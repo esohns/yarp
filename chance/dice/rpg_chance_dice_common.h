@@ -35,7 +35,7 @@ struct RPG_Chance_Roll
 {
   unsigned int         numDice;  // number of dice to roll
   RPG_Chance_Dice_Type typeDice; // the type of dice to roll
-  int                  modifier; // +/- x modifier (e.g. 2D4 + 4)
+  int                  modifier; // +/-x modifier (e.g. 2D4+4)
 };
 
 #endif

@@ -74,7 +74,7 @@ enum RPG_Item_Weapon_Class
 enum RPG_Item_Weapon_Type
 {
   // simple weapons
-  UNARMED_WEAPON_GAUNTLET,
+  UNARMED_WEAPON_GAUNTLET = 0,
   UNARMED_WEAPON_STRIKE,
   LIGHT_MELEE_WEAPON_DAGGER,
   LIGHT_MELEE_WEAPON_SPIKED_GAUNTLET,
@@ -171,13 +171,15 @@ typedef RPG_Chance_Roll RPG_Item_Damage;
 
 struct RPG_Item_Weapon_Properties
 {
-  RPG_Item_Weapon_Category    weaponCategory;
-  RPG_Item_Weapon_Class       weaponClass;
-  RPG_Item_Weapon_Damage_Type typeOfDamage;
-  RPG_Item_Damage             baseDamage;
-  RPG_Item_Store_Price        baseStorePrice;
-  unsigned int                rangeIncrement; // feet
-  unsigned int                baseWeight; // pounds
+  RPG_Item_Weapon_Category      weaponCategory;
+  RPG_Item_Weapon_Class         weaponClass;
+  RPG_Item_Weapon_Type          weaponType;
+  RPG_Item_Store_Price          baseStorePrice;
+  RPG_Item_Damage               baseDamage;
+  RPG_Item_CriticalHit_Modifier criticalModifier;
+  unsigned int                  rangeIncrement; // feet
+  unsigned int                  baseWeight; // pounds
+  RPG_Item_Weapon_Damage_Type   typeOfDamage;
 };
 
 struct RPG_Item_Magic_Weapon_Properties
@@ -221,7 +223,15 @@ enum RPG_Item_Armor_Type
 
 struct RPG_Item_Armor_Properties
 {
-  int toHitModifier;
+  RPG_Item_Armor_Category armorCategory;
+  RPG_Item_Armor_Type     armorType;
+  RPG_Item_Store_Price    baseStorePrice;
+  unsigned int            baseArmorBonus;
+  unsigned int            maxDexterityBonus;
+  int                     armorCheckPenalty;
+  unsigned int            arcaneSpellFailure; // percentage
+  unsigned int            baseSpeed; // feet/round
+  unsigned int            baseWeight; // pounds
 };
 
 struct RPG_Item_Magic_Armor_Properties
