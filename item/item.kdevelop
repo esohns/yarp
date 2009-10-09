@@ -15,30 +15,60 @@
     <projectname>item</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
-    <defaultencoding/>
+    <description></description>
+    <defaultencoding></defaultencoding>
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>libItem.la</activetarget>
-      <useconfiguration>debug</useconfiguration>
+      <activetarget>parser</activetarget>
+      <useconfiguration>default</useconfiguration>
     </general>
-    <run/>
+    <run>
+      <runarguments>
+        <parser/>
+      </runarguments>
+      <debugarguments>
+        <parser/>
+      </debugarguments>
+      <cwd>
+        <parser>/home/unfv/Projects/RPG/item/debug/./</parser>
+      </cwd>
+      <mainprogram>/home/unfv/Projects/RPG/item/debug/.libs/parser</mainprogram>
+      <programargs>-f ../rpg_item.xml -t</programargs>
+      <globaldebugarguments>-f ../rpg_item.xml -t</globaldebugarguments>
+      <globalcwd>/home/unfv/Projects/RPG/item/debug</globalcwd>
+      <useglobalprogram>true</useglobalprogram>
+      <terminal>false</terminal>
+      <autocompile>true</autocompile>
+      <autoinstall>false</autoinstall>
+      <autokdesu>false</autokdesu>
+      <envvars/>
+    </run>
     <configurations>
       <optimized>
         <builddir>optimized</builddir>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
-        <cxxflags>-O2 -g0</cxxflags>
+        <cxxflags>-g -O2 -march=i686</cxxflags>
+        <envvars/>
+        <configargs>--disable-static</configargs>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags>-g -O2 -march=i686</cflags>
+        <f77flags>-g -O2 -march=i686</f77flags>
       </optimized>
       <debug>
-        <configargs/>
+        <configargs>--disable-static</configargs>
         <builddir>debug</builddir>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
-        <cxxflags>-O0 -g3</cxxflags>
+        <cxxflags>-g3 -O0 -march=i686</cxxflags>
         <envvars/>
         <topsourcedir/>
         <cppflags/>
@@ -46,12 +76,12 @@
         <ccompilerbinary/>
         <cxxcompilerbinary/>
         <f77compilerbinary/>
-        <cflags/>
-        <f77flags/>
+        <cflags>-g3 -O0 -march=i686</cflags>
+        <f77flags>-g3 -O0 -march=i686</f77flags>
       </debug>
       <default>
         <envvars/>
-        <configargs/>
+        <configargs>--disable-static</configargs>
         <builddir>debug</builddir>
         <topsourcedir/>
         <cppflags/>
@@ -62,9 +92,9 @@
         <ccompilerbinary/>
         <cxxcompilerbinary/>
         <f77compilerbinary/>
-        <cflags/>
-        <cxxflags>-O0 -g3</cxxflags>
-        <f77flags/>
+        <cflags>-g3 -O0 -march=i686</cflags>
+        <cxxflags>-g3 -O0 -march=i686</cxxflags>
+        <f77flags>-g3 -O0 -march=i686</f77flags>
       </default>
     </configurations>
     <make>
@@ -72,6 +102,12 @@
         <envvar value="1" name="WANT_AUTOCONF_2_5" />
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
       </envvars>
+      <abortonerror>true</abortonerror>
+      <runmultiplejobs>false</runmultiplejobs>
+      <numberofjobs>1</numberofjobs>
+      <dontact>false</dontact>
+      <makebin></makebin>
+      <prio>0</prio>
     </make>
   </kdevautoproject>
   <kdevdoctreeview>
@@ -136,6 +172,7 @@
     <tree>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
       <hidenonprojectfiles>false</hidenonprojectfiles>
+      <showvcsfields>false</showvcsfields>
     </tree>
   </kdevfileview>
   <kdevdocumentation>
@@ -170,7 +207,7 @@
     </qt>
     <references/>
     <codecompletion>
-      <automaticCodeCompletion>false</automaticCodeCompletion>
+      <automaticCodeCompletion>true</automaticCodeCompletion>
       <automaticArgumentsHint>true</automaticArgumentsHint>
       <automaticHeaderCompletion>true</automaticHeaderCompletion>
       <codeCompletionDelay>250</codeCompletionDelay>
@@ -180,20 +217,20 @@
       <completionBoxItemOrder>0</completionBoxItemOrder>
       <howEvaluationContextMenu>true</howEvaluationContextMenu>
       <showCommentWithArgumentHint>true</showCommentWithArgumentHint>
-      <statusBarTypeEvaluation>false</statusBarTypeEvaluation>
+      <statusBarTypeEvaluation>true</statusBarTypeEvaluation>
       <namespaceAliases>std=_GLIBCXX_STD;__gnu_cxx=std</namespaceAliases>
       <processPrimaryTypes>true</processPrimaryTypes>
-      <processFunctionArguments>false</processFunctionArguments>
-      <preProcessAllHeaders>false</preProcessAllHeaders>
+      <processFunctionArguments>true</processFunctionArguments>
+      <preProcessAllHeaders>true</preProcessAllHeaders>
       <parseMissingHeadersExperimental>false</parseMissingHeadersExperimental>
-      <resolveIncludePathsUsingMakeExperimental>false</resolveIncludePathsUsingMakeExperimental>
+      <resolveIncludePathsUsingMakeExperimental>true</resolveIncludePathsUsingMakeExperimental>
       <alwaysParseInBackground>true</alwaysParseInBackground>
       <usePermanentCaching>true</usePermanentCaching>
-      <alwaysIncludeNamespaces>false</alwaysIncludeNamespaces>
+      <alwaysIncludeNamespaces>true</alwaysIncludeNamespaces>
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -214,18 +251,18 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath/>
-      <dbgshell>libtool</dbgshell>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <gdbpath></gdbpath>
+      <dbgshell></dbgshell>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
       <raiseGDBOnStart>false</raiseGDBOnStart>
     </general>
     <display>
-      <staticmembers>false</staticmembers>
+      <staticmembers>true</staticmembers>
       <demanglenames>true</demanglenames>
       <outputradix>10</outputradix>
     </display>

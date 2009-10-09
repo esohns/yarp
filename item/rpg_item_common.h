@@ -23,6 +23,7 @@
 #include "rpg_chance_dice_common.h"
 
 #include <vector>
+#include <map>
 
 enum RPG_Item_Type
 {
@@ -171,9 +172,9 @@ typedef RPG_Chance_Roll RPG_Item_Damage;
 
 struct RPG_Item_Weapon_Properties
 {
+//   RPG_Item_Weapon_Type          weaponType;
   RPG_Item_Weapon_Category      weaponCategory;
   RPG_Item_Weapon_Class         weaponClass;
-  RPG_Item_Weapon_Type          weaponType;
   RPG_Item_Store_Price          baseStorePrice;
   RPG_Item_Damage               baseDamage;
   RPG_Item_CriticalHit_Modifier criticalModifier;
@@ -223,8 +224,8 @@ enum RPG_Item_Armor_Type
 
 struct RPG_Item_Armor_Properties
 {
+//   RPG_Item_Armor_Type     armorType;
   RPG_Item_Armor_Category armorCategory;
-  RPG_Item_Armor_Type     armorType;
   RPG_Item_Store_Price    baseStorePrice;
   unsigned int            baseArmorBonus;
   unsigned int            maxDexterityBonus;
@@ -242,5 +243,11 @@ struct RPG_Item_Magic_Armor_Properties
 // useful types
 typedef std::vector<unsigned int> RPG_ITEM_LIST_T;
 typedef RPG_ITEM_LIST_T::const_iterator RPG_ITEM_LIST_ITERATOR_T;
+typedef std::map<RPG_Item_Weapon_Type,
+                 RPG_Item_Weapon_Properties> RPG_ITEM_WEAPON_DICTIONARY_T;
+typedef RPG_ITEM_WEAPON_DICTIONARY_T::const_iterator RPG_ITEM_WEAPON_DICTIONARY_ITERATOR_T;
+typedef std::map<RPG_Item_Armor_Type,
+                 RPG_Item_Armor_Properties> RPG_ITEM_ARMOR_DICTIONARY_T;
+typedef RPG_ITEM_WEAPON_DICTIONARY_T::const_iterator RPG_ITEM_ARMOR_DICTIONARY_ITERATOR_T;
 
 #endif

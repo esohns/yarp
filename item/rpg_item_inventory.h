@@ -29,7 +29,7 @@ class RPG_Item_Inventory
 {
  public:
   RPG_Item_Inventory();
-  ~RPG_Item_Inventory();
+  virtual ~RPG_Item_Inventory();
 
  private:
   // safety measures

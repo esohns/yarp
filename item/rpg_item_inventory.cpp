@@ -32,5 +32,3 @@ RPG_Item_Inventory::~RPG_Item_Inventory()
   ACE_TRACE(ACE_TEXT("RPG_Item_Inventory::~RPG_Item_Inventory"));
 
 }
-
-

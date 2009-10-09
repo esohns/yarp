@@ -12,8 +12,9 @@ libRPG_Chance_Dice_la_LIBADD = -lACE -lpthread
 libRPG_Chance_Dice_la_SOURCES = rpg_chance_dice.cpp rpg_chance_dice.h \
 	rpg_chance_dice_common.h
 
-bin_PROGRAMS = dice
+noinst_PROGRAMS = dice
 
 # the library search path / libraries
-dice_LDADD = $(top_builddir)/dice/libRPG_Chance_Dice.la
+dice_LDADD = $(top_builddir)/dice/libRPG_Chance_Dice.la -lACE -lpthread
 dice_SOURCES = main.cpp
+dice_LDFLAGS = -L/usr/local/lib

@@ -20,7 +20,7 @@
   </general>
   <kdevautoproject>
     <general>
-      <useconfiguration>debug</useconfiguration>
+      <useconfiguration>default</useconfiguration>
       <activetarget>libCharacter.la</activetarget>
     </general>
     <run>
@@ -41,15 +41,25 @@
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
-        <cxxflags>-O2 -g0</cxxflags>
+        <cxxflags>-g -O2 -march=i686</cxxflags>
+        <envvars/>
+        <configargs>--disable-static</configargs>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags>-g -O2 -march=i686</cflags>
+        <f77flags>-g -O2 -march=i686</f77flags>
       </optimized>
       <debug>
-        <configargs/>
+        <configargs>--disable-static</configargs>
         <builddir>debug</builddir>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
-        <cxxflags>-O0 -g3</cxxflags>
+        <cxxflags>-g3 -O0 -march=i686</cxxflags>
         <envvars/>
         <topsourcedir/>
         <cppflags/>
@@ -57,12 +67,12 @@
         <ccompilerbinary/>
         <cxxcompilerbinary/>
         <f77compilerbinary/>
-        <cflags/>
-        <f77flags/>
+        <cflags>-g3 -O0 -march=i686</cflags>
+        <f77flags>-g3 -O0 -march=i686</f77flags>
       </debug>
       <default>
         <envvars/>
-        <configargs/>
+        <configargs>--disable-static</configargs>
         <builddir>debug</builddir>
         <topsourcedir/>
         <cppflags/>
@@ -73,9 +83,9 @@
         <ccompilerbinary/>
         <cxxcompilerbinary/>
         <f77compilerbinary/>
-        <cflags/>
-        <cxxflags>-O0 -g3</cxxflags>
-        <f77flags/>
+        <cflags>-g3 -O0 -march=i686</cflags>
+        <cxxflags>-g3 -O0 -march=i686</cxxflags>
+        <f77flags>-g3 -O0 -march=i686</f77flags>
       </default>
     </configurations>
     <make>
@@ -154,6 +164,7 @@
     <tree>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
       <hidenonprojectfiles>false</hidenonprojectfiles>
+      <showvcsfields>false</showvcsfields>
     </tree>
   </kdevfileview>
   <kdevdocumentation>

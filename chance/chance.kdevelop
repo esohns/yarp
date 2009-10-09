@@ -15,24 +15,24 @@
     <projectname>chance</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
-    <defaultencoding/>
+    <description></description>
+    <defaultencoding></defaultencoding>
   </general>
   <kdevautoproject>
     <general>
-      <useconfiguration>debug</useconfiguration>
+      <useconfiguration>default</useconfiguration>
       <activetarget>dice/dice</activetarget>
     </general>
     <run>
-      <mainprogram>/home/unfv/Projects/RPG/chance/debug/dice/dice</mainprogram>
+      <mainprogram>/home/unfv/Projects/RPG/chance/debug/dice/.libs/dice</mainprogram>
       <programargs>-d 6 -m 0 -n 1 -r 1</programargs>
       <globaldebugarguments>-d 6 -m 0 -n 1 -r 1</globaldebugarguments>
-      <globalcwd>/home/unfv/Projects/RPG/chance/debug/dice/dice</globalcwd>
+      <globalcwd>/home/unfv/Projects/RPG/chance/debug/dice/</globalcwd>
       <useglobalprogram>true</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
-      <autoinstall>true</autoinstall>
-      <autokdesu>true</autokdesu>
+      <autoinstall>false</autoinstall>
+      <autokdesu>false</autokdesu>
       <envvars/>
       <runarguments>
         <dice/>
@@ -50,15 +50,25 @@
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
-        <cxxflags>-O2 -g0</cxxflags>
+        <cxxflags>-g -O2 -march=i686</cxxflags>
+        <envvars/>
+        <configargs>--disable-static</configargs>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags>-g -O2 -march=i686</cflags>
+        <f77flags>-g -O2 -march=i686</f77flags>
       </optimized>
       <debug>
-        <configargs/>
+        <configargs>--disable-static</configargs>
         <builddir>debug</builddir>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
-        <cxxflags>-O0 -g3</cxxflags>
+        <cxxflags>-g3 -O0 -march=i686</cxxflags>
         <envvars/>
         <topsourcedir/>
         <cppflags/>
@@ -66,13 +76,13 @@
         <ccompilerbinary/>
         <cxxcompilerbinary/>
         <f77compilerbinary/>
-        <cflags/>
-        <f77flags/>
+        <cflags>-g3 -O0 -march=i686</cflags>
+        <f77flags>-g3 -O0 -march=i686</f77flags>
       </debug>
       <default>
         <envvars/>
-        <configargs/>
-        <builddir/>
+        <configargs>--disable-static</configargs>
+        <builddir>debug</builddir>
         <topsourcedir/>
         <cppflags/>
         <ldflags/>
@@ -82,9 +92,9 @@
         <ccompilerbinary/>
         <cxxcompilerbinary/>
         <f77compilerbinary/>
-        <cflags/>
-        <cxxflags/>
-        <f77flags/>
+        <cflags>-g3 -O0 -march=i686</cflags>
+        <cxxflags>-g3 -O0 -march=i686</cxxflags>
+        <f77flags>-g3 -O0 -march=i686</f77flags>
       </default>
     </configurations>
     <make>
@@ -222,7 +232,7 @@
       <includePaths>.;/usr/include;/usr/local/include</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -243,11 +253,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath/>
-      <dbgshell>libtool</dbgshell>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <gdbpath></gdbpath>
+      <dbgshell></dbgshell>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
