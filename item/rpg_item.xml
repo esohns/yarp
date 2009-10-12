@@ -15,7 +15,10 @@
         <typeDice>D_3</typeDice>
         <modifier>0</modifier>
       </baseDamage>
-      <criticalHitModifier>CRITICALHIT_MODIFIER_X2</criticalHitModifier>
+      <criticalHitModifier>
+        <minToHitRoll>20</mintToHitRoll>
+        <damageModifier>2</damageModifier>
+      </criticalHitModifier>
       <rangeIncrement>0</rangeIncrement>
       <baseWeight>1</baseWeight>
       <typeOfDamage>WEAPON_DAMAGE_BLUDGEONING</typeOfDamage>
@@ -33,7 +36,10 @@
         <typeDice>D_3</typeDice>
         <modifier>0</modifier>
       </baseDamage>
-      <criticalHitModifier>CRITICALHIT_MODIFIER_X2</criticalHitModifier>
+      <criticalHitModifier>
+        <minToHitRoll>20</mintToHitRoll>
+        <damageModifier>2</damageModifier>
+      </criticalHitModifier>
       <rangeIncrement>0</rangeIncrement>
       <baseWeight>0</baseWeight>
       <typeOfDamage>WEAPON_DAMAGE_BLUDGEONING</typeOfDamage>

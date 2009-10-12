@@ -19,11 +19,13 @@
  ***************************************************************************/
 #include "rpg_item_dictionary.h"
 
+// #include "rpg_item_schema_dictionary_types.h"
+// #include "rpg_item_dictionary_parser_base.h"
 #include "rpg_item_dictionary_parser.h"
 
-#include <ACEXML/common/FileCharStream.h>
-#include <ACEXML/parser/parser/Parser.h>
-#include <ace/Trace.h>
+#include <ace/Log_Msg.h>
+
+#include <iostream>
 
 RPG_Item_Dictionary::RPG_Item_Dictionary()
 {
@@ -41,68 +43,106 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::initItemDictionary"));
 
-  ACEXML_FileCharStream* fileStream = NULL;
-  try
-  {
-    fileStream = new ACEXML_FileCharStream();
-  }
-  catch(...)
-  {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("caught exception in new, returning\n")));
+  // Construct the parser.
+  //
+  ::xml_schema::unsigned_int_pimpl         unsigned_int_p;
+  RPG_Chance_Dice_Type_pimpl               chanceDiceType_p;
+  ::xml_schema::integer_pimpl              int_p;
 
-    return;
-  }
-  if (!fileStream)
-  {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("unable to allocate memory, returning\n")));
+  RPG_Item_Weapon_Type_pimpl               weaponType_p;
+  RPG_Item_Weapon_Category_Type_pimpl      weaponCategory_p;
+  RPG_Item_Weapon_Class_Type_pimpl         weaponClass_p;
+  RPG_Item_Store_Price_Type_pimpl          baseStorePrice_p;
+  baseStorePrice_p.parsers(unsigned_int_p,
+                           unsigned_int_p);
+  RPG_Chance_Roll_Type_pimpl               baseDamage_p;
+  baseDamage_p.parsers(unsigned_int_p,
+                       chanceDiceType_p,
+                       int_p);
+  RPG_Item_CriticalHit_Modifier_Type_pimpl criticalModifier_p;
+  criticalModifier_p.parsers(unsigned_int_p,
+                             unsigned_int_p);
+//   unsigned_int_pimpl                       rangeIncrement_p;
+//   unsigned_int_pimpl                       baseWeight_p;
+  RPG_Item_Weapon_Damage_Type_pimpl        damageType_p;
 
-    return;
-  } // end IF
+  RPG_Item_Armor_Type_pimpl                armorType_p;
+  RPG_Item_Armor_Category_Type_pimpl       armorCategory_p;
+//  RPG_Item_Store_Price_Type_pimpl          baseStorePrice_p;
+//  unsigned_int_pimpl                       baseArmorBonus_p;
+//  unsigned_int_pimpl                       maxDexterityBonus_p;
+//  int_pimpl                                armorCheckPenalty_p;
+//  unsigned_int_pimpl                       arcaneSpellFailure_p;
+//  unsigned_int_pimpl                       baseSpeed_p;
+//  unsigned_int_pimpl                       baseWeight_p;
 
-  if (fileStream->open(ACE_const_cast(char*,
-                                     filename_in.c_str())))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to open XML file: \"%s\", returning\n"),
-               filename_in.c_str()));
+  RPG_Item_Weapon_Properties_Type_pimpl weaponProperties_p;
+  weaponProperties_p.parsers(weaponType_p,
+                             weaponCategory_p,
+                             weaponClass_p,
+                             baseStorePrice_p,
+                             baseDamage_p,
+                             criticalModifier_p,
+                             unsigned_int_p,
+                             unsigned_int_p,
+                             damageType_p);
+  RPG_Item_Armor_Properties_Type_pimpl  armorProperties_p;
+  armorProperties_p.parsers(armorType_p,
+                            armorCategory_p,
+                            baseStorePrice_p,
+                            unsigned_int_p,
+                            unsigned_int_p,
+                            int_p,
+                            unsigned_int_p,
+                            unsigned_int_p,
+                            unsigned_int_p);
 
-    // clean up
-    delete fileStream;
-    fileStream = NULL;
+  RPG_Item_Weapon_Dictionary_Type_pimpl weaponDictionary_p;
+  weaponDictionary_p.parsers(weaponProperties_p);
+  RPG_Item_Armor_Dictionary_Type_pimpl  armorDictionary_p;
+  armorDictionary_p.parsers(armorProperties_p);
 
-    return;
-  } // end IF
-  ACEXML_CharStream* stream = fileStream;
+  RPG_Item_Dictionary_Parser itemDictionary_p(&myWeaponDictionary,
+                                              &myArmorDictionary);
+  itemDictionary_p.parsers(weaponDictionary_p,
+                           armorDictionary_p);
 
-  // *IMPORTANT NOTE*: input assumes lifetime responsibility for fileStream !
-  ACEXML_InputSource input(stream);
+  // Parse the document to obtain the object model.
+  //
+  ::xml_schema::document doc_p(itemDictionary_p,
+                               ACE_TEXT_ALWAYS_CHAR("RPG_Item_Dictionary"));
 
-  RPG_Item_Dictionary_Parser handler(filename_in,
-                                     &RPG_ITEM_DICTIONARY_SINGLETON::instance()->myWeaponDictionary,
-                                     &RPG_ITEM_DICTIONARY_SINGLETON::instance()->myArmorDictionary);
-  ACEXML_Parser parser;
-  parser.setContentHandler(&handler);
-  parser.setDTDHandler(&handler);
-  parser.setErrorHandler(&handler);
-  parser.setEntityResolver(&handler);
+  itemDictionary_p.pre();
 
   // OK: parse the file...
   try
   {
-    parser.parse(&input);
+    doc_p.parse(filename_in);
   }
-  catch(ACEXML_SAXParseException exception)
+  catch(const ::xml_schema::parsing& exception)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("Exception occurred. Exiting...\n")));
+               ACE_TEXT("RPG_Item_Dictionary::initItemDictionary(): exception occurred, returning\n")));
 
-    exception.print();
+    std::cerr << exception << std::endl;
+//     exception.print(std::cerr);
+
+    return;
   }
   catch(...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("Exception occurred. Exiting...\n")));
+               ACE_TEXT("RPG_Item_Dictionary::initItemDictionary(): exception occurred, returning\n")));
+
+    return;
   }
+
+  itemDictionary_p.post_RPG_Item_Dictionary_Type();
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("parsed dictionary file \"%s\", retrieved %d weapons and %d armors...\n"),
+             filename_in.c_str(),
+             myWeaponDictionary.size(),
+             myArmorDictionary.size()));
 }

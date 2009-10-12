@@ -161,18 +161,14 @@
 </xsd:simpleType>
 -->
 
-  <xsd:simpleType name="RPG_Item_CriticalHit_Modifier_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="CRITICALHIT_MODIFIER_X2"/>
-      <xsd:enumeration value="CRITICALHIT_MODIFIER_X3"/>
-      <xsd:enumeration value="CRITICALHIT_MODIFIER_X3_X4"/>
-      <xsd:enumeration value="CRITICALHIT_MODIFIER_X4"/>
-      <xsd:enumeration value="CRITICALHIT_MODIFIER_19_20_X2"/>
-      <xsd:enumeration value="CRITICALHIT_MODIFIER_18_20_X2"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-  
-  <xsd:simpleType name="RPG_Item_Damage_Type">
+  <xsd:complexType name="RPG_Item_CriticalHit_Modifier_Type">
+    <xsd:sequence>
+      <xsd:element name="minToHitRoll" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="damageModifier" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Item_Weapon_Damage_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="WEAPON_DAMAGE_BLUDGEONING"/>
       <xsd:enumeration value="WEAPON_DAMAGE_PIERCING"/>
@@ -190,7 +186,7 @@
       <xsd:element name="criticalHitModifier" type="RPG_Item_CriticalHit_Modifier_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="rangeIncrement" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="baseWeight" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="typeOfDamage" type="RPG_Item_Damage_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="typeOfDamage" type="RPG_Item_Weapon_Damage_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 

@@ -25,12 +25,12 @@ AM_INIT_AUTOMAKE(item, 0.1)
 LT_INIT
 
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-lACEXML':
-AC_CHECK_LIB([ACEXML], [main])
 # FIXME: Replace `main' with a function in `-lACE':
 AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lpthread':
 AC_CHECK_LIB([pthread], [main])
+# FIXME: Replace `main' with a function in `-lxerces-c':
+AC_CHECK_LIB([xerces-c], [main])
 
 # Checks for header files.
 

@@ -1,0 +1,23 @@
+include "rpg_chance_dice_common.h";
+include "rpg_item_common.h";
+
+RPG_Item_Weapon_Properties_Type    RPG_Item_Weapon_Properties;
+RPG_Item_Armor_Properties_Type     RPG_Item_Armor_Properties;
+RPG_Item_Weapon_Category_Type      RPG_Item_Weapon_Category;
+RPG_Item_Weapon_Class_Type         RPG_Item_Weapon_Class;
+RPG_Item_Weapon_Type               RPG_Item_Weapon_Type;
+RPG_Item_Store_Price_Type          RPG_Item_Store_Price;
+RPG_Chance_Dice_Type               RPG_Chance_Dice_Type;
+RPG_Chance_Roll_Type               RPG_Item_Damage;
+RPG_Item_CriticalHit_Modifier_Type RPG_Item_CriticalHit_Modifier;
+RPG_Item_Weapon_Damage_Type        RPG_Item_Weapon_Damage_Type;
+RPG_Item_Weapon_Properties_Type    RPG_Item_Weapon_Properties;
+
+RPG_Item_Armor_Category_Type       RPG_Item_Armor_Category;
+RPG_Item_Armor_Type                RPG_Item_Armor_Type;
+RPG_Item_Armor_Properties_Type     RPG_Item_Armor_Properties;
+
+RPG_Item_Weapon_Dictionary_Type    RPG_ITEM_WEAPON_DICTIONARY_T;
+RPG_Item_Armor_Dictionary_Type     RPG_ITEM_ARMOR_DICTIONARY_T;
+
+# RPG_Item_Dictionary_Type           RPG_Item_Dictionary

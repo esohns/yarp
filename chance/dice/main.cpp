@@ -27,7 +27,6 @@
 
 #include <ace/OS.h>
 #include <ace/ACE.h>
-#include <ace/Trace.h>
 #include <ace/Get_Opt.h>
 #include <ace/High_Res_Timer.h>
 

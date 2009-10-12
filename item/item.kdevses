@@ -1,23 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="5" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_dictionary_parser.cpp" >
-   <View0 Encoding="" line="45" Type="Source" />
-  </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/main.cpp" >
-   <View0 Encoding="" line="125" Type="Source" />
-  </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_common.h" >
-   <View0 Encoding="" line="33" Type="Source" />
-  </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_common_tools.cpp" >
-   <View0 Encoding="" line="42" Type="Source" />
-  </Doc3>
-  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_common_tools.h" >
-   <View0 Encoding="" line="74" Type="Source" />
-  </Doc4>
- </DocsAndViews>
+ <DocsAndViews NumberOfDocuments="0" />
  <pluginList>
   <kdevdebugger>
    <breakpointList/>
