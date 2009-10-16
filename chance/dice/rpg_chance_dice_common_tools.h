@@ -17,19 +17,37 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_item_weapon.h"
+#ifndef RPG_CHANCE_DICE_COMMON_TOOLS_H
+#define RPG_CHANCE_DICE_COMMON_TOOLS_H
 
-#include <ace/Trace.h>
+#include "rpg_chance_dice_common.h"
 
-RPG_Item_Weapon::RPG_Item_Weapon(const RPG_Item_WeaponType& weaponType_in)
- : inherited(weaponType_in)
+#include <ace/Global_Macros.h>
+
+#include <map>
+#include <string>
+
+/**
+	@author Erik Sohns <erik.sohns@web.de>
+*/
+class RPG_Chance_Dice_Common_Tools
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Weapon::RPG_Item_Weapon"));
+ public:
+  static void initStringConversionTables();
+  static RPG_Chance_DiceType stringToDiceType(const std::string&); // string
 
-}
+ private:
+  // some handy types
+  typedef std::map<std::string, RPG_Chance_DiceType> RPG_String2DiceType_Table;
+  typedef RPG_String2DiceType_Table::const_iterator RPG_String2DiceType_Table_Iterator;
 
-RPG_Item_Weapon::~RPG_Item_Weapon()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_Weapon::RPG_Item_Weapon"));
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Dice_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Chance_Dice_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Dice_Common_Tools(const RPG_Chance_Dice_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Dice_Common_Tools& operator=(const RPG_Chance_Dice_Common_Tools&));
 
-}
+  static RPG_String2DiceType_Table myString2DiceTypeTable;
+};
+
+#endif

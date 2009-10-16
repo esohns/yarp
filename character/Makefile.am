@@ -12,4 +12,3 @@ libRPG_Character_la_SOURCES = rpg_character_base.cpp rpg_character_base.h \
 	rpg_character_player.cpp rpg_character_player.h rpg_character_player_base.cpp \
 	rpg_character_player_base.h rpg_character_race_common.h rpg_character_skills_common.h
 libRPG_Character_la_LDFLAGS = -L/usr/local/lib
-libRPG_Character_la_LIBADD = -lACE -lpthread

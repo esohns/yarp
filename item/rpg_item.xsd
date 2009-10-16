@@ -12,42 +12,42 @@
 
   <xsd:complexType name="RPG_Item_Dictionary_Type">
     <xsd:sequence>
-      <xsd:element name="RPG_Item_Weapon_Dictionary" type="RPG_Item_Weapon_Dictionary_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="RPG_Item_Armor_Dictionary" type="RPG_Item_Armor_Dictionary_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="RPG_Item_WeaponDictionary" type="RPG_Item_WeaponDictionary_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="RPG_Item_ArmorDictionary" type="RPG_Item_ArmorDictionary_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Item_Weapon_Dictionary_Type">
+  <xsd:complexType name="RPG_Item_WeaponDictionary_Type">
     <xsd:sequence>
-      <xsd:element name="weapon" type="RPG_Item_Weapon_Properties_Type" maxOccurs="unbounded"/>
+      <xsd:element name="weapon" type="RPG_Item_WeaponProperties_Type" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Item_Armor_Dictionary_Type">
+  <xsd:complexType name="RPG_Item_ArmorDictionary_Type">
     <xsd:sequence>
-      <xsd:element name="armor" type="RPG_Item_Armor_Properties_Type" maxOccurs="unbounded"/>
+      <xsd:element name="armor" type="RPG_Item_ArmorProperties_Type" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:simpleType name="RPG_Item_Weapon_Category_Type">
+  <xsd:simpleType name="RPG_Item_WeaponCategory_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="WEAPON_CATEGORY_SIMPLE"/>
-      <xsd:enumeration value="WEAPON_CATEGORY_MARTIAL"/>
-      <xsd:enumeration value="WEAPON_CATEGORY_EXOTIC"/>
+      <xsd:enumeration value="WEAPONCATEGORY_SIMPLE"/>
+      <xsd:enumeration value="WEAPONCATEGORY_MARTIAL"/>
+      <xsd:enumeration value="WEAPONCATEGORY_EXOTIC"/>
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="RPG_Item_Weapon_Class_Type">
+  <xsd:simpleType name="RPG_Item_WeaponClass_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="WEAPON_CLASS_UNARMED"/>
-      <xsd:enumeration value="WEAPON_CLASS_LIGHT_MELEE"/>
-      <xsd:enumeration value="WEAPON_CLASS_ONE_HANDED_MELEE"/>
-      <xsd:enumeration value="WEAPON_CLASS_TWO_HANDED_MELEE"/>
-      <xsd:enumeration value="WEAPON_CLASS_RANGED"/>
+      <xsd:enumeration value="WEAPONCLASS_UNARMED"/>
+      <xsd:enumeration value="WEAPONCLASS_LIGHT_MELEE"/>
+      <xsd:enumeration value="WEAPONCLASS_ONE_HANDED_MELEE"/>
+      <xsd:enumeration value="WEAPONCLASS_TWO_HANDED_MELEE"/>
+      <xsd:enumeration value="WEAPONCLASS_RANGED"/>
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="RPG_Item_Weapon_Type">
+  <xsd:simpleType name="RPG_Item_WeaponType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="UNARMED_WEAPON_GAUNTLET"/>
       <xsd:enumeration value="UNARMED_WEAPON_STRIKE"/>
@@ -124,14 +124,14 @@
     </xsd:restriction>
   </xsd:simpleType>
   
-  <xsd:complexType name="RPG_Item_Store_Price_Type">
+  <xsd:complexType name="RPG_Item_StorePrice_Type">
     <xsd:sequence>
       <xsd:element name="numGoldPieces" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="numSilverPieces" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:simpleType name="RPG_Chance_Dice_Type">
+  <xsd:simpleType name="RPG_Chance_DiceType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="D_2"/>
       <xsd:enumeration value="D_3"/>
@@ -148,7 +148,7 @@
   <xsd:complexType name="RPG_Chance_Roll_Type">
     <xsd:sequence>
       <xsd:element name="numDice" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="typeDice" type="RPG_Chance_Dice_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="typeDice" type="RPG_Chance_DiceType_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="modifier" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -161,45 +161,45 @@
 </xsd:simpleType>
 -->
 
-  <xsd:complexType name="RPG_Item_CriticalHit_Modifier_Type">
+  <xsd:complexType name="RPG_Item_CriticalHitModifier_Type">
     <xsd:sequence>
       <xsd:element name="minToHitRoll" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="damageModifier" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:simpleType name="RPG_Item_Weapon_Damage_Type">
+  <xsd:simpleType name="RPG_Item_WeaponDamageType_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="WEAPON_DAMAGE_BLUDGEONING"/>
-      <xsd:enumeration value="WEAPON_DAMAGE_PIERCING"/>
-      <xsd:enumeration value="WEAPON_DAMAGE_SLASHING"/>
+      <xsd:enumeration value="WEAPONDAMAGE_BLUDGEONING"/>
+      <xsd:enumeration value="WEAPONDAMAGE_PIERCING"/>
+      <xsd:enumeration value="WEAPONDAMAGE_SLASHING"/>
     </xsd:restriction>
   </xsd:simpleType>
   
-  <xsd:complexType name="RPG_Item_Weapon_Properties_Type">
+  <xsd:complexType name="RPG_Item_WeaponProperties_Type">
     <xsd:sequence>
-      <xsd:element name="weaponType" type="RPG_Item_Weapon_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="weaponCategory" type="RPG_Item_Weapon_Category_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="weaponClass" type="RPG_Item_Weapon_Class_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="baseStorePrice" type="RPG_Item_Store_Price_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="weaponType" type="RPG_Item_WeaponType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="weaponCategory" type="RPG_Item_WeaponCategory_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="weaponClass" type="RPG_Item_WeaponClass_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="baseStorePrice" type="RPG_Item_StorePrice_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="baseDamage" type="RPG_Chance_Roll_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="criticalHitModifier" type="RPG_Item_CriticalHit_Modifier_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="criticalHitModifier" type="RPG_Item_CriticalHitModifier_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="rangeIncrement" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="baseWeight" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="typeOfDamage" type="RPG_Item_Weapon_Damage_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="typeOfDamage" type="RPG_Item_WeaponDamageType_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:simpleType name="RPG_Item_Armor_Category_Type">
+  <xsd:simpleType name="RPG_Item_ArmorCategory_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="ARMOR_CATEGORY_LIGHT"/>
-      <xsd:enumeration value="ARMOR_CATEGORY_MEDIUM"/>
-      <xsd:enumeration value="ARMOR_CATEGORY_HEAVY"/>
-      <xsd:enumeration value="ARMOR_CATEGORY_SHIELD"/>
+      <xsd:enumeration value="ARMORCATEGORY_LIGHT"/>
+      <xsd:enumeration value="ARMORCATEGORY_MEDIUM"/>
+      <xsd:enumeration value="ARMORCATEGORY_HEAVY"/>
+      <xsd:enumeration value="ARMORCATEGORY_SHIELD"/>
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="RPG_Item_Armor_Type">
+  <xsd:simpleType name="RPG_Item_ArmorType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ARMOR_PADDED"/>
       <xsd:enumeration value="ARMOR_LEATHER"/>
@@ -222,11 +222,11 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:complexType name="RPG_Item_Armor_Properties_Type">
+  <xsd:complexType name="RPG_Item_ArmorProperties_Type">
     <xsd:sequence>
-      <xsd:element name="armorType" type="RPG_Item_Armor_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="armorCategory" type="RPG_Item_Armor_Category_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="baseStorePrice" type="RPG_Item_Store_Price_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="armorType" type="RPG_Item_ArmorType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="armorCategory" type="RPG_Item_ArmorCategory_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="baseStorePrice" type="RPG_Item_StorePrice_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="baseArmorBonus" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="maxDexterityBonus" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="armorCheckPenalty" type="xsd:integer" minOccurs="1" maxOccurs="1"/>

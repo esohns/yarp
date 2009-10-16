@@ -33,10 +33,10 @@ class RPG_Item_Weapon_Base
   ~RPG_Item_Weapon_Base();
 
   // what am I ?
-  const RPG_Item_Weapon_Type getWeaponType() const;
+  const RPG_Item_WeaponType getWeaponType() const;
 
  protected:
-  RPG_Item_Weapon_Base(const RPG_Item_Weapon_Type&);
+  RPG_Item_Weapon_Base(const RPG_Item_WeaponType&);
 
  private:
   // safety measures
@@ -44,7 +44,7 @@ class RPG_Item_Weapon_Base
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Weapon_Base(const RPG_Item_Weapon_Base&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Weapon_Base& operator=(const RPG_Item_Weapon_Base&));
 
-  RPG_Item_Weapon_Type myWeaponType;
+  RPG_Item_WeaponType myWeaponType;
 };
 
 #endif

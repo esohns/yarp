@@ -102,7 +102,7 @@ const bool process_arguments(const int argc_in,
           case D_20:
           case D_100:
           {
-            rollSpecs_out.typeDice = ACE_static_cast(RPG_Chance_Dice_Type,
+            rollSpecs_out.typeDice = ACE_static_cast(RPG_Chance_DiceType,
                                                      temp);
 
             break;

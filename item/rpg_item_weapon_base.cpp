@@ -21,7 +21,7 @@
 
 #include <ace/Trace.h>
 
-RPG_Item_Weapon_Base::RPG_Item_Weapon_Base(const RPG_Item_Weapon_Type& weaponType_in)
+RPG_Item_Weapon_Base::RPG_Item_Weapon_Base(const RPG_Item_WeaponType& weaponType_in)
  : myWeaponType(weaponType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Weapon_Base::RPG_Item_Weapon_Base"));
@@ -34,7 +34,7 @@ RPG_Item_Weapon_Base::~RPG_Item_Weapon_Base()
 
 }
 
-const RPG_Item_Weapon_Type RPG_Item_Weapon_Base::getWeaponType() const
+const RPG_Item_WeaponType RPG_Item_Weapon_Base::getWeaponType() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Weapon_Base::getWeaponType"));
 

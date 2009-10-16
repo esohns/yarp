@@ -61,16 +61,16 @@ void RPG_Item_Common_Tools::initStringConversionTables()
   myString2MoneyTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONEY_PRECIOUS"), MONEY_PRECIOUS));
 
   // RPG_Item_Weapon_Category
-  myString2WeaponCategoryTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPON_CATEGORY_SIMPLE"), WEAPON_CATEGORY_SIMPLE));
-  myString2WeaponCategoryTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPON_CATEGORY_MARTIAL"), WEAPON_CATEGORY_MARTIAL));
-  myString2WeaponCategoryTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPON_CATEGORY_EXOTIC"), WEAPON_CATEGORY_EXOTIC));
+  myString2WeaponCategoryTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPONCATEGORY_SIMPLE"), WEAPONCATEGORY_SIMPLE));
+  myString2WeaponCategoryTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPONCATEGORY_MARTIAL"), WEAPONCATEGORY_MARTIAL));
+  myString2WeaponCategoryTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPONCATEGORY_EXOTIC"), WEAPONCATEGORY_EXOTIC));
 
   // RPG_Item_Weapon_Class
-  myString2WeaponClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPON_CLASS_UNARMED"), WEAPON_CLASS_UNARMED));
-  myString2WeaponClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPON_CLASS_LIGHT_MELEE"), WEAPON_CLASS_LIGHT_MELEE));
-  myString2WeaponClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPON_CLASS_ONE_HANDED_MELEE"), WEAPON_CLASS_ONE_HANDED_MELEE));
-  myString2WeaponClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPON_CLASS_TWO_HANDED_MELEE"), WEAPON_CLASS_TWO_HANDED_MELEE));
-  myString2WeaponClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPON_CLASS_RANGED"), WEAPON_CLASS_RANGED));
+  myString2WeaponClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPONCLASS_UNARMED"), WEAPONCLASS_UNARMED));
+  myString2WeaponClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPONCLASS_LIGHT_MELEE"), WEAPONCLASS_LIGHT_MELEE));
+  myString2WeaponClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPONCLASS_ONE_HANDED_MELEE"), WEAPONCLASS_ONE_HANDED_MELEE));
+  myString2WeaponClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPONCLASS_TWO_HANDED_MELEE"), WEAPONCLASS_TWO_HANDED_MELEE));
+  myString2WeaponClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPONCLASS_RANGED"), WEAPONCLASS_RANGED));
 
   // RPG_Item_Weapon_Type
   myString2WeaponTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("UNARMED_WEAPON_GAUNTLET"), UNARMED_WEAPON_GAUNTLET));
@@ -147,15 +147,15 @@ void RPG_Item_Common_Tools::initStringConversionTables()
   myString2WeaponTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("RANGED_WEAPON_SHURIKEN"), RANGED_WEAPON_SHURIKEN));
 
   // RPG_Item_Weapon_Damage_Type
-  myString2WeaponDamageTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPON_DAMAGE_BLUDGEONING"), WEAPON_DAMAGE_BLUDGEONING));
-  myString2WeaponDamageTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPON_DAMAGE_PIERCING"), WEAPON_DAMAGE_PIERCING));
-  myString2WeaponDamageTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPON_DAMAGE_SLASHING"), WEAPON_DAMAGE_SLASHING));
+  myString2WeaponDamageTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPONDAMAGE_BLUDGEONING"), WEAPONDAMAGE_BLUDGEONING));
+  myString2WeaponDamageTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPONDAMAGE_PIERCING"), WEAPONDAMAGE_PIERCING));
+  myString2WeaponDamageTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPONDAMAGE_SLASHING"), WEAPONDAMAGE_SLASHING));
 
   // RPG_Item_Armor_Category
-  myString2ArmorCategoryTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ARMOR_CATEGORY_LIGHT"), ARMOR_CATEGORY_LIGHT));
-  myString2ArmorCategoryTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ARMOR_CATEGORY_MEDIUM"), ARMOR_CATEGORY_MEDIUM));
-  myString2ArmorCategoryTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ARMOR_CATEGORY_HEAVY"), ARMOR_CATEGORY_HEAVY));
-  myString2ArmorCategoryTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ARMOR_CATEGORY_SHIELD"), ARMOR_CATEGORY_SHIELD));
+  myString2ArmorCategoryTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ARMORCATEGORY_LIGHT"), ARMORCATEGORY_LIGHT));
+  myString2ArmorCategoryTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ARMORCATEGORY_MEDIUM"), ARMORCATEGORY_MEDIUM));
+  myString2ArmorCategoryTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ARMORCATEGORY_HEAVY"), ARMORCATEGORY_HEAVY));
+  myString2ArmorCategoryTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ARMORCATEGORY_SHIELD"), ARMORCATEGORY_SHIELD));
 
   // RPG_Item_Armor_Type
   myString2ArmorTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ARMOR_PADDED"), ARMOR_PADDED));
@@ -178,13 +178,9 @@ void RPG_Item_Common_Tools::initStringConversionTables()
   myString2ArmorTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ARMOR_SHIELD_TOWER"), ARMOR_SHIELD_TOWER));
 }
 
-void RPG_Item_Common_Tools::stringToWeaponCategory(const std::string& string_in,
-                                                   RPG_Item_Weapon_Category& category_out)
+RPG_Item_WeaponCategory RPG_Item_Common_Tools::stringToWeaponCategory(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToWeaponCategory"));
-
-  // init return value(s)
-  category_out = WEAPON_CATEGORY_INVALID;
 
   RPG_String2WeaponCategory_Table_Iterator iterator = myString2WeaponCategoryTable.find(string_in);
   if (iterator == myString2WeaponCategoryTable.end())
@@ -194,19 +190,15 @@ void RPG_Item_Common_Tools::stringToWeaponCategory(const std::string& string_in,
                ACE_TEXT("invalid weapon category: \"%s\" --> check implementation !, returning\n"),
                string_in.c_str()));
 
-    return;
+    return WEAPONCATEGORY_INVALID;
   } // end IF
 
-  category_out = iterator->second;
+  return iterator->second;
 }
 
-void RPG_Item_Common_Tools::stringToWeaponClass(const std::string& string_in,
-                                                RPG_Item_Weapon_Class& class_out)
+RPG_Item_WeaponClass RPG_Item_Common_Tools::stringToWeaponClass(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToWeaponClass"));
-
-  // init return value(s)
-  class_out = WEAPON_CLASS_INVALID;
 
   RPG_String2WeaponClass_Table_Iterator iterator = myString2WeaponClassTable.find(string_in);
   if (iterator == myString2WeaponClassTable.end())
@@ -216,19 +208,15 @@ void RPG_Item_Common_Tools::stringToWeaponClass(const std::string& string_in,
                ACE_TEXT("invalid weapon class: \"%s\" --> check implementation !, returning\n"),
                string_in.c_str()));
 
-    return;
+    return WEAPONCLASS_INVALID;
   } // end IF
 
-  class_out = iterator->second;
+  return iterator->second;
 }
 
-void RPG_Item_Common_Tools::stringToWeaponType(const std::string& string_in,
-                                               RPG_Item_Weapon_Type& type_out)
+RPG_Item_WeaponType RPG_Item_Common_Tools::stringToWeaponType(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToWeaponType"));
-
-  // init return value(s)
-  type_out = WEAPON_TYPE_INVALID;
 
   RPG_String2WeaponType_Table_Iterator iterator = myString2WeaponTypeTable.find(string_in);
   if (iterator == myString2WeaponTypeTable.end())
@@ -238,19 +226,15 @@ void RPG_Item_Common_Tools::stringToWeaponType(const std::string& string_in,
                ACE_TEXT("invalid weapon type: \"%s\" --> check implementation !, returning\n"),
                string_in.c_str()));
 
-    return;
+    return WEAPON_TYPE_INVALID;
   } // end IF
 
-  type_out = iterator->second;
+  return iterator->second;
 }
 
-void RPG_Item_Common_Tools::stringToWeaponDamageType(const std::string& string_in,
-                                                     RPG_Item_Weapon_Damage_Type& damageType_out)
+RPG_Item_WeaponDamageType RPG_Item_Common_Tools::stringToWeaponDamageType(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToWeaponDamageType"));
-
-  // init return value(s)
-  damageType_out = WEAPON_DAMAGE_INVALID;
 
   RPG_String2WeaponDamageType_Table_Iterator iterator = myString2WeaponDamageTypeTable.find(string_in);
   if (iterator == myString2WeaponDamageTypeTable.end())
@@ -260,19 +244,15 @@ void RPG_Item_Common_Tools::stringToWeaponDamageType(const std::string& string_i
                ACE_TEXT("invalid weapon damage type: \"%s\" --> check implementation !, returning\n"),
                string_in.c_str()));
 
-    return;
+    return WEAPONDAMAGE_INVALID;
   } // end IF
 
-  damageType_out = iterator->second;
+  return iterator->second;
 }
 
-void RPG_Item_Common_Tools::stringToArmorCategory(const std::string& string_in,
-                                                  RPG_Item_Armor_Category& category_out)
+RPG_Item_ArmorCategory RPG_Item_Common_Tools::stringToArmorCategory(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToArmorCategory"));
-
-  // init return value(s)
-  category_out = ARMOR_CATEGORY_INVALID;
 
   RPG_String2ArmorCategory_Table_Iterator iterator = myString2ArmorCategoryTable.find(string_in);
   if (iterator == myString2ArmorCategoryTable.end())
@@ -282,19 +262,15 @@ void RPG_Item_Common_Tools::stringToArmorCategory(const std::string& string_in,
                ACE_TEXT("invalid armor category: \"%s\" --> check implementation !, returning\n"),
                string_in.c_str()));
 
-    return;
+    return ARMORCATEGORY_INVALID;
   } // end IF
 
-  category_out = iterator->second;
+  return iterator->second;
 }
 
-void RPG_Item_Common_Tools::stringToArmorType(const std::string& string_in,
-                                              RPG_Item_Armor_Type& type_out)
+RPG_Item_ArmorType RPG_Item_Common_Tools::stringToArmorType(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToArmorType"));
-
-  // init return value(s)
-  type_out = ARMOR_TYPE_INVALID;
 
   RPG_String2ArmorType_Table_Iterator iterator = myString2ArmorTypeTable.find(string_in);
   if (iterator == myString2ArmorTypeTable.end())
@@ -304,8 +280,8 @@ void RPG_Item_Common_Tools::stringToArmorType(const std::string& string_in,
                ACE_TEXT("invalid armor type: \"%s\" --> check implementation !, returning\n"),
                string_in.c_str()));
 
-    return;
+    return ARMOR_TYPE_INVALID;
   } // end IF
 
-  type_out = iterator->second;
+  return iterator->second;
 }

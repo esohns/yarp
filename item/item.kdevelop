@@ -25,10 +25,10 @@
     </general>
     <run>
       <runarguments>
-        <parser></parser>
+        <parser/>
       </runarguments>
       <debugarguments>
-        <parser></parser>
+        <parser/>
       </debugarguments>
       <cwd>
         <parser>/home/unfv/Projects/RPG/item/debug/./</parser>

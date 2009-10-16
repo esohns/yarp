@@ -43,7 +43,7 @@ enum RPG_Item_Type
 //   MAGIC_IS_IMBUED
 // };
 
-enum RPG_Item_Money_Type
+enum RPG_Item_MoneyType
 {
   MONEY_COIN_COPPER = 0,
   MONEY_COIN_SILVER,
@@ -56,35 +56,35 @@ enum RPG_Item_Money_Type
   MONEY_TYPE_INVALID
 };
 
-struct RPG_Item_Store_Price
+struct RPG_Item_StorePrice
 {
   unsigned int numGoldPieces;
   unsigned int numSilverPieces;
 };
 
-enum RPG_Item_Weapon_Category
+enum RPG_Item_WeaponCategory
 {
-  WEAPON_CATEGORY_SIMPLE = 0,
-  WEAPON_CATEGORY_MARTIAL,
-  WEAPON_CATEGORY_EXOTIC,
+  WEAPONCATEGORY_SIMPLE = 0,
+  WEAPONCATEGORY_MARTIAL,
+  WEAPONCATEGORY_EXOTIC,
   //
-  WEAPON_CATEGORY_MAX,
-  WEAPON_CATEGORY_INVALID
+  WEAPONCATEGORY_MAX,
+  WEAPONCATEGORY_INVALID
 };
 
-enum RPG_Item_Weapon_Class
+enum RPG_Item_WeaponClass
 {
-  WEAPON_CLASS_UNARMED = 0,
-  WEAPON_CLASS_LIGHT_MELEE,
-  WEAPON_CLASS_ONE_HANDED_MELEE,
-  WEAPON_CLASS_TWO_HANDED_MELEE,
-  WEAPON_CLASS_RANGED,
+  WEAPONCLASS_UNARMED = 0,
+  WEAPONCLASS_LIGHT_MELEE,
+  WEAPONCLASS_ONE_HANDED_MELEE,
+  WEAPONCLASS_TWO_HANDED_MELEE,
+  WEAPONCLASS_RANGED,
   //
-  WEAPON_CLASS_MAX,
-  WEAPON_CLASS_INVALID
+  WEAPONCLASS_MAX,
+  WEAPONCLASS_INVALID
 };
 
-enum RPG_Item_Weapon_Type
+enum RPG_Item_WeaponType
 {
   // simple weapons
   UNARMED_WEAPON_GAUNTLET = 0,
@@ -166,15 +166,15 @@ enum RPG_Item_Weapon_Type
   WEAPON_TYPE_INVALID
 };
 
-enum RPG_Item_Weapon_Damage_Type
+enum RPG_Item_WeaponDamageType
 {
-  WEAPON_DAMAGE_BLUDGEONING = 1,
-  WEAPON_DAMAGE_PIERCING = 2,
-  WEAPON_DAMAGE_SLASHING = 4,
-  WEAPON_DAMAGE_INVALID
+  WEAPONDAMAGE_BLUDGEONING = 1,
+  WEAPONDAMAGE_PIERCING = 2,
+  WEAPONDAMAGE_SLASHING = 4,
+  WEAPONDAMAGE_INVALID
 };
 
-struct RPG_Item_CriticalHit_Modifier
+struct RPG_Item_CriticalHitModifier
 {
   unsigned int minToHitRoll; // usually a "20" on a D_20
   unsigned int damageModifier;
@@ -182,36 +182,50 @@ struct RPG_Item_CriticalHit_Modifier
 
 typedef RPG_Chance_Roll RPG_Item_Damage;
 
-struct RPG_Item_Weapon_Properties
+struct RPG_Item_WeaponProperties
 {
-//   RPG_Item_Weapon_Type          weaponType;
-  RPG_Item_Weapon_Category      weaponCategory;
-  RPG_Item_Weapon_Class         weaponClass;
-  RPG_Item_Store_Price          baseStorePrice;
-  RPG_Item_Damage               baseDamage;
-  RPG_Item_CriticalHit_Modifier criticalModifier;
-  unsigned int                  rangeIncrement; // feet
-  unsigned int                  baseWeight; // pounds
-  RPG_Item_Weapon_Damage_Type   typeOfDamage;
+//   RPG_Item_WeaponType         weaponType;
+  RPG_Item_WeaponCategory      weaponCategory;
+  RPG_Item_WeaponClass         weaponClass;
+  RPG_Item_StorePrice          baseStorePrice;
+  RPG_Item_Damage              baseDamage;
+  RPG_Item_CriticalHitModifier criticalHitModifier;
+  unsigned int                 rangeIncrement; // feet
+  unsigned int                 baseWeight; // pounds
+  RPG_Item_WeaponDamageType    typeOfDamage;
 };
 
-struct RPG_Item_Magic_Weapon_Properties
+// need this for parsing purposes...
+struct RPG_Item_WeaponProperties_XML
+{
+  RPG_Item_WeaponType          weaponType;
+  RPG_Item_WeaponCategory      weaponCategory;
+  RPG_Item_WeaponClass         weaponClass;
+  RPG_Item_StorePrice          baseStorePrice;
+  RPG_Item_Damage              baseDamage;
+  RPG_Item_CriticalHitModifier criticalHitModifier;
+  unsigned int                 rangeIncrement; // feet
+  unsigned int                 baseWeight; // pounds
+  RPG_Item_WeaponDamageType    typeOfDamage;
+};
+
+struct RPG_Item_MagicWeaponProperties
 {
   int toHitModifier;
 };
 
-enum RPG_Item_Armor_Category
+enum RPG_Item_ArmorCategory
 {
-  ARMOR_CATEGORY_LIGHT = 0,
-  ARMOR_CATEGORY_MEDIUM,
-  ARMOR_CATEGORY_HEAVY,
-  ARMOR_CATEGORY_SHIELD,
+  ARMORCATEGORY_LIGHT = 0,
+  ARMORCATEGORY_MEDIUM,
+  ARMORCATEGORY_HEAVY,
+  ARMORCATEGORY_SHIELD,
   //
-  ARMOR_CATEGORY_MAX,
-  ARMOR_CATEGORY_INVALID
+  ARMORCATEGORY_MAX,
+  ARMORCATEGORY_INVALID
 };
 
-enum RPG_Item_Armor_Type
+enum RPG_Item_ArmorType
 {
   // light armor
   ARMOR_PADDED = 0,
@@ -240,32 +254,50 @@ enum RPG_Item_Armor_Type
   ARMOR_TYPE_INVALID
 };
 
-struct RPG_Item_Armor_Properties
+struct RPG_Item_ArmorProperties
 {
-//   RPG_Item_Armor_Type     armorType;
-  RPG_Item_Armor_Category armorCategory;
-  RPG_Item_Store_Price    baseStorePrice;
-  unsigned int            baseArmorBonus;
-  unsigned int            maxDexterityBonus;
-  int                     armorCheckPenalty;
-  unsigned int            arcaneSpellFailure; // percentage
-  unsigned int            baseSpeed; // feet/round
-  unsigned int            baseWeight; // pounds
+//  RPG_Item_ArmorType     armorType;
+  RPG_Item_ArmorCategory armorCategory;
+  RPG_Item_StorePrice    baseStorePrice;
+  unsigned int           baseArmorBonus;
+  unsigned int           maxDexterityBonus;
+  int                    armorCheckPenalty;
+  unsigned int           arcaneSpellFailure; // percentage
+  unsigned int           baseSpeed; // feet/round
+  unsigned int           baseWeight; // pounds
 };
 
-struct RPG_Item_Magic_Armor_Properties
+// need this for parsing purposes...
+struct RPG_Item_ArmorProperties_XML
+{
+  RPG_Item_ArmorType     armorType;
+  RPG_Item_ArmorCategory armorCategory;
+  RPG_Item_StorePrice    baseStorePrice;
+  unsigned int           baseArmorBonus;
+  unsigned int           maxDexterityBonus;
+  int                    armorCheckPenalty;
+  unsigned int           arcaneSpellFailure; // percentage
+  unsigned int           baseSpeed; // feet/round
+  unsigned int           baseWeight; // pounds
+};
+
+struct RPG_Item_MagicArmorProperties
 {
   int defenseModifier;
 };
 
 // useful types
-typedef std::vector<unsigned int> RPG_ITEM_LIST_T;
+typedef std::vector<int> RPG_ITEM_LIST_T;
 typedef RPG_ITEM_LIST_T::const_iterator RPG_ITEM_LIST_ITERATOR_T;
-typedef std::map<RPG_Item_Weapon_Type,
-                 RPG_Item_Weapon_Properties> RPG_ITEM_WEAPON_DICTIONARY_T;
-typedef RPG_ITEM_WEAPON_DICTIONARY_T::const_iterator RPG_ITEM_WEAPON_DICTIONARY_ITERATOR_T;
-typedef std::map<RPG_Item_Armor_Type,
-                 RPG_Item_Armor_Properties> RPG_ITEM_ARMOR_DICTIONARY_T;
-typedef RPG_ITEM_WEAPON_DICTIONARY_T::const_iterator RPG_ITEM_ARMOR_DICTIONARY_ITERATOR_T;
+typedef std::pair<RPG_Item_WeaponType,
+                  RPG_Item_WeaponProperties> RPG_ITEM_WEAPONDICTIONARY_ITEM_T;
+typedef std::map<RPG_Item_WeaponType,
+                 RPG_Item_WeaponProperties> RPG_ITEM_WEAPONDICTIONARY_T;
+typedef RPG_ITEM_WEAPONDICTIONARY_T::const_iterator RPG_ITEM_WEAPONDICTIONARY_ITERATOR_T;
+typedef std::pair<RPG_Item_ArmorType,
+                  RPG_Item_ArmorProperties> RPG_ITEM_ARMORDICTIONARY_ITEM_T;
+typedef std::map<RPG_Item_ArmorType,
+                 RPG_Item_ArmorProperties> RPG_ITEM_ARMORDICTIONARY_T;
+typedef RPG_ITEM_ARMORDICTIONARY_T::const_iterator RPG_ITEM_ARMORDICTIONARY_ITERATOR_T;
 
 #endif

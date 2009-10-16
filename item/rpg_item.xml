@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- <!DOCTYPE RPG_Item_Dictionary SYSTEM "./rpg_item.xsd"> -->
 <RPG_Item_Dictionary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./rpg_item.xsd">
-  <RPG_Item_Weapon_Dictionary>
+  <RPG_Item_WeaponDictionary>
     <weapon>
       <weaponType>UNARMED_WEAPON_GAUNTLET</weaponType>
-      <weaponCategory>WEAPON_CATEGORY_SIMPLE</weaponCategory>
-      <weaponClass>WEAPON_CLASS_UNARMED</weaponClass>
+      <weaponCategory>WEAPONCATEGORY_SIMPLE</weaponCategory>
+      <weaponClass>WEAPONCLASS_UNARMED</weaponClass>
       <baseStorePrice>
         <numGoldPieces>2</numGoldPieces>
         <numSilverPieces>0</numSilverPieces>
@@ -16,17 +16,17 @@
         <modifier>0</modifier>
       </baseDamage>
       <criticalHitModifier>
-        <minToHitRoll>20</mintToHitRoll>
+        <minToHitRoll>20</minToHitRoll>
         <damageModifier>2</damageModifier>
       </criticalHitModifier>
       <rangeIncrement>0</rangeIncrement>
       <baseWeight>1</baseWeight>
-      <typeOfDamage>WEAPON_DAMAGE_BLUDGEONING</typeOfDamage>
+      <typeOfDamage>WEAPONDAMAGE_BLUDGEONING</typeOfDamage>
     </weapon>
     <weapon>
       <weaponType>UNARMED_WEAPON_STRIKE</weaponType>
-      <weaponCategory>WEAPON_CATEGORY_SIMPLE</weaponCategory>
-      <weaponClass>WEAPON_CLASS_UNARMED</weaponClass>
+      <weaponCategory>WEAPONCATEGORY_SIMPLE</weaponCategory>
+      <weaponClass>WEAPONCLASS_UNARMED</weaponClass>
       <baseStorePrice>
         <numGoldPieces>0</numGoldPieces>
         <numSilverPieces>0</numSilverPieces>
@@ -37,18 +37,18 @@
         <modifier>0</modifier>
       </baseDamage>
       <criticalHitModifier>
-        <minToHitRoll>20</mintToHitRoll>
+        <minToHitRoll>20</minToHitRoll>
         <damageModifier>2</damageModifier>
       </criticalHitModifier>
       <rangeIncrement>0</rangeIncrement>
       <baseWeight>0</baseWeight>
-      <typeOfDamage>WEAPON_DAMAGE_BLUDGEONING</typeOfDamage>
+      <typeOfDamage>WEAPONDAMAGE_BLUDGEONING</typeOfDamage>
     </weapon>
-  </RPG_Item_Weapon_Dictionary>
-  <RPG_Item_Armor_Dictionary>
+  </RPG_Item_WeaponDictionary>
+  <RPG_Item_ArmorDictionary>
     <armor>
       <armorType>ARMOR_PADDED</armorType>
-      <armorCategory>ARMOR_CATEGORY_LIGHT</armorCategory>
+      <armorCategory>ARMORCATEGORY_LIGHT</armorCategory>
       <baseStorePrice>
         <numGoldPieces>5</numGoldPieces>
         <numSilverPieces>0</numSilverPieces>
@@ -62,7 +62,7 @@
     </armor>
     <armor>
       <armorType>ARMOR_LEATHER</armorType>
-      <armorCategory>ARMOR_CATEGORY_LIGHT</armorCategory>
+      <armorCategory>ARMORCATEGORY_LIGHT</armorCategory>
       <baseStorePrice>
         <numGoldPieces>10</numGoldPieces>
         <numSilverPieces>0</numSilverPieces>
@@ -74,5 +74,5 @@
       <baseSpeed>30</baseSpeed>
       <baseWeight>15</baseWeight>
     </armor>
-  </RPG_Item_Armor_Dictionary>
+  </RPG_Item_ArmorDictionary>
 </RPG_Item_Dictionary>

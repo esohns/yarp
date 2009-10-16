@@ -32,7 +32,7 @@ class RPG_Item_Weapon
  : public RPG_Item_Weapon_Base
 {
  public:
-  RPG_Item_Weapon(const RPG_Item_Weapon_Type&);
+  RPG_Item_Weapon(const RPG_Item_WeaponType&);
   ~RPG_Item_Weapon();
 
  private:

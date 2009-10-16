@@ -50,20 +50,20 @@
 // Forward declarations
 //
 class RPG_Item_Dictionary_Type_pskel;
-class RPG_Item_Weapon_Dictionary_Type_pskel;
-class RPG_Item_Armor_Dictionary_Type_pskel;
-class RPG_Item_Weapon_Category_Type_pskel;
-class RPG_Item_Weapon_Class_Type_pskel;
-class RPG_Item_Weapon_Type_pskel;
-class RPG_Item_Store_Price_Type_pskel;
-class RPG_Chance_Dice_Type_pskel;
+class RPG_Item_WeaponDictionary_Type_pskel;
+class RPG_Item_ArmorDictionary_Type_pskel;
+class RPG_Item_WeaponCategory_Type_pskel;
+class RPG_Item_WeaponClass_Type_pskel;
+class RPG_Item_WeaponType_Type_pskel;
+class RPG_Item_StorePrice_Type_pskel;
+class RPG_Chance_DiceType_Type_pskel;
 class RPG_Chance_Roll_Type_pskel;
-class RPG_Item_CriticalHit_Modifier_Type_pskel;
-class RPG_Item_Weapon_Damage_Type_pskel;
-class RPG_Item_Weapon_Properties_Type_pskel;
-class RPG_Item_Armor_Category_Type_pskel;
-class RPG_Item_Armor_Type_pskel;
-class RPG_Item_Armor_Properties_Type_pskel;
+class RPG_Item_CriticalHitModifier_Type_pskel;
+class RPG_Item_WeaponDamageType_Type_pskel;
+class RPG_Item_WeaponProperties_Type_pskel;
+class RPG_Item_ArmorCategory_Type_pskel;
+class RPG_Item_ArmorType_Type_pskel;
+class RPG_Item_ArmorProperties_Type_pskel;
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -87,10 +87,10 @@ class RPG_Item_Dictionary_Type_pskel: public ::xml_schema::complex_content
   // pre ();
 
   virtual void
-  RPG_Item_Weapon_Dictionary (const RPG_ITEM_WEAPON_DICTIONARY_T&);
+  RPG_Item_WeaponDictionary ();
 
   virtual void
-  RPG_Item_Armor_Dictionary (const RPG_ITEM_ARMOR_DICTIONARY_T&);
+  RPG_Item_ArmorDictionary ();
 
   virtual void
   post_RPG_Item_Dictionary_Type ();
@@ -98,14 +98,14 @@ class RPG_Item_Dictionary_Type_pskel: public ::xml_schema::complex_content
   // Parser construction API.
   //
   void
-  RPG_Item_Weapon_Dictionary_parser (::RPG_Item_Weapon_Dictionary_Type_pskel&);
+  RPG_Item_WeaponDictionary_parser (::RPG_Item_WeaponDictionary_Type_pskel&);
 
   void
-  RPG_Item_Armor_Dictionary_parser (::RPG_Item_Armor_Dictionary_Type_pskel&);
+  RPG_Item_ArmorDictionary_parser (::RPG_Item_ArmorDictionary_Type_pskel&);
 
   void
-  parsers (::RPG_Item_Weapon_Dictionary_Type_pskel& /* RPG_Item_Weapon_Dictionary */,
-           ::RPG_Item_Armor_Dictionary_Type_pskel& /* RPG_Item_Armor_Dictionary */);
+  parsers (::RPG_Item_WeaponDictionary_Type_pskel& /* RPG_Item_WeaponDictionary */,
+           ::RPG_Item_ArmorDictionary_Type_pskel& /* RPG_Item_ArmorDictionary */);
 
   // Constructor.
   //
@@ -124,8 +124,8 @@ class RPG_Item_Dictionary_Type_pskel: public ::xml_schema::complex_content
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Item_Weapon_Dictionary_Type_pskel* RPG_Item_Weapon_Dictionary_parser_;
-  ::RPG_Item_Armor_Dictionary_Type_pskel* RPG_Item_Armor_Dictionary_parser_;
+  ::RPG_Item_WeaponDictionary_Type_pskel* RPG_Item_WeaponDictionary_parser_;
+  ::RPG_Item_ArmorDictionary_Type_pskel* RPG_Item_ArmorDictionary_parser_;
 
   protected:
   struct v_state_descr_
@@ -165,7 +165,7 @@ class RPG_Item_Dictionary_Type_pskel: public ::xml_schema::complex_content
               bool start);
 };
 
-class RPG_Item_Weapon_Dictionary_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_WeaponDictionary_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -174,22 +174,22 @@ class RPG_Item_Weapon_Dictionary_Type_pskel: public ::xml_schema::complex_conten
   // pre ();
 
   virtual void
-  weapon (const RPG_Item_Weapon_Properties&);
+  weapon (const RPG_Item_WeaponProperties_XML&);
 
-  virtual RPG_ITEM_WEAPON_DICTIONARY_T
-  post_RPG_Item_Weapon_Dictionary_Type () = 0;
+  virtual void
+  post_RPG_Item_WeaponDictionary_Type ();
 
   // Parser construction API.
   //
   void
-  weapon_parser (::RPG_Item_Weapon_Properties_Type_pskel&);
+  weapon_parser (::RPG_Item_WeaponProperties_Type_pskel&);
 
   void
-  parsers (::RPG_Item_Weapon_Properties_Type_pskel& /* weapon */);
+  parsers (::RPG_Item_WeaponProperties_Type_pskel& /* weapon */);
 
   // Constructor.
   //
-  RPG_Item_Weapon_Dictionary_Type_pskel ();
+  RPG_Item_WeaponDictionary_Type_pskel ();
 
   // Implementation.
   //
@@ -204,12 +204,12 @@ class RPG_Item_Weapon_Dictionary_Type_pskel: public ::xml_schema::complex_conten
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Item_Weapon_Properties_Type_pskel* weapon_parser_;
+  ::RPG_Item_WeaponProperties_Type_pskel* weapon_parser_;
 
   protected:
   struct v_state_descr_
   {
-    void (::RPG_Item_Weapon_Dictionary_Type_pskel::*func) (
+    void (::RPG_Item_WeaponDictionary_Type_pskel::*func) (
       unsigned long&,
       unsigned long&,
       const ::xml_schema::ro_string&,
@@ -244,7 +244,7 @@ class RPG_Item_Weapon_Dictionary_Type_pskel: public ::xml_schema::complex_conten
               bool start);
 };
 
-class RPG_Item_Armor_Dictionary_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_ArmorDictionary_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -253,22 +253,22 @@ class RPG_Item_Armor_Dictionary_Type_pskel: public ::xml_schema::complex_content
   // pre ();
 
   virtual void
-  armor (const RPG_Item_Armor_Properties&);
+  armor (const RPG_Item_ArmorProperties_XML&);
 
-  virtual RPG_ITEM_ARMOR_DICTIONARY_T
-  post_RPG_Item_Armor_Dictionary_Type () = 0;
+  virtual void
+  post_RPG_Item_ArmorDictionary_Type ();
 
   // Parser construction API.
   //
   void
-  armor_parser (::RPG_Item_Armor_Properties_Type_pskel&);
+  armor_parser (::RPG_Item_ArmorProperties_Type_pskel&);
 
   void
-  parsers (::RPG_Item_Armor_Properties_Type_pskel& /* armor */);
+  parsers (::RPG_Item_ArmorProperties_Type_pskel& /* armor */);
 
   // Constructor.
   //
-  RPG_Item_Armor_Dictionary_Type_pskel ();
+  RPG_Item_ArmorDictionary_Type_pskel ();
 
   // Implementation.
   //
@@ -283,12 +283,12 @@ class RPG_Item_Armor_Dictionary_Type_pskel: public ::xml_schema::complex_content
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Item_Armor_Properties_Type_pskel* armor_parser_;
+  ::RPG_Item_ArmorProperties_Type_pskel* armor_parser_;
 
   protected:
   struct v_state_descr_
   {
-    void (::RPG_Item_Armor_Dictionary_Type_pskel::*func) (
+    void (::RPG_Item_ArmorDictionary_Type_pskel::*func) (
       unsigned long&,
       unsigned long&,
       const ::xml_schema::ro_string&,
@@ -323,7 +323,7 @@ class RPG_Item_Armor_Dictionary_Type_pskel: public ::xml_schema::complex_content
               bool start);
 };
 
-class RPG_Item_Weapon_Category_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Item_WeaponCategory_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -331,11 +331,11 @@ class RPG_Item_Weapon_Category_Type_pskel: public virtual ::xml_schema::string_p
   // virtual void
   // pre ();
 
-  virtual RPG_Item_Weapon_Category
-  post_RPG_Item_Weapon_Category_Type () = 0;
+  virtual RPG_Item_WeaponCategory
+  post_RPG_Item_WeaponCategory_Type () = 0;
 };
 
-class RPG_Item_Weapon_Class_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Item_WeaponClass_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -343,11 +343,11 @@ class RPG_Item_Weapon_Class_Type_pskel: public virtual ::xml_schema::string_pske
   // virtual void
   // pre ();
 
-  virtual RPG_Item_Weapon_Class
-  post_RPG_Item_Weapon_Class_Type () = 0;
+  virtual RPG_Item_WeaponClass
+  post_RPG_Item_WeaponClass_Type () = 0;
 };
 
-class RPG_Item_Weapon_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Item_WeaponType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -355,11 +355,11 @@ class RPG_Item_Weapon_Type_pskel: public virtual ::xml_schema::string_pskel
   // virtual void
   // pre ();
 
-  virtual RPG_Item_Weapon_Type
-  post_RPG_Item_Weapon_Type () = 0;
+  virtual RPG_Item_WeaponType
+  post_RPG_Item_WeaponType_Type () = 0;
 };
 
-class RPG_Item_Store_Price_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_StorePrice_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -373,8 +373,8 @@ class RPG_Item_Store_Price_Type_pskel: public ::xml_schema::complex_content
   virtual void
   numSilverPieces (unsigned int);
 
-  virtual RPG_Item_Store_Price
-  post_RPG_Item_Store_Price_Type () = 0;
+  virtual RPG_Item_StorePrice
+  post_RPG_Item_StorePrice_Type () = 0;
 
   // Parser construction API.
   //
@@ -390,7 +390,7 @@ class RPG_Item_Store_Price_Type_pskel: public ::xml_schema::complex_content
 
   // Constructor.
   //
-  RPG_Item_Store_Price_Type_pskel ();
+  RPG_Item_StorePrice_Type_pskel ();
 
   // Implementation.
   //
@@ -411,7 +411,7 @@ class RPG_Item_Store_Price_Type_pskel: public ::xml_schema::complex_content
   protected:
   struct v_state_descr_
   {
-    void (::RPG_Item_Store_Price_Type_pskel::*func) (
+    void (::RPG_Item_StorePrice_Type_pskel::*func) (
       unsigned long&,
       unsigned long&,
       const ::xml_schema::ro_string&,
@@ -446,7 +446,7 @@ class RPG_Item_Store_Price_Type_pskel: public ::xml_schema::complex_content
               bool start);
 };
 
-class RPG_Chance_Dice_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Chance_DiceType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -454,8 +454,8 @@ class RPG_Chance_Dice_Type_pskel: public virtual ::xml_schema::string_pskel
   // virtual void
   // pre ();
 
-  virtual RPG_Chance_Dice_Type
-  post_RPG_Chance_Dice_Type () = 0;
+  virtual RPG_Chance_DiceType
+  post_RPG_Chance_DiceType_Type () = 0;
 };
 
 class RPG_Chance_Roll_Type_pskel: public ::xml_schema::complex_content
@@ -470,7 +470,7 @@ class RPG_Chance_Roll_Type_pskel: public ::xml_schema::complex_content
   numDice (unsigned int);
 
   virtual void
-  typeDice (const RPG_Chance_Dice_Type&);
+  typeDice (const RPG_Chance_DiceType&);
 
   virtual void
   modifier (long long);
@@ -484,14 +484,14 @@ class RPG_Chance_Roll_Type_pskel: public ::xml_schema::complex_content
   numDice_parser (::xml_schema::unsigned_int_pskel&);
 
   void
-  typeDice_parser (::RPG_Chance_Dice_Type_pskel&);
+  typeDice_parser (::RPG_Chance_DiceType_Type_pskel&);
 
   void
   modifier_parser (::xml_schema::integer_pskel&);
 
   void
   parsers (::xml_schema::unsigned_int_pskel& /* numDice */,
-           ::RPG_Chance_Dice_Type_pskel& /* typeDice */,
+           ::RPG_Chance_DiceType_Type_pskel& /* typeDice */,
            ::xml_schema::integer_pskel& /* modifier */);
 
   // Constructor.
@@ -512,7 +512,7 @@ class RPG_Chance_Roll_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::xml_schema::unsigned_int_pskel* numDice_parser_;
-  ::RPG_Chance_Dice_Type_pskel* typeDice_parser_;
+  ::RPG_Chance_DiceType_Type_pskel* typeDice_parser_;
   ::xml_schema::integer_pskel* modifier_parser_;
 
   protected:
@@ -553,7 +553,7 @@ class RPG_Chance_Roll_Type_pskel: public ::xml_schema::complex_content
               bool start);
 };
 
-class RPG_Item_CriticalHit_Modifier_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_CriticalHitModifier_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -567,8 +567,8 @@ class RPG_Item_CriticalHit_Modifier_Type_pskel: public ::xml_schema::complex_con
   virtual void
   damageModifier (unsigned int);
 
-  virtual RPG_Item_CriticalHit_Modifier
-  post_RPG_Item_CriticalHit_Modifier_Type () = 0;
+  virtual RPG_Item_CriticalHitModifier
+  post_RPG_Item_CriticalHitModifier_Type () = 0;
 
   // Parser construction API.
   //
@@ -584,7 +584,7 @@ class RPG_Item_CriticalHit_Modifier_Type_pskel: public ::xml_schema::complex_con
 
   // Constructor.
   //
-  RPG_Item_CriticalHit_Modifier_Type_pskel ();
+  RPG_Item_CriticalHitModifier_Type_pskel ();
 
   // Implementation.
   //
@@ -605,7 +605,7 @@ class RPG_Item_CriticalHit_Modifier_Type_pskel: public ::xml_schema::complex_con
   protected:
   struct v_state_descr_
   {
-    void (::RPG_Item_CriticalHit_Modifier_Type_pskel::*func) (
+    void (::RPG_Item_CriticalHitModifier_Type_pskel::*func) (
       unsigned long&,
       unsigned long&,
       const ::xml_schema::ro_string&,
@@ -640,7 +640,7 @@ class RPG_Item_CriticalHit_Modifier_Type_pskel: public ::xml_schema::complex_con
               bool start);
 };
 
-class RPG_Item_Weapon_Damage_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Item_WeaponDamageType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -648,11 +648,11 @@ class RPG_Item_Weapon_Damage_Type_pskel: public virtual ::xml_schema::string_psk
   // virtual void
   // pre ();
 
-  virtual RPG_Item_Weapon_Damage_Type
-  post_RPG_Item_Weapon_Damage_Type () = 0;
+  virtual RPG_Item_WeaponDamageType
+  post_RPG_Item_WeaponDamageType_Type () = 0;
 };
 
-class RPG_Item_Weapon_Properties_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_WeaponProperties_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -661,22 +661,22 @@ class RPG_Item_Weapon_Properties_Type_pskel: public ::xml_schema::complex_conten
   // pre ();
 
   virtual void
-  weaponType (const RPG_Item_Weapon_Type&);
+  weaponType (const RPG_Item_WeaponType&);
 
   virtual void
-  weaponCategory (const RPG_Item_Weapon_Category&);
+  weaponCategory (const RPG_Item_WeaponCategory&);
 
   virtual void
-  weaponClass (const RPG_Item_Weapon_Class&);
+  weaponClass (const RPG_Item_WeaponClass&);
 
   virtual void
-  baseStorePrice (const RPG_Item_Store_Price&);
+  baseStorePrice (const RPG_Item_StorePrice&);
 
   virtual void
   baseDamage (const RPG_Item_Damage&);
 
   virtual void
-  criticalHitModifier (const RPG_Item_CriticalHit_Modifier&);
+  criticalHitModifier (const RPG_Item_CriticalHitModifier&);
 
   virtual void
   rangeIncrement (unsigned int);
@@ -685,30 +685,30 @@ class RPG_Item_Weapon_Properties_Type_pskel: public ::xml_schema::complex_conten
   baseWeight (unsigned int);
 
   virtual void
-  typeOfDamage (const RPG_Item_Weapon_Damage_Type&);
+  typeOfDamage (const RPG_Item_WeaponDamageType&);
 
-  virtual RPG_Item_Weapon_Properties
-  post_RPG_Item_Weapon_Properties_Type () = 0;
+  virtual RPG_Item_WeaponProperties_XML
+  post_RPG_Item_WeaponProperties_Type () = 0;
 
   // Parser construction API.
   //
   void
-  weaponType_parser (::RPG_Item_Weapon_Type_pskel&);
+  weaponType_parser (::RPG_Item_WeaponType_Type_pskel&);
 
   void
-  weaponCategory_parser (::RPG_Item_Weapon_Category_Type_pskel&);
+  weaponCategory_parser (::RPG_Item_WeaponCategory_Type_pskel&);
 
   void
-  weaponClass_parser (::RPG_Item_Weapon_Class_Type_pskel&);
+  weaponClass_parser (::RPG_Item_WeaponClass_Type_pskel&);
 
   void
-  baseStorePrice_parser (::RPG_Item_Store_Price_Type_pskel&);
+  baseStorePrice_parser (::RPG_Item_StorePrice_Type_pskel&);
 
   void
   baseDamage_parser (::RPG_Chance_Roll_Type_pskel&);
 
   void
-  criticalHitModifier_parser (::RPG_Item_CriticalHit_Modifier_Type_pskel&);
+  criticalHitModifier_parser (::RPG_Item_CriticalHitModifier_Type_pskel&);
 
   void
   rangeIncrement_parser (::xml_schema::unsigned_int_pskel&);
@@ -717,22 +717,22 @@ class RPG_Item_Weapon_Properties_Type_pskel: public ::xml_schema::complex_conten
   baseWeight_parser (::xml_schema::unsigned_int_pskel&);
 
   void
-  typeOfDamage_parser (::RPG_Item_Weapon_Damage_Type_pskel&);
+  typeOfDamage_parser (::RPG_Item_WeaponDamageType_Type_pskel&);
 
   void
-  parsers (::RPG_Item_Weapon_Type_pskel& /* weaponType */,
-           ::RPG_Item_Weapon_Category_Type_pskel& /* weaponCategory */,
-           ::RPG_Item_Weapon_Class_Type_pskel& /* weaponClass */,
-           ::RPG_Item_Store_Price_Type_pskel& /* baseStorePrice */,
+  parsers (::RPG_Item_WeaponType_Type_pskel& /* weaponType */,
+           ::RPG_Item_WeaponCategory_Type_pskel& /* weaponCategory */,
+           ::RPG_Item_WeaponClass_Type_pskel& /* weaponClass */,
+           ::RPG_Item_StorePrice_Type_pskel& /* baseStorePrice */,
            ::RPG_Chance_Roll_Type_pskel& /* baseDamage */,
-           ::RPG_Item_CriticalHit_Modifier_Type_pskel& /* criticalHitModifier */,
+           ::RPG_Item_CriticalHitModifier_Type_pskel& /* criticalHitModifier */,
            ::xml_schema::unsigned_int_pskel& /* rangeIncrement */,
            ::xml_schema::unsigned_int_pskel& /* baseWeight */,
-           ::RPG_Item_Weapon_Damage_Type_pskel& /* typeOfDamage */);
+           ::RPG_Item_WeaponDamageType_Type_pskel& /* typeOfDamage */);
 
   // Constructor.
   //
-  RPG_Item_Weapon_Properties_Type_pskel ();
+  RPG_Item_WeaponProperties_Type_pskel ();
 
   // Implementation.
   //
@@ -747,20 +747,20 @@ class RPG_Item_Weapon_Properties_Type_pskel: public ::xml_schema::complex_conten
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Item_Weapon_Type_pskel* weaponType_parser_;
-  ::RPG_Item_Weapon_Category_Type_pskel* weaponCategory_parser_;
-  ::RPG_Item_Weapon_Class_Type_pskel* weaponClass_parser_;
-  ::RPG_Item_Store_Price_Type_pskel* baseStorePrice_parser_;
+  ::RPG_Item_WeaponType_Type_pskel* weaponType_parser_;
+  ::RPG_Item_WeaponCategory_Type_pskel* weaponCategory_parser_;
+  ::RPG_Item_WeaponClass_Type_pskel* weaponClass_parser_;
+  ::RPG_Item_StorePrice_Type_pskel* baseStorePrice_parser_;
   ::RPG_Chance_Roll_Type_pskel* baseDamage_parser_;
-  ::RPG_Item_CriticalHit_Modifier_Type_pskel* criticalHitModifier_parser_;
+  ::RPG_Item_CriticalHitModifier_Type_pskel* criticalHitModifier_parser_;
   ::xml_schema::unsigned_int_pskel* rangeIncrement_parser_;
   ::xml_schema::unsigned_int_pskel* baseWeight_parser_;
-  ::RPG_Item_Weapon_Damage_Type_pskel* typeOfDamage_parser_;
+  ::RPG_Item_WeaponDamageType_Type_pskel* typeOfDamage_parser_;
 
   protected:
   struct v_state_descr_
   {
-    void (::RPG_Item_Weapon_Properties_Type_pskel::*func) (
+    void (::RPG_Item_WeaponProperties_Type_pskel::*func) (
       unsigned long&,
       unsigned long&,
       const ::xml_schema::ro_string&,
@@ -795,7 +795,7 @@ class RPG_Item_Weapon_Properties_Type_pskel: public ::xml_schema::complex_conten
               bool start);
 };
 
-class RPG_Item_Armor_Category_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Item_ArmorCategory_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -803,11 +803,11 @@ class RPG_Item_Armor_Category_Type_pskel: public virtual ::xml_schema::string_ps
   // virtual void
   // pre ();
 
-  virtual RPG_Item_Armor_Category
-  post_RPG_Item_Armor_Category_Type () = 0;
+  virtual RPG_Item_ArmorCategory
+  post_RPG_Item_ArmorCategory_Type () = 0;
 };
 
-class RPG_Item_Armor_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Item_ArmorType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -815,11 +815,11 @@ class RPG_Item_Armor_Type_pskel: public virtual ::xml_schema::string_pskel
   // virtual void
   // pre ();
 
-  virtual RPG_Item_Armor_Type
-  post_RPG_Item_Armor_Type () = 0;
+  virtual RPG_Item_ArmorType
+  post_RPG_Item_ArmorType_Type () = 0;
 };
 
-class RPG_Item_Armor_Properties_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_ArmorProperties_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -828,13 +828,13 @@ class RPG_Item_Armor_Properties_Type_pskel: public ::xml_schema::complex_content
   // pre ();
 
   virtual void
-  armorType (const RPG_Item_Armor_Type&);
+  armorType (const RPG_Item_ArmorType&);
 
   virtual void
-  armorCategory (const RPG_Item_Armor_Category&);
+  armorCategory (const RPG_Item_ArmorCategory&);
 
   virtual void
-  baseStorePrice (const RPG_Item_Store_Price&);
+  baseStorePrice (const RPG_Item_StorePrice&);
 
   virtual void
   baseArmorBonus (unsigned int);
@@ -854,19 +854,19 @@ class RPG_Item_Armor_Properties_Type_pskel: public ::xml_schema::complex_content
   virtual void
   baseWeight (unsigned int);
 
-  virtual RPG_Item_Armor_Properties
-  post_RPG_Item_Armor_Properties_Type () = 0;
+  virtual RPG_Item_ArmorProperties_XML
+  post_RPG_Item_ArmorProperties_Type () = 0;
 
   // Parser construction API.
   //
   void
-  armorType_parser (::RPG_Item_Armor_Type_pskel&);
+  armorType_parser (::RPG_Item_ArmorType_Type_pskel&);
 
   void
-  armorCategory_parser (::RPG_Item_Armor_Category_Type_pskel&);
+  armorCategory_parser (::RPG_Item_ArmorCategory_Type_pskel&);
 
   void
-  baseStorePrice_parser (::RPG_Item_Store_Price_Type_pskel&);
+  baseStorePrice_parser (::RPG_Item_StorePrice_Type_pskel&);
 
   void
   baseArmorBonus_parser (::xml_schema::unsigned_int_pskel&);
@@ -887,9 +887,9 @@ class RPG_Item_Armor_Properties_Type_pskel: public ::xml_schema::complex_content
   baseWeight_parser (::xml_schema::unsigned_int_pskel&);
 
   void
-  parsers (::RPG_Item_Armor_Type_pskel& /* armorType */,
-           ::RPG_Item_Armor_Category_Type_pskel& /* armorCategory */,
-           ::RPG_Item_Store_Price_Type_pskel& /* baseStorePrice */,
+  parsers (::RPG_Item_ArmorType_Type_pskel& /* armorType */,
+           ::RPG_Item_ArmorCategory_Type_pskel& /* armorCategory */,
+           ::RPG_Item_StorePrice_Type_pskel& /* baseStorePrice */,
            ::xml_schema::unsigned_int_pskel& /* baseArmorBonus */,
            ::xml_schema::unsigned_int_pskel& /* maxDexterityBonus */,
            ::xml_schema::integer_pskel& /* armorCheckPenalty */,
@@ -899,7 +899,7 @@ class RPG_Item_Armor_Properties_Type_pskel: public ::xml_schema::complex_content
 
   // Constructor.
   //
-  RPG_Item_Armor_Properties_Type_pskel ();
+  RPG_Item_ArmorProperties_Type_pskel ();
 
   // Implementation.
   //
@@ -914,9 +914,9 @@ class RPG_Item_Armor_Properties_Type_pskel: public ::xml_schema::complex_content
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Item_Armor_Type_pskel* armorType_parser_;
-  ::RPG_Item_Armor_Category_Type_pskel* armorCategory_parser_;
-  ::RPG_Item_Store_Price_Type_pskel* baseStorePrice_parser_;
+  ::RPG_Item_ArmorType_Type_pskel* armorType_parser_;
+  ::RPG_Item_ArmorCategory_Type_pskel* armorCategory_parser_;
+  ::RPG_Item_StorePrice_Type_pskel* baseStorePrice_parser_;
   ::xml_schema::unsigned_int_pskel* baseArmorBonus_parser_;
   ::xml_schema::unsigned_int_pskel* maxDexterityBonus_parser_;
   ::xml_schema::integer_pskel* armorCheckPenalty_parser_;
@@ -927,7 +927,7 @@ class RPG_Item_Armor_Properties_Type_pskel: public ::xml_schema::complex_content
   protected:
   struct v_state_descr_
   {
-    void (::RPG_Item_Armor_Properties_Type_pskel::*func) (
+    void (::RPG_Item_ArmorProperties_Type_pskel::*func) (
       unsigned long&,
       unsigned long&,
       const ::xml_schema::ro_string&,

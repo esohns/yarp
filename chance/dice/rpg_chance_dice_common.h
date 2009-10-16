@@ -20,7 +20,7 @@
 #ifndef RPG_CHANCE_DICE_COMMON_H
 #define RPG_CHANCE_DICE_COMMON_H
 
-enum RPG_Chance_Dice_Type
+enum RPG_Chance_DiceType
 {
   D_2   = 2,
   D_3   = 3,
@@ -30,14 +30,17 @@ enum RPG_Chance_Dice_Type
   D_10  = 10,
   D_12  = 12,
   D_20  = 20,
-  D_100 = 100
+  D_100 = 100,
+  //
+  D_TYPE_MAX,
+  D_TYPE_INVALID
 };
 
 struct RPG_Chance_Roll
 {
-  unsigned int         numDice;  // number of dice to roll
-  RPG_Chance_Dice_Type typeDice; // the type of dice to roll
-  int                  modifier; // +/-x modifier (e.g. 2D4+4)
+  unsigned int        numDice;  // number of dice to roll
+  RPG_Chance_DiceType typeDice; // the type of dice to roll
+  int                 modifier; // +/-x modifier (e.g. 2D4+4)
 };
 
 #endif
