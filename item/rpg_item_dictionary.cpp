@@ -46,28 +46,28 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
   // Construct the parser.
   //
   ::xml_schema::unsigned_int_pimpl        unsigned_int_p;
-  RPG_Chance_DiceType_Type_pimpl          chanceDiceType_p;
+  RPG_Chance_DiceType_Type                chanceDiceType_p;
   ::xml_schema::integer_pimpl             int_p;
 
-  RPG_Item_WeaponType_Type_pimpl          weaponType_p;
-  RPG_Item_WeaponCategory_Type_pimpl      weaponCategory_p;
-  RPG_Item_WeaponClass_Type_pimpl         weaponClass_p;
-  RPG_Item_StorePrice_Type_pimpl          baseStorePrice_p;
+  RPG_Item_WeaponType_Type                weaponType_p;
+  RPG_Item_WeaponCategory_Type            weaponCategory_p;
+  RPG_Item_WeaponClass_Type               weaponClass_p;
+  RPG_Item_StorePrice_Type                baseStorePrice_p;
   baseStorePrice_p.parsers(unsigned_int_p,
                            unsigned_int_p);
-  RPG_Chance_Roll_Type_pimpl              baseDamage_p;
+  RPG_Chance_Roll_Type                    baseDamage_p;
   baseDamage_p.parsers(unsigned_int_p,
                        chanceDiceType_p,
                        int_p);
-  RPG_Item_CriticalHitModifier_Type_pimpl criticalModifier_p;
+  RPG_Item_CriticalHitModifier_Type       criticalModifier_p;
   criticalModifier_p.parsers(unsigned_int_p,
                              unsigned_int_p);
 //   unsigned_int_pimpl                       rangeIncrement_p;
 //   unsigned_int_pimpl                       baseWeight_p;
-  RPG_Item_WeaponDamageType_Type_pimpl    damageType_p;
+  RPG_Item_WeaponDamageType_Type          damageType_p;
 
-  RPG_Item_ArmorType_Type_pimpl           armorType_p;
-  RPG_Item_ArmorCategory_Type_pimpl       armorCategory_p;
+  RPG_Item_ArmorType_Type                 armorType_p;
+  RPG_Item_ArmorCategory_Type             armorCategory_p;
 //  RPG_Item_StorePrice_Type_pimpl          baseStorePrice_p;
 //  unsigned_int_pimpl                      baseArmorBonus_p;
 //  unsigned_int_pimpl                      maxDexterityBonus_p;
@@ -76,7 +76,7 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
 //  unsigned_int_pimpl                      baseSpeed_p;
 //  unsigned_int_pimpl                      baseWeight_p;
 
-  RPG_Item_WeaponProperties_Type_pimpl    weaponProperties_p;
+  RPG_Item_WeaponProperties_Type          weaponProperties_p;
   weaponProperties_p.parsers(weaponType_p,
                              weaponCategory_p,
                              weaponClass_p,
@@ -86,7 +86,7 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
                              unsigned_int_p,
                              unsigned_int_p,
                              damageType_p);
-  RPG_Item_ArmorProperties_Type_pimpl     armorProperties_p;
+  RPG_Item_ArmorProperties_Type           armorProperties_p;
   armorProperties_p.parsers(armorType_p,
                             armorCategory_p,
                             baseStorePrice_p,
@@ -97,9 +97,9 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
                             unsigned_int_p,
                             unsigned_int_p);
 
-  RPG_Item_WeaponDictionary_Type_pimpl    weaponDictionary_p;
+  RPG_Item_WeaponDictionary_Type          weaponDictionary_p(&myWeaponDictionary);
   weaponDictionary_p.parsers(weaponProperties_p);
-  RPG_Item_ArmorDictionary_Type_pimpl     armorDictionary_p;
+  RPG_Item_ArmorDictionary_Type           armorDictionary_p(&myArmorDictionary);
   armorDictionary_p.parsers(armorProperties_p);
 
   RPG_Item_Dictionary_Parser              itemDictionary_p(&myWeaponDictionary,
@@ -125,7 +125,6 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
                ACE_TEXT("RPG_Item_Dictionary::initItemDictionary(): exception occurred, returning\n")));
 
     std::cerr << exception << std::endl;
-//     exception.print(std::cerr);
 
     return;
   }
@@ -141,8 +140,6 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("parsed dictionary file \"%s\", retrieved %d weapons and %d armors...\n"),
-             filename_in.c_str(),
-             myWeaponDictionary.size(),
-             myArmorDictionary.size()));
+             ACE_TEXT("finished parsing item dictionary file \"%s\"...\n"),
+             filename_in.c_str()));
 }

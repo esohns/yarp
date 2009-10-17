@@ -61,14 +61,16 @@ RPG_Item_Dictionary_Parser::~RPG_Item_Dictionary_Parser()
 //   //
 // }
 
-// void RPG_Item_Dictionary_Parser::post_RPG_Item_Dictionary_Type()
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::post_RPG_Item_Dictionary_Type"));
-// 
-//   // TODO
-//   //
-//   // return ... ;
-// }
+void RPG_Item_Dictionary_Parser::post_RPG_Item_Dictionary_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::post_RPG_Item_Dictionary_Type"));
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("finished parsing item dictionary, retrieved %d weapon and %d armor types...\n"),
+             myWeaponDictionary->size(),
+             myArmorDictionary->size()));
+}
 
 RPG_Item_WeaponDictionary_Type::RPG_Item_WeaponDictionary_Type(RPG_ITEM_WEAPONDICTIONARY_T* weaponDictionary_in)
  : myWeaponDictionary(weaponDictionary_in)
@@ -97,17 +99,18 @@ void RPG_Item_WeaponDictionary_Type::weapon(const RPG_Item_WeaponProperties_XML&
   prop.baseWeight = weapon_in.baseWeight;
   prop.typeOfDamage = weapon_in.typeOfDamage;
 
-  myWeaponDictionary->insert(RPG_ITEM_WEAPONDICTIONARY_ITEM_T(weapon_in.weaponType, prop));
+  myWeaponDictionary->insert(std::make_pair(weapon_in.weaponType, prop));
 }
 
-// RPG_ITEM_WEAPON_DICTIONARY_T RPG_Item_WeaponDictionary_Type::post_RPG_Item_WeaponDictionary_Type()
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponDictionary_Type::post_RPG_Item_WeaponDictionary_Type"));
-// 
-//   // TODO
-//   //
-//   // return ... ;
-// }
+void RPG_Item_WeaponDictionary_Type::post_RPG_Item_WeaponDictionary_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponDictionary_Type::post_RPG_Item_WeaponDictionary_Type"));
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("finished parsing weapon dictionary, retrieved %d types...\n"),
+             myWeaponDictionary->size()));
+}
 
 RPG_Item_ArmorDictionary_Type::RPG_Item_ArmorDictionary_Type(RPG_ITEM_ARMORDICTIONARY_T* armorDictionary_in)
  : myArmorDictionary(armorDictionary_in)
@@ -136,61 +139,56 @@ void RPG_Item_ArmorDictionary_Type::armor(const RPG_Item_ArmorProperties_XML& ar
   prop.baseSpeed = armor_in.baseSpeed;
   prop.baseWeight = armor_in.baseWeight;
 
-  myArmorDictionary->insert(RPG_ITEM_ARMORDICTIONARY_ITEM_T(armor_in.armorType, prop));
+  myArmorDictionary->insert(std::make_pair(armor_in.armorType, prop));
 }
 
-// RPG_ITEM_ARMOR_DICTIONARY_T RPG_Item_ArmorDictionary_Type::post_RPG_Item_ArmorDictionary_Type()
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorDictionary_Type::post_RPG_Item_ArmorDictionary_Type"));
-// 
-//   // TODO
-//   //
-//   // return ... ;
-// }
-
-void RPG_Item_WeaponCategory_Type::pre()
+void RPG_Item_ArmorDictionary_Type::post_RPG_Item_ArmorDictionary_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponCategory_Type::pre"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorDictionary_Type::post_RPG_Item_ArmorDictionary_Type"));
 
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("finished parsing armor dictionary, retrieved %d types...\n"),
+             myArmorDictionary->size()));
 }
+
+// void RPG_Item_WeaponCategory_Type::pre()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponCategory_Type::pre"));
+// 
+// }
 
 RPG_Item_WeaponCategory RPG_Item_WeaponCategory_Type::post_RPG_Item_WeaponCategory_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponCategory_Type::post_RPG_Item_WeaponCategory_Type"));
 
-  std::string v = post_string();
-
-  return RPG_Item_Common_Tools::stringToWeaponCategory(v);
+  return RPG_Item_Common_Tools::stringToWeaponCategory(post_string());
 }
 
-void RPG_Item_WeaponClass_Type::pre()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponClass_Type::pre"));
-
-}
+// void RPG_Item_WeaponClass_Type::pre()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponClass_Type::pre"));
+// 
+// }
 
 RPG_Item_WeaponClass RPG_Item_WeaponClass_Type::post_RPG_Item_WeaponClass_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponClass_Type::post_RPG_Item_WeaponClass_Type"));
 
-  std::string v = post_string();
-
-  return RPG_Item_Common_Tools::stringToWeaponClass(v);
+  return RPG_Item_Common_Tools::stringToWeaponClass(post_string());
 }
 
-void RPG_Item_WeaponType_Type::pre()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponType_Type::pre"));
-
-}
+// void RPG_Item_WeaponType_Type::pre()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponType_Type::pre"));
+// 
+// }
 
 RPG_Item_WeaponType RPG_Item_WeaponType_Type::post_RPG_Item_WeaponType_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponType_Type::post_RPG_Item_WeaponType_Type"));
 
-  std::string v = post_string();
-
-  return RPG_Item_Common_Tools::stringToWeaponType(v);
+  return RPG_Item_Common_Tools::stringToWeaponType(post_string());
 }
 
 RPG_Item_StorePrice_Type::RPG_Item_StorePrice_Type()
@@ -201,11 +199,11 @@ RPG_Item_StorePrice_Type::RPG_Item_StorePrice_Type()
   myCurrentStorePrice.numSilverPieces = 0;
 }
 
-void RPG_Item_StorePrice_Type::pre()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_StorePrice_Type::pre"));
-
-}
+// void RPG_Item_StorePrice_Type::pre()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Item_StorePrice_Type::pre"));
+// 
+// }
 
 void RPG_Item_StorePrice_Type::numGoldPieces(unsigned int numGoldPieces_in)
 {
@@ -228,19 +226,17 @@ RPG_Item_StorePrice RPG_Item_StorePrice_Type::post_RPG_Item_StorePrice_Type()
   return myCurrentStorePrice;
 }
 
-void RPG_Chance_DiceType_Type::pre()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceType_Type::pre"));
-
-}
+// void RPG_Chance_DiceType_Type::pre()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Chance_DiceType_Type::pre"));
+// 
+// }
 
 RPG_Chance_DiceType RPG_Chance_DiceType_Type::post_RPG_Chance_DiceType_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Chance_DiceType_Type::post_RPG_Chance_DiceType_Type"));
 
-  std::string v = post_string();
-
-  return RPG_Chance_Dice_Common_Tools::stringToDiceType(v);
+  return RPG_Chance_Dice_Common_Tools::stringToDiceType(post_string());
 }
 
 RPG_Chance_Roll_Type::RPG_Chance_Roll_Type()
@@ -252,11 +248,11 @@ RPG_Chance_Roll_Type::RPG_Chance_Roll_Type()
   myCurrentItemDamage.modifier = 0;
 }
 
-void RPG_Chance_Roll_Type::pre()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Roll_Type::pre"));
-
-}
+// void RPG_Chance_Roll_Type::pre()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Chance_Roll_Type::pre"));
+// 
+// }
 
 void RPG_Chance_Roll_Type::numDice(unsigned int numDice_in)
 {
@@ -308,11 +304,11 @@ void RPG_Item_CriticalHitModifier_Type::damageModifier(unsigned int damageModifi
   myCurrentCriticalHitModifier.damageModifier = damageModifier_in;
 }
 
-void RPG_Item_CriticalHitModifier_Type::pre()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_CriticalHitModifier_Type::pre"));
-
-}
+// void RPG_Item_CriticalHitModifier_Type::pre()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Item_CriticalHitModifier_Type::pre"));
+// 
+// }
 
 RPG_Item_CriticalHitModifier RPG_Item_CriticalHitModifier_Type::post_RPG_Item_CriticalHitModifier_Type()
 {
@@ -321,19 +317,17 @@ RPG_Item_CriticalHitModifier RPG_Item_CriticalHitModifier_Type::post_RPG_Item_Cr
   return myCurrentCriticalHitModifier;
 }
 
-void RPG_Item_WeaponDamageType_Type::pre()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponDamageType_Type::pre"));
-
-}
+// void RPG_Item_WeaponDamageType_Type::pre()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponDamageType_Type::pre"));
+// 
+// }
 
 RPG_Item_WeaponDamageType RPG_Item_WeaponDamageType_Type::post_RPG_Item_WeaponDamageType_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponDamageType_Type::post_RPG_Item_WeaponDamageType_Type"));
 
-  std::string v = post_string();
-
-  return RPG_Item_Common_Tools::stringToWeaponDamageType(v);
+  return RPG_Item_Common_Tools::stringToWeaponDamageType(post_string());
 }
 
 RPG_Item_WeaponProperties_Type::RPG_Item_WeaponProperties_Type()
@@ -354,11 +348,11 @@ RPG_Item_WeaponProperties_Type::RPG_Item_WeaponProperties_Type()
   myCurrentWeaponProperty.typeOfDamage = WEAPONDAMAGE_INVALID;
 }
 
-void RPG_Item_WeaponProperties_Type::pre()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponProperties_Type::pre"));
-
-}
+// void RPG_Item_WeaponProperties_Type::pre()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponProperties_Type::pre"));
+// 
+// }
 
 void RPG_Item_WeaponProperties_Type::weaponType(const RPG_Item_WeaponType& weaponType_in)
 {
@@ -430,108 +424,120 @@ RPG_Item_WeaponProperties_XML RPG_Item_WeaponProperties_Type::post_RPG_Item_Weap
   return myCurrentWeaponProperty;
 }
 
-void RPG_Item_ArmorCategory_Type::pre()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorCategory_Type::pre"));
-
-}
+// void RPG_Item_ArmorCategory_Type::pre()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorCategory_Type::pre"));
+// 
+// }
 
 RPG_Item_ArmorCategory RPG_Item_ArmorCategory_Type::post_RPG_Item_ArmorCategory_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorCategory_Type::post_RPG_Item_ArmorCategory_Type"));
 
-  std::string v = post_string();
-
-  return RPG_Item_Common_Tools::stringToArmorCategory(v);
+  return RPG_Item_Common_Tools::stringToArmorCategory(post_string());
 }
 
-void RPG_Item_ArmorType_Type::pre()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorType_Type::pre"));
-
-}
+// void RPG_Item_ArmorType_Type::pre()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorType_Type::pre"));
+// 
+// }
 
 RPG_Item_ArmorType RPG_Item_ArmorType_Type::post_RPG_Item_ArmorType_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorType_Type::post_RPG_Item_ArmorType_Type"));
 
-  std::string v = post_string();
-
-  return RPG_Item_Common_Tools::stringToArmorType(v);
+  return RPG_Item_Common_Tools::stringToArmorType(post_string());
 }
 
-void RPG_Item_ArmorProperties_Type::pre()
+RPG_Item_ArmorProperties_Type::RPG_Item_ArmorProperties_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::pre"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::RPG_Item_ArmorProperties_Type"));
 
+  myCurrentArmorProperty.armorType = ARMOR_TYPE_INVALID;
+  myCurrentArmorProperty.armorCategory = ARMORCATEGORY_INVALID;
+  myCurrentArmorProperty.baseStorePrice.numGoldPieces = 0;
+  myCurrentArmorProperty.baseStorePrice.numSilverPieces = 0;
+  myCurrentArmorProperty.baseArmorBonus = 0;
+  myCurrentArmorProperty.maxDexterityBonus = 0;
+  myCurrentArmorProperty.armorCheckPenalty = 0;
+  myCurrentArmorProperty.arcaneSpellFailure = 0;
+  myCurrentArmorProperty.baseSpeed = 0;
+  myCurrentArmorProperty.baseWeight = 0;
 }
+
+// void RPG_Item_ArmorProperties_Type::pre()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::pre"));
+// 
+// }
 
 void RPG_Item_ArmorProperties_Type::armorType(const RPG_Item_ArmorType& armorType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::armorType"));
 
-  myCurrenArmorProperty.armorType = armorType_in;
+  myCurrentArmorProperty.armorType = armorType_in;
 }
 
 void RPG_Item_ArmorProperties_Type::armorCategory(const RPG_Item_ArmorCategory& armorCategory_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::armorCategory"));
 
-  myCurrenArmorProperty.armorCategory = armorCategory_in;
+  myCurrentArmorProperty.armorCategory = armorCategory_in;
 }
 
 void RPG_Item_ArmorProperties_Type::baseStorePrice(const RPG_Item_StorePrice& baseStorePrice_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::baseStorePrice"));
 
-  myCurrenArmorProperty.baseStorePrice = baseStorePrice_in;
+  myCurrentArmorProperty.baseStorePrice = baseStorePrice_in;
 }
 
 void RPG_Item_ArmorProperties_Type::baseArmorBonus(unsigned int baseArmorBonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::baseArmorBonus"));
 
-  myCurrenArmorProperty.baseArmorBonus = baseArmorBonus_in;
+  myCurrentArmorProperty.baseArmorBonus = baseArmorBonus_in;
 }
 
 void RPG_Item_ArmorProperties_Type::maxDexterityBonus(unsigned int maxDexterityBonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::maxDexterityBonus"));
 
-  myCurrenArmorProperty.maxDexterityBonus = maxDexterityBonus_in;
+  myCurrentArmorProperty.maxDexterityBonus = maxDexterityBonus_in;
 }
 
 void RPG_Item_ArmorProperties_Type::armorCheckPenalty(long long armorCheckPenalty_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::armorCheckPenalty"));
 
-  myCurrenArmorProperty.armorCheckPenalty = armorCheckPenalty_in;
+  myCurrentArmorProperty.armorCheckPenalty = armorCheckPenalty_in;
 }
 
 void RPG_Item_ArmorProperties_Type::arcaneSpellFailure(unsigned int arcaneSpellFailure_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::arcaneSpellFailure"));
 
-  myCurrenArmorProperty.arcaneSpellFailure = arcaneSpellFailure_in;
+  myCurrentArmorProperty.arcaneSpellFailure = arcaneSpellFailure_in;
 }
 
 void RPG_Item_ArmorProperties_Type::baseSpeed(unsigned int baseSpeed_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::baseSpeed"));
 
-  myCurrenArmorProperty.baseSpeed = baseSpeed_in;
+  myCurrentArmorProperty.baseSpeed = baseSpeed_in;
 }
 
 void RPG_Item_ArmorProperties_Type::baseWeight(unsigned int baseWeight_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::baseWeight"));
 
-  myCurrenArmorProperty.baseWeight = baseWeight_in;
+  myCurrentArmorProperty.baseWeight = baseWeight_in;
 }
 
 RPG_Item_ArmorProperties_XML RPG_Item_ArmorProperties_Type::post_RPG_Item_ArmorProperties_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::post_RPG_Item_ArmorProperties_Type"));
 
-  return myCurrenArmorProperty;
+  return myCurrentArmorProperty;
 }

@@ -22,6 +22,8 @@
 #include <config.h>
 #endif
 
+#include "rpg_chance_dice_common_tools.h"
+#include "rpg_item_common_tools.h"
 #include "rpg_item_dictionary.h"
 #include "rpg_item_dictionary_parser.h"
 
@@ -120,7 +122,11 @@ void do_work(const std::string& fileName_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
-  // step1: init randomization
+  // step1: init string conversion tables
+  RPG_Chance_Dice_Common_Tools::initStringConversionTables();
+  RPG_Item_Common_Tools::initStringConversionTables();
+
+  // step2: init item dictionary
   try
   {
     RPG_ITEM_DICTIONARY_SINGLETON::instance()->initItemDictionary(fileName_in);

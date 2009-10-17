@@ -38,7 +38,7 @@ class RPG_Item_Dictionary_Parser : public RPG_Item_Dictionary_Type_pimpl
 //   virtual void pre();
 //   virtual void RPG_Item_WeaponDictionary();
 //   virtual void RPG_Item_ArmorDictionary();
-//   virtual void post_RPG_Item_Dictionary_Type();
+  virtual void post_RPG_Item_Dictionary_Type();
 
  private:
   // safety measures
@@ -57,7 +57,7 @@ class RPG_Item_WeaponDictionary_Type : public RPG_Item_WeaponDictionary_Type_pim
 
 //   virtual void pre();
   virtual void weapon(const RPG_Item_WeaponProperties_XML&);
-//   virtual void post_RPG_Item_WeaponDictionary_Type();
+  virtual void post_RPG_Item_WeaponDictionary_Type();
 
  private:
   // safety measures
@@ -75,7 +75,7 @@ class RPG_Item_ArmorDictionary_Type : public RPG_Item_ArmorDictionary_Type_pimpl
 
 //   virtual void pre();
   virtual void armor(const RPG_Item_ArmorProperties_XML&);
-//   virtual void post_RPG_Item_ArmorDictionary_Type();
+  virtual void post_RPG_Item_ArmorDictionary_Type();
 
  private:
   // safety measures
@@ -89,21 +89,21 @@ class RPG_Item_ArmorDictionary_Type : public RPG_Item_ArmorDictionary_Type_pimpl
 class RPG_Item_WeaponCategory_Type : public RPG_Item_WeaponCategory_Type_pimpl
 {
  public:
-  virtual void pre();
+//   virtual void pre();
   virtual RPG_Item_WeaponCategory post_RPG_Item_WeaponCategory_Type();
 };
 
 class RPG_Item_WeaponClass_Type : public RPG_Item_WeaponClass_Type_pimpl
 {
  public:
-  virtual void pre();
+//   virtual void pre();
   virtual RPG_Item_WeaponClass post_RPG_Item_WeaponClass_Type();
 };
 
 class RPG_Item_WeaponType_Type : public RPG_Item_WeaponType_Type_pimpl
 {
  public:
-  virtual void pre();
+//   virtual void pre();
   virtual RPG_Item_WeaponType post_RPG_Item_WeaponType_Type();
 };
 
@@ -112,7 +112,7 @@ class RPG_Item_StorePrice_Type : public RPG_Item_StorePrice_Type_pimpl
  public:
   RPG_Item_StorePrice_Type();
 
-  virtual void pre();
+//   virtual void pre();
   virtual void numGoldPieces(unsigned int);
   virtual void numSilverPieces(unsigned int);
   virtual RPG_Item_StorePrice post_RPG_Item_StorePrice_Type();
@@ -124,7 +124,7 @@ class RPG_Item_StorePrice_Type : public RPG_Item_StorePrice_Type_pimpl
 class RPG_Chance_DiceType_Type : public RPG_Chance_DiceType_Type_pimpl
 {
  public:
-  virtual void pre();
+//   virtual void pre();
   virtual RPG_Chance_DiceType post_RPG_Chance_DiceType_Type();
 };
 
@@ -133,7 +133,7 @@ class RPG_Chance_Roll_Type : public RPG_Chance_Roll_Type_pimpl
  public:
   RPG_Chance_Roll_Type();
 
-  virtual void pre();
+//   virtual void pre();
   virtual void numDice(unsigned int);
   virtual void typeDice(const RPG_Chance_DiceType&);
   virtual void modifier(long long);
@@ -148,7 +148,7 @@ class RPG_Item_CriticalHitModifier_Type : public RPG_Item_CriticalHitModifier_Ty
  public:
   RPG_Item_CriticalHitModifier_Type();
 
-  virtual void pre();
+//   virtual void pre();
   virtual void minToHitRoll(unsigned int);
   virtual void damageModifier(unsigned int);
   virtual RPG_Item_CriticalHitModifier post_RPG_Item_CriticalHitModifier_Type();
@@ -160,7 +160,7 @@ class RPG_Item_CriticalHitModifier_Type : public RPG_Item_CriticalHitModifier_Ty
 class RPG_Item_WeaponDamageType_Type : public RPG_Item_WeaponDamageType_Type_pimpl
 {
  public:
-  virtual void pre();
+//   virtual void pre();
   virtual RPG_Item_WeaponDamageType post_RPG_Item_WeaponDamageType_Type();
 };
 
@@ -169,7 +169,7 @@ class RPG_Item_WeaponProperties_Type : public RPG_Item_WeaponProperties_Type_pim
  public:
   RPG_Item_WeaponProperties_Type();
 
-  virtual void pre();
+//   virtual void pre();
   virtual void weaponType(const RPG_Item_WeaponType&);
   virtual void weaponCategory(const RPG_Item_WeaponCategory&);
   virtual void weaponClass(const RPG_Item_WeaponClass&);
@@ -188,14 +188,14 @@ class RPG_Item_WeaponProperties_Type : public RPG_Item_WeaponProperties_Type_pim
 class RPG_Item_ArmorCategory_Type : public RPG_Item_ArmorCategory_Type_pimpl
 {
  public:
-  virtual void pre();
+//   virtual void pre();
   virtual RPG_Item_ArmorCategory post_RPG_Item_ArmorCategory_Type();
 };
 
 class RPG_Item_ArmorType_Type : public RPG_Item_ArmorType_Type_pimpl
 {
  public:
-  virtual void pre();
+//   virtual void pre();
   virtual RPG_Item_ArmorType post_RPG_Item_ArmorType_Type();
 };
 
@@ -204,7 +204,7 @@ class RPG_Item_ArmorProperties_Type : public RPG_Item_ArmorProperties_Type_pimpl
  public:
   RPG_Item_ArmorProperties_Type();
 
-  virtual void pre();
+//   virtual void pre();
   virtual void armorType(const RPG_Item_ArmorType&);
   virtual void armorCategory(const RPG_Item_ArmorCategory&);
   virtual void baseStorePrice(const RPG_Item_StorePrice&);
@@ -217,7 +217,7 @@ class RPG_Item_ArmorProperties_Type : public RPG_Item_ArmorProperties_Type_pimpl
   virtual RPG_Item_ArmorProperties_XML post_RPG_Item_ArmorProperties_Type();
 
  private:
-  RPG_Item_ArmorProperties_XML myCurrenArmorProperty;
+  RPG_Item_ArmorProperties_XML myCurrentArmorProperty;
 };
 
 #endif

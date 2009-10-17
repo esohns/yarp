@@ -18,4 +18,4 @@ RPG_Item_ArmorProperties_Type     RPG_Item_ArmorProperties_XML;
 #RPG_Item_WeaponDictionary_Type    RPG_ITEM_WEAPON_DICTIONARY_T;
 #RPG_Item_ArmorDictionary_Type     RPG_ITEM_ARMOR_DICTIONARY_T;
 
-#RPG_Item_Dictionary_Type           RPG_Item_Dictionary
+#RPG_Item_Dictionary_Type          RPG_Item_Dictionary;
