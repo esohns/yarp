@@ -52,7 +52,7 @@
       <xsd:enumeration value="UNARMED_WEAPON_GAUNTLET"/>
       <xsd:enumeration value="UNARMED_WEAPON_STRIKE"/>
       <xsd:enumeration value="LIGHT_MELEE_WEAPON_DAGGER"/>
-      <xsd:enumeration value="LIGHT_MELEE_WEAPON_SPIKED_GAUNTLET"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_GAUNTLET_SPIKED"/>
       <xsd:enumeration value="LIGHT_MELEE_WEAPON_MACE_LIGHT"/>
       <xsd:enumeration value="LIGHT_MELEE_WEAPON_SICKLE"/>
       <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_CLUB"/>
@@ -74,8 +74,8 @@
       <xsd:enumeration value="LIGHT_MELEE_WEAPON_PICK_LIGHT"/>
       <xsd:enumeration value="LIGHT_MELEE_WEAPON_SAP"/>
       <xsd:enumeration value="LIGHT_MELEE_WEAPON_SHIELD_LIGHT"/>
-      <xsd:enumeration value="LIGHT_MELEE_WEAPON_SPIKED_ARMOR"/>
-      <xsd:enumeration value="LIGHT_MELEE_WEAPON_SPIKED_SHIELD_LIGHT"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_ARMOR_SPIKED"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_SHIELD_LIGHT_SPIKED"/>
       <xsd:enumeration value="LIGHT_MELEE_WEAPON_SWORD_SHORT"/>
       <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_AXE_BATTLE"/>
       <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_FLAIL_LIGHT"/>
@@ -84,7 +84,7 @@
       <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_RAPIER"/>
       <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_SCIMITAR"/>
       <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_SHIELD_HEAVY"/>
-      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_SPIKED_SHIELD_HEAVY"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_SHIELD_HEAVY_SPIKED"/>
       <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_TRIDENT"/>
       <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_HAMMER_WAR"/>
       <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_FALCHION"/>
@@ -142,6 +142,7 @@
       <xsd:enumeration value="D_12"/>
       <xsd:enumeration value="D_20"/>
       <xsd:enumeration value="D_100"/>
+      <xsd:enumeration value="D_TYPE_INVALID"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -170,6 +171,7 @@
 
   <xsd:simpleType name="RPG_Item_WeaponDamageType_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="WEAPONDAMAGE_NONE"/>
       <xsd:enumeration value="WEAPONDAMAGE_BLUDGEONING"/>
       <xsd:enumeration value="WEAPONDAMAGE_PIERCING"/>
       <xsd:enumeration value="WEAPONDAMAGE_SLASHING"/>
@@ -186,7 +188,7 @@
       <xsd:element name="criticalHitModifier" type="RPG_Item_CriticalHitModifier_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="rangeIncrement" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="baseWeight" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="typeOfDamage" type="RPG_Item_WeaponDamageType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="typeOfDamage" type="RPG_Item_WeaponDamageType_Type" minOccurs="1" maxOccurs="3"/>
     </xsd:sequence>
   </xsd:complexType>
 

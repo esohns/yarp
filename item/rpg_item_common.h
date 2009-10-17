@@ -90,7 +90,7 @@ enum RPG_Item_WeaponType
   UNARMED_WEAPON_GAUNTLET = 0,
   UNARMED_WEAPON_STRIKE,
   LIGHT_MELEE_WEAPON_DAGGER,
-  LIGHT_MELEE_WEAPON_SPIKED_GAUNTLET,
+  LIGHT_MELEE_WEAPON_GAUNTLET_SPIKED,
   LIGHT_MELEE_WEAPON_MACE_LIGHT,
   LIGHT_MELEE_WEAPON_SICKLE,
   ONE_HANDED_MELEE_WEAPON_CLUB,
@@ -113,8 +113,8 @@ enum RPG_Item_WeaponType
   LIGHT_MELEE_WEAPON_PICK_LIGHT,
   LIGHT_MELEE_WEAPON_SAP,
   LIGHT_MELEE_WEAPON_SHIELD_LIGHT,
-  LIGHT_MELEE_WEAPON_SPIKED_ARMOR,
-  LIGHT_MELEE_WEAPON_SPIKED_SHIELD_LIGHT,
+  LIGHT_MELEE_WEAPON_ARMOR_SPIKED,
+  LIGHT_MELEE_WEAPON_SHIELD_LIGHT_SPIKED,
   LIGHT_MELEE_WEAPON_SWORD_SHORT,
   ONE_HANDED_MELEE_WEAPON_AXE_BATTLE,
   ONE_HANDED_MELEE_WEAPON_FLAIL_LIGHT,
@@ -123,7 +123,7 @@ enum RPG_Item_WeaponType
   ONE_HANDED_MELEE_WEAPON_RAPIER,
   ONE_HANDED_MELEE_WEAPON_SCIMITAR,
   ONE_HANDED_MELEE_WEAPON_SHIELD_HEAVY,
-  ONE_HANDED_MELEE_WEAPON_SPIKED_SHIELD_HEAVY,
+  ONE_HANDED_MELEE_WEAPON_SHIELD_HEAVY_SPIKED,
   ONE_HANDED_MELEE_WEAPON_TRIDENT,
   ONE_HANDED_MELEE_WEAPON_HAMMER_WAR,
   TWO_HANDED_MELEE_WEAPON_FALCHION,
@@ -168,9 +168,12 @@ enum RPG_Item_WeaponType
 
 enum RPG_Item_WeaponDamageType
 {
+  WEAPONDAMAGE_NONE = 0,
+  //
   WEAPONDAMAGE_BLUDGEONING = 1,
   WEAPONDAMAGE_PIERCING = 2,
   WEAPONDAMAGE_SLASHING = 4,
+  //
   WEAPONDAMAGE_INVALID
 };
 
@@ -192,7 +195,7 @@ struct RPG_Item_WeaponProperties
   RPG_Item_CriticalHitModifier criticalHitModifier;
   unsigned int                 rangeIncrement; // feet
   unsigned int                 baseWeight; // pounds
-  RPG_Item_WeaponDamageType    typeOfDamage;
+  unsigned int                 typeOfDamage; // bitfield
 };
 
 // need this for parsing purposes...
@@ -206,7 +209,7 @@ struct RPG_Item_WeaponProperties_XML
   RPG_Item_CriticalHitModifier criticalHitModifier;
   unsigned int                 rangeIncrement; // feet
   unsigned int                 baseWeight; // pounds
-  RPG_Item_WeaponDamageType    typeOfDamage;
+  unsigned int                 typeOfDamage; // bitfield
 };
 
 struct RPG_Item_MagicWeaponProperties

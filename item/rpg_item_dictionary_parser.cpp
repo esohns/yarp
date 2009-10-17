@@ -343,9 +343,9 @@ RPG_Item_WeaponProperties_Type::RPG_Item_WeaponProperties_Type()
   myCurrentWeaponProperty.baseDamage.modifier = 0;
   myCurrentWeaponProperty.criticalHitModifier.minToHitRoll = 20;
   myCurrentWeaponProperty.criticalHitModifier.damageModifier = 1;
-  myCurrentWeaponProperty.rangeIncrement = 30;
+  myCurrentWeaponProperty.rangeIncrement = 0;
   myCurrentWeaponProperty.baseWeight = 0;
-  myCurrentWeaponProperty.typeOfDamage = WEAPONDAMAGE_INVALID;
+  myCurrentWeaponProperty.typeOfDamage = WEAPONDAMAGE_NONE;
 }
 
 // void RPG_Item_WeaponProperties_Type::pre()
@@ -414,7 +414,8 @@ void RPG_Item_WeaponProperties_Type::typeOfDamage(const RPG_Item_WeaponDamageTyp
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponProperties_Type::typeOfDamage"));
 
-  myCurrentWeaponProperty.typeOfDamage = typeOfDamage_in;
+  // *IMPORTANT NOTE*: a weapon can exert more than one type of damage...
+  myCurrentWeaponProperty.typeOfDamage |= typeOfDamage_in;
 }
 
 RPG_Item_WeaponProperties_XML RPG_Item_WeaponProperties_Type::post_RPG_Item_WeaponProperties_Type()

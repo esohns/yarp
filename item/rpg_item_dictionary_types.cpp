@@ -2312,8 +2312,11 @@ sequence_0 (unsigned long& state,
             this->typeOfDamage (tmp);
           }
 
-          count = 0;
-          state = ~0UL;
+          if (++count == 3UL)
+          {
+            count = 0;
+            state = ~0UL;
+          }
         }
 
         break;
