@@ -22,7 +22,6 @@
 
 #include "rpg_chance_dice_common.h"
 
-#include <vector>
 #include <map>
 
 enum RPG_Item_Type
@@ -290,15 +289,13 @@ struct RPG_Item_MagicArmorProperties
 };
 
 // useful types
-typedef std::vector<int> RPG_ITEM_LIST_T;
-typedef RPG_ITEM_LIST_T::const_iterator RPG_ITEM_LIST_ITERATOR_T;
-typedef std::pair<RPG_Item_WeaponType,
-                  RPG_Item_WeaponProperties> RPG_ITEM_WEAPONDICTIONARY_ITEM_T;
+// typedef std::pair<RPG_Item_WeaponType,
+//                   RPG_Item_WeaponProperties> RPG_ITEM_WEAPONDICTIONARY_ITEM_T;
 typedef std::map<RPG_Item_WeaponType,
                  RPG_Item_WeaponProperties> RPG_ITEM_WEAPONDICTIONARY_T;
 typedef RPG_ITEM_WEAPONDICTIONARY_T::const_iterator RPG_ITEM_WEAPONDICTIONARY_ITERATOR_T;
-typedef std::pair<RPG_Item_ArmorType,
-                  RPG_Item_ArmorProperties> RPG_ITEM_ARMORDICTIONARY_ITEM_T;
+// typedef std::pair<RPG_Item_ArmorType,
+//                   RPG_Item_ArmorProperties> RPG_ITEM_ARMORDICTIONARY_ITEM_T;
 typedef std::map<RPG_Item_ArmorType,
                  RPG_Item_ArmorProperties> RPG_ITEM_ARMORDICTIONARY_T;
 typedef RPG_ITEM_ARMORDICTIONARY_T::const_iterator RPG_ITEM_ARMORDICTIONARY_ITERATOR_T;

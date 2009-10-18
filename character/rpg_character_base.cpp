@@ -31,7 +31,7 @@ RPG_Character_Base::RPG_Character_Base(const RPG_Character_Gender& gender_in,
                                        const unsigned int& experience_in,
                                        const unsigned short& hitpoints_in,
                                        const unsigned int& wealth_in,
-                                       const RPG_CHARACTER_INVENTORY_T& inventory_in)
+                                       const RPG_ITEM_LIST_T& inventory_in)
  : myGender(gender_in),
    myRace(race_in),
    myClass(class_in),

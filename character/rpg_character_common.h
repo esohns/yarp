@@ -22,28 +22,39 @@
 
 enum RPG_Character_Gender
 {
+  GENDER_NONE = 0,
+  //
   GENDER_MALE = 1,
-  GENDER_FEMALE = 2
+  GENDER_FEMALE = 2,
+  //
+  GENDER_MAX,
+  GENDER_INVALID
 };
 
-enum RPG_Character_Alignment_Civic
+enum RPG_Character_AlignmentCivic
 {
-  ALIGNMENT_CIVIC_LAWFUL,
-  ALIGNMENT_CIVIC_NEUTRAL,
-  ALIGNMENT_CIVIC_CHAOTIC
+  ALIGNMENTCIVIC_LAWFUL = 0,
+  ALIGNMENTCIVIC_NEUTRAL,
+  ALIGNMENTCIVIC_CHAOTIC,
+  //
+  ALIGNMENTCIVIC_MAX,
+  ALIGNMENTCIVIC_INVALID
 };
 
-enum RPG_Character_Alignment_Ethic
+enum RPG_Character_AlignmentEthic
 {
-  ALIGNMENT_ETHIC_GOOD,
-  ALIGNMENT_ETHIC_NEUTRAL,
-  ALIGNMENT_ETHIC_EVIL
+  ALIGNMENTETHIC_GOOD = 0,
+  ALIGNMENTETHIC_NEUTRAL,
+  ALIGNMENTETHIC_EVIL,
+  //
+  ALIGNMENTETHIC_MAX,
+  ALIGNMENTETHIC_INVALID
 };
 
 struct RPG_Character_Alignment
 {
-  RPG_Character_Alignment_Civic civic_alignment;
-  RPG_Character_Alignment_Ethic ethic_alignment;
+  RPG_Character_AlignmentCivic civic_alignment;
+  RPG_Character_AlignmentEthic ethic_alignment;
 };
 
 struct RPG_Character_Attributes
@@ -96,7 +107,10 @@ enum RPG_Character_Condition
   CONDITION_STAGGERED,
   CONDITION_STUNNED,
   CONDITION_TURNED,
-  CONDITION_UNCONSCIOUS
+  CONDITION_UNCONSCIOUS,
+  //
+  CONDITION_MAX,
+  CONDITION_INVALID
 };
 
 #endif

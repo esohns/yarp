@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "rpg_character_player.h"
 
-#include <ace/Trace.h>
+#include <ace/Log_Msg.h>
 
 RPG_Character_Player::RPG_Character_Player(const std::string& name_in,
                                            const RPG_Character_Gender& gender_in,
@@ -31,7 +31,7 @@ RPG_Character_Player::RPG_Character_Player(const std::string& name_in,
                                            const unsigned int& experience_in,
                                            const unsigned short& hitpoints_in,
                                            const unsigned int& wealth_in,
-                                           const RPG_CHARACTER_INVENTORY_T& inventory_in)
+                                           const RPG_ITEM_LIST_T& inventory_in)
  : inherited(name_in,
              gender_in,
              race_in,

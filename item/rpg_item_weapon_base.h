@@ -21,6 +21,7 @@
 #define RPG_ITEM_WEAPON_BASE_H
 
 #include "rpg_item_common.h"
+#include "rpg_item_instance_base.h"
 
 #include <ace/Global_Macros.h>
 
@@ -28,9 +29,10 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Item_Weapon_Base
+ : public RPG_Item_Instance_Base
 {
  public:
-  ~RPG_Item_Weapon_Base();
+  virtual ~RPG_Item_Weapon_Base();
 
   // what am I ?
   const RPG_Item_WeaponType getWeaponType() const;

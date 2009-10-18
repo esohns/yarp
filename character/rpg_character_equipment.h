@@ -21,6 +21,7 @@
 #define RPG_CHARACTER_EQUIPMENT_H
 
 #include "rpg_character_equipment_common.h"
+#include "rpg_item_instance_common.h"
 
 #include <ace/Global_Macros.h>
 
@@ -31,7 +32,12 @@ class RPG_Character_Equipment
 {
  public:
   RPG_Character_Equipment();
-  ~RPG_Character_Equipment();
+  virtual ~RPG_Character_Equipment();
+
+  const bool equip(const RPG_ITEM_ID_T&, // item ID
+                   const RPG_Character_EquipmentSlot&); // where ?
+  const bool unequip(const RPG_ITEM_ID_T&, // item ID
+                     const RPG_Character_EquipmentSlot&); // where ?
 
  private:
   // safety measures

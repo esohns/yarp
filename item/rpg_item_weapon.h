@@ -33,7 +33,7 @@ class RPG_Item_Weapon
 {
  public:
   RPG_Item_Weapon(const RPG_Item_WeaponType&);
-  ~RPG_Item_Weapon();
+  virtual ~RPG_Item_Weapon();
 
  private:
   typedef RPG_Item_Weapon_Base inherited;

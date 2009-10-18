@@ -25,6 +25,7 @@
 #include <ace/Global_Macros.h>
 
 #include <string>
+#include <map>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>

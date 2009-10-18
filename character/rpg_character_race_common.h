@@ -22,12 +22,17 @@
 
 enum RPG_Character_Race
 {
+  RACE_BASE = 0,
+  //
   RACE_HUMAN = 1,
   RACE_DWARF = 2,
   RACE_ELF = 4,
   RACE_HALFLING = 8,
   RACE_GNOME = 16,
-  RACE_ORC = 32
+  RACE_ORC = 32,
+  //
+  RACE_MAX,
+  RACE_INVALID
 };
 
 #endif

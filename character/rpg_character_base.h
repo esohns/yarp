@@ -25,6 +25,7 @@
 #include "rpg_character_class_common.h"
 #include "rpg_character_skills_common.h"
 #include "rpg_character_inventory_common.h"
+#include "rpg_character_inventory.h"
 #include "rpg_character_equipment.h"
 
 #include <ace/Global_Macros.h>
@@ -37,7 +38,7 @@ base class of all PCs, NPCs and monsters
 class RPG_Character_Base
 {
  public:
-  ~RPG_Character_Base();
+  virtual ~RPG_Character_Base();
 
   // retrieve basic character data
   const RPG_Character_Gender getGender() const;
@@ -77,25 +78,25 @@ class RPG_Character_Base
                      const unsigned short&,             // (starting) HP
                      const unsigned int&,               // (starting) wealth (GP)
                      // base items
-                     const RPG_CHARACTER_INVENTORY_T&); // (starting) list of (carried) items
+                     const RPG_ITEM_LIST_T&);           // (starting) list of (carried) items
 
-  RPG_Character_Gender      myGender;
-  RPG_Character_Race        myRace;
-  RPG_Character_Class       myClass;
-  RPG_Character_Alignment   myAlignment;
-  RPG_Character_Attributes  myAttributes;
-  RPG_CHARACTER_SKILLS_T    mySkills;
-  unsigned int              myExperience;
+  RPG_Character_Gender     myGender;
+  RPG_Character_Race       myRace;
+  RPG_Character_Class      myClass;
+  RPG_Character_Alignment  myAlignment;
+  RPG_Character_Attributes myAttributes;
+  RPG_CHARACTER_SKILLS_T   mySkills;
+  unsigned int             myExperience;
 
-  unsigned short            myNumTotalHitPoints;
-  unsigned short            myNumCurrentHitPoints;
+  unsigned short           myNumTotalHitPoints;
+  unsigned short           myNumCurrentHitPoints;
 
-  unsigned int              myCurrentWealth;
+  unsigned int             myCurrentWealth;
 
-  RPG_Character_Condition   myCondition;
+  RPG_Character_Condition  myCondition;
 
-  RPG_Character_Equipment   myEquipment;
-  RPG_CHARACTER_INVENTORY_T myInventory;
+  RPG_Character_Inventory  myInventory;
+  RPG_Character_Equipment  myEquipment;
 
  private:
   // safety measures

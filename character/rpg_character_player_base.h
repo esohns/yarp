@@ -27,10 +27,11 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Player_Base : protected RPG_Character_Base
+class RPG_Character_Player_Base
+ : protected RPG_Character_Base
 {
  public:
-  ~RPG_Character_Player_Base();
+  virtual ~RPG_Character_Player_Base();
 
   // retrieve basic player character data
   const std::string getName() const;
@@ -59,17 +60,17 @@ class RPG_Character_Player_Base : protected RPG_Character_Base
   using RPG_Character_Base::getCurrentWealth;
 
  protected:
-  RPG_Character_Player_Base(const std::string&,                // name
-                            const RPG_Character_Gender&,       // gender
-                            const RPG_Character_Race&,         // race
-                            const RPG_Character_Class&,        // (starting) class
-                            const RPG_Character_Alignment&,    // (starting) alignment
-                            const RPG_Character_Attributes&,   // base attributes
-                            const RPG_CHARACTER_SKILLS_T&,     // (starting) skills
-                            const unsigned int&,               // (starting) XP
-                            const unsigned short&,             // (starting) HP
-                            const unsigned int&,               // (starting) wealth (GP)
-                            const RPG_CHARACTER_INVENTORY_T&); // (starting) list of (carried) items
+  RPG_Character_Player_Base(const std::string&,              // name
+                            const RPG_Character_Gender&,     // gender
+                            const RPG_Character_Race&,       // race
+                            const RPG_Character_Class&,      // (starting) class
+                            const RPG_Character_Alignment&,  // (starting) alignment
+                            const RPG_Character_Attributes&, // base attributes
+                            const RPG_CHARACTER_SKILLS_T&,   // (starting) skills
+                            const unsigned int&,             // (starting) XP
+                            const unsigned short&,           // (starting) HP
+                            const unsigned int&,             // (starting) wealth (GP)
+                            const RPG_ITEM_LIST_T&);         // (starting) list of (carried) items
 
   std::string myName;
 //  unsigned short           mySize; // cm

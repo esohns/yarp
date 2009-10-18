@@ -20,10 +20,4 @@
 #ifndef RPG_CHARACTER_INVENTORY_COMMON_H
 #define RPG_CHARACTER_INVENTORY_COMMON_H
 
-#include <vector>
-
-// useful types
-typedef std::vector<unsigned int> RPG_CHARACTER_INVENTORY_T;
-typedef RPG_CHARACTER_INVENTORY_T::const_iterator RPG_CHARACTER_INVENTORY_ITERATOR_T;
-
 #endif
