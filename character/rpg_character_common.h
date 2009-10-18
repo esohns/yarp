@@ -53,8 +53,8 @@ enum RPG_Character_AlignmentEthic
 
 struct RPG_Character_Alignment
 {
-  RPG_Character_AlignmentCivic civic_alignment;
-  RPG_Character_AlignmentEthic ethic_alignment;
+  RPG_Character_AlignmentCivic civicAlignment;
+  RPG_Character_AlignmentEthic ethicAlignment;
 };
 
 struct RPG_Character_Attributes

@@ -11,7 +11,11 @@ libRPG_Character_la_SOURCES = rpg_character_base.cpp rpg_character_base.h \
 	rpg_character_common_tools.h rpg_character_equipment.cpp rpg_character_equipment.h \
 	rpg_character_equipment_common.h rpg_character_inventory.cpp rpg_character_inventory.h \
 	rpg_character_player.cpp rpg_character_player.h rpg_character_player_base.cpp \
-	rpg_character_player_base.h rpg_character_race_common.h rpg_character_skills_common.h
+	rpg_character_player_base.h rpg_character_race_common.h rpg_character_skills_common.h \
+	rpg_character_skills_common_tools.cpp rpg_character_skills_common_tools.h
 libRPG_Character_la_LDFLAGS = -L/usr/local/lib
 noinst_PROGRAMS = generator
 generator_SOURCES = main.cpp
+generator_LDADD = $(top_builddir)/libRPG_Character.la -lRPG_Chance_Dice \
+	-lRPG_Item -lACE -lpthread
+generator_LDFLAGS = -L/usr/local/lib

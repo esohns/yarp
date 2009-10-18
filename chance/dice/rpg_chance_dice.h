@@ -39,7 +39,7 @@ class RPG_Chance_Dice
 
   // some convenient types...
   typedef std::vector<int> RPG_CHANCE_DICE_RESULT_T;
-  typedef RPG_CHANCE_DICE_RESULT_T::const_iterator RPG_CHANCE_DICE_RESULT_ITERATOR_T;
+  typedef RPG_CHANCE_DICE_RESULT_T::const_iterator RPG_CHANCE_DICE_RESULTITERATOR_T;
 
   static void simulateDiceRoll(const RPG_Chance_Roll&,     // specifics (number of dice, type, modifier)
                                const unsigned int&,        // number of rolls

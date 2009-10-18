@@ -21,11 +21,11 @@
 #define RPG_CHARACTER_SKILLS_COMMON_H
 
 #include <map>
-#include <vector>
+// #include <vector>
 
 enum RPG_Character_Skill
 {
-  SKILL_APPRAISE,
+  SKILL_APPRAISE = 0,
   SKILL_BALANCE,
   SKILL_BLUFF,
   SKILL_CLIMB,
@@ -60,13 +60,16 @@ enum RPG_Character_Skill
   SKILL_SWIM,
   SKILL_TUMBLE,
   SKILL_USE_MAGIC_DEVICE,
-  SKILL_USE_ROPE
+  SKILL_USE_ROPE,
+  //
+  SKILL_MAX,
+  SKILL_INVALID
 };
 
 enum RPG_Character_Feat
 {
   // fighter bonus
-  FEAT_BLIND_FIGHT,
+  FEAT_BLIND_FIGHT = 0,
   FEAT_COMBAT_EXPERTISE,
   FEAT_IMPROVED_DISARM,
   FEAT_IMPROVED_FEINT,
@@ -176,13 +179,16 @@ enum RPG_Character_Feat
   FEAT_GREATER_SPELL_PENETRATION,
   FEAT_STEALTHY,
   FEAT_TOUGHNESS,
-  FEAT_TRACK
+  FEAT_TRACK,
+  //
+  FEAT_MAX,
+  FEAT_INVALID
 };
 
-// some handy types
+// some useful types
 typedef std::map<RPG_Character_Skill, unsigned char> RPG_CHARACTER_SKILLS_T;
-typedef RPG_CHARACTER_SKILLS_T::const_iterator RPG_CHARACTER_SKILLS_ITERATOR_T;
-typedef std::vector<RPG_Character_Skill> RPG_CHARACTER_SKILLS_LIST_T;
-typedef RPG_CHARACTER_SKILLS_LIST_T::const_iterator RPG_CHARACTER_SKILLS_LIST_ITERATOR_T;
+typedef RPG_CHARACTER_SKILLS_T::const_iterator RPG_CHARACTER_SKILLSITERATOR_T;
+// typedef std::vector<RPG_Character_Skill> RPG_CHARACTER_SKILLSLIST_T;
+// typedef RPG_CHARACTER_SKILLSLIST_T::const_iterator RPG_CHARACTER_SKILLSLISTITERATOR_T;
 
 #endif

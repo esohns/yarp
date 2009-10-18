@@ -215,7 +215,7 @@ void do_work(const RPG_Chance_Roll& rollSpecs_in,
 
   // debug info
   std::ostringstream converter;
-  for (RPG_Chance_Dice::RPG_CHANCE_DICE_RESULT_ITERATOR_T iter = result.begin();
+  for (RPG_Chance_Dice::RPG_CHANCE_DICE_RESULTITERATOR_T iter = result.begin();
        iter != result.end();
        iter++)
   {
@@ -238,7 +238,7 @@ void do_work(const RPG_Chance_Roll& rollSpecs_in,
               result.end());
 
     converter.str(std::string()); // "reset" it...
-    for (RPG_Chance_Dice::RPG_CHANCE_DICE_RESULT_ITERATOR_T iter = result.begin();
+    for (RPG_Chance_Dice::RPG_CHANCE_DICE_RESULTITERATOR_T iter = result.begin();
          iter != result.end();
          iter++)
     {

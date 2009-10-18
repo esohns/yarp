@@ -22,6 +22,7 @@
 #include <config.h>
 #endif
 
+#include "rpg_chance_dice.h"
 #include "rpg_character_player.h"
 
 #include <ace/ACE.h>
@@ -108,6 +109,20 @@ void do_work()
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
+  // step1: init randomization
+  try
+  {
+    RPG_Chance_Dice::init();
+  }
+  catch(...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Chance_Dice::init, returning\n")));
+
+    return;
+  }
+
+  // step2: generate/init new player character
   std::string name;
   std::cout << ACE_TEXT("type player name: ");
   std::cin >> name;
@@ -188,10 +203,164 @@ void do_work()
     } // end SWITCH
   } // end WHILE
 
-  RPG_Character_Class class = CLASS
+  RPG_Character_Class player_class;
+  player_class.metaClass = METACLASS_BASE;
+  player_class.subClass = SUBCLASS_BASE;
+  c = 'f';
+  while ((player_class.metaClass == METACLASS_BASE) &&
+         (player_class.subClass == SUBCLASS_BASE))
+  {
+    std::cout << ACE_TEXT("class (f/m/c/t): ");
+    std::cin >> c;
+    switch (c)
+    {
+      case 'f':
+      {
+        player_class.metaClass = METACLASS_WARRIOR;
+        player_class.subClass = SUBCLASS_FIGHTER;
+        break;
+      }
+      case 'm':
+      {
+        player_class.metaClass = METACLASS_WIZARD;
+        player_class.subClass = SUBCLASS_WIZARD;
+        break;
+      }
+      case 'c':
+      {
+        player_class.metaClass = METACLASS_PRIEST;
+        player_class.subClass = SUBCLASS_CLERIC;
+        break;
+      }
+      case 't':
+      {
+        player_class.metaClass = METACLASS_ROGUE;
+        player_class.subClass = SUBCLASS_THIEF;
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("unrecognized (class) option \"%c\", try again\n"),
+                   c));
+        break;
+      }
+    } // end SWITCH
+  } // end WHILE
 
-  RPG_Character_Player player;
+  RPG_Character_Alignment alignment;
+  alignment.civicAlignment = ALIGNMENTCIVIC_INVALID;
+  alignment.ethicAlignment = ALIGNMENTETHIC_INVALID;
+  c = 'f';
+  while ((alignment.civicAlignment == ALIGNMENTCIVIC_INVALID) &&
+         (alignment.ethicAlignment == ALIGNMENTETHIC_INVALID))
+  {
+    std::cout << ACE_TEXT("alignment - civic (l/n/c): ");
+    std::cin >> c;
+    switch (c)
+    {
+      case 'l':
+      {
+        alignment.civicAlignment = ALIGNMENTCIVIC_LAWFUL;
+        break;
+      }
+      case 'n':
+      {
+        alignment.civicAlignment = ALIGNMENTCIVIC_NEUTRAL;
+        break;
+      }
+      case 'c':
+      {
+        alignment.civicAlignment = ALIGNMENTCIVIC_CHAOTIC;
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("unrecognized (alignment - civic) option \"%c\", try again\n"),
+                   c));
+        continue;
+      }
+    } // end SWITCH
 
+    std::cout << ACE_TEXT("alignment - ethic (g/n/e): ");
+    std::cin >> c;
+    switch (c)
+    {
+      case 'g':
+      {
+        alignment.ethicAlignment = ALIGNMENTETHIC_GOOD;
+        break;
+      }
+      case 'n':
+      {
+        alignment.ethicAlignment = ALIGNMENTETHIC_NEUTRAL;
+        break;
+      }
+      case 'e':
+      {
+        alignment.ethicAlignment = ALIGNMENTETHIC_EVIL;
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("unrecognized (alignment - ethic) option \"%c\", try again\n"),
+                   c));
+        continue;
+      }
+    } // end SWITCH
+  } // end WHILE
+
+  RPG_Character_Attributes attributes;
+  unsigned char* p = NULL;
+  RPG_Chance_Roll roll;
+  roll.numDice = 2;
+  roll.typeDice = D_10;
+  roll.modifier = -2; // add +1 if result is 0 --> stats interval 1-18
+  RPG_Chance_Dice::RPG_CHANCE_DICE_RESULT_T result;
+  c = 'n';
+  while (c == 'n')
+  {
+    p = &(attributes.strength);
+    result.clear();
+    RPG_Chance_Dice::simulateDiceRoll(roll,
+                                      6,
+                                      result);
+    for (int i = 0;
+         i < 6;
+         i++, p++)
+    {
+      *p = (result[i] == 0 ? 1 : result[i]);
+    } // end FOR
+
+    std::cout << ACE_TEXT("attributes: ") << std::endl;
+    std::cout << ACE_TEXT("strength: ") << attributes.strength << std::endl;
+    std::cout << ACE_TEXT("dexterity: ") << attributes.dexterity << std::endl;
+    std::cout << ACE_TEXT("constitution: ") << attributes.constitution << std::endl;
+    std::cout << ACE_TEXT("intelligence: ") << attributes.intelligence << std::endl;
+    std::cout << ACE_TEXT("wisdom: ") << attributes.wisdom << std::endl;
+    std::cout << ACE_TEXT("charisma: ") << attributes.charisma << std::endl;
+
+    std::cout << ACE_TEXT("OK ? (y/n): ");
+    std::cin >> c;
+  } // end WHILE
+
+  RPG_CHARACTER_SKILLS_T skills;
+  unsigned short hitpoints = 0;
+  RPG_ITEM_LIST_T items;
+
+  RPG_Character_Player player(name,
+                              gender,
+                              race,
+                              player_class,
+                              alignment,
+                              attributes,
+                              skills,
+                              0,
+                              hitpoints,
+                              0,
+                              items);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));

@@ -17,55 +17,41 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CHARACTER_CLASS_COMMON_H
-#define RPG_CHARACTER_CLASS_COMMON_H
+#ifndef RPG_CHARACTER_SKILLS_COMMON_TOOLS_H
+#define RPG_CHARACTER_SKILLS_COMMON_TOOLS_H
 
-enum RPG_Character_MetaClass
-{
-  METACLASS_BASE = 0,
-  //
-  METACLASS_WARRIOR = 1,
-  METACLASS_WIZARD = 2,
-  METACLASS_PRIEST = 4,
-  METACLASS_ROGUE = 8,
-  //
-  METACLASS_MAX,
-  METACLASS_INVALID
-};
+#include "rpg_character_class_common.h"
+#include "rpg_character_skills_common.h"
 
-enum RPG_Character_SubClass
-{
-  SUBCLASS_BASE = 0,
-  //
-  // warrior subclasses
-  SUBCLASS_FIGHTER = 1,
-  SUBCLASS_PALADIN = 2,
-  SUBCLASS_RANGER = 4,
-  SUBCLASS_BARBARIAN = 8,
-//  SUBCLASS_WARLORD = 16,
-  // wizard subclasses
-  SUBCLASS_WIZARD = 32,
-  SUBCLASS_SORCERER = 64,
-//  SUBCLASS_WARLOCK = 128,
-  // priest subclasses
-  SUBCLASS_CLERIC = 256,
-  SUBCLASS_DRUID = 512,
-  SUBCLASS_MONK = 1024,
-//  SUBCLASS_AVENGER = 2048,
-//  SUBCLASS_INVOKER = 4096,
-//  SUBCLASS_SHAMAN = 8192,
-  // rogue subclasses
-  SUBCLASS_THIEF = 16384,
-  SUBCLASS_BARD = 32768,
-  //
-  SUBCLASS_MAX,
-  SUBCLASS_INVALID
-};
+#include <ace/Global_Macros.h>
 
-struct RPG_Character_Class
+#include <set>
+#include <map>
+
+/**
+	@author Erik Sohns <erik.sohns@web.de>
+*/
+class RPG_Character_Skills_Common_Tools
 {
-  RPG_Character_MetaClass metaClass;
-  RPG_Character_SubClass subClass;
+ public:
+  // some useful types
+  typedef std::set<RPG_Character_Skill> RPG_Character_ClassSkillsSet_t;
+  typedef RPG_Character_ClassSkillsSet_t::const_iterator RPG_Character_ClassSkillsSetIterator_t;
+  typedef std::map<RPG_Character_SubClass, RPG_Character_ClassSkillsSet_t> RPG_Character_ClassSkillsTable_t;
+  typedef RPG_Character_ClassSkillsTable_t::const_iterator RPG_Character_ClassSkillsTableIterator_t;
+
+  static void initClassSkillsTable();
+  static const bool isClassSkill(const RPG_Character_SubClass&, // subclass
+                                 const RPG_Character_Skill&);   // skill
+
+ private:
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Skills_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Skills_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Skills_Common_Tools(const RPG_Character_Skills_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Skills_Common_Tools& operator=(const RPG_Character_Skills_Common_Tools&));
+
+  static RPG_Character_ClassSkillsTable_t myClassSkillsTable;
 };
 
 #endif

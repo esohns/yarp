@@ -133,7 +133,7 @@ void RPG_Character_Base::getSkill(const RPG_Character_Skill& skill_in,
   // init return value
   result_out = 0;
 
-  RPG_CHARACTER_SKILLS_ITERATOR_T iter = mySkills.find(skill_in);
+  RPG_CHARACTER_SKILLSITERATOR_T iter = mySkills.find(skill_in);
   if (iter != mySkills.end())
   {
     result_out = iter->second;
