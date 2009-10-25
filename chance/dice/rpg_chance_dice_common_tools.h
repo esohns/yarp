@@ -34,12 +34,14 @@ class RPG_Chance_Dice_Common_Tools
 {
  public:
   static void initStringConversionTables();
+
   static RPG_Chance_DiceType stringToDiceType(const std::string&); // string
+  static const std::string diceType2String(const RPG_Chance_DiceType&); // dice type
 
  private:
   // some handy types
-  typedef std::map<std::string, RPG_Chance_DiceType> RPG_String2DiceType_Table;
-  typedef RPG_String2DiceType_Table::const_iterator RPG_String2DiceType_Table_Iterator;
+  typedef std::map<std::string, RPG_Chance_DiceType> RPG_String2DiceType_t;
+  typedef RPG_String2DiceType_t::const_iterator RPG_String2DiceTypeIterator_t;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Dice_Common_Tools());
@@ -47,7 +49,7 @@ class RPG_Chance_Dice_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Dice_Common_Tools(const RPG_Chance_Dice_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Dice_Common_Tools& operator=(const RPG_Chance_Dice_Common_Tools&));
 
-  static RPG_String2DiceType_Table myString2DiceTypeTable;
+  static RPG_String2DiceType_t myString2DiceTypeTable;
 };
 
 #endif

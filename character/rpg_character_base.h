@@ -60,11 +60,13 @@ class RPG_Character_Base
   const unsigned int getExperience() const;
   // compute dynamically from class/XP
   const unsigned char getLevel() const;
-  const unsigned short getNumTotalHitPoints() const;
-  const unsigned short getNumCurrentHitPoints() const;
+  const unsigned short int getNumTotalHitPoints() const;
+  const unsigned short int getNumCurrentHitPoints() const;
   const unsigned int getCurrentWealth() const;
 
   const RPG_Character_Condition getCondition() const;
+
+  virtual void dump() const;
 
  protected:
   RPG_Character_Base(// base attributes
@@ -75,7 +77,7 @@ class RPG_Character_Base
                      const RPG_Character_Attributes&,   // base attributes
                      const RPG_CHARACTER_SKILLS_T&,     // (starting) skills
                      const unsigned int&,               // (starting) XP
-                     const unsigned short&,             // (starting) HP
+                     const unsigned short int&,         // (starting) HP
                      const unsigned int&,               // (starting) wealth (GP)
                      // base items
                      const RPG_ITEM_LIST_T&);           // (starting) list of (carried) items
@@ -88,8 +90,8 @@ class RPG_Character_Base
   RPG_CHARACTER_SKILLS_T   mySkills;
   unsigned int             myExperience;
 
-  unsigned short           myNumTotalHitPoints;
-  unsigned short           myNumCurrentHitPoints;
+  unsigned short int       myNumTotalHitPoints;
+  unsigned short int       myNumCurrentHitPoints;
 
   unsigned int             myCurrentWealth;
 

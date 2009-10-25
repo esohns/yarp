@@ -27,6 +27,9 @@ RPG_Character_Common_Tools::RPG_String2AlignmentCivic_t RPG_Character_Common_Too
 RPG_Character_Common_Tools::RPG_String2AlignmentEthic_t RPG_Character_Common_Tools::myString2AlignmentEthicTable;
 RPG_Character_Common_Tools::RPG_String2Condition_t      RPG_Character_Common_Tools::myString2ConditionTable;
 
+RPG_Character_Common_Tools::RPG_String2MetaClass_t      RPG_Character_Common_Tools::myString2MetaClassTable;
+RPG_Character_Common_Tools::RPG_String2SubClass_t       RPG_Character_Common_Tools::myString2SubClassTable;
+
 void RPG_Character_Common_Tools::initStringConversionTables()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::initStringConversionTables"));
@@ -36,6 +39,9 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   myString2AlignmentCivicTable.clear();
   myString2AlignmentEthicTable.clear();
   myString2ConditionTable.clear();
+
+  myString2MetaClassTable.clear();
+  myString2SubClassTable.clear();
 
   // RPG_Character_Gender
   myString2GenderTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("GENDER_NONE"), GENDER_NONE));
@@ -92,9 +98,37 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   myString2ConditionTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("CONDITION_STUNNED"), CONDITION_STUNNED));
   myString2ConditionTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("CONDITION_TURNED"), CONDITION_TURNED));
   myString2ConditionTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("CONDITION_UNCONSCIOUS"), CONDITION_UNCONSCIOUS));
+
+  // RPG_Character_MetaClass
+  myString2MetaClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("METACLASS_WARRIOR"), METACLASS_WARRIOR));
+  myString2MetaClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("METACLASS_WIZARD"), METACLASS_WIZARD));
+  myString2MetaClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("METACLASS_PRIEST"), METACLASS_PRIEST));
+  myString2MetaClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("METACLASS_ROGUE"), METACLASS_ROGUE));
+
+  // RPG_Character_SubClass
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_FIGHTER"), SUBCLASS_FIGHTER));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_PALADIN"), SUBCLASS_PALADIN));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_RANGER"), SUBCLASS_RANGER));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_BARBARIAN"), SUBCLASS_BARBARIAN));
+//   myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_WARLORD"), SUBCLASS_WARLORD));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_WIZARD"), SUBCLASS_WIZARD));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_SORCERER"), SUBCLASS_SORCERER));
+//   myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_WARLOCK"), SUBCLASS_WARLOCK));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_CLERIC"), SUBCLASS_CLERIC));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_DRUID"), SUBCLASS_DRUID));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_MONK"), SUBCLASS_MONK));
+//   myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_AVENGER"), SUBCLASS_AVENGER));
+//   myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_INVOKER"), SUBCLASS_INVOKER));
+//   myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_SHAMAN"), SUBCLASS_SHAMAN));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_THIEF"), SUBCLASS_THIEF));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_BARD"), SUBCLASS_BARD));
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("RPG_Character_Common_Tools: initialized string conversion tables...\n")));
 }
 
-RPG_Character_Gender RPG_Character_Common_Tools::stringToGender(const std::string& string_in)
+const RPG_Character_Gender RPG_Character_Common_Tools::stringToGender(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::stringToGender"));
 
@@ -103,7 +137,7 @@ RPG_Character_Gender RPG_Character_Common_Tools::stringToGender(const std::strin
   {
     // debug info
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid gender: \"%s\" --> check implementation !, returning\n"),
+               ACE_TEXT("invalid gender: \"%s\" --> check implementation !, aborting\n"),
                string_in.c_str()));
 
     return GENDER_INVALID;
@@ -112,7 +146,7 @@ RPG_Character_Gender RPG_Character_Common_Tools::stringToGender(const std::strin
   return iterator->second;
 }
 
-RPG_Character_AlignmentCivic RPG_Character_Common_Tools::stringToAlignmentCivic(const std::string& string_in)
+const RPG_Character_AlignmentCivic RPG_Character_Common_Tools::stringToAlignmentCivic(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::stringToAlignmentCivic"));
 
@@ -121,7 +155,7 @@ RPG_Character_AlignmentCivic RPG_Character_Common_Tools::stringToAlignmentCivic(
   {
     // debug info
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid (civic) alignment: \"%s\" --> check implementation !, returning\n"),
+               ACE_TEXT("invalid (civic) alignment: \"%s\" --> check implementation !, aborting\n"),
                string_in.c_str()));
 
     return ALIGNMENTCIVIC_INVALID;
@@ -130,7 +164,7 @@ RPG_Character_AlignmentCivic RPG_Character_Common_Tools::stringToAlignmentCivic(
   return iterator->second;
 }
 
-RPG_Character_AlignmentEthic RPG_Character_Common_Tools::stringToAlignmentEthic(const std::string& string_in)
+const RPG_Character_AlignmentEthic RPG_Character_Common_Tools::stringToAlignmentEthic(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::stringToAlignmentEthic"));
 
@@ -139,7 +173,7 @@ RPG_Character_AlignmentEthic RPG_Character_Common_Tools::stringToAlignmentEthic(
   {
     // debug info
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid (ethic) alignment: \"%s\" --> check implementation !, returning\n"),
+               ACE_TEXT("invalid (ethic) alignment: \"%s\" --> check implementation !, aborting\n"),
                string_in.c_str()));
 
     return ALIGNMENTETHIC_INVALID;
@@ -148,7 +182,7 @@ RPG_Character_AlignmentEthic RPG_Character_Common_Tools::stringToAlignmentEthic(
   return iterator->second;
 }
 
-RPG_Character_Condition RPG_Character_Common_Tools::stringToCondition(const std::string& string_in)
+const RPG_Character_Condition RPG_Character_Common_Tools::stringToCondition(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::stringToCondition"));
 
@@ -157,11 +191,139 @@ RPG_Character_Condition RPG_Character_Common_Tools::stringToCondition(const std:
   {
     // debug info
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid condition: \"%s\" --> check implementation !, returning\n"),
+               ACE_TEXT("invalid condition: \"%s\" --> check implementation !, aborting\n"),
                string_in.c_str()));
 
     return CONDITION_INVALID;
   } // end IF
 
   return iterator->second;
+}
+
+const RPG_Character_MetaClass RPG_Character_Common_Tools::string2MetaClass(const std::string& string_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::string2MetaClass"));
+
+  RPG_String2MetaClassIterator_t iterator = myString2MetaClassTable.find(string_in);
+  if (iterator == myString2MetaClassTable.end())
+  {
+    // debug info
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid metaClass: \"%s\" --> check implementation !, aborting\n"),
+               string_in.c_str()));
+
+    return METACLASS_INVALID;
+  } // end IF
+
+  return iterator->second;
+}
+
+const RPG_Character_SubClass RPG_Character_Common_Tools::string2SubClass(const std::string& string_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::string2SubClass"));
+
+  RPG_String2SubClassIterator_t iterator = myString2SubClassTable.find(string_in);
+  if (iterator == myString2SubClassTable.end())
+  {
+    // debug info
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid subClass: \"%s\" --> check implementation !, aborting\n"),
+               string_in.c_str()));
+
+    return SUBCLASS_INVALID;
+  } // end IF
+
+  return iterator->second;
+}
+
+const std::string RPG_Character_Common_Tools::subClass2String(const RPG_Character_SubClass& subClass_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::subClass2String"));
+
+  RPG_String2SubClassIterator_t iterator = myString2SubClassTable.begin();
+  do
+  {
+    if (iterator->second == subClass_in)
+    {
+      // done
+      return iterator->first;
+    } // end IF
+
+    iterator++;
+  } while (iterator != myString2SubClassTable.end());
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid subClass: %d --> check implementation !, aborting\n"),
+             subClass_in));
+
+  return std::string(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_INVALID"));
+}
+
+const short int RPG_Character_Common_Tools::getAbilityModifier(const unsigned char& ability_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getAbilityModifier"));
+
+  short baseValue = -5;
+  baseValue += ((ability_in & 0x1) == ability_in) ? ((ability_in - 1) >> 1)
+                                                  : (ability_in >> 1);
+
+  return baseValue;
+}
+
+const RPG_Chance_DiceType RPG_Character_Common_Tools::getHitDie(const RPG_Character_SubClass& subClass_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getHitDie"));
+
+  switch (subClass_in)
+  {
+    case SUBCLASS_BARBARIAN:
+    {
+      return D_12;
+    }
+//     case SUBCLASS_WARLORD:
+//     {
+//       return D_12;
+//     }
+    case SUBCLASS_FIGHTER:
+    case SUBCLASS_PALADIN:
+    {
+      return D_10;
+    }
+    case SUBCLASS_RANGER:
+    case SUBCLASS_CLERIC:
+    case SUBCLASS_DRUID:
+    case SUBCLASS_MONK:
+    {
+      return D_8;
+    }
+    case SUBCLASS_THIEF:
+    case SUBCLASS_BARD:
+    {
+      return D_6;
+    }
+    case SUBCLASS_WIZARD:
+    case SUBCLASS_SORCERER:
+    {
+      return D_4;
+    }
+//     case SUBCLASS_WARLOCK:
+//     case SUBCLASS_AVENGER:
+//     case SUBCLASS_INVOKER:
+//     case SUBCLASS_SHAMAN:
+//     {
+//       return D_4;
+//     }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("invalid subClass: %d --> check implementation !, aborting\n"),
+                subClass_in));
+
+      break;
+    }
+  } // end SWITCH
+
+  return D_TYPE_INVALID;
 }

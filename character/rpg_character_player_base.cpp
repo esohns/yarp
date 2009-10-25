@@ -29,7 +29,7 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(const std::string& name_in,
                                                      const RPG_Character_Attributes& attributes_in,
                                                      const RPG_CHARACTER_SKILLS_T& skills_in,
                                                      const unsigned int& experience_in,
-                                                     const unsigned short& hitpoints_in,
+                                                     const unsigned short int& hitpoints_in,
                                                      const unsigned int& wealth_in,
                                                      const RPG_ITEM_LIST_T& inventory_in)
  : myName(name_in),

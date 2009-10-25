@@ -28,7 +28,7 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Character_Player_Base
- : protected RPG_Character_Base
+ : public RPG_Character_Base
 {
  public:
   virtual ~RPG_Character_Player_Base();
@@ -36,28 +36,28 @@ class RPG_Character_Player_Base
   // retrieve basic player character data
   const std::string getName() const;
 
-  // retrieve basic character data
-  using RPG_Character_Base::getGender;
-  using RPG_Character_Base::getRace;
-  using RPG_Character_Base::getClass;
-  using RPG_Character_Base::getAlignment;
-
-  // retrieve base attributes
-  using RPG_Character_Base::getStrength;
-  using RPG_Character_Base::getDexterity;
-  using RPG_Character_Base::getConstitution;
-  using RPG_Character_Base::getIntelligence;
-  using RPG_Character_Base::getWisdom;
-  using RPG_Character_Base::getCharisma;
-  // retrieve skill value (if any)
-  using RPG_Character_Base::getSkill;
-
-  using RPG_Character_Base::getExperience;
-  // compute dynamically from class/XP
-  using RPG_Character_Base::getLevel;
-  using RPG_Character_Base::getNumTotalHitPoints;
-  using RPG_Character_Base::getNumCurrentHitPoints;
-  using RPG_Character_Base::getCurrentWealth;
+//   // retrieve basic character data
+//   using RPG_Character_Base::getGender;
+//   using RPG_Character_Base::getRace;
+//   using RPG_Character_Base::getClass;
+//   using RPG_Character_Base::getAlignment;
+// 
+//   // retrieve base attributes
+//   using RPG_Character_Base::getStrength;
+//   using RPG_Character_Base::getDexterity;
+//   using RPG_Character_Base::getConstitution;
+//   using RPG_Character_Base::getIntelligence;
+//   using RPG_Character_Base::getWisdom;
+//   using RPG_Character_Base::getCharisma;
+//   // retrieve skill value (if any)
+//   using RPG_Character_Base::getSkill;
+// 
+//   using RPG_Character_Base::getExperience;
+//   // compute dynamically from class/XP
+//   using RPG_Character_Base::getLevel;
+//   using RPG_Character_Base::getNumTotalHitPoints;
+//   using RPG_Character_Base::getNumCurrentHitPoints;
+//   using RPG_Character_Base::getCurrentWealth;
 
  protected:
   RPG_Character_Player_Base(const std::string&,              // name
@@ -68,13 +68,13 @@ class RPG_Character_Player_Base
                             const RPG_Character_Attributes&, // base attributes
                             const RPG_CHARACTER_SKILLS_T&,   // (starting) skills
                             const unsigned int&,             // (starting) XP
-                            const unsigned short&,           // (starting) HP
+                            const unsigned short int&,       // (starting) HP
                             const unsigned int&,             // (starting) wealth (GP)
                             const RPG_ITEM_LIST_T&);         // (starting) list of (carried) items
 
   std::string myName;
-//  unsigned short           mySize; // cm
-//  unsigned short           myWeight; // kg
+//  unsigned short int       mySize; // cm
+//  unsigned short int       myWeight; // kg
 //  unsigned int             myAge; // years
 
  private:

@@ -15,30 +15,30 @@
     <projectname>character</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
-    <defaultencoding/>
+    <description></description>
+    <defaultencoding></defaultencoding>
   </general>
   <kdevautoproject>
     <general>
       <useconfiguration>default</useconfiguration>
-      <activetarget>libCharacter.la</activetarget>
+      <activetarget>generator</activetarget>
     </general>
     <run>
-      <mainprogram>/home/unfv/Projects/RPG/character</mainprogram>
-      <programargs/>
-      <globaldebugarguments/>
-      <globalcwd>/home/unfv/Projects/RPG/character</globalcwd>
-      <useglobalprogram>false</useglobalprogram>
+      <mainprogram>/home/unfv/Projects/RPG/character/debug/.libs/generator</mainprogram>
+      <programargs>-t</programargs>
+      <globaldebugarguments>-t</globaldebugarguments>
+      <globalcwd>/home/unfv/Projects/RPG/character/debug/</globalcwd>
+      <useglobalprogram>true</useglobalprogram>
       <terminal>false</terminal>
-      <autocompile>false</autocompile>
+      <autocompile>true</autocompile>
       <autoinstall>false</autoinstall>
       <autokdesu>false</autokdesu>
       <envvars/>
       <runarguments>
-        <generator></generator>
+        <generator/>
       </runarguments>
       <debugarguments>
-        <generator></generator>
+        <generator/>
       </debugarguments>
       <cwd>
         <generator>/home/unfv/Projects/RPG/character/debug/./</generator>
@@ -231,7 +231,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -253,11 +253,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath/>
-      <dbgshell/>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <gdbpath></gdbpath>
+      <dbgshell></dbgshell>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>

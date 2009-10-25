@@ -22,7 +22,7 @@
 #include <ace/Log_Msg.h>
 
 // init statics
-RPG_Chance_Dice_Common_Tools::RPG_String2DiceType_Table RPG_Chance_Dice_Common_Tools::myString2DiceTypeTable;
+RPG_Chance_Dice_Common_Tools::RPG_String2DiceType_t RPG_Chance_Dice_Common_Tools::myString2DiceTypeTable;
 
 void RPG_Chance_Dice_Common_Tools::initStringConversionTables()
 {
@@ -41,13 +41,17 @@ void RPG_Chance_Dice_Common_Tools::initStringConversionTables()
   myString2DiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_12"), D_12));
   myString2DiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_20"), D_20));
   myString2DiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_100"), D_100));
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("RPG_Chance_Dice_Common_Tools: initialized string conversion tables...\n")));
 }
 
 RPG_Chance_DiceType RPG_Chance_Dice_Common_Tools::stringToDiceType(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Chance_Dice_Common_Tools::stringToDiceType"));
 
-  RPG_String2DiceType_Table_Iterator iterator = myString2DiceTypeTable.find(string_in);
+  RPG_String2DiceTypeIterator_t iterator = myString2DiceTypeTable.find(string_in);
   if (iterator == myString2DiceTypeTable.end())
   {
     // debug info
@@ -59,4 +63,28 @@ RPG_Chance_DiceType RPG_Chance_Dice_Common_Tools::stringToDiceType(const std::st
   } // end IF
 
   return iterator->second;
+}
+
+const std::string RPG_Chance_Dice_Common_Tools::diceType2String(const RPG_Chance_DiceType& diceType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice_Common_Tools::diceType2String"));
+
+  RPG_String2DiceTypeIterator_t iterator = myString2DiceTypeTable.begin();
+  do
+  {
+    if (iterator->second == diceType_in)
+    {
+      // done
+      return iterator->first;
+    } // end IF
+
+    iterator++;
+  } while (iterator != myString2DiceTypeTable.end());
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid dice type: %d --> check implementation !, aborting\n"),
+             diceType_in));
+
+  return std::string(ACE_TEXT_ALWAYS_CHAR("D_TYPE_INVALID"));
 }

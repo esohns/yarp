@@ -39,10 +39,12 @@ class RPG_Character_Player
                        const RPG_Character_Attributes&, // base attributes
                        const RPG_CHARACTER_SKILLS_T&,   // (starting) skills
                        const unsigned int&,             // (starting) XP
-                       const unsigned short&,           // (starting) HP
+                       const unsigned short int&,       // (starting) HP
                        const unsigned int&,             // (starting) wealth (GP)
                        const RPG_ITEM_LIST_T&);         // (starting) list of (carried) items
   virtual ~RPG_Character_Player();
+
+  using RPG_Character_Base::dump;
 
  private:
   typedef RPG_Character_Player_Base inherited;

@@ -29,7 +29,7 @@ RPG_Character_Base::RPG_Character_Base(const RPG_Character_Gender& gender_in,
                                        const RPG_Character_Attributes& attributes_in,
                                        const RPG_CHARACTER_SKILLS_T& skills_in,
                                        const unsigned int& experience_in,
-                                       const unsigned short& hitpoints_in,
+                                       const unsigned short int& hitpoints_in,
                                        const unsigned int& wealth_in,
                                        const RPG_ITEM_LIST_T& inventory_in)
  : myGender(gender_in),
@@ -156,14 +156,14 @@ const unsigned int RPG_Character_Base::getExperience() const
   return myExperience;
 }
 
-const unsigned short RPG_Character_Base::getNumTotalHitPoints() const
+const unsigned short int RPG_Character_Base::getNumTotalHitPoints() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getNumTotalHitPoints"));
 
   return myNumTotalHitPoints;
 }
 
-const unsigned short RPG_Character_Base::getNumCurrentHitPoints() const
+const unsigned short int RPG_Character_Base::getNumCurrentHitPoints() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getNumCurrentHitPoints"));
 
@@ -182,4 +182,11 @@ const RPG_Character_Condition RPG_Character_Base::getCondition() const
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getCondition"));
 
   return myCondition;
+}
+
+void RPG_Character_Base::dump() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::dump"));
+
+  ACE_ASSERT(false);
 }

@@ -23,7 +23,10 @@
 #endif
 
 #include "rpg_chance_dice.h"
+#include "rpg_chance_dice_common_tools.h"
 #include "rpg_character_player.h"
+#include "rpg_character_common_tools.h"
+#include "rpg_character_skills_common_tools.h"
 
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
@@ -109,18 +112,12 @@ void do_work()
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
-  // step1: init randomization
-  try
-  {
-    RPG_Chance_Dice::init();
-  }
-  catch(...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Chance_Dice::init, returning\n")));
+  // step1a: init randomization
+  RPG_Chance_Dice::init();
 
-    return;
-  }
+  // step1b: init string conversion facilities
+  RPG_Chance_Dice_Common_Tools::initStringConversionTables();
+  RPG_Character_Common_Tools::initStringConversionTables();
 
   // step2: generate/init new player character
   std::string name;
@@ -129,7 +126,7 @@ void do_work()
 
   RPG_Character_Gender gender = GENDER_NONE;
   char c = 'm';
-  while (gender == GENDER_NONE)
+  do
   {
     std::cout << ACE_TEXT("gender (m/f): ");
     std::cin >> c;
@@ -153,11 +150,11 @@ void do_work()
         break;
       }
     } // end SWITCH
-  } // end WHILE
+  } while (gender == GENDER_NONE);
 
   RPG_Character_Race race = RACE_BASE;
   c = 'f';
-  while (race == RACE_BASE)
+  do
   {
     std::cout << ACE_TEXT("race (h/d/e/f/g/o): ");
     std::cin >> c;
@@ -201,14 +198,13 @@ void do_work()
         break;
       }
     } // end SWITCH
-  } // end WHILE
+  } while (race == RACE_BASE);
 
   RPG_Character_Class player_class;
   player_class.metaClass = METACLASS_BASE;
   player_class.subClass = SUBCLASS_BASE;
   c = 'f';
-  while ((player_class.metaClass == METACLASS_BASE) &&
-         (player_class.subClass == SUBCLASS_BASE))
+  do
   {
     std::cout << ACE_TEXT("class (f/m/c/t): ");
     std::cin >> c;
@@ -246,14 +242,14 @@ void do_work()
         break;
       }
     } // end SWITCH
-  } // end WHILE
+  } while ((player_class.metaClass == METACLASS_BASE) &&
+           (player_class.subClass == SUBCLASS_BASE));
 
   RPG_Character_Alignment alignment;
   alignment.civicAlignment = ALIGNMENTCIVIC_INVALID;
   alignment.ethicAlignment = ALIGNMENTETHIC_INVALID;
   c = 'f';
-  while ((alignment.civicAlignment == ALIGNMENTCIVIC_INVALID) &&
-         (alignment.ethicAlignment == ALIGNMENTETHIC_INVALID))
+  do
   {
     std::cout << ACE_TEXT("alignment - civic (l/n/c): ");
     std::cin >> c;
@@ -279,7 +275,7 @@ void do_work()
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("unrecognized (alignment - civic) option \"%c\", try again\n"),
                    c));
-        continue;
+        break;
       }
     } // end SWITCH
 
@@ -307,10 +303,11 @@ void do_work()
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("unrecognized (alignment - ethic) option \"%c\", try again\n"),
                    c));
-        continue;
+        break;
       }
     } // end SWITCH
-  } // end WHILE
+  } while ((alignment.civicAlignment == ALIGNMENTCIVIC_INVALID) ||
+           (alignment.ethicAlignment == ALIGNMENTETHIC_INVALID));
 
   RPG_Character_Attributes attributes;
   unsigned char* p = NULL;
@@ -320,13 +317,22 @@ void do_work()
   roll.modifier = -2; // add +1 if result is 0 --> stats interval 1-18
   RPG_Chance_Dice::RPG_CHANCE_DICE_RESULT_T result;
   c = 'n';
-  while (c == 'n')
+  do
   {
     p = &(attributes.strength);
-    result.clear();
-    RPG_Chance_Dice::simulateDiceRoll(roll,
-                                      6,
-                                      result);
+
+    // make sure the result is somewhat balanced...
+    // *IMPORTANT NOTE*: INT must be > 2 (smaller values are reserved for animals...)
+    int sum = 0;
+    do
+    {
+      result.clear();
+      RPG_Chance_Dice::simulateDiceRoll(roll,
+                                        6,
+                                        result);
+      sum = result[0] + result[1] + result[2] + result[3] + result[4] + result[5];
+    } while ((sum <= 54) || (*(std::min_element(result.begin(), result.end())) <= 9));
+
     for (int i = 0;
          i < 6;
          i++, p++)
@@ -334,21 +340,52 @@ void do_work()
       *p = (result[i] == 0 ? 1 : result[i]);
     } // end FOR
 
-    std::cout << ACE_TEXT("attributes: ") << std::endl;
-    std::cout << ACE_TEXT("strength: ") << attributes.strength << std::endl;
-    std::cout << ACE_TEXT("dexterity: ") << attributes.dexterity << std::endl;
-    std::cout << ACE_TEXT("constitution: ") << attributes.constitution << std::endl;
-    std::cout << ACE_TEXT("intelligence: ") << attributes.intelligence << std::endl;
-    std::cout << ACE_TEXT("wisdom: ") << attributes.wisdom << std::endl;
-    std::cout << ACE_TEXT("charisma: ") << attributes.charisma << std::endl;
-
+    std::cout << ACE_TEXT("base attributes: ") << std::endl;
+    std::cout << ACE_TEXT("strength: ") << ACE_static_cast(int, attributes.strength) << std::endl;
+    std::cout << ACE_TEXT("dexterity: ") << ACE_static_cast(int, attributes.dexterity) << std::endl;
+    std::cout << ACE_TEXT("constitution: ") << ACE_static_cast(int, attributes.constitution) << std::endl;
+    std::cout << ACE_TEXT("intelligence: ") << ACE_static_cast(int, attributes.intelligence) << std::endl;
+    std::cout << ACE_TEXT("wisdom: ") << ACE_static_cast(int, attributes.wisdom) << std::endl;
+    std::cout << ACE_TEXT("charisma: ") << ACE_static_cast(int, attributes.charisma) << std::endl;
     std::cout << ACE_TEXT("OK ? (y/n): ");
     std::cin >> c;
-  } // end WHILE
+  } while (c == 'n');
 
   RPG_CHARACTER_SKILLS_T skills;
-  unsigned short hitpoints = 0;
+  short int INTmodifier = RPG_Character_Common_Tools::getAbilityModifier(attributes.intelligence);
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("INT modifier (attribute value: %d) is: %d...\n"),
+             attributes.intelligence,
+             INTmodifier));
+
+  unsigned int initialSkillPoints = 0;
+  RPG_Character_Skills_Common_Tools::getSkillPoints(player_class.subClass,
+                                                    INTmodifier,
+                                                    initialSkillPoints);
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("initial skill points for subClass \"%s\" (INT modifier: %d) is: %d...\n"),
+             RPG_Character_Common_Tools::subClass2String(player_class.subClass).c_str(),
+             INTmodifier,
+             initialSkillPoints));
+
+  // TODO: choose initial set of skills
+
+  roll.numDice = 1;
+  roll.typeDice = RPG_Character_Common_Tools::getHitDie(player_class.subClass);
+  roll.modifier = 0;
+  result.clear();
+  RPG_Chance_Dice::simulateDiceRoll(roll,
+                                    1,
+                                    result);
+  unsigned short int hitpoints = result[0];
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("initial hit points (hit die: \"%s\"): %d...\n"),
+             RPG_Chance_Dice_Common_Tools::diceType2String(roll.typeDice).c_str(),
+             hitpoints));
+
   RPG_ITEM_LIST_T items;
+
+  // TODO: choose initial set of items
 
   RPG_Character_Player player(name,
                               gender,
@@ -361,6 +398,7 @@ void do_work()
                               hitpoints,
                               0,
                               items);
+  player.dump();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));

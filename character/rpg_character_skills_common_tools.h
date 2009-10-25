@@ -43,6 +43,9 @@ class RPG_Character_Skills_Common_Tools
   static void initClassSkillsTable();
   static const bool isClassSkill(const RPG_Character_SubClass&, // subclass
                                  const RPG_Character_Skill&);   // skill
+  static const unsigned int getSkillPoints(const RPG_Character_SubClass&, // subclass
+                                           const short int&,              // INT modifier
+                                           unsigned int&);                // initial points (level 1)
 
  private:
   // safety measures

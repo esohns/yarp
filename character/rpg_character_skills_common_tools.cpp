@@ -35,7 +35,12 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   RPG_Character_ClassSkillsSet_t skillSet;
   // SUBCLASS_FIGHTER
   skillSet.insert(SKILL_CLIMB);
-  skillSet.insert(SKILL_CRAFT);
+  skillSet.insert(SKILL_CRAFT_FLETCHER);
+  skillSet.insert(SKILL_CRAFT_BOWYER);
+  skillSet.insert(SKILL_CRAFT_SMITH_ARMOR);
+  skillSet.insert(SKILL_CRAFT_SMITH_BLACK);
+  skillSet.insert(SKILL_CRAFT_SMITH_WEAPON);
+  skillSet.insert(SKILL_CRAFT_OTHER);
   skillSet.insert(SKILL_HANDLE_ANIMAL);
   skillSet.insert(SKILL_INTIMIDATE);
   skillSet.insert(SKILL_JUMP);
@@ -46,11 +51,17 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   skillSet.clear();
   // SUBCLASS_PALADIN
   skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT);
+  skillSet.insert(SKILL_CRAFT_FLETCHER);
+  skillSet.insert(SKILL_CRAFT_BOWYER);
+  skillSet.insert(SKILL_CRAFT_SMITH_ARMOR);
+  skillSet.insert(SKILL_CRAFT_SMITH_BLACK);
+  skillSet.insert(SKILL_CRAFT_SMITH_WEAPON);
+  skillSet.insert(SKILL_CRAFT_OTHER);
   skillSet.insert(SKILL_DIPLOMACY);
   skillSet.insert(SKILL_HANDLE_ANIMAL);
   skillSet.insert(SKILL_HEAL);
-  skillSet.insert(SKILL_KNOWLEDGE);
+  skillSet.insert(SKILL_KNOWLEDGE_NOB_ROY);
+  skillSet.insert(SKILL_KNOWLEDGE_RELIGION);
   skillSet.insert(SKILL_PROFESSION);
   skillSet.insert(SKILL_RIDE);
   skillSet.insert(SKILL_SENSE_MOTIVE);
@@ -60,12 +71,19 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   // SUBCLASS_RANGER
   skillSet.insert(SKILL_CLIMB);
   skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT);
+  skillSet.insert(SKILL_CRAFT_FLETCHER);
+  skillSet.insert(SKILL_CRAFT_BOWYER);
+  skillSet.insert(SKILL_CRAFT_SMITH_ARMOR);
+  skillSet.insert(SKILL_CRAFT_SMITH_BLACK);
+  skillSet.insert(SKILL_CRAFT_SMITH_WEAPON);
+  skillSet.insert(SKILL_CRAFT_OTHER);
   skillSet.insert(SKILL_HANDLE_ANIMAL);
   skillSet.insert(SKILL_HEAL);
   skillSet.insert(SKILL_HIDE);
   skillSet.insert(SKILL_JUMP);
-  skillSet.insert(SKILL_KNOWLEDGE);
+  skillSet.insert(SKILL_KNOWLEDGE_DUNGEONS);
+  skillSet.insert(SKILL_KNOWLEDGE_GEOGRAPHY);
+  skillSet.insert(SKILL_KNOWLEDGE_NATURE);
   skillSet.insert(SKILL_LISTEN);
   skillSet.insert(SKILL_MOVE_SILENTLY);
   skillSet.insert(SKILL_PROFESSION);
@@ -80,7 +98,12 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   skillSet.clear();
   // SUBCLASS_BARBARIAN
   skillSet.insert(SKILL_CLIMB);
-  skillSet.insert(SKILL_CRAFT);
+  skillSet.insert(SKILL_CRAFT_FLETCHER);
+  skillSet.insert(SKILL_CRAFT_BOWYER);
+  skillSet.insert(SKILL_CRAFT_SMITH_ARMOR);
+  skillSet.insert(SKILL_CRAFT_SMITH_BLACK);
+  skillSet.insert(SKILL_CRAFT_SMITH_WEAPON);
+  skillSet.insert(SKILL_CRAFT_OTHER);
   skillSet.insert(SKILL_HANDLE_ANIMAL);
   skillSet.insert(SKILL_HEAL);
   skillSet.insert(SKILL_INTIMIDATE);
@@ -94,9 +117,18 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   skillSet.clear();
   // SUBCLASS_WIZARD
   skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT);
+  skillSet.insert(SKILL_CRAFT_ALCHEMY);
   skillSet.insert(SKILL_DECIPHER_SCRIPT);
-  skillSet.insert(SKILL_KNOWLEDGE);
+  skillSet.insert(SKILL_KNOWLEDGE_ARCANA);
+  skillSet.insert(SKILL_KNOWLEDGE_ARCH_ENG);
+  skillSet.insert(SKILL_KNOWLEDGE_DUNGEONS);
+  skillSet.insert(SKILL_KNOWLEDGE_GEOGRAPHY);
+  skillSet.insert(SKILL_KNOWLEDGE_HISTORY);
+  skillSet.insert(SKILL_KNOWLEDGE_LOCAL);
+  skillSet.insert(SKILL_KNOWLEDGE_NATURE);
+  skillSet.insert(SKILL_KNOWLEDGE_NOB_ROY);
+  skillSet.insert(SKILL_KNOWLEDGE_RELIGION);
+  skillSet.insert(SKILL_KNOWLEDGE_PLANES);
   skillSet.insert(SKILL_PROFESSION);
   skillSet.insert(SKILL_SPELLCRAFT);
   myClassSkillsTable.insert(std::make_pair(SUBCLASS_WIZARD, skillSet));
@@ -105,8 +137,8 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   // SUBCLASS_SORCERER
   skillSet.insert(SKILL_BLUFF);
   skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT);
-  skillSet.insert(SKILL_KNOWLEDGE);
+  skillSet.insert(SKILL_CRAFT_ALCHEMY);
+  skillSet.insert(SKILL_KNOWLEDGE_ARCANA);
   skillSet.insert(SKILL_PROFESSION);
   skillSet.insert(SKILL_SPELLCRAFT);
   myClassSkillsTable.insert(std::make_pair(SUBCLASS_SORCERER, skillSet));
@@ -114,10 +146,13 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   skillSet.clear();
   // SUBCLASS_CLERIC
   skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT);
+  skillSet.insert(SKILL_CRAFT_ALCHEMY);
   skillSet.insert(SKILL_DIPLOMACY);
   skillSet.insert(SKILL_HEAL);
-  skillSet.insert(SKILL_KNOWLEDGE);
+  skillSet.insert(SKILL_KNOWLEDGE_ARCANA);
+  skillSet.insert(SKILL_KNOWLEDGE_HISTORY);
+  skillSet.insert(SKILL_KNOWLEDGE_RELIGION);
+  skillSet.insert(SKILL_KNOWLEDGE_PLANES);
   skillSet.insert(SKILL_PROFESSION);
   skillSet.insert(SKILL_SPELLCRAFT);
   myClassSkillsTable.insert(std::make_pair(SUBCLASS_CLERIC, skillSet));
@@ -125,11 +160,11 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   skillSet.clear();
   // SUBCLASS_DRUID
   skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT);
+  skillSet.insert(SKILL_CRAFT_ALCHEMY);
   skillSet.insert(SKILL_DIPLOMACY);
   skillSet.insert(SKILL_HANDLE_ANIMAL);
   skillSet.insert(SKILL_HEAL);
-  skillSet.insert(SKILL_KNOWLEDGE);
+  skillSet.insert(SKILL_KNOWLEDGE_NATURE);
   skillSet.insert(SKILL_LISTEN);
   skillSet.insert(SKILL_PROFESSION);
   skillSet.insert(SKILL_RIDE);
@@ -144,12 +179,13 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   skillSet.insert(SKILL_BALANCE);
   skillSet.insert(SKILL_CLIMB);
   skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT);
+  skillSet.insert(SKILL_CRAFT_ALCHEMY);
   skillSet.insert(SKILL_DIPLOMACY);
   skillSet.insert(SKILL_ESCAPE_ARTIST);
   skillSet.insert(SKILL_HIDE);
   skillSet.insert(SKILL_JUMP);
-  skillSet.insert(SKILL_KNOWLEDGE);
+  skillSet.insert(SKILL_KNOWLEDGE_ARCANA);
+  skillSet.insert(SKILL_KNOWLEDGE_RELIGION);
   skillSet.insert(SKILL_LISTEN);
   skillSet.insert(SKILL_MOVE_SILENTLY);
   skillSet.insert(SKILL_PERFORM);
@@ -166,7 +202,7 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   skillSet.insert(SKILL_BALANCE);
   skillSet.insert(SKILL_BLUFF);
   skillSet.insert(SKILL_CLIMB);
-  skillSet.insert(SKILL_CRAFT);
+  skillSet.insert(SKILL_CRAFT_TRAP);
   skillSet.insert(SKILL_DECIPHER_SCRIPT);
   skillSet.insert(SKILL_DIPLOMACY);
   skillSet.insert(SKILL_DISABLE_DEVICE);
@@ -177,7 +213,7 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   skillSet.insert(SKILL_HIDE);
   skillSet.insert(SKILL_INTIMIDATE);
   skillSet.insert(SKILL_JUMP);
-  skillSet.insert(SKILL_KNOWLEDGE);
+  skillSet.insert(SKILL_KNOWLEDGE_LOCAL);
   skillSet.insert(SKILL_LISTEN);
   skillSet.insert(SKILL_MOVE_SILENTLY);
   skillSet.insert(SKILL_OPEN_LOCK);
@@ -200,7 +236,7 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   skillSet.insert(SKILL_BLUFF);
   skillSet.insert(SKILL_CLIMB);
   skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT);
+  skillSet.insert(SKILL_CRAFT_ALCHEMY);
   skillSet.insert(SKILL_DECIPHER_SCRIPT);
   skillSet.insert(SKILL_DIPLOMACY);
   skillSet.insert(SKILL_DISGUISE);
@@ -208,7 +244,16 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   skillSet.insert(SKILL_GATHER_INFORMATION);
   skillSet.insert(SKILL_HIDE);
   skillSet.insert(SKILL_JUMP);
-  skillSet.insert(SKILL_KNOWLEDGE);
+  skillSet.insert(SKILL_KNOWLEDGE_ARCANA);
+  skillSet.insert(SKILL_KNOWLEDGE_ARCH_ENG);
+  skillSet.insert(SKILL_KNOWLEDGE_DUNGEONS);
+  skillSet.insert(SKILL_KNOWLEDGE_GEOGRAPHY);
+  skillSet.insert(SKILL_KNOWLEDGE_HISTORY);
+  skillSet.insert(SKILL_KNOWLEDGE_LOCAL);
+  skillSet.insert(SKILL_KNOWLEDGE_NATURE);
+  skillSet.insert(SKILL_KNOWLEDGE_NOB_ROY);
+  skillSet.insert(SKILL_KNOWLEDGE_RELIGION);
+  skillSet.insert(SKILL_KNOWLEDGE_PLANES);
   skillSet.insert(SKILL_LISTEN);
   skillSet.insert(SKILL_MOVE_SILENTLY);
   skillSet.insert(SKILL_PERFORM);
@@ -241,4 +286,69 @@ const bool RPG_Character_Skills_Common_Tools::isClassSkill(const RPG_Character_S
   } // end IF
 
   return (iterator->second.find(skill_in) != iterator->second.end());
+}
+
+const unsigned int RPG_Character_Skills_Common_Tools::getSkillPoints(const RPG_Character_SubClass& subClass_in,
+                                                                     const short int& INTModifier_in,
+                                                                     unsigned int& initialPoints_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::getSkillPoints"));
+
+  // init defaults
+  initialPoints_out = 0;
+
+  short int baseValue = INTModifier_in;
+  switch (subClass_in)
+  {
+    case SUBCLASS_FIGHTER:
+    case SUBCLASS_PALADIN:
+    case SUBCLASS_WIZARD:
+    case SUBCLASS_SORCERER:
+    case SUBCLASS_CLERIC:
+    {
+      baseValue += 2;
+
+      break;
+    }
+    case SUBCLASS_BARBARIAN:
+    case SUBCLASS_DRUID:
+    case SUBCLASS_MONK:
+    {
+      baseValue += 4;
+
+      break;
+    }
+    case SUBCLASS_RANGER:
+    case SUBCLASS_BARD:
+    {
+      baseValue += 6;
+
+      break;
+    }
+//     case SUBCLASS_WARLORD:
+//     case SUBCLASS_WARLOCK:
+//     case SUBCLASS_AVENGER:
+//     case SUBCLASS_INVOKER:
+//     case SUBCLASS_SHAMAN:
+    case SUBCLASS_THIEF:
+    {
+      baseValue += 8;
+
+      break;
+    }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid subclass: %d --> check implementation !, aborting\n"),
+                 subClass_in));
+
+      return 0;
+    }
+  } // end SWITCH
+
+  // at least 1/level...
+  initialPoints_out = ((baseValue > 1) ? (baseValue * 4) : 1);
+
+  return ((baseValue > 1) ? baseValue : 1);
 }

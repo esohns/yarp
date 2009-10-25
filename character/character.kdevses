@@ -3,13 +3,13 @@
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="4" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/main.cpp" >
-   <View0 Encoding="" line="358" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_skills_common.h" >
-   <View0 Encoding="" line="56" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc1>
   <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_skills_common_tools.h" >
-   <View0 Encoding="" line="27" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc2>
   <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_player.h" >
    <View0 Encoding="" line="43" Type="Source" />
