@@ -37,7 +37,7 @@ class RPG_Character_Player
                        const RPG_Character_Class&,      // (starting) class
                        const RPG_Character_Alignment&,  // (starting) alignment
                        const RPG_Character_Attributes&, // base attributes
-                       const RPG_CHARACTER_SKILLS_T&,   // (starting) skills
+                       const RPG_Character_Skills_t&,   // (starting) skills
                        const unsigned int&,             // (starting) XP
                        const unsigned short int&,       // (starting) HP
                        const unsigned int&,             // (starting) wealth (GP)

@@ -27,6 +27,7 @@
 
 #include <set>
 #include <map>
+#include <string>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -39,13 +40,18 @@ class RPG_Character_Skills_Common_Tools
   typedef RPG_Character_ClassSkillsSet_t::const_iterator RPG_Character_ClassSkillsSetIterator_t;
   typedef std::map<RPG_Character_SubClass, RPG_Character_ClassSkillsSet_t> RPG_Character_ClassSkillsTable_t;
   typedef RPG_Character_ClassSkillsTable_t::const_iterator RPG_Character_ClassSkillsTableIterator_t;
+  typedef std::map<RPG_Character_Skill, std::string> RPG_Character_Skill2StringTable_t;
+  typedef RPG_Character_Skill2StringTable_t::const_iterator RPG_Character_Skill2StringTableIterator_t;
 
   static void initClassSkillsTable();
+  static void initStringConversionTable();
   static const bool isClassSkill(const RPG_Character_SubClass&, // subclass
                                  const RPG_Character_Skill&);   // skill
   static const unsigned int getSkillPoints(const RPG_Character_SubClass&, // subclass
                                            const short int&,              // INT modifier
                                            unsigned int&);                // initial points (level 1)
+
+  static RPG_Character_Skill2StringTable_t mySkill2StringTable;
 
  private:
   // safety measures
@@ -54,7 +60,7 @@ class RPG_Character_Skills_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Skills_Common_Tools(const RPG_Character_Skills_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Skills_Common_Tools& operator=(const RPG_Character_Skills_Common_Tools&));
 
-  static RPG_Character_ClassSkillsTable_t myClassSkillsTable;
+  static RPG_Character_ClassSkillsTable_t  myClassSkillsTable;
 };
 
 #endif

@@ -27,7 +27,7 @@ RPG_Character_Base::RPG_Character_Base(const RPG_Character_Gender& gender_in,
                                        const RPG_Character_Class& class_in,
                                        const RPG_Character_Alignment& alignment_in,
                                        const RPG_Character_Attributes& attributes_in,
-                                       const RPG_CHARACTER_SKILLS_T& skills_in,
+                                       const RPG_Character_Skills_t& skills_in,
                                        const unsigned int& experience_in,
                                        const unsigned short int& hitpoints_in,
                                        const unsigned int& wealth_in,
@@ -133,7 +133,7 @@ void RPG_Character_Base::getSkill(const RPG_Character_Skill& skill_in,
   // init return value
   result_out = 0;
 
-  RPG_CHARACTER_SKILLSITERATOR_T iter = mySkills.find(skill_in);
+  RPG_Character_SkillsConstIterator_t iter = mySkills.find(skill_in);
   if (iter != mySkills.end())
   {
     result_out = iter->second;

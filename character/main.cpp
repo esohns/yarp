@@ -34,6 +34,7 @@
 #include <ace/High_Res_Timer.h>
 
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <string>
 #include <algorithm>
@@ -108,6 +109,85 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
+const bool print_skills_table(RPG_Character_Skills_t& skills_in)
+{
+  ACE_TRACE(ACE_TEXT("::print_skills_table"));
+
+  RPG_Character_SkillsIterator_t skills_iterator = skills_in.end();
+
+  unsigned int skills_per_line = 4;
+  unsigned int index = 1;
+  unsigned int choice = 0;
+  RPG_Character_Skills_Common_Tools::RPG_Character_Skill2StringTableIterator_t iterator = RPG_Character_Skills_Common_Tools::mySkill2StringTable.begin();
+  do
+  {
+    for (unsigned int i = 0;
+         i < skills_per_line;
+         i++, iterator++, index++)
+    {
+      // finished ?
+      if (iterator == RPG_Character_Skills_Common_Tools::mySkill2StringTable.end())
+      {
+        break;
+      } // end IF
+
+      skills_iterator = skills_in.find(iterator->first);
+
+//       std::cout.setf(ios::right);
+      std::cout << ACE_TEXT("[") << std::setw(2) << std::right << index << ACE_TEXT("]: ") << std::setw(20) << std::left << iterator->second.c_str() << ACE_TEXT(": ");
+      if (skills_iterator != skills_in.end())
+      {
+        std::cout << std::setw(3) << std::right << ACE_static_cast(unsigned int, skills_iterator->second) << ACE_TEXT(" ");
+      } // end IF
+      else
+      {
+        std::cout << ACE_TEXT("nil ");
+      } // end ELSE
+//       std::cout.unsetf(ios::right);
+    } // end FOR
+
+    std::cout << std::endl;
+  } while (iterator != RPG_Character_Skills_Common_Tools::mySkill2StringTable.end());
+
+  index--;
+
+  std::cout << ACE_TEXT("enter index: ");
+  std::cin >> choice;
+  // sanity check
+  if ((choice > index) || (choice < 1))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid index %d (max: %d), try again\n"),
+               choice,
+               index));
+
+    // clean input buffer
+    if (!std::cin)
+    {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), ACE_TEXT_ALWAYS_CHAR('\n'));
+    } // end IF
+
+    return false;
+  } // end IF
+
+  // increase skill rank
+  choice -= 1;
+  iterator = RPG_Character_Skills_Common_Tools::mySkill2StringTable.begin();
+  std::advance(iterator, choice);
+  skills_iterator = skills_in.find(iterator->first);
+  if (skills_iterator != skills_in.end())
+  {
+    (skills_iterator->second)++;
+  } // end IF
+  else
+  {
+    skills_in.insert(std::make_pair(iterator->first, ACE_static_cast(unsigned char, 1)));
+  } // end ELSE
+
+  return true;
+}
+
 void do_work()
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
@@ -118,6 +198,7 @@ void do_work()
   // step1b: init string conversion facilities
   RPG_Chance_Dice_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
+  RPG_Character_Skills_Common_Tools::initStringConversionTable();
 
   // step2: generate/init new player character
   std::string name;
@@ -145,8 +226,8 @@ void do_work()
       default:
       {
         ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("unrecognized (gender) option \"%c\", try again\n"),
-                  c));
+                   ACE_TEXT("unrecognized (gender) option \"%c\", try again\n"),
+                   c));
         break;
       }
     } // end SWITCH
@@ -193,8 +274,8 @@ void do_work()
       default:
       {
         ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("unrecognized (race) option \"%c\", try again\n"),
-                  c));
+                   ACE_TEXT("unrecognized (race) option \"%c\", try again\n"),
+                   c));
         break;
       }
     } // end SWITCH
@@ -351,7 +432,7 @@ void do_work()
     std::cin >> c;
   } while (c == 'n');
 
-  RPG_CHARACTER_SKILLS_T skills;
+  RPG_Character_Skills_t skills;
   short int INTmodifier = RPG_Character_Common_Tools::getAbilityModifier(attributes.intelligence);
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("INT modifier (attribute value: %d) is: %d...\n"),
@@ -368,7 +449,17 @@ void do_work()
              INTmodifier,
              initialSkillPoints));
 
-  // TODO: choose initial set of skills
+  do
+  {
+    // header line
+    std::cout << ACE_TEXT("remaining skill points: ") << initialSkillPoints << std::endl;
+    std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
+
+    if (print_skills_table(skills))
+    {
+      initialSkillPoints--;
+    } // end IF
+  } while (initialSkillPoints);
 
   roll.numDice = 1;
   roll.typeDice = RPG_Character_Common_Tools::getHitDie(player_class.subClass);

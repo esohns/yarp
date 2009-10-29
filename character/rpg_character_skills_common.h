@@ -202,8 +202,9 @@ enum RPG_Character_Feat
 };
 
 // some useful types
-typedef std::map<RPG_Character_Skill, unsigned char> RPG_CHARACTER_SKILLS_T;
-typedef RPG_CHARACTER_SKILLS_T::const_iterator RPG_CHARACTER_SKILLSITERATOR_T;
+typedef std::map<RPG_Character_Skill, unsigned char> RPG_Character_Skills_t;
+typedef RPG_Character_Skills_t::iterator RPG_Character_SkillsIterator_t;
+typedef RPG_Character_Skills_t::const_iterator RPG_Character_SkillsConstIterator_t;
 // typedef std::vector<RPG_Character_Skill> RPG_CHARACTER_SKILLSLIST_T;
 // typedef RPG_CHARACTER_SKILLSLIST_T::const_iterator RPG_CHARACTER_SKILLSLISTITERATOR_T;
 
