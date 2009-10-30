@@ -31,7 +31,7 @@ RPG_Character_Player::RPG_Character_Player(const std::string& name_in,
                                            const unsigned int& experience_in,
                                            const unsigned short int& hitpoints_in,
                                            const unsigned int& wealth_in,
-                                           const RPG_ITEM_LIST_T& inventory_in)
+                                           const RPG_Item_List_t& inventory_in)
  : inherited(name_in,
              gender_in,
              race_in,

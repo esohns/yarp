@@ -70,7 +70,7 @@ class RPG_Character_Player_Base
                             const unsigned int&,             // (starting) XP
                             const unsigned short int&,       // (starting) HP
                             const unsigned int&,             // (starting) wealth (GP)
-                            const RPG_ITEM_LIST_T&);         // (starting) list of (carried) items
+                            const RPG_Item_List_t&);         // (starting) list of (carried) items
 
   std::string myName;
 //  unsigned short int       mySize; // cm

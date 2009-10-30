@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "rpg_item_weapon_base.h"
 
-#include <ace/Trace.h>
+#include <ace/Log_Msg.h>
 
 RPG_Item_Weapon_Base::RPG_Item_Weapon_Base(const RPG_Item_WeaponType& weaponType_in)
  : myWeaponType(weaponType_in)
@@ -30,7 +30,7 @@ RPG_Item_Weapon_Base::RPG_Item_Weapon_Base(const RPG_Item_WeaponType& weaponType
 
 RPG_Item_Weapon_Base::~RPG_Item_Weapon_Base()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Weapon_Base::RPG_Item_Weapon_Base"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Weapon_Base::~RPG_Item_Weapon_Base"));
 
 }
 

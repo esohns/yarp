@@ -31,8 +31,8 @@
 class RPG_Item_Dictionary_Parser : public RPG_Item_Dictionary_Type_pimpl
 {
  public:
-  RPG_Item_Dictionary_Parser(RPG_ITEM_WEAPONDICTIONARY_T*, // weapon dictionary
-                             RPG_ITEM_ARMORDICTIONARY_T*); // armor dictionary
+  RPG_Item_Dictionary_Parser(RPG_Item_WeaponDictionary_t*, // weapon dictionary
+                             RPG_Item_ArmorDictionary_t*); // armor dictionary
   virtual ~RPG_Item_Dictionary_Parser();
 
 //   virtual void pre();
@@ -46,14 +46,14 @@ class RPG_Item_Dictionary_Parser : public RPG_Item_Dictionary_Type_pimpl
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary_Parser(const RPG_Item_Dictionary_Parser&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary_Parser& operator=(const RPG_Item_Dictionary_Parser&));
 
-  RPG_ITEM_WEAPONDICTIONARY_T* myWeaponDictionary;
-  RPG_ITEM_ARMORDICTIONARY_T*  myArmorDictionary;
+  RPG_Item_WeaponDictionary_t* myWeaponDictionary;
+  RPG_Item_ArmorDictionary_t*  myArmorDictionary;
 };
 
 class RPG_Item_WeaponDictionary_Type : public RPG_Item_WeaponDictionary_Type_pimpl
 {
  public:
-  RPG_Item_WeaponDictionary_Type(RPG_ITEM_WEAPONDICTIONARY_T*); // weapon dictionary
+  RPG_Item_WeaponDictionary_Type(RPG_Item_WeaponDictionary_t*); // weapon dictionary
 
 //   virtual void pre();
   virtual void weapon(const RPG_Item_WeaponProperties_XML&);
@@ -65,13 +65,13 @@ class RPG_Item_WeaponDictionary_Type : public RPG_Item_WeaponDictionary_Type_pim
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_WeaponDictionary_Type(const RPG_Item_WeaponDictionary_Type&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_WeaponDictionary_Type& operator=(const RPG_Item_WeaponDictionary_Type&));
 
-  RPG_ITEM_WEAPONDICTIONARY_T* myWeaponDictionary;
+  RPG_Item_WeaponDictionary_t* myWeaponDictionary;
 };
 
 class RPG_Item_ArmorDictionary_Type : public RPG_Item_ArmorDictionary_Type_pimpl
 {
  public:
-  RPG_Item_ArmorDictionary_Type(RPG_ITEM_ARMORDICTIONARY_T*); // armor dictionary
+  RPG_Item_ArmorDictionary_Type(RPG_Item_ArmorDictionary_t*); // armor dictionary
 
 //   virtual void pre();
   virtual void armor(const RPG_Item_ArmorProperties_XML&);
@@ -83,7 +83,7 @@ class RPG_Item_ArmorDictionary_Type : public RPG_Item_ArmorDictionary_Type_pimpl
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_ArmorDictionary_Type(const RPG_Item_ArmorDictionary_Type&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_ArmorDictionary_Type& operator=(const RPG_Item_ArmorDictionary_Type&));
 
-  RPG_ITEM_ARMORDICTIONARY_T* myArmorDictionary;
+  RPG_Item_ArmorDictionary_t* myArmorDictionary;
 };
 
 class RPG_Item_WeaponCategory_Type : public RPG_Item_WeaponCategory_Type_pimpl

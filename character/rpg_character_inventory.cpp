@@ -21,7 +21,7 @@
 
 #include <ace/Log_Msg.h>
 
-RPG_Character_Inventory::RPG_Character_Inventory(const RPG_ITEM_LIST_T& items_in)
+RPG_Character_Inventory::RPG_Character_Inventory(const RPG_Item_List_t& items_in)
  : myItems(items_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::RPG_Character_Inventory"));

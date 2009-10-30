@@ -22,14 +22,14 @@
 #include <ace/Log_Msg.h>
 
 // init statics
-RPG_Item_Common_Tools::RPG_String2ItemType_Table         RPG_Item_Common_Tools::myString2ItemTypeTable;
-RPG_Item_Common_Tools::RPG_String2MoneyType_Table        RPG_Item_Common_Tools::myString2MoneyTypeTable;
-RPG_Item_Common_Tools::RPG_String2WeaponCategory_Table   RPG_Item_Common_Tools::myString2WeaponCategoryTable;
-RPG_Item_Common_Tools::RPG_String2WeaponClass_Table      RPG_Item_Common_Tools::myString2WeaponClassTable;
-RPG_Item_Common_Tools::RPG_String2WeaponType_Table       RPG_Item_Common_Tools::myString2WeaponTypeTable;
-RPG_Item_Common_Tools::RPG_String2WeaponDamageType_Table RPG_Item_Common_Tools::myString2WeaponDamageTypeTable;
-RPG_Item_Common_Tools::RPG_String2ArmorCategory_Table    RPG_Item_Common_Tools::myString2ArmorCategoryTable;
-RPG_Item_Common_Tools::RPG_String2ArmorType_Table        RPG_Item_Common_Tools::myString2ArmorTypeTable;
+RPG_Item_Common_Tools::RPG_String2ItemTypeTable_t         RPG_Item_Common_Tools::myString2ItemTypeTable;
+RPG_Item_Common_Tools::RPG_String2MoneyTypeTable_t        RPG_Item_Common_Tools::myString2MoneyTypeTable;
+RPG_Item_Common_Tools::RPG_String2WeaponCategoryTable_t   RPG_Item_Common_Tools::myString2WeaponCategoryTable;
+RPG_Item_Common_Tools::RPG_String2WeaponClassTable_t      RPG_Item_Common_Tools::myString2WeaponClassTable;
+RPG_Item_Common_Tools::RPG_String2WeaponTypeTable_t       RPG_Item_Common_Tools::myString2WeaponTypeTable;
+RPG_Item_Common_Tools::RPG_String2WeaponDamageTypeTable_t RPG_Item_Common_Tools::myString2WeaponDamageTypeTable;
+RPG_Item_Common_Tools::RPG_String2ArmorCategoryTable_t    RPG_Item_Common_Tools::myString2ArmorCategoryTable;
+RPG_Item_Common_Tools::RPG_String2ArmorTypeTable_t        RPG_Item_Common_Tools::myString2ArmorTypeTable;
 
 void RPG_Item_Common_Tools::initStringConversionTables()
 {
@@ -183,7 +183,7 @@ RPG_Item_WeaponCategory RPG_Item_Common_Tools::stringToWeaponCategory(const std:
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToWeaponCategory"));
 
-  RPG_String2WeaponCategory_Table_Iterator iterator = myString2WeaponCategoryTable.find(string_in);
+  RPG_String2WeaponCategoryTableIterator_t iterator = myString2WeaponCategoryTable.find(string_in);
   if (iterator == myString2WeaponCategoryTable.end())
   {
     // debug info
@@ -201,7 +201,7 @@ RPG_Item_WeaponClass RPG_Item_Common_Tools::stringToWeaponClass(const std::strin
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToWeaponClass"));
 
-  RPG_String2WeaponClass_Table_Iterator iterator = myString2WeaponClassTable.find(string_in);
+  RPG_String2WeaponClassTableIterator_t iterator = myString2WeaponClassTable.find(string_in);
   if (iterator == myString2WeaponClassTable.end())
   {
     // debug info
@@ -219,7 +219,7 @@ RPG_Item_WeaponType RPG_Item_Common_Tools::stringToWeaponType(const std::string&
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToWeaponType"));
 
-  RPG_String2WeaponType_Table_Iterator iterator = myString2WeaponTypeTable.find(string_in);
+  RPG_String2WeaponTypeTableIterator_t iterator = myString2WeaponTypeTable.find(string_in);
   if (iterator == myString2WeaponTypeTable.end())
   {
     // debug info
@@ -237,7 +237,7 @@ RPG_Item_WeaponDamageType RPG_Item_Common_Tools::stringToWeaponDamageType(const 
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToWeaponDamageType"));
 
-  RPG_String2WeaponDamageType_Table_Iterator iterator = myString2WeaponDamageTypeTable.find(string_in);
+  RPG_String2WeaponDamageTypeTableIterator_t iterator = myString2WeaponDamageTypeTable.find(string_in);
   if (iterator == myString2WeaponDamageTypeTable.end())
   {
     // debug info
@@ -255,7 +255,7 @@ RPG_Item_ArmorCategory RPG_Item_Common_Tools::stringToArmorCategory(const std::s
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToArmorCategory"));
 
-  RPG_String2ArmorCategory_Table_Iterator iterator = myString2ArmorCategoryTable.find(string_in);
+  RPG_String2ArmorCategoryTableIterator_t iterator = myString2ArmorCategoryTable.find(string_in);
   if (iterator == myString2ArmorCategoryTable.end())
   {
     // debug info
@@ -273,7 +273,7 @@ RPG_Item_ArmorType RPG_Item_Common_Tools::stringToArmorType(const std::string& s
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToArmorType"));
 
-  RPG_String2ArmorType_Table_Iterator iterator = myString2ArmorTypeTable.find(string_in);
+  RPG_String2ArmorTypeTableIterator_t iterator = myString2ArmorTypeTable.find(string_in);
   if (iterator == myString2ArmorTypeTable.end())
   {
     // debug info

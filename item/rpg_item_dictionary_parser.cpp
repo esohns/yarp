@@ -24,8 +24,8 @@
 
 #include <ace/Log_Msg.h>
 
-RPG_Item_Dictionary_Parser::RPG_Item_Dictionary_Parser(RPG_ITEM_WEAPONDICTIONARY_T* weaponDictionary_in,
-                                                       RPG_ITEM_ARMORDICTIONARY_T* armorDictionary_in)
+RPG_Item_Dictionary_Parser::RPG_Item_Dictionary_Parser(RPG_Item_WeaponDictionary_t* weaponDictionary_in,
+                                                       RPG_Item_ArmorDictionary_t* armorDictionary_in)
  : myWeaponDictionary(weaponDictionary_in),
    myArmorDictionary(armorDictionary_in)
 {
@@ -72,7 +72,7 @@ void RPG_Item_Dictionary_Parser::post_RPG_Item_Dictionary_Type()
              myArmorDictionary->size()));
 }
 
-RPG_Item_WeaponDictionary_Type::RPG_Item_WeaponDictionary_Type(RPG_ITEM_WEAPONDICTIONARY_T* weaponDictionary_in)
+RPG_Item_WeaponDictionary_Type::RPG_Item_WeaponDictionary_Type(RPG_Item_WeaponDictionary_t* weaponDictionary_in)
  : myWeaponDictionary(weaponDictionary_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponDictionary_Type::RPG_Item_WeaponDictionary_Type"));
@@ -112,7 +112,7 @@ void RPG_Item_WeaponDictionary_Type::post_RPG_Item_WeaponDictionary_Type()
              myWeaponDictionary->size()));
 }
 
-RPG_Item_ArmorDictionary_Type::RPG_Item_ArmorDictionary_Type(RPG_ITEM_ARMORDICTIONARY_T* armorDictionary_in)
+RPG_Item_ArmorDictionary_Type::RPG_Item_ArmorDictionary_Type(RPG_Item_ArmorDictionary_t* armorDictionary_in)
  : myArmorDictionary(armorDictionary_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorDictionary_Type::RPG_Item_ArmorDictionary_Type"));

@@ -80,7 +80,7 @@ class RPG_Character_Base
                      const unsigned short int&,         // (starting) HP
                      const unsigned int&,               // (starting) wealth (GP)
                      // base items
-                     const RPG_ITEM_LIST_T&);           // (starting) list of (carried) items
+                     const RPG_Item_List_t&);           // (starting) list of (carried) items
 
   RPG_Character_Gender     myGender;
   RPG_Character_Race       myRace;

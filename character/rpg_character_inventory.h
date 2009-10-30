@@ -30,11 +30,11 @@
 class RPG_Character_Inventory
 {
  public:
-  RPG_Character_Inventory(const RPG_ITEM_LIST_T&); // list of initial items
+  RPG_Character_Inventory(const RPG_Item_List_t&); // list of initial items
   virtual ~RPG_Character_Inventory();
 
-  void add(const RPG_ITEM_ID_T&); // item ID
-  void drop(const RPG_ITEM_ID_T&); // item ID
+  void add(const RPG_Item_ID_t&); // item ID
+  void drop(const RPG_Item_ID_t&); // item ID
 
  private:
   // safety measures
@@ -42,7 +42,7 @@ class RPG_Character_Inventory
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Inventory(const RPG_Character_Inventory&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Inventory& operator=(const RPG_Character_Inventory&));
 
-  RPG_ITEM_LIST_T myItems;
+  RPG_Item_List_t myItems;
 };
 
 #endif

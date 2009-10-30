@@ -292,12 +292,12 @@ struct RPG_Item_MagicArmorProperties
 // typedef std::pair<RPG_Item_WeaponType,
 //                   RPG_Item_WeaponProperties> RPG_ITEM_WEAPONDICTIONARY_ITEM_T;
 typedef std::map<RPG_Item_WeaponType,
-                 RPG_Item_WeaponProperties> RPG_ITEM_WEAPONDICTIONARY_T;
-typedef RPG_ITEM_WEAPONDICTIONARY_T::const_iterator RPG_ITEM_WEAPONDICTIONARY_ITERATOR_T;
+                 RPG_Item_WeaponProperties> RPG_Item_WeaponDictionary_t;
+typedef RPG_Item_WeaponDictionary_t::const_iterator RPG_Item_WeaponDictionaryIterator_t;
 // typedef std::pair<RPG_Item_ArmorType,
 //                   RPG_Item_ArmorProperties> RPG_ITEM_ARMORDICTIONARY_ITEM_T;
 typedef std::map<RPG_Item_ArmorType,
-                 RPG_Item_ArmorProperties> RPG_ITEM_ARMORDICTIONARY_T;
-typedef RPG_ITEM_ARMORDICTIONARY_T::const_iterator RPG_ITEM_ARMORDICTIONARY_ITERATOR_T;
+                 RPG_Item_ArmorProperties> RPG_Item_ArmorDictionary_t;
+typedef RPG_Item_ArmorDictionary_t::const_iterator RPG_Item_ArmorDictionaryIterator_t;
 
 #endif

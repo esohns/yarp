@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Erik Sohns   *
- *   erik.sohns@web.de   *
+ *   Copyright (C) 2009 by Erik Sohns                                      *
+ *   erik.sohns@web.de                                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -23,8 +23,8 @@
 #include <vector>
 
 // useful types
-typedef unsigned int RPG_ITEM_ID_T;
-typedef std::vector<RPG_ITEM_ID_T> RPG_ITEM_LIST_T;
-typedef RPG_ITEM_LIST_T::const_iterator RPG_ITEM_LISTITERATOR_T;
+typedef unsigned int RPG_Item_ID_t;
+typedef std::vector<RPG_Item_ID_t> RPG_Item_List_t;
+typedef RPG_Item_List_t::const_iterator RPG_Item_ListIterator_t;
 
 #endif

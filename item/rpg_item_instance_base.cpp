@@ -20,7 +20,7 @@
 #include "rpg_item_instance_base.h"
 
 // init statics
-ACE_Atomic_Op<ACE_Thread_Mutex, RPG_ITEM_ID_T> RPG_Item_Instance_Base::myCurrentID = 1;
+ACE_Atomic_Op<ACE_Thread_Mutex, RPG_Item_ID_t> RPG_Item_Instance_Base::myCurrentID = 1;
 
 RPG_Item_Instance_Base::RPG_Item_Instance_Base()
  : myID(myCurrentID++) // *WARNING*: prefix increment leads to corruption !
@@ -35,7 +35,7 @@ RPG_Item_Instance_Base::~RPG_Item_Instance_Base()
 
 }
 
-const RPG_ITEM_ID_T RPG_Item_Instance_Base::getID() const
+const RPG_Item_ID_t RPG_Item_Instance_Base::getID() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Instance_Base::getID"));
 

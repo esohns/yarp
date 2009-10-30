@@ -37,7 +37,7 @@ enum RPG_Character_EquipmentSlot
 };
 
 // useful types
-typedef std::multimap<RPG_Character_EquipmentSlot, RPG_ITEM_ID_T> RPG_CHARACTER_EQUIPMENT_T;
-typedef RPG_CHARACTER_EQUIPMENT_T::const_iterator RPG_CHARACTER_EQUIPMENT_ITERATOR_T;
+typedef std::multimap<RPG_Character_EquipmentSlot, RPG_Item_ID_t> RPG_Character_Equipment_t;
+typedef RPG_Character_Equipment_t::const_iterator RPG_Character_EquipmentIterator_t;
 
 #endif

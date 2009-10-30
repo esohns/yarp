@@ -48,8 +48,8 @@ class RPG_Item_Dictionary
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary(const RPG_Item_Dictionary&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary& operator=(const RPG_Item_Dictionary&));
 
-  RPG_ITEM_WEAPONDICTIONARY_T myWeaponDictionary;
-  RPG_ITEM_ARMORDICTIONARY_T  myArmorDictionary;
+  RPG_Item_WeaponDictionary_t myWeaponDictionary;
+  RPG_Item_ArmorDictionary_t  myArmorDictionary;
 };
 
 typedef ACE_Singleton<RPG_Item_Dictionary,

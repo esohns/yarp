@@ -34,9 +34,9 @@ class RPG_Character_Equipment
   RPG_Character_Equipment();
   virtual ~RPG_Character_Equipment();
 
-  const bool equip(const RPG_ITEM_ID_T&, // item ID
+  const bool equip(const RPG_Item_ID_t&, // item ID
                    const RPG_Character_EquipmentSlot&); // where ?
-  const bool unequip(const RPG_ITEM_ID_T&, // item ID
+  const bool unequip(const RPG_Item_ID_t&, // item ID
                      const RPG_Character_EquipmentSlot&); // where ?
 
  private:
@@ -45,7 +45,7 @@ class RPG_Character_Equipment
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Equipment& operator=(const RPG_Character_Equipment&));
 
   // map of equipped items (values index corresponding items in the inventory !)
-  RPG_CHARACTER_EQUIPMENT_T myEquipment;
+  RPG_Character_Equipment_t myEquipment;
 };
 
 #endif

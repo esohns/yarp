@@ -35,7 +35,7 @@ class RPG_Item_Instance_Base
   virtual ~RPG_Item_Instance_Base();
 
   // info
-  const RPG_ITEM_ID_T getID() const;
+  const RPG_Item_ID_t getID() const;
 
  protected:
   RPG_Item_Instance_Base();
@@ -46,9 +46,9 @@ class RPG_Item_Instance_Base
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Instance_Base& operator=(const RPG_Item_Instance_Base&));
 
   // atomic ID generator
-  static ACE_Atomic_Op<ACE_Thread_Mutex, RPG_ITEM_ID_T> myCurrentID;
+  static ACE_Atomic_Op<ACE_Thread_Mutex, RPG_Item_ID_t> myCurrentID;
 
-  RPG_ITEM_ID_T myID;
+  RPG_Item_ID_t myID;
 };
 
 #endif

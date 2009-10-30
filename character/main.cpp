@@ -24,6 +24,8 @@
 
 #include "rpg_chance_dice.h"
 #include "rpg_chance_dice_common_tools.h"
+#include "rpg_item_weapon.h"
+#include "rpg_item_armor.h"
 #include "rpg_character_player.h"
 #include "rpg_character_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
@@ -474,9 +476,10 @@ void do_work()
              RPG_Chance_Dice_Common_Tools::diceType2String(roll.typeDice).c_str(),
              hitpoints));
 
-  RPG_ITEM_LIST_T items;
-
   // TODO: choose initial set of items
+  RPG_Item_List_t items;
+  RPG_Item_Armor armor;
+  RPG_Item_Weapon weapon;
 
   RPG_Character_Player player(name,
                               gender,

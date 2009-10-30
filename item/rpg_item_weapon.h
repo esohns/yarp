@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Erik Sohns   *
- *   erik.sohns@web.de   *
+ *   Copyright (C) 2009 by Erik Sohns                                      *
+ *   erik.sohns@web.de                                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,6 +20,7 @@
 #ifndef RPG_ITEM_WEAPON_H
 #define RPG_ITEM_WEAPON_H
 
+#include "rpg_item_instance_base.h"
 #include "rpg_item_weapon_base.h"
 #include "rpg_item_common.h"
 
@@ -29,7 +30,8 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Item_Weapon
- : public RPG_Item_Weapon_Base
+ : public RPG_Item_Weapon_Base,
+   public RPG_Item_Instance_Base
 {
  public:
   RPG_Item_Weapon(const RPG_Item_WeaponType&);
@@ -37,6 +39,7 @@ class RPG_Item_Weapon
 
  private:
   typedef RPG_Item_Weapon_Base inherited;
+  typedef RPG_Item_Instance_Base inherited2;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Weapon());
