@@ -200,7 +200,7 @@ void do_work()
   // step1b: init string conversion facilities
   RPG_Chance_Dice_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
-  RPG_Character_Skills_Common_Tools::initStringConversionTable();
+  RPG_Character_Skills_Common_Tools::init();
 
   // step2: generate/init new player character
   std::string name;
@@ -463,6 +463,28 @@ void do_work()
     } // end IF
   } while (initialSkillPoints);
 
+  RPG_Character_Feats_t feats;
+  unsigned int initialFeats = 0;
+  RPG_Character_Skills_Common_Tools::getNumFeats(player_class.subClass,
+                                                 INTmodifier,
+                                                 initialFeats);
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("initial feats for subClass \"%s\" (INT modifier: %d) is: %d...\n"),
+             RPG_Character_Common_Tools::subClass2String(player_class.subClass).c_str(),
+             INTmodifier,
+             initialFeats));
+  do
+  {
+    // header line
+    std::cout << ACE_TEXT("remaining feats: ") << initialSkillPoints << std::endl;
+    std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
+
+    if (print_feats_table(feats))
+    {
+      initialFeats--;
+    } // end IF
+  } while (initialFeats);
+
   roll.numDice = 1;
   roll.typeDice = RPG_Character_Common_Tools::getHitDie(player_class.subClass);
   roll.modifier = 0;
@@ -478,8 +500,21 @@ void do_work()
 
   // TODO: choose initial set of items
   RPG_Item_List_t items;
-  RPG_Item_Armor armor;
-  RPG_Item_Weapon weapon;
+  RPG_Item_Armor* armor = NULL;
+  RPG_Item_Weapon* weapon = NULL;
+  switch (player_class.subClass)
+  {
+    case SUBCLASS_FIGHTER:
+    {
+
+    }
+    default:
+    {
+
+    }
+  } // end SWITCH
+
+
 
   RPG_Character_Player player(name,
                               gender,

@@ -22,8 +22,1052 @@
 #include <ace/Log_Msg.h>
 
 // init statics
-RPG_Character_Skills_Common_Tools::RPG_Character_ClassSkillsTable_t RPG_Character_Skills_Common_Tools::myClassSkillsTable;
 RPG_Character_Skills_Common_Tools::RPG_Character_Skill2StringTable_t RPG_Character_Skills_Common_Tools::mySkill2StringTable;
+RPG_Character_Skills_Common_Tools::RPG_Character_ClassSkillsTable_t RPG_Character_Skills_Common_Tools::myClassSkillsTable;
+RPG_Character_Skills_Common_Tools::RPG_Character_FeatPrerequisitesTable_t RPG_Character_Skills_Common_Tools::myFeatPrerequisitesTable;
+
+void RPG_Character_Skills_Common_Tools::init()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::init"));
+
+  initStringConversionTable();
+  initClassSkillsTable();
+  initFeatPrerequisitesTable();
+}
+
+void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable"));
+
+  // clean tables
+  myFeatPrerequisitesTable.clear();
+
+  RPG_Character_Feat_Prerequisite prerequisite;
+  prerequisite.minValue = 0;
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+  prerequisite.skill = SKILL_INVALID;
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_INVALID;
+  prerequisite.requiredAbility = ABILITY_INVALID;
+
+  RPG_Character_Feat_Prerequisites_t prerequisites;
+
+  // FEAT_ARMOR_PROFICIENCY_HEAVY
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_ARMOR_PROFICIENCY_MEDIUM;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_ARMOR_PROFICIENCY_LIGHT;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_ARMOR_PROFICIENCY_HEAVY, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_ARMOR_PROFICIENCY_MEDIUM
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_ARMOR_PROFICIENCY_LIGHT;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_ARMOR_PROFICIENCY_MEDIUM, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_AUGMENT_SUMMONING
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_SPELL_FOCUS;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_AUGMENT_SUMMONING, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_BREW_POTION
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
+  prerequisite.minValue = 3;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_BREW_POTION, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_CLEAVE
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_STRENGTH;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_POWER_ATTACK;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_CLEAVE, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_COMBAT_EXPERTISE
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_INTELLIGENCE;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_COMBAT_EXPERTISE, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_CRAFT_MAGIC_ARMS_AND_ARMOR
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
+  prerequisite.minValue = 5;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_CRAFT_MAGIC_ARMS_AND_ARMOR, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_CRAFT_ROD
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
+  prerequisite.minValue = 9;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_CRAFT_ROD, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_CRAFT_STAFF
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
+  prerequisite.minValue = 12;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_CRAFT_STAFF, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_CRAFT_WAND
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
+  prerequisite.minValue = 5;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_CRAFT_WAND, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_CRAFT_WONDROUS_ITEM
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
+  prerequisite.minValue = 3;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_CRAFT_WONDROUS_ITEM, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_DEFLECT_ARROWS
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_DEXTERITY;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_IMPROVED_UNARMED_STRIKE;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_DEFLECT_ARROWS, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_DODGE
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_DEXTERITY;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_DODGE, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_PROFICIENCY_EXOTIC_WEAPONS
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
+  prerequisite.minValue = 1;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_PROFICIENCY_EXOTIC_WEAPONS, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_EXTRA_TURNING
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
+  // ability to turn or rebuke creatures
+  prerequisite.restrictedSubClasses.push_back(SUBCLASS_PALADIN);
+  prerequisite.restrictedSubClasses.push_back(SUBCLASS_CLERIC);
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.restrictedSubClasses.clear();
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_EXTRA_TURNING, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_FAR_SHOT
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_POINT_BLANK_SHOT;
+  prerequisites.push_back(prerequisite);
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_FAR_SHOT, prerequisites));
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+  prerequisites.clear();
+
+  // FEAT_FORGE_RING
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
+  prerequisite.minValue = 12;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_FORGE_RING, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_GREAT_CLEAVE
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_STRENGTH;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_CLEAVE;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_POWER_ATTACK;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
+  prerequisite.minValue = 4;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_GREAT_CLEAVE, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_GREATER_SPELL_PENETRATION
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_SPELL_PENETRATION;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_GREATER_SPELL_PENETRATION, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_GREATER_TWO_WEAPON_FIGHTING
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_DEXTERITY;
+  prerequisite.minValue = 19;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_IMPROVED_TWO_WEAPON_FIGHTING;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_TWO_WEAPON_FIGHTING;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
+  prerequisite.minValue = 11;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_GREATER_TWO_WEAPON_FIGHTING, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_GREATER_WEAPON_FOCUS
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_MARTIAL_WEAPONS;
+  // TODO requires proficiency for a SPECIFIC weapon !
+  // FEAT_PROFICIENCY_SIMPLE_WEAPONS
+  // FEAT_PROFICIENCY_EXOTIC_WEAPONS
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_WEAPON_FOCUS;
+  // TODO requires focus for a SPECIFIC weapon !
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCLASSLEVEL;
+  prerequisite.minValue = 8;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
+  prerequisite.restrictedSubClasses.push_back(SUBCLASS_FIGHTER);
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.restrictedSubClasses.clear();
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_GREATER_WEAPON_FOCUS, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_GREATER_WEAPON_SPECIALIZATION
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_MARTIAL_WEAPONS;
+  // TODO requires proficiency for a SPECIFIC weapon !
+  // FEAT_PROFICIENCY_SIMPLE_WEAPONS
+  // FEAT_PROFICIENCY_EXOTIC_WEAPONS
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_GREATER_WEAPON_FOCUS;
+  // TODO requires greater focus for a SPECIFIC weapon !
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_WEAPON_FOCUS;
+  // TODO requires focus for a SPECIFIC weapon !
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_WEAPON_SPECIALIZATION;
+  // TODO requires specialization for a SPECIFIC weapon !
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCLASSLEVEL;
+  prerequisite.minValue = 12;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
+  prerequisite.restrictedSubClasses.push_back(SUBCLASS_FIGHTER);
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.restrictedSubClasses.clear();
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_GREATER_WEAPON_SPECIALIZATION, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_IMPROVED_BULL_RUSH
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_STRENGTH;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_POWER_ATTACK;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_BULL_RUSH, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_IMPROVED_CRITICAL
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_MARTIAL_WEAPONS;
+  // TODO requires proficiency for a SPECIFIC weapon !
+  // FEAT_PROFICIENCY_SIMPLE_WEAPONS
+  // FEAT_PROFICIENCY_EXOTIC_WEAPONS
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
+  prerequisite.minValue = 8;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_CRITICAL, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_IMPROVED_DISARM
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_INTELLIGENCE;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_COMBAT_EXPERTISE;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_DISARM, prerequisites));
+  prerequisites.clear();
+
+  // TODO: FEAT_IMPROVED_FAMILIAR
+
+  // FEAT_IMPROVED_FEINT
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_INTELLIGENCE;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_COMBAT_EXPERTISE;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_FEINT, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_IMPROVED_GRAPPLE
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_DEXTERITY;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_IMPROVED_UNARMED_STRIKE;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_GRAPPLE, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_IMPROVED_OVERRUN
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_STRENGTH;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_POWER_ATTACK;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_OVERRUN, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_IMPROVED_PRECISE_SHOT
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_DEXTERITY;
+  prerequisite.minValue = 19;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_POINT_BLANK_SHOT;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  prerequisite.requiredOtherFeat = FEAT_PRECISE_SHOT;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
+  prerequisite.minValue = 11;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_PRECISE_SHOT, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_IMPROVED_SHIELD_BASH
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_SHIELD;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_SHIELD_BASH, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_IMPROVED_SUNDER
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_STRENGTH;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_POWER_ATTACK;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_SUNDER, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_IMPROVED_TRIP
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_INTELLIGENCE;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_COMBAT_EXPERTISE;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_TRIP, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_IMPROVED_TURNING
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
+  // ability to turn or rebuke creatures
+  prerequisite.restrictedSubClasses.push_back(SUBCLASS_PALADIN);
+  prerequisite.restrictedSubClasses.push_back(SUBCLASS_CLERIC);
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.restrictedSubClasses.clear();
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_TURNING, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_IMPROVED_TWO_WEAPON_FIGHTING
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_DEXTERITY;
+  prerequisite.minValue = 17;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_TWO_WEAPON_FIGHTING;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
+  prerequisite.minValue = 6;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_TWO_WEAPON_FIGHTING, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_LEADERSHIP
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCLASSLEVEL;
+  prerequisite.minValue = 6;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_LEADERSHIP, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_MANY_SHOT
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_DEXTERITY;
+  prerequisite.minValue = 17;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_POINT_BLANK_SHOT;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  prerequisite.requiredOtherFeat = FEAT_RAPID_SHOT;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
+  prerequisite.minValue = 6;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_MANY_SHOT, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_MOBILITY
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_DEXTERITY;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_DODGE;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_MOBILITY, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_MOUNTED_ARCHERY
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINSKILLRANK;
+  prerequisite.skill = SKILL_RIDE;
+  prerequisite.minValue = 1;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.skill = SKILL_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_MOUNTED_COMBAT;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_MOUNTED_ARCHERY, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_MOUNTED_COMBAT
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINSKILLRANK;
+  prerequisite.skill = SKILL_RIDE;
+  prerequisite.minValue = 1;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.skill = SKILL_INVALID;
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_MOUNTED_COMBAT, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_NATURAL_SPELL
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_WISDOM;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_ABILITY;
+  prerequisite.requiredAbility = ABILITY_POLYMORPH;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredAbility = ABILITY_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_NATURAL_SPELL, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_POWER_ATTACK
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_STRENGTH;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_POWER_ATTACK, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_PRECISE_SHOT
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_POINT_BLANK_SHOT;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_PRECISE_SHOT, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_QUICK_DRAW
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
+  prerequisite.minValue = 1;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_QUICK_DRAW, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_RAPID_RELOAD
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_MARTIAL_WEAPONS;
+  // TODO: requires proficiency with SPECIAL weapon (crossbow) !
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_RAPID_RELOAD, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_RAPID_SHOT
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_DEXTERITY;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_POINT_BLANK_SHOT;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_RAPID_SHOT, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_RIDE_BY_ATTACK
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINSKILLRANK;
+  prerequisite.skill = SKILL_RIDE;
+  prerequisite.minValue = 1;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.skill = SKILL_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_MOUNTED_COMBAT;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_RIDE_BY_ATTACK, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_SCRIBE_SCROLL
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
+  prerequisite.minValue = 1;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_SCRIBE_SCROLL, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_SHOT_ON_THE_RUN
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_DEXTERITY;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_DODGE;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_MOBILITY;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_POINT_BLANK_SHOT;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
+  prerequisite.minValue = 4;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_SHOT_ON_THE_RUN, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_SNATCH_ARROWS
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_DEXTERITY;
+  prerequisite.minValue = 15;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_DEFLECT_ARROWS;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_IMPROVED_UNARMED_STRIKE;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_SNATCH_ARROWS, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_SPELL_MASTERY
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
+  prerequisite.minValue = 1;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
+  prerequisite.restrictedSubClasses.push_back(SUBCLASS_WIZARD);
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.restrictedSubClasses.clear();
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_SPELL_MASTERY, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_SPIRITED_CHARGE
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINSKILLRANK;
+  prerequisite.skill = SKILL_RIDE;
+  prerequisite.minValue = 1;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.skill = SKILL_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_MOUNTED_COMBAT;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_RIDE_BY_ATTACK;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_SPIRITED_CHARGE, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_STUNNING_FIST
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_DEXTERITY;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.attribute = ATTRIBUTE_WISDOM;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_IMPROVED_UNARMED_STRIKE;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
+  prerequisite.minValue = 8;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_STUNNING_FIST, prerequisites));
+  prerequisites.clear();
+
+//   // FEAT_PROFICIENCY_TOWER_SHIELD
+//   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+//   prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_SHIELD;
+//   prerequisites.push_back(prerequisite);
+// 
+//   prerequisite.requiredOtherFeat = FEAT_INVALID;
+// 
+//   myFeatPrerequisitesTable.insert(std::make_pair(FEAT_PROFICIENCY_TOWER_SHIELD, prerequisites));
+//   prerequisites.clear();
+
+  // FEAT_TRAMPLE
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINSKILLRANK;
+  prerequisite.skill = SKILL_RIDE;
+  prerequisite.minValue = 1;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.skill = SKILL_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_MOUNTED_COMBAT;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_TRAMPLE, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_TWO_WEAPON_DEFENSE
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_DEXTERITY;
+  prerequisite.minValue = 15;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_TWO_WEAPON_FIGHTING;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_TWO_WEAPON_DEFENSE, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_TWO_WEAPON_FIGHTING
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_DEXTERITY;
+  prerequisite.minValue = 15;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_TWO_WEAPON_FIGHTING, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_WEAPON_FINESSE
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
+  prerequisite.minValue = 1;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_WEAPON_FINESSE, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_WEAPON_FOCUS
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_MARTIAL_WEAPONS;
+  // TODO requires proficiency for a SPECIFIC weapon !
+  // FEAT_PROFICIENCY_SIMPLE_WEAPONS
+  // FEAT_PROFICIENCY_EXOTIC_WEAPONS
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
+  prerequisite.minValue = 1;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_WEAPON_FOCUS, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_WEAPON_SPECIALIZATION
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_MARTIAL_WEAPONS;
+  // TODO requires proficiency for a SPECIFIC weapon !
+  // FEAT_PROFICIENCY_SIMPLE_WEAPONS
+  // FEAT_PROFICIENCY_EXOTIC_WEAPONS
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_WEAPON_FOCUS;
+  // TODO requires focus for a SPECIFIC weapon !
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCLASSLEVEL;
+  prerequisite.minValue = 4;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
+  prerequisite.restrictedSubClasses.push_back(SUBCLASS_FIGHTER);
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.restrictedSubClasses.clear();
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_WEAPON_SPECIALIZATION, prerequisites));
+  prerequisites.clear();
+
+  // FEAT_WHIRLWIND_ATTACK
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
+  prerequisite.attribute = ATTRIBUTE_DEXTERITY;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INTELLIGENCE;
+  prerequisite.minValue = 13;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.attribute = ATTRIBUTE_INVALID;
+  prerequisite.minValue = 0;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_COMBAT_EXPERTISE;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_DODGE;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_MOBILITY;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_SPRING_ATTACK;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
+  prerequisite.minValue = 4;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.minValue = 0;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_WHIRLWIND_ATTACK, prerequisites));
+  prerequisites.clear();
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized feat prerequisite table...\n")));
+}
 
 void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
 {
@@ -268,6 +1312,10 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   skillSet.insert(SKILL_TUMBLE);
   skillSet.insert(SKILL_USE_MAGIC_DEVICE);
   myClassSkillsTable.insert(std::make_pair(SUBCLASS_BARD, skillSet));
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized class skill table...\n")));
 }
 
 void RPG_Character_Skills_Common_Tools::initStringConversionTable()
@@ -329,6 +1377,10 @@ void RPG_Character_Skills_Common_Tools::initStringConversionTable()
   mySkill2StringTable.insert(std::make_pair(SKILL_TUMBLE, ACE_TEXT_ALWAYS_CHAR("Tumble")));
   mySkill2StringTable.insert(std::make_pair(SKILL_USE_MAGIC_DEVICE, ACE_TEXT_ALWAYS_CHAR("Use Magic Device")));
   mySkill2StringTable.insert(std::make_pair(SKILL_USE_ROPE, ACE_TEXT_ALWAYS_CHAR("Use Rope")));
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized string conversion table...\n")));
 }
 
 const bool RPG_Character_Skills_Common_Tools::isClassSkill(const RPG_Character_SubClass& subClass_in,

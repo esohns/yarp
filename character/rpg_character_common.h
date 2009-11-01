@@ -57,6 +57,19 @@ struct RPG_Character_Alignment
   RPG_Character_AlignmentEthic ethicAlignment;
 };
 
+enum RPG_Character_Attribute
+{
+  ATTRIBUTE_STRENGTH = 0,
+  ATTRIBUTE_DEXTERITY,
+  ATTRIBUTE_CONSTITUTION,
+  ATTRIBUTE_INTELLIGENCE,
+  ATTRIBUTE_WISDOM,
+  ATTRIBUTE_CHARISMA,
+  //
+  ATTRIBUTE_MAX,
+  ATTRIBUTE_INVALID
+};
+
 struct RPG_Character_Attributes
 {
   unsigned char strength;

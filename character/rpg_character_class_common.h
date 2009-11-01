@@ -20,6 +20,8 @@
 #ifndef RPG_CHARACTER_CLASS_COMMON_H
 #define RPG_CHARACTER_CLASS_COMMON_H
 
+#include <vector>
+
 enum RPG_Character_MetaClass
 {
   METACLASS_BASE = 0,
@@ -67,5 +69,9 @@ struct RPG_Character_Class
   RPG_Character_MetaClass metaClass;
   RPG_Character_SubClass subClass;
 };
+
+// some useful types
+typedef std::vector<RPG_Character_SubClass> RPG_Character_SubClasses_t;
+typedef RPG_Character_SubClasses_t::const_iterator RPG_Character_SubClassesIterator_t;
 
 #endif
