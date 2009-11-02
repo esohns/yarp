@@ -190,6 +190,79 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
   return true;
 }
 
+const bool print_feats_table(const RPG_Character_SubClass& subClass_in,
+                             const RPG_Character_Skills_t& skills_in,
+                             const RPG_Character_Abilities_t& abilities_in,
+                             RPG_Character_Feats_t& feats_inout)
+{
+  ACE_TRACE(ACE_TEXT("::print_feats_table"));
+
+  RPG_Character_FeatsIterator_t feats_iterator = feats_inout.end();
+
+  unsigned int feats_per_line = 4;
+  unsigned int index = 1;
+  unsigned int choice = 0;
+  RPG_Character_Skills_Common_Tools::RPG_Character_Feat2StringTableIterator_t iterator = RPG_Character_Skills_Common_Tools::myFeat2StringTable.begin();
+  do
+  {
+    for (unsigned int i = 0;
+         i < feats_per_line;
+         i++, iterator++, index++)
+    {
+      // finished ?
+      if (iterator == RPG_Character_Skills_Common_Tools::myFeat2StringTable.end())
+      {
+        break;
+      } // end IF
+
+      feats_iterator = feats_inout.find(iterator->first);
+      if ((feats_iterator == feats_inout.end()) &&
+          (RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(iterator->first,
+                                                                     subClass_in,
+                                                                     skills_in,
+                                                                     feats_inout,
+                                                                     abilities_in)))
+      {
+//         std::cout.setf(ios::right);
+        std::cout << ACE_TEXT("[") << std::setw(2) << std::right << index << ACE_TEXT("]: ") << std::setw(20) << std::left << iterator->second.c_str();
+//         std::cout.unsetf(ios::right);
+      } // end IF
+    } // end FOR
+
+    std::cout << std::endl;
+  } while (iterator != RPG_Character_Skills_Common_Tools::myFeat2StringTable.end());
+
+  index--;
+
+  std::cout << ACE_TEXT("enter index: ");
+  std::cin >> choice;
+  // sanity check
+  if ((choice > index) || (choice < 1))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid index %d (max: %d), try again\n"),
+               choice,
+               index));
+
+    // clean input buffer
+    if (!std::cin)
+    {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), ACE_TEXT_ALWAYS_CHAR('\n'));
+    } // end IF
+
+    return false;
+  } // end IF
+
+  // append feat
+  choice -= 1;
+  iterator = RPG_Character_Skills_Common_Tools::myFeat2StringTable.begin();
+  std::advance(iterator, choice);
+  feats_inout.insert(iterator->first);
+
+  return true;
+}
+
 void do_work()
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
@@ -465,13 +538,15 @@ void do_work()
 
   RPG_Character_Feats_t feats;
   unsigned int initialFeats = 0;
-  RPG_Character_Skills_Common_Tools::getNumFeats(player_class.subClass,
-                                                 INTmodifier,
-                                                 initialFeats);
+  RPG_Character_Abilities_t abilities;
+  RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(race,
+                                                          player_class.subClass,
+                                                          1,
+                                                          feats,
+                                                          initialFeats,
+                                                          abilities);
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("initial feats for subClass \"%s\" (INT modifier: %d) is: %d...\n"),
-             RPG_Character_Common_Tools::subClass2String(player_class.subClass).c_str(),
-             INTmodifier,
+             ACE_TEXT("initial feats: %d...\n"),
              initialFeats));
   do
   {
@@ -479,7 +554,10 @@ void do_work()
     std::cout << ACE_TEXT("remaining feats: ") << initialSkillPoints << std::endl;
     std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
 
-    if (print_feats_table(feats))
+    if (print_feats_table(player_class.subClass,
+                          skills,
+                          abilities,
+                          feats))
     {
       initialFeats--;
     } // end IF
@@ -523,6 +601,8 @@ void do_work()
                               alignment,
                               attributes,
                               skills,
+                              feats,
+                              abilities,
                               0,
                               hitpoints,
                               0,

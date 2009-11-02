@@ -56,6 +56,8 @@ class RPG_Character_Base
   // retrieve skill value (if any)
   void getSkill(const RPG_Character_Skill&, // skill
                 unsigned char&) const;      // result: value (0: doesn't exist)
+  const bool hasFeat(const RPG_Character_Feat&) const; // feat
+  const bool hasAbility(const RPG_Character_Ability&) const; // ability
 
   const unsigned int getExperience() const;
   // compute dynamically from class/XP
@@ -76,29 +78,33 @@ class RPG_Character_Base
                      const RPG_Character_Alignment&,    // (starting) alignment
                      const RPG_Character_Attributes&,   // base attributes
                      const RPG_Character_Skills_t&,     // (starting) skills
+                     const RPG_Character_Feats_t&,      // base feats
+                     const RPG_Character_Abilities_t&,  // base abilities
                      const unsigned int&,               // (starting) XP
                      const unsigned short int&,         // (starting) HP
                      const unsigned int&,               // (starting) wealth (GP)
                      // base items
                      const RPG_Item_List_t&);           // (starting) list of (carried) items
 
-  RPG_Character_Gender     myGender;
-  RPG_Character_Race       myRace;
-  RPG_Character_Class      myClass;
-  RPG_Character_Alignment  myAlignment;
-  RPG_Character_Attributes myAttributes;
-  RPG_Character_Skills_t   mySkills;
-  unsigned int             myExperience;
+  RPG_Character_Gender      myGender;
+  RPG_Character_Race        myRace;
+  RPG_Character_Class       myClass;
+  RPG_Character_Alignment   myAlignment;
+  RPG_Character_Attributes  myAttributes;
+  RPG_Character_Skills_t    mySkills;
+  RPG_Character_Feats_t     myFeats;
+  RPG_Character_Abilities_t myAbilities;
+  unsigned int              myExperience;
 
-  unsigned short int       myNumTotalHitPoints;
-  unsigned short int       myNumCurrentHitPoints;
+  unsigned short int        myNumTotalHitPoints;
+  unsigned short int        myNumCurrentHitPoints;
 
-  unsigned int             myCurrentWealth;
+  unsigned int              myCurrentWealth;
 
-  RPG_Character_Condition  myCondition;
+  RPG_Character_Condition   myCondition;
 
-  RPG_Character_Inventory  myInventory;
-  RPG_Character_Equipment  myEquipment;
+  RPG_Character_Inventory   myInventory;
+  RPG_Character_Equipment   myEquipment;
 
  private:
   // safety measures

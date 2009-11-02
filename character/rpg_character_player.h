@@ -31,17 +31,19 @@ class RPG_Character_Player
  : protected RPG_Character_Player_Base
 {
  public:
-  RPG_Character_Player(const std::string&,              // name
-                       const RPG_Character_Gender&,     // gender
-                       const RPG_Character_Race&,       // race
-                       const RPG_Character_Class&,      // (starting) class
-                       const RPG_Character_Alignment&,  // (starting) alignment
-                       const RPG_Character_Attributes&, // base attributes
-                       const RPG_Character_Skills_t&,   // (starting) skills
-                       const unsigned int&,             // (starting) XP
-                       const unsigned short int&,       // (starting) HP
-                       const unsigned int&,             // (starting) wealth (GP)
-                       const RPG_Item_List_t&);         // (starting) list of (carried) items
+  RPG_Character_Player(const std::string&,               // name
+                       const RPG_Character_Gender&,      // gender
+                       const RPG_Character_Race&,        // race
+                       const RPG_Character_Class&,       // (starting) class
+                       const RPG_Character_Alignment&,   // (starting) alignment
+                       const RPG_Character_Attributes&,  // base attributes
+                       const RPG_Character_Skills_t&,    // (starting) skills
+                       const RPG_Character_Feats_t&,     // base feats
+                       const RPG_Character_Abilities_t&, // base abilities
+                       const unsigned int&,              // (starting) XP
+                       const unsigned short int&,        // (starting) HP
+                       const unsigned int&,              // (starting) wealth (GP)
+                       const RPG_Item_List_t&);          // (starting) list of (carried) items
   virtual ~RPG_Character_Player();
 
   using RPG_Character_Base::dump;

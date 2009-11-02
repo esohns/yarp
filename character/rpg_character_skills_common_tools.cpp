@@ -23,6 +23,9 @@
 
 // init statics
 RPG_Character_Skills_Common_Tools::RPG_Character_Skill2StringTable_t RPG_Character_Skills_Common_Tools::mySkill2StringTable;
+RPG_Character_Skills_Common_Tools::RPG_Character_Feat2StringTable_t RPG_Character_Skills_Common_Tools::myFeat2StringTable;
+RPG_Character_Feats_t RPG_Character_Skills_Common_Tools::myFighterBonusFeatsTable;
+RPG_Character_Feats_t RPG_Character_Skills_Common_Tools::myWizardBonusFeatsTable;
 RPG_Character_Skills_Common_Tools::RPG_Character_ClassSkillsTable_t RPG_Character_Skills_Common_Tools::myClassSkillsTable;
 RPG_Character_Skills_Common_Tools::RPG_Character_FeatPrerequisitesTable_t RPG_Character_Skills_Common_Tools::myFeatPrerequisitesTable;
 
@@ -30,9 +33,88 @@ void RPG_Character_Skills_Common_Tools::init()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::init"));
 
-  initStringConversionTable();
+  initStringConversionTables();
   initClassSkillsTable();
   initFeatPrerequisitesTable();
+  initBonusFeatsTables();
+}
+
+void RPG_Character_Skills_Common_Tools::initBonusFeatsTables()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initBonusFeatsTables"));
+
+  // clean table
+  myFighterBonusFeatsTable.clear();
+
+  myFighterBonusFeatsTable.insert(FEAT_BLIND_FIGHT);
+  myFighterBonusFeatsTable.insert(FEAT_COMBAT_EXPERTISE);
+  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_DISARM);
+  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_FEINT);
+  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_TRIP);
+  myFighterBonusFeatsTable.insert(FEAT_WHIRLWIND_ATTACK);
+  myFighterBonusFeatsTable.insert(FEAT_COMBAT_REFLEXES);
+  myFighterBonusFeatsTable.insert(FEAT_DODGE);
+  myFighterBonusFeatsTable.insert(FEAT_MOBILITY);
+  myFighterBonusFeatsTable.insert(FEAT_SPRING_ATTACK);
+  myFighterBonusFeatsTable.insert(FEAT_PROFICIENCY_EXOTIC_WEAPONS);
+  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_CRITICAL);
+  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_INITIATIVE);
+  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_SHIELD_BASH);
+  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_UNARMED_STRIKE);
+  myFighterBonusFeatsTable.insert(FEAT_DEFLECT_ARROWS);
+  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_GRAPPLE);
+  myFighterBonusFeatsTable.insert(FEAT_SNATCH_ARROWS);
+  myFighterBonusFeatsTable.insert(FEAT_STUNNING_FIST);
+  myFighterBonusFeatsTable.insert(FEAT_MOUNTED_COMBAT);
+  myFighterBonusFeatsTable.insert(FEAT_MOUNTED_ARCHERY);
+  myFighterBonusFeatsTable.insert(FEAT_RIDE_BY_ATTACK);
+  myFighterBonusFeatsTable.insert(FEAT_SPIRITED_CHARGE);
+  myFighterBonusFeatsTable.insert(FEAT_TRAMPLE);
+  myFighterBonusFeatsTable.insert(FEAT_POINT_BLANK_SHOT);
+  myFighterBonusFeatsTable.insert(FEAT_FAR_SHOT);
+  myFighterBonusFeatsTable.insert(FEAT_PRECISE_SHOT);
+  myFighterBonusFeatsTable.insert(FEAT_RAPID_SHOT);
+  myFighterBonusFeatsTable.insert(FEAT_MANY_SHOT);
+  myFighterBonusFeatsTable.insert(FEAT_SHOT_ON_THE_RUN);
+  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_PRECISE_SHOT);
+  myFighterBonusFeatsTable.insert(FEAT_POWER_ATTACK);
+  myFighterBonusFeatsTable.insert(FEAT_CLEAVE);
+  myFighterBonusFeatsTable.insert(FEAT_GREAT_CLEAVE);
+  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_BULL_RUSH);
+  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_OVERRUN);
+  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_SUNDER);
+  myFighterBonusFeatsTable.insert(FEAT_QUICK_DRAW);
+  myFighterBonusFeatsTable.insert(FEAT_RAPID_RELOAD);
+  myFighterBonusFeatsTable.insert(FEAT_TWO_WEAPON_FIGHTING);
+  myFighterBonusFeatsTable.insert(FEAT_TWO_WEAPON_DEFENSE);
+  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_TWO_WEAPON_FIGHTING);
+  myFighterBonusFeatsTable.insert(FEAT_GREATER_TWO_WEAPON_FIGHTING);
+  myFighterBonusFeatsTable.insert(FEAT_WEAPON_FINESSE);
+  myFighterBonusFeatsTable.insert(FEAT_WEAPON_FOCUS);
+  myFighterBonusFeatsTable.insert(FEAT_WEAPON_SPECIALIZATION);
+  myFighterBonusFeatsTable.insert(FEAT_GREATER_WEAPON_FOCUS);
+  myFighterBonusFeatsTable.insert(FEAT_GREATER_WEAPON_SPECIALIZATION);
+
+  // clean table
+  myWizardBonusFeatsTable.clear();
+
+  myWizardBonusFeatsTable.insert(FEAT_EMPOWER_SPELL);
+  myWizardBonusFeatsTable.insert(FEAT_ENLARGE_SPELL);
+  myWizardBonusFeatsTable.insert(FEAT_EXTEND_SPELL);
+  myWizardBonusFeatsTable.insert(FEAT_HEIGHTEN_SPELL);
+  myWizardBonusFeatsTable.insert(FEAT_MAXIMIZE_SPELL);
+  myWizardBonusFeatsTable.insert(FEAT_QUICKEN_SPELL);
+  myWizardBonusFeatsTable.insert(FEAT_SILENT_SPELL);
+  myWizardBonusFeatsTable.insert(FEAT_WIDEN_SPELL);
+  myWizardBonusFeatsTable.insert(FEAT_BREW_POTION);
+  myWizardBonusFeatsTable.insert(FEAT_CRAFT_MAGIC_ARMS_AND_ARMOR);
+  myWizardBonusFeatsTable.insert(FEAT_CRAFT_ROD);
+  myWizardBonusFeatsTable.insert(FEAT_CRAFT_STAFF);
+  myWizardBonusFeatsTable.insert(FEAT_CRAFT_WAND);
+  myWizardBonusFeatsTable.insert(FEAT_CRAFT_WONDROUS_ITEM);
+  myWizardBonusFeatsTable.insert(FEAT_FORGE_RING);
+  myWizardBonusFeatsTable.insert(FEAT_SCRIBE_SCROLL);
+  myWizardBonusFeatsTable.insert(FEAT_SPELL_MASTERY);
 }
 
 void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
@@ -54,25 +136,25 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
 
   // FEAT_ARMOR_PROFICIENCY_HEAVY
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
-  prerequisite.requiredOtherFeat = FEAT_ARMOR_PROFICIENCY_MEDIUM;
+  prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_ARMOR_MEDIUM;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.requiredOtherFeat = FEAT_ARMOR_PROFICIENCY_LIGHT;
+  prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_ARMOR_LIGHT;
   prerequisites.push_back(prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_ARMOR_PROFICIENCY_HEAVY, prerequisites));
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_PROFICIENCY_ARMOR_HEAVY, prerequisites));
   prerequisites.clear();
 
   // FEAT_ARMOR_PROFICIENCY_MEDIUM
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
-  prerequisite.requiredOtherFeat = FEAT_ARMOR_PROFICIENCY_LIGHT;
+  prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_ARMOR_LIGHT;
   prerequisites.push_back(prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_ARMOR_PROFICIENCY_MEDIUM, prerequisites));
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_PROFICIENCY_ARMOR_MEDIUM, prerequisites));
   prerequisites.clear();
 
   // FEAT_AUGMENT_SUMMONING
@@ -695,7 +777,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_ABILITY;
-  prerequisite.requiredAbility = ABILITY_POLYMORPH;
+  prerequisite.requiredAbility = ABILITY_ALTERNATE_FORM;
   prerequisites.push_back(prerequisite);
 
   prerequisite.requiredAbility = ABILITY_INVALID;
@@ -911,15 +993,15 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   myFeatPrerequisitesTable.insert(std::make_pair(FEAT_STUNNING_FIST, prerequisites));
   prerequisites.clear();
 
-//   // FEAT_PROFICIENCY_TOWER_SHIELD
-//   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
-//   prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_SHIELD;
-//   prerequisites.push_back(prerequisite);
-// 
-//   prerequisite.requiredOtherFeat = FEAT_INVALID;
-// 
-//   myFeatPrerequisitesTable.insert(std::make_pair(FEAT_PROFICIENCY_TOWER_SHIELD, prerequisites));
-//   prerequisites.clear();
+  // FEAT_PROFICIENCY_TOWER_SHIELD
+  prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
+  prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_SHIELD;
+  prerequisites.push_back(prerequisite);
+
+  prerequisite.requiredOtherFeat = FEAT_INVALID;
+
+  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_PROFICIENCY_TOWER_SHIELD, prerequisites));
+  prerequisites.clear();
 
   // FEAT_TRAMPLE
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINSKILLRANK;
@@ -1318,11 +1400,11 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
              ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized class skill table...\n")));
 }
 
-void RPG_Character_Skills_Common_Tools::initStringConversionTable()
+void RPG_Character_Skills_Common_Tools::initStringConversionTables()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initStringConversionTable"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initStringConversionTables"));
 
-  // clean tables
+  // clean table
   mySkill2StringTable.clear();
 
   mySkill2StringTable.insert(std::make_pair(SKILL_APPRAISE, ACE_TEXT_ALWAYS_CHAR("Appraise")));
@@ -1378,9 +1460,122 @@ void RPG_Character_Skills_Common_Tools::initStringConversionTable()
   mySkill2StringTable.insert(std::make_pair(SKILL_USE_MAGIC_DEVICE, ACE_TEXT_ALWAYS_CHAR("Use Magic Device")));
   mySkill2StringTable.insert(std::make_pair(SKILL_USE_ROPE, ACE_TEXT_ALWAYS_CHAR("Use Rope")));
 
+  // clean table
+  myFeat2StringTable.clear();
+
+  myFeat2StringTable.insert(std::make_pair(FEAT_BLIND_FIGHT, ACE_TEXT_ALWAYS_CHAR("Blind Fight")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_COMBAT_EXPERTISE, ACE_TEXT_ALWAYS_CHAR("Combat Expertise")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_DISARM, ACE_TEXT_ALWAYS_CHAR("Improved Disarm")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_FEINT, ACE_TEXT_ALWAYS_CHAR("Improved Feint")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_TRIP, ACE_TEXT_ALWAYS_CHAR("Improved Trip")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_WHIRLWIND_ATTACK, ACE_TEXT_ALWAYS_CHAR("Whirlwind Attack")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_COMBAT_REFLEXES, ACE_TEXT_ALWAYS_CHAR("Combat Reflexes")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_DODGE, ACE_TEXT_ALWAYS_CHAR("Dodge")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_MOBILITY, ACE_TEXT_ALWAYS_CHAR("Mobility")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_SPRING_ATTACK, ACE_TEXT_ALWAYS_CHAR("Spring Attack")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_PROFICIENCY_EXOTIC_WEAPONS, ACE_TEXT_ALWAYS_CHAR("Proficiency: Exotic Weapons")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_CRITICAL, ACE_TEXT_ALWAYS_CHAR("Improved Critical")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_INITIATIVE, ACE_TEXT_ALWAYS_CHAR("Improved Initiative")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_SHIELD_BASH, ACE_TEXT_ALWAYS_CHAR("Improved Shield Bash")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_UNARMED_STRIKE, ACE_TEXT_ALWAYS_CHAR("Improved Unarmed Strike")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_DEFLECT_ARROWS, ACE_TEXT_ALWAYS_CHAR("Deflect Arrows")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_GRAPPLE, ACE_TEXT_ALWAYS_CHAR("Improved Grapple")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_SNATCH_ARROWS, ACE_TEXT_ALWAYS_CHAR("Snatch Arrows")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_STUNNING_FIST, ACE_TEXT_ALWAYS_CHAR("Stunning Fist")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_MOUNTED_COMBAT, ACE_TEXT_ALWAYS_CHAR("Mounted Combat")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_MOUNTED_ARCHERY, ACE_TEXT_ALWAYS_CHAR("Mounted Archery")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_RIDE_BY_ATTACK, ACE_TEXT_ALWAYS_CHAR("Ride-By Attack")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_SPIRITED_CHARGE, ACE_TEXT_ALWAYS_CHAR("Spirited Charge")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_TRAMPLE, ACE_TEXT_ALWAYS_CHAR("Trample")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_POINT_BLANK_SHOT, ACE_TEXT_ALWAYS_CHAR("Point-Blank Shot")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_FAR_SHOT, ACE_TEXT_ALWAYS_CHAR("Far Shot")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_PRECISE_SHOT, ACE_TEXT_ALWAYS_CHAR("Precise Shot")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_RAPID_SHOT, ACE_TEXT_ALWAYS_CHAR("Rapid Shot")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_MANY_SHOT, ACE_TEXT_ALWAYS_CHAR("Many Shot")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_SHOT_ON_THE_RUN, ACE_TEXT_ALWAYS_CHAR("Shot On-The-Run")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_PRECISE_SHOT, ACE_TEXT_ALWAYS_CHAR("Improved Precise Shot")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_POWER_ATTACK, ACE_TEXT_ALWAYS_CHAR("Power Attack")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_CLEAVE, ACE_TEXT_ALWAYS_CHAR("Cleave")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_GREAT_CLEAVE, ACE_TEXT_ALWAYS_CHAR("Great Cleave")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_BULL_RUSH, ACE_TEXT_ALWAYS_CHAR("Improved Bull Rush")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_OVERRUN, ACE_TEXT_ALWAYS_CHAR("Improved Overrun")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_SUNDER, ACE_TEXT_ALWAYS_CHAR("Improved Sunder")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_QUICK_DRAW, ACE_TEXT_ALWAYS_CHAR("Quick Draw")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_RAPID_RELOAD, ACE_TEXT_ALWAYS_CHAR("Rapid Reload")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_TWO_WEAPON_FIGHTING, ACE_TEXT_ALWAYS_CHAR("Two-Weapon Fighting")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_TWO_WEAPON_DEFENSE, ACE_TEXT_ALWAYS_CHAR("Two-Weapon Defense")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_TWO_WEAPON_FIGHTING, ACE_TEXT_ALWAYS_CHAR("Improved Two-Weapon Fighting")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_GREATER_TWO_WEAPON_FIGHTING, ACE_TEXT_ALWAYS_CHAR("Greater Two-Weapon Fighting")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_WEAPON_FINESSE, ACE_TEXT_ALWAYS_CHAR("Weapon Finesse")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_WEAPON_FOCUS, ACE_TEXT_ALWAYS_CHAR("Weapon Focus")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_WEAPON_SPECIALIZATION, ACE_TEXT_ALWAYS_CHAR("Weapon Specialization")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_GREATER_WEAPON_FOCUS, ACE_TEXT_ALWAYS_CHAR("Greater Weapon Focus")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_GREATER_WEAPON_SPECIALIZATION, ACE_TEXT_ALWAYS_CHAR("Greater Weapon Specialization")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_BREW_POTION, ACE_TEXT_ALWAYS_CHAR("Brew Potion")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_CRAFT_MAGIC_ARMS_AND_ARMOR, ACE_TEXT_ALWAYS_CHAR("Craft Magic Arms & Armor")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_CRAFT_ROD, ACE_TEXT_ALWAYS_CHAR("Craft Rod")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_CRAFT_STAFF, ACE_TEXT_ALWAYS_CHAR("Craft Staff")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_CRAFT_WAND, ACE_TEXT_ALWAYS_CHAR("Craft Wand")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_CRAFT_WONDROUS_ITEM, ACE_TEXT_ALWAYS_CHAR("Craft Wondrous Item")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_FORGE_RING, ACE_TEXT_ALWAYS_CHAR("Forge Ring")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_SCRIBE_SCROLL, ACE_TEXT_ALWAYS_CHAR("Scribe Scroll")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_EMPOWER_SPELL, ACE_TEXT_ALWAYS_CHAR("Empower Spell")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_ENLARGE_SPELL, ACE_TEXT_ALWAYS_CHAR("Enlarge Spell")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_EXTEND_SPELL, ACE_TEXT_ALWAYS_CHAR("Extend Spell")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_HEIGHTEN_SPELL, ACE_TEXT_ALWAYS_CHAR("Heighten Spell")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_MAXIMIZE_SPELL, ACE_TEXT_ALWAYS_CHAR("Maximize Spell")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_QUICKEN_SPELL, ACE_TEXT_ALWAYS_CHAR("Quicken Spell")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_SILENT_SPELL, ACE_TEXT_ALWAYS_CHAR("Silent Spell")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_WIDEN_SPELL, ACE_TEXT_ALWAYS_CHAR("Widen Spell")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_ACROBATIC, ACE_TEXT_ALWAYS_CHAR("Acrobatic")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_AGILE, ACE_TEXT_ALWAYS_CHAR("Agile")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_ALERTNESS, ACE_TEXT_ALWAYS_CHAR("Alertness")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_ANIMAL_AFFINITY, ACE_TEXT_ALWAYS_CHAR("Animal Affinity")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_PROFICIENCY_ARMOR_LIGHT, ACE_TEXT_ALWAYS_CHAR("Proficiency: Light Armor")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_PROFICIENCY_ARMOR_MEDIUM, ACE_TEXT_ALWAYS_CHAR("Proficiency: Medium Armor")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_PROFICIENCY_ARMOR_HEAVY, ACE_TEXT_ALWAYS_CHAR("Proficiency: Heavy Armor")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_ATHLETIC, ACE_TEXT_ALWAYS_CHAR("Athletic")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_AUGMENT_SUMMONING, ACE_TEXT_ALWAYS_CHAR("Augment Summoning")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_COMBAT_CASTING, ACE_TEXT_ALWAYS_CHAR("Combat Casting")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_DECEITFUL, ACE_TEXT_ALWAYS_CHAR("Deceitful")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_DEFT_HANDS, ACE_TEXT_ALWAYS_CHAR("Deft Hands")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_DILIGENT, ACE_TEXT_ALWAYS_CHAR("Diligent")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_ENDURANCE, ACE_TEXT_ALWAYS_CHAR("Endurance")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_DIE_HARD, ACE_TEXT_ALWAYS_CHAR("Diehard")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_ESCHEW_MATERIALS, ACE_TEXT_ALWAYS_CHAR("Eschew Materials")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_EXTRA_TURNING, ACE_TEXT_ALWAYS_CHAR("Extra Turning")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_GREAT_FORTITUDE, ACE_TEXT_ALWAYS_CHAR("Great Fortitude")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_COUNTERSPELL, ACE_TEXT_ALWAYS_CHAR("Improved Counterspell")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_FAMILIAR, ACE_TEXT_ALWAYS_CHAR("Improved Familiar")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IMPROVED_TURNING, ACE_TEXT_ALWAYS_CHAR("Improved Turning")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_INVESTIGATOR, ACE_TEXT_ALWAYS_CHAR("Investigator")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_IRON_WILL, ACE_TEXT_ALWAYS_CHAR("Iron Will")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_LEADERSHIP, ACE_TEXT_ALWAYS_CHAR("Leadership")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_LIGHTNING_REFLEXES, ACE_TEXT_ALWAYS_CHAR("Lightning Reflexes")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_MAGICAL_APTITUDE, ACE_TEXT_ALWAYS_CHAR("Magical Aptitude")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_PROFICIENCY_MARTIAL_WEAPONS, ACE_TEXT_ALWAYS_CHAR("Proficiency: Martial Weapons")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_NATURAL_SPELL, ACE_TEXT_ALWAYS_CHAR("Natural Spell")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_NEGOTIATOR, ACE_TEXT_ALWAYS_CHAR("Negotiator")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_NIMBLE_FINGERS, ACE_TEXT_ALWAYS_CHAR("Nimble Fingers")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_PERSUASIVE, ACE_TEXT_ALWAYS_CHAR("Persuasive")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_RUN, ACE_TEXT_ALWAYS_CHAR("Run")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_SELF_SUFFICIENT, ACE_TEXT_ALWAYS_CHAR("Self-Sufficient")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_PROFICIENCY_SHIELD, ACE_TEXT_ALWAYS_CHAR("Proficiency: Shields")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_PROFICIENCY_TOWER_SHIELD, ACE_TEXT_ALWAYS_CHAR("Proficiency: Tower Shield")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_PROFICIENCY_SIMPLE_WEAPONS, ACE_TEXT_ALWAYS_CHAR("Proficiency: Simple Weapons")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_SKILL_FOCUS, ACE_TEXT_ALWAYS_CHAR("Skill Focus")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_SPELL_FOCUS, ACE_TEXT_ALWAYS_CHAR("Spell Focus")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_GREATER_SPELL_FOCUS, ACE_TEXT_ALWAYS_CHAR("Greater Spell Focus")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_SPELL_MASTERY, ACE_TEXT_ALWAYS_CHAR("Spell Mastery")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_SPELL_PENETRATION, ACE_TEXT_ALWAYS_CHAR("Spell Penetration")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_GREATER_SPELL_PENETRATION, ACE_TEXT_ALWAYS_CHAR("Greater Spell Penetration")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_STEALTHY, ACE_TEXT_ALWAYS_CHAR("Stealthy")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_TOUGHNESS, ACE_TEXT_ALWAYS_CHAR("Toughness")));
+  myFeat2StringTable.insert(std::make_pair(FEAT_TRACK, ACE_TEXT_ALWAYS_CHAR("Track")));
+
   // debug info
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized string conversion table...\n")));
+             ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized string conversion tables...\n")));
 }
 
 const bool RPG_Character_Skills_Common_Tools::isClassSkill(const RPG_Character_SubClass& subClass_in,
@@ -1465,4 +1660,316 @@ const unsigned int RPG_Character_Skills_Common_Tools::getSkillPoints(const RPG_C
   initialPoints_out = ((baseValue > 1) ? (baseValue * 4) : 1);
 
   return ((baseValue > 1) ? baseValue : 1);
+}
+
+const unsigned int RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race& race_in,
+                                                                           const RPG_Character_SubClass& subClass_in,
+                                                                           const unsigned char& currentLevel_in,
+                                                                           RPG_Character_Feats_t& baseFeats_out,
+                                                                           unsigned int& numInitialFeats_out,
+                                                                           RPG_Character_Abilities_t& baseAbilities_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::getNumFeatsAbilities"));
+
+  // init defaults
+  baseFeats_out.clear();
+  baseAbilities_out.clear();
+  // everybody starts with one feat
+  numInitialFeats_out = 1;
+  // everybody gets one new feat per level
+  unsigned int numFeats = 1;
+
+  switch (subClass_in)
+  {
+    case SUBCLASS_FIGHTER:
+    {
+      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_MEDIUM);
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_HEAVY);
+      baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
+      baseFeats_out.insert(FEAT_PROFICIENCY_TOWER_SHIELD);
+
+      // fighters get a bonus (combat-oriented) feat at levels 1, 2, 4, 6, 8, 10, ...
+      if (currentLevel_in == 1)
+      {
+        numInitialFeats_out += 1;
+      } // end IF
+      else if ((currentLevel_in % 2) == 0)
+      {
+        numFeats += 1;
+      } // end ELSE
+
+      break;
+    }
+    case SUBCLASS_PALADIN:
+    {
+      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_MEDIUM);
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_HEAVY);
+      baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
+
+      baseAbilities_out.insert(ABILITY_SPELLS);
+
+      break;
+    }
+    case SUBCLASS_WIZARD:
+    {
+      // TODO: proficient with dagger, club, crossbow (heavy, light) and quarterstaff ONLY
+      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      baseFeats_out.insert(FEAT_SCRIBE_SCROLL);
+
+      baseAbilities_out.insert(ABILITY_SPELLS);
+
+      // wizards get a bonus (magic-oriented) feat at levels 5, 10, 15, 20, ...
+      if ((currentLevel_in % 5) == 0)
+      {
+        numFeats += 1;
+      } // end ELSE
+
+      break;
+    }
+    case SUBCLASS_SORCERER:
+    {
+      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+
+      baseAbilities_out.insert(ABILITY_SPELLS);
+
+      break;
+    }
+    case SUBCLASS_CLERIC:
+    {
+      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      // TODO: a cleric with the War domain receives the appropriate WEAPON_FOCUS and MARTIAL_WEAPON proficiency...
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_MEDIUM);
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_HEAVY);
+      baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
+
+      baseAbilities_out.insert(ABILITY_SPELLS);
+
+      break;
+    }
+    case SUBCLASS_BARBARIAN:
+    {
+      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_MEDIUM);
+      baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
+
+      break;
+    }
+    case SUBCLASS_DRUID:
+    {
+      // *TODO*: proficient with dagger, club, dart, quarterstaff, scimitar, sickle shortspear, sling and spear ONLY (+ natural attacks)
+      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      // *TODO*: prohibited from wearing metal armor !
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_MEDIUM);
+      // *TODO*: prohibited from using metal shields !
+      baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
+
+      baseAbilities_out.insert(ABILITY_SPELLS);
+      baseAbilities_out.insert(ABILITY_NATURAL_WEAPONS);
+      baseAbilities_out.insert(ABILITY_ANIMAL_COMPANION);
+      if (currentLevel_in >= 2)
+      {
+        baseAbilities_out.insert(ABILITY_WOODLAND_STRIDE);
+      } // end IF
+      if (currentLevel_in >= 5)
+      {
+        baseAbilities_out.insert(ABILITY_ALTERNATE_FORM);
+      } // end IF
+      if (currentLevel_in >= 9)
+      {
+        baseAbilities_out.insert(ABILITY_IMMUNITY_POISON);
+      } // end IF
+
+      break;
+    }
+    case SUBCLASS_MONK:
+    {
+      // *TODO*: proficient with dagger, club, crossbow (light and heavy), handaxe, javelin,
+      //         kama, nunchaku, quarterstaff, sai, shuriken, siangham and sling ONLY
+      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      baseFeats_out.insert(FEAT_IMPROVED_UNARMED_STRIKE);
+      // *TODO*: choose EITHER of these two at first level
+      baseFeats_out.insert(FEAT_IMPROVED_GRAPPLE);
+      baseFeats_out.insert(FEAT_STUNNING_FIST);
+      if (currentLevel_in == 2)
+      {
+        // *TODO*: choose EITHER of these two
+        baseFeats_out.insert(FEAT_COMBAT_REFLEXES);
+        baseFeats_out.insert(FEAT_DEFLECT_ARROWS);
+      } // end IF
+      if (currentLevel_in == 6)
+      {
+        // *TODO*: choose EITHER of these two
+        baseFeats_out.insert(FEAT_IMPROVED_DISARM);
+        baseFeats_out.insert(FEAT_IMPROVED_TRIP);
+      } // end IF
+
+      if (currentLevel_in >= 2)
+      {
+        baseAbilities_out.insert(ABILITY_EVASION);
+      } // end IF
+      if (currentLevel_in >= 5)
+      {
+        baseAbilities_out.insert(ABILITY_IMMUNITY_DISEASE);
+      } // end IF
+      if (currentLevel_in >= 11)
+      {
+        baseAbilities_out.insert(ABILITY_IMMUNITY_POISON);
+      } // end IF
+      if (currentLevel_in >= 13)
+      {
+        baseAbilities_out.insert(ABILITY_RESISTANCE_TO_SPELL);
+      } // end IF
+      if (currentLevel_in >= 19)
+      {
+        baseAbilities_out.insert(ABILITY_ETHEREALNESS);
+      } // end IF
+      if (currentLevel_in >= 20)
+      {
+        baseAbilities_out.insert(ABILITY_RESISTANCE_TO_DAMAGE);
+      } // end IF
+
+      break;
+    }
+    case SUBCLASS_RANGER:
+    {
+      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
+      baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
+      baseFeats_out.insert(FEAT_TRACK);
+      if (currentLevel_in >= 2)
+      {
+        // *TODO*: choose EITHER of these two
+        baseFeats_out.insert(FEAT_RAPID_SHOT);
+        baseFeats_out.insert(FEAT_TWO_WEAPON_FIGHTING);
+      } // end IF
+      if (currentLevel_in >= 3)
+      {
+        baseFeats_out.insert(FEAT_ENDURANCE);
+      } // end IF
+      if (currentLevel_in >= 6)
+      {
+        // *TODO*: choose EITHER of these two
+        baseFeats_out.insert(FEAT_MANY_SHOT);
+        baseFeats_out.insert(FEAT_IMPROVED_TWO_WEAPON_FIGHTING);
+      } // end IF
+      if (currentLevel_in >= 11)
+      {
+        // *TODO*: choose EITHER of these two
+        baseFeats_out.insert(FEAT_IMPROVED_PRECISE_SHOT);
+        baseFeats_out.insert(FEAT_GREATER_TWO_WEAPON_FIGHTING);
+      } // end IF
+
+      if (currentLevel_in >= 4)
+      {
+        baseAbilities_out.insert(ABILITY_ANIMAL_COMPANION);
+        baseAbilities_out.insert(ABILITY_SPELLS);
+      } // end IF
+      if (currentLevel_in >= 7)
+      {
+        baseAbilities_out.insert(ABILITY_WOODLAND_STRIDE);
+      } // end IF
+      if (currentLevel_in >= 9)
+      {
+        baseAbilities_out.insert(ABILITY_EVASION);
+      } // end IF
+
+      break;
+    }
+    case SUBCLASS_BARD:
+    {
+      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      // *TODO*: proficient with longsword, rapier, sap, short sword, shortbow and whip ONLY
+      baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
+      baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
+
+      baseAbilities_out.insert(ABILITY_SPELLS);
+
+      break;
+    }
+//     case SUBCLASS_WARLORD:
+//     case SUBCLASS_WARLOCK:
+//     case SUBCLASS_AVENGER:
+//     case SUBCLASS_INVOKER:
+//     case SUBCLASS_SHAMAN:
+    case SUBCLASS_THIEF:
+    {
+      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      // *TODO*: proficient with hand crossbow, rapier, sap, short sword and shortbow ONLY
+      baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
+      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
+
+      if (currentLevel_in >= 2)
+      {
+        baseAbilities_out.insert(ABILITY_EVASION);
+      } // end IF
+      if (currentLevel_in >= 3)
+      {
+        baseAbilities_out.insert(ABILITY_SENSE_TRAPS);
+      } // end IF
+      if (currentLevel_in >= 4)
+      {
+        baseAbilities_out.insert(ABILITY_UNCANNY_DODGE);
+      } // end IF
+      if (currentLevel_in >= 8)
+      {
+        baseAbilities_out.insert(ABILITY_IMPROVED_UNCANNY_DODGE);
+      } // end IF
+      if (currentLevel_in >= 10)
+      {
+        unsigned int x = 1 + ((currentLevel_in - 10) / 3);
+        // *TODO*: choose x among these...
+        baseAbilities_out.insert(ABILITY_CRIPPLING_STRIKE);
+        baseAbilities_out.insert(ABILITY_DEFENSIVE_ROLL);
+        baseAbilities_out.insert(ABILITY_IMPROVED_EVASION);
+        baseAbilities_out.insert(ABILITY_OPPORTUNIST);
+        baseAbilities_out.insert(ABILITY_SKILL_MASTERY);
+        baseAbilities_out.insert(ABILITY_SLIPPERY_MIND);
+        baseAbilities_out.insert(ABILITY_BONUS_FEAT);
+      } // end IF
+
+      break;
+    }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid subclass: %d --> check implementation !, aborting\n"),
+                 subClass_in));
+
+      return 0;
+    }
+  } // end SWITCH
+
+  // humans get one additional initial feat
+  if (race_in == RACE_HUMAN)
+  {
+    numInitialFeats_out += 1;
+  } // end IF
+
+  return numFeats;
+}
+
+const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_Character_Feat& feat_in,
+                                                                     const RPG_Character_SubClass& subClass_in,
+                                                                     const RPG_Character_Skills_t& skills_in,
+                                                                     const RPG_Character_Feats_t& feats_in,
+                                                                     const RPG_Character_Abilities_t& abilities_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites"));
+
+  ACE_ASSERT(false);
+
+  return false;
 }

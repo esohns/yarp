@@ -28,6 +28,8 @@ RPG_Character_Base::RPG_Character_Base(const RPG_Character_Gender& gender_in,
                                        const RPG_Character_Alignment& alignment_in,
                                        const RPG_Character_Attributes& attributes_in,
                                        const RPG_Character_Skills_t& skills_in,
+                                       const RPG_Character_Feats_t& feats_in,
+                                       const RPG_Character_Abilities_t& abilities_in,
                                        const unsigned int& experience_in,
                                        const unsigned short int& hitpoints_in,
                                        const unsigned int& wealth_in,
@@ -38,6 +40,8 @@ RPG_Character_Base::RPG_Character_Base(const RPG_Character_Gender& gender_in,
    myAlignment(alignment_in),
    myAttributes(attributes_in),
    mySkills(skills_in),
+   myFeats(feats_in),
+   myAbilities(abilities_in),
    myExperience(experience_in),
    myNumTotalHitPoints(hitpoints_in),
    myNumCurrentHitPoints(hitpoints_in), // we start out healthy, don't we ?
@@ -138,6 +142,20 @@ void RPG_Character_Base::getSkill(const RPG_Character_Skill& skill_in,
   {
     result_out = iter->second;
   } // end IF
+}
+
+const bool RPG_Character_Base::hasFeat(const RPG_Character_Feat& feat_in) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::hasFeat"));
+
+  return (myFeats.find(feat_in) != myFeats.end());
+}
+
+const bool RPG_Character_Base::hasAbility(const RPG_Character_Ability& ability_in) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::hasAbility"));
+
+  return (myAbilities.find(ability_in) != myAbilities.end());
 }
 
 const unsigned char RPG_Character_Base::getLevel() const

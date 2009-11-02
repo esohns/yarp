@@ -24,6 +24,7 @@
 #include "rpg_character_class_common.h"
 
 #include <map>
+#include <set>
 
 enum RPG_Character_Skill
 {
@@ -158,9 +159,9 @@ enum RPG_Character_Feat
   FEAT_AGILE,
   FEAT_ALERTNESS,
   FEAT_ANIMAL_AFFINITY,
-  FEAT_ARMOR_PROFICIENCY_LIGHT,
-  FEAT_ARMOR_PROFICIENCY_MEDIUM,
-  FEAT_ARMOR_PROFICIENCY_HEAVY,
+  FEAT_PROFICIENCY_ARMOR_LIGHT,
+  FEAT_PROFICIENCY_ARMOR_MEDIUM,
+  FEAT_PROFICIENCY_ARMOR_HEAVY,
   FEAT_ATHLETIC,
   FEAT_AUGMENT_SUMMONING,
   FEAT_COMBAT_CASTING,
@@ -188,6 +189,7 @@ enum RPG_Character_Feat
   FEAT_RUN,
   FEAT_SELF_SUFFICIENT,
   FEAT_PROFICIENCY_SHIELD,
+  FEAT_PROFICIENCY_TOWER_SHIELD,
   FEAT_PROFICIENCY_SIMPLE_WEAPONS,
   FEAT_SKILL_FOCUS,
   FEAT_SPELL_FOCUS,
@@ -261,6 +263,21 @@ enum RPG_Character_Ability
   ABILITY_TREMOR_SENSE,
   ABILITY_RESISTANCE_TO_TURNING,
   ABILITY_VULNERABILITY_TO_ENERGY,
+  // Monk abilities
+  ABILITY_IMMUNITY_DISEASE,
+  // Druid/Ranger abilities
+  ABILITY_ANIMAL_COMPANION,
+  ABILITY_WOODLAND_STRIDE,
+  // Rogue abilities
+  ABILITY_SENSE_TRAPS,
+  ABILITY_UNCANNY_DODGE,
+  ABILITY_IMPROVED_UNCANNY_DODGE,
+  ABILITY_CRIPPLING_STRIKE,
+  ABILITY_DEFENSIVE_ROLL,
+  ABILITY_OPPORTUNIST,
+  ABILITY_SKILL_MASTERY,
+  ABILITY_SLIPPERY_MIND,
+  ABILITY_BONUS_FEAT,
   //
   ABILITY_MAX,
   ABILITY_INVALID
@@ -296,5 +313,10 @@ struct RPG_Character_Feat_Prerequisite
 typedef std::map<RPG_Character_Skill, unsigned char> RPG_Character_Skills_t;
 typedef RPG_Character_Skills_t::iterator RPG_Character_SkillsIterator_t;
 typedef RPG_Character_Skills_t::const_iterator RPG_Character_SkillsConstIterator_t;
+typedef std::multiset<RPG_Character_Feat> RPG_Character_Feats_t;
+typedef RPG_Character_Feats_t::iterator RPG_Character_FeatsIterator_t;
+typedef RPG_Character_Feats_t::const_iterator RPG_Character_FeatsConstIterator_t;
+typedef std::set<RPG_Character_Ability> RPG_Character_Abilities_t;
+typedef RPG_Character_Abilities_t::const_iterator RPG_Character_AbilitiesConstIterator_t;
 
 #endif
