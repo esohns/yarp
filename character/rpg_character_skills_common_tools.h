@@ -67,6 +67,8 @@ class RPG_Character_Skills_Common_Tools
                                                  RPG_Character_Abilities_t&);   // base abilities
   static const bool meetsFeatPrerequisites(const RPG_Character_Feat&,         // feat
                                            const RPG_Character_SubClass&,     // subclass
+                                           const unsigned char&,              // current level
+                                           const RPG_Character_Attributes&,   // base attributes
                                            const RPG_Character_Skills_t&,     // skills
                                            const RPG_Character_Feats_t&,      // feats
                                            const RPG_Character_Abilities_t&); // abilities

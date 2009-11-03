@@ -300,8 +300,8 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   // FEAT_EXTRA_TURNING
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
   // ability to turn or rebuke creatures
-  prerequisite.restrictedSubClasses.push_back(SUBCLASS_PALADIN);
-  prerequisite.restrictedSubClasses.push_back(SUBCLASS_CLERIC);
+  prerequisite.restrictedSubClasses.insert(SUBCLASS_PALADIN);
+  prerequisite.restrictedSubClasses.insert(SUBCLASS_CLERIC);
   prerequisites.push_back(prerequisite);
 
   prerequisite.restrictedSubClasses.clear();
@@ -413,7 +413,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
-  prerequisite.restrictedSubClasses.push_back(SUBCLASS_FIGHTER);
+  prerequisite.restrictedSubClasses.insert(SUBCLASS_FIGHTER);
   prerequisites.push_back(prerequisite);
 
   prerequisite.restrictedSubClasses.clear();
@@ -450,7 +450,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
-  prerequisite.restrictedSubClasses.push_back(SUBCLASS_FIGHTER);
+  prerequisite.restrictedSubClasses.insert(SUBCLASS_FIGHTER);
   prerequisites.push_back(prerequisite);
 
   prerequisite.restrictedSubClasses.clear();
@@ -647,8 +647,8 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   // FEAT_IMPROVED_TURNING
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
   // ability to turn or rebuke creatures
-  prerequisite.restrictedSubClasses.push_back(SUBCLASS_PALADIN);
-  prerequisite.restrictedSubClasses.push_back(SUBCLASS_CLERIC);
+  prerequisite.restrictedSubClasses.insert(SUBCLASS_PALADIN);
+  prerequisite.restrictedSubClasses.insert(SUBCLASS_CLERIC);
   prerequisites.push_back(prerequisite);
 
   prerequisite.restrictedSubClasses.clear();
@@ -933,7 +933,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
-  prerequisite.restrictedSubClasses.push_back(SUBCLASS_WIZARD);
+  prerequisite.restrictedSubClasses.insert(SUBCLASS_WIZARD);
   prerequisites.push_back(prerequisite);
 
   prerequisite.restrictedSubClasses.clear();
@@ -1101,7 +1101,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
-  prerequisite.restrictedSubClasses.push_back(SUBCLASS_FIGHTER);
+  prerequisite.restrictedSubClasses.insert(SUBCLASS_FIGHTER);
   prerequisites.push_back(prerequisite);
 
   prerequisite.restrictedSubClasses.clear();
@@ -1963,13 +1963,205 @@ const unsigned int RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const
 
 const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_Character_Feat& feat_in,
                                                                      const RPG_Character_SubClass& subClass_in,
+                                                                     const unsigned char& currentLevel_in,
+                                                                     const RPG_Character_Attributes& attributes_in,
                                                                      const RPG_Character_Skills_t& skills_in,
                                                                      const RPG_Character_Feats_t& feats_in,
                                                                      const RPG_Character_Abilities_t& abilities_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites"));
 
-  ACE_ASSERT(false);
+  // debug info
+  RPG_Character_Feat2StringTableIterator_t iterator = myFeat2StringTable.find(feat_in);
+  if (iterator == myFeat2StringTable.end())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid feat: %d --> check implementation !, aborting\n"),
+               feat_in));
 
-  return false;
+    return false;
+  } // end IF
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("checking feat: \"%s\"...\n"),
+             iterator->second.c_str()));
+
+  // find feat prerequisites
+  RPG_Character_FeatPrerequisitesTableIterator_t iterator2 = myFeatPrerequisitesTable.find(feat_in);
+  if (iterator2 == myFeatPrerequisitesTable.end())
+  {
+    // apparently there are no prerequisites...
+    return true;
+  } // end IF
+
+  // iterate over prerequisites
+  for (RPG_Character_Feat_PrerequisitesIterator_t iterator3 = iterator2->second.begin();
+       iterator3 != iterator2->second.end();
+       iterator3++)
+  {
+    switch ((*iterator3).prerequisiteType)
+    {
+      case FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE:
+      {
+        switch ((*iterator3).attribute)
+        {
+          case ATTRIBUTE_STRENGTH:
+          {
+            if (attributes_in.strength < (*iterator3).minValue)
+            {
+              return false;
+            } // end IF
+
+            // OK
+            continue;
+          }
+          case ATTRIBUTE_DEXTERITY:
+          {
+            if (attributes_in.dexterity < (*iterator3).minValue)
+            {
+              return false;
+            } // end IF
+
+            // OK
+            continue;
+          }
+          case ATTRIBUTE_CONSTITUTION:
+          {
+            if (attributes_in.constitution < (*iterator3).minValue)
+            {
+              return false;
+            } // end IF
+
+            // OK
+            continue;
+          }
+          case ATTRIBUTE_INTELLIGENCE:
+          {
+            if (attributes_in.intelligence < (*iterator3).minValue)
+            {
+              return false;
+            } // end IF
+
+            // OK
+            continue;
+          }
+          case ATTRIBUTE_WISDOM:
+          {
+            if (attributes_in.wisdom < (*iterator3).minValue)
+            {
+              return false;
+            } // end IF
+
+            // OK
+            continue;
+          }
+          case ATTRIBUTE_CHARISMA:
+          {
+            if (attributes_in.charisma < (*iterator3).minValue)
+            {
+              return false;
+            } // end IF
+
+            // OK
+            continue;
+          }
+          default:
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("invalid attribute: \"%d\" --> check implementation !, aborting\n"),
+                       (*iterator3).attribute));
+
+            break;
+          }
+        } // end SWITCH
+
+        break;
+      }
+      case FEAT_PREREQUISITETYPE_OTHERFEAT:
+      {
+        if (feats_in.find((*iterator3).requiredOtherFeat) == feats_in.end())
+        {
+          return false;
+        } // end IF
+
+        // OK
+        continue;
+      }
+      case FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS:
+      {
+        //*TODO*: calculate attack bonus
+        ACE_ASSERT(false);
+
+        // OK
+        continue;
+      }
+      case FEAT_PREREQUISITETYPE_MINSKILLRANK:
+      {
+        RPG_Character_SkillsConstIterator_t iterator4 = skills_in.find((*iterator3).skill);
+        if (iterator4 == skills_in.end())
+        {
+          return false;
+        } // end IF
+        else if (iterator4->second < (*iterator3).minValue)
+        {
+          return false;
+        } // end ELSE
+
+        // OK
+        continue;
+      }
+      case FEAT_PREREQUISITETYPE_MINCLASSLEVEL:
+      {
+        if (((*iterator3).restrictedSubClasses.find(subClass_in) == (*iterator3).restrictedSubClasses.end()) ||
+            (currentLevel_in < (*iterator3).minValue))
+        {
+          return false;
+        } // end IF
+
+        // OK
+        continue;
+      }
+      case FEAT_PREREQUISITETYPE_MINCASTERLEVEL:
+      {
+        if ((abilities_in.find(ABILITY_SPELLS) == abilities_in.end()) ||
+            (currentLevel_in < (*iterator3).minValue))
+        {
+          return false;
+        } // end IF
+
+        // OK
+        continue;
+      }
+      case FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES:
+      {
+        if ((*iterator3).restrictedSubClasses.find(subClass_in) == (*iterator3).restrictedSubClasses.end())
+        {
+          return false;
+        } // end IF
+
+        // OK
+        continue;
+      }
+      case FEAT_PREREQUISITETYPE_ABILITY:
+      {
+        if (abilities_in.find((*iterator3).requiredAbility) == abilities_in.end())
+        {
+          return false;
+        } // end IF
+
+        // OK
+        continue;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid prerequisite type: %d --> check implementation !, aborting\n"),
+                   (*iterator3).prerequisiteType));
+
+        return false;
+      }
+    } // end SWITCH
+  } // end FOR
+
+  return true;
 }

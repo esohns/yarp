@@ -191,6 +191,7 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
 }
 
 const bool print_feats_table(const RPG_Character_SubClass& subClass_in,
+                             const RPG_Character_Attributes& attributes_in,
                              const RPG_Character_Skills_t& skills_in,
                              const RPG_Character_Abilities_t& abilities_in,
                              RPG_Character_Feats_t& feats_inout)
@@ -219,6 +220,8 @@ const bool print_feats_table(const RPG_Character_SubClass& subClass_in,
       if ((feats_iterator == feats_inout.end()) &&
           (RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(iterator->first,
                                                                      subClass_in,
+                                                                     1,
+                                                                     attributes_in,
                                                                      skills_in,
                                                                      feats_inout,
                                                                      abilities_in)))
@@ -555,6 +558,7 @@ void do_work()
     std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
 
     if (print_feats_table(player_class.subClass,
+                          attributes,
                           skills,
                           abilities,
                           feats))
