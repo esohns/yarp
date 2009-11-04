@@ -22,13 +22,14 @@
 #include <ace/Log_Msg.h>
 
 // init statics
-RPG_Character_Common_Tools::RPG_String2Gender_t         RPG_Character_Common_Tools::myString2GenderTable;
-RPG_Character_Common_Tools::RPG_String2AlignmentCivic_t RPG_Character_Common_Tools::myString2AlignmentCivicTable;
-RPG_Character_Common_Tools::RPG_String2AlignmentEthic_t RPG_Character_Common_Tools::myString2AlignmentEthicTable;
-RPG_Character_Common_Tools::RPG_String2Condition_t      RPG_Character_Common_Tools::myString2ConditionTable;
+RPG_Character_Common_Tools::RPG_Character_String2Gender_t         RPG_Character_Common_Tools::myString2GenderTable;
+RPG_Character_Common_Tools::RPG_Character_String2AlignmentCivic_t RPG_Character_Common_Tools::myString2AlignmentCivicTable;
+RPG_Character_Common_Tools::RPG_Character_String2AlignmentEthic_t RPG_Character_Common_Tools::myString2AlignmentEthicTable;
+RPG_Character_Common_Tools::RPG_Character_String2Attribute_t      RPG_Character_Common_Tools::myString2AttributeTable;
+RPG_Character_Common_Tools::RPG_Character_String2Condition_t      RPG_Character_Common_Tools::myString2ConditionTable;
 
-RPG_Character_Common_Tools::RPG_String2MetaClass_t      RPG_Character_Common_Tools::myString2MetaClassTable;
-RPG_Character_Common_Tools::RPG_String2SubClass_t       RPG_Character_Common_Tools::myString2SubClassTable;
+RPG_Character_Common_Tools::RPG_Character_String2MetaClass_t      RPG_Character_Common_Tools::myString2MetaClassTable;
+RPG_Character_Common_Tools::RPG_Character_String2SubClass_t       RPG_Character_Common_Tools::myString2SubClassTable;
 
 void RPG_Character_Common_Tools::initStringConversionTables()
 {
@@ -38,6 +39,7 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   myString2GenderTable.clear();
   myString2AlignmentCivicTable.clear();
   myString2AlignmentEthicTable.clear();
+  myString2AttributeTable.clear();
   myString2ConditionTable.clear();
 
   myString2MetaClassTable.clear();
@@ -57,6 +59,14 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   myString2AlignmentEthicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ALIGNMENTETHIC_GOOD"), ALIGNMENTETHIC_GOOD));
   myString2AlignmentEthicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ALIGNMENTETHIC_NEUTRAL"), ALIGNMENTETHIC_NEUTRAL));
   myString2AlignmentEthicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ALIGNMENTETHIC_EVIL"), ALIGNMENTETHIC_EVIL));
+
+  // RPG_Character_Attribute
+  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_STRENGTH"), ATTRIBUTE_STRENGTH));
+  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_DEXTERITY"), ATTRIBUTE_DEXTERITY));
+  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_CONSTITUTION"), ATTRIBUTE_CONSTITUTION));
+  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_INTELLIGENCE"), ATTRIBUTE_INTELLIGENCE));
+  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_WISDOM"), ATTRIBUTE_WISDOM));
+  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_CHARISMA"), ATTRIBUTE_CHARISMA));
 
   // RPG_Character_Condition
   myString2ConditionTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("CONDITION_NORMAL"), CONDITION_NORMAL));
@@ -132,7 +142,7 @@ const RPG_Character_Gender RPG_Character_Common_Tools::stringToGender(const std:
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::stringToGender"));
 
-  RPG_String2GenderIterator_t iterator = myString2GenderTable.find(string_in);
+  RPG_Character_String2GenderIterator_t iterator = myString2GenderTable.find(string_in);
   if (iterator == myString2GenderTable.end())
   {
     // debug info
@@ -150,7 +160,7 @@ const RPG_Character_AlignmentCivic RPG_Character_Common_Tools::stringToAlignment
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::stringToAlignmentCivic"));
 
-  RPG_String2AlignmentCivicIterator_t iterator = myString2AlignmentCivicTable.find(string_in);
+  RPG_Character_String2AlignmentCivicIterator_t iterator = myString2AlignmentCivicTable.find(string_in);
   if (iterator == myString2AlignmentCivicTable.end())
   {
     // debug info
@@ -168,7 +178,7 @@ const RPG_Character_AlignmentEthic RPG_Character_Common_Tools::stringToAlignment
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::stringToAlignmentEthic"));
 
-  RPG_String2AlignmentEthicIterator_t iterator = myString2AlignmentEthicTable.find(string_in);
+  RPG_Character_String2AlignmentEthicIterator_t iterator = myString2AlignmentEthicTable.find(string_in);
   if (iterator == myString2AlignmentEthicTable.end())
   {
     // debug info
@@ -186,7 +196,7 @@ const RPG_Character_Condition RPG_Character_Common_Tools::stringToCondition(cons
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::stringToCondition"));
 
-  RPG_String2ConditionIterator_t iterator = myString2ConditionTable.find(string_in);
+  RPG_Character_String2ConditionIterator_t iterator = myString2ConditionTable.find(string_in);
   if (iterator == myString2ConditionTable.end())
   {
     // debug info
@@ -204,7 +214,7 @@ const RPG_Character_MetaClass RPG_Character_Common_Tools::string2MetaClass(const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::string2MetaClass"));
 
-  RPG_String2MetaClassIterator_t iterator = myString2MetaClassTable.find(string_in);
+  RPG_Character_String2MetaClassIterator_t iterator = myString2MetaClassTable.find(string_in);
   if (iterator == myString2MetaClassTable.end())
   {
     // debug info
@@ -222,7 +232,7 @@ const RPG_Character_SubClass RPG_Character_Common_Tools::string2SubClass(const s
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::string2SubClass"));
 
-  RPG_String2SubClassIterator_t iterator = myString2SubClassTable.find(string_in);
+  RPG_Character_String2SubClassIterator_t iterator = myString2SubClassTable.find(string_in);
   if (iterator == myString2SubClassTable.end())
   {
     // debug info
@@ -236,11 +246,35 @@ const RPG_Character_SubClass RPG_Character_Common_Tools::string2SubClass(const s
   return iterator->second;
 }
 
+const std::string RPG_Character_Common_Tools::attribute2String(const RPG_Character_Attribute& attribute_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::attribute2String"));
+
+  RPG_Character_String2AttributeIterator_t iterator = myString2AttributeTable.begin();
+  do
+  {
+    if (iterator->second == attribute_in)
+    {
+      // done
+      return iterator->first;
+    } // end IF
+
+    iterator++;
+  } while (iterator != myString2AttributeTable.end());
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid attribute: %d --> check implementation !, aborting\n"),
+             attribute_in));
+
+  return std::string(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_INVALID"));
+}
+
 const std::string RPG_Character_Common_Tools::subClass2String(const RPG_Character_SubClass& subClass_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::subClass2String"));
 
-  RPG_String2SubClassIterator_t iterator = myString2SubClassTable.begin();
+  RPG_Character_String2SubClassIterator_t iterator = myString2SubClassTable.begin();
   do
   {
     if (iterator->second == subClass_in)
@@ -260,13 +294,13 @@ const std::string RPG_Character_Common_Tools::subClass2String(const RPG_Characte
   return std::string(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_INVALID"));
 }
 
-const short int RPG_Character_Common_Tools::getAbilityModifier(const unsigned char& ability_in)
+const short int RPG_Character_Common_Tools::getAttributeAbilityModifier(const unsigned char& attributeAbility_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getAbilityModifier"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getAttributeAbilityModifier"));
 
   short baseValue = -5;
-  baseValue += ((ability_in & 0x1) == ability_in) ? ((ability_in - 1) >> 1)
-                                                  : (ability_in >> 1);
+  baseValue += ((attributeAbility_in & 0x1) == attributeAbility_in) ? ((attributeAbility_in - 1) >> 1)
+                                                                    : (attributeAbility_in >> 1);
 
   return baseValue;
 }
@@ -318,12 +352,73 @@ const RPG_Chance_DiceType RPG_Character_Common_Tools::getHitDie(const RPG_Charac
     {
       // debug info
       ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("invalid subClass: %d --> check implementation !, aborting\n"),
-                subClass_in));
+                 ACE_TEXT("invalid subClass: %d --> check implementation !, aborting\n"),
+                 subClass_in));
 
       break;
     }
   } // end SWITCH
 
   return D_TYPE_INVALID;
+}
+
+const RPG_Character_BaseAttackBonus_t RPG_Character_Common_Tools::getBaseAttackBonus(const RPG_Character_SubClass& subClass_in,
+                                                                                     const unsigned char& classLevel_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getBaseAttackBonus"));
+
+  RPG_Character_BaseAttackBonus_t result;
+  unsigned int baseAttackBonus = 0;
+
+  switch (subClass_in)
+  {
+    case SUBCLASS_FIGHTER:
+    case SUBCLASS_PALADIN:
+    case SUBCLASS_RANGER:
+    case SUBCLASS_BARBARIAN:
+    {
+      baseAttackBonus = classLevel_in;
+
+      break;
+    }
+    case SUBCLASS_WIZARD:
+    case SUBCLASS_SORCERER:
+    {
+      baseAttackBonus = ((classLevel_in & 0x1) == classLevel_in) ? ((classLevel_in - 1) >> 1)
+                                                                 : (classLevel_in >> 1);
+
+      break;
+    }
+    case SUBCLASS_CLERIC:
+    case SUBCLASS_DRUID:
+    case SUBCLASS_MONK:
+    case SUBCLASS_THIEF:
+    case SUBCLASS_BARD:
+    {
+      baseAttackBonus = (classLevel_in - 1) - ((classLevel_in - 1) / 4);
+
+      break;
+    }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid subClass: %d --> check implementation !, aborting\n"),
+                 subClass_in));
+
+      break;
+    }
+  } // end SWITCH
+
+  result.push_back(baseAttackBonus);
+
+  // also, all classes gain an extra (-5) attack (maximum of 6) for a baseAttackBonus of +6, +11, +16, +21 and +26
+  while ((baseAttackBonus >= 6) &&
+         (result.size() < 6))
+  {
+    baseAttackBonus -= 5;
+    result.push_back(baseAttackBonus);
+  } // end WHILE
+
+  return result;
 }

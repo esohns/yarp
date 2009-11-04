@@ -19,11 +19,14 @@
  ***************************************************************************/
 #include "rpg_character_skills_common_tools.h"
 
+#include "rpg_character_common_tools.h"
+
 #include <ace/Log_Msg.h>
 
 // init statics
 RPG_Character_Skills_Common_Tools::RPG_Character_Skill2StringTable_t RPG_Character_Skills_Common_Tools::mySkill2StringTable;
 RPG_Character_Skills_Common_Tools::RPG_Character_Feat2StringTable_t RPG_Character_Skills_Common_Tools::myFeat2StringTable;
+RPG_Character_Skills_Common_Tools::RPG_Character_Ability2StringTable_t RPG_Character_Skills_Common_Tools::myAbility2StringTable;
 RPG_Character_Feats_t RPG_Character_Skills_Common_Tools::myFighterBonusFeatsTable;
 RPG_Character_Feats_t RPG_Character_Skills_Common_Tools::myWizardBonusFeatsTable;
 RPG_Character_Skills_Common_Tools::RPG_Character_ClassSkillsTable_t RPG_Character_Skills_Common_Tools::myClassSkillsTable;
@@ -1573,6 +1576,78 @@ void RPG_Character_Skills_Common_Tools::initStringConversionTables()
   myFeat2StringTable.insert(std::make_pair(FEAT_TOUGHNESS, ACE_TEXT_ALWAYS_CHAR("Toughness")));
   myFeat2StringTable.insert(std::make_pair(FEAT_TRACK, ACE_TEXT_ALWAYS_CHAR("Track")));
 
+  // clean table
+  myAbility2StringTable.clear();
+
+  myAbility2StringTable.insert(std::make_pair(ABILITY_SCORE_LOSS, ACE_TEXT_ALWAYS_CHAR("Ability Score Loss")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_ALTERNATE_FORM, ACE_TEXT_ALWAYS_CHAR("Alternate Form")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_ANTIMAGIC, ACE_TEXT_ALWAYS_CHAR("Antimagic")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_BLINDSIGHT, ACE_TEXT_ALWAYS_CHAR("Blindsight")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_BLINDSENSE, ACE_TEXT_ALWAYS_CHAR("Blindsense")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_BREATH_WEAPON, ACE_TEXT_ALWAYS_CHAR("Breath Weapon")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_CHANGE_SHAPE, ACE_TEXT_ALWAYS_CHAR("Change Shape")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_CHARM, ACE_TEXT_ALWAYS_CHAR("Charm")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_COMPULSION, ACE_TEXT_ALWAYS_CHAR("Compulsion")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_IMMUNITY_COLD, ACE_TEXT_ALWAYS_CHAR("Cold Immunity")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_CONSTRICT, ACE_TEXT_ALWAYS_CHAR("Constrict")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_RESISTANCE_TO_DAMAGE, ACE_TEXT_ALWAYS_CHAR("Damage Reduction")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_DARKVISION, ACE_TEXT_ALWAYS_CHAR("Darkvision")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_DEATH_ATTACK, ACE_TEXT_ALWAYS_CHAR("Death Attack")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_DISEASE, ACE_TEXT_ALWAYS_CHAR("Disease")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_ENERGY_DRAIN, ACE_TEXT_ALWAYS_CHAR("Energy Drain")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_ETHEREALNESS, ACE_TEXT_ALWAYS_CHAR("Etherealness")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_EVASION, ACE_TEXT_ALWAYS_CHAR("Evasion")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_IMPROVED_EVASION, ACE_TEXT_ALWAYS_CHAR("Improved Evasion")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_FAST_HEALING, ACE_TEXT_ALWAYS_CHAR("Fast Healing")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_FEAR, ACE_TEXT_ALWAYS_CHAR("Fear")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_IMMUNITY_FIRE, ACE_TEXT_ALWAYS_CHAR("Fire Immunity")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_GASEOUS_FORM, ACE_TEXT_ALWAYS_CHAR("Gaseous Form")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_GAZE_ATTACK, ACE_TEXT_ALWAYS_CHAR("Gaze Attack")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_IMPROVED_GRAB, ACE_TEXT_ALWAYS_CHAR("Improved Grab")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_INCORPOREALITY, ACE_TEXT_ALWAYS_CHAR("Incorporeality")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_INVISIBILITY, ACE_TEXT_ALWAYS_CHAR("Invisibility")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_LEVEL_LOSS, ACE_TEXT_ALWAYS_CHAR("Level Loss")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_LOWLIGHT_VISION, ACE_TEXT_ALWAYS_CHAR("Low-Light Vision")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_MANUFACTURED_WEAPONS, ACE_TEXT_ALWAYS_CHAR("Manufactured Weapons")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_MOVEMENT_MODES, ACE_TEXT_ALWAYS_CHAR("Movement Modes")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_NATURAL_WEAPONS, ACE_TEXT_ALWAYS_CHAR("Natural Weapons")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_NONABILITIES, ACE_TEXT_ALWAYS_CHAR("Nonabilities")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_PARALYZE_ATTACK, ACE_TEXT_ALWAYS_CHAR("Paralyze Attack")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_POISON_ATTACK, ACE_TEXT_ALWAYS_CHAR("Poison Attack")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_IMMUNITY_POISON, ACE_TEXT_ALWAYS_CHAR("Poison Immunity")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_POLYMORPH, ACE_TEXT_ALWAYS_CHAR("Polymorph")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_POUNCE, ACE_TEXT_ALWAYS_CHAR("Pounce")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_POWERFUL_CHARGE, ACE_TEXT_ALWAYS_CHAR("Powerful Charge")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_PSIONICS, ACE_TEXT_ALWAYS_CHAR("Psionics")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_RAKE, ACE_TEXT_ALWAYS_CHAR("Rake")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_RAY_ATTACK, ACE_TEXT_ALWAYS_CHAR("Ray Attack")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_REGENERATION, ACE_TEXT_ALWAYS_CHAR("Regeneration")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_RESISTANCE_TO_ENERGY, ACE_TEXT_ALWAYS_CHAR("Resistance To Energy")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_SCENT, ACE_TEXT_ALWAYS_CHAR("Scent")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_SONIC_ATTACK, ACE_TEXT_ALWAYS_CHAR("Sonic Attack")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_IMMUNITY_SPELL, ACE_TEXT_ALWAYS_CHAR("Spell Immunity")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_RESISTANCE_TO_SPELL, ACE_TEXT_ALWAYS_CHAR("Spell Resistance")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_SPELLS, ACE_TEXT_ALWAYS_CHAR("Spells")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_SUMMON, ACE_TEXT_ALWAYS_CHAR("Summon")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_SWALLOW_WHOLE, ACE_TEXT_ALWAYS_CHAR("Swallow Whole")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_TELEPATHY, ACE_TEXT_ALWAYS_CHAR("Telepathy")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_TRAMPLE, ACE_TEXT_ALWAYS_CHAR("Trample")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_TREMOR_SENSE, ACE_TEXT_ALWAYS_CHAR("Sense Tremors")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_RESISTANCE_TO_TURNING, ACE_TEXT_ALWAYS_CHAR("Turn Resistance")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_VULNERABILITY_TO_ENERGY, ACE_TEXT_ALWAYS_CHAR("Vulnerability to Energy")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_IMMUNITY_DISEASE, ACE_TEXT_ALWAYS_CHAR("Disease Immunity")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_ANIMAL_COMPANION, ACE_TEXT_ALWAYS_CHAR("Animal Companion")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_WOODLAND_STRIDE, ACE_TEXT_ALWAYS_CHAR("Woodland Stride")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_SENSE_TRAPS, ACE_TEXT_ALWAYS_CHAR("Sense Traps")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_UNCANNY_DODGE, ACE_TEXT_ALWAYS_CHAR("Uncanny Dodge")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_IMPROVED_UNCANNY_DODGE, ACE_TEXT_ALWAYS_CHAR("Improved Uncanny Dodge")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_CRIPPLING_STRIKE, ACE_TEXT_ALWAYS_CHAR("Crippling Strike")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_DEFENSIVE_ROLL, ACE_TEXT_ALWAYS_CHAR("Defensive Roll")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_OPPORTUNIST, ACE_TEXT_ALWAYS_CHAR("Opportunist")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_SKILL_MASTERY, ACE_TEXT_ALWAYS_CHAR("Skill Mastery")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_SLIPPERY_MIND, ACE_TEXT_ALWAYS_CHAR("Slippery Mind")));
+  myAbility2StringTable.insert(std::make_pair(ABILITY_BONUS_FEAT, ACE_TEXT_ALWAYS_CHAR("Bonus Feat")));
+
   // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized string conversion tables...\n")));
@@ -2007,150 +2082,210 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
         {
           case ATTRIBUTE_STRENGTH:
           {
-            if (attributes_in.strength < (*iterator3).minValue)
+            if (attributes_in.strength >= (*iterator3).minValue)
             {
-              return false;
+              // OK
+              continue;
             } // end IF
 
-            // OK
-            continue;
+            break;
           }
           case ATTRIBUTE_DEXTERITY:
           {
-            if (attributes_in.dexterity < (*iterator3).minValue)
+            if (attributes_in.dexterity >= (*iterator3).minValue)
             {
-              return false;
+              // OK
+              continue;
             } // end IF
 
-            // OK
-            continue;
+            break;
           }
           case ATTRIBUTE_CONSTITUTION:
           {
-            if (attributes_in.constitution < (*iterator3).minValue)
+            if (attributes_in.constitution >= (*iterator3).minValue)
             {
-              return false;
+              // OK
+              continue;
             } // end IF
 
-            // OK
-            continue;
+            break;
           }
           case ATTRIBUTE_INTELLIGENCE:
           {
-            if (attributes_in.intelligence < (*iterator3).minValue)
+            if (attributes_in.intelligence >= (*iterator3).minValue)
             {
-              return false;
+              // OK
+              continue;
             } // end IF
 
-            // OK
-            continue;
+            break;
           }
           case ATTRIBUTE_WISDOM:
           {
-            if (attributes_in.wisdom < (*iterator3).minValue)
+            if (attributes_in.wisdom >= (*iterator3).minValue)
             {
-              return false;
+              // OK
+              continue;
             } // end IF
 
-            // OK
-            continue;
+            break;
           }
           case ATTRIBUTE_CHARISMA:
           {
-            if (attributes_in.charisma < (*iterator3).minValue)
+            if (attributes_in.charisma >= (*iterator3).minValue)
             {
-              return false;
+              // OK
+              continue;
             } // end IF
 
-            // OK
-            continue;
+            break;
           }
           default:
           {
             ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("invalid attribute: \"%d\" --> check implementation !, aborting\n"),
-                       (*iterator3).attribute));
+                       ACE_TEXT("invalid attribute: \"%s\" --> check implementation !, aborting\n"),
+                       RPG_Character_Common_Tools::attribute2String((*iterator3).attribute).c_str()));
 
             break;
           }
         } // end SWITCH
 
-        break;
+        // attribute test failed
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("prerequisite of feat \"%s\" not met: \"%s\" < %d\n"),
+                   iterator->second.c_str(),
+                   RPG_Character_Common_Tools::attribute2String((*iterator3).attribute).c_str(),
+                   (*iterator3).minValue));
+
+        return false;
       }
       case FEAT_PREREQUISITETYPE_OTHERFEAT:
       {
-        if (feats_in.find((*iterator3).requiredOtherFeat) == feats_in.end())
+        if (feats_in.find((*iterator3).requiredOtherFeat) != feats_in.end())
         {
-          return false;
+          // OK
+          continue;
         } // end IF
 
-        // OK
-        continue;
+        // other feat test failed
+        RPG_Character_Feat2StringTableIterator_t iterator4 = myFeat2StringTable.find((*iterator3).requiredOtherFeat);
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("prerequisite of feat \"%s\" not met: missing feat \"%s\"\n"),
+                   iterator->second.c_str(),
+                   iterator4->second.c_str()));
+
+        return false;
       }
       case FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS:
       {
-        //*TODO*: calculate attack bonus
-        ACE_ASSERT(false);
+        RPG_Character_BaseAttackBonus_t BAB = RPG_Character_Common_Tools::getBaseAttackBonus(subClass_in,
+                                                                                             currentLevel_in);
+        if (BAB.front() >= (*iterator3).minValue)
+        {
+          // OK
+          continue;
+        } // end IF
 
-        // OK
-        continue;
+        // min base attack bonus test failed
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("prerequisite of feat \"%s\" not met: %d < %d\n"),
+                   iterator->second.c_str(),
+                   BAB.front(),
+                   (*iterator3).minValue));
+
+        return false;
       }
       case FEAT_PREREQUISITETYPE_MINSKILLRANK:
       {
         RPG_Character_SkillsConstIterator_t iterator4 = skills_in.find((*iterator3).skill);
-        if (iterator4 == skills_in.end())
+        if (iterator4 != skills_in.end())
         {
-          return false;
+          if (iterator4->second >= (*iterator3).minValue)
+          {
+            // OK
+            continue;
+          } // end IF
         } // end IF
-        else if (iterator4->second < (*iterator3).minValue)
-        {
-          return false;
-        } // end ELSE
 
-        // OK
-        continue;
+        // min skill rank test failed
+        RPG_Character_Skill2StringTableIterator_t iterator5 = mySkill2StringTable.find((*iterator3).skill);
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("prerequisite of feat \"%s\" not met: \"%s\" < %d\n"),
+                   iterator->second.c_str(),
+                   iterator5->second.c_str(),
+                   (*iterator3).minValue));
+
+        return false;
       }
       case FEAT_PREREQUISITETYPE_MINCLASSLEVEL:
       {
-        if (((*iterator3).restrictedSubClasses.find(subClass_in) == (*iterator3).restrictedSubClasses.end()) ||
+        if (((*iterator3).restrictedSubClasses.find(subClass_in) != (*iterator3).restrictedSubClasses.end()) &&
             (currentLevel_in < (*iterator3).minValue))
         {
-          return false;
+          // OK
+          continue;
         } // end IF
 
-        // OK
-        continue;
+        // min class level failed
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("prerequisite of feat \"%s\" not met: \"%s\" < %d\n"),
+                   iterator->second.c_str(),
+                   RPG_Character_Common_Tools::subClass2String(subClass_in).c_str(),
+                   (*iterator3).minValue));
+
+        return false;
       }
       case FEAT_PREREQUISITETYPE_MINCASTERLEVEL:
       {
-        if ((abilities_in.find(ABILITY_SPELLS) == abilities_in.end()) ||
+        if ((abilities_in.find(ABILITY_SPELLS) != abilities_in.end()) &&
             (currentLevel_in < (*iterator3).minValue))
         {
-          return false;
+          // OK
+          continue;
         } // end IF
 
-        // OK
-        continue;
+        // min caster level failed
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("prerequisite of feat \"%s\" not met: \"%s\", OR %d < %d\n"),
+                   iterator->second.c_str(),
+                   RPG_Character_Common_Tools::subClass2String(subClass_in).c_str(),
+                   currentLevel_in,
+                   (*iterator3).minValue));
+
+        return false;
       }
       case FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES:
       {
-        if ((*iterator3).restrictedSubClasses.find(subClass_in) == (*iterator3).restrictedSubClasses.end())
+        if ((*iterator3).restrictedSubClasses.find(subClass_in) != (*iterator3).restrictedSubClasses.end())
         {
-          return false;
+          // OK
+          continue;
         } // end IF
 
-        // OK
-        continue;
+        // restricted subclasses test failed
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("prerequisite of feat \"%s\" not met: invalid class \"%s\"\n"),
+                   iterator->second.c_str(),
+                   RPG_Character_Common_Tools::subClass2String(subClass_in).c_str()));
+
+        return false;
       }
       case FEAT_PREREQUISITETYPE_ABILITY:
       {
-        if (abilities_in.find((*iterator3).requiredAbility) == abilities_in.end())
+        if (abilities_in.find((*iterator3).requiredAbility) != abilities_in.end())
         {
-          return false;
+          // OK
+          continue;
         } // end IF
 
-        // OK
-        continue;
+        // ability test failed
+        RPG_Character_Ability2StringTableIterator_t iterator4 = myAbility2StringTable.find((*iterator3).requiredAbility);
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("prerequisite of feat \"%s\" not met: missing ability \"%s\"\n"),
+                   iterator->second.c_str(),
+                   iterator4->second.c_str()));
+
+        return false;
       }
       default:
       {

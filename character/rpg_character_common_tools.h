@@ -36,19 +36,21 @@ class RPG_Character_Common_Tools
 {
  public:
   // some handy types
-  typedef std::map<std::string, RPG_Character_Gender> RPG_String2Gender_t;
-  typedef RPG_String2Gender_t::const_iterator RPG_String2GenderIterator_t;
-  typedef std::map<std::string, RPG_Character_AlignmentCivic> RPG_String2AlignmentCivic_t;
-  typedef RPG_String2AlignmentCivic_t::const_iterator RPG_String2AlignmentCivicIterator_t;
-  typedef std::map<std::string, RPG_Character_AlignmentEthic> RPG_String2AlignmentEthic_t;
-  typedef RPG_String2AlignmentEthic_t::const_iterator RPG_String2AlignmentEthicIterator_t;
-  typedef std::map<std::string, RPG_Character_Condition> RPG_String2Condition_t;
-  typedef RPG_String2Condition_t::const_iterator RPG_String2ConditionIterator_t;
+  typedef std::map<std::string, RPG_Character_Gender> RPG_Character_String2Gender_t;
+  typedef RPG_Character_String2Gender_t::const_iterator RPG_Character_String2GenderIterator_t;
+  typedef std::map<std::string, RPG_Character_AlignmentCivic> RPG_Character_String2AlignmentCivic_t;
+  typedef RPG_Character_String2AlignmentCivic_t::const_iterator RPG_Character_String2AlignmentCivicIterator_t;
+  typedef std::map<std::string, RPG_Character_AlignmentEthic> RPG_Character_String2AlignmentEthic_t;
+  typedef RPG_Character_String2AlignmentEthic_t::const_iterator RPG_Character_String2AlignmentEthicIterator_t;
+  typedef std::map<std::string, RPG_Character_Attribute> RPG_Character_String2Attribute_t;
+  typedef RPG_Character_String2Attribute_t::const_iterator RPG_Character_String2AttributeIterator_t;
+  typedef std::map<std::string, RPG_Character_Condition> RPG_Character_String2Condition_t;
+  typedef RPG_Character_String2Condition_t::const_iterator RPG_Character_String2ConditionIterator_t;
 
-  typedef std::map<std::string, RPG_Character_MetaClass> RPG_String2MetaClass_t;
-  typedef RPG_String2MetaClass_t::const_iterator RPG_String2MetaClassIterator_t;
-  typedef std::map<std::string, RPG_Character_SubClass> RPG_String2SubClass_t;
-  typedef RPG_String2SubClass_t::const_iterator RPG_String2SubClassIterator_t;
+  typedef std::map<std::string, RPG_Character_MetaClass> RPG_Character_String2MetaClass_t;
+  typedef RPG_Character_String2MetaClass_t::const_iterator RPG_Character_String2MetaClassIterator_t;
+  typedef std::map<std::string, RPG_Character_SubClass> RPG_Character_String2SubClass_t;
+  typedef RPG_Character_String2SubClass_t::const_iterator RPG_Character_String2SubClassIterator_t;
 
   static void initStringConversionTables();
 
@@ -59,10 +61,13 @@ class RPG_Character_Common_Tools
 
   static const RPG_Character_MetaClass string2MetaClass(const std::string&); // string
   static const RPG_Character_SubClass  string2SubClass(const std::string&); // string
+  static const std::string             attribute2String(const RPG_Character_Attribute&); // attribute
   static const std::string             subClass2String(const RPG_Character_SubClass&); // subClass
 
-  static const short int getAbilityModifier(const unsigned char&); // ability
+  static const short int getAttributeAbilityModifier(const unsigned char&); // attribute
   static const RPG_Chance_DiceType getHitDie(const RPG_Character_SubClass&); // subclass
+  static const RPG_Character_BaseAttackBonus_t getBaseAttackBonus(const RPG_Character_SubClass&, // subClass
+                                                                  const unsigned char&);         // class level
 
  private:
   // safety measures
@@ -71,13 +76,14 @@ class RPG_Character_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools(const RPG_Character_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools& operator=(const RPG_Character_Common_Tools&));
 
-  static RPG_String2Gender_t         myString2GenderTable;
-  static RPG_String2AlignmentCivic_t myString2AlignmentCivicTable;
-  static RPG_String2AlignmentEthic_t myString2AlignmentEthicTable;
-  static RPG_String2Condition_t      myString2ConditionTable;
+  static RPG_Character_String2Gender_t         myString2GenderTable;
+  static RPG_Character_String2AlignmentCivic_t myString2AlignmentCivicTable;
+  static RPG_Character_String2AlignmentEthic_t myString2AlignmentEthicTable;
+  static RPG_Character_String2Attribute_t      myString2AttributeTable;
+  static RPG_Character_String2Condition_t      myString2ConditionTable;
 
-  static RPG_String2MetaClass_t      myString2MetaClassTable;
-  static RPG_String2SubClass_t       myString2SubClassTable;
+  static RPG_Character_String2MetaClass_t      myString2MetaClassTable;
+  static RPG_Character_String2SubClass_t       myString2SubClassTable;
 };
 
 #endif

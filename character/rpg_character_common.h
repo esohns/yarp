@@ -20,6 +20,8 @@
 #ifndef RPG_CHARACTER_COMMON_H
 #define RPG_CHARACTER_COMMON_H
 
+#include <vector>
+
 enum RPG_Character_Gender
 {
   GENDER_NONE = 0,
@@ -125,5 +127,9 @@ enum RPG_Character_Condition
   CONDITION_MAX,
   CONDITION_INVALID
 };
+
+// some useful types
+typedef std::vector<unsigned char> RPG_Character_BaseAttackBonus_t;
+typedef RPG_Character_BaseAttackBonus_t::const_iterator RPG_Character_BaseAttackBonusIterator_t;
 
 #endif

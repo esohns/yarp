@@ -46,6 +46,8 @@ class RPG_Character_Skills_Common_Tools
   typedef RPG_Character_ClassSkillsTable_t::const_iterator RPG_Character_ClassSkillsTableIterator_t;
   typedef std::map<RPG_Character_Feat, std::string> RPG_Character_Feat2StringTable_t;
   typedef RPG_Character_Feat2StringTable_t::const_iterator RPG_Character_Feat2StringTableIterator_t;
+  typedef std::map<RPG_Character_Ability, std::string> RPG_Character_Ability2StringTable_t;
+  typedef RPG_Character_Ability2StringTable_t::const_iterator RPG_Character_Ability2StringTableIterator_t;
   typedef std::vector<RPG_Character_Feat_Prerequisite> RPG_Character_Feat_Prerequisites_t;
   typedef RPG_Character_Feat_Prerequisites_t::const_iterator RPG_Character_Feat_PrerequisitesIterator_t;
   typedef std::map<RPG_Character_Feat, RPG_Character_Feat_Prerequisites_t> RPG_Character_FeatPrerequisitesTable_t;
@@ -75,6 +77,7 @@ class RPG_Character_Skills_Common_Tools
 
   static RPG_Character_Skill2StringTable_t      mySkill2StringTable;
   static RPG_Character_Feat2StringTable_t       myFeat2StringTable;
+  static RPG_Character_Ability2StringTable_t    myAbility2StringTable;
   static RPG_Character_Feats_t                  myFighterBonusFeatsTable;
   static RPG_Character_Feats_t                  myWizardBonusFeatsTable;
 

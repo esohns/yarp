@@ -257,10 +257,28 @@ const bool print_feats_table(const RPG_Character_SubClass& subClass_in,
     return false;
   } // end IF
 
-  // append feat
+  // (try to) append chosen feat
   choice -= 1;
   iterator = RPG_Character_Skills_Common_Tools::myFeat2StringTable.begin();
   std::advance(iterator, choice);
+
+  feats_iterator = feats_inout.find(iterator->first);
+  if ((feats_iterator != feats_inout.end()) ||
+      (!RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(iterator->first,
+                                                                  subClass_in,
+                                                                  1,
+                                                                  attributes_in,
+                                                                  skills_in,
+                                                                  feats_inout,
+                                                                  abilities_in)))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid index %d, try again\n"),
+               choice));
+
+    return false;
+  } // end IF
+
   feats_inout.insert(iterator->first);
 
   return true;
@@ -511,7 +529,7 @@ void do_work()
   } while (c == 'n');
 
   RPG_Character_Skills_t skills;
-  short int INTmodifier = RPG_Character_Common_Tools::getAbilityModifier(attributes.intelligence);
+  short int INTmodifier = RPG_Character_Common_Tools::getAttributeAbilityModifier(attributes.intelligence);
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("INT modifier (attribute value: %d) is: %d...\n"),
              attributes.intelligence,
@@ -554,7 +572,7 @@ void do_work()
   do
   {
     // header line
-    std::cout << ACE_TEXT("remaining feats: ") << initialSkillPoints << std::endl;
+    std::cout << ACE_TEXT("remaining feats: ") << initialFeats << std::endl;
     std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
 
     if (print_feats_table(player_class.subClass,
