@@ -19,8 +19,14 @@
  ***************************************************************************/
 #include "rpg_character_base.h"
 
+#include "rpg_character_common_tools.h"
+#include "rpg_character_skills_common_tools.h"
+
 #include <ace/OS.h>
-#include <ace/Trace.h>
+#include <ace/Log_Msg.h>
+
+#include <string>
+#include <iostream>
 
 RPG_Character_Base::RPG_Character_Base(const RPG_Character_Gender& gender_in,
                                        const RPG_Character_Race& race_in,
@@ -206,5 +212,102 @@ void RPG_Character_Base::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::dump"));
 
-  ACE_ASSERT(false);
+  std::string gender = RPG_Character_Common_Tools::genderToString(myGender);
+  std::string race = RPG_Character_Common_Tools::raceToString(myRace);
+  std::string class_string = RPG_Character_Common_Tools::subClassToString(myClass.subClass);
+  std::string alignment = RPG_Character_Common_Tools::alignmentToString(myAlignment);
+  std::string attributes = RPG_Character_Common_Tools::attributeToString(ATTRIBUTE_STRENGTH);
+  attributes += ACE_TEXT_ALWAYS_CHAR(": ");
+  attributes += myAttributes.strength;
+  attributes += ACE_TEXT_ALWAYS_CHAR("\n");
+  attributes += RPG_Character_Common_Tools::attributeToString(ATTRIBUTE_DEXTERITY);
+  attributes += ACE_TEXT_ALWAYS_CHAR(": ");
+  attributes += myAttributes.dexterity;
+  attributes += ACE_TEXT_ALWAYS_CHAR("\n");
+  attributes += RPG_Character_Common_Tools::attributeToString(ATTRIBUTE_CONSTITUTION);
+  attributes += ACE_TEXT_ALWAYS_CHAR(": ");
+  attributes += myAttributes.constitution;
+  attributes += ACE_TEXT_ALWAYS_CHAR("\n");
+  attributes += RPG_Character_Common_Tools::attributeToString(ATTRIBUTE_INTELLIGENCE);
+  attributes += ACE_TEXT_ALWAYS_CHAR(": ");
+  attributes += myAttributes.intelligence;
+  attributes += ACE_TEXT_ALWAYS_CHAR("\n");
+  attributes += RPG_Character_Common_Tools::attributeToString(ATTRIBUTE_WISDOM);
+  attributes += ACE_TEXT_ALWAYS_CHAR(": ");
+  attributes += myAttributes.wisdom;
+  attributes += ACE_TEXT_ALWAYS_CHAR("\n");
+  attributes += RPG_Character_Common_Tools::attributeToString(ATTRIBUTE_CHARISMA);
+  attributes += ACE_TEXT_ALWAYS_CHAR(": ");
+  attributes += myAttributes.charisma;
+  attributes += ACE_TEXT_ALWAYS_CHAR("\n");
+  std::string skills;
+  RPG_Character_Skills_Common_Tools::RPG_Character_Skill2StringTableIterator_t iterator;
+  for (RPG_Character_SkillsConstIterator_t iterator2 = mySkills.begin();
+       iterator2 != mySkills.end();
+       iterator2++)
+  {
+    iterator = RPG_Character_Skills_Common_Tools::mySkill2StringTable.find(iterator2->first);
+    // sanity check
+    if (iterator == RPG_Character_Skills_Common_Tools::mySkill2StringTable.end())
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid skill %d --> check implementation !, continuing\n"),
+                 iterator2->first));
+    } // end IF
+
+    skills += iterator->second;
+    skills += ACE_TEXT_ALWAYS_CHAR(": ");
+    skills += iterator2->second;
+    skills += ACE_TEXT_ALWAYS_CHAR("\n");
+  }; // end FOR
+  std::string feats;
+  RPG_Character_Skills_Common_Tools::RPG_Character_Feat2StringTableIterator_t iterator3;
+  for (RPG_Character_FeatsConstIterator_t iterator4 = myFeats.begin();
+       iterator4 != myFeats.end();
+       iterator4++)
+  {
+    iterator3 = RPG_Character_Skills_Common_Tools::myFeat2StringTable.find(*iterator4);
+    // sanity check
+    if (iterator3 == RPG_Character_Skills_Common_Tools::myFeat2StringTable.end())
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid feat %d --> check implementation !, continuing\n"),
+                 *iterator4));
+    } // end IF
+
+    feats += iterator3->second;
+    feats += ACE_TEXT_ALWAYS_CHAR("\n");
+  }; // end FOR
+  std::string abilities;
+  RPG_Character_Skills_Common_Tools::RPG_Character_Ability2StringTableIterator_t iterator5;
+  for (RPG_Character_AbilitiesConstIterator_t iterator6 = myAbilities.begin();
+       iterator6 != myAbilities.end();
+       iterator6++)
+  {
+    iterator5 = RPG_Character_Skills_Common_Tools::myAbility2StringTable.find(*iterator6);
+    // sanity check
+    if (iterator5 == RPG_Character_Skills_Common_Tools::myAbility2StringTable.end())
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid ability %d --> check implementation !, continuing\n"),
+                 *iterator6));
+    } // end IF
+
+    abilities += iterator5->second;
+    abilities += ACE_TEXT_ALWAYS_CHAR("\n");
+  }; // end FOR
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("Player: \nGender: %s\nRace: %s\nClass: %s\nAlignment: %s\nAttributes:\n%s\nSkills:\n%s\nFeats:\n%s\nAbilities: %s\nItems:\n"),
+             gender.c_str(),
+             race.c_str(),
+             class_string.c_str(),
+             alignment.c_str(),
+             attributes.c_str(),
+             skills.c_str(),
+             feats.c_str(),
+             abilities.c_str()));
+
+  // dump items
+  myInventory.dump();
 }

@@ -28,6 +28,7 @@ RPG_Character_Common_Tools::RPG_Character_String2AlignmentEthic_t RPG_Character_
 RPG_Character_Common_Tools::RPG_Character_String2Attribute_t      RPG_Character_Common_Tools::myString2AttributeTable;
 RPG_Character_Common_Tools::RPG_Character_String2Condition_t      RPG_Character_Common_Tools::myString2ConditionTable;
 
+RPG_Character_Common_Tools::RPG_Character_String2Race_t           RPG_Character_Common_Tools::myString2RaceTable;
 RPG_Character_Common_Tools::RPG_Character_String2MetaClass_t      RPG_Character_Common_Tools::myString2MetaClassTable;
 RPG_Character_Common_Tools::RPG_Character_String2SubClass_t       RPG_Character_Common_Tools::myString2SubClassTable;
 
@@ -42,6 +43,7 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   myString2AttributeTable.clear();
   myString2ConditionTable.clear();
 
+  myString2RaceTable.clear();
   myString2MetaClassTable.clear();
   myString2SubClassTable.clear();
 
@@ -109,6 +111,14 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   myString2ConditionTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("CONDITION_TURNED"), CONDITION_TURNED));
   myString2ConditionTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("CONDITION_UNCONSCIOUS"), CONDITION_UNCONSCIOUS));
 
+  // RPG_Character_Race
+  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("RACE_HUMAN"), RACE_HUMAN));
+  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("RACE_DWARF"), RACE_DWARF));
+  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("RACE_ELF"), RACE_ELF));
+  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("RACE_HALFLING"), RACE_HALFLING));
+  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("RACE_GNOME"), RACE_GNOME));
+  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("RACE_ORC"), RACE_ORC));
+
   // RPG_Character_MetaClass
   myString2MetaClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("METACLASS_WARRIOR"), METACLASS_WARRIOR));
   myString2MetaClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("METACLASS_WIZARD"), METACLASS_WIZARD));
@@ -156,6 +166,30 @@ const RPG_Character_Gender RPG_Character_Common_Tools::stringToGender(const std:
   return iterator->second;
 }
 
+const std::string RPG_Character_Common_Tools::genderToString(const RPG_Character_Gender& gender_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::genderToString"));
+
+  RPG_Character_String2GenderIterator_t iterator = myString2GenderTable.begin();
+  do
+  {
+    if (iterator->second == gender_in)
+    {
+      // done
+      return iterator->first;
+    } // end IF
+
+    iterator++;
+  } while (iterator != myString2GenderTable.end());
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid gender: %d --> check implementation !, aborting\n"),
+             gender_in));
+
+  return std::string(ACE_TEXT_ALWAYS_CHAR("GENDER_INVALID"));
+}
+
 const RPG_Character_AlignmentCivic RPG_Character_Common_Tools::stringToAlignmentCivic(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::stringToAlignmentCivic"));
@@ -192,6 +226,62 @@ const RPG_Character_AlignmentEthic RPG_Character_Common_Tools::stringToAlignment
   return iterator->second;
 }
 
+const std::string RPG_Character_Common_Tools::alignmentToString(const RPG_Character_Alignment& alignment_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::alignmentToString"));
+
+  std::string result;
+
+  RPG_Character_String2AlignmentCivicIterator_t iterator = myString2AlignmentCivicTable.begin();
+  do
+  {
+    if (iterator->second == alignment_in.civicAlignment)
+    {
+      // found first part
+      result = iterator->first;
+    } // end IF
+
+    iterator++;
+  } while (iterator != myString2AlignmentCivicTable.end());
+
+  // sanity check
+  if (result.empty())
+  {
+    // debug info
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid alignment (civic): %d --> check implementation !, aborting\n"),
+               alignment_in.civicAlignment));
+
+    return std::string(ACE_TEXT_ALWAYS_CHAR("ALIGNMENT_INVALID"));
+  } // end IF
+
+  RPG_Character_String2AlignmentEthicIterator_t iterator2 = myString2AlignmentEthicTable.begin();
+  do
+  {
+    if (iterator2->second == alignment_in.ethicAlignment)
+    {
+      // found second part
+      result += ACE_TEXT_ALWAYS_CHAR("|");
+      result += iterator2->first;
+    } // end IF
+
+    iterator2++;
+  } while (iterator2 != myString2AlignmentEthicTable.end());
+
+  // sanity check
+  if (result.find(ACE_TEXT_ALWAYS_CHAR("|")) == std::string::npos)
+  {
+    // debug info
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid alignment (ethic): %d --> check implementation !, aborting\n"),
+               alignment_in.ethicAlignment));
+
+    return std::string(ACE_TEXT_ALWAYS_CHAR("ALIGNMENT_INVALID"));
+  } // end IF
+
+  return result;
+}
+
 const RPG_Character_Condition RPG_Character_Common_Tools::stringToCondition(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::stringToCondition"));
@@ -210,9 +300,33 @@ const RPG_Character_Condition RPG_Character_Common_Tools::stringToCondition(cons
   return iterator->second;
 }
 
-const RPG_Character_MetaClass RPG_Character_Common_Tools::string2MetaClass(const std::string& string_in)
+const std::string RPG_Character_Common_Tools::raceToString(const RPG_Character_Race& race_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::string2MetaClass"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::raceToString"));
+
+  RPG_Character_String2RaceIterator_t iterator = myString2RaceTable.begin();
+  do
+  {
+    if (iterator->second == race_in)
+    {
+      // done
+      return iterator->first;
+    } // end IF
+
+    iterator++;
+  } while (iterator != myString2RaceTable.end());
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid subClass: %d --> check implementation !, aborting\n"),
+             race_in));
+
+  return std::string(ACE_TEXT_ALWAYS_CHAR("RACE_INVALID"));
+}
+
+const RPG_Character_MetaClass RPG_Character_Common_Tools::stringToMetaClass(const std::string& string_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::stringToMetaClass"));
 
   RPG_Character_String2MetaClassIterator_t iterator = myString2MetaClassTable.find(string_in);
   if (iterator == myString2MetaClassTable.end())
@@ -228,9 +342,9 @@ const RPG_Character_MetaClass RPG_Character_Common_Tools::string2MetaClass(const
   return iterator->second;
 }
 
-const RPG_Character_SubClass RPG_Character_Common_Tools::string2SubClass(const std::string& string_in)
+const RPG_Character_SubClass RPG_Character_Common_Tools::stringToSubClass(const std::string& string_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::string2SubClass"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::stringToSubClass"));
 
   RPG_Character_String2SubClassIterator_t iterator = myString2SubClassTable.find(string_in);
   if (iterator == myString2SubClassTable.end())
@@ -246,33 +360,9 @@ const RPG_Character_SubClass RPG_Character_Common_Tools::string2SubClass(const s
   return iterator->second;
 }
 
-const std::string RPG_Character_Common_Tools::attribute2String(const RPG_Character_Attribute& attribute_in)
+const std::string RPG_Character_Common_Tools::subClassToString(const RPG_Character_SubClass& subClass_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::attribute2String"));
-
-  RPG_Character_String2AttributeIterator_t iterator = myString2AttributeTable.begin();
-  do
-  {
-    if (iterator->second == attribute_in)
-    {
-      // done
-      return iterator->first;
-    } // end IF
-
-    iterator++;
-  } while (iterator != myString2AttributeTable.end());
-
-  // debug info
-  ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("invalid attribute: %d --> check implementation !, aborting\n"),
-             attribute_in));
-
-  return std::string(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_INVALID"));
-}
-
-const std::string RPG_Character_Common_Tools::subClass2String(const RPG_Character_SubClass& subClass_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::subClass2String"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::subClassToString"));
 
   RPG_Character_String2SubClassIterator_t iterator = myString2SubClassTable.begin();
   do
@@ -292,6 +382,30 @@ const std::string RPG_Character_Common_Tools::subClass2String(const RPG_Characte
              subClass_in));
 
   return std::string(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_INVALID"));
+}
+
+const std::string RPG_Character_Common_Tools::attributeToString(const RPG_Character_Attribute& attribute_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::attributeToString"));
+
+  RPG_Character_String2AttributeIterator_t iterator = myString2AttributeTable.begin();
+  do
+  {
+    if (iterator->second == attribute_in)
+    {
+      // done
+      return iterator->first;
+    } // end IF
+
+    iterator++;
+  } while (iterator != myString2AttributeTable.end());
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid attribute: %d --> check implementation !, aborting\n"),
+             attribute_in));
+
+  return std::string(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_INVALID"));
 }
 
 const short int RPG_Character_Common_Tools::getAttributeAbilityModifier(const unsigned char& attributeAbility_in)

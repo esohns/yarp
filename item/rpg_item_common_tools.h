@@ -33,7 +33,7 @@
 class RPG_Item_Common_Tools
 {
  public:
-  // some handy types
+  // some useful types
   typedef std::map<std::string, RPG_Item_Type> RPG_String2ItemTypeTable_t;
   typedef RPG_String2ItemTypeTable_t::const_iterator RPG_String2ItemTypeTableIterator_t;
   typedef std::map<std::string, RPG_Item_MoneyType> RPG_String2MoneyTypeTable_t;
@@ -52,12 +52,18 @@ class RPG_Item_Common_Tools
   typedef RPG_String2ArmorTypeTable_t::const_iterator RPG_String2ArmorTypeTableIterator_t;
 
   static void initStringConversionTables();
-  static RPG_Item_WeaponCategory stringToWeaponCategory(const std::string&); // string
-  static RPG_Item_WeaponClass stringToWeaponClass(const std::string&); // string
-  static RPG_Item_WeaponType stringToWeaponType(const std::string&); // string
-  static RPG_Item_WeaponDamageType stringToWeaponDamageType(const std::string&); // string
-  static RPG_Item_ArmorCategory stringToArmorCategory(const std::string&); // string
-  static RPG_Item_ArmorType stringToArmorType(const std::string&); // string
+  static const RPG_Item_WeaponCategory stringToWeaponCategory(const std::string&); // string
+  static const std::string             weaponCategoryToString(const RPG_Item_WeaponCategory&); // weapon category
+  static const RPG_Item_WeaponClass stringToWeaponClass(const std::string&); // string
+  static const std::string          weaponClassToString(const RPG_Item_WeaponClass&); // weapon class
+  static const RPG_Item_WeaponType stringToWeaponType(const std::string&); // string
+  static const std::string         weaponTypeToString(const RPG_Item_WeaponType&); // weapon type
+  static const RPG_Item_WeaponDamageType stringToWeaponDamageType(const std::string&); // string
+  static const std::string               weaponDamageToString(const RPG_Item_WeaponDamage&); // weapon damage
+  static const RPG_Item_ArmorCategory stringToArmorCategory(const std::string&); // string
+  static const std::string            armorCategoryToString(const RPG_Item_ArmorCategory&); // armor category
+  static const RPG_Item_ArmorType stringToArmorType(const std::string&); // string
+  static const std::string        armorTypeToString(const RPG_Item_ArmorType&); // armor type
 
  private:
   // safety measures

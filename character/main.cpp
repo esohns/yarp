@@ -26,6 +26,8 @@
 #include "rpg_chance_dice_common_tools.h"
 #include "rpg_item_weapon.h"
 #include "rpg_item_armor.h"
+#include "rpg_item_common_tools.h"
+#include "rpg_item_dictionary.h"
 #include "rpg_character_player.h"
 #include "rpg_character_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
@@ -541,7 +543,7 @@ void do_work()
                                                     initialSkillPoints);
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("initial skill points for subClass \"%s\" (INT modifier: %d) is: %d...\n"),
-             RPG_Character_Common_Tools::subClass2String(player_class.subClass).c_str(),
+             RPG_Character_Common_Tools::subClassToString(player_class.subClass).c_str(),
              INTmodifier,
              initialSkillPoints));
 
@@ -601,20 +603,125 @@ void do_work()
   // TODO: choose initial set of items
   RPG_Item_List_t items;
   RPG_Item_Armor* armor = NULL;
+  RPG_Item_Armor* shield = NULL;
   RPG_Item_Weapon* weapon = NULL;
+  RPG_Item_Weapon* bow = NULL;
+  RPG_Item_Common_Tools::initStringConversionTables();
+  std::string filename(ACE_TEXT_ALWAYS_CHAR("../../../item/rpg_item.xml"));
+  RPG_ITEM_DICTIONARY_SINGLETON::instance()->initItemDictionary(filename);
+
   switch (player_class.subClass)
   {
     case SUBCLASS_FIGHTER:
     {
+      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+      armor  = new RPG_Item_Armor(ARMOR_MAIL_SPLINT);
+      shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
 
+      items.push_back(weapon->getID());
+      items.push_back(armor->getID());
+      items.push_back(shield->getID());
+
+      break;
+    }
+    case SUBCLASS_PALADIN:
+    {
+      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+      armor  = new RPG_Item_Armor(ARMOR_PLATE_FULL);
+      shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_STEEL);
+
+      items.push_back(weapon->getID());
+      items.push_back(armor->getID());
+      items.push_back(shield->getID());
+
+      break;
+    }
+    case SUBCLASS_RANGER:
+    {
+      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+      bow    = new RPG_Item_Weapon(RANGED_WEAPON_BOW_LONG);
+      armor  = new RPG_Item_Armor(ARMOR_HIDE);
+
+      items.push_back(weapon->getID());
+      items.push_back(bow->getID());
+      items.push_back(armor->getID());
+
+      break;
+    }
+    case SUBCLASS_BARBARIAN:
+    {
+      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+      armor  = new RPG_Item_Armor(ARMOR_HIDE);
+
+      items.push_back(weapon->getID());
+      items.push_back(armor->getID());
+
+      break;
+    }
+    case SUBCLASS_WIZARD:
+    case SUBCLASS_SORCERER:
+    {
+      weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+
+      items.push_back(weapon->getID());
+
+      break;
+    }
+    case SUBCLASS_CLERIC:
+    {
+      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
+      armor  = new RPG_Item_Armor(ARMOR_MAIL_CHAIN);
+      shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
+
+      items.push_back(weapon->getID());
+      items.push_back(armor->getID());
+      items.push_back(shield->getID());
+
+      break;
+    }
+    case SUBCLASS_DRUID:
+    {
+      weapon = new RPG_Item_Weapon(LIGHT_MELEE_WEAPON_SICKLE);
+      armor  = new RPG_Item_Armor(ARMOR_HIDE);
+      shield  = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_WOODEN);
+
+      items.push_back(weapon->getID());
+      items.push_back(armor->getID());
+      items.push_back(shield->getID());
+
+      break;
+    }
+    case SUBCLASS_MONK:
+    {
+      weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+
+      items.push_back(weapon->getID());
+
+      break;
+    }
+    case SUBCLASS_THIEF:
+    case SUBCLASS_BARD:
+    {
+      weapon = new RPG_Item_Weapon(LIGHT_MELEE_WEAPON_SWORD_SHORT);
+      armor  = new RPG_Item_Armor(ARMOR_LEATHER);
+      shield  = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_STEEL);
+
+      items.push_back(weapon->getID());
+      items.push_back(armor->getID());
+      items.push_back(shield->getID());
+
+      break;
     }
     default:
     {
+      std::string subClass_string = RPG_Character_Common_Tools::subClassToString(player_class.subClass);
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid class \"%s\", aborting\n"),
+                 subClass_string.c_str()));
 
+      return;
     }
   } // end SWITCH
-
-
 
   RPG_Character_Player player(name,
                               gender,

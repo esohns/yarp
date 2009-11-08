@@ -22,6 +22,7 @@
 
 #include "rpg_chance_dice_common.h"
 
+#include <bitset>
 #include <map>
 
 enum RPG_Item_Type
@@ -173,8 +174,11 @@ enum RPG_Item_WeaponDamageType
   WEAPONDAMAGE_PIERCING = 2,
   WEAPONDAMAGE_SLASHING = 4,
   //
+  WEAPONDAMAGE_MAX,
   WEAPONDAMAGE_INVALID
 };
+
+typedef std::bitset<3> RPG_Item_WeaponDamage;
 
 struct RPG_Item_CriticalHitModifier
 {
@@ -194,7 +198,7 @@ struct RPG_Item_WeaponProperties
   RPG_Item_CriticalHitModifier criticalHitModifier;
   unsigned int                 rangeIncrement; // feet
   unsigned int                 baseWeight; // pounds
-  unsigned int                 typeOfDamage; // bitfield
+  RPG_Item_WeaponDamage        typeOfDamage; // bitfield
 };
 
 // need this for parsing purposes...
@@ -208,7 +212,7 @@ struct RPG_Item_WeaponProperties_XML
   RPG_Item_CriticalHitModifier criticalHitModifier;
   unsigned int                 rangeIncrement; // feet
   unsigned int                 baseWeight; // pounds
-  unsigned int                 typeOfDamage; // bitfield
+  RPG_Item_WeaponDamage        typeOfDamage; // bitfield
 };
 
 struct RPG_Item_MagicWeaponProperties

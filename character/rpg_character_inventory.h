@@ -36,6 +36,8 @@ class RPG_Character_Inventory
   void add(const RPG_Item_ID_t&); // item ID
   void drop(const RPG_Item_ID_t&); // item ID
 
+  void dump() const;
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Inventory());

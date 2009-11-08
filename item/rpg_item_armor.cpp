@@ -17,43 +17,20 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_character_inventory.h"
-
-#include <rpg_item_base.h>
-#include <rpg_item_instance_manager.h>
+#include "rpg_item_armor.h"
 
 #include <ace/Log_Msg.h>
 
-RPG_Character_Inventory::RPG_Character_Inventory(const RPG_Item_List_t& items_in)
- : myItems(items_in)
+RPG_Item_Armor::RPG_Item_Armor(const RPG_Item_ArmorType& armorType_in)
+ : inherited2(armorType_in,
+              getID())
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::RPG_Character_Inventory"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Armor::RPG_Item_Armor"));
 
 }
 
-RPG_Character_Inventory::~RPG_Character_Inventory()
+RPG_Item_Armor::~RPG_Item_Armor()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::~RPG_Character_Inventory"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Armor::~RPG_Item_Armor"));
 
-}
-
-void RPG_Character_Inventory::dump() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::dump"));
-
-  RPG_Item_Base* base = NULL;
-  for (RPG_Item_ListIterator_t iterator = myItems.begin();
-       iterator != myItems.end();
-       iterator++)
-  {
-    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem(*iterator,
-                                                                  base))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid item (ID: %d) --> check implementation !, continuing\n"),
-                 *iterator));
-    } // end IF
-
-    base->dump();
-  } // end FOR
 }

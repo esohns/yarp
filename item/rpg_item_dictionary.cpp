@@ -19,9 +19,8 @@
  ***************************************************************************/
 #include "rpg_item_dictionary.h"
 
-// #include "rpg_item_schema_dictionary_types.h"
-// #include "rpg_item_dictionary_parser_base.h"
 #include "rpg_item_dictionary_parser.h"
+#include "rpg_item_common_tools.h"
 
 #include <ace/Log_Msg.h>
 
@@ -142,4 +141,40 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished parsing item dictionary file \"%s\"...\n"),
              filename_in.c_str()));
+}
+
+const RPG_Item_WeaponProperties RPG_Item_Dictionary::getWeaponProperties(const RPG_Item_WeaponType& weaponType_in) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::getWeaponProperties"));
+
+  RPG_Item_WeaponDictionaryIterator_t iterator = myWeaponDictionary.find(weaponType_in);
+  if (iterator == myWeaponDictionary.end())
+  {
+    std::string weaponType_string = RPG_Item_Common_Tools::weaponTypeToString(weaponType_in);
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("invalid weapon type \"%s\" --> check implementation !, aborting\n"),
+               weaponType_string.c_str()));
+
+    ACE_ASSERT(false);
+  } // end IF
+
+  return iterator->second;
+}
+
+const RPG_Item_ArmorProperties RPG_Item_Dictionary::getArmorProperties(const RPG_Item_ArmorType& armorType_in) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::getArmorProperties"));
+
+  RPG_Item_ArmorDictionaryIterator_t iterator = myArmorDictionary.find(armorType_in);
+  if (iterator == myArmorDictionary.end())
+  {
+    std::string armorType_string = RPG_Item_Common_Tools::armorTypeToString(armorType_in);
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("invalid armor type \"%s\" --> check implementation !, aborting\n"),
+               armorType_string.c_str()));
+
+    ACE_ASSERT(false);
+  } // end IF
+
+  return iterator->second;
 }

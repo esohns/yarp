@@ -30,16 +30,16 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Item_Weapon
- : public RPG_Item_Weapon_Base,
-   public RPG_Item_Instance_Base
+ : public RPG_Item_Instance_Base,
+   public RPG_Item_Weapon_Base
 {
  public:
   RPG_Item_Weapon(const RPG_Item_WeaponType&);
   virtual ~RPG_Item_Weapon();
 
  private:
-  typedef RPG_Item_Weapon_Base inherited;
-  typedef RPG_Item_Instance_Base inherited2;
+  typedef RPG_Item_Instance_Base inherited;
+  typedef RPG_Item_Weapon_Base inherited2;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Weapon());

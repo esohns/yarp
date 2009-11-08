@@ -35,8 +35,9 @@ class RPG_Chance_Dice_Common_Tools
  public:
   static void initStringConversionTables();
 
-  static RPG_Chance_DiceType stringToDiceType(const std::string&); // string
+  static const RPG_Chance_DiceType stringToDiceType(const std::string&); // string
   static const std::string diceType2String(const RPG_Chance_DiceType&); // dice type
+  static const std::string rollToString(const RPG_Chance_Roll&); // roll
 
  private:
   // some handy types

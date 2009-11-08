@@ -21,6 +21,7 @@
 #define RPG_ITEM_WEAPON_BASE_H
 
 #include "rpg_item_common.h"
+#include "rpg_item_base.h"
 
 #include <ace/Global_Macros.h>
 
@@ -28,6 +29,7 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Item_Weapon_Base
+ : public RPG_Item_Base
 {
  public:
   virtual ~RPG_Item_Weapon_Base();
@@ -35,10 +37,15 @@ class RPG_Item_Weapon_Base
   // what am I ?
   const RPG_Item_WeaponType getWeaponType() const;
 
+  virtual void dump() const;
+
  protected:
-  RPG_Item_Weapon_Base(const RPG_Item_WeaponType&);
+  RPG_Item_Weapon_Base(const RPG_Item_WeaponType&,
+                       const RPG_Item_ID_t&);
 
  private:
+  typedef RPG_Item_Base inherited;
+
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Weapon_Base());
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Weapon_Base(const RPG_Item_Weapon_Base&));

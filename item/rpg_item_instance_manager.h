@@ -17,44 +17,55 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_ITEM_DICTIONARY_H
-#define RPG_ITEM_DICTIONARY_H
+#ifndef RPG_ITEM_INSTANCE_MANAGER_H
+#define RPG_ITEM_INSTANCE_MANAGER_H
 
-#include "rpg_item_common.h"
+#include "rpg_item_instance_base.h"
+#include "rpg_item_base.h"
 
-#include <ace/Global_Macros.h>
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
 
-#include <string>
+#include <map>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Item_Dictionary
+class RPG_Item_Instance_Manager
 {
   // we use the singleton pattern, so we need to enable access to the ctor/dtors
-  friend class ACE_Singleton<RPG_Item_Dictionary,
+  friend class ACE_Singleton<RPG_Item_Instance_Manager,
                              ACE_Thread_Mutex>;
 
+  // grant access to (de-)register methods...
+  friend class RPG_Item_Base;
+
  public:
-  // init item dictionary
-  void initItemDictionary(const std::string&); // filename
-  const RPG_Item_WeaponProperties getWeaponProperties(const RPG_Item_WeaponType&) const;
-  const RPG_Item_ArmorProperties getArmorProperties(const RPG_Item_ArmorType&) const;
+/*  RPG_Item_Base* createItem(const RPG_Item_Type&, // type of item
+                            const unsigned int&); // specific (sub)type*/
+  const bool getItem(const RPG_Item_ID_t&,   // id
+                     RPG_Item_Base*&) const; // return value: handle
 
  private:
-  // safety measures
-  RPG_Item_Dictionary();
-  virtual ~RPG_Item_Dictionary();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary(const RPG_Item_Dictionary&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary& operator=(const RPG_Item_Dictionary&));
+  typedef std::map<RPG_Item_ID_t, RPG_Item_Base*> RPG_Item_InstanceTable_t;
+  typedef RPG_Item_InstanceTable_t::iterator RPG_Item_InstanceTableIterator_t;
+  typedef RPG_Item_InstanceTable_t::const_iterator RPG_Item_InstanceTableConstIterator_t;
 
-  RPG_Item_WeaponDictionary_t myWeaponDictionary;
-  RPG_Item_ArmorDictionary_t  myArmorDictionary;
+  RPG_Item_Instance_Manager();
+  virtual ~RPG_Item_Instance_Manager();
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Instance_Manager(const RPG_Item_Instance_Manager&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Instance_Manager& operator=(const RPG_Item_Instance_Manager&));
+
+  // *IMPORTANT NOTE*: these are called from RPG_Item_Base ctors/dtors...
+  virtual void registerItem(const RPG_Item_ID_t&, // id
+                            RPG_Item_Base*);      // handle
+  virtual void deregisterItem(RPG_Item_Base*); // handle
+
+  RPG_Item_InstanceTable_t myInstanceTable;
 };
 
-typedef ACE_Singleton<RPG_Item_Dictionary,
-                      ACE_Thread_Mutex> RPG_ITEM_DICTIONARY_SINGLETON;
+typedef ACE_Singleton<RPG_Item_Instance_Manager,
+                      ACE_Thread_Mutex> RPG_ITEM_INSTANCE_MANAGER_SINGLETON;
 
 #endif

@@ -19,10 +19,17 @@
  ***************************************************************************/
 #include "rpg_item_weapon_base.h"
 
+#include "rpg_chance_dice_common_tools.h"
+#include "rpg_item_common_tools.h"
+#include "rpg_item_dictionary.h"
+
 #include <ace/Log_Msg.h>
 
-RPG_Item_Weapon_Base::RPG_Item_Weapon_Base(const RPG_Item_WeaponType& weaponType_in)
- : myWeaponType(weaponType_in)
+RPG_Item_Weapon_Base::RPG_Item_Weapon_Base(const RPG_Item_WeaponType& weaponType_in,
+                                           const RPG_Item_ID_t& itemID_in)
+ : inherited(ITEM_WEAPON,
+             itemID_in),
+   myWeaponType(weaponType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Weapon_Base::RPG_Item_Weapon_Base"));
 
@@ -39,4 +46,32 @@ const RPG_Item_WeaponType RPG_Item_Weapon_Base::getWeaponType() const
   ACE_TRACE(ACE_TEXT("RPG_Item_Weapon_Base::getWeaponType"));
 
   return myWeaponType;
+}
+
+void RPG_Item_Weapon_Base::dump() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Weapon_Base::dump"));
+
+  // retrieve properties
+  RPG_Item_WeaponProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(myWeaponType);
+
+  std::string weaponType = RPG_Item_Common_Tools::weaponTypeToString(myWeaponType);
+  std::string weaponCategory = RPG_Item_Common_Tools::weaponCategoryToString(properties.weaponCategory);
+  std::string weaponClass = RPG_Item_Common_Tools::weaponClassToString(properties.weaponClass);
+  std::string baseDamage = RPG_Chance_Dice_Common_Tools::rollToString(properties.baseDamage);
+  std::string typeOfDamage = RPG_Item_Common_Tools::weaponDamageToString(properties.typeOfDamage);
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("Item: Weapon\nType: %s\nCategory: %s\nClass: %s\nPrice: %d GP, %d SP\nDamage: %s\ncritical Mod: %d, %d\nRange: %d\nWeight: %d\nDamage Type: %s\n"),
+             weaponType.c_str(),
+             weaponCategory.c_str(),
+             weaponClass.c_str(),
+             properties.baseStorePrice.numGoldPieces,
+             properties.baseStorePrice.numSilverPieces,
+             baseDamage.c_str(),
+             properties.criticalHitModifier.minToHitRoll,
+             properties.criticalHitModifier.damageModifier,
+             properties.rangeIncrement,
+             properties.baseWeight,
+             typeOfDamage.c_str()));
 }

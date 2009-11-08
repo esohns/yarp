@@ -22,7 +22,8 @@
 #include <ace/Log_Msg.h>
 
 RPG_Item_Weapon::RPG_Item_Weapon(const RPG_Item_WeaponType& weaponType_in)
- : inherited(weaponType_in)
+ : inherited2(weaponType_in,
+              getID())
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Weapon::RPG_Item_Weapon"));
 

@@ -17,43 +17,33 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_character_inventory.h"
+#include "rpg_item_base.h"
 
-#include <rpg_item_base.h>
-#include <rpg_item_instance_manager.h>
+#include "rpg_item_instance_manager.h"
 
 #include <ace/Log_Msg.h>
 
-RPG_Character_Inventory::RPG_Character_Inventory(const RPG_Item_List_t& items_in)
- : myItems(items_in)
+RPG_Item_Base::RPG_Item_Base(const RPG_Item_Type& itemType_in,
+                             const RPG_Item_ID_t& itemID_in)
+ : myType(itemType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::RPG_Character_Inventory"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Base::RPG_Item_Base"));
 
+  // register with instance manager
+  RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->registerItem(itemID_in, this);
 }
 
-RPG_Character_Inventory::~RPG_Character_Inventory()
+RPG_Item_Base::~RPG_Item_Base()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::~RPG_Character_Inventory"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Base::~RPG_Item_Base"));
 
+  // deregister with instance manager
+  RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->deregisterItem(this);
 }
 
-void RPG_Character_Inventory::dump() const
+const RPG_Item_Type RPG_Item_Base::getType() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::dump"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Base::getType"));
 
-  RPG_Item_Base* base = NULL;
-  for (RPG_Item_ListIterator_t iterator = myItems.begin();
-       iterator != myItems.end();
-       iterator++)
-  {
-    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem(*iterator,
-                                                                  base))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid item (ID: %d) --> check implementation !, continuing\n"),
-                 *iterator));
-    } // end IF
-
-    base->dump();
-  } // end FOR
+  return myType;
 }

@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Erik Sohns   *
- *   erik.sohns@web.de   *
+ *   Copyright (C) 2009 by Erik Sohns                                      *
+ *   erik.sohns@web.de                                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,43 +17,41 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_character_inventory.h"
+#ifndef RPG_ITEM_ARMOR_BASE_H
+#define RPG_ITEM_ARMOR_BASE_H
 
-#include <rpg_item_base.h>
-#include <rpg_item_instance_manager.h>
+#include "rpg_item_common.h"
+#include "rpg_item_base.h"
 
-#include <ace/Log_Msg.h>
+#include <ace/Global_Macros.h>
 
-RPG_Character_Inventory::RPG_Character_Inventory(const RPG_Item_List_t& items_in)
- : myItems(items_in)
+/**
+	@author Erik Sohns <erik.sohns@web.de>
+*/
+class RPG_Item_Armor_Base
+ : public RPG_Item_Base
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::RPG_Character_Inventory"));
+ public:
+  virtual ~RPG_Item_Armor_Base();
 
-}
+  // what am I ?
+  const RPG_Item_ArmorType getArmorType() const;
 
-RPG_Character_Inventory::~RPG_Character_Inventory()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::~RPG_Character_Inventory"));
+  virtual void dump() const;
 
-}
+ protected:
+  RPG_Item_Armor_Base(const RPG_Item_ArmorType&, // type
+                      const RPG_Item_ID_t&);     // ID
 
-void RPG_Character_Inventory::dump() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::dump"));
+ private:
+  typedef RPG_Item_Base inherited;
 
-  RPG_Item_Base* base = NULL;
-  for (RPG_Item_ListIterator_t iterator = myItems.begin();
-       iterator != myItems.end();
-       iterator++)
-  {
-    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem(*iterator,
-                                                                  base))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid item (ID: %d) --> check implementation !, continuing\n"),
-                 *iterator));
-    } // end IF
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Armor_Base());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Armor_Base(const RPG_Item_Armor_Base&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Armor_Base& operator=(const RPG_Item_Armor_Base&));
 
-    base->dump();
-  } // end FOR
-}
+  RPG_Item_ArmorType myArmorType;
+};
+
+#endif

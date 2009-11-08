@@ -2144,7 +2144,7 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
           {
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("invalid attribute: \"%s\" --> check implementation !, aborting\n"),
-                       RPG_Character_Common_Tools::attribute2String((*iterator3).attribute).c_str()));
+                       RPG_Character_Common_Tools::attributeToString((*iterator3).attribute).c_str()));
 
             break;
           }
@@ -2154,7 +2154,7 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("prerequisite of feat \"%s\" not met: \"%s\" < %d\n"),
                    iterator->second.c_str(),
-                   RPG_Character_Common_Tools::attribute2String((*iterator3).attribute).c_str(),
+                   RPG_Character_Common_Tools::attributeToString((*iterator3).attribute).c_str(),
                    (*iterator3).minValue));
 
         return false;
@@ -2230,7 +2230,7 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("prerequisite of feat \"%s\" not met: \"%s\" < %d\n"),
                    iterator->second.c_str(),
-                   RPG_Character_Common_Tools::subClass2String(subClass_in).c_str(),
+                   RPG_Character_Common_Tools::subClassToString(subClass_in).c_str(),
                    (*iterator3).minValue));
 
         return false;
@@ -2248,7 +2248,7 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("prerequisite of feat \"%s\" not met: \"%s\", OR %d < %d\n"),
                    iterator->second.c_str(),
-                   RPG_Character_Common_Tools::subClass2String(subClass_in).c_str(),
+                   RPG_Character_Common_Tools::subClassToString(subClass_in).c_str(),
                    currentLevel_in,
                    (*iterator3).minValue));
 
@@ -2266,7 +2266,7 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("prerequisite of feat \"%s\" not met: invalid class \"%s\"\n"),
                    iterator->second.c_str(),
-                   RPG_Character_Common_Tools::subClass2String(subClass_in).c_str()));
+                   RPG_Character_Common_Tools::subClassToString(subClass_in).c_str()));
 
         return false;
       }

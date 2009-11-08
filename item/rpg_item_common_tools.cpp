@@ -179,7 +179,7 @@ void RPG_Item_Common_Tools::initStringConversionTables()
   myString2ArmorTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ARMOR_SHIELD_TOWER"), ARMOR_SHIELD_TOWER));
 }
 
-RPG_Item_WeaponCategory RPG_Item_Common_Tools::stringToWeaponCategory(const std::string& string_in)
+const RPG_Item_WeaponCategory RPG_Item_Common_Tools::stringToWeaponCategory(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToWeaponCategory"));
 
@@ -197,7 +197,31 @@ RPG_Item_WeaponCategory RPG_Item_Common_Tools::stringToWeaponCategory(const std:
   return iterator->second;
 }
 
-RPG_Item_WeaponClass RPG_Item_Common_Tools::stringToWeaponClass(const std::string& string_in)
+const std::string RPG_Item_Common_Tools::weaponCategoryToString(const RPG_Item_WeaponCategory& weaponCategory_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponCategoryToString"));
+
+  RPG_String2WeaponCategoryTableIterator_t iterator = myString2WeaponCategoryTable.begin();
+  do
+  {
+    if (iterator->second == weaponCategory_in)
+    {
+      // done
+      return iterator->first;
+    } // end IF
+
+    iterator++;
+  } while (iterator != myString2WeaponCategoryTable.end());
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid weapon category: %d --> check implementation !, aborting\n"),
+             weaponCategory_in));
+
+  return std::string(ACE_TEXT_ALWAYS_CHAR("WEAPONCATEGORY_INVALID"));
+}
+
+const RPG_Item_WeaponClass RPG_Item_Common_Tools::stringToWeaponClass(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToWeaponClass"));
 
@@ -215,7 +239,31 @@ RPG_Item_WeaponClass RPG_Item_Common_Tools::stringToWeaponClass(const std::strin
   return iterator->second;
 }
 
-RPG_Item_WeaponType RPG_Item_Common_Tools::stringToWeaponType(const std::string& string_in)
+const std::string RPG_Item_Common_Tools::weaponClassToString(const RPG_Item_WeaponClass& weaponClass_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponClassToString"));
+
+  RPG_String2WeaponClassTableIterator_t iterator = myString2WeaponClassTable.begin();
+  do
+  {
+    if (iterator->second == weaponClass_in)
+    {
+      // done
+      return iterator->first;
+    } // end IF
+
+    iterator++;
+  } while (iterator != myString2WeaponClassTable.end());
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid weapon class: %d --> check implementation !, aborting\n"),
+             weaponClass_in));
+
+  return std::string(ACE_TEXT_ALWAYS_CHAR("WEAPONCLASS_INVALID"));
+}
+
+const RPG_Item_WeaponType RPG_Item_Common_Tools::stringToWeaponType(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToWeaponType"));
 
@@ -233,7 +281,31 @@ RPG_Item_WeaponType RPG_Item_Common_Tools::stringToWeaponType(const std::string&
   return iterator->second;
 }
 
-RPG_Item_WeaponDamageType RPG_Item_Common_Tools::stringToWeaponDamageType(const std::string& string_in)
+const std::string RPG_Item_Common_Tools::weaponTypeToString(const RPG_Item_WeaponType& weaponType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponTypeToString"));
+
+  RPG_String2WeaponTypeTableIterator_t iterator = myString2WeaponTypeTable.begin();
+  do
+  {
+    if (iterator->second == weaponType_in)
+    {
+      // done
+      return iterator->first;
+    } // end IF
+
+    iterator++;
+  } while (iterator != myString2WeaponTypeTable.end());
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid weapon type: %d --> check implementation !, aborting\n"),
+             weaponType_in));
+
+  return std::string(ACE_TEXT_ALWAYS_CHAR("WEAPON_TYPE_INVALID"));
+}
+
+const RPG_Item_WeaponDamageType RPG_Item_Common_Tools::stringToWeaponDamageType(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToWeaponDamageType"));
 
@@ -251,7 +323,38 @@ RPG_Item_WeaponDamageType RPG_Item_Common_Tools::stringToWeaponDamageType(const 
   return iterator->second;
 }
 
-RPG_Item_ArmorCategory RPG_Item_Common_Tools::stringToArmorCategory(const std::string& string_in)
+const std::string RPG_Item_Common_Tools::weaponDamageToString(const RPG_Item_WeaponDamage& weaponDamage_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponDamageToString"));
+
+  std::string result;
+
+  RPG_String2WeaponDamageTypeTableIterator_t iterator = myString2WeaponDamageTypeTable.begin();
+  // sanity check
+  if (weaponDamage_in.none())
+  {
+    return iterator->first;
+  } // end IF
+
+  iterator++;
+  for (int i = 0;
+       i < weaponDamage_in.size();
+       i++, iterator++)
+  {
+    if (weaponDamage_in.test(i))
+    {
+      result += iterator->first;
+      result += ACE_TEXT_ALWAYS_CHAR("|");
+    } // end IF
+  } // end FOR
+
+  // crop last character
+  result.erase(result.end()--);
+
+  return result;
+}
+
+const RPG_Item_ArmorCategory RPG_Item_Common_Tools::stringToArmorCategory(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToArmorCategory"));
 
@@ -269,7 +372,31 @@ RPG_Item_ArmorCategory RPG_Item_Common_Tools::stringToArmorCategory(const std::s
   return iterator->second;
 }
 
-RPG_Item_ArmorType RPG_Item_Common_Tools::stringToArmorType(const std::string& string_in)
+const std::string RPG_Item_Common_Tools::armorCategoryToString(const RPG_Item_ArmorCategory& armorCategory_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::armorCategoryToString"));
+
+  RPG_String2ArmorCategoryTableIterator_t iterator = myString2ArmorCategoryTable.begin();
+  do
+  {
+    if (iterator->second == armorCategory_in)
+    {
+      // done
+      return iterator->first;
+    } // end IF
+
+    iterator++;
+  } while (iterator != myString2ArmorCategoryTable.end());
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid armor category: %d --> check implementation !, aborting\n"),
+             armorCategory_in));
+
+  return std::string(ACE_TEXT_ALWAYS_CHAR("ARMORCATEGORY_INVALID"));
+}
+
+const RPG_Item_ArmorType RPG_Item_Common_Tools::stringToArmorType(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::stringToArmorType"));
 
@@ -285,4 +412,28 @@ RPG_Item_ArmorType RPG_Item_Common_Tools::stringToArmorType(const std::string& s
   } // end IF
 
   return iterator->second;
+}
+
+const std::string RPG_Item_Common_Tools::armorTypeToString(const RPG_Item_ArmorType& armorType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::armorTypeToString"));
+
+  RPG_String2ArmorTypeTableIterator_t iterator = myString2ArmorTypeTable.begin();
+  do
+  {
+    if (iterator->second == armorType_in)
+    {
+      // done
+      return iterator->first;
+    } // end IF
+
+    iterator++;
+  } while (iterator != myString2ArmorTypeTable.end());
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid armor type: %d --> check implementation !, aborting\n"),
+             armorType_in));
+
+  return std::string(ACE_TEXT_ALWAYS_CHAR("ARMOR_TYPE_INVALID"));
 }
