@@ -60,6 +60,7 @@ class RPG_Item_Common_Tools
   static const RPG_Item_WeaponType stringToWeaponType(const std::string&); // string
   static const std::string         weaponTypeToString(const RPG_Item_WeaponType&); // weapon type
   static const RPG_Item_WeaponDamageType stringToWeaponDamageType(const std::string&); // string
+  static const std::string               weaponDamageTypeToString(const RPG_Item_WeaponDamageType&); // weapon damage type
   static const std::string               weaponDamageToString(const RPG_Item_WeaponDamage&); // weapon damage
   static const std::string               damageToString(const RPG_Item_Damage&); // damage
   static const RPG_Item_ArmorCategory stringToArmorCategory(const std::string&); // string

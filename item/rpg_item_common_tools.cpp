@@ -351,26 +351,61 @@ const RPG_Item_WeaponDamageType RPG_Item_Common_Tools::stringToWeaponDamageType(
   return iterator->second;
 }
 
+const std::string RPG_Item_Common_Tools::weaponDamageTypeToString(const RPG_Item_WeaponDamageType& weaponDamageType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponDamageTypeToString"));
+
+  RPG_String2WeaponDamageTypeTableIterator_t iterator = myString2WeaponDamageTypeTable.begin();
+  do
+  {
+    if (iterator->second == weaponDamageType_in)
+    {
+      // done
+      return iterator->first;
+    } // end IF
+
+    iterator++;
+  } while (iterator != myString2WeaponDamageTypeTable.end());
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid weapon damage type: %d --> check implementation !, aborting\n"),
+             weaponDamageType_in));
+
+  return std::string(ACE_TEXT_ALWAYS_CHAR("WEAPONDAMAGE_INVALID"));
+}
+
 const std::string RPG_Item_Common_Tools::weaponDamageToString(const RPG_Item_WeaponDamage& weaponDamage_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponDamageToString"));
 
   std::string result;
 
-  RPG_String2WeaponDamageTypeTableIterator_t iterator = myString2WeaponDamageTypeTable.begin();
   // sanity check
   if (weaponDamage_in.none())
   {
-    return iterator->first;
+    return RPG_Item_Common_Tools::weaponDamageTypeToString(WEAPONDAMAGE_NONE);
   } // end IF
 
-  iterator++;
   for (int i = 0;
        i < weaponDamage_in.size();
-       i++, iterator++)
+       i++)
   {
     if (weaponDamage_in.test(i))
     {
+      // *TODO*: this is a nasty hack !
+      RPG_String2WeaponDamageTypeTableIterator_t iterator = myString2WeaponDamageTypeTable.begin();
+      do
+      {
+        if (iterator->second == ACE_static_cast(RPG_Item_WeaponDamageType, (1 << i)))
+        {
+          // done
+          break;
+        } // end IF
+
+        iterator++;
+      } while (iterator != myString2WeaponDamageTypeTable.end());
+
       result += iterator->first;
       result += ACE_TEXT_ALWAYS_CHAR("|");
     } // end IF
@@ -383,8 +418,9 @@ const std::string RPG_Item_Common_Tools::weaponDamageToString(const RPG_Item_Wea
 
 //   // debug info
 //   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("weapon damage: \"%s\"\n"),
-//              weaponDamage_in.to_string().c_str()));
+//              ACE_TEXT("weapon damage: \"%s\" --> \"%s\"\n"),
+//              weaponDamage_in.to_string().c_str(),
+//              result.c_str()));
 
   return result;
 }
