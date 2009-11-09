@@ -1489,7 +1489,7 @@
       </baseStorePrice>
       <baseDamage>
         <numDice>0</numDice>
-        <typeDice>D_TYPE_INVALID</typeDice>
+        <typeDice>D_0</typeDice>
         <modifier>0</modifier>
       </baseDamage>
       <criticalHitModifier>

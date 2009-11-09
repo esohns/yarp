@@ -48,27 +48,27 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   myString2SubClassTable.clear();
 
   // RPG_Character_Gender
-  myString2GenderTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("GENDER_NONE"), GENDER_NONE));
-  myString2GenderTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("GENDER_MALE"), GENDER_MALE));
-  myString2GenderTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("GENDER_FEMALE"), GENDER_FEMALE));
+  myString2GenderTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("None"), GENDER_NONE));
+  myString2GenderTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Male"), GENDER_MALE));
+  myString2GenderTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Female"), GENDER_FEMALE));
 
   // RPG_Character_AlignmentCivic
-  myString2AlignmentCivicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ALIGNMENTCIVIC_LAWFUL"), ALIGNMENTCIVIC_LAWFUL));
-  myString2AlignmentCivicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ALIGNMENTCIVIC_NEUTRAL"), ALIGNMENTCIVIC_NEUTRAL));
-  myString2AlignmentCivicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ALIGNMENTCIVIC_CHAOTIC"), ALIGNMENTCIVIC_CHAOTIC));
+  myString2AlignmentCivicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Lawful"), ALIGNMENTCIVIC_LAWFUL));
+  myString2AlignmentCivicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Neutral"), ALIGNMENTCIVIC_NEUTRAL));
+  myString2AlignmentCivicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Chaotic"), ALIGNMENTCIVIC_CHAOTIC));
 
   // RPG_Character_AlignmentEthic
-  myString2AlignmentEthicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ALIGNMENTETHIC_GOOD"), ALIGNMENTETHIC_GOOD));
-  myString2AlignmentEthicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ALIGNMENTETHIC_NEUTRAL"), ALIGNMENTETHIC_NEUTRAL));
-  myString2AlignmentEthicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ALIGNMENTETHIC_EVIL"), ALIGNMENTETHIC_EVIL));
+  myString2AlignmentEthicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Good"), ALIGNMENTETHIC_GOOD));
+  myString2AlignmentEthicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Neutral"), ALIGNMENTETHIC_NEUTRAL));
+  myString2AlignmentEthicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Evil"), ALIGNMENTETHIC_EVIL));
 
   // RPG_Character_Attribute
-  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_STRENGTH"), ATTRIBUTE_STRENGTH));
-  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_DEXTERITY"), ATTRIBUTE_DEXTERITY));
-  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_CONSTITUTION"), ATTRIBUTE_CONSTITUTION));
-  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_INTELLIGENCE"), ATTRIBUTE_INTELLIGENCE));
-  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_WISDOM"), ATTRIBUTE_WISDOM));
-  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_CHARISMA"), ATTRIBUTE_CHARISMA));
+  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Strength"), ATTRIBUTE_STRENGTH));
+  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Dexterity"), ATTRIBUTE_DEXTERITY));
+  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Constitution"), ATTRIBUTE_CONSTITUTION));
+  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Intelligence"), ATTRIBUTE_INTELLIGENCE));
+  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Wisdom"), ATTRIBUTE_WISDOM));
+  myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Charisma"), ATTRIBUTE_CHARISMA));
 
   // RPG_Character_Condition
   myString2ConditionTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("CONDITION_NORMAL"), CONDITION_NORMAL));
@@ -112,12 +112,12 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   myString2ConditionTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("CONDITION_UNCONSCIOUS"), CONDITION_UNCONSCIOUS));
 
   // RPG_Character_Race
-  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("RACE_HUMAN"), RACE_HUMAN));
-  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("RACE_DWARF"), RACE_DWARF));
-  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("RACE_ELF"), RACE_ELF));
-  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("RACE_HALFLING"), RACE_HALFLING));
-  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("RACE_GNOME"), RACE_GNOME));
-  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("RACE_ORC"), RACE_ORC));
+  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Human"), RACE_HUMAN));
+  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Dwarf"), RACE_DWARF));
+  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Elf"), RACE_ELF));
+  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Halfling"), RACE_HALFLING));
+  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Gnome"), RACE_GNOME));
+  myString2RaceTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Orc"), RACE_ORC));
 
   // RPG_Character_MetaClass
   myString2MetaClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("METACLASS_WARRIOR"), METACLASS_WARRIOR));
@@ -126,22 +126,22 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   myString2MetaClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("METACLASS_ROGUE"), METACLASS_ROGUE));
 
   // RPG_Character_SubClass
-  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_FIGHTER"), SUBCLASS_FIGHTER));
-  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_PALADIN"), SUBCLASS_PALADIN));
-  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_RANGER"), SUBCLASS_RANGER));
-  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_BARBARIAN"), SUBCLASS_BARBARIAN));
-//   myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_WARLORD"), SUBCLASS_WARLORD));
-  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_WIZARD"), SUBCLASS_WIZARD));
-  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_SORCERER"), SUBCLASS_SORCERER));
-//   myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_WARLOCK"), SUBCLASS_WARLOCK));
-  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_CLERIC"), SUBCLASS_CLERIC));
-  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_DRUID"), SUBCLASS_DRUID));
-  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_MONK"), SUBCLASS_MONK));
-//   myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_AVENGER"), SUBCLASS_AVENGER));
-//   myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_INVOKER"), SUBCLASS_INVOKER));
-//   myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_SHAMAN"), SUBCLASS_SHAMAN));
-  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_THIEF"), SUBCLASS_THIEF));
-  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_BARD"), SUBCLASS_BARD));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Fighter"), SUBCLASS_FIGHTER));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Paladin"), SUBCLASS_PALADIN));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Ranger"), SUBCLASS_RANGER));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Barbarian"), SUBCLASS_BARBARIAN));
+//   myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Warlord"), SUBCLASS_WARLORD));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Wizard"), SUBCLASS_WIZARD));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Sorcerer"), SUBCLASS_SORCERER));
+//   myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Warlock"), SUBCLASS_WARLOCK));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Cleric"), SUBCLASS_CLERIC));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Druid"), SUBCLASS_DRUID));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Monk"), SUBCLASS_MONK));
+//   myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Avenger"), SUBCLASS_AVENGER));
+//   myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Invoker"), SUBCLASS_INVOKER));
+//   myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Shaman"), SUBCLASS_SHAMAN));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Thief"), SUBCLASS_THIEF));
+  myString2SubClassTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Bard"), SUBCLASS_BARD));
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
@@ -261,15 +261,22 @@ const std::string RPG_Character_Common_Tools::alignmentToString(const RPG_Charac
     if (iterator2->second == alignment_in.ethicAlignment)
     {
       // found second part
-      result += ACE_TEXT_ALWAYS_CHAR("|");
+      result += ACE_TEXT_ALWAYS_CHAR(" ");
       result += iterator2->first;
     } // end IF
 
     iterator2++;
   } while (iterator2 != myString2AlignmentEthicTable.end());
 
+  // "Neutral" "Neutral" --> "True Neutral"
+  if ((alignment_in.civicAlignment == ALIGNMENTCIVIC_NEUTRAL) &&
+      (alignment_in.ethicAlignment == ALIGNMENTETHIC_NEUTRAL))
+  {
+    result = ACE_TEXT_ALWAYS_CHAR("True Neutral");
+  } // end IF
+
   // sanity check
-  if (result.find(ACE_TEXT_ALWAYS_CHAR("|")) == std::string::npos)
+  if (result.find(ACE_TEXT_ALWAYS_CHAR(" ")) == std::string::npos)
   {
     // debug info
     ACE_DEBUG((LM_ERROR,

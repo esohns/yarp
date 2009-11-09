@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "rpg_chance_dice.h"
 
+#include "rpg_chance_dice_common_tools.h"
+
 #include <ace/OS.h>
 #include <ace/Trace.h>
 #include <ace/Log_Msg.h>
@@ -65,13 +67,14 @@ void RPG_Chance_Dice::simulateDiceRoll(const RPG_Chance_Roll& rollSpecs_in,
   // init result(s)
   results_out.clear();
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("generating %d roll(s) of %dd%d (modifier: %d)...\n"),
-             numRolls_in,
-             rollSpecs_in.numDice,
-             rollSpecs_in.typeDice,
-             rollSpecs_in.modifier));
+//   // debug info
+//   std::string die = RPG_Chance_Dice_Common_Tools::diceType2String(rollSpecs_in.typeDice);
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("generating %d roll(s) of %d%s (modifier: %d)...\n"),
+//              numRolls_in,
+//              rollSpecs_in.numDice,
+//              die.c_str(),
+//              rollSpecs_in.modifier));
 
   unsigned int tempResult = 0;
   for (unsigned int i = 0;

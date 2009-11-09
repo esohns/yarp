@@ -133,6 +133,7 @@
 
   <xsd:simpleType name="RPG_Chance_DiceType_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="D_0"/>
       <xsd:enumeration value="D_2"/>
       <xsd:enumeration value="D_3"/>
       <xsd:enumeration value="D_4"/>
@@ -142,7 +143,6 @@
       <xsd:enumeration value="D_12"/>
       <xsd:enumeration value="D_20"/>
       <xsd:enumeration value="D_100"/>
-      <xsd:enumeration value="D_TYPE_INVALID"/>
     </xsd:restriction>
   </xsd:simpleType>
 

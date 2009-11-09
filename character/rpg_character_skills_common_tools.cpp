@@ -2057,9 +2057,9 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
     return false;
   } // end IF
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("checking feat: \"%s\"...\n"),
-             iterator->second.c_str()));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("checking feat: \"%s\"...\n"),
+//              iterator->second.c_str()));
 
   // find feat prerequisites
   RPG_Character_FeatPrerequisitesTableIterator_t iterator2 = myFeatPrerequisitesTable.find(feat_in);
@@ -2150,12 +2150,12 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
           }
         } // end SWITCH
 
-        // attribute test failed
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("prerequisite of feat \"%s\" not met: \"%s\" < %d\n"),
-                   iterator->second.c_str(),
-                   RPG_Character_Common_Tools::attributeToString((*iterator3).attribute).c_str(),
-                   (*iterator3).minValue));
+//         // attribute test failed
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("prerequisite of feat \"%s\" not met: \"%s\" < %d\n"),
+//                    iterator->second.c_str(),
+//                    RPG_Character_Common_Tools::attributeToString((*iterator3).attribute).c_str(),
+//                    (*iterator3).minValue));
 
         return false;
       }
@@ -2167,12 +2167,12 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
           continue;
         } // end IF
 
-        // other feat test failed
-        RPG_Character_Feat2StringTableIterator_t iterator4 = myFeat2StringTable.find((*iterator3).requiredOtherFeat);
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("prerequisite of feat \"%s\" not met: missing feat \"%s\"\n"),
-                   iterator->second.c_str(),
-                   iterator4->second.c_str()));
+//         // other feat test failed
+//         RPG_Character_Feat2StringTableIterator_t iterator4 = myFeat2StringTable.find((*iterator3).requiredOtherFeat);
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("prerequisite of feat \"%s\" not met: missing feat \"%s\"\n"),
+//                    iterator->second.c_str(),
+//                    iterator4->second.c_str()));
 
         return false;
       }
@@ -2186,12 +2186,12 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
           continue;
         } // end IF
 
-        // min base attack bonus test failed
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("prerequisite of feat \"%s\" not met: %d < %d\n"),
-                   iterator->second.c_str(),
-                   BAB.front(),
-                   (*iterator3).minValue));
+//         // min base attack bonus test failed
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("prerequisite of feat \"%s\" not met: %d < %d\n"),
+//                    iterator->second.c_str(),
+//                    BAB.front(),
+//                    (*iterator3).minValue));
 
         return false;
       }
@@ -2207,13 +2207,13 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
           } // end IF
         } // end IF
 
-        // min skill rank test failed
-        RPG_Character_Skill2StringTableIterator_t iterator5 = mySkill2StringTable.find((*iterator3).skill);
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("prerequisite of feat \"%s\" not met: \"%s\" < %d\n"),
-                   iterator->second.c_str(),
-                   iterator5->second.c_str(),
-                   (*iterator3).minValue));
+//         // min skill rank test failed
+//         RPG_Character_Skill2StringTableIterator_t iterator5 = mySkill2StringTable.find((*iterator3).skill);
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("prerequisite of feat \"%s\" not met: \"%s\" < %d\n"),
+//                    iterator->second.c_str(),
+//                    iterator5->second.c_str(),
+//                    (*iterator3).minValue));
 
         return false;
       }
@@ -2226,12 +2226,12 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
           continue;
         } // end IF
 
-        // min class level failed
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("prerequisite of feat \"%s\" not met: \"%s\" < %d\n"),
-                   iterator->second.c_str(),
-                   RPG_Character_Common_Tools::subClassToString(subClass_in).c_str(),
-                   (*iterator3).minValue));
+//         // min class level failed
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("prerequisite of feat \"%s\" not met: \"%s\" < %d\n"),
+//                    iterator->second.c_str(),
+//                    RPG_Character_Common_Tools::subClassToString(subClass_in).c_str(),
+//                    (*iterator3).minValue));
 
         return false;
       }
@@ -2244,13 +2244,13 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
           continue;
         } // end IF
 
-        // min caster level failed
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("prerequisite of feat \"%s\" not met: \"%s\", OR %d < %d\n"),
-                   iterator->second.c_str(),
-                   RPG_Character_Common_Tools::subClassToString(subClass_in).c_str(),
-                   currentLevel_in,
-                   (*iterator3).minValue));
+//         // min caster level failed
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("prerequisite of feat \"%s\" not met: \"%s\", OR %d < %d\n"),
+//                    iterator->second.c_str(),
+//                    RPG_Character_Common_Tools::subClassToString(subClass_in).c_str(),
+//                    currentLevel_in,
+//                    (*iterator3).minValue));
 
         return false;
       }
@@ -2262,11 +2262,11 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
           continue;
         } // end IF
 
-        // restricted subclasses test failed
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("prerequisite of feat \"%s\" not met: invalid class \"%s\"\n"),
-                   iterator->second.c_str(),
-                   RPG_Character_Common_Tools::subClassToString(subClass_in).c_str()));
+//         // restricted subclasses test failed
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("prerequisite of feat \"%s\" not met: invalid class \"%s\"\n"),
+//                    iterator->second.c_str(),
+//                    RPG_Character_Common_Tools::subClassToString(subClass_in).c_str()));
 
         return false;
       }
@@ -2278,12 +2278,12 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
           continue;
         } // end IF
 
-        // ability test failed
-        RPG_Character_Ability2StringTableIterator_t iterator4 = myAbility2StringTable.find((*iterator3).requiredAbility);
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("prerequisite of feat \"%s\" not met: missing ability \"%s\"\n"),
-                   iterator->second.c_str(),
-                   iterator4->second.c_str()));
+//         // ability test failed
+//         RPG_Character_Ability2StringTableIterator_t iterator4 = myAbility2StringTable.find((*iterator3).requiredAbility);
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("prerequisite of feat \"%s\" not met: missing ability \"%s\"\n"),
+//                    iterator->second.c_str(),
+//                    iterator4->second.c_str()));
 
         return false;
       }

@@ -65,11 +65,11 @@ void RPG_Item_Dictionary_Parser::post_RPG_Item_Dictionary_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::post_RPG_Item_Dictionary_Type"));
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished parsing item dictionary, retrieved %d weapon and %d armor types...\n"),
-             myWeaponDictionary->size(),
-             myArmorDictionary->size()));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("finished parsing item dictionary, retrieved %d weapon and %d armor types...\n"),
+//              myWeaponDictionary->size(),
+//              myArmorDictionary->size()));
 }
 
 RPG_Item_WeaponDictionary_Type::RPG_Item_WeaponDictionary_Type(RPG_Item_WeaponDictionary_t* weaponDictionary_in)
@@ -334,6 +334,7 @@ RPG_Item_WeaponProperties_Type::RPG_Item_WeaponProperties_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponProperties_Type::RPG_Item_WeaponProperties_Type"));
 
+  // reset current properties
   myCurrentWeaponProperty.weaponCategory = WEAPONCATEGORY_INVALID;
   myCurrentWeaponProperty.weaponClass = WEAPONCLASS_INVALID;
   myCurrentWeaponProperty.baseStorePrice.numGoldPieces = 0;
@@ -345,7 +346,7 @@ RPG_Item_WeaponProperties_Type::RPG_Item_WeaponProperties_Type()
   myCurrentWeaponProperty.criticalHitModifier.damageModifier = 1;
   myCurrentWeaponProperty.rangeIncrement = 0;
   myCurrentWeaponProperty.baseWeight = 0;
-  myCurrentWeaponProperty.typeOfDamage = WEAPONDAMAGE_NONE;
+  myCurrentWeaponProperty.typeOfDamage.reset();
 }
 
 // void RPG_Item_WeaponProperties_Type::pre()
@@ -415,14 +416,35 @@ void RPG_Item_WeaponProperties_Type::typeOfDamage(const RPG_Item_WeaponDamageTyp
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponProperties_Type::typeOfDamage"));
 
   // *IMPORTANT NOTE*: a weapon can exert more than one type of damage...
-  myCurrentWeaponProperty.typeOfDamage |= typeOfDamage_in;
+  myCurrentWeaponProperty.typeOfDamage |= RPG_Item_WeaponDamage(typeOfDamage_in);
+
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("current weapon damage: \"%s\"\n"),
+//              myCurrentWeaponProperty.typeOfDamage.to_string().c_str()));
 }
 
 RPG_Item_WeaponProperties_XML RPG_Item_WeaponProperties_Type::post_RPG_Item_WeaponProperties_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponProperties_Type::post_RPG_Item_WeaponProperties_Type"));
 
-  return myCurrentWeaponProperty;
+  RPG_Item_WeaponProperties_XML result = myCurrentWeaponProperty;
+
+  // reset current properties
+  myCurrentWeaponProperty.weaponCategory = WEAPONCATEGORY_INVALID;
+  myCurrentWeaponProperty.weaponClass = WEAPONCLASS_INVALID;
+  myCurrentWeaponProperty.baseStorePrice.numGoldPieces = 0;
+  myCurrentWeaponProperty.baseStorePrice.numSilverPieces = 0;
+  myCurrentWeaponProperty.baseDamage.numDice = 0;
+  myCurrentWeaponProperty.baseDamage.typeDice = D_TYPE_INVALID;
+  myCurrentWeaponProperty.baseDamage.modifier = 0;
+  myCurrentWeaponProperty.criticalHitModifier.minToHitRoll = 20;
+  myCurrentWeaponProperty.criticalHitModifier.damageModifier = 1;
+  myCurrentWeaponProperty.rangeIncrement = 0;
+  myCurrentWeaponProperty.baseWeight = 0;
+  myCurrentWeaponProperty.typeOfDamage.reset();
+
+  return result;
 }
 
 // void RPG_Item_ArmorCategory_Type::pre()
@@ -455,6 +477,7 @@ RPG_Item_ArmorProperties_Type::RPG_Item_ArmorProperties_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::RPG_Item_ArmorProperties_Type"));
 
+  // reset properties
   myCurrentArmorProperty.armorType = ARMOR_TYPE_INVALID;
   myCurrentArmorProperty.armorCategory = ARMORCATEGORY_INVALID;
   myCurrentArmorProperty.baseStorePrice.numGoldPieces = 0;
@@ -540,5 +563,19 @@ RPG_Item_ArmorProperties_XML RPG_Item_ArmorProperties_Type::post_RPG_Item_ArmorP
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::post_RPG_Item_ArmorProperties_Type"));
 
-  return myCurrentArmorProperty;
+  RPG_Item_ArmorProperties_XML result = myCurrentArmorProperty;
+
+  // reset properties
+  myCurrentArmorProperty.armorType = ARMOR_TYPE_INVALID;
+  myCurrentArmorProperty.armorCategory = ARMORCATEGORY_INVALID;
+  myCurrentArmorProperty.baseStorePrice.numGoldPieces = 0;
+  myCurrentArmorProperty.baseStorePrice.numSilverPieces = 0;
+  myCurrentArmorProperty.baseArmorBonus = 0;
+  myCurrentArmorProperty.maxDexterityBonus = 0;
+  myCurrentArmorProperty.armorCheckPenalty = 0;
+  myCurrentArmorProperty.arcaneSpellFailure = 0;
+  myCurrentArmorProperty.baseSpeed = 0;
+  myCurrentArmorProperty.baseWeight = 0;
+
+  return result;
 }

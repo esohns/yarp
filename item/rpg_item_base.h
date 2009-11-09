@@ -36,7 +36,7 @@ class RPG_Item_Base
   // what am I ?
   const RPG_Item_Type getType() const;
 
-  virtual void dump() const = 0;
+  virtual void dump() const;
 
  protected:
   RPG_Item_Base(const RPG_Item_Type&,

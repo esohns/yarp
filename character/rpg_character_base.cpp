@@ -26,7 +26,7 @@
 #include <ace/Log_Msg.h>
 
 #include <string>
-#include <iostream>
+#include <sstream>
 
 RPG_Character_Base::RPG_Character_Base(const RPG_Character_Gender& gender_in,
                                        const RPG_Character_Race& race_in,
@@ -216,30 +216,44 @@ void RPG_Character_Base::dump() const
   std::string race = RPG_Character_Common_Tools::raceToString(myRace);
   std::string class_string = RPG_Character_Common_Tools::subClassToString(myClass.subClass);
   std::string alignment = RPG_Character_Common_Tools::alignmentToString(myAlignment);
+
+  std::stringstream str;
   std::string attributes = RPG_Character_Common_Tools::attributeToString(ATTRIBUTE_STRENGTH);
   attributes += ACE_TEXT_ALWAYS_CHAR(": ");
-  attributes += myAttributes.strength;
+  str << ACE_static_cast(unsigned int, myAttributes.strength);
+  attributes += str.str();
   attributes += ACE_TEXT_ALWAYS_CHAR("\n");
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
   attributes += RPG_Character_Common_Tools::attributeToString(ATTRIBUTE_DEXTERITY);
   attributes += ACE_TEXT_ALWAYS_CHAR(": ");
-  attributes += myAttributes.dexterity;
+  str << ACE_static_cast(unsigned int, myAttributes.dexterity);
+  attributes += str.str();
   attributes += ACE_TEXT_ALWAYS_CHAR("\n");
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
   attributes += RPG_Character_Common_Tools::attributeToString(ATTRIBUTE_CONSTITUTION);
   attributes += ACE_TEXT_ALWAYS_CHAR(": ");
-  attributes += myAttributes.constitution;
+  str << ACE_static_cast(unsigned int, myAttributes.constitution);
+  attributes += str.str();
   attributes += ACE_TEXT_ALWAYS_CHAR("\n");
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
   attributes += RPG_Character_Common_Tools::attributeToString(ATTRIBUTE_INTELLIGENCE);
   attributes += ACE_TEXT_ALWAYS_CHAR(": ");
-  attributes += myAttributes.intelligence;
+  str << ACE_static_cast(unsigned int, myAttributes.intelligence);
+  attributes += str.str();
   attributes += ACE_TEXT_ALWAYS_CHAR("\n");
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
   attributes += RPG_Character_Common_Tools::attributeToString(ATTRIBUTE_WISDOM);
   attributes += ACE_TEXT_ALWAYS_CHAR(": ");
-  attributes += myAttributes.wisdom;
+  str << ACE_static_cast(unsigned int, myAttributes.wisdom);
+  attributes += str.str();
   attributes += ACE_TEXT_ALWAYS_CHAR("\n");
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
   attributes += RPG_Character_Common_Tools::attributeToString(ATTRIBUTE_CHARISMA);
   attributes += ACE_TEXT_ALWAYS_CHAR(": ");
-  attributes += myAttributes.charisma;
+  str << ACE_static_cast(unsigned int, myAttributes.charisma);
+  attributes += str.str();
   attributes += ACE_TEXT_ALWAYS_CHAR("\n");
+
   std::string skills;
   RPG_Character_Skills_Common_Tools::RPG_Character_Skill2StringTableIterator_t iterator;
   for (RPG_Character_SkillsConstIterator_t iterator2 = mySkills.begin();
@@ -255,11 +269,14 @@ void RPG_Character_Base::dump() const
                  iterator2->first));
     } // end IF
 
+    str.str(ACE_TEXT_ALWAYS_CHAR(""));
     skills += iterator->second;
     skills += ACE_TEXT_ALWAYS_CHAR(": ");
-    skills += iterator2->second;
+    str << ACE_static_cast(unsigned int, iterator2->second);
+    skills += str.str();
     skills += ACE_TEXT_ALWAYS_CHAR("\n");
   }; // end FOR
+
   std::string feats;
   RPG_Character_Skills_Common_Tools::RPG_Character_Feat2StringTableIterator_t iterator3;
   for (RPG_Character_FeatsConstIterator_t iterator4 = myFeats.begin();
@@ -278,6 +295,7 @@ void RPG_Character_Base::dump() const
     feats += iterator3->second;
     feats += ACE_TEXT_ALWAYS_CHAR("\n");
   }; // end FOR
+
   std::string abilities;
   RPG_Character_Skills_Common_Tools::RPG_Character_Ability2StringTableIterator_t iterator5;
   for (RPG_Character_AbilitiesConstIterator_t iterator6 = myAbilities.begin();
@@ -298,7 +316,7 @@ void RPG_Character_Base::dump() const
   }; // end FOR
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("Player: \nGender: %s\nRace: %s\nClass: %s\nAlignment: %s\nAttributes:\n%s\nSkills:\n%s\nFeats:\n%s\nAbilities: %s\nItems:\n"),
+             ACE_TEXT("Player: \nGender: %s\nRace: %s\nClass: %s\nAlignment: %s\nAttributes:\n===========\n%sSkills:\n=======\n%sFeats:\n======\n%sAbilities:\n==========\n%sItems:\n======\n"),
              gender.c_str(),
              race.c_str(),
              class_string.c_str(),

@@ -22,6 +22,7 @@
 
 enum RPG_Chance_DiceType
 {
+  D_0   = 0,
   D_2   = 2,
   D_3   = 3,
   D_4   = 4,

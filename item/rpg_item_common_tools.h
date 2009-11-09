@@ -52,6 +52,7 @@ class RPG_Item_Common_Tools
   typedef RPG_String2ArmorTypeTable_t::const_iterator RPG_String2ArmorTypeTableIterator_t;
 
   static void initStringConversionTables();
+  static const std::string             itemTypeToString(const RPG_Item_Type&); // item type
   static const RPG_Item_WeaponCategory stringToWeaponCategory(const std::string&); // string
   static const std::string             weaponCategoryToString(const RPG_Item_WeaponCategory&); // weapon category
   static const RPG_Item_WeaponClass stringToWeaponClass(const std::string&); // string
@@ -60,6 +61,7 @@ class RPG_Item_Common_Tools
   static const std::string         weaponTypeToString(const RPG_Item_WeaponType&); // weapon type
   static const RPG_Item_WeaponDamageType stringToWeaponDamageType(const std::string&); // string
   static const std::string               weaponDamageToString(const RPG_Item_WeaponDamage&); // weapon damage
+  static const std::string               damageToString(const RPG_Item_Damage&); // damage
   static const RPG_Item_ArmorCategory stringToArmorCategory(const std::string&); // string
   static const std::string            armorCategoryToString(const RPG_Item_ArmorCategory&); // armor category
   static const RPG_Item_ArmorType stringToArmorType(const std::string&); // string

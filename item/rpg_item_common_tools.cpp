@@ -19,7 +19,11 @@
  ***************************************************************************/
 #include "rpg_item_common_tools.h"
 
+#include <rpg_chance_dice_common_tools.h>
+
 #include <ace/Log_Msg.h>
+
+#include <sstream>
 
 // init statics
 RPG_Item_Common_Tools::RPG_String2ItemTypeTable_t         RPG_Item_Common_Tools::myString2ItemTypeTable;
@@ -46,19 +50,19 @@ void RPG_Item_Common_Tools::initStringConversionTables()
   myString2ArmorTypeTable.clear();
 
   // RPG_Item_Type
-  myString2ItemTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ITEM_ARMOR"), ITEM_ARMOR));
-  myString2ItemTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ITEM_GOODS"), ITEM_GOODS));
-  myString2ItemTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ITEM_OTHER"), ITEM_OTHER));
-  myString2ItemTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ITEM_VALUABLE"), ITEM_VALUABLE));
-  myString2ItemTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ITEM_WEAPON"), ITEM_WEAPON));
+  myString2ItemTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Armor"), ITEM_ARMOR));
+  myString2ItemTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Goods"), ITEM_GOODS));
+  myString2ItemTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Other"), ITEM_OTHER));
+  myString2ItemTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Valuable"), ITEM_VALUABLE));
+  myString2ItemTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Weapon"), ITEM_WEAPON));
 
   // RPG_Item_Wealth_Type
-  myString2MoneyTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONEY_COIN_COPPER"), MONEY_COIN_COPPER));
-  myString2MoneyTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONEY_COIN_SILVER"), MONEY_COIN_SILVER));
-  myString2MoneyTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONEY_COIN_GOLD"), MONEY_COIN_GOLD));
-  myString2MoneyTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONEY_COIN_PLATINUM"), MONEY_COIN_PLATINUM));
-  myString2MoneyTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONEY_GEM"), MONEY_GEM));
-  myString2MoneyTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONEY_PRECIOUS"), MONEY_PRECIOUS));
+  myString2MoneyTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Copper"), MONEY_COIN_COPPER));
+  myString2MoneyTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Silver"), MONEY_COIN_SILVER));
+  myString2MoneyTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Gold"), MONEY_COIN_GOLD));
+  myString2MoneyTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Platinum"), MONEY_COIN_PLATINUM));
+  myString2MoneyTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Gem"), MONEY_GEM));
+  myString2MoneyTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Precious"), MONEY_PRECIOUS));
 
   // RPG_Item_Weapon_Category
   myString2WeaponCategoryTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("WEAPONCATEGORY_SIMPLE"), WEAPONCATEGORY_SIMPLE));
@@ -177,6 +181,30 @@ void RPG_Item_Common_Tools::initStringConversionTables()
   myString2ArmorTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ARMOR_SHIELD_HEAVY_WOODEN"), ARMOR_SHIELD_HEAVY_WOODEN));
   myString2ArmorTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ARMOR_SHIELD_HEAVY_STEEL"), ARMOR_SHIELD_HEAVY_STEEL));
   myString2ArmorTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ARMOR_SHIELD_TOWER"), ARMOR_SHIELD_TOWER));
+}
+
+const std::string RPG_Item_Common_Tools::itemTypeToString(const RPG_Item_Type& itemType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::itemTypeToString"));
+
+  RPG_String2ItemTypeTableIterator_t iterator = myString2ItemTypeTable.begin();
+  do
+  {
+    if (iterator->second == itemType_in)
+    {
+      // done
+      return iterator->first;
+    } // end IF
+
+    iterator++;
+  } while (iterator != myString2ItemTypeTable.end());
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid item type: %d --> check implementation !, aborting\n"),
+             itemType_in));
+
+  return std::string(ACE_TEXT_ALWAYS_CHAR("ITEM_TYPE_INVALID"));
 }
 
 const RPG_Item_WeaponCategory RPG_Item_Common_Tools::stringToWeaponCategory(const std::string& string_in)
@@ -349,7 +377,44 @@ const std::string RPG_Item_Common_Tools::weaponDamageToString(const RPG_Item_Wea
   } // end FOR
 
   // crop last character
-  result.erase(result.end()--);
+  std::string::iterator position = result.end();
+  position--;
+  result.erase(position);
+
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("weapon damage: \"%s\"\n"),
+//              weaponDamage_in.to_string().c_str()));
+
+  return result;
+}
+
+const std::string RPG_Item_Common_Tools::damageToString(const RPG_Item_Damage& damage_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::damageToString"));
+
+  std::string result;
+  std::stringstream str;
+
+  if (damage_in.typeDice != D_0)
+  {
+    str << damage_in.numDice;
+    result += str.str();
+    result += RPG_Chance_Dice_Common_Tools::diceType2String(damage_in.typeDice);
+  } // end IF
+
+  if (damage_in.modifier == 0)
+  {
+    return result;
+  } // end IF
+  else if ((damage_in.modifier > 0) &&
+           (damage_in.typeDice != D_0))
+  {
+    result += ACE_TEXT_ALWAYS_CHAR("+");
+  } // end IF
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+  str << damage_in.modifier;
+  result += str.str();
 
   return result;
 }

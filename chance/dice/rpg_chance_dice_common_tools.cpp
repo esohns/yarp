@@ -21,6 +21,8 @@
 
 #include <ace/Log_Msg.h>
 
+#include <sstream>
+
 // init statics
 RPG_Chance_Dice_Common_Tools::RPG_String2DiceType_t RPG_Chance_Dice_Common_Tools::myString2DiceTypeTable;
 
@@ -32,6 +34,7 @@ void RPG_Chance_Dice_Common_Tools::initStringConversionTables()
   myString2DiceTypeTable.clear();
 
   // RPG_Chance_DiceType
+  myString2DiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_0"), D_0));
   myString2DiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_2"), D_2));
   myString2DiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_3"), D_3));
   myString2DiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_4"), D_4));
@@ -41,7 +44,6 @@ void RPG_Chance_Dice_Common_Tools::initStringConversionTables()
   myString2DiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_12"), D_12));
   myString2DiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_20"), D_20));
   myString2DiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_100"), D_100));
-  myString2DiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_TYPE_INVALID"), D_TYPE_INVALID));
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
@@ -95,22 +97,23 @@ const std::string RPG_Chance_Dice_Common_Tools::rollToString(const RPG_Chance_Ro
   ACE_TRACE(ACE_TEXT("RPG_Chance_Dice_Common_Tools::rollToString"));
 
   std::string result;
+  std::stringstream str;
 
-  result += diceRoll_in.numDice;
-  result += ACE_TEXT_ALWAYS_CHAR(" ");
+  str << diceRoll_in.numDice;
+  result += str.str();
   result += RPG_Chance_Dice_Common_Tools::diceType2String(diceRoll_in.typeDice);
 
   if (diceRoll_in.modifier == 0)
   {
     return result;
   } // end IF
-
-  result += ACE_TEXT_ALWAYS_CHAR(" ");
-  if (diceRoll_in.modifier > 0)
+  else if (diceRoll_in.modifier > 0)
   {
     result += ACE_TEXT_ALWAYS_CHAR("+");
   } // end IF
-  result += diceRoll_in.modifier;
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+  str << diceRoll_in.modifier;
+  result += str.str();
 
   return result;
 }
