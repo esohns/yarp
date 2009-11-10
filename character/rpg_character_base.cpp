@@ -22,33 +22,26 @@
 #include "rpg_character_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
 
-#include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
 #include <string>
 #include <sstream>
 
-RPG_Character_Base::RPG_Character_Base(const RPG_Character_Gender& gender_in,
-                                       const RPG_Character_Race& race_in,
-                                       const RPG_Character_Class& class_in,
+RPG_Character_Base::RPG_Character_Base(const std::string& name_in,
                                        const RPG_Character_Alignment& alignment_in,
                                        const RPG_Character_Attributes& attributes_in,
                                        const RPG_Character_Skills_t& skills_in,
                                        const RPG_Character_Feats_t& feats_in,
                                        const RPG_Character_Abilities_t& abilities_in,
-                                       const unsigned int& experience_in,
                                        const unsigned short int& hitpoints_in,
                                        const unsigned int& wealth_in,
                                        const RPG_Item_List_t& inventory_in)
- : myGender(gender_in),
-   myRace(race_in),
-   myClass(class_in),
+ : myName(name_in),
    myAlignment(alignment_in),
    myAttributes(attributes_in),
    mySkills(skills_in),
    myFeats(feats_in),
    myAbilities(abilities_in),
-   myExperience(experience_in),
    myNumTotalHitPoints(hitpoints_in),
    myNumCurrentHitPoints(hitpoints_in), // we start out healthy, don't we ?
    myCurrentWealth(wealth_in),
@@ -65,25 +58,11 @@ RPG_Character_Base::~RPG_Character_Base()
 
 }
 
-const RPG_Character_Gender RPG_Character_Base::getGender() const
+const std::string RPG_Character_Base::getName() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getGender"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getName"));
 
-  return myGender;
-}
-
-const RPG_Character_Race RPG_Character_Base::getRace() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getRace"));
-
-  return myRace;
-}
-
-const RPG_Character_Class RPG_Character_Base::getClass() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getClass"));
-
-  return myClass;
+  return myName;
 }
 
 const RPG_Character_Alignment RPG_Character_Base::getAlignment() const
@@ -164,22 +143,6 @@ const bool RPG_Character_Base::hasAbility(const RPG_Character_Ability& ability_i
   return (myAbilities.find(ability_in) != myAbilities.end());
 }
 
-const unsigned char RPG_Character_Base::getLevel() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getLevel"));
-
-  // *TODO*: consider implementing class-specific tables...
-  return ACE_static_cast(unsigned int,
-                         ACE_OS::floor((1.0 + ::sqrt((myExperience / 125) + 1)) / 2.0));
-}
-
-const unsigned int RPG_Character_Base::getExperience() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getExperience"));
-
-  return myExperience;
-}
-
 const unsigned short int RPG_Character_Base::getNumTotalHitPoints() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getNumTotalHitPoints"));
@@ -212,9 +175,6 @@ void RPG_Character_Base::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::dump"));
 
-  std::string gender = RPG_Character_Common_Tools::genderToString(myGender);
-  std::string race = RPG_Character_Common_Tools::raceToString(myRace);
-  std::string class_string = RPG_Character_Common_Tools::subClassToString(myClass.subClass);
   std::string alignment = RPG_Character_Common_Tools::alignmentToString(myAlignment);
 
   std::stringstream str;
@@ -316,10 +276,8 @@ void RPG_Character_Base::dump() const
   }; // end FOR
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("Player: \nGender: %s\nRace: %s\nClass: %s\nAlignment: %s\nAttributes:\n===========\n%sSkills:\n=======\n%sFeats:\n======\n%sAbilities:\n==========\n%sItems:\n======\n"),
-             gender.c_str(),
-             race.c_str(),
-             class_string.c_str(),
+             ACE_TEXT("Player: \nName: %s\nAlignment: %s\nAttributes:\n===========\n%sSkills:\n=======\n%sFeats:\n======\n%sAbilities:\n==========\n%sItems:\n======\n"),
+             myName.c_str(),
              alignment.c_str(),
              attributes.c_str(),
              skills.c_str(),

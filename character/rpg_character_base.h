@@ -21,14 +21,14 @@
 #define RPG_CHARACTER_BASE_H
 
 #include "rpg_character_common.h"
-#include "rpg_character_race_common.h"
-#include "rpg_character_class_common.h"
 #include "rpg_character_skills_common.h"
 #include "rpg_character_inventory_common.h"
 #include "rpg_character_inventory.h"
 #include "rpg_character_equipment.h"
 
 #include <ace/Global_Macros.h>
+
+#include <string>
 
 /**
 base class of all PCs, NPCs and monsters
@@ -41,9 +41,7 @@ class RPG_Character_Base
   virtual ~RPG_Character_Base();
 
   // retrieve basic character data
-  const RPG_Character_Gender getGender() const;
-  const RPG_Character_Race getRace() const;
-  const RPG_Character_Class getClass() const;
+  const std::string getName() const;
   const RPG_Character_Alignment getAlignment() const;
 
   // retrieve base attributes
@@ -53,58 +51,55 @@ class RPG_Character_Base
   const unsigned char getIntelligence() const;
   const unsigned char getWisdom() const;
   const unsigned char getCharisma() const;
+
   // retrieve skill value (if any)
   void getSkill(const RPG_Character_Skill&, // skill
                 unsigned char&) const;      // result: value (0: doesn't exist)
+
   const bool hasFeat(const RPG_Character_Feat&) const; // feat
+
   const bool hasAbility(const RPG_Character_Ability&) const; // ability
 
-  const unsigned int getExperience() const;
-  // compute dynamically from class/XP
-  const unsigned char getLevel() const;
   const unsigned short int getNumTotalHitPoints() const;
   const unsigned short int getNumCurrentHitPoints() const;
-  const unsigned int getCurrentWealth() const;
-
   const RPG_Character_Condition getCondition() const;
+
+  const unsigned int getCurrentWealth() const;
 
   virtual void dump() const;
 
  protected:
   RPG_Character_Base(// base attributes
-                     const RPG_Character_Gender&,       // gender
-                     const RPG_Character_Race&,         // race
-                     const RPG_Character_Class&,        // (starting) class
+                     const std::string&,                // name
                      const RPG_Character_Alignment&,    // (starting) alignment
                      const RPG_Character_Attributes&,   // base attributes
                      const RPG_Character_Skills_t&,     // (starting) skills
                      const RPG_Character_Feats_t&,      // base feats
                      const RPG_Character_Abilities_t&,  // base abilities
-                     const unsigned int&,               // (starting) XP
                      const unsigned short int&,         // (starting) HP
                      const unsigned int&,               // (starting) wealth (GP)
                      // base items
                      const RPG_Item_List_t&);           // (starting) list of (carried) items
 
-  RPG_Character_Gender      myGender;
-  RPG_Character_Race        myRace;
-  RPG_Character_Class       myClass;
+  std::string               myName;
   RPG_Character_Alignment   myAlignment;
+
   RPG_Character_Attributes  myAttributes;
+
   RPG_Character_Skills_t    mySkills;
+
   RPG_Character_Feats_t     myFeats;
+
   RPG_Character_Abilities_t myAbilities;
-  unsigned int              myExperience;
 
   unsigned short int        myNumTotalHitPoints;
   unsigned short int        myNumCurrentHitPoints;
+  RPG_Character_Condition   myCondition;
 
   unsigned int              myCurrentWealth;
 
-  RPG_Character_Condition   myCondition;
-
-  RPG_Character_Inventory   myInventory;
   RPG_Character_Equipment   myEquipment;
+  RPG_Character_Inventory   myInventory;
 
  private:
   // safety measures

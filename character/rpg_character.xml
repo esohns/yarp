@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE RPG_Character_Dictionary SYSTEM "./rpg_character.xsd"> -->
+<RPG_Character_Dictionary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./rpg_character.xsd">
+
+  <RPG_Character_MonsterDictionary>
+    <monster>
+      <name>Aboleth</name>
+      <size>SIZE_HUGE</size>
+      <type>
+        <metaType>MONSTERMETATYPE_ABERRATION</metaType>
+        <subType>MONSTERSUBTYPE_AQUATIC</subType>
+      </type>
+      <hitDice>
+        <numDice>8</numDice>
+        <typeDice>D_8</typeDice>
+        <modifier>40</modifier>
+      </hitDice>
+      <initiative>1</initiative>
+      <speed>60</speed>
+      <armorClass>
+        <normal>16</normal>
+        <touch>9</touch>
+        <flatFooted>15</flatFooted>
+      </armorClass>
+      <attack>
+        <baseAttackBonus>6</baseAttackBonus>
+        <grappleBonus>22</grappleBonus>
+        <naturalWeapon>NATURALWEAPON_TENTACLE</naturalWeapon>
+        <attackBonus>12</attackBonus>
+        <attackForm>ATTACK_MELEE</attackForm>
+        <damage>
+          <numDice>1</numDice>
+          <typeDice>D_6</typeDice>
+          <modifier>8</modifier>
+        </damage>
+        <numAttacksPerRound>4</numAttacksPerRound>
+      </attack>
+      <space>15</space>
+      <reach>10</reach>
+      <saves>
+        <fortitude>7</fortitude>
+        <reflex>3</reflex>
+        <will>11</will>
+      </saves>
+      <environment>ENVIRONMENT_UNDERGROUND</environment>
+      <organization>ORGANIZATION_SOLITARY</organization>
+      <organization>ORGANIZATION_BROOD</organization>
+      <organization>ORGANIZATION_SLAVER_BROOD</organization>
+      <challengeRating>7</challengeRating>
+      <treasureModifier>2</treasureModifier>
+      <advancement>
+        <step>
+          <size>SIZE_HUGE</size>
+          <range>
+            <numDice>1</numDice>
+            <typeDice>D_6</typeDice>
+            <modifier>8</modifier>
+          </range>
+        </step>
+        <step>
+          <size>SIZE_GARGANTUAN</size>
+          <range>
+            <numDice>1</numDice>
+            <typeDice>D_6</typeDice>
+            <modifier>16</modifier>
+          </range>
+        </step>
+      </advancement>
+      <levelAdjustment>0</levelAdjustment>
+    </monster>
+  </RPG_Character_MonsterDictionary>
+
+</RPG_Character_Dictionary>

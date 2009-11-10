@@ -2,8 +2,8 @@
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="1" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/main.cpp" >
-   <View0 Encoding="" line="732" Type="Source" />
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_monster_common.h" >
+   <View0 Encoding="" line="30" Type="Source" />
   </Doc0>
  </DocsAndViews>
  <pluginList>

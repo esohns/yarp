@@ -21,6 +21,8 @@
 #define RPG_CHARACTER_PLAYER_BASE_H
 
 #include "rpg_character_base.h"
+#include "rpg_character_race_common.h"
+#include "rpg_character_class_common.h"
 
 #include <string>
 
@@ -34,7 +36,13 @@ class RPG_Character_Player_Base
   virtual ~RPG_Character_Player_Base();
 
   // retrieve basic player character data
-  const std::string getName() const;
+  const RPG_Character_Gender getGender() const;
+  const RPG_Character_Race getRace() const;
+  const RPG_Character_Class getClass() const;
+
+  const unsigned int getExperience() const;
+  // compute dynamically from class/XP
+  const unsigned char getLevel() const;
 
 //   // retrieve basic character data
 //   using RPG_Character_Base::getGender;
@@ -59,6 +67,8 @@ class RPG_Character_Player_Base
 //   using RPG_Character_Base::getNumCurrentHitPoints;
 //   using RPG_Character_Base::getCurrentWealth;
 
+  virtual void dump() const;
+
  protected:
   RPG_Character_Player_Base(const std::string&,               // name
                             const RPG_Character_Gender&,      // gender
@@ -74,7 +84,11 @@ class RPG_Character_Player_Base
                             const unsigned int&,              // (starting) wealth (GP)
                             const RPG_Item_List_t&);          // (starting) list of (carried) items
 
-  std::string myName;
+  RPG_Character_Gender      myGender;
+  RPG_Character_Race        myRace;
+  RPG_Character_Class       myClass;
+
+  unsigned int              myExperience;
 //  unsigned short int       mySize; // cm
 //  unsigned short int       myWeight; // kg
 //  unsigned int             myAge; // years
