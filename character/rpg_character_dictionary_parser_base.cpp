@@ -231,7 +231,7 @@ modifier (long long modifier)
   //
 }
 
-RPG_Character_Damage RPG_Chance_Roll_Type_pimpl::
+RPG_Chance_Roll RPG_Chance_Roll_Type_pimpl::
 post_RPG_Chance_Roll_Type ()
 {
   // TODO
@@ -283,7 +283,7 @@ attackForm (const RPG_Character_MonsterAttackForm& attackForm)
 }
 
 void RPG_Character_MonsterAttack_Type_pimpl::
-damage (const RPG_Character_Damage& damage)
+damage (const RPG_Chance_Roll& damage)
 {
   // TODO
   //
@@ -395,6 +395,72 @@ post_RPG_Character_Organization_Type ()
   // return ... ;
 }
 
+// RPG_Character_AlignmentCivic_Type_pimpl
+//
+
+void RPG_Character_AlignmentCivic_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Character_AlignmentCivic RPG_Character_AlignmentCivic_Type_pimpl::
+post_RPG_Character_AlignmentCivic_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Character_AlignmentEthic_Type_pimpl
+//
+
+void RPG_Character_AlignmentEthic_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Character_AlignmentEthic RPG_Character_AlignmentEthic_Type_pimpl::
+post_RPG_Character_AlignmentEthic_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Character_Alignment_Type_pimpl
+//
+
+void RPG_Character_Alignment_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Character_Alignment_Type_pimpl::
+civic (const RPG_Character_AlignmentCivic& civic)
+{
+  // TODO
+  //
+}
+
+void RPG_Character_Alignment_Type_pimpl::
+ethic (const RPG_Character_AlignmentEthic& ethic)
+{
+  // TODO
+  //
+}
+
+RPG_Character_Alignment RPG_Character_Alignment_Type_pimpl::
+post_RPG_Character_Alignment_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
 // RPG_Character_MonsterAdvancementStep_Type_pimpl
 //
 
@@ -411,7 +477,7 @@ size (const RPG_Character_Size& size)
 }
 
 void RPG_Character_MonsterAdvancementStep_Type_pimpl::
-range (const RPG_Character_Damage& range)
+range (const RPG_Chance_Roll& range)
 {
   // TODO
   //
@@ -478,7 +544,7 @@ type (const RPG_Character_MonsterType& type)
 }
 
 void RPG_Character_MonsterProperties_Type_pimpl::
-hitDice (const RPG_Character_Damage& hitDice)
+hitDice (const RPG_Chance_Roll& hitDice)
 {
   // TODO
   //
@@ -556,6 +622,13 @@ challengeRating (unsigned int challengeRating)
 
 void RPG_Character_MonsterProperties_Type_pimpl::
 treasureModifier (unsigned int treasureModifier)
+{
+  // TODO
+  //
+}
+
+void RPG_Character_MonsterProperties_Type_pimpl::
+alignment (const RPG_Character_Alignment& alignment)
 {
   // TODO
   //

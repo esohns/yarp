@@ -27,6 +27,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 #include <map>
 
 enum RPG_Character_MonsterMetaType
@@ -129,6 +130,9 @@ enum RPG_Character_Organization
   ORGANIZATION_INVALID
 };
 
+typedef std::set<RPG_Character_Organization> RPG_Character_Organizations_t;
+typedef RPG_Character_Organizations_t::const_iterator RPG_Character_OrganizationsIterator_t;
+
 typedef RPG_Chance_Roll RPG_Character_HitDice;
 
 typedef std::pair<RPG_Character_Size, RPG_Chance_Roll> RPG_Character_MonsterAdvancementStep_t;
@@ -152,7 +156,7 @@ struct RPG_Character_MonsterProperties
   RPG_Character_Skills_t             skills;
   RPG_Character_Feats_t              feats;
   RPG_Character_Environment          environment;
-  RPG_Character_Organization         organization;
+  RPG_Character_Organizations_t      organizations;
   unsigned int                       challengeRating;
   unsigned int                       treasureModifier; // standard times x
   RPG_Character_Alignment            alignment;
@@ -178,7 +182,7 @@ struct RPG_Character_MonsterProperties_XML
   RPG_Character_Skills_t             skills;
   RPG_Character_Feats_t              feats;
   RPG_Character_Environment          environment;
-  RPG_Character_Organization         organization;
+  RPG_Character_Organizations_t      organizations;
   unsigned int                       challengeRating;
   unsigned int                       treasureModifier; // standard times x
   RPG_Character_Alignment            alignment;
@@ -187,6 +191,8 @@ struct RPG_Character_MonsterProperties_XML
 };
 
 // some useful types
+typedef std::map<std::string, RPG_Character_MonsterProperties> RPG_Character_MonsterDictionary_t;
+typedef RPG_Character_MonsterDictionary_t::const_iterator RPG_Character_MonsterDictionaryIterator_t;
 typedef std::map<std::string, unsigned short int> RPG_Character_Encounter_t;
 typedef RPG_Character_Encounter_t::const_iterator RPG_Character_EncounterIterator_t;
 

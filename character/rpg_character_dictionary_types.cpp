@@ -309,6 +309,37 @@ RPG_Character_SavingThrowModifiers_Type_pskel ()
 {
 }
 
+// RPG_Character_Alignment_Type_pskel
+//
+
+void RPG_Character_Alignment_Type_pskel::
+civic_parser (::RPG_Character_AlignmentCivic_Type_pskel& p)
+{
+  this->civic_parser_ = &p;
+}
+
+void RPG_Character_Alignment_Type_pskel::
+ethic_parser (::RPG_Character_AlignmentEthic_Type_pskel& p)
+{
+  this->ethic_parser_ = &p;
+}
+
+void RPG_Character_Alignment_Type_pskel::
+parsers (::RPG_Character_AlignmentCivic_Type_pskel& civic,
+         ::RPG_Character_AlignmentEthic_Type_pskel& ethic)
+{
+  this->civic_parser_ = &civic;
+  this->ethic_parser_ = &ethic;
+}
+
+RPG_Character_Alignment_Type_pskel::
+RPG_Character_Alignment_Type_pskel ()
+: civic_parser_ (0),
+  ethic_parser_ (0),
+  v_state_stack_ (sizeof (v_state_), &v_state_first_)
+{
+}
+
 // RPG_Character_MonsterAdvancementStep_Type_pskel
 //
 
@@ -456,6 +487,12 @@ treasureModifier_parser (::xml_schema::unsigned_int_pskel& p)
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
+alignment_parser (::RPG_Character_Alignment_Type_pskel& p)
+{
+  this->alignment_parser_ = &p;
+}
+
+void RPG_Character_MonsterProperties_Type_pskel::
 advancement_parser (::RPG_Character_MonsterAdvancement_Type_pskel& p)
 {
   this->advancement_parser_ = &p;
@@ -483,6 +520,7 @@ parsers (::xml_schema::string_pskel& name,
          ::RPG_Character_Organization_Type_pskel& organization,
          ::xml_schema::unsigned_int_pskel& challengeRating,
          ::xml_schema::unsigned_int_pskel& treasureModifier,
+         ::RPG_Character_Alignment_Type_pskel& alignment,
          ::RPG_Character_MonsterAdvancement_Type_pskel& advancement,
          ::xml_schema::unsigned_int_pskel& levelAdjustment)
 {
@@ -501,6 +539,7 @@ parsers (::xml_schema::string_pskel& name,
   this->organization_parser_ = &organization;
   this->challengeRating_parser_ = &challengeRating;
   this->treasureModifier_parser_ = &treasureModifier;
+  this->alignment_parser_ = &alignment;
   this->advancement_parser_ = &advancement;
   this->levelAdjustment_parser_ = &levelAdjustment;
 }
@@ -522,6 +561,7 @@ RPG_Character_MonsterProperties_Type_pskel ()
   organization_parser_ (0),
   challengeRating_parser_ (0),
   treasureModifier_parser_ (0),
+  alignment_parser_ (0),
   advancement_parser_ (0),
   levelAdjustment_parser_ (0),
   v_state_stack_ (sizeof (v_state_), &v_state_first_)
@@ -632,7 +672,7 @@ attackForm (const RPG_Character_MonsterAttackForm&)
 }
 
 void RPG_Character_MonsterAttack_Type_pskel::
-damage (const RPG_Character_Damage&)
+damage (const RPG_Chance_Roll&)
 {
 }
 
@@ -659,6 +699,19 @@ will (unsigned int)
 {
 }
 
+// RPG_Character_Alignment_Type_pskel
+//
+
+void RPG_Character_Alignment_Type_pskel::
+civic (const RPG_Character_AlignmentCivic&)
+{
+}
+
+void RPG_Character_Alignment_Type_pskel::
+ethic (const RPG_Character_AlignmentEthic&)
+{
+}
+
 // RPG_Character_MonsterAdvancementStep_Type_pskel
 //
 
@@ -668,7 +721,7 @@ size (const RPG_Character_Size&)
 }
 
 void RPG_Character_MonsterAdvancementStep_Type_pskel::
-range (const RPG_Character_Damage&)
+range (const RPG_Chance_Roll&)
 {
 }
 
@@ -699,7 +752,7 @@ type (const RPG_Character_MonsterType&)
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
-hitDice (const RPG_Character_Damage&)
+hitDice (const RPG_Chance_Roll&)
 {
 }
 
@@ -755,6 +808,11 @@ challengeRating (unsigned int)
 
 void RPG_Character_MonsterProperties_Type_pskel::
 treasureModifier (unsigned int)
+{
+}
+
+void RPG_Character_MonsterProperties_Type_pskel::
+alignment (const RPG_Character_Alignment&)
 {
 }
 
@@ -2198,7 +2256,7 @@ sequence_0 (unsigned long& state,
         {
           if (this->damage_parser_)
           {
-            const RPG_Character_Damage& tmp (this->damage_parser_->post_RPG_Chance_Roll_Type ());
+            const RPG_Chance_Roll& tmp (this->damage_parser_->post_RPG_Chance_Roll_Type ());
             this->damage (tmp);
           }
 
@@ -2517,6 +2575,224 @@ sequence_0 (unsigned long& state,
   }
 }
 
+// Element validation and dispatch functions for RPG_Character_Alignment_Type_pskel.
+//
+bool RPG_Character_Alignment_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  if (vd->func == 0 && vd->state == 0)
+  {
+    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+      return true;
+    else
+      vd->state = 1;
+  }
+
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
+
+    vd = vs.data + (vs.size - 1);
+
+    if (vd->state == ~0UL)
+      vd = vs.data + (--vs.size - 1);
+    else
+      break;
+  }
+
+  if (vd->func == 0)
+  {
+    if (vd->state != ~0UL)
+    {
+      unsigned long s = ~0UL;
+
+      if (n == "civic" && ns.empty ())
+        s = 0UL;
+
+      if (s != ~0UL)
+      {
+        vd->count++;
+        vd->state = ~0UL;
+
+        vd = vs.data + vs.size++;
+        vd->func = &RPG_Character_Alignment_Type_pskel::sequence_0;
+        vd->state = s;
+        vd->count = 0;
+
+        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
+      }
+      else
+      {
+        if (vd->count < 1UL)
+          this->_expected_element (
+            "", "civic",
+            ns, n);
+        return false;
+      }
+    }
+    else
+      return false;
+  }
+
+  return true;
+}
+
+bool RPG_Character_Alignment_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size - 1];
+
+  if (vd.func == 0 && vd.state == 0)
+  {
+    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
+      assert (false);
+    return true;
+  }
+
+  assert (vd.func != 0);
+  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
+
+  if (vd.state == ~0UL)
+    vs.size--;
+
+  return true;
+}
+
+void RPG_Character_Alignment_Type_pskel::
+_pre_e_validate ()
+{
+  this->v_state_stack_.push ();
+  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size++];
+
+  vd.func = 0;
+  vd.state = 0;
+  vd.count = 0;
+}
+
+void RPG_Character_Alignment_Type_pskel::
+_post_e_validate ()
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  ::xml_schema::ro_string empty;
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
+    assert (vd->state == ~0UL);
+    vd = vs.data + (--vs.size - 1);
+  }
+
+  if (vd->count < 1UL)
+    this->_expected_element (
+      "", "civic");
+
+  this->v_state_stack_.pop ();
+}
+
+void RPG_Character_Alignment_Type_pskel::
+sequence_0 (unsigned long& state,
+            unsigned long& count,
+            const ::xml_schema::ro_string& ns,
+            const ::xml_schema::ro_string& n,
+            const ::xml_schema::ro_string* t,
+            bool start)
+{
+  XSD_UNUSED (t);
+
+  switch (state)
+  {
+    case 0UL:
+    {
+      if (n == "civic" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->civic_parser_;
+
+          if (this->civic_parser_)
+            this->civic_parser_->pre ();
+        }
+        else
+        {
+          if (this->civic_parser_)
+          {
+            const RPG_Character_AlignmentCivic& tmp (this->civic_parser_->post_RPG_Character_AlignmentCivic_Type ());
+            this->civic (tmp);
+          }
+
+          count = 0;
+          state = 1UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "civic",
+            ns, n);
+        count = 0;
+        state = 1UL;
+        // Fall through.
+      }
+    }
+    case 1UL:
+    {
+      if (n == "ethic" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->ethic_parser_;
+
+          if (this->ethic_parser_)
+            this->ethic_parser_->pre ();
+        }
+        else
+        {
+          if (this->ethic_parser_)
+          {
+            const RPG_Character_AlignmentEthic& tmp (this->ethic_parser_->post_RPG_Character_AlignmentEthic_Type ());
+            this->ethic (tmp);
+          }
+
+          count = 0;
+          state = ~0UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "ethic",
+            ns, n);
+        count = 0;
+        state = ~0UL;
+        // Fall through.
+      }
+    }
+    case ~0UL:
+      break;
+  }
+}
+
 // Element validation and dispatch functions for RPG_Character_MonsterAdvancementStep_Type_pskel.
 //
 bool RPG_Character_MonsterAdvancementStep_Type_pskel::
@@ -2708,7 +2984,7 @@ sequence_0 (unsigned long& state,
         {
           if (this->range_parser_)
           {
-            const RPG_Character_Damage& tmp (this->range_parser_->post_RPG_Chance_Roll_Type ());
+            const RPG_Chance_Roll& tmp (this->range_parser_->post_RPG_Chance_Roll_Type ());
             this->range (tmp);
           }
 
@@ -2893,8 +3169,7 @@ sequence_0 (unsigned long& state,
             this->step (tmp);
           }
 
-          count = 0;
-          state = ~0UL;
+          count++;
         }
 
         break;
@@ -3181,7 +3456,7 @@ sequence_0 (unsigned long& state,
         {
           if (this->hitDice_parser_)
           {
-            const RPG_Character_Damage& tmp (this->hitDice_parser_->post_RPG_Chance_Roll_Type ());
+            const RPG_Chance_Roll& tmp (this->hitDice_parser_->post_RPG_Chance_Roll_Type ());
             this->hitDice (tmp);
           }
 
@@ -3518,8 +3793,7 @@ sequence_0 (unsigned long& state,
             this->organization (tmp);
           }
 
-          count = 0;
-          state = 13UL;
+          count++;
         }
 
         break;
@@ -3612,6 +3886,43 @@ sequence_0 (unsigned long& state,
     }
     case 15UL:
     {
+      if (n == "alignment" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->alignment_parser_;
+
+          if (this->alignment_parser_)
+            this->alignment_parser_->pre ();
+        }
+        else
+        {
+          if (this->alignment_parser_)
+          {
+            const RPG_Character_Alignment& tmp (this->alignment_parser_->post_RPG_Character_Alignment_Type ());
+            this->alignment (tmp);
+          }
+
+          count = 0;
+          state = 16UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "alignment",
+            ns, n);
+        count = 0;
+        state = 16UL;
+        // Fall through.
+      }
+    }
+    case 16UL:
+    {
       if (n == "advancement" && ns.empty ())
       {
         if (start)
@@ -3630,7 +3941,7 @@ sequence_0 (unsigned long& state,
           }
 
           count = 0;
-          state = 16UL;
+          state = 17UL;
         }
 
         break;
@@ -3643,11 +3954,11 @@ sequence_0 (unsigned long& state,
             "", "advancement",
             ns, n);
         count = 0;
-        state = 16UL;
+        state = 17UL;
         // Fall through.
       }
     }
-    case 16UL:
+    case 17UL:
     {
       if (n == "levelAdjustment" && ns.empty ())
       {

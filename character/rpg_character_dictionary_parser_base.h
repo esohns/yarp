@@ -141,7 +141,7 @@ class RPG_Chance_Roll_Type_pimpl: public virtual RPG_Chance_Roll_Type_pskel
   virtual void
   modifier (long long);
 
-  virtual RPG_Character_Damage
+  virtual RPG_Chance_Roll
   post_RPG_Chance_Roll_Type ();
 };
 
@@ -167,7 +167,7 @@ class RPG_Character_MonsterAttack_Type_pimpl: public virtual RPG_Character_Monst
   attackForm (const RPG_Character_MonsterAttackForm&);
 
   virtual void
-  damage (const RPG_Character_Damage&);
+  damage (const RPG_Chance_Roll&);
 
   virtual void
   numAttacksPerRound (unsigned int);
@@ -228,6 +228,44 @@ class RPG_Character_Organization_Type_pimpl: public virtual RPG_Character_Organi
   post_RPG_Character_Organization_Type ();
 };
 
+class RPG_Character_AlignmentCivic_Type_pimpl: public virtual RPG_Character_AlignmentCivic_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Character_AlignmentCivic
+  post_RPG_Character_AlignmentCivic_Type ();
+};
+
+class RPG_Character_AlignmentEthic_Type_pimpl: public virtual RPG_Character_AlignmentEthic_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Character_AlignmentEthic
+  post_RPG_Character_AlignmentEthic_Type ();
+};
+
+class RPG_Character_Alignment_Type_pimpl: public virtual RPG_Character_Alignment_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  civic (const RPG_Character_AlignmentCivic&);
+
+  virtual void
+  ethic (const RPG_Character_AlignmentEthic&);
+
+  virtual RPG_Character_Alignment
+  post_RPG_Character_Alignment_Type ();
+};
+
 class RPG_Character_MonsterAdvancementStep_Type_pimpl: public virtual RPG_Character_MonsterAdvancementStep_Type_pskel
 {
   public:
@@ -238,7 +276,7 @@ class RPG_Character_MonsterAdvancementStep_Type_pimpl: public virtual RPG_Charac
   size (const RPG_Character_Size&);
 
   virtual void
-  range (const RPG_Character_Damage&);
+  range (const RPG_Chance_Roll&);
 
   virtual RPG_Character_MonsterAdvancementStep_t
   post_RPG_Character_MonsterAdvancementStep_Type ();
@@ -273,7 +311,7 @@ class RPG_Character_MonsterProperties_Type_pimpl: public virtual RPG_Character_M
   type (const RPG_Character_MonsterType&);
 
   virtual void
-  hitDice (const RPG_Character_Damage&);
+  hitDice (const RPG_Chance_Roll&);
 
   virtual void
   initiative (long long);
@@ -307,6 +345,9 @@ class RPG_Character_MonsterProperties_Type_pimpl: public virtual RPG_Character_M
 
   virtual void
   treasureModifier (unsigned int);
+
+  virtual void
+  alignment (const RPG_Character_Alignment&);
 
   virtual void
   advancement (const RPG_Character_MonsterAdvancement_t&);

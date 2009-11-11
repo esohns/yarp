@@ -28,7 +28,8 @@
 /**
   @author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Item_Dictionary_Parser : public RPG_Item_Dictionary_Type_pimpl
+class RPG_Item_Dictionary_Parser
+ : public RPG_Item_Dictionary_Type_pimpl
 {
  public:
   RPG_Item_Dictionary_Parser(RPG_Item_WeaponDictionary_t*, // weapon dictionary

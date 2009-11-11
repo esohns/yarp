@@ -53,14 +53,14 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   myString2GenderTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Female"), GENDER_FEMALE));
 
   // RPG_Character_AlignmentCivic
-  myString2AlignmentCivicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Lawful"), ALIGNMENTCIVIC_LAWFUL));
-  myString2AlignmentCivicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Neutral"), ALIGNMENTCIVIC_NEUTRAL));
-  myString2AlignmentCivicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Chaotic"), ALIGNMENTCIVIC_CHAOTIC));
+  myString2AlignmentCivicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ALIGNMENTCIVIC_LAWFUL"), ALIGNMENTCIVIC_LAWFUL));
+  myString2AlignmentCivicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ALIGNMENTCIVIC_NEUTRAL"), ALIGNMENTCIVIC_NEUTRAL));
+  myString2AlignmentCivicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ALIGNMENTCIVIC_CHAOTIC"), ALIGNMENTCIVIC_CHAOTIC));
 
   // RPG_Character_AlignmentEthic
-  myString2AlignmentEthicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Good"), ALIGNMENTETHIC_GOOD));
-  myString2AlignmentEthicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Neutral"), ALIGNMENTETHIC_NEUTRAL));
-  myString2AlignmentEthicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Evil"), ALIGNMENTETHIC_EVIL));
+  myString2AlignmentEthicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ALIGNMENTETHIC_GOOD"), ALIGNMENTETHIC_GOOD));
+  myString2AlignmentEthicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ALIGNMENTETHIC_NEUTRAL"), ALIGNMENTETHIC_NEUTRAL));
+  myString2AlignmentEthicTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ALIGNMENTETHIC_EVIL"), ALIGNMENTETHIC_EVIL));
 
   // RPG_Character_Attribute
   myString2AttributeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("Strength"), ATTRIBUTE_STRENGTH));

@@ -38,16 +38,16 @@ class RPG_Character_Skills_Common_Tools
 {
  public:
   // some useful types
-  typedef std::map<RPG_Character_Skill, std::string> RPG_Character_Skill2StringTable_t;
-  typedef RPG_Character_Skill2StringTable_t::const_iterator RPG_Character_Skill2StringTableIterator_t;
+  typedef std::map<RPG_Character_Skill, std::string> RPG_Character_SkillToStringTable_t;
+  typedef RPG_Character_SkillToStringTable_t::const_iterator RPG_Character_SkillToStringTableIterator_t;
   typedef std::set<RPG_Character_Skill> RPG_Character_ClassSkillsSet_t;
   typedef RPG_Character_ClassSkillsSet_t::const_iterator RPG_Character_ClassSkillsSetIterator_t;
   typedef std::map<RPG_Character_SubClass, RPG_Character_ClassSkillsSet_t> RPG_Character_ClassSkillsTable_t;
   typedef RPG_Character_ClassSkillsTable_t::const_iterator RPG_Character_ClassSkillsTableIterator_t;
-  typedef std::map<RPG_Character_Feat, std::string> RPG_Character_Feat2StringTable_t;
-  typedef RPG_Character_Feat2StringTable_t::const_iterator RPG_Character_Feat2StringTableIterator_t;
-  typedef std::map<RPG_Character_Ability, std::string> RPG_Character_Ability2StringTable_t;
-  typedef RPG_Character_Ability2StringTable_t::const_iterator RPG_Character_Ability2StringTableIterator_t;
+  typedef std::map<RPG_Character_Feat, std::string> RPG_Character_FeatToStringTable_t;
+  typedef RPG_Character_FeatToStringTable_t::const_iterator RPG_Character_FeatToStringTableIterator_t;
+  typedef std::map<RPG_Character_Ability, std::string> RPG_Character_AbilityToStringTable_t;
+  typedef RPG_Character_AbilityToStringTable_t::const_iterator RPG_Character_AbilityToStringTableIterator_t;
   typedef std::vector<RPG_Character_Feat_Prerequisite> RPG_Character_Feat_Prerequisites_t;
   typedef RPG_Character_Feat_Prerequisites_t::const_iterator RPG_Character_Feat_PrerequisitesIterator_t;
   typedef std::map<RPG_Character_Feat, RPG_Character_Feat_Prerequisites_t> RPG_Character_FeatPrerequisitesTable_t;
@@ -75,11 +75,11 @@ class RPG_Character_Skills_Common_Tools
                                            const RPG_Character_Feats_t&,      // feats
                                            const RPG_Character_Abilities_t&); // abilities
 
-  static RPG_Character_Skill2StringTable_t      mySkill2StringTable;
-  static RPG_Character_Feat2StringTable_t       myFeat2StringTable;
-  static RPG_Character_Ability2StringTable_t    myAbility2StringTable;
-  static RPG_Character_Feats_t                  myFighterBonusFeatsTable;
-  static RPG_Character_Feats_t                  myWizardBonusFeatsTable;
+  static RPG_Character_SkillToStringTable_t   mySkillToStringTable;
+  static RPG_Character_FeatToStringTable_t    myFeatToStringTable;
+  static RPG_Character_AbilityToStringTable_t myAbilityToStringTable;
+  static RPG_Character_Feats_t                myFighterBonusFeatsTable;
+  static RPG_Character_Feats_t                myWizardBonusFeatsTable;
 
  private:
   // safety measures

@@ -48,6 +48,10 @@
       <organization>ORGANIZATION_SLAVER_BROOD</organization>
       <challengeRating>7</challengeRating>
       <treasureModifier>2</treasureModifier>
+      <alignment>
+        <civic>ALIGNMENTCIVIC_LAWFUL</civic>
+        <ethic>ALIGNMENTETHIC_EVIL</ethic>
+      </alignment>
       <advancement>
         <step>
           <size>SIZE_HUGE</size>

@@ -215,14 +215,14 @@ void RPG_Character_Base::dump() const
   attributes += ACE_TEXT_ALWAYS_CHAR("\n");
 
   std::string skills;
-  RPG_Character_Skills_Common_Tools::RPG_Character_Skill2StringTableIterator_t iterator;
+  RPG_Character_Skills_Common_Tools::RPG_Character_SkillToStringTableIterator_t iterator;
   for (RPG_Character_SkillsConstIterator_t iterator2 = mySkills.begin();
        iterator2 != mySkills.end();
        iterator2++)
   {
-    iterator = RPG_Character_Skills_Common_Tools::mySkill2StringTable.find(iterator2->first);
+    iterator = RPG_Character_Skills_Common_Tools::mySkillToStringTable.find(iterator2->first);
     // sanity check
-    if (iterator == RPG_Character_Skills_Common_Tools::mySkill2StringTable.end())
+    if (iterator == RPG_Character_Skills_Common_Tools::mySkillToStringTable.end())
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid skill %d --> check implementation !, continuing\n"),
@@ -238,14 +238,14 @@ void RPG_Character_Base::dump() const
   }; // end FOR
 
   std::string feats;
-  RPG_Character_Skills_Common_Tools::RPG_Character_Feat2StringTableIterator_t iterator3;
+  RPG_Character_Skills_Common_Tools::RPG_Character_FeatToStringTableIterator_t iterator3;
   for (RPG_Character_FeatsConstIterator_t iterator4 = myFeats.begin();
        iterator4 != myFeats.end();
        iterator4++)
   {
-    iterator3 = RPG_Character_Skills_Common_Tools::myFeat2StringTable.find(*iterator4);
+    iterator3 = RPG_Character_Skills_Common_Tools::myFeatToStringTable.find(*iterator4);
     // sanity check
-    if (iterator3 == RPG_Character_Skills_Common_Tools::myFeat2StringTable.end())
+    if (iterator3 == RPG_Character_Skills_Common_Tools::myFeatToStringTable.end())
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid feat %d --> check implementation !, continuing\n"),
@@ -257,14 +257,14 @@ void RPG_Character_Base::dump() const
   }; // end FOR
 
   std::string abilities;
-  RPG_Character_Skills_Common_Tools::RPG_Character_Ability2StringTableIterator_t iterator5;
+  RPG_Character_Skills_Common_Tools::RPG_Character_AbilityToStringTableIterator_t iterator5;
   for (RPG_Character_AbilitiesConstIterator_t iterator6 = myAbilities.begin();
        iterator6 != myAbilities.end();
        iterator6++)
   {
-    iterator5 = RPG_Character_Skills_Common_Tools::myAbility2StringTable.find(*iterator6);
+    iterator5 = RPG_Character_Skills_Common_Tools::myAbilityToStringTable.find(*iterator6);
     // sanity check
-    if (iterator5 == RPG_Character_Skills_Common_Tools::myAbility2StringTable.end())
+    if (iterator5 == RPG_Character_Skills_Common_Tools::myAbilityToStringTable.end())
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid ability %d --> check implementation !, continuing\n"),

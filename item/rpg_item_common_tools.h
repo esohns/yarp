@@ -33,25 +33,8 @@
 class RPG_Item_Common_Tools
 {
  public:
-  // some useful types
-  typedef std::map<std::string, RPG_Item_Type> RPG_String2ItemTypeTable_t;
-  typedef RPG_String2ItemTypeTable_t::const_iterator RPG_String2ItemTypeTableIterator_t;
-  typedef std::map<std::string, RPG_Item_MoneyType> RPG_String2MoneyTypeTable_t;
-  typedef RPG_String2MoneyTypeTable_t::const_iterator RPG_String2MoneyTypeTableIterator_t;
-  typedef std::map<std::string, RPG_Item_WeaponCategory> RPG_String2WeaponCategoryTable_t;
-  typedef RPG_String2WeaponCategoryTable_t::const_iterator RPG_String2WeaponCategoryTableIterator_t;
-  typedef std::map<std::string, RPG_Item_WeaponClass> RPG_String2WeaponClassTable_t;
-  typedef RPG_String2WeaponClassTable_t::const_iterator RPG_String2WeaponClassTableIterator_t;
-  typedef std::map<std::string, RPG_Item_WeaponType> RPG_String2WeaponTypeTable_t;
-  typedef RPG_String2WeaponTypeTable_t::const_iterator RPG_String2WeaponTypeTableIterator_t;
-  typedef std::map<std::string, RPG_Item_WeaponDamageType> RPG_String2WeaponDamageTypeTable_t;
-  typedef RPG_String2WeaponDamageTypeTable_t::const_iterator RPG_String2WeaponDamageTypeTableIterator_t;
-  typedef std::map<std::string, RPG_Item_ArmorCategory> RPG_String2ArmorCategoryTable_t;
-  typedef RPG_String2ArmorCategoryTable_t::const_iterator RPG_String2ArmorCategoryTableIterator_t;
-  typedef std::map<std::string, RPG_Item_ArmorType> RPG_String2ArmorTypeTable_t;
-  typedef RPG_String2ArmorTypeTable_t::const_iterator RPG_String2ArmorTypeTableIterator_t;
-
   static void initStringConversionTables();
+
   static const std::string             itemTypeToString(const RPG_Item_Type&); // item type
   static const RPG_Item_WeaponCategory stringToWeaponCategory(const std::string&); // string
   static const std::string             weaponCategoryToString(const RPG_Item_WeaponCategory&); // weapon category
@@ -75,14 +58,32 @@ class RPG_Item_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools(const RPG_Item_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools& operator=(const RPG_Item_Common_Tools&));
 
-  static RPG_String2ItemTypeTable_t         myString2ItemTypeTable;
-  static RPG_String2MoneyTypeTable_t        myString2MoneyTypeTable;
-  static RPG_String2WeaponCategoryTable_t   myString2WeaponCategoryTable;
-  static RPG_String2WeaponClassTable_t      myString2WeaponClassTable;
-  static RPG_String2WeaponTypeTable_t       myString2WeaponTypeTable;
-  static RPG_String2WeaponDamageTypeTable_t myString2WeaponDamageTypeTable;
-  static RPG_String2ArmorCategoryTable_t    myString2ArmorCategoryTable;
-  static RPG_String2ArmorTypeTable_t        myString2ArmorTypeTable;
+  // some useful types
+  typedef std::map<std::string, RPG_Item_Type> RPG_StringToItemTypeTable_t;
+  typedef RPG_StringToItemTypeTable_t::const_iterator RPG_StringToItemTypeTableIterator_t;
+  typedef std::map<std::string, RPG_Item_MoneyType> RPG_StringToMoneyTypeTable_t;
+  typedef RPG_StringToMoneyTypeTable_t::const_iterator RPG_StringToMoneyTypeTableIterator_t;
+  typedef std::map<std::string, RPG_Item_WeaponCategory> RPG_StringToWeaponCategoryTable_t;
+  typedef RPG_StringToWeaponCategoryTable_t::const_iterator RPG_StringToWeaponCategoryTableIterator_t;
+  typedef std::map<std::string, RPG_Item_WeaponClass> RPG_StringToWeaponClassTable_t;
+  typedef RPG_StringToWeaponClassTable_t::const_iterator RPG_StringToWeaponClassTableIterator_t;
+  typedef std::map<std::string, RPG_Item_WeaponType> RPG_StringToWeaponTypeTable_t;
+  typedef RPG_StringToWeaponTypeTable_t::const_iterator RPG_StringToWeaponTypeTableIterator_t;
+  typedef std::map<std::string, RPG_Item_WeaponDamageType> RPG_StringToWeaponDamageTypeTable_t;
+  typedef RPG_StringToWeaponDamageTypeTable_t::const_iterator RPG_StringToWeaponDamageTypeTableIterator_t;
+  typedef std::map<std::string, RPG_Item_ArmorCategory> RPG_StringToArmorCategoryTable_t;
+  typedef RPG_StringToArmorCategoryTable_t::const_iterator RPG_StringToArmorCategoryTableIterator_t;
+  typedef std::map<std::string, RPG_Item_ArmorType> RPG_StringToArmorTypeTable_t;
+  typedef RPG_StringToArmorTypeTable_t::const_iterator RPG_StringToArmorTypeTableIterator_t;
+
+  static RPG_StringToItemTypeTable_t         myStringToItemTypeTable;
+  static RPG_StringToMoneyTypeTable_t        myStringToMoneyTypeTable;
+  static RPG_StringToWeaponCategoryTable_t   myStringToWeaponCategoryTable;
+  static RPG_StringToWeaponClassTable_t      myStringToWeaponClassTable;
+  static RPG_StringToWeaponTypeTable_t       myStringToWeaponTypeTable;
+  static RPG_StringToWeaponDamageTypeTable_t myStringToWeaponDamageTypeTable;
+  static RPG_StringToArmorCategoryTable_t    myStringToArmorCategoryTable;
+  static RPG_StringToArmorTypeTable_t        myStringToArmorTypeTable;
 };
 
 #endif

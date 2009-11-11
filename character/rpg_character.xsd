@@ -133,6 +133,29 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="RPG_Character_AlignmentCivic_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ALIGNMENTCIVIC_LAWFUL"/>
+      <xsd:enumeration value="ALIGNMENTCIVIC_NEUTRAL"/>
+      <xsd:enumeration value="ALIGNMENTCIVIC_CHAOTIC"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Character_AlignmentEthic_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ALIGNMENTETHIC_GOOD"/>
+      <xsd:enumeration value="ALIGNMENTETHIC_NEUTRAL"/>
+      <xsd:enumeration value="ALIGNMENTETHIC_EVIL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Character_Alignment_Type">
+    <xsd:sequence>
+      <xsd:element name="civic" type="RPG_Character_AlignmentCivic_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="ethic" type="RPG_Character_AlignmentEthic_Type" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
   <xsd:complexType name="RPG_Character_MonsterAdvancementStep_Type">
     <xsd:sequence>
       <xsd:element name="size" type="RPG_Character_Size_Type" minOccurs="1" maxOccurs="1"/>
@@ -142,7 +165,7 @@
 
   <xsd:complexType name="RPG_Character_MonsterAdvancement_Type">
     <xsd:sequence>
-      <xsd:element name="step" type="RPG_Character_MonsterAdvancementStep_Type" minOccurs="1"/>
+      <xsd:element name="step" type="RPG_Character_MonsterAdvancementStep_Type" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -165,12 +188,10 @@
       <xsd:element name="feats" type="" minOccurs="1" maxOccurs="1"/>
 -->
       <xsd:element name="environment" type="RPG_Character_Environment_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="organization" type="RPG_Character_Organization_Type" minOccurs="1"/>
+      <xsd:element name="organization" type="RPG_Character_Organization_Type" minOccurs="1" maxOccurs="unbounded"/>
       <xsd:element name="challengeRating" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="treasureModifier" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-<!--
-      <xsd:element name="alignment" type="" minOccurs="1" maxOccurs="1"/>
--->
+      <xsd:element name="alignment" type="RPG_Character_Alignment_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="advancement" type="RPG_Character_MonsterAdvancement_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="levelAdjustment" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>

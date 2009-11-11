@@ -22,15 +22,18 @@
 #include <config.h>
 #endif
 
-#include "rpg_chance_dice.h"
-#include "rpg_chance_dice_common_tools.h"
-#include "rpg_item_weapon.h"
-#include "rpg_item_armor.h"
-#include "rpg_item_common_tools.h"
-#include "rpg_item_dictionary.h"
+#include <rpg_chance_dice.h>
+#include <rpg_chance_dice_common_tools.h>
+#include <rpg_item_weapon.h>
+#include <rpg_item_armor.h>
+#include <rpg_item_common_tools.h>
+#include <rpg_item_dictionary.h>
+
+#include "rpg_character_dictionary.h"
 #include "rpg_character_player.h"
 #include "rpg_character_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
+#include "rpg_character_monster_common_tools.h"
 
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
@@ -52,6 +55,8 @@ void print_usage()
             << std::endl;
   std::cout << ACE_TEXT("currently available options:")
             << std::endl;
+  std::cout << ACE_TEXT("-f [VALUE] : filename (*.xml)")
+            << std::endl;
   std::cout << ACE_TEXT("-t         : trace information")
             << std::endl;
   std::cout << ACE_TEXT("-v         : print version information and exit")
@@ -60,6 +65,7 @@ void print_usage()
 
 const bool process_arguments(const int argc_in,
                              ACE_TCHAR* argv_in[], // cannot be const...
+                             std::string& fileName_out,
                              bool& traceInformation_out,
                              bool& printVersionAndExit_out)
 {
@@ -71,13 +77,19 @@ const bool process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("tv"));
+                             ACE_TEXT("f:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
   {
     switch (option)
     {
+      case 'f':
+      {
+        fileName_out = argumentParser.opt_arg();
+
+        break;
+      }
       case 't':
       {
         traceInformation_out = true;
@@ -122,7 +134,7 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
   unsigned int skills_per_line = 4;
   unsigned int index = 1;
   unsigned int choice = 0;
-  RPG_Character_Skills_Common_Tools::RPG_Character_Skill2StringTableIterator_t iterator = RPG_Character_Skills_Common_Tools::mySkill2StringTable.begin();
+  RPG_Character_Skills_Common_Tools::RPG_Character_SkillToStringTableIterator_t iterator = RPG_Character_Skills_Common_Tools::mySkillToStringTable.begin();
   do
   {
     for (unsigned int i = 0;
@@ -130,7 +142,7 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
          i++, iterator++, index++)
     {
       // finished ?
-      if (iterator == RPG_Character_Skills_Common_Tools::mySkill2StringTable.end())
+      if (iterator == RPG_Character_Skills_Common_Tools::mySkillToStringTable.end())
       {
         break;
       } // end IF
@@ -151,7 +163,7 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
     } // end FOR
 
     std::cout << std::endl;
-  } while (iterator != RPG_Character_Skills_Common_Tools::mySkill2StringTable.end());
+  } while (iterator != RPG_Character_Skills_Common_Tools::mySkillToStringTable.end());
 
   index--;
 
@@ -177,7 +189,7 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
 
   // increase skill rank
   choice -= 1;
-  iterator = RPG_Character_Skills_Common_Tools::mySkill2StringTable.begin();
+  iterator = RPG_Character_Skills_Common_Tools::mySkillToStringTable.begin();
   std::advance(iterator, choice);
   skills_iterator = skills_in.find(iterator->first);
   if (skills_iterator != skills_in.end())
@@ -205,7 +217,7 @@ const bool print_feats_table(const RPG_Character_SubClass& subClass_in,
   unsigned int feats_per_line = 4;
   unsigned int index = 1;
   unsigned int choice = 0;
-  RPG_Character_Skills_Common_Tools::RPG_Character_Feat2StringTableIterator_t iterator = RPG_Character_Skills_Common_Tools::myFeat2StringTable.begin();
+  RPG_Character_Skills_Common_Tools::RPG_Character_FeatToStringTableIterator_t iterator = RPG_Character_Skills_Common_Tools::myFeatToStringTable.begin();
   do
   {
     for (unsigned int i = 0;
@@ -213,7 +225,7 @@ const bool print_feats_table(const RPG_Character_SubClass& subClass_in,
          i++, iterator++, index++)
     {
       // finished ?
-      if (iterator == RPG_Character_Skills_Common_Tools::myFeat2StringTable.end())
+      if (iterator == RPG_Character_Skills_Common_Tools::myFeatToStringTable.end())
       {
         break;
       } // end IF
@@ -235,7 +247,7 @@ const bool print_feats_table(const RPG_Character_SubClass& subClass_in,
     } // end FOR
 
     std::cout << std::endl;
-  } while (iterator != RPG_Character_Skills_Common_Tools::myFeat2StringTable.end());
+  } while (iterator != RPG_Character_Skills_Common_Tools::myFeatToStringTable.end());
 
   index--;
 
@@ -261,7 +273,7 @@ const bool print_feats_table(const RPG_Character_SubClass& subClass_in,
 
   // (try to) append chosen feat
   choice -= 1;
-  iterator = RPG_Character_Skills_Common_Tools::myFeat2StringTable.begin();
+  iterator = RPG_Character_Skills_Common_Tools::myFeatToStringTable.begin();
   std::advance(iterator, choice);
 
   feats_iterator = feats_inout.find(iterator->first);
@@ -286,7 +298,7 @@ const bool print_feats_table(const RPG_Character_SubClass& subClass_in,
   return true;
 }
 
-void do_work()
+void do_work(const std::string fileName_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -297,6 +309,20 @@ void do_work()
   RPG_Chance_Dice_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
   RPG_Character_Skills_Common_Tools::init();
+  RPG_Character_Monster_Common_Tools::init();
+
+  // step1c: init character dictionary
+  try
+  {
+    RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->initCharacterDictionary(fileName_in);
+  }
+  catch(...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Character_Dictionary::initCharacterDictionary, returning\n")));
+
+    return;
+  }
 
   // step2: generate/init new player character
   std::string name;
@@ -806,12 +832,14 @@ int ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
+  std::string filename;
   bool traceInformation    = false;
   bool printVersionAndExit = false;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
+                          filename,
                           traceInformation,
                           printVersionAndExit)))
   {
@@ -822,7 +850,17 @@ int ACE_TMAIN(int argc,
   } // end IF
 
   // step1b: validate arguments
+  if (filename.empty())
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("invalid (XML) filename \"%s\", aborting\n"),
+               filename.c_str()));
 
+    // make 'em learn...
+    print_usage();
+
+    return EXIT_FAILURE;
+  } // end IF
 
   // step1c: set correct trace level
   //ACE_Trace::start_tracing();
@@ -862,7 +900,7 @@ int ACE_TMAIN(int argc,
   timer.start();
 
   // step2: do actual work
-  do_work();
+  do_work(filename);
 
   timer.stop();
 
