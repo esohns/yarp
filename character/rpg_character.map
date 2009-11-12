@@ -1,4 +1,6 @@
 include "rpg_chance_dice_common.h";
+include "rpg_character_common.h";
+include "rpg_character_skills_common.h";
 include "rpg_character_monster_common.h";
 
 RPG_Character_MonsterMetaType_Type        RPG_Character_MonsterMetaType;
@@ -9,9 +11,16 @@ RPG_Character_NaturalWeapon_Type          RPG_Character_NaturalWeapon;
 RPG_Character_MonsterAttackForm_Type      RPG_Character_MonsterAttackForm;
 RPG_Chance_DiceType_Type                  RPG_Chance_DiceType;
 RPG_Chance_Roll_Type                      RPG_Chance_Roll;
+RPG_Character_MonsterAttackAction_Type    RPG_Character_MonsterAttackAction;
 RPG_Character_MonsterAttack_Type          RPG_Character_MonsterAttack;
 RPG_Character_Size_Type                   RPG_Character_Size;
 RPG_Character_SavingThrowModifiers_Type   RPG_Character_SavingThrowModifiers;
+RPG_Character_Attributes_Type             RPG_Character_Attributes;
+RPG_Character_Skill_Type                  RPG_Character_Skill;
+RPG_Character_SkillValue_Type             RPG_Character_SkillsItem_t;
+RPG_Character_Skills_Type                 RPG_Character_Skills_t;
+RPG_Character_Feat_Type                   RPG_Character_Feat;
+RPG_Character_Feats_Type                  RPG_Character_Feats_t;
 RPG_Character_Environment_Type            RPG_Character_Environment;
 RPG_Character_Organization_Type           RPG_Character_Organization;
 RPG_Character_AlignmentCivic_Type         RPG_Character_AlignmentCivic;

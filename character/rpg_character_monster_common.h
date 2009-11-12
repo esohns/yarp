@@ -33,6 +33,20 @@
 enum RPG_Character_MonsterMetaType
 {
   MONSTERMETATYPE_ABERRATION = 0,
+  MONSTERMETATYPE_ANIMAL,
+  MONSTERMETATYPE_CONSTRUCT,
+  MONSTERMETATYPE_DRAGON,
+  MONSTERMETATYPE_ELEMENTAL,
+  MONSTERMETATYPE_FEY,
+  MONSTERMETATYPE_GIANT,
+  MONSTERMETATYPE_HUMANOID,
+  MONSTERMETATYPE_MAGICAL_BEAST,
+  MONSTERMETATYPE_MONSTROUS_HUMANOID,
+  MONSTERMETATYPE_OOZE,
+  MONSTERMETATYPE_OUTSIDER,
+  MONSTERMETATYPE_PLANT,
+  MONSTERMETATYPE_UNDEAD,
+  MONSTERMETATYPE_VERMIN,
   //
   MONSTERMETATYPE_MAX,
   MONSTERMETATYPE_INVALID
@@ -40,16 +54,38 @@ enum RPG_Character_MonsterMetaType
 
 enum RPG_Character_MonsterSubType
 {
-  MONSTERSUBTYPE_AQUATIC = 0,
+  MONSTERSUBTYPE_AIR = 0,
+  MONSTERSUBTYPE_ANGEL,
+  MONSTERSUBTYPE_AQUATIC,
+  MONSTERSUBTYPE_ARCHON,
+  MONSTERSUBTYPE_AUGMENTED,
+  MONSTERSUBTYPE_CHAOTIC,
+  MONSTERSUBTYPE_COLD,
+  MONSTERSUBTYPE_EARTH,
+  MONSTERSUBTYPE_EVIL,
+  MONSTERSUBTYPE_EXTRAPLANAR,
+  MONSTERSUBTYPE_FIRE,
+  MONSTERSUBTYPE_GOBLINOID,
+  MONSTERSUBTYPE_GOOD,
+  MONSTERSUBTYPE_INCORPOREAL,
+  MONSTERSUBTYPE_LAWFUL,
+  MONSTERSUBTYPE_NATIVE,
+  MONSTERSUBTYPE_REPTILIAN,
+  MONSTERSUBTYPE_SHAPECHANGER,
+  MONSTERSUBTYPE_SWARM,
+  MONSTERSUBTYPE_WATER,
   //
   MONSTERSUBTYPE_MAX,
   MONSTERSUBTYPE_INVALID
 };
 
+typedef std::set<RPG_Character_MonsterSubType> RPG_Character_MonsterSubTypes_t;
+typedef RPG_Character_MonsterSubTypes_t::const_iterator RPG_Character_MonsterSubTypesIterator_t;
+
 struct RPG_Character_MonsterType
 {
   RPG_Character_MonsterMetaType metaType;
-  RPG_Character_MonsterSubType  subType;
+  RPG_Character_MonsterSubTypes_t subTypes;
 };
 
 struct RPG_Character_MonsterArmorClass
@@ -61,7 +97,12 @@ struct RPG_Character_MonsterArmorClass
 
 enum RPG_Character_NaturalWeapon
 {
-  NATURALWEAPON_TENTACLE = 0,
+  NATURALWEAPON_BITE = 0,
+  NATURALWEAPON_CLAW_TALON,
+  NATURALWEAPON_GORE,
+  NATURALWEAPON_SLAP_SLAM,
+  NATURALWEAPON_STING,
+  NATURALWEAPON_TENTACLE,
   //
   NATURALWEAPON_MAX,
   NATURALWEAPON_INVALID
@@ -78,15 +119,23 @@ enum RPG_Character_MonsterAttackForm
 
 typedef RPG_Chance_Roll RPG_Character_Damage;
 
-struct RPG_Character_MonsterAttack
+struct RPG_Character_MonsterAttackAction
 {
-  unsigned int                    baseAttackBonus;
-  unsigned int                    grappleBonus;
   RPG_Character_NaturalWeapon     naturalWeapon;
   unsigned int                    attackBonus;
   RPG_Character_MonsterAttackForm attackForm;
   RPG_Character_Damage            damage;
   unsigned int                    numAttacksPerRound;
+};
+
+typedef std::vector<RPG_Character_MonsterAttackAction> RPG_Character_MonsterAttackActions_t;
+typedef RPG_Character_MonsterAttackActions_t::const_iterator RPG_Character_MonsterAttackActionsIterator_t;
+
+struct RPG_Character_MonsterAttack
+{
+  unsigned int                         baseAttackBonus;
+  unsigned int                         grappleBonus;
+  RPG_Character_MonsterAttackActions_t attackActions;
 };
 
 enum RPG_Character_Size
@@ -115,6 +164,7 @@ struct RPG_Character_SavingThrowModifiers
 enum RPG_Character_Environment
 {
   ENVIRONMENT_UNDERGROUND = 0,
+  ENVIRONMENT_PLANE_LAWFUL,
   //
   ENVIRONMENT_MAX,
   ENVIRONMENT_INVALID
@@ -152,7 +202,7 @@ struct RPG_Character_MonsterProperties
   unsigned int                       space; // feet
   unsigned int                       reach; // feet
   RPG_Character_SavingThrowModifiers saves;
-  RPG_Character_Abilities_t          abilities;
+  RPG_Character_Attributes           attributes;
   RPG_Character_Skills_t             skills;
   RPG_Character_Feats_t              feats;
   RPG_Character_Environment          environment;
@@ -178,7 +228,7 @@ struct RPG_Character_MonsterProperties_XML
   unsigned int                       space; // feet
   unsigned int                       reach; // feet
   RPG_Character_SavingThrowModifiers saves;
-  RPG_Character_Abilities_t          abilities;
+  RPG_Character_Attributes           attributes;
   RPG_Character_Skills_t             skills;
   RPG_Character_Feats_t              feats;
   RPG_Character_Environment          environment;

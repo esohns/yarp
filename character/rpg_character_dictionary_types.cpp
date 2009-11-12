@@ -193,6 +193,64 @@ RPG_Chance_Roll_Type_pskel ()
 {
 }
 
+// RPG_Character_MonsterAttackAction_Type_pskel
+//
+
+void RPG_Character_MonsterAttackAction_Type_pskel::
+naturalWeapon_parser (::RPG_Character_NaturalWeapon_Type_pskel& p)
+{
+  this->naturalWeapon_parser_ = &p;
+}
+
+void RPG_Character_MonsterAttackAction_Type_pskel::
+attackBonus_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->attackBonus_parser_ = &p;
+}
+
+void RPG_Character_MonsterAttackAction_Type_pskel::
+attackForm_parser (::RPG_Character_MonsterAttackForm_Type_pskel& p)
+{
+  this->attackForm_parser_ = &p;
+}
+
+void RPG_Character_MonsterAttackAction_Type_pskel::
+damage_parser (::RPG_Chance_Roll_Type_pskel& p)
+{
+  this->damage_parser_ = &p;
+}
+
+void RPG_Character_MonsterAttackAction_Type_pskel::
+numAttacksPerRound_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->numAttacksPerRound_parser_ = &p;
+}
+
+void RPG_Character_MonsterAttackAction_Type_pskel::
+parsers (::RPG_Character_NaturalWeapon_Type_pskel& naturalWeapon,
+         ::xml_schema::unsigned_int_pskel& attackBonus,
+         ::RPG_Character_MonsterAttackForm_Type_pskel& attackForm,
+         ::RPG_Chance_Roll_Type_pskel& damage,
+         ::xml_schema::unsigned_int_pskel& numAttacksPerRound)
+{
+  this->naturalWeapon_parser_ = &naturalWeapon;
+  this->attackBonus_parser_ = &attackBonus;
+  this->attackForm_parser_ = &attackForm;
+  this->damage_parser_ = &damage;
+  this->numAttacksPerRound_parser_ = &numAttacksPerRound;
+}
+
+RPG_Character_MonsterAttackAction_Type_pskel::
+RPG_Character_MonsterAttackAction_Type_pskel ()
+: naturalWeapon_parser_ (0),
+  attackBonus_parser_ (0),
+  attackForm_parser_ (0),
+  damage_parser_ (0),
+  numAttacksPerRound_parser_ (0),
+  v_state_stack_ (sizeof (v_state_), &v_state_first_)
+{
+}
+
 // RPG_Character_MonsterAttack_Type_pskel
 //
 
@@ -209,62 +267,26 @@ grappleBonus_parser (::xml_schema::unsigned_int_pskel& p)
 }
 
 void RPG_Character_MonsterAttack_Type_pskel::
-naturalWeapon_parser (::RPG_Character_NaturalWeapon_Type_pskel& p)
+attackAction_parser (::RPG_Character_MonsterAttackAction_Type_pskel& p)
 {
-  this->naturalWeapon_parser_ = &p;
-}
-
-void RPG_Character_MonsterAttack_Type_pskel::
-attackBonus_parser (::xml_schema::unsigned_int_pskel& p)
-{
-  this->attackBonus_parser_ = &p;
-}
-
-void RPG_Character_MonsterAttack_Type_pskel::
-attackForm_parser (::RPG_Character_MonsterAttackForm_Type_pskel& p)
-{
-  this->attackForm_parser_ = &p;
-}
-
-void RPG_Character_MonsterAttack_Type_pskel::
-damage_parser (::RPG_Chance_Roll_Type_pskel& p)
-{
-  this->damage_parser_ = &p;
-}
-
-void RPG_Character_MonsterAttack_Type_pskel::
-numAttacksPerRound_parser (::xml_schema::unsigned_int_pskel& p)
-{
-  this->numAttacksPerRound_parser_ = &p;
+  this->attackAction_parser_ = &p;
 }
 
 void RPG_Character_MonsterAttack_Type_pskel::
 parsers (::xml_schema::unsigned_int_pskel& baseAttackBonus,
          ::xml_schema::unsigned_int_pskel& grappleBonus,
-         ::RPG_Character_NaturalWeapon_Type_pskel& naturalWeapon,
-         ::xml_schema::unsigned_int_pskel& attackBonus,
-         ::RPG_Character_MonsterAttackForm_Type_pskel& attackForm,
-         ::RPG_Chance_Roll_Type_pskel& damage,
-         ::xml_schema::unsigned_int_pskel& numAttacksPerRound)
+         ::RPG_Character_MonsterAttackAction_Type_pskel& attackAction)
 {
   this->baseAttackBonus_parser_ = &baseAttackBonus;
   this->grappleBonus_parser_ = &grappleBonus;
-  this->naturalWeapon_parser_ = &naturalWeapon;
-  this->attackBonus_parser_ = &attackBonus;
-  this->attackForm_parser_ = &attackForm;
-  this->damage_parser_ = &damage;
-  this->numAttacksPerRound_parser_ = &numAttacksPerRound;
+  this->attackAction_parser_ = &attackAction;
 }
 
 RPG_Character_MonsterAttack_Type_pskel::
 RPG_Character_MonsterAttack_Type_pskel ()
 : baseAttackBonus_parser_ (0),
   grappleBonus_parser_ (0),
-  naturalWeapon_parser_ (0),
-  attackBonus_parser_ (0),
-  attackForm_parser_ (0),
-  damage_parser_ (0),
-  numAttacksPerRound_parser_ (0),
+  attackAction_parser_ (0),
   v_state_stack_ (sizeof (v_state_), &v_state_first_)
 {
 }
@@ -305,6 +327,148 @@ RPG_Character_SavingThrowModifiers_Type_pskel ()
 : fortitude_parser_ (0),
   reflex_parser_ (0),
   will_parser_ (0),
+  v_state_stack_ (sizeof (v_state_), &v_state_first_)
+{
+}
+
+// RPG_Character_Attributes_Type_pskel
+//
+
+void RPG_Character_Attributes_Type_pskel::
+strength_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->strength_parser_ = &p;
+}
+
+void RPG_Character_Attributes_Type_pskel::
+dexterity_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->dexterity_parser_ = &p;
+}
+
+void RPG_Character_Attributes_Type_pskel::
+constitution_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->constitution_parser_ = &p;
+}
+
+void RPG_Character_Attributes_Type_pskel::
+intelligence_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->intelligence_parser_ = &p;
+}
+
+void RPG_Character_Attributes_Type_pskel::
+wisdom_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->wisdom_parser_ = &p;
+}
+
+void RPG_Character_Attributes_Type_pskel::
+charisma_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->charisma_parser_ = &p;
+}
+
+void RPG_Character_Attributes_Type_pskel::
+parsers (::xml_schema::unsigned_int_pskel& strength,
+         ::xml_schema::unsigned_int_pskel& dexterity,
+         ::xml_schema::unsigned_int_pskel& constitution,
+         ::xml_schema::unsigned_int_pskel& intelligence,
+         ::xml_schema::unsigned_int_pskel& wisdom,
+         ::xml_schema::unsigned_int_pskel& charisma)
+{
+  this->strength_parser_ = &strength;
+  this->dexterity_parser_ = &dexterity;
+  this->constitution_parser_ = &constitution;
+  this->intelligence_parser_ = &intelligence;
+  this->wisdom_parser_ = &wisdom;
+  this->charisma_parser_ = &charisma;
+}
+
+RPG_Character_Attributes_Type_pskel::
+RPG_Character_Attributes_Type_pskel ()
+: strength_parser_ (0),
+  dexterity_parser_ (0),
+  constitution_parser_ (0),
+  intelligence_parser_ (0),
+  wisdom_parser_ (0),
+  charisma_parser_ (0),
+  v_state_stack_ (sizeof (v_state_), &v_state_first_)
+{
+}
+
+// RPG_Character_SkillValue_Type_pskel
+//
+
+void RPG_Character_SkillValue_Type_pskel::
+skill_parser (::RPG_Character_Skill_Type_pskel& p)
+{
+  this->skill_parser_ = &p;
+}
+
+void RPG_Character_SkillValue_Type_pskel::
+rank_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->rank_parser_ = &p;
+}
+
+void RPG_Character_SkillValue_Type_pskel::
+parsers (::RPG_Character_Skill_Type_pskel& skill,
+         ::xml_schema::unsigned_int_pskel& rank)
+{
+  this->skill_parser_ = &skill;
+  this->rank_parser_ = &rank;
+}
+
+RPG_Character_SkillValue_Type_pskel::
+RPG_Character_SkillValue_Type_pskel ()
+: skill_parser_ (0),
+  rank_parser_ (0),
+  v_state_stack_ (sizeof (v_state_), &v_state_first_)
+{
+}
+
+// RPG_Character_Skills_Type_pskel
+//
+
+void RPG_Character_Skills_Type_pskel::
+skill_parser (::RPG_Character_SkillValue_Type_pskel& p)
+{
+  this->skill_parser_ = &p;
+}
+
+void RPG_Character_Skills_Type_pskel::
+parsers (::RPG_Character_SkillValue_Type_pskel& skill)
+{
+  this->skill_parser_ = &skill;
+}
+
+RPG_Character_Skills_Type_pskel::
+RPG_Character_Skills_Type_pskel ()
+: skill_parser_ (0),
+  v_state_stack_ (sizeof (v_state_), &v_state_first_)
+{
+}
+
+// RPG_Character_Feats_Type_pskel
+//
+
+void RPG_Character_Feats_Type_pskel::
+feat_parser (::RPG_Character_Feat_Type_pskel& p)
+{
+  this->feat_parser_ = &p;
+}
+
+void RPG_Character_Feats_Type_pskel::
+parsers (::RPG_Character_Feat_Type_pskel& feat)
+{
+  this->feat_parser_ = &feat;
+}
+
+RPG_Character_Feats_Type_pskel::
+RPG_Character_Feats_Type_pskel ()
+: feat_parser_ (0),
   v_state_stack_ (sizeof (v_state_), &v_state_first_)
 {
 }
@@ -463,6 +627,24 @@ saves_parser (::RPG_Character_SavingThrowModifiers_Type_pskel& p)
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
+attributes_parser (::RPG_Character_Attributes_Type_pskel& p)
+{
+  this->attributes_parser_ = &p;
+}
+
+void RPG_Character_MonsterProperties_Type_pskel::
+skills_parser (::RPG_Character_Skills_Type_pskel& p)
+{
+  this->skills_parser_ = &p;
+}
+
+void RPG_Character_MonsterProperties_Type_pskel::
+feats_parser (::RPG_Character_Feats_Type_pskel& p)
+{
+  this->feats_parser_ = &p;
+}
+
+void RPG_Character_MonsterProperties_Type_pskel::
 environment_parser (::RPG_Character_Environment_Type_pskel& p)
 {
   this->environment_parser_ = &p;
@@ -516,6 +698,9 @@ parsers (::xml_schema::string_pskel& name,
          ::xml_schema::unsigned_int_pskel& space,
          ::xml_schema::unsigned_int_pskel& reach,
          ::RPG_Character_SavingThrowModifiers_Type_pskel& saves,
+         ::RPG_Character_Attributes_Type_pskel& attributes,
+         ::RPG_Character_Skills_Type_pskel& skills,
+         ::RPG_Character_Feats_Type_pskel& feats,
          ::RPG_Character_Environment_Type_pskel& environment,
          ::RPG_Character_Organization_Type_pskel& organization,
          ::xml_schema::unsigned_int_pskel& challengeRating,
@@ -535,6 +720,9 @@ parsers (::xml_schema::string_pskel& name,
   this->space_parser_ = &space;
   this->reach_parser_ = &reach;
   this->saves_parser_ = &saves;
+  this->attributes_parser_ = &attributes;
+  this->skills_parser_ = &skills;
+  this->feats_parser_ = &feats;
   this->environment_parser_ = &environment;
   this->organization_parser_ = &organization;
   this->challengeRating_parser_ = &challengeRating;
@@ -557,6 +745,9 @@ RPG_Character_MonsterProperties_Type_pskel ()
   space_parser_ (0),
   reach_parser_ (0),
   saves_parser_ (0),
+  attributes_parser_ (0),
+  skills_parser_ (0),
+  feats_parser_ (0),
   environment_parser_ (0),
   organization_parser_ (0),
   challengeRating_parser_ (0),
@@ -643,6 +834,34 @@ modifier (long long)
 {
 }
 
+// RPG_Character_MonsterAttackAction_Type_pskel
+//
+
+void RPG_Character_MonsterAttackAction_Type_pskel::
+naturalWeapon (const RPG_Character_NaturalWeapon&)
+{
+}
+
+void RPG_Character_MonsterAttackAction_Type_pskel::
+attackBonus (unsigned int)
+{
+}
+
+void RPG_Character_MonsterAttackAction_Type_pskel::
+attackForm (const RPG_Character_MonsterAttackForm&)
+{
+}
+
+void RPG_Character_MonsterAttackAction_Type_pskel::
+damage (const RPG_Chance_Roll&)
+{
+}
+
+void RPG_Character_MonsterAttackAction_Type_pskel::
+numAttacksPerRound (unsigned int)
+{
+}
+
 // RPG_Character_MonsterAttack_Type_pskel
 //
 
@@ -657,27 +876,7 @@ grappleBonus (unsigned int)
 }
 
 void RPG_Character_MonsterAttack_Type_pskel::
-naturalWeapon (const RPG_Character_NaturalWeapon&)
-{
-}
-
-void RPG_Character_MonsterAttack_Type_pskel::
-attackBonus (unsigned int)
-{
-}
-
-void RPG_Character_MonsterAttack_Type_pskel::
-attackForm (const RPG_Character_MonsterAttackForm&)
-{
-}
-
-void RPG_Character_MonsterAttack_Type_pskel::
-damage (const RPG_Chance_Roll&)
-{
-}
-
-void RPG_Character_MonsterAttack_Type_pskel::
-numAttacksPerRound (unsigned int)
+attackAction (const RPG_Character_MonsterAttackAction&)
 {
 }
 
@@ -696,6 +895,68 @@ reflex (unsigned int)
 
 void RPG_Character_SavingThrowModifiers_Type_pskel::
 will (unsigned int)
+{
+}
+
+// RPG_Character_Attributes_Type_pskel
+//
+
+void RPG_Character_Attributes_Type_pskel::
+strength (unsigned int)
+{
+}
+
+void RPG_Character_Attributes_Type_pskel::
+dexterity (unsigned int)
+{
+}
+
+void RPG_Character_Attributes_Type_pskel::
+constitution (unsigned int)
+{
+}
+
+void RPG_Character_Attributes_Type_pskel::
+intelligence (unsigned int)
+{
+}
+
+void RPG_Character_Attributes_Type_pskel::
+wisdom (unsigned int)
+{
+}
+
+void RPG_Character_Attributes_Type_pskel::
+charisma (unsigned int)
+{
+}
+
+// RPG_Character_SkillValue_Type_pskel
+//
+
+void RPG_Character_SkillValue_Type_pskel::
+skill (const RPG_Character_Skill&)
+{
+}
+
+void RPG_Character_SkillValue_Type_pskel::
+rank (unsigned int)
+{
+}
+
+// RPG_Character_Skills_Type_pskel
+//
+
+void RPG_Character_Skills_Type_pskel::
+skill (const RPG_Character_SkillsItem_t&)
+{
+}
+
+// RPG_Character_Feats_Type_pskel
+//
+
+void RPG_Character_Feats_Type_pskel::
+feat (const RPG_Character_Feat&)
 {
 }
 
@@ -788,6 +1049,21 @@ reach (unsigned int)
 
 void RPG_Character_MonsterProperties_Type_pskel::
 saves (const RPG_Character_SavingThrowModifiers&)
+{
+}
+
+void RPG_Character_MonsterProperties_Type_pskel::
+attributes (const RPG_Character_Attributes&)
+{
+}
+
+void RPG_Character_MonsterProperties_Type_pskel::
+skills (const RPG_Character_Skills_t&)
+{
+}
+
+void RPG_Character_MonsterProperties_Type_pskel::
+feats (const RPG_Character_Feats_t&)
 {
 }
 
@@ -1384,8 +1660,7 @@ sequence_0 (unsigned long& state,
             this->subType (tmp);
           }
 
-          count = 0;
-          state = ~0UL;
+          count++;
         }
 
         break;
@@ -1917,6 +2192,335 @@ sequence_0 (unsigned long& state,
   }
 }
 
+// Element validation and dispatch functions for RPG_Character_MonsterAttackAction_Type_pskel.
+//
+bool RPG_Character_MonsterAttackAction_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  if (vd->func == 0 && vd->state == 0)
+  {
+    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+      return true;
+    else
+      vd->state = 1;
+  }
+
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
+
+    vd = vs.data + (vs.size - 1);
+
+    if (vd->state == ~0UL)
+      vd = vs.data + (--vs.size - 1);
+    else
+      break;
+  }
+
+  if (vd->func == 0)
+  {
+    if (vd->state != ~0UL)
+    {
+      unsigned long s = ~0UL;
+
+      if (n == "naturalWeapon" && ns.empty ())
+        s = 0UL;
+
+      if (s != ~0UL)
+      {
+        vd->count++;
+        vd->state = ~0UL;
+
+        vd = vs.data + vs.size++;
+        vd->func = &RPG_Character_MonsterAttackAction_Type_pskel::sequence_0;
+        vd->state = s;
+        vd->count = 0;
+
+        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
+      }
+      else
+      {
+        if (vd->count < 1UL)
+          this->_expected_element (
+            "", "naturalWeapon",
+            ns, n);
+        return false;
+      }
+    }
+    else
+      return false;
+  }
+
+  return true;
+}
+
+bool RPG_Character_MonsterAttackAction_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size - 1];
+
+  if (vd.func == 0 && vd.state == 0)
+  {
+    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
+      assert (false);
+    return true;
+  }
+
+  assert (vd.func != 0);
+  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
+
+  if (vd.state == ~0UL)
+    vs.size--;
+
+  return true;
+}
+
+void RPG_Character_MonsterAttackAction_Type_pskel::
+_pre_e_validate ()
+{
+  this->v_state_stack_.push ();
+  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size++];
+
+  vd.func = 0;
+  vd.state = 0;
+  vd.count = 0;
+}
+
+void RPG_Character_MonsterAttackAction_Type_pskel::
+_post_e_validate ()
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  ::xml_schema::ro_string empty;
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
+    assert (vd->state == ~0UL);
+    vd = vs.data + (--vs.size - 1);
+  }
+
+  if (vd->count < 1UL)
+    this->_expected_element (
+      "", "naturalWeapon");
+
+  this->v_state_stack_.pop ();
+}
+
+void RPG_Character_MonsterAttackAction_Type_pskel::
+sequence_0 (unsigned long& state,
+            unsigned long& count,
+            const ::xml_schema::ro_string& ns,
+            const ::xml_schema::ro_string& n,
+            const ::xml_schema::ro_string* t,
+            bool start)
+{
+  XSD_UNUSED (t);
+
+  switch (state)
+  {
+    case 0UL:
+    {
+      if (n == "naturalWeapon" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->naturalWeapon_parser_;
+
+          if (this->naturalWeapon_parser_)
+            this->naturalWeapon_parser_->pre ();
+        }
+        else
+        {
+          if (this->naturalWeapon_parser_)
+          {
+            const RPG_Character_NaturalWeapon& tmp (this->naturalWeapon_parser_->post_RPG_Character_NaturalWeapon_Type ());
+            this->naturalWeapon (tmp);
+          }
+
+          count = 0;
+          state = 1UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "naturalWeapon",
+            ns, n);
+        count = 0;
+        state = 1UL;
+        // Fall through.
+      }
+    }
+    case 1UL:
+    {
+      if (n == "attackBonus" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->attackBonus_parser_;
+
+          if (this->attackBonus_parser_)
+            this->attackBonus_parser_->pre ();
+        }
+        else
+        {
+          if (this->attackBonus_parser_)
+          {
+            unsigned int tmp (this->attackBonus_parser_->post_unsigned_int ());
+            this->attackBonus (tmp);
+          }
+
+          count = 0;
+          state = 2UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "attackBonus",
+            ns, n);
+        count = 0;
+        state = 2UL;
+        // Fall through.
+      }
+    }
+    case 2UL:
+    {
+      if (n == "attackForm" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->attackForm_parser_;
+
+          if (this->attackForm_parser_)
+            this->attackForm_parser_->pre ();
+        }
+        else
+        {
+          if (this->attackForm_parser_)
+          {
+            const RPG_Character_MonsterAttackForm& tmp (this->attackForm_parser_->post_RPG_Character_MonsterAttackForm_Type ());
+            this->attackForm (tmp);
+          }
+
+          count = 0;
+          state = 3UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "attackForm",
+            ns, n);
+        count = 0;
+        state = 3UL;
+        // Fall through.
+      }
+    }
+    case 3UL:
+    {
+      if (n == "damage" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->damage_parser_;
+
+          if (this->damage_parser_)
+            this->damage_parser_->pre ();
+        }
+        else
+        {
+          if (this->damage_parser_)
+          {
+            const RPG_Chance_Roll& tmp (this->damage_parser_->post_RPG_Chance_Roll_Type ());
+            this->damage (tmp);
+          }
+
+          count = 0;
+          state = 4UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "damage",
+            ns, n);
+        count = 0;
+        state = 4UL;
+        // Fall through.
+      }
+    }
+    case 4UL:
+    {
+      if (n == "numAttacksPerRound" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->numAttacksPerRound_parser_;
+
+          if (this->numAttacksPerRound_parser_)
+            this->numAttacksPerRound_parser_->pre ();
+        }
+        else
+        {
+          if (this->numAttacksPerRound_parser_)
+          {
+            unsigned int tmp (this->numAttacksPerRound_parser_->post_unsigned_int ());
+            this->numAttacksPerRound (tmp);
+          }
+
+          count = 0;
+          state = ~0UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "numAttacksPerRound",
+            ns, n);
+        count = 0;
+        state = ~0UL;
+        // Fall through.
+      }
+    }
+    case ~0UL:
+      break;
+  }
+}
+
 // Element validation and dispatch functions for RPG_Character_MonsterAttack_Type_pskel.
 //
 bool RPG_Character_MonsterAttack_Type_pskel::
@@ -2132,25 +2736,24 @@ sequence_0 (unsigned long& state,
     }
     case 2UL:
     {
-      if (n == "naturalWeapon" && ns.empty ())
+      if (n == "attackAction" && ns.empty ())
       {
         if (start)
         {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->naturalWeapon_parser_;
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->attackAction_parser_;
 
-          if (this->naturalWeapon_parser_)
-            this->naturalWeapon_parser_->pre ();
+          if (this->attackAction_parser_)
+            this->attackAction_parser_->pre ();
         }
         else
         {
-          if (this->naturalWeapon_parser_)
+          if (this->attackAction_parser_)
           {
-            const RPG_Character_NaturalWeapon& tmp (this->naturalWeapon_parser_->post_RPG_Character_NaturalWeapon_Type ());
-            this->naturalWeapon (tmp);
+            const RPG_Character_MonsterAttackAction& tmp (this->attackAction_parser_->post_RPG_Character_MonsterAttackAction_Type ());
+            this->attackAction (tmp);
           }
 
-          count = 0;
-          state = 3UL;
+          count++;
         }
 
         break;
@@ -2160,155 +2763,7 @@ sequence_0 (unsigned long& state,
         assert (start);
         if (count < 1UL)
           this->_expected_element (
-            "", "naturalWeapon",
-            ns, n);
-        count = 0;
-        state = 3UL;
-        // Fall through.
-      }
-    }
-    case 3UL:
-    {
-      if (n == "attackBonus" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->attackBonus_parser_;
-
-          if (this->attackBonus_parser_)
-            this->attackBonus_parser_->pre ();
-        }
-        else
-        {
-          if (this->attackBonus_parser_)
-          {
-            unsigned int tmp (this->attackBonus_parser_->post_unsigned_int ());
-            this->attackBonus (tmp);
-          }
-
-          count = 0;
-          state = 4UL;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "attackBonus",
-            ns, n);
-        count = 0;
-        state = 4UL;
-        // Fall through.
-      }
-    }
-    case 4UL:
-    {
-      if (n == "attackForm" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->attackForm_parser_;
-
-          if (this->attackForm_parser_)
-            this->attackForm_parser_->pre ();
-        }
-        else
-        {
-          if (this->attackForm_parser_)
-          {
-            const RPG_Character_MonsterAttackForm& tmp (this->attackForm_parser_->post_RPG_Character_MonsterAttackForm_Type ());
-            this->attackForm (tmp);
-          }
-
-          count = 0;
-          state = 5UL;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "attackForm",
-            ns, n);
-        count = 0;
-        state = 5UL;
-        // Fall through.
-      }
-    }
-    case 5UL:
-    {
-      if (n == "damage" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->damage_parser_;
-
-          if (this->damage_parser_)
-            this->damage_parser_->pre ();
-        }
-        else
-        {
-          if (this->damage_parser_)
-          {
-            const RPG_Chance_Roll& tmp (this->damage_parser_->post_RPG_Chance_Roll_Type ());
-            this->damage (tmp);
-          }
-
-          count = 0;
-          state = 6UL;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "damage",
-            ns, n);
-        count = 0;
-        state = 6UL;
-        // Fall through.
-      }
-    }
-    case 6UL:
-    {
-      if (n == "numAttacksPerRound" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->numAttacksPerRound_parser_;
-
-          if (this->numAttacksPerRound_parser_)
-            this->numAttacksPerRound_parser_->pre ();
-        }
-        else
-        {
-          if (this->numAttacksPerRound_parser_)
-          {
-            unsigned int tmp (this->numAttacksPerRound_parser_->post_unsigned_int ());
-            this->numAttacksPerRound (tmp);
-          }
-
-          count = 0;
-          state = ~0UL;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "numAttacksPerRound",
+            "", "attackAction",
             ns, n);
         count = 0;
         state = ~0UL;
@@ -2565,6 +3020,928 @@ sequence_0 (unsigned long& state,
           this->_expected_element (
             "", "will",
             ns, n);
+        count = 0;
+        state = ~0UL;
+        // Fall through.
+      }
+    }
+    case ~0UL:
+      break;
+  }
+}
+
+// Element validation and dispatch functions for RPG_Character_Attributes_Type_pskel.
+//
+bool RPG_Character_Attributes_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  if (vd->func == 0 && vd->state == 0)
+  {
+    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+      return true;
+    else
+      vd->state = 1;
+  }
+
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
+
+    vd = vs.data + (vs.size - 1);
+
+    if (vd->state == ~0UL)
+      vd = vs.data + (--vs.size - 1);
+    else
+      break;
+  }
+
+  if (vd->func == 0)
+  {
+    if (vd->state != ~0UL)
+    {
+      unsigned long s = ~0UL;
+
+      if (n == "strength" && ns.empty ())
+        s = 0UL;
+
+      if (s != ~0UL)
+      {
+        vd->count++;
+        vd->state = ~0UL;
+
+        vd = vs.data + vs.size++;
+        vd->func = &RPG_Character_Attributes_Type_pskel::sequence_0;
+        vd->state = s;
+        vd->count = 0;
+
+        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
+      }
+      else
+      {
+        if (vd->count < 1UL)
+          this->_expected_element (
+            "", "strength",
+            ns, n);
+        return false;
+      }
+    }
+    else
+      return false;
+  }
+
+  return true;
+}
+
+bool RPG_Character_Attributes_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size - 1];
+
+  if (vd.func == 0 && vd.state == 0)
+  {
+    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
+      assert (false);
+    return true;
+  }
+
+  assert (vd.func != 0);
+  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
+
+  if (vd.state == ~0UL)
+    vs.size--;
+
+  return true;
+}
+
+void RPG_Character_Attributes_Type_pskel::
+_pre_e_validate ()
+{
+  this->v_state_stack_.push ();
+  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size++];
+
+  vd.func = 0;
+  vd.state = 0;
+  vd.count = 0;
+}
+
+void RPG_Character_Attributes_Type_pskel::
+_post_e_validate ()
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  ::xml_schema::ro_string empty;
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
+    assert (vd->state == ~0UL);
+    vd = vs.data + (--vs.size - 1);
+  }
+
+  if (vd->count < 1UL)
+    this->_expected_element (
+      "", "strength");
+
+  this->v_state_stack_.pop ();
+}
+
+void RPG_Character_Attributes_Type_pskel::
+sequence_0 (unsigned long& state,
+            unsigned long& count,
+            const ::xml_schema::ro_string& ns,
+            const ::xml_schema::ro_string& n,
+            const ::xml_schema::ro_string* t,
+            bool start)
+{
+  XSD_UNUSED (t);
+
+  switch (state)
+  {
+    case 0UL:
+    {
+      if (n == "strength" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->strength_parser_;
+
+          if (this->strength_parser_)
+            this->strength_parser_->pre ();
+        }
+        else
+        {
+          if (this->strength_parser_)
+          {
+            unsigned int tmp (this->strength_parser_->post_unsigned_int ());
+            this->strength (tmp);
+          }
+
+          count = 0;
+          state = 1UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "strength",
+            ns, n);
+        count = 0;
+        state = 1UL;
+        // Fall through.
+      }
+    }
+    case 1UL:
+    {
+      if (n == "dexterity" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->dexterity_parser_;
+
+          if (this->dexterity_parser_)
+            this->dexterity_parser_->pre ();
+        }
+        else
+        {
+          if (this->dexterity_parser_)
+          {
+            unsigned int tmp (this->dexterity_parser_->post_unsigned_int ());
+            this->dexterity (tmp);
+          }
+
+          count = 0;
+          state = 2UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "dexterity",
+            ns, n);
+        count = 0;
+        state = 2UL;
+        // Fall through.
+      }
+    }
+    case 2UL:
+    {
+      if (n == "constitution" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->constitution_parser_;
+
+          if (this->constitution_parser_)
+            this->constitution_parser_->pre ();
+        }
+        else
+        {
+          if (this->constitution_parser_)
+          {
+            unsigned int tmp (this->constitution_parser_->post_unsigned_int ());
+            this->constitution (tmp);
+          }
+
+          count = 0;
+          state = 3UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "constitution",
+            ns, n);
+        count = 0;
+        state = 3UL;
+        // Fall through.
+      }
+    }
+    case 3UL:
+    {
+      if (n == "intelligence" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->intelligence_parser_;
+
+          if (this->intelligence_parser_)
+            this->intelligence_parser_->pre ();
+        }
+        else
+        {
+          if (this->intelligence_parser_)
+          {
+            unsigned int tmp (this->intelligence_parser_->post_unsigned_int ());
+            this->intelligence (tmp);
+          }
+
+          count = 0;
+          state = 4UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "intelligence",
+            ns, n);
+        count = 0;
+        state = 4UL;
+        // Fall through.
+      }
+    }
+    case 4UL:
+    {
+      if (n == "wisdom" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->wisdom_parser_;
+
+          if (this->wisdom_parser_)
+            this->wisdom_parser_->pre ();
+        }
+        else
+        {
+          if (this->wisdom_parser_)
+          {
+            unsigned int tmp (this->wisdom_parser_->post_unsigned_int ());
+            this->wisdom (tmp);
+          }
+
+          count = 0;
+          state = 5UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "wisdom",
+            ns, n);
+        count = 0;
+        state = 5UL;
+        // Fall through.
+      }
+    }
+    case 5UL:
+    {
+      if (n == "charisma" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->charisma_parser_;
+
+          if (this->charisma_parser_)
+            this->charisma_parser_->pre ();
+        }
+        else
+        {
+          if (this->charisma_parser_)
+          {
+            unsigned int tmp (this->charisma_parser_->post_unsigned_int ());
+            this->charisma (tmp);
+          }
+
+          count = 0;
+          state = ~0UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "charisma",
+            ns, n);
+        count = 0;
+        state = ~0UL;
+        // Fall through.
+      }
+    }
+    case ~0UL:
+      break;
+  }
+}
+
+// Element validation and dispatch functions for RPG_Character_SkillValue_Type_pskel.
+//
+bool RPG_Character_SkillValue_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  if (vd->func == 0 && vd->state == 0)
+  {
+    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+      return true;
+    else
+      vd->state = 1;
+  }
+
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
+
+    vd = vs.data + (vs.size - 1);
+
+    if (vd->state == ~0UL)
+      vd = vs.data + (--vs.size - 1);
+    else
+      break;
+  }
+
+  if (vd->func == 0)
+  {
+    if (vd->state != ~0UL)
+    {
+      unsigned long s = ~0UL;
+
+      if (n == "skill" && ns.empty ())
+        s = 0UL;
+
+      if (s != ~0UL)
+      {
+        vd->count++;
+        vd->state = ~0UL;
+
+        vd = vs.data + vs.size++;
+        vd->func = &RPG_Character_SkillValue_Type_pskel::sequence_0;
+        vd->state = s;
+        vd->count = 0;
+
+        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
+      }
+      else
+      {
+        if (vd->count < 1UL)
+          this->_expected_element (
+            "", "skill",
+            ns, n);
+        return false;
+      }
+    }
+    else
+      return false;
+  }
+
+  return true;
+}
+
+bool RPG_Character_SkillValue_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size - 1];
+
+  if (vd.func == 0 && vd.state == 0)
+  {
+    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
+      assert (false);
+    return true;
+  }
+
+  assert (vd.func != 0);
+  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
+
+  if (vd.state == ~0UL)
+    vs.size--;
+
+  return true;
+}
+
+void RPG_Character_SkillValue_Type_pskel::
+_pre_e_validate ()
+{
+  this->v_state_stack_.push ();
+  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size++];
+
+  vd.func = 0;
+  vd.state = 0;
+  vd.count = 0;
+}
+
+void RPG_Character_SkillValue_Type_pskel::
+_post_e_validate ()
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  ::xml_schema::ro_string empty;
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
+    assert (vd->state == ~0UL);
+    vd = vs.data + (--vs.size - 1);
+  }
+
+  if (vd->count < 1UL)
+    this->_expected_element (
+      "", "skill");
+
+  this->v_state_stack_.pop ();
+}
+
+void RPG_Character_SkillValue_Type_pskel::
+sequence_0 (unsigned long& state,
+            unsigned long& count,
+            const ::xml_schema::ro_string& ns,
+            const ::xml_schema::ro_string& n,
+            const ::xml_schema::ro_string* t,
+            bool start)
+{
+  XSD_UNUSED (t);
+
+  switch (state)
+  {
+    case 0UL:
+    {
+      if (n == "skill" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->skill_parser_;
+
+          if (this->skill_parser_)
+            this->skill_parser_->pre ();
+        }
+        else
+        {
+          if (this->skill_parser_)
+          {
+            const RPG_Character_Skill& tmp (this->skill_parser_->post_RPG_Character_Skill_Type ());
+            this->skill (tmp);
+          }
+
+          count = 0;
+          state = 1UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "skill",
+            ns, n);
+        count = 0;
+        state = 1UL;
+        // Fall through.
+      }
+    }
+    case 1UL:
+    {
+      if (n == "rank" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->rank_parser_;
+
+          if (this->rank_parser_)
+            this->rank_parser_->pre ();
+        }
+        else
+        {
+          if (this->rank_parser_)
+          {
+            unsigned int tmp (this->rank_parser_->post_unsigned_int ());
+            this->rank (tmp);
+          }
+
+          count = 0;
+          state = ~0UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "rank",
+            ns, n);
+        count = 0;
+        state = ~0UL;
+        // Fall through.
+      }
+    }
+    case ~0UL:
+      break;
+  }
+}
+
+// Element validation and dispatch functions for RPG_Character_Skills_Type_pskel.
+//
+bool RPG_Character_Skills_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  if (vd->func == 0 && vd->state == 0)
+  {
+    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+      return true;
+    else
+      vd->state = 1;
+  }
+
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
+
+    vd = vs.data + (vs.size - 1);
+
+    if (vd->state == ~0UL)
+      vd = vs.data + (--vs.size - 1);
+    else
+      break;
+  }
+
+  if (vd->func == 0)
+  {
+    if (vd->state != ~0UL)
+    {
+      unsigned long s = ~0UL;
+
+      if (n == "skill" && ns.empty ())
+        s = 0UL;
+
+      if (s != ~0UL)
+      {
+        vd->count++;
+        vd->state = ~0UL;
+
+        vd = vs.data + vs.size++;
+        vd->func = &RPG_Character_Skills_Type_pskel::sequence_0;
+        vd->state = s;
+        vd->count = 0;
+
+        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
+      }
+      else
+      {
+        return false;
+      }
+    }
+    else
+      return false;
+  }
+
+  return true;
+}
+
+bool RPG_Character_Skills_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size - 1];
+
+  if (vd.func == 0 && vd.state == 0)
+  {
+    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
+      assert (false);
+    return true;
+  }
+
+  assert (vd.func != 0);
+  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
+
+  if (vd.state == ~0UL)
+    vs.size--;
+
+  return true;
+}
+
+void RPG_Character_Skills_Type_pskel::
+_pre_e_validate ()
+{
+  this->v_state_stack_.push ();
+  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size++];
+
+  vd.func = 0;
+  vd.state = 0;
+  vd.count = 0;
+}
+
+void RPG_Character_Skills_Type_pskel::
+_post_e_validate ()
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  ::xml_schema::ro_string empty;
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
+    assert (vd->state == ~0UL);
+    vd = vs.data + (--vs.size - 1);
+  }
+
+
+  this->v_state_stack_.pop ();
+}
+
+void RPG_Character_Skills_Type_pskel::
+sequence_0 (unsigned long& state,
+            unsigned long& count,
+            const ::xml_schema::ro_string& ns,
+            const ::xml_schema::ro_string& n,
+            const ::xml_schema::ro_string* t,
+            bool start)
+{
+  XSD_UNUSED (t);
+
+  switch (state)
+  {
+    case 0UL:
+    {
+      if (n == "skill" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->skill_parser_;
+
+          if (this->skill_parser_)
+            this->skill_parser_->pre ();
+        }
+        else
+        {
+          if (this->skill_parser_)
+          {
+            const RPG_Character_SkillsItem_t& tmp (this->skill_parser_->post_RPG_Character_SkillValue_Type ());
+            this->skill (tmp);
+          }
+
+          count++;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        count = 0;
+        state = ~0UL;
+        // Fall through.
+      }
+    }
+    case ~0UL:
+      break;
+  }
+}
+
+// Element validation and dispatch functions for RPG_Character_Feats_Type_pskel.
+//
+bool RPG_Character_Feats_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  if (vd->func == 0 && vd->state == 0)
+  {
+    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+      return true;
+    else
+      vd->state = 1;
+  }
+
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
+
+    vd = vs.data + (vs.size - 1);
+
+    if (vd->state == ~0UL)
+      vd = vs.data + (--vs.size - 1);
+    else
+      break;
+  }
+
+  if (vd->func == 0)
+  {
+    if (vd->state != ~0UL)
+    {
+      unsigned long s = ~0UL;
+
+      if (n == "feat" && ns.empty ())
+        s = 0UL;
+
+      if (s != ~0UL)
+      {
+        vd->count++;
+        vd->state = ~0UL;
+
+        vd = vs.data + vs.size++;
+        vd->func = &RPG_Character_Feats_Type_pskel::sequence_0;
+        vd->state = s;
+        vd->count = 0;
+
+        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
+      }
+      else
+      {
+        return false;
+      }
+    }
+    else
+      return false;
+  }
+
+  return true;
+}
+
+bool RPG_Character_Feats_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size - 1];
+
+  if (vd.func == 0 && vd.state == 0)
+  {
+    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
+      assert (false);
+    return true;
+  }
+
+  assert (vd.func != 0);
+  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
+
+  if (vd.state == ~0UL)
+    vs.size--;
+
+  return true;
+}
+
+void RPG_Character_Feats_Type_pskel::
+_pre_e_validate ()
+{
+  this->v_state_stack_.push ();
+  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size++];
+
+  vd.func = 0;
+  vd.state = 0;
+  vd.count = 0;
+}
+
+void RPG_Character_Feats_Type_pskel::
+_post_e_validate ()
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  ::xml_schema::ro_string empty;
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
+    assert (vd->state == ~0UL);
+    vd = vs.data + (--vs.size - 1);
+  }
+
+
+  this->v_state_stack_.pop ();
+}
+
+void RPG_Character_Feats_Type_pskel::
+sequence_0 (unsigned long& state,
+            unsigned long& count,
+            const ::xml_schema::ro_string& ns,
+            const ::xml_schema::ro_string& n,
+            const ::xml_schema::ro_string* t,
+            bool start)
+{
+  XSD_UNUSED (t);
+
+  switch (state)
+  {
+    case 0UL:
+    {
+      if (n == "feat" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->feat_parser_;
+
+          if (this->feat_parser_)
+            this->feat_parser_->pre ();
+        }
+        else
+        {
+          if (this->feat_parser_)
+          {
+            const RPG_Character_Feat& tmp (this->feat_parser_->post_RPG_Character_Feat_Type ());
+            this->feat (tmp);
+          }
+
+          count++;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
         count = 0;
         state = ~0UL;
         // Fall through.
@@ -3739,6 +5116,117 @@ sequence_0 (unsigned long& state,
     }
     case 11UL:
     {
+      if (n == "attributes" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->attributes_parser_;
+
+          if (this->attributes_parser_)
+            this->attributes_parser_->pre ();
+        }
+        else
+        {
+          if (this->attributes_parser_)
+          {
+            const RPG_Character_Attributes& tmp (this->attributes_parser_->post_RPG_Character_Attributes_Type ());
+            this->attributes (tmp);
+          }
+
+          count = 0;
+          state = 12UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "attributes",
+            ns, n);
+        count = 0;
+        state = 12UL;
+        // Fall through.
+      }
+    }
+    case 12UL:
+    {
+      if (n == "skills" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->skills_parser_;
+
+          if (this->skills_parser_)
+            this->skills_parser_->pre ();
+        }
+        else
+        {
+          if (this->skills_parser_)
+          {
+            const RPG_Character_Skills_t& tmp (this->skills_parser_->post_RPG_Character_Skills_Type ());
+            this->skills (tmp);
+          }
+
+          count = 0;
+          state = 13UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "skills",
+            ns, n);
+        count = 0;
+        state = 13UL;
+        // Fall through.
+      }
+    }
+    case 13UL:
+    {
+      if (n == "feats" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->feats_parser_;
+
+          if (this->feats_parser_)
+            this->feats_parser_->pre ();
+        }
+        else
+        {
+          if (this->feats_parser_)
+          {
+            const RPG_Character_Feats_t& tmp (this->feats_parser_->post_RPG_Character_Feats_Type ());
+            this->feats (tmp);
+          }
+
+          count = 0;
+          state = 14UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "feats",
+            ns, n);
+        count = 0;
+        state = 14UL;
+        // Fall through.
+      }
+    }
+    case 14UL:
+    {
       if (n == "environment" && ns.empty ())
       {
         if (start)
@@ -3757,7 +5245,7 @@ sequence_0 (unsigned long& state,
           }
 
           count = 0;
-          state = 12UL;
+          state = 15UL;
         }
 
         break;
@@ -3770,11 +5258,11 @@ sequence_0 (unsigned long& state,
             "", "environment",
             ns, n);
         count = 0;
-        state = 12UL;
+        state = 15UL;
         // Fall through.
       }
     }
-    case 12UL:
+    case 15UL:
     {
       if (n == "organization" && ns.empty ())
       {
@@ -3806,11 +5294,11 @@ sequence_0 (unsigned long& state,
             "", "organization",
             ns, n);
         count = 0;
-        state = 13UL;
+        state = 16UL;
         // Fall through.
       }
     }
-    case 13UL:
+    case 16UL:
     {
       if (n == "challengeRating" && ns.empty ())
       {
@@ -3830,7 +5318,7 @@ sequence_0 (unsigned long& state,
           }
 
           count = 0;
-          state = 14UL;
+          state = 17UL;
         }
 
         break;
@@ -3843,11 +5331,11 @@ sequence_0 (unsigned long& state,
             "", "challengeRating",
             ns, n);
         count = 0;
-        state = 14UL;
+        state = 17UL;
         // Fall through.
       }
     }
-    case 14UL:
+    case 17UL:
     {
       if (n == "treasureModifier" && ns.empty ())
       {
@@ -3867,7 +5355,7 @@ sequence_0 (unsigned long& state,
           }
 
           count = 0;
-          state = 15UL;
+          state = 18UL;
         }
 
         break;
@@ -3880,11 +5368,11 @@ sequence_0 (unsigned long& state,
             "", "treasureModifier",
             ns, n);
         count = 0;
-        state = 15UL;
+        state = 18UL;
         // Fall through.
       }
     }
-    case 15UL:
+    case 18UL:
     {
       if (n == "alignment" && ns.empty ())
       {
@@ -3904,7 +5392,7 @@ sequence_0 (unsigned long& state,
           }
 
           count = 0;
-          state = 16UL;
+          state = 19UL;
         }
 
         break;
@@ -3917,11 +5405,11 @@ sequence_0 (unsigned long& state,
             "", "alignment",
             ns, n);
         count = 0;
-        state = 16UL;
+        state = 19UL;
         // Fall through.
       }
     }
-    case 16UL:
+    case 19UL:
     {
       if (n == "advancement" && ns.empty ())
       {
@@ -3941,7 +5429,7 @@ sequence_0 (unsigned long& state,
           }
 
           count = 0;
-          state = 17UL;
+          state = 20UL;
         }
 
         break;
@@ -3954,11 +5442,11 @@ sequence_0 (unsigned long& state,
             "", "advancement",
             ns, n);
         count = 0;
-        state = 17UL;
+        state = 20UL;
         // Fall through.
       }
     }
-    case 17UL:
+    case 20UL:
     {
       if (n == "levelAdjustment" && ns.empty ())
       {

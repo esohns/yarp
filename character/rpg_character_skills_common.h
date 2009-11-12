@@ -310,7 +310,9 @@ struct RPG_Character_Feat_Prerequisite
 };
 
 // some useful types
+typedef std::pair<RPG_Character_Skill, unsigned char> RPG_Character_SkillsItem_t;
 typedef std::map<RPG_Character_Skill, unsigned char> RPG_Character_Skills_t;
+// typedef RPG_Character_Skills_t::value_type RPG_Character_SkillsItem_t;
 typedef RPG_Character_Skills_t::iterator RPG_Character_SkillsIterator_t;
 typedef RPG_Character_Skills_t::const_iterator RPG_Character_SkillsConstIterator_t;
 typedef std::multiset<RPG_Character_Feat> RPG_Character_Feats_t;

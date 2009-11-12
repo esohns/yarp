@@ -20,6 +20,7 @@
 #include "rpg_character_dictionary_parser.h"
 
 #include "rpg_character_common_tools.h"
+#include "rpg_character_skills_common_tools.h"
 #include "rpg_character_monster_common.h"
 #include "rpg_character_monster_common_tools.h"
 
@@ -92,7 +93,7 @@ void RPG_Character_MonsterDictionary_Type::monster(const RPG_Character_MonsterPr
   properties.space            = monster_in.space;
   properties.reach            = monster_in.reach;
   properties.saves            = monster_in.saves;
-  properties.abilities        = monster_in.abilities;
+  properties.attributes       = monster_in.attributes;
   properties.skills           = monster_in.skills;
   properties.feats            = monster_in.feats;
   properties.environment      = monster_in.environment;
@@ -128,7 +129,7 @@ RPG_Character_MonsterType_Type::RPG_Character_MonsterType_Type()
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterType_Type::RPG_Character_MonsterType_Type"));
 
   myCurrentMonsterType.metaType = MONSTERMETATYPE_INVALID;
-  myCurrentMonsterType.subType = MONSTERSUBTYPE_INVALID;
+  myCurrentMonsterType.subTypes.clear();
 }
 
 void RPG_Character_MonsterType_Type::metaType(const RPG_Character_MonsterMetaType& metaType_in)
@@ -142,7 +143,7 @@ void RPG_Character_MonsterType_Type::subType(const RPG_Character_MonsterSubType&
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterType_Type::subType"));
 
-  myCurrentMonsterType.subType = subType_in;
+  myCurrentMonsterType.subTypes.insert(subType_in);
 }
 
 RPG_Character_MonsterType RPG_Character_MonsterType_Type::post_RPG_Character_MonsterType_Type()
@@ -153,7 +154,7 @@ RPG_Character_MonsterType RPG_Character_MonsterType_Type::post_RPG_Character_Mon
 
   // clear structure
   myCurrentMonsterType.metaType = MONSTERMETATYPE_INVALID;
-  myCurrentMonsterType.subType = MONSTERSUBTYPE_INVALID;
+  myCurrentMonsterType.subTypes.clear();
 
   return result;
 }
@@ -281,19 +282,79 @@ RPG_Character_MonsterArmorClass RPG_Character_MonsterArmorClass_Type::post_RPG_C
   return result;
 }
 
+RPG_Character_MonsterAttackAction_Type::RPG_Character_MonsterAttackAction_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::RPG_Character_MonsterAttackAction_Type"));
+
+  myCurrentMonsterAttackAction.naturalWeapon = NATURALWEAPON_INVALID;
+  myCurrentMonsterAttackAction.attackBonus = 0;
+  myCurrentMonsterAttackAction.attackForm = ATTACK_INVALID;
+  myCurrentMonsterAttackAction.damage.numDice = 0;
+  myCurrentMonsterAttackAction.damage.typeDice = D_TYPE_INVALID;
+  myCurrentMonsterAttackAction.damage.modifier = 0;
+  myCurrentMonsterAttackAction.numAttacksPerRound = 0;
+}
+
+void RPG_Character_MonsterAttackAction_Type::naturalWeapon(const RPG_Character_NaturalWeapon& naturalWeapon_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::naturalWeapon"));
+
+  myCurrentMonsterAttackAction.naturalWeapon = naturalWeapon_in;
+}
+
+void RPG_Character_MonsterAttackAction_Type::attackBonus(unsigned int attackBonus_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::attackBonus"));
+
+  myCurrentMonsterAttackAction.attackBonus = attackBonus_in;
+}
+
+void RPG_Character_MonsterAttackAction_Type::attackForm(const RPG_Character_MonsterAttackForm& attackForm_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::attackForm"));
+
+  myCurrentMonsterAttackAction.attackForm = attackForm_in;
+}
+
+void RPG_Character_MonsterAttackAction_Type::damage(const RPG_Character_Damage& damage_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::damage"));
+
+  myCurrentMonsterAttackAction.damage = damage_in;
+}
+
+void RPG_Character_MonsterAttackAction_Type::numAttacksPerRound(unsigned int numAttacksPerRound_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::numAttacksPerRound"));
+
+  myCurrentMonsterAttackAction.numAttacksPerRound = numAttacksPerRound_in;
+}
+
+RPG_Character_MonsterAttackAction RPG_Character_MonsterAttackAction_Type::post_RPG_Character_MonsterAttackAction_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::post_RPG_Character_MonsterAttackAction_Type"));
+
+  RPG_Character_MonsterAttackAction result = myCurrentMonsterAttackAction;
+
+  // clear structure
+  myCurrentMonsterAttackAction.naturalWeapon = NATURALWEAPON_INVALID;
+  myCurrentMonsterAttackAction.attackBonus = 0;
+  myCurrentMonsterAttackAction.attackForm = ATTACK_INVALID;
+  myCurrentMonsterAttackAction.damage.numDice = 0;
+  myCurrentMonsterAttackAction.damage.typeDice = D_TYPE_INVALID;
+  myCurrentMonsterAttackAction.damage.modifier = 0;
+  myCurrentMonsterAttackAction.numAttacksPerRound = 0;
+
+  return result;
+}
+
 RPG_Character_MonsterAttack_Type::RPG_Character_MonsterAttack_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttack_Type::RPG_Character_MonsterAttack_Type"));
 
   myCurrentMonsterAttack.baseAttackBonus = 0;
   myCurrentMonsterAttack.grappleBonus = 0;
-  myCurrentMonsterAttack.naturalWeapon = NATURALWEAPON_INVALID;
-  myCurrentMonsterAttack.attackBonus = 0;
-  myCurrentMonsterAttack.attackForm = ATTACK_INVALID;
-  myCurrentMonsterAttack.damage.numDice = 0;
-  myCurrentMonsterAttack.damage.typeDice = D_TYPE_INVALID;
-  myCurrentMonsterAttack.damage.modifier = 0;
-  myCurrentMonsterAttack.numAttacksPerRound = 0;
+  myCurrentMonsterAttack.attackActions.clear();
 }
 
 void RPG_Character_MonsterAttack_Type::baseAttackBonus(unsigned int baseAttackBonus_in)
@@ -310,39 +371,11 @@ void RPG_Character_MonsterAttack_Type::grappleBonus(unsigned int grappleBonus_in
   myCurrentMonsterAttack.grappleBonus = grappleBonus_in;
 }
 
-void RPG_Character_MonsterAttack_Type::naturalWeapon(const RPG_Character_NaturalWeapon& naturalWeapon_in)
+void RPG_Character_MonsterAttack_Type::attackAction(const RPG_Character_MonsterAttackAction& attackAction_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttack_Type::naturalWeapon"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttack_Type::attackAction"));
 
-  myCurrentMonsterAttack.naturalWeapon = naturalWeapon_in;
-}
-
-void RPG_Character_MonsterAttack_Type::attackBonus(unsigned int attackBonus_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttack_Type::attackBonus"));
-
-  myCurrentMonsterAttack.attackBonus = attackBonus_in;
-}
-
-void RPG_Character_MonsterAttack_Type::attackForm(const RPG_Character_MonsterAttackForm& attackForm_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttack_Type::attackForm"));
-
-  myCurrentMonsterAttack.attackForm = attackForm_in;
-}
-
-void RPG_Character_MonsterAttack_Type::damage(const RPG_Character_Damage& damage_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttack_Type::damage"));
-
-  myCurrentMonsterAttack.damage = damage_in;
-}
-
-void RPG_Character_MonsterAttack_Type::numAttacksPerRound(unsigned int numAttacksPerRound_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttack_Type::numAttacksPerRound"));
-
-  myCurrentMonsterAttack.numAttacksPerRound = numAttacksPerRound_in;
+  myCurrentMonsterAttack.attackActions.push_back(attackAction_in);
 }
 
 RPG_Character_MonsterAttack RPG_Character_MonsterAttack_Type::post_RPG_Character_MonsterAttack_Type()
@@ -354,13 +387,7 @@ RPG_Character_MonsterAttack RPG_Character_MonsterAttack_Type::post_RPG_Character
   // clear structure
   myCurrentMonsterAttack.baseAttackBonus = 0;
   myCurrentMonsterAttack.grappleBonus = 0;
-  myCurrentMonsterAttack.naturalWeapon = NATURALWEAPON_INVALID;
-  myCurrentMonsterAttack.attackBonus = 0;
-  myCurrentMonsterAttack.attackForm = ATTACK_INVALID;
-  myCurrentMonsterAttack.damage.numDice = 0;
-  myCurrentMonsterAttack.damage.typeDice = D_TYPE_INVALID;
-  myCurrentMonsterAttack.damage.modifier = 0;
-  myCurrentMonsterAttack.numAttacksPerRound = 0;
+  myCurrentMonsterAttack.attackActions.clear();
 
   return result;
 }
@@ -405,6 +432,178 @@ RPG_Character_SavingThrowModifiers RPG_Character_SavingThrowModifiers_Type::post
   myCurrentSavingThrowModifiers.fortitude = 0;
   myCurrentSavingThrowModifiers.reflex = 0;
   myCurrentSavingThrowModifiers.will = 0;
+
+  return result;
+}
+
+RPG_Character_Attributes_Type::RPG_Character_Attributes_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::RPG_Character_Attributes_Type"));
+
+  myCurrentAttributes.strength = 0;
+  myCurrentAttributes.dexterity = 0;
+  myCurrentAttributes.constitution = 0;
+  myCurrentAttributes.intelligence = 0;
+  myCurrentAttributes.wisdom = 0;
+  myCurrentAttributes.charisma = 0;
+}
+
+void RPG_Character_Attributes_Type::strength(unsigned int strength_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::strength"));
+
+  myCurrentAttributes.strength = strength_in;
+}
+
+void RPG_Character_Attributes_Type::dexterity(unsigned int dexterity_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::dexterity"));
+
+  myCurrentAttributes.dexterity = dexterity_in;
+}
+
+void RPG_Character_Attributes_Type::constitution(unsigned int constitution_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::constitution"));
+
+  myCurrentAttributes.constitution = constitution_in;
+}
+
+void RPG_Character_Attributes_Type::intelligence(unsigned int intelligence_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::intelligence"));
+
+  myCurrentAttributes.intelligence = intelligence_in;
+}
+
+void RPG_Character_Attributes_Type::wisdom(unsigned int wisdom_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::wisdom"));
+
+  myCurrentAttributes.wisdom = wisdom_in;
+}
+
+void RPG_Character_Attributes_Type::charisma(unsigned int charisma_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::charisma"));
+
+  myCurrentAttributes.charisma = charisma_in;
+}
+
+RPG_Character_Attributes RPG_Character_Attributes_Type::post_RPG_Character_Attributes_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::post_RPG_Character_Attributes_Type"));
+
+  RPG_Character_Attributes result = myCurrentAttributes;
+
+  // clear structure
+  myCurrentAttributes.strength = 0;
+  myCurrentAttributes.dexterity = 0;
+  myCurrentAttributes.constitution = 0;
+  myCurrentAttributes.intelligence = 0;
+  myCurrentAttributes.wisdom = 0;
+  myCurrentAttributes.charisma = 0;
+
+  return result;
+}
+
+RPG_Character_Skill RPG_Character_Skill_Type::post_RPG_Character_Skill_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skill_Type::post_RPG_Character_Skill_Type"));
+
+  return RPG_Character_Skills_Common_Tools::stringToSkill(post_string());
+}
+
+RPG_Character_SkillValue_Type::RPG_Character_SkillValue_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_SkillValue_Type::RPG_Character_SkillValue_Type"));
+
+  myCurrentSkill.first = SKILL_INVALID;
+  myCurrentSkill.second = 0;
+}
+
+void RPG_Character_SkillValue_Type::skill(const RPG_Character_Skill& skill_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_SkillValue_Type::skill"));
+
+  myCurrentSkill.first = skill_in;
+}
+
+void RPG_Character_SkillValue_Type::rank(unsigned int rank_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_SkillValue_Type::rank"));
+
+  myCurrentSkill.second = rank_in;
+}
+
+RPG_Character_SkillsItem_t RPG_Character_SkillValue_Type::post_RPG_Character_SkillValue_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_SkillValue_Type::post_RPG_Character_SkillValue_Type"));
+
+  RPG_Character_SkillsItem_t result = myCurrentSkill;
+
+  // clear structure
+  myCurrentSkill.first = SKILL_INVALID;
+  myCurrentSkill.second = 0;
+
+  return result;
+}
+
+RPG_Character_Skills_Type::RPG_Character_Skills_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Type::RPG_Character_Skills_Type"));
+
+  myCurrentSkills.clear();
+}
+
+void RPG_Character_Skills_Type::skill(const RPG_Character_SkillsItem_t& skill_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Type::skill"));
+
+  myCurrentSkills.insert(skill_in);
+}
+
+RPG_Character_Skills_t RPG_Character_Skills_Type::post_RPG_Character_Skills_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Type::post_RPG_Character_Skills_Type"));
+
+  RPG_Character_Skills_t result = myCurrentSkills;
+
+  // clear structure
+  myCurrentSkills.clear();
+
+  return result;
+}
+
+RPG_Character_Feat RPG_Character_Feat_Type::post_RPG_Character_Feat_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Feat_Type::post_RPG_Character_Feat_Type"));
+
+  return RPG_Character_Skills_Common_Tools::stringToFeat(post_string());
+}
+
+RPG_Character_Feats_Type::RPG_Character_Feats_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Feats_Type::RPG_Character_Feats_Type"));
+
+  myCurrentFeats.clear();
+}
+
+void RPG_Character_Feats_Type::feat(const RPG_Character_Feat& feat_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Feats_Type::feat"));
+
+  myCurrentFeats.insert(feat_in);
+}
+
+RPG_Character_Feats_t RPG_Character_Feats_Type::post_RPG_Character_Feats_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Feats_Type::post_RPG_Character_Feats_Type"));
+
+  RPG_Character_Feats_t result = myCurrentFeats;
+
+  // clear structure
+  myCurrentFeats.clear();
 
   return result;
 }
@@ -544,7 +743,7 @@ RPG_Character_MonsterProperties_Type::RPG_Character_MonsterProperties_Type()
   myCurrentProperties.name.resize(0);
   myCurrentProperties.size = SIZE_INVALID;
   myCurrentProperties.type.metaType = MONSTERMETATYPE_INVALID;
-  myCurrentProperties.type.subType = MONSTERSUBTYPE_INVALID;
+  myCurrentProperties.type.subTypes.clear();
   myCurrentProperties.hitDice.numDice = 0;
   myCurrentProperties.hitDice.typeDice = D_TYPE_INVALID;
   myCurrentProperties.hitDice.modifier = 0;
@@ -555,19 +754,18 @@ RPG_Character_MonsterProperties_Type::RPG_Character_MonsterProperties_Type()
   myCurrentProperties.armorClass.flatFooted = 0;
   myCurrentProperties.attack.baseAttackBonus = 0;
   myCurrentProperties.attack.grappleBonus = 0;
-  myCurrentProperties.attack.naturalWeapon = NATURALWEAPON_INVALID;
-  myCurrentProperties.attack.attackBonus = 0;
-  myCurrentProperties.attack.attackForm = ATTACK_INVALID;
-  myCurrentProperties.attack.damage.numDice = 0;
-  myCurrentProperties.attack.damage.typeDice = D_TYPE_INVALID;
-  myCurrentProperties.attack.damage.modifier = 0;
-  myCurrentProperties.attack.numAttacksPerRound = 0;
+  myCurrentProperties.attack.attackActions.clear();
   myCurrentProperties.space = 0;
   myCurrentProperties.reach = 0;
   myCurrentProperties.saves.fortitude = 0;
   myCurrentProperties.saves.reflex = 0;
   myCurrentProperties.saves.will = 0;
-  myCurrentProperties.abilities.clear();
+  myCurrentProperties.attributes.strength = 0;
+  myCurrentProperties.attributes.dexterity = 0;
+  myCurrentProperties.attributes.constitution = 0;
+  myCurrentProperties.attributes.intelligence = 0;
+  myCurrentProperties.attributes.wisdom = 0;
+  myCurrentProperties.attributes.charisma = 0;
   myCurrentProperties.skills.clear();
   myCurrentProperties.feats.clear();
   myCurrentProperties.environment = ENVIRONMENT_INVALID;
@@ -657,6 +855,27 @@ void RPG_Character_MonsterProperties_Type::saves(const RPG_Character_SavingThrow
   myCurrentProperties.saves = saves_in;
 }
 
+void RPG_Character_MonsterProperties_Type::attributes(const RPG_Character_Attributes& attributes_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterProperties_Type::attributes"));
+
+  myCurrentProperties.attributes = attributes_in;
+}
+
+void RPG_Character_MonsterProperties_Type::skills(const RPG_Character_Skills_t& skills_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterProperties_Type::skills"));
+
+  myCurrentProperties.skills = skills_in;
+}
+
+void RPG_Character_MonsterProperties_Type::feats(const RPG_Character_Feats_t& feats_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterProperties_Type::feats"));
+
+  myCurrentProperties.feats = feats_in;
+}
+
 void RPG_Character_MonsterProperties_Type::environment(const RPG_Character_Environment& environment_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterProperties_Type::environment"));
@@ -716,7 +935,7 @@ RPG_Character_MonsterProperties_XML RPG_Character_MonsterProperties_Type::post_R
   myCurrentProperties.name.resize(0);
   myCurrentProperties.size = SIZE_INVALID;
   myCurrentProperties.type.metaType = MONSTERMETATYPE_INVALID;
-  myCurrentProperties.type.subType = MONSTERSUBTYPE_INVALID;
+  myCurrentProperties.type.subTypes.clear();
   myCurrentProperties.hitDice.numDice = 0;
   myCurrentProperties.hitDice.typeDice = D_TYPE_INVALID;
   myCurrentProperties.hitDice.modifier = 0;
@@ -727,19 +946,18 @@ RPG_Character_MonsterProperties_XML RPG_Character_MonsterProperties_Type::post_R
   myCurrentProperties.armorClass.flatFooted = 0;
   myCurrentProperties.attack.baseAttackBonus = 0;
   myCurrentProperties.attack.grappleBonus = 0;
-  myCurrentProperties.attack.naturalWeapon = NATURALWEAPON_INVALID;
-  myCurrentProperties.attack.attackBonus = 0;
-  myCurrentProperties.attack.attackForm = ATTACK_INVALID;
-  myCurrentProperties.attack.damage.numDice = 0;
-  myCurrentProperties.attack.damage.typeDice = D_TYPE_INVALID;
-  myCurrentProperties.attack.damage.modifier = 0;
-  myCurrentProperties.attack.numAttacksPerRound = 0;
+  myCurrentProperties.attack.attackActions.clear();
   myCurrentProperties.space = 0;
   myCurrentProperties.reach = 0;
   myCurrentProperties.saves.fortitude = 0;
   myCurrentProperties.saves.reflex = 0;
   myCurrentProperties.saves.will = 0;
-  myCurrentProperties.abilities.clear();
+  myCurrentProperties.attributes.strength = 0;
+  myCurrentProperties.attributes.dexterity = 0;
+  myCurrentProperties.attributes.constitution = 0;
+  myCurrentProperties.attributes.intelligence = 0;
+  myCurrentProperties.attributes.wisdom = 0;
+  myCurrentProperties.attributes.charisma = 0;
   myCurrentProperties.skills.clear();
   myCurrentProperties.feats.clear();
   myCurrentProperties.environment = ENVIRONMENT_INVALID;

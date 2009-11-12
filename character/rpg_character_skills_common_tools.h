@@ -40,12 +40,16 @@ class RPG_Character_Skills_Common_Tools
   // some useful types
   typedef std::map<RPG_Character_Skill, std::string> RPG_Character_SkillToStringTable_t;
   typedef RPG_Character_SkillToStringTable_t::const_iterator RPG_Character_SkillToStringTableIterator_t;
+  typedef std::map<std::string, RPG_Character_Skill> RPG_Character_StringToSkillTable_t;
+  typedef RPG_Character_StringToSkillTable_t::const_iterator RPG_Character_StringToSkillTableIterator_t;
   typedef std::set<RPG_Character_Skill> RPG_Character_ClassSkillsSet_t;
   typedef RPG_Character_ClassSkillsSet_t::const_iterator RPG_Character_ClassSkillsSetIterator_t;
   typedef std::map<RPG_Character_SubClass, RPG_Character_ClassSkillsSet_t> RPG_Character_ClassSkillsTable_t;
   typedef RPG_Character_ClassSkillsTable_t::const_iterator RPG_Character_ClassSkillsTableIterator_t;
   typedef std::map<RPG_Character_Feat, std::string> RPG_Character_FeatToStringTable_t;
   typedef RPG_Character_FeatToStringTable_t::const_iterator RPG_Character_FeatToStringTableIterator_t;
+  typedef std::map<std::string, RPG_Character_Feat> RPG_Character_StringToFeatTable_t;
+  typedef RPG_Character_StringToFeatTable_t::const_iterator RPG_Character_StringToFeatTableIterator_t;
   typedef std::map<RPG_Character_Ability, std::string> RPG_Character_AbilityToStringTable_t;
   typedef RPG_Character_AbilityToStringTable_t::const_iterator RPG_Character_AbilityToStringTableIterator_t;
   typedef std::vector<RPG_Character_Feat_Prerequisite> RPG_Character_Feat_Prerequisites_t;
@@ -75,6 +79,9 @@ class RPG_Character_Skills_Common_Tools
                                            const RPG_Character_Feats_t&,      // feats
                                            const RPG_Character_Abilities_t&); // abilities
 
+  static const RPG_Character_Skill stringToSkill(const std::string&); // string
+  static const RPG_Character_Feat stringToFeat(const std::string&); // string
+
   static RPG_Character_SkillToStringTable_t   mySkillToStringTable;
   static RPG_Character_FeatToStringTable_t    myFeatToStringTable;
   static RPG_Character_AbilityToStringTable_t myAbilityToStringTable;
@@ -96,6 +103,8 @@ class RPG_Character_Skills_Common_Tools
 
   static RPG_Character_ClassSkillsTable_t       myClassSkillsTable;
   static RPG_Character_FeatPrerequisitesTable_t myFeatPrerequisitesTable;
+  static RPG_Character_StringToSkillTable_t     myStringToSkillTable;
+  static RPG_Character_StringToFeatTable_t      myStringToFeatTable;
 };
 
 #endif

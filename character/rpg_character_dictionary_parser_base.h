@@ -145,17 +145,11 @@ class RPG_Chance_Roll_Type_pimpl: public virtual RPG_Chance_Roll_Type_pskel
   post_RPG_Chance_Roll_Type ();
 };
 
-class RPG_Character_MonsterAttack_Type_pimpl: public virtual RPG_Character_MonsterAttack_Type_pskel
+class RPG_Character_MonsterAttackAction_Type_pimpl: public virtual RPG_Character_MonsterAttackAction_Type_pskel
 {
   public:
   virtual void
   pre ();
-
-  virtual void
-  baseAttackBonus (unsigned int);
-
-  virtual void
-  grappleBonus (unsigned int);
 
   virtual void
   naturalWeapon (const RPG_Character_NaturalWeapon&);
@@ -171,6 +165,25 @@ class RPG_Character_MonsterAttack_Type_pimpl: public virtual RPG_Character_Monst
 
   virtual void
   numAttacksPerRound (unsigned int);
+
+  virtual RPG_Character_MonsterAttackAction
+  post_RPG_Character_MonsterAttackAction_Type ();
+};
+
+class RPG_Character_MonsterAttack_Type_pimpl: public virtual RPG_Character_MonsterAttack_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  baseAttackBonus (unsigned int);
+
+  virtual void
+  grappleBonus (unsigned int);
+
+  virtual void
+  attackAction (const RPG_Character_MonsterAttackAction&);
 
   virtual RPG_Character_MonsterAttack
   post_RPG_Character_MonsterAttack_Type ();
@@ -204,6 +217,98 @@ class RPG_Character_SavingThrowModifiers_Type_pimpl: public virtual RPG_Characte
 
   virtual RPG_Character_SavingThrowModifiers
   post_RPG_Character_SavingThrowModifiers_Type ();
+};
+
+class RPG_Character_Attributes_Type_pimpl: public virtual RPG_Character_Attributes_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  strength (unsigned int);
+
+  virtual void
+  dexterity (unsigned int);
+
+  virtual void
+  constitution (unsigned int);
+
+  virtual void
+  intelligence (unsigned int);
+
+  virtual void
+  wisdom (unsigned int);
+
+  virtual void
+  charisma (unsigned int);
+
+  virtual RPG_Character_Attributes
+  post_RPG_Character_Attributes_Type ();
+};
+
+class RPG_Character_Skill_Type_pimpl: public virtual RPG_Character_Skill_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Character_Skill
+  post_RPG_Character_Skill_Type ();
+};
+
+class RPG_Character_SkillValue_Type_pimpl: public virtual RPG_Character_SkillValue_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  skill (const RPG_Character_Skill&);
+
+  virtual void
+  rank (unsigned int);
+
+  virtual RPG_Character_SkillsItem_t
+  post_RPG_Character_SkillValue_Type ();
+};
+
+class RPG_Character_Skills_Type_pimpl: public virtual RPG_Character_Skills_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  skill (const RPG_Character_SkillsItem_t&);
+
+  virtual RPG_Character_Skills_t
+  post_RPG_Character_Skills_Type ();
+};
+
+class RPG_Character_Feat_Type_pimpl: public virtual RPG_Character_Feat_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Character_Feat
+  post_RPG_Character_Feat_Type ();
+};
+
+class RPG_Character_Feats_Type_pimpl: public virtual RPG_Character_Feats_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  feat (const RPG_Character_Feat&);
+
+  virtual RPG_Character_Feats_t
+  post_RPG_Character_Feats_Type ();
 };
 
 class RPG_Character_Environment_Type_pimpl: public virtual RPG_Character_Environment_Type_pskel,
@@ -333,6 +438,15 @@ class RPG_Character_MonsterProperties_Type_pimpl: public virtual RPG_Character_M
 
   virtual void
   saves (const RPG_Character_SavingThrowModifiers&);
+
+  virtual void
+  attributes (const RPG_Character_Attributes&);
+
+  virtual void
+  skills (const RPG_Character_Skills_t&);
+
+  virtual void
+  feats (const RPG_Character_Feats_t&);
 
   virtual void
   environment (const RPG_Character_Environment&);

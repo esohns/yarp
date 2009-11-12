@@ -25,19 +25,52 @@
   <xsd:simpleType name="RPG_Character_MonsterMetaType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="MONSTERMETATYPE_ABERRATION"/>
+      <xsd:enumeration value="MONSTERMETATYPE_ANIMAL"/>
+      <xsd:enumeration value="MONSTERMETATYPE_CONSTRUCT"/>
+      <xsd:enumeration value="MONSTERMETATYPE_DRAGON"/>
+      <xsd:enumeration value="MONSTERMETATYPE_ELEMENTAL"/>
+      <xsd:enumeration value="MONSTERMETATYPE_FEY"/>
+      <xsd:enumeration value="MONSTERMETATYPE_GIANT"/>
+      <xsd:enumeration value="MONSTERMETATYPE_HUMANOID"/>
+      <xsd:enumeration value="MONSTERMETATYPE_MAGICAL_BEAST"/>
+      <xsd:enumeration value="MONSTERMETATYPE_MONSTROUS_HUMANOID"/>
+      <xsd:enumeration value="MONSTERMETATYPE_OOZE"/>
+      <xsd:enumeration value="MONSTERMETATYPE_OUTSIDER"/>
+      <xsd:enumeration value="MONSTERMETATYPE_PLANT"/>
+      <xsd:enumeration value="MONSTERMETATYPE_UNDEAD"/>
+      <xsd:enumeration value="MONSTERMETATYPE_VERMIN"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Character_MonsterSubType_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="MONSTERSUBTYPE_AIR"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_ANGEL"/>
       <xsd:enumeration value="MONSTERSUBTYPE_AQUATIC"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_ARCHON"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_AUGMENTED"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_CHAOTIC"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_COLD"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_EARTH"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_EVIL"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_EXTRAPLANAR"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_FIRE"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_GOBLINOID"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_GOOD"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_INCORPOREAL"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_LAWFUL"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_NATIVE"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_REPTILIAN"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_SHAPECHANGER"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_SWARM"/>
+      <xsd:enumeration value="MONSTERSUBTYPE_WATER"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:complexType name="RPG_Character_MonsterType_Type">
     <xsd:sequence>
       <xsd:element name="metaType" type="RPG_Character_MonsterMetaType_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="subType" type="RPG_Character_MonsterSubType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="subType" type="RPG_Character_MonsterSubType_Type" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -51,6 +84,11 @@
 
   <xsd:simpleType name="RPG_Character_NaturalWeapon_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="NATURALWEAPON_BITE"/>
+      <xsd:enumeration value="NATURALWEAPON_CLAW_TALON"/>
+      <xsd:enumeration value="NATURALWEAPON_GORE"/>
+      <xsd:enumeration value="NATURALWEAPON_SLAP_SLAM"/>
+      <xsd:enumeration value="NATURALWEAPON_STING"/>
       <xsd:enumeration value="NATURALWEAPON_TENTACLE"/>
     </xsd:restriction>
   </xsd:simpleType>
@@ -85,15 +123,21 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Character_MonsterAttack_Type">
+  <xsd:complexType name="RPG_Character_MonsterAttackAction_Type">
     <xsd:sequence>
-      <xsd:element name="baseAttackBonus" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="grappleBonus" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="naturalWeapon" type="RPG_Character_NaturalWeapon_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackBonus" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackForm" type="RPG_Character_MonsterAttackForm_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="damage" type="RPG_Chance_Roll_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="numAttacksPerRound" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Character_MonsterAttack_Type">
+    <xsd:sequence>
+      <xsd:element name="baseAttackBonus" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="grappleBonus" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="attackAction" type="RPG_Character_MonsterAttackAction_Type" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -119,9 +163,211 @@
     </xsd:sequence>
   </xsd:complexType>
 
+  <xsd:complexType name="RPG_Character_Attributes_Type">
+    <xsd:sequence>
+      <xsd:element name="strength" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="dexterity" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="constitution" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="intelligence" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="wisdom" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="charisma" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Character_Skill_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SKILL_APPRAISE"/>
+      <xsd:enumeration value="SKILL_BALANCE"/>
+      <xsd:enumeration value="SKILL_BLUFF"/>
+      <xsd:enumeration value="SKILL_CLIMB"/>
+      <xsd:enumeration value="SKILL_CONCENTRATION"/>
+      <xsd:enumeration value="SKILL_CRAFT_ALCHEMY"/>
+      <xsd:enumeration value="SKILL_CRAFT_FLETCHER"/>
+      <xsd:enumeration value="SKILL_CRAFT_BOWYER"/>
+      <xsd:enumeration value="SKILL_CRAFT_SMITH_ARMOR"/>
+      <xsd:enumeration value="SKILL_CRAFT_SMITH_BLACK"/>
+      <xsd:enumeration value="SKILL_CRAFT_SMITH_WEAPON"/>
+      <xsd:enumeration value="SKILL_CRAFT_TRAP"/>
+      <xsd:enumeration value="SKILL_CRAFT_OTHER"/>
+      <xsd:enumeration value="SKILL_DECIPHER_SCRIPT"/>
+      <xsd:enumeration value="SKILL_DIPLOMACY"/>
+      <xsd:enumeration value="SKILL_DISABLE_DEVICE"/>
+      <xsd:enumeration value="SKILL_DISGUISE"/>
+      <xsd:enumeration value="SKILL_ESCAPE_ARTIST"/>
+      <xsd:enumeration value="SKILL_FORGERY"/>
+      <xsd:enumeration value="SKILL_GATHER_INFORMATION"/>
+      <xsd:enumeration value="SKILL_HANDLE_ANIMAL"/>
+      <xsd:enumeration value="SKILL_HEAL"/>
+      <xsd:enumeration value="SKILL_HIDE"/>
+      <xsd:enumeration value="SKILL_INTIMIDATE"/>
+      <xsd:enumeration value="SKILL_JUMP"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_ARCANA"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_ARCH_ENG"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_DUNGEONS"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_GEOGRAPHY"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_HISTORY"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_LOCAL"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_NATURE"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_NOB_ROY"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_RELIGION"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_PLANES"/>
+      <xsd:enumeration value="SKILL_LISTEN"/>
+      <xsd:enumeration value="SKILL_MOVE_SILENTLY"/>
+      <xsd:enumeration value="SKILL_OPEN_LOCK"/>
+      <xsd:enumeration value="SKILL_PERFORM"/>
+      <xsd:enumeration value="SKILL_PROFESSION"/>
+      <xsd:enumeration value="SKILL_RIDE"/>
+      <xsd:enumeration value="SKILL_SEARCH"/>
+      <xsd:enumeration value="SKILL_SENSE_MOTIVE"/>
+      <xsd:enumeration value="SKILL_SLEIGHT_OF_HAND"/>
+      <xsd:enumeration value="SKILL_SPEAK_LANGUAGE"/>
+      <xsd:enumeration value="SKILL_SPELLCRAFT"/>
+      <xsd:enumeration value="SKILL_SPOT"/>
+      <xsd:enumeration value="SKILL_SURVIVAL"/>
+      <xsd:enumeration value="SKILL_SWIM"/>
+      <xsd:enumeration value="SKILL_TUMBLE"/>
+      <xsd:enumeration value="SKILL_USE_MAGIC_DEVICE"/>
+      <xsd:enumeration value="SKILL_USE_ROPE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Character_SkillValue_Type">
+    <xsd:sequence>
+      <xsd:element name="skill" type="RPG_Character_Skill_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="rank" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Character_Skills_Type">
+    <xsd:sequence>
+      <xsd:element name="skill" type="RPG_Character_SkillValue_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Character_Feat_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="FEAT_BLIND_FIGHT"/>
+      <xsd:enumeration value="FEAT_COMBAT_EXPERTISE"/>
+      <xsd:enumeration value="FEAT_IMPROVED_DISARM"/>
+      <xsd:enumeration value="FEAT_IMPROVED_FEINT"/>
+      <xsd:enumeration value="FEAT_IMPROVED_TRIP"/>
+      <xsd:enumeration value="FEAT_WHIRLWIND_ATTACK"/>
+      <xsd:enumeration value="FEAT_COMBAT_REFLEXES"/>
+      <xsd:enumeration value="FEAT_DODGE"/>
+      <xsd:enumeration value="FEAT_MOBILITY"/>
+      <xsd:enumeration value="FEAT_SPRING_ATTACK"/>
+      <xsd:enumeration value="FEAT_PROFICIENCY_EXOTIC_WEAPONS"/>
+      <xsd:enumeration value="FEAT_IMPROVED_CRITICAL"/>
+      <xsd:enumeration value="FEAT_IMPROVED_INITIATIVE"/>
+      <xsd:enumeration value="FEAT_IMPROVED_SHIELD_BASH"/>
+      <xsd:enumeration value="FEAT_IMPROVED_UNARMED_STRIKE"/>
+      <xsd:enumeration value="FEAT_DEFLECT_ARROWS"/>
+      <xsd:enumeration value="FEAT_IMPROVED_GRAPPLE"/>
+      <xsd:enumeration value="FEAT_SNATCH_ARROWS"/>
+      <xsd:enumeration value="FEAT_STUNNING_FIST"/>
+      <xsd:enumeration value="FEAT_MOUNTED_COMBAT"/>
+      <xsd:enumeration value="FEAT_MOUNTED_ARCHERY"/>
+      <xsd:enumeration value="FEAT_RIDE_BY_ATTACK"/>
+      <xsd:enumeration value="FEAT_SPIRITED_CHARGE"/>
+      <xsd:enumeration value="FEAT_TRAMPLE"/>
+      <xsd:enumeration value="FEAT_POINT_BLANK_SHOT"/>
+      <xsd:enumeration value="FEAT_FAR_SHOT"/>
+      <xsd:enumeration value="FEAT_PRECISE_SHOT"/>
+      <xsd:enumeration value="FEAT_RAPID_SHOT"/>
+      <xsd:enumeration value="FEAT_MANY_SHOT"/>
+      <xsd:enumeration value="FEAT_SHOT_ON_THE_RUN"/>
+      <xsd:enumeration value="FEAT_IMPROVED_PRECISE_SHOT"/>
+      <xsd:enumeration value="FEAT_POWER_ATTACK"/>
+      <xsd:enumeration value="FEAT_CLEAVE"/>
+      <xsd:enumeration value="FEAT_GREAT_CLEAVE"/>
+      <xsd:enumeration value="FEAT_IMPROVED_BULL_RUSH"/>
+      <xsd:enumeration value="FEAT_IMPROVED_OVERRUN"/>
+      <xsd:enumeration value="FEAT_IMPROVED_SUNDER"/>
+      <xsd:enumeration value="FEAT_QUICK_DRAW"/>
+      <xsd:enumeration value="FEAT_RAPID_RELOAD"/>
+      <xsd:enumeration value="FEAT_TWO_WEAPON_FIGHTING"/>
+      <xsd:enumeration value="FEAT_TWO_WEAPON_DEFENSE"/>
+      <xsd:enumeration value="FEAT_IMPROVED_TWO_WEAPON_FIGHTING"/>
+      <xsd:enumeration value="FEAT_GREATER_TWO_WEAPON_FIGHTING"/>
+      <xsd:enumeration value="FEAT_WEAPON_FINESSE"/>
+      <xsd:enumeration value="FEAT_WEAPON_FOCUS"/>
+      <xsd:enumeration value="FEAT_WEAPON_SPECIALIZATION"/>
+      <xsd:enumeration value="FEAT_GREATER_WEAPON_FOCUS"/>
+      <xsd:enumeration value="FEAT_GREATER_WEAPON_SPECIALIZATION"/>
+      <xsd:enumeration value="FEAT_BREW_POTION"/>
+      <xsd:enumeration value="FEAT_CRAFT_MAGIC_ARMS_AND_ARMOR"/>
+      <xsd:enumeration value="FEAT_CRAFT_ROD"/>
+      <xsd:enumeration value="FEAT_CRAFT_STAFF"/>
+      <xsd:enumeration value="FEAT_CRAFT_WAND"/>
+      <xsd:enumeration value="FEAT_CRAFT_WONDROUS_ITEM"/>
+      <xsd:enumeration value="FEAT_FORGE_RING"/>
+      <xsd:enumeration value="FEAT_SCRIBE_SCROLL"/>
+      <xsd:enumeration value="FEAT_EMPOWER_SPELL"/>
+      <xsd:enumeration value="FEAT_ENLARGE_SPELL"/>
+      <xsd:enumeration value="FEAT_EXTEND_SPELL"/>
+      <xsd:enumeration value="FEAT_HEIGHTEN_SPELL"/>
+      <xsd:enumeration value="FEAT_MAXIMIZE_SPELL"/>
+      <xsd:enumeration value="FEAT_QUICKEN_SPELL"/>
+      <xsd:enumeration value="FEAT_SILENT_SPELL"/>
+      <xsd:enumeration value="FEAT_WIDEN_SPELL"/>
+      <xsd:enumeration value="FEAT_ACROBATIC"/>
+      <xsd:enumeration value="FEAT_AGILE"/>
+      <xsd:enumeration value="FEAT_ALERTNESS"/>
+      <xsd:enumeration value="FEAT_ANIMAL_AFFINITY"/>
+      <xsd:enumeration value="FEAT_PROFICIENCY_ARMOR_LIGHT"/>
+      <xsd:enumeration value="FEAT_PROFICIENCY_ARMOR_MEDIUM"/>
+      <xsd:enumeration value="FEAT_PROFICIENCY_ARMOR_HEAVY"/>
+      <xsd:enumeration value="FEAT_ATHLETIC"/>
+      <xsd:enumeration value="FEAT_AUGMENT_SUMMONING"/>
+      <xsd:enumeration value="FEAT_COMBAT_CASTING"/>
+      <xsd:enumeration value="FEAT_DECEITFUL"/>
+      <xsd:enumeration value="FEAT_DEFT_HANDS"/>
+      <xsd:enumeration value="FEAT_DILIGENT"/>
+      <xsd:enumeration value="FEAT_ENDURANCE"/>
+      <xsd:enumeration value="FEAT_DIE_HARD"/>
+      <xsd:enumeration value="FEAT_ESCHEW_MATERIALS"/>
+      <xsd:enumeration value="FEAT_EXTRA_TURNING"/>
+      <xsd:enumeration value="FEAT_GREAT_FORTITUDE"/>
+      <xsd:enumeration value="FEAT_IMPROVED_COUNTERSPELL"/>
+      <xsd:enumeration value="FEAT_IMPROVED_FAMILIAR"/>
+      <xsd:enumeration value="FEAT_IMPROVED_TURNING"/>
+      <xsd:enumeration value="FEAT_INVESTIGATOR"/>
+      <xsd:enumeration value="FEAT_IRON_WILL"/>
+      <xsd:enumeration value="FEAT_LEADERSHIP"/>
+      <xsd:enumeration value="FEAT_LIGHTNING_REFLEXES"/>
+      <xsd:enumeration value="FEAT_MAGICAL_APTITUDE"/>
+      <xsd:enumeration value="FEAT_PROFICIENCY_MARTIAL_WEAPONS"/>
+      <xsd:enumeration value="FEAT_NATURAL_SPELL"/>
+      <xsd:enumeration value="FEAT_NEGOTIATOR"/>
+      <xsd:enumeration value="FEAT_NIMBLE_FINGERS"/>
+      <xsd:enumeration value="FEAT_PERSUASIVE"/>
+      <xsd:enumeration value="FEAT_RUN"/>
+      <xsd:enumeration value="FEAT_SELF_SUFFICIENT"/>
+      <xsd:enumeration value="FEAT_PROFICIENCY_SHIELD"/>
+      <xsd:enumeration value="FEAT_PROFICIENCY_TOWER_SHIELD"/>
+      <xsd:enumeration value="FEAT_PROFICIENCY_SIMPLE_WEAPONS"/>
+      <xsd:enumeration value="FEAT_SKILL_FOCUS"/>
+      <xsd:enumeration value="FEAT_SPELL_FOCUS"/>
+      <xsd:enumeration value="FEAT_GREATER_SPELL_FOCUS"/>
+      <xsd:enumeration value="FEAT_SPELL_MASTERY"/>
+      <xsd:enumeration value="FEAT_SPELL_PENETRATION"/>
+      <xsd:enumeration value="FEAT_GREATER_SPELL_PENETRATION"/>
+      <xsd:enumeration value="FEAT_STEALTHY"/>
+      <xsd:enumeration value="FEAT_TOUGHNESS"/>
+      <xsd:enumeration value="FEAT_TRACK"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Character_Feats_Type">
+    <xsd:sequence>
+      <xsd:element name="feat" type="RPG_Character_Feat_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
   <xsd:simpleType name="RPG_Character_Environment_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ENVIRONMENT_UNDERGROUND"/>
+      <xsd:enumeration value="ENVIRONMENT_PLANE_LAWFUL"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -182,11 +428,9 @@
       <xsd:element name="space" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="reach" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="saves" type="RPG_Character_SavingThrowModifiers_Type" minOccurs="1" maxOccurs="1"/>
-<!--
-      <xsd:element name="abilities" type="" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="skills" type="" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="feats" type="" minOccurs="1" maxOccurs="1"/>
--->
+      <xsd:element name="attributes" type="RPG_Character_Attributes_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="skills" type="RPG_Character_Skills_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="feats" type="RPG_Character_Feats_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="environment" type="RPG_Character_Environment_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="organization" type="RPG_Character_Organization_Type" minOccurs="1" maxOccurs="unbounded"/>
       <xsd:element name="challengeRating" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>

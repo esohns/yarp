@@ -1,22 +1,34 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="5" >
+ <DocsAndViews NumberOfDocuments="9" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_dictionary_parser.cpp" >
-   <View0 Encoding="" line="713" Type="Source" />
+   <View0 Encoding="" line="513" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/main.cpp" >
-   <View0 Encoding="" line="227" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character.xml" >
+   <View0 Encoding="" line="127" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character.xml" >
-   <View0 Encoding="" line="63" Type="Source" />
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character.xsd" >
+   <View0 Encoding="" line="239" Type="Source" />
   </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_dictionary_parser.h" >
-   <View0 Encoding="" line="39" Type="Source" />
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_dictionary.cpp" >
+   <View0 Encoding="" line="130" Type="Source" />
   </Doc3>
   <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_monster_common.h" >
-   <View0 Encoding="" line="191" Type="Source" />
+   <View0 Encoding="" line="181" Type="Source" />
   </Doc4>
+  <Doc5 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_skills_common.h" >
+   <View0 Encoding="" line="312" Type="Source" />
+  </Doc5>
+  <Doc6 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_skills_common_tools.h" >
+   <View0 Encoding="" line="106" Type="Source" />
+  </Doc6>
+  <Doc7 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_skills_common_tools.cpp" >
+   <View0 Encoding="" line="52" Type="Source" />
+  </Doc7>
+  <Doc8 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_monster_common_tools.cpp" >
+   <View0 Encoding="" line="150" Type="Source" />
+  </Doc8>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>

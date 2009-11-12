@@ -67,23 +67,38 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
                               unsigned_int_p);
   RPG_Character_NaturalWeapon_Type        naturalWeapon_p;
   RPG_Character_MonsterAttackForm_Type    monsterAttackForm_p;
+  RPG_Character_MonsterAttackAction_Type  monsterAttackAction_p;
+  monsterAttackAction_p.parsers(naturalWeapon_p,
+                                unsigned_int_p,
+                                monsterAttackForm_p,
+                                roll_p,
+                                unsigned_int_p);
   RPG_Character_MonsterAttack_Type        monsterAttack_p;
   monsterAttack_p.parsers(unsigned_int_p,
                           unsigned_int_p,
-                          naturalWeapon_p,
-                          unsigned_int_p,
-                          monsterAttackForm_p,
-                          roll_p,
-                          unsigned_int_p);
+                          monsterAttackAction_p);
 //   unsigned_int_pimpl                      space_p;
 //   unsigned_int_pimpl                      reach_p;
   RPG_Character_SavingThrowModifiers_Type savingThrowModifiers_p;
   savingThrowModifiers_p.parsers(unsigned_int_p,
                                  unsigned_int_p,
                                  unsigned_int_p);
-//   RPG_Character_Abilities_t          abilities;
-//   RPG_Character_Skills_t             skills;
-//   RPG_Character_Feats_t              feats;
+  RPG_Character_Attributes_Type           attributes_p;
+  attributes_p.parsers(unsigned_int_p,
+                       unsigned_int_p,
+                       unsigned_int_p,
+                       unsigned_int_p,
+                       unsigned_int_p,
+                       unsigned_int_p);
+  RPG_Character_Skill_Type                skill_p;
+  RPG_Character_SkillValue_Type           skillvalue_p;
+  skillvalue_p.parsers(skill_p,
+                       unsigned_int_p);
+  RPG_Character_Skills_Type               skills_p;
+  skills_p.parsers(skillvalue_p);
+  RPG_Character_Feat_Type                 feat_p;
+  RPG_Character_Feats_Type                feats_p;
+  feats_p.parsers(feat_p);
   RPG_Character_Environment_Type          environment_p;
   RPG_Character_Organization_Type         organization_p;
 //   unsigned_int_pimpl                      challengeRating_p;
@@ -111,6 +126,9 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
                               unsigned_int_p,
                               unsigned_int_p,
                               savingThrowModifiers_p,
+                              attributes_p,
+                              skills_p,
+                              feats_p,
                               environment_p,
                               organization_p,
                               unsigned_int_p,

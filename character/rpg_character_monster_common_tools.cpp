@@ -45,15 +45,53 @@ void RPG_Character_Monster_Common_Tools::initStringConversionTables()
   myStringToMonsterMetaTypeTable.clear();
 
   myStringToMonsterMetaTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_ABERRATION"), MONSTERMETATYPE_ABERRATION));
+  myStringToMonsterMetaTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_ANIMAL"), MONSTERMETATYPE_ANIMAL));
+  myStringToMonsterMetaTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_CONSTRUCT"), MONSTERMETATYPE_CONSTRUCT));
+  myStringToMonsterMetaTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_DRAGON"), MONSTERMETATYPE_DRAGON));
+  myStringToMonsterMetaTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_ELEMENTAL"), MONSTERMETATYPE_ELEMENTAL));
+  myStringToMonsterMetaTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_FEY"), MONSTERMETATYPE_FEY));
+  myStringToMonsterMetaTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_GIANT"), MONSTERMETATYPE_GIANT));
+  myStringToMonsterMetaTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_HUMANOID"), MONSTERMETATYPE_HUMANOID));
+  myStringToMonsterMetaTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_MAGICAL_BEAST"), MONSTERMETATYPE_MAGICAL_BEAST));
+  myStringToMonsterMetaTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_MONSTROUS_HUMANOID"), MONSTERMETATYPE_MONSTROUS_HUMANOID));
+  myStringToMonsterMetaTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_OOZE"), MONSTERMETATYPE_OOZE));
+  myStringToMonsterMetaTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_OUTSIDER"), MONSTERMETATYPE_OUTSIDER));
+  myStringToMonsterMetaTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_PLANT"), MONSTERMETATYPE_PLANT));
+  myStringToMonsterMetaTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_UNDEAD"), MONSTERMETATYPE_UNDEAD));
+  myStringToMonsterMetaTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_VERMIN"), MONSTERMETATYPE_VERMIN));
 
   // clean table
   myStringToMonsterSubTypeTable.clear();
 
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_AIR"), MONSTERSUBTYPE_AIR));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_ANGEL"), MONSTERSUBTYPE_ANGEL));
   myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_AQUATIC"), MONSTERSUBTYPE_AQUATIC));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_ARCHON"), MONSTERSUBTYPE_ARCHON));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_AUGMENTED"), MONSTERSUBTYPE_AUGMENTED));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_CHAOTIC"), MONSTERSUBTYPE_CHAOTIC));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_COLD"), MONSTERSUBTYPE_COLD));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_EARTH"), MONSTERSUBTYPE_EARTH));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_EVIL"), MONSTERSUBTYPE_EVIL));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_EXTRAPLANAR"), MONSTERSUBTYPE_EXTRAPLANAR));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_FIRE"), MONSTERSUBTYPE_FIRE));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_GOBLINOID"), MONSTERSUBTYPE_GOBLINOID));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_GOOD"), MONSTERSUBTYPE_GOOD));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_INCORPOREAL"), MONSTERSUBTYPE_INCORPOREAL));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_LAWFUL"), MONSTERSUBTYPE_LAWFUL));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_NATIVE"), MONSTERSUBTYPE_NATIVE));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_REPTILIAN"), MONSTERSUBTYPE_REPTILIAN));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_SHAPECHANGER"), MONSTERSUBTYPE_SHAPECHANGER));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_SWARM"), MONSTERSUBTYPE_SWARM));
+  myStringToMonsterSubTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_WATER"), MONSTERSUBTYPE_WATER));
 
   // clean table
   myStringToNaturalWeaponTable.clear();
 
+  myStringToNaturalWeaponTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_BITE"), NATURALWEAPON_BITE));
+  myStringToNaturalWeaponTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_CLAW_TALON"), NATURALWEAPON_CLAW_TALON));
+  myStringToNaturalWeaponTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_GORE"), NATURALWEAPON_GORE));
+  myStringToNaturalWeaponTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_SLAP_SLAM"), NATURALWEAPON_SLAP_SLAM));
+  myStringToNaturalWeaponTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_STING"), NATURALWEAPON_STING));
   myStringToNaturalWeaponTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_TENTACLE"), NATURALWEAPON_TENTACLE));
 
   // clean table
@@ -79,6 +117,7 @@ void RPG_Character_Monster_Common_Tools::initStringConversionTables()
   myStringToEnvironmentTable.clear();
 
   myStringToEnvironmentTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ENVIRONMENT_UNDERGROUND"), ENVIRONMENT_UNDERGROUND));
+  myStringToEnvironmentTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ENVIRONMENT_PLANE_LAWFUL"), ENVIRONMENT_PLANE_LAWFUL));
 
   // clean table
   myStringToOrganizationTable.clear();

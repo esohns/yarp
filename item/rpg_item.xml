@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- <!DOCTYPE RPG_Item_Dictionary SYSTEM "./rpg_item.xsd"> -->
 <RPG_Item_Dictionary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./rpg_item.xsd">
-  
+
   <RPG_Item_WeaponDictionary>
     <weapon>
       <weaponType>UNARMED_WEAPON_GAUNTLET</weaponType>
