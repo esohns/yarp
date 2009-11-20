@@ -520,7 +520,7 @@ void do_work(const std::string fileName_in)
   roll.numDice = 2;
   roll.typeDice = D_10;
   roll.modifier = -2; // add +1 if result is 0 --> stats interval 1-18
-  RPG_Chance_Dice::RPG_CHANCE_DICE_RESULT_T result;
+  RPG_Chance_Dice::RPG_Chance_Dice_Result_t result;
   c = 'n';
   do
   {
@@ -623,7 +623,7 @@ void do_work(const std::string fileName_in)
   unsigned short int hitpoints = result[0];
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("initial hit points (hit die: \"%s\"): %d...\n"),
-             RPG_Chance_Dice_Common_Tools::diceType2String(roll.typeDice).c_str(),
+             RPG_Chance_Dice_Common_Tools::diceTypeToString(roll.typeDice).c_str(),
              hitpoints));
 
   // TODO: choose initial set of items

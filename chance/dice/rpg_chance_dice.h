@@ -24,8 +24,6 @@
 
 #include <ace/Global_Macros.h>
 
-#include <vector>
-
 /**
 emulate rolling an n-sided die
 
@@ -37,13 +35,14 @@ class RPG_Chance_Dice
   // init random seed
   static void init();
 
-  // some convenient types...
-  typedef std::vector<int> RPG_CHANCE_DICE_RESULT_T;
-  typedef RPG_CHANCE_DICE_RESULT_T::const_iterator RPG_CHANCE_DICE_RESULTITERATOR_T;
-
-  static void simulateDiceRoll(const RPG_Chance_Roll&,     // specifics (number of dice, type, modifier)
-                               const unsigned int&,        // number of rolls
-                               RPG_CHANCE_DICE_RESULT_T&); // individual result(s)
+  static void generateRandomNumbers(const unsigned int&,           // range [1..max]
+                                    const unsigned int&,           // number of rolls
+                                    RPG_Chance_DiceRollResult_t&); // result(s)
+  static void simulateDiceRoll(const RPG_Chance_DiceRoll&,    // specifics (number of dice, type, modifier)
+                               const unsigned int&,           // number of rolls
+                               RPG_Chance_DiceRollResult_t&); // result(s)
+  static void diceRollToRange(const RPG_Chance_DiceRoll&, // roll specifics
+                              RPG_Chance_ValueRange&);    // result
 
  private:
   // safety measures

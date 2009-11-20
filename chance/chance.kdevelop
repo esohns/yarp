@@ -15,18 +15,18 @@
     <projectname>chance</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
-    <defaultencoding/>
+    <description></description>
+    <defaultencoding></defaultencoding>
   </general>
   <kdevautoproject>
     <general>
       <useconfiguration>default</useconfiguration>
-      <activetarget>dice/dice</activetarget>
+      <activetarget>dice/libRPG_Chance_Dice.la</activetarget>
     </general>
     <run>
-      <mainprogram>/home/unfv/Projects/RPG/chance/debug/dice/.libs/dice</mainprogram>
-      <programargs>-d 6 -m 0 -n 1 -r 1</programargs>
-      <globaldebugarguments>-d 6 -m 0 -n 1 -r 1</globaldebugarguments>
+      <mainprogram>/home/unfv/Projects/RPG/chance/debug/dice/.libs/rangeToRoll</mainprogram>
+      <programargs>-r 1-1 -p -t</programargs>
+      <globaldebugarguments>-r 0-6 -p -t</globaldebugarguments>
       <globalcwd>/home/unfv/Projects/RPG/chance/debug/dice/</globalcwd>
       <useglobalprogram>true</useglobalprogram>
       <terminal>false</terminal>
@@ -36,12 +36,15 @@
       <envvars/>
       <runarguments>
         <dice/>
+        <rangeToRoll></rangeToRoll>
       </runarguments>
       <debugarguments>
         <dice/>
+        <rangeToRoll></rangeToRoll>
       </debugarguments>
       <cwd>
         <dice>/home/unfv/Projects/RPG/chance/debug/./dice</dice>
+        <rangeToRoll>/home/unfv/Projects/RPG/chance/debug/./dice</rangeToRoll>
       </cwd>
     </run>
     <configurations>
@@ -232,7 +235,7 @@
       <includePaths>.;/usr/include;/usr/local/include</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -253,11 +256,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath/>
-      <dbgshell/>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <gdbpath></gdbpath>
+      <dbgshell></dbgshell>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>

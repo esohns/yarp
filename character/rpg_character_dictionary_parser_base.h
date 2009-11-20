@@ -10,32 +10,6 @@
 
 #include "rpg_character_dictionary_types.h"
 
-class RPG_Character_Dictionary_Type_pimpl: public virtual RPG_Character_Dictionary_Type_pskel
-{
-  public:
-  virtual void
-  pre ();
-
-  virtual void
-  RPG_Character_MonsterDictionary ();
-
-  virtual void
-  post_RPG_Character_Dictionary_Type ();
-};
-
-class RPG_Character_MonsterDictionary_Type_pimpl: public virtual RPG_Character_MonsterDictionary_Type_pskel
-{
-  public:
-  virtual void
-  pre ();
-
-  virtual void
-  monster (const RPG_Character_MonsterProperties_XML&);
-
-  virtual void
-  post_RPG_Character_MonsterDictionary_Type ();
-};
-
 class RPG_Character_MonsterMetaType_Type_pimpl: public virtual RPG_Character_MonsterMetaType_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -93,15 +67,15 @@ class RPG_Character_MonsterArmorClass_Type_pimpl: public virtual RPG_Character_M
   post_RPG_Character_MonsterArmorClass_Type ();
 };
 
-class RPG_Character_NaturalWeapon_Type_pimpl: public virtual RPG_Character_NaturalWeapon_Type_pskel,
+class RPG_Character_MonsterWeapon_Type_pimpl: public virtual RPG_Character_MonsterWeapon_Type_pskel,
   public ::xml_schema::string_pimpl
 {
   public:
   virtual void
   pre ();
 
-  virtual RPG_Character_NaturalWeapon
-  post_RPG_Character_NaturalWeapon_Type ();
+  virtual RPG_Character_MonsterWeapon
+  post_RPG_Character_MonsterWeapon_Type ();
 };
 
 class RPG_Character_MonsterAttackForm_Type_pimpl: public virtual RPG_Character_MonsterAttackForm_Type_pskel,
@@ -152,10 +126,10 @@ class RPG_Character_MonsterAttackAction_Type_pimpl: public virtual RPG_Character
   pre ();
 
   virtual void
-  naturalWeapon (const RPG_Character_NaturalWeapon&);
+  monsterWeapon (const RPG_Character_MonsterWeapon&);
 
   virtual void
-  attackBonus (unsigned int);
+  attackBonus (long long);
 
   virtual void
   attackForm (const RPG_Character_MonsterAttackForm&);
@@ -177,10 +151,10 @@ class RPG_Character_MonsterAttack_Type_pimpl: public virtual RPG_Character_Monst
   pre ();
 
   virtual void
-  baseAttackBonus (unsigned int);
+  baseAttackBonus (long long);
 
   virtual void
-  grappleBonus (unsigned int);
+  grappleBonus (long long);
 
   virtual void
   attackAction (const RPG_Character_MonsterAttackAction&);
@@ -207,13 +181,13 @@ class RPG_Character_SavingThrowModifiers_Type_pimpl: public virtual RPG_Characte
   pre ();
 
   virtual void
-  fortitude (unsigned int);
+  fortitude (long long);
 
   virtual void
-  reflex (unsigned int);
+  reflex (long long);
 
   virtual void
-  will (unsigned int);
+  will (long long);
 
   virtual RPG_Character_SavingThrowModifiers
   post_RPG_Character_SavingThrowModifiers_Type ();
@@ -268,7 +242,7 @@ class RPG_Character_SkillValue_Type_pimpl: public virtual RPG_Character_SkillVal
   skill (const RPG_Character_Skill&);
 
   virtual void
-  rank (unsigned int);
+  rank (long long);
 
   virtual RPG_Character_SkillsItem_t
   post_RPG_Character_SkillValue_Type ();
@@ -471,6 +445,32 @@ class RPG_Character_MonsterProperties_Type_pimpl: public virtual RPG_Character_M
 
   virtual RPG_Character_MonsterProperties_XML
   post_RPG_Character_MonsterProperties_Type ();
+};
+
+class RPG_Character_MonsterDictionary_Type_pimpl: public virtual RPG_Character_MonsterDictionary_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  monster (const RPG_Character_MonsterProperties_XML&);
+
+  virtual void
+  post_RPG_Character_MonsterDictionary_Type ();
+};
+
+class RPG_Character_Dictionary_Type_pimpl: public virtual RPG_Character_Dictionary_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  RPG_Character_MonsterDictionary ();
+
+  virtual void
+  post_RPG_Character_Dictionary_Type ();
 };
 
 #endif // CXX___RPG_CHARACTER_DICTIONARY_PARSER_BASE_H

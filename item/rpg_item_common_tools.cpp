@@ -436,7 +436,7 @@ const std::string RPG_Item_Common_Tools::damageToString(const RPG_Item_Damage& d
   {
     str << damage_in.numDice;
     result += str.str();
-    result += RPG_Chance_Dice_Common_Tools::diceType2String(damage_in.typeDice);
+    result += RPG_Chance_Dice_Common_Tools::diceTypeToString(damage_in.typeDice);
   } // end IF
 
   if (damage_in.modifier == 0)

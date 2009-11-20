@@ -224,11 +224,11 @@ RPG_Chance_Roll RPG_Chance_Roll_Type::post_RPG_Chance_Roll_Type()
   return result;
 }
 
-RPG_Character_NaturalWeapon RPG_Character_NaturalWeapon_Type::post_RPG_Character_NaturalWeapon_Type()
+RPG_Character_MonsterWeapon RPG_Character_MonsterWeapon_Type::post_RPG_Character_MonsterWeapon_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_NaturalWeapon_Type::post_RPG_Character_NaturalWeapon_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterWeapon_Type::post_RPG_Character_MonsterWeapon_Type"));
 
-  return RPG_Character_Monster_Common_Tools::stringToNaturalWeapon(post_string());
+  return RPG_Character_Monster_Common_Tools::stringToMonsterWeapon(post_string());
 }
 
 RPG_Character_MonsterAttackForm RPG_Character_MonsterAttackForm_Type::post_RPG_Character_MonsterAttackForm_Type()
@@ -286,7 +286,7 @@ RPG_Character_MonsterAttackAction_Type::RPG_Character_MonsterAttackAction_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::RPG_Character_MonsterAttackAction_Type"));
 
-  myCurrentMonsterAttackAction.naturalWeapon = NATURALWEAPON_INVALID;
+  myCurrentMonsterAttackAction.monsterWeapon = MONSTERWEAPON_INVALID;
   myCurrentMonsterAttackAction.attackBonus = 0;
   myCurrentMonsterAttackAction.attackForm = ATTACK_INVALID;
   myCurrentMonsterAttackAction.damage.numDice = 0;
@@ -295,14 +295,14 @@ RPG_Character_MonsterAttackAction_Type::RPG_Character_MonsterAttackAction_Type()
   myCurrentMonsterAttackAction.numAttacksPerRound = 0;
 }
 
-void RPG_Character_MonsterAttackAction_Type::naturalWeapon(const RPG_Character_NaturalWeapon& naturalWeapon_in)
+void RPG_Character_MonsterAttackAction_Type::monsterWeapon(const RPG_Character_MonsterWeapon& monsterWeapon_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::naturalWeapon"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::monsterWeapon"));
 
-  myCurrentMonsterAttackAction.naturalWeapon = naturalWeapon_in;
+  myCurrentMonsterAttackAction.monsterWeapon = monsterWeapon_in;
 }
 
-void RPG_Character_MonsterAttackAction_Type::attackBonus(unsigned int attackBonus_in)
+void RPG_Character_MonsterAttackAction_Type::attackBonus(int attackBonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::attackBonus"));
 
@@ -337,7 +337,7 @@ RPG_Character_MonsterAttackAction RPG_Character_MonsterAttackAction_Type::post_R
   RPG_Character_MonsterAttackAction result = myCurrentMonsterAttackAction;
 
   // clear structure
-  myCurrentMonsterAttackAction.naturalWeapon = NATURALWEAPON_INVALID;
+  myCurrentMonsterAttackAction.monsterWeapon = MONSTERWEAPON_INVALID;
   myCurrentMonsterAttackAction.attackBonus = 0;
   myCurrentMonsterAttackAction.attackForm = ATTACK_INVALID;
   myCurrentMonsterAttackAction.damage.numDice = 0;
@@ -357,14 +357,14 @@ RPG_Character_MonsterAttack_Type::RPG_Character_MonsterAttack_Type()
   myCurrentMonsterAttack.attackActions.clear();
 }
 
-void RPG_Character_MonsterAttack_Type::baseAttackBonus(unsigned int baseAttackBonus_in)
+void RPG_Character_MonsterAttack_Type::baseAttackBonus(int baseAttackBonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttack_Type::baseAttackBonus"));
 
   myCurrentMonsterAttack.baseAttackBonus = baseAttackBonus_in;
 }
 
-void RPG_Character_MonsterAttack_Type::grappleBonus(unsigned int grappleBonus_in)
+void RPG_Character_MonsterAttack_Type::grappleBonus(int grappleBonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttack_Type::grappleBonus"));
 
@@ -401,21 +401,21 @@ RPG_Character_SavingThrowModifiers_Type::RPG_Character_SavingThrowModifiers_Type
   myCurrentSavingThrowModifiers.will = 0;
 }
 
-void RPG_Character_SavingThrowModifiers_Type::fortitude(unsigned int fortitude_in)
+void RPG_Character_SavingThrowModifiers_Type::fortitude(int fortitude_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_SavingThrowModifiers_Type::fortitude"));
 
   myCurrentSavingThrowModifiers.fortitude = fortitude_in;
 }
 
-void RPG_Character_SavingThrowModifiers_Type::reflex(unsigned int reflex_in)
+void RPG_Character_SavingThrowModifiers_Type::reflex(int reflex_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_SavingThrowModifiers_Type::reflex"));
 
   myCurrentSavingThrowModifiers.reflex = reflex_in;
 }
 
-void RPG_Character_SavingThrowModifiers_Type::will(unsigned int will_in)
+void RPG_Character_SavingThrowModifiers_Type::will(int will_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_SavingThrowModifiers_Type::will"));
 
@@ -529,7 +529,7 @@ void RPG_Character_SkillValue_Type::skill(const RPG_Character_Skill& skill_in)
   myCurrentSkill.first = skill_in;
 }
 
-void RPG_Character_SkillValue_Type::rank(unsigned int rank_in)
+void RPG_Character_SkillValue_Type::rank(int rank_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_SkillValue_Type::rank"));
 

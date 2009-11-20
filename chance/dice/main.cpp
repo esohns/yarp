@@ -31,6 +31,7 @@
 #include <ace/High_Res_Timer.h>
 
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <string>
 #include <algorithm>
@@ -62,7 +63,7 @@ void print_usage()
 
 const bool process_arguments(const int argc_in,
                              ACE_TCHAR* argv_in[], // cannot be const...
-                             RPG_Chance_Roll& rollSpecs_out,
+                             RPG_Chance_DiceRoll& rollSpecs_out,
                              unsigned int& numRolls_out,
                              bool& includeSortedResult_out,
                              bool& traceInformation_out,
@@ -94,6 +95,9 @@ const bool process_arguments(const int argc_in,
         unsigned int temp = ::atol(argumentParser.opt_arg());
         switch (temp)
         {
+          case D_0:
+          case D_2:
+          case D_3:
           case D_4:
           case D_6:
           case D_8:
@@ -178,7 +182,7 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
-void do_work(const RPG_Chance_Roll& rollSpecs_in,
+void do_work(const RPG_Chance_DiceRoll& rollSpecs_in,
              const unsigned int& numRolls_in,
              const bool& includeSortedResult_in)
 {
@@ -197,8 +201,65 @@ void do_work(const RPG_Chance_Roll& rollSpecs_in,
     return;
   }
 
-  // step2: generate some randomness...
-  RPG_Chance_Dice::RPG_CHANCE_DICE_RESULT_T result;
+  // step2a: generate some random numbers...
+  RPG_Chance_DiceRollResult_t result;
+  try
+  {
+    RPG_Chance_Dice::generateRandomNumbers(rollSpecs_in.typeDice, // see enum
+                                           numRolls_in,
+                                           result);
+  }
+  catch(...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Chance_Dice::generateRandomNumbers, returning\n")));
+
+    return;
+  }
+
+  // debug info
+  // header line
+  std::cout << ACE_TEXT("random numbers: ") << std::endl;
+  std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
+
+  std::ostringstream converter;
+  for (RPG_Chance_DiceRollResultIterator_t iter = result.begin();
+       iter != result.end();
+       iter++)
+  {
+    converter << *iter;
+    std::cout << converter.str() << ACE_TEXT(" ");
+    converter.str(ACE_TEXT_ALWAYS_CHAR("")); // "reset" it...
+  } // end FOR
+  std::cout << std::endl;
+
+  // dump sorted result too ?
+  if (includeSortedResult_in)
+  {
+    // header line
+    std::cout << ACE_TEXT("random numbers (sorted): ") << std::endl;
+    std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
+
+    // sort array
+    std::sort(result.begin(),
+              result.end());
+
+//     converter.str(std::string()); // "reset" it...
+    for (RPG_Chance_DiceRollResultIterator_t iter = result.begin();
+         iter != result.end();
+         iter++)
+    {
+      converter << *iter;
+      std::cout << converter.str() << ACE_TEXT(" ");
+      converter.str(ACE_TEXT_ALWAYS_CHAR("")); // "reset" it...
+    } // end FOR
+    std::cout << std::endl;
+  } // end IF
+
+  std::cout << std::endl;
+
+  // step2b: generate some random dice rolls...
+  result.clear();
   try
   {
     RPG_Chance_Dice::simulateDiceRoll(rollSpecs_in,
@@ -214,41 +275,42 @@ void do_work(const RPG_Chance_Roll& rollSpecs_in,
   }
 
   // debug info
-  std::ostringstream converter;
-  for (RPG_Chance_Dice::RPG_CHANCE_DICE_RESULTITERATOR_T iter = result.begin();
+  // header line
+  std::cout << ACE_TEXT("dice rolls: ") << std::endl;
+  std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
+
+//   std::ostringstream converter;
+  for (RPG_Chance_DiceRollResultIterator_t iter = result.begin();
        iter != result.end();
        iter++)
   {
-    converter << (*iter);
-    converter << ACE_TEXT(" ");
+    converter << *iter;
+    std::cout << converter.str() << ACE_TEXT(" ");
+    converter.str(ACE_TEXT_ALWAYS_CHAR("")); // "reset" it...
   } // end FOR
-  std::string line_string = converter.str();
-  ACE_DEBUG((LM_INFO,
-             ACE_TEXT("%s\n"),
-             line_string.c_str()));
+  std::cout << std::endl;
 
   // dump sorted result too ?
   if (includeSortedResult_in)
   {
-    ACE_DEBUG((LM_INFO,
-               ACE_TEXT("\n--- sorted ---\n")));
+    // header line
+    std::cout << ACE_TEXT("dice rolls (sorted): ") << std::endl;
+    std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
 
     // sort array
     std::sort(result.begin(),
               result.end());
 
-    converter.str(std::string()); // "reset" it...
-    for (RPG_Chance_Dice::RPG_CHANCE_DICE_RESULTITERATOR_T iter = result.begin();
+//     converter.str(std::string()); // "reset" it...
+    for (RPG_Chance_DiceRollResultIterator_t iter = result.begin();
          iter != result.end();
          iter++)
     {
-      converter << (*iter);
-      converter << ACE_TEXT_ALWAYS_CHAR(" ");
+      converter << *iter;
+      std::cout << converter.str() << ACE_TEXT(" ");
+      converter.str(ACE_TEXT_ALWAYS_CHAR("")); // "reset" it...
     } // end FOR
-    line_string = converter.str();
-    ACE_DEBUG((LM_INFO,
-              ACE_TEXT("%s\n"),
-              line_string.c_str()));
+    std::cout << std::endl;
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
@@ -319,7 +381,7 @@ int ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  RPG_Chance_Roll rollSpecs;
+  RPG_Chance_DiceRoll rollSpecs;
   rollSpecs.typeDice       = D_6;
   rollSpecs.numDice        = 1;
   rollSpecs.modifier       = 0;
@@ -393,7 +455,7 @@ int ACE_TMAIN(int argc,
 //   timer.elapsed_time(working_time);
 //   RPS_FLB_Common_Tools::Period2String(working_time,
 //                                       working_time_string);
-// 
+//
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
 //              working_time_string.c_str()));

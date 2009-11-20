@@ -22,7 +22,6 @@
 #include "rpg_chance_dice_common_tools.h"
 
 #include <ace/OS.h>
-#include <ace/Trace.h>
 #include <ace/Log_Msg.h>
 
 RPG_Chance_Dice::RPG_Chance_Dice()
@@ -58,9 +57,32 @@ void RPG_Chance_Dice::init()
              ACE_TEXT("initializing random seed...DONE\n")));
 }
 
-void RPG_Chance_Dice::simulateDiceRoll(const RPG_Chance_Roll& rollSpecs_in,
+void RPG_Chance_Dice::generateRandomNumbers(const unsigned int& range_in,
+                                            const unsigned int& numRolls_in,
+                                            RPG_Chance_DiceRollResult_t& results_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice::generateRandomNumbers"));
+
+  // init result(s)
+  results_out.clear();
+
+  for (unsigned int i = 0;
+       i < numRolls_in;
+       i++)
+  {
+    // *PORTABILITY*: this is most probably not portable...
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+    results_out.push_back((::random() % range_in) + 1);
+#else
+    // *TODO*
+    ACE_ASSERT(false);
+#endif
+  } // end FOR
+}
+
+void RPG_Chance_Dice::simulateDiceRoll(const RPG_Chance_DiceRoll& rollSpecs_in,
                                        const unsigned int& numRolls_in,
-                                       RPG_CHANCE_DICE_RESULT_T& results_out)
+                                       RPG_Chance_DiceRollResult_t& results_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Chance_Dice::simulateDiceRoll"));
 
@@ -97,4 +119,13 @@ void RPG_Chance_Dice::simulateDiceRoll(const RPG_Chance_Roll& rollSpecs_in,
 
     results_out.push_back(tempResult + rollSpecs_in.modifier);
   } // end FOR
+}
+
+void RPG_Chance_Dice::diceRollToRange(const RPG_Chance_DiceRoll& diceRoll_in,
+                                      RPG_Chance_ValueRange& valueRange_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice::diceRollToRange"));
+
+  valueRange_out.begin = diceRoll_in.modifier + (diceRoll_in.typeDice != D_0 ? diceRoll_in.numDice : 0);
+  valueRange_out.end = diceRoll_in.modifier + (diceRoll_in.numDice * diceRoll_in.typeDice);
 }

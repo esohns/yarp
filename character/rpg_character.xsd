@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!-- <xsd:schema xmlns:xsd="http://www.w3.org/rpg_character_schema"> -->
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
@@ -7,21 +8,7 @@
     </xsd:documentation>
   </xsd:annotation>
 
-<!-- xml document will contain a dictionary of different types of items -->
-  <xsd:element name="RPG_Character_Dictionary" type="RPG_Character_Dictionary_Type"/>
-
-  <xsd:complexType name="RPG_Character_Dictionary_Type">
-    <xsd:sequence>
-      <xsd:element name="RPG_Character_MonsterDictionary" type="RPG_Character_MonsterDictionary_Type" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="RPG_Character_MonsterDictionary_Type">
-    <xsd:sequence>
-      <xsd:element name="monster" type="RPG_Character_MonsterProperties_Type" maxOccurs="unbounded"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
+<!-- xml document will contain a dictionary of different types of monsters -->
   <xsd:simpleType name="RPG_Character_MonsterMetaType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="MONSTERMETATYPE_ABERRATION"/>
@@ -70,7 +57,7 @@
   <xsd:complexType name="RPG_Character_MonsterType_Type">
     <xsd:sequence>
       <xsd:element name="metaType" type="RPG_Character_MonsterMetaType_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="subType" type="RPG_Character_MonsterSubType_Type" minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element name="subType" type="RPG_Character_MonsterSubType_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -82,20 +69,30 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:simpleType name="RPG_Character_NaturalWeapon_Type">
+  <xsd:simpleType name="RPG_Character_MonsterWeapon_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="INCORPOREAL_TOUCH"/>
       <xsd:enumeration value="NATURALWEAPON_BITE"/>
       <xsd:enumeration value="NATURALWEAPON_CLAW_TALON"/>
       <xsd:enumeration value="NATURALWEAPON_GORE"/>
       <xsd:enumeration value="NATURALWEAPON_SLAP_SLAM"/>
       <xsd:enumeration value="NATURALWEAPON_STING"/>
       <xsd:enumeration value="NATURALWEAPON_TENTACLE"/>
+      <xsd:enumeration value="NATURALWEAPON_SPIT_ACID"/>
+      <xsd:enumeration value="NATURALWEAPON_WEB"/>
+      <xsd:enumeration value="NATURALWEAPON_ROCK_STONE"/>
+      <xsd:enumeration value="STANDARDWEAPON_BLUDGEONING"/>
+      <xsd:enumeration value="STANDARDWEAPON_PIERCING"/>
+      <xsd:enumeration value="STANDARDWEAPON_SLASHING"/>
+      <xsd:enumeration value="RAY_ELECTRICITY"/>
+      <xsd:enumeration value="RAY_LIGHT"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Character_MonsterAttackForm_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ATTACK_MELEE"/>
+      <xsd:enumeration value="ATTACK_TOUCH"/>
       <xsd:enumeration value="ATTACK_RANGED"/>
     </xsd:restriction>
   </xsd:simpleType>
@@ -125,8 +122,8 @@
 
   <xsd:complexType name="RPG_Character_MonsterAttackAction_Type">
     <xsd:sequence>
-      <xsd:element name="naturalWeapon" type="RPG_Character_NaturalWeapon_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="attackBonus" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="monsterWeapon" type="RPG_Character_MonsterWeapon_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="attackBonus" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackForm" type="RPG_Character_MonsterAttackForm_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="damage" type="RPG_Chance_Roll_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="numAttacksPerRound" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
@@ -135,8 +132,8 @@
 
   <xsd:complexType name="RPG_Character_MonsterAttack_Type">
     <xsd:sequence>
-      <xsd:element name="baseAttackBonus" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="grappleBonus" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="baseAttackBonus" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="grappleBonus" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackAction" type="RPG_Character_MonsterAttackAction_Type" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -157,9 +154,9 @@
 
   <xsd:complexType name="RPG_Character_SavingThrowModifiers_Type">
     <xsd:sequence>
-      <xsd:element name="fortitude" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="reflex" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="will" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="fortitude" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="reflex" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="will" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -181,6 +178,8 @@
       <xsd:enumeration value="SKILL_BLUFF"/>
       <xsd:enumeration value="SKILL_CLIMB"/>
       <xsd:enumeration value="SKILL_CONCENTRATION"/>
+      <xsd:enumeration value="SKILL_CRAFT_ANY"/>
+      <xsd:enumeration value="SKILL_CRAFT_ALL"/>
       <xsd:enumeration value="SKILL_CRAFT_ALCHEMY"/>
       <xsd:enumeration value="SKILL_CRAFT_FLETCHER"/>
       <xsd:enumeration value="SKILL_CRAFT_BOWYER"/>
@@ -201,6 +200,8 @@
       <xsd:enumeration value="SKILL_HIDE"/>
       <xsd:enumeration value="SKILL_INTIMIDATE"/>
       <xsd:enumeration value="SKILL_JUMP"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_ANY"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_ALL"/>
       <xsd:enumeration value="SKILL_KNOWLEDGE_ARCANA"/>
       <xsd:enumeration value="SKILL_KNOWLEDGE_ARCH_ENG"/>
       <xsd:enumeration value="SKILL_KNOWLEDGE_DUNGEONS"/>
@@ -234,7 +235,7 @@
   <xsd:complexType name="RPG_Character_SkillValue_Type">
     <xsd:sequence>
       <xsd:element name="skill" type="RPG_Character_Skill_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="rank" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="rank" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -355,6 +356,19 @@
       <xsd:enumeration value="FEAT_STEALTHY"/>
       <xsd:enumeration value="FEAT_TOUGHNESS"/>
       <xsd:enumeration value="FEAT_TRACK"/>
+      <xsd:enumeration value="FEAT_ABILITY_FOCUS"/>
+      <xsd:enumeration value="FEAT_AWESOME_BLOW"/>
+      <xsd:enumeration value="FEAT_CRAFT_CONSTRUCT"/>
+      <xsd:enumeration value="FEAT_EMPOWER_SPELLLIKE_ABILITY"/>
+      <xsd:enumeration value="FEAT_FLYBY_ATTACK"/>
+      <xsd:enumeration value="FEAT_HOVER"/>
+      <xsd:enumeration value="FEAT_IMPROVED_NATURAL_ARMOR"/>
+      <xsd:enumeration value="FEAT_IMPROVED_NATURAL_ATTACK"/>
+      <xsd:enumeration value="FEAT_MULTI_ATTACK"/>
+      <xsd:enumeration value="FEAT_MULTIWEAPON_FIGHTING"/>
+      <xsd:enumeration value="FEAT_QUICKEN_SPELLLIKE_ABILITY"/>
+      <xsd:enumeration value="FEAT_SNATCH"/>
+      <xsd:enumeration value="FEAT_WINGOVER"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -366,16 +380,45 @@
 
   <xsd:simpleType name="RPG_Character_Environment_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ENVIRONMENT_ANY"/>
       <xsd:enumeration value="ENVIRONMENT_UNDERGROUND"/>
-      <xsd:enumeration value="ENVIRONMENT_PLANE_LAWFUL"/>
+      <xsd:enumeration value="ENVIRONMENT_PLAINS_TEMPERATE"/>
+      <xsd:enumeration value="ENVIRONMENT_PLAINS_WARM"/>
+      <xsd:enumeration value="ENVIRONMENT_FORESTS_TEMPERATE"/>
+      <xsd:enumeration value="ENVIRONMENT_HILLS_TEMPERATE"/>
+      <xsd:enumeration value="ENVIRONMENT_HILLS_WARM"/>
+      <xsd:enumeration value="ENVIRONMENT_MOUNTAINS_TEMPERATE"/>
+      <xsd:enumeration value="ENVIRONMENT_DESERTS_WARM"/>
+      <xsd:enumeration value="ENVIRONMENT_PLANE_ANY_LAWFUL"/>
+      <xsd:enumeration value="ENVIRONMENT_PLANE_LAWFUL_GOOD"/>
+      <xsd:enumeration value="ENVIRONMENT_PLANE_ANY_GOOD"/>
+      <xsd:enumeration value="ENVIRONMENT_PLANE_CHAOTIC_GOOD"/>
+      <xsd:enumeration value="ENVIRONMENT_PLANE_ANY_EVIL"/>
+      <xsd:enumeration value="ENVIRONMENT_PLANE_CHAOTIC_EVIL"/>
+      <xsd:enumeration value="ENVIRONMENT_PLANE_AIR"/>
+      <xsd:enumeration value="ENVIRONMENT_PLANE_FIRE"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Character_Organization_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ORGANIZATION_ANY"/>
       <xsd:enumeration value="ORGANIZATION_SOLITARY"/>
+      <xsd:enumeration value="ORGANIZATION_PAIR"/>
       <xsd:enumeration value="ORGANIZATION_BROOD"/>
-      <xsd:enumeration value="ORGANIZATION_SLAVER_BROOD"/>
+      <xsd:enumeration value="ORGANIZATION_CLUSTER"/>
+      <xsd:enumeration value="ORGANIZATION_CLUTCH"/>
+      <xsd:enumeration value="ORGANIZATION_PATCH"/>
+      <xsd:enumeration value="ORGANIZATION_GANG"/>
+      <xsd:enumeration value="ORGANIZATION_TEAM"/>
+      <xsd:enumeration value="ORGANIZATION_SQUAD"/>
+      <xsd:enumeration value="ORGANIZATION_PACK"/>
+      <xsd:enumeration value="ORGANIZATION_COLONY"/>
+      <xsd:enumeration value="ORGANIZATION_FLOCK"/>
+      <xsd:enumeration value="ORGANIZATION_TRIBE"/>
+      <xsd:enumeration value="ORGANIZATION_SLAVER"/>
+      <xsd:enumeration value="ORGANIZATION_BAND"/>
+      <xsd:enumeration value="ORGANIZATION_CLAN"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -384,6 +427,7 @@
       <xsd:enumeration value="ALIGNMENTCIVIC_LAWFUL"/>
       <xsd:enumeration value="ALIGNMENTCIVIC_NEUTRAL"/>
       <xsd:enumeration value="ALIGNMENTCIVIC_CHAOTIC"/>
+      <xsd:enumeration value="ALIGNMENTCIVIC_ANY"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -392,6 +436,7 @@
       <xsd:enumeration value="ALIGNMENTETHIC_GOOD"/>
       <xsd:enumeration value="ALIGNMENTETHIC_NEUTRAL"/>
       <xsd:enumeration value="ALIGNMENTETHIC_EVIL"/>
+      <xsd:enumeration value="ALIGNMENTETHIC_ANY"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -411,7 +456,7 @@
 
   <xsd:complexType name="RPG_Character_MonsterAdvancement_Type">
     <xsd:sequence>
-      <xsd:element name="step" type="RPG_Character_MonsterAdvancementStep_Type" minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element name="step" type="RPG_Character_MonsterAdvancementStep_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -440,4 +485,19 @@
       <xsd:element name="levelAdjustment" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
+
+  <xsd:complexType name="RPG_Character_MonsterDictionary_Type">
+    <xsd:sequence>
+      <xsd:element name="monster" type="RPG_Character_MonsterProperties_Type" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Character_Dictionary_Type">
+    <xsd:sequence>
+      <xsd:element name="RPG_Character_MonsterDictionary" type="RPG_Character_MonsterDictionary_Type" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="RPG_Character_Dictionary" type="RPG_Character_Dictionary_Type"/>
+
 </xsd:schema>

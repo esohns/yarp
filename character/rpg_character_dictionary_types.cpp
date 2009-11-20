@@ -38,50 +38,6 @@
 
 #include "rpg_character_dictionary_types.h"
 
-// RPG_Character_Dictionary_Type_pskel
-//
-
-void RPG_Character_Dictionary_Type_pskel::
-RPG_Character_MonsterDictionary_parser (::RPG_Character_MonsterDictionary_Type_pskel& p)
-{
-  this->RPG_Character_MonsterDictionary_parser_ = &p;
-}
-
-void RPG_Character_Dictionary_Type_pskel::
-parsers (::RPG_Character_MonsterDictionary_Type_pskel& RPG_Character_MonsterDictionary)
-{
-  this->RPG_Character_MonsterDictionary_parser_ = &RPG_Character_MonsterDictionary;
-}
-
-RPG_Character_Dictionary_Type_pskel::
-RPG_Character_Dictionary_Type_pskel ()
-: RPG_Character_MonsterDictionary_parser_ (0),
-  v_state_stack_ (sizeof (v_state_), &v_state_first_)
-{
-}
-
-// RPG_Character_MonsterDictionary_Type_pskel
-//
-
-void RPG_Character_MonsterDictionary_Type_pskel::
-monster_parser (::RPG_Character_MonsterProperties_Type_pskel& p)
-{
-  this->monster_parser_ = &p;
-}
-
-void RPG_Character_MonsterDictionary_Type_pskel::
-parsers (::RPG_Character_MonsterProperties_Type_pskel& monster)
-{
-  this->monster_parser_ = &monster;
-}
-
-RPG_Character_MonsterDictionary_Type_pskel::
-RPG_Character_MonsterDictionary_Type_pskel ()
-: monster_parser_ (0),
-  v_state_stack_ (sizeof (v_state_), &v_state_first_)
-{
-}
-
 // RPG_Character_MonsterType_Type_pskel
 //
 
@@ -197,13 +153,13 @@ RPG_Chance_Roll_Type_pskel ()
 //
 
 void RPG_Character_MonsterAttackAction_Type_pskel::
-naturalWeapon_parser (::RPG_Character_NaturalWeapon_Type_pskel& p)
+monsterWeapon_parser (::RPG_Character_MonsterWeapon_Type_pskel& p)
 {
-  this->naturalWeapon_parser_ = &p;
+  this->monsterWeapon_parser_ = &p;
 }
 
 void RPG_Character_MonsterAttackAction_Type_pskel::
-attackBonus_parser (::xml_schema::unsigned_int_pskel& p)
+attackBonus_parser (::xml_schema::integer_pskel& p)
 {
   this->attackBonus_parser_ = &p;
 }
@@ -227,13 +183,13 @@ numAttacksPerRound_parser (::xml_schema::unsigned_int_pskel& p)
 }
 
 void RPG_Character_MonsterAttackAction_Type_pskel::
-parsers (::RPG_Character_NaturalWeapon_Type_pskel& naturalWeapon,
-         ::xml_schema::unsigned_int_pskel& attackBonus,
+parsers (::RPG_Character_MonsterWeapon_Type_pskel& monsterWeapon,
+         ::xml_schema::integer_pskel& attackBonus,
          ::RPG_Character_MonsterAttackForm_Type_pskel& attackForm,
          ::RPG_Chance_Roll_Type_pskel& damage,
          ::xml_schema::unsigned_int_pskel& numAttacksPerRound)
 {
-  this->naturalWeapon_parser_ = &naturalWeapon;
+  this->monsterWeapon_parser_ = &monsterWeapon;
   this->attackBonus_parser_ = &attackBonus;
   this->attackForm_parser_ = &attackForm;
   this->damage_parser_ = &damage;
@@ -242,7 +198,7 @@ parsers (::RPG_Character_NaturalWeapon_Type_pskel& naturalWeapon,
 
 RPG_Character_MonsterAttackAction_Type_pskel::
 RPG_Character_MonsterAttackAction_Type_pskel ()
-: naturalWeapon_parser_ (0),
+: monsterWeapon_parser_ (0),
   attackBonus_parser_ (0),
   attackForm_parser_ (0),
   damage_parser_ (0),
@@ -255,13 +211,13 @@ RPG_Character_MonsterAttackAction_Type_pskel ()
 //
 
 void RPG_Character_MonsterAttack_Type_pskel::
-baseAttackBonus_parser (::xml_schema::unsigned_int_pskel& p)
+baseAttackBonus_parser (::xml_schema::integer_pskel& p)
 {
   this->baseAttackBonus_parser_ = &p;
 }
 
 void RPG_Character_MonsterAttack_Type_pskel::
-grappleBonus_parser (::xml_schema::unsigned_int_pskel& p)
+grappleBonus_parser (::xml_schema::integer_pskel& p)
 {
   this->grappleBonus_parser_ = &p;
 }
@@ -273,8 +229,8 @@ attackAction_parser (::RPG_Character_MonsterAttackAction_Type_pskel& p)
 }
 
 void RPG_Character_MonsterAttack_Type_pskel::
-parsers (::xml_schema::unsigned_int_pskel& baseAttackBonus,
-         ::xml_schema::unsigned_int_pskel& grappleBonus,
+parsers (::xml_schema::integer_pskel& baseAttackBonus,
+         ::xml_schema::integer_pskel& grappleBonus,
          ::RPG_Character_MonsterAttackAction_Type_pskel& attackAction)
 {
   this->baseAttackBonus_parser_ = &baseAttackBonus;
@@ -295,27 +251,27 @@ RPG_Character_MonsterAttack_Type_pskel ()
 //
 
 void RPG_Character_SavingThrowModifiers_Type_pskel::
-fortitude_parser (::xml_schema::unsigned_int_pskel& p)
+fortitude_parser (::xml_schema::integer_pskel& p)
 {
   this->fortitude_parser_ = &p;
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pskel::
-reflex_parser (::xml_schema::unsigned_int_pskel& p)
+reflex_parser (::xml_schema::integer_pskel& p)
 {
   this->reflex_parser_ = &p;
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pskel::
-will_parser (::xml_schema::unsigned_int_pskel& p)
+will_parser (::xml_schema::integer_pskel& p)
 {
   this->will_parser_ = &p;
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pskel::
-parsers (::xml_schema::unsigned_int_pskel& fortitude,
-         ::xml_schema::unsigned_int_pskel& reflex,
-         ::xml_schema::unsigned_int_pskel& will)
+parsers (::xml_schema::integer_pskel& fortitude,
+         ::xml_schema::integer_pskel& reflex,
+         ::xml_schema::integer_pskel& will)
 {
   this->fortitude_parser_ = &fortitude;
   this->reflex_parser_ = &reflex;
@@ -408,14 +364,14 @@ skill_parser (::RPG_Character_Skill_Type_pskel& p)
 }
 
 void RPG_Character_SkillValue_Type_pskel::
-rank_parser (::xml_schema::unsigned_int_pskel& p)
+rank_parser (::xml_schema::integer_pskel& p)
 {
   this->rank_parser_ = &p;
 }
 
 void RPG_Character_SkillValue_Type_pskel::
 parsers (::RPG_Character_Skill_Type_pskel& skill,
-         ::xml_schema::unsigned_int_pskel& rank)
+         ::xml_schema::integer_pskel& rank)
 {
   this->skill_parser_ = &skill;
   this->rank_parser_ = &rank;
@@ -759,29 +715,47 @@ RPG_Character_MonsterProperties_Type_pskel ()
 {
 }
 
-// RPG_Character_Dictionary_Type_pskel
-//
-
-void RPG_Character_Dictionary_Type_pskel::
-RPG_Character_MonsterDictionary ()
-{
-}
-
-void RPG_Character_Dictionary_Type_pskel::
-post_RPG_Character_Dictionary_Type ()
-{
-}
-
 // RPG_Character_MonsterDictionary_Type_pskel
 //
 
 void RPG_Character_MonsterDictionary_Type_pskel::
-monster (const RPG_Character_MonsterProperties_XML&)
+monster_parser (::RPG_Character_MonsterProperties_Type_pskel& p)
 {
+  this->monster_parser_ = &p;
 }
 
 void RPG_Character_MonsterDictionary_Type_pskel::
-post_RPG_Character_MonsterDictionary_Type ()
+parsers (::RPG_Character_MonsterProperties_Type_pskel& monster)
+{
+  this->monster_parser_ = &monster;
+}
+
+RPG_Character_MonsterDictionary_Type_pskel::
+RPG_Character_MonsterDictionary_Type_pskel ()
+: monster_parser_ (0),
+  v_state_stack_ (sizeof (v_state_), &v_state_first_)
+{
+}
+
+// RPG_Character_Dictionary_Type_pskel
+//
+
+void RPG_Character_Dictionary_Type_pskel::
+RPG_Character_MonsterDictionary_parser (::RPG_Character_MonsterDictionary_Type_pskel& p)
+{
+  this->RPG_Character_MonsterDictionary_parser_ = &p;
+}
+
+void RPG_Character_Dictionary_Type_pskel::
+parsers (::RPG_Character_MonsterDictionary_Type_pskel& RPG_Character_MonsterDictionary)
+{
+  this->RPG_Character_MonsterDictionary_parser_ = &RPG_Character_MonsterDictionary;
+}
+
+RPG_Character_Dictionary_Type_pskel::
+RPG_Character_Dictionary_Type_pskel ()
+: RPG_Character_MonsterDictionary_parser_ (0),
+  v_state_stack_ (sizeof (v_state_), &v_state_first_)
 {
 }
 
@@ -838,12 +812,12 @@ modifier (long long)
 //
 
 void RPG_Character_MonsterAttackAction_Type_pskel::
-naturalWeapon (const RPG_Character_NaturalWeapon&)
+monsterWeapon (const RPG_Character_MonsterWeapon&)
 {
 }
 
 void RPG_Character_MonsterAttackAction_Type_pskel::
-attackBonus (unsigned int)
+attackBonus (long long)
 {
 }
 
@@ -866,12 +840,12 @@ numAttacksPerRound (unsigned int)
 //
 
 void RPG_Character_MonsterAttack_Type_pskel::
-baseAttackBonus (unsigned int)
+baseAttackBonus (long long)
 {
 }
 
 void RPG_Character_MonsterAttack_Type_pskel::
-grappleBonus (unsigned int)
+grappleBonus (long long)
 {
 }
 
@@ -884,17 +858,17 @@ attackAction (const RPG_Character_MonsterAttackAction&)
 //
 
 void RPG_Character_SavingThrowModifiers_Type_pskel::
-fortitude (unsigned int)
+fortitude (long long)
 {
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pskel::
-reflex (unsigned int)
+reflex (long long)
 {
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pskel::
-will (unsigned int)
+will (long long)
 {
 }
 
@@ -940,7 +914,7 @@ skill (const RPG_Character_Skill&)
 }
 
 void RPG_Character_SkillValue_Type_pskel::
-rank (unsigned int)
+rank (long long)
 {
 }
 
@@ -1102,368 +1076,33 @@ levelAdjustment (unsigned int)
 {
 }
 
+// RPG_Character_MonsterDictionary_Type_pskel
+//
+
+void RPG_Character_MonsterDictionary_Type_pskel::
+monster (const RPG_Character_MonsterProperties_XML&)
+{
+}
+
+void RPG_Character_MonsterDictionary_Type_pskel::
+post_RPG_Character_MonsterDictionary_Type ()
+{
+}
+
+// RPG_Character_Dictionary_Type_pskel
+//
+
+void RPG_Character_Dictionary_Type_pskel::
+RPG_Character_MonsterDictionary ()
+{
+}
+
+void RPG_Character_Dictionary_Type_pskel::
+post_RPG_Character_Dictionary_Type ()
+{
+}
+
 #include <cassert>
-
-// Element validation and dispatch functions for RPG_Character_Dictionary_Type_pskel.
-//
-bool RPG_Character_Dictionary_Type_pskel::
-_start_element_impl (const ::xml_schema::ro_string& ns,
-                     const ::xml_schema::ro_string& n,
-                     const ::xml_schema::ro_string* t)
-{
-  XSD_UNUSED (t);
-
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
-
-  if (vd->func == 0 && vd->state == 0)
-  {
-    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
-      return true;
-    else
-      vd->state = 1;
-  }
-
-  while (vd->func != 0)
-  {
-    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
-
-    vd = vs.data + (vs.size - 1);
-
-    if (vd->state == ~0UL)
-      vd = vs.data + (--vs.size - 1);
-    else
-      break;
-  }
-
-  if (vd->func == 0)
-  {
-    if (vd->state != ~0UL)
-    {
-      unsigned long s = ~0UL;
-
-      if (n == "RPG_Character_MonsterDictionary" && ns.empty ())
-        s = 0UL;
-
-      if (s != ~0UL)
-      {
-        vd->count++;
-        vd->state = ~0UL;
-
-        vd = vs.data + vs.size++;
-        vd->func = &RPG_Character_Dictionary_Type_pskel::sequence_0;
-        vd->state = s;
-        vd->count = 0;
-
-        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
-      }
-      else
-      {
-        if (vd->count < 1UL)
-          this->_expected_element (
-            "", "RPG_Character_MonsterDictionary",
-            ns, n);
-        return false;
-      }
-    }
-    else
-      return false;
-  }
-
-  return true;
-}
-
-bool RPG_Character_Dictionary_Type_pskel::
-_end_element_impl (const ::xml_schema::ro_string& ns,
-                   const ::xml_schema::ro_string& n)
-{
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size - 1];
-
-  if (vd.func == 0 && vd.state == 0)
-  {
-    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
-      assert (false);
-    return true;
-  }
-
-  assert (vd.func != 0);
-  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
-
-  if (vd.state == ~0UL)
-    vs.size--;
-
-  return true;
-}
-
-void RPG_Character_Dictionary_Type_pskel::
-_pre_e_validate ()
-{
-  this->v_state_stack_.push ();
-  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
-
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size++];
-
-  vd.func = 0;
-  vd.state = 0;
-  vd.count = 0;
-}
-
-void RPG_Character_Dictionary_Type_pskel::
-_post_e_validate ()
-{
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
-
-  ::xml_schema::ro_string empty;
-  while (vd->func != 0)
-  {
-    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
-    assert (vd->state == ~0UL);
-    vd = vs.data + (--vs.size - 1);
-  }
-
-  if (vd->count < 1UL)
-    this->_expected_element (
-      "", "RPG_Character_MonsterDictionary");
-
-  this->v_state_stack_.pop ();
-}
-
-void RPG_Character_Dictionary_Type_pskel::
-sequence_0 (unsigned long& state,
-            unsigned long& count,
-            const ::xml_schema::ro_string& ns,
-            const ::xml_schema::ro_string& n,
-            const ::xml_schema::ro_string* t,
-            bool start)
-{
-  XSD_UNUSED (t);
-
-  switch (state)
-  {
-    case 0UL:
-    {
-      if (n == "RPG_Character_MonsterDictionary" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->RPG_Character_MonsterDictionary_parser_;
-
-          if (this->RPG_Character_MonsterDictionary_parser_)
-            this->RPG_Character_MonsterDictionary_parser_->pre ();
-        }
-        else
-        {
-          if (this->RPG_Character_MonsterDictionary_parser_)
-          {
-            this->RPG_Character_MonsterDictionary_parser_->post_RPG_Character_MonsterDictionary_Type ();
-            this->RPG_Character_MonsterDictionary ();
-          }
-
-          count = 0;
-          state = ~0UL;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "RPG_Character_MonsterDictionary",
-            ns, n);
-        count = 0;
-        state = ~0UL;
-        // Fall through.
-      }
-    }
-    case ~0UL:
-      break;
-  }
-}
-
-// Element validation and dispatch functions for RPG_Character_MonsterDictionary_Type_pskel.
-//
-bool RPG_Character_MonsterDictionary_Type_pskel::
-_start_element_impl (const ::xml_schema::ro_string& ns,
-                     const ::xml_schema::ro_string& n,
-                     const ::xml_schema::ro_string* t)
-{
-  XSD_UNUSED (t);
-
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
-
-  if (vd->func == 0 && vd->state == 0)
-  {
-    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
-      return true;
-    else
-      vd->state = 1;
-  }
-
-  while (vd->func != 0)
-  {
-    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
-
-    vd = vs.data + (vs.size - 1);
-
-    if (vd->state == ~0UL)
-      vd = vs.data + (--vs.size - 1);
-    else
-      break;
-  }
-
-  if (vd->func == 0)
-  {
-    if (vd->state != ~0UL)
-    {
-      unsigned long s = ~0UL;
-
-      if (n == "monster" && ns.empty ())
-        s = 0UL;
-
-      if (s != ~0UL)
-      {
-        vd->count++;
-        vd->state = ~0UL;
-
-        vd = vs.data + vs.size++;
-        vd->func = &RPG_Character_MonsterDictionary_Type_pskel::sequence_0;
-        vd->state = s;
-        vd->count = 0;
-
-        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
-      }
-      else
-      {
-        if (vd->count < 1UL)
-          this->_expected_element (
-            "", "monster",
-            ns, n);
-        return false;
-      }
-    }
-    else
-      return false;
-  }
-
-  return true;
-}
-
-bool RPG_Character_MonsterDictionary_Type_pskel::
-_end_element_impl (const ::xml_schema::ro_string& ns,
-                   const ::xml_schema::ro_string& n)
-{
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size - 1];
-
-  if (vd.func == 0 && vd.state == 0)
-  {
-    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
-      assert (false);
-    return true;
-  }
-
-  assert (vd.func != 0);
-  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
-
-  if (vd.state == ~0UL)
-    vs.size--;
-
-  return true;
-}
-
-void RPG_Character_MonsterDictionary_Type_pskel::
-_pre_e_validate ()
-{
-  this->v_state_stack_.push ();
-  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
-
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size++];
-
-  vd.func = 0;
-  vd.state = 0;
-  vd.count = 0;
-}
-
-void RPG_Character_MonsterDictionary_Type_pskel::
-_post_e_validate ()
-{
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
-
-  ::xml_schema::ro_string empty;
-  while (vd->func != 0)
-  {
-    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
-    assert (vd->state == ~0UL);
-    vd = vs.data + (--vs.size - 1);
-  }
-
-  if (vd->count < 1UL)
-    this->_expected_element (
-      "", "monster");
-
-  this->v_state_stack_.pop ();
-}
-
-void RPG_Character_MonsterDictionary_Type_pskel::
-sequence_0 (unsigned long& state,
-            unsigned long& count,
-            const ::xml_schema::ro_string& ns,
-            const ::xml_schema::ro_string& n,
-            const ::xml_schema::ro_string* t,
-            bool start)
-{
-  XSD_UNUSED (t);
-
-  switch (state)
-  {
-    case 0UL:
-    {
-      if (n == "monster" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->monster_parser_;
-
-          if (this->monster_parser_)
-            this->monster_parser_->pre ();
-        }
-        else
-        {
-          if (this->monster_parser_)
-          {
-            const RPG_Character_MonsterProperties_XML& tmp (this->monster_parser_->post_RPG_Character_MonsterProperties_Type ());
-            this->monster (tmp);
-          }
-
-          count++;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "monster",
-            ns, n);
-        count = 0;
-        state = ~0UL;
-        // Fall through.
-      }
-    }
-    case ~0UL:
-      break;
-  }
-}
 
 // Element validation and dispatch functions for RPG_Character_MonsterType_Type_pskel.
 //
@@ -1668,10 +1307,6 @@ sequence_0 (unsigned long& state,
       else
       {
         assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "subType",
-            ns, n);
         count = 0;
         state = ~0UL;
         // Fall through.
@@ -2230,7 +1865,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     {
       unsigned long s = ~0UL;
 
-      if (n == "naturalWeapon" && ns.empty ())
+      if (n == "monsterWeapon" && ns.empty ())
         s = 0UL;
 
       if (s != ~0UL)
@@ -2249,7 +1884,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
       {
         if (vd->count < 1UL)
           this->_expected_element (
-            "", "naturalWeapon",
+            "", "monsterWeapon",
             ns, n);
         return false;
       }
@@ -2314,7 +1949,7 @@ _post_e_validate ()
 
   if (vd->count < 1UL)
     this->_expected_element (
-      "", "naturalWeapon");
+      "", "monsterWeapon");
 
   this->v_state_stack_.pop ();
 }
@@ -2333,21 +1968,21 @@ sequence_0 (unsigned long& state,
   {
     case 0UL:
     {
-      if (n == "naturalWeapon" && ns.empty ())
+      if (n == "monsterWeapon" && ns.empty ())
       {
         if (start)
         {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->naturalWeapon_parser_;
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->monsterWeapon_parser_;
 
-          if (this->naturalWeapon_parser_)
-            this->naturalWeapon_parser_->pre ();
+          if (this->monsterWeapon_parser_)
+            this->monsterWeapon_parser_->pre ();
         }
         else
         {
-          if (this->naturalWeapon_parser_)
+          if (this->monsterWeapon_parser_)
           {
-            const RPG_Character_NaturalWeapon& tmp (this->naturalWeapon_parser_->post_RPG_Character_NaturalWeapon_Type ());
-            this->naturalWeapon (tmp);
+            const RPG_Character_MonsterWeapon& tmp (this->monsterWeapon_parser_->post_RPG_Character_MonsterWeapon_Type ());
+            this->monsterWeapon (tmp);
           }
 
           count = 0;
@@ -2361,7 +1996,7 @@ sequence_0 (unsigned long& state,
         assert (start);
         if (count < 1UL)
           this->_expected_element (
-            "", "naturalWeapon",
+            "", "monsterWeapon",
             ns, n);
         count = 0;
         state = 1UL;
@@ -2383,7 +2018,7 @@ sequence_0 (unsigned long& state,
         {
           if (this->attackBonus_parser_)
           {
-            unsigned int tmp (this->attackBonus_parser_->post_unsigned_int ());
+            long long tmp (this->attackBonus_parser_->post_integer ());
             this->attackBonus (tmp);
           }
 
@@ -2675,7 +2310,7 @@ sequence_0 (unsigned long& state,
         {
           if (this->baseAttackBonus_parser_)
           {
-            unsigned int tmp (this->baseAttackBonus_parser_->post_unsigned_int ());
+            long long tmp (this->baseAttackBonus_parser_->post_integer ());
             this->baseAttackBonus (tmp);
           }
 
@@ -2712,7 +2347,7 @@ sequence_0 (unsigned long& state,
         {
           if (this->grappleBonus_parser_)
           {
-            unsigned int tmp (this->grappleBonus_parser_->post_unsigned_int ());
+            long long tmp (this->grappleBonus_parser_->post_integer ());
             this->grappleBonus (tmp);
           }
 
@@ -2929,7 +2564,7 @@ sequence_0 (unsigned long& state,
         {
           if (this->fortitude_parser_)
           {
-            unsigned int tmp (this->fortitude_parser_->post_unsigned_int ());
+            long long tmp (this->fortitude_parser_->post_integer ());
             this->fortitude (tmp);
           }
 
@@ -2966,7 +2601,7 @@ sequence_0 (unsigned long& state,
         {
           if (this->reflex_parser_)
           {
-            unsigned int tmp (this->reflex_parser_->post_unsigned_int ());
+            long long tmp (this->reflex_parser_->post_integer ());
             this->reflex (tmp);
           }
 
@@ -3003,7 +2638,7 @@ sequence_0 (unsigned long& state,
         {
           if (this->will_parser_)
           {
-            unsigned int tmp (this->will_parser_->post_unsigned_int ());
+            long long tmp (this->will_parser_->post_integer ());
             this->will (tmp);
           }
 
@@ -3587,7 +3222,7 @@ sequence_0 (unsigned long& state,
         {
           if (this->rank_parser_)
           {
-            unsigned int tmp (this->rank_parser_->post_unsigned_int ());
+            long long tmp (this->rank_parser_->post_integer ());
             this->rank (tmp);
           }
 
@@ -4443,10 +4078,6 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
       }
       else
       {
-        if (vd->count < 1UL)
-          this->_expected_element (
-            "", "step",
-            ns, n);
         return false;
       }
     }
@@ -4508,9 +4139,6 @@ _post_e_validate ()
     vd = vs.data + (--vs.size - 1);
   }
 
-  if (vd->count < 1UL)
-    this->_expected_element (
-      "", "step");
 
   this->v_state_stack_.pop ();
 }
@@ -4554,10 +4182,6 @@ sequence_0 (unsigned long& state,
       else
       {
         assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "step",
-            ns, n);
         count = 0;
         state = ~0UL;
         // Fall through.
@@ -5477,6 +5101,367 @@ sequence_0 (unsigned long& state,
         if (count < 1UL)
           this->_expected_element (
             "", "levelAdjustment",
+            ns, n);
+        count = 0;
+        state = ~0UL;
+        // Fall through.
+      }
+    }
+    case ~0UL:
+      break;
+  }
+}
+
+// Element validation and dispatch functions for RPG_Character_MonsterDictionary_Type_pskel.
+//
+bool RPG_Character_MonsterDictionary_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  if (vd->func == 0 && vd->state == 0)
+  {
+    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+      return true;
+    else
+      vd->state = 1;
+  }
+
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
+
+    vd = vs.data + (vs.size - 1);
+
+    if (vd->state == ~0UL)
+      vd = vs.data + (--vs.size - 1);
+    else
+      break;
+  }
+
+  if (vd->func == 0)
+  {
+    if (vd->state != ~0UL)
+    {
+      unsigned long s = ~0UL;
+
+      if (n == "monster" && ns.empty ())
+        s = 0UL;
+
+      if (s != ~0UL)
+      {
+        vd->count++;
+        vd->state = ~0UL;
+
+        vd = vs.data + vs.size++;
+        vd->func = &RPG_Character_MonsterDictionary_Type_pskel::sequence_0;
+        vd->state = s;
+        vd->count = 0;
+
+        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
+      }
+      else
+      {
+        if (vd->count < 1UL)
+          this->_expected_element (
+            "", "monster",
+            ns, n);
+        return false;
+      }
+    }
+    else
+      return false;
+  }
+
+  return true;
+}
+
+bool RPG_Character_MonsterDictionary_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size - 1];
+
+  if (vd.func == 0 && vd.state == 0)
+  {
+    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
+      assert (false);
+    return true;
+  }
+
+  assert (vd.func != 0);
+  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
+
+  if (vd.state == ~0UL)
+    vs.size--;
+
+  return true;
+}
+
+void RPG_Character_MonsterDictionary_Type_pskel::
+_pre_e_validate ()
+{
+  this->v_state_stack_.push ();
+  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size++];
+
+  vd.func = 0;
+  vd.state = 0;
+  vd.count = 0;
+}
+
+void RPG_Character_MonsterDictionary_Type_pskel::
+_post_e_validate ()
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  ::xml_schema::ro_string empty;
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
+    assert (vd->state == ~0UL);
+    vd = vs.data + (--vs.size - 1);
+  }
+
+  if (vd->count < 1UL)
+    this->_expected_element (
+      "", "monster");
+
+  this->v_state_stack_.pop ();
+}
+
+void RPG_Character_MonsterDictionary_Type_pskel::
+sequence_0 (unsigned long& state,
+            unsigned long& count,
+            const ::xml_schema::ro_string& ns,
+            const ::xml_schema::ro_string& n,
+            const ::xml_schema::ro_string* t,
+            bool start)
+{
+  XSD_UNUSED (t);
+
+  switch (state)
+  {
+    case 0UL:
+    {
+      if (n == "monster" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->monster_parser_;
+
+          if (this->monster_parser_)
+            this->monster_parser_->pre ();
+        }
+        else
+        {
+          if (this->monster_parser_)
+          {
+            const RPG_Character_MonsterProperties_XML& tmp (this->monster_parser_->post_RPG_Character_MonsterProperties_Type ());
+            this->monster (tmp);
+          }
+
+          count++;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "monster",
+            ns, n);
+        count = 0;
+        state = ~0UL;
+        // Fall through.
+      }
+    }
+    case ~0UL:
+      break;
+  }
+}
+
+// Element validation and dispatch functions for RPG_Character_Dictionary_Type_pskel.
+//
+bool RPG_Character_Dictionary_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  if (vd->func == 0 && vd->state == 0)
+  {
+    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+      return true;
+    else
+      vd->state = 1;
+  }
+
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
+
+    vd = vs.data + (vs.size - 1);
+
+    if (vd->state == ~0UL)
+      vd = vs.data + (--vs.size - 1);
+    else
+      break;
+  }
+
+  if (vd->func == 0)
+  {
+    if (vd->state != ~0UL)
+    {
+      unsigned long s = ~0UL;
+
+      if (n == "RPG_Character_MonsterDictionary" && ns.empty ())
+        s = 0UL;
+
+      if (s != ~0UL)
+      {
+        vd->count++;
+        vd->state = ~0UL;
+
+        vd = vs.data + vs.size++;
+        vd->func = &RPG_Character_Dictionary_Type_pskel::sequence_0;
+        vd->state = s;
+        vd->count = 0;
+
+        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
+      }
+      else
+      {
+        if (vd->count < 1UL)
+          this->_expected_element (
+            "", "RPG_Character_MonsterDictionary",
+            ns, n);
+        return false;
+      }
+    }
+    else
+      return false;
+  }
+
+  return true;
+}
+
+bool RPG_Character_Dictionary_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size - 1];
+
+  if (vd.func == 0 && vd.state == 0)
+  {
+    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
+      assert (false);
+    return true;
+  }
+
+  assert (vd.func != 0);
+  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
+
+  if (vd.state == ~0UL)
+    vs.size--;
+
+  return true;
+}
+
+void RPG_Character_Dictionary_Type_pskel::
+_pre_e_validate ()
+{
+  this->v_state_stack_.push ();
+  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size++];
+
+  vd.func = 0;
+  vd.state = 0;
+  vd.count = 0;
+}
+
+void RPG_Character_Dictionary_Type_pskel::
+_post_e_validate ()
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  ::xml_schema::ro_string empty;
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
+    assert (vd->state == ~0UL);
+    vd = vs.data + (--vs.size - 1);
+  }
+
+  if (vd->count < 1UL)
+    this->_expected_element (
+      "", "RPG_Character_MonsterDictionary");
+
+  this->v_state_stack_.pop ();
+}
+
+void RPG_Character_Dictionary_Type_pskel::
+sequence_0 (unsigned long& state,
+            unsigned long& count,
+            const ::xml_schema::ro_string& ns,
+            const ::xml_schema::ro_string& n,
+            const ::xml_schema::ro_string* t,
+            bool start)
+{
+  XSD_UNUSED (t);
+
+  switch (state)
+  {
+    case 0UL:
+    {
+      if (n == "RPG_Character_MonsterDictionary" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->RPG_Character_MonsterDictionary_parser_;
+
+          if (this->RPG_Character_MonsterDictionary_parser_)
+            this->RPG_Character_MonsterDictionary_parser_->pre ();
+        }
+        else
+        {
+          if (this->RPG_Character_MonsterDictionary_parser_)
+          {
+            this->RPG_Character_MonsterDictionary_parser_->post_RPG_Character_MonsterDictionary_Type ();
+            this->RPG_Character_MonsterDictionary ();
+          }
+
+          count = 0;
+          state = ~0UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "RPG_Character_MonsterDictionary",
             ns, n);
         count = 0;
         state = ~0UL;

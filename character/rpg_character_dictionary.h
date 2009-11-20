@@ -22,6 +22,8 @@
 
 #include "rpg_character_monster_common.h"
 
+#include <rpg_chance_dice_common.h>
+
 #include <ace/Global_Macros.h>
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
@@ -41,6 +43,10 @@ class RPG_Character_Dictionary
   // init item dictionary
   void initCharacterDictionary(const std::string&); // filename
   const RPG_Character_MonsterProperties getMonsterProperties(const std::string&) const; // name of monster
+  void generateRandomEncounter(const unsigned int&,                  // # of different monster types
+                               const RPG_Character_Environment&,     // environment
+                               const RPG_Character_Organizations_t&, // allowed organizations
+                               RPG_Character_Encounter_t&) const;    // return value: encounter
 
  private:
   // safety measures
@@ -48,6 +54,10 @@ class RPG_Character_Dictionary
   virtual ~RPG_Character_Dictionary();
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Dictionary(const RPG_Character_Dictionary&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Dictionary& operator=(const RPG_Character_Dictionary&));
+
+  // helper methods
+  void organizationToRoll(const RPG_Character_Organization&, // organization
+                          RPG_Chance_Roll&) const;           // return value: roll
 
   RPG_Character_MonsterDictionary_t myMonsterDictionary;
 };

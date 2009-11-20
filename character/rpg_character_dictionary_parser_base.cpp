@@ -7,44 +7,6 @@
 
 #include "rpg_character_dictionary_parser_base.h"
 
-// RPG_Character_Dictionary_Type_pimpl
-//
-
-void RPG_Character_Dictionary_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Character_Dictionary_Type_pimpl::
-RPG_Character_MonsterDictionary ()
-{
-}
-
-void RPG_Character_Dictionary_Type_pimpl::
-post_RPG_Character_Dictionary_Type ()
-{
-}
-
-// RPG_Character_MonsterDictionary_Type_pimpl
-//
-
-void RPG_Character_MonsterDictionary_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Character_MonsterDictionary_Type_pimpl::
-monster (const RPG_Character_MonsterProperties_XML& monster)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterDictionary_Type_pimpl::
-post_RPG_Character_MonsterDictionary_Type ()
-{
-}
-
 // RPG_Character_MonsterMetaType_Type_pimpl
 //
 
@@ -148,16 +110,16 @@ post_RPG_Character_MonsterArmorClass_Type ()
   // return ... ;
 }
 
-// RPG_Character_NaturalWeapon_Type_pimpl
+// RPG_Character_MonsterWeapon_Type_pimpl
 //
 
-void RPG_Character_NaturalWeapon_Type_pimpl::
+void RPG_Character_MonsterWeapon_Type_pimpl::
 pre ()
 {
 }
 
-RPG_Character_NaturalWeapon RPG_Character_NaturalWeapon_Type_pimpl::
-post_RPG_Character_NaturalWeapon_Type ()
+RPG_Character_MonsterWeapon RPG_Character_MonsterWeapon_Type_pimpl::
+post_RPG_Character_MonsterWeapon_Type ()
 {
   const ::std::string& v (post_string ());
 
@@ -248,14 +210,14 @@ pre ()
 }
 
 void RPG_Character_MonsterAttackAction_Type_pimpl::
-naturalWeapon (const RPG_Character_NaturalWeapon& naturalWeapon)
+monsterWeapon (const RPG_Character_MonsterWeapon& monsterWeapon)
 {
   // TODO
   //
 }
 
 void RPG_Character_MonsterAttackAction_Type_pimpl::
-attackBonus (unsigned int attackBonus)
+attackBonus (long long attackBonus)
 {
   // TODO
   //
@@ -299,14 +261,14 @@ pre ()
 }
 
 void RPG_Character_MonsterAttack_Type_pimpl::
-baseAttackBonus (unsigned int baseAttackBonus)
+baseAttackBonus (long long baseAttackBonus)
 {
   // TODO
   //
 }
 
 void RPG_Character_MonsterAttack_Type_pimpl::
-grappleBonus (unsigned int grappleBonus)
+grappleBonus (long long grappleBonus)
 {
   // TODO
   //
@@ -354,21 +316,21 @@ pre ()
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pimpl::
-fortitude (unsigned int fortitude)
+fortitude (long long fortitude)
 {
   // TODO
   //
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pimpl::
-reflex (unsigned int reflex)
+reflex (long long reflex)
 {
   // TODO
   //
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pimpl::
-will (unsigned int will)
+will (long long will)
 {
   // TODO
   //
@@ -474,7 +436,7 @@ skill (const RPG_Character_Skill& skill)
 }
 
 void RPG_Character_SkillValue_Type_pimpl::
-rank (unsigned int rank)
+rank (long long rank)
 {
   // TODO
   //
@@ -868,5 +830,43 @@ post_RPG_Character_MonsterProperties_Type ()
   // TODO
   //
   // return ... ;
+}
+
+// RPG_Character_MonsterDictionary_Type_pimpl
+//
+
+void RPG_Character_MonsterDictionary_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Character_MonsterDictionary_Type_pimpl::
+monster (const RPG_Character_MonsterProperties_XML& monster)
+{
+  // TODO
+  //
+}
+
+void RPG_Character_MonsterDictionary_Type_pimpl::
+post_RPG_Character_MonsterDictionary_Type ()
+{
+}
+
+// RPG_Character_Dictionary_Type_pimpl
+//
+
+void RPG_Character_Dictionary_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Character_Dictionary_Type_pimpl::
+RPG_Character_MonsterDictionary ()
+{
+}
+
+void RPG_Character_Dictionary_Type_pimpl::
+post_RPG_Character_Dictionary_Type ()
+{
 }
 

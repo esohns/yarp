@@ -1417,6 +1417,8 @@ void RPG_Character_Skills_Common_Tools::initStringConversionTables()
   mySkillToStringTable.insert(std::make_pair(SKILL_BLUFF, ACE_TEXT_ALWAYS_CHAR("Bluff")));
   mySkillToStringTable.insert(std::make_pair(SKILL_CLIMB, ACE_TEXT_ALWAYS_CHAR("Climb")));
   mySkillToStringTable.insert(std::make_pair(SKILL_CONCENTRATION, ACE_TEXT_ALWAYS_CHAR("Concentration")));
+  mySkillToStringTable.insert(std::make_pair(SKILL_CRAFT_ANY, ACE_TEXT_ALWAYS_CHAR("Craft: Any")));
+  mySkillToStringTable.insert(std::make_pair(SKILL_CRAFT_ALL, ACE_TEXT_ALWAYS_CHAR("Craft: All")));
   mySkillToStringTable.insert(std::make_pair(SKILL_CRAFT_ALCHEMY, ACE_TEXT_ALWAYS_CHAR("Craft: Alchemy")));
   mySkillToStringTable.insert(std::make_pair(SKILL_CRAFT_FLETCHER, ACE_TEXT_ALWAYS_CHAR("Craft: Fletcher")));
   mySkillToStringTable.insert(std::make_pair(SKILL_CRAFT_BOWYER, ACE_TEXT_ALWAYS_CHAR("Craft: Bowyer")));
@@ -1437,6 +1439,8 @@ void RPG_Character_Skills_Common_Tools::initStringConversionTables()
   mySkillToStringTable.insert(std::make_pair(SKILL_HIDE, ACE_TEXT_ALWAYS_CHAR("Hide")));
   mySkillToStringTable.insert(std::make_pair(SKILL_INTIMIDATE, ACE_TEXT_ALWAYS_CHAR("Intimidate")));
   mySkillToStringTable.insert(std::make_pair(SKILL_JUMP, ACE_TEXT_ALWAYS_CHAR("Jump")));
+  mySkillToStringTable.insert(std::make_pair(SKILL_KNOWLEDGE_ANY, ACE_TEXT_ALWAYS_CHAR("Knowledge: Any")));
+  mySkillToStringTable.insert(std::make_pair(SKILL_KNOWLEDGE_ALL, ACE_TEXT_ALWAYS_CHAR("Knowledge: All")));
   mySkillToStringTable.insert(std::make_pair(SKILL_KNOWLEDGE_ARCANA, ACE_TEXT_ALWAYS_CHAR("Knowledge: Arcana")));
   mySkillToStringTable.insert(std::make_pair(SKILL_KNOWLEDGE_ARCH_ENG, ACE_TEXT_ALWAYS_CHAR("Knowledge: Achitecture & Engineering")));
   mySkillToStringTable.insert(std::make_pair(SKILL_KNOWLEDGE_DUNGEONS, ACE_TEXT_ALWAYS_CHAR("Knowledge: Dungeoneering")));
@@ -1473,6 +1477,8 @@ void RPG_Character_Skills_Common_Tools::initStringConversionTables()
   myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_BLUFF"), SKILL_BLUFF));
   myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_CLIMB"), SKILL_CLIMB));
   myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_CONCENTRATION"), SKILL_CONCENTRATION));
+  myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_CRAFT_ANY"), SKILL_CRAFT_ANY));
+  myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_CRAFT_ALL"), SKILL_CRAFT_ALL));
   myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_CRAFT_ALCHEMY"), SKILL_CRAFT_ALCHEMY));
   myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_CRAFT_FLETCHER"), SKILL_CRAFT_FLETCHER));
   myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_CRAFT_BOWYER"), SKILL_CRAFT_BOWYER));
@@ -1493,6 +1499,8 @@ void RPG_Character_Skills_Common_Tools::initStringConversionTables()
   myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_HIDE"), SKILL_HIDE));
   myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_INTIMIDATE"), SKILL_INTIMIDATE));
   myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_JUMP"), SKILL_JUMP));
+  myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_KNOWLEDGE_ANY"), SKILL_KNOWLEDGE_ANY));
+  myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_KNOWLEDGE_ALL"), SKILL_KNOWLEDGE_ALL));
   myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_KNOWLEDGE_ARCANA"), SKILL_KNOWLEDGE_ARCANA));
   myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_KNOWLEDGE_ARCH_ENG"), SKILL_KNOWLEDGE_ARCH_ENG));
   myStringToSkillTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("SKILL_KNOWLEDGE_DUNGEONS"), SKILL_KNOWLEDGE_DUNGEONS));
@@ -1633,6 +1641,19 @@ void RPG_Character_Skills_Common_Tools::initStringConversionTables()
   myFeatToStringTable.insert(std::make_pair(FEAT_STEALTHY, ACE_TEXT_ALWAYS_CHAR("Stealthy")));
   myFeatToStringTable.insert(std::make_pair(FEAT_TOUGHNESS, ACE_TEXT_ALWAYS_CHAR("Toughness")));
   myFeatToStringTable.insert(std::make_pair(FEAT_TRACK, ACE_TEXT_ALWAYS_CHAR("Track")));
+  myFeatToStringTable.insert(std::make_pair(FEAT_ABILITY_FOCUS, ACE_TEXT_ALWAYS_CHAR("Ability Focus")));
+  myFeatToStringTable.insert(std::make_pair(FEAT_AWESOME_BLOW, ACE_TEXT_ALWAYS_CHAR("Awesome Blow")));
+  myFeatToStringTable.insert(std::make_pair(FEAT_CRAFT_CONSTRUCT, ACE_TEXT_ALWAYS_CHAR("Craft: Construct")));
+  myFeatToStringTable.insert(std::make_pair(FEAT_EMPOWER_SPELLLIKE_ABILITY, ACE_TEXT_ALWAYS_CHAR("Empower Spell-like Ability")));
+  myFeatToStringTable.insert(std::make_pair(FEAT_FLYBY_ATTACK, ACE_TEXT_ALWAYS_CHAR("Fly-by Attack")));
+  myFeatToStringTable.insert(std::make_pair(FEAT_HOVER, ACE_TEXT_ALWAYS_CHAR("Hover")));
+  myFeatToStringTable.insert(std::make_pair(FEAT_IMPROVED_NATURAL_ARMOR, ACE_TEXT_ALWAYS_CHAR("Improved Natural Armor")));
+  myFeatToStringTable.insert(std::make_pair(FEAT_IMPROVED_NATURAL_ATTACK, ACE_TEXT_ALWAYS_CHAR("Improved Natural Attack")));
+  myFeatToStringTable.insert(std::make_pair(FEAT_MULTI_ATTACK, ACE_TEXT_ALWAYS_CHAR("Multiattack")));
+  myFeatToStringTable.insert(std::make_pair(FEAT_MULTIWEAPON_FIGHTING, ACE_TEXT_ALWAYS_CHAR("Multiweapon Fighting")));
+  myFeatToStringTable.insert(std::make_pair(FEAT_QUICKEN_SPELLLIKE_ABILITY, ACE_TEXT_ALWAYS_CHAR("Quicken Spell-like Ability")));
+  myFeatToStringTable.insert(std::make_pair(FEAT_SNATCH, ACE_TEXT_ALWAYS_CHAR("Sntach")));
+  myFeatToStringTable.insert(std::make_pair(FEAT_WINGOVER, ACE_TEXT_ALWAYS_CHAR("Wingover")));
 
   // clean table
   myStringToFeatTable.clear();
@@ -1746,6 +1767,19 @@ void RPG_Character_Skills_Common_Tools::initStringConversionTables()
   myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_STEALTHY"), FEAT_STEALTHY));
   myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_TOUGHNESS"), FEAT_TOUGHNESS));
   myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_TRACK"), FEAT_TRACK));
+  myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_ABILITY_FOCUS"), FEAT_ABILITY_FOCUS));
+  myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_AWESOME_BLOW"), FEAT_AWESOME_BLOW));
+  myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_CRAFT_CONSTRUCT"), FEAT_CRAFT_CONSTRUCT));
+  myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_EMPOWER_SPELLLIKE_ABILITY"), FEAT_EMPOWER_SPELLLIKE_ABILITY));
+  myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_FLYBY_ATTACK"), FEAT_FLYBY_ATTACK));
+  myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_HOVER"), FEAT_HOVER));
+  myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_IMPROVED_NATURAL_ARMOR"), FEAT_IMPROVED_NATURAL_ARMOR));
+  myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_IMPROVED_NATURAL_ATTACK"), FEAT_IMPROVED_NATURAL_ATTACK));
+  myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_MULTI_ATTACK"), FEAT_MULTI_ATTACK));
+  myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_MULTIWEAPON_FIGHTING"), FEAT_MULTIWEAPON_FIGHTING));
+  myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_QUICKEN_SPELLLIKE_ABILITY"), FEAT_QUICKEN_SPELLLIKE_ABILITY));
+  myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_SNATCH"), FEAT_SNATCH));
+  myStringToFeatTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("FEAT_WINGOVER"), FEAT_WINGOVER));
 
   // clean table
   myAbilityToStringTable.clear();

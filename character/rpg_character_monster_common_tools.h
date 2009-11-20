@@ -38,10 +38,12 @@ class RPG_Character_Monster_Common_Tools
   static const RPG_Character_Size stringToSize(const std::string&); // string
   static const RPG_Character_MonsterMetaType stringToMonsterMetaType(const std::string&); // string
   static const RPG_Character_MonsterSubType stringToMonsterSubType(const std::string&); // string
-  static const RPG_Character_NaturalWeapon stringToNaturalWeapon(const std::string&); // string
+  static const RPG_Character_MonsterWeapon stringToMonsterWeapon(const std::string&); // string
   static const RPG_Character_MonsterAttackForm stringToMonsterAttackForm(const std::string&); // string
   static const RPG_Character_Environment stringToEnvironment(const std::string&); // string
+  static const std::string environmentToString(const RPG_Character_Environment&); // environment
   static const RPG_Character_Organization stringToOrganization(const std::string&); // string
+  static const std::string organizationToString(const RPG_Character_Organization&); // organization
 
  private:
   // safety measures
@@ -58,8 +60,8 @@ class RPG_Character_Monster_Common_Tools
   typedef RPG_StringToMonsterMetaTypeTable_t::const_iterator RPG_StringToMonsterMetaTypeTableIterator_t;
   typedef std::map<std::string, RPG_Character_MonsterSubType> RPG_StringToMonsterSubTypeTable_t;
   typedef RPG_StringToMonsterSubTypeTable_t::const_iterator RPG_StringToMonsterSubTypeTableIterator_t;
-  typedef std::map<std::string, RPG_Character_NaturalWeapon> RPG_StringToNaturalWeaponTable_t;
-  typedef RPG_StringToNaturalWeaponTable_t::const_iterator RPG_StringToNaturalWeaponTableIterator_t;
+  typedef std::map<std::string, RPG_Character_MonsterWeapon> RPG_StringToMonsterWeaponTable_t;
+  typedef RPG_StringToMonsterWeaponTable_t::const_iterator RPG_StringToMonsterWeaponTableIterator_t;
   typedef std::map<std::string, RPG_Character_MonsterAttackForm> RPG_StringToMonsterAttackFormTable_t;
   typedef RPG_StringToMonsterAttackFormTable_t::const_iterator RPG_StringToMonsterAttackFormTableIterator_t;
   typedef std::map<std::string, RPG_Character_Size> RPG_StringToSizeTable_t;
@@ -71,7 +73,7 @@ class RPG_Character_Monster_Common_Tools
 
   static RPG_StringToMonsterMetaTypeTable_t   myStringToMonsterMetaTypeTable;
   static RPG_StringToMonsterSubTypeTable_t    myStringToMonsterSubTypeTable;
-  static RPG_StringToNaturalWeaponTable_t     myStringToNaturalWeaponTable;
+  static RPG_StringToMonsterWeaponTable_t     myStringToMonsterWeaponTable;
   static RPG_StringToMonsterAttackFormTable_t myStringToMonsterAttackFormTable;
   static RPG_StringToSizeTable_t              myStringToSizeTable;
   static RPG_StringToEnvironmentTable_t       myStringToEnvironmentTable;

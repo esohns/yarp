@@ -20,6 +20,9 @@
 #include "rpg_character_dictionary.h"
 
 #include "rpg_character_dictionary_parser.h"
+#include "rpg_character_monster_common_tools.h"
+
+#include <rpg_chance_dice.h>
 
 #include <ace/Log_Msg.h>
 
@@ -65,24 +68,24 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
   monsterArmorClass_p.parsers(unsigned_int_p,
                               unsigned_int_p,
                               unsigned_int_p);
-  RPG_Character_NaturalWeapon_Type        naturalWeapon_p;
+  RPG_Character_MonsterWeapon_Type        monsterWeapon_p;
   RPG_Character_MonsterAttackForm_Type    monsterAttackForm_p;
   RPG_Character_MonsterAttackAction_Type  monsterAttackAction_p;
-  monsterAttackAction_p.parsers(naturalWeapon_p,
-                                unsigned_int_p,
+  monsterAttackAction_p.parsers(monsterWeapon_p,
+                                int_p,
                                 monsterAttackForm_p,
                                 roll_p,
                                 unsigned_int_p);
   RPG_Character_MonsterAttack_Type        monsterAttack_p;
-  monsterAttack_p.parsers(unsigned_int_p,
-                          unsigned_int_p,
+  monsterAttack_p.parsers(int_p,
+                          int_p,
                           monsterAttackAction_p);
 //   unsigned_int_pimpl                      space_p;
 //   unsigned_int_pimpl                      reach_p;
   RPG_Character_SavingThrowModifiers_Type savingThrowModifiers_p;
-  savingThrowModifiers_p.parsers(unsigned_int_p,
-                                 unsigned_int_p,
-                                 unsigned_int_p);
+  savingThrowModifiers_p.parsers(int_p,
+                                 int_p,
+                                 int_p);
   RPG_Character_Attributes_Type           attributes_p;
   attributes_p.parsers(unsigned_int_p,
                        unsigned_int_p,
@@ -93,7 +96,7 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
   RPG_Character_Skill_Type                skill_p;
   RPG_Character_SkillValue_Type           skillvalue_p;
   skillvalue_p.parsers(skill_p,
-                       unsigned_int_p);
+                       int_p);
   RPG_Character_Skills_Type               skills_p;
   skills_p.parsers(skillvalue_p);
   RPG_Character_Feat_Type                 feat_p;
@@ -193,4 +196,192 @@ const RPG_Character_MonsterProperties RPG_Character_Dictionary::getMonsterProper
   } // end IF
 
   return iterator->second;
+}
+
+void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDifferentMonsterTypes,
+                                                       const RPG_Character_Environment& environment_in,
+                                                       const RPG_Character_Organizations_t& organizations_in,
+                                                       RPG_Character_Encounter_t& encounter_out) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary::generateRandomEncounter"));
+
+  // init result
+  encounter_out.clear();
+
+  // step1: depending on the environment, find appropriate foes
+  RPG_Character_MonsterList_t list;
+  for (RPG_Character_MonsterDictionaryIterator_t iterator = myMonsterDictionary.begin();
+       iterator != myMonsterDictionary.end();
+       iterator++)
+  {
+    // *TODO*: need to refine this for different planes...
+    if ((iterator->second.environment == environment_in) ||
+        (iterator->second.environment == ENVIRONMENT_ANY))
+    {
+      list.push_back(iterator->first);
+    } // end IF
+  }; // end FOR
+
+  if (list.empty())
+  {
+    // nothing found in database...
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("found no appropriate monster types for environment \"%s\" in dictionary (%d items) --> check implementation !, returning\n"),
+               RPG_Character_Monster_Common_Tools::environmentToString(environment_in).c_str(),
+               myMonsterDictionary.size()));
+
+    return;
+  } // end IF
+
+  for (int i = 0;
+       i < numDifferentMonsterTypes;
+       i++)
+  {
+    // step2a: choose random foe
+    RPG_Character_EncounterIterator_t iterator;
+    RPG_Chance_Dice::RPG_Chance_Dice_Result_t result;
+    int choiceType = 0;
+    do
+    {
+      result.clear();
+      RPG_Chance_Dice::generateRandomNumbers(list.size(),
+                                             1,
+                                             result);
+      choiceType = result.front() - 1; // list index
+
+      // already used this type ?
+      iterator = encounter_out.find(list[choiceType]);
+    } while (iterator != encounter_out.end());
+
+    // step2b: compute number of foes
+    // step2ba: choose random organization
+    result.clear();
+    RPG_Chance_Dice::generateRandomNumbers(organizations_in.size(),
+                                           1,
+                                           result);
+    int choiceOrganization = result.front() - 1; // list index
+    RPG_Character_OrganizationsIterator_t iterator2 = organizations_in.begin();
+    std::advance(iterator2, choiceOrganization);
+    RPG_Chance_Roll roll;
+    organizationToRoll(*iterator2,
+                       roll);
+  //   RPG_Chance_Dice::RPG_Chance_Dice_Result_t result;
+    result.clear();
+    RPG_Chance_Dice::simulateDiceRoll(roll,
+                                      1,
+                                      result);
+
+    // debug info
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("generated encounter of %d %s...\n"),
+               result.front(),
+               list[choiceType].c_str()));
+
+    encounter_out.insert(std::make_pair(list[choiceType], result.front()));
+  } // end FOR
+}
+
+void RPG_Character_Dictionary::organizationToRoll(const RPG_Character_Organization& organization_in,
+                                                  RPG_Chance_Roll& roll_out) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary::organizationToRoll"));
+
+  // init result
+  roll_out.numDice = 0;
+  roll_out.typeDice = D_0;
+  roll_out.modifier = 0;
+
+  switch (organization_in)
+  {
+    case ORGANIZATION_SOLITARY:
+    {
+      roll_out.modifier = 1;
+
+      break;
+    }
+    case ORGANIZATION_PAIR:
+    {
+      roll_out.modifier = 2;
+
+      break;
+    }
+    case ORGANIZATION_BROOD:   // 2-4 --> 1d3+1
+    case ORGANIZATION_CLUSTER:
+    case ORGANIZATION_CLUTCH:
+    case ORGANIZATION_PATCH:
+    case ORGANIZATION_GANG:
+    {
+      roll_out.numDice = 1;
+      roll_out.typeDice = D_3;
+      roll_out.modifier = 1;
+
+      break;
+    }
+    case ORGANIZATION_TEAM: // 3-4 --> 1d2+2
+    {
+      roll_out.numDice = 1;
+      roll_out.typeDice = D_2;
+      roll_out.modifier = 2;
+
+      break;
+    }
+    case ORGANIZATION_SQUAD: // 3-5, 11-20 + leaders
+    {
+      roll_out.numDice = 1;
+      roll_out.typeDice = D_3;
+      roll_out.modifier = 2;
+
+      break;
+    }
+    case ORGANIZATION_PACK: // 3-6 --> 1d4+2
+    case ORGANIZATION_COLONY:
+    {
+      roll_out.numDice = 1;
+      roll_out.typeDice = D_4;
+      roll_out.modifier = 2;
+
+      break;
+    }
+    case ORGANIZATION_FLOCK: // 5-8 --> 1d4+4
+    {
+      roll_out.numDice = 1;
+      roll_out.typeDice = D_4;
+      roll_out.modifier = 4;
+
+      break;
+    }
+    case ORGANIZATION_TRIBE: // 7-12 --> 1d6+6
+    case ORGANIZATION_SLAVER: // 7-12 slaves
+    {
+      roll_out.numDice = 1;
+      roll_out.typeDice = D_6;
+      roll_out.modifier = 6;
+
+      break;
+    }
+    case ORGANIZATION_BAND: // 11-20 + 2 sergeants + 1 leader + 150% noncombatants
+    {
+      roll_out.numDice = 1;
+      roll_out.typeDice = D_10;
+      roll_out.modifier = 10;
+
+      break;
+    }
+    case ORGANIZATION_CLAN: // 30-100 + leaders + 50% noncombatants
+    {
+      roll_out.numDice = 7;
+      roll_out.typeDice = D_10;
+      roll_out.modifier = 30;
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("invalid organization \"%s\" --> check implementation !, returning\n"),
+                 RPG_Character_Monster_Common_Tools::organizationToString(organization_in).c_str()));
+
+      break;
+    }
+  } // end SWITCH
 }

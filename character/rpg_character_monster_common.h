@@ -32,7 +32,8 @@
 
 enum RPG_Character_MonsterMetaType
 {
-  MONSTERMETATYPE_ABERRATION = 0,
+  MONSTERMETATYPE_ANY = 0,
+  MONSTERMETATYPE_ABERRATION,
   MONSTERMETATYPE_ANIMAL,
   MONSTERMETATYPE_CONSTRUCT,
   MONSTERMETATYPE_DRAGON,
@@ -54,7 +55,8 @@ enum RPG_Character_MonsterMetaType
 
 enum RPG_Character_MonsterSubType
 {
-  MONSTERSUBTYPE_AIR = 0,
+  MONSTERSUBTYPE_ANY = 0,
+  MONSTERSUBTYPE_AIR,
   MONSTERSUBTYPE_ANGEL,
   MONSTERSUBTYPE_AQUATIC,
   MONSTERSUBTYPE_ARCHON,
@@ -95,22 +97,32 @@ struct RPG_Character_MonsterArmorClass
   unsigned int flatFooted;
 };
 
-enum RPG_Character_NaturalWeapon
+enum RPG_Character_MonsterWeapon
 {
-  NATURALWEAPON_BITE = 0,
+  INCORPOREAL_TOUCH = 0,
+  NATURALWEAPON_BITE,
   NATURALWEAPON_CLAW_TALON,
   NATURALWEAPON_GORE,
   NATURALWEAPON_SLAP_SLAM,
   NATURALWEAPON_STING,
   NATURALWEAPON_TENTACLE,
+  NATURALWEAPON_SPIT_ACID,
+  NATURALWEAPON_WEB,
+  NATURALWEAPON_ROCK_STONE,
+  STANDARDWEAPON_BLUDGEONING,
+  STANDARDWEAPON_PIERCING,
+  STANDARDWEAPON_SLASHING,
+  RAY_ELECTRICITY,
+  RAY_LIGHT,
   //
-  NATURALWEAPON_MAX,
-  NATURALWEAPON_INVALID
+  MONSTERWEAPON_MAX,
+  MONSTERWEAPON_INVALID
 };
 
 enum RPG_Character_MonsterAttackForm
 {
   ATTACK_MELEE = 0,
+  ATTACK_TOUCH,
   ATTACK_RANGED,
   //
   ATTACK_MAX,
@@ -121,8 +133,8 @@ typedef RPG_Chance_Roll RPG_Character_Damage;
 
 struct RPG_Character_MonsterAttackAction
 {
-  RPG_Character_NaturalWeapon     naturalWeapon;
-  unsigned int                    attackBonus;
+  RPG_Character_MonsterWeapon     monsterWeapon;
+  int                             attackBonus;
   RPG_Character_MonsterAttackForm attackForm;
   RPG_Character_Damage            damage;
   unsigned int                    numAttacksPerRound;
@@ -133,8 +145,8 @@ typedef RPG_Character_MonsterAttackActions_t::const_iterator RPG_Character_Monst
 
 struct RPG_Character_MonsterAttack
 {
-  unsigned int                         baseAttackBonus;
-  unsigned int                         grappleBonus;
+  int                                  baseAttackBonus;
+  int                                  grappleBonus;
   RPG_Character_MonsterAttackActions_t attackActions;
 };
 
@@ -156,15 +168,30 @@ enum RPG_Character_Size
 
 struct RPG_Character_SavingThrowModifiers
 {
-  unsigned int fortitude;
-  unsigned int reflex;
-  unsigned int will;
+  int fortitude;
+  int reflex;
+  int will;
 };
 
 enum RPG_Character_Environment
 {
-  ENVIRONMENT_UNDERGROUND = 0,
-  ENVIRONMENT_PLANE_LAWFUL,
+  ENVIRONMENT_ANY = 0,
+  ENVIRONMENT_UNDERGROUND,
+  ENVIRONMENT_PLAINS_TEMPERATE,
+  ENVIRONMENT_PLAINS_WARM,
+  ENVIRONMENT_FORESTS_TEMPERATE,
+  ENVIRONMENT_HILLS_TEMPERATE,
+  ENVIRONMENT_HILLS_WARM,
+  ENVIRONMENT_MOUNTAINS_TEMPERATE,
+  ENVIRONMENT_DESERTS_WARM,
+  ENVIRONMENT_PLANE_ANY_LAWFUL,
+  ENVIRONMENT_PLANE_LAWFUL_GOOD,
+  ENVIRONMENT_PLANE_ANY_GOOD,
+  ENVIRONMENT_PLANE_CHAOTIC_GOOD,
+  ENVIRONMENT_PLANE_ANY_EVIL,
+  ENVIRONMENT_PLANE_CHAOTIC_EVIL,
+  ENVIRONMENT_PLANE_AIR,
+  ENVIRONMENT_PLANE_FIRE,
   //
   ENVIRONMENT_MAX,
   ENVIRONMENT_INVALID
@@ -172,9 +199,23 @@ enum RPG_Character_Environment
 
 enum RPG_Character_Organization
 {
-  ORGANIZATION_SOLITARY = 0,
-  ORGANIZATION_BROOD,
-  ORGANIZATION_SLAVER_BROOD,
+  ORGANIZATION_ANY = 0,
+  ORGANIZATION_SOLITARY, // 1
+  ORGANIZATION_PAIR,     // 2
+  ORGANIZATION_BROOD,    // 2-4
+  ORGANIZATION_CLUSTER,  // 2-4
+  ORGANIZATION_CLUTCH,   // 2-4, 3-4
+  ORGANIZATION_PATCH,    // 2-4
+  ORGANIZATION_GANG,     // 2-4
+  ORGANIZATION_TEAM,     // 3-4
+  ORGANIZATION_SQUAD,    // 3-5, 11-20 + leaders
+  ORGANIZATION_PACK,     // 3-6, 7-16
+  ORGANIZATION_COLONY,   // 3-6
+  ORGANIZATION_FLOCK,    // 5-8
+  ORGANIZATION_TRIBE,    // 7-12
+  ORGANIZATION_SLAVER,   // 7-12 slaves
+  ORGANIZATION_BAND,     // 11-20 + 2 sergeants + 1 leader + 150% noncombatants
+  ORGANIZATION_CLAN,     // 30-100 + leaders + 50% noncombatants
   //
   ORGANIZATION_MAX,
   ORGANIZATION_INVALID
@@ -240,9 +281,12 @@ struct RPG_Character_MonsterProperties_XML
   unsigned int                       levelAdjustment;
 };
 
-// some useful types
+// some more useful types
 typedef std::map<std::string, RPG_Character_MonsterProperties> RPG_Character_MonsterDictionary_t;
 typedef RPG_Character_MonsterDictionary_t::const_iterator RPG_Character_MonsterDictionaryIterator_t;
+
+typedef std::vector<std::string> RPG_Character_MonsterList_t;
+typedef RPG_Character_MonsterList_t::const_iterator RPG_Character_MonsterListIterator_t;
 typedef std::map<std::string, unsigned short int> RPG_Character_Encounter_t;
 typedef RPG_Character_Encounter_t::const_iterator RPG_Character_EncounterIterator_t;
 

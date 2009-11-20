@@ -49,13 +49,11 @@
 
 // Forward declarations
 //
-class RPG_Character_Dictionary_Type_pskel;
-class RPG_Character_MonsterDictionary_Type_pskel;
 class RPG_Character_MonsterMetaType_Type_pskel;
 class RPG_Character_MonsterSubType_Type_pskel;
 class RPG_Character_MonsterType_Type_pskel;
 class RPG_Character_MonsterArmorClass_Type_pskel;
-class RPG_Character_NaturalWeapon_Type_pskel;
+class RPG_Character_MonsterWeapon_Type_pskel;
 class RPG_Character_MonsterAttackForm_Type_pskel;
 class RPG_Chance_DiceType_Type_pskel;
 class RPG_Chance_Roll_Type_pskel;
@@ -77,6 +75,8 @@ class RPG_Character_Alignment_Type_pskel;
 class RPG_Character_MonsterAdvancementStep_Type_pskel;
 class RPG_Character_MonsterAdvancement_Type_pskel;
 class RPG_Character_MonsterProperties_Type_pskel;
+class RPG_Character_MonsterDictionary_Type_pskel;
+class RPG_Character_Dictionary_Type_pskel;
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -88,168 +88,10 @@ class RPG_Character_MonsterProperties_Type_pskel;
 
 #include "rpg_character_schema_dictionary_types.h"
 
+#include <rpg_chance_dice_common.h>
 #include "rpg_character_skills_common.h"
 #include "rpg_character_monster_common.h"
 #include "rpg_character_common.h"
-#include "rpg_chance_dice_common.h"
-
-class RPG_Character_Dictionary_Type_pskel: public ::xml_schema::complex_content
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual void
-  RPG_Character_MonsterDictionary ();
-
-  virtual void
-  post_RPG_Character_Dictionary_Type ();
-
-  // Parser construction API.
-  //
-  void
-  RPG_Character_MonsterDictionary_parser (::RPG_Character_MonsterDictionary_Type_pskel&);
-
-  void
-  parsers (::RPG_Character_MonsterDictionary_Type_pskel& /* RPG_Character_MonsterDictionary */);
-
-  // Constructor.
-  //
-  RPG_Character_Dictionary_Type_pskel ();
-
-  // Implementation.
-  //
-  protected:
-  virtual bool
-  _start_element_impl (const ::xml_schema::ro_string&,
-                       const ::xml_schema::ro_string&,
-                       const ::xml_schema::ro_string*);
-
-  virtual bool
-  _end_element_impl (const ::xml_schema::ro_string&,
-                     const ::xml_schema::ro_string&);
-
-  protected:
-  ::RPG_Character_MonsterDictionary_Type_pskel* RPG_Character_MonsterDictionary_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_Dictionary_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
-};
-
-class RPG_Character_MonsterDictionary_Type_pskel: public ::xml_schema::complex_content
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual void
-  monster (const RPG_Character_MonsterProperties_XML&);
-
-  virtual void
-  post_RPG_Character_MonsterDictionary_Type ();
-
-  // Parser construction API.
-  //
-  void
-  monster_parser (::RPG_Character_MonsterProperties_Type_pskel&);
-
-  void
-  parsers (::RPG_Character_MonsterProperties_Type_pskel& /* monster */);
-
-  // Constructor.
-  //
-  RPG_Character_MonsterDictionary_Type_pskel ();
-
-  // Implementation.
-  //
-  protected:
-  virtual bool
-  _start_element_impl (const ::xml_schema::ro_string&,
-                       const ::xml_schema::ro_string&,
-                       const ::xml_schema::ro_string*);
-
-  virtual bool
-  _end_element_impl (const ::xml_schema::ro_string&,
-                     const ::xml_schema::ro_string&);
-
-  protected:
-  ::RPG_Character_MonsterProperties_Type_pskel* monster_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_MonsterDictionary_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
-};
 
 class RPG_Character_MonsterMetaType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
@@ -457,7 +299,7 @@ class RPG_Character_MonsterArmorClass_Type_pskel: public ::xml_schema::complex_c
               bool start);
 };
 
-class RPG_Character_NaturalWeapon_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Character_MonsterWeapon_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -465,8 +307,8 @@ class RPG_Character_NaturalWeapon_Type_pskel: public virtual ::xml_schema::strin
   // virtual void
   // pre ();
 
-  virtual RPG_Character_NaturalWeapon
-  post_RPG_Character_NaturalWeapon_Type () = 0;
+  virtual RPG_Character_MonsterWeapon
+  post_RPG_Character_MonsterWeapon_Type () = 0;
 };
 
 class RPG_Character_MonsterAttackForm_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -597,10 +439,10 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   // pre ();
 
   virtual void
-  naturalWeapon (const RPG_Character_NaturalWeapon&);
+  monsterWeapon (const RPG_Character_MonsterWeapon&);
 
   virtual void
-  attackBonus (unsigned int);
+  attackBonus (long long);
 
   virtual void
   attackForm (const RPG_Character_MonsterAttackForm&);
@@ -617,10 +459,10 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   // Parser construction API.
   //
   void
-  naturalWeapon_parser (::RPG_Character_NaturalWeapon_Type_pskel&);
+  monsterWeapon_parser (::RPG_Character_MonsterWeapon_Type_pskel&);
 
   void
-  attackBonus_parser (::xml_schema::unsigned_int_pskel&);
+  attackBonus_parser (::xml_schema::integer_pskel&);
 
   void
   attackForm_parser (::RPG_Character_MonsterAttackForm_Type_pskel&);
@@ -632,8 +474,8 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   numAttacksPerRound_parser (::xml_schema::unsigned_int_pskel&);
 
   void
-  parsers (::RPG_Character_NaturalWeapon_Type_pskel& /* naturalWeapon */,
-           ::xml_schema::unsigned_int_pskel& /* attackBonus */,
+  parsers (::RPG_Character_MonsterWeapon_Type_pskel& /* monsterWeapon */,
+           ::xml_schema::integer_pskel& /* attackBonus */,
            ::RPG_Character_MonsterAttackForm_Type_pskel& /* attackForm */,
            ::RPG_Chance_Roll_Type_pskel& /* damage */,
            ::xml_schema::unsigned_int_pskel& /* numAttacksPerRound */);
@@ -655,8 +497,8 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Character_NaturalWeapon_Type_pskel* naturalWeapon_parser_;
-  ::xml_schema::unsigned_int_pskel* attackBonus_parser_;
+  ::RPG_Character_MonsterWeapon_Type_pskel* monsterWeapon_parser_;
+  ::xml_schema::integer_pskel* attackBonus_parser_;
   ::RPG_Character_MonsterAttackForm_Type_pskel* attackForm_parser_;
   ::RPG_Chance_Roll_Type_pskel* damage_parser_;
   ::xml_schema::unsigned_int_pskel* numAttacksPerRound_parser_;
@@ -708,10 +550,10 @@ class RPG_Character_MonsterAttack_Type_pskel: public ::xml_schema::complex_conte
   // pre ();
 
   virtual void
-  baseAttackBonus (unsigned int);
+  baseAttackBonus (long long);
 
   virtual void
-  grappleBonus (unsigned int);
+  grappleBonus (long long);
 
   virtual void
   attackAction (const RPG_Character_MonsterAttackAction&);
@@ -722,17 +564,17 @@ class RPG_Character_MonsterAttack_Type_pskel: public ::xml_schema::complex_conte
   // Parser construction API.
   //
   void
-  baseAttackBonus_parser (::xml_schema::unsigned_int_pskel&);
+  baseAttackBonus_parser (::xml_schema::integer_pskel&);
 
   void
-  grappleBonus_parser (::xml_schema::unsigned_int_pskel&);
+  grappleBonus_parser (::xml_schema::integer_pskel&);
 
   void
   attackAction_parser (::RPG_Character_MonsterAttackAction_Type_pskel&);
 
   void
-  parsers (::xml_schema::unsigned_int_pskel& /* baseAttackBonus */,
-           ::xml_schema::unsigned_int_pskel& /* grappleBonus */,
+  parsers (::xml_schema::integer_pskel& /* baseAttackBonus */,
+           ::xml_schema::integer_pskel& /* grappleBonus */,
            ::RPG_Character_MonsterAttackAction_Type_pskel& /* attackAction */);
 
   // Constructor.
@@ -752,8 +594,8 @@ class RPG_Character_MonsterAttack_Type_pskel: public ::xml_schema::complex_conte
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::xml_schema::unsigned_int_pskel* baseAttackBonus_parser_;
-  ::xml_schema::unsigned_int_pskel* grappleBonus_parser_;
+  ::xml_schema::integer_pskel* baseAttackBonus_parser_;
+  ::xml_schema::integer_pskel* grappleBonus_parser_;
   ::RPG_Character_MonsterAttackAction_Type_pskel* attackAction_parser_;
 
   protected:
@@ -815,13 +657,13 @@ class RPG_Character_SavingThrowModifiers_Type_pskel: public ::xml_schema::comple
   // pre ();
 
   virtual void
-  fortitude (unsigned int);
+  fortitude (long long);
 
   virtual void
-  reflex (unsigned int);
+  reflex (long long);
 
   virtual void
-  will (unsigned int);
+  will (long long);
 
   virtual RPG_Character_SavingThrowModifiers
   post_RPG_Character_SavingThrowModifiers_Type () = 0;
@@ -829,18 +671,18 @@ class RPG_Character_SavingThrowModifiers_Type_pskel: public ::xml_schema::comple
   // Parser construction API.
   //
   void
-  fortitude_parser (::xml_schema::unsigned_int_pskel&);
+  fortitude_parser (::xml_schema::integer_pskel&);
 
   void
-  reflex_parser (::xml_schema::unsigned_int_pskel&);
+  reflex_parser (::xml_schema::integer_pskel&);
 
   void
-  will_parser (::xml_schema::unsigned_int_pskel&);
+  will_parser (::xml_schema::integer_pskel&);
 
   void
-  parsers (::xml_schema::unsigned_int_pskel& /* fortitude */,
-           ::xml_schema::unsigned_int_pskel& /* reflex */,
-           ::xml_schema::unsigned_int_pskel& /* will */);
+  parsers (::xml_schema::integer_pskel& /* fortitude */,
+           ::xml_schema::integer_pskel& /* reflex */,
+           ::xml_schema::integer_pskel& /* will */);
 
   // Constructor.
   //
@@ -859,9 +701,9 @@ class RPG_Character_SavingThrowModifiers_Type_pskel: public ::xml_schema::comple
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::xml_schema::unsigned_int_pskel* fortitude_parser_;
-  ::xml_schema::unsigned_int_pskel* reflex_parser_;
-  ::xml_schema::unsigned_int_pskel* will_parser_;
+  ::xml_schema::integer_pskel* fortitude_parser_;
+  ::xml_schema::integer_pskel* reflex_parser_;
+  ::xml_schema::integer_pskel* will_parser_;
 
   protected:
   struct v_state_descr_
@@ -1044,7 +886,7 @@ class RPG_Character_SkillValue_Type_pskel: public ::xml_schema::complex_content
   skill (const RPG_Character_Skill&);
 
   virtual void
-  rank (unsigned int);
+  rank (long long);
 
   virtual RPG_Character_SkillsItem_t
   post_RPG_Character_SkillValue_Type () = 0;
@@ -1055,11 +897,11 @@ class RPG_Character_SkillValue_Type_pskel: public ::xml_schema::complex_content
   skill_parser (::RPG_Character_Skill_Type_pskel&);
 
   void
-  rank_parser (::xml_schema::unsigned_int_pskel&);
+  rank_parser (::xml_schema::integer_pskel&);
 
   void
   parsers (::RPG_Character_Skill_Type_pskel& /* skill */,
-           ::xml_schema::unsigned_int_pskel& /* rank */);
+           ::xml_schema::integer_pskel& /* rank */);
 
   // Constructor.
   //
@@ -1079,7 +921,7 @@ class RPG_Character_SkillValue_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::RPG_Character_Skill_Type_pskel* skill_parser_;
-  ::xml_schema::unsigned_int_pskel* rank_parser_;
+  ::xml_schema::integer_pskel* rank_parser_;
 
   protected:
   struct v_state_descr_
@@ -1795,6 +1637,164 @@ class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_c
   struct v_state_descr_
   {
     void (::RPG_Character_MonsterProperties_Type_pskel::*func) (
+      unsigned long&,
+      unsigned long&,
+      const ::xml_schema::ro_string&,
+      const ::xml_schema::ro_string&,
+      const ::xml_schema::ro_string*,
+      bool);
+    unsigned long state;
+    unsigned long count;
+  };
+
+  struct v_state_
+  {
+    v_state_descr_ data[2UL];
+    unsigned long size;
+  };
+
+  v_state_ v_state_first_;
+  ::xsd::cxx::parser::pod_stack v_state_stack_;
+
+  virtual void
+  _pre_e_validate ();
+
+  virtual void
+  _post_e_validate ();
+
+  void
+  sequence_0 (unsigned long& state,
+              unsigned long& count,
+              const ::xml_schema::ro_string& ns,
+              const ::xml_schema::ro_string& n,
+              const ::xml_schema::ro_string* t,
+              bool start);
+};
+
+class RPG_Character_MonsterDictionary_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  monster (const RPG_Character_MonsterProperties_XML&);
+
+  virtual void
+  post_RPG_Character_MonsterDictionary_Type ();
+
+  // Parser construction API.
+  //
+  void
+  monster_parser (::RPG_Character_MonsterProperties_Type_pskel&);
+
+  void
+  parsers (::RPG_Character_MonsterProperties_Type_pskel& /* monster */);
+
+  // Constructor.
+  //
+  RPG_Character_MonsterDictionary_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Character_MonsterProperties_Type_pskel* monster_parser_;
+
+  protected:
+  struct v_state_descr_
+  {
+    void (::RPG_Character_MonsterDictionary_Type_pskel::*func) (
+      unsigned long&,
+      unsigned long&,
+      const ::xml_schema::ro_string&,
+      const ::xml_schema::ro_string&,
+      const ::xml_schema::ro_string*,
+      bool);
+    unsigned long state;
+    unsigned long count;
+  };
+
+  struct v_state_
+  {
+    v_state_descr_ data[2UL];
+    unsigned long size;
+  };
+
+  v_state_ v_state_first_;
+  ::xsd::cxx::parser::pod_stack v_state_stack_;
+
+  virtual void
+  _pre_e_validate ();
+
+  virtual void
+  _post_e_validate ();
+
+  void
+  sequence_0 (unsigned long& state,
+              unsigned long& count,
+              const ::xml_schema::ro_string& ns,
+              const ::xml_schema::ro_string& n,
+              const ::xml_schema::ro_string* t,
+              bool start);
+};
+
+class RPG_Character_Dictionary_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  RPG_Character_MonsterDictionary ();
+
+  virtual void
+  post_RPG_Character_Dictionary_Type ();
+
+  // Parser construction API.
+  //
+  void
+  RPG_Character_MonsterDictionary_parser (::RPG_Character_MonsterDictionary_Type_pskel&);
+
+  void
+  parsers (::RPG_Character_MonsterDictionary_Type_pskel& /* RPG_Character_MonsterDictionary */);
+
+  // Constructor.
+  //
+  RPG_Character_Dictionary_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Character_MonsterDictionary_Type_pskel* RPG_Character_MonsterDictionary_parser_;
+
+  protected:
+  struct v_state_descr_
+  {
+    void (::RPG_Character_Dictionary_Type_pskel::*func) (
       unsigned long&,
       unsigned long&,
       const ::xml_schema::ro_string&,

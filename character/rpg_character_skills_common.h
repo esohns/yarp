@@ -33,6 +33,8 @@ enum RPG_Character_Skill
   SKILL_BLUFF,
   SKILL_CLIMB,
   SKILL_CONCENTRATION,
+  SKILL_CRAFT_ANY,
+  SKILL_CRAFT_ALL,
   SKILL_CRAFT_ALCHEMY,
   SKILL_CRAFT_FLETCHER,
   SKILL_CRAFT_BOWYER,
@@ -53,6 +55,8 @@ enum RPG_Character_Skill
   SKILL_HIDE,
   SKILL_INTIMIDATE,
   SKILL_JUMP,
+  SKILL_KNOWLEDGE_ANY,
+  SKILL_KNOWLEDGE_ALL,
   SKILL_KNOWLEDGE_ARCANA,
   SKILL_KNOWLEDGE_ARCH_ENG,
   SKILL_KNOWLEDGE_DUNGEONS,
@@ -200,6 +204,20 @@ enum RPG_Character_Feat
   FEAT_STEALTHY,
   FEAT_TOUGHNESS,
   FEAT_TRACK,
+  // monster
+  FEAT_ABILITY_FOCUS,
+  FEAT_AWESOME_BLOW,
+  FEAT_CRAFT_CONSTRUCT,
+  FEAT_EMPOWER_SPELLLIKE_ABILITY,
+  FEAT_FLYBY_ATTACK,
+  FEAT_HOVER,
+  FEAT_IMPROVED_NATURAL_ARMOR,
+  FEAT_IMPROVED_NATURAL_ATTACK,
+  FEAT_MULTI_ATTACK,
+  FEAT_MULTIWEAPON_FIGHTING,
+  FEAT_QUICKEN_SPELLLIKE_ABILITY,
+  FEAT_SNATCH,
+  FEAT_WINGOVER,
   //
   FEAT_MAX,
   FEAT_INVALID
@@ -310,8 +328,8 @@ struct RPG_Character_Feat_Prerequisite
 };
 
 // some useful types
-typedef std::pair<RPG_Character_Skill, unsigned char> RPG_Character_SkillsItem_t;
-typedef std::map<RPG_Character_Skill, unsigned char> RPG_Character_Skills_t;
+typedef std::pair<RPG_Character_Skill, char> RPG_Character_SkillsItem_t;
+typedef std::map<RPG_Character_Skill, char> RPG_Character_Skills_t;
 // typedef RPG_Character_Skills_t::value_type RPG_Character_SkillsItem_t;
 typedef RPG_Character_Skills_t::iterator RPG_Character_SkillsIterator_t;
 typedef RPG_Character_Skills_t::const_iterator RPG_Character_SkillsConstIterator_t;
