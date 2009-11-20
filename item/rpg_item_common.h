@@ -186,7 +186,7 @@ struct RPG_Item_CriticalHitModifier
   unsigned int damageModifier;
 };
 
-typedef RPG_Chance_Roll RPG_Item_Damage;
+typedef RPG_Chance_DiceRoll RPG_Item_Damage;
 
 struct RPG_Item_WeaponProperties
 {

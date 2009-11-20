@@ -1,28 +1,33 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="5" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/main.cpp" >
-   <View0 Encoding="" Type="Source" />
+ <DocsAndViews NumberOfDocuments="4" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item.xsd" >
+   <View0 Encoding="" line="183" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item.xsd" >
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item.xml" >
    <View0 Encoding="" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item.xml" >
-   <View0 Encoding="" Type="Source" />
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_common.h" >
+   <View0 Encoding="" line="189" Type="Source" />
   </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_common.h" >
-   <View0 Encoding="" Type="Source" />
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_common_tools.cpp" >
+   <View0 Encoding="" line="455" Type="Source" />
   </Doc3>
-  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_common_tools.cpp" >
-   <View0 Encoding="" line="453" Type="Source" />
-  </Doc4>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
    <breakpointList/>
    <showInternalCommands value="0" />
   </kdevdebugger>
+  <kdevfilelist>
+   <projectview name="RPG_Item Items XML" >
+    <file line="183" url="file:///home/unfv/Projects/RPG/item/rpg_item.xsd" col="9" encoding="" />
+    <file line="189" url="file:///home/unfv/Projects/RPG/item/rpg_item_common.h" col="0" encoding="" />
+    <file line="447" url="file:///home/unfv/Projects/RPG/item/rpg_item_common_tools.cpp" col="3" encoding="" />
+   </projectview>
+   <defaultview name="" />
+  </kdevfilelist>
   <kdevastyle>
    <Extensions ext="*.cpp *.h *.hpp,*.c *.h,*.cxx *.hxx,*.c++ *.h++,*.cc *.hh,*.C *.H,*.diff ,*.inl,*.java,*.moc,*.patch,*.tlh,*.xpm" />
    <AStyle IndentPreprocessors="0" FillCount="2" PadParenthesesOut="0" IndentNamespaces="0" IndentLabels="1" Fill="Spaces" MaxStatement="40" Brackets="Break" MinConditional="-1" IndentBrackets="0" PadParenthesesUn="1" BlockBreak="0" KeepStatements="0" KeepBlocks="0" BlockIfElse="0" IndentSwitches="1" PadOperators="1" FStyle="UserDefined" IndentCases="0" FillEmptyLines="0" BracketsCloseHeaders="0" BlockBreakAll="0" PadParenthesesIn="0" IndentClasses="1" IndentBlocks="0" FillForce="1" />

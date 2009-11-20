@@ -42,21 +42,21 @@ RPG_Item_Dictionary_Parser::~RPG_Item_Dictionary_Parser()
 // void RPG_Item_Dictionary_Parser::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::pre"));
-// 
+//
 // }
 
 // void RPG_Item_Dictionary_Parser::RPG_Item_WeaponDictionary()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::RPG_Item_WeaponDictionary"));
-// 
+//
 //   // TODO
 //   //
 // }
-// 
+//
 // void RPG_Item_Dictionary_Parser::RPG_Item_ArmorDictionary()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::RPG_Item_ArmorDictionary"));
-// 
+//
 //   // TODO
 //   //
 // }
@@ -82,7 +82,7 @@ RPG_Item_WeaponDictionary_Type::RPG_Item_WeaponDictionary_Type(RPG_Item_WeaponDi
 // void RPG_Item_WeaponDictionary_Type::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponDictionary_Type::pre"));
-// 
+//
 // }
 
 void RPG_Item_WeaponDictionary_Type::weapon(const RPG_Item_WeaponProperties_XML& weapon_in)
@@ -122,7 +122,7 @@ RPG_Item_ArmorDictionary_Type::RPG_Item_ArmorDictionary_Type(RPG_Item_ArmorDicti
 // void RPG_Item_ArmorDictionary_Type::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorDictionary_Type::pre"));
-// 
+//
 // }
 
 void RPG_Item_ArmorDictionary_Type::armor(const RPG_Item_ArmorProperties_XML& armor_in)
@@ -155,7 +155,7 @@ void RPG_Item_ArmorDictionary_Type::post_RPG_Item_ArmorDictionary_Type()
 // void RPG_Item_WeaponCategory_Type::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponCategory_Type::pre"));
-// 
+//
 // }
 
 RPG_Item_WeaponCategory RPG_Item_WeaponCategory_Type::post_RPG_Item_WeaponCategory_Type()
@@ -168,7 +168,7 @@ RPG_Item_WeaponCategory RPG_Item_WeaponCategory_Type::post_RPG_Item_WeaponCatego
 // void RPG_Item_WeaponClass_Type::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponClass_Type::pre"));
-// 
+//
 // }
 
 RPG_Item_WeaponClass RPG_Item_WeaponClass_Type::post_RPG_Item_WeaponClass_Type()
@@ -181,7 +181,7 @@ RPG_Item_WeaponClass RPG_Item_WeaponClass_Type::post_RPG_Item_WeaponClass_Type()
 // void RPG_Item_WeaponType_Type::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponType_Type::pre"));
-// 
+//
 // }
 
 RPG_Item_WeaponType RPG_Item_WeaponType_Type::post_RPG_Item_WeaponType_Type()
@@ -202,7 +202,7 @@ RPG_Item_StorePrice_Type::RPG_Item_StorePrice_Type()
 // void RPG_Item_StorePrice_Type::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_StorePrice_Type::pre"));
-// 
+//
 // }
 
 void RPG_Item_StorePrice_Type::numGoldPieces(unsigned int numGoldPieces_in)
@@ -229,7 +229,7 @@ RPG_Item_StorePrice RPG_Item_StorePrice_Type::post_RPG_Item_StorePrice_Type()
 // void RPG_Chance_DiceType_Type::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Chance_DiceType_Type::pre"));
-// 
+//
 // }
 
 RPG_Chance_DiceType RPG_Chance_DiceType_Type::post_RPG_Chance_DiceType_Type()
@@ -239,45 +239,45 @@ RPG_Chance_DiceType RPG_Chance_DiceType_Type::post_RPG_Chance_DiceType_Type()
   return RPG_Chance_Dice_Common_Tools::stringToDiceType(post_string());
 }
 
-RPG_Chance_Roll_Type::RPG_Chance_Roll_Type()
+RPG_Chance_DiceRoll_Type::RPG_Chance_DiceRoll_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Roll_Type::RPG_Chance_Roll_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::RPG_Chance_DiceRoll_Type"));
 
   myCurrentItemDamage.numDice = 0;
   myCurrentItemDamage.typeDice = D_TYPE_INVALID;
   myCurrentItemDamage.modifier = 0;
 }
 
-// void RPG_Chance_Roll_Type::pre()
+// void RPG_Chance_DiceRoll_Type::pre()
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Chance_Roll_Type::pre"));
-// 
+//   ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::pre"));
+//
 // }
 
-void RPG_Chance_Roll_Type::numDice(unsigned int numDice_in)
+void RPG_Chance_DiceRoll_Type::numDice(unsigned int numDice_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Roll_Type::numDice"));
+  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::numDice"));
 
   myCurrentItemDamage.numDice = numDice_in;
 }
 
-void RPG_Chance_Roll_Type::typeDice(const RPG_Chance_DiceType& typeDice_in)
+void RPG_Chance_DiceRoll_Type::typeDice(const RPG_Chance_DiceType& typeDice_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Roll_Type::typeDice"));
+  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::typeDice"));
 
   myCurrentItemDamage.typeDice = typeDice_in;
 }
 
-void RPG_Chance_Roll_Type::modifier(long long modifier_in)
+void RPG_Chance_DiceRoll_Type::modifier(long long modifier_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Roll_Type::modifier"));
+  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::modifier"));
 
   myCurrentItemDamage.modifier = modifier_in;
 }
 
-RPG_Item_Damage RPG_Chance_Roll_Type::post_RPG_Chance_Roll_Type()
+RPG_Item_Damage RPG_Chance_DiceRoll_Type::post_RPG_Chance_DiceRoll_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Roll_Type::post_RPG_Chance_Roll_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::post_RPG_Chance_DiceRoll_Type"));
 
   return myCurrentItemDamage;
 }
@@ -307,7 +307,7 @@ void RPG_Item_CriticalHitModifier_Type::damageModifier(unsigned int damageModifi
 // void RPG_Item_CriticalHitModifier_Type::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_CriticalHitModifier_Type::pre"));
-// 
+//
 // }
 
 RPG_Item_CriticalHitModifier RPG_Item_CriticalHitModifier_Type::post_RPG_Item_CriticalHitModifier_Type()
@@ -320,7 +320,7 @@ RPG_Item_CriticalHitModifier RPG_Item_CriticalHitModifier_Type::post_RPG_Item_Cr
 // void RPG_Item_WeaponDamageType_Type::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponDamageType_Type::pre"));
-// 
+//
 // }
 
 RPG_Item_WeaponDamageType RPG_Item_WeaponDamageType_Type::post_RPG_Item_WeaponDamageType_Type()
@@ -352,7 +352,7 @@ RPG_Item_WeaponProperties_Type::RPG_Item_WeaponProperties_Type()
 // void RPG_Item_WeaponProperties_Type::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponProperties_Type::pre"));
-// 
+//
 // }
 
 void RPG_Item_WeaponProperties_Type::weaponType(const RPG_Item_WeaponType& weaponType_in)
@@ -450,7 +450,7 @@ RPG_Item_WeaponProperties_XML RPG_Item_WeaponProperties_Type::post_RPG_Item_Weap
 // void RPG_Item_ArmorCategory_Type::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorCategory_Type::pre"));
-// 
+//
 // }
 
 RPG_Item_ArmorCategory RPG_Item_ArmorCategory_Type::post_RPG_Item_ArmorCategory_Type()
@@ -463,7 +463,7 @@ RPG_Item_ArmorCategory RPG_Item_ArmorCategory_Type::post_RPG_Item_ArmorCategory_
 // void RPG_Item_ArmorType_Type::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorType_Type::pre"));
-// 
+//
 // }
 
 RPG_Item_ArmorType RPG_Item_ArmorType_Type::post_RPG_Item_ArmorType_Type()
@@ -493,7 +493,7 @@ RPG_Item_ArmorProperties_Type::RPG_Item_ArmorProperties_Type()
 // void RPG_Item_ArmorProperties_Type::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::pre"));
-// 
+//
 // }
 
 void RPG_Item_ArmorProperties_Type::armorType(const RPG_Item_ArmorType& armorType_in)

@@ -54,7 +54,7 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
   RPG_Item_StorePrice_Type                baseStorePrice_p;
   baseStorePrice_p.parsers(unsigned_int_p,
                            unsigned_int_p);
-  RPG_Chance_Roll_Type                    baseDamage_p;
+  RPG_Chance_DiceRoll_Type                baseDamage_p;
   baseDamage_p.parsers(unsigned_int_p,
                        chanceDiceType_p,
                        int_p);

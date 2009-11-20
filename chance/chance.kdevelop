@@ -26,7 +26,7 @@
     <run>
       <mainprogram>/home/unfv/Projects/RPG/chance/debug/dice/.libs/rangeToRoll</mainprogram>
       <programargs>-r 1-1 -p -t</programargs>
-      <globaldebugarguments>-r 0-6 -p -t</globaldebugarguments>
+      <globaldebugarguments>-r 44-143 -p -t</globaldebugarguments>
       <globalcwd>/home/unfv/Projects/RPG/chance/debug/dice/</globalcwd>
       <useglobalprogram>true</useglobalprogram>
       <terminal>false</terminal>
@@ -36,11 +36,11 @@
       <envvars/>
       <runarguments>
         <dice/>
-        <rangeToRoll></rangeToRoll>
+        <rangeToRoll/>
       </runarguments>
       <debugarguments>
         <dice/>
-        <rangeToRoll></rangeToRoll>
+        <rangeToRoll/>
       </debugarguments>
       <cwd>
         <dice>/home/unfv/Projects/RPG/chance/debug/./dice</dice>

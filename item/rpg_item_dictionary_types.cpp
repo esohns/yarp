@@ -144,28 +144,28 @@ RPG_Item_StorePrice_Type_pskel ()
 {
 }
 
-// RPG_Chance_Roll_Type_pskel
+// RPG_Chance_DiceRoll_Type_pskel
 //
 
-void RPG_Chance_Roll_Type_pskel::
+void RPG_Chance_DiceRoll_Type_pskel::
 numDice_parser (::xml_schema::unsigned_int_pskel& p)
 {
   this->numDice_parser_ = &p;
 }
 
-void RPG_Chance_Roll_Type_pskel::
+void RPG_Chance_DiceRoll_Type_pskel::
 typeDice_parser (::RPG_Chance_DiceType_Type_pskel& p)
 {
   this->typeDice_parser_ = &p;
 }
 
-void RPG_Chance_Roll_Type_pskel::
+void RPG_Chance_DiceRoll_Type_pskel::
 modifier_parser (::xml_schema::integer_pskel& p)
 {
   this->modifier_parser_ = &p;
 }
 
-void RPG_Chance_Roll_Type_pskel::
+void RPG_Chance_DiceRoll_Type_pskel::
 parsers (::xml_schema::unsigned_int_pskel& numDice,
          ::RPG_Chance_DiceType_Type_pskel& typeDice,
          ::xml_schema::integer_pskel& modifier)
@@ -175,8 +175,8 @@ parsers (::xml_schema::unsigned_int_pskel& numDice,
   this->modifier_parser_ = &modifier;
 }
 
-RPG_Chance_Roll_Type_pskel::
-RPG_Chance_Roll_Type_pskel ()
+RPG_Chance_DiceRoll_Type_pskel::
+RPG_Chance_DiceRoll_Type_pskel ()
 : numDice_parser_ (0),
   typeDice_parser_ (0),
   modifier_parser_ (0),
@@ -243,7 +243,7 @@ baseStorePrice_parser (::RPG_Item_StorePrice_Type_pskel& p)
 }
 
 void RPG_Item_WeaponProperties_Type_pskel::
-baseDamage_parser (::RPG_Chance_Roll_Type_pskel& p)
+baseDamage_parser (::RPG_Chance_DiceRoll_Type_pskel& p)
 {
   this->baseDamage_parser_ = &p;
 }
@@ -277,7 +277,7 @@ parsers (::RPG_Item_WeaponType_Type_pskel& weaponType,
          ::RPG_Item_WeaponCategory_Type_pskel& weaponCategory,
          ::RPG_Item_WeaponClass_Type_pskel& weaponClass,
          ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
-         ::RPG_Chance_Roll_Type_pskel& baseDamage,
+         ::RPG_Chance_DiceRoll_Type_pskel& baseDamage,
          ::RPG_Item_CriticalHitModifier_Type_pskel& criticalHitModifier,
          ::xml_schema::unsigned_int_pskel& rangeIncrement,
          ::xml_schema::unsigned_int_pskel& baseWeight,
@@ -460,20 +460,20 @@ numSilverPieces (unsigned int)
 {
 }
 
-// RPG_Chance_Roll_Type_pskel
+// RPG_Chance_DiceRoll_Type_pskel
 //
 
-void RPG_Chance_Roll_Type_pskel::
+void RPG_Chance_DiceRoll_Type_pskel::
 numDice (unsigned int)
 {
 }
 
-void RPG_Chance_Roll_Type_pskel::
+void RPG_Chance_DiceRoll_Type_pskel::
 typeDice (const RPG_Chance_DiceType&)
 {
 }
 
-void RPG_Chance_Roll_Type_pskel::
+void RPG_Chance_DiceRoll_Type_pskel::
 modifier (long long)
 {
 }
@@ -1385,9 +1385,9 @@ sequence_0 (unsigned long& state,
   }
 }
 
-// Element validation and dispatch functions for RPG_Chance_Roll_Type_pskel.
+// Element validation and dispatch functions for RPG_Chance_DiceRoll_Type_pskel.
 //
-bool RPG_Chance_Roll_Type_pskel::
+bool RPG_Chance_DiceRoll_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
@@ -1432,7 +1432,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
         vd->state = ~0UL;
 
         vd = vs.data + vs.size++;
-        vd->func = &RPG_Chance_Roll_Type_pskel::sequence_0;
+        vd->func = &RPG_Chance_DiceRoll_Type_pskel::sequence_0;
         vd->state = s;
         vd->count = 0;
 
@@ -1454,7 +1454,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return true;
 }
 
-bool RPG_Chance_Roll_Type_pskel::
+bool RPG_Chance_DiceRoll_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
@@ -1477,7 +1477,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return true;
 }
 
-void RPG_Chance_Roll_Type_pskel::
+void RPG_Chance_DiceRoll_Type_pskel::
 _pre_e_validate ()
 {
   this->v_state_stack_.push ();
@@ -1491,7 +1491,7 @@ _pre_e_validate ()
   vd.count = 0;
 }
 
-void RPG_Chance_Roll_Type_pskel::
+void RPG_Chance_DiceRoll_Type_pskel::
 _post_e_validate ()
 {
   v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
@@ -1512,7 +1512,7 @@ _post_e_validate ()
   this->v_state_stack_.pop ();
 }
 
-void RPG_Chance_Roll_Type_pskel::
+void RPG_Chance_DiceRoll_Type_pskel::
 sequence_0 (unsigned long& state,
             unsigned long& count,
             const ::xml_schema::ro_string& ns,
@@ -2160,7 +2160,7 @@ sequence_0 (unsigned long& state,
         {
           if (this->baseDamage_parser_)
           {
-            const RPG_Item_Damage& tmp (this->baseDamage_parser_->post_RPG_Chance_Roll_Type ());
+            const RPG_Item_Damage& tmp (this->baseDamage_parser_->post_RPG_Chance_DiceRoll_Type ());
             this->baseDamage (tmp);
           }
 

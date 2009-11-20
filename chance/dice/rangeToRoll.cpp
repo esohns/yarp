@@ -159,11 +159,14 @@ void do_work(const RPG_Chance_ValueRange& valueRange_in,
   ACE_ASSERT(valueRange_in.begin <= valueRange_in.end);
   // step1b: find SMALLEST type of die LARGER than range.end to start with
   RPG_Chance_DiceType current_dieType = D_100;
-  while (current_dieType > valueRange_in.end)
+  if (valueRange_in.end < D_100)
   {
-    current_dieType--;
-  };
-  current_dieType++;
+    while (current_dieType > valueRange_in.end)
+    {
+      current_dieType--;
+    };
+    current_dieType++;
+  } // end IF
 
   // step2: find best results for all valid types of dice, starting at this root
   do

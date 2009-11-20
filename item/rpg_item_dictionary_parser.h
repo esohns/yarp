@@ -129,16 +129,16 @@ class RPG_Chance_DiceType_Type : public RPG_Chance_DiceType_Type_pimpl
   virtual RPG_Chance_DiceType post_RPG_Chance_DiceType_Type();
 };
 
-class RPG_Chance_Roll_Type : public RPG_Chance_Roll_Type_pimpl
+class RPG_Chance_DiceRoll_Type : public RPG_Chance_DiceRoll_Type_pimpl
 {
  public:
-  RPG_Chance_Roll_Type();
+   RPG_Chance_DiceRoll_Type();
 
 //   virtual void pre();
   virtual void numDice(unsigned int);
   virtual void typeDice(const RPG_Chance_DiceType&);
   virtual void modifier(long long);
-  virtual RPG_Item_Damage post_RPG_Chance_Roll_Type();
+  virtual RPG_Item_Damage post_RPG_Chance_DiceRoll_Type();
 
  private:
   RPG_Item_Damage myCurrentItemDamage;

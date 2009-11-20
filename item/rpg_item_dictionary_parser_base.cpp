@@ -172,37 +172,37 @@ post_RPG_Chance_DiceType_Type ()
   // return ... ;
 }
 
-// RPG_Chance_Roll_Type_pimpl
+// RPG_Chance_DiceRoll_Type_pimpl
 //
 
-void RPG_Chance_Roll_Type_pimpl::
+void RPG_Chance_DiceRoll_Type_pimpl::
 pre ()
 {
 }
 
-void RPG_Chance_Roll_Type_pimpl::
+void RPG_Chance_DiceRoll_Type_pimpl::
 numDice (unsigned int numDice)
 {
   // TODO
   //
 }
 
-void RPG_Chance_Roll_Type_pimpl::
+void RPG_Chance_DiceRoll_Type_pimpl::
 typeDice (const RPG_Chance_DiceType& typeDice)
 {
   // TODO
   //
 }
 
-void RPG_Chance_Roll_Type_pimpl::
+void RPG_Chance_DiceRoll_Type_pimpl::
 modifier (long long modifier)
 {
   // TODO
   //
 }
 
-RPG_Item_Damage RPG_Chance_Roll_Type_pimpl::
-post_RPG_Chance_Roll_Type ()
+RPG_Item_Damage RPG_Chance_DiceRoll_Type_pimpl::
+post_RPG_Chance_DiceRoll_Type ()
 {
   // TODO
   //

@@ -57,7 +57,7 @@ class RPG_Item_WeaponClass_Type_pskel;
 class RPG_Item_WeaponType_Type_pskel;
 class RPG_Item_StorePrice_Type_pskel;
 class RPG_Chance_DiceType_Type_pskel;
-class RPG_Chance_Roll_Type_pskel;
+class RPG_Chance_DiceRoll_Type_pskel;
 class RPG_Item_CriticalHitModifier_Type_pskel;
 class RPG_Item_WeaponDamageType_Type_pskel;
 class RPG_Item_WeaponProperties_Type_pskel;
@@ -458,7 +458,7 @@ class RPG_Chance_DiceType_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Chance_DiceType_Type () = 0;
 };
 
-class RPG_Chance_Roll_Type_pskel: public ::xml_schema::complex_content
+class RPG_Chance_DiceRoll_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -476,7 +476,7 @@ class RPG_Chance_Roll_Type_pskel: public ::xml_schema::complex_content
   modifier (long long);
 
   virtual RPG_Item_Damage
-  post_RPG_Chance_Roll_Type () = 0;
+  post_RPG_Chance_DiceRoll_Type () = 0;
 
   // Parser construction API.
   //
@@ -496,7 +496,7 @@ class RPG_Chance_Roll_Type_pskel: public ::xml_schema::complex_content
 
   // Constructor.
   //
-  RPG_Chance_Roll_Type_pskel ();
+  RPG_Chance_DiceRoll_Type_pskel ();
 
   // Implementation.
   //
@@ -518,7 +518,7 @@ class RPG_Chance_Roll_Type_pskel: public ::xml_schema::complex_content
   protected:
   struct v_state_descr_
   {
-    void (::RPG_Chance_Roll_Type_pskel::*func) (
+    void (::RPG_Chance_DiceRoll_Type_pskel::*func) (
       unsigned long&,
       unsigned long&,
       const ::xml_schema::ro_string&,
@@ -705,7 +705,7 @@ class RPG_Item_WeaponProperties_Type_pskel: public ::xml_schema::complex_content
   baseStorePrice_parser (::RPG_Item_StorePrice_Type_pskel&);
 
   void
-  baseDamage_parser (::RPG_Chance_Roll_Type_pskel&);
+  baseDamage_parser (::RPG_Chance_DiceRoll_Type_pskel&);
 
   void
   criticalHitModifier_parser (::RPG_Item_CriticalHitModifier_Type_pskel&);
@@ -724,7 +724,7 @@ class RPG_Item_WeaponProperties_Type_pskel: public ::xml_schema::complex_content
            ::RPG_Item_WeaponCategory_Type_pskel& /* weaponCategory */,
            ::RPG_Item_WeaponClass_Type_pskel& /* weaponClass */,
            ::RPG_Item_StorePrice_Type_pskel& /* baseStorePrice */,
-           ::RPG_Chance_Roll_Type_pskel& /* baseDamage */,
+           ::RPG_Chance_DiceRoll_Type_pskel& /* baseDamage */,
            ::RPG_Item_CriticalHitModifier_Type_pskel& /* criticalHitModifier */,
            ::xml_schema::unsigned_int_pskel& /* rangeIncrement */,
            ::xml_schema::unsigned_int_pskel& /* baseWeight */,
@@ -751,7 +751,7 @@ class RPG_Item_WeaponProperties_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Item_WeaponCategory_Type_pskel* weaponCategory_parser_;
   ::RPG_Item_WeaponClass_Type_pskel* weaponClass_parser_;
   ::RPG_Item_StorePrice_Type_pskel* baseStorePrice_parser_;
-  ::RPG_Chance_Roll_Type_pskel* baseDamage_parser_;
+  ::RPG_Chance_DiceRoll_Type_pskel* baseDamage_parser_;
   ::RPG_Item_CriticalHitModifier_Type_pskel* criticalHitModifier_parser_;
   ::xml_schema::unsigned_int_pskel* rangeIncrement_parser_;
   ::xml_schema::unsigned_int_pskel* baseWeight_parser_;

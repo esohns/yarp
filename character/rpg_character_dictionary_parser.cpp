@@ -44,13 +44,13 @@ RPG_Character_Dictionary_Parser::~RPG_Character_Dictionary_Parser()
 // void RPG_Character_Dictionary_Parser::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary_Parser::pre"));
-// 
+//
 // }
 
 // void RPG_Character_Dictionary_Parser::RPG_Character_MonsterDictionary()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::RPG_Character_MonsterDictionary"));
-// 
+//
 //   // TODO
 //   //
 // }
@@ -75,7 +75,7 @@ RPG_Character_MonsterDictionary_Type::RPG_Character_MonsterDictionary_Type(RPG_C
 // void RPG_Character_MonsterDictionary_Type::pre()
 // {
 //   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterDictionary_Type::pre"));
-// 
+//
 // }
 
 void RPG_Character_MonsterDictionary_Type::monster(const RPG_Character_MonsterProperties_XML& monster_in)
@@ -180,46 +180,81 @@ RPG_Chance_DiceType RPG_Chance_DiceType_Type::post_RPG_Chance_DiceType_Type()
   return RPG_Chance_Dice_Common_Tools::stringToDiceType(post_string());
 }
 
-RPG_Chance_Roll_Type::RPG_Chance_Roll_Type()
+RPG_Chance_DiceRoll_Type::RPG_Chance_DiceRoll_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Roll_Type::RPG_Chance_Roll_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::RPG_Chance_DiceRoll_Type"));
 
   myCurrentRoll.numDice = 0;
   myCurrentRoll.typeDice = D_TYPE_INVALID;
   myCurrentRoll.modifier = 0;
 }
 
-void RPG_Chance_Roll_Type::numDice(unsigned int numDice_in)
+void RPG_Chance_DiceRoll_Type::numDice(unsigned int numDice_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Roll_Type::numDice"));
+  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::numDice"));
 
   myCurrentRoll.numDice = numDice_in;
 }
 
-void RPG_Chance_Roll_Type::typeDice(const RPG_Chance_DiceType& typeDice_in)
+void RPG_Chance_DiceRoll_Type::typeDice(const RPG_Chance_DiceType& typeDice_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Roll_Type::typeDice"));
+  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::typeDice"));
 
   myCurrentRoll.typeDice = typeDice_in;
 }
 
-void RPG_Chance_Roll_Type::modifier(long long modifier_in)
+void RPG_Chance_DiceRoll_Type::modifier(long long modifier_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Roll_Type::modifier"));
+  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::modifier"));
 
   myCurrentRoll.modifier = modifier_in;
 }
 
-RPG_Chance_Roll RPG_Chance_Roll_Type::post_RPG_Chance_Roll_Type()
+RPG_Chance_DiceRoll RPG_Chance_DiceRoll_Type::post_RPG_Chance_DiceRoll_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Roll_Type::post_RPG_Chance_Roll_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::post_RPG_Chance_DiceRoll_Type"));
 
-  RPG_Character_HitDice result = myCurrentRoll;
+  RPG_Chance_DiceRoll result = myCurrentRoll;
 
   // clear structure
   myCurrentRoll.numDice = 0;
   myCurrentRoll.typeDice = D_TYPE_INVALID;
   myCurrentRoll.modifier = 0;
+
+  return result;
+}
+
+RPG_Chance_ValueRange_Type::RPG_Chance_ValueRange_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Chance_ValueRange_Type::RPG_Chance_ValueRange_Type"));
+
+  myCurrentRange.begin = 0;
+  myCurrentRange.end = 0;
+}
+
+void RPG_Chance_ValueRange_Type::begin(long long begin_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Chance_ValueRange_Type::begin"));
+
+  myCurrentRange.begin = begin_in;
+}
+
+void RPG_Chance_ValueRange_Type::end(long long end_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Chance_ValueRange_Type::end"));
+
+  myCurrentRange.end = end_in;
+}
+
+RPG_Chance_ValueRange RPG_Chance_ValueRange_Type::post_RPG_Chance_ValueRange_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Chance_ValueRange_Type::post_RPG_Chance_ValueRange_Type"));
+
+  RPG_Chance_ValueRange result = myCurrentRange;
+
+  // clear structure
+  myCurrentRange.begin = 0;
+  myCurrentRange.end = 0;
 
   return result;
 }
@@ -676,9 +711,8 @@ RPG_Character_MonsterAdvancementStep_Type::RPG_Character_MonsterAdvancementStep_
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAdvancementStep_Type::RPG_Character_MonsterAdvancementStep_Type"));
 
   myCurrentAdvancementStep.first = SIZE_INVALID;
-  myCurrentAdvancementStep.second.numDice = 0;
-  myCurrentAdvancementStep.second.typeDice = D_TYPE_INVALID;
-  myCurrentAdvancementStep.second.modifier = 0;
+  myCurrentAdvancementStep.second.begin = 0;
+  myCurrentAdvancementStep.second.end = 0;
 }
 
 void RPG_Character_MonsterAdvancementStep_Type::size(const RPG_Character_Size& size_in)
@@ -688,7 +722,7 @@ void RPG_Character_MonsterAdvancementStep_Type::size(const RPG_Character_Size& s
   myCurrentAdvancementStep.first = size_in;
 }
 
-void RPG_Character_MonsterAdvancementStep_Type::range(const RPG_Character_Damage& range_in)
+void RPG_Character_MonsterAdvancementStep_Type::range(const RPG_Chance_ValueRange& range_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAdvancementStep_Type::range"));
 
@@ -703,9 +737,8 @@ RPG_Character_MonsterAdvancementStep_t RPG_Character_MonsterAdvancementStep_Type
 
   // clear structure
   myCurrentAdvancementStep.first = SIZE_INVALID;
-  myCurrentAdvancementStep.second.numDice = 0;
-  myCurrentAdvancementStep.second.typeDice = D_TYPE_INVALID;
-  myCurrentAdvancementStep.second.modifier = 0;
+  myCurrentAdvancementStep.second.begin = 0;
+  myCurrentAdvancementStep.second.end = 0;
 
   return result;
 }
@@ -799,7 +832,7 @@ void RPG_Character_MonsterProperties_Type::type(const RPG_Character_MonsterType&
   myCurrentProperties.type = type_in;
 }
 
-void RPG_Character_MonsterProperties_Type::hitDice(const RPG_Chance_Roll& hitDice_in)
+void RPG_Character_MonsterProperties_Type::hitDice(const RPG_Chance_DiceRoll& hitDice_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterProperties_Type::hitDice"));
 

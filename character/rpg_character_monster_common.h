@@ -129,7 +129,7 @@ enum RPG_Character_MonsterAttackForm
   ATTACK_INVALID
 };
 
-typedef RPG_Chance_Roll RPG_Character_Damage;
+typedef RPG_Chance_DiceRoll RPG_Character_Damage;
 
 struct RPG_Character_MonsterAttackAction
 {
@@ -224,9 +224,9 @@ enum RPG_Character_Organization
 typedef std::set<RPG_Character_Organization> RPG_Character_Organizations_t;
 typedef RPG_Character_Organizations_t::const_iterator RPG_Character_OrganizationsIterator_t;
 
-typedef RPG_Chance_Roll RPG_Character_HitDice;
+typedef RPG_Chance_DiceRoll RPG_Character_HitDice;
 
-typedef std::pair<RPG_Character_Size, RPG_Chance_Roll> RPG_Character_MonsterAdvancementStep_t;
+typedef std::pair<RPG_Character_Size, RPG_Chance_ValueRange> RPG_Character_MonsterAdvancementStep_t;
 typedef std::vector<RPG_Character_MonsterAdvancementStep_t> RPG_Character_MonsterAdvancement_t;
 typedef RPG_Character_MonsterAdvancement_t::const_iterator RPG_Character_MonsterAdvancementIterator_t;
 

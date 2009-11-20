@@ -100,7 +100,7 @@ class RPG_Chance_DiceType_Type_pimpl: public virtual RPG_Chance_DiceType_Type_ps
   post_RPG_Chance_DiceType_Type ();
 };
 
-class RPG_Chance_Roll_Type_pimpl: public virtual RPG_Chance_Roll_Type_pskel
+class RPG_Chance_DiceRoll_Type_pimpl: public virtual RPG_Chance_DiceRoll_Type_pskel
 {
   public:
   virtual void
@@ -115,8 +115,24 @@ class RPG_Chance_Roll_Type_pimpl: public virtual RPG_Chance_Roll_Type_pskel
   virtual void
   modifier (long long);
 
-  virtual RPG_Chance_Roll
-  post_RPG_Chance_Roll_Type ();
+  virtual RPG_Chance_DiceRoll
+  post_RPG_Chance_DiceRoll_Type ();
+};
+
+class RPG_Chance_ValueRange_Type_pimpl: public virtual RPG_Chance_ValueRange_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  begin (long long);
+
+  virtual void
+  end (long long);
+
+  virtual RPG_Chance_ValueRange
+  post_RPG_Chance_ValueRange_Type ();
 };
 
 class RPG_Character_MonsterAttackAction_Type_pimpl: public virtual RPG_Character_MonsterAttackAction_Type_pskel
@@ -135,7 +151,7 @@ class RPG_Character_MonsterAttackAction_Type_pimpl: public virtual RPG_Character
   attackForm (const RPG_Character_MonsterAttackForm&);
 
   virtual void
-  damage (const RPG_Chance_Roll&);
+  damage (const RPG_Chance_DiceRoll&);
 
   virtual void
   numAttacksPerRound (unsigned int);
@@ -355,7 +371,7 @@ class RPG_Character_MonsterAdvancementStep_Type_pimpl: public virtual RPG_Charac
   size (const RPG_Character_Size&);
 
   virtual void
-  range (const RPG_Chance_Roll&);
+  range (const RPG_Chance_ValueRange&);
 
   virtual RPG_Character_MonsterAdvancementStep_t
   post_RPG_Character_MonsterAdvancementStep_Type ();
@@ -390,7 +406,7 @@ class RPG_Character_MonsterProperties_Type_pimpl: public virtual RPG_Character_M
   type (const RPG_Character_MonsterType&);
 
   virtual void
-  hitDice (const RPG_Chance_Roll&);
+  hitDice (const RPG_Chance_DiceRoll&);
 
   virtual void
   initiative (long long);

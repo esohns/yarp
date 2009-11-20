@@ -123,7 +123,7 @@
       <xsd:enumeration value="RANGED_WEAPON_SHURIKEN"/>
     </xsd:restriction>
   </xsd:simpleType>
-  
+
   <xsd:complexType name="RPG_Item_StorePrice_Type">
     <xsd:sequence>
       <xsd:element name="numGoldPieces" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
@@ -146,7 +146,7 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:complexType name="RPG_Chance_Roll_Type">
+  <xsd:complexType name="RPG_Chance_DiceRoll_Type">
     <xsd:sequence>
       <xsd:element name="numDice" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="typeDice" type="RPG_Chance_DiceType_Type" minOccurs="1" maxOccurs="1"/>
@@ -177,14 +177,14 @@
       <xsd:enumeration value="WEAPONDAMAGE_SLASHING"/>
     </xsd:restriction>
   </xsd:simpleType>
-  
+
   <xsd:complexType name="RPG_Item_WeaponProperties_Type">
     <xsd:sequence>
       <xsd:element name="weaponType" type="RPG_Item_WeaponType_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="weaponCategory" type="RPG_Item_WeaponCategory_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="weaponClass" type="RPG_Item_WeaponClass_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="baseStorePrice" type="RPG_Item_StorePrice_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="baseDamage" type="RPG_Chance_Roll_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="baseDamage" type="RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="criticalHitModifier" type="RPG_Item_CriticalHitModifier_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="rangeIncrement" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="baseWeight" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>

@@ -112,11 +112,18 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:complexType name="RPG_Chance_Roll_Type">
+  <xsd:complexType name="RPG_Chance_DiceRoll_Type">
     <xsd:sequence>
       <xsd:element name="numDice" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="typeDice" type="RPG_Chance_DiceType_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="modifier" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Chance_ValueRange_Type">
+    <xsd:sequence>
+      <xsd:element name="begin" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="end" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -125,7 +132,7 @@
       <xsd:element name="monsterWeapon" type="RPG_Character_MonsterWeapon_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackBonus" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackForm" type="RPG_Character_MonsterAttackForm_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="damage" type="RPG_Chance_Roll_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="damage" type="RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="numAttacksPerRound" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -450,7 +457,7 @@
   <xsd:complexType name="RPG_Character_MonsterAdvancementStep_Type">
     <xsd:sequence>
       <xsd:element name="size" type="RPG_Character_Size_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="range" type="RPG_Chance_Roll_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="range" type="RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -465,7 +472,7 @@
       <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="size" type="RPG_Character_Size_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="type" type="RPG_Character_MonsterType_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="hitDice" type="RPG_Chance_Roll_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="hitDice" type="RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="initiative" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="speed" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="armorClass" type="RPG_Character_MonsterArmorClass_Type" minOccurs="1" maxOccurs="1"/>

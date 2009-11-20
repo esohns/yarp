@@ -58,7 +58,7 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
   ::xml_schema::unsigned_int_pimpl        unsigned_int_p;
   RPG_Chance_DiceType_Type                chanceDiceType_p;
   ::xml_schema::integer_pimpl             int_p;
-  RPG_Chance_Roll_Type                    roll_p;
+  RPG_Chance_DiceRoll_Type                roll_p;
   roll_p.parsers(unsigned_int_p,
                  chanceDiceType_p,
                  int_p);
@@ -111,9 +111,12 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
   RPG_Character_Alignment_Type            alignment_p;
   alignment_p.parsers(alignmentCivic_p,
                       alignmentEthic_p);
+  RPG_Chance_ValueRange_Type              range_p;
+  range_p.parsers(int_p,
+                  int_p);
   RPG_Character_MonsterAdvancementStep_Type advancementStep_p;
   advancementStep_p.parsers(size_p,
-                            roll_p);
+                            range_p);
   RPG_Character_MonsterAdvancement_Type   advancement_p;
   advancement_p.parsers(advancementStep_p);
 //   unsigned_int_pimpl                      levelAdjustment_p;
@@ -239,7 +242,7 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
   {
     // step2a: choose random foe
     RPG_Character_EncounterIterator_t iterator;
-    RPG_Chance_Dice::RPG_Chance_Dice_Result_t result;
+    RPG_Chance_DiceRollResult_t result;
     int choiceType = 0;
     do
     {
@@ -262,7 +265,7 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
     int choiceOrganization = result.front() - 1; // list index
     RPG_Character_OrganizationsIterator_t iterator2 = organizations_in.begin();
     std::advance(iterator2, choiceOrganization);
-    RPG_Chance_Roll roll;
+    RPG_Chance_DiceRoll roll;
     organizationToRoll(*iterator2,
                        roll);
   //   RPG_Chance_Dice::RPG_Chance_Dice_Result_t result;
@@ -282,7 +285,7 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
 }
 
 void RPG_Character_Dictionary::organizationToRoll(const RPG_Character_Organization& organization_in,
-                                                  RPG_Chance_Roll& roll_out) const
+                                                  RPG_Chance_DiceRoll& roll_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary::organizationToRoll"));
 

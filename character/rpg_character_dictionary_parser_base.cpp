@@ -164,37 +164,67 @@ post_RPG_Chance_DiceType_Type ()
   // return ... ;
 }
 
-// RPG_Chance_Roll_Type_pimpl
+// RPG_Chance_DiceRoll_Type_pimpl
 //
 
-void RPG_Chance_Roll_Type_pimpl::
+void RPG_Chance_DiceRoll_Type_pimpl::
 pre ()
 {
 }
 
-void RPG_Chance_Roll_Type_pimpl::
+void RPG_Chance_DiceRoll_Type_pimpl::
 numDice (unsigned int numDice)
 {
   // TODO
   //
 }
 
-void RPG_Chance_Roll_Type_pimpl::
+void RPG_Chance_DiceRoll_Type_pimpl::
 typeDice (const RPG_Chance_DiceType& typeDice)
 {
   // TODO
   //
 }
 
-void RPG_Chance_Roll_Type_pimpl::
+void RPG_Chance_DiceRoll_Type_pimpl::
 modifier (long long modifier)
 {
   // TODO
   //
 }
 
-RPG_Chance_Roll RPG_Chance_Roll_Type_pimpl::
-post_RPG_Chance_Roll_Type ()
+RPG_Chance_DiceRoll RPG_Chance_DiceRoll_Type_pimpl::
+post_RPG_Chance_DiceRoll_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Chance_ValueRange_Type_pimpl
+//
+
+void RPG_Chance_ValueRange_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Chance_ValueRange_Type_pimpl::
+begin (long long begin)
+{
+  // TODO
+  //
+}
+
+void RPG_Chance_ValueRange_Type_pimpl::
+end (long long end)
+{
+  // TODO
+  //
+}
+
+RPG_Chance_ValueRange RPG_Chance_ValueRange_Type_pimpl::
+post_RPG_Chance_ValueRange_Type ()
 {
   // TODO
   //
@@ -231,7 +261,7 @@ attackForm (const RPG_Character_MonsterAttackForm& attackForm)
 }
 
 void RPG_Character_MonsterAttackAction_Type_pimpl::
-damage (const RPG_Chance_Roll& damage)
+damage (const RPG_Chance_DiceRoll& damage)
 {
   // TODO
   //
@@ -632,7 +662,7 @@ size (const RPG_Character_Size& size)
 }
 
 void RPG_Character_MonsterAdvancementStep_Type_pimpl::
-range (const RPG_Chance_Roll& range)
+range (const RPG_Chance_ValueRange& range)
 {
   // TODO
   //
@@ -699,7 +729,7 @@ type (const RPG_Character_MonsterType& type)
 }
 
 void RPG_Character_MonsterProperties_Type_pimpl::
-hitDice (const RPG_Chance_Roll& hitDice)
+hitDice (const RPG_Chance_DiceRoll& hitDice)
 {
   // TODO
   //

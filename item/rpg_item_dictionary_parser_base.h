@@ -112,7 +112,7 @@ class RPG_Chance_DiceType_Type_pimpl: public virtual RPG_Chance_DiceType_Type_ps
   post_RPG_Chance_DiceType_Type ();
 };
 
-class RPG_Chance_Roll_Type_pimpl: public virtual RPG_Chance_Roll_Type_pskel
+class RPG_Chance_DiceRoll_Type_pimpl: public virtual RPG_Chance_DiceRoll_Type_pskel
 {
   public:
   virtual void
@@ -128,7 +128,7 @@ class RPG_Chance_Roll_Type_pimpl: public virtual RPG_Chance_Roll_Type_pskel
   modifier (long long);
 
   virtual RPG_Item_Damage
-  post_RPG_Chance_Roll_Type ();
+  post_RPG_Chance_DiceRoll_Type ();
 };
 
 class RPG_Item_CriticalHitModifier_Type_pimpl: public virtual RPG_Item_CriticalHitModifier_Type_pskel

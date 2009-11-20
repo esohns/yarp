@@ -516,11 +516,11 @@ void do_work(const std::string fileName_in)
 
   RPG_Character_Attributes attributes;
   unsigned char* p = NULL;
-  RPG_Chance_Roll roll;
+  RPG_Chance_DiceRoll roll;
   roll.numDice = 2;
   roll.typeDice = D_10;
   roll.modifier = -2; // add +1 if result is 0 --> stats interval 1-18
-  RPG_Chance_Dice::RPG_Chance_Dice_Result_t result;
+  RPG_Chance_DiceRollResult_t result;
   c = 'n';
   do
   {
@@ -910,7 +910,7 @@ int ACE_TMAIN(int argc,
 //   timer.elapsed_time(working_time);
 //   RPS_FLB_Common_Tools::Period2String(working_time,
 //                                       working_time_string);
-// 
+//
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
 //              working_time_string.c_str()));

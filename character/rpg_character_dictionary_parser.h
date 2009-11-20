@@ -113,20 +113,35 @@ class RPG_Chance_DiceType_Type
   virtual RPG_Chance_DiceType post_RPG_Chance_DiceType_Type();
 };
 
-class RPG_Chance_Roll_Type
- : public RPG_Chance_Roll_Type_pimpl
+class RPG_Chance_DiceRoll_Type
+ : public RPG_Chance_DiceRoll_Type_pimpl
 {
  public:
-  RPG_Chance_Roll_Type();
+  RPG_Chance_DiceRoll_Type();
 
 //   virtual void pre();
   virtual void numDice(unsigned int);
   virtual void typeDice(const RPG_Chance_DiceType&);
   virtual void modifier(long long);
-  virtual RPG_Chance_Roll post_RPG_Chance_Roll_Type();
+  virtual RPG_Chance_DiceRoll post_RPG_Chance_DiceRoll_Type();
 
  private:
-  RPG_Chance_Roll myCurrentRoll;
+   RPG_Chance_DiceRoll myCurrentRoll;
+};
+
+class RPG_Chance_ValueRange_Type
+  : public RPG_Chance_ValueRange_Type_pimpl
+{
+ public:
+  RPG_Chance_ValueRange_Type();
+
+//   virtual void pre();
+  virtual void begin(long long);
+  virtual void end(long long);
+  virtual RPG_Chance_ValueRange post_RPG_Chance_ValueRange_Type();
+
+ private:
+  RPG_Chance_ValueRange myCurrentRange;
 };
 
 class RPG_Character_MonsterArmorClass_Type
@@ -171,7 +186,7 @@ class RPG_Character_MonsterAttackAction_Type
   virtual void monsterWeapon(const RPG_Character_MonsterWeapon&);
   virtual void attackBonus(int);
   virtual void attackForm(const RPG_Character_MonsterAttackForm&);
-  virtual void damage(const RPG_Chance_Roll&);
+  virtual void damage(const RPG_Chance_DiceRoll&);
   virtual void numAttacksPerRound(unsigned int);
   virtual RPG_Character_MonsterAttackAction post_RPG_Character_MonsterAttackAction_Type();
 
@@ -313,7 +328,7 @@ class RPG_Character_MonsterAdvancementStep_Type
 
 //   virtual void pre();
   virtual void size(const RPG_Character_Size&);
-  virtual void range(const RPG_Chance_Roll&);
+  virtual void range(const RPG_Chance_ValueRange&);
   virtual RPG_Character_MonsterAdvancementStep_t post_RPG_Character_MonsterAdvancementStep_Type();
 
  private:
@@ -375,7 +390,7 @@ class RPG_Character_MonsterProperties_Type
   virtual void name(const ::std::string&);
   virtual void size(const RPG_Character_Size&);
   virtual void type(const RPG_Character_MonsterType&);
-  virtual void hitDice(const RPG_Chance_Roll&);
+  virtual void hitDice(const RPG_Chance_DiceRoll&);
   virtual void initiative(long long);
   virtual void speed(unsigned int);
   virtual void armorClass(const RPG_Character_MonsterArmorClass&);

@@ -56,7 +56,8 @@ class RPG_Character_MonsterArmorClass_Type_pskel;
 class RPG_Character_MonsterWeapon_Type_pskel;
 class RPG_Character_MonsterAttackForm_Type_pskel;
 class RPG_Chance_DiceType_Type_pskel;
-class RPG_Chance_Roll_Type_pskel;
+class RPG_Chance_DiceRoll_Type_pskel;
+class RPG_Chance_ValueRange_Type_pskel;
 class RPG_Character_MonsterAttackAction_Type_pskel;
 class RPG_Character_MonsterAttack_Type_pskel;
 class RPG_Character_Size_Type_pskel;
@@ -335,7 +336,7 @@ class RPG_Chance_DiceType_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Chance_DiceType_Type () = 0;
 };
 
-class RPG_Chance_Roll_Type_pskel: public ::xml_schema::complex_content
+class RPG_Chance_DiceRoll_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -352,8 +353,8 @@ class RPG_Chance_Roll_Type_pskel: public ::xml_schema::complex_content
   virtual void
   modifier (long long);
 
-  virtual RPG_Chance_Roll
-  post_RPG_Chance_Roll_Type () = 0;
+  virtual RPG_Chance_DiceRoll
+  post_RPG_Chance_DiceRoll_Type () = 0;
 
   // Parser construction API.
   //
@@ -373,7 +374,7 @@ class RPG_Chance_Roll_Type_pskel: public ::xml_schema::complex_content
 
   // Constructor.
   //
-  RPG_Chance_Roll_Type_pskel ();
+  RPG_Chance_DiceRoll_Type_pskel ();
 
   // Implementation.
   //
@@ -395,7 +396,94 @@ class RPG_Chance_Roll_Type_pskel: public ::xml_schema::complex_content
   protected:
   struct v_state_descr_
   {
-    void (::RPG_Chance_Roll_Type_pskel::*func) (
+    void (::RPG_Chance_DiceRoll_Type_pskel::*func) (
+      unsigned long&,
+      unsigned long&,
+      const ::xml_schema::ro_string&,
+      const ::xml_schema::ro_string&,
+      const ::xml_schema::ro_string*,
+      bool);
+    unsigned long state;
+    unsigned long count;
+  };
+
+  struct v_state_
+  {
+    v_state_descr_ data[2UL];
+    unsigned long size;
+  };
+
+  v_state_ v_state_first_;
+  ::xsd::cxx::parser::pod_stack v_state_stack_;
+
+  virtual void
+  _pre_e_validate ();
+
+  virtual void
+  _post_e_validate ();
+
+  void
+  sequence_0 (unsigned long& state,
+              unsigned long& count,
+              const ::xml_schema::ro_string& ns,
+              const ::xml_schema::ro_string& n,
+              const ::xml_schema::ro_string* t,
+              bool start);
+};
+
+class RPG_Chance_ValueRange_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  begin (long long);
+
+  virtual void
+  end (long long);
+
+  virtual RPG_Chance_ValueRange
+  post_RPG_Chance_ValueRange_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  begin_parser (::xml_schema::integer_pskel&);
+
+  void
+  end_parser (::xml_schema::integer_pskel&);
+
+  void
+  parsers (::xml_schema::integer_pskel& /* begin */,
+           ::xml_schema::integer_pskel& /* end */);
+
+  // Constructor.
+  //
+  RPG_Chance_ValueRange_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::xml_schema::integer_pskel* begin_parser_;
+  ::xml_schema::integer_pskel* end_parser_;
+
+  protected:
+  struct v_state_descr_
+  {
+    void (::RPG_Chance_ValueRange_Type_pskel::*func) (
       unsigned long&,
       unsigned long&,
       const ::xml_schema::ro_string&,
@@ -448,7 +536,7 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   attackForm (const RPG_Character_MonsterAttackForm&);
 
   virtual void
-  damage (const RPG_Chance_Roll&);
+  damage (const RPG_Chance_DiceRoll&);
 
   virtual void
   numAttacksPerRound (unsigned int);
@@ -468,7 +556,7 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   attackForm_parser (::RPG_Character_MonsterAttackForm_Type_pskel&);
 
   void
-  damage_parser (::RPG_Chance_Roll_Type_pskel&);
+  damage_parser (::RPG_Chance_DiceRoll_Type_pskel&);
 
   void
   numAttacksPerRound_parser (::xml_schema::unsigned_int_pskel&);
@@ -477,7 +565,7 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   parsers (::RPG_Character_MonsterWeapon_Type_pskel& /* monsterWeapon */,
            ::xml_schema::integer_pskel& /* attackBonus */,
            ::RPG_Character_MonsterAttackForm_Type_pskel& /* attackForm */,
-           ::RPG_Chance_Roll_Type_pskel& /* damage */,
+           ::RPG_Chance_DiceRoll_Type_pskel& /* damage */,
            ::xml_schema::unsigned_int_pskel& /* numAttacksPerRound */);
 
   // Constructor.
@@ -500,7 +588,7 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   ::RPG_Character_MonsterWeapon_Type_pskel* monsterWeapon_parser_;
   ::xml_schema::integer_pskel* attackBonus_parser_;
   ::RPG_Character_MonsterAttackForm_Type_pskel* attackForm_parser_;
-  ::RPG_Chance_Roll_Type_pskel* damage_parser_;
+  ::RPG_Chance_DiceRoll_Type_pskel* damage_parser_;
   ::xml_schema::unsigned_int_pskel* numAttacksPerRound_parser_;
 
   protected:
@@ -1278,7 +1366,7 @@ class RPG_Character_MonsterAdvancementStep_Type_pskel: public ::xml_schema::comp
   size (const RPG_Character_Size&);
 
   virtual void
-  range (const RPG_Chance_Roll&);
+  range (const RPG_Chance_ValueRange&);
 
   virtual RPG_Character_MonsterAdvancementStep_t
   post_RPG_Character_MonsterAdvancementStep_Type () = 0;
@@ -1289,11 +1377,11 @@ class RPG_Character_MonsterAdvancementStep_Type_pskel: public ::xml_schema::comp
   size_parser (::RPG_Character_Size_Type_pskel&);
 
   void
-  range_parser (::RPG_Chance_Roll_Type_pskel&);
+  range_parser (::RPG_Chance_ValueRange_Type_pskel&);
 
   void
   parsers (::RPG_Character_Size_Type_pskel& /* size */,
-           ::RPG_Chance_Roll_Type_pskel& /* range */);
+           ::RPG_Chance_ValueRange_Type_pskel& /* range */);
 
   // Constructor.
   //
@@ -1313,7 +1401,7 @@ class RPG_Character_MonsterAdvancementStep_Type_pskel: public ::xml_schema::comp
 
   protected:
   ::RPG_Character_Size_Type_pskel* size_parser_;
-  ::RPG_Chance_Roll_Type_pskel* range_parser_;
+  ::RPG_Chance_ValueRange_Type_pskel* range_parser_;
 
   protected:
   struct v_state_descr_
@@ -1450,7 +1538,7 @@ class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_c
   type (const RPG_Character_MonsterType&);
 
   virtual void
-  hitDice (const RPG_Chance_Roll&);
+  hitDice (const RPG_Chance_DiceRoll&);
 
   virtual void
   initiative (long long);
@@ -1518,7 +1606,7 @@ class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_c
   type_parser (::RPG_Character_MonsterType_Type_pskel&);
 
   void
-  hitDice_parser (::RPG_Chance_Roll_Type_pskel&);
+  hitDice_parser (::RPG_Chance_DiceRoll_Type_pskel&);
 
   void
   initiative_parser (::xml_schema::integer_pskel&);
@@ -1575,7 +1663,7 @@ class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_c
   parsers (::xml_schema::string_pskel& /* name */,
            ::RPG_Character_Size_Type_pskel& /* size */,
            ::RPG_Character_MonsterType_Type_pskel& /* type */,
-           ::RPG_Chance_Roll_Type_pskel& /* hitDice */,
+           ::RPG_Chance_DiceRoll_Type_pskel& /* hitDice */,
            ::xml_schema::integer_pskel& /* initiative */,
            ::xml_schema::unsigned_int_pskel& /* speed */,
            ::RPG_Character_MonsterArmorClass_Type_pskel& /* armorClass */,
@@ -1614,7 +1702,7 @@ class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_c
   ::xml_schema::string_pskel* name_parser_;
   ::RPG_Character_Size_Type_pskel* size_parser_;
   ::RPG_Character_MonsterType_Type_pskel* type_parser_;
-  ::RPG_Chance_Roll_Type_pskel* hitDice_parser_;
+  ::RPG_Chance_DiceRoll_Type_pskel* hitDice_parser_;
   ::xml_schema::integer_pskel* initiative_parser_;
   ::xml_schema::unsigned_int_pskel* speed_parser_;
   ::RPG_Character_MonsterArmorClass_Type_pskel* armorClass_parser_;

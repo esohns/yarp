@@ -93,19 +93,147 @@
         <step>
           <size>SIZE_HUGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>8</modifier>
+            <begin>9</begin>
+            <end>16</end>
           </range>
         </step>
         <step>
           <size>SIZE_GARGANTUAN</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>16</modifier>
+            <begin>17</begin>
+            <end>24</end>
           </range>
         </step>
+      </advancement>
+      <levelAdjustment>0</levelAdjustment>
+    </monster>
+    <monster>
+      <name>Aboleth Mage</name>
+      <size>SIZE_HUGE</size>
+      <type>
+        <metaType>MONSTERMETATYPE_ABERRATION</metaType>
+        <subType>MONSTERSUBTYPE_AQUATIC</subType>
+      </type>
+      <hitDice>
+        <numDice>13</numDice>
+        <typeDice>D_8</typeDice>
+        <modifier>126</modifier>
+      </hitDice>
+      <initiative>7</initiative>
+      <speed>60</speed>
+      <armorClass>
+        <normal>18</normal>
+        <touch>11</touch>
+        <flatFooted>15</flatFooted>
+      </armorClass>
+      <attack>
+        <baseAttackBonus>11</baseAttackBonus>
+        <grappleBonus>28</grappleBonus>
+        <attackAction>
+          <monsterWeapon>NATURALWEAPON_TENTACLE</monsterWeapon>
+          <attackBonus>18</attackBonus>
+          <attackForm>ATTACK_MELEE</attackForm>
+          <damage>
+            <numDice>1</numDice>
+            <typeDice>D_6</typeDice>
+            <modifier>9</modifier>
+          </damage>
+          <numAttacksPerRound>4</numAttacksPerRound>
+        </attackAction>
+      </attack>
+      <space>15</space>
+      <reach>10</reach>
+      <saves>
+        <fortitude>15</fortitude>
+        <reflex>10</reflex>
+        <will>15</will>
+      </saves>
+      <attributes>
+        <strength>28</strength>
+        <dexterity>16</dexterity>
+        <constitution>24</constitution>
+        <intelligence>20</intelligence>
+        <wisdom>16</wisdom>
+        <charisma>14</charisma>
+      </attributes>
+      <skills>
+        <skill>
+          <skill>SKILL_BLUFF</skill>
+          <rank>13</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_CONCENTRATION</skill>
+          <rank>25</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_DECIPHER_SCRIPT</skill>
+          <rank>15</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_DIPLOMACY</skill>
+          <rank>6</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_DISGUISE</skill>
+          <rank>2</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_INTIMIDATE</skill>
+          <rank>4</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_KNOWLEDGE_ANY</skill>
+          <rank>20</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_LISTEN</skill>
+          <rank>15</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SEARCH</skill>
+          <rank>10</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SENSE_MOTIVE</skill>
+          <rank>15</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SPELLCRAFT</skill>
+          <rank>20</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SPOT</skill>
+          <rank>17</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SURVIVAL</skill>
+          <rank>3</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SWIM</skill>
+          <rank>8</rank>
+        </skill>
+      </skills>
+      <feats>
+        <feat>FEAT_COMBAT_CASTING</feat>
+        <feat>FEAT_EMPOWER_SPELL</feat>
+        <feat>FEAT_ESCHEW_MATERIALS</feat>
+        <feat>FEAT_GREAT_FORTITUDE</feat>
+        <feat>FEAT_IMPROVED_INITIATIVE</feat>
+        <feat>FEAT_LIGHTNING_REFLEXES</feat>
+        <feat>FEAT_SCRIBE_SCROLL</feat>
+        <feat>FEAT_SPELL_FOCUS</feat>
+        <feat>FEAT_SPELL_PENETRATION</feat>
+      </feats>
+      <environment>ENVIRONMENT_UNDERGROUND</environment>
+      <organization>ORGANIZATION_SOLITARY</organization>
+      <challengeRating>17</challengeRating>
+      <treasureModifier>2</treasureModifier>
+      <alignment>
+        <civic>ALIGNMENTCIVIC_LAWFUL</civic>
+        <ethic>ALIGNMENTETHIC_EVIL</ethic>
+      </alignment>
+      <advancement>
       </advancement>
       <levelAdjustment>0</levelAdjustment>
     </monster>
@@ -227,17 +355,15 @@
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>6</modifier>
+            <begin>7</begin>
+            <end>12</end>
           </range>
         </step>
         <step>
           <size>SIZE_HUGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>12</modifier>
+            <begin>13</begin>
+            <end>18</end>
           </range>
         </step>
       </advancement>
@@ -334,9 +460,8 @@
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_8</typeDice>
-            <modifier>4</modifier>
+            <begin>5</begin>
+            <end>12</end>
           </range>
         </step>
       </advancement>
@@ -471,17 +596,15 @@
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>12</modifier>
+            <begin>13</begin>
+            <end>18</end>
           </range>
         </step>
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_20</typeDice>
-            <modifier>18</modifier>
+            <begin>19</begin>
+            <end>36</end>
           </range>
         </step>
       </advancement>
@@ -619,17 +742,15 @@
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>14</modifier>
+            <begin>15</begin>
+            <end>21</end>
           </range>
         </step>
         <step>
           <size>SIZE_HUGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_20</typeDice>
-            <modifier>22</modifier>
+            <begin>22</begin>
+            <end>42</end>
           </range>
         </step>
       </advancement>
@@ -785,17 +906,15 @@
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_10</typeDice>
-            <modifier>23</modifier>
+            <begin>23</begin>
+            <end>33</end>
           </range>
         </step>
         <step>
           <size>SIZE_HUGE</size>
           <range>
-            <numDice>4</numDice>
-            <typeDice>D_8</typeDice>
-            <modifier>30</modifier>
+            <begin>34</begin>
+            <end>66</end>
           </range>
         </step>
       </advancement>
@@ -865,49 +984,43 @@
         <step>
           <size>SIZE_TINY</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>0</modifier>
+            <begin>-1</begin>
+            <end>-1</end>
           </range>
         </step>
         <step>
           <size>SIZE_SMALL</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_10</typeDice>
-            <modifier>10</modifier>
+            <begin>0</begin>
+            <end>0</end>
           </range>
         </step>
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <numDice>4</numDice>
-            <typeDice>D_10</typeDice>
-            <modifier>40</modifier>
+            <begin>2</begin>
+            <end>2</end>
           </range>
         </step>
         <step>
           <size>SIZE_HUGE</size>
           <range>
-            <numDice>8</numDice>
-            <typeDice>D_10</typeDice>
-            <modifier>40</modifier>
+            <begin>6</begin>
+            <end>6</end>
           </range>
         </step>
         <step>
           <size>SIZE_GARGANTUAN</size>
           <range>
-            <numDice>16</numDice>
-            <typeDice>D_10</typeDice>
-            <modifier>60</modifier>
+            <begin>14</begin>
+            <end>14</end>
           </range>
         </step>
         <step>
           <size>SIZE_COLOSSAL</size>
           <range>
-            <numDice>32</numDice>
-            <typeDice>D_10</typeDice>
-            <modifier>80</modifier>
+            <begin>30</begin>
+            <end>30</end>
           </range>
         </step>
       </advancement>
@@ -1003,17 +1116,15 @@
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <numDice>0</numDice>
-            <typeDice>D_0</typeDice>
-            <modifier>4</modifier>
+            <begin>4</begin>
+            <end>4</end>
           </range>
         </step>
         <step>
           <size>SIZE_HUGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>4</modifier>
+            <begin>5</begin>
+            <end>9</end>
           </range>
         </step>
       </advancement>
@@ -1217,9 +1328,8 @@
         <step>
           <size>SIZE_SMALL</size>
           <range>
-            <numDice>2</numDice>
-            <typeDice>D_2</typeDice>
-            <modifier>0</modifier>
+            <begin>2</begin>
+            <end>4</end>
           </range>
         </step>
       </advancement>
@@ -1356,24 +1466,154 @@
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_4</typeDice>
-            <modifier>6</modifier>
+            <begin>7</begin>
+            <end>9</end>
           </range>
         </step>
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_8</typeDice>
-            <modifier>9</modifier>
+            <begin>10</begin>
+            <end>18</end>
           </range>
         </step>
       </advancement>
       <levelAdjustment>5</levelAdjustment>
     </monster>
     <monster>
-      <name>Lantern Archon</name>
+      <name>Hound Archon Hero</name>
+      <size>SIZE_MEDIUM</size>
+      <type>
+        <metaType>MONSTERMETATYPE_OUTSIDER</metaType>
+        <subType>MONSTERSUBTYPE_ARCHON</subType>
+        <subType>MONSTERSUBTYPE_EXTRAPLANAR</subType>
+        <subType>MONSTERSUBTYPE_GOOD</subType>
+        <subType>MONSTERSUBTYPE_LAWFUL</subType>
+      </type>
+      <hitDice>
+        <numDice>23</numDice>
+        <typeDice>D_8</typeDice>
+        <modifier>43</modifier>
+      </hitDice>
+      <initiative>4</initiative>
+      <speed>30</speed>
+      <armorClass>
+        <normal>30</normal>
+        <touch>10</touch>
+        <flatFooted>30</flatFooted>
+      </armorClass>
+      <attack>
+        <baseAttackBonus>17</baseAttackBonus>
+        <grappleBonus>22</grappleBonus>
+        <attackAction>
+          <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+          <attackBonus>22</attackBonus>
+          <attackForm>ATTACK_MELEE</attackForm>
+          <damage>
+            <numDice>1</numDice>
+            <typeDice>D_8</typeDice>
+            <modifier>5</modifier>
+          </damage>
+          <numAttacksPerRound>1</numAttacksPerRound>
+        </attackAction>
+        <attackAction>
+          <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+          <attackBonus>17</attackBonus>
+          <attackForm>ATTACK_MELEE</attackForm>
+          <damage>
+            <numDice>1</numDice>
+            <typeDice>D_4</typeDice>
+            <modifier>2</modifier>
+          </damage>
+          <numAttacksPerRound>1</numAttacksPerRound>
+        </attackAction>
+        <attackAction>
+          <monsterWeapon>STANDARDWEAPON_SLASHING</monsterWeapon>
+          <attackBonus>25</attackBonus>
+          <attackForm>ATTACK_MELEE</attackForm>
+          <damage>
+            <numDice>2</numDice>
+            <typeDice>D_6</typeDice>
+            <modifier>9</modifier>
+          </damage>
+          <numAttacksPerRound>2</numAttacksPerRound>
+        </attackAction>
+      </attack>
+      <space>5</space>
+      <reach>5</reach>
+      <saves>
+        <fortitude>18</fortitude>
+        <reflex>11</reflex>
+        <will>13</will>
+      </saves>
+      <attributes>
+        <strength>21</strength>
+        <dexterity>10</dexterity>
+        <constitution>16</constitution>
+        <intelligence>8</intelligence>
+        <wisdom>14</wisdom>
+        <charisma>16</charisma>
+      </attributes>
+      <skills>
+        <skill>
+          <skill>SKILL_CONCENTRATION</skill>
+          <rank>20</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_DIPLOMACY</skill>
+          <rank>19</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_HIDE</skill>
+          <rank>2</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_JUMP</skill>
+          <rank>0</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_LISTEN</skill>
+          <rank>10</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_RIDE</skill>
+          <rank>14</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SENSE_MOTIVE</skill>
+          <rank>19</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SPOT</skill>
+          <rank>10</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SURVIVAL</skill>
+          <rank>2</rank>
+        </skill>
+      </skills>
+      <feats>
+        <feat>FEAT_IMPROVED_INITIATIVE</feat>
+        <feat>FEAT_LEADERSHIP</feat>
+        <feat>FEAT_MOUNTED_COMBAT</feat>
+        <feat>FEAT_RIDE_BY_ATTACK</feat>
+        <feat>FEAT_TRACK</feat>
+        <feat>FEAT_WEAPON_FOCUS</feat>
+      </feats>
+      <environment>ENVIRONMENT_PLANE_LAWFUL_GOOD</environment>
+      <organization>ORGANIZATION_SOLITARY</organization>
+      <challengeRating>16</challengeRating>
+      <treasureModifier>1</treasureModifier>
+      <alignment>
+        <civic>ALIGNMENTCIVIC_LAWFUL</civic>
+        <ethic>ALIGNMENTETHIC_GOOD</ethic>
+      </alignment>
+      <advancement>
+      </advancement>
+      <levelAdjustment>5</levelAdjustment>
+    </monster>
+    <monster>
+      <name>Trumpet Archon</name>
       <size>SIZE_MEDIUM</size>
       <type>
         <metaType>MONSTERMETATYPE_OUTSIDER</metaType>
@@ -1495,17 +1735,15 @@
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>12</modifier>
+            <begin>13</begin>
+            <end>18</end>
           </range>
         </step>
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <numDice>2</numDice>
-            <typeDice>D_10</typeDice>
-            <modifier>17</modifier>
+            <begin>19</begin>
+            <end>36</end>
           </range>
         </step>
       </advancement>
@@ -1629,36 +1867,32 @@
         <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
       </alignment>
       <advancement>
-<!--        <step>
+        <step>
           <size>SIZE_SMALL</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_4</typeDice>
-            <modifier>3</modifier>
+            <begin>-4</begin>
+            <end>2</end>
           </range>
-        </step> -->
+        </step>
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>8</modifier>
+            <begin>0</begin>
+            <end>0</end>
           </range>
         </step>
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_8</typeDice>
-            <modifier>16</modifier>
+            <begin>24</begin>
+            <end>32</end>
           </range>
         </step>
         <step>
           <size>SIZE_GARGANTUAN</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_8</typeDice>
-            <modifier>25</modifier>
+            <begin>33</begin>
+            <end>40</end>
           </range>
         </step>
       </advancement>
@@ -1729,25 +1963,22 @@
         <step>
           <size>SIZE_HUGE</size>
           <range>
-            <numDice>2</numDice>
-            <typeDice>D_8</typeDice>
-            <modifier>4</modifier>
+            <begin>5</begin>
+            <end>16</end>
           </range>
         </step>
         <step>
           <size>SIZE_GARGANTUAN</size>
           <range>
-            <numDice>2</numDice>
-            <typeDice>D_8</typeDice>
-            <modifier>16</modifier>
+            <begin>17</begin>
+            <end>32</end>
           </range>
         </step>
         <step>
           <size>SIZE_COLOSSAL</size>
           <range>
-            <numDice>0</numDice>
-            <typeDice>D_0</typeDice>
-            <modifier>33</modifier>
+            <begin>33</begin>
+            <end>33</end>
           </range>
         </step>
       </advancement>
@@ -1862,9 +2093,8 @@
         <step>
           <size>SIZE_HUGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_12</typeDice>
-            <modifier>16</modifier>
+            <begin>15</begin>
+            <end>28</end>
           </range>
         </step>
       </advancement>
@@ -2008,17 +2238,15 @@
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>8</modifier>
+            <begin>8</begin>
+            <end>14</end>
           </range>
         </step>
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>15</modifier>
+            <begin>15</begin>
+            <end>21</end>
           </range>
         </step>
       </advancement>
@@ -2266,14 +2494,146 @@
         <ethic>ALIGNMENTETHIC_EVIL</ethic>
       </alignment>
       <advancement>
-        <step>
-          <size>SIZE_LARGE</size>
-          <range>
+      </advancement>
+      <levelAdjustment>0</levelAdjustment>
+    </monster>
+    <monster>
+      <name>Greater Barghest</name>
+      <size>SIZE_LARGE</size>
+      <type>
+        <metaType>MONSTERMETATYPE_OUTSIDER</metaType>
+        <subType>MONSTERSUBTYPE_EVIL</subType>
+        <subType>MONSTERSUBTYPE_EXTRAPLANAR</subType>
+        <subType>MONSTERSUBTYPE_LAWFUL</subType>
+        <subType>MONSTERSUBTYPE_SHAPECHANGER</subType>
+      </type>
+      <hitDice>
+        <numDice>9</numDice>
+        <typeDice>D_8</typeDice>
+        <modifier>27</modifier>
+      </hitDice>
+      <initiative>6</initiative>
+      <speed>40</speed>
+      <armorClass>
+        <normal>20</normal>
+        <touch>11</touch>
+        <flatFooted>18</flatFooted>
+      </armorClass>
+      <attack>
+        <baseAttackBonus>9</baseAttackBonus>
+        <grappleBonus>18</grappleBonus>
+        <attackAction>
+          <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+          <attackBonus>13</attackBonus>
+          <attackForm>ATTACK_MELEE</attackForm>
+          <damage>
             <numDice>1</numDice>
-            <typeDice>D_3</typeDice>
-            <modifier>4</modifier>
-          </range>
-        </step>
+            <typeDice>D_8</typeDice>
+            <modifier>5</modifier>
+          </damage>
+          <numAttacksPerRound>1</numAttacksPerRound>
+        </attackAction>
+        <attackAction>
+          <monsterWeapon>NATURALWEAPON_CLAW_TALON</monsterWeapon>
+          <attackBonus>8</attackBonus>
+          <attackForm>ATTACK_MELEE</attackForm>
+          <damage>
+            <numDice>1</numDice>
+            <typeDice>D_6</typeDice>
+            <modifier>2</modifier>
+          </damage>
+          <numAttacksPerRound>2</numAttacksPerRound>
+        </attackAction>
+      </attack>
+      <space>10</space>
+      <reach>5</reach>
+      <saves>
+        <fortitude>9</fortitude>
+        <reflex>8</reflex>
+        <will>10</will>
+      </saves>
+      <attributes>
+        <strength>20</strength>
+        <dexterity>15</dexterity>
+        <constitution>16</constitution>
+        <intelligence>18</intelligence>
+        <wisdom>18</wisdom>
+        <charisma>18</charisma>
+      </attributes>
+      <skills>
+        <skill>
+          <skill>SKILL_BLUFF</skill>
+          <rank>16</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_CLIMB</skill>
+          <rank>17</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_CONCENTRATION</skill>
+          <rank>15</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_DIPLOMACY</skill>
+          <rank>8</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_DISGUISE</skill>
+          <rank>4</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_HIDE</skill>
+          <rank>10</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_INTIMIDATE</skill>
+          <rank>18</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_JUMP</skill>
+          <rank>21</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_LISTEN</skill>
+          <rank>16</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_MOVE_SILENTLY</skill>
+          <rank>14</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SENSE_MOTIVE</skill>
+          <rank>16</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SPOT</skill>
+          <rank>16</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SURVIVAL</skill>
+          <rank>16</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_TUMBLE</skill>
+          <rank>16</rank>
+        </skill>
+      </skills>
+      <feats>
+        <feat>FEAT_COMBAT_CASTING</feat>
+        <feat>FEAT_COMBAT_REFLEXES</feat>
+        <feat>FEAT_IMPROVED_INITIATIVE</feat>
+        <feat>FEAT_TRACK</feat>
+      </feats>
+      <environment>ENVIRONMENT_PLANE_ANY_EVIL</environment>
+      <organization>ORGANIZATION_SOLITARY</organization>
+      <organization>ORGANIZATION_PACK</organization>
+      <challengeRating>5</challengeRating>
+      <treasureModifier>2</treasureModifier>
+      <alignment>
+        <civic>ALIGNMENTCIVIC_LAWFUL</civic>
+        <ethic>ALIGNMENTETHIC_EVIL</ethic>
+      </alignment>
+      <advancement>
       </advancement>
       <levelAdjustment>0</levelAdjustment>
     </monster>
@@ -2357,17 +2717,15 @@
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_4</typeDice>
-            <modifier>6</modifier>
+            <begin>7</begin>
+            <end>10</end>
           </range>
         </step>
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_8</typeDice>
-            <modifier>10</modifier>
+            <begin>11</begin>
+            <end>18</end>
           </range>
         </step>
       </advancement>
@@ -2548,17 +2906,15 @@
         <step>
           <size>SIZE_HUGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_3</typeDice>
-            <modifier>10</modifier>
+            <begin>10</begin>
+            <end>13</end>
           </range>
         </step>
         <step>
           <size>SIZE_GARGANTUAN</size>
           <range>
-            <numDice>3</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>10</modifier>
+            <begin>14</begin>
+            <end>27</end>
           </range>
         </step>
       </advancement>
@@ -2669,17 +3025,15 @@
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_3</typeDice>
-            <modifier>7</modifier>
+            <begin>8</begin>
+            <end>10</end>
           </range>
         </step>
         <step>
           <size>SIZE_HUGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_10</typeDice>
-            <modifier>11</modifier>
+            <begin>11</begin>
+            <end>21</end>
           </range>
         </step>
       </advancement>
@@ -2774,17 +3128,15 @@
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_4</typeDice>
-            <modifier>3</modifier>
+            <begin>5</begin>
+            <end>7</end>
           </range>
         </step>
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>6</modifier>
+            <begin>8</begin>
+            <end>12</end>
           </range>
         </step>
       </advancement>
@@ -2872,17 +3224,15 @@
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_3</typeDice>
-            <modifier>10</modifier>
+            <begin>10</begin>
+            <end>13</end>
           </range>
         </step>
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_12</typeDice>
-            <modifier>14</modifier>
+            <begin>14</begin>
+            <end>27</end>
           </range>
         </step>
       </advancement>
@@ -3032,17 +3382,15 @@
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>6</modifier>
+            <begin>7</begin>
+            <end>12</end>
           </range>
         </step>
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_6</typeDice>
-            <modifier>12</modifier>
+            <begin>13</begin>
+            <end>18</end>
           </range>
         </step>
       </advancement>
@@ -3240,17 +3588,15 @@
         <step>
           <size>SIZE_HUGE</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_8</typeDice>
-            <modifier>8</modifier>
+            <begin>10</begin>
+            <end>16</end>
           </range>
         </step>
         <step>
           <size>SIZE_GARGANTUAN</size>
           <range>
-            <numDice>1</numDice>
-            <typeDice>D_10</typeDice>
-            <modifier>16</modifier>
+            <begin>17</begin>
+            <end>27</end>
           </range>
         </step>
       </advancement>

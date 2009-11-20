@@ -6,7 +6,7 @@ RPG_Item_WeaponClass_Type         RPG_Item_WeaponClass;
 RPG_Item_WeaponType_Type          RPG_Item_WeaponType;
 RPG_Item_StorePrice_Type          RPG_Item_StorePrice;
 RPG_Chance_DiceType_Type          RPG_Chance_DiceType;
-RPG_Chance_Roll_Type              RPG_Item_Damage;
+RPG_Chance_DiceRoll_Type          RPG_Item_Damage;
 RPG_Item_CriticalHitModifier_Type RPG_Item_CriticalHitModifier;
 RPG_Item_WeaponDamageType_Type    RPG_Item_WeaponDamageType;
 RPG_Item_WeaponProperties_Type    RPG_Item_WeaponProperties_XML;
@@ -15,7 +15,7 @@ RPG_Item_ArmorCategory_Type       RPG_Item_ArmorCategory;
 RPG_Item_ArmorType_Type           RPG_Item_ArmorType;
 RPG_Item_ArmorProperties_Type     RPG_Item_ArmorProperties_XML;
 
-#RPG_Item_WeaponDictionary_Type    RPG_ITEM_WEAPON_DICTIONARY_T;
-#RPG_Item_ArmorDictionary_Type     RPG_ITEM_ARMOR_DICTIONARY_T;
+#RPG_Item_WeaponDictionary_Type   RPG_Item_WeaponDictionary;
+#RPG_Item_ArmorDictionary_Type    RPG_Item_ArmorDictionary;
 
 #RPG_Item_Dictionary_Type          RPG_Item_Dictionary;

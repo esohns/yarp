@@ -57,7 +57,7 @@ class RPG_Character_Dictionary
 
   // helper methods
   void organizationToRoll(const RPG_Character_Organization&, // organization
-                          RPG_Chance_Roll&) const;           // return value: roll
+                          RPG_Chance_DiceRoll&) const;       // return value: roll
 
   RPG_Character_MonsterDictionary_t myMonsterDictionary;
 };
