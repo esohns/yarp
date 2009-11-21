@@ -1,19 +1,28 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="4" >
+ <DocsAndViews NumberOfDocuments="7" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item.xsd" >
-   <View0 Encoding="" line="183" Type="Source" />
+   <View0 Encoding="" line="18" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item.xml" >
-   <View0 Encoding="" Type="Source" />
+   <View0 Encoding="" line="3" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_common.h" >
-   <View0 Encoding="" line="189" Type="Source" />
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item.map" >
+   <View0 Encoding="" line="23" Type="Source" />
   </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_common_tools.cpp" >
-   <View0 Encoding="" line="455" Type="Source" />
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/scripts/bindings.sh" >
+   <View0 Encoding="" line="2" Type="Source" />
   </Doc3>
+  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_common.h" >
+   <View0 Encoding="" line="288" Type="Source" />
+  </Doc4>
+  <Doc5 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_XML_parser.cpp" >
+   <View0 Encoding="" line="65" Type="Source" />
+  </Doc5>
+  <Doc6 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_dictionary.cpp" >
+   <View0 Encoding="" line="139" Type="Source" />
+  </Doc6>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
@@ -22,9 +31,9 @@
   </kdevdebugger>
   <kdevfilelist>
    <projectview name="RPG_Item Items XML" >
-    <file line="183" url="file:///home/unfv/Projects/RPG/item/rpg_item.xsd" col="9" encoding="" />
-    <file line="189" url="file:///home/unfv/Projects/RPG/item/rpg_item_common.h" col="0" encoding="" />
-    <file line="447" url="file:///home/unfv/Projects/RPG/item/rpg_item_common_tools.cpp" col="3" encoding="" />
+    <file line="183" url="rpg_item.xsd" col="9" encoding="" />
+    <file line="189" url="rpg_item_common.h" col="0" encoding="" />
+    <file line="447" url="rpg_item_common_tools.cpp" col="3" encoding="" />
    </projectview>
    <defaultview name="" />
   </kdevfilelist>

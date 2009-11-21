@@ -111,6 +111,7 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
   // Parse the document to obtain the object model.
   //
   ::xml_schema::document doc_p(itemDictionary_p,
+                               ACE_TEXT_ALWAYS_CHAR("urn:rpg"),
                                ACE_TEXT_ALWAYS_CHAR("RPG_Item_Dictionary"));
 
   itemDictionary_p.pre();
@@ -139,10 +140,10 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
 
   itemDictionary_p.post_RPG_Item_Dictionary_Type();
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished parsing item dictionary file \"%s\"...\n"),
-             filename_in.c_str()));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("finished parsing item dictionary file \"%s\"...\n"),
+//              filename_in.c_str()));
 }
 
 const RPG_Item_WeaponProperties RPG_Item_Dictionary::getWeaponProperties(const RPG_Item_WeaponType& weaponType_in) const

@@ -24,6 +24,8 @@ dice_LDADD = $(top_builddir)/dice/libRPG_Chance_Dice.la -lACE -lpthread \
 dice_SOURCES = main.cpp
 dice_LDFLAGS = -L/usr/local/lib
 rangeToRoll_SOURCES = rangeToRoll.cpp
-rangeToRoll_LDADD = $(top_builddir)/dice/libRPG_Chance_Dice.la -lxerces-c
+rangeToRoll_LDADD = $(top_builddir)/dice/libRPG_Chance_Dice.la -lACE -lpthread \
+	-lxerces-c
 
-noinst_HEADERS =
+noinst_HEADERS = rpg_XMLSchema.h
+rangeToRoll_LDFLAGS = -L/usr/local/lib

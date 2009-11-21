@@ -17,22 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CHARACTER_DICTIONARY_PARSER_H
-#define RPG_CHARACTER_DICTIONARY_PARSER_H
+#ifndef RPG_CHARACTER_XML_PARSER_H
+#define RPG_CHARACTER_XML_PARSER_H
 
-#include "rpg_character_dictionary_parser_base.h"
+#include "rpg_character_XML_parser_base.h"
 
 #include <ace/Global_Macros.h>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Dictionary_Parser
+class RPG_Character_Dictionary_Type
  : public RPG_Character_Dictionary_Type_pimpl
 {
  public:
-  RPG_Character_Dictionary_Parser(RPG_Character_MonsterDictionary_t*); // monster dictionary
-  virtual ~RPG_Character_Dictionary_Parser();
+  RPG_Character_Dictionary_Type(RPG_Character_MonsterDictionary_t*); // monster dictionary
+  virtual ~RPG_Character_Dictionary_Type();
 
 //   virtual void pre();
 //   virtual void RPG_Character_MonsterDictionary();
@@ -40,9 +40,9 @@ class RPG_Character_Dictionary_Parser
 
  private:
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Dictionary_Parser());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Dictionary_Parser(const RPG_Character_Dictionary_Parser&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Dictionary_Parser& operator=(const RPG_Character_Dictionary_Parser&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Dictionary_Type());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Dictionary_Type(const RPG_Character_Dictionary_Type&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Dictionary_Type& operator=(const RPG_Character_Dictionary_Type&));
 
   RPG_Character_MonsterDictionary_t* myMonsterDictionary;
 };
@@ -103,45 +103,6 @@ class RPG_Character_MonsterSubType_Type
  public:
 //   virtual void pre();
   virtual RPG_Character_MonsterSubType post_RPG_Character_MonsterSubType_Type();
-};
-
-class RPG_Chance_DiceType_Type
- : public RPG_Chance_DiceType_Type_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Chance_DiceType post_RPG_Chance_DiceType_Type();
-};
-
-class RPG_Chance_DiceRoll_Type
- : public RPG_Chance_DiceRoll_Type_pimpl
-{
- public:
-  RPG_Chance_DiceRoll_Type();
-
-//   virtual void pre();
-  virtual void numDice(unsigned int);
-  virtual void typeDice(const RPG_Chance_DiceType&);
-  virtual void modifier(long long);
-  virtual RPG_Chance_DiceRoll post_RPG_Chance_DiceRoll_Type();
-
- private:
-   RPG_Chance_DiceRoll myCurrentRoll;
-};
-
-class RPG_Chance_ValueRange_Type
-  : public RPG_Chance_ValueRange_Type_pimpl
-{
- public:
-  RPG_Chance_ValueRange_Type();
-
-//   virtual void pre();
-  virtual void begin(long long);
-  virtual void end(long long);
-  virtual RPG_Chance_ValueRange post_RPG_Chance_ValueRange_Type();
-
- private:
-  RPG_Chance_ValueRange myCurrentRange;
 };
 
 class RPG_Character_MonsterArmorClass_Type

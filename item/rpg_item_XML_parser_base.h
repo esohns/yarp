@@ -8,9 +8,9 @@
 #ifndef CXX___RPG_ITEM_XML_PARSER_BASE_H
 #define CXX___RPG_ITEM_XML_PARSER_BASE_H
 
-#include "rpg_item_XML_types.h"
+#include <rpg_item_XML_types.h>
 
-#include "../chance/dice/rpg_chance_dice_XML_parser_base.h"
+#include <rpg_chance_dice_XML_parser_base.h>
 
 class RPG_Item_WeaponCategory_Type_pimpl: public virtual RPG_Item_WeaponCategory_Type_pskel,
   public ::xml_schema::string_pimpl

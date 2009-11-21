@@ -18,6 +18,7 @@ libRPG_Item_la_SOURCES = rpg_XMLSchema.h rpg_item_XML_parser.cpp \
 libRPG_Item_la_LDFLAGS = -L/usr/local/lib
 noinst_PROGRAMS = parser
 parser_SOURCES = main.cpp
-parser_LDADD = $(top_builddir)/libRPG_Item.la -lRPG_Chance_Dice -lACE -lpthread \
-	-lxerces-c
+parser_LDADD = $(top_builddir)/libRPG_Item.la -lACE -lpthread -lxerces-c \
+	-lRPG_Chance_Dice
 parser_LDFLAGS = -L/usr/local/lib
+noinst_HEADERS = rpg_XMLSchema.h

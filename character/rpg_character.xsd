@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xsd:schema targetNamespace="urn:rpg_character"
-            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            xmlns:rpg_chance_dice="urn:rpg_chance_dice"
-            xmlns:rpg_item="urn:rpg_item"
-            xmlns="urn:rpg_character"
-            elementFormDefault="unqualified">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="urn:rpg"
+            xmlns="urn:rpg"
+            elementFormDefault="qualified"
+            attributeFormDefault="qualified">
 
+  <!-- include chance_dice schema -->
+  <xsd:include schemaLocation="rpg_chance_dice.xsd"/>
+  <!-- include item schema -->
+  <xsd:include schemaLocation="rpg_item.xsd"/>
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
-  <!-- import chance_dice schema (as declared above) -->
-  <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/>
-  <!-- import item schema (as declared above) -->
-  <xsd:import namespace="urn:rpg_item" schemaLocation="../item/rpg_item.xsd"/>
+<!--   import chance_dice schema (as declared above) -->
+<!--   <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/> -->
+<!--   import item schema (as declared above) -->
+<!--   <xsd:import namespace="urn:rpg_item" schemaLocation="../item/rpg_item.xsd"/> -->
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
@@ -113,7 +116,8 @@
       <xsd:element name="monsterWeapon" type="RPG_Character_MonsterWeapon_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackBonus" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackForm" type="RPG_Character_MonsterAttackForm_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="damage" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
+<!--      <xsd:element name="damage" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>-->
+      <xsd:element name="damage" type="RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="numAttacksPerRound" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -438,7 +442,8 @@
   <xsd:complexType name="RPG_Character_MonsterAdvancementStep_Type">
     <xsd:sequence>
       <xsd:element name="size" type="RPG_Character_Size_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="range" type="rpg_chance_dice:RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/>
+<!--       <xsd:element name="range" type="rpg_chance_dice:RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/> -->
+      <xsd:element name="range" type="RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -453,7 +458,8 @@
       <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="size" type="RPG_Character_Size_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="type" type="RPG_Character_MonsterType_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="hitDice" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
+<!--       <xsd:element name="hitDice" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/> -->
+      <xsd:element name="hitDice" type="RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="initiative" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="speed" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="armorClass" type="RPG_Character_MonsterArmorClass_Type" minOccurs="1" maxOccurs="1"/>

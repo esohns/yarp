@@ -29,6 +29,8 @@ LT_INIT
 AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lpthread':
 AC_CHECK_LIB([pthread], [main])
+# FIXME: Replace `main' with a function in `-lxerces-c':
+AC_CHECK_LIB([xerces-c], [main])
 
 # Checks for header files.
 

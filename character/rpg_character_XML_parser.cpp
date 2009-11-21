@@ -28,16 +28,16 @@
 
 #include <ace/Log_Msg.h>
 
-RPG_Character_Dictionary_Parser::RPG_Character_Dictionary_Parser(RPG_Character_MonsterDictionary_t* monsterDictionary_in)
+RPG_Character_Dictionary_Type::RPG_Character_Dictionary_Type(RPG_Character_MonsterDictionary_t* monsterDictionary_in)
  : myMonsterDictionary(monsterDictionary_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary_Parser::RPG_Character_Dictionary_Parser"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary_Type::RPG_Character_Dictionary_Type"));
 
 }
 
-RPG_Character_Dictionary_Parser::~RPG_Character_Dictionary_Parser()
+RPG_Character_Dictionary_Type::~RPG_Character_Dictionary_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary_Parser::~RPG_Character_Dictionary_Parser"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary_Type::~RPG_Character_Dictionary_Type"));
 
 }
 
@@ -55,14 +55,14 @@ RPG_Character_Dictionary_Parser::~RPG_Character_Dictionary_Parser()
 //   //
 // }
 
-void RPG_Character_Dictionary_Parser::post_RPG_Character_Dictionary_Type()
+void RPG_Character_Dictionary_Type::post_RPG_Character_Dictionary_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary_Parser::post_RPG_Character_Dictionary_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary_Type::post_RPG_Character_Dictionary_Type"));
 
-//   // debug info
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("finished parsing character dictionary, retrieved %d monster types...\n"),
-//              myMonsterDictionary->size()));
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("finished parsing character dictionary, retrieved %d monster types...\n"),
+             myMonsterDictionary->size()));
 }
 
 RPG_Character_MonsterDictionary_Type::RPG_Character_MonsterDictionary_Type(RPG_Character_MonsterDictionary_t* monsterDictionary_in)
@@ -111,10 +111,10 @@ void RPG_Character_MonsterDictionary_Type::post_RPG_Character_MonsterDictionary_
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterDictionary_Type::post_RPG_Character_MonsterDictionary_Type"));
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished parsing monster dictionary, retrieved %d types...\n"),
-             myMonsterDictionary->size()));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("finished parsing monster dictionary, retrieved %d types...\n"),
+//              myMonsterDictionary->size()));
 }
 
 RPG_Character_Size RPG_Character_Size_Type::post_RPG_Character_Size_Type()

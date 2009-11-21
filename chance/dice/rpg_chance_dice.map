@@ -1,4 +1,4 @@
-namespace urn:rpg_chance_dice
+namespace urn:rpg
 {
   include "rpg_chance_dice_common.h";
 

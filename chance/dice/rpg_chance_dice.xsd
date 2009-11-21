@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xsd:schema targetNamespace="urn:rpg_chance_dice"
+<xsd:schema targetNamespace="urn:rpg"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            xmlns="urn:rpg_chance_dice"
-            elementFormDefault="unqualified">
+            xmlns="urn:rpg"
+            elementFormDefault="qualified"
+            attributeFormDefault="qualified">
 
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
   <!-- import item schema (as declared above) -->

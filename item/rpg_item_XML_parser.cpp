@@ -64,11 +64,11 @@ void RPG_Item_Dictionary_Type::post_RPG_Item_Dictionary_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::post_RPG_Item_Dictionary_Type"));
 
-//   // debug info
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("finished parsing item dictionary, retrieved %d weapon and %d armor types...\n"),
-//              myWeaponDictionary->size(),
-//              myArmorDictionary->size()));
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("finished parsing item dictionary, retrieved %d weapon and %d armor types...\n"),
+             myWeaponDictionary->size(),
+             myArmorDictionary->size()));
 }
 
 RPG_Item_WeaponDictionary_Type::RPG_Item_WeaponDictionary_Type(RPG_Item_WeaponDictionary_t* weaponDictionary_in)

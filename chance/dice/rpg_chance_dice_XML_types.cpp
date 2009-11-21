@@ -73,8 +73,7 @@ RPG_Chance_DiceRoll_Type_pskel::
 RPG_Chance_DiceRoll_Type_pskel ()
 : numDice_parser_ (0),
   typeDice_parser_ (0),
-  modifier_parser_ (0),
-  v_state_stack_ (sizeof (v_state_), &v_state_first_)
+  modifier_parser_ (0)
 {
 }
 
@@ -104,8 +103,7 @@ parsers (::xml_schema::integer_pskel& begin,
 RPG_Chance_ValueRange_Type_pskel::
 RPG_Chance_ValueRange_Type_pskel ()
 : begin_parser_ (0),
-  end_parser_ (0),
-  v_state_stack_ (sizeof (v_state_), &v_state_first_)
+  end_parser_ (0)
 {
 }
 
@@ -127,6 +125,83 @@ modifier (long long)
 {
 }
 
+bool RPG_Chance_DiceRoll_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "numDice" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->numDice_parser_;
+
+    if (this->numDice_parser_)
+      this->numDice_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "typeDice" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->typeDice_parser_;
+
+    if (this->typeDice_parser_)
+      this->typeDice_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "modifier" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->modifier_parser_;
+
+    if (this->modifier_parser_)
+      this->modifier_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Chance_DiceRoll_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "numDice" && ns == "urn:rpg")
+  {
+    if (this->numDice_parser_)
+      this->numDice (this->numDice_parser_->post_unsigned_int ());
+
+    return true;
+  }
+
+  if (n == "typeDice" && ns == "urn:rpg")
+  {
+    if (this->typeDice_parser_)
+      this->typeDice (this->typeDice_parser_->post_RPG_Chance_DiceType_Type ());
+
+    return true;
+  }
+
+  if (n == "modifier" && ns == "urn:rpg")
+  {
+    if (this->modifier_parser_)
+      this->modifier (this->modifier_parser_->post_integer ());
+
+    return true;
+  }
+
+  return false;
+}
+
 // RPG_Chance_ValueRange_Type_pskel
 //
 
@@ -140,265 +215,6 @@ end (long long)
 {
 }
 
-#include <cassert>
-
-// Element validation and dispatch functions for RPG_Chance_DiceRoll_Type_pskel.
-//
-bool RPG_Chance_DiceRoll_Type_pskel::
-_start_element_impl (const ::xml_schema::ro_string& ns,
-                     const ::xml_schema::ro_string& n,
-                     const ::xml_schema::ro_string* t)
-{
-  XSD_UNUSED (t);
-
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
-
-  if (vd->func == 0 && vd->state == 0)
-  {
-    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
-      return true;
-    else
-      vd->state = 1;
-  }
-
-  while (vd->func != 0)
-  {
-    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
-
-    vd = vs.data + (vs.size - 1);
-
-    if (vd->state == ~0UL)
-      vd = vs.data + (--vs.size - 1);
-    else
-      break;
-  }
-
-  if (vd->func == 0)
-  {
-    if (vd->state != ~0UL)
-    {
-      unsigned long s = ~0UL;
-
-      if (n == "numDice" && ns.empty ())
-        s = 0UL;
-
-      if (s != ~0UL)
-      {
-        vd->count++;
-        vd->state = ~0UL;
-
-        vd = vs.data + vs.size++;
-        vd->func = &RPG_Chance_DiceRoll_Type_pskel::sequence_0;
-        vd->state = s;
-        vd->count = 0;
-
-        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
-      }
-      else
-      {
-        if (vd->count < 1UL)
-          this->_expected_element (
-            "", "numDice",
-            ns, n);
-        return false;
-      }
-    }
-    else
-      return false;
-  }
-
-  return true;
-}
-
-bool RPG_Chance_DiceRoll_Type_pskel::
-_end_element_impl (const ::xml_schema::ro_string& ns,
-                   const ::xml_schema::ro_string& n)
-{
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size - 1];
-
-  if (vd.func == 0 && vd.state == 0)
-  {
-    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
-      assert (false);
-    return true;
-  }
-
-  assert (vd.func != 0);
-  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
-
-  if (vd.state == ~0UL)
-    vs.size--;
-
-  return true;
-}
-
-void RPG_Chance_DiceRoll_Type_pskel::
-_pre_e_validate ()
-{
-  this->v_state_stack_.push ();
-  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
-
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size++];
-
-  vd.func = 0;
-  vd.state = 0;
-  vd.count = 0;
-}
-
-void RPG_Chance_DiceRoll_Type_pskel::
-_post_e_validate ()
-{
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
-
-  ::xml_schema::ro_string empty;
-  while (vd->func != 0)
-  {
-    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
-    assert (vd->state == ~0UL);
-    vd = vs.data + (--vs.size - 1);
-  }
-
-  if (vd->count < 1UL)
-    this->_expected_element (
-      "", "numDice");
-
-  this->v_state_stack_.pop ();
-}
-
-void RPG_Chance_DiceRoll_Type_pskel::
-sequence_0 (unsigned long& state,
-            unsigned long& count,
-            const ::xml_schema::ro_string& ns,
-            const ::xml_schema::ro_string& n,
-            const ::xml_schema::ro_string* t,
-            bool start)
-{
-  XSD_UNUSED (t);
-
-  switch (state)
-  {
-    case 0UL:
-    {
-      if (n == "numDice" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->numDice_parser_;
-
-          if (this->numDice_parser_)
-            this->numDice_parser_->pre ();
-        }
-        else
-        {
-          if (this->numDice_parser_)
-          {
-            unsigned int tmp (this->numDice_parser_->post_unsigned_int ());
-            this->numDice (tmp);
-          }
-
-          count = 0;
-          state = 1UL;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "numDice",
-            ns, n);
-        count = 0;
-        state = 1UL;
-        // Fall through.
-      }
-    }
-    case 1UL:
-    {
-      if (n == "typeDice" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->typeDice_parser_;
-
-          if (this->typeDice_parser_)
-            this->typeDice_parser_->pre ();
-        }
-        else
-        {
-          if (this->typeDice_parser_)
-          {
-            const RPG_Chance_DiceType& tmp (this->typeDice_parser_->post_RPG_Chance_DiceType_Type ());
-            this->typeDice (tmp);
-          }
-
-          count = 0;
-          state = 2UL;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "typeDice",
-            ns, n);
-        count = 0;
-        state = 2UL;
-        // Fall through.
-      }
-    }
-    case 2UL:
-    {
-      if (n == "modifier" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->modifier_parser_;
-
-          if (this->modifier_parser_)
-            this->modifier_parser_->pre ();
-        }
-        else
-        {
-          if (this->modifier_parser_)
-          {
-            long long tmp (this->modifier_parser_->post_integer ());
-            this->modifier (tmp);
-          }
-
-          count = 0;
-          state = ~0UL;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "modifier",
-            ns, n);
-        count = 0;
-        state = ~0UL;
-        // Fall through.
-      }
-    }
-    case ~0UL:
-      break;
-  }
-}
-
-// Element validation and dispatch functions for RPG_Chance_ValueRange_Type_pskel.
-//
 bool RPG_Chance_ValueRange_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
@@ -406,213 +222,56 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 {
   XSD_UNUSED (t);
 
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
 
-  if (vd->func == 0 && vd->state == 0)
+  if (n == "begin" && ns == "urn:rpg")
   {
-    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
-      return true;
-    else
-      vd->state = 1;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->begin_parser_;
+
+    if (this->begin_parser_)
+      this->begin_parser_->pre ();
+
+    return true;
   }
 
-  while (vd->func != 0)
+  if (n == "end" && ns == "urn:rpg")
   {
-    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->end_parser_;
 
-    vd = vs.data + (vs.size - 1);
+    if (this->end_parser_)
+      this->end_parser_->pre ();
 
-    if (vd->state == ~0UL)
-      vd = vs.data + (--vs.size - 1);
-    else
-      break;
+    return true;
   }
 
-  if (vd->func == 0)
-  {
-    if (vd->state != ~0UL)
-    {
-      unsigned long s = ~0UL;
-
-      if (n == "begin" && ns.empty ())
-        s = 0UL;
-
-      if (s != ~0UL)
-      {
-        vd->count++;
-        vd->state = ~0UL;
-
-        vd = vs.data + vs.size++;
-        vd->func = &RPG_Chance_ValueRange_Type_pskel::sequence_0;
-        vd->state = s;
-        vd->count = 0;
-
-        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
-      }
-      else
-      {
-        if (vd->count < 1UL)
-          this->_expected_element (
-            "", "begin",
-            ns, n);
-        return false;
-      }
-    }
-    else
-      return false;
-  }
-
-  return true;
+  return false;
 }
 
 bool RPG_Chance_ValueRange_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size - 1];
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
 
-  if (vd.func == 0 && vd.state == 0)
+  if (n == "begin" && ns == "urn:rpg")
   {
-    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
-      assert (false);
+    if (this->begin_parser_)
+      this->begin (this->begin_parser_->post_integer ());
+
     return true;
   }
 
-  assert (vd.func != 0);
-  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
-
-  if (vd.state == ~0UL)
-    vs.size--;
-
-  return true;
-}
-
-void RPG_Chance_ValueRange_Type_pskel::
-_pre_e_validate ()
-{
-  this->v_state_stack_.push ();
-  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
-
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size++];
-
-  vd.func = 0;
-  vd.state = 0;
-  vd.count = 0;
-}
-
-void RPG_Chance_ValueRange_Type_pskel::
-_post_e_validate ()
-{
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
-
-  ::xml_schema::ro_string empty;
-  while (vd->func != 0)
+  if (n == "end" && ns == "urn:rpg")
   {
-    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
-    assert (vd->state == ~0UL);
-    vd = vs.data + (--vs.size - 1);
+    if (this->end_parser_)
+      this->end (this->end_parser_->post_integer ());
+
+    return true;
   }
 
-  if (vd->count < 1UL)
-    this->_expected_element (
-      "", "begin");
-
-  this->v_state_stack_.pop ();
-}
-
-void RPG_Chance_ValueRange_Type_pskel::
-sequence_0 (unsigned long& state,
-            unsigned long& count,
-            const ::xml_schema::ro_string& ns,
-            const ::xml_schema::ro_string& n,
-            const ::xml_schema::ro_string* t,
-            bool start)
-{
-  XSD_UNUSED (t);
-
-  switch (state)
-  {
-    case 0UL:
-    {
-      if (n == "begin" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->begin_parser_;
-
-          if (this->begin_parser_)
-            this->begin_parser_->pre ();
-        }
-        else
-        {
-          if (this->begin_parser_)
-          {
-            long long tmp (this->begin_parser_->post_integer ());
-            this->begin (tmp);
-          }
-
-          count = 0;
-          state = 1UL;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "begin",
-            ns, n);
-        count = 0;
-        state = 1UL;
-        // Fall through.
-      }
-    }
-    case 1UL:
-    {
-      if (n == "end" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->end_parser_;
-
-          if (this->end_parser_)
-            this->end_parser_->pre ();
-        }
-        else
-        {
-          if (this->end_parser_)
-          {
-            long long tmp (this->end_parser_->post_integer ());
-            this->end (tmp);
-          }
-
-          count = 0;
-          state = ~0UL;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "end",
-            ns, n);
-        count = 0;
-        state = ~0UL;
-        // Fall through.
-      }
-    }
-    case ~0UL:
-      break;
-  }
+  return false;
 }
 
 // Begin epilogue.

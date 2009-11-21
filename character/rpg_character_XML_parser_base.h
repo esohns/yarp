@@ -10,9 +10,9 @@
 
 #include "rpg_character_XML_types.h"
 
-#include "../chance/dice/rpg_chance_dice_XML_parser_base.h"
+#include "rpg_chance_dice_XML_parser_base.h"
 
-#include "../item/rpg_item_XML_parser_base.h"
+#include "rpg_item_XML_parser_base.h"
 
 class RPG_Character_MonsterMetaType_Type_pimpl: public virtual RPG_Character_MonsterMetaType_Type_pskel,
   public ::xml_schema::string_pimpl

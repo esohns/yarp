@@ -23,6 +23,7 @@
 #include "rpg_character_monster_common_tools.h"
 
 #include <rpg_chance_dice.h>
+#include <rpg_chance_dice_XML_parser.h>
 
 #include <ace/Log_Msg.h>
 
@@ -144,12 +145,13 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
                               unsigned_int_p);
   RPG_Character_MonsterDictionary_Type    monsterDictionary_p(&myMonsterDictionary);
   monsterDictionary_p.parsers(monsterProperties_p);
-  RPG_Character_Dictionary_Parser         characterDictionary_p(&myMonsterDictionary);
+  RPG_Character_Dictionary_Type           characterDictionary_p(&myMonsterDictionary);
   characterDictionary_p.parsers(monsterDictionary_p);
 
   // Parse the document to obtain the object model.
   //
   ::xml_schema::document doc_p(characterDictionary_p,
+                               ACE_TEXT_ALWAYS_CHAR("urn:rpg"),
                                ACE_TEXT_ALWAYS_CHAR("RPG_Character_Dictionary"));
 
   characterDictionary_p.pre();
@@ -157,7 +159,8 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
   // OK: parse the file...
   try
   {
-    doc_p.parse(filename_in);
+    doc_p.parse(filename_in,
+                myXSDErrorHandler);
   }
   catch(const ::xml_schema::parsing& exception)
   {
@@ -178,10 +181,10 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
 
   characterDictionary_p.post_RPG_Character_Dictionary_Type();
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished parsing character dictionary file \"%s\"...\n"),
-             filename_in.c_str()));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("finished parsing character dictionary file \"%s\"...\n"),
+//              filename_in.c_str()));
 }
 
 const RPG_Character_MonsterProperties RPG_Character_Dictionary::getMonsterProperties(const std::string& monsterName_in) const
@@ -387,4 +390,72 @@ void RPG_Character_Dictionary::organizationToRoll(const RPG_Character_Organizati
       break;
     }
   } // end SWITCH
+}
+
+bool RPG_Character_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
+                                                         unsigned long line_in,
+                                                         unsigned long column_in,
+                                                         ::xml_schema::error_handler::severity severity_in,
+                                                         const std::string& message_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary::XSD_Error_Handler::handle"));
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+             id_in.c_str(),
+             line_in,
+             column_in,
+             message_in.c_str()));
+
+  switch (severity_in)
+  {
+    case ::xml_schema::error_handler::severity::warning:
+    {
+      ACE_DEBUG((LM_WARNING,
+                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 id_in.c_str(),
+                 line_in,
+                 column_in,
+                 message_in.c_str()));
+
+      break;
+    }
+    case ::xml_schema::error_handler::severity::error:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 id_in.c_str(),
+                 line_in,
+                 column_in,
+                 message_in.c_str()));
+
+      break;
+    }
+    case ::xml_schema::error_handler::severity::fatal:
+    {
+      ACE_DEBUG((LM_CRITICAL,
+                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 id_in.c_str(),
+                 line_in,
+                 column_in,
+                 message_in.c_str()));
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 id_in.c_str(),
+                 line_in,
+                 column_in,
+                 message_in.c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  // try to continue anyway...
+  return true;
 }

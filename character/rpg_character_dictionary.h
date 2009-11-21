@@ -21,6 +21,7 @@
 #define RPG_CHARACTER_DICTIONARY_H
 
 #include "rpg_character_monster_common.h"
+#include "rpg_XMLSchema.h"
 
 #include <rpg_chance_dice_common.h>
 
@@ -55,11 +56,24 @@ class RPG_Character_Dictionary
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Dictionary(const RPG_Character_Dictionary&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Dictionary& operator=(const RPG_Character_Dictionary&));
 
+  // private error handler
+  class XSD_Error_Handler
+   : public ::xml_schema::error_handler
+  {
+   public:
+    virtual bool handle(const std::string&,                    // id
+                        unsigned long,                         // line
+                        unsigned long,                         // column
+                        ::xml_schema::error_handler::severity, // severity
+                        const std::string&);                   // message
+  };
+
   // helper methods
   void organizationToRoll(const RPG_Character_Organization&, // organization
                           RPG_Chance_DiceRoll&) const;       // return value: roll
 
   RPG_Character_MonsterDictionary_t myMonsterDictionary;
+  XSD_Error_Handler                 myXSDErrorHandler;
 };
 
 typedef ACE_Singleton<RPG_Character_Dictionary,

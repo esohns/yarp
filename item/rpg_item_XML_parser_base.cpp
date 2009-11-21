@@ -5,7 +5,7 @@
 // programs without any restrictions.
 //
 
-#include "rpg_item_XML_parser_base.h"
+#include <rpg_item_XML_parser_base.h>
 
 // RPG_Item_WeaponCategory_Type_pimpl
 //

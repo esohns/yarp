@@ -133,43 +133,6 @@ class RPG_Chance_DiceRoll_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_int_pskel* numDice_parser_;
   ::RPG_Chance_DiceType_Type_pskel* typeDice_parser_;
   ::xml_schema::integer_pskel* modifier_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Chance_DiceRoll_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Chance_ValueRange_Type_pskel: public ::xml_schema::complex_content
@@ -220,43 +183,6 @@ class RPG_Chance_ValueRange_Type_pskel: public ::xml_schema::complex_content
   protected:
   ::xml_schema::integer_pskel* begin_parser_;
   ::xml_schema::integer_pskel* end_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Chance_ValueRange_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 #include <xsd/cxx/post.hxx>

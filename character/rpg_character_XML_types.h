@@ -84,16 +84,16 @@ class RPG_Character_Dictionary_Type_pskel;
 #define XSD_CXX_PARSER_USE_CHAR
 #endif
 
-#include "rpg_XMLSchema_XML_types.h"
+#include "rpg_XMLSchema.h"
 
 #include <rpg_chance_dice_common.h>
 #include "rpg_character_skills_common.h"
 #include "rpg_character_monster_common.h"
 #include "rpg_character_common.h"
 
-#include "../chance/dice/rpg_chance_dice_XML_types.h"
+#include "rpg_chance_dice_XML_types.h"
 
-#include "../item/rpg_item_XML_types.h"
+#include "rpg_item_XML_types.h"
 
 class RPG_Character_MonsterMetaType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
@@ -167,43 +167,6 @@ class RPG_Character_MonsterType_Type_pskel: public ::xml_schema::complex_content
   protected:
   ::RPG_Character_MonsterMetaType_Type_pskel* metaType_parser_;
   ::RPG_Character_MonsterSubType_Type_pskel* subType_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_MonsterType_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Character_MonsterArmorClass_Type_pskel: public ::xml_schema::complex_content
@@ -262,43 +225,6 @@ class RPG_Character_MonsterArmorClass_Type_pskel: public ::xml_schema::complex_c
   ::xml_schema::unsigned_int_pskel* normal_parser_;
   ::xml_schema::unsigned_int_pskel* touch_parser_;
   ::xml_schema::unsigned_int_pskel* flatFooted_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_MonsterArmorClass_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Character_MonsterWeapon_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -397,43 +323,6 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   ::RPG_Character_MonsterAttackForm_Type_pskel* attackForm_parser_;
   ::RPG_Chance_DiceRoll_Type_pskel* damage_parser_;
   ::xml_schema::unsigned_int_pskel* numAttacksPerRound_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_MonsterAttackAction_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Character_MonsterAttack_Type_pskel: public ::xml_schema::complex_content
@@ -492,43 +381,6 @@ class RPG_Character_MonsterAttack_Type_pskel: public ::xml_schema::complex_conte
   ::xml_schema::integer_pskel* baseAttackBonus_parser_;
   ::xml_schema::integer_pskel* grappleBonus_parser_;
   ::RPG_Character_MonsterAttackAction_Type_pskel* attackAction_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_MonsterAttack_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Character_Size_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -599,43 +451,6 @@ class RPG_Character_SavingThrowModifiers_Type_pskel: public ::xml_schema::comple
   ::xml_schema::integer_pskel* fortitude_parser_;
   ::xml_schema::integer_pskel* reflex_parser_;
   ::xml_schema::integer_pskel* will_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_SavingThrowModifiers_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Character_Attributes_Type_pskel: public ::xml_schema::complex_content
@@ -718,43 +533,6 @@ class RPG_Character_Attributes_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_int_pskel* intelligence_parser_;
   ::xml_schema::unsigned_int_pskel* wisdom_parser_;
   ::xml_schema::unsigned_int_pskel* charisma_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_Attributes_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Character_Skill_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -817,43 +595,6 @@ class RPG_Character_SkillValue_Type_pskel: public ::xml_schema::complex_content
   protected:
   ::RPG_Character_Skill_Type_pskel* skill_parser_;
   ::xml_schema::integer_pskel* rank_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_SkillValue_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Character_Skills_Type_pskel: public ::xml_schema::complex_content
@@ -896,43 +637,6 @@ class RPG_Character_Skills_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::RPG_Character_SkillValue_Type_pskel* skill_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_Skills_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Character_Feat_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -987,43 +691,6 @@ class RPG_Character_Feats_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::RPG_Character_Feat_Type_pskel* feat_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_Feats_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Character_Environment_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -1122,43 +789,6 @@ class RPG_Character_Alignment_Type_pskel: public ::xml_schema::complex_content
   protected:
   ::RPG_Character_AlignmentCivic_Type_pskel* civic_parser_;
   ::RPG_Character_AlignmentEthic_Type_pskel* ethic_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_Alignment_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Character_MonsterAdvancementStep_Type_pskel: public ::xml_schema::complex_content
@@ -1209,43 +839,6 @@ class RPG_Character_MonsterAdvancementStep_Type_pskel: public ::xml_schema::comp
   protected:
   ::RPG_Character_Size_Type_pskel* size_parser_;
   ::RPG_Chance_ValueRange_Type_pskel* range_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_MonsterAdvancementStep_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Character_MonsterAdvancement_Type_pskel: public ::xml_schema::complex_content
@@ -1288,43 +881,6 @@ class RPG_Character_MonsterAdvancement_Type_pskel: public ::xml_schema::complex_
 
   protected:
   ::RPG_Character_MonsterAdvancementStep_Type_pskel* step_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_MonsterAdvancement_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_content
@@ -1527,43 +1083,6 @@ class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_c
   ::RPG_Character_Alignment_Type_pskel* alignment_parser_;
   ::RPG_Character_MonsterAdvancement_Type_pskel* advancement_parser_;
   ::xml_schema::unsigned_int_pskel* levelAdjustment_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_MonsterProperties_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Character_MonsterDictionary_Type_pskel: public ::xml_schema::complex_content
@@ -1606,43 +1125,6 @@ class RPG_Character_MonsterDictionary_Type_pskel: public ::xml_schema::complex_c
 
   protected:
   ::RPG_Character_MonsterProperties_Type_pskel* monster_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_MonsterDictionary_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Character_Dictionary_Type_pskel: public ::xml_schema::complex_content
@@ -1685,43 +1167,6 @@ class RPG_Character_Dictionary_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::RPG_Character_MonsterDictionary_Type_pskel* RPG_Character_MonsterDictionary_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Character_Dictionary_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 #include <xsd/cxx/post.hxx>
