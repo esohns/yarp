@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_character_dictionary_parser.h"
+#include "rpg_character_XML_parser.h"
 
 #include "rpg_character_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
@@ -171,92 +171,6 @@ RPG_Character_MonsterSubType RPG_Character_MonsterSubType_Type::post_RPG_Charact
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterSubType_Type::post_RPG_Character_MonsterSubType_Type"));
 
   return RPG_Character_Monster_Common_Tools::stringToMonsterSubType(post_string());
-}
-
-RPG_Chance_DiceType RPG_Chance_DiceType_Type::post_RPG_Chance_DiceType_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceType_Type::post_RPG_Chance_DiceType_Type"));
-
-  return RPG_Chance_Dice_Common_Tools::stringToDiceType(post_string());
-}
-
-RPG_Chance_DiceRoll_Type::RPG_Chance_DiceRoll_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::RPG_Chance_DiceRoll_Type"));
-
-  myCurrentRoll.numDice = 0;
-  myCurrentRoll.typeDice = D_TYPE_INVALID;
-  myCurrentRoll.modifier = 0;
-}
-
-void RPG_Chance_DiceRoll_Type::numDice(unsigned int numDice_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::numDice"));
-
-  myCurrentRoll.numDice = numDice_in;
-}
-
-void RPG_Chance_DiceRoll_Type::typeDice(const RPG_Chance_DiceType& typeDice_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::typeDice"));
-
-  myCurrentRoll.typeDice = typeDice_in;
-}
-
-void RPG_Chance_DiceRoll_Type::modifier(long long modifier_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::modifier"));
-
-  myCurrentRoll.modifier = modifier_in;
-}
-
-RPG_Chance_DiceRoll RPG_Chance_DiceRoll_Type::post_RPG_Chance_DiceRoll_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::post_RPG_Chance_DiceRoll_Type"));
-
-  RPG_Chance_DiceRoll result = myCurrentRoll;
-
-  // clear structure
-  myCurrentRoll.numDice = 0;
-  myCurrentRoll.typeDice = D_TYPE_INVALID;
-  myCurrentRoll.modifier = 0;
-
-  return result;
-}
-
-RPG_Chance_ValueRange_Type::RPG_Chance_ValueRange_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_ValueRange_Type::RPG_Chance_ValueRange_Type"));
-
-  myCurrentRange.begin = 0;
-  myCurrentRange.end = 0;
-}
-
-void RPG_Chance_ValueRange_Type::begin(long long begin_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_ValueRange_Type::begin"));
-
-  myCurrentRange.begin = begin_in;
-}
-
-void RPG_Chance_ValueRange_Type::end(long long end_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_ValueRange_Type::end"));
-
-  myCurrentRange.end = end_in;
-}
-
-RPG_Chance_ValueRange RPG_Chance_ValueRange_Type::post_RPG_Chance_ValueRange_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_ValueRange_Type::post_RPG_Chance_ValueRange_Type"));
-
-  RPG_Chance_ValueRange result = myCurrentRange;
-
-  // clear structure
-  myCurrentRange.begin = 0;
-  myCurrentRange.end = 0;
-
-  return result;
 }
 
 RPG_Character_MonsterWeapon RPG_Character_MonsterWeapon_Type::post_RPG_Character_MonsterWeapon_Type()

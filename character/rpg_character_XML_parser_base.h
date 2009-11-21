@@ -5,10 +5,14 @@
 // programs without any restrictions.
 //
 
-#ifndef CXX___RPG_CHARACTER_DICTIONARY_PARSER_BASE_H
-#define CXX___RPG_CHARACTER_DICTIONARY_PARSER_BASE_H
+#ifndef CXX___RPG_CHARACTER_XML_PARSER_BASE_H
+#define CXX___RPG_CHARACTER_XML_PARSER_BASE_H
 
-#include "rpg_character_dictionary_types.h"
+#include "rpg_character_XML_types.h"
+
+#include "../chance/dice/rpg_chance_dice_XML_parser_base.h"
+
+#include "../item/rpg_item_XML_parser_base.h"
 
 class RPG_Character_MonsterMetaType_Type_pimpl: public virtual RPG_Character_MonsterMetaType_Type_pskel,
   public ::xml_schema::string_pimpl
@@ -87,52 +91,6 @@ class RPG_Character_MonsterAttackForm_Type_pimpl: public virtual RPG_Character_M
 
   virtual RPG_Character_MonsterAttackForm
   post_RPG_Character_MonsterAttackForm_Type ();
-};
-
-class RPG_Chance_DiceType_Type_pimpl: public virtual RPG_Chance_DiceType_Type_pskel,
-  public ::xml_schema::string_pimpl
-{
-  public:
-  virtual void
-  pre ();
-
-  virtual RPG_Chance_DiceType
-  post_RPG_Chance_DiceType_Type ();
-};
-
-class RPG_Chance_DiceRoll_Type_pimpl: public virtual RPG_Chance_DiceRoll_Type_pskel
-{
-  public:
-  virtual void
-  pre ();
-
-  virtual void
-  numDice (unsigned int);
-
-  virtual void
-  typeDice (const RPG_Chance_DiceType&);
-
-  virtual void
-  modifier (long long);
-
-  virtual RPG_Chance_DiceRoll
-  post_RPG_Chance_DiceRoll_Type ();
-};
-
-class RPG_Chance_ValueRange_Type_pimpl: public virtual RPG_Chance_ValueRange_Type_pskel
-{
-  public:
-  virtual void
-  pre ();
-
-  virtual void
-  begin (long long);
-
-  virtual void
-  end (long long);
-
-  virtual RPG_Chance_ValueRange
-  post_RPG_Chance_ValueRange_Type ();
 };
 
 class RPG_Character_MonsterAttackAction_Type_pimpl: public virtual RPG_Character_MonsterAttackAction_Type_pskel
@@ -489,4 +447,4 @@ class RPG_Character_Dictionary_Type_pimpl: public virtual RPG_Character_Dictiona
   post_RPG_Character_Dictionary_Type ();
 };
 
-#endif // CXX___RPG_CHARACTER_DICTIONARY_PARSER_BASE_H
+#endif // CXX___RPG_CHARACTER_XML_PARSER_BASE_H

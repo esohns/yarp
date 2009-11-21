@@ -1,0 +1,8 @@
+namespace urn:rpg_chance_dice
+{
+  include "rpg_chance_dice_common.h";
+
+  RPG_Chance_DiceType_Type   RPG_Chance_DiceType;
+  RPG_Chance_DiceRoll_Type   RPG_Chance_DiceRoll;
+  RPG_Chance_ValueRange_Type RPG_Chance_ValueRange;
+}

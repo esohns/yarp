@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- <!DOCTYPE RPG_Item_Dictionary SYSTEM "./rpg_item.xsd"> -->
-<RPG_Item_Dictionary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./rpg_item.xsd">
+
+<RPG_Item_Dictionary
+ xmlns="urn:rpg_character"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ <!--  xsi:noNamespaceSchemaLocation="./rpg_item.xsd" -->
+ xsi:schemaLocation="urn:rpg_item" "../item/rpg_item.xsd">
 
   <RPG_Item_WeaponDictionary>
     <weapon>
@@ -1522,7 +1527,7 @@
       <typeOfDamage>WEAPONDAMAGE_PIERCING</typeOfDamage>
     </weapon>
   </RPG_Item_WeaponDictionary>
-  
+
   <RPG_Item_ArmorDictionary>
     <armor>
       <armorType>ARMOR_PADDED</armorType>
@@ -1777,5 +1782,5 @@
       <baseWeight>45</baseWeight>
     </armor>
   </RPG_Item_ArmorDictionary>
-  
+
 </RPG_Item_Dictionary>

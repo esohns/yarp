@@ -19,8 +19,10 @@
  ***************************************************************************/
 #include "rpg_item_dictionary.h"
 
-#include "rpg_item_dictionary_parser.h"
+#include "rpg_item_XML_parser.h"
 #include "rpg_item_common_tools.h"
+
+#include "rpg_chance_dice_XML_parser.h"
 
 #include <ace/Log_Msg.h>
 
@@ -101,7 +103,7 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
   RPG_Item_ArmorDictionary_Type           armorDictionary_p(&myArmorDictionary);
   armorDictionary_p.parsers(armorProperties_p);
 
-  RPG_Item_Dictionary_Parser              itemDictionary_p(&myWeaponDictionary,
+  RPG_Item_Dictionary_Type                itemDictionary_p(&myWeaponDictionary,
                                                            &myArmorDictionary);
   itemDictionary_p.parsers(weaponDictionary_p,
                            armorDictionary_p);

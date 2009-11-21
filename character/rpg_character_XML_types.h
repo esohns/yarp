@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX___RPG_CHARACTER_DICTIONARY_TYPES_H
-#define CXX___RPG_CHARACTER_DICTIONARY_TYPES_H
+#ifndef CXX___RPG_CHARACTER_XML_TYPES_H
+#define CXX___RPG_CHARACTER_XML_TYPES_H
 
 // Begin prologue.
 //
@@ -55,9 +55,6 @@ class RPG_Character_MonsterType_Type_pskel;
 class RPG_Character_MonsterArmorClass_Type_pskel;
 class RPG_Character_MonsterWeapon_Type_pskel;
 class RPG_Character_MonsterAttackForm_Type_pskel;
-class RPG_Chance_DiceType_Type_pskel;
-class RPG_Chance_DiceRoll_Type_pskel;
-class RPG_Chance_ValueRange_Type_pskel;
 class RPG_Character_MonsterAttackAction_Type_pskel;
 class RPG_Character_MonsterAttack_Type_pskel;
 class RPG_Character_Size_Type_pskel;
@@ -87,12 +84,16 @@ class RPG_Character_Dictionary_Type_pskel;
 #define XSD_CXX_PARSER_USE_CHAR
 #endif
 
-#include "rpg_character_schema_dictionary_types.h"
+#include "rpg_XMLSchema_XML_types.h"
 
 #include <rpg_chance_dice_common.h>
 #include "rpg_character_skills_common.h"
 #include "rpg_character_monster_common.h"
 #include "rpg_character_common.h"
+
+#include "../chance/dice/rpg_chance_dice_XML_types.h"
+
+#include "../item/rpg_item_XML_types.h"
 
 class RPG_Character_MonsterMetaType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
@@ -322,200 +323,6 @@ class RPG_Character_MonsterAttackForm_Type_pskel: public virtual ::xml_schema::s
 
   virtual RPG_Character_MonsterAttackForm
   post_RPG_Character_MonsterAttackForm_Type () = 0;
-};
-
-class RPG_Chance_DiceType_Type_pskel: public virtual ::xml_schema::string_pskel
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual RPG_Chance_DiceType
-  post_RPG_Chance_DiceType_Type () = 0;
-};
-
-class RPG_Chance_DiceRoll_Type_pskel: public ::xml_schema::complex_content
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual void
-  numDice (unsigned int);
-
-  virtual void
-  typeDice (const RPG_Chance_DiceType&);
-
-  virtual void
-  modifier (long long);
-
-  virtual RPG_Chance_DiceRoll
-  post_RPG_Chance_DiceRoll_Type () = 0;
-
-  // Parser construction API.
-  //
-  void
-  numDice_parser (::xml_schema::unsigned_int_pskel&);
-
-  void
-  typeDice_parser (::RPG_Chance_DiceType_Type_pskel&);
-
-  void
-  modifier_parser (::xml_schema::integer_pskel&);
-
-  void
-  parsers (::xml_schema::unsigned_int_pskel& /* numDice */,
-           ::RPG_Chance_DiceType_Type_pskel& /* typeDice */,
-           ::xml_schema::integer_pskel& /* modifier */);
-
-  // Constructor.
-  //
-  RPG_Chance_DiceRoll_Type_pskel ();
-
-  // Implementation.
-  //
-  protected:
-  virtual bool
-  _start_element_impl (const ::xml_schema::ro_string&,
-                       const ::xml_schema::ro_string&,
-                       const ::xml_schema::ro_string*);
-
-  virtual bool
-  _end_element_impl (const ::xml_schema::ro_string&,
-                     const ::xml_schema::ro_string&);
-
-  protected:
-  ::xml_schema::unsigned_int_pskel* numDice_parser_;
-  ::RPG_Chance_DiceType_Type_pskel* typeDice_parser_;
-  ::xml_schema::integer_pskel* modifier_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Chance_DiceRoll_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
-};
-
-class RPG_Chance_ValueRange_Type_pskel: public ::xml_schema::complex_content
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual void
-  begin (long long);
-
-  virtual void
-  end (long long);
-
-  virtual RPG_Chance_ValueRange
-  post_RPG_Chance_ValueRange_Type () = 0;
-
-  // Parser construction API.
-  //
-  void
-  begin_parser (::xml_schema::integer_pskel&);
-
-  void
-  end_parser (::xml_schema::integer_pskel&);
-
-  void
-  parsers (::xml_schema::integer_pskel& /* begin */,
-           ::xml_schema::integer_pskel& /* end */);
-
-  // Constructor.
-  //
-  RPG_Chance_ValueRange_Type_pskel ();
-
-  // Implementation.
-  //
-  protected:
-  virtual bool
-  _start_element_impl (const ::xml_schema::ro_string&,
-                       const ::xml_schema::ro_string&,
-                       const ::xml_schema::ro_string*);
-
-  virtual bool
-  _end_element_impl (const ::xml_schema::ro_string&,
-                     const ::xml_schema::ro_string&);
-
-  protected:
-  ::xml_schema::integer_pskel* begin_parser_;
-  ::xml_schema::integer_pskel* end_parser_;
-
-  protected:
-  struct v_state_descr_
-  {
-    void (::RPG_Chance_ValueRange_Type_pskel::*func) (
-      unsigned long&,
-      unsigned long&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string&,
-      const ::xml_schema::ro_string*,
-      bool);
-    unsigned long state;
-    unsigned long count;
-  };
-
-  struct v_state_
-  {
-    v_state_descr_ data[2UL];
-    unsigned long size;
-  };
-
-  v_state_ v_state_first_;
-  ::xsd::cxx::parser::pod_stack v_state_stack_;
-
-  virtual void
-  _pre_e_validate ();
-
-  virtual void
-  _post_e_validate ();
-
-  void
-  sequence_0 (unsigned long& state,
-              unsigned long& count,
-              const ::xml_schema::ro_string& ns,
-              const ::xml_schema::ro_string& n,
-              const ::xml_schema::ro_string* t,
-              bool start);
 };
 
 class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex_content
@@ -1924,4 +1731,4 @@ class RPG_Character_Dictionary_Type_pskel: public ::xml_schema::complex_content
 //
 // End epilogue.
 
-#endif // CXX___RPG_CHARACTER_DICTIONARY_TYPES_H
+#endif // CXX___RPG_CHARACTER_XML_TYPES_H

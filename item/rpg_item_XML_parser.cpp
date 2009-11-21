@@ -17,53 +17,52 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_item_dictionary_parser.h"
+#include "rpg_item_XML_parser.h"
 
-#include "rpg_chance_dice_common_tools.h"
 #include "rpg_item_common_tools.h"
 
 #include <ace/Log_Msg.h>
 
-RPG_Item_Dictionary_Parser::RPG_Item_Dictionary_Parser(RPG_Item_WeaponDictionary_t* weaponDictionary_in,
-                                                       RPG_Item_ArmorDictionary_t* armorDictionary_in)
+RPG_Item_Dictionary_Type::RPG_Item_Dictionary_Type(RPG_Item_WeaponDictionary_t* weaponDictionary_in,
+                                                   RPG_Item_ArmorDictionary_t* armorDictionary_in)
  : myWeaponDictionary(weaponDictionary_in),
    myArmorDictionary(armorDictionary_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::RPG_Item_Dictionary_Parser"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::RPG_Item_Dictionary_Type"));
 
 }
 
-RPG_Item_Dictionary_Parser::~RPG_Item_Dictionary_Parser()
+RPG_Item_Dictionary_Type::~RPG_Item_Dictionary_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::~RPG_Item_Dictionary_Parser"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::~RPG_Item_Dictionary_Type"));
 
 }
 
-// void RPG_Item_Dictionary_Parser::pre()
+// void RPG_Item_Dictionary_Type::pre()
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::pre"));
+//   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::pre"));
 //
 // }
 
-// void RPG_Item_Dictionary_Parser::RPG_Item_WeaponDictionary()
+// void RPG_Item_Dictionary_Type::RPG_Item_WeaponDictionary()
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::RPG_Item_WeaponDictionary"));
+//   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::RPG_Item_WeaponDictionary"));
 //
 //   // TODO
 //   //
 // }
 //
-// void RPG_Item_Dictionary_Parser::RPG_Item_ArmorDictionary()
+// void RPG_Item_Dictionary_Type::RPG_Item_ArmorDictionary()
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::RPG_Item_ArmorDictionary"));
+//   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::RPG_Item_ArmorDictionary"));
 //
 //   // TODO
 //   //
 // }
 
-void RPG_Item_Dictionary_Parser::post_RPG_Item_Dictionary_Type()
+void RPG_Item_Dictionary_Type::post_RPG_Item_Dictionary_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::post_RPG_Item_Dictionary_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::post_RPG_Item_Dictionary_Type"));
 
 //   // debug info
 //   ACE_DEBUG((LM_DEBUG,
@@ -224,62 +223,6 @@ RPG_Item_StorePrice RPG_Item_StorePrice_Type::post_RPG_Item_StorePrice_Type()
   ACE_TRACE(ACE_TEXT("RPG_Item_StorePrice_Type::post_RPG_Item_StorePrice_Type"));
 
   return myCurrentStorePrice;
-}
-
-// void RPG_Chance_DiceType_Type::pre()
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Chance_DiceType_Type::pre"));
-//
-// }
-
-RPG_Chance_DiceType RPG_Chance_DiceType_Type::post_RPG_Chance_DiceType_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceType_Type::post_RPG_Chance_DiceType_Type"));
-
-  return RPG_Chance_Dice_Common_Tools::stringToDiceType(post_string());
-}
-
-RPG_Chance_DiceRoll_Type::RPG_Chance_DiceRoll_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::RPG_Chance_DiceRoll_Type"));
-
-  myCurrentItemDamage.numDice = 0;
-  myCurrentItemDamage.typeDice = D_TYPE_INVALID;
-  myCurrentItemDamage.modifier = 0;
-}
-
-// void RPG_Chance_DiceRoll_Type::pre()
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::pre"));
-//
-// }
-
-void RPG_Chance_DiceRoll_Type::numDice(unsigned int numDice_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::numDice"));
-
-  myCurrentItemDamage.numDice = numDice_in;
-}
-
-void RPG_Chance_DiceRoll_Type::typeDice(const RPG_Chance_DiceType& typeDice_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::typeDice"));
-
-  myCurrentItemDamage.typeDice = typeDice_in;
-}
-
-void RPG_Chance_DiceRoll_Type::modifier(long long modifier_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::modifier"));
-
-  myCurrentItemDamage.modifier = modifier_in;
-}
-
-RPG_Item_Damage RPG_Chance_DiceRoll_Type::post_RPG_Chance_DiceRoll_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::post_RPG_Chance_DiceRoll_Type"));
-
-  return myCurrentItemDamage;
 }
 
 RPG_Item_CriticalHitModifier_Type::RPG_Item_CriticalHitModifier_Type()

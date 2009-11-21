@@ -5,70 +5,7 @@
 // programs without any restrictions.
 //
 
-#include "rpg_item_dictionary_parser_base.h"
-
-// RPG_Item_Dictionary_Type_pimpl
-//
-
-void RPG_Item_Dictionary_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Item_Dictionary_Type_pimpl::
-RPG_Item_WeaponDictionary ()
-{
-}
-
-void RPG_Item_Dictionary_Type_pimpl::
-RPG_Item_ArmorDictionary ()
-{
-}
-
-void RPG_Item_Dictionary_Type_pimpl::
-post_RPG_Item_Dictionary_Type ()
-{
-}
-
-// RPG_Item_WeaponDictionary_Type_pimpl
-//
-
-void RPG_Item_WeaponDictionary_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Item_WeaponDictionary_Type_pimpl::
-weapon (const RPG_Item_WeaponProperties_XML& weapon)
-{
-  // TODO
-  //
-}
-
-void RPG_Item_WeaponDictionary_Type_pimpl::
-post_RPG_Item_WeaponDictionary_Type ()
-{
-}
-
-// RPG_Item_ArmorDictionary_Type_pimpl
-//
-
-void RPG_Item_ArmorDictionary_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Item_ArmorDictionary_Type_pimpl::
-armor (const RPG_Item_ArmorProperties_XML& armor)
-{
-  // TODO
-  //
-}
-
-void RPG_Item_ArmorDictionary_Type_pimpl::
-post_RPG_Item_ArmorDictionary_Type ()
-{
-}
+#include "rpg_item_XML_parser_base.h"
 
 // RPG_Item_WeaponCategory_Type_pimpl
 //
@@ -148,61 +85,6 @@ numSilverPieces (unsigned int numSilverPieces)
 
 RPG_Item_StorePrice RPG_Item_StorePrice_Type_pimpl::
 post_RPG_Item_StorePrice_Type ()
-{
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Chance_DiceType_Type_pimpl
-//
-
-void RPG_Chance_DiceType_Type_pimpl::
-pre ()
-{
-}
-
-RPG_Chance_DiceType RPG_Chance_DiceType_Type_pimpl::
-post_RPG_Chance_DiceType_Type ()
-{
-  const ::std::string& v (post_string ());
-
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Chance_DiceRoll_Type_pimpl
-//
-
-void RPG_Chance_DiceRoll_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Chance_DiceRoll_Type_pimpl::
-numDice (unsigned int numDice)
-{
-  // TODO
-  //
-}
-
-void RPG_Chance_DiceRoll_Type_pimpl::
-typeDice (const RPG_Chance_DiceType& typeDice)
-{
-  // TODO
-  //
-}
-
-void RPG_Chance_DiceRoll_Type_pimpl::
-modifier (long long modifier)
-{
-  // TODO
-  //
-}
-
-RPG_Item_Damage RPG_Chance_DiceRoll_Type_pimpl::
-post_RPG_Chance_DiceRoll_Type ()
 {
   // TODO
   //
@@ -336,6 +218,26 @@ post_RPG_Item_WeaponProperties_Type ()
   // return ... ;
 }
 
+// RPG_Item_WeaponDictionary_Type_pimpl
+//
+
+void RPG_Item_WeaponDictionary_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Item_WeaponDictionary_Type_pimpl::
+weapon (const RPG_Item_WeaponProperties_XML& weapon)
+{
+  // TODO
+  //
+}
+
+void RPG_Item_WeaponDictionary_Type_pimpl::
+post_RPG_Item_WeaponDictionary_Type ()
+{
+}
+
 // RPG_Item_ArmorCategory_Type_pimpl
 //
 
@@ -449,5 +351,48 @@ post_RPG_Item_ArmorProperties_Type ()
   // TODO
   //
   // return ... ;
+}
+
+// RPG_Item_ArmorDictionary_Type_pimpl
+//
+
+void RPG_Item_ArmorDictionary_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Item_ArmorDictionary_Type_pimpl::
+armor (const RPG_Item_ArmorProperties_XML& armor)
+{
+  // TODO
+  //
+}
+
+void RPG_Item_ArmorDictionary_Type_pimpl::
+post_RPG_Item_ArmorDictionary_Type ()
+{
+}
+
+// RPG_Item_Dictionary_Type_pimpl
+//
+
+void RPG_Item_Dictionary_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Item_Dictionary_Type_pimpl::
+RPG_Item_WeaponDictionary ()
+{
+}
+
+void RPG_Item_Dictionary_Type_pimpl::
+RPG_Item_ArmorDictionary ()
+{
+}
+
+void RPG_Item_Dictionary_Type_pimpl::
+post_RPG_Item_Dictionary_Type ()
+{
 }
 

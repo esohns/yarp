@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-<!-- <xsd:schema xmlns:xsd="http://www.w3.org/rpg_character_schema"> -->
+
+<xsd:schema targetNamespace="urn:rpg_character"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:rpg_chance_dice="urn:rpg_chance_dice"
+            xmlns:rpg_item="urn:rpg_item"
+            xmlns="urn:rpg_character"
+            elementFormDefault="unqualified">
+
+<!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
+  <!-- import chance_dice schema (as declared above) -->
+  <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/>
+  <!-- import item schema (as declared above) -->
+  <xsd:import namespace="urn:rpg_item" schemaLocation="../item/rpg_item.xsd"/>
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
@@ -8,7 +19,7 @@
     </xsd:documentation>
   </xsd:annotation>
 
-<!-- xml document will contain a dictionary of different types of monsters -->
+  <!-- xml instance document(s) will contain a dictionary of different types of monsters -->
   <xsd:simpleType name="RPG_Character_MonsterMetaType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="MONSTERMETATYPE_ABERRATION"/>
@@ -97,42 +108,12 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="RPG_Chance_DiceType_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="D_0"/>
-      <xsd:enumeration value="D_2"/>
-      <xsd:enumeration value="D_3"/>
-      <xsd:enumeration value="D_4"/>
-      <xsd:enumeration value="D_6"/>
-      <xsd:enumeration value="D_8"/>
-      <xsd:enumeration value="D_10"/>
-      <xsd:enumeration value="D_12"/>
-      <xsd:enumeration value="D_20"/>
-      <xsd:enumeration value="D_100"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
-  <xsd:complexType name="RPG_Chance_DiceRoll_Type">
-    <xsd:sequence>
-      <xsd:element name="numDice" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="typeDice" type="RPG_Chance_DiceType_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="modifier" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="RPG_Chance_ValueRange_Type">
-    <xsd:sequence>
-      <xsd:element name="begin" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="end" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
   <xsd:complexType name="RPG_Character_MonsterAttackAction_Type">
     <xsd:sequence>
       <xsd:element name="monsterWeapon" type="RPG_Character_MonsterWeapon_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackBonus" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackForm" type="RPG_Character_MonsterAttackForm_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="damage" type="RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="damage" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="numAttacksPerRound" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -457,7 +438,7 @@
   <xsd:complexType name="RPG_Character_MonsterAdvancementStep_Type">
     <xsd:sequence>
       <xsd:element name="size" type="RPG_Character_Size_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="range" type="RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="range" type="rpg_chance_dice:RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -472,7 +453,7 @@
       <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="size" type="RPG_Character_Size_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="type" type="RPG_Character_MonsterType_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="hitDice" type="RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="hitDice" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="initiative" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="speed" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="armorClass" type="RPG_Character_MonsterArmorClass_Type" minOccurs="1" maxOccurs="1"/>
@@ -505,6 +486,7 @@
     </xsd:sequence>
   </xsd:complexType>
 
+  <!-- xml instance document(s) will contain a dictionary of different types of monsters -->
   <xsd:element name="RPG_Character_Dictionary" type="RPG_Character_Dictionary_Type"/>
 
 </xsd:schema>

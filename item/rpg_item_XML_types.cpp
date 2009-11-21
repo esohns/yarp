@@ -36,82 +36,7 @@
 //
 // End prologue.
 
-#include "rpg_item_dictionary_types.h"
-
-// RPG_Item_Dictionary_Type_pskel
-//
-
-void RPG_Item_Dictionary_Type_pskel::
-RPG_Item_WeaponDictionary_parser (::RPG_Item_WeaponDictionary_Type_pskel& p)
-{
-  this->RPG_Item_WeaponDictionary_parser_ = &p;
-}
-
-void RPG_Item_Dictionary_Type_pskel::
-RPG_Item_ArmorDictionary_parser (::RPG_Item_ArmorDictionary_Type_pskel& p)
-{
-  this->RPG_Item_ArmorDictionary_parser_ = &p;
-}
-
-void RPG_Item_Dictionary_Type_pskel::
-parsers (::RPG_Item_WeaponDictionary_Type_pskel& RPG_Item_WeaponDictionary,
-         ::RPG_Item_ArmorDictionary_Type_pskel& RPG_Item_ArmorDictionary)
-{
-  this->RPG_Item_WeaponDictionary_parser_ = &RPG_Item_WeaponDictionary;
-  this->RPG_Item_ArmorDictionary_parser_ = &RPG_Item_ArmorDictionary;
-}
-
-RPG_Item_Dictionary_Type_pskel::
-RPG_Item_Dictionary_Type_pskel ()
-: RPG_Item_WeaponDictionary_parser_ (0),
-  RPG_Item_ArmorDictionary_parser_ (0),
-  v_state_stack_ (sizeof (v_state_), &v_state_first_)
-{
-}
-
-// RPG_Item_WeaponDictionary_Type_pskel
-//
-
-void RPG_Item_WeaponDictionary_Type_pskel::
-weapon_parser (::RPG_Item_WeaponProperties_Type_pskel& p)
-{
-  this->weapon_parser_ = &p;
-}
-
-void RPG_Item_WeaponDictionary_Type_pskel::
-parsers (::RPG_Item_WeaponProperties_Type_pskel& weapon)
-{
-  this->weapon_parser_ = &weapon;
-}
-
-RPG_Item_WeaponDictionary_Type_pskel::
-RPG_Item_WeaponDictionary_Type_pskel ()
-: weapon_parser_ (0),
-  v_state_stack_ (sizeof (v_state_), &v_state_first_)
-{
-}
-
-// RPG_Item_ArmorDictionary_Type_pskel
-//
-
-void RPG_Item_ArmorDictionary_Type_pskel::
-armor_parser (::RPG_Item_ArmorProperties_Type_pskel& p)
-{
-  this->armor_parser_ = &p;
-}
-
-void RPG_Item_ArmorDictionary_Type_pskel::
-parsers (::RPG_Item_ArmorProperties_Type_pskel& armor)
-{
-  this->armor_parser_ = &armor;
-}
-
-RPG_Item_ArmorDictionary_Type_pskel::
-RPG_Item_ArmorDictionary_Type_pskel ()
-: armor_parser_ (0),
-  v_state_stack_ (sizeof (v_state_), &v_state_first_)
-{
-}
+#include "rpg_item_XML_types.h"
 
 // RPG_Item_StorePrice_Type_pskel
 //
@@ -140,46 +65,6 @@ RPG_Item_StorePrice_Type_pskel::
 RPG_Item_StorePrice_Type_pskel ()
 : numGoldPieces_parser_ (0),
   numSilverPieces_parser_ (0),
-  v_state_stack_ (sizeof (v_state_), &v_state_first_)
-{
-}
-
-// RPG_Chance_DiceRoll_Type_pskel
-//
-
-void RPG_Chance_DiceRoll_Type_pskel::
-numDice_parser (::xml_schema::unsigned_int_pskel& p)
-{
-  this->numDice_parser_ = &p;
-}
-
-void RPG_Chance_DiceRoll_Type_pskel::
-typeDice_parser (::RPG_Chance_DiceType_Type_pskel& p)
-{
-  this->typeDice_parser_ = &p;
-}
-
-void RPG_Chance_DiceRoll_Type_pskel::
-modifier_parser (::xml_schema::integer_pskel& p)
-{
-  this->modifier_parser_ = &p;
-}
-
-void RPG_Chance_DiceRoll_Type_pskel::
-parsers (::xml_schema::unsigned_int_pskel& numDice,
-         ::RPG_Chance_DiceType_Type_pskel& typeDice,
-         ::xml_schema::integer_pskel& modifier)
-{
-  this->numDice_parser_ = &numDice;
-  this->typeDice_parser_ = &typeDice;
-  this->modifier_parser_ = &modifier;
-}
-
-RPG_Chance_DiceRoll_Type_pskel::
-RPG_Chance_DiceRoll_Type_pskel ()
-: numDice_parser_ (0),
-  typeDice_parser_ (0),
-  modifier_parser_ (0),
   v_state_stack_ (sizeof (v_state_), &v_state_first_)
 {
 }
@@ -309,6 +194,28 @@ RPG_Item_WeaponProperties_Type_pskel ()
 {
 }
 
+// RPG_Item_WeaponDictionary_Type_pskel
+//
+
+void RPG_Item_WeaponDictionary_Type_pskel::
+weapon_parser (::RPG_Item_WeaponProperties_Type_pskel& p)
+{
+  this->weapon_parser_ = &p;
+}
+
+void RPG_Item_WeaponDictionary_Type_pskel::
+parsers (::RPG_Item_WeaponProperties_Type_pskel& weapon)
+{
+  this->weapon_parser_ = &weapon;
+}
+
+RPG_Item_WeaponDictionary_Type_pskel::
+RPG_Item_WeaponDictionary_Type_pskel ()
+: weapon_parser_ (0),
+  v_state_stack_ (sizeof (v_state_), &v_state_first_)
+{
+}
+
 // RPG_Item_ArmorProperties_Type_pskel
 //
 
@@ -403,47 +310,56 @@ RPG_Item_ArmorProperties_Type_pskel ()
 {
 }
 
-// RPG_Item_Dictionary_Type_pskel
-//
-
-void RPG_Item_Dictionary_Type_pskel::
-RPG_Item_WeaponDictionary ()
-{
-}
-
-void RPG_Item_Dictionary_Type_pskel::
-RPG_Item_ArmorDictionary ()
-{
-}
-
-void RPG_Item_Dictionary_Type_pskel::
-post_RPG_Item_Dictionary_Type ()
-{
-}
-
-// RPG_Item_WeaponDictionary_Type_pskel
-//
-
-void RPG_Item_WeaponDictionary_Type_pskel::
-weapon (const RPG_Item_WeaponProperties_XML&)
-{
-}
-
-void RPG_Item_WeaponDictionary_Type_pskel::
-post_RPG_Item_WeaponDictionary_Type ()
-{
-}
-
 // RPG_Item_ArmorDictionary_Type_pskel
 //
 
 void RPG_Item_ArmorDictionary_Type_pskel::
-armor (const RPG_Item_ArmorProperties_XML&)
+armor_parser (::RPG_Item_ArmorProperties_Type_pskel& p)
 {
+  this->armor_parser_ = &p;
 }
 
 void RPG_Item_ArmorDictionary_Type_pskel::
-post_RPG_Item_ArmorDictionary_Type ()
+parsers (::RPG_Item_ArmorProperties_Type_pskel& armor)
+{
+  this->armor_parser_ = &armor;
+}
+
+RPG_Item_ArmorDictionary_Type_pskel::
+RPG_Item_ArmorDictionary_Type_pskel ()
+: armor_parser_ (0),
+  v_state_stack_ (sizeof (v_state_), &v_state_first_)
+{
+}
+
+// RPG_Item_Dictionary_Type_pskel
+//
+
+void RPG_Item_Dictionary_Type_pskel::
+RPG_Item_WeaponDictionary_parser (::RPG_Item_WeaponDictionary_Type_pskel& p)
+{
+  this->RPG_Item_WeaponDictionary_parser_ = &p;
+}
+
+void RPG_Item_Dictionary_Type_pskel::
+RPG_Item_ArmorDictionary_parser (::RPG_Item_ArmorDictionary_Type_pskel& p)
+{
+  this->RPG_Item_ArmorDictionary_parser_ = &p;
+}
+
+void RPG_Item_Dictionary_Type_pskel::
+parsers (::RPG_Item_WeaponDictionary_Type_pskel& RPG_Item_WeaponDictionary,
+         ::RPG_Item_ArmorDictionary_Type_pskel& RPG_Item_ArmorDictionary)
+{
+  this->RPG_Item_WeaponDictionary_parser_ = &RPG_Item_WeaponDictionary;
+  this->RPG_Item_ArmorDictionary_parser_ = &RPG_Item_ArmorDictionary;
+}
+
+RPG_Item_Dictionary_Type_pskel::
+RPG_Item_Dictionary_Type_pskel ()
+: RPG_Item_WeaponDictionary_parser_ (0),
+  RPG_Item_ArmorDictionary_parser_ (0),
+  v_state_stack_ (sizeof (v_state_), &v_state_first_)
 {
 }
 
@@ -457,24 +373,6 @@ numGoldPieces (unsigned int)
 
 void RPG_Item_StorePrice_Type_pskel::
 numSilverPieces (unsigned int)
-{
-}
-
-// RPG_Chance_DiceRoll_Type_pskel
-//
-
-void RPG_Chance_DiceRoll_Type_pskel::
-numDice (unsigned int)
-{
-}
-
-void RPG_Chance_DiceRoll_Type_pskel::
-typeDice (const RPG_Chance_DiceType&)
-{
-}
-
-void RPG_Chance_DiceRoll_Type_pskel::
-modifier (long long)
 {
 }
 
@@ -539,6 +437,19 @@ typeOfDamage (const RPG_Item_WeaponDamageType&)
 {
 }
 
+// RPG_Item_WeaponDictionary_Type_pskel
+//
+
+void RPG_Item_WeaponDictionary_Type_pskel::
+weapon (const RPG_Item_WeaponProperties_XML&)
+{
+}
+
+void RPG_Item_WeaponDictionary_Type_pskel::
+post_RPG_Item_WeaponDictionary_Type ()
+{
+}
+
 // RPG_Item_ArmorProperties_Type_pskel
 //
 
@@ -587,585 +498,38 @@ baseWeight (unsigned int)
 {
 }
 
+// RPG_Item_ArmorDictionary_Type_pskel
+//
+
+void RPG_Item_ArmorDictionary_Type_pskel::
+armor (const RPG_Item_ArmorProperties_XML&)
+{
+}
+
+void RPG_Item_ArmorDictionary_Type_pskel::
+post_RPG_Item_ArmorDictionary_Type ()
+{
+}
+
+// RPG_Item_Dictionary_Type_pskel
+//
+
+void RPG_Item_Dictionary_Type_pskel::
+RPG_Item_WeaponDictionary ()
+{
+}
+
+void RPG_Item_Dictionary_Type_pskel::
+RPG_Item_ArmorDictionary ()
+{
+}
+
+void RPG_Item_Dictionary_Type_pskel::
+post_RPG_Item_Dictionary_Type ()
+{
+}
+
 #include <cassert>
-
-// Element validation and dispatch functions for RPG_Item_Dictionary_Type_pskel.
-//
-bool RPG_Item_Dictionary_Type_pskel::
-_start_element_impl (const ::xml_schema::ro_string& ns,
-                     const ::xml_schema::ro_string& n,
-                     const ::xml_schema::ro_string* t)
-{
-  XSD_UNUSED (t);
-
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
-
-  if (vd->func == 0 && vd->state == 0)
-  {
-    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
-      return true;
-    else
-      vd->state = 1;
-  }
-
-  while (vd->func != 0)
-  {
-    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
-
-    vd = vs.data + (vs.size - 1);
-
-    if (vd->state == ~0UL)
-      vd = vs.data + (--vs.size - 1);
-    else
-      break;
-  }
-
-  if (vd->func == 0)
-  {
-    if (vd->state != ~0UL)
-    {
-      unsigned long s = ~0UL;
-
-      if (n == "RPG_Item_WeaponDictionary" && ns.empty ())
-        s = 0UL;
-
-      if (s != ~0UL)
-      {
-        vd->count++;
-        vd->state = ~0UL;
-
-        vd = vs.data + vs.size++;
-        vd->func = &RPG_Item_Dictionary_Type_pskel::sequence_0;
-        vd->state = s;
-        vd->count = 0;
-
-        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
-      }
-      else
-      {
-        if (vd->count < 1UL)
-          this->_expected_element (
-            "", "RPG_Item_WeaponDictionary",
-            ns, n);
-        return false;
-      }
-    }
-    else
-      return false;
-  }
-
-  return true;
-}
-
-bool RPG_Item_Dictionary_Type_pskel::
-_end_element_impl (const ::xml_schema::ro_string& ns,
-                   const ::xml_schema::ro_string& n)
-{
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size - 1];
-
-  if (vd.func == 0 && vd.state == 0)
-  {
-    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
-      assert (false);
-    return true;
-  }
-
-  assert (vd.func != 0);
-  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
-
-  if (vd.state == ~0UL)
-    vs.size--;
-
-  return true;
-}
-
-void RPG_Item_Dictionary_Type_pskel::
-_pre_e_validate ()
-{
-  this->v_state_stack_.push ();
-  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
-
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size++];
-
-  vd.func = 0;
-  vd.state = 0;
-  vd.count = 0;
-}
-
-void RPG_Item_Dictionary_Type_pskel::
-_post_e_validate ()
-{
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
-
-  ::xml_schema::ro_string empty;
-  while (vd->func != 0)
-  {
-    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
-    assert (vd->state == ~0UL);
-    vd = vs.data + (--vs.size - 1);
-  }
-
-  if (vd->count < 1UL)
-    this->_expected_element (
-      "", "RPG_Item_WeaponDictionary");
-
-  this->v_state_stack_.pop ();
-}
-
-void RPG_Item_Dictionary_Type_pskel::
-sequence_0 (unsigned long& state,
-            unsigned long& count,
-            const ::xml_schema::ro_string& ns,
-            const ::xml_schema::ro_string& n,
-            const ::xml_schema::ro_string* t,
-            bool start)
-{
-  XSD_UNUSED (t);
-
-  switch (state)
-  {
-    case 0UL:
-    {
-      if (n == "RPG_Item_WeaponDictionary" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->RPG_Item_WeaponDictionary_parser_;
-
-          if (this->RPG_Item_WeaponDictionary_parser_)
-            this->RPG_Item_WeaponDictionary_parser_->pre ();
-        }
-        else
-        {
-          if (this->RPG_Item_WeaponDictionary_parser_)
-          {
-            this->RPG_Item_WeaponDictionary_parser_->post_RPG_Item_WeaponDictionary_Type ();
-            this->RPG_Item_WeaponDictionary ();
-          }
-
-          count = 0;
-          state = 1UL;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "RPG_Item_WeaponDictionary",
-            ns, n);
-        count = 0;
-        state = 1UL;
-        // Fall through.
-      }
-    }
-    case 1UL:
-    {
-      if (n == "RPG_Item_ArmorDictionary" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->RPG_Item_ArmorDictionary_parser_;
-
-          if (this->RPG_Item_ArmorDictionary_parser_)
-            this->RPG_Item_ArmorDictionary_parser_->pre ();
-        }
-        else
-        {
-          if (this->RPG_Item_ArmorDictionary_parser_)
-          {
-            this->RPG_Item_ArmorDictionary_parser_->post_RPG_Item_ArmorDictionary_Type ();
-            this->RPG_Item_ArmorDictionary ();
-          }
-
-          count = 0;
-          state = ~0UL;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "RPG_Item_ArmorDictionary",
-            ns, n);
-        count = 0;
-        state = ~0UL;
-        // Fall through.
-      }
-    }
-    case ~0UL:
-      break;
-  }
-}
-
-// Element validation and dispatch functions for RPG_Item_WeaponDictionary_Type_pskel.
-//
-bool RPG_Item_WeaponDictionary_Type_pskel::
-_start_element_impl (const ::xml_schema::ro_string& ns,
-                     const ::xml_schema::ro_string& n,
-                     const ::xml_schema::ro_string* t)
-{
-  XSD_UNUSED (t);
-
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
-
-  if (vd->func == 0 && vd->state == 0)
-  {
-    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
-      return true;
-    else
-      vd->state = 1;
-  }
-
-  while (vd->func != 0)
-  {
-    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
-
-    vd = vs.data + (vs.size - 1);
-
-    if (vd->state == ~0UL)
-      vd = vs.data + (--vs.size - 1);
-    else
-      break;
-  }
-
-  if (vd->func == 0)
-  {
-    if (vd->state != ~0UL)
-    {
-      unsigned long s = ~0UL;
-
-      if (n == "weapon" && ns.empty ())
-        s = 0UL;
-
-      if (s != ~0UL)
-      {
-        vd->count++;
-        vd->state = ~0UL;
-
-        vd = vs.data + vs.size++;
-        vd->func = &RPG_Item_WeaponDictionary_Type_pskel::sequence_0;
-        vd->state = s;
-        vd->count = 0;
-
-        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
-      }
-      else
-      {
-        if (vd->count < 1UL)
-          this->_expected_element (
-            "", "weapon",
-            ns, n);
-        return false;
-      }
-    }
-    else
-      return false;
-  }
-
-  return true;
-}
-
-bool RPG_Item_WeaponDictionary_Type_pskel::
-_end_element_impl (const ::xml_schema::ro_string& ns,
-                   const ::xml_schema::ro_string& n)
-{
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size - 1];
-
-  if (vd.func == 0 && vd.state == 0)
-  {
-    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
-      assert (false);
-    return true;
-  }
-
-  assert (vd.func != 0);
-  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
-
-  if (vd.state == ~0UL)
-    vs.size--;
-
-  return true;
-}
-
-void RPG_Item_WeaponDictionary_Type_pskel::
-_pre_e_validate ()
-{
-  this->v_state_stack_.push ();
-  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
-
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size++];
-
-  vd.func = 0;
-  vd.state = 0;
-  vd.count = 0;
-}
-
-void RPG_Item_WeaponDictionary_Type_pskel::
-_post_e_validate ()
-{
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
-
-  ::xml_schema::ro_string empty;
-  while (vd->func != 0)
-  {
-    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
-    assert (vd->state == ~0UL);
-    vd = vs.data + (--vs.size - 1);
-  }
-
-  if (vd->count < 1UL)
-    this->_expected_element (
-      "", "weapon");
-
-  this->v_state_stack_.pop ();
-}
-
-void RPG_Item_WeaponDictionary_Type_pskel::
-sequence_0 (unsigned long& state,
-            unsigned long& count,
-            const ::xml_schema::ro_string& ns,
-            const ::xml_schema::ro_string& n,
-            const ::xml_schema::ro_string* t,
-            bool start)
-{
-  XSD_UNUSED (t);
-
-  switch (state)
-  {
-    case 0UL:
-    {
-      if (n == "weapon" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->weapon_parser_;
-
-          if (this->weapon_parser_)
-            this->weapon_parser_->pre ();
-        }
-        else
-        {
-          if (this->weapon_parser_)
-          {
-            const RPG_Item_WeaponProperties_XML& tmp (this->weapon_parser_->post_RPG_Item_WeaponProperties_Type ());
-            this->weapon (tmp);
-          }
-
-          count++;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "weapon",
-            ns, n);
-        count = 0;
-        state = ~0UL;
-        // Fall through.
-      }
-    }
-    case ~0UL:
-      break;
-  }
-}
-
-// Element validation and dispatch functions for RPG_Item_ArmorDictionary_Type_pskel.
-//
-bool RPG_Item_ArmorDictionary_Type_pskel::
-_start_element_impl (const ::xml_schema::ro_string& ns,
-                     const ::xml_schema::ro_string& n,
-                     const ::xml_schema::ro_string* t)
-{
-  XSD_UNUSED (t);
-
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
-
-  if (vd->func == 0 && vd->state == 0)
-  {
-    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
-      return true;
-    else
-      vd->state = 1;
-  }
-
-  while (vd->func != 0)
-  {
-    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
-
-    vd = vs.data + (vs.size - 1);
-
-    if (vd->state == ~0UL)
-      vd = vs.data + (--vs.size - 1);
-    else
-      break;
-  }
-
-  if (vd->func == 0)
-  {
-    if (vd->state != ~0UL)
-    {
-      unsigned long s = ~0UL;
-
-      if (n == "armor" && ns.empty ())
-        s = 0UL;
-
-      if (s != ~0UL)
-      {
-        vd->count++;
-        vd->state = ~0UL;
-
-        vd = vs.data + vs.size++;
-        vd->func = &RPG_Item_ArmorDictionary_Type_pskel::sequence_0;
-        vd->state = s;
-        vd->count = 0;
-
-        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
-      }
-      else
-      {
-        if (vd->count < 1UL)
-          this->_expected_element (
-            "", "armor",
-            ns, n);
-        return false;
-      }
-    }
-    else
-      return false;
-  }
-
-  return true;
-}
-
-bool RPG_Item_ArmorDictionary_Type_pskel::
-_end_element_impl (const ::xml_schema::ro_string& ns,
-                   const ::xml_schema::ro_string& n)
-{
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size - 1];
-
-  if (vd.func == 0 && vd.state == 0)
-  {
-    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
-      assert (false);
-    return true;
-  }
-
-  assert (vd.func != 0);
-  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
-
-  if (vd.state == ~0UL)
-    vs.size--;
-
-  return true;
-}
-
-void RPG_Item_ArmorDictionary_Type_pskel::
-_pre_e_validate ()
-{
-  this->v_state_stack_.push ();
-  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
-
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size++];
-
-  vd.func = 0;
-  vd.state = 0;
-  vd.count = 0;
-}
-
-void RPG_Item_ArmorDictionary_Type_pskel::
-_post_e_validate ()
-{
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
-
-  ::xml_schema::ro_string empty;
-  while (vd->func != 0)
-  {
-    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
-    assert (vd->state == ~0UL);
-    vd = vs.data + (--vs.size - 1);
-  }
-
-  if (vd->count < 1UL)
-    this->_expected_element (
-      "", "armor");
-
-  this->v_state_stack_.pop ();
-}
-
-void RPG_Item_ArmorDictionary_Type_pskel::
-sequence_0 (unsigned long& state,
-            unsigned long& count,
-            const ::xml_schema::ro_string& ns,
-            const ::xml_schema::ro_string& n,
-            const ::xml_schema::ro_string* t,
-            bool start)
-{
-  XSD_UNUSED (t);
-
-  switch (state)
-  {
-    case 0UL:
-    {
-      if (n == "armor" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->armor_parser_;
-
-          if (this->armor_parser_)
-            this->armor_parser_->pre ();
-        }
-        else
-        {
-          if (this->armor_parser_)
-          {
-            const RPG_Item_ArmorProperties_XML& tmp (this->armor_parser_->post_RPG_Item_ArmorProperties_Type ());
-            this->armor (tmp);
-          }
-
-          count++;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "armor",
-            ns, n);
-        count = 0;
-        state = ~0UL;
-        // Fall through.
-      }
-    }
-    case ~0UL:
-      break;
-  }
-}
 
 // Element validation and dispatch functions for RPG_Item_StorePrice_Type_pskel.
 //
@@ -1374,261 +738,6 @@ sequence_0 (unsigned long& state,
         if (count < 1UL)
           this->_expected_element (
             "", "numSilverPieces",
-            ns, n);
-        count = 0;
-        state = ~0UL;
-        // Fall through.
-      }
-    }
-    case ~0UL:
-      break;
-  }
-}
-
-// Element validation and dispatch functions for RPG_Chance_DiceRoll_Type_pskel.
-//
-bool RPG_Chance_DiceRoll_Type_pskel::
-_start_element_impl (const ::xml_schema::ro_string& ns,
-                     const ::xml_schema::ro_string& n,
-                     const ::xml_schema::ro_string* t)
-{
-  XSD_UNUSED (t);
-
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
-
-  if (vd->func == 0 && vd->state == 0)
-  {
-    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
-      return true;
-    else
-      vd->state = 1;
-  }
-
-  while (vd->func != 0)
-  {
-    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
-
-    vd = vs.data + (vs.size - 1);
-
-    if (vd->state == ~0UL)
-      vd = vs.data + (--vs.size - 1);
-    else
-      break;
-  }
-
-  if (vd->func == 0)
-  {
-    if (vd->state != ~0UL)
-    {
-      unsigned long s = ~0UL;
-
-      if (n == "numDice" && ns.empty ())
-        s = 0UL;
-
-      if (s != ~0UL)
-      {
-        vd->count++;
-        vd->state = ~0UL;
-
-        vd = vs.data + vs.size++;
-        vd->func = &RPG_Chance_DiceRoll_Type_pskel::sequence_0;
-        vd->state = s;
-        vd->count = 0;
-
-        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
-      }
-      else
-      {
-        if (vd->count < 1UL)
-          this->_expected_element (
-            "", "numDice",
-            ns, n);
-        return false;
-      }
-    }
-    else
-      return false;
-  }
-
-  return true;
-}
-
-bool RPG_Chance_DiceRoll_Type_pskel::
-_end_element_impl (const ::xml_schema::ro_string& ns,
-                   const ::xml_schema::ro_string& n)
-{
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size - 1];
-
-  if (vd.func == 0 && vd.state == 0)
-  {
-    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
-      assert (false);
-    return true;
-  }
-
-  assert (vd.func != 0);
-  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
-
-  if (vd.state == ~0UL)
-    vs.size--;
-
-  return true;
-}
-
-void RPG_Chance_DiceRoll_Type_pskel::
-_pre_e_validate ()
-{
-  this->v_state_stack_.push ();
-  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
-
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_& vd = vs.data[vs.size++];
-
-  vd.func = 0;
-  vd.state = 0;
-  vd.count = 0;
-}
-
-void RPG_Chance_DiceRoll_Type_pskel::
-_post_e_validate ()
-{
-  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
-  v_state_descr_* vd = vs.data + (vs.size - 1);
-
-  ::xml_schema::ro_string empty;
-  while (vd->func != 0)
-  {
-    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
-    assert (vd->state == ~0UL);
-    vd = vs.data + (--vs.size - 1);
-  }
-
-  if (vd->count < 1UL)
-    this->_expected_element (
-      "", "numDice");
-
-  this->v_state_stack_.pop ();
-}
-
-void RPG_Chance_DiceRoll_Type_pskel::
-sequence_0 (unsigned long& state,
-            unsigned long& count,
-            const ::xml_schema::ro_string& ns,
-            const ::xml_schema::ro_string& n,
-            const ::xml_schema::ro_string* t,
-            bool start)
-{
-  XSD_UNUSED (t);
-
-  switch (state)
-  {
-    case 0UL:
-    {
-      if (n == "numDice" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->numDice_parser_;
-
-          if (this->numDice_parser_)
-            this->numDice_parser_->pre ();
-        }
-        else
-        {
-          if (this->numDice_parser_)
-          {
-            unsigned int tmp (this->numDice_parser_->post_unsigned_int ());
-            this->numDice (tmp);
-          }
-
-          count = 0;
-          state = 1UL;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "numDice",
-            ns, n);
-        count = 0;
-        state = 1UL;
-        // Fall through.
-      }
-    }
-    case 1UL:
-    {
-      if (n == "typeDice" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->typeDice_parser_;
-
-          if (this->typeDice_parser_)
-            this->typeDice_parser_->pre ();
-        }
-        else
-        {
-          if (this->typeDice_parser_)
-          {
-            const RPG_Chance_DiceType& tmp (this->typeDice_parser_->post_RPG_Chance_DiceType_Type ());
-            this->typeDice (tmp);
-          }
-
-          count = 0;
-          state = 2UL;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "typeDice",
-            ns, n);
-        count = 0;
-        state = 2UL;
-        // Fall through.
-      }
-    }
-    case 2UL:
-    {
-      if (n == "modifier" && ns.empty ())
-      {
-        if (start)
-        {
-          this->::xml_schema::complex_content::context_.top ().parser_ = this->modifier_parser_;
-
-          if (this->modifier_parser_)
-            this->modifier_parser_->pre ();
-        }
-        else
-        {
-          if (this->modifier_parser_)
-          {
-            long long tmp (this->modifier_parser_->post_integer ());
-            this->modifier (tmp);
-          }
-
-          count = 0;
-          state = ~0UL;
-        }
-
-        break;
-      }
-      else
-      {
-        assert (start);
-        if (count < 1UL)
-          this->_expected_element (
-            "", "modifier",
             ns, n);
         count = 0;
         state = ~0UL;
@@ -2338,6 +1447,186 @@ sequence_0 (unsigned long& state,
   }
 }
 
+// Element validation and dispatch functions for RPG_Item_WeaponDictionary_Type_pskel.
+//
+bool RPG_Item_WeaponDictionary_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  if (vd->func == 0 && vd->state == 0)
+  {
+    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+      return true;
+    else
+      vd->state = 1;
+  }
+
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
+
+    vd = vs.data + (vs.size - 1);
+
+    if (vd->state == ~0UL)
+      vd = vs.data + (--vs.size - 1);
+    else
+      break;
+  }
+
+  if (vd->func == 0)
+  {
+    if (vd->state != ~0UL)
+    {
+      unsigned long s = ~0UL;
+
+      if (n == "weapon" && ns.empty ())
+        s = 0UL;
+
+      if (s != ~0UL)
+      {
+        vd->count++;
+        vd->state = ~0UL;
+
+        vd = vs.data + vs.size++;
+        vd->func = &RPG_Item_WeaponDictionary_Type_pskel::sequence_0;
+        vd->state = s;
+        vd->count = 0;
+
+        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
+      }
+      else
+      {
+        if (vd->count < 1UL)
+          this->_expected_element (
+            "", "weapon",
+            ns, n);
+        return false;
+      }
+    }
+    else
+      return false;
+  }
+
+  return true;
+}
+
+bool RPG_Item_WeaponDictionary_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size - 1];
+
+  if (vd.func == 0 && vd.state == 0)
+  {
+    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
+      assert (false);
+    return true;
+  }
+
+  assert (vd.func != 0);
+  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
+
+  if (vd.state == ~0UL)
+    vs.size--;
+
+  return true;
+}
+
+void RPG_Item_WeaponDictionary_Type_pskel::
+_pre_e_validate ()
+{
+  this->v_state_stack_.push ();
+  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size++];
+
+  vd.func = 0;
+  vd.state = 0;
+  vd.count = 0;
+}
+
+void RPG_Item_WeaponDictionary_Type_pskel::
+_post_e_validate ()
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  ::xml_schema::ro_string empty;
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
+    assert (vd->state == ~0UL);
+    vd = vs.data + (--vs.size - 1);
+  }
+
+  if (vd->count < 1UL)
+    this->_expected_element (
+      "", "weapon");
+
+  this->v_state_stack_.pop ();
+}
+
+void RPG_Item_WeaponDictionary_Type_pskel::
+sequence_0 (unsigned long& state,
+            unsigned long& count,
+            const ::xml_schema::ro_string& ns,
+            const ::xml_schema::ro_string& n,
+            const ::xml_schema::ro_string* t,
+            bool start)
+{
+  XSD_UNUSED (t);
+
+  switch (state)
+  {
+    case 0UL:
+    {
+      if (n == "weapon" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->weapon_parser_;
+
+          if (this->weapon_parser_)
+            this->weapon_parser_->pre ();
+        }
+        else
+        {
+          if (this->weapon_parser_)
+          {
+            const RPG_Item_WeaponProperties_XML& tmp (this->weapon_parser_->post_RPG_Item_WeaponProperties_Type ());
+            this->weapon (tmp);
+          }
+
+          count++;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "weapon",
+            ns, n);
+        count = 0;
+        state = ~0UL;
+        // Fall through.
+      }
+    }
+    case ~0UL:
+      break;
+  }
+}
+
 // Element validation and dispatch functions for RPG_Item_ArmorProperties_Type_pskel.
 //
 bool RPG_Item_ArmorProperties_Type_pskel::
@@ -2804,6 +2093,404 @@ sequence_0 (unsigned long& state,
         if (count < 1UL)
           this->_expected_element (
             "", "baseWeight",
+            ns, n);
+        count = 0;
+        state = ~0UL;
+        // Fall through.
+      }
+    }
+    case ~0UL:
+      break;
+  }
+}
+
+// Element validation and dispatch functions for RPG_Item_ArmorDictionary_Type_pskel.
+//
+bool RPG_Item_ArmorDictionary_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  if (vd->func == 0 && vd->state == 0)
+  {
+    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+      return true;
+    else
+      vd->state = 1;
+  }
+
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
+
+    vd = vs.data + (vs.size - 1);
+
+    if (vd->state == ~0UL)
+      vd = vs.data + (--vs.size - 1);
+    else
+      break;
+  }
+
+  if (vd->func == 0)
+  {
+    if (vd->state != ~0UL)
+    {
+      unsigned long s = ~0UL;
+
+      if (n == "armor" && ns.empty ())
+        s = 0UL;
+
+      if (s != ~0UL)
+      {
+        vd->count++;
+        vd->state = ~0UL;
+
+        vd = vs.data + vs.size++;
+        vd->func = &RPG_Item_ArmorDictionary_Type_pskel::sequence_0;
+        vd->state = s;
+        vd->count = 0;
+
+        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
+      }
+      else
+      {
+        if (vd->count < 1UL)
+          this->_expected_element (
+            "", "armor",
+            ns, n);
+        return false;
+      }
+    }
+    else
+      return false;
+  }
+
+  return true;
+}
+
+bool RPG_Item_ArmorDictionary_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size - 1];
+
+  if (vd.func == 0 && vd.state == 0)
+  {
+    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
+      assert (false);
+    return true;
+  }
+
+  assert (vd.func != 0);
+  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
+
+  if (vd.state == ~0UL)
+    vs.size--;
+
+  return true;
+}
+
+void RPG_Item_ArmorDictionary_Type_pskel::
+_pre_e_validate ()
+{
+  this->v_state_stack_.push ();
+  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size++];
+
+  vd.func = 0;
+  vd.state = 0;
+  vd.count = 0;
+}
+
+void RPG_Item_ArmorDictionary_Type_pskel::
+_post_e_validate ()
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  ::xml_schema::ro_string empty;
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
+    assert (vd->state == ~0UL);
+    vd = vs.data + (--vs.size - 1);
+  }
+
+  if (vd->count < 1UL)
+    this->_expected_element (
+      "", "armor");
+
+  this->v_state_stack_.pop ();
+}
+
+void RPG_Item_ArmorDictionary_Type_pskel::
+sequence_0 (unsigned long& state,
+            unsigned long& count,
+            const ::xml_schema::ro_string& ns,
+            const ::xml_schema::ro_string& n,
+            const ::xml_schema::ro_string* t,
+            bool start)
+{
+  XSD_UNUSED (t);
+
+  switch (state)
+  {
+    case 0UL:
+    {
+      if (n == "armor" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->armor_parser_;
+
+          if (this->armor_parser_)
+            this->armor_parser_->pre ();
+        }
+        else
+        {
+          if (this->armor_parser_)
+          {
+            const RPG_Item_ArmorProperties_XML& tmp (this->armor_parser_->post_RPG_Item_ArmorProperties_Type ());
+            this->armor (tmp);
+          }
+
+          count++;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "armor",
+            ns, n);
+        count = 0;
+        state = ~0UL;
+        // Fall through.
+      }
+    }
+    case ~0UL:
+      break;
+  }
+}
+
+// Element validation and dispatch functions for RPG_Item_Dictionary_Type_pskel.
+//
+bool RPG_Item_Dictionary_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  if (vd->func == 0 && vd->state == 0)
+  {
+    if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+      return true;
+    else
+      vd->state = 1;
+  }
+
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, ns, n, t, true);
+
+    vd = vs.data + (vs.size - 1);
+
+    if (vd->state == ~0UL)
+      vd = vs.data + (--vs.size - 1);
+    else
+      break;
+  }
+
+  if (vd->func == 0)
+  {
+    if (vd->state != ~0UL)
+    {
+      unsigned long s = ~0UL;
+
+      if (n == "RPG_Item_WeaponDictionary" && ns.empty ())
+        s = 0UL;
+
+      if (s != ~0UL)
+      {
+        vd->count++;
+        vd->state = ~0UL;
+
+        vd = vs.data + vs.size++;
+        vd->func = &RPG_Item_Dictionary_Type_pskel::sequence_0;
+        vd->state = s;
+        vd->count = 0;
+
+        this->sequence_0 (vd->state, vd->count, ns, n, t, true);
+      }
+      else
+      {
+        if (vd->count < 1UL)
+          this->_expected_element (
+            "", "RPG_Item_WeaponDictionary",
+            ns, n);
+        return false;
+      }
+    }
+    else
+      return false;
+  }
+
+  return true;
+}
+
+bool RPG_Item_Dictionary_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size - 1];
+
+  if (vd.func == 0 && vd.state == 0)
+  {
+    if (!::xml_schema::complex_content::_end_element_impl (ns, n))
+      assert (false);
+    return true;
+  }
+
+  assert (vd.func != 0);
+  (this->*vd.func) (vd.state, vd.count, ns, n, 0, false);
+
+  if (vd.state == ~0UL)
+    vs.size--;
+
+  return true;
+}
+
+void RPG_Item_Dictionary_Type_pskel::
+_pre_e_validate ()
+{
+  this->v_state_stack_.push ();
+  static_cast< v_state_* > (this->v_state_stack_.top ())->size = 0;
+
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_& vd = vs.data[vs.size++];
+
+  vd.func = 0;
+  vd.state = 0;
+  vd.count = 0;
+}
+
+void RPG_Item_Dictionary_Type_pskel::
+_post_e_validate ()
+{
+  v_state_& vs = *static_cast< v_state_* > (this->v_state_stack_.top ());
+  v_state_descr_* vd = vs.data + (vs.size - 1);
+
+  ::xml_schema::ro_string empty;
+  while (vd->func != 0)
+  {
+    (this->*vd->func) (vd->state, vd->count, empty, empty, 0, true);
+    assert (vd->state == ~0UL);
+    vd = vs.data + (--vs.size - 1);
+  }
+
+  if (vd->count < 1UL)
+    this->_expected_element (
+      "", "RPG_Item_WeaponDictionary");
+
+  this->v_state_stack_.pop ();
+}
+
+void RPG_Item_Dictionary_Type_pskel::
+sequence_0 (unsigned long& state,
+            unsigned long& count,
+            const ::xml_schema::ro_string& ns,
+            const ::xml_schema::ro_string& n,
+            const ::xml_schema::ro_string* t,
+            bool start)
+{
+  XSD_UNUSED (t);
+
+  switch (state)
+  {
+    case 0UL:
+    {
+      if (n == "RPG_Item_WeaponDictionary" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->RPG_Item_WeaponDictionary_parser_;
+
+          if (this->RPG_Item_WeaponDictionary_parser_)
+            this->RPG_Item_WeaponDictionary_parser_->pre ();
+        }
+        else
+        {
+          if (this->RPG_Item_WeaponDictionary_parser_)
+          {
+            this->RPG_Item_WeaponDictionary_parser_->post_RPG_Item_WeaponDictionary_Type ();
+            this->RPG_Item_WeaponDictionary ();
+          }
+
+          count = 0;
+          state = 1UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "RPG_Item_WeaponDictionary",
+            ns, n);
+        count = 0;
+        state = 1UL;
+        // Fall through.
+      }
+    }
+    case 1UL:
+    {
+      if (n == "RPG_Item_ArmorDictionary" && ns.empty ())
+      {
+        if (start)
+        {
+          this->::xml_schema::complex_content::context_.top ().parser_ = this->RPG_Item_ArmorDictionary_parser_;
+
+          if (this->RPG_Item_ArmorDictionary_parser_)
+            this->RPG_Item_ArmorDictionary_parser_->pre ();
+        }
+        else
+        {
+          if (this->RPG_Item_ArmorDictionary_parser_)
+          {
+            this->RPG_Item_ArmorDictionary_parser_->post_RPG_Item_ArmorDictionary_Type ();
+            this->RPG_Item_ArmorDictionary ();
+          }
+
+          count = 0;
+          state = ~0UL;
+        }
+
+        break;
+      }
+      else
+      {
+        assert (start);
+        if (count < 1UL)
+          this->_expected_element (
+            "", "RPG_Item_ArmorDictionary",
             ns, n);
         count = 0;
         state = ~0UL;

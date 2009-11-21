@@ -25,7 +25,6 @@
 #include "rpg_chance_dice_common_tools.h"
 #include "rpg_item_common_tools.h"
 #include "rpg_item_dictionary.h"
-#include "rpg_item_dictionary_parser.h"
 
 #include <ace/OS.h>
 #include <ace/ACE.h>
@@ -285,7 +284,7 @@ int ACE_TMAIN(int argc,
 //   timer.elapsed_time(working_time);
 //   RPS_FLB_Common_Tools::Period2String(working_time,
 //                                       working_time_string);
-// 
+//
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
 //              working_time_string.c_str()));

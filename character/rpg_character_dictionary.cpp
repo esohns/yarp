@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "rpg_character_dictionary.h"
 
-#include "rpg_character_dictionary_parser.h"
+#include "rpg_character_XML_parser.h"
 #include "rpg_character_monster_common_tools.h"
 
 #include <rpg_chance_dice.h>
