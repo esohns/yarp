@@ -70,6 +70,7 @@ class RPG_Character_Common_Tools
   static const RPG_Character_SubClass  stringToSubClass(const std::string&); // string
   static const std::string             subClassToString(const RPG_Character_SubClass&); // subClass
   static const std::string             attributeToString(const RPG_Character_Attribute&); // attribute
+  static const std::string             attributesToString(const RPG_Character_Attributes&); // attributes
 
   static const short int getAttributeAbilityModifier(const unsigned char&); // attribute
   static const RPG_Chance_DiceType getHitDie(const RPG_Character_SubClass&); // subclass

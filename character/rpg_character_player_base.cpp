@@ -102,15 +102,11 @@ void RPG_Character_Player_Base::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::dump"));
 
-  std::string gender = RPG_Character_Common_Tools::genderToString(myGender);
-  std::string race = RPG_Character_Common_Tools::raceToString(myRace);
-  std::string class_string = RPG_Character_Common_Tools::subClassToString(myClass.subClass);
-
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("Player: \nGender: %s\nRace: %s\nClass: %s\nXP: %d\n"),
-             gender.c_str(),
-             race.c_str(),
-             class_string.c_str(),
+             RPG_Character_Common_Tools::genderToString(myGender).c_str(),
+             RPG_Character_Common_Tools::raceToString(myRace).c_str(),
+             RPG_Character_Common_Tools::subClassToString(myClass.subClass).c_str(),
              myExperience));
 
   inherited::dump();

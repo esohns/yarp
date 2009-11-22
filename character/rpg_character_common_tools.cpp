@@ -21,6 +21,9 @@
 
 #include <ace/Log_Msg.h>
 
+#include <string>
+#include <sstream>
+
 // init statics
 RPG_Character_Common_Tools::RPG_Character_String2Gender_t         RPG_Character_Common_Tools::myString2GenderTable;
 RPG_Character_Common_Tools::RPG_Character_String2AlignmentCivic_t RPG_Character_Common_Tools::myString2AlignmentCivicTable;
@@ -416,6 +419,51 @@ const std::string RPG_Character_Common_Tools::attributeToString(const RPG_Charac
              attribute_in));
 
   return std::string(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_INVALID"));
+}
+
+const std::string RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& attributes_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::attributesToString"));
+
+  std::string result;
+  std::stringstream str;
+  result = attributeToString(ATTRIBUTE_STRENGTH);
+  result += ACE_TEXT_ALWAYS_CHAR(": ");
+  str << ACE_static_cast(unsigned int, attributes_in.strength);
+  result += str.str();
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+  result += attributeToString(ATTRIBUTE_DEXTERITY);
+  result += ACE_TEXT_ALWAYS_CHAR(": ");
+  str << ACE_static_cast(unsigned int, attributes_in.dexterity);
+  result += str.str();
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+  result += attributeToString(ATTRIBUTE_CONSTITUTION);
+  result += ACE_TEXT_ALWAYS_CHAR(": ");
+  str << ACE_static_cast(unsigned int, attributes_in.constitution);
+  result += str.str();
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+  result += attributeToString(ATTRIBUTE_INTELLIGENCE);
+  result += ACE_TEXT_ALWAYS_CHAR(": ");
+  str << ACE_static_cast(unsigned int, attributes_in.intelligence);
+  result += str.str();
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+  result += attributeToString(ATTRIBUTE_WISDOM);
+  result += ACE_TEXT_ALWAYS_CHAR(": ");
+  str << ACE_static_cast(unsigned int, attributes_in.wisdom);
+  result += str.str();
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+  result += attributeToString(ATTRIBUTE_CHARISMA);
+  result += ACE_TEXT_ALWAYS_CHAR(": ");
+  str << ACE_static_cast(unsigned int, attributes_in.charisma);
+  result += str.str();
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+
+  return result;
 }
 
 const short int RPG_Character_Common_Tools::getAttributeAbilityModifier(const unsigned char& attributeAbility_in)

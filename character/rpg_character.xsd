@@ -103,7 +103,7 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="RPG_Character_MonsterAttackForm_Type">
+  <xsd:simpleType name="RPG_Character_AttackForm_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ATTACK_MELEE"/>
       <xsd:enumeration value="ATTACK_TOUCH"/>
@@ -115,7 +115,7 @@
     <xsd:sequence>
       <xsd:element name="monsterWeapon" type="RPG_Character_MonsterWeapon_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackBonus" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="attackForm" type="RPG_Character_MonsterAttackForm_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="attackForm" type="RPG_Character_AttackForm_Type" minOccurs="1" maxOccurs="1"/>
 <!--      <xsd:element name="damage" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>-->
       <xsd:element name="damage" type="RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="numAttacksPerRound" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>

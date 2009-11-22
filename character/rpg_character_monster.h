@@ -46,6 +46,8 @@ class RPG_Character_Monster
 
   const RPG_Character_MonsterType getMonsterType() const;
 
+  virtual void dump() const;
+
  private:
   typedef RPG_Character_Base inherited;
 

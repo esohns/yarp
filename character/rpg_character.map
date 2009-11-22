@@ -14,7 +14,7 @@ namespace urn:rpg
   RPG_Character_MonsterType_Type            RPG_Character_MonsterType;
   RPG_Character_MonsterArmorClass_Type      RPG_Character_MonsterArmorClass;
   RPG_Character_MonsterWeapon_Type          RPG_Character_MonsterWeapon;
-  RPG_Character_MonsterAttackForm_Type      RPG_Character_MonsterAttackForm;
+  RPG_Character_AttackForm_Type             RPG_Character_AttackForm;
   RPG_Character_MonsterAttackAction_Type    RPG_Character_MonsterAttackAction;
   RPG_Character_MonsterAttack_Type          RPG_Character_MonsterAttack;
   RPG_Character_Size_Type                   RPG_Character_Size;
@@ -59,7 +59,7 @@ namespace urn:rpg
 #  RPG_Character_MonsterType_Type            RPG_Character_MonsterType;
 #  RPG_Character_MonsterArmorClass_Type      RPG_Character_MonsterArmorClass;
 #  RPG_Character_MonsterWeapon_Type          RPG_Character_MonsterWeapon;
-#  RPG_Character_MonsterAttackForm_Type      RPG_Character_MonsterAttackForm;
+#  RPG_Character_AttackForm_Type             RPG_Character_AttackForm;
 #  RPG_Character_MonsterAttackAction_Type    RPG_Character_MonsterAttackAction;
 #  RPG_Character_MonsterAttack_Type          RPG_Character_MonsterAttack;
 #  RPG_Character_Size_Type                   RPG_Character_Size;

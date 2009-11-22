@@ -23,6 +23,9 @@
 
 #include <ace/Log_Msg.h>
 
+#include <string>
+#include <sstream>
+
 // init statics
 RPG_Character_Skills_Common_Tools::RPG_Character_SkillToStringTable_t RPG_Character_Skills_Common_Tools::mySkillToStringTable;
 RPG_Character_Skills_Common_Tools::RPG_Character_FeatToStringTable_t RPG_Character_Skills_Common_Tools::myFeatToStringTable;
@@ -2504,6 +2507,129 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
   } // end FOR
 
   return true;
+}
+
+const std::string RPG_Character_Skills_Common_Tools::skillToString(const RPG_Character_Skill& skill_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::skillToString"));
+
+  std::string result;
+
+  RPG_Character_SkillToStringTableIterator_t iterator = mySkillToStringTable.find(skill_in);
+  if (iterator == mySkillToStringTable.end())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid skill %d --> check implementation !, continuing\n"),
+               skill_in));
+
+    result = ACE_TEXT_ALWAYS_CHAR("SKILL_INVALID");
+
+    return result;
+  } // end IF
+
+  result = iterator->second;
+
+  return result;
+}
+
+const std::string RPG_Character_Skills_Common_Tools::skillsToString(const RPG_Character_Skills_t& skills_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::skillsToString"));
+
+  std::string result;
+
+  std::stringstream str;
+  for (RPG_Character_SkillsConstIterator_t iterator = skills_in.begin();
+       iterator != skills_in.end();
+       iterator++)
+  {
+    result += skillToString(iterator->first);
+    result += ACE_TEXT_ALWAYS_CHAR(": ");
+    str.str(ACE_TEXT_ALWAYS_CHAR(""));
+    str << ACE_static_cast(int, iterator->second);
+    result += str.str();
+    result += ACE_TEXT_ALWAYS_CHAR("\n");
+  } // end FOR
+
+  return result;
+}
+
+const std::string RPG_Character_Skills_Common_Tools::featToString(const RPG_Character_Feat& feat_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::featToString"));
+
+  std::string result;
+
+  RPG_Character_FeatToStringTableIterator_t iterator = myFeatToStringTable.find(feat_in);
+  if (iterator == myFeatToStringTable.end())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid feat %d --> check implementation !, continuing\n"),
+               feat_in));
+
+    result = ACE_TEXT_ALWAYS_CHAR("FEAT_INVALID");
+
+    return result;
+  } // end IF
+
+  result = iterator->second;
+
+  return result;
+}
+
+const std::string RPG_Character_Skills_Common_Tools::featsToString(const RPG_Character_Feats_t& feats_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::featsToString"));
+
+  std::string result;
+  for (RPG_Character_FeatsConstIterator_t iterator = feats_in.begin();
+       iterator != feats_in.end();
+       iterator++)
+  {
+    result += featToString(*iterator);
+    result += ACE_TEXT_ALWAYS_CHAR("\n");
+  } // end FOR
+
+  return result;
+}
+
+const std::string RPG_Character_Skills_Common_Tools::abilityToString(const RPG_Character_Ability& ability_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::abilityToString"));
+
+  std::string result;
+
+  RPG_Character_AbilityToStringTableIterator_t iterator = myAbilityToStringTable.find(ability_in);
+  if (iterator == myAbilityToStringTable.end())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid ability %d --> check implementation !, continuing\n"),
+               ability_in));
+
+    result = ACE_TEXT_ALWAYS_CHAR("ABILITY_INVALID");
+
+    return result;
+  } // end IF
+
+  result = iterator->second;
+
+  return result;
+}
+
+const std::string RPG_Character_Skills_Common_Tools::abilitiesToString(const RPG_Character_Abilities_t& abilities_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::abilitiesToString"));
+
+  std::string result;
+  for (RPG_Character_AbilitiesConstIterator_t iterator = abilities_in.begin();
+       iterator != abilities_in.end();
+       iterator++)
+  {
+    result += abilityToString(*iterator);
+    result += ACE_TEXT_ALWAYS_CHAR("\n");
+  } // end FOR
+
+  return result;
 }
 
 const RPG_Character_Skill RPG_Character_Skills_Common_Tools::stringToSkill(const std::string& string_in)

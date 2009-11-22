@@ -128,16 +128,16 @@ post_RPG_Character_MonsterWeapon_Type ()
   // return ... ;
 }
 
-// RPG_Character_MonsterAttackForm_Type_pimpl
+// RPG_Character_AttackForm_Type_pimpl
 //
 
-void RPG_Character_MonsterAttackForm_Type_pimpl::
+void RPG_Character_AttackForm_Type_pimpl::
 pre ()
 {
 }
 
-RPG_Character_MonsterAttackForm RPG_Character_MonsterAttackForm_Type_pimpl::
-post_RPG_Character_MonsterAttackForm_Type ()
+RPG_Character_AttackForm RPG_Character_AttackForm_Type_pimpl::
+post_RPG_Character_AttackForm_Type ()
 {
   const ::std::string& v (post_string ());
 
@@ -169,7 +169,7 @@ attackBonus (long long attackBonus)
 }
 
 void RPG_Character_MonsterAttackAction_Type_pimpl::
-attackForm (const RPG_Character_MonsterAttackForm& attackForm)
+attackForm (const RPG_Character_AttackForm& attackForm)
 {
   // TODO
   //

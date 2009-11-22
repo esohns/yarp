@@ -180,11 +180,11 @@ RPG_Character_MonsterWeapon RPG_Character_MonsterWeapon_Type::post_RPG_Character
   return RPG_Character_Monster_Common_Tools::stringToMonsterWeapon(post_string());
 }
 
-RPG_Character_MonsterAttackForm RPG_Character_MonsterAttackForm_Type::post_RPG_Character_MonsterAttackForm_Type()
+RPG_Character_AttackForm RPG_Character_AttackForm_Type::post_RPG_Character_AttackForm_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackForm_Type::post_RPG_Character_MonsterAttackForm_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_AttackForm_Type::post_RPG_Character_AttackForm_Type"));
 
-  return RPG_Character_Monster_Common_Tools::stringToMonsterAttackForm(post_string());
+  return RPG_Character_Monster_Common_Tools::stringToAttackForm(post_string());
 }
 
 RPG_Character_MonsterArmorClass_Type::RPG_Character_MonsterArmorClass_Type()
@@ -251,21 +251,21 @@ void RPG_Character_MonsterAttackAction_Type::monsterWeapon(const RPG_Character_M
   myCurrentMonsterAttackAction.monsterWeapon = monsterWeapon_in;
 }
 
-void RPG_Character_MonsterAttackAction_Type::attackBonus(int attackBonus_in)
+void RPG_Character_MonsterAttackAction_Type::attackBonus(long long attackBonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::attackBonus"));
 
   myCurrentMonsterAttackAction.attackBonus = attackBonus_in;
 }
 
-void RPG_Character_MonsterAttackAction_Type::attackForm(const RPG_Character_MonsterAttackForm& attackForm_in)
+void RPG_Character_MonsterAttackAction_Type::attackForm(const RPG_Character_AttackForm& attackForm_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::attackForm"));
 
   myCurrentMonsterAttackAction.attackForm = attackForm_in;
 }
 
-void RPG_Character_MonsterAttackAction_Type::damage(const RPG_Character_Damage& damage_in)
+void RPG_Character_MonsterAttackAction_Type::damage(const RPG_Chance_DiceRoll& damage_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::damage"));
 
@@ -306,14 +306,14 @@ RPG_Character_MonsterAttack_Type::RPG_Character_MonsterAttack_Type()
   myCurrentMonsterAttack.attackActions.clear();
 }
 
-void RPG_Character_MonsterAttack_Type::baseAttackBonus(int baseAttackBonus_in)
+void RPG_Character_MonsterAttack_Type::baseAttackBonus(long long baseAttackBonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttack_Type::baseAttackBonus"));
 
   myCurrentMonsterAttack.baseAttackBonus = baseAttackBonus_in;
 }
 
-void RPG_Character_MonsterAttack_Type::grappleBonus(int grappleBonus_in)
+void RPG_Character_MonsterAttack_Type::grappleBonus(long long grappleBonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttack_Type::grappleBonus"));
 
@@ -350,21 +350,21 @@ RPG_Character_SavingThrowModifiers_Type::RPG_Character_SavingThrowModifiers_Type
   myCurrentSavingThrowModifiers.will = 0;
 }
 
-void RPG_Character_SavingThrowModifiers_Type::fortitude(int fortitude_in)
+void RPG_Character_SavingThrowModifiers_Type::fortitude(long long fortitude_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_SavingThrowModifiers_Type::fortitude"));
 
   myCurrentSavingThrowModifiers.fortitude = fortitude_in;
 }
 
-void RPG_Character_SavingThrowModifiers_Type::reflex(int reflex_in)
+void RPG_Character_SavingThrowModifiers_Type::reflex(long long reflex_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_SavingThrowModifiers_Type::reflex"));
 
   myCurrentSavingThrowModifiers.reflex = reflex_in;
 }
 
-void RPG_Character_SavingThrowModifiers_Type::will(int will_in)
+void RPG_Character_SavingThrowModifiers_Type::will(long long will_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_SavingThrowModifiers_Type::will"));
 
@@ -478,11 +478,11 @@ void RPG_Character_SkillValue_Type::skill(const RPG_Character_Skill& skill_in)
   myCurrentSkill.first = skill_in;
 }
 
-void RPG_Character_SkillValue_Type::rank(int rank_in)
+void RPG_Character_SkillValue_Type::rank(long long rank_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_SkillValue_Type::rank"));
 
-  myCurrentSkill.second = rank_in;
+  myCurrentSkill.second = ACE_static_cast(char, rank_in);
 }
 
 RPG_Character_SkillsItem_t RPG_Character_SkillValue_Type::post_RPG_Character_SkillValue_Type()

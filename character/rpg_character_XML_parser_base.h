@@ -82,15 +82,15 @@ class RPG_Character_MonsterWeapon_Type_pimpl: public virtual RPG_Character_Monst
   post_RPG_Character_MonsterWeapon_Type ();
 };
 
-class RPG_Character_MonsterAttackForm_Type_pimpl: public virtual RPG_Character_MonsterAttackForm_Type_pskel,
+class RPG_Character_AttackForm_Type_pimpl: public virtual RPG_Character_AttackForm_Type_pskel,
   public ::xml_schema::string_pimpl
 {
   public:
   virtual void
   pre ();
 
-  virtual RPG_Character_MonsterAttackForm
-  post_RPG_Character_MonsterAttackForm_Type ();
+  virtual RPG_Character_AttackForm
+  post_RPG_Character_AttackForm_Type ();
 };
 
 class RPG_Character_MonsterAttackAction_Type_pimpl: public virtual RPG_Character_MonsterAttackAction_Type_pskel
@@ -106,7 +106,7 @@ class RPG_Character_MonsterAttackAction_Type_pimpl: public virtual RPG_Character
   attackBonus (long long);
 
   virtual void
-  attackForm (const RPG_Character_MonsterAttackForm&);
+  attackForm (const RPG_Character_AttackForm&);
 
   virtual void
   damage (const RPG_Chance_DiceRoll&);

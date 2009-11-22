@@ -20,9 +20,12 @@
 #include "rpg_character_dictionary.h"
 
 #include "rpg_character_XML_parser.h"
+#include "rpg_character_common_tools.h"
+#include "rpg_character_skills_common_tools.h"
 #include "rpg_character_monster_common_tools.h"
 
 #include <rpg_chance_dice.h>
+#include <rpg_chance_dice_common_tools.h>
 #include <rpg_chance_dice_XML_parser.h>
 
 #include <ace/Log_Msg.h>
@@ -70,11 +73,11 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
                               unsigned_int_p,
                               unsigned_int_p);
   RPG_Character_MonsterWeapon_Type          monsterWeapon_p;
-  RPG_Character_MonsterAttackForm_Type      monsterAttackForm_p;
+  RPG_Character_AttackForm_Type             attackForm_p;
   RPG_Character_MonsterAttackAction_Type    monsterAttackAction_p;
   monsterAttackAction_p.parsers(monsterWeapon_p,
                                 int_p,
-                                monsterAttackForm_p,
+                                attackForm_p,
                                 roll_p,
                                 unsigned_int_p);
   RPG_Character_MonsterAttack_Type          monsterAttack_p;
@@ -214,14 +217,30 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
   // init result
   encounter_out.clear();
 
+  RPG_Chance_DiceRollResult_t result;
   // step1: depending on the environment, find appropriate foes
+  // *IMPORTANT NOTE*: if the input environment is ENVIRONMENT_ANY, we choose one at random
+  RPG_Character_Environment choiceEnvironment = environment_in;
+  if (environment_in == ENVIRONMENT_ANY)
+  {
+    do
+    {
+      result.clear();
+      RPG_Chance_Dice::generateRandomNumbers(ENVIRONMENT_MAX,
+                                             1,
+                                             result);
+      choiceEnvironment = ACE_static_cast(RPG_Character_Environment,
+                                          (result.front() - 1));
+    } while (choiceEnvironment == ENVIRONMENT_ANY);
+  } // end IF
+
   RPG_Character_MonsterList_t list;
   for (RPG_Character_MonsterDictionaryIterator_t iterator = myMonsterDictionary.begin();
        iterator != myMonsterDictionary.end();
        iterator++)
   {
     // *TODO*: need to refine this for different planes...
-    if ((iterator->second.environment == environment_in) ||
+    if ((iterator->second.environment == choiceEnvironment) ||
         (iterator->second.environment == ENVIRONMENT_ANY))
     {
       list.push_back(iterator->first);
@@ -233,7 +252,7 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
     // nothing found in database...
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("found no appropriate monster types for environment \"%s\" in dictionary (%d items) --> check implementation !, returning\n"),
-               RPG_Character_Monster_Common_Tools::environmentToString(environment_in).c_str(),
+               RPG_Character_Monster_Common_Tools::environmentToString(choiceEnvironment).c_str(),
                myMonsterDictionary.size()));
 
     return;
@@ -245,7 +264,6 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
   {
     // step2a: choose random foe
     RPG_Character_EncounterIterator_t iterator;
-    RPG_Chance_DiceRollResult_t result;
     int choiceType = 0;
     do
     {
@@ -254,13 +272,12 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
                                              1,
                                              result);
       choiceType = result.front() - 1; // list index
-
       // already used this type ?
       iterator = encounter_out.find(list[choiceType]);
     } while (iterator != encounter_out.end());
 
     // step2b: compute number of foes
-    // step2ba: choose random organization
+    // step2ba: ...simply choose a random organization from the list
     result.clear();
     RPG_Chance_Dice::generateRandomNumbers(organizations_in.size(),
                                            1,
@@ -271,7 +288,6 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
     RPG_Chance_DiceRoll roll;
     organizationToRoll(*iterator2,
                        roll);
-  //   RPG_Chance_Dice::RPG_Chance_Dice_Result_t result;
     result.clear();
     RPG_Chance_Dice::simulateDiceRoll(roll,
                                       1,
@@ -299,6 +315,26 @@ void RPG_Character_Dictionary::organizationToRoll(const RPG_Character_Organizati
 
   switch (organization_in)
   {
+    case ORGANIZATION_ANY:
+    {
+      // choose any (other) form of organization at random...
+      RPG_Character_Organization organization = ORGANIZATION_ANY;
+      RPG_Chance_DiceRollResult_t result;
+      do
+      {
+        result.clear();
+        RPG_Chance_Dice::generateRandomNumbers(ORGANIZATION_MAX,
+                                               1,
+                                               result);
+        organization = ACE_static_cast(RPG_Character_Organization,
+                                       (result.front() - 1));
+      } while (organization == ORGANIZATION_ANY);
+      // ...and run ourselves again
+      organizationToRoll(organization,
+                         roll_out);
+
+      break;
+    }
     case ORGANIZATION_SOLITARY:
     {
       roll_out.modifier = 1;
@@ -458,4 +494,43 @@ bool RPG_Character_Dictionary::XSD_Error_Handler::handle(const std::string& id_i
 
   // try to continue anyway...
   return true;
+}
+
+void RPG_Character_Dictionary::dump() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary::dump"));
+
+  // simply dump the current content of our dictionary
+  for (RPG_Character_MonsterDictionaryIterator_t iterator = myMonsterDictionary.begin();
+       iterator != myMonsterDictionary.end();
+       iterator++)
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("Monster (\"%s\"):\nSize: \"%s\"\nType: \"%s\"\nHit Dice: \"%s\"\nInitiative: %d\nSpeed: %d ft/round\nArmor Class: %d / %d / %d\nAttack:\n-------\n%sSpace: %d ft\nReach: %d ft\nSaves: %d / %d / %d\nAttributes:\n-----------\n%sSkills:\n-------\n%sFeats:\n------\n%sEnvironment: \"%s\"\nOrganizations: \"%s\"\nChallenge Rating: %d\nTreasure Modifier: %d\nAlignment: \"%s\"\nAdvancement:\n------------\n%sLevel Adjustment: %d\n"),
+               (iterator->first).c_str(),
+               RPG_Character_Monster_Common_Tools::sizeToString((iterator->second).size).c_str(),
+               RPG_Character_Monster_Common_Tools::monsterTypeToString((iterator->second).type).c_str(),
+               RPG_Chance_Dice_Common_Tools::rollToString((iterator->second).hitDice).c_str(),
+               (iterator->second).initiative,
+               (iterator->second).speed,
+               (iterator->second).armorClass.normal,
+               (iterator->second).armorClass.touch,
+               (iterator->second).armorClass.flatFooted,
+               RPG_Character_Monster_Common_Tools::monsterAttackToString((iterator->second).attack).c_str(),
+               (iterator->second).space,
+               (iterator->second).reach,
+               (iterator->second).saves.fortitude,
+               (iterator->second).saves.reflex,
+               (iterator->second).saves.will,
+               RPG_Character_Common_Tools::attributesToString((iterator->second).attributes).c_str(),
+               RPG_Character_Skills_Common_Tools::skillsToString((iterator->second).skills).c_str(),
+               RPG_Character_Skills_Common_Tools::featsToString((iterator->second).feats).c_str(),
+               RPG_Character_Monster_Common_Tools::environmentToString((iterator->second).environment).c_str(),
+               RPG_Character_Monster_Common_Tools::organizationsToString((iterator->second).organizations).c_str(),
+               (iterator->second).challengeRating,
+               (iterator->second).treasureModifier,
+               RPG_Character_Common_Tools::alignmentToString((iterator->second).alignment).c_str(),
+               RPG_Character_Monster_Common_Tools::monsterAdvancementToString((iterator->second).advancement).c_str(),
+               (iterator->second).levelAdjustment));
+  } // end FOR
 }

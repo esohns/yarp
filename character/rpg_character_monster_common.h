@@ -119,7 +119,7 @@ enum RPG_Character_MonsterWeapon
   MONSTERWEAPON_INVALID
 };
 
-enum RPG_Character_MonsterAttackForm
+enum RPG_Character_AttackForm
 {
   ATTACK_MELEE = 0,
   ATTACK_TOUCH,
@@ -133,11 +133,11 @@ typedef RPG_Chance_DiceRoll RPG_Character_Damage;
 
 struct RPG_Character_MonsterAttackAction
 {
-  RPG_Character_MonsterWeapon     monsterWeapon;
-  int                             attackBonus;
-  RPG_Character_MonsterAttackForm attackForm;
-  RPG_Chance_DiceRoll             damage;
-  unsigned int                    numAttacksPerRound;
+  RPG_Character_MonsterWeapon monsterWeapon;
+  int                         attackBonus;
+  RPG_Character_AttackForm    attackForm;
+  RPG_Chance_DiceRoll         damage;
+  unsigned int                numAttacksPerRound;
 };
 
 typedef std::vector<RPG_Character_MonsterAttackAction> RPG_Character_MonsterAttackActions_t;

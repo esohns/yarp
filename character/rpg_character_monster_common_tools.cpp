@@ -19,13 +19,18 @@
  ***************************************************************************/
 #include "rpg_character_monster_common_tools.h"
 
+#include <rpg_chance_dice_common_tools.h>
+
 #include <ace/Log_Msg.h>
+
+#include <string>
+#include <sstream>
 
 // init statics
 RPG_Character_Monster_Common_Tools::RPG_StringToMonsterMetaTypeTable_t   RPG_Character_Monster_Common_Tools::myStringToMonsterMetaTypeTable;
 RPG_Character_Monster_Common_Tools::RPG_StringToMonsterSubTypeTable_t    RPG_Character_Monster_Common_Tools::myStringToMonsterSubTypeTable;
 RPG_Character_Monster_Common_Tools::RPG_StringToMonsterWeaponTable_t     RPG_Character_Monster_Common_Tools::myStringToMonsterWeaponTable;
-RPG_Character_Monster_Common_Tools::RPG_StringToMonsterAttackFormTable_t RPG_Character_Monster_Common_Tools::myStringToMonsterAttackFormTable;
+RPG_Character_Monster_Common_Tools::RPG_StringToAttackFormTable_t RPG_Character_Monster_Common_Tools::myStringToAttackFormTable;
 RPG_Character_Monster_Common_Tools::RPG_StringToSizeTable_t              RPG_Character_Monster_Common_Tools::myStringToSizeTable;
 RPG_Character_Monster_Common_Tools::RPG_StringToEnvironmentTable_t       RPG_Character_Monster_Common_Tools::myStringToEnvironmentTable;
 RPG_Character_Monster_Common_Tools::RPG_StringToOrganizationTable_t      RPG_Character_Monster_Common_Tools::myStringToOrganizationTable;
@@ -106,11 +111,11 @@ void RPG_Character_Monster_Common_Tools::initStringConversionTables()
   myStringToMonsterWeaponTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("RAY_LIGHT"), RAY_LIGHT));
 
   // clean table
-  myStringToMonsterAttackFormTable.clear();
+  myStringToAttackFormTable.clear();
 
-  myStringToMonsterAttackFormTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTACK_MELEE"), ATTACK_MELEE));
-  myStringToMonsterAttackFormTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTACK_TOUCH"), ATTACK_TOUCH));
-  myStringToMonsterAttackFormTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTACK_RANGED"), ATTACK_RANGED));
+  myStringToAttackFormTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTACK_MELEE"), ATTACK_MELEE));
+  myStringToAttackFormTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTACK_TOUCH"), ATTACK_TOUCH));
+  myStringToAttackFormTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("ATTACK_RANGED"), ATTACK_RANGED));
 
   // clean table
   myStringToSizeTable.clear();
@@ -190,6 +195,28 @@ const RPG_Character_Size RPG_Character_Monster_Common_Tools::stringToSize(const 
   return iterator->second;
 }
 
+const std::string RPG_Character_Monster_Common_Tools::sizeToString(const RPG_Character_Size& size_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster_Common_Tools::sizeToString"));
+
+  for (RPG_StringToSizeTableIterator_t iterator = myStringToSizeTable.begin();
+       iterator != myStringToSizeTable.end();
+       iterator++)
+  {
+    if (iterator->second == size_in)
+    {
+      return iterator->first;
+    } // end IF
+  } // end FOR
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid size: %d --> check implementation !, returning\n"),
+             size_in));
+
+  return ACE_TEXT_ALWAYS_CHAR("SIZE_INVALID");
+}
+
 const RPG_Character_MonsterMetaType RPG_Character_Monster_Common_Tools::stringToMonsterMetaType(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster_Common_Tools::stringToMonsterMetaType"));
@@ -206,6 +233,28 @@ const RPG_Character_MonsterMetaType RPG_Character_Monster_Common_Tools::stringTo
   } // end IF
 
   return iterator->second;
+}
+
+const std::string RPG_Character_Monster_Common_Tools::monsterMetaTypeToString(const RPG_Character_MonsterMetaType& metaType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster_Common_Tools::monsterMetaTypeToString"));
+
+  for (RPG_StringToMonsterMetaTypeTableIterator_t iterator = myStringToMonsterMetaTypeTable.begin();
+       iterator != myStringToMonsterMetaTypeTable.end();
+       iterator++)
+  {
+    if (iterator->second == metaType_in)
+    {
+      return iterator->first;
+    } // end IF
+  } // end FOR
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid monster (meta)type: %d --> check implementation !, returning\n"),
+             metaType_in));
+
+  return ACE_TEXT_ALWAYS_CHAR("MONSTERMETATYPE_INVALID");
 }
 
 const RPG_Character_MonsterSubType RPG_Character_Monster_Common_Tools::stringToMonsterSubType(const std::string& string_in)
@@ -226,6 +275,50 @@ const RPG_Character_MonsterSubType RPG_Character_Monster_Common_Tools::stringToM
   return iterator->second;
 }
 
+const std::string RPG_Character_Monster_Common_Tools::monsterSubTypeToString(const RPG_Character_MonsterSubType& subType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster_Common_Tools::monsterSubTypeToString"));
+
+  for (RPG_StringToMonsterSubTypeTableIterator_t iterator = myStringToMonsterSubTypeTable.begin();
+       iterator != myStringToMonsterSubTypeTable.end();
+       iterator++)
+  {
+    if (iterator->second == subType_in)
+    {
+      return iterator->first;
+    } // end IF
+  } // end FOR
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid monster (sub)type: %d --> check implementation !, returning\n"),
+             subType_in));
+
+  return ACE_TEXT_ALWAYS_CHAR("MONSTERSUBTYPE_INVALID");
+}
+
+const std::string RPG_Character_Monster_Common_Tools::monsterTypeToString(const RPG_Character_MonsterType& type_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster_Common_Tools::monsterTypeToString"));
+
+  std::string result = monsterMetaTypeToString(type_in.metaType);
+  if (!type_in.subTypes.empty())
+  {
+    result += ACE_TEXT_ALWAYS_CHAR(" / (");
+    for (RPG_Character_MonsterSubTypesIterator_t iterator = type_in.subTypes.begin();
+        iterator != type_in.subTypes.end();
+        iterator++)
+    {
+      result += monsterSubTypeToString(*iterator);
+      result += ACE_TEXT_ALWAYS_CHAR("|");
+    } // end FOR
+    result.erase(--(result.end()));
+    result += ACE_TEXT_ALWAYS_CHAR(")");
+  } // end IF
+
+  return result;
+}
+
 const RPG_Character_MonsterWeapon RPG_Character_Monster_Common_Tools::stringToMonsterWeapon(const std::string& string_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster_Common_Tools::stringToMonsterWeapon"));
@@ -244,22 +337,124 @@ const RPG_Character_MonsterWeapon RPG_Character_Monster_Common_Tools::stringToMo
   return iterator->second;
 }
 
-const RPG_Character_MonsterAttackForm RPG_Character_Monster_Common_Tools::stringToMonsterAttackForm(const std::string& string_in)
+const std::string RPG_Character_Monster_Common_Tools::monsterWeaponToString(const RPG_Character_MonsterWeapon& monsterWeapon_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Monster_Common_Tools::stringToMonsterAttackForm"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster_Common_Tools::monsterWeaponToString"));
 
-  RPG_StringToMonsterAttackFormTableIterator_t iterator = myStringToMonsterAttackFormTable.find(string_in);
-  if (iterator == myStringToMonsterAttackFormTable.end())
+  for (RPG_StringToMonsterWeaponTableIterator_t iterator = myStringToMonsterWeaponTable.begin();
+       iterator != myStringToMonsterWeaponTable.end();
+       iterator++)
+  {
+    if (iterator->second == monsterWeapon_in)
+    {
+      return iterator->first;
+    } // end IF
+  } // end FOR
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid monster weapon: %d --> check implementation !, returning\n"),
+                      monsterWeapon_in));
+
+  return ACE_TEXT_ALWAYS_CHAR("MONSTERWEAPON_INVALID");
+}
+
+const RPG_Character_AttackForm RPG_Character_Monster_Common_Tools::stringToAttackForm(const std::string& string_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster_Common_Tools::stringToAttackForm"));
+
+  RPG_StringToAttackFormTableIterator_t iterator = myStringToAttackFormTable.find(string_in);
+  if (iterator == myStringToAttackFormTable.end())
   {
     // debug info
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid monster attack form: \"%s\" --> check implementation !, returning\n"),
+               ACE_TEXT("invalid attack form: \"%s\" --> check implementation !, returning\n"),
                string_in.c_str()));
 
     return ATTACK_INVALID;
   } // end IF
 
   return iterator->second;
+}
+
+const std::string RPG_Character_Monster_Common_Tools::attackFormToString(const RPG_Character_AttackForm& attackForm_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster_Common_Tools::attackFormToString"));
+
+  for (RPG_StringToAttackFormTableIterator_t iterator = myStringToAttackFormTable.begin();
+       iterator != myStringToAttackFormTable.end();
+       iterator++)
+  {
+    if (iterator->second == attackForm_in)
+    {
+      return iterator->first;
+    } // end IF
+  } // end FOR
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid attack form: %d --> check implementation !, returning\n"),
+             attackForm_in));
+
+  return ACE_TEXT_ALWAYS_CHAR("ATTACK_INVALID");
+}
+
+const std::string RPG_Character_Monster_Common_Tools::monsterAttackActionToString(const RPG_Character_MonsterAttackAction& attackAction_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster_Common_Tools::monsterAttackActionToString"));
+
+  std::string result;
+
+  result += ACE_TEXT_ALWAYS_CHAR("weapon: ");
+  result += monsterWeaponToString(attackAction_in.monsterWeapon);
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT_ALWAYS_CHAR("attackBonus: ");
+  std::stringstream str;
+  str << attackAction_in.attackBonus;
+  result += str.str();
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT_ALWAYS_CHAR("attackForm: ");
+  result += attackFormToString(attackAction_in.attackForm);
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT_ALWAYS_CHAR("damage: ");
+  result += RPG_Chance_Dice_Common_Tools::rollToString(attackAction_in.damage);
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT_ALWAYS_CHAR("numAttacksPerRound: ");
+  str << attackAction_in.numAttacksPerRound;
+  result += str.str();
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+
+  return result;
+}
+
+const std::string RPG_Character_Monster_Common_Tools::monsterAttackToString(const RPG_Character_MonsterAttack& monsterAttack_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster_Common_Tools::monsterAttackToString"));
+
+  std::string result;
+
+  std::stringstream str;
+  result += ACE_TEXT_ALWAYS_CHAR("baseAttackBonus: ");
+  str << monsterAttack_in.baseAttackBonus;
+  result += str.str();
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT_ALWAYS_CHAR("grappleBonus: ");
+  str << monsterAttack_in.grappleBonus;
+  result += str.str();
+  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT_ALWAYS_CHAR("Action(s):\n----------\n");
+  for (RPG_Character_MonsterAttackActionsIterator_t iterator = monsterAttack_in.attackActions.begin();
+       iterator != monsterAttack_in.attackActions.end();
+       iterator++)
+  {
+    result += monsterAttackActionToString(*iterator);
+  } // end FOR
+
+  return result;
 }
 
 const RPG_Character_Environment RPG_Character_Monster_Common_Tools::stringToEnvironment(const std::string& string_in)
@@ -340,4 +535,43 @@ const std::string RPG_Character_Monster_Common_Tools::organizationToString(const
              organization_in));
 
   return ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_INVALID");
+}
+
+const std::string RPG_Character_Monster_Common_Tools::organizationsToString(const RPG_Character_Organizations_t& organizations_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster_Common_Tools::organizationsToString"));
+
+  std::string result;
+
+  for (RPG_Character_OrganizationsIterator_t iterator = organizations_in.begin();
+       iterator != organizations_in.end();
+       iterator++)
+  {
+    result += organizationToString(*iterator);
+    result += ACE_TEXT_ALWAYS_CHAR("|");
+  }; // end FOR
+
+  // sanity check
+  if (!organizations_in.empty())
+    result.erase(--(result.end()));
+
+  return result;
+}
+
+const std::string RPG_Character_Monster_Common_Tools::monsterAdvancementToString(const RPG_Character_MonsterAdvancement_t& advancement_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster_Common_Tools::monsterAdvancementToString"));
+
+  std::string result;
+  for (RPG_Character_MonsterAdvancementIterator_t iterator = advancement_in.begin();
+       iterator != advancement_in.end();
+       iterator++)
+  {
+    result += sizeToString((*iterator).first);
+    result += ACE_TEXT_ALWAYS_CHAR(": ");
+    result += RPG_Chance_Dice_Common_Tools::rangeToString((*iterator).second);
+    result += ACE_TEXT_ALWAYS_CHAR(" HD\n");
+  }; // end FOR
+
+  return result;
 }

@@ -46,7 +46,7 @@ class RPG_Character_Player
                        const RPG_Item_List_t&);          // (starting) list of (carried) items
   virtual ~RPG_Character_Player();
 
-  using RPG_Character_Base::dump;
+  using RPG_Character_Player_Base::dump;
 
  private:
   typedef RPG_Character_Player_Base inherited;

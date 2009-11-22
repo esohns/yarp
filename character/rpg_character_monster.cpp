@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "rpg_character_monster.h"
 
+#include "rpg_character_monster_common_tools.h"
+
 #include <ace/Log_Msg.h>
 
 RPG_Character_Monster::RPG_Character_Monster(const std::string& name_in,
@@ -57,4 +59,15 @@ const RPG_Character_MonsterType RPG_Character_Monster::getMonsterType() const
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getMonsterType"));
 
   return myMonsterType;
+}
+
+void RPG_Character_Monster::dump() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::dump"));
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("Monster (type: \"%s\")\n"),
+             RPG_Character_Monster_Common_Tools::monsterTypeToString(myMonsterType).c_str()));
+
+  inherited::dump();
 }

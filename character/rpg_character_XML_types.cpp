@@ -123,7 +123,7 @@ attackBonus_parser (::xml_schema::integer_pskel& p)
 }
 
 void RPG_Character_MonsterAttackAction_Type_pskel::
-attackForm_parser (::RPG_Character_MonsterAttackForm_Type_pskel& p)
+attackForm_parser (::RPG_Character_AttackForm_Type_pskel& p)
 {
   this->attackForm_parser_ = &p;
 }
@@ -143,7 +143,7 @@ numAttacksPerRound_parser (::xml_schema::unsigned_int_pskel& p)
 void RPG_Character_MonsterAttackAction_Type_pskel::
 parsers (::RPG_Character_MonsterWeapon_Type_pskel& monsterWeapon,
          ::xml_schema::integer_pskel& attackBonus,
-         ::RPG_Character_MonsterAttackForm_Type_pskel& attackForm,
+         ::RPG_Character_AttackForm_Type_pskel& attackForm,
          ::RPG_Chance_DiceRoll_Type_pskel& damage,
          ::xml_schema::unsigned_int_pskel& numAttacksPerRound)
 {
@@ -885,7 +885,7 @@ attackBonus (long long)
 }
 
 void RPG_Character_MonsterAttackAction_Type_pskel::
-attackForm (const RPG_Character_MonsterAttackForm&)
+attackForm (const RPG_Character_AttackForm&)
 {
 }
 
@@ -988,7 +988,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "attackForm" && ns == "urn:rpg")
   {
     if (this->attackForm_parser_)
-      this->attackForm (this->attackForm_parser_->post_RPG_Character_MonsterAttackForm_Type ());
+      this->attackForm (this->attackForm_parser_->post_RPG_Character_AttackForm_Type ());
 
     return true;
   }

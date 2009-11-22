@@ -129,12 +129,12 @@ class RPG_Character_MonsterWeapon_Type
   virtual RPG_Character_MonsterWeapon post_RPG_Character_MonsterWeapon_Type();
 };
 
-class RPG_Character_MonsterAttackForm_Type
- : public RPG_Character_MonsterAttackForm_Type_pimpl
+class RPG_Character_AttackForm_Type
+ : public RPG_Character_AttackForm_Type_pimpl
 {
  public:
 //   virtual void pre();
-  virtual RPG_Character_MonsterAttackForm post_RPG_Character_MonsterAttackForm_Type();
+  virtual RPG_Character_AttackForm post_RPG_Character_AttackForm_Type();
 };
 
 class RPG_Character_MonsterAttackAction_Type
@@ -145,8 +145,8 @@ class RPG_Character_MonsterAttackAction_Type
 
 //   virtual void pre();
   virtual void monsterWeapon(const RPG_Character_MonsterWeapon&);
-  virtual void attackBonus(int);
-  virtual void attackForm(const RPG_Character_MonsterAttackForm&);
+  virtual void attackBonus(long long);
+  virtual void attackForm(const RPG_Character_AttackForm&);
   virtual void damage(const RPG_Chance_DiceRoll&);
   virtual void numAttacksPerRound(unsigned int);
   virtual RPG_Character_MonsterAttackAction post_RPG_Character_MonsterAttackAction_Type();
@@ -162,8 +162,8 @@ class RPG_Character_MonsterAttack_Type
   RPG_Character_MonsterAttack_Type();
 
 //   virtual void pre();
-  virtual void baseAttackBonus(int);
-  virtual void grappleBonus(int);
+  virtual void baseAttackBonus(long long);
+  virtual void grappleBonus(long long);
   virtual void attackAction(const RPG_Character_MonsterAttackAction&);
   virtual RPG_Character_MonsterAttack post_RPG_Character_MonsterAttack_Type();
 
@@ -178,9 +178,9 @@ class RPG_Character_SavingThrowModifiers_Type
   RPG_Character_SavingThrowModifiers_Type();
 
 //   virtual void pre();
-  virtual void fortitude(int);
-  virtual void reflex(int);
-  virtual void will(int);
+  virtual void fortitude(long long);
+  virtual void reflex(long long);
+  virtual void will(long long);
   virtual RPG_Character_SavingThrowModifiers post_RPG_Character_SavingThrowModifiers_Type();
 
  private:
@@ -222,7 +222,7 @@ class RPG_Character_SkillValue_Type
 
 //   virtual void pre();
   virtual void skill(const RPG_Character_Skill&);
-  virtual void rank(int);
+  virtual void rank(long long);
   virtual RPG_Character_SkillsItem_t post_RPG_Character_SkillValue_Type();
 
  private:

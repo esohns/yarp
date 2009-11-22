@@ -36,14 +36,25 @@ class RPG_Character_Monster_Common_Tools
   static void init();
 
   static const RPG_Character_Size stringToSize(const std::string&); // string
+  static const std::string sizeToString(const RPG_Character_Size&); // size
+
   static const RPG_Character_MonsterMetaType stringToMonsterMetaType(const std::string&); // string
+  static const std::string monsterMetaTypeToString(const RPG_Character_MonsterMetaType&); // metaType
   static const RPG_Character_MonsterSubType stringToMonsterSubType(const std::string&); // string
+  static const std::string monsterSubTypeToString(const RPG_Character_MonsterSubType&); // subType
+  static const std::string monsterTypeToString(const RPG_Character_MonsterType&); // type
   static const RPG_Character_MonsterWeapon stringToMonsterWeapon(const std::string&); // string
-  static const RPG_Character_MonsterAttackForm stringToMonsterAttackForm(const std::string&); // string
+  static const std::string monsterWeaponToString(const RPG_Character_MonsterWeapon&); // weapon
+  static const RPG_Character_AttackForm stringToAttackForm(const std::string&); // string
+  static const std::string attackFormToString(const RPG_Character_AttackForm&); // attack form
+  static const std::string monsterAttackActionToString(const RPG_Character_MonsterAttackAction&); // attack action
+  static const std::string monsterAttackToString(const RPG_Character_MonsterAttack&); // attack
   static const RPG_Character_Environment stringToEnvironment(const std::string&); // string
   static const std::string environmentToString(const RPG_Character_Environment&); // environment
   static const RPG_Character_Organization stringToOrganization(const std::string&); // string
   static const std::string organizationToString(const RPG_Character_Organization&); // organization
+  static const std::string organizationsToString(const RPG_Character_Organizations_t&); // organizations
+  static const std::string monsterAdvancementToString(const RPG_Character_MonsterAdvancement_t&); // advancement
 
  private:
   // safety measures
@@ -62,8 +73,8 @@ class RPG_Character_Monster_Common_Tools
   typedef RPG_StringToMonsterSubTypeTable_t::const_iterator RPG_StringToMonsterSubTypeTableIterator_t;
   typedef std::map<std::string, RPG_Character_MonsterWeapon> RPG_StringToMonsterWeaponTable_t;
   typedef RPG_StringToMonsterWeaponTable_t::const_iterator RPG_StringToMonsterWeaponTableIterator_t;
-  typedef std::map<std::string, RPG_Character_MonsterAttackForm> RPG_StringToMonsterAttackFormTable_t;
-  typedef RPG_StringToMonsterAttackFormTable_t::const_iterator RPG_StringToMonsterAttackFormTableIterator_t;
+  typedef std::map<std::string, RPG_Character_AttackForm> RPG_StringToAttackFormTable_t;
+  typedef RPG_StringToAttackFormTable_t::const_iterator RPG_StringToAttackFormTableIterator_t;
   typedef std::map<std::string, RPG_Character_Size> RPG_StringToSizeTable_t;
   typedef RPG_StringToSizeTable_t::const_iterator RPG_StringToSizeTableIterator_t;
   typedef std::map<std::string, RPG_Character_Environment> RPG_StringToEnvironmentTable_t;
@@ -71,13 +82,13 @@ class RPG_Character_Monster_Common_Tools
   typedef std::map<std::string, RPG_Character_Organization> RPG_StringToOrganizationTable_t;
   typedef RPG_StringToOrganizationTable_t::const_iterator RPG_StringToOrganizationTableIterator_t;
 
-  static RPG_StringToMonsterMetaTypeTable_t   myStringToMonsterMetaTypeTable;
-  static RPG_StringToMonsterSubTypeTable_t    myStringToMonsterSubTypeTable;
-  static RPG_StringToMonsterWeaponTable_t     myStringToMonsterWeaponTable;
-  static RPG_StringToMonsterAttackFormTable_t myStringToMonsterAttackFormTable;
-  static RPG_StringToSizeTable_t              myStringToSizeTable;
-  static RPG_StringToEnvironmentTable_t       myStringToEnvironmentTable;
-  static RPG_StringToOrganizationTable_t      myStringToOrganizationTable;
+  static RPG_StringToMonsterMetaTypeTable_t myStringToMonsterMetaTypeTable;
+  static RPG_StringToMonsterSubTypeTable_t  myStringToMonsterSubTypeTable;
+  static RPG_StringToMonsterWeaponTable_t   myStringToMonsterWeaponTable;
+  static RPG_StringToAttackFormTable_t      myStringToAttackFormTable;
+  static RPG_StringToSizeTable_t            myStringToSizeTable;
+  static RPG_StringToEnvironmentTable_t     myStringToEnvironmentTable;
+  static RPG_StringToOrganizationTable_t    myStringToOrganizationTable;
 };
 
 #endif

@@ -54,7 +54,7 @@ class RPG_Character_MonsterSubType_Type_pskel;
 class RPG_Character_MonsterType_Type_pskel;
 class RPG_Character_MonsterArmorClass_Type_pskel;
 class RPG_Character_MonsterWeapon_Type_pskel;
-class RPG_Character_MonsterAttackForm_Type_pskel;
+class RPG_Character_AttackForm_Type_pskel;
 class RPG_Character_MonsterAttackAction_Type_pskel;
 class RPG_Character_MonsterAttack_Type_pskel;
 class RPG_Character_Size_Type_pskel;
@@ -239,7 +239,7 @@ class RPG_Character_MonsterWeapon_Type_pskel: public virtual ::xml_schema::strin
   post_RPG_Character_MonsterWeapon_Type () = 0;
 };
 
-class RPG_Character_MonsterAttackForm_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Character_AttackForm_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -247,8 +247,8 @@ class RPG_Character_MonsterAttackForm_Type_pskel: public virtual ::xml_schema::s
   // virtual void
   // pre ();
 
-  virtual RPG_Character_MonsterAttackForm
-  post_RPG_Character_MonsterAttackForm_Type () = 0;
+  virtual RPG_Character_AttackForm
+  post_RPG_Character_AttackForm_Type () = 0;
 };
 
 class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex_content
@@ -266,7 +266,7 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   attackBonus (long long);
 
   virtual void
-  attackForm (const RPG_Character_MonsterAttackForm&);
+  attackForm (const RPG_Character_AttackForm&);
 
   virtual void
   damage (const RPG_Chance_DiceRoll&);
@@ -286,7 +286,7 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   attackBonus_parser (::xml_schema::integer_pskel&);
 
   void
-  attackForm_parser (::RPG_Character_MonsterAttackForm_Type_pskel&);
+  attackForm_parser (::RPG_Character_AttackForm_Type_pskel&);
 
   void
   damage_parser (::RPG_Chance_DiceRoll_Type_pskel&);
@@ -297,7 +297,7 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   void
   parsers (::RPG_Character_MonsterWeapon_Type_pskel& /* monsterWeapon */,
            ::xml_schema::integer_pskel& /* attackBonus */,
-           ::RPG_Character_MonsterAttackForm_Type_pskel& /* attackForm */,
+           ::RPG_Character_AttackForm_Type_pskel& /* attackForm */,
            ::RPG_Chance_DiceRoll_Type_pskel& /* damage */,
            ::xml_schema::unsigned_int_pskel& /* numAttacksPerRound */);
 
@@ -320,7 +320,7 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   protected:
   ::RPG_Character_MonsterWeapon_Type_pskel* monsterWeapon_parser_;
   ::xml_schema::integer_pskel* attackBonus_parser_;
-  ::RPG_Character_MonsterAttackForm_Type_pskel* attackForm_parser_;
+  ::RPG_Character_AttackForm_Type_pskel* attackForm_parser_;
   ::RPG_Chance_DiceRoll_Type_pskel* damage_parser_;
   ::xml_schema::unsigned_int_pskel* numAttacksPerRound_parser_;
 };

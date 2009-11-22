@@ -22,11 +22,14 @@
 #include <config.h>
 #endif
 
-#include <rpg_chance_dice_common_tools.h>
 #include "rpg_character_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
 #include "rpg_character_monster_common_tools.h"
 #include "rpg_character_dictionary.h"
+#include "rpg_character_monster.h"
+
+#include <rpg_chance_dice.h>
+#include <rpg_chance_dice_common_tools.h>
 
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
@@ -115,7 +118,8 @@ void do_work(const std::string& filename_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
-  // step1: init string conversion facilities
+  // step1: init: random seed, string conversion facilities, ...
+  RPG_Chance_Dice::init();
   RPG_Chance_Dice_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
   RPG_Character_Skills_Common_Tools::init();
@@ -135,18 +139,41 @@ void do_work(const std::string& filename_in)
   }
 
   // step3: dump monster descriptions
-  RPG_Character_Monster monster(name,
-                                gender,
-                                race,
-                                player_class,
-                                alignment,
-                                attributes,
-                                skills,
-                                feats,
+  RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->dump();
+
+  // step4: generate random encounter
+  unsigned int numMonsterTypes = 1;
+  RPG_Character_Environment environment = ENVIRONMENT_ANY;
+  RPG_Character_Organizations_t organizations;
+  organizations.insert(ORGANIZATION_ANY);
+  RPG_Character_Encounter_t encounter;
+  RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->generateRandomEncounter(numMonsterTypes,
+                                                                          environment,
+                                                                          organizations,
+                                                                          encounter);
+
+  // step5: instantiate monster(s)
+  RPG_Character_EncounterIterator_t iterator = encounter.begin();
+  RPG_Character_MonsterProperties properties = RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->getMonsterProperties(iterator->first);
+  // *TODO*: define monster abilities !
+  RPG_Character_Abilities_t abilities;
+  RPG_Chance_DiceRollResult_t results;
+  RPG_Chance_Dice::simulateDiceRoll(properties.hitDice,
+                                    1,
+                                    results);
+  unsigned short int hitPoints = results.front();
+  // *TODO*: define default monster inventory...
+  unsigned int wealth = 0;
+  RPG_Item_List_t items;
+  RPG_Character_Monster monster((iterator->first).c_str(),
+                                properties.type,
+                                properties.alignment,
+                                properties.attributes,
+                                properties.skills,
+                                properties.feats,
                                 abilities,
-                                0,
-                                hitpoints,
-                                0,
+                                hitPoints,
+                                wealth,
                                 items);
   monster.dump();
 

@@ -49,6 +49,9 @@ class RPG_Character_Dictionary
                                const RPG_Character_Organizations_t&, // allowed organizations
                                RPG_Character_Encounter_t&) const;    // return value: encounter
 
+  // debug info
+  void dump() const;
+
  private:
   // safety measures
   RPG_Character_Dictionary();
