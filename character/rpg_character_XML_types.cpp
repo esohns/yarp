@@ -727,7 +727,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "metaType" && ns.empty ())
+  if (n == "metaType" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->metaType_parser_;
 
@@ -737,7 +737,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "subType" && ns.empty ())
+  if (n == "subType" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->subType_parser_;
 
@@ -757,7 +757,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "metaType" && ns.empty ())
+  if (n == "metaType" && ns == "urn:rpg")
   {
     if (this->metaType_parser_)
       this->metaType (this->metaType_parser_->post_RPG_Character_MonsterMetaType_Type ());
@@ -765,7 +765,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "subType" && ns.empty ())
+  if (n == "subType" && ns == "urn:rpg")
   {
     if (this->subType_parser_)
       this->subType (this->subType_parser_->post_RPG_Character_MonsterSubType_Type ());
@@ -804,7 +804,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "normal" && ns.empty ())
+  if (n == "normal" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->normal_parser_;
 
@@ -814,7 +814,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "touch" && ns.empty ())
+  if (n == "touch" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->touch_parser_;
 
@@ -824,7 +824,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "flatFooted" && ns.empty ())
+  if (n == "flatFooted" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->flatFooted_parser_;
 
@@ -844,7 +844,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "normal" && ns.empty ())
+  if (n == "normal" && ns == "urn:rpg")
   {
     if (this->normal_parser_)
       this->normal (this->normal_parser_->post_unsigned_int ());
@@ -852,7 +852,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "touch" && ns.empty ())
+  if (n == "touch" && ns == "urn:rpg")
   {
     if (this->touch_parser_)
       this->touch (this->touch_parser_->post_unsigned_int ());
@@ -860,7 +860,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "flatFooted" && ns.empty ())
+  if (n == "flatFooted" && ns == "urn:rpg")
   {
     if (this->flatFooted_parser_)
       this->flatFooted (this->flatFooted_parser_->post_unsigned_int ());
@@ -909,7 +909,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "monsterWeapon" && ns.empty ())
+  if (n == "monsterWeapon" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->monsterWeapon_parser_;
 
@@ -919,7 +919,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "attackBonus" && ns.empty ())
+  if (n == "attackBonus" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->attackBonus_parser_;
 
@@ -929,7 +929,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "attackForm" && ns.empty ())
+  if (n == "attackForm" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->attackForm_parser_;
 
@@ -939,7 +939,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "damage" && ns.empty ())
+  if (n == "damage" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->damage_parser_;
 
@@ -949,7 +949,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "numAttacksPerRound" && ns.empty ())
+  if (n == "numAttacksPerRound" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->numAttacksPerRound_parser_;
 
@@ -969,7 +969,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "monsterWeapon" && ns.empty ())
+  if (n == "monsterWeapon" && ns == "urn:rpg")
   {
     if (this->monsterWeapon_parser_)
       this->monsterWeapon (this->monsterWeapon_parser_->post_RPG_Character_MonsterWeapon_Type ());
@@ -977,7 +977,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "attackBonus" && ns.empty ())
+  if (n == "attackBonus" && ns == "urn:rpg")
   {
     if (this->attackBonus_parser_)
       this->attackBonus (this->attackBonus_parser_->post_integer ());
@@ -985,7 +985,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "attackForm" && ns.empty ())
+  if (n == "attackForm" && ns == "urn:rpg")
   {
     if (this->attackForm_parser_)
       this->attackForm (this->attackForm_parser_->post_RPG_Character_MonsterAttackForm_Type ());
@@ -993,7 +993,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "damage" && ns.empty ())
+  if (n == "damage" && ns == "urn:rpg")
   {
     if (this->damage_parser_)
       this->damage (this->damage_parser_->post_RPG_Chance_DiceRoll_Type ());
@@ -1001,7 +1001,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "numAttacksPerRound" && ns.empty ())
+  if (n == "numAttacksPerRound" && ns == "urn:rpg")
   {
     if (this->numAttacksPerRound_parser_)
       this->numAttacksPerRound (this->numAttacksPerRound_parser_->post_unsigned_int ());
@@ -1040,7 +1040,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "baseAttackBonus" && ns.empty ())
+  if (n == "baseAttackBonus" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->baseAttackBonus_parser_;
 
@@ -1050,7 +1050,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "grappleBonus" && ns.empty ())
+  if (n == "grappleBonus" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->grappleBonus_parser_;
 
@@ -1060,7 +1060,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "attackAction" && ns.empty ())
+  if (n == "attackAction" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->attackAction_parser_;
 
@@ -1080,7 +1080,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "baseAttackBonus" && ns.empty ())
+  if (n == "baseAttackBonus" && ns == "urn:rpg")
   {
     if (this->baseAttackBonus_parser_)
       this->baseAttackBonus (this->baseAttackBonus_parser_->post_integer ());
@@ -1088,7 +1088,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "grappleBonus" && ns.empty ())
+  if (n == "grappleBonus" && ns == "urn:rpg")
   {
     if (this->grappleBonus_parser_)
       this->grappleBonus (this->grappleBonus_parser_->post_integer ());
@@ -1096,7 +1096,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "attackAction" && ns.empty ())
+  if (n == "attackAction" && ns == "urn:rpg")
   {
     if (this->attackAction_parser_)
       this->attackAction (this->attackAction_parser_->post_RPG_Character_MonsterAttackAction_Type ());
@@ -1135,7 +1135,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "fortitude" && ns.empty ())
+  if (n == "fortitude" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->fortitude_parser_;
 
@@ -1145,7 +1145,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "reflex" && ns.empty ())
+  if (n == "reflex" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->reflex_parser_;
 
@@ -1155,7 +1155,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "will" && ns.empty ())
+  if (n == "will" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->will_parser_;
 
@@ -1175,7 +1175,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "fortitude" && ns.empty ())
+  if (n == "fortitude" && ns == "urn:rpg")
   {
     if (this->fortitude_parser_)
       this->fortitude (this->fortitude_parser_->post_integer ());
@@ -1183,7 +1183,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "reflex" && ns.empty ())
+  if (n == "reflex" && ns == "urn:rpg")
   {
     if (this->reflex_parser_)
       this->reflex (this->reflex_parser_->post_integer ());
@@ -1191,7 +1191,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "will" && ns.empty ())
+  if (n == "will" && ns == "urn:rpg")
   {
     if (this->will_parser_)
       this->will (this->will_parser_->post_integer ());
@@ -1245,7 +1245,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "strength" && ns.empty ())
+  if (n == "strength" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->strength_parser_;
 
@@ -1255,7 +1255,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "dexterity" && ns.empty ())
+  if (n == "dexterity" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->dexterity_parser_;
 
@@ -1265,7 +1265,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "constitution" && ns.empty ())
+  if (n == "constitution" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->constitution_parser_;
 
@@ -1275,7 +1275,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "intelligence" && ns.empty ())
+  if (n == "intelligence" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->intelligence_parser_;
 
@@ -1285,7 +1285,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "wisdom" && ns.empty ())
+  if (n == "wisdom" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->wisdom_parser_;
 
@@ -1295,7 +1295,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "charisma" && ns.empty ())
+  if (n == "charisma" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->charisma_parser_;
 
@@ -1315,7 +1315,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "strength" && ns.empty ())
+  if (n == "strength" && ns == "urn:rpg")
   {
     if (this->strength_parser_)
       this->strength (this->strength_parser_->post_unsigned_int ());
@@ -1323,7 +1323,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "dexterity" && ns.empty ())
+  if (n == "dexterity" && ns == "urn:rpg")
   {
     if (this->dexterity_parser_)
       this->dexterity (this->dexterity_parser_->post_unsigned_int ());
@@ -1331,7 +1331,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "constitution" && ns.empty ())
+  if (n == "constitution" && ns == "urn:rpg")
   {
     if (this->constitution_parser_)
       this->constitution (this->constitution_parser_->post_unsigned_int ());
@@ -1339,7 +1339,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "intelligence" && ns.empty ())
+  if (n == "intelligence" && ns == "urn:rpg")
   {
     if (this->intelligence_parser_)
       this->intelligence (this->intelligence_parser_->post_unsigned_int ());
@@ -1347,7 +1347,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "wisdom" && ns.empty ())
+  if (n == "wisdom" && ns == "urn:rpg")
   {
     if (this->wisdom_parser_)
       this->wisdom (this->wisdom_parser_->post_unsigned_int ());
@@ -1355,7 +1355,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "charisma" && ns.empty ())
+  if (n == "charisma" && ns == "urn:rpg")
   {
     if (this->charisma_parser_)
       this->charisma (this->charisma_parser_->post_unsigned_int ());
@@ -1389,7 +1389,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "skill" && ns.empty ())
+  if (n == "skill" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->skill_parser_;
 
@@ -1399,7 +1399,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "rank" && ns.empty ())
+  if (n == "rank" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->rank_parser_;
 
@@ -1419,7 +1419,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "skill" && ns.empty ())
+  if (n == "skill" && ns == "urn:rpg")
   {
     if (this->skill_parser_)
       this->skill (this->skill_parser_->post_RPG_Character_Skill_Type ());
@@ -1427,7 +1427,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "rank" && ns.empty ())
+  if (n == "rank" && ns == "urn:rpg")
   {
     if (this->rank_parser_)
       this->rank (this->rank_parser_->post_integer ());
@@ -1456,7 +1456,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "skill" && ns.empty ())
+  if (n == "skill" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->skill_parser_;
 
@@ -1476,7 +1476,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "skill" && ns.empty ())
+  if (n == "skill" && ns == "urn:rpg")
   {
     if (this->skill_parser_)
       this->skill (this->skill_parser_->post_RPG_Character_SkillValue_Type ());
@@ -1505,7 +1505,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "feat" && ns.empty ())
+  if (n == "feat" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->feat_parser_;
 
@@ -1525,7 +1525,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "feat" && ns.empty ())
+  if (n == "feat" && ns == "urn:rpg")
   {
     if (this->feat_parser_)
       this->feat (this->feat_parser_->post_RPG_Character_Feat_Type ());
@@ -1559,7 +1559,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "civic" && ns.empty ())
+  if (n == "civic" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->civic_parser_;
 
@@ -1569,7 +1569,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "ethic" && ns.empty ())
+  if (n == "ethic" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->ethic_parser_;
 
@@ -1589,7 +1589,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "civic" && ns.empty ())
+  if (n == "civic" && ns == "urn:rpg")
   {
     if (this->civic_parser_)
       this->civic (this->civic_parser_->post_RPG_Character_AlignmentCivic_Type ());
@@ -1597,7 +1597,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "ethic" && ns.empty ())
+  if (n == "ethic" && ns == "urn:rpg")
   {
     if (this->ethic_parser_)
       this->ethic (this->ethic_parser_->post_RPG_Character_AlignmentEthic_Type ());
@@ -1631,7 +1631,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "size" && ns.empty ())
+  if (n == "size" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->size_parser_;
 
@@ -1641,7 +1641,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "range" && ns.empty ())
+  if (n == "range" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->range_parser_;
 
@@ -1661,7 +1661,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "size" && ns.empty ())
+  if (n == "size" && ns == "urn:rpg")
   {
     if (this->size_parser_)
       this->size (this->size_parser_->post_RPG_Character_Size_Type ());
@@ -1669,7 +1669,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "range" && ns.empty ())
+  if (n == "range" && ns == "urn:rpg")
   {
     if (this->range_parser_)
       this->range (this->range_parser_->post_RPG_Chance_ValueRange_Type ());
@@ -1698,7 +1698,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "step" && ns.empty ())
+  if (n == "step" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->step_parser_;
 
@@ -1718,7 +1718,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "step" && ns.empty ())
+  if (n == "step" && ns == "urn:rpg")
   {
     if (this->step_parser_)
       this->step (this->step_parser_->post_RPG_Character_MonsterAdvancementStep_Type ());
@@ -1847,7 +1847,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "name" && ns.empty ())
+  if (n == "name" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->name_parser_;
 
@@ -1857,7 +1857,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "size" && ns.empty ())
+  if (n == "size" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->size_parser_;
 
@@ -1867,7 +1867,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "type" && ns.empty ())
+  if (n == "type" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
 
@@ -1877,7 +1877,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "hitDice" && ns.empty ())
+  if (n == "hitDice" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->hitDice_parser_;
 
@@ -1887,7 +1887,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "initiative" && ns.empty ())
+  if (n == "initiative" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->initiative_parser_;
 
@@ -1897,7 +1897,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "speed" && ns.empty ())
+  if (n == "speed" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->speed_parser_;
 
@@ -1907,7 +1907,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "armorClass" && ns.empty ())
+  if (n == "armorClass" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->armorClass_parser_;
 
@@ -1917,7 +1917,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "attack" && ns.empty ())
+  if (n == "attack" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->attack_parser_;
 
@@ -1927,7 +1927,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "space" && ns.empty ())
+  if (n == "space" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->space_parser_;
 
@@ -1937,7 +1937,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "reach" && ns.empty ())
+  if (n == "reach" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->reach_parser_;
 
@@ -1947,7 +1947,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "saves" && ns.empty ())
+  if (n == "saves" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->saves_parser_;
 
@@ -1957,7 +1957,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "attributes" && ns.empty ())
+  if (n == "attributes" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->attributes_parser_;
 
@@ -1967,7 +1967,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "skills" && ns.empty ())
+  if (n == "skills" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->skills_parser_;
 
@@ -1977,7 +1977,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "feats" && ns.empty ())
+  if (n == "feats" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->feats_parser_;
 
@@ -1987,7 +1987,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "environment" && ns.empty ())
+  if (n == "environment" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->environment_parser_;
 
@@ -1997,7 +1997,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "organization" && ns.empty ())
+  if (n == "organization" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->organization_parser_;
 
@@ -2007,7 +2007,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "challengeRating" && ns.empty ())
+  if (n == "challengeRating" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->challengeRating_parser_;
 
@@ -2017,7 +2017,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "treasureModifier" && ns.empty ())
+  if (n == "treasureModifier" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->treasureModifier_parser_;
 
@@ -2027,7 +2027,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "alignment" && ns.empty ())
+  if (n == "alignment" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->alignment_parser_;
 
@@ -2037,7 +2037,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "advancement" && ns.empty ())
+  if (n == "advancement" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->advancement_parser_;
 
@@ -2047,7 +2047,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "levelAdjustment" && ns.empty ())
+  if (n == "levelAdjustment" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->levelAdjustment_parser_;
 
@@ -2067,7 +2067,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "name" && ns.empty ())
+  if (n == "name" && ns == "urn:rpg")
   {
     if (this->name_parser_)
       this->name (this->name_parser_->post_string ());
@@ -2075,7 +2075,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "size" && ns.empty ())
+  if (n == "size" && ns == "urn:rpg")
   {
     if (this->size_parser_)
       this->size (this->size_parser_->post_RPG_Character_Size_Type ());
@@ -2083,7 +2083,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "type" && ns.empty ())
+  if (n == "type" && ns == "urn:rpg")
   {
     if (this->type_parser_)
       this->type (this->type_parser_->post_RPG_Character_MonsterType_Type ());
@@ -2091,7 +2091,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "hitDice" && ns.empty ())
+  if (n == "hitDice" && ns == "urn:rpg")
   {
     if (this->hitDice_parser_)
       this->hitDice (this->hitDice_parser_->post_RPG_Chance_DiceRoll_Type ());
@@ -2099,7 +2099,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "initiative" && ns.empty ())
+  if (n == "initiative" && ns == "urn:rpg")
   {
     if (this->initiative_parser_)
       this->initiative (this->initiative_parser_->post_integer ());
@@ -2107,7 +2107,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "speed" && ns.empty ())
+  if (n == "speed" && ns == "urn:rpg")
   {
     if (this->speed_parser_)
       this->speed (this->speed_parser_->post_unsigned_int ());
@@ -2115,7 +2115,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "armorClass" && ns.empty ())
+  if (n == "armorClass" && ns == "urn:rpg")
   {
     if (this->armorClass_parser_)
       this->armorClass (this->armorClass_parser_->post_RPG_Character_MonsterArmorClass_Type ());
@@ -2123,7 +2123,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "attack" && ns.empty ())
+  if (n == "attack" && ns == "urn:rpg")
   {
     if (this->attack_parser_)
       this->attack (this->attack_parser_->post_RPG_Character_MonsterAttack_Type ());
@@ -2131,7 +2131,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "space" && ns.empty ())
+  if (n == "space" && ns == "urn:rpg")
   {
     if (this->space_parser_)
       this->space (this->space_parser_->post_unsigned_int ());
@@ -2139,7 +2139,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "reach" && ns.empty ())
+  if (n == "reach" && ns == "urn:rpg")
   {
     if (this->reach_parser_)
       this->reach (this->reach_parser_->post_unsigned_int ());
@@ -2147,7 +2147,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "saves" && ns.empty ())
+  if (n == "saves" && ns == "urn:rpg")
   {
     if (this->saves_parser_)
       this->saves (this->saves_parser_->post_RPG_Character_SavingThrowModifiers_Type ());
@@ -2155,7 +2155,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "attributes" && ns.empty ())
+  if (n == "attributes" && ns == "urn:rpg")
   {
     if (this->attributes_parser_)
       this->attributes (this->attributes_parser_->post_RPG_Character_Attributes_Type ());
@@ -2163,7 +2163,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "skills" && ns.empty ())
+  if (n == "skills" && ns == "urn:rpg")
   {
     if (this->skills_parser_)
       this->skills (this->skills_parser_->post_RPG_Character_Skills_Type ());
@@ -2171,7 +2171,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "feats" && ns.empty ())
+  if (n == "feats" && ns == "urn:rpg")
   {
     if (this->feats_parser_)
       this->feats (this->feats_parser_->post_RPG_Character_Feats_Type ());
@@ -2179,7 +2179,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "environment" && ns.empty ())
+  if (n == "environment" && ns == "urn:rpg")
   {
     if (this->environment_parser_)
       this->environment (this->environment_parser_->post_RPG_Character_Environment_Type ());
@@ -2187,7 +2187,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "organization" && ns.empty ())
+  if (n == "organization" && ns == "urn:rpg")
   {
     if (this->organization_parser_)
       this->organization (this->organization_parser_->post_RPG_Character_Organization_Type ());
@@ -2195,7 +2195,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "challengeRating" && ns.empty ())
+  if (n == "challengeRating" && ns == "urn:rpg")
   {
     if (this->challengeRating_parser_)
       this->challengeRating (this->challengeRating_parser_->post_unsigned_int ());
@@ -2203,7 +2203,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "treasureModifier" && ns.empty ())
+  if (n == "treasureModifier" && ns == "urn:rpg")
   {
     if (this->treasureModifier_parser_)
       this->treasureModifier (this->treasureModifier_parser_->post_unsigned_int ());
@@ -2211,7 +2211,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "alignment" && ns.empty ())
+  if (n == "alignment" && ns == "urn:rpg")
   {
     if (this->alignment_parser_)
       this->alignment (this->alignment_parser_->post_RPG_Character_Alignment_Type ());
@@ -2219,7 +2219,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "advancement" && ns.empty ())
+  if (n == "advancement" && ns == "urn:rpg")
   {
     if (this->advancement_parser_)
       this->advancement (this->advancement_parser_->post_RPG_Character_MonsterAdvancement_Type ());
@@ -2227,7 +2227,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "levelAdjustment" && ns.empty ())
+  if (n == "levelAdjustment" && ns == "urn:rpg")
   {
     if (this->levelAdjustment_parser_)
       this->levelAdjustment (this->levelAdjustment_parser_->post_unsigned_int ());
@@ -2261,7 +2261,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "monster" && ns.empty ())
+  if (n == "monster" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->monster_parser_;
 
@@ -2281,7 +2281,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "monster" && ns.empty ())
+  if (n == "monster" && ns == "urn:rpg")
   {
     if (this->monster_parser_)
       this->monster (this->monster_parser_->post_RPG_Character_MonsterProperties_Type ());
@@ -2315,7 +2315,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "RPG_Character_MonsterDictionary" && ns.empty ())
+  if (n == "RPG_Character_MonsterDictionary" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->RPG_Character_MonsterDictionary_parser_;
 
@@ -2335,7 +2335,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "RPG_Character_MonsterDictionary" && ns.empty ())
+  if (n == "RPG_Character_MonsterDictionary" && ns == "urn:rpg")
   {
     if (this->RPG_Character_MonsterDictionary_parser_)
     {

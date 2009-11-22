@@ -65,7 +65,7 @@ void print_usage()
 
 const bool process_arguments(const int argc_in,
                              ACE_TCHAR* argv_in[], // cannot be const...
-                             std::string& fileName_out,
+                             std::string& filename_out,
                              bool& traceInformation_out,
                              bool& printVersionAndExit_out)
 {
@@ -86,7 +86,7 @@ const bool process_arguments(const int argc_in,
     {
       case 'f':
       {
-        fileName_out = argumentParser.opt_arg();
+        filename_out = argumentParser.opt_arg();
 
         break;
       }
@@ -298,7 +298,7 @@ const bool print_feats_table(const RPG_Character_SubClass& subClass_in,
   return true;
 }
 
-void do_work(const std::string fileName_in)
+void do_work(const std::string filename_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -307,19 +307,19 @@ void do_work(const std::string fileName_in)
 
   // step1b: init string conversion facilities
   RPG_Chance_Dice_Common_Tools::initStringConversionTables();
+  RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
   RPG_Character_Skills_Common_Tools::init();
-  RPG_Character_Monster_Common_Tools::init();
 
-  // step1c: init character dictionary
+  // step1c: init item dictionary
   try
   {
-    RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->initCharacterDictionary(fileName_in);
+    RPG_ITEM_DICTIONARY_SINGLETON::instance()->initItemDictionary(filename_in);
   }
   catch(...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Character_Dictionary::initCharacterDictionary, returning\n")));
+               ACE_TEXT("caught exception in RPG_Item_Dictionary::initCharacterDictionary, returning\n")));
 
     return;
   }
@@ -626,15 +626,12 @@ void do_work(const std::string fileName_in)
              RPG_Chance_Dice_Common_Tools::diceTypeToString(roll.typeDice).c_str(),
              hitpoints));
 
-  // TODO: choose initial set of items
+  // *TODO*: step3: choose appropriate initial set of items
   RPG_Item_List_t items;
   RPG_Item_Armor* armor = NULL;
   RPG_Item_Armor* shield = NULL;
   RPG_Item_Weapon* weapon = NULL;
   RPG_Item_Weapon* bow = NULL;
-  RPG_Item_Common_Tools::initStringConversionTables();
-  std::string filename(ACE_TEXT_ALWAYS_CHAR("../../../item/rpg_item.xml"));
-  RPG_ITEM_DICTIONARY_SINGLETON::instance()->initItemDictionary(filename);
 
   switch (player_class.subClass)
   {
@@ -749,6 +746,7 @@ void do_work(const std::string fileName_in)
     }
   } // end SWITCH
 
+  // step4: instantiate player character
   RPG_Character_Player player(name,
                               gender,
                               race,
@@ -762,6 +760,7 @@ void do_work(const std::string fileName_in)
                               hitpoints,
                               0,
                               items);
+  // debug info
   player.dump();
 
   ACE_DEBUG((LM_DEBUG,

@@ -16,9 +16,15 @@ libRPG_Item_la_SOURCES = rpg_XMLSchema.h rpg_item_XML_parser.cpp \
 	rpg_item_instance_manager.h rpg_item_weapon.cpp rpg_item_weapon.h rpg_item_weapon_base.cpp \
 	rpg_item_weapon_base.h
 libRPG_Item_la_LDFLAGS = -L/usr/local/lib
+
 noinst_PROGRAMS = parser
+
 parser_SOURCES = main.cpp
 parser_LDADD = $(top_builddir)/libRPG_Item.la -lACE -lpthread -lxerces-c \
 	-lRPG_Chance_Dice
 parser_LDFLAGS = -L/usr/local/lib
+
 noinst_HEADERS = rpg_XMLSchema.h
+
+bindata_DATA = rpg_item.xsd rpg_item.xml
+bindatadir = $(bindir)

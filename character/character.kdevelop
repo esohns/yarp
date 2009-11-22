@@ -21,13 +21,13 @@
   <kdevautoproject>
     <general>
       <useconfiguration>default</useconfiguration>
-      <activetarget>generator</activetarget>
+      <activetarget>character_parser</activetarget>
     </general>
     <run>
-      <mainprogram>/home/unfv/Projects/RPG/character/debug/.libs/generator</mainprogram>
-      <programargs>-t -f ../rpg_character.xml</programargs>
-      <globaldebugarguments>-t -f ../rpg_character.xml</globaldebugarguments>
-      <globalcwd>/home/unfv/Projects/RPG/character/debug</globalcwd>
+      <mainprogram>/home/unfv/Projects/RPG/character/debug/.libs/character_parser</mainprogram>
+      <programargs>-t -f ./rpg_character.xml</programargs>
+      <globaldebugarguments>-t -f ./rpg_character.xml</globaldebugarguments>
+      <globalcwd>/home/unfv/Projects/RPG/character/</globalcwd>
       <useglobalprogram>true</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
@@ -35,13 +35,16 @@
       <autokdesu>false</autokdesu>
       <envvars/>
       <runarguments>
-        <generator></generator>
+        <generator>-t -f ../../item/rpg_item.xml</generator>
+        <character_parser>-t -f ./../../rpg_character.xml</character_parser>
       </runarguments>
       <debugarguments>
-        <generator></generator>
+        <generator>-t -f ../../item/rpg_item.xml</generator>
+        <character_parser>-t -f ./../../rpg_character.xml</character_parser>
       </debugarguments>
       <cwd>
         <generator>/home/unfv/Projects/RPG/character/debug/./</generator>
+        <character_parser>/home/unfv/Projects/RPG/character/debug/.libs</character_parser>
       </cwd>
     </run>
     <configurations>

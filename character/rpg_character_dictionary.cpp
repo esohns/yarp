@@ -47,81 +47,81 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
 
   // Construct the parser.
   //
-  ::xml_schema::string_pimpl              string_p;
-  RPG_Character_Size_Type                 size_p;
+  ::xml_schema::string_pimpl                string_p;
+  RPG_Character_Size_Type                   size_p;
 
-  RPG_Character_MonsterMetaType_Type      monsterMetaType_p;
-  RPG_Character_MonsterSubType_Type       monsterSubType_p;
-  RPG_Character_MonsterType_Type          monsterType_p;
+  RPG_Character_MonsterMetaType_Type        monsterMetaType_p;
+  RPG_Character_MonsterSubType_Type         monsterSubType_p;
+  RPG_Character_MonsterType_Type            monsterType_p;
   monsterType_p.parsers(monsterMetaType_p,
                         monsterSubType_p);
 
-  ::xml_schema::unsigned_int_pimpl        unsigned_int_p;
-  RPG_Chance_DiceType_Type                chanceDiceType_p;
-  ::xml_schema::integer_pimpl             int_p;
-  RPG_Chance_DiceRoll_Type                roll_p;
+  ::xml_schema::unsigned_int_pimpl          unsigned_int_p;
+  RPG_Chance_DiceType_Type                  chanceDiceType_p;
+  ::xml_schema::integer_pimpl               int_p;
+  RPG_Chance_DiceRoll_Type                  roll_p;
   roll_p.parsers(unsigned_int_p,
                  chanceDiceType_p,
                  int_p);
 //   int_pimpl                               initiative_p;
 //   unsigned_int_pimpl                      speed_p;
-  RPG_Character_MonsterArmorClass_Type    monsterArmorClass_p;
+  RPG_Character_MonsterArmorClass_Type      monsterArmorClass_p;
   monsterArmorClass_p.parsers(unsigned_int_p,
                               unsigned_int_p,
                               unsigned_int_p);
-  RPG_Character_MonsterWeapon_Type        monsterWeapon_p;
-  RPG_Character_MonsterAttackForm_Type    monsterAttackForm_p;
-  RPG_Character_MonsterAttackAction_Type  monsterAttackAction_p;
+  RPG_Character_MonsterWeapon_Type          monsterWeapon_p;
+  RPG_Character_MonsterAttackForm_Type      monsterAttackForm_p;
+  RPG_Character_MonsterAttackAction_Type    monsterAttackAction_p;
   monsterAttackAction_p.parsers(monsterWeapon_p,
                                 int_p,
                                 monsterAttackForm_p,
                                 roll_p,
                                 unsigned_int_p);
-  RPG_Character_MonsterAttack_Type        monsterAttack_p;
+  RPG_Character_MonsterAttack_Type          monsterAttack_p;
   monsterAttack_p.parsers(int_p,
                           int_p,
                           monsterAttackAction_p);
 //   unsigned_int_pimpl                      space_p;
 //   unsigned_int_pimpl                      reach_p;
-  RPG_Character_SavingThrowModifiers_Type savingThrowModifiers_p;
+  RPG_Character_SavingThrowModifiers_Type   savingThrowModifiers_p;
   savingThrowModifiers_p.parsers(int_p,
                                  int_p,
                                  int_p);
-  RPG_Character_Attributes_Type           attributes_p;
+  RPG_Character_Attributes_Type             attributes_p;
   attributes_p.parsers(unsigned_int_p,
                        unsigned_int_p,
                        unsigned_int_p,
                        unsigned_int_p,
                        unsigned_int_p,
                        unsigned_int_p);
-  RPG_Character_Skill_Type                skill_p;
-  RPG_Character_SkillValue_Type           skillvalue_p;
+  RPG_Character_Skill_Type                  skill_p;
+  RPG_Character_SkillValue_Type             skillvalue_p;
   skillvalue_p.parsers(skill_p,
                        int_p);
-  RPG_Character_Skills_Type               skills_p;
+  RPG_Character_Skills_Type                 skills_p;
   skills_p.parsers(skillvalue_p);
-  RPG_Character_Feat_Type                 feat_p;
-  RPG_Character_Feats_Type                feats_p;
+  RPG_Character_Feat_Type                   feat_p;
+  RPG_Character_Feats_Type                  feats_p;
   feats_p.parsers(feat_p);
-  RPG_Character_Environment_Type          environment_p;
-  RPG_Character_Organization_Type         organization_p;
+  RPG_Character_Environment_Type            environment_p;
+  RPG_Character_Organization_Type           organization_p;
 //   unsigned_int_pimpl                      challengeRating_p;
 //   unsigned_int_pimpl                      treasureModifier_p;
-  RPG_Character_AlignmentCivic_Type       alignmentCivic_p;
-  RPG_Character_AlignmentEthic_Type       alignmentEthic_p;
-  RPG_Character_Alignment_Type            alignment_p;
+  RPG_Character_AlignmentCivic_Type         alignmentCivic_p;
+  RPG_Character_AlignmentEthic_Type         alignmentEthic_p;
+  RPG_Character_Alignment_Type              alignment_p;
   alignment_p.parsers(alignmentCivic_p,
                       alignmentEthic_p);
-  RPG_Chance_ValueRange_Type              range_p;
+  RPG_Chance_ValueRange_Type                range_p;
   range_p.parsers(int_p,
                   int_p);
   RPG_Character_MonsterAdvancementStep_Type advancementStep_p;
   advancementStep_p.parsers(size_p,
                             range_p);
-  RPG_Character_MonsterAdvancement_Type   advancement_p;
+  RPG_Character_MonsterAdvancement_Type     advancement_p;
   advancement_p.parsers(advancementStep_p);
 //   unsigned_int_pimpl                      levelAdjustment_p;
-  RPG_Character_MonsterProperties_Type    monsterProperties_p;
+  RPG_Character_MonsterProperties_Type      monsterProperties_p;
   monsterProperties_p.parsers(string_p,
                               size_p,
                               monsterType_p,

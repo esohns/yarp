@@ -783,7 +783,6 @@ post_RPG_Character_MonsterProperties_Type ()
 void RPG_Character_MonsterDictionary_Type_pimpl::
 pre ()
 {
-  ACE_ASSERT(true);
 }
 
 void RPG_Character_MonsterDictionary_Type_pimpl::

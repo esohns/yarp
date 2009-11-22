@@ -136,7 +136,7 @@ struct RPG_Character_MonsterAttackAction
   RPG_Character_MonsterWeapon     monsterWeapon;
   int                             attackBonus;
   RPG_Character_MonsterAttackForm attackForm;
-  RPG_Character_Damage            damage;
+  RPG_Chance_DiceRoll             damage;
   unsigned int                    numAttacksPerRound;
 };
 
@@ -235,7 +235,7 @@ struct RPG_Character_MonsterProperties
 //   std::string                        name;
   RPG_Character_Size                 size;
   RPG_Character_MonsterType          type;
-  RPG_Character_HitDice              hitDice;
+  RPG_Chance_DiceRoll                hitDice;
   int                                initiative;
   unsigned int                       speed;
   RPG_Character_MonsterArmorClass    armorClass;
@@ -261,7 +261,7 @@ struct RPG_Character_MonsterProperties_XML
   std::string                        name;
   RPG_Character_Size                 size;
   RPG_Character_MonsterType          type;
-  RPG_Character_HitDice              hitDice;
+  RPG_Chance_DiceRoll                hitDice;
   int                                initiative;
   unsigned int                       speed;
   RPG_Character_MonsterArmorClass    armorClass;

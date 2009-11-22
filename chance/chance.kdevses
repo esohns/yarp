@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="5" >
+ <DocsAndViews NumberOfDocuments="6" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/chance/dice/scripts/bindings.sh" >
    <View0 Encoding="" Type="Source" />
   </Doc0>
@@ -15,8 +15,11 @@
    <View0 Encoding="" Type="Source" />
   </Doc3>
   <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/chance/dice/rpg_chance_dice_XML_types.h" >
-   <View0 Encoding="" line="64" Type="Source" />
+   <View0 Encoding="" line="58" Type="Source" />
   </Doc4>
+  <Doc5 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/chance/dice/Makefile.am" >
+   <View0 Encoding="" line="35" Type="Source" />
+  </Doc5>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
