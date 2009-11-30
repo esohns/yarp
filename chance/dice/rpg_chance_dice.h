@@ -20,7 +20,9 @@
 #ifndef RPG_CHANCE_DICE_H
 #define RPG_CHANCE_DICE_H
 
-#include "rpg_chance_dice_common.h"
+#include "rpg_chance_dicetype.h"
+#include "rpg_chance_diceroll.h"
+#include "rpg_chance_valuerange.h"
 
 #include <ace/Global_Macros.h>
 

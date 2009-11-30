@@ -4,8 +4,8 @@ METASOURCES = AUTO
 INCLUDES = -I$(top_srcdir)/dice
 
 include_HEADERS = rpg_chance_dice.h rpg_chance_dice_XML_parser.h \
-	rpg_chance_dice_XML_parser_base.h rpg_chance_dice_XML_types.h rpg_chance_dice_common.h \
-	rpg_chance_dice_common_tools.h
+	rpg_chance_dice_XML_parser_base.h rpg_chance_dice_XML_types.h rpg_chance_dice_common_tools.h \
+	rpg_chance_diceroll.h rpg_chance_dicetype.h rpg_chance_valuerange.h
 
 lib_LTLIBRARIES = libRPG_Chance_Dice.la
 
@@ -13,8 +13,8 @@ libRPG_Chance_Dice_la_LDFLAGS = -L/usr/local/lib
 libRPG_Chance_Dice_la_SOURCES = rpg_XMLSchema.h rpg_chance_dice.cpp \
 	rpg_chance_dice.h rpg_chance_dice_XML_parser.cpp rpg_chance_dice_XML_parser.h \
 	rpg_chance_dice_XML_parser_base.cpp rpg_chance_dice_XML_parser_base.h rpg_chance_dice_XML_types.cpp \
-	rpg_chance_dice_XML_types.h rpg_chance_dice_common.h rpg_chance_dice_common_tools.cpp \
-	rpg_chance_dice_common_tools.h
+	rpg_chance_dice_XML_types.h rpg_chance_dice_common_tools.cpp rpg_chance_dice_common_tools.h \
+	rpg_chance_diceroll.h rpg_chance_dicetype.h rpg_chance_valuerange.h
 
 bin_PROGRAMS = chance_dice chance_rangeToRoll
 
