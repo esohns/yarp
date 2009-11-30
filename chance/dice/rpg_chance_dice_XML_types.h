@@ -63,7 +63,9 @@ class RPG_Chance_ValueRange_Type_pskel;
 
 #include "rpg_XMLSchema.h"
 
-#include "rpg_chance_dice_common.h"
+#include "rpg_chance_valuerange.h"
+#include "rpg_chance_dicetype.h"
+#include "rpg_chance_diceroll.h"
 
 class RPG_Chance_DiceType_Type_pskel: public virtual ::xml_schema::string_pskel
 {

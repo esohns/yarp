@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "rpg_chance_dice_XML_parser.h"
 
-#include "rpg_chance_dice_common_tools.h"
+#include "rpg_chance_dicetype.h"
 
 // void RPG_Chance_DiceType_Type::pre()
 // {
@@ -31,7 +31,7 @@ RPG_Chance_DiceType RPG_Chance_DiceType_Type::post_RPG_Chance_DiceType_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Chance_DiceType_Type::post_RPG_Chance_DiceType_Type"));
 
-  return RPG_Chance_Dice_Common_Tools::stringToDiceType(post_string());
+  return RPG_Chance_DiceTypeHelper::stringToRPG_Chance_DiceType(post_string());
 }
 
 // void RPG_Chance_DiceRoll_Type::pre()
@@ -45,7 +45,7 @@ RPG_Chance_DiceRoll_Type::RPG_Chance_DiceRoll_Type()
   ACE_TRACE(ACE_TEXT("RPG_Chance_DiceRoll_Type::RPG_Chance_DiceRoll_Type"));
 
   myCurrentDiceRoll.numDice = 0;
-  myCurrentDiceRoll.typeDice = D_TYPE_INVALID;
+  myCurrentDiceRoll.typeDice = RPG_CHANCE_DICETYPE_INVALID;
   myCurrentDiceRoll.modifier = 0;
 }
 
@@ -78,7 +78,7 @@ RPG_Chance_DiceRoll RPG_Chance_DiceRoll_Type::post_RPG_Chance_DiceRoll_Type()
 
   // clear structure
   myCurrentDiceRoll.numDice = 0;
-  myCurrentDiceRoll.typeDice = D_TYPE_INVALID;
+  myCurrentDiceRoll.typeDice = RPG_CHANCE_DICETYPE_INVALID;
   myCurrentDiceRoll.modifier = 0;
 
   return result;

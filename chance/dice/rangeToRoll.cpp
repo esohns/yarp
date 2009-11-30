@@ -22,9 +22,8 @@
 #include <config.h>
 #endif
 
-#include "rpg_chance_dice_common.h"
-#include "rpg_chance_dice_common_tools.h"
 #include "rpg_chance_dice.h"
+#include "rpg_chance_dice_common_tools.h"
 
 #include <ace/OS.h>
 #include <ace/ACE.h>

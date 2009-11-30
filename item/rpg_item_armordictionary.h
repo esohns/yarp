@@ -18,13 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_ITEM_DICTIONARY_H
-#define RPG_ITEM_DICTIONARY_H
+#ifndef RPG_ITEM_ARMORDICTIONARY_H
+#define RPG_ITEM_ARMORDICTIONARY_H
 
-struct RPG_Item_Dictionary
+struct RPG_Item_ArmorDictionary
 {
-  RPG_Item_WeaponDictionary weaponDictionary;
-  RPG_Item_ArmorDictionary armorDictionary;
+  std::vector<RPG_Item_ArmorProperties> armors;
 };
 
 #endif

@@ -26,14 +26,14 @@
 #include <sstream>
 
 // init statics
-RPG_Item_Common_Tools::RPG_StringToItemTypeTable_t         RPG_Item_Common_Tools::myStringToItemTypeTable;
-RPG_Item_Common_Tools::RPG_StringToMoneyTypeTable_t        RPG_Item_Common_Tools::myStringToMoneyTypeTable;
-RPG_Item_Common_Tools::RPG_StringToWeaponCategoryTable_t   RPG_Item_Common_Tools::myStringToWeaponCategoryTable;
-RPG_Item_Common_Tools::RPG_StringToWeaponClassTable_t      RPG_Item_Common_Tools::myStringToWeaponClassTable;
-RPG_Item_Common_Tools::RPG_StringToWeaponTypeTable_t       RPG_Item_Common_Tools::myStringToWeaponTypeTable;
-RPG_Item_Common_Tools::RPG_StringToWeaponDamageTypeTable_t RPG_Item_Common_Tools::myStringToWeaponDamageTypeTable;
-RPG_Item_Common_Tools::RPG_StringToArmorCategoryTable_t    RPG_Item_Common_Tools::myStringToArmorCategoryTable;
-RPG_Item_Common_Tools::RPG_StringToArmorTypeTable_t        RPG_Item_Common_Tools::myStringToArmorTypeTable;
+// RPG_Item_Common_Tools::RPG_StringToItemTypeTable_t         RPG_Item_Common_Tools::myStringToItemTypeTable;
+// RPG_Item_Common_Tools::RPG_StringToMoneyTypeTable_t        RPG_Item_Common_Tools::myStringToMoneyTypeTable;
+// RPG_Item_Common_Tools::RPG_StringToWeaponCategoryTable_t   RPG_Item_Common_Tools::myStringToWeaponCategoryTable;
+// RPG_Item_Common_Tools::RPG_StringToWeaponClassTable_t      RPG_Item_Common_Tools::myStringToWeaponClassTable;
+// RPG_Item_Common_Tools::RPG_StringToWeaponTypeTable_t       RPG_Item_Common_Tools::myStringToWeaponTypeTable;
+// RPG_Item_Common_Tools::RPG_StringToWeaponDamageTypeTable_t RPG_Item_Common_Tools::myStringToWeaponDamageTypeTable;
+// RPG_Item_Common_Tools::RPG_StringToArmorCategoryTable_t    RPG_Item_Common_Tools::myStringToArmorCategoryTable;
+// RPG_Item_Common_Tools::RPG_StringToArmorTypeTable_t        RPG_Item_Common_Tools::myStringToArmorTypeTable;
 
 void RPG_Item_Common_Tools::initStringConversionTables()
 {

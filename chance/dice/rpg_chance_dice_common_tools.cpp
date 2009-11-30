@@ -24,73 +24,60 @@
 #include <sstream>
 
 // init statics
-RPG_Chance_Dice_Common_Tools::RPG_Chance_Dice_StringToDiceType_t RPG_Chance_Dice_Common_Tools::myStringToDiceTypeTable;
+RPG_Chance_DiceTypeToStringTable_t RPG_Chance_DiceTypeHelper::myRPG_Chance_DiceTypeToStringTable;
 
 void RPG_Chance_Dice_Common_Tools::initStringConversionTables()
 {
   ACE_TRACE(ACE_TEXT("RPG_Chance_Dice_Common_Tools::initStringConversionTables"));
 
-  // clean tables
-  myStringToDiceTypeTable.clear();
-
-  // RPG_Chance_DiceType
-  myStringToDiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_0"), D_0));
-  myStringToDiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_2"), D_2));
-  myStringToDiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_3"), D_3));
-  myStringToDiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_4"), D_4));
-  myStringToDiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_6"), D_6));
-  myStringToDiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_8"), D_8));
-  myStringToDiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_10"), D_10));
-  myStringToDiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_12"), D_12));
-  myStringToDiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_20"), D_20));
-  myStringToDiceTypeTable.insert(std::make_pair(ACE_TEXT_ALWAYS_CHAR("D_100"), D_100));
+  RPG_Chance_DiceTypeHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Chance_Dice_Common_Tools: initialized string conversion tables...\n")));
+             ACE_TEXT("RPG_Chance_Dice_Common_Tools: initialized string conversion table...\n")));
 }
 
-const RPG_Chance_DiceType RPG_Chance_Dice_Common_Tools::stringToDiceType(const std::string& string_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice_Common_Tools::stringToDiceType"));
+// const RPG_Chance_DiceType RPG_Chance_Dice_Common_Tools::stringToDiceType(const std::string& string_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Chance_Dice_Common_Tools::stringToDiceType"));
+//
+//   RPG_Chance_Dice_StringToDiceTypeIterator_t iterator = myStringToDiceTypeTable.find(string_in);
+//   if (iterator == myStringToDiceTypeTable.end())
+//   {
+//     // debug info
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("invalid dice type: \"%s\" --> check implementation !, returning\n"),
+//                string_in.c_str()));
+//
+//     return RPG_CHANCE_DICETYPE_INVALID;
+//   } // end IF
+//
+//   return iterator->second;
+// }
 
-  RPG_Chance_Dice_StringToDiceTypeIterator_t iterator = myStringToDiceTypeTable.find(string_in);
-  if (iterator == myStringToDiceTypeTable.end())
-  {
-    // debug info
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid dice type: \"%s\" --> check implementation !, returning\n"),
-               string_in.c_str()));
-
-    return D_TYPE_INVALID;
-  } // end IF
-
-  return iterator->second;
-}
-
-const std::string RPG_Chance_Dice_Common_Tools::diceTypeToString(const RPG_Chance_DiceType& diceType_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice_Common_Tools::diceTypeToString"));
-
-  RPG_Chance_Dice_StringToDiceTypeIterator_t iterator = myStringToDiceTypeTable.begin();
-  do
-  {
-    if (iterator->second == diceType_in)
-    {
-      // done
-      return iterator->first;
-    } // end IF
-
-    iterator++;
-  } while (iterator != myStringToDiceTypeTable.end());
-
-  // debug info
-  ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("invalid dice type: %d --> check implementation !, aborting\n"),
-             diceType_in));
-
-  return std::string(ACE_TEXT_ALWAYS_CHAR("D_TYPE_INVALID"));
-}
+// const std::string RPG_Chance_Dice_Common_Tools::diceTypeToString(const RPG_Chance_DiceType& diceType_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Chance_Dice_Common_Tools::diceTypeToString"));
+//
+//   RPG_Chance_Dice_StringToDiceTypeIterator_t iterator = myStringToDiceTypeTable.begin();
+//   do
+//   {
+//     if (iterator->second == diceType_in)
+//     {
+//       // done
+//       return iterator->first;
+//     } // end IF
+//
+//     iterator++;
+//   } while (iterator != myStringToDiceTypeTable.end());
+//
+//   // debug info
+//   ACE_DEBUG((LM_ERROR,
+//              ACE_TEXT("invalid dice type: %d --> check implementation !, aborting\n"),
+//              diceType_in));
+//
+//   return std::string(ACE_TEXT_ALWAYS_CHAR("D_TYPE_INVALID"));
+// }
 
 const std::string RPG_Chance_Dice_Common_Tools::rollToString(const RPG_Chance_DiceRoll& diceRoll_in)
 {
@@ -101,7 +88,7 @@ const std::string RPG_Chance_Dice_Common_Tools::rollToString(const RPG_Chance_Di
 
   str << diceRoll_in.numDice;
   result += str.str();
-  result += RPG_Chance_Dice_Common_Tools::diceTypeToString(diceRoll_in.typeDice);
+  result += RPG_Chance_DiceTypeHelper::RPG_Chance_DiceTypeToString(diceRoll_in.typeDice);
 
   if (diceRoll_in.modifier == 0)
   {

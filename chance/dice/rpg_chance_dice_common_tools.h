@@ -20,7 +20,9 @@
 #ifndef RPG_CHANCE_DICE_COMMON_TOOLS_H
 #define RPG_CHANCE_DICE_COMMON_TOOLS_H
 
-#include "rpg_chance_dice_common.h"
+#include "rpg_chance_dicetype.h"
+#include "rpg_chance_diceroll.h"
+#include "rpg_chance_valuerange.h"
 
 #include <ace/Global_Macros.h>
 
@@ -36,15 +38,15 @@ class RPG_Chance_Dice_Common_Tools
   // init string tables
   static void initStringConversionTables();
 
-  static const RPG_Chance_DiceType stringToDiceType(const std::string&); // string
-  static const std::string diceTypeToString(const RPG_Chance_DiceType&); // dice type
+//   static const RPG_Chance_DiceType stringToDiceType(const std::string&); // string
+//   static const std::string diceTypeToString(const RPG_Chance_DiceType&); // dice type
   static const std::string rollToString(const RPG_Chance_DiceRoll&); // roll
   static const std::string rangeToString(const RPG_Chance_ValueRange&); // range
 
  private:
-  // some handy types
-  typedef std::map<std::string, RPG_Chance_DiceType> RPG_Chance_Dice_StringToDiceType_t;
-  typedef RPG_Chance_Dice_StringToDiceType_t::const_iterator RPG_Chance_Dice_StringToDiceTypeIterator_t;
+//   // some handy types
+//   typedef std::map<std::string, RPG_Chance_DiceType> RPG_Chance_Dice_StringToDiceType_t;
+//   typedef RPG_Chance_Dice_StringToDiceType_t::const_iterator RPG_Chance_Dice_StringToDiceTypeIterator_t;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Dice_Common_Tools());
@@ -52,7 +54,7 @@ class RPG_Chance_Dice_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Dice_Common_Tools(const RPG_Chance_Dice_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Dice_Common_Tools& operator=(const RPG_Chance_Dice_Common_Tools&));
 
-  static RPG_Chance_Dice_StringToDiceType_t myStringToDiceTypeTable;
+//   static RPG_Chance_Dice_StringToDiceType_t myStringToDiceTypeTable;
 };
 
 #endif

@@ -18,13 +18,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_ITEM_DICTIONARY_H
-#define RPG_ITEM_DICTIONARY_H
+#ifndef RPG_ITEM_ARMORPROPERTIES_H
+#define RPG_ITEM_ARMORPROPERTIES_H
 
-struct RPG_Item_Dictionary
+struct RPG_Item_ArmorProperties
 {
-  RPG_Item_WeaponDictionary weaponDictionary;
-  RPG_Item_ArmorDictionary armorDictionary;
+  RPG_Item_ArmorType armorType;
+  RPG_Item_ArmorCategory armorCategory;
+  RPG_Item_StorePrice baseStorePrice;
+  unsigned char baseArmorBonus;
+  unsigned char maxDexterityBonus;
+  char armorCheckPenalty;
+  unsigned char arcaneSpellFailure;
+  unsigned short int baseSpeed;
+  unsigned short int baseWeight;
 };
 
 #endif
