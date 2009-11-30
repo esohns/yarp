@@ -47,6 +47,7 @@ void print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
+  std::cout << ACE_TEXT("-d         : dump monster dictionary") << std::endl;
   std::cout << ACE_TEXT("-f [VALUE] : filename (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-t         : trace information") << std::endl;
   std::cout << ACE_TEXT("-v         : print version information and exit") << std::endl;
@@ -54,6 +55,7 @@ void print_usage(const std::string& programName_in)
 
 const bool process_arguments(const int argc_in,
                              ACE_TCHAR* argv_in[], // cannot be const...
+                             bool& dumpDictionary_out,
                              std::string& filename_out,
                              bool& traceInformation_out,
                              bool& printVersionAndExit_out)
@@ -61,18 +63,26 @@ const bool process_arguments(const int argc_in,
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
+  dumpDictionary_out = false;
+  filename_out.clear();
   traceInformation_out = false;
   printVersionAndExit_out = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("f:tv"));
+                             ACE_TEXT("df:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
   {
     switch (option)
     {
+      case 'd':
+      {
+        dumpDictionary_out = true;
+
+        break;
+      }
       case 'f':
       {
         filename_out = argumentParser.opt_arg();
@@ -114,7 +124,8 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
-void do_work(const std::string& filename_in)
+void do_work(const std::string& filename_in,
+             const bool& dumpDictionary_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -139,7 +150,10 @@ void do_work(const std::string& filename_in)
   }
 
   // step3: dump monster descriptions
-  RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->dump();
+  if (dumpDictionary_in)
+  {
+    RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->dump();
+  } // end IF
 
   // step4: generate random encounter
   unsigned int numMonsterTypes = 1;
@@ -241,6 +255,7 @@ int ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
+  bool dumpDictionary      = false;
   std::string filename;
   bool traceInformation    = false;
   bool printVersionAndExit = false;
@@ -248,6 +263,7 @@ int ACE_TMAIN(int argc,
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
+                          dumpDictionary,
                           filename,
                           traceInformation,
                           printVersionAndExit)))
@@ -309,7 +325,8 @@ int ACE_TMAIN(int argc,
   timer.start();
 
   // step2: do actual work
-  do_work(filename);
+  do_work(filename,
+          dumpDictionary);
 
   timer.stop();
 

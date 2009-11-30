@@ -23,14 +23,12 @@ libRPG_Character_la_SOURCES = rpg_XMLSchema.h rpg_character_XML_parser.cpp \
 	rpg_character_skills_common_tools.h
 libRPG_Character_la_LDFLAGS = -L/usr/local/lib
 
-noinst_PROGRAMS = generator
+bin_PROGRAMS = character_generator character_parser
 
-generator_SOURCES = main.cpp
-generator_LDADD = $(top_builddir)/libRPG_Character.la -lACE -lpthread \
+character_generator_SOURCES = main.cpp
+character_generator_LDADD = $(top_builddir)/libRPG_Character.la -lACE -lpthread \
 	-lxerces-c -lRPG_Chance_Dice -lRPG_Item
-generator_LDFLAGS = -L/usr/local/lib
-
-bin_PROGRAMS = character_parser
+character_generator_LDFLAGS = -L/usr/local/lib
 
 character_parser_SOURCES = character_parser.cpp
 character_parser_LDADD = $(top_builddir)/libRPG_Character.la -lACE -lpthread \
