@@ -2,10 +2,10 @@
 <!-- <!DOCTYPE RPG_Character_Dictionary SYSTEM "./rpg_character.xsd"> -->
 <!--  xsi:noNamespaceSchemaLocation="rpg_character.xsd" -->
 
-<RPG_Character_Dictionary xmlns="urn:rpg"
-                          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                          xsi:schemaLocation="urn:rpg rpg_character.xsd">
-  <RPG_Character_MonsterDictionary>
+<characterDictionary xmlns="urn:rpg"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="urn:rpg rpg_character.xsd">
+  <monsterDictionary>
     <monster>
       <name>Aboleth</name>
       <size>SIZE_HUGE</size>
@@ -3605,5 +3605,5 @@
       </advancement>
       <levelAdjustment>0</levelAdjustment>
     </monster>
-  </RPG_Character_MonsterDictionary>
-</RPG_Character_Dictionary>
+  </monsterDictionary>
+</characterDictionary>

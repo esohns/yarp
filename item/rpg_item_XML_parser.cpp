@@ -233,14 +233,14 @@ RPG_Item_CriticalHitModifier_Type::RPG_Item_CriticalHitModifier_Type()
   myCurrentCriticalHitModifier.damageModifier = 1;
 }
 
-void RPG_Item_CriticalHitModifier_Type::minToHitRoll(unsigned int minToHitRoll_in)
+void RPG_Item_CriticalHitModifier_Type::minToHitRoll(unsigned char minToHitRoll_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_CriticalHitModifier_Type::minToHitRoll"));
 
   myCurrentCriticalHitModifier.minToHitRoll = minToHitRoll_in;
 }
 
-void RPG_Item_CriticalHitModifier_Type::damageModifier(unsigned int damageModifier_in)
+void RPG_Item_CriticalHitModifier_Type::damageModifier(unsigned char damageModifier_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_CriticalHitModifier_Type::damageModifier"));
 
@@ -340,14 +340,14 @@ void RPG_Item_WeaponProperties_Type::criticalHitModifier(const RPG_Item_Critical
   myCurrentWeaponProperty.criticalHitModifier = criticalHitModifier_in;
 }
 
-void RPG_Item_WeaponProperties_Type::rangeIncrement(unsigned int rangeIncrement_in)
+void RPG_Item_WeaponProperties_Type::rangeIncrement(unsigned char rangeIncrement_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponProperties_Type::rangeIncrement"));
 
   myCurrentWeaponProperty.rangeIncrement = rangeIncrement_in;
 }
 
-void RPG_Item_WeaponProperties_Type::baseWeight(unsigned int baseWeight_in)
+void RPG_Item_WeaponProperties_Type::baseWeight(unsigned short baseWeight_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponProperties_Type::baseWeight"));
 
@@ -460,42 +460,42 @@ void RPG_Item_ArmorProperties_Type::baseStorePrice(const RPG_Item_StorePrice& ba
   myCurrentArmorProperty.baseStorePrice = baseStorePrice_in;
 }
 
-void RPG_Item_ArmorProperties_Type::baseArmorBonus(unsigned int baseArmorBonus_in)
+void RPG_Item_ArmorProperties_Type::baseArmorBonus(unsigned char baseArmorBonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::baseArmorBonus"));
 
   myCurrentArmorProperty.baseArmorBonus = baseArmorBonus_in;
 }
 
-void RPG_Item_ArmorProperties_Type::maxDexterityBonus(unsigned int maxDexterityBonus_in)
+void RPG_Item_ArmorProperties_Type::maxDexterityBonus(unsigned char maxDexterityBonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::maxDexterityBonus"));
 
   myCurrentArmorProperty.maxDexterityBonus = maxDexterityBonus_in;
 }
 
-void RPG_Item_ArmorProperties_Type::armorCheckPenalty(long long armorCheckPenalty_in)
+void RPG_Item_ArmorProperties_Type::armorCheckPenalty(signed char armorCheckPenalty_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::armorCheckPenalty"));
 
   myCurrentArmorProperty.armorCheckPenalty = armorCheckPenalty_in;
 }
 
-void RPG_Item_ArmorProperties_Type::arcaneSpellFailure(unsigned int arcaneSpellFailure_in)
+void RPG_Item_ArmorProperties_Type::arcaneSpellFailure(unsigned char arcaneSpellFailure_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::arcaneSpellFailure"));
 
   myCurrentArmorProperty.arcaneSpellFailure = arcaneSpellFailure_in;
 }
 
-void RPG_Item_ArmorProperties_Type::baseSpeed(unsigned int baseSpeed_in)
+void RPG_Item_ArmorProperties_Type::baseSpeed(unsigned short baseSpeed_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::baseSpeed"));
 
   myCurrentArmorProperty.baseSpeed = baseSpeed_in;
 }
 
-void RPG_Item_ArmorProperties_Type::baseWeight(unsigned int baseWeight_in)
+void RPG_Item_ArmorProperties_Type::baseWeight(unsigned short baseWeight_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorProperties_Type::baseWeight"));
 

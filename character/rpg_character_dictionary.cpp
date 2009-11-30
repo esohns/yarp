@@ -68,39 +68,41 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
                  int_p);
 //   int_pimpl                               initiative_p;
 //   unsigned_int_pimpl                      speed_p;
+  ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
   RPG_Character_MonsterArmorClass_Type      monsterArmorClass_p;
-  monsterArmorClass_p.parsers(unsigned_int_p,
-                              unsigned_int_p,
-                              unsigned_int_p);
+  monsterArmorClass_p.parsers(unsigned_byte_p,
+                              unsigned_byte_p,
+                              unsigned_byte_p);
   RPG_Character_MonsterWeapon_Type          monsterWeapon_p;
+  ::xml_schema::byte_pimpl                  byte_p;
   RPG_Character_AttackForm_Type             attackForm_p;
   RPG_Character_MonsterAttackAction_Type    monsterAttackAction_p;
   monsterAttackAction_p.parsers(monsterWeapon_p,
-                                int_p,
+                                byte_p,
                                 attackForm_p,
                                 roll_p,
-                                unsigned_int_p);
+                                unsigned_byte_p);
   RPG_Character_MonsterAttack_Type          monsterAttack_p;
-  monsterAttack_p.parsers(int_p,
-                          int_p,
+  monsterAttack_p.parsers(byte_p,
+                          byte_p,
                           monsterAttackAction_p);
 //   unsigned_int_pimpl                      space_p;
 //   unsigned_int_pimpl                      reach_p;
   RPG_Character_SavingThrowModifiers_Type   savingThrowModifiers_p;
-  savingThrowModifiers_p.parsers(int_p,
-                                 int_p,
-                                 int_p);
+  savingThrowModifiers_p.parsers(byte_p,
+                                 byte_p,
+                                 byte_p);
   RPG_Character_Attributes_Type             attributes_p;
-  attributes_p.parsers(unsigned_int_p,
-                       unsigned_int_p,
-                       unsigned_int_p,
-                       unsigned_int_p,
-                       unsigned_int_p,
-                       unsigned_int_p);
+  attributes_p.parsers(unsigned_byte_p,
+                       unsigned_byte_p,
+                       unsigned_byte_p,
+                       unsigned_byte_p,
+                       unsigned_byte_p,
+                       unsigned_byte_p);
   RPG_Character_Skill_Type                  skill_p;
   RPG_Character_SkillValue_Type             skillvalue_p;
   skillvalue_p.parsers(skill_p,
-                       int_p);
+                       byte_p);
   RPG_Character_Skills_Type                 skills_p;
   skills_p.parsers(skillvalue_p);
   RPG_Character_Feat_Type                   feat_p;
@@ -129,23 +131,23 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
                               size_p,
                               monsterType_p,
                               roll_p,
-                              int_p,
-                              unsigned_int_p,
+                              byte_p,
+                              unsigned_byte_p,
                               monsterArmorClass_p,
                               monsterAttack_p,
-                              unsigned_int_p,
-                              unsigned_int_p,
+                              unsigned_byte_p,
+                              unsigned_byte_p,
                               savingThrowModifiers_p,
                               attributes_p,
                               skills_p,
                               feats_p,
                               environment_p,
                               organization_p,
-                              unsigned_int_p,
-                              unsigned_int_p,
+                              unsigned_byte_p,
+                              unsigned_byte_p,
                               alignment_p,
                               advancement_p,
-                              unsigned_int_p);
+                              unsigned_byte_p);
   RPG_Character_MonsterDictionary_Type    monsterDictionary_p(&myMonsterDictionary);
   monsterDictionary_p.parsers(monsterProperties_p);
   RPG_Character_Dictionary_Type           characterDictionary_p(&myMonsterDictionary);
@@ -155,7 +157,7 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
   //
   ::xml_schema::document doc_p(characterDictionary_p,
                                ACE_TEXT_ALWAYS_CHAR("urn:rpg"),
-                               ACE_TEXT_ALWAYS_CHAR("RPG_Character_Dictionary"));
+                               ACE_TEXT_ALWAYS_CHAR("characterDictionary"));
 
   characterDictionary_p.pre();
 

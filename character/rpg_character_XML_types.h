@@ -178,13 +178,13 @@ class RPG_Character_MonsterArmorClass_Type_pskel: public ::xml_schema::complex_c
   // pre ();
 
   virtual void
-  normal (unsigned int);
+  normal (unsigned char);
 
   virtual void
-  touch (unsigned int);
+  touch (unsigned char);
 
   virtual void
-  flatFooted (unsigned int);
+  flatFooted (unsigned char);
 
   virtual RPG_Character_MonsterArmorClass
   post_RPG_Character_MonsterArmorClass_Type () = 0;
@@ -192,18 +192,18 @@ class RPG_Character_MonsterArmorClass_Type_pskel: public ::xml_schema::complex_c
   // Parser construction API.
   //
   void
-  normal_parser (::xml_schema::unsigned_int_pskel&);
+  normal_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  touch_parser (::xml_schema::unsigned_int_pskel&);
+  touch_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  flatFooted_parser (::xml_schema::unsigned_int_pskel&);
+  flatFooted_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  parsers (::xml_schema::unsigned_int_pskel& /* normal */,
-           ::xml_schema::unsigned_int_pskel& /* touch */,
-           ::xml_schema::unsigned_int_pskel& /* flatFooted */);
+  parsers (::xml_schema::unsigned_byte_pskel& /* normal */,
+           ::xml_schema::unsigned_byte_pskel& /* touch */,
+           ::xml_schema::unsigned_byte_pskel& /* flatFooted */);
 
   // Constructor.
   //
@@ -222,9 +222,9 @@ class RPG_Character_MonsterArmorClass_Type_pskel: public ::xml_schema::complex_c
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::xml_schema::unsigned_int_pskel* normal_parser_;
-  ::xml_schema::unsigned_int_pskel* touch_parser_;
-  ::xml_schema::unsigned_int_pskel* flatFooted_parser_;
+  ::xml_schema::unsigned_byte_pskel* normal_parser_;
+  ::xml_schema::unsigned_byte_pskel* touch_parser_;
+  ::xml_schema::unsigned_byte_pskel* flatFooted_parser_;
 };
 
 class RPG_Character_MonsterWeapon_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -263,7 +263,7 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   monsterWeapon (const RPG_Character_MonsterWeapon&);
 
   virtual void
-  attackBonus (long long);
+  attackBonus (signed char);
 
   virtual void
   attackForm (const RPG_Character_AttackForm&);
@@ -272,7 +272,7 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   damage (const RPG_Chance_DiceRoll&);
 
   virtual void
-  numAttacksPerRound (unsigned int);
+  numAttacksPerRound (unsigned char);
 
   virtual RPG_Character_MonsterAttackAction
   post_RPG_Character_MonsterAttackAction_Type () = 0;
@@ -283,7 +283,7 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   monsterWeapon_parser (::RPG_Character_MonsterWeapon_Type_pskel&);
 
   void
-  attackBonus_parser (::xml_schema::integer_pskel&);
+  attackBonus_parser (::xml_schema::byte_pskel&);
 
   void
   attackForm_parser (::RPG_Character_AttackForm_Type_pskel&);
@@ -292,14 +292,14 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
   damage_parser (::RPG_Chance_DiceRoll_Type_pskel&);
 
   void
-  numAttacksPerRound_parser (::xml_schema::unsigned_int_pskel&);
+  numAttacksPerRound_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
   parsers (::RPG_Character_MonsterWeapon_Type_pskel& /* monsterWeapon */,
-           ::xml_schema::integer_pskel& /* attackBonus */,
+           ::xml_schema::byte_pskel& /* attackBonus */,
            ::RPG_Character_AttackForm_Type_pskel& /* attackForm */,
            ::RPG_Chance_DiceRoll_Type_pskel& /* damage */,
-           ::xml_schema::unsigned_int_pskel& /* numAttacksPerRound */);
+           ::xml_schema::unsigned_byte_pskel& /* numAttacksPerRound */);
 
   // Constructor.
   //
@@ -319,10 +319,10 @@ class RPG_Character_MonsterAttackAction_Type_pskel: public ::xml_schema::complex
 
   protected:
   ::RPG_Character_MonsterWeapon_Type_pskel* monsterWeapon_parser_;
-  ::xml_schema::integer_pskel* attackBonus_parser_;
+  ::xml_schema::byte_pskel* attackBonus_parser_;
   ::RPG_Character_AttackForm_Type_pskel* attackForm_parser_;
   ::RPG_Chance_DiceRoll_Type_pskel* damage_parser_;
-  ::xml_schema::unsigned_int_pskel* numAttacksPerRound_parser_;
+  ::xml_schema::unsigned_byte_pskel* numAttacksPerRound_parser_;
 };
 
 class RPG_Character_MonsterAttack_Type_pskel: public ::xml_schema::complex_content
@@ -334,10 +334,10 @@ class RPG_Character_MonsterAttack_Type_pskel: public ::xml_schema::complex_conte
   // pre ();
 
   virtual void
-  baseAttackBonus (long long);
+  baseAttackBonus (signed char);
 
   virtual void
-  grappleBonus (long long);
+  grappleBonus (signed char);
 
   virtual void
   attackAction (const RPG_Character_MonsterAttackAction&);
@@ -348,17 +348,17 @@ class RPG_Character_MonsterAttack_Type_pskel: public ::xml_schema::complex_conte
   // Parser construction API.
   //
   void
-  baseAttackBonus_parser (::xml_schema::integer_pskel&);
+  baseAttackBonus_parser (::xml_schema::byte_pskel&);
 
   void
-  grappleBonus_parser (::xml_schema::integer_pskel&);
+  grappleBonus_parser (::xml_schema::byte_pskel&);
 
   void
   attackAction_parser (::RPG_Character_MonsterAttackAction_Type_pskel&);
 
   void
-  parsers (::xml_schema::integer_pskel& /* baseAttackBonus */,
-           ::xml_schema::integer_pskel& /* grappleBonus */,
+  parsers (::xml_schema::byte_pskel& /* baseAttackBonus */,
+           ::xml_schema::byte_pskel& /* grappleBonus */,
            ::RPG_Character_MonsterAttackAction_Type_pskel& /* attackAction */);
 
   // Constructor.
@@ -378,8 +378,8 @@ class RPG_Character_MonsterAttack_Type_pskel: public ::xml_schema::complex_conte
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::xml_schema::integer_pskel* baseAttackBonus_parser_;
-  ::xml_schema::integer_pskel* grappleBonus_parser_;
+  ::xml_schema::byte_pskel* baseAttackBonus_parser_;
+  ::xml_schema::byte_pskel* grappleBonus_parser_;
   ::RPG_Character_MonsterAttackAction_Type_pskel* attackAction_parser_;
 };
 
@@ -404,13 +404,13 @@ class RPG_Character_SavingThrowModifiers_Type_pskel: public ::xml_schema::comple
   // pre ();
 
   virtual void
-  fortitude (long long);
+  fortitude (signed char);
 
   virtual void
-  reflex (long long);
+  reflex (signed char);
 
   virtual void
-  will (long long);
+  will (signed char);
 
   virtual RPG_Character_SavingThrowModifiers
   post_RPG_Character_SavingThrowModifiers_Type () = 0;
@@ -418,18 +418,18 @@ class RPG_Character_SavingThrowModifiers_Type_pskel: public ::xml_schema::comple
   // Parser construction API.
   //
   void
-  fortitude_parser (::xml_schema::integer_pskel&);
+  fortitude_parser (::xml_schema::byte_pskel&);
 
   void
-  reflex_parser (::xml_schema::integer_pskel&);
+  reflex_parser (::xml_schema::byte_pskel&);
 
   void
-  will_parser (::xml_schema::integer_pskel&);
+  will_parser (::xml_schema::byte_pskel&);
 
   void
-  parsers (::xml_schema::integer_pskel& /* fortitude */,
-           ::xml_schema::integer_pskel& /* reflex */,
-           ::xml_schema::integer_pskel& /* will */);
+  parsers (::xml_schema::byte_pskel& /* fortitude */,
+           ::xml_schema::byte_pskel& /* reflex */,
+           ::xml_schema::byte_pskel& /* will */);
 
   // Constructor.
   //
@@ -448,9 +448,9 @@ class RPG_Character_SavingThrowModifiers_Type_pskel: public ::xml_schema::comple
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::xml_schema::integer_pskel* fortitude_parser_;
-  ::xml_schema::integer_pskel* reflex_parser_;
-  ::xml_schema::integer_pskel* will_parser_;
+  ::xml_schema::byte_pskel* fortitude_parser_;
+  ::xml_schema::byte_pskel* reflex_parser_;
+  ::xml_schema::byte_pskel* will_parser_;
 };
 
 class RPG_Character_Attributes_Type_pskel: public ::xml_schema::complex_content
@@ -462,22 +462,22 @@ class RPG_Character_Attributes_Type_pskel: public ::xml_schema::complex_content
   // pre ();
 
   virtual void
-  strength (unsigned int);
+  strength (unsigned char);
 
   virtual void
-  dexterity (unsigned int);
+  dexterity (unsigned char);
 
   virtual void
-  constitution (unsigned int);
+  constitution (unsigned char);
 
   virtual void
-  intelligence (unsigned int);
+  intelligence (unsigned char);
 
   virtual void
-  wisdom (unsigned int);
+  wisdom (unsigned char);
 
   virtual void
-  charisma (unsigned int);
+  charisma (unsigned char);
 
   virtual RPG_Character_Attributes
   post_RPG_Character_Attributes_Type () = 0;
@@ -485,30 +485,30 @@ class RPG_Character_Attributes_Type_pskel: public ::xml_schema::complex_content
   // Parser construction API.
   //
   void
-  strength_parser (::xml_schema::unsigned_int_pskel&);
+  strength_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  dexterity_parser (::xml_schema::unsigned_int_pskel&);
+  dexterity_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  constitution_parser (::xml_schema::unsigned_int_pskel&);
+  constitution_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  intelligence_parser (::xml_schema::unsigned_int_pskel&);
+  intelligence_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  wisdom_parser (::xml_schema::unsigned_int_pskel&);
+  wisdom_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  charisma_parser (::xml_schema::unsigned_int_pskel&);
+  charisma_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  parsers (::xml_schema::unsigned_int_pskel& /* strength */,
-           ::xml_schema::unsigned_int_pskel& /* dexterity */,
-           ::xml_schema::unsigned_int_pskel& /* constitution */,
-           ::xml_schema::unsigned_int_pskel& /* intelligence */,
-           ::xml_schema::unsigned_int_pskel& /* wisdom */,
-           ::xml_schema::unsigned_int_pskel& /* charisma */);
+  parsers (::xml_schema::unsigned_byte_pskel& /* strength */,
+           ::xml_schema::unsigned_byte_pskel& /* dexterity */,
+           ::xml_schema::unsigned_byte_pskel& /* constitution */,
+           ::xml_schema::unsigned_byte_pskel& /* intelligence */,
+           ::xml_schema::unsigned_byte_pskel& /* wisdom */,
+           ::xml_schema::unsigned_byte_pskel& /* charisma */);
 
   // Constructor.
   //
@@ -527,12 +527,12 @@ class RPG_Character_Attributes_Type_pskel: public ::xml_schema::complex_content
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::xml_schema::unsigned_int_pskel* strength_parser_;
-  ::xml_schema::unsigned_int_pskel* dexterity_parser_;
-  ::xml_schema::unsigned_int_pskel* constitution_parser_;
-  ::xml_schema::unsigned_int_pskel* intelligence_parser_;
-  ::xml_schema::unsigned_int_pskel* wisdom_parser_;
-  ::xml_schema::unsigned_int_pskel* charisma_parser_;
+  ::xml_schema::unsigned_byte_pskel* strength_parser_;
+  ::xml_schema::unsigned_byte_pskel* dexterity_parser_;
+  ::xml_schema::unsigned_byte_pskel* constitution_parser_;
+  ::xml_schema::unsigned_byte_pskel* intelligence_parser_;
+  ::xml_schema::unsigned_byte_pskel* wisdom_parser_;
+  ::xml_schema::unsigned_byte_pskel* charisma_parser_;
 };
 
 class RPG_Character_Skill_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -559,7 +559,7 @@ class RPG_Character_SkillValue_Type_pskel: public ::xml_schema::complex_content
   skill (const RPG_Character_Skill&);
 
   virtual void
-  rank (long long);
+  rank (signed char);
 
   virtual RPG_Character_SkillsItem_t
   post_RPG_Character_SkillValue_Type () = 0;
@@ -570,11 +570,11 @@ class RPG_Character_SkillValue_Type_pskel: public ::xml_schema::complex_content
   skill_parser (::RPG_Character_Skill_Type_pskel&);
 
   void
-  rank_parser (::xml_schema::integer_pskel&);
+  rank_parser (::xml_schema::byte_pskel&);
 
   void
   parsers (::RPG_Character_Skill_Type_pskel& /* skill */,
-           ::xml_schema::integer_pskel& /* rank */);
+           ::xml_schema::byte_pskel& /* rank */);
 
   // Constructor.
   //
@@ -594,7 +594,7 @@ class RPG_Character_SkillValue_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::RPG_Character_Skill_Type_pskel* skill_parser_;
-  ::xml_schema::integer_pskel* rank_parser_;
+  ::xml_schema::byte_pskel* rank_parser_;
 };
 
 class RPG_Character_Skills_Type_pskel: public ::xml_schema::complex_content
@@ -904,10 +904,10 @@ class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_c
   hitDice (const RPG_Chance_DiceRoll&);
 
   virtual void
-  initiative (long long);
+  initiative (signed char);
 
   virtual void
-  speed (unsigned int);
+  speed (unsigned char);
 
   virtual void
   armorClass (const RPG_Character_MonsterArmorClass&);
@@ -916,10 +916,10 @@ class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_c
   attack (const RPG_Character_MonsterAttack&);
 
   virtual void
-  space (unsigned int);
+  space (unsigned char);
 
   virtual void
-  reach (unsigned int);
+  reach (unsigned char);
 
   virtual void
   saves (const RPG_Character_SavingThrowModifiers&);
@@ -940,10 +940,10 @@ class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_c
   organization (const RPG_Character_Organization&);
 
   virtual void
-  challengeRating (unsigned int);
+  challengeRating (unsigned char);
 
   virtual void
-  treasureModifier (unsigned int);
+  treasureModifier (unsigned char);
 
   virtual void
   alignment (const RPG_Character_Alignment&);
@@ -952,7 +952,7 @@ class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_c
   advancement (const RPG_Character_MonsterAdvancement_t&);
 
   virtual void
-  levelAdjustment (unsigned int);
+  levelAdjustment (unsigned char);
 
   virtual RPG_Character_MonsterProperties_XML
   post_RPG_Character_MonsterProperties_Type () = 0;
@@ -972,10 +972,10 @@ class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_c
   hitDice_parser (::RPG_Chance_DiceRoll_Type_pskel&);
 
   void
-  initiative_parser (::xml_schema::integer_pskel&);
+  initiative_parser (::xml_schema::byte_pskel&);
 
   void
-  speed_parser (::xml_schema::unsigned_int_pskel&);
+  speed_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
   armorClass_parser (::RPG_Character_MonsterArmorClass_Type_pskel&);
@@ -984,10 +984,10 @@ class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_c
   attack_parser (::RPG_Character_MonsterAttack_Type_pskel&);
 
   void
-  space_parser (::xml_schema::unsigned_int_pskel&);
+  space_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  reach_parser (::xml_schema::unsigned_int_pskel&);
+  reach_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
   saves_parser (::RPG_Character_SavingThrowModifiers_Type_pskel&);
@@ -1008,10 +1008,10 @@ class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_c
   organization_parser (::RPG_Character_Organization_Type_pskel&);
 
   void
-  challengeRating_parser (::xml_schema::unsigned_int_pskel&);
+  challengeRating_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  treasureModifier_parser (::xml_schema::unsigned_int_pskel&);
+  treasureModifier_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
   alignment_parser (::RPG_Character_Alignment_Type_pskel&);
@@ -1020,30 +1020,30 @@ class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_c
   advancement_parser (::RPG_Character_MonsterAdvancement_Type_pskel&);
 
   void
-  levelAdjustment_parser (::xml_schema::unsigned_int_pskel&);
+  levelAdjustment_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
   parsers (::xml_schema::string_pskel& /* name */,
            ::RPG_Character_Size_Type_pskel& /* size */,
            ::RPG_Character_MonsterType_Type_pskel& /* type */,
            ::RPG_Chance_DiceRoll_Type_pskel& /* hitDice */,
-           ::xml_schema::integer_pskel& /* initiative */,
-           ::xml_schema::unsigned_int_pskel& /* speed */,
+           ::xml_schema::byte_pskel& /* initiative */,
+           ::xml_schema::unsigned_byte_pskel& /* speed */,
            ::RPG_Character_MonsterArmorClass_Type_pskel& /* armorClass */,
            ::RPG_Character_MonsterAttack_Type_pskel& /* attack */,
-           ::xml_schema::unsigned_int_pskel& /* space */,
-           ::xml_schema::unsigned_int_pskel& /* reach */,
+           ::xml_schema::unsigned_byte_pskel& /* space */,
+           ::xml_schema::unsigned_byte_pskel& /* reach */,
            ::RPG_Character_SavingThrowModifiers_Type_pskel& /* saves */,
            ::RPG_Character_Attributes_Type_pskel& /* attributes */,
            ::RPG_Character_Skills_Type_pskel& /* skills */,
            ::RPG_Character_Feats_Type_pskel& /* feats */,
            ::RPG_Character_Environment_Type_pskel& /* environment */,
            ::RPG_Character_Organization_Type_pskel& /* organization */,
-           ::xml_schema::unsigned_int_pskel& /* challengeRating */,
-           ::xml_schema::unsigned_int_pskel& /* treasureModifier */,
+           ::xml_schema::unsigned_byte_pskel& /* challengeRating */,
+           ::xml_schema::unsigned_byte_pskel& /* treasureModifier */,
            ::RPG_Character_Alignment_Type_pskel& /* alignment */,
            ::RPG_Character_MonsterAdvancement_Type_pskel& /* advancement */,
-           ::xml_schema::unsigned_int_pskel& /* levelAdjustment */);
+           ::xml_schema::unsigned_byte_pskel& /* levelAdjustment */);
 
   // Constructor.
   //
@@ -1066,23 +1066,23 @@ class RPG_Character_MonsterProperties_Type_pskel: public ::xml_schema::complex_c
   ::RPG_Character_Size_Type_pskel* size_parser_;
   ::RPG_Character_MonsterType_Type_pskel* type_parser_;
   ::RPG_Chance_DiceRoll_Type_pskel* hitDice_parser_;
-  ::xml_schema::integer_pskel* initiative_parser_;
-  ::xml_schema::unsigned_int_pskel* speed_parser_;
+  ::xml_schema::byte_pskel* initiative_parser_;
+  ::xml_schema::unsigned_byte_pskel* speed_parser_;
   ::RPG_Character_MonsterArmorClass_Type_pskel* armorClass_parser_;
   ::RPG_Character_MonsterAttack_Type_pskel* attack_parser_;
-  ::xml_schema::unsigned_int_pskel* space_parser_;
-  ::xml_schema::unsigned_int_pskel* reach_parser_;
+  ::xml_schema::unsigned_byte_pskel* space_parser_;
+  ::xml_schema::unsigned_byte_pskel* reach_parser_;
   ::RPG_Character_SavingThrowModifiers_Type_pskel* saves_parser_;
   ::RPG_Character_Attributes_Type_pskel* attributes_parser_;
   ::RPG_Character_Skills_Type_pskel* skills_parser_;
   ::RPG_Character_Feats_Type_pskel* feats_parser_;
   ::RPG_Character_Environment_Type_pskel* environment_parser_;
   ::RPG_Character_Organization_Type_pskel* organization_parser_;
-  ::xml_schema::unsigned_int_pskel* challengeRating_parser_;
-  ::xml_schema::unsigned_int_pskel* treasureModifier_parser_;
+  ::xml_schema::unsigned_byte_pskel* challengeRating_parser_;
+  ::xml_schema::unsigned_byte_pskel* treasureModifier_parser_;
   ::RPG_Character_Alignment_Type_pskel* alignment_parser_;
   ::RPG_Character_MonsterAdvancement_Type_pskel* advancement_parser_;
-  ::xml_schema::unsigned_int_pskel* levelAdjustment_parser_;
+  ::xml_schema::unsigned_byte_pskel* levelAdjustment_parser_;
 };
 
 class RPG_Character_MonsterDictionary_Type_pskel: public ::xml_schema::complex_content
@@ -1136,7 +1136,7 @@ class RPG_Character_Dictionary_Type_pskel: public ::xml_schema::complex_content
   // pre ();
 
   virtual void
-  RPG_Character_MonsterDictionary ();
+  monsterDictionary ();
 
   virtual void
   post_RPG_Character_Dictionary_Type ();
@@ -1144,10 +1144,10 @@ class RPG_Character_Dictionary_Type_pskel: public ::xml_schema::complex_content
   // Parser construction API.
   //
   void
-  RPG_Character_MonsterDictionary_parser (::RPG_Character_MonsterDictionary_Type_pskel&);
+  monsterDictionary_parser (::RPG_Character_MonsterDictionary_Type_pskel&);
 
   void
-  parsers (::RPG_Character_MonsterDictionary_Type_pskel& /* RPG_Character_MonsterDictionary */);
+  parsers (::RPG_Character_MonsterDictionary_Type_pskel& /* monsterDictionary */);
 
   // Constructor.
   //
@@ -1166,7 +1166,7 @@ class RPG_Character_Dictionary_Type_pskel: public ::xml_schema::complex_content
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Character_MonsterDictionary_Type_pskel* RPG_Character_MonsterDictionary_parser_;
+  ::RPG_Character_MonsterDictionary_Type_pskel* monsterDictionary_parser_;
 };
 
 #include <xsd/cxx/post.hxx>

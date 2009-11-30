@@ -68,10 +68,10 @@ class RPG_Item_CriticalHitModifier_Type_pimpl: public virtual RPG_Item_CriticalH
   pre ();
 
   virtual void
-  minToHitRoll (unsigned int);
+  minToHitRoll (unsigned char);
 
   virtual void
-  damageModifier (unsigned int);
+  damageModifier (unsigned char);
 
   virtual RPG_Item_CriticalHitModifier
   post_RPG_Item_CriticalHitModifier_Type ();
@@ -113,10 +113,10 @@ class RPG_Item_WeaponProperties_Type_pimpl: public virtual RPG_Item_WeaponProper
   criticalHitModifier (const RPG_Item_CriticalHitModifier&);
 
   virtual void
-  rangeIncrement (unsigned int);
+  rangeIncrement (unsigned char);
 
   virtual void
-  baseWeight (unsigned int);
+  baseWeight (unsigned short);
 
   virtual void
   typeOfDamage (const RPG_Item_WeaponDamageType&);
@@ -176,22 +176,22 @@ class RPG_Item_ArmorProperties_Type_pimpl: public virtual RPG_Item_ArmorProperti
   baseStorePrice (const RPG_Item_StorePrice&);
 
   virtual void
-  baseArmorBonus (unsigned int);
+  baseArmorBonus (unsigned char);
 
   virtual void
-  maxDexterityBonus (unsigned int);
+  maxDexterityBonus (unsigned char);
 
   virtual void
-  armorCheckPenalty (long long);
+  armorCheckPenalty (signed char);
 
   virtual void
-  arcaneSpellFailure (unsigned int);
+  arcaneSpellFailure (unsigned char);
 
   virtual void
-  baseSpeed (unsigned int);
+  baseSpeed (unsigned short);
 
   virtual void
-  baseWeight (unsigned int);
+  baseWeight (unsigned short);
 
   virtual RPG_Item_ArmorProperties_XML
   post_RPG_Item_ArmorProperties_Type ();
@@ -217,10 +217,10 @@ class RPG_Item_Dictionary_Type_pimpl: public virtual RPG_Item_Dictionary_Type_ps
   pre ();
 
   virtual void
-  RPG_Item_WeaponDictionary ();
+  weaponDictionary ();
 
   virtual void
-  RPG_Item_ArmorDictionary ();
+  armorDictionary ();
 
   virtual void
   post_RPG_Item_Dictionary_Type ();

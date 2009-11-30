@@ -100,14 +100,14 @@ pre ()
 }
 
 void RPG_Item_CriticalHitModifier_Type_pimpl::
-minToHitRoll (unsigned int minToHitRoll)
+minToHitRoll (unsigned char minToHitRoll)
 {
   // TODO
   //
 }
 
 void RPG_Item_CriticalHitModifier_Type_pimpl::
-damageModifier (unsigned int damageModifier)
+damageModifier (unsigned char damageModifier)
 {
   // TODO
   //
@@ -190,14 +190,14 @@ criticalHitModifier (const RPG_Item_CriticalHitModifier& criticalHitModifier)
 }
 
 void RPG_Item_WeaponProperties_Type_pimpl::
-rangeIncrement (unsigned int rangeIncrement)
+rangeIncrement (unsigned char rangeIncrement)
 {
   // TODO
   //
 }
 
 void RPG_Item_WeaponProperties_Type_pimpl::
-baseWeight (unsigned int baseWeight)
+baseWeight (unsigned short baseWeight)
 {
   // TODO
   //
@@ -304,42 +304,42 @@ baseStorePrice (const RPG_Item_StorePrice& baseStorePrice)
 }
 
 void RPG_Item_ArmorProperties_Type_pimpl::
-baseArmorBonus (unsigned int baseArmorBonus)
+baseArmorBonus (unsigned char baseArmorBonus)
 {
   // TODO
   //
 }
 
 void RPG_Item_ArmorProperties_Type_pimpl::
-maxDexterityBonus (unsigned int maxDexterityBonus)
+maxDexterityBonus (unsigned char maxDexterityBonus)
 {
   // TODO
   //
 }
 
 void RPG_Item_ArmorProperties_Type_pimpl::
-armorCheckPenalty (long long armorCheckPenalty)
+armorCheckPenalty (signed char armorCheckPenalty)
 {
   // TODO
   //
 }
 
 void RPG_Item_ArmorProperties_Type_pimpl::
-arcaneSpellFailure (unsigned int arcaneSpellFailure)
+arcaneSpellFailure (unsigned char arcaneSpellFailure)
 {
   // TODO
   //
 }
 
 void RPG_Item_ArmorProperties_Type_pimpl::
-baseSpeed (unsigned int baseSpeed)
+baseSpeed (unsigned short baseSpeed)
 {
   // TODO
   //
 }
 
 void RPG_Item_ArmorProperties_Type_pimpl::
-baseWeight (unsigned int baseWeight)
+baseWeight (unsigned short baseWeight)
 {
   // TODO
   //
@@ -382,12 +382,12 @@ pre ()
 }
 
 void RPG_Item_Dictionary_Type_pimpl::
-RPG_Item_WeaponDictionary ()
+weaponDictionary ()
 {
 }
 
 void RPG_Item_Dictionary_Type_pimpl::
-RPG_Item_ArmorDictionary ()
+armorDictionary ()
 {
 }
 

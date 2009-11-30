@@ -72,27 +72,27 @@ RPG_Character_MonsterType_Type_pskel ()
 //
 
 void RPG_Character_MonsterArmorClass_Type_pskel::
-normal_parser (::xml_schema::unsigned_int_pskel& p)
+normal_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->normal_parser_ = &p;
 }
 
 void RPG_Character_MonsterArmorClass_Type_pskel::
-touch_parser (::xml_schema::unsigned_int_pskel& p)
+touch_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->touch_parser_ = &p;
 }
 
 void RPG_Character_MonsterArmorClass_Type_pskel::
-flatFooted_parser (::xml_schema::unsigned_int_pskel& p)
+flatFooted_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->flatFooted_parser_ = &p;
 }
 
 void RPG_Character_MonsterArmorClass_Type_pskel::
-parsers (::xml_schema::unsigned_int_pskel& normal,
-         ::xml_schema::unsigned_int_pskel& touch,
-         ::xml_schema::unsigned_int_pskel& flatFooted)
+parsers (::xml_schema::unsigned_byte_pskel& normal,
+         ::xml_schema::unsigned_byte_pskel& touch,
+         ::xml_schema::unsigned_byte_pskel& flatFooted)
 {
   this->normal_parser_ = &normal;
   this->touch_parser_ = &touch;
@@ -117,7 +117,7 @@ monsterWeapon_parser (::RPG_Character_MonsterWeapon_Type_pskel& p)
 }
 
 void RPG_Character_MonsterAttackAction_Type_pskel::
-attackBonus_parser (::xml_schema::integer_pskel& p)
+attackBonus_parser (::xml_schema::byte_pskel& p)
 {
   this->attackBonus_parser_ = &p;
 }
@@ -135,17 +135,17 @@ damage_parser (::RPG_Chance_DiceRoll_Type_pskel& p)
 }
 
 void RPG_Character_MonsterAttackAction_Type_pskel::
-numAttacksPerRound_parser (::xml_schema::unsigned_int_pskel& p)
+numAttacksPerRound_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->numAttacksPerRound_parser_ = &p;
 }
 
 void RPG_Character_MonsterAttackAction_Type_pskel::
 parsers (::RPG_Character_MonsterWeapon_Type_pskel& monsterWeapon,
-         ::xml_schema::integer_pskel& attackBonus,
+         ::xml_schema::byte_pskel& attackBonus,
          ::RPG_Character_AttackForm_Type_pskel& attackForm,
          ::RPG_Chance_DiceRoll_Type_pskel& damage,
-         ::xml_schema::unsigned_int_pskel& numAttacksPerRound)
+         ::xml_schema::unsigned_byte_pskel& numAttacksPerRound)
 {
   this->monsterWeapon_parser_ = &monsterWeapon;
   this->attackBonus_parser_ = &attackBonus;
@@ -168,13 +168,13 @@ RPG_Character_MonsterAttackAction_Type_pskel ()
 //
 
 void RPG_Character_MonsterAttack_Type_pskel::
-baseAttackBonus_parser (::xml_schema::integer_pskel& p)
+baseAttackBonus_parser (::xml_schema::byte_pskel& p)
 {
   this->baseAttackBonus_parser_ = &p;
 }
 
 void RPG_Character_MonsterAttack_Type_pskel::
-grappleBonus_parser (::xml_schema::integer_pskel& p)
+grappleBonus_parser (::xml_schema::byte_pskel& p)
 {
   this->grappleBonus_parser_ = &p;
 }
@@ -186,8 +186,8 @@ attackAction_parser (::RPG_Character_MonsterAttackAction_Type_pskel& p)
 }
 
 void RPG_Character_MonsterAttack_Type_pskel::
-parsers (::xml_schema::integer_pskel& baseAttackBonus,
-         ::xml_schema::integer_pskel& grappleBonus,
+parsers (::xml_schema::byte_pskel& baseAttackBonus,
+         ::xml_schema::byte_pskel& grappleBonus,
          ::RPG_Character_MonsterAttackAction_Type_pskel& attackAction)
 {
   this->baseAttackBonus_parser_ = &baseAttackBonus;
@@ -207,27 +207,27 @@ RPG_Character_MonsterAttack_Type_pskel ()
 //
 
 void RPG_Character_SavingThrowModifiers_Type_pskel::
-fortitude_parser (::xml_schema::integer_pskel& p)
+fortitude_parser (::xml_schema::byte_pskel& p)
 {
   this->fortitude_parser_ = &p;
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pskel::
-reflex_parser (::xml_schema::integer_pskel& p)
+reflex_parser (::xml_schema::byte_pskel& p)
 {
   this->reflex_parser_ = &p;
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pskel::
-will_parser (::xml_schema::integer_pskel& p)
+will_parser (::xml_schema::byte_pskel& p)
 {
   this->will_parser_ = &p;
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pskel::
-parsers (::xml_schema::integer_pskel& fortitude,
-         ::xml_schema::integer_pskel& reflex,
-         ::xml_schema::integer_pskel& will)
+parsers (::xml_schema::byte_pskel& fortitude,
+         ::xml_schema::byte_pskel& reflex,
+         ::xml_schema::byte_pskel& will)
 {
   this->fortitude_parser_ = &fortitude;
   this->reflex_parser_ = &reflex;
@@ -246,48 +246,48 @@ RPG_Character_SavingThrowModifiers_Type_pskel ()
 //
 
 void RPG_Character_Attributes_Type_pskel::
-strength_parser (::xml_schema::unsigned_int_pskel& p)
+strength_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->strength_parser_ = &p;
 }
 
 void RPG_Character_Attributes_Type_pskel::
-dexterity_parser (::xml_schema::unsigned_int_pskel& p)
+dexterity_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->dexterity_parser_ = &p;
 }
 
 void RPG_Character_Attributes_Type_pskel::
-constitution_parser (::xml_schema::unsigned_int_pskel& p)
+constitution_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->constitution_parser_ = &p;
 }
 
 void RPG_Character_Attributes_Type_pskel::
-intelligence_parser (::xml_schema::unsigned_int_pskel& p)
+intelligence_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->intelligence_parser_ = &p;
 }
 
 void RPG_Character_Attributes_Type_pskel::
-wisdom_parser (::xml_schema::unsigned_int_pskel& p)
+wisdom_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->wisdom_parser_ = &p;
 }
 
 void RPG_Character_Attributes_Type_pskel::
-charisma_parser (::xml_schema::unsigned_int_pskel& p)
+charisma_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->charisma_parser_ = &p;
 }
 
 void RPG_Character_Attributes_Type_pskel::
-parsers (::xml_schema::unsigned_int_pskel& strength,
-         ::xml_schema::unsigned_int_pskel& dexterity,
-         ::xml_schema::unsigned_int_pskel& constitution,
-         ::xml_schema::unsigned_int_pskel& intelligence,
-         ::xml_schema::unsigned_int_pskel& wisdom,
-         ::xml_schema::unsigned_int_pskel& charisma)
+parsers (::xml_schema::unsigned_byte_pskel& strength,
+         ::xml_schema::unsigned_byte_pskel& dexterity,
+         ::xml_schema::unsigned_byte_pskel& constitution,
+         ::xml_schema::unsigned_byte_pskel& intelligence,
+         ::xml_schema::unsigned_byte_pskel& wisdom,
+         ::xml_schema::unsigned_byte_pskel& charisma)
 {
   this->strength_parser_ = &strength;
   this->dexterity_parser_ = &dexterity;
@@ -318,14 +318,14 @@ skill_parser (::RPG_Character_Skill_Type_pskel& p)
 }
 
 void RPG_Character_SkillValue_Type_pskel::
-rank_parser (::xml_schema::integer_pskel& p)
+rank_parser (::xml_schema::byte_pskel& p)
 {
   this->rank_parser_ = &p;
 }
 
 void RPG_Character_SkillValue_Type_pskel::
 parsers (::RPG_Character_Skill_Type_pskel& skill,
-         ::xml_schema::integer_pskel& rank)
+         ::xml_schema::byte_pskel& rank)
 {
   this->skill_parser_ = &skill;
   this->rank_parser_ = &rank;
@@ -489,13 +489,13 @@ hitDice_parser (::RPG_Chance_DiceRoll_Type_pskel& p)
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
-initiative_parser (::xml_schema::integer_pskel& p)
+initiative_parser (::xml_schema::byte_pskel& p)
 {
   this->initiative_parser_ = &p;
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
-speed_parser (::xml_schema::unsigned_int_pskel& p)
+speed_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->speed_parser_ = &p;
 }
@@ -513,13 +513,13 @@ attack_parser (::RPG_Character_MonsterAttack_Type_pskel& p)
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
-space_parser (::xml_schema::unsigned_int_pskel& p)
+space_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->space_parser_ = &p;
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
-reach_parser (::xml_schema::unsigned_int_pskel& p)
+reach_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->reach_parser_ = &p;
 }
@@ -561,13 +561,13 @@ organization_parser (::RPG_Character_Organization_Type_pskel& p)
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
-challengeRating_parser (::xml_schema::unsigned_int_pskel& p)
+challengeRating_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->challengeRating_parser_ = &p;
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
-treasureModifier_parser (::xml_schema::unsigned_int_pskel& p)
+treasureModifier_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->treasureModifier_parser_ = &p;
 }
@@ -585,7 +585,7 @@ advancement_parser (::RPG_Character_MonsterAdvancement_Type_pskel& p)
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
-levelAdjustment_parser (::xml_schema::unsigned_int_pskel& p)
+levelAdjustment_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->levelAdjustment_parser_ = &p;
 }
@@ -595,23 +595,23 @@ parsers (::xml_schema::string_pskel& name,
          ::RPG_Character_Size_Type_pskel& size,
          ::RPG_Character_MonsterType_Type_pskel& type,
          ::RPG_Chance_DiceRoll_Type_pskel& hitDice,
-         ::xml_schema::integer_pskel& initiative,
-         ::xml_schema::unsigned_int_pskel& speed,
+         ::xml_schema::byte_pskel& initiative,
+         ::xml_schema::unsigned_byte_pskel& speed,
          ::RPG_Character_MonsterArmorClass_Type_pskel& armorClass,
          ::RPG_Character_MonsterAttack_Type_pskel& attack,
-         ::xml_schema::unsigned_int_pskel& space,
-         ::xml_schema::unsigned_int_pskel& reach,
+         ::xml_schema::unsigned_byte_pskel& space,
+         ::xml_schema::unsigned_byte_pskel& reach,
          ::RPG_Character_SavingThrowModifiers_Type_pskel& saves,
          ::RPG_Character_Attributes_Type_pskel& attributes,
          ::RPG_Character_Skills_Type_pskel& skills,
          ::RPG_Character_Feats_Type_pskel& feats,
          ::RPG_Character_Environment_Type_pskel& environment,
          ::RPG_Character_Organization_Type_pskel& organization,
-         ::xml_schema::unsigned_int_pskel& challengeRating,
-         ::xml_schema::unsigned_int_pskel& treasureModifier,
+         ::xml_schema::unsigned_byte_pskel& challengeRating,
+         ::xml_schema::unsigned_byte_pskel& treasureModifier,
          ::RPG_Character_Alignment_Type_pskel& alignment,
          ::RPG_Character_MonsterAdvancement_Type_pskel& advancement,
-         ::xml_schema::unsigned_int_pskel& levelAdjustment)
+         ::xml_schema::unsigned_byte_pskel& levelAdjustment)
 {
   this->name_parser_ = &name;
   this->size_parser_ = &size;
@@ -687,20 +687,20 @@ RPG_Character_MonsterDictionary_Type_pskel ()
 //
 
 void RPG_Character_Dictionary_Type_pskel::
-RPG_Character_MonsterDictionary_parser (::RPG_Character_MonsterDictionary_Type_pskel& p)
+monsterDictionary_parser (::RPG_Character_MonsterDictionary_Type_pskel& p)
 {
-  this->RPG_Character_MonsterDictionary_parser_ = &p;
+  this->monsterDictionary_parser_ = &p;
 }
 
 void RPG_Character_Dictionary_Type_pskel::
-parsers (::RPG_Character_MonsterDictionary_Type_pskel& RPG_Character_MonsterDictionary)
+parsers (::RPG_Character_MonsterDictionary_Type_pskel& monsterDictionary)
 {
-  this->RPG_Character_MonsterDictionary_parser_ = &RPG_Character_MonsterDictionary;
+  this->monsterDictionary_parser_ = &monsterDictionary;
 }
 
 RPG_Character_Dictionary_Type_pskel::
 RPG_Character_Dictionary_Type_pskel ()
-: RPG_Character_MonsterDictionary_parser_ (0)
+: monsterDictionary_parser_ (0)
 {
 }
 
@@ -780,17 +780,17 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Character_MonsterArmorClass_Type_pskel::
-normal (unsigned int)
+normal (unsigned char)
 {
 }
 
 void RPG_Character_MonsterArmorClass_Type_pskel::
-touch (unsigned int)
+touch (unsigned char)
 {
 }
 
 void RPG_Character_MonsterArmorClass_Type_pskel::
-flatFooted (unsigned int)
+flatFooted (unsigned char)
 {
 }
 
@@ -847,7 +847,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "normal" && ns == "urn:rpg")
   {
     if (this->normal_parser_)
-      this->normal (this->normal_parser_->post_unsigned_int ());
+      this->normal (this->normal_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -855,7 +855,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "touch" && ns == "urn:rpg")
   {
     if (this->touch_parser_)
-      this->touch (this->touch_parser_->post_unsigned_int ());
+      this->touch (this->touch_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -863,7 +863,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "flatFooted" && ns == "urn:rpg")
   {
     if (this->flatFooted_parser_)
-      this->flatFooted (this->flatFooted_parser_->post_unsigned_int ());
+      this->flatFooted (this->flatFooted_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -880,7 +880,7 @@ monsterWeapon (const RPG_Character_MonsterWeapon&)
 }
 
 void RPG_Character_MonsterAttackAction_Type_pskel::
-attackBonus (long long)
+attackBonus (signed char)
 {
 }
 
@@ -895,7 +895,7 @@ damage (const RPG_Chance_DiceRoll&)
 }
 
 void RPG_Character_MonsterAttackAction_Type_pskel::
-numAttacksPerRound (unsigned int)
+numAttacksPerRound (unsigned char)
 {
 }
 
@@ -980,7 +980,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "attackBonus" && ns == "urn:rpg")
   {
     if (this->attackBonus_parser_)
-      this->attackBonus (this->attackBonus_parser_->post_integer ());
+      this->attackBonus (this->attackBonus_parser_->post_byte ());
 
     return true;
   }
@@ -1004,7 +1004,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "numAttacksPerRound" && ns == "urn:rpg")
   {
     if (this->numAttacksPerRound_parser_)
-      this->numAttacksPerRound (this->numAttacksPerRound_parser_->post_unsigned_int ());
+      this->numAttacksPerRound (this->numAttacksPerRound_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -1016,12 +1016,12 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Character_MonsterAttack_Type_pskel::
-baseAttackBonus (long long)
+baseAttackBonus (signed char)
 {
 }
 
 void RPG_Character_MonsterAttack_Type_pskel::
-grappleBonus (long long)
+grappleBonus (signed char)
 {
 }
 
@@ -1083,7 +1083,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "baseAttackBonus" && ns == "urn:rpg")
   {
     if (this->baseAttackBonus_parser_)
-      this->baseAttackBonus (this->baseAttackBonus_parser_->post_integer ());
+      this->baseAttackBonus (this->baseAttackBonus_parser_->post_byte ());
 
     return true;
   }
@@ -1091,7 +1091,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "grappleBonus" && ns == "urn:rpg")
   {
     if (this->grappleBonus_parser_)
-      this->grappleBonus (this->grappleBonus_parser_->post_integer ());
+      this->grappleBonus (this->grappleBonus_parser_->post_byte ());
 
     return true;
   }
@@ -1111,17 +1111,17 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Character_SavingThrowModifiers_Type_pskel::
-fortitude (long long)
+fortitude (signed char)
 {
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pskel::
-reflex (long long)
+reflex (signed char)
 {
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pskel::
-will (long long)
+will (signed char)
 {
 }
 
@@ -1178,7 +1178,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "fortitude" && ns == "urn:rpg")
   {
     if (this->fortitude_parser_)
-      this->fortitude (this->fortitude_parser_->post_integer ());
+      this->fortitude (this->fortitude_parser_->post_byte ());
 
     return true;
   }
@@ -1186,7 +1186,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "reflex" && ns == "urn:rpg")
   {
     if (this->reflex_parser_)
-      this->reflex (this->reflex_parser_->post_integer ());
+      this->reflex (this->reflex_parser_->post_byte ());
 
     return true;
   }
@@ -1194,7 +1194,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "will" && ns == "urn:rpg")
   {
     if (this->will_parser_)
-      this->will (this->will_parser_->post_integer ());
+      this->will (this->will_parser_->post_byte ());
 
     return true;
   }
@@ -1206,32 +1206,32 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Character_Attributes_Type_pskel::
-strength (unsigned int)
+strength (unsigned char)
 {
 }
 
 void RPG_Character_Attributes_Type_pskel::
-dexterity (unsigned int)
+dexterity (unsigned char)
 {
 }
 
 void RPG_Character_Attributes_Type_pskel::
-constitution (unsigned int)
+constitution (unsigned char)
 {
 }
 
 void RPG_Character_Attributes_Type_pskel::
-intelligence (unsigned int)
+intelligence (unsigned char)
 {
 }
 
 void RPG_Character_Attributes_Type_pskel::
-wisdom (unsigned int)
+wisdom (unsigned char)
 {
 }
 
 void RPG_Character_Attributes_Type_pskel::
-charisma (unsigned int)
+charisma (unsigned char)
 {
 }
 
@@ -1318,7 +1318,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "strength" && ns == "urn:rpg")
   {
     if (this->strength_parser_)
-      this->strength (this->strength_parser_->post_unsigned_int ());
+      this->strength (this->strength_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -1326,7 +1326,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "dexterity" && ns == "urn:rpg")
   {
     if (this->dexterity_parser_)
-      this->dexterity (this->dexterity_parser_->post_unsigned_int ());
+      this->dexterity (this->dexterity_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -1334,7 +1334,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "constitution" && ns == "urn:rpg")
   {
     if (this->constitution_parser_)
-      this->constitution (this->constitution_parser_->post_unsigned_int ());
+      this->constitution (this->constitution_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -1342,7 +1342,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "intelligence" && ns == "urn:rpg")
   {
     if (this->intelligence_parser_)
-      this->intelligence (this->intelligence_parser_->post_unsigned_int ());
+      this->intelligence (this->intelligence_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -1350,7 +1350,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "wisdom" && ns == "urn:rpg")
   {
     if (this->wisdom_parser_)
-      this->wisdom (this->wisdom_parser_->post_unsigned_int ());
+      this->wisdom (this->wisdom_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -1358,7 +1358,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "charisma" && ns == "urn:rpg")
   {
     if (this->charisma_parser_)
-      this->charisma (this->charisma_parser_->post_unsigned_int ());
+      this->charisma (this->charisma_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -1375,7 +1375,7 @@ skill (const RPG_Character_Skill&)
 }
 
 void RPG_Character_SkillValue_Type_pskel::
-rank (long long)
+rank (signed char)
 {
 }
 
@@ -1430,7 +1430,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "rank" && ns == "urn:rpg")
   {
     if (this->rank_parser_)
-      this->rank (this->rank_parser_->post_integer ());
+      this->rank (this->rank_parser_->post_byte ());
 
     return true;
   }
@@ -1753,12 +1753,12 @@ hitDice (const RPG_Chance_DiceRoll&)
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
-initiative (long long)
+initiative (signed char)
 {
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
-speed (unsigned int)
+speed (unsigned char)
 {
 }
 
@@ -1773,12 +1773,12 @@ attack (const RPG_Character_MonsterAttack&)
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
-space (unsigned int)
+space (unsigned char)
 {
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
-reach (unsigned int)
+reach (unsigned char)
 {
 }
 
@@ -1813,12 +1813,12 @@ organization (const RPG_Character_Organization&)
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
-challengeRating (unsigned int)
+challengeRating (unsigned char)
 {
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
-treasureModifier (unsigned int)
+treasureModifier (unsigned char)
 {
 }
 
@@ -1833,7 +1833,7 @@ advancement (const RPG_Character_MonsterAdvancement_t&)
 }
 
 void RPG_Character_MonsterProperties_Type_pskel::
-levelAdjustment (unsigned int)
+levelAdjustment (unsigned char)
 {
 }
 
@@ -2102,7 +2102,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "initiative" && ns == "urn:rpg")
   {
     if (this->initiative_parser_)
-      this->initiative (this->initiative_parser_->post_integer ());
+      this->initiative (this->initiative_parser_->post_byte ());
 
     return true;
   }
@@ -2110,7 +2110,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "speed" && ns == "urn:rpg")
   {
     if (this->speed_parser_)
-      this->speed (this->speed_parser_->post_unsigned_int ());
+      this->speed (this->speed_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -2134,7 +2134,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "space" && ns == "urn:rpg")
   {
     if (this->space_parser_)
-      this->space (this->space_parser_->post_unsigned_int ());
+      this->space (this->space_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -2142,7 +2142,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "reach" && ns == "urn:rpg")
   {
     if (this->reach_parser_)
-      this->reach (this->reach_parser_->post_unsigned_int ());
+      this->reach (this->reach_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -2198,7 +2198,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "challengeRating" && ns == "urn:rpg")
   {
     if (this->challengeRating_parser_)
-      this->challengeRating (this->challengeRating_parser_->post_unsigned_int ());
+      this->challengeRating (this->challengeRating_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -2206,7 +2206,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "treasureModifier" && ns == "urn:rpg")
   {
     if (this->treasureModifier_parser_)
-      this->treasureModifier (this->treasureModifier_parser_->post_unsigned_int ());
+      this->treasureModifier (this->treasureModifier_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -2230,7 +2230,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "levelAdjustment" && ns == "urn:rpg")
   {
     if (this->levelAdjustment_parser_)
-      this->levelAdjustment (this->levelAdjustment_parser_->post_unsigned_int ());
+      this->levelAdjustment (this->levelAdjustment_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -2296,7 +2296,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Character_Dictionary_Type_pskel::
-RPG_Character_MonsterDictionary ()
+monsterDictionary ()
 {
 }
 
@@ -2315,12 +2315,12 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "RPG_Character_MonsterDictionary" && ns == "urn:rpg")
+  if (n == "monsterDictionary" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->RPG_Character_MonsterDictionary_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->monsterDictionary_parser_;
 
-    if (this->RPG_Character_MonsterDictionary_parser_)
-      this->RPG_Character_MonsterDictionary_parser_->pre ();
+    if (this->monsterDictionary_parser_)
+      this->monsterDictionary_parser_->pre ();
 
     return true;
   }
@@ -2335,12 +2335,12 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "RPG_Character_MonsterDictionary" && ns == "urn:rpg")
+  if (n == "monsterDictionary" && ns == "urn:rpg")
   {
-    if (this->RPG_Character_MonsterDictionary_parser_)
+    if (this->monsterDictionary_parser_)
     {
-      this->RPG_Character_MonsterDictionary_parser_->post_RPG_Character_MonsterDictionary_Type ();
-      this->RPG_Character_MonsterDictionary ();
+      this->monsterDictionary_parser_->post_RPG_Character_MonsterDictionary_Type ();
+      this->monsterDictionary ();
     }
 
     return true;

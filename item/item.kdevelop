@@ -15,8 +15,8 @@
     <projectname>item</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
-    <defaultencoding></defaultencoding>
+    <description/>
+    <defaultencoding/>
   </general>
   <kdevautoproject>
     <general>
@@ -25,13 +25,13 @@
     </general>
     <run>
       <runarguments>
-        <parser/>
+        <parser>-t -f ./rpg_item.xml</parser>
       </runarguments>
       <debugarguments>
-        <parser/>
+        <parser>-t -f ./rpg_item.xml</parser>
       </debugarguments>
       <cwd>
-        <parser>/home/unfv/Projects/RPG/item/debug/./</parser>
+        <parser>/home/unfv/Projects/RPG/item</parser>
       </cwd>
       <mainprogram>/home/unfv/Projects/RPG/item/debug/.libs/parser</mainprogram>
       <programargs>-f ./rpg_item.xml -t</programargs>
@@ -230,7 +230,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -251,11 +251,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath></gdbpath>
-      <dbgshell></dbgshell>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <gdbpath/>
+      <dbgshell/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>

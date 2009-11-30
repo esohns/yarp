@@ -82,21 +82,21 @@ pre ()
 }
 
 void RPG_Character_MonsterArmorClass_Type_pimpl::
-normal (unsigned int normal)
+normal (unsigned char normal)
 {
   // TODO
   //
 }
 
 void RPG_Character_MonsterArmorClass_Type_pimpl::
-touch (unsigned int touch)
+touch (unsigned char touch)
 {
   // TODO
   //
 }
 
 void RPG_Character_MonsterArmorClass_Type_pimpl::
-flatFooted (unsigned int flatFooted)
+flatFooted (unsigned char flatFooted)
 {
   // TODO
   //
@@ -162,7 +162,7 @@ monsterWeapon (const RPG_Character_MonsterWeapon& monsterWeapon)
 }
 
 void RPG_Character_MonsterAttackAction_Type_pimpl::
-attackBonus (long long attackBonus)
+attackBonus (signed char attackBonus)
 {
   // TODO
   //
@@ -183,7 +183,7 @@ damage (const RPG_Chance_DiceRoll& damage)
 }
 
 void RPG_Character_MonsterAttackAction_Type_pimpl::
-numAttacksPerRound (unsigned int numAttacksPerRound)
+numAttacksPerRound (unsigned char numAttacksPerRound)
 {
   // TODO
   //
@@ -206,14 +206,14 @@ pre ()
 }
 
 void RPG_Character_MonsterAttack_Type_pimpl::
-baseAttackBonus (long long baseAttackBonus)
+baseAttackBonus (signed char baseAttackBonus)
 {
   // TODO
   //
 }
 
 void RPG_Character_MonsterAttack_Type_pimpl::
-grappleBonus (long long grappleBonus)
+grappleBonus (signed char grappleBonus)
 {
   // TODO
   //
@@ -261,21 +261,21 @@ pre ()
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pimpl::
-fortitude (long long fortitude)
+fortitude (signed char fortitude)
 {
   // TODO
   //
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pimpl::
-reflex (long long reflex)
+reflex (signed char reflex)
 {
   // TODO
   //
 }
 
 void RPG_Character_SavingThrowModifiers_Type_pimpl::
-will (long long will)
+will (signed char will)
 {
   // TODO
   //
@@ -298,42 +298,42 @@ pre ()
 }
 
 void RPG_Character_Attributes_Type_pimpl::
-strength (unsigned int strength)
+strength (unsigned char strength)
 {
   // TODO
   //
 }
 
 void RPG_Character_Attributes_Type_pimpl::
-dexterity (unsigned int dexterity)
+dexterity (unsigned char dexterity)
 {
   // TODO
   //
 }
 
 void RPG_Character_Attributes_Type_pimpl::
-constitution (unsigned int constitution)
+constitution (unsigned char constitution)
 {
   // TODO
   //
 }
 
 void RPG_Character_Attributes_Type_pimpl::
-intelligence (unsigned int intelligence)
+intelligence (unsigned char intelligence)
 {
   // TODO
   //
 }
 
 void RPG_Character_Attributes_Type_pimpl::
-wisdom (unsigned int wisdom)
+wisdom (unsigned char wisdom)
 {
   // TODO
   //
 }
 
 void RPG_Character_Attributes_Type_pimpl::
-charisma (unsigned int charisma)
+charisma (unsigned char charisma)
 {
   // TODO
   //
@@ -381,7 +381,7 @@ skill (const RPG_Character_Skill& skill)
 }
 
 void RPG_Character_SkillValue_Type_pimpl::
-rank (long long rank)
+rank (signed char rank)
 {
   // TODO
   //
@@ -651,14 +651,14 @@ hitDice (const RPG_Chance_DiceRoll& hitDice)
 }
 
 void RPG_Character_MonsterProperties_Type_pimpl::
-initiative (long long initiative)
+initiative (signed char initiative)
 {
   // TODO
   //
 }
 
 void RPG_Character_MonsterProperties_Type_pimpl::
-speed (unsigned int speed)
+speed (unsigned char speed)
 {
   // TODO
   //
@@ -679,14 +679,14 @@ attack (const RPG_Character_MonsterAttack& attack)
 }
 
 void RPG_Character_MonsterProperties_Type_pimpl::
-space (unsigned int space)
+space (unsigned char space)
 {
   // TODO
   //
 }
 
 void RPG_Character_MonsterProperties_Type_pimpl::
-reach (unsigned int reach)
+reach (unsigned char reach)
 {
   // TODO
   //
@@ -735,14 +735,14 @@ organization (const RPG_Character_Organization& organization)
 }
 
 void RPG_Character_MonsterProperties_Type_pimpl::
-challengeRating (unsigned int challengeRating)
+challengeRating (unsigned char challengeRating)
 {
   // TODO
   //
 }
 
 void RPG_Character_MonsterProperties_Type_pimpl::
-treasureModifier (unsigned int treasureModifier)
+treasureModifier (unsigned char treasureModifier)
 {
   // TODO
   //
@@ -763,7 +763,7 @@ advancement (const RPG_Character_MonsterAdvancement_t& advancement)
 }
 
 void RPG_Character_MonsterProperties_Type_pimpl::
-levelAdjustment (unsigned int levelAdjustment)
+levelAdjustment (unsigned char levelAdjustment)
 {
   // TODO
   //
@@ -806,7 +806,7 @@ pre ()
 }
 
 void RPG_Character_Dictionary_Type_pimpl::
-RPG_Character_MonsterDictionary ()
+monsterDictionary ()
 {
 }
 

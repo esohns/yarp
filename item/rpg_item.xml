@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- <!DOCTYPE RPG_Item_Dictionary SYSTEM "./rpg_item.xsd"> -->
+<!-- <!DOCTYPE itemDictionary SYSTEM "./rpg_item.xsd"> -->
 <!-- xsi:noNamespaceSchemaLocation="rpg_item.xsd" -->
 
-<RPG_Item_Dictionary xmlns="urn:rpg"
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                     xsi:schemaLocation="urn:rpg rpg_item.xsd">
-  <RPG_Item_WeaponDictionary>
+<itemDictionary xmlns="urn:rpg"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="urn:rpg rpg_item.xsd">
+  <weaponDictionary>
     <weapon>
       <weaponType>UNARMED_WEAPON_GAUNTLET</weaponType>
       <weaponCategory>WEAPONCATEGORY_SIMPLE</weaponCategory>
@@ -1524,8 +1524,9 @@
       <baseWeight>1</baseWeight>
       <typeOfDamage>WEAPONDAMAGE_PIERCING</typeOfDamage>
     </weapon>
-  </RPG_Item_WeaponDictionary>
-  <RPG_Item_ArmorDictionary>
+  </weaponDictionary>
+
+  <armorDictionary>
     <armor>
       <armorType>ARMOR_PADDED</armorType>
       <armorCategory>ARMORCATEGORY_LIGHT</armorCategory>
@@ -1778,5 +1779,5 @@
       <baseSpeed>0</baseSpeed>
       <baseWeight>45</baseWeight>
     </armor>
-  </RPG_Item_ArmorDictionary>
-</RPG_Item_Dictionary>
+  </armorDictionary>
+</itemDictionary>

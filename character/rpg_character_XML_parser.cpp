@@ -196,21 +196,21 @@ RPG_Character_MonsterArmorClass_Type::RPG_Character_MonsterArmorClass_Type()
   myCurrentArmorClass.flatFooted = 0;
 }
 
-void RPG_Character_MonsterArmorClass_Type::normal(unsigned int normal_in)
+void RPG_Character_MonsterArmorClass_Type::normal(unsigned char normal_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterArmorClass_Type::normal"));
 
   myCurrentArmorClass.normal = normal_in;
 }
 
-void RPG_Character_MonsterArmorClass_Type::touch(unsigned int touch_in)
+void RPG_Character_MonsterArmorClass_Type::touch(unsigned char touch_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterArmorClass_Type::touch"));
 
   myCurrentArmorClass.touch = touch_in;
 }
 
-void RPG_Character_MonsterArmorClass_Type::flatFooted(unsigned int flatFooted_in)
+void RPG_Character_MonsterArmorClass_Type::flatFooted(unsigned char flatFooted_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterArmorClass_Type::flatFooted"));
 
@@ -251,7 +251,7 @@ void RPG_Character_MonsterAttackAction_Type::monsterWeapon(const RPG_Character_M
   myCurrentMonsterAttackAction.monsterWeapon = monsterWeapon_in;
 }
 
-void RPG_Character_MonsterAttackAction_Type::attackBonus(long long attackBonus_in)
+void RPG_Character_MonsterAttackAction_Type::attackBonus(signed char attackBonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::attackBonus"));
 
@@ -272,7 +272,7 @@ void RPG_Character_MonsterAttackAction_Type::damage(const RPG_Chance_DiceRoll& d
   myCurrentMonsterAttackAction.damage = damage_in;
 }
 
-void RPG_Character_MonsterAttackAction_Type::numAttacksPerRound(unsigned int numAttacksPerRound_in)
+void RPG_Character_MonsterAttackAction_Type::numAttacksPerRound(unsigned char numAttacksPerRound_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::numAttacksPerRound"));
 
@@ -306,14 +306,14 @@ RPG_Character_MonsterAttack_Type::RPG_Character_MonsterAttack_Type()
   myCurrentMonsterAttack.attackActions.clear();
 }
 
-void RPG_Character_MonsterAttack_Type::baseAttackBonus(long long baseAttackBonus_in)
+void RPG_Character_MonsterAttack_Type::baseAttackBonus(signed char baseAttackBonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttack_Type::baseAttackBonus"));
 
   myCurrentMonsterAttack.baseAttackBonus = baseAttackBonus_in;
 }
 
-void RPG_Character_MonsterAttack_Type::grappleBonus(long long grappleBonus_in)
+void RPG_Character_MonsterAttack_Type::grappleBonus(signed char grappleBonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttack_Type::grappleBonus"));
 
@@ -350,21 +350,21 @@ RPG_Character_SavingThrowModifiers_Type::RPG_Character_SavingThrowModifiers_Type
   myCurrentSavingThrowModifiers.will = 0;
 }
 
-void RPG_Character_SavingThrowModifiers_Type::fortitude(long long fortitude_in)
+void RPG_Character_SavingThrowModifiers_Type::fortitude(signed char fortitude_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_SavingThrowModifiers_Type::fortitude"));
 
   myCurrentSavingThrowModifiers.fortitude = fortitude_in;
 }
 
-void RPG_Character_SavingThrowModifiers_Type::reflex(long long reflex_in)
+void RPG_Character_SavingThrowModifiers_Type::reflex(signed char reflex_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_SavingThrowModifiers_Type::reflex"));
 
   myCurrentSavingThrowModifiers.reflex = reflex_in;
 }
 
-void RPG_Character_SavingThrowModifiers_Type::will(long long will_in)
+void RPG_Character_SavingThrowModifiers_Type::will(signed char will_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_SavingThrowModifiers_Type::will"));
 
@@ -397,42 +397,42 @@ RPG_Character_Attributes_Type::RPG_Character_Attributes_Type()
   myCurrentAttributes.charisma = 0;
 }
 
-void RPG_Character_Attributes_Type::strength(unsigned int strength_in)
+void RPG_Character_Attributes_Type::strength(unsigned char strength_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::strength"));
 
   myCurrentAttributes.strength = strength_in;
 }
 
-void RPG_Character_Attributes_Type::dexterity(unsigned int dexterity_in)
+void RPG_Character_Attributes_Type::dexterity(unsigned char dexterity_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::dexterity"));
 
   myCurrentAttributes.dexterity = dexterity_in;
 }
 
-void RPG_Character_Attributes_Type::constitution(unsigned int constitution_in)
+void RPG_Character_Attributes_Type::constitution(unsigned char constitution_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::constitution"));
 
   myCurrentAttributes.constitution = constitution_in;
 }
 
-void RPG_Character_Attributes_Type::intelligence(unsigned int intelligence_in)
+void RPG_Character_Attributes_Type::intelligence(unsigned char intelligence_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::intelligence"));
 
   myCurrentAttributes.intelligence = intelligence_in;
 }
 
-void RPG_Character_Attributes_Type::wisdom(unsigned int wisdom_in)
+void RPG_Character_Attributes_Type::wisdom(unsigned char wisdom_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::wisdom"));
 
   myCurrentAttributes.wisdom = wisdom_in;
 }
 
-void RPG_Character_Attributes_Type::charisma(unsigned int charisma_in)
+void RPG_Character_Attributes_Type::charisma(unsigned char charisma_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::charisma"));
 
@@ -478,7 +478,7 @@ void RPG_Character_SkillValue_Type::skill(const RPG_Character_Skill& skill_in)
   myCurrentSkill.first = skill_in;
 }
 
-void RPG_Character_SkillValue_Type::rank(long long rank_in)
+void RPG_Character_SkillValue_Type::rank(signed char rank_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_SkillValue_Type::rank"));
 
@@ -753,14 +753,14 @@ void RPG_Character_MonsterProperties_Type::hitDice(const RPG_Chance_DiceRoll& hi
   myCurrentProperties.hitDice = hitDice_in;
 }
 
-void RPG_Character_MonsterProperties_Type::initiative(long long initiative_in)
+void RPG_Character_MonsterProperties_Type::initiative(signed char initiative_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterProperties_Type::initiative"));
 
   myCurrentProperties.initiative = initiative_in;
 }
 
-void RPG_Character_MonsterProperties_Type::speed(unsigned int speed_in)
+void RPG_Character_MonsterProperties_Type::speed(unsigned char speed_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterProperties_Type::speed"));
 
@@ -781,14 +781,14 @@ void RPG_Character_MonsterProperties_Type::attack(const RPG_Character_MonsterAtt
   myCurrentProperties.attack = attack_in;
 }
 
-void RPG_Character_MonsterProperties_Type::space(unsigned int space_in)
+void RPG_Character_MonsterProperties_Type::space(unsigned char space_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterProperties_Type::space"));
 
   myCurrentProperties.space = space_in;
 }
 
-void RPG_Character_MonsterProperties_Type::reach(unsigned int reach_in)
+void RPG_Character_MonsterProperties_Type::reach(unsigned char reach_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterProperties_Type::reach"));
 
@@ -837,14 +837,14 @@ void RPG_Character_MonsterProperties_Type::organization(const RPG_Character_Orga
   myCurrentProperties.organizations.insert(organization_in);
 }
 
-void RPG_Character_MonsterProperties_Type::challengeRating(unsigned int challengeRating_in)
+void RPG_Character_MonsterProperties_Type::challengeRating(unsigned char challengeRating_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterProperties_Type::challengeRating"));
 
   myCurrentProperties.challengeRating = challengeRating_in;
 }
 
-void RPG_Character_MonsterProperties_Type::treasureModifier(unsigned int treasureModifier_in)
+void RPG_Character_MonsterProperties_Type::treasureModifier(unsigned char treasureModifier_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterProperties_Type::treasureModifier"));
 
@@ -865,7 +865,7 @@ void RPG_Character_MonsterProperties_Type::advancement(const RPG_Character_Monst
   myCurrentProperties.advancement = advancement_in;
 }
 
-void RPG_Character_MonsterProperties_Type::levelAdjustment(unsigned int levelAdjustment_in)
+void RPG_Character_MonsterProperties_Type::levelAdjustment(unsigned char levelAdjustment_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterProperties_Type::levelAdjustment"));
 

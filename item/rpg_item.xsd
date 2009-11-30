@@ -123,8 +123,8 @@
 
   <xsd:complexType name="RPG_Item_CriticalHitModifier_Type">
     <xsd:sequence>
-      <xsd:element name="minToHitRoll" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="damageModifier" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="minToHitRoll" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="damageModifier" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -146,15 +146,15 @@
 <!--       <xsd:element name="baseDamage" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/> -->
 <xsd:element name="baseDamage" type="RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="criticalHitModifier" type="RPG_Item_CriticalHitModifier_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="rangeIncrement" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="baseWeight" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="rangeIncrement" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="baseWeight" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="typeOfDamage" type="RPG_Item_WeaponDamageType_Type" minOccurs="1" maxOccurs="3"/>
     </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Item_WeaponDictionary_Type">
     <xsd:sequence>
-      <xsd:element name="weapon" type="RPG_Item_WeaponProperties_Type" maxOccurs="unbounded"/>
+      <xsd:element name="weapon" type="RPG_Item_WeaponProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -195,29 +195,29 @@
       <xsd:element name="armorType" type="RPG_Item_ArmorType_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="armorCategory" type="RPG_Item_ArmorCategory_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="baseStorePrice" type="RPG_Item_StorePrice_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="baseArmorBonus" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="maxDexterityBonus" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="armorCheckPenalty" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="arcaneSpellFailure" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="baseSpeed" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="baseWeight" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="baseArmorBonus" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="maxDexterityBonus" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="armorCheckPenalty" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="arcaneSpellFailure" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="baseSpeed" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="baseWeight" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Item_ArmorDictionary_Type">
     <xsd:sequence>
-      <xsd:element name="armor" type="RPG_Item_ArmorProperties_Type" maxOccurs="unbounded"/>
+      <xsd:element name="armor" type="RPG_Item_ArmorProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Item_Dictionary_Type">
     <xsd:sequence>
-      <xsd:element name="RPG_Item_WeaponDictionary" type="RPG_Item_WeaponDictionary_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="RPG_Item_ArmorDictionary" type="RPG_Item_ArmorDictionary_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="weaponDictionary" type="RPG_Item_WeaponDictionary_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="armorDictionary" type="RPG_Item_ArmorDictionary_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
   <!-- xml instance document(s) will contain a dictionary of different types of items -->
-  <xsd:element name="RPG_Item_Dictionary" type="RPG_Item_Dictionary_Type"/>
+  <xsd:element name="itemDictionary" type="RPG_Item_Dictionary_Type"/>
 
 </xsd:schema>

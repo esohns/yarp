@@ -112,9 +112,9 @@ class RPG_Character_MonsterArmorClass_Type
   RPG_Character_MonsterArmorClass_Type();
 
 //   virtual void pre();
-  virtual void normal(unsigned int);
-  virtual void touch(unsigned int);
-  virtual void flatFooted(unsigned int);
+  virtual void normal(unsigned char);
+  virtual void touch(unsigned char);
+  virtual void flatFooted(unsigned char);
   virtual RPG_Character_MonsterArmorClass post_RPG_Character_MonsterArmorClass_Type();
 
  private:
@@ -145,10 +145,10 @@ class RPG_Character_MonsterAttackAction_Type
 
 //   virtual void pre();
   virtual void monsterWeapon(const RPG_Character_MonsterWeapon&);
-  virtual void attackBonus(long long);
+  virtual void attackBonus(signed char);
   virtual void attackForm(const RPG_Character_AttackForm&);
   virtual void damage(const RPG_Chance_DiceRoll&);
-  virtual void numAttacksPerRound(unsigned int);
+  virtual void numAttacksPerRound(unsigned char);
   virtual RPG_Character_MonsterAttackAction post_RPG_Character_MonsterAttackAction_Type();
 
  private:
@@ -162,8 +162,8 @@ class RPG_Character_MonsterAttack_Type
   RPG_Character_MonsterAttack_Type();
 
 //   virtual void pre();
-  virtual void baseAttackBonus(long long);
-  virtual void grappleBonus(long long);
+  virtual void baseAttackBonus(signed char);
+  virtual void grappleBonus(signed char);
   virtual void attackAction(const RPG_Character_MonsterAttackAction&);
   virtual RPG_Character_MonsterAttack post_RPG_Character_MonsterAttack_Type();
 
@@ -178,9 +178,9 @@ class RPG_Character_SavingThrowModifiers_Type
   RPG_Character_SavingThrowModifiers_Type();
 
 //   virtual void pre();
-  virtual void fortitude(long long);
-  virtual void reflex(long long);
-  virtual void will(long long);
+  virtual void fortitude(signed char);
+  virtual void reflex(signed char);
+  virtual void will(signed char);
   virtual RPG_Character_SavingThrowModifiers post_RPG_Character_SavingThrowModifiers_Type();
 
  private:
@@ -194,12 +194,12 @@ class RPG_Character_Attributes_Type
   RPG_Character_Attributes_Type();
 
 //   virtual void pre();
-  virtual void strength(unsigned int);
-  virtual void dexterity(unsigned int);
-  virtual void constitution(unsigned int);
-  virtual void intelligence(unsigned int);
-  virtual void wisdom(unsigned int);
-  virtual void charisma(unsigned int);
+  virtual void strength(unsigned char);
+  virtual void dexterity(unsigned char);
+  virtual void constitution(unsigned char);
+  virtual void intelligence(unsigned char);
+  virtual void wisdom(unsigned char);
+  virtual void charisma(unsigned char);
   virtual RPG_Character_Attributes post_RPG_Character_Attributes_Type();
 
  private:
@@ -222,7 +222,7 @@ class RPG_Character_SkillValue_Type
 
 //   virtual void pre();
   virtual void skill(const RPG_Character_Skill&);
-  virtual void rank(long long);
+  virtual void rank(signed char);
   virtual RPG_Character_SkillsItem_t post_RPG_Character_SkillValue_Type();
 
  private:
@@ -352,23 +352,23 @@ class RPG_Character_MonsterProperties_Type
   virtual void size(const RPG_Character_Size&);
   virtual void type(const RPG_Character_MonsterType&);
   virtual void hitDice(const RPG_Chance_DiceRoll&);
-  virtual void initiative(long long);
-  virtual void speed(unsigned int);
+  virtual void initiative(signed char);
+  virtual void speed(unsigned char);
   virtual void armorClass(const RPG_Character_MonsterArmorClass&);
   virtual void attack(const RPG_Character_MonsterAttack&);
-  virtual void space(unsigned int);
-  virtual void reach(unsigned int);
+  virtual void space(unsigned char);
+  virtual void reach(unsigned char);
   virtual void saves(const RPG_Character_SavingThrowModifiers&);
   virtual void attributes(const RPG_Character_Attributes&);
   virtual void skills(const RPG_Character_Skills_t&);
   virtual void feats(const RPG_Character_Feats_t&);
   virtual void environment(const RPG_Character_Environment&);
   virtual void organization(const RPG_Character_Organization&);
-  virtual void challengeRating(unsigned int);
-  virtual void treasureModifier(unsigned int);
+  virtual void challengeRating(unsigned char);
+  virtual void treasureModifier(unsigned char);
   virtual void alignment(const RPG_Character_Alignment&);
   virtual void advancement(const RPG_Character_MonsterAdvancement_t&);
-  virtual void levelAdjustment(unsigned int);
+  virtual void levelAdjustment(unsigned char);
   virtual RPG_Character_MonsterProperties_XML post_RPG_Character_MonsterProperties_Type();
 
  private:

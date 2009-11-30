@@ -77,9 +77,9 @@
 
   <xsd:complexType name="RPG_Character_MonsterArmorClass_Type">
     <xsd:sequence>
-      <xsd:element name="normal" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="touch" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="flatFooted" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="normal" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="touch" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="flatFooted" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -114,18 +114,18 @@
   <xsd:complexType name="RPG_Character_MonsterAttackAction_Type">
     <xsd:sequence>
       <xsd:element name="monsterWeapon" type="RPG_Character_MonsterWeapon_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="attackBonus" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="attackBonus" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackForm" type="RPG_Character_AttackForm_Type" minOccurs="1" maxOccurs="1"/>
 <!--      <xsd:element name="damage" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>-->
       <xsd:element name="damage" type="RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="numAttacksPerRound" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="numAttacksPerRound" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Character_MonsterAttack_Type">
     <xsd:sequence>
-      <xsd:element name="baseAttackBonus" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="grappleBonus" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="baseAttackBonus" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="grappleBonus" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackAction" type="RPG_Character_MonsterAttackAction_Type" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -146,20 +146,20 @@
 
   <xsd:complexType name="RPG_Character_SavingThrowModifiers_Type">
     <xsd:sequence>
-      <xsd:element name="fortitude" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="reflex" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="will" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="fortitude" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="reflex" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="will" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Character_Attributes_Type">
     <xsd:sequence>
-      <xsd:element name="strength" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="dexterity" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="constitution" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="intelligence" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="wisdom" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="charisma" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="strength" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="dexterity" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="constitution" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="intelligence" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="wisdom" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="charisma" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -227,7 +227,7 @@
   <xsd:complexType name="RPG_Character_SkillValue_Type">
     <xsd:sequence>
       <xsd:element name="skill" type="RPG_Character_Skill_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="rank" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="rank" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -460,39 +460,39 @@
       <xsd:element name="type" type="RPG_Character_MonsterType_Type" minOccurs="1" maxOccurs="1"/>
 <!--       <xsd:element name="hitDice" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/> -->
       <xsd:element name="hitDice" type="RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="initiative" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="speed" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="initiative" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="speed" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="armorClass" type="RPG_Character_MonsterArmorClass_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attack" type="RPG_Character_MonsterAttack_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="space" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="reach" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="space" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="reach" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="saves" type="RPG_Character_SavingThrowModifiers_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attributes" type="RPG_Character_Attributes_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="skills" type="RPG_Character_Skills_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="feats" type="RPG_Character_Feats_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="environment" type="RPG_Character_Environment_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="organization" type="RPG_Character_Organization_Type" minOccurs="1" maxOccurs="unbounded"/>
-      <xsd:element name="challengeRating" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="treasureModifier" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="challengeRating" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="treasureModifier" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="alignment" type="RPG_Character_Alignment_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="advancement" type="RPG_Character_MonsterAdvancement_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="levelAdjustment" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="levelAdjustment" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Character_MonsterDictionary_Type">
     <xsd:sequence>
-      <xsd:element name="monster" type="RPG_Character_MonsterProperties_Type" maxOccurs="unbounded"/>
+      <xsd:element name="monster" type="RPG_Character_MonsterProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Character_Dictionary_Type">
     <xsd:sequence>
-      <xsd:element name="RPG_Character_MonsterDictionary" type="RPG_Character_MonsterDictionary_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="monsterDictionary" type="RPG_Character_MonsterDictionary_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
   <!-- xml instance document(s) will contain a dictionary of different types of monsters -->
-  <xsd:element name="RPG_Character_Dictionary" type="RPG_Character_Dictionary_Type"/>
+  <xsd:element name="characterDictionary" type="RPG_Character_Dictionary_Type"/>
 
 </xsd:schema>
