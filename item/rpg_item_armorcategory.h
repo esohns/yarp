@@ -32,6 +32,8 @@ enum RPG_Item_ArmorCategory
   RPG_ITEM_ARMORCATEGORY_INVALID
 };
 
+#include <ace/Global_Macros.h>
+
 #include <map>
 #include <string>
 

@@ -1,25 +1,37 @@
 namespace urn:rpg
 {
   include "rpg_item_common.h";
-  include <rpg_chance_dice_common.h>;
+  include "rpg_item_weaponcategory.h";
+  include "rpg_item_weaponclass.h";
+  include "rpg_item_storeprice.h";
+  include "rpg_item_criticalhitmodifier.h";
+  inlcude "rpg_item_weapondamagetype.h";
+  include "rpg_item_armorcategory.h";
+  include "rpg_item_weapontype.h";
+  include "rpg_item_armortype.h";
 
-  RPG_Item_WeaponCategory_Type      RPG_Item_WeaponCategory;
-  RPG_Item_WeaponClass_Type         RPG_Item_WeaponClass;
-  RPG_Item_WeaponType_Type          RPG_Item_WeaponType;
-  RPG_Item_StorePrice_Type          RPG_Item_StorePrice;
-  RPG_Item_CriticalHitModifier_Type RPG_Item_CriticalHitModifier;
-  RPG_Item_WeaponDamageType_Type    RPG_Item_WeaponDamageType;
-  RPG_Chance_DiceRoll_Type          RPG_Item_Damage;
-  RPG_Item_WeaponProperties_Type    RPG_Item_WeaponProperties_XML;
+  include <rpg_chance_dicetype.h>;
+  include <rpg_chance_diceroll.h>;
 
-  RPG_Item_ArmorCategory_Type       RPG_Item_ArmorCategory;
-  RPG_Item_ArmorType_Type           RPG_Item_ArmorType;
-  RPG_Item_ArmorProperties_Type     RPG_Item_ArmorProperties_XML;
+  RPG_Item_WeaponCategory_Type           RPG_Item_WeaponCategory;
+  RPG_Item_WeaponClass_Type              RPG_Item_WeaponClass;
+  RPG_Item_WeaponType_Type               RPG_Item_WeaponType;
+  RPG_Item_StorePrice_Type               RPG_Item_StorePrice;
+  RPG_Item_CriticalHitModifier_Type      RPG_Item_CriticalHitModifier;
+  RPG_Item_WeaponDamageType_Type         RPG_Item_WeaponDamageType;
+  RPG_Chance_DiceRoll_Type               RPG_Item_Damage;
+  RPG_Item_WeaponPropertiesXML_Type      RPG_Item_WeaponPropertiesXML;
+#  RPG_Item_MagicWeaponPropertiesXML_Type RPG_Item_MagicWeaponPropertiesXML;
 
-#  RPG_Item_WeaponDictionary_Type    RPG_Item_WeaponDictionary_t*;
-#  RPG_Item_ArmorDictionary_Type     RPG_Item_ArmorDictionary_t*;
+  RPG_Item_ArmorCategory_Type            RPG_Item_ArmorCategory;
+  RPG_Item_ArmorType_Type                RPG_Item_ArmorType;
+  RPG_Item_ArmorPropertiesXML_Type       RPG_Item_ArmorPropertiesXML;
+#  RPG_Item_MagicArmorPropertiesXML_Type  RPG_Item_MagicArmorPropertiesXML;
 
-#  RPG_Item_Dictionary_Type          RPG_Item_Dictionary;
+#  RPG_Item_WeaponDictionary_Type        RPG_Item_WeaponDictionary_t*;
+#  RPG_Item_ArmorDictionary_Type         RPG_Item_ArmorDictionary_t*;
+
+#  RPG_Item_Dictionary_Type              RPG_Item_Dictionary;
 }
 
 #namespace urn:rpg_chance_dice

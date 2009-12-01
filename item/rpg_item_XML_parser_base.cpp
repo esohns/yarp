@@ -7,6 +7,40 @@
 
 #include <rpg_item_XML_parser_base.h>
 
+// RPG_Item_Type_Type_pimpl
+//
+
+void RPG_Item_Type_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Item_Type_Type_pimpl::
+post_RPG_Item_Type_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+}
+
+// RPG_Item_Money_Type_pimpl
+//
+
+void RPG_Item_Money_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Item_Money_Type_pimpl::
+post_RPG_Item_Money_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+}
+
 // RPG_Item_WeaponCategory_Type_pimpl
 //
 
@@ -139,83 +173,107 @@ post_RPG_Item_WeaponDamageType_Type ()
   // return ... ;
 }
 
-// RPG_Item_WeaponProperties_Type_pimpl
+// RPG_Item_WeaponPropertiesXML_Type_pimpl
 //
 
-void RPG_Item_WeaponProperties_Type_pimpl::
+void RPG_Item_WeaponPropertiesXML_Type_pimpl::
 pre ()
 {
 }
 
-void RPG_Item_WeaponProperties_Type_pimpl::
+void RPG_Item_WeaponPropertiesXML_Type_pimpl::
 weaponType (const RPG_Item_WeaponType& weaponType)
 {
   // TODO
   //
 }
 
-void RPG_Item_WeaponProperties_Type_pimpl::
+void RPG_Item_WeaponPropertiesXML_Type_pimpl::
 weaponCategory (const RPG_Item_WeaponCategory& weaponCategory)
 {
   // TODO
   //
 }
 
-void RPG_Item_WeaponProperties_Type_pimpl::
+void RPG_Item_WeaponPropertiesXML_Type_pimpl::
 weaponClass (const RPG_Item_WeaponClass& weaponClass)
 {
   // TODO
   //
 }
 
-void RPG_Item_WeaponProperties_Type_pimpl::
+void RPG_Item_WeaponPropertiesXML_Type_pimpl::
 baseStorePrice (const RPG_Item_StorePrice& baseStorePrice)
 {
   // TODO
   //
 }
 
-void RPG_Item_WeaponProperties_Type_pimpl::
+void RPG_Item_WeaponPropertiesXML_Type_pimpl::
 baseDamage (const RPG_Item_Damage& baseDamage)
 {
   // TODO
   //
 }
 
-void RPG_Item_WeaponProperties_Type_pimpl::
+void RPG_Item_WeaponPropertiesXML_Type_pimpl::
 criticalHitModifier (const RPG_Item_CriticalHitModifier& criticalHitModifier)
 {
   // TODO
   //
 }
 
-void RPG_Item_WeaponProperties_Type_pimpl::
+void RPG_Item_WeaponPropertiesXML_Type_pimpl::
 rangeIncrement (unsigned char rangeIncrement)
 {
   // TODO
   //
 }
 
-void RPG_Item_WeaponProperties_Type_pimpl::
+void RPG_Item_WeaponPropertiesXML_Type_pimpl::
 baseWeight (unsigned short baseWeight)
 {
   // TODO
   //
 }
 
-void RPG_Item_WeaponProperties_Type_pimpl::
+void RPG_Item_WeaponPropertiesXML_Type_pimpl::
 typeOfDamage (const RPG_Item_WeaponDamageType& typeOfDamage)
 {
   // TODO
   //
 }
 
-RPG_Item_WeaponProperties_XML RPG_Item_WeaponProperties_Type_pimpl::
-post_RPG_Item_WeaponProperties_Type ()
+RPG_Item_WeaponPropertiesXML RPG_Item_WeaponPropertiesXML_Type_pimpl::
+post_RPG_Item_WeaponPropertiesXML_Type ()
 {
   // TODO
   //
   // return ... ;
+}
+
+// RPG_Item_MagicWeaponPropertiesXML_Type_pimpl
+//
+
+void RPG_Item_MagicWeaponPropertiesXML_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Item_MagicWeaponPropertiesXML_Type_pimpl::
+toHitModifier (signed char toHitModifier)
+{
+  // TODO
+  //
+}
+
+void RPG_Item_MagicWeaponPropertiesXML_Type_pimpl::
+post_RPG_Item_MagicWeaponPropertiesXML_Type ()
+{
+  const RPG_Item_WeaponPropertiesXML& v (post_RPG_Item_WeaponPropertiesXML_Type ());
+
+  // TODO
+  //
 }
 
 // RPG_Item_WeaponDictionary_Type_pimpl
@@ -227,7 +285,7 @@ pre ()
 }
 
 void RPG_Item_WeaponDictionary_Type_pimpl::
-weapon (const RPG_Item_WeaponProperties_XML& weapon)
+weapon (const RPG_Item_WeaponPropertiesXML& weapon)
 {
   // TODO
   //
@@ -274,83 +332,107 @@ post_RPG_Item_ArmorType_Type ()
   // return ... ;
 }
 
-// RPG_Item_ArmorProperties_Type_pimpl
+// RPG_Item_ArmorPropertiesXML_Type_pimpl
 //
 
-void RPG_Item_ArmorProperties_Type_pimpl::
+void RPG_Item_ArmorPropertiesXML_Type_pimpl::
 pre ()
 {
 }
 
-void RPG_Item_ArmorProperties_Type_pimpl::
+void RPG_Item_ArmorPropertiesXML_Type_pimpl::
 armorType (const RPG_Item_ArmorType& armorType)
 {
   // TODO
   //
 }
 
-void RPG_Item_ArmorProperties_Type_pimpl::
+void RPG_Item_ArmorPropertiesXML_Type_pimpl::
 armorCategory (const RPG_Item_ArmorCategory& armorCategory)
 {
   // TODO
   //
 }
 
-void RPG_Item_ArmorProperties_Type_pimpl::
+void RPG_Item_ArmorPropertiesXML_Type_pimpl::
 baseStorePrice (const RPG_Item_StorePrice& baseStorePrice)
 {
   // TODO
   //
 }
 
-void RPG_Item_ArmorProperties_Type_pimpl::
+void RPG_Item_ArmorPropertiesXML_Type_pimpl::
 baseArmorBonus (unsigned char baseArmorBonus)
 {
   // TODO
   //
 }
 
-void RPG_Item_ArmorProperties_Type_pimpl::
+void RPG_Item_ArmorPropertiesXML_Type_pimpl::
 maxDexterityBonus (unsigned char maxDexterityBonus)
 {
   // TODO
   //
 }
 
-void RPG_Item_ArmorProperties_Type_pimpl::
+void RPG_Item_ArmorPropertiesXML_Type_pimpl::
 armorCheckPenalty (signed char armorCheckPenalty)
 {
   // TODO
   //
 }
 
-void RPG_Item_ArmorProperties_Type_pimpl::
+void RPG_Item_ArmorPropertiesXML_Type_pimpl::
 arcaneSpellFailure (unsigned char arcaneSpellFailure)
 {
   // TODO
   //
 }
 
-void RPG_Item_ArmorProperties_Type_pimpl::
+void RPG_Item_ArmorPropertiesXML_Type_pimpl::
 baseSpeed (unsigned short baseSpeed)
 {
   // TODO
   //
 }
 
-void RPG_Item_ArmorProperties_Type_pimpl::
+void RPG_Item_ArmorPropertiesXML_Type_pimpl::
 baseWeight (unsigned short baseWeight)
 {
   // TODO
   //
 }
 
-RPG_Item_ArmorProperties_XML RPG_Item_ArmorProperties_Type_pimpl::
-post_RPG_Item_ArmorProperties_Type ()
+RPG_Item_ArmorPropertiesXML RPG_Item_ArmorPropertiesXML_Type_pimpl::
+post_RPG_Item_ArmorPropertiesXML_Type ()
 {
   // TODO
   //
   // return ... ;
+}
+
+// RPG_Item_MagicArmorPropertiesXML_Type_pimpl
+//
+
+void RPG_Item_MagicArmorPropertiesXML_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Item_MagicArmorPropertiesXML_Type_pimpl::
+defenseModifier (signed char defenseModifier)
+{
+  // TODO
+  //
+}
+
+void RPG_Item_MagicArmorPropertiesXML_Type_pimpl::
+post_RPG_Item_MagicArmorPropertiesXML_Type ()
+{
+  const RPG_Item_ArmorPropertiesXML& v (post_RPG_Item_ArmorPropertiesXML_Type ());
+
+  // TODO
+  //
 }
 
 // RPG_Item_ArmorDictionary_Type_pimpl
@@ -362,7 +444,7 @@ pre ()
 }
 
 void RPG_Item_ArmorDictionary_Type_pimpl::
-armor (const RPG_Item_ArmorProperties_XML& armor)
+armor (const RPG_Item_ArmorPropertiesXML& armor)
 {
   // TODO
   //

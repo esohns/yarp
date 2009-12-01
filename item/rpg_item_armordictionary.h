@@ -23,7 +23,7 @@
 
 struct RPG_Item_ArmorDictionary
 {
-  std::vector<RPG_Item_ArmorProperties> armors;
+  std::vector<RPG_Item_ArmorPropertiesXML> armors;
 };
 
 #endif

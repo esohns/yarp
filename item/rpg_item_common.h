@@ -20,41 +20,22 @@
 #ifndef RPG_ITEM_COMMON_H
 #define RPG_ITEM_COMMON_H
 
-#include "rpg_chance_dice_common.h"
+#include <rpg_chance_dicetype.h>
+#include <rpg_chance_diceroll.h>
+
+#include "rpg_item_weapontype.h"
+#include "rpg_item_weaponcategory.h"
+#include "rpg_item_weaponclass.h"
+#include "rpg_item_storeprice.h"
+#include "rpg_item_criticalhitmodifier.h"
+#include "rpg_item_weapondamagetype.h"
+#include "rpg_item_weaponpropertiesxml.h"
+#include "rpg_item_armortype.h"
+#include "rpg_item_armorcategory.h"
+#include "rpg_item_armorpropertiesxml.h"
 
 #include <bitset>
 #include <map>
-
-enum RPG_Item_Type
-{
-  ITEM_ARMOR = 0,
-  ITEM_GOODS,
-  ITEM_OTHER,
-  ITEM_VALUABLE,
-  ITEM_WEAPON,
-  //
-  ITEM_TYPE_MAX,
-  ITEM_TYPE_INVALID
-};
-
-// enum RPG_Item_Magic_Item
-// {
-//   MAGIC_IS_CURSED,
-//   MAGIC_IS_IMBUED
-// };
-
-enum RPG_Item_MoneyType
-{
-  MONEY_COIN_COPPER = 0,
-  MONEY_COIN_SILVER,
-  MONEY_COIN_GOLD,
-  MONEY_COIN_PLATINUM,
-  MONEY_GEM,
-  MONEY_PRECIOUS,
-  //
-  MONEY_TYPE_MAX,
-  MONEY_TYPE_INVALID
-};
 
 typedef std::bitset<3> RPG_Item_WeaponDamage;
 
@@ -62,38 +43,28 @@ typedef RPG_Chance_DiceRoll RPG_Item_Damage;
 
 struct RPG_Item_WeaponProperties
 {
-//   RPG_Item_WeaponType          weaponType;
-  RPG_Item_WeaponCategory      weaponCategory;
-  RPG_Item_WeaponClass         weaponClass;
-  RPG_Item_StorePrice          baseStorePrice;
-  RPG_Item_Damage              baseDamage;
+//   RPG_Item_WeaponType weaponType;
+  RPG_Item_WeaponCategory weaponCategory;
+  RPG_Item_WeaponClass weaponClass;
+  RPG_Item_StorePrice baseStorePrice;
+  RPG_Chance_DiceRoll baseDamage;
   RPG_Item_CriticalHitModifier criticalHitModifier;
-  unsigned int                 rangeIncrement; // feet
-  unsigned int                 baseWeight; // pounds
-  RPG_Item_WeaponDamage        typeOfDamage; // bitfield
-};
-
-struct RPG_Item_MagicWeaponProperties
-{
-  int toHitModifier;
+  unsigned char rangeIncrement;
+  unsigned short int baseWeight;
+  RPG_Item_WeaponDamage typeOfDamage;
 };
 
 struct RPG_Item_ArmorProperties
 {
-//  RPG_Item_ArmorType     armorType;
+//   RPG_Item_ArmorType armorType;
   RPG_Item_ArmorCategory armorCategory;
-  RPG_Item_StorePrice    baseStorePrice;
-  unsigned int           baseArmorBonus;
-  unsigned int           maxDexterityBonus;
-  int                    armorCheckPenalty;
-  unsigned int           arcaneSpellFailure; // percentage
-  unsigned int           baseSpeed; // feet/round
-  unsigned int           baseWeight; // pounds
-};
-
-struct RPG_Item_MagicArmorProperties
-{
-  int defenseModifier;
+  RPG_Item_StorePrice baseStorePrice;
+  unsigned char baseArmorBonus;
+  unsigned char maxDexterityBonus;
+  char armorCheckPenalty;
+  unsigned char arcaneSpellFailure;
+  unsigned short int baseSpeed;
+  unsigned short int baseWeight;
 };
 
 // useful types

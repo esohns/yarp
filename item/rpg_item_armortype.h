@@ -46,6 +46,8 @@ enum RPG_Item_ArmorType
   RPG_ITEM_ARMORTYPE_INVALID
 };
 
+#include <ace/Global_Macros.h>
+
 #include <map>
 #include <string>
 

@@ -100,6 +100,8 @@ enum RPG_Item_WeaponType
   RPG_ITEM_WEAPONTYPE_INVALID
 };
 
+#include <ace/Global_Macros.h>
+
 #include <map>
 #include <string>
 

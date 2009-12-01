@@ -18,20 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_ITEM_WEAPONPROPERTIES_H
-#define RPG_ITEM_WEAPONPROPERTIES_H
+#ifndef RPG_ITEM_MAGICWEAPONPROPERTIESXML_H
+#define RPG_ITEM_MAGICWEAPONPROPERTIESXML_H
 
-struct RPG_Item_WeaponProperties
+struct RPG_Item_MagicWeaponPropertiesXML
 {
-  RPG_Item_WeaponType weaponType;
-  RPG_Item_WeaponCategory weaponCategory;
-  RPG_Item_WeaponClass weaponClass;
-  RPG_Item_StorePrice baseStorePrice;
-  RPG_Chance_DiceRoll baseDamage;
-  RPG_Item_CriticalHitModifier criticalHitModifier;
-  unsigned char rangeIncrement;
-  unsigned short int baseWeight;
-  RPG_Item_WeaponDamageType typeOfDamage;
+  char toHitModifier;
 };
 
 #endif

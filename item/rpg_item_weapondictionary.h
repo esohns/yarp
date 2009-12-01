@@ -23,7 +23,7 @@
 
 struct RPG_Item_WeaponDictionary
 {
-  std::vector<RPG_Item_WeaponProperties> weapons;
+  std::vector<RPG_Item_WeaponPropertiesXML> weapons;
 };
 
 #endif

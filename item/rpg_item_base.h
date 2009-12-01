@@ -20,7 +20,7 @@
 #ifndef RPG_ITEM_BASE_H
 #define RPG_ITEM_BASE_H
 
-#include "rpg_item_common.h"
+#include "rpg_item_type.h"
 #include "rpg_item_instance_common.h"
 
 #include <ace/Global_Macros.h>

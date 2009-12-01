@@ -12,6 +12,28 @@
 
 #include <rpg_chance_dice_XML_parser_base.h>
 
+class RPG_Item_Type_Type_pimpl: public virtual RPG_Item_Type_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  post_RPG_Item_Type_Type ();
+};
+
+class RPG_Item_Money_Type_pimpl: public virtual RPG_Item_Money_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  post_RPG_Item_Money_Type ();
+};
+
 class RPG_Item_WeaponCategory_Type_pimpl: public virtual RPG_Item_WeaponCategory_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -88,7 +110,7 @@ class RPG_Item_WeaponDamageType_Type_pimpl: public virtual RPG_Item_WeaponDamage
   post_RPG_Item_WeaponDamageType_Type ();
 };
 
-class RPG_Item_WeaponProperties_Type_pimpl: public virtual RPG_Item_WeaponProperties_Type_pskel
+class RPG_Item_WeaponPropertiesXML_Type_pimpl: public virtual RPG_Item_WeaponPropertiesXML_Type_pskel
 {
   public:
   virtual void
@@ -121,8 +143,22 @@ class RPG_Item_WeaponProperties_Type_pimpl: public virtual RPG_Item_WeaponProper
   virtual void
   typeOfDamage (const RPG_Item_WeaponDamageType&);
 
-  virtual RPG_Item_WeaponProperties_XML
-  post_RPG_Item_WeaponProperties_Type ();
+  virtual RPG_Item_WeaponPropertiesXML
+  post_RPG_Item_WeaponPropertiesXML_Type ();
+};
+
+class RPG_Item_MagicWeaponPropertiesXML_Type_pimpl: public virtual RPG_Item_MagicWeaponPropertiesXML_Type_pskel,
+  public ::RPG_Item_WeaponPropertiesXML_Type_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  toHitModifier (signed char);
+
+  virtual void
+  post_RPG_Item_MagicWeaponPropertiesXML_Type ();
 };
 
 class RPG_Item_WeaponDictionary_Type_pimpl: public virtual RPG_Item_WeaponDictionary_Type_pskel
@@ -132,7 +168,7 @@ class RPG_Item_WeaponDictionary_Type_pimpl: public virtual RPG_Item_WeaponDictio
   pre ();
 
   virtual void
-  weapon (const RPG_Item_WeaponProperties_XML&);
+  weapon (const RPG_Item_WeaponPropertiesXML&);
 
   virtual void
   post_RPG_Item_WeaponDictionary_Type ();
@@ -160,7 +196,7 @@ class RPG_Item_ArmorType_Type_pimpl: public virtual RPG_Item_ArmorType_Type_pske
   post_RPG_Item_ArmorType_Type ();
 };
 
-class RPG_Item_ArmorProperties_Type_pimpl: public virtual RPG_Item_ArmorProperties_Type_pskel
+class RPG_Item_ArmorPropertiesXML_Type_pimpl: public virtual RPG_Item_ArmorPropertiesXML_Type_pskel
 {
   public:
   virtual void
@@ -193,8 +229,22 @@ class RPG_Item_ArmorProperties_Type_pimpl: public virtual RPG_Item_ArmorProperti
   virtual void
   baseWeight (unsigned short);
 
-  virtual RPG_Item_ArmorProperties_XML
-  post_RPG_Item_ArmorProperties_Type ();
+  virtual RPG_Item_ArmorPropertiesXML
+  post_RPG_Item_ArmorPropertiesXML_Type ();
+};
+
+class RPG_Item_MagicArmorPropertiesXML_Type_pimpl: public virtual RPG_Item_MagicArmorPropertiesXML_Type_pskel,
+  public ::RPG_Item_ArmorPropertiesXML_Type_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  defenseModifier (signed char);
+
+  virtual void
+  post_RPG_Item_MagicArmorPropertiesXML_Type ();
 };
 
 class RPG_Item_ArmorDictionary_Type_pimpl: public virtual RPG_Item_ArmorDictionary_Type_pskel
@@ -204,7 +254,7 @@ class RPG_Item_ArmorDictionary_Type_pimpl: public virtual RPG_Item_ArmorDictiona
   pre ();
 
   virtual void
-  armor (const RPG_Item_ArmorProperties_XML&);
+  armor (const RPG_Item_ArmorPropertiesXML&);
 
   virtual void
   post_RPG_Item_ArmorDictionary_Type ();

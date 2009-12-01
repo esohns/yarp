@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Erik Sohns                                      *
- *   erik.sohns@web.de                                                     *
+ *   Copyright (C) 2009 by Erik Sohns   *
+ *   erik.sohns@web.de   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,30 +17,21 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_ITEM_COMMON_TOOLS_H
-#define RPG_ITEM_COMMON_TOOLS_H
 
-#include "rpg_item_common.h"
+#ifndef RPG_ITEM_ARMORPROPERTIESXML_H
+#define RPG_ITEM_ARMORPROPERTIESXML_H
 
-#include <ace/Global_Macros.h>
-
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
-class RPG_Item_Common_Tools
+struct RPG_Item_ArmorPropertiesXML
 {
- public:
-  static void initStringConversionTables();
-
-  static const std::string weaponDamageToString(const RPG_Item_WeaponDamage&); // weapon damage
-  static const std::string damageToString(const RPG_Item_Damage&); // damage
-
- private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Item_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools(const RPG_Item_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools& operator=(const RPG_Item_Common_Tools&));
+  RPG_Item_ArmorType armorType;
+  RPG_Item_ArmorCategory armorCategory;
+  RPG_Item_StorePrice baseStorePrice;
+  unsigned char baseArmorBonus;
+  unsigned char maxDexterityBonus;
+  char armorCheckPenalty;
+  unsigned char arcaneSpellFailure;
+  unsigned short int baseSpeed;
+  unsigned short int baseWeight;
 };
 
 #endif

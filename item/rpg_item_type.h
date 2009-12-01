@@ -18,17 +18,19 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_ITEM_WEAPONCATEGORY_H
-#define RPG_ITEM_WEAPONCATEGORY_H
+#ifndef RPG_ITEM_TYPE_H
+#define RPG_ITEM_TYPE_H
 
-enum RPG_Item_WeaponCategory
+enum RPG_Item_Type
 {
-  WEAPONCATEGORY_SIMPLE = 0,
-  WEAPONCATEGORY_MARTIAL,
-  WEAPONCATEGORY_EXOTIC,
+  ITEM_ARMOR = 0,
+  ITEM_GOODS,
+  ITEM_OTHER,
+  ITEM_VALUABLE,
+  ITEM_WEAPON,
   //
-  RPG_ITEM_WEAPONCATEGORY_MAX,
-  RPG_ITEM_WEAPONCATEGORY_INVALID
+  RPG_ITEM_TYPE_MAX,
+  RPG_ITEM_TYPE_INVALID
 };
 
 #include <ace/Global_Macros.h>
@@ -36,48 +38,50 @@ enum RPG_Item_WeaponCategory
 #include <map>
 #include <string>
 
-typedef std::map<RPG_Item_WeaponCategory, std::string> RPG_Item_WeaponCategoryToStringTable_t;
-typedef RPG_Item_WeaponCategoryToStringTable_t::const_iterator RPG_Item_WeaponCategoryToStringTableIterator_t;
+typedef std::map<RPG_Item_Type, std::string> RPG_Item_TypeToStringTable_t;
+typedef RPG_Item_TypeToStringTable_t::const_iterator RPG_Item_TypeToStringTableIterator_t;
 
-class RPG_Item_WeaponCategoryHelper
+class RPG_Item_TypeHelper
 {
  public:
   inline static void init()
   {
-    myRPG_Item_WeaponCategoryToStringTable.clear();
-    myRPG_Item_WeaponCategoryToStringTable.insert(std::make_pair(WEAPONCATEGORY_SIMPLE, ACE_TEXT_ALWAYS_CHAR("WEAPONCATEGORY_SIMPLE")));
-    myRPG_Item_WeaponCategoryToStringTable.insert(std::make_pair(WEAPONCATEGORY_MARTIAL, ACE_TEXT_ALWAYS_CHAR("WEAPONCATEGORY_MARTIAL")));
-    myRPG_Item_WeaponCategoryToStringTable.insert(std::make_pair(WEAPONCATEGORY_EXOTIC, ACE_TEXT_ALWAYS_CHAR("WEAPONCATEGORY_EXOTIC")));
+    myRPG_Item_TypeToStringTable.clear();
+    myRPG_Item_TypeToStringTable.insert(std::make_pair(ITEM_ARMOR, ACE_TEXT_ALWAYS_CHAR("ITEM_ARMOR")));
+    myRPG_Item_TypeToStringTable.insert(std::make_pair(ITEM_GOODS, ACE_TEXT_ALWAYS_CHAR("ITEM_GOODS")));
+    myRPG_Item_TypeToStringTable.insert(std::make_pair(ITEM_OTHER, ACE_TEXT_ALWAYS_CHAR("ITEM_OTHER")));
+    myRPG_Item_TypeToStringTable.insert(std::make_pair(ITEM_VALUABLE, ACE_TEXT_ALWAYS_CHAR("ITEM_VALUABLE")));
+    myRPG_Item_TypeToStringTable.insert(std::make_pair(ITEM_WEAPON, ACE_TEXT_ALWAYS_CHAR("ITEM_WEAPON")));
   };
 
-  inline static std::string RPG_Item_WeaponCategoryToString(const RPG_Item_WeaponCategory& element_in)
+  inline static std::string RPG_Item_TypeToString(const RPG_Item_Type& element_in)
   {
     std::string result;
-    RPG_Item_WeaponCategoryToStringTableIterator_t iterator = myRPG_Item_WeaponCategoryToStringTable.find(element_in);
-    if (iterator != myRPG_Item_WeaponCategoryToStringTable.end())
+    RPG_Item_TypeToStringTableIterator_t iterator = myRPG_Item_TypeToStringTable.find(element_in);
+    if (iterator != myRPG_Item_TypeToStringTable.end())
       result = iterator->second;
     else
-      result = ACE_TEXT_ALWAYS_CHAR("RPG_ITEM_WEAPONCATEGORY_INVALID");
+      result = ACE_TEXT_ALWAYS_CHAR("RPG_ITEM_TYPE_INVALID");
 
     return result;
   };
 
-  inline static RPG_Item_WeaponCategory stringToRPG_Item_WeaponCategory(const std::string& string_in)
+  inline static RPG_Item_Type stringToRPG_Item_Type(const std::string& string_in)
   {
-    RPG_Item_WeaponCategoryToStringTableIterator_t iterator = myRPG_Item_WeaponCategoryToStringTable.begin();
+    RPG_Item_TypeToStringTableIterator_t iterator = myRPG_Item_TypeToStringTable.begin();
     do
     {
       if (iterator->second == string_in)
         return iterator->first;
 
       iterator++;
-    } while (iterator != myRPG_Item_WeaponCategoryToStringTable.end());
+    } while (iterator != myRPG_Item_TypeToStringTable.end());
 
-    return RPG_ITEM_WEAPONCATEGORY_INVALID;
+    return RPG_ITEM_TYPE_INVALID;
   };
 
  private:
-  static RPG_Item_WeaponCategoryToStringTable_t myRPG_Item_WeaponCategoryToStringTable;
+  static RPG_Item_TypeToStringTable_t myRPG_Item_TypeToStringTable;
 };
 
 #endif

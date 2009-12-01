@@ -58,7 +58,7 @@ class RPG_Item_WeaponDictionary_Type
   RPG_Item_WeaponDictionary_Type(RPG_Item_WeaponDictionary_t*); // weapon dictionary
 
 //   virtual void pre();
-  virtual void weapon(const RPG_Item_WeaponProperties_XML&);
+  virtual void weapon(const RPG_Item_WeaponPropertiesXML&);
   virtual void post_RPG_Item_WeaponDictionary_Type();
 
  private:
@@ -77,7 +77,7 @@ class RPG_Item_ArmorDictionary_Type
   RPG_Item_ArmorDictionary_Type(RPG_Item_ArmorDictionary_t*); // armor dictionary
 
 //   virtual void pre();
-  virtual void armor(const RPG_Item_ArmorProperties_XML&);
+  virtual void armor(const RPG_Item_ArmorPropertiesXML&);
   virtual void post_RPG_Item_ArmorDictionary_Type();
 
  private:
@@ -151,11 +151,11 @@ class RPG_Item_WeaponDamageType_Type
   virtual RPG_Item_WeaponDamageType post_RPG_Item_WeaponDamageType_Type();
 };
 
-class RPG_Item_WeaponProperties_Type
- : public RPG_Item_WeaponProperties_Type_pimpl
+class RPG_Item_WeaponPropertiesXML_Type
+ : public RPG_Item_WeaponPropertiesXML_Type_pimpl
 {
  public:
-  RPG_Item_WeaponProperties_Type();
+  RPG_Item_WeaponPropertiesXML_Type();
 
 //   virtual void pre();
   virtual void weaponType(const RPG_Item_WeaponType&);
@@ -167,10 +167,10 @@ class RPG_Item_WeaponProperties_Type
   virtual void rangeIncrement(unsigned char);
   virtual void baseWeight(unsigned short);
   virtual void typeOfDamage(const RPG_Item_WeaponDamageType&);
-  virtual RPG_Item_WeaponProperties_XML post_RPG_Item_WeaponProperties_Type();
+  virtual RPG_Item_WeaponPropertiesXML post_RPG_Item_WeaponPropertiesXML_Type();
 
  private:
-  RPG_Item_WeaponProperties_XML myCurrentWeaponProperty;
+  RPG_Item_WeaponPropertiesXML myCurrentWeaponProperties;
 };
 
 class RPG_Item_ArmorCategory_Type
@@ -189,11 +189,11 @@ class RPG_Item_ArmorType_Type
   virtual RPG_Item_ArmorType post_RPG_Item_ArmorType_Type();
 };
 
-class RPG_Item_ArmorProperties_Type
- : public RPG_Item_ArmorProperties_Type_pimpl
+class RPG_Item_ArmorPropertiesXML_Type
+ : public RPG_Item_ArmorPropertiesXML_Type_pimpl
 {
  public:
-  RPG_Item_ArmorProperties_Type();
+  RPG_Item_ArmorPropertiesXML_Type();
 
 //   virtual void pre();
   virtual void armorType(const RPG_Item_ArmorType&);
@@ -205,10 +205,10 @@ class RPG_Item_ArmorProperties_Type
   virtual void arcaneSpellFailure(unsigned char);
   virtual void baseSpeed(unsigned short);
   virtual void baseWeight(unsigned short);
-  virtual RPG_Item_ArmorProperties_XML post_RPG_Item_ArmorProperties_Type();
+  virtual RPG_Item_ArmorPropertiesXML post_RPG_Item_ArmorPropertiesXML_Type();
 
  private:
-  RPG_Item_ArmorProperties_XML myCurrentArmorProperty;
+  RPG_Item_ArmorPropertiesXML myCurrentArmorProperties;
 };
 
 #endif
