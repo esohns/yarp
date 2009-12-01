@@ -20,9 +20,10 @@
 #include "rpg_item_dictionary.h"
 
 #include "rpg_item_XML_parser.h"
-#include "rpg_item_common_tools.h"
+#include "rpg_item_weapontype.h"
+#include "rpg_item_armortype.h"
 
-#include "rpg_chance_dice_XML_parser.h"
+#include <rpg_chance_dice_XML_parser.h>
 
 #include <ace/Log_Msg.h>
 
@@ -79,32 +80,32 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
 //  unsigned_int_pimpl                      baseWeight_p;
 
   ::xml_schema::unsigned_short_pimpl      unsigned_short_p;
-  RPG_Item_WeaponProperties_Type          weaponProperties_p;
-  weaponProperties_p.parsers(weaponType_p,
-                             weaponCategory_p,
-                             weaponClass_p,
-                             baseStorePrice_p,
-                             baseDamage_p,
-                             criticalModifier_p,
-                             unsigned_byte_p,
-                             unsigned_short_p,
-                             damageType_p);
+  RPG_Item_WeaponPropertiesXML_Type       weaponPropertiesXML_p;
+  weaponPropertiesXML_p.parsers(weaponType_p,
+                                weaponCategory_p,
+                                weaponClass_p,
+                                baseStorePrice_p,
+                                baseDamage_p,
+                                criticalModifier_p,
+                                unsigned_byte_p,
+                                unsigned_short_p,
+                                damageType_p);
   ::xml_schema::byte_pimpl                byte_p;
-  RPG_Item_ArmorProperties_Type           armorProperties_p;
-  armorProperties_p.parsers(armorType_p,
-                            armorCategory_p,
-                            baseStorePrice_p,
-                            unsigned_byte_p,
-                            unsigned_byte_p,
-                            byte_p,
-                            unsigned_byte_p,
-                            unsigned_short_p,
-                            unsigned_short_p);
+  RPG_Item_ArmorPropertiesXML_Type        armorPropertiesXML_p;
+  armorPropertiesXML_p.parsers(armorType_p,
+                               armorCategory_p,
+                               baseStorePrice_p,
+                               unsigned_byte_p,
+                               unsigned_byte_p,
+                               byte_p,
+                               unsigned_byte_p,
+                               unsigned_short_p,
+                               unsigned_short_p);
 
   RPG_Item_WeaponDictionary_Type          weaponDictionary_p(&myWeaponDictionary);
-  weaponDictionary_p.parsers(weaponProperties_p);
+  weaponDictionary_p.parsers(weaponPropertiesXML_p);
   RPG_Item_ArmorDictionary_Type           armorDictionary_p(&myArmorDictionary);
-  armorDictionary_p.parsers(armorProperties_p);
+  armorDictionary_p.parsers(armorPropertiesXML_p);
 
   RPG_Item_Dictionary_Type                itemDictionary_p(&myWeaponDictionary,
                                                            &myArmorDictionary);
@@ -156,7 +157,7 @@ const RPG_Item_WeaponProperties RPG_Item_Dictionary::getWeaponProperties(const R
   RPG_Item_WeaponDictionaryIterator_t iterator = myWeaponDictionary.find(weaponType_in);
   if (iterator == myWeaponDictionary.end())
   {
-    std::string weaponType_string = RPG_Item_Common_Tools::weaponTypeToString(weaponType_in);
+    std::string weaponType_string = RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weaponType_in);
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid weapon type \"%s\" --> check implementation !, aborting\n"),
                weaponType_string.c_str()));
@@ -174,7 +175,7 @@ const RPG_Item_ArmorProperties RPG_Item_Dictionary::getArmorProperties(const RPG
   RPG_Item_ArmorDictionaryIterator_t iterator = myArmorDictionary.find(armorType_in);
   if (iterator == myArmorDictionary.end())
   {
-    std::string armorType_string = RPG_Item_Common_Tools::armorTypeToString(armorType_in);
+    std::string armorType_string = RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armorType_in);
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid armor type \"%s\" --> check implementation !, aborting\n"),
                armorType_string.c_str()));

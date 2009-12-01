@@ -19,7 +19,8 @@
  ***************************************************************************/
 #include "rpg_item_armor_base.h"
 
-#include "rpg_item_common_tools.h"
+#include "rpg_item_armortype.h"
+#include "rpg_item_armorcategory.h"
 #include "rpg_item_dictionary.h"
 
 #include <ace/Log_Msg.h>
@@ -54,8 +55,8 @@ void RPG_Item_Armor_Base::dump() const
   // retrieve properties
   RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(myArmorType);
 
-  std::string armorType = RPG_Item_Common_Tools::armorTypeToString(myArmorType);
-  std::string armorCategory = RPG_Item_Common_Tools::armorCategoryToString(properties.armorCategory);
+  std::string armorType = RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(myArmorType);
+  std::string armorCategory = RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString(properties.armorCategory);
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("Item: Armor\nType: %s\nCategory: %s\nPrice: %d GP, %d SP\nAC Bonus: %d\nmax Dex Bonus: %d\nPenalty: %d\nSpell Failure: %d%%\nSpeed: %d\nWeight: %d\n"),
              armorType.c_str(),

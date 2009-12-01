@@ -19,9 +19,13 @@
  ***************************************************************************/
 #include "rpg_item_weapon_base.h"
 
-#include "rpg_chance_dice_common_tools.h"
-#include "rpg_item_common_tools.h"
 #include "rpg_item_dictionary.h"
+#include "rpg_item_weapontype.h"
+#include "rpg_item_weaponcategory.h"
+#include "rpg_item_weaponclass.h"
+#include "rpg_item_common_tools.h"
+
+#include <rpg_chance_dice_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -55,9 +59,9 @@ void RPG_Item_Weapon_Base::dump() const
   // retrieve properties
   RPG_Item_WeaponProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(myWeaponType);
 
-  std::string weaponType = RPG_Item_Common_Tools::weaponTypeToString(myWeaponType);
-  std::string weaponCategory = RPG_Item_Common_Tools::weaponCategoryToString(properties.weaponCategory);
-  std::string weaponClass = RPG_Item_Common_Tools::weaponClassToString(properties.weaponClass);
+  std::string weaponType = RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(myWeaponType);
+  std::string weaponCategory = RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString(properties.weaponCategory);
+  std::string weaponClass = RPG_Item_WeaponClassHelper::RPG_Item_WeaponClassToString(properties.weaponClass);
   std::string baseDamage = RPG_Chance_Dice_Common_Tools::rollToString(properties.baseDamage);
   std::string typeOfDamage = RPG_Item_Common_Tools::weaponDamageToString(properties.typeOfDamage);
 

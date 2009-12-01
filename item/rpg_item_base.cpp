@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "rpg_item_base.h"
 
-#include "rpg_item_common_tools.h"
+#include "rpg_item_type.h"
 #include "rpg_item_instance_manager.h"
 
 #include <ace/Log_Msg.h>
@@ -53,7 +53,7 @@ void RPG_Item_Base::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Base::dump"));
 
-  std::string itemType = RPG_Item_Common_Tools::itemTypeToString(myType);
+  std::string itemType = RPG_Item_TypeHelper::RPG_Item_TypeToString(myType);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("Item Type: %s\n"),

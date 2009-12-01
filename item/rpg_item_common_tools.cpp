@@ -19,23 +19,43 @@
  ***************************************************************************/
 #include "rpg_item_common_tools.h"
 
+#include "rpg_item_type.h"
+#include "rpg_item_money.h"
 #include "rpg_item_weaponcategory.h"
+#include "rpg_item_weaponclass.h"
+#include "rpg_item_weapontype.h"
+#include "rpg_item_weapondamagetype.h"
+#include "rpg_item_armorcategory.h"
+#include "rpg_item_armortype.h"
 
-#include <rpg_chance_dice_common_tools.h>
+#include <rpg_chance_dicetype.h>
 
 #include <ace/Log_Msg.h>
 
 #include <sstream>
 
 // init statics
-RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToStringTable_t RPG_Item_WeaponCategoryHelper::myRPG_Item_WeaponCategoryToStringTable;
-
+RPG_Item_TypeToStringTable_t RPG_Item_TypeHelper::myRPG_Item_TypeToStringTable;
+RPG_Item_MoneyToStringTable_t RPG_Item_MoneyHelper::myRPG_Item_MoneyToStringTable;
+RPG_Item_WeaponCategoryToStringTable_t RPG_Item_WeaponCategoryHelper::myRPG_Item_WeaponCategoryToStringTable;
+RPG_Item_WeaponClassToStringTable_t RPG_Item_WeaponClassHelper::myRPG_Item_WeaponClassToStringTable;
+RPG_Item_WeaponTypeToStringTable_t RPG_Item_WeaponTypeHelper::myRPG_Item_WeaponTypeToStringTable;
+RPG_Item_WeaponDamageTypeToStringTable_t RPG_Item_WeaponDamageTypeHelper::myRPG_Item_WeaponDamageTypeToStringTable;
+RPG_Item_ArmorCategoryToStringTable_t RPG_Item_ArmorCategoryHelper::myRPG_Item_ArmorCategoryToStringTable;
+RPG_Item_ArmorTypeToStringTable_t RPG_Item_ArmorTypeHelper::myRPG_Item_ArmorTypeToStringTable;
 
 void RPG_Item_Common_Tools::initStringConversionTables()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::initStringConversionTables"));
 
+  RPG_Item_TypeHelper::init();
+  RPG_Item_MoneyHelper::init();
   RPG_Item_WeaponCategoryHelper::init();
+  RPG_Item_WeaponClassHelper::init();
+  RPG_Item_WeaponTypeHelper::init();
+  RPG_Item_WeaponDamageTypeHelper::init();
+  RPG_Item_ArmorCategoryHelper::init();
+  RPG_Item_ArmorTypeHelper::init();
 }
 
 const std::string RPG_Item_Common_Tools::weaponDamageToString(const RPG_Item_WeaponDamage& weaponDamage_in)
@@ -47,29 +67,20 @@ const std::string RPG_Item_Common_Tools::weaponDamageToString(const RPG_Item_Wea
   // sanity check
   if (weaponDamage_in.none())
   {
-    return RPG_Item_Common_Tools::weaponDamageTypeToString(WEAPONDAMAGE_NONE);
+    return RPG_Item_WeaponDamageTypeHelper::RPG_Item_WeaponDamageTypeToString(WEAPONDAMAGE_NONE);
   } // end IF
 
+  int damageType = WEAPONDAMAGE_NONE;
   for (int i = 0;
        i < weaponDamage_in.size();
-       i++)
+       i++, damageType++)
   {
     if (weaponDamage_in.test(i))
     {
-      // *TODO*: this is a nasty hack !
-      RPG_StringToWeaponDamageTypeTableIterator_t iterator = myStringToWeaponDamageTypeTable.begin();
-      do
-      {
-        if (iterator->second == ACE_static_cast(RPG_Item_WeaponDamageType, (1 << i)))
-        {
-          // done
-          break;
-        } // end IF
+      RPG_Item_WeaponDamageType damageTypeEnum = ACE_static_cast(RPG_Item_WeaponDamageType,
+                                                                 damageType);
 
-        iterator++;
-      } while (iterator != myStringToWeaponDamageTypeTable.end());
-
-      result += iterator->first;
+      result += RPG_Item_WeaponDamageTypeHelper::RPG_Item_WeaponDamageTypeToString(damageTypeEnum);
       result += ACE_TEXT_ALWAYS_CHAR("|");
     } // end IF
   } // end FOR
@@ -99,7 +110,7 @@ const std::string RPG_Item_Common_Tools::damageToString(const RPG_Item_Damage& d
   {
     str << damage_in.numDice;
     result += str.str();
-    result += RPG_Chance_Dice_Common_Tools::diceTypeToString(damage_in.typeDice);
+    result += RPG_Chance_DiceTypeHelper::RPG_Chance_DiceTypeToString(damage_in.typeDice);
   } // end IF
 
   if (damage_in.modifier == 0)
