@@ -22,6 +22,143 @@
     </xsd:documentation>
   </xsd:annotation>
 
+  <xsd:simpleType name="RPG_Character_Gender_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="GENDER_NONE"/>
+      <xsd:enumeration value="GENDER_MALE"/>
+      <xsd:enumeration value="GENDER_FEMALE"/>
+      <xsd:enumeration value="GENDER_ANY"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Character_Attribute_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ATTRIBUTE_STRENGTH"/>
+      <xsd:enumeration value="ATTRIBUTE_DEXTERITY"/>
+      <xsd:enumeration value="ATTRIBUTE_CONSTITUTION"/>
+      <xsd:enumeration value="ATTRIBUTE_INTELLIGENCE"/>
+      <xsd:enumeration value="ATTRIBUTE_WISDOM"/>
+      <xsd:enumeration value="ATTRIBUTE_CHARISMA"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Character_Condition_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="CONDITION_NORMAL"/>
+      <xsd:enumeration value="CONDITION_ABILITY_DAMAGED"/>
+      <xsd:enumeration value="CONDITION_ABILITY_DRAINED"/>
+      <xsd:enumeration value="CONDITION_BLINDED"/>
+      <xsd:enumeration value="CONDITION_BLOWN_AWAY"/>
+      <xsd:enumeration value="CONDITION_CHECKED"/>
+      <xsd:enumeration value="CONDITION_CONFUSED"/>
+      <xsd:enumeration value="CONDITION_COWERING"/>
+      <xsd:enumeration value="CONDITION_DAZED"/>
+      <xsd:enumeration value="CONDITION_DAZZLED"/>
+      <xsd:enumeration value="CONDITION_DEAD"/>
+      <xsd:enumeration value="CONDITION_DEAFENED"/>
+      <xsd:enumeration value="CONDITION_DISABLED"/>
+      <xsd:enumeration value="CONDITION_DYING"/>
+      <xsd:enumeration value="CONDITION_ENERGY_DRAINED"/>
+      <xsd:enumeration value="CONDITION_ENTANGLED"/>
+      <xsd:enumeration value="CONDITION_EXHAUSTED"/>
+      <xsd:enumeration value="CONDITION_FASCINATED"/>
+      <xsd:enumeration value="CONDITION_FATIGUED"/>
+      <xsd:enumeration value="CONDITION_FLAT_FOOTED"/>
+      <xsd:enumeration value="CONDITION_FRIGHTENED"/>
+      <xsd:enumeration value="CONDITION_GRAPPLING"/>
+      <xsd:enumeration value="CONDITION_HELPLESS"/>
+      <xsd:enumeration value="CONDITION_INCORPOREAL"/>
+      <xsd:enumeration value="CONDITION_INVISIBLE"/>
+      <xsd:enumeration value="CONDITION_KNOCKED_DOWN"/>
+      <xsd:enumeration value="CONDITION_NAUSEATED"/>
+      <xsd:enumeration value="CONDITION_PANICKED"/>
+      <xsd:enumeration value="CONDITION_PARALYZED"/>
+      <xsd:enumeration value="CONDITION_PETRIFIED"/>
+      <xsd:enumeration value="CONDITION_PINNED"/>
+      <xsd:enumeration value="CONDITION_PRONE"/>
+      <xsd:enumeration value="CONDITION_SHAKEN"/>
+      <xsd:enumeration value="CONDITION_SICKENED"/>
+      <xsd:enumeration value="CONDITION_STABLE"/>
+      <xsd:enumeration value="CONDITION_STAGGERED"/>
+      <xsd:enumeration value="CONDITION_STUNNED"/>
+      <xsd:enumeration value="CONDITION_TURNED"/>
+      <xsd:enumeration value="CONDITION_UNCONSCIOUS"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Character_Ability_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ABILITY_SCORE_LOSS"/>
+      <xsd:enumeration value="ABILITY_ALTERNATE_FORM"/>
+      <xsd:enumeration value="ABILITY_ANTIMAGIC"/>
+      <xsd:enumeration value="ABILITY_BLINDSIGHT"/>
+      <xsd:enumeration value="ABILITY_BLINDSENSE"/>
+      <xsd:enumeration value="ABILITY_BREATH_WEAPON"/>
+      <xsd:enumeration value="ABILITY_CHANGE_SHAPE"/>
+      <xsd:enumeration value="ABILITY_CHARM"/>
+      <xsd:enumeration value="ABILITY_COMPULSION"/>
+      <xsd:enumeration value="ABILITY_IMMUNITY_COLD"/>
+      <xsd:enumeration value="ABILITY_CONSTRICT"/>
+      <xsd:enumeration value="ABILITY_RESISTANCE_TO_DAMAGE"/>
+      <xsd:enumeration value="ABILITY_DARKVISION"/>
+      <xsd:enumeration value="ABILITY_DEATH_ATTACK"/>
+      <xsd:enumeration value="ABILITY_DISEASE"/>
+      <xsd:enumeration value="ABILITY_ENERGY_DRAIN"/>
+      <xsd:enumeration value="ABILITY_ETHEREALNESS"/>
+      <xsd:enumeration value="ABILITY_EVASION"/>
+      <xsd:enumeration value="ABILITY_IMPROVED_EVASION"/>
+      <xsd:enumeration value="ABILITY_FAST_HEALING"/>
+      <xsd:enumeration value="ABILITY_FEAR"/>
+      <xsd:enumeration value="ABILITY_IMMUNITY_FIRE"/>
+      <xsd:enumeration value="ABILITY_GASEOUS_FORM"/>
+      <xsd:enumeration value="ABILITY_GAZE_ATTACK"/>
+      <xsd:enumeration value="ABILITY_IMPROVED_GRAB"/>
+      <xsd:enumeration value="ABILITY_INCORPOREALITY"/>
+      <xsd:enumeration value="ABILITY_INVISIBILITY"/>
+      <xsd:enumeration value="ABILITY_LEVEL_LOSS"/>
+      <xsd:enumeration value="ABILITY_LOWLIGHT_VISION"/>
+      <xsd:enumeration value="ABILITY_MANUFACTURED_WEAPONS"/>
+      <xsd:enumeration value="ABILITY_MOVEMENT_MODES"/>
+      <xsd:enumeration value="ABILITY_NATURAL_WEAPONS"/>
+      <xsd:enumeration value="ABILITY_NONABILITIES"/>
+      <xsd:enumeration value="ABILITY_PARALYZE_ATTACK"/>
+      <xsd:enumeration value="ABILITY_POISON_ATTACK"/>
+      <xsd:enumeration value="ABILITY_IMMUNITY_POISON"/>
+      <xsd:enumeration value="ABILITY_POLYMORPH"/>
+      <xsd:enumeration value="ABILITY_POUNCE"/>
+      <xsd:enumeration value="ABILITY_POWERFUL_CHARGE"/>
+      <xsd:enumeration value="ABILITY_PSIONICS"/>
+      <xsd:enumeration value="ABILITY_RAKE"/>
+      <xsd:enumeration value="ABILITY_RAY_ATTACK"/>
+      <xsd:enumeration value="ABILITY_REGENERATION"/>
+      <xsd:enumeration value="ABILITY_RESISTANCE_TO_ENERGY"/>
+      <xsd:enumeration value="ABILITY_SCENT"/>
+      <xsd:enumeration value="ABILITY_SONIC_ATTACK"/>
+      <xsd:enumeration value="ABILITY_IMMUNITY_SPELL"/>
+      <xsd:enumeration value="ABILITY_RESISTANCE_TO_SPELL"/>
+      <xsd:enumeration value="ABILITY_SPELLS"/>
+      <xsd:enumeration value="ABILITY_SUMMON"/>
+      <xsd:enumeration value="ABILITY_SWALLOW_WHOLE"/>
+      <xsd:enumeration value="ABILITY_TELEPATHY"/>
+      <xsd:enumeration value="ABILITY_TRAMPLE"/>
+      <xsd:enumeration value="ABILITY_TREMOR_SENSE"/>
+      <xsd:enumeration value="ABILITY_RESISTANCE_TO_TURNING"/>
+      <xsd:enumeration value="ABILITY_VULNERABILITY_TO_ENERGY"/>
+      <xsd:enumeration value="ABILITY_IMMUNITY_DISEASE"/>
+      <xsd:enumeration value="ABILITY_ANIMAL_COMPANION"/>
+      <xsd:enumeration value="ABILITY_WOODLAND_STRIDE"/>
+      <xsd:enumeration value="ABILITY_SENSE_TRAPS"/>
+      <xsd:enumeration value="ABILITY_UNCANNY_DODGE"/>
+      <xsd:enumeration value="ABILITY_IMPROVED_UNCANNY_DODGE"/>
+      <xsd:enumeration value="ABILITY_CRIPPLING_STRIKE"/>
+      <xsd:enumeration value="ABILITY_DEFENSIVE_ROLL"/>
+      <xsd:enumeration value="ABILITY_OPPORTUNIST"/>
+      <xsd:enumeration value="ABILITY_SKILL_MASTERY"/>
+      <xsd:enumeration value="ABILITY_SLIPPERY_MIND"/>
+      <xsd:enumeration value="ABILITY_BONUS_FEAT"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
   <!-- xml instance document(s) will contain a dictionary of different types of monsters -->
   <xsd:simpleType name="RPG_Character_MonsterMetaType_Type">
     <xsd:restriction base="xsd:string">
@@ -486,7 +623,7 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Character_Dictionary_Type">
+  <xsd:complexType name="RPG_Character_Dictionary_Type" id="skip0">
     <xsd:sequence>
       <xsd:element name="monsterDictionary" type="RPG_Character_MonsterDictionary_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>

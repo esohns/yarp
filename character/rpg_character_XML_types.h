@@ -86,14 +86,14 @@ class RPG_Character_Dictionary_Type_pskel;
 
 #include "rpg_XMLSchema.h"
 
-#include <rpg_chance_dice_common.h>
 #include "rpg_character_skills_common.h"
 #include "rpg_character_monster_common.h"
 #include "rpg_character_common.h"
 
-#include "rpg_chance_dice_XML_types.h"
+#include <rpg_item_XML_types.h>
 
-#include "rpg_item_XML_types.h"
+#include <rpg_chance_dice_common.h>
+#include <rpg_chance_dice_XML_types.h>
 
 class RPG_Character_MonsterMetaType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
