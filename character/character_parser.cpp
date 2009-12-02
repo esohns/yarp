@@ -24,7 +24,6 @@
 
 #include "rpg_character_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
-#include "rpg_character_monster_common_tools.h"
 #include "rpg_character_dictionary.h"
 #include "rpg_character_monster.h"
 
@@ -134,7 +133,6 @@ void do_work(const std::string& filename_in,
   RPG_Chance_Dice_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
   RPG_Character_Skills_Common_Tools::init();
-  RPG_Character_Monster_Common_Tools::init();
 
   // step2: init character dictionary
   try

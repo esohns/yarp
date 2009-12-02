@@ -20,7 +20,14 @@
 #ifndef RPG_CHARACTER_BASE_H
 #define RPG_CHARACTER_BASE_H
 
-#include "rpg_character_common.h"
+#include "rpg_character_alignmentcivic.h"
+#include "rpg_character_alignmentethic.h"
+#include "rpg_character_alignment.h"
+#include "rpg_character_skill.h"
+#include "rpg_character_feat.h"
+#include "rpg_character_ability.h"
+#include "rpg_character_condition.h"
+#include "rpg_character_attributes.h"
 #include "rpg_character_skills_common.h"
 #include "rpg_character_inventory_common.h"
 #include "rpg_character_inventory.h"

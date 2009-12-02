@@ -17,34 +17,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CHARACTER_INVENTORY_H
-#define RPG_CHARACTER_INVENTORY_H
 
-#include <rpg_item_instance_common.h>
+#ifndef RPG_CHARACTER_MONSTERADVANCEMENTSTEP_H
+#define RPG_CHARACTER_MONSTERADVANCEMENTSTEP_H
 
-#include <ace/Global_Macros.h>
-
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
-class RPG_Character_Inventory
+struct RPG_Character_MonsterAdvancementStep
 {
- public:
-  RPG_Character_Inventory(const RPG_Item_List_t&); // list of initial items
-  virtual ~RPG_Character_Inventory();
-
-  void add(const RPG_Item_ID_t&); // item ID
-  void drop(const RPG_Item_ID_t&); // item ID
-
-  void dump() const;
-
- private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Inventory());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Inventory(const RPG_Character_Inventory&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Inventory& operator=(const RPG_Character_Inventory&));
-
-  RPG_Item_List_t myItems;
+  RPG_Character_Size size;
+  RPG_Chance_ValueRange range;
 };
 
 #endif

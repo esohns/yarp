@@ -23,7 +23,8 @@
 #include "rpg_character_monster_common.h"
 #include "rpg_XMLSchema.h"
 
-#include <rpg_chance_dice_common.h>
+#include <rpg_chance_dicetype.h>
+#include <rpg_chance_diceroll.h>
 
 #include <ace/Global_Macros.h>
 #include <ace/Singleton.h>

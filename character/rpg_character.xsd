@@ -31,6 +31,57 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="RPG_Character_Race_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="RACE_BASE"/>
+      <xsd:enumeration value="RACE_HUMAN"/>
+      <xsd:enumeration value="RACE_DWARF"/>
+      <xsd:enumeration value="RACE_ELF"/>
+      <xsd:enumeration value="RACE_HALFLING"/>
+      <xsd:enumeration value="RACE_GNOME"/>
+      <xsd:enumeration value="RACE_ORC"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Character_MetaClass_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="METACLASS_BASE"/>
+      <xsd:enumeration value="METACLASS_WARRIOR"/>
+      <xsd:enumeration value="METACLASS_WIZARD"/>
+      <xsd:enumeration value="METACLASS_PRIEST"/>
+      <xsd:enumeration value="METACLASS_ROGUE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Character_SubClass_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SUBCLASS_BASE"/>
+      <xsd:enumeration value="SUBCLASS_FIGHTER"/>
+      <xsd:enumeration value="SUBCLASS_PALADIN"/>
+      <xsd:enumeration value="SUBCLASS_RANGER"/>
+      <xsd:enumeration value="SUBCLASS_BARBARIAN"/>
+      <xsd:enumeration value="SUBCLASS_WARLORD"/>
+      <xsd:enumeration value="SUBCLASS_WIZARD"/>
+      <xsd:enumeration value="SUBCLASS_SORCERER"/>
+      <xsd:enumeration value="SUBCLASS_WARLOCK"/>
+      <xsd:enumeration value="SUBCLASS_CLERIC"/>
+      <xsd:enumeration value="SUBCLASS_DRUID"/>
+      <xsd:enumeration value="SUBCLASS_MONK"/>
+      <xsd:enumeration value="SUBCLASS_AVENGER"/>
+      <xsd:enumeration value="SUBCLASS_INVOKER"/>
+      <xsd:enumeration value="SUBCLASS_SHAMAN"/>
+      <xsd:enumeration value="SUBCLASS_THIEF"/>
+      <xsd:enumeration value="SUBCLASS_BARD"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Character_Class_Type">
+    <xsd:sequence>
+      <xsd:element name="metaClass" type="RPG_Character_MetaClass_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="subClass" type="RPG_Character_SubClass_Type" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
   <xsd:simpleType name="RPG_Character_Attribute_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ATTRIBUTE_STRENGTH"/>
@@ -590,7 +641,7 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Character_MonsterProperties_Type">
+  <xsd:complexType name="RPG_Character_MonsterPropertiesXML_Type">
     <xsd:sequence>
       <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="size" type="RPG_Character_Size_Type" minOccurs="1" maxOccurs="1"/>
@@ -619,7 +670,7 @@
 
   <xsd:complexType name="RPG_Character_MonsterDictionary_Type">
     <xsd:sequence>
-      <xsd:element name="monster" type="RPG_Character_MonsterProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="monster" type="RPG_Character_MonsterPropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 

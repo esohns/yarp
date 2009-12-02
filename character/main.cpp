@@ -23,7 +23,9 @@
 #endif
 
 #include <rpg_chance_dice.h>
+#include <rpg_chance_dicetype.h>
 #include <rpg_chance_dice_common_tools.h>
+
 #include <rpg_item_weapon.h>
 #include <rpg_item_armor.h>
 #include <rpg_item_common_tools.h>
@@ -31,6 +33,10 @@
 
 #include "rpg_character_dictionary.h"
 #include "rpg_character_player.h"
+#include "rpg_character_alignmentcivic.h"
+#include "rpg_character_alignmentethic.h"
+#include "rpg_character_alignment.h"
+#include "rpg_character_subclass.h"
 #include "rpg_character_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
 #include "rpg_character_monster_common_tools.h"
@@ -134,7 +140,7 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
   unsigned int skills_per_line = 4;
   unsigned int index = 1;
   unsigned int choice = 0;
-  RPG_Character_Skills_Common_Tools::RPG_Character_SkillToStringTableIterator_t iterator = RPG_Character_Skills_Common_Tools::mySkillToStringTable.begin();
+  RPG_Character_SkillToStringTableIterator_t iterator = RPG_Character_SkillHelper::myRPG_Character_SkillToStringTable.begin();
   do
   {
     for (unsigned int i = 0;
@@ -142,7 +148,7 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
          i++, iterator++, index++)
     {
       // finished ?
-      if (iterator == RPG_Character_Skills_Common_Tools::mySkillToStringTable.end())
+      if (iterator == RPG_Character_SkillHelper::myRPG_Character_SkillToStringTable.end())
       {
         break;
       } // end IF
@@ -163,7 +169,7 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
     } // end FOR
 
     std::cout << std::endl;
-  } while (iterator != RPG_Character_Skills_Common_Tools::mySkillToStringTable.end());
+  } while (iterator != RPG_Character_SkillHelper::myRPG_Character_SkillToStringTable.end());
 
   index--;
 
@@ -189,7 +195,7 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
 
   // increase skill rank
   choice -= 1;
-  iterator = RPG_Character_Skills_Common_Tools::mySkillToStringTable.begin();
+  iterator = RPG_Character_SkillHelper::myRPG_Character_SkillToStringTable.begin();
   std::advance(iterator, choice);
   skills_iterator = skills_in.find(iterator->first);
   if (skills_iterator != skills_in.end())
@@ -217,7 +223,7 @@ const bool print_feats_table(const RPG_Character_SubClass& subClass_in,
   unsigned int feats_per_line = 4;
   unsigned int index = 1;
   unsigned int choice = 0;
-  RPG_Character_Skills_Common_Tools::RPG_Character_FeatToStringTableIterator_t iterator = RPG_Character_Skills_Common_Tools::myFeatToStringTable.begin();
+  RPG_Character_FeatToStringTableIterator_t iterator = RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable.begin();
   do
   {
     for (unsigned int i = 0;
@@ -225,7 +231,7 @@ const bool print_feats_table(const RPG_Character_SubClass& subClass_in,
          i++, iterator++, index++)
     {
       // finished ?
-      if (iterator == RPG_Character_Skills_Common_Tools::myFeatToStringTable.end())
+      if (iterator == RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable.end())
       {
         break;
       } // end IF
@@ -247,7 +253,7 @@ const bool print_feats_table(const RPG_Character_SubClass& subClass_in,
     } // end FOR
 
     std::cout << std::endl;
-  } while (iterator != RPG_Character_Skills_Common_Tools::myFeatToStringTable.end());
+  } while (iterator != RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable.end());
 
   index--;
 
@@ -273,7 +279,7 @@ const bool print_feats_table(const RPG_Character_SubClass& subClass_in,
 
   // (try to) append chosen feat
   choice -= 1;
-  iterator = RPG_Character_Skills_Common_Tools::myFeatToStringTable.begin();
+  iterator = RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable.begin();
   std::advance(iterator, choice);
 
   feats_iterator = feats_inout.find(iterator->first);
@@ -451,8 +457,8 @@ void do_work(const std::string filename_in)
            (player_class.subClass == SUBCLASS_BASE));
 
   RPG_Character_Alignment alignment;
-  alignment.civicAlignment = ALIGNMENTCIVIC_INVALID;
-  alignment.ethicAlignment = ALIGNMENTETHIC_INVALID;
+  alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
+  alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
   c = 'f';
   do
   {
@@ -462,17 +468,17 @@ void do_work(const std::string filename_in)
     {
       case 'l':
       {
-        alignment.civicAlignment = ALIGNMENTCIVIC_LAWFUL;
+        alignment.civic = ALIGNMENTCIVIC_LAWFUL;
         break;
       }
       case 'n':
       {
-        alignment.civicAlignment = ALIGNMENTCIVIC_NEUTRAL;
+        alignment.civic = ALIGNMENTCIVIC_NEUTRAL;
         break;
       }
       case 'c':
       {
-        alignment.civicAlignment = ALIGNMENTCIVIC_CHAOTIC;
+        alignment.civic = ALIGNMENTCIVIC_CHAOTIC;
         break;
       }
       default:
@@ -490,17 +496,17 @@ void do_work(const std::string filename_in)
     {
       case 'g':
       {
-        alignment.ethicAlignment = ALIGNMENTETHIC_GOOD;
+        alignment.ethic = ALIGNMENTETHIC_GOOD;
         break;
       }
       case 'n':
       {
-        alignment.ethicAlignment = ALIGNMENTETHIC_NEUTRAL;
+        alignment.ethic = ALIGNMENTETHIC_NEUTRAL;
         break;
       }
       case 'e':
       {
-        alignment.ethicAlignment = ALIGNMENTETHIC_EVIL;
+        alignment.ethic = ALIGNMENTETHIC_EVIL;
         break;
       }
       default:
@@ -511,8 +517,8 @@ void do_work(const std::string filename_in)
         break;
       }
     } // end SWITCH
-  } while ((alignment.civicAlignment == ALIGNMENTCIVIC_INVALID) ||
-           (alignment.ethicAlignment == ALIGNMENTETHIC_INVALID));
+  } while ((alignment.civic == RPG_CHARACTER_ALIGNMENTCIVIC_INVALID) ||
+           (alignment.ethic == RPG_CHARACTER_ALIGNMENTETHIC_INVALID));
 
   RPG_Character_Attributes attributes;
   unsigned char* p = NULL;
@@ -569,7 +575,7 @@ void do_work(const std::string filename_in)
                                                     initialSkillPoints);
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("initial skill points for subClass \"%s\" (INT modifier: %d) is: %d...\n"),
-             RPG_Character_Common_Tools::subClassToString(player_class.subClass).c_str(),
+             RPG_Character_SubClassHelper::RPG_Character_SubClassToString(player_class.subClass).c_str(),
              INTmodifier,
              initialSkillPoints));
 
@@ -623,7 +629,7 @@ void do_work(const std::string filename_in)
   unsigned short int hitpoints = result[0];
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("initial hit points (hit die: \"%s\"): %d...\n"),
-             RPG_Chance_Dice_Common_Tools::diceTypeToString(roll.typeDice).c_str(),
+             RPG_Chance_DiceTypeHelper::RPG_Chance_DiceTypeToString(roll.typeDice).c_str(),
              hitpoints));
 
   // *TODO*: step3: choose appropriate initial set of items
@@ -737,7 +743,7 @@ void do_work(const std::string filename_in)
     }
     default:
     {
-      std::string subClass_string = RPG_Character_Common_Tools::subClassToString(player_class.subClass);
+      std::string subClass_string = RPG_Character_SubClassHelper::RPG_Character_SubClassToString(player_class.subClass);
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid class \"%s\", aborting\n"),
                  subClass_string.c_str()));

@@ -14,6 +14,99 @@
 
 #include "rpg_item_XML_parser_base.h"
 
+class RPG_Character_Gender_Type_pimpl: public virtual RPG_Character_Gender_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  post_RPG_Character_Gender_Type ();
+};
+
+class RPG_Character_Race_Type_pimpl: public virtual RPG_Character_Race_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  post_RPG_Character_Race_Type ();
+};
+
+class RPG_Character_MetaClass_Type_pimpl: public virtual RPG_Character_MetaClass_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  post_RPG_Character_MetaClass_Type ();
+};
+
+class RPG_Character_SubClass_Type_pimpl: public virtual RPG_Character_SubClass_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  post_RPG_Character_SubClass_Type ();
+};
+
+class RPG_Character_Class_Type_pimpl: public virtual RPG_Character_Class_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  metaClass ();
+
+  virtual void
+  subClass ();
+
+  virtual void
+  post_RPG_Character_Class_Type ();
+};
+
+class RPG_Character_Attribute_Type_pimpl: public virtual RPG_Character_Attribute_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  post_RPG_Character_Attribute_Type ();
+};
+
+class RPG_Character_Condition_Type_pimpl: public virtual RPG_Character_Condition_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  post_RPG_Character_Condition_Type ();
+};
+
+class RPG_Character_Ability_Type_pimpl: public virtual RPG_Character_Ability_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  post_RPG_Character_Ability_Type ();
+};
+
 class RPG_Character_MonsterMetaType_Type_pimpl: public virtual RPG_Character_MonsterMetaType_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -218,7 +311,7 @@ class RPG_Character_SkillValue_Type_pimpl: public virtual RPG_Character_SkillVal
   virtual void
   rank (signed char);
 
-  virtual RPG_Character_SkillsItem_t
+  virtual RPG_Character_SkillValue
   post_RPG_Character_SkillValue_Type ();
 };
 
@@ -229,9 +322,9 @@ class RPG_Character_Skills_Type_pimpl: public virtual RPG_Character_Skills_Type_
   pre ();
 
   virtual void
-  skill (const RPG_Character_SkillsItem_t&);
+  skill (const RPG_Character_SkillValue&);
 
-  virtual RPG_Character_Skills_t
+  virtual RPG_Character_Skills
   post_RPG_Character_Skills_Type ();
 };
 
@@ -255,7 +348,7 @@ class RPG_Character_Feats_Type_pimpl: public virtual RPG_Character_Feats_Type_ps
   virtual void
   feat (const RPG_Character_Feat&);
 
-  virtual RPG_Character_Feats_t
+  virtual RPG_Character_Feats
   post_RPG_Character_Feats_Type ();
 };
 
@@ -331,7 +424,7 @@ class RPG_Character_MonsterAdvancementStep_Type_pimpl: public virtual RPG_Charac
   virtual void
   range (const RPG_Chance_ValueRange&);
 
-  virtual RPG_Character_MonsterAdvancementStep_t
+  virtual RPG_Character_MonsterAdvancementStep
   post_RPG_Character_MonsterAdvancementStep_Type ();
 };
 
@@ -342,13 +435,13 @@ class RPG_Character_MonsterAdvancement_Type_pimpl: public virtual RPG_Character_
   pre ();
 
   virtual void
-  step (const RPG_Character_MonsterAdvancementStep_t&);
+  step (const RPG_Character_MonsterAdvancementStep&);
 
-  virtual RPG_Character_MonsterAdvancement_t
+  virtual RPG_Character_MonsterAdvancement
   post_RPG_Character_MonsterAdvancement_Type ();
 };
 
-class RPG_Character_MonsterProperties_Type_pimpl: public virtual RPG_Character_MonsterProperties_Type_pskel
+class RPG_Character_MonsterPropertiesXML_Type_pimpl: public virtual RPG_Character_MonsterPropertiesXML_Type_pskel
 {
   public:
   virtual void
@@ -391,10 +484,10 @@ class RPG_Character_MonsterProperties_Type_pimpl: public virtual RPG_Character_M
   attributes (const RPG_Character_Attributes&);
 
   virtual void
-  skills (const RPG_Character_Skills_t&);
+  skills (const RPG_Character_Skills&);
 
   virtual void
-  feats (const RPG_Character_Feats_t&);
+  feats (const RPG_Character_Feats&);
 
   virtual void
   environment (const RPG_Character_Environment&);
@@ -412,13 +505,13 @@ class RPG_Character_MonsterProperties_Type_pimpl: public virtual RPG_Character_M
   alignment (const RPG_Character_Alignment&);
 
   virtual void
-  advancement (const RPG_Character_MonsterAdvancement_t&);
+  advancement (const RPG_Character_MonsterAdvancement&);
 
   virtual void
   levelAdjustment (unsigned char);
 
-  virtual RPG_Character_MonsterProperties_XML
-  post_RPG_Character_MonsterProperties_Type ();
+  virtual RPG_Character_MonsterPropertiesXML
+  post_RPG_Character_MonsterPropertiesXML_Type ();
 };
 
 class RPG_Character_MonsterDictionary_Type_pimpl: public virtual RPG_Character_MonsterDictionary_Type_pskel
@@ -428,7 +521,7 @@ class RPG_Character_MonsterDictionary_Type_pimpl: public virtual RPG_Character_M
   pre ();
 
   virtual void
-  monster (const RPG_Character_MonsterProperties_XML&);
+  monster (const RPG_Character_MonsterPropertiesXML&);
 
   virtual void
   post_RPG_Character_MonsterDictionary_Type ();

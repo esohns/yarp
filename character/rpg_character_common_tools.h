@@ -20,15 +20,18 @@
 #ifndef RPG_CHARACTER_COMMON_TOOLS_H
 #define RPG_CHARACTER_COMMON_TOOLS_H
 
-#include "rpg_chance_dice_common.h"
+#include "rpg_character_alignmentcivic.h"
+#include "rpg_character_alignmentethic.h"
+#include "rpg_character_alignment.h"
+#include "rpg_character_attributes.h"
+#include "rpg_character_subclass.h"
 #include "rpg_character_common.h"
-#include "rpg_character_race_common.h"
-#include "rpg_character_class_common.h"
+
+#include <rpg_chance_dicetype.h>
 
 #include <ace/Global_Macros.h>
 
 #include <string>
-#include <map>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -36,41 +39,10 @@
 class RPG_Character_Common_Tools
 {
  public:
-  // some handy types
-  typedef std::map<std::string, RPG_Character_Gender> RPG_Character_String2Gender_t;
-  typedef RPG_Character_String2Gender_t::const_iterator RPG_Character_String2GenderIterator_t;
-  typedef std::map<std::string, RPG_Character_AlignmentCivic> RPG_Character_String2AlignmentCivic_t;
-  typedef RPG_Character_String2AlignmentCivic_t::const_iterator RPG_Character_String2AlignmentCivicIterator_t;
-  typedef std::map<std::string, RPG_Character_AlignmentEthic> RPG_Character_String2AlignmentEthic_t;
-  typedef RPG_Character_String2AlignmentEthic_t::const_iterator RPG_Character_String2AlignmentEthicIterator_t;
-  typedef std::map<std::string, RPG_Character_Attribute> RPG_Character_String2Attribute_t;
-  typedef RPG_Character_String2Attribute_t::const_iterator RPG_Character_String2AttributeIterator_t;
-  typedef std::map<std::string, RPG_Character_Condition> RPG_Character_String2Condition_t;
-  typedef RPG_Character_String2Condition_t::const_iterator RPG_Character_String2ConditionIterator_t;
-
-  typedef std::map<std::string, RPG_Character_Race> RPG_Character_String2Race_t;
-  typedef RPG_Character_String2Race_t::const_iterator RPG_Character_String2RaceIterator_t;
-  typedef std::map<std::string, RPG_Character_MetaClass> RPG_Character_String2MetaClass_t;
-  typedef RPG_Character_String2MetaClass_t::const_iterator RPG_Character_String2MetaClassIterator_t;
-  typedef std::map<std::string, RPG_Character_SubClass> RPG_Character_String2SubClass_t;
-  typedef RPG_Character_String2SubClass_t::const_iterator RPG_Character_String2SubClassIterator_t;
-
   static void initStringConversionTables();
 
-  static const RPG_Character_Gender stringToGender(const std::string&); // string
-  static const std::string          genderToString(const RPG_Character_Gender&); // gender
-  static const RPG_Character_AlignmentCivic stringToAlignmentCivic(const std::string&); // string
-  static const RPG_Character_AlignmentEthic stringToAlignmentEthic(const std::string&); // string
-  static const std::string                  alignmentToString(const RPG_Character_Alignment&); // alignment
-  static const RPG_Character_Condition stringToCondition(const std::string&); // string
-  static const std::string             conditionToString(const RPG_Character_Condition&); // condition
-
-  static const std::string             raceToString(const RPG_Character_Race&); // race
-  static const RPG_Character_MetaClass stringToMetaClass(const std::string&); // string
-  static const RPG_Character_SubClass  stringToSubClass(const std::string&); // string
-  static const std::string             subClassToString(const RPG_Character_SubClass&); // subClass
-  static const std::string             attributeToString(const RPG_Character_Attribute&); // attribute
-  static const std::string             attributesToString(const RPG_Character_Attributes&); // attributes
+  static const std::string alignmentToString(const RPG_Character_Alignment&); // alignment
+  static const std::string attributesToString(const RPG_Character_Attributes&); // attributes
 
   static const short int getAttributeAbilityModifier(const unsigned char&); // attribute
   static const RPG_Chance_DiceType getHitDie(const RPG_Character_SubClass&); // subclass
@@ -83,16 +55,6 @@ class RPG_Character_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools(const RPG_Character_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools& operator=(const RPG_Character_Common_Tools&));
-
-  static RPG_Character_String2Gender_t         myString2GenderTable;
-  static RPG_Character_String2AlignmentCivic_t myString2AlignmentCivicTable;
-  static RPG_Character_String2AlignmentEthic_t myString2AlignmentEthicTable;
-  static RPG_Character_String2Attribute_t      myString2AttributeTable;
-  static RPG_Character_String2Condition_t      myString2ConditionTable;
-
-  static RPG_Character_String2Race_t           myString2RaceTable;
-  static RPG_Character_String2MetaClass_t      myString2MetaClassTable;
-  static RPG_Character_String2SubClass_t       myString2SubClassTable;
 };
 
 #endif

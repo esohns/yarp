@@ -20,55 +20,9 @@
 #ifndef RPG_CHARACTER_CLASS_COMMON_H
 #define RPG_CHARACTER_CLASS_COMMON_H
 
+#include "rpg_character_subclass.h"
+
 #include <set>
-
-enum RPG_Character_MetaClass
-{
-  METACLASS_BASE = 0,
-  //
-  METACLASS_WARRIOR = 1,
-  METACLASS_WIZARD = 2,
-  METACLASS_PRIEST = 4,
-  METACLASS_ROGUE = 8,
-  //
-  METACLASS_MAX,
-  METACLASS_INVALID
-};
-
-enum RPG_Character_SubClass
-{
-  SUBCLASS_BASE = 0,
-  //
-  // warrior subclasses
-  SUBCLASS_FIGHTER = 1,
-  SUBCLASS_PALADIN = 2,
-  SUBCLASS_RANGER = 4,
-  SUBCLASS_BARBARIAN = 8,
-//  SUBCLASS_WARLORD = 16,
-  // wizard subclasses
-  SUBCLASS_WIZARD = 32,
-  SUBCLASS_SORCERER = 64,
-//  SUBCLASS_WARLOCK = 128,
-  // priest subclasses
-  SUBCLASS_CLERIC = 256,
-  SUBCLASS_DRUID = 512,
-  SUBCLASS_MONK = 1024,
-//  SUBCLASS_AVENGER = 2048,
-//  SUBCLASS_INVOKER = 4096,
-//  SUBCLASS_SHAMAN = 8192,
-  // rogue subclasses
-  SUBCLASS_THIEF = 16384,
-  SUBCLASS_BARD = 32768,
-  //
-  SUBCLASS_MAX,
-  SUBCLASS_INVALID
-};
-
-struct RPG_Character_Class
-{
-  RPG_Character_MetaClass metaClass;
-  RPG_Character_SubClass subClass;
-};
 
 // some useful types
 typedef std::set<RPG_Character_SubClass> RPG_Character_SubClasses_t;

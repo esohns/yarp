@@ -54,7 +54,7 @@ class RPG_Character_MonsterDictionary_Type
   RPG_Character_MonsterDictionary_Type(RPG_Character_MonsterDictionary_t*); // monster dictionary
 
 //   virtual void pre();
-  virtual void monster(const RPG_Character_MonsterProperties_XML&);
+  virtual void monster(const RPG_Character_MonsterPropertiesXML&);
   virtual void post_RPG_Character_MonsterDictionary_Type();
 
  private:
@@ -223,10 +223,10 @@ class RPG_Character_SkillValue_Type
 //   virtual void pre();
   virtual void skill(const RPG_Character_Skill&);
   virtual void rank(signed char);
-  virtual RPG_Character_SkillsItem_t post_RPG_Character_SkillValue_Type();
+  virtual RPG_Character_SkillValue post_RPG_Character_SkillValue_Type();
 
  private:
-  RPG_Character_SkillsItem_t myCurrentSkill;
+  RPG_Character_SkillValue myCurrentSkill;
 };
 
 class RPG_Character_Skills_Type
@@ -236,11 +236,11 @@ class RPG_Character_Skills_Type
   RPG_Character_Skills_Type();
 
 //   virtual void pre();
-  virtual void skill(const RPG_Character_SkillsItem_t&);
-  virtual RPG_Character_Skills_t post_RPG_Character_Skills_Type();
+  virtual void skill(const RPG_Character_SkillValue&);
+  virtual RPG_Character_Skills post_RPG_Character_Skills_Type();
 
  private:
-  RPG_Character_Skills_t myCurrentSkills;
+  RPG_Character_Skills myCurrentSkills;
 };
 
 class RPG_Character_Feat_Type
@@ -259,10 +259,10 @@ class RPG_Character_Feats_Type
 
 //   virtual void pre();
   virtual void feat(const RPG_Character_Feat&);
-  virtual RPG_Character_Feats_t post_RPG_Character_Feats_Type();
+  virtual RPG_Character_Feats post_RPG_Character_Feats_Type();
 
  private:
-  RPG_Character_Feats_t myCurrentFeats;
+  RPG_Character_Feats myCurrentFeats;
 };
 
 class RPG_Character_Environment_Type
@@ -290,10 +290,10 @@ class RPG_Character_MonsterAdvancementStep_Type
 //   virtual void pre();
   virtual void size(const RPG_Character_Size&);
   virtual void range(const RPG_Chance_ValueRange&);
-  virtual RPG_Character_MonsterAdvancementStep_t post_RPG_Character_MonsterAdvancementStep_Type();
+  virtual RPG_Character_MonsterAdvancementStep post_RPG_Character_MonsterAdvancementStep_Type();
 
  private:
-  RPG_Character_MonsterAdvancementStep_t myCurrentAdvancementStep;
+  RPG_Character_MonsterAdvancementStep myCurrentAdvancementStep;
 };
 
 class RPG_Character_MonsterAdvancement_Type
@@ -303,11 +303,11 @@ class RPG_Character_MonsterAdvancement_Type
   RPG_Character_MonsterAdvancement_Type();
 
 //   virtual void pre();
-  virtual void step(const RPG_Character_MonsterAdvancementStep_t&);
-  virtual RPG_Character_MonsterAdvancement_t post_RPG_Character_MonsterAdvancement_Type();
+  virtual void step(const RPG_Character_MonsterAdvancementStep&);
+  virtual RPG_Character_MonsterAdvancement post_RPG_Character_MonsterAdvancement_Type();
 
  private:
-  RPG_Character_MonsterAdvancement_t myCurrentMonsterAdvancement;
+  RPG_Character_MonsterAdvancement myCurrentMonsterAdvancement;
 };
 
 class RPG_Character_AlignmentCivic_Type
@@ -341,11 +341,11 @@ class RPG_Character_Alignment_Type
   RPG_Character_Alignment myCurrentAlignment;
 };
 
-class RPG_Character_MonsterProperties_Type
- : public RPG_Character_MonsterProperties_Type_pimpl
+class RPG_Character_MonsterPropertiesXML_Type
+ : public RPG_Character_MonsterPropertiesXML_Type_pimpl
 {
  public:
-  RPG_Character_MonsterProperties_Type();
+  RPG_Character_MonsterPropertiesXML_Type();
 
 //   virtual void pre();
   virtual void name(const ::std::string&);
@@ -360,19 +360,19 @@ class RPG_Character_MonsterProperties_Type
   virtual void reach(unsigned char);
   virtual void saves(const RPG_Character_SavingThrowModifiers&);
   virtual void attributes(const RPG_Character_Attributes&);
-  virtual void skills(const RPG_Character_Skills_t&);
-  virtual void feats(const RPG_Character_Feats_t&);
+  virtual void skills(const RPG_Character_Skills&);
+  virtual void feats(const RPG_Character_Feats&);
   virtual void environment(const RPG_Character_Environment&);
   virtual void organization(const RPG_Character_Organization&);
   virtual void challengeRating(unsigned char);
   virtual void treasureModifier(unsigned char);
   virtual void alignment(const RPG_Character_Alignment&);
-  virtual void advancement(const RPG_Character_MonsterAdvancement_t&);
+  virtual void advancement(const RPG_Character_MonsterAdvancement&);
   virtual void levelAdjustment(unsigned char);
-  virtual RPG_Character_MonsterProperties_XML post_RPG_Character_MonsterProperties_Type();
+  virtual RPG_Character_MonsterPropertiesXML post_RPG_Character_MonsterPropertiesXML_Type();
 
  private:
-  RPG_Character_MonsterProperties_XML myCurrentProperties;
+  RPG_Character_MonsterPropertiesXML myCurrentProperties;
 };
 
 #endif

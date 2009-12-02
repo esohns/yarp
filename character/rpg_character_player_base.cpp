@@ -104,9 +104,9 @@ void RPG_Character_Player_Base::dump() const
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("Player: \nGender: %s\nRace: %s\nClass: %s\nXP: %d\n"),
-             RPG_Character_Common_Tools::genderToString(myGender).c_str(),
-             RPG_Character_Common_Tools::raceToString(myRace).c_str(),
-             RPG_Character_Common_Tools::subClassToString(myClass.subClass).c_str(),
+             RPG_Character_GenderHelper::RPG_Character_GenderToString(myGender).c_str(),
+             RPG_Character_RaceHelper::RPG_Character_RaceToString(myRace).c_str(),
+             RPG_Character_SubClassHelper::RPG_Character_SubClassToString(myClass.subClass).c_str(),
              myExperience));
 
   inherited::dump();

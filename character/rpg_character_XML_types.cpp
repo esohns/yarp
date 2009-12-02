@@ -38,6 +38,36 @@
 
 #include "rpg_character_XML_types.h"
 
+// RPG_Character_Class_Type_pskel
+//
+
+void RPG_Character_Class_Type_pskel::
+metaClass_parser (::RPG_Character_MetaClass_Type_pskel& p)
+{
+  this->metaClass_parser_ = &p;
+}
+
+void RPG_Character_Class_Type_pskel::
+subClass_parser (::RPG_Character_SubClass_Type_pskel& p)
+{
+  this->subClass_parser_ = &p;
+}
+
+void RPG_Character_Class_Type_pskel::
+parsers (::RPG_Character_MetaClass_Type_pskel& metaClass,
+         ::RPG_Character_SubClass_Type_pskel& subClass)
+{
+  this->metaClass_parser_ = &metaClass;
+  this->subClass_parser_ = &subClass;
+}
+
+RPG_Character_Class_Type_pskel::
+RPG_Character_Class_Type_pskel ()
+: metaClass_parser_ (0),
+  subClass_parser_ (0)
+{
+}
+
 // RPG_Character_MonsterType_Type_pskel
 //
 
@@ -461,136 +491,136 @@ RPG_Character_MonsterAdvancement_Type_pskel ()
 {
 }
 
-// RPG_Character_MonsterProperties_Type_pskel
+// RPG_Character_MonsterPropertiesXML_Type_pskel
 //
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 name_parser (::xml_schema::string_pskel& p)
 {
   this->name_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 size_parser (::RPG_Character_Size_Type_pskel& p)
 {
   this->size_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 type_parser (::RPG_Character_MonsterType_Type_pskel& p)
 {
   this->type_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 hitDice_parser (::RPG_Chance_DiceRoll_Type_pskel& p)
 {
   this->hitDice_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 initiative_parser (::xml_schema::byte_pskel& p)
 {
   this->initiative_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 speed_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->speed_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 armorClass_parser (::RPG_Character_MonsterArmorClass_Type_pskel& p)
 {
   this->armorClass_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 attack_parser (::RPG_Character_MonsterAttack_Type_pskel& p)
 {
   this->attack_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 space_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->space_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 reach_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->reach_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 saves_parser (::RPG_Character_SavingThrowModifiers_Type_pskel& p)
 {
   this->saves_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 attributes_parser (::RPG_Character_Attributes_Type_pskel& p)
 {
   this->attributes_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 skills_parser (::RPG_Character_Skills_Type_pskel& p)
 {
   this->skills_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 feats_parser (::RPG_Character_Feats_Type_pskel& p)
 {
   this->feats_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 environment_parser (::RPG_Character_Environment_Type_pskel& p)
 {
   this->environment_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 organization_parser (::RPG_Character_Organization_Type_pskel& p)
 {
   this->organization_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 challengeRating_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->challengeRating_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 treasureModifier_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->treasureModifier_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 alignment_parser (::RPG_Character_Alignment_Type_pskel& p)
 {
   this->alignment_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 advancement_parser (::RPG_Character_MonsterAdvancement_Type_pskel& p)
 {
   this->advancement_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 levelAdjustment_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->levelAdjustment_parser_ = &p;
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 parsers (::xml_schema::string_pskel& name,
          ::RPG_Character_Size_Type_pskel& size,
          ::RPG_Character_MonsterType_Type_pskel& type,
@@ -636,8 +666,8 @@ parsers (::xml_schema::string_pskel& name,
   this->levelAdjustment_parser_ = &levelAdjustment;
 }
 
-RPG_Character_MonsterProperties_Type_pskel::
-RPG_Character_MonsterProperties_Type_pskel ()
+RPG_Character_MonsterPropertiesXML_Type_pskel::
+RPG_Character_MonsterPropertiesXML_Type_pskel ()
 : name_parser_ (0),
   size_parser_ (0),
   type_parser_ (0),
@@ -666,13 +696,13 @@ RPG_Character_MonsterProperties_Type_pskel ()
 //
 
 void RPG_Character_MonsterDictionary_Type_pskel::
-monster_parser (::RPG_Character_MonsterProperties_Type_pskel& p)
+monster_parser (::RPG_Character_MonsterPropertiesXML_Type_pskel& p)
 {
   this->monster_parser_ = &p;
 }
 
 void RPG_Character_MonsterDictionary_Type_pskel::
-parsers (::RPG_Character_MonsterProperties_Type_pskel& monster)
+parsers (::RPG_Character_MonsterPropertiesXML_Type_pskel& monster)
 {
   this->monster_parser_ = &monster;
 }
@@ -701,6 +731,145 @@ parsers (::RPG_Character_MonsterDictionary_Type_pskel& monsterDictionary)
 RPG_Character_Dictionary_Type_pskel::
 RPG_Character_Dictionary_Type_pskel ()
 : monsterDictionary_parser_ (0)
+{
+}
+
+// RPG_Character_Gender_Type_pskel
+//
+
+void RPG_Character_Gender_Type_pskel::
+post_RPG_Character_Gender_Type ()
+{
+}
+
+// RPG_Character_Race_Type_pskel
+//
+
+void RPG_Character_Race_Type_pskel::
+post_RPG_Character_Race_Type ()
+{
+}
+
+// RPG_Character_MetaClass_Type_pskel
+//
+
+void RPG_Character_MetaClass_Type_pskel::
+post_RPG_Character_MetaClass_Type ()
+{
+}
+
+// RPG_Character_SubClass_Type_pskel
+//
+
+void RPG_Character_SubClass_Type_pskel::
+post_RPG_Character_SubClass_Type ()
+{
+}
+
+// RPG_Character_Class_Type_pskel
+//
+
+void RPG_Character_Class_Type_pskel::
+metaClass ()
+{
+}
+
+void RPG_Character_Class_Type_pskel::
+subClass ()
+{
+}
+
+void RPG_Character_Class_Type_pskel::
+post_RPG_Character_Class_Type ()
+{
+}
+
+bool RPG_Character_Class_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "metaClass" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->metaClass_parser_;
+
+    if (this->metaClass_parser_)
+      this->metaClass_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "subClass" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->subClass_parser_;
+
+    if (this->subClass_parser_)
+      this->subClass_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Character_Class_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "metaClass" && ns == "urn:rpg")
+  {
+    if (this->metaClass_parser_)
+    {
+      this->metaClass_parser_->post_RPG_Character_MetaClass_Type ();
+      this->metaClass ();
+    }
+
+    return true;
+  }
+
+  if (n == "subClass" && ns == "urn:rpg")
+  {
+    if (this->subClass_parser_)
+    {
+      this->subClass_parser_->post_RPG_Character_SubClass_Type ();
+      this->subClass ();
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Character_Attribute_Type_pskel
+//
+
+void RPG_Character_Attribute_Type_pskel::
+post_RPG_Character_Attribute_Type ()
+{
+}
+
+// RPG_Character_Condition_Type_pskel
+//
+
+void RPG_Character_Condition_Type_pskel::
+post_RPG_Character_Condition_Type ()
+{
+}
+
+// RPG_Character_Ability_Type_pskel
+//
+
+void RPG_Character_Ability_Type_pskel::
+post_RPG_Character_Ability_Type ()
 {
 }
 
@@ -1442,7 +1611,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Character_Skills_Type_pskel::
-skill (const RPG_Character_SkillsItem_t&)
+skill (const RPG_Character_SkillValue&)
 {
 }
 
@@ -1684,7 +1853,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Character_MonsterAdvancement_Type_pskel::
-step (const RPG_Character_MonsterAdvancementStep_t&)
+step (const RPG_Character_MonsterAdvancementStep&)
 {
 }
 
@@ -1729,115 +1898,115 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-// RPG_Character_MonsterProperties_Type_pskel
+// RPG_Character_MonsterPropertiesXML_Type_pskel
 //
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 name (const ::std::string&)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 size (const RPG_Character_Size&)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 type (const RPG_Character_MonsterType&)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 hitDice (const RPG_Chance_DiceRoll&)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 initiative (signed char)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 speed (unsigned char)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 armorClass (const RPG_Character_MonsterArmorClass&)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 attack (const RPG_Character_MonsterAttack&)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 space (unsigned char)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 reach (unsigned char)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 saves (const RPG_Character_SavingThrowModifiers&)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 attributes (const RPG_Character_Attributes&)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
-skills (const RPG_Character_Skills_t&)
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
+skills (const RPG_Character_Skills&)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
-feats (const RPG_Character_Feats_t&)
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
+feats (const RPG_Character_Feats&)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 environment (const RPG_Character_Environment&)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 organization (const RPG_Character_Organization&)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 challengeRating (unsigned char)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 treasureModifier (unsigned char)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 alignment (const RPG_Character_Alignment&)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
-advancement (const RPG_Character_MonsterAdvancement_t&)
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
+advancement (const RPG_Character_MonsterAdvancement&)
 {
 }
 
-void RPG_Character_MonsterProperties_Type_pskel::
+void RPG_Character_MonsterPropertiesXML_Type_pskel::
 levelAdjustment (unsigned char)
 {
 }
 
-bool RPG_Character_MonsterProperties_Type_pskel::
+bool RPG_Character_MonsterPropertiesXML_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
@@ -2060,7 +2229,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Character_MonsterProperties_Type_pskel::
+bool RPG_Character_MonsterPropertiesXML_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
@@ -2242,7 +2411,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Character_MonsterDictionary_Type_pskel::
-monster (const RPG_Character_MonsterProperties_XML&)
+monster (const RPG_Character_MonsterPropertiesXML&)
 {
 }
 
@@ -2284,7 +2453,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "monster" && ns == "urn:rpg")
   {
     if (this->monster_parser_)
-      this->monster (this->monster_parser_->post_RPG_Character_MonsterProperties_Type ());
+      this->monster (this->monster_parser_->post_RPG_Character_MonsterPropertiesXML_Type ());
 
     return true;
   }

@@ -21,8 +21,16 @@
 #define RPG_CHARACTER_PLAYER_BASE_H
 
 #include "rpg_character_base.h"
-#include "rpg_character_race_common.h"
-#include "rpg_character_class_common.h"
+#include "rpg_character_gender.h"
+#include "rpg_character_race.h"
+#include "rpg_character_metaclass.h"
+#include "rpg_character_subclass.h"
+#include "rpg_character_class.h"
+#include "rpg_character_alignmentcivic.h"
+#include "rpg_character_alignmentethic.h"
+#include "rpg_character_alignment.h"
+#include "rpg_character_attributes.h"
+#include "rpg_character_skills_common.h"
 
 #include <string>
 
@@ -49,7 +57,7 @@ class RPG_Character_Player_Base
 //   using RPG_Character_Base::getRace;
 //   using RPG_Character_Base::getClass;
 //   using RPG_Character_Base::getAlignment;
-// 
+//
 //   // retrieve base attributes
 //   using RPG_Character_Base::getStrength;
 //   using RPG_Character_Base::getDexterity;
@@ -59,7 +67,7 @@ class RPG_Character_Player_Base
 //   using RPG_Character_Base::getCharisma;
 //   // retrieve skill value (if any)
 //   using RPG_Character_Base::getSkill;
-// 
+//
 //   using RPG_Character_Base::getExperience;
 //   // compute dynamically from class/XP
 //   using RPG_Character_Base::getLevel;

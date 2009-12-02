@@ -17,34 +17,33 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CHARACTER_INVENTORY_H
-#define RPG_CHARACTER_INVENTORY_H
 
-#include <rpg_item_instance_common.h>
+#ifndef RPG_CHARACTER_MONSTERPROPERTIESXML_H
+#define RPG_CHARACTER_MONSTERPROPERTIESXML_H
 
-#include <ace/Global_Macros.h>
-
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
-class RPG_Character_Inventory
+struct RPG_Character_MonsterPropertiesXML
 {
- public:
-  RPG_Character_Inventory(const RPG_Item_List_t&); // list of initial items
-  virtual ~RPG_Character_Inventory();
-
-  void add(const RPG_Item_ID_t&); // item ID
-  void drop(const RPG_Item_ID_t&); // item ID
-
-  void dump() const;
-
- private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Inventory());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Inventory(const RPG_Character_Inventory&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Inventory& operator=(const RPG_Character_Inventory&));
-
-  RPG_Item_List_t myItems;
+  std::string name;
+  RPG_Character_Size size;
+  RPG_Character_MonsterType type;
+  RPG_Chance_DiceRoll hitDice;
+  char initiative;
+  unsigned char speed;
+  RPG_Character_MonsterArmorClass armorClass;
+  RPG_Character_MonsterAttack attack;
+  unsigned char space;
+  unsigned char reach;
+  RPG_Character_SavingThrowModifiers saves;
+  RPG_Character_Attributes attributes;
+  RPG_Character_Skills skills;
+  RPG_Character_Feats feats;
+  RPG_Character_Environment environment;
+  std::vector<RPG_Character_Organization> organizations;
+  unsigned char challengeRating;
+  unsigned char treasureModifier;
+  RPG_Character_Alignment alignment;
+  RPG_Character_MonsterAdvancement advancement;
+  unsigned char levelAdjustment;
 };
 
 #endif

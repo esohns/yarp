@@ -20,8 +20,11 @@
 #ifndef RPG_CHARACTER_SKILLS_COMMON_H
 #define RPG_CHARACTER_SKILLS_COMMON_H
 
-#include "rpg_character_common.h"
 #include "rpg_character_class_common.h"
+#include "rpg_character_feat.h"
+#include "rpg_character_attribute.h"
+#include "rpg_character_skill.h"
+#include "rpg_character_ability.h"
 
 #include <map>
 #include <set>

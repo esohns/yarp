@@ -126,30 +126,30 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
   RPG_Character_MonsterAdvancement_Type     advancement_p;
   advancement_p.parsers(advancementStep_p);
 //   unsigned_int_pimpl                      levelAdjustment_p;
-  RPG_Character_MonsterProperties_Type      monsterProperties_p;
-  monsterProperties_p.parsers(string_p,
-                              size_p,
-                              monsterType_p,
-                              roll_p,
-                              byte_p,
-                              unsigned_byte_p,
-                              monsterArmorClass_p,
-                              monsterAttack_p,
-                              unsigned_byte_p,
-                              unsigned_byte_p,
-                              savingThrowModifiers_p,
-                              attributes_p,
-                              skills_p,
-                              feats_p,
-                              environment_p,
-                              organization_p,
-                              unsigned_byte_p,
-                              unsigned_byte_p,
-                              alignment_p,
-                              advancement_p,
-                              unsigned_byte_p);
+  RPG_Character_MonsterPropertiesXML_Type   monsterPropertiesXML_p;
+  monsterPropertiesXML_p.parsers(string_p,
+                                 size_p,
+                                 monsterType_p,
+                                 roll_p,
+                                 byte_p,
+                                 unsigned_byte_p,
+                                 monsterArmorClass_p,
+                                 monsterAttack_p,
+                                 unsigned_byte_p,
+                                 unsigned_byte_p,
+                                 savingThrowModifiers_p,
+                                 attributes_p,
+                                 skills_p,
+                                 feats_p,
+                                 environment_p,
+                                 organization_p,
+                                 unsigned_byte_p,
+                                 unsigned_byte_p,
+                                 alignment_p,
+                                 advancement_p,
+                                 unsigned_byte_p);
   RPG_Character_MonsterDictionary_Type    monsterDictionary_p(&myMonsterDictionary);
-  monsterDictionary_p.parsers(monsterProperties_p);
+  monsterDictionary_p.parsers(monsterPropertiesXML_p);
   RPG_Character_Dictionary_Type           characterDictionary_p(&myMonsterDictionary);
   characterDictionary_p.parsers(monsterDictionary_p);
 
@@ -228,7 +228,7 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
     do
     {
       result.clear();
-      RPG_Chance_Dice::generateRandomNumbers(ENVIRONMENT_MAX,
+      RPG_Chance_Dice::generateRandomNumbers(RPG_CHARACTER_ENVIRONMENT_MAX,
                                              1,
                                              result);
       choiceEnvironment = ACE_static_cast(RPG_Character_Environment,
@@ -254,7 +254,7 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
     // nothing found in database...
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("found no appropriate monster types for environment \"%s\" in dictionary (%d items) --> check implementation !, returning\n"),
-               RPG_Character_Monster_Common_Tools::environmentToString(choiceEnvironment).c_str(),
+               RPG_Character_EnvironmentHelper::RPG_Character_EnvironmentToString(choiceEnvironment).c_str(),
                myMonsterDictionary.size()));
 
     return;
@@ -325,7 +325,7 @@ void RPG_Character_Dictionary::organizationToRoll(const RPG_Character_Organizati
       do
       {
         result.clear();
-        RPG_Chance_Dice::generateRandomNumbers(ORGANIZATION_MAX,
+        RPG_Chance_Dice::generateRandomNumbers(RPG_CHARACTER_ORGANIZATION_MAX,
                                                1,
                                                result);
         organization = ACE_static_cast(RPG_Character_Organization,
@@ -423,7 +423,7 @@ void RPG_Character_Dictionary::organizationToRoll(const RPG_Character_Organizati
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("invalid organization \"%s\" --> check implementation !, returning\n"),
-                 RPG_Character_Monster_Common_Tools::organizationToString(organization_in).c_str()));
+                 RPG_Character_OrganizationHelper::RPG_Character_OrganizationToString(organization_in).c_str()));
 
       break;
     }
@@ -510,7 +510,7 @@ void RPG_Character_Dictionary::dump() const
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Monster (\"%s\"):\nSize: \"%s\"\nType: \"%s\"\nHit Dice: \"%s\"\nInitiative: %d\nSpeed: %d ft/round\nArmor Class: %d / %d / %d\nAttack:\n-------\n%sSpace: %d ft\nReach: %d ft\nSaves: %d / %d / %d\nAttributes:\n-----------\n%sSkills:\n-------\n%sFeats:\n------\n%sEnvironment: \"%s\"\nOrganizations: \"%s\"\nChallenge Rating: %d\nTreasure Modifier: %d\nAlignment: \"%s\"\nAdvancement:\n------------\n%sLevel Adjustment: %d\n"),
                (iterator->first).c_str(),
-               RPG_Character_Monster_Common_Tools::sizeToString((iterator->second).size).c_str(),
+               RPG_Character_SizeHelper::RPG_Character_SizeToString((iterator->second).size).c_str(),
                RPG_Character_Monster_Common_Tools::monsterTypeToString((iterator->second).type).c_str(),
                RPG_Chance_Dice_Common_Tools::rollToString((iterator->second).hitDice).c_str(),
                (iterator->second).initiative,
@@ -527,7 +527,7 @@ void RPG_Character_Dictionary::dump() const
                RPG_Character_Common_Tools::attributesToString((iterator->second).attributes).c_str(),
                RPG_Character_Skills_Common_Tools::skillsToString((iterator->second).skills).c_str(),
                RPG_Character_Skills_Common_Tools::featsToString((iterator->second).feats).c_str(),
-               RPG_Character_Monster_Common_Tools::environmentToString((iterator->second).environment).c_str(),
+               RPG_Character_EnvironmentHelper::RPG_Character_EnvironmentToString((iterator->second).environment).c_str(),
                RPG_Character_Monster_Common_Tools::organizationsToString((iterator->second).organizations).c_str(),
                (iterator->second).challengeRating,
                (iterator->second).treasureModifier,
