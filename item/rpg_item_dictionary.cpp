@@ -22,6 +22,8 @@
 #include "rpg_item_XML_parser.h"
 #include "rpg_item_weapontype.h"
 #include "rpg_item_armortype.h"
+#include "rpg_item_weapon.h"
+#include "rpg_item_armor.h"
 
 #include <rpg_chance_dice_XML_parser.h>
 
@@ -181,4 +183,26 @@ const RPG_Item_ArmorProperties RPG_Item_Dictionary::getArmorProperties(const RPG
   } // end IF
 
   return iterator->second;
+}
+
+void RPG_Item_Dictionary::dump() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::dump"));
+
+  // simply dump the current content of our dictionaries
+  for (RPG_Item_WeaponDictionaryIterator_t iterator = myWeaponDictionary.begin();
+       iterator != myWeaponDictionary.end();
+       iterator++)
+  {
+    RPG_Item_Weapon weapon(iterator->first);
+    weapon.dump();
+  } // end FOR
+
+  for (RPG_Item_ArmorDictionaryIterator_t iterator = myArmorDictionary.begin();
+       iterator != myArmorDictionary.end();
+       iterator++)
+  {
+    RPG_Item_Armor armor(iterator->first);
+    armor.dump();
+  } // end FOR
 }

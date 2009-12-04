@@ -19,6 +19,7 @@
  ***************************************************************************/
 #include "rpg_item_XML_parser.h"
 
+#include "rpg_item_weapontype.h"
 #include "rpg_item_weaponcategory.h"
 #include "rpg_item_weaponclass.h"
 #include "rpg_item_physicaldamagetype.h"
@@ -99,11 +100,17 @@ void RPG_Item_WeaponDictionary_Type::weapon(const RPG_Item_WeaponPropertiesXML& 
   prop.criticalHitModifier = weapon_in.criticalHitModifier;
   prop.rangeIncrement = weapon_in.rangeIncrement;
   prop.baseWeight = weapon_in.baseWeight;
+  prop.typeOfDamage = PHYSICALDAMAGE_NONE;
   for (std::vector<RPG_Item_PhysicalDamageType>::const_iterator iterator = weapon_in.typeOfDamages.begin();
        iterator != weapon_in.typeOfDamages.end();
        iterator++)
   {
-    prop.typeOfDamage |= RPG_Item_WeaponDamage(*iterator);
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("weapon %s: damage: %s\n"),
+               RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_in.weaponType).c_str(),
+               RPG_Item_PhysicalDamageTypeHelper::RPG_Item_PhysicalDamageTypeToString(*iterator).c_str()));
+
+    prop.typeOfDamage.set((*iterator - 1));
   } // end FOR
 
   myWeaponDictionary->insert(std::make_pair(weapon_in.weaponType, prop));

@@ -37,8 +37,8 @@
 #include <bitset>
 #include <map>
 
-typedef std::bitset<(RPG_ITEM_PHYSICALDAMAGETYPE_MAX - 1)> RPG_Item_WeaponDamage;
-
+// typedef std::bitset<(RPG_ITEM_PHYSICALDAMAGETYPE_MAX - 1)> RPG_Item_WeaponDamage;
+typedef std::bitset<3> RPG_Item_WeaponDamage;
 typedef RPG_Chance_DiceRoll RPG_Item_Damage;
 
 struct RPG_Item_WeaponProperties

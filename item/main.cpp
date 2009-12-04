@@ -41,21 +41,17 @@ void print_usage()
 {
   ACE_TRACE(ACE_TEXT("::print_usage"));
 
-  std::cout << ACE_TEXT("usage: parser [OPTIONS]")
-            << std::endl
-            << std::endl;
-  std::cout << ACE_TEXT("currently available options:")
-            << std::endl;
-  std::cout << ACE_TEXT("-f [VALUE] : filename (*.xml)")
-            << std::endl;
-  std::cout << ACE_TEXT("-t         : trace information")
-            << std::endl;
-  std::cout << ACE_TEXT("-v         : print version information and exit")
-            << std::endl;
+  std::cout << ACE_TEXT("usage: item_parser [OPTIONS]") << std::endl;
+  std::cout << ACE_TEXT("currently available options:") << std::endl;
+  std::cout << ACE_TEXT("-d        : dump item dictionary") << std::endl;
+  std::cout << ACE_TEXT("-f [FILE] : filename (*.xml)") << std::endl;
+  std::cout << ACE_TEXT("-t        : trace information") << std::endl;
+  std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
 } // end print_usage
 
 const bool process_arguments(const int argc_in,
                              ACE_TCHAR* argv_in[], // cannot be const...
+                             bool& dumpItemDictionary_out,
                              std::string& fileName_out,
                              bool& traceInformation_out,
                              bool& printVersionAndExit_out)
@@ -63,19 +59,26 @@ const bool process_arguments(const int argc_in,
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
+  dumpItemDictionary_out = false;
   fileName_out.resize(0);
   traceInformation_out = false;
   printVersionAndExit_out = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("f:tv"));
+                             ACE_TEXT("df:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
   {
     switch (option)
     {
+      case 'd':
+      {
+        dumpItemDictionary_out = true;
+
+        break;
+      }
       case 'f':
       {
         fileName_out = argumentParser.opt_arg();
@@ -117,7 +120,8 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
-void do_work(const std::string& fileName_in)
+void do_work(const bool& dumpItemDictionary_in,
+             const std::string& fileName_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -137,6 +141,11 @@ void do_work(const std::string& fileName_in)
 
     return;
   }
+
+  if (dumpItemDictionary_in)
+  {
+    RPG_ITEM_DICTIONARY_SINGLETON::instance()->dump();
+  } // end IF
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -206,6 +215,7 @@ int ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
+  bool dumpItemDictionary  = false;
   std::string filename;
   bool traceInformation    = false;
   bool printVersionAndExit = false;
@@ -213,6 +223,7 @@ int ACE_TMAIN(int argc,
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
+                          dumpItemDictionary,
                           filename,
                           traceInformation,
                           printVersionAndExit)))
@@ -274,7 +285,8 @@ int ACE_TMAIN(int argc,
   timer.start();
 
   // step2: do actual work
-  do_work(filename);
+  do_work(dumpItemDictionary,
+          filename);
 
   timer.stop();
 
