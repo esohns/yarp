@@ -106,8 +106,12 @@ class RPG_Item_ArmorTypeHelper
     return RPG_ITEM_ARMORTYPE_INVALID;
   };
 
- private:
   static RPG_Item_ArmorTypeToStringTable_t myRPG_Item_ArmorTypeToStringTable;
+
+ private:
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_ArmorTypeHelper());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_ArmorTypeHelper(const RPG_Item_ArmorTypeHelper&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_ArmorTypeHelper& operator=(const RPG_Item_ArmorTypeHelper&));
 };
 
 #endif

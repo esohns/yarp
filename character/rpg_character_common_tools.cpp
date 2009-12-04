@@ -34,14 +34,25 @@
 #include "rpg_character_monsterweapon.h"
 #include "rpg_character_organization.h"
 #include "rpg_character_race.h"
+#include "rpg_character_race_common.h"
 #include "rpg_character_size.h"
 #include "rpg_character_skill.h"
 #include "rpg_character_subclass.h"
+
+#include "rpg_character_skills_common_tools.h"
+
+#include <rpg_item_weapon.h>
+#include <rpg_item_armor.h>
+#include <rpg_item_common_tools.h>
+#include <rpg_item_dictionary.h>
+
+#include <rpg_chance_dice.h>
 
 #include <ace/Log_Msg.h>
 
 #include <string>
 #include <sstream>
+#include <cctype>
 
 // init statics
 RPG_Character_AbilityToStringTable_t RPG_Character_AbilityHelper::myRPG_Character_AbilityToStringTable;
@@ -283,4 +294,334 @@ const RPG_Character_BaseAttackBonus_t RPG_Character_Common_Tools::getBaseAttackB
   } // end WHILE
 
   return result;
+}
+
+const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::generatePlayerCharacter"));
+
+  // step1: name
+  std::string name;
+  // generate a string of (random ASCII alphabet, printable) characters
+  int length = 0;
+  RPG_Chance_DiceRollResult_t result;
+  RPG_Chance_Dice::generateRandomNumbers(10, // maximum length
+                                         1,
+                                         result);
+  length = result.front();
+  result.clear();
+  RPG_Chance_Dice::generateRandomNumbers(26, // characters in (ASCII) alphabet
+                                         (2 * length), // first half are characters, last half interpreted as boolean (upper/lower)
+                                         result);
+  bool lowercase = false;
+  for (int i = 0;
+       i < length;
+       i++)
+  {
+    // upper/lower ?
+    if (result[26 + i + 1] > 13)
+      lowercase = false;
+    else
+      lowercase = true;
+
+    name += ACE_static_cast(char, (lowercase ? 97 : 65) + result[i]); // 97 == 'a', 65 == 'A'
+  } // end FOR
+
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("generated name: \"%s\"\n"),
+//              name.c_str()));
+
+  // step2: gender
+  RPG_Character_Gender gender = RPG_CHARACTER_GENDER_INVALID;
+  result.clear();
+  RPG_Chance_Dice::generateRandomNumbers((RPG_CHARACTER_GENDER_MAX - 1),
+                                         1,
+                                         result);
+  gender = ACE_static_cast(RPG_Character_Gender, (result.front() - 1));
+
+  // step3: race
+  RPG_Character_PlayerRace player_race(0);
+  // *TODO*: consider allowing multi-race like Half-Elf etc.
+  RPG_Character_Race race = RPG_CHARACTER_RACE_INVALID;
+  result.clear();
+  RPG_Chance_Dice::generateRandomNumbers((RPG_CHARACTER_RACE_MAX - 1),
+                                         1,
+                                         result);
+  race = ACE_static_cast(RPG_Character_Race, (result.front() - 1));
+  player_race.set(race);
+
+  // step4: class
+  RPG_Character_Class player_class;
+  player_class.metaClass = RPG_CHARACTER_METACLASS_INVALID;
+  player_class.subClass = RPG_CHARACTER_SUBCLASS_INVALID;
+  result.clear();
+  RPG_Chance_Dice::generateRandomNumbers((RPG_CHARACTER_SUBCLASS_MAX - 1),
+                                         1,
+                                         result);
+  player_class.subClass = ACE_static_cast(RPG_Character_SubClass, (result.front() - 1));
+  player_class.metaClass = RPG_Character_Class_Common_Tools::subClassToMetaClass(player_class.subClass);
+
+  // step5: alignment
+  RPG_Character_Alignment alignment;
+  alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
+  alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
+  result.clear();
+  RPG_Chance_Dice::generateRandomNumbers((RPG_CHARACTER_ALIGNMENTCIVIC_MAX - 1),
+                                         2,
+                                         result);
+  alignment.civic = ACE_static_cast(RPG_Character_AlignmentCivic, (result.front() - 1));
+  alignment.ethic = ACE_static_cast(RPG_Character_AlignmentEthic, (result.back() - 1));
+
+  // step6: attributes
+  RPG_Character_Attributes attributes;
+  ACE_OS::memset(&attributes, 0, sizeof(RPG_Character_Attributes));
+  unsigned char* p = &(attributes.strength);
+  RPG_Chance_DiceRoll roll;
+  roll.numDice = 2;
+  roll.typeDice = D_10;
+  roll.modifier = -2; // add +1 if result is 0 --> stats interval 1-18
+  // make sure the result is somewhat balanced (average == 6 * 9)...
+  // *IMPORTANT NOTE*: INT must be > 2 (smaller values are reserved for animals...)
+  int sum = 0;
+  do
+  {
+    result.clear();
+    RPG_Chance_Dice::simulateDiceRoll(roll,
+                                      6,
+                                      result);
+    sum = result[0] + result[1] + result[2] + result[3] + result[4] + result[5];
+  } while ((sum <= 54) ||
+           (*(std::min_element(result.begin(), result.end())) <= 9) ||
+           (result[3] < 3)); // Note: this is already covered by the last case...
+  for (int i = 0;
+       i < 6;
+       i++, p++)
+  {
+    *p = result[i];
+  } // end FOR
+
+  // step7: (initial) skills
+  RPG_Character_Skills_t skills;
+  unsigned int initialSkillPoints = 0;
+  RPG_Character_Skills_Common_Tools::getSkillPoints(player_class.subClass,
+                                                    RPG_Character_Common_Tools::getAttributeAbilityModifier(attributes.intelligence),
+                                                    initialSkillPoints);
+  RPG_Character_SkillsIterator_t iterator;
+  RPG_Character_Skill skill = RPG_CHARACTER_SKILL_INVALID;
+  for (unsigned int i = 0;
+       i < initialSkillPoints;
+       i++)
+  {
+    result.clear();
+    RPG_Chance_Dice::generateRandomNumbers(RPG_CHARACTER_SKILL_MAX,
+                                           1,
+                                           result);
+    skill = ACE_static_cast(RPG_Character_Skill, result.front() - 1);
+    iterator = skills.find(skill);
+    if (iterator != skills.end())
+    {
+      (iterator->second)++;
+    } // end IF
+    else
+    {
+      skills.insert(std::make_pair(skill,
+                                   ACE_static_cast(char, 1)));
+    } // end ELSE
+  } // end FOR
+
+  // step8: (initial) feats & abilities
+  RPG_Character_Feats_t feats;
+  unsigned int initialFeats = 0;
+  RPG_Character_Abilities_t abilities;
+  RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(race,
+                                                          player_class.subClass,
+                                                          1,
+                                                          feats,
+                                                          initialFeats,
+                                                          abilities);
+  RPG_Character_FeatsIterator_t iterator2;
+  RPG_Character_Feat feat = RPG_CHARACTER_FEAT_INVALID;
+  do
+  {
+    result.clear();
+    RPG_Chance_Dice::generateRandomNumbers(RPG_CHARACTER_FEAT_MAX,
+                                           1,
+                                           result);
+    feat = ACE_static_cast(RPG_Character_Feat, result.front() - 1);
+
+    // check prerequisites
+    if (!RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(feat,
+                                                                   player_class.subClass,
+                                                                   1,
+                                                                   attributes,
+                                                                   skills,
+                                                                   feats,
+                                                                   abilities))
+    {
+      // try again
+      continue;
+    } // end IF
+
+    iterator2 = feats.find(feat);
+    if (iterator2 != feats.end())
+    {
+      // try again
+      continue;
+    } // end IF
+
+    feats.insert(feat);
+  } while (feats.size() < initialFeats);
+
+  // step9: (initial) Hit Points
+  unsigned short int hitpoints = 0;
+  roll.numDice = 1;
+  roll.typeDice = RPG_Character_Common_Tools::getHitDie(player_class.subClass);
+  roll.modifier = 0;
+  result.clear();
+  RPG_Chance_Dice::simulateDiceRoll(roll,
+                                    1,
+                                    result);
+  hitpoints = result[0];
+
+  // step10: (initial) set of items
+  // *TODO*: somehow generate these at random too ?
+  RPG_Item_List_t items;
+  RPG_Item_Armor* armor = NULL;
+  RPG_Item_Armor* shield = NULL;
+  RPG_Item_Weapon* weapon = NULL;
+  RPG_Item_Weapon* bow = NULL;
+  switch (player_class.subClass)
+  {
+    case SUBCLASS_FIGHTER:
+    {
+      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+      armor  = new RPG_Item_Armor(ARMOR_MAIL_SPLINT);
+      shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
+
+      items.push_back(weapon->getID());
+      items.push_back(armor->getID());
+      items.push_back(shield->getID());
+
+      break;
+    }
+    case SUBCLASS_PALADIN:
+    {
+      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+      armor  = new RPG_Item_Armor(ARMOR_PLATE_FULL);
+      shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_STEEL);
+
+      items.push_back(weapon->getID());
+      items.push_back(armor->getID());
+      items.push_back(shield->getID());
+
+      break;
+    }
+    case SUBCLASS_RANGER:
+    {
+      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+      bow    = new RPG_Item_Weapon(RANGED_WEAPON_BOW_LONG);
+      armor  = new RPG_Item_Armor(ARMOR_HIDE);
+
+      items.push_back(weapon->getID());
+      items.push_back(bow->getID());
+      items.push_back(armor->getID());
+
+      break;
+    }
+    case SUBCLASS_BARBARIAN:
+    {
+      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+      armor  = new RPG_Item_Armor(ARMOR_HIDE);
+
+      items.push_back(weapon->getID());
+      items.push_back(armor->getID());
+
+      break;
+    }
+    case SUBCLASS_WIZARD:
+    case SUBCLASS_SORCERER:
+    case SUBCLASS_WARLOCK:
+    {
+      weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+
+      items.push_back(weapon->getID());
+
+      break;
+    }
+    case SUBCLASS_CLERIC:
+    case SUBCLASS_AVENGER:
+    case SUBCLASS_INVOKER:
+    {
+      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
+      armor  = new RPG_Item_Armor(ARMOR_MAIL_CHAIN);
+      shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
+
+      items.push_back(weapon->getID());
+      items.push_back(armor->getID());
+      items.push_back(shield->getID());
+
+      break;
+    }
+    case SUBCLASS_DRUID:
+    case SUBCLASS_SHAMAN:
+    {
+      weapon = new RPG_Item_Weapon(LIGHT_MELEE_WEAPON_SICKLE);
+      armor  = new RPG_Item_Armor(ARMOR_HIDE);
+      shield  = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_WOODEN);
+
+      items.push_back(weapon->getID());
+      items.push_back(armor->getID());
+      items.push_back(shield->getID());
+
+      break;
+    }
+    case SUBCLASS_MONK:
+    {
+      weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+
+      items.push_back(weapon->getID());
+
+      break;
+    }
+    case SUBCLASS_THIEF:
+    case SUBCLASS_BARD:
+    {
+      weapon = new RPG_Item_Weapon(LIGHT_MELEE_WEAPON_SWORD_SHORT);
+      armor  = new RPG_Item_Armor(ARMOR_LEATHER);
+      shield  = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_STEEL);
+
+      items.push_back(weapon->getID());
+      items.push_back(armor->getID());
+      items.push_back(shield->getID());
+
+      break;
+    }
+    default:
+    {
+      std::string subClass_string = RPG_Character_SubClassHelper::RPG_Character_SubClassToString(player_class.subClass);
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid player sub-class \"%s\", continuing\n"),
+                 subClass_string.c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  // step11: instantiate player character
+  RPG_Character_Player player(name,
+                              gender,
+                              race,
+                              player_class,
+                              alignment,
+                              attributes,
+                              skills,
+                              feats,
+                              abilities,
+                              0,
+                              hitpoints,
+                              0,
+                              items);
+
+  return player;
 }

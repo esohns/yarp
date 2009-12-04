@@ -1412,8 +1412,9 @@ const bool RPG_Character_Skills_Common_Tools::isClassSkill(const RPG_Character_S
   {
     // debug info
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid subclass: %d --> check implementation !, aborting\n"),
-               subClass_in));
+               ACE_TEXT("isClassSkill(\"%s\", \"%s\"): missing table for subclass, aborting\n"),
+               RPG_Character_SubClassHelper::RPG_Character_SubClassToString(subClass_in).c_str(),
+               RPG_Character_SkillHelper::RPG_Character_SkillToString(skill_in).c_str()));
 
     return false;
   } // end IF
@@ -1473,8 +1474,8 @@ const unsigned int RPG_Character_Skills_Common_Tools::getSkillPoints(const RPG_C
     {
       // debug info
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid subclass: %d --> check implementation !, aborting\n"),
-                 subClass_in));
+                 ACE_TEXT("invalid subclass: \"%s\" --> check implementation !, aborting\n"),
+                 RPG_Character_SubClassHelper::RPG_Character_SubClassToString(subClass_in).c_str()));
 
       return 0;
     }
@@ -1769,8 +1770,8 @@ const unsigned int RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const
     {
       // debug info
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid subclass: %d --> check implementation !, aborting\n"),
-                 subClass_in));
+                 ACE_TEXT("invalid subclass: \"%s\" --> check implementation !, aborting\n"),
+                 RPG_Character_SubClassHelper::RPG_Character_SubClassToString(subClass_in).c_str()));
 
       return 0;
     }

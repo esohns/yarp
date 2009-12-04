@@ -20,19 +20,10 @@
 #ifndef RPG_CHARACTER_RACE_COMMON_H
 #define RPG_CHARACTER_RACE_COMMON_H
 
-enum RPG_Character_Race
-{
-  RACE_BASE = 0,
-  //
-  RACE_HUMAN = 1,
-  RACE_DWARF = 2,
-  RACE_ELF = 4,
-  RACE_HALFLING = 8,
-  RACE_GNOME = 16,
-  RACE_ORC = 32,
-  //
-  RACE_MAX,
-  RACE_INVALID
-};
+#include "rpg_character_race.h"
+
+#include <bitset>
+
+typedef std::bitset<(RPG_CHARACTER_RACE_MAX - 1)> RPG_Character_PlayerRace;
 
 #endif

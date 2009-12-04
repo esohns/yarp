@@ -76,8 +76,12 @@ class RPG_Item_WeaponCategoryHelper
     return RPG_ITEM_WEAPONCATEGORY_INVALID;
   };
 
- private:
   static RPG_Item_WeaponCategoryToStringTable_t myRPG_Item_WeaponCategoryToStringTable;
+
+ private:
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_WeaponCategoryHelper());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_WeaponCategoryHelper(const RPG_Item_WeaponCategoryHelper&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_WeaponCategoryHelper& operator=(const RPG_Item_WeaponCategoryHelper&));
 };
 
 #endif

@@ -214,8 +214,12 @@ class RPG_Item_WeaponTypeHelper
     return RPG_ITEM_WEAPONTYPE_INVALID;
   };
 
- private:
   static RPG_Item_WeaponTypeToStringTable_t myRPG_Item_WeaponTypeToStringTable;
+
+ private:
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_WeaponTypeHelper());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_WeaponTypeHelper(const RPG_Item_WeaponTypeHelper&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_WeaponTypeHelper& operator=(const RPG_Item_WeaponTypeHelper&));
 };
 
 #endif

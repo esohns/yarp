@@ -80,8 +80,12 @@ class RPG_Item_TypeHelper
     return RPG_ITEM_TYPE_INVALID;
   };
 
- private:
   static RPG_Item_TypeToStringTable_t myRPG_Item_TypeToStringTable;
+
+ private:
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_TypeHelper());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_TypeHelper(const RPG_Item_TypeHelper&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_TypeHelper& operator=(const RPG_Item_TypeHelper&));
 };
 
 #endif

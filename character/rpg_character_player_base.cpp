@@ -55,6 +55,17 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(const std::string& name_in,
 
 }
 
+RPG_Character_Player_Base::RPG_Character_Player_Base(const RPG_Character_Player_Base& playerBase_in)
+ : myGender(playerBase_in.myGender),
+   myRace(playerBase_in.myRace),
+   myClass(playerBase_in.myClass),
+   myExperience(playerBase_in.myExperience),
+   inherited(playerBase_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::RPG_Character_Player_Base"));
+
+}
+
 RPG_Character_Player_Base::~RPG_Character_Player_Base()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::~RPG_Character_Player_Base"));

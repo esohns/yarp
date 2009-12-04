@@ -363,7 +363,7 @@ void do_work(const std::string filename_in)
     } // end SWITCH
   } while (gender == GENDER_NONE);
 
-  RPG_Character_Race race = RACE_BASE;
+  RPG_Character_Race race = RACE_NONE;
   c = 'f';
   do
   {
@@ -409,11 +409,11 @@ void do_work(const std::string filename_in)
         break;
       }
     } // end SWITCH
-  } while (race == RACE_BASE);
+  } while (race == RACE_NONE);
 
   RPG_Character_Class player_class;
-  player_class.metaClass = METACLASS_BASE;
-  player_class.subClass = SUBCLASS_BASE;
+  player_class.metaClass = METACLASS_NONE;
+  player_class.subClass = SUBCLASS_NONE;
   c = 'f';
   do
   {
@@ -453,8 +453,8 @@ void do_work(const std::string filename_in)
         break;
       }
     } // end SWITCH
-  } while ((player_class.metaClass == METACLASS_BASE) &&
-           (player_class.subClass == SUBCLASS_BASE));
+  } while ((player_class.metaClass == METACLASS_NONE) &&
+           (player_class.subClass == SUBCLASS_NONE));
 
   RPG_Character_Alignment alignment;
   alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;

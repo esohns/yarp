@@ -78,8 +78,12 @@ class RPG_Item_ArmorCategoryHelper
     return RPG_ITEM_ARMORCATEGORY_INVALID;
   };
 
- private:
   static RPG_Item_ArmorCategoryToStringTable_t myRPG_Item_ArmorCategoryToStringTable;
+
+ private:
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_ArmorCategoryHelper());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_ArmorCategoryHelper(const RPG_Item_ArmorCategoryHelper&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_ArmorCategoryHelper& operator=(const RPG_Item_ArmorCategoryHelper&));
 };
 
 #endif

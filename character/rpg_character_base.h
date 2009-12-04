@@ -87,6 +87,7 @@ class RPG_Character_Base
                      const unsigned int&,               // (starting) wealth (GP)
                      // base items
                      const RPG_Item_List_t&);           // (starting) list of (carried) items
+  RPG_Character_Base(const RPG_Character_Base&);
 
   std::string               myName;
   RPG_Character_Alignment   myAlignment;
@@ -111,7 +112,6 @@ class RPG_Character_Base
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Base());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Base(const RPG_Character_Base&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Base& operator=(const RPG_Character_Base&));
 };
 

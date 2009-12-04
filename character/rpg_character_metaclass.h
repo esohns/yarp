@@ -23,7 +23,7 @@
 
 enum RPG_Character_MetaClass
 {
-  METACLASS_BASE = 0,
+  METACLASS_NONE = 0,
   METACLASS_WARRIOR,
   METACLASS_WIZARD,
   METACLASS_PRIEST,
@@ -47,7 +47,7 @@ class RPG_Character_MetaClassHelper
   inline static void init()
   {
     myRPG_Character_MetaClassToStringTable.clear();
-    myRPG_Character_MetaClassToStringTable.insert(std::make_pair(METACLASS_BASE, ACE_TEXT_ALWAYS_CHAR("METACLASS_BASE")));
+    myRPG_Character_MetaClassToStringTable.insert(std::make_pair(METACLASS_NONE, ACE_TEXT_ALWAYS_CHAR("METACLASS_NONE")));
     myRPG_Character_MetaClassToStringTable.insert(std::make_pair(METACLASS_WARRIOR, ACE_TEXT_ALWAYS_CHAR("METACLASS_WARRIOR")));
     myRPG_Character_MetaClassToStringTable.insert(std::make_pair(METACLASS_WIZARD, ACE_TEXT_ALWAYS_CHAR("METACLASS_WIZARD")));
     myRPG_Character_MetaClassToStringTable.insert(std::make_pair(METACLASS_PRIEST, ACE_TEXT_ALWAYS_CHAR("METACLASS_PRIEST")));

@@ -44,6 +44,7 @@ class RPG_Character_Player
                        const unsigned short int&,        // (starting) HP
                        const unsigned int&,              // (starting) wealth (GP)
                        const RPG_Item_List_t&);          // (starting) list of (carried) items
+  RPG_Character_Player(const RPG_Character_Player&);
   virtual ~RPG_Character_Player();
 
   using RPG_Character_Player_Base::dump;
@@ -53,7 +54,6 @@ class RPG_Character_Player
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player(const RPG_Character_Player&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player& operator=(const RPG_Character_Player&));
 };
 

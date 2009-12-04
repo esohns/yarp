@@ -31,6 +31,13 @@ RPG_Character_Inventory::RPG_Character_Inventory(const RPG_Item_List_t& items_in
 
 }
 
+RPG_Character_Inventory::RPG_Character_Inventory(const RPG_Character_Inventory& inventory_in)
+ : myItems(inventory_in.myItems)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::RPG_Character_Inventory"));
+
+}
+
 RPG_Character_Inventory::~RPG_Character_Inventory()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::~RPG_Character_Inventory"));

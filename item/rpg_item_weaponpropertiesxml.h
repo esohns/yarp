@@ -31,7 +31,7 @@ struct RPG_Item_WeaponPropertiesXML
   RPG_Item_CriticalHitModifier criticalHitModifier;
   unsigned char rangeIncrement;
   unsigned short int baseWeight;
-  std::vector<RPG_Item_WeaponDamageType> typeOfDamages;
+  std::vector<RPG_Item_PhysicalDamageType> typeOfDamages;
 };
 
 #endif

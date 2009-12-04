@@ -20,6 +20,7 @@
 #ifndef RPG_CHARACTER_CLASS_COMMON_H
 #define RPG_CHARACTER_CLASS_COMMON_H
 
+#include "rpg_character_metaclass.h"
 #include "rpg_character_subclass.h"
 
 #include <set>
@@ -27,5 +28,18 @@
 // some useful types
 typedef std::set<RPG_Character_SubClass> RPG_Character_SubClasses_t;
 typedef RPG_Character_SubClasses_t::const_iterator RPG_Character_SubClassesIterator_t;
+
+class RPG_Character_Class_Common_Tools
+{
+ public:
+  static const RPG_Character_MetaClass subClassToMetaClass(const RPG_Character_SubClass&); // subclass
+
+ private:
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Class_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Class_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Class_Common_Tools(const RPG_Character_Class_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Class_Common_Tools& operator=(const RPG_Character_Class_Common_Tools&));
+};
 
 #endif

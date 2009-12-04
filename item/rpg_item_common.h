@@ -28,7 +28,7 @@
 #include "rpg_item_weaponclass.h"
 #include "rpg_item_storeprice.h"
 #include "rpg_item_criticalhitmodifier.h"
-#include "rpg_item_weapondamagetype.h"
+#include "rpg_item_physicaldamagetype.h"
 #include "rpg_item_weaponpropertiesxml.h"
 #include "rpg_item_armortype.h"
 #include "rpg_item_armorcategory.h"
@@ -37,7 +37,7 @@
 #include <bitset>
 #include <map>
 
-typedef std::bitset<3> RPG_Item_WeaponDamage;
+typedef std::bitset<(RPG_ITEM_PHYSICALDAMAGETYPE_MAX - 1)> RPG_Item_WeaponDamage;
 
 typedef RPG_Chance_DiceRoll RPG_Item_Damage;
 

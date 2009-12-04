@@ -150,7 +150,7 @@ baseWeight_parser (::xml_schema::unsigned_short_pskel& p)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pskel::
-typeOfDamage_parser (::RPG_Item_WeaponDamageType_Type_pskel& p)
+typeOfDamage_parser (::RPG_Item_PhysicalDamageType_Type_pskel& p)
 {
   this->typeOfDamage_parser_ = &p;
 }
@@ -164,7 +164,7 @@ parsers (::RPG_Item_WeaponType_Type_pskel& weaponType,
          ::RPG_Item_CriticalHitModifier_Type_pskel& criticalHitModifier,
          ::xml_schema::unsigned_byte_pskel& rangeIncrement,
          ::xml_schema::unsigned_short_pskel& baseWeight,
-         ::RPG_Item_WeaponDamageType_Type_pskel& typeOfDamage)
+         ::RPG_Item_PhysicalDamageType_Type_pskel& typeOfDamage)
 {
   this->weaponType_parser_ = &weaponType;
   this->weaponCategory_parser_ = &weaponCategory;
@@ -209,7 +209,7 @@ parsers (::RPG_Item_WeaponType_Type_pskel& weaponType,
          ::RPG_Item_CriticalHitModifier_Type_pskel& criticalHitModifier,
          ::xml_schema::unsigned_byte_pskel& rangeIncrement,
          ::xml_schema::unsigned_short_pskel& baseWeight,
-         ::RPG_Item_WeaponDamageType_Type_pskel& typeOfDamage,
+         ::RPG_Item_PhysicalDamageType_Type_pskel& typeOfDamage,
          ::xml_schema::byte_pskel& toHitModifier)
 {
   this->weaponType_parser_ = &weaponType;
@@ -638,7 +638,7 @@ baseWeight (unsigned short)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pskel::
-typeOfDamage (const RPG_Item_WeaponDamageType&)
+typeOfDamage (const RPG_Item_PhysicalDamageType&)
 {
 }
 
@@ -819,7 +819,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "typeOfDamage" && ns == "urn:rpg")
   {
     if (this->typeOfDamage_parser_)
-      this->typeOfDamage (this->typeOfDamage_parser_->post_RPG_Item_WeaponDamageType_Type ());
+      this->typeOfDamage (this->typeOfDamage_parser_->post_RPG_Item_PhysicalDamageType_Type ());
 
     return true;
   }

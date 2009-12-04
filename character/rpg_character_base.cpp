@@ -51,6 +51,23 @@ RPG_Character_Base::RPG_Character_Base(const std::string& name_in,
 
 }
 
+RPG_Character_Base::RPG_Character_Base(const RPG_Character_Base& playerBase_in)
+  : myName(playerBase_in.myName),
+    myAlignment(playerBase_in.myAlignment),
+    myAttributes(playerBase_in.myAttributes),
+    mySkills(playerBase_in.mySkills),
+    myFeats(playerBase_in.myFeats),
+    myAbilities(playerBase_in.myAbilities),
+    myNumTotalHitPoints(playerBase_in.myNumTotalHitPoints),
+    myNumCurrentHitPoints(playerBase_in.myNumCurrentHitPoints),
+    myCurrentWealth(playerBase_in.myCurrentWealth),
+    myCondition(playerBase_in.myCondition),
+    myInventory(playerBase_in.myInventory)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
+
+}
+
 RPG_Character_Base::~RPG_Character_Base()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::~RPG_Character_Base"));

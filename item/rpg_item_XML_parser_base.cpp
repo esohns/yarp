@@ -155,16 +155,16 @@ post_RPG_Item_CriticalHitModifier_Type ()
   // return ... ;
 }
 
-// RPG_Item_WeaponDamageType_Type_pimpl
+// RPG_Item_PhysicalDamageType_Type_pimpl
 //
 
-void RPG_Item_WeaponDamageType_Type_pimpl::
+void RPG_Item_PhysicalDamageType_Type_pimpl::
 pre ()
 {
 }
 
-RPG_Item_WeaponDamageType RPG_Item_WeaponDamageType_Type_pimpl::
-post_RPG_Item_WeaponDamageType_Type ()
+RPG_Item_PhysicalDamageType RPG_Item_PhysicalDamageType_Type_pimpl::
+post_RPG_Item_PhysicalDamageType_Type ()
 {
   const ::std::string& v (post_string ());
 
@@ -238,7 +238,7 @@ baseWeight (unsigned short baseWeight)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pimpl::
-typeOfDamage (const RPG_Item_WeaponDamageType& typeOfDamage)
+typeOfDamage (const RPG_Item_PhysicalDamageType& typeOfDamage)
 {
   // TODO
   //

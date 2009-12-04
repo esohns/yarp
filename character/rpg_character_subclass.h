@@ -23,7 +23,7 @@
 
 enum RPG_Character_SubClass
 {
-  SUBCLASS_BASE = 0,
+  SUBCLASS_NONE = 0,
   SUBCLASS_FIGHTER,
   SUBCLASS_PALADIN,
   SUBCLASS_RANGER,
@@ -59,7 +59,7 @@ class RPG_Character_SubClassHelper
   inline static void init()
   {
     myRPG_Character_SubClassToStringTable.clear();
-    myRPG_Character_SubClassToStringTable.insert(std::make_pair(SUBCLASS_BASE, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_BASE")));
+    myRPG_Character_SubClassToStringTable.insert(std::make_pair(SUBCLASS_NONE, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_NONE")));
     myRPG_Character_SubClassToStringTable.insert(std::make_pair(SUBCLASS_FIGHTER, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_FIGHTER")));
     myRPG_Character_SubClassToStringTable.insert(std::make_pair(SUBCLASS_PALADIN, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_PALADIN")));
     myRPG_Character_SubClassToStringTable.insert(std::make_pair(SUBCLASS_RANGER, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_RANGER")));

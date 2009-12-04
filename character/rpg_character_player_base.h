@@ -91,6 +91,7 @@ class RPG_Character_Player_Base
                             const unsigned short int&,        // (starting) HP
                             const unsigned int&,              // (starting) wealth (GP)
                             const RPG_Item_List_t&);          // (starting) list of (carried) items
+  RPG_Character_Player_Base(const RPG_Character_Player_Base&);
 
   RPG_Character_Gender      myGender;
   RPG_Character_Race        myRace;
@@ -106,7 +107,6 @@ class RPG_Character_Player_Base
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player_Base());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player_Base(const RPG_Character_Player_Base&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player_Base& operator=(const RPG_Character_Player_Base&));
 };
 

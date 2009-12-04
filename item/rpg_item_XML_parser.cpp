@@ -21,7 +21,7 @@
 
 #include "rpg_item_weaponcategory.h"
 #include "rpg_item_weaponclass.h"
-#include "rpg_item_weapondamagetype.h"
+#include "rpg_item_physicaldamagetype.h"
 #include "rpg_item_armorcategory.h"
 
 #include <ace/Log_Msg.h>
@@ -99,7 +99,7 @@ void RPG_Item_WeaponDictionary_Type::weapon(const RPG_Item_WeaponPropertiesXML& 
   prop.criticalHitModifier = weapon_in.criticalHitModifier;
   prop.rangeIncrement = weapon_in.rangeIncrement;
   prop.baseWeight = weapon_in.baseWeight;
-  for (std::vector<RPG_Item_WeaponDamageType>::const_iterator iterator = weapon_in.typeOfDamages.begin();
+  for (std::vector<RPG_Item_PhysicalDamageType>::const_iterator iterator = weapon_in.typeOfDamages.begin();
        iterator != weapon_in.typeOfDamages.end();
        iterator++)
   {
@@ -274,11 +274,11 @@ RPG_Item_CriticalHitModifier RPG_Item_CriticalHitModifier_Type::post_RPG_Item_Cr
 //
 // }
 
-RPG_Item_WeaponDamageType RPG_Item_WeaponDamageType_Type::post_RPG_Item_WeaponDamageType_Type()
+RPG_Item_PhysicalDamageType RPG_Item_PhysicalDamageType_Type::post_RPG_Item_PhysicalDamageType_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponDamageType_Type::post_RPG_Item_WeaponDamageType_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_PhysicalDamageType_Type::post_RPG_Item_PhysicalDamageType_Type"));
 
-  return RPG_Item_WeaponDamageTypeHelper::stringToRPG_Item_WeaponDamageType(post_string());
+  return RPG_Item_PhysicalDamageTypeHelper::stringToRPG_Item_PhysicalDamageType(post_string());
 }
 
 RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type()
@@ -363,7 +363,7 @@ void RPG_Item_WeaponPropertiesXML_Type::baseWeight(unsigned short baseWeight_in)
   myCurrentWeaponProperties.baseWeight = baseWeight_in;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type::typeOfDamage(const RPG_Item_WeaponDamageType& typeOfDamage_in)
+void RPG_Item_WeaponPropertiesXML_Type::typeOfDamage(const RPG_Item_PhysicalDamageType& typeOfDamage_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::typeOfDamage"));
 

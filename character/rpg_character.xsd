@@ -33,7 +33,7 @@
 
   <xsd:simpleType name="RPG_Character_Race_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="RACE_BASE"/>
+      <xsd:enumeration value="RACE_NONE"/>
       <xsd:enumeration value="RACE_HUMAN"/>
       <xsd:enumeration value="RACE_DWARF"/>
       <xsd:enumeration value="RACE_ELF"/>
@@ -45,7 +45,7 @@
 
   <xsd:simpleType name="RPG_Character_MetaClass_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="METACLASS_BASE"/>
+      <xsd:enumeration value="METACLASS_NONE"/>
       <xsd:enumeration value="METACLASS_WARRIOR"/>
       <xsd:enumeration value="METACLASS_WIZARD"/>
       <xsd:enumeration value="METACLASS_PRIEST"/>
@@ -55,7 +55,7 @@
 
   <xsd:simpleType name="RPG_Character_SubClass_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="SUBCLASS_BASE"/>
+      <xsd:enumeration value="SUBCLASS_NONE"/>
       <xsd:enumeration value="SUBCLASS_FIGHTER"/>
       <xsd:enumeration value="SUBCLASS_PALADIN"/>
       <xsd:enumeration value="SUBCLASS_RANGER"/>
@@ -668,13 +668,13 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Character_MonsterDictionary_Type">
+  <xsd:complexType name="RPG_Character_MonsterDictionary_Type" id="skip0">
     <xsd:sequence>
       <xsd:element name="monster" type="RPG_Character_MonsterPropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Character_Dictionary_Type" id="skip0">
+  <xsd:complexType name="RPG_Character_Dictionary_Type" id="skip1">
     <xsd:sequence>
       <xsd:element name="monsterDictionary" type="RPG_Character_MonsterDictionary_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>

@@ -20,7 +20,7 @@
 #ifndef RPG_ITEM_XML_PARSER_H
 #define RPG_ITEM_XML_PARSER_H
 
-#include "rpg_item_common.h"
+// #include "rpg_item_common.h"
 #include "rpg_item_XML_parser_base.h"
 
 #include <ace/Global_Macros.h>
@@ -143,12 +143,12 @@ class RPG_Item_CriticalHitModifier_Type
   RPG_Item_CriticalHitModifier myCurrentCriticalHitModifier;
 };
 
-class RPG_Item_WeaponDamageType_Type
- : public RPG_Item_WeaponDamageType_Type_pimpl
+class RPG_Item_PhysicalDamageType_Type
+ : public RPG_Item_PhysicalDamageType_Type_pimpl
 {
  public:
 //   virtual void pre();
-  virtual RPG_Item_WeaponDamageType post_RPG_Item_WeaponDamageType_Type();
+  virtual RPG_Item_PhysicalDamageType post_RPG_Item_PhysicalDamageType_Type();
 };
 
 class RPG_Item_WeaponPropertiesXML_Type
@@ -166,7 +166,7 @@ class RPG_Item_WeaponPropertiesXML_Type
   virtual void criticalHitModifier(const RPG_Item_CriticalHitModifier&);
   virtual void rangeIncrement(unsigned char);
   virtual void baseWeight(unsigned short);
-  virtual void typeOfDamage(const RPG_Item_WeaponDamageType&);
+  virtual void typeOfDamage(const RPG_Item_PhysicalDamageType&);
   virtual RPG_Item_WeaponPropertiesXML post_RPG_Item_WeaponPropertiesXML_Type();
 
  private:

@@ -99,15 +99,15 @@ class RPG_Item_CriticalHitModifier_Type_pimpl: public virtual RPG_Item_CriticalH
   post_RPG_Item_CriticalHitModifier_Type ();
 };
 
-class RPG_Item_WeaponDamageType_Type_pimpl: public virtual RPG_Item_WeaponDamageType_Type_pskel,
+class RPG_Item_PhysicalDamageType_Type_pimpl: public virtual RPG_Item_PhysicalDamageType_Type_pskel,
   public ::xml_schema::string_pimpl
 {
   public:
   virtual void
   pre ();
 
-  virtual RPG_Item_WeaponDamageType
-  post_RPG_Item_WeaponDamageType_Type ();
+  virtual RPG_Item_PhysicalDamageType
+  post_RPG_Item_PhysicalDamageType_Type ();
 };
 
 class RPG_Item_WeaponPropertiesXML_Type_pimpl: public virtual RPG_Item_WeaponPropertiesXML_Type_pskel
@@ -141,7 +141,7 @@ class RPG_Item_WeaponPropertiesXML_Type_pimpl: public virtual RPG_Item_WeaponPro
   baseWeight (unsigned short);
 
   virtual void
-  typeOfDamage (const RPG_Item_WeaponDamageType&);
+  typeOfDamage (const RPG_Item_PhysicalDamageType&);
 
   virtual RPG_Item_WeaponPropertiesXML
   post_RPG_Item_WeaponPropertiesXML_Type ();

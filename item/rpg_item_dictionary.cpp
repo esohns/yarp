@@ -67,19 +67,8 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
                              unsigned_byte_p);
 //   unsigned_int_pimpl                       rangeIncrement_p;
 //   unsigned_int_pimpl                       baseWeight_p;
-  RPG_Item_WeaponDamageType_Type          damageType_p;
-
-  RPG_Item_ArmorType_Type                 armorType_p;
-  RPG_Item_ArmorCategory_Type             armorCategory_p;
-//  RPG_Item_StorePrice_Type_pimpl          baseStorePrice_p;
-//  unsigned_int_pimpl                      baseArmorBonus_p;
-//  unsigned_int_pimpl                      maxDexterityBonus_p;
-//  int_pimpl                               armorCheckPenalty_p;
-//  unsigned_int_pimpl                      arcaneSpellFailure_p;
-//  unsigned_int_pimpl                      baseSpeed_p;
-//  unsigned_int_pimpl                      baseWeight_p;
-
   ::xml_schema::unsigned_short_pimpl      unsigned_short_p;
+  RPG_Item_PhysicalDamageType_Type        damageType_p;
   RPG_Item_WeaponPropertiesXML_Type       weaponPropertiesXML_p;
   weaponPropertiesXML_p.parsers(weaponType_p,
                                 weaponCategory_p,
@@ -90,6 +79,15 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
                                 unsigned_byte_p,
                                 unsigned_short_p,
                                 damageType_p);
+  RPG_Item_ArmorType_Type                 armorType_p;
+  RPG_Item_ArmorCategory_Type             armorCategory_p;
+//  RPG_Item_StorePrice_Type_pimpl          baseStorePrice_p;
+//  unsigned_int_pimpl                      baseArmorBonus_p;
+//  unsigned_int_pimpl                      maxDexterityBonus_p;
+//  int_pimpl                               armorCheckPenalty_p;
+//  unsigned_int_pimpl                      arcaneSpellFailure_p;
+//  unsigned_int_pimpl                      baseSpeed_p;
+//  unsigned_int_pimpl                      baseWeight_p;
   ::xml_schema::byte_pimpl                byte_p;
   RPG_Item_ArmorPropertiesXML_Type        armorPropertiesXML_p;
   armorPropertiesXML_p.parsers(armorType_p,
@@ -157,10 +155,9 @@ const RPG_Item_WeaponProperties RPG_Item_Dictionary::getWeaponProperties(const R
   RPG_Item_WeaponDictionaryIterator_t iterator = myWeaponDictionary.find(weaponType_in);
   if (iterator == myWeaponDictionary.end())
   {
-    std::string weaponType_string = RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weaponType_in);
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid weapon type \"%s\" --> check implementation !, aborting\n"),
-               weaponType_string.c_str()));
+               RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weaponType_in).c_str()));
 
     ACE_ASSERT(false);
   } // end IF

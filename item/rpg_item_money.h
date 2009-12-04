@@ -82,8 +82,12 @@ class RPG_Item_MoneyHelper
     return RPG_ITEM_MONEY_INVALID;
   };
 
- private:
   static RPG_Item_MoneyToStringTable_t myRPG_Item_MoneyToStringTable;
+
+ private:
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_MoneyHelper());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_MoneyHelper(const RPG_Item_MoneyHelper&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_MoneyHelper& operator=(const RPG_Item_MoneyHelper&));
 };
 
 #endif

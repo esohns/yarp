@@ -52,6 +52,13 @@ RPG_Character_Player::RPG_Character_Player(const std::string& name_in,
 
 }
 
+RPG_Character_Player::RPG_Character_Player(const RPG_Character_Player& player_in)
+ : inherited(player_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player::RPG_Character_Player"));
+
+}
+
 RPG_Character_Player::~RPG_Character_Player()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player::~RPG_Character_Player"));

@@ -31,6 +31,8 @@ class RPG_Character_Inventory
 {
  public:
   RPG_Character_Inventory(const RPG_Item_List_t&); // list of initial items
+  // *IMPORTANT NOTE*: this could prove problematic (add reference counting ?)
+  RPG_Character_Inventory(const RPG_Character_Inventory&);
   virtual ~RPG_Character_Inventory();
 
   void add(const RPG_Item_ID_t&); // item ID
@@ -41,7 +43,6 @@ class RPG_Character_Inventory
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Inventory());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Inventory(const RPG_Character_Inventory&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Inventory& operator=(const RPG_Character_Inventory&));
 
   RPG_Item_List_t myItems;

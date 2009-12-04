@@ -5,7 +5,7 @@ namespace urn:rpg
   include "rpg_item_weaponclass.h";
   include "rpg_item_storeprice.h";
   include "rpg_item_criticalhitmodifier.h";
-  inlcude "rpg_item_weapondamagetype.h";
+  include "rpg_item_physicaldamagetype.h";
   include "rpg_item_armorcategory.h";
   include "rpg_item_weapontype.h";
   include "rpg_item_armortype.h";
@@ -18,7 +18,7 @@ namespace urn:rpg
   RPG_Item_WeaponType_Type               RPG_Item_WeaponType;
   RPG_Item_StorePrice_Type               RPG_Item_StorePrice;
   RPG_Item_CriticalHitModifier_Type      RPG_Item_CriticalHitModifier;
-  RPG_Item_WeaponDamageType_Type         RPG_Item_WeaponDamageType;
+  RPG_Item_PhysicalDamageType_Type       RPG_Item_PhysicalDamageType;
   RPG_Chance_DiceRoll_Type               RPG_Item_Damage;
   RPG_Item_WeaponPropertiesXML_Type      RPG_Item_WeaponPropertiesXML;
 #  RPG_Item_MagicWeaponPropertiesXML_Type RPG_Item_MagicWeaponPropertiesXML;
