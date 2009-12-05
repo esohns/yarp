@@ -20,10 +20,16 @@
 #ifndef RPG_CHARACTER_COMMON_H
 #define RPG_CHARACTER_COMMON_H
 
+#include "rpg_character_condition.h"
+
 #include <vector>
+#include <set>
 
 // some useful types
 typedef std::vector<unsigned char> RPG_Character_BaseAttackBonus_t;
 typedef RPG_Character_BaseAttackBonus_t::const_iterator RPG_Character_BaseAttackBonusIterator_t;
+
+typedef std::set<RPG_Character_Condition> RPG_Character_Conditions_t;
+typedef RPG_Character_Conditions_t::const_iterator RPG_Character_ConditionsIterator_t;
 
 #endif

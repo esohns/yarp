@@ -43,38 +43,6 @@ class RPG_Character_Player_Base
  public:
   virtual ~RPG_Character_Player_Base();
 
-  // retrieve basic player character data
-  const RPG_Character_Gender getGender() const;
-  const RPG_Character_Race getRace() const;
-  const RPG_Character_Class getClass() const;
-
-  const unsigned int getExperience() const;
-  // compute dynamically from class/XP
-  const unsigned char getLevel() const;
-
-//   // retrieve basic character data
-//   using RPG_Character_Base::getGender;
-//   using RPG_Character_Base::getRace;
-//   using RPG_Character_Base::getClass;
-//   using RPG_Character_Base::getAlignment;
-//
-//   // retrieve base attributes
-//   using RPG_Character_Base::getStrength;
-//   using RPG_Character_Base::getDexterity;
-//   using RPG_Character_Base::getConstitution;
-//   using RPG_Character_Base::getIntelligence;
-//   using RPG_Character_Base::getWisdom;
-//   using RPG_Character_Base::getCharisma;
-//   // retrieve skill value (if any)
-//   using RPG_Character_Base::getSkill;
-//
-//   using RPG_Character_Base::getExperience;
-//   // compute dynamically from class/XP
-//   using RPG_Character_Base::getLevel;
-//   using RPG_Character_Base::getNumTotalHitPoints;
-//   using RPG_Character_Base::getNumCurrentHitPoints;
-//   using RPG_Character_Base::getCurrentWealth;
-
   virtual void dump() const;
 
  protected:
@@ -93,6 +61,35 @@ class RPG_Character_Player_Base
                             const RPG_Item_List_t&);          // (starting) list of (carried) items
   RPG_Character_Player_Base(const RPG_Character_Player_Base&);
 
+  RPG_Character_Player_Base& operator=(const RPG_Character_Player_Base&);
+
+  // retrieve basic player character data
+  const RPG_Character_Gender getGender() const;
+  const RPG_Character_Race getRace() const;
+  const RPG_Character_Class getClass() const;
+
+  const unsigned int getExperience() const;
+  // compute dynamically from class/XP
+  const unsigned char getLevel() const;
+
+//   // retrieve basic character data
+//   using RPG_Character_Base::getAlignment;
+  //
+//   // retrieve base attributes
+//   using RPG_Character_Base::getStrength;
+//   using RPG_Character_Base::getDexterity;
+//   using RPG_Character_Base::getConstitution;
+//   using RPG_Character_Base::getIntelligence;
+//   using RPG_Character_Base::getWisdom;
+//   using RPG_Character_Base::getCharisma;
+//   // retrieve skill value (if any)
+//   using RPG_Character_Base::getSkill;
+  //
+//   // compute dynamically from class/XP
+//   using RPG_Character_Base::getNumTotalHitPoints;
+//   using RPG_Character_Base::getNumCurrentHitPoints;
+//   using RPG_Character_Base::getCurrentWealth;
+
   RPG_Character_Gender      myGender;
   RPG_Character_Race        myRace;
   RPG_Character_Class       myClass;
@@ -107,7 +104,6 @@ class RPG_Character_Player_Base
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player_Base());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player_Base& operator=(const RPG_Character_Player_Base&));
 };
 
 #endif

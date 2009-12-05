@@ -72,6 +72,19 @@ RPG_Character_Player_Base::~RPG_Character_Player_Base()
 
 }
 
+RPG_Character_Player_Base& RPG_Character_Player_Base::operator=(const RPG_Character_Player_Base& playerBase_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::operator="));
+
+  myGender = playerBase_in.myGender;
+  myRace = playerBase_in.myRace;
+  myClass = playerBase_in.myClass;
+  myExperience = playerBase_in.myExperience;
+  inherited::operator=(playerBase_in);
+
+  return *this;
+}
+
 const RPG_Character_Gender RPG_Character_Player_Base::getGender() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getGender"));

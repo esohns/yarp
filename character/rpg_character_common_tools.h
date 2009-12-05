@@ -25,7 +25,6 @@
 #include "rpg_character_alignment.h"
 #include "rpg_character_attributes.h"
 #include "rpg_character_subclass.h"
-#include "rpg_character_common.h"
 #include "rpg_character_player.h"
 
 #include <rpg_chance_dicetype.h>
@@ -50,7 +49,7 @@ class RPG_Character_Common_Tools
   static const RPG_Character_BaseAttackBonus_t getBaseAttackBonus(const RPG_Character_SubClass&, // subClass
                                                                   const unsigned char&);         // class level
 
-  static const RPG_Character_Player generatePlayerCharacter();
+  static const RPG_Character_Player generatePlayerCharacter(); // return value: (random) player
 
  private:
   // safety measures

@@ -44,7 +44,7 @@ RPG_Character_Base::RPG_Character_Base(const std::string& name_in,
    myNumTotalHitPoints(hitpoints_in),
    myNumCurrentHitPoints(hitpoints_in), // we start out healthy, don't we ?
    myCurrentWealth(wealth_in),
-   myCondition(CONDITION_NORMAL), // start normal
+//    myConditions(), // start normal
    myInventory(inventory_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
@@ -61,11 +61,30 @@ RPG_Character_Base::RPG_Character_Base(const RPG_Character_Base& playerBase_in)
     myNumTotalHitPoints(playerBase_in.myNumTotalHitPoints),
     myNumCurrentHitPoints(playerBase_in.myNumCurrentHitPoints),
     myCurrentWealth(playerBase_in.myCurrentWealth),
-    myCondition(playerBase_in.myCondition),
+    myConditions(playerBase_in.myConditions),
     myInventory(playerBase_in.myInventory)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
 
+}
+
+RPG_Character_Base& RPG_Character_Base::operator=(const RPG_Character_Base& playerBase_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::operator="));
+
+  myName = playerBase_in.myName;
+  myAlignment = playerBase_in.myAlignment;
+  myAttributes = playerBase_in.myAttributes;
+  mySkills = playerBase_in.mySkills;
+  myFeats = playerBase_in.myFeats;
+  myAbilities = playerBase_in.myAbilities;
+  myNumTotalHitPoints = playerBase_in.myNumTotalHitPoints;
+  myNumCurrentHitPoints = playerBase_in.myNumCurrentHitPoints;
+  myCurrentWealth = playerBase_in.myCurrentWealth;
+  myConditions = playerBase_in.myConditions;
+  myInventory = playerBase_in.myInventory;
+
+  return *this;
 }
 
 RPG_Character_Base::~RPG_Character_Base()
@@ -180,11 +199,11 @@ const unsigned int RPG_Character_Base::getCurrentWealth() const
   return myCurrentWealth;
 }
 
-const RPG_Character_Condition RPG_Character_Base::getCondition() const
+const bool RPG_Character_Base::hasCondition(const RPG_Character_Condition& condition_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getCondition"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::hasCondition"));
 
-  return myCondition;
+  return (myConditions.find(condition_in) != myConditions.end());
 }
 
 void RPG_Character_Base::dump() const

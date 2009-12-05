@@ -155,11 +155,15 @@ void do_work(const std::string& filename_in,
 
   // step4: generate random encounter
   unsigned int numMonsterTypes = 1;
+  RPG_Character_Alignment alignment;
+  alignment.civic = ALIGNMENTCIVIC_ANY;
+  alignment.ethic = ALIGNMENTETHIC_ANY;
   RPG_Character_Environment environment = ENVIRONMENT_ANY;
   RPG_Character_Organizations_t organizations;
   organizations.insert(ORGANIZATION_ANY);
   RPG_Character_Encounter_t encounter;
   RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->generateRandomEncounter(numMonsterTypes,
+                                                                          alignment,
                                                                           environment,
                                                                           organizations,
                                                                           encounter);

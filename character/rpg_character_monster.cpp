@@ -48,10 +48,28 @@ RPG_Character_Monster::RPG_Character_Monster(const std::string& name_in,
 
 }
 
+RPG_Character_Monster::RPG_Character_Monster(const RPG_Character_Monster& monster_in)
+ : myMonsterType(monster_in.myMonsterType),
+   inherited(monster_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::RPG_Character_Monster"));
+
+}
+
 RPG_Character_Monster::~RPG_Character_Monster()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::~RPG_Character_Monster"));
 
+}
+
+RPG_Character_Monster& RPG_Character_Monster::operator=(const RPG_Character_Monster& monster_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::operator="));
+
+  myMonsterType = monster_in.myMonsterType;
+  inherited::operator=(monster_in);
+
+  return *this;
 }
 
 const RPG_Character_MonsterType RPG_Character_Monster::getMonsterType() const

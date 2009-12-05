@@ -12,7 +12,7 @@
     </keywords>
     <versioncontrol>kdevsubversion</versioncontrol>
     <ignoreparts/>
-    <projectname>character</projectname>
+    <projectname>combat</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
     <description></description>
@@ -20,35 +20,29 @@
   </general>
   <kdevautoproject>
     <general>
-      <useconfiguration>optimized</useconfiguration>
-      <activetarget>libRPG_Character.la</activetarget>
+      <activetarget>combat_simulator</activetarget>
+      <useconfiguration>debug</useconfiguration>
     </general>
     <run>
-      <mainprogram>/home/unfv/Projects/RPG/character/debug/.libs/character_generator</mainprogram>
+      <runarguments>
+        <combat_simulator>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -t</combat_simulator>
+      </runarguments>
+      <debugarguments>
+        <combat_simulator>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -t</combat_simulator>
+      </debugarguments>
+      <cwd>
+        <combat_simulator>/home/unfv/Projects/RPG/combat/./</combat_simulator>
+      </cwd>
+      <mainprogram>/home/unfv/Projects/RPG/combat/debug/.libs/combat_simulator</mainprogram>
       <programargs>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -t</programargs>
       <globaldebugarguments>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -t</globaldebugarguments>
-      <globalcwd>/home/unfv/Projects/RPG/character/</globalcwd>
+      <globalcwd>/home/unfv/Projects/RPG/combat/debug</globalcwd>
       <useglobalprogram>true</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <autoinstall>false</autoinstall>
       <autokdesu>false</autokdesu>
       <envvars/>
-      <runarguments>
-        <generator>-t -f ../../item/rpg_item.xml</generator>
-        <character_parser>-t -f ./../../rpg_character.xml</character_parser>
-        <combat_simulator>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -t</combat_simulator>
-      </runarguments>
-      <debugarguments>
-        <generator>-t -f ../../item/rpg_item.xml</generator>
-        <character_parser>-t -f ./../../rpg_character.xml</character_parser>
-        <combat_simulator>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -t</combat_simulator>
-      </debugarguments>
-      <cwd>
-        <generator>/home/unfv/Projects/RPG/character/debug/./</generator>
-        <character_parser>/home/unfv/Projects/RPG/character/debug/.libs</character_parser>
-        <combat_simulator>/home/unfv/Projects/RPG/character/debug/.libs/</combat_simulator>
-      </cwd>
     </run>
     <configurations>
       <optimized>
@@ -59,14 +53,14 @@
         <cxxflags>-g -O2 -march=i686</cxxflags>
         <envvars/>
         <configargs>--disable-static</configargs>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags>-g -O2 -march=i686</cflags>
-        <f77flags>-g -O2 -march=i686</f77flags>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <f77flags></f77flags>
       </optimized>
       <debug>
         <configargs>--disable-static</configargs>
@@ -76,31 +70,31 @@
         <f77compiler>kdevg77options</f77compiler>
         <cxxflags>-g3 -O0 -march=i686</cxxflags>
         <envvars/>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags>-g3 -O0 -march=i686</cflags>
-        <f77flags>-g3 -O0 -march=i686</f77flags>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <f77flags></f77flags>
       </debug>
       <default>
         <envvars/>
         <configargs>--disable-static</configargs>
         <builddir>debug</builddir>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
-        <f77compiler>kdevg77options</f77compiler>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags>-g3 -O0 -march=i686</cflags>
+        <f77compiler>kdevpgf77options</f77compiler>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
         <cxxflags>-g3 -O0 -march=i686</cxxflags>
-        <f77flags>-g3 -O0 -march=i686</f77flags>
+        <f77flags></f77flags>
       </default>
     </configurations>
     <make>
@@ -179,28 +173,27 @@
     <tree>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
       <hidenonprojectfiles>false</hidenonprojectfiles>
-      <showvcsfields>false</showvcsfields>
     </tree>
   </kdevfileview>
   <kdevdocumentation>
     <projectdoc>
       <docsystem>Doxygen Documentation Collection</docsystem>
-      <docurl>character.tag</docurl>
+      <docurl>combat.tag</docurl>
       <usermanualurl></usermanualurl>
     </projectdoc>
   </kdevdocumentation>
   <substmap>
-    <APPNAME>character</APPNAME>
-    <APPNAMELC>character</APPNAMELC>
-    <APPNAMESC>Character</APPNAMESC>
-    <APPNAMEUC>CHARACTER</APPNAMEUC>
+    <APPNAME>combat</APPNAME>
+    <APPNAMELC>combat</APPNAMELC>
+    <APPNAMESC>Combat</APPNAMESC>
+    <APPNAMEUC>COMBAT</APPNAMEUC>
     <AUTHOR>Erik Sohns</AUTHOR>
     <EMAIL>erik.sohns@web.de</EMAIL>
     <LICENSE>GPL</LICENSE>
     <LICENSEFILE>COPYING</LICENSEFILE>
     <VERSION>0.1</VERSION>
     <YEAR>2009</YEAR>
-    <dest>/home/unfv/Projects/RPG/character</dest>
+    <dest>/home/unfv/Projects/RPG/combat</dest>
   </substmap>
   <kdevcppsupport>
     <qt>
@@ -213,6 +206,7 @@
       <designer>/usr/lib/qt-3.3/bin/designer</designer>
       <designerpluginpaths/>
     </qt>
+    <references/>
     <codecompletion>
       <automaticCodeCompletion>true</automaticCodeCompletion>
       <automaticArgumentsHint>true</automaticArgumentsHint>
@@ -249,7 +243,6 @@
       <synchronize>true</synchronize>
       <orientation>Vertical</orientation>
     </splitheadersource>
-    <references/>
   </kdevcppsupport>
   <cppsupportpart>
     <filetemplates>
@@ -275,9 +268,4 @@
       <outputradix>10</outputradix>
     </display>
   </kdevdebugger>
-  <ctagspart>
-    <customArguments></customArguments>
-    <customTagfilePath>/home/unfv/Projects/RPG/character/tags</customTagfilePath>
-    <activeTagsFiles/>
-  </ctagspart>
 </kdevelop>

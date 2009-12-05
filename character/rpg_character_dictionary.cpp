@@ -210,6 +210,7 @@ const RPG_Character_MonsterProperties RPG_Character_Dictionary::getMonsterProper
 }
 
 void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDifferentMonsterTypes,
+                                                       const RPG_Character_Alignment& alignment_in,
                                                        const RPG_Character_Environment& environment_in,
                                                        const RPG_Character_Organizations_t& organizations_in,
                                                        RPG_Character_Encounter_t& encounter_out) const
@@ -245,9 +246,16 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
     if ((iterator->second.environment == choiceEnvironment) ||
         (iterator->second.environment == ENVIRONMENT_ANY))
     {
-      list.push_back(iterator->first);
+      // check if alignment is appropriate
+      if (((iterator->second.alignment.civic == alignment_in.civic) ||
+           (iterator->second.alignment.civic == ALIGNMENTCIVIC_ANY)) &&
+          ((iterator->second.alignment.ethic == alignment_in.ethic) ||
+           (iterator->second.alignment.ethic == ALIGNMENTETHIC_ANY)))
+      {
+        list.push_back(iterator->first);
+      } // end IF
     } // end IF
-  }; // end FOR
+  } // end FOR
 
   if (list.empty())
   {

@@ -22,10 +22,14 @@
 #include <config.h>
 #endif
 
-#include "rpg_character_common_tools.h"
-#include "rpg_character_skills_common_tools.h"
-#include "rpg_character_dictionary.h"
-#include "rpg_character_monster.h"
+#include "rpg_combat_common_tools.h"
+
+#include <rpg_character_common_tools.h>
+#include <rpg_character_skills_common_tools.h>
+#include <rpg_character_dictionary.h>
+#include <rpg_character_player.h>
+#include <rpg_character_player_common.h>
+#include <rpg_character_monster.h>
 
 #include <rpg_item_dictionary.h>
 #include <rpg_item_common_tools.h>
@@ -126,6 +130,84 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
+void do_battle(const RPG_Character_Party_t& party_in,
+               const RPG_Character_Encounter_t& encounter_in)
+{
+  ACE_TRACE(ACE_TEXT("::do_battle"));
+
+  // step1: instantiate monster(s)
+  RPG_Character_Monsters_t monsters;
+  for (RPG_Character_EncounterIterator_t iterator = encounter_in.begin();
+       iterator != encounter_in.end();
+       iterator++)
+  {
+    RPG_Character_MonsterGroupInstance_t groupInstance;
+    RPG_Character_MonsterProperties properties = RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->getMonsterProperties(iterator->first);
+  // *TODO*: define monster abilities !
+    RPG_Character_Abilities_t abilities;
+
+    // compute individual hitpoints
+    RPG_Chance_DiceRollResult_t results;
+    RPG_Chance_Dice::simulateDiceRoll(properties.hitDice,
+                                      iterator->second,
+                                      results);
+    for (RPG_Chance_DiceRollResultIterator_t iterator2 = results.begin();
+         iterator2 != results.end();
+         iterator2++)
+    {
+      // *TODO*: define default monster inventory...
+      unsigned int wealth = 0;
+      RPG_Item_List_t items;
+      RPG_Character_Monster monster((iterator->first).c_str(),
+                                    properties.type,
+                                    properties.alignment,
+                                    properties.attributes,
+                                    properties.skills,
+                                    properties.feats,
+                                    abilities,
+                                    (*iterator2),
+                                    wealth,
+                                    items);
+
+        // debug info
+      monster.dump();
+
+      groupInstance.push_back(monster);
+    } // end FOR
+
+    monsters.push_back(groupInstance);
+  } // end FOR
+
+  // perform a combat round
+  while (!RPG_Combat_Common_Tools::isPartyDead(party_in) &&
+         !RPG_Combat_Common_Tools::areMonstersDead(monsters))
+  {
+
+  } // end WHILE
+
+  // sanity check
+  if (RPG_Combat_Common_Tools::isPartyDead(party_in) &&
+      RPG_Combat_Common_Tools::areMonstersDead(monsters))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("everybody is DEAD --> check implementation !\n")));
+  } // end IF
+
+  if (!RPG_Combat_Common_Tools::isPartyDead(party_in))
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("party has WON !\n")));
+
+    // *TODO*: award treasure and experience...
+
+  } // end IF
+  else
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("monsters have WON !\n")));
+  } // end ELSE
+}
+
 void do_work(const std::string& itemDictionaryFilename_in,
              const std::string& monsterDictionaryFilename_in)
 {
@@ -170,46 +252,27 @@ void do_work(const std::string& itemDictionaryFilename_in,
   // debug info
   player.dump();
 
-  // step4: generate random encounter
+  RPG_Character_Party_t party;
+  party.push_back(player);
+
+  // step4: generate (random) encounter
   unsigned int numMonsterTypes = 1;
+  RPG_Character_Alignment alignment;
+  alignment.civic = ALIGNMENTCIVIC_ANY;
+  alignment.ethic = ALIGNMENTETHIC_ANY;
   RPG_Character_Environment environment = ENVIRONMENT_ANY;
   RPG_Character_Organizations_t organizations;
   organizations.insert(ORGANIZATION_ANY);
   RPG_Character_Encounter_t encounter;
   RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->generateRandomEncounter(numMonsterTypes,
+                                                                          alignment,
                                                                           environment,
                                                                           organizations,
                                                                           encounter);
 
-  // step5: instantiate monster(s)
-  RPG_Character_EncounterIterator_t iterator = encounter.begin();
-  RPG_Character_MonsterProperties properties = RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->getMonsterProperties(iterator->first);
-  // *TODO*: define monster abilities !
-  RPG_Character_Abilities_t abilities;
-  RPG_Chance_DiceRollResult_t results;
-  RPG_Chance_Dice::simulateDiceRoll(properties.hitDice,
-                                    1,
-                                    results);
-  unsigned short int hitPoints = results.front();
-  // *TODO*: define default monster inventory...
-  unsigned int wealth = 0;
-  RPG_Item_List_t items;
-  RPG_Character_Monster monster((iterator->first).c_str(),
-                                properties.type,
-                                properties.alignment,
-                                properties.attributes,
-                                properties.skills,
-                                properties.feats,
-                                abilities,
-                                hitPoints,
-                                wealth,
-                                items);
-
-  // debug info
-  monster.dump();
-
   // step6: FIGHT !
-//   ACE_ASSERT(false);
+  do_battle(party,
+            encounter);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));

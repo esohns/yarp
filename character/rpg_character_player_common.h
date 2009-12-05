@@ -17,36 +17,21 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CHARACTER_INVENTORY_H
-#define RPG_CHARACTER_INVENTORY_H
+#ifndef RPG_CHARACTER_PLAYER_COMMON_H
+#define RPG_CHARACTER_PLAYER_COMMON_H
 
-#include <rpg_item_instance_common.h>
+#include "rpg_character_player.h"
+#include "rpg_character_monster.h"
 
-#include <ace/Global_Macros.h>
+#include <vector>
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
-class RPG_Character_Inventory
-{
- public:
-  RPG_Character_Inventory(const RPG_Item_List_t&); // list of initial items
-  // *IMPORTANT NOTE*: this could prove problematic (add reference counting ?)
-  RPG_Character_Inventory(const RPG_Character_Inventory&);
-  virtual ~RPG_Character_Inventory();
+typedef std::vector<RPG_Character_Player> RPG_Character_Party_t;
+typedef RPG_Character_Party_t::const_iterator RPG_Character_PartyIterator_t;
 
-  RPG_Character_Inventory& operator=(const RPG_Character_Inventory&);
+typedef std::vector<RPG_Character_Monster> RPG_Character_MonsterGroupInstance_t;
+typedef RPG_Character_MonsterGroupInstance_t::const_iterator RPG_Character_MonsterGroupInstanceIterator_t;
 
-  void add(const RPG_Item_ID_t&); // item ID
-  void drop(const RPG_Item_ID_t&); // item ID
-
-  void dump() const;
-
- private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Inventory());
-
-  RPG_Item_List_t myItems;
-};
+typedef std::vector<RPG_Character_MonsterGroupInstance_t> RPG_Character_Monsters_t;
+typedef RPG_Character_Monsters_t::const_iterator RPG_Character_MonstersIterator_t;
 
 #endif

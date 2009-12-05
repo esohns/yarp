@@ -44,6 +44,15 @@ RPG_Character_Inventory::~RPG_Character_Inventory()
 
 }
 
+RPG_Character_Inventory& RPG_Character_Inventory::operator=(const RPG_Character_Inventory& inventory_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::operator="));
+
+  myItems = inventory_in.myItems;
+
+  return *this;
+}
+
 void RPG_Character_Inventory::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::dump"));

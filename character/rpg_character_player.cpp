@@ -64,3 +64,12 @@ RPG_Character_Player::~RPG_Character_Player()
   ACE_TRACE(ACE_TEXT("RPG_Character_Player::~RPG_Character_Player"));
 
 }
+
+RPG_Character_Player& RPG_Character_Player::operator=(const RPG_Character_Player& player_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player::operator="));
+
+  inherited::operator=(player_in);
+
+  return *this;
+}

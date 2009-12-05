@@ -46,6 +46,7 @@ class RPG_Character_Dictionary
   void initCharacterDictionary(const std::string&); // filename
   const RPG_Character_MonsterProperties getMonsterProperties(const std::string&) const; // name of monster
   void generateRandomEncounter(const unsigned int&,                  // # of different monster types
+                               const RPG_Character_Alignment&,       // alignment
                                const RPG_Character_Environment&,     // environment
                                const RPG_Character_Organizations_t&, // allowed organizations
                                RPG_Character_Encounter_t&) const;    // return value: encounter

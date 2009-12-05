@@ -17,13 +17,32 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef RPG_COMBAT_COMMON_TOOLS_H
+#define RPG_COMBAT_COMMON_TOOLS_H
 
-#ifndef RPG_CHARACTER_MONSTERDICTIONARY_H
-#define RPG_CHARACTER_MONSTERDICTIONARY_H
+#include <rpg_character_common.h>
+#include <rpg_character_player.h>
+#include <rpg_character_player_common.h>
 
-struct RPG_Character_MonsterDictionary
+#include <ace/Global_Macros.h>
+
+/**
+	@author Erik Sohns <erik.sohns@web.de>
+*/
+class RPG_Combat_Common_Tools
 {
-  std::vector<RPG_Character_MonsterPropertiesXML> monsters;
+ public:
+  static const bool isPartyDead(const RPG_Character_Party_t&); // party
+  static const bool areMonstersDead(const RPG_Character_Monsters_t&); // monsters
+
+ private:
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Combat_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools(const RPG_Combat_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools& operator=(const RPG_Combat_Common_Tools&));
+
+  static const bool isMonsterGroupDead(const RPG_Character_MonsterGroupInstance_t&); // group instance
 };
 
 #endif

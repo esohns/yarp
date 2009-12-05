@@ -32,6 +32,7 @@
 #include "rpg_character_inventory_common.h"
 #include "rpg_character_inventory.h"
 #include "rpg_character_equipment.h"
+#include "rpg_character_common.h"
 
 #include <ace/Global_Macros.h>
 
@@ -69,7 +70,7 @@ class RPG_Character_Base
 
   const unsigned short int getNumTotalHitPoints() const;
   const unsigned short int getNumCurrentHitPoints() const;
-  const RPG_Character_Condition getCondition() const;
+  const bool hasCondition(const RPG_Character_Condition&) const; // condition
 
   const unsigned int getCurrentWealth() const;
 
@@ -88,31 +89,31 @@ class RPG_Character_Base
                      // base items
                      const RPG_Item_List_t&);           // (starting) list of (carried) items
   RPG_Character_Base(const RPG_Character_Base&);
+  RPG_Character_Base& operator=(const RPG_Character_Base&);
 
-  std::string               myName;
-  RPG_Character_Alignment   myAlignment;
+  std::string                myName;
+  RPG_Character_Alignment    myAlignment;
 
-  RPG_Character_Attributes  myAttributes;
+  RPG_Character_Attributes   myAttributes;
 
-  RPG_Character_Skills_t    mySkills;
+  RPG_Character_Skills_t     mySkills;
 
-  RPG_Character_Feats_t     myFeats;
+  RPG_Character_Feats_t      myFeats;
 
-  RPG_Character_Abilities_t myAbilities;
+  RPG_Character_Abilities_t  myAbilities;
 
-  unsigned short int        myNumTotalHitPoints;
-  unsigned short int        myNumCurrentHitPoints;
-  RPG_Character_Condition   myCondition;
+  unsigned short int         myNumTotalHitPoints;
+  unsigned short int         myNumCurrentHitPoints;
+  RPG_Character_Conditions_t myConditions;
 
-  unsigned int              myCurrentWealth;
+  unsigned int               myCurrentWealth;
 
-  RPG_Character_Equipment   myEquipment;
-  RPG_Character_Inventory   myInventory;
+  RPG_Character_Equipment    myEquipment;
+  RPG_Character_Inventory    myInventory;
 
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Base());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Base& operator=(const RPG_Character_Base&));
 };
 
 #endif

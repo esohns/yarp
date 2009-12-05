@@ -42,7 +42,9 @@ class RPG_Character_Monster
                         const unsigned short int&,        // (starting) HP
                         const unsigned int&,              // (starting) wealth (GP)
                         const RPG_Item_List_t&);          // (starting) list of (carried) items
+  RPG_Character_Monster(const RPG_Character_Monster&);
   virtual ~RPG_Character_Monster();
+  RPG_Character_Monster& operator=(const RPG_Character_Monster&);
 
   const RPG_Character_MonsterType getMonsterType() const;
 
@@ -53,8 +55,6 @@ class RPG_Character_Monster
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Monster());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Monster(const RPG_Character_Monster&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Monster& operator=(const RPG_Character_Monster&));
 
   RPG_Character_MonsterType myMonsterType;
 };
