@@ -1439,6 +1439,12 @@ const unsigned int RPG_Character_Skills_Common_Tools::getSkillPoints(const RPG_C
     case SUBCLASS_WIZARD:
     case SUBCLASS_SORCERER:
     case SUBCLASS_CLERIC:
+    // *TODO*: don't know if this makes sense...
+    case SUBCLASS_WARLORD:
+    case SUBCLASS_WARLOCK:
+    case SUBCLASS_AVENGER:
+    case SUBCLASS_INVOKER:
+    case SUBCLASS_SHAMAN:
     {
       baseValue += 2;
 
@@ -1459,11 +1465,6 @@ const unsigned int RPG_Character_Skills_Common_Tools::getSkillPoints(const RPG_C
 
       break;
     }
-//     case SUBCLASS_WARLORD:
-//     case SUBCLASS_WARLOCK:
-//     case SUBCLASS_AVENGER:
-//     case SUBCLASS_INVOKER:
-//     case SUBCLASS_SHAMAN:
     case SUBCLASS_THIEF:
     {
       baseValue += 8;
@@ -1529,6 +1530,7 @@ const unsigned int RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const
       break;
     }
     case SUBCLASS_PALADIN:
+    case SUBCLASS_WARLORD:
     {
       baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
       baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
@@ -1558,6 +1560,7 @@ const unsigned int RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const
       break;
     }
     case SUBCLASS_SORCERER:
+    case SUBCLASS_WARLOCK:
     {
       baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
 
@@ -1566,6 +1569,8 @@ const unsigned int RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const
       break;
     }
     case SUBCLASS_CLERIC:
+    case SUBCLASS_AVENGER:
+    case SUBCLASS_INVOKER:
     {
       baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
       // TODO: a cleric with the War domain receives the appropriate WEAPON_FOCUS and MARTIAL_WEAPON proficiency...
@@ -1579,6 +1584,7 @@ const unsigned int RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const
       break;
     }
     case SUBCLASS_BARBARIAN:
+    case SUBCLASS_SHAMAN:
     {
       baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
       baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
@@ -1723,11 +1729,6 @@ const unsigned int RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const
 
       break;
     }
-//     case SUBCLASS_WARLORD:
-//     case SUBCLASS_WARLOCK:
-//     case SUBCLASS_AVENGER:
-//     case SUBCLASS_INVOKER:
-//     case SUBCLASS_SHAMAN:
     case SUBCLASS_THIEF:
     {
       baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);

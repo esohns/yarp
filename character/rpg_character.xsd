@@ -383,13 +383,13 @@
       <xsd:enumeration value="SKILL_KNOWLEDGE_ANY"/>
       <xsd:enumeration value="SKILL_KNOWLEDGE_ALL"/>
       <xsd:enumeration value="SKILL_KNOWLEDGE_ARCANA"/>
-      <xsd:enumeration value="SKILL_KNOWLEDGE_ARCH_ENG"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING"/>
       <xsd:enumeration value="SKILL_KNOWLEDGE_DUNGEONS"/>
       <xsd:enumeration value="SKILL_KNOWLEDGE_GEOGRAPHY"/>
       <xsd:enumeration value="SKILL_KNOWLEDGE_HISTORY"/>
       <xsd:enumeration value="SKILL_KNOWLEDGE_LOCAL"/>
       <xsd:enumeration value="SKILL_KNOWLEDGE_NATURE"/>
-      <xsd:enumeration value="SKILL_KNOWLEDGE_NOB_ROY"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_NOBILITY_ROYALTY"/>
       <xsd:enumeration value="SKILL_KNOWLEDGE_RELIGION"/>
       <xsd:enumeration value="SKILL_KNOWLEDGE_PLANES"/>
       <xsd:enumeration value="SKILL_LISTEN"/>

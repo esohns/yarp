@@ -105,12 +105,15 @@ void RPG_Item_WeaponDictionary_Type::weapon(const RPG_Item_WeaponPropertiesXML& 
        iterator != weapon_in.typeOfDamages.end();
        iterator++)
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("weapon %s: damage: %s\n"),
-               RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_in.weaponType).c_str(),
-               RPG_Item_PhysicalDamageTypeHelper::RPG_Item_PhysicalDamageTypeToString(*iterator).c_str()));
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("weapon %s: damage: %s\n"),
+//                RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_in.weaponType).c_str(),
+//                RPG_Item_PhysicalDamageTypeHelper::RPG_Item_PhysicalDamageTypeToString(*iterator).c_str()));
 
-    prop.typeOfDamage.set((*iterator - 1));
+    // *IMPORTANT NOTE*: consider that some weapons don't do any damage...
+    // --> in that case, the element could be empty OR set to this
+    if ((*iterator) != PHYSICALDAMAGE_NONE)
+      prop.typeOfDamage.set((*iterator - 1));
   } // end FOR
 
   myWeaponDictionary->insert(std::make_pair(weapon_in.weaponType, prop));

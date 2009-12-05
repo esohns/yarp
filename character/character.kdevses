@@ -1,16 +1,13 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="3" >
+ <DocsAndViews NumberOfDocuments="2" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character.xsd" >
-   <View0 Encoding="" line="32" Type="Source" />
+   <View0 Encoding="" line="413" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/combat_simulator.cpp" >
-   <View0 Encoding="UTF-8" line="208" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_common_tools.cpp" >
+   <View0 Encoding="" line="495" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/combat_simulator.cpp" >
-   <View0 Encoding="UTF-8" line="135" Type="Source" />
-  </Doc2>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
@@ -18,33 +15,30 @@
     <breakpoint0 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser_base.cpp:124" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint0>
-    <breakpoint1 location="/home/unfv/Projects/RPG/character/rpg_character_dictionary.cpp:439" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint1 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:716" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint1>
-    <breakpoint2 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:716" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint2 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:192" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint2>
-    <breakpoint3 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:192" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint3 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:590" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint3>
-    <breakpoint4 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:590" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint4 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:557" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint4>
-    <breakpoint5 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:557" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint5 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:374" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint5>
-    <breakpoint6 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:374" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint6 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:952" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint6>
-    <breakpoint7 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:952" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint7 location="/home/unfv/Projects/RPG/item/rpg_item_weapon_base.cpp:60" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint7>
-    <breakpoint8 location="/home/unfv/Projects/RPG/character/rpg_character_class_common.cpp:66" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint8 location="/home/unfv/Projects/RPG/character/rpg_character_dictionary.cpp:447" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint8>
-    <breakpoint9 location="/home/unfv/Projects/RPG/item/rpg_item_weapon_base.cpp:60" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
-     <tracedExpressions/>
-    </breakpoint9>
    </breakpointList>
    <showInternalCommands value="0" />
   </kdevdebugger>
@@ -54,7 +48,7 @@
     <file line="0" url="rpg_character_monster_common_tools.cpp" col="0" encoding="" />
     <file line="0" url="rpg_character_common.h" col="0" encoding="" />
    </projectview>
-   <defaultview name="" />
+   <defaultview name="RPG_character Monsters XML" />
   </kdevfilelist>
   <kdevastyle>
    <Extensions ext="*.cpp *.h *.hpp,*.c *.h,*.cxx *.hxx,*.c++ *.h++,*.cc *.hh,*.C *.H,*.diff ,*.inl,*.java,*.moc,*.patch,*.tlh,*.xpm" />

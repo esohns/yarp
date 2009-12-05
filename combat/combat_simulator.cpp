@@ -228,7 +228,7 @@ void do_work(const std::string& itemDictionaryFilename_in,
   catch(...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Item_Dictionary::initCharacterDictionary, returning\n")));
+               ACE_TEXT("caught exception in RPG_Item_Dictionary::initItemDictionary, returning\n")));
 
     return;
   }

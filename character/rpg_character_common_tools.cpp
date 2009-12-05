@@ -188,12 +188,9 @@ const RPG_Chance_DiceType RPG_Character_Common_Tools::getHitDie(const RPG_Charac
     {
       return D_12;
     }
-//     case SUBCLASS_WARLORD:
-//     {
-//       return D_12;
-//     }
     case SUBCLASS_FIGHTER:
     case SUBCLASS_PALADIN:
+    case SUBCLASS_WARLORD:
     {
       return D_10;
     }
@@ -201,6 +198,9 @@ const RPG_Chance_DiceType RPG_Character_Common_Tools::getHitDie(const RPG_Charac
     case SUBCLASS_CLERIC:
     case SUBCLASS_DRUID:
     case SUBCLASS_MONK:
+    case SUBCLASS_AVENGER:
+    case SUBCLASS_INVOKER:
+    case SUBCLASS_SHAMAN:
     {
       return D_8;
     }
@@ -211,22 +211,16 @@ const RPG_Chance_DiceType RPG_Character_Common_Tools::getHitDie(const RPG_Charac
     }
     case SUBCLASS_WIZARD:
     case SUBCLASS_SORCERER:
+    case SUBCLASS_WARLOCK:
     {
       return D_4;
     }
-//     case SUBCLASS_WARLOCK:
-//     case SUBCLASS_AVENGER:
-//     case SUBCLASS_INVOKER:
-//     case SUBCLASS_SHAMAN:
-//     {
-//       return D_4;
-//     }
     default:
     {
       // debug info
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid subClass: %d --> check implementation !, aborting\n"),
-                 subClass_in));
+                 ACE_TEXT("invalid subclass: \"%s\" --> check implementation !, aborting\n"),
+                 RPG_Character_SubClassHelper::RPG_Character_SubClassToString(subClass_in).c_str()));
 
       break;
     }
@@ -249,6 +243,7 @@ const RPG_Character_BaseAttackBonus_t RPG_Character_Common_Tools::getBaseAttackB
     case SUBCLASS_PALADIN:
     case SUBCLASS_RANGER:
     case SUBCLASS_BARBARIAN:
+    case SUBCLASS_WARLORD:
     {
       baseAttackBonus = classLevel_in;
 
@@ -256,6 +251,7 @@ const RPG_Character_BaseAttackBonus_t RPG_Character_Common_Tools::getBaseAttackB
     }
     case SUBCLASS_WIZARD:
     case SUBCLASS_SORCERER:
+    case SUBCLASS_WARLOCK:
     {
       baseAttackBonus = ((classLevel_in & 0x1) == classLevel_in) ? ((classLevel_in - 1) >> 1)
                                                                  : (classLevel_in >> 1);
@@ -267,6 +263,9 @@ const RPG_Character_BaseAttackBonus_t RPG_Character_Common_Tools::getBaseAttackB
     case SUBCLASS_MONK:
     case SUBCLASS_THIEF:
     case SUBCLASS_BARD:
+    case SUBCLASS_AVENGER:
+    case SUBCLASS_INVOKER:
+    case SUBCLASS_SHAMAN:
     {
       baseAttackBonus = (classLevel_in - 1) - ((classLevel_in - 1) / 4);
 
@@ -276,8 +275,8 @@ const RPG_Character_BaseAttackBonus_t RPG_Character_Common_Tools::getBaseAttackB
     {
       // debug info
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid subClass: %d --> check implementation !, aborting\n"),
-                 subClass_in));
+                 ACE_TEXT("invalid subclass: \"%s\" --> check implementation !, aborting\n"),
+                 RPG_Character_SubClassHelper::RPG_Character_SubClassToString(subClass_in).c_str()));
 
       break;
     }
@@ -335,10 +334,10 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   // step2: gender
   RPG_Character_Gender gender = RPG_CHARACTER_GENDER_INVALID;
   result.clear();
-  RPG_Chance_Dice::generateRandomNumbers((RPG_CHARACTER_GENDER_MAX - 1),
+  RPG_Chance_Dice::generateRandomNumbers((RPG_CHARACTER_GENDER_MAX - 2),
                                          1,
                                          result);
-  gender = ACE_static_cast(RPG_Character_Gender, (result.front() - 1));
+  gender = ACE_static_cast(RPG_Character_Gender, result.front());
 
   // step3: race
   RPG_Character_PlayerRace player_race(0);
@@ -348,7 +347,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   RPG_Chance_Dice::generateRandomNumbers((RPG_CHARACTER_RACE_MAX - 1),
                                          1,
                                          result);
-  race = ACE_static_cast(RPG_Character_Race, (result.front() - 1));
+  race = ACE_static_cast(RPG_Character_Race, result.front());
   player_race.set(race);
 
   // step4: class
@@ -359,7 +358,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   RPG_Chance_Dice::generateRandomNumbers((RPG_CHARACTER_SUBCLASS_MAX - 1),
                                          1,
                                          result);
-  player_class.subClass = ACE_static_cast(RPG_Character_SubClass, (result.front() - 1));
+  player_class.subClass = ACE_static_cast(RPG_Character_SubClass, result.front());
   player_class.metaClass = RPG_Character_Class_Common_Tools::subClassToMetaClass(player_class.subClass);
 
   // step5: alignment
@@ -367,11 +366,11 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
   alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
   result.clear();
-  RPG_Chance_Dice::generateRandomNumbers((RPG_CHARACTER_ALIGNMENTCIVIC_MAX - 1),
+  RPG_Chance_Dice::generateRandomNumbers((RPG_CHARACTER_ALIGNMENTCIVIC_MAX - 2),
                                          2,
                                          result);
-  alignment.civic = ACE_static_cast(RPG_Character_AlignmentCivic, (result.front() - 1));
-  alignment.ethic = ACE_static_cast(RPG_Character_AlignmentEthic, (result.back() - 1));
+  alignment.civic = ACE_static_cast(RPG_Character_AlignmentCivic, result.front());
+  alignment.ethic = ACE_static_cast(RPG_Character_AlignmentEthic, result.back());
 
   // step6: attributes
   RPG_Character_Attributes attributes;
@@ -417,7 +416,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
     RPG_Chance_Dice::generateRandomNumbers(RPG_CHARACTER_SKILL_MAX,
                                            1,
                                            result);
-    skill = ACE_static_cast(RPG_Character_Skill, result.front() - 1);
+    skill = ACE_static_cast(RPG_Character_Skill, (result.front() - 1));
     iterator = skills.find(skill);
     if (iterator != skills.end())
     {
@@ -448,7 +447,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
     RPG_Chance_Dice::generateRandomNumbers(RPG_CHARACTER_FEAT_MAX,
                                            1,
                                            result);
-    feat = ACE_static_cast(RPG_Character_Feat, result.front() - 1);
+    feat = ACE_static_cast(RPG_Character_Feat, (result.front() - 1));
 
     // check prerequisites
     if (!RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(feat,

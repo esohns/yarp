@@ -20,7 +20,7 @@
   </general>
   <kdevautoproject>
     <general>
-      <useconfiguration>optimized</useconfiguration>
+      <useconfiguration>debug</useconfiguration>
       <activetarget>libRPG_Character.la</activetarget>
     </general>
     <run>

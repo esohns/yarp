@@ -169,7 +169,7 @@
       <xsd:element name="criticalHitModifier" type="RPG_Item_CriticalHitModifier_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="rangeIncrement" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="baseWeight" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="typeOfDamage" type="RPG_Item_PhysicalDamageType_Type" minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element name="typeOfDamage" type="RPG_Item_PhysicalDamageType_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
