@@ -38,12 +38,12 @@ bin_PROGRAMS = character_generator character_parser
 
 character_generator_SOURCES = main.cpp
 character_generator_LDADD = $(top_builddir)/libRPG_Character.la -lACE -lpthread \
-	-lxerces-c -lRPG_Chance_Dice -lRPG_Item
+	-lxerces-c -lRPG_Chance_Dice -lRPG_Chance -lRPG_Item
 character_generator_LDFLAGS = -L/usr/local/lib
 
 character_parser_SOURCES = character_parser.cpp
 character_parser_LDADD = $(top_builddir)/libRPG_Character.la -lACE -lpthread \
-	-lRPG_Chance_Dice -lRPG_Item -lxerces-c
+	-lxerces-c -lRPG_Chance_Dice -lRPG_Chance -lRPG_Item
 character_parser_LDFLAGS = -L/usr/local/lib
 
 bindata_DATA = rpg_character.xsd rpg_character.xml

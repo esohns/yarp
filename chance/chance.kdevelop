@@ -21,7 +21,7 @@
   <kdevautoproject>
     <general>
       <useconfiguration>default</useconfiguration>
-      <activetarget>dice/libRPG_Chance_Dice.la</activetarget>
+      <activetarget>libRPG_Chance.la</activetarget>
     </general>
     <run>
       <mainprogram>/home/unfv/Projects/RPG/chance/debug/dice/.libs/rangeToRoll</mainprogram>

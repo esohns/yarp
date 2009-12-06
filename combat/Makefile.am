@@ -10,6 +10,6 @@ libRPG_Combat_la_LDFLAGS = -L/usr/local/lib
 bin_PROGRAMS = combat_simulator
 
 combat_simulator_SOURCES = combat_simulator.cpp
-combat_simulator_LDADD = $(top_builddir)/libRPG_Combat.la -lRPG_Character \
-	-lRPG_Item -lRPG_Chance_Dice -lACE -lpthread -lxerces-c
+combat_simulator_LDADD = $(top_builddir)/libRPG_Combat.la -lACE -lpthread \
+	-lxerces-c -lRPG_Chance_Dice -lRPG_Chance -lRPG_Item -lRPG_Character
 combat_simulator_LDFLAGS = -L/usr/local/lib

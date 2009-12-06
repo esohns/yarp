@@ -28,7 +28,7 @@ player character
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Character_Player
- : protected RPG_Character_Player_Base
+ : public RPG_Character_Player_Base
 {
  public:
   RPG_Character_Player(const std::string&,               // name
@@ -48,37 +48,6 @@ class RPG_Character_Player
   virtual ~RPG_Character_Player();
 
   RPG_Character_Player& operator=(const RPG_Character_Player&);
-
-  using RPG_Character_Player_Base::dump;
-
-  // retrieve basic player character data
-  using RPG_Character_Player_Base::getGender;
-  using RPG_Character_Player_Base::getRace;
-  using RPG_Character_Player_Base::getClass;
-
-  using RPG_Character_Player_Base::getExperience;
-  // compute dynamically from class/XP
-  using RPG_Character_Player_Base::getLevel;
-
-  // retrieve basic character data
-  using RPG_Character_Base::getAlignment;
-
-  // retrieve base attributes
-  using RPG_Character_Base::getStrength;
-  using RPG_Character_Base::getDexterity;
-  using RPG_Character_Base::getConstitution;
-  using RPG_Character_Base::getIntelligence;
-  using RPG_Character_Base::getWisdom;
-  using RPG_Character_Base::getCharisma;
-  // retrieve skill value (if any)
-  using RPG_Character_Base::getSkill;
-
-  // compute dynamically from class/XP
-  using RPG_Character_Base::getNumTotalHitPoints;
-  using RPG_Character_Base::getNumCurrentHitPoints;
-  using RPG_Character_Base::hasCondition;
-
-  using RPG_Character_Base::getCurrentWealth;
 
  private:
   typedef RPG_Character_Player_Base inherited;

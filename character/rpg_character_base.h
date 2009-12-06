@@ -91,6 +91,10 @@ class RPG_Character_Base
   RPG_Character_Base(const RPG_Character_Base&);
   RPG_Character_Base& operator=(const RPG_Character_Base&);
 
+ private:
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Base());
+
   std::string                myName;
   RPG_Character_Alignment    myAlignment;
 
@@ -110,10 +114,6 @@ class RPG_Character_Base
 
   RPG_Character_Equipment    myEquipment;
   RPG_Character_Inventory    myInventory;
-
- private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Base());
 };
 
 #endif

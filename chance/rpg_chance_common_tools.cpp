@@ -17,25 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CHARACTER_PLAYER_COMMON_H
-#define RPG_CHARACTER_PLAYER_COMMON_H
+#include "rpg_chance_common_tools.h"
 
-#include "rpg_character_base.h"
-#include "rpg_character_player.h"
-#include "rpg_character_monster.h"
+#include "rpg_chance_dicetype.h"
+#include "rpg_chance_diceroll.h"
+#include "rpg_chance_dice.h"
 
-#include <vector>
+#include <ace/Log_Msg.h>
 
-typedef std::vector<RPG_Character_Base*> RPG_Character_List_t;
-typedef RPG_Character_List_t::const_iterator RPG_Character_ListIterator_t;
+const int RPG_Chance_Common_Tools::getCheck(const short int& modifier_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Chance_Common_Tools::getCheck"));
 
-typedef std::vector<RPG_Character_Player> RPG_Character_Party_t;
-typedef RPG_Character_Party_t::const_iterator RPG_Character_PartyIterator_t;
+  RPG_Chance_DiceRoll roll;
+  roll.numDice = 1;
+  roll.typeDice = D_20;
+  roll.modifier = modifier_in;
+  RPG_Chance_DiceRollResult_t result;
+  RPG_Chance_Dice::simulateDiceRoll(roll,
+                                    1,
+                                    result);
 
-typedef std::vector<RPG_Character_Monster> RPG_Character_MonsterGroupInstance_t;
-typedef RPG_Character_MonsterGroupInstance_t::const_iterator RPG_Character_MonsterGroupInstanceIterator_t;
-
-typedef std::vector<RPG_Character_MonsterGroupInstance_t> RPG_Character_Monsters_t;
-typedef RPG_Character_Monsters_t::const_iterator RPG_Character_MonstersIterator_t;
-
-#endif
+  return result.front();
+}

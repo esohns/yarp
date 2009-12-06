@@ -43,6 +43,15 @@ class RPG_Character_Player_Base
  public:
   virtual ~RPG_Character_Player_Base();
 
+  // retrieve basic player character data
+  const RPG_Character_Gender getGender() const;
+  const RPG_Character_Race getRace() const;
+  const RPG_Character_Class getClass() const;
+
+  const unsigned int getExperience() const;
+  // compute dynamically from class/XP
+  const unsigned char getLevel() const;
+
   virtual void dump() const;
 
  protected:
@@ -63,47 +72,20 @@ class RPG_Character_Player_Base
 
   RPG_Character_Player_Base& operator=(const RPG_Character_Player_Base&);
 
-  // retrieve basic player character data
-  const RPG_Character_Gender getGender() const;
-  const RPG_Character_Race getRace() const;
-  const RPG_Character_Class getClass() const;
-
-  const unsigned int getExperience() const;
-  // compute dynamically from class/XP
-  const unsigned char getLevel() const;
-
-//   // retrieve basic character data
-//   using RPG_Character_Base::getAlignment;
-  //
-//   // retrieve base attributes
-//   using RPG_Character_Base::getStrength;
-//   using RPG_Character_Base::getDexterity;
-//   using RPG_Character_Base::getConstitution;
-//   using RPG_Character_Base::getIntelligence;
-//   using RPG_Character_Base::getWisdom;
-//   using RPG_Character_Base::getCharisma;
-//   // retrieve skill value (if any)
-//   using RPG_Character_Base::getSkill;
-  //
-//   // compute dynamically from class/XP
-//   using RPG_Character_Base::getNumTotalHitPoints;
-//   using RPG_Character_Base::getNumCurrentHitPoints;
-//   using RPG_Character_Base::getCurrentWealth;
-
-  RPG_Character_Gender      myGender;
-  RPG_Character_Race        myRace;
-  RPG_Character_Class       myClass;
-
-  unsigned int              myExperience;
-//  unsigned short int       mySize; // cm
-//  unsigned short int       myWeight; // kg
-//  unsigned int             myAge; // years
-
  private:
   typedef RPG_Character_Base inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player_Base());
+
+  RPG_Character_Gender myGender;
+  RPG_Character_Race   myRace;
+  RPG_Character_Class  myClass;
+
+  unsigned int         myExperience;
+//  unsigned short int       mySize; // cm
+//  unsigned short int       myWeight; // kg
+//  unsigned int             myAge; // years
 };
 
 #endif

@@ -169,8 +169,8 @@ void do_battle(const RPG_Character_Party_t& party_in,
                                     wealth,
                                     items);
 
-        // debug info
-      monster.dump();
+      // debug info
+//       monster.dump();
 
       groupInstance.push_back(monster);
     } // end FOR
@@ -178,22 +178,27 @@ void do_battle(const RPG_Character_Party_t& party_in,
     monsters.push_back(groupInstance);
   } // end FOR
 
+  // step2: compute initiative and battle sequence
+  RPG_Combat_CombatantSequence_t battleSequence;
+  RPG_Combat_Common_Tools::getCombatantSequence(party_in,
+                                                monsters,
+                                                battleSequence);
   // perform a combat round
-  while (!RPG_Combat_Common_Tools::isPartyDead(party_in) &&
-         !RPG_Combat_Common_Tools::areMonstersDead(monsters))
+  while (!RPG_Combat_Common_Tools::isPartyDeadOrHelpless(party_in) &&
+         !RPG_Combat_Common_Tools::areMonstersDeadOrHelpless(monsters))
   {
 
   } // end WHILE
 
   // sanity check
-  if (RPG_Combat_Common_Tools::isPartyDead(party_in) &&
-      RPG_Combat_Common_Tools::areMonstersDead(monsters))
+  if (RPG_Combat_Common_Tools::isPartyDeadOrHelpless(party_in) &&
+      RPG_Combat_Common_Tools::areMonstersDeadOrHelpless(monsters))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("everybody is DEAD --> check implementation !\n")));
   } // end IF
 
-  if (!RPG_Combat_Common_Tools::isPartyDead(party_in))
+  if (!RPG_Combat_Common_Tools::isPartyDeadOrHelpless(party_in))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("party has WON !\n")));
@@ -250,7 +255,7 @@ void do_work(const std::string& itemDictionaryFilename_in,
   RPG_Character_Player player = RPG_Character_Common_Tools::generatePlayerCharacter();
 
   // debug info
-  player.dump();
+//   player.dump();
 
   RPG_Character_Party_t party;
   party.push_back(player);

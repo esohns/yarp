@@ -44,7 +44,8 @@ class RPG_Character_Common_Tools
   static const std::string alignmentToString(const RPG_Character_Alignment&); // alignment
   static const std::string attributesToString(const RPG_Character_Attributes&); // attributes
 
-  static const short int getAttributeAbilityModifier(const unsigned char&); // attribute
+  static const short int getAttributeAbilityModifier(const unsigned char&); // attribute ability score
+  static const bool getAttributeCheck(const unsigned char&); // attribute ability score
   static const RPG_Chance_DiceType getHitDie(const RPG_Character_SubClass&); // subclass
   static const RPG_Character_BaseAttackBonus_t getBaseAttackBonus(const RPG_Character_SubClass&, // subClass
                                                                   const unsigned char&);         // class level

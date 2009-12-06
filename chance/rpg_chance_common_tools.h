@@ -17,25 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CHARACTER_PLAYER_COMMON_H
-#define RPG_CHARACTER_PLAYER_COMMON_H
+#ifndef RPG_CHANCE_COMMON_TOOLS_H
+#define RPG_CHANCE_COMMON_TOOLS_H
 
-#include "rpg_character_base.h"
-#include "rpg_character_player.h"
-#include "rpg_character_monster.h"
+#include <ace/Global_Macros.h>
 
-#include <vector>
+/**
+	@author Erik Sohns <erik.sohns@web.de>
+*/
+class RPG_Chance_Common_Tools
+{
+ public:
+  // perform a standard die roll check
+  static const int getCheck(const short int&); // modifier
 
-typedef std::vector<RPG_Character_Base*> RPG_Character_List_t;
-typedef RPG_Character_List_t::const_iterator RPG_Character_ListIterator_t;
-
-typedef std::vector<RPG_Character_Player> RPG_Character_Party_t;
-typedef RPG_Character_Party_t::const_iterator RPG_Character_PartyIterator_t;
-
-typedef std::vector<RPG_Character_Monster> RPG_Character_MonsterGroupInstance_t;
-typedef RPG_Character_MonsterGroupInstance_t::const_iterator RPG_Character_MonsterGroupInstanceIterator_t;
-
-typedef std::vector<RPG_Character_MonsterGroupInstance_t> RPG_Character_Monsters_t;
-typedef RPG_Character_Monsters_t::const_iterator RPG_Character_MonstersIterator_t;
+ private:
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Chance_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Common_Tools(const RPG_Chance_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Common_Tools& operator=(const RPG_Chance_Common_Tools&));
+};
 
 #endif

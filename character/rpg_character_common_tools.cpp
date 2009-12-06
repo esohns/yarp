@@ -47,6 +47,7 @@
 #include <rpg_item_dictionary.h>
 
 #include <rpg_chance_dice.h>
+#include <rpg_chance_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -171,11 +172,20 @@ const short int RPG_Character_Common_Tools::getAttributeAbilityModifier(const un
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getAttributeAbilityModifier"));
 
-  short baseValue = -5;
+  short int baseValue = -5;
   baseValue += ((attributeAbility_in & 0x1) == attributeAbility_in) ? ((attributeAbility_in - 1) >> 1)
                                                                     : (attributeAbility_in >> 1);
 
   return baseValue;
+}
+
+const bool RPG_Character_Common_Tools::getAttributeCheck(const unsigned char& attributeAbilityScore_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getAttributeCheck"));
+
+  int result = RPG_Chance_Common_Tools::getCheck(0);
+
+  return (result >= attributeAbilityScore_in);
 }
 
 const RPG_Chance_DiceType RPG_Character_Common_Tools::getHitDie(const RPG_Character_SubClass& subClass_in)
@@ -323,7 +333,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
     else
       lowercase = true;
 
-    name += ACE_static_cast(char, (lowercase ? 97 : 65) + result[i]); // 97 == 'a', 65 == 'A'
+    name += ACE_static_cast(char, (lowercase ? 96 : 64) + result[i]); // 97 == 'a', 65 == 'A'
   } // end FOR
 
 //   // debug info

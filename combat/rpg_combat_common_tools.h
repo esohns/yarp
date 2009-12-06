@@ -20,6 +20,8 @@
 #ifndef RPG_COMBAT_COMMON_TOOLS_H
 #define RPG_COMBAT_COMMON_TOOLS_H
 
+#include "rpg_combat_common.h"
+
 #include <rpg_character_common.h>
 #include <rpg_character_player.h>
 #include <rpg_character_player_common.h>
@@ -32,8 +34,12 @@
 class RPG_Combat_Common_Tools
 {
  public:
-  static const bool isPartyDead(const RPG_Character_Party_t&); // party
-  static const bool areMonstersDead(const RPG_Character_Monsters_t&); // monsters
+  static const bool isPartyDeadOrHelpless(const RPG_Character_Party_t&); // party
+  static const bool areMonstersDeadOrHelpless(const RPG_Character_Monsters_t&); // monsters
+
+  static void getCombatantSequence(const RPG_Character_Party_t&,     // party
+                                   const RPG_Character_Monsters_t&,  // monsters
+                                   RPG_Combat_CombatantSequence_t&); // battle sequence
 
  private:
   // safety measures
@@ -42,7 +48,14 @@ class RPG_Combat_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools(const RPG_Combat_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools& operator=(const RPG_Combat_Common_Tools&));
 
-  static const bool isMonsterGroupDead(const RPG_Character_MonsterGroupInstance_t&); // group instance
+  // helper types
+  typedef std::pair<RPG_Combat_CombatantSequenceElement,
+                    RPG_Combat_CombatantSequenceElement> RPG_Combat_CombatSequenceConflict_t;
+  typedef std::vector<RPG_Combat_CombatSequenceConflict_t> RPG_Combat_CombatSequenceConflicts_t;
+  typedef RPG_Combat_CombatSequenceConflicts_t::iterator RPG_Combat_CombatSequenceConflictsIterator_t;
+
+  static const bool isMonsterGroupDeadOrHelpless(const RPG_Character_MonsterGroupInstance_t&); // group instance
+  static const bool isCharacterDeadOrHelpless(const RPG_Character_Base*); // character handle
 };
 
 #endif

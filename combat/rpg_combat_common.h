@@ -20,6 +20,37 @@
 #ifndef RPG_COMBAT_COMMON_H
 #define RPG_COMBAT_COMMON_H
 
+#include <rpg_character_base.h>
 
+#include <set>
+
+struct RPG_Combat_CombatantSequenceElement
+{
+  // needed for proper sorting...
+  bool operator<(const RPG_Combat_CombatantSequenceElement& rhs_in) const
+  {
+    if (initiative > rhs_in.initiative)
+      return false;
+
+    return (initiative < rhs_in.initiative ? true
+                                           : (DEXModifier < rhs_in.DEXModifier));
+  };
+  bool operator==(const RPG_Combat_CombatantSequenceElement& rhs_in) const
+  {
+    return ((initiative == rhs_in.initiative) &&
+            (DEXModifier == rhs_in.DEXModifier));
+  };
+  bool operator!=(const RPG_Combat_CombatantSequenceElement& rhs_in) const
+  {
+    return !operator==(rhs_in);
+  };
+
+  char                      initiative;
+  short int                 DEXModifier;
+  const RPG_Character_Base* handle;
+};
+
+typedef std::set<RPG_Combat_CombatantSequenceElement> RPG_Combat_CombatantSequence_t;
+typedef RPG_Combat_CombatantSequence_t::const_iterator RPG_Combat_CombatantSequenceIterator_t;
 
 #endif
