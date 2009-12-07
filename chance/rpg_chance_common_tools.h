@@ -20,6 +20,8 @@
 #ifndef RPG_CHANCE_COMMON_TOOLS_H
 #define RPG_CHANCE_COMMON_TOOLS_H
 
+#include <rpg_chance_dicetype.h>
+
 #include <ace/Global_Macros.h>
 
 /**
@@ -29,7 +31,8 @@ class RPG_Chance_Common_Tools
 {
  public:
   // perform a standard die roll check
-  static const int getCheck(const short int&); // modifier
+  static const int getCheck(const short int&,                   // modifier
+                            const RPG_Chance_DiceType& = D_20); // type of dice
 
  private:
   // safety measures

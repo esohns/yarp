@@ -29,16 +29,49 @@
 struct RPG_Combat_CombatantSequenceElement
 {
   // needed for proper sorting...
-  bool operator<(const RPG_Combat_CombatantSequenceElement& rhs_in) const
+  inline bool operator<(const RPG_Combat_CombatantSequenceElement& rhs_in) const
   {
-    // *IMPORTANT NOTE*: we want to sort it DESCENDING, so < is actually > !
-    if (initiative > rhs_in.initiative)
+    if (initiative < rhs_in.initiative)
       return true;
 
-    return (initiative < rhs_in.initiative ? false
-                                           : (DEXModifier > rhs_in.DEXModifier));
-  };
-  bool operator==(const RPG_Combat_CombatantSequenceElement& rhs_in) const
+    if (initiative > rhs_in.initiative)
+      return false;
+
+    if (DEXModifier < rhs_in.DEXModifier)
+      return true;
+
+    if (DEXModifier > rhs_in.DEXModifier)
+      return false;
+
+    // *IMPORTANT NOTE*: a conflict between monsters doesn't matter !
+    // --> if either one is a PC, we have a conflict
+    ACE_ASSERT(handle && rhs_in.handle);
+    try
+    {
+      if (handle->isPlayerCharacter() ||
+          rhs_in.handle->isPlayerCharacter())
+      {
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("sort-conflict !\n")));
+
+        // solve the conflict by comparing adresses...
+        return (this < &rhs_in);
+      } // end IF
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Combat_CombatantSequenceElement::operator==, aborting\n")));
+    }
+
+    // no conflict
+    return false;
+  }
+  inline bool operator>(const RPG_Combat_CombatantSequenceElement& rhs_in) const
+  {
+    return (!(*this < rhs_in) && !(*this == rhs_in));
+  }
+  inline bool operator==(const RPG_Combat_CombatantSequenceElement& rhs_in) const
   {
     if (initiative == rhs_in.initiative)
     {
@@ -51,7 +84,13 @@ struct RPG_Combat_CombatantSequenceElement
         {
           if (handle->isPlayerCharacter() ||
               rhs_in.handle->isPlayerCharacter())
-            return true;
+          {
+//             ACE_DEBUG((LM_DEBUG,
+//                        ACE_TEXT("sort-conflict !\n")));
+
+            // solve the conflict by comparing adresses...
+            return (this < &rhs_in);
+          } // end IF
         }
         catch (...)
         {
@@ -62,18 +101,36 @@ struct RPG_Combat_CombatantSequenceElement
     } // end IF
 
     return false;
-  };
-  bool operator!=(const RPG_Combat_CombatantSequenceElement& rhs_in) const
+  }
+  inline bool operator!=(const RPG_Combat_CombatantSequenceElement& rhs_in) const
   {
     return !operator==(rhs_in);
-  };
+  }
 
   char                      initiative;
   short int                 DEXModifier;
   const RPG_Character_Base* handle;
 };
 
-typedef std::set<RPG_Combat_CombatantSequenceElement> RPG_Combat_CombatantSequence_t;
+// struct lessThanRPG_Combat_CombatantSequenceElement
+// {
+//   inline bool operator()(const RPG_Combat_CombatantSequenceElement& lhs_in,
+//                          const RPG_Combat_CombatantSequenceElement& rhs_in) const
+//   {
+//     if (lhs_in.initiative < rhs_in.initiative)
+//       return true;
+//
+//     return (lhs_in.initiative > rhs_in.initiative ? false
+//                                                   : (lhs_in.DEXModifier < rhs_in.DEXModifier));
+//   }
+// };
+
+// typedef std::set<RPG_Combat_CombatantSequenceElement,
+//                  lessThanRPG_Combat_CombatantSequenceElement> RPG_Combat_CombatantSequence_t;
+// *IMPORTANT NOTE*: sort in DESCENDING order !
+typedef std::set<RPG_Combat_CombatantSequenceElement,
+                 std::greater<RPG_Combat_CombatantSequenceElement> > RPG_Combat_CombatantSequence_t;
 typedef RPG_Combat_CombatantSequence_t::const_iterator RPG_Combat_CombatantSequenceIterator_t;
+// typedef RPG_Combat_CombatantSequence_t::const_reverse_iterator RPG_Combat_CombatantSequenceRIterator_t;
 
 #endif

@@ -25,13 +25,14 @@
 
 #include <ace/Log_Msg.h>
 
-const int RPG_Chance_Common_Tools::getCheck(const short int& modifier_in)
+const int RPG_Chance_Common_Tools::getCheck(const short int& modifier_in,
+                                            const RPG_Chance_DiceType& diceType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Chance_Common_Tools::getCheck"));
 
   RPG_Chance_DiceRoll roll;
   roll.numDice = 1;
-  roll.typeDice = D_20;
+  roll.typeDice = diceType_in;
   roll.modifier = modifier_in;
   RPG_Chance_DiceRollResult_t result;
   RPG_Chance_Dice::simulateDiceRoll(roll,

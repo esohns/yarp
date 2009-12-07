@@ -93,6 +93,10 @@ void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& 
     } // end FOR
   } // end FOR
 
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("sorting %d combatants...\n"),
+             listOfCombatants.size()));
+
   // step1: go through the list and compute initiatives
   RPG_Combat_CombatSequenceList_t preliminarySequence;
   for (RPG_Character_ListIterator_t iterator = listOfCombatants.begin();
@@ -102,7 +106,9 @@ void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& 
     RPG_Combat_CombatantSequenceElement element = {0, 0, *iterator};
     // compute initiative: DEX check
     element.DEXModifier = RPG_Character_Common_Tools::getAttributeAbilityModifier((*iterator)->getDexterity());
-    element.initiative = RPG_Chance_Common_Tools::getCheck(element.DEXModifier);
+    // make sure there are enough SLOTS for large armies !
+    element.initiative = RPG_Chance_Common_Tools::getCheck(element.DEXModifier,
+                                                           D_20);
 //     element.handle = &(*iterator);
 
     preliminarySequence.push_back(element);
@@ -137,42 +143,46 @@ void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& 
 
   // step3: resolve conflicts
   // *TODO* there's a potential bug here for large armies: change Die Type D_20 --> D_100/D_1000/... ?
-  RPG_Combat_CombatSequenceListIterator_t iterator;
   while (!conflicts.empty())
   {
-    // get first conflict
-    iterator = conflicts.begin();
+//     // handle first conflict
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("resolving %d conflicts...\n"),
+//                conflicts.size()));
 
     // re-roll initiative
     // compute initiative: DEX check
-    (*iterator).initiative = RPG_Chance_Common_Tools::getCheck((*iterator).DEXModifier);
+    conflicts.front().initiative = RPG_Chance_Common_Tools::getCheck(conflicts.front().DEXModifier,
+                                                                     D_20);
 
     // make sure there is a PROPER sequence:
     // if the set already contains this value we must resolve the conflict (again)
     // *IMPORTANT NOTE*: this algorithm implements the notion of fairness as appropriate between two HUMAN/HUMAN-Monster actors,
     // i.e. we could have just re-rolled the current element until it doesn't clash. In a real-world situation this
     // would trigger discussions of WHO would re-roll...
-    preliminarySequencePosition = battleSequence_out.insert(*iterator);
+    preliminarySequencePosition = battleSequence_out.insert(conflicts.front());
     if (preliminarySequencePosition.second == false)
     {
       // find conflicting element
-      RPG_Combat_CombatantSequenceIterator_t iterator2 = battleSequence_out.find(*iterator);
+      RPG_Combat_CombatantSequenceIterator_t iterator2 = battleSequence_out.find(conflicts.front());
       ACE_ASSERT(iterator2 != battleSequence_out.end());
 
-      conflicts.push_back(*iterator);
+      conflicts.push_back(conflicts.front());
       conflicts.push_back(*iterator2);
 
       // erase conflicting element from the preliminary sequence
       battleSequence_out.erase(iterator2);
     } // end IF
 
-    // OK: handled this conflict
-    conflicts.erase(iterator);
+    conflicts.pop_front();
   } // end WHILE
 
   ACE_ASSERT(listOfCombatants.size() == battleSequence_out.size());
   // debug info
   int i = 1;
+//   for (RPG_Combat_CombatantSequenceRIterator_t iterator = battleSequence_out.rbegin();
+//        iterator != battleSequence_out.rend();
+//        iterator++, i++)
   for (RPG_Combat_CombatantSequenceIterator_t iterator = battleSequence_out.begin();
        iterator != battleSequence_out.end();
        iterator++, i++)

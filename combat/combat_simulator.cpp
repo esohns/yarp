@@ -53,16 +53,18 @@ void print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << std::endl;
-  std::cout << ACE_TEXT("-m [FILE] : monster dictionary (*.xml)") << std::endl;
-  std::cout << ACE_TEXT("-t        : trace information") << std::endl;
-  std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
+  std::cout << ACE_TEXT("-i [FILE]  : item dictionary (*.xml)") << std::endl;
+  std::cout << ACE_TEXT("-m [FILE]  : monster dictionary (*.xml)") << std::endl;
+  std::cout << ACE_TEXT("-n [VALUE] : number of different monsters") << std::endl;
+  std::cout << ACE_TEXT("-t         : trace information") << std::endl;
+  std::cout << ACE_TEXT("-v         : print version information and exit") << std::endl;
 } // end print_usage
 
 const bool process_arguments(const int argc_in,
                              ACE_TCHAR* argv_in[], // cannot be const...
                              std::string& itemDictionaryFilename_out,
                              std::string& monsterDictionaryFilename_out,
+                             unsigned int& numMonsterTypes_out,
                              bool& traceInformation_out,
                              bool& printVersionAndExit_out)
 {
@@ -71,12 +73,13 @@ const bool process_arguments(const int argc_in,
   // init results
   itemDictionaryFilename_out.clear();
   monsterDictionaryFilename_out.clear();
+  numMonsterTypes_out = 1;
   traceInformation_out = false;
   printVersionAndExit_out = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("i:m:tv"));
+                             ACE_TEXT("i:m:n:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -92,6 +95,14 @@ const bool process_arguments(const int argc_in,
       case 'm':
       {
         monsterDictionaryFilename_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'n':
+      {
+        std::stringstream str;
+        str << argumentParser.opt_arg();
+        str >> numMonsterTypes_out;
 
         break;
       }
@@ -187,7 +198,7 @@ void do_battle(const RPG_Character_Party_t& party_in,
   while (!RPG_Combat_Common_Tools::isPartyDeadOrHelpless(party_in) &&
          !RPG_Combat_Common_Tools::areMonstersDeadOrHelpless(monsters))
   {
-
+    break;
   } // end WHILE
 
   // sanity check
@@ -214,7 +225,8 @@ void do_battle(const RPG_Character_Party_t& party_in,
 }
 
 void do_work(const std::string& itemDictionaryFilename_in,
-             const std::string& monsterDictionaryFilename_in)
+             const std::string& monsterDictionaryFilename_in,
+             const unsigned int& numMonsterTypes_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -261,7 +273,6 @@ void do_work(const std::string& itemDictionaryFilename_in,
   party.push_back(player);
 
   // step4: generate (random) encounter
-  unsigned int numMonsterTypes = 1;
   RPG_Character_Alignment alignment;
   alignment.civic = ALIGNMENTCIVIC_ANY;
   alignment.ethic = ALIGNMENTETHIC_ANY;
@@ -271,7 +282,7 @@ void do_work(const std::string& itemDictionaryFilename_in,
   RPG_Character_OrganizationList_t organizations;
   organizations.insert(ORGANIZATION_ANY);
   RPG_Character_Encounter_t encounter;
-  RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->generateRandomEncounter(numMonsterTypes,
+  RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->generateRandomEncounter(numMonsterTypes_in,
                                                                           alignment,
                                                                           environment,
                                                                           organizations,
@@ -345,17 +356,19 @@ int ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  bool dumpDictionary      = false;
+  bool dumpDictionary          = false;
   std::string itemDictionaryFilename;
   std::string monsterDictionaryFilename;
-  bool traceInformation    = false;
-  bool printVersionAndExit = false;
+  unsigned int numMonsterTypes = 1;
+  bool traceInformation        = false;
+  bool printVersionAndExit     = false;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
                           itemDictionaryFilename,
                           monsterDictionaryFilename,
+                          numMonsterTypes,
                           traceInformation,
                           printVersionAndExit)))
   {
@@ -417,7 +430,8 @@ int ACE_TMAIN(int argc,
 
   // step2: do actual work
   do_work(itemDictionaryFilename,
-          monsterDictionaryFilename);
+          monsterDictionaryFilename,
+          numMonsterTypes);
 
   timer.stop();
 

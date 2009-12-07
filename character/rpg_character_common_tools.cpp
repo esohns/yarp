@@ -521,6 +521,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
       break;
     }
     case SUBCLASS_PALADIN:
+    case SUBCLASS_WARLORD:
     {
       weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
       armor  = new RPG_Item_Armor(ARMOR_PLATE_FULL);
