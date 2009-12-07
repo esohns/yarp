@@ -69,15 +69,15 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
                  int_p);
 //   int_pimpl                               initiative_p;
 //   unsigned_int_pimpl                      speed_p;
-  ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
-  RPG_Character_MonsterArmorClass_Type      monsterArmorClass_p;
-  monsterArmorClass_p.parsers(unsigned_byte_p,
-                              unsigned_byte_p,
-                              unsigned_byte_p);
-  RPG_Character_MonsterWeapon_Type          monsterWeapon_p;
   ::xml_schema::byte_pimpl                  byte_p;
+  RPG_Character_MonsterArmorClass_Type      monsterArmorClass_p;
+  monsterArmorClass_p.parsers(byte_p,
+                              byte_p,
+                              byte_p);
+  RPG_Character_MonsterWeapon_Type          monsterWeapon_p;
   RPG_Character_AttackForm_Type             attackForm_p;
   RPG_Character_MonsterAttackAction_Type    monsterAttackAction_p;
+  ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
   monsterAttackAction_p.parsers(monsterWeapon_p,
                                 byte_p,
                                 attackForm_p,
@@ -118,9 +118,13 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
   RPG_Chance_ValueRange_Type                range_p;
   range_p.parsers(int_p,
                   int_p);
+  RPG_Character_OrganizationSlaverStep_Type organizationSlaverStep_p;
+  organizationSlaverStep_p.parsers(string_p,
+                                   range_p);
   RPG_Character_OrganizationStep_Type       organizationStep_p;
   organizationStep_p.parsers(organization_p,
-                             range_p);
+                             range_p,
+                             organizationSlaverStep_p);
   RPG_Character_Organizations_Type          organizations_p;
   organizations_p.parsers(organizationStep_p);
 //   unsigned_int_pimpl                      challengeRating_p;
@@ -392,7 +396,7 @@ void RPG_Character_Dictionary::organizationStepToRoll(const RPG_Character_Organi
     case ORGANIZATION_COLONY:
     case ORGANIZATION_FLOCK: // 5-8 --> 1d4+4
     case ORGANIZATION_TRIBE: // 7-12 --> 1d6+6
-    case ORGANIZATION_SLAVER: // 7-12 slaves
+//     case ORGANIZATION_SLAVER: // 7-12 slaves
     case ORGANIZATION_BAND: // 11-20 + 2 sergeants + 1 leader + 150% noncombatants
     case ORGANIZATION_CLAN: // 30-100 + leaders + 50% noncombatants
     {

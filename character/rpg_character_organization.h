@@ -32,11 +32,11 @@ enum RPG_Character_Organization
   ORGANIZATION_GANG,
   ORGANIZATION_TEAM,
   ORGANIZATION_SQUAD,
+  ORGANIZATION_GROUP,
   ORGANIZATION_PACK,
   ORGANIZATION_COLONY,
   ORGANIZATION_FLOCK,
   ORGANIZATION_TRIBE,
-  ORGANIZATION_SLAVER,
   ORGANIZATION_BAND,
   ORGANIZATION_CLAN,
   ORGANIZATION_ANY,
@@ -68,11 +68,11 @@ class RPG_Character_OrganizationHelper
     myRPG_Character_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_GANG, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_GANG")));
     myRPG_Character_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_TEAM, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_TEAM")));
     myRPG_Character_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_SQUAD, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_SQUAD")));
+    myRPG_Character_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_GROUP, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_GROUP")));
     myRPG_Character_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_PACK, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_PACK")));
     myRPG_Character_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_COLONY, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_COLONY")));
     myRPG_Character_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_FLOCK, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_FLOCK")));
     myRPG_Character_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_TRIBE, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_TRIBE")));
-    myRPG_Character_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_SLAVER, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_SLAVER")));
     myRPG_Character_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_BAND, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_BAND")));
     myRPG_Character_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_CLAN, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_CLAN")));
     myRPG_Character_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_ANY, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_ANY")));

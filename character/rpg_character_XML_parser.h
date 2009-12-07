@@ -112,9 +112,9 @@ class RPG_Character_MonsterArmorClass_Type
   RPG_Character_MonsterArmorClass_Type();
 
 //   virtual void pre();
-  virtual void normal(unsigned char);
-  virtual void touch(unsigned char);
-  virtual void flatFooted(unsigned char);
+  virtual void normal(signed char);
+  virtual void touch(signed char);
+  virtual void flatFooted(signed char);
   virtual RPG_Character_MonsterArmorClass post_RPG_Character_MonsterArmorClass_Type();
 
  private:
@@ -304,6 +304,21 @@ class RPG_Character_Organization_Type
   virtual RPG_Character_Organization post_RPG_Character_Organization_Type();
 };
 
+class RPG_Character_OrganizationSlaverStep_Type
+ : public RPG_Character_OrganizationSlaverStep_Type_pimpl
+{
+  public:
+   RPG_Character_OrganizationSlaverStep_Type();
+
+//   virtual void pre();
+   virtual void name(const std::string&);
+   virtual void range(const RPG_Chance_ValueRange&);
+   virtual RPG_Character_OrganizationSlaverStep post_RPG_Character_OrganizationSlaverStep_Type();
+
+  private:
+   RPG_Character_OrganizationSlaverStep myCurrentOrganizationSlaverStep;
+};
+
 class RPG_Character_OrganizationStep_Type
  : public RPG_Character_OrganizationStep_Type_pimpl
 {
@@ -313,6 +328,7 @@ class RPG_Character_OrganizationStep_Type
 //   virtual void pre();
   virtual void type(const RPG_Character_Organization&);
   virtual void range(const RPG_Chance_ValueRange&);
+  virtual void slaves(const RPG_Character_OrganizationSlaverStep&);
   virtual RPG_Character_OrganizationStep post_RPG_Character_OrganizationStep_Type();
 
  private:

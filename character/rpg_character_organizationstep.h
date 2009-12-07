@@ -25,6 +25,7 @@ struct RPG_Character_OrganizationStep
 {
   RPG_Character_Organization type;
   RPG_Chance_ValueRange range;
+  std::vector<RPG_Character_OrganizationSlaverStep> slaves;
 };
 
 #endif

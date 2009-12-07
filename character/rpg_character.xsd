@@ -265,9 +265,9 @@
 
   <xsd:complexType name="RPG_Character_MonsterArmorClass_Type">
     <xsd:sequence>
-      <xsd:element name="normal" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="touch" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="flatFooted" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="normal" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="touch" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="flatFooted" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -303,7 +303,7 @@
     <xsd:sequence>
       <xsd:element name="monsterWeapon" type="RPG_Character_MonsterWeapon_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackBonus" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="attackForm" type="RPG_Character_AttackForm_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="attackForm" type="RPG_Character_AttackForm_Type" minOccurs="1" maxOccurs="unbounded"/>
 <!--      <xsd:element name="damage" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>-->
       <xsd:element name="damage" type="RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="numAttacksPerRound" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
@@ -632,22 +632,32 @@
       <xsd:enumeration value="ORGANIZATION_GANG"/>
       <xsd:enumeration value="ORGANIZATION_TEAM"/>
       <xsd:enumeration value="ORGANIZATION_SQUAD"/>
+      <xsd:enumeration value="ORGANIZATION_GROUP"/>
       <xsd:enumeration value="ORGANIZATION_PACK"/>
       <xsd:enumeration value="ORGANIZATION_COLONY"/>
       <xsd:enumeration value="ORGANIZATION_FLOCK"/>
       <xsd:enumeration value="ORGANIZATION_TRIBE"/>
-      <xsd:enumeration value="ORGANIZATION_SLAVER"/>
+<!--      <xsd:enumeration value="ORGANIZATION_SLAVER"/>-->
       <xsd:enumeration value="ORGANIZATION_BAND"/>
       <xsd:enumeration value="ORGANIZATION_CLAN"/>
       <xsd:enumeration value="ORGANIZATION_ANY"/>
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:complexType name="RPG_Character_OrganizationSlaverStep_Type">
+    <xsd:sequence>
+      <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <!--       <xsd:element name="range" type="rpg_chance_dice:RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/> -->
+      <xsd:element name="range" type="RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
   <xsd:complexType name="RPG_Character_OrganizationStep_Type">
     <xsd:sequence>
       <xsd:element name="type" type="RPG_Character_Organization_Type" minOccurs="1" maxOccurs="1"/>
       <!--       <xsd:element name="range" type="rpg_chance_dice:RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/> -->
       <xsd:element name="range" type="RPG_Chance_ValueRange_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="slaves" type="RPG_Character_OrganizationSlaverStep_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 

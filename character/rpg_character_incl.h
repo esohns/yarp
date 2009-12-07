@@ -50,6 +50,7 @@
 #include "rpg_character_climate.h"
 #include "rpg_character_environment.h"
 #include "rpg_character_organization.h"
+#include "rpg_character_organizationslaverstep.h"
 #include "rpg_character_organizationstep.h"
 #include "rpg_character_organizations.h"
 #include "rpg_character_alignmentcivic.h"

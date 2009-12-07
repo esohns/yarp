@@ -33,7 +33,6 @@
 #include "rpg_character_attackform.h"
 #include "rpg_character_monsterattackaction.h"
 #include "rpg_character_monsterattack.h"
-#include "rpg_character_organization.h"
 #include "rpg_character_size.h"
 #include "rpg_character_monsteradvancementstep.h"
 #include "rpg_character_monsteradvancement.h"
@@ -51,7 +50,6 @@ class RPG_Character_Monster_Common_Tools
 {
  public:
   static const std::string monsterTypeToString(const RPG_Character_MonsterType&); // type
-  static const std::string monsterAttackActionToString(const RPG_Character_MonsterAttackAction&); // attack action
   static const std::string monsterAttackToString(const RPG_Character_MonsterAttack&); // attack
   static const std::string environmentToString(const RPG_Character_Environment&); // environment
   static const std::string organizationsToString(const RPG_Character_Organizations_t&); // organizations
@@ -66,6 +64,9 @@ class RPG_Character_Monster_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Monster_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Monster_Common_Tools(const RPG_Character_Monster_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Monster_Common_Tools& operator=(const RPG_Character_Monster_Common_Tools&));
+
+  static const std::string monsterAttackFormsToString(const RPG_Character_AttackForms_t&); // attack forms
+  static const std::string monsterAttackActionToString(const RPG_Character_MonsterAttackAction&); // attack action
 };
 
 #endif

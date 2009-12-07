@@ -21,12 +21,12 @@
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>libRPG_Character.la</activetarget>
+      <activetarget>character_parser</activetarget>
     </general>
     <run>
-      <mainprogram>/home/unfv/Projects/RPG/character/debug/.libs/character_generator</mainprogram>
-      <programargs>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -t</programargs>
-      <globaldebugarguments>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -t</globaldebugarguments>
+      <mainprogram>/home/unfv/Projects/RPG/character/debug/.libs/character_parser</mainprogram>
+      <programargs>-f ./rpg_character.xml -t</programargs>
+      <globaldebugarguments>-f ./rpg_character.xml -t</globaldebugarguments>
       <globalcwd>/home/unfv/Projects/RPG/character/</globalcwd>
       <useglobalprogram>true</useglobalprogram>
       <terminal>false</terminal>
@@ -36,18 +36,21 @@
       <envvars/>
       <runarguments>
         <generator>-t -f ../../item/rpg_item.xml</generator>
-        <character_parser>-t -f ./../../rpg_character.xml</character_parser>
+        <character_parser>-f ./../../rpg_character.xml -t</character_parser>
         <combat_simulator>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -t</combat_simulator>
+        <character_generator/>
       </runarguments>
       <debugarguments>
         <generator>-t -f ../../item/rpg_item.xml</generator>
-        <character_parser>-t -f ./../../rpg_character.xml</character_parser>
+        <character_parser>-f ./../../rpg_character.xml -t</character_parser>
         <combat_simulator>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -t</combat_simulator>
+        <character_generator/>
       </debugarguments>
       <cwd>
         <generator>/home/unfv/Projects/RPG/character/debug/./</generator>
         <character_parser>/home/unfv/Projects/RPG/character/debug/.libs</character_parser>
         <combat_simulator>/home/unfv/Projects/RPG/character/debug/.libs/</combat_simulator>
+        <character_generator>/home/unfv/Projects/RPG/character/debug/./</character_generator>
       </cwd>
     </run>
     <configurations>
@@ -112,7 +115,7 @@
       <runmultiplejobs>false</runmultiplejobs>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin></makebin>
+      <makebin/>
       <prio>0</prio>
     </make>
   </kdevautoproject>
@@ -186,7 +189,7 @@
     <projectdoc>
       <docsystem>Doxygen Documentation Collection</docsystem>
       <docurl>character.tag</docurl>
-      <usermanualurl></usermanualurl>
+      <usermanualurl/>
     </projectdoc>
   </kdevdocumentation>
   <substmap>
@@ -276,7 +279,7 @@
     </display>
   </kdevdebugger>
   <ctagspart>
-    <customArguments></customArguments>
+    <customArguments/>
     <customTagfilePath>/home/unfv/Projects/RPG/character/tags</customTagfilePath>
     <activeTagsFiles/>
   </ctagspart>

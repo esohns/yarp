@@ -64,7 +64,7 @@ const std::string RPG_Character_Monster_Common_Tools::monsterAttackActionToStrin
   str.str(ACE_TEXT_ALWAYS_CHAR(""));
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("attackForm: ");
-  result += RPG_Character_AttackFormHelper::RPG_Character_AttackFormToString(attackAction_in.attackForm);
+  result += monsterAttackFormsToString(attackAction_in.attackForms);
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("damage: ");
   result += RPG_Chance_Dice_Common_Tools::rollToString(attackAction_in.damage);
@@ -74,6 +74,28 @@ const std::string RPG_Character_Monster_Common_Tools::monsterAttackActionToStrin
   result += str.str();
   str.str(ACE_TEXT_ALWAYS_CHAR(""));
   result += ACE_TEXT_ALWAYS_CHAR("\n");
+
+  return result;
+}
+
+const std::string RPG_Character_Monster_Common_Tools::monsterAttackFormsToString(const RPG_Character_AttackForms_t& attackForms_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster_Common_Tools::monsterAttackFormsToString"));
+
+  std::string result;
+
+  for (RPG_Character_AttackFormsIterator_t iterator = attackForms_in.begin();
+       iterator != attackForms_in.end();
+       iterator++)
+  {
+    result += RPG_Character_AttackFormHelper::RPG_Character_AttackFormToString(*iterator);
+    result += ACE_TEXT_ALWAYS_CHAR("|");
+  } // end FOR
+
+  if (!result.empty())
+  {
+    result.erase(--(result.end()));
+  } // end IF
 
   return result;
 }

@@ -102,27 +102,27 @@ RPG_Character_MonsterType_Type_pskel ()
 //
 
 void RPG_Character_MonsterArmorClass_Type_pskel::
-normal_parser (::xml_schema::unsigned_byte_pskel& p)
+normal_parser (::xml_schema::byte_pskel& p)
 {
   this->normal_parser_ = &p;
 }
 
 void RPG_Character_MonsterArmorClass_Type_pskel::
-touch_parser (::xml_schema::unsigned_byte_pskel& p)
+touch_parser (::xml_schema::byte_pskel& p)
 {
   this->touch_parser_ = &p;
 }
 
 void RPG_Character_MonsterArmorClass_Type_pskel::
-flatFooted_parser (::xml_schema::unsigned_byte_pskel& p)
+flatFooted_parser (::xml_schema::byte_pskel& p)
 {
   this->flatFooted_parser_ = &p;
 }
 
 void RPG_Character_MonsterArmorClass_Type_pskel::
-parsers (::xml_schema::unsigned_byte_pskel& normal,
-         ::xml_schema::unsigned_byte_pskel& touch,
-         ::xml_schema::unsigned_byte_pskel& flatFooted)
+parsers (::xml_schema::byte_pskel& normal,
+         ::xml_schema::byte_pskel& touch,
+         ::xml_schema::byte_pskel& flatFooted)
 {
   this->normal_parser_ = &normal;
   this->touch_parser_ = &touch;
@@ -440,6 +440,36 @@ RPG_Character_Environment_Type_pskel ()
 {
 }
 
+// RPG_Character_OrganizationSlaverStep_Type_pskel
+//
+
+void RPG_Character_OrganizationSlaverStep_Type_pskel::
+name_parser (::xml_schema::string_pskel& p)
+{
+  this->name_parser_ = &p;
+}
+
+void RPG_Character_OrganizationSlaverStep_Type_pskel::
+range_parser (::RPG_Chance_ValueRange_Type_pskel& p)
+{
+  this->range_parser_ = &p;
+}
+
+void RPG_Character_OrganizationSlaverStep_Type_pskel::
+parsers (::xml_schema::string_pskel& name,
+         ::RPG_Chance_ValueRange_Type_pskel& range)
+{
+  this->name_parser_ = &name;
+  this->range_parser_ = &range;
+}
+
+RPG_Character_OrganizationSlaverStep_Type_pskel::
+RPG_Character_OrganizationSlaverStep_Type_pskel ()
+: name_parser_ (0),
+  range_parser_ (0)
+{
+}
+
 // RPG_Character_OrganizationStep_Type_pskel
 //
 
@@ -456,17 +486,26 @@ range_parser (::RPG_Chance_ValueRange_Type_pskel& p)
 }
 
 void RPG_Character_OrganizationStep_Type_pskel::
+slaves_parser (::RPG_Character_OrganizationSlaverStep_Type_pskel& p)
+{
+  this->slaves_parser_ = &p;
+}
+
+void RPG_Character_OrganizationStep_Type_pskel::
 parsers (::RPG_Character_Organization_Type_pskel& type,
-         ::RPG_Chance_ValueRange_Type_pskel& range)
+         ::RPG_Chance_ValueRange_Type_pskel& range,
+         ::RPG_Character_OrganizationSlaverStep_Type_pskel& slaves)
 {
   this->type_parser_ = &type;
   this->range_parser_ = &range;
+  this->slaves_parser_ = &slaves;
 }
 
 RPG_Character_OrganizationStep_Type_pskel::
 RPG_Character_OrganizationStep_Type_pskel ()
 : type_parser_ (0),
-  range_parser_ (0)
+  range_parser_ (0),
+  slaves_parser_ (0)
 {
 }
 
@@ -1030,17 +1069,17 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Character_MonsterArmorClass_Type_pskel::
-normal (unsigned char)
+normal (signed char)
 {
 }
 
 void RPG_Character_MonsterArmorClass_Type_pskel::
-touch (unsigned char)
+touch (signed char)
 {
 }
 
 void RPG_Character_MonsterArmorClass_Type_pskel::
-flatFooted (unsigned char)
+flatFooted (signed char)
 {
 }
 
@@ -1097,7 +1136,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "normal" && ns == "urn:rpg")
   {
     if (this->normal_parser_)
-      this->normal (this->normal_parser_->post_unsigned_byte ());
+      this->normal (this->normal_parser_->post_byte ());
 
     return true;
   }
@@ -1105,7 +1144,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "touch" && ns == "urn:rpg")
   {
     if (this->touch_parser_)
-      this->touch (this->touch_parser_->post_unsigned_byte ());
+      this->touch (this->touch_parser_->post_byte ());
 
     return true;
   }
@@ -1113,7 +1152,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "flatFooted" && ns == "urn:rpg")
   {
     if (this->flatFooted_parser_)
-      this->flatFooted (this->flatFooted_parser_->post_unsigned_byte ());
+      this->flatFooted (this->flatFooted_parser_->post_byte ());
 
     return true;
   }
@@ -1866,6 +1905,78 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
+// RPG_Character_OrganizationSlaverStep_Type_pskel
+//
+
+void RPG_Character_OrganizationSlaverStep_Type_pskel::
+name (const ::std::string&)
+{
+}
+
+void RPG_Character_OrganizationSlaverStep_Type_pskel::
+range (const RPG_Chance_ValueRange&)
+{
+}
+
+bool RPG_Character_OrganizationSlaverStep_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "name" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->name_parser_;
+
+    if (this->name_parser_)
+      this->name_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "range" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->range_parser_;
+
+    if (this->range_parser_)
+      this->range_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Character_OrganizationSlaverStep_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "name" && ns == "urn:rpg")
+  {
+    if (this->name_parser_)
+      this->name (this->name_parser_->post_string ());
+
+    return true;
+  }
+
+  if (n == "range" && ns == "urn:rpg")
+  {
+    if (this->range_parser_)
+      this->range (this->range_parser_->post_RPG_Chance_ValueRange_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
 // RPG_Character_OrganizationStep_Type_pskel
 //
 
@@ -1876,6 +1987,11 @@ type (const RPG_Character_Organization&)
 
 void RPG_Character_OrganizationStep_Type_pskel::
 range (const RPG_Chance_ValueRange&)
+{
+}
+
+void RPG_Character_OrganizationStep_Type_pskel::
+slaves (const RPG_Character_OrganizationSlaverStep&)
 {
 }
 
@@ -1909,6 +2025,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "slaves" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->slaves_parser_;
+
+    if (this->slaves_parser_)
+      this->slaves_parser_->pre ();
+
+    return true;
+  }
+
   return false;
 }
 
@@ -1931,6 +2057,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->range_parser_)
       this->range (this->range_parser_->post_RPG_Chance_ValueRange_Type ());
+
+    return true;
+  }
+
+  if (n == "slaves" && ns == "urn:rpg")
+  {
+    if (this->slaves_parser_)
+      this->slaves (this->slaves_parser_->post_RPG_Character_OrganizationSlaverStep_Type ());
 
     return true;
   }

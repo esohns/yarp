@@ -224,21 +224,21 @@ pre ()
 }
 
 void RPG_Character_MonsterArmorClass_Type_pimpl::
-normal (unsigned char normal)
+normal (signed char normal)
 {
   // TODO
   //
 }
 
 void RPG_Character_MonsterArmorClass_Type_pimpl::
-touch (unsigned char touch)
+touch (signed char touch)
 {
   // TODO
   //
 }
 
 void RPG_Character_MonsterArmorClass_Type_pimpl::
-flatFooted (unsigned char flatFooted)
+flatFooted (signed char flatFooted)
 {
   // TODO
   //
@@ -702,6 +702,36 @@ post_RPG_Character_Organization_Type ()
   // return ... ;
 }
 
+// RPG_Character_OrganizationSlaverStep_Type_pimpl
+//
+
+void RPG_Character_OrganizationSlaverStep_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Character_OrganizationSlaverStep_Type_pimpl::
+name (const ::std::string& name)
+{
+  // TODO
+  //
+}
+
+void RPG_Character_OrganizationSlaverStep_Type_pimpl::
+range (const RPG_Chance_ValueRange& range)
+{
+  // TODO
+  //
+}
+
+RPG_Character_OrganizationSlaverStep RPG_Character_OrganizationSlaverStep_Type_pimpl::
+post_RPG_Character_OrganizationSlaverStep_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
 // RPG_Character_OrganizationStep_Type_pimpl
 //
 
@@ -719,6 +749,13 @@ type (const RPG_Character_Organization& type)
 
 void RPG_Character_OrganizationStep_Type_pimpl::
 range (const RPG_Chance_ValueRange& range)
+{
+  // TODO
+  //
+}
+
+void RPG_Character_OrganizationStep_Type_pimpl::
+slaves (const RPG_Character_OrganizationSlaverStep& slaves)
 {
   // TODO
   //

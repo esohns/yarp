@@ -229,21 +229,21 @@ RPG_Character_MonsterArmorClass_Type::RPG_Character_MonsterArmorClass_Type()
   myCurrentArmorClass.flatFooted = 0;
 }
 
-void RPG_Character_MonsterArmorClass_Type::normal(unsigned char normal_in)
+void RPG_Character_MonsterArmorClass_Type::normal(signed char normal_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterArmorClass_Type::normal"));
 
   myCurrentArmorClass.normal = normal_in;
 }
 
-void RPG_Character_MonsterArmorClass_Type::touch(unsigned char touch_in)
+void RPG_Character_MonsterArmorClass_Type::touch(signed char touch_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterArmorClass_Type::touch"));
 
   myCurrentArmorClass.touch = touch_in;
 }
 
-void RPG_Character_MonsterArmorClass_Type::flatFooted(unsigned char flatFooted_in)
+void RPG_Character_MonsterArmorClass_Type::flatFooted(signed char flatFooted_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterArmorClass_Type::flatFooted"));
 
@@ -270,7 +270,7 @@ RPG_Character_MonsterAttackAction_Type::RPG_Character_MonsterAttackAction_Type()
 
   myCurrentMonsterAttackAction.monsterWeapon = RPG_CHARACTER_MONSTERWEAPON_INVALID;
   myCurrentMonsterAttackAction.attackBonus = 0;
-  myCurrentMonsterAttackAction.attackForm = RPG_CHARACTER_ATTACKFORM_INVALID;
+  myCurrentMonsterAttackAction.attackForms.clear();
   myCurrentMonsterAttackAction.damage.numDice = 0;
   myCurrentMonsterAttackAction.damage.typeDice = RPG_CHANCE_DICETYPE_INVALID;
   myCurrentMonsterAttackAction.damage.modifier = 0;
@@ -295,7 +295,7 @@ void RPG_Character_MonsterAttackAction_Type::attackForm(const RPG_Character_Atta
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterAttackAction_Type::attackForm"));
 
-  myCurrentMonsterAttackAction.attackForm = attackForm_in;
+  myCurrentMonsterAttackAction.attackForms.push_back(attackForm_in);
 }
 
 void RPG_Character_MonsterAttackAction_Type::damage(const RPG_Chance_DiceRoll& damage_in)
@@ -321,7 +321,7 @@ RPG_Character_MonsterAttackAction RPG_Character_MonsterAttackAction_Type::post_R
   // clear structure
   myCurrentMonsterAttackAction.monsterWeapon = RPG_CHARACTER_MONSTERWEAPON_INVALID;
   myCurrentMonsterAttackAction.attackBonus = 0;
-  myCurrentMonsterAttackAction.attackForm = RPG_CHARACTER_ATTACKFORM_INVALID;
+  myCurrentMonsterAttackAction.attackForms.clear();
   myCurrentMonsterAttackAction.damage.numDice = 0;
   myCurrentMonsterAttackAction.damage.typeDice = RPG_CHANCE_DICETYPE_INVALID;
   myCurrentMonsterAttackAction.damage.modifier = 0;
@@ -646,6 +646,43 @@ RPG_Character_Organization RPG_Character_Organization_Type::post_RPG_Character_O
   return RPG_Character_OrganizationHelper::stringToRPG_Character_Organization(post_string());
 }
 
+RPG_Character_OrganizationSlaverStep_Type::RPG_Character_OrganizationSlaverStep_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_OrganizationSlaverStep_Type::RPG_Character_OrganizationSlaverStep_Type"));
+
+  myCurrentOrganizationSlaverStep.name.clear();
+  myCurrentOrganizationSlaverStep.range.begin = 0;
+  myCurrentOrganizationSlaverStep.range.end = 0;
+}
+
+void RPG_Character_OrganizationSlaverStep_Type::name(const std::string& name_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_OrganizationSlaverStep_Type::name"));
+
+  myCurrentOrganizationSlaverStep.name = name_in;
+}
+
+void RPG_Character_OrganizationSlaverStep_Type::range(const RPG_Chance_ValueRange& range_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_OrganizationSlaverStep_Type::range"));
+
+  myCurrentOrganizationSlaverStep.range = range_in;
+}
+
+RPG_Character_OrganizationSlaverStep RPG_Character_OrganizationSlaverStep_Type::post_RPG_Character_OrganizationSlaverStep_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_OrganizationSlaverStep_Type::post_RPG_Character_OrganizationSlaverStep_Type"));
+
+  RPG_Character_OrganizationSlaverStep result = myCurrentOrganizationSlaverStep;
+
+  // clear structure
+  myCurrentOrganizationSlaverStep.name.clear();
+  myCurrentOrganizationSlaverStep.range.begin = 0;
+  myCurrentOrganizationSlaverStep.range.end = 0;
+
+  return result;
+}
+
 RPG_Character_OrganizationStep_Type::RPG_Character_OrganizationStep_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_OrganizationStep_Type::RPG_Character_OrganizationStep_Type"));
@@ -653,6 +690,7 @@ RPG_Character_OrganizationStep_Type::RPG_Character_OrganizationStep_Type()
   myCurrentOrganizationStep.type = RPG_CHARACTER_ORGANIZATION_INVALID;
   myCurrentOrganizationStep.range.begin = 0;
   myCurrentOrganizationStep.range.end = 0;
+  myCurrentOrganizationStep.slaves.clear();
 }
 
 void RPG_Character_OrganizationStep_Type::type(const RPG_Character_Organization& organization_in)
@@ -669,6 +707,13 @@ void RPG_Character_OrganizationStep_Type::range(const RPG_Chance_ValueRange& ran
   myCurrentOrganizationStep.range = range_in;
 }
 
+void RPG_Character_OrganizationStep_Type::slaves(const RPG_Character_OrganizationSlaverStep& organizationSlaverStep_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_OrganizationStep_Type::slaves"));
+
+  myCurrentOrganizationStep.slaves.push_back(organizationSlaverStep_in);
+}
+
 RPG_Character_OrganizationStep RPG_Character_OrganizationStep_Type::post_RPG_Character_OrganizationStep_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_OrganizationStep_Type::post_RPG_Character_OrganizationStep_Type"));
@@ -679,6 +724,7 @@ RPG_Character_OrganizationStep RPG_Character_OrganizationStep_Type::post_RPG_Cha
   myCurrentOrganizationStep.type = RPG_CHARACTER_ORGANIZATION_INVALID;
   myCurrentOrganizationStep.range.begin = 0;
   myCurrentOrganizationStep.range.end = 0;
+  myCurrentOrganizationStep.slaves.clear();
 
   return result;
 }

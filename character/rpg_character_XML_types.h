@@ -78,6 +78,7 @@ class RPG_Character_Terrain_Type_pskel;
 class RPG_Character_Climate_Type_pskel;
 class RPG_Character_Environment_Type_pskel;
 class RPG_Character_Organization_Type_pskel;
+class RPG_Character_OrganizationSlaverStep_Type_pskel;
 class RPG_Character_OrganizationStep_Type_pskel;
 class RPG_Character_Organizations_Type_pskel;
 class RPG_Character_AlignmentCivic_Type_pskel;
@@ -327,13 +328,13 @@ class RPG_Character_MonsterArmorClass_Type_pskel: public ::xml_schema::complex_c
   // pre ();
 
   virtual void
-  normal (unsigned char);
+  normal (signed char);
 
   virtual void
-  touch (unsigned char);
+  touch (signed char);
 
   virtual void
-  flatFooted (unsigned char);
+  flatFooted (signed char);
 
   virtual RPG_Character_MonsterArmorClass
   post_RPG_Character_MonsterArmorClass_Type () = 0;
@@ -341,18 +342,18 @@ class RPG_Character_MonsterArmorClass_Type_pskel: public ::xml_schema::complex_c
   // Parser construction API.
   //
   void
-  normal_parser (::xml_schema::unsigned_byte_pskel&);
+  normal_parser (::xml_schema::byte_pskel&);
 
   void
-  touch_parser (::xml_schema::unsigned_byte_pskel&);
+  touch_parser (::xml_schema::byte_pskel&);
 
   void
-  flatFooted_parser (::xml_schema::unsigned_byte_pskel&);
+  flatFooted_parser (::xml_schema::byte_pskel&);
 
   void
-  parsers (::xml_schema::unsigned_byte_pskel& /* normal */,
-           ::xml_schema::unsigned_byte_pskel& /* touch */,
-           ::xml_schema::unsigned_byte_pskel& /* flatFooted */);
+  parsers (::xml_schema::byte_pskel& /* normal */,
+           ::xml_schema::byte_pskel& /* touch */,
+           ::xml_schema::byte_pskel& /* flatFooted */);
 
   // Constructor.
   //
@@ -371,9 +372,9 @@ class RPG_Character_MonsterArmorClass_Type_pskel: public ::xml_schema::complex_c
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::xml_schema::unsigned_byte_pskel* normal_parser_;
-  ::xml_schema::unsigned_byte_pskel* touch_parser_;
-  ::xml_schema::unsigned_byte_pskel* flatFooted_parser_;
+  ::xml_schema::byte_pskel* normal_parser_;
+  ::xml_schema::byte_pskel* touch_parser_;
+  ::xml_schema::byte_pskel* flatFooted_parser_;
 };
 
 class RPG_Character_MonsterWeapon_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -940,6 +941,56 @@ class RPG_Character_Organization_Type_pskel: public virtual ::xml_schema::string
   post_RPG_Character_Organization_Type () = 0;
 };
 
+class RPG_Character_OrganizationSlaverStep_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  name (const ::std::string&);
+
+  virtual void
+  range (const RPG_Chance_ValueRange&);
+
+  virtual RPG_Character_OrganizationSlaverStep
+  post_RPG_Character_OrganizationSlaverStep_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  name_parser (::xml_schema::string_pskel&);
+
+  void
+  range_parser (::RPG_Chance_ValueRange_Type_pskel&);
+
+  void
+  parsers (::xml_schema::string_pskel& /* name */,
+           ::RPG_Chance_ValueRange_Type_pskel& /* range */);
+
+  // Constructor.
+  //
+  RPG_Character_OrganizationSlaverStep_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::xml_schema::string_pskel* name_parser_;
+  ::RPG_Chance_ValueRange_Type_pskel* range_parser_;
+};
+
 class RPG_Character_OrganizationStep_Type_pskel: public ::xml_schema::complex_content
 {
   public:
@@ -954,6 +1005,9 @@ class RPG_Character_OrganizationStep_Type_pskel: public ::xml_schema::complex_co
   virtual void
   range (const RPG_Chance_ValueRange&);
 
+  virtual void
+  slaves (const RPG_Character_OrganizationSlaverStep&);
+
   virtual RPG_Character_OrganizationStep
   post_RPG_Character_OrganizationStep_Type () = 0;
 
@@ -966,8 +1020,12 @@ class RPG_Character_OrganizationStep_Type_pskel: public ::xml_schema::complex_co
   range_parser (::RPG_Chance_ValueRange_Type_pskel&);
 
   void
+  slaves_parser (::RPG_Character_OrganizationSlaverStep_Type_pskel&);
+
+  void
   parsers (::RPG_Character_Organization_Type_pskel& /* type */,
-           ::RPG_Chance_ValueRange_Type_pskel& /* range */);
+           ::RPG_Chance_ValueRange_Type_pskel& /* range */,
+           ::RPG_Character_OrganizationSlaverStep_Type_pskel& /* slaves */);
 
   // Constructor.
   //
@@ -988,6 +1046,7 @@ class RPG_Character_OrganizationStep_Type_pskel: public ::xml_schema::complex_co
   protected:
   ::RPG_Character_Organization_Type_pskel* type_parser_;
   ::RPG_Chance_ValueRange_Type_pskel* range_parser_;
+  ::RPG_Character_OrganizationSlaverStep_Type_pskel* slaves_parser_;
 };
 
 class RPG_Character_Organizations_Type_pskel: public ::xml_schema::complex_content

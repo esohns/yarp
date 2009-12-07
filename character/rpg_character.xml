@@ -82,17 +82,36 @@
         <feat>FEAT_COMBAT_CASTING</feat>
         <feat>FEAT_IRON_WILL</feat>
       </feats>
-      <environment>ENVIRONMENT_UNDERGROUND</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_BROOD</organization>
-      <organization>ORGANIZATION_SLAVER</organization>
+      <environment>
+        <terrain>TERRAIN_UNDERGROUND</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_BROOD</type>
+          <range>
+            <begin>2</begin>
+            <end>4</end>
+          </range>
+          <slaves>
+            <name>Skum</name>
+            <range>
+              <begin>7</begin>
+              <end>12</end>
+            </range>
+          </slaves>
+        </step>
+      </organizations>
       <challengeRating>7</challengeRating>
       <treasureModifier>2</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_LAWFUL</civic>
         <ethic>ALIGNMENTETHIC_EVIL</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_HUGE</size>
           <range>
@@ -107,7 +126,7 @@
             <end>24</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -228,16 +247,23 @@
         <feat>FEAT_SPELL_FOCUS</feat>
         <feat>FEAT_SPELL_PENETRATION</feat>
       </feats>
-      <environment>ENVIRONMENT_UNDERGROUND</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
+      <environment>
+        <terrain>TERRAIN_UNDERGROUND</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+      </organizations>
       <challengeRating>17</challengeRating>
       <treasureModifier>2</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_LAWFUL</civic>
         <ethic>ALIGNMENTETHIC_EVIL</ethic>
       </alignment>
-      <advancement>
-      </advancement>
+      <advancements>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -345,16 +371,29 @@
         <feat>FEAT_MOBILITY</feat>
         <feat>FEAT_SPRING_ATTACK</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_ANY_LAWFUL</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_FLOCK</organization>
+      <environment>
+        <terrain>TERRAIN_OUTERPLANE_LAWFUL_ANY</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_FLOCK</type>
+          <range>
+            <begin>5</begin>
+            <end>8</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>5</challengeRating>
       <treasureModifier>2</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_LAWFUL</civic>
         <ethic>ALIGNMENTETHIC_EVIL</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_LARGE</size>
           <range>
@@ -369,7 +408,7 @@
             <end>18</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -451,15 +490,22 @@
         <feat>FEAT_IMPROVED_INITIATIVE</feat>
         <feat>FEAT_LIGHTNING_REFLEXES</feat>
       </feats>
-      <environment>ENVIRONMENT_ANY</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
+      <environment>
+        <terrain>TERRAIN_ANY</terrain>
+        <climate>CLIMATE_ANY</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+      </organizations>
       <challengeRating>3</challengeRating>
       <treasureModifier>0</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
         <ethic>ALIGNMENTETHIC_EVIL</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
@@ -467,7 +513,7 @@
             <end>12</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -585,17 +631,32 @@
         <feat>FEAT_IMPROVED_INITIATIVE</feat>
         <feat>FEAT_POWER_ATTACK</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_ANY_GOOD</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PAIR</organization>
-      <organization>ORGANIZATION_SQUAD</organization>
+      <environment>
+        <terrain>TERRAIN_OUTERPLANE_GOOD_ANY</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PAIR</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_SQUAD</type>
+          <range>
+            <begin>3</begin>
+            <end>5</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>14</challengeRating>
       <treasureModifier>2</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_ANY</civic>
         <ethic>ALIGNMENTETHIC_GOOD</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
@@ -610,7 +671,7 @@
             <end>36</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>8</levelAdjustment>
     </monster>
     <monster>
@@ -732,16 +793,25 @@
         <feat>FEAT_IMPROVED_SUNDER</feat>
         <feat>FEAT_POWER_ATTACK</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_ANY_GOOD</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PAIR</organization>
+      <environment>
+        <terrain>TERRAIN_OUTERPLANE_GOOD_ANY</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PAIR</type>
+        </step>
+      </organizations>
       <challengeRating>16</challengeRating>
       <treasureModifier>2</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_ANY</civic>
         <ethic>ALIGNMENTETHIC_GOOD</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_LARGE</size>
           <range>
@@ -756,7 +826,7 @@
             <end>42</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -896,16 +966,25 @@
         <feat>FEAT_POWER_ATTACK</feat>
         <feat>FEAT_TRACK</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_ANY_GOOD</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PAIR</organization>
+      <environment>
+        <terrain>TERRAIN_OUTERPLANE_GOOD_ANY</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PAIR</type>
+        </step>
+      </organizations>
       <challengeRating>23</challengeRating>
       <treasureModifier>2</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_ANY</civic>
         <ethic>ALIGNMENTETHIC_GOOD</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_LARGE</size>
           <range>
@@ -920,11 +999,157 @@
             <end>66</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
-      <name>Animated Object</name>
+      <name>Tiny Animated Object</name>
+      <size>SIZE_TINY</size>
+      <type>
+        <metaType>MONSTERMETATYPE_CONSTRUCT</metaType>
+      </type>
+      <hitDice>
+        <numDice>1</numDice>
+        <typeDice>D_10</typeDice>
+        <modifier>-5</modifier>
+      </hitDice>
+      <initiative>2</initiative>
+      <speed>40</speed>
+      <armorClass>
+        <normal>14</normal>
+        <touch>14</touch>
+        <flatFooted>12</flatFooted>
+      </armorClass>
+      <attack>
+        <baseAttackBonus>0</baseAttackBonus>
+        <grappleBonus>-9</grappleBonus>
+        <attackAction>
+          <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+          <attackBonus>1</attackBonus>
+          <attackForm>ATTACK_MELEE</attackForm>
+          <damage>
+            <numDice>1</numDice>
+            <typeDice>D_3</typeDice>
+            <modifier>-1</modifier>
+          </damage>
+          <numAttacksPerRound>1</numAttacksPerRound>
+        </attackAction>
+      </attack>
+      <space>2</space>
+      <reach>0</reach>
+      <saves>
+        <fortitude>0</fortitude>
+        <reflex>2</reflex>
+        <will>-5</will>
+      </saves>
+      <attributes>
+        <strength>8</strength>
+        <dexterity>14</dexterity>
+        <constitution>0</constitution>
+        <intelligence>0</intelligence>
+        <wisdom>1</wisdom>
+        <charisma>1</charisma>
+      </attributes>
+      <skills>
+      </skills>
+      <feats>
+      </feats>
+      <environment>
+        <terrain>TERRAIN_ANY</terrain>
+        <climate>CLIMATE_ANY</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_GROUP</type>
+          <range>
+            <begin>4</begin>
+            <end>4</end>
+          </range>
+        </step>
+      </organizations>
+      <challengeRating>1</challengeRating>
+      <treasureModifier>0</treasureModifier>
+      <alignment>
+        <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
+        <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
+      </alignment>
+      <advancements>
+      </advancements>
+      <levelAdjustment>0</levelAdjustment>
+    </monster>
+    <monster>
+      <name>Small Animated Object</name>
+      <size>SIZE_SMALL</size>
+      <type>
+        <metaType>MONSTERMETATYPE_CONSTRUCT</metaType>
+      </type>
+      <hitDice>
+        <numDice>1</numDice>
+        <typeDice>D_10</typeDice>
+        <modifier>10</modifier>
+      </hitDice>
+      <initiative>1</initiative>
+      <speed>30</speed>
+      <armorClass>
+        <normal>14</normal>
+        <touch>12</touch>
+        <flatFooted>13</flatFooted>
+      </armorClass>
+      <attack>
+        <baseAttackBonus>0</baseAttackBonus>
+        <grappleBonus>-4</grappleBonus>
+        <attackAction>
+          <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+          <attackBonus>1</attackBonus>
+          <attackForm>ATTACK_MELEE</attackForm>
+          <damage>
+            <numDice>1</numDice>
+            <typeDice>D_4</typeDice>
+            <modifier>0</modifier>
+          </damage>
+          <numAttacksPerRound>1</numAttacksPerRound>
+        </attackAction>
+      </attack>
+      <space>5</space>
+      <reach>5</reach>
+      <saves>
+        <fortitude>0</fortitude>
+        <reflex>1</reflex>
+        <will>-5</will>
+      </saves>
+      <attributes>
+        <strength>10</strength>
+        <dexterity>12</dexterity>
+        <constitution>0</constitution>
+        <intelligence>0</intelligence>
+        <wisdom>1</wisdom>
+        <charisma>1</charisma>
+      </attributes>
+      <skills>
+      </skills>
+      <feats>
+      </feats>
+      <environment>
+        <terrain>TERRAIN_ANY</terrain>
+        <climate>CLIMATE_ANY</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_PAIR</type>
+        </step>
+      </organizations>
+      <challengeRating>1</challengeRating>
+      <treasureModifier>0</treasureModifier>
+      <alignment>
+        <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
+        <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
+      </alignment>
+      <advancements>
+      </advancements>
+      <levelAdjustment>0</levelAdjustment>
+    </monster>
+    <monster>
+      <name>Medium Animated Object</name>
       <size>SIZE_MEDIUM</size>
       <type>
         <metaType>MONSTERMETATYPE_CONSTRUCT</metaType>
@@ -935,7 +1160,7 @@
         <modifier>20</modifier>
       </hitDice>
       <initiative>0</initiative>
-      <speed>40</speed>
+      <speed>30</speed>
       <armorClass>
         <normal>14</normal>
         <touch>10</touch>
@@ -975,58 +1200,307 @@
       </skills>
       <feats>
       </feats>
-      <environment>ENVIRONMENT_ANY</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
+      <environment>
+        <terrain>TERRAIN_ANY</terrain>
+        <climate>CLIMATE_ANY</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+      </organizations>
       <challengeRating>2</challengeRating>
       <treasureModifier>0</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
         <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
       </alignment>
-      <advancement>
+      <advancements>
+      </advancements>
+      <levelAdjustment>0</levelAdjustment>
+    </monster>
+    <monster>
+      <name>Large Animated Object</name>
+      <size>SIZE_LARGE</size>
+      <type>
+        <metaType>MONSTERMETATYPE_CONSTRUCT</metaType>
+      </type>
+      <hitDice>
+        <numDice>4</numDice>
+        <typeDice>D_10</typeDice>
+        <modifier>30</modifier>
+      </hitDice>
+      <initiative>0</initiative>
+      <speed>20</speed>
+      <armorClass>
+        <normal>14</normal>
+        <touch>9</touch>
+        <flatFooted>14</flatFooted>
+      </armorClass>
+      <attack>
+        <baseAttackBonus>3</baseAttackBonus>
+        <grappleBonus>10</grappleBonus>
+        <attackAction>
+          <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+          <attackBonus>5</attackBonus>
+          <attackForm>ATTACK_MELEE</attackForm>
+          <damage>
+            <numDice>1</numDice>
+            <typeDice>D_8</typeDice>
+            <modifier>4</modifier>
+          </damage>
+          <numAttacksPerRound>1</numAttacksPerRound>
+        </attackAction>
+      </attack>
+      <space>10</space>
+      <reach>5</reach>
+      <saves>
+        <fortitude>1</fortitude>
+        <reflex>1</reflex>
+        <will>-4</will>
+      </saves>
+      <attributes>
+        <strength>16</strength>
+        <dexterity>10</dexterity>
+        <constitution>0</constitution>
+        <intelligence>0</intelligence>
+        <wisdom>1</wisdom>
+        <charisma>1</charisma>
+      </attributes>
+      <skills>
+      </skills>
+      <feats>
+      </feats>
+      <environment>
+        <terrain>TERRAIN_ANY</terrain>
+        <climate>CLIMATE_ANY</climate>
+      </environment>
+      <organizations>
         <step>
-          <size>SIZE_TINY</size>
-          <range>
-            <begin>-1</begin>
-            <end>-1</end>
-          </range>
+          <type>ORGANIZATION_SOLITARY</type>
         </step>
+      </organizations>
+      <challengeRating>3</challengeRating>
+      <treasureModifier>0</treasureModifier>
+      <alignment>
+        <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
+        <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
+      </alignment>
+      <advancements>
+      </advancements>
+      <levelAdjustment>0</levelAdjustment>
+    </monster>
+    <monster>
+      <name>Huge Animated Object</name>
+      <size>SIZE_HUGE</size>
+      <type>
+        <metaType>MONSTERMETATYPE_CONSTRUCT</metaType>
+      </type>
+      <hitDice>
+        <numDice>8</numDice>
+        <typeDice>D_10</typeDice>
+        <modifier>40</modifier>
+      </hitDice>
+      <initiative>-1</initiative>
+      <speed>20</speed>
+      <armorClass>
+        <normal>13</normal>
+        <touch>7</touch>
+        <flatFooted>13</flatFooted>
+      </armorClass>
+      <attack>
+        <baseAttackBonus>6</baseAttackBonus>
+        <grappleBonus>19</grappleBonus>
+        <attackAction>
+          <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+          <attackBonus>9</attackBonus>
+          <attackForm>ATTACK_MELEE</attackForm>
+          <damage>
+            <numDice>2</numDice>
+            <typeDice>D_6</typeDice>
+            <modifier>7</modifier>
+          </damage>
+          <numAttacksPerRound>1</numAttacksPerRound>
+        </attackAction>
+      </attack>
+      <space>15</space>
+      <reach>10</reach>
+      <saves>
+        <fortitude>2</fortitude>
+        <reflex>1</reflex>
+        <will>-3</will>
+      </saves>
+      <attributes>
+        <strength>20</strength>
+        <dexterity>8</dexterity>
+        <constitution>0</constitution>
+        <intelligence>0</intelligence>
+        <wisdom>1</wisdom>
+        <charisma>1</charisma>
+      </attributes>
+      <skills>
+      </skills>
+      <feats>
+      </feats>
+      <environment>
+        <terrain>TERRAIN_ANY</terrain>
+        <climate>CLIMATE_ANY</climate>
+      </environment>
+      <organizations>
         <step>
-          <size>SIZE_SMALL</size>
-          <range>
-            <begin>0</begin>
-            <end>0</end>
-          </range>
+          <type>ORGANIZATION_SOLITARY</type>
         </step>
+      </organizations>
+      <challengeRating>5</challengeRating>
+      <treasureModifier>0</treasureModifier>
+      <alignment>
+        <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
+        <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
+      </alignment>
+      <advancements>
+      </advancements>
+      <levelAdjustment>0</levelAdjustment>
+    </monster>
+    <monster>
+      <name>Gargantuan Animated Object</name>
+      <size>SIZE_GARGANTUAN</size>
+      <type>
+        <metaType>MONSTERMETATYPE_CONSTRUCT</metaType>
+      </type>
+      <hitDice>
+        <numDice>16</numDice>
+        <typeDice>D_10</typeDice>
+        <modifier>60</modifier>
+      </hitDice>
+      <initiative>-2</initiative>
+      <speed>10</speed>
+      <armorClass>
+        <normal>12</normal>
+        <touch>4</touch>
+        <flatFooted>12</flatFooted>
+      </armorClass>
+      <attack>
+        <baseAttackBonus>12</baseAttackBonus>
+        <grappleBonus>31</grappleBonus>
+        <attackAction>
+          <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+          <attackBonus>15</attackBonus>
+          <attackForm>ATTACK_MELEE</attackForm>
+          <damage>
+            <numDice>2</numDice>
+            <typeDice>D_8</typeDice>
+            <modifier>10</modifier>
+          </damage>
+          <numAttacksPerRound>1</numAttacksPerRound>
+        </attackAction>
+      </attack>
+      <space>20</space>
+      <reach>15</reach>
+      <saves>
+        <fortitude>5</fortitude>
+        <reflex>3</reflex>
+        <will>0</will>
+      </saves>
+      <attributes>
+        <strength>24</strength>
+        <dexterity>6</dexterity>
+        <constitution>0</constitution>
+        <intelligence>0</intelligence>
+        <wisdom>1</wisdom>
+        <charisma>1</charisma>
+      </attributes>
+      <skills>
+      </skills>
+      <feats>
+      </feats>
+      <environment>
+        <terrain>TERRAIN_ANY</terrain>
+        <climate>CLIMATE_ANY</climate>
+      </environment>
+      <organizations>
         <step>
-          <size>SIZE_LARGE</size>
-          <range>
-            <begin>2</begin>
-            <end>2</end>
-          </range>
+          <type>ORGANIZATION_SOLITARY</type>
         </step>
+      </organizations>
+      <challengeRating>7</challengeRating>
+      <treasureModifier>0</treasureModifier>
+      <alignment>
+        <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
+        <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
+      </alignment>
+      <advancements>
+      </advancements>
+      <levelAdjustment>0</levelAdjustment>
+    </monster>
+    <monster>
+      <name>Colossal Animated Object</name>
+      <size>SIZE_COLOSSAL</size>
+      <type>
+        <metaType>MONSTERMETATYPE_CONSTRUCT</metaType>
+      </type>
+      <hitDice>
+        <numDice>32</numDice>
+        <typeDice>D_10</typeDice>
+        <modifier>80</modifier>
+      </hitDice>
+      <initiative>-3</initiative>
+      <speed>10</speed>
+      <armorClass>
+        <normal>11</normal>
+        <touch>-1</touch>
+        <flatFooted>11</flatFooted>
+      </armorClass>
+      <attack>
+        <baseAttackBonus>24</baseAttackBonus>
+        <grappleBonus>49</grappleBonus>
+        <attackAction>
+          <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+          <attackBonus>25</attackBonus>
+          <attackForm>ATTACK_MELEE</attackForm>
+          <damage>
+            <numDice>4</numDice>
+            <typeDice>D_6</typeDice>
+            <modifier>13</modifier>
+          </damage>
+          <numAttacksPerRound>1</numAttacksPerRound>
+        </attackAction>
+      </attack>
+      <space>30</space>
+      <reach>20</reach>
+      <saves>
+        <fortitude>10</fortitude>
+        <reflex>7</reflex>
+        <will>5</will>
+      </saves>
+      <attributes>
+        <strength>28</strength>
+        <dexterity>4</dexterity>
+        <constitution>0</constitution>
+        <intelligence>0</intelligence>
+        <wisdom>1</wisdom>
+        <charisma>1</charisma>
+      </attributes>
+      <skills>
+      </skills>
+      <feats>
+      </feats>
+      <environment>
+        <terrain>TERRAIN_ANY</terrain>
+        <climate>CLIMATE_ANY</climate>
+      </environment>
+      <organizations>
         <step>
-          <size>SIZE_HUGE</size>
-          <range>
-            <begin>6</begin>
-            <end>6</end>
-          </range>
+          <type>ORGANIZATION_SOLITARY</type>
         </step>
-        <step>
-          <size>SIZE_GARGANTUAN</size>
-          <range>
-            <begin>14</begin>
-            <end>14</end>
-          </range>
-        </step>
-        <step>
-          <size>SIZE_COLOSSAL</size>
-          <range>
-            <begin>30</begin>
-            <end>30</end>
-          </range>
-        </step>
-      </advancement>
+      </organizations>
+      <challengeRating>10</challengeRating>
+      <treasureModifier>0</treasureModifier>
+      <alignment>
+        <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
+        <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
+      </alignment>
+      <advancements>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -1106,16 +1580,29 @@
         <feat>FEAT_ALERTNESS</feat>
         <feat>FEAT_TOUGHNESS</feat>
       </feats>
-      <environment>ENVIRONMENT_PLAINS_WARM</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_CLUSTER</organization>
+      <environment>
+        <terrain>TERRAIN_PLAINS</terrain>
+        <climate>CLIMATE_WARM</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_CLUSTER</type>
+          <range>
+            <begin>2</begin>
+            <end>4</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>3</challengeRating>
       <treasureModifier>0</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
         <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_LARGE</size>
           <range>
@@ -1130,7 +1617,7 @@
             <end>9</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -1224,17 +1711,30 @@
         <feat>FEAT_IRON_WILL</feat>
         <feat>FEAT_WEAPON_FINESSE</feat>
       </feats>
-      <environment>ENVIRONMENT_FORESTS_TEMPERATE</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_COLONY</organization>
+      <environment>
+        <terrain>TERRAIN_FORESTS</terrain>
+        <climate>CLIMATE_TEMPERATE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_COLONY</type>
+          <range>
+            <begin>3</begin>
+            <end>6</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>4</challengeRating>
       <treasureModifier>1</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
         <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
       </alignment>
-      <advancement>
-      </advancement>
+      <advancements>
+      </advancements>
       <levelAdjustment>4</levelAdjustment>
     </monster>
     <monster>
@@ -1317,17 +1817,32 @@
       <feats>
         <feat>FEAT_IMPROVED_INITIATIVE</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_LAWFUL_GOOD</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PAIR</organization>
-      <organization>ORGANIZATION_SQUAD</organization>
+      <environment>
+        <terrain>TERRAIN_OUTERPLANE_LAWFUL_GOOD</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PAIR</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_SQUAD</type>
+          <range>
+            <begin>3</begin>
+            <end>5</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>2</challengeRating>
       <treasureModifier>0</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_LAWFUL</civic>
         <ethic>ALIGNMENTETHIC_GOOD</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_SMALL</size>
           <range>
@@ -1335,7 +1850,7 @@
             <end>4</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -1455,17 +1970,32 @@
         <feat>FEAT_POWER_ATTACK</feat>
         <feat>FEAT_TRACK</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_LAWFUL_GOOD</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PAIR</organization>
-      <organization>ORGANIZATION_SQUAD</organization>
+      <environment>
+        <terrain>TERRAIN_OUTERPLANE_LAWFUL_GOOD</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PAIR</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_SQUAD</type>
+          <range>
+            <begin>3</begin>
+            <end>5</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>4</challengeRating>
       <treasureModifier>1</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_LAWFUL</civic>
         <ethic>ALIGNMENTETHIC_GOOD</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
@@ -1480,7 +2010,7 @@
             <end>18</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>5</levelAdjustment>
     </monster>
     <monster>
@@ -1603,16 +2133,30 @@
         <feat>FEAT_TRACK</feat>
         <feat>FEAT_WEAPON_FOCUS</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_LAWFUL_GOOD</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
+      <environment>
+        <terrain>TERRAIN_OUTERPLANE_LAWFUL_GOOD</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+          <slaves>
+            <name>Juvenile Bronze Dragon</name>
+            <range>
+              <begin>1</begin>
+              <end>1</end>
+            </range>
+          </slaves>
+        </step>
+      </organizations>
       <challengeRating>16</challengeRating>
       <treasureModifier>1</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_LAWFUL</civic>
         <ethic>ALIGNMENTETHIC_GOOD</ethic>
       </alignment>
-      <advancement>
-      </advancement>
+      <advancements>
+      </advancements>
       <levelAdjustment>5</levelAdjustment>
     </monster>
     <monster>
@@ -1724,17 +2268,32 @@
         <feat>FEAT_IMPROVED_INITIATIVE</feat>
         <feat>FEAT_POWER_ATTACK</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_LAWFUL_GOOD</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PAIR</organization>
-      <organization>ORGANIZATION_SQUAD</organization>
+      <environment>
+        <terrain>TERRAIN_OUTERPLANE_LAWFUL_GOOD</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PAIR</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_SQUAD</type>
+          <range>
+            <begin>3</begin>
+            <end>5</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>14</challengeRating>
       <treasureModifier>2</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_LAWFUL</civic>
         <ethic>ALIGNMENTETHIC_GOOD</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
@@ -1749,11 +2308,152 @@
             <end>36</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>8</levelAdjustment>
     </monster>
     <monster>
-      <name>Arrowhawk</name>
+      <name>Juvenile Arrowhawk</name>
+      <size>SIZE_SMALL</size>
+      <type>
+        <metaType>MONSTERMETATYPE_OUTSIDER</metaType>
+        <subType>MONSTERSUBTYPE_AIR</subType>
+        <subType>MONSTERSUBTYPE_EXTRAPLANAR</subType>
+      </type>
+      <hitDice>
+        <numDice>3</numDice>
+        <typeDice>D_8</typeDice>
+        <modifier>3</modifier>
+      </hitDice>
+      <initiative>5</initiative>
+      <speed>60</speed>
+      <armorClass>
+        <normal>20</normal>
+        <touch>16</touch>
+        <flatFooted>15</flatFooted>
+      </armorClass>
+      <attack>
+        <baseAttackBonus>3</baseAttackBonus>
+        <grappleBonus>0</grappleBonus>
+        <attackAction>
+          <monsterWeapon>RAY_ELECTRICITY</monsterWeapon>
+          <attackBonus>9</attackBonus>
+          <attackForm>ATTACK_RANGED</attackForm>
+          <attackForm>ATTACK_TOUCH</attackForm>
+          <damage>
+            <numDice>2</numDice>
+            <typeDice>D_6</typeDice>
+            <modifier>0</modifier>
+          </damage>
+          <numAttacksPerRound>1</numAttacksPerRound>
+        </attackAction>
+        <attackAction>
+          <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+          <attackBonus>9</attackBonus>
+          <attackForm>ATTACK_MELEE</attackForm>
+          <damage>
+            <numDice>1</numDice>
+            <typeDice>D_6</typeDice>
+            <modifier>1</modifier>
+          </damage>
+          <numAttacksPerRound>1</numAttacksPerRound>
+        </attackAction>
+      </attack>
+      <space>5</space>
+      <reach>5</reach>
+      <saves>
+        <fortitude>4</fortitude>
+        <reflex>8</reflex>
+        <will>4</will>
+      </saves>
+      <attributes>
+        <strength>12</strength>
+        <dexterity>21</dexterity>
+        <constitution>12</constitution>
+        <intelligence>10</intelligence>
+        <wisdom>13</wisdom>
+        <charisma>13</charisma>
+      </attributes>
+      <skills>
+        <skill>
+          <skill>SKILL_DIPLOMACY</skill>
+          <rank>3</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_ESCAPE_ARTIST</skill>
+          <rank>11</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_KNOWLEDGE_PLANES</skill>
+          <rank>6</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_LISTEN</skill>
+          <rank>7</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_MOVE_SILENTLY</skill>
+          <rank>11</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SEARCH</skill>
+          <rank>6</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SENSE_MOTIVE</skill>
+          <rank>7</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SPOT</skill>
+          <rank>7</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SURVIVAL</skill>
+          <rank>7</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_USE_ROPE</skill>
+          <rank>5</rank>
+        </skill>
+      </skills>
+      <feats>
+        <feat>FEAT_DODGE</feat>
+        <feat>FEAT_WEAPON_FINESSE</feat>
+      </feats>
+      <environment>
+        <terrain>TERRAIN_INNERPLANE_AIR</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_CLUTCH</type>
+          <range>
+            <begin>2</begin>
+            <end>4</end>
+          </range>
+        </step>
+      </organizations>
+      <challengeRating>3</challengeRating>
+      <treasureModifier>0</treasureModifier>
+      <alignment>
+        <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
+        <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
+      </alignment>
+      <advancements>
+        <step>
+          <size>SIZE_SMALL</size>
+          <range>
+            <begin>4</begin>
+            <end>6</end>
+          </range>
+        </step>
+      </advancements>
+      <levelAdjustment>0</levelAdjustment>
+    </monster>
+    <monster>
+      <name>Adult Arrowhawk</name>
       <size>SIZE_MEDIUM</size>
       <type>
         <metaType>MONSTERMETATYPE_OUTSIDER</metaType>
@@ -1779,6 +2479,7 @@
           <monsterWeapon>RAY_ELECTRICITY</monsterWeapon>
           <attackBonus>12</attackBonus>
           <attackForm>ATTACK_RANGED</attackForm>
+          <attackForm>ATTACK_TOUCH</attackForm>
           <damage>
             <numDice>2</numDice>
             <typeDice>D_8</typeDice>
@@ -1860,45 +2561,190 @@
         <feat>FEAT_FLYBY_ATTACK</feat>
         <feat>FEAT_WEAPON_FINESSE</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_AIR</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_CLUTCH</organization>
+      <environment>
+        <terrain>TERRAIN_INNERPLANE_AIR</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_CLUTCH</type>
+          <range>
+            <begin>2</begin>
+            <end>4</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>5</challengeRating>
       <treasureModifier>0</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
         <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
       </alignment>
-      <advancement>
-        <step>
-          <size>SIZE_SMALL</size>
-          <range>
-            <begin>-4</begin>
-            <end>2</end>
-          </range>
-        </step>
+      <advancements>
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
-            <begin>0</begin>
-            <end>0</end>
+            <begin>8</begin>
+            <end>14</end>
           </range>
         </step>
+      </advancements>
+      <levelAdjustment>0</levelAdjustment>
+    </monster>
+    <monster>
+      <name>Elder Arrowhawk</name>
+      <size>SIZE_LARGE</size>
+      <type>
+        <metaType>MONSTERMETATYPE_OUTSIDER</metaType>
+        <subType>MONSTERSUBTYPE_AIR</subType>
+        <subType>MONSTERSUBTYPE_EXTRAPLANAR</subType>
+      </type>
+      <hitDice>
+        <numDice>15</numDice>
+        <typeDice>D_8</typeDice>
+        <modifier>45</modifier>
+      </hitDice>
+      <initiative>5</initiative>
+      <speed>60</speed>
+      <armorClass>
+        <normal>22</normal>
+        <touch>14</touch>
+        <flatFooted>17</flatFooted>
+      </armorClass>
+      <attack>
+        <baseAttackBonus>15</baseAttackBonus>
+        <grappleBonus>25</grappleBonus>
+        <attackAction>
+          <monsterWeapon>RAY_ELECTRICITY</monsterWeapon>
+          <attackBonus>19</attackBonus>
+          <attackForm>ATTACK_RANGED</attackForm>
+          <attackForm>ATTACK_TOUCH</attackForm>
+          <damage>
+            <numDice>2</numDice>
+            <typeDice>D_8</typeDice>
+            <modifier>0</modifier>
+          </damage>
+          <numAttacksPerRound>1</numAttacksPerRound>
+        </attackAction>
+        <attackAction>
+          <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+          <attackBonus>21</attackBonus>
+          <attackForm>ATTACK_MELEE</attackForm>
+          <damage>
+            <numDice>2</numDice>
+            <typeDice>D_6</typeDice>
+            <modifier>9</modifier>
+          </damage>
+          <numAttacksPerRound>1</numAttacksPerRound>
+        </attackAction>
+      </attack>
+      <space>10</space>
+      <reach>5</reach>
+      <saves>
+        <fortitude>12</fortitude>
+        <reflex>14</reflex>
+        <will>10</will>
+      </saves>
+      <attributes>
+        <strength>22</strength>
+        <dexterity>21</dexterity>
+        <constitution>16</constitution>
+        <intelligence>10</intelligence>
+        <wisdom>13</wisdom>
+        <charisma>13</charisma>
+      </attributes>
+      <skills>
+        <skill>
+          <skill>SKILL_DIPLOMACY</skill>
+          <rank>3</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_ESCAPE_ARTIST</skill>
+          <rank>23</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_KNOWLEDGE_PLANES</skill>
+          <rank>18</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_LISTEN</skill>
+          <rank>21</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_MOVE_SILENTLY</skill>
+          <rank>23</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SEARCH</skill>
+          <rank>18</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SENSE_MOTIVE</skill>
+          <rank>19</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SPOT</skill>
+          <rank>21</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_SURVIVAL</skill>
+          <rank>19</rank>
+        </skill>
+        <skill>
+          <skill>SKILL_USE_ROPE</skill>
+          <rank>5</rank>
+        </skill>
+      </skills>
+      <feats>
+        <feat>FEAT_ALERTNESS</feat>
+        <feat>FEAT_BLIND_FIGHT</feat>
+        <feat>FEAT_COMBAT_REFLEXES</feat>
+        <feat>FEAT_DODGE</feat>
+        <feat>FEAT_FLYBY_ATTACK</feat>
+        <feat>FEAT_WEAPON_FINESSE</feat>
+        <feat>FEAT_WEAPON_FOCUS</feat>
+      </feats>
+      <environment>
+        <terrain>TERRAIN_INNERPLANE_AIR</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_CLUTCH</type>
+          <range>
+            <begin>2</begin>
+            <end>4</end>
+          </range>
+        </step>
+      </organizations>
+      <challengeRating>8</challengeRating>
+      <treasureModifier>0</treasureModifier>
+      <alignment>
+        <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
+        <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
+      </alignment>
+      <advancements>
         <step>
           <size>SIZE_LARGE</size>
           <range>
-            <begin>24</begin>
-            <end>32</end>
+            <begin>16</begin>
+            <end>24</end>
           </range>
         </step>
         <step>
           <size>SIZE_GARGANTUAN</size>
           <range>
-            <begin>33</begin>
-            <end>40</end>
+            <begin>25</begin>
+            <end>32</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -1953,16 +2799,29 @@
       </skills>
       <feats>
       </feats>
-      <environment>ENVIRONMENT_FORESTS_TEMPERATE</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PATCH</organization>
+      <environment>
+        <terrain>TERRAIN_FORESTS</terrain>
+        <climate>CLIMATE_TEMPERATE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PATCH</type>
+          <range>
+            <begin>2</begin>
+            <end>4</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>3</challengeRating>
       <treasureModifier>1</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
         <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_HUGE</size>
           <range>
@@ -1984,7 +2843,7 @@
             <end>33</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -2082,17 +2941,36 @@
         <feat>FEAT_POWER_ATTACK</feat>
         <feat>FEAT_WEAPON_FOCUS</feat>
       </feats>
-      <environment>ENVIRONMENT_HILLS_TEMPERATE</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_GANG</organization>
-      <organization>ORGANIZATION_TRIBE</organization>
+      <environment>
+        <terrain>TERRAIN_HILLS</terrain>
+        <climate>CLIMATE_TEMPERATE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_GANG</type>
+          <range>
+            <begin>2</begin>
+            <end>4</end>
+          </range>
+        </step>
+        <step>
+          <type>ORGANIZATION_TRIBE</type>
+          <range>
+            <begin>7</begin>
+            <end>12</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>8</challengeRating>
       <treasureModifier>1</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_CHAOTIC</civic>
         <ethic>ALIGNMENTETHIC_EVIL</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_HUGE</size>
           <range>
@@ -2100,7 +2978,7 @@
             <end>28</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>5</levelAdjustment>
     </monster>
     <monster>
@@ -2227,17 +3105,32 @@
         <feat>FEAT_FLYBY_ATTACK</feat>
         <feat>FEAT_WEAPON_FINESSE</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_ANY_GOOD</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PAIR</organization>
-      <organization>ORGANIZATION_SQUAD</organization>
+      <environment>
+        <terrain>TERRAIN_OUTERPLANE_GOOD_ANY</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PAIR</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_SQUAD</type>
+          <range>
+            <begin>3</begin>
+            <end>5</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>9</challengeRating>
       <treasureModifier>1</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
         <ethic>ALIGNMENTETHIC_GOOD</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
@@ -2252,7 +3145,7 @@
             <end>21</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -2353,20 +3246,47 @@
       <feats>
         <feat>FEAT_POWER_ATTACK</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_FIRE</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PAIR</organization>
-      <organization>ORGANIZATION_TEAM</organization>
-      <organization>ORGANIZATION_SQUAD</organization>
-      <organization>ORGANIZATION_CLAN</organization>
+      <environment>
+        <terrain>TERRAIN_INNERPLANE_FIRE</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PAIR</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_TEAM</type>
+          <range>
+            <begin>3</begin>
+            <end>4</end>
+          </range>
+        </step>
+        <step>
+          <type>ORGANIZATION_SQUAD</type>
+          <range>
+            <begin>11</begin>
+            <end>20</end>
+          </range>
+        </step>
+        <step>
+          <type>ORGANIZATION_CLAN</type>
+          <range>
+            <begin>30</begin>
+            <end>100</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>2</challengeRating>
       <treasureModifier>1</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_LAWFUL</civic>
         <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
       </alignment>
-      <advancement>
-      </advancement>
+      <advancements>
+      </advancements>
       <levelAdjustment>4</levelAdjustment>
     </monster>
     <monster>
@@ -2487,17 +3407,30 @@
         <feat>FEAT_IMPROVED_INITIATIVE</feat>
         <feat>FEAT_TRACK</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_ANY_EVIL</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PACK</organization>
+      <environment>
+        <terrain>TERRAIN_OUTERPLANE_EVIL_ANY</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PACK</type>
+          <range>
+            <begin>3</begin>
+            <end>6</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>4</challengeRating>
       <treasureModifier>2</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_LAWFUL</civic>
         <ethic>ALIGNMENTETHIC_EVIL</ethic>
       </alignment>
-      <advancement>
-      </advancement>
+      <advancements>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -2627,17 +3560,30 @@
         <feat>FEAT_IMPROVED_INITIATIVE</feat>
         <feat>FEAT_TRACK</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_ANY_EVIL</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PACK</organization>
+      <environment>
+        <terrain>TERRAIN_OUTERPLANE_EVIL_ANY</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PACK</type>
+          <range>
+            <begin>3</begin>
+            <end>6</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>5</challengeRating>
       <treasureModifier>2</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_LAWFUL</civic>
         <ethic>ALIGNMENTETHIC_EVIL</ethic>
       </alignment>
-      <advancement>
-      </advancement>
+      <advancements>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -2707,16 +3653,29 @@
         <feat>FEAT_BLIND_FIGHT</feat>
         <feat>FEAT_GREAT_FORTITUDE</feat>
       </feats>
-      <environment>ENVIRONMENT_DESERTS_WARM</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_COLONY</organization>
+      <environment>
+        <terrain>TERRAIN_DESERTS</terrain>
+        <climate>CLIMATE_WARM</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_COLONY</type>
+          <range>
+            <begin>3</begin>
+            <end>6</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>5</challengeRating>
       <treasureModifier>0</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
         <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
@@ -2731,7 +3690,7 @@
             <end>18</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -2807,17 +3766,30 @@
         <feat>FEAT_LIGHTNING_REFLEXES</feat>
         <feat>FEAT_WEAPON_FOCUS</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_CHAOTIC_EVIL</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_COLONY</organization>
+      <environment>
+        <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_COLONY</type>
+          <range>
+            <begin>3</begin>
+            <end>6</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>12</challengeRating>
       <treasureModifier>1</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_CHAOTIC</civic>
         <ethic>ALIGNMENTETHIC_EVIL</ethic>
       </alignment>
-      <advancement>
-      </advancement>
+      <advancements>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -2896,16 +3868,25 @@
         <feat>FEAT_POWER_ATTACK</feat>
         <feat>FEAT_TRACK</feat>
       </feats>
-      <environment>ENVIRONMENT_HILLS_WARM</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PAIR</organization>
+      <environment>
+        <terrain>TERRAIN_HILLS</terrain>
+        <climate>CLIMATE_WARM</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PAIR</type>
+        </step>
+      </organizations>
       <challengeRating>8</challengeRating>
       <treasureModifier>1</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
         <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_HUGE</size>
           <range>
@@ -2920,7 +3901,7 @@
             <end>27</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -3014,17 +3995,32 @@
         <feat>FEAT_MULTI_ATTACK</feat>
         <feat>FEAT_WEAPON_FINESSE</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_AIR</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PAIR</organization>
-      <organization>ORGANIZATION_CLUTCH</organization>
+      <environment>
+        <terrain>TERRAIN_INNERPLANE_AIR</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PAIR</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_CLUTCH</type>
+          <range>
+            <begin>3</begin>
+            <end>4</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>6</challengeRating>
       <treasureModifier>0</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
         <ethic>ALIGNMENTETHIC_EVIL</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_LARGE</size>
           <range>
@@ -3039,7 +4035,7 @@
             <end>21</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -3117,17 +4113,32 @@
         <feat>FEAT_RUN</feat>
         <feat>FEAT_TRACK</feat>
       </feats>
-      <environment>ENVIRONMENT_PLAINS_TEMPERATE</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PAIR</organization>
-      <organization>ORGANIZATION_PACK</organization>
+      <environment>
+        <terrain>TERRAIN_PLAINS</terrain>
+        <climate>CLIMATE_TEMPERATE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PAIR</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PACK</type>
+          <range>
+            <begin>7</begin>
+            <end>16</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>2</challengeRating>
       <treasureModifier>0</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_LAWFUL</civic>
         <ethic>ALIGNMENTETHIC_GOOD</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
@@ -3142,7 +4153,7 @@
             <end>12</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>2</levelAdjustment>
     </monster>
     <monster>
@@ -3214,16 +4225,29 @@
         <feat>FEAT_IMPROVED_INITIATIVE</feat>
         <feat>FEAT_WEAPON_FOCUS</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_CHAOTIC_EVIL</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_GANG</organization>
+      <environment>
+        <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_GANG</type>
+          <range>
+            <begin>2</begin>
+            <end>4</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>8</challengeRating>
       <treasureModifier>0</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_CHAOTIC</civic>
         <ethic>ALIGNMENTETHIC_EVIL</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
@@ -3238,7 +4262,7 @@
             <end>27</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
     <monster>
@@ -3371,17 +4395,32 @@
       <feats>
         <feat>FEAT_POWER_ATTACK</feat>
       </feats>
-      <environment>ENVIRONMENT_PLANE_CHAOTIC_GOOD</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PAIR</organization>
-      <organization>ORGANIZATION_SQUAD</organization>
+      <environment>
+        <terrain>TERRAIN_OUTERPLANE_CHAOTIC_GOOD</terrain>
+        <climate>CLIMATE_NONE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PAIR</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_SQUAD</type>
+          <range>
+            <begin>3</begin>
+            <end>5</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>6</challengeRating>
       <treasureModifier>1</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_CHAOTIC</civic>
         <ethic>ALIGNMENTETHIC_GOOD</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_MEDIUM</size>
           <range>
@@ -3396,7 +4435,7 @@
             <end>18</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>5</levelAdjustment>
     </monster>
     <monster>
@@ -3485,18 +4524,37 @@
         <feat>FEAT_ALERTNESS</feat>
         <feat>FEAT_WEAPON_FOCUS</feat>
       </feats>
-      <environment>ENVIRONMENT_MOUNTAINS_TEMPERATE</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_GANG</organization>
-      <organization>ORGANIZATION_BAND</organization>
+      <environment>
+        <terrain>TERRAIN_MOUNTAINS</terrain>
+        <climate>CLIMATE_TEMPERATE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_GANG</type>
+          <range>
+            <begin>2</begin>
+            <end>4</end>
+          </range>
+        </step>
+        <step>
+          <type>ORGANIZATION_BAND</type>
+          <range>
+            <begin>11</begin>
+            <end>20</end>
+          </range>
+        </step>
+      </organizations>
       <challengeRating>2</challengeRating>
       <treasureModifier>1</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_CHAOTIC</civic>
         <ethic>ALIGNMENTETHIC_EVIL</ethic>
       </alignment>
-      <advancement>
-      </advancement>
+      <advancements>
+      </advancements>
       <levelAdjustment>1</levelAdjustment>
     </monster>
     <monster>
@@ -3578,16 +4636,25 @@
         <feat>FEAT_TRACK</feat>
         <feat>FEAT_WEAPON_FOCUS</feat>
       </feats>
-      <environment>ENVIRONMENT_HILLS_TEMPERATE</environment>
-      <organization>ORGANIZATION_SOLITARY</organization>
-      <organization>ORGANIZATION_PAIR</organization>
+      <environment>
+        <terrain>TERRAIN_HILLS</terrain>
+        <climate>CLIMATE_TEMPERATE</climate>
+      </environment>
+      <organizations>
+        <step>
+          <type>ORGANIZATION_SOLITARY</type>
+        </step>
+        <step>
+          <type>ORGANIZATION_PAIR</type>
+        </step>
+      </organizations>
       <challengeRating>7</challengeRating>
       <treasureModifier>0</treasureModifier>
       <alignment>
         <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
         <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
       </alignment>
-      <advancement>
+      <advancements>
         <step>
           <size>SIZE_HUGE</size>
           <range>
@@ -3602,7 +4669,7 @@
             <end>27</end>
           </range>
         </step>
-      </advancement>
+      </advancements>
       <levelAdjustment>0</levelAdjustment>
     </monster>
   </monsterDictionary>

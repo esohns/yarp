@@ -31,6 +31,7 @@ namespace urn:rpg
   RPG_Character_Climate_Type                RPG_Character_Climate;
   RPG_Character_Environment_Type            RPG_Character_Environment;
   RPG_Character_Organization_Type           RPG_Character_Organization;
+  RPG_Character_OrganizationSlaverStep_Type RPG_Character_OrganizationSlaverStep;
   RPG_Character_OrganizationStep_Type       RPG_Character_OrganizationStep;
   RPG_Character_Organizations_Type          RPG_Character_Organizations;
   RPG_Character_AlignmentCivic_Type         RPG_Character_AlignmentCivic;

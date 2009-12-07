@@ -23,9 +23,9 @@
 
 struct RPG_Character_MonsterArmorClass
 {
-  unsigned char normal;
-  unsigned char touch;
-  unsigned char flatFooted;
+  char normal;
+  char touch;
+  char flatFooted;
 };
 
 #endif

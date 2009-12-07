@@ -25,7 +25,7 @@ struct RPG_Character_MonsterAttackAction
 {
   RPG_Character_MonsterWeapon monsterWeapon;
   char attackBonus;
-  RPG_Character_AttackForm attackForm;
+  std::vector<RPG_Character_AttackForm> attackForms;
   RPG_Chance_DiceRoll damage;
   unsigned char numAttacksPerRound;
 };

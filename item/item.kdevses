@@ -1,13 +1,19 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="2" >
+ <DocsAndViews NumberOfDocuments="4" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item.xsd" >
    <View0 Encoding="" line="159" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item.xml" >
-   <View0 Encoding="" line="1502" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_common.h" >
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_common_tools.cpp" >
+   <View0 Encoding="" line="23" Type="Source" />
+  </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_XML_types.h" >
+   <View0 Encoding="" line="78" Type="Source" />
+  </Doc3>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>

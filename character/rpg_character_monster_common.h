@@ -30,7 +30,6 @@
 #include <rpg_chance_valuerange.h>
 
 #include "rpg_character_monstersubtype.h"
-#include "rpg_character_size.h"
 #include "rpg_character_monstermetatype.h"
 #include "rpg_character_monstertype.h"
 #include "rpg_character_monsterarmorclass.h"
@@ -44,10 +43,12 @@
 #include "rpg_character_climate.h"
 #include "rpg_character_environment.h"
 #include "rpg_character_organization.h"
+#include "rpg_character_organizationslaverstep.h"
 #include "rpg_character_organizationstep.h"
 #include "rpg_character_alignmentcivic.h"
 #include "rpg_character_alignmentethic.h"
 #include "rpg_character_alignment.h"
+#include "rpg_character_size.h"
 #include "rpg_character_monsteradvancementstep.h"
 #include "rpg_character_common.h"
 #include "rpg_character_skills_common.h"
@@ -57,6 +58,9 @@ typedef RPG_Character_MonsterSubTypes_t::const_iterator RPG_Character_MonsterSub
 
 typedef RPG_Chance_DiceRoll RPG_Character_Damage;
 typedef RPG_Chance_DiceRoll RPG_Character_HitDice;
+
+typedef std::vector<RPG_Character_AttackForm> RPG_Character_AttackForms_t;
+typedef RPG_Character_AttackForms_t::const_iterator RPG_Character_AttackFormsIterator_t;
 
 typedef std::vector<RPG_Character_OrganizationStep> RPG_Character_Organizations_t;
 typedef RPG_Character_Organizations_t::const_iterator RPG_Character_OrganizationsIterator_t;
