@@ -38,11 +38,11 @@ struct RPG_Character_MonsterPropertiesXML
   RPG_Character_Skills skills;
   RPG_Character_Feats feats;
   RPG_Character_Environment environment;
-  std::vector<RPG_Character_Organization> organizations;
+  RPG_Character_Organizations organizations;
   unsigned char challengeRating;
   unsigned char treasureModifier;
   RPG_Character_Alignment alignment;
-  RPG_Character_MonsterAdvancement advancement;
+  RPG_Character_MonsterAdvancement advancements;
   unsigned char levelAdjustment;
 };
 

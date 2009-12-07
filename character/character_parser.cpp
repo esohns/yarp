@@ -153,46 +153,6 @@ void do_work(const std::string& filename_in,
     RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->dump();
   } // end IF
 
-  // step4: generate random encounter
-  unsigned int numMonsterTypes = 1;
-  RPG_Character_Alignment alignment;
-  alignment.civic = ALIGNMENTCIVIC_ANY;
-  alignment.ethic = ALIGNMENTETHIC_ANY;
-  RPG_Character_Environment environment = ENVIRONMENT_ANY;
-  RPG_Character_Organizations_t organizations;
-  organizations.insert(ORGANIZATION_ANY);
-  RPG_Character_Encounter_t encounter;
-  RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->generateRandomEncounter(numMonsterTypes,
-                                                                          alignment,
-                                                                          environment,
-                                                                          organizations,
-                                                                          encounter);
-
-  // step5: instantiate monster(s)
-  RPG_Character_EncounterIterator_t iterator = encounter.begin();
-  RPG_Character_MonsterProperties properties = RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->getMonsterProperties(iterator->first);
-  // *TODO*: define monster abilities !
-  RPG_Character_Abilities_t abilities;
-  RPG_Chance_DiceRollResult_t results;
-  RPG_Chance_Dice::simulateDiceRoll(properties.hitDice,
-                                    1,
-                                    results);
-  unsigned short int hitPoints = results.front();
-  // *TODO*: define default monster inventory...
-  unsigned int wealth = 0;
-  RPG_Item_List_t items;
-  RPG_Character_Monster monster((iterator->first).c_str(),
-                                properties.type,
-                                properties.alignment,
-                                properties.attributes,
-                                properties.skills,
-                                properties.feats,
-                                abilities,
-                                hitPoints,
-                                wealth,
-                                items);
-  monster.dump();
-
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
 } // end do_work

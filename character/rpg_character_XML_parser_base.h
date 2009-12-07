@@ -352,12 +352,50 @@ class RPG_Character_Feats_Type_pimpl: public virtual RPG_Character_Feats_Type_ps
   post_RPG_Character_Feats_Type ();
 };
 
-class RPG_Character_Environment_Type_pimpl: public virtual RPG_Character_Environment_Type_pskel,
+class RPG_Character_Plane_Type_pimpl: public virtual RPG_Character_Plane_Type_pskel,
   public ::xml_schema::string_pimpl
 {
   public:
   virtual void
   pre ();
+
+  virtual void
+  post_RPG_Character_Plane_Type ();
+};
+
+class RPG_Character_Terrain_Type_pimpl: public virtual RPG_Character_Terrain_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Character_Terrain
+  post_RPG_Character_Terrain_Type ();
+};
+
+class RPG_Character_Climate_Type_pimpl: public virtual RPG_Character_Climate_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Character_Climate
+  post_RPG_Character_Climate_Type ();
+};
+
+class RPG_Character_Environment_Type_pimpl: public virtual RPG_Character_Environment_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  terrain (const RPG_Character_Terrain&);
+
+  virtual void
+  climate (const RPG_Character_Climate&);
 
   virtual RPG_Character_Environment
   post_RPG_Character_Environment_Type ();
@@ -372,6 +410,35 @@ class RPG_Character_Organization_Type_pimpl: public virtual RPG_Character_Organi
 
   virtual RPG_Character_Organization
   post_RPG_Character_Organization_Type ();
+};
+
+class RPG_Character_OrganizationStep_Type_pimpl: public virtual RPG_Character_OrganizationStep_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  type (const RPG_Character_Organization&);
+
+  virtual void
+  range (const RPG_Chance_ValueRange&);
+
+  virtual RPG_Character_OrganizationStep
+  post_RPG_Character_OrganizationStep_Type ();
+};
+
+class RPG_Character_Organizations_Type_pimpl: public virtual RPG_Character_Organizations_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  step (const RPG_Character_OrganizationStep&);
+
+  virtual RPG_Character_Organizations
+  post_RPG_Character_Organizations_Type ();
 };
 
 class RPG_Character_AlignmentCivic_Type_pimpl: public virtual RPG_Character_AlignmentCivic_Type_pskel,
@@ -493,7 +560,7 @@ class RPG_Character_MonsterPropertiesXML_Type_pimpl: public virtual RPG_Characte
   environment (const RPG_Character_Environment&);
 
   virtual void
-  organization (const RPG_Character_Organization&);
+  organizations (const RPG_Character_Organizations&);
 
   virtual void
   challengeRating (unsigned char);
@@ -505,7 +572,7 @@ class RPG_Character_MonsterPropertiesXML_Type_pimpl: public virtual RPG_Characte
   alignment (const RPG_Character_Alignment&);
 
   virtual void
-  advancement (const RPG_Character_MonsterAdvancement&);
+  advancements (const RPG_Character_MonsterAdvancement&);
 
   virtual void
   levelAdjustment (unsigned char);

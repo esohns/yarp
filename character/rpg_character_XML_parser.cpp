@@ -120,20 +120,20 @@ void RPG_Character_MonsterDictionary_Type::monster(const RPG_Character_MonsterPr
     properties.feats.insert(*iterator);
   } // end FOR
   properties.environment      = monster_in.environment;
-  for (std::vector<RPG_Character_Organization>::const_iterator iterator = monster_in.organizations.begin();
-       iterator != monster_in.organizations.end();
+  for (std::vector<RPG_Character_OrganizationStep>::const_iterator iterator = monster_in.organizations.steps.begin();
+       iterator != monster_in.organizations.steps.end();
        iterator++)
   {
-    properties.organizations.insert(*iterator);
+    properties.organizations.push_back(*iterator);
   } // end FOR
   properties.challengeRating  = monster_in.challengeRating;
   properties.treasureModifier = monster_in.treasureModifier;
   properties.alignment        = monster_in.alignment;
-  for (std::vector<RPG_Character_MonsterAdvancementStep>::const_iterator iterator = monster_in.advancement.steps.begin();
-       iterator != monster_in.advancement.steps.end();
+  for (std::vector<RPG_Character_MonsterAdvancementStep>::const_iterator iterator = monster_in.advancements.steps.begin();
+       iterator != monster_in.advancements.steps.end();
        iterator++)
   {
-    properties.advancement.push_back(std::make_pair((*iterator).size, (*iterator).range));
+    properties.advancements.push_back(*iterator);
   } // end FOR
   properties.levelAdjustment = monster_in.levelAdjustment;
 
@@ -590,11 +590,53 @@ RPG_Character_Feats RPG_Character_Feats_Type::post_RPG_Character_Feats_Type()
   return result;
 }
 
+RPG_Character_Terrain RPG_Character_Terrain_Type::post_RPG_Character_Terrain_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Terrain_Type::post_RPG_Character_Terrain_Type"));
+
+  return RPG_Character_TerrainHelper::stringToRPG_Character_Terrain(post_string());
+}
+
+RPG_Character_Climate RPG_Character_Climate_Type::post_RPG_Character_Climate_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Climate_Type::post_RPG_Character_Climate_Type"));
+
+  return RPG_Character_ClimateHelper::stringToRPG_Character_Climate(post_string());
+}
+
+RPG_Character_Environment_Type::RPG_Character_Environment_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Environment_Type::RPG_Character_Environment_Type"));
+
+  myCurrentEnvironment.terrain = RPG_CHARACTER_TERRAIN_INVALID;
+  myCurrentEnvironment.climate = RPG_CHARACTER_CLIMATE_INVALID;
+}
+
+void RPG_Character_Environment_Type::terrain(const RPG_Character_Terrain& terrain_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Environment_Type::terrain"));
+
+  myCurrentEnvironment.terrain = terrain_in;
+}
+
+void RPG_Character_Environment_Type::climate(const RPG_Character_Climate& climate_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Environment_Type::climate"));
+
+  myCurrentEnvironment.climate = climate_in;
+}
+
 RPG_Character_Environment RPG_Character_Environment_Type::post_RPG_Character_Environment_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Environment_Type::post_RPG_Character_Environment_Type"));
 
-  return RPG_Character_EnvironmentHelper::stringToRPG_Character_Environment(post_string());
+  RPG_Character_Environment result = myCurrentEnvironment;
+
+  // clear structure
+  myCurrentEnvironment.terrain = RPG_CHARACTER_TERRAIN_INVALID;
+  myCurrentEnvironment.climate = RPG_CHARACTER_CLIMATE_INVALID;
+
+  return result;
 }
 
 RPG_Character_Organization RPG_Character_Organization_Type::post_RPG_Character_Organization_Type()
@@ -602,6 +644,69 @@ RPG_Character_Organization RPG_Character_Organization_Type::post_RPG_Character_O
   ACE_TRACE(ACE_TEXT("RPG_Character_Organization_Type::post_RPG_Character_Organization_Type"));
 
   return RPG_Character_OrganizationHelper::stringToRPG_Character_Organization(post_string());
+}
+
+RPG_Character_OrganizationStep_Type::RPG_Character_OrganizationStep_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_OrganizationStep_Type::RPG_Character_OrganizationStep_Type"));
+
+  myCurrentOrganizationStep.type = RPG_CHARACTER_ORGANIZATION_INVALID;
+  myCurrentOrganizationStep.range.begin = 0;
+  myCurrentOrganizationStep.range.end = 0;
+}
+
+void RPG_Character_OrganizationStep_Type::type(const RPG_Character_Organization& organization_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_OrganizationStep_Type::type"));
+
+  myCurrentOrganizationStep.type = organization_in;
+}
+
+void RPG_Character_OrganizationStep_Type::range(const RPG_Chance_ValueRange& range_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_OrganizationStep_Type::range"));
+
+  myCurrentOrganizationStep.range = range_in;
+}
+
+RPG_Character_OrganizationStep RPG_Character_OrganizationStep_Type::post_RPG_Character_OrganizationStep_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_OrganizationStep_Type::post_RPG_Character_OrganizationStep_Type"));
+
+  RPG_Character_OrganizationStep result = myCurrentOrganizationStep;
+
+  // clear structure
+  myCurrentOrganizationStep.type = RPG_CHARACTER_ORGANIZATION_INVALID;
+  myCurrentOrganizationStep.range.begin = 0;
+  myCurrentOrganizationStep.range.end = 0;
+
+  return result;
+}
+
+RPG_Character_Organizations_Type::RPG_Character_Organizations_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Organizations_Type::RPG_Character_Organizations_Type"));
+
+  myCurrentOrganizations.steps.clear();
+}
+
+void RPG_Character_Organizations_Type::step(const RPG_Character_OrganizationStep& organizationStep_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Organizations_Type::step"));
+
+  myCurrentOrganizations.steps.push_back(organizationStep_in);
+}
+
+RPG_Character_Organizations RPG_Character_Organizations_Type::post_RPG_Character_Organizations_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Organizations_Type::post_RPG_Character_Organizations_Type"));
+
+  RPG_Character_Organizations result = myCurrentOrganizations;
+
+  // clear structure
+  myCurrentOrganizations.steps.clear();
+
+  return result;
 }
 
 RPG_Character_AlignmentCivic RPG_Character_AlignmentCivic_Type::post_RPG_Character_AlignmentCivic_Type()
@@ -748,13 +853,14 @@ RPG_Character_MonsterPropertiesXML_Type::RPG_Character_MonsterPropertiesXML_Type
   myCurrentProperties.attributes.charisma = 0;
   myCurrentProperties.skills.skills.clear();
   myCurrentProperties.feats.feats.clear();
-  myCurrentProperties.environment = RPG_CHARACTER_ENVIRONMENT_INVALID;
-  myCurrentProperties.organizations.clear();
+  myCurrentProperties.environment.climate = RPG_CHARACTER_CLIMATE_INVALID;
+  myCurrentProperties.environment.terrain = RPG_CHARACTER_TERRAIN_INVALID;
+  myCurrentProperties.organizations.steps.clear();
   myCurrentProperties.challengeRating = 0;
   myCurrentProperties.treasureModifier = 0;
   myCurrentProperties.alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
   myCurrentProperties.alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
-  myCurrentProperties.advancement.steps.clear();
+  myCurrentProperties.advancements.steps.clear();
   myCurrentProperties.levelAdjustment = 0;
 }
 
@@ -863,11 +969,11 @@ void RPG_Character_MonsterPropertiesXML_Type::environment(const RPG_Character_En
   myCurrentProperties.environment = environment_in;
 }
 
-void RPG_Character_MonsterPropertiesXML_Type::organization(const RPG_Character_Organization& organization_in)
+void RPG_Character_MonsterPropertiesXML_Type::organizations(const RPG_Character_Organizations& organizations_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterPropertiesXML_Type::organization"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_MonsterPropertiesXML_Type::organizations"));
 
-  myCurrentProperties.organizations.push_back(organization_in);
+  myCurrentProperties.organizations = organizations_in;
 }
 
 void RPG_Character_MonsterPropertiesXML_Type::challengeRating(unsigned char challengeRating_in)
@@ -895,7 +1001,7 @@ void RPG_Character_MonsterPropertiesXML_Type::advancement(const RPG_Character_Mo
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_MonsterPropertiesXML_Type::advancement"));
 
-  myCurrentProperties.advancement = advancement_in;
+  myCurrentProperties.advancements = advancement_in;
 }
 
 void RPG_Character_MonsterPropertiesXML_Type::levelAdjustment(unsigned char levelAdjustment_in)
@@ -940,13 +1046,14 @@ RPG_Character_MonsterPropertiesXML RPG_Character_MonsterPropertiesXML_Type::post
   myCurrentProperties.attributes.charisma = 0;
   myCurrentProperties.skills.skills.clear();
   myCurrentProperties.feats.feats.clear();
-  myCurrentProperties.environment = RPG_CHARACTER_ENVIRONMENT_INVALID;
-  myCurrentProperties.organizations.clear();
+  myCurrentProperties.environment.climate = RPG_CHARACTER_CLIMATE_INVALID;
+  myCurrentProperties.environment.terrain = RPG_CHARACTER_TERRAIN_INVALID;
+  myCurrentProperties.organizations.steps.clear();
   myCurrentProperties.challengeRating = 0;
   myCurrentProperties.treasureModifier = 0;
   myCurrentProperties.alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
   myCurrentProperties.alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
-  myCurrentProperties.advancement.steps.clear();
+  myCurrentProperties.advancements.steps.clear();
   myCurrentProperties.levelAdjustment = 0;
 
   return result;

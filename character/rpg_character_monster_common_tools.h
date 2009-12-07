@@ -29,7 +29,6 @@
 #include "rpg_character_monstermetatype.h"
 #include "rpg_character_monstersubtype.h"
 #include "rpg_character_monstertype.h"
-
 #include "rpg_character_monsterweapon.h"
 #include "rpg_character_attackform.h"
 #include "rpg_character_monsterattackaction.h"
@@ -38,6 +37,9 @@
 #include "rpg_character_size.h"
 #include "rpg_character_monsteradvancementstep.h"
 #include "rpg_character_monsteradvancement.h"
+#include "rpg_character_terrain.h"
+#include "rpg_character_plane.h"
+
 #include "rpg_character_monster_common.h"
 
 #include <ace/Global_Macros.h>
@@ -51,8 +53,12 @@ class RPG_Character_Monster_Common_Tools
   static const std::string monsterTypeToString(const RPG_Character_MonsterType&); // type
   static const std::string monsterAttackActionToString(const RPG_Character_MonsterAttackAction&); // attack action
   static const std::string monsterAttackToString(const RPG_Character_MonsterAttack&); // attack
+  static const std::string environmentToString(const RPG_Character_Environment&); // environment
   static const std::string organizationsToString(const RPG_Character_Organizations_t&); // organizations
-  static const std::string monsterAdvancementToString(const RPG_Character_MonsterAdvancement_t&); // advancement
+  static const std::string organizationsToString(const RPG_Character_OrganizationList_t&); // organizations
+  static const std::string monsterAdvancementsToString(const RPG_Character_MonsterAdvancement_t&); // advancement
+
+  static const RPG_Character_Plane terrainToPlane(const RPG_Character_Terrain&);
 
  private:
   // safety measures

@@ -19,26 +19,28 @@
  ***************************************************************************/
 #include "rpg_character_common_tools.h"
 
-#include "rpg_character_ability.h"
-#include "rpg_character_alignmentcivic.h"
-#include "rpg_character_alignmentethic.h"
-#include "rpg_character_attackform.h"
+#include "rpg_character_gender.h"
+#include "rpg_character_race.h"
+#include "rpg_character_metaclass.h"
+#include "rpg_character_subclass.h"
 #include "rpg_character_attribute.h"
 #include "rpg_character_condition.h"
-#include "rpg_character_environment.h"
-#include "rpg_character_feat.h"
-#include "rpg_character_gender.h"
-#include "rpg_character_metaclass.h"
+#include "rpg_character_ability.h"
 #include "rpg_character_monstermetatype.h"
 #include "rpg_character_monstersubtype.h"
 #include "rpg_character_monsterweapon.h"
-#include "rpg_character_organization.h"
-#include "rpg_character_race.h"
-#include "rpg_character_race_common.h"
+#include "rpg_character_attackform.h"
 #include "rpg_character_size.h"
 #include "rpg_character_skill.h"
-#include "rpg_character_subclass.h"
+#include "rpg_character_feat.h"
+#include "rpg_character_plane.h"
+#include "rpg_character_terrain.h"
+#include "rpg_character_climate.h"
+#include "rpg_character_organization.h"
+#include "rpg_character_alignmentcivic.h"
+#include "rpg_character_alignmentethic.h"
 
+#include "rpg_character_race_common.h"
 #include "rpg_character_skills_common_tools.h"
 
 #include <rpg_item_weapon.h>
@@ -62,7 +64,9 @@ RPG_Character_AlignmentEthicToStringTable_t RPG_Character_AlignmentEthicHelper::
 RPG_Character_AttackFormToStringTable_t RPG_Character_AttackFormHelper::myRPG_Character_AttackFormToStringTable;
 RPG_Character_AttributeToStringTable_t RPG_Character_AttributeHelper::myRPG_Character_AttributeToStringTable;
 RPG_Character_ConditionToStringTable_t RPG_Character_ConditionHelper::myRPG_Character_ConditionToStringTable;
-RPG_Character_EnvironmentToStringTable_t RPG_Character_EnvironmentHelper::myRPG_Character_EnvironmentToStringTable;
+RPG_Character_PlaneToStringTable_t RPG_Character_PlaneHelper::myRPG_Character_PlaneToStringTable;
+RPG_Character_ClimateToStringTable_t RPG_Character_ClimateHelper::myRPG_Character_ClimateToStringTable;
+RPG_Character_TerrainToStringTable_t RPG_Character_TerrainHelper::myRPG_Character_TerrainToStringTable;
 RPG_Character_FeatToStringTable_t RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable;
 RPG_Character_GenderToStringTable_t RPG_Character_GenderHelper::myRPG_Character_GenderToStringTable;
 RPG_Character_MetaClassToStringTable_t RPG_Character_MetaClassHelper::myRPG_Character_MetaClassToStringTable;
@@ -85,7 +89,9 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   RPG_Character_AttackFormHelper::init();
   RPG_Character_AttributeHelper::init();
   RPG_Character_ConditionHelper::init();
-  RPG_Character_EnvironmentHelper::init();
+  RPG_Character_PlaneHelper::init();
+  RPG_Character_ClimateHelper::init();
+  RPG_Character_TerrainHelper::init();
   RPG_Character_FeatHelper::init();
   RPG_Character_GenderHelper::init();
   RPG_Character_MetaClassHelper::init();

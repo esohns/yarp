@@ -558,31 +558,71 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:simpleType name="RPG_Character_Environment_Type">
+  <xsd:simpleType name="RPG_Character_Plane_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="ENVIRONMENT_ANY"/>
-      <xsd:enumeration value="ENVIRONMENT_UNDERGROUND"/>
-      <xsd:enumeration value="ENVIRONMENT_PLAINS_TEMPERATE"/>
-      <xsd:enumeration value="ENVIRONMENT_PLAINS_WARM"/>
-      <xsd:enumeration value="ENVIRONMENT_FORESTS_TEMPERATE"/>
-      <xsd:enumeration value="ENVIRONMENT_HILLS_TEMPERATE"/>
-      <xsd:enumeration value="ENVIRONMENT_HILLS_WARM"/>
-      <xsd:enumeration value="ENVIRONMENT_MOUNTAINS_TEMPERATE"/>
-      <xsd:enumeration value="ENVIRONMENT_DESERTS_WARM"/>
-      <xsd:enumeration value="ENVIRONMENT_PLANE_ANY_LAWFUL"/>
-      <xsd:enumeration value="ENVIRONMENT_PLANE_LAWFUL_GOOD"/>
-      <xsd:enumeration value="ENVIRONMENT_PLANE_ANY_GOOD"/>
-      <xsd:enumeration value="ENVIRONMENT_PLANE_CHAOTIC_GOOD"/>
-      <xsd:enumeration value="ENVIRONMENT_PLANE_ANY_EVIL"/>
-      <xsd:enumeration value="ENVIRONMENT_PLANE_CHAOTIC_EVIL"/>
-      <xsd:enumeration value="ENVIRONMENT_PLANE_AIR"/>
-      <xsd:enumeration value="ENVIRONMENT_PLANE_FIRE"/>
+      <xsd:enumeration value="PLANE_MATERIAL"/>
+      <xsd:enumeration value="PLANE_TRANSITIVE"/>
+      <xsd:enumeration value="PLANE_INNER"/>
+      <xsd:enumeration value="PLANE_OUTER"/>
+      <xsd:enumeration value="PLANE_ANY"/>
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="RPG_Character_Terrain_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="TERRAIN_UNDERGROUND"/>
+      <xsd:enumeration value="TERRAIN_PLAINS"/>
+      <xsd:enumeration value="TERRAIN_FORESTS"/>
+      <xsd:enumeration value="TERRAIN_HILLS"/>
+      <xsd:enumeration value="TERRAIN_MOUNTAINS"/>
+      <xsd:enumeration value="TERRAIN_DESERTS"/>
+      <xsd:enumeration value="TERRAIN_MATERIALPLANE_ANY"/>
+      <xsd:enumeration value="TERRAIN_TRANSITIVEPLANE_ASTRAL"/>
+      <xsd:enumeration value="TERRAIN_TRANSITIVEPLANE_ETHERAL"/>
+      <xsd:enumeration value="TERRAIN_TRANSITIVEPLANE_SHADOW"/>
+      <xsd:enumeration value="TERRAIN_TRANSITIVEPLANE_ANY"/>
+      <xsd:enumeration value="TERRAIN_INNERPLANE_AIR"/>
+      <xsd:enumeration value="TERRAIN_INNERPLANE_EARTH"/>
+      <xsd:enumeration value="TERRAIN_INNERPLANE_FIRE"/>
+      <xsd:enumeration value="TERRAIN_INNERPLANE_WATER"/>
+      <xsd:enumeration value="TERRAIN_INNERPLANE_POSITIVE"/>
+      <xsd:enumeration value="TERRAIN_INNERPLANE_NEGATIVE"/>
+      <xsd:enumeration value="TERRAIN_INNERPLANE_ANY"/>
+      <xsd:enumeration value="TERRAIN_OUTERPLANE_LAWFUL_ANY"/>
+      <xsd:enumeration value="TERRAIN_OUTERPLANE_CHAOTIC_ANY"/>
+      <xsd:enumeration value="TERRAIN_OUTERPLANE_GOOD_ANY"/>
+      <xsd:enumeration value="TERRAIN_OUTERPLANE_EVIL_ANY"/>
+      <xsd:enumeration value="TERRAIN_OUTERPLANE_LAWFUL_GOOD"/>
+      <xsd:enumeration value="TERRAIN_OUTERPLANE_LAWFUL_EVIL"/>
+      <xsd:enumeration value="TERRAIN_OUTERPLANE_CHAOTIC_GOOD"/>
+      <xsd:enumeration value="TERRAIN_OUTERPLANE_CHAOTIC_EVIL"/>
+      <xsd:enumeration value="TERRAIN_OUTERPLANE_NEUTRAL"/>
+      <xsd:enumeration value="TERRAIN_OUTERPLANE_MILD_ANY"/>
+      <xsd:enumeration value="TERRAIN_OUTERPLANE_STRONG_ANY"/>
+      <xsd:enumeration value="TERRAIN_OUTERPLANE_ANY"/>
+      <xsd:enumeration value="TERRAIN_ANY"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Character_Climate_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="CLIMATE_NONE"/>
+      <xsd:enumeration value="CLIMATE_COLD"/>
+      <xsd:enumeration value="CLIMATE_TEMPERATE"/>
+      <xsd:enumeration value="CLIMATE_WARM"/>
+      <xsd:enumeration value="CLIMATE_ANY"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Character_Environment_Type">
+    <xsd:sequence>
+      <xsd:element name="terrain" type="RPG_Character_Terrain_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="climate" type="RPG_Character_Climate_Type" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
   <xsd:simpleType name="RPG_Character_Organization_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="ORGANIZATION_ANY"/>
       <xsd:enumeration value="ORGANIZATION_SOLITARY"/>
       <xsd:enumeration value="ORGANIZATION_PAIR"/>
       <xsd:enumeration value="ORGANIZATION_BROOD"/>
@@ -599,8 +639,23 @@
       <xsd:enumeration value="ORGANIZATION_SLAVER"/>
       <xsd:enumeration value="ORGANIZATION_BAND"/>
       <xsd:enumeration value="ORGANIZATION_CLAN"/>
+      <xsd:enumeration value="ORGANIZATION_ANY"/>
     </xsd:restriction>
   </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Character_OrganizationStep_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Character_Organization_Type" minOccurs="1" maxOccurs="1"/>
+      <!--       <xsd:element name="range" type="rpg_chance_dice:RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/> -->
+      <xsd:element name="range" type="RPG_Chance_ValueRange_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Character_Organizations_Type">
+    <xsd:sequence>
+      <xsd:element name="step" type="RPG_Character_OrganizationStep_Type" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
 
   <xsd:simpleType name="RPG_Character_AlignmentCivic_Type">
     <xsd:restriction base="xsd:string">
@@ -659,11 +714,11 @@
       <xsd:element name="skills" type="RPG_Character_Skills_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="feats" type="RPG_Character_Feats_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="environment" type="RPG_Character_Environment_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="organization" type="RPG_Character_Organization_Type" minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element name="organizations" type="RPG_Character_Organizations_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="challengeRating" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="treasureModifier" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="alignment" type="RPG_Character_Alignment_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="advancement" type="RPG_Character_MonsterAdvancement_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="advancements" type="RPG_Character_MonsterAdvancement_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="levelAdjustment" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>

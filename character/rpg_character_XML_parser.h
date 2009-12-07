@@ -265,12 +265,35 @@ class RPG_Character_Feats_Type
   RPG_Character_Feats myCurrentFeats;
 };
 
+class RPG_Character_Terrain_Type
+  : public RPG_Character_Terrain_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Character_Terrain post_RPG_Character_Terrain_Type();
+};
+
+class RPG_Character_Climate_Type
+  : public RPG_Character_Climate_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Character_Climate post_RPG_Character_Climate_Type();
+};
+
 class RPG_Character_Environment_Type
  : public RPG_Character_Environment_Type_pimpl
 {
  public:
+  RPG_Character_Environment_Type();
+
 //   virtual void pre();
+  virtual void terrain(const RPG_Character_Terrain&);
+  virtual void climate(const RPG_Character_Climate&);
   virtual RPG_Character_Environment post_RPG_Character_Environment_Type();
+
+ private:
+  RPG_Character_Environment myCurrentEnvironment;
 };
 
 class RPG_Character_Organization_Type
@@ -279,6 +302,35 @@ class RPG_Character_Organization_Type
  public:
 //   virtual void pre();
   virtual RPG_Character_Organization post_RPG_Character_Organization_Type();
+};
+
+class RPG_Character_OrganizationStep_Type
+ : public RPG_Character_OrganizationStep_Type_pimpl
+{
+ public:
+  RPG_Character_OrganizationStep_Type();
+
+//   virtual void pre();
+  virtual void type(const RPG_Character_Organization&);
+  virtual void range(const RPG_Chance_ValueRange&);
+  virtual RPG_Character_OrganizationStep post_RPG_Character_OrganizationStep_Type();
+
+ private:
+  RPG_Character_OrganizationStep myCurrentOrganizationStep;
+};
+
+class RPG_Character_Organizations_Type
+ : public RPG_Character_Organizations_Type_pimpl
+{
+ public:
+  RPG_Character_Organizations_Type();
+
+//   virtual void pre();
+  virtual void step(const RPG_Character_OrganizationStep&);
+  virtual RPG_Character_Organizations post_RPG_Character_Organizations_Type();
+
+ private:
+  RPG_Character_Organizations myCurrentOrganizations;
 };
 
 class RPG_Character_MonsterAdvancementStep_Type
@@ -363,7 +415,7 @@ class RPG_Character_MonsterPropertiesXML_Type
   virtual void skills(const RPG_Character_Skills&);
   virtual void feats(const RPG_Character_Feats&);
   virtual void environment(const RPG_Character_Environment&);
-  virtual void organization(const RPG_Character_Organization&);
+  virtual void organizations(const RPG_Character_Organizations&);
   virtual void challengeRating(unsigned char);
   virtual void treasureModifier(unsigned char);
   virtual void alignment(const RPG_Character_Alignment&);

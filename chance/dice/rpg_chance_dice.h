@@ -26,6 +26,8 @@
 
 #include <ace/Global_Macros.h>
 
+#include <set>
+
 /**
 emulate rolling an n-sided die
 
@@ -45,6 +47,8 @@ class RPG_Chance_Dice
                                RPG_Chance_DiceRollResult_t&); // result(s)
   static void diceRollToRange(const RPG_Chance_DiceRoll&, // roll specifics
                               RPG_Chance_ValueRange&);    // result
+  static void rangeToDiceRoll(const RPG_Chance_ValueRange&, // range
+                              RPG_Chance_DiceRoll&);        // roll specifics
 
  private:
   // safety measures
@@ -52,6 +56,35 @@ class RPG_Chance_Dice
   ACE_UNIMPLEMENTED_FUNC(~RPG_Chance_Dice());
   ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Dice(const RPG_Chance_Dice&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Dice& operator=(const RPG_Chance_Dice&));
+
+  // helper methods
+  static const unsigned int distanceRangeToRange(const RPG_Chance_ValueRange&,
+                                                 const RPG_Chance_ValueRange&);
+
+  // helper types
+  struct rangeToRollElement
+  {
+    // needed for proper sorting...
+    bool operator<(const rangeToRollElement& rhs_in) const
+    {
+      ACE_ASSERT((range.begin == rhs_in.range.begin) &&
+                 (range.end == rhs_in.range.end));
+
+      // compute distance to other
+      RPG_Chance_ValueRange possible_range;
+      diceRollToRange(roll, possible_range);
+      RPG_Chance_ValueRange possible_range2;
+      diceRollToRange(rhs_in.roll, possible_range2);
+      int distance = distanceRangeToRange(range, possible_range);
+      int distance2 = distanceRangeToRange(range, possible_range2);
+      return (distance < distance2);
+    };
+
+    RPG_Chance_ValueRange range;
+    RPG_Chance_DiceRoll roll;
+  };
+  typedef std::set<rangeToRollElement> RPG_Chance_Dice_SortedRolls_t;
+  typedef RPG_Chance_Dice_SortedRolls_t::const_iterator RPG_Chance_Dice_SortedRollsIterator_t;
 };
 
 #endif

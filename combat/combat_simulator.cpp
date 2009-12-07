@@ -265,8 +265,10 @@ void do_work(const std::string& itemDictionaryFilename_in,
   RPG_Character_Alignment alignment;
   alignment.civic = ALIGNMENTCIVIC_ANY;
   alignment.ethic = ALIGNMENTETHIC_ANY;
-  RPG_Character_Environment environment = ENVIRONMENT_ANY;
-  RPG_Character_Organizations_t organizations;
+  RPG_Character_Environment environment;
+  environment.climate = CLIMATE_ANY;
+  environment.terrain = TERRAIN_ANY;
+  RPG_Character_OrganizationList_t organizations;
   organizations.insert(ORGANIZATION_ANY);
   RPG_Character_Encounter_t encounter;
   RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->generateRandomEncounter(numMonsterTypes,

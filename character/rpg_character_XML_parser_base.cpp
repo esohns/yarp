@@ -601,6 +601,59 @@ post_RPG_Character_Feats_Type ()
   // return ... ;
 }
 
+// RPG_Character_Plane_Type_pimpl
+//
+
+void RPG_Character_Plane_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Character_Plane_Type_pimpl::
+post_RPG_Character_Plane_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+}
+
+// RPG_Character_Terrain_Type_pimpl
+//
+
+void RPG_Character_Terrain_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Character_Terrain RPG_Character_Terrain_Type_pimpl::
+post_RPG_Character_Terrain_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Character_Climate_Type_pimpl
+//
+
+void RPG_Character_Climate_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Character_Climate RPG_Character_Climate_Type_pimpl::
+post_RPG_Character_Climate_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
 // RPG_Character_Environment_Type_pimpl
 //
 
@@ -609,11 +662,23 @@ pre ()
 {
 }
 
+void RPG_Character_Environment_Type_pimpl::
+terrain (const RPG_Character_Terrain& terrain)
+{
+  // TODO
+  //
+}
+
+void RPG_Character_Environment_Type_pimpl::
+climate (const RPG_Character_Climate& climate)
+{
+  // TODO
+  //
+}
+
 RPG_Character_Environment RPG_Character_Environment_Type_pimpl::
 post_RPG_Character_Environment_Type ()
 {
-  const ::std::string& v (post_string ());
-
   // TODO
   //
   // return ... ;
@@ -632,6 +697,59 @@ post_RPG_Character_Organization_Type ()
 {
   const ::std::string& v (post_string ());
 
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Character_OrganizationStep_Type_pimpl
+//
+
+void RPG_Character_OrganizationStep_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Character_OrganizationStep_Type_pimpl::
+type (const RPG_Character_Organization& type)
+{
+  // TODO
+  //
+}
+
+void RPG_Character_OrganizationStep_Type_pimpl::
+range (const RPG_Chance_ValueRange& range)
+{
+  // TODO
+  //
+}
+
+RPG_Character_OrganizationStep RPG_Character_OrganizationStep_Type_pimpl::
+post_RPG_Character_OrganizationStep_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Character_Organizations_Type_pimpl
+//
+
+void RPG_Character_Organizations_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Character_Organizations_Type_pimpl::
+step (const RPG_Character_OrganizationStep& step)
+{
+  // TODO
+  //
+}
+
+RPG_Character_Organizations RPG_Character_Organizations_Type_pimpl::
+post_RPG_Character_Organizations_Type ()
+{
   // TODO
   //
   // return ... ;
@@ -870,7 +988,7 @@ environment (const RPG_Character_Environment& environment)
 }
 
 void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-organization (const RPG_Character_Organization& organization)
+organizations (const RPG_Character_Organizations& organizations)
 {
   // TODO
   //
@@ -898,7 +1016,7 @@ alignment (const RPG_Character_Alignment& alignment)
 }
 
 void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-advancement (const RPG_Character_MonsterAdvancement& advancement)
+advancements (const RPG_Character_MonsterAdvancement& advancements)
 {
   // TODO
   //

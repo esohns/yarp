@@ -17,23 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CHARACTER_COMMON_H
-#define RPG_CHARACTER_COMMON_H
 
-#include "rpg_character_condition.h"
-#include "rpg_character_terrain.h"
+#ifndef RPG_CHARACTER_ORGANIZATIONS_H
+#define RPG_CHARACTER_ORGANIZATIONS_H
 
-#include <vector>
-#include <set>
-
-// some useful types
-typedef std::vector<unsigned char> RPG_Character_BaseAttackBonus_t;
-typedef RPG_Character_BaseAttackBonus_t::const_iterator RPG_Character_BaseAttackBonusIterator_t;
-
-typedef std::set<RPG_Character_Condition> RPG_Character_Conditions_t;
-typedef RPG_Character_Conditions_t::const_iterator RPG_Character_ConditionsIterator_t;
-
-typedef std::set<RPG_Character_Terrain> RPG_Character_Terrains_t;
-typedef RPG_Character_Terrains_t::const_iterator RPG_Character_TerrainsIterator_t;
+struct RPG_Character_Organizations
+{
+  std::vector<RPG_Character_OrganizationStep> steps;
+};
 
 #endif

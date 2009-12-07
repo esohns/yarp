@@ -1,29 +1,6 @@
 namespace urn:rpg
 {
-  include "rpg_character_monstermetatype.h";
-  include "rpg_character_monstersubtype.h";
-  include "rpg_character_monstertype.h";
-  include "rpg_character_monsterarmorclass.h";
-  include "rpg_character_monsterweapon.h";
-  include "rpg_character_attackform.h";
-  include "rpg_character_monsterattackaction.h";
-  include "rpg_character_monsterattack.h";
-  include "rpg_character_size.h";
-  include "rpg_character_savingthrowmodifiers.h";
-  include "rpg_character_attributes.h";
-  include "rpg_character_skills.h";
-  include "rpg_character_skillvalue.h";
-  include "rpg_character_skill.h";
-  include "rpg_character_feat.h";
-  include "rpg_character_feats.h";
-  include "rpg_character_environment.h";
-  include "rpg_character_organization.h";
-  include "rpg_character_alignmentcivic.h";
-  include "rpg_character_alignmentethic.h";
-  include "rpg_character_alignment.h";
-  include "rpg_character_monsteradvancementstep.h";
-  include "rpg_character_monsteradvancement.h";
-  include "rpg_character_monsterpropertiesxml.h";
+  include "rpg_character_incl.h";
   include "rpg_character_skills_common.h";
   include "rpg_character_monster_common.h";
 
@@ -50,8 +27,12 @@ namespace urn:rpg
   RPG_Character_Skills_Type                 RPG_Character_Skills;
   RPG_Character_Feat_Type                   RPG_Character_Feat;
   RPG_Character_Feats_Type                  RPG_Character_Feats;
+  RPG_Character_Terrain_Type                RPG_Character_Terrain;
+  RPG_Character_Climate_Type                RPG_Character_Climate;
   RPG_Character_Environment_Type            RPG_Character_Environment;
   RPG_Character_Organization_Type           RPG_Character_Organization;
+  RPG_Character_OrganizationStep_Type       RPG_Character_OrganizationStep;
+  RPG_Character_Organizations_Type          RPG_Character_Organizations;
   RPG_Character_AlignmentCivic_Type         RPG_Character_AlignmentCivic;
   RPG_Character_AlignmentEthic_Type         RPG_Character_AlignmentEthic;
   RPG_Character_Alignment_Type              RPG_Character_Alignment;

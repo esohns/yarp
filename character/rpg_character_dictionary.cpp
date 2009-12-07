@@ -31,6 +31,7 @@
 #include <ace/Log_Msg.h>
 
 #include <iostream>
+#include <algorithm>
 
 RPG_Character_Dictionary::RPG_Character_Dictionary()
 {
@@ -108,8 +109,20 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
   RPG_Character_Feat_Type                   feat_p;
   RPG_Character_Feats_Type                  feats_p;
   feats_p.parsers(feat_p);
+  RPG_Character_Terrain_Type                terrain_p;
+  RPG_Character_Climate_Type                climate_p;
   RPG_Character_Environment_Type            environment_p;
+  environment_p.parsers(terrain_p,
+                        climate_p);
   RPG_Character_Organization_Type           organization_p;
+  RPG_Chance_ValueRange_Type                range_p;
+  range_p.parsers(int_p,
+                  int_p);
+  RPG_Character_OrganizationStep_Type       organizationStep_p;
+  organizationStep_p.parsers(organization_p,
+                             range_p);
+  RPG_Character_Organizations_Type          organizations_p;
+  organizations_p.parsers(organizationStep_p);
 //   unsigned_int_pimpl                      challengeRating_p;
 //   unsigned_int_pimpl                      treasureModifier_p;
   RPG_Character_AlignmentCivic_Type         alignmentCivic_p;
@@ -117,9 +130,7 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
   RPG_Character_Alignment_Type              alignment_p;
   alignment_p.parsers(alignmentCivic_p,
                       alignmentEthic_p);
-  RPG_Chance_ValueRange_Type                range_p;
-  range_p.parsers(int_p,
-                  int_p);
+
   RPG_Character_MonsterAdvancementStep_Type advancementStep_p;
   advancementStep_p.parsers(size_p,
                             range_p);
@@ -142,7 +153,7 @@ void RPG_Character_Dictionary::initCharacterDictionary(const std::string& filena
                                  skills_p,
                                  feats_p,
                                  environment_p,
-                                 organization_p,
+                                 organizations_p,
                                  unsigned_byte_p,
                                  unsigned_byte_p,
                                  alignment_p,
@@ -212,7 +223,7 @@ const RPG_Character_MonsterProperties RPG_Character_Dictionary::getMonsterProper
 void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDifferentMonsterTypes,
                                                        const RPG_Character_Alignment& alignment_in,
                                                        const RPG_Character_Environment& environment_in,
-                                                       const RPG_Character_Organizations_t& organizations_in,
+                                                       const RPG_Character_OrganizationList_t& organizations_in,
                                                        RPG_Character_Encounter_t& encounter_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary::generateRandomEncounter"));
@@ -220,31 +231,14 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
   // init result
   encounter_out.clear();
 
-  RPG_Chance_DiceRollResult_t result;
-  // step1: depending on the environment, find appropriate foes
-  // *IMPORTANT NOTE*: if the input environment is ENVIRONMENT_ANY, we choose one at random
-  RPG_Character_Environment choiceEnvironment = environment_in;
-  if (environment_in == ENVIRONMENT_ANY)
-  {
-    do
-    {
-      result.clear();
-      RPG_Chance_Dice::generateRandomNumbers(RPG_CHARACTER_ENVIRONMENT_MAX,
-                                             1,
-                                             result);
-      choiceEnvironment = ACE_static_cast(RPG_Character_Environment,
-                                          (result.front() - 1));
-    } while (choiceEnvironment == ENVIRONMENT_ANY);
-  } // end IF
-
   RPG_Character_MonsterList_t list;
   for (RPG_Character_MonsterDictionaryIterator_t iterator = myMonsterDictionary.begin();
        iterator != myMonsterDictionary.end();
        iterator++)
   {
-    // *TODO*: need to refine this for different planes...
-    if ((iterator->second.environment == choiceEnvironment) ||
-        (iterator->second.environment == ENVIRONMENT_ANY))
+    // check if environment is appropriate
+    if (environmentMatches(environment_in,
+                           iterator->second.environment))
     {
       // check if alignment is appropriate
       if (((iterator->second.alignment.civic == alignment_in.civic) ||
@@ -252,7 +246,25 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
           ((iterator->second.alignment.ethic == alignment_in.ethic) ||
            (iterator->second.alignment.ethic == ALIGNMENTETHIC_ANY)))
       {
-        list.push_back(iterator->first);
+        // check if organizations are appropriate
+        RPG_Character_OrganizationList_t possible_organizations;
+        for (RPG_Character_OrganizationsIterator_t iterator2 = iterator->second.organizations.begin();
+             iterator2 != iterator->second.organizations.end();
+             iterator2++)
+        {
+          possible_organizations.insert((*iterator2).type);
+        } // end FOR
+        std::vector<RPG_Character_Organization> intersection;
+        std::set_intersection(organizations_in.begin(),
+                              organizations_in.end(),
+                              possible_organizations.begin(),
+                              possible_organizations.end(),
+                              intersection.begin());
+        if ((organizations_in.find(ORGANIZATION_ANY) != organizations_in.end()) ||
+            !intersection.empty())
+        {
+          list.push_back(iterator->first);
+        } // end IF
       } // end IF
     } // end IF
   } // end FOR
@@ -261,13 +273,16 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
   {
     // nothing found in database...
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("found no appropriate monster types for environment \"%s\" in dictionary (%d items) --> check implementation !, returning\n"),
-               RPG_Character_EnvironmentHelper::RPG_Character_EnvironmentToString(choiceEnvironment).c_str(),
+               ACE_TEXT("found no appropriate monster types (alignment: \"%s\", environment \"%s\", organizations: \"%s\" in dictionary (%d items) --> check implementation !, returning\n"),
+               RPG_Character_Common_Tools::alignmentToString(alignment_in).c_str(),
+               RPG_Character_Monster_Common_Tools::environmentToString(environment_in).c_str(),
+               RPG_Character_Monster_Common_Tools::organizationsToString(organizations_in).c_str(),
                myMonsterDictionary.size()));
 
     return;
   } // end IF
 
+  RPG_Chance_DiceRollResult_t result;
   for (int i = 0;
        i < numDifferentMonsterTypes;
        i++)
@@ -287,17 +302,46 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
     } while (iterator != encounter_out.end());
 
     // step2b: compute number of foes
-    // step2ba: ...simply choose a random organization from the list
+    // step2ba: ...choose a random organization from the intersection
+    RPG_Character_MonsterDictionaryIterator_t iterator2 = myMonsterDictionary.find((*iterator).first);
+    RPG_Character_OrganizationList_t possible_organizations;
+    for (RPG_Character_OrganizationsIterator_t iterator3 = (*iterator2).second.organizations.begin();
+         iterator3 != (*iterator2).second.organizations.end();
+         iterator3++)
+    {
+      possible_organizations.insert((*iterator3).type);
+    } // end FOR
+    if (organizations_in.find(ORGANIZATION_ANY) == organizations_in.end())
+    {
+      std::vector<RPG_Character_Organization> intersection;
+      std::set_intersection(organizations_in.begin(),
+                            organizations_in.end(),
+                            possible_organizations.begin(),
+                            possible_organizations.end(),
+                            intersection.begin());
+      possible_organizations.clear();
+      for (std::vector<RPG_Character_Organization>::const_iterator iterator4 = intersection.begin();
+           iterator4 != intersection.end();
+           iterator4++)
+      {
+        possible_organizations.insert(*iterator4);
+      } // end FOR
+    } // end IF
+
     result.clear();
-    RPG_Chance_Dice::generateRandomNumbers(organizations_in.size(),
+    RPG_Chance_Dice::generateRandomNumbers(possible_organizations.size(),
                                            1,
                                            result);
     int choiceOrganization = result.front() - 1; // list index
-    RPG_Character_OrganizationsIterator_t iterator2 = organizations_in.begin();
-    std::advance(iterator2, choiceOrganization);
+    RPG_Character_OrganizationListIterator_t iterator3 = possible_organizations.begin();
+    std::advance(iterator3, choiceOrganization);
+    RPG_Character_OrganizationsIterator_t iterator4 = (*iterator2).second.organizations.begin();
+    while ((*iterator4).type != *iterator3)
+      iterator4++;
+    ACE_ASSERT(iterator4 != (*iterator2).second.organizations.end());
     RPG_Chance_DiceRoll roll;
-    organizationToRoll(*iterator2,
-                       roll);
+    organizationStepToRoll(*iterator4,
+                           roll);
     result.clear();
     RPG_Chance_Dice::simulateDiceRoll(roll,
                                       1,
@@ -313,38 +357,18 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
   } // end FOR
 }
 
-void RPG_Character_Dictionary::organizationToRoll(const RPG_Character_Organization& organization_in,
-                                                  RPG_Chance_DiceRoll& roll_out) const
+void RPG_Character_Dictionary::organizationStepToRoll(const RPG_Character_OrganizationStep& organizationStep_in,
+                                                      RPG_Chance_DiceRoll& roll_out) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary::organizationToRoll"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary::organizationStepToRoll"));
 
   // init result
   roll_out.numDice = 0;
   roll_out.typeDice = D_0;
   roll_out.modifier = 0;
 
-  switch (organization_in)
+  switch (organizationStep_in.type)
   {
-    case ORGANIZATION_ANY:
-    {
-      // choose any (other) form of organization at random...
-      RPG_Character_Organization organization = ORGANIZATION_ANY;
-      RPG_Chance_DiceRollResult_t result;
-      do
-      {
-        result.clear();
-        RPG_Chance_Dice::generateRandomNumbers(RPG_CHARACTER_ORGANIZATION_MAX,
-                                               1,
-                                               result);
-        organization = ACE_static_cast(RPG_Character_Organization,
-                                       (result.front() - 1));
-      } while (organization == ORGANIZATION_ANY);
-      // ...and run ourselves again
-      organizationToRoll(organization,
-                         roll_out);
-
-      break;
-    }
     case ORGANIZATION_SOLITARY:
     {
       roll_out.modifier = 1;
@@ -362,80 +386,141 @@ void RPG_Character_Dictionary::organizationToRoll(const RPG_Character_Organizati
     case ORGANIZATION_CLUTCH:
     case ORGANIZATION_PATCH:
     case ORGANIZATION_GANG:
-    {
-      roll_out.numDice = 1;
-      roll_out.typeDice = D_3;
-      roll_out.modifier = 1;
-
-      break;
-    }
     case ORGANIZATION_TEAM: // 3-4 --> 1d2+2
-    {
-      roll_out.numDice = 1;
-      roll_out.typeDice = D_2;
-      roll_out.modifier = 2;
-
-      break;
-    }
     case ORGANIZATION_SQUAD: // 3-5, 11-20 + leaders
-    {
-      roll_out.numDice = 1;
-      roll_out.typeDice = D_3;
-      roll_out.modifier = 2;
-
-      break;
-    }
     case ORGANIZATION_PACK: // 3-6 --> 1d4+2
     case ORGANIZATION_COLONY:
-    {
-      roll_out.numDice = 1;
-      roll_out.typeDice = D_4;
-      roll_out.modifier = 2;
-
-      break;
-    }
     case ORGANIZATION_FLOCK: // 5-8 --> 1d4+4
-    {
-      roll_out.numDice = 1;
-      roll_out.typeDice = D_4;
-      roll_out.modifier = 4;
-
-      break;
-    }
     case ORGANIZATION_TRIBE: // 7-12 --> 1d6+6
     case ORGANIZATION_SLAVER: // 7-12 slaves
-    {
-      roll_out.numDice = 1;
-      roll_out.typeDice = D_6;
-      roll_out.modifier = 6;
-
-      break;
-    }
     case ORGANIZATION_BAND: // 11-20 + 2 sergeants + 1 leader + 150% noncombatants
-    {
-      roll_out.numDice = 1;
-      roll_out.typeDice = D_10;
-      roll_out.modifier = 10;
-
-      break;
-    }
     case ORGANIZATION_CLAN: // 30-100 + leaders + 50% noncombatants
     {
-      roll_out.numDice = 7;
-      roll_out.typeDice = D_10;
-      roll_out.modifier = 30;
+      RPG_Chance_Dice::rangeToDiceRoll(organizationStep_in.range,
+                                       roll_out);
+
+      break;
+    }
+    case ORGANIZATION_ANY:
+    default:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("invalid organization \"%s\" --> check implementation !, returning\n"),
+                 RPG_Character_OrganizationHelper::RPG_Character_OrganizationToString(organizationStep_in.type).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+}
+
+const bool RPG_Character_Dictionary::environmentMatches(const RPG_Character_Environment& environmentA_in,
+                                                        const RPG_Character_Environment& environmentB_in) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary::environmentMatches"));
+
+  if ((environmentA_in.terrain == TERRAIN_ANY) ||
+      (environmentB_in.terrain == TERRAIN_ANY))
+    return true;
+
+  // different planes don't match: determine planes
+  RPG_Character_Plane planeA = RPG_Character_Monster_Common_Tools::terrainToPlane(environmentA_in.terrain);
+  RPG_Character_Plane planeB = RPG_Character_Monster_Common_Tools::terrainToPlane(environmentB_in.terrain);
+  if (planeA != planeB)
+    return false;
+
+  switch (planeA)
+  {
+    case PLANE_MATERIAL:
+    {
+      if ((environmentA_in.terrain == TERRAIN_MATERIALPLANE_ANY) ||
+          (environmentB_in.terrain == TERRAIN_MATERIALPLANE_ANY))
+        return true;
+
+      // handle climate
+      if ((environmentA_in.climate == CLIMATE_ANY) ||
+          (environmentB_in.climate == CLIMATE_ANY))
+        return true;
+
+      return ((environmentA_in.terrain == environmentB_in.terrain) &&
+              (environmentA_in.climate == environmentB_in.climate));
+    }
+    case PLANE_TRANSITIVE:
+    {
+      if ((environmentA_in.terrain == TERRAIN_TRANSITIVEPLANE_ANY) ||
+          (environmentB_in.terrain == TERRAIN_TRANSITIVEPLANE_ANY))
+        return true;
+
+      return (environmentA_in.terrain == environmentB_in.terrain);
+    }
+    case PLANE_INNER:
+    {
+      if ((environmentA_in.terrain == TERRAIN_INNERPLANE_ANY) ||
+          (environmentB_in.terrain == TERRAIN_INNERPLANE_ANY))
+        return true;
+
+      return (environmentA_in.terrain == environmentB_in.terrain);
+    }
+    case PLANE_OUTER:
+    {
+      if ((environmentA_in.terrain == TERRAIN_OUTERPLANE_ANY) ||
+          (environmentB_in.terrain == TERRAIN_OUTERPLANE_ANY))
+        return true;
+
+      switch (environmentA_in.terrain)
+      {
+        case TERRAIN_OUTERPLANE_LAWFUL_ANY:
+        {
+          return ((environmentB_in.terrain == TERRAIN_OUTERPLANE_LAWFUL_GOOD) ||
+                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_LAWFUL_EVIL));
+        }
+        case TERRAIN_OUTERPLANE_CHAOTIC_ANY:
+        {
+          return ((environmentB_in.terrain == TERRAIN_OUTERPLANE_CHAOTIC_GOOD) ||
+                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_CHAOTIC_EVIL));
+        }
+        case TERRAIN_OUTERPLANE_GOOD_ANY:
+        {
+          return ((environmentB_in.terrain == TERRAIN_OUTERPLANE_LAWFUL_GOOD) ||
+                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_CHAOTIC_GOOD));
+        }
+        case TERRAIN_OUTERPLANE_EVIL_ANY:
+        {
+          return ((environmentB_in.terrain == TERRAIN_OUTERPLANE_LAWFUL_EVIL) ||
+                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_CHAOTIC_EVIL));
+        }
+        case TERRAIN_OUTERPLANE_NEUTRAL:
+        {
+          return ((environmentB_in.terrain == TERRAIN_OUTERPLANE_NEUTRAL) ||
+                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_MILD_ANY) ||
+                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_STRONG_ANY));
+        }
+        case TERRAIN_OUTERPLANE_MILD_ANY:
+        case TERRAIN_OUTERPLANE_STRONG_ANY:
+        default:
+        {
+          // debug info
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid terrain: \"%s\" --> check implementation !, aborting\n"),
+                     RPG_Character_TerrainHelper::RPG_Character_TerrainToString(environmentA_in.terrain).c_str()));
+
+          break;
+        }
+      } // end SWITCH
 
       break;
     }
     default:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("invalid organization \"%s\" --> check implementation !, returning\n"),
-                 RPG_Character_OrganizationHelper::RPG_Character_OrganizationToString(organization_in).c_str()));
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid plane: \"%s\" --> check implementation !, aborting\n"),
+                 RPG_Character_PlaneHelper::RPG_Character_PlaneToString(planeA).c_str()));
 
       break;
     }
   } // end SWITCH
+
+  return false;
 }
 
 bool RPG_Character_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
@@ -535,12 +620,12 @@ void RPG_Character_Dictionary::dump() const
                RPG_Character_Common_Tools::attributesToString((iterator->second).attributes).c_str(),
                RPG_Character_Skills_Common_Tools::skillsToString((iterator->second).skills).c_str(),
                RPG_Character_Skills_Common_Tools::featsToString((iterator->second).feats).c_str(),
-               RPG_Character_EnvironmentHelper::RPG_Character_EnvironmentToString((iterator->second).environment).c_str(),
+               RPG_Character_Monster_Common_Tools::environmentToString((iterator->second).environment).c_str(),
                RPG_Character_Monster_Common_Tools::organizationsToString((iterator->second).organizations).c_str(),
                (iterator->second).challengeRating,
                (iterator->second).treasureModifier,
                RPG_Character_Common_Tools::alignmentToString((iterator->second).alignment).c_str(),
-               RPG_Character_Monster_Common_Tools::monsterAdvancementToString((iterator->second).advancement).c_str(),
+               RPG_Character_Monster_Common_Tools::monsterAdvancementsToString((iterator->second).advancements).c_str(),
                (iterator->second).levelAdjustment));
   } // end FOR
 }

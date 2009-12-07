@@ -29,9 +29,9 @@
 #include <rpg_chance_diceroll.h>
 #include <rpg_chance_valuerange.h>
 
-#include "rpg_character_monstermetatype.h"
 #include "rpg_character_monstersubtype.h"
 #include "rpg_character_size.h"
+#include "rpg_character_monstermetatype.h"
 #include "rpg_character_monstertype.h"
 #include "rpg_character_monsterarmorclass.h"
 #include "rpg_character_monsterweapon.h"
@@ -40,11 +40,15 @@
 #include "rpg_character_monsterattack.h"
 #include "rpg_character_savingthrowmodifiers.h"
 #include "rpg_character_attributes.h"
+#include "rpg_character_terrain.h"
+#include "rpg_character_climate.h"
 #include "rpg_character_environment.h"
 #include "rpg_character_organization.h"
+#include "rpg_character_organizationstep.h"
 #include "rpg_character_alignmentcivic.h"
 #include "rpg_character_alignmentethic.h"
 #include "rpg_character_alignment.h"
+#include "rpg_character_monsteradvancementstep.h"
 #include "rpg_character_common.h"
 #include "rpg_character_skills_common.h"
 
@@ -54,11 +58,12 @@ typedef RPG_Character_MonsterSubTypes_t::const_iterator RPG_Character_MonsterSub
 typedef RPG_Chance_DiceRoll RPG_Character_Damage;
 typedef RPG_Chance_DiceRoll RPG_Character_HitDice;
 
-typedef std::set<RPG_Character_Organization> RPG_Character_Organizations_t;
+typedef std::vector<RPG_Character_OrganizationStep> RPG_Character_Organizations_t;
 typedef RPG_Character_Organizations_t::const_iterator RPG_Character_OrganizationsIterator_t;
+typedef std::set<RPG_Character_Organization> RPG_Character_OrganizationList_t;
+typedef RPG_Character_OrganizationList_t::const_iterator RPG_Character_OrganizationListIterator_t;
 
-typedef std::pair<RPG_Character_Size, RPG_Chance_ValueRange> RPG_Character_MonsterAdvancementStep_t;
-typedef std::vector<RPG_Character_MonsterAdvancementStep_t> RPG_Character_MonsterAdvancement_t;
+typedef std::vector<RPG_Character_MonsterAdvancementStep> RPG_Character_MonsterAdvancement_t;
 typedef RPG_Character_MonsterAdvancement_t::const_iterator RPG_Character_MonsterAdvancementIterator_t;
 
 struct RPG_Character_MonsterProperties
@@ -82,7 +87,7 @@ struct RPG_Character_MonsterProperties
   unsigned int                       challengeRating;
   unsigned int                       treasureModifier; // standard times x
   RPG_Character_Alignment            alignment;
-  RPG_Character_MonsterAdvancement_t advancement;
+  RPG_Character_MonsterAdvancement_t advancements;
   unsigned int                       levelAdjustment;
 };
 

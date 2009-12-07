@@ -73,8 +73,13 @@ class RPG_Character_SkillValue_Type_pskel;
 class RPG_Character_Skills_Type_pskel;
 class RPG_Character_Feat_Type_pskel;
 class RPG_Character_Feats_Type_pskel;
+class RPG_Character_Plane_Type_pskel;
+class RPG_Character_Terrain_Type_pskel;
+class RPG_Character_Climate_Type_pskel;
 class RPG_Character_Environment_Type_pskel;
 class RPG_Character_Organization_Type_pskel;
+class RPG_Character_OrganizationStep_Type_pskel;
+class RPG_Character_Organizations_Type_pskel;
 class RPG_Character_AlignmentCivic_Type_pskel;
 class RPG_Character_AlignmentEthic_Type_pskel;
 class RPG_Character_Alignment_Type_pskel;
@@ -97,32 +102,9 @@ class RPG_Character_Dictionary_Type_pskel;
 #include <rpg_chance_valuerange.h>
 #include <rpg_chance_dicetype.h>
 #include <rpg_chance_diceroll.h>
-#include "rpg_character_skill.h"
-#include "rpg_character_skillvalue.h"
 #include "rpg_character_skills_common.h"
-#include "rpg_character_skills.h"
-#include "rpg_character_size.h"
-#include "rpg_character_savingthrowmodifiers.h"
-#include "rpg_character_organization.h"
-#include "rpg_character_monsterweapon.h"
-#include "rpg_character_monstermetatype.h"
-#include "rpg_character_monstersubtype.h"
-#include "rpg_character_monstertype.h"
-#include "rpg_character_attackform.h"
-#include "rpg_character_monsterattackaction.h"
-#include "rpg_character_monsterattack.h"
-#include "rpg_character_monsterarmorclass.h"
-#include "rpg_character_monsteradvancementstep.h"
-#include "rpg_character_monsteradvancement.h"
 #include "rpg_character_monster_common.h"
-#include "rpg_character_feat.h"
-#include "rpg_character_feats.h"
-#include "rpg_character_environment.h"
-#include "rpg_character_attributes.h"
-#include "rpg_character_alignmentethic.h"
-#include "rpg_character_alignmentcivic.h"
-#include "rpg_character_alignment.h"
-#include "rpg_character_monsterpropertiesxml.h"
+#include "rpg_character_incl.h"
 
 #include "rpg_chance_dice_XML_types.h"
 
@@ -860,7 +842,7 @@ class RPG_Character_Feats_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Character_Feat_Type_pskel* feat_parser_;
 };
 
-class RPG_Character_Environment_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Character_Plane_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -868,8 +850,82 @@ class RPG_Character_Environment_Type_pskel: public virtual ::xml_schema::string_
   // virtual void
   // pre ();
 
+  virtual void
+  post_RPG_Character_Plane_Type ();
+};
+
+class RPG_Character_Terrain_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Character_Terrain
+  post_RPG_Character_Terrain_Type () = 0;
+};
+
+class RPG_Character_Climate_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Character_Climate
+  post_RPG_Character_Climate_Type () = 0;
+};
+
+class RPG_Character_Environment_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  terrain (const RPG_Character_Terrain&);
+
+  virtual void
+  climate (const RPG_Character_Climate&);
+
   virtual RPG_Character_Environment
   post_RPG_Character_Environment_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  terrain_parser (::RPG_Character_Terrain_Type_pskel&);
+
+  void
+  climate_parser (::RPG_Character_Climate_Type_pskel&);
+
+  void
+  parsers (::RPG_Character_Terrain_Type_pskel& /* terrain */,
+           ::RPG_Character_Climate_Type_pskel& /* climate */);
+
+  // Constructor.
+  //
+  RPG_Character_Environment_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Character_Terrain_Type_pskel* terrain_parser_;
+  ::RPG_Character_Climate_Type_pskel* climate_parser_;
 };
 
 class RPG_Character_Organization_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -882,6 +938,98 @@ class RPG_Character_Organization_Type_pskel: public virtual ::xml_schema::string
 
   virtual RPG_Character_Organization
   post_RPG_Character_Organization_Type () = 0;
+};
+
+class RPG_Character_OrganizationStep_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  type (const RPG_Character_Organization&);
+
+  virtual void
+  range (const RPG_Chance_ValueRange&);
+
+  virtual RPG_Character_OrganizationStep
+  post_RPG_Character_OrganizationStep_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  type_parser (::RPG_Character_Organization_Type_pskel&);
+
+  void
+  range_parser (::RPG_Chance_ValueRange_Type_pskel&);
+
+  void
+  parsers (::RPG_Character_Organization_Type_pskel& /* type */,
+           ::RPG_Chance_ValueRange_Type_pskel& /* range */);
+
+  // Constructor.
+  //
+  RPG_Character_OrganizationStep_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Character_Organization_Type_pskel* type_parser_;
+  ::RPG_Chance_ValueRange_Type_pskel* range_parser_;
+};
+
+class RPG_Character_Organizations_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  step (const RPG_Character_OrganizationStep&);
+
+  virtual RPG_Character_Organizations
+  post_RPG_Character_Organizations_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  step_parser (::RPG_Character_OrganizationStep_Type_pskel&);
+
+  void
+  parsers (::RPG_Character_OrganizationStep_Type_pskel& /* step */);
+
+  // Constructor.
+  //
+  RPG_Character_Organizations_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Character_OrganizationStep_Type_pskel* step_parser_;
 };
 
 class RPG_Character_AlignmentCivic_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -1104,7 +1252,7 @@ class RPG_Character_MonsterPropertiesXML_Type_pskel: public ::xml_schema::comple
   environment (const RPG_Character_Environment&);
 
   virtual void
-  organization (const RPG_Character_Organization&);
+  organizations (const RPG_Character_Organizations&);
 
   virtual void
   challengeRating (unsigned char);
@@ -1116,7 +1264,7 @@ class RPG_Character_MonsterPropertiesXML_Type_pskel: public ::xml_schema::comple
   alignment (const RPG_Character_Alignment&);
 
   virtual void
-  advancement (const RPG_Character_MonsterAdvancement&);
+  advancements (const RPG_Character_MonsterAdvancement&);
 
   virtual void
   levelAdjustment (unsigned char);
@@ -1172,7 +1320,7 @@ class RPG_Character_MonsterPropertiesXML_Type_pskel: public ::xml_schema::comple
   environment_parser (::RPG_Character_Environment_Type_pskel&);
 
   void
-  organization_parser (::RPG_Character_Organization_Type_pskel&);
+  organizations_parser (::RPG_Character_Organizations_Type_pskel&);
 
   void
   challengeRating_parser (::xml_schema::unsigned_byte_pskel&);
@@ -1184,7 +1332,7 @@ class RPG_Character_MonsterPropertiesXML_Type_pskel: public ::xml_schema::comple
   alignment_parser (::RPG_Character_Alignment_Type_pskel&);
 
   void
-  advancement_parser (::RPG_Character_MonsterAdvancement_Type_pskel&);
+  advancements_parser (::RPG_Character_MonsterAdvancement_Type_pskel&);
 
   void
   levelAdjustment_parser (::xml_schema::unsigned_byte_pskel&);
@@ -1205,11 +1353,11 @@ class RPG_Character_MonsterPropertiesXML_Type_pskel: public ::xml_schema::comple
            ::RPG_Character_Skills_Type_pskel& /* skills */,
            ::RPG_Character_Feats_Type_pskel& /* feats */,
            ::RPG_Character_Environment_Type_pskel& /* environment */,
-           ::RPG_Character_Organization_Type_pskel& /* organization */,
+           ::RPG_Character_Organizations_Type_pskel& /* organizations */,
            ::xml_schema::unsigned_byte_pskel& /* challengeRating */,
            ::xml_schema::unsigned_byte_pskel& /* treasureModifier */,
            ::RPG_Character_Alignment_Type_pskel& /* alignment */,
-           ::RPG_Character_MonsterAdvancement_Type_pskel& /* advancement */,
+           ::RPG_Character_MonsterAdvancement_Type_pskel& /* advancements */,
            ::xml_schema::unsigned_byte_pskel& /* levelAdjustment */);
 
   // Constructor.
@@ -1244,11 +1392,11 @@ class RPG_Character_MonsterPropertiesXML_Type_pskel: public ::xml_schema::comple
   ::RPG_Character_Skills_Type_pskel* skills_parser_;
   ::RPG_Character_Feats_Type_pskel* feats_parser_;
   ::RPG_Character_Environment_Type_pskel* environment_parser_;
-  ::RPG_Character_Organization_Type_pskel* organization_parser_;
+  ::RPG_Character_Organizations_Type_pskel* organizations_parser_;
   ::xml_schema::unsigned_byte_pskel* challengeRating_parser_;
   ::xml_schema::unsigned_byte_pskel* treasureModifier_parser_;
   ::RPG_Character_Alignment_Type_pskel* alignment_parser_;
-  ::RPG_Character_MonsterAdvancement_Type_pskel* advancement_parser_;
+  ::RPG_Character_MonsterAdvancement_Type_pskel* advancements_parser_;
   ::xml_schema::unsigned_byte_pskel* levelAdjustment_parser_;
 };
 

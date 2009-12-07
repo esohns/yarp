@@ -45,11 +45,11 @@ class RPG_Character_Dictionary
   // init item dictionary
   void initCharacterDictionary(const std::string&); // filename
   const RPG_Character_MonsterProperties getMonsterProperties(const std::string&) const; // name of monster
-  void generateRandomEncounter(const unsigned int&,                  // # of different monster types
-                               const RPG_Character_Alignment&,       // alignment
-                               const RPG_Character_Environment&,     // environment
-                               const RPG_Character_Organizations_t&, // allowed organizations
-                               RPG_Character_Encounter_t&) const;    // return value: encounter
+  void generateRandomEncounter(const unsigned int&,                     // # of different monster types
+                               const RPG_Character_Alignment&,          // alignment
+                               const RPG_Character_Environment&,        // environment
+                               const RPG_Character_OrganizationList_t&, // allowed organizations
+                               RPG_Character_Encounter_t&) const;       // return value: encounter
 
   // debug info
   void dump() const;
@@ -74,8 +74,10 @@ class RPG_Character_Dictionary
   };
 
   // helper methods
-  void organizationToRoll(const RPG_Character_Organization&, // organization
-                          RPG_Chance_DiceRoll&) const;       // return value: roll
+  void organizationStepToRoll(const RPG_Character_OrganizationStep&, // organization step
+                              RPG_Chance_DiceRoll&) const;           // return value: roll
+  const bool environmentMatches(const RPG_Character_Environment&,        // a
+                                const RPG_Character_Environment&) const; // b
 
   RPG_Character_MonsterDictionary_t myMonsterDictionary;
   XSD_Error_Handler                 myXSDErrorHandler;

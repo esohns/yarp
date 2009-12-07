@@ -17,23 +17,46 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CHARACTER_COMMON_H
-#define RPG_CHARACTER_COMMON_H
 
+#ifndef RPG_CHARACTER_INCL_H
+#define RPG_CHARACTER_INCL_H
+
+#include "rpg_character_gender.h"
+#include "rpg_character_race.h"
+#include "rpg_character_metaclass.h"
+#include "rpg_character_subclass.h"
+#include "rpg_character_class.h"
+#include "rpg_character_attribute.h"
 #include "rpg_character_condition.h"
+#include "rpg_character_ability.h"
+#include "rpg_character_monstermetatype.h"
+#include "rpg_character_monstersubtype.h"
+#include "rpg_character_monstertype.h"
+#include "rpg_character_monsterarmorclass.h"
+#include "rpg_character_monsterweapon.h"
+#include "rpg_character_attackform.h"
+#include "rpg_character_monsterattackaction.h"
+#include "rpg_character_monsterattack.h"
+#include "rpg_character_size.h"
+#include "rpg_character_savingthrowmodifiers.h"
+#include "rpg_character_attributes.h"
+#include "rpg_character_skill.h"
+#include "rpg_character_skillvalue.h"
+#include "rpg_character_skills.h"
+#include "rpg_character_feat.h"
+#include "rpg_character_feats.h"
+#include "rpg_character_plane.h"
 #include "rpg_character_terrain.h"
-
-#include <vector>
-#include <set>
-
-// some useful types
-typedef std::vector<unsigned char> RPG_Character_BaseAttackBonus_t;
-typedef RPG_Character_BaseAttackBonus_t::const_iterator RPG_Character_BaseAttackBonusIterator_t;
-
-typedef std::set<RPG_Character_Condition> RPG_Character_Conditions_t;
-typedef RPG_Character_Conditions_t::const_iterator RPG_Character_ConditionsIterator_t;
-
-typedef std::set<RPG_Character_Terrain> RPG_Character_Terrains_t;
-typedef RPG_Character_Terrains_t::const_iterator RPG_Character_TerrainsIterator_t;
+#include "rpg_character_climate.h"
+#include "rpg_character_environment.h"
+#include "rpg_character_organization.h"
+#include "rpg_character_organizationstep.h"
+#include "rpg_character_organizations.h"
+#include "rpg_character_alignmentcivic.h"
+#include "rpg_character_alignmentethic.h"
+#include "rpg_character_alignment.h"
+#include "rpg_character_monsteradvancementstep.h"
+#include "rpg_character_monsteradvancement.h"
+#include "rpg_character_monsterpropertiesxml.h"
 
 #endif

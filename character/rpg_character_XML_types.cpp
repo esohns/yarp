@@ -410,6 +410,87 @@ RPG_Character_Feats_Type_pskel ()
 {
 }
 
+// RPG_Character_Environment_Type_pskel
+//
+
+void RPG_Character_Environment_Type_pskel::
+terrain_parser (::RPG_Character_Terrain_Type_pskel& p)
+{
+  this->terrain_parser_ = &p;
+}
+
+void RPG_Character_Environment_Type_pskel::
+climate_parser (::RPG_Character_Climate_Type_pskel& p)
+{
+  this->climate_parser_ = &p;
+}
+
+void RPG_Character_Environment_Type_pskel::
+parsers (::RPG_Character_Terrain_Type_pskel& terrain,
+         ::RPG_Character_Climate_Type_pskel& climate)
+{
+  this->terrain_parser_ = &terrain;
+  this->climate_parser_ = &climate;
+}
+
+RPG_Character_Environment_Type_pskel::
+RPG_Character_Environment_Type_pskel ()
+: terrain_parser_ (0),
+  climate_parser_ (0)
+{
+}
+
+// RPG_Character_OrganizationStep_Type_pskel
+//
+
+void RPG_Character_OrganizationStep_Type_pskel::
+type_parser (::RPG_Character_Organization_Type_pskel& p)
+{
+  this->type_parser_ = &p;
+}
+
+void RPG_Character_OrganizationStep_Type_pskel::
+range_parser (::RPG_Chance_ValueRange_Type_pskel& p)
+{
+  this->range_parser_ = &p;
+}
+
+void RPG_Character_OrganizationStep_Type_pskel::
+parsers (::RPG_Character_Organization_Type_pskel& type,
+         ::RPG_Chance_ValueRange_Type_pskel& range)
+{
+  this->type_parser_ = &type;
+  this->range_parser_ = &range;
+}
+
+RPG_Character_OrganizationStep_Type_pskel::
+RPG_Character_OrganizationStep_Type_pskel ()
+: type_parser_ (0),
+  range_parser_ (0)
+{
+}
+
+// RPG_Character_Organizations_Type_pskel
+//
+
+void RPG_Character_Organizations_Type_pskel::
+step_parser (::RPG_Character_OrganizationStep_Type_pskel& p)
+{
+  this->step_parser_ = &p;
+}
+
+void RPG_Character_Organizations_Type_pskel::
+parsers (::RPG_Character_OrganizationStep_Type_pskel& step)
+{
+  this->step_parser_ = &step;
+}
+
+RPG_Character_Organizations_Type_pskel::
+RPG_Character_Organizations_Type_pskel ()
+: step_parser_ (0)
+{
+}
+
 // RPG_Character_Alignment_Type_pskel
 //
 
@@ -585,9 +666,9 @@ environment_parser (::RPG_Character_Environment_Type_pskel& p)
 }
 
 void RPG_Character_MonsterPropertiesXML_Type_pskel::
-organization_parser (::RPG_Character_Organization_Type_pskel& p)
+organizations_parser (::RPG_Character_Organizations_Type_pskel& p)
 {
-  this->organization_parser_ = &p;
+  this->organizations_parser_ = &p;
 }
 
 void RPG_Character_MonsterPropertiesXML_Type_pskel::
@@ -609,9 +690,9 @@ alignment_parser (::RPG_Character_Alignment_Type_pskel& p)
 }
 
 void RPG_Character_MonsterPropertiesXML_Type_pskel::
-advancement_parser (::RPG_Character_MonsterAdvancement_Type_pskel& p)
+advancements_parser (::RPG_Character_MonsterAdvancement_Type_pskel& p)
 {
-  this->advancement_parser_ = &p;
+  this->advancements_parser_ = &p;
 }
 
 void RPG_Character_MonsterPropertiesXML_Type_pskel::
@@ -636,11 +717,11 @@ parsers (::xml_schema::string_pskel& name,
          ::RPG_Character_Skills_Type_pskel& skills,
          ::RPG_Character_Feats_Type_pskel& feats,
          ::RPG_Character_Environment_Type_pskel& environment,
-         ::RPG_Character_Organization_Type_pskel& organization,
+         ::RPG_Character_Organizations_Type_pskel& organizations,
          ::xml_schema::unsigned_byte_pskel& challengeRating,
          ::xml_schema::unsigned_byte_pskel& treasureModifier,
          ::RPG_Character_Alignment_Type_pskel& alignment,
-         ::RPG_Character_MonsterAdvancement_Type_pskel& advancement,
+         ::RPG_Character_MonsterAdvancement_Type_pskel& advancements,
          ::xml_schema::unsigned_byte_pskel& levelAdjustment)
 {
   this->name_parser_ = &name;
@@ -658,11 +739,11 @@ parsers (::xml_schema::string_pskel& name,
   this->skills_parser_ = &skills;
   this->feats_parser_ = &feats;
   this->environment_parser_ = &environment;
-  this->organization_parser_ = &organization;
+  this->organizations_parser_ = &organizations;
   this->challengeRating_parser_ = &challengeRating;
   this->treasureModifier_parser_ = &treasureModifier;
   this->alignment_parser_ = &alignment;
-  this->advancement_parser_ = &advancement;
+  this->advancements_parser_ = &advancements;
   this->levelAdjustment_parser_ = &levelAdjustment;
 }
 
@@ -683,11 +764,11 @@ RPG_Character_MonsterPropertiesXML_Type_pskel ()
   skills_parser_ (0),
   feats_parser_ (0),
   environment_parser_ (0),
-  organization_parser_ (0),
+  organizations_parser_ (0),
   challengeRating_parser_ (0),
   treasureModifier_parser_ (0),
   alignment_parser_ (0),
-  advancement_parser_ (0),
+  advancements_parser_ (0),
   levelAdjustment_parser_ (0)
 {
 }
@@ -1705,6 +1786,207 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
+// RPG_Character_Plane_Type_pskel
+//
+
+void RPG_Character_Plane_Type_pskel::
+post_RPG_Character_Plane_Type ()
+{
+}
+
+// RPG_Character_Environment_Type_pskel
+//
+
+void RPG_Character_Environment_Type_pskel::
+terrain (const RPG_Character_Terrain&)
+{
+}
+
+void RPG_Character_Environment_Type_pskel::
+climate (const RPG_Character_Climate&)
+{
+}
+
+bool RPG_Character_Environment_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "terrain" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->terrain_parser_;
+
+    if (this->terrain_parser_)
+      this->terrain_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "climate" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->climate_parser_;
+
+    if (this->climate_parser_)
+      this->climate_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Character_Environment_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "terrain" && ns == "urn:rpg")
+  {
+    if (this->terrain_parser_)
+      this->terrain (this->terrain_parser_->post_RPG_Character_Terrain_Type ());
+
+    return true;
+  }
+
+  if (n == "climate" && ns == "urn:rpg")
+  {
+    if (this->climate_parser_)
+      this->climate (this->climate_parser_->post_RPG_Character_Climate_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Character_OrganizationStep_Type_pskel
+//
+
+void RPG_Character_OrganizationStep_Type_pskel::
+type (const RPG_Character_Organization&)
+{
+}
+
+void RPG_Character_OrganizationStep_Type_pskel::
+range (const RPG_Chance_ValueRange&)
+{
+}
+
+bool RPG_Character_OrganizationStep_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
+
+    if (this->type_parser_)
+      this->type_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "range" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->range_parser_;
+
+    if (this->range_parser_)
+      this->range_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Character_OrganizationStep_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    if (this->type_parser_)
+      this->type (this->type_parser_->post_RPG_Character_Organization_Type ());
+
+    return true;
+  }
+
+  if (n == "range" && ns == "urn:rpg")
+  {
+    if (this->range_parser_)
+      this->range (this->range_parser_->post_RPG_Chance_ValueRange_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Character_Organizations_Type_pskel
+//
+
+void RPG_Character_Organizations_Type_pskel::
+step (const RPG_Character_OrganizationStep&)
+{
+}
+
+bool RPG_Character_Organizations_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "step" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->step_parser_;
+
+    if (this->step_parser_)
+      this->step_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Character_Organizations_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "step" && ns == "urn:rpg")
+  {
+    if (this->step_parser_)
+      this->step (this->step_parser_->post_RPG_Character_OrganizationStep_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
 // RPG_Character_Alignment_Type_pskel
 //
 
@@ -1977,7 +2259,7 @@ environment (const RPG_Character_Environment&)
 }
 
 void RPG_Character_MonsterPropertiesXML_Type_pskel::
-organization (const RPG_Character_Organization&)
+organizations (const RPG_Character_Organizations&)
 {
 }
 
@@ -1997,7 +2279,7 @@ alignment (const RPG_Character_Alignment&)
 }
 
 void RPG_Character_MonsterPropertiesXML_Type_pskel::
-advancement (const RPG_Character_MonsterAdvancement&)
+advancements (const RPG_Character_MonsterAdvancement&)
 {
 }
 
@@ -2166,12 +2448,12 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "organization" && ns == "urn:rpg")
+  if (n == "organizations" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->organization_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->organizations_parser_;
 
-    if (this->organization_parser_)
-      this->organization_parser_->pre ();
+    if (this->organizations_parser_)
+      this->organizations_parser_->pre ();
 
     return true;
   }
@@ -2206,12 +2488,12 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "advancement" && ns == "urn:rpg")
+  if (n == "advancements" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->advancement_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->advancements_parser_;
 
-    if (this->advancement_parser_)
-      this->advancement_parser_->pre ();
+    if (this->advancements_parser_)
+      this->advancements_parser_->pre ();
 
     return true;
   }
@@ -2356,10 +2638,10 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "organization" && ns == "urn:rpg")
+  if (n == "organizations" && ns == "urn:rpg")
   {
-    if (this->organization_parser_)
-      this->organization (this->organization_parser_->post_RPG_Character_Organization_Type ());
+    if (this->organizations_parser_)
+      this->organizations (this->organizations_parser_->post_RPG_Character_Organizations_Type ());
 
     return true;
   }
@@ -2388,10 +2670,10 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "advancement" && ns == "urn:rpg")
+  if (n == "advancements" && ns == "urn:rpg")
   {
-    if (this->advancement_parser_)
-      this->advancement (this->advancement_parser_->post_RPG_Character_MonsterAdvancement_Type ());
+    if (this->advancements_parser_)
+      this->advancements (this->advancements_parser_->post_RPG_Character_MonsterAdvancement_Type ());
 
     return true;
   }
