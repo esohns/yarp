@@ -78,6 +78,8 @@ class RPG_Character_Dictionary
                               RPG_Chance_DiceRoll&) const;           // return value: roll
   const bool environmentMatches(const RPG_Character_Environment&,        // a
                                 const RPG_Character_Environment&) const; // b
+  const bool alignmentMatches(const RPG_Character_Alignment&,        // a
+                              const RPG_Character_Alignment&) const; // b
 
   RPG_Character_MonsterDictionary_t myMonsterDictionary;
   XSD_Error_Handler                 myXSDErrorHandler;

@@ -74,6 +74,9 @@ class RPG_Character_Base
 
   const unsigned int getCurrentWealth() const;
 
+  // get a hint if this is a PC/NPC
+  virtual const bool isPlayerCharacter() const = 0;
+
   virtual void dump() const;
 
  protected:

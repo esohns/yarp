@@ -79,6 +79,13 @@ const RPG_Character_MonsterType RPG_Character_Monster::getMonsterType() const
   return myMonsterType;
 }
 
+const bool RPG_Character_Monster::isPlayerCharacter() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::isPlayerCharacter"));
+
+  return false;
+}
+
 void RPG_Character_Monster::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::dump"));

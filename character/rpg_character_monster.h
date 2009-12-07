@@ -48,6 +48,8 @@ class RPG_Character_Monster
 
   const RPG_Character_MonsterType getMonsterType() const;
 
+  virtual const bool isPlayerCharacter() const;
+
   virtual void dump() const;
 
  private:

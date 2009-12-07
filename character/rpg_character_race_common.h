@@ -24,6 +24,7 @@
 
 #include <bitset>
 
-typedef std::bitset<(RPG_CHARACTER_RACE_MAX - 1)> RPG_Character_PlayerRace;
+// typedef std::bitset<(RPG_CHARACTER_RACE_MAX - 1)> RPG_Character_PlayerRace;
+typedef std::bitset<6> RPG_Character_PlayerRace;
 
 #endif

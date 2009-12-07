@@ -22,6 +22,8 @@
 
 #include <rpg_character_base.h>
 
+#include <ace/Log_Msg.h>
+
 #include <set>
 
 struct RPG_Combat_CombatantSequenceElement
@@ -29,16 +31,37 @@ struct RPG_Combat_CombatantSequenceElement
   // needed for proper sorting...
   bool operator<(const RPG_Combat_CombatantSequenceElement& rhs_in) const
   {
+    // *IMPORTANT NOTE*: we want to sort it DESCENDING, so < is actually > !
     if (initiative > rhs_in.initiative)
-      return false;
+      return true;
 
-    return (initiative < rhs_in.initiative ? true
-                                           : (DEXModifier < rhs_in.DEXModifier));
+    return (initiative < rhs_in.initiative ? false
+                                           : (DEXModifier > rhs_in.DEXModifier));
   };
   bool operator==(const RPG_Combat_CombatantSequenceElement& rhs_in) const
   {
-    return ((initiative == rhs_in.initiative) &&
-            (DEXModifier == rhs_in.DEXModifier));
+    if (initiative == rhs_in.initiative)
+    {
+      if (DEXModifier == rhs_in.DEXModifier)
+      {
+        // *IMPORTANT NOTE*: a conflict between monsters doesn't matter !
+        // --> if either one is a PC, we have a conflict
+        ACE_ASSERT(handle && rhs_in.handle);
+        try
+        {
+          if (handle->isPlayerCharacter() ||
+              rhs_in.handle->isPlayerCharacter())
+            return true;
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Combat_CombatantSequenceElement::operator==, aborting\n")));
+        }
+      } // end IF
+    } // end IF
+
+    return false;
   };
   bool operator!=(const RPG_Combat_CombatantSequenceElement& rhs_in) const
   {

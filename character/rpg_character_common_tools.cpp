@@ -364,7 +364,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
                                          1,
                                          result);
   race = ACE_static_cast(RPG_Character_Race, result.front());
-  player_race.set(race);
+  player_race.set(race - 1);
 
   // step4: class
   RPG_Character_Class player_class;

@@ -245,10 +245,8 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
                            iterator->second.environment))
     {
       // check if alignment is appropriate
-      if (((iterator->second.alignment.civic == alignment_in.civic) ||
-           (iterator->second.alignment.civic == ALIGNMENTCIVIC_ANY)) &&
-          ((iterator->second.alignment.ethic == alignment_in.ethic) ||
-           (iterator->second.alignment.ethic == ALIGNMENTETHIC_ANY)))
+      if (alignmentMatches(alignment_in,
+                           iterator->second.alignment))
       {
         // check if organizations are appropriate
         RPG_Character_OrganizationList_t possible_organizations;
@@ -291,7 +289,7 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
        i < numDifferentMonsterTypes;
        i++)
   {
-    // step2a: choose random foe
+    // step2a: choose new random foe (from the set of possibilities)
     RPG_Character_EncounterIterator_t iterator;
     int choiceType = 0;
     do
@@ -307,7 +305,7 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
 
     // step2b: compute number of foes
     // step2ba: ...choose a random organization from the intersection
-    RPG_Character_MonsterDictionaryIterator_t iterator2 = myMonsterDictionary.find((*iterator).first);
+    RPG_Character_MonsterDictionaryIterator_t iterator2 = myMonsterDictionary.find(list[choiceType]);
     RPG_Character_OrganizationList_t possible_organizations;
     for (RPG_Character_OrganizationsIterator_t iterator3 = (*iterator2).second.organizations.begin();
          iterator3 != (*iterator2).second.organizations.end();
@@ -392,6 +390,7 @@ void RPG_Character_Dictionary::organizationStepToRoll(const RPG_Character_Organi
     case ORGANIZATION_GANG:
     case ORGANIZATION_TEAM: // 3-4 --> 1d2+2
     case ORGANIZATION_SQUAD: // 3-5, 11-20 + leaders
+    case ORGANIZATION_GROUP: // 4-4
     case ORGANIZATION_PACK: // 3-6 --> 1d4+2
     case ORGANIZATION_COLONY:
     case ORGANIZATION_FLOCK: // 5-8 --> 1d4+4
@@ -415,6 +414,72 @@ void RPG_Character_Dictionary::organizationStepToRoll(const RPG_Character_Organi
       break;
     }
   } // end SWITCH
+}
+
+const bool RPG_Character_Dictionary::alignmentMatches(const RPG_Character_Alignment& alignmentA_in,
+                                                      const RPG_Character_Alignment& alignmentB_in) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Dictionary::alignmentMatches"));
+
+  // check civics
+  switch (alignmentA_in.civic)
+  {
+    case ALIGNMENTCIVIC_ANY:
+    {
+      // OK
+      break;
+    }
+    default:
+    {
+      switch (alignmentB_in.civic)
+      {
+        case ALIGNMENTCIVIC_ANY:
+        {
+          // OK
+          break;
+        }
+        default:
+        {
+          if (alignmentA_in.civic != alignmentB_in.civic)
+            return false;
+
+          // OK
+          break;
+        }
+      } // end SWITCH
+    }
+  } // end SWITCH
+
+  // check ethics
+  switch (alignmentA_in.ethic)
+  {
+    case ALIGNMENTETHIC_ANY:
+    {
+      // OK
+      break;
+    }
+    default:
+    {
+      switch (alignmentB_in.ethic)
+      {
+        case ALIGNMENTETHIC_ANY:
+        {
+          // OK
+          break;
+        }
+        default:
+        {
+          if (alignmentA_in.ethic != alignmentB_in.ethic)
+            return false;
+
+          // OK
+          break;
+        }
+      } // end SWITCH
+    }
+  } // end SWITCH
+
+  return true;
 }
 
 const bool RPG_Character_Dictionary::environmentMatches(const RPG_Character_Environment& environmentA_in,

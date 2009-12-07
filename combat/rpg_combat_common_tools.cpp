@@ -94,11 +94,7 @@ void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& 
   } // end FOR
 
   // step1: go through the list and compute initiatives
-  int modifier = 0;
-  char initiative = 0;
-  std::pair<RPG_Combat_CombatantSequence_t::iterator, bool> preliminarySequencePosition;
-  RPG_Combat_CombatSequenceConflict_t conflict;
-  RPG_Combat_CombatSequenceConflicts_t conflicts;
+  RPG_Combat_CombatSequenceList_t preliminarySequence;
   for (RPG_Character_ListIterator_t iterator = listOfCombatants.begin();
        iterator != listOfCombatants.end();
        iterator++)
@@ -109,68 +105,68 @@ void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& 
     element.initiative = RPG_Chance_Common_Tools::getCheck(element.DEXModifier);
 //     element.handle = &(*iterator);
 
+    preliminarySequence.push_back(element);
+  } // end FOR
+
+  // step2: sort according to criteria: descending initiative / DEX modifier
+  std::pair<RPG_Combat_CombatantSequenceIterator_t, bool> preliminarySequencePosition;
+  RPG_Combat_CombatSequenceList_t conflicts;
+  for (RPG_Combat_CombatSequenceListIterator_t iterator = preliminarySequence.begin();
+       iterator != preliminarySequence.end();
+       iterator++)
+  {
     // make sure there is a PROPER sequence:
-    // if the set already contains this value we must resolve the conflict (see below)
-    // *IMPORTANT NOTE*: this algorithm implements the notion of fairness as appropriate between two HUMAN actors,
+    // if the set already contains this value we must resolve the conflict (again)
+    // *IMPORTANT NOTE*: this algorithm implements the notion of fairness as appropriate between two HUMAN/HUMAN-Monster actors,
     // i.e. we could have just re-rolled the current element until it doesn't clash. In a real-world situation this
     // would trigger discussions of WHO would re-roll...
-    preliminarySequencePosition = battleSequence_out.insert(element);
+    preliminarySequencePosition = battleSequence_out.insert(*iterator);
     if (preliminarySequencePosition.second == false)
     {
       // find conflicting element
-      RPG_Combat_CombatantSequenceIterator_t iterator2 = battleSequence_out.find(element);
+      RPG_Combat_CombatantSequenceIterator_t iterator2 = battleSequence_out.find(*iterator);
       ACE_ASSERT(iterator2 != battleSequence_out.end());
-      conflict = std::make_pair(element, *iterator2);
-      conflicts.push_back(conflict);
+
+      conflicts.push_back(*iterator);
+      conflicts.push_back(*iterator2);
 
       // erase conflicting element from the preliminary sequence
       battleSequence_out.erase(iterator2);
     } // end IF
   } // end FOR
 
-  // step2: resolve conflicts
+  // step3: resolve conflicts
+  // *TODO* there's a potential bug here for large armies: change Die Type D_20 --> D_100/D_1000/... ?
+  RPG_Combat_CombatSequenceListIterator_t iterator;
   while (!conflicts.empty())
   {
     // get first conflict
-    RPG_Combat_CombatSequenceConflictsIterator_t iterator = conflicts.begin();
+    iterator = conflicts.begin();
 
-    // re-roll initiative for both elements
+    // re-roll initiative
     // compute initiative: DEX check
-    (*iterator).first.initiative = RPG_Chance_Common_Tools::getCheck((*iterator).first.DEXModifier);
-    (*iterator).second.initiative = RPG_Chance_Common_Tools::getCheck((*iterator).second.DEXModifier);
+    (*iterator).initiative = RPG_Chance_Common_Tools::getCheck((*iterator).DEXModifier);
 
     // make sure there is a PROPER sequence:
     // if the set already contains this value we must resolve the conflict (again)
-    // *IMPORTANT NOTE*: this algorithm implements the notion of fairness as appropriate between two HUMAN actors,
+    // *IMPORTANT NOTE*: this algorithm implements the notion of fairness as appropriate between two HUMAN/HUMAN-Monster actors,
     // i.e. we could have just re-rolled the current element until it doesn't clash. In a real-world situation this
     // would trigger discussions of WHO would re-roll...
-    preliminarySequencePosition = battleSequence_out.insert((*iterator).first);
+    preliminarySequencePosition = battleSequence_out.insert(*iterator);
     if (preliminarySequencePosition.second == false)
     {
       // find conflicting element
-      RPG_Combat_CombatantSequenceIterator_t iterator2 = battleSequence_out.find((*iterator).first);
+      RPG_Combat_CombatantSequenceIterator_t iterator2 = battleSequence_out.find(*iterator);
       ACE_ASSERT(iterator2 != battleSequence_out.end());
-      conflict = std::make_pair((*iterator).first, *iterator2);
-      conflicts.push_back(conflict);
+
+      conflicts.push_back(*iterator);
+      conflicts.push_back(*iterator2);
 
       // erase conflicting element from the preliminary sequence
       battleSequence_out.erase(iterator2);
     } // end IF
 
-    preliminarySequencePosition = battleSequence_out.insert((*iterator).second);
-    if (preliminarySequencePosition.second == false)
-    {
-      // find conflicting element
-      RPG_Combat_CombatantSequenceIterator_t iterator2 = battleSequence_out.find((*iterator).second);
-      ACE_ASSERT(iterator2 != battleSequence_out.end());
-      conflict = std::make_pair((*iterator).second, *iterator2);
-      conflicts.push_back(conflict);
-
-      // erase conflicting element from the preliminary sequence
-      battleSequence_out.erase(iterator2);
-    } // end IF
-
-    // OK: handled one conflict
+    // OK: handled this conflict
     conflicts.erase(iterator);
   } // end WHILE
 

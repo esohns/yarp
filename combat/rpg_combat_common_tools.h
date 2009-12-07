@@ -28,6 +28,8 @@
 
 #include <ace/Global_Macros.h>
 
+#include <vector>
+
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
@@ -49,10 +51,8 @@ class RPG_Combat_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools& operator=(const RPG_Combat_Common_Tools&));
 
   // helper types
-  typedef std::pair<RPG_Combat_CombatantSequenceElement,
-                    RPG_Combat_CombatantSequenceElement> RPG_Combat_CombatSequenceConflict_t;
-  typedef std::vector<RPG_Combat_CombatSequenceConflict_t> RPG_Combat_CombatSequenceConflicts_t;
-  typedef RPG_Combat_CombatSequenceConflicts_t::iterator RPG_Combat_CombatSequenceConflictsIterator_t;
+  typedef std::vector<RPG_Combat_CombatantSequenceElement> RPG_Combat_CombatSequenceList_t;
+  typedef RPG_Combat_CombatSequenceList_t::iterator RPG_Combat_CombatSequenceListIterator_t;
 
   static const bool isMonsterGroupDeadOrHelpless(const RPG_Character_MonsterGroupInstance_t&); // group instance
   static const bool isCharacterDeadOrHelpless(const RPG_Character_Base*); // character handle

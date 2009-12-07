@@ -13,10 +13,10 @@ include_HEADERS = rpg_character_XML_parser.h rpg_character_XML_parser_base.h \
 	rpg_character_monsteradvancementstep.h rpg_character_monsterarmorclass.h rpg_character_monsterattack.h \
 	rpg_character_monsterattackaction.h rpg_character_monstermetatype.h rpg_character_monsterpropertiesxml.h \
 	rpg_character_monstersubtype.h rpg_character_monstertype.h rpg_character_monsterweapon.h \
-	rpg_character_organization.h rpg_character_organizationstep.h rpg_character_plane.h \
-	rpg_character_player.h rpg_character_player_base.h rpg_character_player_common.h \
-	rpg_character_race.h rpg_character_race_common.h rpg_character_savingthrowmodifiers.h \
-	rpg_character_size.h rpg_character_skill.h rpg_character_skills.h \
+	rpg_character_organization.h rpg_character_organizationslaverstep.h rpg_character_organizationstep.h \
+	rpg_character_plane.h rpg_character_player.h rpg_character_player_base.h \
+	rpg_character_player_common.h rpg_character_race.h rpg_character_race_common.h \
+	rpg_character_savingthrowmodifiers.h rpg_character_size.h rpg_character_skill.h rpg_character_skills.h \
 	rpg_character_skills_common.h rpg_character_skills_common_tools.h rpg_character_subclass.h \
 	rpg_character_terrain.h
 
