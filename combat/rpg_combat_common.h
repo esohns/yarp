@@ -107,8 +107,8 @@ struct RPG_Combat_CombatantSequenceElement
     return !operator==(rhs_in);
   }
 
-  char                      initiative;
-  short int                 DEXModifier;
+  char                initiative;
+  short int           DEXModifier;
   const RPG_Character_Base* handle;
 };
 
@@ -130,7 +130,8 @@ struct RPG_Combat_CombatantSequenceElement
 // *IMPORTANT NOTE*: sort in DESCENDING order !
 typedef std::set<RPG_Combat_CombatantSequenceElement,
                  std::greater<RPG_Combat_CombatantSequenceElement> > RPG_Combat_CombatantSequence_t;
-typedef RPG_Combat_CombatantSequence_t::const_iterator RPG_Combat_CombatantSequenceIterator_t;
+typedef RPG_Combat_CombatantSequence_t::iterator RPG_Combat_CombatantSequenceIterator_t;
+typedef RPG_Combat_CombatantSequence_t::const_iterator RPG_Combat_CombatantSequenceConstIterator_t;
 // typedef RPG_Combat_CombatantSequence_t::const_reverse_iterator RPG_Combat_CombatantSequenceRIterator_t;
 
 #endif

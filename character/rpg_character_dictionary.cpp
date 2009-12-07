@@ -235,6 +235,9 @@ void RPG_Character_Dictionary::generateRandomEncounter(const unsigned int& numDi
   // init result
   encounter_out.clear();
 
+  // sanity check
+  ACE_ASSERT(numDifferentMonsterTypes <= myMonsterDictionary.size());
+
   RPG_Character_MonsterList_t list;
   for (RPG_Character_MonsterDictionaryIterator_t iterator = myMonsterDictionary.begin();
        iterator != myMonsterDictionary.end();

@@ -122,6 +122,12 @@ const unsigned int RPG_Character_Player_Base::getExperience() const
   return myExperience;
 }
 
+void RPG_Character_Player_Base::attack(RPG_Character_Base* const foe_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::attack"));
+
+}
+
 const bool RPG_Character_Player_Base::isPlayerCharacter() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::isPlayerCharacter"));

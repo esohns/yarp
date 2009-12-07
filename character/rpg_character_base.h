@@ -74,6 +74,9 @@ class RPG_Character_Base
 
   const unsigned int getCurrentWealth() const;
 
+  // attack a foe
+  virtual void attack(RPG_Character_Base* const) = 0;
+
   // get a hint if this is a PC/NPC
   virtual const bool isPlayerCharacter() const = 0;
 

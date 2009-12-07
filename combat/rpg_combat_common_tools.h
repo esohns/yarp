@@ -42,6 +42,7 @@ class RPG_Combat_Common_Tools
   static void getCombatantSequence(const RPG_Character_Party_t&,     // party
                                    const RPG_Character_Monsters_t&,  // monsters
                                    RPG_Combat_CombatantSequence_t&); // battle sequence
+  static void performCombatRound(const RPG_Combat_CombatantSequence_t&); // battle sequence
 
  private:
   // safety measures
@@ -55,7 +56,7 @@ class RPG_Combat_Common_Tools
   typedef RPG_Combat_CombatSequenceList_t::iterator RPG_Combat_CombatSequenceListIterator_t;
 
   static const bool isMonsterGroupDeadOrHelpless(const RPG_Character_MonsterGroupInstance_t&); // group instance
-  static const bool isCharacterDeadOrHelpless(const RPG_Character_Base*); // character handle
+  static const bool isCharacterDeadOrHelpless(const RPG_Character_Base* const); // character handle
 };
 
 #endif

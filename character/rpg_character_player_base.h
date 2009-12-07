@@ -52,6 +52,8 @@ class RPG_Character_Player_Base
   // compute dynamically from class/XP
   const unsigned char getLevel() const;
 
+  virtual void attack(RPG_Character_Base* const); // foe
+
   virtual const bool isPlayerCharacter() const;
 
   virtual void dump() const;

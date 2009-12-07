@@ -25,13 +25,13 @@
     </general>
     <run>
       <runarguments>
-        <combat_simulator>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -n 10 -t</combat_simulator>
+        <combat_simulator>-i ./../../item/rpg_item.xml -m ./../../character/rpg_character.xml -n 10 -t</combat_simulator>
       </runarguments>
       <debugarguments>
-        <combat_simulator>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -n 10 -t</combat_simulator>
+        <combat_simulator>-i ./../../item/rpg_item.xml -m ./../../character/rpg_character.xml -n 10 -t</combat_simulator>
       </debugarguments>
       <cwd>
-        <combat_simulator>/home/unfv/Projects/RPG/combat/./</combat_simulator>
+        <combat_simulator>/home/unfv/Projects/RPG/combat/debug</combat_simulator>
       </cwd>
       <mainprogram>/home/unfv/Projects/RPG/combat/debug/.libs/combat_simulator</mainprogram>
       <programargs>-i ./../../item/rpg_item.xml -m ./../../character/rpg_character.xml -n 10 -t</programargs>

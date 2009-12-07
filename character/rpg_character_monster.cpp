@@ -79,6 +79,12 @@ const RPG_Character_MonsterType RPG_Character_Monster::getMonsterType() const
   return myMonsterType;
 }
 
+void RPG_Character_Monster::attack(RPG_Character_Base* const foe_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::attack"));
+
+}
+
 const bool RPG_Character_Monster::isPlayerCharacter() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::isPlayerCharacter"));

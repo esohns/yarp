@@ -1,25 +1,31 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="6" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_monster_common_tools.h" >
-   <View0 Encoding="" line="57" Type="Source" />
+ <DocsAndViews NumberOfDocuments="8" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character.xml" >
+   <View0 Encoding="UTF-8" line="3151" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_common_tools.h" >
-   <View0 Encoding="" line="0" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character.xsd" >
+   <View0 Encoding="" line="264" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_dictionary.cpp" >
-   <View0 Encoding="" line="348" Type="Source" />
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_player.h" >
+   <View0 Encoding="" line="45" Type="Source" />
   </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_monster_common.h" >
-   <View0 Encoding="" line="63" Type="Source" />
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_player_base.h" >
+   <View0 Encoding="" line="54" Type="Source" />
   </Doc3>
-  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_monster_common_tools.cpp" >
-   <View0 Encoding="" line="143" Type="Source" />
+  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_base.h" >
+   <View0 Encoding="" line="78" Type="Source" />
   </Doc4>
-  <Doc5 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_common_tools.cpp" >
-   <View0 Encoding="" line="58" Type="Source" />
+  <Doc5 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_player_base.cpp" >
+   <View0 Encoding="" line="125" Type="Source" />
   </Doc5>
+  <Doc6 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_monster.h" >
+   <View0 Encoding="" line="50" Type="Source" />
+  </Doc6>
+  <Doc7 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_monster.cpp" >
+   <View0 Encoding="" line="81" Type="Source" />
+  </Doc7>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
@@ -27,29 +33,16 @@
     <breakpoint0 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser_base.cpp:124" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint0>
-    <breakpoint1 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:192" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint1 location="/home/unfv/Projects/RPG/item/rpg_item_weapon_base.cpp:60" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint1>
-    <breakpoint2 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:557" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
-     <tracedExpressions/>
-    </breakpoint2>
-    <breakpoint3 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:374" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
-     <tracedExpressions/>
-    </breakpoint3>
-    <breakpoint4 location="/home/unfv/Projects/RPG/item/rpg_item_weapon_base.cpp:60" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
-     <tracedExpressions/>
-    </breakpoint4>
-    <breakpoint5 location="/home/unfv/Projects/RPG/character/rpg_character_XML_parser.cpp:1059" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
-     <tracedExpressions/>
-    </breakpoint5>
    </breakpointList>
    <showInternalCommands value="0" />
   </kdevdebugger>
   <kdevfilelist>
    <projectview name="RPG_character Monsters XML" >
-    <file line="3" url="rpg_character.xsd" col="0" encoding="" />
-    <file line="0" url="rpg_character_monster_common_tools.cpp" col="0" encoding="" />
-    <file line="0" url="rpg_character_common.h" col="0" encoding="" />
+    <file line="653" url="rpg_character.xsd" col="36" encoding="" />
+    <file line="88" url="rpg_character.xml" col="56" encoding="" />
    </projectview>
    <defaultview name="RPG_character Monsters XML" />
   </kdevfilelist>
