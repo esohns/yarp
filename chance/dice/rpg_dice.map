@@ -1,0 +1,12 @@
+namespace urn:rpg
+{
+  include "rpg_dice_incl.h"
+
+  include "rpg_dice_dietype.h";
+  include "rpg_dice_roll.h";
+  include "rpg_dice_valuerange.h";
+
+  RPG_Dice_DieType_Type    RPG_Dice_DieType;
+  RPG_Dice_Roll_Type       RPG_Dice_Roll;
+  RPG_Dice_ValueRange_Type RPG_Dice_ValueRange;
+}

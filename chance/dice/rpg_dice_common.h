@@ -17,24 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef RPG_DICE_COMMON_H
+#define RPG_DICE_COMMON_H
 
-#ifndef RPG_CHANCE_DICEROLL_H
-#define RPG_CHANCE_DICEROLL_H
+#include "rpg_dice_dietype.h"
+#include "rpg_dice_roll.h"
 
 #include <vector>
 
-struct RPG_Chance_DiceRoll
-{
-  unsigned int numDice;
-  RPG_Chance_DiceType typeDice;
-  int modifier;
-};
-
 // some convenient types...
-typedef std::vector<RPG_Chance_DiceRoll> RPG_Chance_DiceRolls_t;
-typedef RPG_Chance_DiceRolls_t::const_iterator RPG_Chance_DiceRollsIterator_t;
+typedef std::vector<RPG_Dice_Roll> RPG_Dice_Rolls_t;
+typedef RPG_Dice_Rolls_t::const_iterator RPG_Dice_RollsIterator_t;
 
-typedef std::vector<int> RPG_Chance_DiceRollResult_t;
-typedef RPG_Chance_DiceRollResult_t::const_iterator RPG_Chance_DiceRollResultIterator_t;
+typedef std::vector<int> RPG_Dice_RollResult_t;
+typedef RPG_Dice_RollResult_t::const_iterator RPG_Dice_RollResultIterator_t;
 
 #endif

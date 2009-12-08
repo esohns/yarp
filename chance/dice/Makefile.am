@@ -3,33 +3,33 @@ METASOURCES = AUTO
 # set the include path found by configure
 INCLUDES = -I$(top_srcdir)/dice
 
-include_HEADERS = rpg_chance_dice.h rpg_chance_dice_XML_parser.h \
-	rpg_chance_dice_XML_parser_base.h rpg_chance_dice_XML_types.h rpg_chance_dice_common_tools.h \
-	rpg_chance_diceroll.h rpg_chance_dicetype.h rpg_chance_valuerange.h
+include_HEADERS = rpg_dice.h rpg_dice_XML_parser.h rpg_dice_XML_parser_base.h \
+	rpg_dice_XML_types.h rpg_dice_common.h rpg_dice_common_tools.h rpg_dice_dietype.h \
+	rpg_dice_incl.h rpg_dice_roll.h rpg_dice_valuerange.h
 
-lib_LTLIBRARIES = libRPG_Chance_Dice.la
+lib_LTLIBRARIES = libRPG_Dice.la
 
-libRPG_Chance_Dice_la_LDFLAGS = -L/usr/local/lib
-libRPG_Chance_Dice_la_SOURCES = rpg_XMLSchema.h rpg_chance_dice.cpp \
-	rpg_chance_dice.h rpg_chance_dice_XML_parser.cpp rpg_chance_dice_XML_parser.h \
-	rpg_chance_dice_XML_parser_base.cpp rpg_chance_dice_XML_parser_base.h rpg_chance_dice_XML_types.cpp \
-	rpg_chance_dice_XML_types.h rpg_chance_dice_common_tools.cpp rpg_chance_dice_common_tools.h \
-	rpg_chance_diceroll.h rpg_chance_dicetype.h rpg_chance_valuerange.h
+libRPG_Dice_la_LDFLAGS = -L/usr/local/lib
+libRPG_Dice_la_SOURCES = rpg_XMLSchema.h rpg_dice.cpp \
+	rpg_dice.h rpg_dice_XML_parser.cpp rpg_dice_XML_parser.h \
+	rpg_dice_XML_parser_base.cpp rpg_dice_XML_parser_base.h rpg_dice_XML_types.cpp \
+	rpg_dice_XML_types.h rpg_dice_common_tools.cpp rpg_dice_common_tools.h \
+	rpg_dice_roll.h rpg_dice_dietype.h rpg_dice_valuerange.h
 
-bin_PROGRAMS = chance_dice chance_rangeToRoll
+bin_PROGRAMS = dice rangeToRoll
 
 # the library search path / libraries
-chance_dice_LDADD = $(top_builddir)/dice/libRPG_Chance_Dice.la -lACE -lpthread \
+dice_LDADD = $(top_builddir)/dice/libRPG_Dice.la -lACE -lpthread \
 	-lxerces-c
-chance_dice_SOURCES = main.cpp
-chance_dice_LDFLAGS = -L/usr/local/lib
+dice_SOURCES = main.cpp
+dice_LDFLAGS = -L/usr/local/lib
 
-chance_rangeToRoll_LDADD = $(top_builddir)/dice/libRPG_Chance_Dice.la -lACE -lpthread \
+rangeToRoll_LDADD = $(top_builddir)/dice/libRPG_Dice.la -lACE -lpthread \
 	-lxerces-c
-chance_rangeToRoll_SOURCES = rangeToRoll.cpp
-chance_rangeToRoll_LDFLAGS = -L/usr/local/lib
+rangeToRoll_SOURCES = rangeToRoll.cpp
+rangeToRoll_LDFLAGS = -L/usr/local/lib
 
 noinst_HEADERS = rpg_XMLSchema.h
 
-bindata_DATA = rpg_chance_dice.xsd
+bindata_DATA = rpg_dice.xsd
 bindatadir = $(bindir)

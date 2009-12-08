@@ -22,8 +22,9 @@
 #include <config.h>
 #endif
 
-#include "rpg_chance_dice.h"
-#include "rpg_chance_dice_common_tools.h"
+#include "rpg_dice.h"
+#include "rpg_dice_common.h"
+#include "rpg_dice_common_tools.h"
 
 #include <ace/OS.h>
 #include <ace/ACE.h>
@@ -51,7 +52,7 @@ void print_usage()
 const bool process_arguments(const int argc_in,
                              ACE_TCHAR* argv_in[], // cannot be const...
                              bool& printAllResults_out,
-                             RPG_Chance_ValueRange& valueRange_out,
+                             RPG_Dice_ValueRange& valueRange_out,
                              bool& traceInformation_out,
                              bool& printVersionAndExit_out)
 {
@@ -142,8 +143,8 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
-void do_work(const RPG_Chance_ValueRange& valueRange_in,
-             RPG_Chance_DiceRolls_t& rolls_out)
+void do_work(const RPG_Dice_ValueRange& valueRange_in,
+             RPG_Dice_Rolls_t& rolls_out)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -151,13 +152,13 @@ void do_work(const RPG_Chance_ValueRange& valueRange_in,
   rolls_out.clear();
 
   // step0: init framework
-  RPG_Chance_Dice_Common_Tools::initStringConversionTables();
+  RPG_Dice_Common_Tools::initStringConversionTables();
 
   // we use a (rather simplistic) greedy algorithm to compute this
   // step1a: make sure begin <= end
   ACE_ASSERT(valueRange_in.begin <= valueRange_in.end);
   // step1b: find SMALLEST type of die LARGER than range.end to start with
-  RPG_Chance_DiceType current_dieType = D_100;
+  RPG_Dice_DieType current_dieType = D_100;
   if (valueRange_in.end < D_100)
   {
     while (current_dieType > valueRange_in.end)
@@ -175,11 +176,11 @@ void do_work(const RPG_Chance_ValueRange& valueRange_in,
 //                ACE_TEXT("current die type: \"%s\"\n"),
 //                RPG_Chance_Dice_Common_Tools::diceTypeToString(current_dieType).c_str()));
 
-    RPG_Chance_DiceRoll result;
+    RPG_Dice_Roll result;
     result.numDice = 0;
     result.typeDice = current_dieType;
     result.modifier = 0;
-    RPG_Chance_ValueRange range = valueRange_in;
+    RPG_Dice_ValueRange range = valueRange_in;
     do
     {
       if ((current_dieType == D_0) ||
@@ -299,7 +300,7 @@ int ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  RPG_Chance_ValueRange valueRange;
+  RPG_Dice_ValueRange valueRange;
   valueRange.begin = 0;
   valueRange.end = 0;
   bool printAllResults     = false;
@@ -371,7 +372,7 @@ int ACE_TMAIN(int argc,
   timer.start();
 
   // step2: do actual work
-  RPG_Chance_DiceRolls_t combinations;
+  RPG_Dice_Rolls_t combinations;
   do_work(valueRange,
           combinations);
 
@@ -379,18 +380,18 @@ int ACE_TMAIN(int argc,
 
   // print results
   // header line
-  std::cout << ACE_TEXT("results ") << RPG_Chance_Dice_Common_Tools::rangeToString(valueRange) << ACE_TEXT(": ") << std::endl;
+  std::cout << ACE_TEXT("results ") << RPG_Dice_Common_Tools::rangeToString(valueRange) << ACE_TEXT(": ") << std::endl;
   std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
 
   bool perfect_match = true;
   int index = 1;
-  RPG_Chance_ValueRange range;
-  for (RPG_Chance_DiceRollsIterator_t iterator = combinations.begin();
+  RPG_Dice_ValueRange range;
+  for (RPG_Dice_RollsIterator_t iterator = combinations.begin();
        iterator != combinations.end();
        iterator++, index++)
   {
     perfect_match = true;
-    RPG_Chance_Dice::diceRollToRange(*iterator, range);
+    RPG_Dice::rollToRange(*iterator, range);
     if ((range.begin != valueRange.begin) || (range.end != valueRange.end))
     {
       // not a perfect match...
@@ -401,7 +402,7 @@ int ACE_TMAIN(int argc,
       } // end IF
     } // end IF
 
-    std::cout << ACE_TEXT("[") << index << (perfect_match ? ACE_TEXT("*]") : ACE_TEXT("]")) << RPG_Chance_Dice_Common_Tools::rollToString(*iterator) << ACE_TEXT(" : ") << RPG_Chance_Dice_Common_Tools::rangeToString(range) << std::endl;
+    std::cout << ACE_TEXT("[") << index << (perfect_match ? ACE_TEXT("*]") : ACE_TEXT("]")) << RPG_Dice_Common_Tools::rollToString(*iterator) << ACE_TEXT(" : ") << RPG_Dice_Common_Tools::rangeToString(range) << std::endl;
   } // end FOR
 
 //   std::string working_time_string;

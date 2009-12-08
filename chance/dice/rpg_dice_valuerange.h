@@ -17,35 +17,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CHANCE_DICE_COMMON_TOOLS_H
-#define RPG_CHANCE_DICE_COMMON_TOOLS_H
 
-#include "rpg_chance_dicetype.h"
-#include "rpg_chance_diceroll.h"
-#include "rpg_chance_valuerange.h"
+#ifndef RPG_DICE_VALUERANGE_H
+#define RPG_DICE_VALUERANGE_H
 
-#include <ace/Global_Macros.h>
-
-#include <string>
-
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
-class RPG_Chance_Dice_Common_Tools
+struct RPG_Dice_ValueRange
 {
- public:
-  // init string tables
-  static void initStringConversionTables();
-
-  static const std::string rollToString(const RPG_Chance_DiceRoll&); // roll
-  static const std::string rangeToString(const RPG_Chance_ValueRange&); // range
-
- private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Dice_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Chance_Dice_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Dice_Common_Tools(const RPG_Chance_Dice_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Dice_Common_Tools& operator=(const RPG_Chance_Dice_Common_Tools&));
+  int begin;
+  int end;
 };
 
 #endif

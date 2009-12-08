@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX___RPG_CHANCE_DICE_XML_TYPES_H
-#define CXX___RPG_CHANCE_DICE_XML_TYPES_H
+#ifndef CXX_____DICE_RPG_DICE_XML_TYPES_H
+#define CXX_____DICE_RPG_DICE_XML_TYPES_H
 
 // Begin prologue.
 //
@@ -49,9 +49,9 @@
 
 // Forward declarations
 //
-class RPG_Chance_DiceType_Type_pskel;
-class RPG_Chance_DiceRoll_Type_pskel;
-class RPG_Chance_ValueRange_Type_pskel;
+class RPG_Dice_DieType_Type_pskel;
+class RPG_Dice_Roll_Type_pskel;
+class RPG_Dice_ValueRange_Type_pskel;
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -61,13 +61,15 @@ class RPG_Chance_ValueRange_Type_pskel;
 #define XSD_CXX_PARSER_USE_CHAR
 #endif
 
-#include "rpg_XMLSchema.h"
+#include <rpg_XMLSchema.h>
 
-#include "rpg_chance_valuerange.h"
-#include "rpg_chance_dicetype.h"
-#include "rpg_chance_diceroll.h"
+#include "rpg_dice_incl.h"
 
-class RPG_Chance_DiceType_Type_pskel: public virtual ::xml_schema::string_pskel
+#include "rpg_dice_valuerange.h"
+#include "rpg_dice_roll.h"
+#include "rpg_dice_dietype.h"
+
+class RPG_Dice_DieType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -75,11 +77,11 @@ class RPG_Chance_DiceType_Type_pskel: public virtual ::xml_schema::string_pskel
   // virtual void
   // pre ();
 
-  virtual RPG_Chance_DiceType
-  post_RPG_Chance_DiceType_Type () = 0;
+  virtual RPG_Dice_DieType
+  post_RPG_Dice_DieType_Type () = 0;
 };
 
-class RPG_Chance_DiceRoll_Type_pskel: public ::xml_schema::complex_content
+class RPG_Dice_Roll_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -91,13 +93,13 @@ class RPG_Chance_DiceRoll_Type_pskel: public ::xml_schema::complex_content
   numDice (unsigned int);
 
   virtual void
-  typeDice (const RPG_Chance_DiceType&);
+  typeDice (const RPG_Dice_DieType&);
 
   virtual void
   modifier (long long);
 
-  virtual RPG_Chance_DiceRoll
-  post_RPG_Chance_DiceRoll_Type () = 0;
+  virtual RPG_Dice_Roll
+  post_RPG_Dice_Roll_Type () = 0;
 
   // Parser construction API.
   //
@@ -105,19 +107,19 @@ class RPG_Chance_DiceRoll_Type_pskel: public ::xml_schema::complex_content
   numDice_parser (::xml_schema::unsigned_int_pskel&);
 
   void
-  typeDice_parser (::RPG_Chance_DiceType_Type_pskel&);
+  typeDice_parser (::RPG_Dice_DieType_Type_pskel&);
 
   void
   modifier_parser (::xml_schema::integer_pskel&);
 
   void
   parsers (::xml_schema::unsigned_int_pskel& /* numDice */,
-           ::RPG_Chance_DiceType_Type_pskel& /* typeDice */,
+           ::RPG_Dice_DieType_Type_pskel& /* typeDice */,
            ::xml_schema::integer_pskel& /* modifier */);
 
   // Constructor.
   //
-  RPG_Chance_DiceRoll_Type_pskel ();
+  RPG_Dice_Roll_Type_pskel ();
 
   // Implementation.
   //
@@ -133,11 +135,11 @@ class RPG_Chance_DiceRoll_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::xml_schema::unsigned_int_pskel* numDice_parser_;
-  ::RPG_Chance_DiceType_Type_pskel* typeDice_parser_;
+  ::RPG_Dice_DieType_Type_pskel* typeDice_parser_;
   ::xml_schema::integer_pskel* modifier_parser_;
 };
 
-class RPG_Chance_ValueRange_Type_pskel: public ::xml_schema::complex_content
+class RPG_Dice_ValueRange_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -151,8 +153,8 @@ class RPG_Chance_ValueRange_Type_pskel: public ::xml_schema::complex_content
   virtual void
   end (long long);
 
-  virtual RPG_Chance_ValueRange
-  post_RPG_Chance_ValueRange_Type () = 0;
+  virtual RPG_Dice_ValueRange
+  post_RPG_Dice_ValueRange_Type () = 0;
 
   // Parser construction API.
   //
@@ -168,7 +170,7 @@ class RPG_Chance_ValueRange_Type_pskel: public ::xml_schema::complex_content
 
   // Constructor.
   //
-  RPG_Chance_ValueRange_Type_pskel ();
+  RPG_Dice_ValueRange_Type_pskel ();
 
   // Implementation.
   //
@@ -194,4 +196,4 @@ class RPG_Chance_ValueRange_Type_pskel: public ::xml_schema::complex_content
 //
 // End epilogue.
 
-#endif // CXX___RPG_CHANCE_DICE_XML_TYPES_H
+#endif // CXX_____DICE_RPG_DICE_XML_TYPES_H

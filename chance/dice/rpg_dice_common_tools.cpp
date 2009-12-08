@@ -17,55 +17,55 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_chance_dice_common_tools.h"
+#include "rpg_dice_common_tools.h"
 
 #include <ace/Log_Msg.h>
 
 #include <sstream>
 
 // init statics
-RPG_Chance_DiceTypeToStringTable_t RPG_Chance_DiceTypeHelper::myRPG_Chance_DiceTypeToStringTable;
+RPG_Dice_DieTypeToStringTable_t RPG_Dice_DieTypeHelper::myRPG_Dice_DieTypeToStringTable;
 
-void RPG_Chance_Dice_Common_Tools::initStringConversionTables()
+void RPG_Dice_Common_Tools::initStringConversionTables()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice_Common_Tools::initStringConversionTables"));
+  ACE_TRACE(ACE_TEXT("RPG_Dice_Common_Tools::initStringConversionTables"));
 
-  RPG_Chance_DiceTypeHelper::init();
+  RPG_Dice_DieTypeHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Chance_Dice_Common_Tools: initialized string conversion table...\n")));
+             ACE_TEXT("RPG_Dice_Common_Tools: initialized string conversion table...\n")));
 }
 
-const std::string RPG_Chance_Dice_Common_Tools::rollToString(const RPG_Chance_DiceRoll& diceRoll_in)
+const std::string RPG_Dice_Common_Tools::rollToString(const RPG_Dice_Roll& roll_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice_Common_Tools::rollToString"));
+  ACE_TRACE(ACE_TEXT("RPG_Dice_Common_Tools::rollToString"));
 
   std::string result;
   std::stringstream str;
 
-  str << diceRoll_in.numDice;
+  str << roll_in.numDice;
   result += str.str();
-  result += RPG_Chance_DiceTypeHelper::RPG_Chance_DiceTypeToString(diceRoll_in.typeDice);
+  result += RPG_Dice_DieTypeHelper::RPG_Dice_DieTypeToString(roll_in.typeDice);
 
-  if (diceRoll_in.modifier == 0)
+  if (roll_in.modifier == 0)
   {
     return result;
   } // end IF
-  else if (diceRoll_in.modifier > 0)
+  else if (roll_in.modifier > 0)
   {
     result += ACE_TEXT_ALWAYS_CHAR("+");
   } // end IF
   str.str(ACE_TEXT_ALWAYS_CHAR(""));
-  str << diceRoll_in.modifier;
+  str << roll_in.modifier;
   result += str.str();
 
   return result;
 }
 
-const std::string RPG_Chance_Dice_Common_Tools::rangeToString(const RPG_Chance_ValueRange& range_in)
+const std::string RPG_Dice_Common_Tools::rangeToString(const RPG_Dice_ValueRange& range_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice_Common_Tools::rangeToString"));
+  ACE_TRACE(ACE_TEXT("RPG_Dice_Common_Tools::rangeToString"));
 
   std::string result;
   std::stringstream str;

@@ -22,9 +22,9 @@
 #include <config.h>
 #endif
 
-#include "rpg_chance_dicetype.h"
-#include "rpg_chance_diceroll.h"
-#include "rpg_chance_dice.h"
+#include "rpg_dice_dietype.h"
+#include "rpg_dice_roll.h"
+#include "rpg_dice.h"
 
 #include <ace/OS.h>
 #include <ace/ACE.h>
@@ -64,7 +64,7 @@ void print_usage()
 
 const bool process_arguments(const int argc_in,
                              ACE_TCHAR* argv_in[], // cannot be const...
-                             RPG_Chance_DiceRoll& rollSpecs_out,
+                             RPG_Dice_Roll& rollSpecs_out,
                              unsigned int& numRolls_out,
                              bool& includeSortedResult_out,
                              bool& traceInformation_out,
@@ -107,7 +107,7 @@ const bool process_arguments(const int argc_in,
           case D_20:
           case D_100:
           {
-            rollSpecs_out.typeDice = ACE_static_cast(RPG_Chance_DiceType,
+            rollSpecs_out.typeDice = ACE_static_cast(RPG_Dice_DieType,
                                                      temp);
 
             break;
@@ -183,7 +183,7 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
-void do_work(const RPG_Chance_DiceRoll& rollSpecs_in,
+void do_work(const RPG_Dice_Roll& rollSpecs_in,
              const unsigned int& numRolls_in,
              const bool& includeSortedResult_in)
 {
@@ -192,28 +192,28 @@ void do_work(const RPG_Chance_DiceRoll& rollSpecs_in,
   // step1: init randomization
   try
   {
-    RPG_Chance_Dice::init();
+    RPG_Dice::init();
   }
   catch(...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Chance_Dice::init, returning\n")));
+               ACE_TEXT("caught exception in RPG_Dice::init, returning\n")));
 
     return;
   }
 
   // step2a: generate some random numbers...
-  RPG_Chance_DiceRollResult_t result;
+  RPG_Dice_RollResult_t result;
   try
   {
-    RPG_Chance_Dice::generateRandomNumbers(rollSpecs_in.typeDice, // see enum
+    RPG_Dice::generateRandomNumbers(rollSpecs_in.typeDice, // see enum
                                            numRolls_in,
                                            result);
   }
   catch(...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Chance_Dice::generateRandomNumbers, returning\n")));
+               ACE_TEXT("caught exception in RPG_Dice::generateRandomNumbers, returning\n")));
 
     return;
   }
@@ -224,7 +224,7 @@ void do_work(const RPG_Chance_DiceRoll& rollSpecs_in,
   std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
 
   std::ostringstream converter;
-  for (RPG_Chance_DiceRollResultIterator_t iter = result.begin();
+  for (RPG_Dice_RollResultIterator_t iter = result.begin();
        iter != result.end();
        iter++)
   {
@@ -246,7 +246,7 @@ void do_work(const RPG_Chance_DiceRoll& rollSpecs_in,
               result.end());
 
 //     converter.str(std::string()); // "reset" it...
-    for (RPG_Chance_DiceRollResultIterator_t iter = result.begin();
+    for (RPG_Dice_RollResultIterator_t iter = result.begin();
          iter != result.end();
          iter++)
     {
@@ -263,14 +263,14 @@ void do_work(const RPG_Chance_DiceRoll& rollSpecs_in,
   result.clear();
   try
   {
-    RPG_Chance_Dice::simulateDiceRoll(rollSpecs_in,
-                                      numRolls_in,
-                                      result);
+    RPG_Dice::simulateRoll(rollSpecs_in,
+                           numRolls_in,
+                           result);
   }
   catch(...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Chance_Dice::simulateDiceRoll, returning\n")));
+               ACE_TEXT("caught exception in RPG_Dice::simulateRoll, returning\n")));
 
     return;
   }
@@ -281,7 +281,7 @@ void do_work(const RPG_Chance_DiceRoll& rollSpecs_in,
   std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
 
 //   std::ostringstream converter;
-  for (RPG_Chance_DiceRollResultIterator_t iter = result.begin();
+  for (RPG_Dice_RollResultIterator_t iter = result.begin();
        iter != result.end();
        iter++)
   {
@@ -303,7 +303,7 @@ void do_work(const RPG_Chance_DiceRoll& rollSpecs_in,
               result.end());
 
 //     converter.str(std::string()); // "reset" it...
-    for (RPG_Chance_DiceRollResultIterator_t iter = result.begin();
+    for (RPG_Dice_RollResultIterator_t iter = result.begin();
          iter != result.end();
          iter++)
     {
@@ -382,7 +382,7 @@ int ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  RPG_Chance_DiceRoll rollSpecs;
+  RPG_Dice_Roll rollSpecs;
   rollSpecs.typeDice       = D_6;
   rollSpecs.numDice        = 1;
   rollSpecs.modifier       = 0;

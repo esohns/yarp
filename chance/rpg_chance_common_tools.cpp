@@ -19,25 +19,25 @@
  ***************************************************************************/
 #include "rpg_chance_common_tools.h"
 
-#include "rpg_chance_dicetype.h"
-#include "rpg_chance_diceroll.h"
-#include "rpg_chance_dice.h"
+#include "rpg_dice_dietype.h"
+#include "rpg_dice_roll.h"
+#include "rpg_dice.h"
 
 #include <ace/Log_Msg.h>
 
 const int RPG_Chance_Common_Tools::getCheck(const short int& modifier_in,
-                                            const RPG_Chance_DiceType& diceType_in)
+                                            const RPG_Dice_DieType& dieType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Chance_Common_Tools::getCheck"));
 
-  RPG_Chance_DiceRoll roll;
+  RPG_Dice_Roll roll;
   roll.numDice = 1;
-  roll.typeDice = diceType_in;
+  roll.typeDice = dieType_in;
   roll.modifier = modifier_in;
-  RPG_Chance_DiceRollResult_t result;
-  RPG_Chance_Dice::simulateDiceRoll(roll,
-                                    1,
-                                    result);
+  RPG_Dice_RollResult_t result;
+  RPG_Dice::simulateRoll(roll,
+                         1,
+                         result);
 
   return result.front();
 }

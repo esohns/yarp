@@ -17,29 +17,51 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CHANCE_COMMON_TOOLS_H
-#define RPG_CHANCE_COMMON_TOOLS_H
+#ifndef RPG_DICE_XML_PARSER_H
+#define RPG_DICE_XML_PARSER_H
 
-#include <rpg_dice_dietype.h>
-
-#include <ace/Global_Macros.h>
+#include "rpg_dice_XML_parser_base.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Chance_Common_Tools
+class RPG_Dice_DieType_Type
+ : public RPG_Dice_DieType_Type_pimpl
 {
  public:
-  // perform a standard die roll check
-  static const int getCheck(const short int&,                // modifier
-                            const RPG_Dice_DieType& = D_20); // type of dice
+//   virtual void pre();
+  virtual RPG_Dice_DieType post_RPG_Dice_DieType_Type();
+};
+
+class RPG_Dice_Roll_Type
+ : public RPG_Dice_Roll_Type_pimpl
+{
+ public:
+  RPG_Dice_Roll_Type();
+
+//   virtual void pre();
+  virtual void numDice(unsigned int);
+  virtual void typeDice(const RPG_Dice_DieType&);
+  virtual void modifier(long long);
+  virtual RPG_Dice_Roll post_RPG_Dice_Roll_Type();
 
  private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Chance_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Common_Tools(const RPG_Chance_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Common_Tools& operator=(const RPG_Chance_Common_Tools&));
+  RPG_Dice_Roll myCurrentRoll;
+};
+
+class RPG_Dice_ValueRange_Type
+ : public RPG_Dice_ValueRange_Type_pimpl
+{
+ public:
+  RPG_Dice_ValueRange_Type();
+
+//   virtual void pre();
+  virtual void begin(long long);
+  virtual void end(long long);
+  virtual RPG_Dice_ValueRange post_RPG_Dice_ValueRange_Type();
+
+ private:
+  RPG_Dice_ValueRange myCurrentValueRange;
 };
 
 #endif

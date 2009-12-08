@@ -36,32 +36,32 @@
 //
 // End prologue.
 
-#include "rpg_chance_dice_XML_types.h"
+#include <rpg_dice_XML_types.h>
 
-// RPG_Chance_DiceRoll_Type_pskel
+// RPG_Dice_Roll_Type_pskel
 //
 
-void RPG_Chance_DiceRoll_Type_pskel::
+void RPG_Dice_Roll_Type_pskel::
 numDice_parser (::xml_schema::unsigned_int_pskel& p)
 {
   this->numDice_parser_ = &p;
 }
 
-void RPG_Chance_DiceRoll_Type_pskel::
-typeDice_parser (::RPG_Chance_DiceType_Type_pskel& p)
+void RPG_Dice_Roll_Type_pskel::
+typeDice_parser (::RPG_Dice_DieType_Type_pskel& p)
 {
   this->typeDice_parser_ = &p;
 }
 
-void RPG_Chance_DiceRoll_Type_pskel::
+void RPG_Dice_Roll_Type_pskel::
 modifier_parser (::xml_schema::integer_pskel& p)
 {
   this->modifier_parser_ = &p;
 }
 
-void RPG_Chance_DiceRoll_Type_pskel::
+void RPG_Dice_Roll_Type_pskel::
 parsers (::xml_schema::unsigned_int_pskel& numDice,
-         ::RPG_Chance_DiceType_Type_pskel& typeDice,
+         ::RPG_Dice_DieType_Type_pskel& typeDice,
          ::xml_schema::integer_pskel& modifier)
 {
   this->numDice_parser_ = &numDice;
@@ -69,30 +69,30 @@ parsers (::xml_schema::unsigned_int_pskel& numDice,
   this->modifier_parser_ = &modifier;
 }
 
-RPG_Chance_DiceRoll_Type_pskel::
-RPG_Chance_DiceRoll_Type_pskel ()
+RPG_Dice_Roll_Type_pskel::
+RPG_Dice_Roll_Type_pskel ()
 : numDice_parser_ (0),
   typeDice_parser_ (0),
   modifier_parser_ (0)
 {
 }
 
-// RPG_Chance_ValueRange_Type_pskel
+// RPG_Dice_ValueRange_Type_pskel
 //
 
-void RPG_Chance_ValueRange_Type_pskel::
+void RPG_Dice_ValueRange_Type_pskel::
 begin_parser (::xml_schema::integer_pskel& p)
 {
   this->begin_parser_ = &p;
 }
 
-void RPG_Chance_ValueRange_Type_pskel::
+void RPG_Dice_ValueRange_Type_pskel::
 end_parser (::xml_schema::integer_pskel& p)
 {
   this->end_parser_ = &p;
 }
 
-void RPG_Chance_ValueRange_Type_pskel::
+void RPG_Dice_ValueRange_Type_pskel::
 parsers (::xml_schema::integer_pskel& begin,
          ::xml_schema::integer_pskel& end)
 {
@@ -100,32 +100,32 @@ parsers (::xml_schema::integer_pskel& begin,
   this->end_parser_ = &end;
 }
 
-RPG_Chance_ValueRange_Type_pskel::
-RPG_Chance_ValueRange_Type_pskel ()
+RPG_Dice_ValueRange_Type_pskel::
+RPG_Dice_ValueRange_Type_pskel ()
 : begin_parser_ (0),
   end_parser_ (0)
 {
 }
 
-// RPG_Chance_DiceRoll_Type_pskel
+// RPG_Dice_Roll_Type_pskel
 //
 
-void RPG_Chance_DiceRoll_Type_pskel::
+void RPG_Dice_Roll_Type_pskel::
 numDice (unsigned int)
 {
 }
 
-void RPG_Chance_DiceRoll_Type_pskel::
-typeDice (const RPG_Chance_DiceType&)
+void RPG_Dice_Roll_Type_pskel::
+typeDice (const RPG_Dice_DieType&)
 {
 }
 
-void RPG_Chance_DiceRoll_Type_pskel::
+void RPG_Dice_Roll_Type_pskel::
 modifier (long long)
 {
 }
 
-bool RPG_Chance_DiceRoll_Type_pskel::
+bool RPG_Dice_Roll_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
@@ -168,7 +168,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Chance_DiceRoll_Type_pskel::
+bool RPG_Dice_Roll_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
@@ -186,7 +186,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "typeDice" && ns == "urn:rpg")
   {
     if (this->typeDice_parser_)
-      this->typeDice (this->typeDice_parser_->post_RPG_Chance_DiceType_Type ());
+      this->typeDice (this->typeDice_parser_->post_RPG_Dice_DieType_Type ());
 
     return true;
   }
@@ -202,20 +202,20 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-// RPG_Chance_ValueRange_Type_pskel
+// RPG_Dice_ValueRange_Type_pskel
 //
 
-void RPG_Chance_ValueRange_Type_pskel::
+void RPG_Dice_ValueRange_Type_pskel::
 begin (long long)
 {
 }
 
-void RPG_Chance_ValueRange_Type_pskel::
+void RPG_Dice_ValueRange_Type_pskel::
 end (long long)
 {
 }
 
-bool RPG_Chance_ValueRange_Type_pskel::
+bool RPG_Dice_ValueRange_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
@@ -248,7 +248,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Chance_ValueRange_Type_pskel::
+bool RPG_Dice_ValueRange_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {

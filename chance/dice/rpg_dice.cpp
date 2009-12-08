@@ -17,28 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_chance_dice.h"
+#include "rpg_dice.h"
 
-#include "rpg_chance_dice_common_tools.h"
+#include "rpg_dice_common_tools.h"
 
+#include <ace/Time_Value.h>
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
+#include <ace/Assert.h>
 
-RPG_Chance_Dice::RPG_Chance_Dice()
+#include <stdlib.h>
+#include <algorithm>
+#include <string>
+
+void RPG_Dice::init()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice::RPG_Chance_Dice"));
-
-}
-
-RPG_Chance_Dice::~RPG_Chance_Dice()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice::~RPG_Chance_Dice"));
-
-}
-
-void RPG_Chance_Dice::init()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice::init"));
+  ACE_TRACE(ACE_TEXT("RPG_Dice::init"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("initializing random seed (RAND_MAX = %d)...\n"),
@@ -57,11 +51,11 @@ void RPG_Chance_Dice::init()
              ACE_TEXT("initializing random seed...DONE\n")));
 }
 
-void RPG_Chance_Dice::generateRandomNumbers(const unsigned int& range_in,
-                                            const unsigned int& numRolls_in,
-                                            RPG_Chance_DiceRollResult_t& results_out)
+void RPG_Dice::generateRandomNumbers(const unsigned int& range_in,
+                                     const unsigned int& numRolls_in,
+                                     RPG_Dice_RollResult_t& results_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice::generateRandomNumbers"));
+  ACE_TRACE(ACE_TEXT("RPG_Dice::generateRandomNumbers"));
 
   // init result(s)
   results_out.clear();
@@ -80,17 +74,17 @@ void RPG_Chance_Dice::generateRandomNumbers(const unsigned int& range_in,
   } // end FOR
 }
 
-void RPG_Chance_Dice::simulateDiceRoll(const RPG_Chance_DiceRoll& rollSpecs_in,
-                                       const unsigned int& numRolls_in,
-                                       RPG_Chance_DiceRollResult_t& results_out)
+void RPG_Dice::simulateRoll(const RPG_Dice_Roll& rollSpecs_in,
+                            const unsigned int& numRolls_in,
+                            RPG_Dice_RollResult_t& results_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice::simulateDiceRoll"));
+  ACE_TRACE(ACE_TEXT("RPG_Dice::simulateRoll"));
 
   // init result(s)
   results_out.clear();
 
 //   // debug info
-//   std::string die = RPG_Chance_Dice_Common_Tools::diceType2String(rollSpecs_in.typeDice);
+//   std::string die = RPG_Dice_Common_Tools::diceType2String(rollSpecs_in.typeDice);
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("generating %d roll(s) of %d%s (modifier: %d)...\n"),
 //              numRolls_in,
@@ -121,30 +115,30 @@ void RPG_Chance_Dice::simulateDiceRoll(const RPG_Chance_DiceRoll& rollSpecs_in,
   } // end FOR
 }
 
-void RPG_Chance_Dice::diceRollToRange(const RPG_Chance_DiceRoll& diceRoll_in,
-                                      RPG_Chance_ValueRange& valueRange_out)
+void RPG_Dice::rollToRange(const RPG_Dice_Roll& roll_in,
+                           RPG_Dice_ValueRange& valueRange_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice::diceRollToRange"));
+  ACE_TRACE(ACE_TEXT("RPG_Dice::rollToRange"));
 
-  valueRange_out.begin = diceRoll_in.modifier + (diceRoll_in.typeDice != D_0 ? diceRoll_in.numDice : 0);
-  valueRange_out.end = diceRoll_in.modifier + (diceRoll_in.numDice * diceRoll_in.typeDice);
+  valueRange_out.begin = roll_in.modifier + (roll_in.typeDice != D_0 ? roll_in.numDice : 0);
+  valueRange_out.end = roll_in.modifier + (roll_in.numDice * roll_in.typeDice);
 }
 
-void RPG_Chance_Dice::rangeToDiceRoll(const RPG_Chance_ValueRange& valueRange_in,
-                                      RPG_Chance_DiceRoll& diceRoll_out)
+void RPG_Dice::rangeToRoll(const RPG_Dice_ValueRange& valueRange_in,
+                           RPG_Dice_Roll& roll_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice::rangeToDiceRoll"));
+  ACE_TRACE(ACE_TEXT("RPG_Dice::rangeToRoll"));
 
   // init result
-  diceRoll_out.numDice = 0;
-  diceRoll_out.typeDice = D_0;
-  diceRoll_out.modifier = 0;
+  roll_out.numDice = 0;
+  roll_out.typeDice = D_0;
+  roll_out.modifier = 0;
 
   ACE_ASSERT(valueRange_in.begin <= valueRange_in.end);
 
-  RPG_Chance_Dice_SortedRolls_t sortedRolls;
+  RPG_Dice_SortedRolls_t sortedRolls;
   // step1b: find SMALLEST type of die LARGER than range.end to start with
-  RPG_Chance_DiceType current_dieType = D_100;
+  RPG_Dice_DieType current_dieType = D_100;
   if (valueRange_in.end < D_100)
   {
     while (current_dieType > valueRange_in.end)
@@ -160,17 +154,17 @@ void RPG_Chance_Dice::rangeToDiceRoll(const RPG_Chance_ValueRange& valueRange_in
 //     // debug info
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("current die type: \"%s\"\n"),
-//                RPG_Chance_Dice_Common_Tools::diceTypeToString(current_dieType).c_str()));
+//                RPG_Dice_Common_Tools::diceTypeToString(current_dieType).c_str()));
 
-    RPG_Chance_DiceRoll result;
+    RPG_Dice_Roll result;
     result.numDice = 0;
     result.typeDice = current_dieType;
     result.modifier = 0;
-    RPG_Chance_ValueRange range = valueRange_in;
+    RPG_Dice_ValueRange range = valueRange_in;
     do
     {
       if ((current_dieType == D_0) ||
-           ((range.begin == 0) && (range.end == 0))) // handle special (corner) case gracefully...
+          ((range.begin == 0) && (range.end == 0))) // handle special (corner) case gracefully...
       {
         // we're (already) at D_0 --> compute (static) modifier
         break;
@@ -226,43 +220,43 @@ void RPG_Chance_Dice::rangeToDiceRoll(const RPG_Chance_ValueRange& valueRange_in
   } while (true);
 
   // return the best result (top of the list !)
-  diceRoll_out = (*sortedRolls.begin()).roll;
+  roll_out = (*sortedRolls.begin()).roll;
 
   // debug info: test if we have found a match
-  RPG_Chance_ValueRange possible_range;
-  diceRollToRange(diceRoll_out, possible_range);
+  RPG_Dice_ValueRange possible_range;
+  rollToRange(roll_out, possible_range);
   unsigned int distance = distanceRangeToRange(possible_range, valueRange_in);
   if (distance)
   {
     ACE_DEBUG((LM_WARNING,
                ACE_TEXT("failed to match range: %s, best result was: %s (distance: %d)...\n"),
-               RPG_Chance_Dice_Common_Tools::rangeToString(valueRange_in).c_str(),
-               RPG_Chance_Dice_Common_Tools::rollToString(diceRoll_out).c_str(),
+               RPG_Dice_Common_Tools::rangeToString(valueRange_in).c_str(),
+               RPG_Dice_Common_Tools::rollToString(roll_out).c_str(),
                distance));
 
     // print all results...
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("results for range \"%s\"\n"),
-               RPG_Chance_Dice_Common_Tools::rangeToString(valueRange_in).c_str()));
+               RPG_Dice_Common_Tools::rangeToString(valueRange_in).c_str()));
     bool perfect_match = true;
     int index = 1;
-    RPG_Chance_ValueRange range;
+    RPG_Dice_ValueRange range;
     std::string index_string, range_string;
-    for (RPG_Chance_Dice_SortedRollsIterator_t iterator = sortedRolls.begin();
+    for (RPG_Dice_SortedRollsIterator_t iterator = sortedRolls.begin();
          iterator != sortedRolls.end();
          iterator++, index++)
     {
       perfect_match = true;
       index_string.clear();
       range_string.clear();
-      RPG_Chance_Dice::diceRollToRange((*iterator).roll, range);
+      rollToRange((*iterator).roll, range);
       distance = distanceRangeToRange(range, valueRange_in);
       if (distance)
       {
        // not a perfect match...
         perfect_match = false;
         range_string = ACE_TEXT(" --> ");
-        range_string += RPG_Chance_Dice_Common_Tools::rangeToString(range);
+        range_string += RPG_Dice_Common_Tools::rangeToString(range);
       } // end IF
 
       index_string = ACE_TEXT("[");
@@ -270,16 +264,16 @@ void RPG_Chance_Dice::rangeToDiceRoll(const RPG_Chance_ValueRange& valueRange_in
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("%s: \"%s\"%s\n"),
                  index_string.c_str(),
-                 RPG_Chance_Dice_Common_Tools::rollToString((*iterator).roll).c_str(),
+                 RPG_Dice_Common_Tools::rollToString((*iterator).roll).c_str(),
                  range_string.c_str()));
     } // end FOR
   } // end IF
 }
 
-const unsigned int RPG_Chance_Dice::distanceRangeToRange(const RPG_Chance_ValueRange& rangeA_in,
-                                                         const RPG_Chance_ValueRange& rangeB_in)
+const unsigned int RPG_Dice::distanceRangeToRange(const RPG_Dice_ValueRange& rangeA_in,
+                                                  const RPG_Dice_ValueRange& rangeB_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Dice::distanceRangeToRange"));
+  ACE_TRACE(ACE_TEXT("RPG_Dice::distanceRangeToRange"));
 
   return (::abs(rangeA_in.begin - rangeB_in.begin) +
           ::abs(rangeA_in.end - rangeB_in.end));

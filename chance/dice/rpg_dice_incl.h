@@ -17,51 +17,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CHANCE_DICE_XML_PARSER_H
-#define RPG_CHANCE_DICE_XML_PARSER_H
 
-#include "rpg_chance_dice_XML_parser_base.h"
+#ifndef RPG_DICE_INCL_H
+#define RPG_DICE_INCL_H
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
-class RPG_Chance_DiceType_Type
- : public RPG_Chance_DiceType_Type_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Chance_DiceType post_RPG_Chance_DiceType_Type();
-};
-
-class RPG_Chance_DiceRoll_Type
- : public RPG_Chance_DiceRoll_Type_pimpl
-{
- public:
-  RPG_Chance_DiceRoll_Type();
-
-//   virtual void pre();
-  virtual void numDice(unsigned int);
-  virtual void typeDice(const RPG_Chance_DiceType&);
-  virtual void modifier(long long);
-  virtual RPG_Chance_DiceRoll post_RPG_Chance_DiceRoll_Type();
-
- private:
-  RPG_Chance_DiceRoll myCurrentDiceRoll;
-};
-
-class RPG_Chance_ValueRange_Type
- : public RPG_Chance_ValueRange_Type_pimpl
-{
- public:
-  RPG_Chance_ValueRange_Type();
-
-//   virtual void pre();
-  virtual void begin(long long);
-  virtual void end(long long);
-  virtual RPG_Chance_ValueRange post_RPG_Chance_ValueRange_Type();
-
- private:
-  RPG_Chance_ValueRange myCurrentValueRange;
-};
+#include "rpg_dice_dietype.h"
+#include "rpg_dice_roll.h"
+#include "rpg_dice_valuerange.h"
 
 #endif

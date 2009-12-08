@@ -18,13 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_CHANCE_VALUERANGE_H
-#define RPG_CHANCE_VALUERANGE_H
+#ifndef RPG_DICE_ROLL_H
+#define RPG_DICE_ROLL_H
 
-struct RPG_Chance_ValueRange
+struct RPG_Dice_Roll
 {
-  int begin;
-  int end;
+  unsigned int numDice;
+  RPG_Dice_DieType typeDice;
+  int modifier;
 };
 
 #endif

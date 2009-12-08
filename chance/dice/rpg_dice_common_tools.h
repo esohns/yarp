@@ -17,29 +17,35 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CHANCE_COMMON_TOOLS_H
-#define RPG_CHANCE_COMMON_TOOLS_H
+#ifndef RPG_DICE_COMMON_TOOLS_H
+#define RPG_DICE_COMMON_TOOLS_H
 
-#include <rpg_dice_dietype.h>
+#include "rpg_dice_dietype.h"
+#include "rpg_dice_roll.h"
+#include "rpg_dice_valuerange.h"
 
 #include <ace/Global_Macros.h>
+
+#include <string>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Chance_Common_Tools
+class RPG_Dice_Common_Tools
 {
  public:
-  // perform a standard die roll check
-  static const int getCheck(const short int&,                // modifier
-                            const RPG_Dice_DieType& = D_20); // type of dice
+  // init string tables
+  static void initStringConversionTables();
+
+  static const std::string rollToString(const RPG_Dice_Roll&); // roll
+  static const std::string rangeToString(const RPG_Dice_ValueRange&); // range
 
  private:
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Chance_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Common_Tools(const RPG_Chance_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Chance_Common_Tools& operator=(const RPG_Chance_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Dice_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Dice_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Dice_Common_Tools(const RPG_Dice_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Dice_Common_Tools& operator=(const RPG_Dice_Common_Tools&));
 };
 
 #endif
