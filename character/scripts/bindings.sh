@@ -8,12 +8,22 @@
 #// 20/02/06 | soh | Creation.
 #//%%%FILE%%%////////////////////////////////////////////////////////////////////
 
+# C++ "glue code"
+/usr/local/bin/XML2CppCode -e -f ./../rpg_character.xsd -i -o ./.. -p ./../templates/h -s
+/usr/local/bin/XML2CppCode -e -f ./../monster/rpg_monster.xsd -i -o ./../monster -p ./../templates/h -s
+
 # XML Parser
 # generate "XMLSchema" namespace include file
 /usr/bin/xsdcxx cxx-parser --char-type char --output-dir ./.. --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ../rpg_XMLSchema.xsd
 
+# generate "XMLSchema" namespace include file
+/usr/bin/xsdcxx cxx-parser --char-type char --output-dir ./../monster --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ../rpg_XMLSchema.xsd
+
 # generate include/implementation
 xsdcxx cxx-parser --type-map ../rpg_character.map --char-type char --output-dir ./.. --namespace-map urn:rpg= --xml-parser xerces --generate-noop-impl --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --impl-file-suffix _XML_parser_base --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc ../rpg_character.xsd
+
+# generate include/implementation
+xsdcxx cxx-parser --type-map ../monster/rpg_monster.map --char-type char --output-dir ./../monster --namespace-map urn:rpg= --xml-parser xerces --generate-noop-impl --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --impl-file-suffix _XML_parser_base --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc ../monster/rpg_monster.xsd
 
 # # XML Tree
 # # generate schema files

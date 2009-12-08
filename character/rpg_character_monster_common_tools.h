@@ -22,9 +22,9 @@
 
 #include <vector>
 
-#include <rpg_chance_dicetype.h>
-#include <rpg_chance_diceroll.h>
-#include <rpg_chance_valuerange.h>
+#include <rpg_dice_dietype.h>
+#include <rpg_dice_roll.h>
+#include <rpg_dice_valuerange.h>
 
 #include "rpg_character_monstermetatype.h"
 #include "rpg_character_monstersubtype.h"

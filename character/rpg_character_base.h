@@ -34,6 +34,8 @@
 #include "rpg_character_equipment.h"
 #include "rpg_character_common.h"
 
+#include <rpg_combat_damage.h>
+
 #include <ace/Global_Macros.h>
 
 #include <string>
@@ -65,17 +67,18 @@ class RPG_Character_Base
                 unsigned char&) const;      // result: value (0: doesn't exist)
 
   const bool hasFeat(const RPG_Character_Feat&) const; // feat
-
   const bool hasAbility(const RPG_Character_Ability&) const; // ability
+  const bool hasCondition(const RPG_Character_Condition&) const; // condition
 
   const unsigned short int getNumTotalHitPoints() const;
   const unsigned short int getNumCurrentHitPoints() const;
-  const bool hasCondition(const RPG_Character_Condition&) const; // condition
-
   const unsigned int getCurrentWealth() const;
 
-  // attack a foe
-  virtual void attack(RPG_Character_Base* const) = 0;
+  // sustain some damage (melee, magic, ...)
+  void sustainDamage(const RPG_Combat_Damage&);
+
+  // we just got wiser...
+  virtual void gainExperience(const unsigned int&) = 0; // XP
 
   // get a hint if this is a PC/NPC
   virtual const bool isPlayerCharacter() const = 0;

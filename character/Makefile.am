@@ -7,9 +7,9 @@ include_HEADERS = rpg_character_XML_parser.h rpg_character_XML_parser_base.h \
 	rpg_character_class_common.h rpg_character_climate.h rpg_character_common.h \
 	rpg_character_common_tools.h rpg_character_condition.h rpg_character_dictionary.h \
 	rpg_character_environment.h rpg_character_equipment.h rpg_character_equipment_common.h \
-	rpg_character_feat.h rpg_character_feats.h rpg_character_gender.h rpg_character_inventory.h \
-	rpg_character_inventory_common.h rpg_character_metaclass.h rpg_character_monster.h \
-	rpg_character_monster_common.h rpg_character_monsteradvancement.h \
+	rpg_character_feat.h rpg_character_feats.h rpg_character_gender.h rpg_character_incl.h \
+	rpg_character_inventory.h rpg_character_inventory_common.h rpg_character_metaclass.h \
+	rpg_character_monster.h rpg_character_monster_common.h rpg_character_monsteradvancement.h \
 	rpg_character_monsteradvancementstep.h rpg_character_monsterarmorclass.h rpg_character_monsterattack.h \
 	rpg_character_monsterattackaction.h rpg_character_monstermetatype.h rpg_character_monsterpropertiesxml.h \
 	rpg_character_monstersubtype.h rpg_character_monstertype.h rpg_character_monsterweapon.h \
@@ -27,13 +27,13 @@ libRPG_Character_la_SOURCES = rpg_XMLSchema.h rpg_character_XML_parser.cpp \
 	rpg_character_XML_types.cpp rpg_character_XML_types.h rpg_character_base.cpp rpg_character_base.h \
 	rpg_character_class_common.cpp rpg_character_class_common.h rpg_character_climate.h \
 	rpg_character_common.h rpg_character_common_tools.cpp rpg_character_common_tools.h \
-	rpg_character_dictionary.cpp rpg_character_equipment.cpp rpg_character_equipment.h \
-	rpg_character_equipment_common.h rpg_character_inventory.cpp rpg_character_inventory.h \
-	rpg_character_monster.cpp rpg_character_monster.h rpg_character_monster_common.h \
-	rpg_character_monster_common_tools.cpp rpg_character_monster_common_tools.h rpg_character_organizationstep.h \
-	rpg_character_plane.h rpg_character_player.cpp rpg_character_player.h \
-	rpg_character_player_base.cpp rpg_character_player_base.h rpg_character_player_common.h \
-	rpg_character_race_common.h rpg_character_skills_common.h rpg_character_skills_common_tools.cpp \
+	rpg_character_equipment.cpp rpg_character_equipment.h rpg_character_equipment_common.h \
+	rpg_character_inventory.cpp rpg_character_inventory.h rpg_character_monster.cpp \
+	rpg_character_monster.h rpg_character_monster_common.h rpg_character_monster_common_tools.cpp \
+	rpg_character_monster_common_tools.h rpg_character_organizationstep.h rpg_character_plane.h \
+	rpg_character_player.cpp rpg_character_player.h rpg_character_player_base.cpp \
+	rpg_character_player_base.h rpg_character_player_common.h rpg_character_race_common.h \
+	rpg_character_skills_common.h rpg_character_skills_common_tools.cpp \
 	rpg_character_skills_common_tools.h rpg_character_terrain.h
 libRPG_Character_la_LDFLAGS = -L/usr/local/lib
 
@@ -51,3 +51,5 @@ character_parser_LDFLAGS = -L/usr/local/lib
 
 bindata_DATA = rpg_character.xsd rpg_character.xml
 bindatadir = $(bindir)
+
+SUBDIRS = monster

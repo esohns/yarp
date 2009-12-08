@@ -6,10 +6,6 @@
             elementFormDefault="qualified"
             attributeFormDefault="qualified">
 
-  <!-- include chance_dice schema -->
-  <xsd:include schemaLocation="rpg_chance_dice.xsd"/>
-  <!-- include item schema -->
-  <xsd:include schemaLocation="rpg_item.xsd"/>
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import chance_dice schema (as declared above) -->
 <!--   <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/> -->
@@ -18,7 +14,7 @@
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
-      RPG_Character types XML schema
+      RPG_Character: character-types XML schema
     </xsd:documentation>
   </xsd:annotation>
 
@@ -100,6 +96,7 @@
       <xsd:enumeration value="CONDITION_ABILITY_DRAINED"/>
       <xsd:enumeration value="CONDITION_BLINDED"/>
       <xsd:enumeration value="CONDITION_BLOWN_AWAY"/>
+      <xsd:enumeration value="CONDITION_BOUND"/>
       <xsd:enumeration value="CONDITION_CHECKED"/>
       <xsd:enumeration value="CONDITION_CONFUSED"/>
       <xsd:enumeration value="CONDITION_COWERING"/>
@@ -117,6 +114,7 @@
       <xsd:enumeration value="CONDITION_FLAT_FOOTED"/>
       <xsd:enumeration value="CONDITION_FRIGHTENED"/>
       <xsd:enumeration value="CONDITION_GRAPPLING"/>
+      <xsd:enumeration value="CONDITION_HELD"/>
       <xsd:enumeration value="CONDITION_HELPLESS"/>
       <xsd:enumeration value="CONDITION_INCORPOREAL"/>
       <xsd:enumeration value="CONDITION_INVISIBLE"/>
@@ -129,6 +127,7 @@
       <xsd:enumeration value="CONDITION_PRONE"/>
       <xsd:enumeration value="CONDITION_SHAKEN"/>
       <xsd:enumeration value="CONDITION_SICKENED"/>
+      <xsd:enumeration value="CONDITION_SLEEPING"/>
       <xsd:enumeration value="CONDITION_STABLE"/>
       <xsd:enumeration value="CONDITION_STAGGERED"/>
       <xsd:enumeration value="CONDITION_STUNNED"/>
@@ -210,114 +209,6 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <!-- xml instance document(s) will contain a dictionary of different types of monsters -->
-  <xsd:simpleType name="RPG_Character_MonsterMetaType_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="MONSTERMETATYPE_ABERRATION"/>
-      <xsd:enumeration value="MONSTERMETATYPE_ANIMAL"/>
-      <xsd:enumeration value="MONSTERMETATYPE_CONSTRUCT"/>
-      <xsd:enumeration value="MONSTERMETATYPE_DRAGON"/>
-      <xsd:enumeration value="MONSTERMETATYPE_ELEMENTAL"/>
-      <xsd:enumeration value="MONSTERMETATYPE_FEY"/>
-      <xsd:enumeration value="MONSTERMETATYPE_GIANT"/>
-      <xsd:enumeration value="MONSTERMETATYPE_HUMANOID"/>
-      <xsd:enumeration value="MONSTERMETATYPE_MAGICAL_BEAST"/>
-      <xsd:enumeration value="MONSTERMETATYPE_MONSTROUS_HUMANOID"/>
-      <xsd:enumeration value="MONSTERMETATYPE_OOZE"/>
-      <xsd:enumeration value="MONSTERMETATYPE_OUTSIDER"/>
-      <xsd:enumeration value="MONSTERMETATYPE_PLANT"/>
-      <xsd:enumeration value="MONSTERMETATYPE_UNDEAD"/>
-      <xsd:enumeration value="MONSTERMETATYPE_VERMIN"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
-  <xsd:simpleType name="RPG_Character_MonsterSubType_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="MONSTERSUBTYPE_AIR"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_ANGEL"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_AQUATIC"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_ARCHON"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_AUGMENTED"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_CHAOTIC"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_COLD"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_EARTH"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_EVIL"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_EXTRAPLANAR"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_FIRE"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_GOBLINOID"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_GOOD"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_INCORPOREAL"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_LAWFUL"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_NATIVE"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_REPTILIAN"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_SHAPECHANGER"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_SWARM"/>
-      <xsd:enumeration value="MONSTERSUBTYPE_WATER"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
-  <xsd:complexType name="RPG_Character_MonsterType_Type">
-    <xsd:sequence>
-      <xsd:element name="metaType" type="RPG_Character_MonsterMetaType_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="subType" type="RPG_Character_MonsterSubType_Type" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="RPG_Character_MonsterArmorClass_Type">
-    <xsd:sequence>
-      <xsd:element name="normal" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="touch" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="flatFooted" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:simpleType name="RPG_Character_MonsterWeapon_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="INCORPOREAL_TOUCH"/>
-      <xsd:enumeration value="NATURALWEAPON_BITE"/>
-      <xsd:enumeration value="NATURALWEAPON_CLAW_TALON"/>
-      <xsd:enumeration value="NATURALWEAPON_GORE"/>
-      <xsd:enumeration value="NATURALWEAPON_SLAP_SLAM"/>
-      <xsd:enumeration value="NATURALWEAPON_STING"/>
-      <xsd:enumeration value="NATURALWEAPON_TENTACLE"/>
-      <xsd:enumeration value="NATURALWEAPON_SPIT_ACID"/>
-      <xsd:enumeration value="NATURALWEAPON_WEB"/>
-      <xsd:enumeration value="NATURALWEAPON_ROCK_STONE"/>
-      <xsd:enumeration value="STANDARDWEAPON_BLUDGEONING"/>
-      <xsd:enumeration value="STANDARDWEAPON_PIERCING"/>
-      <xsd:enumeration value="STANDARDWEAPON_SLASHING"/>
-      <xsd:enumeration value="RAY_ELECTRICITY"/>
-      <xsd:enumeration value="RAY_LIGHT"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
-  <xsd:simpleType name="RPG_Character_AttackForm_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="ATTACK_MELEE"/>
-      <xsd:enumeration value="ATTACK_TOUCH"/>
-      <xsd:enumeration value="ATTACK_RANGED"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
-  <xsd:complexType name="RPG_Character_MonsterAttackAction_Type">
-    <xsd:sequence>
-      <xsd:element name="monsterWeapon" type="RPG_Character_MonsterWeapon_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="attackBonus" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="attackForm" type="RPG_Character_AttackForm_Type" minOccurs="1" maxOccurs="unbounded"/>
-<!--      <xsd:element name="damage" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>-->
-      <xsd:element name="damage" type="RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="numAttacksPerRound" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="RPG_Character_MonsterAttack_Type">
-    <xsd:sequence>
-      <xsd:element name="baseAttackBonus" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="grappleBonus" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="attackAction" type="RPG_Character_MonsterAttackAction_Type" minOccurs="1" maxOccurs="unbounded"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
   <xsd:simpleType name="RPG_Character_Size_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SIZE_FINE"/>
@@ -331,14 +222,6 @@
       <xsd:enumeration value="SIZE_COLOSSAL"/>
     </xsd:restriction>
   </xsd:simpleType>
-
-  <xsd:complexType name="RPG_Character_SavingThrowModifiers_Type">
-    <xsd:sequence>
-      <xsd:element name="fortitude" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="reflex" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="will" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
 
   <xsd:complexType name="RPG_Character_Attributes_Type">
     <xsd:sequence>
@@ -621,52 +504,6 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:simpleType name="RPG_Character_Organization_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="ORGANIZATION_SOLITARY"/>
-      <xsd:enumeration value="ORGANIZATION_PAIR"/>
-      <xsd:enumeration value="ORGANIZATION_BROOD"/>
-      <xsd:enumeration value="ORGANIZATION_CLUSTER"/>
-      <xsd:enumeration value="ORGANIZATION_CLUTCH"/>
-      <xsd:enumeration value="ORGANIZATION_PATCH"/>
-      <xsd:enumeration value="ORGANIZATION_GANG"/>
-      <xsd:enumeration value="ORGANIZATION_TEAM"/>
-      <xsd:enumeration value="ORGANIZATION_SQUAD"/>
-      <xsd:enumeration value="ORGANIZATION_GROUP"/>
-      <xsd:enumeration value="ORGANIZATION_PACK"/>
-      <xsd:enumeration value="ORGANIZATION_COLONY"/>
-      <xsd:enumeration value="ORGANIZATION_FLOCK"/>
-      <xsd:enumeration value="ORGANIZATION_TRIBE"/>
-<!--      <xsd:enumeration value="ORGANIZATION_SLAVER"/>-->
-      <xsd:enumeration value="ORGANIZATION_BAND"/>
-      <xsd:enumeration value="ORGANIZATION_CLAN"/>
-      <xsd:enumeration value="ORGANIZATION_ANY"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
-  <xsd:complexType name="RPG_Character_OrganizationSlaverStep_Type">
-    <xsd:sequence>
-      <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-      <!--       <xsd:element name="range" type="rpg_chance_dice:RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/> -->
-      <xsd:element name="range" type="RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="RPG_Character_OrganizationStep_Type">
-    <xsd:sequence>
-      <xsd:element name="type" type="RPG_Character_Organization_Type" minOccurs="1" maxOccurs="1"/>
-      <!--       <xsd:element name="range" type="rpg_chance_dice:RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/> -->
-      <xsd:element name="range" type="RPG_Chance_ValueRange_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="slaves" type="RPG_Character_OrganizationSlaverStep_Type" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="RPG_Character_Organizations_Type">
-    <xsd:sequence>
-      <xsd:element name="step" type="RPG_Character_OrganizationStep_Type" minOccurs="1" maxOccurs="unbounded"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
   <xsd:simpleType name="RPG_Character_AlignmentCivic_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ALIGNMENTCIVIC_LAWFUL"/>
@@ -691,61 +528,5 @@
       <xsd:element name="ethic" type="RPG_Character_AlignmentEthic_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
-
-  <xsd:complexType name="RPG_Character_MonsterAdvancementStep_Type">
-    <xsd:sequence>
-      <xsd:element name="size" type="RPG_Character_Size_Type" minOccurs="1" maxOccurs="1"/>
-<!--       <xsd:element name="range" type="rpg_chance_dice:RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/> -->
-      <xsd:element name="range" type="RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="RPG_Character_MonsterAdvancement_Type">
-    <xsd:sequence>
-      <xsd:element name="step" type="RPG_Character_MonsterAdvancementStep_Type" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="RPG_Character_MonsterPropertiesXML_Type">
-    <xsd:sequence>
-      <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="size" type="RPG_Character_Size_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="type" type="RPG_Character_MonsterType_Type" minOccurs="1" maxOccurs="1"/>
-<!--       <xsd:element name="hitDice" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/> -->
-      <xsd:element name="hitDice" type="RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="initiative" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="speed" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="armorClass" type="RPG_Character_MonsterArmorClass_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="attack" type="RPG_Character_MonsterAttack_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="space" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="reach" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="saves" type="RPG_Character_SavingThrowModifiers_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="attributes" type="RPG_Character_Attributes_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="skills" type="RPG_Character_Skills_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="feats" type="RPG_Character_Feats_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="environment" type="RPG_Character_Environment_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="organizations" type="RPG_Character_Organizations_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="challengeRating" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="treasureModifier" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="alignment" type="RPG_Character_Alignment_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="advancements" type="RPG_Character_MonsterAdvancement_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="levelAdjustment" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="RPG_Character_MonsterDictionary_Type" id="skip0">
-    <xsd:sequence>
-      <xsd:element name="monster" type="RPG_Character_MonsterPropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="RPG_Character_Dictionary_Type" id="skip1">
-    <xsd:sequence>
-      <xsd:element name="monsterDictionary" type="RPG_Character_MonsterDictionary_Type" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <!-- xml instance document(s) will contain a dictionary of different types of monsters -->
-  <xsd:element name="characterDictionary" type="RPG_Character_Dictionary_Type"/>
 
 </xsd:schema>

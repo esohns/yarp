@@ -25,9 +25,9 @@
 #include <set>
 #include <map>
 
-#include <rpg_chance_dicetype.h>
-#include <rpg_chance_diceroll.h>
-#include <rpg_chance_valuerange.h>
+#include <rpg_dice_dietype.h>
+#include <rpg_dice_roll.h>
+#include <rpg_dice_valuerange.h>
 
 #include "rpg_character_monstersubtype.h"
 #include "rpg_character_monstermetatype.h"
@@ -56,7 +56,6 @@
 typedef std::set<RPG_Character_MonsterSubType> RPG_Character_MonsterSubTypes_t;
 typedef RPG_Character_MonsterSubTypes_t::const_iterator RPG_Character_MonsterSubTypesIterator_t;
 
-typedef RPG_Chance_DiceRoll RPG_Character_Damage;
 typedef RPG_Chance_DiceRoll RPG_Character_HitDice;
 
 typedef std::vector<RPG_Character_AttackForm> RPG_Character_AttackForms_t;

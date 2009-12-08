@@ -38,5 +38,6 @@ AC_CHECK_LIB([xerces-c], [main])
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile
+                 monster/Makefile])
 AC_OUTPUT

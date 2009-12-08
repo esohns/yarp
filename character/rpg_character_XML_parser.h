@@ -27,43 +27,75 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Dictionary_Type
- : public RPG_Character_Dictionary_Type_pimpl
+class RPG_Character_Gender_Type
+ : public RPG_Character_Gender_Type_pimpl
 {
  public:
-  RPG_Character_Dictionary_Type(RPG_Character_MonsterDictionary_t*); // monster dictionary
-  virtual ~RPG_Character_Dictionary_Type();
-
 //   virtual void pre();
-//   virtual void RPG_Character_MonsterDictionary();
-  virtual void post_RPG_Character_Dictionary_Type();
-
- private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Dictionary_Type());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Dictionary_Type(const RPG_Character_Dictionary_Type&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Dictionary_Type& operator=(const RPG_Character_Dictionary_Type&));
-
-  RPG_Character_MonsterDictionary_t* myMonsterDictionary;
+  virtual RPG_Character_Gender post_RPG_Character_Gender_Type();
 };
 
-class RPG_Character_MonsterDictionary_Type
- : public RPG_Character_MonsterDictionary_Type_pimpl
+class RPG_Character_Race_Type
+ : public RPG_Character_Race_Type_pimpl
 {
  public:
-  RPG_Character_MonsterDictionary_Type(RPG_Character_MonsterDictionary_t*); // monster dictionary
+//   virtual void pre();
+  virtual RPG_Character_Race post_RPG_Character_Race_Type();
+};
+
+class RPG_Character_MetaClass_Type
+ : public RPG_Character_MetaClass_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Character_MetaClass post_RPG_Character_MetaClass_Type();
+};
+
+class RPG_Character_SubClass_Type
+ : public RPG_Character_SubClass_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Character_SubClass post_RPG_Character_SubClass_Type();
+};
+
+class RPG_Character_Class_Type
+ : public RPG_Character_Class_Type_pimpl
+{
+ public:
+  RPG_Character_Class_Type();
 
 //   virtual void pre();
-  virtual void monster(const RPG_Character_MonsterPropertiesXML&);
-  virtual void post_RPG_Character_MonsterDictionary_Type();
+  virtual void metaClass(const RPG_Character_MetaClass&);
+  virtual void subClass(const RPG_Character_SubClass&);
+  virtual RPG_Character_Class post_RPG_Character_Class_Type();
 
  private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_MonsterDictionary_Type());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_MonsterDictionary_Type(const RPG_Character_MonsterDictionary_Type&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_MonsterDictionary_Type& operator=(const RPG_Character_MonsterDictionary_Type&));
+  RPG_Character_Class myCurrentClass;
+};
 
-  RPG_Character_MonsterDictionary_t* myMonsterDictionary;
+class RPG_Character_Attribute_Type
+ : public RPG_Character_Attribute_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Character_Attribute post_RPG_Character_Attribute_Type();
+};
+
+class RPG_Character_Condition_Type
+ : public RPG_Character_Condition_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Character_Condition post_RPG_Character_Condition_Type();
+};
+
+class RPG_Character_Ability_Type
+ : public RPG_Character_Ability_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Character_Ability post_RPG_Character_Ability_Type();
 };
 
 class RPG_Character_Size_Type
@@ -72,119 +104,6 @@ class RPG_Character_Size_Type
  public:
 //   virtual void pre();
   virtual RPG_Character_Size post_RPG_Character_Size_Type();
-};
-
-class RPG_Character_MonsterType_Type
- : public RPG_Character_MonsterType_Type_pimpl
-{
- public:
-  RPG_Character_MonsterType_Type();
-
-//   virtual void pre();
-  virtual void metaType(const RPG_Character_MonsterMetaType&);
-  virtual void subType(const RPG_Character_MonsterSubType&);
-  virtual RPG_Character_MonsterType post_RPG_Character_MonsterType_Type();
-
- private:
-  RPG_Character_MonsterType myCurrentMonsterType;
-};
-
-class RPG_Character_MonsterMetaType_Type
- : public RPG_Character_MonsterMetaType_Type_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Character_MonsterMetaType post_RPG_Character_MonsterMetaType_Type();
-};
-
-class RPG_Character_MonsterSubType_Type
- : public RPG_Character_MonsterSubType_Type_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Character_MonsterSubType post_RPG_Character_MonsterSubType_Type();
-};
-
-class RPG_Character_MonsterArmorClass_Type
- : public RPG_Character_MonsterArmorClass_Type_pimpl
-{
- public:
-  RPG_Character_MonsterArmorClass_Type();
-
-//   virtual void pre();
-  virtual void normal(signed char);
-  virtual void touch(signed char);
-  virtual void flatFooted(signed char);
-  virtual RPG_Character_MonsterArmorClass post_RPG_Character_MonsterArmorClass_Type();
-
- private:
-  RPG_Character_MonsterArmorClass myCurrentArmorClass;
-};
-
-class RPG_Character_MonsterWeapon_Type
- : public RPG_Character_MonsterWeapon_Type_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Character_MonsterWeapon post_RPG_Character_MonsterWeapon_Type();
-};
-
-class RPG_Character_AttackForm_Type
- : public RPG_Character_AttackForm_Type_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Character_AttackForm post_RPG_Character_AttackForm_Type();
-};
-
-class RPG_Character_MonsterAttackAction_Type
- : public RPG_Character_MonsterAttackAction_Type_pimpl
-{
- public:
-  RPG_Character_MonsterAttackAction_Type();
-
-//   virtual void pre();
-  virtual void monsterWeapon(const RPG_Character_MonsterWeapon&);
-  virtual void attackBonus(signed char);
-  virtual void attackForm(const RPG_Character_AttackForm&);
-  virtual void damage(const RPG_Chance_DiceRoll&);
-  virtual void numAttacksPerRound(unsigned char);
-  virtual RPG_Character_MonsterAttackAction post_RPG_Character_MonsterAttackAction_Type();
-
- private:
-  RPG_Character_MonsterAttackAction myCurrentMonsterAttackAction;
-};
-
-class RPG_Character_MonsterAttack_Type
- : public RPG_Character_MonsterAttack_Type_pimpl
-{
- public:
-  RPG_Character_MonsterAttack_Type();
-
-//   virtual void pre();
-  virtual void baseAttackBonus(signed char);
-  virtual void grappleBonus(signed char);
-  virtual void attackAction(const RPG_Character_MonsterAttackAction&);
-  virtual RPG_Character_MonsterAttack post_RPG_Character_MonsterAttack_Type();
-
- private:
-  RPG_Character_MonsterAttack myCurrentMonsterAttack;
-};
-
-class RPG_Character_SavingThrowModifiers_Type
- : public RPG_Character_SavingThrowModifiers_Type_pimpl
-{
- public:
-  RPG_Character_SavingThrowModifiers_Type();
-
-//   virtual void pre();
-  virtual void fortitude(signed char);
-  virtual void reflex(signed char);
-  virtual void will(signed char);
-  virtual RPG_Character_SavingThrowModifiers post_RPG_Character_SavingThrowModifiers_Type();
-
- private:
-  RPG_Character_SavingThrowModifiers myCurrentSavingThrowModifiers;
 };
 
 class RPG_Character_Attributes_Type
@@ -296,88 +215,6 @@ class RPG_Character_Environment_Type
   RPG_Character_Environment myCurrentEnvironment;
 };
 
-class RPG_Character_Organization_Type
- : public RPG_Character_Organization_Type_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Character_Organization post_RPG_Character_Organization_Type();
-};
-
-class RPG_Character_OrganizationSlaverStep_Type
- : public RPG_Character_OrganizationSlaverStep_Type_pimpl
-{
-  public:
-   RPG_Character_OrganizationSlaverStep_Type();
-
-//   virtual void pre();
-   virtual void name(const std::string&);
-   virtual void range(const RPG_Chance_ValueRange&);
-   virtual RPG_Character_OrganizationSlaverStep post_RPG_Character_OrganizationSlaverStep_Type();
-
-  private:
-   RPG_Character_OrganizationSlaverStep myCurrentOrganizationSlaverStep;
-};
-
-class RPG_Character_OrganizationStep_Type
- : public RPG_Character_OrganizationStep_Type_pimpl
-{
- public:
-  RPG_Character_OrganizationStep_Type();
-
-//   virtual void pre();
-  virtual void type(const RPG_Character_Organization&);
-  virtual void range(const RPG_Chance_ValueRange&);
-  virtual void slaves(const RPG_Character_OrganizationSlaverStep&);
-  virtual RPG_Character_OrganizationStep post_RPG_Character_OrganizationStep_Type();
-
- private:
-  RPG_Character_OrganizationStep myCurrentOrganizationStep;
-};
-
-class RPG_Character_Organizations_Type
- : public RPG_Character_Organizations_Type_pimpl
-{
- public:
-  RPG_Character_Organizations_Type();
-
-//   virtual void pre();
-  virtual void step(const RPG_Character_OrganizationStep&);
-  virtual RPG_Character_Organizations post_RPG_Character_Organizations_Type();
-
- private:
-  RPG_Character_Organizations myCurrentOrganizations;
-};
-
-class RPG_Character_MonsterAdvancementStep_Type
- : public RPG_Character_MonsterAdvancementStep_Type_pimpl
-{
- public:
-  RPG_Character_MonsterAdvancementStep_Type();
-
-//   virtual void pre();
-  virtual void size(const RPG_Character_Size&);
-  virtual void range(const RPG_Chance_ValueRange&);
-  virtual RPG_Character_MonsterAdvancementStep post_RPG_Character_MonsterAdvancementStep_Type();
-
- private:
-  RPG_Character_MonsterAdvancementStep myCurrentAdvancementStep;
-};
-
-class RPG_Character_MonsterAdvancement_Type
- : public RPG_Character_MonsterAdvancement_Type_pimpl
-{
- public:
-  RPG_Character_MonsterAdvancement_Type();
-
-//   virtual void pre();
-  virtual void step(const RPG_Character_MonsterAdvancementStep&);
-  virtual RPG_Character_MonsterAdvancement post_RPG_Character_MonsterAdvancement_Type();
-
- private:
-  RPG_Character_MonsterAdvancement myCurrentMonsterAdvancement;
-};
-
 class RPG_Character_AlignmentCivic_Type
  : public RPG_Character_AlignmentCivic_Type_pimpl
 {
@@ -407,40 +244,6 @@ class RPG_Character_Alignment_Type
 
  private:
   RPG_Character_Alignment myCurrentAlignment;
-};
-
-class RPG_Character_MonsterPropertiesXML_Type
- : public RPG_Character_MonsterPropertiesXML_Type_pimpl
-{
- public:
-  RPG_Character_MonsterPropertiesXML_Type();
-
-//   virtual void pre();
-  virtual void name(const ::std::string&);
-  virtual void size(const RPG_Character_Size&);
-  virtual void type(const RPG_Character_MonsterType&);
-  virtual void hitDice(const RPG_Chance_DiceRoll&);
-  virtual void initiative(signed char);
-  virtual void speed(unsigned char);
-  virtual void armorClass(const RPG_Character_MonsterArmorClass&);
-  virtual void attack(const RPG_Character_MonsterAttack&);
-  virtual void space(unsigned char);
-  virtual void reach(unsigned char);
-  virtual void saves(const RPG_Character_SavingThrowModifiers&);
-  virtual void attributes(const RPG_Character_Attributes&);
-  virtual void skills(const RPG_Character_Skills&);
-  virtual void feats(const RPG_Character_Feats&);
-  virtual void environment(const RPG_Character_Environment&);
-  virtual void organizations(const RPG_Character_Organizations&);
-  virtual void challengeRating(unsigned char);
-  virtual void treasureModifier(unsigned char);
-  virtual void alignment(const RPG_Character_Alignment&);
-  virtual void advancement(const RPG_Character_MonsterAdvancement&);
-  virtual void levelAdjustment(unsigned char);
-  virtual RPG_Character_MonsterPropertiesXML post_RPG_Character_MonsterPropertiesXML_Type();
-
- private:
-  RPG_Character_MonsterPropertiesXML myCurrentProperties;
 };
 
 #endif

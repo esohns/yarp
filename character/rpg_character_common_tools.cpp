@@ -48,7 +48,7 @@
 #include <rpg_item_common_tools.h>
 #include <rpg_item_dictionary.h>
 
-#include <rpg_chance_dice.h>
+#include <rpg_dice.h>
 #include <rpg_chance_common_tools.h>
 
 #include <ace/Log_Msg.h>
@@ -194,7 +194,7 @@ const bool RPG_Character_Common_Tools::getAttributeCheck(const unsigned char& at
   return (result >= attributeAbilityScore_in);
 }
 
-const RPG_Chance_DiceType RPG_Character_Common_Tools::getHitDie(const RPG_Character_SubClass& subClass_in)
+const RPG_Dice_DieType RPG_Character_Common_Tools::getHitDie(const RPG_Character_SubClass& subClass_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getHitDie"));
 
@@ -242,7 +242,7 @@ const RPG_Chance_DiceType RPG_Character_Common_Tools::getHitDie(const RPG_Charac
     }
   } // end SWITCH
 
-  return RPG_CHANCE_DICETYPE_INVALID;
+  return RPG_DICE_DIETYPE_INVALID;
 }
 
 const RPG_Character_BaseAttackBonus_t RPG_Character_Common_Tools::getBaseAttackBonus(const RPG_Character_SubClass& subClass_in,
@@ -319,15 +319,15 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   std::string name;
   // generate a string of (random ASCII alphabet, printable) characters
   int length = 0;
-  RPG_Chance_DiceRollResult_t result;
-  RPG_Chance_Dice::generateRandomNumbers(10, // maximum length
-                                         1,
-                                         result);
+  RPG_Dice_RollResult_t result;
+  RPG_Dice::generateRandomNumbers(10, // maximum length
+                                  1,
+                                  result);
   length = result.front();
   result.clear();
-  RPG_Chance_Dice::generateRandomNumbers(26, // characters in (ASCII) alphabet
-                                         (2 * length), // first half are characters, last half interpreted as boolean (upper/lower)
-                                         result);
+  RPG_Dice::generateRandomNumbers(26, // characters in (ASCII) alphabet
+                                  (2 * length), // first half are characters, last half interpreted as boolean (upper/lower)
+                                  result);
   bool lowercase = false;
   for (int i = 0;
        i < length;
@@ -350,9 +350,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   // step2: gender
   RPG_Character_Gender gender = RPG_CHARACTER_GENDER_INVALID;
   result.clear();
-  RPG_Chance_Dice::generateRandomNumbers((RPG_CHARACTER_GENDER_MAX - 2),
-                                         1,
-                                         result);
+  RPG_Dice::generateRandomNumbers((RPG_CHARACTER_GENDER_MAX - 2),
+                                  1,
+                                  result);
   gender = ACE_static_cast(RPG_Character_Gender, result.front());
 
   // step3: race
@@ -360,9 +360,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   // *TODO*: consider allowing multi-race like Half-Elf etc.
   RPG_Character_Race race = RPG_CHARACTER_RACE_INVALID;
   result.clear();
-  RPG_Chance_Dice::generateRandomNumbers((RPG_CHARACTER_RACE_MAX - 1),
-                                         1,
-                                         result);
+  RPG_Dice::generateRandomNumbers((RPG_CHARACTER_RACE_MAX - 1),
+                                  1,
+                                  result);
   race = ACE_static_cast(RPG_Character_Race, result.front());
   player_race.set(race - 1);
 
@@ -371,9 +371,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   player_class.metaClass = RPG_CHARACTER_METACLASS_INVALID;
   player_class.subClass = RPG_CHARACTER_SUBCLASS_INVALID;
   result.clear();
-  RPG_Chance_Dice::generateRandomNumbers((RPG_CHARACTER_SUBCLASS_MAX - 1),
-                                         1,
-                                         result);
+  RPG_Dice::generateRandomNumbers((RPG_CHARACTER_SUBCLASS_MAX - 1),
+                                  1,
+                                  result);
   player_class.subClass = ACE_static_cast(RPG_Character_SubClass, result.front());
   player_class.metaClass = RPG_Character_Class_Common_Tools::subClassToMetaClass(player_class.subClass);
 
@@ -382,9 +382,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
   alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
   result.clear();
-  RPG_Chance_Dice::generateRandomNumbers((RPG_CHARACTER_ALIGNMENTCIVIC_MAX - 2),
-                                         2,
-                                         result);
+  RPG_Dice::generateRandomNumbers((RPG_CHARACTER_ALIGNMENTCIVIC_MAX - 2),
+                                  2,
+                                  result);
   alignment.civic = ACE_static_cast(RPG_Character_AlignmentCivic, result.front());
   alignment.ethic = ACE_static_cast(RPG_Character_AlignmentEthic, result.back());
 
@@ -392,7 +392,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   RPG_Character_Attributes attributes;
   ACE_OS::memset(&attributes, 0, sizeof(RPG_Character_Attributes));
   unsigned char* p = &(attributes.strength);
-  RPG_Chance_DiceRoll roll;
+  RPG_Dice_Roll roll;
   roll.numDice = 2;
   roll.typeDice = D_10;
   roll.modifier = -2; // add +1 if result is 0 --> stats interval 1-18
@@ -402,9 +402,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   do
   {
     result.clear();
-    RPG_Chance_Dice::simulateDiceRoll(roll,
-                                      6,
-                                      result);
+    RPG_Dice::simulateRoll(roll,
+                           6,
+                           result);
     sum = result[0] + result[1] + result[2] + result[3] + result[4] + result[5];
   } while ((sum <= 54) ||
            (*(std::min_element(result.begin(), result.end())) <= 9) ||
@@ -429,9 +429,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
        i++)
   {
     result.clear();
-    RPG_Chance_Dice::generateRandomNumbers(RPG_CHARACTER_SKILL_MAX,
-                                           1,
-                                           result);
+    RPG_Dice::generateRandomNumbers(RPG_CHARACTER_SKILL_MAX,
+                                    1,
+                                    result);
     skill = ACE_static_cast(RPG_Character_Skill, (result.front() - 1));
     iterator = skills.find(skill);
     if (iterator != skills.end())
@@ -460,9 +460,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   do
   {
     result.clear();
-    RPG_Chance_Dice::generateRandomNumbers(RPG_CHARACTER_FEAT_MAX,
-                                           1,
-                                           result);
+    RPG_Dice::generateRandomNumbers(RPG_CHARACTER_FEAT_MAX,
+                                    1,
+                                    result);
     feat = ACE_static_cast(RPG_Character_Feat, (result.front() - 1));
 
     // check prerequisites
@@ -494,9 +494,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   roll.typeDice = RPG_Character_Common_Tools::getHitDie(player_class.subClass);
   roll.modifier = 0;
   result.clear();
-  RPG_Chance_Dice::simulateDiceRoll(roll,
-                                    1,
-                                    result);
+  RPG_Dice::simulateRoll(roll,
+                         1,
+                         result);
   hitpoints = result[0];
 
   // step10: (initial) set of items

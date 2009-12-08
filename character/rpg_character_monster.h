@@ -48,8 +48,6 @@ class RPG_Character_Monster
 
   const RPG_Character_MonsterType getMonsterType() const;
 
-  virtual void attack(RPG_Character_Base* const); // foe
-
   virtual const bool isPlayerCharacter() const;
 
   virtual void dump() const;

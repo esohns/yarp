@@ -28,6 +28,7 @@ enum RPG_Character_Condition
   CONDITION_ABILITY_DRAINED,
   CONDITION_BLINDED,
   CONDITION_BLOWN_AWAY,
+  CONDITION_BOUND,
   CONDITION_CHECKED,
   CONDITION_CONFUSED,
   CONDITION_COWERING,
@@ -45,6 +46,7 @@ enum RPG_Character_Condition
   CONDITION_FLAT_FOOTED,
   CONDITION_FRIGHTENED,
   CONDITION_GRAPPLING,
+  CONDITION_HELD,
   CONDITION_HELPLESS,
   CONDITION_INCORPOREAL,
   CONDITION_INVISIBLE,
@@ -57,6 +59,7 @@ enum RPG_Character_Condition
   CONDITION_PRONE,
   CONDITION_SHAKEN,
   CONDITION_SICKENED,
+  CONDITION_SLEEPING,
   CONDITION_STABLE,
   CONDITION_STAGGERED,
   CONDITION_STUNNED,
@@ -86,6 +89,7 @@ class RPG_Character_ConditionHelper
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_ABILITY_DRAINED, ACE_TEXT_ALWAYS_CHAR("CONDITION_ABILITY_DRAINED")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_BLINDED, ACE_TEXT_ALWAYS_CHAR("CONDITION_BLINDED")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_BLOWN_AWAY, ACE_TEXT_ALWAYS_CHAR("CONDITION_BLOWN_AWAY")));
+    myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_BOUND, ACE_TEXT_ALWAYS_CHAR("CONDITION_BOUND")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_CHECKED, ACE_TEXT_ALWAYS_CHAR("CONDITION_CHECKED")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_CONFUSED, ACE_TEXT_ALWAYS_CHAR("CONDITION_CONFUSED")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_COWERING, ACE_TEXT_ALWAYS_CHAR("CONDITION_COWERING")));
@@ -103,6 +107,7 @@ class RPG_Character_ConditionHelper
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_FLAT_FOOTED, ACE_TEXT_ALWAYS_CHAR("CONDITION_FLAT_FOOTED")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_FRIGHTENED, ACE_TEXT_ALWAYS_CHAR("CONDITION_FRIGHTENED")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_GRAPPLING, ACE_TEXT_ALWAYS_CHAR("CONDITION_GRAPPLING")));
+    myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_HELD, ACE_TEXT_ALWAYS_CHAR("CONDITION_HELD")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_HELPLESS, ACE_TEXT_ALWAYS_CHAR("CONDITION_HELPLESS")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_INCORPOREAL, ACE_TEXT_ALWAYS_CHAR("CONDITION_INCORPOREAL")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_INVISIBLE, ACE_TEXT_ALWAYS_CHAR("CONDITION_INVISIBLE")));
@@ -115,6 +120,7 @@ class RPG_Character_ConditionHelper
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_PRONE, ACE_TEXT_ALWAYS_CHAR("CONDITION_PRONE")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_SHAKEN, ACE_TEXT_ALWAYS_CHAR("CONDITION_SHAKEN")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_SICKENED, ACE_TEXT_ALWAYS_CHAR("CONDITION_SICKENED")));
+    myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_SLEEPING, ACE_TEXT_ALWAYS_CHAR("CONDITION_SLEEPING")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_STABLE, ACE_TEXT_ALWAYS_CHAR("CONDITION_STABLE")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_STAGGERED, ACE_TEXT_ALWAYS_CHAR("CONDITION_STAGGERED")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_STUNNED, ACE_TEXT_ALWAYS_CHAR("CONDITION_STUNNED")));

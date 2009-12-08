@@ -15,13 +15,14 @@ pre ()
 {
 }
 
-void RPG_Character_Gender_Type_pimpl::
+RPG_Character_Gender RPG_Character_Gender_Type_pimpl::
 post_RPG_Character_Gender_Type ()
 {
   const ::std::string& v (post_string ());
 
   // TODO
   //
+  // return ... ;
 }
 
 // RPG_Character_Race_Type_pimpl
@@ -32,13 +33,14 @@ pre ()
 {
 }
 
-void RPG_Character_Race_Type_pimpl::
+RPG_Character_Race RPG_Character_Race_Type_pimpl::
 post_RPG_Character_Race_Type ()
 {
   const ::std::string& v (post_string ());
 
   // TODO
   //
+  // return ... ;
 }
 
 // RPG_Character_MetaClass_Type_pimpl
@@ -49,13 +51,14 @@ pre ()
 {
 }
 
-void RPG_Character_MetaClass_Type_pimpl::
+RPG_Character_MetaClass RPG_Character_MetaClass_Type_pimpl::
 post_RPG_Character_MetaClass_Type ()
 {
   const ::std::string& v (post_string ());
 
   // TODO
   //
+  // return ... ;
 }
 
 // RPG_Character_SubClass_Type_pimpl
@@ -66,13 +69,14 @@ pre ()
 {
 }
 
-void RPG_Character_SubClass_Type_pimpl::
+RPG_Character_SubClass RPG_Character_SubClass_Type_pimpl::
 post_RPG_Character_SubClass_Type ()
 {
   const ::std::string& v (post_string ());
 
   // TODO
   //
+  // return ... ;
 }
 
 // RPG_Character_Class_Type_pimpl
@@ -84,18 +88,25 @@ pre ()
 }
 
 void RPG_Character_Class_Type_pimpl::
-metaClass ()
+metaClass (const RPG_Character_MetaClass& metaClass)
 {
+  // TODO
+  //
 }
 
 void RPG_Character_Class_Type_pimpl::
-subClass ()
+subClass (const RPG_Character_SubClass& subClass)
 {
+  // TODO
+  //
 }
 
-void RPG_Character_Class_Type_pimpl::
+RPG_Character_Class RPG_Character_Class_Type_pimpl::
 post_RPG_Character_Class_Type ()
 {
+  // TODO
+  //
+  // return ... ;
 }
 
 // RPG_Character_Attribute_Type_pimpl
@@ -106,13 +117,14 @@ pre ()
 {
 }
 
-void RPG_Character_Attribute_Type_pimpl::
+RPG_Character_Attribute RPG_Character_Attribute_Type_pimpl::
 post_RPG_Character_Attribute_Type ()
 {
   const ::std::string& v (post_string ());
 
   // TODO
   //
+  // return ... ;
 }
 
 // RPG_Character_Condition_Type_pimpl
@@ -123,13 +135,14 @@ pre ()
 {
 }
 
-void RPG_Character_Condition_Type_pimpl::
+RPG_Character_Condition RPG_Character_Condition_Type_pimpl::
 post_RPG_Character_Condition_Type ()
 {
   const ::std::string& v (post_string ());
 
   // TODO
   //
+  // return ... ;
 }
 
 // RPG_Character_Ability_Type_pimpl
@@ -140,237 +153,11 @@ pre ()
 {
 }
 
-void RPG_Character_Ability_Type_pimpl::
+RPG_Character_Ability RPG_Character_Ability_Type_pimpl::
 post_RPG_Character_Ability_Type ()
 {
   const ::std::string& v (post_string ());
 
-  // TODO
-  //
-}
-
-// RPG_Character_MonsterMetaType_Type_pimpl
-//
-
-void RPG_Character_MonsterMetaType_Type_pimpl::
-pre ()
-{
-}
-
-RPG_Character_MonsterMetaType RPG_Character_MonsterMetaType_Type_pimpl::
-post_RPG_Character_MonsterMetaType_Type ()
-{
-  const ::std::string& v (post_string ());
-
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Character_MonsterSubType_Type_pimpl
-//
-
-void RPG_Character_MonsterSubType_Type_pimpl::
-pre ()
-{
-}
-
-RPG_Character_MonsterSubType RPG_Character_MonsterSubType_Type_pimpl::
-post_RPG_Character_MonsterSubType_Type ()
-{
-  const ::std::string& v (post_string ());
-
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Character_MonsterType_Type_pimpl
-//
-
-void RPG_Character_MonsterType_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Character_MonsterType_Type_pimpl::
-metaType (const RPG_Character_MonsterMetaType& metaType)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterType_Type_pimpl::
-subType (const RPG_Character_MonsterSubType& subType)
-{
-  // TODO
-  //
-}
-
-RPG_Character_MonsterType RPG_Character_MonsterType_Type_pimpl::
-post_RPG_Character_MonsterType_Type ()
-{
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Character_MonsterArmorClass_Type_pimpl
-//
-
-void RPG_Character_MonsterArmorClass_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Character_MonsterArmorClass_Type_pimpl::
-normal (signed char normal)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterArmorClass_Type_pimpl::
-touch (signed char touch)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterArmorClass_Type_pimpl::
-flatFooted (signed char flatFooted)
-{
-  // TODO
-  //
-}
-
-RPG_Character_MonsterArmorClass RPG_Character_MonsterArmorClass_Type_pimpl::
-post_RPG_Character_MonsterArmorClass_Type ()
-{
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Character_MonsterWeapon_Type_pimpl
-//
-
-void RPG_Character_MonsterWeapon_Type_pimpl::
-pre ()
-{
-}
-
-RPG_Character_MonsterWeapon RPG_Character_MonsterWeapon_Type_pimpl::
-post_RPG_Character_MonsterWeapon_Type ()
-{
-  const ::std::string& v (post_string ());
-
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Character_AttackForm_Type_pimpl
-//
-
-void RPG_Character_AttackForm_Type_pimpl::
-pre ()
-{
-}
-
-RPG_Character_AttackForm RPG_Character_AttackForm_Type_pimpl::
-post_RPG_Character_AttackForm_Type ()
-{
-  const ::std::string& v (post_string ());
-
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Character_MonsterAttackAction_Type_pimpl
-//
-
-void RPG_Character_MonsterAttackAction_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Character_MonsterAttackAction_Type_pimpl::
-monsterWeapon (const RPG_Character_MonsterWeapon& monsterWeapon)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterAttackAction_Type_pimpl::
-attackBonus (signed char attackBonus)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterAttackAction_Type_pimpl::
-attackForm (const RPG_Character_AttackForm& attackForm)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterAttackAction_Type_pimpl::
-damage (const RPG_Chance_DiceRoll& damage)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterAttackAction_Type_pimpl::
-numAttacksPerRound (unsigned char numAttacksPerRound)
-{
-  // TODO
-  //
-}
-
-RPG_Character_MonsterAttackAction RPG_Character_MonsterAttackAction_Type_pimpl::
-post_RPG_Character_MonsterAttackAction_Type ()
-{
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Character_MonsterAttack_Type_pimpl
-//
-
-void RPG_Character_MonsterAttack_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Character_MonsterAttack_Type_pimpl::
-baseAttackBonus (signed char baseAttackBonus)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterAttack_Type_pimpl::
-grappleBonus (signed char grappleBonus)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterAttack_Type_pimpl::
-attackAction (const RPG_Character_MonsterAttackAction& attackAction)
-{
-  // TODO
-  //
-}
-
-RPG_Character_MonsterAttack RPG_Character_MonsterAttack_Type_pimpl::
-post_RPG_Character_MonsterAttack_Type ()
-{
   // TODO
   //
   // return ... ;
@@ -389,43 +176,6 @@ post_RPG_Character_Size_Type ()
 {
   const ::std::string& v (post_string ());
 
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Character_SavingThrowModifiers_Type_pimpl
-//
-
-void RPG_Character_SavingThrowModifiers_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Character_SavingThrowModifiers_Type_pimpl::
-fortitude (signed char fortitude)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_SavingThrowModifiers_Type_pimpl::
-reflex (signed char reflex)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_SavingThrowModifiers_Type_pimpl::
-will (signed char will)
-{
-  // TODO
-  //
-}
-
-RPG_Character_SavingThrowModifiers RPG_Character_SavingThrowModifiers_Type_pimpl::
-post_RPG_Character_SavingThrowModifiers_Type ()
-{
   // TODO
   //
   // return ... ;
@@ -684,114 +434,6 @@ post_RPG_Character_Environment_Type ()
   // return ... ;
 }
 
-// RPG_Character_Organization_Type_pimpl
-//
-
-void RPG_Character_Organization_Type_pimpl::
-pre ()
-{
-}
-
-RPG_Character_Organization RPG_Character_Organization_Type_pimpl::
-post_RPG_Character_Organization_Type ()
-{
-  const ::std::string& v (post_string ());
-
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Character_OrganizationSlaverStep_Type_pimpl
-//
-
-void RPG_Character_OrganizationSlaverStep_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Character_OrganizationSlaverStep_Type_pimpl::
-name (const ::std::string& name)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_OrganizationSlaverStep_Type_pimpl::
-range (const RPG_Chance_ValueRange& range)
-{
-  // TODO
-  //
-}
-
-RPG_Character_OrganizationSlaverStep RPG_Character_OrganizationSlaverStep_Type_pimpl::
-post_RPG_Character_OrganizationSlaverStep_Type ()
-{
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Character_OrganizationStep_Type_pimpl
-//
-
-void RPG_Character_OrganizationStep_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Character_OrganizationStep_Type_pimpl::
-type (const RPG_Character_Organization& type)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_OrganizationStep_Type_pimpl::
-range (const RPG_Chance_ValueRange& range)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_OrganizationStep_Type_pimpl::
-slaves (const RPG_Character_OrganizationSlaverStep& slaves)
-{
-  // TODO
-  //
-}
-
-RPG_Character_OrganizationStep RPG_Character_OrganizationStep_Type_pimpl::
-post_RPG_Character_OrganizationStep_Type ()
-{
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Character_Organizations_Type_pimpl
-//
-
-void RPG_Character_Organizations_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Character_Organizations_Type_pimpl::
-step (const RPG_Character_OrganizationStep& step)
-{
-  // TODO
-  //
-}
-
-RPG_Character_Organizations RPG_Character_Organizations_Type_pimpl::
-post_RPG_Character_Organizations_Type ()
-{
-  // TODO
-  //
-  // return ... ;
-}
-
 // RPG_Character_AlignmentCivic_Type_pimpl
 //
 
@@ -856,259 +498,5 @@ post_RPG_Character_Alignment_Type ()
   // TODO
   //
   // return ... ;
-}
-
-// RPG_Character_MonsterAdvancementStep_Type_pimpl
-//
-
-void RPG_Character_MonsterAdvancementStep_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Character_MonsterAdvancementStep_Type_pimpl::
-size (const RPG_Character_Size& size)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterAdvancementStep_Type_pimpl::
-range (const RPG_Chance_ValueRange& range)
-{
-  // TODO
-  //
-}
-
-RPG_Character_MonsterAdvancementStep RPG_Character_MonsterAdvancementStep_Type_pimpl::
-post_RPG_Character_MonsterAdvancementStep_Type ()
-{
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Character_MonsterAdvancement_Type_pimpl
-//
-
-void RPG_Character_MonsterAdvancement_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Character_MonsterAdvancement_Type_pimpl::
-step (const RPG_Character_MonsterAdvancementStep& step)
-{
-  // TODO
-  //
-}
-
-RPG_Character_MonsterAdvancement RPG_Character_MonsterAdvancement_Type_pimpl::
-post_RPG_Character_MonsterAdvancement_Type ()
-{
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Character_MonsterPropertiesXML_Type_pimpl
-//
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-name (const ::std::string& name)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-size (const RPG_Character_Size& size)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-type (const RPG_Character_MonsterType& type)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-hitDice (const RPG_Chance_DiceRoll& hitDice)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-initiative (signed char initiative)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-speed (unsigned char speed)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-armorClass (const RPG_Character_MonsterArmorClass& armorClass)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-attack (const RPG_Character_MonsterAttack& attack)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-space (unsigned char space)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-reach (unsigned char reach)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-saves (const RPG_Character_SavingThrowModifiers& saves)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-attributes (const RPG_Character_Attributes& attributes)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-skills (const RPG_Character_Skills& skills)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-feats (const RPG_Character_Feats& feats)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-environment (const RPG_Character_Environment& environment)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-organizations (const RPG_Character_Organizations& organizations)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-challengeRating (unsigned char challengeRating)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-treasureModifier (unsigned char treasureModifier)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-alignment (const RPG_Character_Alignment& alignment)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-advancements (const RPG_Character_MonsterAdvancement& advancements)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterPropertiesXML_Type_pimpl::
-levelAdjustment (unsigned char levelAdjustment)
-{
-  // TODO
-  //
-}
-
-RPG_Character_MonsterPropertiesXML RPG_Character_MonsterPropertiesXML_Type_pimpl::
-post_RPG_Character_MonsterPropertiesXML_Type ()
-{
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Character_MonsterDictionary_Type_pimpl
-//
-
-void RPG_Character_MonsterDictionary_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Character_MonsterDictionary_Type_pimpl::
-monster (const RPG_Character_MonsterPropertiesXML& monster)
-{
-  // TODO
-  //
-}
-
-void RPG_Character_MonsterDictionary_Type_pimpl::
-post_RPG_Character_MonsterDictionary_Type ()
-{
-}
-
-// RPG_Character_Dictionary_Type_pimpl
-//
-
-void RPG_Character_Dictionary_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Character_Dictionary_Type_pimpl::
-monsterDictionary ()
-{
-}
-
-void RPG_Character_Dictionary_Type_pimpl::
-post_RPG_Character_Dictionary_Type ()
-{
 }
 
