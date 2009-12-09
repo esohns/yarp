@@ -23,8 +23,8 @@
 #include "rpg_combat_attackform.h"
 #include "rpg_combat_common.h"
 
-#include <rpg_character_common.h>
-#include <rpg_character_player.h>
+// #include <rpg_character_common.h>
+// #include <rpg_character_player.h>
 #include <rpg_character_player_common.h>
 
 #include <ace/Global_Macros.h>

@@ -26,6 +26,7 @@
 #include "rpg_monster_type.h"
 #include "rpg_monster_naturalarmorclass.h"
 #include "rpg_monster_naturalweapon.h"
+#include "rpg_monster_weapontypeunion.h"
 #include "rpg_monster_attackaction.h"
 #include "rpg_monster_attack.h"
 #include "rpg_monster_savingthrowmodifiers.h"

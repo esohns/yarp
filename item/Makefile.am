@@ -3,8 +3,9 @@ METASOURCES = AUTO
 include_HEADERS = rpg_item_XML_parser.h rpg_item_XML_parser_base.h \
 	rpg_item_XML_types.h rpg_item_armor.h rpg_item_armor_base.h rpg_item_armorcategory.h \
 	rpg_item_armorpropertiesxml.h rpg_item_armortype.h rpg_item_base.h rpg_item_common.h \
-	rpg_item_common_tools.h rpg_item_criticalhitmodifier.h rpg_item_dictionary.h \
+	rpg_item_common_tools.h rpg_item_criticalhitmodifier.h rpg_item_dictionary.h rpg_item_incl.h \
 	rpg_item_instance_base.h rpg_item_instance_common.h rpg_item_instance_manager.h \
+	rpg_item_magicarmorpropertiesxml.h rpg_item_magicweaponpropertiesxml.h rpg_item_money.h \
 	rpg_item_physicaldamagetype.h rpg_item_storeprice.h rpg_item_type.h rpg_item_weapon.h \
 	rpg_item_weapon_base.h rpg_item_weaponcategory.h rpg_item_weaponclass.h \
 	rpg_item_weaponpropertiesxml.h rpg_item_weapontype.h

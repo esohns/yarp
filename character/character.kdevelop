@@ -21,12 +21,12 @@
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>monster/monster_parser</activetarget>
+      <activetarget>character_generator</activetarget>
     </general>
     <run>
-      <mainprogram>/home/unfv/Projects/RPG/character/debug/.libs/character_generator</mainprogram>
-      <programargs>-f ./../../item/rpg_item.xml -t</programargs>
-      <globaldebugarguments>-f ./../../item/rpg_item.xml -t</globaldebugarguments>
+      <mainprogram>/home/unfv/Projects/RPG/character/debug/monster/.libs/monster_parser</mainprogram>
+      <programargs>-f ./../monster/rpg_monster.xml -t</programargs>
+      <globaldebugarguments>-f ./../monster/rpg_monster.xml -t</globaldebugarguments>
       <globalcwd>/home/unfv/Projects/RPG/character/debug</globalcwd>
       <useglobalprogram>true</useglobalprogram>
       <terminal>false</terminal>

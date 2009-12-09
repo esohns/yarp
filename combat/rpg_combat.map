@@ -2,5 +2,9 @@ namespace urn:rpg
 {
   include "rpg_combat_incl.h";
 
+  include <rpg_dice_incl.h>;
+
+  include <rpg_item_incl.h>;
+
   RPG_Combat_AttackForm_Type RPG_Combat_AttackForm;
 }

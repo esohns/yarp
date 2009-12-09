@@ -34,7 +34,7 @@
 #include "rpg_character_equipment.h"
 #include "rpg_character_common.h"
 
-#include <rpg_combat_damage.h>
+// #include <rpg_combat_damage.h>
 
 #include <ace/Global_Macros.h>
 
@@ -75,7 +75,7 @@ class RPG_Character_Base
   const unsigned int getCurrentWealth() const;
 
   // sustain some damage (melee, magic, ...)
-  void sustainDamage(const RPG_Combat_Damage&);
+//   void sustainDamage(const RPG_Combat_Damage&);
 
   // we just got wiser...
   virtual void gainExperience(const unsigned int&) = 0; // XP

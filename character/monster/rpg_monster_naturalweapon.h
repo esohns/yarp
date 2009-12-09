@@ -23,8 +23,7 @@
 
 enum RPG_Monster_NaturalWeapon
 {
-  INCORPOREAL_TOUCH = 0,
-  NATURALWEAPON_BITE,
+  NATURALWEAPON_BITE = 0,
   NATURALWEAPON_CLAW_TALON,
   NATURALWEAPON_GORE,
   NATURALWEAPON_SLAP_SLAM,
@@ -33,11 +32,6 @@ enum RPG_Monster_NaturalWeapon
   NATURALWEAPON_SPIT_ACID,
   NATURALWEAPON_WEB,
   NATURALWEAPON_ROCK_STONE,
-  STANDARDWEAPON_BLUDGEONING,
-  STANDARDWEAPON_PIERCING,
-  STANDARDWEAPON_SLASHING,
-  RAY_ELECTRICITY,
-  RAY_LIGHT,
   //
   RPG_MONSTER_NATURALWEAPON_MAX,
   RPG_MONSTER_NATURALWEAPON_INVALID
@@ -57,7 +51,6 @@ class RPG_Monster_NaturalWeaponHelper
   inline static void init()
   {
     myRPG_Monster_NaturalWeaponToStringTable.clear();
-    myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(INCORPOREAL_TOUCH, ACE_TEXT_ALWAYS_CHAR("INCORPOREAL_TOUCH")));
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_BITE, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_BITE")));
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_CLAW_TALON, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_CLAW_TALON")));
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_GORE, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_GORE")));
@@ -67,11 +60,6 @@ class RPG_Monster_NaturalWeaponHelper
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_SPIT_ACID, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_SPIT_ACID")));
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_WEB, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_WEB")));
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_ROCK_STONE, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_ROCK_STONE")));
-    myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(STANDARDWEAPON_BLUDGEONING, ACE_TEXT_ALWAYS_CHAR("STANDARDWEAPON_BLUDGEONING")));
-    myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(STANDARDWEAPON_PIERCING, ACE_TEXT_ALWAYS_CHAR("STANDARDWEAPON_PIERCING")));
-    myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(STANDARDWEAPON_SLASHING, ACE_TEXT_ALWAYS_CHAR("STANDARDWEAPON_SLASHING")));
-    myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(RAY_ELECTRICITY, ACE_TEXT_ALWAYS_CHAR("RAY_ELECTRICITY")));
-    myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(RAY_LIGHT, ACE_TEXT_ALWAYS_CHAR("RAY_LIGHT")));
   };
 
   inline static std::string RPG_Monster_NaturalWeaponToString(const RPG_Monster_NaturalWeapon& element_in)

@@ -8,6 +8,8 @@
 
   <!-- include chance_dice schema -->
   <xsd:include schemaLocation="rpg_dice.xsd"/>
+  <!-- include item schema -->
+  <xsd:include schemaLocation="rpg_item.xsd"/>
   <!-- include character schema -->
   <xsd:include schemaLocation="rpg_character.xsd"/>
   <!-- include combat schema -->
@@ -87,7 +89,6 @@
 
   <xsd:simpleType name="RPG_Monster_NaturalWeapon_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="INCORPOREAL_TOUCH"/>
       <xsd:enumeration value="NATURALWEAPON_BITE"/>
       <xsd:enumeration value="NATURALWEAPON_CLAW_TALON"/>
       <xsd:enumeration value="NATURALWEAPON_GORE"/>
@@ -97,21 +98,20 @@
       <xsd:enumeration value="NATURALWEAPON_SPIT_ACID"/>
       <xsd:enumeration value="NATURALWEAPON_WEB"/>
       <xsd:enumeration value="NATURALWEAPON_ROCK_STONE"/>
-      <xsd:enumeration value="STANDARDWEAPON_BLUDGEONING"/>
-      <xsd:enumeration value="STANDARDWEAPON_PIERCING"/>
-      <xsd:enumeration value="STANDARDWEAPON_SLASHING"/>
-      <xsd:enumeration value="RAY_ELECTRICITY"/>
-      <xsd:enumeration value="RAY_LIGHT"/>
     </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Monster_WeaponTypeUnion_Type">
+    <xsd:union memberTypes="RPG_Combat_SpecialAttack_Type RPG_Monster_NaturalWeapon_Type RPG_Item_WeaponType_Type"/>
   </xsd:simpleType>
 
   <xsd:complexType name="RPG_Monster_AttackAction_Type">
     <xsd:sequence>
-      <xsd:element name="monsterWeapon" type="RPG_Monster_NaturalWeapon_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="weapon" type="RPG_Monster_WeaponTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackBonus" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackForm" type="RPG_Combat_AttackForm_Type" minOccurs="1" maxOccurs="unbounded"/>
 <!--      <xsd:element name="damage" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>-->
-      <xsd:element name="physicalDamage" type="RPG_Dice_Roll_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="damage" type="RPG_Combat_Damage_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="numAttacksPerRound" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>

@@ -21,7 +21,7 @@
 
 #include "rpg_combat_attackform.h"
 
-#include <rpg_character_player_common.h>
+// #include <rpg_character_player_common.h>
 #include <rpg_character_common_tools.h>
 
 #include <rpg_dice.h>

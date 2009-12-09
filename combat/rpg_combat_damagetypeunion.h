@@ -18,12 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_COMBAT_DAMAGE_H
-#define RPG_COMBAT_DAMAGE_H
+#ifndef RPG_COMBAT_DAMAGETYPEUNION_H
+#define RPG_COMBAT_DAMAGETYPEUNION_H
 
-struct RPG_Combat_Damage
+union RPG_Combat_DamageTypeUnion
 {
-  std::vector<RPG_Combat_DamageElement> elements;
+  RPG_Item_PhysicalDamageType physicaldamagetype;
+  RPG_Combat_SpecialDamageType specialdamagetype;
 };
 
 #endif

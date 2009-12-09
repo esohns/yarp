@@ -10,6 +10,8 @@
 
 #include <rpg_combat_XML_types.h>
 
+#include <rpg_item_XML_parser_base.h>
+
 class RPG_Combat_AttackForm_Type_pimpl: public virtual RPG_Combat_AttackForm_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -19,6 +21,87 @@ class RPG_Combat_AttackForm_Type_pimpl: public virtual RPG_Combat_AttackForm_Typ
 
   virtual RPG_Combat_AttackForm
   post_RPG_Combat_AttackForm_Type ();
+};
+
+class RPG_Combat_SpecialAttack_Type_pimpl: public virtual RPG_Combat_SpecialAttack_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  post_RPG_Combat_SpecialAttack_Type ();
+};
+
+class RPG_Combat_SpecialDamageType_Type_pimpl: public virtual RPG_Combat_SpecialDamageType_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  post_RPG_Combat_SpecialDamageType_Type ();
+};
+
+class RPG_Combat_DamageEffectType_Type_pimpl: public virtual RPG_Combat_DamageEffectType_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  post_RPG_Combat_DamageEffectType_Type ();
+};
+
+class RPG_Combat_DamageTypeUnion_Type_pimpl: public virtual RPG_Combat_DamageTypeUnion_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  _characters (const ::xml_schema::ro_string&);
+
+  virtual void
+  post_RPG_Combat_DamageTypeUnion_Type ();
+};
+
+class RPG_Combat_DamageElement_Type_pimpl: public virtual RPG_Combat_DamageElement_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  type ();
+
+  virtual void
+  damage ();
+
+  virtual void
+  duration (unsigned short);
+
+  virtual void
+  effect ();
+
+  virtual void
+  post_RPG_Combat_DamageElement_Type ();
+};
+
+class RPG_Combat_Damage_Type_pimpl: public virtual RPG_Combat_Damage_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  element ();
+
+  virtual void
+  post_RPG_Combat_Damage_Type ();
 };
 
 #endif // CXX___RPG_COMBAT_XML_PARSER_BASE_H

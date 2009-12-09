@@ -12,6 +12,8 @@
 
 #include "rpg_dice_XML_parser_base.h"
 
+#include "rpg_item_XML_parser_base.h"
+
 #include "rpg_character_XML_parser_base.h"
 
 #include "rpg_combat_XML_parser_base.h"
@@ -84,6 +86,19 @@ class RPG_Monster_NaturalWeapon_Type_pimpl: public virtual RPG_Monster_NaturalWe
   post_RPG_Monster_NaturalWeapon_Type ();
 };
 
+class RPG_Monster_WeaponTypeUnion_Type_pimpl: public virtual RPG_Monster_WeaponTypeUnion_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  _characters (const ::xml_schema::ro_string&);
+
+  virtual void
+  post_RPG_Monster_WeaponTypeUnion_Type ();
+};
+
 class RPG_Monster_AttackAction_Type_pimpl: public virtual RPG_Monster_AttackAction_Type_pskel
 {
   public:
@@ -91,7 +106,7 @@ class RPG_Monster_AttackAction_Type_pimpl: public virtual RPG_Monster_AttackActi
   pre ();
 
   virtual void
-  monsterWeapon (const RPG_Monster_NaturalWeapon&);
+  weapon ();
 
   virtual void
   attackBonus (signed char);
@@ -100,7 +115,7 @@ class RPG_Monster_AttackAction_Type_pimpl: public virtual RPG_Monster_AttackActi
   attackForm (const RPG_Combat_AttackForm&);
 
   virtual void
-  physicalDamage (const RPG_Dice_Roll&);
+  damage ();
 
   virtual void
   numAttacksPerRound (unsigned char);

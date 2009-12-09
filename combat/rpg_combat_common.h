@@ -29,6 +29,9 @@
 #include <set>
 #include <vector>
 
+// forward declaration
+// class RPG_Character_Base;
+
 struct RPG_Combat_CombatantSequenceElement
 {
   // needed for proper sorting...

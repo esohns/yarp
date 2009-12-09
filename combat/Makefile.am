@@ -18,3 +18,5 @@ dnl combat_simulator_SOURCES = combat_simulator.cpp
 dnl combat_simulator_LDADD = $(top_builddir)/libRPG_Combat.la -lRPG_Character \
 	-lRPG_Item -lRPG_Chance -lRPG_Dice -lACE -lpthread -lxerces-c
 dnl combat_simulator_LDFLAGS = -L/usr/local/lib
+bin_PROGRAMS = combat_simulator
+combat_simulator_SOURCES = combat_simulator.cpp

@@ -54,6 +54,7 @@ class RPG_Monster_SubType_Type_pskel;
 class RPG_Monster_Type_Type_pskel;
 class RPG_Monster_NaturalArmorClass_Type_pskel;
 class RPG_Monster_NaturalWeapon_Type_pskel;
+class RPG_Monster_WeaponTypeUnion_Type_pskel;
 class RPG_Monster_AttackAction_Type_pskel;
 class RPG_Monster_Attack_Type_pskel;
 class RPG_Monster_SavingThrowModifiers_Type_pskel;
@@ -82,6 +83,8 @@ class RPG_Monster_Dictionary_Type_pskel;
 #include "rpg_monster_incl.h"
 
 #include "rpg_dice_XML_types.h"
+
+#include "rpg_item_XML_types.h"
 
 #include "rpg_character_XML_types.h"
 
@@ -231,6 +234,21 @@ class RPG_Monster_NaturalWeapon_Type_pskel: public virtual ::xml_schema::string_
   post_RPG_Monster_NaturalWeapon_Type () = 0;
 };
 
+class RPG_Monster_WeaponTypeUnion_Type_pskel: public ::xml_schema::simple_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+  //
+  // virtual void
+  // _characters (const ::xml_schema::ro_string&);
+
+  virtual void
+  post_RPG_Monster_WeaponTypeUnion_Type ();
+};
+
 class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
 {
   public:
@@ -240,7 +258,7 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   // pre ();
 
   virtual void
-  monsterWeapon (const RPG_Monster_NaturalWeapon&);
+  weapon ();
 
   virtual void
   attackBonus (signed char);
@@ -249,7 +267,7 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   attackForm (const RPG_Combat_AttackForm&);
 
   virtual void
-  physicalDamage (const RPG_Dice_Roll&);
+  damage ();
 
   virtual void
   numAttacksPerRound (unsigned char);
@@ -260,7 +278,7 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   // Parser construction API.
   //
   void
-  monsterWeapon_parser (::RPG_Monster_NaturalWeapon_Type_pskel&);
+  weapon_parser (::RPG_Monster_WeaponTypeUnion_Type_pskel&);
 
   void
   attackBonus_parser (::xml_schema::byte_pskel&);
@@ -269,16 +287,16 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   attackForm_parser (::RPG_Combat_AttackForm_Type_pskel&);
 
   void
-  physicalDamage_parser (::RPG_Dice_Roll_Type_pskel&);
+  damage_parser (::RPG_Combat_Damage_Type_pskel&);
 
   void
   numAttacksPerRound_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  parsers (::RPG_Monster_NaturalWeapon_Type_pskel& /* monsterWeapon */,
+  parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& /* weapon */,
            ::xml_schema::byte_pskel& /* attackBonus */,
            ::RPG_Combat_AttackForm_Type_pskel& /* attackForm */,
-           ::RPG_Dice_Roll_Type_pskel& /* physicalDamage */,
+           ::RPG_Combat_Damage_Type_pskel& /* damage */,
            ::xml_schema::unsigned_byte_pskel& /* numAttacksPerRound */);
 
   // Constructor.
@@ -298,10 +316,10 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Monster_NaturalWeapon_Type_pskel* monsterWeapon_parser_;
+  ::RPG_Monster_WeaponTypeUnion_Type_pskel* weapon_parser_;
   ::xml_schema::byte_pskel* attackBonus_parser_;
   ::RPG_Combat_AttackForm_Type_pskel* attackForm_parser_;
-  ::RPG_Dice_Roll_Type_pskel* physicalDamage_parser_;
+  ::RPG_Combat_Damage_Type_pskel* damage_parser_;
   ::xml_schema::unsigned_byte_pskel* numAttacksPerRound_parser_;
 };
 

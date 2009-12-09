@@ -111,9 +111,9 @@ RPG_Monster_NaturalArmorClass_Type_pskel ()
 //
 
 void RPG_Monster_AttackAction_Type_pskel::
-monsterWeapon_parser (::RPG_Monster_NaturalWeapon_Type_pskel& p)
+weapon_parser (::RPG_Monster_WeaponTypeUnion_Type_pskel& p)
 {
-  this->monsterWeapon_parser_ = &p;
+  this->weapon_parser_ = &p;
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
@@ -129,9 +129,9 @@ attackForm_parser (::RPG_Combat_AttackForm_Type_pskel& p)
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
-physicalDamage_parser (::RPG_Dice_Roll_Type_pskel& p)
+damage_parser (::RPG_Combat_Damage_Type_pskel& p)
 {
-  this->physicalDamage_parser_ = &p;
+  this->damage_parser_ = &p;
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
@@ -141,25 +141,25 @@ numAttacksPerRound_parser (::xml_schema::unsigned_byte_pskel& p)
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
-parsers (::RPG_Monster_NaturalWeapon_Type_pskel& monsterWeapon,
+parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& weapon,
          ::xml_schema::byte_pskel& attackBonus,
          ::RPG_Combat_AttackForm_Type_pskel& attackForm,
-         ::RPG_Dice_Roll_Type_pskel& physicalDamage,
+         ::RPG_Combat_Damage_Type_pskel& damage,
          ::xml_schema::unsigned_byte_pskel& numAttacksPerRound)
 {
-  this->monsterWeapon_parser_ = &monsterWeapon;
+  this->weapon_parser_ = &weapon;
   this->attackBonus_parser_ = &attackBonus;
   this->attackForm_parser_ = &attackForm;
-  this->physicalDamage_parser_ = &physicalDamage;
+  this->damage_parser_ = &damage;
   this->numAttacksPerRound_parser_ = &numAttacksPerRound;
 }
 
 RPG_Monster_AttackAction_Type_pskel::
 RPG_Monster_AttackAction_Type_pskel ()
-: monsterWeapon_parser_ (0),
+: weapon_parser_ (0),
   attackBonus_parser_ (0),
   attackForm_parser_ (0),
-  physicalDamage_parser_ (0),
+  damage_parser_ (0),
   numAttacksPerRound_parser_ (0)
 {
 }
@@ -781,11 +781,19 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
+// RPG_Monster_WeaponTypeUnion_Type_pskel
+//
+
+void RPG_Monster_WeaponTypeUnion_Type_pskel::
+post_RPG_Monster_WeaponTypeUnion_Type ()
+{
+}
+
 // RPG_Monster_AttackAction_Type_pskel
 //
 
 void RPG_Monster_AttackAction_Type_pskel::
-monsterWeapon (const RPG_Monster_NaturalWeapon&)
+weapon ()
 {
 }
 
@@ -800,7 +808,7 @@ attackForm (const RPG_Combat_AttackForm&)
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
-physicalDamage (const RPG_Dice_Roll&)
+damage ()
 {
 }
 
@@ -819,12 +827,12 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "monsterWeapon" && ns == "urn:rpg")
+  if (n == "weapon" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->monsterWeapon_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->weapon_parser_;
 
-    if (this->monsterWeapon_parser_)
-      this->monsterWeapon_parser_->pre ();
+    if (this->weapon_parser_)
+      this->weapon_parser_->pre ();
 
     return true;
   }
@@ -849,12 +857,12 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "physicalDamage" && ns == "urn:rpg")
+  if (n == "damage" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->physicalDamage_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->damage_parser_;
 
-    if (this->physicalDamage_parser_)
-      this->physicalDamage_parser_->pre ();
+    if (this->damage_parser_)
+      this->damage_parser_->pre ();
 
     return true;
   }
@@ -879,10 +887,13 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "monsterWeapon" && ns == "urn:rpg")
+  if (n == "weapon" && ns == "urn:rpg")
   {
-    if (this->monsterWeapon_parser_)
-      this->monsterWeapon (this->monsterWeapon_parser_->post_RPG_Monster_NaturalWeapon_Type ());
+    if (this->weapon_parser_)
+    {
+      this->weapon_parser_->post_RPG_Monster_WeaponTypeUnion_Type ();
+      this->weapon ();
+    }
 
     return true;
   }
@@ -903,10 +914,13 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "physicalDamage" && ns == "urn:rpg")
+  if (n == "damage" && ns == "urn:rpg")
   {
-    if (this->physicalDamage_parser_)
-      this->physicalDamage (this->physicalDamage_parser_->post_RPG_Dice_Roll_Type ());
+    if (this->damage_parser_)
+    {
+      this->damage_parser_->post_RPG_Combat_Damage_Type ();
+      this->damage ();
+    }
 
     return true;
   }

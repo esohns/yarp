@@ -25,3 +25,127 @@ post_RPG_Combat_AttackForm_Type ()
   // return ... ;
 }
 
+// RPG_Combat_SpecialAttack_Type_pimpl
+//
+
+void RPG_Combat_SpecialAttack_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_SpecialAttack_Type_pimpl::
+post_RPG_Combat_SpecialAttack_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+}
+
+// RPG_Combat_SpecialDamageType_Type_pimpl
+//
+
+void RPG_Combat_SpecialDamageType_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_SpecialDamageType_Type_pimpl::
+post_RPG_Combat_SpecialDamageType_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+}
+
+// RPG_Combat_DamageEffectType_Type_pimpl
+//
+
+void RPG_Combat_DamageEffectType_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_DamageEffectType_Type_pimpl::
+post_RPG_Combat_DamageEffectType_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+}
+
+// RPG_Combat_DamageTypeUnion_Type_pimpl
+//
+
+void RPG_Combat_DamageTypeUnion_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_DamageTypeUnion_Type_pimpl::
+_characters (const ::xml_schema::ro_string& s)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_DamageTypeUnion_Type_pimpl::
+post_RPG_Combat_DamageTypeUnion_Type ()
+{
+}
+
+// RPG_Combat_DamageElement_Type_pimpl
+//
+
+void RPG_Combat_DamageElement_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_DamageElement_Type_pimpl::
+type ()
+{
+}
+
+void RPG_Combat_DamageElement_Type_pimpl::
+damage ()
+{
+}
+
+void RPG_Combat_DamageElement_Type_pimpl::
+duration (unsigned short duration)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_DamageElement_Type_pimpl::
+effect ()
+{
+}
+
+void RPG_Combat_DamageElement_Type_pimpl::
+post_RPG_Combat_DamageElement_Type ()
+{
+}
+
+// RPG_Combat_Damage_Type_pimpl
+//
+
+void RPG_Combat_Damage_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_Damage_Type_pimpl::
+element ()
+{
+}
+
+void RPG_Combat_Damage_Type_pimpl::
+post_RPG_Combat_Damage_Type ()
+{
+}
+

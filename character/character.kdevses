@@ -1,40 +1,25 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="11" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character.xsd" >
-   <View0 Encoding="" line="0" Type="Source" />
-  </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character.xml" >
-   <View0 Encoding="" line="88" Type="Source" />
-  </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/main.cpp" >
+ <DocsAndViews NumberOfDocuments="6" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/main.cpp" >
    <View0 Encoding="" line="339" Type="Source" />
+  </Doc0>
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_base.h" >
+   <View0 Encoding="" line="73" Type="Source" />
+  </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/monster/rpg_monster_XML_types.h" >
+   <View0 Encoding="" line="78" Type="Source" />
   </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_monster.h" >
-   <View0 Encoding="" Type="Source" />
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/monster/rpg_monster_attackaction.h" >
+   <View0 Encoding="" line="18" Type="Source" />
   </Doc3>
-  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_monster_common.h" >
-   <View0 Encoding="" Type="Source" />
+  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/monster/rpg_monster_weapontypeunion.h" >
+   <View0 Encoding="" line="25" Type="Source" />
   </Doc4>
-  <Doc5 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_player_common.h" >
-   <View0 Encoding="" Type="Source" />
+  <Doc5 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_base.cpp" >
+   <View0 Encoding="" line="187" Type="Source" />
   </Doc5>
-  <Doc6 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_monster.cpp" >
-   <View0 Encoding="" Type="Source" />
-  </Doc6>
-  <Doc7 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/monster/rpg_monster_dictionary.cpp" >
-   <View0 Encoding="" Type="Source" />
-  </Doc7>
-  <Doc8 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/monster/rpg_monster_dictionary.h" >
-   <View0 Encoding="" Type="Source" />
-  </Doc8>
-  <Doc9 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/monster/monster_parser.cpp" >
-   <View0 Encoding="UTF-8" line="40" Type="Source" />
-  </Doc9>
-  <Doc10 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/monster/rpg_XMLSchema.h" >
-   <View0 Encoding="" line="0" Type="Source" />
-  </Doc10>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>

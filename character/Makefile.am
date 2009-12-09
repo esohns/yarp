@@ -32,9 +32,8 @@ libRPG_Character_la_LDFLAGS = -L/usr/local/lib
 bin_PROGRAMS = character_generator
 
 character_generator_SOURCES = main.cpp
-character_generator_LDADD = $(top_builddir)/libRPG_Character.la \
-	$(top_builddir)/monster/libRPG_Monster.la -lRPG_Combat -lRPG_Item -lRPG_Chance -lRPG_Dice -lACE -lpthread \
-	-lxerces-c
+character_generator_LDADD = $(top_builddir)/libRPG_Character.la -lACE \
+	-lRPG_Chance -lRPG_Combat -lRPG_Dice -lRPG_Item -lpthread -lxerces-c
 character_generator_LDFLAGS = -L/usr/local/lib
 
 bindata_DATA = rpg_character.xsd

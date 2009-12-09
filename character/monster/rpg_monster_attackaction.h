@@ -23,10 +23,10 @@
 
 struct RPG_Monster_AttackAction
 {
-  RPG_Monster_NaturalWeapon monsterWeapon;
+  RPG_Monster_WeaponTypeUnion weapon;
   char attackBonus;
   std::vector<RPG_Combat_AttackForm> attackForms;
-  RPG_Dice_Roll physicalDamage;
+  RPG_Combat_Damage damage;
   unsigned char numAttacksPerRound;
 };
 

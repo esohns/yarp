@@ -128,6 +128,26 @@ post_RPG_Monster_NaturalWeapon_Type ()
   // return ... ;
 }
 
+// RPG_Monster_WeaponTypeUnion_Type_pimpl
+//
+
+void RPG_Monster_WeaponTypeUnion_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Monster_WeaponTypeUnion_Type_pimpl::
+_characters (const ::xml_schema::ro_string& s)
+{
+  // TODO
+  //
+}
+
+void RPG_Monster_WeaponTypeUnion_Type_pimpl::
+post_RPG_Monster_WeaponTypeUnion_Type ()
+{
+}
+
 // RPG_Monster_AttackAction_Type_pimpl
 //
 
@@ -137,10 +157,8 @@ pre ()
 }
 
 void RPG_Monster_AttackAction_Type_pimpl::
-monsterWeapon (const RPG_Monster_NaturalWeapon& monsterWeapon)
+weapon ()
 {
-  // TODO
-  //
 }
 
 void RPG_Monster_AttackAction_Type_pimpl::
@@ -158,10 +176,8 @@ attackForm (const RPG_Combat_AttackForm& attackForm)
 }
 
 void RPG_Monster_AttackAction_Type_pimpl::
-physicalDamage (const RPG_Dice_Roll& physicalDamage)
+damage ()
 {
-  // TODO
-  //
 }
 
 void RPG_Monster_AttackAction_Type_pimpl::

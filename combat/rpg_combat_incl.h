@@ -22,5 +22,11 @@
 #define RPG_COMBAT_INCL_H
 
 #include "rpg_combat_attackform.h"
+#include "rpg_combat_specialattack.h"
+#include "rpg_combat_specialdamagetype.h"
+#include "rpg_combat_damageeffecttype.h"
+#include "rpg_combat_damagetypeunion.h"
+#include "rpg_combat_damageelement.h"
+#include "rpg_combat_damage.h"
 
 #endif
