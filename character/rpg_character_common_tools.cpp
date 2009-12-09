@@ -26,17 +26,12 @@
 #include "rpg_character_attribute.h"
 #include "rpg_character_condition.h"
 #include "rpg_character_ability.h"
-#include "rpg_character_monstermetatype.h"
-#include "rpg_character_monstersubtype.h"
-#include "rpg_character_monsterweapon.h"
-#include "rpg_character_attackform.h"
 #include "rpg_character_size.h"
 #include "rpg_character_skill.h"
 #include "rpg_character_feat.h"
 #include "rpg_character_plane.h"
 #include "rpg_character_terrain.h"
 #include "rpg_character_climate.h"
-#include "rpg_character_organization.h"
 #include "rpg_character_alignmentcivic.h"
 #include "rpg_character_alignmentethic.h"
 
@@ -58,51 +53,41 @@
 #include <cctype>
 
 // init statics
-RPG_Character_AbilityToStringTable_t RPG_Character_AbilityHelper::myRPG_Character_AbilityToStringTable;
-RPG_Character_AlignmentCivicToStringTable_t RPG_Character_AlignmentCivicHelper::myRPG_Character_AlignmentCivicToStringTable;
-RPG_Character_AlignmentEthicToStringTable_t RPG_Character_AlignmentEthicHelper::myRPG_Character_AlignmentEthicToStringTable;
-RPG_Character_AttackFormToStringTable_t RPG_Character_AttackFormHelper::myRPG_Character_AttackFormToStringTable;
+RPG_Character_GenderToStringTable_t RPG_Character_GenderHelper::myRPG_Character_GenderToStringTable;
+RPG_Character_RaceToStringTable_t RPG_Character_RaceHelper::myRPG_Character_RaceToStringTable;
+RPG_Character_MetaClassToStringTable_t RPG_Character_MetaClassHelper::myRPG_Character_MetaClassToStringTable;
+RPG_Character_SubClassToStringTable_t RPG_Character_SubClassHelper::myRPG_Character_SubClassToStringTable;
 RPG_Character_AttributeToStringTable_t RPG_Character_AttributeHelper::myRPG_Character_AttributeToStringTable;
 RPG_Character_ConditionToStringTable_t RPG_Character_ConditionHelper::myRPG_Character_ConditionToStringTable;
-RPG_Character_PlaneToStringTable_t RPG_Character_PlaneHelper::myRPG_Character_PlaneToStringTable;
-RPG_Character_ClimateToStringTable_t RPG_Character_ClimateHelper::myRPG_Character_ClimateToStringTable;
-RPG_Character_TerrainToStringTable_t RPG_Character_TerrainHelper::myRPG_Character_TerrainToStringTable;
-RPG_Character_FeatToStringTable_t RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable;
-RPG_Character_GenderToStringTable_t RPG_Character_GenderHelper::myRPG_Character_GenderToStringTable;
-RPG_Character_MetaClassToStringTable_t RPG_Character_MetaClassHelper::myRPG_Character_MetaClassToStringTable;
-RPG_Character_MonsterMetaTypeToStringTable_t RPG_Character_MonsterMetaTypeHelper::myRPG_Character_MonsterMetaTypeToStringTable;
-RPG_Character_MonsterSubTypeToStringTable_t RPG_Character_MonsterSubTypeHelper::myRPG_Character_MonsterSubTypeToStringTable;
-RPG_Character_MonsterWeaponToStringTable_t RPG_Character_MonsterWeaponHelper::myRPG_Character_MonsterWeaponToStringTable;
-RPG_Character_OrganizationToStringTable_t RPG_Character_OrganizationHelper::myRPG_Character_OrganizationToStringTable;
-RPG_Character_RaceToStringTable_t RPG_Character_RaceHelper::myRPG_Character_RaceToStringTable;
+RPG_Character_AbilityToStringTable_t RPG_Character_AbilityHelper::myRPG_Character_AbilityToStringTable;
 RPG_Character_SizeToStringTable_t RPG_Character_SizeHelper::myRPG_Character_SizeToStringTable;
 RPG_Character_SkillToStringTable_t RPG_Character_SkillHelper::myRPG_Character_SkillToStringTable;
-RPG_Character_SubClassToStringTable_t RPG_Character_SubClassHelper::myRPG_Character_SubClassToStringTable;
+RPG_Character_FeatToStringTable_t RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable;
+RPG_Character_PlaneToStringTable_t RPG_Character_PlaneHelper::myRPG_Character_PlaneToStringTable;
+RPG_Character_TerrainToStringTable_t RPG_Character_TerrainHelper::myRPG_Character_TerrainToStringTable;
+RPG_Character_ClimateToStringTable_t RPG_Character_ClimateHelper::myRPG_Character_ClimateToStringTable;
+RPG_Character_AlignmentCivicToStringTable_t RPG_Character_AlignmentCivicHelper::myRPG_Character_AlignmentCivicToStringTable;
+RPG_Character_AlignmentEthicToStringTable_t RPG_Character_AlignmentEthicHelper::myRPG_Character_AlignmentEthicToStringTable;
 
 void RPG_Character_Common_Tools::initStringConversionTables()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::initStringConversionTables"));
 
-  RPG_Character_AbilityHelper::init();
-  RPG_Character_AlignmentCivicHelper::init();
-  RPG_Character_AlignmentEthicHelper::init();
-  RPG_Character_AttackFormHelper::init();
+  RPG_Character_GenderHelper::init();
+  RPG_Character_RaceHelper::init();
+  RPG_Character_MetaClassHelper::init();
+  RPG_Character_SubClassHelper::init();
   RPG_Character_AttributeHelper::init();
   RPG_Character_ConditionHelper::init();
-  RPG_Character_PlaneHelper::init();
-  RPG_Character_ClimateHelper::init();
-  RPG_Character_TerrainHelper::init();
-  RPG_Character_FeatHelper::init();
-  RPG_Character_GenderHelper::init();
-  RPG_Character_MetaClassHelper::init();
-  RPG_Character_MonsterMetaTypeHelper::init();
-  RPG_Character_MonsterSubTypeHelper::init();
-  RPG_Character_MonsterWeaponHelper::init();
-  RPG_Character_OrganizationHelper::init();
-  RPG_Character_RaceHelper::init();
+  RPG_Character_AbilityHelper::init();
   RPG_Character_SizeHelper::init();
   RPG_Character_SkillHelper::init();
-  RPG_Character_SubClassHelper::init();
+  RPG_Character_FeatHelper::init();
+  RPG_Character_PlaneHelper::init();
+  RPG_Character_TerrainHelper::init();
+  RPG_Character_ClimateHelper::init();
+  RPG_Character_AlignmentCivicHelper::init();
+  RPG_Character_AlignmentEthicHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
@@ -124,6 +109,22 @@ const std::string RPG_Character_Common_Tools::alignmentToString(const RPG_Charac
       (alignment_in.ethic == ALIGNMENTETHIC_NEUTRAL))
   {
     result = ACE_TEXT_ALWAYS_CHAR("True Neutral");
+  } // end IF
+
+  return result;
+}
+
+const std::string RPG_Character_Common_Tools::environmentToString(const RPG_Character_Environment& environment_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::environmentToString"));
+
+  std::string result;
+
+  result += RPG_Character_TerrainHelper::RPG_Character_TerrainToString(environment_in.terrain);
+  if (environment_in.climate != CLIMATE_NONE)
+  {
+    result += ACE_TEXT_ALWAYS_CHAR("|");
+    result += RPG_Character_ClimateHelper::RPG_Character_ClimateToString(environment_in.climate);
   } // end IF
 
   return result;
@@ -172,6 +173,68 @@ const std::string RPG_Character_Common_Tools::attributesToString(const RPG_Chara
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
   return result;
+}
+
+const RPG_Character_Plane RPG_Character_Common_Tools::terrainToPlane(const RPG_Character_Terrain& terrain_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::terrainToPlane"));
+
+  switch (terrain_in)
+  {
+    case TERRAIN_UNDERGROUND:
+    case TERRAIN_PLAINS:
+    case TERRAIN_FORESTS:
+    case TERRAIN_HILLS:
+    case TERRAIN_MOUNTAINS:
+    case TERRAIN_DESERTS:
+    case TERRAIN_MATERIALPLANE_ANY:
+    {
+      return PLANE_MATERIAL;
+    }
+    case TERRAIN_TRANSITIVEPLANE_ASTRAL:
+    case TERRAIN_TRANSITIVEPLANE_ETHERAL:
+    case TERRAIN_TRANSITIVEPLANE_SHADOW:
+    case TERRAIN_TRANSITIVEPLANE_ANY:
+    {
+      return PLANE_TRANSITIVE;
+    }
+    case TERRAIN_INNERPLANE_AIR:
+    case TERRAIN_INNERPLANE_EARTH:
+    case TERRAIN_INNERPLANE_FIRE:
+    case TERRAIN_INNERPLANE_WATER:
+    case TERRAIN_INNERPLANE_POSITIVE:
+    case TERRAIN_INNERPLANE_NEGATIVE:
+    case TERRAIN_INNERPLANE_ANY:
+    {
+      return PLANE_INNER;
+    }
+    case TERRAIN_OUTERPLANE_LAWFUL_ANY:
+    case TERRAIN_OUTERPLANE_CHAOTIC_ANY:
+    case TERRAIN_OUTERPLANE_GOOD_ANY:
+    case TERRAIN_OUTERPLANE_EVIL_ANY:
+    case TERRAIN_OUTERPLANE_LAWFUL_GOOD:
+    case TERRAIN_OUTERPLANE_LAWFUL_EVIL:
+    case TERRAIN_OUTERPLANE_CHAOTIC_GOOD:
+    case TERRAIN_OUTERPLANE_CHAOTIC_EVIL:
+    case TERRAIN_OUTERPLANE_NEUTRAL:
+    case TERRAIN_OUTERPLANE_MILD_ANY:
+    case TERRAIN_OUTERPLANE_STRONG_ANY:
+    case TERRAIN_OUTERPLANE_ANY:
+    {
+      return PLANE_OUTER;
+    }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid terrain: \"%s\" --> check implementation !, aborting\n"),
+                 RPG_Character_TerrainHelper::RPG_Character_TerrainToString(terrain_in).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  return RPG_CHARACTER_PLANE_INVALID;
 }
 
 const short int RPG_Character_Common_Tools::getAttributeAbilityModifier(const unsigned char& attributeAbility_in)

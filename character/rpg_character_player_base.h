@@ -52,7 +52,7 @@ class RPG_Character_Player_Base
   // compute dynamically from class/XP
   const unsigned char getLevel() const;
 
-  void gainExperience(const unsigned int&); // XP
+  virtual void gainExperience(const unsigned int&); // XP
 
   virtual const bool isPlayerCharacter() const;
 

@@ -28,7 +28,7 @@
 #include "rpg_item_armorcategory.h"
 #include "rpg_item_armortype.h"
 
-#include <rpg_chance_dicetype.h>
+#include <rpg_dice_dietype.h>
 
 #include <ace/Log_Msg.h>
 
@@ -112,7 +112,7 @@ const std::string RPG_Item_Common_Tools::damageToString(const RPG_Item_Damage& d
   {
     str << damage_in.numDice;
     result += str.str();
-    result += RPG_Chance_DiceTypeHelper::RPG_Chance_DiceTypeToString(damage_in.typeDice);
+    result += RPG_Dice_DieTypeHelper::RPG_Dice_DieTypeToString(damage_in.typeDice);
   } // end IF
 
   if (damage_in.modifier == 0)

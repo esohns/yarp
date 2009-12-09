@@ -77,8 +77,7 @@ class RPG_Item_Dictionary_Type_pskel;
 
 #include <rpg_XMLSchema.h>
 
-#include <rpg_chance_dicetype.h>
-#include <rpg_chance_diceroll.h>
+#include <rpg_dice_incl.h>
 #include "rpg_item_weapontype.h"
 #include "rpg_item_weaponclass.h"
 #include "rpg_item_weaponcategory.h"
@@ -89,7 +88,7 @@ class RPG_Item_Dictionary_Type_pskel;
 #include "rpg_item_armortype.h"
 #include "rpg_item_armorcategory.h"
 
-#include <rpg_chance_dice_XML_types.h>
+#include <rpg_dice_XML_types.h>
 
 class RPG_Item_Type_Type_pskel: public virtual ::xml_schema::string_pskel
 {
@@ -284,7 +283,7 @@ class RPG_Item_WeaponPropertiesXML_Type_pskel: public ::xml_schema::complex_cont
   baseStorePrice (const RPG_Item_StorePrice&);
 
   virtual void
-  baseDamage (const RPG_Item_Damage&);
+  baseDamage ();
 
   virtual void
   criticalHitModifier (const RPG_Item_CriticalHitModifier&);
@@ -316,7 +315,7 @@ class RPG_Item_WeaponPropertiesXML_Type_pskel: public ::xml_schema::complex_cont
   baseStorePrice_parser (::RPG_Item_StorePrice_Type_pskel&);
 
   void
-  baseDamage_parser (::RPG_Chance_DiceRoll_Type_pskel&);
+  baseDamage_parser (::RPG_Dice_Roll_Type_pskel&);
 
   void
   criticalHitModifier_parser (::RPG_Item_CriticalHitModifier_Type_pskel&);
@@ -335,7 +334,7 @@ class RPG_Item_WeaponPropertiesXML_Type_pskel: public ::xml_schema::complex_cont
            ::RPG_Item_WeaponCategory_Type_pskel& /* weaponCategory */,
            ::RPG_Item_WeaponClass_Type_pskel& /* weaponClass */,
            ::RPG_Item_StorePrice_Type_pskel& /* baseStorePrice */,
-           ::RPG_Chance_DiceRoll_Type_pskel& /* baseDamage */,
+           ::RPG_Dice_Roll_Type_pskel& /* baseDamage */,
            ::RPG_Item_CriticalHitModifier_Type_pskel& /* criticalHitModifier */,
            ::xml_schema::unsigned_byte_pskel& /* rangeIncrement */,
            ::xml_schema::unsigned_short_pskel& /* baseWeight */,
@@ -362,7 +361,7 @@ class RPG_Item_WeaponPropertiesXML_Type_pskel: public ::xml_schema::complex_cont
   ::RPG_Item_WeaponCategory_Type_pskel* weaponCategory_parser_;
   ::RPG_Item_WeaponClass_Type_pskel* weaponClass_parser_;
   ::RPG_Item_StorePrice_Type_pskel* baseStorePrice_parser_;
-  ::RPG_Chance_DiceRoll_Type_pskel* baseDamage_parser_;
+  ::RPG_Dice_Roll_Type_pskel* baseDamage_parser_;
   ::RPG_Item_CriticalHitModifier_Type_pskel* criticalHitModifier_parser_;
   ::xml_schema::unsigned_byte_pskel* rangeIncrement_parser_;
   ::xml_schema::unsigned_short_pskel* baseWeight_parser_;
@@ -393,7 +392,7 @@ class RPG_Item_MagicWeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_We
            ::RPG_Item_WeaponCategory_Type_pskel& /* weaponCategory */,
            ::RPG_Item_WeaponClass_Type_pskel& /* weaponClass */,
            ::RPG_Item_StorePrice_Type_pskel& /* baseStorePrice */,
-           ::RPG_Chance_DiceRoll_Type_pskel& /* baseDamage */,
+           ::RPG_Dice_Roll_Type_pskel& /* baseDamage */,
            ::RPG_Item_CriticalHitModifier_Type_pskel& /* criticalHitModifier */,
            ::xml_schema::unsigned_byte_pskel& /* rangeIncrement */,
            ::xml_schema::unsigned_short_pskel& /* baseWeight */,

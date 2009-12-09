@@ -126,7 +126,7 @@ baseStorePrice_parser (::RPG_Item_StorePrice_Type_pskel& p)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pskel::
-baseDamage_parser (::RPG_Chance_DiceRoll_Type_pskel& p)
+baseDamage_parser (::RPG_Dice_Roll_Type_pskel& p)
 {
   this->baseDamage_parser_ = &p;
 }
@@ -160,7 +160,7 @@ parsers (::RPG_Item_WeaponType_Type_pskel& weaponType,
          ::RPG_Item_WeaponCategory_Type_pskel& weaponCategory,
          ::RPG_Item_WeaponClass_Type_pskel& weaponClass,
          ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
-         ::RPG_Chance_DiceRoll_Type_pskel& baseDamage,
+         ::RPG_Dice_Roll_Type_pskel& baseDamage,
          ::RPG_Item_CriticalHitModifier_Type_pskel& criticalHitModifier,
          ::xml_schema::unsigned_byte_pskel& rangeIncrement,
          ::xml_schema::unsigned_short_pskel& baseWeight,
@@ -205,7 +205,7 @@ parsers (::RPG_Item_WeaponType_Type_pskel& weaponType,
          ::RPG_Item_WeaponCategory_Type_pskel& weaponCategory,
          ::RPG_Item_WeaponClass_Type_pskel& weaponClass,
          ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
-         ::RPG_Chance_DiceRoll_Type_pskel& baseDamage,
+         ::RPG_Dice_Roll_Type_pskel& baseDamage,
          ::RPG_Item_CriticalHitModifier_Type_pskel& criticalHitModifier,
          ::xml_schema::unsigned_byte_pskel& rangeIncrement,
          ::xml_schema::unsigned_short_pskel& baseWeight,
@@ -618,7 +618,7 @@ baseStorePrice (const RPG_Item_StorePrice&)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pskel::
-baseDamage (const RPG_Item_Damage&)
+baseDamage ()
 {
 }
 
@@ -787,7 +787,10 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "baseDamage" && ns == "urn:rpg")
   {
     if (this->baseDamage_parser_)
-      this->baseDamage (this->baseDamage_parser_->post_RPG_Chance_DiceRoll_Type ());
+    {
+      this->baseDamage_parser_->post_RPG_Dice_Roll_Type ();
+      this->baseDamage ();
+    }
 
     return true;
   }

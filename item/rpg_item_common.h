@@ -20,8 +20,8 @@
 #ifndef RPG_ITEM_COMMON_H
 #define RPG_ITEM_COMMON_H
 
-#include <rpg_chance_dicetype.h>
-#include <rpg_chance_diceroll.h>
+#include <rpg_dice_dietype.h>
+#include <rpg_dice_roll.h>
 
 #include "rpg_item_weapontype.h"
 #include "rpg_item_weaponcategory.h"
@@ -29,6 +29,7 @@
 #include "rpg_item_storeprice.h"
 #include "rpg_item_criticalhitmodifier.h"
 #include "rpg_item_physicaldamagetype.h"
+#include <vector>
 #include "rpg_item_weaponpropertiesxml.h"
 #include "rpg_item_armortype.h"
 #include "rpg_item_armorcategory.h"
@@ -39,7 +40,7 @@
 
 // typedef std::bitset<(RPG_ITEM_PHYSICALDAMAGETYPE_MAX - 1)> RPG_Item_WeaponDamage;
 typedef std::bitset<3> RPG_Item_WeaponDamage;
-typedef RPG_Chance_DiceRoll RPG_Item_Damage;
+typedef RPG_Dice_Roll RPG_Item_Damage;
 
 struct RPG_Item_WeaponProperties
 {
@@ -47,7 +48,7 @@ struct RPG_Item_WeaponProperties
   RPG_Item_WeaponCategory weaponCategory;
   RPG_Item_WeaponClass weaponClass;
   RPG_Item_StorePrice baseStorePrice;
-  RPG_Chance_DiceRoll baseDamage;
+  RPG_Item_Damage baseDamage;
   RPG_Item_CriticalHitModifier criticalHitModifier;
   unsigned char rangeIncrement;
   unsigned short int baseWeight;

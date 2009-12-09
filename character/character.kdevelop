@@ -21,7 +21,7 @@
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>character_parser</activetarget>
+      <activetarget>libRPG_Character.la</activetarget>
     </general>
     <run>
       <mainprogram>/home/unfv/Projects/RPG/character/debug/.libs/character_parser</mainprogram>

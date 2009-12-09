@@ -26,16 +26,18 @@
 
 #include <rpg_character_common_tools.h>
 #include <rpg_character_skills_common_tools.h>
-#include <rpg_character_dictionary.h>
 #include <rpg_character_player.h>
 #include <rpg_character_player_common.h>
 #include <rpg_character_monster.h>
 
+#include <rpg_monster_dictionary.h>
+#include <rpg_monster_common_tools.h>
+
 #include <rpg_item_dictionary.h>
 #include <rpg_item_common_tools.h>
 
-#include <rpg_chance_dice.h>
-#include <rpg_chance_dice_common_tools.h>
+#include <rpg_dice.h>
+#include <rpg_dice_common_tools.h>
 
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
@@ -142,27 +144,27 @@ const bool process_arguments(const int argc_in,
 }
 
 void do_battle(const RPG_Character_Party_t& party_in,
-               const RPG_Character_Encounter_t& encounter_in)
+               const RPG_Monster_Encounter_t& encounter_in)
 {
   ACE_TRACE(ACE_TEXT("::do_battle"));
 
   // step1: instantiate monster(s)
   RPG_Character_Monsters_t monsters;
-  for (RPG_Character_EncounterIterator_t iterator = encounter_in.begin();
+  for (RPG_Monster_EncounterIterator_t iterator = encounter_in.begin();
        iterator != encounter_in.end();
        iterator++)
   {
     RPG_Character_MonsterGroupInstance_t groupInstance;
-    RPG_Character_MonsterProperties properties = RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->getMonsterProperties(iterator->first);
+    RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getMonsterProperties(iterator->first);
   // *TODO*: define monster abilities !
     RPG_Character_Abilities_t abilities;
 
     // compute individual hitpoints
-    RPG_Chance_DiceRollResult_t results;
-    RPG_Chance_Dice::simulateDiceRoll(properties.hitDice,
-                                      iterator->second,
-                                      results);
-    for (RPG_Chance_DiceRollResultIterator_t iterator2 = results.begin();
+    RPG_Dice_RollResult_t results;
+    RPG_Dice::simulateRoll(properties.hitDice,
+                           iterator->second,
+                           results);
+    for (RPG_Dice_RollResultIterator_t iterator2 = results.begin();
          iterator2 != results.end();
          iterator2++)
     {
@@ -195,21 +197,21 @@ void do_battle(const RPG_Character_Party_t& party_in,
                                                 monsters,
                                                 battleSequence);
   // perform a combat round
-  while (!RPG_Combat_Common_Tools::isPartyDeadOrHelpless(party_in) &&
-         !RPG_Combat_Common_Tools::areMonstersDeadOrHelpless(monsters))
+  while (!RPG_Combat_Common_Tools::isPartyHelpless(party_in) &&
+         !RPG_Combat_Common_Tools::areMonstersHelpless(monsters))
   {
     break;
   } // end WHILE
 
   // sanity check
-  if (RPG_Combat_Common_Tools::isPartyDeadOrHelpless(party_in) &&
-      RPG_Combat_Common_Tools::areMonstersDeadOrHelpless(monsters))
+  if (RPG_Combat_Common_Tools::isPartyHelpless(party_in) &&
+      RPG_Combat_Common_Tools::areMonstersHelpless(monsters))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("everybody is DEAD --> check implementation !\n")));
   } // end IF
 
-  if (!RPG_Combat_Common_Tools::isPartyDeadOrHelpless(party_in))
+  if (!RPG_Combat_Common_Tools::isPartyHelpless(party_in))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("party has WON !\n")));
@@ -231,10 +233,14 @@ void do_work(const std::string& itemDictionaryFilename_in,
   ACE_TRACE(ACE_TEXT("::do_work"));
 
   // step1: init: random seed, string conversion facilities, ...
-  RPG_Chance_Dice::init();
-  RPG_Chance_Dice_Common_Tools::initStringConversionTables();
+  RPG_Dice::init();
+  RPG_Dice_Common_Tools::initStringConversionTables();
   RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
+  RPG_Monster_Common_Tools::initStringConversionTables();
+  RPG_Combat_Common_Tools::initStringConversionTables();
+
+  // step 1a: init ruleset
   RPG_Character_Skills_Common_Tools::init();
 
   // step2a: init item dictionary
@@ -253,12 +259,12 @@ void do_work(const std::string& itemDictionaryFilename_in,
   // step2b: init monster dictionary
   try
   {
-    RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->initCharacterDictionary(monsterDictionaryFilename_in);
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->initMonsterDictionary(monsterDictionaryFilename_in);
   }
   catch(...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Character_Dictionary::initCharacterDictionary, returning\n")));
+               ACE_TEXT("caught exception in RPG_Monster_Dictionary::initMonsterDictionary, returning\n")));
 
     return;
   }
@@ -279,14 +285,14 @@ void do_work(const std::string& itemDictionaryFilename_in,
   RPG_Character_Environment environment;
   environment.climate = CLIMATE_ANY;
   environment.terrain = TERRAIN_ANY;
-  RPG_Character_OrganizationList_t organizations;
+  RPG_Monster_OrganizationList_t organizations;
   organizations.insert(ORGANIZATION_ANY);
-  RPG_Character_Encounter_t encounter;
-  RPG_CHARACTER_DICTIONARY_SINGLETON::instance()->generateRandomEncounter(numMonsterTypes_in,
-                                                                          alignment,
-                                                                          environment,
-                                                                          organizations,
-                                                                          encounter);
+  RPG_Monster_Encounter_t encounter;
+  RPG_MONSTER_DICTIONARY_SINGLETON::instance()->generateRandomEncounter(numMonsterTypes_in,
+                                                                        alignment,
+                                                                        environment,
+                                                                        organizations,
+                                                                        encounter);
 
   // step6: FIGHT !
   do_battle(party,

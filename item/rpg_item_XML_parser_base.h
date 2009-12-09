@@ -10,7 +10,7 @@
 
 #include <rpg_item_XML_types.h>
 
-#include <rpg_chance_dice_XML_parser_base.h>
+#include <rpg_dice_XML_parser_base.h>
 
 class RPG_Item_Type_Type_pimpl: public virtual RPG_Item_Type_Type_pskel,
   public ::xml_schema::string_pimpl
@@ -129,7 +129,7 @@ class RPG_Item_WeaponPropertiesXML_Type_pimpl: public virtual RPG_Item_WeaponPro
   baseStorePrice (const RPG_Item_StorePrice&);
 
   virtual void
-  baseDamage (const RPG_Item_Damage&);
+  baseDamage ();
 
   virtual void
   criticalHitModifier (const RPG_Item_CriticalHitModifier&);

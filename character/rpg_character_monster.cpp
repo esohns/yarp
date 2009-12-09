@@ -19,12 +19,12 @@
  ***************************************************************************/
 #include "rpg_character_monster.h"
 
-#include "rpg_character_monster_common_tools.h"
+#include <rpg_monster_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
 RPG_Character_Monster::RPG_Character_Monster(const std::string& name_in,
-                                             const RPG_Character_MonsterType& monsterType_in,
+                                             const RPG_Monster_Type& type_in,
                                              const RPG_Character_Alignment& alignment_in,
                                              const RPG_Character_Attributes& attributes_in,
                                              const RPG_Character_Skills_t& skills_in,
@@ -33,7 +33,7 @@ RPG_Character_Monster::RPG_Character_Monster(const std::string& name_in,
                                              const unsigned short int& hitpoints_in,
                                              const unsigned int& wealth_in,
                                              const RPG_Item_List_t& inventory_in)
- : myMonsterType(monsterType_in),
+ : myType(type_in),
    inherited(name_in,
              alignment_in,
              attributes_in,
@@ -49,7 +49,7 @@ RPG_Character_Monster::RPG_Character_Monster(const std::string& name_in,
 }
 
 RPG_Character_Monster::RPG_Character_Monster(const RPG_Character_Monster& monster_in)
- : myMonsterType(monster_in.myMonsterType),
+ : myType(monster_in.myType),
    inherited(monster_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::RPG_Character_Monster"));
@@ -66,17 +66,25 @@ RPG_Character_Monster& RPG_Character_Monster::operator=(const RPG_Character_Mons
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::operator="));
 
-  myMonsterType = monster_in.myMonsterType;
+  myType = monster_in.myType;
   inherited::operator=(monster_in);
 
   return *this;
 }
 
-const RPG_Character_MonsterType RPG_Character_Monster::getMonsterType() const
+const RPG_Monster_Type RPG_Character_Monster::getType() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getMonsterType"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getType"));
 
-  return myMonsterType;
+  return myType;
+}
+
+void RPG_Character_Monster::gainExperience(const unsigned int& XP_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::gainExperience"));
+
+  // *TODO*
+  ACE_ASSERT(false);
 }
 
 const bool RPG_Character_Monster::isPlayerCharacter() const
@@ -92,7 +100,7 @@ void RPG_Character_Monster::dump() const
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("Monster (type: \"%s\")\n"),
-             RPG_Character_Monster_Common_Tools::monsterTypeToString(myMonsterType).c_str()));
+             RPG_Monster_Common_Tools::typeToString(myType).c_str()));
 
   inherited::dump();
 }

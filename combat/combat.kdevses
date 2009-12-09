@@ -2,17 +2,17 @@
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="4" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat_common_tools.cpp" >
-   <View0 Encoding="" line="232" Type="Source" />
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat.xsd" >
+   <View0 Encoding="" line="22" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat_common_tools.h" >
-   <View0 Encoding="" line="60" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat_common_tools.cpp" >
+   <View0 Encoding="" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/combat_simulator.cpp" >
-   <View0 Encoding="" line="199" Type="Source" />
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat_common_tools.h" >
+   <View0 Encoding="" Type="Source" />
   </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat_common.h" >
-   <View0 Encoding="" line="132" Type="Source" />
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/combat_simulator.cpp" >
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc3>
  </DocsAndViews>
  <pluginList>
@@ -21,13 +21,13 @@
     <breakpoint0 location="/home/unfv/Projects/RPG/item/rpg_item_dictionary.cpp:139" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint0>
-    <breakpoint1 location="/home/unfv/Projects/RPG/combat/rpg_combat_common.h:107" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint1 location="/home/unfv/Projects/RPG/combat/rpg_combat_common.h:72" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint1>
-    <breakpoint2 location="/home/unfv/Projects/RPG/combat/rpg_combat_common.h:76" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint2 location="/home/unfv/Projects/RPG/combat/rpg_combat_common.h:107" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint2>
-    <breakpoint3 location="/home/unfv/Projects/RPG/combat/rpg_combat_common.h:72" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint3 location="/home/unfv/Projects/RPG/combat/rpg_combat_common.h:76" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint3>
     <breakpoint4 location="/home/unfv/Projects/RPG/combat/rpg_combat_common.h:34" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >

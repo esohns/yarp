@@ -1,22 +1,16 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="5" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/chance/dice/rpg_chance_dice_common_tools.h" >
-   <View0 Encoding="" line="51" Type="Source" />
+ <DocsAndViews NumberOfDocuments="3" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/chance/dice/rpg_dice_roll.h" >
+   <View0 Encoding="" line="25" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/chance/scripts/bindings.sh" >
-   <View0 Encoding="" line="18" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/chance/rpg_chance_common_tools.h" >
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/chance/dice/rpg_dice.xsd" >
-   <View0 Encoding="UTF-8" line="31" Type="Source" />
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/chance/rpg_chance_common_tools.cpp" >
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/chance/dice/Makefile.am" >
-   <View0 Encoding="" line="35" Type="Source" />
-  </Doc3>
-  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/chance/dice/rpg_dice.map" >
-   <View0 Encoding="UTF-8" line="10" Type="Source" />
-  </Doc4>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>

@@ -21,7 +21,11 @@
 #define RPG_CHARACTER_MONSTER_H
 
 #include "rpg_character_base.h"
-#include "rpg_character_monster_common.h"
+#include "rpg_character_common.h"
+
+#include <rpg_monster_metatype.h>
+#include <rpg_monster_subtype.h>
+#include <rpg_monster_type.h>
 
 #include <ace/Global_Macros.h>
 
@@ -33,7 +37,7 @@ class RPG_Character_Monster
 {
  public:
   RPG_Character_Monster(const std::string&,               // name
-                        const RPG_Character_MonsterType&, // type
+                        const RPG_Monster_Type&,          // type
                         const RPG_Character_Alignment&,   // (starting) alignment
                         const RPG_Character_Attributes&,  // base attributes
                         const RPG_Character_Skills_t&,    // (starting) skills
@@ -46,7 +50,9 @@ class RPG_Character_Monster
   virtual ~RPG_Character_Monster();
   RPG_Character_Monster& operator=(const RPG_Character_Monster&);
 
-  const RPG_Character_MonsterType getMonsterType() const;
+  const RPG_Monster_Type getType() const;
+
+  virtual void gainExperience(const unsigned int&); // XP
 
   virtual const bool isPlayerCharacter() const;
 
@@ -58,7 +64,7 @@ class RPG_Character_Monster
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Monster());
 
-  RPG_Character_MonsterType myMonsterType;
+  RPG_Monster_Type myType;
 };
 
 #endif

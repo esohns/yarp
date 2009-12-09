@@ -1,17 +1,8 @@
 namespace urn:rpg
 {
-  include "rpg_item_common.h";
-  include "rpg_item_weaponcategory.h";
-  include "rpg_item_weaponclass.h";
-  include "rpg_item_storeprice.h";
-  include "rpg_item_criticalhitmodifier.h";
-  include "rpg_item_physicaldamagetype.h";
-  include "rpg_item_armorcategory.h";
-  include "rpg_item_weapontype.h";
-  include "rpg_item_armortype.h";
+  include "rpg_item_incl.h";
 
-  include <rpg_chance_dicetype.h>;
-  include <rpg_chance_diceroll.h>;
+  include <rpg_dice_incl.h>;
 
   RPG_Item_WeaponCategory_Type           RPG_Item_WeaponCategory;
   RPG_Item_WeaponClass_Type              RPG_Item_WeaponClass;

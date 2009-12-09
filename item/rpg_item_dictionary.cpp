@@ -25,7 +25,7 @@
 #include "rpg_item_weapon.h"
 #include "rpg_item_armor.h"
 
-#include <rpg_chance_dice_XML_parser.h>
+#include <rpg_dice_XML_parser.h>
 
 #include <ace/Log_Msg.h>
 
@@ -50,7 +50,7 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
   // Construct the parser.
   //
   ::xml_schema::unsigned_int_pimpl        unsigned_int_p;
-  RPG_Chance_DiceType_Type                chanceDiceType_p;
+  RPG_Dice_DieType_Type                   dieType_p;
   ::xml_schema::integer_pimpl             int_p;
 
   RPG_Item_WeaponType_Type                weaponType_p;
@@ -59,10 +59,10 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
   RPG_Item_StorePrice_Type                baseStorePrice_p;
   baseStorePrice_p.parsers(unsigned_int_p,
                            unsigned_int_p);
-  RPG_Chance_DiceRoll_Type                baseDamage_p;
-  baseDamage_p.parsers(unsigned_int_p,
-                       chanceDiceType_p,
-                       int_p);
+  RPG_Dice_Roll_Type                      roll_p;
+  roll_p.parsers(unsigned_int_p,
+                 dieType_p,
+                 int_p);
   ::xml_schema::unsigned_byte_pimpl       unsigned_byte_p;
   RPG_Item_CriticalHitModifier_Type       criticalModifier_p;
   criticalModifier_p.parsers(unsigned_byte_p,
@@ -76,7 +76,7 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
                                 weaponCategory_p,
                                 weaponClass_p,
                                 baseStorePrice_p,
-                                baseDamage_p,
+                                roll_p,
                                 criticalModifier_p,
                                 unsigned_byte_p,
                                 unsigned_short_p,

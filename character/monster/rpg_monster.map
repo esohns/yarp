@@ -1,0 +1,84 @@
+namespace urn:rpg
+{
+  include "rpg_monster_incl.h";
+
+  include <rpg_combat_incl.h>;
+
+  include <rpg_character_incl.h>;
+
+  include <rpg_dice_incl.h>;
+
+  RPG_Dice_Roll_Type                      RPG_Dice_Roll;
+  RPG_Dice_ValueRange_Type                RPG_Dice_ValueRange;
+
+  RPG_Character_Size_Type                 RPG_Character_Size;
+  RPG_Character_Attributes_Type           RPG_Character_Attributes;
+  RPG_Character_Skills_Type               RPG_Character_Skills;
+  RPG_Character_Feats_Type                RPG_Character_Feats;
+  RPG_Character_Environment_Type          RPG_Character_Environment;
+  RPG_Character_Alignment_Type            RPG_Character_Alignment;
+
+  RPG_Combat_AttackForm_Type              RPG_Combat_AttackForm;
+
+  RPG_Monster_MetaType_Type               RPG_Monster_MetaType;
+  RPG_Monster_SubType_Type                RPG_Monster_SubType;
+  RPG_Monster_Type_Type                   RPG_Monster_Type;
+  RPG_Monster_NaturalArmorClass_Type      RPG_Monster_NaturalArmorClass;
+  RPG_Monster_NaturalWeapon_Type          RPG_Monster_NaturalWeapon;
+  RPG_Monster_AttackAction_Type           RPG_Monster_AttackAction;
+  RPG_Monster_Attack_Type                 RPG_Monster_Attack;
+  RPG_Monster_SavingThrowModifiers_Type   RPG_Monster_SavingThrowModifiers;
+  RPG_Monster_Organization_Type           RPG_Monster_Organization;
+  RPG_Monster_OrganizationSlaverStep_Type RPG_Monster_OrganizationSlaverStep;
+  RPG_Monster_OrganizationStep_Type       RPG_Monster_OrganizationStep;
+  RPG_Monster_Organizations_Type          RPG_Monster_Organizations;
+  RPG_Monster_AdvancementStep_Type        RPG_Monster_AdvancementStep;
+  RPG_Monster_Advancement_Type            RPG_Monster_Advancement;
+  RPG_Monster_PropertiesXML_Type          RPG_Monster_PropertiesXML;
+#  RPG_Monster_Dictionary_Type             RPG_Monster_Dictionary;
+}
+
+#namespace urn:rpg_chance_dice
+#{
+#  include <rpg_chance_dice_common.h>;
+
+#  RPG_Chance_DiceRoll_Type                  RPG_Chance_DiceRoll;
+#  RPG_Chance_ValueRange_Type                RPG_Chance_ValueRange;
+#}
+
+#namespace urn:rpg_item
+#{
+
+#}
+
+#namespace urn:rpg_character
+#{
+#  include "rpg_character_common.h";
+#  include "rpg_character_skills_common.h";
+#  include "rpg_character_monster_common.h";
+
+#  RPG_Character_MonsterMetaType_Type        RPG_Character_MonsterMetaType;
+#  RPG_Character_MonsterSubType_Type         RPG_Character_MonsterSubType;
+#  RPG_Character_MonsterType_Type            RPG_Character_MonsterType;
+#  RPG_Character_MonsterArmorClass_Type      RPG_Character_MonsterArmorClass;
+#  RPG_Character_MonsterWeapon_Type          RPG_Character_MonsterWeapon;
+#  RPG_Character_AttackForm_Type             RPG_Character_AttackForm;
+#  RPG_Character_MonsterAttackAction_Type    RPG_Character_MonsterAttackAction;
+#  RPG_Character_MonsterAttack_Type          RPG_Character_MonsterAttack;
+#  RPG_Character_Size_Type                   RPG_Character_Size;
+#  RPG_Character_SavingThrowModifiers_Type   RPG_Character_SavingThrowModifiers;
+#  RPG_Character_Attributes_Type             RPG_Character_Attributes;
+#  RPG_Character_Skill_Type                  RPG_Character_Skill;
+#  RPG_Character_SkillValue_Type             RPG_Character_SkillsItem_t;
+#  RPG_Character_Skills_Type                 RPG_Character_Skills_t;
+#  RPG_Character_Feat_Type                   RPG_Character_Feat;
+#  RPG_Character_Feats_Type                  RPG_Character_Feats_t;
+#  RPG_Character_Environment_Type            RPG_Character_Environment;
+#  RPG_Character_Organization_Type           RPG_Character_Organization;
+#  RPG_Character_AlignmentCivic_Type         RPG_Character_AlignmentCivic;
+#  RPG_Character_AlignmentEthic_Type         RPG_Character_AlignmentEthic;
+#  RPG_Character_Alignment_Type              RPG_Character_Alignment;
+#  RPG_Character_MonsterAdvancementStep_Type RPG_Character_MonsterAdvancementStep_t;
+#  RPG_Character_MonsterAdvancement_Type     RPG_Character_MonsterAdvancement_t;
+#  RPG_Character_MonsterProperties_Type      RPG_Character_MonsterProperties_XML;
+#}

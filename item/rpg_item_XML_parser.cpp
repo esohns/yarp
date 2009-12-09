@@ -302,7 +302,7 @@ RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type()
   myCurrentWeaponProperties.baseStorePrice.numGoldPieces = 0;
   myCurrentWeaponProperties.baseStorePrice.numSilverPieces = 0;
   myCurrentWeaponProperties.baseDamage.numDice = 0;
-  myCurrentWeaponProperties.baseDamage.typeDice = RPG_CHANCE_DICETYPE_INVALID;
+  myCurrentWeaponProperties.baseDamage.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentWeaponProperties.baseDamage.modifier = 0;
   myCurrentWeaponProperties.criticalHitModifier.minToHitRoll = 20;
   myCurrentWeaponProperties.criticalHitModifier.damageModifier = 1;
@@ -393,7 +393,7 @@ RPG_Item_WeaponPropertiesXML RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_We
   myCurrentWeaponProperties.baseStorePrice.numGoldPieces = 0;
   myCurrentWeaponProperties.baseStorePrice.numSilverPieces = 0;
   myCurrentWeaponProperties.baseDamage.numDice = 0;
-  myCurrentWeaponProperties.baseDamage.typeDice = RPG_CHANCE_DICETYPE_INVALID;
+  myCurrentWeaponProperties.baseDamage.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentWeaponProperties.baseDamage.modifier = 0;
   myCurrentWeaponProperties.criticalHitModifier.minToHitRoll = 20;
   myCurrentWeaponProperties.criticalHitModifier.damageModifier = 1;

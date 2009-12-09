@@ -27,8 +27,8 @@ libRPG_Item_la_LDFLAGS = -L/usr/local/lib
 bin_PROGRAMS = item_parser
 
 item_parser_SOURCES = main.cpp
-item_parser_LDADD = $(top_builddir)/libRPG_Item.la -lACE -lpthread -lxerces-c \
-	-lRPG_Chance_Dice
+item_parser_LDADD = $(top_builddir)/libRPG_Item.la -lACE -lRPG_Dice -lpthread \
+	-lxerces-c
 item_parser_LDFLAGS = -L/usr/local/lib
 
 noinst_HEADERS = rpg_XMLSchema.h

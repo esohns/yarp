@@ -27,7 +27,7 @@ struct RPG_Item_WeaponPropertiesXML
   RPG_Item_WeaponCategory weaponCategory;
   RPG_Item_WeaponClass weaponClass;
   RPG_Item_StorePrice baseStorePrice;
-  RPG_Chance_DiceRoll baseDamage;
+  RPG_Dice_Roll baseDamage;
   RPG_Item_CriticalHitModifier criticalHitModifier;
   unsigned char rangeIncrement;
   unsigned short int baseWeight;

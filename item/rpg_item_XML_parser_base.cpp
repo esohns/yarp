@@ -210,10 +210,8 @@ baseStorePrice (const RPG_Item_StorePrice& baseStorePrice)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pimpl::
-baseDamage (const RPG_Item_Damage& baseDamage)
+baseDamage ()
 {
-  // TODO
-  //
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pimpl::

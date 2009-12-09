@@ -20,11 +20,14 @@
 #ifndef RPG_COMBAT_COMMON_H
 #define RPG_COMBAT_COMMON_H
 
+#include "rpg_combat_attackform.h"
+
 #include <rpg_character_base.h>
 
 #include <ace/Log_Msg.h>
 
 #include <set>
+#include <vector>
 
 struct RPG_Combat_CombatantSequenceElement
 {
@@ -133,5 +136,8 @@ typedef std::set<RPG_Combat_CombatantSequenceElement,
 typedef RPG_Combat_CombatantSequence_t::iterator RPG_Combat_CombatantSequenceIterator_t;
 typedef RPG_Combat_CombatantSequence_t::const_iterator RPG_Combat_CombatantSequenceConstIterator_t;
 // typedef RPG_Combat_CombatantSequence_t::const_reverse_iterator RPG_Combat_CombatantSequenceRIterator_t;
+
+typedef std::vector<RPG_Combat_AttackForm> RPG_Combat_AttackForms_t;
+typedef RPG_Combat_AttackForms_t::const_iterator RPG_Combat_AttackFormsIterator_t;
 
 #endif

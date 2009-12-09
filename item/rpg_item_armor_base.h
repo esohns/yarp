@@ -20,8 +20,8 @@
 #ifndef RPG_ITEM_ARMOR_BASE_H
 #define RPG_ITEM_ARMOR_BASE_H
 
-#include "rpg_item_common.h"
 #include "rpg_item_base.h"
+#include "rpg_item_armortype.h"
 
 #include <ace/Global_Macros.h>
 

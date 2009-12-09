@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="urn:rpg"
+            xmlns="urn:rpg"
+            elementFormDefault="qualified"
+            attributeFormDefault="qualified">
+
+<!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
+<!--   import chance_dice schema (as declared above) -->
+<!--   <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/> -->
+<!--   import item schema (as declared above) -->
+<!--   <xsd:import namespace="urn:rpg_item" schemaLocation="../item/rpg_item.xsd"/> -->
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      RPG_Combat: combat-related types XML schema
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:simpleType name="RPG_Combat_AttackForm_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ATTACK_MELEE"/>
+      <xsd:enumeration value="ATTACK_TOUCH"/>
+      <xsd:enumeration value="ATTACK_RANGED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+</xsd:schema>

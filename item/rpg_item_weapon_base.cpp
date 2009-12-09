@@ -25,7 +25,7 @@
 #include "rpg_item_weaponclass.h"
 #include "rpg_item_common_tools.h"
 
-#include <rpg_chance_dice_common_tools.h>
+#include <rpg_dice_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -62,7 +62,7 @@ void RPG_Item_Weapon_Base::dump() const
   std::string weaponType = RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(myWeaponType);
   std::string weaponCategory = RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString(properties.weaponCategory);
   std::string weaponClass = RPG_Item_WeaponClassHelper::RPG_Item_WeaponClassToString(properties.weaponClass);
-  std::string baseDamage = RPG_Chance_Dice_Common_Tools::rollToString(properties.baseDamage);
+  std::string baseDamage = RPG_Dice_Common_Tools::rollToString(properties.baseDamage);
   std::string typeOfDamage = RPG_Item_Common_Tools::weaponDamageToString(properties.typeOfDamage);
 
   ACE_DEBUG((LM_DEBUG,

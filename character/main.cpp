@@ -22,16 +22,18 @@
 #include <config.h>
 #endif
 
-#include <rpg_chance_dice.h>
-#include <rpg_chance_dicetype.h>
-#include <rpg_chance_dice_common_tools.h>
+#include <rpg_dice.h>
+#include <rpg_dice_dietype.h>
+#include <rpg_dice_common_tools.h>
 
 #include <rpg_item_weapon.h>
 #include <rpg_item_armor.h>
 #include <rpg_item_common_tools.h>
 #include <rpg_item_dictionary.h>
 
-#include "rpg_character_dictionary.h"
+#include <rpg_monster_dictionary.h>
+#include <rpg_monster_common_tools.h>
+
 #include "rpg_character_player.h"
 #include "rpg_character_alignmentcivic.h"
 #include "rpg_character_alignmentethic.h"
@@ -39,7 +41,6 @@
 #include "rpg_character_subclass.h"
 #include "rpg_character_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
-#include "rpg_character_monster_common_tools.h"
 
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
@@ -309,15 +310,18 @@ void do_work(const std::string filename_in)
   ACE_TRACE(ACE_TEXT("::do_work"));
 
   // step1a: init randomization
-  RPG_Chance_Dice::init();
+  RPG_Dice::init();
 
   // step1b: init string conversion facilities
-  RPG_Chance_Dice_Common_Tools::initStringConversionTables();
+  RPG_Dice_Common_Tools::initStringConversionTables();
   RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
+  RPG_Monster_Common_Tools::initStringConversionTables();
+
+  // step1c: init ruleset
   RPG_Character_Skills_Common_Tools::init();
 
-  // step1c: init item dictionary
+  // step1d: init item dictionary
   try
   {
     RPG_ITEM_DICTIONARY_SINGLETON::instance()->initItemDictionary(filename_in);
@@ -522,11 +526,11 @@ void do_work(const std::string filename_in)
 
   RPG_Character_Attributes attributes;
   unsigned char* p = NULL;
-  RPG_Chance_DiceRoll roll;
+  RPG_Dice_Roll roll;
   roll.numDice = 2;
   roll.typeDice = D_10;
   roll.modifier = -2; // add +1 if result is 0 --> stats interval 1-18
-  RPG_Chance_DiceRollResult_t result;
+  RPG_Dice_RollResult_t result;
   c = 'n';
   do
   {
@@ -538,9 +542,9 @@ void do_work(const std::string filename_in)
     do
     {
       result.clear();
-      RPG_Chance_Dice::simulateDiceRoll(roll,
-                                        6,
-                                        result);
+      RPG_Dice::simulateRoll(roll,
+                             6,
+                             result);
       sum = result[0] + result[1] + result[2] + result[3] + result[4] + result[5];
     } while ((sum <= 54) || (*(std::min_element(result.begin(), result.end())) <= 9));
 
@@ -623,13 +627,13 @@ void do_work(const std::string filename_in)
   roll.typeDice = RPG_Character_Common_Tools::getHitDie(player_class.subClass);
   roll.modifier = 0;
   result.clear();
-  RPG_Chance_Dice::simulateDiceRoll(roll,
-                                    1,
-                                    result);
+  RPG_Dice::simulateRoll(roll,
+                         1,
+                         result);
   unsigned short int hitpoints = result[0];
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("initial hit points (hit die: \"%s\"): %d...\n"),
-             RPG_Chance_DiceTypeHelper::RPG_Chance_DiceTypeToString(roll.typeDice).c_str(),
+             RPG_Dice_DieTypeHelper::RPG_Dice_DieTypeToString(roll.typeDice).c_str(),
              hitpoints));
 
   // *TODO*: step3: choose appropriate initial set of items

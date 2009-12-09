@@ -19,24 +19,63 @@
  ***************************************************************************/
 #include "rpg_combat_common_tools.h"
 
+#include "rpg_combat_attackform.h"
+
 #include <rpg_character_player_common.h>
 #include <rpg_character_common_tools.h>
 
-#include <rpg_chance_dice.h>
+#include <rpg_dice.h>
 #include <rpg_chance_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
-const bool RPG_Combat_Common_Tools::isPartyDeadOrHelpless(const RPG_Character_Party_t& party_in)
+// init statics
+RPG_Combat_AttackFormToStringTable_t RPG_Combat_AttackFormHelper::myRPG_Combat_AttackFormToStringTable;
+
+void RPG_Combat_Common_Tools::initStringConversionTables()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::isPartyDeadOrHelpless"));
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::initStringConversionTables"));
+
+  RPG_Combat_AttackFormHelper::init();
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("RPG_Combat_Common_Tools: initialized string conversion tables...\n")));
+}
+
+
+const std::string RPG_Combat_Common_Tools::attackFormsToString(const RPG_Combat_AttackForms_t& attackForms_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::attackFormsToString"));
+
+  std::string result;
+
+  for (RPG_Combat_AttackFormsIterator_t iterator = attackForms_in.begin();
+       iterator != attackForms_in.end();
+       iterator++)
+  {
+    result += RPG_Combat_AttackFormHelper::RPG_Combat_AttackFormToString(*iterator);
+    result += ACE_TEXT_ALWAYS_CHAR("|");
+  } // end FOR
+
+  if (!result.empty())
+  {
+    result.erase(--(result.end()));
+  } // end IF
+
+  return result;
+}
+
+const bool RPG_Combat_Common_Tools::isPartyHelpless(const RPG_Character_Party_t& party_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::isPartyHelpless"));
 
   int numDeadOrHelpless = 0;
   for (RPG_Character_PartyIterator_t iterator = party_in.begin();
        iterator != party_in.end();
        iterator++)
   {
-    if (isCharacterDeadOrHelpless(&(*iterator)))
+    if (isCharacterHelpless(&(*iterator)))
     {
       numDeadOrHelpless++;
     } // end IF
@@ -45,22 +84,22 @@ const bool RPG_Combat_Common_Tools::isPartyDeadOrHelpless(const RPG_Character_Pa
   return (numDeadOrHelpless == party_in.size());
 }
 
-const bool RPG_Combat_Common_Tools::areMonstersDeadOrHelpless(const RPG_Character_Monsters_t& monsters_in)
+const bool RPG_Combat_Common_Tools::areMonstersHelpless(const RPG_Character_Monsters_t& monsters_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::areMonstersDeadOrHelpless"));
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::areMonstersHelpless"));
 
-  int numDeadOrHelplessGroups = 0;
+  int numHelplessGroups = 0;
   for (RPG_Character_MonstersIterator_t iterator = monsters_in.begin();
        iterator != monsters_in.end();
        iterator++)
   {
-    if (RPG_Combat_Common_Tools::isMonsterGroupDeadOrHelpless(*iterator))
+    if (RPG_Combat_Common_Tools::isMonsterGroupHelpless(*iterator))
     {
-      numDeadOrHelplessGroups++;
+      numHelplessGroups++;
     } // end IF
   } // end FOR
 
-  return (numDeadOrHelplessGroups == monsters_in.size());
+  return (numHelplessGroups == monsters_in.size());
 }
 
 void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& party_in,
@@ -204,7 +243,7 @@ void RPG_Combat_Common_Tools::performCombatRound(const RPG_Combat_CombatantSeque
   // everybody gets their turn
   bool isPlayer = false;
   RPG_Combat_CombatantSequenceIterator_t iterator;
-  RPG_Chance_DiceRollResult_t result;
+  RPG_Dice_RollResult_t result;
   for (RPG_Combat_CombatantSequenceIterator_t iterator2 = battleSequence_in.begin();
        iterator2 != battleSequence_in.end();
        iterator2++)
@@ -216,13 +255,13 @@ void RPG_Combat_Common_Tools::performCombatRound(const RPG_Combat_CombatantSeque
     do
     {
       result.clear();
-      RPG_Chance_Dice::generateRandomNumbers(battleSequence_in.size(),
-                                             1,
-                                             result);
+      RPG_Dice::generateRandomNumbers(battleSequence_in.size(),
+                                      1,
+                                      result);
       std::advance(iterator, result.front() - 1);
     } while ((iterator == iterator2) ||                               // dont't attack ourselves !
              ((*iterator).handle->isPlayerCharacter() == isPlayer) || // don't attack friends
-             (isCharacterDeadOrHelpless((*iterator).handle)));        // leave the dead/dying alone
+             (isCharacterDeadOrDying((*iterator).handle)));           // leave the dead/dying alone (...for now)
 
     // step2: attack foe !
     ACE_DEBUG((LM_DEBUG,
@@ -230,49 +269,83 @@ void RPG_Combat_Common_Tools::performCombatRound(const RPG_Combat_CombatantSeque
                (*iterator2).handle->getName().c_str(),
                (*iterator).handle->getName().c_str()));
 
-    (*iterator2).handle->attack((*iterator2).handle);
-    // step2a: choose weapon
-    for (iterator = battleSequence_in.begin();
-         iterator != battleSequence_in.end();
-         iterator++)
-    {
-
-    } // end FOR
+    attackFoe((*iterator2).handle,
+              ACE_const_cast(RPG_Character_Base*, (*iterator).handle));
   } // end FOR
 }
 
-const bool RPG_Combat_Common_Tools::isMonsterGroupDeadOrHelpless(const RPG_Character_MonsterGroupInstance_t& groupInstance_in)
+const bool RPG_Combat_Common_Tools::isMonsterGroupHelpless(const RPG_Character_MonsterGroupInstance_t& groupInstance_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::isMonsterGroupDeadOrHelpless"));
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::isMonsterGroupHelpless"));
 
-  int numDeadOrHelplessMonsters = 0;
+  int numHelplessMonsters = 0;
   for (RPG_Character_MonsterGroupInstanceIterator_t iterator = groupInstance_in.begin();
        iterator != groupInstance_in.end();
        iterator++)
   {
-    if (isCharacterDeadOrHelpless(&(*iterator)))
+    if (isCharacterHelpless(&(*iterator)))
     {
-      numDeadOrHelplessMonsters++;
+      numHelplessMonsters++;
     } // end IF
   } // end FOR
 
-  return (numDeadOrHelplessMonsters == groupInstance_in.size());
+  return (numHelplessMonsters == groupInstance_in.size());
 }
 
-const bool RPG_Combat_Common_Tools::isCharacterDeadOrHelpless(const RPG_Character_Base* const character_in)
+const bool RPG_Combat_Common_Tools::isCharacterHelpless(const RPG_Character_Base* const character_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::isCharacterDeadOrHelpless"));
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::isCharacterHelpless"));
 
   ACE_ASSERT(character_in);
 
-  if ((character_in->hasCondition(CONDITION_DEAD)) ||
-      (character_in->hasCondition(CONDITION_DYING)) ||
-      (character_in->hasCondition(CONDITION_PETRIFIED)) ||
-      (character_in->hasCondition(CONDITION_STABLE)) ||
-      (character_in->hasCondition(CONDITION_UNCONSCIOUS)))
+  if ((character_in->hasCondition(CONDITION_PARALYZED)) || // spell, ...
+       (character_in->hasCondition(CONDITION_HELD)) ||     // bound as per spell, ...
+       (character_in->hasCondition(CONDITION_BOUND)) ||    // bound ase per rope, ...
+       (character_in->hasCondition(CONDITION_SLEEPING)) || // natural, spell, ...
+       isCharacterDeadOrDying(character_in))               // dead/dying
   {
     return true;
   } // end IF
 
   return false;
+}
+
+const bool RPG_Combat_Common_Tools::isCharacterDeadOrDying(const RPG_Character_Base* const character_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::isCharacterDeadOrDying"));
+
+  ACE_ASSERT(character_in);
+
+  if ((character_in->hasCondition(CONDITION_DISABLED)) ||    // (HP==0) || (STABLE && CONSCIOUS)
+      (character_in->hasCondition(CONDITION_DEAD)) ||        // HP<-10
+      (character_in->hasCondition(CONDITION_DYING)) ||       // -10<HP<0
+      (character_in->hasCondition(CONDITION_STABLE)) ||      // -10<HP<0 && !DYING
+      (character_in->hasCondition(CONDITION_UNCONSCIOUS)) || // -10<HP<0 && (DYING || STABLE)
+      (character_in->hasCondition(CONDITION_PETRIFIED)))     // turned to stone
+  {
+    return true;
+  } // end IF
+
+  return false;
+}
+
+void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
+                                        RPG_Character_Base* const target_inout)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::attackFoe"));
+
+  // sanity check
+  ACE_ASSERT(attacker_in && target_inout);
+
+  // step1: choose primary weapon
+
+  if (attacker_in->isPlayerCharacter())
+  {
+
+  } // end IF
+  else
+  {
+    // if the attacker is a "regular" monster, we have a description of its weapons
+
+  } // end ELSE
 }

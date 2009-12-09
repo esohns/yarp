@@ -20,6 +20,7 @@
 #ifndef RPG_COMBAT_COMMON_TOOLS_H
 #define RPG_COMBAT_COMMON_TOOLS_H
 
+#include "rpg_combat_attackform.h"
 #include "rpg_combat_common.h"
 
 #include <rpg_character_common.h>
@@ -36,8 +37,12 @@
 class RPG_Combat_Common_Tools
 {
  public:
-  static const bool isPartyDeadOrHelpless(const RPG_Character_Party_t&); // party
-  static const bool areMonstersDeadOrHelpless(const RPG_Character_Monsters_t&); // monsters
+  static void initStringConversionTables();
+
+  static const std::string attackFormsToString(const RPG_Combat_AttackForms_t&); // attack forms
+
+  static const bool isPartyHelpless(const RPG_Character_Party_t&); // party
+  static const bool areMonstersHelpless(const RPG_Character_Monsters_t&); // monsters
 
   static void getCombatantSequence(const RPG_Character_Party_t&,     // party
                                    const RPG_Character_Monsters_t&,  // monsters
@@ -55,8 +60,11 @@ class RPG_Combat_Common_Tools
   typedef std::deque<RPG_Combat_CombatantSequenceElement> RPG_Combat_CombatSequenceList_t;
   typedef RPG_Combat_CombatSequenceList_t::iterator RPG_Combat_CombatSequenceListIterator_t;
 
-  static const bool isMonsterGroupDeadOrHelpless(const RPG_Character_MonsterGroupInstance_t&); // group instance
-  static const bool isCharacterDeadOrHelpless(const RPG_Character_Base* const); // character handle
+  static const bool isMonsterGroupHelpless(const RPG_Character_MonsterGroupInstance_t&); // group instance
+  static const bool isCharacterHelpless(const RPG_Character_Base* const); // character handle
+  static const bool isCharacterDeadOrDying(const RPG_Character_Base* const); // character handle
+  static void attackFoe(const RPG_Character_Base* const, // attacker
+                        RPG_Character_Base* const);      // target
 };
 
 #endif

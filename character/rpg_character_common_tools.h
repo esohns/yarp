@@ -24,7 +24,11 @@
 #include "rpg_character_alignmentethic.h"
 #include "rpg_character_alignment.h"
 #include "rpg_character_attributes.h"
+#include "rpg_character_terrain.h"
+#include "rpg_character_climate.h"
+#include "rpg_character_environment.h"
 #include "rpg_character_subclass.h"
+#include "rpg_character_plane.h"
 #include "rpg_character_player.h"
 
 #include <rpg_dice_dietype.h>
@@ -43,12 +47,15 @@ class RPG_Character_Common_Tools
 
   static const std::string alignmentToString(const RPG_Character_Alignment&); // alignment
   static const std::string attributesToString(const RPG_Character_Attributes&); // attributes
+  static const std::string environmentToString(const RPG_Character_Environment&); // environment
 
   static const short int getAttributeAbilityModifier(const unsigned char&); // attribute ability score
   static const bool getAttributeCheck(const unsigned char&); // attribute ability score
   static const RPG_Dice_DieType getHitDie(const RPG_Character_SubClass&); // subclass
   static const RPG_Character_BaseAttackBonus_t getBaseAttackBonus(const RPG_Character_SubClass&, // subClass
                                                                   const unsigned char&);         // class level
+
+  static const RPG_Character_Plane terrainToPlane(const RPG_Character_Terrain&);
 
   static const RPG_Character_Player generatePlayerCharacter(); // return value: (random) player
 

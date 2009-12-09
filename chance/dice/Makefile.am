@@ -16,18 +16,18 @@ libRPG_Dice_la_SOURCES = rpg_XMLSchema.h rpg_dice.cpp \
 	rpg_dice_XML_types.h rpg_dice_common_tools.cpp rpg_dice_common_tools.h \
 	rpg_dice_roll.h rpg_dice_dietype.h rpg_dice_valuerange.h
 
-bin_PROGRAMS = dice rangeToRoll
+bin_PROGRAMS = chance_dice chance_rangeToRoll
 
 # the library search path / libraries
-dice_LDADD = $(top_builddir)/dice/libRPG_Dice.la -lACE -lpthread \
+chance_dice_LDADD = $(top_builddir)/dice/libRPG_Dice.la -lACE -lpthread \
 	-lxerces-c
-dice_SOURCES = main.cpp
-dice_LDFLAGS = -L/usr/local/lib
+chance_dice_SOURCES = main.cpp
+chance_dice_LDFLAGS = -L/usr/local/lib
 
-rangeToRoll_LDADD = $(top_builddir)/dice/libRPG_Dice.la -lACE -lpthread \
+chance_rangeToRoll_LDADD = $(top_builddir)/dice/libRPG_Dice.la -lACE -lpthread \
 	-lxerces-c
-rangeToRoll_SOURCES = rangeToRoll.cpp
-rangeToRoll_LDFLAGS = -L/usr/local/lib
+chance_rangeToRoll_SOURCES = rangeToRoll.cpp
+chance_rangeToRoll_LDFLAGS = -L/usr/local/lib
 
 noinst_HEADERS = rpg_XMLSchema.h
 
