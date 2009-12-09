@@ -28,3 +28,9 @@ libRPG_Monster_la_SOURCES = rpg_XMLSchema.h rpg_monster_XML_parser.cpp \
 bindata_DATA = rpg_monster.xsd rpg_monster.xml
 bindatadir = $(bindir)
 noinst_HEADERS = rpg_XMLSchema.h
+monster_parser_LDFLAGS = -L/usr/local/lib
+bin_PROGRAMS = monster_parser
+monster_parser_SOURCES = monster_parser.cpp
+monster_parser_LDADD = $(top_builddir)/monster/libRPG_Monster.la \
+	$(top_builddir)/libRPG_Character.la -lRPG_Combat -lRPG_Item -lRPG_Chance -lRPG_Dice -lxerces-c -lpthread \
+	-lACE

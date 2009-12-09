@@ -15,19 +15,19 @@
     <projectname>character</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
-    <defaultencoding/>
+    <description></description>
+    <defaultencoding></defaultencoding>
   </general>
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>libRPG_Character.la</activetarget>
+      <activetarget>monster/monster_parser</activetarget>
     </general>
     <run>
-      <mainprogram>/home/unfv/Projects/RPG/character/debug/.libs/character_parser</mainprogram>
-      <programargs>-f ./rpg_character.xml -t</programargs>
-      <globaldebugarguments>-f ./rpg_character.xml -t</globaldebugarguments>
-      <globalcwd>/home/unfv/Projects/RPG/character/</globalcwd>
+      <mainprogram>/home/unfv/Projects/RPG/character/debug/.libs/character_generator</mainprogram>
+      <programargs>-f ./../../item/rpg_item.xml -t</programargs>
+      <globaldebugarguments>-f ./../../item/rpg_item.xml -t</globaldebugarguments>
+      <globalcwd>/home/unfv/Projects/RPG/character/debug</globalcwd>
       <useglobalprogram>true</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
@@ -38,19 +38,22 @@
         <generator>-t -f ../../item/rpg_item.xml</generator>
         <character_parser>-f ./../../rpg_character.xml -t</character_parser>
         <combat_simulator>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -t</combat_simulator>
-        <character_generator/>
+        <character_generator>-f ./../../item/rpg_item.xml -t</character_generator>
+        <monster_parser/>
       </runarguments>
       <debugarguments>
         <generator>-t -f ../../item/rpg_item.xml</generator>
         <character_parser>-f ./../../rpg_character.xml -t</character_parser>
         <combat_simulator>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -t</combat_simulator>
-        <character_generator/>
+        <character_generator>-f ./../../item/rpg_item.xml -t</character_generator>
+        <monster_parser/>
       </debugarguments>
       <cwd>
         <generator>/home/unfv/Projects/RPG/character/debug/./</generator>
         <character_parser>/home/unfv/Projects/RPG/character/debug/.libs</character_parser>
         <combat_simulator>/home/unfv/Projects/RPG/character/debug/.libs/</combat_simulator>
         <character_generator>/home/unfv/Projects/RPG/character/debug/./</character_generator>
+        <monster_parser>/home/unfv/Projects/RPG/character/debug/./</monster_parser>
       </cwd>
     </run>
     <configurations>
@@ -240,7 +243,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -262,11 +265,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath/>
-      <dbgshell/>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <gdbpath></gdbpath>
+      <dbgshell></dbgshell>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>

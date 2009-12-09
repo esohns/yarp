@@ -12,9 +12,9 @@ libRPG_Combat_la_SOURCES = rpg_XMLSchema.h rpg_combat_XML_parser.cpp \
 	rpg_combat_common_tools.cpp rpg_combat_damage.h rpg_combat_incl.h
 libRPG_Combat_la_LDFLAGS = -L/usr/local/lib
 
-bin_PROGRAMS = combat_simulator
+dnl bin_PROGRAMS = combat_simulator
 
-combat_simulator_SOURCES = combat_simulator.cpp
-combat_simulator_LDADD = $(top_builddir)/libRPG_Combat.la -lRPG_Character \
+dnl combat_simulator_SOURCES = combat_simulator.cpp
+dnl combat_simulator_LDADD = $(top_builddir)/libRPG_Combat.la -lRPG_Character \
 	-lRPG_Item -lRPG_Chance -lRPG_Dice -lACE -lpthread -lxerces-c
-combat_simulator_LDFLAGS = -L/usr/local/lib
+dnl combat_simulator_LDFLAGS = -L/usr/local/lib
