@@ -1,7 +1,9 @@
 namespace urn:rpg
 {
+  include <rpg_item_weapontype.h>;
   include "rpg_monster_incl.h";
 
+  include <rpg_item_physicaldamagetype.h>;
   include <rpg_combat_incl.h>;
 
   include <rpg_character_incl.h>;
@@ -19,12 +21,14 @@ namespace urn:rpg
   RPG_Character_Alignment_Type            RPG_Character_Alignment;
 
   RPG_Combat_AttackForm_Type              RPG_Combat_AttackForm;
+  RPG_Combat_Damage_Type                  RPG_Combat_Damage;
 
   RPG_Monster_MetaType_Type               RPG_Monster_MetaType;
   RPG_Monster_SubType_Type                RPG_Monster_SubType;
   RPG_Monster_Type_Type                   RPG_Monster_Type;
   RPG_Monster_NaturalArmorClass_Type      RPG_Monster_NaturalArmorClass;
   RPG_Monster_NaturalWeapon_Type          RPG_Monster_NaturalWeapon;
+  RPG_Monster_WeaponTypeUnion_Type        RPG_Monster_WeaponTypeUnion;
   RPG_Monster_AttackAction_Type           RPG_Monster_AttackAction;
   RPG_Monster_Attack_Type                 RPG_Monster_Attack;
   RPG_Monster_SavingThrowModifiers_Type   RPG_Monster_SavingThrowModifiers;

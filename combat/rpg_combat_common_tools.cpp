@@ -20,23 +20,34 @@
 #include "rpg_combat_common_tools.h"
 
 #include "rpg_combat_attackform.h"
+#include "rpg_combat_specialattack.h"
+#include "rpg_combat_specialdamagetype.h"
+#include "rpg_combat_damageeffecttype.h"
 
-// #include <rpg_character_player_common.h>
 #include <rpg_character_common_tools.h>
 
 #include <rpg_dice.h>
+#include <rpg_dice_common_tools.h>
 #include <rpg_chance_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
+#include <sstream>
+
 // init statics
 RPG_Combat_AttackFormToStringTable_t RPG_Combat_AttackFormHelper::myRPG_Combat_AttackFormToStringTable;
+RPG_Combat_SpecialAttackToStringTable_t RPG_Combat_SpecialAttackHelper::myRPG_Combat_SpecialAttackToStringTable;
+RPG_Combat_SpecialDamageTypeToStringTable_t RPG_Combat_SpecialDamageTypeHelper::myRPG_Combat_SpecialDamageTypeToStringTable;
+RPG_Combat_DamageEffectTypeToStringTable_t RPG_Combat_DamageEffectTypeHelper::myRPG_Combat_DamageEffectTypeToStringTable;
 
 void RPG_Combat_Common_Tools::initStringConversionTables()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::initStringConversionTables"));
 
   RPG_Combat_AttackFormHelper::init();
+  RPG_Combat_SpecialAttackHelper::init();
+  RPG_Combat_SpecialDamageTypeHelper::init();
+  RPG_Combat_DamageEffectTypeHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
@@ -56,6 +67,39 @@ const std::string RPG_Combat_Common_Tools::attackFormsToString(const RPG_Combat_
   {
     result += RPG_Combat_AttackFormHelper::RPG_Combat_AttackFormToString(*iterator);
     result += ACE_TEXT_ALWAYS_CHAR("|");
+  } // end FOR
+
+  if (!result.empty())
+  {
+    result.erase(--(result.end()));
+  } // end IF
+
+  return result;
+}
+
+const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damage& damage_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::damageToString"));
+
+  std::string result;
+  std::stringstream converter;
+
+  for (std::vector<RPG_Combat_DamageElement>::const_iterator iterator = damage_in.elements.begin();
+       iterator != damage_in.elements.end();
+       iterator++)
+  {
+    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+
+    result += ACE_TEXT_ALWAYS_CHAR("type: ");
+//     result += RPG_Combat_DamageTypeUnionHelper::RPG_Combat_DamageTypeUnionToString((*iterator).type);
+    result += ACE_TEXT_ALWAYS_CHAR("\ndamage: ");
+    result += RPG_Dice_Common_Tools::rollToString((*iterator).damage);
+    converter << (*iterator).duration;
+    result += ACE_TEXT_ALWAYS_CHAR("\nduration: ");
+    result += converter.str();
+    result += ACE_TEXT_ALWAYS_CHAR("\neffect: ");
+    result += RPG_Combat_DamageEffectTypeHelper::RPG_Combat_DamageEffectTypeToString((*iterator).effect);
+    result += ACE_TEXT_ALWAYS_CHAR("\n");
   } // end FOR
 
   if (!result.empty())

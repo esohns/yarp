@@ -6,5 +6,13 @@ namespace urn:rpg
 
   include <rpg_item_incl.h>;
 
-  RPG_Combat_AttackForm_Type RPG_Combat_AttackForm;
+  RPG_Dice_Roll_Type                RPG_Dice_Roll;
+
+  RPG_Combat_AttackForm_Type        RPG_Combat_AttackForm;
+  RPG_Combat_SpecialAttack_Type     RPG_Combat_SpecialAttack;
+  RPG_Combat_SpecialDamageType_Type RPG_Combat_SpecialDamageType;
+  RPG_Combat_DamageEffectType_Type  RPG_Combat_DamageEffectType;
+  RPG_Combat_DamageTypeUnion_Type   RPG_Combat_DamageTypeUnion;
+  RPG_Combat_DamageElement_Type     RPG_Combat_DamageElement;
+  RPG_Combat_Damage_Type            RPG_Combat_Damage;
 }

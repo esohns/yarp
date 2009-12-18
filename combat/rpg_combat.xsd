@@ -6,6 +6,8 @@
             elementFormDefault="qualified"
             attributeFormDefault="qualified">
 
+  <!-- include chance_dice schema -->
+  <xsd:include schemaLocation="rpg_dice.xsd"/>
   <!-- include item schema -->
   <xsd:include schemaLocation="rpg_item.xsd"/>
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->

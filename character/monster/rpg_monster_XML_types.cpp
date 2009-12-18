@@ -781,19 +781,11 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-// RPG_Monster_WeaponTypeUnion_Type_pskel
-//
-
-void RPG_Monster_WeaponTypeUnion_Type_pskel::
-post_RPG_Monster_WeaponTypeUnion_Type ()
-{
-}
-
 // RPG_Monster_AttackAction_Type_pskel
 //
 
 void RPG_Monster_AttackAction_Type_pskel::
-weapon ()
+weapon (const RPG_Monster_WeaponTypeUnion&)
 {
 }
 
@@ -808,7 +800,7 @@ attackForm (const RPG_Combat_AttackForm&)
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
-damage ()
+damage (const RPG_Combat_Damage&)
 {
 }
 
@@ -890,10 +882,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "weapon" && ns == "urn:rpg")
   {
     if (this->weapon_parser_)
-    {
-      this->weapon_parser_->post_RPG_Monster_WeaponTypeUnion_Type ();
-      this->weapon ();
-    }
+      this->weapon (this->weapon_parser_->post_RPG_Monster_WeaponTypeUnion_Type ());
 
     return true;
   }
@@ -917,10 +906,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "damage" && ns == "urn:rpg")
   {
     if (this->damage_parser_)
-    {
-      this->damage_parser_->post_RPG_Combat_Damage_Type ();
-      this->damage ();
-    }
+      this->damage (this->damage_parser_->post_RPG_Combat_Damage_Type ());
 
     return true;
   }

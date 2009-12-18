@@ -69,8 +69,9 @@ class RPG_Combat_Damage_Type_pskel;
 
 #include <rpg_dice_incl.h>
 #include <rpg_item_incl.h>
-
 #include "rpg_combat_incl.h"
+
+#include <rpg_dice_XML_types.h>
 
 #include <rpg_item_XML_types.h>
 
@@ -94,8 +95,8 @@ class RPG_Combat_SpecialAttack_Type_pskel: public virtual ::xml_schema::string_p
   // virtual void
   // pre ();
 
-  virtual void
-  post_RPG_Combat_SpecialAttack_Type ();
+  virtual RPG_Combat_SpecialAttack
+  post_RPG_Combat_SpecialAttack_Type () = 0;
 };
 
 class RPG_Combat_SpecialDamageType_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -106,8 +107,8 @@ class RPG_Combat_SpecialDamageType_Type_pskel: public virtual ::xml_schema::stri
   // virtual void
   // pre ();
 
-  virtual void
-  post_RPG_Combat_SpecialDamageType_Type ();
+  virtual RPG_Combat_SpecialDamageType
+  post_RPG_Combat_SpecialDamageType_Type () = 0;
 };
 
 class RPG_Combat_DamageEffectType_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -118,8 +119,8 @@ class RPG_Combat_DamageEffectType_Type_pskel: public virtual ::xml_schema::strin
   // virtual void
   // pre ();
 
-  virtual void
-  post_RPG_Combat_DamageEffectType_Type ();
+  virtual RPG_Combat_DamageEffectType
+  post_RPG_Combat_DamageEffectType_Type () = 0;
 };
 
 class RPG_Combat_DamageTypeUnion_Type_pskel: public ::xml_schema::simple_content
@@ -133,8 +134,8 @@ class RPG_Combat_DamageTypeUnion_Type_pskel: public ::xml_schema::simple_content
   // virtual void
   // _characters (const ::xml_schema::ro_string&);
 
-  virtual void
-  post_RPG_Combat_DamageTypeUnion_Type ();
+  virtual RPG_Combat_DamageTypeUnion
+  post_RPG_Combat_DamageTypeUnion_Type () = 0;
 };
 
 class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
@@ -146,19 +147,19 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   // pre ();
 
   virtual void
-  type ();
+  type (const RPG_Combat_DamageTypeUnion&);
 
   virtual void
-  damage ();
+  damage (const RPG_Dice_Roll&);
 
   virtual void
   duration (unsigned short);
 
   virtual void
-  effect ();
+  effect (const RPG_Combat_DamageEffectType&);
 
-  virtual void
-  post_RPG_Combat_DamageElement_Type ();
+  virtual RPG_Combat_DamageElement
+  post_RPG_Combat_DamageElement_Type () = 0;
 
   // Parser construction API.
   //
@@ -217,10 +218,10 @@ class RPG_Combat_Damage_Type_pskel: public ::xml_schema::complex_content
   // pre ();
 
   virtual void
-  element ();
+  element (const RPG_Combat_DamageElement&);
 
-  virtual void
-  post_RPG_Combat_Damage_Type ();
+  virtual RPG_Combat_Damage
+  post_RPG_Combat_Damage_Type () = 0;
 
   // Parser construction API.
   //

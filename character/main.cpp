@@ -31,8 +31,8 @@
 #include <rpg_item_common_tools.h>
 #include <rpg_item_dictionary.h>
 
-#include <rpg_monster_dictionary.h>
-#include <rpg_monster_common_tools.h>
+// #include <rpg_monster_dictionary.h>
+// #include <rpg_monster_common_tools.h>
 
 #include "rpg_character_player.h"
 #include "rpg_character_alignmentcivic.h"
@@ -316,7 +316,7 @@ void do_work(const std::string filename_in)
   RPG_Dice_Common_Tools::initStringConversionTables();
   RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
-  RPG_Monster_Common_Tools::initStringConversionTables();
+//   RPG_Monster_Common_Tools::initStringConversionTables();
 
   // step1c: init ruleset
   RPG_Character_Skills_Common_Tools::init();

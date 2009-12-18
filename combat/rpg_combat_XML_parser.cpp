@@ -27,3 +27,133 @@ RPG_Combat_AttackForm RPG_Combat_AttackForm_Type::post_RPG_Combat_AttackForm_Typ
 
   return RPG_Combat_AttackFormHelper::stringToRPG_Combat_AttackForm(post_string());
 }
+
+RPG_Combat_SpecialAttack RPG_Combat_SpecialAttack_Type::post_RPG_Combat_SpecialAttack_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_SpecialAttack_Type::post_RPG_Combat_SpecialAttack_Type"));
+
+  return RPG_Combat_SpecialAttackHelper::stringToRPG_Combat_SpecialAttack(post_string());
+}
+
+RPG_Combat_SpecialDamageType RPG_Combat_SpecialDamageType_Type::post_RPG_Combat_SpecialDamageType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_SpecialDamageType_Type::post_RPG_Combat_SpecialDamageType_Type"));
+
+  return RPG_Combat_SpecialDamageTypeHelper::stringToRPG_Combat_SpecialDamageType(post_string());
+}
+
+RPG_Combat_DamageEffectType RPG_Combat_DamageEffectType_Type::post_RPG_Combat_DamageEffectType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageEffectType_Type::post_RPG_Combat_DamageEffectType_Type"));
+
+  return RPG_Combat_DamageEffectTypeHelper::stringToRPG_Combat_DamageEffectType(post_string());
+}
+
+RPG_Combat_DamageTypeUnion_Type::RPG_Combat_DamageTypeUnion_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageTypeUnion_Type::RPG_Combat_DamageTypeUnion_Type"));
+
+  myCurrentDamageType.physicaldamagetype = RPG_ITEM_PHYSICALDAMAGETYPE_INVALID;
+}
+
+void RPG_Combat_DamageTypeUnion_Type::_characters(const ::xml_schema::ro_string& damageType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageTypeUnion_Type::_characters"));
+
+//   myCurrentDamageType.metaType = metaType_in;
+}
+
+RPG_Combat_DamageTypeUnion RPG_Combat_DamageTypeUnion_Type::post_RPG_Combat_DamageTypeUnion_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageTypeUnion_Type::RPG_Combat_DamageTypeUnion_Type"));
+
+  RPG_Combat_DamageTypeUnion result = myCurrentDamageType;
+
+  // clear structure
+  myCurrentDamageType.physicaldamagetype = RPG_ITEM_PHYSICALDAMAGETYPE_INVALID;
+
+  return result;
+}
+
+RPG_Combat_DamageElement_Type::RPG_Combat_DamageElement_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::RPG_Combat_DamageElement_Type"));
+
+  myCurrentDamageElement.type.physicaldamagetype = RPG_ITEM_PHYSICALDAMAGETYPE_INVALID;
+  myCurrentDamageElement.damage.numDice = 0;
+  myCurrentDamageElement.damage.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentDamageElement.damage.modifier = 0;
+  myCurrentDamageElement.duration = 0;
+  myCurrentDamageElement.effect = RPG_COMBAT_DAMAGEEFFECTTYPE_INVALID;
+}
+
+void RPG_Combat_DamageElement_Type::type(const RPG_Combat_DamageTypeUnion& damageType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::type"));
+
+  myCurrentDamageElement.type = damageType_in;
+}
+
+void RPG_Combat_DamageElement_Type::damage(const RPG_Dice_Roll& damage_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::damage"));
+
+  myCurrentDamageElement.damage = damage_in;
+}
+
+void RPG_Combat_DamageElement_Type::duration(unsigned short duration_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::duration"));
+
+  myCurrentDamageElement.duration = duration_in;
+}
+
+void RPG_Combat_DamageElement_Type::effect(const RPG_Combat_DamageEffectType& effect_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::effect"));
+
+  myCurrentDamageElement.effect = effect_in;
+}
+
+RPG_Combat_DamageElement RPG_Combat_DamageElement_Type::post_RPG_Combat_DamageElement_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::post_RPG_Combat_DamageElement_Type"));
+
+  RPG_Combat_DamageElement result = myCurrentDamageElement;
+
+  // clear structure
+  myCurrentDamageElement.type.physicaldamagetype = RPG_ITEM_PHYSICALDAMAGETYPE_INVALID;
+  myCurrentDamageElement.damage.numDice = 0;
+  myCurrentDamageElement.damage.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentDamageElement.damage.modifier = 0;
+  myCurrentDamageElement.duration = 0;
+  myCurrentDamageElement.effect = RPG_COMBAT_DAMAGEEFFECTTYPE_INVALID;
+
+  return result;
+}
+
+RPG_Combat_Damage_Type::RPG_Combat_Damage_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Damage_Type::RPG_Combat_Damage_Type"));
+
+  myCurrentDamage.elements.clear();
+}
+
+void RPG_Combat_Damage_Type::element(const RPG_Combat_DamageElement& element_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Damage_Type::element"));
+
+  myCurrentDamage.elements.push_back(element_in);
+}
+
+RPG_Combat_Damage RPG_Combat_Damage_Type::post_RPG_Combat_Damage_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Damage_Type::post_RPG_Combat_Damage_Type"));
+
+  RPG_Combat_Damage result = myCurrentDamage;
+
+  // clear structure
+  myCurrentDamage.elements.clear();
+
+  return result;
+}

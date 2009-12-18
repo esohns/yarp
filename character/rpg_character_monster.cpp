@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "rpg_character_monster.h"
 
-#include <rpg_monster_common_tools.h>
+// #include <rpg_monster_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -98,9 +98,9 @@ void RPG_Character_Monster::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::dump"));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("Monster (type: \"%s\")\n"),
-             RPG_Monster_Common_Tools::typeToString(myType).c_str()));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("Monster (type: \"%s\")\n"),
+//              RPG_Monster_Common_Tools::typeToString(myType).c_str()));
 
   inherited::dump();
 }

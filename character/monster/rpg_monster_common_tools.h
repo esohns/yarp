@@ -26,14 +26,24 @@
 #include <rpg_dice_roll.h>
 #include <rpg_dice_valuerange.h>
 
+#include <rpg_item_weapontype.h>
+#include <rpg_item_physicaldamagetype.h>
+
 #include <rpg_character_size.h>
 
 #include <rpg_combat_attackform.h>
+#include <rpg_combat_specialattack.h>
+#include <rpg_combat_specialdamagetype.h>
+#include <rpg_combat_damageeffecttype.h>
+#include <rpg_combat_damagetypeunion.h>
+#include <rpg_combat_damageelement.h>
+#include <rpg_combat_damage.h>
 
 #include "rpg_monster_metatype.h"
 #include "rpg_monster_subtype.h"
 #include "rpg_monster_type.h"
 #include "rpg_monster_naturalweapon.h"
+#include "rpg_monster_weapontypeunion.h"
 #include "rpg_monster_attackaction.h"
 #include "rpg_monster_attack.h"
 #include "rpg_monster_organization.h"
@@ -56,6 +66,7 @@ class RPG_Monster_Common_Tools
   static void initStringConversionTables();
 
   static const std::string typeToString(const RPG_Monster_Type&); // type
+  static const std::string weaponTypeToString(const RPG_Monster_WeaponTypeUnion&); // weapon type
   static const std::string attackToString(const RPG_Monster_Attack&); // attack
   static const std::string organizationsToString(const RPG_Monster_Organizations_t&); // organizations
   static const std::string organizationsToString(const RPG_Monster_OrganizationList_t&); // organizations

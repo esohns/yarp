@@ -95,7 +95,7 @@ class RPG_Monster_WeaponTypeUnion_Type_pimpl: public virtual RPG_Monster_WeaponT
   virtual void
   _characters (const ::xml_schema::ro_string&);
 
-  virtual void
+  virtual RPG_Monster_WeaponTypeUnion
   post_RPG_Monster_WeaponTypeUnion_Type ();
 };
 
@@ -106,7 +106,7 @@ class RPG_Monster_AttackAction_Type_pimpl: public virtual RPG_Monster_AttackActi
   pre ();
 
   virtual void
-  weapon ();
+  weapon (const RPG_Monster_WeaponTypeUnion&);
 
   virtual void
   attackBonus (signed char);
@@ -115,7 +115,7 @@ class RPG_Monster_AttackAction_Type_pimpl: public virtual RPG_Monster_AttackActi
   attackForm (const RPG_Combat_AttackForm&);
 
   virtual void
-  damage ();
+  damage (const RPG_Combat_Damage&);
 
   virtual void
   numAttacksPerRound (unsigned char);

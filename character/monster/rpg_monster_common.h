@@ -29,6 +29,9 @@
 #include <rpg_dice_roll.h>
 #include <rpg_dice_valuerange.h>
 
+#include <rpg_item_weapontype.h>
+#include <rpg_item_physicaldamagetype.h>
+
 #include <rpg_character_attributes.h>
 #include <rpg_character_terrain.h>
 #include <rpg_character_climate.h>
@@ -46,6 +49,12 @@
 #include <rpg_character_skills_common.h>
 
 #include <rpg_combat_attackform.h>
+#include <rpg_combat_specialattack.h>
+#include <rpg_combat_specialdamagetype.h>
+#include <rpg_combat_damageeffecttype.h>
+#include <rpg_combat_damagetypeunion.h>
+#include <rpg_combat_damageelement.h>
+#include <rpg_combat_damage.h>
 
 #include "rpg_monster_incl.h"
 

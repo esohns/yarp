@@ -104,6 +104,20 @@ class RPG_Monster_NaturalWeapon_Type
   virtual RPG_Monster_NaturalWeapon post_RPG_Monster_NaturalWeapon_Type();
 };
 
+class RPG_Monster_WeaponTypeUnion_Type
+ : public RPG_Monster_WeaponTypeUnion_Type_pimpl
+{
+ public:
+  RPG_Monster_WeaponTypeUnion_Type();
+
+//   virtual void pre();
+  virtual void _characters(const ::xml_schema::ro_string&);
+  virtual RPG_Monster_WeaponTypeUnion post_RPG_Monster_WeaponTypeUnion_Type();
+
+ private:
+  RPG_Monster_WeaponTypeUnion myCurrentWeaponType;
+};
+
 class RPG_Monster_AttackAction_Type
  : public RPG_Monster_AttackAction_Type_pimpl
 {
@@ -111,10 +125,10 @@ class RPG_Monster_AttackAction_Type
   RPG_Monster_AttackAction_Type();
 
 //   virtual void pre();
-  virtual void monsterWeapon(const RPG_Monster_NaturalWeapon&);
+  virtual void weapon(const RPG_Monster_WeaponTypeUnion&);
   virtual void attackBonus(signed char);
   virtual void attackForm(const RPG_Combat_AttackForm&);
-  virtual void physicalDamage(const RPG_Dice_Roll&);
+  virtual void damage(const RPG_Combat_Damage&);
   virtual void numAttacksPerRound(unsigned char);
   virtual RPG_Monster_AttackAction post_RPG_Monster_AttackAction_Type();
 

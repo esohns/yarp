@@ -10,6 +10,8 @@
 
 #include <rpg_combat_XML_types.h>
 
+#include <rpg_dice_XML_parser_base.h>
+
 #include <rpg_item_XML_parser_base.h>
 
 class RPG_Combat_AttackForm_Type_pimpl: public virtual RPG_Combat_AttackForm_Type_pskel,
@@ -30,7 +32,7 @@ class RPG_Combat_SpecialAttack_Type_pimpl: public virtual RPG_Combat_SpecialAtta
   virtual void
   pre ();
 
-  virtual void
+  virtual RPG_Combat_SpecialAttack
   post_RPG_Combat_SpecialAttack_Type ();
 };
 
@@ -41,7 +43,7 @@ class RPG_Combat_SpecialDamageType_Type_pimpl: public virtual RPG_Combat_Special
   virtual void
   pre ();
 
-  virtual void
+  virtual RPG_Combat_SpecialDamageType
   post_RPG_Combat_SpecialDamageType_Type ();
 };
 
@@ -52,7 +54,7 @@ class RPG_Combat_DamageEffectType_Type_pimpl: public virtual RPG_Combat_DamageEf
   virtual void
   pre ();
 
-  virtual void
+  virtual RPG_Combat_DamageEffectType
   post_RPG_Combat_DamageEffectType_Type ();
 };
 
@@ -65,7 +67,7 @@ class RPG_Combat_DamageTypeUnion_Type_pimpl: public virtual RPG_Combat_DamageTyp
   virtual void
   _characters (const ::xml_schema::ro_string&);
 
-  virtual void
+  virtual RPG_Combat_DamageTypeUnion
   post_RPG_Combat_DamageTypeUnion_Type ();
 };
 
@@ -76,18 +78,18 @@ class RPG_Combat_DamageElement_Type_pimpl: public virtual RPG_Combat_DamageEleme
   pre ();
 
   virtual void
-  type ();
+  type (const RPG_Combat_DamageTypeUnion&);
 
   virtual void
-  damage ();
+  damage (const RPG_Dice_Roll&);
 
   virtual void
   duration (unsigned short);
 
   virtual void
-  effect ();
+  effect (const RPG_Combat_DamageEffectType&);
 
-  virtual void
+  virtual RPG_Combat_DamageElement
   post_RPG_Combat_DamageElement_Type ();
 };
 
@@ -98,9 +100,9 @@ class RPG_Combat_Damage_Type_pimpl: public virtual RPG_Combat_Damage_Type_pskel
   pre ();
 
   virtual void
-  element ();
+  element (const RPG_Combat_DamageElement&);
 
-  virtual void
+  virtual RPG_Combat_Damage
   post_RPG_Combat_Damage_Type ();
 };
 

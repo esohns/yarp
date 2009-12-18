@@ -8,9 +8,8 @@ include_HEADERS = rpg_monster_XML_parser.h rpg_monster_XML_parser_base.h \
 	rpg_monster_attack.h rpg_monster_attackaction.h rpg_monster_common.h \
 	rpg_monster_common_tools.h rpg_monster_dictionary.h rpg_monster_incl.h rpg_monster_metatype.h \
 	rpg_monster_naturalarmorclass.h rpg_monster_naturalweapon.h rpg_monster_organization.h \
-	rpg_monster_organizations.h rpg_monster_organizationslaverstep.h \
-	rpg_monster_organizationstep.h rpg_monster_savingthrowmodifiers.h rpg_monster_subtype.h \
-	rpg_monster_type.h
+	rpg_monster_organizations.h rpg_monster_organizationslaverstep.h rpg_monster_organizationstep.h \
+	rpg_monster_savingthrowmodifiers.h rpg_monster_subtype.h rpg_monster_type.h rpg_monster_weapontypeunion.h
 
 lib_LTLIBRARIES = libRPG_Monster.la
 
@@ -32,5 +31,5 @@ monster_parser_LDFLAGS = -L/usr/local/lib
 bin_PROGRAMS = monster_parser
 monster_parser_SOURCES = monster_parser.cpp
 monster_parser_LDADD = $(top_builddir)/monster/libRPG_Monster.la \
-	$(top_builddir)/libRPG_Character.la -lRPG_Combat -lRPG_Item -lRPG_Chance -lRPG_Dice -lxerces-c -lpthread \
-	-lACE
+	$(top_builddir)/libRPG_Character.la -lACE -lRPG_Chance -lRPG_Combat -lRPG_Dice -lRPG_Item -lpthread \
+	-lxerces-c

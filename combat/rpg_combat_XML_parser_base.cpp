@@ -33,13 +33,14 @@ pre ()
 {
 }
 
-void RPG_Combat_SpecialAttack_Type_pimpl::
+RPG_Combat_SpecialAttack RPG_Combat_SpecialAttack_Type_pimpl::
 post_RPG_Combat_SpecialAttack_Type ()
 {
   const ::std::string& v (post_string ());
 
   // TODO
   //
+  // return ... ;
 }
 
 // RPG_Combat_SpecialDamageType_Type_pimpl
@@ -50,13 +51,14 @@ pre ()
 {
 }
 
-void RPG_Combat_SpecialDamageType_Type_pimpl::
+RPG_Combat_SpecialDamageType RPG_Combat_SpecialDamageType_Type_pimpl::
 post_RPG_Combat_SpecialDamageType_Type ()
 {
   const ::std::string& v (post_string ());
 
   // TODO
   //
+  // return ... ;
 }
 
 // RPG_Combat_DamageEffectType_Type_pimpl
@@ -67,13 +69,14 @@ pre ()
 {
 }
 
-void RPG_Combat_DamageEffectType_Type_pimpl::
+RPG_Combat_DamageEffectType RPG_Combat_DamageEffectType_Type_pimpl::
 post_RPG_Combat_DamageEffectType_Type ()
 {
   const ::std::string& v (post_string ());
 
   // TODO
   //
+  // return ... ;
 }
 
 // RPG_Combat_DamageTypeUnion_Type_pimpl
@@ -91,9 +94,12 @@ _characters (const ::xml_schema::ro_string& s)
   //
 }
 
-void RPG_Combat_DamageTypeUnion_Type_pimpl::
+RPG_Combat_DamageTypeUnion RPG_Combat_DamageTypeUnion_Type_pimpl::
 post_RPG_Combat_DamageTypeUnion_Type ()
 {
+  // TODO
+  //
+  // return ... ;
 }
 
 // RPG_Combat_DamageElement_Type_pimpl
@@ -105,13 +111,17 @@ pre ()
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::
-type ()
+type (const RPG_Combat_DamageTypeUnion& type)
 {
+  // TODO
+  //
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::
-damage ()
+damage (const RPG_Dice_Roll& damage)
 {
+  // TODO
+  //
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::
@@ -122,13 +132,18 @@ duration (unsigned short duration)
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::
-effect ()
+effect (const RPG_Combat_DamageEffectType& effect)
 {
+  // TODO
+  //
 }
 
-void RPG_Combat_DamageElement_Type_pimpl::
+RPG_Combat_DamageElement RPG_Combat_DamageElement_Type_pimpl::
 post_RPG_Combat_DamageElement_Type ()
 {
+  // TODO
+  //
+  // return ... ;
 }
 
 // RPG_Combat_Damage_Type_pimpl
@@ -140,12 +155,17 @@ pre ()
 }
 
 void RPG_Combat_Damage_Type_pimpl::
-element ()
+element (const RPG_Combat_DamageElement& element)
 {
+  // TODO
+  //
 }
 
-void RPG_Combat_Damage_Type_pimpl::
+RPG_Combat_Damage RPG_Combat_Damage_Type_pimpl::
 post_RPG_Combat_Damage_Type ()
 {
+  // TODO
+  //
+  // return ... ;
 }
 

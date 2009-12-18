@@ -77,6 +77,8 @@ class RPG_Monster_Dictionary_Type_pskel;
 
 #include "rpg_XMLSchema.h"
 
+#include <rpg_item_weapontype.h>
+#include <rpg_item_physicaldamagetype.h>
 #include <rpg_dice_incl.h>
 #include <rpg_combat_incl.h>
 #include <rpg_character_incl.h>
@@ -245,8 +247,8 @@ class RPG_Monster_WeaponTypeUnion_Type_pskel: public ::xml_schema::simple_conten
   // virtual void
   // _characters (const ::xml_schema::ro_string&);
 
-  virtual void
-  post_RPG_Monster_WeaponTypeUnion_Type ();
+  virtual RPG_Monster_WeaponTypeUnion
+  post_RPG_Monster_WeaponTypeUnion_Type () = 0;
 };
 
 class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
@@ -258,7 +260,7 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   // pre ();
 
   virtual void
-  weapon ();
+  weapon (const RPG_Monster_WeaponTypeUnion&);
 
   virtual void
   attackBonus (signed char);
@@ -267,7 +269,7 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   attackForm (const RPG_Combat_AttackForm&);
 
   virtual void
-  damage ();
+  damage (const RPG_Combat_Damage&);
 
   virtual void
   numAttacksPerRound (unsigned char);

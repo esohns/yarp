@@ -70,6 +70,28 @@ const std::string RPG_Monster_Common_Tools::typeToString(const RPG_Monster_Type&
   return result;
 }
 
+const std::string RPG_Monster_Common_Tools::weaponTypeToString(const RPG_Monster_WeaponTypeUnion& weaponType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::weaponTypeToString"));
+
+  std::string result;
+
+//   for (RPG_Combat_AttackFormsIterator_t iterator = attackForms_in.begin();
+//        iterator != attackForms_in.end();
+//        iterator++)
+//   {
+//     result += RPG_Combat_AttackFormHelper::RPG_Combat_AttackFormToString(*iterator);
+//     result += ACE_TEXT_ALWAYS_CHAR("|");
+//   } // end FOR
+
+  if (!result.empty())
+  {
+    result.erase(--(result.end()));
+  } // end IF
+
+  return result;
+}
+
 const std::string RPG_Monster_Common_Tools::attackActionToString(const RPG_Monster_AttackAction& attackAction_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::attackActionToString"));
@@ -77,7 +99,7 @@ const std::string RPG_Monster_Common_Tools::attackActionToString(const RPG_Monst
   std::string result;
 
   result += ACE_TEXT_ALWAYS_CHAR("weapon: ");
-  result += RPG_Monster_NaturalWeaponHelper::RPG_Monster_NaturalWeaponToString(attackAction_in.monsterWeapon);
+  result += RPG_Monster_Common_Tools::weaponTypeToString(attackAction_in.weapon);
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("attackBonus: ");
   std::stringstream str;
@@ -89,7 +111,7 @@ const std::string RPG_Monster_Common_Tools::attackActionToString(const RPG_Monst
   result += RPG_Combat_Common_Tools::attackFormsToString(attackAction_in.attackForms);
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("damage: ");
-  result += RPG_Dice_Common_Tools::rollToString(attackAction_in.physicalDamage);
+  result += RPG_Combat_Common_Tools::damageToString(attackAction_in.damage);
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("numAttacksPerRound: ");
   str << attackAction_in.numAttacksPerRound;

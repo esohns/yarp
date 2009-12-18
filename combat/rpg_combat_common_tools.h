@@ -20,11 +20,21 @@
 #ifndef RPG_COMBAT_COMMON_TOOLS_H
 #define RPG_COMBAT_COMMON_TOOLS_H
 
+#include <vector>
+
+#include <rpg_dice_dietype.h>
+#include <rpg_dice_roll.h>
+
+#include <rpg_item_physicaldamagetype.h>
+
 #include "rpg_combat_attackform.h"
+#include "rpg_combat_specialdamagetype.h"
+#include "rpg_combat_damagetypeunion.h"
+#include "rpg_combat_damageeffecttype.h"
+#include "rpg_combat_damageelement.h"
+#include "rpg_combat_damage.h"
 #include "rpg_combat_common.h"
 
-// #include <rpg_character_common.h>
-// #include <rpg_character_player.h>
 #include <rpg_character_player_common.h>
 
 #include <ace/Global_Macros.h>
@@ -40,6 +50,7 @@ class RPG_Combat_Common_Tools
   static void initStringConversionTables();
 
   static const std::string attackFormsToString(const RPG_Combat_AttackForms_t&); // attack forms
+  static const std::string damageToString(const RPG_Combat_Damage&); // damage
 
   static const bool isPartyHelpless(const RPG_Character_Party_t&); // party
   static const bool areMonstersHelpless(const RPG_Character_Monsters_t&); // monsters

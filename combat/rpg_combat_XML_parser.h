@@ -35,4 +35,73 @@ class RPG_Combat_AttackForm_Type
   virtual RPG_Combat_AttackForm post_RPG_Combat_AttackForm_Type();
 };
 
+class RPG_Combat_SpecialAttack_Type
+ : public RPG_Combat_SpecialAttack_Type_pimpl
+{
+  public:
+//   virtual void pre();
+   virtual RPG_Combat_SpecialAttack post_RPG_Combat_SpecialAttack_Type();
+};
+
+class RPG_Combat_SpecialDamageType_Type
+ : public RPG_Combat_SpecialDamageType_Type_pimpl
+{
+  public:
+//   virtual void pre();
+   virtual RPG_Combat_SpecialDamageType post_RPG_Combat_SpecialDamageType_Type();
+};
+
+class RPG_Combat_DamageEffectType_Type
+ : public RPG_Combat_DamageEffectType_Type_pimpl
+{
+  public:
+//   virtual void pre();
+   virtual RPG_Combat_DamageEffectType post_RPG_Combat_DamageEffectType_Type();
+};
+
+class RPG_Combat_DamageTypeUnion_Type
+ : public RPG_Combat_DamageTypeUnion_Type_pimpl
+{
+ public:
+  RPG_Combat_DamageTypeUnion_Type();
+
+//   virtual void pre();
+  virtual void _characters(const ::xml_schema::ro_string&);
+  virtual RPG_Combat_DamageTypeUnion post_RPG_Combat_DamageTypeUnion_Type();
+
+ private:
+  RPG_Combat_DamageTypeUnion myCurrentDamageType;
+};
+
+class RPG_Combat_DamageElement_Type
+ : public RPG_Combat_DamageElement_Type_pimpl
+{
+ public:
+  RPG_Combat_DamageElement_Type();
+
+//   virtual void pre();
+  virtual void type(const RPG_Combat_DamageTypeUnion&);
+  virtual void damage(const RPG_Dice_Roll&);
+  virtual void duration(unsigned short);
+  virtual void effect(const RPG_Combat_DamageEffectType&);
+  virtual RPG_Combat_DamageElement post_RPG_Combat_DamageElement_Type();
+
+ private:
+  RPG_Combat_DamageElement myCurrentDamageElement;
+};
+
+class RPG_Combat_Damage_Type
+ : public RPG_Combat_Damage_Type_pimpl
+{
+ public:
+  RPG_Combat_Damage_Type();
+
+//   virtual void pre();
+  virtual void element(const RPG_Combat_DamageElement&);
+  virtual RPG_Combat_Damage post_RPG_Combat_Damage_Type();
+
+ private:
+  RPG_Combat_Damage myCurrentDamage;
+};
+
 #endif

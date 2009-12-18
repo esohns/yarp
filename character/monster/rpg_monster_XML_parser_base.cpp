@@ -143,9 +143,12 @@ _characters (const ::xml_schema::ro_string& s)
   //
 }
 
-void RPG_Monster_WeaponTypeUnion_Type_pimpl::
+RPG_Monster_WeaponTypeUnion RPG_Monster_WeaponTypeUnion_Type_pimpl::
 post_RPG_Monster_WeaponTypeUnion_Type ()
 {
+  // TODO
+  //
+  // return ... ;
 }
 
 // RPG_Monster_AttackAction_Type_pimpl
@@ -157,8 +160,10 @@ pre ()
 }
 
 void RPG_Monster_AttackAction_Type_pimpl::
-weapon ()
+weapon (const RPG_Monster_WeaponTypeUnion& weapon)
 {
+  // TODO
+  //
 }
 
 void RPG_Monster_AttackAction_Type_pimpl::
@@ -176,8 +181,10 @@ attackForm (const RPG_Combat_AttackForm& attackForm)
 }
 
 void RPG_Monster_AttackAction_Type_pimpl::
-damage ()
+damage (const RPG_Combat_Damage& damage)
 {
+  // TODO
+  //
 }
 
 void RPG_Monster_AttackAction_Type_pimpl::
