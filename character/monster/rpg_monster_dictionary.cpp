@@ -49,7 +49,8 @@ RPG_Monster_Dictionary::~RPG_Monster_Dictionary()
 
 }
 
-void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_in)
+void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_in,
+                                                   const bool& validateXML_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::initMonsterDictionary"));
 
@@ -191,10 +192,14 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   dictionary_p.pre();
 
   // OK: parse the file...
+  ::xml_schema::flags flags;
+  if (!validateXML_in)
+    flags = flags | ::xml_schema::flags::dont_validate;
   try
   {
     doc_p.parse(filename_in,
-                myXSDErrorHandler);
+                myXSDErrorHandler,
+                flags);
   }
   catch(const ::xml_schema::parsing& exception)
   {

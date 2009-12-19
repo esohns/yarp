@@ -32,9 +32,9 @@
 
   <xsd:simpleType name="RPG_Combat_SpecialAttack_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="INCORPOREAL_TOUCH"/>
-      <xsd:enumeration value="RAY_ELECTRICITY"/>
-      <xsd:enumeration value="RAY_LIGHT"/>
+      <xsd:enumeration value="SPECIALATTACK_INCORPOREAL_TOUCH"/>
+      <xsd:enumeration value="SPECIALATTACK_RAY_ELECTRICITY"/>
+      <xsd:enumeration value="SPECIALATTACK_RAY_LIGHT"/>
     </xsd:restriction>
   </xsd:simpleType>
 

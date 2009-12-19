@@ -54,13 +54,21 @@ RPG_Combat_DamageTypeUnion_Type::RPG_Combat_DamageTypeUnion_Type()
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageTypeUnion_Type::RPG_Combat_DamageTypeUnion_Type"));
 
   myCurrentDamageType.physicaldamagetype = RPG_ITEM_PHYSICALDAMAGETYPE_INVALID;
+  myCurrentDamageType.specialdamagetype = RPG_COMBAT_SPECIALDAMAGETYPE_INVALID;
 }
 
 void RPG_Combat_DamageTypeUnion_Type::_characters(const ::xml_schema::ro_string& damageType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageTypeUnion_Type::_characters"));
 
-//   myCurrentDamageType.metaType = metaType_in;
+  // can be either:
+  // - RPG_Item_PhysicalDamageType --> "PHYSICALDAMAGE_xxx"
+  // - RPG_Combat_SpecialDamageType --> "DAMAGE_xxx"
+  std::string type = damageType_in;
+  if (type.find(ACE_TEXT_ALWAYS_CHAR("PHYSICALDAMAGE_")) == 0)
+    myCurrentDamageType.physicaldamagetype = RPG_Item_PhysicalDamageTypeHelper::stringToRPG_Item_PhysicalDamageType(damageType_in);
+  else
+    myCurrentDamageType.specialdamagetype = RPG_Combat_SpecialDamageTypeHelper::stringToRPG_Combat_SpecialDamageType(damageType_in);
 }
 
 RPG_Combat_DamageTypeUnion RPG_Combat_DamageTypeUnion_Type::post_RPG_Combat_DamageTypeUnion_Type()
@@ -71,6 +79,7 @@ RPG_Combat_DamageTypeUnion RPG_Combat_DamageTypeUnion_Type::post_RPG_Combat_Dama
 
   // clear structure
   myCurrentDamageType.physicaldamagetype = RPG_ITEM_PHYSICALDAMAGETYPE_INVALID;
+  myCurrentDamageType.specialdamagetype = RPG_COMBAT_SPECIALDAMAGETYPE_INVALID;
 
   return result;
 }

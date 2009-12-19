@@ -27,17 +27,38 @@
     <attack>
       <baseAttackBonus>6</baseAttackBonus>
       <grappleBonus>22</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_TENTACLE</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_TENTACLE</weapon>
         <attackBonus>12</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
-          <numDice>1</numDice>
-          <typeDice>D_6</typeDice>
-          <modifier>8</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <damage>
+              <numDice>1</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>8</modifier>
+            </damage>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </standardAttackAction>
+      <fullAttackAction>
+        <weapon>NATURALWEAPON_TENTACLE</weapon>
+        <attackBonus>12</attackBonus>
+        <attackForm>ATTACK_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <damage>
+              <numDice>1</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>8</modifier>
+            </damage>
+          </element>
         </damage>
         <numAttacksPerRound>4</numAttacksPerRound>
-      </attackAction>
+      </fullAttackAction>
     </attack>
     <space>15</space>
     <reach>10</reach>
@@ -150,17 +171,38 @@
     <attack>
       <baseAttackBonus>11</baseAttackBonus>
       <grappleBonus>28</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_TENTACLE</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_TENTACLE</weapon>
         <attackBonus>18</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
-          <numDice>1</numDice>
-          <typeDice>D_6</typeDice>
-          <modifier>9</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <damage>
+              <numDice>1</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>9</modifier>
+            </damage>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </standardAttackAction>
+      <fullAttackAction>
+        <weapon>NATURALWEAPON_TENTACLE</weapon>
+        <attackBonus>18</attackBonus>
+        <attackForm>ATTACK_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <damage>
+              <numDice>1</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>9</modifier>
+            </damage>
+          </element>
         </damage>
         <numAttacksPerRound>4</numAttacksPerRound>
-      </attackAction>
+      </fullAttackAction>
     </attack>
     <space>15</space>
     <reach>10</reach>
@@ -289,8 +331,8 @@
     <attack>
       <baseAttackBonus>6</baseAttackBonus>
       <grappleBonus>14</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_CLAW_TALON</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_CLAW_TALON</weapon>
         <attackBonus>9</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -299,9 +341,9 @@
           <modifier>4</modifier>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>4</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -310,7 +352,7 @@
           <modifier>2</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>10</space>
     <reach>10</reach>
@@ -432,8 +474,8 @@
     <attack>
       <baseAttackBonus>2</baseAttackBonus>
       <grappleBonus>0</grappleBonus>
-      <attackAction>
-        <monsterWeapon>INCORPOREAL_TOUCH</monsterWeapon>
+      <standardAttackAction>
+        <weapon>INCORPOREAL_TOUCH</weapon>
         <attackBonus>3</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -442,7 +484,7 @@
           <modifier>0</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -539,8 +581,8 @@
     <attack>
       <baseAttackBonus>12</baseAttackBonus>
       <grappleBonus>18</grappleBonus>
-      <attackAction>
-        <monsterWeapon>STANDARDWEAPON_BLUDGEONING</monsterWeapon>
+      <standardAttackAction>
+        <weapon>STANDARDWEAPON_BLUDGEONING</weapon>
         <attackBonus>21</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -549,9 +591,9 @@
           <modifier>12</modifier>
         </damage>
         <numAttacksPerRound>3</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>18</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -560,7 +602,7 @@
           <modifier>9</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -697,8 +739,8 @@
     <attack>
       <baseAttackBonus>14</baseAttackBonus>
       <grappleBonus>25</grappleBonus>
-      <attackAction>
-        <monsterWeapon>STANDARDWEAPON_SLASHING</monsterWeapon>
+      <standardAttackAction>
+        <weapon>STANDARDWEAPON_SLASHING</weapon>
         <attackBonus>23</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -707,9 +749,9 @@
           <modifier>13</modifier>
         </damage>
         <numAttacksPerRound>3</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>20</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -718,7 +760,7 @@
           <modifier>10</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>10</space>
     <reach>10</reach>
@@ -852,8 +894,8 @@
     <attack>
       <baseAttackBonus>22</baseAttackBonus>
       <grappleBonus>35</grappleBonus>
-      <attackAction>
-        <monsterWeapon>STANDARDWEAPON_SLASHING</monsterWeapon>
+      <standardAttackAction>
+        <weapon>STANDARDWEAPON_SLASHING</weapon>
         <attackBonus>35</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -862,9 +904,9 @@
           <modifier>18</modifier>
         </damage>
         <numAttacksPerRound>4</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>STANDARDWEAPON_PIERCING</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>STANDARDWEAPON_PIERCING</weapon>
         <attackBonus>28</attackBonus>
         <attackForm>ATTACK_RANGED</attackForm>
         <damage>
@@ -873,9 +915,9 @@
           <modifier>7</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>30</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -884,7 +926,7 @@
           <modifier>13</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>10</space>
     <reach>10</reach>
@@ -1022,8 +1064,8 @@
     <attack>
       <baseAttackBonus>0</baseAttackBonus>
       <grappleBonus>-9</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>1</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -1032,7 +1074,7 @@
           <modifier>-1</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>2</space>
     <reach>0</reach>
@@ -1097,8 +1139,8 @@
     <attack>
       <baseAttackBonus>0</baseAttackBonus>
       <grappleBonus>-4</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>1</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -1107,7 +1149,7 @@
           <modifier>0</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -1168,8 +1210,8 @@
     <attack>
       <baseAttackBonus>1</baseAttackBonus>
       <grappleBonus>2</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>2</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -1178,7 +1220,7 @@
           <modifier>1</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -1239,8 +1281,8 @@
     <attack>
       <baseAttackBonus>3</baseAttackBonus>
       <grappleBonus>10</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>5</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -1249,7 +1291,7 @@
           <modifier>4</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>10</space>
     <reach>5</reach>
@@ -1310,8 +1352,8 @@
     <attack>
       <baseAttackBonus>6</baseAttackBonus>
       <grappleBonus>19</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>9</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -1320,7 +1362,7 @@
           <modifier>7</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>15</space>
     <reach>10</reach>
@@ -1381,8 +1423,8 @@
     <attack>
       <baseAttackBonus>12</baseAttackBonus>
       <grappleBonus>31</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>15</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -1391,7 +1433,7 @@
           <modifier>10</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>20</space>
     <reach>15</reach>
@@ -1452,8 +1494,8 @@
     <attack>
       <baseAttackBonus>24</baseAttackBonus>
       <grappleBonus>49</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>25</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -1462,7 +1504,7 @@
           <modifier>13</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>30</space>
     <reach>20</reach>
@@ -1523,8 +1565,8 @@
     <attack>
       <baseAttackBonus>3</baseAttackBonus>
       <grappleBonus>12</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>7</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -1533,9 +1575,9 @@
           <modifier>7</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SPIT_ACID</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SPIT_ACID</weapon>
         <attackBonus>0</attackBonus>
         <attackForm>ATTACK_RANGED</attackForm>
         <damage>
@@ -1544,7 +1586,7 @@
           <modifier>0</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>10</space>
     <reach>5</reach>
@@ -1641,8 +1683,8 @@
     <attack>
       <baseAttackBonus>3</baseAttackBonus>
       <grappleBonus>3</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>5</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -1651,9 +1693,9 @@
           <modifier>0</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_WEB</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_WEB</weapon>
         <attackBonus>5</attackBonus>
         <attackForm>ATTACK_RANGED</attackForm>
         <damage>
@@ -1662,7 +1704,7 @@
           <modifier>0</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -1760,8 +1802,8 @@
     <attack>
       <baseAttackBonus>1</baseAttackBonus>
       <grappleBonus>-8</grappleBonus>
-      <attackAction>
-        <monsterWeapon>RAY_LIGHT</monsterWeapon>
+      <standardAttackAction>
+        <weapon>RAY_LIGHT</weapon>
         <attackBonus>2</attackBonus>
         <attackForm>ATTACK_RANGED</attackForm>
         <damage>
@@ -1770,7 +1812,7 @@
           <modifier>0</modifier>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -1877,8 +1919,8 @@
     <attack>
       <baseAttackBonus>6</baseAttackBonus>
       <grappleBonus>8</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>8</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -1887,9 +1929,9 @@
           <modifier>2</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>3</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -1898,9 +1940,9 @@
           <modifier>1</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>STANDARDWEAPON_SLASHING</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>STANDARDWEAPON_SLASHING</weapon>
         <attackBonus>8</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -1909,7 +1951,7 @@
           <modifier>3</modifier>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -2037,8 +2079,8 @@
     <attack>
       <baseAttackBonus>17</baseAttackBonus>
       <grappleBonus>22</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>22</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -2047,9 +2089,9 @@
           <modifier>5</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>17</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -2058,9 +2100,9 @@
           <modifier>2</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>STANDARDWEAPON_SLASHING</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>STANDARDWEAPON_SLASHING</weapon>
         <attackBonus>25</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -2069,7 +2111,7 @@
           <modifier>9</modifier>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -2183,8 +2225,8 @@
     <attack>
       <baseAttackBonus>12</baseAttackBonus>
       <grappleBonus>17</grappleBonus>
-      <attackAction>
-        <monsterWeapon>STANDARDWEAPON_SLASHING</monsterWeapon>
+      <standardAttackAction>
+        <weapon>STANDARDWEAPON_SLASHING</weapon>
         <attackBonus>21</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -2193,7 +2235,7 @@
           <modifier>11</modifier>
         </damage>
         <numAttacksPerRound>3</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -2333,8 +2375,8 @@
     <attack>
       <baseAttackBonus>3</baseAttackBonus>
       <grappleBonus>0</grappleBonus>
-      <attackAction>
-        <monsterWeapon>RAY_ELECTRICITY</monsterWeapon>
+      <standardAttackAction>
+        <weapon>RAY_ELECTRICITY</weapon>
         <attackBonus>9</attackBonus>
         <attackForm>ATTACK_RANGED</attackForm>
         <attackForm>ATTACK_TOUCH</attackForm>
@@ -2344,9 +2386,9 @@
           <modifier>0</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>9</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -2355,7 +2397,7 @@
           <modifier>1</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -2474,8 +2516,8 @@
     <attack>
       <baseAttackBonus>7</baseAttackBonus>
       <grappleBonus>9</grappleBonus>
-      <attackAction>
-        <monsterWeapon>RAY_ELECTRICITY</monsterWeapon>
+      <standardAttackAction>
+        <weapon>RAY_ELECTRICITY</weapon>
         <attackBonus>12</attackBonus>
         <attackForm>ATTACK_RANGED</attackForm>
         <attackForm>ATTACK_TOUCH</attackForm>
@@ -2485,9 +2527,9 @@
           <modifier>0</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>12</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -2496,7 +2538,7 @@
           <modifier>3</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -2616,8 +2658,8 @@
     <attack>
       <baseAttackBonus>15</baseAttackBonus>
       <grappleBonus>25</grappleBonus>
-      <attackAction>
-        <monsterWeapon>RAY_ELECTRICITY</monsterWeapon>
+      <standardAttackAction>
+        <weapon>RAY_ELECTRICITY</weapon>
         <attackBonus>19</attackBonus>
         <attackForm>ATTACK_RANGED</attackForm>
         <attackForm>ATTACK_TOUCH</attackForm>
@@ -2627,9 +2669,9 @@
           <modifier>0</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>21</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -2638,7 +2680,7 @@
           <modifier>9</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>10</space>
     <reach>5</reach>
@@ -2767,8 +2809,8 @@
     <attack>
       <baseAttackBonus>3</baseAttackBonus>
       <grappleBonus>12</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>7</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -2777,7 +2819,7 @@
           <modifier>7</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>10</space>
     <reach>10</reach>
@@ -2866,8 +2908,8 @@
     <attack>
       <baseAttackBonus>10</baseAttackBonus>
       <grappleBonus>26</grappleBonus>
-      <attackAction>
-        <monsterWeapon>STANDARDWEAPON_BLUDGEONING</monsterWeapon>
+      <standardAttackAction>
+        <weapon>STANDARDWEAPON_BLUDGEONING</weapon>
         <attackBonus>16</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -2876,9 +2918,9 @@
           <modifier>8</modifier>
         </damage>
         <numAttacksPerRound>3</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>12</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -2887,9 +2929,9 @@
           <modifier>4</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_ROCK_STONE</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_ROCK_STONE</weapon>
         <attackBonus>5</attackBonus>
         <attackForm>ATTACK_RANGED</attackForm>
         <damage>
@@ -2898,7 +2940,7 @@
           <modifier>8</modifier>
         </damage>
         <numAttacksPerRound>3</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>15</space>
     <reach>15</reach>
@@ -3003,8 +3045,8 @@
     <attack>
       <baseAttackBonus>7</baseAttackBonus>
       <grappleBonus>9</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_CLAW_TALON</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_CLAW_TALON</weapon>
         <attackBonus>13</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -3013,9 +3055,9 @@
           <modifier>2</modifier>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>13</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -3024,7 +3066,7 @@
           <modifier>2</modifier>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -3170,8 +3212,8 @@
     <attack>
       <baseAttackBonus>2</baseAttackBonus>
       <grappleBonus>3</grappleBonus>
-      <attackAction>
-        <monsterWeapon>STANDARDWEAPON_BLUDGEONING</monsterWeapon>
+      <standardAttackAction>
+        <weapon>STANDARDWEAPON_BLUDGEONING</weapon>
         <attackBonus>3</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -3180,9 +3222,9 @@
           <modifier>2</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>STANDARDWEAPON_PIERCING</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>STANDARDWEAPON_PIERCING</weapon>
         <attackBonus>3</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -3191,7 +3233,7 @@
           <modifier>2</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -3313,8 +3355,8 @@
     <attack>
       <baseAttackBonus>6</baseAttackBonus>
       <grappleBonus>9</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>9</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -3323,9 +3365,9 @@
           <modifier>3</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_CLAW_TALON</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_CLAW_TALON</weapon>
         <attackBonus>4</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -3334,7 +3376,7 @@
           <modifier>1</modifier>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -3457,8 +3499,8 @@
     <attack>
       <baseAttackBonus>9</baseAttackBonus>
       <grappleBonus>18</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>13</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -3467,9 +3509,9 @@
           <modifier>5</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_CLAW_TALON</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_CLAW_TALON</weapon>
         <attackBonus>8</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -3478,7 +3520,7 @@
           <modifier>2</modifier>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>10</space>
     <reach>5</reach>
@@ -3606,8 +3648,8 @@
     <attack>
       <baseAttackBonus>6</baseAttackBonus>
       <grappleBonus>8</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>8</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -3616,7 +3658,7 @@
           <modifier>3</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -3715,8 +3757,8 @@
     <attack>
       <baseAttackBonus>18</baseAttackBonus>
       <grappleBonus>29</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>25</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -3725,7 +3767,7 @@
           <modifier>10</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>10</space>
     <reach>5</reach>
@@ -3812,8 +3854,8 @@
     <attack>
       <baseAttackBonus>9</baseAttackBonus>
       <grappleBonus>25</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>15</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -3822,7 +3864,7 @@
           <modifier>12</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>15</space>
     <reach>10</reach>
@@ -3926,8 +3968,8 @@
     <attack>
       <baseAttackBonus>5</baseAttackBonus>
       <grappleBonus>11</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>9</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -3936,9 +3978,9 @@
           <modifier>2</modifier>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>7</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -3947,9 +3989,9 @@
           <modifier>1</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_CLAW_TALON</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_CLAW_TALON</weapon>
         <attackBonus>7</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -3958,7 +4000,7 @@
           <modifier>1</modifier>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>10</space>
     <reach>10</reach>
@@ -4058,8 +4100,8 @@
     <attack>
       <baseAttackBonus>4</baseAttackBonus>
       <grappleBonus>4</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>4</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -4068,7 +4110,7 @@
           <modifier>0</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -4177,8 +4219,8 @@
     <attack>
       <baseAttackBonus>4</baseAttackBonus>
       <grappleBonus>5</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>6</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -4187,7 +4229,7 @@
           <modifier>1</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -4288,8 +4330,8 @@
     <attack>
       <baseAttackBonus>6</baseAttackBonus>
       <grappleBonus>10</grappleBonus>
-      <attackAction>
-        <monsterWeapon>STANDARDWEAPON_SLASHING</monsterWeapon>
+      <standardAttackAction>
+        <weapon>STANDARDWEAPON_SLASHING</weapon>
         <attackBonus>11</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -4298,9 +4340,9 @@
           <modifier>4</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>STANDARDWEAPON_PIERCING</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>STANDARDWEAPON_PIERCING</weapon>
         <attackBonus>11</attackBonus>
         <attackForm>ATTACK_RANGED</attackForm>
         <damage>
@@ -4309,9 +4351,9 @@
           <modifier>5</modifier>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_SLAP_SLAM</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>10</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -4320,7 +4362,7 @@
           <modifier>4</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -4459,8 +4501,8 @@
     <attack>
       <baseAttackBonus>2</baseAttackBonus>
       <grappleBonus>4</grappleBonus>
-      <attackAction>
-        <monsterWeapon>STANDARDWEAPON_BLUDGEONING</monsterWeapon>
+      <standardAttackAction>
+        <weapon>STANDARDWEAPON_BLUDGEONING</weapon>
         <attackBonus>5</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -4469,9 +4511,9 @@
           <modifier>2</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>STANDARDWEAPON_PIERCING</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>STANDARDWEAPON_PIERCING</weapon>
         <attackBonus>3</attackBonus>
         <attackForm>ATTACK_RANGED</attackForm>
         <damage>
@@ -4480,7 +4522,7 @@
           <modifier>2</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -4577,8 +4619,8 @@
     <attack>
       <baseAttackBonus>9</baseAttackBonus>
       <grappleBonus>25</grappleBonus>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_BITE</monsterWeapon>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>16</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -4587,9 +4629,9 @@
           <modifier>8</modifier>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </attackAction>
-      <attackAction>
-        <monsterWeapon>NATURALWEAPON_CLAW_TALON</monsterWeapon>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_CLAW_TALON</weapon>
         <attackBonus>10</attackBonus>
         <attackForm>ATTACK_MELEE</attackForm>
         <damage>
@@ -4598,7 +4640,7 @@
           <modifier>4</modifier>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
-      </attackAction>
+      </standardAttackAction>
     </attack>
     <space>15</space>
     <reach>10</reach>

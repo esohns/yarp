@@ -54,6 +54,7 @@ void print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-f [VALUE] : filename (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-t         : trace information") << std::endl;
   std::cout << ACE_TEXT("-v         : print version information and exit") << std::endl;
+  std::cout << ACE_TEXT("-x         : do NOT validate XML") << std::endl;
 } // end print_usage
 
 const bool process_arguments(const int argc_in,
@@ -61,7 +62,8 @@ const bool process_arguments(const int argc_in,
                              bool& dumpDictionary_out,
                              std::string& filename_out,
                              bool& traceInformation_out,
-                             bool& printVersionAndExit_out)
+                             bool& printVersionAndExit_out,
+                             bool& validateXML_out)
 {
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -70,10 +72,11 @@ const bool process_arguments(const int argc_in,
   filename_out.clear();
   traceInformation_out = false;
   printVersionAndExit_out = false;
+  validateXML_out = true;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("df:tv"));
+                             ACE_TEXT("df:tvx"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -104,6 +107,12 @@ const bool process_arguments(const int argc_in,
 
         break;
       }
+      case 'x':
+      {
+        validateXML_out = false;
+
+        break;
+      }
       // error handling
       case '?':
       {
@@ -128,6 +137,7 @@ const bool process_arguments(const int argc_in,
 }
 
 void do_work(const std::string& filename_in,
+             const bool& validateXML_in,
              const bool& dumpDictionary_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
@@ -143,9 +153,10 @@ void do_work(const std::string& filename_in,
   // step2: init character dictionary
   try
   {
-    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->initMonsterDictionary(filename_in);
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->initMonsterDictionary(filename_in,
+                                                                        validateXML_in);
   }
-  catch(...)
+  catch (...)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in RPG_Monster_Dictionary::initMonsterDictionary, returning\n")));
@@ -227,6 +238,7 @@ int ACE_TMAIN(int argc,
   std::string filename;
   bool traceInformation    = false;
   bool printVersionAndExit = false;
+  bool validateXML         = true;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
@@ -234,7 +246,8 @@ int ACE_TMAIN(int argc,
                           dumpDictionary,
                           filename,
                           traceInformation,
-                          printVersionAndExit)))
+                          printVersionAndExit,
+                          validateXML)))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
@@ -294,6 +307,7 @@ int ACE_TMAIN(int argc,
 
   // step2: do actual work
   do_work(filename,
+          validateXML,
           dumpDictionary);
 
   timer.stop();

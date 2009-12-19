@@ -69,6 +69,7 @@ class RPG_Combat_Damage_Type_pskel;
 
 #include <rpg_dice_incl.h>
 #include <rpg_item_incl.h>
+
 #include "rpg_combat_incl.h"
 
 #include <rpg_dice_XML_types.h>

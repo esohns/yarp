@@ -23,9 +23,9 @@
 
 enum RPG_Combat_SpecialAttack
 {
-  INCORPOREAL_TOUCH = 0,
-  RAY_ELECTRICITY,
-  RAY_LIGHT,
+  SPECIALATTACK_INCORPOREAL_TOUCH = 0,
+  SPECIALATTACK_RAY_ELECTRICITY,
+  SPECIALATTACK_RAY_LIGHT,
   //
   RPG_COMBAT_SPECIALATTACK_MAX,
   RPG_COMBAT_SPECIALATTACK_INVALID
@@ -45,9 +45,9 @@ class RPG_Combat_SpecialAttackHelper
   inline static void init()
   {
     myRPG_Combat_SpecialAttackToStringTable.clear();
-    myRPG_Combat_SpecialAttackToStringTable.insert(std::make_pair(INCORPOREAL_TOUCH, ACE_TEXT_ALWAYS_CHAR("INCORPOREAL_TOUCH")));
-    myRPG_Combat_SpecialAttackToStringTable.insert(std::make_pair(RAY_ELECTRICITY, ACE_TEXT_ALWAYS_CHAR("RAY_ELECTRICITY")));
-    myRPG_Combat_SpecialAttackToStringTable.insert(std::make_pair(RAY_LIGHT, ACE_TEXT_ALWAYS_CHAR("RAY_LIGHT")));
+    myRPG_Combat_SpecialAttackToStringTable.insert(std::make_pair(SPECIALATTACK_INCORPOREAL_TOUCH, ACE_TEXT_ALWAYS_CHAR("SPECIALATTACK_INCORPOREAL_TOUCH")));
+    myRPG_Combat_SpecialAttackToStringTable.insert(std::make_pair(SPECIALATTACK_RAY_ELECTRICITY, ACE_TEXT_ALWAYS_CHAR("SPECIALATTACK_RAY_ELECTRICITY")));
+    myRPG_Combat_SpecialAttackToStringTable.insert(std::make_pair(SPECIALATTACK_RAY_LIGHT, ACE_TEXT_ALWAYS_CHAR("SPECIALATTACK_RAY_LIGHT")));
   };
 
   inline static std::string RPG_Combat_SpecialAttackToString(const RPG_Combat_SpecialAttack& element_in)

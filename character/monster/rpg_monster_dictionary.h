@@ -47,7 +47,8 @@ class RPG_Monster_Dictionary
 
  public:
   // init item dictionary
-  void initMonsterDictionary(const std::string&); // filename
+  void initMonsterDictionary(const std::string&,  // filename
+                             const bool& = true); // validate XML ?
   const RPG_Monster_Properties getMonsterProperties(const std::string&) const; // name of monster
   void generateRandomEncounter(const unsigned int&,                   // # of different monster types
                                const RPG_Character_Alignment&,        // alignment
