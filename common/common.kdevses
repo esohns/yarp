@@ -1,13 +1,10 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="2" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/item/item_parser.cpp" >
-   <View0 Encoding="" line="0" Type="Source" />
+ <DocsAndViews NumberOfDocuments="1" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/combat/combat_simulator.cpp" >
+   <View0 Encoding="" line="275" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/configure.ac" >
-   <View0 Encoding="UTF-8" line="25" Type="Source" />
-  </Doc1>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>

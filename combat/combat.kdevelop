@@ -15,8 +15,8 @@
     <projectname>combat</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
-    <defaultencoding/>
+    <description></description>
+    <defaultencoding></defaultencoding>
   </general>
   <kdevautoproject>
     <general>
@@ -33,7 +33,7 @@
       <cwd>
         <combat_simulator>/home/unfv/Projects/RPG/combat/debug</combat_simulator>
       </cwd>
-      <mainprogram>/home/unfv/Projects/RPG/combat/debug/.libs/combat_simulator</mainprogram>
+      <mainprogram></mainprogram>
       <programargs>-i ./../../item/rpg_item.xml -m ./../../character/rpg_character.xml -n 10 -t</programargs>
       <globaldebugarguments>-i ./../../item/rpg_item.xml -m ./../../character/rpg_character.xml -n 10 -t</globaldebugarguments>
       <globalcwd>/home/unfv/Projects/RPG/combat/debug</globalcwd>
@@ -167,8 +167,6 @@
     <groups>
       <group pattern="*.h" name="Header files" />
       <group pattern="*.cpp" name="Source files" />
-      <hidenonprojectfiles>false</hidenonprojectfiles>
-      <hidenonlocation>false</hidenonlocation>
     </groups>
     <tree>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
@@ -232,7 +230,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -253,11 +251,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath/>
-      <dbgshell/>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <gdbpath></gdbpath>
+      <dbgshell></dbgshell>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -269,4 +267,9 @@
       <outputradix>10</outputradix>
     </display>
   </kdevdebugger>
+  <ctagspart>
+    <customArguments></customArguments>
+    <customTagfilePath>/home/unfv/Projects/RPG/combat/tags</customTagfilePath>
+    <activeTagsFiles/>
+  </ctagspart>
 </kdevelop>
