@@ -78,15 +78,8 @@ class RPG_Item_Dictionary_Type_pskel;
 #include <rpg_XMLSchema.h>
 
 #include <rpg_dice_incl.h>
-#include "rpg_item_weapontype.h"
-#include "rpg_item_weaponclass.h"
-#include "rpg_item_weaponcategory.h"
-#include "rpg_item_storeprice.h"
-#include "rpg_item_physicaldamagetype.h"
-#include "rpg_item_criticalhitmodifier.h"
+#include "rpg_item_incl.h"
 #include "rpg_item_common.h"
-#include "rpg_item_armortype.h"
-#include "rpg_item_armorcategory.h"
 
 #include <rpg_dice_XML_types.h>
 
@@ -283,7 +276,7 @@ class RPG_Item_WeaponPropertiesXML_Type_pskel: public ::xml_schema::complex_cont
   baseStorePrice (const RPG_Item_StorePrice&);
 
   virtual void
-  baseDamage ();
+  baseDamage (const RPG_Item_Damage&);
 
   virtual void
   criticalHitModifier (const RPG_Item_CriticalHitModifier&);

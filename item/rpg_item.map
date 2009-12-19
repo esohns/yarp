@@ -1,8 +1,11 @@
 namespace urn:rpg
 {
   include "rpg_item_incl.h";
+  include "rpg_item_common.h";
 
   include <rpg_dice_incl.h>;
+
+  RPG_Dice_Roll_Type                     RPG_Item_Damage;
 
   RPG_Item_WeaponCategory_Type           RPG_Item_WeaponCategory;
   RPG_Item_WeaponClass_Type              RPG_Item_WeaponClass;
@@ -10,7 +13,6 @@ namespace urn:rpg
   RPG_Item_StorePrice_Type               RPG_Item_StorePrice;
   RPG_Item_CriticalHitModifier_Type      RPG_Item_CriticalHitModifier;
   RPG_Item_PhysicalDamageType_Type       RPG_Item_PhysicalDamageType;
-  RPG_Chance_DiceRoll_Type               RPG_Item_Damage;
   RPG_Item_WeaponPropertiesXML_Type      RPG_Item_WeaponPropertiesXML;
 #  RPG_Item_MagicWeaponPropertiesXML_Type RPG_Item_MagicWeaponPropertiesXML;
 

@@ -618,7 +618,7 @@ baseStorePrice (const RPG_Item_StorePrice&)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pskel::
-baseDamage ()
+baseDamage (const RPG_Item_Damage&)
 {
 }
 
@@ -787,10 +787,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "baseDamage" && ns == "urn:rpg")
   {
     if (this->baseDamage_parser_)
-    {
-      this->baseDamage_parser_->post_RPG_Dice_Roll_Type ();
-      this->baseDamage ();
-    }
+      this->baseDamage (this->baseDamage_parser_->post_RPG_Dice_Roll_Type ());
 
     return true;
   }

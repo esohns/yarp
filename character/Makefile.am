@@ -29,15 +29,11 @@ libRPG_Character_la_SOURCES = rpg_XMLSchema.h rpg_character_XML_parser.cpp \
 	rpg_character_skills_common_tools.h rpg_character_terrain.h
 libRPG_Character_la_LDFLAGS = -L/usr/local/lib
 
-bin_PROGRAMS = character_generator
 
-character_generator_SOURCES = main.cpp
-character_generator_LDADD = $(top_builddir)/libRPG_Character.la -lACE \
-	-lRPG_Chance -lRPG_Combat -lRPG_Dice -lRPG_Item -lpthread -lxerces-c
-character_generator_LDFLAGS = -L/usr/local/lib
 
 bindata_DATA = rpg_character.xsd
 bindatadir = $(bindir)
 
 SUBDIRS = monster
 noinst_HEADERS = rpg_XMLSchema.h
+INCLUDES = -I$(top_srcdir)/. -I$(top_srcdir)/monster

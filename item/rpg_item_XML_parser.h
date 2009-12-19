@@ -20,7 +20,7 @@
 #ifndef RPG_ITEM_XML_PARSER_H
 #define RPG_ITEM_XML_PARSER_H
 
-// #include "rpg_item_common.h"
+#include "rpg_item_common.h"
 #include "rpg_item_XML_parser_base.h"
 
 #include <ace/Global_Macros.h>

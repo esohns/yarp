@@ -129,7 +129,7 @@ class RPG_Item_WeaponPropertiesXML_Type_pimpl: public virtual RPG_Item_WeaponPro
   baseStorePrice (const RPG_Item_StorePrice&);
 
   virtual void
-  baseDamage ();
+  baseDamage (const RPG_Item_Damage&);
 
   virtual void
   criticalHitModifier (const RPG_Item_CriticalHitModifier&);

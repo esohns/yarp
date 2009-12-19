@@ -36,6 +36,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <sstream>
 
 RPG_Monster_Dictionary::RPG_Monster_Dictionary()
 {
@@ -201,19 +202,21 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                 myXSDErrorHandler,
                 flags);
   }
-  catch(const ::xml_schema::parsing& exception)
+  catch (const ::xml_schema::parsing& exception)
   {
+    std::ostringstream converter;
+    converter << exception;
+    std::string text = converter.str();
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Monster_Dictionary::initCharacterDictionary(): exception occurred, returning\n")));
-
-    std::cerr << exception << std::endl;
+               ACE_TEXT("RPG_Monster_Dictionary::initMonsterDictionary(): exception occurred: \"%s\", returning\n"),
+               text.c_str()));
 
     return;
   }
-  catch(...)
+  catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Monster_Dictionary::initCharacterDictionary(): exception occurred, returning\n")));
+               ACE_TEXT("RPG_Monster_Dictionary::initMonsterDictionary(): exception occurred, returning\n")));
 
     return;
   }
@@ -622,13 +625,13 @@ bool RPG_Monster_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::XSD_Error_Handler::handle"));
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
-             id_in.c_str(),
-             line_in,
-             column_in,
-             message_in.c_str()));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+//              id_in.c_str(),
+//              line_in,
+//              column_in,
+//              message_in.c_str()));
 
   switch (severity_in)
   {
