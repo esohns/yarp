@@ -21,7 +21,9 @@
 #define RPG_CHARACTER_EQUIPMENT_H
 
 #include "rpg_character_equipment_common.h"
-#include "rpg_item_instance_common.h"
+
+#include <rpg_item_instance_common.h>
+#include <rpg_item_weapontype.h>
 
 #include <ace/Global_Macros.h>
 
@@ -36,8 +38,10 @@ class RPG_Character_Equipment
 
   const bool equip(const RPG_Item_ID_t&, // item ID
                    const RPG_Character_EquipmentSlot&); // where ?
-  const bool unequip(const RPG_Item_ID_t&, // item ID
-                     const RPG_Character_EquipmentSlot&); // where ?
+  const bool unequip(const RPG_Character_EquipmentSlot&); // where ?
+
+  // item in EQUIPMENTSLOT_RIGHT_HAND/EQUIPMENTSLOT_LEFT_HAND
+  const RPG_Item_WeaponType getPrimaryWeapon() const;
 
  private:
   // safety measures

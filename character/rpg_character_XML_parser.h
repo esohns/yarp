@@ -246,4 +246,12 @@ class RPG_Character_Alignment_Type
   RPG_Character_Alignment myCurrentAlignment;
 };
 
+class RPG_Character_EquipmentSlot_Type
+ : public RPG_Character_EquipmentSlot_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Character_EquipmentSlot post_RPG_Character_EquipmentSlot_Type();
+};
+
 #endif

@@ -43,5 +43,6 @@
 #include "rpg_character_alignmentcivic.h"
 #include "rpg_character_alignmentethic.h"
 #include "rpg_character_alignment.h"
+#include "rpg_character_equipmentslot.h"
 
 #endif

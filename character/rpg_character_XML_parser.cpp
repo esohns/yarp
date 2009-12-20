@@ -383,3 +383,10 @@ RPG_Character_Alignment RPG_Character_Alignment_Type::post_RPG_Character_Alignme
 
   return result;
 }
+
+RPG_Character_EquipmentSlot RPG_Character_EquipmentSlot_Type::post_RPG_Character_EquipmentSlot_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_EquipmentSlot_Type::post_RPG_Character_EquipmentSlot_Type"));
+
+  return RPG_Character_EquipmentSlotHelper::stringToRPG_Character_EquipmentSlot(post_string());
+}

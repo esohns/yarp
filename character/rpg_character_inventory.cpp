@@ -53,6 +53,20 @@ RPG_Character_Inventory& RPG_Character_Inventory::operator=(const RPG_Character_
   return *this;
 }
 
+void RPG_Character_Inventory::pickUp(const RPG_Item_ID_t& itemID_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::pickUp"));
+
+  myItems.insert(itemID_in);
+}
+
+void RPG_Character_Inventory::drop(const RPG_Item_ID_t& itemID_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::drop"));
+
+  myItems.erase(itemID_in);
+}
+
 void RPG_Character_Inventory::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::dump"));
@@ -66,8 +80,10 @@ void RPG_Character_Inventory::dump() const
                                                                   base))
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid item (ID: %d) --> check implementation !, continuing\n"),
+                 ACE_TEXT("invalid item (ID: %d), continuing\n"),
                  *iterator));
+
+      continue;
     } // end IF
 
     base->dump();

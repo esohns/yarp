@@ -26,6 +26,7 @@
 #include <rpg_dice_roll.h>
 
 #include <rpg_item_physicaldamagetype.h>
+#include <rpg_item_weapontype.h>
 
 #include "rpg_combat_attackform.h"
 #include "rpg_combat_specialdamagetype.h"
@@ -36,6 +37,7 @@
 #include "rpg_combat_common.h"
 
 #include <rpg_character_player_common.h>
+#include <rpg_character_size.h>
 
 #include <ace/Global_Macros.h>
 
@@ -74,6 +76,9 @@ class RPG_Combat_Common_Tools
   static const bool isMonsterGroupHelpless(const RPG_Character_MonsterGroupInstance_t&); // group instance
   static const bool isCharacterHelpless(const RPG_Character_Base* const); // character handle
   static const bool isCharacterDeadOrDying(const RPG_Character_Base* const); // character handle
+
+  static RPG_Combat_AttackForm weaponTypeToAttackForm(const RPG_Item_WeaponType&); // weapon type
+  static const signed char getSizeModifier(const RPG_Character_Size&);
   static void attackFoe(const RPG_Character_Base* const, // attacker
                         RPG_Character_Base* const);      // target
 };

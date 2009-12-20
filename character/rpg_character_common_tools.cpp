@@ -68,6 +68,7 @@ RPG_Character_TerrainToStringTable_t RPG_Character_TerrainHelper::myRPG_Characte
 RPG_Character_ClimateToStringTable_t RPG_Character_ClimateHelper::myRPG_Character_ClimateToStringTable;
 RPG_Character_AlignmentCivicToStringTable_t RPG_Character_AlignmentCivicHelper::myRPG_Character_AlignmentCivicToStringTable;
 RPG_Character_AlignmentEthicToStringTable_t RPG_Character_AlignmentEthicHelper::myRPG_Character_AlignmentEthicToStringTable;
+RPG_Character_EquipmentSlotToStringTable_t RPG_Character_EquipmentSlotHelper::myRPG_Character_EquipmentSlotToStringTable;
 
 void RPG_Character_Common_Tools::initStringConversionTables()
 {
@@ -88,6 +89,7 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   RPG_Character_ClimateHelper::init();
   RPG_Character_AlignmentCivicHelper::init();
   RPG_Character_AlignmentEthicHelper::init();
+  RPG_Character_EquipmentSlotHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
@@ -171,6 +173,24 @@ const std::string RPG_Character_Common_Tools::attributesToString(const RPG_Chara
   str << ACE_static_cast(unsigned int, attributes_in.charisma);
   result += str.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
+
+  return result;
+}
+
+const std::string RPG_Character_Common_Tools::classesToString(const RPG_Character_Classes_t& classes_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::classesToString"));
+
+  std::string result;
+  for (RPG_Character_ClassesIterator_t iterator = classes_in.begin();
+       iterator != classes_in.end();
+       iterator++)
+  {
+    result += RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString((*iterator).metaClass);
+    result += ACE_TEXT_ALWAYS_CHAR(" | ");
+    result += RPG_Character_SubClassHelper::RPG_Character_SubClassToString((*iterator).subClass);
+    result += ACE_TEXT_ALWAYS_CHAR("\n");
+  } // end FOR
 
   return result;
 }
@@ -430,6 +450,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   player_race.set(race - 1);
 
   // step4: class
+  RPG_Character_Classes_t player_classes;
   RPG_Character_Class player_class;
   player_class.metaClass = RPG_CHARACTER_METACLASS_INVALID;
   player_class.subClass = RPG_CHARACTER_SUBCLASS_INVALID;
@@ -439,6 +460,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
                                   result);
   player_class.subClass = ACE_static_cast(RPG_Character_SubClass, result.front());
   player_class.metaClass = RPG_Character_Class_Common_Tools::subClassToMetaClass(player_class.subClass);
+  player_classes.push_back(player_class);
 
   // step5: alignment
   RPG_Character_Alignment alignment;
@@ -577,9 +599,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
       armor  = new RPG_Item_Armor(ARMOR_MAIL_SPLINT);
       shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
 
-      items.push_back(weapon->getID());
-      items.push_back(armor->getID());
-      items.push_back(shield->getID());
+      items.insert(weapon->getID());
+      items.insert(armor->getID());
+      items.insert(shield->getID());
 
       break;
     }
@@ -590,9 +612,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
       armor  = new RPG_Item_Armor(ARMOR_PLATE_FULL);
       shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_STEEL);
 
-      items.push_back(weapon->getID());
-      items.push_back(armor->getID());
-      items.push_back(shield->getID());
+      items.insert(weapon->getID());
+      items.insert(armor->getID());
+      items.insert(shield->getID());
 
       break;
     }
@@ -602,9 +624,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
       bow    = new RPG_Item_Weapon(RANGED_WEAPON_BOW_LONG);
       armor  = new RPG_Item_Armor(ARMOR_HIDE);
 
-      items.push_back(weapon->getID());
-      items.push_back(bow->getID());
-      items.push_back(armor->getID());
+      items.insert(weapon->getID());
+      items.insert(bow->getID());
+      items.insert(armor->getID());
 
       break;
     }
@@ -613,8 +635,8 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
       weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
       armor  = new RPG_Item_Armor(ARMOR_HIDE);
 
-      items.push_back(weapon->getID());
-      items.push_back(armor->getID());
+      items.insert(weapon->getID());
+      items.insert(armor->getID());
 
       break;
     }
@@ -624,7 +646,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
     {
       weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
 
-      items.push_back(weapon->getID());
+      items.insert(weapon->getID());
 
       break;
     }
@@ -636,9 +658,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
       armor  = new RPG_Item_Armor(ARMOR_MAIL_CHAIN);
       shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
 
-      items.push_back(weapon->getID());
-      items.push_back(armor->getID());
-      items.push_back(shield->getID());
+      items.insert(weapon->getID());
+      items.insert(armor->getID());
+      items.insert(shield->getID());
 
       break;
     }
@@ -649,9 +671,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
       armor  = new RPG_Item_Armor(ARMOR_HIDE);
       shield  = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_WOODEN);
 
-      items.push_back(weapon->getID());
-      items.push_back(armor->getID());
-      items.push_back(shield->getID());
+      items.insert(weapon->getID());
+      items.insert(armor->getID());
+      items.insert(shield->getID());
 
       break;
     }
@@ -659,7 +681,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
     {
       weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
 
-      items.push_back(weapon->getID());
+      items.insert(weapon->getID());
 
       break;
     }
@@ -670,9 +692,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
       armor  = new RPG_Item_Armor(ARMOR_LEATHER);
       shield  = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_STEEL);
 
-      items.push_back(weapon->getID());
-      items.push_back(armor->getID());
-      items.push_back(shield->getID());
+      items.insert(weapon->getID());
+      items.insert(armor->getID());
+      items.insert(shield->getID());
 
       break;
     }
@@ -691,7 +713,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   RPG_Character_Player player(name,
                               gender,
                               race,
-                              player_class,
+                              player_classes,
                               alignment,
                               attributes,
                               skills,

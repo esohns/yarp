@@ -20,11 +20,11 @@
 #ifndef RPG_ITEM_INSTANCE_COMMON_H
 #define RPG_ITEM_INSTANCE_COMMON_H
 
-#include <vector>
+#include <set>
 
 // useful types
 typedef unsigned int RPG_Item_ID_t;
-typedef std::vector<RPG_Item_ID_t> RPG_Item_List_t;
+typedef std::set<RPG_Item_ID_t> RPG_Item_List_t;
 typedef RPG_Item_List_t::const_iterator RPG_Item_ListIterator_t;
 
 #endif

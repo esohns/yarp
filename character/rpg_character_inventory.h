@@ -37,7 +37,7 @@ class RPG_Character_Inventory
 
   RPG_Character_Inventory& operator=(const RPG_Character_Inventory&);
 
-  void add(const RPG_Item_ID_t&); // item ID
+  void pickUp(const RPG_Item_ID_t&); // item ID
   void drop(const RPG_Item_ID_t&); // item ID
 
   void dump() const;

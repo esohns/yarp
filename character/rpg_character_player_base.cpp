@@ -27,7 +27,7 @@
 RPG_Character_Player_Base::RPG_Character_Player_Base(const std::string& name_in,
                                                      const RPG_Character_Gender& gender_in,
                                                      const RPG_Character_Race& race_in,
-                                                     const RPG_Character_Class& class_in,
+                                                     const RPG_Character_Classes_t& classes_in,
                                                      const RPG_Character_Alignment& alignment_in,
                                                      const RPG_Character_Attributes& attributes_in,
                                                      const RPG_Character_Skills_t& skills_in,
@@ -39,7 +39,7 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(const std::string& name_in,
                                                      const RPG_Item_List_t& inventory_in)
  : myGender(gender_in),
    myRace(race_in),
-   myClass(class_in),
+   myClasses(classes_in),
    myExperience(experience_in),
    inherited(name_in,
              alignment_in,
@@ -47,6 +47,7 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(const std::string& name_in,
              skills_in,
              feats_in,
              abilities_in,
+             SIZE_MEDIUM, // standard PCs are all medium-sized
              hitpoints_in,
              wealth_in,
              inventory_in)
@@ -58,7 +59,7 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(const std::string& name_in,
 RPG_Character_Player_Base::RPG_Character_Player_Base(const RPG_Character_Player_Base& playerBase_in)
  : myGender(playerBase_in.myGender),
    myRace(playerBase_in.myRace),
-   myClass(playerBase_in.myClass),
+   myClasses(playerBase_in.myClasses),
    myExperience(playerBase_in.myExperience),
    inherited(playerBase_in)
 {
@@ -78,7 +79,7 @@ RPG_Character_Player_Base& RPG_Character_Player_Base::operator=(const RPG_Charac
 
   myGender = playerBase_in.myGender;
   myRace = playerBase_in.myRace;
-  myClass = playerBase_in.myClass;
+  myClasses = playerBase_in.myClasses;
   myExperience = playerBase_in.myExperience;
   inherited::operator=(playerBase_in);
 
@@ -99,14 +100,14 @@ const RPG_Character_Race RPG_Character_Player_Base::getRace() const
   return myRace;
 }
 
-const RPG_Character_Class RPG_Character_Player_Base::getClass() const
+const RPG_Character_Classes_t RPG_Character_Player_Base::getClasses() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getClass"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getClasses"));
 
-  return myClass;
+  return myClasses;
 }
 
-const unsigned char RPG_Character_Player_Base::getLevel() const
+const unsigned char RPG_Character_Player_Base::getLevel(const RPG_Character_SubClass& subClass_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getLevel"));
 
@@ -120,6 +121,13 @@ const unsigned int RPG_Character_Player_Base::getExperience() const
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getExperience"));
 
   return myExperience;
+}
+
+const RPG_Character_Equipment* RPG_Character_Player_Base::getEquipment() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getEquipment"));
+
+  return &(inherited::myEquipment);
 }
 
 void RPG_Character_Player_Base::gainExperience(const unsigned int& XP_in)
@@ -142,10 +150,10 @@ void RPG_Character_Player_Base::dump() const
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::dump"));
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("Player: \nGender: %s\nRace: %s\nClass: %s\nXP: %d\n"),
+             ACE_TEXT("Player: \nGender: %s\nRace: %s\nClass(es):\n%sXP: %d\n"),
              RPG_Character_GenderHelper::RPG_Character_GenderToString(myGender).c_str(),
              RPG_Character_RaceHelper::RPG_Character_RaceToString(myRace).c_str(),
-             RPG_Character_SubClassHelper::RPG_Character_SubClassToString(myClass.subClass).c_str(),
+             RPG_Character_Common_Tools::classesToString(myClasses).c_str(),
              myExperience));
 
   inherited::dump();

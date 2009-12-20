@@ -29,6 +29,7 @@
 #include "rpg_character_condition.h"
 #include "rpg_character_attributes.h"
 #include "rpg_character_skills_common.h"
+#include "rpg_character_size.h"
 #include "rpg_character_inventory_common.h"
 #include "rpg_character_inventory.h"
 #include "rpg_character_equipment.h"
@@ -55,12 +56,7 @@ class RPG_Character_Base
   const RPG_Character_Alignment getAlignment() const;
 
   // retrieve base attributes
-  const unsigned char getStrength() const;
-  const unsigned char getDexterity() const;
-  const unsigned char getConstitution() const;
-  const unsigned char getIntelligence() const;
-  const unsigned char getWisdom() const;
-  const unsigned char getCharisma() const;
+  const unsigned char getAttribute(const RPG_Character_Attribute&) const;
 
   // retrieve skill value (if any)
   void getSkill(const RPG_Character_Skill&, // skill
@@ -72,7 +68,9 @@ class RPG_Character_Base
 
   const unsigned short int getNumTotalHitPoints() const;
   const unsigned short int getNumCurrentHitPoints() const;
+
   const unsigned int getCurrentWealth() const;
+  const RPG_Character_Size getSize() const;
 
   // sustain some damage (melee, magic, ...)
 //   void sustainDamage(const RPG_Combat_Damage&);
@@ -93,12 +91,19 @@ class RPG_Character_Base
                      const RPG_Character_Skills_t&,     // (starting) skills
                      const RPG_Character_Feats_t&,      // base feats
                      const RPG_Character_Abilities_t&,  // base abilities
+                     const RPG_Character_Size&,         // (default) size
                      const unsigned short int&,         // (starting) HP
                      const unsigned int&,               // (starting) wealth (GP)
                      // base items
                      const RPG_Item_List_t&);           // (starting) list of (carried) items
   RPG_Character_Base(const RPG_Character_Base&);
   RPG_Character_Base& operator=(const RPG_Character_Base&);
+
+  unsigned int               myCurrentWealth;
+  RPG_Character_Size         mySize;
+
+  RPG_Character_Inventory    myInventory;
+  RPG_Character_Equipment    myEquipment;
 
  private:
   // safety measures
@@ -108,21 +113,13 @@ class RPG_Character_Base
   RPG_Character_Alignment    myAlignment;
 
   RPG_Character_Attributes   myAttributes;
-
   RPG_Character_Skills_t     mySkills;
-
   RPG_Character_Feats_t      myFeats;
-
   RPG_Character_Abilities_t  myAbilities;
 
   unsigned short int         myNumTotalHitPoints;
   unsigned short int         myNumCurrentHitPoints;
   RPG_Character_Conditions_t myConditions;
-
-  unsigned int               myCurrentWealth;
-
-  RPG_Character_Equipment    myEquipment;
-  RPG_Character_Inventory    myInventory;
 };
 
 #endif

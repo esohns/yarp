@@ -20,21 +20,11 @@
 #ifndef RPG_CHARACTER_EQUIPMENT_COMMON_H
 #define RPG_CHARACTER_EQUIPMENT_COMMON_H
 
-#include "rpg_item_instance_common.h"
+#include "rpg_character_equipmentslot.h"
+
+#include <rpg_item_instance_common.h>
 
 #include <map>
-
-enum RPG_Character_EquipmentSlot
-{
-  EQUIPMENTSLOT_HEAD,
-  EQUIPMENTSLOT_NECK,
-  EQUIPMENTSLOT_APPAREL,
-  EQUIPMENTSLOT_RIGHT_HAND,
-  EQUIPMENTSLOT_LEFT_HAND,
-  EQUIPMENTSLOT_GAUNTLETS,
-  EQUIPMENTSLOT_RING,
-  EQUIPMENTSLOT_FEET
-};
 
 // useful types
 typedef std::multimap<RPG_Character_EquipmentSlot, RPG_Item_ID_t> RPG_Character_Equipment_t;

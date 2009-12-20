@@ -46,11 +46,13 @@ class RPG_Character_Player_Base
   // retrieve basic player character data
   const RPG_Character_Gender getGender() const;
   const RPG_Character_Race getRace() const;
-  const RPG_Character_Class getClass() const;
+  const RPG_Character_Classes_t getClasses() const;
 
   const unsigned int getExperience() const;
   // compute dynamically from class/XP
-  const unsigned char getLevel() const;
+  const unsigned char getLevel(const RPG_Character_SubClass&) const; // subclass
+
+  const RPG_Character_Equipment* getEquipment() const;
 
   virtual void gainExperience(const unsigned int&); // XP
 
@@ -62,7 +64,7 @@ class RPG_Character_Player_Base
   RPG_Character_Player_Base(const std::string&,               // name
                             const RPG_Character_Gender&,      // gender
                             const RPG_Character_Race&,        // race
-                            const RPG_Character_Class&,       // (starting) class
+                            const RPG_Character_Classes_t&,   // (starting) class(es)
                             const RPG_Character_Alignment&,   // (starting) alignment
                             const RPG_Character_Attributes&,  // base attributes
                             const RPG_Character_Skills_t&,    // (starting) skills
@@ -82,11 +84,11 @@ class RPG_Character_Player_Base
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player_Base());
 
-  RPG_Character_Gender myGender;
-  RPG_Character_Race   myRace;
-  RPG_Character_Class  myClass;
+  RPG_Character_Gender    myGender;
+  RPG_Character_Race      myRace;
+  RPG_Character_Classes_t myClasses;
 
-  unsigned int         myExperience;
+  unsigned int            myExperience;
 //  unsigned short int       mySize; // cm
 //  unsigned short int       myWeight; // kg
 //  unsigned int             myAge; // years

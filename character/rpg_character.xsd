@@ -529,4 +529,17 @@
     </xsd:sequence>
   </xsd:complexType>
 
+  <xsd:simpleType name="RPG_Character_EquipmentSlot_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="EQUIPMENTSLOT_HEAD"/>
+      <xsd:enumeration value="EQUIPMENTSLOT_NECK"/>
+      <xsd:enumeration value="EQUIPMENTSLOT_APPAREL"/>
+      <xsd:enumeration value="EQUIPMENTSLOT_RIGHT_HAND"/>
+      <xsd:enumeration value="EQUIPMENTSLOT_LEFT_HAND"/>
+      <xsd:enumeration value="EQUIPMENTSLOT_GAUNTLETS"/>
+      <xsd:enumeration value="EQUIPMENTSLOT_RING"/>
+      <xsd:enumeration value="EQUIPMENTSLOT_FEET"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
 </xsd:schema>

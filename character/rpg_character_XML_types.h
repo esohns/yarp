@@ -71,6 +71,7 @@ class RPG_Character_Environment_Type_pskel;
 class RPG_Character_AlignmentCivic_Type_pskel;
 class RPG_Character_AlignmentEthic_Type_pskel;
 class RPG_Character_Alignment_Type_pskel;
+class RPG_Character_EquipmentSlot_Type_pskel;
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -629,6 +630,18 @@ class RPG_Character_Alignment_Type_pskel: public ::xml_schema::complex_content
   protected:
   ::RPG_Character_AlignmentCivic_Type_pskel* civic_parser_;
   ::RPG_Character_AlignmentEthic_Type_pskel* ethic_parser_;
+};
+
+class RPG_Character_EquipmentSlot_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Character_EquipmentSlot
+  post_RPG_Character_EquipmentSlot_Type () = 0;
 };
 
 #include <xsd/cxx/post.hxx>

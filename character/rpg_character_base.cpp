@@ -32,6 +32,7 @@ RPG_Character_Base::RPG_Character_Base(const std::string& name_in,
                                        const RPG_Character_Skills_t& skills_in,
                                        const RPG_Character_Feats_t& feats_in,
                                        const RPG_Character_Abilities_t& abilities_in,
+                                       const RPG_Character_Size& defaultSize_in,
                                        const unsigned short int& hitpoints_in,
                                        const unsigned int& wealth_in,
                                        const RPG_Item_List_t& inventory_in)
@@ -41,11 +42,13 @@ RPG_Character_Base::RPG_Character_Base(const std::string& name_in,
    mySkills(skills_in),
    myFeats(feats_in),
    myAbilities(abilities_in),
+   mySize(defaultSize_in),
    myNumTotalHitPoints(hitpoints_in),
    myNumCurrentHitPoints(hitpoints_in), // we start out healthy, don't we ?
    myCurrentWealth(wealth_in),
 //    myConditions(), // start normal
-   myInventory(inventory_in)
+   myInventory(inventory_in)//,
+//    myEquipment() // start naked
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
 
@@ -58,6 +61,7 @@ RPG_Character_Base::RPG_Character_Base(const RPG_Character_Base& playerBase_in)
     mySkills(playerBase_in.mySkills),
     myFeats(playerBase_in.myFeats),
     myAbilities(playerBase_in.myAbilities),
+    mySize(playerBase_in.mySize),
     myNumTotalHitPoints(playerBase_in.myNumTotalHitPoints),
     myNumCurrentHitPoints(playerBase_in.myNumCurrentHitPoints),
     myCurrentWealth(playerBase_in.myCurrentWealth),
@@ -78,6 +82,7 @@ RPG_Character_Base& RPG_Character_Base::operator=(const RPG_Character_Base& play
   mySkills = playerBase_in.mySkills;
   myFeats = playerBase_in.myFeats;
   myAbilities = playerBase_in.myAbilities;
+  mySize = playerBase_in.mySize;
   myNumTotalHitPoints = playerBase_in.myNumTotalHitPoints;
   myNumCurrentHitPoints = playerBase_in.myNumCurrentHitPoints;
   myCurrentWealth = playerBase_in.myCurrentWealth;
@@ -107,46 +112,48 @@ const RPG_Character_Alignment RPG_Character_Base::getAlignment() const
   return myAlignment;
 }
 
-const unsigned char RPG_Character_Base::getStrength() const
+const unsigned char RPG_Character_Base::getAttribute(const RPG_Character_Attribute& attribute_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getStrength"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getAttribute"));
 
-  return myAttributes.strength;
-}
+  switch (attribute_in)
+  {
+    case ATTRIBUTE_STRENGTH:
+    {
+      return myAttributes.strength;
+    }
+    case ATTRIBUTE_DEXTERITY:
+    {
+      return myAttributes.dexterity;
+    }
+    case ATTRIBUTE_CONSTITUTION:
+    {
+      return myAttributes.constitution;
+    }
+    case ATTRIBUTE_INTELLIGENCE:
+    {
+      return myAttributes.intelligence;
+    }
+    case ATTRIBUTE_WISDOM:
+    {
+      return myAttributes.wisdom;
+    }
+    case ATTRIBUTE_CHARISMA:
+    {
+      return myAttributes.charisma;
+    }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid attribute: \"%s\", aborting\n"),
+                 RPG_Character_AttributeHelper::RPG_Character_AttributeToString(attribute_in).c_str()));
 
-const unsigned char RPG_Character_Base::getDexterity() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getDexterity"));
+      break;
+    }
+  } // end SWITCH
 
-  return myAttributes.dexterity;
-}
-
-const unsigned char RPG_Character_Base::getConstitution() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getConstitution"));
-
-  return myAttributes.constitution;
-}
-
-const unsigned char RPG_Character_Base::getIntelligence() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getIntelligence"));
-
-  return myAttributes.intelligence;
-}
-
-const unsigned char RPG_Character_Base::getWisdom() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getWisdom"));
-
-  return myAttributes.wisdom;
-}
-
-const unsigned char RPG_Character_Base::getCharisma() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getCharisma"));
-
-  return myAttributes.charisma;
+  return 0;
 }
 
 void RPG_Character_Base::getSkill(const RPG_Character_Skill& skill_in,
@@ -176,6 +183,13 @@ const bool RPG_Character_Base::hasAbility(const RPG_Character_Ability& ability_i
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::hasAbility"));
 
   return (myAbilities.find(ability_in) != myAbilities.end());
+}
+
+const RPG_Character_Size RPG_Character_Base::getSize() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getSize"));
+
+  return mySize;
 }
 
 const unsigned short int RPG_Character_Base::getNumTotalHitPoints() const

@@ -20,6 +20,9 @@
 #ifndef RPG_CHARACTER_COMMON_H
 #define RPG_CHARACTER_COMMON_H
 
+#include "rpg_character_metaclass.h"
+#include "rpg_character_subclass.h"
+#include "rpg_character_class.h"
 #include "rpg_character_condition.h"
 #include "rpg_character_terrain.h"
 
@@ -27,6 +30,9 @@
 #include <set>
 
 // some useful types
+typedef std::vector<RPG_Character_Class> RPG_Character_Classes_t;
+typedef RPG_Character_Classes_t::const_iterator RPG_Character_ClassesIterator_t;
+
 typedef std::vector<unsigned char> RPG_Character_BaseAttackBonus_t;
 typedef RPG_Character_BaseAttackBonus_t::const_iterator RPG_Character_BaseAttackBonusIterator_t;
 

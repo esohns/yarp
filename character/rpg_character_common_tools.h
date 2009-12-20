@@ -48,6 +48,7 @@ class RPG_Character_Common_Tools
   static const std::string alignmentToString(const RPG_Character_Alignment&); // alignment
   static const std::string attributesToString(const RPG_Character_Attributes&); // attributes
   static const std::string environmentToString(const RPG_Character_Environment&); // environment
+  static const std::string classesToString(const RPG_Character_Classes_t&); // classes
 
   static const short int getAttributeAbilityModifier(const unsigned char&); // attribute ability score
   static const bool getAttributeCheck(const unsigned char&); // attribute ability score

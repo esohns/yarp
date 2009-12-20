@@ -293,4 +293,15 @@ class RPG_Character_Alignment_Type_pimpl: public virtual RPG_Character_Alignment
   post_RPG_Character_Alignment_Type ();
 };
 
+class RPG_Character_EquipmentSlot_Type_pimpl: public virtual RPG_Character_EquipmentSlot_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Character_EquipmentSlot
+  post_RPG_Character_EquipmentSlot_Type ();
+};
+
 #endif // CXX___RPG_CHARACTER_XML_PARSER_BASE_H

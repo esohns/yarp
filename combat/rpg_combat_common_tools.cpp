@@ -189,7 +189,7 @@ void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& 
   {
     RPG_Combat_CombatantSequenceElement element = {0, 0, *iterator};
     // compute initiative: DEX check
-    element.DEXModifier = RPG_Character_Common_Tools::getAttributeAbilityModifier((*iterator)->getDexterity());
+    element.DEXModifier = RPG_Character_Common_Tools::getAttributeAbilityModifier((*iterator)->getAttribute(ATTRIBUTE_DEXTERITY));
     // make sure there are enough SLOTS for large armies !
     element.initiative = RPG_Chance_Common_Tools::getCheck(element.DEXModifier,
                                                            D_20);
@@ -373,6 +373,178 @@ const bool RPG_Combat_Common_Tools::isCharacterDeadOrDying(const RPG_Character_B
   return false;
 }
 
+RPG_Combat_AttackForm RPG_Combat_Common_Tools::weaponTypeToAttackForm(const RPG_Item_WeaponType& weaponType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::weaponTypeToAttackForm"));
+
+  switch (weaponType_in)
+  {
+    case UNARMED_WEAPON_GAUNTLET:
+    case UNARMED_WEAPON_STRIKE:
+    case LIGHT_MELEE_WEAPON_DAGGER:
+    case LIGHT_MELEE_WEAPON_GAUNTLET_SPIKED:
+    case LIGHT_MELEE_WEAPON_MACE_LIGHT:
+    case LIGHT_MELEE_WEAPON_SICKLE:
+    case ONE_HANDED_MELEE_WEAPON_CLUB:
+    case ONE_HANDED_MELEE_WEAPON_MACE_HEAVY:
+    case ONE_HANDED_MELEE_WEAPON_MORNINGSTAR:
+    case ONE_HANDED_MELEE_WEAPON_SHORTSPEAR:
+    case TWO_HANDED_MELEE_WEAPON_LONGSPEAR:
+    case TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF:
+    case TWO_HANDED_MELEE_WEAPON_SPEAR:
+    case LIGHT_MELEE_WEAPON_AXE_THROWING:
+    case LIGHT_MELEE_WEAPON_HAMMER_LIGHT:
+    case LIGHT_MELEE_WEAPON_AXE_HAND:
+    case LIGHT_MELEE_WEAPON_KUKRI:
+    case LIGHT_MELEE_WEAPON_PICK_LIGHT:
+    case LIGHT_MELEE_WEAPON_SAP:
+    case LIGHT_MELEE_WEAPON_SHIELD_LIGHT:
+    case LIGHT_MELEE_WEAPON_ARMOR_SPIKED:
+    case LIGHT_MELEE_WEAPON_SHIELD_LIGHT_SPIKED:
+    case LIGHT_MELEE_WEAPON_SWORD_SHORT:
+    case ONE_HANDED_MELEE_WEAPON_AXE_BATTLE:
+    case ONE_HANDED_MELEE_WEAPON_FLAIL_LIGHT:
+    case ONE_HANDED_MELEE_WEAPON_SWORD_LONG:
+    case ONE_HANDED_MELEE_WEAPON_PICK_HEAVY:
+    case ONE_HANDED_MELEE_WEAPON_RAPIER:
+    case ONE_HANDED_MELEE_WEAPON_SCIMITAR:
+    case ONE_HANDED_MELEE_WEAPON_SHIELD_HEAVY:
+    case ONE_HANDED_MELEE_WEAPON_SHIELD_HEAVY_SPIKED:
+    case ONE_HANDED_MELEE_WEAPON_TRIDENT:
+    case ONE_HANDED_MELEE_WEAPON_HAMMER_WAR:
+    case TWO_HANDED_MELEE_WEAPON_FALCHION:
+    case TWO_HANDED_MELEE_WEAPON_GLAIVE:
+    case TWO_HANDED_MELEE_WEAPON_AXE_GREAT:
+    case TWO_HANDED_MELEE_WEAPON_CLUB_GREAT:
+    case TWO_HANDED_MELEE_WEAPON_FLAIL_HEAVY:
+    case TWO_HANDED_MELEE_WEAPON_SWORD_GREAT:
+    case TWO_HANDED_MELEE_WEAPON_GUISARME:
+    case TWO_HANDED_MELEE_WEAPON_HALBERD:
+    case TWO_HANDED_MELEE_WEAPON_LANCE:
+    case TWO_HANDED_MELEE_WEAPON_RANSEUR:
+    case TWO_HANDED_MELEE_WEAPON_SCYTHE:
+    case LIGHT_MELEE_WEAPON_KAMA:
+    case LIGHT_MELEE_WEAPON_NUNCHAKU:
+    case LIGHT_MELEE_WEAPON_SAI:
+    case LIGHT_MELEE_WEAPON_SIANGHAM:
+    case ONE_HANDED_MELEE_WEAPON_SWORD_BASTARD:
+    case ONE_HANDED_MELEE_WEAPON_AXE_WAR_DWARVEN:
+    case ONE_HANDED_MELEE_WEAPON_WHIP:
+    case TWO_HANDED_MELEE_WEAPON_AXE_ORC_DOUBLE:
+    case TWO_HANDED_MELEE_WEAPON_CHAIN_SPIKED:
+    case TWO_HANDED_MELEE_WEAPON_FLAIL_DIRE:
+    case TWO_HANDED_MELEE_WEAPON_HAMMER_GNOME_HOOKED:
+    case TWO_HANDED_MELEE_WEAPON_SWORD_TWO_BLADED:
+    case TWO_HANDED_MELEE_WEAPON_URGROSH_DWARVEN:
+    {
+      return ATTACK_MELEE;
+    }
+    case RANGED_WEAPON_CROSSBOW_LIGHT:
+    case RANGED_WEAPON_CROSSBOW_HEAVY:
+    case RANGED_WEAPON_DART:
+    case RANGED_WEAPON_JAVELIN:
+    case RANGED_WEAPON_SLING:
+    case RANGED_WEAPON_BOW_SHORT:
+    case RANGED_WEAPON_BOW_SHORT_COMPOSITE:
+    case RANGED_WEAPON_BOW_LONG:
+    case RANGED_WEAPON_BOW_LONG_COMPOSITE:
+    case RANGED_WEAPON_BOLAS:
+    case RANGED_WEAPON_CROSSBOW_HAND:
+    case RANGED_WEAPON_CROSSBOW_REPEATING_LIGHT:
+    case RANGED_WEAPON_CROSSBOW_REPEATING_HEAVY:
+    case RANGED_WEAPON_NET:
+    case RANGED_WEAPON_SHURIKEN:
+    {
+      return ATTACK_RANGED;
+    }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid weapon type: \"%s\", aborting\n"),
+                 RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weaponType_in).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  return RPG_COMBAT_ATTACKFORM_INVALID;
+}
+
+const signed char RPG_Combat_Common_Tools::getSizeModifier(const RPG_Character_Size& size_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::getSizeModifier"));
+
+  // SIZE_FINE:       8
+  // SIZE_DIMINUTIVE: 4
+  // SIZE_TINY:       2
+  // SIZE_SMALL:      1
+  // SIZE_MEDIUM:     0
+  // SIZE_LARGE:      -1
+  // SIZE_HUGE:       -2
+  // SIZE_GARGANTUAN: -4
+  // SIZE_COLOSSAL:   -8
+  // --> 2**(distance to medium - 1);
+  if (size_in == SIZE_MEDIUM)
+    return 0;
+
+  signed char result = 1;
+  result <<= ::abs(SIZE_MEDIUM - size_in - 1);
+
+  return ((size_in > SIZE_MEDIUM) ? -result : result);
+
+//   switch (size_in)
+//   {
+//     case SIZE_FINE:
+//     {
+//       return 8;
+//     }
+//     case SIZE_DIMINUTIVE:
+//     {
+//       return 4;
+//     }
+//     case SIZE_TINY:
+//     {
+//       return 2;
+//     }
+//     case SIZE_SMALL:
+//     {
+//       return 1;
+//     }
+//     case SIZE_MEDIUM:
+//     {
+//       return 0;
+//     }
+//     case SIZE_LARGE:
+//     {
+//       return -1;
+//     }
+//     case SIZE_HUGE:
+//     {
+//       return -2;
+//     }
+//     case SIZE_GARGANTUAN:
+//     {
+//       return -4;
+//     }
+//     case SIZE_COLOSSAL:
+//     {
+//       return -8;
+//     }
+//     default:
+//     {
+//       // debug info
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("invalid size: \"%s\", aborting\n"),
+//                  RPG_Character_SizeHelper::RPG_Character_SizeToString(size_in).c_str()));
+//
+//       break;
+//     }
+//   } // end SWITCH
+//
+//   return 0;
+}
+
 void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
                                         RPG_Character_Base* const target_inout)
 {
@@ -381,11 +553,73 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
   // sanity check
   ACE_ASSERT(attacker_in && target_inout);
 
-  // step1: choose primary weapon
-
+  RPG_Dice_Roll roll;
+  RPG_Dice_RollResult_t result;
   if (attacker_in->isPlayerCharacter())
   {
+    // attack roll: D_20 + attack bonus + other modifiers
+    // step1: compute attack bonus(ses) --> number of attacks
+    const RPG_Character_Player_Base* player_base = ACE_dynamic_cast(const RPG_Character_Player_Base*,
+                                                                    attacker_in);
+    ACE_ASSERT(player_base);
+    RPG_Character_Classes_t classes = player_base->getClasses();
+    // attack bonusses stack for multiclass characters...
+    RPG_Character_BaseAttackBonus_t baseAttackBonus;
+    for (RPG_Character_ClassesIterator_t iterator = classes.begin();
+         iterator != classes.end();
+         iterator++)
+    {
+      RPG_Character_BaseAttackBonus_t bonus = RPG_Character_Common_Tools::getBaseAttackBonus((*iterator).subClass,
+          player_base->getLevel((*iterator).subClass));
+      // append necessary entries
+      for (int diff = bonus.size() - baseAttackBonus.size();
+           diff > 0;
+           diff--)
+        baseAttackBonus.push_back(0);
+      int index = 0;
+      for (RPG_Character_BaseAttackBonusIterator_t iterator2 = bonus.begin();
+           iterator2 != bonus.end();
+           iterator2++, index++)
+        baseAttackBonus[index] += *iterator2;
+    } // end FOR
 
+    // step2: perform attack(s)
+    int attack_roll = 0;
+    for (RPG_Character_BaseAttackBonusIterator_t iterator = baseAttackBonus.begin();
+         iterator != baseAttackBonus.end();
+         iterator++)
+    {
+      // step2a: roll D_20
+      result.clear();
+      roll.numDice = 1;
+      roll.typeDice = D_20;
+      roll.modifier = 0;
+      RPG_Dice::simulateRoll(roll,
+                            1,
+                            result);
+      attack_roll = result.front();
+      // attack bonus: base attack bonus + STR/DEX modifier + size modifier (+ range penalty)
+      attack_roll += *iterator;
+      // --> check primary weapon
+      RPG_Character_Attribute attribute = ATTRIBUTE_STRENGTH;
+      RPG_Combat_AttackForm attackForm = weaponTypeToAttackForm(player_base->getEquipment()->getPrimaryWeapon());
+      if (attackForm == ATTACK_RANGED)
+        attribute = ATTRIBUTE_DEXTERITY;
+      attack_roll += RPG_Character_Common_Tools::getAttributeAbilityModifier(attacker_in->getAttribute(attribute));
+      attack_roll += RPG_Combat_Common_Tools::getSizeModifier(attacker_in->getSize());
+      // *TODO*: consider other modifiers...
+
+      // step2b: compute target AC
+      // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier + other modifiers
+      int AC = 10;
+      RPG_Character_Monster* monster = ACE_dynamic_cast(RPG_Character_Monster*,
+                                                        target_inout);
+      ACE_ASSERT(monster);
+      AC += monster->getArmorBonus();
+      AC += monster->getShieldBonus();
+      AC += RPG_Character_Common_Tools::getAttributeAbilityModifier(target_inout->getAttribute(ATTRIBUTE_DEXTERITY));
+      AC += RPG_Combat_Common_Tools::getSizeModifier(target_inout->getSize());
+    } // end FOR
   } // end IF
   else
   {

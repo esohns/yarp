@@ -21,6 +21,7 @@
 #define RPG_CHARACTER_PLAYER_H
 
 #include "rpg_character_player_base.h"
+#include "rpg_character_equipment.h"
 
 /**
 player character
@@ -34,7 +35,7 @@ class RPG_Character_Player
   RPG_Character_Player(const std::string&,               // name
                        const RPG_Character_Gender&,      // gender
                        const RPG_Character_Race&,        // race
-                       const RPG_Character_Class&,       // (starting) class
+                       const RPG_Character_Classes_t&,   // (starting) class(es)
                        const RPG_Character_Alignment&,   // (starting) alignment
                        const RPG_Character_Attributes&,  // base attributes
                        const RPG_Character_Skills_t&,    // (starting) skills
@@ -54,6 +55,8 @@ class RPG_Character_Player
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player());
+
+  RPG_Character_Equipment myEquipment;
 };
 
 #endif
