@@ -20,7 +20,7 @@
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>item_parser</activetarget>
+      <activetarget>libRPG_Item.la</activetarget>
       <useconfiguration>default</useconfiguration>
     </general>
     <run>
