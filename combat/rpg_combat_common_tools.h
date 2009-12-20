@@ -29,6 +29,8 @@
 #include <rpg_item_weapontype.h>
 
 #include "rpg_combat_attackform.h"
+#include "rpg_combat_attacksituation.h"
+#include "rpg_combat_defensesituation.h"
 #include "rpg_combat_specialdamagetype.h"
 #include "rpg_combat_damagetypeunion.h"
 #include "rpg_combat_damageeffecttype.h"
@@ -60,7 +62,9 @@ class RPG_Combat_Common_Tools
   static void getCombatantSequence(const RPG_Character_Party_t&,     // party
                                    const RPG_Character_Monsters_t&,  // monsters
                                    RPG_Combat_CombatantSequence_t&); // battle sequence
-  static void performCombatRound(const RPG_Combat_CombatantSequence_t&); // battle sequence
+  static void performCombatRound(const RPG_Combat_AttackSituation&,      // attack situation
+                                 const RPG_Combat_DefenseSituation&,     // defense situation
+                                 const RPG_Combat_CombatantSequence_t&); // battle sequence
 
  private:
   // safety measures

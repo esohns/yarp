@@ -21,6 +21,9 @@
 
 #include "rpg_character_common_tools.h"
 
+#include <rpg_item_common.h>
+#include <rpg_item_dictionary.h>
+
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
@@ -128,6 +131,29 @@ const RPG_Character_Equipment* RPG_Character_Player_Base::getEquipment() const
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getEquipment"));
 
   return &(inherited::myEquipment);
+}
+
+const signed char RPG_Character_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_in) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getArmorClass"));
+
+  // retrieve equipped armor type
+  RPG_Item_ArmorType type = myEquipment.getArmor();
+  RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
+
+  // *TODO*: consider defense situation
+  return properties.baseArmorBonus;
+}
+
+const signed char RPG_Character_Player_Base::getShieldBonus() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getShieldBonus"));
+
+  // retrieve equipped armor type
+  RPG_Item_ArmorType type = myEquipment.getShield();
+  RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
+
+  return properties.baseArmorBonus;
 }
 
 void RPG_Character_Player_Base::gainExperience(const unsigned int& XP_in)

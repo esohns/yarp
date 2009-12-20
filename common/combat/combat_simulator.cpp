@@ -178,6 +178,7 @@ void do_battle(const RPG_Character_Party_t& party_in,
                                     properties.skills,
                                     properties.feats,
                                     abilities,
+                                    properties.size,
                                     (*iterator2),
                                     wealth,
                                     items);

@@ -36,6 +36,8 @@
 
 // init statics
 RPG_Combat_AttackFormToStringTable_t RPG_Combat_AttackFormHelper::myRPG_Combat_AttackFormToStringTable;
+RPG_Combat_AttackSituationToStringTable_t RPG_Combat_AttackSituationHelper::myRPG_Combat_AttackSituationToStringTable;
+RPG_Combat_DefenseSituationToStringTable_t RPG_Combat_DefenseSituationHelper::myRPG_Combat_DefenseSituationToStringTable;
 RPG_Combat_SpecialAttackToStringTable_t RPG_Combat_SpecialAttackHelper::myRPG_Combat_SpecialAttackToStringTable;
 RPG_Combat_SpecialDamageTypeToStringTable_t RPG_Combat_SpecialDamageTypeHelper::myRPG_Combat_SpecialDamageTypeToStringTable;
 RPG_Combat_DamageEffectTypeToStringTable_t RPG_Combat_DamageEffectTypeHelper::myRPG_Combat_DamageEffectTypeToStringTable;
@@ -45,6 +47,8 @@ void RPG_Combat_Common_Tools::initStringConversionTables()
   ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::initStringConversionTables"));
 
   RPG_Combat_AttackFormHelper::init();
+  RPG_Combat_AttackSituationHelper::init();
+  RPG_Combat_DefenseSituationHelper::init();
   RPG_Combat_SpecialAttackHelper::init();
   RPG_Combat_SpecialDamageTypeHelper::init();
   RPG_Combat_DamageEffectTypeHelper::init();
@@ -280,7 +284,9 @@ void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& 
   } // end FOR
 }
 
-void RPG_Combat_Common_Tools::performCombatRound(const RPG_Combat_CombatantSequence_t& battleSequence_in)
+void RPG_Combat_Common_Tools::performCombatRound(const RPG_Combat_AttackSituation& attackSituation_in,
+                                                 const RPG_Combat_DefenseSituation& defenseSituation_in,
+                                                 const RPG_Combat_CombatantSequence_t& battleSequence_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::performCombatRound"));
 
@@ -314,7 +320,9 @@ void RPG_Combat_Common_Tools::performCombatRound(const RPG_Combat_CombatantSeque
                (*iterator).handle->getName().c_str()));
 
     attackFoe((*iterator2).handle,
-              ACE_const_cast(RPG_Character_Base*, (*iterator).handle));
+              ACE_const_cast(RPG_Character_Base*, (*iterator).handle),
+              attackSituation_in,
+              defenseSituation_in);
   } // end FOR
 }
 
@@ -437,7 +445,7 @@ RPG_Combat_AttackForm RPG_Combat_Common_Tools::weaponTypeToAttackForm(const RPG_
     case TWO_HANDED_MELEE_WEAPON_SWORD_TWO_BLADED:
     case TWO_HANDED_MELEE_WEAPON_URGROSH_DWARVEN:
     {
-      return ATTACK_MELEE;
+      return ATTACKFORM_MELEE;
     }
     case RANGED_WEAPON_CROSSBOW_LIGHT:
     case RANGED_WEAPON_CROSSBOW_HEAVY:
@@ -455,7 +463,7 @@ RPG_Combat_AttackForm RPG_Combat_Common_Tools::weaponTypeToAttackForm(const RPG_
     case RANGED_WEAPON_NET:
     case RANGED_WEAPON_SHURIKEN:
     {
-      return ATTACK_RANGED;
+      return ATTACKFORM_RANGED;
     }
     default:
     {
@@ -547,8 +555,8 @@ const signed char RPG_Combat_Common_Tools::getSizeModifier(const RPG_Character_S
 
 void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
                                         RPG_Character_Base* const target_inout,
-                                        const RPG_Character_AttackSituation& attackSituation_in,
-                                        const RPG_Character_DefenseSituation& defenseSituation_in)
+                                        const RPG_Combat_AttackSituation& attackSituation_in,
+                                        const RPG_Combat_DefenseSituation& defenseSituation_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::attackFoe"));
 
@@ -605,7 +613,7 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
       // --> check primary weapon
       RPG_Character_Attribute attribute = ATTRIBUTE_STRENGTH;
       RPG_Combat_AttackForm attackForm = weaponTypeToAttackForm(player_base->getEquipment()->getPrimaryWeapon());
-      if (attackForm == ATTACK_RANGED)
+      if (attackForm == ATTACKFORM_RANGED)
         attribute = ATTRIBUTE_DEXTERITY;
       attack_roll += RPG_Character_Common_Tools::getAttributeAbilityModifier(attacker_in->getAttribute(attribute));
       attack_roll += RPG_Combat_Common_Tools::getSizeModifier(attacker_in->getSize());
@@ -613,12 +621,12 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
 
       // step2b: compute target AC
       // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier + other modifiers
-      int AC = 10;
+      int AC = 0;
       RPG_Character_Monster* monster = ACE_dynamic_cast(RPG_Character_Monster*,
                                                         target_inout);
       ACE_ASSERT(monster);
-      AC += monster->getArmorBonus();
-      AC += monster->getShieldBonus();
+//       AC += monster->getArmorClass(defenseSituation_in);
+//       AC += monster->getShieldBonus();
       AC += RPG_Character_Common_Tools::getAttributeAbilityModifier(target_inout->getAttribute(ATTRIBUTE_DEXTERITY));
       AC += RPG_Combat_Common_Tools::getSizeModifier(target_inout->getSize());
     } // end FOR

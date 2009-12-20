@@ -23,7 +23,8 @@
 
 enum RPG_Item_ArmorType
 {
-  ARMOR_PADDED = 0,
+  ARMOR_NONE = 0,
+  ARMOR_PADDED,
   ARMOR_LEATHER,
   ARMOR_LEATHER_STUDDED,
   ARMOR_CHAIN_SHIRT,
@@ -60,6 +61,7 @@ class RPG_Item_ArmorTypeHelper
   inline static void init()
   {
     myRPG_Item_ArmorTypeToStringTable.clear();
+    myRPG_Item_ArmorTypeToStringTable.insert(std::make_pair(ARMOR_NONE, ACE_TEXT_ALWAYS_CHAR("ARMOR_NONE")));
     myRPG_Item_ArmorTypeToStringTable.insert(std::make_pair(ARMOR_PADDED, ACE_TEXT_ALWAYS_CHAR("ARMOR_PADDED")));
     myRPG_Item_ArmorTypeToStringTable.insert(std::make_pair(ARMOR_LEATHER, ACE_TEXT_ALWAYS_CHAR("ARMOR_LEATHER")));
     myRPG_Item_ArmorTypeToStringTable.insert(std::make_pair(ARMOR_LEATHER_STUDDED, ACE_TEXT_ALWAYS_CHAR("ARMOR_LEATHER_STUDDED")));

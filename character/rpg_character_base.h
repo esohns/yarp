@@ -35,7 +35,7 @@
 #include "rpg_character_equipment.h"
 #include "rpg_character_common.h"
 
-// #include <rpg_combat_damage.h>
+#include <rpg_combat_defensesituation.h>
 
 #include <ace/Global_Macros.h>
 
@@ -72,8 +72,8 @@ class RPG_Character_Base
   const unsigned int getCurrentWealth() const;
   const RPG_Character_Size getSize() const;
 
-  virtual void getArmorClass() const = 0;
-  virtual void getShieldBonus() const = 0;
+  virtual const signed char getArmorClass(const RPG_Combat_DefenseSituation&) const = 0;
+  virtual const signed char getShieldBonus() const = 0;
   // sustain some damage (melee, magic, ...)
 //   void sustainDamage(const RPG_Combat_Damage&);
 

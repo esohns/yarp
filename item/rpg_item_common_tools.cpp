@@ -130,3 +130,27 @@ const std::string RPG_Item_Common_Tools::damageToString(const RPG_Item_Damage& d
 
   return result;
 }
+
+const bool RPG_Item_Common_Tools::isShield(const RPG_Item_ArmorType& armorType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isShield"));
+
+  switch (armorType_in)
+  {
+    case ARMOR_BUCKLER:
+    case ARMOR_SHIELD_LIGHT_WOODEN:
+    case ARMOR_SHIELD_LIGHT_STEEL:
+    case ARMOR_SHIELD_HEAVY_WOODEN:
+    case ARMOR_SHIELD_HEAVY_STEEL:
+    case ARMOR_SHIELD_TOWER:
+    {
+      return true;
+    }
+    default:
+    {
+      break;
+    }
+  } // end SWITCH
+
+  return false;
+}

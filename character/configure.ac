@@ -35,9 +35,12 @@ AC_CHECK_LIB([xerces-c], [main])
 # Checks for header files.
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_HEADER_STDBOOL
+AC_C_INLINE
 
 # Checks for library functions.
+AC_CHECK_FUNCS([floor memset sqrt strerror])
 
-AC_CONFIG_FILES([Makefile
-                 monster/Makefile])
+AC_CONFIG_FILES([Makefile])
+
 AC_OUTPUT)

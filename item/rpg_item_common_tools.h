@@ -35,6 +35,8 @@ class RPG_Item_Common_Tools
   static const std::string weaponDamageToString(const RPG_Item_WeaponDamage&); // weapon damage
   static const std::string damageToString(const RPG_Item_Damage&); // damage
 
+  static const bool isShield(const RPG_Item_ArmorType&); // armor type
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools());

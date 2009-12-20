@@ -67,10 +67,11 @@ class RPG_Combat_Damage_Type_pskel;
 #define XSD_CXX_PARSER_USE_CHAR
 #endif
 
-#include <rpg_XMLSchema_XML_types.h>
+#include <rpg_XMLSchema.h>
 
-#include <rpg_item_incl.h>
 #include <rpg_dice_incl.h>
+#include <rpg_item_incl.h>
+
 #include "rpg_combat_incl.h"
 
 #include <rpg_dice_XML_types.h>

@@ -406,6 +406,7 @@ void do_work(const std::string filename_in)
     } // end SWITCH
   } while (race == RACE_NONE);
 
+  RPG_Character_Classes_t classes;
   RPG_Character_Class player_class;
   player_class.metaClass = METACLASS_NONE;
   player_class.subClass = SUBCLASS_NONE;
@@ -450,6 +451,7 @@ void do_work(const std::string filename_in)
     } // end SWITCH
   } while ((player_class.metaClass == METACLASS_NONE) &&
            (player_class.subClass == SUBCLASS_NONE));
+  classes.push_back(player_class);
 
   RPG_Character_Alignment alignment;
   alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
@@ -642,9 +644,9 @@ void do_work(const std::string filename_in)
       armor  = new RPG_Item_Armor(ARMOR_MAIL_SPLINT);
       shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
 
-      items.push_back(weapon->getID());
-      items.push_back(armor->getID());
-      items.push_back(shield->getID());
+      items.insert(weapon->getID());
+      items.insert(armor->getID());
+      items.insert(shield->getID());
 
       break;
     }
@@ -654,9 +656,9 @@ void do_work(const std::string filename_in)
       armor  = new RPG_Item_Armor(ARMOR_PLATE_FULL);
       shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_STEEL);
 
-      items.push_back(weapon->getID());
-      items.push_back(armor->getID());
-      items.push_back(shield->getID());
+      items.insert(weapon->getID());
+      items.insert(armor->getID());
+      items.insert(shield->getID());
 
       break;
     }
@@ -666,9 +668,9 @@ void do_work(const std::string filename_in)
       bow    = new RPG_Item_Weapon(RANGED_WEAPON_BOW_LONG);
       armor  = new RPG_Item_Armor(ARMOR_HIDE);
 
-      items.push_back(weapon->getID());
-      items.push_back(bow->getID());
-      items.push_back(armor->getID());
+      items.insert(weapon->getID());
+      items.insert(bow->getID());
+      items.insert(armor->getID());
 
       break;
     }
@@ -677,8 +679,8 @@ void do_work(const std::string filename_in)
       weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
       armor  = new RPG_Item_Armor(ARMOR_HIDE);
 
-      items.push_back(weapon->getID());
-      items.push_back(armor->getID());
+      items.insert(weapon->getID());
+      items.insert(armor->getID());
 
       break;
     }
@@ -687,7 +689,7 @@ void do_work(const std::string filename_in)
     {
       weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
 
-      items.push_back(weapon->getID());
+      items.insert(weapon->getID());
 
       break;
     }
@@ -697,9 +699,9 @@ void do_work(const std::string filename_in)
       armor  = new RPG_Item_Armor(ARMOR_MAIL_CHAIN);
       shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
 
-      items.push_back(weapon->getID());
-      items.push_back(armor->getID());
-      items.push_back(shield->getID());
+      items.insert(weapon->getID());
+      items.insert(armor->getID());
+      items.insert(shield->getID());
 
       break;
     }
@@ -709,9 +711,9 @@ void do_work(const std::string filename_in)
       armor  = new RPG_Item_Armor(ARMOR_HIDE);
       shield  = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_WOODEN);
 
-      items.push_back(weapon->getID());
-      items.push_back(armor->getID());
-      items.push_back(shield->getID());
+      items.insert(weapon->getID());
+      items.insert(armor->getID());
+      items.insert(shield->getID());
 
       break;
     }
@@ -719,7 +721,7 @@ void do_work(const std::string filename_in)
     {
       weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
 
-      items.push_back(weapon->getID());
+      items.insert(weapon->getID());
 
       break;
     }
@@ -730,9 +732,9 @@ void do_work(const std::string filename_in)
       armor  = new RPG_Item_Armor(ARMOR_LEATHER);
       shield  = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_STEEL);
 
-      items.push_back(weapon->getID());
-      items.push_back(armor->getID());
-      items.push_back(shield->getID());
+      items.insert(weapon->getID());
+      items.insert(armor->getID());
+      items.insert(shield->getID());
 
       break;
     }
@@ -751,7 +753,7 @@ void do_work(const std::string filename_in)
   RPG_Character_Player player(name,
                               gender,
                               race,
-                              player_class,
+                              classes,
                               alignment,
                               attributes,
                               skills,

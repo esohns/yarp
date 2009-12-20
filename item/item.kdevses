@@ -3,16 +3,16 @@
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="5" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item.xsd" >
-   <View0 Encoding="" line="172" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item.xml" >
-   <View0 Encoding="" line="0" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc1>
   <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_instance_common.h" >
-   <View0 Encoding="" line="30" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc2>
   <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_instance_manager.h" >
-   <View0 Encoding="" line="68" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc3>
   <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/item/rpg_item_weapon_base.h" >
    <View0 Encoding="" line="30" Type="Source" />

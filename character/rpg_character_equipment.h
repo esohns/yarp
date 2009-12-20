@@ -24,6 +24,7 @@
 
 #include <rpg_item_instance_common.h>
 #include <rpg_item_weapontype.h>
+#include <rpg_item_armortype.h>
 
 #include <ace/Global_Macros.h>
 
@@ -42,6 +43,10 @@ class RPG_Character_Equipment
 
   // item in EQUIPMENTSLOT_RIGHT_HAND/EQUIPMENTSLOT_LEFT_HAND
   const RPG_Item_WeaponType getPrimaryWeapon() const;
+  // item in EQUIPMENTSLOT_APPAREL
+  const RPG_Item_ArmorType getArmor() const;
+  // item in EQUIPMENTSLOT_LEFT_HAND, IF ARMOR
+  const RPG_Item_ArmorType getShield() const;
 
  private:
   // safety measures

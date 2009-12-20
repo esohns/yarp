@@ -19,6 +19,12 @@
  ***************************************************************************/
 #include "rpg_character_monster.h"
 
+#include <rpg_monster_common.h>
+#include <rpg_monster_dictionary.h>
+
+#include <rpg_item_common.h>
+#include <rpg_item_dictionary.h>
+
 #include <ace/Log_Msg.h>
 
 RPG_Character_Monster::RPG_Character_Monster(const std::string& name_in,
@@ -79,18 +85,48 @@ const RPG_Monster_Type RPG_Character_Monster::getType() const
   return myType;
 }
 
-void RPG_Character_Monster::getArmorBonus() const
+const signed char RPG_Character_Monster::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getArmorBonus"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getArmorClass"));
 
-  return myType;
+  // retrieve natural armor
+  RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getMonsterProperties(getName());
+
+  // *TODO*: consider any equipped armor
+  switch (defenseSituation_in)
+  {
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid defense situation (\"%s\"): returning value for \"%s\"...\n"),
+                 RPG_Combat_DefenseSituationHelper::RPG_Combat_DefenseSituationToString(defenseSituation_in).c_str(),
+                 RPG_Combat_DefenseSituationHelper::RPG_Combat_DefenseSituationToString(DEFENSE_NORMAL).c_str()));
+    }
+    case DEFENSE_NORMAL:
+    {
+      return properties.armorClass.normal;
+    }
+    case DEFENSE_TOUCH:
+    {
+      return properties.armorClass.touch;
+    }
+    case DEFENSE_FLATFOOTED:
+    {
+      return properties.armorClass.flatFooted;
+    }
+  } // end SWITCH
 }
 
-void RPG_Character_Monster::getShieldBonus() const
+const signed char RPG_Character_Monster::getShieldBonus() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getShieldBonus"));
 
-  return myType;
+  // retrieve equipped armor type
+  RPG_Item_ArmorType type = myEquipment.getShield();
+  RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
+
+  return properties.baseArmorBonus;
 }
 
 void RPG_Character_Monster::gainExperience(const unsigned int& XP_in)

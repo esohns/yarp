@@ -21,7 +21,9 @@
 
 #include <rpg_item_base.h>
 #include <rpg_item_weapon_base.h>
+#include <rpg_item_armor_base.h>
 #include <rpg_item_instance_manager.h>
+#include <rpg_item_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -80,7 +82,7 @@ const RPG_Item_WeaponType RPG_Character_Equipment::getPrimaryWeapon() const
   {
     // debug info
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid item (ID: %d) aborting\n"),
+               ACE_TEXT("invalid item (ID: %d), aborting\n"),
                (*iterator).second));
 
     return RPG_ITEM_WEAPONTYPE_INVALID;
@@ -92,4 +94,99 @@ const RPG_Item_WeaponType RPG_Character_Equipment::getPrimaryWeapon() const
   ACE_ASSERT(weapon_base);
 
   return weapon_base->getWeaponType();
+}
+
+const RPG_Item_ArmorType RPG_Character_Equipment::getArmor() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getArmor"));
+
+  // find item ID
+  RPG_Item_ID_t id = 0;
+
+  // *TODO*; consider helmets/gauntlets/boots/shields, etc...
+  RPG_Character_EquipmentIterator_t iterator = myEquipment.find(EQUIPMENTSLOT_APPAREL);
+  if (iterator == myEquipment.end())
+  {
+    // debug info
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("nothing equipped in slot (\"%s\"): returning \"%s\"...\n"),
+               RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(EQUIPMENTSLOT_APPAREL).c_str(),
+               RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(ARMOR_NONE).c_str()));
+
+    // nothing equipped --> default is "nakedness"...
+    return ARMOR_NONE;
+  } // end IF
+
+  // find item type
+  RPG_Item_Base* handle = NULL;
+  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem((*iterator).second,
+                                                                handle))
+  {
+    // debug info
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid item (ID: %d), aborting\n"),
+               (*iterator).second));
+
+    return RPG_ITEM_ARMORTYPE_INVALID;
+  } // end IF
+
+  ACE_ASSERT(handle->getType() == ITEM_ARMOR);
+  RPG_Item_Armor_Base* armor_base = ACE_dynamic_cast(RPG_Item_Armor_Base*,
+                                                     handle);
+  ACE_ASSERT(armor_base);
+
+  return armor_base->getArmorType();
+}
+
+const RPG_Item_ArmorType RPG_Character_Equipment::getShield() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getShield"));
+
+  // find item ID
+  RPG_Item_ID_t id = 0;
+
+  // *TODO*; consider case where shield is in right hand, etc...
+  RPG_Character_EquipmentIterator_t iterator = myEquipment.find(EQUIPMENTSLOT_LEFT_HAND);
+  if (iterator == myEquipment.end())
+  {
+    // debug info
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("nothing equipped in slot (\"%s\"): returning \"%s\"...\n"),
+               RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(EQUIPMENTSLOT_LEFT_HAND).c_str(),
+               RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(ARMOR_NONE).c_str()));
+
+    // nothing equipped...
+    return ARMOR_NONE;
+  } // end IF
+
+  // find item type
+  RPG_Item_Base* handle = NULL;
+  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem((*iterator).second,
+       handle))
+  {
+    // debug info
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid item (ID: %d), aborting\n"),
+               (*iterator).second));
+
+    return RPG_ITEM_ARMORTYPE_INVALID;
+  } // end IF
+
+  ACE_ASSERT(handle->getType() == ITEM_ARMOR);
+  RPG_Item_Armor_Base* armor_base = ACE_dynamic_cast(RPG_Item_Armor_Base*,
+                                                     handle);
+  ACE_ASSERT(armor_base);
+  if (!RPG_Item_Common_Tools::isShield(armor_base->getArmorType()))
+  {
+    // debug info
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("equipped armor (type: \"%s\") is not a shield: returning \"%s\"...\n"),
+               RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor_base->getArmorType()).c_str(),
+               RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(ARMOR_NONE).c_str()));
+
+    // some kind of armor is equipped, but it's not a shield...
+    return ARMOR_NONE;
+  } // end IF
+
+  return armor_base->getArmorType();
 }

@@ -1,10 +1,16 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="1" >
+ <DocsAndViews NumberOfDocuments="3" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/combat/combat_simulator.cpp" >
-   <View0 Encoding="" line="266" Type="Source" />
+   <View0 Encoding="" line="180" Type="Source" />
   </Doc0>
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/character/character_generator.cpp" >
+   <View0 Encoding="" line="755" Type="Source" />
+  </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:///usr/local/include/rpg_character_monster.h" >
+   <View0 Encoding="" line="36" Type="Source" />
+  </Doc2>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
