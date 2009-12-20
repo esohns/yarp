@@ -21,7 +21,7 @@
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>character_generator</activetarget>
+      <activetarget>monster/libRPG_Monster.la</activetarget>
     </general>
     <run>
       <mainprogram>/home/unfv/Projects/RPG/character/debug/monster/.libs/monster_parser</mainprogram>
