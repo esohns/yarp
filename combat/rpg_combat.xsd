@@ -24,9 +24,25 @@
 
   <xsd:simpleType name="RPG_Combat_AttackForm_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="ATTACK_MELEE"/>
-      <xsd:enumeration value="ATTACK_TOUCH"/>
-      <xsd:enumeration value="ATTACK_RANGED"/>
+      <xsd:enumeration value="ATTACKFORM_MELEE"/>
+      <xsd:enumeration value="ATTACKFORM_TOUCH"/>
+      <xsd:enumeration value="ATTACKFORM_RANGED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Combat_AttackSituation_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ATTACK_NORMAL"/>
+      <xsd:enumeration value="ATTACK_BACKSTAB"/>
+      <xsd:enumeration value="ATTACK_SURPRISE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Combat_DefenseSituation_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DEFENSE_NORMAL"/>
+      <xsd:enumeration value="DEFENSE_TOUCH"/>
+      <xsd:enumeration value="DEFENSE_FLATFOOTED"/>
     </xsd:restriction>
   </xsd:simpleType>
 

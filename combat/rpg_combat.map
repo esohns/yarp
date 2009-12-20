@@ -9,6 +9,8 @@ namespace urn:rpg
   RPG_Dice_Roll_Type                RPG_Dice_Roll;
 
   RPG_Combat_AttackForm_Type        RPG_Combat_AttackForm;
+  RPG_Combat_AttackSituation_Type   RPG_Combat_AttackSituation;
+  RPG_Combat_DefenseSituation_Type  RPG_Combat_DefenseSituation;
   RPG_Combat_SpecialAttack_Type     RPG_Combat_SpecialAttack;
   RPG_Combat_SpecialDamageType_Type RPG_Combat_SpecialDamageType;
   RPG_Combat_DamageEffectType_Type  RPG_Combat_DamageEffectType;

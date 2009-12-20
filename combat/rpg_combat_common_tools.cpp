@@ -546,7 +546,9 @@ const signed char RPG_Combat_Common_Tools::getSizeModifier(const RPG_Character_S
 }
 
 void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
-                                        RPG_Character_Base* const target_inout)
+                                        RPG_Character_Base* const target_inout,
+                                        const RPG_Character_AttackSituation& attackSituation_in,
+                                        const RPG_Character_DefenseSituation& defenseSituation_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::attackFoe"));
 
@@ -595,8 +597,8 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
       roll.typeDice = D_20;
       roll.modifier = 0;
       RPG_Dice::simulateRoll(roll,
-                            1,
-                            result);
+                             1,
+                             result);
       attack_roll = result.front();
       // attack bonus: base attack bonus + STR/DEX modifier + size modifier (+ range penalty)
       attack_roll += *iterator;
@@ -607,7 +609,7 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
         attribute = ATTRIBUTE_DEXTERITY;
       attack_roll += RPG_Character_Common_Tools::getAttributeAbilityModifier(attacker_in->getAttribute(attribute));
       attack_roll += RPG_Combat_Common_Tools::getSizeModifier(attacker_in->getSize());
-      // *TODO*: consider other modifiers...
+      // *TODO*: consider other modifiers (e.g. range penalty)...
 
       // step2b: compute target AC
       // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier + other modifiers

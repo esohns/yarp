@@ -50,6 +50,8 @@
 // Forward declarations
 //
 class RPG_Combat_AttackForm_Type_pskel;
+class RPG_Combat_AttackSituation_Type_pskel;
+class RPG_Combat_DefenseSituation_Type_pskel;
 class RPG_Combat_SpecialAttack_Type_pskel;
 class RPG_Combat_SpecialDamageType_Type_pskel;
 class RPG_Combat_DamageEffectType_Type_pskel;
@@ -65,11 +67,10 @@ class RPG_Combat_Damage_Type_pskel;
 #define XSD_CXX_PARSER_USE_CHAR
 #endif
 
-#include <rpg_XMLSchema.h>
+#include <rpg_XMLSchema_XML_types.h>
 
-#include <rpg_dice_incl.h>
 #include <rpg_item_incl.h>
-
+#include <rpg_dice_incl.h>
 #include "rpg_combat_incl.h"
 
 #include <rpg_dice_XML_types.h>
@@ -86,6 +87,30 @@ class RPG_Combat_AttackForm_Type_pskel: public virtual ::xml_schema::string_pske
 
   virtual RPG_Combat_AttackForm
   post_RPG_Combat_AttackForm_Type () = 0;
+};
+
+class RPG_Combat_AttackSituation_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Combat_AttackSituation
+  post_RPG_Combat_AttackSituation_Type () = 0;
+};
+
+class RPG_Combat_DefenseSituation_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Combat_DefenseSituation
+  post_RPG_Combat_DefenseSituation_Type () = 0;
 };
 
 class RPG_Combat_SpecialAttack_Type_pskel: public virtual ::xml_schema::string_pskel

@@ -25,6 +25,28 @@ class RPG_Combat_AttackForm_Type_pimpl: public virtual RPG_Combat_AttackForm_Typ
   post_RPG_Combat_AttackForm_Type ();
 };
 
+class RPG_Combat_AttackSituation_Type_pimpl: public virtual RPG_Combat_AttackSituation_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Combat_AttackSituation
+  post_RPG_Combat_AttackSituation_Type ();
+};
+
+class RPG_Combat_DefenseSituation_Type_pimpl: public virtual RPG_Combat_DefenseSituation_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Combat_DefenseSituation
+  post_RPG_Combat_DefenseSituation_Type ();
+};
+
 class RPG_Combat_SpecialAttack_Type_pimpl: public virtual RPG_Combat_SpecialAttack_Type_pskel,
   public ::xml_schema::string_pimpl
 {

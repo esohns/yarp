@@ -23,9 +23,9 @@
 
 enum RPG_Combat_AttackForm
 {
-  ATTACK_MELEE = 0,
-  ATTACK_TOUCH,
-  ATTACK_RANGED,
+  ATTACKFORM_MELEE = 0,
+  ATTACKFORM_TOUCH,
+  ATTACKFORM_RANGED,
   //
   RPG_COMBAT_ATTACKFORM_MAX,
   RPG_COMBAT_ATTACKFORM_INVALID
@@ -45,9 +45,9 @@ class RPG_Combat_AttackFormHelper
   inline static void init()
   {
     myRPG_Combat_AttackFormToStringTable.clear();
-    myRPG_Combat_AttackFormToStringTable.insert(std::make_pair(ATTACK_MELEE, ACE_TEXT_ALWAYS_CHAR("ATTACK_MELEE")));
-    myRPG_Combat_AttackFormToStringTable.insert(std::make_pair(ATTACK_TOUCH, ACE_TEXT_ALWAYS_CHAR("ATTACK_TOUCH")));
-    myRPG_Combat_AttackFormToStringTable.insert(std::make_pair(ATTACK_RANGED, ACE_TEXT_ALWAYS_CHAR("ATTACK_RANGED")));
+    myRPG_Combat_AttackFormToStringTable.insert(std::make_pair(ATTACKFORM_MELEE, ACE_TEXT_ALWAYS_CHAR("ATTACKFORM_MELEE")));
+    myRPG_Combat_AttackFormToStringTable.insert(std::make_pair(ATTACKFORM_TOUCH, ACE_TEXT_ALWAYS_CHAR("ATTACKFORM_TOUCH")));
+    myRPG_Combat_AttackFormToStringTable.insert(std::make_pair(ATTACKFORM_RANGED, ACE_TEXT_ALWAYS_CHAR("ATTACKFORM_RANGED")));
   };
 
   inline static std::string RPG_Combat_AttackFormToString(const RPG_Combat_AttackForm& element_in)

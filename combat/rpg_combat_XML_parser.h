@@ -35,6 +35,22 @@ class RPG_Combat_AttackForm_Type
   virtual RPG_Combat_AttackForm post_RPG_Combat_AttackForm_Type();
 };
 
+class RPG_Combat_AttackSituation_Type
+ : public RPG_Combat_AttackSituation_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Combat_AttackSituation post_RPG_Combat_AttackSituation_Type();
+};
+
+class RPG_Combat_DefenseSituation_Type
+  : public RPG_Combat_DefenseSituation_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Combat_DefenseSituation post_RPG_Combat_DefenseSituation_Type();
+};
+
 class RPG_Combat_SpecialAttack_Type
  : public RPG_Combat_SpecialAttack_Type_pimpl
 {

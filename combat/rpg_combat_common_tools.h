@@ -79,8 +79,10 @@ class RPG_Combat_Common_Tools
 
   static RPG_Combat_AttackForm weaponTypeToAttackForm(const RPG_Item_WeaponType&); // weapon type
   static const signed char getSizeModifier(const RPG_Character_Size&);
-  static void attackFoe(const RPG_Character_Base* const, // attacker
-                        RPG_Character_Base* const);      // target
+  static void attackFoe(const RPG_Character_Base* const,     // attacker
+                        RPG_Character_Base* const,           // target
+                        const RPG_Combat_AttackSituation&,   // attacker situation
+                        const RPG_Combat_DefenseSituation&); // defender situation
 };
 
 #endif

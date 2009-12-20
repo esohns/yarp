@@ -19,8 +19,6 @@
  ***************************************************************************/
 #include "rpg_character_monster.h"
 
-// #include <rpg_monster_common_tools.h>
-
 #include <ace/Log_Msg.h>
 
 RPG_Character_Monster::RPG_Character_Monster(const std::string& name_in,
@@ -77,6 +75,20 @@ RPG_Character_Monster& RPG_Character_Monster::operator=(const RPG_Character_Mons
 const RPG_Monster_Type RPG_Character_Monster::getType() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getType"));
+
+  return myType;
+}
+
+void RPG_Character_Monster::getArmorBonus() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getArmorBonus"));
+
+  return myType;
+}
+
+void RPG_Character_Monster::getShieldBonus() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getShieldBonus"));
 
   return myType;
 }

@@ -1,5 +1,11 @@
 METASOURCES = AUTO
 
+ACLOCAL_AMFLAGS = `-I m4'
+
+INCLUDES = -I$(top_srcdir)/.
+
+noinst_HEADERS = rpg_XMLSchema.h
+
 include_HEADERS = rpg_character_XML_parser.h rpg_character_XML_parser_base.h \
 	rpg_character_XML_types.h rpg_character_ability.h rpg_character_alignment.h \
 	rpg_character_alignmentcivic.h rpg_character_alignmentethic.h rpg_character_attribute.h \
@@ -29,11 +35,5 @@ libRPG_Character_la_SOURCES = rpg_XMLSchema.h rpg_character_XML_parser.cpp \
 	rpg_character_skills_common_tools.h rpg_character_terrain.h
 libRPG_Character_la_LDFLAGS = -L/usr/local/lib
 
-
-
 bindata_DATA = rpg_character.xsd
 bindatadir = $(bindir)
-
-SUBDIRS = monster
-noinst_HEADERS = rpg_XMLSchema.h
-INCLUDES = -I$(top_srcdir)/. -I$(top_srcdir)/monster

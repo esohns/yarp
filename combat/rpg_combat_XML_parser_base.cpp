@@ -25,6 +25,42 @@ post_RPG_Combat_AttackForm_Type ()
   // return ... ;
 }
 
+// RPG_Combat_AttackSituation_Type_pimpl
+//
+
+void RPG_Combat_AttackSituation_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Combat_AttackSituation RPG_Combat_AttackSituation_Type_pimpl::
+post_RPG_Combat_AttackSituation_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Combat_DefenseSituation_Type_pimpl
+//
+
+void RPG_Combat_DefenseSituation_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Combat_DefenseSituation RPG_Combat_DefenseSituation_Type_pimpl::
+post_RPG_Combat_DefenseSituation_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
 // RPG_Combat_SpecialAttack_Type_pimpl
 //
 

@@ -72,6 +72,8 @@ class RPG_Character_Base
   const unsigned int getCurrentWealth() const;
   const RPG_Character_Size getSize() const;
 
+  virtual void getArmorClass() const = 0;
+  virtual void getShieldBonus() const = 0;
   // sustain some damage (melee, magic, ...)
 //   void sustainDamage(const RPG_Combat_Damage&);
 

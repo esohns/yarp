@@ -28,6 +28,20 @@ RPG_Combat_AttackForm RPG_Combat_AttackForm_Type::post_RPG_Combat_AttackForm_Typ
   return RPG_Combat_AttackFormHelper::stringToRPG_Combat_AttackForm(post_string());
 }
 
+RPG_Combat_AttackSituation RPG_Combat_AttackSituation_Type::post_RPG_Combat_AttackSituation_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_AttackSituation_Type::post_RPG_Combat_AttackSituation_Type"));
+
+  return RPG_Combat_AttackSituationHelper::stringToRPG_Combat_AttackSituation(post_string());
+}
+
+RPG_Combat_DefenseSituation RPG_Combat_DefenseSituation_Type::post_RPG_Combat_DefenseSituation_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DefenseSituation_Type::post_RPG_Combat_DefenseSituation_Type"));
+
+  return RPG_Combat_DefenseSituationHelper::stringToRPG_Combat_DefenseSituation(post_string());
+}
+
 RPG_Combat_SpecialAttack RPG_Combat_SpecialAttack_Type::post_RPG_Combat_SpecialAttack_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_SpecialAttack_Type::post_RPG_Combat_SpecialAttack_Type"));

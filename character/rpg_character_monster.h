@@ -53,6 +53,9 @@ class RPG_Character_Monster
 
   const RPG_Monster_Type getType() const;
 
+  virtual void getArmorBonus() const;
+  virtual void getShieldBonus() const;
+
   virtual void gainExperience(const unsigned int&); // XP
 
   virtual const bool isPlayerCharacter() const;

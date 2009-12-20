@@ -40,4 +40,4 @@ AC_CHECK_LIB([xerces-c], [main])
 
 AC_CONFIG_FILES([Makefile
                  monster/Makefile])
-AC_OUTPUT
+AC_OUTPUT)
