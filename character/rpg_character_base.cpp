@@ -22,6 +22,11 @@
 #include "rpg_character_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
 
+#include <rpg_dice_dietype.h>
+#include <rpg_dice_roll.h>
+#include <rpg_dice_common.h>
+#include <rpg_dice.h>
+
 #include <ace/Log_Msg.h>
 
 #include <string>
@@ -218,6 +223,53 @@ const bool RPG_Character_Base::hasCondition(const RPG_Character_Condition& condi
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::hasCondition"));
 
   return (myConditions.find(condition_in) != myConditions.end());
+}
+
+void RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::sustainDamage"));
+
+  signed short total_damage_value = 0;
+  RPG_Dice_Roll roll;
+  RPG_Dice_RollResult_t result;
+  for (std::vector<RPG_Combat_DamageElement>::const_iterator iterator = damage_in.elements.begin();
+       iterator != damage_in.elements.end();
+       iterator++)
+  {
+    // compute damage
+    signed short damage_value = 0;
+
+    result.clear();
+    RPG_Dice::simulateRoll((*iterator).damage,
+                           1,
+                           result);
+    damage_value = result.front();
+    // minimum damage is 1 HP
+    if (damage_value <= 0)
+      damage_value = 1;
+
+    // *TODO*: consider defenses, resistances, (partial) immunities...
+    total_damage_value += damage_value;
+  } // end FOR
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("character \"%s\" takes damge of %d HP...\n"),
+             getName().c_str(),
+             total_damage_value));
+
+  myNumCurrentHitPoints -= total_damage_value;
+  if (myNumTotalHitPoints < -10)
+    myNumCurrentHitPoints = -10;
+
+  // change condition...
+  if (myNumCurrentHitPoints <= 0)
+  {
+    if (myNumCurrentHitPoints == 0)
+    {
+
+    } // end IF
+  } // end IF
 }
 
 void RPG_Character_Base::dump() const

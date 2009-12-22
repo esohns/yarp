@@ -1,16 +1,22 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="3" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/scripts/bindings.sh" >
-   <View0 Encoding="" line="12" Type="Source" />
+ <DocsAndViews NumberOfDocuments="5" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster_propertiesxml.h" >
+   <View0 Encoding="" line="32" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster_XML_types.h" >
-   <View0 Encoding="" line="78" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster_common.h" >
+   <View0 Encoding="" line="74" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/Makefile.am" >
-   <View0 Encoding="" line="2" Type="Source" />
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster_attack.h" >
+   <View0 Encoding="" line="28" Type="Source" />
   </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster_attackaction.h" >
+   <View0 Encoding="" line="25" Type="Source" />
+  </Doc3>
+  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster.xsd" >
+   <View0 Encoding="" line="113" Type="Source" />
+  </Doc4>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>

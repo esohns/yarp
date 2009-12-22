@@ -15,13 +15,13 @@
     <projectname>character</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
-    <defaultencoding></defaultencoding>
+    <description/>
+    <defaultencoding/>
   </general>
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>monster/libRPG_Monster.la</activetarget>
+      <activetarget>libRPG_Character.la</activetarget>
     </general>
     <run>
       <mainprogram>/home/unfv/Projects/RPG/character/debug/monster/.libs/monster_parser</mainprogram>
@@ -39,14 +39,14 @@
         <character_parser>-f ./../../rpg_character.xml -t</character_parser>
         <combat_simulator>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -t</combat_simulator>
         <character_generator>-f ./../../item/rpg_item.xml -t</character_generator>
-        <monster_parser></monster_parser>
+        <monster_parser/>
       </runarguments>
       <debugarguments>
         <generator>-t -f ../../item/rpg_item.xml</generator>
         <character_parser>-f ./../../rpg_character.xml -t</character_parser>
         <combat_simulator>-i /usr/local/bin/rpg_item.xml -m /usr/local/bin/rpg_character.xml -t</combat_simulator>
         <character_generator>-f ./../../item/rpg_item.xml -t</character_generator>
-        <monster_parser></monster_parser>
+        <monster_parser/>
       </debugarguments>
       <cwd>
         <generator>/home/unfv/Projects/RPG/character/debug/./</generator>
@@ -243,7 +243,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -265,11 +265,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath></gdbpath>
-      <dbgshell></dbgshell>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <gdbpath/>
+      <dbgshell/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>

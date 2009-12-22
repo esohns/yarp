@@ -198,10 +198,18 @@ void do_battle(const RPG_Character_Party_t& party_in,
                                                 monsters,
                                                 battleSequence);
   // perform a combat round
+  bool isFirstRound = true;
   while (!RPG_Combat_Common_Tools::isPartyHelpless(party_in) &&
          !RPG_Combat_Common_Tools::areMonstersHelpless(monsters))
   {
-    break;
+    // *TODO*: consider surprise round
+    RPG_Combat_Common_Tools::performCombatRound(ATTACK_NORMAL,
+                                                (isFirstRound ? DEFENSE_FLATFOOTED
+                                                              : DEFENSE_NORMAL),
+                                                battleSequence);
+
+    if (isFirstRound)
+      isFirstRound = false;
   } // end WHILE
 
   // sanity check

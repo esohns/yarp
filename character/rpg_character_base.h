@@ -35,7 +35,16 @@
 #include "rpg_character_equipment.h"
 #include "rpg_character_common.h"
 
+#include <rpg_dice_dietype.h>
+#include <rpg_dice_roll.h>
+#include <rpg_item_physicaldamagetype.h>
+
 #include <rpg_combat_defensesituation.h>
+#include <rpg_combat_damageeffecttype.h>
+#include <rpg_combat_specialdamagetype.h>
+#include <rpg_combat_damagetypeunion.h>
+#include <rpg_combat_damageelement.h>
+#include <rpg_combat_damage.h>
 
 #include <ace/Global_Macros.h>
 
@@ -74,8 +83,9 @@ class RPG_Character_Base
 
   virtual const signed char getArmorClass(const RPG_Combat_DefenseSituation&) const = 0;
   virtual const signed char getShieldBonus() const = 0;
+
   // sustain some damage (melee, magic, ...)
-//   void sustainDamage(const RPG_Combat_Damage&);
+  void sustainDamage(const RPG_Combat_Damage&); // damage
 
   // we just got wiser...
   virtual void gainExperience(const unsigned int&) = 0; // XP
@@ -120,7 +130,7 @@ class RPG_Character_Base
   RPG_Character_Abilities_t  myAbilities;
 
   unsigned short int         myNumTotalHitPoints;
-  unsigned short int         myNumCurrentHitPoints;
+  short int                  myNumCurrentHitPoints;
   RPG_Character_Conditions_t myConditions;
 };
 

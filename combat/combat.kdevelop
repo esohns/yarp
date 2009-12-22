@@ -15,8 +15,8 @@
     <projectname>combat</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
-    <defaultencoding></defaultencoding>
+    <description/>
+    <defaultencoding/>
   </general>
   <kdevautoproject>
     <general>
@@ -33,7 +33,7 @@
       <cwd>
         <combat_simulator>/home/unfv/Projects/RPG/combat/debug</combat_simulator>
       </cwd>
-      <mainprogram></mainprogram>
+      <mainprogram/>
       <programargs>-i ./../../item/rpg_item.xml -m ./../../character/rpg_character.xml -n 10 -t</programargs>
       <globaldebugarguments>-i ./../../item/rpg_item.xml -m ./../../character/rpg_character.xml -n 10 -t</globaldebugarguments>
       <globalcwd>/home/unfv/Projects/RPG/combat/debug</globalcwd>
@@ -232,7 +232,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -253,11 +253,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath></gdbpath>
-      <dbgshell></dbgshell>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <gdbpath/>
+      <dbgshell/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -270,7 +270,7 @@
     </display>
   </kdevdebugger>
   <ctagspart>
-    <customArguments></customArguments>
+    <customArguments/>
     <customTagfilePath>/home/unfv/Projects/RPG/combat/tags</customTagfilePath>
     <activeTagsFiles/>
   </ctagspart>
