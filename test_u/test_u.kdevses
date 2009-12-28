@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="1" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/configure.ac" >
-   <View0 Encoding="" line="44" Type="Source" />
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/chance/chance_dice.cpp" >
+   <View0 Encoding="" line="15" Type="Source" />
   </Doc0>
  </DocsAndViews>
  <pluginList>
