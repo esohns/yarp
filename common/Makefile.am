@@ -1,2 +1,7 @@
+METASOURCES = AUTO
 
-SUBDIRS = chance character combat item monster
+ACLOCAL_AMFLAGS = `-I m4'
+
+lib_LTLIBRARIES = libRPG_Common.la
+libRPG_Common_la_SOURCES =
+libRPG_Common_la_LDFLAGS = -L/usr/local/lib
