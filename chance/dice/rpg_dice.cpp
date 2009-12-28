@@ -216,7 +216,7 @@ void RPG_Dice::rangeToRoll(const RPG_Dice_ValueRange& valueRange_in,
     else
     {
       current_dieType--;
-    };
+    }
   } while (true);
 
   // return the best result (top of the list !)

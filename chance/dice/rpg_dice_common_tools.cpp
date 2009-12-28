@@ -71,8 +71,11 @@ const std::string RPG_Dice_Common_Tools::rangeToString(const RPG_Dice_ValueRange
   std::stringstream str;
 
   str << range_in.begin;
-  str << ACE_TEXT_ALWAYS_CHAR("-");
-  str << range_in.end;
+  if (range_in.begin != range_in.end)
+  {
+    str << ACE_TEXT_ALWAYS_CHAR("-");
+    str << range_in.end;
+  } // end IF
 
   result = str.str();
 
