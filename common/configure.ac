@@ -40,10 +40,6 @@ AC_HEADER_STDBOOL
 # Checks for library functions.
 AC_CHECK_FUNCS([strerror])
 
-AC_CONFIG_FILES([Makefile
-                 chance/Makefile
-                 character/Makefile
-                 monster/Makefile
-                 combat/Makefile
-                 item/Makefile])
+AC_CONFIG_FILES([Makefile])
+
 AC_OUTPUT
