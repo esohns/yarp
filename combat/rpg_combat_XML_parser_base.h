@@ -14,7 +14,11 @@
 
 #include <rpg_item_XML_parser_base.h>
 
-class RPG_Combat_AttackForm_Type_pimpl: public virtual RPG_Combat_AttackForm_Type_pskel,
+#include <rpg_character_XML_parser_base.h>
+
+#include <rpg_monster_XML_parser_base.h>
+
+class RPG_Combat_AttackForm_Type_pimpl: public virtual RPG_Combat_AttackForm_Type_pskel1,
   public ::xml_schema::string_pimpl
 {
   public:
@@ -25,7 +29,7 @@ class RPG_Combat_AttackForm_Type_pimpl: public virtual RPG_Combat_AttackForm_Typ
   post_RPG_Combat_AttackForm_Type ();
 };
 
-class RPG_Combat_AttackSituation_Type_pimpl: public virtual RPG_Combat_AttackSituation_Type_pskel,
+class RPG_Combat_AttackSituation_Type_pimpl: public virtual RPG_Combat_AttackSituation_Type_pskel1,
   public ::xml_schema::string_pimpl
 {
   public:
@@ -36,7 +40,7 @@ class RPG_Combat_AttackSituation_Type_pimpl: public virtual RPG_Combat_AttackSit
   post_RPG_Combat_AttackSituation_Type ();
 };
 
-class RPG_Combat_DefenseSituation_Type_pimpl: public virtual RPG_Combat_DefenseSituation_Type_pskel,
+class RPG_Combat_DefenseSituation_Type_pimpl: public virtual RPG_Combat_DefenseSituation_Type_pskel1,
   public ::xml_schema::string_pimpl
 {
   public:
@@ -47,7 +51,7 @@ class RPG_Combat_DefenseSituation_Type_pimpl: public virtual RPG_Combat_DefenseS
   post_RPG_Combat_DefenseSituation_Type ();
 };
 
-class RPG_Combat_SpecialAttack_Type_pimpl: public virtual RPG_Combat_SpecialAttack_Type_pskel,
+class RPG_Combat_SpecialAttack_Type_pimpl: public virtual RPG_Combat_SpecialAttack_Type_pskel1,
   public ::xml_schema::string_pimpl
 {
   public:
@@ -58,7 +62,7 @@ class RPG_Combat_SpecialAttack_Type_pimpl: public virtual RPG_Combat_SpecialAtta
   post_RPG_Combat_SpecialAttack_Type ();
 };
 
-class RPG_Combat_SpecialDamageType_Type_pimpl: public virtual RPG_Combat_SpecialDamageType_Type_pskel,
+class RPG_Combat_SpecialDamageType_Type_pimpl: public virtual RPG_Combat_SpecialDamageType_Type_pskel1,
   public ::xml_schema::string_pimpl
 {
   public:
@@ -69,7 +73,36 @@ class RPG_Combat_SpecialDamageType_Type_pimpl: public virtual RPG_Combat_Special
   post_RPG_Combat_SpecialDamageType_Type ();
 };
 
-class RPG_Combat_DamageEffectType_Type_pimpl: public virtual RPG_Combat_DamageEffectType_Type_pskel,
+class RPG_Combat_SavingThrowUnion_Type_pimpl: public virtual RPG_Combat_SavingThrowUnion_Type_pskel1
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  _characters (const ::xml_schema::ro_string&);
+
+  virtual void
+  post_RPG_Combat_SavingThrowUnion_Type ();
+};
+
+class RPG_Combat_SavingThrow_Type_pimpl: public virtual RPG_Combat_SavingThrow_Type_pskel1
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  type ();
+
+  virtual void
+  difficultyClass (unsigned char);
+
+  virtual void
+  post_RPG_Combat_SavingThrow_Type ();
+};
+
+class RPG_Combat_DamageEffectType_Type_pimpl: public virtual RPG_Combat_DamageEffectType_Type_pskel1,
   public ::xml_schema::string_pimpl
 {
   public:
@@ -80,7 +113,7 @@ class RPG_Combat_DamageEffectType_Type_pimpl: public virtual RPG_Combat_DamageEf
   post_RPG_Combat_DamageEffectType_Type ();
 };
 
-class RPG_Combat_DamageTypeUnion_Type_pimpl: public virtual RPG_Combat_DamageTypeUnion_Type_pskel
+class RPG_Combat_DamageTypeUnion_Type_pimpl: public virtual RPG_Combat_DamageTypeUnion_Type_pskel1
 {
   public:
   virtual void
@@ -93,7 +126,7 @@ class RPG_Combat_DamageTypeUnion_Type_pimpl: public virtual RPG_Combat_DamageTyp
   post_RPG_Combat_DamageTypeUnion_Type ();
 };
 
-class RPG_Combat_DamageElement_Type_pimpl: public virtual RPG_Combat_DamageElement_Type_pskel
+class RPG_Combat_DamageElement_Type_pimpl: public virtual RPG_Combat_DamageElement_Type_pskel1
 {
   public:
   virtual void
@@ -109,13 +142,19 @@ class RPG_Combat_DamageElement_Type_pimpl: public virtual RPG_Combat_DamageEleme
   duration (unsigned short);
 
   virtual void
+  affectedAttribute ();
+
+  virtual void
+  savingThrow ();
+
+  virtual void
   effect (const RPG_Combat_DamageEffectType&);
 
   virtual RPG_Combat_DamageElement
   post_RPG_Combat_DamageElement_Type ();
 };
 
-class RPG_Combat_Damage_Type_pimpl: public virtual RPG_Combat_Damage_Type_pskel
+class RPG_Combat_Damage_Type_pimpl: public virtual RPG_Combat_Damage_Type_pskel1
 {
   public:
   virtual void

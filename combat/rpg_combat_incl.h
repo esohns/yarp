@@ -26,6 +26,8 @@
 #include "rpg_combat_defensesituation.h"
 #include "rpg_combat_specialattack.h"
 #include "rpg_combat_specialdamagetype.h"
+#include "rpg_combat_savingthrowunion.h"
+#include "rpg_combat_savingthrow.h"
 #include "rpg_combat_damageeffecttype.h"
 #include "rpg_combat_damagetypeunion.h"
 #include "rpg_combat_damageelement.h"

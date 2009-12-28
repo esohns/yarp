@@ -107,18 +107,16 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
 //     result += RPG_Combat_DamageTypeUnionHelper::RPG_Combat_DamageTypeUnionToString((*iterator).type);
     result += ACE_TEXT_ALWAYS_CHAR("\ndamage: ");
     result += RPG_Dice_Common_Tools::rollToString((*iterator).damage);
-    converter << (*iterator).duration;
-    result += ACE_TEXT_ALWAYS_CHAR("\nduration: ");
-    result += converter.str();
+    if ((*iterator).duration)
+    {
+      converter << (*iterator).duration;
+      result += ACE_TEXT_ALWAYS_CHAR("\nduration: ");
+      result += converter.str();
+    } // end IF
     result += ACE_TEXT_ALWAYS_CHAR("\neffect: ");
     result += RPG_Combat_DamageEffectTypeHelper::RPG_Combat_DamageEffectTypeToString((*iterator).effect);
     result += ACE_TEXT_ALWAYS_CHAR("\n");
   } // end FOR
-
-  if (!result.empty())
-  {
-    result.erase(--(result.end()));
-  } // end IF
 
   return result;
 }
@@ -804,6 +802,7 @@ is_monster_hit:
           {
             // *TODO*: this probably applies for physical/natural damage only !
             // *TODO*: consider manufactured (and equipped) weapons may have different modifiers
+            // *IMPORTANT NOTE*: STR modifier already included...
             (*iterator2).damage *= 2;
           } // end FOR
         } // end IF

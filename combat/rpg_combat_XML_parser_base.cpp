@@ -97,6 +97,51 @@ post_RPG_Combat_SpecialDamageType_Type ()
   // return ... ;
 }
 
+// RPG_Combat_SavingThrowUnion_Type_pimpl
+//
+
+void RPG_Combat_SavingThrowUnion_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_SavingThrowUnion_Type_pimpl::
+_characters (const ::xml_schema::ro_string& s)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_SavingThrowUnion_Type_pimpl::
+post_RPG_Combat_SavingThrowUnion_Type ()
+{
+}
+
+// RPG_Combat_SavingThrow_Type_pimpl
+//
+
+void RPG_Combat_SavingThrow_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_SavingThrow_Type_pimpl::
+type ()
+{
+}
+
+void RPG_Combat_SavingThrow_Type_pimpl::
+difficultyClass (unsigned char difficultyClass)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_SavingThrow_Type_pimpl::
+post_RPG_Combat_SavingThrow_Type ()
+{
+}
+
 // RPG_Combat_DamageEffectType_Type_pimpl
 //
 
@@ -165,6 +210,16 @@ duration (unsigned short duration)
 {
   // TODO
   //
+}
+
+void RPG_Combat_DamageElement_Type_pimpl::
+affectedAttribute ()
+{
+}
+
+void RPG_Combat_DamageElement_Type_pimpl::
+savingThrow ()
+{
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::

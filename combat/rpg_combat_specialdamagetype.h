@@ -28,6 +28,8 @@ enum RPG_Combat_SpecialDamageType
   DAMAGE_ACID,
   DAMAGE_POISON,
   DAMAGE_SLIME,
+  DAMAGE_STUN,
+  DAMAGE_DRAIN_ATTRIBUTE,
   //
   RPG_COMBAT_SPECIALDAMAGETYPE_MAX,
   RPG_COMBAT_SPECIALDAMAGETYPE_INVALID
@@ -52,6 +54,8 @@ class RPG_Combat_SpecialDamageTypeHelper
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_ACID, ACE_TEXT_ALWAYS_CHAR("DAMAGE_ACID")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_POISON, ACE_TEXT_ALWAYS_CHAR("DAMAGE_POISON")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_SLIME, ACE_TEXT_ALWAYS_CHAR("DAMAGE_SLIME")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_STUN, ACE_TEXT_ALWAYS_CHAR("DAMAGE_STUN")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_DRAIN_ATTRIBUTE, ACE_TEXT_ALWAYS_CHAR("DAMAGE_DRAIN_ATTRIBUTE")));
   };
 
   inline static std::string RPG_Combat_SpecialDamageTypeToString(const RPG_Combat_SpecialDamageType& element_in)
