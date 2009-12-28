@@ -20,7 +20,7 @@
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>monster/monster_parser</activetarget>
+      <activetarget>libRPG_Common.la</activetarget>
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>
