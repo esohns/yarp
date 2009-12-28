@@ -24,7 +24,7 @@
 struct RPG_Monster_AttackAction
 {
   RPG_Monster_WeaponTypeUnion weapon;
-  char attackBonus;
+  std::vector<char> attackBonus;
   std::vector<RPG_Combat_AttackForm> attackForms;
   RPG_Combat_Damage damage;
   unsigned char numAttacksPerRound;

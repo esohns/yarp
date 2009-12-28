@@ -246,6 +246,24 @@ post_RPG_Monster_Attack_Type ()
   // return ... ;
 }
 
+// RPG_Monster_SavingThrow_Type_pimpl
+//
+
+void RPG_Monster_SavingThrow_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Monster_SavingThrow RPG_Monster_SavingThrow_Type_pimpl::
+post_RPG_Monster_SavingThrow_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
 // RPG_Monster_SavingThrowModifiers_Type_pimpl
 //
 

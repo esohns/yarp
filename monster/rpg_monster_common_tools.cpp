@@ -32,6 +32,7 @@
 RPG_Monster_MetaTypeToStringTable_t RPG_Monster_MetaTypeHelper::myRPG_Monster_MetaTypeToStringTable;
 RPG_Monster_SubTypeToStringTable_t RPG_Monster_SubTypeHelper::myRPG_Monster_SubTypeToStringTable;
 RPG_Monster_NaturalWeaponToStringTable_t RPG_Monster_NaturalWeaponHelper::myRPG_Monster_NaturalWeaponToStringTable;
+RPG_Monster_SavingThrowToStringTable_t RPG_Monster_SavingThrowHelper::myRPG_Monster_SavingThrowToStringTable;
 RPG_Monster_OrganizationToStringTable_t RPG_Monster_OrganizationHelper::myRPG_Monster_OrganizationToStringTable;
 
 void RPG_Monster_Common_Tools::initStringConversionTables()
@@ -41,6 +42,7 @@ void RPG_Monster_Common_Tools::initStringConversionTables()
   RPG_Monster_MetaTypeHelper::init();
   RPG_Monster_SubTypeHelper::init();
   RPG_Monster_NaturalWeaponHelper::init();
+  RPG_Monster_SavingThrowHelper::init();
   RPG_Monster_OrganizationHelper::init();
 
   // debug info
@@ -92,6 +94,28 @@ const std::string RPG_Monster_Common_Tools::weaponTypeToString(const RPG_Monster
   return result;
 }
 
+const std::string RPG_Combat_Common_Tools::attackFormsToString(const RPG_Combat_AttackForms_t& attackForms_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::attackFormsToString"));
+
+  std::string result;
+
+  for (RPG_Combat_AttackFormsIterator_t iterator = attackForms_in.begin();
+       iterator != attackForms_in.end();
+       iterator++)
+  {
+    result += RPG_Combat_AttackFormHelper::RPG_Combat_AttackFormToString(*iterator);
+    result += ACE_TEXT_ALWAYS_CHAR("|");
+  } // end FOR
+
+  if (!result.empty())
+  {
+    result.erase(--(result.end()));
+  } // end IF
+
+  return result;
+}
+
 const std::string RPG_Monster_Common_Tools::attackActionToString(const RPG_Monster_AttackAction& attackAction_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::attackActionToString"));
@@ -103,20 +127,28 @@ const std::string RPG_Monster_Common_Tools::attackActionToString(const RPG_Monst
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("attackBonus: ");
   std::stringstream str;
-  str << attackAction_in.attackBonus;
-  result += str.str();
+  for (std::vector<char>::const_iterator iterator = attackAction_in.attackBonus.begin();
+       iterator != attackAction_in.attackBonus.end();
+       iterator++)
+  {
+    str.str(ACE_TEXT_ALWAYS_CHAR(""));
+    str << ACE_static_cast(int, *iterator);
+    result += str.str();
+    result += ACE_TEXT_ALWAYS_CHAR("/");
+  } // end FOR
+  if (!attackAction_in.attackBonus.empty())
+  {
+    result.erase(--(result.end()));
+  } // end IF
   str.str(ACE_TEXT_ALWAYS_CHAR(""));
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("attackForm: ");
   result += RPG_Combat_Common_Tools::attackFormsToString(attackAction_in.attackForms);
   result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += ACE_TEXT_ALWAYS_CHAR("damage: ");
   result += RPG_Combat_Common_Tools::damageToString(attackAction_in.damage);
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("numAttacksPerRound: ");
-  str << attackAction_in.numAttacksPerRound;
+  str << ACE_static_cast(int, attackAction_in.numAttacksPerRound);
   result += str.str();
-  str.str(ACE_TEXT_ALWAYS_CHAR(""));
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
   return result;
@@ -130,22 +162,39 @@ const std::string RPG_Monster_Common_Tools::attackToString(const RPG_Monster_Att
 
   std::stringstream str;
   result += ACE_TEXT_ALWAYS_CHAR("baseAttackBonus: ");
-  str << attack_in.baseAttackBonus;
+  str << ACE_static_cast(int, attack_in.baseAttackBonus);
   result += str.str();
   str.str(ACE_TEXT_ALWAYS_CHAR(""));
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("grappleBonus: ");
-  str << attack_in.grappleBonus;
+  str << ACE_static_cast(int, attack_in.grappleBonus);
   result += str.str();
-  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+//   str.str(ACE_TEXT_ALWAYS_CHAR(""));
   result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += ACE_TEXT_ALWAYS_CHAR("Standard Attack Action:\n--------------------\n");
-  result += attackActionToString(attack_in.standardAttackAction);
+  result += ACE_TEXT_ALWAYS_CHAR("Standard Attack Action(s):\n-----------------------\n");
+  int i = 1;
+  for (std::vector<RPG_Monster_AttackAction>::const_iterator iterator = attack_in.standardAttackActions.begin();
+       iterator != attack_in.standardAttackActions.end();
+       iterator++, i++)
+  {
+    result += ACE_TEXT_ALWAYS_CHAR("action #");
+    str.str(ACE_TEXT_ALWAYS_CHAR(""));
+    str << i;
+    result += str.str();
+    result += ACE_TEXT_ALWAYS_CHAR("\n");
+    result += attackActionToString(*iterator);
+  } // end FOR
   result += ACE_TEXT_ALWAYS_CHAR("Full Attack Action(s):\n---------------\n");
+  i = 1;
   for (std::vector<RPG_Monster_AttackAction>::const_iterator iterator = attack_in.fullAttackActions.begin();
        iterator != attack_in.fullAttackActions.end();
-       iterator++)
+       iterator++, i++)
   {
+    result += ACE_TEXT_ALWAYS_CHAR("action #");
+    str.str(ACE_TEXT_ALWAYS_CHAR(""));
+    str << i;
+    result += str.str();
+    result += ACE_TEXT_ALWAYS_CHAR("\n");
     result += attackActionToString(*iterator);
   } // end FOR
 
@@ -165,7 +214,7 @@ const std::string RPG_Monster_Common_Tools::organizationsToString(const RPG_Mons
   {
     result += RPG_Monster_OrganizationHelper::RPG_Monster_OrganizationToString(*iterator);
     result += ACE_TEXT_ALWAYS_CHAR("|");
-  }; // end FOR
+  } // end FOR
 
   if (!result.empty())
   {
@@ -191,7 +240,7 @@ const std::string RPG_Monster_Common_Tools::organizationsToString(const RPG_Mons
     result += ACE_TEXT_ALWAYS_CHAR(": ");
     result += range_string;
     result += ACE_TEXT_ALWAYS_CHAR("\n");
-  }; // end FOR
+  } // end FOR
 
   return result;
 }
@@ -209,7 +258,7 @@ const std::string RPG_Monster_Common_Tools::advancementToString(const RPG_Monste
     result += ACE_TEXT_ALWAYS_CHAR(": ");
     result += RPG_Dice_Common_Tools::rangeToString((*iterator).range);
     result += ACE_TEXT_ALWAYS_CHAR(" HD\n");
-  }; // end FOR
+  } // end FOR
 
   return result;
 }

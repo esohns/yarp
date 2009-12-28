@@ -252,7 +252,7 @@ RPG_Monster_AttackAction_Type::RPG_Monster_AttackAction_Type()
   ACE_TRACE(ACE_TEXT("RPG_Monster_AttackAction_Type::RPG_Monster_AttackAction_Type"));
 
   myCurrentAttackAction.weapon.weapontype = RPG_ITEM_WEAPONTYPE_INVALID;
-  myCurrentAttackAction.attackBonus = 0;
+  myCurrentAttackAction.attackBonus.clear();
   myCurrentAttackAction.attackForms.clear();
   myCurrentAttackAction.damage.elements.clear();
   myCurrentAttackAction.numAttacksPerRound = 0;
@@ -269,7 +269,7 @@ void RPG_Monster_AttackAction_Type::attackBonus(signed char attackBonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_AttackAction_Type::attackBonus"));
 
-  myCurrentAttackAction.attackBonus = attackBonus_in;
+  myCurrentAttackAction.attackBonus.push_back(attackBonus_in);
 }
 
 void RPG_Monster_AttackAction_Type::attackForm(const RPG_Combat_AttackForm& attackForm_in)
@@ -301,7 +301,7 @@ RPG_Monster_AttackAction RPG_Monster_AttackAction_Type::post_RPG_Monster_AttackA
 
   // clear structure
   myCurrentAttackAction.weapon.weapontype = RPG_ITEM_WEAPONTYPE_INVALID;
-  myCurrentAttackAction.attackBonus = 0;
+  myCurrentAttackAction.attackBonus.clear();
   myCurrentAttackAction.attackForms.clear();
   myCurrentAttackAction.damage.elements.clear();
   myCurrentAttackAction.numAttacksPerRound = 0;
@@ -315,11 +315,7 @@ RPG_Monster_Attack_Type::RPG_Monster_Attack_Type()
 
   myCurrentAttack.baseAttackBonus = 0;
   myCurrentAttack.grappleBonus = 0;
-  myCurrentAttack.standardAttackAction.weapon.weapontype = RPG_ITEM_WEAPONTYPE_INVALID;
-  myCurrentAttack.standardAttackAction.attackBonus = 0;
-  myCurrentAttack.standardAttackAction.attackForms.clear();
-  myCurrentAttack.standardAttackAction.damage.elements.clear();
-  myCurrentAttack.standardAttackAction.numAttacksPerRound = 0;
+  myCurrentAttack.standardAttackActions.clear();
   myCurrentAttack.fullAttackActions.clear();
 }
 
@@ -341,7 +337,7 @@ void RPG_Monster_Attack_Type::standardAttackAction(const RPG_Monster_AttackActio
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Attack_Type::standardAttackAction"));
 
-  myCurrentAttack.standardAttackAction = attackAction_in;
+  myCurrentAttack.standardAttackActions.push_back(attackAction_in);
 }
 
 void RPG_Monster_Attack_Type::fullAttackAction(const RPG_Monster_AttackAction& attackAction_in)
@@ -360,14 +356,17 @@ RPG_Monster_Attack RPG_Monster_Attack_Type::post_RPG_Monster_Attack_Type()
   // clear structure
   myCurrentAttack.baseAttackBonus = 0;
   myCurrentAttack.grappleBonus = 0;
-  myCurrentAttack.standardAttackAction.weapon.weapontype = RPG_ITEM_WEAPONTYPE_INVALID;
-  myCurrentAttack.standardAttackAction.attackBonus = 0;
-  myCurrentAttack.standardAttackAction.attackForms.clear();
-  myCurrentAttack.standardAttackAction.damage.elements.clear();
-  myCurrentAttack.standardAttackAction.numAttacksPerRound = 0;
+  myCurrentAttack.standardAttackActions.clear();
   myCurrentAttack.fullAttackActions.clear();
 
   return result;
+}
+
+RPG_Monster_SavingThrow RPG_Monster_SavingThrow_Type::post_RPG_Monster_SavingThrow_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SavingThrow_Type::post_RPG_Monster_SavingThrow_Type"));
+
+  return RPG_Monster_SavingThrowHelper::stringToRPG_Monster_SavingThrow(post_string());
 }
 
 RPG_Monster_SavingThrowModifiers_Type::RPG_Monster_SavingThrowModifiers_Type()
@@ -495,6 +494,18 @@ RPG_Monster_OrganizationStep RPG_Monster_OrganizationStep_Type::post_RPG_Monster
 
   RPG_Monster_OrganizationStep result = myCurrentOrganizationStep;
 
+  // if necessary, adjust range
+  if (result.type == ORGANIZATION_SOLITARY)
+  {
+    result.range.begin = 1;
+    result.range.end = 1;
+  } // end IF
+  else if (result.type == ORGANIZATION_PAIR)
+  {
+    result.range.begin = 2;
+    result.range.end = 2;
+  } // end IF
+
   // clear structure
   myCurrentOrganizationStep.type = RPG_MONSTER_ORGANIZATION_INVALID;
   myCurrentOrganizationStep.range.begin = 0;
@@ -611,11 +622,7 @@ RPG_Monster_PropertiesXML_Type::RPG_Monster_PropertiesXML_Type()
   myCurrentProperties.armorClass.flatFooted = 0;
   myCurrentProperties.attack.baseAttackBonus = 0;
   myCurrentProperties.attack.grappleBonus = 0;
-  myCurrentProperties.attack.standardAttackAction.weapon.weapontype = RPG_ITEM_WEAPONTYPE_INVALID;
-  myCurrentProperties.attack.standardAttackAction.attackBonus = 0;
-  myCurrentProperties.attack.standardAttackAction.attackForms.clear();
-  myCurrentProperties.attack.standardAttackAction.damage.elements.clear();
-  myCurrentProperties.attack.standardAttackAction.numAttacksPerRound = 0;
+  myCurrentProperties.attack.standardAttackActions.clear();
   myCurrentProperties.attack.fullAttackActions.clear();
   myCurrentProperties.space = 0;
   myCurrentProperties.reach = 0;
@@ -809,11 +816,7 @@ RPG_Monster_PropertiesXML RPG_Monster_PropertiesXML_Type::post_RPG_Monster_Prope
   myCurrentProperties.armorClass.flatFooted = 0;
   myCurrentProperties.attack.baseAttackBonus = 0;
   myCurrentProperties.attack.grappleBonus = 0;
-  myCurrentProperties.attack.standardAttackAction.weapon.weapontype = RPG_ITEM_WEAPONTYPE_INVALID;
-  myCurrentProperties.attack.standardAttackAction.attackBonus = 0;
-  myCurrentProperties.attack.standardAttackAction.attackForms.clear();
-  myCurrentProperties.attack.standardAttackAction.damage.elements.clear();
-  myCurrentProperties.attack.standardAttackAction.numAttacksPerRound = 0;
+  myCurrentProperties.attack.standardAttackActions.clear();
   myCurrentProperties.attack.fullAttackActions.clear();
   myCurrentProperties.space = 0;
   myCurrentProperties.reach = 0;

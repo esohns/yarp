@@ -18,7 +18,7 @@
 
 #include "rpg_combat_XML_parser_base.h"
 
-class RPG_Monster_MetaType_Type_pimpl: public virtual RPG_Monster_MetaType_Type_pskel,
+class RPG_Monster_MetaType_Type_pimpl: public virtual RPG_Monster_MetaType_Type_pskel1,
   public ::xml_schema::string_pimpl
 {
   public:
@@ -29,7 +29,7 @@ class RPG_Monster_MetaType_Type_pimpl: public virtual RPG_Monster_MetaType_Type_
   post_RPG_Monster_MetaType_Type ();
 };
 
-class RPG_Monster_SubType_Type_pimpl: public virtual RPG_Monster_SubType_Type_pskel,
+class RPG_Monster_SubType_Type_pimpl: public virtual RPG_Monster_SubType_Type_pskel1,
   public ::xml_schema::string_pimpl
 {
   public:
@@ -40,7 +40,7 @@ class RPG_Monster_SubType_Type_pimpl: public virtual RPG_Monster_SubType_Type_ps
   post_RPG_Monster_SubType_Type ();
 };
 
-class RPG_Monster_Type_Type_pimpl: public virtual RPG_Monster_Type_Type_pskel
+class RPG_Monster_Type_Type_pimpl: public virtual RPG_Monster_Type_Type_pskel1
 {
   public:
   virtual void
@@ -56,7 +56,7 @@ class RPG_Monster_Type_Type_pimpl: public virtual RPG_Monster_Type_Type_pskel
   post_RPG_Monster_Type_Type ();
 };
 
-class RPG_Monster_NaturalArmorClass_Type_pimpl: public virtual RPG_Monster_NaturalArmorClass_Type_pskel
+class RPG_Monster_NaturalArmorClass_Type_pimpl: public virtual RPG_Monster_NaturalArmorClass_Type_pskel1
 {
   public:
   virtual void
@@ -75,7 +75,7 @@ class RPG_Monster_NaturalArmorClass_Type_pimpl: public virtual RPG_Monster_Natur
   post_RPG_Monster_NaturalArmorClass_Type ();
 };
 
-class RPG_Monster_NaturalWeapon_Type_pimpl: public virtual RPG_Monster_NaturalWeapon_Type_pskel,
+class RPG_Monster_NaturalWeapon_Type_pimpl: public virtual RPG_Monster_NaturalWeapon_Type_pskel1,
   public ::xml_schema::string_pimpl
 {
   public:
@@ -86,7 +86,7 @@ class RPG_Monster_NaturalWeapon_Type_pimpl: public virtual RPG_Monster_NaturalWe
   post_RPG_Monster_NaturalWeapon_Type ();
 };
 
-class RPG_Monster_WeaponTypeUnion_Type_pimpl: public virtual RPG_Monster_WeaponTypeUnion_Type_pskel
+class RPG_Monster_WeaponTypeUnion_Type_pimpl: public virtual RPG_Monster_WeaponTypeUnion_Type_pskel1
 {
   public:
   virtual void
@@ -99,7 +99,7 @@ class RPG_Monster_WeaponTypeUnion_Type_pimpl: public virtual RPG_Monster_WeaponT
   post_RPG_Monster_WeaponTypeUnion_Type ();
 };
 
-class RPG_Monster_AttackAction_Type_pimpl: public virtual RPG_Monster_AttackAction_Type_pskel
+class RPG_Monster_AttackAction_Type_pimpl: public virtual RPG_Monster_AttackAction_Type_pskel1
 {
   public:
   virtual void
@@ -124,7 +124,7 @@ class RPG_Monster_AttackAction_Type_pimpl: public virtual RPG_Monster_AttackActi
   post_RPG_Monster_AttackAction_Type ();
 };
 
-class RPG_Monster_Attack_Type_pimpl: public virtual RPG_Monster_Attack_Type_pskel
+class RPG_Monster_Attack_Type_pimpl: public virtual RPG_Monster_Attack_Type_pskel1
 {
   public:
   virtual void
@@ -146,7 +146,18 @@ class RPG_Monster_Attack_Type_pimpl: public virtual RPG_Monster_Attack_Type_pske
   post_RPG_Monster_Attack_Type ();
 };
 
-class RPG_Monster_SavingThrowModifiers_Type_pimpl: public virtual RPG_Monster_SavingThrowModifiers_Type_pskel
+class RPG_Monster_SavingThrow_Type_pimpl: public virtual RPG_Monster_SavingThrow_Type_pskel1,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Monster_SavingThrow
+  post_RPG_Monster_SavingThrow_Type ();
+};
+
+class RPG_Monster_SavingThrowModifiers_Type_pimpl: public virtual RPG_Monster_SavingThrowModifiers_Type_pskel1
 {
   public:
   virtual void
@@ -165,7 +176,7 @@ class RPG_Monster_SavingThrowModifiers_Type_pimpl: public virtual RPG_Monster_Sa
   post_RPG_Monster_SavingThrowModifiers_Type ();
 };
 
-class RPG_Monster_Organization_Type_pimpl: public virtual RPG_Monster_Organization_Type_pskel,
+class RPG_Monster_Organization_Type_pimpl: public virtual RPG_Monster_Organization_Type_pskel1,
   public ::xml_schema::string_pimpl
 {
   public:
@@ -176,7 +187,7 @@ class RPG_Monster_Organization_Type_pimpl: public virtual RPG_Monster_Organizati
   post_RPG_Monster_Organization_Type ();
 };
 
-class RPG_Monster_OrganizationSlaverStep_Type_pimpl: public virtual RPG_Monster_OrganizationSlaverStep_Type_pskel
+class RPG_Monster_OrganizationSlaverStep_Type_pimpl: public virtual RPG_Monster_OrganizationSlaverStep_Type_pskel1
 {
   public:
   virtual void
@@ -192,7 +203,7 @@ class RPG_Monster_OrganizationSlaverStep_Type_pimpl: public virtual RPG_Monster_
   post_RPG_Monster_OrganizationSlaverStep_Type ();
 };
 
-class RPG_Monster_OrganizationStep_Type_pimpl: public virtual RPG_Monster_OrganizationStep_Type_pskel
+class RPG_Monster_OrganizationStep_Type_pimpl: public virtual RPG_Monster_OrganizationStep_Type_pskel1
 {
   public:
   virtual void
@@ -211,7 +222,7 @@ class RPG_Monster_OrganizationStep_Type_pimpl: public virtual RPG_Monster_Organi
   post_RPG_Monster_OrganizationStep_Type ();
 };
 
-class RPG_Monster_Organizations_Type_pimpl: public virtual RPG_Monster_Organizations_Type_pskel
+class RPG_Monster_Organizations_Type_pimpl: public virtual RPG_Monster_Organizations_Type_pskel1
 {
   public:
   virtual void
@@ -224,7 +235,7 @@ class RPG_Monster_Organizations_Type_pimpl: public virtual RPG_Monster_Organizat
   post_RPG_Monster_Organizations_Type ();
 };
 
-class RPG_Monster_AdvancementStep_Type_pimpl: public virtual RPG_Monster_AdvancementStep_Type_pskel
+class RPG_Monster_AdvancementStep_Type_pimpl: public virtual RPG_Monster_AdvancementStep_Type_pskel1
 {
   public:
   virtual void
@@ -240,7 +251,7 @@ class RPG_Monster_AdvancementStep_Type_pimpl: public virtual RPG_Monster_Advance
   post_RPG_Monster_AdvancementStep_Type ();
 };
 
-class RPG_Monster_Advancement_Type_pimpl: public virtual RPG_Monster_Advancement_Type_pskel
+class RPG_Monster_Advancement_Type_pimpl: public virtual RPG_Monster_Advancement_Type_pskel1
 {
   public:
   virtual void
@@ -253,7 +264,7 @@ class RPG_Monster_Advancement_Type_pimpl: public virtual RPG_Monster_Advancement
   post_RPG_Monster_Advancement_Type ();
 };
 
-class RPG_Monster_PropertiesXML_Type_pimpl: public virtual RPG_Monster_PropertiesXML_Type_pskel
+class RPG_Monster_PropertiesXML_Type_pimpl: public virtual RPG_Monster_PropertiesXML_Type_pskel1
 {
   public:
   virtual void
@@ -326,7 +337,7 @@ class RPG_Monster_PropertiesXML_Type_pimpl: public virtual RPG_Monster_Propertie
   post_RPG_Monster_PropertiesXML_Type ();
 };
 
-class RPG_Monster_Dictionary_Type_pimpl: public virtual RPG_Monster_Dictionary_Type_pskel
+class RPG_Monster_Dictionary_Type_pimpl: public virtual RPG_Monster_Dictionary_Type_pskel1
 {
   public:
   virtual void

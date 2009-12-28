@@ -30,7 +30,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_TENTACLE</weapon>
         <attackBonus>12</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
             <type>PHYSICALDAMAGE_BLUDGEONING</type>
@@ -46,7 +46,7 @@
       <fullAttackAction>
         <weapon>NATURALWEAPON_TENTACLE</weapon>
         <attackBonus>12</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
             <type>PHYSICALDAMAGE_BLUDGEONING</type>
@@ -174,7 +174,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_TENTACLE</weapon>
         <attackBonus>18</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
             <type>PHYSICALDAMAGE_BLUDGEONING</type>
@@ -190,7 +190,7 @@
       <fullAttackAction>
         <weapon>NATURALWEAPON_TENTACLE</weapon>
         <attackBonus>18</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
             <type>PHYSICALDAMAGE_BLUDGEONING</type>
@@ -334,25 +334,51 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_CLAW_TALON</weapon>
         <attackBonus>9</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
-          <numDice>2</numDice>
-          <typeDice>D_6</typeDice>
-          <modifier>4</modifier>
-        </damage>
-        <numAttacksPerRound>2</numAttacksPerRound>
-      </standardAttackAction>
-      <standardAttackAction>
-        <weapon>NATURALWEAPON_BITE</weapon>
-        <attackBonus>4</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
-        <damage>
-          <numDice>4</numDice>
-          <typeDice>D_6</typeDice>
-          <modifier>2</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_SLASHING</type>
+            <damage>
+              <numDice>2</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>4</modifier>
+            </damage>
+          </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
+      <fullAttackAction>
+        <weapon>NATURALWEAPON_CLAW_TALON</weapon>
+        <attackBonus>9</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_SLASHING</type>
+            <damage>
+              <numDice>2</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>4</modifier>
+            </damage>
+          </element>
+        </damage>
+        <numAttacksPerRound>2</numAttacksPerRound>
+      </fullAttackAction>
+      <fullAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
+        <attackBonus>4</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_PIERCING</type>
+            <damage>
+              <numDice>4</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>2</modifier>
+            </damage>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </fullAttackAction>
     </attack>
     <space>10</space>
     <reach>10</reach>
@@ -475,13 +501,19 @@
       <baseAttackBonus>2</baseAttackBonus>
       <grappleBonus>0</grappleBonus>
       <standardAttackAction>
-        <weapon>INCORPOREAL_TOUCH</weapon>
+        <weapon>SPECIALATTACK_INCORPOREAL_TOUCH</weapon>
         <attackBonus>3</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_TOUCH</attackForm>
         <damage>
-          <numDice>1</numDice>
-          <typeDice>D_4</typeDice>
-          <modifier>0</modifier>
+          <element>
+            <type>DAMAGE_DRAIN_ATTRIBUTE</type>
+            <damage>
+              <numDice>1</numDice>
+              <typeDice>D_4</typeDice>
+              <modifier>0</modifier>
+            </damage>
+            <affectedAttribute>ATTRIBUTE>_WISDOM</affectedAttribute>
+          </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
@@ -582,27 +614,95 @@
       <baseAttackBonus>12</baseAttackBonus>
       <grappleBonus>18</grappleBonus>
       <standardAttackAction>
-        <weapon>STANDARDWEAPON_BLUDGEONING</weapon>
+        <weapon>ONE_HANDED_MELEE_WEAPON_MACE_HEAVY</weapon>
         <attackBonus>21</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
-          <numDice>1</numDice>
-          <typeDice>D_8</typeDice>
-          <modifier>12</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <damage>
+              <numDice>1</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>12</modifier>
+            </damage>
+          </element>
+          <element>
+            <type>DAMAGE_STUN</type>
+            <damage>
+              <numDice>1</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>0</modifier>
+            </damage>
+            <savingThrow>
+              <type>ATTRIBUTE_STRENGTH</type>
+              <diffficultyClass>22</diffficultyClass>
+            </savingThrow>
+          </element>
         </damage>
-        <numAttacksPerRound>3</numAttacksPerRound>
+        <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>18</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
-          <numDice>1</numDice>
-          <typeDice>D_8</typeDice>
-          <modifier>9</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <damage>
+              <numDice>1</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>9</modifier>
+            </damage>
+          </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
+      <fullAttackAction>
+        <weapon>ONE_HANDED_MELEE_WEAPON_MACE_HEAVY</weapon>
+        <attackBonus>21</attackBonus>
+        <attackBonus>16</attackBonus>
+        <attackBonus>11</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <damage>
+              <numDice>1</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>12</modifier>
+            </damage>
+          </element>
+          <element>
+            <type>DAMAGE_STUN</type>
+            <damage>
+              <numDice>1</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>0</modifier>
+            </damage>
+            <savingThrow>
+              <type>ATTRIBUTE_STRENGTH</type>
+              <diffficultyClass>22</diffficultyClass>
+            </savingThrow>
+          </element>
+        </damage>
+        <numAttacksPerRound>3</numAttacksPerRound>
+      </fullAttackAction>
+      <fullAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
+        <attackBonus>18</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <damage>
+              <numDice>1</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>9</modifier>
+            </damage>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </fullAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -742,7 +842,7 @@
       <standardAttackAction>
         <weapon>STANDARDWEAPON_SLASHING</weapon>
         <attackBonus>23</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>3</numDice>
           <typeDice>D_6</typeDice>
@@ -753,7 +853,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>20</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_8</typeDice>
@@ -897,7 +997,7 @@
       <standardAttackAction>
         <weapon>STANDARDWEAPON_SLASHING</weapon>
         <attackBonus>35</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>3</numDice>
           <typeDice>D_6</typeDice>
@@ -908,7 +1008,7 @@
       <standardAttackAction>
         <weapon>STANDARDWEAPON_PIERCING</weapon>
         <attackBonus>28</attackBonus>
-        <attackForm>ATTACK_RANGED</attackForm>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_6</typeDice>
@@ -919,7 +1019,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>30</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_8</typeDice>
@@ -1067,7 +1167,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>1</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_3</typeDice>
@@ -1142,7 +1242,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>1</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_4</typeDice>
@@ -1213,7 +1313,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>2</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_6</typeDice>
@@ -1284,7 +1384,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>5</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_8</typeDice>
@@ -1355,7 +1455,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>9</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_6</typeDice>
@@ -1426,7 +1526,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>15</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_8</typeDice>
@@ -1497,7 +1597,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>25</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>4</numDice>
           <typeDice>D_6</typeDice>
@@ -1568,7 +1668,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>7</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_6</typeDice>
@@ -1579,7 +1679,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SPIT_ACID</weapon>
         <attackBonus>0</attackBonus>
-        <attackForm>ATTACK_RANGED</attackForm>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
         <damage>
           <numDice>4</numDice>
           <typeDice>D_4</typeDice>
@@ -1686,7 +1786,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>5</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_6</typeDice>
@@ -1697,7 +1797,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_WEB</weapon>
         <attackBonus>5</attackBonus>
-        <attackForm>ATTACK_RANGED</attackForm>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
         <damage>
           <numDice>0</numDice>
           <typeDice>D_0</typeDice>
@@ -1805,7 +1905,7 @@
       <standardAttackAction>
         <weapon>RAY_LIGHT</weapon>
         <attackBonus>2</attackBonus>
-        <attackForm>ATTACK_RANGED</attackForm>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_6</typeDice>
@@ -1922,7 +2022,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>8</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_8</typeDice>
@@ -1933,7 +2033,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>3</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_4</typeDice>
@@ -1944,7 +2044,7 @@
       <standardAttackAction>
         <weapon>STANDARDWEAPON_SLASHING</weapon>
         <attackBonus>8</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_6</typeDice>
@@ -2082,7 +2182,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>22</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_8</typeDice>
@@ -2093,7 +2193,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>17</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_4</typeDice>
@@ -2104,7 +2204,7 @@
       <standardAttackAction>
         <weapon>STANDARDWEAPON_SLASHING</weapon>
         <attackBonus>25</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_6</typeDice>
@@ -2228,7 +2328,7 @@
       <standardAttackAction>
         <weapon>STANDARDWEAPON_SLASHING</weapon>
         <attackBonus>21</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_6</typeDice>
@@ -2378,8 +2478,8 @@
       <standardAttackAction>
         <weapon>RAY_ELECTRICITY</weapon>
         <attackBonus>9</attackBonus>
-        <attackForm>ATTACK_RANGED</attackForm>
-        <attackForm>ATTACK_TOUCH</attackForm>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
+        <attackForm>ATTACKFORM_TOUCH</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_6</typeDice>
@@ -2390,7 +2490,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>9</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_6</typeDice>
@@ -2519,8 +2619,8 @@
       <standardAttackAction>
         <weapon>RAY_ELECTRICITY</weapon>
         <attackBonus>12</attackBonus>
-        <attackForm>ATTACK_RANGED</attackForm>
-        <attackForm>ATTACK_TOUCH</attackForm>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
+        <attackForm>ATTACKFORM_TOUCH</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_8</typeDice>
@@ -2531,7 +2631,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>12</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_8</typeDice>
@@ -2661,8 +2761,8 @@
       <standardAttackAction>
         <weapon>RAY_ELECTRICITY</weapon>
         <attackBonus>19</attackBonus>
-        <attackForm>ATTACK_RANGED</attackForm>
-        <attackForm>ATTACK_TOUCH</attackForm>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
+        <attackForm>ATTACKFORM_TOUCH</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_8</typeDice>
@@ -2673,7 +2773,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>21</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_6</typeDice>
@@ -2812,7 +2912,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>7</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_6</typeDice>
@@ -2911,7 +3011,7 @@
       <standardAttackAction>
         <weapon>STANDARDWEAPON_BLUDGEONING</weapon>
         <attackBonus>16</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>3</numDice>
           <typeDice>D_6</typeDice>
@@ -2922,7 +3022,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>12</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_8</typeDice>
@@ -2933,7 +3033,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_ROCK_STONE</weapon>
         <attackBonus>5</attackBonus>
-        <attackForm>ATTACK_RANGED</attackForm>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_6</typeDice>
@@ -3048,7 +3148,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_CLAW_TALON</weapon>
         <attackBonus>13</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_6</typeDice>
@@ -3059,7 +3159,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>13</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_8</typeDice>
@@ -3215,7 +3315,7 @@
       <standardAttackAction>
         <weapon>STANDARDWEAPON_BLUDGEONING</weapon>
         <attackBonus>3</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_8</typeDice>
@@ -3226,7 +3326,7 @@
       <standardAttackAction>
         <weapon>STANDARDWEAPON_PIERCING</weapon>
         <attackBonus>3</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_6</typeDice>
@@ -3358,7 +3458,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>9</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_6</typeDice>
@@ -3369,7 +3469,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_CLAW_TALON</weapon>
         <attackBonus>4</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_4</typeDice>
@@ -3502,7 +3602,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>13</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_8</typeDice>
@@ -3513,7 +3613,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_CLAW_TALON</weapon>
         <attackBonus>8</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_6</typeDice>
@@ -3651,7 +3751,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>8</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_8</typeDice>
@@ -3760,7 +3860,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>25</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_8</typeDice>
@@ -3857,7 +3957,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>15</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_4</typeDice>
@@ -3971,7 +4071,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>9</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_6</typeDice>
@@ -3982,7 +4082,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>7</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_4</typeDice>
@@ -3993,7 +4093,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_CLAW_TALON</weapon>
         <attackBonus>7</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_3</typeDice>
@@ -4103,7 +4203,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>4</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_6</typeDice>
@@ -4222,7 +4322,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>6</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_8</typeDice>
@@ -4333,7 +4433,7 @@
       <standardAttackAction>
         <weapon>STANDARDWEAPON_SLASHING</weapon>
         <attackBonus>11</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_6</typeDice>
@@ -4344,7 +4444,7 @@
       <standardAttackAction>
         <weapon>STANDARDWEAPON_PIERCING</weapon>
         <attackBonus>11</attackBonus>
-        <attackForm>ATTACK_RANGED</attackForm>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_8</typeDice>
@@ -4355,7 +4455,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>10</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_6</typeDice>
@@ -4504,7 +4604,7 @@
       <standardAttackAction>
         <weapon>STANDARDWEAPON_BLUDGEONING</weapon>
         <attackBonus>5</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_8</typeDice>
@@ -4515,7 +4615,7 @@
       <standardAttackAction>
         <weapon>STANDARDWEAPON_PIERCING</weapon>
         <attackBonus>3</attackBonus>
-        <attackForm>ATTACK_RANGED</attackForm>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
         <damage>
           <numDice>1</numDice>
           <typeDice>D_6</typeDice>
@@ -4622,7 +4722,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>16</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_8</typeDice>
@@ -4633,7 +4733,7 @@
       <standardAttackAction>
         <weapon>NATURALWEAPON_CLAW_TALON</weapon>
         <attackBonus>10</attackBonus>
-        <attackForm>ATTACK_MELEE</attackForm>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <numDice>2</numDice>
           <typeDice>D_6</typeDice>

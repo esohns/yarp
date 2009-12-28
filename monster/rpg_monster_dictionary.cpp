@@ -695,7 +695,7 @@ void RPG_Monster_Dictionary::dump() const
        iterator++)
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("Monster (\"%s\"):\nSize: \"%s\"\nType: \"%s\"\nHit Dice: \"%s\"\nInitiative: %d\nSpeed: %d ft/round\nArmor Class: %d / %d / %d\nAttack:\n-------\n%sSpace: %d ft\nReach: %d ft\nSaves: %d / %d / %d\nAttributes:\n-----------\n%sSkills:\n-------\n%sFeats:\n------\n%sEnvironment: \"%s\"\nOrganizations: \"%s\"\nChallenge Rating: %d\nTreasure Modifier: %d\nAlignment: \"%s\"\nAdvancement:\n------------\n%sLevel Adjustment: %d\n"),
+               ACE_TEXT("Monster (\"%s\"):\nSize: %s\nType: %s\nHit Dice: %s\nInitiative: %d\nSpeed: %d ft/round\nArmor Class (normal/touch/flat-footed): %d / %d / %d\nAttacks:\n-------\n%sSpace: %d ft\nReach: %d ft\nSaves (fortitude/reflex/will): %d / %d / %d\nAttributes:\n-----------\n%sSkills:\n-------\n%sFeats:\n------\n%sEnvironment: %s\nOrganizations:\n--------------\n%sChallenge Rating: %d\nTreasure Modifier: %d\nAlignment: %s\nAdvancement:\n------------\n%sLevel Adjustment: %d\n"),
                (iterator->first).c_str(),
                RPG_Character_SizeHelper::RPG_Character_SizeToString((iterator->second).size).c_str(),
                RPG_Monster_Common_Tools::typeToString((iterator->second).type).c_str(),
@@ -721,5 +721,7 @@ void RPG_Monster_Dictionary::dump() const
                RPG_Character_Common_Tools::alignmentToString((iterator->second).alignment).c_str(),
                RPG_Monster_Common_Tools::advancementToString((iterator->second).advancements).c_str(),
                (iterator->second).levelAdjustment));
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("===========================\n")));
   } // end FOR
 }

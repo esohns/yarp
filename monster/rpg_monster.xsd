@@ -108,7 +108,7 @@
   <xsd:complexType name="RPG_Monster_AttackAction_Type">
     <xsd:sequence>
       <xsd:element name="weapon" type="RPG_Monster_WeaponTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="attackBonus" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="attackBonus" type="xsd:byte" minOccurs="1" maxOccurs="5"/>
       <xsd:element name="attackForm" type="RPG_Combat_AttackForm_Type" minOccurs="1" maxOccurs="unbounded"/>
 <!--      <xsd:element name="damage" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/>-->
       <xsd:element name="damage" type="RPG_Combat_Damage_Type" minOccurs="1" maxOccurs="1"/>
@@ -120,10 +120,18 @@
     <xsd:sequence>
       <xsd:element name="baseAttackBonus" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="grappleBonus" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="standardAttackAction" type="RPG_Monster_AttackAction_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="fullAttackAction" type="RPG_Monster_AttackAction_Type" minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element name="standardAttackAction" type="RPG_Monster_AttackAction_Type" minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element name="fullAttackAction" type="RPG_Monster_AttackAction_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Monster_SavingThrow_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SAVE_FORTITUDE"/>
+      <xsd:enumeration value="SAVE_REFLEX"/>
+      <xsd:enumeration value="SAVE_WILL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
 
   <xsd:complexType name="RPG_Monster_SavingThrowModifiers_Type">
     <xsd:sequence>

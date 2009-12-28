@@ -153,6 +153,14 @@ class RPG_Monster_Attack_Type
   RPG_Monster_Attack myCurrentAttack;
 };
 
+class RPG_Monster_SavingThrow_Type
+ : public RPG_Monster_SavingThrow_Type_pimpl
+{
+  public:
+//   virtual void pre();
+   virtual RPG_Monster_SavingThrow post_RPG_Monster_SavingThrow_Type();
+};
+
 class RPG_Monster_SavingThrowModifiers_Type
  : public RPG_Monster_SavingThrowModifiers_Type_pimpl
 {
