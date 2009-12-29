@@ -22,6 +22,8 @@
 #include "rpg_monster_XML_parser.h"
 #include "rpg_monster_common_tools.h"
 
+#include <rpg_common_XML_parser.h>
+
 #include <rpg_character_common_tools.h>
 #include <rpg_character_skills_common_tools.h>
 #include <rpg_character_XML_parser.h>
@@ -85,15 +87,23 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   RPG_Combat_AttackForm_Type                attackForm_p;
   RPG_Combat_DamageTypeUnion_Type           damageType_p;
   ::xml_schema::unsigned_short_pimpl        unsigned_short_p;
+  RPG_Common_Attribute_Type                 attribute_p;
+  ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
+  RPG_Common_SavingThrowUnion_Type          savingThrow_p;
+  RPG_Combat_AttackSavingThrow_Type         attackSavingThrow_p;
+  attackSavingThrow_p.parsers(savingThrow_p,
+                              unsigned_byte_p);
   RPG_Combat_DamageEffectType_Type          damageEffect_p;
   RPG_Combat_DamageElement_Type             damageElement_p;
   damageElement_p.parsers(damageType_p,
                           roll_p,
                           unsigned_short_p,
+                          attribute_p,
+                          attackSavingThrow_p,
                           damageEffect_p);
   RPG_Combat_Damage_Type                    damage_p;
   damage_p.parsers(damageElement_p);
-  ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
+//   ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
   RPG_Monster_AttackAction_Type             attackAction_p;
   attackAction_p.parsers(weaponUnion_p,
                          byte_p,

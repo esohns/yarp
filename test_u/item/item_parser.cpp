@@ -38,14 +38,14 @@
 #include <string>
 #include <algorithm>
 
-void print_usage()
+void print_usage(const std::string& programName_in)
 {
   ACE_TRACE(ACE_TEXT("::print_usage"));
 
-  std::cout << ACE_TEXT("usage: item_parser [OPTIONS]") << std::endl;
+  std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d       : dump item dictionary") << std::endl;
-  std::cout << ACE_TEXT("-f [FILE]: filename (*.xml)") << std::endl;
+  std::cout << ACE_TEXT("-i [FILE]: item dictionary (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
 } // end print_usage
@@ -67,7 +67,7 @@ const bool process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("df:tv"));
+                             ACE_TEXT("di:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -80,7 +80,7 @@ const bool process_arguments(const int argc_in,
 
         break;
       }
-      case 'f':
+      case 'i':
       {
         fileName_out = argumentParser.opt_arg();
 
@@ -230,7 +230,7 @@ int ACE_TMAIN(int argc,
                           printVersionAndExit)))
   {
     // make 'em learn...
-    print_usage();
+    print_usage(std::string(ACE::basename(argv[0])));
 
     return EXIT_FAILURE;
   } // end IF
@@ -243,7 +243,7 @@ int ACE_TMAIN(int argc,
                filename.c_str()));
 
     // make 'em learn...
-    print_usage();
+    print_usage(std::string(ACE::basename(argv[0])));
 
     return EXIT_FAILURE;
   } // end IF

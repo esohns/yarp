@@ -26,8 +26,8 @@ struct RPG_Combat_DamageElement
   RPG_Combat_DamageTypeUnion type;
   RPG_Dice_Roll damage;
   unsigned short int duration;
-  RPG_Character_Attribute affectedAttribute;
-  RPG_Combat_SavingThrow savingThrow;
+  RPG_Common_Attribute affectedAttribute;
+  RPG_Combat_AttackSavingThrow savingThrow;
   RPG_Combat_DamageEffectType effect;
 };
 

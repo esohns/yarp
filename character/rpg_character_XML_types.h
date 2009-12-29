@@ -54,7 +54,6 @@ class RPG_Character_Race_Type_pskel;
 class RPG_Character_MetaClass_Type_pskel;
 class RPG_Character_SubClass_Type_pskel;
 class RPG_Character_Class_Type_pskel;
-class RPG_Character_Attribute_Type_pskel;
 class RPG_Character_Condition_Type_pskel;
 class RPG_Character_Ability_Type_pskel;
 class RPG_Character_Size_Type_pskel;
@@ -182,18 +181,6 @@ class RPG_Character_Class_Type_pskel: public ::xml_schema::complex_content
   protected:
   ::RPG_Character_MetaClass_Type_pskel* metaClass_parser_;
   ::RPG_Character_SubClass_Type_pskel* subClass_parser_;
-};
-
-class RPG_Character_Attribute_Type_pskel: public virtual ::xml_schema::string_pskel
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual RPG_Character_Attribute
-  post_RPG_Character_Attribute_Type () = 0;
 };
 
 class RPG_Character_Condition_Type_pskel: public virtual ::xml_schema::string_pskel

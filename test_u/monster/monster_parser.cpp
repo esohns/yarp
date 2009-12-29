@@ -33,6 +33,8 @@
 
 #include <rpg_item_common_tools.h>
 
+#include <rpg_common_tools.h>
+
 #include <rpg_dice.h>
 #include <rpg_dice_common_tools.h>
 
@@ -52,8 +54,8 @@ void print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-d       : dump monster dictionary") << std::endl;
-  std::cout << ACE_TEXT("-f [FILE]: filename (*.xml)") << std::endl;
+  std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
+  std::cout << ACE_TEXT("-m [FILE]: monster dictionary (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x       : do NOT validate XML") << std::endl;
@@ -78,7 +80,7 @@ const bool process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("df:tvx"));
+                             ACE_TEXT("dm:tvx"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -91,7 +93,7 @@ const bool process_arguments(const int argc_in,
 
         break;
       }
-      case 'f':
+      case 'm':
       {
         filename_out = argumentParser.opt_arg();
 
@@ -147,6 +149,7 @@ void do_work(const std::string& filename_in,
   // step1: init: random seed, string conversion facilities, ...
   RPG_Dice::init();
   RPG_Dice_Common_Tools::initStringConversionTables();
+  RPG_Common_Tools::initStringConversionTables();
   RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
   RPG_Monster_Common_Tools::initStringConversionTables();

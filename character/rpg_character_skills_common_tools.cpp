@@ -130,7 +130,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 0;
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
   prerequisite.skill = RPG_CHARACTER_SKILL_INVALID;
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_INVALID;
   prerequisite.requiredAbility = RPG_CHARACTER_ABILITY_INVALID;
 
@@ -185,7 +185,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -203,7 +203,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   myFeatPrerequisitesTable.insert(std::make_pair(FEAT_COMBAT_EXPERTISE, prerequisites));
@@ -265,7 +265,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -283,7 +283,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   myFeatPrerequisitesTable.insert(std::make_pair(FEAT_DODGE, prerequisites));
@@ -336,7 +336,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -373,7 +373,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 19;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -466,7 +466,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -503,7 +503,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -523,7 +523,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -541,7 +541,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -559,7 +559,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -577,7 +577,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 19;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -616,7 +616,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -634,7 +634,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -664,7 +664,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 17;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -698,7 +698,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 17;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -727,7 +727,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -775,7 +775,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_ABILITY;
@@ -793,7 +793,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   myFeatPrerequisitesTable.insert(std::make_pair(FEAT_POWER_ATTACK, prerequisites));
@@ -836,7 +836,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -882,7 +882,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -912,7 +912,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 15;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -970,14 +970,14 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.attribute = ATTRIBUTE_WISDOM;
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -1029,7 +1029,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 15;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -1047,7 +1047,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 15;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   myFeatPrerequisitesTable.insert(std::make_pair(FEAT_TWO_WEAPON_FIGHTING, prerequisites));
@@ -1121,7 +1121,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 13;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -1894,7 +1894,7 @@ const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_C
           {
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("invalid attribute: \"%s\" --> check implementation !, aborting\n"),
-                       RPG_Character_AttributeHelper::RPG_Character_AttributeToString((*iterator3).attribute).c_str()));
+                       RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator3).attribute).c_str()));
 
             break;
           }

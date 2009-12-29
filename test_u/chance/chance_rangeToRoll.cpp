@@ -35,13 +35,12 @@
 #include <iomanip>
 #include <string>
 #include <sstream>
-// #include <algorithm>
 
-void print_usage()
+void print_usage(const std::string& programName_in)
 {
   ACE_TRACE(ACE_TEXT("::print_usage"));
 
-  std::cout << ACE_TEXT("usage: rangeToRoll [OPTIONS]") << std::endl << std::endl;
+  std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-p              : print all results") << std::endl;
   std::cout << ACE_TEXT("-r [VALUE-VALUE]: range (e.g. 5-12)") << std::endl;
@@ -316,7 +315,7 @@ int ACE_TMAIN(int argc,
                           printVersionAndExit)))
   {
     // make 'em learn...
-    print_usage();
+    print_usage(std::string(ACE::basename(argv[0])));
 
     return EXIT_FAILURE;
   } // end IF

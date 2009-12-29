@@ -29,7 +29,6 @@
 #include "rpg_monster_weapontypeunion.h"
 #include "rpg_monster_attackaction.h"
 #include "rpg_monster_attack.h"
-#include "rpg_monster_savingthrow.h"
 #include "rpg_monster_savingthrowmodifiers.h"
 #include "rpg_monster_organization.h"
 #include "rpg_monster_organizationslaverstep.h"

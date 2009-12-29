@@ -575,7 +575,7 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
   int attack_roll = 0;
   RPG_Item_WeaponProperties weapon_properties;
   bool is_critical_hit = false;
-  RPG_Character_Attribute attribute = RPG_CHARACTER_ATTRIBUTE_INVALID;
+  RPG_Common_Attribute attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   RPG_Combat_AttackForm attackForm = RPG_COMBAT_ATTACKFORM_INVALID;
   RPG_Item_ArmorProperties armor_properties;
   int AC = 0;
@@ -722,6 +722,7 @@ is_player_miss:
     RPG_Monster_Properties monster_properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getMonsterProperties(monster->getName());
 
     // step2: perform attack(s)
+    // *TODO*: evaluate whether the attacks are OR/AND...
     for (std::vector<RPG_Monster_AttackAction>::const_iterator iterator = monster_properties.attack.fullAttackActions.begin();
          iterator != monster_properties.attack.fullAttackActions.end();
          iterator++)
@@ -754,7 +755,7 @@ is_player_miss:
           goto is_monster_miss;
 
         // attack bonus: base attack bonus + STR/DEX modifier + size modifier (+ range penalty)
-        attack_roll += (*iterator).attackBonus;
+        attack_roll += (*iterator).attackBonus[i];
         // *TODO*: consider that a create with FEAT_WEAPON_FINESSE can use its DEX modifier for melee attacks...
 /*        // --> check primary weapon
         attribute = ATTRIBUTE_STRENGTH;

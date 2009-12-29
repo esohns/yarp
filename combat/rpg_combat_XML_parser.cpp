@@ -42,6 +42,41 @@ RPG_Combat_DefenseSituation RPG_Combat_DefenseSituation_Type::post_RPG_Combat_De
   return RPG_Combat_DefenseSituationHelper::stringToRPG_Combat_DefenseSituation(post_string());
 }
 
+RPG_Combat_AttackSavingThrow_Type::RPG_Combat_AttackSavingThrow_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_AttackSavingThrow_Type::RPG_Combat_AttackSavingThrow_Type"));
+
+  myCurrentSavingThrow.type.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentSavingThrow.difficultyClass = 0;
+}
+
+void RPG_Combat_AttackSavingThrow_Type::type(const RPG_Common_SavingThrowUnion& savingThrowUnion_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_AttackSavingThrow_Type::type"));
+
+  myCurrentSavingThrow.type = savingThrowUnion_in;
+}
+
+void RPG_Combat_AttackSavingThrow_Type::difficultyClass(unsigned char difficultyClass_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_AttackSavingThrow_Type::difficultyClass"));
+
+  myCurrentSavingThrow.difficultyClass = difficultyClass_in;
+}
+
+RPG_Combat_AttackSavingThrow RPG_Combat_AttackSavingThrow_Type::post_RPG_Combat_AttackSavingThrow_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_AttackSavingThrow_Type::post_RPG_Combat_AttackSavingThrow_Type"));
+
+  RPG_Combat_AttackSavingThrow result = myCurrentSavingThrow;
+
+  // clear structure
+  myCurrentSavingThrow.type.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentSavingThrow.difficultyClass = 0;
+
+  return result;
+}
+
 RPG_Combat_SpecialAttack RPG_Combat_SpecialAttack_Type::post_RPG_Combat_SpecialAttack_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_SpecialAttack_Type::post_RPG_Combat_SpecialAttack_Type"));
@@ -87,7 +122,7 @@ void RPG_Combat_DamageTypeUnion_Type::_characters(const ::xml_schema::ro_string&
 
 RPG_Combat_DamageTypeUnion RPG_Combat_DamageTypeUnion_Type::post_RPG_Combat_DamageTypeUnion_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageTypeUnion_Type::RPG_Combat_DamageTypeUnion_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageTypeUnion_Type::post_RPG_Combat_DamageTypeUnion_Type"));
 
   RPG_Combat_DamageTypeUnion result = myCurrentDamageType;
 

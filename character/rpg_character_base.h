@@ -37,14 +37,19 @@
 
 #include <rpg_dice_dietype.h>
 #include <rpg_dice_roll.h>
+#include <rpg_common_savingthrow.h>
+#include <rpg_common_savingthrowunion.h>
 #include <rpg_item_physicaldamagetype.h>
 
 #include <rpg_combat_defensesituation.h>
-#include <rpg_combat_damageeffecttype.h>
 #include <rpg_combat_specialdamagetype.h>
 #include <rpg_combat_damagetypeunion.h>
+#include <rpg_combat_attacksavingthrow.h>
+#include <rpg_combat_damageeffecttype.h>
 #include <rpg_combat_damageelement.h>
 #include <rpg_combat_damage.h>
+
+#include <rpg_common_attribute.h>
 
 #include <ace/Global_Macros.h>
 
@@ -65,7 +70,7 @@ class RPG_Character_Base
   const RPG_Character_Alignment getAlignment() const;
 
   // retrieve base attributes
-  const unsigned char getAttribute(const RPG_Character_Attribute&) const;
+  const unsigned char getAttribute(const RPG_Common_Attribute&) const;
 
   // retrieve skill value (if any)
   void getSkill(const RPG_Character_Skill&, // skill

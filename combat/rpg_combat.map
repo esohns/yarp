@@ -3,16 +3,20 @@ namespace urn:rpg
   include "rpg_combat_incl.h";
 
   include <rpg_dice_incl.h>;
+  include <rpg_common_incl.h>;
   include <rpg_item_incl.h>;
-  include <rpg_character_incl.h>;
-
-  include <rpg_monster_savingthrow.h>;
 
   RPG_Dice_Roll_Type                RPG_Dice_Roll;
+
+  RPG_Common_Attribute_Type         RPG_Common_Attribute;
+  RPG_Common_SavingThrowUnion_Type  RPG_Common_SavingThrowUnion;
+
+  RPG_Item_PhysicalDamageType_Type  RPG_Item_PhysicalDamageType;
 
   RPG_Combat_AttackForm_Type        RPG_Combat_AttackForm;
   RPG_Combat_AttackSituation_Type   RPG_Combat_AttackSituation;
   RPG_Combat_DefenseSituation_Type  RPG_Combat_DefenseSituation;
+  RPG_Combat_AttackSavingThrow_Type RPG_Combat_AttackSavingThrow;
   RPG_Combat_SpecialAttack_Type     RPG_Combat_SpecialAttack;
   RPG_Combat_SpecialDamageType_Type RPG_Combat_SpecialDamageType;
   RPG_Combat_DamageEffectType_Type  RPG_Combat_DamageEffectType;

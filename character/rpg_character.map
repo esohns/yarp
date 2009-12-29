@@ -12,7 +12,6 @@ namespace urn:rpg
   RPG_Character_MetaClass_Type      RPG_Character_MetaClass;
   RPG_Character_SubClass_Type       RPG_Character_SubClass;
   RPG_Character_Class_Type          RPG_Character_Class;
-  RPG_Character_Attribute_Type      RPG_Character_Attribute;
   RPG_Character_Condition_Type      RPG_Character_Condition;
   RPG_Character_Ability_Type        RPG_Character_Ability;
   RPG_Character_Size_Type           RPG_Character_Size;

@@ -38,82 +38,82 @@
 
 #include <rpg_combat_XML_types.h>
 
-// RPG_Combat_SavingThrow_Type_pskel1
+// RPG_Combat_AttackSavingThrow_Type_pskel
 //
 
-void RPG_Combat_SavingThrow_Type_pskel1::
-type_parser (::RPG_Combat_SavingThrowUnion_Type_pskel1& p)
+void RPG_Combat_AttackSavingThrow_Type_pskel::
+type_parser (::RPG_Common_SavingThrowUnion_Type_pskel& p)
 {
   this->type_parser_ = &p;
 }
 
-void RPG_Combat_SavingThrow_Type_pskel1::
+void RPG_Combat_AttackSavingThrow_Type_pskel::
 difficultyClass_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->difficultyClass_parser_ = &p;
 }
 
-void RPG_Combat_SavingThrow_Type_pskel1::
-parsers (::RPG_Combat_SavingThrowUnion_Type_pskel1& type,
+void RPG_Combat_AttackSavingThrow_Type_pskel::
+parsers (::RPG_Common_SavingThrowUnion_Type_pskel& type,
          ::xml_schema::unsigned_byte_pskel& difficultyClass)
 {
   this->type_parser_ = &type;
   this->difficultyClass_parser_ = &difficultyClass;
 }
 
-RPG_Combat_SavingThrow_Type_pskel1::
-RPG_Combat_SavingThrow_Type_pskel1 ()
+RPG_Combat_AttackSavingThrow_Type_pskel::
+RPG_Combat_AttackSavingThrow_Type_pskel ()
 : type_parser_ (0),
   difficultyClass_parser_ (0)
 {
 }
 
-// RPG_Combat_DamageElement_Type_pskel1
+// RPG_Combat_DamageElement_Type_pskel
 //
 
-void RPG_Combat_DamageElement_Type_pskel1::
-type_parser (::RPG_Combat_DamageTypeUnion_Type_pskel1& p)
+void RPG_Combat_DamageElement_Type_pskel::
+type_parser (::RPG_Combat_DamageTypeUnion_Type_pskel& p)
 {
   this->type_parser_ = &p;
 }
 
-void RPG_Combat_DamageElement_Type_pskel1::
+void RPG_Combat_DamageElement_Type_pskel::
 damage_parser (::RPG_Dice_Roll_Type_pskel& p)
 {
   this->damage_parser_ = &p;
 }
 
-void RPG_Combat_DamageElement_Type_pskel1::
+void RPG_Combat_DamageElement_Type_pskel::
 duration_parser (::xml_schema::unsigned_short_pskel& p)
 {
   this->duration_parser_ = &p;
 }
 
-void RPG_Combat_DamageElement_Type_pskel1::
-affectedAttribute_parser (::RPG_Character_Attribute_Type_pskel& p)
+void RPG_Combat_DamageElement_Type_pskel::
+affectedAttribute_parser (::RPG_Common_Attribute_Type_pskel& p)
 {
   this->affectedAttribute_parser_ = &p;
 }
 
-void RPG_Combat_DamageElement_Type_pskel1::
-savingThrow_parser (::RPG_Combat_SavingThrow_Type_pskel1& p)
+void RPG_Combat_DamageElement_Type_pskel::
+savingThrow_parser (::RPG_Combat_AttackSavingThrow_Type_pskel& p)
 {
   this->savingThrow_parser_ = &p;
 }
 
-void RPG_Combat_DamageElement_Type_pskel1::
-effect_parser (::RPG_Combat_DamageEffectType_Type_pskel1& p)
+void RPG_Combat_DamageElement_Type_pskel::
+effect_parser (::RPG_Combat_DamageEffectType_Type_pskel& p)
 {
   this->effect_parser_ = &p;
 }
 
-void RPG_Combat_DamageElement_Type_pskel1::
-parsers (::RPG_Combat_DamageTypeUnion_Type_pskel1& type,
+void RPG_Combat_DamageElement_Type_pskel::
+parsers (::RPG_Combat_DamageTypeUnion_Type_pskel& type,
          ::RPG_Dice_Roll_Type_pskel& damage,
          ::xml_schema::unsigned_short_pskel& duration,
-         ::RPG_Character_Attribute_Type_pskel& affectedAttribute,
-         ::RPG_Combat_SavingThrow_Type_pskel1& savingThrow,
-         ::RPG_Combat_DamageEffectType_Type_pskel1& effect)
+         ::RPG_Common_Attribute_Type_pskel& affectedAttribute,
+         ::RPG_Combat_AttackSavingThrow_Type_pskel& savingThrow,
+         ::RPG_Combat_DamageEffectType_Type_pskel& effect)
 {
   this->type_parser_ = &type;
   this->damage_parser_ = &damage;
@@ -123,8 +123,8 @@ parsers (::RPG_Combat_DamageTypeUnion_Type_pskel1& type,
   this->effect_parser_ = &effect;
 }
 
-RPG_Combat_DamageElement_Type_pskel1::
-RPG_Combat_DamageElement_Type_pskel1 ()
+RPG_Combat_DamageElement_Type_pskel::
+RPG_Combat_DamageElement_Type_pskel ()
 : type_parser_ (0),
   damage_parser_ (0),
   duration_parser_ (0),
@@ -134,54 +134,41 @@ RPG_Combat_DamageElement_Type_pskel1 ()
 {
 }
 
-// RPG_Combat_Damage_Type_pskel1
+// RPG_Combat_Damage_Type_pskel
 //
 
-void RPG_Combat_Damage_Type_pskel1::
-element_parser (::RPG_Combat_DamageElement_Type_pskel1& p)
+void RPG_Combat_Damage_Type_pskel::
+element_parser (::RPG_Combat_DamageElement_Type_pskel& p)
 {
   this->element_parser_ = &p;
 }
 
-void RPG_Combat_Damage_Type_pskel1::
-parsers (::RPG_Combat_DamageElement_Type_pskel1& element)
+void RPG_Combat_Damage_Type_pskel::
+parsers (::RPG_Combat_DamageElement_Type_pskel& element)
 {
   this->element_parser_ = &element;
 }
 
-RPG_Combat_Damage_Type_pskel1::
-RPG_Combat_Damage_Type_pskel1 ()
+RPG_Combat_Damage_Type_pskel::
+RPG_Combat_Damage_Type_pskel ()
 : element_parser_ (0)
 {
 }
 
-// RPG_Combat_SavingThrowUnion_Type_pskel1
+// RPG_Combat_AttackSavingThrow_Type_pskel
 //
 
-void RPG_Combat_SavingThrowUnion_Type_pskel1::
-post_RPG_Combat_SavingThrowUnion_Type ()
+void RPG_Combat_AttackSavingThrow_Type_pskel::
+type (const RPG_Common_SavingThrowUnion&)
 {
 }
 
-// RPG_Combat_SavingThrow_Type_pskel1
-//
-
-void RPG_Combat_SavingThrow_Type_pskel1::
-type ()
-{
-}
-
-void RPG_Combat_SavingThrow_Type_pskel1::
+void RPG_Combat_AttackSavingThrow_Type_pskel::
 difficultyClass (unsigned char)
 {
 }
 
-void RPG_Combat_SavingThrow_Type_pskel1::
-post_RPG_Combat_SavingThrow_Type ()
-{
-}
-
-bool RPG_Combat_SavingThrow_Type_pskel1::
+bool RPG_Combat_AttackSavingThrow_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
@@ -214,7 +201,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Combat_SavingThrow_Type_pskel1::
+bool RPG_Combat_AttackSavingThrow_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
@@ -224,10 +211,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "type" && ns == "urn:rpg")
   {
     if (this->type_parser_)
-    {
-      this->type_parser_->post_RPG_Combat_SavingThrowUnion_Type ();
-      this->type ();
-    }
+      this->type (this->type_parser_->post_RPG_Common_SavingThrowUnion_Type ());
 
     return true;
   }
@@ -243,40 +227,40 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-// RPG_Combat_DamageElement_Type_pskel1
+// RPG_Combat_DamageElement_Type_pskel
 //
 
-void RPG_Combat_DamageElement_Type_pskel1::
+void RPG_Combat_DamageElement_Type_pskel::
 type (const RPG_Combat_DamageTypeUnion&)
 {
 }
 
-void RPG_Combat_DamageElement_Type_pskel1::
+void RPG_Combat_DamageElement_Type_pskel::
 damage (const RPG_Dice_Roll&)
 {
 }
 
-void RPG_Combat_DamageElement_Type_pskel1::
+void RPG_Combat_DamageElement_Type_pskel::
 duration (unsigned short)
 {
 }
 
-void RPG_Combat_DamageElement_Type_pskel1::
-affectedAttribute ()
+void RPG_Combat_DamageElement_Type_pskel::
+affectedAttribute (const RPG_Common_Attribute&)
 {
 }
 
-void RPG_Combat_DamageElement_Type_pskel1::
-savingThrow ()
+void RPG_Combat_DamageElement_Type_pskel::
+savingThrow (const RPG_Combat_AttackSavingThrow&)
 {
 }
 
-void RPG_Combat_DamageElement_Type_pskel1::
+void RPG_Combat_DamageElement_Type_pskel::
 effect (const RPG_Combat_DamageEffectType&)
 {
 }
 
-bool RPG_Combat_DamageElement_Type_pskel1::
+bool RPG_Combat_DamageElement_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
@@ -339,7 +323,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Combat_DamageElement_Type_pskel1::
+bool RPG_Combat_DamageElement_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
@@ -373,10 +357,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "affectedAttribute" && ns == "urn:rpg")
   {
     if (this->affectedAttribute_parser_)
-    {
-      this->affectedAttribute_parser_->post_RPG_Character_Attribute_Type ();
-      this->affectedAttribute ();
-    }
+      this->affectedAttribute (this->affectedAttribute_parser_->post_RPG_Common_Attribute_Type ());
 
     return true;
   }
@@ -384,10 +365,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "savingThrow" && ns == "urn:rpg")
   {
     if (this->savingThrow_parser_)
-    {
-      this->savingThrow_parser_->post_RPG_Combat_SavingThrow_Type ();
-      this->savingThrow ();
-    }
+      this->savingThrow (this->savingThrow_parser_->post_RPG_Combat_AttackSavingThrow_Type ());
 
     return true;
   }
@@ -395,7 +373,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Combat_DamageElement_Type_pskel1::
+bool RPG_Combat_DamageElement_Type_pskel::
 _attribute_impl (const ::xml_schema::ro_string& ns,
                  const ::xml_schema::ro_string& n,
                  const ::xml_schema::ro_string& v)
@@ -420,15 +398,15 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-// RPG_Combat_Damage_Type_pskel1
+// RPG_Combat_Damage_Type_pskel
 //
 
-void RPG_Combat_Damage_Type_pskel1::
+void RPG_Combat_Damage_Type_pskel::
 element (const RPG_Combat_DamageElement&)
 {
 }
 
-bool RPG_Combat_Damage_Type_pskel1::
+bool RPG_Combat_Damage_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
@@ -451,7 +429,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Combat_Damage_Type_pskel1::
+bool RPG_Combat_Damage_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {

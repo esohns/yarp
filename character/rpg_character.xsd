@@ -78,17 +78,6 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:simpleType name="RPG_Character_Attribute_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="ATTRIBUTE_STRENGTH"/>
-      <xsd:enumeration value="ATTRIBUTE_DEXTERITY"/>
-      <xsd:enumeration value="ATTRIBUTE_CONSTITUTION"/>
-      <xsd:enumeration value="ATTRIBUTE_INTELLIGENCE"/>
-      <xsd:enumeration value="ATTRIBUTE_WISDOM"/>
-      <xsd:enumeration value="ATTRIBUTE_CHARISMA"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
   <xsd:simpleType name="RPG_Character_Condition_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="CONDITION_NORMAL"/>

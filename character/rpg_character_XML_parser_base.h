@@ -70,17 +70,6 @@ class RPG_Character_Class_Type_pimpl: public virtual RPG_Character_Class_Type_ps
   post_RPG_Character_Class_Type ();
 };
 
-class RPG_Character_Attribute_Type_pimpl: public virtual RPG_Character_Attribute_Type_pskel,
-  public ::xml_schema::string_pimpl
-{
-  public:
-  virtual void
-  pre ();
-
-  virtual RPG_Character_Attribute
-  post_RPG_Character_Attribute_Type ();
-};
-
 class RPG_Character_Condition_Type_pimpl: public virtual RPG_Character_Condition_Type_pskel,
   public ::xml_schema::string_pimpl
 {

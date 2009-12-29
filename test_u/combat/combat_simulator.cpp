@@ -36,6 +36,8 @@
 #include <rpg_item_dictionary.h>
 #include <rpg_item_common_tools.h>
 
+#include <rpg_common_tools.h>
+
 #include <rpg_dice.h>
 #include <rpg_dice_common_tools.h>
 
@@ -244,6 +246,7 @@ void do_work(const std::string& itemDictionaryFilename_in,
   // step1: init: random seed, string conversion facilities, ...
   RPG_Dice::init();
   RPG_Dice_Common_Tools::initStringConversionTables();
+  RPG_Common_Tools::initStringConversionTables();
   RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
   RPG_Monster_Common_Tools::initStringConversionTables();

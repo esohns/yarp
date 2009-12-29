@@ -31,11 +31,16 @@
 
 #include <rpg_character_size.h>
 
+#include <rpg_common_attribute.h>
+#include <rpg_common_savingthrow.h>
+#include <rpg_common_savingthrowunion.h>
+
 #include <rpg_combat_attackform.h>
 #include <rpg_combat_specialattack.h>
 #include <rpg_combat_specialdamagetype.h>
-#include <rpg_combat_damageeffecttype.h>
 #include <rpg_combat_damagetypeunion.h>
+#include <rpg_combat_attacksavingthrow.h>
+#include <rpg_combat_damageeffecttype.h>
 #include <rpg_combat_damageelement.h>
 #include <rpg_combat_damage.h>
 

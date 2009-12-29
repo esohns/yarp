@@ -32,7 +32,6 @@
 RPG_Monster_MetaTypeToStringTable_t RPG_Monster_MetaTypeHelper::myRPG_Monster_MetaTypeToStringTable;
 RPG_Monster_SubTypeToStringTable_t RPG_Monster_SubTypeHelper::myRPG_Monster_SubTypeToStringTable;
 RPG_Monster_NaturalWeaponToStringTable_t RPG_Monster_NaturalWeaponHelper::myRPG_Monster_NaturalWeaponToStringTable;
-RPG_Monster_SavingThrowToStringTable_t RPG_Monster_SavingThrowHelper::myRPG_Monster_SavingThrowToStringTable;
 RPG_Monster_OrganizationToStringTable_t RPG_Monster_OrganizationHelper::myRPG_Monster_OrganizationToStringTable;
 
 void RPG_Monster_Common_Tools::initStringConversionTables()
@@ -42,7 +41,6 @@ void RPG_Monster_Common_Tools::initStringConversionTables()
   RPG_Monster_MetaTypeHelper::init();
   RPG_Monster_SubTypeHelper::init();
   RPG_Monster_NaturalWeaponHelper::init();
-  RPG_Monster_SavingThrowHelper::init();
   RPG_Monster_OrganizationHelper::init();
 
   // debug info

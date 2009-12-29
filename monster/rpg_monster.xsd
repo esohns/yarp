@@ -125,14 +125,6 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:simpleType name="RPG_Monster_SavingThrow_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="SAVE_FORTITUDE"/>
-      <xsd:enumeration value="SAVE_REFLEX"/>
-      <xsd:enumeration value="SAVE_WILL"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
   <xsd:complexType name="RPG_Monster_SavingThrowModifiers_Type">
     <xsd:sequence>
       <xsd:element name="fortitude" type="xsd:byte" minOccurs="1" maxOccurs="1"/>

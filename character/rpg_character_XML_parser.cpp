@@ -86,13 +86,6 @@ RPG_Character_Class RPG_Character_Class_Type::post_RPG_Character_Class_Type()
   return result;
 }
 
-RPG_Character_Attribute RPG_Character_Attribute_Type::post_RPG_Character_Attribute_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Attribute_Type::post_RPG_Character_Attribute_Type"));
-
-  return RPG_Character_AttributeHelper::stringToRPG_Character_Attribute(post_string());
-}
-
 RPG_Character_Condition RPG_Character_Condition_Type::post_RPG_Character_Condition_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Condition_Type::post_RPG_Character_Condition_Type"));

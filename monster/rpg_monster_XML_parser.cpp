@@ -362,13 +362,6 @@ RPG_Monster_Attack RPG_Monster_Attack_Type::post_RPG_Monster_Attack_Type()
   return result;
 }
 
-RPG_Monster_SavingThrow RPG_Monster_SavingThrow_Type::post_RPG_Monster_SavingThrow_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster_SavingThrow_Type::post_RPG_Monster_SavingThrow_Type"));
-
-  return RPG_Monster_SavingThrowHelper::stringToRPG_Monster_SavingThrow(post_string());
-}
-
 RPG_Monster_SavingThrowModifiers_Type::RPG_Monster_SavingThrowModifiers_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SavingThrowModifiers_Type::RPG_Monster_SavingThrowModifiers_Type"));

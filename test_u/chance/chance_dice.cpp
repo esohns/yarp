@@ -37,11 +37,11 @@
 #include <string>
 #include <algorithm>
 
-void print_usage()
+void print_usage(const std::string& programName_in)
 {
   ACE_TRACE(ACE_TEXT("::print_usage"));
 
-  std::cout << ACE_TEXT("usage: dice [OPTIONS]") << std::endl << std::endl;
+  std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d [VALUE]: type of dice (# sides: 0, 2, 3, 4, 6, 8, 10, 12, 20 or 100); default: 6") << std::endl;
   std::cout << ACE_TEXT("-m [VALUE]: modifier (e.g. +/-1, as in a roll of e.g. 2d4+1); default: 0") << std::endl;
@@ -391,7 +391,7 @@ int ACE_TMAIN(int argc,
                           printVersionAndExit)))
   {
     // make 'em learn...
-    print_usage();
+    print_usage(std::string(ACE::basename(argv[0])));
 
     return EXIT_FAILURE;
   } // end IF

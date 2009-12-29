@@ -17,31 +17,24 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "rpg_common_tools.h"
 
-#ifndef RPG_CHARACTER_INCL_H
-#define RPG_CHARACTER_INCL_H
+#include "rpg_common_incl.h"
 
-#include "rpg_character_gender.h"
-#include "rpg_character_race.h"
-#include "rpg_character_metaclass.h"
-#include "rpg_character_subclass.h"
-#include "rpg_character_class.h"
-#include "rpg_character_condition.h"
-#include "rpg_character_ability.h"
-#include "rpg_character_size.h"
-#include "rpg_character_attributes.h"
-#include "rpg_character_skill.h"
-#include "rpg_character_skillvalue.h"
-#include "rpg_character_skills.h"
-#include "rpg_character_feat.h"
-#include "rpg_character_feats.h"
-#include "rpg_character_plane.h"
-#include "rpg_character_terrain.h"
-#include "rpg_character_climate.h"
-#include "rpg_character_environment.h"
-#include "rpg_character_alignmentcivic.h"
-#include "rpg_character_alignmentethic.h"
-#include "rpg_character_alignment.h"
-#include "rpg_character_equipmentslot.h"
+#include <ace/Log_Msg.h>
 
-#endif
+// init statics
+RPG_Common_AttributeToStringTable_t RPG_Common_AttributeHelper::myRPG_Common_AttributeToStringTable;
+RPG_Common_SavingThrowToStringTable_t RPG_Common_SavingThrowHelper::myRPG_Common_SavingThrowToStringTable;
+
+void RPG_Common_Tools::initStringConversionTables()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::initStringConversionTables"));
+
+  RPG_Common_AttributeHelper::init();
+  RPG_Common_SavingThrowHelper::init();
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("RPG_Common_Tools: initialized string conversion tables...\n")));
+}

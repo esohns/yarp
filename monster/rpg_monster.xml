@@ -512,7 +512,7 @@
               <typeDice>D_4</typeDice>
               <modifier>0</modifier>
             </damage>
-            <affectedAttribute>ATTRIBUTE>_WISDOM</affectedAttribute>
+            <affectedAttribute>ATTRIBUTE_WISDOM</affectedAttribute>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -635,7 +635,7 @@
             </damage>
             <savingThrow>
               <type>ATTRIBUTE_STRENGTH</type>
-              <diffficultyClass>22</diffficultyClass>
+              <difficultyClass>22</difficultyClass>
             </savingThrow>
           </element>
         </damage>
@@ -681,7 +681,7 @@
             </damage>
             <savingThrow>
               <type>ATTRIBUTE_STRENGTH</type>
-              <diffficultyClass>22</diffficultyClass>
+              <difficultyClass>22</difficultyClass>
             </savingThrow>
           </element>
         </damage>

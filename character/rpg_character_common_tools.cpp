@@ -23,7 +23,6 @@
 #include "rpg_character_race.h"
 #include "rpg_character_metaclass.h"
 #include "rpg_character_subclass.h"
-#include "rpg_character_attribute.h"
 #include "rpg_character_condition.h"
 #include "rpg_character_ability.h"
 #include "rpg_character_size.h"
@@ -57,7 +56,6 @@ RPG_Character_GenderToStringTable_t RPG_Character_GenderHelper::myRPG_Character_
 RPG_Character_RaceToStringTable_t RPG_Character_RaceHelper::myRPG_Character_RaceToStringTable;
 RPG_Character_MetaClassToStringTable_t RPG_Character_MetaClassHelper::myRPG_Character_MetaClassToStringTable;
 RPG_Character_SubClassToStringTable_t RPG_Character_SubClassHelper::myRPG_Character_SubClassToStringTable;
-RPG_Character_AttributeToStringTable_t RPG_Character_AttributeHelper::myRPG_Character_AttributeToStringTable;
 RPG_Character_ConditionToStringTable_t RPG_Character_ConditionHelper::myRPG_Character_ConditionToStringTable;
 RPG_Character_AbilityToStringTable_t RPG_Character_AbilityHelper::myRPG_Character_AbilityToStringTable;
 RPG_Character_SizeToStringTable_t RPG_Character_SizeHelper::myRPG_Character_SizeToStringTable;
@@ -78,7 +76,6 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   RPG_Character_RaceHelper::init();
   RPG_Character_MetaClassHelper::init();
   RPG_Character_SubClassHelper::init();
-  RPG_Character_AttributeHelper::init();
   RPG_Character_ConditionHelper::init();
   RPG_Character_AbilityHelper::init();
   RPG_Character_SizeHelper::init();
@@ -138,37 +135,37 @@ const std::string RPG_Character_Common_Tools::attributesToString(const RPG_Chara
 
   std::string result;
   std::stringstream str;
-  result = RPG_Character_AttributeHelper::RPG_Character_AttributeToString(ATTRIBUTE_STRENGTH);
+  result = RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_STRENGTH);
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   str << ACE_static_cast(unsigned int, attributes_in.strength);
   result += str.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   str.str(ACE_TEXT_ALWAYS_CHAR(""));
-  result += RPG_Character_AttributeHelper::RPG_Character_AttributeToString(ATTRIBUTE_DEXTERITY);
+  result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_DEXTERITY);
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   str << ACE_static_cast(unsigned int, attributes_in.dexterity);
   result += str.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   str.str(ACE_TEXT_ALWAYS_CHAR(""));
-  result += RPG_Character_AttributeHelper::RPG_Character_AttributeToString(ATTRIBUTE_CONSTITUTION);
+  result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_CONSTITUTION);
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   str << ACE_static_cast(unsigned int, attributes_in.constitution);
   result += str.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   str.str(ACE_TEXT_ALWAYS_CHAR(""));
-  result += RPG_Character_AttributeHelper::RPG_Character_AttributeToString(ATTRIBUTE_INTELLIGENCE);
+  result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_INTELLIGENCE);
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   str << ACE_static_cast(unsigned int, attributes_in.intelligence);
   result += str.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   str.str(ACE_TEXT_ALWAYS_CHAR(""));
-  result += RPG_Character_AttributeHelper::RPG_Character_AttributeToString(ATTRIBUTE_WISDOM);
+  result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_WISDOM);
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   str << ACE_static_cast(unsigned int, attributes_in.wisdom);
   result += str.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   str.str(ACE_TEXT_ALWAYS_CHAR(""));
-  result += RPG_Character_AttributeHelper::RPG_Character_AttributeToString(ATTRIBUTE_CHARISMA);
+  result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_CHARISMA);
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   str << ACE_static_cast(unsigned int, attributes_in.charisma);
   result += str.str();

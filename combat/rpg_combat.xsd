@@ -8,12 +8,10 @@
 
   <!-- include chance_dice schema -->
   <xsd:include schemaLocation="rpg_dice.xsd"/>
+  <!-- include common schema -->
+  <xsd:include schemaLocation="rpg_common.xsd"/>
   <!-- include item schema -->
   <xsd:include schemaLocation="rpg_item.xsd"/>
-  <!-- include character schema -->
-  <xsd:include schemaLocation="rpg_character.xsd"/>
-  <!-- include monster schema -->
-  <xsd:include schemaLocation="rpg_monster.xsd"/>
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import chance_dice schema (as declared above) -->
 <!--   <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/> -->
@@ -50,6 +48,13 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:complexType name="RPG_Combat_AttackSavingThrow_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Common_SavingThrowUnion_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
   <xsd:simpleType name="RPG_Combat_SpecialAttack_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SPECIALATTACK_INCORPOREAL_TOUCH"/>
@@ -70,17 +75,6 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="RPG_Combat_SavingThrowUnion_Type">
-    <xsd:union memberTypes="RPG_Character_Attribute_Type RPG_Monster_SavingThrow_Type"/>
-  </xsd:simpleType>
-
-  <xsd:complexType name="RPG_Combat_SavingThrow_Type">
-    <xsd:sequence>
-      <xsd:element name="type" type="RPG_Combat_SavingThrowUnion_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
   <xsd:simpleType name="RPG_Combat_DamageEffectType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="EFFECT_IMMEDIATE"/>
@@ -99,8 +93,8 @@
       <xsd:element name="type" type="RPG_Combat_DamageTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="damage" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="duration" type="xsd:unsignedShort" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="affectedAttribute" type="RPG_Character_Attribute_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="savingThrow" type="RPG_Combat_SavingThrow_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="affectedAttribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="savingThrow" type="RPG_Combat_AttackSavingThrow_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="effect" type="RPG_Combat_DamageEffectType_Type" use="optional" default="EFFECT_IMMEDIATE"/>
   </xsd:complexType>

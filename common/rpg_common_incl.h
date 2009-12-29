@@ -18,30 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_CHARACTER_INCL_H
-#define RPG_CHARACTER_INCL_H
+#ifndef RPG_COMMON_INCL_H
+#define RPG_COMMON_INCL_H
 
-#include "rpg_character_gender.h"
-#include "rpg_character_race.h"
-#include "rpg_character_metaclass.h"
-#include "rpg_character_subclass.h"
-#include "rpg_character_class.h"
-#include "rpg_character_condition.h"
-#include "rpg_character_ability.h"
-#include "rpg_character_size.h"
-#include "rpg_character_attributes.h"
-#include "rpg_character_skill.h"
-#include "rpg_character_skillvalue.h"
-#include "rpg_character_skills.h"
-#include "rpg_character_feat.h"
-#include "rpg_character_feats.h"
-#include "rpg_character_plane.h"
-#include "rpg_character_terrain.h"
-#include "rpg_character_climate.h"
-#include "rpg_character_environment.h"
-#include "rpg_character_alignmentcivic.h"
-#include "rpg_character_alignmentethic.h"
-#include "rpg_character_alignment.h"
-#include "rpg_character_equipmentslot.h"
+#include "rpg_common_attribute.h"
+#include "rpg_common_savingthrow.h"
+#include "rpg_common_savingthrowunion.h"
 
 #endif

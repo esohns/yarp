@@ -23,16 +23,34 @@
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>
-      <mainprogram>/home/unfv/Projects/RPG/test_u</mainprogram>
-      <programargs></programargs>
-      <globaldebugarguments></globaldebugarguments>
-      <globalcwd>/home/unfv/Projects/RPG/test_u</globalcwd>
-      <useglobalprogram>false</useglobalprogram>
+      <mainprogram>/home/unfv/Projects/RPG/test_u/debug/monster/monster_parser</mainprogram>
+      <programargs>-d -m ../../monster/rpg_monster.xml -t</programargs>
+      <globaldebugarguments>-d -m ../../monster/rpg_monster.xml -t</globaldebugarguments>
+      <globalcwd>/home/unfv/Projects/RPG/test_u/debug/</globalcwd>
+      <useglobalprogram>true</useglobalprogram>
       <terminal>false</terminal>
-      <autocompile>false</autocompile>
-      <autoinstall>false</autoinstall>
-      <autokdesu>false</autokdesu>
+      <autocompile>true</autocompile>
+      <autoinstall>true</autoinstall>
+      <autokdesu>true</autokdesu>
       <envvars/>
+      <runarguments>
+        <character_generator>-i ../../item/rpg_item.xml -t</character_generator>
+        <combat_simulator>-i ../../item/rpg_item.xml -m ../../monster/rpg_monster.xml -n 5 -t</combat_simulator>
+        <monster_parser>-d -m ../../monster/rpg_monster.xml -t</monster_parser>
+        <item_parser>-d -i ../../item/rpg_item.xml -t</item_parser>
+      </runarguments>
+      <debugarguments>
+        <character_generator>-i ../../item/rpg_item.xml -t</character_generator>
+        <combat_simulator>-i ../../item/rpg_item.xml -m ../../monster/rpg_monster.xml -n 5 -t</combat_simulator>
+        <monster_parser>-d -m ../../monster/rpg_monster.xml -t</monster_parser>
+        <item_parser>-d -i ../../item/rpg_item.xml -t</item_parser>
+      </debugarguments>
+      <cwd>
+        <character_generator>/home/unfv/Projects/RPG/test_u/debug/./</character_generator>
+        <combat_simulator>/home/unfv/Projects/RPG/test_u/debug/./</combat_simulator>
+        <monster_parser>/home/unfv/Projects/RPG/test_u/debug/./</monster_parser>
+        <item_parser>/home/unfv/Projects/RPG/test_u/debug/./</item_parser>
+      </cwd>
     </run>
     <configurations>
       <optimized>
@@ -43,14 +61,14 @@
         <cxxflags>-g -O2 -march=i686</cxxflags>
         <envvars/>
         <configargs>--disable-static</configargs>
-        <topsourcedir></topsourcedir>
-        <cppflags></cppflags>
-        <ldflags></ldflags>
-        <ccompilerbinary></ccompilerbinary>
-        <cxxcompilerbinary></cxxcompilerbinary>
-        <f77compilerbinary></f77compilerbinary>
-        <cflags></cflags>
-        <f77flags></f77flags>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <f77flags/>
       </optimized>
       <debug>
         <configargs>--disable-static</configargs>
@@ -60,31 +78,31 @@
         <f77compiler>kdevg77options</f77compiler>
         <cxxflags>-g3 -O0 -march=i686</cxxflags>
         <envvars/>
-        <topsourcedir></topsourcedir>
-        <cppflags></cppflags>
-        <ldflags></ldflags>
-        <ccompilerbinary></ccompilerbinary>
-        <cxxcompilerbinary></cxxcompilerbinary>
-        <f77compilerbinary></f77compilerbinary>
-        <cflags></cflags>
-        <f77flags></f77flags>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <f77flags/>
       </debug>
       <default>
         <envvars/>
         <configargs>--disable-static</configargs>
         <builddir>debug</builddir>
-        <topsourcedir></topsourcedir>
-        <cppflags></cppflags>
-        <ldflags></ldflags>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpgf77options</f77compiler>
-        <ccompilerbinary></ccompilerbinary>
-        <cxxcompilerbinary></cxxcompilerbinary>
-        <f77compilerbinary></f77compilerbinary>
-        <cflags></cflags>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
         <cxxflags>-g3 -O0 -march=i686</cxxflags>
-        <f77flags></f77flags>
+        <f77flags/>
       </default>
     </configurations>
     <make>
@@ -96,7 +114,7 @@
       <runmultiplejobs>false</runmultiplejobs>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin></makebin>
+      <makebin/>
       <prio>0</prio>
     </make>
   </kdevautoproject>
@@ -258,7 +276,7 @@
     </display>
   </kdevdebugger>
   <ctagspart>
-    <customArguments></customArguments>
+    <customArguments/>
     <customTagfilePath>/home/unfv/Projects/RPG/test_u/tags</customTagfilePath>
     <activeTagsFiles/>
   </ctagspart>

@@ -51,6 +51,21 @@ class RPG_Combat_DefenseSituation_Type
   virtual RPG_Combat_DefenseSituation post_RPG_Combat_DefenseSituation_Type();
 };
 
+class RPG_Combat_AttackSavingThrow_Type
+ : public RPG_Combat_AttackSavingThrow_Type_pimpl
+{
+ public:
+  RPG_Combat_AttackSavingThrow_Type();
+
+//   virtual void pre();
+  virtual void type(const RPG_Common_SavingThrowUnion&);
+  virtual void difficultyClass(unsigned char);
+  virtual RPG_Combat_AttackSavingThrow post_RPG_Combat_AttackSavingThrow_Type();
+
+ private:
+  RPG_Combat_AttackSavingThrow myCurrentSavingThrow;
+};
+
 class RPG_Combat_SpecialAttack_Type
  : public RPG_Combat_SpecialAttack_Type_pimpl
 {

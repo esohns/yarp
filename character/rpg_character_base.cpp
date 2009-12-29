@@ -117,7 +117,7 @@ const RPG_Character_Alignment RPG_Character_Base::getAlignment() const
   return myAlignment;
 }
 
-const unsigned char RPG_Character_Base::getAttribute(const RPG_Character_Attribute& attribute_in) const
+const unsigned char RPG_Character_Base::getAttribute(const RPG_Common_Attribute& attribute_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getAttribute"));
 
@@ -152,7 +152,7 @@ const unsigned char RPG_Character_Base::getAttribute(const RPG_Character_Attribu
       // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid attribute: \"%s\", aborting\n"),
-                 RPG_Character_AttributeHelper::RPG_Character_AttributeToString(attribute_in).c_str()));
+                 RPG_Common_AttributeHelper::RPG_Common_AttributeToString(attribute_in).c_str()));
 
       break;
     }

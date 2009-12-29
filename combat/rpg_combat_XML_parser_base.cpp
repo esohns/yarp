@@ -61,6 +61,36 @@ post_RPG_Combat_DefenseSituation_Type ()
   // return ... ;
 }
 
+// RPG_Combat_AttackSavingThrow_Type_pimpl
+//
+
+void RPG_Combat_AttackSavingThrow_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_AttackSavingThrow_Type_pimpl::
+type (const RPG_Common_SavingThrowUnion& type)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_AttackSavingThrow_Type_pimpl::
+difficultyClass (unsigned char difficultyClass)
+{
+  // TODO
+  //
+}
+
+RPG_Combat_AttackSavingThrow RPG_Combat_AttackSavingThrow_Type_pimpl::
+post_RPG_Combat_AttackSavingThrow_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
 // RPG_Combat_SpecialAttack_Type_pimpl
 //
 
@@ -95,51 +125,6 @@ post_RPG_Combat_SpecialDamageType_Type ()
   // TODO
   //
   // return ... ;
-}
-
-// RPG_Combat_SavingThrowUnion_Type_pimpl
-//
-
-void RPG_Combat_SavingThrowUnion_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Combat_SavingThrowUnion_Type_pimpl::
-_characters (const ::xml_schema::ro_string& s)
-{
-  // TODO
-  //
-}
-
-void RPG_Combat_SavingThrowUnion_Type_pimpl::
-post_RPG_Combat_SavingThrowUnion_Type ()
-{
-}
-
-// RPG_Combat_SavingThrow_Type_pimpl
-//
-
-void RPG_Combat_SavingThrow_Type_pimpl::
-pre ()
-{
-}
-
-void RPG_Combat_SavingThrow_Type_pimpl::
-type ()
-{
-}
-
-void RPG_Combat_SavingThrow_Type_pimpl::
-difficultyClass (unsigned char difficultyClass)
-{
-  // TODO
-  //
-}
-
-void RPG_Combat_SavingThrow_Type_pimpl::
-post_RPG_Combat_SavingThrow_Type ()
-{
 }
 
 // RPG_Combat_DamageEffectType_Type_pimpl
@@ -213,13 +198,17 @@ duration (unsigned short duration)
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::
-affectedAttribute ()
+affectedAttribute (const RPG_Common_Attribute& affectedAttribute)
 {
+  // TODO
+  //
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::
-savingThrow ()
+savingThrow (const RPG_Combat_AttackSavingThrow& savingThrow)
 {
+  // TODO
+  //
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::

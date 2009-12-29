@@ -22,9 +22,10 @@
 
 #include "rpg_character_class_common.h"
 #include "rpg_character_feat.h"
-#include "rpg_character_attribute.h"
 #include "rpg_character_skill.h"
 #include "rpg_character_ability.h"
+
+#include <rpg_common_attribute.h>
 
 #include <map>
 #include <set>
@@ -48,7 +49,7 @@ struct RPG_Character_Feat_Prerequisite
 {
   RPG_Character_Feat_Prerequisite_Type prerequisiteType;
   RPG_Character_Feat requiredOtherFeat;            // if applicable
-  RPG_Character_Attribute attribute;               // if applicable
+  RPG_Common_Attribute attribute;                  // if applicable
   unsigned char minValue;                          // if applicable
   RPG_Character_Skill skill;                       // if applicable
   RPG_Character_SubClasses_t restrictedSubClasses; // if applicable

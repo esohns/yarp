@@ -196,6 +196,8 @@ void RPG_Item_Dictionary::dump() const
   {
     RPG_Item_Weapon weapon(iterator->first);
     weapon.dump();
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("==================================\n")));
   } // end FOR
 
   for (RPG_Item_ArmorDictionaryIterator_t iterator = myArmorDictionary.begin();
@@ -204,5 +206,7 @@ void RPG_Item_Dictionary::dump() const
   {
     RPG_Item_Armor armor(iterator->first);
     armor.dump();
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("==================================\n")));
   } // end FOR
 }

@@ -109,24 +109,6 @@ post_RPG_Character_Class_Type ()
   // return ... ;
 }
 
-// RPG_Character_Attribute_Type_pimpl
-//
-
-void RPG_Character_Attribute_Type_pimpl::
-pre ()
-{
-}
-
-RPG_Character_Attribute RPG_Character_Attribute_Type_pimpl::
-post_RPG_Character_Attribute_Type ()
-{
-  const ::std::string& v (post_string ());
-
-  // TODO
-  //
-  // return ... ;
-}
-
 // RPG_Character_Condition_Type_pimpl
 //
 

@@ -74,14 +74,6 @@ class RPG_Character_Class_Type
   RPG_Character_Class myCurrentClass;
 };
 
-class RPG_Character_Attribute_Type
- : public RPG_Character_Attribute_Type_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Character_Attribute post_RPG_Character_Attribute_Type();
-};
-
 class RPG_Character_Condition_Type
  : public RPG_Character_Condition_Type_pimpl
 {
