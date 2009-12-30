@@ -147,6 +147,7 @@ class RPG_Monster_Attack_Type
   virtual void grappleBonus(signed char);
   virtual void standardAttackAction(const RPG_Monster_AttackAction&);
   virtual void fullAttackAction(const RPG_Monster_AttackAction&);
+  virtual void attackActionsAreInclusive(bool);
   virtual RPG_Monster_Attack post_RPG_Monster_Attack_Type();
 
  private:

@@ -82,7 +82,7 @@ class RPG_Monster_Dictionary_Type_pskel;
 #include <rpg_dice_incl.h>
 #include <rpg_common_savingthrow.h>
 #include <rpg_common_attribute.h>
-#include <rpg_common_savingthrowunion.h>
+#include <rpg_common_savingthrowmodifier.h>
 #include <rpg_combat_incl.h>
 #include <rpg_character_incl.h>
 #include "rpg_monster_incl.h"
@@ -348,6 +348,9 @@ class RPG_Monster_Attack_Type_pskel: public ::xml_schema::complex_content
   virtual void
   fullAttackAction (const RPG_Monster_AttackAction&);
 
+  virtual void
+  attackActionsAreInclusive (bool);
+
   virtual RPG_Monster_Attack
   post_RPG_Monster_Attack_Type () = 0;
 
@@ -366,10 +369,14 @@ class RPG_Monster_Attack_Type_pskel: public ::xml_schema::complex_content
   fullAttackAction_parser (::RPG_Monster_AttackAction_Type_pskel&);
 
   void
+  attackActionsAreInclusive_parser (::xml_schema::boolean_pskel&);
+
+  void
   parsers (::xml_schema::byte_pskel& /* baseAttackBonus */,
            ::xml_schema::byte_pskel& /* grappleBonus */,
            ::RPG_Monster_AttackAction_Type_pskel& /* standardAttackAction */,
-           ::RPG_Monster_AttackAction_Type_pskel& /* fullAttackAction */);
+           ::RPG_Monster_AttackAction_Type_pskel& /* fullAttackAction */,
+           ::xml_schema::boolean_pskel& /* attackActionsAreInclusive */);
 
   // Constructor.
   //
@@ -387,11 +394,17 @@ class RPG_Monster_Attack_Type_pskel: public ::xml_schema::complex_content
   _end_element_impl (const ::xml_schema::ro_string&,
                      const ::xml_schema::ro_string&);
 
+  virtual bool
+  _attribute_impl (const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&);
+
   protected:
   ::xml_schema::byte_pskel* baseAttackBonus_parser_;
   ::xml_schema::byte_pskel* grappleBonus_parser_;
   ::RPG_Monster_AttackAction_Type_pskel* standardAttackAction_parser_;
   ::RPG_Monster_AttackAction_Type_pskel* fullAttackAction_parser_;
+  ::xml_schema::boolean_pskel* attackActionsAreInclusive_parser_;
 };
 
 class RPG_Monster_SavingThrowModifiers_Type_pskel: public ::xml_schema::complex_content

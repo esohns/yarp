@@ -317,6 +317,7 @@ RPG_Monster_Attack_Type::RPG_Monster_Attack_Type()
   myCurrentAttack.grappleBonus = 0;
   myCurrentAttack.standardAttackActions.clear();
   myCurrentAttack.fullAttackActions.clear();
+  myCurrentAttack.attackActionsAreInclusive = true;
 }
 
 void RPG_Monster_Attack_Type::baseAttackBonus(signed char baseAttackBonus_in)
@@ -347,6 +348,13 @@ void RPG_Monster_Attack_Type::fullAttackAction(const RPG_Monster_AttackAction& a
   myCurrentAttack.fullAttackActions.push_back(attackAction_in);
 }
 
+void RPG_Monster_Attack_Type::attackActionsAreInclusive(bool actionsAreInclusive_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_Attack_Type::fullAttackAction"));
+
+  myCurrentAttack.attackActionsAreInclusive = actionsAreInclusive_in;
+}
+
 RPG_Monster_Attack RPG_Monster_Attack_Type::post_RPG_Monster_Attack_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Attack_Type::post_RPG_Monster_Attack_Type"));
@@ -358,6 +366,7 @@ RPG_Monster_Attack RPG_Monster_Attack_Type::post_RPG_Monster_Attack_Type()
   myCurrentAttack.grappleBonus = 0;
   myCurrentAttack.standardAttackActions.clear();
   myCurrentAttack.fullAttackActions.clear();
+  myCurrentAttack.attackActionsAreInclusive = true;
 
   return result;
 }

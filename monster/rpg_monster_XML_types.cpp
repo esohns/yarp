@@ -192,15 +192,23 @@ fullAttackAction_parser (::RPG_Monster_AttackAction_Type_pskel& p)
 }
 
 void RPG_Monster_Attack_Type_pskel::
+attackActionsAreInclusive_parser (::xml_schema::boolean_pskel& p)
+{
+  this->attackActionsAreInclusive_parser_ = &p;
+}
+
+void RPG_Monster_Attack_Type_pskel::
 parsers (::xml_schema::byte_pskel& baseAttackBonus,
          ::xml_schema::byte_pskel& grappleBonus,
          ::RPG_Monster_AttackAction_Type_pskel& standardAttackAction,
-         ::RPG_Monster_AttackAction_Type_pskel& fullAttackAction)
+         ::RPG_Monster_AttackAction_Type_pskel& fullAttackAction,
+         ::xml_schema::boolean_pskel& attackActionsAreInclusive)
 {
   this->baseAttackBonus_parser_ = &baseAttackBonus;
   this->grappleBonus_parser_ = &grappleBonus;
   this->standardAttackAction_parser_ = &standardAttackAction;
   this->fullAttackAction_parser_ = &fullAttackAction;
+  this->attackActionsAreInclusive_parser_ = &attackActionsAreInclusive;
 }
 
 RPG_Monster_Attack_Type_pskel::
@@ -208,7 +216,8 @@ RPG_Monster_Attack_Type_pskel ()
 : baseAttackBonus_parser_ (0),
   grappleBonus_parser_ (0),
   standardAttackAction_parser_ (0),
-  fullAttackAction_parser_ (0)
+  fullAttackAction_parser_ (0),
+  attackActionsAreInclusive_parser_ (0)
 {
 }
 
@@ -945,6 +954,11 @@ fullAttackAction (const RPG_Monster_AttackAction&)
 {
 }
 
+void RPG_Monster_Attack_Type_pskel::
+attackActionsAreInclusive (bool)
+{
+}
+
 bool RPG_Monster_Attack_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
@@ -1033,6 +1047,31 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->fullAttackAction_parser_)
       this->fullAttackAction (this->fullAttackAction_parser_->post_RPG_Monster_AttackAction_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Monster_Attack_Type_pskel::
+_attribute_impl (const ::xml_schema::ro_string& ns,
+                 const ::xml_schema::ro_string& n,
+                 const ::xml_schema::ro_string& v)
+{
+  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
+    return true;
+
+  if (n == "attackActionsAreInclusive" && ns == "urn:rpg")
+  {
+    if (this->attackActionsAreInclusive_parser_)
+    {
+      this->attackActionsAreInclusive_parser_->pre ();
+      this->attackActionsAreInclusive_parser_->_pre_impl ();
+      this->attackActionsAreInclusive_parser_->_characters (v);
+      this->attackActionsAreInclusive_parser_->_post_impl ();
+      this->attackActionsAreInclusive (this->attackActionsAreInclusive_parser_->post_boolean ());
+    }
 
     return true;
   }

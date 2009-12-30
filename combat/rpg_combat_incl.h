@@ -24,7 +24,6 @@
 #include "rpg_combat_attackform.h"
 #include "rpg_combat_attacksituation.h"
 #include "rpg_combat_defensesituation.h"
-#include "rpg_combat_attacksavingthrow.h"
 #include "rpg_combat_specialattack.h"
 #include "rpg_combat_specialdamagetype.h"
 #include "rpg_combat_damageeffecttype.h"

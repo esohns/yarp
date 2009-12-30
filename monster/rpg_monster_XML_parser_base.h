@@ -142,6 +142,9 @@ class RPG_Monster_Attack_Type_pimpl: public virtual RPG_Monster_Attack_Type_pske
   virtual void
   fullAttackAction (const RPG_Monster_AttackAction&);
 
+  virtual void
+  attackActionsAreInclusive (bool);
+
   virtual RPG_Monster_Attack
   post_RPG_Monster_Attack_Type ();
 };

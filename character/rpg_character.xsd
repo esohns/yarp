@@ -521,12 +521,17 @@
   <xsd:simpleType name="RPG_Character_EquipmentSlot_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="EQUIPMENTSLOT_HEAD"/>
+      <xsd:enumeration value="EQUIPMENTSLOT_EYES"/>
       <xsd:enumeration value="EQUIPMENTSLOT_NECK"/>
-      <xsd:enumeration value="EQUIPMENTSLOT_APPAREL"/>
+      <xsd:enumeration value="EQUIPMENTSLOT_TORSO"/>
+      <xsd:enumeration value="EQUIPMENTSLOT_BODY"/>
+      <xsd:enumeration value="EQUIPMENTSLOT_WAIST"/>
+      <xsd:enumeration value="EQUIPMENTSLOT_SHOULDERS"/>
+      <xsd:enumeration value="EQUIPMENTSLOT_WRISTS"/>
       <xsd:enumeration value="EQUIPMENTSLOT_RIGHT_HAND"/>
       <xsd:enumeration value="EQUIPMENTSLOT_LEFT_HAND"/>
-      <xsd:enumeration value="EQUIPMENTSLOT_GAUNTLETS"/>
-      <xsd:enumeration value="EQUIPMENTSLOT_RING"/>
+      <xsd:enumeration value="EQUIPMENTSLOT_HANDS"/>
+      <xsd:enumeration value="EQUIPMENTSLOT_FINGERS"/>
       <xsd:enumeration value="EQUIPMENTSLOT_FEET"/>
     </xsd:restriction>
   </xsd:simpleType>

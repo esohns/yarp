@@ -2,7 +2,7 @@ namespace urn:rpg
 {
   include "rpg_common_incl.h";
 
-  RPG_Common_Attribute_Type        RPG_Common_Attribute;
-  RPG_Common_SavingThrow_Type      RPG_Common_SavingThrow;
-  RPG_Common_SavingThrowUnion_Type RPG_Common_SavingThrowUnion;
+  RPG_Common_Attribute_Type           RPG_Common_Attribute;
+  RPG_Common_SavingThrow_Type         RPG_Common_SavingThrow;
+  RPG_Common_SavingThrowModifier_Type RPG_Common_SavingThrowModifier;
 }

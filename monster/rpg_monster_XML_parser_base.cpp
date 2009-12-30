@@ -238,6 +238,13 @@ fullAttackAction (const RPG_Monster_AttackAction& fullAttackAction)
   //
 }
 
+void RPG_Monster_Attack_Type_pimpl::
+attackActionsAreInclusive (bool attackActionsAreInclusive)
+{
+  // TODO
+  //
+}
+
 RPG_Monster_Attack RPG_Monster_Attack_Type_pimpl::
 post_RPG_Monster_Attack_Type ()
 {

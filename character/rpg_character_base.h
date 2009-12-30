@@ -38,13 +38,12 @@
 #include <rpg_dice_dietype.h>
 #include <rpg_dice_roll.h>
 #include <rpg_common_savingthrow.h>
-#include <rpg_common_savingthrowunion.h>
+#include <rpg_common_savingthrowmodifier.h>
 #include <rpg_item_physicaldamagetype.h>
 
 #include <rpg_combat_defensesituation.h>
 #include <rpg_combat_specialdamagetype.h>
 #include <rpg_combat_damagetypeunion.h>
-#include <rpg_combat_attacksavingthrow.h>
 #include <rpg_combat_damageeffecttype.h>
 #include <rpg_combat_damageelement.h>
 #include <rpg_combat_damage.h>

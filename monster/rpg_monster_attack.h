@@ -27,6 +27,7 @@ struct RPG_Monster_Attack
   char grappleBonus;
   std::vector<RPG_Monster_AttackAction> standardAttackActions;
   std::vector<RPG_Monster_AttackAction> fullAttackActions;
+  bool attackActionsAreInclusive;
 };
 
 #endif

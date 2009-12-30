@@ -18,13 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_COMMON_SAVINGTHROWUNION_H
-#define RPG_COMMON_SAVINGTHROWUNION_H
+#ifndef RPG_COMMON_SAVINGTHROWMODIFIER_H
+#define RPG_COMMON_SAVINGTHROWMODIFIER_H
 
-union RPG_Common_SavingThrowUnion
+struct RPG_Common_SavingThrowModifier
 {
+  RPG_Common_SavingThrow type;
   RPG_Common_Attribute attribute;
-  RPG_Common_SavingThrow savingthrow;
+  unsigned char difficultyClass;
 };
 
 #endif

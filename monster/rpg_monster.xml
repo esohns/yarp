@@ -634,7 +634,8 @@
               <modifier>0</modifier>
             </damage>
             <savingThrow>
-              <type>ATTRIBUTE_STRENGTH</type>
+              <type>SAVE_FORTITUDE</type>
+              <attribute>ATTRIBUTE_STRENGTH</attribute>
               <difficultyClass>22</difficultyClass>
             </savingThrow>
           </element>
@@ -703,6 +704,7 @@
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </fullAttackAction>
+      <attackActionsAreInclusive>false</attackActionsAreInclusive>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -840,27 +842,72 @@
       <baseAttackBonus>14</baseAttackBonus>
       <grappleBonus>25</grappleBonus>
       <standardAttackAction>
-        <weapon>STANDARDWEAPON_SLASHING</weapon>
+        <weapon>TWO_HANDED_MELEE_WEAPON_SWORD_GREAT</weapon>
         <attackBonus>23</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
-          <numDice>3</numDice>
-          <typeDice>D_6</typeDice>
-          <modifier>13</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_SLASHING</type>
+            <damage>
+              <numDice>3</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>13</modifier>
+            </damage>
+          </element>
         </damage>
-        <numAttacksPerRound>3</numAttacksPerRound>
+        <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
       <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
         <attackBonus>20</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
-          <numDice>2</numDice>
-          <typeDice>D_8</typeDice>
-          <modifier>10</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <damage>
+              <numDice>2</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>10</modifier>
+            </damage>
+          </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
+      <fullAttackAction>
+        <weapon>TWO_HANDED_MELEE_WEAPON_SWORD_GREAT</weapon>
+        <attackBonus>23</attackBonus>
+        <attackBonus>18</attackBonus>
+        <attackBonus>13</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_SLASHING</type>
+            <damage>
+              <numDice>3</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>13</modifier>
+            </damage>
+          </element>
+        </damage>
+        <numAttacksPerRound>3</numAttacksPerRound>
+      </fullAttackAction>
+      <fullAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
+        <attackBonus>20</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <damage>
+              <numDice>2</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>10</modifier>
+            </damage>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </fullAttackAction>
+      <attackActionsAreInclusive>false</attackActionsAreInclusive>
     </attack>
     <space>10</space>
     <reach>10</reach>
@@ -994,6 +1041,123 @@
     <attack>
       <baseAttackBonus>22</baseAttackBonus>
       <grappleBonus>35</grappleBonus>
+      <standardAttackAction>
+        <weapon>TWO_HANDED_MELEE_WEAPON_SWORD_GREAT</weapon>
+        <attackBonus>35</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_SLASHING</type>
+            <damage>
+              <numDice>3</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>18</modifier>
+            </damage>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>RANGED_WEAPON_BOW_LONG_COMPOSITE</weapon>
+        <attackBonus>28</attackBonus>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_PIERCING</type>
+            <damage>
+              <numDice>2</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>7</modifier>
+            </damage>
+          </element>
+          <element>
+            <type>DAMAGE_SLAY</type>
+            <save>
+              <type>SAVE_FORTITUDE</type>
+              <difficultyClass>20</modifier>
+            </save>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
+        <attackBonus>30</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <damage>
+              <numDice>2</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>13</modifier>
+            </damage>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </standardAttackAction>
+      <fullAttackAction>
+        <weapon>TWO_HANDED_MELEE_WEAPON_SWORD_GREAT</weapon>
+        <attackBonus>35</attackBonus>
+        <attackBonus>30</attackBonus>
+        <attackBonus>25</attackBonus>
+        <attackBonus>20</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_SLASHING</type>
+            <damage>
+              <numDice>3</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>18</modifier>
+            </damage>
+          </element>
+        </damage>
+        <numAttacksPerRound>4</numAttacksPerRound>
+      </fullAttackAction>
+      <fullAttackAction>
+        <weapon>RANGED_WEAPON_BOW_LONG_COMPOSITE</weapon>
+        <attackBonus>28</attackBonus>
+        <attackBonus>23</attackBonus>
+        <attackBonus>18</attackBonus>
+        <attackBonus>13</attackBonus>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_PIERCING</type>
+            <damage>
+              <numDice>2</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>7</modifier>
+            </damage>
+          </element>
+          <element>
+            <type>DAMAGE_SLAY</type>
+            <save>
+              <type>SAVE_FORTITUDE</type>
+              <difficultyClass>20</modifier>
+            </save>
+          </element>
+        </damage>
+        <numAttacksPerRound>4</numAttacksPerRound>
+      </fullAttackAction>
+      <fullAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
+        <attackBonus>20</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <damage>
+              <numDice>2</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>10</modifier>
+            </damage>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </fullAttackAction>
+      <attackActionsAreInclusive>false</attackActionsAreInclusive>
       <standardAttackAction>
         <weapon>STANDARDWEAPON_SLASHING</weapon>
         <attackBonus>35</attackBonus>

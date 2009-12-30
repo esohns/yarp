@@ -49,22 +49,6 @@ class RPG_Combat_DefenseSituation_Type_pimpl: public virtual RPG_Combat_DefenseS
   post_RPG_Combat_DefenseSituation_Type ();
 };
 
-class RPG_Combat_AttackSavingThrow_Type_pimpl: public virtual RPG_Combat_AttackSavingThrow_Type_pskel
-{
-  public:
-  virtual void
-  pre ();
-
-  virtual void
-  type (const RPG_Common_SavingThrowUnion&);
-
-  virtual void
-  difficultyClass (unsigned char);
-
-  virtual RPG_Combat_AttackSavingThrow
-  post_RPG_Combat_AttackSavingThrow_Type ();
-};
-
 class RPG_Combat_SpecialAttack_Type_pimpl: public virtual RPG_Combat_SpecialAttack_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -130,7 +114,7 @@ class RPG_Combat_DamageElement_Type_pimpl: public virtual RPG_Combat_DamageEleme
   affectedAttribute (const RPG_Common_Attribute&);
 
   virtual void
-  savingThrow (const RPG_Combat_AttackSavingThrow&);
+  savingThrow ();
 
   virtual void
   effect (const RPG_Combat_DamageEffectType&);

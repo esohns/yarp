@@ -51,7 +51,7 @@
 //
 class RPG_Common_Attribute_Type_pskel;
 class RPG_Common_SavingThrow_Type_pskel;
-class RPG_Common_SavingThrowUnion_Type_pskel;
+class RPG_Common_SavingThrowModifier_Type_pskel;
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -89,19 +89,62 @@ class RPG_Common_SavingThrow_Type_pskel: public virtual ::xml_schema::string_psk
   post_RPG_Common_SavingThrow_Type () = 0;
 };
 
-class RPG_Common_SavingThrowUnion_Type_pskel: public ::xml_schema::simple_content
+class RPG_Common_SavingThrowModifier_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
   //
   // virtual void
   // pre ();
-  //
-  // virtual void
-  // _characters (const ::xml_schema::ro_string&);
 
-  virtual RPG_Common_SavingThrowUnion
-  post_RPG_Common_SavingThrowUnion_Type () = 0;
+  virtual void
+  type (const RPG_Common_SavingThrow&);
+
+  virtual void
+  attribute (const RPG_Common_Attribute&);
+
+  virtual void
+  difficultyClass (unsigned char);
+
+  virtual RPG_Common_SavingThrowModifier
+  post_RPG_Common_SavingThrowModifier_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  type_parser (::RPG_Common_SavingThrow_Type_pskel&);
+
+  void
+  attribute_parser (::RPG_Common_Attribute_Type_pskel&);
+
+  void
+  difficultyClass_parser (::xml_schema::unsigned_byte_pskel&);
+
+  void
+  parsers (::RPG_Common_SavingThrow_Type_pskel& /* type */,
+           ::RPG_Common_Attribute_Type_pskel& /* attribute */,
+           ::xml_schema::unsigned_byte_pskel& /* difficultyClass */);
+
+  // Constructor.
+  //
+  RPG_Common_SavingThrowModifier_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Common_SavingThrow_Type_pskel* type_parser_;
+  ::RPG_Common_Attribute_Type_pskel* attribute_parser_;
+  ::xml_schema::unsigned_byte_pskel* difficultyClass_parser_;
 };
 
 #include <xsd/cxx/post.hxx>

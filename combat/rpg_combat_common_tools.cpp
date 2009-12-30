@@ -755,7 +755,10 @@ is_player_miss:
           goto is_monster_miss;
 
         // attack bonus: base attack bonus + STR/DEX modifier + size modifier (+ range penalty)
-        attack_roll += (*iterator).attackBonus[i];
+        if ((*iterator).attackBonus.size() == (*iterator).numAttacksPerRound)
+          attack_roll += (*iterator).attackBonus[i];
+        else
+          attack_roll += (*iterator).attackBonus[0];
         // *TODO*: consider that a create with FEAT_WEAPON_FINESSE can use its DEX modifier for melee attacks...
 /*        // --> check primary weapon
         attribute = ATTRIBUTE_STRENGTH;

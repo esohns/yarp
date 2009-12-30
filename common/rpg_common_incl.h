@@ -23,6 +23,6 @@
 
 #include "rpg_common_attribute.h"
 #include "rpg_common_savingthrow.h"
-#include "rpg_common_savingthrowunion.h"
+#include "rpg_common_savingthrowmodifier.h"
 
 #endif

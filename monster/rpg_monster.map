@@ -5,7 +5,7 @@ namespace urn:rpg
 
   include <rpg_common_attribute.h>;
   include <rpg_common_savingthrow.h>;
-  include <rpg_common_savingthrowunion.h>;
+  include <rpg_common_savingthrowmodifier.h>;
   include <rpg_item_physicaldamagetype.h>;
   include <rpg_combat_incl.h>;
 

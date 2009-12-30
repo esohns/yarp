@@ -48,13 +48,6 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:complexType name="RPG_Combat_AttackSavingThrow_Type">
-    <xsd:sequence>
-      <xsd:element name="type" type="RPG_Common_SavingThrowUnion_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
   <xsd:simpleType name="RPG_Combat_SpecialAttack_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SPECIALATTACK_INCORPOREAL_TOUCH"/>
@@ -65,12 +58,15 @@
 
   <xsd:simpleType name="RPG_Combat_SpecialDamageType_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="DAMAGE_FIRE"/>
-      <xsd:enumeration value="DAMAGE_COLD"/>
       <xsd:enumeration value="DAMAGE_ACID"/>
+      <xsd:enumeration value="DAMAGE_COLD"/>
+      <xsd:enumeration value="DAMAGE_ELECTRICITY"/>
+      <xsd:enumeration value="DAMAGE_FIRE"/>
+      <xsd:enumeration value="DAMAGE_SONIC"/>
       <xsd:enumeration value="DAMAGE_POISON"/>
       <xsd:enumeration value="DAMAGE_SLIME"/>
       <xsd:enumeration value="DAMAGE_STUN"/>
+      <xsd:enumeration value="DAMAGE_SLAY"/>
       <xsd:enumeration value="DAMAGE_DRAIN_ATTRIBUTE"/>
     </xsd:restriction>
   </xsd:simpleType>
@@ -93,8 +89,8 @@
       <xsd:element name="type" type="RPG_Combat_DamageTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="damage" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="duration" type="xsd:unsignedShort" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="affectedAttribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="savingThrow" type="RPG_Combat_AttackSavingThrow_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="save" type="RPG_Common_SavingThrowModifier_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="effect" type="RPG_Combat_DamageEffectType_Type" use="optional" default="EFFECT_IMMEDIATE"/>
   </xsd:complexType>

@@ -122,7 +122,9 @@
       <xsd:element name="grappleBonus" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="standardAttackAction" type="RPG_Monster_AttackAction_Type" minOccurs="1" maxOccurs="unbounded"/>
       <xsd:element name="fullAttackAction" type="RPG_Monster_AttackAction_Type" minOccurs="0" maxOccurs="unbounded"/>
+<!--       <xsd:element name="attackActionsAreInclusive" type="xsd:boolean" minOccurs="0" maxOccurs="1"/> -->
     </xsd:sequence>
+    <xsd:attribute name="attackActionsAreInclusive" type="xsd:boolean" use="optional" default="true"/>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Monster_SavingThrowModifiers_Type">

@@ -32,17 +32,23 @@ class RPG_Common_SavingThrow_Type_pimpl: public virtual RPG_Common_SavingThrow_T
   post_RPG_Common_SavingThrow_Type ();
 };
 
-class RPG_Common_SavingThrowUnion_Type_pimpl: public virtual RPG_Common_SavingThrowUnion_Type_pskel
+class RPG_Common_SavingThrowModifier_Type_pimpl: public virtual RPG_Common_SavingThrowModifier_Type_pskel
 {
   public:
   virtual void
   pre ();
 
   virtual void
-  _characters (const ::xml_schema::ro_string&);
+  type (const RPG_Common_SavingThrow&);
 
-  virtual RPG_Common_SavingThrowUnion
-  post_RPG_Common_SavingThrowUnion_Type ();
+  virtual void
+  attribute (const RPG_Common_Attribute&);
+
+  virtual void
+  difficultyClass (unsigned char);
+
+  virtual RPG_Common_SavingThrowModifier
+  post_RPG_Common_SavingThrowModifier_Type ();
 };
 
 #endif // CXX_____RPG_COMMON_XML_PARSER_BASE_H

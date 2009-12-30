@@ -37,37 +37,46 @@ RPG_Common_SavingThrow RPG_Common_SavingThrow_Type::post_RPG_Common_SavingThrow_
   return RPG_Common_SavingThrowHelper::stringToRPG_Common_SavingThrow(post_string());
 }
 
-RPG_Common_SavingThrowUnion_Type::RPG_Common_SavingThrowUnion_Type()
+RPG_Common_SavingThrowModifier_Type::RPG_Common_SavingThrowModifier_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowUnion_Type::RPG_Common_SavingThrowUnion_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowModifier_Type::RPG_Common_SavingThrowModifier_Type"));
 
-  myCurrentSavingThrowUnion.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-//   myCurrentSavingThrowUnion.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
+  myCurrentSavingThrowModifier.type = RPG_COMMON_SAVINGTHROW_INVALID;
+  myCurrentSavingThrowModifier.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentSavingThrowModifier.difficultyClass = 0;
 }
 
-void RPG_Common_SavingThrowUnion_Type::_characters(const ::xml_schema::ro_string& savingThrowUnion_in)
+void RPG_Common_SavingThrowModifier_Type::type(const RPG_Common_SavingThrow& type_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowUnion_Type::_characters"));
+  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowUnion_Type::type"));
 
-  // can be either:
-  // - RPG_Common_Attribute_Type   --> "ATTRIBUTE_xxx"
-  // - RPG_Common_SavingThrow_Type --> "SAVE_xxx"
-  std::string type = savingThrowUnion_in;
-  if (type.find(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_")) == 0)
-    myCurrentSavingThrowUnion.attribute = RPG_Common_AttributeHelper::stringToRPG_Common_Attribute(type);
-  else
-    myCurrentSavingThrowUnion.savingthrow = RPG_Common_SavingThrowHelper::stringToRPG_Common_SavingThrow(type);
+  myCurrentSavingThrowModifier.type = type_in;
 }
 
-RPG_Common_SavingThrowUnion RPG_Common_SavingThrowUnion_Type::post_RPG_Common_SavingThrowUnion_Type()
+void RPG_Common_SavingThrowModifier_Type::attribute(const RPG_Common_Attribute& attribute_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowUnion_Type::post_RPG_Common_SavingThrowUnion_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowUnion_Type::attribute"));
 
-  RPG_Common_SavingThrowUnion result = myCurrentSavingThrowUnion;
+  myCurrentSavingThrowModifier.attribute = attribute_in;
+}
+
+void RPG_Common_SavingThrowModifier_Type::difficultyClass(unsigned char DC_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowUnion_Type::difficultyClass"));
+
+  myCurrentSavingThrowModifier.difficultyClass = DC_in;
+}
+
+RPG_Common_SavingThrowModifier RPG_Common_SavingThrowModifier_Type::post_RPG_Common_SavingThrowModifier_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowModifier_Type::post_RPG_Common_SavingThrowModifier_Type"));
+
+  RPG_Common_SavingThrowModifier result = myCurrentSavingThrowModifier;
 
   // clear structure
-  myCurrentSavingThrowUnion.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-//   myCurrentSavingThrowUnion.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
+  myCurrentSavingThrowModifier.type = RPG_COMMON_SAVINGTHROW_INVALID;
+  myCurrentSavingThrowModifier.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentSavingThrowModifier.difficultyClass = 0;
 
   return result;
 }
