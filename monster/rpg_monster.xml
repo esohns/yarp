@@ -512,7 +512,7 @@
               <typeDice>D_4</typeDice>
               <modifier>0</modifier>
             </damage>
-            <affectedAttribute>ATTRIBUTE_WISDOM</affectedAttribute>
+            <attribute>ATTRIBUTE_WISDOM</attribute>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -610,7 +610,7 @@
       <touch>14</touch>
       <flatFooted>25</flatFooted>
     </armorClass>
-    <attack>
+    <attack attackActionsAreInclusive="false">
       <baseAttackBonus>12</baseAttackBonus>
       <grappleBonus>18</grappleBonus>
       <standardAttackAction>
@@ -633,11 +633,11 @@
               <typeDice>D_6</typeDice>
               <modifier>0</modifier>
             </damage>
-            <savingThrow>
+            <save>
               <type>SAVE_FORTITUDE</type>
               <attribute>ATTRIBUTE_STRENGTH</attribute>
               <difficultyClass>22</difficultyClass>
-            </savingThrow>
+            </save>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -680,10 +680,11 @@
               <typeDice>D_6</typeDice>
               <modifier>0</modifier>
             </damage>
-            <savingThrow>
-              <type>ATTRIBUTE_STRENGTH</type>
+            <save>
+              <type>SAVE_FORTITUDE</type>
+              <attribute>ATTRIBUTE_STRENGTH</attribute>
               <difficultyClass>22</difficultyClass>
-            </savingThrow>
+            </save>
           </element>
         </damage>
         <numAttacksPerRound>3</numAttacksPerRound>
@@ -704,7 +705,6 @@
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </fullAttackAction>
-      <attackActionsAreInclusive>false</attackActionsAreInclusive>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -838,7 +838,7 @@
       <touch>13</touch>
       <flatFooted>28</flatFooted>
     </armorClass>
-    <attack>
+    <attack attackActionsAreInclusive="false">
       <baseAttackBonus>14</baseAttackBonus>
       <grappleBonus>25</grappleBonus>
       <standardAttackAction>
@@ -907,7 +907,6 @@
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </fullAttackAction>
-      <attackActionsAreInclusive>false</attackActionsAreInclusive>
     </attack>
     <space>10</space>
     <reach>10</reach>
@@ -1038,7 +1037,7 @@
       <touch>14</touch>
       <flatFooted>30</flatFooted>
     </armorClass>
-    <attack>
+    <attack attackActionsAreInclusive="false">
       <baseAttackBonus>22</baseAttackBonus>
       <grappleBonus>35</grappleBonus>
       <standardAttackAction>
@@ -1074,7 +1073,7 @@
             <type>DAMAGE_SLAY</type>
             <save>
               <type>SAVE_FORTITUDE</type>
-              <difficultyClass>20</modifier>
+              <difficultyClass>20</difficultyClass>
             </save>
           </element>
         </damage>
@@ -1135,7 +1134,7 @@
             <type>DAMAGE_SLAY</type>
             <save>
               <type>SAVE_FORTITUDE</type>
-              <difficultyClass>20</modifier>
+              <difficultyClass>20</difficultyClass>
             </save>
           </element>
         </damage>
@@ -1157,40 +1156,6 @@
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </fullAttackAction>
-      <attackActionsAreInclusive>false</attackActionsAreInclusive>
-      <standardAttackAction>
-        <weapon>STANDARDWEAPON_SLASHING</weapon>
-        <attackBonus>35</attackBonus>
-        <attackForm>ATTACKFORM_MELEE</attackForm>
-        <damage>
-          <numDice>3</numDice>
-          <typeDice>D_6</typeDice>
-          <modifier>18</modifier>
-        </damage>
-        <numAttacksPerRound>4</numAttacksPerRound>
-      </standardAttackAction>
-      <standardAttackAction>
-        <weapon>STANDARDWEAPON_PIERCING</weapon>
-        <attackBonus>28</attackBonus>
-        <attackForm>ATTACKFORM_RANGED</attackForm>
-        <damage>
-          <numDice>2</numDice>
-          <typeDice>D_6</typeDice>
-          <modifier>7</modifier>
-        </damage>
-        <numAttacksPerRound>1</numAttacksPerRound>
-      </standardAttackAction>
-      <standardAttackAction>
-        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
-        <attackBonus>30</attackBonus>
-        <attackForm>ATTACKFORM_MELEE</attackForm>
-        <damage>
-          <numDice>2</numDice>
-          <typeDice>D_8</typeDice>
-          <modifier>13</modifier>
-        </damage>
-        <numAttacksPerRound>1</numAttacksPerRound>
-      </standardAttackAction>
     </attack>
     <space>10</space>
     <reach>10</reach>

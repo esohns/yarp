@@ -4,7 +4,7 @@
             targetNamespace="urn:rpg"
             xmlns="urn:rpg"
             elementFormDefault="qualified"
-            attributeFormDefault="qualified">
+            attributeFormDefault="unqualified">
 
   <!-- include chance_dice schema -->
   <xsd:include schemaLocation="rpg_dice.xsd"/>
@@ -122,7 +122,6 @@
       <xsd:element name="grappleBonus" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="standardAttackAction" type="RPG_Monster_AttackAction_Type" minOccurs="1" maxOccurs="unbounded"/>
       <xsd:element name="fullAttackAction" type="RPG_Monster_AttackAction_Type" minOccurs="0" maxOccurs="unbounded"/>
-<!--       <xsd:element name="attackActionsAreInclusive" type="xsd:boolean" minOccurs="0" maxOccurs="1"/> -->
     </xsd:sequence>
     <xsd:attribute name="attackActionsAreInclusive" type="xsd:boolean" use="optional" default="true"/>
   </xsd:complexType>
