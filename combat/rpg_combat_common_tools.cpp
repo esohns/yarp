@@ -723,9 +723,33 @@ is_player_miss:
 
     // step2: perform attack(s)
     // *TODO*: evaluate whether the attacks are OR/AND...
-    for (std::vector<RPG_Monster_AttackAction>::const_iterator iterator = monster_properties.attack.fullAttackActions.begin();
-         iterator != monster_properties.attack.fullAttackActions.end();
-         iterator++)
+    std::vector<RPG_Monster_AttackAction>::const_iterator iterator;
+    bool is_action_complete = false;
+    if (monster_properties.attack.fullAttackActions.empty())
+    {
+      // choose any (ONE!) standard action instead
+      iterator = monster_properties.attack.standardAttackActions.begin();
+      result.clear();
+      RPG_Dice::generateRandomNumbers(monster_properties.attack.standardAttackActions.size(),
+                                      1,
+                                      result);
+      std::advance(iterator, result.front() - 1);
+      is_action_complete = true;
+    } // end IF
+    else if (!monster_properties.attack.attackActionsAreInclusive)
+    {
+      // evaluate whether the attack options are exclusive...
+      // --> choose any (ONE!) full attack action
+      iterator = monster_properties.attack.fullAttackActions.begin();
+      result.clear();
+      RPG_Dice::generateRandomNumbers(monster_properties.attack.fullAttackActions.size(),
+                                      1,
+                                      result);
+      std::advance(iterator, result.front() - 1);
+      is_action_complete = true;
+    } // end IF
+
+    do
     {
       for (int i = 0;
            i < (*iterator).numAttacksPerRound;
@@ -801,8 +825,8 @@ is_monster_hit:
         if (is_critical_hit)
         {
           for (std::vector<RPG_Combat_DamageElement>::iterator iterator2 = damage.elements.begin();
-               iterator2 != damage.elements.end();
-               iterator2++)
+                iterator2 != damage.elements.end();
+                iterator2++)
           {
             // *TODO*: this probably applies for physical/natural damage only !
             // *TODO*: consider manufactured (and equipped) weapons may have different modifiers
@@ -812,8 +836,7 @@ is_monster_hit:
         } // end IF
         target_inout->sustainDamage(damage);
 
-        // perform next attack
-        continue;
+        goto iterator_advance;
 
 is_monster_miss:
         // debug info
@@ -824,6 +847,11 @@ is_monster_miss:
                    AC,
                    attack_roll));
       } // end FOR
-    } // end FOR
+
+iterator_advance:
+      iterator++;
+    } while ((iterator != (monster_properties.attack.fullAttackActions.empty() ? monster_properties.attack.standardAttackActions.end()
+      : monster_properties.attack.fullAttackActions.end())) &&
+             (!is_action_complete));
   } // end ELSE
 }
