@@ -97,24 +97,6 @@ post_RPG_Combat_SpecialDamageType_Type ()
   // return ... ;
 }
 
-// RPG_Combat_DamageEffectType_Type_pimpl
-//
-
-void RPG_Combat_DamageEffectType_Type_pimpl::
-pre ()
-{
-}
-
-RPG_Combat_DamageEffectType RPG_Combat_DamageEffectType_Type_pimpl::
-post_RPG_Combat_DamageEffectType_Type ()
-{
-  const ::std::string& v (post_string ());
-
-  // TODO
-  //
-  // return ... ;
-}
-
 // RPG_Combat_DamageTypeUnion_Type_pimpl
 //
 
@@ -138,6 +120,100 @@ post_RPG_Combat_DamageTypeUnion_Type ()
   // return ... ;
 }
 
+// RPG_Combat_RecurringDamage_Type_pimpl
+//
+
+void RPG_Combat_RecurringDamage_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_RecurringDamage_Type_pimpl::
+incubationPeriod (const RPG_Dice_Roll& incubationPeriod)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_RecurringDamage_Type_pimpl::
+damageInterval (unsigned short damageInterval)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_RecurringDamage_Type_pimpl::
+duration (unsigned short duration)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_RecurringDamage_Type_pimpl::
+post_RPG_Combat_RecurringDamage_Type ()
+{
+}
+
+// RPG_Combat_DamageMalusType_Type_pimpl
+//
+
+void RPG_Combat_DamageMalusType_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_DamageMalusType_Type_pimpl::
+post_RPG_Combat_DamageMalusType_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+}
+
+// RPG_Combat_DamageMalus_Type_pimpl
+//
+
+void RPG_Combat_DamageMalus_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_DamageMalus_Type_pimpl::
+type ()
+{
+}
+
+void RPG_Combat_DamageMalus_Type_pimpl::
+modifier (signed char modifier)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_DamageMalus_Type_pimpl::
+post_RPG_Combat_DamageMalus_Type ()
+{
+}
+
+// RPG_Combat_DamageEffectType_Type_pimpl
+//
+
+void RPG_Combat_DamageEffectType_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Combat_DamageEffectType RPG_Combat_DamageEffectType_Type_pimpl::
+post_RPG_Combat_DamageEffectType_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
 // RPG_Combat_DamageElement_Type_pimpl
 //
 
@@ -154,29 +230,39 @@ type (const RPG_Combat_DamageTypeUnion& type)
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::
-damage (const RPG_Dice_Roll& damage)
+amount (const RPG_Dice_Roll& amount)
 {
   // TODO
   //
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::
-duration (unsigned short duration)
+recurrence ()
+{
+}
+
+void RPG_Combat_DamageElement_Type_pimpl::
+malus ()
+{
+}
+
+void RPG_Combat_DamageElement_Type_pimpl::
+attribute (const RPG_Common_Attribute& attribute)
 {
   // TODO
   //
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::
-affectedAttribute (const RPG_Common_Attribute& affectedAttribute)
+save ()
 {
-  // TODO
-  //
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::
-savingThrow ()
+counterMeasure (bool counterMeasure)
 {
+  // TODO
+  //
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::

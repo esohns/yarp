@@ -4,8 +4,11 @@ namespace urn:rpg
   include "rpg_item_common.h";
 
   include <rpg_dice_incl.h>;
+  include <rpg_magic_incl.h>;
 
   RPG_Dice_Roll_Type                     RPG_Item_Damage;
+
+  RPG_Magic_School_Type                  RPG_Magic_School;
 
   RPG_Item_WeaponCategory_Type           RPG_Item_WeaponCategory;
   RPG_Item_WeaponClass_Type              RPG_Item_WeaponClass;
@@ -13,13 +16,17 @@ namespace urn:rpg
   RPG_Item_StorePrice_Type               RPG_Item_StorePrice;
   RPG_Item_CriticalHitModifier_Type      RPG_Item_CriticalHitModifier;
   RPG_Item_PhysicalDamageType_Type       RPG_Item_PhysicalDamageType;
+  RPG_Item_CreationCost_Type             RPG_Item_CreationCost;
+  RPG_Item_BaseProperties_Type           RPG_Item_BaseProperties;
+  RPG_Item_MagicalPrerequisites_Type     RPG_Item_MagicalPrerequisites;
+  RPG_Item_MagicalProperties_Type        RPG_Item_MagicalProperties;
   RPG_Item_WeaponPropertiesXML_Type      RPG_Item_WeaponPropertiesXML;
-#  RPG_Item_MagicWeaponPropertiesXML_Type RPG_Item_MagicWeaponPropertiesXML;
+  RPG_Item_MagicWeaponPropertiesXML_Type RPG_Item_MagicWeaponPropertiesXML;
 
   RPG_Item_ArmorCategory_Type            RPG_Item_ArmorCategory;
   RPG_Item_ArmorType_Type                RPG_Item_ArmorType;
   RPG_Item_ArmorPropertiesXML_Type       RPG_Item_ArmorPropertiesXML;
-#  RPG_Item_MagicArmorPropertiesXML_Type  RPG_Item_MagicArmorPropertiesXML;
+  RPG_Item_MagicArmorPropertiesXML_Type  RPG_Item_MagicArmorPropertiesXML;
 
 #  RPG_Item_WeaponDictionary_Type        RPG_Item_WeaponDictionary_t*;
 #  RPG_Item_ArmorDictionary_Type         RPG_Item_ArmorDictionary_t*;

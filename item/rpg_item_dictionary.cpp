@@ -49,16 +49,19 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
 
   // Construct the parser.
   //
+  ::xml_schema::unsigned_short_pimpl      unsigned_short_p;
   ::xml_schema::unsigned_int_pimpl        unsigned_int_p;
-  RPG_Dice_DieType_Type                   dieType_p;
-  ::xml_schema::integer_pimpl             int_p;
-
-  RPG_Item_WeaponType_Type                weaponType_p;
-  RPG_Item_WeaponCategory_Type            weaponCategory_p;
-  RPG_Item_WeaponClass_Type               weaponClass_p;
   RPG_Item_StorePrice_Type                baseStorePrice_p;
   baseStorePrice_p.parsers(unsigned_int_p,
                            unsigned_int_p);
+  RPG_Item_CreationCost_Type              creationCost_p;
+  creationCost_p.parsers(unsigned_int_p,
+                         unsigned_int_p);
+  RPG_Item_WeaponType_Type                weaponType_p;
+  RPG_Item_WeaponCategory_Type            weaponCategory_p;
+  RPG_Item_WeaponClass_Type               weaponClass_p;
+  RPG_Dice_DieType_Type                   dieType_p;
+  ::xml_schema::integer_pimpl             int_p;
   RPG_Dice_Roll_Type                      roll_p;
   roll_p.parsers(unsigned_int_p,
                  dieType_p,
@@ -67,19 +70,18 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
   RPG_Item_CriticalHitModifier_Type       criticalModifier_p;
   criticalModifier_p.parsers(unsigned_byte_p,
                              unsigned_byte_p);
-//   unsigned_int_pimpl                       rangeIncrement_p;
-//   unsigned_int_pimpl                       baseWeight_p;
-  ::xml_schema::unsigned_short_pimpl      unsigned_short_p;
+//   unsigned_byte_pimpl                       rangeIncrement_p;
   RPG_Item_PhysicalDamageType_Type        damageType_p;
   RPG_Item_WeaponPropertiesXML_Type       weaponPropertiesXML_p;
-  weaponPropertiesXML_p.parsers(weaponType_p,
+  weaponPropertiesXML_p.parsers(unsigned_short_p,
+                                baseStorePrice_p,
+                                creationCost_p,
+                                weaponType_p,
                                 weaponCategory_p,
                                 weaponClass_p,
-                                baseStorePrice_p,
                                 roll_p,
                                 criticalModifier_p,
                                 unsigned_byte_p,
-                                unsigned_short_p,
                                 damageType_p);
   RPG_Item_ArmorType_Type                 armorType_p;
   RPG_Item_ArmorCategory_Type             armorCategory_p;
@@ -92,14 +94,15 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
 //  unsigned_int_pimpl                      baseWeight_p;
   ::xml_schema::byte_pimpl                byte_p;
   RPG_Item_ArmorPropertiesXML_Type        armorPropertiesXML_p;
-  armorPropertiesXML_p.parsers(armorType_p,
-                               armorCategory_p,
+  armorPropertiesXML_p.parsers(unsigned_short_p,
                                baseStorePrice_p,
+                               creationCost_p,
+                               armorType_p,
+                               armorCategory_p,
                                unsigned_byte_p,
                                unsigned_byte_p,
                                byte_p,
                                unsigned_byte_p,
-                               unsigned_short_p,
                                unsigned_short_p);
 
   RPG_Item_WeaponDictionary_Type          weaponDictionary_p(&myWeaponDictionary);

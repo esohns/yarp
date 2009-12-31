@@ -1,5 +1,7 @@
 METASOURCES = AUTO
 
+noinst_HEADERS = rpg_XMLSchema.h
+
 include_HEADERS = rpg_combat_XML_parser.h rpg_combat_XML_parser_base.h \
 	rpg_combat_XML_types.h rpg_combat_attackform.h rpg_combat_attacksituation.h \
 	rpg_combat_common.h rpg_combat_common_tools.h rpg_combat_damage.h \

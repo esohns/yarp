@@ -22,16 +22,15 @@
 #define RPG_ITEM_ARMORPROPERTIESXML_H
 
 struct RPG_Item_ArmorPropertiesXML
+ : public RPG_Item_BaseProperties
 {
   RPG_Item_ArmorType armorType;
   RPG_Item_ArmorCategory armorCategory;
-  RPG_Item_StorePrice baseStorePrice;
   unsigned char baseArmorBonus;
   unsigned char maxDexterityBonus;
   char armorCheckPenalty;
   unsigned char arcaneSpellFailure;
   unsigned short int baseSpeed;
-  unsigned short int baseWeight;
 };
 
 #endif

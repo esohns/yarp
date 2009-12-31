@@ -22,6 +22,7 @@
 #define RPG_ITEM_MAGICARMORPROPERTIESXML_H
 
 struct RPG_Item_MagicArmorPropertiesXML
+ : public RPG_Item_ArmorPropertiesXML
 {
   char defenseModifier;
 };

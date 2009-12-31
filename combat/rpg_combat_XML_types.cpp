@@ -38,6 +38,75 @@
 
 #include <rpg_combat_XML_types.h>
 
+// RPG_Combat_RecurringDamage_Type_pskel
+//
+
+void RPG_Combat_RecurringDamage_Type_pskel::
+incubationPeriod_parser (::RPG_Dice_Roll_Type_pskel& p)
+{
+  this->incubationPeriod_parser_ = &p;
+}
+
+void RPG_Combat_RecurringDamage_Type_pskel::
+damageInterval_parser (::xml_schema::unsigned_short_pskel& p)
+{
+  this->damageInterval_parser_ = &p;
+}
+
+void RPG_Combat_RecurringDamage_Type_pskel::
+duration_parser (::xml_schema::unsigned_short_pskel& p)
+{
+  this->duration_parser_ = &p;
+}
+
+void RPG_Combat_RecurringDamage_Type_pskel::
+parsers (::RPG_Dice_Roll_Type_pskel& incubationPeriod,
+         ::xml_schema::unsigned_short_pskel& damageInterval,
+         ::xml_schema::unsigned_short_pskel& duration)
+{
+  this->incubationPeriod_parser_ = &incubationPeriod;
+  this->damageInterval_parser_ = &damageInterval;
+  this->duration_parser_ = &duration;
+}
+
+RPG_Combat_RecurringDamage_Type_pskel::
+RPG_Combat_RecurringDamage_Type_pskel ()
+: incubationPeriod_parser_ (0),
+  damageInterval_parser_ (0),
+  duration_parser_ (0)
+{
+}
+
+// RPG_Combat_DamageMalus_Type_pskel
+//
+
+void RPG_Combat_DamageMalus_Type_pskel::
+type_parser (::RPG_Combat_DamageMalusType_Type_pskel& p)
+{
+  this->type_parser_ = &p;
+}
+
+void RPG_Combat_DamageMalus_Type_pskel::
+modifier_parser (::xml_schema::byte_pskel& p)
+{
+  this->modifier_parser_ = &p;
+}
+
+void RPG_Combat_DamageMalus_Type_pskel::
+parsers (::RPG_Combat_DamageMalusType_Type_pskel& type,
+         ::xml_schema::byte_pskel& modifier)
+{
+  this->type_parser_ = &type;
+  this->modifier_parser_ = &modifier;
+}
+
+RPG_Combat_DamageMalus_Type_pskel::
+RPG_Combat_DamageMalus_Type_pskel ()
+: type_parser_ (0),
+  modifier_parser_ (0)
+{
+}
+
 // RPG_Combat_DamageElement_Type_pskel
 //
 
@@ -48,27 +117,39 @@ type_parser (::RPG_Combat_DamageTypeUnion_Type_pskel& p)
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
-damage_parser (::RPG_Dice_Roll_Type_pskel& p)
+amount_parser (::RPG_Dice_Roll_Type_pskel& p)
 {
-  this->damage_parser_ = &p;
+  this->amount_parser_ = &p;
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
-duration_parser (::xml_schema::unsigned_short_pskel& p)
+recurrence_parser (::RPG_Combat_RecurringDamage_Type_pskel& p)
 {
-  this->duration_parser_ = &p;
+  this->recurrence_parser_ = &p;
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
-affectedAttribute_parser (::RPG_Common_Attribute_Type_pskel& p)
+malus_parser (::RPG_Combat_DamageMalus_Type_pskel& p)
 {
-  this->affectedAttribute_parser_ = &p;
+  this->malus_parser_ = &p;
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
-savingThrow_parser (::RPG_Common_SavingThrowModifier_Type_pskel& p)
+attribute_parser (::RPG_Common_Attribute_Type_pskel& p)
 {
-  this->savingThrow_parser_ = &p;
+  this->attribute_parser_ = &p;
+}
+
+void RPG_Combat_DamageElement_Type_pskel::
+save_parser (::RPG_Common_SavingThrowModifier_Type_pskel& p)
+{
+  this->save_parser_ = &p;
+}
+
+void RPG_Combat_DamageElement_Type_pskel::
+counterMeasure_parser (::xml_schema::boolean_pskel& p)
+{
+  this->counterMeasure_parser_ = &p;
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
@@ -79,27 +160,33 @@ effect_parser (::RPG_Combat_DamageEffectType_Type_pskel& p)
 
 void RPG_Combat_DamageElement_Type_pskel::
 parsers (::RPG_Combat_DamageTypeUnion_Type_pskel& type,
-         ::RPG_Dice_Roll_Type_pskel& damage,
-         ::xml_schema::unsigned_short_pskel& duration,
-         ::RPG_Common_Attribute_Type_pskel& affectedAttribute,
-         ::RPG_Common_SavingThrowModifier_Type_pskel& savingThrow,
+         ::RPG_Dice_Roll_Type_pskel& amount,
+         ::RPG_Combat_RecurringDamage_Type_pskel& recurrence,
+         ::RPG_Combat_DamageMalus_Type_pskel& malus,
+         ::RPG_Common_Attribute_Type_pskel& attribute,
+         ::RPG_Common_SavingThrowModifier_Type_pskel& save,
+         ::xml_schema::boolean_pskel& counterMeasure,
          ::RPG_Combat_DamageEffectType_Type_pskel& effect)
 {
   this->type_parser_ = &type;
-  this->damage_parser_ = &damage;
-  this->duration_parser_ = &duration;
-  this->affectedAttribute_parser_ = &affectedAttribute;
-  this->savingThrow_parser_ = &savingThrow;
+  this->amount_parser_ = &amount;
+  this->recurrence_parser_ = &recurrence;
+  this->malus_parser_ = &malus;
+  this->attribute_parser_ = &attribute;
+  this->save_parser_ = &save;
+  this->counterMeasure_parser_ = &counterMeasure;
   this->effect_parser_ = &effect;
 }
 
 RPG_Combat_DamageElement_Type_pskel::
 RPG_Combat_DamageElement_Type_pskel ()
 : type_parser_ (0),
-  damage_parser_ (0),
-  duration_parser_ (0),
-  affectedAttribute_parser_ (0),
-  savingThrow_parser_ (0),
+  amount_parser_ (0),
+  recurrence_parser_ (0),
+  malus_parser_ (0),
+  attribute_parser_ (0),
+  save_parser_ (0),
+  counterMeasure_parser_ (0),
   effect_parser_ (0)
 {
 }
@@ -125,6 +212,194 @@ RPG_Combat_Damage_Type_pskel ()
 {
 }
 
+// RPG_Combat_RecurringDamage_Type_pskel
+//
+
+void RPG_Combat_RecurringDamage_Type_pskel::
+incubationPeriod (const RPG_Dice_Roll&)
+{
+}
+
+void RPG_Combat_RecurringDamage_Type_pskel::
+damageInterval (unsigned short)
+{
+}
+
+void RPG_Combat_RecurringDamage_Type_pskel::
+duration (unsigned short)
+{
+}
+
+void RPG_Combat_RecurringDamage_Type_pskel::
+post_RPG_Combat_RecurringDamage_Type ()
+{
+}
+
+bool RPG_Combat_RecurringDamage_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "incubationPeriod" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->incubationPeriod_parser_;
+
+    if (this->incubationPeriod_parser_)
+      this->incubationPeriod_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "damageInterval" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->damageInterval_parser_;
+
+    if (this->damageInterval_parser_)
+      this->damageInterval_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "duration" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->duration_parser_;
+
+    if (this->duration_parser_)
+      this->duration_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Combat_RecurringDamage_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "incubationPeriod" && ns == "urn:rpg")
+  {
+    if (this->incubationPeriod_parser_)
+      this->incubationPeriod (this->incubationPeriod_parser_->post_RPG_Dice_Roll_Type ());
+
+    return true;
+  }
+
+  if (n == "damageInterval" && ns == "urn:rpg")
+  {
+    if (this->damageInterval_parser_)
+      this->damageInterval (this->damageInterval_parser_->post_unsigned_short ());
+
+    return true;
+  }
+
+  if (n == "duration" && ns == "urn:rpg")
+  {
+    if (this->duration_parser_)
+      this->duration (this->duration_parser_->post_unsigned_short ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Combat_DamageMalusType_Type_pskel
+//
+
+void RPG_Combat_DamageMalusType_Type_pskel::
+post_RPG_Combat_DamageMalusType_Type ()
+{
+}
+
+// RPG_Combat_DamageMalus_Type_pskel
+//
+
+void RPG_Combat_DamageMalus_Type_pskel::
+type ()
+{
+}
+
+void RPG_Combat_DamageMalus_Type_pskel::
+modifier (signed char)
+{
+}
+
+void RPG_Combat_DamageMalus_Type_pskel::
+post_RPG_Combat_DamageMalus_Type ()
+{
+}
+
+bool RPG_Combat_DamageMalus_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
+
+    if (this->type_parser_)
+      this->type_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "modifier" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->modifier_parser_;
+
+    if (this->modifier_parser_)
+      this->modifier_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Combat_DamageMalus_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    if (this->type_parser_)
+    {
+      this->type_parser_->post_RPG_Combat_DamageMalusType_Type ();
+      this->type ();
+    }
+
+    return true;
+  }
+
+  if (n == "modifier" && ns == "urn:rpg")
+  {
+    if (this->modifier_parser_)
+      this->modifier (this->modifier_parser_->post_byte ());
+
+    return true;
+  }
+
+  return false;
+}
+
 // RPG_Combat_DamageElement_Type_pskel
 //
 
@@ -134,22 +409,32 @@ type (const RPG_Combat_DamageTypeUnion&)
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
-damage (const RPG_Dice_Roll&)
+amount (const RPG_Dice_Roll&)
 {
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
-duration (unsigned short)
+recurrence ()
 {
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
-affectedAttribute (const RPG_Common_Attribute&)
+malus ()
 {
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
-savingThrow ()
+attribute (const RPG_Common_Attribute&)
+{
+}
+
+void RPG_Combat_DamageElement_Type_pskel::
+save ()
+{
+}
+
+void RPG_Combat_DamageElement_Type_pskel::
+counterMeasure (bool)
 {
 }
 
@@ -178,42 +463,62 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "damage" && ns == "urn:rpg")
+  if (n == "amount" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->damage_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->amount_parser_;
 
-    if (this->damage_parser_)
-      this->damage_parser_->pre ();
+    if (this->amount_parser_)
+      this->amount_parser_->pre ();
 
     return true;
   }
 
-  if (n == "duration" && ns == "urn:rpg")
+  if (n == "recurrence" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->duration_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->recurrence_parser_;
 
-    if (this->duration_parser_)
-      this->duration_parser_->pre ();
+    if (this->recurrence_parser_)
+      this->recurrence_parser_->pre ();
 
     return true;
   }
 
-  if (n == "affectedAttribute" && ns == "urn:rpg")
+  if (n == "malus" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->affectedAttribute_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->malus_parser_;
 
-    if (this->affectedAttribute_parser_)
-      this->affectedAttribute_parser_->pre ();
+    if (this->malus_parser_)
+      this->malus_parser_->pre ();
 
     return true;
   }
 
-  if (n == "savingThrow" && ns == "urn:rpg")
+  if (n == "attribute" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->savingThrow_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->attribute_parser_;
 
-    if (this->savingThrow_parser_)
-      this->savingThrow_parser_->pre ();
+    if (this->attribute_parser_)
+      this->attribute_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "save" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->save_parser_;
+
+    if (this->save_parser_)
+      this->save_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "counterMeasure" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->counterMeasure_parser_;
+
+    if (this->counterMeasure_parser_)
+      this->counterMeasure_parser_->pre ();
 
     return true;
   }
@@ -236,37 +541,59 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "damage" && ns == "urn:rpg")
+  if (n == "amount" && ns == "urn:rpg")
   {
-    if (this->damage_parser_)
-      this->damage (this->damage_parser_->post_RPG_Dice_Roll_Type ());
+    if (this->amount_parser_)
+      this->amount (this->amount_parser_->post_RPG_Dice_Roll_Type ());
 
     return true;
   }
 
-  if (n == "duration" && ns == "urn:rpg")
+  if (n == "recurrence" && ns == "urn:rpg")
   {
-    if (this->duration_parser_)
-      this->duration (this->duration_parser_->post_unsigned_short ());
-
-    return true;
-  }
-
-  if (n == "affectedAttribute" && ns == "urn:rpg")
-  {
-    if (this->affectedAttribute_parser_)
-      this->affectedAttribute (this->affectedAttribute_parser_->post_RPG_Common_Attribute_Type ());
-
-    return true;
-  }
-
-  if (n == "savingThrow" && ns == "urn:rpg")
-  {
-    if (this->savingThrow_parser_)
+    if (this->recurrence_parser_)
     {
-      this->savingThrow_parser_->post_RPG_Common_SavingThrowModifier_Type ();
-      this->savingThrow ();
+      this->recurrence_parser_->post_RPG_Combat_RecurringDamage_Type ();
+      this->recurrence ();
     }
+
+    return true;
+  }
+
+  if (n == "malus" && ns == "urn:rpg")
+  {
+    if (this->malus_parser_)
+    {
+      this->malus_parser_->post_RPG_Combat_DamageMalus_Type ();
+      this->malus ();
+    }
+
+    return true;
+  }
+
+  if (n == "attribute" && ns == "urn:rpg")
+  {
+    if (this->attribute_parser_)
+      this->attribute (this->attribute_parser_->post_RPG_Common_Attribute_Type ());
+
+    return true;
+  }
+
+  if (n == "save" && ns == "urn:rpg")
+  {
+    if (this->save_parser_)
+    {
+      this->save_parser_->post_RPG_Common_SavingThrowModifier_Type ();
+      this->save ();
+    }
+
+    return true;
+  }
+
+  if (n == "counterMeasure" && ns == "urn:rpg")
+  {
+    if (this->counterMeasure_parser_)
+      this->counterMeasure (this->counterMeasure_parser_->post_boolean ());
 
     return true;
   }
@@ -282,7 +609,7 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
     return true;
 
-  if (n == "effect" && ns == "urn:rpg")
+  if (n == "effect" && ns.empty ())
   {
     if (this->effect_parser_)
     {

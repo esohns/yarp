@@ -24,10 +24,12 @@
 struct RPG_Combat_DamageElement
 {
   RPG_Combat_DamageTypeUnion type;
-  RPG_Dice_Roll damage;
-  unsigned short int duration;
-  RPG_Common_Attribute affectedAttribute;
-  RPG_Common_SavingThrowModifier savingThrow;
+  RPG_Dice_Roll amount;
+  RPG_Combat_RecurringDamage recurrence;
+  std::vector<RPG_Combat_DamageMalus> malus;
+  RPG_Common_Attribute attribute;
+  RPG_Common_SavingThrowModifier save;
+  bool counterMeasure;
   RPG_Combat_DamageEffectType effect;
 };
 

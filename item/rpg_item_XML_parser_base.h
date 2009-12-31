@@ -12,6 +12,8 @@
 
 #include <rpg_dice_XML_parser_base.h>
 
+#include <rpg_magic_XML_parser_base.h>
+
 class RPG_Item_Type_Type_pimpl: public virtual RPG_Item_Type_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -110,7 +112,72 @@ class RPG_Item_PhysicalDamageType_Type_pimpl: public virtual RPG_Item_PhysicalDa
   post_RPG_Item_PhysicalDamageType_Type ();
 };
 
-class RPG_Item_WeaponPropertiesXML_Type_pimpl: public virtual RPG_Item_WeaponPropertiesXML_Type_pskel
+class RPG_Item_CreationCost_Type_pimpl: public virtual RPG_Item_CreationCost_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  numGoldPieces (unsigned int);
+
+  virtual void
+  numExperiencePoints (unsigned int);
+
+  virtual RPG_Item_CreationCost
+  post_RPG_Item_CreationCost_Type ();
+};
+
+class RPG_Item_BaseProperties_Type_pimpl: public virtual RPG_Item_BaseProperties_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  baseWeight (unsigned short);
+
+  virtual void
+  baseStorePrice (const RPG_Item_StorePrice&);
+
+  virtual void
+  costToCreate (const RPG_Item_CreationCost&);
+
+  virtual RPG_Item_BaseProperties
+  post_RPG_Item_BaseProperties_Type ();
+};
+
+class RPG_Item_MagicalPrerequisites_Type_pimpl: public virtual RPG_Item_MagicalPrerequisites_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  minCasterLevel (unsigned char);
+
+  virtual RPG_Item_MagicalPrerequisites
+  post_RPG_Item_MagicalPrerequisites_Type ();
+};
+
+class RPG_Item_MagicalProperties_Type_pimpl: public virtual RPG_Item_MagicalProperties_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  Aura (const RPG_Magic_School&);
+
+  virtual void
+  Prerequisites (const RPG_Item_MagicalPrerequisites&);
+
+  virtual RPG_Item_MagicalProperties
+  post_RPG_Item_MagicalProperties_Type ();
+};
+
+class RPG_Item_WeaponPropertiesXML_Type_pimpl: public virtual RPG_Item_WeaponPropertiesXML_Type_pskel,
+  public ::RPG_Item_BaseProperties_Type_pimpl
 {
   public:
   virtual void
@@ -126,9 +193,6 @@ class RPG_Item_WeaponPropertiesXML_Type_pimpl: public virtual RPG_Item_WeaponPro
   weaponClass (const RPG_Item_WeaponClass&);
 
   virtual void
-  baseStorePrice (const RPG_Item_StorePrice&);
-
-  virtual void
   baseDamage (const RPG_Item_Damage&);
 
   virtual void
@@ -136,9 +200,6 @@ class RPG_Item_WeaponPropertiesXML_Type_pimpl: public virtual RPG_Item_WeaponPro
 
   virtual void
   rangeIncrement (unsigned char);
-
-  virtual void
-  baseWeight (unsigned short);
 
   virtual void
   typeOfDamage (const RPG_Item_PhysicalDamageType&);
@@ -157,7 +218,7 @@ class RPG_Item_MagicWeaponPropertiesXML_Type_pimpl: public virtual RPG_Item_Magi
   virtual void
   toHitModifier (signed char);
 
-  virtual void
+  virtual RPG_Item_MagicWeaponPropertiesXML
   post_RPG_Item_MagicWeaponPropertiesXML_Type ();
 };
 
@@ -196,7 +257,8 @@ class RPG_Item_ArmorType_Type_pimpl: public virtual RPG_Item_ArmorType_Type_pske
   post_RPG_Item_ArmorType_Type ();
 };
 
-class RPG_Item_ArmorPropertiesXML_Type_pimpl: public virtual RPG_Item_ArmorPropertiesXML_Type_pskel
+class RPG_Item_ArmorPropertiesXML_Type_pimpl: public virtual RPG_Item_ArmorPropertiesXML_Type_pskel,
+  public ::RPG_Item_BaseProperties_Type_pimpl
 {
   public:
   virtual void
@@ -207,9 +269,6 @@ class RPG_Item_ArmorPropertiesXML_Type_pimpl: public virtual RPG_Item_ArmorPrope
 
   virtual void
   armorCategory (const RPG_Item_ArmorCategory&);
-
-  virtual void
-  baseStorePrice (const RPG_Item_StorePrice&);
 
   virtual void
   baseArmorBonus (unsigned char);
@@ -226,9 +285,6 @@ class RPG_Item_ArmorPropertiesXML_Type_pimpl: public virtual RPG_Item_ArmorPrope
   virtual void
   baseSpeed (unsigned short);
 
-  virtual void
-  baseWeight (unsigned short);
-
   virtual RPG_Item_ArmorPropertiesXML
   post_RPG_Item_ArmorPropertiesXML_Type ();
 };
@@ -243,7 +299,7 @@ class RPG_Item_MagicArmorPropertiesXML_Type_pimpl: public virtual RPG_Item_Magic
   virtual void
   defenseModifier (signed char);
 
-  virtual void
+  virtual RPG_Item_MagicArmorPropertiesXML
   post_RPG_Item_MagicArmorPropertiesXML_Type ();
 };
 

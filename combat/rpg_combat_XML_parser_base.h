@@ -71,17 +71,6 @@ class RPG_Combat_SpecialDamageType_Type_pimpl: public virtual RPG_Combat_Special
   post_RPG_Combat_SpecialDamageType_Type ();
 };
 
-class RPG_Combat_DamageEffectType_Type_pimpl: public virtual RPG_Combat_DamageEffectType_Type_pskel,
-  public ::xml_schema::string_pimpl
-{
-  public:
-  virtual void
-  pre ();
-
-  virtual RPG_Combat_DamageEffectType
-  post_RPG_Combat_DamageEffectType_Type ();
-};
-
 class RPG_Combat_DamageTypeUnion_Type_pimpl: public virtual RPG_Combat_DamageTypeUnion_Type_pskel
 {
   public:
@@ -95,6 +84,63 @@ class RPG_Combat_DamageTypeUnion_Type_pimpl: public virtual RPG_Combat_DamageTyp
   post_RPG_Combat_DamageTypeUnion_Type ();
 };
 
+class RPG_Combat_RecurringDamage_Type_pimpl: public virtual RPG_Combat_RecurringDamage_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  incubationPeriod (const RPG_Dice_Roll&);
+
+  virtual void
+  damageInterval (unsigned short);
+
+  virtual void
+  duration (unsigned short);
+
+  virtual void
+  post_RPG_Combat_RecurringDamage_Type ();
+};
+
+class RPG_Combat_DamageMalusType_Type_pimpl: public virtual RPG_Combat_DamageMalusType_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  post_RPG_Combat_DamageMalusType_Type ();
+};
+
+class RPG_Combat_DamageMalus_Type_pimpl: public virtual RPG_Combat_DamageMalus_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  type ();
+
+  virtual void
+  modifier (signed char);
+
+  virtual void
+  post_RPG_Combat_DamageMalus_Type ();
+};
+
+class RPG_Combat_DamageEffectType_Type_pimpl: public virtual RPG_Combat_DamageEffectType_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Combat_DamageEffectType
+  post_RPG_Combat_DamageEffectType_Type ();
+};
+
 class RPG_Combat_DamageElement_Type_pimpl: public virtual RPG_Combat_DamageElement_Type_pskel
 {
   public:
@@ -105,16 +151,22 @@ class RPG_Combat_DamageElement_Type_pimpl: public virtual RPG_Combat_DamageEleme
   type (const RPG_Combat_DamageTypeUnion&);
 
   virtual void
-  damage (const RPG_Dice_Roll&);
+  amount (const RPG_Dice_Roll&);
 
   virtual void
-  duration (unsigned short);
+  recurrence ();
 
   virtual void
-  affectedAttribute (const RPG_Common_Attribute&);
+  malus ();
 
   virtual void
-  savingThrow ();
+  attribute (const RPG_Common_Attribute&);
+
+  virtual void
+  save ();
+
+  virtual void
+  counterMeasure (bool);
 
   virtual void
   effect (const RPG_Combat_DamageEffectType&);

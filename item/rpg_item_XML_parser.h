@@ -151,6 +151,66 @@ class RPG_Item_PhysicalDamageType_Type
   virtual RPG_Item_PhysicalDamageType post_RPG_Item_PhysicalDamageType_Type();
 };
 
+class RPG_Item_CreationCost_Type
+ : public RPG_Item_CreationCost_Type_pimpl
+{
+ public:
+  RPG_Item_CreationCost_Type();
+
+//   virtual void pre();
+  virtual void numGoldPieces(unsigned int);
+  virtual void numExperiencePoints(unsigned int);
+  virtual RPG_Item_CreationCost post_RPG_Item_CreationCost_Type();
+
+ private:
+  RPG_Item_CreationCost myCurrentCreationCost;
+};
+
+class RPG_Item_BaseProperties_Type
+ : public RPG_Item_BaseProperties_Type_pimpl
+{
+ public:
+  RPG_Item_BaseProperties_Type();
+
+//   virtual void pre();
+  virtual void baseWeight(unsigned short);
+  virtual void baseStorePrice(const RPG_Item_StorePrice&);
+  virtual void costToCreate(const RPG_Item_CreationCost&);
+  virtual RPG_Item_BaseProperties post_RPG_Item_BaseProperties_Type();
+
+ private:
+  RPG_Item_BaseProperties myBaseProperties;
+};
+
+class RPG_Item_MagicalPrerequisites_Type
+ : public RPG_Item_MagicalPrerequisites_Type_pimpl
+{
+ public:
+  RPG_Item_MagicalPrerequisites_Type();
+
+//   virtual void pre();
+  virtual void minCasterLevel(unsigned char);
+  virtual RPG_Item_MagicalPrerequisites post_RPG_Item_MagicalPrerequisites_Type();
+
+ private:
+  RPG_Item_MagicalPrerequisites myCurrentPrerequisites;
+};
+
+class RPG_Item_MagicalProperties_Type
+ : public RPG_Item_MagicalProperties_Type_pimpl
+{
+ public:
+  RPG_Item_MagicalProperties_Type();
+
+//   virtual void pre();
+  virtual void Aura(const RPG_Magic_School&);
+  virtual void Prerequisites(const RPG_Item_MagicalPrerequisites&);
+  virtual RPG_Item_MagicalProperties post_RPG_Item_MagicalProperties_Type();
+
+ private:
+  RPG_Item_MagicalProperties myCurrentProperties;
+};
+
 class RPG_Item_WeaponPropertiesXML_Type
  : public RPG_Item_WeaponPropertiesXML_Type_pimpl
 {

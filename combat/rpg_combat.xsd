@@ -4,7 +4,7 @@
             targetNamespace="urn:rpg"
             xmlns="urn:rpg"
             elementFormDefault="qualified"
-            attributeFormDefault="qualified">
+            attributeFormDefault="unqualified">
 
   <!-- include chance_dice schema -->
   <xsd:include schemaLocation="rpg_dice.xsd"/>

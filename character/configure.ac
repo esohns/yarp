@@ -43,4 +43,4 @@ AC_CHECK_FUNCS([floor memset sqrt strerror])
 
 AC_CONFIG_FILES([Makefile])
 
-AC_OUTPUT)
+AC_OUTPUT

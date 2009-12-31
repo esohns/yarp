@@ -29,6 +29,8 @@
 #include "rpg_item_storeprice.h"
 #include "rpg_item_criticalhitmodifier.h"
 #include "rpg_item_physicaldamagetype.h"
+#include "rpg_item_creationcost.h"
+#include "rpg_item_baseproperties.h"
 #include <vector>
 #include "rpg_item_weaponpropertiesxml.h"
 #include "rpg_item_armortype.h"

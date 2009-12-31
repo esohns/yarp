@@ -98,6 +98,126 @@ RPG_Item_CriticalHitModifier_Type_pskel ()
 {
 }
 
+// RPG_Item_CreationCost_Type_pskel
+//
+
+void RPG_Item_CreationCost_Type_pskel::
+numGoldPieces_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->numGoldPieces_parser_ = &p;
+}
+
+void RPG_Item_CreationCost_Type_pskel::
+numExperiencePoints_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->numExperiencePoints_parser_ = &p;
+}
+
+void RPG_Item_CreationCost_Type_pskel::
+parsers (::xml_schema::unsigned_int_pskel& numGoldPieces,
+         ::xml_schema::unsigned_int_pskel& numExperiencePoints)
+{
+  this->numGoldPieces_parser_ = &numGoldPieces;
+  this->numExperiencePoints_parser_ = &numExperiencePoints;
+}
+
+RPG_Item_CreationCost_Type_pskel::
+RPG_Item_CreationCost_Type_pskel ()
+: numGoldPieces_parser_ (0),
+  numExperiencePoints_parser_ (0)
+{
+}
+
+// RPG_Item_BaseProperties_Type_pskel
+//
+
+void RPG_Item_BaseProperties_Type_pskel::
+baseWeight_parser (::xml_schema::unsigned_short_pskel& p)
+{
+  this->baseWeight_parser_ = &p;
+}
+
+void RPG_Item_BaseProperties_Type_pskel::
+baseStorePrice_parser (::RPG_Item_StorePrice_Type_pskel& p)
+{
+  this->baseStorePrice_parser_ = &p;
+}
+
+void RPG_Item_BaseProperties_Type_pskel::
+costToCreate_parser (::RPG_Item_CreationCost_Type_pskel& p)
+{
+  this->costToCreate_parser_ = &p;
+}
+
+void RPG_Item_BaseProperties_Type_pskel::
+parsers (::xml_schema::unsigned_short_pskel& baseWeight,
+         ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
+         ::RPG_Item_CreationCost_Type_pskel& costToCreate)
+{
+  this->baseWeight_parser_ = &baseWeight;
+  this->baseStorePrice_parser_ = &baseStorePrice;
+  this->costToCreate_parser_ = &costToCreate;
+}
+
+RPG_Item_BaseProperties_Type_pskel::
+RPG_Item_BaseProperties_Type_pskel ()
+: baseWeight_parser_ (0),
+  baseStorePrice_parser_ (0),
+  costToCreate_parser_ (0)
+{
+}
+
+// RPG_Item_MagicalPrerequisites_Type_pskel
+//
+
+void RPG_Item_MagicalPrerequisites_Type_pskel::
+minCasterLevel_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->minCasterLevel_parser_ = &p;
+}
+
+void RPG_Item_MagicalPrerequisites_Type_pskel::
+parsers (::xml_schema::unsigned_byte_pskel& minCasterLevel)
+{
+  this->minCasterLevel_parser_ = &minCasterLevel;
+}
+
+RPG_Item_MagicalPrerequisites_Type_pskel::
+RPG_Item_MagicalPrerequisites_Type_pskel ()
+: minCasterLevel_parser_ (0)
+{
+}
+
+// RPG_Item_MagicalProperties_Type_pskel
+//
+
+void RPG_Item_MagicalProperties_Type_pskel::
+Aura_parser (::RPG_Magic_School_Type_pskel& p)
+{
+  this->Aura_parser_ = &p;
+}
+
+void RPG_Item_MagicalProperties_Type_pskel::
+Prerequisites_parser (::RPG_Item_MagicalPrerequisites_Type_pskel& p)
+{
+  this->Prerequisites_parser_ = &p;
+}
+
+void RPG_Item_MagicalProperties_Type_pskel::
+parsers (::RPG_Magic_School_Type_pskel& Aura,
+         ::RPG_Item_MagicalPrerequisites_Type_pskel& Prerequisites)
+{
+  this->Aura_parser_ = &Aura;
+  this->Prerequisites_parser_ = &Prerequisites;
+}
+
+RPG_Item_MagicalProperties_Type_pskel::
+RPG_Item_MagicalProperties_Type_pskel ()
+: Aura_parser_ (0),
+  Prerequisites_parser_ (0)
+{
+}
+
 // RPG_Item_WeaponPropertiesXML_Type_pskel
 //
 
@@ -120,12 +240,6 @@ weaponClass_parser (::RPG_Item_WeaponClass_Type_pskel& p)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pskel::
-baseStorePrice_parser (::RPG_Item_StorePrice_Type_pskel& p)
-{
-  this->baseStorePrice_parser_ = &p;
-}
-
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
 baseDamage_parser (::RPG_Dice_Roll_Type_pskel& p)
 {
   this->baseDamage_parser_ = &p;
@@ -144,36 +258,32 @@ rangeIncrement_parser (::xml_schema::unsigned_byte_pskel& p)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pskel::
-baseWeight_parser (::xml_schema::unsigned_short_pskel& p)
-{
-  this->baseWeight_parser_ = &p;
-}
-
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
 typeOfDamage_parser (::RPG_Item_PhysicalDamageType_Type_pskel& p)
 {
   this->typeOfDamage_parser_ = &p;
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pskel::
-parsers (::RPG_Item_WeaponType_Type_pskel& weaponType,
+parsers (::xml_schema::unsigned_short_pskel& baseWeight,
+         ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
+         ::RPG_Item_CreationCost_Type_pskel& costToCreate,
+         ::RPG_Item_WeaponType_Type_pskel& weaponType,
          ::RPG_Item_WeaponCategory_Type_pskel& weaponCategory,
          ::RPG_Item_WeaponClass_Type_pskel& weaponClass,
-         ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
          ::RPG_Dice_Roll_Type_pskel& baseDamage,
          ::RPG_Item_CriticalHitModifier_Type_pskel& criticalHitModifier,
          ::xml_schema::unsigned_byte_pskel& rangeIncrement,
-         ::xml_schema::unsigned_short_pskel& baseWeight,
          ::RPG_Item_PhysicalDamageType_Type_pskel& typeOfDamage)
 {
+  this->baseWeight_parser_ = &baseWeight;
+  this->baseStorePrice_parser_ = &baseStorePrice;
+  this->costToCreate_parser_ = &costToCreate;
   this->weaponType_parser_ = &weaponType;
   this->weaponCategory_parser_ = &weaponCategory;
   this->weaponClass_parser_ = &weaponClass;
-  this->baseStorePrice_parser_ = &baseStorePrice;
   this->baseDamage_parser_ = &baseDamage;
   this->criticalHitModifier_parser_ = &criticalHitModifier;
   this->rangeIncrement_parser_ = &rangeIncrement;
-  this->baseWeight_parser_ = &baseWeight;
   this->typeOfDamage_parser_ = &typeOfDamage;
 }
 
@@ -182,11 +292,9 @@ RPG_Item_WeaponPropertiesXML_Type_pskel ()
 : weaponType_parser_ (0),
   weaponCategory_parser_ (0),
   weaponClass_parser_ (0),
-  baseStorePrice_parser_ (0),
   baseDamage_parser_ (0),
   criticalHitModifier_parser_ (0),
   rangeIncrement_parser_ (0),
-  baseWeight_parser_ (0),
   typeOfDamage_parser_ (0)
 {
 }
@@ -201,25 +309,27 @@ toHitModifier_parser (::xml_schema::byte_pskel& p)
 }
 
 void RPG_Item_MagicWeaponPropertiesXML_Type_pskel::
-parsers (::RPG_Item_WeaponType_Type_pskel& weaponType,
+parsers (::xml_schema::unsigned_short_pskel& baseWeight,
+         ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
+         ::RPG_Item_CreationCost_Type_pskel& costToCreate,
+         ::RPG_Item_WeaponType_Type_pskel& weaponType,
          ::RPG_Item_WeaponCategory_Type_pskel& weaponCategory,
          ::RPG_Item_WeaponClass_Type_pskel& weaponClass,
-         ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
          ::RPG_Dice_Roll_Type_pskel& baseDamage,
          ::RPG_Item_CriticalHitModifier_Type_pskel& criticalHitModifier,
          ::xml_schema::unsigned_byte_pskel& rangeIncrement,
-         ::xml_schema::unsigned_short_pskel& baseWeight,
          ::RPG_Item_PhysicalDamageType_Type_pskel& typeOfDamage,
          ::xml_schema::byte_pskel& toHitModifier)
 {
+  this->baseWeight_parser_ = &baseWeight;
+  this->baseStorePrice_parser_ = &baseStorePrice;
+  this->costToCreate_parser_ = &costToCreate;
   this->weaponType_parser_ = &weaponType;
   this->weaponCategory_parser_ = &weaponCategory;
   this->weaponClass_parser_ = &weaponClass;
-  this->baseStorePrice_parser_ = &baseStorePrice;
   this->baseDamage_parser_ = &baseDamage;
   this->criticalHitModifier_parser_ = &criticalHitModifier;
   this->rangeIncrement_parser_ = &rangeIncrement;
-  this->baseWeight_parser_ = &baseWeight;
   this->typeOfDamage_parser_ = &typeOfDamage;
   this->toHitModifier_parser_ = &toHitModifier;
 }
@@ -267,12 +377,6 @@ armorCategory_parser (::RPG_Item_ArmorCategory_Type_pskel& p)
 }
 
 void RPG_Item_ArmorPropertiesXML_Type_pskel::
-baseStorePrice_parser (::RPG_Item_StorePrice_Type_pskel& p)
-{
-  this->baseStorePrice_parser_ = &p;
-}
-
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
 baseArmorBonus_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->baseArmorBonus_parser_ = &p;
@@ -303,44 +407,38 @@ baseSpeed_parser (::xml_schema::unsigned_short_pskel& p)
 }
 
 void RPG_Item_ArmorPropertiesXML_Type_pskel::
-baseWeight_parser (::xml_schema::unsigned_short_pskel& p)
-{
-  this->baseWeight_parser_ = &p;
-}
-
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
-parsers (::RPG_Item_ArmorType_Type_pskel& armorType,
-         ::RPG_Item_ArmorCategory_Type_pskel& armorCategory,
+parsers (::xml_schema::unsigned_short_pskel& baseWeight,
          ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
+         ::RPG_Item_CreationCost_Type_pskel& costToCreate,
+         ::RPG_Item_ArmorType_Type_pskel& armorType,
+         ::RPG_Item_ArmorCategory_Type_pskel& armorCategory,
          ::xml_schema::unsigned_byte_pskel& baseArmorBonus,
          ::xml_schema::unsigned_byte_pskel& maxDexterityBonus,
          ::xml_schema::byte_pskel& armorCheckPenalty,
          ::xml_schema::unsigned_byte_pskel& arcaneSpellFailure,
-         ::xml_schema::unsigned_short_pskel& baseSpeed,
-         ::xml_schema::unsigned_short_pskel& baseWeight)
+         ::xml_schema::unsigned_short_pskel& baseSpeed)
 {
+  this->baseWeight_parser_ = &baseWeight;
+  this->baseStorePrice_parser_ = &baseStorePrice;
+  this->costToCreate_parser_ = &costToCreate;
   this->armorType_parser_ = &armorType;
   this->armorCategory_parser_ = &armorCategory;
-  this->baseStorePrice_parser_ = &baseStorePrice;
   this->baseArmorBonus_parser_ = &baseArmorBonus;
   this->maxDexterityBonus_parser_ = &maxDexterityBonus;
   this->armorCheckPenalty_parser_ = &armorCheckPenalty;
   this->arcaneSpellFailure_parser_ = &arcaneSpellFailure;
   this->baseSpeed_parser_ = &baseSpeed;
-  this->baseWeight_parser_ = &baseWeight;
 }
 
 RPG_Item_ArmorPropertiesXML_Type_pskel::
 RPG_Item_ArmorPropertiesXML_Type_pskel ()
 : armorType_parser_ (0),
   armorCategory_parser_ (0),
-  baseStorePrice_parser_ (0),
   baseArmorBonus_parser_ (0),
   maxDexterityBonus_parser_ (0),
   armorCheckPenalty_parser_ (0),
   arcaneSpellFailure_parser_ (0),
-  baseSpeed_parser_ (0),
-  baseWeight_parser_ (0)
+  baseSpeed_parser_ (0)
 {
 }
 
@@ -354,26 +452,28 @@ defenseModifier_parser (::xml_schema::byte_pskel& p)
 }
 
 void RPG_Item_MagicArmorPropertiesXML_Type_pskel::
-parsers (::RPG_Item_ArmorType_Type_pskel& armorType,
-         ::RPG_Item_ArmorCategory_Type_pskel& armorCategory,
+parsers (::xml_schema::unsigned_short_pskel& baseWeight,
          ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
+         ::RPG_Item_CreationCost_Type_pskel& costToCreate,
+         ::RPG_Item_ArmorType_Type_pskel& armorType,
+         ::RPG_Item_ArmorCategory_Type_pskel& armorCategory,
          ::xml_schema::unsigned_byte_pskel& baseArmorBonus,
          ::xml_schema::unsigned_byte_pskel& maxDexterityBonus,
          ::xml_schema::byte_pskel& armorCheckPenalty,
          ::xml_schema::unsigned_byte_pskel& arcaneSpellFailure,
          ::xml_schema::unsigned_short_pskel& baseSpeed,
-         ::xml_schema::unsigned_short_pskel& baseWeight,
          ::xml_schema::byte_pskel& defenseModifier)
 {
+  this->baseWeight_parser_ = &baseWeight;
+  this->baseStorePrice_parser_ = &baseStorePrice;
+  this->costToCreate_parser_ = &costToCreate;
   this->armorType_parser_ = &armorType;
   this->armorCategory_parser_ = &armorCategory;
-  this->baseStorePrice_parser_ = &baseStorePrice;
   this->baseArmorBonus_parser_ = &baseArmorBonus;
   this->maxDexterityBonus_parser_ = &maxDexterityBonus;
   this->armorCheckPenalty_parser_ = &armorCheckPenalty;
   this->arcaneSpellFailure_parser_ = &arcaneSpellFailure;
   this->baseSpeed_parser_ = &baseSpeed;
-  this->baseWeight_parser_ = &baseWeight;
   this->defenseModifier_parser_ = &defenseModifier;
 }
 
@@ -594,6 +694,294 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
+// RPG_Item_CreationCost_Type_pskel
+//
+
+void RPG_Item_CreationCost_Type_pskel::
+numGoldPieces (unsigned int)
+{
+}
+
+void RPG_Item_CreationCost_Type_pskel::
+numExperiencePoints (unsigned int)
+{
+}
+
+bool RPG_Item_CreationCost_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "numGoldPieces" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->numGoldPieces_parser_;
+
+    if (this->numGoldPieces_parser_)
+      this->numGoldPieces_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "numExperiencePoints" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->numExperiencePoints_parser_;
+
+    if (this->numExperiencePoints_parser_)
+      this->numExperiencePoints_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Item_CreationCost_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "numGoldPieces" && ns == "urn:rpg")
+  {
+    if (this->numGoldPieces_parser_)
+      this->numGoldPieces (this->numGoldPieces_parser_->post_unsigned_int ());
+
+    return true;
+  }
+
+  if (n == "numExperiencePoints" && ns == "urn:rpg")
+  {
+    if (this->numExperiencePoints_parser_)
+      this->numExperiencePoints (this->numExperiencePoints_parser_->post_unsigned_int ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Item_BaseProperties_Type_pskel
+//
+
+void RPG_Item_BaseProperties_Type_pskel::
+baseWeight (unsigned short)
+{
+}
+
+void RPG_Item_BaseProperties_Type_pskel::
+baseStorePrice (const RPG_Item_StorePrice&)
+{
+}
+
+void RPG_Item_BaseProperties_Type_pskel::
+costToCreate (const RPG_Item_CreationCost&)
+{
+}
+
+bool RPG_Item_BaseProperties_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "baseWeight" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->baseWeight_parser_;
+
+    if (this->baseWeight_parser_)
+      this->baseWeight_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "baseStorePrice" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->baseStorePrice_parser_;
+
+    if (this->baseStorePrice_parser_)
+      this->baseStorePrice_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "costToCreate" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->costToCreate_parser_;
+
+    if (this->costToCreate_parser_)
+      this->costToCreate_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Item_BaseProperties_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "baseWeight" && ns == "urn:rpg")
+  {
+    if (this->baseWeight_parser_)
+      this->baseWeight (this->baseWeight_parser_->post_unsigned_short ());
+
+    return true;
+  }
+
+  if (n == "baseStorePrice" && ns == "urn:rpg")
+  {
+    if (this->baseStorePrice_parser_)
+      this->baseStorePrice (this->baseStorePrice_parser_->post_RPG_Item_StorePrice_Type ());
+
+    return true;
+  }
+
+  if (n == "costToCreate" && ns == "urn:rpg")
+  {
+    if (this->costToCreate_parser_)
+      this->costToCreate (this->costToCreate_parser_->post_RPG_Item_CreationCost_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Item_MagicalPrerequisites_Type_pskel
+//
+
+void RPG_Item_MagicalPrerequisites_Type_pskel::
+minCasterLevel (unsigned char)
+{
+}
+
+bool RPG_Item_MagicalPrerequisites_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "minCasterLevel" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->minCasterLevel_parser_;
+
+    if (this->minCasterLevel_parser_)
+      this->minCasterLevel_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Item_MagicalPrerequisites_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "minCasterLevel" && ns == "urn:rpg")
+  {
+    if (this->minCasterLevel_parser_)
+      this->minCasterLevel (this->minCasterLevel_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Item_MagicalProperties_Type_pskel
+//
+
+void RPG_Item_MagicalProperties_Type_pskel::
+Aura (const RPG_Magic_School&)
+{
+}
+
+void RPG_Item_MagicalProperties_Type_pskel::
+Prerequisites (const RPG_Item_MagicalPrerequisites&)
+{
+}
+
+bool RPG_Item_MagicalProperties_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "Aura" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->Aura_parser_;
+
+    if (this->Aura_parser_)
+      this->Aura_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "Prerequisites" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->Prerequisites_parser_;
+
+    if (this->Prerequisites_parser_)
+      this->Prerequisites_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Item_MagicalProperties_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "Aura" && ns == "urn:rpg")
+  {
+    if (this->Aura_parser_)
+      this->Aura (this->Aura_parser_->post_RPG_Magic_School_Type ());
+
+    return true;
+  }
+
+  if (n == "Prerequisites" && ns == "urn:rpg")
+  {
+    if (this->Prerequisites_parser_)
+      this->Prerequisites (this->Prerequisites_parser_->post_RPG_Item_MagicalPrerequisites_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
 // RPG_Item_WeaponPropertiesXML_Type_pskel
 //
 
@@ -613,11 +1001,6 @@ weaponClass (const RPG_Item_WeaponClass&)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pskel::
-baseStorePrice (const RPG_Item_StorePrice&)
-{
-}
-
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
 baseDamage (const RPG_Item_Damage&)
 {
 }
@@ -633,11 +1016,6 @@ rangeIncrement (unsigned char)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pskel::
-baseWeight (unsigned short)
-{
-}
-
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
 typeOfDamage (const RPG_Item_PhysicalDamageType&)
 {
 }
@@ -649,7 +1027,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 {
   XSD_UNUSED (t);
 
-  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+  if (this->::RPG_Item_BaseProperties_Type_pskel::_start_element_impl (ns, n, t))
     return true;
 
   if (n == "weaponType" && ns == "urn:rpg")
@@ -678,16 +1056,6 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->weaponClass_parser_)
       this->weaponClass_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "baseStorePrice" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->baseStorePrice_parser_;
-
-    if (this->baseStorePrice_parser_)
-      this->baseStorePrice_parser_->pre ();
 
     return true;
   }
@@ -722,16 +1090,6 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "baseWeight" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->baseWeight_parser_;
-
-    if (this->baseWeight_parser_)
-      this->baseWeight_parser_->pre ();
-
-    return true;
-  }
-
   if (n == "typeOfDamage" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->typeOfDamage_parser_;
@@ -749,7 +1107,7 @@ bool RPG_Item_WeaponPropertiesXML_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
-  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+  if (this->::RPG_Item_BaseProperties_Type_pskel::_end_element_impl (ns, n))
     return true;
 
   if (n == "weaponType" && ns == "urn:rpg")
@@ -772,14 +1130,6 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->weaponClass_parser_)
       this->weaponClass (this->weaponClass_parser_->post_RPG_Item_WeaponClass_Type ());
-
-    return true;
-  }
-
-  if (n == "baseStorePrice" && ns == "urn:rpg")
-  {
-    if (this->baseStorePrice_parser_)
-      this->baseStorePrice (this->baseStorePrice_parser_->post_RPG_Item_StorePrice_Type ());
 
     return true;
   }
@@ -808,14 +1158,6 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "baseWeight" && ns == "urn:rpg")
-  {
-    if (this->baseWeight_parser_)
-      this->baseWeight (this->baseWeight_parser_->post_unsigned_short ());
-
-    return true;
-  }
-
   if (n == "typeOfDamage" && ns == "urn:rpg")
   {
     if (this->typeOfDamage_parser_)
@@ -832,11 +1174,6 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 
 void RPG_Item_MagicWeaponPropertiesXML_Type_pskel::
 toHitModifier (signed char)
-{
-}
-
-void RPG_Item_MagicWeaponPropertiesXML_Type_pskel::
-post_RPG_Item_MagicWeaponPropertiesXML_Type ()
 {
 }
 
@@ -949,11 +1286,6 @@ armorCategory (const RPG_Item_ArmorCategory&)
 }
 
 void RPG_Item_ArmorPropertiesXML_Type_pskel::
-baseStorePrice (const RPG_Item_StorePrice&)
-{
-}
-
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
 baseArmorBonus (unsigned char)
 {
 }
@@ -978,11 +1310,6 @@ baseSpeed (unsigned short)
 {
 }
 
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
-baseWeight (unsigned short)
-{
-}
-
 bool RPG_Item_ArmorPropertiesXML_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
@@ -990,7 +1317,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 {
   XSD_UNUSED (t);
 
-  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+  if (this->::RPG_Item_BaseProperties_Type_pskel::_start_element_impl (ns, n, t))
     return true;
 
   if (n == "armorType" && ns == "urn:rpg")
@@ -1009,16 +1336,6 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->armorCategory_parser_)
       this->armorCategory_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "baseStorePrice" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->baseStorePrice_parser_;
-
-    if (this->baseStorePrice_parser_)
-      this->baseStorePrice_parser_->pre ();
 
     return true;
   }
@@ -1073,16 +1390,6 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "baseWeight" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->baseWeight_parser_;
-
-    if (this->baseWeight_parser_)
-      this->baseWeight_parser_->pre ();
-
-    return true;
-  }
-
   return false;
 }
 
@@ -1090,7 +1397,7 @@ bool RPG_Item_ArmorPropertiesXML_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
-  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+  if (this->::RPG_Item_BaseProperties_Type_pskel::_end_element_impl (ns, n))
     return true;
 
   if (n == "armorType" && ns == "urn:rpg")
@@ -1105,14 +1412,6 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->armorCategory_parser_)
       this->armorCategory (this->armorCategory_parser_->post_RPG_Item_ArmorCategory_Type ());
-
-    return true;
-  }
-
-  if (n == "baseStorePrice" && ns == "urn:rpg")
-  {
-    if (this->baseStorePrice_parser_)
-      this->baseStorePrice (this->baseStorePrice_parser_->post_RPG_Item_StorePrice_Type ());
 
     return true;
   }
@@ -1157,14 +1456,6 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "baseWeight" && ns == "urn:rpg")
-  {
-    if (this->baseWeight_parser_)
-      this->baseWeight (this->baseWeight_parser_->post_unsigned_short ());
-
-    return true;
-  }
-
   return false;
 }
 
@@ -1173,11 +1464,6 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 
 void RPG_Item_MagicArmorPropertiesXML_Type_pskel::
 defenseModifier (signed char)
-{
-}
-
-void RPG_Item_MagicArmorPropertiesXML_Type_pskel::
-post_RPG_Item_MagicArmorPropertiesXML_Type ()
 {
 }
 

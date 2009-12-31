@@ -173,6 +173,126 @@ post_RPG_Item_PhysicalDamageType_Type ()
   // return ... ;
 }
 
+// RPG_Item_CreationCost_Type_pimpl
+//
+
+void RPG_Item_CreationCost_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Item_CreationCost_Type_pimpl::
+numGoldPieces (unsigned int numGoldPieces)
+{
+  // TODO
+  //
+}
+
+void RPG_Item_CreationCost_Type_pimpl::
+numExperiencePoints (unsigned int numExperiencePoints)
+{
+  // TODO
+  //
+}
+
+RPG_Item_CreationCost RPG_Item_CreationCost_Type_pimpl::
+post_RPG_Item_CreationCost_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Item_BaseProperties_Type_pimpl
+//
+
+void RPG_Item_BaseProperties_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Item_BaseProperties_Type_pimpl::
+baseWeight (unsigned short baseWeight)
+{
+  // TODO
+  //
+}
+
+void RPG_Item_BaseProperties_Type_pimpl::
+baseStorePrice (const RPG_Item_StorePrice& baseStorePrice)
+{
+  // TODO
+  //
+}
+
+void RPG_Item_BaseProperties_Type_pimpl::
+costToCreate (const RPG_Item_CreationCost& costToCreate)
+{
+  // TODO
+  //
+}
+
+RPG_Item_BaseProperties RPG_Item_BaseProperties_Type_pimpl::
+post_RPG_Item_BaseProperties_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Item_MagicalPrerequisites_Type_pimpl
+//
+
+void RPG_Item_MagicalPrerequisites_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Item_MagicalPrerequisites_Type_pimpl::
+minCasterLevel (unsigned char minCasterLevel)
+{
+  // TODO
+  //
+}
+
+RPG_Item_MagicalPrerequisites RPG_Item_MagicalPrerequisites_Type_pimpl::
+post_RPG_Item_MagicalPrerequisites_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Item_MagicalProperties_Type_pimpl
+//
+
+void RPG_Item_MagicalProperties_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Item_MagicalProperties_Type_pimpl::
+Aura (const RPG_Magic_School& Aura)
+{
+  // TODO
+  //
+}
+
+void RPG_Item_MagicalProperties_Type_pimpl::
+Prerequisites (const RPG_Item_MagicalPrerequisites& Prerequisites)
+{
+  // TODO
+  //
+}
+
+RPG_Item_MagicalProperties RPG_Item_MagicalProperties_Type_pimpl::
+post_RPG_Item_MagicalProperties_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
 // RPG_Item_WeaponPropertiesXML_Type_pimpl
 //
 
@@ -203,13 +323,6 @@ weaponClass (const RPG_Item_WeaponClass& weaponClass)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pimpl::
-baseStorePrice (const RPG_Item_StorePrice& baseStorePrice)
-{
-  // TODO
-  //
-}
-
-void RPG_Item_WeaponPropertiesXML_Type_pimpl::
 baseDamage (const RPG_Item_Damage& baseDamage)
 {
   // TODO
@@ -231,13 +344,6 @@ rangeIncrement (unsigned char rangeIncrement)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pimpl::
-baseWeight (unsigned short baseWeight)
-{
-  // TODO
-  //
-}
-
-void RPG_Item_WeaponPropertiesXML_Type_pimpl::
 typeOfDamage (const RPG_Item_PhysicalDamageType& typeOfDamage)
 {
   // TODO
@@ -247,6 +353,8 @@ typeOfDamage (const RPG_Item_PhysicalDamageType& typeOfDamage)
 RPG_Item_WeaponPropertiesXML RPG_Item_WeaponPropertiesXML_Type_pimpl::
 post_RPG_Item_WeaponPropertiesXML_Type ()
 {
+  const RPG_Item_BaseProperties& v (post_RPG_Item_BaseProperties_Type ());
+
   // TODO
   //
   // return ... ;
@@ -267,13 +375,14 @@ toHitModifier (signed char toHitModifier)
   //
 }
 
-void RPG_Item_MagicWeaponPropertiesXML_Type_pimpl::
+RPG_Item_MagicWeaponPropertiesXML RPG_Item_MagicWeaponPropertiesXML_Type_pimpl::
 post_RPG_Item_MagicWeaponPropertiesXML_Type ()
 {
   const RPG_Item_WeaponPropertiesXML& v (post_RPG_Item_WeaponPropertiesXML_Type ());
 
   // TODO
   //
+  // return ... ;
 }
 
 // RPG_Item_WeaponDictionary_Type_pimpl
@@ -355,13 +464,6 @@ armorCategory (const RPG_Item_ArmorCategory& armorCategory)
 }
 
 void RPG_Item_ArmorPropertiesXML_Type_pimpl::
-baseStorePrice (const RPG_Item_StorePrice& baseStorePrice)
-{
-  // TODO
-  //
-}
-
-void RPG_Item_ArmorPropertiesXML_Type_pimpl::
 baseArmorBonus (unsigned char baseArmorBonus)
 {
   // TODO
@@ -396,16 +498,11 @@ baseSpeed (unsigned short baseSpeed)
   //
 }
 
-void RPG_Item_ArmorPropertiesXML_Type_pimpl::
-baseWeight (unsigned short baseWeight)
-{
-  // TODO
-  //
-}
-
 RPG_Item_ArmorPropertiesXML RPG_Item_ArmorPropertiesXML_Type_pimpl::
 post_RPG_Item_ArmorPropertiesXML_Type ()
 {
+  const RPG_Item_BaseProperties& v (post_RPG_Item_BaseProperties_Type ());
+
   // TODO
   //
   // return ... ;
@@ -426,13 +523,14 @@ defenseModifier (signed char defenseModifier)
   //
 }
 
-void RPG_Item_MagicArmorPropertiesXML_Type_pimpl::
+RPG_Item_MagicArmorPropertiesXML RPG_Item_MagicArmorPropertiesXML_Type_pimpl::
 post_RPG_Item_MagicArmorPropertiesXML_Type ()
 {
   const RPG_Item_ArmorPropertiesXML& v (post_RPG_Item_ArmorPropertiesXML_Type ());
 
   // TODO
   //
+  // return ... ;
 }
 
 // RPG_Item_ArmorDictionary_Type_pimpl

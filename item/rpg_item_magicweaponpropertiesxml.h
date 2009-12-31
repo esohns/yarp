@@ -22,6 +22,7 @@
 #define RPG_ITEM_MAGICWEAPONPROPERTIESXML_H
 
 struct RPG_Item_MagicWeaponPropertiesXML
+ : public RPG_Item_WeaponPropertiesXML
 {
   char toHitModifier;
 };

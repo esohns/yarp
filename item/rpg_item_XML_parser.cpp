@@ -265,12 +265,6 @@ void RPG_Item_CriticalHitModifier_Type::damageModifier(unsigned char damageModif
   myCurrentCriticalHitModifier.damageModifier = damageModifier_in;
 }
 
-// void RPG_Item_CriticalHitModifier_Type::pre()
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Item_CriticalHitModifier_Type::pre"));
-//
-// }
-
 RPG_Item_CriticalHitModifier RPG_Item_CriticalHitModifier_Type::post_RPG_Item_CriticalHitModifier_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_CriticalHitModifier_Type::post_RPG_Item_CriticalHitModifier_Type"));
@@ -278,17 +272,151 @@ RPG_Item_CriticalHitModifier RPG_Item_CriticalHitModifier_Type::post_RPG_Item_Cr
   return myCurrentCriticalHitModifier;
 }
 
-// void RPG_Item_WeaponDamageType_Type::pre()
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponDamageType_Type::pre"));
-//
-// }
-
 RPG_Item_PhysicalDamageType RPG_Item_PhysicalDamageType_Type::post_RPG_Item_PhysicalDamageType_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_PhysicalDamageType_Type::post_RPG_Item_PhysicalDamageType_Type"));
 
   return RPG_Item_PhysicalDamageTypeHelper::stringToRPG_Item_PhysicalDamageType(post_string());
+}
+
+RPG_Item_CreationCost_Type::RPG_Item_CreationCost_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_CreationCost_Type::RPG_Item_CreationCost_Type"));
+
+  myCurrentCreationCost.numGoldPieces = 0;
+  myCurrentCreationCost.numExperiencePoints = 0;
+}
+
+void RPG_Item_CreationCost_Type::numGoldPieces(unsigned int goldPieces_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_CreationCost_Type::numGoldPieces"));
+
+  myCurrentCreationCost.numGoldPieces = goldPieces_in;
+}
+
+void RPG_Item_CreationCost_Type::numExperiencePoints(unsigned int experiencePoints_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_CreationCost_Type::numExperiencePoints"));
+
+  myCurrentCreationCost.numExperiencePoints = experiencePoints_in;
+}
+
+RPG_Item_CreationCost RPG_Item_CreationCost_Type::post_RPG_Item_CreationCost_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_CreationCost_Type::post_RPG_Item_CreationCost_Type"));
+
+  RPG_Item_CreationCost result = myCurrentCreationCost;
+
+  myCurrentCreationCost.numGoldPieces = 0;
+  myCurrentCreationCost.numExperiencePoints = 0;
+
+  return result;
+}
+
+RPG_Item_BaseProperties_Type::RPG_Item_BaseProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_BaseProperties_Type::RPG_Item_BaseProperties_Type"));
+
+  myBaseProperties.baseWeight = 0;
+  myBaseProperties.baseStorePrice.numGoldPieces = 0;
+  myBaseProperties.baseStorePrice.numSilverPieces = 0;
+  myBaseProperties.costToCreate.numGoldPieces = 0;
+  myBaseProperties.costToCreate.numExperiencePoints = 0;
+}
+
+void RPG_Item_BaseProperties_Type::baseWeight(unsigned short baseWeight_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_BaseProperties_Type::baseWeight"));
+
+  myBaseProperties.baseWeight = baseWeight_in;
+}
+
+void RPG_Item_BaseProperties_Type::baseStorePrice(const RPG_Item_StorePrice& baseStorePrice_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_BaseProperties_Type::baseStorePrice"));
+
+  myBaseProperties.baseStorePrice = baseStorePrice_in;
+}
+
+void RPG_Item_BaseProperties_Type::costToCreate(const RPG_Item_CreationCost& creationCost_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_BaseProperties_Type::costToCreate"));
+
+  myBaseProperties.costToCreate = creationCost_in;
+}
+
+RPG_Item_BaseProperties RPG_Item_BaseProperties_Type::post_RPG_Item_BaseProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_BaseProperties_Type::post_RPG_Item_BaseProperties_Type"));
+
+  RPG_Item_BaseProperties result = myBaseProperties;
+
+  myBaseProperties.baseWeight = 0;
+  myBaseProperties.baseStorePrice.numGoldPieces = 0;
+  myBaseProperties.baseStorePrice.numSilverPieces = 0;
+  myBaseProperties.costToCreate.numGoldPieces = 0;
+  myBaseProperties.costToCreate.numExperiencePoints = 0;
+
+  return result;
+}
+
+RPG_Item_MagicalPrerequisites_Type::RPG_Item_MagicalPrerequisites_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_MagicalPrerequisites_Type::RPG_Item_MagicalPrerequisites_Type"));
+
+  myCurrentPrerequisites.minCasterLevel = 0;
+}
+
+void RPG_Item_MagicalPrerequisites_Type::minCasterLevel(unsigned char minCasterLevel_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_MagicalPrerequisites_Type::minCasterLevel"));
+
+  myCurrentPrerequisites.minCasterLevel = minCasterLevel_in;
+}
+
+RPG_Item_MagicalPrerequisites RPG_Item_MagicalPrerequisites_Type::post_RPG_Item_MagicalPrerequisites_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_MagicalPrerequisites_Type::post_RPG_Item_MagicalPrerequisites_Type"));
+
+  RPG_Item_MagicalPrerequisites result = myCurrentPrerequisites;
+
+  myCurrentPrerequisites.minCasterLevel = 0;
+
+  return result;
+}
+
+RPG_Item_MagicalProperties_Type::RPG_Item_MagicalProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_MagicalProperties_Type::RPG_Item_MagicalProperties_Type"));
+
+  myCurrentProperties.Aura = RPG_MAGIC_SCHOOL_INVALID;
+  myCurrentProperties.Prerequisites.minCasterLevel = 0;
+}
+
+void RPG_Item_MagicalProperties_Type::Aura(const RPG_Magic_School& school_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_MagicalProperties_Type::Aura"));
+
+  myCurrentProperties.Aura = school_in;
+}
+
+void RPG_Item_MagicalProperties_Type::Prerequisites(const RPG_Item_MagicalPrerequisites& prerequisites_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_MagicalProperties_Type::Prerequisites"));
+
+  myCurrentProperties.Prerequisites = prerequisites_in;
+}
+
+RPG_Item_MagicalProperties RPG_Item_MagicalProperties_Type::post_RPG_Item_MagicalProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_MagicalProperties_Type::post_RPG_Item_MagicalProperties_Type"));
+
+  RPG_Item_MagicalProperties result = myCurrentProperties;
+
+  myCurrentProperties.Aura = RPG_MAGIC_SCHOOL_INVALID;
+  myCurrentProperties.Prerequisites.minCasterLevel = 0;
+
+  return result;
 }
 
 RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type()

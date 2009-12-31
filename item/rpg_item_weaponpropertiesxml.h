@@ -22,15 +22,14 @@
 #define RPG_ITEM_WEAPONPROPERTIESXML_H
 
 struct RPG_Item_WeaponPropertiesXML
+ : public RPG_Item_BaseProperties
 {
   RPG_Item_WeaponType weaponType;
   RPG_Item_WeaponCategory weaponCategory;
   RPG_Item_WeaponClass weaponClass;
-  RPG_Item_StorePrice baseStorePrice;
   RPG_Dice_Roll baseDamage;
   RPG_Item_CriticalHitModifier criticalHitModifier;
   unsigned char rangeIncrement;
-  unsigned short int baseWeight;
   std::vector<RPG_Item_PhysicalDamageType> typeOfDamages;
 };
 

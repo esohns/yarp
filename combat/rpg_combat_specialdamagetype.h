@@ -23,13 +23,16 @@
 
 enum RPG_Combat_SpecialDamageType
 {
-  DAMAGE_FIRE = 0,
+  DAMAGE_ACID = 0,
   DAMAGE_COLD,
-  DAMAGE_ACID,
+  DAMAGE_ELECTRICITY,
+  DAMAGE_FIRE,
+  DAMAGE_SONIC,
   DAMAGE_POISON,
-  DAMAGE_SLIME,
   DAMAGE_STUN,
-  DAMAGE_DRAIN_ATTRIBUTE,
+  DAMAGE_SLAY,
+  DAMAGE_DRAIN,
+  DAMAGE_SLIME,
   //
   RPG_COMBAT_SPECIALDAMAGETYPE_MAX,
   RPG_COMBAT_SPECIALDAMAGETYPE_INVALID
@@ -49,13 +52,16 @@ class RPG_Combat_SpecialDamageTypeHelper
   inline static void init()
   {
     myRPG_Combat_SpecialDamageTypeToStringTable.clear();
-    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_FIRE, ACE_TEXT_ALWAYS_CHAR("DAMAGE_FIRE")));
-    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_COLD, ACE_TEXT_ALWAYS_CHAR("DAMAGE_COLD")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_ACID, ACE_TEXT_ALWAYS_CHAR("DAMAGE_ACID")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_COLD, ACE_TEXT_ALWAYS_CHAR("DAMAGE_COLD")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_ELECTRICITY, ACE_TEXT_ALWAYS_CHAR("DAMAGE_ELECTRICITY")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_FIRE, ACE_TEXT_ALWAYS_CHAR("DAMAGE_FIRE")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_SONIC, ACE_TEXT_ALWAYS_CHAR("DAMAGE_SONIC")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_POISON, ACE_TEXT_ALWAYS_CHAR("DAMAGE_POISON")));
-    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_SLIME, ACE_TEXT_ALWAYS_CHAR("DAMAGE_SLIME")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_STUN, ACE_TEXT_ALWAYS_CHAR("DAMAGE_STUN")));
-    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_DRAIN_ATTRIBUTE, ACE_TEXT_ALWAYS_CHAR("DAMAGE_DRAIN_ATTRIBUTE")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_SLAY, ACE_TEXT_ALWAYS_CHAR("DAMAGE_SLAY")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_DRAIN, ACE_TEXT_ALWAYS_CHAR("DAMAGE_DRAIN")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_SLIME, ACE_TEXT_ALWAYS_CHAR("DAMAGE_SLIME")));
   };
 
   inline static std::string RPG_Combat_SpecialDamageTypeToString(const RPG_Combat_SpecialDamageType& element_in)
