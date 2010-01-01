@@ -47,18 +47,18 @@
               <typeDice>D_12</typeDice>
               <modifier>0</modifier>
             </amount>
-            <recurrence>
+            <duration>
               <incubationPeriod>
                 <numDice>1</numDice>
                 <typeDice>D_4</typeDice>
                 <modifier>1</modifier>
               </incubationPeriod>
-              <damageInterval>10</damageInterval>
-            </recurrence>
-            <malus>
+              <interval>10</interval>
+            </duration>
+            <other>
               <type>MALUS_NATURALARMOR</type>
               <modifier>-1</modifier>
-            </malus>
+            </other>
             <save>
               <type>SAVE_FORTITUDE</type>
               <difficultyClass>19</difficultyClass>
@@ -87,18 +87,18 @@
               <typeDice>D_12</typeDice>
               <modifier>0</modifier>
             </amount>
-            <recurrence>
+            <duration>
               <incubationPeriod>
                 <numDice>1</numDice>
                 <typeDice>D_4</typeDice>
                 <modifier>1</modifier>
               </incubationPeriod>
-              <damageInterval>10</damageInterval>
-            </recurrence>
-            <malus>
+              <interval>10</interval>
+            </duration>
+            <other>
               <type>MALUS_NATURALARMOR</type>
               <modifier>-1</modifier>
-            </malus>
+            </other>
             <save>
               <type>SAVE_FORTITUDE</type>
               <difficultyClass>19</difficultyClass>
@@ -239,18 +239,18 @@
               <typeDice>D_12</typeDice>
               <modifier>0</modifier>
             </amount>
-            <recurrence>
+            <duration>
               <incubationPeriod>
                 <numDice>1</numDice>
                 <typeDice>D_4</typeDice>
                 <modifier>1</modifier>
               </incubationPeriod>
-              <damageInterval>10</damageInterval>
-            </recurrence>
-            <malus>
+              <interval>10</interval>
+            </duration>
+            <other>
               <type>MALUS_NATURALARMOR</type>
               <modifier>-1</modifier>
-            </malus>
+            </other>
             <save>
               <type>SAVE_FORTITUDE</type>
               <difficultyClass>19</difficultyClass>
@@ -279,18 +279,18 @@
               <typeDice>D_12</typeDice>
               <modifier>0</modifier>
             </amount>
-            <recurrence>
+            <duration>
               <incubationPeriod>
                 <numDice>1</numDice>
                 <typeDice>D_4</typeDice>
                 <modifier>1</modifier>
               </incubationPeriod>
-              <damageInterval>10</damageInterval>
-            </recurrence>
-            <malus>
+              <interval>10</interval>
+            </duration>
+            <other>
               <type>MALUS_NATURALARMOR</type>
               <modifier>-1</modifier>
-            </malus>
+            </other>
             <save>
               <type>SAVE_FORTITUDE</type>
               <difficultyClass>19</difficultyClass>
@@ -434,11 +434,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_SLASHING</type>
-            <damage>
+            <amount>
               <numDice>2</numDice>
               <typeDice>D_6</typeDice>
               <modifier>4</modifier>
-            </damage>
+            </amount>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -450,11 +450,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_SLASHING</type>
-            <damage>
+            <amount>
               <numDice>2</numDice>
               <typeDice>D_6</typeDice>
               <modifier>4</modifier>
-            </damage>
+            </amount>
           </element>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
@@ -466,11 +466,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_PIERCING</type>
-            <damage>
+            <amount>
               <numDice>4</numDice>
               <typeDice>D_6</typeDice>
               <modifier>2</modifier>
-            </damage>
+            </amount>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -608,10 +608,10 @@
               <typeDice>D_4</typeDice>
               <modifier>0</modifier>
             </amount>
-            <malus>
-              <type>MALUS_GAINHITPOINTS</type>
+            <other>
+              <type>BONUS_HITPOINTS</type>
               <modifier>5</modifier>
-            </malus>
+            </other>
             <attribute>ATTRIBUTE_WISDOM</attribute>
           </element>
         </damage>
@@ -720,19 +720,19 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_BLUDGEONING</type>
-            <damage>
+            <amount>
               <numDice>1</numDice>
               <typeDice>D_8</typeDice>
               <modifier>12</modifier>
-            </damage>
+            </amount>
           </element>
           <element>
             <type>DAMAGE_STUN</type>
-            <damage>
+            <amount>
               <numDice>1</numDice>
               <typeDice>D_6</typeDice>
               <modifier>0</modifier>
-            </damage>
+            </amount>
             <save>
               <type>SAVE_FORTITUDE</type>
               <attribute>ATTRIBUTE_STRENGTH</attribute>
@@ -749,11 +749,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_BLUDGEONING</type>
-            <damage>
+            <amount>
               <numDice>1</numDice>
               <typeDice>D_8</typeDice>
               <modifier>9</modifier>
-            </damage>
+            </amount>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -767,19 +767,19 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_BLUDGEONING</type>
-            <damage>
+            <amount>
               <numDice>1</numDice>
               <typeDice>D_8</typeDice>
               <modifier>12</modifier>
-            </damage>
+            </amount>
           </element>
           <element>
             <type>DAMAGE_STUN</type>
-            <damage>
+            <amount>
               <numDice>1</numDice>
               <typeDice>D_6</typeDice>
               <modifier>0</modifier>
-            </damage>
+            </amount>
             <save>
               <type>SAVE_FORTITUDE</type>
               <attribute>ATTRIBUTE_STRENGTH</attribute>
@@ -796,11 +796,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_BLUDGEONING</type>
-            <damage>
+            <amount>
               <numDice>1</numDice>
               <typeDice>D_8</typeDice>
               <modifier>9</modifier>
-            </damage>
+            </amount>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -948,11 +948,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_SLASHING</type>
-            <damage>
+            <amount>
               <numDice>3</numDice>
               <typeDice>D_6</typeDice>
               <modifier>13</modifier>
-            </damage>
+            </amount>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -964,11 +964,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_BLUDGEONING</type>
-            <damage>
+            <amount>
               <numDice>2</numDice>
               <typeDice>D_8</typeDice>
               <modifier>10</modifier>
-            </damage>
+            </amount>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -982,11 +982,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_SLASHING</type>
-            <damage>
+            <amount>
               <numDice>3</numDice>
               <typeDice>D_6</typeDice>
               <modifier>13</modifier>
-            </damage>
+            </amount>
           </element>
         </damage>
         <numAttacksPerRound>3</numAttacksPerRound>
@@ -998,11 +998,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_BLUDGEONING</type>
-            <damage>
+            <amount>
               <numDice>2</numDice>
               <typeDice>D_8</typeDice>
               <modifier>10</modifier>
-            </damage>
+            </amount>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -1147,11 +1147,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_SLASHING</type>
-            <damage>
+            <amount>
               <numDice>3</numDice>
               <typeDice>D_6</typeDice>
               <modifier>18</modifier>
-            </damage>
+            </amount>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -1163,11 +1163,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_PIERCING</type>
-            <damage>
+            <amount>
               <numDice>2</numDice>
               <typeDice>D_6</typeDice>
               <modifier>7</modifier>
-            </damage>
+            </amount>
           </element>
           <element>
             <type>DAMAGE_SLAY</type>
@@ -1186,11 +1186,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_BLUDGEONING</type>
-            <damage>
+            <amount>
               <numDice>2</numDice>
               <typeDice>D_8</typeDice>
               <modifier>13</modifier>
-            </damage>
+            </amount>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -1205,11 +1205,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_SLASHING</type>
-            <damage>
+            <amount>
               <numDice>3</numDice>
               <typeDice>D_6</typeDice>
               <modifier>18</modifier>
-            </damage>
+            </amount>
           </element>
         </damage>
         <numAttacksPerRound>4</numAttacksPerRound>
@@ -1224,11 +1224,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_PIERCING</type>
-            <damage>
+            <amount>
               <numDice>2</numDice>
               <typeDice>D_6</typeDice>
               <modifier>7</modifier>
-            </damage>
+            </amount>
           </element>
           <element>
             <type>DAMAGE_SLAY</type>
@@ -1247,11 +1247,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_BLUDGEONING</type>
-            <damage>
+            <amount>
               <numDice>2</numDice>
               <typeDice>D_8</typeDice>
               <modifier>10</modifier>
-            </damage>
+            </amount>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -1400,11 +1400,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_BLUDGEONING</type>
-            <damage>
+            <amount>
               <numDice>1</numDice>
               <typeDice>D_3</typeDice>
               <modifier>-1</modifier>
-            </damage>
+            </amount>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -1416,11 +1416,11 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_BLUDGEONING</type>
-            <damage>
+            <amount>
               <numDice>1</numDice>
               <typeDice>D_3</typeDice>
               <modifier>-1</modifier>
-            </damage>
+            </amount>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
