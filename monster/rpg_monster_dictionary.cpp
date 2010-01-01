@@ -82,25 +82,36 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   naturalArmorClass_p.parsers(byte_p,
                               byte_p,
                               byte_p);
+
 //   RPG_Monster_NaturalWeapon_Type            naturalWeapon_p;
   RPG_Monster_WeaponTypeUnion_Type          weaponUnion_p;
   RPG_Combat_AttackForm_Type                attackForm_p;
+
   RPG_Combat_DamageTypeUnion_Type           damageType_p;
   ::xml_schema::unsigned_short_pimpl        unsigned_short_p;
-  RPG_Common_SavingThrow_Type               savingThrow_p;
+  RPG_Combat_DamageDuration_Type            duration_p;
+  duration_p.parsers(roll_p,
+                     unsigned_short_p,
+                     unsigned_short_p);
+  RPG_Combat_DamageBonus_Type               others_p;
   RPG_Common_Attribute_Type                 attribute_p;
+  RPG_Common_SavingThrow_Type               savingThrow_p;
+//   RPG_Common_Attribute_Type                 attribute_p;
   ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
   RPG_Common_SavingThrowModifier_Type       savingThrowModifier_p;
   savingThrowModifier_p.parsers(savingThrow_p,
                                 attribute_p,
                                 unsigned_byte_p);
+  ::xml_schema::boolean_pimpl               bool_p;
   RPG_Combat_DamageEffectType_Type          damageEffect_p;
   RPG_Combat_DamageElement_Type             damageElement_p;
   damageElement_p.parsers(damageType_p,
                           roll_p,
-                          unsigned_short_p,
+                          duration_p,
+                          others_p,
                           attribute_p,
                           savingThrowModifier_p,
+                          bool_p,
                           damageEffect_p);
   RPG_Combat_Damage_Type                    damage_p;
   damage_p.parsers(damageElement_p);
@@ -111,7 +122,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                          attackForm_p,
                          damage_p,
                          unsigned_byte_p);
-  ::xml_schema::boolean_pimpl               bool_p;
+//   ::xml_schema::boolean_pimpl               bool_p;
   RPG_Monster_Attack_Type                   attack_p;
   attack_p.parsers(byte_p,
                    byte_p,

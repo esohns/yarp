@@ -101,27 +101,33 @@ const std::string RPG_Item_Common_Tools::weaponDamageToString(const RPG_Item_Wea
   return result;
 }
 
-const RPG_Item_PhysicalDamageType RPG_Item_Common_Tools::weaponDamageToPhysicalDamageType(const RPG_Item_WeaponDamage& weaponDamage_in)
+const RPG_Item_WeaponDamageList_t RPG_Item_Common_Tools::weaponDamageToPhysicalDamageType(const RPG_Item_WeaponDamage& weaponDamage_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponDamageToPhysicalDamageType"));
+
+  RPG_Item_WeaponDamageList_t result;
 
   // sanity check
   if (weaponDamage_in.none())
   {
-    return PHYSICALDAMAGE_NONE;
+    result.insert(PHYSICALDAMAGE_NONE);
+
+    // finished !
+    return result;
   } // end IF
 
-  int result = PHYSICALDAMAGE_NONE;
+  int damageType = PHYSICALDAMAGE_NONE;
   for (int i = 0;
        i < weaponDamage_in.size();
-       i++, result++)
+       i++, damageType++)
   {
     if (weaponDamage_in.test(i))
     {
-      // *TODO*: we just return the first we find...
-      return ACE_static_cast(RPG_Item_PhysicalDamageType, result);
+      result.insert(ACE_static_cast(RPG_Item_PhysicalDamageType, damageType));
     } // end IF
   } // end FOR
+
+  return result;
 }
 
 const std::string RPG_Item_Common_Tools::damageToString(const RPG_Item_Damage& damage_in)

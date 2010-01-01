@@ -84,7 +84,7 @@ class RPG_Combat_DamageTypeUnion_Type_pimpl: public virtual RPG_Combat_DamageTyp
   post_RPG_Combat_DamageTypeUnion_Type ();
 };
 
-class RPG_Combat_RecurringDamage_Type_pimpl: public virtual RPG_Combat_RecurringDamage_Type_pskel
+class RPG_Combat_DamageDuration_Type_pimpl: public virtual RPG_Combat_DamageDuration_Type_pskel
 {
   public:
   virtual void
@@ -94,40 +94,40 @@ class RPG_Combat_RecurringDamage_Type_pimpl: public virtual RPG_Combat_Recurring
   incubationPeriod (const RPG_Dice_Roll&);
 
   virtual void
-  damageInterval (unsigned short);
+  interval (unsigned short);
 
   virtual void
-  duration (unsigned short);
+  totalDuration (unsigned short);
 
-  virtual void
-  post_RPG_Combat_RecurringDamage_Type ();
+  virtual RPG_Combat_DamageDuration
+  post_RPG_Combat_DamageDuration_Type ();
 };
 
-class RPG_Combat_DamageMalusType_Type_pimpl: public virtual RPG_Combat_DamageMalusType_Type_pskel,
+class RPG_Combat_DamageBonusType_Type_pimpl: public virtual RPG_Combat_DamageBonusType_Type_pskel,
   public ::xml_schema::string_pimpl
 {
   public:
   virtual void
   pre ();
 
-  virtual void
-  post_RPG_Combat_DamageMalusType_Type ();
+  virtual RPG_Combat_DamageBonusType
+  post_RPG_Combat_DamageBonusType_Type ();
 };
 
-class RPG_Combat_DamageMalus_Type_pimpl: public virtual RPG_Combat_DamageMalus_Type_pskel
+class RPG_Combat_DamageBonus_Type_pimpl: public virtual RPG_Combat_DamageBonus_Type_pskel
 {
   public:
   virtual void
   pre ();
 
   virtual void
-  type ();
+  type (const RPG_Combat_DamageBonusType&);
 
   virtual void
   modifier (signed char);
 
-  virtual void
-  post_RPG_Combat_DamageMalus_Type ();
+  virtual RPG_Combat_DamageBonus
+  post_RPG_Combat_DamageBonus_Type ();
 };
 
 class RPG_Combat_DamageEffectType_Type_pimpl: public virtual RPG_Combat_DamageEffectType_Type_pskel,
@@ -154,16 +154,16 @@ class RPG_Combat_DamageElement_Type_pimpl: public virtual RPG_Combat_DamageEleme
   amount (const RPG_Dice_Roll&);
 
   virtual void
-  recurrence ();
+  duration (const RPG_Combat_DamageDuration&);
 
   virtual void
-  malus ();
+  other (const RPG_Combat_DamageBonus&);
 
   virtual void
   attribute (const RPG_Common_Attribute&);
 
   virtual void
-  save ();
+  save (const RPG_Common_SavingThrowModifier&);
 
   virtual void
   counterMeasure (bool);

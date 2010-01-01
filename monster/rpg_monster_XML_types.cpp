@@ -1062,7 +1062,7 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
     return true;
 
-  if (n == "attackActionsAreInclusive" && ns == "urn:rpg")
+  if (n == "attackActionsAreInclusive" && ns.empty ())
   {
     if (this->attackActionsAreInclusive_parser_)
     {

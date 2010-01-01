@@ -80,6 +80,7 @@ class RPG_Monster_Dictionary_Type_pskel;
 #include <rpg_item_weapontype.h>
 #include <rpg_item_physicaldamagetype.h>
 #include <rpg_dice_incl.h>
+
 #include <rpg_common_savingthrow.h>
 #include <rpg_common_attribute.h>
 #include <rpg_common_savingthrowmodifier.h>

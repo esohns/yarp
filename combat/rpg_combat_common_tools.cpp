@@ -34,6 +34,8 @@
 #include <rpg_item_dictionary.h>
 #include <rpg_item_common_tools.h>
 
+#include <rpg_common_attribute.h>
+
 #include <rpg_dice.h>
 #include <rpg_dice_common_tools.h>
 #include <rpg_chance_common_tools.h>
@@ -49,6 +51,7 @@ RPG_Combat_AttackSituationToStringTable_t RPG_Combat_AttackSituationHelper::myRP
 RPG_Combat_DefenseSituationToStringTable_t RPG_Combat_DefenseSituationHelper::myRPG_Combat_DefenseSituationToStringTable;
 RPG_Combat_SpecialAttackToStringTable_t RPG_Combat_SpecialAttackHelper::myRPG_Combat_SpecialAttackToStringTable;
 RPG_Combat_SpecialDamageTypeToStringTable_t RPG_Combat_SpecialDamageTypeHelper::myRPG_Combat_SpecialDamageTypeToStringTable;
+RPG_Combat_DamageBonusTypeToStringTable_t RPG_Combat_DamageBonusTypeHelper::myRPG_Combat_DamageBonusTypeToStringTable;
 RPG_Combat_DamageEffectTypeToStringTable_t RPG_Combat_DamageEffectTypeHelper::myRPG_Combat_DamageEffectTypeToStringTable;
 
 void RPG_Combat_Common_Tools::initStringConversionTables()
@@ -60,6 +63,7 @@ void RPG_Combat_Common_Tools::initStringConversionTables()
   RPG_Combat_DefenseSituationHelper::init();
   RPG_Combat_SpecialAttackHelper::init();
   RPG_Combat_SpecialDamageTypeHelper::init();
+  RPG_Combat_DamageBonusTypeHelper::init();
   RPG_Combat_DamageEffectTypeHelper::init();
 
   // debug info
@@ -105,13 +109,84 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
 
     result += ACE_TEXT_ALWAYS_CHAR("type: ");
 //     result += RPG_Combat_DamageTypeUnionHelper::RPG_Combat_DamageTypeUnionToString((*iterator).type);
-    result += ACE_TEXT_ALWAYS_CHAR("\ndamage: ");
-    result += RPG_Dice_Common_Tools::rollToString((*iterator).damage);
-    if ((*iterator).duration)
+    result += ACE_TEXT_ALWAYS_CHAR("\namount: ");
+    result += RPG_Dice_Common_Tools::rollToString((*iterator).amount);
+    if ((*iterator).duration.interval ||
+        (*iterator).duration.totalDuration)
     {
-      converter << (*iterator).duration;
-      result += ACE_TEXT_ALWAYS_CHAR("\nduration: ");
+      result += ACE_TEXT_ALWAYS_CHAR("\nduration (incubation / interval / total): ");
+      result += RPG_Dice_Common_Tools::rollToString((*iterator).duration.incubationPeriod);
+      converter << (*iterator).duration.interval;
+      result += ACE_TEXT_ALWAYS_CHAR(" / ");
       result += converter.str();
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+      converter << (*iterator).duration.totalDuration;
+      result += ACE_TEXT_ALWAYS_CHAR(" / ");
+      result += converter.str();
+    } // end IF
+    for (std::vector<RPG_Combat_DamageBonus>::const_iterator iterator2 = (*iterator).others.begin();
+         iterator2 != (*iterator).others.end();
+         iterator2++)
+    {
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+
+      result += ACE_TEXT_ALWAYS_CHAR("\nother (bonus / modifier): ");
+      result += RPG_Combat_DamageBonusTypeHelper::RPG_Combat_DamageBonusTypeToString((*iterator2).type);
+      result += ACE_TEXT_ALWAYS_CHAR(" / ");
+      converter << (*iterator2).modifier;
+      result += converter.str();
+    } // end FOR
+    if ((*iterator).attribute != RPG_COMMON_ATTRIBUTE_INVALID)
+    {
+      result += ACE_TEXT_ALWAYS_CHAR("\nattribute: ");
+      result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator).attribute);
+    } // end IF
+    if ((*iterator).save.type != RPG_COMMON_SAVINGTHROW_INVALID)
+    {
+      result += ACE_TEXT_ALWAYS_CHAR("\nsave (type (attribute) / DC): ");
+      result += RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString((*iterator).save.type);
+      result += ACE_TEXT_ALWAYS_CHAR("(");
+      if ((*iterator).save.attribute != RPG_COMMON_ATTRIBUTE_INVALID)
+      {
+        result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator).save.attribute);
+      } // end IF
+      else
+      {
+        switch ((*iterator).save.type)
+        {
+          case SAVE_FORTITUDE:
+          {
+            result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_CONSTITUTION);
+            break;
+          }
+          case SAVE_REFLEX:
+          {
+            result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_DEXTERITY);
+            break;
+          }
+          case SAVE_WILL:
+          {
+            result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_WISDOM);
+            break;
+          }
+          default:
+          {
+            // debug info
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("invalid saving throw type: \"%s\", continuing\n"),
+                       RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString((*iterator).save.type).c_str()));
+            break;
+          }
+        } // end SWITCH
+      } // end ELSE
+      result += ACE_TEXT_ALWAYS_CHAR(") / ");
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+      converter << ACE_static_cast(int, (*iterator).save.difficultyClass);
+      result += converter.str();
+    } // end IF
+    if ((*iterator).counterMeasure)
+    {
+      result += ACE_TEXT_ALWAYS_CHAR("\ncounterMeasure: yes, there will be !");
     } // end IF
     result += ACE_TEXT_ALWAYS_CHAR("\neffect: ");
     result += RPG_Combat_DamageEffectTypeHelper::RPG_Combat_DamageEffectTypeToString((*iterator).effect);
@@ -582,6 +657,7 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
   short int DEX_modifier = 0;
   RPG_Combat_Damage damage;
   RPG_Combat_DamageElement damage_element;
+  RPG_Item_WeaponDamageList_t physicalDamageTypeList;
   if (attacker_in->isPlayerCharacter())
   {
     RPG_Character_Monster* monster = NULL;
@@ -680,17 +756,36 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
 is_player_hit:
       // compute damage
       damage.elements.clear();
-      damage_element.type.physicaldamagetype = RPG_Item_Common_Tools::weaponDamageToPhysicalDamageType(weapon_properties.typeOfDamage);
-      damage_element.damage = weapon_properties.baseDamage;
+      physicalDamageTypeList.clear();
+      physicalDamageTypeList = RPG_Item_Common_Tools::weaponDamageToPhysicalDamageType(weapon_properties.typeOfDamage);
+      for (RPG_Item_WeaponDamageListIterator_t iterator = physicalDamageTypeList.begin();
+           iterator != physicalDamageTypeList.end();
+           iterator++)
+      {
+        RPG_Combat_DamageTypeUnion damageType;
+        damageType.physicaldamagetype = *iterator;
+        damage_element.types.push_back(damageType);
+      } // end FOR
+      damage_element.amount = weapon_properties.baseDamage;
       // add STR modifier for melee attacks...
       // *TODO*: consider:
       // - this applies for slings and thrown weapons
       // - a STR penalty applies to any bow != Composite
       if (attackForm == ATTACKFORM_MELEE)
-        damage_element.damage.modifier += RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH));
+        damage_element.amount.modifier += RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH));
       if (is_critical_hit)
-        damage_element.damage *= weapon_properties.criticalHitModifier.damageModifier;
-      damage_element.duration = 0;
+        damage_element.amount *= weapon_properties.criticalHitModifier.damageModifier;
+      damage_element.duration.incubationPeriod.numDice = 0;
+      damage_element.duration.incubationPeriod.typeDice = RPG_DICE_DIETYPE_INVALID;
+      damage_element.duration.incubationPeriod.modifier = 0;
+      damage_element.duration.interval = 0;
+      damage_element.duration.totalDuration = 0;
+      damage_element.others.clear();
+      damage_element.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+      damage_element.save.type = RPG_COMMON_SAVINGTHROW_INVALID;
+      damage_element.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+      damage_element.save.difficultyClass = 0;
+      damage_element.counterMeasure = false;
       damage_element.effect = EFFECT_IMMEDIATE;
       damage.elements.push_back(damage_element);
       target_inout->sustainDamage(damage);
@@ -831,7 +926,7 @@ is_monster_hit:
             // *TODO*: this probably applies for physical/natural damage only !
             // *TODO*: consider manufactured (and equipped) weapons may have different modifiers
             // *IMPORTANT NOTE*: STR modifier already included...
-            (*iterator2).damage *= 2;
+            (*iterator2).amount *= 2;
           } // end FOR
         } // end IF
         target_inout->sustainDamage(damage);

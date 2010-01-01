@@ -240,7 +240,7 @@ void RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
     signed short damage_value = 0;
 
     result.clear();
-    RPG_Dice::simulateRoll((*iterator).damage,
+    RPG_Dice::simulateRoll((*iterator).amount,
                            1,
                            result);
     damage_value = result.front();

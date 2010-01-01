@@ -75,25 +75,25 @@
     <xsd:union memberTypes="RPG_Item_PhysicalDamageType_Type RPG_Combat_SpecialDamageType_Type"/>
   </xsd:simpleType>
 
-  <xsd:complexType name="RPG_Combat_RecurringDamage_Type">
+  <xsd:complexType name="RPG_Combat_DamageDuration_Type">
     <xsd:sequence>
       <xsd:element name="incubationPeriod" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
 <!--       <xsd:element name="incubationCounterMeasure" type="xsd:boolean" minOccurs="0" maxOccurs="1"/> -->
-      <xsd:element name="damageInterval" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="duration" type="xsd:unsignedShort" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="interval" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="totalDuration" type="xsd:unsignedShort" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:simpleType name="RPG_Combat_DamageMalusType_Type">
+  <xsd:simpleType name="RPG_Combat_DamageBonusType_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="BONUS_HITPOINTS"/>
       <xsd:enumeration value="MALUS_NATURALARMOR"/>
-      <xsd:enumeration value="MALUS_GAINHITPOINTS"/>
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:complexType name="RPG_Combat_DamageMalus_Type">
+  <xsd:complexType name="RPG_Combat_DamageBonus_Type">
     <xsd:sequence>
-      <xsd:element name="type" type="RPG_Combat_DamageMalusType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="type" type="RPG_Combat_DamageBonusType_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="modifier" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -109,10 +109,10 @@
 
   <xsd:complexType name="RPG_Combat_DamageElement_Type">
     <xsd:sequence>
-      <xsd:element name="type" type="RPG_Combat_DamageTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="type" type="RPG_Combat_DamageTypeUnion_Type" minOccurs="1" maxOccurs="unbounded"/>
       <xsd:element name="amount" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="recurrence" type="RPG_Combat_RecurringDamage_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="malus" type="RPG_Combat_DamageMalus_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="duration" type="RPG_Combat_DamageDuration_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="other" type="RPG_Combat_DamageBonus_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="save" type="RPG_Common_SavingThrowModifier_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="counterMeasure" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>

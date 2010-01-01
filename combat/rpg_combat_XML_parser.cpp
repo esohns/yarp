@@ -56,13 +56,6 @@ RPG_Combat_SpecialDamageType RPG_Combat_SpecialDamageType_Type::post_RPG_Combat_
   return RPG_Combat_SpecialDamageTypeHelper::stringToRPG_Combat_SpecialDamageType(post_string());
 }
 
-RPG_Combat_DamageEffectType RPG_Combat_DamageEffectType_Type::post_RPG_Combat_DamageEffectType_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageEffectType_Type::post_RPG_Combat_DamageEffectType_Type"));
-
-  return RPG_Combat_DamageEffectTypeHelper::stringToRPG_Combat_DamageEffectType(post_string());
-}
-
 RPG_Combat_DamageTypeUnion_Type::RPG_Combat_DamageTypeUnion_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageTypeUnion_Type::RPG_Combat_DamageTypeUnion_Type"));
@@ -98,15 +91,122 @@ RPG_Combat_DamageTypeUnion RPG_Combat_DamageTypeUnion_Type::post_RPG_Combat_Dama
   return result;
 }
 
+RPG_Combat_DamageDuration_Type::RPG_Combat_DamageDuration_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageDuration_Type::RPG_Combat_DamageDuration_Type"));
+
+  myCurrentDuration.incubationPeriod.numDice = 0;
+  myCurrentDuration.incubationPeriod.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentDuration.incubationPeriod.modifier = 0;
+  myCurrentDuration.interval = 0;
+  myCurrentDuration.totalDuration = 0;
+}
+
+void RPG_Combat_DamageDuration_Type::incubationPeriod(const RPG_Dice_Roll& incubationPeriod_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageDuration_Type::incubationPeriod"));
+
+  myCurrentDuration.incubationPeriod = incubationPeriod_in;
+}
+
+void RPG_Combat_DamageDuration_Type::interval(unsigned short interval_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageDuration_Type::interval"));
+
+  myCurrentDuration.interval = interval_in;
+}
+
+void RPG_Combat_DamageDuration_Type::totalDuration(unsigned short duration_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageDuration_Type::totalDuration"));
+
+  myCurrentDuration.totalDuration = duration_in;
+}
+
+RPG_Combat_DamageDuration RPG_Combat_DamageDuration_Type::post_RPG_Combat_DamageDuration_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageDuration_Type::post_RPG_Combat_DamageDuration_Type"));
+
+  RPG_Combat_DamageDuration result = myCurrentDuration;
+
+  // clear structure
+  myCurrentDuration.incubationPeriod.numDice = 0;
+  myCurrentDuration.incubationPeriod.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentDuration.incubationPeriod.modifier = 0;
+  myCurrentDuration.interval = 0;
+  myCurrentDuration.totalDuration = 0;
+
+  return result;
+}
+
+RPG_Combat_DamageBonusType RPG_Combat_DamageBonusType_Type::post_RPG_Combat_DamageBonusType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageBonusType_Type::post_RPG_Combat_DamageBonusType_Type"));
+
+  return RPG_Combat_DamageBonusTypeHelper::stringToRPG_Combat_DamageBonusType(post_string());
+}
+
+RPG_Combat_DamageBonus_Type::RPG_Combat_DamageBonus_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageBonus_Type::RPG_Combat_DamageBonus_Type"));
+
+  myCurrentDamageBonus.type = RPG_COMBAT_DAMAGEBONUSTYPE_INVALID;
+  myCurrentDamageBonus.modifier = 0;
+}
+
+void RPG_Combat_DamageBonus_Type::type(const RPG_Combat_DamageBonusType& type_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageBonus_Type::type"));
+
+  myCurrentDamageBonus.type = type_in;
+}
+
+void RPG_Combat_DamageBonus_Type::modifier(signed char modifier_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageBonus_Type::modifier"));
+
+  myCurrentDamageBonus.modifier = modifier_in;
+}
+
+RPG_Combat_DamageBonus RPG_Combat_DamageBonus_Type::post_RPG_Combat_DamageBonus_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageBonus_Type::post_RPG_Combat_DamageBonus_Type"));
+
+  RPG_Combat_DamageBonus result = myCurrentDamageBonus;
+
+  // clear structure
+  myCurrentDamageBonus.type = RPG_COMBAT_DAMAGEBONUSTYPE_INVALID;
+  myCurrentDamageBonus.modifier = 0;
+
+  return result;
+}
+
+RPG_Combat_DamageEffectType RPG_Combat_DamageEffectType_Type::post_RPG_Combat_DamageEffectType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageEffectType_Type::post_RPG_Combat_DamageEffectType_Type"));
+
+  return RPG_Combat_DamageEffectTypeHelper::stringToRPG_Combat_DamageEffectType(post_string());
+}
+
 RPG_Combat_DamageElement_Type::RPG_Combat_DamageElement_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::RPG_Combat_DamageElement_Type"));
 
-  myCurrentDamageElement.type.physicaldamagetype = RPG_ITEM_PHYSICALDAMAGETYPE_INVALID;
-  myCurrentDamageElement.damage.numDice = 0;
-  myCurrentDamageElement.damage.typeDice = RPG_DICE_DIETYPE_INVALID;
-  myCurrentDamageElement.damage.modifier = 0;
-  myCurrentDamageElement.duration = 0;
+  myCurrentDamageElement.types.clear();
+  myCurrentDamageElement.amount.numDice = 0;
+  myCurrentDamageElement.amount.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentDamageElement.amount.modifier = 0;
+  myCurrentDamageElement.duration.incubationPeriod.numDice = 0;
+  myCurrentDamageElement.duration.incubationPeriod.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentDamageElement.duration.incubationPeriod.modifier = 0;
+  myCurrentDamageElement.duration.interval = 0;
+  myCurrentDamageElement.duration.totalDuration = 0;
+  myCurrentDamageElement.others.clear();
+  myCurrentDamageElement.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentDamageElement.save.type = RPG_COMMON_SAVINGTHROW_INVALID;
+  myCurrentDamageElement.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentDamageElement.save.difficultyClass = 0;
+  myCurrentDamageElement.counterMeasure = false;
   myCurrentDamageElement.effect = RPG_COMBAT_DAMAGEEFFECTTYPE_INVALID;
 }
 
@@ -114,21 +214,49 @@ void RPG_Combat_DamageElement_Type::type(const RPG_Combat_DamageTypeUnion& damag
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::type"));
 
-  myCurrentDamageElement.type = damageType_in;
+  myCurrentDamageElement.types.push_back(damageType_in);
 }
 
-void RPG_Combat_DamageElement_Type::damage(const RPG_Dice_Roll& damage_in)
+void RPG_Combat_DamageElement_Type::amount(const RPG_Dice_Roll& amount_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::damage"));
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::amount"));
 
-  myCurrentDamageElement.damage = damage_in;
+  myCurrentDamageElement.amount = amount_in;
 }
 
-void RPG_Combat_DamageElement_Type::duration(unsigned short duration_in)
+void RPG_Combat_DamageElement_Type::duration(const RPG_Combat_DamageDuration& duration_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::duration"));
 
   myCurrentDamageElement.duration = duration_in;
+}
+
+void RPG_Combat_DamageElement_Type::other(const RPG_Combat_DamageBonus& bonus_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::other"));
+
+  myCurrentDamageElement.others.push_back(bonus_in);
+}
+
+void RPG_Combat_DamageElement_Type::attribute(const RPG_Common_Attribute& attitude_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::attribute"));
+
+  myCurrentDamageElement.attribute = attitude_in;
+}
+
+void RPG_Combat_DamageElement_Type::save(const RPG_Common_SavingThrowModifier& savingThrow_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::save"));
+
+  myCurrentDamageElement.save = savingThrow_in;
+}
+
+void RPG_Combat_DamageElement_Type::counterMeasure(bool counterMeasure_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::counterMeasure"));
+
+  myCurrentDamageElement.counterMeasure = counterMeasure_in;
 }
 
 void RPG_Combat_DamageElement_Type::effect(const RPG_Combat_DamageEffectType& effect_in)
@@ -145,11 +273,21 @@ RPG_Combat_DamageElement RPG_Combat_DamageElement_Type::post_RPG_Combat_DamageEl
   RPG_Combat_DamageElement result = myCurrentDamageElement;
 
   // clear structure
-  myCurrentDamageElement.type.physicaldamagetype = RPG_ITEM_PHYSICALDAMAGETYPE_INVALID;
-  myCurrentDamageElement.damage.numDice = 0;
-  myCurrentDamageElement.damage.typeDice = RPG_DICE_DIETYPE_INVALID;
-  myCurrentDamageElement.damage.modifier = 0;
-  myCurrentDamageElement.duration = 0;
+  myCurrentDamageElement.types.clear();
+  myCurrentDamageElement.amount.numDice = 0;
+  myCurrentDamageElement.amount.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentDamageElement.amount.modifier = 0;
+  myCurrentDamageElement.duration.incubationPeriod.numDice = 0;
+  myCurrentDamageElement.duration.incubationPeriod.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentDamageElement.duration.incubationPeriod.modifier = 0;
+  myCurrentDamageElement.duration.interval = 0;
+  myCurrentDamageElement.duration.totalDuration = 0;
+  myCurrentDamageElement.others.clear();
+  myCurrentDamageElement.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentDamageElement.save.type = RPG_COMMON_SAVINGTHROW_INVALID;
+  myCurrentDamageElement.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentDamageElement.save.difficultyClass = 0;
+  myCurrentDamageElement.counterMeasure = false;
   myCurrentDamageElement.effect = RPG_COMBAT_DAMAGEEFFECTTYPE_INVALID;
 
   return result;

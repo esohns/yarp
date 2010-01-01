@@ -18,19 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_COMBAT_DAMAGEELEMENT_H
-#define RPG_COMBAT_DAMAGEELEMENT_H
+#ifndef RPG_COMBAT_DAMAGEDURATION_H
+#define RPG_COMBAT_DAMAGEDURATION_H
 
-struct RPG_Combat_DamageElement
+struct RPG_Combat_DamageDuration
 {
-  std::vector<RPG_Combat_DamageTypeUnion> types;
-  RPG_Dice_Roll amount;
-  RPG_Combat_DamageDuration duration;
-  std::vector<RPG_Combat_DamageBonus> others;
-  RPG_Common_Attribute attribute;
-  RPG_Common_SavingThrowModifier save;
-  bool counterMeasure;
-  RPG_Combat_DamageEffectType effect;
+  RPG_Dice_Roll incubationPeriod;
+  unsigned short int interval;
+  unsigned short int totalDuration;
 };
 
 #endif

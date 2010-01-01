@@ -38,10 +38,14 @@
 #include "rpg_item_armorpropertiesxml.h"
 
 #include <bitset>
+#include <set>
 #include <map>
 
 // typedef std::bitset<(RPG_ITEM_PHYSICALDAMAGETYPE_MAX - 1)> RPG_Item_WeaponDamage;
 typedef std::bitset<3> RPG_Item_WeaponDamage;
+typedef std::set<RPG_Item_PhysicalDamageType> RPG_Item_WeaponDamageList_t;
+typedef RPG_Item_WeaponDamageList_t::const_iterator RPG_Item_WeaponDamageListIterator_t;
+
 typedef RPG_Dice_Roll RPG_Item_Damage;
 
 struct RPG_Item_WeaponProperties

@@ -44,6 +44,9 @@
 #include <rpg_combat_defensesituation.h>
 #include <rpg_combat_specialdamagetype.h>
 #include <rpg_combat_damagetypeunion.h>
+#include <rpg_combat_damageduration.h>
+#include <rpg_combat_damagebonustype.h>
+#include <rpg_combat_damagebonus.h>
 #include <rpg_combat_damageeffecttype.h>
 #include <rpg_combat_damageelement.h>
 #include <rpg_combat_damage.h>

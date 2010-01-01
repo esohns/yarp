@@ -67,14 +67,6 @@ class RPG_Combat_SpecialDamageType_Type
    virtual RPG_Combat_SpecialDamageType post_RPG_Combat_SpecialDamageType_Type();
 };
 
-class RPG_Combat_DamageEffectType_Type
- : public RPG_Combat_DamageEffectType_Type_pimpl
-{
-  public:
-//   virtual void pre();
-   virtual RPG_Combat_DamageEffectType post_RPG_Combat_DamageEffectType_Type();
-};
-
 class RPG_Combat_DamageTypeUnion_Type
  : public RPG_Combat_DamageTypeUnion_Type_pimpl
 {
@@ -89,6 +81,53 @@ class RPG_Combat_DamageTypeUnion_Type
   RPG_Combat_DamageTypeUnion myCurrentDamageType;
 };
 
+class RPG_Combat_DamageDuration_Type
+ : public RPG_Combat_DamageDuration_Type_pimpl
+{
+ public:
+  RPG_Combat_DamageDuration_Type();
+
+//   virtual void pre();
+  virtual void incubationPeriod(const RPG_Dice_Roll&);
+  virtual void interval(unsigned short);
+  virtual void totalDuration(unsigned short);
+  virtual RPG_Combat_DamageDuration post_RPG_Combat_DamageDuration_Type();
+
+ private:
+  RPG_Combat_DamageDuration myCurrentDuration;
+};
+
+class RPG_Combat_DamageBonusType_Type
+ : public RPG_Combat_DamageBonusType_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Combat_DamageBonusType post_RPG_Combat_DamageBonusType_Type();
+};
+
+class RPG_Combat_DamageBonus_Type
+ : public RPG_Combat_DamageBonus_Type_pimpl
+{
+ public:
+  RPG_Combat_DamageBonus_Type();
+
+//   virtual void pre();
+  virtual void type(const RPG_Combat_DamageBonusType&);
+  virtual void modifier(signed char);
+  virtual RPG_Combat_DamageBonus post_RPG_Combat_DamageBonus_Type();
+
+ private:
+  RPG_Combat_DamageBonus myCurrentDamageBonus;
+};
+
+class RPG_Combat_DamageEffectType_Type
+ : public RPG_Combat_DamageEffectType_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Combat_DamageEffectType post_RPG_Combat_DamageEffectType_Type();
+};
+
 class RPG_Combat_DamageElement_Type
  : public RPG_Combat_DamageElement_Type_pimpl
 {
@@ -97,8 +136,12 @@ class RPG_Combat_DamageElement_Type
 
 //   virtual void pre();
   virtual void type(const RPG_Combat_DamageTypeUnion&);
-  virtual void damage(const RPG_Dice_Roll&);
-  virtual void duration(unsigned short);
+  virtual void amount(const RPG_Dice_Roll&);
+  virtual void duration(const RPG_Combat_DamageDuration&);
+  virtual void other(const RPG_Combat_DamageBonus&);
+  virtual void attribute(const RPG_Common_Attribute&);
+  virtual void save(const RPG_Common_SavingThrowModifier&);
+  virtual void counterMeasure(bool);
   virtual void effect(const RPG_Combat_DamageEffectType&);
   virtual RPG_Combat_DamageElement post_RPG_Combat_DamageElement_Type();
 
