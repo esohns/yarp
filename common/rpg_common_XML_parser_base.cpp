@@ -43,37 +43,37 @@ post_RPG_Common_SavingThrow_Type ()
   // return ... ;
 }
 
-// RPG_Common_SavingThrowModifier_Type_pimpl
+// RPG_Common_SavingThrowCheck_Type_pimpl
 //
 
-void RPG_Common_SavingThrowModifier_Type_pimpl::
+void RPG_Common_SavingThrowCheck_Type_pimpl::
 pre ()
 {
 }
 
-void RPG_Common_SavingThrowModifier_Type_pimpl::
+void RPG_Common_SavingThrowCheck_Type_pimpl::
 type (const RPG_Common_SavingThrow& type)
 {
   // TODO
   //
 }
 
-void RPG_Common_SavingThrowModifier_Type_pimpl::
+void RPG_Common_SavingThrowCheck_Type_pimpl::
 attribute (const RPG_Common_Attribute& attribute)
 {
   // TODO
   //
 }
 
-void RPG_Common_SavingThrowModifier_Type_pimpl::
+void RPG_Common_SavingThrowCheck_Type_pimpl::
 difficultyClass (unsigned char difficultyClass)
 {
   // TODO
   //
 }
 
-RPG_Common_SavingThrowModifier RPG_Common_SavingThrowModifier_Type_pimpl::
-post_RPG_Common_SavingThrowModifier_Type ()
+RPG_Common_SavingThrowCheck RPG_Common_SavingThrowCheck_Type_pimpl::
+post_RPG_Common_SavingThrowCheck_Type ()
 {
   // TODO
   //

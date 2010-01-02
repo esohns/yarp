@@ -20,6 +20,7 @@
 #include "rpg_combat_common_tools.h"
 
 #include "rpg_combat_attackform.h"
+#include "rpg_combat_areaofeffect.h"
 #include "rpg_combat_specialattack.h"
 #include "rpg_combat_specialdamagetype.h"
 #include "rpg_combat_damageeffecttype.h"
@@ -47,6 +48,7 @@
 
 // init statics
 RPG_Combat_AttackFormToStringTable_t RPG_Combat_AttackFormHelper::myRPG_Combat_AttackFormToStringTable;
+RPG_Combat_AreaOfEffectToStringTable_t RPG_Combat_AreaOfEffectHelper::myRPG_Combat_AreaOfEffectToStringTable;
 RPG_Combat_AttackSituationToStringTable_t RPG_Combat_AttackSituationHelper::myRPG_Combat_AttackSituationToStringTable;
 RPG_Combat_DefenseSituationToStringTable_t RPG_Combat_DefenseSituationHelper::myRPG_Combat_DefenseSituationToStringTable;
 RPG_Combat_SpecialAttackToStringTable_t RPG_Combat_SpecialAttackHelper::myRPG_Combat_SpecialAttackToStringTable;
@@ -59,6 +61,7 @@ void RPG_Combat_Common_Tools::initStringConversionTables()
   ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::initStringConversionTables"));
 
   RPG_Combat_AttackFormHelper::init();
+  RPG_Combat_AreaOfEffectHelper::init();
   RPG_Combat_AttackSituationHelper::init();
   RPG_Combat_DefenseSituationHelper::init();
   RPG_Combat_SpecialAttackHelper::init();

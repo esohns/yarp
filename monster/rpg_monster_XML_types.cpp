@@ -141,17 +141,33 @@ numAttacksPerRound_parser (::xml_schema::unsigned_byte_pskel& p)
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
+interval_parser (::xml_schema::unsigned_short_pskel& p)
+{
+  this->interval_parser_ = &p;
+}
+
+void RPG_Monster_AttackAction_Type_pskel::
+ranged_parser (::RPG_Combat_RangedAttackProperties_Type_pskel& p)
+{
+  this->ranged_parser_ = &p;
+}
+
+void RPG_Monster_AttackAction_Type_pskel::
 parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& weapon,
          ::xml_schema::byte_pskel& attackBonus,
          ::RPG_Combat_AttackForm_Type_pskel& attackForm,
          ::RPG_Combat_Damage_Type_pskel& damage,
-         ::xml_schema::unsigned_byte_pskel& numAttacksPerRound)
+         ::xml_schema::unsigned_byte_pskel& numAttacksPerRound,
+         ::xml_schema::unsigned_short_pskel& interval,
+         ::RPG_Combat_RangedAttackProperties_Type_pskel& ranged)
 {
   this->weapon_parser_ = &weapon;
   this->attackBonus_parser_ = &attackBonus;
   this->attackForm_parser_ = &attackForm;
   this->damage_parser_ = &damage;
   this->numAttacksPerRound_parser_ = &numAttacksPerRound;
+  this->interval_parser_ = &interval;
+  this->ranged_parser_ = &ranged;
 }
 
 RPG_Monster_AttackAction_Type_pskel::
@@ -160,7 +176,9 @@ RPG_Monster_AttackAction_Type_pskel ()
   attackBonus_parser_ (0),
   attackForm_parser_ (0),
   damage_parser_ (0),
-  numAttacksPerRound_parser_ (0)
+  numAttacksPerRound_parser_ (0),
+  interval_parser_ (0),
+  ranged_parser_ (0)
 {
 }
 
@@ -818,6 +836,16 @@ numAttacksPerRound (unsigned char)
 {
 }
 
+void RPG_Monster_AttackAction_Type_pskel::
+interval (unsigned short)
+{
+}
+
+void RPG_Monster_AttackAction_Type_pskel::
+ranged (const RPG_Combat_RangedAttackProperties&)
+{
+}
+
 bool RPG_Monster_AttackAction_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
@@ -878,6 +906,26 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "interval" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->interval_parser_;
+
+    if (this->interval_parser_)
+      this->interval_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "ranged" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->ranged_parser_;
+
+    if (this->ranged_parser_)
+      this->ranged_parser_->pre ();
+
+    return true;
+  }
+
   return false;
 }
 
@@ -924,6 +972,22 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->numAttacksPerRound_parser_)
       this->numAttacksPerRound (this->numAttacksPerRound_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  if (n == "interval" && ns == "urn:rpg")
+  {
+    if (this->interval_parser_)
+      this->interval (this->interval_parser_->post_unsigned_short ());
+
+    return true;
+  }
+
+  if (n == "ranged" && ns == "urn:rpg")
+  {
+    if (this->ranged_parser_)
+      this->ranged (this->ranged_parser_->post_RPG_Combat_RangedAttackProperties_Type ());
 
     return true;
   }

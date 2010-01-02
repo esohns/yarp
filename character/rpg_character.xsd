@@ -6,6 +6,8 @@
             elementFormDefault="qualified"
             attributeFormDefault="qualified">
 
+  <!-- include common schema -->
+  <xsd:include schemaLocation="rpg_common.xsd"/>
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import chance_dice schema (as declared above) -->
 <!--   <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/> -->
@@ -294,6 +296,17 @@
   <xsd:complexType name="RPG_Character_Skills_Type">
     <xsd:sequence>
       <xsd:element name="skill" type="RPG_Character_SkillValue_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Character_CheckTypeUnion_Type">
+    <xsd:union memberTypes="RPG_Common_Attribute_Type RPG_Character_Skill_Type"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Character_Check_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Character_CheckTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 

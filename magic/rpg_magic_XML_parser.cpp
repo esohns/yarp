@@ -27,3 +27,17 @@ RPG_Magic_School RPG_Magic_School_Type::post_RPG_Magic_School_Type()
 
   return RPG_Magic_SchoolHelper::stringToRPG_Magic_School(post_string());
 }
+
+RPG_Magic_Domain RPG_Magic_Domain_Type::post_RPG_Magic_Domain_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Domain_Type::post_RPG_Magic_Domain_Type"));
+
+  return RPG_Magic_DomainHelper::stringToRPG_Magic_Domain(post_string());
+}
+
+RPG_Magic_Spell RPG_Magic_Spell_Type::post_RPG_Magic_Spell_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Type::post_RPG_Magic_Spell_Type"));
+
+  return RPG_Magic_SpellHelper::stringToRPG_Magic_Spell(post_string());
+}

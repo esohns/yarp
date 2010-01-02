@@ -32,21 +32,11 @@
 #include <rpg_common_savingthrow.h>
 #include <rpg_common_savingthrowmodifier.h>
 
-#include "rpg_combat_attackform.h"
-#include "rpg_combat_attacksituation.h"
-#include "rpg_combat_defensesituation.h"
-#include "rpg_combat_specialdamagetype.h"
-#include "rpg_combat_damagetypeunion.h"
-#include "rpg_combat_damageduration.h"
-#include "rpg_combat_damagebonustype.h"
-#include "rpg_combat_damagebonus.h"
-#include "rpg_combat_damageeffecttype.h"
-#include "rpg_combat_damageelement.h"
-#include "rpg_combat_damage.h"
-#include "rpg_combat_common.h"
-
 #include <rpg_character_player_common.h>
 #include <rpg_character_size.h>
+
+#include "rpg_combat_incl.h"
+#include "rpg_combat_common.h"
 
 #include <ace/Global_Macros.h>
 

@@ -116,12 +116,19 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   RPG_Combat_Damage_Type                    damage_p;
   damage_p.parsers(damageElement_p);
 //   ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
+  RPG_Combat_RangedEffectUnion_Type         rangedEffectUnion_p;
+  RPG_Combat_RangedAttackProperties_Type    rangedProperties_p;
+  rangedProperties_p.parsers(unsigned_byte_p,
+                             unsigned_byte_p,
+                             rangedEffectUnion_p);
   RPG_Monster_AttackAction_Type             attackAction_p;
   attackAction_p.parsers(weaponUnion_p,
                          byte_p,
                          attackForm_p,
                          damage_p,
-                         unsigned_byte_p);
+                         unsigned_byte_p,
+                         unsigned_short_p,
+                         rangedProperties_p);
 //   ::xml_schema::boolean_pimpl               bool_p;
   RPG_Monster_Attack_Type                   attack_p;
   attack_p.parsers(byte_p,

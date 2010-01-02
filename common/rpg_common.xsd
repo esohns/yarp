@@ -40,7 +40,7 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:complexType name="RPG_Common_SavingThrowModifier_Type">
+  <xsd:complexType name="RPG_Common_SavingThrowCheck_Type">
     <xsd:sequence>
       <xsd:element name="type" type="RPG_Common_SavingThrow_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>

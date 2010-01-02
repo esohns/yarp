@@ -50,6 +50,9 @@
 // Forward declarations
 //
 class RPG_Combat_AttackForm_Type_pskel;
+class RPG_Combat_AreaOfEffect_Type_pskel;
+class RPG_Combat_RangedEffectUnion_Type_pskel;
+class RPG_Combat_RangedAttackProperties_Type_pskel;
 class RPG_Combat_AttackSituation_Type_pskel;
 class RPG_Combat_DefenseSituation_Type_pskel;
 class RPG_Combat_SpecialAttack_Type_pskel;
@@ -76,6 +79,7 @@ class RPG_Combat_Damage_Type_pskel;
 #include <rpg_dice_incl.h>
 #include <rpg_item_incl.h>
 #include <rpg_common_incl.h>
+#include <rpg_character_size.h>
 #include "rpg_combat_incl.h"
 
 #include <rpg_dice_XML_types.h>
@@ -83,6 +87,8 @@ class RPG_Combat_Damage_Type_pskel;
 #include <rpg_common_XML_types.h>
 
 #include <rpg_item_XML_types.h>
+
+#include <rpg_character_XML_types.h>
 
 class RPG_Combat_AttackForm_Type_pskel: public virtual ::xml_schema::string_pskel
 {
@@ -94,6 +100,91 @@ class RPG_Combat_AttackForm_Type_pskel: public virtual ::xml_schema::string_pske
 
   virtual RPG_Combat_AttackForm
   post_RPG_Combat_AttackForm_Type () = 0;
+};
+
+class RPG_Combat_AreaOfEffect_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Combat_AreaOfEffect
+  post_RPG_Combat_AreaOfEffect_Type () = 0;
+};
+
+class RPG_Combat_RangedEffectUnion_Type_pskel: public ::xml_schema::simple_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+  //
+  // virtual void
+  // _characters (const ::xml_schema::ro_string&);
+
+  virtual RPG_Combat_RangedEffectUnion
+  post_RPG_Combat_RangedEffectUnion_Type () = 0;
+};
+
+class RPG_Combat_RangedAttackProperties_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  maxRange (unsigned char);
+
+  virtual void
+  increment (unsigned char);
+
+  virtual void
+  effect (const RPG_Combat_RangedEffectUnion&);
+
+  virtual RPG_Combat_RangedAttackProperties
+  post_RPG_Combat_RangedAttackProperties_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  maxRange_parser (::xml_schema::unsigned_byte_pskel&);
+
+  void
+  increment_parser (::xml_schema::unsigned_byte_pskel&);
+
+  void
+  effect_parser (::RPG_Combat_RangedEffectUnion_Type_pskel&);
+
+  void
+  parsers (::xml_schema::unsigned_byte_pskel& /* maxRange */,
+           ::xml_schema::unsigned_byte_pskel& /* increment */,
+           ::RPG_Combat_RangedEffectUnion_Type_pskel& /* effect */);
+
+  // Constructor.
+  //
+  RPG_Combat_RangedAttackProperties_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::xml_schema::unsigned_byte_pskel* maxRange_parser_;
+  ::xml_schema::unsigned_byte_pskel* increment_parser_;
+  ::RPG_Combat_RangedEffectUnion_Type_pskel* effect_parser_;
 };
 
 class RPG_Combat_AttackSituation_Type_pskel: public virtual ::xml_schema::string_pskel

@@ -51,7 +51,7 @@
 //
 class RPG_Common_Attribute_Type_pskel;
 class RPG_Common_SavingThrow_Type_pskel;
-class RPG_Common_SavingThrowModifier_Type_pskel;
+class RPG_Common_SavingThrowCheck_Type_pskel;
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -89,7 +89,7 @@ class RPG_Common_SavingThrow_Type_pskel: public virtual ::xml_schema::string_psk
   post_RPG_Common_SavingThrow_Type () = 0;
 };
 
-class RPG_Common_SavingThrowModifier_Type_pskel: public ::xml_schema::complex_content
+class RPG_Common_SavingThrowCheck_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -106,8 +106,8 @@ class RPG_Common_SavingThrowModifier_Type_pskel: public ::xml_schema::complex_co
   virtual void
   difficultyClass (unsigned char);
 
-  virtual RPG_Common_SavingThrowModifier
-  post_RPG_Common_SavingThrowModifier_Type () = 0;
+  virtual RPG_Common_SavingThrowCheck
+  post_RPG_Common_SavingThrowCheck_Type () = 0;
 
   // Parser construction API.
   //
@@ -127,7 +127,7 @@ class RPG_Common_SavingThrowModifier_Type_pskel: public ::xml_schema::complex_co
 
   // Constructor.
   //
-  RPG_Common_SavingThrowModifier_Type_pskel ();
+  RPG_Common_SavingThrowCheck_Type_pskel ();
 
   // Implementation.
   //

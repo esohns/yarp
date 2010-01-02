@@ -33,6 +33,8 @@
 #include "rpg_character_skill.h"
 #include "rpg_character_skillvalue.h"
 #include "rpg_character_skills.h"
+#include "rpg_character_checktypeunion.h"
+#include "rpg_character_check.h"
 #include "rpg_character_feat.h"
 #include "rpg_character_feats.h"
 #include "rpg_character_plane.h"

@@ -25,6 +25,84 @@ post_RPG_Combat_AttackForm_Type ()
   // return ... ;
 }
 
+// RPG_Combat_AreaOfEffect_Type_pimpl
+//
+
+void RPG_Combat_AreaOfEffect_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Combat_AreaOfEffect RPG_Combat_AreaOfEffect_Type_pimpl::
+post_RPG_Combat_AreaOfEffect_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Combat_RangedEffectUnion_Type_pimpl
+//
+
+void RPG_Combat_RangedEffectUnion_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_RangedEffectUnion_Type_pimpl::
+_characters (const ::xml_schema::ro_string& s)
+{
+  // TODO
+  //
+}
+
+RPG_Combat_RangedEffectUnion RPG_Combat_RangedEffectUnion_Type_pimpl::
+post_RPG_Combat_RangedEffectUnion_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Combat_RangedAttackProperties_Type_pimpl
+//
+
+void RPG_Combat_RangedAttackProperties_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_RangedAttackProperties_Type_pimpl::
+maxRange (unsigned char maxRange)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_RangedAttackProperties_Type_pimpl::
+increment (unsigned char increment)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_RangedAttackProperties_Type_pimpl::
+effect (const RPG_Combat_RangedEffectUnion& effect)
+{
+  // TODO
+  //
+}
+
+RPG_Combat_RangedAttackProperties RPG_Combat_RangedAttackProperties_Type_pimpl::
+post_RPG_Combat_RangedAttackProperties_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
 // RPG_Combat_AttackSituation_Type_pimpl
 //
 

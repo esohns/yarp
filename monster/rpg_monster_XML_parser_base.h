@@ -120,6 +120,12 @@ class RPG_Monster_AttackAction_Type_pimpl: public virtual RPG_Monster_AttackActi
   virtual void
   numAttacksPerRound (unsigned char);
 
+  virtual void
+  interval (unsigned short);
+
+  virtual void
+  ranged (const RPG_Combat_RangedAttackProperties&);
+
   virtual RPG_Monster_AttackAction
   post_RPG_Monster_AttackAction_Type ();
 };

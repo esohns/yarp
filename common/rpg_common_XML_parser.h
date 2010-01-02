@@ -43,20 +43,20 @@ class RPG_Common_SavingThrow_Type
   virtual RPG_Common_SavingThrow post_RPG_Common_SavingThrow_Type();
 };
 
-class RPG_Common_SavingThrowModifier_Type
- : public RPG_Common_SavingThrowModifier_Type_pimpl
+class RPG_Common_SavingThrowCheck_Type
+ : public RPG_Common_SavingThrowCheck_Type_pimpl
 {
-  public:
-   RPG_Common_SavingThrowModifier_Type();
+ public:
+  RPG_Common_SavingThrowCheck_Type();
 
 //   virtual void pre();
   virtual void type(const RPG_Common_SavingThrow&);
   virtual void attribute(const RPG_Common_Attribute&);
   virtual void difficultyClass(unsigned char);
-  virtual RPG_Common_SavingThrowModifier post_RPG_Common_SavingThrowModifier_Type();
+  virtual RPG_Common_SavingThrowCheck post_RPG_Common_SavingThrowCheck_Type();
 
-  private:
-   RPG_Common_SavingThrowModifier myCurrentSavingThrowModifier;
+ private:
+  RPG_Common_SavingThrowCheck myCurrentSavingThrowCheck;
 };
 
 #endif

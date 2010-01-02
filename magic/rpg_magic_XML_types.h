@@ -50,6 +50,8 @@
 // Forward declarations
 //
 class RPG_Magic_School_Type_pskel;
+class RPG_Magic_Domain_Type_pskel;
+class RPG_Magic_Spell_Type_pskel;
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -64,12 +66,6 @@ class RPG_Magic_School_Type_pskel;
 #include <rpg_dice_incl.h>
 #include "rpg_magic_incl.h"
 
-#include "rpg_dice_XML_types.h"
-
-#include "rpg_common_XML_types.h"
-
-#include "rpg_item_XML_types.h"
-
 class RPG_Magic_School_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
@@ -80,6 +76,30 @@ class RPG_Magic_School_Type_pskel: public virtual ::xml_schema::string_pskel
 
   virtual RPG_Magic_School
   post_RPG_Magic_School_Type () = 0;
+};
+
+class RPG_Magic_Domain_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Magic_Domain
+  post_RPG_Magic_Domain_Type () = 0;
+};
+
+class RPG_Magic_Spell_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Magic_Spell
+  post_RPG_Magic_Spell_Type () = 0;
 };
 
 #include <xsd/cxx/post.hxx>

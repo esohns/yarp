@@ -32,7 +32,7 @@ class RPG_Common_SavingThrow_Type_pimpl: public virtual RPG_Common_SavingThrow_T
   post_RPG_Common_SavingThrow_Type ();
 };
 
-class RPG_Common_SavingThrowModifier_Type_pimpl: public virtual RPG_Common_SavingThrowModifier_Type_pskel
+class RPG_Common_SavingThrowCheck_Type_pimpl: public virtual RPG_Common_SavingThrowCheck_Type_pskel
 {
   public:
   virtual void
@@ -47,8 +47,8 @@ class RPG_Common_SavingThrowModifier_Type_pimpl: public virtual RPG_Common_Savin
   virtual void
   difficultyClass (unsigned char);
 
-  virtual RPG_Common_SavingThrowModifier
-  post_RPG_Common_SavingThrowModifier_Type ();
+  virtual RPG_Common_SavingThrowCheck
+  post_RPG_Common_SavingThrowCheck_Type ();
 };
 
 #endif // CXX_____RPG_COMMON_XML_PARSER_BASE_H

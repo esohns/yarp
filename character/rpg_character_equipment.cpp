@@ -104,13 +104,13 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getArmor() const
   RPG_Item_ID_t id = 0;
 
   // *TODO*; consider helmets/gauntlets/boots/shields, etc...
-  RPG_Character_EquipmentIterator_t iterator = myEquipment.find(EQUIPMENTSLOT_APPAREL);
+  RPG_Character_EquipmentIterator_t iterator = myEquipment.find(EQUIPMENTSLOT_BODY);
   if (iterator == myEquipment.end())
   {
     // debug info
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("nothing equipped in slot (\"%s\"): returning \"%s\"...\n"),
-               RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(EQUIPMENTSLOT_APPAREL).c_str(),
+               RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(EQUIPMENTSLOT_BODY).c_str(),
                RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(ARMOR_NONE).c_str()));
 
     // nothing equipped --> default is "nakedness"...

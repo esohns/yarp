@@ -35,4 +35,19 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="RPG_Magic_Domain_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DOMAIN_GOOD"/>
+      <xsd:enumeration value="DOMAIN_EVIL"/>
+      <xsd:enumeration value="DOMAIN_WAR"/>
+      <xsd:enumeration value="DOMAIN_PEACE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Magic_Spell_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SPELL_CANTRIP"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
 </xsd:schema>

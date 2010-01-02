@@ -10,12 +10,6 @@
 
 #include "rpg_magic_XML_types.h"
 
-#include "rpg_dice_XML_parser_base.h"
-
-#include "rpg_common_XML_parser_base.h"
-
-#include "rpg_item_XML_parser_base.h"
-
 class RPG_Magic_School_Type_pimpl: public virtual RPG_Magic_School_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -25,6 +19,28 @@ class RPG_Magic_School_Type_pimpl: public virtual RPG_Magic_School_Type_pskel,
 
   virtual RPG_Magic_School
   post_RPG_Magic_School_Type ();
+};
+
+class RPG_Magic_Domain_Type_pimpl: public virtual RPG_Magic_Domain_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Magic_Domain
+  post_RPG_Magic_Domain_Type ();
+};
+
+class RPG_Magic_Spell_Type_pimpl: public virtual RPG_Magic_Spell_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Magic_Spell
+  post_RPG_Magic_Spell_Type ();
 };
 
 #endif // CXX_____RPG_MAGIC_XML_PARSER_BASE_H

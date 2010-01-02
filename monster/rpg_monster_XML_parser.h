@@ -130,6 +130,8 @@ class RPG_Monster_AttackAction_Type
   virtual void attackForm(const RPG_Combat_AttackForm&);
   virtual void damage(const RPG_Combat_Damage&);
   virtual void numAttacksPerRound(unsigned char);
+  virtual void interval(unsigned short);
+  virtual void ranged(const RPG_Combat_RangedAttackProperties&);
   virtual RPG_Monster_AttackAction post_RPG_Monster_AttackAction_Type();
 
  private:

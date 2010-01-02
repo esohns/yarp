@@ -25,6 +25,7 @@ namespace urn:rpg
 
   RPG_Combat_AttackForm_Type              RPG_Combat_AttackForm;
   RPG_Combat_Damage_Type                  RPG_Combat_Damage;
+  RPG_Combat_RangedAttackProperties_Type  RPG_Combat_RangedAttackProperties;
 
   RPG_Monster_MetaType_Type               RPG_Monster_MetaType;
   RPG_Monster_SubType_Type                RPG_Monster_SubType;

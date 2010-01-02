@@ -17,26 +17,15 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_magic_common_tools.h"
 
-#include "rpg_magic_incl.h"
+#ifndef RPG_COMBAT_DAMAGECOUNTERMEASURE_H
+#define RPG_COMBAT_DAMAGECOUNTERMEASURE_H
 
-#include <ace/Log_Msg.h>
-
-// init statics
-RPG_Magic_SchoolToStringTable_t RPG_Magic_SchoolHelper::myRPG_Magic_SchoolToStringTable;
-RPG_Magic_DomainToStringTable_t RPG_Magic_DomainHelper::myRPG_Magic_DomainToStringTable;
-RPG_Magic_SpellToStringTable_t RPG_Magic_SpellHelper::myRPG_Magic_SpellToStringTable;
-
-void RPG_Magic_Common_Tools::initStringConversionTables()
+struct RPG_Combat_DamageCounterMeasure
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::initStringConversionTables"));
+  RPG_Combat_DamageCounterMeasureType type;
+  std::vector<RPG_Combat_DamageCounterMeasureCheckUnion> checks;
+  std::vector<RPG_Magic_Spell> spells;
+};
 
-  RPG_Magic_SchoolHelper::init();
-  RPG_Magic_DomainHelper::init();
-  RPG_Magic_SpellHelper::init();
-
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Magic_Common_Tools: initialized string conversion tables...\n")));
-}
+#endif

@@ -29,7 +29,7 @@ enum RPG_Monster_NaturalWeapon
   NATURALWEAPON_SLAP_SLAM,
   NATURALWEAPON_STING,
   NATURALWEAPON_TENTACLE,
-  NATURALWEAPON_SPIT_ACID,
+  NATURALWEAPON_SPIT,
   NATURALWEAPON_WEB,
   NATURALWEAPON_ROCK_STONE,
   //
@@ -57,7 +57,7 @@ class RPG_Monster_NaturalWeaponHelper
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_SLAP_SLAM, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_SLAP_SLAM")));
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_STING, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_STING")));
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_TENTACLE, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_TENTACLE")));
-    myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_SPIT_ACID, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_SPIT_ACID")));
+    myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_SPIT, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_SPIT")));
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_WEB, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_WEB")));
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_ROCK_STONE, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_ROCK_STONE")));
   };

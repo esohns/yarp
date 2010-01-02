@@ -28,6 +28,8 @@ struct RPG_Monster_AttackAction
   std::vector<RPG_Combat_AttackForm> attackForms;
   RPG_Combat_Damage damage;
   unsigned char numAttacksPerRound;
+  unsigned short int interval;
+  RPG_Combat_RangedAttackProperties ranged;
 };
 
 #endif

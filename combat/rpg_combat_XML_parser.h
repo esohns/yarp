@@ -35,6 +35,44 @@ class RPG_Combat_AttackForm_Type
   virtual RPG_Combat_AttackForm post_RPG_Combat_AttackForm_Type();
 };
 
+class RPG_Combat_AreaOfEffect_Type
+ : public RPG_Combat_AreaOfEffect_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Combat_AreaOfEffect post_RPG_Combat_AreaOfEffect_Type();
+};
+
+class RPG_Combat_RangedEffectUnion_Type
+ : public RPG_Combat_RangedEffectUnion_Type_pimpl
+{
+ public:
+  RPG_Combat_RangedEffectUnion_Type();
+
+//   virtual void pre();
+  virtual void _characters(const ::xml_schema::ro_string&);
+  virtual RPG_Combat_RangedEffectUnion post_RPG_Combat_RangedEffectUnion_Type();
+
+ private:
+  RPG_Combat_RangedEffectUnion myCurrentRangedEffect;
+};
+
+class RPG_Combat_RangedAttackProperties_Type
+ : public RPG_Combat_RangedAttackProperties_Type_pimpl
+{
+ public:
+  RPG_Combat_RangedAttackProperties_Type();
+
+//   virtual void pre();
+  virtual void maxRange(unsigned char);
+  virtual void increment(unsigned char);
+  virtual void effect(const RPG_Combat_RangedEffectUnion&);
+  virtual RPG_Combat_RangedAttackProperties post_RPG_Combat_RangedAttackProperties_Type();
+
+ private:
+  RPG_Combat_RangedAttackProperties myCurrentRangedProperties;
+};
+
 class RPG_Combat_AttackSituation_Type
  : public RPG_Combat_AttackSituation_Type_pimpl
 {

@@ -38,6 +38,45 @@
 
 #include <rpg_combat_XML_types.h>
 
+// RPG_Combat_RangedAttackProperties_Type_pskel
+//
+
+void RPG_Combat_RangedAttackProperties_Type_pskel::
+maxRange_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->maxRange_parser_ = &p;
+}
+
+void RPG_Combat_RangedAttackProperties_Type_pskel::
+increment_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->increment_parser_ = &p;
+}
+
+void RPG_Combat_RangedAttackProperties_Type_pskel::
+effect_parser (::RPG_Combat_RangedEffectUnion_Type_pskel& p)
+{
+  this->effect_parser_ = &p;
+}
+
+void RPG_Combat_RangedAttackProperties_Type_pskel::
+parsers (::xml_schema::unsigned_byte_pskel& maxRange,
+         ::xml_schema::unsigned_byte_pskel& increment,
+         ::RPG_Combat_RangedEffectUnion_Type_pskel& effect)
+{
+  this->maxRange_parser_ = &maxRange;
+  this->increment_parser_ = &increment;
+  this->effect_parser_ = &effect;
+}
+
+RPG_Combat_RangedAttackProperties_Type_pskel::
+RPG_Combat_RangedAttackProperties_Type_pskel ()
+: maxRange_parser_ (0),
+  increment_parser_ (0),
+  effect_parser_ (0)
+{
+}
+
 // RPG_Combat_DamageDuration_Type_pskel
 //
 
@@ -210,6 +249,101 @@ RPG_Combat_Damage_Type_pskel::
 RPG_Combat_Damage_Type_pskel ()
 : element_parser_ (0)
 {
+}
+
+// RPG_Combat_RangedAttackProperties_Type_pskel
+//
+
+void RPG_Combat_RangedAttackProperties_Type_pskel::
+maxRange (unsigned char)
+{
+}
+
+void RPG_Combat_RangedAttackProperties_Type_pskel::
+increment (unsigned char)
+{
+}
+
+void RPG_Combat_RangedAttackProperties_Type_pskel::
+effect (const RPG_Combat_RangedEffectUnion&)
+{
+}
+
+bool RPG_Combat_RangedAttackProperties_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "maxRange" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->maxRange_parser_;
+
+    if (this->maxRange_parser_)
+      this->maxRange_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "increment" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->increment_parser_;
+
+    if (this->increment_parser_)
+      this->increment_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "effect" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->effect_parser_;
+
+    if (this->effect_parser_)
+      this->effect_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Combat_RangedAttackProperties_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "maxRange" && ns == "urn:rpg")
+  {
+    if (this->maxRange_parser_)
+      this->maxRange (this->maxRange_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  if (n == "increment" && ns == "urn:rpg")
+  {
+    if (this->increment_parser_)
+      this->increment (this->increment_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  if (n == "effect" && ns == "urn:rpg")
+  {
+    if (this->effect_parser_)
+      this->effect (this->effect_parser_->post_RPG_Combat_RangedEffectUnion_Type ());
+
+    return true;
+  }
+
+  return false;
 }
 
 // RPG_Combat_DamageDuration_Type_pskel

@@ -17,26 +17,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_magic_common_tools.h"
 
-#include "rpg_magic_incl.h"
+#ifndef RPG_CHARACTER_CHECKTYPEUNION_H
+#define RPG_CHARACTER_CHECKTYPEUNION_H
 
-#include <ace/Log_Msg.h>
-
-// init statics
-RPG_Magic_SchoolToStringTable_t RPG_Magic_SchoolHelper::myRPG_Magic_SchoolToStringTable;
-RPG_Magic_DomainToStringTable_t RPG_Magic_DomainHelper::myRPG_Magic_DomainToStringTable;
-RPG_Magic_SpellToStringTable_t RPG_Magic_SpellHelper::myRPG_Magic_SpellToStringTable;
-
-void RPG_Magic_Common_Tools::initStringConversionTables()
+union RPG_Character_CheckTypeUnion
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::initStringConversionTables"));
+  RPG_Common_Attribute attribute;
+  RPG_Character_Skill skill;
+};
 
-  RPG_Magic_SchoolHelper::init();
-  RPG_Magic_DomainHelper::init();
-  RPG_Magic_SpellHelper::init();
-
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Magic_Common_Tools: initialized string conversion tables...\n")));
-}
+#endif

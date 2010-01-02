@@ -256,6 +256,10 @@ RPG_Monster_AttackAction_Type::RPG_Monster_AttackAction_Type()
   myCurrentAttackAction.attackForms.clear();
   myCurrentAttackAction.damage.elements.clear();
   myCurrentAttackAction.numAttacksPerRound = 0;
+  myCurrentAttackAction.interval = 0;
+  myCurrentAttackAction.ranged.maxRange = 0;
+  myCurrentAttackAction.ranged.increment = 0;
+  myCurrentAttackAction.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
 }
 
 void RPG_Monster_AttackAction_Type::weapon(const RPG_Monster_WeaponTypeUnion& weapon_in)
@@ -293,6 +297,20 @@ void RPG_Monster_AttackAction_Type::numAttacksPerRound(unsigned char numAttacksP
   myCurrentAttackAction.numAttacksPerRound = numAttacksPerRound_in;
 }
 
+void RPG_Monster_AttackAction_Type::interval(unsigned short interval_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_AttackAction_Type::interval"));
+
+  myCurrentAttackAction.interval = interval_in;
+}
+
+void RPG_Monster_AttackAction_Type::ranged(const RPG_Combat_RangedAttackProperties& rangedProperties_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_AttackAction_Type::ranged"));
+
+  myCurrentAttackAction.ranged = rangedProperties_in;
+}
+
 RPG_Monster_AttackAction RPG_Monster_AttackAction_Type::post_RPG_Monster_AttackAction_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_AttackAction_Type::post_RPG_Monster_AttackAction_Type"));
@@ -305,6 +323,10 @@ RPG_Monster_AttackAction RPG_Monster_AttackAction_Type::post_RPG_Monster_AttackA
   myCurrentAttackAction.attackForms.clear();
   myCurrentAttackAction.damage.elements.clear();
   myCurrentAttackAction.numAttacksPerRound = 0;
+  myCurrentAttackAction.interval = 0;
+  myCurrentAttackAction.ranged.maxRange = 0;
+  myCurrentAttackAction.ranged.increment = 0;
+  myCurrentAttackAction.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
 
   return result;
 }

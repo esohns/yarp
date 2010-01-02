@@ -154,6 +154,35 @@ class RPG_Character_Skills_Type
   RPG_Character_Skills myCurrentSkills;
 };
 
+class RPG_Character_CheckTypeUnion_Type
+ : public RPG_Character_CheckTypeUnion_Type_pimpl
+{
+ public:
+  RPG_Character_CheckTypeUnion_Type();
+
+//   virtual void pre();
+  virtual void _characters(const ::xml_schema::ro_string&);
+  virtual RPG_Character_CheckTypeUnion post_RPG_Character_CheckTypeUnion_Type();
+
+ private:
+  RPG_Character_CheckTypeUnion myCurrentCheckType;
+};
+
+class RPG_Character_Check_Type
+ : public RPG_Character_Check_Type_pimpl
+{
+ public:
+  RPG_Character_Check_Type();
+
+//   virtual void pre();
+  virtual void type(const RPG_Character_CheckTypeUnion&);
+  virtual void difficultyClass(unsigned char);
+  virtual RPG_Character_Check post_RPG_Character_Check_Type();
+
+ private:
+  RPG_Character_Check myCurrentCheck;
+};
+
 class RPG_Character_Feat_Type
  : public RPG_Character_Feat_Type_pimpl
 {

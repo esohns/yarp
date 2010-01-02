@@ -61,6 +61,8 @@ class RPG_Character_Attributes_Type_pskel;
 class RPG_Character_Skill_Type_pskel;
 class RPG_Character_SkillValue_Type_pskel;
 class RPG_Character_Skills_Type_pskel;
+class RPG_Character_CheckTypeUnion_Type_pskel;
+class RPG_Character_Check_Type_pskel;
 class RPG_Character_Feat_Type_pskel;
 class RPG_Character_Feats_Type_pskel;
 class RPG_Character_Plane_Type_pskel;
@@ -83,7 +85,10 @@ class RPG_Character_EquipmentSlot_Type_pskel;
 #include "rpg_XMLSchema.h"
 
 #include <rpg_dice_incl.h>
+#include <rpg_common_incl.h>
 #include "rpg_character_incl.h"
+
+#include "rpg_common_XML_types.h"
 
 class RPG_Character_Gender_Type_pskel: public virtual ::xml_schema::string_pskel
 {
@@ -403,6 +408,71 @@ class RPG_Character_Skills_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::RPG_Character_SkillValue_Type_pskel* skill_parser_;
+};
+
+class RPG_Character_CheckTypeUnion_Type_pskel: public ::xml_schema::simple_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+  //
+  // virtual void
+  // _characters (const ::xml_schema::ro_string&);
+
+  virtual RPG_Character_CheckTypeUnion
+  post_RPG_Character_CheckTypeUnion_Type () = 0;
+};
+
+class RPG_Character_Check_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  type (const RPG_Character_CheckTypeUnion&);
+
+  virtual void
+  difficultyClass (unsigned char);
+
+  virtual RPG_Character_Check
+  post_RPG_Character_Check_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  type_parser (::RPG_Character_CheckTypeUnion_Type_pskel&);
+
+  void
+  difficultyClass_parser (::xml_schema::unsigned_byte_pskel&);
+
+  void
+  parsers (::RPG_Character_CheckTypeUnion_Type_pskel& /* type */,
+           ::xml_schema::unsigned_byte_pskel& /* difficultyClass */);
+
+  // Constructor.
+  //
+  RPG_Character_Check_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Character_CheckTypeUnion_Type_pskel* type_parser_;
+  ::xml_schema::unsigned_byte_pskel* difficultyClass_parser_;
 };
 
 class RPG_Character_Feat_Type_pskel: public virtual ::xml_schema::string_pskel

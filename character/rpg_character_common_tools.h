@@ -20,15 +20,9 @@
 #ifndef RPG_CHARACTER_COMMON_TOOLS_H
 #define RPG_CHARACTER_COMMON_TOOLS_H
 
-#include "rpg_character_alignmentcivic.h"
-#include "rpg_character_alignmentethic.h"
-#include "rpg_character_alignment.h"
-#include "rpg_character_attributes.h"
-#include "rpg_character_terrain.h"
-#include "rpg_character_climate.h"
-#include "rpg_character_environment.h"
-#include "rpg_character_subclass.h"
-#include "rpg_character_plane.h"
+#include <vector>
+#include <rpg_common_attribute.h>
+#include "rpg_character_incl.h"
 #include "rpg_character_player.h"
 
 #include <rpg_dice_dietype.h>

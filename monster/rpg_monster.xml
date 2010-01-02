@@ -1409,22 +1409,6 @@
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
-      <fullAttackAction>
-        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
-        <attackBonus>1</attackBonus>
-        <attackForm>ATTACKFORM_MELEE</attackForm>
-        <damage>
-          <element>
-            <type>PHYSICALDAMAGE_BLUDGEONING</type>
-            <amount>
-              <numDice>1</numDice>
-              <typeDice>D_3</typeDice>
-              <modifier>-1</modifier>
-            </amount>
-          </element>
-        </damage>
-        <numAttacksPerRound>1</numAttacksPerRound>
-      </fullAttackAction>
     </attack>
     <space>2</space>
     <reach>0</reach>
@@ -1494,9 +1478,14 @@
         <attackBonus>1</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
-          <numDice>1</numDice>
-          <typeDice>D_4</typeDice>
-          <modifier>0</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <amount>
+              <numDice>1</numDice>
+              <typeDice>D_4</typeDice>
+              <modifier>0</modifier>
+            </amount>
+          </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
@@ -1565,9 +1554,14 @@
         <attackBonus>2</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
-          <numDice>1</numDice>
-          <typeDice>D_6</typeDice>
-          <modifier>1</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <amount>
+              <numDice>1</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>1</modifier>
+            </amount>
+          </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
@@ -1636,9 +1630,14 @@
         <attackBonus>5</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
-          <numDice>1</numDice>
-          <typeDice>D_8</typeDice>
-          <modifier>4</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <amount>
+              <numDice>1</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>4</modifier>
+            </amount>
+          </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
@@ -1707,9 +1706,14 @@
         <attackBonus>9</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
-          <numDice>2</numDice>
-          <typeDice>D_6</typeDice>
-          <modifier>7</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <amount>
+              <numDice>2</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>7</modifier>
+            </amount>
+          </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
@@ -1778,9 +1782,14 @@
         <attackBonus>15</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
-          <numDice>2</numDice>
-          <typeDice>D_8</typeDice>
-          <modifier>10</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <amount>
+              <numDice>2</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>10</modifier>
+            </amount>
+          </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
@@ -1849,9 +1858,14 @@
         <attackBonus>25</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
-          <numDice>4</numDice>
-          <typeDice>D_6</typeDice>
-          <modifier>13</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <amount>
+              <numDice>4</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>13</modifier>
+            </amount>
+          </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
@@ -1920,22 +1934,50 @@
         <attackBonus>7</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
-          <numDice>2</numDice>
-          <typeDice>D_6</typeDice>
-          <modifier>7</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_PIERCING</type>
+            <amount>
+              <numDice>2</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>7</modifier>
+            </amount>
+          </element>
+          <element>
+            <type>DAMAGE_ACID</type>
+            <amount>
+              <numDice>1</numDice>
+              <typeDice>D_4</typeDice>
+              <modifier>0</modifier>
+            </amount>
+          </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
       <standardAttackAction>
-        <weapon>NATURALWEAPON_SPIT_ACID</weapon>
+        <weapon>NATURALWEAPON_SPIT</weapon>
         <attackBonus>0</attackBonus>
         <attackForm>ATTACKFORM_RANGED</attackForm>
         <damage>
-          <numDice>4</numDice>
-          <typeDice>D_4</typeDice>
-          <modifier>0</modifier>
+          <element>
+            <type>DAMAGE_ACID</type>
+            <amount>
+              <numDice>4</numDice>
+              <typeDice>D_4</typeDice>
+              <modifier>0</modifier>
+            </amount>
+            <save>
+              <type>SAVE_REFLEX</type>
+              <attribute>ATTRIBUTE_CONSTITUTION</attribute>
+              <difficultyClass>14</difficultyClass>
+            </save>
+          </element>
         </damage>
-        <numAttacksPerRound>1</numAttacksPerRound>
+        <numAttacksPerRound>0</numAttacksPerRound>
+        <interval>3600</interval>
+        <ranged>
+          <maxRange>30</maxRange>
+          <effect>AREA_LINE</effect>
+        </ranged>
       </standardAttackAction>
     </attack>
     <space>10</space>
@@ -2038,12 +2080,50 @@
         <attackBonus>5</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
-          <numDice>1</numDice>
-          <typeDice>D_6</typeDice>
-          <modifier>0</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_PIERCING</type>
+            <amount>
+              <numDice>1</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>0</modifier>
+            </amount>
+          </element>
+          <element>
+            <type>DAMAGE_POISON</type>
+            <amount>
+              <numDice>1</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>0</modifier>
+            </amount>
+            <save>
+              <type>SAVE_FORTITUDE</type>
+              <difficultyClass>13</difficultyClass>
+            </save>
+          </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_WEB</weapon>
+        <attackBonus>5</attackBonus>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
+        <damage>
+          <element>
+            <type>DAMAGE_WEB</type>
+            <amount>
+              <numDice>1</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>0</modifier>
+            </amount>
+            <save>
+              <type>SAVE_FORTITUDE</type>
+              <difficultyClass>13</difficultyClass>
+            </save>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </standardAttackAction>
+
       <standardAttackAction>
         <weapon>NATURALWEAPON_WEB</weapon>
         <attackBonus>5</attackBonus>

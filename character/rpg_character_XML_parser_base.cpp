@@ -292,6 +292,59 @@ post_RPG_Character_Skills_Type ()
   // return ... ;
 }
 
+// RPG_Character_CheckTypeUnion_Type_pimpl
+//
+
+void RPG_Character_CheckTypeUnion_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Character_CheckTypeUnion_Type_pimpl::
+_characters (const ::xml_schema::ro_string& s)
+{
+  // TODO
+  //
+}
+
+RPG_Character_CheckTypeUnion RPG_Character_CheckTypeUnion_Type_pimpl::
+post_RPG_Character_CheckTypeUnion_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Character_Check_Type_pimpl
+//
+
+void RPG_Character_Check_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Character_Check_Type_pimpl::
+type (const RPG_Character_CheckTypeUnion& type)
+{
+  // TODO
+  //
+}
+
+void RPG_Character_Check_Type_pimpl::
+difficultyClass (unsigned char difficultyClass)
+{
+  // TODO
+  //
+}
+
+RPG_Character_Check RPG_Character_Check_Type_pimpl::
+post_RPG_Character_Check_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
 // RPG_Character_Feat_Type_pimpl
 //
 

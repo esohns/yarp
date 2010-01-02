@@ -246,6 +246,76 @@ RPG_Character_Skills RPG_Character_Skills_Type::post_RPG_Character_Skills_Type()
   return result;
 }
 
+RPG_Character_CheckTypeUnion_Type::RPG_Character_CheckTypeUnion_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_CheckTypeUnion_Type::RPG_Character_CheckTypeUnion_Type"));
+
+  myCurrentCheckType.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentCheckType.skill = RPG_CHARACTER_SKILL_INVALID;
+}
+
+void RPG_Character_CheckTypeUnion_Type::_characters(const ::xml_schema::ro_string& checkType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_CheckTypeUnion_Type::_characters"));
+
+  // can be either:
+  // - RPG_Common_Attribute_Type --> "ATTRIBUTE_xxx"
+  // - RPG_Character_Skill_Type --> "SKILL_xxx"
+  std::string type = checkType_in;
+  if (type.find(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_")) == 0)
+    myCurrentCheckType.attribute = RPG_Common_AttributeHelper::stringToRPG_Common_Attribute(checkType_in);
+  else
+    myCurrentCheckType.skill = RPG_Character_SkillHelper::stringToRPG_Character_Skill(checkType_in);
+}
+
+RPG_Character_CheckTypeUnion RPG_Character_CheckTypeUnion_Type::post_RPG_Character_CheckTypeUnion_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_CheckTypeUnion_Type::post_RPG_Character_CheckTypeUnion_Type"));
+
+  RPG_Character_CheckTypeUnion result = myCurrentCheckType;
+
+  // clear structure
+  myCurrentCheckType.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentCheckType.skill = RPG_CHARACTER_SKILL_INVALID;
+
+  return result;
+}
+
+RPG_Character_Check_Type::RPG_Character_Check_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Check_Type::RPG_Character_Check_Type"));
+
+  myCurrentCheck.type.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentCheck.difficultyClass = 0;
+}
+
+void RPG_Character_Check_Type::type(const RPG_Character_CheckTypeUnion& type_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Check_Type::type"));
+
+  myCurrentCheck.type = type_in;
+}
+
+void RPG_Character_Check_Type::difficultyClass(unsigned char difficultyClass_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Check_Type::difficultyClass"));
+
+  myCurrentCheck.difficultyClass = difficultyClass_in;
+}
+
+RPG_Character_Check RPG_Character_Check_Type::post_RPG_Character_Check_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Check_Type::post_RPG_Character_Check_Type"));
+
+  RPG_Character_Check result = myCurrentCheck;
+
+  // clear structure
+  myCurrentCheck.type.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentCheck.difficultyClass = 0;
+
+  return result;
+}
+
 RPG_Character_Feat RPG_Character_Feat_Type::post_RPG_Character_Feat_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Feat_Type::post_RPG_Character_Feat_Type"));

@@ -10,6 +10,8 @@
 
 #include "rpg_character_XML_types.h"
 
+#include "rpg_common_XML_parser_base.h"
+
 class RPG_Character_Gender_Type_pimpl: public virtual RPG_Character_Gender_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -169,6 +171,35 @@ class RPG_Character_Skills_Type_pimpl: public virtual RPG_Character_Skills_Type_
 
   virtual RPG_Character_Skills
   post_RPG_Character_Skills_Type ();
+};
+
+class RPG_Character_CheckTypeUnion_Type_pimpl: public virtual RPG_Character_CheckTypeUnion_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  _characters (const ::xml_schema::ro_string&);
+
+  virtual RPG_Character_CheckTypeUnion
+  post_RPG_Character_CheckTypeUnion_Type ();
+};
+
+class RPG_Character_Check_Type_pimpl: public virtual RPG_Character_Check_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  type (const RPG_Character_CheckTypeUnion&);
+
+  virtual void
+  difficultyClass (unsigned char);
+
+  virtual RPG_Character_Check
+  post_RPG_Character_Check_Type ();
 };
 
 class RPG_Character_Feat_Type_pimpl: public virtual RPG_Character_Feat_Type_pskel,

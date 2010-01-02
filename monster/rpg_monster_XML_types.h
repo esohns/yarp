@@ -80,12 +80,12 @@ class RPG_Monster_Dictionary_Type_pskel;
 #include <rpg_item_weapontype.h>
 #include <rpg_item_physicaldamagetype.h>
 #include <rpg_dice_incl.h>
-
 #include <rpg_common_savingthrow.h>
 #include <rpg_common_attribute.h>
 #include <rpg_common_savingthrowmodifier.h>
-#include <rpg_combat_incl.h>
 #include <rpg_character_incl.h>
+#include <rpg_combat_incl.h>
+
 #include "rpg_monster_incl.h"
 
 #include "rpg_dice_XML_types.h"
@@ -278,6 +278,12 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   virtual void
   numAttacksPerRound (unsigned char);
 
+  virtual void
+  interval (unsigned short);
+
+  virtual void
+  ranged (const RPG_Combat_RangedAttackProperties&);
+
   virtual RPG_Monster_AttackAction
   post_RPG_Monster_AttackAction_Type () = 0;
 
@@ -299,11 +305,19 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   numAttacksPerRound_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
+  interval_parser (::xml_schema::unsigned_short_pskel&);
+
+  void
+  ranged_parser (::RPG_Combat_RangedAttackProperties_Type_pskel&);
+
+  void
   parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& /* weapon */,
            ::xml_schema::byte_pskel& /* attackBonus */,
            ::RPG_Combat_AttackForm_Type_pskel& /* attackForm */,
            ::RPG_Combat_Damage_Type_pskel& /* damage */,
-           ::xml_schema::unsigned_byte_pskel& /* numAttacksPerRound */);
+           ::xml_schema::unsigned_byte_pskel& /* numAttacksPerRound */,
+           ::xml_schema::unsigned_short_pskel& /* interval */,
+           ::RPG_Combat_RangedAttackProperties_Type_pskel& /* ranged */);
 
   // Constructor.
   //
@@ -327,6 +341,8 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Combat_AttackForm_Type_pskel* attackForm_parser_;
   ::RPG_Combat_Damage_Type_pskel* damage_parser_;
   ::xml_schema::unsigned_byte_pskel* numAttacksPerRound_parser_;
+  ::xml_schema::unsigned_short_pskel* interval_parser_;
+  ::RPG_Combat_RangedAttackProperties_Type_pskel* ranged_parser_;
 };
 
 class RPG_Monster_Attack_Type_pskel: public ::xml_schema::complex_content

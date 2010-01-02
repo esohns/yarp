@@ -35,4 +35,20 @@ class RPG_Magic_School_Type
   virtual RPG_Magic_School post_RPG_Magic_School_Type();
 };
 
+class RPG_Magic_Domain_Type
+ : public RPG_Magic_Domain_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Magic_Domain post_RPG_Magic_Domain_Type();
+};
+
+class RPG_Magic_Spell_Type
+ : public RPG_Magic_Spell_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Magic_Spell post_RPG_Magic_Spell_Type();
+};
+
 #endif

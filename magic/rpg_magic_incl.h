@@ -22,5 +22,7 @@
 #define RPG_MAGIC_INCL_H
 
 #include "rpg_magic_school.h"
+#include "rpg_magic_domain.h"
+#include "rpg_magic_spell.h"
 
 #endif

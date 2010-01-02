@@ -38,28 +38,28 @@
 
 #include "rpg_common_XML_types.h"
 
-// RPG_Common_SavingThrowModifier_Type_pskel
+// RPG_Common_SavingThrowCheck_Type_pskel
 //
 
-void RPG_Common_SavingThrowModifier_Type_pskel::
+void RPG_Common_SavingThrowCheck_Type_pskel::
 type_parser (::RPG_Common_SavingThrow_Type_pskel& p)
 {
   this->type_parser_ = &p;
 }
 
-void RPG_Common_SavingThrowModifier_Type_pskel::
+void RPG_Common_SavingThrowCheck_Type_pskel::
 attribute_parser (::RPG_Common_Attribute_Type_pskel& p)
 {
   this->attribute_parser_ = &p;
 }
 
-void RPG_Common_SavingThrowModifier_Type_pskel::
+void RPG_Common_SavingThrowCheck_Type_pskel::
 difficultyClass_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->difficultyClass_parser_ = &p;
 }
 
-void RPG_Common_SavingThrowModifier_Type_pskel::
+void RPG_Common_SavingThrowCheck_Type_pskel::
 parsers (::RPG_Common_SavingThrow_Type_pskel& type,
          ::RPG_Common_Attribute_Type_pskel& attribute,
          ::xml_schema::unsigned_byte_pskel& difficultyClass)
@@ -69,33 +69,33 @@ parsers (::RPG_Common_SavingThrow_Type_pskel& type,
   this->difficultyClass_parser_ = &difficultyClass;
 }
 
-RPG_Common_SavingThrowModifier_Type_pskel::
-RPG_Common_SavingThrowModifier_Type_pskel ()
+RPG_Common_SavingThrowCheck_Type_pskel::
+RPG_Common_SavingThrowCheck_Type_pskel ()
 : type_parser_ (0),
   attribute_parser_ (0),
   difficultyClass_parser_ (0)
 {
 }
 
-// RPG_Common_SavingThrowModifier_Type_pskel
+// RPG_Common_SavingThrowCheck_Type_pskel
 //
 
-void RPG_Common_SavingThrowModifier_Type_pskel::
+void RPG_Common_SavingThrowCheck_Type_pskel::
 type (const RPG_Common_SavingThrow&)
 {
 }
 
-void RPG_Common_SavingThrowModifier_Type_pskel::
+void RPG_Common_SavingThrowCheck_Type_pskel::
 attribute (const RPG_Common_Attribute&)
 {
 }
 
-void RPG_Common_SavingThrowModifier_Type_pskel::
+void RPG_Common_SavingThrowCheck_Type_pskel::
 difficultyClass (unsigned char)
 {
 }
 
-bool RPG_Common_SavingThrowModifier_Type_pskel::
+bool RPG_Common_SavingThrowCheck_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
@@ -138,7 +138,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Common_SavingThrowModifier_Type_pskel::
+bool RPG_Common_SavingThrowCheck_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {

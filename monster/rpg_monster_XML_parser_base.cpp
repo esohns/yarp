@@ -194,6 +194,20 @@ numAttacksPerRound (unsigned char numAttacksPerRound)
   //
 }
 
+void RPG_Monster_AttackAction_Type_pimpl::
+interval (unsigned short interval)
+{
+  // TODO
+  //
+}
+
+void RPG_Monster_AttackAction_Type_pimpl::
+ranged (const RPG_Combat_RangedAttackProperties& ranged)
+{
+  // TODO
+  //
+}
+
 RPG_Monster_AttackAction RPG_Monster_AttackAction_Type_pimpl::
 post_RPG_Monster_AttackAction_Type ()
 {
