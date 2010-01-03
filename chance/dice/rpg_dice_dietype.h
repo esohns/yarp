@@ -41,7 +41,7 @@ enum RPG_Dice_DieType
 #include <ace/Assert.h>
 
 // prefix increment
-inline RPG_Dice_DieType& operator++(RPG_Dice_DieType& dieType_inout)
+             inline RPG_Dice_DieType& operator++(RPG_Dice_DieType& dieType_inout)
 {
   switch (dieType_inout)
   {
@@ -101,59 +101,59 @@ inline RPG_Dice_DieType operator--(RPG_Dice_DieType& dieType_inout, int)
 #include <map>
 #include <string>
 
-typedef std::map<RPG_Dice_DieType, std::string> RPG_Dice_DieTypeToStringTable_t;
-typedef RPG_Dice_DieTypeToStringTable_t::const_iterator RPG_Dice_DieTypeToStringTableIterator_t;
+             typedef std::map<RPG_Dice_DieType, std::string> RPG_Dice_DieTypeToStringTable_t;
+         typedef RPG_Dice_DieTypeToStringTable_t::const_iterator RPG_Dice_DieTypeToStringTableIterator_t;
 
-class RPG_Dice_DieTypeHelper
+         class RPG_Dice_DieTypeHelper
 {
- public:
-  inline static void init()
-  {
-    myRPG_Dice_DieTypeToStringTable.clear();
-    myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_0, ACE_TEXT_ALWAYS_CHAR("D_0")));
-    myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_2, ACE_TEXT_ALWAYS_CHAR("D_2")));
-    myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_3, ACE_TEXT_ALWAYS_CHAR("D_3")));
-    myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_4, ACE_TEXT_ALWAYS_CHAR("D_4")));
-    myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_6, ACE_TEXT_ALWAYS_CHAR("D_6")));
-    myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_8, ACE_TEXT_ALWAYS_CHAR("D_8")));
-    myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_10, ACE_TEXT_ALWAYS_CHAR("D_10")));
-    myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_12, ACE_TEXT_ALWAYS_CHAR("D_12")));
-    myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_20, ACE_TEXT_ALWAYS_CHAR("D_20")));
-    myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_100, ACE_TEXT_ALWAYS_CHAR("D_100")));
-  };
-
-  inline static std::string RPG_Dice_DieTypeToString(const RPG_Dice_DieType& element_in)
-  {
-    std::string result;
-    RPG_Dice_DieTypeToStringTableIterator_t iterator = myRPG_Dice_DieTypeToStringTable.find(element_in);
-    if (iterator != myRPG_Dice_DieTypeToStringTable.end())
-      result = iterator->second;
-    else
-      result = ACE_TEXT_ALWAYS_CHAR("RPG_DICE_DIETYPE_INVALID");
-
-    return result;
-  };
-
-  inline static RPG_Dice_DieType stringToRPG_Dice_DieType(const std::string& string_in)
-  {
-    RPG_Dice_DieTypeToStringTableIterator_t iterator = myRPG_Dice_DieTypeToStringTable.begin();
-    do
+  public:
+    inline static void init()
     {
-      if (iterator->second == string_in)
-        return iterator->first;
+      myRPG_Dice_DieTypeToStringTable.clear();
+      myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_0, ACE_TEXT_ALWAYS_CHAR("D_0")));
+      myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_2, ACE_TEXT_ALWAYS_CHAR("D_2")));
+      myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_3, ACE_TEXT_ALWAYS_CHAR("D_3")));
+      myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_4, ACE_TEXT_ALWAYS_CHAR("D_4")));
+      myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_6, ACE_TEXT_ALWAYS_CHAR("D_6")));
+      myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_8, ACE_TEXT_ALWAYS_CHAR("D_8")));
+      myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_10, ACE_TEXT_ALWAYS_CHAR("D_10")));
+      myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_12, ACE_TEXT_ALWAYS_CHAR("D_12")));
+      myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_20, ACE_TEXT_ALWAYS_CHAR("D_20")));
+      myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_100, ACE_TEXT_ALWAYS_CHAR("D_100")));
+    };
 
-      iterator++;
-    } while (iterator != myRPG_Dice_DieTypeToStringTable.end());
+    inline static std::string RPG_Dice_DieTypeToString(const RPG_Dice_DieType& element_in)
+    {
+      std::string result;
+      RPG_Dice_DieTypeToStringTableIterator_t iterator = myRPG_Dice_DieTypeToStringTable.find(element_in);
+      if (iterator != myRPG_Dice_DieTypeToStringTable.end())
+        result = iterator->second;
+      else
+        result = ACE_TEXT_ALWAYS_CHAR("RPG_DICE_DIETYPE_INVALID");
 
-    return RPG_DICE_DIETYPE_INVALID;
-  };
+      return result;
+    };
 
-  static RPG_Dice_DieTypeToStringTable_t myRPG_Dice_DieTypeToStringTable;
+    inline static RPG_Dice_DieType stringToRPG_Dice_DieType(const std::string& string_in)
+    {
+      RPG_Dice_DieTypeToStringTableIterator_t iterator = myRPG_Dice_DieTypeToStringTable.begin();
+      do
+      {
+        if (iterator->second == string_in)
+          return iterator->first;
 
- private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Dice_DieTypeHelper());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Dice_DieTypeHelper(const RPG_Dice_DieTypeHelper&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Dice_DieTypeHelper& operator=(const RPG_Dice_DieTypeHelper&));
+        iterator++;
+      } while (iterator != myRPG_Dice_DieTypeToStringTable.end());
+
+      return RPG_DICE_DIETYPE_INVALID;
+    };
+
+    static RPG_Dice_DieTypeToStringTable_t myRPG_Dice_DieTypeToStringTable;
+
+  private:
+    ACE_UNIMPLEMENTED_FUNC(RPG_Dice_DieTypeHelper());
+    ACE_UNIMPLEMENTED_FUNC(RPG_Dice_DieTypeHelper(const RPG_Dice_DieTypeHelper&));
+    ACE_UNIMPLEMENTED_FUNC(RPG_Dice_DieTypeHelper& operator=(const RPG_Dice_DieTypeHelper&));
 };
 
 #endif

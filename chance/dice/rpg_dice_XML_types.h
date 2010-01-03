@@ -61,13 +61,9 @@ class RPG_Dice_ValueRange_Type_pskel;
 #define XSD_CXX_PARSER_USE_CHAR
 #endif
 
-#include <rpg_XMLSchema.h>
+#include <rpg_XMLSchema_XML_types.h>
 
 #include "rpg_dice_incl.h"
-
-#include "rpg_dice_valuerange.h"
-#include "rpg_dice_roll.h"
-#include "rpg_dice_dietype.h"
 
 class RPG_Dice_DieType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
