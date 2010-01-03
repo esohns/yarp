@@ -21,10 +21,21 @@
 #ifndef RPG_CHARACTER_CHECKTYPEUNION_H
 #define RPG_CHARACTER_CHECKTYPEUNION_H
 
-union RPG_Character_CheckTypeUnion
+struct RPG_Character_CheckTypeUnion
 {
-  RPG_Common_Attribute attribute;
-  RPG_Character_Skill skill;
+  union
+  {
+    RPG_Common_Attribute attribute;
+    RPG_Character_Skill skill;
+  };
+
+  enum Discriminator_t
+  {
+    ATTRIBUTE,
+    SKILL,
+    INVALID
+  };
+  Discriminator_t discriminator;
 };
 
 #endif

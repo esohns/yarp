@@ -9,7 +9,7 @@
 #//%%%FILE%%%////////////////////////////////////////////////////////////////////
 
 # C++ "glue code"
-/usr/local/bin/XML2CppCode -e -f ./../rpg_character.xsd -i -o ./.. -p ./../templates/h -s
+/usr/local/bin/XML2CppCode -e -f ./../rpg_character.xsd -i -o ./.. -p ./../templates/h -s -u
 
 # XML Parser
 # generate "XMLSchema" namespace include file
