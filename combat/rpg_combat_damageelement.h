@@ -28,8 +28,7 @@ struct RPG_Combat_DamageElement
   RPG_Combat_DamageDuration duration;
   std::vector<RPG_Combat_DamageBonus> others;
   RPG_Common_Attribute attribute;
-  RPG_Common_SavingThrowModifier save;
-  RPG_Combat_DamageCounterMeasure counterMeasure;
+  std::vector<RPG_Combat_DamageCounterMeasure> counterMeasures;
   RPG_Combat_DamageEffectType effect;
 };
 

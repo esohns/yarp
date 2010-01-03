@@ -140,16 +140,32 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="RPG_Combat_DamageCounterMeasureCheckUnion_Type">
-    <xsd:union memberTypes="RPG_Character_Check_Type RPG_Common_SavingThrowCheck_Type"/>
+  <xsd:simpleType name="RPG_Combat_DamageReductionType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="REDUCTION_HALF"/>
+      <xsd:enumeration value="REDUCTION_FULL"/>
+    </xsd:restriction>
   </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Combat_DamageCounterMeasureCheckUnion_Type">
+    <xsd:union memberTypes="RPG_Character_Skill_Type RPG_Common_Attribute_Type RPG_Common_SavingThrow_Type"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Combat_DamageCounterMeasureCheck_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Combat_DamageCounterMeasureCheckUnion_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
 
   <xsd:complexType name="RPG_Combat_DamageCounterMeasure_Type">
     <xsd:sequence>
       <xsd:element name="type" type="RPG_Combat_DamageCounterMeasureType_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="check" type="RPG_Combat_DamageCounterMeasureCheckUnion_Type" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="spell" type="RPG_Magic_Spell" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="check" type="RPG_Combat_DamageCounterMeasureCheck_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="spell" type="RPG_Magic_Spell_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
+    <xsd:attribute name="reduction" type="RPG_Combat_DamageReductionType_Type" use="optional" default="REDUCTION_FULL"/>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Combat_DamageElement_Type">
@@ -159,8 +175,7 @@
       <xsd:element name="duration" type="RPG_Combat_DamageDuration_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="other" type="RPG_Combat_DamageBonus_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="save" type="RPG_Common_SavingThrowModifier_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="counterMeasure" type="RPG_Combat_DamageCounterMeasure_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="counterMeasure" type="RPG_Combat_DamageCounterMeasure_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
     <xsd:attribute name="effect" type="RPG_Combat_DamageEffectType_Type" use="optional" default="EFFECT_IMMEDIATE"/>
   </xsd:complexType>

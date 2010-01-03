@@ -61,7 +61,7 @@ class RPG_Common_SavingThrowCheck_Type_pskel;
 #define XSD_CXX_PARSER_USE_CHAR
 #endif
 
-#include "rpg_XMLSchema.h"
+#include "rpg_XMLSchema_XML_types.h"
 
 #include "rpg_common_incl.h"
 

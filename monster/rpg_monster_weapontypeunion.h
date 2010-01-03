@@ -21,11 +21,23 @@
 #ifndef RPG_MONSTER_WEAPONTYPEUNION_H
 #define RPG_MONSTER_WEAPONTYPEUNION_H
 
-union RPG_Monster_WeaponTypeUnion
+struct RPG_Monster_WeaponTypeUnion
 {
-  RPG_Combat_SpecialAttack specialattack;
-  RPG_Monster_NaturalWeapon naturalweapon;
-  RPG_Item_WeaponType weapontype;
+  union
+  {
+    RPG_Combat_SpecialAttack specialattack;
+    RPG_Monster_NaturalWeapon naturalweapon;
+    RPG_Item_WeaponType weapontype;
+  };
+
+  enum Discriminator_t
+  {
+    SPECIALATTACK,
+    NATURALWEAPON,
+    WEAPONTYPE,
+    INVALID
+  };
+  Discriminator_t discriminator;
 };
 
 #endif

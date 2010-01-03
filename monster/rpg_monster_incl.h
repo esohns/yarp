@@ -21,6 +21,7 @@
 #ifndef RPG_MONSTER_INCL_H
 #define RPG_MONSTER_INCL_H
 
+#include <vector>
 #include "rpg_monster_metatype.h"
 #include "rpg_monster_subtype.h"
 #include "rpg_monster_type.h"

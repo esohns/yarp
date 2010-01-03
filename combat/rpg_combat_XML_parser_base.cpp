@@ -301,6 +301,146 @@ post_RPG_Combat_DamageEffectType_Type ()
   // return ... ;
 }
 
+// RPG_Combat_DamageCounterMeasureType_Type_pimpl
+//
+
+void RPG_Combat_DamageCounterMeasureType_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Combat_DamageCounterMeasureType RPG_Combat_DamageCounterMeasureType_Type_pimpl::
+post_RPG_Combat_DamageCounterMeasureType_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Combat_DamageReductionType_Type_pimpl
+//
+
+void RPG_Combat_DamageReductionType_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Combat_DamageReductionType RPG_Combat_DamageReductionType_Type_pimpl::
+post_RPG_Combat_DamageReductionType_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Combat_DamageCounterMeasureCheckUnion_Type_pimpl
+//
+
+void RPG_Combat_DamageCounterMeasureCheckUnion_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_DamageCounterMeasureCheckUnion_Type_pimpl::
+_characters (const ::xml_schema::ro_string& s)
+{
+  // TODO
+  //
+}
+
+RPG_Combat_DamageCounterMeasureCheckUnion RPG_Combat_DamageCounterMeasureCheckUnion_Type_pimpl::
+post_RPG_Combat_DamageCounterMeasureCheckUnion_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Combat_DamageCounterMeasureCheck_Type_pimpl
+//
+
+void RPG_Combat_DamageCounterMeasureCheck_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_DamageCounterMeasureCheck_Type_pimpl::
+type (const RPG_Combat_DamageCounterMeasureCheckUnion& type)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_DamageCounterMeasureCheck_Type_pimpl::
+attribute (const RPG_Common_Attribute& attribute)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_DamageCounterMeasureCheck_Type_pimpl::
+difficultyClass (unsigned char difficultyClass)
+{
+  // TODO
+  //
+}
+
+RPG_Combat_DamageCounterMeasureCheck RPG_Combat_DamageCounterMeasureCheck_Type_pimpl::
+post_RPG_Combat_DamageCounterMeasureCheck_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Combat_DamageCounterMeasure_Type_pimpl
+//
+
+void RPG_Combat_DamageCounterMeasure_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Combat_DamageCounterMeasure_Type_pimpl::
+type (const RPG_Combat_DamageCounterMeasureType& type)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_DamageCounterMeasure_Type_pimpl::
+check (const RPG_Combat_DamageCounterMeasureCheck& check)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_DamageCounterMeasure_Type_pimpl::
+spell (const RPG_Magic_Spell& spell)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_DamageCounterMeasure_Type_pimpl::
+reduction (const RPG_Combat_DamageReductionType& reduction)
+{
+  // TODO
+  //
+}
+
+RPG_Combat_DamageCounterMeasure RPG_Combat_DamageCounterMeasure_Type_pimpl::
+post_RPG_Combat_DamageCounterMeasure_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
 // RPG_Combat_DamageElement_Type_pimpl
 //
 
@@ -345,14 +485,7 @@ attribute (const RPG_Common_Attribute& attribute)
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::
-save (const RPG_Common_SavingThrowModifier& save)
-{
-  // TODO
-  //
-}
-
-void RPG_Combat_DamageElement_Type_pimpl::
-counterMeasure (bool counterMeasure)
+counterMeasure (const RPG_Combat_DamageCounterMeasure& counterMeasure)
 {
   // TODO
   //

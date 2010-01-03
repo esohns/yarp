@@ -41,7 +41,7 @@
             </amount>
           </element>
           <element effect="EFFECT_PERMANENT">
-            <type>DAMAGE_SLIME</type>
+            <type>DAMAGE_ACID</type>
             <amount>
               <numDice>1</numDice>
               <typeDice>D_12</typeDice>
@@ -81,7 +81,7 @@
             </amount>
           </element>
           <element effect="EFFECT_PERMANENT">
-            <type>DAMAGE_SLIME</type>
+            <type>DAMAGE_ACID</type>
             <amount>
               <numDice>1</numDice>
               <typeDice>D_12</typeDice>
@@ -233,7 +233,7 @@
             </amount>
           </element>
           <element effect="EFFECT_PERMANENT">
-            <type>DAMAGE_SLIME</type>
+            <type>DAMAGE_ACID</type>
             <amount>
               <numDice>1</numDice>
               <typeDice>D_12</typeDice>
@@ -273,7 +273,7 @@
             </amount>
           </element>
           <element effect="EFFECT_PERMANENT">
-            <type>DAMAGE_SLIME</type>
+            <type>DAMAGE_ACID</type>
             <amount>
               <numDice>1</numDice>
               <typeDice>D_12</typeDice>
@@ -2109,12 +2109,7 @@
         <attackForm>ATTACKFORM_RANGED</attackForm>
         <damage>
           <element>
-            <type>DAMAGE_WEB</type>
-            <amount>
-              <numDice>1</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>0</modifier>
-            </amount>
+            <type>PHYSICALDAMAGE_NONE</type>
             <save>
               <type>SAVE_FORTITUDE</type>
               <difficultyClass>13</difficultyClass>

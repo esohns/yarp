@@ -21,10 +21,21 @@
 #ifndef RPG_COMBAT_DAMAGETYPEUNION_H
 #define RPG_COMBAT_DAMAGETYPEUNION_H
 
-union RPG_Combat_DamageTypeUnion
+struct RPG_Combat_DamageTypeUnion
 {
-  RPG_Item_PhysicalDamageType physicaldamagetype;
-  RPG_Combat_SpecialDamageType specialdamagetype;
+  union
+  {
+    RPG_Item_PhysicalDamageType physicaldamagetype;
+    RPG_Combat_SpecialDamageType specialdamagetype;
+  };
+
+  enum Discriminator_t
+  {
+    PHYSICALDAMAGETYPE,
+    SPECIALDAMAGETYPE,
+    INVALID
+  };
+  Discriminator_t discriminator;
 };
 
 #endif

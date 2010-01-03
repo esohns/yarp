@@ -166,6 +166,69 @@ class RPG_Combat_DamageEffectType_Type
   virtual RPG_Combat_DamageEffectType post_RPG_Combat_DamageEffectType_Type();
 };
 
+class RPG_Combat_DamageCounterMeasureType_Type
+ : public RPG_Combat_DamageCounterMeasureType_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Combat_DamageCounterMeasureType post_RPG_Combat_DamageCounterMeasureType_Type();
+};
+
+class RPG_Combat_DamageReductionType_Type
+ : public RPG_Combat_DamageReductionType_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Combat_DamageReductionType post_RPG_Combat_DamageReductionType_Type();
+};
+
+class RPG_Combat_DamageCounterMeasureCheckUnion_Type
+ : public RPG_Combat_DamageCounterMeasureCheckUnion_Type_pimpl
+{
+ public:
+  RPG_Combat_DamageCounterMeasureCheckUnion_Type();
+
+//   virtual void pre();
+  virtual void _characters(const ::xml_schema::ro_string&);
+  virtual RPG_Combat_DamageCounterMeasureCheckUnion post_RPG_Combat_DamageCounterMeasureCheckUnion_Type();
+
+ private:
+  RPG_Combat_DamageCounterMeasureCheckUnion myCurrentCheckUnion;
+};
+
+class RPG_Combat_DamageCounterMeasureCheck_Type
+ : public RPG_Combat_DamageCounterMeasureCheck_Type_pimpl
+{
+ public:
+   RPG_Combat_DamageCounterMeasureCheck_Type();
+
+//   virtual void pre();
+  virtual void type(const RPG_Combat_DamageCounterMeasureCheckUnion&);
+  virtual void attribute(const RPG_Common_Attribute&);
+  virtual void difficultyClass(unsigned char);
+  virtual RPG_Combat_DamageCounterMeasureCheck post_RPG_Combat_DamageCounterMeasureCheck_Type();
+
+ private:
+  RPG_Combat_DamageCounterMeasureCheck myCurrentCheck;
+};
+
+class RPG_Combat_DamageCounterMeasure_Type
+ : public RPG_Combat_DamageCounterMeasure_Type_pimpl
+{
+  public:
+   RPG_Combat_DamageCounterMeasure_Type();
+
+//    virtual void pre();
+   virtual void type(const RPG_Combat_DamageCounterMeasureType&);
+   virtual void check(const RPG_Combat_DamageCounterMeasureCheck&);
+   virtual void spell(const RPG_Magic_Spell&);
+   virtual void reduction(const RPG_Combat_DamageReductionType&);
+   virtual RPG_Combat_DamageCounterMeasure post_RPG_Combat_DamageCounterMeasure_Type();
+
+ private:
+  RPG_Combat_DamageCounterMeasure myCurrentCounterMeasure;
+};
+
 class RPG_Combat_DamageElement_Type
  : public RPG_Combat_DamageElement_Type_pimpl
 {
@@ -178,8 +241,7 @@ class RPG_Combat_DamageElement_Type
   virtual void duration(const RPG_Combat_DamageDuration&);
   virtual void other(const RPG_Combat_DamageBonus&);
   virtual void attribute(const RPG_Common_Attribute&);
-  virtual void save(const RPG_Common_SavingThrowModifier&);
-  virtual void counterMeasure(bool);
+  virtual void counterMeasure(const RPG_Combat_DamageCounterMeasure&);
   virtual void effect(const RPG_Combat_DamageEffectType&);
   virtual RPG_Combat_DamageElement post_RPG_Combat_DamageElement_Type();
 

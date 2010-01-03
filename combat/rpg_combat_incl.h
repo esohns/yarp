@@ -21,6 +21,7 @@
 #ifndef RPG_COMBAT_INCL_H
 #define RPG_COMBAT_INCL_H
 
+#include <vector>
 #include "rpg_combat_attackform.h"
 #include "rpg_combat_areaofeffect.h"
 #include "rpg_combat_rangedeffectunion.h"
@@ -35,7 +36,9 @@
 #include "rpg_combat_damagebonus.h"
 #include "rpg_combat_damageeffecttype.h"
 #include "rpg_combat_damagecountermeasuretype.h"
+#include "rpg_combat_damagereductiontype.h"
 #include "rpg_combat_damagecountermeasurecheckunion.h"
+#include "rpg_combat_damagecountermeasurecheck.h"
 #include "rpg_combat_damagecountermeasure.h"
 #include "rpg_combat_damageelement.h"
 #include "rpg_combat_damage.h"

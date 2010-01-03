@@ -20,21 +20,14 @@
 #ifndef RPG_MONSTER_COMMON_TOOLS_H
 #define RPG_MONSTER_COMMON_TOOLS_H
 
-#include <vector>
-
-#include <rpg_dice_dietype.h>
-#include <rpg_dice_roll.h>
-#include <rpg_dice_valuerange.h>
+#include <rpg_dice_incl.h>
 
 #include <rpg_item_weapontype.h>
 #include <rpg_item_physicaldamagetype.h>
 
+#include <rpg_common_incl.h>
 #include <rpg_character_incl.h>
-
-#include <rpg_common_attribute.h>
-#include <rpg_common_savingthrow.h>
-#include <rpg_common_savingthrowmodifier.h>
-
+#include <rpg_magic_incl.h>
 #include <rpg_combat_incl.h>
 
 #include "rpg_monster_incl.h"

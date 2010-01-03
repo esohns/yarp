@@ -24,8 +24,9 @@
 struct RPG_Combat_DamageCounterMeasure
 {
   RPG_Combat_DamageCounterMeasureType type;
-  std::vector<RPG_Combat_DamageCounterMeasureCheckUnion> checks;
+  RPG_Combat_DamageCounterMeasureCheck check;
   std::vector<RPG_Magic_Spell> spells;
+  RPG_Combat_DamageReductionType reduction;
 };
 
 #endif

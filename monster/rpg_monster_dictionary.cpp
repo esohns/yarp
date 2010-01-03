@@ -28,6 +28,8 @@
 #include <rpg_character_skills_common_tools.h>
 #include <rpg_character_XML_parser.h>
 
+#include <rpg_magic_XML_parser.h>
+
 #include <rpg_combat_XML_parser.h>
 
 #include <rpg_dice.h>
@@ -59,69 +61,76 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
 
   // Construct the parser.
   //
-  ::xml_schema::string_pimpl                string_p;
-  RPG_Character_Size_Type                   size_p;
+  ::xml_schema::string_pimpl                     string_p;
+  RPG_Character_Size_Type                        size_p;
 
-  RPG_Monster_MetaType_Type                 metaType_p;
-  RPG_Monster_SubType_Type                  subType_p;
-  RPG_Monster_Type_Type                     type_p;
+  RPG_Monster_MetaType_Type                      metaType_p;
+  RPG_Monster_SubType_Type                       subType_p;
+  RPG_Monster_Type_Type                          type_p;
   type_p.parsers(metaType_p,
                  subType_p);
 
-  ::xml_schema::unsigned_int_pimpl          unsigned_int_p;
-  RPG_Dice_DieType_Type                     dieType_p;
-  ::xml_schema::integer_pimpl               int_p;
-  RPG_Dice_Roll_Type                        roll_p;
+  ::xml_schema::unsigned_int_pimpl               unsigned_int_p;
+  RPG_Dice_DieType_Type                          dieType_p;
+  ::xml_schema::integer_pimpl                    int_p;
+  RPG_Dice_Roll_Type                             roll_p;
   roll_p.parsers(unsigned_int_p,
                  dieType_p,
                  int_p);
 //   int_pimpl                               initiative_p;
 //   unsigned_int_pimpl                      speed_p;
-  ::xml_schema::byte_pimpl                  byte_p;
-  RPG_Monster_NaturalArmorClass_Type        naturalArmorClass_p;
+  ::xml_schema::byte_pimpl                       byte_p;
+  RPG_Monster_NaturalArmorClass_Type             naturalArmorClass_p;
   naturalArmorClass_p.parsers(byte_p,
                               byte_p,
                               byte_p);
 
 //   RPG_Monster_NaturalWeapon_Type            naturalWeapon_p;
-  RPG_Monster_WeaponTypeUnion_Type          weaponUnion_p;
-  RPG_Combat_AttackForm_Type                attackForm_p;
+  RPG_Monster_WeaponTypeUnion_Type               weaponUnion_p;
+  RPG_Combat_AttackForm_Type                     attackForm_p;
 
-  RPG_Combat_DamageTypeUnion_Type           damageType_p;
-  ::xml_schema::unsigned_short_pimpl        unsigned_short_p;
-  RPG_Combat_DamageDuration_Type            duration_p;
+  RPG_Combat_DamageTypeUnion_Type                damageType_p;
+  ::xml_schema::unsigned_short_pimpl             unsigned_short_p;
+  RPG_Combat_DamageDuration_Type                 duration_p;
   duration_p.parsers(roll_p,
                      unsigned_short_p,
                      unsigned_short_p);
-  RPG_Combat_DamageBonus_Type               others_p;
-  RPG_Common_Attribute_Type                 attribute_p;
-  RPG_Common_SavingThrow_Type               savingThrow_p;
-//   RPG_Common_Attribute_Type                 attribute_p;
-  ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
-  RPG_Common_SavingThrowModifier_Type       savingThrowModifier_p;
-  savingThrowModifier_p.parsers(savingThrow_p,
-                                attribute_p,
-                                unsigned_byte_p);
-  ::xml_schema::boolean_pimpl               bool_p;
-  RPG_Combat_DamageEffectType_Type          damageEffect_p;
-  RPG_Combat_DamageElement_Type             damageElement_p;
+  RPG_Combat_DamageBonus_Type                    others_p;
+  RPG_Common_Attribute_Type                      attribute_p;
+
+  RPG_Combat_DamageCounterMeasureType_Type       counterMeasureType_p;
+  RPG_Combat_DamageCounterMeasureCheckUnion_Type counterMeasureCheckUnion_p;
+//   RPG_Common_Attribute_Type                      attribute_p;
+  ::xml_schema::unsigned_byte_pimpl              unsigned_byte_p;
+  RPG_Combat_DamageCounterMeasureCheck_Type      counterMeausureCheck_p;
+  counterMeausureCheck_p.parsers(counterMeasureCheckUnion_p,
+                                 attribute_p,
+                                 unsigned_byte_p);
+  RPG_Magic_Spell_Type                           spell_p;
+  RPG_Combat_DamageReductionType_Type            reduction_p;
+  RPG_Combat_DamageCounterMeasure_Type           counterMeasure_p;
+  counterMeasure_p.parsers(counterMeasureType_p,
+                           counterMeausureCheck_p,
+                           spell_p,
+                           reduction_p);
+  RPG_Combat_DamageEffectType_Type               damageEffect_p;
+  RPG_Combat_DamageElement_Type                  damageElement_p;
   damageElement_p.parsers(damageType_p,
                           roll_p,
                           duration_p,
                           others_p,
                           attribute_p,
-                          savingThrowModifier_p,
-                          bool_p,
+                          counterMeasure_p,
                           damageEffect_p);
-  RPG_Combat_Damage_Type                    damage_p;
+  RPG_Combat_Damage_Type                         damage_p;
   damage_p.parsers(damageElement_p);
 //   ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
-  RPG_Combat_RangedEffectUnion_Type         rangedEffectUnion_p;
-  RPG_Combat_RangedAttackProperties_Type    rangedProperties_p;
+  RPG_Combat_RangedEffectUnion_Type              rangedEffectUnion_p;
+  RPG_Combat_RangedAttackProperties_Type         rangedProperties_p;
   rangedProperties_p.parsers(unsigned_byte_p,
                              unsigned_byte_p,
                              rangedEffectUnion_p);
-  RPG_Monster_AttackAction_Type             attackAction_p;
+  RPG_Monster_AttackAction_Type                  attackAction_p;
   attackAction_p.parsers(weaponUnion_p,
                          byte_p,
                          attackForm_p,
@@ -129,8 +138,8 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                          unsigned_byte_p,
                          unsigned_short_p,
                          rangedProperties_p);
-//   ::xml_schema::boolean_pimpl               bool_p;
-  RPG_Monster_Attack_Type                   attack_p;
+  ::xml_schema::boolean_pimpl                    bool_p;
+  RPG_Monster_Attack_Type                        attack_p;
   attack_p.parsers(byte_p,
                    byte_p,
                    attackAction_p,
@@ -138,59 +147,59 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                    bool_p);
 //   unsigned_int_pimpl                      space_p;
 //   unsigned_int_pimpl                      reach_p;
-  RPG_Monster_SavingThrowModifiers_Type     savingThrowModifiers_p;
+  RPG_Monster_SavingThrowModifiers_Type          savingThrowModifiers_p;
   savingThrowModifiers_p.parsers(byte_p,
                                  byte_p,
                                  byte_p);
-  RPG_Character_Attributes_Type             attributes_p;
+  RPG_Character_Attributes_Type                  attributes_p;
   attributes_p.parsers(unsigned_byte_p,
                        unsigned_byte_p,
                        unsigned_byte_p,
                        unsigned_byte_p,
                        unsigned_byte_p,
                        unsigned_byte_p);
-  RPG_Character_Skill_Type                  skill_p;
-  RPG_Character_SkillValue_Type             skillvalue_p;
+  RPG_Character_Skill_Type                       skill_p;
+  RPG_Character_SkillValue_Type                  skillvalue_p;
   skillvalue_p.parsers(skill_p,
                        byte_p);
-  RPG_Character_Skills_Type                 skills_p;
+  RPG_Character_Skills_Type                      skills_p;
   skills_p.parsers(skillvalue_p);
-  RPG_Character_Feat_Type                   feat_p;
-  RPG_Character_Feats_Type                  feats_p;
+  RPG_Character_Feat_Type                        feat_p;
+  RPG_Character_Feats_Type                       feats_p;
   feats_p.parsers(feat_p);
-  RPG_Character_Terrain_Type                terrain_p;
-  RPG_Character_Climate_Type                climate_p;
-  RPG_Character_Environment_Type            environment_p;
+  RPG_Character_Terrain_Type                     terrain_p;
+  RPG_Character_Climate_Type                     climate_p;
+  RPG_Character_Environment_Type                 environment_p;
   environment_p.parsers(terrain_p,
                         climate_p);
-  RPG_Monster_Organization_Type             organization_p;
-  RPG_Dice_ValueRange_Type                  range_p;
+  RPG_Monster_Organization_Type                  organization_p;
+  RPG_Dice_ValueRange_Type                       range_p;
   range_p.parsers(int_p,
                   int_p);
-  RPG_Monster_OrganizationSlaverStep_Type   organizationSlaverStep_p;
+  RPG_Monster_OrganizationSlaverStep_Type        organizationSlaverStep_p;
   organizationSlaverStep_p.parsers(string_p,
                                    range_p);
-  RPG_Monster_OrganizationStep_Type         organizationStep_p;
+  RPG_Monster_OrganizationStep_Type              organizationStep_p;
   organizationStep_p.parsers(organization_p,
                              range_p,
                              organizationSlaverStep_p);
-  RPG_Monster_Organizations_Type            organizations_p;
+  RPG_Monster_Organizations_Type                 organizations_p;
   organizations_p.parsers(organizationStep_p);
 //   unsigned_int_pimpl                      challengeRating_p;
 //   unsigned_int_pimpl                      treasureModifier_p;
-  RPG_Character_AlignmentCivic_Type         alignmentCivic_p;
-  RPG_Character_AlignmentEthic_Type         alignmentEthic_p;
-  RPG_Character_Alignment_Type              alignment_p;
+  RPG_Character_AlignmentCivic_Type              alignmentCivic_p;
+  RPG_Character_AlignmentEthic_Type              alignmentEthic_p;
+  RPG_Character_Alignment_Type                   alignment_p;
   alignment_p.parsers(alignmentCivic_p,
                       alignmentEthic_p);
 
-  RPG_Monster_AdvancementStep_Type          advancementStep_p;
+  RPG_Monster_AdvancementStep_Type               advancementStep_p;
   advancementStep_p.parsers(size_p,
                             range_p);
-  RPG_Monster_Advancement_Type              advancement_p;
+  RPG_Monster_Advancement_Type                   advancement_p;
   advancement_p.parsers(advancementStep_p);
 //   unsigned_int_pimpl                      levelAdjustment_p;
-  RPG_Monster_PropertiesXML_Type            propertiesXML_p;
+  RPG_Monster_PropertiesXML_Type                 propertiesXML_p;
   propertiesXML_p.parsers(string_p,
                           size_p,
                           type_p,
@@ -212,7 +221,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                           alignment_p,
                           advancement_p,
                           unsigned_byte_p);
-  RPG_Monster_Dictionary_Type               dictionary_p(&myMonsterDictionary);
+  RPG_Monster_Dictionary_Type                    dictionary_p(&myMonsterDictionary);
   dictionary_p.parsers(propertiesXML_p);
 
   // Parse the document to obtain the object model.

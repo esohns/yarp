@@ -21,10 +21,23 @@
 #ifndef RPG_COMBAT_DAMAGECOUNTERMEASURECHECKUNION_H
 #define RPG_COMBAT_DAMAGECOUNTERMEASURECHECKUNION_H
 
-union RPG_Combat_DamageCounterMeasureCheckUnion
+struct RPG_Combat_DamageCounterMeasureCheckUnion
 {
-  RPG_Character_Check check;
-  RPG_Common_SavingThrowCheck savingthrowcheck;
+  union
+  {
+    RPG_Character_Skill skill;
+    RPG_Common_Attribute attribute;
+    RPG_Common_SavingThrow savingthrow;
+  };
+
+  enum Discriminator_t
+  {
+    SKILL,
+    ATTRIBUTE,
+    SAVINGTHROW,
+    INVALID
+  };
+  Discriminator_t discriminator;
 };
 
 #endif

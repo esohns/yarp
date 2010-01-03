@@ -214,6 +214,7 @@ RPG_Monster_WeaponTypeUnion_Type::RPG_Monster_WeaponTypeUnion_Type()
   myCurrentWeaponType.specialattack = RPG_COMBAT_SPECIALATTACK_INVALID;
   myCurrentWeaponType.naturalweapon = RPG_MONSTER_NATURALWEAPON_INVALID;
   myCurrentWeaponType.weapontype = RPG_ITEM_WEAPONTYPE_INVALID;
+  myCurrentWeaponType.discriminator = RPG_Monster_WeaponTypeUnion::INVALID;
 }
 
 void RPG_Monster_WeaponTypeUnion_Type::_characters(const ::xml_schema::ro_string& weaponType_in)
@@ -223,14 +224,23 @@ void RPG_Monster_WeaponTypeUnion_Type::_characters(const ::xml_schema::ro_string
   // can be either:
   // - RPG_Combat_SpecialAttack_Type --> "SPECIALATTACK_xxx"
   // - RPG_Monster_NaturalWeapon_Type --> "NATURALWEAPON_xxx"
-  // - RPG_Item_WeaponType_Type --> "xxx"
+  // - RPG_Item_WeaponType_Type --> "WEAPONTYPE_xxx"
   std::string type = weaponType_in;
   if (type.find(ACE_TEXT_ALWAYS_CHAR("SPECIALATTACK_")) == 0)
+  {
     myCurrentWeaponType.specialattack = RPG_Combat_SpecialAttackHelper::stringToRPG_Combat_SpecialAttack(weaponType_in);
+    myCurrentWeaponType.discriminator = RPG_Monster_WeaponTypeUnion::SPECIALATTACK;
+  } // end IF
   else if (type.find(ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_")) == 0)
+  {
     myCurrentWeaponType.naturalweapon = RPG_Monster_NaturalWeaponHelper::stringToRPG_Monster_NaturalWeapon(weaponType_in);
+    myCurrentWeaponType.discriminator = RPG_Monster_WeaponTypeUnion::NATURALWEAPON;
+  } // end IF
   else
+  {
     myCurrentWeaponType.weapontype = RPG_Item_WeaponTypeHelper::stringToRPG_Item_WeaponType(weaponType_in);
+    myCurrentWeaponType.discriminator = RPG_Monster_WeaponTypeUnion::WEAPONTYPE;
+  } // end ELSE
 }
 
 RPG_Monster_WeaponTypeUnion RPG_Monster_WeaponTypeUnion_Type::post_RPG_Monster_WeaponTypeUnion_Type()
@@ -243,6 +253,7 @@ RPG_Monster_WeaponTypeUnion RPG_Monster_WeaponTypeUnion_Type::post_RPG_Monster_W
   myCurrentWeaponType.specialattack = RPG_COMBAT_SPECIALATTACK_INVALID;
   myCurrentWeaponType.naturalweapon = RPG_MONSTER_NATURALWEAPON_INVALID;
   myCurrentWeaponType.weapontype = RPG_ITEM_WEAPONTYPE_INVALID;
+  myCurrentWeaponType.discriminator = RPG_Monster_WeaponTypeUnion::INVALID;
 
   return result;
 }

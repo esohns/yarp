@@ -21,6 +21,7 @@
 #ifndef RPG_CHARACTER_INCL_H
 #define RPG_CHARACTER_INCL_H
 
+#include <vector>
 #include "rpg_character_gender.h"
 #include "rpg_character_race.h"
 #include "rpg_character_metaclass.h"

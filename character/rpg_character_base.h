@@ -20,38 +20,20 @@
 #ifndef RPG_CHARACTER_BASE_H
 #define RPG_CHARACTER_BASE_H
 
-#include "rpg_character_alignmentcivic.h"
-#include "rpg_character_alignmentethic.h"
-#include "rpg_character_alignment.h"
-#include "rpg_character_skill.h"
-#include "rpg_character_feat.h"
-#include "rpg_character_ability.h"
-#include "rpg_character_condition.h"
-#include "rpg_character_attributes.h"
-#include "rpg_character_skills_common.h"
-#include "rpg_character_size.h"
+#include <rpg_common_incl.h>
+
+#include "rpg_character_incl.h"
 #include "rpg_character_inventory_common.h"
 #include "rpg_character_inventory.h"
 #include "rpg_character_equipment.h"
 #include "rpg_character_common.h"
+#include "rpg_character_skills_common.h"
 
 #include <rpg_dice_dietype.h>
 #include <rpg_dice_roll.h>
-#include <rpg_common_savingthrow.h>
-#include <rpg_common_savingthrowmodifier.h>
 #include <rpg_item_physicaldamagetype.h>
-
-#include <rpg_combat_defensesituation.h>
-#include <rpg_combat_specialdamagetype.h>
-#include <rpg_combat_damagetypeunion.h>
-#include <rpg_combat_damageduration.h>
-#include <rpg_combat_damagebonustype.h>
-#include <rpg_combat_damagebonus.h>
-#include <rpg_combat_damageeffecttype.h>
-#include <rpg_combat_damageelement.h>
-#include <rpg_combat_damage.h>
-
-#include <rpg_common_attribute.h>
+#include <rpg_magic_spell.h>
+#include <rpg_combat_incl.h>
 
 #include <ace/Global_Macros.h>
 

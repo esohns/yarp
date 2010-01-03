@@ -18,6 +18,8 @@
 
 #include <rpg_character_XML_parser_base.h>
 
+#include <rpg_magic_XML_parser_base.h>
+
 class RPG_Combat_AttackForm_Type_pimpl: public virtual RPG_Combat_AttackForm_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -186,6 +188,82 @@ class RPG_Combat_DamageEffectType_Type_pimpl: public virtual RPG_Combat_DamageEf
   post_RPG_Combat_DamageEffectType_Type ();
 };
 
+class RPG_Combat_DamageCounterMeasureType_Type_pimpl: public virtual RPG_Combat_DamageCounterMeasureType_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Combat_DamageCounterMeasureType
+  post_RPG_Combat_DamageCounterMeasureType_Type ();
+};
+
+class RPG_Combat_DamageReductionType_Type_pimpl: public virtual RPG_Combat_DamageReductionType_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Combat_DamageReductionType
+  post_RPG_Combat_DamageReductionType_Type ();
+};
+
+class RPG_Combat_DamageCounterMeasureCheckUnion_Type_pimpl: public virtual RPG_Combat_DamageCounterMeasureCheckUnion_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  _characters (const ::xml_schema::ro_string&);
+
+  virtual RPG_Combat_DamageCounterMeasureCheckUnion
+  post_RPG_Combat_DamageCounterMeasureCheckUnion_Type ();
+};
+
+class RPG_Combat_DamageCounterMeasureCheck_Type_pimpl: public virtual RPG_Combat_DamageCounterMeasureCheck_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  type (const RPG_Combat_DamageCounterMeasureCheckUnion&);
+
+  virtual void
+  attribute (const RPG_Common_Attribute&);
+
+  virtual void
+  difficultyClass (unsigned char);
+
+  virtual RPG_Combat_DamageCounterMeasureCheck
+  post_RPG_Combat_DamageCounterMeasureCheck_Type ();
+};
+
+class RPG_Combat_DamageCounterMeasure_Type_pimpl: public virtual RPG_Combat_DamageCounterMeasure_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  type (const RPG_Combat_DamageCounterMeasureType&);
+
+  virtual void
+  check (const RPG_Combat_DamageCounterMeasureCheck&);
+
+  virtual void
+  spell (const RPG_Magic_Spell&);
+
+  virtual void
+  reduction (const RPG_Combat_DamageReductionType&);
+
+  virtual RPG_Combat_DamageCounterMeasure
+  post_RPG_Combat_DamageCounterMeasure_Type ();
+};
+
 class RPG_Combat_DamageElement_Type_pimpl: public virtual RPG_Combat_DamageElement_Type_pskel
 {
   public:
@@ -208,10 +286,7 @@ class RPG_Combat_DamageElement_Type_pimpl: public virtual RPG_Combat_DamageEleme
   attribute (const RPG_Common_Attribute&);
 
   virtual void
-  save (const RPG_Common_SavingThrowModifier&);
-
-  virtual void
-  counterMeasure (bool);
+  counterMeasure (const RPG_Combat_DamageCounterMeasure&);
 
   virtual void
   effect (const RPG_Combat_DamageEffectType&);

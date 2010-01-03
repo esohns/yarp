@@ -55,6 +55,8 @@ RPG_Combat_SpecialAttackToStringTable_t RPG_Combat_SpecialAttackHelper::myRPG_Co
 RPG_Combat_SpecialDamageTypeToStringTable_t RPG_Combat_SpecialDamageTypeHelper::myRPG_Combat_SpecialDamageTypeToStringTable;
 RPG_Combat_DamageBonusTypeToStringTable_t RPG_Combat_DamageBonusTypeHelper::myRPG_Combat_DamageBonusTypeToStringTable;
 RPG_Combat_DamageEffectTypeToStringTable_t RPG_Combat_DamageEffectTypeHelper::myRPG_Combat_DamageEffectTypeToStringTable;
+RPG_Combat_DamageCounterMeasureTypeToStringTable_t RPG_Combat_DamageCounterMeasureTypeHelper::myRPG_Combat_DamageCounterMeasureTypeToStringTable;
+RPG_Combat_DamageReductionTypeToStringTable_t RPG_Combat_DamageReductionTypeHelper::myRPG_Combat_DamageReductionTypeToStringTable;
 
 void RPG_Combat_Common_Tools::initStringConversionTables()
 {
@@ -68,6 +70,8 @@ void RPG_Combat_Common_Tools::initStringConversionTables()
   RPG_Combat_SpecialDamageTypeHelper::init();
   RPG_Combat_DamageBonusTypeHelper::init();
   RPG_Combat_DamageEffectTypeHelper::init();
+  RPG_Combat_DamageCounterMeasureTypeHelper::init();
+  RPG_Combat_DamageReductionTypeHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
@@ -144,53 +148,127 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
       result += ACE_TEXT_ALWAYS_CHAR("\nattribute: ");
       result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator).attribute);
     } // end IF
-    if ((*iterator).save.type != RPG_COMMON_SAVINGTHROW_INVALID)
+    for (std::vector<RPG_Combat_DamageCounterMeasure>::const_iterator iterator2 = (*iterator).counterMeasures.begin();
+         iterator2 != (*iterator).counterMeasures.end();
+         iterator2++)
     {
-      result += ACE_TEXT_ALWAYS_CHAR("\nsave (type (attribute) / DC): ");
-      result += RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString((*iterator).save.type);
-      result += ACE_TEXT_ALWAYS_CHAR("(");
-      if ((*iterator).save.attribute != RPG_COMMON_ATTRIBUTE_INVALID)
+      result += ACE_TEXT_ALWAYS_CHAR("\ncounter-measure ([reduction] type (check|spell) [(attribute) DC]: ");
+      if ((*iterator2).reduction != REDUCTION_FULL)
       {
-        result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator).save.attribute);
+        result += RPG_Combat_DamageReductionTypeHelper::RPG_Combat_DamageReductionTypeToString((*iterator2).reduction);
+        result += ACE_TEXT_ALWAYS_CHAR(" ");
       } // end IF
-      else
+//       result += RPG_Combat_DamageCounterMeasureTypeHelper::RPG_Combat_DamageCounterMeasureTypeToString((*iterator).type);
+//       result += ACE_TEXT_ALWAYS_CHAR(" ");
+      switch ((*iterator2).type)
       {
-        switch ((*iterator).save.type)
+        case COUNTERMEASURE_CHECK:
         {
-          case SAVE_FORTITUDE:
+          switch ((*iterator2).check.type.discriminator)
           {
-            result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_CONSTITUTION);
-            break;
-          }
-          case SAVE_REFLEX:
+            case RPG_Combat_DamageCounterMeasureCheckUnion::SKILL:
+            {
+              result += RPG_Character_SkillHelper::RPG_Character_SkillToString((*iterator2).check.type.skill);
+              result += ACE_TEXT_ALWAYS_CHAR(" ");
+
+              break;
+            }
+            case RPG_Combat_DamageCounterMeasureCheckUnion::ATTRIBUTE:
+            {
+              result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator2).check.type.attribute);
+              result += ACE_TEXT_ALWAYS_CHAR(" ");
+
+              break;
+            }
+            case RPG_Combat_DamageCounterMeasureCheckUnion::SAVINGTHROW:
+            {
+              result += RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString((*iterator2).check.type.savingthrow);
+              result += ACE_TEXT_ALWAYS_CHAR(" ");
+
+              if ((*iterator2).check.attribute != RPG_COMMON_ATTRIBUTE_INVALID)
+              {
+                result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator2).check.attribute);
+                result += ACE_TEXT_ALWAYS_CHAR(" ");
+              } // end IF
+              else
+              {
+                switch ((*iterator2).check.type.savingthrow)
+                {
+                  case SAVE_FORTITUDE:
+                  {
+                    result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_CONSTITUTION);
+                    result += ACE_TEXT_ALWAYS_CHAR(" ");
+                    break;
+                  }
+                  case SAVE_REFLEX:
+                  {
+                    result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_DEXTERITY);
+                    result += ACE_TEXT_ALWAYS_CHAR(" ");
+                    break;
+                  }
+                  case SAVE_WILL:
+                  {
+                    result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_WISDOM);
+                    result += ACE_TEXT_ALWAYS_CHAR(" ");
+                    break;
+                  }
+                  default:
+                  {
+                    // debug info
+                    ACE_DEBUG((LM_ERROR,
+                               ACE_TEXT("invalid saving throw type: \"%s\", continuing\n"),
+                               RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString((*iterator2).check.type.savingthrow).c_str()));
+                    break;
+                  }
+                } // end SWITCH
+              } // end ELSE
+
+              break;
+            }
+            default:
+            {
+              // debug info
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("invalid RPG_Combat_DamageCounterMeasureCheckUnion type: %d, continuing\n"),
+                         (*iterator2).check.type.discriminator));
+
+              break;
+            }
+          } // end SWITCH
+
+          converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+          converter << (*iterator2).check.difficultyClass;
+          result += converter.str();
+
+          break;
+        }
+        case COUNTERMEASURE_SPELL:
+        {
+          for (std::vector<RPG_Magic_Spell>::const_iterator iterator3 = (*iterator2).spells.begin();
+               iterator3 != (*iterator2).spells.end();
+               iterator3++)
           {
-            result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_DEXTERITY);
-            break;
-          }
-          case SAVE_WILL:
+            result += RPG_Magic_SpellHelper::RPG_Magic_SpellToString(*iterator3);
+            result += ACE_TEXT_ALWAYS_CHAR("|");
+          } // end FOR
+          if (!(*iterator2).spells.empty())
           {
-            result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_WISDOM);
-            break;
-          }
-          default:
-          {
-            // debug info
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("invalid saving throw type: \"%s\", continuing\n"),
-                       RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString((*iterator).save.type).c_str()));
-            break;
-          }
-        } // end SWITCH
-      } // end ELSE
-      result += ACE_TEXT_ALWAYS_CHAR(") / ");
-      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-      converter << ACE_static_cast(int, (*iterator).save.difficultyClass);
-      result += converter.str();
-    } // end IF
-    if ((*iterator).counterMeasure)
-    {
-      result += ACE_TEXT_ALWAYS_CHAR("\ncounterMeasure: yes, there will be !");
-    } // end IF
+            result.erase(--(result.end()));
+          } // end IF
+
+          break;
+        }
+        default:
+        {
+          // debug info
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid counter-measure type: \"%s\", continuing\n"),
+                     RPG_Combat_DamageCounterMeasureTypeHelper::RPG_Combat_DamageCounterMeasureTypeToString((*iterator2).type).c_str()));
+
+          break;
+        }
+      } // end SWITCH
+    } // end FOR
     result += ACE_TEXT_ALWAYS_CHAR("\neffect: ");
     result += RPG_Combat_DamageEffectTypeHelper::RPG_Combat_DamageEffectTypeToString((*iterator).effect);
     result += ACE_TEXT_ALWAYS_CHAR("\n");
@@ -785,10 +863,7 @@ is_player_hit:
       damage_element.duration.totalDuration = 0;
       damage_element.others.clear();
       damage_element.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-      damage_element.save.type = RPG_COMMON_SAVINGTHROW_INVALID;
-      damage_element.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-      damage_element.save.difficultyClass = 0;
-      damage_element.counterMeasure = false;
+      damage_element.counterMeasures.clear();
       damage_element.effect = EFFECT_IMMEDIATE;
       damage.elements.push_back(damage_element);
       target_inout->sustainDamage(damage);

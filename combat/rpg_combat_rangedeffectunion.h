@@ -21,10 +21,21 @@
 #ifndef RPG_COMBAT_RANGEDEFFECTUNION_H
 #define RPG_COMBAT_RANGEDEFFECTUNION_H
 
-union RPG_Combat_RangedEffectUnion
+struct RPG_Combat_RangedEffectUnion
 {
-  RPG_Character_Size size;
-  RPG_Combat_AreaOfEffect areaofeffect;
+  union
+  {
+    RPG_Character_Size size;
+    RPG_Combat_AreaOfEffect areaofeffect;
+  };
+
+  enum Discriminator_t
+  {
+    SIZE,
+    AREAOFEFFECT,
+    INVALID
+  };
+  Discriminator_t discriminator;
 };
 
 #endif

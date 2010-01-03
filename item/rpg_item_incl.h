@@ -21,6 +21,7 @@
 #ifndef RPG_ITEM_INCL_H
 #define RPG_ITEM_INCL_H
 
+#include <vector>
 #include "rpg_item_type.h"
 #include "rpg_item_money.h"
 #include "rpg_item_weaponcategory.h"

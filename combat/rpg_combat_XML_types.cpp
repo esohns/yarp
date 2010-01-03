@@ -146,6 +146,93 @@ RPG_Combat_DamageBonus_Type_pskel ()
 {
 }
 
+// RPG_Combat_DamageCounterMeasureCheck_Type_pskel
+//
+
+void RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+type_parser (::RPG_Combat_DamageCounterMeasureCheckUnion_Type_pskel& p)
+{
+  this->type_parser_ = &p;
+}
+
+void RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+attribute_parser (::RPG_Common_Attribute_Type_pskel& p)
+{
+  this->attribute_parser_ = &p;
+}
+
+void RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+difficultyClass_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->difficultyClass_parser_ = &p;
+}
+
+void RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+parsers (::RPG_Combat_DamageCounterMeasureCheckUnion_Type_pskel& type,
+         ::RPG_Common_Attribute_Type_pskel& attribute,
+         ::xml_schema::unsigned_byte_pskel& difficultyClass)
+{
+  this->type_parser_ = &type;
+  this->attribute_parser_ = &attribute;
+  this->difficultyClass_parser_ = &difficultyClass;
+}
+
+RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+RPG_Combat_DamageCounterMeasureCheck_Type_pskel ()
+: type_parser_ (0),
+  attribute_parser_ (0),
+  difficultyClass_parser_ (0)
+{
+}
+
+// RPG_Combat_DamageCounterMeasure_Type_pskel
+//
+
+void RPG_Combat_DamageCounterMeasure_Type_pskel::
+type_parser (::RPG_Combat_DamageCounterMeasureType_Type_pskel& p)
+{
+  this->type_parser_ = &p;
+}
+
+void RPG_Combat_DamageCounterMeasure_Type_pskel::
+check_parser (::RPG_Combat_DamageCounterMeasureCheck_Type_pskel& p)
+{
+  this->check_parser_ = &p;
+}
+
+void RPG_Combat_DamageCounterMeasure_Type_pskel::
+spell_parser (::RPG_Magic_Spell_Type_pskel& p)
+{
+  this->spell_parser_ = &p;
+}
+
+void RPG_Combat_DamageCounterMeasure_Type_pskel::
+reduction_parser (::RPG_Combat_DamageReductionType_Type_pskel& p)
+{
+  this->reduction_parser_ = &p;
+}
+
+void RPG_Combat_DamageCounterMeasure_Type_pskel::
+parsers (::RPG_Combat_DamageCounterMeasureType_Type_pskel& type,
+         ::RPG_Combat_DamageCounterMeasureCheck_Type_pskel& check,
+         ::RPG_Magic_Spell_Type_pskel& spell,
+         ::RPG_Combat_DamageReductionType_Type_pskel& reduction)
+{
+  this->type_parser_ = &type;
+  this->check_parser_ = &check;
+  this->spell_parser_ = &spell;
+  this->reduction_parser_ = &reduction;
+}
+
+RPG_Combat_DamageCounterMeasure_Type_pskel::
+RPG_Combat_DamageCounterMeasure_Type_pskel ()
+: type_parser_ (0),
+  check_parser_ (0),
+  spell_parser_ (0),
+  reduction_parser_ (0)
+{
+}
+
 // RPG_Combat_DamageElement_Type_pskel
 //
 
@@ -180,13 +267,7 @@ attribute_parser (::RPG_Common_Attribute_Type_pskel& p)
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
-save_parser (::RPG_Common_SavingThrowModifier_Type_pskel& p)
-{
-  this->save_parser_ = &p;
-}
-
-void RPG_Combat_DamageElement_Type_pskel::
-counterMeasure_parser (::xml_schema::boolean_pskel& p)
+counterMeasure_parser (::RPG_Combat_DamageCounterMeasure_Type_pskel& p)
 {
   this->counterMeasure_parser_ = &p;
 }
@@ -203,8 +284,7 @@ parsers (::RPG_Combat_DamageTypeUnion_Type_pskel& type,
          ::RPG_Combat_DamageDuration_Type_pskel& duration,
          ::RPG_Combat_DamageBonus_Type_pskel& other,
          ::RPG_Common_Attribute_Type_pskel& attribute,
-         ::RPG_Common_SavingThrowModifier_Type_pskel& save,
-         ::xml_schema::boolean_pskel& counterMeasure,
+         ::RPG_Combat_DamageCounterMeasure_Type_pskel& counterMeasure,
          ::RPG_Combat_DamageEffectType_Type_pskel& effect)
 {
   this->type_parser_ = &type;
@@ -212,7 +292,6 @@ parsers (::RPG_Combat_DamageTypeUnion_Type_pskel& type,
   this->duration_parser_ = &duration;
   this->other_parser_ = &other;
   this->attribute_parser_ = &attribute;
-  this->save_parser_ = &save;
   this->counterMeasure_parser_ = &counterMeasure;
   this->effect_parser_ = &effect;
 }
@@ -224,7 +303,6 @@ RPG_Combat_DamageElement_Type_pskel ()
   duration_parser_ (0),
   other_parser_ (0),
   attribute_parser_ (0),
-  save_parser_ (0),
   counterMeasure_parser_ (0),
   effect_parser_ (0)
 {
@@ -513,6 +591,226 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
+// RPG_Combat_DamageCounterMeasureCheck_Type_pskel
+//
+
+void RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+type (const RPG_Combat_DamageCounterMeasureCheckUnion&)
+{
+}
+
+void RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+attribute (const RPG_Common_Attribute&)
+{
+}
+
+void RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+difficultyClass (unsigned char)
+{
+}
+
+bool RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
+
+    if (this->type_parser_)
+      this->type_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "attribute" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->attribute_parser_;
+
+    if (this->attribute_parser_)
+      this->attribute_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "difficultyClass" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->difficultyClass_parser_;
+
+    if (this->difficultyClass_parser_)
+      this->difficultyClass_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    if (this->type_parser_)
+      this->type (this->type_parser_->post_RPG_Combat_DamageCounterMeasureCheckUnion_Type ());
+
+    return true;
+  }
+
+  if (n == "attribute" && ns == "urn:rpg")
+  {
+    if (this->attribute_parser_)
+      this->attribute (this->attribute_parser_->post_RPG_Common_Attribute_Type ());
+
+    return true;
+  }
+
+  if (n == "difficultyClass" && ns == "urn:rpg")
+  {
+    if (this->difficultyClass_parser_)
+      this->difficultyClass (this->difficultyClass_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Combat_DamageCounterMeasure_Type_pskel
+//
+
+void RPG_Combat_DamageCounterMeasure_Type_pskel::
+type (const RPG_Combat_DamageCounterMeasureType&)
+{
+}
+
+void RPG_Combat_DamageCounterMeasure_Type_pskel::
+check (const RPG_Combat_DamageCounterMeasureCheck&)
+{
+}
+
+void RPG_Combat_DamageCounterMeasure_Type_pskel::
+spell (const RPG_Magic_Spell&)
+{
+}
+
+void RPG_Combat_DamageCounterMeasure_Type_pskel::
+reduction (const RPG_Combat_DamageReductionType&)
+{
+}
+
+bool RPG_Combat_DamageCounterMeasure_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
+
+    if (this->type_parser_)
+      this->type_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "check" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->check_parser_;
+
+    if (this->check_parser_)
+      this->check_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "spell" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->spell_parser_;
+
+    if (this->spell_parser_)
+      this->spell_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Combat_DamageCounterMeasure_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    if (this->type_parser_)
+      this->type (this->type_parser_->post_RPG_Combat_DamageCounterMeasureType_Type ());
+
+    return true;
+  }
+
+  if (n == "check" && ns == "urn:rpg")
+  {
+    if (this->check_parser_)
+      this->check (this->check_parser_->post_RPG_Combat_DamageCounterMeasureCheck_Type ());
+
+    return true;
+  }
+
+  if (n == "spell" && ns == "urn:rpg")
+  {
+    if (this->spell_parser_)
+      this->spell (this->spell_parser_->post_RPG_Magic_Spell_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Combat_DamageCounterMeasure_Type_pskel::
+_attribute_impl (const ::xml_schema::ro_string& ns,
+                 const ::xml_schema::ro_string& n,
+                 const ::xml_schema::ro_string& v)
+{
+  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
+    return true;
+
+  if (n == "reduction" && ns.empty ())
+  {
+    if (this->reduction_parser_)
+    {
+      this->reduction_parser_->pre ();
+      this->reduction_parser_->_pre_impl ();
+      this->reduction_parser_->_characters (v);
+      this->reduction_parser_->_post_impl ();
+      this->reduction (this->reduction_parser_->post_RPG_Combat_DamageReductionType_Type ());
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
 // RPG_Combat_DamageElement_Type_pskel
 //
 
@@ -542,12 +840,7 @@ attribute (const RPG_Common_Attribute&)
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
-save (const RPG_Common_SavingThrowModifier&)
-{
-}
-
-void RPG_Combat_DamageElement_Type_pskel::
-counterMeasure (bool)
+counterMeasure (const RPG_Combat_DamageCounterMeasure&)
 {
 }
 
@@ -616,16 +909,6 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "save" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->save_parser_;
-
-    if (this->save_parser_)
-      this->save_parser_->pre ();
-
-    return true;
-  }
-
   if (n == "counterMeasure" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->counterMeasure_parser_;
@@ -686,18 +969,10 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "save" && ns == "urn:rpg")
-  {
-    if (this->save_parser_)
-      this->save (this->save_parser_->post_RPG_Common_SavingThrowModifier_Type ());
-
-    return true;
-  }
-
   if (n == "counterMeasure" && ns == "urn:rpg")
   {
     if (this->counterMeasure_parser_)
-      this->counterMeasure (this->counterMeasure_parser_->post_boolean ());
+      this->counterMeasure (this->counterMeasure_parser_->post_RPG_Combat_DamageCounterMeasure_Type ());
 
     return true;
   }

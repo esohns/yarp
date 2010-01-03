@@ -20,11 +20,6 @@
 #ifndef RPG_MONSTER_COMMON_H
 #define RPG_MONSTER_COMMON_H
 
-#include <string>
-#include <vector>
-#include <set>
-#include <map>
-
 #include <rpg_dice_dietype.h>
 #include <rpg_dice_roll.h>
 #include <rpg_dice_valuerange.h>
@@ -38,10 +33,15 @@
 
 #include <rpg_character_incl.h>
 #include <rpg_character_skills_common.h>
-
+#include <rpg_magic_incl.h>
 #include <rpg_combat_incl.h>
 
 #include "rpg_monster_incl.h"
+
+#include <string>
+#include <vector>
+#include <set>
+#include <map>
 
 typedef std::set<RPG_Monster_SubType> RPG_Monster_SubTypes_t;
 typedef RPG_Monster_SubTypes_t::const_iterator RPG_Monster_SubTypesIterator_t;

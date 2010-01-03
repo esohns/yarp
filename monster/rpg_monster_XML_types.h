@@ -75,17 +75,15 @@ class RPG_Monster_Dictionary_Type_pskel;
 #define XSD_CXX_PARSER_USE_CHAR
 #endif
 
-#include "rpg_XMLSchema.h"
+#include "rpg_XMLSchema_XML_types.h"
 
+#include <rpg_magic_incl.h>
 #include <rpg_item_weapontype.h>
 #include <rpg_item_physicaldamagetype.h>
 #include <rpg_dice_incl.h>
-#include <rpg_common_savingthrow.h>
-#include <rpg_common_attribute.h>
-#include <rpg_common_savingthrowmodifier.h>
+#include <rpg_common_incl.h>
 #include <rpg_character_incl.h>
 #include <rpg_combat_incl.h>
-
 #include "rpg_monster_incl.h"
 
 #include "rpg_dice_XML_types.h"
