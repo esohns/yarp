@@ -112,7 +112,7 @@
       <xsd:element name="attackForm" type="RPG_Combat_AttackForm_Type" minOccurs="1" maxOccurs="unbounded"/>
       <xsd:element name="damage" type="RPG_Combat_Damage_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="numAttacksPerRound" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="interval" type="xsd:unsignedShort" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="usage" type="RPG_Common_Usage_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="ranged" type="RPG_Combat_RangedAttackProperties_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -206,6 +206,7 @@
       <xsd:element name="speed" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="armorClass" type="RPG_Monster_NaturalArmorClass_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attack" type="RPG_Monster_Attack_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="specialAbilities" type="RPG_Magic_SpecialAbilityProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="space" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="reach" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="saves" type="RPG_Monster_SavingThrowModifiers_Type" minOccurs="1" maxOccurs="1"/>

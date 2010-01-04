@@ -92,8 +92,11 @@
       <xsd:enumeration value="DAMAGE_STUN"/>
 <!--       <xsd:enumeration value="DAMAGE_WEB"/> -->
       <xsd:enumeration value="DAMAGE_SLAY"/>
-      <xsd:enumeration value="DAMAGE_DRAIN"/>
-
+      <xsd:enumeration value="DAMAGE_ABILITY_REDUCTION"/>
+      <xsd:enumeration value="DAMAGE_ABILITY_LOSS"/>
+      <xsd:enumeration value="DAMAGE_ABILITY_DRAIN"/>
+      <xsd:enumeration value="DAMAGE_LEVEL_LOSS"/>
+      <xsd:enumeration value="DAMAGE_LEVEL_DRAIN"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -172,6 +175,7 @@
     <xsd:sequence>
       <xsd:element name="type" type="RPG_Combat_DamageTypeUnion_Type" minOccurs="1" maxOccurs="unbounded"/>
       <xsd:element name="amount" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="secondary" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="duration" type="RPG_Combat_DamageDuration_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="other" type="RPG_Combat_DamageBonus_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>

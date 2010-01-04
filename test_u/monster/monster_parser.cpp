@@ -25,11 +25,13 @@
 #include <rpg_monster_dictionary.h>
 #include <rpg_monster_common_tools.h>
 
+#include <rpg_combat_common_tools.h>
+
 #include <rpg_character_common_tools.h>
 #include <rpg_character_skills_common_tools.h>
 #include <rpg_character_monster.h>
 
-#include <rpg_combat_common_tools.h>
+#include <rpg_magic_common_tools.h>
 
 #include <rpg_item_common_tools.h>
 
@@ -152,8 +154,9 @@ void do_work(const std::string& filename_in,
   RPG_Common_Tools::initStringConversionTables();
   RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
-  RPG_Monster_Common_Tools::initStringConversionTables();
+  RPG_Magic_Common_Tools::initStringConversionTables();
   RPG_Combat_Common_Tools::initStringConversionTables();
+  RPG_Monster_Common_Tools::initStringConversionTables();
   RPG_Character_Skills_Common_Tools::init();
 
   // step2: init character dictionary

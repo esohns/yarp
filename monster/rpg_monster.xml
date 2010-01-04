@@ -59,10 +59,19 @@
               <type>MALUS_NATURALARMOR</type>
               <modifier>-1</modifier>
             </other>
-            <save>
-              <type>SAVE_FORTITUDE</type>
-              <difficultyClass>19</difficultyClass>
-            </save>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_FORTITUDE</type>
+                <difficultyClass>19</difficultyClass>
+              </check>
+            </counterMeasure>
+            <counterMeasure>
+              <type>COUNTERMEASURE_SPELL</type>
+              <spell>SPELL_REMOVE_DISEASE</spell>
+              <spell>SPELL_HEAL</spell>
+              <spell>SPELL_MASS_HEAL</spell>
+            </counterMeasure>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -99,10 +108,19 @@
               <type>MALUS_NATURALARMOR</type>
               <modifier>-1</modifier>
             </other>
-            <save>
-              <type>SAVE_FORTITUDE</type>
-              <difficultyClass>19</difficultyClass>
-            </save>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_FORTITUDE</type>
+                <difficultyClass>19</difficultyClass>
+              </check>
+            </counterMeasure>
+            <counterMeasure>
+              <type>COUNTERMEASURE_SPELL</type>
+              <spell>SPELL_REMOVE_DISEASE</spell>
+              <spell>SPELL_HEAL</spell>
+              <spell>SPELL_MASS_HEAL</spell>
+            </counterMeasure>
           </element>
         </damage>
         <numAttacksPerRound>4</numAttacksPerRound>
@@ -251,10 +269,19 @@
               <type>MALUS_NATURALARMOR</type>
               <modifier>-1</modifier>
             </other>
-            <save>
-              <type>SAVE_FORTITUDE</type>
-              <difficultyClass>19</difficultyClass>
-            </save>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_FORTITUDE</type>
+                <difficultyClass>19</difficultyClass>
+              </check>
+            </counterMeasure>
+            <counterMeasure>
+              <type>COUNTERMEASURE_SPELL</type>
+              <spell>SPELL_REMOVE_DISEASE</spell>
+              <spell>SPELL_HEAL</spell>
+              <spell>SPELL_MASS_HEAL</spell>
+            </counterMeasure>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -291,10 +318,19 @@
               <type>MALUS_NATURALARMOR</type>
               <modifier>-1</modifier>
             </other>
-            <save>
-              <type>SAVE_FORTITUDE</type>
-              <difficultyClass>19</difficultyClass>
-            </save>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_FORTITUDE</type>
+                <difficultyClass>19</difficultyClass>
+              </check>
+            </counterMeasure>
+            <counterMeasure>
+              <type>COUNTERMEASURE_SPELL</type>
+              <spell>SPELL_REMOVE_DISEASE</spell>
+              <spell>SPELL_HEAL</spell>
+              <spell>SPELL_MASS_HEAL</spell>
+            </counterMeasure>
           </element>
         </damage>
         <numAttacksPerRound>4</numAttacksPerRound>
@@ -602,7 +638,7 @@
         <attackForm>ATTACKFORM_TOUCH</attackForm>
         <damage>
           <element effect="EFFECT_PERMANENT">
-            <type>DAMAGE_DRAIN</type>
+            <type>DAMAGE_ABILITY_DRAIN</type>
             <amount>
               <numDice>1</numDice>
               <typeDice>D_4</typeDice>
@@ -733,11 +769,14 @@
               <typeDice>D_6</typeDice>
               <modifier>0</modifier>
             </amount>
-            <save>
-              <type>SAVE_FORTITUDE</type>
-              <attribute>ATTRIBUTE_STRENGTH</attribute>
-              <difficultyClass>22</difficultyClass>
-            </save>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_FORTITUDE</type>
+                <attribute>ATTRIBUTE_STRENGTH</attribute>
+                <difficultyClass>22</difficultyClass>
+              </check>
+            </counterMeasure>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -780,11 +819,14 @@
               <typeDice>D_6</typeDice>
               <modifier>0</modifier>
             </amount>
-            <save>
-              <type>SAVE_FORTITUDE</type>
-              <attribute>ATTRIBUTE_STRENGTH</attribute>
-              <difficultyClass>22</difficultyClass>
-            </save>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_FORTITUDE</type>
+                <attribute>ATTRIBUTE_STRENGTH</attribute>
+                <difficultyClass>22</difficultyClass>
+              </check>
+            </counterMeasure>
           </element>
         </damage>
         <numAttacksPerRound>3</numAttacksPerRound>
@@ -1171,10 +1213,13 @@
           </element>
           <element>
             <type>DAMAGE_SLAY</type>
-            <save>
-              <type>SAVE_FORTITUDE</type>
-              <difficultyClass>20</difficultyClass>
-            </save>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_FORTITUDE</type>
+                <difficultyClass>20</difficultyClass>
+              </check>
+            </counterMeasure>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -1232,10 +1277,13 @@
           </element>
           <element>
             <type>DAMAGE_SLAY</type>
-            <save>
-              <type>SAVE_FORTITUDE</type>
-              <difficultyClass>20</difficultyClass>
-            </save>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_FORTITUDE</type>
+                <difficultyClass>20</difficultyClass>
+              </check>
+            </counterMeasure>
           </element>
         </damage>
         <numAttacksPerRound>4</numAttacksPerRound>
@@ -1965,15 +2013,21 @@
               <typeDice>D_4</typeDice>
               <modifier>0</modifier>
             </amount>
-            <save>
-              <type>SAVE_REFLEX</type>
-              <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-              <difficultyClass>14</difficultyClass>
-            </save>
+            <counterMeasure reduction="REDUCTION_HALF">
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_REFLEX</type>
+                <attribute>ATTRIBUTE_CONSTITUTION</attribute>
+                <difficultyClass>14</difficultyClass>
+              </check>
+            </counterMeasure>
           </element>
         </damage>
         <numAttacksPerRound>0</numAttacksPerRound>
-        <interval>3600</interval>
+        <usage>
+          <numUses>1</numUses>
+          <period>21600</period>
+        </usage>
         <ranged>
           <maxRange>30</maxRange>
           <effect>AREA_LINE</effect>
@@ -2088,17 +2142,26 @@
               <modifier>0</modifier>
             </amount>
           </element>
-          <element>
+          <element effect="EFFECT_TEMPORARY">
             <type>DAMAGE_POISON</type>
             <amount>
               <numDice>1</numDice>
               <typeDice>D_6</typeDice>
               <modifier>0</modifier>
             </amount>
-            <save>
-              <type>SAVE_FORTITUDE</type>
-              <difficultyClass>13</difficultyClass>
-            </save>
+            <secondary>
+              <numDice>2</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>0</modifier>
+            </secondary>
+            <attribute>ATTRIBUTE_STRENGTH</attribute>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_FORTITUDE</type>
+                <difficultyClass>13</difficultyClass>
+              </check>
+            </counterMeasure>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
@@ -2110,25 +2173,34 @@
         <damage>
           <element>
             <type>PHYSICALDAMAGE_NONE</type>
-            <save>
-              <type>SAVE_FORTITUDE</type>
-              <difficultyClass>13</difficultyClass>
-            </save>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SKILL_ESCAPE_ARTIST</type>
+                <attribute>ATTRIBUTE_CONSTITUTION</attribute>
+                <difficultyClass>13</difficultyClass>
+              </check>
+            </counterMeasure>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>ATTRIBUTE_STRENGTH</type>
+                <attribute>ATTRIBUTE_CONSTITUTION</attribute>
+                <difficultyClass>17</difficultyClass>
+              </check>
+            </counterMeasure>
           </element>
         </damage>
-        <numAttacksPerRound>1</numAttacksPerRound>
-      </standardAttackAction>
-
-      <standardAttackAction>
-        <weapon>NATURALWEAPON_WEB</weapon>
-        <attackBonus>5</attackBonus>
-        <attackForm>ATTACKFORM_RANGED</attackForm>
-        <damage>
-          <numDice>0</numDice>
-          <typeDice>D_0</typeDice>
-          <modifier>0</modifier>
-        </damage>
-        <numAttacksPerRound>1</numAttacksPerRound>
+        <numAttacksPerRound>0</numAttacksPerRound>
+        <usage>
+          <numUses>6</numUses>
+          <period>86400</period>
+        </usage>
+        <ranged>
+          <maxRange>50</maxRange>
+          <increment>10</increment>
+          <effect>SIZE_LARGE</effect>
+        </ranged>
       </standardAttackAction>
     </attack>
     <space>5</space>

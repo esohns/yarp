@@ -2,8 +2,8 @@
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="1" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/chance/chance_dice.cpp" >
-   <View0 Encoding="" line="15" Type="Source" />
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/monster/monster_parser.cpp" >
+   <View0 Encoding="" line="141" Type="Source" />
   </Doc0>
  </DocsAndViews>
  <pluginList>

@@ -6,12 +6,10 @@
             elementFormDefault="qualified"
             attributeFormDefault="unqualified">
 
-  <!-- include chance_dice schema -->
-<!--   <xsd:include schemaLocation="rpg_dice.xsd"/> -->
   <!-- include common schema -->
-<!--   <xsd:include schemaLocation="rpg_common.xsd"/> -->
-  <!-- include item schema -->
-<!--   <xsd:include schemaLocation="rpg_item.xsd"/> -->
+  <xsd:include schemaLocation="rpg_common.xsd"/>
+<!-- include item schema -->
+<!--  <xsd:include schemaLocation="rpg_item.xsd"/> -->
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import chance_dice schema (as declared above) -->
 <!--   <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/> -->
@@ -47,7 +45,34 @@
   <xsd:simpleType name="RPG_Magic_Spell_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SPELL_CANTRIP"/>
+      <xsd:enumeration value="SPELL_REMOVE_DISEASE"/>
+      <xsd:enumeration value="SPELL_HEAL"/>
+      <xsd:enumeration value="SPELL_MASS_HEAL"/>
     </xsd:restriction>
   </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Magic_SpecialAbilityClass_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ABILITYCLASS_EXTRAORDINARY"/>
+      <xsd:enumeration value="ABILITYCLASS_SPELLLIKE"/>
+      <xsd:enumeration value="ABILITYCLASS_SUPERNATURAL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Magic_SpecialAbility_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SPECIALABILITY_"/>
+      <xsd:enumeration value="SPECIALABILITY_"/>
+      <xsd:enumeration value="SPECIALABILITY_"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Magic_SpecialAbilityProperties_Type">
+    <xsd:sequence>
+      <xsd:element name="class" type="RPG_Magic_SpecialAbilityClass_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="type" type="RPG_Magic_SpecialAbility_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="usage" type="RPG_Common_Usage_Type" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
 
 </xsd:schema>
