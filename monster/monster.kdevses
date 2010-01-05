@@ -3,10 +3,10 @@
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="2" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster.xsd" >
-   <View0 Encoding="" line="103" Type="Source" />
+   <View0 Encoding="" line="208" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster.xml" >
-   <View0 Encoding="" line="61" Type="Source" />
+   <View0 Encoding="" line="2472" Type="Source" />
   </Doc1>
  </DocsAndViews>
  <pluginList>
