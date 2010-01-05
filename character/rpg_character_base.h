@@ -31,7 +31,7 @@
 
 #include <rpg_dice_dietype.h>
 #include <rpg_dice_roll.h>
-#include <rpg_item_physicaldamagetype.h>
+#include <rpg_common_physicaldamagetype.h>
 #include <rpg_magic_spell.h>
 #include <rpg_combat_incl.h>
 

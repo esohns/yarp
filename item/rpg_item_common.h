@@ -20,15 +20,14 @@
 #ifndef RPG_ITEM_COMMON_H
 #define RPG_ITEM_COMMON_H
 
-#include <rpg_dice_dietype.h>
-#include <rpg_dice_roll.h>
+#include <rpg_dice_incl.h>
+#include <rpg_common_incl.h>
 
 #include "rpg_item_weapontype.h"
 #include "rpg_item_weaponcategory.h"
 #include "rpg_item_weaponclass.h"
 #include "rpg_item_storeprice.h"
-#include "rpg_item_criticalhitmodifier.h"
-#include "rpg_item_physicaldamagetype.h"
+#include "rpg_item_criticalhitproperties.h"
 #include "rpg_item_creationcost.h"
 #include "rpg_item_baseproperties.h"
 #include <vector>
@@ -43,7 +42,7 @@
 
 // typedef std::bitset<(RPG_ITEM_PHYSICALDAMAGETYPE_MAX - 1)> RPG_Item_WeaponDamage;
 typedef std::bitset<3> RPG_Item_WeaponDamage;
-typedef std::set<RPG_Item_PhysicalDamageType> RPG_Item_WeaponDamageList_t;
+typedef std::set<RPG_Common_PhysicalDamageType> RPG_Item_WeaponDamageList_t;
 typedef RPG_Item_WeaponDamageList_t::const_iterator RPG_Item_WeaponDamageListIterator_t;
 
 typedef RPG_Dice_Roll RPG_Item_Damage;
@@ -51,27 +50,27 @@ typedef RPG_Dice_Roll RPG_Item_Damage;
 struct RPG_Item_WeaponProperties
 {
 //   RPG_Item_WeaponType weaponType;
-  RPG_Item_WeaponCategory weaponCategory;
-  RPG_Item_WeaponClass weaponClass;
-  RPG_Item_StorePrice baseStorePrice;
-  RPG_Item_Damage baseDamage;
-  RPG_Item_CriticalHitModifier criticalHitModifier;
-  unsigned char rangeIncrement;
-  unsigned short int baseWeight;
-  RPG_Item_WeaponDamage typeOfDamage;
+  RPG_Item_WeaponCategory        weaponCategory;
+  RPG_Item_WeaponClass           weaponClass;
+  RPG_Item_StorePrice            baseStorePrice;
+  RPG_Item_Damage                baseDamage;
+  RPG_Item_CriticalHitProperties criticalHit;
+  unsigned char                  rangeIncrement;
+  unsigned short int             baseWeight;
+  RPG_Item_WeaponDamage          typeOfDamage;
 };
 
 struct RPG_Item_ArmorProperties
 {
 //   RPG_Item_ArmorType armorType;
   RPG_Item_ArmorCategory armorCategory;
-  RPG_Item_StorePrice baseStorePrice;
-  unsigned char baseArmorBonus;
-  unsigned char maxDexterityBonus;
-  char armorCheckPenalty;
-  unsigned char arcaneSpellFailure;
-  unsigned short int baseSpeed;
-  unsigned short int baseWeight;
+  RPG_Item_StorePrice    baseStorePrice;
+  unsigned char          baseArmorBonus;
+  unsigned char          maxDexterityBonus;
+  char                   armorCheckPenalty;
+  unsigned char          arcaneSpellFailure;
+  unsigned short int     baseSpeed;
+  unsigned short int     baseWeight;
 };
 
 // useful types

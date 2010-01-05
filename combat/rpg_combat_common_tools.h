@@ -25,12 +25,12 @@
 #include <rpg_dice_dietype.h>
 #include <rpg_dice_roll.h>
 
-#include <rpg_item_physicaldamagetype.h>
-#include <rpg_item_weapontype.h>
-
 #include <rpg_common_attribute.h>
+#include <rpg_common_physicaldamagetype.h>
 #include <rpg_common_savingthrow.h>
 #include <rpg_common_savingthrowmodifier.h>
+
+#include <rpg_item_weapontype.h>
 
 #include <rpg_character_player_common.h>
 #include <rpg_character_size.h>

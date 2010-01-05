@@ -249,6 +249,12 @@ amount_parser (::RPG_Dice_Roll_Type_pskel& p)
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
+secondary_parser (::RPG_Dice_Roll_Type_pskel& p)
+{
+  this->secondary_parser_ = &p;
+}
+
+void RPG_Combat_DamageElement_Type_pskel::
 duration_parser (::RPG_Combat_DamageDuration_Type_pskel& p)
 {
   this->duration_parser_ = &p;
@@ -281,6 +287,7 @@ effect_parser (::RPG_Combat_DamageEffectType_Type_pskel& p)
 void RPG_Combat_DamageElement_Type_pskel::
 parsers (::RPG_Combat_DamageTypeUnion_Type_pskel& type,
          ::RPG_Dice_Roll_Type_pskel& amount,
+         ::RPG_Dice_Roll_Type_pskel& secondary,
          ::RPG_Combat_DamageDuration_Type_pskel& duration,
          ::RPG_Combat_DamageBonus_Type_pskel& other,
          ::RPG_Common_Attribute_Type_pskel& attribute,
@@ -289,6 +296,7 @@ parsers (::RPG_Combat_DamageTypeUnion_Type_pskel& type,
 {
   this->type_parser_ = &type;
   this->amount_parser_ = &amount;
+  this->secondary_parser_ = &secondary;
   this->duration_parser_ = &duration;
   this->other_parser_ = &other;
   this->attribute_parser_ = &attribute;
@@ -300,6 +308,7 @@ RPG_Combat_DamageElement_Type_pskel::
 RPG_Combat_DamageElement_Type_pskel ()
 : type_parser_ (0),
   amount_parser_ (0),
+  secondary_parser_ (0),
   duration_parser_ (0),
   other_parser_ (0),
   attribute_parser_ (0),
@@ -825,6 +834,11 @@ amount (const RPG_Dice_Roll&)
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
+secondary (const RPG_Dice_Roll&)
+{
+}
+
+void RPG_Combat_DamageElement_Type_pskel::
 duration (const RPG_Combat_DamageDuration&)
 {
 }
@@ -875,6 +889,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->amount_parser_)
       this->amount_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "secondary" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->secondary_parser_;
+
+    if (this->secondary_parser_)
+      this->secondary_parser_->pre ();
 
     return true;
   }
@@ -941,6 +965,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->amount_parser_)
       this->amount (this->amount_parser_->post_RPG_Dice_Roll_Type ());
+
+    return true;
+  }
+
+  if (n == "secondary" && ns == "urn:rpg")
+  {
+    if (this->secondary_parser_)
+      this->secondary (this->secondary_parser_->post_RPG_Dice_Roll_Type ());
 
     return true;
   }

@@ -12,6 +12,8 @@
 
 #include <rpg_dice_XML_parser_base.h>
 
+#include <rpg_common_XML_parser_base.h>
+
 #include <rpg_magic_XML_parser_base.h>
 
 class RPG_Item_Type_Type_pimpl: public virtual RPG_Item_Type_Type_pskel,
@@ -85,7 +87,7 @@ class RPG_Item_StorePrice_Type_pimpl: public virtual RPG_Item_StorePrice_Type_ps
   post_RPG_Item_StorePrice_Type ();
 };
 
-class RPG_Item_CriticalHitModifier_Type_pimpl: public virtual RPG_Item_CriticalHitModifier_Type_pskel
+class RPG_Item_CriticalHitProperties_Type_pimpl: public virtual RPG_Item_CriticalHitProperties_Type_pskel
 {
   public:
   virtual void
@@ -97,19 +99,8 @@ class RPG_Item_CriticalHitModifier_Type_pimpl: public virtual RPG_Item_CriticalH
   virtual void
   damageModifier (unsigned char);
 
-  virtual RPG_Item_CriticalHitModifier
-  post_RPG_Item_CriticalHitModifier_Type ();
-};
-
-class RPG_Item_PhysicalDamageType_Type_pimpl: public virtual RPG_Item_PhysicalDamageType_Type_pskel,
-  public ::xml_schema::string_pimpl
-{
-  public:
-  virtual void
-  pre ();
-
-  virtual RPG_Item_PhysicalDamageType
-  post_RPG_Item_PhysicalDamageType_Type ();
+  virtual RPG_Item_CriticalHitProperties
+  post_RPG_Item_CriticalHitProperties_Type ();
 };
 
 class RPG_Item_CreationCost_Type_pimpl: public virtual RPG_Item_CreationCost_Type_pskel
@@ -196,13 +187,13 @@ class RPG_Item_WeaponPropertiesXML_Type_pimpl: public virtual RPG_Item_WeaponPro
   baseDamage (const RPG_Item_Damage&);
 
   virtual void
-  criticalHitModifier (const RPG_Item_CriticalHitModifier&);
+  criticalHit (const RPG_Item_CriticalHitProperties&);
 
   virtual void
   rangeIncrement (unsigned char);
 
   virtual void
-  typeOfDamage (const RPG_Item_PhysicalDamageType&);
+  typeOfDamage (const RPG_Common_PhysicalDamageType&);
 
   virtual RPG_Item_WeaponPropertiesXML
   post_RPG_Item_WeaponPropertiesXML_Type ();

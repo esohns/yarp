@@ -62,14 +62,12 @@
   <xsd:simpleType name="RPG_Magic_SpecialAbility_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SPECIALABILITY_"/>
-      <xsd:enumeration value="SPECIALABILITY_"/>
-      <xsd:enumeration value="SPECIALABILITY_"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:complexType name="RPG_Magic_SpecialAbilityProperties_Type">
     <xsd:sequence>
-      <xsd:element name="class" type="RPG_Magic_SpecialAbilityClass_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="abilityClass" type="RPG_Magic_SpecialAbilityClass_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="type" type="RPG_Magic_SpecialAbility_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="usage" type="RPG_Common_Usage_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>

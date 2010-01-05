@@ -10,6 +10,8 @@
 
 #include "rpg_magic_XML_types.h"
 
+#include "rpg_common_XML_parser_base.h"
+
 class RPG_Magic_School_Type_pimpl: public virtual RPG_Magic_School_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -41,6 +43,47 @@ class RPG_Magic_Spell_Type_pimpl: public virtual RPG_Magic_Spell_Type_pskel,
 
   virtual RPG_Magic_Spell
   post_RPG_Magic_Spell_Type ();
+};
+
+class RPG_Magic_SpecialAbilityClass_Type_pimpl: public virtual RPG_Magic_SpecialAbilityClass_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Magic_SpecialAbilityClass
+  post_RPG_Magic_SpecialAbilityClass_Type ();
+};
+
+class RPG_Magic_SpecialAbility_Type_pimpl: public virtual RPG_Magic_SpecialAbility_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Magic_SpecialAbility
+  post_RPG_Magic_SpecialAbility_Type ();
+};
+
+class RPG_Magic_SpecialAbilityProperties_Type_pimpl: public virtual RPG_Magic_SpecialAbilityProperties_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  abilityClass (const RPG_Magic_SpecialAbilityClass&);
+
+  virtual void
+  type (const RPG_Magic_SpecialAbility&);
+
+  virtual void
+  usage (const RPG_Common_Usage&);
+
+  virtual RPG_Magic_SpecialAbilityProperties
+  post_RPG_Magic_SpecialAbilityProperties_Type ();
 };
 
 #endif // CXX_____RPG_MAGIC_XML_PARSER_BASE_H

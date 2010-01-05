@@ -32,6 +32,15 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="RPG_Common_PhysicalDamageType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="PHYSICALDAMAGE_NONE"/>
+      <xsd:enumeration value="PHYSICALDAMAGE_BLUDGEONING"/>
+      <xsd:enumeration value="PHYSICALDAMAGE_PIERCING"/>
+      <xsd:enumeration value="PHYSICALDAMAGE_SLASHING"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:simpleType name="RPG_Common_SavingThrow_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SAVE_FORTITUDE"/>

@@ -35,6 +35,14 @@ class RPG_Common_Attribute_Type
   virtual RPG_Common_Attribute post_RPG_Common_Attribute_Type();
 };
 
+class RPG_Common_PhysicalDamageType_Type
+ : public RPG_Common_PhysicalDamageType_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Common_PhysicalDamageType post_RPG_Common_PhysicalDamageType_Type();
+};
+
 class RPG_Common_SavingThrow_Type
  : public RPG_Common_SavingThrow_Type_pimpl
 {
@@ -57,6 +65,21 @@ class RPG_Common_SavingThrowCheck_Type
 
  private:
   RPG_Common_SavingThrowCheck myCurrentSavingThrowCheck;
+};
+
+class RPG_Common_Usage_Type
+ : public RPG_Common_Usage_Type_pimpl
+{
+ public:
+  RPG_Common_Usage_Type();
+
+//   virtual void pre();
+  virtual void numUses(unsigned char);
+  virtual void period(unsigned int);
+  virtual RPG_Common_Usage post_RPG_Common_Usage_Type();
+
+ private:
+  RPG_Common_Usage myCurrentUsage;
 };
 
 #endif

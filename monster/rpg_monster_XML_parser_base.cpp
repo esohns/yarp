@@ -195,7 +195,7 @@ numAttacksPerRound (unsigned char numAttacksPerRound)
 }
 
 void RPG_Monster_AttackAction_Type_pimpl::
-interval (unsigned short interval)
+usage (const RPG_Common_Usage& usage)
 {
   // TODO
   //
@@ -524,6 +524,13 @@ armorClass (const RPG_Monster_NaturalArmorClass& armorClass)
 
 void RPG_Monster_PropertiesXML_Type_pimpl::
 attack (const RPG_Monster_Attack& attack)
+{
+  // TODO
+  //
+}
+
+void RPG_Monster_PropertiesXML_Type_pimpl::
+specialAbilities (const RPG_Magic_SpecialAbilityProperties& specialAbilities)
 {
   // TODO
   //

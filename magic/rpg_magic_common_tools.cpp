@@ -19,6 +19,7 @@
  ***************************************************************************/
 #include "rpg_magic_common_tools.h"
 
+#include <rpg_common_incl.h>
 #include "rpg_magic_incl.h"
 
 #include <ace/Log_Msg.h>
@@ -27,6 +28,8 @@
 RPG_Magic_SchoolToStringTable_t RPG_Magic_SchoolHelper::myRPG_Magic_SchoolToStringTable;
 RPG_Magic_DomainToStringTable_t RPG_Magic_DomainHelper::myRPG_Magic_DomainToStringTable;
 RPG_Magic_SpellToStringTable_t RPG_Magic_SpellHelper::myRPG_Magic_SpellToStringTable;
+RPG_Magic_SpecialAbilityClassToStringTable_t RPG_Magic_SpecialAbilityClassHelper::myRPG_Magic_SpecialAbilityClassToStringTable;
+RPG_Magic_SpecialAbilityToStringTable_t RPG_Magic_SpecialAbilityHelper::myRPG_Magic_SpecialAbilityToStringTable;
 
 void RPG_Magic_Common_Tools::initStringConversionTables()
 {
@@ -35,6 +38,8 @@ void RPG_Magic_Common_Tools::initStringConversionTables()
   RPG_Magic_SchoolHelper::init();
   RPG_Magic_DomainHelper::init();
   RPG_Magic_SpellHelper::init();
+  RPG_Magic_SpecialAbilityClassHelper::init();
+  RPG_Magic_SpecialAbilityHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,

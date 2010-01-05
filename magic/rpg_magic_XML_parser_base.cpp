@@ -61,3 +61,76 @@ post_RPG_Magic_Spell_Type ()
   // return ... ;
 }
 
+// RPG_Magic_SpecialAbilityClass_Type_pimpl
+//
+
+void RPG_Magic_SpecialAbilityClass_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Magic_SpecialAbilityClass RPG_Magic_SpecialAbilityClass_Type_pimpl::
+post_RPG_Magic_SpecialAbilityClass_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Magic_SpecialAbility_Type_pimpl
+//
+
+void RPG_Magic_SpecialAbility_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Magic_SpecialAbility RPG_Magic_SpecialAbility_Type_pimpl::
+post_RPG_Magic_SpecialAbility_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Magic_SpecialAbilityProperties_Type_pimpl
+//
+
+void RPG_Magic_SpecialAbilityProperties_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Magic_SpecialAbilityProperties_Type_pimpl::
+abilityClass (const RPG_Magic_SpecialAbilityClass& abilityClass)
+{
+  // TODO
+  //
+}
+
+void RPG_Magic_SpecialAbilityProperties_Type_pimpl::
+type (const RPG_Magic_SpecialAbility& type)
+{
+  // TODO
+  //
+}
+
+void RPG_Magic_SpecialAbilityProperties_Type_pimpl::
+usage (const RPG_Common_Usage& usage)
+{
+  // TODO
+  //
+}
+
+RPG_Magic_SpecialAbilityProperties RPG_Magic_SpecialAbilityProperties_Type_pimpl::
+post_RPG_Magic_SpecialAbilityProperties_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+

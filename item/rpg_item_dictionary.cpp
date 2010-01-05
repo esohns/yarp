@@ -26,6 +26,7 @@
 #include "rpg_item_armor.h"
 
 #include <rpg_dice_XML_parser.h>
+#include <rpg_common_XML_parser.h>
 
 #include <ace/Log_Msg.h>
 
@@ -67,11 +68,11 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
                  dieType_p,
                  int_p);
   ::xml_schema::unsigned_byte_pimpl       unsigned_byte_p;
-  RPG_Item_CriticalHitModifier_Type       criticalModifier_p;
-  criticalModifier_p.parsers(unsigned_byte_p,
-                             unsigned_byte_p);
+  RPG_Item_CriticalHitProperties_Type     criticalHitProperties_p;
+  criticalHitProperties_p.parsers(unsigned_byte_p,
+                                  unsigned_byte_p);
 //   unsigned_byte_pimpl                       rangeIncrement_p;
-  RPG_Item_PhysicalDamageType_Type        damageType_p;
+  RPG_Common_PhysicalDamageType_Type      damageType_p;
   RPG_Item_WeaponPropertiesXML_Type       weaponPropertiesXML_p;
   weaponPropertiesXML_p.parsers(unsigned_short_p,
                                 baseStorePrice_p,
@@ -80,7 +81,7 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
                                 weaponCategory_p,
                                 weaponClass_p,
                                 roll_p,
-                                criticalModifier_p,
+                                criticalHitProperties_p,
                                 unsigned_byte_p,
                                 damageType_p);
   RPG_Item_ArmorType_Type                 armorType_p;

@@ -130,7 +130,7 @@ class RPG_Monster_AttackAction_Type
   virtual void attackForm(const RPG_Combat_AttackForm&);
   virtual void damage(const RPG_Combat_Damage&);
   virtual void numAttacksPerRound(unsigned char);
-  virtual void interval(unsigned short);
+  virtual void usage(const RPG_Common_Usage&);
   virtual void ranged(const RPG_Combat_RangedAttackProperties&);
   virtual RPG_Monster_AttackAction post_RPG_Monster_AttackAction_Type();
 
@@ -269,6 +269,7 @@ class RPG_Monster_PropertiesXML_Type
   virtual void speed(unsigned char);
   virtual void armorClass(const RPG_Monster_NaturalArmorClass&);
   virtual void attack(const RPG_Monster_Attack&);
+  virtual void specialAbilities(const RPG_Magic_SpecialAbilityProperties&);
   virtual void space(unsigned char);
   virtual void reach(unsigned char);
   virtual void saves(const RPG_Monster_SavingThrowModifiers&);

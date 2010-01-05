@@ -141,9 +141,9 @@ numAttacksPerRound_parser (::xml_schema::unsigned_byte_pskel& p)
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
-interval_parser (::xml_schema::unsigned_short_pskel& p)
+usage_parser (::RPG_Common_Usage_Type_pskel& p)
 {
-  this->interval_parser_ = &p;
+  this->usage_parser_ = &p;
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
@@ -158,7 +158,7 @@ parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& weapon,
          ::RPG_Combat_AttackForm_Type_pskel& attackForm,
          ::RPG_Combat_Damage_Type_pskel& damage,
          ::xml_schema::unsigned_byte_pskel& numAttacksPerRound,
-         ::xml_schema::unsigned_short_pskel& interval,
+         ::RPG_Common_Usage_Type_pskel& usage,
          ::RPG_Combat_RangedAttackProperties_Type_pskel& ranged)
 {
   this->weapon_parser_ = &weapon;
@@ -166,7 +166,7 @@ parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& weapon,
   this->attackForm_parser_ = &attackForm;
   this->damage_parser_ = &damage;
   this->numAttacksPerRound_parser_ = &numAttacksPerRound;
-  this->interval_parser_ = &interval;
+  this->usage_parser_ = &usage;
   this->ranged_parser_ = &ranged;
 }
 
@@ -177,7 +177,7 @@ RPG_Monster_AttackAction_Type_pskel ()
   attackForm_parser_ (0),
   damage_parser_ (0),
   numAttacksPerRound_parser_ (0),
-  interval_parser_ (0),
+  usage_parser_ (0),
   ranged_parser_ (0)
 {
 }
@@ -471,6 +471,12 @@ attack_parser (::RPG_Monster_Attack_Type_pskel& p)
 }
 
 void RPG_Monster_PropertiesXML_Type_pskel::
+specialAbilities_parser (::RPG_Magic_SpecialAbilityProperties_Type_pskel& p)
+{
+  this->specialAbilities_parser_ = &p;
+}
+
+void RPG_Monster_PropertiesXML_Type_pskel::
 space_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->space_parser_ = &p;
@@ -557,6 +563,7 @@ parsers (::xml_schema::string_pskel& name,
          ::xml_schema::unsigned_byte_pskel& speed,
          ::RPG_Monster_NaturalArmorClass_Type_pskel& armorClass,
          ::RPG_Monster_Attack_Type_pskel& attack,
+         ::RPG_Magic_SpecialAbilityProperties_Type_pskel& specialAbilities,
          ::xml_schema::unsigned_byte_pskel& space,
          ::xml_schema::unsigned_byte_pskel& reach,
          ::RPG_Monster_SavingThrowModifiers_Type_pskel& saves,
@@ -579,6 +586,7 @@ parsers (::xml_schema::string_pskel& name,
   this->speed_parser_ = &speed;
   this->armorClass_parser_ = &armorClass;
   this->attack_parser_ = &attack;
+  this->specialAbilities_parser_ = &specialAbilities;
   this->space_parser_ = &space;
   this->reach_parser_ = &reach;
   this->saves_parser_ = &saves;
@@ -604,6 +612,7 @@ RPG_Monster_PropertiesXML_Type_pskel ()
   speed_parser_ (0),
   armorClass_parser_ (0),
   attack_parser_ (0),
+  specialAbilities_parser_ (0),
   space_parser_ (0),
   reach_parser_ (0),
   saves_parser_ (0),
@@ -837,7 +846,7 @@ numAttacksPerRound (unsigned char)
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
-interval (unsigned short)
+usage (const RPG_Common_Usage&)
 {
 }
 
@@ -906,12 +915,12 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "interval" && ns == "urn:rpg")
+  if (n == "usage" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->interval_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->usage_parser_;
 
-    if (this->interval_parser_)
-      this->interval_parser_->pre ();
+    if (this->usage_parser_)
+      this->usage_parser_->pre ();
 
     return true;
   }
@@ -976,10 +985,10 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "interval" && ns == "urn:rpg")
+  if (n == "usage" && ns == "urn:rpg")
   {
-    if (this->interval_parser_)
-      this->interval (this->interval_parser_->post_unsigned_short ());
+    if (this->usage_parser_)
+      this->usage (this->usage_parser_->post_RPG_Common_Usage_Type ());
 
     return true;
   }
@@ -1619,6 +1628,11 @@ attack (const RPG_Monster_Attack&)
 }
 
 void RPG_Monster_PropertiesXML_Type_pskel::
+specialAbilities (const RPG_Magic_SpecialAbilityProperties&)
+{
+}
+
+void RPG_Monster_PropertiesXML_Type_pskel::
 space (unsigned char)
 {
 }
@@ -1769,6 +1783,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->attack_parser_)
       this->attack_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "specialAbilities" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->specialAbilities_parser_;
+
+    if (this->specialAbilities_parser_)
+      this->specialAbilities_parser_->pre ();
 
     return true;
   }
@@ -1973,6 +1997,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->attack_parser_)
       this->attack (this->attack_parser_->post_RPG_Monster_Attack_Type ());
+
+    return true;
+  }
+
+  if (n == "specialAbilities" && ns == "urn:rpg")
+  {
+    if (this->specialAbilities_parser_)
+      this->specialAbilities (this->specialAbilities_parser_->post_RPG_Magic_SpecialAbilityProperties_Type ());
 
     return true;
   }

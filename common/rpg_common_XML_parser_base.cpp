@@ -25,6 +25,24 @@ post_RPG_Common_Attribute_Type ()
   // return ... ;
 }
 
+// RPG_Common_PhysicalDamageType_Type_pimpl
+//
+
+void RPG_Common_PhysicalDamageType_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Common_PhysicalDamageType RPG_Common_PhysicalDamageType_Type_pimpl::
+post_RPG_Common_PhysicalDamageType_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
 // RPG_Common_SavingThrow_Type_pimpl
 //
 
@@ -74,6 +92,36 @@ difficultyClass (unsigned char difficultyClass)
 
 RPG_Common_SavingThrowCheck RPG_Common_SavingThrowCheck_Type_pimpl::
 post_RPG_Common_SavingThrowCheck_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Common_Usage_Type_pimpl
+//
+
+void RPG_Common_Usage_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Common_Usage_Type_pimpl::
+numUses (unsigned char numUses)
+{
+  // TODO
+  //
+}
+
+void RPG_Common_Usage_Type_pimpl::
+period (unsigned int period)
+{
+  // TODO
+  //
+}
+
+RPG_Common_Usage RPG_Common_Usage_Type_pimpl::
+post_RPG_Common_Usage_Type ()
 {
   // TODO
   //

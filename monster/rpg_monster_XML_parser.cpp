@@ -267,7 +267,8 @@ RPG_Monster_AttackAction_Type::RPG_Monster_AttackAction_Type()
   myCurrentAttackAction.attackForms.clear();
   myCurrentAttackAction.damage.elements.clear();
   myCurrentAttackAction.numAttacksPerRound = 0;
-  myCurrentAttackAction.interval = 0;
+  myCurrentAttackAction.usage.numUses = 0;
+  myCurrentAttackAction.usage.period = 0;
   myCurrentAttackAction.ranged.maxRange = 0;
   myCurrentAttackAction.ranged.increment = 0;
   myCurrentAttackAction.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
@@ -308,11 +309,11 @@ void RPG_Monster_AttackAction_Type::numAttacksPerRound(unsigned char numAttacksP
   myCurrentAttackAction.numAttacksPerRound = numAttacksPerRound_in;
 }
 
-void RPG_Monster_AttackAction_Type::interval(unsigned short interval_in)
+void RPG_Monster_AttackAction_Type::usage(const RPG_Common_Usage& usage_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_AttackAction_Type::interval"));
+  ACE_TRACE(ACE_TEXT("RPG_Monster_AttackAction_Type::usage"));
 
-  myCurrentAttackAction.interval = interval_in;
+  myCurrentAttackAction.usage = usage_in;
 }
 
 void RPG_Monster_AttackAction_Type::ranged(const RPG_Combat_RangedAttackProperties& rangedProperties_in)
@@ -334,7 +335,8 @@ RPG_Monster_AttackAction RPG_Monster_AttackAction_Type::post_RPG_Monster_AttackA
   myCurrentAttackAction.attackForms.clear();
   myCurrentAttackAction.damage.elements.clear();
   myCurrentAttackAction.numAttacksPerRound = 0;
-  myCurrentAttackAction.interval = 0;
+  myCurrentAttackAction.usage.numUses = 0;
+  myCurrentAttackAction.usage.period = 0;
   myCurrentAttackAction.ranged.maxRange = 0;
   myCurrentAttackAction.ranged.increment = 0;
   myCurrentAttackAction.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
@@ -659,6 +661,7 @@ RPG_Monster_PropertiesXML_Type::RPG_Monster_PropertiesXML_Type()
   myCurrentProperties.attack.grappleBonus = 0;
   myCurrentProperties.attack.standardAttackActions.clear();
   myCurrentProperties.attack.fullAttackActions.clear();
+  myCurrentProperties.specialAbilities.clear();
   myCurrentProperties.space = 0;
   myCurrentProperties.reach = 0;
   myCurrentProperties.saves.fortitude = 0;
@@ -737,6 +740,13 @@ void RPG_Monster_PropertiesXML_Type::attack(const RPG_Monster_Attack& attack_in)
   ACE_TRACE(ACE_TEXT("RPG_Monster_PropertiesXML_Type::attack"));
 
   myCurrentProperties.attack = attack_in;
+}
+
+void RPG_Monster_PropertiesXML_Type::specialAbilities(const RPG_Magic_SpecialAbilityProperties& property_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_PropertiesXML_Type::specialAbilities"));
+
+  myCurrentProperties.specialAbilities.push_back(property_in);
 }
 
 void RPG_Monster_PropertiesXML_Type::space(unsigned char space_in)
@@ -853,6 +863,7 @@ RPG_Monster_PropertiesXML RPG_Monster_PropertiesXML_Type::post_RPG_Monster_Prope
   myCurrentProperties.attack.grappleBonus = 0;
   myCurrentProperties.attack.standardAttackActions.clear();
   myCurrentProperties.attack.fullAttackActions.clear();
+  myCurrentProperties.specialAbilities.clear();
   myCurrentProperties.space = 0;
   myCurrentProperties.reach = 0;
   myCurrentProperties.saves.fortitude = 0;

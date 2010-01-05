@@ -24,6 +24,9 @@
 enum RPG_Magic_Spell
 {
   SPELL_CANTRIP = 0,
+  SPELL_REMOVE_DISEASE,
+  SPELL_HEAL,
+  SPELL_MASS_HEAL,
   //
   RPG_MAGIC_SPELL_MAX,
   RPG_MAGIC_SPELL_INVALID
@@ -44,6 +47,9 @@ class RPG_Magic_SpellHelper
   {
     myRPG_Magic_SpellToStringTable.clear();
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_CANTRIP, ACE_TEXT_ALWAYS_CHAR("SPELL_CANTRIP")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_REMOVE_DISEASE, ACE_TEXT_ALWAYS_CHAR("SPELL_REMOVE_DISEASE")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_HEAL, ACE_TEXT_ALWAYS_CHAR("SPELL_HEAL")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_MASS_HEAL, ACE_TEXT_ALWAYS_CHAR("SPELL_MASS_HEAL")));
   };
 
   inline static std::string RPG_Magic_SpellToString(const RPG_Magic_Spell& element_in)

@@ -121,7 +121,7 @@ class RPG_Monster_AttackAction_Type_pimpl: public virtual RPG_Monster_AttackActi
   numAttacksPerRound (unsigned char);
 
   virtual void
-  interval (unsigned short);
+  usage (const RPG_Common_Usage&);
 
   virtual void
   ranged (const RPG_Combat_RangedAttackProperties&);
@@ -291,6 +291,9 @@ class RPG_Monster_PropertiesXML_Type_pimpl: public virtual RPG_Monster_Propertie
 
   virtual void
   attack (const RPG_Monster_Attack&);
+
+  virtual void
+  specialAbilities (const RPG_Magic_SpecialAbilityProperties&);
 
   virtual void
   space (unsigned char);

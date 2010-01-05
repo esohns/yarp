@@ -789,7 +789,7 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
 
       // a roll of 20 is ALWAYS a (critical) hit, a 1 a miss...
       weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(player_base->getEquipment()->getPrimaryWeapon());
-      is_critical_hit = (attack_roll >= weapon_properties.criticalHitModifier.minToHitRoll);
+      is_critical_hit = (attack_roll >= weapon_properties.criticalHit.minToHitRoll);
 
       if (attack_roll == 20)
         goto is_player_hit;
@@ -855,7 +855,10 @@ is_player_hit:
       if (attackForm == ATTACKFORM_MELEE)
         damage_element.amount.modifier += RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH));
       if (is_critical_hit)
-        damage_element.amount *= weapon_properties.criticalHitModifier.damageModifier;
+        damage_element.amount *= ACE_static_cast(int, weapon_properties.criticalHit.damageModifier);
+      damage_element.secondary.numDice = 0;
+      damage_element.secondary.typeDice = RPG_DICE_DIETYPE_INVALID;
+      damage_element.secondary.modifier = 0;
       damage_element.duration.incubationPeriod.numDice = 0;
       damage_element.duration.incubationPeriod.typeDice = RPG_DICE_DIETYPE_INVALID;
       damage_element.duration.incubationPeriod.modifier = 0;

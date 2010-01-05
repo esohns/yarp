@@ -23,6 +23,14 @@
 
 struct RPG_Dice_Roll
 {
+  // allow multiplier
+  inline RPG_Dice_Roll& operator*=(const int& multiplier_in)
+  {
+    numDice *= multiplier_in;
+    modifier *= multiplier_in;
+    return (*this);
+  };
+
   unsigned int numDice;
   RPG_Dice_DieType typeDice;
   int modifier;

@@ -25,6 +25,7 @@ struct RPG_Combat_DamageElement
 {
   std::vector<RPG_Combat_DamageTypeUnion> types;
   RPG_Dice_Roll amount;
+  RPG_Dice_Roll secondary;
   RPG_Combat_DamageDuration duration;
   std::vector<RPG_Combat_DamageBonus> others;
   RPG_Common_Attribute attribute;

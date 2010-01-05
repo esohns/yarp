@@ -2300,16 +2300,39 @@
       <baseAttackBonus>1</baseAttackBonus>
       <grappleBonus>-8</grappleBonus>
       <standardAttackAction>
-        <weapon>RAY_LIGHT</weapon>
+        <weapon>SPECIALATTACK_RAY_LIGHT</weapon>
         <attackBonus>2</attackBonus>
         <attackForm>ATTACKFORM_RANGED</attackForm>
+        <attackForm>ATTACKFORM_TOUCH</attackForm>
         <damage>
-          <numDice>1</numDice>
-          <typeDice>D_6</typeDice>
-          <modifier>0</modifier>
+          <element>
+            <type>DAMAGE_FIRE</type> <!-- *TODO*: ??? -->
+            <amount>
+              <numDice>1</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>0</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </standardAttackAction>
+      <fullAttackAction>
+        <weapon>SPECIALATTACK_RAY_LIGHT</weapon>
+        <attackBonus>2</attackBonus>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
+        <attackForm>ATTACKFORM_TOUCH</attackForm>
+        <damage>
+          <element>
+            <type>DAMAGE_FIRE</type> <!-- *TODO*: ??? -->
+            <amount>
+              <numDice>1</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>0</modifier>
+            </amount>
+          </element>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
-      </standardAttackAction>
+      </fullAttackAction>
     </attack>
     <space>5</space>
     <reach>5</reach>
@@ -2413,7 +2436,7 @@
       <touch>10</touch>
       <flatFooted>19</flatFooted>
     </armorClass>
-    <attack>
+    <attack attackActionsAreInclusive="false">
       <baseAttackBonus>6</baseAttackBonus>
       <grappleBonus>8</grappleBonus>
       <standardAttackAction>
@@ -2421,9 +2444,30 @@
         <attackBonus>8</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
-          <numDice>1</numDice>
-          <typeDice>D_8</typeDice>
-          <modifier>2</modifier>
+          <element>
+            <type>PHYSICALDAMAGE_PIERCING</type>
+            <amount>
+              <numDice>1</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>2</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>TWO_HANDED_MELEE_WEAPON_SWORD_GREAT</weapon>
+        <attackBonus>8</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_SLASHING</type>
+            <amount>
+              <numDice>2</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>3</modifier>
+            </amount>
+          </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>

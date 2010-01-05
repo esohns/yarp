@@ -8,7 +8,9 @@
 
   <!-- include chance_dice schema -->
   <xsd:include schemaLocation="rpg_dice.xsd"/>
-  <!--             xmlns:rpg_chance_dice="urn:rpg_chance_dice"> -->
+  <!-- include common schema -->
+  <xsd:include schemaLocation="rpg_common.xsd"/>
+  <!-- include magic schema -->
   <xsd:include schemaLocation="rpg_magic.xsd"/>
 <!--             xmlns:rpg_chance_dice="urn:rpg_chance_dice"> -->
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
@@ -144,21 +146,12 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Item_CriticalHitModifier_Type">
+  <xsd:complexType name="RPG_Item_CriticalHitProperties_Type">
     <xsd:sequence>
       <xsd:element name="minToHitRoll" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="damageModifier" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
-
-  <xsd:simpleType name="RPG_Item_PhysicalDamageType_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="PHYSICALDAMAGE_NONE"/>
-      <xsd:enumeration value="PHYSICALDAMAGE_BLUDGEONING"/>
-      <xsd:enumeration value="PHYSICALDAMAGE_PIERCING"/>
-      <xsd:enumeration value="PHYSICALDAMAGE_SLASHING"/>
-    </xsd:restriction>
-  </xsd:simpleType>
 
   <xsd:complexType name="RPG_Item_CreationCost_Type">
     <xsd:sequence>
@@ -199,9 +192,9 @@
           <xsd:element name="weaponCategory" type="RPG_Item_WeaponCategory_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="weaponClass" type="RPG_Item_WeaponClass_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="baseDamage" type="RPG_Dice_Roll_Type" minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="criticalHitModifier" type="RPG_Item_CriticalHitModifier_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="criticalHit" type="RPG_Item_CriticalHitProperties_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="rangeIncrement" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="typeOfDamage" type="RPG_Item_PhysicalDamageType_Type" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element name="typeOfDamage" type="RPG_Common_PhysicalDamageType_Type" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>

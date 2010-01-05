@@ -238,6 +238,7 @@ class RPG_Combat_DamageElement_Type
 //   virtual void pre();
   virtual void type(const RPG_Combat_DamageTypeUnion&);
   virtual void amount(const RPG_Dice_Roll&);
+  virtual void secondary(const RPG_Dice_Roll&);
   virtual void duration(const RPG_Combat_DamageDuration&);
   virtual void other(const RPG_Combat_DamageBonus&);
   virtual void attribute(const RPG_Common_Attribute&);

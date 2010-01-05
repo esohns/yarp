@@ -22,7 +22,6 @@
 #include "rpg_item_weapontype.h"
 #include "rpg_item_weaponcategory.h"
 #include "rpg_item_weaponclass.h"
-#include "rpg_item_physicaldamagetype.h"
 #include "rpg_item_armorcategory.h"
 
 #include <ace/Log_Msg.h>
@@ -94,14 +93,14 @@ void RPG_Item_WeaponDictionary_Type::weapon(const RPG_Item_WeaponPropertiesXML& 
 
   RPG_Item_WeaponProperties prop;
   prop.weaponCategory = weapon_in.weaponCategory;
-  prop.weaponClass = weapon_in.weaponClass;
+  prop.weaponClass    = weapon_in.weaponClass;
   prop.baseStorePrice = weapon_in.baseStorePrice;
-  prop.baseDamage = weapon_in.baseDamage;
-  prop.criticalHitModifier = weapon_in.criticalHitModifier;
+  prop.baseDamage     = weapon_in.baseDamage;
+  prop.criticalHit    = weapon_in.criticalHit;
   prop.rangeIncrement = weapon_in.rangeIncrement;
-  prop.baseWeight = weapon_in.baseWeight;
-  prop.typeOfDamage = PHYSICALDAMAGE_NONE;
-  for (std::vector<RPG_Item_PhysicalDamageType>::const_iterator iterator = weapon_in.typeOfDamages.begin();
+  prop.baseWeight     = weapon_in.baseWeight;
+  prop.typeOfDamage   = PHYSICALDAMAGE_NONE;
+  for (std::vector<RPG_Common_PhysicalDamageType>::const_iterator iterator = weapon_in.typeOfDamages.begin();
        iterator != weapon_in.typeOfDamages.end();
        iterator++)
   {
@@ -243,40 +242,33 @@ RPG_Item_StorePrice RPG_Item_StorePrice_Type::post_RPG_Item_StorePrice_Type()
   return myCurrentStorePrice;
 }
 
-RPG_Item_CriticalHitModifier_Type::RPG_Item_CriticalHitModifier_Type()
+RPG_Item_CriticalHitProperties_Type::RPG_Item_CriticalHitProperties_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_CriticalHitModifier_Type::RPG_Item_CriticalHitModifier_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_CriticalHitProperties_Type::RPG_Item_CriticalHitProperties_Type"));
 
-  myCurrentCriticalHitModifier.minToHitRoll = 20;
-  myCurrentCriticalHitModifier.damageModifier = 1;
+  myCurrentCriticalHitProperties.minToHitRoll = 20;
+  myCurrentCriticalHitProperties.damageModifier = 1;
 }
 
-void RPG_Item_CriticalHitModifier_Type::minToHitRoll(unsigned char minToHitRoll_in)
+void RPG_Item_CriticalHitProperties_Type::minToHitRoll(unsigned char minToHitRoll_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_CriticalHitModifier_Type::minToHitRoll"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_CriticalHitProperties_Type::minToHitRoll"));
 
-  myCurrentCriticalHitModifier.minToHitRoll = minToHitRoll_in;
+  myCurrentCriticalHitProperties.minToHitRoll = minToHitRoll_in;
 }
 
-void RPG_Item_CriticalHitModifier_Type::damageModifier(unsigned char damageModifier_in)
+void RPG_Item_CriticalHitProperties_Type::damageModifier(unsigned char damageModifier_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_CriticalHitModifier_Type::damageModifier"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_CriticalHitProperties_Type::damageModifier"));
 
-  myCurrentCriticalHitModifier.damageModifier = damageModifier_in;
+  myCurrentCriticalHitProperties.damageModifier = damageModifier_in;
 }
 
-RPG_Item_CriticalHitModifier RPG_Item_CriticalHitModifier_Type::post_RPG_Item_CriticalHitModifier_Type()
+RPG_Item_CriticalHitProperties RPG_Item_CriticalHitProperties_Type::post_RPG_Item_CriticalHitProperties_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_CriticalHitModifier_Type::post_RPG_Item_CriticalHitModifier_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_CriticalHitProperties_Type::post_RPG_Item_CriticalHitProperties_Type"));
 
-  return myCurrentCriticalHitModifier;
-}
-
-RPG_Item_PhysicalDamageType RPG_Item_PhysicalDamageType_Type::post_RPG_Item_PhysicalDamageType_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_PhysicalDamageType_Type::post_RPG_Item_PhysicalDamageType_Type"));
-
-  return RPG_Item_PhysicalDamageTypeHelper::stringToRPG_Item_PhysicalDamageType(post_string());
+  return myCurrentCriticalHitProperties;
 }
 
 RPG_Item_CreationCost_Type::RPG_Item_CreationCost_Type()
@@ -432,8 +424,8 @@ RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type()
   myCurrentWeaponProperties.baseDamage.numDice = 0;
   myCurrentWeaponProperties.baseDamage.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentWeaponProperties.baseDamage.modifier = 0;
-  myCurrentWeaponProperties.criticalHitModifier.minToHitRoll = 20;
-  myCurrentWeaponProperties.criticalHitModifier.damageModifier = 1;
+  myCurrentWeaponProperties.criticalHit.minToHitRoll = 20;
+  myCurrentWeaponProperties.criticalHit.damageModifier = 1;
   myCurrentWeaponProperties.rangeIncrement = 0;
   myCurrentWeaponProperties.baseWeight = 0;
   myCurrentWeaponProperties.typeOfDamages.clear();
@@ -480,11 +472,11 @@ void RPG_Item_WeaponPropertiesXML_Type::baseDamage(const RPG_Item_Damage& baseDa
   myCurrentWeaponProperties.baseDamage = baseDamage_in;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type::criticalHitModifier(const RPG_Item_CriticalHitModifier& criticalHitModifier_in)
+void RPG_Item_WeaponPropertiesXML_Type::criticalHit(const RPG_Item_CriticalHitProperties& criticalHit_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::criticalHitModifier"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::criticalHit"));
 
-  myCurrentWeaponProperties.criticalHitModifier = criticalHitModifier_in;
+  myCurrentWeaponProperties.criticalHit = criticalHit_in;
 }
 
 void RPG_Item_WeaponPropertiesXML_Type::rangeIncrement(unsigned char rangeIncrement_in)
@@ -501,7 +493,7 @@ void RPG_Item_WeaponPropertiesXML_Type::baseWeight(unsigned short baseWeight_in)
   myCurrentWeaponProperties.baseWeight = baseWeight_in;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type::typeOfDamage(const RPG_Item_PhysicalDamageType& typeOfDamage_in)
+void RPG_Item_WeaponPropertiesXML_Type::typeOfDamage(const RPG_Common_PhysicalDamageType& typeOfDamage_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::typeOfDamage"));
 
@@ -523,8 +515,8 @@ RPG_Item_WeaponPropertiesXML RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_We
   myCurrentWeaponProperties.baseDamage.numDice = 0;
   myCurrentWeaponProperties.baseDamage.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentWeaponProperties.baseDamage.modifier = 0;
-  myCurrentWeaponProperties.criticalHitModifier.minToHitRoll = 20;
-  myCurrentWeaponProperties.criticalHitModifier.damageModifier = 1;
+  myCurrentWeaponProperties.criticalHit.minToHitRoll = 20;
+  myCurrentWeaponProperties.criticalHit.damageModifier = 1;
   myCurrentWeaponProperties.rangeIncrement = 0;
   myCurrentWeaponProperties.baseWeight = 0;
   myCurrentWeaponProperties.typeOfDamages.clear();

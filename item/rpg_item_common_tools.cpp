@@ -24,7 +24,6 @@
 #include "rpg_item_weaponcategory.h"
 #include "rpg_item_weaponclass.h"
 #include "rpg_item_weapontype.h"
-#include "rpg_item_physicaldamagetype.h"
 #include "rpg_item_armorcategory.h"
 #include "rpg_item_armortype.h"
 
@@ -40,7 +39,6 @@ RPG_Item_MoneyToStringTable_t RPG_Item_MoneyHelper::myRPG_Item_MoneyToStringTabl
 RPG_Item_WeaponCategoryToStringTable_t RPG_Item_WeaponCategoryHelper::myRPG_Item_WeaponCategoryToStringTable;
 RPG_Item_WeaponClassToStringTable_t RPG_Item_WeaponClassHelper::myRPG_Item_WeaponClassToStringTable;
 RPG_Item_WeaponTypeToStringTable_t RPG_Item_WeaponTypeHelper::myRPG_Item_WeaponTypeToStringTable;
-RPG_Item_PhysicalDamageTypeToStringTable_t RPG_Item_PhysicalDamageTypeHelper::myRPG_Item_PhysicalDamageTypeToStringTable;
 RPG_Item_ArmorCategoryToStringTable_t RPG_Item_ArmorCategoryHelper::myRPG_Item_ArmorCategoryToStringTable;
 RPG_Item_ArmorTypeToStringTable_t RPG_Item_ArmorTypeHelper::myRPG_Item_ArmorTypeToStringTable;
 
@@ -53,7 +51,6 @@ void RPG_Item_Common_Tools::initStringConversionTables()
   RPG_Item_WeaponCategoryHelper::init();
   RPG_Item_WeaponClassHelper::init();
   RPG_Item_WeaponTypeHelper::init();
-  RPG_Item_PhysicalDamageTypeHelper::init();
   RPG_Item_ArmorCategoryHelper::init();
   RPG_Item_ArmorTypeHelper::init();
 
@@ -71,7 +68,7 @@ const std::string RPG_Item_Common_Tools::weaponDamageToString(const RPG_Item_Wea
   // sanity check
   if (weaponDamage_in.none())
   {
-    return RPG_Item_PhysicalDamageTypeHelper::RPG_Item_PhysicalDamageTypeToString(PHYSICALDAMAGE_NONE);
+    return RPG_Common_PhysicalDamageTypeHelper::RPG_Common_PhysicalDamageTypeToString(PHYSICALDAMAGE_NONE);
   } // end IF
 
   int damageType = PHYSICALDAMAGE_NONE + 1;
@@ -81,8 +78,7 @@ const std::string RPG_Item_Common_Tools::weaponDamageToString(const RPG_Item_Wea
   {
     if (weaponDamage_in.test(i))
     {
-      result += RPG_Item_PhysicalDamageTypeHelper::RPG_Item_PhysicalDamageTypeToString(ACE_static_cast(RPG_Item_PhysicalDamageType,
-                                                                                             damageType));
+      result += RPG_Common_PhysicalDamageTypeHelper::RPG_Common_PhysicalDamageTypeToString(ACE_static_cast(RPG_Common_PhysicalDamageType, damageType));
       result += ACE_TEXT_ALWAYS_CHAR("|");
     } // end IF
   } // end FOR
@@ -123,7 +119,7 @@ const RPG_Item_WeaponDamageList_t RPG_Item_Common_Tools::weaponDamageToPhysicalD
   {
     if (weaponDamage_in.test(i))
     {
-      result.insert(ACE_static_cast(RPG_Item_PhysicalDamageType, damageType));
+      result.insert(ACE_static_cast(RPG_Common_PhysicalDamageType, damageType));
     } // end IF
   } // end FOR
 

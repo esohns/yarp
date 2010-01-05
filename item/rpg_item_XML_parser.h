@@ -128,27 +128,19 @@ class RPG_Item_StorePrice_Type
   RPG_Item_StorePrice myCurrentStorePrice;
 };
 
-class RPG_Item_CriticalHitModifier_Type
- : public RPG_Item_CriticalHitModifier_Type_pimpl
+class RPG_Item_CriticalHitProperties_Type
+ : public RPG_Item_CriticalHitProperties_Type_pimpl
 {
  public:
-  RPG_Item_CriticalHitModifier_Type();
+  RPG_Item_CriticalHitProperties_Type();
 
 //   virtual void pre();
   virtual void minToHitRoll(unsigned char);
   virtual void damageModifier(unsigned char);
-  virtual RPG_Item_CriticalHitModifier post_RPG_Item_CriticalHitModifier_Type();
+  virtual RPG_Item_CriticalHitProperties post_RPG_Item_CriticalHitProperties_Type();
 
  private:
-  RPG_Item_CriticalHitModifier myCurrentCriticalHitModifier;
-};
-
-class RPG_Item_PhysicalDamageType_Type
- : public RPG_Item_PhysicalDamageType_Type_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Item_PhysicalDamageType post_RPG_Item_PhysicalDamageType_Type();
+  RPG_Item_CriticalHitProperties myCurrentCriticalHitProperties;
 };
 
 class RPG_Item_CreationCost_Type
@@ -223,10 +215,10 @@ class RPG_Item_WeaponPropertiesXML_Type
   virtual void weaponClass(const RPG_Item_WeaponClass&);
   virtual void baseStorePrice(const RPG_Item_StorePrice&);
   virtual void baseDamage(const RPG_Item_Damage&);
-  virtual void criticalHitModifier(const RPG_Item_CriticalHitModifier&);
+  virtual void criticalHit(const RPG_Item_CriticalHitProperties&);
   virtual void rangeIncrement(unsigned char);
   virtual void baseWeight(unsigned short);
-  virtual void typeOfDamage(const RPG_Item_PhysicalDamageType&);
+  virtual void typeOfDamage(const RPG_Common_PhysicalDamageType&);
   virtual RPG_Item_WeaponPropertiesXML post_RPG_Item_WeaponPropertiesXML_Type();
 
  private:

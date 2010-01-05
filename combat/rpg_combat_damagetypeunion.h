@@ -25,7 +25,7 @@ struct RPG_Combat_DamageTypeUnion
 {
   union
   {
-    RPG_Item_PhysicalDamageType physicaldamagetype;
+    RPG_Common_PhysicalDamageType physicaldamagetype;
     RPG_Combat_SpecialDamageType specialdamagetype;
   };
 

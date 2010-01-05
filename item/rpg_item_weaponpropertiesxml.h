@@ -28,9 +28,9 @@ struct RPG_Item_WeaponPropertiesXML
   RPG_Item_WeaponCategory weaponCategory;
   RPG_Item_WeaponClass weaponClass;
   RPG_Dice_Roll baseDamage;
-  RPG_Item_CriticalHitModifier criticalHitModifier;
+  RPG_Item_CriticalHitProperties criticalHit;
   unsigned char rangeIncrement;
-  std::vector<RPG_Item_PhysicalDamageType> typeOfDamages;
+  std::vector<RPG_Common_PhysicalDamageType> typeOfDamages;
 };
 
 #endif

@@ -146,7 +146,7 @@ RPG_Combat_DamageTypeUnion_Type::RPG_Combat_DamageTypeUnion_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageTypeUnion_Type::RPG_Combat_DamageTypeUnion_Type"));
 
-  myCurrentDamageType.physicaldamagetype = RPG_ITEM_PHYSICALDAMAGETYPE_INVALID;
+  myCurrentDamageType.physicaldamagetype = RPG_COMMON_PHYSICALDAMAGETYPE_INVALID;
   myCurrentDamageType.specialdamagetype = RPG_COMBAT_SPECIALDAMAGETYPE_INVALID;
   myCurrentDamageType.discriminator = RPG_Combat_DamageTypeUnion::INVALID;
 }
@@ -161,7 +161,7 @@ void RPG_Combat_DamageTypeUnion_Type::_characters(const ::xml_schema::ro_string&
   std::string type = damageType_in;
   if (type.find(ACE_TEXT_ALWAYS_CHAR("PHYSICALDAMAGE_")) == 0)
   {
-    myCurrentDamageType.physicaldamagetype = RPG_Item_PhysicalDamageTypeHelper::stringToRPG_Item_PhysicalDamageType(damageType_in);
+    myCurrentDamageType.physicaldamagetype = RPG_Common_PhysicalDamageTypeHelper::stringToRPG_Common_PhysicalDamageType(damageType_in);
     myCurrentDamageType.discriminator = RPG_Combat_DamageTypeUnion::PHYSICALDAMAGETYPE;
   } // end IF
   else
@@ -178,7 +178,7 @@ RPG_Combat_DamageTypeUnion RPG_Combat_DamageTypeUnion_Type::post_RPG_Combat_Dama
   RPG_Combat_DamageTypeUnion result = myCurrentDamageType;
 
   // clear structure
-  myCurrentDamageType.physicaldamagetype = RPG_ITEM_PHYSICALDAMAGETYPE_INVALID;
+  myCurrentDamageType.physicaldamagetype = RPG_COMMON_PHYSICALDAMAGETYPE_INVALID;
   myCurrentDamageType.specialdamagetype = RPG_COMBAT_SPECIALDAMAGETYPE_INVALID;
   myCurrentDamageType.discriminator = RPG_Combat_DamageTypeUnion::INVALID;
 
@@ -460,6 +460,9 @@ RPG_Combat_DamageElement_Type::RPG_Combat_DamageElement_Type()
   myCurrentDamageElement.amount.numDice = 0;
   myCurrentDamageElement.amount.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentDamageElement.amount.modifier = 0;
+  myCurrentDamageElement.secondary.numDice = 0;
+  myCurrentDamageElement.secondary.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentDamageElement.secondary.modifier = 0;
   myCurrentDamageElement.duration.incubationPeriod.numDice = 0;
   myCurrentDamageElement.duration.incubationPeriod.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentDamageElement.duration.incubationPeriod.modifier = 0;
@@ -483,6 +486,13 @@ void RPG_Combat_DamageElement_Type::amount(const RPG_Dice_Roll& amount_in)
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::amount"));
 
   myCurrentDamageElement.amount = amount_in;
+}
+
+void RPG_Combat_DamageElement_Type::secondary(const RPG_Dice_Roll& secondary_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::secondary"));
+
+  myCurrentDamageElement.secondary = secondary_in;
 }
 
 void RPG_Combat_DamageElement_Type::duration(const RPG_Combat_DamageDuration& duration_in)
@@ -531,6 +541,9 @@ RPG_Combat_DamageElement RPG_Combat_DamageElement_Type::post_RPG_Combat_DamageEl
   myCurrentDamageElement.amount.numDice = 0;
   myCurrentDamageElement.amount.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentDamageElement.amount.modifier = 0;
+  myCurrentDamageElement.secondary.numDice = 0;
+  myCurrentDamageElement.secondary.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentDamageElement.secondary.modifier = 0;
   myCurrentDamageElement.duration.incubationPeriod.numDice = 0;
   myCurrentDamageElement.duration.incubationPeriod.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentDamageElement.duration.incubationPeriod.modifier = 0;

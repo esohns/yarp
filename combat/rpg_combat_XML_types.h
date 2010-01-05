@@ -81,17 +81,14 @@ class RPG_Combat_Damage_Type_pskel;
 #include <rpg_XMLSchema_XML_types.h>
 
 #include <rpg_dice_incl.h>
-#include <rpg_magic_incl.h>
-#include <rpg_item_incl.h>
 #include <rpg_common_incl.h>
+#include <rpg_magic_incl.h>
 #include <rpg_character_incl.h>
 #include "rpg_combat_incl.h"
 
 #include <rpg_dice_XML_types.h>
 
 #include <rpg_common_XML_types.h>
-
-#include <rpg_item_XML_types.h>
 
 #include <rpg_character_XML_types.h>
 
@@ -572,6 +569,9 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   amount (const RPG_Dice_Roll&);
 
   virtual void
+  secondary (const RPG_Dice_Roll&);
+
+  virtual void
   duration (const RPG_Combat_DamageDuration&);
 
   virtual void
@@ -598,6 +598,9 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   amount_parser (::RPG_Dice_Roll_Type_pskel&);
 
   void
+  secondary_parser (::RPG_Dice_Roll_Type_pskel&);
+
+  void
   duration_parser (::RPG_Combat_DamageDuration_Type_pskel&);
 
   void
@@ -615,6 +618,7 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   void
   parsers (::RPG_Combat_DamageTypeUnion_Type_pskel& /* type */,
            ::RPG_Dice_Roll_Type_pskel& /* amount */,
+           ::RPG_Dice_Roll_Type_pskel& /* secondary */,
            ::RPG_Combat_DamageDuration_Type_pskel& /* duration */,
            ::RPG_Combat_DamageBonus_Type_pskel& /* other */,
            ::RPG_Common_Attribute_Type_pskel& /* attribute */,
@@ -645,6 +649,7 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   protected:
   ::RPG_Combat_DamageTypeUnion_Type_pskel* type_parser_;
   ::RPG_Dice_Roll_Type_pskel* amount_parser_;
+  ::RPG_Dice_Roll_Type_pskel* secondary_parser_;
   ::RPG_Combat_DamageDuration_Type_pskel* duration_parser_;
   ::RPG_Combat_DamageBonus_Type_pskel* other_parser_;
   ::RPG_Common_Attribute_Type_pskel* attribute_parser_;

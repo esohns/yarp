@@ -50,8 +50,10 @@
 // Forward declarations
 //
 class RPG_Common_Attribute_Type_pskel;
+class RPG_Common_PhysicalDamageType_Type_pskel;
 class RPG_Common_SavingThrow_Type_pskel;
 class RPG_Common_SavingThrowCheck_Type_pskel;
+class RPG_Common_Usage_Type_pskel;
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -75,6 +77,18 @@ class RPG_Common_Attribute_Type_pskel: public virtual ::xml_schema::string_pskel
 
   virtual RPG_Common_Attribute
   post_RPG_Common_Attribute_Type () = 0;
+};
+
+class RPG_Common_PhysicalDamageType_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Common_PhysicalDamageType
+  post_RPG_Common_PhysicalDamageType_Type () = 0;
 };
 
 class RPG_Common_SavingThrow_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -145,6 +159,56 @@ class RPG_Common_SavingThrowCheck_Type_pskel: public ::xml_schema::complex_conte
   ::RPG_Common_SavingThrow_Type_pskel* type_parser_;
   ::RPG_Common_Attribute_Type_pskel* attribute_parser_;
   ::xml_schema::unsigned_byte_pskel* difficultyClass_parser_;
+};
+
+class RPG_Common_Usage_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  numUses (unsigned char);
+
+  virtual void
+  period (unsigned int);
+
+  virtual RPG_Common_Usage
+  post_RPG_Common_Usage_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  numUses_parser (::xml_schema::unsigned_byte_pskel&);
+
+  void
+  period_parser (::xml_schema::unsigned_int_pskel&);
+
+  void
+  parsers (::xml_schema::unsigned_byte_pskel& /* numUses */,
+           ::xml_schema::unsigned_int_pskel& /* period */);
+
+  // Constructor.
+  //
+  RPG_Common_Usage_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::xml_schema::unsigned_byte_pskel* numUses_parser_;
+  ::xml_schema::unsigned_int_pskel* period_parser_;
 };
 
 #include <xsd/cxx/post.hxx>

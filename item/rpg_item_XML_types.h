@@ -55,8 +55,7 @@ class RPG_Item_WeaponCategory_Type_pskel;
 class RPG_Item_WeaponClass_Type_pskel;
 class RPG_Item_WeaponType_Type_pskel;
 class RPG_Item_StorePrice_Type_pskel;
-class RPG_Item_CriticalHitModifier_Type_pskel;
-class RPG_Item_PhysicalDamageType_Type_pskel;
+class RPG_Item_CriticalHitProperties_Type_pskel;
 class RPG_Item_CreationCost_Type_pskel;
 class RPG_Item_BaseProperties_Type_pskel;
 class RPG_Item_MagicalPrerequisites_Type_pskel;
@@ -81,12 +80,15 @@ class RPG_Item_Dictionary_Type_pskel;
 
 #include <rpg_XMLSchema_XML_types.h>
 
-#include <rpg_magic_incl.h>
 #include <rpg_dice_incl.h>
+#include <rpg_common_incl.h>
+#include <rpg_magic_incl.h>
 #include "rpg_item_incl.h"
 #include "rpg_item_common.h"
 
 #include <rpg_dice_XML_types.h>
+
+#include <rpg_common_XML_types.h>
 
 #include <rpg_magic_XML_types.h>
 
@@ -200,7 +202,7 @@ class RPG_Item_StorePrice_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_int_pskel* numSilverPieces_parser_;
 };
 
-class RPG_Item_CriticalHitModifier_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_CriticalHitProperties_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -214,8 +216,8 @@ class RPG_Item_CriticalHitModifier_Type_pskel: public ::xml_schema::complex_cont
   virtual void
   damageModifier (unsigned char);
 
-  virtual RPG_Item_CriticalHitModifier
-  post_RPG_Item_CriticalHitModifier_Type () = 0;
+  virtual RPG_Item_CriticalHitProperties
+  post_RPG_Item_CriticalHitProperties_Type () = 0;
 
   // Parser construction API.
   //
@@ -231,7 +233,7 @@ class RPG_Item_CriticalHitModifier_Type_pskel: public ::xml_schema::complex_cont
 
   // Constructor.
   //
-  RPG_Item_CriticalHitModifier_Type_pskel ();
+  RPG_Item_CriticalHitProperties_Type_pskel ();
 
   // Implementation.
   //
@@ -248,18 +250,6 @@ class RPG_Item_CriticalHitModifier_Type_pskel: public ::xml_schema::complex_cont
   protected:
   ::xml_schema::unsigned_byte_pskel* minToHitRoll_parser_;
   ::xml_schema::unsigned_byte_pskel* damageModifier_parser_;
-};
-
-class RPG_Item_PhysicalDamageType_Type_pskel: public virtual ::xml_schema::string_pskel
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual RPG_Item_PhysicalDamageType
-  post_RPG_Item_PhysicalDamageType_Type () = 0;
 };
 
 class RPG_Item_CreationCost_Type_pskel: public ::xml_schema::complex_content
@@ -483,13 +473,13 @@ class RPG_Item_WeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_BasePro
   baseDamage (const RPG_Item_Damage&);
 
   virtual void
-  criticalHitModifier (const RPG_Item_CriticalHitModifier&);
+  criticalHit (const RPG_Item_CriticalHitProperties&);
 
   virtual void
   rangeIncrement (unsigned char);
 
   virtual void
-  typeOfDamage (const RPG_Item_PhysicalDamageType&);
+  typeOfDamage (const RPG_Common_PhysicalDamageType&);
 
   virtual RPG_Item_WeaponPropertiesXML
   post_RPG_Item_WeaponPropertiesXML_Type () = 0;
@@ -509,13 +499,13 @@ class RPG_Item_WeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_BasePro
   baseDamage_parser (::RPG_Dice_Roll_Type_pskel&);
 
   void
-  criticalHitModifier_parser (::RPG_Item_CriticalHitModifier_Type_pskel&);
+  criticalHit_parser (::RPG_Item_CriticalHitProperties_Type_pskel&);
 
   void
   rangeIncrement_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  typeOfDamage_parser (::RPG_Item_PhysicalDamageType_Type_pskel&);
+  typeOfDamage_parser (::RPG_Common_PhysicalDamageType_Type_pskel&);
 
   void
   parsers (::xml_schema::unsigned_short_pskel& /* baseWeight */,
@@ -525,9 +515,9 @@ class RPG_Item_WeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_BasePro
            ::RPG_Item_WeaponCategory_Type_pskel& /* weaponCategory */,
            ::RPG_Item_WeaponClass_Type_pskel& /* weaponClass */,
            ::RPG_Dice_Roll_Type_pskel& /* baseDamage */,
-           ::RPG_Item_CriticalHitModifier_Type_pskel& /* criticalHitModifier */,
+           ::RPG_Item_CriticalHitProperties_Type_pskel& /* criticalHit */,
            ::xml_schema::unsigned_byte_pskel& /* rangeIncrement */,
-           ::RPG_Item_PhysicalDamageType_Type_pskel& /* typeOfDamage */);
+           ::RPG_Common_PhysicalDamageType_Type_pskel& /* typeOfDamage */);
 
   // Constructor.
   //
@@ -550,9 +540,9 @@ class RPG_Item_WeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_BasePro
   ::RPG_Item_WeaponCategory_Type_pskel* weaponCategory_parser_;
   ::RPG_Item_WeaponClass_Type_pskel* weaponClass_parser_;
   ::RPG_Dice_Roll_Type_pskel* baseDamage_parser_;
-  ::RPG_Item_CriticalHitModifier_Type_pskel* criticalHitModifier_parser_;
+  ::RPG_Item_CriticalHitProperties_Type_pskel* criticalHit_parser_;
   ::xml_schema::unsigned_byte_pskel* rangeIncrement_parser_;
-  ::RPG_Item_PhysicalDamageType_Type_pskel* typeOfDamage_parser_;
+  ::RPG_Common_PhysicalDamageType_Type_pskel* typeOfDamage_parser_;
 };
 
 class RPG_Item_MagicWeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_WeaponPropertiesXML_Type_pskel
@@ -582,9 +572,9 @@ class RPG_Item_MagicWeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_We
            ::RPG_Item_WeaponCategory_Type_pskel& /* weaponCategory */,
            ::RPG_Item_WeaponClass_Type_pskel& /* weaponClass */,
            ::RPG_Dice_Roll_Type_pskel& /* baseDamage */,
-           ::RPG_Item_CriticalHitModifier_Type_pskel& /* criticalHitModifier */,
+           ::RPG_Item_CriticalHitProperties_Type_pskel& /* criticalHit */,
            ::xml_schema::unsigned_byte_pskel& /* rangeIncrement */,
-           ::RPG_Item_PhysicalDamageType_Type_pskel& /* typeOfDamage */,
+           ::RPG_Common_PhysicalDamageType_Type_pskel& /* typeOfDamage */,
            ::xml_schema::byte_pskel& /* toHitModifier */);
 
   // Constructor.

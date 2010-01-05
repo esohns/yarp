@@ -77,6 +77,36 @@ RPG_Common_SavingThrowCheck_Type_pskel ()
 {
 }
 
+// RPG_Common_Usage_Type_pskel
+//
+
+void RPG_Common_Usage_Type_pskel::
+numUses_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->numUses_parser_ = &p;
+}
+
+void RPG_Common_Usage_Type_pskel::
+period_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->period_parser_ = &p;
+}
+
+void RPG_Common_Usage_Type_pskel::
+parsers (::xml_schema::unsigned_byte_pskel& numUses,
+         ::xml_schema::unsigned_int_pskel& period)
+{
+  this->numUses_parser_ = &numUses;
+  this->period_parser_ = &period;
+}
+
+RPG_Common_Usage_Type_pskel::
+RPG_Common_Usage_Type_pskel ()
+: numUses_parser_ (0),
+  period_parser_ (0)
+{
+}
+
 // RPG_Common_SavingThrowCheck_Type_pskel
 //
 
@@ -165,6 +195,78 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->difficultyClass_parser_)
       this->difficultyClass (this->difficultyClass_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Common_Usage_Type_pskel
+//
+
+void RPG_Common_Usage_Type_pskel::
+numUses (unsigned char)
+{
+}
+
+void RPG_Common_Usage_Type_pskel::
+period (unsigned int)
+{
+}
+
+bool RPG_Common_Usage_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "numUses" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->numUses_parser_;
+
+    if (this->numUses_parser_)
+      this->numUses_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "period" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->period_parser_;
+
+    if (this->period_parser_)
+      this->period_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Common_Usage_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "numUses" && ns == "urn:rpg")
+  {
+    if (this->numUses_parser_)
+      this->numUses (this->numUses_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  if (n == "period" && ns == "urn:rpg")
+  {
+    if (this->period_parser_)
+      this->period (this->period_parser_->post_unsigned_int ());
 
     return true;
   }

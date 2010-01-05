@@ -10,8 +10,6 @@
   <xsd:include schemaLocation="rpg_dice.xsd"/>
   <!-- include common schema -->
   <xsd:include schemaLocation="rpg_common.xsd"/>
-  <!-- include item schema -->
-  <xsd:include schemaLocation="rpg_item.xsd"/>
   <!-- include character schema -->
   <xsd:include schemaLocation="rpg_character.xsd"/>
   <!-- include magic schema -->
@@ -101,7 +99,7 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Combat_DamageTypeUnion_Type">
-    <xsd:union memberTypes="RPG_Item_PhysicalDamageType_Type RPG_Combat_SpecialDamageType_Type"/>
+    <xsd:union memberTypes="RPG_Common_PhysicalDamageType_Type RPG_Combat_SpecialDamageType_Type"/>
   </xsd:simpleType>
 
   <xsd:complexType name="RPG_Combat_DamageDuration_Type">
@@ -173,7 +171,7 @@
 
   <xsd:complexType name="RPG_Combat_DamageElement_Type">
     <xsd:sequence>
-      <xsd:element name="type" type="RPG_Combat_DamageTypeUnion_Type" minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element name="type" type="RPG_Combat_DamageTypeUnion_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="amount" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="secondary" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="duration" type="RPG_Combat_DamageDuration_Type" minOccurs="0" maxOccurs="1"/>

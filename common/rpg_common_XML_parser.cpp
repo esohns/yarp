@@ -30,6 +30,13 @@ RPG_Common_Attribute RPG_Common_Attribute_Type::post_RPG_Common_Attribute_Type()
   return RPG_Common_AttributeHelper::stringToRPG_Common_Attribute(post_string());
 }
 
+RPG_Common_PhysicalDamageType RPG_Common_PhysicalDamageType_Type::post_RPG_Common_PhysicalDamageType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_PhysicalDamageType_Type::post_RPG_Common_PhysicalDamageType_Type"));
+
+  return RPG_Common_PhysicalDamageTypeHelper::stringToRPG_Common_PhysicalDamageType(post_string());
+}
+
 RPG_Common_SavingThrow RPG_Common_SavingThrow_Type::post_RPG_Common_SavingThrow_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrow_Type::post_RPG_Common_SavingThrow_Type"));
@@ -77,6 +84,41 @@ RPG_Common_SavingThrowCheck RPG_Common_SavingThrowCheck_Type::post_RPG_Common_Sa
   myCurrentSavingThrowCheck.type = RPG_COMMON_SAVINGTHROW_INVALID;
   myCurrentSavingThrowCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentSavingThrowCheck.difficultyClass = 0;
+
+  return result;
+}
+
+RPG_Common_Usage_Type::RPG_Common_Usage_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Usage_Type::RPG_Common_Usage_Type"));
+
+  myCurrentUsage.numUses = 0;
+  myCurrentUsage.period = 0;
+}
+
+void RPG_Common_Usage_Type::numUses(unsigned char numUses_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Usage_Type::numUses"));
+
+  myCurrentUsage.numUses = numUses_in;
+}
+
+void RPG_Common_Usage_Type::period(unsigned int period_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Usage_Type::period"));
+
+  myCurrentUsage.period = period_in;
+}
+
+RPG_Common_Usage RPG_Common_Usage_Type::post_RPG_Common_Usage_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Usage_Type::post_RPG_Common_Usage_Type"));
+
+  RPG_Common_Usage result = myCurrentUsage;
+
+  // clear structure
+  myCurrentUsage.numUses = 0;
+  myCurrentUsage.period = 0;
 
   return result;
 }

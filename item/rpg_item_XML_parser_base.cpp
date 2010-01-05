@@ -125,49 +125,31 @@ post_RPG_Item_StorePrice_Type ()
   // return ... ;
 }
 
-// RPG_Item_CriticalHitModifier_Type_pimpl
+// RPG_Item_CriticalHitProperties_Type_pimpl
 //
 
-void RPG_Item_CriticalHitModifier_Type_pimpl::
+void RPG_Item_CriticalHitProperties_Type_pimpl::
 pre ()
 {
 }
 
-void RPG_Item_CriticalHitModifier_Type_pimpl::
+void RPG_Item_CriticalHitProperties_Type_pimpl::
 minToHitRoll (unsigned char minToHitRoll)
 {
   // TODO
   //
 }
 
-void RPG_Item_CriticalHitModifier_Type_pimpl::
+void RPG_Item_CriticalHitProperties_Type_pimpl::
 damageModifier (unsigned char damageModifier)
 {
   // TODO
   //
 }
 
-RPG_Item_CriticalHitModifier RPG_Item_CriticalHitModifier_Type_pimpl::
-post_RPG_Item_CriticalHitModifier_Type ()
+RPG_Item_CriticalHitProperties RPG_Item_CriticalHitProperties_Type_pimpl::
+post_RPG_Item_CriticalHitProperties_Type ()
 {
-  // TODO
-  //
-  // return ... ;
-}
-
-// RPG_Item_PhysicalDamageType_Type_pimpl
-//
-
-void RPG_Item_PhysicalDamageType_Type_pimpl::
-pre ()
-{
-}
-
-RPG_Item_PhysicalDamageType RPG_Item_PhysicalDamageType_Type_pimpl::
-post_RPG_Item_PhysicalDamageType_Type ()
-{
-  const ::std::string& v (post_string ());
-
   // TODO
   //
   // return ... ;
@@ -330,7 +312,7 @@ baseDamage (const RPG_Item_Damage& baseDamage)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pimpl::
-criticalHitModifier (const RPG_Item_CriticalHitModifier& criticalHitModifier)
+criticalHit (const RPG_Item_CriticalHitProperties& criticalHit)
 {
   // TODO
   //
@@ -344,7 +326,7 @@ rangeIncrement (unsigned char rangeIncrement)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pimpl::
-typeOfDamage (const RPG_Item_PhysicalDamageType& typeOfDamage)
+typeOfDamage (const RPG_Common_PhysicalDamageType& typeOfDamage)
 {
   // TODO
   //

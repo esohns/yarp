@@ -464,6 +464,13 @@ amount (const RPG_Dice_Roll& amount)
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::
+secondary (const RPG_Dice_Roll& secondary)
+{
+  // TODO
+  //
+}
+
+void RPG_Combat_DamageElement_Type_pimpl::
 duration (const RPG_Combat_DamageDuration& duration)
 {
   // TODO

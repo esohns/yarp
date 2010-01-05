@@ -14,8 +14,6 @@
 
 #include <rpg_common_XML_parser_base.h>
 
-#include <rpg_item_XML_parser_base.h>
-
 #include <rpg_character_XML_parser_base.h>
 
 #include <rpg_magic_XML_parser_base.h>
@@ -275,6 +273,9 @@ class RPG_Combat_DamageElement_Type_pimpl: public virtual RPG_Combat_DamageEleme
 
   virtual void
   amount (const RPG_Dice_Roll&);
+
+  virtual void
+  secondary (const RPG_Dice_Roll&);
 
   virtual void
   duration (const RPG_Combat_DamageDuration&);

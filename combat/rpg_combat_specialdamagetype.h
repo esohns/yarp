@@ -31,7 +31,11 @@ enum RPG_Combat_SpecialDamageType
   DAMAGE_POISON,
   DAMAGE_STUN,
   DAMAGE_SLAY,
-  DAMAGE_DRAIN,
+  DAMAGE_ABILITY_REDUCTION,
+  DAMAGE_ABILITY_LOSS,
+  DAMAGE_ABILITY_DRAIN,
+  DAMAGE_LEVEL_LOSS,
+  DAMAGE_LEVEL_DRAIN,
   //
   RPG_COMBAT_SPECIALDAMAGETYPE_MAX,
   RPG_COMBAT_SPECIALDAMAGETYPE_INVALID
@@ -59,7 +63,11 @@ class RPG_Combat_SpecialDamageTypeHelper
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_POISON, ACE_TEXT_ALWAYS_CHAR("DAMAGE_POISON")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_STUN, ACE_TEXT_ALWAYS_CHAR("DAMAGE_STUN")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_SLAY, ACE_TEXT_ALWAYS_CHAR("DAMAGE_SLAY")));
-    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_DRAIN, ACE_TEXT_ALWAYS_CHAR("DAMAGE_DRAIN")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_ABILITY_REDUCTION, ACE_TEXT_ALWAYS_CHAR("DAMAGE_ABILITY_REDUCTION")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_ABILITY_LOSS, ACE_TEXT_ALWAYS_CHAR("DAMAGE_ABILITY_LOSS")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_ABILITY_DRAIN, ACE_TEXT_ALWAYS_CHAR("DAMAGE_ABILITY_DRAIN")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_LEVEL_LOSS, ACE_TEXT_ALWAYS_CHAR("DAMAGE_LEVEL_LOSS")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_LEVEL_DRAIN, ACE_TEXT_ALWAYS_CHAR("DAMAGE_LEVEL_DRAIN")));
   };
 
   inline static std::string RPG_Combat_SpecialDamageTypeToString(const RPG_Combat_SpecialDamageType& element_in)
