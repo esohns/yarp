@@ -97,6 +97,9 @@
       <xsd:enumeration value="NATURALWEAPON_TENTACLE"/>
       <xsd:enumeration value="NATURALWEAPON_SPIT"/>
       <xsd:enumeration value="NATURALWEAPON_WEB"/>
+<!--       <xsd:enumeration value="NATURALWEAPON_GAZE"/> -->
+<!--       <xsd:enumeration value="NATURALWEAPON_BREATH"/> -->
+      <xsd:enumeration value="NATURALWEAPON_CONSTRICT"/>
       <xsd:enumeration value="NATURALWEAPON_ROCK_STONE"/>
     </xsd:restriction>
   </xsd:simpleType>
@@ -115,6 +118,7 @@
       <xsd:element name="usage" type="RPG_Common_Usage_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="ranged" type="RPG_Combat_RangedAttackProperties_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
+    <xsd:attribute name="fullAttackIncludesNextAction" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Monster_Attack_Type">
@@ -206,7 +210,7 @@
       <xsd:element name="speed" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="armorClass" type="RPG_Monster_NaturalArmorClass_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attack" type="RPG_Monster_Attack_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="specialAbilities" type="RPG_Magic_SpecialAbilityProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="specialAbility" type="RPG_Magic_SpecialAbilityProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="space" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="reach" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="saves" type="RPG_Monster_SavingThrowModifiers_Type" minOccurs="1" maxOccurs="1"/>

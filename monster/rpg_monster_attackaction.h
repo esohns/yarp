@@ -30,6 +30,7 @@ struct RPG_Monster_AttackAction
   unsigned char numAttacksPerRound;
   RPG_Common_Usage usage;
   RPG_Combat_RangedAttackProperties ranged;
+  bool fullAttackIncludesNextAction;
 };
 
 #endif

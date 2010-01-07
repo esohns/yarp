@@ -38,6 +38,7 @@
       <xsd:enumeration value="PHYSICALDAMAGE_BLUDGEONING"/>
       <xsd:enumeration value="PHYSICALDAMAGE_PIERCING"/>
       <xsd:enumeration value="PHYSICALDAMAGE_SLASHING"/>
+      <xsd:enumeration value="PHYSICALDAMAGE_CONSTRICT"/>
     </xsd:restriction>
   </xsd:simpleType>
 

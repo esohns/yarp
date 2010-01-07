@@ -208,6 +208,13 @@ ranged (const RPG_Combat_RangedAttackProperties& ranged)
   //
 }
 
+void RPG_Monster_AttackAction_Type_pimpl::
+fullAttackIncludesNextAction (bool fullAttackIncludesNextAction)
+{
+  // TODO
+  //
+}
+
 RPG_Monster_AttackAction RPG_Monster_AttackAction_Type_pimpl::
 post_RPG_Monster_AttackAction_Type ()
 {
@@ -530,7 +537,7 @@ attack (const RPG_Monster_Attack& attack)
 }
 
 void RPG_Monster_PropertiesXML_Type_pimpl::
-specialAbilities (const RPG_Magic_SpecialAbilityProperties& specialAbilities)
+specialAbility (const RPG_Magic_SpecialAbilityProperties& specialAbility)
 {
   // TODO
   //

@@ -25,6 +25,8 @@ struct RPG_Magic_SpecialAbilityProperties
 {
   RPG_Magic_SpecialAbilityClass abilityClass;
   RPG_Magic_SpecialAbility type;
+  RPG_Dice_Roll amount;
+  RPG_Character_Alignment alignment;
   RPG_Common_Usage usage;
 };
 

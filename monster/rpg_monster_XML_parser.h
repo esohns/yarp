@@ -132,6 +132,7 @@ class RPG_Monster_AttackAction_Type
   virtual void numAttacksPerRound(unsigned char);
   virtual void usage(const RPG_Common_Usage&);
   virtual void ranged(const RPG_Combat_RangedAttackProperties&);
+  virtual void fullAttackIncludesNextAction(bool);
   virtual RPG_Monster_AttackAction post_RPG_Monster_AttackAction_Type();
 
  private:

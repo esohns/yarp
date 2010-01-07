@@ -120,6 +120,20 @@ type (const RPG_Magic_SpecialAbility& type)
 }
 
 void RPG_Magic_SpecialAbilityProperties_Type_pimpl::
+amount (const RPG_Dice_Roll& amount)
+{
+  // TODO
+  //
+}
+
+void RPG_Magic_SpecialAbilityProperties_Type_pimpl::
+alignment (const RPG_Character_Alignment& alignment)
+{
+  // TODO
+  //
+}
+
+void RPG_Magic_SpecialAbilityProperties_Type_pimpl::
 usage (const RPG_Common_Usage& usage)
 {
   // TODO

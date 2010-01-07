@@ -77,12 +77,12 @@ class RPG_Monster_Dictionary_Type_pskel;
 
 #include "rpg_XMLSchema_XML_types.h"
 
+#include <rpg_magic_incl.h>
 #include <rpg_item_weapontype.h>
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
-#include <rpg_magic_incl.h>
-#include <rpg_character_incl.h>
 #include <rpg_combat_incl.h>
+#include <rpg_character_incl.h>
 #include "rpg_monster_incl.h"
 
 #include "rpg_dice_XML_types.h"
@@ -281,6 +281,9 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   virtual void
   ranged (const RPG_Combat_RangedAttackProperties&);
 
+  virtual void
+  fullAttackIncludesNextAction (bool);
+
   virtual RPG_Monster_AttackAction
   post_RPG_Monster_AttackAction_Type () = 0;
 
@@ -308,13 +311,17 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   ranged_parser (::RPG_Combat_RangedAttackProperties_Type_pskel&);
 
   void
+  fullAttackIncludesNextAction_parser (::xml_schema::boolean_pskel&);
+
+  void
   parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& /* weapon */,
            ::xml_schema::byte_pskel& /* attackBonus */,
            ::RPG_Combat_AttackForm_Type_pskel& /* attackForm */,
            ::RPG_Combat_Damage_Type_pskel& /* damage */,
            ::xml_schema::unsigned_byte_pskel& /* numAttacksPerRound */,
            ::RPG_Common_Usage_Type_pskel& /* usage */,
-           ::RPG_Combat_RangedAttackProperties_Type_pskel& /* ranged */);
+           ::RPG_Combat_RangedAttackProperties_Type_pskel& /* ranged */,
+           ::xml_schema::boolean_pskel& /* fullAttackIncludesNextAction */);
 
   // Constructor.
   //
@@ -332,6 +339,11 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   _end_element_impl (const ::xml_schema::ro_string&,
                      const ::xml_schema::ro_string&);
 
+  virtual bool
+  _attribute_impl (const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&);
+
   protected:
   ::RPG_Monster_WeaponTypeUnion_Type_pskel* weapon_parser_;
   ::xml_schema::byte_pskel* attackBonus_parser_;
@@ -340,6 +352,7 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_byte_pskel* numAttacksPerRound_parser_;
   ::RPG_Common_Usage_Type_pskel* usage_parser_;
   ::RPG_Combat_RangedAttackProperties_Type_pskel* ranged_parser_;
+  ::xml_schema::boolean_pskel* fullAttackIncludesNextAction_parser_;
 };
 
 class RPG_Monster_Attack_Type_pskel: public ::xml_schema::complex_content
@@ -766,7 +779,7 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
   attack (const RPG_Monster_Attack&);
 
   virtual void
-  specialAbilities (const RPG_Magic_SpecialAbilityProperties&);
+  specialAbility (const RPG_Magic_SpecialAbilityProperties&);
 
   virtual void
   space (unsigned char);
@@ -837,7 +850,7 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
   attack_parser (::RPG_Monster_Attack_Type_pskel&);
 
   void
-  specialAbilities_parser (::RPG_Magic_SpecialAbilityProperties_Type_pskel&);
+  specialAbility_parser (::RPG_Magic_SpecialAbilityProperties_Type_pskel&);
 
   void
   space_parser (::xml_schema::unsigned_byte_pskel&);
@@ -887,7 +900,7 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
            ::xml_schema::unsigned_byte_pskel& /* speed */,
            ::RPG_Monster_NaturalArmorClass_Type_pskel& /* armorClass */,
            ::RPG_Monster_Attack_Type_pskel& /* attack */,
-           ::RPG_Magic_SpecialAbilityProperties_Type_pskel& /* specialAbilities */,
+           ::RPG_Magic_SpecialAbilityProperties_Type_pskel& /* specialAbility */,
            ::xml_schema::unsigned_byte_pskel& /* space */,
            ::xml_schema::unsigned_byte_pskel& /* reach */,
            ::RPG_Monster_SavingThrowModifiers_Type_pskel& /* saves */,
@@ -927,7 +940,7 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_byte_pskel* speed_parser_;
   ::RPG_Monster_NaturalArmorClass_Type_pskel* armorClass_parser_;
   ::RPG_Monster_Attack_Type_pskel* attack_parser_;
-  ::RPG_Magic_SpecialAbilityProperties_Type_pskel* specialAbilities_parser_;
+  ::RPG_Magic_SpecialAbilityProperties_Type_pskel* specialAbility_parser_;
   ::xml_schema::unsigned_byte_pskel* space_parser_;
   ::xml_schema::unsigned_byte_pskel* reach_parser_;
   ::RPG_Monster_SavingThrowModifiers_Type_pskel* saves_parser_;

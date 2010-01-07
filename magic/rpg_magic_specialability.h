@@ -23,7 +23,7 @@
 
 enum RPG_Magic_SpecialAbility
 {
-  SPECIALABILITY_ = 0,
+  SPECIALABILITY_SMITE_GOOD = 0,
   //
   RPG_MAGIC_SPECIALABILITY_MAX,
   RPG_MAGIC_SPECIALABILITY_INVALID
@@ -43,7 +43,7 @@ class RPG_Magic_SpecialAbilityHelper
   inline static void init()
   {
     myRPG_Magic_SpecialAbilityToStringTable.clear();
-    myRPG_Magic_SpecialAbilityToStringTable.insert(std::make_pair(SPECIALABILITY_, ACE_TEXT_ALWAYS_CHAR("SPECIALABILITY_")));
+    myRPG_Magic_SpecialAbilityToStringTable.insert(std::make_pair(SPECIALABILITY_SMITE_GOOD, ACE_TEXT_ALWAYS_CHAR("SPECIALABILITY_SMITE_GOOD")));
   };
 
   inline static std::string RPG_Magic_SpecialAbilityToString(const RPG_Magic_SpecialAbility& element_in)

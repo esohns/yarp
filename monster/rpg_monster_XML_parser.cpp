@@ -272,6 +272,7 @@ RPG_Monster_AttackAction_Type::RPG_Monster_AttackAction_Type()
   myCurrentAttackAction.ranged.maxRange = 0;
   myCurrentAttackAction.ranged.increment = 0;
   myCurrentAttackAction.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
+  myCurrentAttackAction.fullAttackIncludesNextAction = false;
 }
 
 void RPG_Monster_AttackAction_Type::weapon(const RPG_Monster_WeaponTypeUnion& weapon_in)
@@ -323,6 +324,13 @@ void RPG_Monster_AttackAction_Type::ranged(const RPG_Combat_RangedAttackProperti
   myCurrentAttackAction.ranged = rangedProperties_in;
 }
 
+void RPG_Monster_AttackAction_Type::fullAttackIncludesNextAction(bool includeNextAction_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_AttackAction_Type::fullAttackIncludesNextAction"));
+
+  myCurrentAttackAction.fullAttackIncludesNextAction = includeNextAction_in;
+}
+
 RPG_Monster_AttackAction RPG_Monster_AttackAction_Type::post_RPG_Monster_AttackAction_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_AttackAction_Type::post_RPG_Monster_AttackAction_Type"));
@@ -340,6 +348,7 @@ RPG_Monster_AttackAction RPG_Monster_AttackAction_Type::post_RPG_Monster_AttackA
   myCurrentAttackAction.ranged.maxRange = 0;
   myCurrentAttackAction.ranged.increment = 0;
   myCurrentAttackAction.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
+  myCurrentAttackAction.fullAttackIncludesNextAction = false;
 
   return result;
 }

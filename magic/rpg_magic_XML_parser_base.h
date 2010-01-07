@@ -10,7 +10,11 @@
 
 #include "rpg_magic_XML_types.h"
 
+#include "rpg_dice_XML_parser_base.h"
+
 #include "rpg_common_XML_parser_base.h"
+
+#include "rpg_character_XML_parser_base.h"
 
 class RPG_Magic_School_Type_pimpl: public virtual RPG_Magic_School_Type_pskel,
   public ::xml_schema::string_pimpl
@@ -78,6 +82,12 @@ class RPG_Magic_SpecialAbilityProperties_Type_pimpl: public virtual RPG_Magic_Sp
 
   virtual void
   type (const RPG_Magic_SpecialAbility&);
+
+  virtual void
+  amount (const RPG_Dice_Roll&);
+
+  virtual void
+  alignment (const RPG_Character_Alignment&);
 
   virtual void
   usage (const RPG_Common_Usage&);

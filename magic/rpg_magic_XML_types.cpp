@@ -54,6 +54,18 @@ type_parser (::RPG_Magic_SpecialAbility_Type_pskel& p)
 }
 
 void RPG_Magic_SpecialAbilityProperties_Type_pskel::
+amount_parser (::RPG_Dice_Roll_Type_pskel& p)
+{
+  this->amount_parser_ = &p;
+}
+
+void RPG_Magic_SpecialAbilityProperties_Type_pskel::
+alignment_parser (::RPG_Character_Alignment_Type_pskel& p)
+{
+  this->alignment_parser_ = &p;
+}
+
+void RPG_Magic_SpecialAbilityProperties_Type_pskel::
 usage_parser (::RPG_Common_Usage_Type_pskel& p)
 {
   this->usage_parser_ = &p;
@@ -62,10 +74,14 @@ usage_parser (::RPG_Common_Usage_Type_pskel& p)
 void RPG_Magic_SpecialAbilityProperties_Type_pskel::
 parsers (::RPG_Magic_SpecialAbilityClass_Type_pskel& abilityClass,
          ::RPG_Magic_SpecialAbility_Type_pskel& type,
+         ::RPG_Dice_Roll_Type_pskel& amount,
+         ::RPG_Character_Alignment_Type_pskel& alignment,
          ::RPG_Common_Usage_Type_pskel& usage)
 {
   this->abilityClass_parser_ = &abilityClass;
   this->type_parser_ = &type;
+  this->amount_parser_ = &amount;
+  this->alignment_parser_ = &alignment;
   this->usage_parser_ = &usage;
 }
 
@@ -73,6 +89,8 @@ RPG_Magic_SpecialAbilityProperties_Type_pskel::
 RPG_Magic_SpecialAbilityProperties_Type_pskel ()
 : abilityClass_parser_ (0),
   type_parser_ (0),
+  amount_parser_ (0),
+  alignment_parser_ (0),
   usage_parser_ (0)
 {
 }
@@ -87,6 +105,16 @@ abilityClass (const RPG_Magic_SpecialAbilityClass&)
 
 void RPG_Magic_SpecialAbilityProperties_Type_pskel::
 type (const RPG_Magic_SpecialAbility&)
+{
+}
+
+void RPG_Magic_SpecialAbilityProperties_Type_pskel::
+amount (const RPG_Dice_Roll&)
+{
+}
+
+void RPG_Magic_SpecialAbilityProperties_Type_pskel::
+alignment (const RPG_Character_Alignment&)
 {
 }
 
@@ -125,6 +153,26 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "amount" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->amount_parser_;
+
+    if (this->amount_parser_)
+      this->amount_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "alignment" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->alignment_parser_;
+
+    if (this->alignment_parser_)
+      this->alignment_parser_->pre ();
+
+    return true;
+  }
+
   if (n == "usage" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->usage_parser_;
@@ -157,6 +205,22 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->type_parser_)
       this->type (this->type_parser_->post_RPG_Magic_SpecialAbility_Type ());
+
+    return true;
+  }
+
+  if (n == "amount" && ns == "urn:rpg")
+  {
+    if (this->amount_parser_)
+      this->amount (this->amount_parser_->post_RPG_Dice_Roll_Type ());
+
+    return true;
+  }
+
+  if (n == "alignment" && ns == "urn:rpg")
+  {
+    if (this->alignment_parser_)
+      this->alignment (this->alignment_parser_->post_RPG_Character_Alignment_Type ());
 
     return true;
   }

@@ -62,6 +62,11 @@ RPG_Magic_SpecialAbilityProperties_Type::RPG_Magic_SpecialAbilityProperties_Type
 
   myCurrentProperties.abilityClass = RPG_MAGIC_SPECIALABILITYCLASS_INVALID;
   myCurrentProperties.type = RPG_MAGIC_SPECIALABILITY_INVALID;
+  myCurrentProperties.amount.numDice = 0;
+  myCurrentProperties.amount.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentProperties.amount.modifier = 0;
+  myCurrentProperties.alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
+  myCurrentProperties.alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
   myCurrentProperties.usage.numUses = 0;
   myCurrentProperties.usage.period = 0;
 }
@@ -78,6 +83,20 @@ void RPG_Magic_SpecialAbilityProperties_Type::type(const RPG_Magic_SpecialAbilit
   ACE_TRACE(ACE_TEXT("RPG_Magic_SpecialAbilityProperties_Type::type"));
 
   myCurrentProperties.type = type_in;
+}
+
+void RPG_Magic_SpecialAbilityProperties_Type::amount(const RPG_Dice_Roll& amount_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_SpecialAbilityProperties_Type::amount"));
+
+  myCurrentProperties.amount = amount_in;
+}
+
+void RPG_Magic_SpecialAbilityProperties_Type::alignment(const RPG_Character_Alignment& alignment_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_SpecialAbilityProperties_Type::alignment"));
+
+  myCurrentProperties.alignment = alignment_in;
 }
 
 void RPG_Magic_SpecialAbilityProperties_Type::usage(const RPG_Common_Usage& usage_in)

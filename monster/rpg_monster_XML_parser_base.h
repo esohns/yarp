@@ -126,6 +126,9 @@ class RPG_Monster_AttackAction_Type_pimpl: public virtual RPG_Monster_AttackActi
   virtual void
   ranged (const RPG_Combat_RangedAttackProperties&);
 
+  virtual void
+  fullAttackIncludesNextAction (bool);
+
   virtual RPG_Monster_AttackAction
   post_RPG_Monster_AttackAction_Type ();
 };
@@ -293,7 +296,7 @@ class RPG_Monster_PropertiesXML_Type_pimpl: public virtual RPG_Monster_Propertie
   attack (const RPG_Monster_Attack&);
 
   virtual void
-  specialAbilities (const RPG_Magic_SpecialAbilityProperties&);
+  specialAbility (const RPG_Magic_SpecialAbilityProperties&);
 
   virtual void
   space (unsigned char);

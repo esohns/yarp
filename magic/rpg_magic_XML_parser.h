@@ -76,6 +76,8 @@ class RPG_Magic_SpecialAbilityProperties_Type
 //   virtual void pre();
   virtual void abilityClass(const RPG_Magic_SpecialAbilityClass&);
   virtual void type(const RPG_Magic_SpecialAbility&);
+  virtual void amount(const RPG_Dice_Roll&);
+  virtual void alignment(const RPG_Character_Alignment&);
   virtual void usage(const RPG_Common_Usage&);
   virtual RPG_Magic_SpecialAbilityProperties post_RPG_Magic_SpecialAbilityProperties_Type();
 

@@ -68,9 +68,14 @@ class RPG_Magic_SpecialAbilityProperties_Type_pskel;
 
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
+#include <rpg_character_incl.h>
 #include "rpg_magic_incl.h"
 
+#include "rpg_dice_XML_types.h"
+
 #include "rpg_common_XML_types.h"
+
+#include "rpg_character_XML_types.h"
 
 class RPG_Magic_School_Type_pskel: public virtual ::xml_schema::string_pskel
 {
@@ -147,6 +152,12 @@ class RPG_Magic_SpecialAbilityProperties_Type_pskel: public ::xml_schema::comple
   type (const RPG_Magic_SpecialAbility&);
 
   virtual void
+  amount (const RPG_Dice_Roll&);
+
+  virtual void
+  alignment (const RPG_Character_Alignment&);
+
+  virtual void
   usage (const RPG_Common_Usage&);
 
   virtual RPG_Magic_SpecialAbilityProperties
@@ -161,11 +172,19 @@ class RPG_Magic_SpecialAbilityProperties_Type_pskel: public ::xml_schema::comple
   type_parser (::RPG_Magic_SpecialAbility_Type_pskel&);
 
   void
+  amount_parser (::RPG_Dice_Roll_Type_pskel&);
+
+  void
+  alignment_parser (::RPG_Character_Alignment_Type_pskel&);
+
+  void
   usage_parser (::RPG_Common_Usage_Type_pskel&);
 
   void
   parsers (::RPG_Magic_SpecialAbilityClass_Type_pskel& /* abilityClass */,
            ::RPG_Magic_SpecialAbility_Type_pskel& /* type */,
+           ::RPG_Dice_Roll_Type_pskel& /* amount */,
+           ::RPG_Character_Alignment_Type_pskel& /* alignment */,
            ::RPG_Common_Usage_Type_pskel& /* usage */);
 
   // Constructor.
@@ -187,6 +206,8 @@ class RPG_Magic_SpecialAbilityProperties_Type_pskel: public ::xml_schema::comple
   protected:
   ::RPG_Magic_SpecialAbilityClass_Type_pskel* abilityClass_parser_;
   ::RPG_Magic_SpecialAbility_Type_pskel* type_parser_;
+  ::RPG_Dice_Roll_Type_pskel* amount_parser_;
+  ::RPG_Character_Alignment_Type_pskel* alignment_parser_;
   ::RPG_Common_Usage_Type_pskel* usage_parser_;
 };
 

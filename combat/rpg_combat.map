@@ -34,6 +34,7 @@ namespace urn:rpg
   RPG_Combat_DamageEffectType_Type               RPG_Combat_DamageEffectType;
   RPG_Combat_DamageCounterMeasureType_Type       RPG_Combat_DamageCounterMeasureType;
   RPG_Combat_DamageReductionType_Type            RPG_Combat_DamageReductionType;
+  RPG_Combat_DamageCounterMeasureCheckType_Type  RPG_Combat_DamageCounterMeasureCheckType;
   RPG_Combat_DamageCounterMeasureCheckUnion_Type RPG_Combat_DamageCounterMeasureCheckUnion;
   RPG_Combat_DamageCounterMeasureCheck_Type      RPG_Combat_DamageCounterMeasureCheck;
   RPG_Combat_DamageCounterMeasure_Type           RPG_Combat_DamageCounterMeasure;
