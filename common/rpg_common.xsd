@@ -42,6 +42,12 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="RPG_Common_CheckType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="CHECK_GRAPPLE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:simpleType name="RPG_Common_SavingThrow_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SAVE_FORTITUDE"/>
@@ -50,13 +56,17 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:complexType name="RPG_Common_SavingThrowCheck_Type">
+  <xsd:simpleType name="RPG_Common_BaseCheckTypeUnion_Type">
+    <xsd:union memberTypes="RPG_Common_CheckType_Type RPG_Common_SavingThrow_Type"/>
+  </xsd:simpleType>
+
+<!--  <xsd:complexType name="RPG_Common_SavingThrowCheck_Type">
     <xsd:sequence>
       <xsd:element name="type" type="RPG_Common_SavingThrow_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
-  </xsd:complexType>
+  </xsd:complexType>-->
 
   <xsd:complexType name="RPG_Common_Usage_Type">
     <xsd:sequence>

@@ -105,17 +105,17 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Monster_WeaponTypeUnion_Type">
-    <xsd:union memberTypes="RPG_Combat_SpecialAttack_Type RPG_Monster_NaturalWeapon_Type RPG_Item_WeaponType_Type"/>
+    <xsd:union memberTypes="RPG_Monster_NaturalWeapon_Type RPG_Character_Ability_Type RPG_Item_WeaponType_Type RPG_Combat_SpecialAttack_Type"/>
   </xsd:simpleType>
 
   <xsd:complexType name="RPG_Monster_AttackAction_Type">
     <xsd:sequence>
       <xsd:element name="weapon" type="RPG_Monster_WeaponTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="attackBonus" type="xsd:byte" minOccurs="1" maxOccurs="5"/>
-      <xsd:element name="attackForm" type="RPG_Combat_AttackForm_Type" minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element name="attackBonus" type="xsd:byte" minOccurs="0" maxOccurs="5"/>
+      <xsd:element name="attackForm" type="RPG_Combat_AttackForm_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="damage" type="RPG_Combat_Damage_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="numAttacksPerRound" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="usage" type="RPG_Common_Usage_Type" minOccurs="0" maxOccurs="1"/>
+<!--       <xsd:element name="usage" type="RPG_Common_Usage_Type" minOccurs="0" maxOccurs="1"/> -->
       <xsd:element name="ranged" type="RPG_Combat_RangedAttackProperties_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="fullAttackIncludesNextAction" type="xsd:boolean" use="optional" default="false"/>
@@ -129,6 +129,31 @@
       <xsd:element name="fullAttackAction" type="RPG_Monster_AttackAction_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
     <xsd:attribute name="attackActionsAreInclusive" type="xsd:boolean" use="optional" default="true"/>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Monster_SpecialAttackTypeUnion_Type">
+    <xsd:union memberTypes="RPG_Character_Ability_Type RPG_Magic_AbilityType_Type"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Monster_SpecialAttackPreCondition_Type">
+    <xsd:sequence>
+      <xsd:element name="targetAlignment" type="RPG_Character_Alignment_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="targetCondition" type="RPG_Character_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="minTargetSize" type="RPG_Character_Size_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="maxTargetSize" type="RPG_Character_Size_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="check" type="RPG_Combat_Check_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_SpecialAttackProperties_Type">
+    <xsd:sequence>
+      <xsd:element name="abilityClass" type="RPG_Magic_SpecialAbilityClass_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="type" type="RPG_Monster_SpecialAttackTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="preCondition" type="RPG_Monster_SpecialAttackPreCondition_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="action" type="RPG_Monster_AttackAction_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="amount" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="usage" type="RPG_Common_Usage_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Monster_SavingThrowModifiers_Type">
@@ -210,7 +235,7 @@
       <xsd:element name="speed" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="armorClass" type="RPG_Monster_NaturalArmorClass_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attack" type="RPG_Monster_Attack_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="specialAbility" type="RPG_Magic_SpecialAbilityProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="specialAttack" type="RPG_Magic_SpecialAttackProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="space" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="reach" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="saves" type="RPG_Monster_SavingThrowModifiers_Type" minOccurs="1" maxOccurs="1"/>

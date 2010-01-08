@@ -53,7 +53,7 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="RPG_Magic_SpecialAbilityClass_Type">
+  <xsd:simpleType name="RPG_Magic_AbilityClass_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ABILITYCLASS_EXTRAORDINARY"/>
       <xsd:enumeration value="ABILITYCLASS_SPELLLIKE"/>
@@ -61,20 +61,10 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="RPG_Magic_SpecialAbility_Type">
+  <xsd:simpleType name="RPG_Magic_AbilityType_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="SPECIALABILITY_SMITE"/>
+      <xsd:enumeration value="ABILITYTYPE_SMITE"/>
     </xsd:restriction>
   </xsd:simpleType>
-
-  <xsd:complexType name="RPG_Magic_SpecialAbilityProperties_Type">
-    <xsd:sequence>
-      <xsd:element name="abilityClass" type="RPG_Magic_SpecialAbilityClass_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="type" type="RPG_Magic_SpecialAbility_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="amount" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="alignment" type="RPG_Character_Alignment_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="usage" type="RPG_Common_Usage_Type" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
 
 </xsd:schema>

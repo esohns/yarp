@@ -4605,9 +4605,14 @@
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
-      <standardAttackAction>
-        <weapon>SPECIALATTACK_GAZE_PETRIFY</weapon>
-        <attackBonus>0</attackBonus>
+    </attack>
+    <specialAbility>
+      <type>
+        <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+        <type>ABILITY_GAZE_ATTACK</type>
+      </type>
+      <action>
+        <weapon>ABILITY_GAZE_ATTACK</weapon>
         <attackForm>ATTACKFORM_RANGED</attackForm>
         <damage effect="EFFECT_PERMANENT">
           <element>
@@ -4625,9 +4630,9 @@
         <numAttacksPerRound>1</numAttacksPerRound>
         <ranged>
           <maxRange>30</maxRange>
-        <ranged>
-      </standardAttackAction>
-    </attack>
+        </ranged>
+      </action>
+    </specialAbility>
     <space>5</space>
     <reach>5</reach>
     <saves>
@@ -4744,9 +4749,14 @@
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
-      <standardAttackAction>
-        <weapon>SPECIALATTACK_GAZE_PETRIFY</weapon>
-        <attackBonus>0</attackBonus>
+    </attack>
+    <specialAbility>
+      <type>
+        <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+        <type>ABILITY_GAZE_ATTACK</type>
+      </type>
+      <action>
+        <weapon>ABILITY_GAZE_ATTACK</weapon>
         <attackForm>ATTACKFORM_RANGED</attackForm>
         <damage effect="EFFECT_PERMANENT">
           <element>
@@ -4764,26 +4774,30 @@
         <numAttacksPerRound>1</numAttacksPerRound>
         <ranged>
           <maxRange>30</maxRange>
-          <ranged>
-      </standardAttackAction>
-    </attack>
+        </ranged>
+      </action>
+    </specialAbility>
     <specialAbility>
-      <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
-      <type>SPECIALABILITY_SMITE</type>
+      <type>
+        <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+        <type>ABILITYTYPE_SMITE</type>
+      </type>
+      <preCondition>
+        <targetAlignment>
+          <civic>ALIGNMENTCIVIC_ANY</civic>
+          <ethic>ALIGNMENTETHIC_GOOD</ethic>
+        </targetAlignment>
+      </preCondition>
       <amount>
         <numDice>0</numDice>
         <typeDice>D_0</typeDice>
         <modifier>18</modifier>
       </amount>
-      <alignment>
-        <civic>ALIGNMENTCIVIC_ANY</civic>
-        <ethic>ALIGNMENTETHIC_GOOD</ethic>
-      </alignment>
       <usage>
         <numUses>1</numUses>
         <period>86400</period>
       </usage>
-     </specialAbility>
+    </specialAbility>
     <space>10</space>
     <reach>5</reach>
     <saves>
@@ -4866,7 +4880,7 @@
       <touch>9</touch>
       <flatFooted>19</flatFooted>
     </armorClass>
-    <attack attackActionsAreInclusive="false">
+    <attack>
       <baseAttackBonus>9</baseAttackBonus>
       <grappleBonus>25</grappleBonus>
       <standardAttackAction>
@@ -4885,9 +4899,14 @@
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
-      <standardAttackAction>
-        <weapon>SPECIALATTACK_BREATH</weapon>
-        <attackBonus>0</attackBonus>
+    </attack>
+    <specialAbility>
+      <type>
+        <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+        <type>ABILITY_BREATH_WEAPON</type>
+      </type>
+      <action>
+        <weapon>ABILITY_BREATH_WEAPON</weapon>
         <attackForm>ATTACKFORM_RANGED</attackForm>
         <damage>
           <element>
@@ -4908,64 +4927,29 @@
           </element>
         </damage>
         <numAttacksPerRound>0</numAttacksPerRound>
-        <usage>
-          <numUses>1</numUses>
-          <period>60</period>
-        </usage>
         <ranged>
           <maxRange>20</maxRange>
         </ranged>
-      </standardAttackAction>
-      <fullAttackAction>
-        <weapon>NATURALWEAPON_BITE</weapon>
-        <attackBonus>15</attackBonus>
-        <attackForm>ATTACKFORM_MELEE</attackForm>
-        <damage>
-          <element>
-            <type>PHYSICALDAMAGE_PIERCING</type>
-            <amount>
-              <numDice>2</numDice>
-              <typeDice>D_4</typeDice>
-              <modifier>12</modifier>
-            </amount>
-          </element>
-        </damage>
-        <numAttacksPerRound>1</numAttacksPerRound>
-      </fullAttackAction>
-      <fullAttackAction>
-        <weapon>SPECIALATTACK_BREATH</weapon>
-        <attackBonus>0</attackBonus>
-        <attackForm>ATTACKFORM_RANGED</attackForm>
-        <damage>
-          <element>
-            <type>DAMAGE_ELECTRICITY</type>
-            <amount>
-              <numDice>7</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>0</modifier>
-            </amount>
-            <counterMeasure>
-              <type>COUNTERMEASURE_CHECK</type>
-              <check reduction="REDUCTION_HALF">
-                <type>SAVE_REFLEX</type>
-                <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                <difficultyClass>19</difficultyClass>
-              </check>
-            </counterMeasure>
-          </element>
-        </damage>
-        <numAttacksPerRound>0</numAttacksPerRound>
-        <usage>
-          <numUses>1</numUses>
-          <period>60</period>
-        </usage>
-        <ranged>
-          <maxRange>20</maxRange>
-        </ranged>
-      </fullAttackAction>
-      <fullAttackAction>
-        <weapon>NATURALWEAPON_CONSTRICT</weapon>
-        <attackBonus>0</attackBonus>
+      </action>
+      <usage>
+        <numUses>1</numUses>
+        <period>60</period>
+      </usage>
+    </specialAbility>
+    <specialAbility>
+      <type>
+        <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
+        <type>ABILITY_CONSTRICT</type>
+      </type>
+      <preCondition>
+        <targetCondition>CONDITION_GRAPPLING</targetCondition>
+        <targetCondition>CONDITION_PINNED</targetCondition>
+        <check>
+          <type>CHECK_GRAPPLE</type>
+        </check>
+      </preCondition>
+      <action>
+        <weapon>ABILITY_CONSTRICT</weapon>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
@@ -4978,8 +4962,74 @@
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
-      </fullAttackAction>
-    </attack>
+      </action>
+    </specialAbility>
+    <specialAbility>
+      <type>
+        <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
+        <type>ABILITY_RAKE</type>
+      </type>
+      <preCondition>
+        <targetCondition>CONDITION_GRAPPLING</targetCondition>
+        <targetCondition>CONDITION_PINNED</targetCondition>
+        <check>
+          <type>CHECK_GRAPPLE</type>
+        </check>
+      </preCondition>
+      <action>
+        <weapon>NATURALWEAPON_CLAW_TALON</weapon>
+        <attackBonus>15</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_PIERCING</type>
+            <type>PHYSICALDAMAGE_SLASHING</type>
+            <amount>
+              <numDice>1</numDice>
+              <typeDice>D_4</typeDice>
+              <modifier>1</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>6</numAttacksPerRound>
+      </action>
+    </specialAbility>
+    <specialAbility>
+      <type>
+        <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
+        <type>ABILITY_SWALLOW_WHOLE</type>
+      </type>
+      <preCondition>
+        <targetCondition>CONDITION_GRAPPLING</targetCondition>
+        <targetCondition>CONDITION_PINNED</targetCondition>
+        <maxTargetSize>SIZE_MEDIUM</maxTargetSize>
+        <check>
+          <type>CHECK_GRAPPLE</type>
+        </check>
+      </preCondition>
+      <action>
+        <weapon>ABILITY_SWALLOW_WHOLE</weapon>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_BLUDGEONING</type>
+            <amount>
+              <numDice>2</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>8</modifier>
+            </amount>
+          </element>
+          <element>
+            <type>DAMAGE_ACID</type>
+            <amount>
+              <numDice>0</numDice>
+              <typeDice>D_0</typeDice>
+              <modifier>8</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </action>
+    </specialAbility>
     <space>15</space>
     <reach>10</reach>
     <saves>
