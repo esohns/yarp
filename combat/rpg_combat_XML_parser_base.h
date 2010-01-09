@@ -316,7 +316,7 @@ class RPG_Combat_ActionType_Type_pimpl: public virtual RPG_Combat_ActionType_Typ
   virtual void
   pre ();
 
-  virtual void
+  virtual RPG_Combat_ActionType
   post_RPG_Combat_ActionType_Type ();
 };
 

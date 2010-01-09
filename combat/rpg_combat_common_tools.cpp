@@ -55,6 +55,7 @@ RPG_Combat_DamageBonusTypeToStringTable_t RPG_Combat_DamageBonusTypeHelper::myRP
 RPG_Combat_DamageEffectTypeToStringTable_t RPG_Combat_DamageEffectTypeHelper::myRPG_Combat_DamageEffectTypeToStringTable;
 RPG_Combat_DamageCounterMeasureTypeToStringTable_t RPG_Combat_DamageCounterMeasureTypeHelper::myRPG_Combat_DamageCounterMeasureTypeToStringTable;
 RPG_Combat_DamageReductionTypeToStringTable_t RPG_Combat_DamageReductionTypeHelper::myRPG_Combat_DamageReductionTypeToStringTable;
+RPG_Combat_ActionTypeToStringTable_t RPG_Combat_ActionTypeHelper::myRPG_Combat_ActionTypeToStringTable;
 
 void RPG_Combat_Common_Tools::initStringConversionTables()
 {
@@ -70,6 +71,7 @@ void RPG_Combat_Common_Tools::initStringConversionTables()
   RPG_Combat_DamageEffectTypeHelper::init();
   RPG_Combat_DamageCounterMeasureTypeHelper::init();
   RPG_Combat_DamageReductionTypeHelper::init();
+  RPG_Combat_ActionTypeHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,

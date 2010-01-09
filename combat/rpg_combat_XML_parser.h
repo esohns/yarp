@@ -264,4 +264,12 @@ class RPG_Combat_Damage_Type
   RPG_Combat_Damage myCurrentDamage;
 };
 
+class RPG_Combat_ActionType_Type
+ : public RPG_Combat_ActionType_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Combat_ActionType post_RPG_Combat_ActionType_Type();
+};
+
 #endif

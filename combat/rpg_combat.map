@@ -7,36 +7,37 @@ namespace urn:rpg
   include <rpg_dice_incl.h>;
   include <rpg_common_incl.h>;
 
-  RPG_Dice_Roll_Type                             RPG_Dice_Roll;
+  RPG_Dice_Roll_Type                       RPG_Dice_Roll;
 
-  RPG_Common_Attribute_Type                      RPG_Common_Attribute;
-  RPG_Common_PhysicalDamageType_Type             RPG_Common_PhysicalDamageType;
-  RPG_Common_SavingThrowCheck_Type               RPG_Common_SavingThrowCheck;
+  RPG_Common_Attribute_Type                RPG_Common_Attribute;
+  RPG_Common_PhysicalDamageType_Type       RPG_Common_PhysicalDamageType;
+  RPG_Common_SavingThrowCheck_Type         RPG_Common_SavingThrowCheck;
 
-  RPG_Magic_Spell_Type                           RPG_Magic_Spell;
+  RPG_Magic_Spell_Type                     RPG_Magic_Spell;
 
-  RPG_Character_Size_Type                        RPG_Character_Size;
-  RPG_Character_Skill_Type                       RPG_Character_Skill;
-  RPG_Character_Check_Type                       RPG_Character_Check;
+  RPG_Character_Size_Type                  RPG_Character_Size;
+  RPG_Character_Skill_Type                 RPG_Character_Skill;
+  RPG_Character_Check_Type                 RPG_Character_Check;
 
-  RPG_Combat_AttackForm_Type                     RPG_Combat_AttackForm;
-  RPG_Combat_AreaOfEffect_Type                   RPG_Combat_AreaOfEffect;
-  RPG_Combat_RangedEffectUnion_Type              RPG_Combat_RangedEffectUnion;
-  RPG_Combat_RangedAttackProperties_Type         RPG_Combat_RangedAttackProperties;
-  RPG_Combat_AttackSituation_Type                RPG_Combat_AttackSituation;
-  RPG_Combat_DefenseSituation_Type               RPG_Combat_DefenseSituation;
-  RPG_Combat_SpecialAttack_Type                  RPG_Combat_SpecialAttack;
-  RPG_Combat_SpecialDamageType_Type              RPG_Combat_SpecialDamageType;
-  RPG_Combat_DamageTypeUnion_Type                RPG_Combat_DamageTypeUnion;
-  RPG_Combat_DamageDuration_Type                 RPG_Combat_DamageDuration;
-  RPG_Combat_DamageBonusType_Type                RPG_Combat_DamageBonusType;
-  RPG_Combat_DamageBonus_Type                    RPG_Combat_DamageBonus;
-  RPG_Combat_DamageEffectType_Type               RPG_Combat_DamageEffectType;
-  RPG_Combat_DamageCounterMeasureType_Type       RPG_Combat_DamageCounterMeasureType;
-  RPG_Combat_CheckTypeUnion_Type                 RPG_Combat_CheckTypeUnion;
-  RPG_Combat_Check_Type                          RPG_Combat_Check;
-  RPG_Combat_DamageReductionType_Type            RPG_Combat_DamageReductionType;
-  RPG_Combat_DamageCounterMeasure_Type           RPG_Combat_DamageCounterMeasure;
-  RPG_Combat_DamageElement_Type                  RPG_Combat_DamageElement;
-  RPG_Combat_Damage_Type                         RPG_Combat_Damage;
+  RPG_Combat_AttackForm_Type               RPG_Combat_AttackForm;
+  RPG_Combat_AreaOfEffect_Type             RPG_Combat_AreaOfEffect;
+  RPG_Combat_RangedEffectUnion_Type        RPG_Combat_RangedEffectUnion;
+  RPG_Combat_RangedAttackProperties_Type   RPG_Combat_RangedAttackProperties;
+  RPG_Combat_AttackSituation_Type          RPG_Combat_AttackSituation;
+  RPG_Combat_DefenseSituation_Type         RPG_Combat_DefenseSituation;
+  RPG_Combat_SpecialAttack_Type            RPG_Combat_SpecialAttack;
+  RPG_Combat_SpecialDamageType_Type        RPG_Combat_SpecialDamageType;
+  RPG_Combat_DamageTypeUnion_Type          RPG_Combat_DamageTypeUnion;
+  RPG_Combat_DamageDuration_Type           RPG_Combat_DamageDuration;
+  RPG_Combat_DamageBonusType_Type          RPG_Combat_DamageBonusType;
+  RPG_Combat_DamageBonus_Type              RPG_Combat_DamageBonus;
+  RPG_Combat_DamageEffectType_Type         RPG_Combat_DamageEffectType;
+  RPG_Combat_DamageCounterMeasureType_Type RPG_Combat_DamageCounterMeasureType;
+  RPG_Combat_CheckTypeUnion_Type           RPG_Combat_CheckTypeUnion;
+  RPG_Combat_Check_Type                    RPG_Combat_Check;
+  RPG_Combat_DamageReductionType_Type      RPG_Combat_DamageReductionType;
+  RPG_Combat_DamageCounterMeasure_Type     RPG_Combat_DamageCounterMeasure;
+  RPG_Combat_DamageElement_Type            RPG_Combat_DamageElement;
+  RPG_Combat_Damage_Type                   RPG_Combat_Damage;
+  RPG_Combat_ActionType_Type               RPG_Combat_ActionType;
 }

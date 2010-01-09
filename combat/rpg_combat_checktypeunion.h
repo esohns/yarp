@@ -18,14 +18,26 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_COMBAT_DAMAGECOUNTERMEASURECHECK_H
-#define RPG_COMBAT_DAMAGECOUNTERMEASURECHECK_H
+#ifndef RPG_COMBAT_CHECKTYPEUNION_H
+#define RPG_COMBAT_CHECKTYPEUNION_H
 
-struct RPG_Combat_DamageCounterMeasureCheck
+struct RPG_Combat_CheckTypeUnion
 {
-  RPG_Combat_DamageCounterMeasureCheckUnion type;
-  RPG_Common_Attribute attribute;
-  unsigned char difficultyClass;
+  union
+  {
+    RPG_Character_Skill skill;
+    RPG_Common_Attribute attribute;
+    RPG_Common_BaseCheckTypeUnion basechecktypeunion;
+  };
+
+  enum Discriminator_t
+  {
+    SKILL,
+    ATTRIBUTE,
+    BASECHECKTYPEUNION,
+    INVALID
+  };
+  Discriminator_t discriminator;
 };
 
 #endif

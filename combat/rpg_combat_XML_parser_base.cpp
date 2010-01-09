@@ -544,12 +544,13 @@ pre ()
 {
 }
 
-void RPG_Combat_ActionType_Type_pimpl::
+RPG_Combat_ActionType RPG_Combat_ActionType_Type_pimpl::
 post_RPG_Combat_ActionType_Type ()
 {
   const ::std::string& v (post_string ());
 
   // TODO
   //
+  // return ... ;
 }
 

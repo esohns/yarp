@@ -1093,14 +1093,6 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-// RPG_Combat_ActionType_Type_pskel
-//
-
-void RPG_Combat_ActionType_Type_pskel::
-post_RPG_Combat_ActionType_Type ()
-{
-}
-
 // Begin epilogue.
 //
 //

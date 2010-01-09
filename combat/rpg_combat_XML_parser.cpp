@@ -591,3 +591,10 @@ RPG_Combat_Damage RPG_Combat_Damage_Type::post_RPG_Combat_Damage_Type()
 
   return result;
 }
+
+RPG_Combat_ActionType RPG_Combat_ActionType_Type::post_RPG_Combat_ActionType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_ActionType_Type::post_RPG_Combat_ActionType_Type"));
+
+  return RPG_Combat_ActionTypeHelper::stringToRPG_Combat_ActionType(post_string());
+}

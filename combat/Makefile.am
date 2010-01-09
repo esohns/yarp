@@ -2,10 +2,10 @@ METASOURCES = AUTO
 
 
 include_HEADERS = rpg_combat_XML_parser.h rpg_combat_XML_parser_base.h \
-	rpg_combat_XML_types.h rpg_combat_areaofeffect.h rpg_combat_attackform.h \
-	rpg_combat_attacksituation.h rpg_combat_common.h rpg_combat_common_tools.h rpg_combat_damage.h \
+	rpg_combat_XML_types.h rpg_combat_actiontype.h rpg_combat_areaofeffect.h \
+	rpg_combat_attackform.h rpg_combat_attacksituation.h rpg_combat_check.h \
+	rpg_combat_checktypeunion.h rpg_combat_common.h rpg_combat_common_tools.h rpg_combat_damage.h \
 	rpg_combat_damagebonus.h rpg_combat_damagebonustype.h rpg_combat_damagecountermeasure.h \
-	rpg_combat_damagecountermeasurecheck.h rpg_combat_damagecountermeasurecheckunion.h \
 	rpg_combat_damagecountermeasuretype.h rpg_combat_damageduration.h rpg_combat_damageeffecttype.h \
 	rpg_combat_damageelement.h rpg_combat_damagereductiontype.h rpg_combat_damagetypeunion.h \
 	rpg_combat_defensesituation.h rpg_combat_incl.h rpg_combat_rangedattackproperties.h \
@@ -15,11 +15,10 @@ lib_LTLIBRARIES = libRPG_Combat.la
 
 libRPG_Combat_la_SOURCES = rpg_XMLSchema_XML_types.h rpg_combat_XML_parser.cpp \
 	rpg_combat_XML_parser.h rpg_combat_XML_parser_base.cpp rpg_combat_XML_parser_base.h \
-	rpg_combat_XML_types.cpp rpg_combat_XML_types.h rpg_combat_areaofeffect.h \
-	rpg_combat_attackform.h rpg_combat_attacksituation.h rpg_combat_common.h \
-	rpg_combat_common_tools.cpp rpg_combat_damage.h rpg_combat_damagebonus.h \
-	rpg_combat_damagebonustype.h rpg_combat_damagecountermeasure.h \
-	rpg_combat_damagecountermeasurecheck.h rpg_combat_damagecountermeasurecheckunion.h \
+	rpg_combat_XML_types.cpp rpg_combat_XML_types.h rpg_combat_actiontype.h \
+	rpg_combat_areaofeffect.h rpg_combat_attackform.h rpg_combat_attacksituation.h rpg_combat_check.h \
+	rpg_combat_checktypeunion.h rpg_combat_common.h rpg_combat_common_tools.cpp rpg_combat_damage.h \
+	rpg_combat_damagebonus.h rpg_combat_damagebonustype.h rpg_combat_damagecountermeasure.h \
 	rpg_combat_damagecountermeasuretype.h rpg_combat_damageduration.h rpg_combat_damagereductiontype.h \
 	rpg_combat_defensesituation.h rpg_combat_incl.h rpg_combat_rangedattackproperties.h \
 	rpg_combat_rangedeffectunion.h

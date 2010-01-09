@@ -713,8 +713,8 @@ class RPG_Combat_ActionType_Type_pskel: public virtual ::xml_schema::string_pske
   // virtual void
   // pre ();
 
-  virtual void
-  post_RPG_Combat_ActionType_Type ();
+  virtual RPG_Combat_ActionType
+  post_RPG_Combat_ActionType_Type () = 0;
 };
 
 #include <xsd/cxx/post.hxx>
