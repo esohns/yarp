@@ -26,6 +26,7 @@
 // init statics
 RPG_Common_AttributeToStringTable_t RPG_Common_AttributeHelper::myRPG_Common_AttributeToStringTable;
 RPG_Common_PhysicalDamageTypeToStringTable_t RPG_Common_PhysicalDamageTypeHelper::myRPG_Common_PhysicalDamageTypeToStringTable;
+RPG_Common_CheckTypeToStringTable_t RPG_Common_CheckTypeHelper::myRPG_Common_CheckTypeToStringTable;
 RPG_Common_SavingThrowToStringTable_t RPG_Common_SavingThrowHelper::myRPG_Common_SavingThrowToStringTable;
 
 void RPG_Common_Tools::initStringConversionTables()
@@ -34,6 +35,7 @@ void RPG_Common_Tools::initStringConversionTables()
 
   RPG_Common_AttributeHelper::init();
   RPG_Common_PhysicalDamageTypeHelper::init();
+  RPG_Common_CheckTypeHelper::init();
   RPG_Common_SavingThrowHelper::init();
 
   // debug info

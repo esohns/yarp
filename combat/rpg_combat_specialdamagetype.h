@@ -23,7 +23,8 @@
 
 enum RPG_Combat_SpecialDamageType
 {
-  DAMAGE_ACID = 0,
+  DAMAGE_SPECIAL = 0,
+  DAMAGE_ACID,
   DAMAGE_COLD,
   DAMAGE_ELECTRICITY,
   DAMAGE_FIRE,
@@ -31,6 +32,7 @@ enum RPG_Combat_SpecialDamageType
   DAMAGE_POISON,
   DAMAGE_STUN,
   DAMAGE_SLAY,
+  DAMAGE_PETRIFY,
   DAMAGE_ABILITY_REDUCTION,
   DAMAGE_ABILITY_LOSS,
   DAMAGE_ABILITY_DRAIN,
@@ -55,6 +57,7 @@ class RPG_Combat_SpecialDamageTypeHelper
   inline static void init()
   {
     myRPG_Combat_SpecialDamageTypeToStringTable.clear();
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_SPECIAL, ACE_TEXT_ALWAYS_CHAR("DAMAGE_SPECIAL")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_ACID, ACE_TEXT_ALWAYS_CHAR("DAMAGE_ACID")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_COLD, ACE_TEXT_ALWAYS_CHAR("DAMAGE_COLD")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_ELECTRICITY, ACE_TEXT_ALWAYS_CHAR("DAMAGE_ELECTRICITY")));
@@ -63,6 +66,7 @@ class RPG_Combat_SpecialDamageTypeHelper
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_POISON, ACE_TEXT_ALWAYS_CHAR("DAMAGE_POISON")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_STUN, ACE_TEXT_ALWAYS_CHAR("DAMAGE_STUN")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_SLAY, ACE_TEXT_ALWAYS_CHAR("DAMAGE_SLAY")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_PETRIFY, ACE_TEXT_ALWAYS_CHAR("DAMAGE_PETRIFY")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_ABILITY_REDUCTION, ACE_TEXT_ALWAYS_CHAR("DAMAGE_ABILITY_REDUCTION")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_ABILITY_LOSS, ACE_TEXT_ALWAYS_CHAR("DAMAGE_ABILITY_LOSS")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_ABILITY_DRAIN, ACE_TEXT_ALWAYS_CHAR("DAMAGE_ABILITY_DRAIN")));

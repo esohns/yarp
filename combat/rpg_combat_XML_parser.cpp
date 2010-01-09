@@ -289,6 +289,112 @@ RPG_Combat_DamageCounterMeasureType RPG_Combat_DamageCounterMeasureType_Type::po
   return RPG_Combat_DamageCounterMeasureTypeHelper::stringToRPG_Combat_DamageCounterMeasureType(post_string());
 }
 
+RPG_Combat_CheckTypeUnion_Type::RPG_Combat_CheckTypeUnion_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_CheckTypeUnion_Type::RPG_Combat_CheckTypeUnion_Type"));
+
+  myCurrentCheckTypeUnion.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheckTypeUnion.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentCheckTypeUnion.basechecktypeunion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
+  myCurrentCheckTypeUnion.basechecktypeunion.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
+  myCurrentCheckTypeUnion.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
+}
+
+void RPG_Combat_CheckTypeUnion_Type::_characters(const ::xml_schema::ro_string& checkType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_CheckTypeUnion_Type::_characters"));
+
+  // can be either:
+  // - RPG_Character_Skill_Type --> "SKILL_xxx"
+  // - RPG_Common_Attribute_Type --> "ATTRIBUTE_xxx"
+  // - RPG_Common_BaseCheckTypeUnion --> "CHECK_xxx" || "SAVINGTHROW_xxx"
+  std::string type = checkType_in;
+  if (type.find(ACE_TEXT_ALWAYS_CHAR("SKILL_")) == 0)
+  {
+    myCurrentCheckTypeUnion.skill = RPG_Character_SkillHelper::stringToRPG_Character_Skill(checkType_in);
+    myCurrentCheckTypeUnion.discriminator = RPG_Combat_CheckTypeUnion::SKILL;
+  } // end IF
+  else if (type.find(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_")) == 0)
+  {
+    myCurrentCheckTypeUnion.attribute = RPG_Common_AttributeHelper::stringToRPG_Common_Attribute(checkType_in);
+    myCurrentCheckTypeUnion.discriminator = RPG_Combat_CheckTypeUnion::ATTRIBUTE;
+  } // end IF
+  else if (type.find(ACE_TEXT_ALWAYS_CHAR("CHECK_")) == 0)
+  {
+    myCurrentCheckTypeUnion.discriminator = RPG_Combat_CheckTypeUnion::BASECHECKTYPEUNION;
+    myCurrentCheckTypeUnion.basechecktypeunion.checktype = RPG_Common_CheckTypeHelper::stringToRPG_Common_CheckType(checkType_in);
+    myCurrentCheckTypeUnion.basechecktypeunion.discriminator = RPG_Common_BaseCheckTypeUnion::CHECKTYPE;
+  } // end IF
+  else
+  {
+    myCurrentCheckTypeUnion.discriminator = RPG_Combat_CheckTypeUnion::BASECHECKTYPEUNION;
+    myCurrentCheckTypeUnion.basechecktypeunion.savingthrow = RPG_Common_SavingThrowHelper::stringToRPG_Common_SavingThrow(checkType_in);
+    myCurrentCheckTypeUnion.basechecktypeunion.discriminator = RPG_Common_BaseCheckTypeUnion::SAVINGTHROW;
+  } // end ELSE
+}
+
+RPG_Combat_CheckTypeUnion RPG_Combat_CheckTypeUnion_Type::post_RPG_Combat_CheckTypeUnion_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_CheckTypeUnion_Type::post_RPG_Combat_CheckTypeUnion_Type"));
+
+  RPG_Combat_CheckTypeUnion result = myCurrentCheckTypeUnion;
+
+  // clear structure
+  myCurrentCheckTypeUnion.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheckTypeUnion.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentCheckTypeUnion.basechecktypeunion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
+  myCurrentCheckTypeUnion.basechecktypeunion.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
+  myCurrentCheckTypeUnion.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
+
+  return result;
+}
+
+RPG_Combat_Check_Type::RPG_Combat_Check_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Check_Type::RPG_Combat_Check_Type"));
+
+  myCurrentCheck.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheck.type.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
+  myCurrentCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentCheck.difficultyClass = 0;
+}
+
+void RPG_Combat_Check_Type::type(const RPG_Combat_CheckTypeUnion& checkUnion_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Check_Type::type"));
+
+  myCurrentCheck.type = checkUnion_in;
+}
+
+void RPG_Combat_Check_Type::attribute(const RPG_Common_Attribute& attribute_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Check_Type::attribute"));
+
+  myCurrentCheck.attribute = attribute_in;
+}
+
+void RPG_Combat_Check_Type::difficultyClass(unsigned char difficultyClass_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Check_Type::difficultyClass"));
+
+  myCurrentCheck.difficultyClass = difficultyClass_in;
+}
+
+RPG_Combat_Check RPG_Combat_Check_Type::post_RPG_Combat_Check_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Check_Type::post_RPG_Combat_Check_Type"));
+
+  RPG_Combat_Check result = myCurrentCheck;
+
+  // clear structure
+  myCurrentCheck.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheck.type.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
+  myCurrentCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentCheck.difficultyClass = 0;
+
+  return result;
+}
+
 RPG_Combat_DamageReductionType RPG_Combat_DamageReductionType_Type::post_RPG_Combat_DamageReductionType_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageReductionType_Type::post_RPG_Combat_DamageReductionType_Type"));
@@ -296,110 +402,13 @@ RPG_Combat_DamageReductionType RPG_Combat_DamageReductionType_Type::post_RPG_Com
   return RPG_Combat_DamageReductionTypeHelper::stringToRPG_Combat_DamageReductionType(post_string());
 }
 
-RPG_Combat_DamageCounterMeasureCheckUnion_Type::RPG_Combat_DamageCounterMeasureCheckUnion_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasureCheckUnion_Type::RPG_Combat_DamageCounterMeasureCheckUnion_Type"));
-
-  myCurrentCheckUnion.skill = RPG_CHARACTER_SKILL_INVALID;
-  myCurrentCheckUnion.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  myCurrentCheckUnion.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
-  myCurrentCheckUnion.discriminator = RPG_Combat_DamageCounterMeasureCheckUnion::INVALID;
-}
-
-void RPG_Combat_DamageCounterMeasureCheckUnion_Type::_characters(const ::xml_schema::ro_string& checkType_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasureCheckUnion_Type::_characters"));
-
-  // can be either:
-  // - RPG_Character_Skill_Type --> "SKILL_xxx"
-  // - RPG_Common_Attribute_Type --> "ATTRIBUTE_xxx"
-  // - RPG_Common_SavingThrow_Type --> "SAVINGTHROW_xxx"
-  std::string type = checkType_in;
-  if (type.find(ACE_TEXT_ALWAYS_CHAR("SKILL_")) == 0)
-  {
-    myCurrentCheckUnion.skill = RPG_Character_SkillHelper::stringToRPG_Character_Skill(checkType_in);
-    myCurrentCheckUnion.discriminator = RPG_Combat_DamageCounterMeasureCheckUnion::SKILL;
-  } // end IF
-  else if (type.find(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_")) == 0)
-  {
-    myCurrentCheckUnion.attribute = RPG_Common_AttributeHelper::stringToRPG_Common_Attribute(checkType_in);
-    myCurrentCheckUnion.discriminator = RPG_Combat_DamageCounterMeasureCheckUnion::ATTRIBUTE;
-  } // end IF
-  else
-  {
-    myCurrentCheckUnion.savingthrow = RPG_Common_SavingThrowHelper::stringToRPG_Common_SavingThrow(checkType_in);
-    myCurrentCheckUnion.discriminator = RPG_Combat_DamageCounterMeasureCheckUnion::SAVINGTHROW;
-  } // end ELSE
-}
-
-RPG_Combat_DamageCounterMeasureCheckUnion RPG_Combat_DamageCounterMeasureCheckUnion_Type::post_RPG_Combat_DamageCounterMeasureCheckUnion_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasureCheckUnion_Type::post_RPG_Combat_DamageCounterMeasureCheckUnion_Type"));
-
-  RPG_Combat_DamageCounterMeasureCheckUnion result = myCurrentCheckUnion;
-
-  // clear structure
-  myCurrentCheckUnion.skill = RPG_CHARACTER_SKILL_INVALID;
-  myCurrentCheckUnion.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  myCurrentCheckUnion.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
-  myCurrentCheckUnion.discriminator = RPG_Combat_DamageCounterMeasureCheckUnion::INVALID;
-
-  return result;
-}
-
-RPG_Combat_DamageCounterMeasureCheck_Type::RPG_Combat_DamageCounterMeasureCheck_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasureCheck_Type::RPG_Combat_DamageCounterMeasureCheck_Type"));
-
-  myCurrentCheck.type.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
-  myCurrentCheck.type.discriminator = RPG_Combat_DamageCounterMeasureCheckUnion::INVALID;
-  myCurrentCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  myCurrentCheck.difficultyClass = 0;
-}
-
-void RPG_Combat_DamageCounterMeasureCheck_Type::type(const RPG_Combat_DamageCounterMeasureCheckUnion& checkUnion_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasureCheck_Type::type"));
-
-  myCurrentCheck.type = checkUnion_in;
-}
-
-void RPG_Combat_DamageCounterMeasureCheck_Type::attribute(const RPG_Common_Attribute& attribute_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasureCheck_Type::attribute"));
-
-  myCurrentCheck.attribute = attribute_in;
-}
-
-void RPG_Combat_DamageCounterMeasureCheck_Type::difficultyClass(unsigned char difficultyClass_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasureCheck_Type::difficultyClass"));
-
-  myCurrentCheck.difficultyClass = difficultyClass_in;
-}
-
-RPG_Combat_DamageCounterMeasureCheck RPG_Combat_DamageCounterMeasureCheck_Type::post_RPG_Combat_DamageCounterMeasureCheck_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasureCheck_Type::post_RPG_Combat_DamageCounterMeasureCheck_Type"));
-
-  RPG_Combat_DamageCounterMeasureCheck result = myCurrentCheck;
-
-  // clear structure
-  myCurrentCheck.type.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
-  myCurrentCheck.type.discriminator = RPG_Combat_DamageCounterMeasureCheckUnion::INVALID;
-  myCurrentCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  myCurrentCheck.difficultyClass = 0;
-
-  return result;
-}
-
 RPG_Combat_DamageCounterMeasure_Type::RPG_Combat_DamageCounterMeasure_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasure_Type::RPG_Combat_DamageCounterMeasure_Type"));
 
   myCurrentCounterMeasure.type = RPG_COMBAT_DAMAGECOUNTERMEASURETYPE_INVALID;
-  myCurrentCounterMeasure.check.type.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
-  myCurrentCounterMeasure.check.type.discriminator = RPG_Combat_DamageCounterMeasureCheckUnion::INVALID;
+  myCurrentCounterMeasure.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCounterMeasure.check.type.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
   myCurrentCounterMeasure.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentCounterMeasure.check.difficultyClass = 0;
   myCurrentCounterMeasure.spells.clear();
@@ -413,7 +422,7 @@ void RPG_Combat_DamageCounterMeasure_Type::type(const RPG_Combat_DamageCounterMe
   myCurrentCounterMeasure.type = type_in;
 }
 
-void RPG_Combat_DamageCounterMeasure_Type::check(const RPG_Combat_DamageCounterMeasureCheck& check_in)
+void RPG_Combat_DamageCounterMeasure_Type::check(const RPG_Combat_Check& check_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasure_Type::check"));
 
@@ -442,8 +451,8 @@ RPG_Combat_DamageCounterMeasure RPG_Combat_DamageCounterMeasure_Type::post_RPG_C
 
   // clear structure
   myCurrentCounterMeasure.type = RPG_COMBAT_DAMAGECOUNTERMEASURETYPE_INVALID;
-  myCurrentCounterMeasure.check.type.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
-  myCurrentCounterMeasure.check.type.discriminator = RPG_Combat_DamageCounterMeasureCheckUnion::INVALID;
+  myCurrentCounterMeasure.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCounterMeasure.check.type.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
   myCurrentCounterMeasure.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentCounterMeasure.check.difficultyClass = 0;
   myCurrentCounterMeasure.spells.clear();

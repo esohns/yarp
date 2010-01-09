@@ -174,42 +174,42 @@ class RPG_Combat_DamageCounterMeasureType_Type
   virtual RPG_Combat_DamageCounterMeasureType post_RPG_Combat_DamageCounterMeasureType_Type();
 };
 
+class RPG_Combat_CheckTypeUnion_Type
+ : public RPG_Combat_CheckTypeUnion_Type_pimpl
+{
+ public:
+  RPG_Combat_CheckTypeUnion_Type();
+
+//   virtual void pre();
+  virtual void _characters(const ::xml_schema::ro_string&);
+  virtual RPG_Combat_CheckTypeUnion post_RPG_Combat_CheckTypeUnion_Type();
+
+ private:
+  RPG_Combat_CheckTypeUnion myCurrentCheckTypeUnion;
+};
+
+class RPG_Combat_Check_Type
+ : public RPG_Combat_Check_Type_pimpl
+{
+ public:
+  RPG_Combat_Check_Type();
+
+//   virtual void pre();
+  virtual void type(const RPG_Combat_CheckTypeUnion&);
+  virtual void attribute(const RPG_Common_Attribute&);
+  virtual void difficultyClass(unsigned char);
+  virtual RPG_Combat_Check post_RPG_Combat_Check_Type();
+
+ private:
+  RPG_Combat_Check myCurrentCheck;
+};
+
 class RPG_Combat_DamageReductionType_Type
  : public RPG_Combat_DamageReductionType_Type_pimpl
 {
  public:
 //   virtual void pre();
   virtual RPG_Combat_DamageReductionType post_RPG_Combat_DamageReductionType_Type();
-};
-
-class RPG_Combat_DamageCounterMeasureCheckUnion_Type
- : public RPG_Combat_DamageCounterMeasureCheckUnion_Type_pimpl
-{
- public:
-  RPG_Combat_DamageCounterMeasureCheckUnion_Type();
-
-//   virtual void pre();
-  virtual void _characters(const ::xml_schema::ro_string&);
-  virtual RPG_Combat_DamageCounterMeasureCheckUnion post_RPG_Combat_DamageCounterMeasureCheckUnion_Type();
-
- private:
-  RPG_Combat_DamageCounterMeasureCheckUnion myCurrentCheckUnion;
-};
-
-class RPG_Combat_DamageCounterMeasureCheck_Type
- : public RPG_Combat_DamageCounterMeasureCheck_Type_pimpl
-{
- public:
-   RPG_Combat_DamageCounterMeasureCheck_Type();
-
-//   virtual void pre();
-  virtual void type(const RPG_Combat_DamageCounterMeasureCheckUnion&);
-  virtual void attribute(const RPG_Common_Attribute&);
-  virtual void difficultyClass(unsigned char);
-  virtual RPG_Combat_DamageCounterMeasureCheck post_RPG_Combat_DamageCounterMeasureCheck_Type();
-
- private:
-  RPG_Combat_DamageCounterMeasureCheck myCurrentCheck;
 };
 
 class RPG_Combat_DamageCounterMeasure_Type
@@ -220,7 +220,7 @@ class RPG_Combat_DamageCounterMeasure_Type
 
 //    virtual void pre();
    virtual void type(const RPG_Combat_DamageCounterMeasureType&);
-   virtual void check(const RPG_Combat_DamageCounterMeasureCheck&);
+   virtual void check(const RPG_Combat_Check&);
    virtual void spell(const RPG_Magic_Spell&);
    virtual void reduction(const RPG_Combat_DamageReductionType&);
    virtual RPG_Combat_DamageCounterMeasure post_RPG_Combat_DamageCounterMeasure_Type();

@@ -43,6 +43,24 @@ post_RPG_Common_PhysicalDamageType_Type ()
   // return ... ;
 }
 
+// RPG_Common_CheckType_Type_pimpl
+//
+
+void RPG_Common_CheckType_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Common_CheckType RPG_Common_CheckType_Type_pimpl::
+post_RPG_Common_CheckType_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
 // RPG_Common_SavingThrow_Type_pimpl
 //
 
@@ -61,37 +79,23 @@ post_RPG_Common_SavingThrow_Type ()
   // return ... ;
 }
 
-// RPG_Common_SavingThrowCheck_Type_pimpl
+// RPG_Common_BaseCheckTypeUnion_Type_pimpl
 //
 
-void RPG_Common_SavingThrowCheck_Type_pimpl::
+void RPG_Common_BaseCheckTypeUnion_Type_pimpl::
 pre ()
 {
 }
 
-void RPG_Common_SavingThrowCheck_Type_pimpl::
-type (const RPG_Common_SavingThrow& type)
+void RPG_Common_BaseCheckTypeUnion_Type_pimpl::
+_characters (const ::xml_schema::ro_string& s)
 {
   // TODO
   //
 }
 
-void RPG_Common_SavingThrowCheck_Type_pimpl::
-attribute (const RPG_Common_Attribute& attribute)
-{
-  // TODO
-  //
-}
-
-void RPG_Common_SavingThrowCheck_Type_pimpl::
-difficultyClass (unsigned char difficultyClass)
-{
-  // TODO
-  //
-}
-
-RPG_Common_SavingThrowCheck RPG_Common_SavingThrowCheck_Type_pimpl::
-post_RPG_Common_SavingThrowCheck_Type ()
+RPG_Common_BaseCheckTypeUnion RPG_Common_BaseCheckTypeUnion_Type_pimpl::
+post_RPG_Common_BaseCheckTypeUnion_Type ()
 {
   // TODO
   //
@@ -122,6 +126,43 @@ period (unsigned int period)
 
 RPG_Common_Usage RPG_Common_Usage_Type_pimpl::
 post_RPG_Common_Usage_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Common_Duration_Type_pimpl
+//
+
+void RPG_Common_Duration_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Common_Duration_Type_pimpl::
+activationPeriod (unsigned short activationPeriod)
+{
+  // TODO
+  //
+}
+
+void RPG_Common_Duration_Type_pimpl::
+interval (unsigned short interval)
+{
+  // TODO
+  //
+}
+
+void RPG_Common_Duration_Type_pimpl::
+totalDuration (unsigned short totalDuration)
+{
+  // TODO
+  //
+}
+
+RPG_Common_Duration RPG_Common_Duration_Type_pimpl::
+post_RPG_Common_Duration_Type ()
 {
   // TODO
   //

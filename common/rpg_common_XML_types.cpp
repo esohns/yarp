@@ -38,45 +38,6 @@
 
 #include "rpg_common_XML_types.h"
 
-// RPG_Common_SavingThrowCheck_Type_pskel
-//
-
-void RPG_Common_SavingThrowCheck_Type_pskel::
-type_parser (::RPG_Common_SavingThrow_Type_pskel& p)
-{
-  this->type_parser_ = &p;
-}
-
-void RPG_Common_SavingThrowCheck_Type_pskel::
-attribute_parser (::RPG_Common_Attribute_Type_pskel& p)
-{
-  this->attribute_parser_ = &p;
-}
-
-void RPG_Common_SavingThrowCheck_Type_pskel::
-difficultyClass_parser (::xml_schema::unsigned_byte_pskel& p)
-{
-  this->difficultyClass_parser_ = &p;
-}
-
-void RPG_Common_SavingThrowCheck_Type_pskel::
-parsers (::RPG_Common_SavingThrow_Type_pskel& type,
-         ::RPG_Common_Attribute_Type_pskel& attribute,
-         ::xml_schema::unsigned_byte_pskel& difficultyClass)
-{
-  this->type_parser_ = &type;
-  this->attribute_parser_ = &attribute;
-  this->difficultyClass_parser_ = &difficultyClass;
-}
-
-RPG_Common_SavingThrowCheck_Type_pskel::
-RPG_Common_SavingThrowCheck_Type_pskel ()
-: type_parser_ (0),
-  attribute_parser_ (0),
-  difficultyClass_parser_ (0)
-{
-}
-
 // RPG_Common_Usage_Type_pskel
 //
 
@@ -107,99 +68,43 @@ RPG_Common_Usage_Type_pskel ()
 {
 }
 
-// RPG_Common_SavingThrowCheck_Type_pskel
+// RPG_Common_Duration_Type_pskel
 //
 
-void RPG_Common_SavingThrowCheck_Type_pskel::
-type (const RPG_Common_SavingThrow&)
+void RPG_Common_Duration_Type_pskel::
+activationPeriod_parser (::xml_schema::unsigned_short_pskel& p)
 {
+  this->activationPeriod_parser_ = &p;
 }
 
-void RPG_Common_SavingThrowCheck_Type_pskel::
-attribute (const RPG_Common_Attribute&)
+void RPG_Common_Duration_Type_pskel::
+interval_parser (::xml_schema::unsigned_short_pskel& p)
 {
+  this->interval_parser_ = &p;
 }
 
-void RPG_Common_SavingThrowCheck_Type_pskel::
-difficultyClass (unsigned char)
+void RPG_Common_Duration_Type_pskel::
+totalDuration_parser (::xml_schema::unsigned_short_pskel& p)
 {
+  this->totalDuration_parser_ = &p;
 }
 
-bool RPG_Common_SavingThrowCheck_Type_pskel::
-_start_element_impl (const ::xml_schema::ro_string& ns,
-                     const ::xml_schema::ro_string& n,
-                     const ::xml_schema::ro_string* t)
+void RPG_Common_Duration_Type_pskel::
+parsers (::xml_schema::unsigned_short_pskel& activationPeriod,
+         ::xml_schema::unsigned_short_pskel& interval,
+         ::xml_schema::unsigned_short_pskel& totalDuration)
 {
-  XSD_UNUSED (t);
-
-  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
-    return true;
-
-  if (n == "type" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
-
-    if (this->type_parser_)
-      this->type_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "attribute" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->attribute_parser_;
-
-    if (this->attribute_parser_)
-      this->attribute_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "difficultyClass" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->difficultyClass_parser_;
-
-    if (this->difficultyClass_parser_)
-      this->difficultyClass_parser_->pre ();
-
-    return true;
-  }
-
-  return false;
+  this->activationPeriod_parser_ = &activationPeriod;
+  this->interval_parser_ = &interval;
+  this->totalDuration_parser_ = &totalDuration;
 }
 
-bool RPG_Common_SavingThrowCheck_Type_pskel::
-_end_element_impl (const ::xml_schema::ro_string& ns,
-                   const ::xml_schema::ro_string& n)
+RPG_Common_Duration_Type_pskel::
+RPG_Common_Duration_Type_pskel ()
+: activationPeriod_parser_ (0),
+  interval_parser_ (0),
+  totalDuration_parser_ (0)
 {
-  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
-    return true;
-
-  if (n == "type" && ns == "urn:rpg")
-  {
-    if (this->type_parser_)
-      this->type (this->type_parser_->post_RPG_Common_SavingThrow_Type ());
-
-    return true;
-  }
-
-  if (n == "attribute" && ns == "urn:rpg")
-  {
-    if (this->attribute_parser_)
-      this->attribute (this->attribute_parser_->post_RPG_Common_Attribute_Type ());
-
-    return true;
-  }
-
-  if (n == "difficultyClass" && ns == "urn:rpg")
-  {
-    if (this->difficultyClass_parser_)
-      this->difficultyClass (this->difficultyClass_parser_->post_unsigned_byte ());
-
-    return true;
-  }
-
-  return false;
 }
 
 // RPG_Common_Usage_Type_pskel
@@ -267,6 +172,101 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->period_parser_)
       this->period (this->period_parser_->post_unsigned_int ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Common_Duration_Type_pskel
+//
+
+void RPG_Common_Duration_Type_pskel::
+activationPeriod (unsigned short)
+{
+}
+
+void RPG_Common_Duration_Type_pskel::
+interval (unsigned short)
+{
+}
+
+void RPG_Common_Duration_Type_pskel::
+totalDuration (unsigned short)
+{
+}
+
+bool RPG_Common_Duration_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "activationPeriod" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->activationPeriod_parser_;
+
+    if (this->activationPeriod_parser_)
+      this->activationPeriod_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "interval" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->interval_parser_;
+
+    if (this->interval_parser_)
+      this->interval_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "totalDuration" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->totalDuration_parser_;
+
+    if (this->totalDuration_parser_)
+      this->totalDuration_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Common_Duration_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "activationPeriod" && ns == "urn:rpg")
+  {
+    if (this->activationPeriod_parser_)
+      this->activationPeriod (this->activationPeriod_parser_->post_unsigned_short ());
+
+    return true;
+  }
+
+  if (n == "interval" && ns == "urn:rpg")
+  {
+    if (this->interval_parser_)
+      this->interval (this->interval_parser_->post_unsigned_short ());
+
+    return true;
+  }
+
+  if (n == "totalDuration" && ns == "urn:rpg")
+  {
+    if (this->totalDuration_parser_)
+      this->totalDuration (this->totalDuration_parser_->post_unsigned_short ());
 
     return true;
   }

@@ -37,6 +37,13 @@ RPG_Common_PhysicalDamageType RPG_Common_PhysicalDamageType_Type::post_RPG_Commo
   return RPG_Common_PhysicalDamageTypeHelper::stringToRPG_Common_PhysicalDamageType(post_string());
 }
 
+RPG_Common_CheckType RPG_Common_CheckType_Type::post_RPG_Common_CheckType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_CheckType_Type::post_RPG_Common_CheckType_Type"));
+
+  return RPG_Common_CheckTypeHelper::stringToRPG_Common_CheckType(post_string());
+}
+
 RPG_Common_SavingThrow RPG_Common_SavingThrow_Type::post_RPG_Common_SavingThrow_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrow_Type::post_RPG_Common_SavingThrow_Type"));
@@ -44,46 +51,37 @@ RPG_Common_SavingThrow RPG_Common_SavingThrow_Type::post_RPG_Common_SavingThrow_
   return RPG_Common_SavingThrowHelper::stringToRPG_Common_SavingThrow(post_string());
 }
 
-RPG_Common_SavingThrowCheck_Type::RPG_Common_SavingThrowCheck_Type()
+RPG_Common_BaseCheckTypeUnion_Type::RPG_Common_BaseCheckTypeUnion_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::RPG_Common_SavingThrowCheck_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Common_BaseCheckTypeUnion_Type::RPG_Common_BaseCheckTypeUnion_Type"));
 
-  myCurrentSavingThrowCheck.type = RPG_COMMON_SAVINGTHROW_INVALID;
-  myCurrentSavingThrowCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  myCurrentSavingThrowCheck.difficultyClass = 0;
+  myBaseCheckTypeUnion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
+  myBaseCheckTypeUnion.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
 }
 
-void RPG_Common_SavingThrowCheck_Type::type(const RPG_Common_SavingThrow& type_in)
+void RPG_Common_BaseCheckTypeUnion_Type::_characters(const ::xml_schema::ro_string& checkType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowUnion_Type::type"));
+  ACE_TRACE(ACE_TEXT("RPG_Common_BaseCheckTypeUnion_Type::_characters"));
 
-  myCurrentSavingThrowCheck.type = type_in;
+  // can be either:
+  // - RPG_Common_CheckType_Type --> "CHECK_xxx"
+  // - RPG_Common_SavingThrow_Type --> "SAVE_xxx"
+  std::string type = checkType_in;
+  if (type.find(ACE_TEXT_ALWAYS_CHAR("CHECK_")) == 0)
+    myBaseCheckTypeUnion.checktype = RPG_Common_CheckTypeHelper::stringToRPG_Common_CheckType(checkType_in);
+  else
+    myBaseCheckTypeUnion.savingthrow = RPG_Common_SavingThrowHelper::stringToRPG_Common_SavingThrow(checkType_in);
 }
 
-void RPG_Common_SavingThrowCheck_Type::attribute(const RPG_Common_Attribute& attribute_in)
+RPG_Common_BaseCheckTypeUnion RPG_Common_BaseCheckTypeUnion_Type::post_RPG_Common_BaseCheckTypeUnion_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowUnion_Type::attribute"));
+  ACE_TRACE(ACE_TEXT("RPG_Common_BaseCheckTypeUnion_Type::post_RPG_Common_BaseCheckTypeUnion_Type"));
 
-  myCurrentSavingThrowCheck.attribute = attribute_in;
-}
-
-void RPG_Common_SavingThrowCheck_Type::difficultyClass(unsigned char DC_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowUnion_Type::difficultyClass"));
-
-  myCurrentSavingThrowCheck.difficultyClass = DC_in;
-}
-
-RPG_Common_SavingThrowCheck RPG_Common_SavingThrowCheck_Type::post_RPG_Common_SavingThrowCheck_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::post_RPG_Common_SavingThrowCheck_Type"));
-
-  RPG_Common_SavingThrowCheck result = myCurrentSavingThrowCheck;
+  RPG_Common_BaseCheckTypeUnion result = myBaseCheckTypeUnion;
 
   // clear structure
-  myCurrentSavingThrowCheck.type = RPG_COMMON_SAVINGTHROW_INVALID;
-  myCurrentSavingThrowCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  myCurrentSavingThrowCheck.difficultyClass = 0;
+  myBaseCheckTypeUnion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
+  myBaseCheckTypeUnion.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
 
   return result;
 }
@@ -119,6 +117,50 @@ RPG_Common_Usage RPG_Common_Usage_Type::post_RPG_Common_Usage_Type()
   // clear structure
   myCurrentUsage.numUses = 0;
   myCurrentUsage.period = 0;
+
+  return result;
+}
+
+RPG_Common_Duration_Type::RPG_Common_Duration_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::RPG_Common_Duration_Type"));
+
+  myCurrentDuration.activationPeriod = 0;
+  myCurrentDuration.interval = 0;
+  myCurrentDuration.totalDuration = 0;
+}
+
+void RPG_Common_Duration_Type::activationPeriod(unsigned short activationPeriod_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::activationPeriod"));
+
+  myCurrentDuration.activationPeriod = activationPeriod_in;
+}
+
+void RPG_Common_Duration_Type::interval(unsigned short interval_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::interval"));
+
+  myCurrentDuration.interval = interval_in;
+}
+
+void RPG_Common_Duration_Type::totalDuration(unsigned short totalDuration_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::totalDuration"));
+
+  myCurrentDuration.totalDuration = totalDuration_in;
+}
+
+RPG_Common_Duration RPG_Common_Duration_Type::post_RPG_Common_Duration_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::post_RPG_Common_Duration_Type"));
+
+  RPG_Common_Duration result = myCurrentDuration;
+
+  // clear structure
+  myCurrentDuration.activationPeriod = 0;
+  myCurrentDuration.interval = 0;
+  myCurrentDuration.totalDuration = 0;
 
   return result;
 }

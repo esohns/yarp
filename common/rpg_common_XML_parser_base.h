@@ -32,6 +32,17 @@ class RPG_Common_PhysicalDamageType_Type_pimpl: public virtual RPG_Common_Physic
   post_RPG_Common_PhysicalDamageType_Type ();
 };
 
+class RPG_Common_CheckType_Type_pimpl: public virtual RPG_Common_CheckType_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Common_CheckType
+  post_RPG_Common_CheckType_Type ();
+};
+
 class RPG_Common_SavingThrow_Type_pimpl: public virtual RPG_Common_SavingThrow_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -43,23 +54,17 @@ class RPG_Common_SavingThrow_Type_pimpl: public virtual RPG_Common_SavingThrow_T
   post_RPG_Common_SavingThrow_Type ();
 };
 
-class RPG_Common_SavingThrowCheck_Type_pimpl: public virtual RPG_Common_SavingThrowCheck_Type_pskel
+class RPG_Common_BaseCheckTypeUnion_Type_pimpl: public virtual RPG_Common_BaseCheckTypeUnion_Type_pskel
 {
   public:
   virtual void
   pre ();
 
   virtual void
-  type (const RPG_Common_SavingThrow&);
+  _characters (const ::xml_schema::ro_string&);
 
-  virtual void
-  attribute (const RPG_Common_Attribute&);
-
-  virtual void
-  difficultyClass (unsigned char);
-
-  virtual RPG_Common_SavingThrowCheck
-  post_RPG_Common_SavingThrowCheck_Type ();
+  virtual RPG_Common_BaseCheckTypeUnion
+  post_RPG_Common_BaseCheckTypeUnion_Type ();
 };
 
 class RPG_Common_Usage_Type_pimpl: public virtual RPG_Common_Usage_Type_pskel
@@ -76,6 +81,25 @@ class RPG_Common_Usage_Type_pimpl: public virtual RPG_Common_Usage_Type_pskel
 
   virtual RPG_Common_Usage
   post_RPG_Common_Usage_Type ();
+};
+
+class RPG_Common_Duration_Type_pimpl: public virtual RPG_Common_Duration_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  activationPeriod (unsigned short);
+
+  virtual void
+  interval (unsigned short);
+
+  virtual void
+  totalDuration (unsigned short);
+
+  virtual RPG_Common_Duration
+  post_RPG_Common_Duration_Type ();
 };
 
 #endif // CXX_____RPG_COMMON_XML_PARSER_BASE_H

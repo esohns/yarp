@@ -36,11 +36,12 @@
 #include "rpg_combat_damagebonus.h"
 #include "rpg_combat_damageeffecttype.h"
 #include "rpg_combat_damagecountermeasuretype.h"
+#include "rpg_combat_checktypeunion.h"
+#include "rpg_combat_check.h"
 #include "rpg_combat_damagereductiontype.h"
-#include "rpg_combat_damagecountermeasurecheckunion.h"
-#include "rpg_combat_damagecountermeasurecheck.h"
 #include "rpg_combat_damagecountermeasure.h"
 #include "rpg_combat_damageelement.h"
 #include "rpg_combat_damage.h"
+#include "rpg_combat_actiontype.h"
 
 #endif

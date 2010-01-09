@@ -146,29 +146,29 @@ RPG_Combat_DamageBonus_Type_pskel ()
 {
 }
 
-// RPG_Combat_DamageCounterMeasureCheck_Type_pskel
+// RPG_Combat_Check_Type_pskel
 //
 
-void RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
-type_parser (::RPG_Combat_DamageCounterMeasureCheckUnion_Type_pskel& p)
+void RPG_Combat_Check_Type_pskel::
+type_parser (::RPG_Combat_CheckTypeUnion_Type_pskel& p)
 {
   this->type_parser_ = &p;
 }
 
-void RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+void RPG_Combat_Check_Type_pskel::
 attribute_parser (::RPG_Common_Attribute_Type_pskel& p)
 {
   this->attribute_parser_ = &p;
 }
 
-void RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+void RPG_Combat_Check_Type_pskel::
 difficultyClass_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->difficultyClass_parser_ = &p;
 }
 
-void RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
-parsers (::RPG_Combat_DamageCounterMeasureCheckUnion_Type_pskel& type,
+void RPG_Combat_Check_Type_pskel::
+parsers (::RPG_Combat_CheckTypeUnion_Type_pskel& type,
          ::RPG_Common_Attribute_Type_pskel& attribute,
          ::xml_schema::unsigned_byte_pskel& difficultyClass)
 {
@@ -177,8 +177,8 @@ parsers (::RPG_Combat_DamageCounterMeasureCheckUnion_Type_pskel& type,
   this->difficultyClass_parser_ = &difficultyClass;
 }
 
-RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
-RPG_Combat_DamageCounterMeasureCheck_Type_pskel ()
+RPG_Combat_Check_Type_pskel::
+RPG_Combat_Check_Type_pskel ()
 : type_parser_ (0),
   attribute_parser_ (0),
   difficultyClass_parser_ (0)
@@ -195,7 +195,7 @@ type_parser (::RPG_Combat_DamageCounterMeasureType_Type_pskel& p)
 }
 
 void RPG_Combat_DamageCounterMeasure_Type_pskel::
-check_parser (::RPG_Combat_DamageCounterMeasureCheck_Type_pskel& p)
+check_parser (::RPG_Combat_Check_Type_pskel& p)
 {
   this->check_parser_ = &p;
 }
@@ -214,7 +214,7 @@ reduction_parser (::RPG_Combat_DamageReductionType_Type_pskel& p)
 
 void RPG_Combat_DamageCounterMeasure_Type_pskel::
 parsers (::RPG_Combat_DamageCounterMeasureType_Type_pskel& type,
-         ::RPG_Combat_DamageCounterMeasureCheck_Type_pskel& check,
+         ::RPG_Combat_Check_Type_pskel& check,
          ::RPG_Magic_Spell_Type_pskel& spell,
          ::RPG_Combat_DamageReductionType_Type_pskel& reduction)
 {
@@ -386,16 +386,6 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "effect" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->effect_parser_;
-
-    if (this->effect_parser_)
-      this->effect_parser_->pre ();
-
-    return true;
-  }
-
   return false;
 }
 
@@ -422,10 +412,27 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "effect" && ns == "urn:rpg")
+  return false;
+}
+
+bool RPG_Combat_RangedAttackProperties_Type_pskel::
+_attribute_impl (const ::xml_schema::ro_string& ns,
+                 const ::xml_schema::ro_string& n,
+                 const ::xml_schema::ro_string& v)
+{
+  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
+    return true;
+
+  if (n == "effect" && ns.empty ())
   {
     if (this->effect_parser_)
+    {
+      this->effect_parser_->pre ();
+      this->effect_parser_->_pre_impl ();
+      this->effect_parser_->_characters (v);
+      this->effect_parser_->_post_impl ();
       this->effect (this->effect_parser_->post_RPG_Combat_RangedEffectUnion_Type ());
+    }
 
     return true;
   }
@@ -600,25 +607,25 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-// RPG_Combat_DamageCounterMeasureCheck_Type_pskel
+// RPG_Combat_Check_Type_pskel
 //
 
-void RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
-type (const RPG_Combat_DamageCounterMeasureCheckUnion&)
+void RPG_Combat_Check_Type_pskel::
+type (const RPG_Combat_CheckTypeUnion&)
 {
 }
 
-void RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+void RPG_Combat_Check_Type_pskel::
 attribute (const RPG_Common_Attribute&)
 {
 }
 
-void RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+void RPG_Combat_Check_Type_pskel::
 difficultyClass (unsigned char)
 {
 }
 
-bool RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+bool RPG_Combat_Check_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
@@ -661,7 +668,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Combat_DamageCounterMeasureCheck_Type_pskel::
+bool RPG_Combat_Check_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
@@ -671,7 +678,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "type" && ns == "urn:rpg")
   {
     if (this->type_parser_)
-      this->type (this->type_parser_->post_RPG_Combat_DamageCounterMeasureCheckUnion_Type ());
+      this->type (this->type_parser_->post_RPG_Combat_CheckTypeUnion_Type ());
 
     return true;
   }
@@ -704,7 +711,7 @@ type (const RPG_Combat_DamageCounterMeasureType&)
 }
 
 void RPG_Combat_DamageCounterMeasure_Type_pskel::
-check (const RPG_Combat_DamageCounterMeasureCheck&)
+check (const RPG_Combat_Check&)
 {
 }
 
@@ -779,7 +786,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "check" && ns == "urn:rpg")
   {
     if (this->check_parser_)
-      this->check (this->check_parser_->post_RPG_Combat_DamageCounterMeasureCheck_Type ());
+      this->check (this->check_parser_->post_RPG_Combat_Check_Type ());
 
     return true;
   }
@@ -1084,6 +1091,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   }
 
   return false;
+}
+
+// RPG_Combat_ActionType_Type_pskel
+//
+
+void RPG_Combat_ActionType_Type_pskel::
+post_RPG_Combat_ActionType_Type ()
+{
 }
 
 // Begin epilogue.

@@ -164,62 +164,86 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
         {
           switch ((*iterator2).check.type.discriminator)
           {
-            case RPG_Combat_DamageCounterMeasureCheckUnion::SKILL:
+            case RPG_Combat_CheckTypeUnion::SKILL:
             {
               result += RPG_Character_SkillHelper::RPG_Character_SkillToString((*iterator2).check.type.skill);
               result += ACE_TEXT_ALWAYS_CHAR(" ");
 
               break;
             }
-            case RPG_Combat_DamageCounterMeasureCheckUnion::ATTRIBUTE:
+            case RPG_Combat_CheckTypeUnion::ATTRIBUTE:
             {
               result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator2).check.type.attribute);
               result += ACE_TEXT_ALWAYS_CHAR(" ");
 
               break;
             }
-            case RPG_Combat_DamageCounterMeasureCheckUnion::SAVINGTHROW:
+            case RPG_Combat_CheckTypeUnion::BASECHECKTYPEUNION:
             {
-              result += RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString((*iterator2).check.type.savingthrow);
-              result += ACE_TEXT_ALWAYS_CHAR(" ");
-
-              if ((*iterator2).check.attribute != RPG_COMMON_ATTRIBUTE_INVALID)
+              switch ((*iterator2).check.type.basechecktypeunion.discriminator)
               {
-                result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator2).check.attribute);
-                result += ACE_TEXT_ALWAYS_CHAR(" ");
-              } // end IF
-              else
-              {
-                switch ((*iterator2).check.type.savingthrow)
+                case RPG_Common_BaseCheckTypeUnion::CHECKTYPE:
                 {
-                  case SAVE_FORTITUDE:
+                  result += RPG_Common_CheckTypeHelper::RPG_Common_CheckTypeToString((*iterator2).check.type.basechecktypeunion.checktype);
+                  result += ACE_TEXT_ALWAYS_CHAR(" ");
+
+                  break;
+                }
+                case RPG_Common_BaseCheckTypeUnion::SAVINGTHROW:
+                {
+                  result += RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString((*iterator2).check.type.basechecktypeunion.savingthrow);
+                  result += ACE_TEXT_ALWAYS_CHAR(" ");
+
+                  if ((*iterator2).check.attribute != RPG_COMMON_ATTRIBUTE_INVALID)
                   {
-                    result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_CONSTITUTION);
+                    result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator2).check.attribute);
                     result += ACE_TEXT_ALWAYS_CHAR(" ");
-                    break;
-                  }
-                  case SAVE_REFLEX:
+                  } // end IF
+                  else
                   {
-                    result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_DEXTERITY);
-                    result += ACE_TEXT_ALWAYS_CHAR(" ");
-                    break;
-                  }
-                  case SAVE_WILL:
-                  {
-                    result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_WISDOM);
-                    result += ACE_TEXT_ALWAYS_CHAR(" ");
-                    break;
-                  }
-                  default:
-                  {
-                    // debug info
-                    ACE_DEBUG((LM_ERROR,
-                               ACE_TEXT("invalid saving throw type: \"%s\", continuing\n"),
-                               RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString((*iterator2).check.type.savingthrow).c_str()));
-                    break;
-                  }
-                } // end SWITCH
-              } // end ELSE
+                    switch ((*iterator2).check.type.basechecktypeunion.savingthrow)
+                    {
+                      case SAVE_FORTITUDE:
+                      {
+                        result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_CONSTITUTION);
+                        result += ACE_TEXT_ALWAYS_CHAR(" ");
+                        break;
+                      }
+                      case SAVE_REFLEX:
+                      {
+                        result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_DEXTERITY);
+                        result += ACE_TEXT_ALWAYS_CHAR(" ");
+                        break;
+                      }
+                      case SAVE_WILL:
+                      {
+                        result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_WISDOM);
+                        result += ACE_TEXT_ALWAYS_CHAR(" ");
+                        break;
+                      }
+                      default:
+                      {
+                        // debug info
+                        ACE_DEBUG((LM_ERROR,
+                                   ACE_TEXT("invalid saving throw type: \"%s\", continuing\n"),
+                                   RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString((*iterator2).check.type.basechecktypeunion.savingthrow).c_str()));
+                        break;
+                      }
+                    } // end SWITCH
+                  } // end ELSE
+
+                  break;
+                }
+                default:
+                {
+                  // debug info
+                  ACE_DEBUG((LM_ERROR,
+                             ACE_TEXT("invalid RPG_Common_BaseCheckTypeUnion type: %d, continuing\n"),
+                             (*iterator2).check.type.basechecktypeunion.discriminator));
+
+                  break;
+                }
+              } // end SWITCH
 
               break;
             }
@@ -227,7 +251,7 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
             {
               // debug info
               ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("invalid RPG_Combat_DamageCounterMeasureCheckUnion type: %d, continuing\n"),
+                         ACE_TEXT("invalid RPG_Combat_CheckTypeUnion type: %d, continuing\n"),
                          (*iterator2).check.type.discriminator));
 
               break;

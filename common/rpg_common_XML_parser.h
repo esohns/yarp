@@ -43,6 +43,14 @@ class RPG_Common_PhysicalDamageType_Type
   virtual RPG_Common_PhysicalDamageType post_RPG_Common_PhysicalDamageType_Type();
 };
 
+class RPG_Common_CheckType_Type
+ : public RPG_Common_CheckType_Type_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Common_CheckType post_RPG_Common_CheckType_Type();
+};
+
 class RPG_Common_SavingThrow_Type
  : public RPG_Common_SavingThrow_Type_pimpl
 {
@@ -51,20 +59,18 @@ class RPG_Common_SavingThrow_Type
   virtual RPG_Common_SavingThrow post_RPG_Common_SavingThrow_Type();
 };
 
-class RPG_Common_SavingThrowCheck_Type
- : public RPG_Common_SavingThrowCheck_Type_pimpl
+class RPG_Common_BaseCheckTypeUnion_Type
+ : public RPG_Common_BaseCheckTypeUnion_Type_pimpl
 {
  public:
-  RPG_Common_SavingThrowCheck_Type();
+  RPG_Common_BaseCheckTypeUnion_Type();
 
 //   virtual void pre();
-  virtual void type(const RPG_Common_SavingThrow&);
-  virtual void attribute(const RPG_Common_Attribute&);
-  virtual void difficultyClass(unsigned char);
-  virtual RPG_Common_SavingThrowCheck post_RPG_Common_SavingThrowCheck_Type();
+  virtual void _characters(const ::xml_schema::ro_string&);
+  virtual RPG_Common_BaseCheckTypeUnion post_RPG_Common_BaseCheckTypeUnion_Type();
 
  private:
-  RPG_Common_SavingThrowCheck myCurrentSavingThrowCheck;
+  RPG_Common_BaseCheckTypeUnion myBaseCheckTypeUnion;
 };
 
 class RPG_Common_Usage_Type
@@ -80,6 +86,22 @@ class RPG_Common_Usage_Type
 
  private:
   RPG_Common_Usage myCurrentUsage;
+};
+
+class RPG_Common_Duration_Type
+ : public RPG_Common_Duration_Type_pimpl
+{
+ public:
+  RPG_Common_Duration_Type();
+
+//   virtual void pre();
+  virtual void activationPeriod(unsigned short);
+  virtual void interval(unsigned short);
+  virtual void totalDuration(unsigned short);
+  virtual RPG_Common_Duration post_RPG_Common_Duration_Type();
+
+ private:
+  RPG_Common_Duration myCurrentDuration;
 };
 
 #endif
