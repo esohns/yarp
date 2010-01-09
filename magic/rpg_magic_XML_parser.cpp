@@ -42,81 +42,16 @@ RPG_Magic_Spell RPG_Magic_Spell_Type::post_RPG_Magic_Spell_Type()
   return RPG_Magic_SpellHelper::stringToRPG_Magic_Spell(post_string());
 }
 
-RPG_Magic_SpecialAbilityClass RPG_Magic_SpecialAbilityClass_Type::post_RPG_Magic_SpecialAbilityClass_Type()
+RPG_Magic_AbilityClass RPG_Magic_AbilityClass_Type::post_RPG_Magic_AbilityClass_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_SpecialAbilityClass_Type::post_RPG_Magic_SpecialAbilityClass_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Magic_AbilityClass_Type::post_RPG_Magic_AbilityClass_Type"));
 
-  return RPG_Magic_SpecialAbilityClassHelper::stringToRPG_Magic_SpecialAbilityClass(post_string());
+  return RPG_Magic_AbilityClassHelper::stringToRPG_Magic_AbilityClass(post_string());
 }
 
-RPG_Magic_SpecialAbility RPG_Magic_SpecialAbility_Type::post_RPG_Magic_SpecialAbility_Type()
+RPG_Magic_AbilityType RPG_Magic_AbilityType_Type::post_RPG_Magic_AbilityType_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_SpecialAbility_Type::post_RPG_Magic_SpecialAbility_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Magic_AbilityType_Type::post_RPG_Magic_AbilityType_Type"));
 
-  return RPG_Magic_SpecialAbilityHelper::stringToRPG_Magic_SpecialAbility(post_string());
-}
-
-RPG_Magic_SpecialAbilityProperties_Type::RPG_Magic_SpecialAbilityProperties_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Magic_SpecialAbilityProperties_Type::RPG_Magic_SpecialAbilityProperties_Type"));
-
-  myCurrentProperties.abilityClass = RPG_MAGIC_SPECIALABILITYCLASS_INVALID;
-  myCurrentProperties.type = RPG_MAGIC_SPECIALABILITY_INVALID;
-  myCurrentProperties.amount.numDice = 0;
-  myCurrentProperties.amount.typeDice = RPG_DICE_DIETYPE_INVALID;
-  myCurrentProperties.amount.modifier = 0;
-  myCurrentProperties.alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
-  myCurrentProperties.alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
-  myCurrentProperties.usage.numUses = 0;
-  myCurrentProperties.usage.period = 0;
-}
-
-void RPG_Magic_SpecialAbilityProperties_Type::abilityClass(const RPG_Magic_SpecialAbilityClass& abilityClass_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Magic_SpecialAbilityProperties_Type::abilityClass"));
-
-  myCurrentProperties.abilityClass = abilityClass_in;
-}
-
-void RPG_Magic_SpecialAbilityProperties_Type::type(const RPG_Magic_SpecialAbility& type_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Magic_SpecialAbilityProperties_Type::type"));
-
-  myCurrentProperties.type = type_in;
-}
-
-void RPG_Magic_SpecialAbilityProperties_Type::amount(const RPG_Dice_Roll& amount_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Magic_SpecialAbilityProperties_Type::amount"));
-
-  myCurrentProperties.amount = amount_in;
-}
-
-void RPG_Magic_SpecialAbilityProperties_Type::alignment(const RPG_Character_Alignment& alignment_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Magic_SpecialAbilityProperties_Type::alignment"));
-
-  myCurrentProperties.alignment = alignment_in;
-}
-
-void RPG_Magic_SpecialAbilityProperties_Type::usage(const RPG_Common_Usage& usage_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Magic_SpecialAbilityProperties_Type::usage"));
-
-  myCurrentProperties.usage = usage_in;
-}
-
-RPG_Magic_SpecialAbilityProperties RPG_Magic_SpecialAbilityProperties_Type::post_RPG_Magic_SpecialAbilityProperties_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Magic_SpecialAbilityProperties_Type::post_RPG_Magic_SpecialAbilityProperties_Type"));
-
-  RPG_Magic_SpecialAbilityProperties result = myCurrentProperties;
-
-  // clear structure
-  myCurrentProperties.abilityClass = RPG_MAGIC_SPECIALABILITYCLASS_INVALID;
-  myCurrentProperties.type = RPG_MAGIC_SPECIALABILITY_INVALID;
-  myCurrentProperties.usage.numUses = 0;
-  myCurrentProperties.usage.period = 0;
-
-  return result;
+  return RPG_Magic_AbilityTypeHelper::stringToRPG_Magic_AbilityType(post_string());
 }

@@ -24,8 +24,7 @@
 #include "rpg_magic_school.h"
 #include "rpg_magic_domain.h"
 #include "rpg_magic_spell.h"
-#include "rpg_magic_specialabilityclass.h"
-#include "rpg_magic_specialability.h"
-#include "rpg_magic_specialabilityproperties.h"
+#include "rpg_magic_abilityclass.h"
+#include "rpg_magic_abilitytype.h"
 
 #endif

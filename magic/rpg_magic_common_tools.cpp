@@ -30,8 +30,8 @@
 RPG_Magic_SchoolToStringTable_t RPG_Magic_SchoolHelper::myRPG_Magic_SchoolToStringTable;
 RPG_Magic_DomainToStringTable_t RPG_Magic_DomainHelper::myRPG_Magic_DomainToStringTable;
 RPG_Magic_SpellToStringTable_t RPG_Magic_SpellHelper::myRPG_Magic_SpellToStringTable;
-RPG_Magic_SpecialAbilityClassToStringTable_t RPG_Magic_SpecialAbilityClassHelper::myRPG_Magic_SpecialAbilityClassToStringTable;
-RPG_Magic_SpecialAbilityToStringTable_t RPG_Magic_SpecialAbilityHelper::myRPG_Magic_SpecialAbilityToStringTable;
+RPG_Magic_AbilityClassToStringTable_t RPG_Magic_AbilityClassHelper::myRPG_Magic_AbilityClassToStringTable;
+RPG_Magic_AbilityTypeToStringTable_t RPG_Magic_AbilityTypeHelper::myRPG_Magic_AbilityTypeToStringTable;
 
 void RPG_Magic_Common_Tools::initStringConversionTables()
 {
@@ -40,8 +40,8 @@ void RPG_Magic_Common_Tools::initStringConversionTables()
   RPG_Magic_SchoolHelper::init();
   RPG_Magic_DomainHelper::init();
   RPG_Magic_SpellHelper::init();
-  RPG_Magic_SpecialAbilityClassHelper::init();
-  RPG_Magic_SpecialAbilityHelper::init();
+  RPG_Magic_AbilityClassHelper::init();
+  RPG_Magic_AbilityTypeHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
