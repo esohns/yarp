@@ -114,6 +114,9 @@ void RPG_Item_WeaponDictionary_Type::weapon(const RPG_Item_WeaponPropertiesXML& 
     if ((*iterator) != PHYSICALDAMAGE_NONE)
       prop.typeOfDamage.set((*iterator - 1));
   } // end FOR
+  prop.isNonLethal    = weapon_in.isNonLethal;
+  prop.isReachWeapon  = weapon_in.isReachWeapon;
+  prop.isDoubleWeapon = weapon_in.isDoubleWeapon;
 
   myWeaponDictionary->insert(std::make_pair(weapon_in.weaponType, prop));
 }
@@ -429,6 +432,9 @@ RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type()
   myCurrentWeaponProperties.rangeIncrement = 0;
   myCurrentWeaponProperties.baseWeight = 0;
   myCurrentWeaponProperties.typeOfDamages.clear();
+  myCurrentWeaponProperties.isNonLethal = false;
+  myCurrentWeaponProperties.isReachWeapon = false;
+  myCurrentWeaponProperties.isDoubleWeapon = false;
 }
 
 // void RPG_Item_WeaponProperties_Type::pre()
@@ -500,6 +506,27 @@ void RPG_Item_WeaponPropertiesXML_Type::typeOfDamage(const RPG_Common_PhysicalDa
   myCurrentWeaponProperties.typeOfDamages.push_back(typeOfDamage_in);
 }
 
+void RPG_Item_WeaponPropertiesXML_Type::isNonLethal(bool isNonLethal_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::isNonLethal"));
+
+  myCurrentWeaponProperties.isNonLethal = isNonLethal_in;
+}
+
+void RPG_Item_WeaponPropertiesXML_Type::isReachWeapon(bool isReachWeapon_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::isReachWeapon"));
+
+  myCurrentWeaponProperties.isReachWeapon = isReachWeapon_in;
+}
+
+void RPG_Item_WeaponPropertiesXML_Type::isDoubleWeapon(bool isDoubleWeapon_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::isDoubleWeapon"));
+
+  myCurrentWeaponProperties.isDoubleWeapon = isDoubleWeapon_in;
+}
+
 RPG_Item_WeaponPropertiesXML RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_WeaponPropertiesXML_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_WeaponPropertiesXML_Type"));
@@ -520,6 +547,9 @@ RPG_Item_WeaponPropertiesXML RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_We
   myCurrentWeaponProperties.rangeIncrement = 0;
   myCurrentWeaponProperties.baseWeight = 0;
   myCurrentWeaponProperties.typeOfDamages.clear();
+  myCurrentWeaponProperties.isNonLethal = false;
+  myCurrentWeaponProperties.isReachWeapon = false;
+  myCurrentWeaponProperties.isDoubleWeapon = false;
 
   return result;
 }

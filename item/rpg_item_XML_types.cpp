@@ -264,6 +264,24 @@ typeOfDamage_parser (::RPG_Common_PhysicalDamageType_Type_pskel& p)
 }
 
 void RPG_Item_WeaponPropertiesXML_Type_pskel::
+isNonLethal_parser (::xml_schema::boolean_pskel& p)
+{
+  this->isNonLethal_parser_ = &p;
+}
+
+void RPG_Item_WeaponPropertiesXML_Type_pskel::
+isReachWeapon_parser (::xml_schema::boolean_pskel& p)
+{
+  this->isReachWeapon_parser_ = &p;
+}
+
+void RPG_Item_WeaponPropertiesXML_Type_pskel::
+isDoubleWeapon_parser (::xml_schema::boolean_pskel& p)
+{
+  this->isDoubleWeapon_parser_ = &p;
+}
+
+void RPG_Item_WeaponPropertiesXML_Type_pskel::
 parsers (::xml_schema::unsigned_short_pskel& baseWeight,
          ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
          ::RPG_Item_CreationCost_Type_pskel& costToCreate,
@@ -273,7 +291,10 @@ parsers (::xml_schema::unsigned_short_pskel& baseWeight,
          ::RPG_Dice_Roll_Type_pskel& baseDamage,
          ::RPG_Item_CriticalHitProperties_Type_pskel& criticalHit,
          ::xml_schema::unsigned_byte_pskel& rangeIncrement,
-         ::RPG_Common_PhysicalDamageType_Type_pskel& typeOfDamage)
+         ::RPG_Common_PhysicalDamageType_Type_pskel& typeOfDamage,
+         ::xml_schema::boolean_pskel& isNonLethal,
+         ::xml_schema::boolean_pskel& isReachWeapon,
+         ::xml_schema::boolean_pskel& isDoubleWeapon)
 {
   this->baseWeight_parser_ = &baseWeight;
   this->baseStorePrice_parser_ = &baseStorePrice;
@@ -285,6 +306,9 @@ parsers (::xml_schema::unsigned_short_pskel& baseWeight,
   this->criticalHit_parser_ = &criticalHit;
   this->rangeIncrement_parser_ = &rangeIncrement;
   this->typeOfDamage_parser_ = &typeOfDamage;
+  this->isNonLethal_parser_ = &isNonLethal;
+  this->isReachWeapon_parser_ = &isReachWeapon;
+  this->isDoubleWeapon_parser_ = &isDoubleWeapon;
 }
 
 RPG_Item_WeaponPropertiesXML_Type_pskel::
@@ -295,7 +319,10 @@ RPG_Item_WeaponPropertiesXML_Type_pskel ()
   baseDamage_parser_ (0),
   criticalHit_parser_ (0),
   rangeIncrement_parser_ (0),
-  typeOfDamage_parser_ (0)
+  typeOfDamage_parser_ (0),
+  isNonLethal_parser_ (0),
+  isReachWeapon_parser_ (0),
+  isDoubleWeapon_parser_ (0)
 {
 }
 
@@ -319,6 +346,9 @@ parsers (::xml_schema::unsigned_short_pskel& baseWeight,
          ::RPG_Item_CriticalHitProperties_Type_pskel& criticalHit,
          ::xml_schema::unsigned_byte_pskel& rangeIncrement,
          ::RPG_Common_PhysicalDamageType_Type_pskel& typeOfDamage,
+         ::xml_schema::boolean_pskel& isNonLethal,
+         ::xml_schema::boolean_pskel& isReachWeapon,
+         ::xml_schema::boolean_pskel& isDoubleWeapon,
          ::xml_schema::byte_pskel& toHitModifier)
 {
   this->baseWeight_parser_ = &baseWeight;
@@ -331,6 +361,9 @@ parsers (::xml_schema::unsigned_short_pskel& baseWeight,
   this->criticalHit_parser_ = &criticalHit;
   this->rangeIncrement_parser_ = &rangeIncrement;
   this->typeOfDamage_parser_ = &typeOfDamage;
+  this->isNonLethal_parser_ = &isNonLethal;
+  this->isReachWeapon_parser_ = &isReachWeapon;
+  this->isDoubleWeapon_parser_ = &isDoubleWeapon;
   this->toHitModifier_parser_ = &toHitModifier;
 }
 
@@ -1020,6 +1053,21 @@ typeOfDamage (const RPG_Common_PhysicalDamageType&)
 {
 }
 
+void RPG_Item_WeaponPropertiesXML_Type_pskel::
+isNonLethal (bool)
+{
+}
+
+void RPG_Item_WeaponPropertiesXML_Type_pskel::
+isReachWeapon (bool)
+{
+}
+
+void RPG_Item_WeaponPropertiesXML_Type_pskel::
+isDoubleWeapon (bool)
+{
+}
+
 bool RPG_Item_WeaponPropertiesXML_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
@@ -1162,6 +1210,59 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->typeOfDamage_parser_)
       this->typeOfDamage (this->typeOfDamage_parser_->post_RPG_Common_PhysicalDamageType_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Item_WeaponPropertiesXML_Type_pskel::
+_attribute_impl (const ::xml_schema::ro_string& ns,
+                 const ::xml_schema::ro_string& n,
+                 const ::xml_schema::ro_string& v)
+{
+  if (this->::RPG_Item_BaseProperties_Type_pskel::_attribute_impl (ns, n, v))
+    return true;
+
+  if (n == "isNonLethal" && ns == "urn:rpg")
+  {
+    if (this->isNonLethal_parser_)
+    {
+      this->isNonLethal_parser_->pre ();
+      this->isNonLethal_parser_->_pre_impl ();
+      this->isNonLethal_parser_->_characters (v);
+      this->isNonLethal_parser_->_post_impl ();
+      this->isNonLethal (this->isNonLethal_parser_->post_boolean ());
+    }
+
+    return true;
+  }
+
+  if (n == "isReachWeapon" && ns == "urn:rpg")
+  {
+    if (this->isReachWeapon_parser_)
+    {
+      this->isReachWeapon_parser_->pre ();
+      this->isReachWeapon_parser_->_pre_impl ();
+      this->isReachWeapon_parser_->_characters (v);
+      this->isReachWeapon_parser_->_post_impl ();
+      this->isReachWeapon (this->isReachWeapon_parser_->post_boolean ());
+    }
+
+    return true;
+  }
+
+  if (n == "isDoubleWeapon" && ns == "urn:rpg")
+  {
+    if (this->isDoubleWeapon_parser_)
+    {
+      this->isDoubleWeapon_parser_->pre ();
+      this->isDoubleWeapon_parser_->_pre_impl ();
+      this->isDoubleWeapon_parser_->_characters (v);
+      this->isDoubleWeapon_parser_->_post_impl ();
+      this->isDoubleWeapon (this->isDoubleWeapon_parser_->post_boolean ());
+    }
 
     return true;
   }

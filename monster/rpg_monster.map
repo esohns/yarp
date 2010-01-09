@@ -11,42 +11,48 @@ namespace urn:rpg
 
   include <rpg_dice_incl.h>;
 
-  RPG_Dice_Roll_Type                      RPG_Dice_Roll;
-  RPG_Dice_ValueRange_Type                RPG_Dice_ValueRange;
+  RPG_Dice_Roll_Type                         RPG_Dice_Roll;
+  RPG_Dice_ValueRange_Type                   RPG_Dice_ValueRange;
 
-  RPG_Common_Usage_Type                   RPG_Common_Usage;
+  RPG_Common_Usage_Type                      RPG_Common_Usage;
 
-  RPG_Magic_SpecialAbilityProperties_Type RPG_Magic_SpecialAbilityProperties;
+  RPG_Magic_AbilityClass_Type                RPG_Magic_AbilityClass;
+  RPG_Magic_AbilityType_Type                 RPG_Magic_AbilityType;
 
-  RPG_Character_Size_Type                 RPG_Character_Size;
-  RPG_Character_Attributes_Type           RPG_Character_Attributes;
-  RPG_Character_Skills_Type               RPG_Character_Skills;
-  RPG_Character_Feats_Type                RPG_Character_Feats;
-  RPG_Character_Environment_Type          RPG_Character_Environment;
-  RPG_Character_Alignment_Type            RPG_Character_Alignment;
+  RPG_Character_Size_Type                    RPG_Character_Size;
+  RPG_Character_Attributes_Type              RPG_Character_Attributes;
+  RPG_Character_Skills_Type                  RPG_Character_Skills;
+  RPG_Character_Feats_Type                   RPG_Character_Feats;
+  RPG_Character_Environment_Type             RPG_Character_Environment;
+  RPG_Character_Alignment_Type               RPG_Character_Alignment;
+  RPG_Character_Condition_Type               RPG_Character_Condition;
 
-  RPG_Combat_AttackForm_Type              RPG_Combat_AttackForm;
-  RPG_Combat_Damage_Type                  RPG_Combat_Damage;
-  RPG_Combat_RangedAttackProperties_Type  RPG_Combat_RangedAttackProperties;
+  RPG_Combat_SpecialAttack_Type              RPG_Combat_SpecialAttack;
+  RPG_Combat_AttackForm_Type                 RPG_Combat_AttackForm;
+  RPG_Combat_Damage_Type                     RPG_Combat_Damage;
+  RPG_Combat_RangedAttackProperties_Type     RPG_Combat_RangedAttackProperties;
+  RPG_Combat_Check_Type                      RPG_Combat_Check;
 
-  RPG_Monster_MetaType_Type               RPG_Monster_MetaType;
-  RPG_Monster_SubType_Type                RPG_Monster_SubType;
-  RPG_Monster_Type_Type                   RPG_Monster_Type;
-  RPG_Monster_NaturalArmorClass_Type      RPG_Monster_NaturalArmorClass;
-  RPG_Monster_NaturalWeapon_Type          RPG_Monster_NaturalWeapon;
-  RPG_Monster_WeaponTypeUnion_Type        RPG_Monster_WeaponTypeUnion;
-  RPG_Monster_AttackAction_Type           RPG_Monster_AttackAction;
-  RPG_Monster_Attack_Type                 RPG_Monster_Attack;
-  RPG_Monster_SavingThrow_Type            RPG_Monster_SavingThrow;
-  RPG_Monster_SavingThrowModifiers_Type   RPG_Monster_SavingThrowModifiers;
-  RPG_Monster_Organization_Type           RPG_Monster_Organization;
-  RPG_Monster_OrganizationSlaverStep_Type RPG_Monster_OrganizationSlaverStep;
-  RPG_Monster_OrganizationStep_Type       RPG_Monster_OrganizationStep;
-  RPG_Monster_Organizations_Type          RPG_Monster_Organizations;
-  RPG_Monster_AdvancementStep_Type        RPG_Monster_AdvancementStep;
-  RPG_Monster_Advancement_Type            RPG_Monster_Advancement;
-  RPG_Monster_PropertiesXML_Type          RPG_Monster_PropertiesXML;
-#  RPG_Monster_Dictionary_Type             RPG_Monster_Dictionary;
+  RPG_Monster_MetaType_Type                  RPG_Monster_MetaType;
+  RPG_Monster_SubType_Type                   RPG_Monster_SubType;
+  RPG_Monster_Type_Type                      RPG_Monster_Type;
+  RPG_Monster_NaturalArmorClass_Type         RPG_Monster_NaturalArmorClass;
+  RPG_Monster_NaturalWeapon_Type             RPG_Monster_NaturalWeapon;
+  RPG_Monster_WeaponTypeUnion_Type           RPG_Monster_WeaponTypeUnion;
+  RPG_Monster_AttackAction_Type              RPG_Monster_AttackAction;
+  RPG_Monster_Attack_Type                    RPG_Monster_Attack;
+  RPG_Monster_SpecialAttackTypeUnion_Type    RPG_Monster_SpecialAttackTypeUnion;
+  RPG_Monster_SpecialAttackPreCondition_Type RPG_Monster_SpecialAttackPreCondition;
+  RPG_Monster_SpecialAttackProperties_Type   RPG_Monster_SpecialAttackProperties;
+  RPG_Monster_SavingThrowModifiers_Type      RPG_Monster_SavingThrowModifiers;
+  RPG_Monster_Organization_Type              RPG_Monster_Organization;
+  RPG_Monster_OrganizationSlaverStep_Type    RPG_Monster_OrganizationSlaverStep;
+  RPG_Monster_OrganizationStep_Type          RPG_Monster_OrganizationStep;
+  RPG_Monster_Organizations_Type             RPG_Monster_Organizations;
+  RPG_Monster_AdvancementStep_Type           RPG_Monster_AdvancementStep;
+  RPG_Monster_Advancement_Type               RPG_Monster_Advancement;
+  RPG_Monster_PropertiesXML_Type             RPG_Monster_PropertiesXML;
+#  RPG_Monster_Dictionary_Type               RPG_Monster_Dictionary;
 }
 
 #namespace urn:rpg_chance_dice

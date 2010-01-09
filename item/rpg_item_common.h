@@ -58,6 +58,9 @@ struct RPG_Item_WeaponProperties
   unsigned char                  rangeIncrement;
   unsigned short int             baseWeight;
   RPG_Item_WeaponDamage          typeOfDamage;
+  bool                           isNonLethal;
+  bool                           isReachWeapon;
+  bool                           isDoubleWeapon;
 };
 
 struct RPG_Item_ArmorProperties

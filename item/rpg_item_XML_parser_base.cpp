@@ -332,6 +332,27 @@ typeOfDamage (const RPG_Common_PhysicalDamageType& typeOfDamage)
   //
 }
 
+void RPG_Item_WeaponPropertiesXML_Type_pimpl::
+isNonLethal (bool isNonLethal)
+{
+  // TODO
+  //
+}
+
+void RPG_Item_WeaponPropertiesXML_Type_pimpl::
+isReachWeapon (bool isReachWeapon)
+{
+  // TODO
+  //
+}
+
+void RPG_Item_WeaponPropertiesXML_Type_pimpl::
+isDoubleWeapon (bool isDoubleWeapon)
+{
+  // TODO
+  //
+}
+
 RPG_Item_WeaponPropertiesXML RPG_Item_WeaponPropertiesXML_Type_pimpl::
 post_RPG_Item_WeaponPropertiesXML_Type ()
 {

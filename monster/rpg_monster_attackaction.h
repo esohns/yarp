@@ -28,7 +28,6 @@ struct RPG_Monster_AttackAction
   std::vector<RPG_Combat_AttackForm> attackForms;
   RPG_Combat_Damage damage;
   unsigned char numAttacksPerRound;
-  RPG_Common_Usage usage;
   RPG_Combat_RangedAttackProperties ranged;
   bool fullAttackIncludesNextAction;
 };

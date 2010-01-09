@@ -29,40 +29,6 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Monster_Dictionary_Type
- : public RPG_Monster_Dictionary_Type_pimpl
-{
- public:
-  RPG_Monster_Dictionary_Type(RPG_Monster_Dictionary_t*); // monster dictionary
-  virtual ~RPG_Monster_Dictionary_Type();
-
-//   virtual void pre();
-  virtual void monster(const RPG_Monster_PropertiesXML&);
-  virtual void post_RPG_Monster_Dictionary_Type();
-
- private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary_Type());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary_Type(const RPG_Monster_Dictionary_Type&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary_Type& operator=(const RPG_Monster_Dictionary_Type&));
-
-  RPG_Monster_Dictionary_t* myMonsterDictionary;
-};
-
-class RPG_Monster_Type_Type
- : public RPG_Monster_Type_Type_pimpl
-{
- public:
-  RPG_Monster_Type_Type();
-
-//   virtual void pre();
-  virtual void metaType(const RPG_Monster_MetaType&);
-  virtual void subType(const RPG_Monster_SubType&);
-  virtual RPG_Monster_Type post_RPG_Monster_Type_Type();
-
- private:
-  RPG_Monster_Type myCurrentType;
-};
 
 class RPG_Monster_MetaType_Type
  : public RPG_Monster_MetaType_Type_pimpl
@@ -78,6 +44,21 @@ class RPG_Monster_SubType_Type
  public:
 //   virtual void pre();
   virtual RPG_Monster_SubType post_RPG_Monster_SubType_Type();
+};
+
+class RPG_Monster_Type_Type
+  : public RPG_Monster_Type_Type_pimpl
+{
+  public:
+    RPG_Monster_Type_Type();
+
+//   virtual void pre();
+    virtual void metaType(const RPG_Monster_MetaType&);
+    virtual void subType(const RPG_Monster_SubType&);
+    virtual RPG_Monster_Type post_RPG_Monster_Type_Type();
+
+  private:
+    RPG_Monster_Type myCurrentType;
 };
 
 class RPG_Monster_NaturalArmorClass_Type
@@ -155,6 +136,57 @@ class RPG_Monster_Attack_Type
 
  private:
   RPG_Monster_Attack myCurrentAttack;
+};
+
+class RPG_Monster_SpecialAttackTypeUnion_Type
+  : public RPG_Monster_SpecialAttackTypeUnion_Type_pimpl
+{
+  public:
+    RPG_Monster_SpecialAttackTypeUnion_Type();
+
+//   virtual void pre();
+    virtual void _characters(const ::xml_schema::ro_string&);
+    virtual RPG_Monster_SpecialAttackTypeUnion post_RPG_Monster_SpecialAttackTypeUnion_Type();
+
+  private:
+    RPG_Monster_SpecialAttackTypeUnion myCurrentUnionType;
+};
+
+class RPG_Monster_SpecialAttackPreCondition_Type
+  : public RPG_Monster_SpecialAttackPreCondition_Type_pimpl
+{
+  public:
+    RPG_Monster_SpecialAttackPreCondition_Type();
+
+//   virtual void pre();
+    virtual void targetAlignment(const RPG_Character_Alignment&);
+    virtual void targetCondition(const RPG_Character_Condition&);
+    virtual void minTargetSize(const RPG_Character_Size&);
+    virtual void maxTargetSize(const RPG_Character_Size&);
+    virtual void check(const RPG_Combat_Check&);
+    virtual RPG_Monster_SpecialAttackPreCondition post_RPG_Monster_SpecialAttackPreCondition_Type();
+
+  private:
+    RPG_Monster_SpecialAttackPreCondition myCurrentPreCondition;
+};
+
+class RPG_Monster_SpecialAttackProperties_Type
+  : public RPG_Monster_SpecialAttackProperties_Type_pimpl
+{
+  public:
+    RPG_Monster_SpecialAttackProperties_Type();
+
+//     virtual void pre();
+    virtual void abilityClass(const RPG_Magic_AbilityClass&);
+    virtual void type(const RPG_Monster_SpecialAttackTypeUnion&);
+    virtual void preCondition(const RPG_Monster_SpecialAttackPreCondition&);
+    virtual void action(const RPG_Monster_AttackAction&);
+    virtual void amount(const RPG_Dice_Roll&);
+    virtual void usage(const RPG_Common_Usage&);
+    virtual RPG_Monster_SpecialAttackProperties post_RPG_Monster_SpecialAttackProperties_Type();
+
+  private:
+    RPG_Monster_SpecialAttackProperties myCurrentProperties;
 };
 
 class RPG_Monster_SavingThrowModifiers_Type
@@ -270,7 +302,7 @@ class RPG_Monster_PropertiesXML_Type
   virtual void speed(unsigned char);
   virtual void armorClass(const RPG_Monster_NaturalArmorClass&);
   virtual void attack(const RPG_Monster_Attack&);
-  virtual void specialAbilities(const RPG_Magic_SpecialAbilityProperties&);
+  virtual void specialAttack(const RPG_Monster_SpecialAttackProperties&);
   virtual void space(unsigned char);
   virtual void reach(unsigned char);
   virtual void saves(const RPG_Monster_SavingThrowModifiers&);
@@ -288,6 +320,26 @@ class RPG_Monster_PropertiesXML_Type
 
  private:
   RPG_Monster_PropertiesXML myCurrentProperties;
+};
+
+class RPG_Monster_Dictionary_Type
+  : public RPG_Monster_Dictionary_Type_pimpl
+{
+  public:
+    RPG_Monster_Dictionary_Type(RPG_Monster_Dictionary_t*); // monster dictionary
+    virtual ~RPG_Monster_Dictionary_Type();
+
+//   virtual void pre();
+    virtual void monster(const RPG_Monster_PropertiesXML&);
+    virtual void post_RPG_Monster_Dictionary_Type();
+
+  private:
+  // safety measures
+    ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary_Type());
+    ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary_Type(const RPG_Monster_Dictionary_Type&));
+    ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary_Type& operator=(const RPG_Monster_Dictionary_Type&));
+
+    RPG_Monster_Dictionary_t* myMonsterDictionary;
 };
 
 #endif

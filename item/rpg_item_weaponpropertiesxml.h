@@ -31,6 +31,9 @@ struct RPG_Item_WeaponPropertiesXML
   RPG_Item_CriticalHitProperties criticalHit;
   unsigned char rangeIncrement;
   std::vector<RPG_Common_PhysicalDamageType> typeOfDamages;
+  bool isNonLethal;
+  bool isReachWeapon;
+  bool isDoubleWeapon;
 };
 
 #endif

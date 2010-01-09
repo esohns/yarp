@@ -196,10 +196,10 @@
           <xsd:element name="rangeIncrement" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="typeOfDamage" type="RPG_Common_PhysicalDamageType_Type" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
+        <xsd:attribute name="isNonLethal" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="isReachWeapon" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="isDoubleWeapon" type="xsd:boolean" use="optional" default="false"/>
       </xsd:extension>
-      <xsd:attribute name="isNonLethal" type="xsd:boolean" use="optional" default="false"/>
-      <xsd:attribute name="isReachWeapon" type="xsd:boolean" use="optional" default="false"/>
-      <xsd:attribute name="isDoubleWeapon" type="xsd:boolean" use="optional" default="false"/>
     </xsd:complexContent>
   </xsd:complexType>
 

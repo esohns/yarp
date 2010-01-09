@@ -25,16 +25,18 @@ struct RPG_Monster_WeaponTypeUnion
 {
   union
   {
-    RPG_Combat_SpecialAttack specialattack;
     RPG_Monster_NaturalWeapon naturalweapon;
+    RPG_Character_Ability ability;
     RPG_Item_WeaponType weapontype;
+    RPG_Combat_SpecialAttack specialattack;
   };
 
   enum Discriminator_t
   {
-    SPECIALATTACK,
     NATURALWEAPON,
+    ABILITY,
     WEAPONTYPE,
+    SPECIALATTACK,
     INVALID
   };
   Discriminator_t discriminator;

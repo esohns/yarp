@@ -121,9 +121,6 @@ class RPG_Monster_AttackAction_Type_pimpl: public virtual RPG_Monster_AttackActi
   numAttacksPerRound (unsigned char);
 
   virtual void
-  usage (const RPG_Common_Usage&);
-
-  virtual void
   ranged (const RPG_Combat_RangedAttackProperties&);
 
   virtual void
@@ -156,6 +153,72 @@ class RPG_Monster_Attack_Type_pimpl: public virtual RPG_Monster_Attack_Type_pske
 
   virtual RPG_Monster_Attack
   post_RPG_Monster_Attack_Type ();
+};
+
+class RPG_Monster_SpecialAttackTypeUnion_Type_pimpl: public virtual RPG_Monster_SpecialAttackTypeUnion_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  _characters (const ::xml_schema::ro_string&);
+
+  virtual RPG_Monster_SpecialAttackTypeUnion
+  post_RPG_Monster_SpecialAttackTypeUnion_Type ();
+};
+
+class RPG_Monster_SpecialAttackPreCondition_Type_pimpl: public virtual RPG_Monster_SpecialAttackPreCondition_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  targetAlignment (const RPG_Character_Alignment&);
+
+  virtual void
+  targetCondition (const RPG_Character_Condition&);
+
+  virtual void
+  minTargetSize (const RPG_Character_Size&);
+
+  virtual void
+  maxTargetSize (const RPG_Character_Size&);
+
+  virtual void
+  check (const RPG_Combat_Check&);
+
+  virtual RPG_Monster_SpecialAttackPreCondition
+  post_RPG_Monster_SpecialAttackPreCondition_Type ();
+};
+
+class RPG_Monster_SpecialAttackProperties_Type_pimpl: public virtual RPG_Monster_SpecialAttackProperties_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  abilityClass (const RPG_Magic_AbilityClass&);
+
+  virtual void
+  type (const RPG_Monster_SpecialAttackTypeUnion&);
+
+  virtual void
+  preCondition (const RPG_Monster_SpecialAttackPreCondition&);
+
+  virtual void
+  action (const RPG_Monster_AttackAction&);
+
+  virtual void
+  amount (const RPG_Dice_Roll&);
+
+  virtual void
+  usage (const RPG_Common_Usage&);
+
+  virtual RPG_Monster_SpecialAttackProperties
+  post_RPG_Monster_SpecialAttackProperties_Type ();
 };
 
 class RPG_Monster_SavingThrowModifiers_Type_pimpl: public virtual RPG_Monster_SavingThrowModifiers_Type_pskel
@@ -296,7 +359,7 @@ class RPG_Monster_PropertiesXML_Type_pimpl: public virtual RPG_Monster_Propertie
   attack (const RPG_Monster_Attack&);
 
   virtual void
-  specialAbility (const RPG_Magic_SpecialAbilityProperties&);
+  specialAttack (const RPG_Monster_SpecialAttackProperties&);
 
   virtual void
   space (unsigned char);

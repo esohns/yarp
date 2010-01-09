@@ -73,6 +73,7 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
                                   unsigned_byte_p);
 //   unsigned_byte_pimpl                       rangeIncrement_p;
   RPG_Common_PhysicalDamageType_Type      damageType_p;
+  ::xml_schema::boolean_pimpl             bool_p;
   RPG_Item_WeaponPropertiesXML_Type       weaponPropertiesXML_p;
   weaponPropertiesXML_p.parsers(unsigned_short_p,
                                 baseStorePrice_p,
@@ -83,7 +84,10 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
                                 roll_p,
                                 criticalHitProperties_p,
                                 unsigned_byte_p,
-                                damageType_p);
+                                damageType_p,
+                                bool_p,
+                                bool_p,
+                                bool_p);
   RPG_Item_ArmorType_Type                 armorType_p;
   RPG_Item_ArmorCategory_Type             armorCategory_p;
 //  RPG_Item_StorePrice_Type_pimpl          baseStorePrice_p;

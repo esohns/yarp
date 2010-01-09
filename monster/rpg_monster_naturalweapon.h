@@ -31,6 +31,7 @@ enum RPG_Monster_NaturalWeapon
   NATURALWEAPON_TENTACLE,
   NATURALWEAPON_SPIT,
   NATURALWEAPON_WEB,
+  NATURALWEAPON_CONSTRICT,
   NATURALWEAPON_ROCK_STONE,
   //
   RPG_MONSTER_NATURALWEAPON_MAX,
@@ -59,6 +60,7 @@ class RPG_Monster_NaturalWeaponHelper
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_TENTACLE, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_TENTACLE")));
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_SPIT, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_SPIT")));
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_WEB, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_WEB")));
+    myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_CONSTRICT, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_CONSTRICT")));
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_ROCK_STONE, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_ROCK_STONE")));
   };
 

@@ -80,9 +80,9 @@ class RPG_Item_Dictionary_Type_pskel;
 
 #include <rpg_XMLSchema_XML_types.h>
 
+#include <rpg_magic_incl.h>
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
-#include <rpg_magic_incl.h>
 #include "rpg_item_incl.h"
 #include "rpg_item_common.h"
 
@@ -481,6 +481,15 @@ class RPG_Item_WeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_BasePro
   virtual void
   typeOfDamage (const RPG_Common_PhysicalDamageType&);
 
+  virtual void
+  isNonLethal (bool);
+
+  virtual void
+  isReachWeapon (bool);
+
+  virtual void
+  isDoubleWeapon (bool);
+
   virtual RPG_Item_WeaponPropertiesXML
   post_RPG_Item_WeaponPropertiesXML_Type () = 0;
 
@@ -508,6 +517,15 @@ class RPG_Item_WeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_BasePro
   typeOfDamage_parser (::RPG_Common_PhysicalDamageType_Type_pskel&);
 
   void
+  isNonLethal_parser (::xml_schema::boolean_pskel&);
+
+  void
+  isReachWeapon_parser (::xml_schema::boolean_pskel&);
+
+  void
+  isDoubleWeapon_parser (::xml_schema::boolean_pskel&);
+
+  void
   parsers (::xml_schema::unsigned_short_pskel& /* baseWeight */,
            ::RPG_Item_StorePrice_Type_pskel& /* baseStorePrice */,
            ::RPG_Item_CreationCost_Type_pskel& /* costToCreate */,
@@ -517,7 +535,10 @@ class RPG_Item_WeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_BasePro
            ::RPG_Dice_Roll_Type_pskel& /* baseDamage */,
            ::RPG_Item_CriticalHitProperties_Type_pskel& /* criticalHit */,
            ::xml_schema::unsigned_byte_pskel& /* rangeIncrement */,
-           ::RPG_Common_PhysicalDamageType_Type_pskel& /* typeOfDamage */);
+           ::RPG_Common_PhysicalDamageType_Type_pskel& /* typeOfDamage */,
+           ::xml_schema::boolean_pskel& /* isNonLethal */,
+           ::xml_schema::boolean_pskel& /* isReachWeapon */,
+           ::xml_schema::boolean_pskel& /* isDoubleWeapon */);
 
   // Constructor.
   //
@@ -535,6 +556,11 @@ class RPG_Item_WeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_BasePro
   _end_element_impl (const ::xml_schema::ro_string&,
                      const ::xml_schema::ro_string&);
 
+  virtual bool
+  _attribute_impl (const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&);
+
   protected:
   ::RPG_Item_WeaponType_Type_pskel* weaponType_parser_;
   ::RPG_Item_WeaponCategory_Type_pskel* weaponCategory_parser_;
@@ -543,6 +569,9 @@ class RPG_Item_WeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_BasePro
   ::RPG_Item_CriticalHitProperties_Type_pskel* criticalHit_parser_;
   ::xml_schema::unsigned_byte_pskel* rangeIncrement_parser_;
   ::RPG_Common_PhysicalDamageType_Type_pskel* typeOfDamage_parser_;
+  ::xml_schema::boolean_pskel* isNonLethal_parser_;
+  ::xml_schema::boolean_pskel* isReachWeapon_parser_;
+  ::xml_schema::boolean_pskel* isDoubleWeapon_parser_;
 };
 
 class RPG_Item_MagicWeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_WeaponPropertiesXML_Type_pskel
@@ -575,6 +604,9 @@ class RPG_Item_MagicWeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_We
            ::RPG_Item_CriticalHitProperties_Type_pskel& /* criticalHit */,
            ::xml_schema::unsigned_byte_pskel& /* rangeIncrement */,
            ::RPG_Common_PhysicalDamageType_Type_pskel& /* typeOfDamage */,
+           ::xml_schema::boolean_pskel& /* isNonLethal */,
+           ::xml_schema::boolean_pskel& /* isReachWeapon */,
+           ::xml_schema::boolean_pskel& /* isDoubleWeapon */,
            ::xml_schema::byte_pskel& /* toHitModifier */);
 
   // Constructor.

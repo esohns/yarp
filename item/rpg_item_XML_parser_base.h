@@ -195,6 +195,15 @@ class RPG_Item_WeaponPropertiesXML_Type_pimpl: public virtual RPG_Item_WeaponPro
   virtual void
   typeOfDamage (const RPG_Common_PhysicalDamageType&);
 
+  virtual void
+  isNonLethal (bool);
+
+  virtual void
+  isReachWeapon (bool);
+
+  virtual void
+  isDoubleWeapon (bool);
+
   virtual RPG_Item_WeaponPropertiesXML
   post_RPG_Item_WeaponPropertiesXML_Type ();
 };

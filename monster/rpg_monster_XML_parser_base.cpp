@@ -195,13 +195,6 @@ numAttacksPerRound (unsigned char numAttacksPerRound)
 }
 
 void RPG_Monster_AttackAction_Type_pimpl::
-usage (const RPG_Common_Usage& usage)
-{
-  // TODO
-  //
-}
-
-void RPG_Monster_AttackAction_Type_pimpl::
 ranged (const RPG_Combat_RangedAttackProperties& ranged)
 {
   // TODO
@@ -268,6 +261,138 @@ attackActionsAreInclusive (bool attackActionsAreInclusive)
 
 RPG_Monster_Attack RPG_Monster_Attack_Type_pimpl::
 post_RPG_Monster_Attack_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Monster_SpecialAttackTypeUnion_Type_pimpl
+//
+
+void RPG_Monster_SpecialAttackTypeUnion_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Monster_SpecialAttackTypeUnion_Type_pimpl::
+_characters (const ::xml_schema::ro_string& s)
+{
+  // TODO
+  //
+}
+
+RPG_Monster_SpecialAttackTypeUnion RPG_Monster_SpecialAttackTypeUnion_Type_pimpl::
+post_RPG_Monster_SpecialAttackTypeUnion_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Monster_SpecialAttackPreCondition_Type_pimpl
+//
+
+void RPG_Monster_SpecialAttackPreCondition_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Monster_SpecialAttackPreCondition_Type_pimpl::
+targetAlignment (const RPG_Character_Alignment& targetAlignment)
+{
+  // TODO
+  //
+}
+
+void RPG_Monster_SpecialAttackPreCondition_Type_pimpl::
+targetCondition (const RPG_Character_Condition& targetCondition)
+{
+  // TODO
+  //
+}
+
+void RPG_Monster_SpecialAttackPreCondition_Type_pimpl::
+minTargetSize (const RPG_Character_Size& minTargetSize)
+{
+  // TODO
+  //
+}
+
+void RPG_Monster_SpecialAttackPreCondition_Type_pimpl::
+maxTargetSize (const RPG_Character_Size& maxTargetSize)
+{
+  // TODO
+  //
+}
+
+void RPG_Monster_SpecialAttackPreCondition_Type_pimpl::
+check (const RPG_Combat_Check& check)
+{
+  // TODO
+  //
+}
+
+RPG_Monster_SpecialAttackPreCondition RPG_Monster_SpecialAttackPreCondition_Type_pimpl::
+post_RPG_Monster_SpecialAttackPreCondition_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Monster_SpecialAttackProperties_Type_pimpl
+//
+
+void RPG_Monster_SpecialAttackProperties_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Monster_SpecialAttackProperties_Type_pimpl::
+abilityClass (const RPG_Magic_AbilityClass& abilityClass)
+{
+  // TODO
+  //
+}
+
+void RPG_Monster_SpecialAttackProperties_Type_pimpl::
+type (const RPG_Monster_SpecialAttackTypeUnion& type)
+{
+  // TODO
+  //
+}
+
+void RPG_Monster_SpecialAttackProperties_Type_pimpl::
+preCondition (const RPG_Monster_SpecialAttackPreCondition& preCondition)
+{
+  // TODO
+  //
+}
+
+void RPG_Monster_SpecialAttackProperties_Type_pimpl::
+action (const RPG_Monster_AttackAction& action)
+{
+  // TODO
+  //
+}
+
+void RPG_Monster_SpecialAttackProperties_Type_pimpl::
+amount (const RPG_Dice_Roll& amount)
+{
+  // TODO
+  //
+}
+
+void RPG_Monster_SpecialAttackProperties_Type_pimpl::
+usage (const RPG_Common_Usage& usage)
+{
+  // TODO
+  //
+}
+
+RPG_Monster_SpecialAttackProperties RPG_Monster_SpecialAttackProperties_Type_pimpl::
+post_RPG_Monster_SpecialAttackProperties_Type ()
 {
   // TODO
   //
@@ -537,7 +662,7 @@ attack (const RPG_Monster_Attack& attack)
 }
 
 void RPG_Monster_PropertiesXML_Type_pimpl::
-specialAbility (const RPG_Magic_SpecialAbilityProperties& specialAbility)
+specialAttack (const RPG_Monster_SpecialAttackProperties& specialAttack)
 {
   // TODO
   //

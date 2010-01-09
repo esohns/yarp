@@ -99,18 +99,18 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   RPG_Common_Attribute_Type                      attribute_p;
 
   RPG_Combat_DamageCounterMeasureType_Type       counterMeasureType_p;
-  RPG_Combat_DamageCounterMeasureCheckUnion_Type counterMeasureCheckUnion_p;
+  RPG_Combat_CheckTypeUnion_Type                 checkTypeUnion_p;
 //   RPG_Common_Attribute_Type                      attribute_p;
   ::xml_schema::unsigned_byte_pimpl              unsigned_byte_p;
-  RPG_Combat_DamageCounterMeasureCheck_Type      counterMeausureCheck_p;
-  counterMeausureCheck_p.parsers(counterMeasureCheckUnion_p,
-                                 attribute_p,
-                                 unsigned_byte_p);
+  RPG_Combat_Check_Type                          check_p;
+  check_p.parsers(checkTypeUnion_p,
+                  attribute_p,
+                  unsigned_byte_p);
   RPG_Magic_Spell_Type                           spell_p;
   RPG_Combat_DamageReductionType_Type            reduction_p;
   RPG_Combat_DamageCounterMeasure_Type           counterMeasure_p;
   counterMeasure_p.parsers(counterMeasureType_p,
-                           counterMeausureCheck_p,
+                           check_p,
                            spell_p,
                            reduction_p);
   RPG_Combat_DamageEffectType_Type               damageEffect_p;
@@ -126,7 +126,6 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   RPG_Combat_Damage_Type                         damage_p;
   damage_p.parsers(damageElement_p);
 //   ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
-  RPG_Common_Usage_Type                          usage_p;
   RPG_Combat_RangedEffectUnion_Type              rangedEffectUnion_p;
   RPG_Combat_RangedAttackProperties_Type         rangedProperties_p;
   rangedProperties_p.parsers(unsigned_byte_p,
@@ -139,7 +138,6 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                          attackForm_p,
                          damage_p,
                          unsigned_byte_p,
-                         usage_p,
                          rangedProperties_p,
                          bool_p);
   RPG_Monster_Attack_Type                        attack_p;
@@ -149,13 +147,28 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                    attackAction_p,
                    bool_p);
 
-  RPG_Magic_SpecialAbilityClass_Type             specialAbilitiesClass_p;
-  RPG_Magic_SpecialAbility_Type                  specialAbility_p;
-//   RPG_Common_Usage_Type                          usage_p;
-  RPG_Magic_SpecialAbilityProperties_Type        specialAbilities_p;
-  specialAbilities_p.parsers(specialAbilitiesClass_p,
-                             specialAbility_p,
-                             usage_p);
+  RPG_Magic_AbilityClass_Type                    abilityClass_p;
+  RPG_Monster_SpecialAttackTypeUnion_Type        attackTypeUnion_p;
+  RPG_Character_Alignment_Type                   alignment_p;
+  RPG_Character_Condition_Type                   condition_p;
+//   RPG_Character_Size_Type                        size_p;
+//   RPG_Combat_Check_Type                          check_p;
+  RPG_Monster_SpecialAttackPreCondition_Type     preCondition_p;
+  preCondition_p.parsers(alignment_p,
+                         condition_p,
+                         size_p,
+                         size_p,
+                         check_p);
+//   RPG_Monster_AttackAction_Type                  attackAction_p;
+//   RPG_Dice_Roll_Type                             roll_p;
+  RPG_Common_Usage_Type                          usage_p;
+  RPG_Monster_SpecialAttackProperties_Type       specialAttack_p;
+  specialAttack_p.parsers(abilityClass_p,
+                          attackTypeUnion_p,
+                          preCondition_p,
+                          attackAction_p,
+                          roll_p,
+                          usage_p);
 
 //   unsigned_int_pimpl                      space_p;
 //   unsigned_int_pimpl                      reach_p;
@@ -201,7 +214,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
 //   unsigned_int_pimpl                      treasureModifier_p;
   RPG_Character_AlignmentCivic_Type              alignmentCivic_p;
   RPG_Character_AlignmentEthic_Type              alignmentEthic_p;
-  RPG_Character_Alignment_Type                   alignment_p;
+//   RPG_Character_Alignment_Type                   alignment_p;
   alignment_p.parsers(alignmentCivic_p,
                       alignmentEthic_p);
 
@@ -220,7 +233,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                           unsigned_byte_p,
                           naturalArmorClass_p,
                           attack_p,
-                          specialAbilities_p,
+                          specialAttack_p,
                           unsigned_byte_p,
                           unsigned_byte_p,
                           savingThrowModifiers_p,

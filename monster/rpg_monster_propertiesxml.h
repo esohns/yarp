@@ -31,7 +31,7 @@ struct RPG_Monster_PropertiesXML
   unsigned char speed;
   RPG_Monster_NaturalArmorClass armorClass;
   RPG_Monster_Attack attack;
-  std::vector<RPG_Magic_SpecialAbilityProperties> specialAbilities;
+  std::vector<RPG_Monster_SpecialAttackProperties> specialAttacks;
   unsigned char space;
   unsigned char reach;
   RPG_Monster_SavingThrowModifiers saves;
