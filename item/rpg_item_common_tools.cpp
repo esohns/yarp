@@ -19,15 +19,10 @@
  ***************************************************************************/
 #include "rpg_item_common_tools.h"
 
-#include "rpg_item_type.h"
-#include "rpg_item_money.h"
-#include "rpg_item_weaponcategory.h"
-#include "rpg_item_weaponclass.h"
-#include "rpg_item_weapontype.h"
-#include "rpg_item_armorcategory.h"
-#include "rpg_item_armortype.h"
+#include <rpg_magic_incl.h>
 
-#include <rpg_dice_dietype.h>
+#include "rpg_item_incl.h"
+#include "rpg_item_dictionary.h"
 
 #include <ace/Log_Msg.h>
 
@@ -168,6 +163,81 @@ const bool RPG_Item_Common_Tools::isShield(const RPG_Item_ArmorType& armorType_i
     case ARMOR_SHIELD_HEAVY_WOODEN:
     case ARMOR_SHIELD_HEAVY_STEEL:
     case ARMOR_SHIELD_TOWER:
+    {
+      return true;
+    }
+    default:
+    {
+      break;
+    }
+  } // end SWITCH
+
+  return false;
+}
+
+const bool RPG_Item_Common_Tools::isThrownWeapon(const RPG_Item_WeaponType& weaponType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isThrownWeapon"));
+
+  RPG_Item_WeaponProperties weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weaponType_in);
+
+  return (weapon_properties.rangeIncrement && !isProjectileWeapon(weaponType_in));
+}
+
+const bool RPG_Item_Common_Tools::isProjectileWeapon(const RPG_Item_WeaponType& weaponType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isProjectileWeapon"));
+
+  switch (weaponType_in)
+  {
+    case RANGED_WEAPON_SLING:
+    case RANGED_WEAPON_CROSSBOW_LIGHT:
+    case RANGED_WEAPON_CROSSBOW_HEAVY:
+    case RANGED_WEAPON_BOW_SHORT:
+    case RANGED_WEAPON_BOW_SHORT_COMPOSITE:
+    case RANGED_WEAPON_BOW_LONG:
+    case RANGED_WEAPON_BOW_LONG_COMPOSITE:
+    case RANGED_WEAPON_CROSSBOW_HAND:
+    case RANGED_WEAPON_CROSSBOW_REPEATING_LIGHT:
+    case RANGED_WEAPON_CROSSBOW_REPEATING_HEAVY:
+    {
+      return true;
+    }
+    default:
+    {
+      break;
+    }
+  } // end SWITCH
+
+  return false;
+}
+
+const bool RPG_Item_Common_Tools::isTwoHandedWeapon(const RPG_Item_WeaponType& weaponType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isTwoHandedWeapon"));
+
+  switch (weaponType_in)
+  {
+    case TWO_HANDED_MELEE_WEAPON_LONGSPEAR:
+    case TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF:
+    case TWO_HANDED_MELEE_WEAPON_SPEAR:
+    case TWO_HANDED_MELEE_WEAPON_FALCHION:
+    case TWO_HANDED_MELEE_WEAPON_GLAIVE:
+    case TWO_HANDED_MELEE_WEAPON_AXE_GREAT:
+    case TWO_HANDED_MELEE_WEAPON_CLUB_GREAT:
+    case TWO_HANDED_MELEE_WEAPON_FLAIL_HEAVY:
+    case TWO_HANDED_MELEE_WEAPON_SWORD_GREAT:
+    case TWO_HANDED_MELEE_WEAPON_GUISARME:
+    case TWO_HANDED_MELEE_WEAPON_HALBERD:
+    case TWO_HANDED_MELEE_WEAPON_LANCE:
+    case TWO_HANDED_MELEE_WEAPON_RANSEUR:
+    case TWO_HANDED_MELEE_WEAPON_SCYTHE:
+    case TWO_HANDED_MELEE_WEAPON_AXE_ORC_DOUBLE:
+    case TWO_HANDED_MELEE_WEAPON_CHAIN_SPIKED:
+    case TWO_HANDED_MELEE_WEAPON_FLAIL_DIRE:
+    case TWO_HANDED_MELEE_WEAPON_HAMMER_GNOME_HOOKED:
+    case TWO_HANDED_MELEE_WEAPON_SWORD_TWO_BLADED:
+    case TWO_HANDED_MELEE_WEAPON_URGROSH_DWARVEN:
     {
       return true;
     }

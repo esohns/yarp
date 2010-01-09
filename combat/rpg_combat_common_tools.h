@@ -78,12 +78,13 @@ class RPG_Combat_Common_Tools
   static const bool isCharacterHelpless(const RPG_Character_Base* const); // character handle
   static const bool isCharacterDeadOrDying(const RPG_Character_Base* const); // character handle
 
-  static RPG_Combat_AttackForm weaponTypeToAttackForm(const RPG_Item_WeaponType&); // weapon type
   static const signed char getSizeModifier(const RPG_Character_Size&);
-  static void attackFoe(const RPG_Character_Base* const,     // attacker
-                        RPG_Character_Base* const,           // target
-                        const RPG_Combat_AttackSituation&,   // attacker situation
-                        const RPG_Combat_DefenseSituation&); // defender situation
+  static void attackFoe(const RPG_Character_Base* const,    // attacker
+                        RPG_Character_Base* const,          // target
+                        const RPG_Combat_AttackSituation&,  // attacker situation
+                        const RPG_Combat_DefenseSituation&, // defender situation
+                        const bool&,                        // is this a Full-Round Action ?
+                        const unsigned short&);             // distance (feet)
 };
 
 #endif

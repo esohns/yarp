@@ -36,8 +36,11 @@ class RPG_Item_Common_Tools
   static const RPG_Item_WeaponDamageList_t weaponDamageToPhysicalDamageType(const RPG_Item_WeaponDamage&); // weapon damage
   static const std::string damageToString(const RPG_Item_Damage&); // damage
 
-  static const bool isShield(const RPG_Item_ArmorType&); // armor type
+  static const bool isThrownWeapon(const RPG_Item_WeaponType&); // weapon type
+  static const bool isProjectileWeapon(const RPG_Item_WeaponType&); // weapon type
+  static const bool isTwoHandedWeapon(const RPG_Item_WeaponType&); // weapon type
 
+  static const bool isShield(const RPG_Item_ArmorType&); // armor type
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools());

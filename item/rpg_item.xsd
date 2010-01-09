@@ -197,6 +197,9 @@
           <xsd:element name="typeOfDamage" type="RPG_Common_PhysicalDamageType_Type" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
       </xsd:extension>
+      <xsd:attribute name="isNonLethal" type="xsd:boolean" use="optional" default="false"/>
+      <xsd:attribute name="isReachWeapon" type="xsd:boolean" use="optional" default="false"/>
+      <xsd:attribute name="isDoubleWeapon" type="xsd:boolean" use="optional" default="false"/>
     </xsd:complexContent>
   </xsd:complexType>
 

@@ -75,4 +75,21 @@
     </xsd:sequence>
   </xsd:complexType>
 
+  <xsd:simpleType name="RPG_Common_SavingThrow_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SAVE_FORTITUDE"/>
+      <xsd:enumeration value="SAVE_REFLEX"/>
+      <xsd:enumeration value="SAVE_WILL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Common_Duration_Type">
+    <xsd:sequence>
+      <xsd:element name="activationPeriod" type="xsd:unsignedShort" minOccurs="0" maxOccurs="1"/>
+      <!--       <xsd:element name="incubationCounterMeasure" type="xsd:boolean" minOccurs="0" maxOccurs="1"/> -->
+      <xsd:element name="interval" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="totalDuration" type="xsd:unsignedShort" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
 </xsd:schema>

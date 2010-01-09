@@ -19,11 +19,7 @@
  ***************************************************************************/
 #include "rpg_combat_common_tools.h"
 
-#include "rpg_combat_attackform.h"
-#include "rpg_combat_areaofeffect.h"
-#include "rpg_combat_specialattack.h"
-#include "rpg_combat_specialdamagetype.h"
-#include "rpg_combat_damageeffecttype.h"
+#include "rpg_combat_incl.h"
 
 #include <rpg_monster_common.h>
 #include <rpg_monster_attackaction.h>
@@ -45,6 +41,8 @@
 
 #include <algorithm>
 #include <sstream>
+
+#include <math.h>
 
 // init statics
 RPG_Combat_AttackFormToStringTable_t RPG_Combat_AttackFormHelper::myRPG_Combat_AttackFormToStringTable;
@@ -482,10 +480,13 @@ void RPG_Combat_Common_Tools::performCombatRound(const RPG_Combat_AttackSituatio
                (*iterator2).handle->getName().c_str(),
                (*iterator).handle->getName().c_str()));
 
+    // *TODO*: for now, we ignore range and movement
     attackFoe((*iterator2).handle,
               ACE_const_cast(RPG_Character_Base*, (*iterator).handle),
               attackSituation_in,
-              defenseSituation_in);
+              defenseSituation_in,
+              true,
+              5);
   } // end FOR
 }
 
@@ -542,104 +543,6 @@ const bool RPG_Combat_Common_Tools::isCharacterDeadOrDying(const RPG_Character_B
   } // end IF
 
   return false;
-}
-
-RPG_Combat_AttackForm RPG_Combat_Common_Tools::weaponTypeToAttackForm(const RPG_Item_WeaponType& weaponType_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::weaponTypeToAttackForm"));
-
-  switch (weaponType_in)
-  {
-    case UNARMED_WEAPON_GAUNTLET:
-    case UNARMED_WEAPON_STRIKE:
-    case LIGHT_MELEE_WEAPON_DAGGER:
-    case LIGHT_MELEE_WEAPON_GAUNTLET_SPIKED:
-    case LIGHT_MELEE_WEAPON_MACE_LIGHT:
-    case LIGHT_MELEE_WEAPON_SICKLE:
-    case ONE_HANDED_MELEE_WEAPON_CLUB:
-    case ONE_HANDED_MELEE_WEAPON_MACE_HEAVY:
-    case ONE_HANDED_MELEE_WEAPON_MORNINGSTAR:
-    case ONE_HANDED_MELEE_WEAPON_SHORTSPEAR:
-    case TWO_HANDED_MELEE_WEAPON_LONGSPEAR:
-    case TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF:
-    case TWO_HANDED_MELEE_WEAPON_SPEAR:
-    case LIGHT_MELEE_WEAPON_AXE_THROWING:
-    case LIGHT_MELEE_WEAPON_HAMMER_LIGHT:
-    case LIGHT_MELEE_WEAPON_AXE_HAND:
-    case LIGHT_MELEE_WEAPON_KUKRI:
-    case LIGHT_MELEE_WEAPON_PICK_LIGHT:
-    case LIGHT_MELEE_WEAPON_SAP:
-    case LIGHT_MELEE_WEAPON_SHIELD_LIGHT:
-    case LIGHT_MELEE_WEAPON_ARMOR_SPIKED:
-    case LIGHT_MELEE_WEAPON_SHIELD_LIGHT_SPIKED:
-    case LIGHT_MELEE_WEAPON_SWORD_SHORT:
-    case ONE_HANDED_MELEE_WEAPON_AXE_BATTLE:
-    case ONE_HANDED_MELEE_WEAPON_FLAIL_LIGHT:
-    case ONE_HANDED_MELEE_WEAPON_SWORD_LONG:
-    case ONE_HANDED_MELEE_WEAPON_PICK_HEAVY:
-    case ONE_HANDED_MELEE_WEAPON_RAPIER:
-    case ONE_HANDED_MELEE_WEAPON_SCIMITAR:
-    case ONE_HANDED_MELEE_WEAPON_SHIELD_HEAVY:
-    case ONE_HANDED_MELEE_WEAPON_SHIELD_HEAVY_SPIKED:
-    case ONE_HANDED_MELEE_WEAPON_TRIDENT:
-    case ONE_HANDED_MELEE_WEAPON_HAMMER_WAR:
-    case TWO_HANDED_MELEE_WEAPON_FALCHION:
-    case TWO_HANDED_MELEE_WEAPON_GLAIVE:
-    case TWO_HANDED_MELEE_WEAPON_AXE_GREAT:
-    case TWO_HANDED_MELEE_WEAPON_CLUB_GREAT:
-    case TWO_HANDED_MELEE_WEAPON_FLAIL_HEAVY:
-    case TWO_HANDED_MELEE_WEAPON_SWORD_GREAT:
-    case TWO_HANDED_MELEE_WEAPON_GUISARME:
-    case TWO_HANDED_MELEE_WEAPON_HALBERD:
-    case TWO_HANDED_MELEE_WEAPON_LANCE:
-    case TWO_HANDED_MELEE_WEAPON_RANSEUR:
-    case TWO_HANDED_MELEE_WEAPON_SCYTHE:
-    case LIGHT_MELEE_WEAPON_KAMA:
-    case LIGHT_MELEE_WEAPON_NUNCHAKU:
-    case LIGHT_MELEE_WEAPON_SAI:
-    case LIGHT_MELEE_WEAPON_SIANGHAM:
-    case ONE_HANDED_MELEE_WEAPON_SWORD_BASTARD:
-    case ONE_HANDED_MELEE_WEAPON_AXE_WAR_DWARVEN:
-    case ONE_HANDED_MELEE_WEAPON_WHIP:
-    case TWO_HANDED_MELEE_WEAPON_AXE_ORC_DOUBLE:
-    case TWO_HANDED_MELEE_WEAPON_CHAIN_SPIKED:
-    case TWO_HANDED_MELEE_WEAPON_FLAIL_DIRE:
-    case TWO_HANDED_MELEE_WEAPON_HAMMER_GNOME_HOOKED:
-    case TWO_HANDED_MELEE_WEAPON_SWORD_TWO_BLADED:
-    case TWO_HANDED_MELEE_WEAPON_URGROSH_DWARVEN:
-    {
-      return ATTACKFORM_MELEE;
-    }
-    case RANGED_WEAPON_CROSSBOW_LIGHT:
-    case RANGED_WEAPON_CROSSBOW_HEAVY:
-    case RANGED_WEAPON_DART:
-    case RANGED_WEAPON_JAVELIN:
-    case RANGED_WEAPON_SLING:
-    case RANGED_WEAPON_BOW_SHORT:
-    case RANGED_WEAPON_BOW_SHORT_COMPOSITE:
-    case RANGED_WEAPON_BOW_LONG:
-    case RANGED_WEAPON_BOW_LONG_COMPOSITE:
-    case RANGED_WEAPON_BOLAS:
-    case RANGED_WEAPON_CROSSBOW_HAND:
-    case RANGED_WEAPON_CROSSBOW_REPEATING_LIGHT:
-    case RANGED_WEAPON_CROSSBOW_REPEATING_HEAVY:
-    case RANGED_WEAPON_NET:
-    case RANGED_WEAPON_SHURIKEN:
-    {
-      return ATTACKFORM_RANGED;
-    }
-    default:
-    {
-      // debug info
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid weapon type: \"%s\", aborting\n"),
-                 RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weaponType_in).c_str()));
-
-      break;
-    }
-  } // end SWITCH
-
-  return RPG_COMBAT_ATTACKFORM_INVALID;
 }
 
 const signed char RPG_Combat_Common_Tools::getSizeModifier(const RPG_Character_Size& size_in)
@@ -719,7 +622,9 @@ const signed char RPG_Combat_Common_Tools::getSizeModifier(const RPG_Character_S
 void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
                                         RPG_Character_Base* const target_inout,
                                         const RPG_Combat_AttackSituation& attackSituation_in,
-                                        const RPG_Combat_DefenseSituation& defenseSituation_in)
+                                        const RPG_Combat_DefenseSituation& defenseSituation_in,
+                                        const bool& isFullRoundAction_in,
+                                        const unsigned short& distance_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::attackFoe"));
 
@@ -727,24 +632,28 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
   ACE_ASSERT(attacker_in && target_inout);
 
   RPG_Dice_Roll roll;
+  roll.numDice = 1;
+  roll.typeDice = D_20;
+  roll.modifier = 0;
   RPG_Dice_RollResult_t result;
   int attack_roll = 0;
+  int attackBonus = 0;
   RPG_Item_WeaponProperties weapon_properties;
+  bool is_threat = false;
   bool is_critical_hit = false;
   RPG_Common_Attribute attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   RPG_Combat_AttackForm attackForm = RPG_COMBAT_ATTACKFORM_INVALID;
   RPG_Item_ArmorProperties armor_properties;
-  int AC = 0;
+  int targetArmorClass = 10;
   short int DEX_modifier = 0;
+  float STR_factor = 1.0;
   RPG_Combat_Damage damage;
   RPG_Combat_DamageElement damage_element;
   RPG_Item_WeaponDamageList_t physicalDamageTypeList;
   if (attacker_in->isPlayerCharacter())
   {
-    RPG_Character_Monster* monster = NULL;
-
     // attack roll: D_20 + attack bonus + other modifiers
-    // step1: compute attack bonus(ses) --> number of attacks
+    // step1a: compute attack bonus(ses) --> number of attacks
     const RPG_Character_Player_Base* player_base = ACE_dynamic_cast(const RPG_Character_Player_Base*,
                                                                     attacker_in);
     ACE_ASSERT(player_base);
@@ -756,7 +665,7 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
          iterator++)
     {
       RPG_Character_BaseAttackBonus_t bonus = RPG_Character_Common_Tools::getBaseAttackBonus((*iterator).subClass,
-          player_base->getLevel((*iterator).subClass));
+                                                                                             player_base->getLevel((*iterator).subClass));
       // append necessary entries
       for (int diff = bonus.size() - baseAttackBonus.size();
            diff > 0;
@@ -769,70 +678,109 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
         baseAttackBonus[index] += *iterator2;
     } // end FOR
 
+    // step1b: compute target AC
+    // *TODO*: consider manufactured (and equipped) armor
+    // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier + other modifiers
+    RPG_Character_Monster* monster = NULL;
+    monster = ACE_dynamic_cast(RPG_Character_Monster*, target_inout);
+    ACE_ASSERT(monster);
+    targetArmorClass = monster->getArmorClass(defenseSituation_in);
+    targetArmorClass += monster->getShieldBonus();
+/*      armor_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(monster->getEquipment()->getArmor());
+    DEX_modifier = RPG_Character_Common_Tools::getAttributeAbilityModifier(target_inout->getAttribute(ATTRIBUTE_DEXTERITY));
+    if (monster->getEquipment()->getArmor() != ARMOR_NONE)
+    {
+    DEX_modifier = std::min(ACE_static_cast(int, armor_properties.maxDexterityBonus),
+    ACE_static_cast(int, DEX_modifier));
+  } // end IF
+    targetArmorClass += DEX_modifier;
+    targetArmorClass += RPG_Combat_Common_Tools::getSizeModifier(target_inout->getSize());*/
+    // *TODO*: consider other modifiers:
+    // - enhancement bonuses
+    // - deflection bonuses
+    // - natural armor
+    // - dodge bonuses
+
+    // step1c: retrieve active weapon properties
+    // *TODO*: consider multi-weapon/offhand attacks...
+    weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(player_base->getEquipment()->getPrimaryWeapon());
+    // check if target is within reach at all
+    // *TODO*: consider players size (and therefore reach) may be (temporarily) altered
+    unsigned short maxReach = 0;
+    maxReach = RPG_Item_Common_Tools::isProjectileWeapon(player_base->getEquipment()->getPrimaryWeapon()) ? (weapon_properties.rangeIncrement * 5) : (weapon_properties.rangeIncrement * 10);
+    if (weapon_properties.rangeIncrement == 0) maxReach = 50; // not really meant to be thrown...
+    if (((weapon_properties.rangeIncrement == 0) && distance_in > 5) ||
+        (distance_in > maxReach))
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("player \"%s\" primary weapon (max. reach: %d) is not within range %d of \"%s\", returning\n"),
+                 player_base->getName().c_str(),
+                 maxReach,
+                 distance_in,
+                 monster->getName().c_str()));
+
+      // nothing to do...
+      return;
+    } // end IF
+
     // step2: perform attack(s)
     for (RPG_Character_BaseAttackBonusIterator_t iterator = baseAttackBonus.begin();
          iterator != baseAttackBonus.end();
          iterator++)
     {
       attack_roll = 0;
+      attackBonus = 0;
+      is_threat = false;
       is_critical_hit = false;
 
       // step2a: roll D_20
       result.clear();
-      roll.numDice = 1;
-      roll.typeDice = D_20;
-      roll.modifier = 0;
       RPG_Dice::simulateRoll(roll,
                              1,
                              result);
       attack_roll = result.front();
 
-      // a roll of 20 is ALWAYS a (critical) hit, a 1 a miss...
-      weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(player_base->getEquipment()->getPrimaryWeapon());
-      is_critical_hit = (attack_roll >= weapon_properties.criticalHit.minToHitRoll);
+      // a natural roll of 20 is ALWAYS a hit (roll again to test for critical), a 1 a miss...
+      // for increased threat ranges, a score lower than 20 is NOT automatically a hit...
+      if (attack_roll >= weapon_properties.criticalHit.minToHitRoll)
+      {
+        // we have scored a threat...
+        is_threat = true;
+        // --> roll again to test for critical hit
+        result.clear();
+        RPG_Dice::simulateRoll(roll,
+                               1,
+                               result);
+      } // end IF
 
-      if (attack_roll == 20)
-        goto is_player_hit;
-      else if (attack_roll == 1)
+      if (attack_roll == 1)
         goto is_player_miss;
 
       // attack bonus: base attack bonus + STR/DEX modifier + size modifier (+ range penalty)
-      attack_roll += *iterator;
+      attackBonus = *iterator;
       // --> check primary weapon
+      // *TODO*: consider that a creature with FEAT_WEAPON_FINESSE can use its DEX modifier for melee attacks...
       attribute = ATTRIBUTE_STRENGTH;
-      attackForm = weaponTypeToAttackForm(player_base->getEquipment()->getPrimaryWeapon());
+      attackForm = (distance_in > 5 ? ATTACKFORM_RANGED : ATTACKFORM_MELEE);
       if (attackForm == ATTACKFORM_RANGED)
         attribute = ATTRIBUTE_DEXTERITY;
-      attack_roll += RPG_Character_Common_Tools::getAttributeAbilityModifier(attacker_in->getAttribute(attribute));
-      attack_roll += RPG_Combat_Common_Tools::getSizeModifier(attacker_in->getSize());
-      // *TODO*: consider other modifiers (e.g. range penalty)...
-
-      // step2b: compute target AC
-      // *TODO*: consider manufactured (and equipped) armor
-      // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier + other modifiers
-      AC = 0;
-      monster = ACE_dynamic_cast(RPG_Character_Monster*, target_inout);
-      ACE_ASSERT(monster);
-      AC += monster->getArmorClass(defenseSituation_in);
-      AC += monster->getShieldBonus();
-/*      armor_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(monster->getEquipment()->getArmor());
-      DEX_modifier = RPG_Character_Common_Tools::getAttributeAbilityModifier(target_inout->getAttribute(ATTRIBUTE_DEXTERITY));
-      if (monster->getEquipment()->getArmor() != ARMOR_NONE)
-      {
-        DEX_modifier = std::min(ACE_static_cast(int, armor_properties.maxDexterityBonus),
-                                ACE_static_cast(int, DEX_modifier));
-      } // end IF
-      AC += DEX_modifier;
-      AC += RPG_Combat_Common_Tools::getSizeModifier(target_inout->getSize());*/
-      // *TODO*: consider other modifiers:
-      // - enhancement bonuses
-      // - deflection bonuses
-      // - natural armor
-      // - dodge bonuses
+      attackBonus += RPG_Character_Common_Tools::getAttributeAbilityModifier(attacker_in->getAttribute(attribute));
+      attackBonus += RPG_Combat_Common_Tools::getSizeModifier(attacker_in->getSize());
+      // consider range penalty...
+      if (weapon_properties.rangeIncrement)
+        attackBonus += (ACE_static_cast(int, (distance_in / weapon_properties.rangeIncrement)) * -2);
+      // *TODO*: consider other modifiers...
 
       // hit or miss ?
-      if (attack_roll < AC)
+      if (((attack_roll + attackBonus) < targetArmorClass) && (attack_roll != 20))
         goto is_player_miss;
+      else if (is_threat)
+      {
+        // check for critical
+        if ((result.front() + attackBonus) >= targetArmorClass)
+          is_critical_hit = true;
+      } // end ELSE
 
 is_player_hit:
       // compute damage
@@ -848,12 +796,32 @@ is_player_hit:
         damage_element.types.push_back(damageType);
       } // end FOR
       damage_element.amount = weapon_properties.baseDamage;
-      // add STR modifier for melee attacks...
-      // *TODO*: consider:
-      // - this applies for slings and thrown weapons
-      // - a STR penalty applies to any bow != Composite
-      if (attackForm == ATTACKFORM_MELEE)
-        damage_element.amount.modifier += RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH));
+      // compute STR factor
+      // *TODO*: consider off-hand, double-handed/weapon fighting etc...
+      // light weapon: primary x1, off-hand x.5
+      // one-handed: primary x1, off-hand x.5, two-handed x1.5:
+      // two-handed: x1.5
+      if (RPG_Item_Common_Tools::isTwoHandedWeapon(player_base->getEquipment()->getPrimaryWeapon()))
+        STR_factor = 1.5;
+      // add STR modifier for melee attacks and thrown weapons...
+      // consider:
+      // - bonusses only apply to slings and composite bows
+      // - penalties apply to ANY bow or sling
+      if ((attackForm == ATTACKFORM_MELEE) ||
+          ((attackForm == ATTACKFORM_RANGED) &&
+           (RPG_Item_Common_Tools::isThrownWeapon(player_base->getEquipment()->getPrimaryWeapon()) ||
+            (RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH)) &&
+             (player_base->getEquipment()->getPrimaryWeapon() == RANGED_WEAPON_SLING) ||
+             (player_base->getEquipment()->getPrimaryWeapon() == RANGED_WEAPON_BOW_SHORT_COMPOSITE) ||
+             (player_base->getEquipment()->getPrimaryWeapon() == RANGED_WEAPON_BOW_LONG_COMPOSITE)) ||
+            (RPG_Item_Common_Tools::isProjectileWeapon(player_base->getEquipment()->getPrimaryWeapon()) &&
+             (player_base->getEquipment()->getPrimaryWeapon() != RANGED_WEAPON_CROSSBOW_LIGHT) &&
+             (player_base->getEquipment()->getPrimaryWeapon() != RANGED_WEAPON_CROSSBOW_HEAVY) &&
+             (player_base->getEquipment()->getPrimaryWeapon() != RANGED_WEAPON_CROSSBOW_HAND) &&
+             (player_base->getEquipment()->getPrimaryWeapon() != RANGED_WEAPON_CROSSBOW_REPEATING_LIGHT) &&
+             (player_base->getEquipment()->getPrimaryWeapon() != RANGED_WEAPON_CROSSBOW_REPEATING_HEAVY)))))
+        damage_element.amount.modifier += ::lround(RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH)) * STR_factor);
+      // *IMPORTANT NOTE*: extra damage over and above a weapon’s normal damage is not multiplied
       if (is_critical_hit)
         damage_element.amount *= ACE_static_cast(int, weapon_properties.criticalHit.damageModifier);
       damage_element.secondary.numDice = 0;
@@ -871,6 +839,10 @@ is_player_hit:
       damage.elements.push_back(damage_element);
       target_inout->sustainDamage(damage);
 
+      // if this was a Standard Action, we're done
+      if (!isFullRoundAction_in)
+        break;
+
       // perform next attack
       continue;
 
@@ -880,49 +852,134 @@ is_player_miss:
                  ACE_TEXT("player \"%s\" attacks \"%s\" (AC: %d) and misses: %d...\n"),
                  player_base->getName().c_str(),
                  monster->getName().c_str(),
-                 AC,
+                 targetArmorClass,
                  attack_roll));
+
+      // if this was a Standard Action, we're done
+      if (!isFullRoundAction_in)
+        break;
     } // end FOR
   } // end IF
   else
   {
-    // if the attacker is a "regular" monster, we have a specific description of its weapons
-    // attack roll: D_20 + attack bonus + other modifiers
-    // step1: compute attack bonus(ses) --> number of attacks
-    RPG_Character_Player_Base* player_base = NULL;
-
-    // attack roll: D_20 + attack bonus + other modifiers
-    // step1: get monster properties
+    // if the attacker is a "regular" monster, so we have a specific description of its weapons/abilities
+    // step1a: get monster properties
     const RPG_Character_Monster* monster = ACE_dynamic_cast(const RPG_Character_Monster*, attacker_in);
     ACE_ASSERT(monster);
     RPG_Monster_Properties monster_properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getMonsterProperties(monster->getName());
 
-    // step2: perform attack(s)
-    // *TODO*: evaluate whether the attacks are OR/AND...
-    std::vector<RPG_Monster_AttackAction>::const_iterator iterator;
-    bool is_action_complete = false;
-    if (monster_properties.attack.fullAttackActions.empty())
+    // step1b: compute target AC
+    // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier + other modifiers
+    RPG_Character_Player_Base* player_base = NULL;
+    player_base = ACE_dynamic_cast(RPG_Character_Player_Base*, target_inout);
+    ACE_ASSERT(player_base);
+    targetArmorClass += player_base->getArmorClass(defenseSituation_in);
+    targetArmorClass += player_base->getShieldBonus();
+    DEX_modifier = RPG_Character_Common_Tools::getAttributeAbilityModifier(target_inout->getAttribute(ATTRIBUTE_DEXTERITY));
+    if (player_base->getEquipment()->getArmor() != ARMOR_NONE)
     {
-      // choose any (ONE!) standard action instead
-      iterator = monster_properties.attack.standardAttackActions.begin();
-      result.clear();
-      RPG_Dice::generateRandomNumbers(monster_properties.attack.standardAttackActions.size(),
-                                      1,
-                                      result);
-      std::advance(iterator, result.front() - 1);
-      is_action_complete = true;
+      armor_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(player_base->getEquipment()->getArmor());
+      DEX_modifier = std::min(ACE_static_cast(int, armor_properties.maxDexterityBonus),
+                              ACE_static_cast(int, DEX_modifier));
     } // end IF
-    else if (!monster_properties.attack.attackActionsAreInclusive)
-    {
-      // evaluate whether the attack options are exclusive...
-      // --> choose any (ONE!) full attack action
+    targetArmorClass += DEX_modifier;
+    targetArmorClass += RPG_Combat_Common_Tools::getSizeModifier(target_inout->getSize());
+        // *TODO*: consider other modifiers:
+        // - enhancement bonuses
+        // - deflection bonuses
+        // - natural armor
+        // - dodge bonuses
+
+    // step2: perform attack(s)
+    bool attacks_are_standard_actions = false;
+    std::vector<RPG_Monster_AttackAction>::const_iterator iterator;
+    if ((isFullRoundAction_in) &&
+        (!monster_properties.attack.fullAttackActions.empty()))
       iterator = monster_properties.attack.fullAttackActions.begin();
-      result.clear();
-      RPG_Dice::generateRandomNumbers(monster_properties.attack.fullAttackActions.size(),
-                                      1,
-                                      result);
-      std::advance(iterator, result.front() - 1);
-      is_action_complete = true;
+    else
+    {
+      iterator = monster_properties.attack.standardAttackActions.begin();
+      attacks_are_standard_actions = true;
+    } // end ELSE
+    bool is_action_complete = false;
+
+    // if the attack actions are not inclusive, we need to choose a single (set of) (suitable) one(s)...
+    if (!monster_properties.attack.attackActionsAreInclusive)
+    {
+      if (attacks_are_standard_actions)
+      {
+        // choose any single appropriate (i.e. MELEE) standard action instead
+        // *TODO*: consider the possibility that the monster doesn't use melee attacks !
+        do
+        {
+          result.clear();
+          RPG_Dice::generateRandomNumbers(monster_properties.attack.standardAttackActions.size(),
+                                          1,
+                                          result);
+          std::advance(iterator, result.front() - 1);
+
+          // check if the attack is appropriate:
+          // --> i.e. within range
+          if ((*iterator).attackForms.find(ATTACKFORM_MELEE) != (*iterator).attackForms.end())
+          {
+            if (distance_in <= 5) break; // done
+          } // end IF
+          else
+          {
+            // check max range
+            if ((*iterator).ranged.maxRange >= distance_in) break; // OK
+          } // end ELSE
+        } while (true);
+
+        // in this case, we just take this one action...
+        is_action_complete = true;
+      } // end IF
+      else
+      {
+        // choose any single appropriate (i.e. MELEE) (set of) full action(s)
+        // *TODO*: consider the possibility that the monster doesn't use melee attacks !
+        // step1: count the number of available sets
+        int numberOfSets = 0;
+        std::vector<RPG_Monster_AttackAction>::const_iterator iterator2 = monster_properties.attack.fullAttackActions.begin();
+        do
+        {
+          if ((*iterator2).attackForms.find(ATTACKFORM_MELEE) != (*iterator2).attackForms.end())
+            numberOfSets++;
+
+          while ((*iterator2).fullAttackIncludesNextAction)
+            iterator2++;
+
+          if ((iterator2 + 1) == monster_properties.attack.fullAttackActions.end())
+            break;
+        } while (true);
+
+        do
+        {
+          result.clear();
+          RPG_Dice::generateRandomNumbers(numberOfSets,
+                                          1,
+                                          result);
+          for (int i = 0;
+               i < (result.front() - 1);
+               i++)
+          {
+            while ((*iterator).fullAttackIncludesNextAction)
+              iterator++;
+          } // end FOR
+
+          // check if the attack is appropriate:
+          // --> i.e. within range
+          if ((*iterator).attackForms.find(ATTACKFORM_MELEE) != (*iterator).attackForms.end())
+          {
+            if (distance_in <= 5) break; // done
+          } // end IF
+          else
+          {
+            // check max range
+            if ((*iterator).ranged.maxRange >= distance_in) break; // OK
+          } // end ELSE
+        } while (true);
+      } // end ELSE
     } // end IF
 
     do
@@ -932,34 +989,40 @@ is_player_miss:
            i++)
       {
         attack_roll = 0;
+        attackBonus = 0;
+        is_threat = false;
         is_critical_hit = false;
 
         // step2a: roll D_20
         result.clear();
-        roll.numDice = 1;
-        roll.typeDice = D_20;
-        roll.modifier = 0;
         RPG_Dice::simulateRoll(roll,
                                1,
                                result);
         attack_roll = result.front();
 
-        // a roll of 20 is ALWAYS a (critical) hit, a 1 a miss...
+        // a natural roll of 20 is ALWAYS a hit (roll again to test for critical), a 1 a miss...
+        // for increased threat ranges, a score lower than 20 is NOT automatically a hit...
         // *TODO*: consider any manufactured (and equipped) weapons...
-//         weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(player_base->getEquipment()->getPrimaryWeapon());
-        is_critical_hit = (attack_roll == 20);
-
         if (attack_roll == 20)
-          goto is_monster_hit;
-        else if (attack_roll == 1)
+        {
+          // we have scored a threat...
+          is_threat = true;
+          // --> roll again to test for critical hit
+          result.clear();
+          RPG_Dice::simulateRoll(roll,
+                                 1,
+                                 result);
+        } // end IF
+
+        if (attack_roll == 1)
           goto is_monster_miss;
 
         // attack bonus: base attack bonus + STR/DEX modifier + size modifier (+ range penalty)
         if ((*iterator).attackBonus.size() == (*iterator).numAttacksPerRound)
-          attack_roll += (*iterator).attackBonus[i];
+          attackBonus = (*iterator).attackBonus[i];
         else
-          attack_roll += (*iterator).attackBonus[0];
-        // *TODO*: consider that a create with FEAT_WEAPON_FINESSE can use its DEX modifier for melee attacks...
+          attackBonus = (*iterator).attackBonus[0];
+        // *TODO*: consider that a creature with FEAT_WEAPON_FINESSE can use its DEX modifier for melee attacks...
 /*        // --> check primary weapon
         attribute = ATTRIBUTE_STRENGTH;
         attackForm = weaponTypeToAttackForm(player_base->getEquipment()->getPrimaryWeapon());
@@ -967,33 +1030,21 @@ is_player_miss:
           attribute = ATTRIBUTE_DEXTERITY;
         attack_roll += RPG_Character_Common_Tools::getAttributeAbilityModifier(attacker_in->getAttribute(attribute));
         attack_roll += RPG_Combat_Common_Tools::getSizeModifier(attacker_in->getSize());*/
-        // *TODO*: consider other modifiers (e.g. range penalty)...
 
-        // step2b: compute target AC
-        // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier + other modifiers
-        AC = 10;
-        player_base = ACE_dynamic_cast(RPG_Character_Player_Base*, target_inout);
-        ACE_ASSERT(player_base);
-        AC += player_base->getArmorClass(defenseSituation_in);
-        AC += player_base->getShieldBonus();
-        DEX_modifier = RPG_Character_Common_Tools::getAttributeAbilityModifier(target_inout->getAttribute(ATTRIBUTE_DEXTERITY));
-        if (player_base->getEquipment()->getArmor() != ARMOR_NONE)
-        {
-          armor_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(player_base->getEquipment()->getArmor());
-          DEX_modifier = std::min(ACE_static_cast(int, armor_properties.maxDexterityBonus),
-                                  ACE_static_cast(int, DEX_modifier));
-        } // end IF
-        AC += DEX_modifier;
-        AC += RPG_Combat_Common_Tools::getSizeModifier(target_inout->getSize());
-        // *TODO*: consider other modifiers:
-        // - enhancement bonuses
-        // - deflection bonuses
-        // - natural armor
-        // - dodge bonuses
+        // consider range penalty...
+        if ((*iterator).ranged.increment)
+          attackBonus += (ACE_static_cast(int, (distance_in / (*iterator).ranged.increment)) * -2);
+        // *TODO*: consider other modifiers...
 
         // hit or miss ?
-        if (attack_roll < AC)
+        if (((attack_roll + attackBonus) < targetArmorClass) && (attack_roll != 20))
           goto is_monster_miss;
+        else if (is_threat)
+        {
+          // check for critical
+          if ((result.front() + attackBonus) >= targetArmorClass)
+            is_critical_hit = true;
+        } // end ELSE
 
 is_monster_hit:
         // compute damage
@@ -1004,15 +1055,21 @@ is_monster_hit:
                 iterator2 != damage.elements.end();
                 iterator2++)
           {
-            // *TODO*: this probably applies for physical/natural damage only !
+            // *IMPORTANT NOTE*: this applies for physical/natural damage only !
             // *TODO*: consider manufactured (and equipped) weapons may have different modifiers
             // *IMPORTANT NOTE*: STR modifier already included...
-            (*iterator2).amount *= 2;
+            if ((*iterator2).types.front().discriminator == RPG_Combat_DamageTypeUnion::PHYSICALDAMAGETYPE)
+              (*iterator2).amount *= 2;
           } // end FOR
         } // end IF
         target_inout->sustainDamage(damage);
 
-        goto iterator_advance;
+        // if this was a Standard Action, we're done
+        if (!isFullRoundAction_in)
+          return;
+
+        // perform next attack
+        continue;
 
 is_monster_miss:
         // debug info
@@ -1020,14 +1077,14 @@ is_monster_miss:
                    ACE_TEXT("monster \"%s\" attacks \"%s\" (AC: %d) and misses: %d...\n"),
                    monster->getName().c_str(),
                    player_base->getName().c_str(),
-                   AC,
-                   attack_roll));
+                   targetArmorClass,
+                   (attack_roll + attackBonus)));
       } // end FOR
 
-iterator_advance:
-      iterator++;
-    } while ((iterator != (monster_properties.attack.fullAttackActions.empty() ? monster_properties.attack.standardAttackActions.end()
-      : monster_properties.attack.fullAttackActions.end())) &&
-             (!is_action_complete));
+      if ((*iterator).fullAttackIncludesNextAction)
+        iterator++;
+      else
+        return;
+    } while (true);
   } // end ELSE
 }
