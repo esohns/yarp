@@ -38,6 +38,8 @@
 #include "rpg_combat_incl.h"
 #include "rpg_combat_common.h"
 
+#include "rpg_monster_common.h"
+
 #include <ace/Global_Macros.h>
 
 #include <deque>
@@ -79,6 +81,10 @@ class RPG_Combat_Common_Tools
   static const bool isCharacterDeadOrDying(const RPG_Character_Base* const); // character handle
 
   static const signed char getSizeModifier(const RPG_Character_Size&);
+  static const unsigned int numCompatibleMonsterAttackActions(const RPG_Combat_AttackForm&,
+                                                              const RPG_Monster_AttackActions_t&);
+  static const bool isCompatibleMonsterAttackAction(const RPG_Combat_AttackForm&,
+                                                    const RPG_Monster_AttackAction&);
   static void attackFoe(const RPG_Character_Base* const,    // attacker
                         RPG_Character_Base* const,          // target
                         const RPG_Combat_AttackSituation&,  // attacker situation

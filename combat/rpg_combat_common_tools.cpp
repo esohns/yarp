@@ -645,6 +645,87 @@ const signed char RPG_Combat_Common_Tools::getSizeModifier(const RPG_Character_S
 //   return 0;
 }
 
+const unsigned int RPG_Combat_Common_Tools::numCompatibleMonsterAttackActions(const RPG_Combat_AttackForm& attackForm_in,
+                                                                              const RPG_Monster_AttackActions_t& actions_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::numCompatibleMonsterAttackActions"));
+
+  unsigned int result = 0;
+
+  switch (attackForm_in)
+  {
+    case ATTACKFORM_MELEE:
+    {
+      for (RPG_Monster_AttackActionsIterator_t iterator = actions_in.begin();
+           iterator != actions_in.end();
+           iterator++)
+      {
+        // *IMPORTANT NOTE*: for this purpose, touch attacks count as melee attacks
+        // if (and ONLY IF) it's not a ranged touch...
+        if ((std::find((*iterator).attackForms.begin(),
+                       (*iterator).attackForms.end(),
+                       ATTACKFORM_MELEE) != (*iterator).attackForms.end()))
+          result++;
+        else if ((std::find((*iterator).attackForms.begin(),
+                            (*iterator).attackForms.end(),
+                            ATTACKFORM_TOUCH) != (*iterator).attackForms.end()) &&
+                 (std::find((*iterator).attackForms.begin(),
+                            (*iterator).attackForms.end(),
+                            ATTACKFORM_RANGED) == (*iterator).attackForms.end()))
+          result++;
+      } // end FOR
+    }
+    default:
+    {
+      for (RPG_Monster_AttackActionsIterator_t iterator = actions_in.begin();
+            iterator != actions_in.end();
+            iterator++)
+      {
+        if (std::find((*iterator).attackForms.begin(),
+                      (*iterator).attackForms.end(),
+                      attackForm_in) != (*iterator).attackForms.end())
+          result++;
+      } // end FOR
+    }
+  } // end SWITCH
+
+  return result;
+}
+
+const bool RPG_Combat_Common_Tools::isCompatibleMonsterAttackAction(const RPG_Combat_AttackForm& attackForm_in,
+                                                                    const RPG_Monster_AttackAction& action_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::isCompatibleMonsterAttackAction"));
+
+  switch (attackForm_in)
+  {
+    case ATTACKFORM_MELEE:
+    {
+      if (std::find(action_in.attackForms.begin(),
+                    action_in.attackForms.end(),
+                    ATTACKFORM_MELEE) != action_in.attackForms.end())
+        return true;
+
+      // touch attacks are also melee attacks if (and ONLY IF) it's not a "ranged" touch...
+      if ((std::find(action_in.attackForms.begin(),
+                     action_in.attackForms.end(),
+                     ATTACKFORM_TOUCH) != action_in.attackForms.end()) &&
+          (std::find(action_in.attackForms.begin(),
+                     action_in.attackForms.end(),
+                     ATTACKFORM_RANGED) == action_in.attackForms.end()))
+        return true;
+
+      return false;
+    }
+    default:
+    {
+      return (std::find(action_in.attackForms.begin(),
+                        action_in.attackForms.end(),
+                        attackForm_in) != action_in.attackForms.end());
+    }
+  } // end SWITCH
+}
+
 void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
                                         RPG_Character_Base* const target_inout,
                                         const RPG_Combat_AttackSituation& attackSituation_in,
@@ -731,10 +812,10 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
     // *TODO*: consider multi-weapon/offhand attacks...
     weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(player_base->getEquipment()->getPrimaryWeapon());
     // check if target is within reach at all
-    // *TODO*: consider players size (and therefore reach) may be (temporarily) altered
     unsigned short maxReach = 0;
     maxReach = RPG_Item_Common_Tools::isProjectileWeapon(player_base->getEquipment()->getPrimaryWeapon()) ? (weapon_properties.rangeIncrement * 5) : (weapon_properties.rangeIncrement * 10);
     if (weapon_properties.rangeIncrement == 0) maxReach = 50; // not really meant to be thrown...
+    // *TODO*: consider players size (and therefore reach) may be (temporarily) altered
     if (((weapon_properties.rangeIncrement == 0) && distance_in > 5) ||
         (distance_in > maxReach))
     {
@@ -788,7 +869,8 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
       // --> check primary weapon
       // *TODO*: consider that a creature with FEAT_WEAPON_FINESSE can use its DEX modifier for melee attacks...
       attribute = ATTRIBUTE_STRENGTH;
-      attackForm = (distance_in > 5 ? ATTACKFORM_RANGED : ATTACKFORM_MELEE);
+      // consider that the player may (temporarily) have a bigger reach...
+      attackForm = (distance_in > RPG_Character_Common_Tools::sizeToReach(player_base->getSize()) ? ATTACKFORM_RANGED : ATTACKFORM_MELEE);
       if (attackForm == ATTACKFORM_RANGED)
         attribute = ATTRIBUTE_DEXTERITY;
       attackBonus += RPG_Character_Common_Tools::getAttributeAbilityModifier(attacker_in->getAttribute(attribute));
@@ -910,72 +992,47 @@ is_player_miss:
     } // end IF
     targetArmorClass += DEX_modifier;
     targetArmorClass += RPG_Combat_Common_Tools::getSizeModifier(target_inout->getSize());
-        // *TODO*: consider other modifiers:
-        // - enhancement bonuses
-        // - deflection bonuses
-        // - natural armor
-        // - dodge bonuses
+    // *TODO*: consider other modifiers:
+    // - enhancement bonuses
+    // - deflection bonuses
+    // - natural armor
+    // - dodge bonuses
+
+    // choose appropriate form of attack...
+    // consider that the monster may (temporarily) have a bigger reach...
+    attackForm = (distance_in > RPG_Character_Common_Tools::sizeToReach(monster->getSize()) ? ATTACKFORM_RANGED : ATTACKFORM_MELEE);
 
     // step2: perform attack(s)
-    bool attacks_are_standard_actions = false;
+    // *TODO*: if available (AND preconditions are met), we MAY also choose a special attack...
+    // current (non-)strategy: melee/ranged --> special attack
+    bool is_special_attack = false;
+    unsigned int numberOfPossibleAttackActions = 0;
     std::vector<RPG_Monster_AttackAction>::const_iterator iterator;
-    if ((isFullRoundAction_in) &&
-        (!monster_properties.attack.fullAttackActions.empty()))
+    std::vector<RPG_Monster_SpecialAttackProperties>::const_iterator special_iterator;
+    const RPG_Monster_AttackAction* current_action = NULL;
+    int randomPossibleIndex = 0;
+    int possibleIndex = 0;
+    if (isFullRoundAction_in)
+    {
+      // sanity check
+      numberOfPossibleAttackActions = numCompatibleMonsterAttackActions(attackForm,
+                                                                        monster_properties.attack.fullAttackActions);
+      if (monster_properties.attack.fullAttackActions.empty() ||
+          (numberOfPossibleAttackActions == 0))
+        goto init_monster_standard_actions;
+
       iterator = monster_properties.attack.fullAttackActions.begin();
-    else
-    {
-      iterator = monster_properties.attack.standardAttackActions.begin();
-      attacks_are_standard_actions = true;
-    } // end ELSE
-    bool is_action_complete = false;
-
-    // if the attack actions are not inclusive, we need to choose a single (set of) (suitable) one(s)...
-    if (!monster_properties.attack.attackActionsAreInclusive)
-    {
-      if (attacks_are_standard_actions)
+      if (!monster_properties.attack.attackActionsAreInclusive)
       {
-        // choose any single appropriate (i.e. MELEE) standard action instead
-        // *TODO*: consider the possibility that the monster doesn't use melee attacks !
-        do
-        {
-          result.clear();
-          RPG_Dice::generateRandomNumbers(monster_properties.attack.standardAttackActions.size(),
-                                          1,
-                                          result);
-          std::advance(iterator, result.front() - 1);
-
-          // check if the attack is appropriate:
-          // --> i.e. within range
-
-          if (std::find((*iterator).attackForms.begin(),
-                        (*iterator).attackForms.end(),
-                        ATTACKFORM_MELEE) != (*iterator).attackForms.end())
-          {
-            if (distance_in <= 5) break; // done
-          } // end IF
-          else
-          {
-            // check max range
-            if ((*iterator).ranged.maxRange >= distance_in) break; // OK
-          } // end ELSE
-        } while (true);
-
-        // in this case, we just take this one action...
-        is_action_complete = true;
-      } // end IF
-      else
-      {
-        // choose any single appropriate (i.e. MELEE) (set of) full action(s)
-        // *TODO*: consider the possibility that the monster doesn't use melee attacks !
+        // choose any single appropriate (i.e. possible) (set of) full action(s)
         // step1: count the number of available sets
-        int numberOfSets = 0;
+        int numberOfPossibleSets = 0;
         std::vector<RPG_Monster_AttackAction>::const_iterator iterator2 = monster_properties.attack.fullAttackActions.begin();
         do
         {
-          if (std::find((*iterator2).attackForms.begin(),
-                        (*iterator2).attackForms.end(),
-                        ATTACKFORM_MELEE) != (*iterator2).attackForms.end())
-            numberOfSets++;
+          if (isCompatibleMonsterAttackAction(attackForm,
+                                              *iterator2))
+            numberOfPossibleSets++;
 
           while ((*iterator2).fullAttackIncludesNextAction)
             iterator2++;
@@ -984,77 +1041,186 @@ is_player_miss:
             break;
         } while (true);
 
+        // choose (random) possible set...
+        result.clear();
+        RPG_Dice::generateRandomNumbers(numberOfPossibleSets,
+                                        1,
+                                        result);
+        randomPossibleIndex = result.front() - 1;
+        possibleIndex = 0;
         do
         {
-          result.clear();
-          RPG_Dice::generateRandomNumbers(numberOfSets,
-                                          1,
-                                          result);
-          for (int i = 0;
-               i < (result.front() - 1);
-               i++)
+          // is this a possible set ?
+          if (isCompatibleMonsterAttackAction(attackForm,
+                                              *iterator))
           {
-            while ((*iterator).fullAttackIncludesNextAction)
-              iterator++;
-          } // end FOR
+            // maybe we have found our set...
+            if (possibleIndex == randomPossibleIndex)
+              break;
 
-          // check if the attack is appropriate:
-          // --> i.e. within range
-          if (std::find((*iterator).attackForms.begin(),
-                        (*iterator).attackForms.end(),
-                        ATTACKFORM_MELEE) != (*iterator).attackForms.end())
-          {
-            if (distance_in <= 5) break; // done
+            possibleIndex++;
           } // end IF
-          else
-          {
-            // check max range
-            if ((*iterator).ranged.maxRange >= distance_in) break; // OK
-          } // end ELSE
+
+          // skip to next set...
+          while ((*iterator).fullAttackIncludesNextAction)
+            iterator++;
         } while (true);
-      } // end ELSE
+      } // end IF
+
+      current_action = &*iterator;
+      goto monster_perform_single_action;
     } // end IF
 
-    do
+init_monster_standard_actions:
+    // sanity check
+    numberOfPossibleAttackActions = numCompatibleMonsterAttackActions(attackForm,
+    monster_properties.attack.standardAttackActions);
+    if (monster_properties.attack.standardAttackActions.empty() ||
+        (numberOfPossibleAttackActions == 0))
+      goto init_monster_special_attack;
+
+    iterator = monster_properties.attack.standardAttackActions.begin();
+    // if the attack actions are not inclusive, we need to choose a single (set of) (suitable) one(s)...
+    if (!monster_properties.attack.attackActionsAreInclusive)
     {
-      for (int i = 0;
-           i < (*iterator).numAttacksPerRound;
-           i++)
+      // choose any single appropriate standard action instead
+      result.clear();
+      RPG_Dice::generateRandomNumbers(numberOfPossibleAttackActions,
+                                      1,
+                                      result);
+      randomPossibleIndex = result.front() - 1;
+      possibleIndex = 0;
+      do
       {
-        attack_roll = 0;
-        attackBonus = 0;
-        is_threat = false;
-        is_critical_hit = false;
-
-        // step2a: roll D_20
-        result.clear();
-        RPG_Dice::simulateRoll(roll,
-                               1,
-                               result);
-        attack_roll = result.front();
-
-        // a natural roll of 20 is ALWAYS a hit (roll again to test for critical), a 1 a miss...
-        // for increased threat ranges, a score lower than 20 is NOT automatically a hit...
-        // *TODO*: consider any manufactured (and equipped) weapons...
-        if (attack_roll == 20)
+          // is this a possible set ?
+        if (isCompatibleMonsterAttackAction(attackForm,
+                                            *iterator))
         {
-          // we have scored a threat...
-          is_threat = true;
-          // --> roll again to test for critical hit
-          result.clear();
-          RPG_Dice::simulateRoll(roll,
-                                 1,
-                                 result);
+            // maybe we have found our action...
+          if (possibleIndex == randomPossibleIndex)
+            break;
+
+          possibleIndex++;
         } // end IF
 
-        if (attack_roll == 1)
-          goto is_monster_miss;
+        // skip to next action...
+        while ((*iterator).fullAttackIncludesNextAction)
+          iterator++;
+      } while (true);
+    } // end IF
 
-        // attack bonus: base attack bonus + STR/DEX modifier + size modifier (+ range penalty)
-        if ((*iterator).attackBonus.size() == (*iterator).numAttacksPerRound)
-          attackBonus = (*iterator).attackBonus[i];
-        else
-          attackBonus = (*iterator).attackBonus[0];
+    current_action = &*iterator;
+    goto monster_perform_single_action;
+
+init_monster_special_attack:
+    // sanity check
+    for (std::vector<RPG_Monster_SpecialAttackProperties>::const_iterator iterator2 = monster_properties.specialAttacks.begin();
+         iterator2 != monster_properties.specialAttacks.end();
+         iterator2++)
+    {
+      if (isCompatibleMonsterAttackAction(attackForm,
+                                          *iterator))
+        numberOfPossibleAttackActions++;
+    } // end FOR
+    if (numberOfPossibleAttackActions == 0)
+    {
+      // debug info
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("found no suitable attack for monster \"%s\"...\n"),
+                 monster->getName().c_str()));
+
+      // what else can we do ?
+      return;
+    } // end IF
+
+    special_iterator = monster_properties.specialAttacks.begin();
+    // choose any single appropriate action
+    result.clear();
+    RPG_Dice::generateRandomNumbers(numberOfPossibleAttackActions,
+                                    1,
+                                    result);
+    randomPossibleIndex = result.front() - 1;
+    possibleIndex = 0;
+    do
+    {
+      // is this a possible set ?
+      if (isCompatibleMonsterAttackAction(attackForm,
+                                          (*special_iterator).action))
+      {
+        // maybe we have found our action...
+        if (possibleIndex == randomPossibleIndex)
+          break;
+
+        possibleIndex++;
+      } // end IF
+
+      // skip to next action...
+      special_iterator++;
+    } while (true);
+
+    current_action = &((*special_iterator).action);
+    is_special_attack = true;
+
+monster_perform_single_action:
+    // check if the attack is appropriate:
+    // --> i.e. within range
+    if ((std::find(current_action->attackForms.begin(),
+                   current_action->attackForms.end(),
+                   ATTACKFORM_MELEE) != current_action->attackForms.end()) ||
+        (std::find(current_action->attackForms.begin(),
+                   current_action->attackForms.end(),
+                   ATTACKFORM_TOUCH) != current_action->attackForms.end()))
+    {
+      // *TODO*: consider manufactured/reach weapons
+      if (distance_in <= monster_properties.reach)
+        goto monster_advance_attack_iterator;
+    } // end IF
+    else
+    {
+      // check max range
+      if (current_action->ranged.maxRange >= distance_in)
+        goto monster_advance_attack_iterator;
+    } // end ELSE
+
+    // run attack(s)
+    for (int i = 0;
+         i < current_action->numAttacksPerRound;
+         i++)
+    {
+      attack_roll = 0;
+      attackBonus = 0;
+      is_threat = false;
+      is_critical_hit = false;
+
+      // step2a: roll D_20
+      result.clear();
+      RPG_Dice::simulateRoll(roll,
+                            1,
+                            result);
+      attack_roll = result.front();
+
+      // a natural roll of 20 is ALWAYS a hit (roll again to test for critical), a 1 a miss...
+      // for increased threat ranges, a score lower than 20 is NOT automatically a hit...
+      // *TODO*: consider any manufactured (and equipped) weapons...
+      if (attack_roll == 20)
+      {
+        // we have scored a threat...
+        is_threat = true;
+        // --> roll again to test for critical hit
+        result.clear();
+        RPG_Dice::simulateRoll(roll,
+                              1,
+                              result);
+      } // end IF
+
+      if (attack_roll == 1)
+        goto is_monster_miss;
+
+      // attack bonus: base attack bonus + STR/DEX modifier + size modifier (+ range penalty)
+      if (current_action->attackBonus.size() == current_action->numAttacksPerRound)
+        attackBonus = current_action->attackBonus[i];
+      else
+        attackBonus = current_action->attackBonus[0];
         // *TODO*: consider that a creature with FEAT_WEAPON_FINESSE can use its DEX modifier for melee attacks...
 /*        // --> check primary weapon
         attribute = ATTRIBUTE_STRENGTH;
@@ -1064,60 +1230,72 @@ is_player_miss:
         attack_roll += RPG_Character_Common_Tools::getAttributeAbilityModifier(attacker_in->getAttribute(attribute));
         attack_roll += RPG_Combat_Common_Tools::getSizeModifier(attacker_in->getSize());*/
 
-        // consider range penalty...
-        if ((*iterator).ranged.increment)
-          attackBonus += (ACE_static_cast(int, (distance_in / (*iterator).ranged.increment)) * -2);
-        // *TODO*: consider other modifiers...
+      // consider range penalty...
+      if (current_action->ranged.increment)
+        attackBonus += (ACE_static_cast(int, (distance_in / current_action->ranged.increment)) * -2);
+      // *TODO*: consider other modifiers...
 
-        // hit or miss ?
-        if (((attack_roll + attackBonus) < targetArmorClass) && (attack_roll != 20))
-          goto is_monster_miss;
-        else if (is_threat)
-        {
-          // check for critical
-          if ((result.front() + attackBonus) >= targetArmorClass)
-            is_critical_hit = true;
-        } // end ELSE
+      // hit or miss ?
+      if (((attack_roll + attackBonus) < targetArmorClass) && (attack_roll != 20))
+        goto is_monster_miss;
+      else if (is_threat)
+      {
+        // check for critical
+        if ((result.front() + attackBonus) >= targetArmorClass)
+          is_critical_hit = true;
+      } // end ELSE
 
 is_monster_hit:
-        // compute damage
-        damage = (*iterator).damage;
-        if (is_critical_hit)
+      // compute damage
+      damage = current_action->damage;
+      if (is_critical_hit)
+      {
+        for (std::vector<RPG_Combat_DamageElement>::iterator iterator2 = damage.elements.begin();
+             iterator2 != damage.elements.end();
+             iterator2++)
         {
-          for (std::vector<RPG_Combat_DamageElement>::iterator iterator2 = damage.elements.begin();
-                iterator2 != damage.elements.end();
-                iterator2++)
-          {
-            // *IMPORTANT NOTE*: this applies for physical/natural damage only !
-            // *TODO*: consider manufactured (and equipped) weapons may have different modifiers
-            // *IMPORTANT NOTE*: STR modifier already included...
-            if ((*iterator2).types.front().discriminator == RPG_Combat_DamageTypeUnion::PHYSICALDAMAGETYPE)
-              (*iterator2).amount *= 2;
-          } // end FOR
-        } // end IF
-        target_inout->sustainDamage(damage);
+          // *IMPORTANT NOTE*: this applies for physical/natural damage only !
+          // *TODO*: consider manufactured (and equipped) weapons may have different modifiers
+          // *IMPORTANT NOTE*: STR modifier already included...
+          if ((*iterator2).types.front().discriminator == RPG_Combat_DamageTypeUnion::PHYSICALDAMAGETYPE)
+            (*iterator2).amount *= 2;
+        } // end FOR
+      } // end IF
+      target_inout->sustainDamage(damage);
 
-        // if this was a Standard Action, we're done
-        if (!isFullRoundAction_in)
-          return;
+      // if this was a Standard Action, we're done
+      if (!isFullRoundAction_in)
+        goto monster_advance_attack_iterator;
 
-        // perform next attack
-        continue;
+      // perform next attack
+      continue;
 
 is_monster_miss:
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("monster \"%s\" attacks \"%s\" (AC: %d) and misses: %d...\n"),
-                   monster->getName().c_str(),
-                   player_base->getName().c_str(),
-                   targetArmorClass,
-                   (attack_roll + attackBonus)));
-      } // end FOR
+      // debug info
+      ACE_DEBUG((LM_DEBUG,
+                ACE_TEXT("monster \"%s\" attacks \"%s\" (AC: %d) and misses: %d...\n"),
+                monster->getName().c_str(),
+                player_base->getName().c_str(),
+                targetArmorClass,
+                (attack_roll + attackBonus)));
+    } // end FOR
 
-      if ((*iterator).fullAttackIncludesNextAction)
+monster_advance_attack_iterator:
+    if (!is_special_attack)
+    {
+      if (monster_properties.attack.attackActionsAreInclusive ||
+          (isFullRoundAction_in && (*iterator).fullAttackIncludesNextAction))
+      {
         iterator++;
-      else
-        return;
-    } while (true);
+
+        // run next attack, if appropriate
+        if ((iterator != monster_properties.attack.standardAttackActions.end()) &&
+            (iterator != monster_properties.attack.fullAttackActions.end()))
+        {
+          current_action = &*iterator;
+          goto monster_perform_single_action;
+        } // end IF
+      } // end IF
+    } // end IF
   } // end ELSE
 }

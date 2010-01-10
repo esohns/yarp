@@ -192,68 +192,6 @@ const std::string RPG_Character_Common_Tools::classesToString(const RPG_Characte
   return result;
 }
 
-const RPG_Character_Plane RPG_Character_Common_Tools::terrainToPlane(const RPG_Character_Terrain& terrain_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::terrainToPlane"));
-
-  switch (terrain_in)
-  {
-    case TERRAIN_UNDERGROUND:
-    case TERRAIN_PLAINS:
-    case TERRAIN_FORESTS:
-    case TERRAIN_HILLS:
-    case TERRAIN_MOUNTAINS:
-    case TERRAIN_DESERTS:
-    case TERRAIN_MATERIALPLANE_ANY:
-    {
-      return PLANE_MATERIAL;
-    }
-    case TERRAIN_TRANSITIVEPLANE_ASTRAL:
-    case TERRAIN_TRANSITIVEPLANE_ETHERAL:
-    case TERRAIN_TRANSITIVEPLANE_SHADOW:
-    case TERRAIN_TRANSITIVEPLANE_ANY:
-    {
-      return PLANE_TRANSITIVE;
-    }
-    case TERRAIN_INNERPLANE_AIR:
-    case TERRAIN_INNERPLANE_EARTH:
-    case TERRAIN_INNERPLANE_FIRE:
-    case TERRAIN_INNERPLANE_WATER:
-    case TERRAIN_INNERPLANE_POSITIVE:
-    case TERRAIN_INNERPLANE_NEGATIVE:
-    case TERRAIN_INNERPLANE_ANY:
-    {
-      return PLANE_INNER;
-    }
-    case TERRAIN_OUTERPLANE_LAWFUL_ANY:
-    case TERRAIN_OUTERPLANE_CHAOTIC_ANY:
-    case TERRAIN_OUTERPLANE_GOOD_ANY:
-    case TERRAIN_OUTERPLANE_EVIL_ANY:
-    case TERRAIN_OUTERPLANE_LAWFUL_GOOD:
-    case TERRAIN_OUTERPLANE_LAWFUL_EVIL:
-    case TERRAIN_OUTERPLANE_CHAOTIC_GOOD:
-    case TERRAIN_OUTERPLANE_CHAOTIC_EVIL:
-    case TERRAIN_OUTERPLANE_NEUTRAL:
-    case TERRAIN_OUTERPLANE_MILD_ANY:
-    case TERRAIN_OUTERPLANE_STRONG_ANY:
-    case TERRAIN_OUTERPLANE_ANY:
-    {
-      return PLANE_OUTER;
-    }
-    default:
-    {
-      // debug info
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid terrain: \"%s\" --> check implementation !, aborting\n"),
-                 RPG_Character_TerrainHelper::RPG_Character_TerrainToString(terrain_in).c_str()));
-
-      break;
-    }
-  } // end SWITCH
-
-  return RPG_CHARACTER_PLANE_INVALID;
-}
-
 const short int RPG_Character_Common_Tools::getAttributeAbilityModifier(const unsigned char& attributeAbility_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getAttributeAbilityModifier"));
@@ -389,6 +327,101 @@ const RPG_Character_BaseAttackBonus_t RPG_Character_Common_Tools::getBaseAttackB
   } // end WHILE
 
   return result;
+}
+
+const RPG_Character_Plane RPG_Character_Common_Tools::terrainToPlane(const RPG_Character_Terrain& terrain_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::terrainToPlane"));
+
+  switch (terrain_in)
+  {
+    case TERRAIN_UNDERGROUND:
+    case TERRAIN_PLAINS:
+    case TERRAIN_FORESTS:
+    case TERRAIN_HILLS:
+    case TERRAIN_MOUNTAINS:
+    case TERRAIN_DESERTS:
+    case TERRAIN_MATERIALPLANE_ANY:
+    {
+      return PLANE_MATERIAL;
+    }
+    case TERRAIN_TRANSITIVEPLANE_ASTRAL:
+    case TERRAIN_TRANSITIVEPLANE_ETHERAL:
+    case TERRAIN_TRANSITIVEPLANE_SHADOW:
+    case TERRAIN_TRANSITIVEPLANE_ANY:
+    {
+      return PLANE_TRANSITIVE;
+    }
+    case TERRAIN_INNERPLANE_AIR:
+    case TERRAIN_INNERPLANE_EARTH:
+    case TERRAIN_INNERPLANE_FIRE:
+    case TERRAIN_INNERPLANE_WATER:
+    case TERRAIN_INNERPLANE_POSITIVE:
+    case TERRAIN_INNERPLANE_NEGATIVE:
+    case TERRAIN_INNERPLANE_ANY:
+    {
+      return PLANE_INNER;
+    }
+    case TERRAIN_OUTERPLANE_LAWFUL_ANY:
+    case TERRAIN_OUTERPLANE_CHAOTIC_ANY:
+    case TERRAIN_OUTERPLANE_GOOD_ANY:
+    case TERRAIN_OUTERPLANE_EVIL_ANY:
+    case TERRAIN_OUTERPLANE_LAWFUL_GOOD:
+    case TERRAIN_OUTERPLANE_LAWFUL_EVIL:
+    case TERRAIN_OUTERPLANE_CHAOTIC_GOOD:
+    case TERRAIN_OUTERPLANE_CHAOTIC_EVIL:
+    case TERRAIN_OUTERPLANE_NEUTRAL:
+    case TERRAIN_OUTERPLANE_MILD_ANY:
+    case TERRAIN_OUTERPLANE_STRONG_ANY:
+    case TERRAIN_OUTERPLANE_ANY:
+    {
+      return PLANE_OUTER;
+    }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid terrain: \"%s\" --> check implementation !, aborting\n"),
+                 RPG_Character_TerrainHelper::RPG_Character_TerrainToString(terrain_in).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  return RPG_CHARACTER_PLANE_INVALID;
+}
+
+const unsigned char RPG_Character_Common_Tools::sizeToReach(const RPG_Character_Size& size_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::sizeToReach"));
+
+  switch (size_in)
+  {
+    case SIZE_FINE:
+    case SIZE_DIMINUTIVE:
+    case SIZE_TINY:
+    case SIZE_SMALL:
+    case SIZE_MEDIUM:
+    {
+      return 5;
+    }
+    case SIZE_LARGE:
+    case SIZE_HUGE:
+    case SIZE_GARGANTUAN:
+    case SIZE_COLOSSAL:
+    {
+      return 10;
+    }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid size: \"%s\" --> check implementation !, aborting\n"),
+                 RPG_Character_SizeHelper::RPG_Character_SizeToString(size_in).c_str()));
+
+      break;
+    }
+  } // end SWITCH
 }
 
 const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()

@@ -51,6 +51,7 @@ class RPG_Character_Common_Tools
                                                                   const unsigned char&);         // class level
 
   static const RPG_Character_Plane terrainToPlane(const RPG_Character_Terrain&);
+  static const unsigned char sizeToReach(const RPG_Character_Size&);
 
   static const RPG_Character_Player generatePlayerCharacter(); // return value: (random) player
 

@@ -2001,7 +2001,11 @@
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
-      <standardAttackAction>
+    </attack>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
+      <type>ABILITY_ACID_ATTACK</type>
+      <action>
         <weapon>NATURALWEAPON_SPIT</weapon>
         <attackBonus>0</attackBonus>
         <attackForm>ATTACKFORM_RANGED</attackForm>
@@ -2024,16 +2028,15 @@
           </element>
         </damage>
         <numAttacksPerRound>0</numAttacksPerRound>
-        <usage>
-          <numUses>1</numUses>
-          <period>21600</period>
-        </usage>
         <ranged>
           <maxRange>30</maxRange>
-          <effect>AREA_LINE</effect>
         </ranged>
-      </standardAttackAction>
-    </attack>
+      </action>
+      <usage>
+        <numUses>1</numUses>
+        <period>21600</period>
+      </usage>
+    </specialAttack>
     <space>10</space>
     <reach>5</reach>
     <saves>
@@ -2166,7 +2169,14 @@
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
-      <standardAttackAction>
+    </attack>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
+      <type>ABILITY_THROW_WEB</type>
+      <preCondition>
+        <maxTargetSize>SIZE_LARGE</maxTargetSize>
+      </preCondition>
+      <action>
         <weapon>NATURALWEAPON_WEB</weapon>
         <attackBonus>5</attackBonus>
         <attackForm>ATTACKFORM_RANGED</attackForm>
@@ -2192,17 +2202,16 @@
           </element>
         </damage>
         <numAttacksPerRound>0</numAttacksPerRound>
-        <usage>
-          <numUses>6</numUses>
-          <period>86400</period>
-        </usage>
         <ranged>
           <maxRange>50</maxRange>
           <increment>10</increment>
-          <effect>SIZE_LARGE</effect>
         </ranged>
-      </standardAttackAction>
-    </attack>
+      </action>
+      <usage>
+        <numUses>6</numUses>
+        <period>86400</period>
+      </usage>
+    </specialAttack>
     <space>5</space>
     <reach>5</reach>
     <saves>
@@ -2299,24 +2308,11 @@
     <attack>
       <baseAttackBonus>1</baseAttackBonus>
       <grappleBonus>-8</grappleBonus>
-      <standardAttackAction>
-        <weapon>SPECIALATTACK_RAY_LIGHT</weapon>
-        <attackBonus>2</attackBonus>
-        <attackForm>ATTACKFORM_RANGED</attackForm>
-        <attackForm>ATTACKFORM_TOUCH</attackForm>
-        <damage>
-          <element>
-            <type>DAMAGE_FIRE</type> <!-- *TODO*: ??? -->
-            <amount>
-              <numDice>1</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>0</modifier>
-            </amount>
-          </element>
-        </damage>
-        <numAttacksPerRound>1</numAttacksPerRound>
-      </standardAttackAction>
-      <fullAttackAction>
+    </attack>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
+      <type>ABILITY_RAY_ATTACK</type>
+      <action>
         <weapon>SPECIALATTACK_RAY_LIGHT</weapon>
         <attackBonus>2</attackBonus>
         <attackForm>ATTACKFORM_RANGED</attackForm>
@@ -2332,8 +2328,8 @@
           </element>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
-      </fullAttackAction>
-    </attack>
+      </action>
+    </specialAttack>
     <space>5</space>
     <reach>5</reach>
     <saves>

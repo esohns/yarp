@@ -129,7 +129,10 @@
 
   <xsd:simpleType name="RPG_Character_Ability_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ABILITY_ACID_ATTACK"/>
       <xsd:enumeration value="ABILITY_SCORE_LOSS"/>
+      <xsd:enumeration value="ABILITY_THROW_WEB"/>
+      <!--                                          -->
       <xsd:enumeration value="ABILITY_ALTERNATE_FORM"/>
       <xsd:enumeration value="ABILITY_ANTIMAGIC"/>
       <xsd:enumeration value="ABILITY_BLINDSIGHT"/>

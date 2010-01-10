@@ -70,6 +70,7 @@ void RPG_Monster_Dictionary_Type::monster(const RPG_Monster_PropertiesXML& monst
   properties.speed            = monster_in.speed;
   properties.armorClass       = monster_in.armorClass;
   properties.attack           = monster_in.attack;
+  properties.specialAttacks   = monster_in.specialAttacks;
   properties.space            = monster_in.space;
   properties.reach            = monster_in.reach;
   properties.saves            = monster_in.saves;
