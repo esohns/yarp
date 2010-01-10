@@ -946,7 +946,10 @@ is_player_miss:
 
           // check if the attack is appropriate:
           // --> i.e. within range
-          if ((*iterator).attackForms.find(ATTACKFORM_MELEE) != (*iterator).attackForms.end())
+
+          if (std::find((*iterator).attackForms.begin(),
+                        (*iterator).attackForms.end(),
+                        ATTACKFORM_MELEE) != (*iterator).attackForms.end())
           {
             if (distance_in <= 5) break; // done
           } // end IF
@@ -969,7 +972,9 @@ is_player_miss:
         std::vector<RPG_Monster_AttackAction>::const_iterator iterator2 = monster_properties.attack.fullAttackActions.begin();
         do
         {
-          if ((*iterator2).attackForms.find(ATTACKFORM_MELEE) != (*iterator2).attackForms.end())
+          if (std::find((*iterator2).attackForms.begin(),
+                        (*iterator2).attackForms.end(),
+                        ATTACKFORM_MELEE) != (*iterator2).attackForms.end())
             numberOfSets++;
 
           while ((*iterator2).fullAttackIncludesNextAction)
@@ -995,7 +1000,9 @@ is_player_miss:
 
           // check if the attack is appropriate:
           // --> i.e. within range
-          if ((*iterator).attackForms.find(ATTACKFORM_MELEE) != (*iterator).attackForms.end())
+          if (std::find((*iterator).attackForms.begin(),
+                        (*iterator).attackForms.end(),
+                        ATTACKFORM_MELEE) != (*iterator).attackForms.end())
           {
             if (distance_in <= 5) break; // done
           } // end IF

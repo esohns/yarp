@@ -25,6 +25,8 @@
 #include <rpg_item_common_tools.h>
 #include <rpg_item_dictionary.h>
 
+#include <rpg_common_tools.h>
+
 #include <rpg_dice_common_tools.h>
 
 #include <ace/OS.h>
@@ -128,6 +130,7 @@ void do_work(const bool& dumpItemDictionary_in,
 
   // step1: init string conversion tables
   RPG_Dice_Common_Tools::initStringConversionTables();
+  RPG_Common_Tools::initStringConversionTables();
   RPG_Item_Common_Tools::initStringConversionTables();
 
   // step2: init item dictionary
