@@ -54,6 +54,7 @@ class RPG_Magic_Domain_Type_pskel;
 class RPG_Magic_Spell_Type_pskel;
 class RPG_Magic_AbilityClass_Type_pskel;
 class RPG_Magic_AbilityType_Type_pskel;
+class RPG_Magic_SpellProperties_Type_pskel;
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -134,6 +135,64 @@ class RPG_Magic_AbilityType_Type_pskel: public virtual ::xml_schema::string_pske
 
   virtual RPG_Magic_AbilityType
   post_RPG_Magic_AbilityType_Type () = 0;
+};
+
+class RPG_Magic_SpellProperties_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  type (const RPG_Magic_Spell&);
+
+  virtual void
+  casterLevel (unsigned char);
+
+  virtual void
+  save (const RPG_Common_SavingThrowCheck&);
+
+  virtual RPG_Magic_SpellProperties
+  post_RPG_Magic_SpellProperties_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  type_parser (::RPG_Magic_Spell_Type_pskel&);
+
+  void
+  casterLevel_parser (::xml_schema::unsigned_byte_pskel&);
+
+  void
+  save_parser (::RPG_Common_SavingThrowCheck_Type_pskel&);
+
+  void
+  parsers (::RPG_Magic_Spell_Type_pskel& /* type */,
+           ::xml_schema::unsigned_byte_pskel& /* casterLevel */,
+           ::RPG_Common_SavingThrowCheck_Type_pskel& /* save */);
+
+  // Constructor.
+  //
+  RPG_Magic_SpellProperties_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Magic_Spell_Type_pskel* type_parser_;
+  ::xml_schema::unsigned_byte_pskel* casterLevel_parser_;
+  ::RPG_Common_SavingThrowCheck_Type_pskel* save_parser_;
 };
 
 #include <xsd/cxx/post.hxx>

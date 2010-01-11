@@ -188,6 +188,13 @@ damage (const RPG_Combat_Damage& damage)
 }
 
 void RPG_Monster_AttackAction_Type_pimpl::
+effect (const RPG_Magic_SpellProperties& effect)
+{
+  // TODO
+  //
+}
+
+void RPG_Monster_AttackAction_Type_pimpl::
 numAttacksPerRound (unsigned char numAttacksPerRound)
 {
   // TODO
@@ -364,6 +371,13 @@ type (const RPG_Monster_SpecialAttackTypeUnion& type)
 }
 
 void RPG_Monster_SpecialAttackProperties_Type_pimpl::
+actionType (const RPG_Combat_ActionType& actionType)
+{
+  // TODO
+  //
+}
+
+void RPG_Monster_SpecialAttackProperties_Type_pimpl::
 preCondition (const RPG_Monster_SpecialAttackPreCondition& preCondition)
 {
   // TODO
@@ -372,13 +386,6 @@ preCondition (const RPG_Monster_SpecialAttackPreCondition& preCondition)
 
 void RPG_Monster_SpecialAttackProperties_Type_pimpl::
 action (const RPG_Monster_AttackAction& action)
-{
-  // TODO
-  //
-}
-
-void RPG_Monster_SpecialAttackProperties_Type_pimpl::
-amount (const RPG_Dice_Roll& amount)
 {
   // TODO
   //

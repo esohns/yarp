@@ -54,6 +54,8 @@ class RPG_Common_PhysicalDamageType_Type_pskel;
 class RPG_Common_CheckType_Type_pskel;
 class RPG_Common_SavingThrow_Type_pskel;
 class RPG_Common_BaseCheckTypeUnion_Type_pskel;
+class RPG_Common_SaveReductionType_Type_pskel;
+class RPG_Common_SavingThrowCheck_Type_pskel;
 class RPG_Common_Usage_Type_pskel;
 class RPG_Common_Duration_Type_pskel;
 
@@ -130,6 +132,89 @@ class RPG_Common_BaseCheckTypeUnion_Type_pskel: public ::xml_schema::simple_cont
 
   virtual RPG_Common_BaseCheckTypeUnion
   post_RPG_Common_BaseCheckTypeUnion_Type () = 0;
+};
+
+class RPG_Common_SaveReductionType_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Common_SaveReductionType
+  post_RPG_Common_SaveReductionType_Type () = 0;
+};
+
+class RPG_Common_SavingThrowCheck_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  type (const RPG_Common_SavingThrow&);
+
+  virtual void
+  attribute (const RPG_Common_Attribute&);
+
+  virtual void
+  difficultyClass (unsigned char);
+
+  virtual void
+  reduction (const RPG_Common_SaveReductionType&);
+
+  virtual RPG_Common_SavingThrowCheck
+  post_RPG_Common_SavingThrowCheck_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  type_parser (::RPG_Common_SavingThrow_Type_pskel&);
+
+  void
+  attribute_parser (::RPG_Common_Attribute_Type_pskel&);
+
+  void
+  difficultyClass_parser (::xml_schema::unsigned_byte_pskel&);
+
+  void
+  reduction_parser (::RPG_Common_SaveReductionType_Type_pskel&);
+
+  void
+  parsers (::RPG_Common_SavingThrow_Type_pskel& /* type */,
+           ::RPG_Common_Attribute_Type_pskel& /* attribute */,
+           ::xml_schema::unsigned_byte_pskel& /* difficultyClass */,
+           ::RPG_Common_SaveReductionType_Type_pskel& /* reduction */);
+
+  // Constructor.
+  //
+  RPG_Common_SavingThrowCheck_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  virtual bool
+  _attribute_impl (const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Common_SavingThrow_Type_pskel* type_parser_;
+  ::RPG_Common_Attribute_Type_pskel* attribute_parser_;
+  ::xml_schema::unsigned_byte_pskel* difficultyClass_parser_;
+  ::RPG_Common_SaveReductionType_Type_pskel* reduction_parser_;
 };
 
 class RPG_Common_Usage_Type_pskel: public ::xml_schema::complex_content

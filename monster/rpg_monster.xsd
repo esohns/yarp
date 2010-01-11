@@ -113,9 +113,9 @@
       <xsd:element name="weapon" type="RPG_Monster_WeaponTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attackBonus" type="xsd:byte" minOccurs="0" maxOccurs="5"/>
       <xsd:element name="attackForm" type="RPG_Combat_AttackForm_Type" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="damage" type="RPG_Combat_Damage_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="numAttacksPerRound" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-<!--       <xsd:element name="usage" type="RPG_Common_Usage_Type" minOccurs="0" maxOccurs="1"/> -->
+      <xsd:element name="damage" type="RPG_Combat_Damage_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="effect" type="RPG_Magic_SpellProperties_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="numAttacksPerRound" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="ranged" type="RPG_Combat_RangedAttackProperties_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="fullAttackIncludesNextAction" type="xsd:boolean" use="optional" default="false"/>
@@ -149,9 +149,10 @@
     <xsd:sequence>
       <xsd:element name="abilityClass" type="RPG_Magic_AbilityClass_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="type" type="RPG_Monster_SpecialAttackTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="actionType" type="RPG_Combat_ActionType_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="preCondition" type="RPG_Monster_SpecialAttackPreCondition_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="action" type="RPG_Monster_AttackAction_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="amount" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
+<!--       <xsd:element name="amount" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/> -->
       <xsd:element name="usage" type="RPG_Common_Usage_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>

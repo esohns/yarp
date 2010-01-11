@@ -71,4 +71,23 @@ class RPG_Magic_AbilityType_Type_pimpl: public virtual RPG_Magic_AbilityType_Typ
   post_RPG_Magic_AbilityType_Type ();
 };
 
+class RPG_Magic_SpellProperties_Type_pimpl: public virtual RPG_Magic_SpellProperties_Type_pskel
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual void
+  type (const RPG_Magic_Spell&);
+
+  virtual void
+  casterLevel (unsigned char);
+
+  virtual void
+  save (const RPG_Common_SavingThrowCheck&);
+
+  virtual RPG_Magic_SpellProperties
+  post_RPG_Magic_SpellProperties_Type ();
+};
+
 #endif // CXX_____RPG_MAGIC_XML_PARSER_BASE_H

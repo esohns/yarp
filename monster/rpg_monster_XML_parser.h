@@ -110,6 +110,7 @@ class RPG_Monster_AttackAction_Type
   virtual void attackBonus(signed char);
   virtual void attackForm(const RPG_Combat_AttackForm&);
   virtual void damage(const RPG_Combat_Damage&);
+  virtual void effect(const RPG_Magic_SpellProperties&);
   virtual void numAttacksPerRound(unsigned char);
   virtual void ranged(const RPG_Combat_RangedAttackProperties&);
   virtual void fullAttackIncludesNextAction(bool);
@@ -178,9 +179,10 @@ class RPG_Monster_SpecialAttackProperties_Type
 //     virtual void pre();
     virtual void abilityClass(const RPG_Magic_AbilityClass&);
     virtual void type(const RPG_Monster_SpecialAttackTypeUnion&);
+    virtual void actionType(const RPG_Combat_ActionType&);
     virtual void preCondition(const RPG_Monster_SpecialAttackPreCondition&);
     virtual void action(const RPG_Monster_AttackAction&);
-    virtual void amount(const RPG_Dice_Roll&);
+//     virtual void amount(const RPG_Dice_Roll&);
     virtual void usage(const RPG_Common_Usage&);
     virtual RPG_Monster_SpecialAttackProperties post_RPG_Monster_SpecialAttackProperties_Type();
 

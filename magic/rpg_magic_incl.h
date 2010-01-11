@@ -26,5 +26,6 @@
 #include "rpg_magic_spell.h"
 #include "rpg_magic_abilityclass.h"
 #include "rpg_magic_abilitytype.h"
+#include "rpg_magic_spellproperties.h"
 
 #endif

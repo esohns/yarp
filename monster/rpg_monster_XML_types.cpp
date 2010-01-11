@@ -135,6 +135,12 @@ damage_parser (::RPG_Combat_Damage_Type_pskel& p)
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
+effect_parser (::RPG_Magic_SpellProperties_Type_pskel& p)
+{
+  this->effect_parser_ = &p;
+}
+
+void RPG_Monster_AttackAction_Type_pskel::
 numAttacksPerRound_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->numAttacksPerRound_parser_ = &p;
@@ -157,6 +163,7 @@ parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& weapon,
          ::xml_schema::byte_pskel& attackBonus,
          ::RPG_Combat_AttackForm_Type_pskel& attackForm,
          ::RPG_Combat_Damage_Type_pskel& damage,
+         ::RPG_Magic_SpellProperties_Type_pskel& effect,
          ::xml_schema::unsigned_byte_pskel& numAttacksPerRound,
          ::RPG_Combat_RangedAttackProperties_Type_pskel& ranged,
          ::xml_schema::boolean_pskel& fullAttackIncludesNextAction)
@@ -165,6 +172,7 @@ parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& weapon,
   this->attackBonus_parser_ = &attackBonus;
   this->attackForm_parser_ = &attackForm;
   this->damage_parser_ = &damage;
+  this->effect_parser_ = &effect;
   this->numAttacksPerRound_parser_ = &numAttacksPerRound;
   this->ranged_parser_ = &ranged;
   this->fullAttackIncludesNextAction_parser_ = &fullAttackIncludesNextAction;
@@ -176,6 +184,7 @@ RPG_Monster_AttackAction_Type_pskel ()
   attackBonus_parser_ (0),
   attackForm_parser_ (0),
   damage_parser_ (0),
+  effect_parser_ (0),
   numAttacksPerRound_parser_ (0),
   ranged_parser_ (0),
   fullAttackIncludesNextAction_parser_ (0)
@@ -312,6 +321,12 @@ type_parser (::RPG_Monster_SpecialAttackTypeUnion_Type_pskel& p)
 }
 
 void RPG_Monster_SpecialAttackProperties_Type_pskel::
+actionType_parser (::RPG_Combat_ActionType_Type_pskel& p)
+{
+  this->actionType_parser_ = &p;
+}
+
+void RPG_Monster_SpecialAttackProperties_Type_pskel::
 preCondition_parser (::RPG_Monster_SpecialAttackPreCondition_Type_pskel& p)
 {
   this->preCondition_parser_ = &p;
@@ -324,12 +339,6 @@ action_parser (::RPG_Monster_AttackAction_Type_pskel& p)
 }
 
 void RPG_Monster_SpecialAttackProperties_Type_pskel::
-amount_parser (::RPG_Dice_Roll_Type_pskel& p)
-{
-  this->amount_parser_ = &p;
-}
-
-void RPG_Monster_SpecialAttackProperties_Type_pskel::
 usage_parser (::RPG_Common_Usage_Type_pskel& p)
 {
   this->usage_parser_ = &p;
@@ -338,16 +347,16 @@ usage_parser (::RPG_Common_Usage_Type_pskel& p)
 void RPG_Monster_SpecialAttackProperties_Type_pskel::
 parsers (::RPG_Magic_AbilityClass_Type_pskel& abilityClass,
          ::RPG_Monster_SpecialAttackTypeUnion_Type_pskel& type,
+         ::RPG_Combat_ActionType_Type_pskel& actionType,
          ::RPG_Monster_SpecialAttackPreCondition_Type_pskel& preCondition,
          ::RPG_Monster_AttackAction_Type_pskel& action,
-         ::RPG_Dice_Roll_Type_pskel& amount,
          ::RPG_Common_Usage_Type_pskel& usage)
 {
   this->abilityClass_parser_ = &abilityClass;
   this->type_parser_ = &type;
+  this->actionType_parser_ = &actionType;
   this->preCondition_parser_ = &preCondition;
   this->action_parser_ = &action;
-  this->amount_parser_ = &amount;
   this->usage_parser_ = &usage;
 }
 
@@ -355,9 +364,9 @@ RPG_Monster_SpecialAttackProperties_Type_pskel::
 RPG_Monster_SpecialAttackProperties_Type_pskel ()
 : abilityClass_parser_ (0),
   type_parser_ (0),
+  actionType_parser_ (0),
   preCondition_parser_ (0),
   action_parser_ (0),
-  amount_parser_ (0),
   usage_parser_ (0)
 {
 }
@@ -964,6 +973,11 @@ damage (const RPG_Combat_Damage&)
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
+effect (const RPG_Magic_SpellProperties&)
+{
+}
+
+void RPG_Monster_AttackAction_Type_pskel::
 numAttacksPerRound (unsigned char)
 {
 }
@@ -1028,6 +1042,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "effect" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->effect_parser_;
+
+    if (this->effect_parser_)
+      this->effect_parser_->pre ();
+
+    return true;
+  }
+
   if (n == "numAttacksPerRound" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->numAttacksPerRound_parser_;
@@ -1086,6 +1110,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->damage_parser_)
       this->damage (this->damage_parser_->post_RPG_Combat_Damage_Type ());
+
+    return true;
+  }
+
+  if (n == "effect" && ns == "urn:rpg")
+  {
+    if (this->effect_parser_)
+      this->effect (this->effect_parser_->post_RPG_Magic_SpellProperties_Type ());
 
     return true;
   }
@@ -1437,17 +1469,17 @@ type (const RPG_Monster_SpecialAttackTypeUnion&)
 }
 
 void RPG_Monster_SpecialAttackProperties_Type_pskel::
+actionType (const RPG_Combat_ActionType&)
+{
+}
+
+void RPG_Monster_SpecialAttackProperties_Type_pskel::
 preCondition (const RPG_Monster_SpecialAttackPreCondition&)
 {
 }
 
 void RPG_Monster_SpecialAttackProperties_Type_pskel::
 action (const RPG_Monster_AttackAction&)
-{
-}
-
-void RPG_Monster_SpecialAttackProperties_Type_pskel::
-amount (const RPG_Dice_Roll&)
 {
 }
 
@@ -1486,6 +1518,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "actionType" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->actionType_parser_;
+
+    if (this->actionType_parser_)
+      this->actionType_parser_->pre ();
+
+    return true;
+  }
+
   if (n == "preCondition" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->preCondition_parser_;
@@ -1502,16 +1544,6 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->action_parser_)
       this->action_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "amount" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->amount_parser_;
-
-    if (this->amount_parser_)
-      this->amount_parser_->pre ();
 
     return true;
   }
@@ -1552,6 +1584,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "actionType" && ns == "urn:rpg")
+  {
+    if (this->actionType_parser_)
+      this->actionType (this->actionType_parser_->post_RPG_Combat_ActionType_Type ());
+
+    return true;
+  }
+
   if (n == "preCondition" && ns == "urn:rpg")
   {
     if (this->preCondition_parser_)
@@ -1564,14 +1604,6 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->action_parser_)
       this->action (this->action_parser_->post_RPG_Monster_AttackAction_Type ());
-
-    return true;
-  }
-
-  if (n == "amount" && ns == "urn:rpg")
-  {
-    if (this->amount_parser_)
-      this->amount (this->amount_parser_->post_RPG_Dice_Roll_Type ());
 
     return true;
   }

@@ -67,4 +67,20 @@ class RPG_Magic_AbilityType_Type
   virtual RPG_Magic_AbilityType post_RPG_Magic_AbilityType_Type();
 };
 
+class RPG_Magic_SpellProperties_Type
+  : public RPG_Magic_SpellProperties_Type_pimpl
+{
+  public:
+    RPG_Magic_SpellProperties_Type();
+
+//     virtual void pre();
+    virtual void type(const RPG_Magic_Spell&);
+    virtual void casterLevel(unsigned char);
+    virtual void save(const RPG_Common_SavingThrowCheck&);
+    virtual RPG_Magic_SpellProperties post_RPG_Magic_SpellProperties_Type();
+
+  private:
+    RPG_Magic_SpellProperties myCurrentProperties;
+};
+
 #endif

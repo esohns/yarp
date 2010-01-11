@@ -86,6 +86,66 @@ RPG_Common_BaseCheckTypeUnion RPG_Common_BaseCheckTypeUnion_Type::post_RPG_Commo
   return result;
 }
 
+RPG_Common_SaveReductionType RPG_Common_SaveReductionType_Type::post_RPG_Common_SaveReductionType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_SaveReductionType_Type::post_RPG_Common_SaveReductionType_Type"));
+
+  return RPG_Common_SaveReductionTypeHelper::stringToRPG_Common_SaveReductionType(post_string());
+}
+
+RPG_Common_SavingThrowCheck_Type::RPG_Common_SavingThrowCheck_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::RPG_Common_SavingThrowCheck_Type"));
+
+  myCurrentCheck.type = RPG_COMMON_SAVINGTHROW_INVALID;
+  myCurrentCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentCheck.difficultyClass = 0;
+  myCurrentCheck.reduction = RPG_COMMON_SAVEREDUCTIONTYPE_INVALID;
+}
+
+void RPG_Common_SavingThrowCheck_Type::type(const RPG_Common_SavingThrow& type_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::type"));
+
+  myCurrentCheck.type = type_in;
+}
+
+void RPG_Common_SavingThrowCheck_Type::attribute(const RPG_Common_Attribute& attribute_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::attribute"));
+
+  myCurrentCheck.attribute = attribute_in;
+}
+
+void RPG_Common_SavingThrowCheck_Type::difficultyClass(unsigned char difficultyClass_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::difficultyClass"));
+
+  myCurrentCheck.difficultyClass = difficultyClass_in;
+}
+
+void RPG_Common_SavingThrowCheck_Type::reduction(const RPG_Common_SaveReductionType& reduction_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::reduction"));
+
+  myCurrentCheck.reduction = reduction_in;
+}
+
+RPG_Common_SavingThrowCheck RPG_Common_SavingThrowCheck_Type::post_RPG_Common_SavingThrowCheck_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::post_RPG_Common_SavingThrowCheck_Type"));
+
+  RPG_Common_SavingThrowCheck result = myCurrentCheck;
+
+  // clear structure
+  myCurrentCheck.type = RPG_COMMON_SAVINGTHROW_INVALID;
+  myCurrentCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentCheck.difficultyClass = 0;
+  myCurrentCheck.reduction = RPG_COMMON_SAVEREDUCTIONTYPE_INVALID;
+
+  return result;
+}
+
 RPG_Common_Usage_Type::RPG_Common_Usage_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_Usage_Type::RPG_Common_Usage_Type"));

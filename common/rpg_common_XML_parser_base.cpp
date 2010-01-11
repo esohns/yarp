@@ -102,6 +102,68 @@ post_RPG_Common_BaseCheckTypeUnion_Type ()
   // return ... ;
 }
 
+// RPG_Common_SaveReductionType_Type_pimpl
+//
+
+void RPG_Common_SaveReductionType_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Common_SaveReductionType RPG_Common_SaveReductionType_Type_pimpl::
+post_RPG_Common_SaveReductionType_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
+// RPG_Common_SavingThrowCheck_Type_pimpl
+//
+
+void RPG_Common_SavingThrowCheck_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Common_SavingThrowCheck_Type_pimpl::
+type (const RPG_Common_SavingThrow& type)
+{
+  // TODO
+  //
+}
+
+void RPG_Common_SavingThrowCheck_Type_pimpl::
+attribute (const RPG_Common_Attribute& attribute)
+{
+  // TODO
+  //
+}
+
+void RPG_Common_SavingThrowCheck_Type_pimpl::
+difficultyClass (unsigned char difficultyClass)
+{
+  // TODO
+  //
+}
+
+void RPG_Common_SavingThrowCheck_Type_pimpl::
+reduction (const RPG_Common_SaveReductionType& reduction)
+{
+  // TODO
+  //
+}
+
+RPG_Common_SavingThrowCheck RPG_Common_SavingThrowCheck_Type_pimpl::
+post_RPG_Common_SavingThrowCheck_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+
 // RPG_Common_Usage_Type_pimpl
 //
 

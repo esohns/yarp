@@ -75,7 +75,7 @@
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SPECIALATTACK_INCORPOREAL_TOUCH"/>
       <xsd:enumeration value="SPECIALATTACK_SMOKE_CLAWS"/>
-      <xsd:enumeration value="SPECIALATTACK_RAY_LIGHT"/>
+<!--       <xsd:enumeration value="SPECIALATTACK_RAY_LIGHT"/> -->
 <!--      <xsd:enumeration value="SPECIALATTACK_RAY_ELECTRICITY"/>
       <xsd:enumeration value="SPECIALATTACK_GAZE_PETRIFY"/>
       <xsd:enumeration value="SPECIALATTACK_BREATH"/>-->

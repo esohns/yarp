@@ -27,6 +27,7 @@ struct RPG_Monster_AttackAction
   std::vector<char> attackBonus;
   std::vector<RPG_Combat_AttackForm> attackForms;
   RPG_Combat_Damage damage;
+  RPG_Magic_SpellProperties effect;
   unsigned char numAttacksPerRound;
   RPG_Combat_RangedAttackProperties ranged;
   bool fullAttackIncludesNextAction;

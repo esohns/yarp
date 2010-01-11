@@ -4,7 +4,7 @@
             targetNamespace="urn:rpg"
             xmlns="urn:rpg"
             elementFormDefault="qualified"
-            attributeFormDefault="qualified">
+            attributeFormDefault="unqualified">
 
   <!-- include chance_dice schema -->
 <!--  <xsd:include schemaLocation="rpg_dice.xsd"/>-->
@@ -59,6 +59,23 @@
   <xsd:simpleType name="RPG_Common_BaseCheckTypeUnion_Type">
     <xsd:union memberTypes="RPG_Common_CheckType_Type RPG_Common_SavingThrow_Type"/>
   </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_SaveReductionType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SAVE_PARTIAL"/>
+      <xsd:enumeration value="SAVE_HALF"/>
+      <xsd:enumeration value="SAVE_FULL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Common_SavingThrowCheck_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Common_SavingThrow_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="reduction" type="RPG_Common_SaveReductionType_Type" use="optional" default="SAVE_FULL"/>
+  </xsd:complexType>
 
   <xsd:complexType name="RPG_Common_Usage_Type">
     <xsd:sequence>

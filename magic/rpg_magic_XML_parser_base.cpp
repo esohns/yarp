@@ -97,3 +97,40 @@ post_RPG_Magic_AbilityType_Type ()
   // return ... ;
 }
 
+// RPG_Magic_SpellProperties_Type_pimpl
+//
+
+void RPG_Magic_SpellProperties_Type_pimpl::
+pre ()
+{
+}
+
+void RPG_Magic_SpellProperties_Type_pimpl::
+type (const RPG_Magic_Spell& type)
+{
+  // TODO
+  //
+}
+
+void RPG_Magic_SpellProperties_Type_pimpl::
+casterLevel (unsigned char casterLevel)
+{
+  // TODO
+  //
+}
+
+void RPG_Magic_SpellProperties_Type_pimpl::
+save (const RPG_Common_SavingThrowCheck& save)
+{
+  // TODO
+  //
+}
+
+RPG_Magic_SpellProperties RPG_Magic_SpellProperties_Type_pimpl::
+post_RPG_Magic_SpellProperties_Type ()
+{
+  // TODO
+  //
+  // return ... ;
+}
+

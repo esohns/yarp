@@ -125,6 +125,21 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                           damageEffect_p);
   RPG_Combat_Damage_Type                         damage_p;
   damage_p.parsers(damageElement_p);
+//   RPG_Magic_Spell_Type                           spell_p;
+  //   ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
+  RPG_Common_SavingThrow_Type                    savingThrow_p;
+//   RPG_Common_Attribute_Type                      attribute_p;
+  //   ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
+  RPG_Common_SaveReductionType_Type              saveReduction_p;
+  RPG_Common_SavingThrowCheck_Type               savingThrowCheck_p;
+  savingThrowCheck_p.parsers(savingThrow_p,
+                             attribute_p,
+                             unsigned_byte_p,
+                             saveReduction_p);
+  RPG_Magic_SpellProperties_Type                 spellProperties_p;
+  spellProperties_p.parsers(spell_p,
+                            unsigned_byte_p,
+                            savingThrowCheck_p);
 //   ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
   RPG_Combat_RangedEffectUnion_Type              rangedEffectUnion_p;
   RPG_Combat_RangedAttackProperties_Type         rangedProperties_p;
@@ -137,6 +152,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                          byte_p,
                          attackForm_p,
                          damage_p,
+                         spellProperties_p,
                          unsigned_byte_p,
                          rangedProperties_p,
                          bool_p);
@@ -149,6 +165,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
 
   RPG_Magic_AbilityClass_Type                    abilityClass_p;
   RPG_Monster_SpecialAttackTypeUnion_Type        attackTypeUnion_p;
+  RPG_Combat_ActionType_Type                     actionType_p;
   RPG_Character_Alignment_Type                   alignment_p;
   RPG_Character_Condition_Type                   condition_p;
 //   RPG_Character_Size_Type                        size_p;
@@ -165,9 +182,10 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   RPG_Monster_SpecialAttackProperties_Type       specialAttack_p;
   specialAttack_p.parsers(abilityClass_p,
                           attackTypeUnion_p,
+                          actionType_p,
                           preCondition_p,
                           attackAction_p,
-                          roll_p,
+//                           roll_p,
                           usage_p);
 
 //   unsigned_int_pimpl                      space_p;

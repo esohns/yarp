@@ -118,6 +118,9 @@ class RPG_Monster_AttackAction_Type_pimpl: public virtual RPG_Monster_AttackActi
   damage (const RPG_Combat_Damage&);
 
   virtual void
+  effect (const RPG_Magic_SpellProperties&);
+
+  virtual void
   numAttacksPerRound (unsigned char);
 
   virtual void
@@ -206,13 +209,13 @@ class RPG_Monster_SpecialAttackProperties_Type_pimpl: public virtual RPG_Monster
   type (const RPG_Monster_SpecialAttackTypeUnion&);
 
   virtual void
+  actionType (const RPG_Combat_ActionType&);
+
+  virtual void
   preCondition (const RPG_Monster_SpecialAttackPreCondition&);
 
   virtual void
   action (const RPG_Monster_AttackAction&);
-
-  virtual void
-  amount (const RPG_Dice_Roll&);
 
   virtual void
   usage (const RPG_Common_Usage&);

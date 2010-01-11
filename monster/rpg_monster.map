@@ -18,6 +18,7 @@ namespace urn:rpg
 
   RPG_Magic_AbilityClass_Type                RPG_Magic_AbilityClass;
   RPG_Magic_AbilityType_Type                 RPG_Magic_AbilityType;
+  RPG_Magic_SpellProperties_Type             RPG_Magic_SpellProperties;
 
   RPG_Character_Size_Type                    RPG_Character_Size;
   RPG_Character_Attributes_Type              RPG_Character_Attributes;
@@ -32,6 +33,7 @@ namespace urn:rpg
   RPG_Combat_Damage_Type                     RPG_Combat_Damage;
   RPG_Combat_RangedAttackProperties_Type     RPG_Combat_RangedAttackProperties;
   RPG_Combat_Check_Type                      RPG_Combat_Check;
+  RPG_Combat_ActionType_Type                 RPG_Combat_ActionType;
 
   RPG_Monster_MetaType_Type                  RPG_Monster_MetaType;
   RPG_Monster_SubType_Type                   RPG_Monster_SubType;

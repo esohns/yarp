@@ -28,6 +28,7 @@ RPG_Common_AttributeToStringTable_t RPG_Common_AttributeHelper::myRPG_Common_Att
 RPG_Common_PhysicalDamageTypeToStringTable_t RPG_Common_PhysicalDamageTypeHelper::myRPG_Common_PhysicalDamageTypeToStringTable;
 RPG_Common_CheckTypeToStringTable_t RPG_Common_CheckTypeHelper::myRPG_Common_CheckTypeToStringTable;
 RPG_Common_SavingThrowToStringTable_t RPG_Common_SavingThrowHelper::myRPG_Common_SavingThrowToStringTable;
+RPG_Common_SaveReductionTypeToStringTable_t RPG_Common_SaveReductionTypeHelper::myRPG_Common_SaveReductionTypeToStringTable;
 
 void RPG_Common_Tools::initStringConversionTables()
 {
@@ -37,6 +38,7 @@ void RPG_Common_Tools::initStringConversionTables()
   RPG_Common_PhysicalDamageTypeHelper::init();
   RPG_Common_CheckTypeHelper::init();
   RPG_Common_SavingThrowHelper::init();
+  RPG_Common_SaveReductionTypeHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,

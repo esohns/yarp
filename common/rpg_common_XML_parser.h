@@ -73,6 +73,31 @@ class RPG_Common_BaseCheckTypeUnion_Type
   RPG_Common_BaseCheckTypeUnion myBaseCheckTypeUnion;
 };
 
+class RPG_Common_SaveReductionType_Type
+  : public RPG_Common_SaveReductionType_Type_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Common_SaveReductionType post_RPG_Common_SaveReductionType_Type();
+};
+
+class RPG_Common_SavingThrowCheck_Type
+  : public RPG_Common_SavingThrowCheck_Type_pimpl
+{
+  public:
+    RPG_Common_SavingThrowCheck_Type();
+
+//   virtual void pre();
+    virtual void type(const RPG_Common_SavingThrow&);
+    virtual void attribute(const RPG_Common_Attribute&);
+    virtual void difficultyClass(unsigned char);
+    virtual void reduction(const RPG_Common_SaveReductionType&);
+    virtual RPG_Common_SavingThrowCheck post_RPG_Common_SavingThrowCheck_Type();
+
+  private:
+    RPG_Common_SavingThrowCheck myCurrentCheck;
+};
+
 class RPG_Common_Usage_Type
  : public RPG_Common_Usage_Type_pimpl
 {

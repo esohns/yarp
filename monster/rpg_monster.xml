@@ -2313,7 +2313,7 @@
       <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
       <type>ABILITY_RAY_ATTACK</type>
       <action>
-        <weapon>SPECIALATTACK_RAY_LIGHT</weapon>
+        <weapon>ABILITY_RAY_ATTACK</weapon>
         <attackBonus>2</attackBonus>
         <attackForm>ATTACKFORM_RANGED</attackForm>
         <attackForm>ATTACKFORM_TOUCH</attackForm>
@@ -3041,30 +3041,9 @@
       <touch>16</touch>
       <flatFooted>15</flatFooted>
     </armorClass>
-    <attack attackActionsAreInclusive="false">
+    <attack>
       <baseAttackBonus>3</baseAttackBonus>
       <grappleBonus>0</grappleBonus>
-      <standardAttackAction>
-        <weapon>SPECIALATTACK_RAY_ELECTRICITY</weapon>
-        <attackBonus>9</attackBonus>
-        <attackForm>ATTACKFORM_RANGED</attackForm>
-        <attackForm>ATTACKFORM_TOUCH</attackForm>
-        <damage>
-          <element>
-            <type>DAMAGE_ELECTRICITY</type>
-            <amount>
-              <numDice>2</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>0</modifier>
-            </amount>
-          </element>
-        </damage>
-        <numAttacksPerRound>1</numAttacksPerRound>
-        <ranged>
-          <maxRange>50</maxRange>
-          <effect>AREA_LINE</effect>
-        </ranged>
-      </standardAttackAction>
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>9</attackBonus>
@@ -3082,6 +3061,30 @@
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
     </attack>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+      <type>ABILITY_RAY_ATTACK</type>
+      <action>
+        <weapon>ABILITY_RAY_ATTACK</weapon>
+        <attackBonus>9</attackBonus>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
+        <attackForm>ATTACKFORM_TOUCH</attackForm>
+        <damage>
+          <element>
+            <type>DAMAGE_ELECTRICITY</type>
+            <amount>
+              <numDice>2</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>0</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+        <ranged>
+          <maxRange>50</maxRange>
+        </ranged>
+      </action>
+    </specialAttack>
     <space>5</space>
     <reach>5</reach>
     <saves>
@@ -3196,30 +3199,9 @@
       <touch>15</touch>
       <flatFooted>16</flatFooted>
     </armorClass>
-    <attack attackActionsAreInclusive="false">
+    <attack>
       <baseAttackBonus>7</baseAttackBonus>
       <grappleBonus>9</grappleBonus>
-      <standardAttackAction>
-        <weapon>SPECIALATTACK_RAY_ELECTRICITY</weapon>
-        <attackBonus>12</attackBonus>
-        <attackForm>ATTACKFORM_RANGED</attackForm>
-        <attackForm>ATTACKFORM_TOUCH</attackForm>
-        <damage>
-          <element>
-            <type>DAMAGE_ELECTRICITY</type>
-            <amount>
-              <numDice>2</numDice>
-              <typeDice>D_8</typeDice>
-              <modifier>0</modifier>
-            </amount>
-          </element>
-        </damage>
-        <numAttacksPerRound>1</numAttacksPerRound>
-        <ranged>
-          <maxRange>50</maxRange>
-          <effect>AREA_LINE</effect>
-        </ranged>
-      </standardAttackAction>
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>12</attackBonus>
@@ -3237,6 +3219,30 @@
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
     </attack>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+      <type>ABILITY_RAY_ATTACK</type>
+      <action>
+        <weapon>ABILITY_RAY_ATTACK</weapon>
+        <attackBonus>12</attackBonus>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
+        <attackForm>ATTACKFORM_TOUCH</attackForm>
+        <damage>
+          <element>
+            <type>DAMAGE_ELECTRICITY</type>
+            <amount>
+              <numDice>2</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>0</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+        <ranged>
+          <maxRange>50</maxRange>
+        </ranged>
+      </action>
+    </specialAttack>
     <space>5</space>
     <reach>5</reach>
     <saves>
@@ -3352,30 +3358,9 @@
       <touch>14</touch>
       <flatFooted>17</flatFooted>
     </armorClass>
-    <attack attackActionsAreInclusive="false">
+    <attack>
       <baseAttackBonus>15</baseAttackBonus>
       <grappleBonus>25</grappleBonus>
-      <standardAttackAction>
-        <weapon>SPECIALATTACK_RAY_ELECTRICITY</weapon>
-        <attackBonus>19</attackBonus>
-        <attackForm>ATTACKFORM_RANGED</attackForm>
-        <attackForm>ATTACKFORM_TOUCH</attackForm>
-        <damage>
-          <element>
-            <type>DAMAGE_ELECTRICITY</type>
-            <amount>
-              <numDice>2</numDice>
-              <typeDice>D_8</typeDice>
-              <modifier>0</modifier>
-            </amount>
-          </element>
-        </damage>
-        <numAttacksPerRound>1</numAttacksPerRound>
-        <ranged>
-          <maxRange>50</maxRange>
-          <effect>AREA_LINE</effect>
-        </ranged>
-      </standardAttackAction>
       <standardAttackAction>
         <weapon>NATURALWEAPON_BITE</weapon>
         <attackBonus>21</attackBonus>
@@ -3393,6 +3378,30 @@
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
     </attack>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+      <type>ABILITY_RAY_ATTACK</type>
+      <action>
+        <weapon>ABILITY_RAY_ATTACK</weapon>
+        <attackBonus>19</attackBonus>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
+        <attackForm>ATTACKFORM_TOUCH</attackForm>
+        <damage>
+          <element>
+            <type>DAMAGE_ELECTRICITY</type>
+            <amount>
+              <numDice>2</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>0</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+        <ranged>
+          <maxRange>50</maxRange>
+        </ranged>
+      </action>
+    </specialAttack>
     <space>10</space>
     <reach>5</reach>
     <saves>
@@ -3537,6 +3546,52 @@
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
     </attack>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
+      <type>ABILITY_CONSTRICT</type>
+      <preCondition>
+        <targetCondition>CONDITION_GRAPPLING</targetCondition>
+        <targetCondition>CONDITION_PINNED</targetCondition>
+        <check>
+          <type>CHECK_GRAPPLE</type>
+        </check>
+      </preCondition>
+      <action>
+        <weapon>ABILITY_CONSTRICT</weapon>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_CONSTRICT</type>
+            <amount>
+              <numDice>1</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>7</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </action>
+    </specialAttack>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+      <type>ABILITY_ENTANGLE</type>
+      <action>
+        <weapon>ABILITY_ENTANGLE</weapon>
+        <effect>
+          <type>SPELL_ENTANGLE</type>
+          <casterLevel>4</casterLevel>
+          <save reduction="SAVE_PARTIAL">
+            <type>SAVE_REFLEX</type>
+            <attribute>ATTRIBUTE_WISDOM</attribute>
+            <difficultyClass>13</difficultyClass>
+          </save>
+        </effect>
+        <ranged effect="AREA_CUBE">
+          <maxRange>30</maxRange>
+        </ranged>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </action>
+    </specialAttack>
     <space>10</space>
     <reach>10</reach>
     <saves>
