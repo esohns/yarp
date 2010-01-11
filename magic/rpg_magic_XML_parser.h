@@ -76,6 +76,7 @@ class RPG_Magic_SpellProperties_Type
 //     virtual void pre();
     virtual void type(const RPG_Magic_Spell&);
     virtual void casterLevel(unsigned char);
+    virtual void duration(const RPG_Common_Duration&);
     virtual void save(const RPG_Common_SavingThrowCheck&);
     virtual RPG_Magic_SpellProperties post_RPG_Magic_SpellProperties_Type();
 

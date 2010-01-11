@@ -283,24 +283,6 @@ post_RPG_Combat_DamageBonus_Type ()
   // return ... ;
 }
 
-// RPG_Combat_DamageEffectType_Type_pimpl
-//
-
-void RPG_Combat_DamageEffectType_Type_pimpl::
-pre ()
-{
-}
-
-RPG_Combat_DamageEffectType RPG_Combat_DamageEffectType_Type_pimpl::
-post_RPG_Combat_DamageEffectType_Type ()
-{
-  const ::std::string& v (post_string ());
-
-  // TODO
-  //
-  // return ... ;
-}
-
 // RPG_Combat_DamageCounterMeasureType_Type_pimpl
 //
 
@@ -499,7 +481,7 @@ counterMeasure (const RPG_Combat_DamageCounterMeasure& counterMeasure)
 }
 
 void RPG_Combat_DamageElement_Type_pimpl::
-effect (const RPG_Combat_DamageEffectType& effect)
+effect (const RPG_Common_EffectType& effect)
 {
   // TODO
   //

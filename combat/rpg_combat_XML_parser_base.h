@@ -175,17 +175,6 @@ class RPG_Combat_DamageBonus_Type_pimpl: public virtual RPG_Combat_DamageBonus_T
   post_RPG_Combat_DamageBonus_Type ();
 };
 
-class RPG_Combat_DamageEffectType_Type_pimpl: public virtual RPG_Combat_DamageEffectType_Type_pskel,
-  public ::xml_schema::string_pimpl
-{
-  public:
-  virtual void
-  pre ();
-
-  virtual RPG_Combat_DamageEffectType
-  post_RPG_Combat_DamageEffectType_Type ();
-};
-
 class RPG_Combat_DamageCounterMeasureType_Type_pimpl: public virtual RPG_Combat_DamageCounterMeasureType_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -290,7 +279,7 @@ class RPG_Combat_DamageElement_Type_pimpl: public virtual RPG_Combat_DamageEleme
   counterMeasure (const RPG_Combat_DamageCounterMeasure&);
 
   virtual void
-  effect (const RPG_Combat_DamageEffectType&);
+  effect (const RPG_Common_EffectType&);
 
   virtual RPG_Combat_DamageElement
   post_RPG_Combat_DamageElement_Type ();

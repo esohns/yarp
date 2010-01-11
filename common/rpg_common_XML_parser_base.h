@@ -32,6 +32,17 @@ class RPG_Common_PhysicalDamageType_Type_pimpl: public virtual RPG_Common_Physic
   post_RPG_Common_PhysicalDamageType_Type ();
 };
 
+class RPG_Common_EffectType_Type_pimpl: public virtual RPG_Common_EffectType_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Common_EffectType
+  post_RPG_Common_EffectType_Type ();
+};
+
 class RPG_Common_CheckType_Type_pimpl: public virtual RPG_Common_CheckType_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -123,13 +134,13 @@ class RPG_Common_Duration_Type_pimpl: public virtual RPG_Common_Duration_Type_ps
   pre ();
 
   virtual void
-  activationPeriod (unsigned short);
+  activation (unsigned int);
 
   virtual void
-  interval (unsigned short);
+  interval (unsigned int);
 
   virtual void
-  totalDuration (unsigned short);
+  total (unsigned int);
 
   virtual RPG_Common_Duration
   post_RPG_Common_Duration_Type ();

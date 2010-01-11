@@ -30,7 +30,7 @@ struct RPG_Combat_DamageElement
   std::vector<RPG_Combat_DamageBonus> others;
   RPG_Common_Attribute attribute;
   std::vector<RPG_Combat_DamageCounterMeasure> counterMeasures;
-  RPG_Combat_DamageEffectType effect;
+  RPG_Common_EffectType effect;
 };
 
 #endif

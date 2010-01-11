@@ -120,6 +120,13 @@ casterLevel (unsigned char casterLevel)
 }
 
 void RPG_Magic_SpellProperties_Type_pimpl::
+duration (const RPG_Common_Duration& duration)
+{
+  // TODO
+  //
+}
+
+void RPG_Magic_SpellProperties_Type_pimpl::
 save (const RPG_Common_SavingThrowCheck& save)
 {
   // TODO

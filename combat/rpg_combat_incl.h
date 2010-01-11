@@ -34,7 +34,6 @@
 #include "rpg_combat_damageduration.h"
 #include "rpg_combat_damagebonustype.h"
 #include "rpg_combat_damagebonus.h"
-#include "rpg_combat_damageeffecttype.h"
 #include "rpg_combat_damagecountermeasuretype.h"
 #include "rpg_combat_checktypeunion.h"
 #include "rpg_combat_check.h"

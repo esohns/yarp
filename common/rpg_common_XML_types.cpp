@@ -120,38 +120,38 @@ RPG_Common_Usage_Type_pskel ()
 //
 
 void RPG_Common_Duration_Type_pskel::
-activationPeriod_parser (::xml_schema::unsigned_short_pskel& p)
+activation_parser (::xml_schema::unsigned_int_pskel& p)
 {
-  this->activationPeriod_parser_ = &p;
+  this->activation_parser_ = &p;
 }
 
 void RPG_Common_Duration_Type_pskel::
-interval_parser (::xml_schema::unsigned_short_pskel& p)
+interval_parser (::xml_schema::unsigned_int_pskel& p)
 {
   this->interval_parser_ = &p;
 }
 
 void RPG_Common_Duration_Type_pskel::
-totalDuration_parser (::xml_schema::unsigned_short_pskel& p)
+total_parser (::xml_schema::unsigned_int_pskel& p)
 {
-  this->totalDuration_parser_ = &p;
+  this->total_parser_ = &p;
 }
 
 void RPG_Common_Duration_Type_pskel::
-parsers (::xml_schema::unsigned_short_pskel& activationPeriod,
-         ::xml_schema::unsigned_short_pskel& interval,
-         ::xml_schema::unsigned_short_pskel& totalDuration)
+parsers (::xml_schema::unsigned_int_pskel& activation,
+         ::xml_schema::unsigned_int_pskel& interval,
+         ::xml_schema::unsigned_int_pskel& total)
 {
-  this->activationPeriod_parser_ = &activationPeriod;
+  this->activation_parser_ = &activation;
   this->interval_parser_ = &interval;
-  this->totalDuration_parser_ = &totalDuration;
+  this->total_parser_ = &total;
 }
 
 RPG_Common_Duration_Type_pskel::
 RPG_Common_Duration_Type_pskel ()
-: activationPeriod_parser_ (0),
+: activation_parser_ (0),
   interval_parser_ (0),
-  totalDuration_parser_ (0)
+  total_parser_ (0)
 {
 }
 
@@ -263,7 +263,7 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
     return true;
 
-  if (n == "reduction" && ns == "urn:rpg")
+  if (n == "reduction" && ns.empty ())
   {
     if (this->reduction_parser_)
     {
@@ -356,17 +356,17 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Common_Duration_Type_pskel::
-activationPeriod (unsigned short)
+activation (unsigned int)
 {
 }
 
 void RPG_Common_Duration_Type_pskel::
-interval (unsigned short)
+interval (unsigned int)
 {
 }
 
 void RPG_Common_Duration_Type_pskel::
-totalDuration (unsigned short)
+total (unsigned int)
 {
 }
 
@@ -380,12 +380,12 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "activationPeriod" && ns == "urn:rpg")
+  if (n == "activation" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->activationPeriod_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->activation_parser_;
 
-    if (this->activationPeriod_parser_)
-      this->activationPeriod_parser_->pre ();
+    if (this->activation_parser_)
+      this->activation_parser_->pre ();
 
     return true;
   }
@@ -400,12 +400,12 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "totalDuration" && ns == "urn:rpg")
+  if (n == "total" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->totalDuration_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->total_parser_;
 
-    if (this->totalDuration_parser_)
-      this->totalDuration_parser_->pre ();
+    if (this->total_parser_)
+      this->total_parser_->pre ();
 
     return true;
   }
@@ -420,10 +420,10 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "activationPeriod" && ns == "urn:rpg")
+  if (n == "activation" && ns == "urn:rpg")
   {
-    if (this->activationPeriod_parser_)
-      this->activationPeriod (this->activationPeriod_parser_->post_unsigned_short ());
+    if (this->activation_parser_)
+      this->activation (this->activation_parser_->post_unsigned_int ());
 
     return true;
   }
@@ -431,15 +431,15 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "interval" && ns == "urn:rpg")
   {
     if (this->interval_parser_)
-      this->interval (this->interval_parser_->post_unsigned_short ());
+      this->interval (this->interval_parser_->post_unsigned_int ());
 
     return true;
   }
 
-  if (n == "totalDuration" && ns == "urn:rpg")
+  if (n == "total" && ns == "urn:rpg")
   {
-    if (this->totalDuration_parser_)
-      this->totalDuration (this->totalDuration_parser_->post_unsigned_short ());
+    if (this->total_parser_)
+      this->total (this->total_parser_->post_unsigned_int ());
 
     return true;
   }

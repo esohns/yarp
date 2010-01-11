@@ -158,14 +158,6 @@ class RPG_Combat_DamageBonus_Type
   RPG_Combat_DamageBonus myCurrentDamageBonus;
 };
 
-class RPG_Combat_DamageEffectType_Type
- : public RPG_Combat_DamageEffectType_Type_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Combat_DamageEffectType post_RPG_Combat_DamageEffectType_Type();
-};
-
 class RPG_Combat_DamageCounterMeasureType_Type
  : public RPG_Combat_DamageCounterMeasureType_Type_pimpl
 {
@@ -243,7 +235,7 @@ class RPG_Combat_DamageElement_Type
   virtual void other(const RPG_Combat_DamageBonus&);
   virtual void attribute(const RPG_Common_Attribute&);
   virtual void counterMeasure(const RPG_Combat_DamageCounterMeasure&);
-  virtual void effect(const RPG_Combat_DamageEffectType&);
+  virtual void effect(const RPG_Common_EffectType&);
   virtual RPG_Combat_DamageElement post_RPG_Combat_DamageElement_Type();
 
  private:

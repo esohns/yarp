@@ -23,7 +23,7 @@
 
 enum RPG_Combat_SpecialDamageType
 {
-  DAMAGE_SPECIAL = 0,
+  DAMAGE_MAGIC = 0,
   DAMAGE_ACID,
   DAMAGE_COLD,
   DAMAGE_ELECTRICITY,
@@ -57,7 +57,7 @@ class RPG_Combat_SpecialDamageTypeHelper
   inline static void init()
   {
     myRPG_Combat_SpecialDamageTypeToStringTable.clear();
-    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_SPECIAL, ACE_TEXT_ALWAYS_CHAR("DAMAGE_SPECIAL")));
+    myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_MAGIC, ACE_TEXT_ALWAYS_CHAR("DAMAGE_MAGIC")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_ACID, ACE_TEXT_ALWAYS_CHAR("DAMAGE_ACID")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_COLD, ACE_TEXT_ALWAYS_CHAR("DAMAGE_COLD")));
     myRPG_Combat_SpecialDamageTypeToStringTable.insert(std::make_pair(DAMAGE_ELECTRICITY, ACE_TEXT_ALWAYS_CHAR("DAMAGE_ELECTRICITY")));

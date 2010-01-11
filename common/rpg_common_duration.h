@@ -23,9 +23,9 @@
 
 struct RPG_Common_Duration
 {
-  unsigned short int activationPeriod;
-  unsigned short int interval;
-  unsigned short int totalDuration;
+  unsigned int activation;
+  unsigned int interval;
+  unsigned int total;
 };
 
 #endif

@@ -51,6 +51,7 @@
 //
 class RPG_Common_Attribute_Type_pskel;
 class RPG_Common_PhysicalDamageType_Type_pskel;
+class RPG_Common_EffectType_Type_pskel;
 class RPG_Common_CheckType_Type_pskel;
 class RPG_Common_SavingThrow_Type_pskel;
 class RPG_Common_BaseCheckTypeUnion_Type_pskel;
@@ -93,6 +94,18 @@ class RPG_Common_PhysicalDamageType_Type_pskel: public virtual ::xml_schema::str
 
   virtual RPG_Common_PhysicalDamageType
   post_RPG_Common_PhysicalDamageType_Type () = 0;
+};
+
+class RPG_Common_EffectType_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Common_EffectType
+  post_RPG_Common_EffectType_Type () = 0;
 };
 
 class RPG_Common_CheckType_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -276,13 +289,13 @@ class RPG_Common_Duration_Type_pskel: public ::xml_schema::complex_content
   // pre ();
 
   virtual void
-  activationPeriod (unsigned short);
+  activation (unsigned int);
 
   virtual void
-  interval (unsigned short);
+  interval (unsigned int);
 
   virtual void
-  totalDuration (unsigned short);
+  total (unsigned int);
 
   virtual RPG_Common_Duration
   post_RPG_Common_Duration_Type () = 0;
@@ -290,18 +303,18 @@ class RPG_Common_Duration_Type_pskel: public ::xml_schema::complex_content
   // Parser construction API.
   //
   void
-  activationPeriod_parser (::xml_schema::unsigned_short_pskel&);
+  activation_parser (::xml_schema::unsigned_int_pskel&);
 
   void
-  interval_parser (::xml_schema::unsigned_short_pskel&);
+  interval_parser (::xml_schema::unsigned_int_pskel&);
 
   void
-  totalDuration_parser (::xml_schema::unsigned_short_pskel&);
+  total_parser (::xml_schema::unsigned_int_pskel&);
 
   void
-  parsers (::xml_schema::unsigned_short_pskel& /* activationPeriod */,
-           ::xml_schema::unsigned_short_pskel& /* interval */,
-           ::xml_schema::unsigned_short_pskel& /* totalDuration */);
+  parsers (::xml_schema::unsigned_int_pskel& /* activation */,
+           ::xml_schema::unsigned_int_pskel& /* interval */,
+           ::xml_schema::unsigned_int_pskel& /* total */);
 
   // Constructor.
   //
@@ -320,9 +333,9 @@ class RPG_Common_Duration_Type_pskel: public ::xml_schema::complex_content
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::xml_schema::unsigned_short_pskel* activationPeriod_parser_;
-  ::xml_schema::unsigned_short_pskel* interval_parser_;
-  ::xml_schema::unsigned_short_pskel* totalDuration_parser_;
+  ::xml_schema::unsigned_int_pskel* activation_parser_;
+  ::xml_schema::unsigned_int_pskel* interval_parser_;
+  ::xml_schema::unsigned_int_pskel* total_parser_;
 };
 
 #include <xsd/cxx/post.hxx>

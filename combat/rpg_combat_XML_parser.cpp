@@ -275,13 +275,6 @@ RPG_Combat_DamageBonus RPG_Combat_DamageBonus_Type::post_RPG_Combat_DamageBonus_
   return result;
 }
 
-RPG_Combat_DamageEffectType RPG_Combat_DamageEffectType_Type::post_RPG_Combat_DamageEffectType_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageEffectType_Type::post_RPG_Combat_DamageEffectType_Type"));
-
-  return RPG_Combat_DamageEffectTypeHelper::stringToRPG_Combat_DamageEffectType(post_string());
-}
-
 RPG_Combat_DamageCounterMeasureType RPG_Combat_DamageCounterMeasureType_Type::post_RPG_Combat_DamageCounterMeasureType_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasureType_Type::post_RPG_Combat_DamageCounterMeasureType_Type"));
@@ -480,7 +473,7 @@ RPG_Combat_DamageElement_Type::RPG_Combat_DamageElement_Type()
   myCurrentDamageElement.others.clear();
   myCurrentDamageElement.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentDamageElement.counterMeasures.clear();
-  myCurrentDamageElement.effect = RPG_COMBAT_DAMAGEEFFECTTYPE_INVALID;
+  myCurrentDamageElement.effect = RPG_COMMON_EFFECTTYPE_INVALID;
 }
 
 void RPG_Combat_DamageElement_Type::type(const RPG_Combat_DamageTypeUnion& damageType_in)
@@ -532,7 +525,7 @@ void RPG_Combat_DamageElement_Type::counterMeasure(const RPG_Combat_DamageCounte
   myCurrentDamageElement.counterMeasures.push_back(counterMeasure_in);
 }
 
-void RPG_Combat_DamageElement_Type::effect(const RPG_Combat_DamageEffectType& effect_in)
+void RPG_Combat_DamageElement_Type::effect(const RPG_Common_EffectType& effect_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::effect"));
 
@@ -561,7 +554,7 @@ RPG_Combat_DamageElement RPG_Combat_DamageElement_Type::post_RPG_Combat_DamageEl
   myCurrentDamageElement.others.clear();
   myCurrentDamageElement.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentDamageElement.counterMeasures.clear();
-  myCurrentDamageElement.effect = RPG_COMBAT_DAMAGEEFFECTTYPE_INVALID;
+  myCurrentDamageElement.effect = RPG_COMMON_EFFECTTYPE_INVALID;
 
   return result;
 }

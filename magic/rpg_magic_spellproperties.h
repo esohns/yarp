@@ -25,6 +25,7 @@ struct RPG_Magic_SpellProperties
 {
   RPG_Magic_Spell type;
   unsigned char casterLevel;
+  RPG_Common_Duration duration;
   RPG_Common_SavingThrowCheck save;
 };
 

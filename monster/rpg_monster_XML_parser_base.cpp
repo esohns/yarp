@@ -313,6 +313,13 @@ targetAlignment (const RPG_Character_Alignment& targetAlignment)
 }
 
 void RPG_Monster_SpecialAttackPreCondition_Type_pimpl::
+ownCondition (const RPG_Character_Condition& ownCondition)
+{
+  // TODO
+  //
+}
+
+void RPG_Monster_SpecialAttackPreCondition_Type_pimpl::
 targetCondition (const RPG_Character_Condition& targetCondition)
 {
   // TODO

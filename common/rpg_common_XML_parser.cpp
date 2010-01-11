@@ -37,6 +37,13 @@ RPG_Common_PhysicalDamageType RPG_Common_PhysicalDamageType_Type::post_RPG_Commo
   return RPG_Common_PhysicalDamageTypeHelper::stringToRPG_Common_PhysicalDamageType(post_string());
 }
 
+RPG_Common_EffectType RPG_Common_EffectType_Type::post_RPG_Common_EffectType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_EffectType_Type::post_RPG_Common_EffectType_Type"));
+
+  return RPG_Common_EffectTypeHelper::stringToRPG_Common_EffectType(post_string());
+}
+
 RPG_Common_CheckType RPG_Common_CheckType_Type::post_RPG_Common_CheckType_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_CheckType_Type::post_RPG_Common_CheckType_Type"));
@@ -185,30 +192,30 @@ RPG_Common_Duration_Type::RPG_Common_Duration_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::RPG_Common_Duration_Type"));
 
-  myCurrentDuration.activationPeriod = 0;
+  myCurrentDuration.activation = 0;
   myCurrentDuration.interval = 0;
-  myCurrentDuration.totalDuration = 0;
+  myCurrentDuration.total = 0;
 }
 
-void RPG_Common_Duration_Type::activationPeriod(unsigned short activationPeriod_in)
+void RPG_Common_Duration_Type::activation(unsigned int activation_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::activationPeriod"));
+  ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::activation"));
 
-  myCurrentDuration.activationPeriod = activationPeriod_in;
+  myCurrentDuration.activation = activation_in;
 }
 
-void RPG_Common_Duration_Type::interval(unsigned short interval_in)
+void RPG_Common_Duration_Type::interval(unsigned int interval_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::interval"));
 
   myCurrentDuration.interval = interval_in;
 }
 
-void RPG_Common_Duration_Type::totalDuration(unsigned short totalDuration_in)
+void RPG_Common_Duration_Type::total(unsigned int total_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::totalDuration"));
+  ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::total"));
 
-  myCurrentDuration.totalDuration = totalDuration_in;
+  myCurrentDuration.total = total_in;
 }
 
 RPG_Common_Duration RPG_Common_Duration_Type::post_RPG_Common_Duration_Type()
@@ -218,9 +225,9 @@ RPG_Common_Duration RPG_Common_Duration_Type::post_RPG_Common_Duration_Type()
   RPG_Common_Duration result = myCurrentDuration;
 
   // clear structure
-  myCurrentDuration.activationPeriod = 0;
+  myCurrentDuration.activation = 0;
   myCurrentDuration.interval = 0;
-  myCurrentDuration.totalDuration = 0;
+  myCurrentDuration.total = 0;
 
   return result;
 }

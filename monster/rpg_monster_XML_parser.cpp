@@ -471,6 +471,7 @@ RPG_Monster_SpecialAttackPreCondition_Type::RPG_Monster_SpecialAttackPreConditio
 
   myCurrentPreCondition.targetAlignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
   myCurrentPreCondition.targetAlignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
+  myCurrentPreCondition.ownConditions.clear();
   myCurrentPreCondition.targetConditions.clear();
   myCurrentPreCondition.minTargetSize = RPG_CHARACTER_SIZE_INVALID;
   myCurrentPreCondition.maxTargetSize = RPG_CHARACTER_SIZE_INVALID;
@@ -487,11 +488,18 @@ void RPG_Monster_SpecialAttackPreCondition_Type::targetAlignment(const RPG_Chara
   myCurrentPreCondition.targetAlignment = targetAlignment_in;
 }
 
-void RPG_Monster_SpecialAttackPreCondition_Type::targetCondition(const RPG_Character_Condition& targetCondition_in)
+void RPG_Monster_SpecialAttackPreCondition_Type::ownCondition(const RPG_Character_Condition& condition_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackPreCondition_Type::ownCondition"));
+
+  myCurrentPreCondition.ownConditions.push_back(condition_in);
+}
+
+void RPG_Monster_SpecialAttackPreCondition_Type::targetCondition(const RPG_Character_Condition& condition_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackPreCondition_Type::targetCondition"));
 
-  myCurrentPreCondition.targetConditions.push_back(targetCondition_in);
+  myCurrentPreCondition.targetConditions.push_back(condition_in);
 }
 
 void RPG_Monster_SpecialAttackPreCondition_Type::minTargetSize(const RPG_Character_Size& minTargetSize_in)
@@ -524,6 +532,7 @@ RPG_Monster_SpecialAttackPreCondition RPG_Monster_SpecialAttackPreCondition_Type
   // clear structure
   myCurrentPreCondition.targetAlignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
   myCurrentPreCondition.targetAlignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
+  myCurrentPreCondition.ownConditions.clear();
   myCurrentPreCondition.targetConditions.clear();
   myCurrentPreCondition.minTargetSize = RPG_CHARACTER_SIZE_INVALID;
   myCurrentPreCondition.maxTargetSize = RPG_CHARACTER_SIZE_INVALID;

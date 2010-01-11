@@ -138,6 +138,7 @@
   <xsd:complexType name="RPG_Monster_SpecialAttackPreCondition_Type">
     <xsd:sequence>
       <xsd:element name="targetAlignment" type="RPG_Character_Alignment_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="ownCondition" type="RPG_Character_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="targetCondition" type="RPG_Character_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="minTargetSize" type="RPG_Character_Size_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="maxTargetSize" type="RPG_Character_Size_Type" minOccurs="0" maxOccurs="1"/>

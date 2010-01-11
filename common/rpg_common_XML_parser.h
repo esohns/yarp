@@ -43,6 +43,14 @@ class RPG_Common_PhysicalDamageType_Type
   virtual RPG_Common_PhysicalDamageType post_RPG_Common_PhysicalDamageType_Type();
 };
 
+class RPG_Common_EffectType_Type
+  : public RPG_Common_EffectType_Type_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Common_EffectType post_RPG_Common_EffectType_Type();
+};
+
 class RPG_Common_CheckType_Type
  : public RPG_Common_CheckType_Type_pimpl
 {
@@ -120,9 +128,9 @@ class RPG_Common_Duration_Type
   RPG_Common_Duration_Type();
 
 //   virtual void pre();
-  virtual void activationPeriod(unsigned short);
-  virtual void interval(unsigned short);
-  virtual void totalDuration(unsigned short);
+  virtual void activation(unsigned int);
+  virtual void interval(unsigned int);
+  virtual void total(unsigned int);
   virtual RPG_Common_Duration post_RPG_Common_Duration_Type();
 
  private:

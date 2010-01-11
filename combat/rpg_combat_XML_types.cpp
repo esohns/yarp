@@ -279,7 +279,7 @@ counterMeasure_parser (::RPG_Combat_DamageCounterMeasure_Type_pskel& p)
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
-effect_parser (::RPG_Combat_DamageEffectType_Type_pskel& p)
+effect_parser (::RPG_Common_EffectType_Type_pskel& p)
 {
   this->effect_parser_ = &p;
 }
@@ -292,7 +292,7 @@ parsers (::RPG_Combat_DamageTypeUnion_Type_pskel& type,
          ::RPG_Combat_DamageBonus_Type_pskel& other,
          ::RPG_Common_Attribute_Type_pskel& attribute,
          ::RPG_Combat_DamageCounterMeasure_Type_pskel& counterMeasure,
-         ::RPG_Combat_DamageEffectType_Type_pskel& effect)
+         ::RPG_Common_EffectType_Type_pskel& effect)
 {
   this->type_parser_ = &type;
   this->amount_parser_ = &amount;
@@ -866,7 +866,7 @@ counterMeasure (const RPG_Combat_DamageCounterMeasure&)
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
-effect (const RPG_Combat_DamageEffectType&)
+effect (const RPG_Common_EffectType&)
 {
 }
 
@@ -1035,7 +1035,7 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
       this->effect_parser_->_pre_impl ();
       this->effect_parser_->_characters (v);
       this->effect_parser_->_post_impl ();
-      this->effect (this->effect_parser_->post_RPG_Combat_DamageEffectType_Type ());
+      this->effect (this->effect_parser_->post_RPG_Common_EffectType_Type ());
     }
 
     return true;

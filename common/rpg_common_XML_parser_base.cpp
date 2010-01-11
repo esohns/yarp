@@ -43,6 +43,24 @@ post_RPG_Common_PhysicalDamageType_Type ()
   // return ... ;
 }
 
+// RPG_Common_EffectType_Type_pimpl
+//
+
+void RPG_Common_EffectType_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Common_EffectType RPG_Common_EffectType_Type_pimpl::
+post_RPG_Common_EffectType_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+
 // RPG_Common_CheckType_Type_pimpl
 //
 
@@ -203,21 +221,21 @@ pre ()
 }
 
 void RPG_Common_Duration_Type_pimpl::
-activationPeriod (unsigned short activationPeriod)
+activation (unsigned int activation)
 {
   // TODO
   //
 }
 
 void RPG_Common_Duration_Type_pimpl::
-interval (unsigned short interval)
+interval (unsigned int interval)
 {
   // TODO
   //
 }
 
 void RPG_Common_Duration_Type_pimpl::
-totalDuration (unsigned short totalDuration)
+total (unsigned int total)
 {
   // TODO
   //

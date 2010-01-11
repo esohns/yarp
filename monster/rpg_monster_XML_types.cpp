@@ -258,6 +258,12 @@ targetAlignment_parser (::RPG_Character_Alignment_Type_pskel& p)
 }
 
 void RPG_Monster_SpecialAttackPreCondition_Type_pskel::
+ownCondition_parser (::RPG_Character_Condition_Type_pskel& p)
+{
+  this->ownCondition_parser_ = &p;
+}
+
+void RPG_Monster_SpecialAttackPreCondition_Type_pskel::
 targetCondition_parser (::RPG_Character_Condition_Type_pskel& p)
 {
   this->targetCondition_parser_ = &p;
@@ -283,12 +289,14 @@ check_parser (::RPG_Combat_Check_Type_pskel& p)
 
 void RPG_Monster_SpecialAttackPreCondition_Type_pskel::
 parsers (::RPG_Character_Alignment_Type_pskel& targetAlignment,
+         ::RPG_Character_Condition_Type_pskel& ownCondition,
          ::RPG_Character_Condition_Type_pskel& targetCondition,
          ::RPG_Character_Size_Type_pskel& minTargetSize,
          ::RPG_Character_Size_Type_pskel& maxTargetSize,
          ::RPG_Combat_Check_Type_pskel& check)
 {
   this->targetAlignment_parser_ = &targetAlignment;
+  this->ownCondition_parser_ = &ownCondition;
   this->targetCondition_parser_ = &targetCondition;
   this->minTargetSize_parser_ = &minTargetSize;
   this->maxTargetSize_parser_ = &maxTargetSize;
@@ -298,6 +306,7 @@ parsers (::RPG_Character_Alignment_Type_pskel& targetAlignment,
 RPG_Monster_SpecialAttackPreCondition_Type_pskel::
 RPG_Monster_SpecialAttackPreCondition_Type_pskel ()
 : targetAlignment_parser_ (0),
+  ownCondition_parser_ (0),
   targetCondition_parser_ (0),
   minTargetSize_parser_ (0),
   maxTargetSize_parser_ (0),
@@ -1323,6 +1332,11 @@ targetAlignment (const RPG_Character_Alignment&)
 }
 
 void RPG_Monster_SpecialAttackPreCondition_Type_pskel::
+ownCondition (const RPG_Character_Condition&)
+{
+}
+
+void RPG_Monster_SpecialAttackPreCondition_Type_pskel::
 targetCondition (const RPG_Character_Condition&)
 {
 }
@@ -1358,6 +1372,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->targetAlignment_parser_)
       this->targetAlignment_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "ownCondition" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->ownCondition_parser_;
+
+    if (this->ownCondition_parser_)
+      this->ownCondition_parser_->pre ();
 
     return true;
   }
@@ -1416,6 +1440,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->targetAlignment_parser_)
       this->targetAlignment (this->targetAlignment_parser_->post_RPG_Character_Alignment_Type ());
+
+    return true;
+  }
+
+  if (n == "ownCondition" && ns == "urn:rpg")
+  {
+    if (this->ownCondition_parser_)
+      this->ownCondition (this->ownCondition_parser_->post_RPG_Character_Condition_Type ());
 
     return true;
   }

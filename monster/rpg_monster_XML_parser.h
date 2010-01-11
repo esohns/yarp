@@ -160,6 +160,7 @@ class RPG_Monster_SpecialAttackPreCondition_Type
 
 //   virtual void pre();
     virtual void targetAlignment(const RPG_Character_Alignment&);
+    virtual void ownCondition(const RPG_Character_Condition&);
     virtual void targetCondition(const RPG_Character_Condition&);
     virtual void minTargetSize(const RPG_Character_Size&);
     virtual void maxTargetSize(const RPG_Character_Size&);

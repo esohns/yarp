@@ -24,6 +24,7 @@
 enum RPG_Character_Ability
 {
   ABILITY_ACID_ATTACK = 0,
+  ABILITY_ENTANGLE,
   ABILITY_SCORE_LOSS,
   ABILITY_THROW_WEB,
   ABILITY_ALTERNATE_FORM,
@@ -113,6 +114,7 @@ class RPG_Character_AbilityHelper
   {
     myRPG_Character_AbilityToStringTable.clear();
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_ACID_ATTACK, ACE_TEXT_ALWAYS_CHAR("ABILITY_ACID_ATTACK")));
+    myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_ENTANGLE, ACE_TEXT_ALWAYS_CHAR("ABILITY_ENTANGLE")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_SCORE_LOSS, ACE_TEXT_ALWAYS_CHAR("ABILITY_SCORE_LOSS")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_THROW_WEB, ACE_TEXT_ALWAYS_CHAR("ABILITY_THROW_WEB")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_ALTERNATE_FORM, ACE_TEXT_ALWAYS_CHAR("ABILITY_ALTERNATE_FORM")));

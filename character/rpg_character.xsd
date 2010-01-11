@@ -82,6 +82,8 @@
 
   <xsd:simpleType name="RPG_Character_Condition_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="CONDITION_GASEOUS"/>
+      <!--                                     -->
       <xsd:enumeration value="CONDITION_NORMAL"/>
       <xsd:enumeration value="CONDITION_ABILITY_DAMAGED"/>
       <xsd:enumeration value="CONDITION_ABILITY_DRAINED"/>

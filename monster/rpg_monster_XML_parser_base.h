@@ -181,6 +181,9 @@ class RPG_Monster_SpecialAttackPreCondition_Type_pimpl: public virtual RPG_Monst
   targetAlignment (const RPG_Character_Alignment&);
 
   virtual void
+  ownCondition (const RPG_Character_Condition&);
+
+  virtual void
   targetCondition (const RPG_Character_Condition&);
 
   virtual void

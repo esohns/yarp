@@ -24,6 +24,7 @@
 struct RPG_Monster_SpecialAttackPreCondition
 {
   RPG_Character_Alignment targetAlignment;
+  std::vector<RPG_Character_Condition> ownConditions;
   std::vector<RPG_Character_Condition> targetConditions;
   RPG_Character_Size minTargetSize;
   RPG_Character_Size maxTargetSize;

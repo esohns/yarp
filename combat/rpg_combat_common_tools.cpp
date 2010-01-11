@@ -52,7 +52,6 @@ RPG_Combat_DefenseSituationToStringTable_t RPG_Combat_DefenseSituationHelper::my
 RPG_Combat_SpecialAttackToStringTable_t RPG_Combat_SpecialAttackHelper::myRPG_Combat_SpecialAttackToStringTable;
 RPG_Combat_SpecialDamageTypeToStringTable_t RPG_Combat_SpecialDamageTypeHelper::myRPG_Combat_SpecialDamageTypeToStringTable;
 RPG_Combat_DamageBonusTypeToStringTable_t RPG_Combat_DamageBonusTypeHelper::myRPG_Combat_DamageBonusTypeToStringTable;
-RPG_Combat_DamageEffectTypeToStringTable_t RPG_Combat_DamageEffectTypeHelper::myRPG_Combat_DamageEffectTypeToStringTable;
 RPG_Combat_DamageCounterMeasureTypeToStringTable_t RPG_Combat_DamageCounterMeasureTypeHelper::myRPG_Combat_DamageCounterMeasureTypeToStringTable;
 RPG_Combat_DamageReductionTypeToStringTable_t RPG_Combat_DamageReductionTypeHelper::myRPG_Combat_DamageReductionTypeToStringTable;
 RPG_Combat_ActionTypeToStringTable_t RPG_Combat_ActionTypeHelper::myRPG_Combat_ActionTypeToStringTable;
@@ -68,7 +67,6 @@ void RPG_Combat_Common_Tools::initStringConversionTables()
   RPG_Combat_SpecialAttackHelper::init();
   RPG_Combat_SpecialDamageTypeHelper::init();
   RPG_Combat_DamageBonusTypeHelper::init();
-  RPG_Combat_DamageEffectTypeHelper::init();
   RPG_Combat_DamageCounterMeasureTypeHelper::init();
   RPG_Combat_DamageReductionTypeHelper::init();
   RPG_Combat_ActionTypeHelper::init();
@@ -294,7 +292,7 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
       } // end SWITCH
     } // end FOR
     result += ACE_TEXT_ALWAYS_CHAR("\neffect: ");
-    result += RPG_Combat_DamageEffectTypeHelper::RPG_Combat_DamageEffectTypeToString((*iterator).effect);
+    result += RPG_Common_EffectTypeHelper::RPG_Common_EffectTypeToString((*iterator).effect);
     result += ACE_TEXT_ALWAYS_CHAR("\n");
   } // end FOR
 

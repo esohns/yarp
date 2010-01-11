@@ -61,7 +61,6 @@ class RPG_Combat_DamageTypeUnion_Type_pskel;
 class RPG_Combat_DamageDuration_Type_pskel;
 class RPG_Combat_DamageBonusType_Type_pskel;
 class RPG_Combat_DamageBonus_Type_pskel;
-class RPG_Combat_DamageEffectType_Type_pskel;
 class RPG_Combat_DamageCounterMeasureType_Type_pskel;
 class RPG_Combat_CheckTypeUnion_Type_pskel;
 class RPG_Combat_Check_Type_pskel;
@@ -380,18 +379,6 @@ class RPG_Combat_DamageBonus_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::byte_pskel* modifier_parser_;
 };
 
-class RPG_Combat_DamageEffectType_Type_pskel: public virtual ::xml_schema::string_pskel
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual RPG_Combat_DamageEffectType
-  post_RPG_Combat_DamageEffectType_Type () = 0;
-};
-
 class RPG_Combat_DamageCounterMeasureType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
@@ -590,7 +577,7 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   counterMeasure (const RPG_Combat_DamageCounterMeasure&);
 
   virtual void
-  effect (const RPG_Combat_DamageEffectType&);
+  effect (const RPG_Common_EffectType&);
 
   virtual RPG_Combat_DamageElement
   post_RPG_Combat_DamageElement_Type () = 0;
@@ -619,7 +606,7 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   counterMeasure_parser (::RPG_Combat_DamageCounterMeasure_Type_pskel&);
 
   void
-  effect_parser (::RPG_Combat_DamageEffectType_Type_pskel&);
+  effect_parser (::RPG_Common_EffectType_Type_pskel&);
 
   void
   parsers (::RPG_Combat_DamageTypeUnion_Type_pskel& /* type */,
@@ -629,7 +616,7 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
            ::RPG_Combat_DamageBonus_Type_pskel& /* other */,
            ::RPG_Common_Attribute_Type_pskel& /* attribute */,
            ::RPG_Combat_DamageCounterMeasure_Type_pskel& /* counterMeasure */,
-           ::RPG_Combat_DamageEffectType_Type_pskel& /* effect */);
+           ::RPG_Common_EffectType_Type_pskel& /* effect */);
 
   // Constructor.
   //
@@ -660,7 +647,7 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Combat_DamageBonus_Type_pskel* other_parser_;
   ::RPG_Common_Attribute_Type_pskel* attribute_parser_;
   ::RPG_Combat_DamageCounterMeasure_Type_pskel* counterMeasure_parser_;
-  ::RPG_Combat_DamageEffectType_Type_pskel* effect_parser_;
+  ::RPG_Common_EffectType_Type_pskel* effect_parser_;
 };
 
 class RPG_Combat_Damage_Type_pskel: public ::xml_schema::complex_content

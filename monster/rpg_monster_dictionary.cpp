@@ -113,7 +113,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                            check_p,
                            spell_p,
                            reduction_p);
-  RPG_Combat_DamageEffectType_Type               damageEffect_p;
+  RPG_Common_EffectType_Type                     effectType_p;
   RPG_Combat_DamageElement_Type                  damageElement_p;
   damageElement_p.parsers(damageType_p,
                           roll_p,
@@ -122,11 +122,15 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                           others_p,
                           attribute_p,
                           counterMeasure_p,
-                          damageEffect_p);
+                          effectType_p);
   RPG_Combat_Damage_Type                         damage_p;
   damage_p.parsers(damageElement_p);
 //   RPG_Magic_Spell_Type                           spell_p;
   //   ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
+  RPG_Common_Duration_Type                       commonDuration_p;
+  commonDuration_p.parsers(unsigned_int_p,
+                           unsigned_int_p,
+                           unsigned_int_p);
   RPG_Common_SavingThrow_Type                    savingThrow_p;
 //   RPG_Common_Attribute_Type                      attribute_p;
   //   ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
@@ -139,6 +143,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   RPG_Magic_SpellProperties_Type                 spellProperties_p;
   spellProperties_p.parsers(spell_p,
                             unsigned_byte_p,
+                            commonDuration_p,
                             savingThrowCheck_p);
 //   ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
   RPG_Combat_RangedEffectUnion_Type              rangedEffectUnion_p;
@@ -172,6 +177,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
 //   RPG_Combat_Check_Type                          check_p;
   RPG_Monster_SpecialAttackPreCondition_Type     preCondition_p;
   preCondition_p.parsers(alignment_p,
+                         condition_p,
                          condition_p,
                          size_p,
                          size_p,

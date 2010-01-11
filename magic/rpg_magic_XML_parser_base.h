@@ -84,6 +84,9 @@ class RPG_Magic_SpellProperties_Type_pimpl: public virtual RPG_Magic_SpellProper
   casterLevel (unsigned char);
 
   virtual void
+  duration (const RPG_Common_Duration&);
+
+  virtual void
   save (const RPG_Common_SavingThrowCheck&);
 
   virtual RPG_Magic_SpellProperties

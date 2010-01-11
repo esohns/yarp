@@ -28,6 +28,8 @@ enum RPG_Magic_Spell
   SPELL_HEAL,
   SPELL_MASS_HEAL,
   SPELL_ENTANGLE,
+  SPELL_FEAR,
+  SPELL_GASEOUS_FORM,
   //
   RPG_MAGIC_SPELL_MAX,
   RPG_MAGIC_SPELL_INVALID
@@ -52,6 +54,8 @@ class RPG_Magic_SpellHelper
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_HEAL, ACE_TEXT_ALWAYS_CHAR("SPELL_HEAL")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_MASS_HEAL, ACE_TEXT_ALWAYS_CHAR("SPELL_MASS_HEAL")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_ENTANGLE, ACE_TEXT_ALWAYS_CHAR("SPELL_ENTANGLE")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_FEAR, ACE_TEXT_ALWAYS_CHAR("SPELL_FEAR")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_GASEOUS_FORM, ACE_TEXT_ALWAYS_CHAR("SPELL_GASEOUS_FORM")));
   };
 
   inline static std::string RPG_Magic_SpellToString(const RPG_Magic_Spell& element_in)

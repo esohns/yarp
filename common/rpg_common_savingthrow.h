@@ -26,6 +26,7 @@ enum RPG_Common_SavingThrow
   SAVE_FORTITUDE = 0,
   SAVE_REFLEX,
   SAVE_WILL,
+  SAVE_SPELL,
   //
   RPG_COMMON_SAVINGTHROW_MAX,
   RPG_COMMON_SAVINGTHROW_INVALID
@@ -48,6 +49,7 @@ class RPG_Common_SavingThrowHelper
     myRPG_Common_SavingThrowToStringTable.insert(std::make_pair(SAVE_FORTITUDE, ACE_TEXT_ALWAYS_CHAR("SAVE_FORTITUDE")));
     myRPG_Common_SavingThrowToStringTable.insert(std::make_pair(SAVE_REFLEX, ACE_TEXT_ALWAYS_CHAR("SAVE_REFLEX")));
     myRPG_Common_SavingThrowToStringTable.insert(std::make_pair(SAVE_WILL, ACE_TEXT_ALWAYS_CHAR("SAVE_WILL")));
+    myRPG_Common_SavingThrowToStringTable.insert(std::make_pair(SAVE_SPELL, ACE_TEXT_ALWAYS_CHAR("SAVE_SPELL")));
   };
 
   inline static std::string RPG_Common_SavingThrowToString(const RPG_Common_SavingThrow& element_in)

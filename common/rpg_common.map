@@ -4,6 +4,7 @@ namespace urn:rpg
 
   RPG_Common_Attribute_Type          RPG_Common_Attribute;
   RPG_Common_PhysicalDamageType_Type RPG_Common_PhysicalDamageType;
+  RPG_Common_EffectType_Type         RPG_Common_EffectType;
   RPG_Common_CheckType_Type          RPG_Common_CheckType;
   RPG_Common_SavingThrow_Type        RPG_Common_SavingThrow;
   RPG_Common_BaseCheckTypeUnion_Type RPG_Common_BaseCheckTypeUnion;

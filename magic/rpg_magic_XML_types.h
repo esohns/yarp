@@ -152,6 +152,9 @@ class RPG_Magic_SpellProperties_Type_pskel: public ::xml_schema::complex_content
   casterLevel (unsigned char);
 
   virtual void
+  duration (const RPG_Common_Duration&);
+
+  virtual void
   save (const RPG_Common_SavingThrowCheck&);
 
   virtual RPG_Magic_SpellProperties
@@ -166,11 +169,15 @@ class RPG_Magic_SpellProperties_Type_pskel: public ::xml_schema::complex_content
   casterLevel_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
+  duration_parser (::RPG_Common_Duration_Type_pskel&);
+
+  void
   save_parser (::RPG_Common_SavingThrowCheck_Type_pskel&);
 
   void
   parsers (::RPG_Magic_Spell_Type_pskel& /* type */,
            ::xml_schema::unsigned_byte_pskel& /* casterLevel */,
+           ::RPG_Common_Duration_Type_pskel& /* duration */,
            ::RPG_Common_SavingThrowCheck_Type_pskel& /* save */);
 
   // Constructor.
@@ -192,6 +199,7 @@ class RPG_Magic_SpellProperties_Type_pskel: public ::xml_schema::complex_content
   protected:
   ::RPG_Magic_Spell_Type_pskel* type_parser_;
   ::xml_schema::unsigned_byte_pskel* casterLevel_parser_;
+  ::RPG_Common_Duration_Type_pskel* duration_parser_;
   ::RPG_Common_SavingThrowCheck_Type_pskel* save_parser_;
 };
 

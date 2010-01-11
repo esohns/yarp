@@ -74,7 +74,7 @@
   <xsd:simpleType name="RPG_Combat_SpecialAttack_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SPECIALATTACK_INCORPOREAL_TOUCH"/>
-      <xsd:enumeration value="SPECIALATTACK_SMOKE_CLAWS"/>
+<!--       <xsd:enumeration value="SPECIALATTACK_SMOKE_CLAWS"/> -->
 <!--       <xsd:enumeration value="SPECIALATTACK_RAY_LIGHT"/> -->
 <!--      <xsd:enumeration value="SPECIALATTACK_RAY_ELECTRICITY"/>
       <xsd:enumeration value="SPECIALATTACK_GAZE_PETRIFY"/>
@@ -84,7 +84,7 @@
 
   <xsd:simpleType name="RPG_Combat_SpecialDamageType_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="DAMAGE_SPECIAL"/>
+      <xsd:enumeration value="DAMAGE_MAGIC"/>
       <xsd:enumeration value="DAMAGE_ACID"/>
 <!--       <xsd:enumeration value="DAMAGE_SLIME"/> -->
       <xsd:enumeration value="DAMAGE_COLD"/>
@@ -132,15 +132,6 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:simpleType name="RPG_Combat_DamageEffectType_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="EFFECT_IMMEDIATE"/>
-      <xsd:enumeration value="EFFECT_BATTLE"/>
-      <xsd:enumeration value="EFFECT_TEMPORARY"/>
-      <xsd:enumeration value="EFFECT_PERMANENT"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
   <xsd:simpleType name="RPG_Combat_DamageCounterMeasureType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="COUNTERMEASURE_CHECK"/>
@@ -186,7 +177,7 @@
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="counterMeasure" type="RPG_Combat_DamageCounterMeasure_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
-    <xsd:attribute name="effect" type="RPG_Combat_DamageEffectType_Type" use="optional" default="EFFECT_IMMEDIATE"/>
+    <xsd:attribute name="effect" type="RPG_Common_EffectType_Type" use="optional" default="EFFECT_IMMEDIATE"/>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Combat_Damage_Type">

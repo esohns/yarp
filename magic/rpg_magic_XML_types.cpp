@@ -54,6 +54,12 @@ casterLevel_parser (::xml_schema::unsigned_byte_pskel& p)
 }
 
 void RPG_Magic_SpellProperties_Type_pskel::
+duration_parser (::RPG_Common_Duration_Type_pskel& p)
+{
+  this->duration_parser_ = &p;
+}
+
+void RPG_Magic_SpellProperties_Type_pskel::
 save_parser (::RPG_Common_SavingThrowCheck_Type_pskel& p)
 {
   this->save_parser_ = &p;
@@ -62,10 +68,12 @@ save_parser (::RPG_Common_SavingThrowCheck_Type_pskel& p)
 void RPG_Magic_SpellProperties_Type_pskel::
 parsers (::RPG_Magic_Spell_Type_pskel& type,
          ::xml_schema::unsigned_byte_pskel& casterLevel,
+         ::RPG_Common_Duration_Type_pskel& duration,
          ::RPG_Common_SavingThrowCheck_Type_pskel& save)
 {
   this->type_parser_ = &type;
   this->casterLevel_parser_ = &casterLevel;
+  this->duration_parser_ = &duration;
   this->save_parser_ = &save;
 }
 
@@ -73,6 +81,7 @@ RPG_Magic_SpellProperties_Type_pskel::
 RPG_Magic_SpellProperties_Type_pskel ()
 : type_parser_ (0),
   casterLevel_parser_ (0),
+  duration_parser_ (0),
   save_parser_ (0)
 {
 }
@@ -87,6 +96,11 @@ type (const RPG_Magic_Spell&)
 
 void RPG_Magic_SpellProperties_Type_pskel::
 casterLevel (unsigned char)
+{
+}
+
+void RPG_Magic_SpellProperties_Type_pskel::
+duration (const RPG_Common_Duration&)
 {
 }
 
@@ -125,6 +139,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "duration" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->duration_parser_;
+
+    if (this->duration_parser_)
+      this->duration_parser_->pre ();
+
+    return true;
+  }
+
   if (n == "save" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->save_parser_;
@@ -157,6 +181,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->casterLevel_parser_)
       this->casterLevel (this->casterLevel_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  if (n == "duration" && ns == "urn:rpg")
+  {
+    if (this->duration_parser_)
+      this->duration (this->duration_parser_->post_RPG_Common_Duration_Type ());
 
     return true;
   }

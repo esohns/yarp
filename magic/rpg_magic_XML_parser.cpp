@@ -62,6 +62,9 @@ RPG_Magic_SpellProperties_Type::RPG_Magic_SpellProperties_Type()
 
   myCurrentProperties.type = RPG_MAGIC_SPELL_INVALID;
   myCurrentProperties.casterLevel = 0;
+  myCurrentProperties.duration.activation = 0;
+  myCurrentProperties.duration.interval = 0;
+  myCurrentProperties.duration.total = 0;
   myCurrentProperties.save.type = RPG_COMMON_SAVINGTHROW_INVALID;
   myCurrentProperties.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentProperties.save.difficultyClass = 0;
@@ -81,6 +84,13 @@ void RPG_Magic_SpellProperties_Type::casterLevel(unsigned char casterLevel_in)
   myCurrentProperties.casterLevel = casterLevel_in;
 }
 
+void RPG_Magic_SpellProperties_Type::duration(const RPG_Common_Duration& duration_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_SpellProperties_Type::duration"));
+
+  myCurrentProperties.duration = duration_in;
+}
+
 void RPG_Magic_SpellProperties_Type::save(const RPG_Common_SavingThrowCheck& save_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_SpellProperties_Type::save"));
@@ -97,6 +107,9 @@ RPG_Magic_SpellProperties RPG_Magic_SpellProperties_Type::post_RPG_Magic_SpellPr
   // clear structure
   myCurrentProperties.type = RPG_MAGIC_SPELL_INVALID;
   myCurrentProperties.casterLevel = 0;
+  myCurrentProperties.duration.activation = 0;
+  myCurrentProperties.duration.interval = 0;
+  myCurrentProperties.duration.total = 0;
   myCurrentProperties.save.type = RPG_COMMON_SAVINGTHROW_INVALID;
   myCurrentProperties.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentProperties.save.difficultyClass = 0;

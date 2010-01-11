@@ -26,12 +26,14 @@
 
   <xsd:simpleType name="RPG_Magic_School_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="SCHOOL_CONJURATION"/>
       <xsd:enumeration value="SCHOOL_ABJURATION"/>
+      <xsd:enumeration value="SCHOOL_CONJURATION"/>
       <xsd:enumeration value="SCHOOL_DIVINATION"/>
       <xsd:enumeration value="SCHOOL_ENCHANTMENT"/>
+      <xsd:enumeration value="SCHOOL_EVOCATION"/>
+      <xsd:enumeration value="SCHOOL_ILLUSION"/>
       <xsd:enumeration value="SCHOOL_NECROMANCY"/>
-      <xsd:enumeration value="SCHOOL_ILLUSIONISM"/>
+      <xsd:enumeration value="SCHOOL_TRANSMUTATION"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -51,6 +53,8 @@
       <xsd:enumeration value="SPELL_HEAL"/>
       <xsd:enumeration value="SPELL_MASS_HEAL"/>
       <xsd:enumeration value="SPELL_ENTANGLE"/>
+      <xsd:enumeration value="SPELL_FEAR"/>
+      <xsd:enumeration value="SPELL_GASEOUS_FORM"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -65,6 +69,7 @@
   <xsd:simpleType name="RPG_Magic_AbilityType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ABILITYTYPE_SMITE"/>
+      <xsd:enumeration value="ABILITYTYPE_SMOKE_CLAWS"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -72,6 +77,7 @@
     <xsd:sequence>
       <xsd:element name="type" type="RPG_Magic_Spell_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="casterLevel" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="duration" type="RPG_Common_Duration_Type" minOccurs="0" maxOccurs="1"/>
 <!--      <xsd:element name="area" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>-->
       <xsd:element name="save" type="RPG_Common_SavingThrowCheck_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>

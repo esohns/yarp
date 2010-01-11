@@ -2005,6 +2005,7 @@
     <specialAttack>
       <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
       <type>ABILITY_ACID_ATTACK</type>
+      <actionType>ACTION_STANDARD</actionType>
       <action>
         <weapon>NATURALWEAPON_SPIT</weapon>
         <attackBonus>0</attackBonus>
@@ -2173,6 +2174,7 @@
     <specialAttack>
       <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
       <type>ABILITY_THROW_WEB</type>
+      <actionType>ACTION_STANDARD</actionType>
       <preCondition>
         <maxTargetSize>SIZE_LARGE</maxTargetSize>
       </preCondition>
@@ -2312,6 +2314,7 @@
     <specialAttack>
       <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
       <type>ABILITY_RAY_ATTACK</type>
+      <actionType>ACTION_STANDARD</actionType>
       <action>
         <weapon>ABILITY_RAY_ATTACK</weapon>
         <attackBonus>2</attackBonus>
@@ -3064,6 +3067,7 @@
     <specialAttack>
       <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
       <type>ABILITY_RAY_ATTACK</type>
+      <actionType>ACTION_STANDARD</actionType>
       <action>
         <weapon>ABILITY_RAY_ATTACK</weapon>
         <attackBonus>9</attackBonus>
@@ -3222,6 +3226,7 @@
     <specialAttack>
       <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
       <type>ABILITY_RAY_ATTACK</type>
+      <actionType>ACTION_STANDARD</actionType>
       <action>
         <weapon>ABILITY_RAY_ATTACK</weapon>
         <attackBonus>12</attackBonus>
@@ -3381,6 +3386,7 @@
     <specialAttack>
       <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
       <type>ABILITY_RAY_ATTACK</type>
+      <actionType>ACTION_STANDARD</actionType>
       <action>
         <weapon>ABILITY_RAY_ATTACK</weapon>
         <attackBonus>19</attackBonus>
@@ -3549,6 +3555,7 @@
     <specialAttack>
       <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
       <type>ABILITY_CONSTRICT</type>
+      <actionType>ACTION_STANDARD</actionType>
       <preCondition>
         <targetCondition>CONDITION_GRAPPLING</targetCondition>
         <targetCondition>CONDITION_PINNED</targetCondition>
@@ -3575,6 +3582,7 @@
     <specialAttack>
       <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
       <type>ABILITY_ENTANGLE</type>
+      <actionType>ACTION_FREE</actionType>
       <action>
         <weapon>ABILITY_ENTANGLE</weapon>
         <effect>
@@ -3589,7 +3597,6 @@
         <ranged effect="AREA_CUBE">
           <maxRange>30</maxRange>
         </ranged>
-        <numAttacksPerRound>1</numAttacksPerRound>
       </action>
     </specialAttack>
     <space>10</space>
@@ -3982,6 +3989,30 @@
         <numAttacksPerRound>2</numAttacksPerRound>
       </fullAttackAction>
     </attack>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+      <type>ABILITY_FEAR</type>
+      <actionType>ACTION_FREE</actionType>
+      <action>
+        <weapon>ABILITY_FEAR</weapon>
+        <effect>
+          <type>SPELL_FEAR</type>
+          <casterLevel>8</casterLevel>
+          <save reduction="SAVE_FULL">
+            <type>SAVE_SPELL</type>
+            <attribute>ATTRIBUTE_CHARISMA</attribute>
+            <difficultyClass>17</difficultyClass>
+          </save>
+        </effect>
+        <ranged effect="AREA_CUBE">
+          <maxRange>20</maxRange>
+        </ranged>
+      </action>
+      <usage>
+        <numUses>1</numUses>
+        <period>86400</period>
+      </usage>
+    </specialAttack>
     <space>5</space>
     <reach>5</reach>
     <saves>
@@ -4657,16 +4688,15 @@
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
     </attack>
-    <specialAbility>
-      <type>
-        <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
-        <type>ABILITY_GAZE_ATTACK</type>
-      </type>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+      <type>ABILITY_GAZE_ATTACK</type>
+      <actionType>ACTION_STANDARD</actionType>
       <action>
         <weapon>ABILITY_GAZE_ATTACK</weapon>
         <attackForm>ATTACKFORM_RANGED</attackForm>
-        <damage effect="EFFECT_PERMANENT">
-          <element>
+        <damage>
+          <element effect="EFFECT_PERMANENT">
             <type>DAMAGE_PETRIFY</type>
             <counterMeasure>
               <type>COUNTERMEASURE_CHECK</type>
@@ -4683,7 +4713,7 @@
           <maxRange>30</maxRange>
         </ranged>
       </action>
-    </specialAbility>
+    </specialAttack>
     <space>5</space>
     <reach>5</reach>
     <saves>
@@ -4794,23 +4824,19 @@
               <modifier>10</modifier>
             </amount>
           </element>
-          <element>
-            <type>DAMAGE_SPECIAL</type>
-          </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
     </attack>
-    <specialAbility>
-      <type>
-        <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
-        <type>ABILITY_GAZE_ATTACK</type>
-      </type>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+      <type>ABILITY_GAZE_ATTACK</type>
+      <actionType>ACTION_STANDARD</actionType>
       <action>
         <weapon>ABILITY_GAZE_ATTACK</weapon>
         <attackForm>ATTACKFORM_RANGED</attackForm>
-        <damage effect="EFFECT_PERMANENT">
-          <element>
+        <damage>
+          <element effect="EFFECT_PERMANENT">
             <type>DAMAGE_PETRIFY</type>
             <counterMeasure>
               <type>COUNTERMEASURE_CHECK</type>
@@ -4827,28 +4853,46 @@
           <maxRange>30</maxRange>
         </ranged>
       </action>
-    </specialAbility>
-    <specialAbility>
-      <type>
-        <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
-        <type>ABILITYTYPE_SMITE</type>
-      </type>
+    </specialAttack>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+      <type>ABILITYTYPE_SMITE</type>
+      <actionType>ACTION_STANDARD</actionType>
       <preCondition>
         <targetAlignment>
           <civic>ALIGNMENTCIVIC_ANY</civic>
           <ethic>ALIGNMENTETHIC_GOOD</ethic>
         </targetAlignment>
       </preCondition>
-      <amount>
-        <numDice>0</numDice>
-        <typeDice>D_0</typeDice>
-        <modifier>18</modifier>
-      </amount>
+      <action>
+        <weapon>NATURALWEAPON_BITE</weapon>
+        <attackBonus>25</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_PIERCING</type>
+            <amount>
+              <numDice>2</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>10</modifier>
+            </amount>
+          </element>
+          <element>
+            <type>DAMAGE_MAGIC</type>
+            <amount>
+              <numDice>0</numDice>
+              <typeDice>D_0</typeDice>
+              <modifier>18</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </action>
       <usage>
         <numUses>1</numUses>
         <period>86400</period>
       </usage>
-    </specialAbility>
+    </specialAttack>
     <space>10</space>
     <reach>5</reach>
     <saves>
@@ -4951,11 +4995,10 @@
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
     </attack>
-    <specialAbility>
-      <type>
-        <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
-        <type>ABILITY_BREATH_WEAPON</type>
-      </type>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+      <type>ABILITY_BREATH_WEAPON</type>
+      <actionType>ACTION_STANDARD</actionType>
       <action>
         <weapon>ABILITY_BREATH_WEAPON</weapon>
         <attackForm>ATTACKFORM_RANGED</attackForm>
@@ -4967,9 +5010,9 @@
               <typeDice>D_6</typeDice>
               <modifier>0</modifier>
             </amount>
-            <counterMeasure>
+            <counterMeasure reduction="REDUCTION_HALF">
               <type>COUNTERMEASURE_CHECK</type>
-              <check reduction="REDUCTION_HALF">
+              <check>
                 <type>SAVE_REFLEX</type>
                 <attribute>ATTRIBUTE_CONSTITUTION</attribute>
                 <difficultyClass>19</difficultyClass>
@@ -4986,12 +5029,11 @@
         <numUses>1</numUses>
         <period>60</period>
       </usage>
-    </specialAbility>
-    <specialAbility>
-      <type>
-        <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
-        <type>ABILITY_CONSTRICT</type>
-      </type>
+    </specialAttack>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
+      <type>ABILITY_CONSTRICT</type>
+      <actionType>ACTION_STANDARD</actionType>
       <preCondition>
         <targetCondition>CONDITION_GRAPPLING</targetCondition>
         <targetCondition>CONDITION_PINNED</targetCondition>
@@ -5014,12 +5056,11 @@
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </action>
-    </specialAbility>
-    <specialAbility>
-      <type>
-        <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
-        <type>ABILITY_RAKE</type>
-      </type>
+    </specialAttack>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
+      <type>ABILITY_RAKE</type>
+      <actionType>ACTION_STANDARD</actionType>
       <preCondition>
         <targetCondition>CONDITION_GRAPPLING</targetCondition>
         <targetCondition>CONDITION_PINNED</targetCondition>
@@ -5044,12 +5085,11 @@
         </damage>
         <numAttacksPerRound>6</numAttacksPerRound>
       </action>
-    </specialAbility>
-    <specialAbility>
-      <type>
-        <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
-        <type>ABILITY_SWALLOW_WHOLE</type>
-      </type>
+    </specialAttack>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
+      <type>ABILITY_SWALLOW_WHOLE</type>
+      <actionType>ACTION_STANDARD</actionType>
       <preCondition>
         <targetCondition>CONDITION_GRAPPLING</targetCondition>
         <targetCondition>CONDITION_PINNED</targetCondition>
@@ -5069,18 +5109,21 @@
               <modifier>8</modifier>
             </amount>
           </element>
-          <element>
+          <element effect="EFFECT_BATTLE">
             <type>DAMAGE_ACID</type>
             <amount>
               <numDice>0</numDice>
               <typeDice>D_0</typeDice>
               <modifier>8</modifier>
             </amount>
+            <duration>
+              <interval>6</interval>
+            </duration>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </action>
-    </specialAbility>
+    </specialAttack>
     <space>15</space>
     <reach>10</reach>
     <saves>
@@ -5249,12 +5292,12 @@
         <numAttacksPerRound>2</numAttacksPerRound>
       </fullAttackAction>
     </attack>
-    <specialAbility>
-      <type>
-        <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
-        <type>SPECIALATTACK_SMOKE_CLAWS</type>
-      </type>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
+      <type>ABILITYTYPE_SMOKE_CLAWS</type>
+      <actionType>ACTION_STANDARD</actionType>
       <preCondition>
+        <ownCondition>CONDITION_GASEOUS</ownCondition>
         <maxTargetSize>SIZE_MEDIUM</maxTargetSize>
         <check>
           <type>SAVE_FORTITUDE</type>
@@ -5265,7 +5308,6 @@
         <weapon>NATURALWEAPON_CLAW_TALON</weapon>
         <damage>
           <element>
-            <type>PHYSICALDAMAGE_PIERCING</type>
             <type>PHYSICALDAMAGE_SLASHING</type>
             <amount>
               <numDice>3</numDice>
@@ -5276,16 +5318,28 @@
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </action>
-    </specialAbility>
-    <specialAbility>
-      <type>
-        <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
-        <type>ABILITY_GASEOUS_FORM</type>
-      </type>
+    </specialAttack>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
+      <type>ABILITY_GASEOUS_FORM</type>
+      <actionType>ACTION_FREE</actionType>
+      <action>
+        <weapon>ABILITY_GASEOUS_FORM</weapon>
+        <effect>
+          <type>SPELL_GASEOUS_FORM</type>
+          <casterLevel>7</casterLevel>
+          <duration>
+            <interval>86400</interval>
+            <total>120</total>
+          </duration>
+        </effect>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </action>
       <usage>
-        <numUses></numUses>
+        <numUses>1</numUses>
+        <period>6</period>
       </usage>
-    </specialAbility>
+    </specialAttack>
     <space>10</space>
     <reach>10</reach>
     <saves>
