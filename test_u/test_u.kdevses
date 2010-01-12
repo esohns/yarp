@@ -3,12 +3,16 @@
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="1" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/monster/monster_parser.cpp" >
-   <View0 Encoding="" line="33" Type="Source" />
+   <View0 Encoding="" line="51" Type="Source" />
   </Doc0>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
-   <breakpointList/>
+   <breakpointList>
+    <breakpoint0 location="/home/unfv/Projects/RPG/combat/rpg_combat_XML_parser.cpp:511" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+     <tracedExpressions/>
+    </breakpoint0>
+   </breakpointList>
    <showInternalCommands value="0" />
   </kdevdebugger>
   <kdevastyle>
