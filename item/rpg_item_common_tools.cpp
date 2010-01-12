@@ -92,11 +92,11 @@ const std::string RPG_Item_Common_Tools::weaponDamageToString(const RPG_Item_Wea
   return result;
 }
 
-const RPG_Item_WeaponDamageList_t RPG_Item_Common_Tools::weaponDamageToPhysicalDamageType(const RPG_Item_WeaponDamage& weaponDamage_in)
+const RPG_Common_PhysicalDamageList_t RPG_Item_Common_Tools::weaponDamageToPhysicalDamageType(const RPG_Item_WeaponDamage& weaponDamage_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponDamageToPhysicalDamageType"));
 
-  RPG_Item_WeaponDamageList_t result;
+  RPG_Common_PhysicalDamageList_t result;
 
   // sanity check
   if (weaponDamage_in.none())

@@ -33,6 +33,7 @@ enum RPG_Monster_NaturalWeapon
   NATURALWEAPON_WEB,
   NATURALWEAPON_CONSTRICT,
   NATURALWEAPON_ROCK_STONE,
+  NATURALWEAPON_BLAST,
   //
   RPG_MONSTER_NATURALWEAPON_MAX,
   RPG_MONSTER_NATURALWEAPON_INVALID
@@ -62,6 +63,7 @@ class RPG_Monster_NaturalWeaponHelper
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_WEB, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_WEB")));
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_CONSTRICT, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_CONSTRICT")));
     myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_ROCK_STONE, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_ROCK_STONE")));
+    myRPG_Monster_NaturalWeaponToStringTable.insert(std::make_pair(NATURALWEAPON_BLAST, ACE_TEXT_ALWAYS_CHAR("NATURALWEAPON_BLAST")));
   };
 
   inline static std::string RPG_Monster_NaturalWeaponToString(const RPG_Monster_NaturalWeapon& element_in)

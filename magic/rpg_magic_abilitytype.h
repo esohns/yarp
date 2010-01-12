@@ -24,6 +24,8 @@
 enum RPG_Magic_AbilityType
 {
   ABILITYTYPE_SMITE = 0,
+  ABILITYTYPE_SMOKE_CLAWS,
+  ABILITYTYPE_WHIRLWIND_BLAST,
   //
   RPG_MAGIC_ABILITYTYPE_MAX,
   RPG_MAGIC_ABILITYTYPE_INVALID
@@ -44,6 +46,8 @@ class RPG_Magic_AbilityTypeHelper
   {
     myRPG_Magic_AbilityTypeToStringTable.clear();
     myRPG_Magic_AbilityTypeToStringTable.insert(std::make_pair(ABILITYTYPE_SMITE, ACE_TEXT_ALWAYS_CHAR("ABILITYTYPE_SMITE")));
+    myRPG_Magic_AbilityTypeToStringTable.insert(std::make_pair(ABILITYTYPE_SMOKE_CLAWS, ACE_TEXT_ALWAYS_CHAR("ABILITYTYPE_SMOKE_CLAWS")));
+    myRPG_Magic_AbilityTypeToStringTable.insert(std::make_pair(ABILITYTYPE_WHIRLWIND_BLAST, ACE_TEXT_ALWAYS_CHAR("ABILITYTYPE_WHIRLWIND_BLAST")));
   };
 
   inline static std::string RPG_Magic_AbilityTypeToString(const RPG_Magic_AbilityType& element_in)

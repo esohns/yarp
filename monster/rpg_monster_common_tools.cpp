@@ -76,18 +76,34 @@ const std::string RPG_Monster_Common_Tools::weaponTypeToString(const RPG_Monster
 
   std::string result;
 
-//   for (RPG_Combat_AttackFormsIterator_t iterator = attackForms_in.begin();
-//        iterator != attackForms_in.end();
-//        iterator++)
-//   {
-//     result += RPG_Combat_AttackFormHelper::RPG_Combat_AttackFormToString(*iterator);
-//     result += ACE_TEXT_ALWAYS_CHAR("|");
-//   } // end FOR
-
-  if (!result.empty())
+  switch (weaponType_in.discriminator)
   {
-    result.erase(--(result.end()));
-  } // end IF
+    case RPG_Monster_WeaponTypeUnion::NATURALWEAPON:
+    {
+      return RPG_Monster_NaturalWeaponHelper::RPG_Monster_NaturalWeaponToString(weaponType_in.naturalweapon);
+    }
+    case RPG_Monster_WeaponTypeUnion::ABILITY:
+    {
+      return RPG_Character_AbilityHelper::RPG_Character_AbilityToString(weaponType_in.ability);
+    }
+    case RPG_Monster_WeaponTypeUnion::WEAPONTYPE:
+    {
+      return RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weaponType_in.weapontype);
+    }
+    case RPG_Monster_WeaponTypeUnion::SPECIALATTACK:
+    {
+      return RPG_Combat_SpecialAttackHelper::RPG_Combat_SpecialAttackToString(weaponType_in.specialattack);
+    }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid weapon type: %d, aborting\n"),
+                 weaponType_in.discriminator));
+
+      break;
+    }
+  } // end SWITCH
 
   return result;
 }
@@ -257,6 +273,60 @@ const std::string RPG_Monster_Common_Tools::advancementToString(const RPG_Monste
     result += RPG_Dice_Common_Tools::rangeToString((*iterator).range);
     result += ACE_TEXT_ALWAYS_CHAR(" HD\n");
   } // end FOR
+
+  return result;
+}
+
+const RPG_Common_PhysicalDamageList_t RPG_Monster_Common_Tools::naturalWeaponToPhysicalDamageType(const RPG_Monster_NaturalWeapon& naturalWeapon_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::naturalWeaponToPhysicalDamageType"));
+
+  RPG_Common_PhysicalDamageList_t result;
+
+  switch (naturalWeapon_in)
+  {
+    case NATURALWEAPON_BITE:
+    case NATURALWEAPON_GORE:
+    case NATURALWEAPON_STING:
+    {
+      result.insert(PHYSICALDAMAGE_PIERCING);
+
+      break;
+    }
+    case NATURALWEAPON_CLAW_TALON:
+    {
+//       result.push_back(PHYSICALDAMAGE_PIERCING);
+      result.insert(PHYSICALDAMAGE_SLASHING);
+
+      break;
+    }
+    case NATURALWEAPON_SLAP_SLAM:
+    case NATURALWEAPON_TENTACLE:
+    case NATURALWEAPON_CONSTRICT:
+    case NATURALWEAPON_ROCK_STONE:
+    case NATURALWEAPON_BLAST:
+    {
+      result.insert(PHYSICALDAMAGE_BLUDGEONING);
+
+      break;
+    }
+    case NATURALWEAPON_SPIT:
+    case NATURALWEAPON_WEB:
+    {
+      result.insert(PHYSICALDAMAGE_NONE);
+
+      break;
+    }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid natural weapon: \"%s\", aborting\n"),
+                 RPG_Monster_NaturalWeaponHelper::RPG_Monster_NaturalWeaponToString(naturalWeapon_in).c_str()));
+
+      break;
+    }
+  } // end SWITCH
 
   return result;
 }

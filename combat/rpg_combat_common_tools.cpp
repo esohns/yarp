@@ -112,8 +112,16 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
   {
     converter.str(ACE_TEXT_ALWAYS_CHAR(""));
 
-    result += ACE_TEXT_ALWAYS_CHAR("type: ");
-//     result += RPG_Combat_DamageTypeUnionHelper::RPG_Combat_DamageTypeUnionToString((*iterator).type);
+    result += ACE_TEXT_ALWAYS_CHAR("damage type: ");
+    for (std::vector<RPG_Combat_DamageTypeUnion>::const_iterator iterator2 = (*iterator).types.begin();
+         iterator2 != (*iterator).types.end();
+         iterator2++)
+    {
+      result += damageTypeToString(*iterator2);
+      result += ACE_TEXT_ALWAYS_CHAR("|");
+    } // end FOR
+    if (!(*iterator).types.empty())
+      result.erase(--result.end());
     result += ACE_TEXT_ALWAYS_CHAR("\namount: ");
     result += RPG_Dice_Common_Tools::rollToString((*iterator).amount);
     if ((*iterator).duration.interval ||
@@ -138,7 +146,7 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
       result += ACE_TEXT_ALWAYS_CHAR("\nother (bonus / modifier): ");
       result += RPG_Combat_DamageBonusTypeHelper::RPG_Combat_DamageBonusTypeToString((*iterator2).type);
       result += ACE_TEXT_ALWAYS_CHAR(" / ");
-      converter << (*iterator2).modifier;
+      converter << ACE_static_cast(int, (*iterator2).modifier);
       result += converter.str();
     } // end FOR
     if ((*iterator).attribute != RPG_COMMON_ATTRIBUTE_INVALID)
@@ -259,7 +267,7 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
           } // end SWITCH
 
           converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-          converter << (*iterator2).check.difficultyClass;
+          converter << ACE_static_cast(int, (*iterator2).check.difficultyClass);
           result += converter.str();
 
           break;
@@ -514,6 +522,36 @@ void RPG_Combat_Common_Tools::performCombatRound(const RPG_Combat_AttackSituatio
   } // end FOR
 }
 
+const std::string RPG_Combat_Common_Tools::damageTypeToString(const RPG_Combat_DamageTypeUnion& type_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::damageTypeToString"));
+
+  std::string result;
+
+  switch (type_in.discriminator)
+  {
+    case RPG_Combat_DamageTypeUnion::PHYSICALDAMAGETYPE:
+    {
+      return RPG_Common_PhysicalDamageTypeHelper::RPG_Common_PhysicalDamageTypeToString(type_in.physicaldamagetype);
+    }
+    case RPG_Combat_DamageTypeUnion::SPECIALDAMAGETYPE:
+    {
+      return RPG_Combat_SpecialDamageTypeHelper::RPG_Combat_SpecialDamageTypeToString(type_in.specialdamagetype);
+    }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid damage type: %d, aborting\n"),
+                 type_in.discriminator));
+
+      break;
+    }
+  } // end SWITCH
+
+  return result;
+}
+
 const bool RPG_Combat_Common_Tools::isMonsterGroupHelpless(const RPG_Character_MonsterGroupInstance_t& groupInstance_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::isMonsterGroupHelpless"));
@@ -754,7 +792,7 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
   float STR_factor = 1.0;
   RPG_Combat_Damage damage;
   RPG_Combat_DamageElement damage_element;
-  RPG_Item_WeaponDamageList_t physicalDamageTypeList;
+  RPG_Common_PhysicalDamageList_t physicalDamageTypeList;
   if (attacker_in->isPlayerCharacter())
   {
     // attack roll: D_20 + attack bonus + other modifiers
@@ -893,7 +931,7 @@ is_player_hit:
       damage.elements.clear();
       physicalDamageTypeList.clear();
       physicalDamageTypeList = RPG_Item_Common_Tools::weaponDamageToPhysicalDamageType(weapon_properties.typeOfDamage);
-      for (RPG_Item_WeaponDamageListIterator_t iterator = physicalDamageTypeList.begin();
+      for (RPG_Common_PhysicalDamageListIterator_t iterator = physicalDamageTypeList.begin();
            iterator != physicalDamageTypeList.end();
            iterator++)
       {

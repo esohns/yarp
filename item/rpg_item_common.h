@@ -42,8 +42,6 @@
 
 // typedef std::bitset<(RPG_ITEM_PHYSICALDAMAGETYPE_MAX - 1)> RPG_Item_WeaponDamage;
 typedef std::bitset<3> RPG_Item_WeaponDamage;
-typedef std::set<RPG_Common_PhysicalDamageType> RPG_Item_WeaponDamageList_t;
-typedef RPG_Item_WeaponDamageList_t::const_iterator RPG_Item_WeaponDamageListIterator_t;
 
 typedef RPG_Dice_Roll RPG_Item_Damage;
 

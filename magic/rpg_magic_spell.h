@@ -30,6 +30,8 @@ enum RPG_Magic_Spell
   SPELL_ENTANGLE,
   SPELL_FEAR,
   SPELL_GASEOUS_FORM,
+  SPELL_BLINK,
+  SPELL_DIMENSION_DOOR,
   //
   RPG_MAGIC_SPELL_MAX,
   RPG_MAGIC_SPELL_INVALID
@@ -56,6 +58,8 @@ class RPG_Magic_SpellHelper
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_ENTANGLE, ACE_TEXT_ALWAYS_CHAR("SPELL_ENTANGLE")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_FEAR, ACE_TEXT_ALWAYS_CHAR("SPELL_FEAR")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_GASEOUS_FORM, ACE_TEXT_ALWAYS_CHAR("SPELL_GASEOUS_FORM")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_BLINK, ACE_TEXT_ALWAYS_CHAR("SPELL_BLINK")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_DIMENSION_DOOR, ACE_TEXT_ALWAYS_CHAR("SPELL_DIMENSION_DOOR")));
   };
 
   inline static std::string RPG_Magic_SpellToString(const RPG_Magic_Spell& element_in)

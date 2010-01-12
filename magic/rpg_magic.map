@@ -4,7 +4,7 @@ namespace urn:rpg
 
   include <rpg_dice_incl.h>;
   include <rpg_common_incl.h>;
-  include <rpg_character_incl.h>;
+#  include <rpg_character_incl.h>;
 
   RPG_Dice_Roll_Type               RPG_Dice_Roll;
 
@@ -12,7 +12,7 @@ namespace urn:rpg
   RPG_Common_SavingThrowCheck_Type RPG_Common_SavingThrowCheck;
   RPG_Common_Duration_Type         RPG_Common_Duration;
 
-  RPG_Character_Alignment_Type     RPG_Character_Alignment;
+#  RPG_Character_Alignment_Type     RPG_Character_Alignment;
 
   RPG_Magic_School_Type            RPG_Magic_School;
   RPG_Magic_Domain_Type            RPG_Magic_Domain;

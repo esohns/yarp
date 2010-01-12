@@ -72,6 +72,8 @@ class RPG_Combat_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools(const RPG_Combat_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools& operator=(const RPG_Combat_Common_Tools&));
 
+  static const std::string damageTypeToString(const RPG_Combat_DamageTypeUnion&); // damage type
+
   // helper types
   typedef std::deque<RPG_Combat_CombatantSequenceElement> RPG_Combat_CombatSequenceList_t;
   typedef RPG_Combat_CombatSequenceList_t::iterator RPG_Combat_CombatSequenceListIterator_t;

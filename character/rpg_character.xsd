@@ -82,7 +82,7 @@
 
   <xsd:simpleType name="RPG_Character_Condition_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="CONDITION_GASEOUS"/>
+      <xsd:enumeration value="CONDITION_ALTERNATE_FORM"/>
       <!--                                     -->
       <xsd:enumeration value="CONDITION_NORMAL"/>
       <xsd:enumeration value="CONDITION_ABILITY_DAMAGED"/>
@@ -135,6 +135,9 @@
       <xsd:enumeration value="ABILITY_ENTANGLE"/>
       <xsd:enumeration value="ABILITY_SCORE_LOSS"/>
       <xsd:enumeration value="ABILITY_THROW_WEB"/>
+      <xsd:enumeration value="ABILITY_BLINK"/>
+      <xsd:enumeration value="ABILITY_DIMENSION_DOOR"/>
+      <xsd:enumeration value="ABILITY_LEAP_ATTACK"/>
       <!--                                          -->
       <xsd:enumeration value="ABILITY_ALTERNATE_FORM"/>
       <xsd:enumeration value="ABILITY_ANTIMAGIC"/>

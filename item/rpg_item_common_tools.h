@@ -20,6 +20,8 @@
 #ifndef RPG_ITEM_COMMON_TOOLS_H
 #define RPG_ITEM_COMMON_TOOLS_H
 
+#include <rpg_common.h>
+
 #include "rpg_item_common.h"
 
 #include <ace/Global_Macros.h>
@@ -33,7 +35,7 @@ class RPG_Item_Common_Tools
   static void initStringConversionTables();
 
   static const std::string weaponDamageToString(const RPG_Item_WeaponDamage&); // weapon damage
-  static const RPG_Item_WeaponDamageList_t weaponDamageToPhysicalDamageType(const RPG_Item_WeaponDamage&); // weapon damage
+  static const RPG_Common_PhysicalDamageList_t weaponDamageToPhysicalDamageType(const RPG_Item_WeaponDamage&); // weapon damage
   static const std::string damageToString(const RPG_Item_Damage&); // damage
 
   static const bool isThrownWeapon(const RPG_Item_WeaponType&); // weapon type

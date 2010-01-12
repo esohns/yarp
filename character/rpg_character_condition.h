@@ -23,7 +23,7 @@
 
 enum RPG_Character_Condition
 {
-  CONDITION_GASEOUS = 0,
+  CONDITION_ALTERNATE_FORM = 0,
   CONDITION_NORMAL,
   CONDITION_ABILITY_DAMAGED,
   CONDITION_ABILITY_DRAINED,
@@ -85,7 +85,7 @@ class RPG_Character_ConditionHelper
   inline static void init()
   {
     myRPG_Character_ConditionToStringTable.clear();
-    myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_GASEOUS, ACE_TEXT_ALWAYS_CHAR("CONDITION_GASEOUS")));
+    myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_ALTERNATE_FORM, ACE_TEXT_ALWAYS_CHAR("CONDITION_ALTERNATE_FORM")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_NORMAL, ACE_TEXT_ALWAYS_CHAR("CONDITION_NORMAL")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_ABILITY_DAMAGED, ACE_TEXT_ALWAYS_CHAR("CONDITION_ABILITY_DAMAGED")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_ABILITY_DRAINED, ACE_TEXT_ALWAYS_CHAR("CONDITION_ABILITY_DRAINED")));

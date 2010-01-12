@@ -14,8 +14,6 @@
 
 #include "rpg_common_XML_parser_base.h"
 
-#include "rpg_character_XML_parser_base.h"
-
 class RPG_Magic_School_Type_pimpl: public virtual RPG_Magic_School_Type_pskel,
   public ::xml_schema::string_pimpl
 {

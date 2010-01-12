@@ -95,7 +95,10 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   duration_p.parsers(roll_p,
                      unsigned_short_p,
                      unsigned_short_p);
+  RPG_Combat_DamageBonusType_Type                bonusType_p;
   RPG_Combat_DamageBonus_Type                    others_p;
+  others_p.parsers(bonusType_p,
+                   byte_p);
   RPG_Common_Attribute_Type                      attribute_p;
 
   RPG_Combat_DamageCounterMeasureType_Type       counterMeasureType_p;

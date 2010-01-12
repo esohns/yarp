@@ -68,14 +68,11 @@ class RPG_Magic_SpellProperties_Type_pskel;
 
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
-#include <rpg_character_incl.h>
 #include "rpg_magic_incl.h"
 
 #include "rpg_dice_XML_types.h"
 
 #include "rpg_common_XML_types.h"
-
-#include "rpg_character_XML_types.h"
 
 class RPG_Magic_School_Type_pskel: public virtual ::xml_schema::string_pskel
 {

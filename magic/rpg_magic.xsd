@@ -11,7 +11,7 @@
   <!-- include common schema -->
   <xsd:include schemaLocation="rpg_common.xsd"/>
 <!-- include character schema -->
- <xsd:include schemaLocation="rpg_character.xsd"/>
+<!--  <xsd:include schemaLocation="rpg_character.xsd"/> -->
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import chance_dice schema (as declared above) -->
 <!--   <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/> -->
@@ -55,6 +55,8 @@
       <xsd:enumeration value="SPELL_ENTANGLE"/>
       <xsd:enumeration value="SPELL_FEAR"/>
       <xsd:enumeration value="SPELL_GASEOUS_FORM"/>
+      <xsd:enumeration value="SPELL_BLINK"/>
+      <xsd:enumeration value="SPELL_DIMENSION_DOOR"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -70,6 +72,7 @@
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ABILITYTYPE_SMITE"/>
       <xsd:enumeration value="ABILITYTYPE_SMOKE_CLAWS"/>
+      <xsd:enumeration value="ABILITYTYPE_WHIRLWIND_BLAST"/>
     </xsd:restriction>
   </xsd:simpleType>
 

@@ -101,6 +101,7 @@
 <!--       <xsd:enumeration value="NATURALWEAPON_BREATH"/> -->
       <xsd:enumeration value="NATURALWEAPON_CONSTRICT"/>
       <xsd:enumeration value="NATURALWEAPON_ROCK_STONE"/>
+      <xsd:enumeration value="NATURALWEAPON_BLAST"/>
     </xsd:restriction>
   </xsd:simpleType>
 
