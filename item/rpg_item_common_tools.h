@@ -40,7 +40,9 @@ class RPG_Item_Common_Tools
 
   static const bool isThrownWeapon(const RPG_Item_WeaponType&); // weapon type
   static const bool isProjectileWeapon(const RPG_Item_WeaponType&); // weapon type
+  static const bool isRangedWeapon(const RPG_Item_WeaponType&); // weapon type
   static const bool isTwoHandedWeapon(const RPG_Item_WeaponType&); // weapon type
+  static const bool isMeleeWeapon(const RPG_Item_WeaponType&); // weapon type
 
   static const bool isShield(const RPG_Item_ArmorType&); // armor type
  private:

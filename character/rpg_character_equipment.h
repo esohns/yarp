@@ -37,9 +37,9 @@ class RPG_Character_Equipment
   RPG_Character_Equipment();
   virtual ~RPG_Character_Equipment();
 
-  const bool equip(const RPG_Item_ID_t&, // item ID
-                   const RPG_Character_EquipmentSlot&); // where ?
-  const bool unequip(const RPG_Character_EquipmentSlot&); // where ?
+  void equip(const RPG_Item_ID_t&, // item ID
+             const RPG_Character_EquipmentSlot&); // where ?
+  void unequip(const RPG_Character_EquipmentSlot&); // where ?
 
   // item in EQUIPMENTSLOT_RIGHT_HAND/EQUIPMENTSLOT_LEFT_HAND
   const RPG_Item_WeaponType getPrimaryWeapon() const;

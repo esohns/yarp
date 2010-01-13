@@ -36,6 +36,8 @@
 #include <rpg_item_dictionary.h>
 #include <rpg_item_common_tools.h>
 
+#include <rpg_magic_common_tools.h>
+
 #include <rpg_common_tools.h>
 
 #include <rpg_dice.h>
@@ -247,6 +249,7 @@ void do_work(const std::string& itemDictionaryFilename_in,
   RPG_Dice::init();
   RPG_Dice_Common_Tools::initStringConversionTables();
   RPG_Common_Tools::initStringConversionTables();
+  RPG_Magic_Common_Tools::initStringConversionTables();
   RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
   RPG_Monster_Common_Tools::initStringConversionTables();
@@ -285,7 +288,9 @@ void do_work(const std::string& itemDictionaryFilename_in,
   RPG_Character_Player player = RPG_Character_Common_Tools::generatePlayerCharacter();
 
   // debug info
-//   player.dump();
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("generated (random) player...\n")));
+  player.dump();
 
   RPG_Character_Party_t party;
   party.push_back(player);

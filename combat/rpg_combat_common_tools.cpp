@@ -469,11 +469,11 @@ void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& 
        iterator++, i++)
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("combatant #%d: DEXModifier: %d, Initiative: %d, Name: \"%s\"\n"),
+               ACE_TEXT("combatant #%d: name: \"%s\", DEXModifier: %d, initiative: %d\n"),
                i,
+               (*iterator).handle->getName().c_str(),
                (*iterator).DEXModifier,
-               (*iterator).initiative,
-               (*iterator).handle->getName().c_str()));
+               (*iterator).initiative));
   } // end FOR
 }
 
@@ -508,9 +508,11 @@ void RPG_Combat_Common_Tools::performCombatRound(const RPG_Combat_AttackSituatio
 
     // step2: attack foe !
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("\"%s\" attacks \"%s\"...\n"),
+               ACE_TEXT("\"%s\" attacks \"%s\" (HP: %d/%d)...\n"),
                (*iterator2).handle->getName().c_str(),
-               (*iterator).handle->getName().c_str()));
+               (*iterator).handle->getName().c_str(),
+               (*iterator).handle->getNumCurrentHitPoints(),
+               (*iterator).handle->getNumTotalHitPoints()));
 
     // *TODO*: for now, we ignore range and movement
     attackFoe((*iterator2).handle,

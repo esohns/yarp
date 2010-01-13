@@ -4,7 +4,7 @@
             targetNamespace="urn:rpg"
             xmlns="urn:rpg"
             elementFormDefault="qualified"
-            attributeFormDefault="qualified">
+            attributeFormDefault="unqualified">
 
   <!-- include chance_dice schema -->
   <xsd:include schemaLocation="rpg_dice.xsd"/>
@@ -67,6 +67,7 @@
       <xsd:enumeration value="UNARMED_WEAPON_GAUNTLET"/>
       <xsd:enumeration value="UNARMED_WEAPON_STRIKE"/>
       <xsd:enumeration value="LIGHT_MELEE_WEAPON_DAGGER"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_DAGGER_PUNCHING"/>
       <xsd:enumeration value="LIGHT_MELEE_WEAPON_GAUNTLET_SPIKED"/>
       <xsd:enumeration value="LIGHT_MELEE_WEAPON_MACE_LIGHT"/>
       <xsd:enumeration value="LIGHT_MELEE_WEAPON_SICKLE"/>

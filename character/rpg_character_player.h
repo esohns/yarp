@@ -53,10 +53,11 @@ class RPG_Character_Player
  private:
   typedef RPG_Character_Player_Base inherited;
 
+  // helper methods
+  void defaultEquip();
+
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player());
-
-  RPG_Character_Equipment myEquipment;
 };
 
 #endif

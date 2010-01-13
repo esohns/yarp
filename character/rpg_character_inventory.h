@@ -42,11 +42,11 @@ class RPG_Character_Inventory
 
   void dump() const;
 
+  RPG_Item_List_t myItems;
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Inventory());
-
-  RPG_Item_List_t myItems;
 };
 
 #endif

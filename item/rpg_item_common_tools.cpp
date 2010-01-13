@@ -212,6 +212,13 @@ const bool RPG_Item_Common_Tools::isProjectileWeapon(const RPG_Item_WeaponType& 
   return false;
 }
 
+const bool RPG_Item_Common_Tools::isRangedWeapon(const RPG_Item_WeaponType& weaponType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isRangedWeapon"));
+
+  return (isThrownWeapon(weaponType_in) || isProjectileWeapon(weaponType_in));
+}
+
 const bool RPG_Item_Common_Tools::isTwoHandedWeapon(const RPG_Item_WeaponType& weaponType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isTwoHandedWeapon"));
@@ -238,6 +245,44 @@ const bool RPG_Item_Common_Tools::isTwoHandedWeapon(const RPG_Item_WeaponType& w
     case TWO_HANDED_MELEE_WEAPON_HAMMER_GNOME_HOOKED:
     case TWO_HANDED_MELEE_WEAPON_SWORD_TWO_BLADED:
     case TWO_HANDED_MELEE_WEAPON_URGROSH_DWARVEN:
+    {
+      return true;
+    }
+    default:
+    {
+      // ALL projectile weapons are two-handed...
+      if (isProjectileWeapon(weaponType_in))
+        return true;
+
+      break;
+    }
+  } // end SWITCH
+
+  return false;
+}
+
+const bool RPG_Item_Common_Tools::isMeleeWeapon(const RPG_Item_WeaponType& weaponType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isMeleeWeapon"));
+
+  if (!isRangedWeapon(weaponType_in))
+    return true;
+
+  // some thrown weapons CAN be effectively used in melee
+  if (!isThrownWeapon(weaponType_in))
+    return false;
+
+  switch (weaponType_in)
+  {
+    case LIGHT_MELEE_WEAPON_DAGGER:
+    case ONE_HANDED_MELEE_WEAPON_CLUB:
+    case ONE_HANDED_MELEE_WEAPON_SHORTSPEAR:
+    case TWO_HANDED_MELEE_WEAPON_SPEAR:
+//     case RANGED_WEAPON_JAVELIN:
+    case LIGHT_MELEE_WEAPON_AXE_THROWING:
+    case LIGHT_MELEE_WEAPON_HAMMER_LIGHT:
+    case ONE_HANDED_MELEE_WEAPON_TRIDENT:
+    case LIGHT_MELEE_WEAPON_SAI:
     {
       return true;
     }

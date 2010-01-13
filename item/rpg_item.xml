@@ -6,7 +6,7 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="urn:rpg rpg_item.xsd">
   <weaponDictionary>
-    <weapon>
+    <weapon isNonLethal="true">
       <baseWeight>1</baseWeight>
       <baseStorePrice>
         <numGoldPieces>2</numGoldPieces>
@@ -27,7 +27,7 @@
       <rangeIncrement>0</rangeIncrement>
       <typeOfDamage>PHYSICALDAMAGE_BLUDGEONING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isNonLethal="true">
       <baseWeight>0</baseWeight>
       <baseStorePrice>
         <numGoldPieces>0</numGoldPieces>
@@ -73,6 +73,28 @@
     <weapon>
       <baseWeight>1</baseWeight>
       <baseStorePrice>
+        <numGoldPieces>2</numGoldPieces>
+        <numSilverPieces>0</numSilverPieces>
+      </baseStorePrice>
+      <weaponType>LIGHT_MELEE_WEAPON_DAGGER_PUNCHING</weaponType>
+      <weaponCategory>WEAPONCATEGORY_SIMPLE</weaponCategory>
+      <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
+      <baseDamage>
+        <numDice>1</numDice>
+        <typeDice>D_4</typeDice>
+        <modifier>0</modifier>
+      </baseDamage>
+      <criticalHit>
+        <minToHitRoll>20</minToHitRoll>
+        <damageModifier>3</damageModifier>
+      </criticalHit>
+      <rangeIncrement>0</rangeIncrement>
+      <typeOfDamage>PHYSICALDAMAGE_PIERCING</typeOfDamage>
+      <typeOfDamage>PHYSICALDAMAGE_SLASHING</typeOfDamage>
+    </weapon>
+    <weapon isNonLethal="true">
+      <baseWeight>1</baseWeight>
+      <baseStorePrice>
         <numGoldPieces>5</numGoldPieces>
         <numSilverPieces>0</numSilverPieces>
       </baseStorePrice>
@@ -89,6 +111,7 @@
         <damageModifier>2</damageModifier>
       </criticalHit>
       <rangeIncrement>0</rangeIncrement>
+      <typeOfDamage>PHYSICALDAMAGE_BLUDGEONING</typeOfDamage>
       <typeOfDamage>PHYSICALDAMAGE_PIERCING</typeOfDamage>
     </weapon>
     <weapon>
@@ -218,7 +241,7 @@
       <rangeIncrement>20</rangeIncrement>
       <typeOfDamage>PHYSICALDAMAGE_PIERCING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isReachWeapon="true">
       <baseWeight>9</baseWeight>
       <baseStorePrice>
         <numGoldPieces>5</numGoldPieces>
@@ -239,7 +262,7 @@
       <rangeIncrement>0</rangeIncrement>
       <typeOfDamage>PHYSICALDAMAGE_PIERCING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isDoubleWeapon="true">
       <baseWeight>4</baseWeight>
       <baseStorePrice>
         <numGoldPieces>0</numGoldPieces>
@@ -491,7 +514,7 @@
       <rangeIncrement>0</rangeIncrement>
       <typeOfDamage>PHYSICALDAMAGE_PIERCING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isNonLethal="true">
       <baseWeight>2</baseWeight>
       <baseStorePrice>
         <numGoldPieces>1</numGoldPieces>
@@ -827,7 +850,7 @@
       <rangeIncrement>0</rangeIncrement>
       <typeOfDamage>PHYSICALDAMAGE_SLASHING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isReachWeapon="true">
       <baseWeight>10</baseWeight>
       <baseStorePrice>
         <numGoldPieces>8</numGoldPieces>
@@ -932,7 +955,7 @@
       <rangeIncrement>0</rangeIncrement>
       <typeOfDamage>PHYSICALDAMAGE_SLASHING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isReachWeapon="true">
       <baseWeight>12</baseWeight>
       <baseStorePrice>
         <numGoldPieces>9</numGoldPieces>
@@ -975,7 +998,7 @@
       <typeOfDamage>PHYSICALDAMAGE_PIERCING</typeOfDamage>
       <typeOfDamage>PHYSICALDAMAGE_SLASHING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isReachWeapon="true">
       <baseWeight>10</baseWeight>
       <baseStorePrice>
         <numGoldPieces>10</numGoldPieces>
@@ -996,7 +1019,7 @@
       <rangeIncrement>0</rangeIncrement>
       <typeOfDamage>PHYSICALDAMAGE_PIERCING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isReachWeapon="true">
       <baseWeight>12</baseWeight>
       <baseStorePrice>
         <numGoldPieces>10</numGoldPieces>
@@ -1249,7 +1272,7 @@
       <rangeIncrement>0</rangeIncrement>
       <typeOfDamage>PHYSICALDAMAGE_SLASHING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isNonLethal="true" isReachWeapon="true">
       <baseWeight>2</baseWeight>
       <baseStorePrice>
         <numGoldPieces>1</numGoldPieces>
@@ -1270,7 +1293,7 @@
       <rangeIncrement>0</rangeIncrement>
       <typeOfDamage>PHYSICALDAMAGE_SLASHING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isDoubleWeapon="true">
       <baseWeight>15</baseWeight>
       <baseStorePrice>
         <numGoldPieces>60</numGoldPieces>
@@ -1291,7 +1314,7 @@
       <rangeIncrement>0</rangeIncrement>
       <typeOfDamage>PHYSICALDAMAGE_SLASHING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isReachWeapon="true">
       <baseWeight>10</baseWeight>
       <baseStorePrice>
         <numGoldPieces>25</numGoldPieces>
@@ -1312,7 +1335,7 @@
       <rangeIncrement>0</rangeIncrement>
       <typeOfDamage>PHYSICALDAMAGE_PIERCING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isDoubleWeapon="true">
       <baseWeight>10</baseWeight>
       <baseStorePrice>
         <numGoldPieces>90</numGoldPieces>
@@ -1333,7 +1356,7 @@
       <rangeIncrement>0</rangeIncrement>
       <typeOfDamage>PHYSICALDAMAGE_BLUDGEONING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isDoubleWeapon="true">
       <baseWeight>6</baseWeight>
       <baseStorePrice>
         <numGoldPieces>20</numGoldPieces>
@@ -1355,7 +1378,7 @@
       <typeOfDamage>PHYSICALDAMAGE_BLUDGEONING</typeOfDamage>
       <typeOfDamage>PHYSICALDAMAGE_PIERCING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isDoubleWeapon="true">
       <baseWeight>10</baseWeight>
       <baseStorePrice>
         <numGoldPieces>100</numGoldPieces>
@@ -1376,7 +1399,7 @@
       <rangeIncrement>0</rangeIncrement>
       <typeOfDamage>PHYSICALDAMAGE_SLASHING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isDoubleWeapon="true">
       <baseWeight>12</baseWeight>
       <baseStorePrice>
         <numGoldPieces>50</numGoldPieces>
@@ -1398,7 +1421,7 @@
       <typeOfDamage>PHYSICALDAMAGE_PIERCING</typeOfDamage>
       <typeOfDamage>PHYSICALDAMAGE_SLASHING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isNonLethal="true">
       <baseWeight>2</baseWeight>
       <baseStorePrice>
         <numGoldPieces>5</numGoldPieces>
@@ -1482,7 +1505,7 @@
       <rangeIncrement>120</rangeIncrement>
       <typeOfDamage>PHYSICALDAMAGE_PIERCING</typeOfDamage>
     </weapon>
-    <weapon>
+    <weapon isNonLethal="true">
       <baseWeight>6</baseWeight>
       <baseStorePrice>
         <numGoldPieces>20</numGoldPieces>

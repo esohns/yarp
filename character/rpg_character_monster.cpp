@@ -124,8 +124,10 @@ const signed char RPG_Character_Monster::getShieldBonus() const
 
   // retrieve equipped armor type
   RPG_Item_ArmorType type = myEquipment.getShield();
-  RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
+  if (type == ARMOR_NONE)
+    return 0;
 
+  RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
   return properties.baseArmorBonus;
 }
 
