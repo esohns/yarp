@@ -605,14 +605,16 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
 
   // step9: (initial) Hit Points
   unsigned short int hitpoints = 0;
-  roll.numDice = 1;
-  roll.typeDice = RPG_Character_Common_Tools::getHitDie(player_class.subClass);
-  roll.modifier = 0;
-  result.clear();
-  RPG_Dice::simulateRoll(roll,
-                         1,
-                         result);
-  hitpoints = result[0];
+//   roll.numDice = 1;
+//   roll.typeDice = RPG_Character_Common_Tools::getHitDie(player_class.subClass);
+//   roll.modifier = 0;
+//   result.clear();
+//   RPG_Dice::simulateRoll(roll,
+//                          1,
+//                          result);
+//   hitpoints = result.front();
+  // our players start with maxed HP...
+  hitpoints = RPG_Character_Common_Tools::getHitDie(player_class.subClass);
 
   // step10: (initial) set of items
   // *TODO*: somehow generate these at random too ?

@@ -29,9 +29,6 @@
 #include <set>
 #include <vector>
 
-// forward declaration
-// class RPG_Character_Base;
-
 struct RPG_Combat_CombatantSequenceElement
 {
   // needed for proper sorting...
@@ -49,7 +46,7 @@ struct RPG_Combat_CombatantSequenceElement
     if (DEXModifier > rhs_in.DEXModifier)
       return false;
 
-    // *IMPORTANT NOTE*: a conflict between monsters doesn't matter !
+    // *IMPORTANT NOTE*: a conflict between monsters doesn't matter, really...
     // --> if either one is a PC, we have a conflict
     ACE_ASSERT(handle && rhs_in.handle);
     try
@@ -67,10 +64,10 @@ struct RPG_Combat_CombatantSequenceElement
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Combat_CombatantSequenceElement::operator==, aborting\n")));
+                 ACE_TEXT("caught exception in RPG_Combat_CombatantSequenceElement::operator<, aborting\n")));
     }
 
-    // no conflict
+    // no conflict for monsters...
     return false;
   }
   inline bool operator>(const RPG_Combat_CombatantSequenceElement& rhs_in) const
@@ -83,7 +80,7 @@ struct RPG_Combat_CombatantSequenceElement
     {
       if (DEXModifier == rhs_in.DEXModifier)
       {
-        // *IMPORTANT NOTE*: a conflict between monsters doesn't matter !
+        // *IMPORTANT NOTE*: a conflict between monsters matter, really...
         // --> if either one is a PC, we have a conflict
         ACE_ASSERT(handle && rhs_in.handle);
         try
@@ -106,6 +103,7 @@ struct RPG_Combat_CombatantSequenceElement
       } // end IF
     } // end IF
 
+    // no conflict for monsters...
     return false;
   }
   inline bool operator!=(const RPG_Combat_CombatantSequenceElement& rhs_in) const

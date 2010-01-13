@@ -290,7 +290,7 @@ void do_work(const std::string& itemDictionaryFilename_in,
   // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("generated (random) player...\n")));
-  player.dump();
+//   player.dump();
 
   RPG_Character_Party_t party;
   party.push_back(player);

@@ -380,6 +380,23 @@ void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& 
 
   // step1: go through the list and compute initiatives
   RPG_Combat_CombatSequenceList_t preliminarySequence;
+   // make sure there are enough SLOTS for large armies !
+   // ruleset says it should be a D_20, but if there are more than 20 combatants - just as in RL - the conflict resolution algorithm could potentially run forever...
+  RPG_Dice_DieType checkDie = D_20;
+  bool num_slots_too_small = (listOfCombatants.size() > D_100);
+  if (!num_slots_too_small)
+  {
+    while (checkDie < listOfCombatants.size())
+      checkDie++;
+  } // end IF
+  else
+  {
+    // debug info
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("too many combatants: %d, trying alternate slot conflict resolution...\n"),
+               listOfCombatants.size()));
+  } // end ELSE
+  RPG_Dice_RollResult_t result;
   for (RPG_Character_ListIterator_t iterator = listOfCombatants.begin();
        iterator != listOfCombatants.end();
        iterator++)
@@ -387,10 +404,20 @@ void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& 
     RPG_Combat_CombatantSequenceElement element = {0, 0, *iterator};
     // compute initiative: DEX check
     element.DEXModifier = RPG_Character_Common_Tools::getAttributeAbilityModifier((*iterator)->getAttribute(ATTRIBUTE_DEXTERITY));
-    // make sure there are enough SLOTS for large armies !
-    element.initiative = RPG_Chance_Common_Tools::getCheck(element.DEXModifier,
-                                                           D_20);
-//     element.handle = &(*iterator);
+    if (!num_slots_too_small)
+    {
+      element.initiative = RPG_Chance_Common_Tools::getCheck(element.DEXModifier,
+                                                             checkDie);
+    } // end IF
+    else
+    {
+      // try another solution...
+      result.clear();
+      RPG_Dice::generateRandomNumbers(listOfCombatants.size(),
+                                      1,
+                                      result);
+      element.initiative = result.front() + element.DEXModifier;
+    } // end ELSE
 
     preliminarySequence.push_back(element);
   } // end FOR
@@ -405,8 +432,7 @@ void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& 
     // make sure there is a PROPER sequence:
     // if the set already contains this value we must resolve the conflict (again)
     // *IMPORTANT NOTE*: this algorithm implements the notion of fairness as appropriate between two HUMAN/HUMAN-Monster actors,
-    // i.e. we could have just re-rolled the current element until it doesn't clash. In a real-world situation this
-    // would trigger discussions of WHO would re-roll...
+    // i.e. we could have just re-rolled the current element until it doesn't clash. In a real-world situation (depending on the relevance of the CURRENT position) this would trigger discussions of WHO would re-roll...
     preliminarySequencePosition = battleSequence_out.insert(*iterator);
     if (preliminarySequencePosition.second == false)
     {
@@ -423,7 +449,7 @@ void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& 
   } // end FOR
 
   // step3: resolve conflicts
-  // *TODO* there's a potential bug here for large armies: change Die Type D_20 --> D_100/D_1000/... ?
+  RPG_Combat_CombatantSequenceElement current_conflict;
   while (!conflicts.empty())
   {
 //     // handle first conflict
@@ -431,24 +457,37 @@ void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& 
 //                ACE_TEXT("resolving %d conflicts...\n"),
 //                conflicts.size()));
 
+    current_conflict = conflicts.front();
     // re-roll initiative
     // compute initiative: DEX check
-    conflicts.front().initiative = RPG_Chance_Common_Tools::getCheck(conflicts.front().DEXModifier,
-                                                                     D_20);
+    if (!num_slots_too_small)
+    {
+      current_conflict.initiative = RPG_Chance_Common_Tools::getCheck(current_conflict.DEXModifier,
+                                                                      checkDie);
+    } // end IF
+    else
+    {
+      // try another solution...
+      result.clear();
+      RPG_Dice::generateRandomNumbers(listOfCombatants.size(),
+                                      1,
+                                      result);
+      current_conflict.initiative = result.front() + current_conflict.DEXModifier;
+    } // end ELSE
 
     // make sure there is a PROPER sequence:
     // if the set already contains this value we must resolve the conflict (again)
     // *IMPORTANT NOTE*: this algorithm implements the notion of fairness as appropriate between two HUMAN/HUMAN-Monster actors,
     // i.e. we could have just re-rolled the current element until it doesn't clash. In a real-world situation this
     // would trigger discussions of WHO would re-roll...
-    preliminarySequencePosition = battleSequence_out.insert(conflicts.front());
+    preliminarySequencePosition = battleSequence_out.insert(current_conflict);
     if (preliminarySequencePosition.second == false)
     {
       // find conflicting element
-      RPG_Combat_CombatantSequenceIterator_t iterator2 = battleSequence_out.find(conflicts.front());
+      RPG_Combat_CombatantSequenceIterator_t iterator2 = battleSequence_out.find(current_conflict);
       ACE_ASSERT(iterator2 != battleSequence_out.end());
 
-      conflicts.push_back(conflicts.front());
+      conflicts.push_back(current_conflict);
       conflicts.push_back(*iterator2);
 
       // erase conflicting element from the preliminary sequence
@@ -508,8 +547,10 @@ void RPG_Combat_Common_Tools::performCombatRound(const RPG_Combat_AttackSituatio
 
     // step2: attack foe !
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("\"%s\" attacks \"%s\" (HP: %d/%d)...\n"),
+               ACE_TEXT("\"%s\" (HP: %d/%d) attacks \"%s\" (HP: %d/%d)...\n"),
                (*iterator2).handle->getName().c_str(),
+               (*iterator2).handle->getNumCurrentHitPoints(),
+               (*iterator2).handle->getNumTotalHitPoints(),
                (*iterator).handle->getName().c_str(),
                (*iterator).handle->getNumCurrentHitPoints(),
                (*iterator).handle->getNumTotalHitPoints()));
@@ -629,58 +670,13 @@ const signed char RPG_Combat_Common_Tools::getSizeModifier(const RPG_Character_S
   signed char result = 1;
   result <<= ::abs(SIZE_MEDIUM - size_in - 1);
 
-  return ((size_in > SIZE_MEDIUM) ? -result : result);
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("size (\"%s\") --> modifier: %d...\n"),
+             RPG_Character_SizeHelper::RPG_Character_SizeToString(size_in).c_str(),
+             ACE_static_cast(int, ((size_in > SIZE_MEDIUM) ? -result : result))));
 
-//   switch (size_in)
-//   {
-//     case SIZE_FINE:
-//     {
-//       return 8;
-//     }
-//     case SIZE_DIMINUTIVE:
-//     {
-//       return 4;
-//     }
-//     case SIZE_TINY:
-//     {
-//       return 2;
-//     }
-//     case SIZE_SMALL:
-//     {
-//       return 1;
-//     }
-//     case SIZE_MEDIUM:
-//     {
-//       return 0;
-//     }
-//     case SIZE_LARGE:
-//     {
-//       return -1;
-//     }
-//     case SIZE_HUGE:
-//     {
-//       return -2;
-//     }
-//     case SIZE_GARGANTUAN:
-//     {
-//       return -4;
-//     }
-//     case SIZE_COLOSSAL:
-//     {
-//       return -8;
-//     }
-//     default:
-//     {
-//       // debug info
-//       ACE_DEBUG((LM_ERROR,
-//                  ACE_TEXT("invalid size: \"%s\", aborting\n"),
-//                  RPG_Character_SizeHelper::RPG_Character_SizeToString(size_in).c_str()));
-//
-//       break;
-//     }
-//   } // end SWITCH
-//
-//   return 0;
+  return ((size_in > SIZE_MEDIUM) ? -result : result);
 }
 
 const unsigned int RPG_Combat_Common_Tools::numCompatibleMonsterAttackActions(const RPG_Combat_AttackForm& attackForm_in,
@@ -995,7 +991,7 @@ is_player_hit:
 is_player_miss:
       // debug info
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("player \"%s\" attacks \"%s\" (AC: %d) and misses: %d...\n"),
+                 ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) and misses: %d...\n"),
                  player_base->getName().c_str(),
                  monster->getName().c_str(),
                  targetArmorClass,
@@ -1311,7 +1307,7 @@ is_monster_hit:
 is_monster_miss:
       // debug info
       ACE_DEBUG((LM_DEBUG,
-                ACE_TEXT("monster \"%s\" attacks \"%s\" (AC: %d) and misses: %d...\n"),
+                ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) and misses: %d...\n"),
                 monster->getName().c_str(),
                 player_base->getName().c_str(),
                 targetArmorClass,

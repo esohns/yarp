@@ -254,7 +254,7 @@ void RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("character \"%s\" takes damge of %d HP...\n"),
+             ACE_TEXT("character \"%s\" takes damage of %d HP...\n"),
              getName().c_str(),
              total_damage_value));
 
@@ -265,9 +265,14 @@ void RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
   // change condition...
   if (myNumCurrentHitPoints <= 0)
   {
+    if (myNumCurrentHitPoints == -10)
+      myConditions.insert(CONDITION_DEAD);
+
+    myConditions.insert(CONDITION_DYING);
+    myConditions.insert(CONDITION_UNCONSCIOUS);
     if (myNumCurrentHitPoints == 0)
     {
-
+      myConditions.insert(CONDITION_DISABLED);
     } // end IF
   } // end IF
 }
