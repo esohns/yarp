@@ -54,7 +54,6 @@ class RPG_Character_Monster
   const RPG_Monster_Type getType() const;
 
   virtual const signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
-  virtual const signed char getShieldBonus() const;
 
   virtual void gainExperience(const unsigned int&); // XP
 
@@ -67,6 +66,10 @@ class RPG_Character_Monster
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Monster());
+
+  // helper methods
+  virtual const RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
+                                                               const RPG_Combat_AttackSituation&) const;
 
   RPG_Monster_Type myType;
 };

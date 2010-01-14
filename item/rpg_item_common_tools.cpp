@@ -54,24 +54,24 @@ void RPG_Item_Common_Tools::initStringConversionTables()
              ACE_TEXT("RPG_Item_Common_Tools: initialized string conversion tables...\n")));
 }
 
-const std::string RPG_Item_Common_Tools::weaponDamageToString(const RPG_Item_WeaponDamage& weaponDamage_in)
+const std::string RPG_Item_Common_Tools::weaponDamageTypeToString(const RPG_Item_WeaponDamageType& weaponDamageType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponDamageToString"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponDamageTypeToString"));
 
   std::string result;
 
   // sanity check
-  if (weaponDamage_in.none())
+  if (weaponDamageType_in.none())
   {
     return RPG_Common_PhysicalDamageTypeHelper::RPG_Common_PhysicalDamageTypeToString(PHYSICALDAMAGE_NONE);
   } // end IF
 
   int damageType = PHYSICALDAMAGE_NONE + 1;
   for (int i = 0;
-       i < weaponDamage_in.size();
+       i < weaponDamageType_in.size();
        i++, damageType++)
   {
-    if (weaponDamage_in.test(i))
+    if (weaponDamageType_in.test(i))
     {
       result += RPG_Common_PhysicalDamageTypeHelper::RPG_Common_PhysicalDamageTypeToString(ACE_static_cast(RPG_Common_PhysicalDamageType, damageType));
       result += ACE_TEXT_ALWAYS_CHAR("|");
@@ -92,14 +92,14 @@ const std::string RPG_Item_Common_Tools::weaponDamageToString(const RPG_Item_Wea
   return result;
 }
 
-const RPG_Common_PhysicalDamageList_t RPG_Item_Common_Tools::weaponDamageToPhysicalDamageType(const RPG_Item_WeaponDamage& weaponDamage_in)
+const RPG_Common_PhysicalDamageList_t RPG_Item_Common_Tools::weaponDamageTypeToPhysicalDamageType(const RPG_Item_WeaponDamageType& weaponDamageType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponDamageToPhysicalDamageType"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponDamageTypeToPhysicalDamageType"));
 
   RPG_Common_PhysicalDamageList_t result;
 
   // sanity check
-  if (weaponDamage_in.none())
+  if (weaponDamageType_in.none())
   {
     result.insert(PHYSICALDAMAGE_NONE);
 
@@ -109,10 +109,10 @@ const RPG_Common_PhysicalDamageList_t RPG_Item_Common_Tools::weaponDamageToPhysi
 
   int damageType = PHYSICALDAMAGE_NONE;
   for (int i = 0;
-       i < weaponDamage_in.size();
+       i < weaponDamageType_in.size();
        i++, damageType++)
   {
-    if (weaponDamage_in.test(i))
+    if (weaponDamageType_in.test(i))
     {
       result.insert(ACE_static_cast(RPG_Common_PhysicalDamageType, damageType));
     } // end IF

@@ -275,4 +275,12 @@ class RPG_Character_EquipmentSlot_Type
   virtual RPG_Character_EquipmentSlot post_RPG_Character_EquipmentSlot_Type();
 };
 
+class RPG_Character_OffHand_Type
+  : public RPG_Character_OffHand_Type_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Character_OffHand post_RPG_Character_OffHand_Type();
+};
+
 #endif

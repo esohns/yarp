@@ -19,21 +19,7 @@
  ***************************************************************************/
 #include "rpg_character_common_tools.h"
 
-#include "rpg_character_gender.h"
-#include "rpg_character_race.h"
-#include "rpg_character_metaclass.h"
-#include "rpg_character_subclass.h"
-#include "rpg_character_condition.h"
-#include "rpg_character_ability.h"
-#include "rpg_character_size.h"
-#include "rpg_character_skill.h"
-#include "rpg_character_feat.h"
-#include "rpg_character_plane.h"
-#include "rpg_character_terrain.h"
-#include "rpg_character_climate.h"
-#include "rpg_character_alignmentcivic.h"
-#include "rpg_character_alignmentethic.h"
-
+#include "rpg_character_incl.h"
 #include "rpg_character_race_common.h"
 #include "rpg_character_skills_common_tools.h"
 
@@ -67,6 +53,7 @@ RPG_Character_ClimateToStringTable_t RPG_Character_ClimateHelper::myRPG_Characte
 RPG_Character_AlignmentCivicToStringTable_t RPG_Character_AlignmentCivicHelper::myRPG_Character_AlignmentCivicToStringTable;
 RPG_Character_AlignmentEthicToStringTable_t RPG_Character_AlignmentEthicHelper::myRPG_Character_AlignmentEthicToStringTable;
 RPG_Character_EquipmentSlotToStringTable_t RPG_Character_EquipmentSlotHelper::myRPG_Character_EquipmentSlotToStringTable;
+RPG_Character_OffHandToStringTable_t RPG_Character_OffHandHelper::myRPG_Character_OffHandToStringTable;
 
 void RPG_Character_Common_Tools::initStringConversionTables()
 {
@@ -87,6 +74,7 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   RPG_Character_AlignmentCivicHelper::init();
   RPG_Character_AlignmentEthicHelper::init();
   RPG_Character_EquipmentSlotHelper::init();
+  RPG_Character_OffHandHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
@@ -192,7 +180,7 @@ const std::string RPG_Character_Common_Tools::classesToString(const RPG_Characte
   return result;
 }
 
-const short int RPG_Character_Common_Tools::getAttributeAbilityModifier(const unsigned char& attributeAbility_in)
+const signed char RPG_Character_Common_Tools::getAttributeAbilityModifier(const unsigned char& attributeAbility_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getAttributeAbilityModifier"));
 
@@ -201,6 +189,35 @@ const short int RPG_Character_Common_Tools::getAttributeAbilityModifier(const un
                                                                     : (attributeAbility_in >> 1);
 
   return baseValue;
+}
+
+const signed char RPG_Character_Common_Tools::getSizeModifier(const RPG_Character_Size& size_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getSizeModifier"));
+
+  // SIZE_FINE:       8
+  // SIZE_DIMINUTIVE: 4
+  // SIZE_TINY:       2
+  // SIZE_SMALL:      1
+  // SIZE_MEDIUM:     0
+  // SIZE_LARGE:      -1
+  // SIZE_HUGE:       -2
+  // SIZE_GARGANTUAN: -4
+  // SIZE_COLOSSAL:   -8
+  // --> +/-2**(distance to medium - 1);
+  if (size_in == SIZE_MEDIUM)
+    return 0;
+
+  signed char result = 1;
+  result <<= ::abs(SIZE_MEDIUM - size_in - 1);
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("size (\"%s\") --> modifier: %d...\n"),
+             RPG_Character_SizeHelper::RPG_Character_SizeToString(size_in).c_str(),
+             ACE_static_cast(int, ((size_in > SIZE_MEDIUM) ? -result : result))));
+
+  return ((size_in > SIZE_MEDIUM) ? -result : result);
 }
 
 const bool RPG_Character_Common_Tools::getAttributeCheck(const unsigned char& attributeAbilityScore_in)

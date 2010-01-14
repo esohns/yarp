@@ -34,8 +34,8 @@ class RPG_Item_Common_Tools
  public:
   static void initStringConversionTables();
 
-  static const std::string weaponDamageToString(const RPG_Item_WeaponDamage&); // weapon damage
-  static const RPG_Common_PhysicalDamageList_t weaponDamageToPhysicalDamageType(const RPG_Item_WeaponDamage&); // weapon damage
+  static const std::string weaponDamageTypeToString(const RPG_Item_WeaponDamageType&); // weapon damage
+  static const RPG_Common_PhysicalDamageList_t weaponDamageTypeToPhysicalDamageType(const RPG_Item_WeaponDamageType&); // weapon damage
   static const std::string damageToString(const RPG_Item_Damage&); // damage
 
   static const bool isThrownWeapon(const RPG_Item_WeaponType&); // weapon type

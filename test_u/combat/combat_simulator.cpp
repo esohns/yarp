@@ -59,6 +59,7 @@ void print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
+  std::cout << ACE_TEXT("-b [VALUE]: number of battles") << std::endl;
   std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-m [FILE] : monster dictionary (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-n [VALUE]: number of different monsters") << std::endl;
@@ -68,6 +69,7 @@ void print_usage(const std::string& programName_in)
 
 const bool process_arguments(const int argc_in,
                              ACE_TCHAR* argv_in[], // cannot be const...
+                             unsigned int& numBattles_out,
                              std::string& itemDictionaryFilename_out,
                              std::string& monsterDictionaryFilename_out,
                              unsigned int& numMonsterTypes_out,
@@ -77,6 +79,7 @@ const bool process_arguments(const int argc_in,
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
+  numBattles_out = 0;
   itemDictionaryFilename_out.clear();
   monsterDictionaryFilename_out.clear();
   numMonsterTypes_out = 1;
@@ -85,13 +88,21 @@ const bool process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("i:m:n:tv"));
+                             ACE_TEXT("b:i:m:n:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
   {
     switch (option)
     {
+      case 'b':
+      {
+        std::stringstream str;
+        str << argumentParser.opt_arg();
+        str >> numBattles_out;
+
+        break;
+      }
       case 'i':
       {
         itemDictionaryFilename_out = argumentParser.opt_arg();
@@ -241,7 +252,8 @@ void do_battle(const RPG_Character_Party_t& party_in,
 
 void do_work(const std::string& itemDictionaryFilename_in,
              const std::string& monsterDictionaryFilename_in,
-             const unsigned int& numMonsterTypes_in)
+             const unsigned int& numMonsterTypes_in,
+             const unsigned int& numBattles_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -295,25 +307,38 @@ void do_work(const std::string& itemDictionaryFilename_in,
   RPG_Character_Party_t party;
   party.push_back(player);
 
-  // step4: generate (random) encounter
-  RPG_Character_Alignment alignment;
-  alignment.civic = ALIGNMENTCIVIC_ANY;
-  alignment.ethic = ALIGNMENTETHIC_ANY;
-  RPG_Character_Environment environment;
-  environment.climate = CLIMATE_ANY;
-  environment.terrain = TERRAIN_ANY;
-  RPG_Monster_OrganizationList_t organizations;
-  organizations.insert(ORGANIZATION_ANY);
-  RPG_Monster_Encounter_t encounter;
-  RPG_MONSTER_DICTIONARY_SINGLETON::instance()->generateRandomEncounter(numMonsterTypes_in,
-                                                                        alignment,
-                                                                        environment,
-                                                                        organizations,
-                                                                        encounter);
+  unsigned int numBattle = 0;
+  do
+  {
+    // step4: generate (random) encounter
+    RPG_Character_Alignment alignment;
+    alignment.civic = ALIGNMENTCIVIC_ANY;
+    alignment.ethic = ALIGNMENTETHIC_ANY;
+    RPG_Character_Environment environment;
+    environment.climate = CLIMATE_ANY;
+    environment.terrain = TERRAIN_ANY;
+    RPG_Monster_OrganizationList_t organizations;
+    organizations.insert(ORGANIZATION_ANY);
+    RPG_Monster_Encounter_t encounter;
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->generateRandomEncounter(numMonsterTypes_in,
+                                                                          alignment,
+                                                                          environment,
+                                                                          organizations,
+                                                                          encounter);
 
-  // step6: FIGHT !
-  do_battle(party,
-            encounter);
+    // step5: FIGHT !
+    do_battle(party,
+              encounter);
+
+    numBattle++;
+    if (RPG_Combat_Common_Tools::isPartyHelpless(party))
+      break;
+    else if (numBattle == numBattles_in)
+    {
+      if (numBattles_in != 0)
+        break;
+    } // end IF
+  } while (true);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -383,12 +408,14 @@ int ACE_TMAIN(int argc,
   std::string itemDictionaryFilename;
   std::string monsterDictionaryFilename;
   unsigned int numMonsterTypes = 1;
+  unsigned int numBattles = 1;
   bool traceInformation        = false;
   bool printVersionAndExit     = false;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
+                          numBattles,
                           itemDictionaryFilename,
                           monsterDictionaryFilename,
                           numMonsterTypes,
@@ -454,7 +481,8 @@ int ACE_TMAIN(int argc,
   // step2: do actual work
   do_work(itemDictionaryFilename,
           monsterDictionaryFilename,
-          numMonsterTypes);
+          numMonsterTypes,
+          numBattles);
 
   timer.stop();
 

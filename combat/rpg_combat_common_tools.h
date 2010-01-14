@@ -80,9 +80,10 @@ class RPG_Combat_Common_Tools
 
   static const bool isMonsterGroupHelpless(const RPG_Character_MonsterGroupInstance_t&); // group instance
   static const bool isCharacterHelpless(const RPG_Character_Base* const); // character handle
+  static const bool isValidFoeAvailable(const bool&,                            // monsters ? : players
+                                        const RPG_Combat_CombatantSequence_t&); // battle sequence
   static const bool isCharacterDeadOrDying(const RPG_Character_Base* const); // character handle
 
-  static const signed char getSizeModifier(const RPG_Character_Size&);
   static const unsigned int numCompatibleMonsterAttackActions(const RPG_Combat_AttackForm&,
                                                               const RPG_Monster_AttackActions_t&);
   static const bool isCompatibleMonsterAttackAction(const RPG_Combat_AttackForm&,

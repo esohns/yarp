@@ -63,7 +63,7 @@ void RPG_Item_Weapon_Base::dump() const
   std::string weaponCategory = RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString(properties.weaponCategory);
   std::string weaponClass = RPG_Item_WeaponClassHelper::RPG_Item_WeaponClassToString(properties.weaponClass);
   std::string baseDamage = RPG_Dice_Common_Tools::rollToString(properties.baseDamage);
-  std::string typeOfDamage = RPG_Item_Common_Tools::weaponDamageToString(properties.typeOfDamage);
+  std::string typeOfDamage = RPG_Item_Common_Tools::weaponDamageTypeToString(properties.typeOfDamage);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("Item: Weapon\nType: %s\nCategory: %s\nClass: %s\nPrice: %d GP, %d SP\nDamage: %s\ncritical: %d, x%d\nRange: %d\nWeight: %d\nDamage Type: %s\n"),

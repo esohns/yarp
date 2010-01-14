@@ -54,8 +54,9 @@ class RPG_Character_Player_Base
 
   const RPG_Character_Equipment* getEquipment() const;
 
+  virtual const RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
+                                                               const RPG_Combat_AttackSituation&) const;
   virtual const signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
-  virtual const signed char getShieldBonus() const;
 
   virtual void gainExperience(const unsigned int&); // XP
 

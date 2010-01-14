@@ -44,7 +44,8 @@ class RPG_Character_Common_Tools
   static const std::string environmentToString(const RPG_Character_Environment&); // environment
   static const std::string classesToString(const RPG_Character_Classes_t&); // classes
 
-  static const short int getAttributeAbilityModifier(const unsigned char&); // attribute ability score
+  static const signed char getAttributeAbilityModifier(const unsigned char&); // attribute ability score
+  static const signed char getSizeModifier(const RPG_Character_Size&);
   static const bool getAttributeCheck(const unsigned char&); // attribute ability score
   static const RPG_Dice_DieType getHitDie(const RPG_Character_SubClass&); // subclass
   static const RPG_Character_BaseAttackBonus_t getBaseAttackBonus(const RPG_Character_SubClass&, // subClass

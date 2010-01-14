@@ -1,5 +1,6 @@
 METASOURCES = AUTO
 
+noinst_HEADERS = rpg_XMLSchema_XML_types.h
 
 include_HEADERS = rpg_combat_XML_parser.h rpg_combat_XML_parser_base.h \
 	rpg_combat_XML_types.h rpg_combat_actiontype.h rpg_combat_areaofeffect.h \
@@ -30,4 +31,6 @@ dnl combat_simulator_SOURCES = combat_simulator.cpp
 dnl combat_simulator_LDADD = $(top_builddir)/libRPG_Combat.la -lRPG_Character \
 	-lRPG_Item -lRPG_Chance -lRPG_Dice -lACE -lpthread -lxerces-c
 dnl combat_simulator_LDFLAGS = -L/usr/local/lib
-noinst_HEADERS = rpg_XMLSchema_XML_types.h
+
+bindata_DATA = rpg_combat.xsd
+bindatadir = $(bindir)

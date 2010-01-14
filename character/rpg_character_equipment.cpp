@@ -91,6 +91,7 @@ const RPG_Item_WeaponType RPG_Character_Equipment::getPrimaryWeapon() const
 //                ACE_TEXT("nothing equipped in slot (\"%s\"): returning \"%s\"...\n"),
 //                RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(EQUIPMENTSLOT_RIGHT_HAND).c_str(),
 //                RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(UNARMED_WEAPON_STRIKE).c_str()));
+    dump();
 
     // nothing equipped --> default is the bare fist...
     return UNARMED_WEAPON_STRIKE;
@@ -130,6 +131,7 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getArmor() const
                ACE_TEXT("nothing equipped in slot (\"%s\"): returning \"%s\"...\n"),
                RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(EQUIPMENTSLOT_BODY).c_str(),
                RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(ARMOR_NONE).c_str()));
+    dump();
 
     // nothing equipped --> default is "nakedness"...
     return ARMOR_NONE;

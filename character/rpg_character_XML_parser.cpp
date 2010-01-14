@@ -463,3 +463,10 @@ RPG_Character_EquipmentSlot RPG_Character_EquipmentSlot_Type::post_RPG_Character
 
   return RPG_Character_EquipmentSlotHelper::stringToRPG_Character_EquipmentSlot(post_string());
 }
+
+RPG_Character_OffHand RPG_Character_OffHand_Type::post_RPG_Character_OffHand_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_OffHand_Type::post_RPG_Character_OffHand_Type"));
+
+  return RPG_Character_OffHandHelper::stringToRPG_Character_OffHand(post_string());
+}

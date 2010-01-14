@@ -324,4 +324,15 @@ class RPG_Character_EquipmentSlot_Type_pimpl: public virtual RPG_Character_Equip
   post_RPG_Character_EquipmentSlot_Type ();
 };
 
+class RPG_Character_OffHand_Type_pimpl: public virtual RPG_Character_OffHand_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+  virtual void
+  pre ();
+
+  virtual RPG_Character_OffHand
+  post_RPG_Character_OffHand_Type ();
+};
+
 #endif // CXX___RPG_CHARACTER_XML_PARSER_BASE_H

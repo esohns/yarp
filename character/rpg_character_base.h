@@ -70,8 +70,9 @@ class RPG_Character_Base
   const unsigned int getCurrentWealth() const;
   const RPG_Character_Size getSize() const;
 
+  virtual const RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
+                                                               const RPG_Combat_AttackSituation&) const = 0;
   virtual const signed char getArmorClass(const RPG_Combat_DefenseSituation&) const = 0;
-  virtual const signed char getShieldBonus() const = 0;
 
   // sustain some damage (melee, magic, ...)
   void sustainDamage(const RPG_Combat_Damage&); // damage
@@ -99,6 +100,8 @@ class RPG_Character_Base
                      const RPG_Item_List_t&);           // (starting) list of (carried) items
   RPG_Character_Base(const RPG_Character_Base&);
   RPG_Character_Base& operator=(const RPG_Character_Base&);
+
+  virtual const signed char getShieldBonus() const;
 
   unsigned int               myCurrentWealth;
   RPG_Character_Size         mySize;

@@ -553,3 +553,21 @@ post_RPG_Character_EquipmentSlot_Type ()
   // return ... ;
 }
 
+// RPG_Character_OffHand_Type_pimpl
+//
+
+void RPG_Character_OffHand_Type_pimpl::
+pre ()
+{
+}
+
+RPG_Character_OffHand RPG_Character_OffHand_Type_pimpl::
+post_RPG_Character_OffHand_Type ()
+{
+  const ::std::string& v (post_string ());
+
+  // TODO
+  //
+  // return ... ;
+}
+

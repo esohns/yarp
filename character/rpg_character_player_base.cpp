@@ -115,6 +115,8 @@ const unsigned char RPG_Character_Player_Base::getLevel(const RPG_Character_SubC
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getLevel"));
 
   // *TODO*: consider implementing class-specific tables...
+  ACE_UNUSED_ARG(subClass_in);
+
   return ACE_static_cast(unsigned int,
                          ACE_OS::floor((1.0 + ::sqrt((myExperience / 125) + 1)) / 2.0));
 }
@@ -133,39 +135,114 @@ const RPG_Character_Equipment* RPG_Character_Player_Base::getEquipment() const
   return &(inherited::myEquipment);
 }
 
+const RPG_Character_BaseAttackBonus_t RPG_Character_Player_Base::getAttackBonus(const RPG_Common_Attribute& modifier_in,
+                                                                                const RPG_Combat_AttackSituation& attackSituation_in) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getAttackBonus"));
+
+  ACE_ASSERT((modifier_in == ATTRIBUTE_DEXTERITY) ||
+             (modifier_in == ATTRIBUTE_STRENGTH));
+
+  // Attack Bonus = base attack bonus + STR/DEX modifier + size modifier [+ range penalty + other modifiers]
+  RPG_Character_BaseAttackBonus_t result;
+
+  // attack bonusses stack for multiclass characters...
+  RPG_Character_Classes_t classes = getClasses();
+  for (RPG_Character_ClassesIterator_t iterator = classes.begin();
+       iterator != classes.end();
+       iterator++)
+  {
+    RPG_Character_BaseAttackBonus_t bonus = RPG_Character_Common_Tools::getBaseAttackBonus((*iterator).subClass,
+                                                                                           getLevel((*iterator).subClass));
+    // append necessary entries
+    for (int diff = bonus.size() - result.size();
+         diff > 0;
+         diff--)
+      result.push_back(0);
+    int index = 0;
+    for (RPG_Character_BaseAttackBonusIterator_t iterator2 = bonus.begin();
+         iterator2 != bonus.end();
+         iterator2++, index++)
+      result[index] += *iterator2;
+  } // end FOR
+
+  int abilityModifier = RPG_Character_Common_Tools::getAttributeAbilityModifier(getAttribute(modifier_in));
+  int sizeModifier = RPG_Character_Common_Tools::getSizeModifier(getSize());
+  for (RPG_Character_BaseAttackBonusIterator_t iterator = result.begin();
+       iterator != result.end();
+       iterator++)
+  {
+    (*iterator) += abilityModifier;
+    (*iterator) += sizeModifier;
+  } // end FOR
+
+  // debug info
+  int index = 1;
+  for (RPG_Character_BaseAttackBonusIterator_t iterator = result.begin();
+       iterator != result.end();
+       iterator++, index++)
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("player: \"%s\" attack #%d: base attack bonus: %d\n"),
+               getName().c_str(),
+               index,
+               ACE_static_cast(int, *iterator)));
+  } // end FOR
+}
+
 const signed char RPG_Character_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getArmorClass"));
 
+  // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier [+ other modifiers]
+  signed char result = 10;
+
   // retrieve equipped armor type
   RPG_Item_ArmorType type = myEquipment.getArmor();
-  if (type == ARMOR_NONE)
-    return 0;
+  RPG_Item_ArmorProperties properties;
+  if (type != ARMOR_NONE)
+  {
+    properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
+    result += properties.baseArmorBonus;
+  } // end IF
+  result += getShieldBonus();
 
-  RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
-  // *TODO*: consider defense situation
-  return properties.baseArmorBonus;
-}
+  // consider defense situation
+  int DEX_modifier = 0;
+  if (defenseSituation_in != DEFENSE_FLATFOOTED)
+  {
+    DEX_modifier = RPG_Character_Common_Tools::getAttributeAbilityModifier(getAttribute(ATTRIBUTE_DEXTERITY));
+    if (type != ARMOR_NONE)
+    {
+      DEX_modifier = std::min(ACE_static_cast(int, properties.maxDexterityBonus),
+                              ACE_static_cast(int, DEX_modifier));
+    } // end IF
+  } // end IF
+  result += DEX_modifier;
 
-const signed char RPG_Character_Player_Base::getShieldBonus() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getShieldBonus"));
+  // usually, this is irrelevant (SIZE_MEDIUM --> +/-0), but may have changed temporarily, magically etc...
+  result += RPG_Character_Common_Tools::getSizeModifier(getSize());
 
-  // retrieve equipped armor type
-  RPG_Item_ArmorType type = myEquipment.getShield();
-  if (type == ARMOR_NONE)
-    return 0;
-
-  RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
-  return properties.baseArmorBonus;
+  return result;
 }
 
 void RPG_Character_Player_Base::gainExperience(const unsigned int& XP_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::gainExperience"));
 
-  // *TODO*
-  ACE_ASSERT(false);
+  unsigned char old_level = getLevel(myClasses.front().subClass);
+
+  myExperience += XP_in;
+
+  // *TODO*: trigger level-up
+  if (old_level != getLevel(myClasses.front().subClass))
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("player: \"%s\" (XP: %d) has gained a level (%d)...\n"),
+               getName().c_str(),
+               myExperience,
+               ACE_static_cast(int, getLevel(myClasses.front().subClass))));
+  } // end IF
 }
 
 const bool RPG_Character_Player_Base::isPlayerCharacter() const

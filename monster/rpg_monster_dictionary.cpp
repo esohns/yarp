@@ -304,14 +304,14 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                ACE_TEXT("RPG_Monster_Dictionary::initMonsterDictionary(): exception occurred: \"%s\", returning\n"),
                text.c_str()));
 
-    return;
+    throw(exception);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Monster_Dictionary::initMonsterDictionary(): exception occurred, returning\n")));
 
-    return;
+    throw;
   }
 
   dictionary_p.post_RPG_Monster_Dictionary_Type();

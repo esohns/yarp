@@ -85,14 +85,26 @@ const RPG_Monster_Type RPG_Character_Monster::getType() const
   return myType;
 }
 
+const RPG_Character_BaseAttackBonus_t RPG_Character_Monster::getAttackBonus(const RPG_Common_Attribute& modifier_in,
+                                                                            const RPG_Combat_AttackSituation& attackSituation_in) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getAttackBonus"));
+
+  ACE_ASSERT((modifier_in == ATTRIBUTE_DEXTERITY) ||
+             (modifier_in == ATTRIBUTE_STRENGTH));
+
+  ACE_ASSERT(false);
+}
+
 const signed char RPG_Character_Monster::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getArmorClass"));
 
-  // retrieve natural armor
-  RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getMonsterProperties(getName());
+  // AC = 10 + (natural) armor bonus (+ shield bonus) + DEX modifier + size modifier [+ other modifiers]
+  signed char result = 0;
 
-  // *TODO*: consider any equipped armor
+  // *TODO*: consider any (additional, equipped) armor...
+  RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getMonsterProperties(getName());
   switch (defenseSituation_in)
   {
     default:
@@ -105,30 +117,20 @@ const signed char RPG_Character_Monster::getArmorClass(const RPG_Combat_DefenseS
     }
     case DEFENSE_NORMAL:
     {
-      return properties.armorClass.normal;
+      result += properties.armorClass.normal;
     }
     case DEFENSE_TOUCH:
     {
-      return properties.armorClass.touch;
+      result += properties.armorClass.touch;
     }
     case DEFENSE_FLATFOOTED:
     {
-      return properties.armorClass.flatFooted;
+      result += properties.armorClass.flatFooted;
     }
   } // end SWITCH
-}
+  result += getShieldBonus();
 
-const signed char RPG_Character_Monster::getShieldBonus() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getShieldBonus"));
-
-  // retrieve equipped armor type
-  RPG_Item_ArmorType type = myEquipment.getShield();
-  if (type == ARMOR_NONE)
-    return 0;
-
-  RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
-  return properties.baseArmorBonus;
+  return result;
 }
 
 void RPG_Character_Monster::gainExperience(const unsigned int& XP_in)

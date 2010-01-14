@@ -22,6 +22,9 @@
 #include "rpg_character_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
 
+#include <rpg_item_common.h>
+#include <rpg_item_dictionary.h>
+
 #include <rpg_dice_dietype.h>
 #include <rpg_dice_roll.h>
 #include <rpg_dice_common.h>
@@ -197,6 +200,19 @@ const RPG_Character_Size RPG_Character_Base::getSize() const
   return mySize;
 }
 
+const signed char RPG_Character_Base::getShieldBonus() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getShieldBonus"));
+
+  // retrieve equipped armor type
+  RPG_Item_ArmorType type = myEquipment.getShield();
+  if (type == ARMOR_NONE)
+    return 0;
+
+  RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
+  return properties.baseArmorBonus;
+}
+
 const unsigned short int RPG_Character_Base::getNumTotalHitPoints() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getNumTotalHitPoints"));
@@ -254,12 +270,14 @@ void RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("character \"%s\" takes damage of %d HP...\n"),
+             ACE_TEXT("character \"%s\" (HP: %d/%d) takes damage of %d HP...\n"),
              getName().c_str(),
+             myNumCurrentHitPoints,
+             myNumTotalHitPoints,
              total_damage_value));
 
   myNumCurrentHitPoints -= total_damage_value;
-  if (myNumTotalHitPoints < -10)
+  if (myNumCurrentHitPoints < -10)
     myNumCurrentHitPoints = -10;
 
   // change condition...
