@@ -33,6 +33,7 @@ namespace urn:rpg
   RPG_Character_AlignmentEthic_Type RPG_Character_AlignmentEthic;
   RPG_Character_Alignment_Type      RPG_Character_Alignment;
   RPG_Character_EquipmentSlot_Type  RPG_Character_EquipmentSlot;
+  RPG_Character_OffHand_Type        RPG_Character_OffHand;
 }
 
 #namespace urn:rpg_chance_dice

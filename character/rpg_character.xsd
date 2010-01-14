@@ -558,4 +558,12 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="RPG_Character_OffHand_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="OFFHAND_NONE"/>
+      <xsd:enumeration value="OFFHAND_LEFT"/>
+      <xsd:enumeration value="OFFHAND_RIGHT"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
 </xsd:schema>

@@ -524,40 +524,47 @@ void RPG_Combat_Common_Tools::performCombatRound(const RPG_Combat_AttackSituatio
 
   // everybody gets their turn
   bool isPlayer = false;
-  RPG_Combat_CombatantSequenceIterator_t iterator;
+  RPG_Combat_CombatantSequenceIterator_t foeFinder;
   RPG_Dice_RollResult_t result;
-  for (RPG_Combat_CombatantSequenceIterator_t iterator2 = battleSequence_in.begin();
-       iterator2 != battleSequence_in.end();
-       iterator2++)
+  for (RPG_Combat_CombatantSequenceIterator_t iterator = battleSequence_in.begin();
+       iterator != battleSequence_in.end();
+       iterator++)
   {
+    // step0: determine whether this combatant is fit enough to fight
+    if (isCharacterDeadOrDying((*iterator).handle))
+    {
+      // not fit enough...
+      continue;
+    } // end IF
+
     // step1: find (random) opponent
     // step1a: determine friend or foe
-    isPlayer = (*iterator2).handle->isPlayerCharacter();
-    iterator = battleSequence_in.begin();
+    isPlayer = (*iterator).handle->isPlayerCharacter();
+    foeFinder = battleSequence_in.begin();
     do
     {
       result.clear();
       RPG_Dice::generateRandomNumbers(battleSequence_in.size(),
                                       1,
                                       result);
-      std::advance(iterator, result.front() - 1);
-    } while ((iterator == iterator2) ||                               // dont't attack ourselves !
-             ((*iterator).handle->isPlayerCharacter() == isPlayer) || // don't attack friends
-             (isCharacterDeadOrDying((*iterator).handle)));           // leave the dead/dying alone (...for now)
+      std::advance(foeFinder, result.front() - 1);
+    } while ((iterator == foeFinder) ||                                // dont't attack ourselves !
+             ((*foeFinder).handle->isPlayerCharacter() == isPlayer) || // don't attack friends
+             (isCharacterDeadOrDying((*foeFinder).handle)));           // leave the dead/dying alone (...for now)
 
     // step2: attack foe !
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("\"%s\" (HP: %d/%d) attacks \"%s\" (HP: %d/%d)...\n"),
-               (*iterator2).handle->getName().c_str(),
-               (*iterator2).handle->getNumCurrentHitPoints(),
-               (*iterator2).handle->getNumTotalHitPoints(),
                (*iterator).handle->getName().c_str(),
                (*iterator).handle->getNumCurrentHitPoints(),
-               (*iterator).handle->getNumTotalHitPoints()));
+               (*iterator).handle->getNumTotalHitPoints(),
+               (*foeFinder).handle->getName().c_str(),
+               (*foeFinder).handle->getNumCurrentHitPoints(),
+               (*foeFinder).handle->getNumTotalHitPoints()));
 
     // *TODO*: for now, we ignore range and movement
-    attackFoe((*iterator2).handle,
-              ACE_const_cast(RPG_Character_Base*, (*iterator).handle),
+    attackFoe((*iterator).handle,
+              ACE_const_cast(RPG_Character_Base*, (*foeFinder).handle),
               attackSituation_in,
               defenseSituation_in,
               true,

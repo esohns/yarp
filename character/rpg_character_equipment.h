@@ -48,6 +48,9 @@ class RPG_Character_Equipment
   // item in EQUIPMENTSLOT_LEFT_HAND, IF ARMOR
   const RPG_Item_ArmorType getShield() const;
 
+  // dump equipment
+  void dump() const;
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Equipment(const RPG_Character_Equipment&));

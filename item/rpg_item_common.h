@@ -41,7 +41,7 @@
 #include <map>
 
 // typedef std::bitset<(RPG_ITEM_PHYSICALDAMAGETYPE_MAX - 1)> RPG_Item_WeaponDamage;
-typedef std::bitset<3> RPG_Item_WeaponDamage;
+typedef std::bitset<3> RPG_Item_WeaponDamageType;
 
 typedef RPG_Dice_Roll RPG_Item_Damage;
 
@@ -55,7 +55,7 @@ struct RPG_Item_WeaponProperties
   RPG_Item_CriticalHitProperties criticalHit;
   unsigned char                  rangeIncrement;
   unsigned short int             baseWeight;
-  RPG_Item_WeaponDamage          typeOfDamage;
+  RPG_Item_WeaponDamageType      typeOfDamage;
   bool                           isNonLethal;
   bool                           isReachWeapon;
   bool                           isDoubleWeapon;

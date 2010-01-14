@@ -59,6 +59,7 @@ RPG_Character_Player::RPG_Character_Player(const std::string& name_in,
 
   // wear default items...
   defaultEquip();
+  myEquipment.dump();
 }
 
 RPG_Character_Player::RPG_Character_Player(const RPG_Character_Player& player_in)

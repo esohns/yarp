@@ -82,9 +82,6 @@ const RPG_Item_WeaponType RPG_Character_Equipment::getPrimaryWeapon() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getPrimaryWeapon"));
 
-  // find item ID
-  RPG_Item_ID_t id = 0;
-
   // *TODO*; consider ambidexterity/left-right-handedness, etc...
   RPG_Character_EquipmentIterator_t iterator = myEquipment.find(EQUIPMENTSLOT_RIGHT_HAND);
   if (iterator == myEquipment.end())
@@ -124,9 +121,6 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getArmor() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getArmor"));
 
-  // find item ID
-  RPG_Item_ID_t id = 0;
-
   // *TODO*; consider helmets/gauntlets/boots/shields, etc...
   RPG_Character_EquipmentIterator_t iterator = myEquipment.find(EQUIPMENTSLOT_BODY);
   if (iterator == myEquipment.end())
@@ -155,8 +149,7 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getArmor() const
   } // end IF
 
   ACE_ASSERT(handle->getType() == ITEM_ARMOR);
-  RPG_Item_Armor_Base* armor_base = ACE_dynamic_cast(RPG_Item_Armor_Base*,
-                                                     handle);
+  RPG_Item_Armor_Base* armor_base = ACE_dynamic_cast(RPG_Item_Armor_Base*, handle);
   ACE_ASSERT(armor_base);
 
   return armor_base->getArmorType();
@@ -165,9 +158,6 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getArmor() const
 const RPG_Item_ArmorType RPG_Character_Equipment::getShield() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getShield"));
-
-  // find item ID
-  RPG_Item_ID_t id = 0;
 
   // *TODO*; consider case where shield is in right hand, etc...
   RPG_Character_EquipmentIterator_t iterator = myEquipment.find(EQUIPMENTSLOT_LEFT_HAND);
@@ -185,8 +175,7 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getShield() const
 
   // find item type
   RPG_Item_Base* handle = NULL;
-  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem((*iterator).second,
-       handle))
+  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem((*iterator).second, handle))
   {
     // debug info
     ACE_DEBUG((LM_ERROR,
@@ -197,9 +186,10 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getShield() const
   } // end IF
 
   ACE_ASSERT(handle->getType() == ITEM_ARMOR);
-  RPG_Item_Armor_Base* armor_base = ACE_dynamic_cast(RPG_Item_Armor_Base*,
-                                                     handle);
+  RPG_Item_Armor_Base* armor_base = ACE_dynamic_cast(RPG_Item_Armor_Base*, handle);
   ACE_ASSERT(armor_base);
+
+  // sanity check
   if (!RPG_Item_Common_Tools::isShield(armor_base->getArmorType()))
   {
     // debug info
@@ -213,4 +203,69 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getShield() const
   } // end IF
 
   return armor_base->getArmorType();
+}
+
+void RPG_Character_Equipment::dump() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::dump"));
+
+  RPG_Item_Base* handle = NULL;
+  for (RPG_Character_EquipmentIterator_t iterator = myEquipment.begin();
+       iterator != myEquipment.end();
+       iterator++)
+  {
+    // find item type
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem((*iterator).second, handle))
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid item (ID: %d), continuing\n"),
+                 (*iterator).second));
+
+      continue;
+    } // end IF
+
+    switch (handle->getType())
+    {
+      case ITEM_WEAPON:
+      {
+        RPG_Item_Weapon_Base* weapon_base = ACE_dynamic_cast(RPG_Item_Weapon_Base*, handle);
+        ACE_ASSERT(weapon_base);
+
+        // debug info
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("slot \"%s\" --> weapon (ID: %d, type: %s)\n"),
+                   RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),
+                   (*iterator).second,
+                   RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_base->getWeaponType()).c_str()));
+
+        break;
+      }
+      case ITEM_ARMOR:
+      {
+        RPG_Item_Armor_Base* armor_base = ACE_dynamic_cast(RPG_Item_Armor_Base*, handle);
+        ACE_ASSERT(armor_base);
+
+        // debug info
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("slot \"%s\" --> armor (ID: %d, type: %s)\n"),
+                   RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),
+                   (*iterator).second,
+                   RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor_base->getArmorType()).c_str()));
+
+        break;
+      }
+      default:
+      {
+        // debug info
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("slot \"%s\" --> item (ID: %d, type: %s)\n"),
+                   RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),
+                   (*iterator).second,
+                   RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str()));
+
+        break;
+      }
+    } // end SWITCH
+  } // end FOR
 }
