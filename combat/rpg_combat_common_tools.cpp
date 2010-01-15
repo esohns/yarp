@@ -551,9 +551,9 @@ void RPG_Combat_Common_Tools::performCombatRound(const RPG_Combat_AttackSituatio
     // step1: find (random) opponent
     // step1a: determine friend or foe
     isPlayer = (*iterator).handle->isPlayerCharacter();
-    foeFinder = battleSequence_in.begin();
     do
     {
+      foeFinder = battleSequence_in.begin();
       result.clear();
       RPG_Dice::generateRandomNumbers(battleSequence_in.size(),
                                       1,

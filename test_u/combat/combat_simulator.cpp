@@ -59,10 +59,11 @@ void print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-b [VALUE]: number of battles") << std::endl;
+  std::cout << ACE_TEXT("-b [VALUE]: number of battles (0: endless)") << std::endl;
+  std::cout << ACE_TEXT("-f [VALUE]: total number of foes (0: random)") << std::endl;
   std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-m [FILE] : monster dictionary (*.xml)") << std::endl;
-  std::cout << ACE_TEXT("-n [VALUE]: number of different monsters") << std::endl;
+  std::cout << ACE_TEXT("-n [VALUE]: number of different monster types") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
   std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
 } // end print_usage
@@ -70,6 +71,7 @@ void print_usage(const std::string& programName_in)
 const bool process_arguments(const int argc_in,
                              ACE_TCHAR* argv_in[], // cannot be const...
                              unsigned int& numBattles_out,
+                             unsigned int& numFoes_out,
                              std::string& itemDictionaryFilename_out,
                              std::string& monsterDictionaryFilename_out,
                              unsigned int& numMonsterTypes_out,
@@ -80,6 +82,7 @@ const bool process_arguments(const int argc_in,
 
   // init results
   numBattles_out = 0;
+  numFoes_out = 0;
   itemDictionaryFilename_out.clear();
   monsterDictionaryFilename_out.clear();
   numMonsterTypes_out = 1;
@@ -88,7 +91,7 @@ const bool process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("b:i:m:n:tv"));
+                             ACE_TEXT("b:f:i:m:n:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -100,6 +103,14 @@ const bool process_arguments(const int argc_in,
         std::stringstream str;
         str << argumentParser.opt_arg();
         str >> numBattles_out;
+
+        break;
+      }
+      case 'f':
+      {
+        std::stringstream str;
+        str << argumentParser.opt_arg();
+        str >> numFoes_out;
 
         break;
       }
@@ -253,6 +264,7 @@ void do_battle(const RPG_Character_Party_t& party_in,
 void do_work(const std::string& itemDictionaryFilename_in,
              const std::string& monsterDictionaryFilename_in,
              const unsigned int& numMonsterTypes_in,
+             const unsigned int& numFoes_in,
              const unsigned int& numBattles_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
@@ -321,6 +333,7 @@ void do_work(const std::string& itemDictionaryFilename_in,
     organizations.insert(ORGANIZATION_ANY);
     RPG_Monster_Encounter_t encounter;
     RPG_MONSTER_DICTIONARY_SINGLETON::instance()->generateRandomEncounter(numMonsterTypes_in,
+                                                                          numFoes_in,
                                                                           alignment,
                                                                           environment,
                                                                           organizations,
@@ -407,6 +420,7 @@ int ACE_TMAIN(int argc,
   bool dumpDictionary          = false;
   std::string itemDictionaryFilename;
   std::string monsterDictionaryFilename;
+  unsigned int numFoes = 0;
   unsigned int numMonsterTypes = 1;
   unsigned int numBattles = 1;
   bool traceInformation        = false;
@@ -416,6 +430,7 @@ int ACE_TMAIN(int argc,
   if (!(process_arguments(argc,
                           argv,
                           numBattles,
+                          numFoes,
                           itemDictionaryFilename,
                           monsterDictionaryFilename,
                           numMonsterTypes,
@@ -482,6 +497,7 @@ int ACE_TMAIN(int argc,
   do_work(itemDictionaryFilename,
           monsterDictionaryFilename,
           numMonsterTypes,
+          numFoes,
           numBattles);
 
   timer.stop();
