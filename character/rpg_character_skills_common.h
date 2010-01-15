@@ -66,6 +66,7 @@ typedef std::multiset<RPG_Character_Feat> RPG_Character_Feats_t;
 typedef RPG_Character_Feats_t::iterator RPG_Character_FeatsIterator_t;
 typedef RPG_Character_Feats_t::const_iterator RPG_Character_FeatsConstIterator_t;
 typedef std::set<RPG_Character_Ability> RPG_Character_Abilities_t;
+typedef RPG_Character_Abilities_t::iterator RPG_Character_AbilitiesIterator_t;
 typedef RPG_Character_Abilities_t::const_iterator RPG_Character_AbilitiesConstIterator_t;
 
 #endif

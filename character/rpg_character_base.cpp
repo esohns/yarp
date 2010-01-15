@@ -44,37 +44,38 @@ RPG_Character_Base::RPG_Character_Base(const std::string& name_in,
                                        const unsigned short int& hitpoints_in,
                                        const unsigned int& wealth_in,
                                        const RPG_Item_List_t& inventory_in)
- : myName(name_in),
+ : myCurrentWealth(wealth_in),
+   mySize(defaultSize_in),
+   myInventory(inventory_in),
+//    myEquipment(), // start naked
+   myName(name_in),
    myAlignment(alignment_in),
    myAttributes(attributes_in),
    mySkills(skills_in),
    myFeats(feats_in),
    myAbilities(abilities_in),
-   mySize(defaultSize_in),
    myNumTotalHitPoints(hitpoints_in),
-   myNumCurrentHitPoints(hitpoints_in), // we start out healthy, don't we ?
-   myCurrentWealth(wealth_in),
-//    myConditions(), // start normal
-   myInventory(inventory_in)//,
-//    myEquipment() // start naked
+   myNumCurrentHitPoints(hitpoints_in)//, // we start out healthy, don't we ?
+//    myConditions() // start normal
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
 
 }
 
 RPG_Character_Base::RPG_Character_Base(const RPG_Character_Base& playerBase_in)
-  : myName(playerBase_in.myName),
+  : myCurrentWealth(playerBase_in.myCurrentWealth),
+    mySize(playerBase_in.mySize),
+    myInventory(playerBase_in.myInventory),
+    myEquipment(playerBase_in.myEquipment),
+    myName(playerBase_in.myName),
     myAlignment(playerBase_in.myAlignment),
     myAttributes(playerBase_in.myAttributes),
     mySkills(playerBase_in.mySkills),
     myFeats(playerBase_in.myFeats),
     myAbilities(playerBase_in.myAbilities),
-    mySize(playerBase_in.mySize),
     myNumTotalHitPoints(playerBase_in.myNumTotalHitPoints),
     myNumCurrentHitPoints(playerBase_in.myNumCurrentHitPoints),
-    myCurrentWealth(playerBase_in.myCurrentWealth),
-    myConditions(playerBase_in.myConditions),
-    myInventory(playerBase_in.myInventory)
+    myConditions(playerBase_in.myConditions)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
 
@@ -246,7 +247,6 @@ void RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::sustainDamage"));
 
   signed short total_damage_value = 0;
-  RPG_Dice_Roll roll;
   RPG_Dice_RollResult_t result;
   for (std::vector<RPG_Combat_DamageElement>::const_iterator iterator = damage_in.elements.begin();
        iterator != damage_in.elements.end();

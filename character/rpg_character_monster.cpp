@@ -38,8 +38,7 @@ RPG_Character_Monster::RPG_Character_Monster(const std::string& name_in,
                                              const unsigned short int& hitpoints_in,
                                              const unsigned int& wealth_in,
                                              const RPG_Item_List_t& inventory_in)
- : myType(type_in),
-   inherited(name_in,
+ : inherited(name_in,
              alignment_in,
              attributes_in,
              skills_in,
@@ -48,15 +47,16 @@ RPG_Character_Monster::RPG_Character_Monster(const std::string& name_in,
              defaultSize_in,
              hitpoints_in,
              wealth_in,
-             inventory_in)
+             inventory_in),
+   myType(type_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::RPG_Character_Monster"));
 
 }
 
 RPG_Character_Monster::RPG_Character_Monster(const RPG_Character_Monster& monster_in)
- : myType(monster_in.myType),
-   inherited(monster_in)
+ : inherited(monster_in),
+   myType(monster_in.myType)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::RPG_Character_Monster"));
 
@@ -90,10 +90,15 @@ const RPG_Character_BaseAttackBonus_t RPG_Character_Monster::getAttackBonus(cons
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getAttackBonus"));
 
+  ACE_NOTREACHED();
+  ACE_ASSERT(false);
+
   ACE_ASSERT((modifier_in == ATTRIBUTE_DEXTERITY) ||
              (modifier_in == ATTRIBUTE_STRENGTH));
 
-  ACE_ASSERT(false);
+  RPG_Character_BaseAttackBonus_t result;
+
+  return result;
 }
 
 const signed char RPG_Character_Monster::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_in) const

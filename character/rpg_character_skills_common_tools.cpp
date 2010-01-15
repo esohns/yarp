@@ -21,6 +21,9 @@
 
 #include "rpg_character_common_tools.h"
 
+#include <rpg_dice_common.h>
+#include <rpg_dice.h>
+
 #include <ace/Log_Msg.h>
 
 #include <string>
@@ -1754,15 +1757,58 @@ const unsigned int RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const
       } // end IF
       if (currentLevel_in >= 10)
       {
-        unsigned int x = 1 + ((currentLevel_in - 10) / 3);
-        // *TODO*: choose x among these...
-        baseAbilities_out.insert(ABILITY_CRIPPLING_STRIKE);
-        baseAbilities_out.insert(ABILITY_DEFENSIVE_ROLL);
-        baseAbilities_out.insert(ABILITY_IMPROVED_EVASION);
-        baseAbilities_out.insert(ABILITY_OPPORTUNIST);
-        baseAbilities_out.insert(ABILITY_SKILL_MASTERY);
-        baseAbilities_out.insert(ABILITY_SLIPPERY_MIND);
-        baseAbilities_out.insert(ABILITY_BONUS_FEAT);
+        unsigned int numChoices = 1 + ((currentLevel_in - 10) / 3);
+        // choose numChoices among these...
+        RPG_Character_Abilities_t choiceList;
+        choiceList.insert(ABILITY_CRIPPLING_STRIKE);
+        choiceList.insert(ABILITY_DEFENSIVE_ROLL);
+        choiceList.insert(ABILITY_IMPROVED_EVASION);
+        choiceList.insert(ABILITY_OPPORTUNIST);
+        choiceList.insert(ABILITY_SKILL_MASTERY);
+        choiceList.insert(ABILITY_SLIPPERY_MIND);
+        choiceList.insert(ABILITY_BONUS_FEAT);
+
+        // sanity check: make sure we can satisfy this requirement !!!
+        unsigned int options = 0;
+        for (RPG_Character_AbilitiesConstIterator_t iterator = choiceList.begin();
+             iterator != choiceList.end();
+             iterator++)
+        {
+          if (baseAbilities_out.find(*iterator) == baseAbilities_out.end())
+            options++;
+        } // end FOR
+        if (options < numChoices)
+        {
+          // debug info
+          ACE_DEBUG((LM_WARNING,
+                     ACE_TEXT("%d/%d abilities already acquired --> cannot choose %d among them\n"),
+                     choiceList.size() - options,
+                     choiceList.size(),
+                     numChoices));
+
+          // what else can we do ?
+          numChoices = options;
+        } // end IF
+
+        RPG_Character_AbilitiesConstIterator_t iterator;
+        RPG_Dice_RollResult_t result;
+        std::pair<RPG_Character_AbilitiesIterator_t, bool> position;
+        while (numChoices)
+        {
+          // choose random ability
+          iterator = choiceList.begin();
+          result.clear();
+          RPG_Dice::generateRandomNumbers(choiceList.size(),
+                                          1,
+                                          result);
+          std::advance(iterator, result.front() - 1);
+          position = baseAbilities_out.insert(*iterator);
+
+          if (position.second == false)
+            continue; // already have this ability --> try again...
+
+          numChoices--;
+        } // end WHILE
       } // end IF
 
       break;

@@ -35,6 +35,8 @@ class RPG_Character_Equipment
 {
  public:
   RPG_Character_Equipment();
+  // *TODO*: implement reference counted items...
+  RPG_Character_Equipment(const RPG_Character_Equipment&);
   virtual ~RPG_Character_Equipment();
 
   void equip(const RPG_Item_ID_t&, // item ID
@@ -53,7 +55,6 @@ class RPG_Character_Equipment
 
  private:
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Equipment(const RPG_Character_Equipment&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Equipment& operator=(const RPG_Character_Equipment&));
 
   // map of equipped items (values index corresponding items in the inventory !)

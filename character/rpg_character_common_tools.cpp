@@ -439,6 +439,8 @@ const unsigned char RPG_Character_Common_Tools::sizeToReach(const RPG_Character_
       break;
     }
   } // end SWITCH
+
+  return 0;
 }
 
 const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()

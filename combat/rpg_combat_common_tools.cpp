@@ -820,6 +820,20 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
       attribute = ATTRIBUTE_DEXTERITY;
     RPG_Character_BaseAttackBonus_t attackBonus = player_base->getAttackBonus(attribute,
                                                                               attackSituation_in);
+    ACE_ASSERT(!attackBonus.empty());
+
+    // debug info
+    int index = 1;
+    for (RPG_Character_BaseAttackBonusIterator_t iterator = attackBonus.begin();
+         iterator != attackBonus.end();
+         iterator++, index++)
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("player: \"%s\" attack #%d: base attack bonus: %d\n"),
+                 player_base->getName().c_str(),
+                 index,
+                 ACE_static_cast(int, *iterator)));
+    } // end FOR
 
     // --> check primary weapon
     weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(player_base->getEquipment()->getPrimaryWeapon());
@@ -874,7 +888,7 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
          iterator++)
     {
       attack_roll = 0;
-      currentAttackBonus = ACE_static_cast(int, *iterator);
+      currentAttackBonus = *iterator;
       is_threat = false;
       is_critical_hit = false;
 

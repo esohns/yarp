@@ -1225,7 +1225,7 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
   if (this->::RPG_Item_BaseProperties_Type_pskel::_attribute_impl (ns, n, v))
     return true;
 
-  if (n == "isNonLethal" && ns == "urn:rpg")
+  if (n == "isNonLethal" && ns.empty ())
   {
     if (this->isNonLethal_parser_)
     {
@@ -1239,7 +1239,7 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "isReachWeapon" && ns == "urn:rpg")
+  if (n == "isReachWeapon" && ns.empty ())
   {
     if (this->isReachWeapon_parser_)
     {
@@ -1253,7 +1253,7 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "isDoubleWeapon" && ns == "urn:rpg")
+  if (n == "isDoubleWeapon" && ns.empty ())
   {
     if (this->isDoubleWeapon_parser_)
     {

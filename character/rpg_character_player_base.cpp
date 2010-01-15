@@ -40,31 +40,31 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(const std::string& name_in,
                                                      const unsigned short int& hitpoints_in,
                                                      const unsigned int& wealth_in,
                                                      const RPG_Item_List_t& inventory_in)
- : myGender(gender_in),
-   myRace(race_in),
-   myClasses(classes_in),
-   myExperience(experience_in),
-   inherited(name_in,
-             alignment_in,
-             attributes_in,
-             skills_in,
-             feats_in,
-             abilities_in,
-             SIZE_MEDIUM, // standard PCs are all medium-sized
-             hitpoints_in,
-             wealth_in,
-             inventory_in)
+  : inherited(name_in,
+              alignment_in,
+              attributes_in,
+              skills_in,
+              feats_in,
+              abilities_in,
+              SIZE_MEDIUM, // standard PCs are all medium-sized
+              hitpoints_in,
+              wealth_in,
+              inventory_in),
+    myGender(gender_in),
+    myRace(race_in),
+    myClasses(classes_in),
+    myExperience(experience_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::RPG_Character_Player_Base"));
 
 }
 
 RPG_Character_Player_Base::RPG_Character_Player_Base(const RPG_Character_Player_Base& playerBase_in)
- : myGender(playerBase_in.myGender),
+ : inherited(playerBase_in),
+   myGender(playerBase_in.myGender),
    myRace(playerBase_in.myRace),
    myClasses(playerBase_in.myClasses),
-   myExperience(playerBase_in.myExperience),
-   inherited(playerBase_in)
+   myExperience(playerBase_in.myExperience)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::RPG_Character_Player_Base"));
 
@@ -117,8 +117,12 @@ const unsigned char RPG_Character_Player_Base::getLevel(const RPG_Character_SubC
   // *TODO*: consider implementing class-specific tables...
   ACE_UNUSED_ARG(subClass_in);
 
-  return ACE_static_cast(unsigned int,
-                         ACE_OS::floor((1.0 + ::sqrt((myExperience / 125) + 1)) / 2.0));
+  unsigned char result = 0;
+
+  result = ACE_static_cast(unsigned int,
+                           ACE_OS::floor((1.0 + ::sqrt((myExperience / 125) + 1)) / 2.0));
+
+  return result;
 }
 
 const unsigned int RPG_Character_Player_Base::getExperience() const
@@ -176,18 +180,7 @@ const RPG_Character_BaseAttackBonus_t RPG_Character_Player_Base::getAttackBonus(
     (*iterator) += sizeModifier;
   } // end FOR
 
-  // debug info
-  int index = 1;
-  for (RPG_Character_BaseAttackBonusIterator_t iterator = result.begin();
-       iterator != result.end();
-       iterator++, index++)
-  {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("player: \"%s\" attack #%d: base attack bonus: %d\n"),
-               getName().c_str(),
-               index,
-               ACE_static_cast(int, *iterator)));
-  } // end FOR
+  return result;
 }
 
 const signed char RPG_Character_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_in) const
