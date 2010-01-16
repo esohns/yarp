@@ -84,6 +84,7 @@ typedef RPG_Monster_Dictionary_t::const_iterator RPG_Monster_DictionaryIterator_
 typedef std::vector<std::string> RPG_Monster_List_t;
 typedef RPG_Monster_List_t::const_iterator RPG_Monster_ListIterator_t;
 typedef std::map<std::string, unsigned short int> RPG_Monster_Encounter_t;
-typedef RPG_Monster_Encounter_t::const_iterator RPG_Monster_EncounterIterator_t;
+typedef RPG_Monster_Encounter_t::const_iterator RPG_Monster_EncounterConstIterator_t;
+typedef RPG_Monster_Encounter_t::iterator RPG_Monster_EncounterIterator_t;
 
 #endif

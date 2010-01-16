@@ -49,7 +49,6 @@ class RPG_Monster_Common_Tools
   static const std::string organizationsToString(const RPG_Monster_Organizations_t&); // organizations
   static const std::string organizationsToString(const RPG_Monster_OrganizationList_t&); // organizations
   static const std::string advancementToString(const RPG_Monster_Advancement_t&); // advancement
-
   static const RPG_Common_PhysicalDamageList_t naturalWeaponToPhysicalDamageType(const RPG_Monster_NaturalWeapon&);
 
  private:

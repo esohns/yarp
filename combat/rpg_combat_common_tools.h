@@ -82,7 +82,7 @@ class RPG_Combat_Common_Tools
   static const bool isCharacterHelpless(const RPG_Character_Base* const); // character handle
   static const bool isValidFoeAvailable(const bool&,                            // monsters ? : players
                                         const RPG_Combat_CombatantSequence_t&); // battle sequence
-  static const bool isCharacterDeadOrDying(const RPG_Character_Base* const); // character handle
+  static const bool isCharacterDisabled(const RPG_Character_Base* const); // character handle
 
   static const unsigned int numCompatibleMonsterAttackActions(const RPG_Combat_AttackForm&,
                                                               const RPG_Monster_AttackActions_t&);

@@ -51,6 +51,7 @@ class RPG_Monster_Dictionary
                              const bool& = true); // validate XML ?
   const RPG_Monster_Properties getMonsterProperties(const std::string&) const; // name of monster
   void generateRandomEncounter(const unsigned int&,                   // # of different monster types
+                               const unsigned int&,                   // total # of foes (0: random)
                                const RPG_Character_Alignment&,        // alignment
                                const RPG_Character_Environment&,      // environment
                                const RPG_Monster_OrganizationList_t&, // allowed organizations

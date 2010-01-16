@@ -64,8 +64,10 @@ void print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-m [FILE] : monster dictionary (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-n [VALUE]: number of different monster types") << std::endl;
+  std::cout << ACE_TEXT("-p [VALUE]: number of players") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
   std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
+  std::cout << ACE_TEXT("-x        : endless loop (testing purposes)") << std::endl;
 } // end print_usage
 
 const bool process_arguments(const int argc_in,
@@ -75,8 +77,10 @@ const bool process_arguments(const int argc_in,
                              std::string& itemDictionaryFilename_out,
                              std::string& monsterDictionaryFilename_out,
                              unsigned int& numMonsterTypes_out,
+                             unsigned int& numPlayers_out,
                              bool& traceInformation_out,
-                             bool& printVersionAndExit_out)
+                             bool& printVersionAndExit_out,
+                             bool& endlessLoop_out)
 {
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -86,12 +90,14 @@ const bool process_arguments(const int argc_in,
   itemDictionaryFilename_out.clear();
   monsterDictionaryFilename_out.clear();
   numMonsterTypes_out = 1;
+  numPlayers_out = 1;
   traceInformation_out = false;
   printVersionAndExit_out = false;
+  endlessLoop_out = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("b:f:i:m:n:tv"));
+                             ACE_TEXT("b:f:i:m:n:p:tvx"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -134,6 +140,14 @@ const bool process_arguments(const int argc_in,
 
         break;
       }
+      case 'p':
+      {
+        std::stringstream str;
+        str << argumentParser.opt_arg();
+        str >> numPlayers_out;
+
+        break;
+      }
       case 't':
       {
         traceInformation_out = true;
@@ -143,6 +157,12 @@ const bool process_arguments(const int argc_in,
       case 'v':
       {
         printVersionAndExit_out = true;
+
+        break;
+      }
+      case 'x':
+      {
+        endlessLoop_out = true;
 
         break;
       }
@@ -176,7 +196,7 @@ void do_battle(const RPG_Character_Party_t& party_in,
 
   // step1: instantiate monster(s)
   RPG_Character_Monsters_t monsters;
-  for (RPG_Monster_EncounterIterator_t iterator = encounter_in.begin();
+  for (RPG_Monster_EncounterConstIterator_t iterator = encounter_in.begin();
        iterator != encounter_in.end();
        iterator++)
   {
@@ -224,18 +244,21 @@ void do_battle(const RPG_Character_Party_t& party_in,
                                                 monsters,
                                                 battleSequence);
   // perform a combat round
-  bool isFirstRound = true;
+  unsigned int numRound = 1;
   while (!RPG_Combat_Common_Tools::isPartyHelpless(party_in) &&
          !RPG_Combat_Common_Tools::areMonstersHelpless(monsters))
   {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("----------------round #%d----------------\n"),
+               numRound));
+
     // *TODO*: consider surprise round
     RPG_Combat_Common_Tools::performCombatRound(ATTACK_NORMAL,
-                                                (isFirstRound ? DEFENSE_FLATFOOTED
-                                                              : DEFENSE_NORMAL),
+                                                ((numRound == 1) ? DEFENSE_FLATFOOTED
+                                                                 : DEFENSE_NORMAL),
                                                 battleSequence);
 
-    if (isFirstRound)
-      isFirstRound = false;
+    numRound++;
   } // end WHILE
 
   // sanity check
@@ -243,7 +266,7 @@ void do_battle(const RPG_Character_Party_t& party_in,
       RPG_Combat_Common_Tools::areMonstersHelpless(monsters))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("everybody is DEAD --> check implementation !\n")));
+               ACE_TEXT("everybody is HELPLESS --> check implementation !\n")));
   } // end IF
 
   if (!RPG_Combat_Common_Tools::isPartyHelpless(party_in))
@@ -265,7 +288,9 @@ void do_work(const std::string& itemDictionaryFilename_in,
              const std::string& monsterDictionaryFilename_in,
              const unsigned int& numMonsterTypes_in,
              const unsigned int& numFoes_in,
-             const unsigned int& numBattles_in)
+             const unsigned int& numPlayers_in,
+             const unsigned int& numBattles_in,
+             bool& endlessLoop_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -308,50 +333,59 @@ void do_work(const std::string& itemDictionaryFilename_in,
     return;
   }
 
-  // step3: generate a (random) player character
-  RPG_Character_Player player = RPG_Character_Common_Tools::generatePlayerCharacter();
-
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("generated (random) player...\n")));
-//   player.dump();
-
-  RPG_Character_Party_t party;
-  party.push_back(player);
-
-  unsigned int numBattle = 0;
   do
   {
-    // step4: generate (random) encounter
-    RPG_Character_Alignment alignment;
-    alignment.civic = ALIGNMENTCIVIC_ANY;
-    alignment.ethic = ALIGNMENTETHIC_ANY;
-    RPG_Character_Environment environment;
-    environment.climate = CLIMATE_ANY;
-    environment.terrain = TERRAIN_ANY;
-    RPG_Monster_OrganizationList_t organizations;
-    organizations.insert(ORGANIZATION_ANY);
-    RPG_Monster_Encounter_t encounter;
-    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->generateRandomEncounter(numMonsterTypes_in,
-                                                                          numFoes_in,
-                                                                          alignment,
-                                                                          environment,
-                                                                          organizations,
-                                                                          encounter);
-
-    // step5: FIGHT !
-    do_battle(party,
-              encounter);
-
-    numBattle++;
-    if (RPG_Combat_Common_Tools::isPartyHelpless(party))
-      break;
-    else if (numBattle == numBattles_in)
+    // step3: generate a (random) party
+    RPG_Character_Party_t party;
+    for (unsigned int i = 0;
+        i < numPlayers_in;
+        i++)
     {
-      if (numBattles_in != 0)
+      RPG_Character_Player player = RPG_Character_Common_Tools::generatePlayerCharacter();
+    //   player.dump();
+
+      party.push_back(player);
+    } // end FOR
+
+    // debug info
+    ACE_DEBUG((LM_DEBUG,
+              ACE_TEXT("generated (random) party of %d player(s)...\n"),
+              numPlayers_in));
+
+    unsigned int numBattle = 0;
+    do
+    {
+      // step4: generate (random) encounter
+      RPG_Character_Alignment alignment;
+      alignment.civic = ALIGNMENTCIVIC_ANY;
+      alignment.ethic = ALIGNMENTETHIC_ANY;
+      RPG_Character_Environment environment;
+      environment.climate = CLIMATE_ANY;
+      environment.terrain = TERRAIN_ANY;
+      RPG_Monster_OrganizationList_t organizations;
+      organizations.insert(ORGANIZATION_ANY);
+      RPG_Monster_Encounter_t encounter;
+      RPG_MONSTER_DICTIONARY_SINGLETON::instance()->generateRandomEncounter(numMonsterTypes_in,
+                                                                            numFoes_in,
+                                                                            alignment,
+                                                                            environment,
+                                                                            organizations,
+                                                                            encounter);
+
+      // step5: FIGHT !
+      do_battle(party,
+                encounter);
+
+      numBattle++;
+      if (RPG_Combat_Common_Tools::isPartyHelpless(party))
         break;
-    } // end IF
-  } while (true);
+      else if (numBattle == numBattles_in)
+      {
+        if (numBattles_in != 0)
+          break;
+      } // end IF
+    } while (true);
+  } while (endlessLoop_in);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -422,9 +456,11 @@ int ACE_TMAIN(int argc,
   std::string monsterDictionaryFilename;
   unsigned int numFoes = 0;
   unsigned int numMonsterTypes = 1;
+  unsigned int numPlayers = 1;
   unsigned int numBattles = 1;
   bool traceInformation        = false;
   bool printVersionAndExit     = false;
+  bool endlessLoop             = false;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
@@ -434,8 +470,10 @@ int ACE_TMAIN(int argc,
                           itemDictionaryFilename,
                           monsterDictionaryFilename,
                           numMonsterTypes,
+                          numPlayers,
                           traceInformation,
-                          printVersionAndExit)))
+                          printVersionAndExit,
+                          endlessLoop)))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
@@ -498,7 +536,9 @@ int ACE_TMAIN(int argc,
           monsterDictionaryFilename,
           numMonsterTypes,
           numFoes,
-          numBattles);
+          numPlayers,
+          numBattles,
+          endlessLoop);
 
   timer.stop();
 

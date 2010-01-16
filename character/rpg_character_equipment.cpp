@@ -53,24 +53,24 @@ void RPG_Character_Equipment::equip(const RPG_Item_ID_t& itemID_in,
 
   myEquipment.insert(std::make_pair(slot_in, itemID_in));
 
-  // debug info
-  RPG_Item_Base* handle = NULL;
-  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem(itemID_in, handle))
-  {
-    // debug info
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid item ID: %d, aborting\n"),
-               itemID_in));
-
-    return;
-  } // end IF
-  ACE_ASSERT(handle);
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("equipped item (ID: %d, type: \"%s\") @ \"%s\"\n"),
-             itemID_in,
-             RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str(),
-             RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(slot_in).c_str()));
+//   // debug info
+//   RPG_Item_Base* handle = NULL;
+//   if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem(itemID_in, handle))
+//   {
+//     // debug info
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("invalid item ID: %d, aborting\n"),
+//                itemID_in));
+//
+//     return;
+//   } // end IF
+//   ACE_ASSERT(handle);
+//
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("equipped item (ID: %d, type: \"%s\") @ \"%s\"\n"),
+//              itemID_in,
+//              RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str(),
+//              RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(slot_in).c_str()));
 }
 
 void RPG_Character_Equipment::unequip(const RPG_Character_EquipmentSlot& slot_in)
@@ -79,10 +79,10 @@ void RPG_Character_Equipment::unequip(const RPG_Character_EquipmentSlot& slot_in
 
   myEquipment.erase(slot_in);
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("unequipped \"%s\"\n"),
-             RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(slot_in).c_str()));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("unequipped \"%s\"\n"),
+//              RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(slot_in).c_str()));
 }
 
 const RPG_Item_WeaponType RPG_Character_Equipment::getPrimaryWeapon() const

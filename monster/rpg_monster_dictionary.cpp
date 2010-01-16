@@ -339,7 +339,8 @@ const RPG_Monster_Properties RPG_Monster_Dictionary::getMonsterProperties(const 
   return iterator->second;
 }
 
-void RPG_Monster_Dictionary::generateRandomEncounter(const unsigned int& numDifferentMonsterTypes,
+void RPG_Monster_Dictionary::generateRandomEncounter(const unsigned int& numDifferentMonsterTypes_in,
+                                                     const unsigned int& numMonsters_in,
                                                      const RPG_Character_Alignment& alignment_in,
                                                      const RPG_Character_Environment& environment_in,
                                                      const RPG_Monster_OrganizationList_t& organizations_in,
@@ -350,8 +351,12 @@ void RPG_Monster_Dictionary::generateRandomEncounter(const unsigned int& numDiff
   // init result
   encounter_out.clear();
 
-  // sanity check
-  ACE_ASSERT(numDifferentMonsterTypes <= myMonsterDictionary.size());
+  // sanity check(s)
+  ACE_ASSERT(numDifferentMonsterTypes_in <= myMonsterDictionary.size());
+  if (numMonsters_in)
+  {
+    ACE_ASSERT(numDifferentMonsterTypes_in <= numMonsters_in);
+  } // end IF
 
   RPG_Monster_List_t list;
   for (RPG_Monster_DictionaryIterator_t iterator = myMonsterDictionary.begin();
@@ -403,12 +408,12 @@ void RPG_Monster_Dictionary::generateRandomEncounter(const unsigned int& numDiff
   } // end IF
 
   RPG_Dice_RollResult_t result;
-  for (int i = 0;
-       i < numDifferentMonsterTypes;
+  for (unsigned int i = 0;
+       i < numDifferentMonsterTypes_in;
        i++)
   {
     // step2a: choose new random foe (from the set of possibilities)
-    RPG_Monster_EncounterIterator_t iterator;
+    RPG_Monster_EncounterConstIterator_t iterator;
     int choiceType = 0;
     do
     {
@@ -467,14 +472,59 @@ void RPG_Monster_Dictionary::generateRandomEncounter(const unsigned int& numDiff
                            1,
                            result);
 
-    // debug info
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("generated encounter of %d %s...\n"),
-               result.front(),
-               list[choiceType].c_str()));
-
     encounter_out.insert(std::make_pair(list[choiceType], result.front()));
   } // end FOR
+
+  // reduce/increase total number of foes to adjust the result
+  // *IMPORTANT NOTE*: this means, however, that the final result doesn't necessarily
+  // correspond to the numbers implied by the requested types of organizations...
+  unsigned int numCurrentFoes = 0;
+  if (numMonsters_in)
+  {
+    for (RPG_Monster_EncounterConstIterator_t iterator = encounter_out.begin();
+        iterator != encounter_out.end();
+        iterator++)
+    {
+      numCurrentFoes += (*iterator).second;
+    } // end FOR
+    RPG_Monster_EncounterIterator_t iterator;
+    int diff = ::abs(numCurrentFoes - numMonsters_in);
+    while (diff)
+    {
+      iterator = encounter_out.begin();
+      result.clear();
+      RPG_Dice::generateRandomNumbers(encounter_out.size(),
+                                      1,
+                                      result);
+      std::advance(iterator, result.front() - 1);
+      if ((*iterator).second) // don't go below 1...
+      {
+        (*iterator).second += ((numCurrentFoes > numMonsters_in) ? -1 : 1);
+        diff--;
+      } // end IF
+    } // end WHILE
+  } // end IF
+
+  numCurrentFoes = 0;
+  int index = 1;
+  for (RPG_Monster_EncounterConstIterator_t iterator = encounter_out.begin();
+       iterator != encounter_out.end();
+       iterator++, index++)
+  {
+    numCurrentFoes += (*iterator).second;
+
+    // debug info
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("group #%d: %d %s\n"),
+               index,
+               (*iterator).second,
+               (*iterator).first.c_str()));
+  } // end FOR
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("generated %d foes...\n"),
+             numCurrentFoes));
 }
 
 void RPG_Monster_Dictionary::organizationStepToRoll(const RPG_Monster_OrganizationStep& organizationStep_in,

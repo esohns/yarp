@@ -22,6 +22,7 @@
 #include "rpg_combat_incl.h"
 
 #include <rpg_monster_common.h>
+#include <rpg_monster_common_tools.h>
 #include <rpg_monster_attackaction.h>
 #include <rpg_monster_dictionary.h>
 
@@ -561,17 +562,17 @@ void RPG_Combat_Common_Tools::performCombatRound(const RPG_Combat_AttackSituatio
       std::advance(foeFinder, result.front() - 1);
     } while ((iterator == foeFinder) ||                                // dont't attack ourselves !
              ((*foeFinder).handle->isPlayerCharacter() == isPlayer) || // don't attack friends
-             (isCharacterDeadOrDying((*foeFinder).handle)));           // leave the dead/dying alone (...for now)
+             (isCharacterDisabled((*foeFinder).handle)));              // leave the disabled alone (...for now)
 
     // step2: attack foe !
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("\"%s\" (HP: %d/%d) attacks \"%s\" (HP: %d/%d)...\n"),
-               (*iterator).handle->getName().c_str(),
-               (*iterator).handle->getNumCurrentHitPoints(),
-               (*iterator).handle->getNumTotalHitPoints(),
-               (*foeFinder).handle->getName().c_str(),
-               (*foeFinder).handle->getNumCurrentHitPoints(),
-               (*foeFinder).handle->getNumTotalHitPoints()));
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("\"%s\" (HP: %d/%d) attacks \"%s\" (HP: %d/%d)...\n"),
+//                (*iterator).handle->getName().c_str(),
+//                (*iterator).handle->getNumCurrentHitPoints(),
+//                (*iterator).handle->getNumTotalHitPoints(),
+//                (*foeFinder).handle->getName().c_str(),
+//                (*foeFinder).handle->getNumCurrentHitPoints(),
+//                (*foeFinder).handle->getNumTotalHitPoints()));
 
     // *TODO*: for now, we ignore range and movement
     attackFoe((*iterator).handle,
@@ -638,10 +639,11 @@ const bool RPG_Combat_Common_Tools::isCharacterHelpless(const RPG_Character_Base
   ACE_ASSERT(character_in);
 
   if ((character_in->hasCondition(CONDITION_PARALYZED)) || // spell, ...
-       (character_in->hasCondition(CONDITION_HELD)) ||     // bound as per spell, ...
-       (character_in->hasCondition(CONDITION_BOUND)) ||    // bound ase per rope, ...
-       (character_in->hasCondition(CONDITION_SLEEPING)) || // natural, spell, ...
-       isCharacterDeadOrDying(character_in))               // dead/dying
+      (character_in->hasCondition(CONDITION_HELD)) ||      // bound as per spell, ...
+      (character_in->hasCondition(CONDITION_BOUND)) ||     // bound ase per rope, ...
+      (character_in->hasCondition(CONDITION_SLEEPING)) ||  // natural, spell, ...
+      (character_in->hasCondition(CONDITION_PETRIFIED)) || // turned to stone
+      isCharacterDisabled(character_in))                   // disabled
   {
     return true;
   } // end IF
@@ -670,18 +672,17 @@ const bool RPG_Combat_Common_Tools::isValidFoeAvailable(const bool& isMonsterAva
   return false;
 }
 
-const bool RPG_Combat_Common_Tools::isCharacterDeadOrDying(const RPG_Character_Base* const character_in)
+const bool RPG_Combat_Common_Tools::isCharacterDisabled(const RPG_Character_Base* const character_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::isCharacterDeadOrDying"));
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::isCharacterDisabled"));
 
   ACE_ASSERT(character_in);
 
-  if ((character_in->hasCondition(CONDITION_DISABLED)) ||    // (HP==0) || (STABLE && CONSCIOUS)
-      (character_in->hasCondition(CONDITION_DEAD)) ||        // HP<-10
+  if ((character_in->hasCondition(CONDITION_DEAD)) ||        // HP<-10
       (character_in->hasCondition(CONDITION_DYING)) ||       // -10<HP<0
       (character_in->hasCondition(CONDITION_STABLE)) ||      // -10<HP<0 && !DYING
       (character_in->hasCondition(CONDITION_UNCONSCIOUS)) || // -10<HP<0 && (DYING || STABLE)
-      (character_in->hasCondition(CONDITION_PETRIFIED)))     // turned to stone
+      (character_in->hasCondition(CONDITION_DISABLED)))      // (HP==0) || (STABLE && !UNCONSCIOUS)
   {
     return true;
   } // end IF
@@ -822,18 +823,18 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
                                                                               attackSituation_in);
     ACE_ASSERT(!attackBonus.empty());
 
-    // debug info
-    int index = 1;
-    for (RPG_Character_BaseAttackBonusIterator_t iterator = attackBonus.begin();
-         iterator != attackBonus.end();
-         iterator++, index++)
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("player: \"%s\" attack #%d: base attack bonus: %d\n"),
-                 player_base->getName().c_str(),
-                 index,
-                 ACE_static_cast(int, *iterator)));
-    } // end FOR
+//     // debug info
+//     int index = 1;
+//     for (RPG_Character_BaseAttackBonusIterator_t iterator = attackBonus.begin();
+//          iterator != attackBonus.end();
+//          iterator++, index++)
+//     {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("player: \"%s\" attack #%d: base attack bonus: %d\n"),
+//                  player_base->getName().c_str(),
+//                  index,
+//                  ACE_static_cast(int, *iterator)));
+//     } // end FOR
 
     // --> check primary weapon
     weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(player_base->getEquipment()->getPrimaryWeapon());
@@ -964,8 +965,8 @@ is_player_hit:
              (player_base->getEquipment()->getPrimaryWeapon() != RANGED_WEAPON_CROSSBOW_REPEATING_LIGHT) &&
              (player_base->getEquipment()->getPrimaryWeapon() != RANGED_WEAPON_CROSSBOW_REPEATING_HEAVY)))))
         damage_element.amount.modifier += ::lround(RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH)) * STR_factor);
-      // *IMPORTANT NOTE*: extra damage over and above a weapon’s normal damage is not multiplied
-      if (is_critical_hit)
+      // *TODO*: extra damage over and above a weapon’s normal damage is not multiplied
+      if (is_critical_hit) // *IMPORTANT NOTE*: this applies for physical/natural damage only !
         damage_element.amount *= ACE_static_cast(int, weapon_properties.criticalHit.damageModifier);
       damage_element.secondary.numDice = 0;
       damage_element.secondary.typeDice = RPG_DICE_DIETYPE_INVALID;
@@ -980,7 +981,21 @@ is_player_hit:
       damage_element.counterMeasures.clear();
       damage_element.effect = EFFECT_IMMEDIATE;
       damage.elements.push_back(damage_element);
+
+      // debug info
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) and hits: %d...\n"),
+                 player_base->getName().c_str(),
+                 monster->getName().c_str(),
+                 targetArmorClass,
+                 (attack_roll + currentAttackBonus)));
+
       target_inout->sustainDamage(damage);
+
+      // if the target has been disabled, we're done...
+      // *TODO*: consider remaining actions...
+      if (isCharacterHelpless(target_inout))
+        break;
 
       // if this was a Standard Action, we're done
       if (!isFullRoundAction_in)
@@ -1266,6 +1281,50 @@ monster_perform_single_action:
 is_monster_hit:
       // compute damage
       damage = current_action->damage;
+      // insert (missing) damage types
+      for (std::vector<RPG_Combat_DamageElement>::iterator iterator2 = damage.elements.begin();
+           iterator2 != damage.elements.end();
+           iterator2++)
+      {
+        if ((*iterator2).types.empty())
+        {
+          RPG_Common_PhysicalDamageList_t damageTypeList;
+          switch (current_action->weapon.discriminator)
+          {
+            case RPG_Monster_WeaponTypeUnion::NATURALWEAPON:
+            {
+              damageTypeList = RPG_Monster_Common_Tools::naturalWeaponToPhysicalDamageType(current_action->weapon.naturalweapon);
+
+              break;
+            }
+            case RPG_Monster_WeaponTypeUnion::WEAPONTYPE:
+            {
+              weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(current_action->weapon.weapontype);
+              damageTypeList = RPG_Item_Common_Tools::weaponDamageTypeToPhysicalDamageType(weapon_properties.typeOfDamage);
+
+              break;
+            }
+            default:
+            {
+              // debug info
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("invalid weapon type: %d, continuing\n"),
+                         current_action->weapon.discriminator));
+
+              break;
+            }
+          } // end SWITCH
+          RPG_Combat_DamageTypeUnion damageType_union;
+          damageType_union.discriminator = RPG_Combat_DamageTypeUnion::PHYSICALDAMAGETYPE;
+          for (RPG_Common_PhysicalDamageListIterator_t iterator3 = damageTypeList.begin();
+               iterator3 != damageTypeList.end();
+               iterator3++)
+          {
+            damageType_union.physicaldamagetype = *iterator3;
+            (*iterator2).types.push_back(damageType_union);
+          } // end FOR
+        } // end IF
+      } // end FOR
       if (is_critical_hit)
       {
         for (std::vector<RPG_Combat_DamageElement>::iterator iterator2 = damage.elements.begin();
@@ -1273,13 +1332,29 @@ is_monster_hit:
              iterator2++)
         {
           // *IMPORTANT NOTE*: this applies for physical/natural damage only !
+          if ((*iterator2).types.front().discriminator != RPG_Combat_DamageTypeUnion::PHYSICALDAMAGETYPE)
+            continue;
+
           // *TODO*: consider manufactured (and equipped) weapons may have different modifiers
           // *IMPORTANT NOTE*: STR modifier already included...
-          if ((*iterator2).types.front().discriminator == RPG_Combat_DamageTypeUnion::PHYSICALDAMAGETYPE)
-            (*iterator2).amount *= 2;
+          (*iterator2).amount *= 2;
         } // end FOR
       } // end IF
+
+      // debug info
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) and hits: %d...\n"),
+                 monster->getName().c_str(),
+                 player_base->getName().c_str(),
+                 targetArmorClass,
+                 (attack_roll + currentAttackBonus)));
+
       target_inout->sustainDamage(damage);
+
+      // if the target has been disabled, we're done...
+      // *TODO*: consider remaining actions...
+      if (isCharacterHelpless(target_inout))
+        return;
 
       // if this was a Standard Action, we're done
       if (!isFullRoundAction_in)

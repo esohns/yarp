@@ -122,15 +122,21 @@ const signed char RPG_Character_Monster::getArmorClass(const RPG_Combat_DefenseS
     }
     case DEFENSE_NORMAL:
     {
-      result += properties.armorClass.normal;
+      result = properties.armorClass.normal;
+
+      break;
     }
     case DEFENSE_TOUCH:
     {
-      result += properties.armorClass.touch;
+      result = properties.armorClass.touch;
+
+      break;
     }
     case DEFENSE_FLATFOOTED:
     {
-      result += properties.armorClass.flatFooted;
+      result = properties.armorClass.flatFooted;
+
+      break;
     }
   } // end SWITCH
   result += getShieldBonus();
