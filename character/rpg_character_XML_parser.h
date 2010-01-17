@@ -20,7 +20,7 @@
 #ifndef RPG_CHARACTER_XML_PARSER_H
 #define RPG_CHARACTER_XML_PARSER_H
 
-#include "rpg_character_XML_parser_base.h"
+#include "rpg_character_XML_types.h"
 
 #include <ace/Global_Macros.h>
 
@@ -28,7 +28,8 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Character_Gender_Type
- : public RPG_Character_Gender_Type_pimpl
+ : public RPG_Character_Gender_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -36,7 +37,8 @@ class RPG_Character_Gender_Type
 };
 
 class RPG_Character_Race_Type
- : public RPG_Character_Race_Type_pimpl
+ : public RPG_Character_Race_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -44,7 +46,8 @@ class RPG_Character_Race_Type
 };
 
 class RPG_Character_MetaClass_Type
- : public RPG_Character_MetaClass_Type_pimpl
+ : public RPG_Character_MetaClass_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -52,7 +55,8 @@ class RPG_Character_MetaClass_Type
 };
 
 class RPG_Character_SubClass_Type
- : public RPG_Character_SubClass_Type_pimpl
+ : public RPG_Character_SubClass_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -60,7 +64,7 @@ class RPG_Character_SubClass_Type
 };
 
 class RPG_Character_Class_Type
- : public RPG_Character_Class_Type_pimpl
+ : public RPG_Character_Class_Type_pskel
 {
  public:
   RPG_Character_Class_Type();
@@ -75,7 +79,8 @@ class RPG_Character_Class_Type
 };
 
 class RPG_Character_Condition_Type
- : public RPG_Character_Condition_Type_pimpl
+ : public RPG_Character_Condition_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -83,7 +88,8 @@ class RPG_Character_Condition_Type
 };
 
 class RPG_Character_Ability_Type
- : public RPG_Character_Ability_Type_pimpl
+ : public RPG_Character_Ability_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -91,7 +97,8 @@ class RPG_Character_Ability_Type
 };
 
 class RPG_Character_Size_Type
- : public RPG_Character_Size_Type_pimpl
+ : public RPG_Character_Size_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -99,7 +106,7 @@ class RPG_Character_Size_Type
 };
 
 class RPG_Character_Attributes_Type
- : public RPG_Character_Attributes_Type_pimpl
+ : public RPG_Character_Attributes_Type_pskel
 {
  public:
   RPG_Character_Attributes_Type();
@@ -118,7 +125,8 @@ class RPG_Character_Attributes_Type
 };
 
 class RPG_Character_Skill_Type
- : public RPG_Character_Skill_Type_pimpl
+ : public RPG_Character_Skill_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -126,7 +134,7 @@ class RPG_Character_Skill_Type
 };
 
 class RPG_Character_SkillValue_Type
- : public RPG_Character_SkillValue_Type_pimpl
+ : public RPG_Character_SkillValue_Type_pskel
 {
  public:
   RPG_Character_SkillValue_Type();
@@ -141,7 +149,7 @@ class RPG_Character_SkillValue_Type
 };
 
 class RPG_Character_Skills_Type
- : public RPG_Character_Skills_Type_pimpl
+ : public RPG_Character_Skills_Type_pskel
 {
  public:
   RPG_Character_Skills_Type();
@@ -155,7 +163,7 @@ class RPG_Character_Skills_Type
 };
 
 class RPG_Character_CheckTypeUnion_Type
- : public RPG_Character_CheckTypeUnion_Type_pimpl
+ : public RPG_Character_CheckTypeUnion_Type_pskel
 {
  public:
   RPG_Character_CheckTypeUnion_Type();
@@ -169,7 +177,7 @@ class RPG_Character_CheckTypeUnion_Type
 };
 
 class RPG_Character_Check_Type
- : public RPG_Character_Check_Type_pimpl
+ : public RPG_Character_Check_Type_pskel
 {
  public:
   RPG_Character_Check_Type();
@@ -184,7 +192,8 @@ class RPG_Character_Check_Type
 };
 
 class RPG_Character_Feat_Type
- : public RPG_Character_Feat_Type_pimpl
+ : public RPG_Character_Feat_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -192,7 +201,7 @@ class RPG_Character_Feat_Type
 };
 
 class RPG_Character_Feats_Type
- : public RPG_Character_Feats_Type_pimpl
+ : public RPG_Character_Feats_Type_pskel
 {
  public:
   RPG_Character_Feats_Type();
@@ -206,7 +215,8 @@ class RPG_Character_Feats_Type
 };
 
 class RPG_Character_Terrain_Type
-  : public RPG_Character_Terrain_Type_pimpl
+ : public RPG_Character_Terrain_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -214,7 +224,8 @@ class RPG_Character_Terrain_Type
 };
 
 class RPG_Character_Climate_Type
-  : public RPG_Character_Climate_Type_pimpl
+ : public RPG_Character_Climate_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -222,7 +233,7 @@ class RPG_Character_Climate_Type
 };
 
 class RPG_Character_Environment_Type
- : public RPG_Character_Environment_Type_pimpl
+ : public RPG_Character_Environment_Type_pskel
 {
  public:
   RPG_Character_Environment_Type();
@@ -237,7 +248,8 @@ class RPG_Character_Environment_Type
 };
 
 class RPG_Character_AlignmentCivic_Type
- : public RPG_Character_AlignmentCivic_Type_pimpl
+ : public RPG_Character_AlignmentCivic_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -245,7 +257,8 @@ class RPG_Character_AlignmentCivic_Type
 };
 
 class RPG_Character_AlignmentEthic_Type
- : public RPG_Character_AlignmentEthic_Type_pimpl
+ : public RPG_Character_AlignmentEthic_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -253,7 +266,7 @@ class RPG_Character_AlignmentEthic_Type
 };
 
 class RPG_Character_Alignment_Type
- : public RPG_Character_Alignment_Type_pimpl
+ : public RPG_Character_Alignment_Type_pskel
 {
  public:
   RPG_Character_Alignment_Type();
@@ -268,7 +281,8 @@ class RPG_Character_Alignment_Type
 };
 
 class RPG_Character_EquipmentSlot_Type
- : public RPG_Character_EquipmentSlot_Type_pimpl
+ : public RPG_Character_EquipmentSlot_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -276,7 +290,8 @@ class RPG_Character_EquipmentSlot_Type
 };
 
 class RPG_Character_OffHand_Type
-  : public RPG_Character_OffHand_Type_pimpl
+ : public RPG_Character_OffHand_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
   public:
 //   virtual void pre();

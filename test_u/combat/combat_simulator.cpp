@@ -189,8 +189,8 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
-void do_battle(const RPG_Character_Party_t& party_in,
-               const RPG_Monster_Encounter_t& encounter_in)
+const unsigned int do_battle(RPG_Character_Party_t& party_in,
+                             const RPG_Monster_Encounter_t& encounter_in)
 {
   ACE_TRACE(ACE_TEXT("::do_battle"));
 
@@ -245,8 +245,7 @@ void do_battle(const RPG_Character_Party_t& party_in,
                                                 battleSequence);
   // perform a combat round
   unsigned int numRound = 1;
-  while (!RPG_Combat_Common_Tools::isPartyHelpless(party_in) &&
-         !RPG_Combat_Common_Tools::areMonstersHelpless(monsters))
+  do
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("----------------round #%d----------------\n"),
@@ -258,8 +257,12 @@ void do_battle(const RPG_Character_Party_t& party_in,
                                                                  : DEFENSE_NORMAL),
                                                 battleSequence);
 
+    if (RPG_Combat_Common_Tools::isPartyHelpless(party_in) ||
+        RPG_Combat_Common_Tools::areMonstersHelpless(monsters))
+      break;
+
     numRound++;
-  } // end WHILE
+  } while (true);
 
   // sanity check
   if (RPG_Combat_Common_Tools::isPartyHelpless(party_in) &&
@@ -275,13 +278,14 @@ void do_battle(const RPG_Character_Party_t& party_in,
                ACE_TEXT("party has WON !\n")));
 
     // *TODO*: award treasure and experience...
-
   } // end IF
   else
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("monsters have WON !\n")));
   } // end ELSE
+
+  return (numRound * 6); // each round takes 6 seconds...
 }
 
 void do_work(const std::string& itemDictionaryFilename_in,
@@ -333,6 +337,7 @@ void do_work(const std::string& itemDictionaryFilename_in,
     return;
   }
 
+  unsigned int gameTime = 0;
   do
   {
     // step3: generate a (random) party
@@ -352,9 +357,13 @@ void do_work(const std::string& itemDictionaryFilename_in,
               ACE_TEXT("generated (random) party of %d player(s)...\n"),
               numPlayers_in));
 
-    unsigned int numBattle = 0;
+    unsigned int numBattle = 1;
     do
     {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("================battle #%d================\n"),
+                 numBattle));
+
       // step4: generate (random) encounter
       RPG_Character_Alignment alignment;
       alignment.civic = ALIGNMENTCIVIC_ANY;
@@ -373,22 +382,25 @@ void do_work(const std::string& itemDictionaryFilename_in,
                                                                             encounter);
 
       // step5: FIGHT !
-      do_battle(party,
-                encounter);
+      gameTime += do_battle(party,
+                            encounter);
 
-      numBattle++;
       if (RPG_Combat_Common_Tools::isPartyHelpless(party))
         break;
-      else if (numBattle == numBattles_in)
-      {
-        if (numBattles_in != 0)
-          break;
-      } // end IF
+
+      // party has survived --> rest/recover...
+      gameTime += RPG_Character_Common_Tools::restParty(party);
+
+      if (numBattles_in && (numBattle == numBattles_in))
+        break;
+
+      numBattle++;
     } while (true);
   } while (endlessLoop_in);
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished working...\n")));
+             ACE_TEXT("finished working (duration (game time): %d seconds)...\n"),
+             gameTime));
 } // end do_work
 
 void do_printVersion(const std::string& programName_in)
@@ -451,7 +463,6 @@ int ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  bool dumpDictionary          = false;
   std::string itemDictionaryFilename;
   std::string monsterDictionaryFilename;
   unsigned int numFoes = 0;

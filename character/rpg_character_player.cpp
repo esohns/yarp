@@ -37,6 +37,7 @@ RPG_Character_Player::RPG_Character_Player(const std::string& name_in,
                                            const RPG_Character_Skills_t& skills_in,
                                            const RPG_Character_Feats_t& feats_in,
                                            const RPG_Character_Abilities_t& abilities_in,
+                                           const RPG_Character_OffHand& offhand_in,
                                            const unsigned int& experience_in,
                                            const unsigned short int& hitpoints_in,
                                            const unsigned int& wealth_in,
@@ -50,6 +51,7 @@ RPG_Character_Player::RPG_Character_Player(const std::string& name_in,
              skills_in,
              feats_in,
              abilities_in,
+             offhand_in,
              experience_in,
              hitpoints_in,
              wealth_in,
@@ -117,7 +119,8 @@ void RPG_Character_Player::defaultEquip()
         RPG_Character_EquipmentSlot slot = EQUIPMENTSLOT_BODY;
         if (RPG_Item_Common_Tools::isShield(armor_base->getArmorType()))
         {
-          slot = EQUIPMENTSLOT_LEFT_HAND;
+          slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_LEFT_HAND
+                                                 : EQUIPMENTSLOT_RIGHT_HAND);
         } // end IF
         myEquipment.equip(*iterator, slot);
 
@@ -133,12 +136,13 @@ void RPG_Character_Player::defaultEquip()
         if (!RPG_Item_Common_Tools::isMeleeWeapon(weapon_base->getWeaponType()))
           break;
 
-        RPG_Character_EquipmentSlot slot = EQUIPMENTSLOT_RIGHT_HAND;
+        RPG_Character_EquipmentSlot slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_RIGHT_HAND
+                                                                           : EQUIPMENTSLOT_LEFT_HAND);
         myEquipment.equip(*iterator, slot);
-
         if (RPG_Item_Common_Tools::isTwoHandedWeapon(weapon_base->getWeaponType()))
         {
-          RPG_Character_EquipmentSlot slot = EQUIPMENTSLOT_LEFT_HAND;
+          slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_LEFT_HAND
+                                                 : EQUIPMENTSLOT_RIGHT_HAND);
           myEquipment.equip(*iterator, slot);
         } // end IF
 
@@ -147,8 +151,8 @@ void RPG_Character_Player::defaultEquip()
       default:
       {
         // debug info
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("item ID %d: invalid item type: \"%s\", continuing\n"),
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("item ID %d: invalid type: \"%s\", continuing\n"),
                    *iterator,
                    RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str()));
 

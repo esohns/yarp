@@ -41,6 +41,7 @@ class RPG_Character_Player
                        const RPG_Character_Skills_t&,    // (starting) skills
                        const RPG_Character_Feats_t&,     // base feats
                        const RPG_Character_Abilities_t&, // base abilities
+                       const RPG_Character_OffHand&,     // off-hand
                        const unsigned int&,              // (starting) XP
                        const unsigned short int&,        // (starting) HP
                        const unsigned int&,              // (starting) wealth (GP)

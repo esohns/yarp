@@ -30,6 +30,7 @@ RPG_Common_EffectTypeToStringTable_t RPG_Common_EffectTypeHelper::myRPG_Common_E
 RPG_Common_CheckTypeToStringTable_t RPG_Common_CheckTypeHelper::myRPG_Common_CheckTypeToStringTable;
 RPG_Common_SavingThrowToStringTable_t RPG_Common_SavingThrowHelper::myRPG_Common_SavingThrowToStringTable;
 RPG_Common_SaveReductionTypeToStringTable_t RPG_Common_SaveReductionTypeHelper::myRPG_Common_SaveReductionTypeToStringTable;
+RPG_Common_CampToStringTable_t RPG_Common_CampHelper::myRPG_Common_CampToStringTable;
 
 void RPG_Common_Tools::initStringConversionTables()
 {
@@ -41,6 +42,7 @@ void RPG_Common_Tools::initStringConversionTables()
   RPG_Common_CheckTypeHelper::init();
   RPG_Common_SavingThrowHelper::init();
   RPG_Common_SaveReductionTypeHelper::init();
+  RPG_Common_CampHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,

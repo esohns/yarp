@@ -85,22 +85,6 @@ const RPG_Monster_Type RPG_Character_Monster::getType() const
   return myType;
 }
 
-const RPG_Character_BaseAttackBonus_t RPG_Character_Monster::getAttackBonus(const RPG_Common_Attribute& modifier_in,
-                                                                            const RPG_Combat_AttackSituation& attackSituation_in) const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getAttackBonus"));
-
-  ACE_NOTREACHED();
-  ACE_ASSERT(false);
-
-  ACE_ASSERT((modifier_in == ATTRIBUTE_DEXTERITY) ||
-             (modifier_in == ATTRIBUTE_STRENGTH));
-
-  RPG_Character_BaseAttackBonus_t result;
-
-  return result;
-}
-
 const signed char RPG_Character_Monster::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getArmorClass"));
@@ -139,7 +123,7 @@ const signed char RPG_Character_Monster::getArmorClass(const RPG_Combat_DefenseS
       break;
     }
   } // end SWITCH
-  result += getShieldBonus();
+//   result += getShieldBonus();
 
   return result;
 }
@@ -168,4 +152,32 @@ void RPG_Character_Monster::dump() const
 //              RPG_Monster_Common_Tools::typeToString(myType).c_str()));
 
   inherited::dump();
+}
+
+const RPG_Character_BaseAttackBonus_t RPG_Character_Monster::getAttackBonus(const RPG_Common_Attribute& modifier_in,
+                                                                            const RPG_Combat_AttackSituation& attackSituation_in) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getAttackBonus"));
+
+  ACE_NOTREACHED();
+  ACE_ASSERT(false);
+
+  ACE_ASSERT((modifier_in == ATTRIBUTE_DEXTERITY) ||
+      (modifier_in == ATTRIBUTE_STRENGTH));
+
+  RPG_Character_BaseAttackBonus_t result;
+
+  return result;
+}
+
+const signed char RPG_Character_Monster::getShieldBonus() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getShieldBonus"));
+
+  ACE_NOTREACHED();
+  ACE_ASSERT(false);
+
+  signed char result = 0;
+
+  return result;
 }

@@ -231,3 +231,10 @@ RPG_Common_Duration RPG_Common_Duration_Type::post_RPG_Common_Duration_Type()
 
   return result;
 }
+
+RPG_Common_Camp RPG_Common_Camp_Type::post_RPG_Common_Camp_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Camp_Type::post_RPG_Common_Camp_Type"));
+
+  return RPG_Common_CampHelper::stringToRPG_Common_Camp(post_string());
+}

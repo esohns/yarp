@@ -68,4 +68,6 @@ const RPG_Character_MetaClass RPG_Character_Class_Common_Tools::subClassToMetaCl
                  RPG_Character_SubClassHelper::RPG_Character_SubClassToString(subClass_in).c_str()));
     }
   } // end SWITCH
+
+  return RPG_CHARACTER_METACLASS_INVALID;
 }

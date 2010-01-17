@@ -48,14 +48,14 @@ RPG_Character_Base::RPG_Character_Base(const std::string& name_in,
    mySize(defaultSize_in),
    myInventory(inventory_in),
 //    myEquipment(), // start naked
+   myNumCurrentHitPoints(hitpoints_in), // we start out healthy, don't we ?
    myName(name_in),
    myAlignment(alignment_in),
    myAttributes(attributes_in),
    mySkills(skills_in),
    myFeats(feats_in),
    myAbilities(abilities_in),
-   myNumTotalHitPoints(hitpoints_in),
-   myNumCurrentHitPoints(hitpoints_in)//, // we start out healthy, don't we ?
+   myNumTotalHitPoints(hitpoints_in)//,
 //    myConditions() // start normal
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
@@ -67,6 +67,7 @@ RPG_Character_Base::RPG_Character_Base(const RPG_Character_Base& playerBase_in)
     mySize(playerBase_in.mySize),
     myInventory(playerBase_in.myInventory),
     myEquipment(playerBase_in.myEquipment),
+    myNumCurrentHitPoints(playerBase_in.myNumCurrentHitPoints),
     myName(playerBase_in.myName),
     myAlignment(playerBase_in.myAlignment),
     myAttributes(playerBase_in.myAttributes),
@@ -74,7 +75,6 @@ RPG_Character_Base::RPG_Character_Base(const RPG_Character_Base& playerBase_in)
     myFeats(playerBase_in.myFeats),
     myAbilities(playerBase_in.myAbilities),
     myNumTotalHitPoints(playerBase_in.myNumTotalHitPoints),
-    myNumCurrentHitPoints(playerBase_in.myNumCurrentHitPoints),
     myConditions(playerBase_in.myConditions)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
@@ -85,18 +85,19 @@ RPG_Character_Base& RPG_Character_Base::operator=(const RPG_Character_Base& play
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::operator="));
 
+  myCurrentWealth = playerBase_in.myCurrentWealth;
+  mySize = playerBase_in.mySize;
+  myInventory = playerBase_in.myInventory;
+  myEquipment = playerBase_in.myEquipment;
+  myNumCurrentHitPoints = playerBase_in.myNumCurrentHitPoints;
   myName = playerBase_in.myName;
   myAlignment = playerBase_in.myAlignment;
   myAttributes = playerBase_in.myAttributes;
   mySkills = playerBase_in.mySkills;
   myFeats = playerBase_in.myFeats;
   myAbilities = playerBase_in.myAbilities;
-  mySize = playerBase_in.mySize;
   myNumTotalHitPoints = playerBase_in.myNumTotalHitPoints;
-  myNumCurrentHitPoints = playerBase_in.myNumCurrentHitPoints;
-  myCurrentWealth = playerBase_in.myCurrentWealth;
   myConditions = playerBase_in.myConditions;
-  myInventory = playerBase_in.myInventory;
 
   return *this;
 }
@@ -201,19 +202,6 @@ const RPG_Character_Size RPG_Character_Base::getSize() const
   return mySize;
 }
 
-const signed char RPG_Character_Base::getShieldBonus() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getShieldBonus"));
-
-  // retrieve equipped armor type
-  RPG_Item_ArmorType type = myEquipment.getShield();
-  if (type == ARMOR_NONE)
-    return 0;
-
-  RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
-  return properties.baseArmorBonus;
-}
-
 const unsigned short int RPG_Character_Base::getNumTotalHitPoints() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getNumTotalHitPoints"));
@@ -221,7 +209,7 @@ const unsigned short int RPG_Character_Base::getNumTotalHitPoints() const
   return myNumTotalHitPoints;
 }
 
-const unsigned short int RPG_Character_Base::getNumCurrentHitPoints() const
+const short int RPG_Character_Base::getNumCurrentHitPoints() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getNumCurrentHitPoints"));
 

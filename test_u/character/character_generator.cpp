@@ -32,10 +32,11 @@
 #include <rpg_item_dictionary.h>
 
 #include <rpg_character_player.h>
+#include <rpg_character_subclass.h>
 #include <rpg_character_alignmentcivic.h>
 #include <rpg_character_alignmentethic.h>
 #include <rpg_character_alignment.h>
-#include <rpg_character_subclass.h>
+#include <rpg_character_offhand.h>
 #include <rpg_character_common_tools.h>
 #include <rpg_character_skills_common_tools.h>
 
@@ -616,6 +617,18 @@ void do_work(const std::string filename_in)
     } // end IF
   } while (initialFeats);
 
+  RPG_Character_OffHand offHand = OFFHAND_LEFT;
+  roll.numDice = 1;
+  roll.typeDice = D_100;
+  roll.modifier = 0;
+  // *TODO*: 10% (?) of people are "lefties"...
+  result.clear();
+  RPG_Dice::simulateRoll(roll,
+                         1,
+                         result);
+  if (result.front() <= 10)
+    offHand = OFFHAND_RIGHT;
+
   roll.numDice = 1;
   roll.typeDice = RPG_Character_Common_Tools::getHitDie(player_class.subClass);
   roll.modifier = 0;
@@ -629,7 +642,7 @@ void do_work(const std::string filename_in)
              RPG_Dice_DieTypeHelper::RPG_Dice_DieTypeToString(roll.typeDice).c_str(),
              hitpoints));
 
-  // *TODO*: step3: choose appropriate initial set of items
+  // step3: choose appropriate initial set of items
   RPG_Item_List_t items;
   RPG_Item_Armor* armor = NULL;
   RPG_Item_Armor* shield = NULL;
@@ -759,6 +772,7 @@ void do_work(const std::string filename_in)
                               skills,
                               feats,
                               abilities,
+                              offHand,
                               0,
                               hitpoints,
                               0,

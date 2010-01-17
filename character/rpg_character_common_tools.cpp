@@ -28,6 +28,8 @@
 #include <rpg_item_common_tools.h>
 #include <rpg_item_dictionary.h>
 
+#include <rpg_common_camp.h>
+
 #include <rpg_dice.h>
 #include <rpg_chance_common_tools.h>
 
@@ -622,7 +624,20 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
     feats.insert(feat);
   } while (feats.size() < initialFeats);
 
-  // step9: (initial) Hit Points
+  // step9: off-hand
+  RPG_Character_OffHand offHand = OFFHAND_LEFT;
+  roll.numDice = 1;
+  roll.typeDice = D_100;
+  roll.modifier = 0;
+  // *TODO*: 10% (?) of people are "lefties"...
+  result.clear();
+  RPG_Dice::simulateRoll(roll,
+                         1,
+                         result);
+  if (result.front() <= 10)
+    offHand = OFFHAND_RIGHT;
+
+  // step10: (initial) Hit Points
   unsigned short int hitpoints = 0;
 //   roll.numDice = 1;
 //   roll.typeDice = RPG_Character_Common_Tools::getHitDie(player_class.subClass);
@@ -635,7 +650,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   // our players start with maxed HP...
   hitpoints = RPG_Character_Common_Tools::getHitDie(player_class.subClass);
 
-  // step10: (initial) set of items
+  // step11: (initial) set of items
   // *TODO*: somehow generate these at random too ?
   RPG_Item_List_t items;
   RPG_Item_Armor* armor = NULL;
@@ -770,10 +785,70 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
                               skills,
                               feats,
                               abilities,
+                              offHand,
                               0,
                               hitpoints,
                               0,
                               items);
 
   return player;
+}
+
+const unsigned int RPG_Character_Common_Tools::restParty(RPG_Character_Party_t& party_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::restParty"));
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("party status:\n-------------\n")));
+  int index = 1;
+  for (RPG_Character_PartyIterator_t iterator = party_in.begin();
+       iterator != party_in.end();
+       iterator++, index++)
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("#%d] \"%s\": level: %d, HP: %d/%d\n"),
+               index,
+               (*iterator).getName().c_str(),
+               (*iterator).getLevel(),
+               (*iterator).getNumCurrentHitPoints(),
+               (*iterator).getNumTotalHitPoints()));
+  } // end FOR
+
+  // check party status
+  unsigned int diff = 0;
+  unsigned int fraction = 0;
+  unsigned int recoveryTime = 0;
+  unsigned int maxRecoveryTime = 0;
+  for (RPG_Character_PartyIterator_t iterator = party_in.begin();
+       iterator != party_in.end();
+       iterator++)
+  {
+    // *TODO*: consider dead/dying players !
+    if ((*iterator).getNumCurrentHitPoints() < 0)
+      continue;
+
+    diff = ((*iterator).getNumTotalHitPoints() - (*iterator).getNumCurrentHitPoints());
+    fraction = (diff % ((*iterator).getLevel() * 2));
+    diff -= fraction;
+    recoveryTime = ((diff / ((*iterator).getLevel() * 2)) + // days of complete bed-rest +
+                    (fraction / (*iterator).getLevel()));   // days of good night's sleep
+    if (recoveryTime > maxRecoveryTime)
+      maxRecoveryTime = recoveryTime;
+  } // end FOR
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("max. recovery time: %d days\n"),
+             maxRecoveryTime));
+
+  for (RPG_Character_PartyIterator_t iterator = party_in.begin();
+       iterator != party_in.end();
+       iterator++)
+  {
+    (*iterator).rest(REST_FULL,
+                     (maxRecoveryTime * 24));
+  } // end FOR
+
+  return (maxRecoveryTime * 24 * 3600);
 }

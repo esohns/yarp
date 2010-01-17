@@ -315,8 +315,8 @@ const bool RPG_Combat_Common_Tools::isPartyHelpless(const RPG_Character_Party_t&
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::isPartyHelpless"));
 
-  int numDeadOrHelpless = 0;
-  for (RPG_Character_PartyIterator_t iterator = party_in.begin();
+  unsigned int numDeadOrHelpless = 0;
+  for (RPG_Character_PartyConstIterator_t iterator = party_in.begin();
        iterator != party_in.end();
        iterator++)
   {
@@ -333,7 +333,7 @@ const bool RPG_Combat_Common_Tools::areMonstersHelpless(const RPG_Character_Mons
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::areMonstersHelpless"));
 
-  int numHelplessGroups = 0;
+  unsigned int numHelplessGroups = 0;
   for (RPG_Character_MonstersIterator_t iterator = monsters_in.begin();
        iterator != monsters_in.end();
        iterator++)
@@ -358,7 +358,7 @@ void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& 
 
   // step0: throw everybody into a list
   RPG_Character_List_t listOfCombatants;
-  for (RPG_Character_PartyIterator_t iterator = party_in.begin();
+  for (RPG_Character_PartyConstIterator_t iterator = party_in.begin();
        iterator != party_in.end();
        iterator++)
   {
@@ -390,7 +390,7 @@ void RPG_Combat_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& 
   bool num_slots_too_small = (listOfCombatants.size() > D_100);
   if (!num_slots_too_small)
   {
-    while (checkDie < listOfCombatants.size())
+    while (ACE_static_cast(unsigned int, checkDie) < listOfCombatants.size())
       checkDie++;
   } // end IF
   else
@@ -618,7 +618,7 @@ const bool RPG_Combat_Common_Tools::isMonsterGroupHelpless(const RPG_Character_M
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::isMonsterGroupHelpless"));
 
-  int numHelplessMonsters = 0;
+  unsigned int numHelplessMonsters = 0;
   for (RPG_Character_MonsterGroupInstanceIterator_t iterator = groupInstance_in.begin();
        iterator != groupInstance_in.end();
        iterator++)
@@ -794,6 +794,7 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
   RPG_Dice_RollResult_t result;
   int attack_roll = 0;
   int currentAttackBonus = 0;
+  RPG_Item_WeaponType weapon_type = RPG_ITEM_WEAPONTYPE_INVALID;
   RPG_Item_WeaponProperties weapon_properties;
   bool is_threat = false;
   bool is_critical_hit = false;
@@ -837,7 +838,8 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
 //     } // end FOR
 
     // --> check primary weapon
-    weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(player_base->getEquipment()->getPrimaryWeapon());
+    weapon_type = player_base->getEquipment()->getPrimaryWeapon(player_base->getOffHand());
+    weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
     // consider range penalty...
     if (weapon_properties.rangeIncrement)
     {
@@ -862,21 +864,34 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
     // - dodge bonuses
 
     // step3: check if target is within reach at all
+    unsigned short minReach = 0;
     unsigned short maxReach = 0;
-    maxReach = RPG_Item_Common_Tools::isProjectileWeapon(player_base->getEquipment()->getPrimaryWeapon()) ? (weapon_properties.rangeIncrement * 5) : (weapon_properties.rangeIncrement * 10);
-    if (weapon_properties.rangeIncrement == 0) maxReach = 50; // not really meant to be thrown...
-    // *TODO*: consider reach weapons !
-    if (((weapon_properties.rangeIncrement == 0) &&
-         (distance_in > RPG_Character_Common_Tools::sizeToReach(player_base->getSize()))) ||
-        (distance_in > maxReach))
+    maxReach = (RPG_Item_Common_Tools::isProjectileWeapon(weapon_type)) ? (weapon_properties.rangeIncrement * 5)
+                                                                        : (weapon_properties.rangeIncrement * 10);
+    if (weapon_properties.rangeIncrement == 0)
+    {
+      maxReach = RPG_Character_Common_Tools::sizeToReach(player_base->getSize());
+      // consider reach weapons
+      if (weapon_properties.isReachWeapon)
+      {
+        minReach = maxReach;
+        maxReach *= 2;
+      } // end IF
+    } // end IF
+
+    if ((distance_in < minReach) || (distance_in > maxReach))
     {
       // debug info
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("player \"%s\" primary weapon (max. reach: %d) is not within range %d of \"%s\", returning\n"),
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("player \"%s\": primary weapon (min/max. reach: %d/%d) is not within range %d of \"%s\", returning\n"),
                  player_base->getName().c_str(),
+                 minReach,
                  maxReach,
                  distance_in,
                  monster->getName().c_str()));
+
+      // *TODO*: consider the possibility of throwing a melee weapon...
+//       maxReach = 50; // not really meant to be thrown...
 
       // nothing to do...
       return;
@@ -926,7 +941,7 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
           is_critical_hit = true;
       } // end ELSE
 
-is_player_hit:
+// is_player_hit:
       // compute damage
       damage.elements.clear();
       physicalDamageTypeList.clear();
@@ -945,25 +960,25 @@ is_player_hit:
       // light weapon: primary x1, off-hand x.5
       // one-handed: primary x1, off-hand x.5, two-handed x1.5:
       // two-handed: x1.5
-      if (RPG_Item_Common_Tools::isTwoHandedWeapon(player_base->getEquipment()->getPrimaryWeapon()))
+      if (RPG_Item_Common_Tools::isTwoHandedWeapon(weapon_type))
         STR_factor = 1.5;
       // add STR modifier for melee attacks and thrown weapons...
       // consider:
       // - bonusses only apply to slings and composite bows
       // - penalties apply to ANY bow or sling
       if ((attackForm == ATTACKFORM_MELEE) ||
-          ((attackForm == ATTACKFORM_RANGED) &&
-           (RPG_Item_Common_Tools::isThrownWeapon(player_base->getEquipment()->getPrimaryWeapon()) ||
-            (RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH)) &&
-             (player_base->getEquipment()->getPrimaryWeapon() == RANGED_WEAPON_SLING) ||
-             (player_base->getEquipment()->getPrimaryWeapon() == RANGED_WEAPON_BOW_SHORT_COMPOSITE) ||
-             (player_base->getEquipment()->getPrimaryWeapon() == RANGED_WEAPON_BOW_LONG_COMPOSITE)) ||
-            (RPG_Item_Common_Tools::isProjectileWeapon(player_base->getEquipment()->getPrimaryWeapon()) &&
-             (player_base->getEquipment()->getPrimaryWeapon() != RANGED_WEAPON_CROSSBOW_LIGHT) &&
-             (player_base->getEquipment()->getPrimaryWeapon() != RANGED_WEAPON_CROSSBOW_HEAVY) &&
-             (player_base->getEquipment()->getPrimaryWeapon() != RANGED_WEAPON_CROSSBOW_HAND) &&
-             (player_base->getEquipment()->getPrimaryWeapon() != RANGED_WEAPON_CROSSBOW_REPEATING_LIGHT) &&
-             (player_base->getEquipment()->getPrimaryWeapon() != RANGED_WEAPON_CROSSBOW_REPEATING_HEAVY)))))
+          ((attackForm == ATTACKFORM_RANGED) && RPG_Item_Common_Tools::isThrownWeapon(weapon_type)) ||
+          (RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH)) &&
+           ((weapon_type == RANGED_WEAPON_SLING) ||
+            (weapon_type == RANGED_WEAPON_BOW_SHORT_COMPOSITE) ||
+            (weapon_type == RANGED_WEAPON_BOW_LONG_COMPOSITE))) ||
+          ((RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH)) < 0) &&
+           ((RPG_Item_Common_Tools::isProjectileWeapon(weapon_type) &&
+            (weapon_type != RANGED_WEAPON_CROSSBOW_LIGHT) &&
+            (weapon_type != RANGED_WEAPON_CROSSBOW_HEAVY) &&
+            (weapon_type != RANGED_WEAPON_CROSSBOW_HAND) &&
+            (weapon_type != RANGED_WEAPON_CROSSBOW_REPEATING_LIGHT) &&
+            (weapon_type != RANGED_WEAPON_CROSSBOW_REPEATING_HEAVY)))))
         damage_element.amount.modifier += ::lround(RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH)) * STR_factor);
       // *TODO*: extra damage over and above a weapon’s normal damage is not multiplied
       if (is_critical_hit) // *IMPORTANT NOTE*: this applies for physical/natural damage only !
@@ -1278,7 +1293,7 @@ monster_perform_single_action:
           is_critical_hit = true;
       } // end ELSE
 
-is_monster_hit:
+// is_monster_hit:
       // compute damage
       damage = current_action->damage;
       // insert (missing) damage types

@@ -102,4 +102,11 @@
     </xsd:sequence>
   </xsd:complexType>
 
+  <xsd:simpleType name="RPG_Common_Camp_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="REST_NORMAL"/>
+      <xsd:enumeration value="REST_FULL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
 </xsd:schema>

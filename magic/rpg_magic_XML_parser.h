@@ -20,7 +20,7 @@
 #ifndef RPG_MAGIC_XML_PARSER_H
 #define RPG_MAGIC_XML_PARSER_H
 
-#include "rpg_magic_XML_parser_base.h"
+#include "rpg_magic_XML_types.h"
 
 #include <ace/Global_Macros.h>
 
@@ -28,7 +28,8 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Magic_School_Type
- : public RPG_Magic_School_Type_pimpl
+ : public RPG_Magic_School_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -36,7 +37,8 @@ class RPG_Magic_School_Type
 };
 
 class RPG_Magic_Domain_Type
- : public RPG_Magic_Domain_Type_pimpl
+ : public RPG_Magic_Domain_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -44,7 +46,8 @@ class RPG_Magic_Domain_Type
 };
 
 class RPG_Magic_Spell_Type
- : public RPG_Magic_Spell_Type_pimpl
+ : public RPG_Magic_Spell_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -52,7 +55,8 @@ class RPG_Magic_Spell_Type
 };
 
 class RPG_Magic_AbilityClass_Type
- : public RPG_Magic_AbilityClass_Type_pimpl
+ : public RPG_Magic_AbilityClass_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -60,7 +64,8 @@ class RPG_Magic_AbilityClass_Type
 };
 
 class RPG_Magic_AbilityType_Type
- : public RPG_Magic_AbilityType_Type_pimpl
+ : public RPG_Magic_AbilityType_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -68,7 +73,7 @@ class RPG_Magic_AbilityType_Type
 };
 
 class RPG_Magic_SpellProperties_Type
-  : public RPG_Magic_SpellProperties_Type_pimpl
+  : public RPG_Magic_SpellProperties_Type_pskel
 {
   public:
     RPG_Magic_SpellProperties_Type();

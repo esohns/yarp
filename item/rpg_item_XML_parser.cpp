@@ -308,52 +308,52 @@ RPG_Item_CreationCost RPG_Item_CreationCost_Type::post_RPG_Item_CreationCost_Typ
   return result;
 }
 
-RPG_Item_BaseProperties_Type::RPG_Item_BaseProperties_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_BaseProperties_Type::RPG_Item_BaseProperties_Type"));
-
-  myBaseProperties.baseWeight = 0;
-  myBaseProperties.baseStorePrice.numGoldPieces = 0;
-  myBaseProperties.baseStorePrice.numSilverPieces = 0;
-  myBaseProperties.costToCreate.numGoldPieces = 0;
-  myBaseProperties.costToCreate.numExperiencePoints = 0;
-}
-
-void RPG_Item_BaseProperties_Type::baseWeight(unsigned short baseWeight_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_BaseProperties_Type::baseWeight"));
-
-  myBaseProperties.baseWeight = baseWeight_in;
-}
-
-void RPG_Item_BaseProperties_Type::baseStorePrice(const RPG_Item_StorePrice& baseStorePrice_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_BaseProperties_Type::baseStorePrice"));
-
-  myBaseProperties.baseStorePrice = baseStorePrice_in;
-}
-
-void RPG_Item_BaseProperties_Type::costToCreate(const RPG_Item_CreationCost& creationCost_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_BaseProperties_Type::costToCreate"));
-
-  myBaseProperties.costToCreate = creationCost_in;
-}
-
-RPG_Item_BaseProperties RPG_Item_BaseProperties_Type::post_RPG_Item_BaseProperties_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_BaseProperties_Type::post_RPG_Item_BaseProperties_Type"));
-
-  RPG_Item_BaseProperties result = myBaseProperties;
-
-  myBaseProperties.baseWeight = 0;
-  myBaseProperties.baseStorePrice.numGoldPieces = 0;
-  myBaseProperties.baseStorePrice.numSilverPieces = 0;
-  myBaseProperties.costToCreate.numGoldPieces = 0;
-  myBaseProperties.costToCreate.numExperiencePoints = 0;
-
-  return result;
-}
+// RPG_Item_BaseProperties_Type::RPG_Item_BaseProperties_Type()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Item_BaseProperties_Type::RPG_Item_BaseProperties_Type"));
+//
+//   myBaseProperties.baseWeight = 0;
+//   myBaseProperties.baseStorePrice.numGoldPieces = 0;
+//   myBaseProperties.baseStorePrice.numSilverPieces = 0;
+//   myBaseProperties.costToCreate.numGoldPieces = 0;
+//   myBaseProperties.costToCreate.numExperiencePoints = 0;
+// }
+//
+// void RPG_Item_BaseProperties_Type::baseWeight(unsigned short baseWeight_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Item_BaseProperties_Type::baseWeight"));
+//
+//   myBaseProperties.baseWeight = baseWeight_in;
+// }
+//
+// void RPG_Item_BaseProperties_Type::baseStorePrice(const RPG_Item_StorePrice& baseStorePrice_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Item_BaseProperties_Type::baseStorePrice"));
+//
+//   myBaseProperties.baseStorePrice = baseStorePrice_in;
+// }
+//
+// void RPG_Item_BaseProperties_Type::costToCreate(const RPG_Item_CreationCost& creationCost_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Item_BaseProperties_Type::costToCreate"));
+//
+//   myBaseProperties.costToCreate = creationCost_in;
+// }
+//
+// RPG_Item_BaseProperties RPG_Item_BaseProperties_Type::post_RPG_Item_BaseProperties_Type()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Item_BaseProperties_Type::post_RPG_Item_BaseProperties_Type"));
+//
+//   RPG_Item_BaseProperties result = myBaseProperties;
+//
+//   myBaseProperties.baseWeight = 0;
+//   myBaseProperties.baseStorePrice.numGoldPieces = 0;
+//   myBaseProperties.baseStorePrice.numSilverPieces = 0;
+//   myBaseProperties.costToCreate.numGoldPieces = 0;
+//   myBaseProperties.costToCreate.numExperiencePoints = 0;
+//
+//   return result;
+// }
 
 RPG_Item_MagicalPrerequisites_Type::RPG_Item_MagicalPrerequisites_Type()
 {
@@ -419,6 +419,12 @@ RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type()
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type"));
 
   // reset current properties
+  myCurrentWeaponProperties.baseWeight = 0;
+  myCurrentWeaponProperties.baseStorePrice.numGoldPieces = 0;
+  myCurrentWeaponProperties.baseStorePrice.numSilverPieces = 0;
+  myCurrentWeaponProperties.costToCreate.numGoldPieces = 0;
+  myCurrentWeaponProperties.costToCreate.numExperiencePoints = 0;
+  // -------------------------------------------------------------
   myCurrentWeaponProperties.weaponType = RPG_ITEM_WEAPONTYPE_INVALID;
   myCurrentWeaponProperties.weaponCategory = RPG_ITEM_WEAPONCATEGORY_INVALID;
   myCurrentWeaponProperties.weaponClass = RPG_ITEM_WEAPONCLASS_INVALID;
@@ -443,6 +449,36 @@ RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type()
 //
 // }
 
+void RPG_Item_WeaponPropertiesXML_Type::baseWeight(unsigned short baseWeight_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::baseWeight"));
+
+  myCurrentWeaponProperties.baseWeight = baseWeight_in;
+}
+
+void RPG_Item_WeaponPropertiesXML_Type::baseStorePrice(const RPG_Item_StorePrice& baseStorePrice_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::baseStorePrice"));
+
+  myCurrentWeaponProperties.baseStorePrice = baseStorePrice_in;
+}
+
+void RPG_Item_WeaponPropertiesXML_Type::costToCreate(const RPG_Item_CreationCost& creationCost_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::costToCreate"));
+
+  myCurrentWeaponProperties.costToCreate = creationCost_in;
+}
+
+RPG_Item_BaseProperties RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_BaseProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_BaseProperties_Type"));
+
+  RPG_Item_BaseProperties result = myCurrentWeaponProperties;
+
+  return result;
+}
+
 void RPG_Item_WeaponPropertiesXML_Type::weaponType(const RPG_Item_WeaponType& weaponType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::weaponType"));
@@ -464,13 +500,6 @@ void RPG_Item_WeaponPropertiesXML_Type::weaponClass(const RPG_Item_WeaponClass& 
   myCurrentWeaponProperties.weaponClass = weaponClass_in;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type::baseStorePrice(const RPG_Item_StorePrice& baseStorePrice_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::baseStorePrice"));
-
-  myCurrentWeaponProperties.baseStorePrice = baseStorePrice_in;
-}
-
 void RPG_Item_WeaponPropertiesXML_Type::baseDamage(const RPG_Item_Damage& baseDamage_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::baseDamage"));
@@ -490,13 +519,6 @@ void RPG_Item_WeaponPropertiesXML_Type::rangeIncrement(unsigned char rangeIncrem
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::rangeIncrement"));
 
   myCurrentWeaponProperties.rangeIncrement = rangeIncrement_in;
-}
-
-void RPG_Item_WeaponPropertiesXML_Type::baseWeight(unsigned short baseWeight_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::baseWeight"));
-
-  myCurrentWeaponProperties.baseWeight = baseWeight_in;
 }
 
 void RPG_Item_WeaponPropertiesXML_Type::typeOfDamage(const RPG_Common_PhysicalDamageType& typeOfDamage_in)
@@ -534,6 +556,12 @@ RPG_Item_WeaponPropertiesXML RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_We
   RPG_Item_WeaponPropertiesXML result = myCurrentWeaponProperties;
 
   // reset current properties
+  myCurrentWeaponProperties.baseWeight = 0;
+  myCurrentWeaponProperties.baseStorePrice.numGoldPieces = 0;
+  myCurrentWeaponProperties.baseStorePrice.numSilverPieces = 0;
+  myCurrentWeaponProperties.costToCreate.numGoldPieces = 0;
+  myCurrentWeaponProperties.costToCreate.numExperiencePoints = 0;
+  // -------------------------------------------------------------
   myCurrentWeaponProperties.weaponType = RPG_ITEM_WEAPONTYPE_INVALID;
   myCurrentWeaponProperties.weaponCategory = RPG_ITEM_WEAPONCATEGORY_INVALID;
   myCurrentWeaponProperties.weaponClass = RPG_ITEM_WEAPONCLASS_INVALID;
@@ -585,6 +613,12 @@ RPG_Item_ArmorPropertiesXML_Type::RPG_Item_ArmorPropertiesXML_Type()
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::RPG_Item_ArmorPropertiesXML_Type"));
 
   // reset properties
+  myCurrentArmorProperties.baseWeight = 0;
+  myCurrentArmorProperties.baseStorePrice.numGoldPieces = 0;
+  myCurrentArmorProperties.baseStorePrice.numSilverPieces = 0;
+  myCurrentArmorProperties.costToCreate.numGoldPieces = 0;
+  myCurrentArmorProperties.costToCreate.numExperiencePoints = 0;
+  // -------------------------------------------------------------
   myCurrentArmorProperties.armorType = RPG_ITEM_ARMORTYPE_INVALID;
   myCurrentArmorProperties.armorCategory = RPG_ITEM_ARMORCATEGORY_INVALID;
   myCurrentArmorProperties.baseStorePrice.numGoldPieces = 0;
@@ -603,6 +637,36 @@ RPG_Item_ArmorPropertiesXML_Type::RPG_Item_ArmorPropertiesXML_Type()
 //
 // }
 
+void RPG_Item_ArmorPropertiesXML_Type::baseWeight(unsigned short baseWeight_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::baseWeight"));
+
+  myCurrentArmorProperties.baseWeight = baseWeight_in;
+}
+
+void RPG_Item_ArmorPropertiesXML_Type::baseStorePrice(const RPG_Item_StorePrice& baseStorePrice_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::baseStorePrice"));
+
+  myCurrentArmorProperties.baseStorePrice = baseStorePrice_in;
+}
+
+void RPG_Item_ArmorPropertiesXML_Type::costToCreate(const RPG_Item_CreationCost& creationCost_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::costToCreate"));
+
+  myCurrentArmorProperties.costToCreate = creationCost_in;
+}
+
+RPG_Item_BaseProperties RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_BaseProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_BaseProperties_Type"));
+
+  RPG_Item_BaseProperties result = myCurrentArmorProperties;
+
+  return result;
+}
+
 void RPG_Item_ArmorPropertiesXML_Type::armorType(const RPG_Item_ArmorType& armorType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::armorType"));
@@ -615,13 +679,6 @@ void RPG_Item_ArmorPropertiesXML_Type::armorCategory(const RPG_Item_ArmorCategor
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::armorCategory"));
 
   myCurrentArmorProperties.armorCategory = armorCategory_in;
-}
-
-void RPG_Item_ArmorPropertiesXML_Type::baseStorePrice(const RPG_Item_StorePrice& baseStorePrice_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::baseStorePrice"));
-
-  myCurrentArmorProperties.baseStorePrice = baseStorePrice_in;
 }
 
 void RPG_Item_ArmorPropertiesXML_Type::baseArmorBonus(unsigned char baseArmorBonus_in)
@@ -659,13 +716,6 @@ void RPG_Item_ArmorPropertiesXML_Type::baseSpeed(unsigned short baseSpeed_in)
   myCurrentArmorProperties.baseSpeed = baseSpeed_in;
 }
 
-void RPG_Item_ArmorPropertiesXML_Type::baseWeight(unsigned short baseWeight_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::baseWeight"));
-
-  myCurrentArmorProperties.baseWeight = baseWeight_in;
-}
-
 RPG_Item_ArmorPropertiesXML RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_ArmorPropertiesXML_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_ArmorPropertiesXML_Type"));
@@ -673,6 +723,12 @@ RPG_Item_ArmorPropertiesXML RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_Armo
   RPG_Item_ArmorPropertiesXML result = myCurrentArmorProperties;
 
   // reset properties
+  myCurrentArmorProperties.baseWeight = 0;
+  myCurrentArmorProperties.baseStorePrice.numGoldPieces = 0;
+  myCurrentArmorProperties.baseStorePrice.numSilverPieces = 0;
+  myCurrentArmorProperties.costToCreate.numGoldPieces = 0;
+  myCurrentArmorProperties.costToCreate.numExperiencePoints = 0;
+  // -------------------------------------------------------------
   myCurrentArmorProperties.armorType = RPG_ITEM_ARMORTYPE_INVALID;
   myCurrentArmorProperties.armorCategory = RPG_ITEM_ARMORCATEGORY_INVALID;
   myCurrentArmorProperties.baseStorePrice.numGoldPieces = 0;

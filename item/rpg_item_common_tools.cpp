@@ -67,7 +67,7 @@ const std::string RPG_Item_Common_Tools::weaponDamageTypeToString(const RPG_Item
   } // end IF
 
   int damageType = PHYSICALDAMAGE_NONE + 1;
-  for (int i = 0;
+  for (unsigned int i = 0;
        i < weaponDamageType_in.size();
        i++, damageType++)
   {
@@ -108,7 +108,7 @@ const RPG_Common_PhysicalDamageList_t RPG_Item_Common_Tools::weaponDamageTypeToP
   } // end IF
 
   int damageType = PHYSICALDAMAGE_NONE;
-  for (int i = 0;
+  for (unsigned int i = 0;
        i < weaponDamageType_in.size();
        i++, damageType++)
   {

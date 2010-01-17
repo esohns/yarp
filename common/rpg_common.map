@@ -12,4 +12,5 @@ namespace urn:rpg
   RPG_Common_SavingThrowCheck_Type   RPG_Common_SavingThrowCheck;
   RPG_Common_Usage_Type              RPG_Common_Usage;
   RPG_Common_Duration_Type           RPG_Common_Duration;
+  RPG_Common_Camp_Type               RPG_Common_Camp;
 }

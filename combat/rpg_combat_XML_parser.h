@@ -20,7 +20,7 @@
 #ifndef RPG_COMBAT_XML_PARSER_H
 #define RPG_COMBAT_XML_PARSER_H
 
-#include "rpg_combat_XML_parser_base.h"
+#include "rpg_combat_XML_types.h"
 
 #include <ace/Global_Macros.h>
 
@@ -28,7 +28,8 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Combat_AttackForm_Type
- : public RPG_Combat_AttackForm_Type_pimpl
+ : public RPG_Combat_AttackForm_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -36,7 +37,8 @@ class RPG_Combat_AttackForm_Type
 };
 
 class RPG_Combat_AreaOfEffect_Type
- : public RPG_Combat_AreaOfEffect_Type_pimpl
+ : public RPG_Combat_AreaOfEffect_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -44,7 +46,7 @@ class RPG_Combat_AreaOfEffect_Type
 };
 
 class RPG_Combat_RangedEffectUnion_Type
- : public RPG_Combat_RangedEffectUnion_Type_pimpl
+ : public RPG_Combat_RangedEffectUnion_Type_pskel
 {
  public:
   RPG_Combat_RangedEffectUnion_Type();
@@ -58,7 +60,7 @@ class RPG_Combat_RangedEffectUnion_Type
 };
 
 class RPG_Combat_RangedAttackProperties_Type
- : public RPG_Combat_RangedAttackProperties_Type_pimpl
+ : public RPG_Combat_RangedAttackProperties_Type_pskel
 {
  public:
   RPG_Combat_RangedAttackProperties_Type();
@@ -74,7 +76,8 @@ class RPG_Combat_RangedAttackProperties_Type
 };
 
 class RPG_Combat_AttackSituation_Type
- : public RPG_Combat_AttackSituation_Type_pimpl
+ : public RPG_Combat_AttackSituation_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -82,7 +85,8 @@ class RPG_Combat_AttackSituation_Type
 };
 
 class RPG_Combat_DefenseSituation_Type
-  : public RPG_Combat_DefenseSituation_Type_pimpl
+ : public RPG_Combat_DefenseSituation_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -90,7 +94,8 @@ class RPG_Combat_DefenseSituation_Type
 };
 
 class RPG_Combat_SpecialAttack_Type
- : public RPG_Combat_SpecialAttack_Type_pimpl
+ : public RPG_Combat_SpecialAttack_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
   public:
 //   virtual void pre();
@@ -98,7 +103,8 @@ class RPG_Combat_SpecialAttack_Type
 };
 
 class RPG_Combat_SpecialDamageType_Type
- : public RPG_Combat_SpecialDamageType_Type_pimpl
+ : public RPG_Combat_SpecialDamageType_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
   public:
 //   virtual void pre();
@@ -106,7 +112,7 @@ class RPG_Combat_SpecialDamageType_Type
 };
 
 class RPG_Combat_DamageTypeUnion_Type
- : public RPG_Combat_DamageTypeUnion_Type_pimpl
+ : public RPG_Combat_DamageTypeUnion_Type_pskel
 {
  public:
   RPG_Combat_DamageTypeUnion_Type();
@@ -120,7 +126,7 @@ class RPG_Combat_DamageTypeUnion_Type
 };
 
 class RPG_Combat_DamageDuration_Type
- : public RPG_Combat_DamageDuration_Type_pimpl
+ : public RPG_Combat_DamageDuration_Type_pskel
 {
  public:
   RPG_Combat_DamageDuration_Type();
@@ -136,7 +142,8 @@ class RPG_Combat_DamageDuration_Type
 };
 
 class RPG_Combat_DamageBonusType_Type
- : public RPG_Combat_DamageBonusType_Type_pimpl
+ : public RPG_Combat_DamageBonusType_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -144,7 +151,7 @@ class RPG_Combat_DamageBonusType_Type
 };
 
 class RPG_Combat_DamageBonus_Type
- : public RPG_Combat_DamageBonus_Type_pimpl
+ : public RPG_Combat_DamageBonus_Type_pskel
 {
  public:
   RPG_Combat_DamageBonus_Type();
@@ -159,7 +166,8 @@ class RPG_Combat_DamageBonus_Type
 };
 
 class RPG_Combat_DamageCounterMeasureType_Type
- : public RPG_Combat_DamageCounterMeasureType_Type_pimpl
+ : public RPG_Combat_DamageCounterMeasureType_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -167,7 +175,7 @@ class RPG_Combat_DamageCounterMeasureType_Type
 };
 
 class RPG_Combat_CheckTypeUnion_Type
- : public RPG_Combat_CheckTypeUnion_Type_pimpl
+ : public RPG_Combat_CheckTypeUnion_Type_pskel
 {
  public:
   RPG_Combat_CheckTypeUnion_Type();
@@ -181,7 +189,7 @@ class RPG_Combat_CheckTypeUnion_Type
 };
 
 class RPG_Combat_Check_Type
- : public RPG_Combat_Check_Type_pimpl
+ : public RPG_Combat_Check_Type_pskel
 {
  public:
   RPG_Combat_Check_Type();
@@ -197,7 +205,8 @@ class RPG_Combat_Check_Type
 };
 
 class RPG_Combat_DamageReductionType_Type
- : public RPG_Combat_DamageReductionType_Type_pimpl
+ : public RPG_Combat_DamageReductionType_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -205,7 +214,7 @@ class RPG_Combat_DamageReductionType_Type
 };
 
 class RPG_Combat_DamageCounterMeasure_Type
- : public RPG_Combat_DamageCounterMeasure_Type_pimpl
+ : public RPG_Combat_DamageCounterMeasure_Type_pskel
 {
   public:
    RPG_Combat_DamageCounterMeasure_Type();
@@ -222,7 +231,7 @@ class RPG_Combat_DamageCounterMeasure_Type
 };
 
 class RPG_Combat_DamageElement_Type
- : public RPG_Combat_DamageElement_Type_pimpl
+ : public RPG_Combat_DamageElement_Type_pskel
 {
  public:
   RPG_Combat_DamageElement_Type();
@@ -243,7 +252,7 @@ class RPG_Combat_DamageElement_Type
 };
 
 class RPG_Combat_Damage_Type
- : public RPG_Combat_Damage_Type_pimpl
+ : public RPG_Combat_Damage_Type_pskel
 {
  public:
   RPG_Combat_Damage_Type();
@@ -257,7 +266,8 @@ class RPG_Combat_Damage_Type
 };
 
 class RPG_Combat_ActionType_Type
- : public RPG_Combat_ActionType_Type_pimpl
+ : public RPG_Combat_ActionType_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();

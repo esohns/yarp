@@ -20,7 +20,7 @@
 #ifndef RPG_COMMON_XML_PARSER_H
 #define RPG_COMMON_XML_PARSER_H
 
-#include "rpg_common_XML_parser_base.h"
+#include "rpg_common_XML_types.h"
 
 #include <ace/Global_Macros.h>
 
@@ -28,7 +28,8 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Common_Attribute_Type
- : public RPG_Common_Attribute_Type_pimpl
+ : public RPG_Common_Attribute_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -36,7 +37,8 @@ class RPG_Common_Attribute_Type
 };
 
 class RPG_Common_PhysicalDamageType_Type
- : public RPG_Common_PhysicalDamageType_Type_pimpl
+ : public RPG_Common_PhysicalDamageType_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -44,7 +46,8 @@ class RPG_Common_PhysicalDamageType_Type
 };
 
 class RPG_Common_EffectType_Type
-  : public RPG_Common_EffectType_Type_pimpl
+  : public RPG_Common_EffectType_Type_pskel,
+    public ::xml_schema::string_pimpl
 {
   public:
 //   virtual void pre();
@@ -52,7 +55,8 @@ class RPG_Common_EffectType_Type
 };
 
 class RPG_Common_CheckType_Type
- : public RPG_Common_CheckType_Type_pimpl
+ : public RPG_Common_CheckType_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -60,7 +64,8 @@ class RPG_Common_CheckType_Type
 };
 
 class RPG_Common_SavingThrow_Type
- : public RPG_Common_SavingThrow_Type_pimpl
+ : public RPG_Common_SavingThrow_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -68,7 +73,7 @@ class RPG_Common_SavingThrow_Type
 };
 
 class RPG_Common_BaseCheckTypeUnion_Type
- : public RPG_Common_BaseCheckTypeUnion_Type_pimpl
+ : public RPG_Common_BaseCheckTypeUnion_Type_pskel
 {
  public:
   RPG_Common_BaseCheckTypeUnion_Type();
@@ -82,7 +87,8 @@ class RPG_Common_BaseCheckTypeUnion_Type
 };
 
 class RPG_Common_SaveReductionType_Type
-  : public RPG_Common_SaveReductionType_Type_pimpl
+  : public RPG_Common_SaveReductionType_Type_pskel,
+    public ::xml_schema::string_pimpl
 {
   public:
 //   virtual void pre();
@@ -90,7 +96,7 @@ class RPG_Common_SaveReductionType_Type
 };
 
 class RPG_Common_SavingThrowCheck_Type
-  : public RPG_Common_SavingThrowCheck_Type_pimpl
+  : public RPG_Common_SavingThrowCheck_Type_pskel
 {
   public:
     RPG_Common_SavingThrowCheck_Type();
@@ -107,7 +113,7 @@ class RPG_Common_SavingThrowCheck_Type
 };
 
 class RPG_Common_Usage_Type
- : public RPG_Common_Usage_Type_pimpl
+ : public RPG_Common_Usage_Type_pskel
 {
  public:
   RPG_Common_Usage_Type();
@@ -122,7 +128,7 @@ class RPG_Common_Usage_Type
 };
 
 class RPG_Common_Duration_Type
- : public RPG_Common_Duration_Type_pimpl
+ : public RPG_Common_Duration_Type_pskel
 {
  public:
   RPG_Common_Duration_Type();
@@ -135,6 +141,15 @@ class RPG_Common_Duration_Type
 
  private:
   RPG_Common_Duration myCurrentDuration;
+};
+
+class RPG_Common_Camp_Type
+  : public RPG_Common_Camp_Type_pskel,
+    public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Common_Camp post_RPG_Common_Camp_Type();
 };
 
 #endif

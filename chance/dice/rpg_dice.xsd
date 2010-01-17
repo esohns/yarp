@@ -7,7 +7,6 @@
             attributeFormDefault="qualified">
 
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
-  <!-- import item schema (as declared above) -->
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">

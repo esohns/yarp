@@ -36,24 +36,26 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(const std::string& name_in,
                                                      const RPG_Character_Skills_t& skills_in,
                                                      const RPG_Character_Feats_t& feats_in,
                                                      const RPG_Character_Abilities_t& abilities_in,
+                                                     const RPG_Character_OffHand& offhand_in,
                                                      const unsigned int& experience_in,
                                                      const unsigned short int& hitpoints_in,
                                                      const unsigned int& wealth_in,
                                                      const RPG_Item_List_t& inventory_in)
-  : inherited(name_in,
-              alignment_in,
-              attributes_in,
-              skills_in,
-              feats_in,
-              abilities_in,
-              SIZE_MEDIUM, // standard PCs are all medium-sized
-              hitpoints_in,
-              wealth_in,
-              inventory_in),
-    myGender(gender_in),
-    myRace(race_in),
-    myClasses(classes_in),
-    myExperience(experience_in)
+ : inherited(name_in,
+             alignment_in,
+             attributes_in,
+             skills_in,
+             feats_in,
+             abilities_in,
+             SIZE_MEDIUM, // standard PCs are all medium-sized
+             hitpoints_in,
+             wealth_in,
+             inventory_in),
+   myGender(gender_in),
+   myRace(race_in),
+   myClasses(classes_in),
+   myOffHand(offhand_in),
+   myExperience(experience_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::RPG_Character_Player_Base"));
 
@@ -64,6 +66,7 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(const RPG_Character_Player_
    myGender(playerBase_in.myGender),
    myRace(playerBase_in.myRace),
    myClasses(playerBase_in.myClasses),
+   myOffHand(playerBase_in.myOffHand),
    myExperience(playerBase_in.myExperience)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::RPG_Character_Player_Base"));
@@ -80,11 +83,12 @@ RPG_Character_Player_Base& RPG_Character_Player_Base::operator=(const RPG_Charac
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::operator="));
 
+  inherited::operator=(playerBase_in);
   myGender = playerBase_in.myGender;
   myRace = playerBase_in.myRace;
   myClasses = playerBase_in.myClasses;
+  myOffHand = playerBase_in.myOffHand;
   myExperience = playerBase_in.myExperience;
-  inherited::operator=(playerBase_in);
 
   return *this;
 }
@@ -108,6 +112,13 @@ const RPG_Character_Classes_t RPG_Character_Player_Base::getClasses() const
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getClasses"));
 
   return myClasses;
+}
+
+const RPG_Character_OffHand RPG_Character_Player_Base::getOffHand() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getOffHand"));
+
+  return myOffHand;
 }
 
 const unsigned char RPG_Character_Player_Base::getLevel(const RPG_Character_SubClass& subClass_in) const
@@ -219,6 +230,13 @@ const signed char RPG_Character_Player_Base::getArmorClass(const RPG_Combat_Defe
   return result;
 }
 
+const bool RPG_Character_Player_Base::isPlayerCharacter() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::isPlayerCharacter"));
+
+  return true;
+}
+
 void RPG_Character_Player_Base::gainExperience(const unsigned int& XP_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::gainExperience"));
@@ -238,11 +256,42 @@ void RPG_Character_Player_Base::gainExperience(const unsigned int& XP_in)
   } // end IF
 }
 
-const bool RPG_Character_Player_Base::isPlayerCharacter() const
+const unsigned int RPG_Character_Player_Base::rest(const RPG_Common_Camp& type_in,
+                                                   const unsigned int& hours_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::isPlayerCharacter"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::rest"));
 
-  return true;
+  // *TODO*: consider dead/dying players !
+  if (myNumCurrentHitPoints < 0)
+  {
+    // cannot rest --> will die
+    return 0;
+  } // end IF
+
+  // consider natural healing...
+  unsigned int restedPeriod = 0;
+  int missingHPs = getNumTotalHitPoints() - myNumCurrentHitPoints;
+  unsigned int recoveryRate = getLevel();
+  if (type_in == REST_FULL) recoveryRate *= 2;
+  if ((missingHPs > 0) && (hours_in >= 24))
+  {
+    // OK: we've (naturally) recovered some HPs...
+    while ((missingHPs > 0) && (restedPeriod < hours_in))
+    {
+      // just a fraction left...
+      if ((hours_in - restedPeriod) < 24)
+        break;
+
+      missingHPs -= recoveryRate;
+      restedPeriod += 24;
+    } // end WHILE
+
+    if (missingHPs < 0)
+      missingHPs = 0;
+    myNumCurrentHitPoints = getNumTotalHitPoints() - missingHPs;
+  } // end IF
+
+  return (restedPeriod * 24);
 }
 
 void RPG_Character_Player_Base::dump() const
@@ -257,4 +306,17 @@ void RPG_Character_Player_Base::dump() const
              myExperience));
 
   inherited::dump();
+}
+
+const signed char RPG_Character_Player_Base::getShieldBonus() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getShieldBonus"));
+
+  // retrieve equipped armor type
+  RPG_Item_ArmorType type = myEquipment.getShield(myOffHand);
+  if (type == ARMOR_NONE)
+    return 0;
+
+  RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
+  return properties.baseArmorBonus;
 }

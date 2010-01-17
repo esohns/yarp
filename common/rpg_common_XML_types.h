@@ -59,6 +59,7 @@ class RPG_Common_SaveReductionType_Type_pskel;
 class RPG_Common_SavingThrowCheck_Type_pskel;
 class RPG_Common_Usage_Type_pskel;
 class RPG_Common_Duration_Type_pskel;
+class RPG_Common_Camp_Type_pskel;
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -336,6 +337,18 @@ class RPG_Common_Duration_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_int_pskel* activation_parser_;
   ::xml_schema::unsigned_int_pskel* interval_parser_;
   ::xml_schema::unsigned_int_pskel* total_parser_;
+};
+
+class RPG_Common_Camp_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Common_Camp
+  post_RPG_Common_Camp_Type () = 0;
 };
 
 #include <xsd/cxx/post.hxx>

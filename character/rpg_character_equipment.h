@@ -21,6 +21,7 @@
 #define RPG_CHARACTER_EQUIPMENT_H
 
 #include "rpg_character_equipment_common.h"
+#include "rpg_character_offhand.h"
 
 #include <rpg_item_instance_common.h>
 #include <rpg_item_weapontype.h>
@@ -38,25 +39,23 @@ class RPG_Character_Equipment
   // *TODO*: implement reference counted items...
   RPG_Character_Equipment(const RPG_Character_Equipment&);
   virtual ~RPG_Character_Equipment();
+  RPG_Character_Equipment& operator=(const RPG_Character_Equipment&);
 
   void equip(const RPG_Item_ID_t&, // item ID
              const RPG_Character_EquipmentSlot&); // where ?
   void unequip(const RPG_Character_EquipmentSlot&); // where ?
 
-  // item in EQUIPMENTSLOT_RIGHT_HAND/EQUIPMENTSLOT_LEFT_HAND
-  const RPG_Item_WeaponType getPrimaryWeapon() const;
-  // item in EQUIPMENTSLOT_APPAREL
+  // weapon in EQUIPMENTSLOT_RIGHT_HAND/EQUIPMENTSLOT_LEFT_HAND
+  const RPG_Item_WeaponType getPrimaryWeapon(const RPG_Character_OffHand&) const;
+  // armor in EQUIPMENTSLOT_BODY/TORSO
   const RPG_Item_ArmorType getArmor() const;
-  // item in EQUIPMENTSLOT_LEFT_HAND, IF ARMOR
-  const RPG_Item_ArmorType getShield() const;
+  // armor in EQUIPMENTSLOT_LEFT/RIGHT_HAND, IF ARMOR
+  const RPG_Item_ArmorType getShield(const RPG_Character_OffHand&) const;
 
   // dump equipment
   void dump() const;
 
  private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Equipment& operator=(const RPG_Character_Equipment&));
-
   // map of equipped items (values index corresponding items in the inventory !)
   RPG_Character_Equipment_t myEquipment;
 };

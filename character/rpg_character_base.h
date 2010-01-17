@@ -65,7 +65,7 @@ class RPG_Character_Base
   const bool hasCondition(const RPG_Character_Condition&) const; // condition
 
   const unsigned short int getNumTotalHitPoints() const;
-  const unsigned short int getNumCurrentHitPoints() const;
+  const short int getNumCurrentHitPoints() const;
 
   const unsigned int getCurrentWealth() const;
   const RPG_Character_Size getSize() const;
@@ -74,14 +74,12 @@ class RPG_Character_Base
                                                                const RPG_Combat_AttackSituation&) const = 0;
   virtual const signed char getArmorClass(const RPG_Combat_DefenseSituation&) const = 0;
 
+    // get a hint if this is a PC/NPC
+  virtual const bool isPlayerCharacter() const = 0;
   // sustain some damage (melee, magic, ...)
   void sustainDamage(const RPG_Combat_Damage&); // damage
-
   // we just got wiser...
   virtual void gainExperience(const unsigned int&) = 0; // XP
-
-  // get a hint if this is a PC/NPC
-  virtual const bool isPlayerCharacter() const = 0;
 
   virtual void dump() const;
 
@@ -101,13 +99,15 @@ class RPG_Character_Base
   RPG_Character_Base(const RPG_Character_Base&);
   RPG_Character_Base& operator=(const RPG_Character_Base&);
 
-  virtual const signed char getShieldBonus() const;
+  virtual const signed char getShieldBonus() const = 0;
 
   unsigned int               myCurrentWealth;
   RPG_Character_Size         mySize;
 
   RPG_Character_Inventory    myInventory;
   RPG_Character_Equipment    myEquipment;
+
+  short int                  myNumCurrentHitPoints;
 
  private:
   // safety measures
@@ -122,7 +122,6 @@ class RPG_Character_Base
   RPG_Character_Abilities_t  myAbilities;
 
   unsigned short int         myNumTotalHitPoints;
-  short int                  myNumCurrentHitPoints;
   RPG_Character_Conditions_t myConditions;
 };
 

@@ -26,11 +26,20 @@
 #include "rpg_character_metaclass.h"
 #include "rpg_character_subclass.h"
 #include "rpg_character_class.h"
+#include "rpg_character_offhand.h"
 #include "rpg_character_alignmentcivic.h"
 #include "rpg_character_alignmentethic.h"
 #include "rpg_character_alignment.h"
 #include "rpg_character_attributes.h"
 #include "rpg_character_skills_common.h"
+
+#include <rpg_combat_attacksituation.h>
+#include <rpg_combat_defensesituation.h>
+
+#include <rpg_item_instance_common.h>
+
+#include <rpg_common_attribute.h>
+#include <rpg_common_camp.h>
 
 #include <string>
 
@@ -47,10 +56,11 @@ class RPG_Character_Player_Base
   const RPG_Character_Gender getGender() const;
   const RPG_Character_Race getRace() const;
   const RPG_Character_Classes_t getClasses() const;
+  const RPG_Character_OffHand getOffHand() const;
 
   const unsigned int getExperience() const;
   // compute dynamically from class/XP
-  const unsigned char getLevel(const RPG_Character_SubClass&) const; // subclass
+  const unsigned char getLevel(const RPG_Character_SubClass& = SUBCLASS_NONE) const; // subclass
 
   const RPG_Character_Equipment* getEquipment() const;
 
@@ -58,9 +68,10 @@ class RPG_Character_Player_Base
                                                                const RPG_Combat_AttackSituation&) const;
   virtual const signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
 
-  virtual void gainExperience(const unsigned int&); // XP
-
   virtual const bool isPlayerCharacter() const;
+  virtual void gainExperience(const unsigned int&); // XP
+  const unsigned int rest(const RPG_Common_Camp&, // type of rest
+                          const unsigned int&);   // hours
 
   virtual void dump() const;
 
@@ -74,6 +85,7 @@ class RPG_Character_Player_Base
                             const RPG_Character_Skills_t&,    // (starting) skills
                             const RPG_Character_Feats_t&,     // base feats
                             const RPG_Character_Abilities_t&, // base abilities
+                            const RPG_Character_OffHand&,     // off-hand
                             const unsigned int&,              // (starting) XP
                             const unsigned short int&,        // (starting) HP
                             const unsigned int&,              // (starting) wealth (GP)
@@ -81,6 +93,8 @@ class RPG_Character_Player_Base
   RPG_Character_Player_Base(const RPG_Character_Player_Base&);
 
   RPG_Character_Player_Base& operator=(const RPG_Character_Player_Base&);
+
+  virtual const signed char getShieldBonus() const;
 
  private:
   typedef RPG_Character_Base inherited;
@@ -91,6 +105,7 @@ class RPG_Character_Player_Base
   RPG_Character_Gender    myGender;
   RPG_Character_Race      myRace;
   RPG_Character_Classes_t myClasses;
+  RPG_Character_OffHand   myOffHand;
 
   unsigned int            myExperience;
 //  unsigned short int       mySize; // cm

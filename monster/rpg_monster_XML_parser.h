@@ -20,7 +20,7 @@
 #ifndef RPG_MONSTER_XML_PARSER_H
 #define RPG_MONSTER_XML_PARSER_H
 
-#include "rpg_monster_XML_parser_base.h"
+#include "rpg_monster_XML_types.h"
 
 #include "rpg_monster_common.h"
 
@@ -31,7 +31,8 @@
 */
 
 class RPG_Monster_MetaType_Type
- : public RPG_Monster_MetaType_Type_pimpl
+ : public RPG_Monster_MetaType_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -39,7 +40,8 @@ class RPG_Monster_MetaType_Type
 };
 
 class RPG_Monster_SubType_Type
- : public RPG_Monster_SubType_Type_pimpl
+ : public RPG_Monster_SubType_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -47,7 +49,7 @@ class RPG_Monster_SubType_Type
 };
 
 class RPG_Monster_Type_Type
-  : public RPG_Monster_Type_Type_pimpl
+  : public RPG_Monster_Type_Type_pskel
 {
   public:
     RPG_Monster_Type_Type();
@@ -62,7 +64,7 @@ class RPG_Monster_Type_Type
 };
 
 class RPG_Monster_NaturalArmorClass_Type
- : public RPG_Monster_NaturalArmorClass_Type_pimpl
+ : public RPG_Monster_NaturalArmorClass_Type_pskel
 {
  public:
   RPG_Monster_NaturalArmorClass_Type();
@@ -78,7 +80,8 @@ class RPG_Monster_NaturalArmorClass_Type
 };
 
 class RPG_Monster_NaturalWeapon_Type
- : public RPG_Monster_NaturalWeapon_Type_pimpl
+ : public RPG_Monster_NaturalWeapon_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -86,7 +89,7 @@ class RPG_Monster_NaturalWeapon_Type
 };
 
 class RPG_Monster_WeaponTypeUnion_Type
- : public RPG_Monster_WeaponTypeUnion_Type_pimpl
+ : public RPG_Monster_WeaponTypeUnion_Type_pskel
 {
  public:
   RPG_Monster_WeaponTypeUnion_Type();
@@ -100,7 +103,7 @@ class RPG_Monster_WeaponTypeUnion_Type
 };
 
 class RPG_Monster_AttackAction_Type
- : public RPG_Monster_AttackAction_Type_pimpl
+ : public RPG_Monster_AttackAction_Type_pskel
 {
  public:
   RPG_Monster_AttackAction_Type();
@@ -121,7 +124,7 @@ class RPG_Monster_AttackAction_Type
 };
 
 class RPG_Monster_Attack_Type
- : public RPG_Monster_Attack_Type_pimpl
+ : public RPG_Monster_Attack_Type_pskel
 {
  public:
   RPG_Monster_Attack_Type();
@@ -139,7 +142,7 @@ class RPG_Monster_Attack_Type
 };
 
 class RPG_Monster_SpecialAttackTypeUnion_Type
-  : public RPG_Monster_SpecialAttackTypeUnion_Type_pimpl
+  : public RPG_Monster_SpecialAttackTypeUnion_Type_pskel
 {
   public:
     RPG_Monster_SpecialAttackTypeUnion_Type();
@@ -153,7 +156,7 @@ class RPG_Monster_SpecialAttackTypeUnion_Type
 };
 
 class RPG_Monster_SpecialAttackPreCondition_Type
-  : public RPG_Monster_SpecialAttackPreCondition_Type_pimpl
+  : public RPG_Monster_SpecialAttackPreCondition_Type_pskel
 {
   public:
     RPG_Monster_SpecialAttackPreCondition_Type();
@@ -172,7 +175,7 @@ class RPG_Monster_SpecialAttackPreCondition_Type
 };
 
 class RPG_Monster_SpecialAttackProperties_Type
-  : public RPG_Monster_SpecialAttackProperties_Type_pimpl
+  : public RPG_Monster_SpecialAttackProperties_Type_pskel
 {
   public:
     RPG_Monster_SpecialAttackProperties_Type();
@@ -192,7 +195,7 @@ class RPG_Monster_SpecialAttackProperties_Type
 };
 
 class RPG_Monster_SavingThrowModifiers_Type
- : public RPG_Monster_SavingThrowModifiers_Type_pimpl
+ : public RPG_Monster_SavingThrowModifiers_Type_pskel
 {
  public:
   RPG_Monster_SavingThrowModifiers_Type();
@@ -208,7 +211,8 @@ class RPG_Monster_SavingThrowModifiers_Type
 };
 
 class RPG_Monster_Organization_Type
- : public RPG_Monster_Organization_Type_pimpl
+ : public RPG_Monster_Organization_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -216,7 +220,7 @@ class RPG_Monster_Organization_Type
 };
 
 class RPG_Monster_OrganizationSlaverStep_Type
- : public RPG_Monster_OrganizationSlaverStep_Type_pimpl
+ : public RPG_Monster_OrganizationSlaverStep_Type_pskel
 {
  public:
   RPG_Monster_OrganizationSlaverStep_Type();
@@ -231,7 +235,7 @@ class RPG_Monster_OrganizationSlaverStep_Type
 };
 
 class RPG_Monster_OrganizationStep_Type
- : public RPG_Monster_OrganizationStep_Type_pimpl
+ : public RPG_Monster_OrganizationStep_Type_pskel
 {
  public:
   RPG_Monster_OrganizationStep_Type();
@@ -247,7 +251,7 @@ class RPG_Monster_OrganizationStep_Type
 };
 
 class RPG_Monster_Organizations_Type
- : public RPG_Monster_Organizations_Type_pimpl
+ : public RPG_Monster_Organizations_Type_pskel
 {
  public:
   RPG_Monster_Organizations_Type();
@@ -261,7 +265,7 @@ class RPG_Monster_Organizations_Type
 };
 
 class RPG_Monster_AdvancementStep_Type
- : public RPG_Monster_AdvancementStep_Type_pimpl
+ : public RPG_Monster_AdvancementStep_Type_pskel
 {
  public:
   RPG_Monster_AdvancementStep_Type();
@@ -276,7 +280,7 @@ class RPG_Monster_AdvancementStep_Type
 };
 
 class RPG_Monster_Advancement_Type
- : public RPG_Monster_Advancement_Type_pimpl
+ : public RPG_Monster_Advancement_Type_pskel
 {
  public:
   RPG_Monster_Advancement_Type();
@@ -290,7 +294,7 @@ class RPG_Monster_Advancement_Type
 };
 
 class RPG_Monster_PropertiesXML_Type
- : public RPG_Monster_PropertiesXML_Type_pimpl
+ : public RPG_Monster_PropertiesXML_Type_pskel
 {
  public:
    RPG_Monster_PropertiesXML_Type();
@@ -325,7 +329,7 @@ class RPG_Monster_PropertiesXML_Type
 };
 
 class RPG_Monster_Dictionary_Type
-  : public RPG_Monster_Dictionary_Type_pimpl
+  : public RPG_Monster_Dictionary_Type_pskel
 {
   public:
     RPG_Monster_Dictionary_Type(RPG_Monster_Dictionary_t*); // monster dictionary

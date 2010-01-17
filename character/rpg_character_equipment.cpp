@@ -46,6 +46,15 @@ RPG_Character_Equipment::~RPG_Character_Equipment()
 
 }
 
+RPG_Character_Equipment& RPG_Character_Equipment::operator=(const RPG_Character_Equipment& equipment_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::operator="));
+
+  myEquipment = equipment_in.myEquipment;
+
+  return *this;
+}
+
 void RPG_Character_Equipment::equip(const RPG_Item_ID_t& itemID_in,
                                     const RPG_Character_EquipmentSlot& slot_in)
 {
@@ -85,12 +94,15 @@ void RPG_Character_Equipment::unequip(const RPG_Character_EquipmentSlot& slot_in
 //              RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(slot_in).c_str()));
 }
 
-const RPG_Item_WeaponType RPG_Character_Equipment::getPrimaryWeapon() const
+const RPG_Item_WeaponType RPG_Character_Equipment::getPrimaryWeapon(const RPG_Character_OffHand& offHand_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getPrimaryWeapon"));
 
-  // *TODO*; consider ambidexterity/left-right-handedness, etc...
-  RPG_Character_EquipmentIterator_t iterator = myEquipment.find(EQUIPMENTSLOT_RIGHT_HAND);
+  RPG_Character_EquipmentSlot slot = ((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_RIGHT_HAND
+                                                                   : EQUIPMENTSLOT_LEFT_HAND);
+
+  // *TODO*; consider ambidexterity, etc...
+  RPG_Character_EquipmentIterator_t iterator = myEquipment.find(slot);
   if (iterator == myEquipment.end())
   {
     // nothing equipped --> default is the bare fist...
@@ -137,8 +149,13 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getArmor() const
   RPG_Character_EquipmentIterator_t iterator = myEquipment.find(EQUIPMENTSLOT_BODY);
   if (iterator == myEquipment.end())
   {
-    // nothing equipped --> default is "nakedness"...
-    return ARMOR_NONE;
+    // nothing equipped on body --> check torso
+    iterator = myEquipment.find(EQUIPMENTSLOT_TORSO);
+    if (iterator == myEquipment.end())
+    {
+      // nothing equipped --> default is "nakedness"...
+      return ARMOR_NONE;
+    } // end IF
   } // end IF
 
   // find item type
@@ -167,12 +184,15 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getArmor() const
   return armor_base->getArmorType();
 }
 
-const RPG_Item_ArmorType RPG_Character_Equipment::getShield() const
+const RPG_Item_ArmorType RPG_Character_Equipment::getShield(const RPG_Character_OffHand& offHand_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getShield"));
 
-  // *TODO*; consider case where shield is in right hand, etc...
-  RPG_Character_EquipmentIterator_t iterator = myEquipment.find(EQUIPMENTSLOT_LEFT_HAND);
+  RPG_Character_EquipmentSlot slot = ((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_LEFT_HAND
+                                                                   : EQUIPMENTSLOT_RIGHT_HAND);
+
+  // *TODO*; consider case where shield is in the primary hand, etc...
+  RPG_Character_EquipmentIterator_t iterator = myEquipment.find(slot);
   if (iterator == myEquipment.end())
   {
     // nothing equipped...

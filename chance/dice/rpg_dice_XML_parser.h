@@ -20,13 +20,14 @@
 #ifndef RPG_DICE_XML_PARSER_H
 #define RPG_DICE_XML_PARSER_H
 
-#include "rpg_dice_XML_parser_base.h"
+#include "rpg_dice_XML_types.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Dice_DieType_Type
- : public RPG_Dice_DieType_Type_pimpl
+ : public RPG_Dice_DieType_Type_pskel,
+   public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
@@ -34,7 +35,7 @@ class RPG_Dice_DieType_Type
 };
 
 class RPG_Dice_Roll_Type
- : public RPG_Dice_Roll_Type_pimpl
+ : public RPG_Dice_Roll_Type_pskel
 {
  public:
   RPG_Dice_Roll_Type();
@@ -50,7 +51,7 @@ class RPG_Dice_Roll_Type
 };
 
 class RPG_Dice_ValueRange_Type
- : public RPG_Dice_ValueRange_Type_pimpl
+ : public RPG_Dice_ValueRange_Type_pskel
 {
  public:
   RPG_Dice_ValueRange_Type();
