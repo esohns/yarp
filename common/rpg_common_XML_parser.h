@@ -121,6 +121,7 @@ class RPG_Common_Usage_Type
 //   virtual void pre();
   virtual void numUses(unsigned char);
   virtual void period(unsigned int);
+  virtual void interval(const RPG_Dice_Roll&);
   virtual RPG_Common_Usage post_RPG_Common_Usage_Type();
 
  private:

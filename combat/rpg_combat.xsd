@@ -76,32 +76,35 @@
       <xsd:enumeration value="SPECIALATTACK_INCORPOREAL_TOUCH"/>
 <!--       <xsd:enumeration value="SPECIALATTACK_SMOKE_CLAWS"/> -->
 <!--       <xsd:enumeration value="SPECIALATTACK_RAY_LIGHT"/> -->
-<!--      <xsd:enumeration value="SPECIALATTACK_RAY_ELECTRICITY"/>
-      <xsd:enumeration value="SPECIALATTACK_GAZE_PETRIFY"/>
-      <xsd:enumeration value="SPECIALATTACK_BREATH"/>-->
+<!--       <xsd:enumeration value="SPECIALATTACK_RAY_ELECTRICITY"/> -->
+<!--       <xsd:enumeration value="SPECIALATTACK_GAZE_PETRIFY"/> -->
+<!--       <xsd:enumeration value="SPECIALATTACK_BREATH"/> -->
+<!--       <xsd:enumeration value="SPECIALATTACK_PARALYTIC_TENTACLES"/> -->
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Combat_SpecialDamageType_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="DAMAGE_MAGIC"/>
+      <xsd:enumeration value="DAMAGE_ABILITY_DRAIN"/>
+      <xsd:enumeration value="DAMAGE_ABILITY_LOSS"/>
+      <xsd:enumeration value="DAMAGE_ABILITY_REDUCTION"/>
       <xsd:enumeration value="DAMAGE_ACID"/>
-<!--       <xsd:enumeration value="DAMAGE_SLIME"/> -->
       <xsd:enumeration value="DAMAGE_COLD"/>
       <xsd:enumeration value="DAMAGE_ELECTRICITY"/>
       <xsd:enumeration value="DAMAGE_FIRE"/>
-      <xsd:enumeration value="DAMAGE_SONIC"/>
-      <xsd:enumeration value="DAMAGE_POISON"/>
-      <xsd:enumeration value="DAMAGE_STUN"/>
-<!--       <xsd:enumeration value="DAMAGE_WEB"/> -->
-      <xsd:enumeration value="DAMAGE_SLAY"/>
-      <xsd:enumeration value="DAMAGE_PETRIFY"/>
-<!--       <xsd:enumeration value="DAMAGE_CONSTRICT"/> -->
-      <xsd:enumeration value="DAMAGE_ABILITY_REDUCTION"/>
-      <xsd:enumeration value="DAMAGE_ABILITY_LOSS"/>
-      <xsd:enumeration value="DAMAGE_ABILITY_DRAIN"/>
-      <xsd:enumeration value="DAMAGE_LEVEL_LOSS"/>
       <xsd:enumeration value="DAMAGE_LEVEL_DRAIN"/>
+      <xsd:enumeration value="DAMAGE_LEVEL_LOSS"/>
+      <xsd:enumeration value="DAMAGE_MAGIC"/>
+      <xsd:enumeration value="DAMAGE_PETRIFY"/>
+      <xsd:enumeration value="DAMAGE_PARALYZE"/>
+      <xsd:enumeration value="DAMAGE_POISON"/>
+      <xsd:enumeration value="DAMAGE_SLAY"/>
+      <xsd:enumeration value="DAMAGE_SONIC"/>
+      <xsd:enumeration value="DAMAGE_STUN"/>
+<!--       <xsd:enumeration value="DAMAGE_CORPOREAL_INSTABILITY"/> -->
+<!--       <xsd:enumeration value="DAMAGE_CONSTRICT"/> -->
+<!--       <xsd:enumeration value="DAMAGE_SLIME"/> -->
+<!--       <xsd:enumeration value="DAMAGE_WEB"/> -->
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -153,6 +156,7 @@
 
   <xsd:simpleType name="RPG_Combat_DamageReductionType_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="REDUCTION_TEMPORARY"/>
       <xsd:enumeration value="REDUCTION_HALF"/>
       <xsd:enumeration value="REDUCTION_FULL"/>
     </xsd:restriction>
@@ -163,6 +167,7 @@
       <xsd:element name="type" type="RPG_Combat_DamageCounterMeasureType_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="check" type="RPG_Combat_Check_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="spell" type="RPG_Magic_Spell_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="duration" type="RPG_Common_Duration_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="reduction" type="RPG_Combat_DamageReductionType_Type" use="optional" default="REDUCTION_FULL"/>
   </xsd:complexType>

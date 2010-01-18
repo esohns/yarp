@@ -223,6 +223,7 @@ class RPG_Combat_DamageCounterMeasure_Type
    virtual void type(const RPG_Combat_DamageCounterMeasureType&);
    virtual void check(const RPG_Combat_Check&);
    virtual void spell(const RPG_Magic_Spell&);
+   virtual void duration(const RPG_Common_Duration_Type&);
    virtual void reduction(const RPG_Combat_DamageReductionType&);
    virtual RPG_Combat_DamageCounterMeasure post_RPG_Combat_DamageCounterMeasure_Type();
 

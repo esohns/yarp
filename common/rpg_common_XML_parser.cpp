@@ -159,6 +159,9 @@ RPG_Common_Usage_Type::RPG_Common_Usage_Type()
 
   myCurrentUsage.numUses = 0;
   myCurrentUsage.period = 0;
+  myCurrentUsage.interval.numDice = 0;
+  myCurrentUsage.interval.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentUsage.interval.modifier = 0;
 }
 
 void RPG_Common_Usage_Type::numUses(unsigned char numUses_in)
@@ -175,6 +178,13 @@ void RPG_Common_Usage_Type::period(unsigned int period_in)
   myCurrentUsage.period = period_in;
 }
 
+void RPG_Common_Usage_Type::interval(const RPG_Dice_Roll& interval_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Usage_Type::interval"));
+
+  myCurrentUsage.interval = interval_in;
+}
+
 RPG_Common_Usage RPG_Common_Usage_Type::post_RPG_Common_Usage_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_Usage_Type::post_RPG_Common_Usage_Type"));
@@ -184,6 +194,9 @@ RPG_Common_Usage RPG_Common_Usage_Type::post_RPG_Common_Usage_Type()
   // clear structure
   myCurrentUsage.numUses = 0;
   myCurrentUsage.period = 0;
+  myCurrentUsage.interval.numDice = 0;
+  myCurrentUsage.interval.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentUsage.interval.modifier = 0;
 
   return result;
 }

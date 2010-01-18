@@ -90,18 +90,19 @@
   <xsd:simpleType name="RPG_Monster_NaturalWeapon_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="NATURALWEAPON_BITE"/>
+      <xsd:enumeration value="NATURALWEAPON_BLAST"/>
       <xsd:enumeration value="NATURALWEAPON_CLAW_TALON"/>
+      <xsd:enumeration value="NATURALWEAPON_CONSTRICT"/>
       <xsd:enumeration value="NATURALWEAPON_GORE"/>
+      <xsd:enumeration value="NATURALWEAPON_HOOF"/>
+      <xsd:enumeration value="NATURALWEAPON_ROCK_STONE"/>
       <xsd:enumeration value="NATURALWEAPON_SLAP_SLAM"/>
+      <xsd:enumeration value="NATURALWEAPON_SPIT"/>
       <xsd:enumeration value="NATURALWEAPON_STING"/>
       <xsd:enumeration value="NATURALWEAPON_TENTACLE"/>
-      <xsd:enumeration value="NATURALWEAPON_SPIT"/>
       <xsd:enumeration value="NATURALWEAPON_WEB"/>
 <!--       <xsd:enumeration value="NATURALWEAPON_GAZE"/> -->
 <!--       <xsd:enumeration value="NATURALWEAPON_BREATH"/> -->
-      <xsd:enumeration value="NATURALWEAPON_CONSTRICT"/>
-      <xsd:enumeration value="NATURALWEAPON_ROCK_STONE"/>
-      <xsd:enumeration value="NATURALWEAPON_BLAST"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -115,7 +116,7 @@
       <xsd:element name="attackBonus" type="xsd:byte" minOccurs="0" maxOccurs="5"/>
       <xsd:element name="attackForm" type="RPG_Combat_AttackForm_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="damage" type="RPG_Combat_Damage_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="effect" type="RPG_Magic_SpellProperties_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="effect" type="RPG_Magic_SpellProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="numAttacksPerRound" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="ranged" type="RPG_Combat_RangedAttackProperties_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
@@ -186,6 +187,11 @@
 <!--      <xsd:enumeration value="ORGANIZATION_SLAVER"/>-->
       <xsd:enumeration value="ORGANIZATION_BAND"/>
       <xsd:enumeration value="ORGANIZATION_CLAN"/>
+      <xsd:enumeration value="ORGANIZATION_COMPANY"/>
+      <xsd:enumeration value="ORGANIZATION_TROOP"/>
+      <xsd:enumeration value="ORGANIZATION_PRIDE"/>
+      <xsd:enumeration value="ORGANIZATION_FLIGHT"/>
+      <xsd:enumeration value="ORGANIZATION_MOB"/>
       <xsd:enumeration value="ORGANIZATION_ANY"/>
     </xsd:restriction>
   </xsd:simpleType>
@@ -250,7 +256,7 @@
       <xsd:element name="challengeRating" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="treasureModifier" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="alignment" type="RPG_Character_Alignment_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="advancements" type="RPG_Monster_Advancement_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="advancements" type="RPG_Monster_Advancement_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="levelAdjustment" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>

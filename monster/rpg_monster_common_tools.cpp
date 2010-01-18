@@ -300,11 +300,12 @@ const RPG_Common_PhysicalDamageList_t RPG_Monster_Common_Tools::naturalWeaponToP
 
       break;
     }
+    case NATURALWEAPON_BLAST:
+    case NATURALWEAPON_CONSTRICT:
+    case NATURALWEAPON_HOOF:
+    case NATURALWEAPON_ROCK_STONE:
     case NATURALWEAPON_SLAP_SLAM:
     case NATURALWEAPON_TENTACLE:
-    case NATURALWEAPON_CONSTRICT:
-    case NATURALWEAPON_ROCK_STONE:
-    case NATURALWEAPON_BLAST:
     {
       result.insert(PHYSICALDAMAGE_BLUDGEONING);
 

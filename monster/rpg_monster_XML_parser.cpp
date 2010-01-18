@@ -267,11 +267,7 @@ RPG_Monster_AttackAction_Type::RPG_Monster_AttackAction_Type()
   myCurrentAttackAction.attackBonus.clear();
   myCurrentAttackAction.attackForms.clear();
   myCurrentAttackAction.damage.elements.clear();
-  myCurrentAttackAction.effect.type = RPG_MAGIC_SPELL_INVALID;
-  myCurrentAttackAction.effect.casterLevel = 0;
-  myCurrentAttackAction.effect.save.type = RPG_COMMON_SAVINGTHROW_INVALID;
-  myCurrentAttackAction.effect.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  myCurrentAttackAction.effect.save.difficultyClass = 0;
+  myCurrentAttackAction.effects.clear();
   myCurrentAttackAction.numAttacksPerRound = 0;
   myCurrentAttackAction.ranged.maxRange = 0;
   myCurrentAttackAction.ranged.increment = 0;
@@ -311,7 +307,7 @@ void RPG_Monster_AttackAction_Type::effect(const RPG_Magic_SpellProperties& effe
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_AttackAction_Type::effect"));
 
-  myCurrentAttackAction.effect = effect_in;
+  myCurrentAttackAction.effects.push_back(effect_in);
 }
 
 void RPG_Monster_AttackAction_Type::numAttacksPerRound(unsigned char numAttacksPerRound_in)
@@ -346,11 +342,7 @@ RPG_Monster_AttackAction RPG_Monster_AttackAction_Type::post_RPG_Monster_AttackA
   myCurrentAttackAction.attackBonus.clear();
   myCurrentAttackAction.attackForms.clear();
   myCurrentAttackAction.damage.elements.clear();
-  myCurrentAttackAction.effect.type = RPG_MAGIC_SPELL_INVALID;
-  myCurrentAttackAction.effect.casterLevel = 0;
-  myCurrentAttackAction.effect.save.type = RPG_COMMON_SAVINGTHROW_INVALID;
-  myCurrentAttackAction.effect.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  myCurrentAttackAction.effect.save.difficultyClass = 0;
+  myCurrentAttackAction.effects.clear();
   myCurrentAttackAction.numAttacksPerRound = 0;
   myCurrentAttackAction.ranged.maxRange = 0;
   myCurrentAttackAction.ranged.increment = 0;

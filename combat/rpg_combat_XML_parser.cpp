@@ -405,6 +405,9 @@ RPG_Combat_DamageCounterMeasure_Type::RPG_Combat_DamageCounterMeasure_Type()
   myCurrentCounterMeasure.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentCounterMeasure.check.difficultyClass = 0;
   myCurrentCounterMeasure.spells.clear();
+  myCurrentCounterMeasure.duration.activation = 0;
+  myCurrentCounterMeasure.duration.interval = 0;
+  myCurrentCounterMeasure.duration.total = 0;
   myCurrentCounterMeasure.reduction = RPG_COMBAT_DAMAGEREDUCTIONTYPE_INVALID;
 }
 
@@ -429,6 +432,13 @@ void RPG_Combat_DamageCounterMeasure_Type::spell(const RPG_Magic_Spell& spell_in
   myCurrentCounterMeasure.spells.push_back(spell_in);
 }
 
+void RPG_Combat_DamageCounterMeasure_Type::duration(const RPG_Common_Duration_Type& duration_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasure_Type::duration"));
+
+  myCurrentCounterMeasure.duration = duration_in;
+}
+
 void RPG_Combat_DamageCounterMeasure_Type::reduction(const RPG_Combat_DamageReductionType& reduction_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasure_Type::reduction"));
@@ -449,6 +459,9 @@ RPG_Combat_DamageCounterMeasure RPG_Combat_DamageCounterMeasure_Type::post_RPG_C
   myCurrentCounterMeasure.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentCounterMeasure.check.difficultyClass = 0;
   myCurrentCounterMeasure.spells.clear();
+  myCurrentCounterMeasure.duration.activation = 0;
+  myCurrentCounterMeasure.duration.interval = 0;
+  myCurrentCounterMeasure.duration.total = 0;
   myCurrentCounterMeasure.reduction = RPG_COMBAT_DAMAGEREDUCTIONTYPE_INVALID;
 
   return result;

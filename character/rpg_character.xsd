@@ -138,6 +138,7 @@
       <xsd:enumeration value="ABILITY_BLINK"/>
       <xsd:enumeration value="ABILITY_DIMENSION_DOOR"/>
       <xsd:enumeration value="ABILITY_LEAP_ATTACK"/>
+      <xsd:enumeration value="ABILITY_SHADOW_SHIFT"/>
       <!--                                          -->
       <xsd:enumeration value="ABILITY_ALTERNATE_FORM"/>
       <xsd:enumeration value="ABILITY_ANTIMAGIC"/>
@@ -467,6 +468,7 @@
       <xsd:enumeration value="TERRAIN_UNDERGROUND"/>
       <xsd:enumeration value="TERRAIN_PLAINS"/>
       <xsd:enumeration value="TERRAIN_FORESTS"/>
+      <xsd:enumeration value="TERRAIN_MARSHES"/>
       <xsd:enumeration value="TERRAIN_HILLS"/>
       <xsd:enumeration value="TERRAIN_MOUNTAINS"/>
       <xsd:enumeration value="TERRAIN_DESERTS"/>
@@ -500,7 +502,7 @@
 
   <xsd:simpleType name="RPG_Character_Climate_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="CLIMATE_NONE"/>
+<!--       <xsd:enumeration value="CLIMATE_NONE"/> -->
       <xsd:enumeration value="CLIMATE_COLD"/>
       <xsd:enumeration value="CLIMATE_TEMPERATE"/>
       <xsd:enumeration value="CLIMATE_WARM"/>
@@ -511,7 +513,7 @@
   <xsd:complexType name="RPG_Character_Environment_Type">
     <xsd:sequence>
       <xsd:element name="terrain" type="RPG_Character_Terrain_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="climate" type="RPG_Character_Climate_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="climate" type="RPG_Character_Climate_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 

@@ -51,12 +51,26 @@
       <xsd:enumeration value="SPELL_CANTRIP"/>
       <xsd:enumeration value="SPELL_REMOVE_DISEASE"/>
       <xsd:enumeration value="SPELL_HEAL"/>
-      <xsd:enumeration value="SPELL_MASS_HEAL"/>
+      <xsd:enumeration value="SPELL_HEAL_MASS"/>
       <xsd:enumeration value="SPELL_ENTANGLE"/>
       <xsd:enumeration value="SPELL_FEAR"/>
       <xsd:enumeration value="SPELL_GASEOUS_FORM"/>
       <xsd:enumeration value="SPELL_BLINK"/>
       <xsd:enumeration value="SPELL_DIMENSION_DOOR"/>
+      <xsd:enumeration value="SPELL_RESTORATION"/>
+      <xsd:enumeration value="SPELL_RESTORATION_GREATER"/>
+      <xsd:enumeration value="SPELL_HOLD_MONSTER"/>
+      <xsd:enumeration value="SPELL_MIRROR_IMAGE"/>
+      <xsd:enumeration value="SPELL_ETHEREAL_JAUNT"/>
+      <xsd:enumeration value="SPELL_DETECT_CHAOS"/>
+      <xsd:enumeration value="SPELL_DETECT_EVIL"/>
+      <xsd:enumeration value="SPELL_DETECT_GOOD"/>
+      <xsd:enumeration value="SPELL_DETECT_LAW"/>
+      <xsd:enumeration value="SPELL_DETECT_THOUGHTS"/>
+      <xsd:enumeration value="SPELL_INVISIBILITY"/>
+      <xsd:enumeration value="SPELL_PLANE_SHIFT"/>
+      <xsd:enumeration value="SPELL_POLYMORPH"/>
+      <xsd:enumeration value="SPELL_TELEPATHY"/>
     </xsd:restriction>
   </xsd:simpleType>
 
