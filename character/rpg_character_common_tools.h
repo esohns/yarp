@@ -44,6 +44,7 @@ class RPG_Character_Common_Tools
   static const std::string attributesToString(const RPG_Character_Attributes&); // attributes
   static const std::string environmentToString(const RPG_Character_Environment&); // environment
   static const std::string classesToString(const RPG_Character_Classes_t&); // classes
+  static const std::string conditionToString(const RPG_Character_Conditions_t&); // condition
 
   static const signed char getAttributeAbilityModifier(const unsigned char&); // attribute ability score
   static const signed char getSizeModifier(const RPG_Character_Size&);

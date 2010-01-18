@@ -999,11 +999,13 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
 
       // debug info
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) and hits: %d...\n"),
+                 ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) with %s and hits: %d%s...\n"),
                  player_base->getName().c_str(),
                  monster->getName().c_str(),
                  targetArmorClass,
-                 (attack_roll + currentAttackBonus)));
+                 RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_type).c_str(),
+                 (attack_roll + currentAttackBonus),
+                 (is_critical_hit ? ACE_TEXT_ALWAYS_CHAR(" (critical)") : ACE_TEXT_ALWAYS_CHAR(""))));
 
       target_inout->sustainDamage(damage);
 
@@ -1022,10 +1024,11 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
 is_player_miss:
       // debug info
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) and misses: %d...\n"),
+                 ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) with %s and misses: %d...\n"),
                  player_base->getName().c_str(),
                  monster->getName().c_str(),
                  targetArmorClass,
+                 RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_type).c_str(),
                  (attack_roll + currentAttackBonus)));
 
       // if this was a Standard Action, we're done
@@ -1358,11 +1361,13 @@ monster_perform_single_action:
 
       // debug info
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) and hits: %d...\n"),
+                 ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) with %s and hits: %d%s...\n"),
                  monster->getName().c_str(),
                  player_base->getName().c_str(),
                  targetArmorClass,
-                 (attack_roll + currentAttackBonus)));
+                 RPG_Monster_Common_Tools::weaponTypeToString(current_action->weapon).c_str(),
+                 (attack_roll + currentAttackBonus),
+                 (is_critical_hit ? ACE_TEXT_ALWAYS_CHAR(" (critical)") : ACE_TEXT_ALWAYS_CHAR(""))));
 
       target_inout->sustainDamage(damage);
 
@@ -1381,11 +1386,12 @@ monster_perform_single_action:
 is_monster_miss:
       // debug info
       ACE_DEBUG((LM_DEBUG,
-                ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) and misses: %d...\n"),
-                monster->getName().c_str(),
-                player_base->getName().c_str(),
-                targetArmorClass,
-                (attack_roll + currentAttackBonus)));
+                 ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) with %s and misses: %d...\n"),
+                 monster->getName().c_str(),
+                 player_base->getName().c_str(),
+                 targetArmorClass,
+                 RPG_Monster_Common_Tools::weaponTypeToString(current_action->weapon).c_str(),
+                 (attack_roll + currentAttackBonus)));
     } // end FOR
 
 monster_advance_attack_iterator:

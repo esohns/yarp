@@ -73,6 +73,8 @@ class RPG_Character_Player_Base
   const unsigned int rest(const RPG_Common_Camp&, // type of rest
                           const unsigned int&);   // hours
 
+  virtual void status() const;
+
   virtual void dump() const;
 
  protected:

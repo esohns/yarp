@@ -81,6 +81,8 @@ class RPG_Character_Base
   // we just got wiser...
   virtual void gainExperience(const unsigned int&) = 0; // XP
 
+  virtual void status() const;
+
   virtual void dump() const;
 
  protected:
@@ -108,6 +110,7 @@ class RPG_Character_Base
   RPG_Character_Equipment    myEquipment;
 
   short int                  myNumCurrentHitPoints;
+  RPG_Character_Conditions_t myConditions;
 
  private:
   // safety measures
@@ -122,7 +125,6 @@ class RPG_Character_Base
   RPG_Character_Abilities_t  myAbilities;
 
   unsigned short int         myNumTotalHitPoints;
-  RPG_Character_Conditions_t myConditions;
 };
 
 #endif

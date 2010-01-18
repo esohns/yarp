@@ -49,17 +49,18 @@ RPG_Character_Base::RPG_Character_Base(const std::string& name_in,
    myInventory(inventory_in),
 //    myEquipment(), // start naked
    myNumCurrentHitPoints(hitpoints_in), // we start out healthy, don't we ?
+//    myConditions(), // start normal
    myName(name_in),
    myAlignment(alignment_in),
    myAttributes(attributes_in),
    mySkills(skills_in),
    myFeats(feats_in),
    myAbilities(abilities_in),
-   myNumTotalHitPoints(hitpoints_in)//,
-//    myConditions() // start normal
+   myNumTotalHitPoints(hitpoints_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
 
+  myConditions.insert(CONDITION_NORMAL);
 }
 
 RPG_Character_Base::RPG_Character_Base(const RPG_Character_Base& playerBase_in)
@@ -68,14 +69,14 @@ RPG_Character_Base::RPG_Character_Base(const RPG_Character_Base& playerBase_in)
     myInventory(playerBase_in.myInventory),
     myEquipment(playerBase_in.myEquipment),
     myNumCurrentHitPoints(playerBase_in.myNumCurrentHitPoints),
+    myConditions(playerBase_in.myConditions),
     myName(playerBase_in.myName),
     myAlignment(playerBase_in.myAlignment),
     myAttributes(playerBase_in.myAttributes),
     mySkills(playerBase_in.mySkills),
     myFeats(playerBase_in.myFeats),
     myAbilities(playerBase_in.myAbilities),
-    myNumTotalHitPoints(playerBase_in.myNumTotalHitPoints),
-    myConditions(playerBase_in.myConditions)
+    myNumTotalHitPoints(playerBase_in.myNumTotalHitPoints)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
 
@@ -90,6 +91,7 @@ RPG_Character_Base& RPG_Character_Base::operator=(const RPG_Character_Base& play
   myInventory = playerBase_in.myInventory;
   myEquipment = playerBase_in.myEquipment;
   myNumCurrentHitPoints = playerBase_in.myNumCurrentHitPoints;
+  myConditions = playerBase_in.myConditions;
   myName = playerBase_in.myName;
   myAlignment = playerBase_in.myAlignment;
   myAttributes = playerBase_in.myAttributes;
@@ -97,7 +99,6 @@ RPG_Character_Base& RPG_Character_Base::operator=(const RPG_Character_Base& play
   myFeats = playerBase_in.myFeats;
   myAbilities = playerBase_in.myAbilities;
   myNumTotalHitPoints = playerBase_in.myNumTotalHitPoints;
-  myConditions = playerBase_in.myConditions;
 
   return *this;
 }
@@ -234,6 +235,7 @@ void RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::sustainDamage"));
 
+  signed short damage_value = 0;
   signed short total_damage_value = 0;
   RPG_Dice_RollResult_t result;
   for (std::vector<RPG_Combat_DamageElement>::const_iterator iterator = damage_in.elements.begin();
@@ -241,46 +243,64 @@ void RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
        iterator++)
   {
     // compute damage
-    signed short damage_value = 0;
-
+    damage_value = 0;
     result.clear();
+
     RPG_Dice::simulateRoll((*iterator).amount,
                            1,
                            result);
     damage_value = result.front();
+
+    // *TODO*: consider defenses, resistances, (partial) immunities...
+
     // minimum damage is 1 HP
     if (damage_value <= 0)
       damage_value = 1;
 
-    // *TODO*: consider defenses, resistances, (partial) immunities...
+    myNumCurrentHitPoints -= damage_value;
+
     total_damage_value += damage_value;
   } // end FOR
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("character \"%s\" (HP: %d/%d) takes damage of %d HP...\n"),
-             getName().c_str(),
-             myNumCurrentHitPoints,
-             myNumTotalHitPoints,
-             total_damage_value));
-
-  myNumCurrentHitPoints -= total_damage_value;
   if (myNumCurrentHitPoints < -10)
     myNumCurrentHitPoints = -10;
 
-  // change condition...
+  // adjust condition
   if (myNumCurrentHitPoints <= 0)
   {
+    myConditions.erase(CONDITION_NORMAL);
+
     if (myNumCurrentHitPoints == -10)
       myConditions.insert(CONDITION_DEAD);
-
-    myConditions.insert(CONDITION_DYING);
-    myConditions.insert(CONDITION_UNCONSCIOUS);
-    if (myNumCurrentHitPoints == 0)
-    {
+    else if (myNumCurrentHitPoints < 0)
+      myConditions.insert(CONDITION_DYING);
+    else
       myConditions.insert(CONDITION_DISABLED);
-    } // end IF
+
+    if (myNumCurrentHitPoints < 0)
+      myConditions.insert(CONDITION_UNCONSCIOUS);
   } // end IF
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("character \"%s\" (HP: %d/%d) suffers damage of %d HP%s...\n"),
+             getName().c_str(),
+             myNumCurrentHitPoints,
+             myNumTotalHitPoints,
+             total_damage_value,
+             (!hasCondition(CONDITION_NORMAL) ? ACE_TEXT_ALWAYS_CHAR(" --> DOWN") : ACE_TEXT_ALWAYS_CHAR(""))));
+}
+
+void RPG_Character_Base::status() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::status"));
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("condition: %s\nHP: %d/%d\nwealth: %d GP\n"),
+             RPG_Character_Common_Tools::conditionToString(myConditions).c_str(),
+             myNumCurrentHitPoints,
+             myNumTotalHitPoints,
+             myCurrentWealth));
 }
 
 void RPG_Character_Base::dump() const

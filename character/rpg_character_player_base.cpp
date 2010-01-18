@@ -291,7 +291,27 @@ const unsigned int RPG_Character_Player_Base::rest(const RPG_Common_Camp& type_i
     myNumCurrentHitPoints = getNumTotalHitPoints() - missingHPs;
   } // end IF
 
+  // adjust condition
+  if (myNumCurrentHitPoints > 0)
+  {
+    myConditions.insert(CONDITION_NORMAL);
+    myConditions.erase(CONDITION_DISABLED);
+  } // end IF
+
   return (restedPeriod * 24);
+}
+
+void RPG_Character_Player_Base::status() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::status"));
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("name: \"%s\" (XP: %d (%d))\n"),
+             getName().c_str(),
+             myExperience,
+             ACE_static_cast(int, getLevel())));
+
+  inherited::status();
 }
 
 void RPG_Character_Player_Base::dump() const

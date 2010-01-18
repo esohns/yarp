@@ -182,6 +182,24 @@ const std::string RPG_Character_Common_Tools::classesToString(const RPG_Characte
   return result;
 }
 
+const std::string RPG_Character_Common_Tools::conditionToString(const RPG_Character_Conditions_t& condition_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::conditionToString"));
+
+  std::string result;
+  for (RPG_Character_ConditionsIterator_t iterator = condition_in.begin();
+       iterator != condition_in.end();
+       iterator++)
+  {
+    result += RPG_Character_ConditionHelper::RPG_Character_ConditionToString(*iterator);
+    result += ACE_TEXT_ALWAYS_CHAR(" | ");
+  } // end FOR
+  if (!result.empty())
+    result.erase(--result.end());
+
+  return result;
+}
+
 const signed char RPG_Character_Common_Tools::getAttributeAbilityModifier(const unsigned char& attributeAbility_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getAttributeAbilityModifier"));
@@ -807,12 +825,13 @@ const unsigned int RPG_Character_Common_Tools::restParty(RPG_Character_Party_t& 
        iterator++, index++)
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("#%d] \"%s\": level: %d, HP: %d/%d\n"),
+               ACE_TEXT("#%d] \"%s\" (lvl: %d), HP: %d/%d --> %s\n"),
                index,
                (*iterator).getName().c_str(),
                (*iterator).getLevel(),
                (*iterator).getNumCurrentHitPoints(),
-               (*iterator).getNumTotalHitPoints()));
+               (*iterator).getNumTotalHitPoints(),
+               ((*iterator).hasCondition(CONDITION_NORMAL) ? ACE_TEXT_ALWAYS_CHAR("OK") : ACE_TEXT_ALWAYS_CHAR("DOWN"))));
   } // end FOR
 
   // check party status
