@@ -22,13 +22,10 @@
 #define RPG_MONSTER_SPECIALATTACKPROPERTIES_H
 
 struct RPG_Monster_SpecialAttackProperties
+ : public RPG_Monster_SpecialBaseProperties
 {
-  RPG_Magic_AbilityClass abilityClass;
-  RPG_Monster_SpecialAttackTypeUnion type;
-  RPG_Combat_ActionType actionType;
   std::vector<RPG_Monster_SpecialAttackPreCondition> preConditions;
   RPG_Monster_AttackAction action;
-  RPG_Common_Usage usage;
 };
 
 #endif

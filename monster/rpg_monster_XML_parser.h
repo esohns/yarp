@@ -79,6 +79,86 @@ class RPG_Monster_NaturalArmorClass_Type
   RPG_Monster_NaturalArmorClass myCurrentNaturalArmorClass;
 };
 
+class RPG_Monster_SpecialPropertyTypeUnion_Type
+  : public RPG_Monster_SpecialPropertyTypeUnion_Type_pskel
+{
+  public:
+    RPG_Monster_SpecialPropertyTypeUnion_Type();
+
+//   virtual void pre();
+    virtual void _characters(const ::xml_schema::ro_string&);
+    virtual RPG_Monster_SpecialPropertyTypeUnion post_RPG_Monster_SpecialPropertyTypeUnion_Type();
+
+  private:
+    RPG_Monster_SpecialPropertyTypeUnion myCurrentUnionType;
+};
+
+class RPG_Monster_SpecialBaseProperties_Type
+  : public RPG_Monster_SpecialBaseProperties_Type_pskel
+{
+  public:
+    RPG_Monster_SpecialBaseProperties_Type();
+
+//     virtual void pre();
+    virtual void abilityClass(const RPG_Magic_AbilityClass&);
+    virtual void type(const RPG_Monster_SpecialPropertyTypeUnion&);
+    virtual void actionType(const RPG_Combat_ActionType&);
+    virtual void usage(const RPG_Common_Usage&);
+    virtual RPG_Monster_SpecialBaseProperties post_RPG_Monster_SpecialBaseProperties_Type();
+
+  private:
+    RPG_Monster_SpecialBaseProperties myCurrentProperties;
+};
+
+class RPG_Monster_SpecialDefensePreCondition_Type
+  : public RPG_Monster_SpecialDefensePreCondition_Type_pskel
+{
+  public:
+    RPG_Monster_SpecialDefensePreCondition_Type();
+
+//   virtual void pre();
+    virtual void weaponType(const RPG_Monster_WeaponTypeUnion&);
+    virtual RPG_Monster_SpecialDefensePreCondition post_RPG_Monster_SpecialDefensePreCondition_Type();
+
+  private:
+    RPG_Monster_SpecialDefensePreCondition myCurrentPreCondition;
+};
+
+class RPG_Monster_DefenseAction_Type
+  : public RPG_Monster_DefenseAction_Type_pskel
+{
+  public:
+    RPG_Monster_DefenseAction_Type();
+
+//   virtual void pre();
+    virtual void preCondition(const RPG_Monster_SpecialDefensePreCondition&);
+    virtual void damage(const RPG_Combat_Damage&);
+    virtual RPG_Monster_DefenseAction post_RPG_Monster_DefenseAction_Type();
+
+  private:
+    RPG_Monster_DefenseAction myCurrentAction;
+};
+
+class RPG_Monster_SpecialDefenseProperties_Type
+  : public RPG_Monster_SpecialDefenseProperties_Type_pskel
+{
+  public:
+    RPG_Monster_SpecialDefenseProperties_Type();
+
+//     virtual void pre();
+    virtual void abilityClass(const RPG_Magic_AbilityClass&);
+    virtual void type(const RPG_Monster_SpecialPropertyTypeUnion&);
+    virtual void actionType(const RPG_Combat_ActionType&);
+    virtual void usage(const RPG_Common_Usage&);
+    virtual RPG_Monster_SpecialBaseProperties post_RPG_Monster_SpecialBaseProperties_Type();
+    // ------------------------------------------------------------
+    virtual void action(const RPG_Monster_DefenseAction&);
+    virtual RPG_Monster_SpecialDefenseProperties post_RPG_Monster_SpecialDefenseProperties_Type();
+
+  private:
+    RPG_Monster_SpecialDefenseProperties myCurrentProperties;
+};
+
 class RPG_Monster_NaturalWeapon_Type
  : public RPG_Monster_NaturalWeapon_Type_pskel,
    public ::xml_schema::string_pimpl
@@ -141,20 +221,6 @@ class RPG_Monster_Attack_Type
   RPG_Monster_Attack myCurrentAttack;
 };
 
-class RPG_Monster_SpecialAttackTypeUnion_Type
-  : public RPG_Monster_SpecialAttackTypeUnion_Type_pskel
-{
-  public:
-    RPG_Monster_SpecialAttackTypeUnion_Type();
-
-//   virtual void pre();
-    virtual void _characters(const ::xml_schema::ro_string&);
-    virtual RPG_Monster_SpecialAttackTypeUnion post_RPG_Monster_SpecialAttackTypeUnion_Type();
-
-  private:
-    RPG_Monster_SpecialAttackTypeUnion myCurrentUnionType;
-};
-
 class RPG_Monster_SpecialAttackPreCondition_Type
   : public RPG_Monster_SpecialAttackPreCondition_Type_pskel
 {
@@ -182,16 +248,39 @@ class RPG_Monster_SpecialAttackProperties_Type
 
 //     virtual void pre();
     virtual void abilityClass(const RPG_Magic_AbilityClass&);
-    virtual void type(const RPG_Monster_SpecialAttackTypeUnion&);
+    virtual void type(const RPG_Monster_SpecialPropertyTypeUnion&);
     virtual void actionType(const RPG_Combat_ActionType&);
+    virtual void usage(const RPG_Common_Usage&);
+    virtual RPG_Monster_SpecialBaseProperties post_RPG_Monster_SpecialBaseProperties_Type();
+    // ------------------------------------------------------------
     virtual void preCondition(const RPG_Monster_SpecialAttackPreCondition&);
     virtual void action(const RPG_Monster_AttackAction&);
 //     virtual void amount(const RPG_Dice_Roll&);
-    virtual void usage(const RPG_Common_Usage&);
     virtual RPG_Monster_SpecialAttackProperties post_RPG_Monster_SpecialAttackProperties_Type();
 
   private:
     RPG_Monster_SpecialAttackProperties myCurrentProperties;
+};
+
+class RPG_Monster_SpecialAbilityProperties_Type
+  : public RPG_Monster_SpecialAbilityProperties_Type_pskel
+{
+  public:
+    RPG_Monster_SpecialAbilityProperties_Type();
+
+//     virtual void pre();
+    virtual void abilityClass(const RPG_Magic_AbilityClass&);
+    virtual void type(const RPG_Monster_SpecialPropertyTypeUnion&);
+    virtual void actionType(const RPG_Combat_ActionType&);
+    virtual void usage(const RPG_Common_Usage&);
+    virtual RPG_Monster_SpecialBaseProperties post_RPG_Monster_SpecialBaseProperties_Type();
+    // ------------------------------------------------------------
+    virtual void effect(const RPG_Magic_SpellProperties&);
+    virtual void ranged(const RPG_Combat_RangedAttackProperties&);
+    virtual RPG_Monster_SpecialAbilityProperties post_RPG_Monster_SpecialAbilityProperties_Type();
+
+  private:
+    RPG_Monster_SpecialAbilityProperties myCurrentProperties;
 };
 
 class RPG_Monster_SavingThrowModifiers_Type
@@ -307,8 +396,10 @@ class RPG_Monster_PropertiesXML_Type
   virtual void initiative(signed char);
   virtual void speed(unsigned char);
   virtual void armorClass(const RPG_Monster_NaturalArmorClass&);
+  virtual void specialDefense(const RPG_Monster_SpecialDefenseProperties&);
   virtual void attack(const RPG_Monster_Attack&);
   virtual void specialAttack(const RPG_Monster_SpecialAttackProperties&);
+  virtual void specialAbility(const RPG_Monster_SpecialAbilityProperties&);
   virtual void space(unsigned char);
   virtual void reach(unsigned char);
   virtual void saves(const RPG_Monster_SavingThrowModifiers&);

@@ -52,7 +52,7 @@ RPG_Combat_AttackSituationToStringTable_t RPG_Combat_AttackSituationHelper::myRP
 RPG_Combat_DefenseSituationToStringTable_t RPG_Combat_DefenseSituationHelper::myRPG_Combat_DefenseSituationToStringTable;
 RPG_Combat_SpecialAttackToStringTable_t RPG_Combat_SpecialAttackHelper::myRPG_Combat_SpecialAttackToStringTable;
 RPG_Combat_SpecialDamageTypeToStringTable_t RPG_Combat_SpecialDamageTypeHelper::myRPG_Combat_SpecialDamageTypeToStringTable;
-RPG_Combat_DamageBonusTypeToStringTable_t RPG_Combat_DamageBonusTypeHelper::myRPG_Combat_DamageBonusTypeToStringTable;
+RPG_Combat_OtherDamageTypeToStringTable_t RPG_Combat_OtherDamageTypeHelper::myRPG_Combat_OtherDamageTypeToStringTable;
 RPG_Combat_DamageCounterMeasureTypeToStringTable_t RPG_Combat_DamageCounterMeasureTypeHelper::myRPG_Combat_DamageCounterMeasureTypeToStringTable;
 RPG_Combat_DamageReductionTypeToStringTable_t RPG_Combat_DamageReductionTypeHelper::myRPG_Combat_DamageReductionTypeToStringTable;
 RPG_Combat_ActionTypeToStringTable_t RPG_Combat_ActionTypeHelper::myRPG_Combat_ActionTypeToStringTable;
@@ -67,7 +67,7 @@ void RPG_Combat_Common_Tools::initStringConversionTables()
   RPG_Combat_DefenseSituationHelper::init();
   RPG_Combat_SpecialAttackHelper::init();
   RPG_Combat_SpecialDamageTypeHelper::init();
-  RPG_Combat_DamageBonusTypeHelper::init();
+  RPG_Combat_OtherDamageTypeHelper::init();
   RPG_Combat_DamageCounterMeasureTypeHelper::init();
   RPG_Combat_DamageReductionTypeHelper::init();
   RPG_Combat_ActionTypeHelper::init();
@@ -138,14 +138,14 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
       result += ACE_TEXT_ALWAYS_CHAR(" / ");
       result += converter.str();
     } // end IF
-    for (std::vector<RPG_Combat_DamageBonus>::const_iterator iterator2 = (*iterator).others.begin();
+    for (std::vector<RPG_Combat_OtherDamage>::const_iterator iterator2 = (*iterator).others.begin();
          iterator2 != (*iterator).others.end();
          iterator2++)
     {
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
 
       result += ACE_TEXT_ALWAYS_CHAR("\nother (bonus / modifier): ");
-      result += RPG_Combat_DamageBonusTypeHelper::RPG_Combat_DamageBonusTypeToString((*iterator2).type);
+      result += RPG_Combat_OtherDamageTypeHelper::RPG_Combat_OtherDamageTypeToString((*iterator2).type);
       result += ACE_TEXT_ALWAYS_CHAR(" / ");
       converter << ACE_static_cast(int, (*iterator2).modifier);
       result += converter.str();

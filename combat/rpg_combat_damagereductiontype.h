@@ -23,7 +23,8 @@
 
 enum RPG_Combat_DamageReductionType
 {
-  REDUCTION_HALF = 0,
+  REDUCTION_TEMPORARY = 0,
+  REDUCTION_HALF,
   REDUCTION_FULL,
   //
   RPG_COMBAT_DAMAGEREDUCTIONTYPE_MAX,
@@ -44,6 +45,7 @@ class RPG_Combat_DamageReductionTypeHelper
   inline static void init()
   {
     myRPG_Combat_DamageReductionTypeToStringTable.clear();
+    myRPG_Combat_DamageReductionTypeToStringTable.insert(std::make_pair(REDUCTION_TEMPORARY, ACE_TEXT_ALWAYS_CHAR("REDUCTION_TEMPORARY")));
     myRPG_Combat_DamageReductionTypeToStringTable.insert(std::make_pair(REDUCTION_HALF, ACE_TEXT_ALWAYS_CHAR("REDUCTION_HALF")));
     myRPG_Combat_DamageReductionTypeToStringTable.insert(std::make_pair(REDUCTION_FULL, ACE_TEXT_ALWAYS_CHAR("REDUCTION_FULL")));
   };

@@ -233,44 +233,53 @@ RPG_Combat_DamageDuration RPG_Combat_DamageDuration_Type::post_RPG_Combat_Damage
   return result;
 }
 
-RPG_Combat_DamageBonusType RPG_Combat_DamageBonusType_Type::post_RPG_Combat_DamageBonusType_Type()
+RPG_Combat_OtherDamageType RPG_Combat_OtherDamageType_Type::post_RPG_Combat_OtherDamageType_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageBonusType_Type::post_RPG_Combat_DamageBonusType_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Combat_OtherDamageType_Type::post_RPG_Combat_OtherDamageType_Type"));
 
-  return RPG_Combat_DamageBonusTypeHelper::stringToRPG_Combat_DamageBonusType(post_string());
+  return RPG_Combat_OtherDamageTypeHelper::stringToRPG_Combat_OtherDamageType(post_string());
 }
 
-RPG_Combat_DamageBonus_Type::RPG_Combat_DamageBonus_Type()
+RPG_Combat_OtherDamage_Type::RPG_Combat_OtherDamage_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageBonus_Type::RPG_Combat_DamageBonus_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Combat_OtherDamage_Type::RPG_Combat_OtherDamage_Type"));
 
-  myCurrentDamageBonus.type = RPG_COMBAT_DAMAGEBONUSTYPE_INVALID;
-  myCurrentDamageBonus.modifier = 0;
+  myCurrentOtherDamage.type = RPG_COMBAT_OTHERDAMAGETYPE_INVALID;
+  myCurrentOtherDamage.modifier = 0;
+  myCurrentOtherDamage.counterMeasures.clear();
 }
 
-void RPG_Combat_DamageBonus_Type::type(const RPG_Combat_DamageBonusType& type_in)
+void RPG_Combat_OtherDamage_Type::type(const RPG_Combat_OtherDamageType& type_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageBonus_Type::type"));
+  ACE_TRACE(ACE_TEXT("RPG_Combat_OtherDamage_Type::type"));
 
-  myCurrentDamageBonus.type = type_in;
+  myCurrentOtherDamage.type = type_in;
 }
 
-void RPG_Combat_DamageBonus_Type::modifier(signed char modifier_in)
+void RPG_Combat_OtherDamage_Type::modifier(signed char modifier_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageBonus_Type::modifier"));
+  ACE_TRACE(ACE_TEXT("RPG_Combat_OtherDamage_Type::modifier"));
 
-  myCurrentDamageBonus.modifier = modifier_in;
+  myCurrentOtherDamage.modifier = modifier_in;
 }
 
-RPG_Combat_DamageBonus RPG_Combat_DamageBonus_Type::post_RPG_Combat_DamageBonus_Type()
+void RPG_Combat_OtherDamage_Type::counterMeasure(const RPG_Combat_DamageCounterMeasure& counterMeasure_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageBonus_Type::post_RPG_Combat_DamageBonus_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Combat_OtherDamage_Type::counterMeasure"));
 
-  RPG_Combat_DamageBonus result = myCurrentDamageBonus;
+  myCurrentOtherDamage.counterMeasures.push_back(counterMeasure_in);
+}
+
+RPG_Combat_OtherDamage RPG_Combat_OtherDamage_Type::post_RPG_Combat_OtherDamage_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_OtherDamage_Type::post_RPG_Combat_OtherDamage_Type"));
+
+  RPG_Combat_OtherDamage result = myCurrentOtherDamage;
 
   // clear structure
-  myCurrentDamageBonus.type = RPG_COMBAT_DAMAGEBONUSTYPE_INVALID;
-  myCurrentDamageBonus.modifier = 0;
+  myCurrentOtherDamage.type = RPG_COMBAT_OTHERDAMAGETYPE_INVALID;
+  myCurrentOtherDamage.modifier = 0;
+  myCurrentOtherDamage.counterMeasures.clear();
 
   return result;
 }
@@ -432,7 +441,7 @@ void RPG_Combat_DamageCounterMeasure_Type::spell(const RPG_Magic_Spell& spell_in
   myCurrentCounterMeasure.spells.push_back(spell_in);
 }
 
-void RPG_Combat_DamageCounterMeasure_Type::duration(const RPG_Common_Duration_Type& duration_in)
+void RPG_Combat_DamageCounterMeasure_Type::duration(const RPG_Common_Duration& duration_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasure_Type::duration"));
 
@@ -517,7 +526,7 @@ void RPG_Combat_DamageElement_Type::duration(const RPG_Combat_DamageDuration& du
   myCurrentDamageElement.duration = duration_in;
 }
 
-void RPG_Combat_DamageElement_Type::other(const RPG_Combat_DamageBonus& bonus_in)
+void RPG_Combat_DamageElement_Type::other(const RPG_Combat_OtherDamage& bonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::other"));
 

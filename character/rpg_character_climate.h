@@ -23,8 +23,7 @@
 
 enum RPG_Character_Climate
 {
-  CLIMATE_NONE = 0,
-  CLIMATE_COLD,
+  CLIMATE_COLD = 0,
   CLIMATE_TEMPERATE,
   CLIMATE_WARM,
   CLIMATE_ANY,
@@ -47,7 +46,6 @@ class RPG_Character_ClimateHelper
   inline static void init()
   {
     myRPG_Character_ClimateToStringTable.clear();
-    myRPG_Character_ClimateToStringTable.insert(std::make_pair(CLIMATE_NONE, ACE_TEXT_ALWAYS_CHAR("CLIMATE_NONE")));
     myRPG_Character_ClimateToStringTable.insert(std::make_pair(CLIMATE_COLD, ACE_TEXT_ALWAYS_CHAR("CLIMATE_COLD")));
     myRPG_Character_ClimateToStringTable.insert(std::make_pair(CLIMATE_TEMPERATE, ACE_TEXT_ALWAYS_CHAR("CLIMATE_TEMPERATE")));
     myRPG_Character_ClimateToStringTable.insert(std::make_pair(CLIMATE_WARM, ACE_TEXT_ALWAYS_CHAR("CLIMATE_WARM")));

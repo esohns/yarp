@@ -141,28 +141,29 @@ class RPG_Combat_DamageDuration_Type
   RPG_Combat_DamageDuration myCurrentDuration;
 };
 
-class RPG_Combat_DamageBonusType_Type
- : public RPG_Combat_DamageBonusType_Type_pskel,
+class RPG_Combat_OtherDamageType_Type
+ : public RPG_Combat_OtherDamageType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
-  virtual RPG_Combat_DamageBonusType post_RPG_Combat_DamageBonusType_Type();
+  virtual RPG_Combat_OtherDamageType post_RPG_Combat_OtherDamageType_Type();
 };
 
-class RPG_Combat_DamageBonus_Type
- : public RPG_Combat_DamageBonus_Type_pskel
+class RPG_Combat_OtherDamage_Type
+ : public RPG_Combat_OtherDamage_Type_pskel
 {
  public:
-  RPG_Combat_DamageBonus_Type();
+  RPG_Combat_OtherDamage_Type();
 
 //   virtual void pre();
-  virtual void type(const RPG_Combat_DamageBonusType&);
+  virtual void type(const RPG_Combat_OtherDamageType&);
   virtual void modifier(signed char);
-  virtual RPG_Combat_DamageBonus post_RPG_Combat_DamageBonus_Type();
+  virtual void counterMeasure(const RPG_Combat_DamageCounterMeasure&);
+  virtual RPG_Combat_OtherDamage post_RPG_Combat_OtherDamage_Type();
 
  private:
-  RPG_Combat_DamageBonus myCurrentDamageBonus;
+  RPG_Combat_OtherDamage myCurrentOtherDamage;
 };
 
 class RPG_Combat_DamageCounterMeasureType_Type
@@ -223,7 +224,7 @@ class RPG_Combat_DamageCounterMeasure_Type
    virtual void type(const RPG_Combat_DamageCounterMeasureType&);
    virtual void check(const RPG_Combat_Check&);
    virtual void spell(const RPG_Magic_Spell&);
-   virtual void duration(const RPG_Common_Duration_Type&);
+   virtual void duration(const RPG_Common_Duration&);
    virtual void reduction(const RPG_Combat_DamageReductionType&);
    virtual RPG_Combat_DamageCounterMeasure post_RPG_Combat_DamageCounterMeasure_Type();
 
@@ -241,10 +242,10 @@ class RPG_Combat_DamageElement_Type
   virtual void type(const RPG_Combat_DamageTypeUnion&);
   virtual void amount(const RPG_Dice_Roll&);
   virtual void secondary(const RPG_Dice_Roll&);
-  virtual void duration(const RPG_Combat_DamageDuration&);
-  virtual void other(const RPG_Combat_DamageBonus&);
   virtual void attribute(const RPG_Common_Attribute&);
+  virtual void duration(const RPG_Combat_DamageDuration&);
   virtual void counterMeasure(const RPG_Combat_DamageCounterMeasure&);
+  virtual void other(const RPG_Combat_OtherDamage&);
   virtual void effect(const RPG_Common_EffectType&);
   virtual RPG_Combat_DamageElement post_RPG_Combat_DamageElement_Type();
 

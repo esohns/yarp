@@ -23,22 +23,28 @@
 
 enum RPG_Monster_Organization
 {
-  ORGANIZATION_SOLITARY = 0,
-  ORGANIZATION_PAIR,
+  ORGANIZATION_BAND = 0,
   ORGANIZATION_BROOD,
+  ORGANIZATION_COLONY,
+  ORGANIZATION_CLAN,
   ORGANIZATION_CLUSTER,
   ORGANIZATION_CLUTCH,
-  ORGANIZATION_PATCH,
-  ORGANIZATION_GANG,
-  ORGANIZATION_TEAM,
-  ORGANIZATION_SQUAD,
-  ORGANIZATION_GROUP,
-  ORGANIZATION_PACK,
-  ORGANIZATION_COLONY,
+  ORGANIZATION_COMPANY,
+  ORGANIZATION_FLIGHT,
   ORGANIZATION_FLOCK,
+  ORGANIZATION_GANG,
+  ORGANIZATION_GROUP,
+  ORGANIZATION_MOB,
+  ORGANIZATION_PACK,
+  ORGANIZATION_PAIR,
+  ORGANIZATION_PATCH,
+  ORGANIZATION_PRIDE,
+  ORGANIZATION_SOLITARY,
+  ORGANIZATION_SQUAD,
+  ORGANIZATION_SWARM,
+  ORGANIZATION_TEAM,
   ORGANIZATION_TRIBE,
-  ORGANIZATION_BAND,
-  ORGANIZATION_CLAN,
+  ORGANIZATION_TROOP,
   ORGANIZATION_ANY,
   //
   RPG_MONSTER_ORGANIZATION_MAX,
@@ -59,22 +65,28 @@ class RPG_Monster_OrganizationHelper
   inline static void init()
   {
     myRPG_Monster_OrganizationToStringTable.clear();
-    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_SOLITARY, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_SOLITARY")));
-    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_PAIR, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_PAIR")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_BAND, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_BAND")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_BROOD, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_BROOD")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_COLONY, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_COLONY")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_CLAN, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_CLAN")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_CLUSTER, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_CLUSTER")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_CLUTCH, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_CLUTCH")));
-    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_PATCH, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_PATCH")));
-    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_GANG, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_GANG")));
-    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_TEAM, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_TEAM")));
-    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_SQUAD, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_SQUAD")));
-    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_GROUP, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_GROUP")));
-    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_PACK, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_PACK")));
-    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_COLONY, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_COLONY")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_COMPANY, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_COMPANY")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_FLIGHT, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_FLIGHT")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_FLOCK, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_FLOCK")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_GANG, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_GANG")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_GROUP, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_GROUP")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_MOB, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_MOB")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_PACK, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_PACK")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_PAIR, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_PAIR")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_PATCH, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_PATCH")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_PRIDE, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_PRIDE")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_SOLITARY, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_SOLITARY")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_SQUAD, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_SQUAD")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_SWARM, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_SWARM")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_TEAM, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_TEAM")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_TRIBE, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_TRIBE")));
-    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_BAND, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_BAND")));
-    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_CLAN, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_CLAN")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_TROOP, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_TROOP")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_ANY, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_ANY")));
   };
 

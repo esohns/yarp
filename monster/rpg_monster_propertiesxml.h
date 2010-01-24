@@ -30,8 +30,10 @@ struct RPG_Monster_PropertiesXML
   char initiative;
   unsigned char speed;
   RPG_Monster_NaturalArmorClass armorClass;
+  std::vector<RPG_Monster_SpecialDefenseProperties> specialDefenses;
   RPG_Monster_Attack attack;
   std::vector<RPG_Monster_SpecialAttackProperties> specialAttacks;
+  std::vector<RPG_Monster_SpecialAbilityProperties> specialAbilities;
   unsigned char space;
   unsigned char reach;
   RPG_Monster_SavingThrowModifiers saves;

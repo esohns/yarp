@@ -201,6 +201,244 @@ RPG_Monster_NaturalArmorClass RPG_Monster_NaturalArmorClass_Type::post_RPG_Monst
   return result;
 }
 
+RPG_Monster_SpecialPropertyTypeUnion_Type::RPG_Monster_SpecialPropertyTypeUnion_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialPropertyTypeUnion_Type::RPG_Monster_SpecialPropertyTypeUnion_Type"));
+
+  myCurrentUnionType.ability = RPG_CHARACTER_ABILITY_INVALID;
+  myCurrentUnionType.abilitytype = RPG_MAGIC_ABILITYTYPE_INVALID;
+  myCurrentUnionType.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
+}
+
+void RPG_Monster_SpecialPropertyTypeUnion_Type::_characters(const ::xml_schema::ro_string& abilityType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialPropertyTypeUnion_Type::_characters"));
+
+  // can be either:
+  // - RPG_Character_Ability --> "ABILITY_xxx"
+  // - RPG_Magic_AbilityType --> "ABILITYTYPE_xxx"
+  std::string type = abilityType_in;
+  if (type.find(ACE_TEXT_ALWAYS_CHAR("ABILITYTYPE_")) == 0)
+  {
+    myCurrentUnionType.abilitytype = RPG_Magic_AbilityTypeHelper::stringToRPG_Magic_AbilityType(type);
+    myCurrentUnionType.discriminator = RPG_Monster_SpecialPropertyTypeUnion::ABILITYTYPE;
+  } // end IF
+  else
+  {
+    myCurrentUnionType.ability = RPG_Character_AbilityHelper::stringToRPG_Character_Ability(type);
+    myCurrentUnionType.discriminator = RPG_Monster_SpecialPropertyTypeUnion::ABILITY;
+  } // end ELSE
+}
+
+RPG_Monster_SpecialPropertyTypeUnion RPG_Monster_SpecialPropertyTypeUnion_Type::post_RPG_Monster_SpecialPropertyTypeUnion_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialPropertyTypeUnion_Type::post_RPG_Monster_SpecialPropertyTypeUnion_Type"));
+
+  RPG_Monster_SpecialPropertyTypeUnion result = myCurrentUnionType;
+
+  // clear structure
+  myCurrentUnionType.ability = RPG_CHARACTER_ABILITY_INVALID;
+  myCurrentUnionType.abilitytype = RPG_MAGIC_ABILITYTYPE_INVALID;
+  myCurrentUnionType.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
+
+  return result;
+}
+
+RPG_Monster_SpecialBaseProperties_Type::RPG_Monster_SpecialBaseProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialBaseProperties_Type::RPG_Monster_SpecialBaseProperties_Type"));
+
+  myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
+  myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
+  myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
+  myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
+  myCurrentProperties.usage.numUses = 0;
+  myCurrentProperties.usage.period = 0;
+}
+
+void RPG_Monster_SpecialBaseProperties_Type::abilityClass(const RPG_Magic_AbilityClass& abilityClass_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialBaseProperties_Type::abilityClass"));
+
+  myCurrentProperties.abilityClass = abilityClass_in;
+}
+
+void RPG_Monster_SpecialBaseProperties_Type::type(const RPG_Monster_SpecialPropertyTypeUnion& type_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialBaseProperties_Type::type"));
+
+  myCurrentProperties.type = type_in;
+}
+
+void RPG_Monster_SpecialBaseProperties_Type::actionType(const RPG_Combat_ActionType& actionType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialBaseProperties_Type::actionType"));
+
+  myCurrentProperties.actionType = actionType_in;
+}
+
+void RPG_Monster_SpecialBaseProperties_Type::usage(const RPG_Common_Usage& usage_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialBaseProperties_Type::usage"));
+
+  myCurrentProperties.usage = usage_in;
+}
+
+RPG_Monster_SpecialBaseProperties RPG_Monster_SpecialBaseProperties_Type::post_RPG_Monster_SpecialBaseProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialBaseProperties_Type::post_RPG_Monster_SpecialBaseProperties_Type"));
+
+  RPG_Monster_SpecialBaseProperties result = myCurrentProperties;
+
+  // clear structure
+  myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
+  myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
+  myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
+  myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
+  myCurrentProperties.usage.numUses = 0;
+  myCurrentProperties.usage.period = 0;
+
+  return result;
+}
+
+RPG_Monster_SpecialDefensePreCondition_Type::RPG_Monster_SpecialDefensePreCondition_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialDefensePreCondition_Type::RPG_Monster_SpecialDefensePreCondition_Type"));
+
+  myCurrentPreCondition.weaponType.naturalweapon = RPG_MONSTER_NATURALWEAPON_INVALID;
+  myCurrentPreCondition.weaponType.discriminator = RPG_Monster_WeaponTypeUnion::INVALID;
+}
+
+void RPG_Monster_SpecialDefensePreCondition_Type::weaponType(const RPG_Monster_WeaponTypeUnion& weaponType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialDefensePreCondition_Type::weaponType"));
+
+  myCurrentPreCondition.weaponType = weaponType_in;
+}
+
+RPG_Monster_SpecialDefensePreCondition RPG_Monster_SpecialDefensePreCondition_Type::post_RPG_Monster_SpecialDefensePreCondition_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialDefensePreCondition_Type::post_RPG_Monster_SpecialDefensePreCondition_Type"));
+
+  RPG_Monster_SpecialDefensePreCondition result = myCurrentPreCondition;
+
+  // clear structure
+  myCurrentPreCondition.weaponType.naturalweapon = RPG_MONSTER_NATURALWEAPON_INVALID;
+  myCurrentPreCondition.weaponType.discriminator = RPG_Monster_WeaponTypeUnion::INVALID;
+
+  return result;
+}
+
+RPG_Monster_DefenseAction_Type::RPG_Monster_DefenseAction_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_DefenseAction_Type::RPG_Monster_DefenseAction_Type"));
+
+  myCurrentAction.preConditions.clear();
+  myCurrentAction.damage.elements.clear();
+}
+
+void RPG_Monster_DefenseAction_Type::preCondition(const RPG_Monster_SpecialDefensePreCondition& preCondition_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_DefenseAction_Type::preCondition"));
+
+  myCurrentAction.preConditions.push_back(preCondition_in);
+}
+
+void RPG_Monster_DefenseAction_Type::damage(const RPG_Combat_Damage& damage_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_DefenseAction_Type::damage"));
+
+  myCurrentAction.damage = damage_in;
+}
+
+RPG_Monster_DefenseAction RPG_Monster_DefenseAction_Type::post_RPG_Monster_DefenseAction_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_DefenseAction_Type::post_RPG_Monster_DefenseAction_Type"));
+
+  RPG_Monster_DefenseAction result = myCurrentAction;
+
+  // clear structure
+  myCurrentAction.preConditions.clear();
+  myCurrentAction.damage.elements.clear();
+
+  return result;
+}
+
+RPG_Monster_SpecialDefenseProperties_Type::RPG_Monster_SpecialDefenseProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialDefenseProperties_Type::RPG_Monster_SpecialDefenseProperties_Type"));
+
+  myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
+  myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
+  myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
+  myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
+  myCurrentProperties.usage.numUses = 0;
+  myCurrentProperties.usage.period = 0;
+  myCurrentProperties.actions.clear();
+}
+
+void RPG_Monster_SpecialDefenseProperties_Type::abilityClass(const RPG_Magic_AbilityClass& abilityClass_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialDefenseProperties_Type::abilityClass"));
+
+  myCurrentProperties.abilityClass = abilityClass_in;
+}
+
+void RPG_Monster_SpecialDefenseProperties_Type::type(const RPG_Monster_SpecialPropertyTypeUnion& type_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialDefenseProperties_Type::type"));
+
+  myCurrentProperties.type = type_in;
+}
+
+void RPG_Monster_SpecialDefenseProperties_Type::actionType(const RPG_Combat_ActionType& actionType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialDefenseProperties_Type::actionType"));
+
+  myCurrentProperties.actionType = actionType_in;
+}
+
+void RPG_Monster_SpecialDefenseProperties_Type::usage(const RPG_Common_Usage& usage_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialDefenseProperties_Type::usage"));
+
+  myCurrentProperties.usage = usage_in;
+}
+
+RPG_Monster_SpecialBaseProperties RPG_Monster_SpecialDefenseProperties_Type::post_RPG_Monster_SpecialBaseProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialDefenseProperties_Type::post_RPG_Monster_SpecialBaseProperties_Type"));
+
+  RPG_Monster_SpecialBaseProperties result = myCurrentProperties;
+
+  return result;
+}
+
+void RPG_Monster_SpecialDefenseProperties_Type::action(const RPG_Monster_DefenseAction& action_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialDefenseProperties_Type::action"));
+
+  myCurrentProperties.actions.push_back(action_in);
+}
+
+RPG_Monster_SpecialDefenseProperties RPG_Monster_SpecialDefenseProperties_Type::post_RPG_Monster_SpecialDefenseProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialDefenseProperties_Type::post_RPG_Monster_SpecialDefenseProperties_Type"));
+
+  RPG_Monster_SpecialDefenseProperties result = myCurrentProperties;
+
+  // clear structure
+  myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
+  myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
+  myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
+  myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
+  myCurrentProperties.usage.numUses = 0;
+  myCurrentProperties.usage.period = 0;
+  myCurrentProperties.actions.clear();
+
+  return result;
+}
+
 RPG_Monster_NaturalWeapon RPG_Monster_NaturalWeapon_Type::post_RPG_Monster_NaturalWeapon_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_NaturalWeapon_Type::post_RPG_Monster_NaturalWeapon_Type"));
@@ -267,7 +505,14 @@ RPG_Monster_AttackAction_Type::RPG_Monster_AttackAction_Type()
   myCurrentAttackAction.attackBonus.clear();
   myCurrentAttackAction.attackForms.clear();
   myCurrentAttackAction.damage.elements.clear();
-  myCurrentAttackAction.effects.clear();
+  myCurrentAttackAction.effect.type = RPG_MAGIC_SPELL_INVALID;
+  myCurrentAttackAction.effect.casterLevel = 0;
+  myCurrentAttackAction.effect.duration.activation = 0;
+  myCurrentAttackAction.effect.duration.interval = 0;
+  myCurrentAttackAction.effect.duration.total = 0;
+  myCurrentAttackAction.effect.save.type = RPG_COMMON_SAVINGTHROW_INVALID;
+  myCurrentAttackAction.effect.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentAttackAction.effect.save.difficultyClass = 0;
   myCurrentAttackAction.numAttacksPerRound = 0;
   myCurrentAttackAction.ranged.maxRange = 0;
   myCurrentAttackAction.ranged.increment = 0;
@@ -307,7 +552,7 @@ void RPG_Monster_AttackAction_Type::effect(const RPG_Magic_SpellProperties& effe
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_AttackAction_Type::effect"));
 
-  myCurrentAttackAction.effects.push_back(effect_in);
+  myCurrentAttackAction.effect = effect_in;
 }
 
 void RPG_Monster_AttackAction_Type::numAttacksPerRound(unsigned char numAttacksPerRound_in)
@@ -342,7 +587,14 @@ RPG_Monster_AttackAction RPG_Monster_AttackAction_Type::post_RPG_Monster_AttackA
   myCurrentAttackAction.attackBonus.clear();
   myCurrentAttackAction.attackForms.clear();
   myCurrentAttackAction.damage.elements.clear();
-  myCurrentAttackAction.effects.clear();
+  myCurrentAttackAction.effect.type = RPG_MAGIC_SPELL_INVALID;
+  myCurrentAttackAction.effect.casterLevel = 0;
+  myCurrentAttackAction.effect.duration.activation = 0;
+  myCurrentAttackAction.effect.duration.interval = 0;
+  myCurrentAttackAction.effect.duration.total = 0;
+  myCurrentAttackAction.effect.save.type = RPG_COMMON_SAVINGTHROW_INVALID;
+  myCurrentAttackAction.effect.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentAttackAction.effect.save.difficultyClass = 0;
   myCurrentAttackAction.numAttacksPerRound = 0;
   myCurrentAttackAction.ranged.maxRange = 0;
   myCurrentAttackAction.ranged.increment = 0;
@@ -410,49 +662,6 @@ RPG_Monster_Attack RPG_Monster_Attack_Type::post_RPG_Monster_Attack_Type()
   myCurrentAttack.standardAttackActions.clear();
   myCurrentAttack.fullAttackActions.clear();
   myCurrentAttack.attackActionsAreInclusive = true;
-
-  return result;
-}
-
-RPG_Monster_SpecialAttackTypeUnion_Type::RPG_Monster_SpecialAttackTypeUnion_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackTypeUnion_Type::RPG_Monster_SpecialAttackTypeUnion_Type"));
-
-  myCurrentUnionType.ability = RPG_CHARACTER_ABILITY_INVALID;
-  myCurrentUnionType.abilitytype = RPG_MAGIC_ABILITYTYPE_INVALID;
-  myCurrentUnionType.discriminator = RPG_Monster_SpecialAttackTypeUnion::INVALID;
-}
-
-void RPG_Monster_SpecialAttackTypeUnion_Type::_characters(const ::xml_schema::ro_string& abilityType_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackTypeUnion_Type::_characters"));
-
-  // can be either:
-  // - RPG_Character_Ability --> "ABILITY_xxx"
-  // - RPG_Magic_AbilityType --> "ABILITYTYPE_xxx"
-  std::string type = abilityType_in;
-  if (type.find(ACE_TEXT_ALWAYS_CHAR("ABILITYTYPE_")) == 0)
-  {
-    myCurrentUnionType.abilitytype = RPG_Magic_AbilityTypeHelper::stringToRPG_Magic_AbilityType(type);
-    myCurrentUnionType.discriminator = RPG_Monster_SpecialAttackTypeUnion::ABILITYTYPE;
-  } // end IF
-  else
-  {
-    myCurrentUnionType.ability = RPG_Character_AbilityHelper::stringToRPG_Character_Ability(type);
-    myCurrentUnionType.discriminator = RPG_Monster_SpecialAttackTypeUnion::ABILITY;
-  } // end ELSE
-}
-
-RPG_Monster_SpecialAttackTypeUnion RPG_Monster_SpecialAttackTypeUnion_Type::post_RPG_Monster_SpecialAttackTypeUnion_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackTypeUnion_Type::post_RPG_Monster_SpecialAttackTypeUnion_Type"));
-
-  RPG_Monster_SpecialAttackTypeUnion result = myCurrentUnionType;
-
-  // clear structure
-  myCurrentUnionType.ability = RPG_CHARACTER_ABILITY_INVALID;
-  myCurrentUnionType.abilitytype = RPG_MAGIC_ABILITYTYPE_INVALID;
-  myCurrentUnionType.discriminator = RPG_Monster_SpecialAttackTypeUnion::INVALID;
 
   return result;
 }
@@ -542,8 +751,10 @@ RPG_Monster_SpecialAttackProperties_Type::RPG_Monster_SpecialAttackProperties_Ty
 
   myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
   myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
-  myCurrentProperties.type.discriminator = RPG_Monster_SpecialAttackTypeUnion::INVALID;
+  myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
   myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
+  myCurrentProperties.usage.numUses = 0;
+  myCurrentProperties.usage.period = 0;
   myCurrentProperties.preConditions.clear();
   myCurrentProperties.action.weapon.weapontype = RPG_ITEM_WEAPONTYPE_INVALID;
   myCurrentProperties.action.attackBonus.clear();
@@ -557,8 +768,6 @@ RPG_Monster_SpecialAttackProperties_Type::RPG_Monster_SpecialAttackProperties_Ty
 //   myCurrentProperties.amount.numDice = 0;
 //   myCurrentProperties.amount.typeDice = RPG_DICE_DIETYPE_INVALID;
 //   myCurrentProperties.amount.modifier = 0;
-  myCurrentProperties.usage.numUses = 0;
-  myCurrentProperties.usage.period = 0;
 }
 
 void RPG_Monster_SpecialAttackProperties_Type::abilityClass(const RPG_Magic_AbilityClass& abilityClass_in)
@@ -568,7 +777,7 @@ void RPG_Monster_SpecialAttackProperties_Type::abilityClass(const RPG_Magic_Abil
   myCurrentProperties.abilityClass = abilityClass_in;
 }
 
-void RPG_Monster_SpecialAttackProperties_Type::type(const RPG_Monster_SpecialAttackTypeUnion& type_in)
+void RPG_Monster_SpecialAttackProperties_Type::type(const RPG_Monster_SpecialPropertyTypeUnion& type_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackProperties_Type::type"));
 
@@ -580,6 +789,22 @@ void RPG_Monster_SpecialAttackProperties_Type::actionType(const RPG_Combat_Actio
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackProperties_Type::actionType"));
 
   myCurrentProperties.actionType = actionType_in;
+}
+
+void RPG_Monster_SpecialAttackProperties_Type::usage(const RPG_Common_Usage& usage_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackProperties_Type::usage"));
+
+  myCurrentProperties.usage = usage_in;
+}
+
+RPG_Monster_SpecialBaseProperties RPG_Monster_SpecialAttackProperties_Type::post_RPG_Monster_SpecialBaseProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackProperties_Type::post_RPG_Monster_SpecialBaseProperties_Type"));
+
+  RPG_Monster_SpecialBaseProperties result = myCurrentProperties;
+
+  return result;
 }
 
 void RPG_Monster_SpecialAttackProperties_Type::preCondition(const RPG_Monster_SpecialAttackPreCondition& preCondition_in)
@@ -603,13 +828,6 @@ void RPG_Monster_SpecialAttackProperties_Type::action(const RPG_Monster_AttackAc
 //   myCurrentProperties.amount = amount_in;
 // }
 
-void RPG_Monster_SpecialAttackProperties_Type::usage(const RPG_Common_Usage& usage_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackProperties_Type::usage"));
-
-  myCurrentProperties.usage = usage_in;
-}
-
 RPG_Monster_SpecialAttackProperties RPG_Monster_SpecialAttackProperties_Type::post_RPG_Monster_SpecialAttackProperties_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackProperties_Type::post_RPG_Monster_SpecialAttackProperties_Type"));
@@ -619,8 +837,10 @@ RPG_Monster_SpecialAttackProperties RPG_Monster_SpecialAttackProperties_Type::po
   // clear structure
   myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
   myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
-  myCurrentProperties.type.discriminator = RPG_Monster_SpecialAttackTypeUnion::INVALID;
+  myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
   myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
+  myCurrentProperties.usage.numUses = 0;
+  myCurrentProperties.usage.period = 0;
   myCurrentProperties.preConditions.clear();
   myCurrentProperties.action.weapon.weapontype = RPG_ITEM_WEAPONTYPE_INVALID;
   myCurrentProperties.action.attackBonus.clear();
@@ -634,8 +854,108 @@ RPG_Monster_SpecialAttackProperties RPG_Monster_SpecialAttackProperties_Type::po
 //   myCurrentProperties.amount.numDice = 0;
 //   myCurrentProperties.amount.typeDice = RPG_DICE_DIETYPE_INVALID;
 //   myCurrentProperties.amount.modifier = 0;
+
+  return result;
+}
+
+RPG_Monster_SpecialAbilityProperties_Type::RPG_Monster_SpecialAbilityProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAbilityProperties_Type::RPG_Monster_SpecialAbilityProperties_Type"));
+
+  myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
+  myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
+  myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
+  myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
   myCurrentProperties.usage.numUses = 0;
   myCurrentProperties.usage.period = 0;
+  myCurrentProperties.effect.type = RPG_MAGIC_SPELL_INVALID;
+  myCurrentProperties.effect.casterLevel = 0;
+  myCurrentProperties.effect.duration.activation = 0;
+  myCurrentProperties.effect.duration.interval = 0;
+  myCurrentProperties.effect.duration.total = 0;
+  myCurrentProperties.effect.save.type = RPG_COMMON_SAVINGTHROW_INVALID;
+  myCurrentProperties.effect.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentProperties.effect.save.difficultyClass = 0;
+  myCurrentProperties.ranged.maxRange = 0;
+  myCurrentProperties.ranged.increment = 0;
+  myCurrentProperties.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
+}
+
+void RPG_Monster_SpecialAbilityProperties_Type::abilityClass(const RPG_Magic_AbilityClass& abilityClass_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAbilityProperties_Type::abilityClass"));
+
+  myCurrentProperties.abilityClass = abilityClass_in;
+}
+
+void RPG_Monster_SpecialAbilityProperties_Type::type(const RPG_Monster_SpecialPropertyTypeUnion& type_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAbilityProperties_Type::type"));
+
+  myCurrentProperties.type = type_in;
+}
+
+void RPG_Monster_SpecialAbilityProperties_Type::actionType(const RPG_Combat_ActionType& actionType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAbilityProperties_Type::actionType"));
+
+  myCurrentProperties.actionType = actionType_in;
+}
+
+void RPG_Monster_SpecialAbilityProperties_Type::usage(const RPG_Common_Usage& usage_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAbilityProperties_Type::usage"));
+
+  myCurrentProperties.usage = usage_in;
+}
+
+RPG_Monster_SpecialBaseProperties RPG_Monster_SpecialAbilityProperties_Type::post_RPG_Monster_SpecialBaseProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAbilityProperties_Type::post_RPG_Monster_SpecialBaseProperties_Type"));
+
+  RPG_Monster_SpecialBaseProperties result = myCurrentProperties;
+
+  return result;
+}
+
+void RPG_Monster_SpecialAbilityProperties_Type::effect(const RPG_Magic_SpellProperties& effect_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAbilityProperties_Type::effect"));
+
+  myCurrentProperties.effect = effect_in;
+}
+
+void RPG_Monster_SpecialAbilityProperties_Type::ranged(const RPG_Combat_RangedAttackProperties& rangedProperties_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAbilityProperties_Type::ranged"));
+
+  myCurrentProperties.ranged = rangedProperties_in;
+}
+
+RPG_Monster_SpecialAbilityProperties RPG_Monster_SpecialAbilityProperties_Type::post_RPG_Monster_SpecialAbilityProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAbilityProperties_Type::post_RPG_Monster_SpecialAbilityProperties_Type"));
+
+  RPG_Monster_SpecialAbilityProperties result = myCurrentProperties;
+
+  // clear structure
+  myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
+  myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
+  myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
+  myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
+  myCurrentProperties.usage.numUses = 0;
+  myCurrentProperties.usage.period = 0;
+  myCurrentProperties.effect.type = RPG_MAGIC_SPELL_INVALID;
+  myCurrentProperties.effect.casterLevel = 0;
+  myCurrentProperties.effect.duration.activation = 0;
+  myCurrentProperties.effect.duration.interval = 0;
+  myCurrentProperties.effect.duration.total = 0;
+  myCurrentProperties.effect.save.type = RPG_COMMON_SAVINGTHROW_INVALID;
+  myCurrentProperties.effect.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentProperties.effect.save.difficultyClass = 0;
+  myCurrentProperties.ranged.maxRange = 0;
+  myCurrentProperties.ranged.increment = 0;
+  myCurrentProperties.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
 
   return result;
 }
@@ -891,12 +1211,14 @@ RPG_Monster_PropertiesXML_Type::RPG_Monster_PropertiesXML_Type()
   myCurrentProperties.armorClass.normal = 0;
   myCurrentProperties.armorClass.touch = 0;
   myCurrentProperties.armorClass.flatFooted = 0;
+  myCurrentProperties.specialDefenses.clear();
   myCurrentProperties.attack.baseAttackBonus = 0;
   myCurrentProperties.attack.grappleBonus = 0;
   myCurrentProperties.attack.standardAttackActions.clear();
   myCurrentProperties.attack.fullAttackActions.clear();
   myCurrentProperties.attack.attackActionsAreInclusive = true;
   myCurrentProperties.specialAttacks.clear();
+  myCurrentProperties.specialAbilities.clear();
   myCurrentProperties.space = 0;
   myCurrentProperties.reach = 0;
   myCurrentProperties.saves.fortitude = 0;
@@ -970,6 +1292,13 @@ void RPG_Monster_PropertiesXML_Type::armorClass(const RPG_Monster_NaturalArmorCl
   myCurrentProperties.armorClass = armorClass_in;
 }
 
+void RPG_Monster_PropertiesXML_Type::specialDefense(const RPG_Monster_SpecialDefenseProperties& property_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_PropertiesXML_Type::specialDefense"));
+
+  myCurrentProperties.specialDefenses.push_back(property_in);
+}
+
 void RPG_Monster_PropertiesXML_Type::attack(const RPG_Monster_Attack& attack_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_PropertiesXML_Type::attack"));
@@ -982,6 +1311,13 @@ void RPG_Monster_PropertiesXML_Type::specialAttack(const RPG_Monster_SpecialAtta
   ACE_TRACE(ACE_TEXT("RPG_Monster_PropertiesXML_Type::specialAttack"));
 
   myCurrentProperties.specialAttacks.push_back(property_in);
+}
+
+void RPG_Monster_PropertiesXML_Type::specialAbility(const RPG_Monster_SpecialAbilityProperties& property_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_PropertiesXML_Type::specialAbility"));
+
+  myCurrentProperties.specialAbilities.push_back(property_in);
 }
 
 void RPG_Monster_PropertiesXML_Type::space(unsigned char space_in)
@@ -1094,12 +1430,14 @@ RPG_Monster_PropertiesXML RPG_Monster_PropertiesXML_Type::post_RPG_Monster_Prope
   myCurrentProperties.armorClass.normal = 0;
   myCurrentProperties.armorClass.touch = 0;
   myCurrentProperties.armorClass.flatFooted = 0;
+  myCurrentProperties.specialDefenses.clear();
   myCurrentProperties.attack.baseAttackBonus = 0;
   myCurrentProperties.attack.grappleBonus = 0;
   myCurrentProperties.attack.standardAttackActions.clear();
   myCurrentProperties.attack.fullAttackActions.clear();
   myCurrentProperties.attack.attackActionsAreInclusive = true;
   myCurrentProperties.specialAttacks.clear();
+  myCurrentProperties.specialAbilities.clear();
   myCurrentProperties.space = 0;
   myCurrentProperties.reach = 0;
   myCurrentProperties.saves.fortitude = 0;

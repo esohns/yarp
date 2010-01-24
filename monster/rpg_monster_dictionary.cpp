@@ -85,9 +85,19 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                               byte_p,
                               byte_p);
 
-//   RPG_Monster_NaturalWeapon_Type            naturalWeapon_p;
+  RPG_Magic_AbilityClass_Type                    abilityClass_p;
+  RPG_Monster_SpecialPropertyTypeUnion_Type      specialPropertyTypeUnion_p;
+  RPG_Combat_ActionType_Type                     actionType_p;
+  RPG_Common_Usage_Type                          usage_p;
+  RPG_Monster_SpecialBaseProperties_Type         specialBaseProperties_p;
+  specialBaseProperties_p.parsers(abilityClass_p,
+                                  specialPropertyTypeUnion_p,
+                                  actionType_p,
+                                  usage_p);
+
   RPG_Monster_WeaponTypeUnion_Type               weaponUnion_p;
-  RPG_Combat_AttackForm_Type                     attackForm_p;
+  RPG_Monster_SpecialDefensePreCondition_Type    specialDefensePreCondition_p;
+  specialDefensePreCondition_p.parsers(weaponUnion_p);
 
   RPG_Combat_DamageTypeUnion_Type                damageType_p;
   ::xml_schema::unsigned_short_pimpl             unsigned_short_p;
@@ -95,45 +105,62 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   duration_p.parsers(roll_p,
                      unsigned_short_p,
                      unsigned_short_p);
-  RPG_Combat_DamageBonusType_Type                bonusType_p;
-  RPG_Combat_DamageBonus_Type                    others_p;
-  others_p.parsers(bonusType_p,
-                   byte_p);
-  RPG_Common_Attribute_Type                      attribute_p;
-
   RPG_Combat_DamageCounterMeasureType_Type       counterMeasureType_p;
   RPG_Combat_CheckTypeUnion_Type                 checkTypeUnion_p;
-//   RPG_Common_Attribute_Type                      attribute_p;
+  RPG_Common_Attribute_Type                      attribute_p;
   ::xml_schema::unsigned_byte_pimpl              unsigned_byte_p;
   RPG_Combat_Check_Type                          check_p;
   check_p.parsers(checkTypeUnion_p,
                   attribute_p,
                   unsigned_byte_p);
   RPG_Magic_Spell_Type                           spell_p;
+  RPG_Common_Duration_Type                       commonDuration_p;
+  commonDuration_p.parsers(unsigned_int_p,
+                           unsigned_int_p,
+                           unsigned_int_p);
   RPG_Combat_DamageReductionType_Type            reduction_p;
   RPG_Combat_DamageCounterMeasure_Type           counterMeasure_p;
   counterMeasure_p.parsers(counterMeasureType_p,
                            check_p,
                            spell_p,
+                           commonDuration_p,
                            reduction_p);
+
+  RPG_Combat_OtherDamageType_Type                otherDamageType_p;
+  RPG_Combat_OtherDamage_Type                    others_p;
+  others_p.parsers(otherDamageType_p,
+                   byte_p,
+                   counterMeasure_p);
+//   RPG_Common_Attribute_Type                      attribute_p;
   RPG_Common_EffectType_Type                     effectType_p;
   RPG_Combat_DamageElement_Type                  damageElement_p;
   damageElement_p.parsers(damageType_p,
                           roll_p,
                           roll_p,
-                          duration_p,
-                          others_p,
                           attribute_p,
+                          duration_p,
                           counterMeasure_p,
+                          others_p,
                           effectType_p);
   RPG_Combat_Damage_Type                         damage_p;
   damage_p.parsers(damageElement_p);
-//   RPG_Magic_Spell_Type                           spell_p;
+  RPG_Monster_DefenseAction_Type                 defenseAction_p;
+  defenseAction_p.parsers(specialDefensePreCondition_p,
+                          damage_p);
+  RPG_Monster_SpecialDefenseProperties_Type      specialDefenseProperties_p;
+  specialDefenseProperties_p.parsers(abilityClass_p,
+                                     specialPropertyTypeUnion_p,
+                                     actionType_p,
+                                     usage_p,
+                                     defenseAction_p);
+
+//   RPG_Monster_NaturalWeapon_Type            naturalWeapon_p;
+//   RPG_Monster_WeaponTypeUnion_Type               weaponUnion_p;
+  RPG_Combat_AttackForm_Type                     attackForm_p;
+
+  //   RPG_Magic_Spell_Type                           spell_p;
   //   ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
-  RPG_Common_Duration_Type                       commonDuration_p;
-  commonDuration_p.parsers(unsigned_int_p,
-                           unsigned_int_p,
-                           unsigned_int_p);
+//   RPG_Common_Duration_Type                       commonDuration_p;
   RPG_Common_SavingThrow_Type                    savingThrow_p;
 //   RPG_Common_Attribute_Type                      attribute_p;
   //   ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
@@ -171,31 +198,41 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                    attackAction_p,
                    bool_p);
 
-  RPG_Magic_AbilityClass_Type                    abilityClass_p;
-  RPG_Monster_SpecialAttackTypeUnion_Type        attackTypeUnion_p;
-  RPG_Combat_ActionType_Type                     actionType_p;
+//   RPG_Magic_AbilityClass_Type                    abilityClass_p;
+//   RPG_Monster_SpecialPropertyTypeUnion_Type      specialPropertyTypeUnion_p;
+//   RPG_Combat_ActionType_Type                     actionType_p;
+//   RPG_Common_Usage_Type                          usage_p;
   RPG_Character_Alignment_Type                   alignment_p;
   RPG_Character_Condition_Type                   condition_p;
 //   RPG_Character_Size_Type                        size_p;
 //   RPG_Combat_Check_Type                          check_p;
-  RPG_Monster_SpecialAttackPreCondition_Type     preCondition_p;
-  preCondition_p.parsers(alignment_p,
-                         condition_p,
-                         condition_p,
-                         size_p,
-                         size_p,
-                         check_p);
+  RPG_Monster_SpecialAttackPreCondition_Type     specialAttackPreCondition_p;
+  specialAttackPreCondition_p.parsers(alignment_p,
+                                      condition_p,
+                                      condition_p,
+                                      size_p,
+                                      size_p,
+                                      check_p);
 //   RPG_Monster_AttackAction_Type                  attackAction_p;
 //   RPG_Dice_Roll_Type                             roll_p;
-  RPG_Common_Usage_Type                          usage_p;
   RPG_Monster_SpecialAttackProperties_Type       specialAttack_p;
   specialAttack_p.parsers(abilityClass_p,
-                          attackTypeUnion_p,
+                          specialPropertyTypeUnion_p,
                           actionType_p,
-                          preCondition_p,
-                          attackAction_p,
+                          usage_p,
+                          specialAttackPreCondition_p,
+                          attackAction_p//,
 //                           roll_p,
-                          usage_p);
+                          );
+
+//   RPG_Magic_SpellProperties_Type                 spellProperties_p;
+  RPG_Monster_SpecialAbilityProperties_Type      specialAbilityProperties_p;
+  specialAbilityProperties_p.parsers(abilityClass_p,
+                                     specialPropertyTypeUnion_p,
+                                     actionType_p,
+                                     usage_p,
+                                     spellProperties_p,
+                                     rangedProperties_p);
 
 //   unsigned_int_pimpl                      space_p;
 //   unsigned_int_pimpl                      reach_p;
@@ -259,8 +296,10 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                           byte_p,
                           unsigned_byte_p,
                           naturalArmorClass_p,
+                          specialDefenseProperties_p,
                           attack_p,
                           specialAttack_p,
+                          specialAbilityProperties_p,
                           unsigned_byte_p,
                           unsigned_byte_p,
                           savingThrowModifiers_p,

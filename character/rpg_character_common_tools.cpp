@@ -110,7 +110,7 @@ const std::string RPG_Character_Common_Tools::environmentToString(const RPG_Char
   std::string result;
 
   result += RPG_Character_TerrainHelper::RPG_Character_TerrainToString(environment_in.terrain);
-  if (environment_in.climate != CLIMATE_NONE)
+  if (environment_in.climate != RPG_CHARACTER_CLIMATE_INVALID)
   {
     result += ACE_TEXT_ALWAYS_CHAR("|");
     result += RPG_Character_ClimateHelper::RPG_Character_ClimateToString(environment_in.climate);

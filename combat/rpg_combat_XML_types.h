@@ -59,13 +59,13 @@ class RPG_Combat_SpecialAttack_Type_pskel;
 class RPG_Combat_SpecialDamageType_Type_pskel;
 class RPG_Combat_DamageTypeUnion_Type_pskel;
 class RPG_Combat_DamageDuration_Type_pskel;
-class RPG_Combat_DamageBonusType_Type_pskel;
-class RPG_Combat_DamageBonus_Type_pskel;
 class RPG_Combat_DamageCounterMeasureType_Type_pskel;
 class RPG_Combat_CheckTypeUnion_Type_pskel;
 class RPG_Combat_Check_Type_pskel;
 class RPG_Combat_DamageReductionType_Type_pskel;
 class RPG_Combat_DamageCounterMeasure_Type_pskel;
+class RPG_Combat_OtherDamageType_Type_pskel;
+class RPG_Combat_OtherDamage_Type_pskel;
 class RPG_Combat_DamageElement_Type_pskel;
 class RPG_Combat_Damage_Type_pskel;
 class RPG_Combat_ActionType_Type_pskel;
@@ -317,68 +317,6 @@ class RPG_Combat_DamageDuration_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_short_pskel* totalDuration_parser_;
 };
 
-class RPG_Combat_DamageBonusType_Type_pskel: public virtual ::xml_schema::string_pskel
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual RPG_Combat_DamageBonusType
-  post_RPG_Combat_DamageBonusType_Type () = 0;
-};
-
-class RPG_Combat_DamageBonus_Type_pskel: public ::xml_schema::complex_content
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual void
-  type (const RPG_Combat_DamageBonusType&);
-
-  virtual void
-  modifier (signed char);
-
-  virtual RPG_Combat_DamageBonus
-  post_RPG_Combat_DamageBonus_Type () = 0;
-
-  // Parser construction API.
-  //
-  void
-  type_parser (::RPG_Combat_DamageBonusType_Type_pskel&);
-
-  void
-  modifier_parser (::xml_schema::byte_pskel&);
-
-  void
-  parsers (::RPG_Combat_DamageBonusType_Type_pskel& /* type */,
-           ::xml_schema::byte_pskel& /* modifier */);
-
-  // Constructor.
-  //
-  RPG_Combat_DamageBonus_Type_pskel ();
-
-  // Implementation.
-  //
-  protected:
-  virtual bool
-  _start_element_impl (const ::xml_schema::ro_string&,
-                       const ::xml_schema::ro_string&,
-                       const ::xml_schema::ro_string*);
-
-  virtual bool
-  _end_element_impl (const ::xml_schema::ro_string&,
-                     const ::xml_schema::ro_string&);
-
-  protected:
-  ::RPG_Combat_DamageBonusType_Type_pskel* type_parser_;
-  ::xml_schema::byte_pskel* modifier_parser_;
-};
-
 class RPG_Combat_DamageCounterMeasureType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
@@ -494,6 +432,9 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
   spell (const RPG_Magic_Spell&);
 
   virtual void
+  duration ();
+
+  virtual void
   reduction (const RPG_Combat_DamageReductionType&);
 
   virtual RPG_Combat_DamageCounterMeasure
@@ -511,12 +452,16 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
   spell_parser (::RPG_Magic_Spell_Type_pskel&);
 
   void
+  duration_parser (::RPG_Common_Duration_Type_pskel&);
+
+  void
   reduction_parser (::RPG_Combat_DamageReductionType_Type_pskel&);
 
   void
   parsers (::RPG_Combat_DamageCounterMeasureType_Type_pskel& /* type */,
            ::RPG_Combat_Check_Type_pskel& /* check */,
            ::RPG_Magic_Spell_Type_pskel& /* spell */,
+           ::RPG_Common_Duration_Type_pskel& /* duration */,
            ::RPG_Combat_DamageReductionType_Type_pskel& /* reduction */);
 
   // Constructor.
@@ -544,7 +489,78 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
   ::RPG_Combat_DamageCounterMeasureType_Type_pskel* type_parser_;
   ::RPG_Combat_Check_Type_pskel* check_parser_;
   ::RPG_Magic_Spell_Type_pskel* spell_parser_;
+  ::RPG_Common_Duration_Type_pskel* duration_parser_;
   ::RPG_Combat_DamageReductionType_Type_pskel* reduction_parser_;
+};
+
+class RPG_Combat_OtherDamageType_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Combat_OtherDamageType
+  post_RPG_Combat_OtherDamageType_Type () = 0;
+};
+
+class RPG_Combat_OtherDamage_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  type (const RPG_Combat_OtherDamageType&);
+
+  virtual void
+  modifier (signed char);
+
+  virtual void
+  counterMeasure (const RPG_Combat_DamageCounterMeasure&);
+
+  virtual RPG_Combat_OtherDamage
+  post_RPG_Combat_OtherDamage_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  type_parser (::RPG_Combat_OtherDamageType_Type_pskel&);
+
+  void
+  modifier_parser (::xml_schema::byte_pskel&);
+
+  void
+  counterMeasure_parser (::RPG_Combat_DamageCounterMeasure_Type_pskel&);
+
+  void
+  parsers (::RPG_Combat_OtherDamageType_Type_pskel& /* type */,
+           ::xml_schema::byte_pskel& /* modifier */,
+           ::RPG_Combat_DamageCounterMeasure_Type_pskel& /* counterMeasure */);
+
+  // Constructor.
+  //
+  RPG_Combat_OtherDamage_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Combat_OtherDamageType_Type_pskel* type_parser_;
+  ::xml_schema::byte_pskel* modifier_parser_;
+  ::RPG_Combat_DamageCounterMeasure_Type_pskel* counterMeasure_parser_;
 };
 
 class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
@@ -565,16 +581,16 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   secondary (const RPG_Dice_Roll&);
 
   virtual void
-  duration (const RPG_Combat_DamageDuration&);
-
-  virtual void
-  other (const RPG_Combat_DamageBonus&);
-
-  virtual void
   attribute (const RPG_Common_Attribute&);
 
   virtual void
+  duration (const RPG_Combat_DamageDuration&);
+
+  virtual void
   counterMeasure (const RPG_Combat_DamageCounterMeasure&);
+
+  virtual void
+  other (const RPG_Combat_OtherDamage&);
 
   virtual void
   effect (const RPG_Common_EffectType&);
@@ -594,16 +610,16 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   secondary_parser (::RPG_Dice_Roll_Type_pskel&);
 
   void
-  duration_parser (::RPG_Combat_DamageDuration_Type_pskel&);
-
-  void
-  other_parser (::RPG_Combat_DamageBonus_Type_pskel&);
-
-  void
   attribute_parser (::RPG_Common_Attribute_Type_pskel&);
 
   void
+  duration_parser (::RPG_Combat_DamageDuration_Type_pskel&);
+
+  void
   counterMeasure_parser (::RPG_Combat_DamageCounterMeasure_Type_pskel&);
+
+  void
+  other_parser (::RPG_Combat_OtherDamage_Type_pskel&);
 
   void
   effect_parser (::RPG_Common_EffectType_Type_pskel&);
@@ -612,10 +628,10 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   parsers (::RPG_Combat_DamageTypeUnion_Type_pskel& /* type */,
            ::RPG_Dice_Roll_Type_pskel& /* amount */,
            ::RPG_Dice_Roll_Type_pskel& /* secondary */,
-           ::RPG_Combat_DamageDuration_Type_pskel& /* duration */,
-           ::RPG_Combat_DamageBonus_Type_pskel& /* other */,
            ::RPG_Common_Attribute_Type_pskel& /* attribute */,
+           ::RPG_Combat_DamageDuration_Type_pskel& /* duration */,
            ::RPG_Combat_DamageCounterMeasure_Type_pskel& /* counterMeasure */,
+           ::RPG_Combat_OtherDamage_Type_pskel& /* other */,
            ::RPG_Common_EffectType_Type_pskel& /* effect */);
 
   // Constructor.
@@ -643,10 +659,10 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Combat_DamageTypeUnion_Type_pskel* type_parser_;
   ::RPG_Dice_Roll_Type_pskel* amount_parser_;
   ::RPG_Dice_Roll_Type_pskel* secondary_parser_;
-  ::RPG_Combat_DamageDuration_Type_pskel* duration_parser_;
-  ::RPG_Combat_DamageBonus_Type_pskel* other_parser_;
   ::RPG_Common_Attribute_Type_pskel* attribute_parser_;
+  ::RPG_Combat_DamageDuration_Type_pskel* duration_parser_;
   ::RPG_Combat_DamageCounterMeasure_Type_pskel* counterMeasure_parser_;
+  ::RPG_Combat_OtherDamage_Type_pskel* other_parser_;
   ::RPG_Common_EffectType_Type_pskel* effect_parser_;
 };
 

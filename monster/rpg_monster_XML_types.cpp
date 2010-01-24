@@ -107,6 +107,134 @@ RPG_Monster_NaturalArmorClass_Type_pskel ()
 {
 }
 
+// RPG_Monster_SpecialBaseProperties_Type_pskel
+//
+
+void RPG_Monster_SpecialBaseProperties_Type_pskel::
+abilityClass_parser (::RPG_Magic_AbilityClass_Type_pskel& p)
+{
+  this->abilityClass_parser_ = &p;
+}
+
+void RPG_Monster_SpecialBaseProperties_Type_pskel::
+type_parser (::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel& p)
+{
+  this->type_parser_ = &p;
+}
+
+void RPG_Monster_SpecialBaseProperties_Type_pskel::
+actionType_parser (::RPG_Combat_ActionType_Type_pskel& p)
+{
+  this->actionType_parser_ = &p;
+}
+
+void RPG_Monster_SpecialBaseProperties_Type_pskel::
+usage_parser (::RPG_Common_Usage_Type_pskel& p)
+{
+  this->usage_parser_ = &p;
+}
+
+void RPG_Monster_SpecialBaseProperties_Type_pskel::
+parsers (::RPG_Magic_AbilityClass_Type_pskel& abilityClass,
+         ::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel& type,
+         ::RPG_Combat_ActionType_Type_pskel& actionType,
+         ::RPG_Common_Usage_Type_pskel& usage)
+{
+  this->abilityClass_parser_ = &abilityClass;
+  this->type_parser_ = &type;
+  this->actionType_parser_ = &actionType;
+  this->usage_parser_ = &usage;
+}
+
+RPG_Monster_SpecialBaseProperties_Type_pskel::
+RPG_Monster_SpecialBaseProperties_Type_pskel ()
+: abilityClass_parser_ (0),
+  type_parser_ (0),
+  actionType_parser_ (0),
+  usage_parser_ (0)
+{
+}
+
+// RPG_Monster_SpecialDefensePreCondition_Type_pskel
+//
+
+void RPG_Monster_SpecialDefensePreCondition_Type_pskel::
+weaponType_parser (::RPG_Monster_WeaponTypeUnion_Type_pskel& p)
+{
+  this->weaponType_parser_ = &p;
+}
+
+void RPG_Monster_SpecialDefensePreCondition_Type_pskel::
+parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& weaponType)
+{
+  this->weaponType_parser_ = &weaponType;
+}
+
+RPG_Monster_SpecialDefensePreCondition_Type_pskel::
+RPG_Monster_SpecialDefensePreCondition_Type_pskel ()
+: weaponType_parser_ (0)
+{
+}
+
+// RPG_Monster_DefenseAction_Type_pskel
+//
+
+void RPG_Monster_DefenseAction_Type_pskel::
+preCondition_parser (::RPG_Monster_SpecialDefensePreCondition_Type_pskel& p)
+{
+  this->preCondition_parser_ = &p;
+}
+
+void RPG_Monster_DefenseAction_Type_pskel::
+damage_parser (::RPG_Combat_Damage_Type_pskel& p)
+{
+  this->damage_parser_ = &p;
+}
+
+void RPG_Monster_DefenseAction_Type_pskel::
+parsers (::RPG_Monster_SpecialDefensePreCondition_Type_pskel& preCondition,
+         ::RPG_Combat_Damage_Type_pskel& damage)
+{
+  this->preCondition_parser_ = &preCondition;
+  this->damage_parser_ = &damage;
+}
+
+RPG_Monster_DefenseAction_Type_pskel::
+RPG_Monster_DefenseAction_Type_pskel ()
+: preCondition_parser_ (0),
+  damage_parser_ (0)
+{
+}
+
+// RPG_Monster_SpecialDefenseProperties_Type_pskel
+//
+
+void RPG_Monster_SpecialDefenseProperties_Type_pskel::
+action_parser (::RPG_Monster_DefenseAction_Type_pskel& p)
+{
+  this->action_parser_ = &p;
+}
+
+void RPG_Monster_SpecialDefenseProperties_Type_pskel::
+parsers (::RPG_Magic_AbilityClass_Type_pskel& abilityClass,
+         ::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel& type,
+         ::RPG_Combat_ActionType_Type_pskel& actionType,
+         ::RPG_Common_Usage_Type_pskel& usage,
+         ::RPG_Monster_DefenseAction_Type_pskel& action)
+{
+  this->abilityClass_parser_ = &abilityClass;
+  this->type_parser_ = &type;
+  this->actionType_parser_ = &actionType;
+  this->usage_parser_ = &usage;
+  this->action_parser_ = &action;
+}
+
+RPG_Monster_SpecialDefenseProperties_Type_pskel::
+RPG_Monster_SpecialDefenseProperties_Type_pskel ()
+: action_parser_ (0)
+{
+}
+
 // RPG_Monster_AttackAction_Type_pskel
 //
 
@@ -318,24 +446,6 @@ RPG_Monster_SpecialAttackPreCondition_Type_pskel ()
 //
 
 void RPG_Monster_SpecialAttackProperties_Type_pskel::
-abilityClass_parser (::RPG_Magic_AbilityClass_Type_pskel& p)
-{
-  this->abilityClass_parser_ = &p;
-}
-
-void RPG_Monster_SpecialAttackProperties_Type_pskel::
-type_parser (::RPG_Monster_SpecialAttackTypeUnion_Type_pskel& p)
-{
-  this->type_parser_ = &p;
-}
-
-void RPG_Monster_SpecialAttackProperties_Type_pskel::
-actionType_parser (::RPG_Combat_ActionType_Type_pskel& p)
-{
-  this->actionType_parser_ = &p;
-}
-
-void RPG_Monster_SpecialAttackProperties_Type_pskel::
 preCondition_parser (::RPG_Monster_SpecialAttackPreCondition_Type_pskel& p)
 {
   this->preCondition_parser_ = &p;
@@ -348,35 +458,63 @@ action_parser (::RPG_Monster_AttackAction_Type_pskel& p)
 }
 
 void RPG_Monster_SpecialAttackProperties_Type_pskel::
-usage_parser (::RPG_Common_Usage_Type_pskel& p)
-{
-  this->usage_parser_ = &p;
-}
-
-void RPG_Monster_SpecialAttackProperties_Type_pskel::
 parsers (::RPG_Magic_AbilityClass_Type_pskel& abilityClass,
-         ::RPG_Monster_SpecialAttackTypeUnion_Type_pskel& type,
+         ::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel& type,
          ::RPG_Combat_ActionType_Type_pskel& actionType,
+         ::RPG_Common_Usage_Type_pskel& usage,
          ::RPG_Monster_SpecialAttackPreCondition_Type_pskel& preCondition,
-         ::RPG_Monster_AttackAction_Type_pskel& action,
-         ::RPG_Common_Usage_Type_pskel& usage)
+         ::RPG_Monster_AttackAction_Type_pskel& action)
 {
   this->abilityClass_parser_ = &abilityClass;
   this->type_parser_ = &type;
   this->actionType_parser_ = &actionType;
+  this->usage_parser_ = &usage;
   this->preCondition_parser_ = &preCondition;
   this->action_parser_ = &action;
-  this->usage_parser_ = &usage;
 }
 
 RPG_Monster_SpecialAttackProperties_Type_pskel::
 RPG_Monster_SpecialAttackProperties_Type_pskel ()
-: abilityClass_parser_ (0),
-  type_parser_ (0),
-  actionType_parser_ (0),
-  preCondition_parser_ (0),
-  action_parser_ (0),
-  usage_parser_ (0)
+: preCondition_parser_ (0),
+  action_parser_ (0)
+{
+}
+
+// RPG_Monster_SpecialAbilityProperties_Type_pskel
+//
+
+void RPG_Monster_SpecialAbilityProperties_Type_pskel::
+effect_parser (::RPG_Magic_SpellProperties_Type_pskel& p)
+{
+  this->effect_parser_ = &p;
+}
+
+void RPG_Monster_SpecialAbilityProperties_Type_pskel::
+ranged_parser (::RPG_Combat_RangedAttackProperties_Type_pskel& p)
+{
+  this->ranged_parser_ = &p;
+}
+
+void RPG_Monster_SpecialAbilityProperties_Type_pskel::
+parsers (::RPG_Magic_AbilityClass_Type_pskel& abilityClass,
+         ::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel& type,
+         ::RPG_Combat_ActionType_Type_pskel& actionType,
+         ::RPG_Common_Usage_Type_pskel& usage,
+         ::RPG_Magic_SpellProperties_Type_pskel& effect,
+         ::RPG_Combat_RangedAttackProperties_Type_pskel& ranged)
+{
+  this->abilityClass_parser_ = &abilityClass;
+  this->type_parser_ = &type;
+  this->actionType_parser_ = &actionType;
+  this->usage_parser_ = &usage;
+  this->effect_parser_ = &effect;
+  this->ranged_parser_ = &ranged;
+}
+
+RPG_Monster_SpecialAbilityProperties_Type_pskel::
+RPG_Monster_SpecialAbilityProperties_Type_pskel ()
+: effect_parser_ (0),
+  ranged_parser_ (0)
 {
 }
 
@@ -606,6 +744,12 @@ armorClass_parser (::RPG_Monster_NaturalArmorClass_Type_pskel& p)
 }
 
 void RPG_Monster_PropertiesXML_Type_pskel::
+specialDefense_parser (::RPG_Monster_SpecialDefenseProperties_Type_pskel& p)
+{
+  this->specialDefense_parser_ = &p;
+}
+
+void RPG_Monster_PropertiesXML_Type_pskel::
 attack_parser (::RPG_Monster_Attack_Type_pskel& p)
 {
   this->attack_parser_ = &p;
@@ -615,6 +759,12 @@ void RPG_Monster_PropertiesXML_Type_pskel::
 specialAttack_parser (::RPG_Monster_SpecialAttackProperties_Type_pskel& p)
 {
   this->specialAttack_parser_ = &p;
+}
+
+void RPG_Monster_PropertiesXML_Type_pskel::
+specialAbility_parser (::RPG_Monster_SpecialAbilityProperties_Type_pskel& p)
+{
+  this->specialAbility_parser_ = &p;
 }
 
 void RPG_Monster_PropertiesXML_Type_pskel::
@@ -703,8 +853,10 @@ parsers (::xml_schema::string_pskel& name,
          ::xml_schema::byte_pskel& initiative,
          ::xml_schema::unsigned_byte_pskel& speed,
          ::RPG_Monster_NaturalArmorClass_Type_pskel& armorClass,
+         ::RPG_Monster_SpecialDefenseProperties_Type_pskel& specialDefense,
          ::RPG_Monster_Attack_Type_pskel& attack,
          ::RPG_Monster_SpecialAttackProperties_Type_pskel& specialAttack,
+         ::RPG_Monster_SpecialAbilityProperties_Type_pskel& specialAbility,
          ::xml_schema::unsigned_byte_pskel& space,
          ::xml_schema::unsigned_byte_pskel& reach,
          ::RPG_Monster_SavingThrowModifiers_Type_pskel& saves,
@@ -726,8 +878,10 @@ parsers (::xml_schema::string_pskel& name,
   this->initiative_parser_ = &initiative;
   this->speed_parser_ = &speed;
   this->armorClass_parser_ = &armorClass;
+  this->specialDefense_parser_ = &specialDefense;
   this->attack_parser_ = &attack;
   this->specialAttack_parser_ = &specialAttack;
+  this->specialAbility_parser_ = &specialAbility;
   this->space_parser_ = &space;
   this->reach_parser_ = &reach;
   this->saves_parser_ = &saves;
@@ -752,8 +906,10 @@ RPG_Monster_PropertiesXML_Type_pskel ()
   initiative_parser_ (0),
   speed_parser_ (0),
   armorClass_parser_ (0),
+  specialDefense_parser_ (0),
   attack_parser_ (0),
   specialAttack_parser_ (0),
+  specialAbility_parser_ (0),
   space_parser_ (0),
   reach_parser_ (0),
   saves_parser_ (0),
@@ -951,6 +1107,294 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->flatFooted_parser_)
       this->flatFooted (this->flatFooted_parser_->post_byte ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Monster_SpecialBaseProperties_Type_pskel
+//
+
+void RPG_Monster_SpecialBaseProperties_Type_pskel::
+abilityClass (const RPG_Magic_AbilityClass&)
+{
+}
+
+void RPG_Monster_SpecialBaseProperties_Type_pskel::
+type (const RPG_Monster_SpecialPropertyTypeUnion&)
+{
+}
+
+void RPG_Monster_SpecialBaseProperties_Type_pskel::
+actionType (const RPG_Combat_ActionType&)
+{
+}
+
+void RPG_Monster_SpecialBaseProperties_Type_pskel::
+usage (const RPG_Common_Usage&)
+{
+}
+
+bool RPG_Monster_SpecialBaseProperties_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "abilityClass" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->abilityClass_parser_;
+
+    if (this->abilityClass_parser_)
+      this->abilityClass_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
+
+    if (this->type_parser_)
+      this->type_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "actionType" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->actionType_parser_;
+
+    if (this->actionType_parser_)
+      this->actionType_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "usage" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->usage_parser_;
+
+    if (this->usage_parser_)
+      this->usage_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Monster_SpecialBaseProperties_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "abilityClass" && ns == "urn:rpg")
+  {
+    if (this->abilityClass_parser_)
+      this->abilityClass (this->abilityClass_parser_->post_RPG_Magic_AbilityClass_Type ());
+
+    return true;
+  }
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    if (this->type_parser_)
+      this->type (this->type_parser_->post_RPG_Monster_SpecialPropertyTypeUnion_Type ());
+
+    return true;
+  }
+
+  if (n == "actionType" && ns == "urn:rpg")
+  {
+    if (this->actionType_parser_)
+      this->actionType (this->actionType_parser_->post_RPG_Combat_ActionType_Type ());
+
+    return true;
+  }
+
+  if (n == "usage" && ns == "urn:rpg")
+  {
+    if (this->usage_parser_)
+      this->usage (this->usage_parser_->post_RPG_Common_Usage_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Monster_SpecialDefensePreCondition_Type_pskel
+//
+
+void RPG_Monster_SpecialDefensePreCondition_Type_pskel::
+weaponType (const RPG_Monster_WeaponTypeUnion&)
+{
+}
+
+bool RPG_Monster_SpecialDefensePreCondition_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "weaponType" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->weaponType_parser_;
+
+    if (this->weaponType_parser_)
+      this->weaponType_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Monster_SpecialDefensePreCondition_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "weaponType" && ns == "urn:rpg")
+  {
+    if (this->weaponType_parser_)
+      this->weaponType (this->weaponType_parser_->post_RPG_Monster_WeaponTypeUnion_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Monster_DefenseAction_Type_pskel
+//
+
+void RPG_Monster_DefenseAction_Type_pskel::
+preCondition (const RPG_Monster_SpecialDefensePreCondition&)
+{
+}
+
+void RPG_Monster_DefenseAction_Type_pskel::
+damage (const RPG_Combat_Damage&)
+{
+}
+
+bool RPG_Monster_DefenseAction_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "preCondition" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->preCondition_parser_;
+
+    if (this->preCondition_parser_)
+      this->preCondition_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "damage" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->damage_parser_;
+
+    if (this->damage_parser_)
+      this->damage_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Monster_DefenseAction_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "preCondition" && ns == "urn:rpg")
+  {
+    if (this->preCondition_parser_)
+      this->preCondition (this->preCondition_parser_->post_RPG_Monster_SpecialDefensePreCondition_Type ());
+
+    return true;
+  }
+
+  if (n == "damage" && ns == "urn:rpg")
+  {
+    if (this->damage_parser_)
+      this->damage (this->damage_parser_->post_RPG_Combat_Damage_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Monster_SpecialDefenseProperties_Type_pskel
+//
+
+void RPG_Monster_SpecialDefenseProperties_Type_pskel::
+action (const RPG_Monster_DefenseAction&)
+{
+}
+
+bool RPG_Monster_SpecialDefenseProperties_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::RPG_Monster_SpecialBaseProperties_Type_pskel::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "action" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->action_parser_;
+
+    if (this->action_parser_)
+      this->action_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Monster_SpecialDefenseProperties_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::RPG_Monster_SpecialBaseProperties_Type_pskel::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "action" && ns == "urn:rpg")
+  {
+    if (this->action_parser_)
+      this->action (this->action_parser_->post_RPG_Monster_DefenseAction_Type ());
 
     return true;
   }
@@ -1491,32 +1935,12 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Monster_SpecialAttackProperties_Type_pskel::
-abilityClass (const RPG_Magic_AbilityClass&)
-{
-}
-
-void RPG_Monster_SpecialAttackProperties_Type_pskel::
-type (const RPG_Monster_SpecialAttackTypeUnion&)
-{
-}
-
-void RPG_Monster_SpecialAttackProperties_Type_pskel::
-actionType (const RPG_Combat_ActionType&)
-{
-}
-
-void RPG_Monster_SpecialAttackProperties_Type_pskel::
 preCondition (const RPG_Monster_SpecialAttackPreCondition&)
 {
 }
 
 void RPG_Monster_SpecialAttackProperties_Type_pskel::
 action (const RPG_Monster_AttackAction&)
-{
-}
-
-void RPG_Monster_SpecialAttackProperties_Type_pskel::
-usage (const RPG_Common_Usage&)
 {
 }
 
@@ -1527,38 +1951,8 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 {
   XSD_UNUSED (t);
 
-  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+  if (this->::RPG_Monster_SpecialBaseProperties_Type_pskel::_start_element_impl (ns, n, t))
     return true;
-
-  if (n == "abilityClass" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->abilityClass_parser_;
-
-    if (this->abilityClass_parser_)
-      this->abilityClass_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "type" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
-
-    if (this->type_parser_)
-      this->type_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "actionType" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->actionType_parser_;
-
-    if (this->actionType_parser_)
-      this->actionType_parser_->pre ();
-
-    return true;
-  }
 
   if (n == "preCondition" && ns == "urn:rpg")
   {
@@ -1580,16 +1974,6 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "usage" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->usage_parser_;
-
-    if (this->usage_parser_)
-      this->usage_parser_->pre ();
-
-    return true;
-  }
-
   return false;
 }
 
@@ -1597,32 +1981,8 @@ bool RPG_Monster_SpecialAttackProperties_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
-  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+  if (this->::RPG_Monster_SpecialBaseProperties_Type_pskel::_end_element_impl (ns, n))
     return true;
-
-  if (n == "abilityClass" && ns == "urn:rpg")
-  {
-    if (this->abilityClass_parser_)
-      this->abilityClass (this->abilityClass_parser_->post_RPG_Magic_AbilityClass_Type ());
-
-    return true;
-  }
-
-  if (n == "type" && ns == "urn:rpg")
-  {
-    if (this->type_parser_)
-      this->type (this->type_parser_->post_RPG_Monster_SpecialAttackTypeUnion_Type ());
-
-    return true;
-  }
-
-  if (n == "actionType" && ns == "urn:rpg")
-  {
-    if (this->actionType_parser_)
-      this->actionType (this->actionType_parser_->post_RPG_Combat_ActionType_Type ());
-
-    return true;
-  }
 
   if (n == "preCondition" && ns == "urn:rpg")
   {
@@ -1640,10 +2000,74 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "usage" && ns == "urn:rpg")
+  return false;
+}
+
+// RPG_Monster_SpecialAbilityProperties_Type_pskel
+//
+
+void RPG_Monster_SpecialAbilityProperties_Type_pskel::
+effect (const RPG_Magic_SpellProperties&)
+{
+}
+
+void RPG_Monster_SpecialAbilityProperties_Type_pskel::
+ranged (const RPG_Combat_RangedAttackProperties&)
+{
+}
+
+bool RPG_Monster_SpecialAbilityProperties_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::RPG_Monster_SpecialBaseProperties_Type_pskel::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "effect" && ns == "urn:rpg")
   {
-    if (this->usage_parser_)
-      this->usage (this->usage_parser_->post_RPG_Common_Usage_Type ());
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->effect_parser_;
+
+    if (this->effect_parser_)
+      this->effect_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "ranged" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->ranged_parser_;
+
+    if (this->ranged_parser_)
+      this->ranged_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Monster_SpecialAbilityProperties_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::RPG_Monster_SpecialBaseProperties_Type_pskel::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "effect" && ns == "urn:rpg")
+  {
+    if (this->effect_parser_)
+      this->effect (this->effect_parser_->post_RPG_Magic_SpellProperties_Type ());
+
+    return true;
+  }
+
+  if (n == "ranged" && ns == "urn:rpg")
+  {
+    if (this->ranged_parser_)
+      this->ranged (this->ranged_parser_->post_RPG_Combat_RangedAttackProperties_Type ());
 
     return true;
   }
@@ -2122,12 +2546,22 @@ armorClass (const RPG_Monster_NaturalArmorClass&)
 }
 
 void RPG_Monster_PropertiesXML_Type_pskel::
+specialDefense (const RPG_Monster_SpecialDefenseProperties&)
+{
+}
+
+void RPG_Monster_PropertiesXML_Type_pskel::
 attack (const RPG_Monster_Attack&)
 {
 }
 
 void RPG_Monster_PropertiesXML_Type_pskel::
 specialAttack (const RPG_Monster_SpecialAttackProperties&)
+{
+}
+
+void RPG_Monster_PropertiesXML_Type_pskel::
+specialAbility (const RPG_Monster_SpecialAbilityProperties&)
 {
 }
 
@@ -2276,6 +2710,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "specialDefense" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->specialDefense_parser_;
+
+    if (this->specialDefense_parser_)
+      this->specialDefense_parser_->pre ();
+
+    return true;
+  }
+
   if (n == "attack" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->attack_parser_;
@@ -2292,6 +2736,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->specialAttack_parser_)
       this->specialAttack_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "specialAbility" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->specialAbility_parser_;
+
+    if (this->specialAbility_parser_)
+      this->specialAbility_parser_->pre ();
 
     return true;
   }
@@ -2492,6 +2946,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "specialDefense" && ns == "urn:rpg")
+  {
+    if (this->specialDefense_parser_)
+      this->specialDefense (this->specialDefense_parser_->post_RPG_Monster_SpecialDefenseProperties_Type ());
+
+    return true;
+  }
+
   if (n == "attack" && ns == "urn:rpg")
   {
     if (this->attack_parser_)
@@ -2504,6 +2966,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->specialAttack_parser_)
       this->specialAttack (this->specialAttack_parser_->post_RPG_Monster_SpecialAttackProperties_Type ());
+
+    return true;
+  }
+
+  if (n == "specialAbility" && ns == "urn:rpg")
+  {
+    if (this->specialAbility_parser_)
+      this->specialAbility (this->specialAbility_parser_->post_RPG_Monster_SpecialAbilityProperties_Type ());
 
     return true;
   }

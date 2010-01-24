@@ -53,13 +53,18 @@ class RPG_Monster_MetaType_Type_pskel;
 class RPG_Monster_SubType_Type_pskel;
 class RPG_Monster_Type_Type_pskel;
 class RPG_Monster_NaturalArmorClass_Type_pskel;
+class RPG_Monster_SpecialPropertyTypeUnion_Type_pskel;
+class RPG_Monster_SpecialBaseProperties_Type_pskel;
 class RPG_Monster_NaturalWeapon_Type_pskel;
 class RPG_Monster_WeaponTypeUnion_Type_pskel;
+class RPG_Monster_SpecialDefensePreCondition_Type_pskel;
+class RPG_Monster_DefenseAction_Type_pskel;
+class RPG_Monster_SpecialDefenseProperties_Type_pskel;
 class RPG_Monster_AttackAction_Type_pskel;
 class RPG_Monster_Attack_Type_pskel;
-class RPG_Monster_SpecialAttackTypeUnion_Type_pskel;
 class RPG_Monster_SpecialAttackPreCondition_Type_pskel;
 class RPG_Monster_SpecialAttackProperties_Type_pskel;
+class RPG_Monster_SpecialAbilityProperties_Type_pskel;
 class RPG_Monster_SavingThrowModifiers_Type_pskel;
 class RPG_Monster_Organization_Type_pskel;
 class RPG_Monster_OrganizationSlaverStep_Type_pskel;
@@ -229,6 +234,87 @@ class RPG_Monster_NaturalArmorClass_Type_pskel: public ::xml_schema::complex_con
   ::xml_schema::byte_pskel* flatFooted_parser_;
 };
 
+class RPG_Monster_SpecialPropertyTypeUnion_Type_pskel: public ::xml_schema::simple_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+  //
+  // virtual void
+  // _characters (const ::xml_schema::ro_string&);
+
+  virtual RPG_Monster_SpecialPropertyTypeUnion
+  post_RPG_Monster_SpecialPropertyTypeUnion_Type () = 0;
+};
+
+class RPG_Monster_SpecialBaseProperties_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  abilityClass (const RPG_Magic_AbilityClass&);
+
+  virtual void
+  type (const RPG_Monster_SpecialPropertyTypeUnion&);
+
+  virtual void
+  actionType (const RPG_Combat_ActionType&);
+
+  virtual void
+  usage (const RPG_Common_Usage&);
+
+  virtual RPG_Monster_SpecialBaseProperties
+  post_RPG_Monster_SpecialBaseProperties_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  abilityClass_parser (::RPG_Magic_AbilityClass_Type_pskel&);
+
+  void
+  type_parser (::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel&);
+
+  void
+  actionType_parser (::RPG_Combat_ActionType_Type_pskel&);
+
+  void
+  usage_parser (::RPG_Common_Usage_Type_pskel&);
+
+  void
+  parsers (::RPG_Magic_AbilityClass_Type_pskel& /* abilityClass */,
+           ::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel& /* type */,
+           ::RPG_Combat_ActionType_Type_pskel& /* actionType */,
+           ::RPG_Common_Usage_Type_pskel& /* usage */);
+
+  // Constructor.
+  //
+  RPG_Monster_SpecialBaseProperties_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Magic_AbilityClass_Type_pskel* abilityClass_parser_;
+  ::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel* type_parser_;
+  ::RPG_Combat_ActionType_Type_pskel* actionType_parser_;
+  ::RPG_Common_Usage_Type_pskel* usage_parser_;
+};
+
 class RPG_Monster_NaturalWeapon_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
@@ -254,6 +340,144 @@ class RPG_Monster_WeaponTypeUnion_Type_pskel: public ::xml_schema::simple_conten
 
   virtual RPG_Monster_WeaponTypeUnion
   post_RPG_Monster_WeaponTypeUnion_Type () = 0;
+};
+
+class RPG_Monster_SpecialDefensePreCondition_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  weaponType (const RPG_Monster_WeaponTypeUnion&);
+
+  virtual RPG_Monster_SpecialDefensePreCondition
+  post_RPG_Monster_SpecialDefensePreCondition_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  weaponType_parser (::RPG_Monster_WeaponTypeUnion_Type_pskel&);
+
+  void
+  parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& /* weaponType */);
+
+  // Constructor.
+  //
+  RPG_Monster_SpecialDefensePreCondition_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Monster_WeaponTypeUnion_Type_pskel* weaponType_parser_;
+};
+
+class RPG_Monster_DefenseAction_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  preCondition (const RPG_Monster_SpecialDefensePreCondition&);
+
+  virtual void
+  damage (const RPG_Combat_Damage&);
+
+  virtual RPG_Monster_DefenseAction
+  post_RPG_Monster_DefenseAction_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  preCondition_parser (::RPG_Monster_SpecialDefensePreCondition_Type_pskel&);
+
+  void
+  damage_parser (::RPG_Combat_Damage_Type_pskel&);
+
+  void
+  parsers (::RPG_Monster_SpecialDefensePreCondition_Type_pskel& /* preCondition */,
+           ::RPG_Combat_Damage_Type_pskel& /* damage */);
+
+  // Constructor.
+  //
+  RPG_Monster_DefenseAction_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Monster_SpecialDefensePreCondition_Type_pskel* preCondition_parser_;
+  ::RPG_Combat_Damage_Type_pskel* damage_parser_;
+};
+
+class RPG_Monster_SpecialDefenseProperties_Type_pskel: public virtual ::RPG_Monster_SpecialBaseProperties_Type_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  action (const RPG_Monster_DefenseAction&);
+
+  virtual RPG_Monster_SpecialDefenseProperties
+  post_RPG_Monster_SpecialDefenseProperties_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  action_parser (::RPG_Monster_DefenseAction_Type_pskel&);
+
+  void
+  parsers (::RPG_Magic_AbilityClass_Type_pskel& /* abilityClass */,
+           ::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel& /* type */,
+           ::RPG_Combat_ActionType_Type_pskel& /* actionType */,
+           ::RPG_Common_Usage_Type_pskel& /* usage */,
+           ::RPG_Monster_DefenseAction_Type_pskel& /* action */);
+
+  // Constructor.
+  //
+  RPG_Monster_SpecialDefenseProperties_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Monster_DefenseAction_Type_pskel* action_parser_;
 };
 
 class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
@@ -438,21 +662,6 @@ class RPG_Monster_Attack_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::boolean_pskel* attackActionsAreInclusive_parser_;
 };
 
-class RPG_Monster_SpecialAttackTypeUnion_Type_pskel: public ::xml_schema::simple_content
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-  //
-  // virtual void
-  // _characters (const ::xml_schema::ro_string&);
-
-  virtual RPG_Monster_SpecialAttackTypeUnion
-  post_RPG_Monster_SpecialAttackTypeUnion_Type () = 0;
-};
-
 class RPG_Monster_SpecialAttackPreCondition_Type_pskel: public ::xml_schema::complex_content
 {
   public:
@@ -535,7 +744,7 @@ class RPG_Monster_SpecialAttackPreCondition_Type_pskel: public ::xml_schema::com
   ::RPG_Combat_Check_Type_pskel* check_parser_;
 };
 
-class RPG_Monster_SpecialAttackProperties_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_SpecialAttackProperties_Type_pskel: public virtual ::RPG_Monster_SpecialBaseProperties_Type_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -544,22 +753,10 @@ class RPG_Monster_SpecialAttackProperties_Type_pskel: public ::xml_schema::compl
   // pre ();
 
   virtual void
-  abilityClass (const RPG_Magic_AbilityClass&);
-
-  virtual void
-  type (const RPG_Monster_SpecialAttackTypeUnion&);
-
-  virtual void
-  actionType (const RPG_Combat_ActionType&);
-
-  virtual void
   preCondition (const RPG_Monster_SpecialAttackPreCondition&);
 
   virtual void
   action (const RPG_Monster_AttackAction&);
-
-  virtual void
-  usage (const RPG_Common_Usage&);
 
   virtual RPG_Monster_SpecialAttackProperties
   post_RPG_Monster_SpecialAttackProperties_Type () = 0;
@@ -567,30 +764,18 @@ class RPG_Monster_SpecialAttackProperties_Type_pskel: public ::xml_schema::compl
   // Parser construction API.
   //
   void
-  abilityClass_parser (::RPG_Magic_AbilityClass_Type_pskel&);
-
-  void
-  type_parser (::RPG_Monster_SpecialAttackTypeUnion_Type_pskel&);
-
-  void
-  actionType_parser (::RPG_Combat_ActionType_Type_pskel&);
-
-  void
   preCondition_parser (::RPG_Monster_SpecialAttackPreCondition_Type_pskel&);
 
   void
   action_parser (::RPG_Monster_AttackAction_Type_pskel&);
 
   void
-  usage_parser (::RPG_Common_Usage_Type_pskel&);
-
-  void
   parsers (::RPG_Magic_AbilityClass_Type_pskel& /* abilityClass */,
-           ::RPG_Monster_SpecialAttackTypeUnion_Type_pskel& /* type */,
+           ::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel& /* type */,
            ::RPG_Combat_ActionType_Type_pskel& /* actionType */,
+           ::RPG_Common_Usage_Type_pskel& /* usage */,
            ::RPG_Monster_SpecialAttackPreCondition_Type_pskel& /* preCondition */,
-           ::RPG_Monster_AttackAction_Type_pskel& /* action */,
-           ::RPG_Common_Usage_Type_pskel& /* usage */);
+           ::RPG_Monster_AttackAction_Type_pskel& /* action */);
 
   // Constructor.
   //
@@ -609,12 +794,62 @@ class RPG_Monster_SpecialAttackProperties_Type_pskel: public ::xml_schema::compl
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Magic_AbilityClass_Type_pskel* abilityClass_parser_;
-  ::RPG_Monster_SpecialAttackTypeUnion_Type_pskel* type_parser_;
-  ::RPG_Combat_ActionType_Type_pskel* actionType_parser_;
   ::RPG_Monster_SpecialAttackPreCondition_Type_pskel* preCondition_parser_;
   ::RPG_Monster_AttackAction_Type_pskel* action_parser_;
-  ::RPG_Common_Usage_Type_pskel* usage_parser_;
+};
+
+class RPG_Monster_SpecialAbilityProperties_Type_pskel: public virtual ::RPG_Monster_SpecialBaseProperties_Type_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  effect (const RPG_Magic_SpellProperties&);
+
+  virtual void
+  ranged (const RPG_Combat_RangedAttackProperties&);
+
+  virtual RPG_Monster_SpecialAbilityProperties
+  post_RPG_Monster_SpecialAbilityProperties_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  effect_parser (::RPG_Magic_SpellProperties_Type_pskel&);
+
+  void
+  ranged_parser (::RPG_Combat_RangedAttackProperties_Type_pskel&);
+
+  void
+  parsers (::RPG_Magic_AbilityClass_Type_pskel& /* abilityClass */,
+           ::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel& /* type */,
+           ::RPG_Combat_ActionType_Type_pskel& /* actionType */,
+           ::RPG_Common_Usage_Type_pskel& /* usage */,
+           ::RPG_Magic_SpellProperties_Type_pskel& /* effect */,
+           ::RPG_Combat_RangedAttackProperties_Type_pskel& /* ranged */);
+
+  // Constructor.
+  //
+  RPG_Monster_SpecialAbilityProperties_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Magic_SpellProperties_Type_pskel* effect_parser_;
+  ::RPG_Combat_RangedAttackProperties_Type_pskel* ranged_parser_;
 };
 
 class RPG_Monster_SavingThrowModifiers_Type_pskel: public ::xml_schema::complex_content
@@ -959,10 +1194,16 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
   armorClass (const RPG_Monster_NaturalArmorClass&);
 
   virtual void
+  specialDefense (const RPG_Monster_SpecialDefenseProperties&);
+
+  virtual void
   attack (const RPG_Monster_Attack&);
 
   virtual void
   specialAttack (const RPG_Monster_SpecialAttackProperties&);
+
+  virtual void
+  specialAbility (const RPG_Monster_SpecialAbilityProperties&);
 
   virtual void
   space (unsigned char);
@@ -1030,10 +1271,16 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
   armorClass_parser (::RPG_Monster_NaturalArmorClass_Type_pskel&);
 
   void
+  specialDefense_parser (::RPG_Monster_SpecialDefenseProperties_Type_pskel&);
+
+  void
   attack_parser (::RPG_Monster_Attack_Type_pskel&);
 
   void
   specialAttack_parser (::RPG_Monster_SpecialAttackProperties_Type_pskel&);
+
+  void
+  specialAbility_parser (::RPG_Monster_SpecialAbilityProperties_Type_pskel&);
 
   void
   space_parser (::xml_schema::unsigned_byte_pskel&);
@@ -1082,8 +1329,10 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
            ::xml_schema::byte_pskel& /* initiative */,
            ::xml_schema::unsigned_byte_pskel& /* speed */,
            ::RPG_Monster_NaturalArmorClass_Type_pskel& /* armorClass */,
+           ::RPG_Monster_SpecialDefenseProperties_Type_pskel& /* specialDefense */,
            ::RPG_Monster_Attack_Type_pskel& /* attack */,
            ::RPG_Monster_SpecialAttackProperties_Type_pskel& /* specialAttack */,
+           ::RPG_Monster_SpecialAbilityProperties_Type_pskel& /* specialAbility */,
            ::xml_schema::unsigned_byte_pskel& /* space */,
            ::xml_schema::unsigned_byte_pskel& /* reach */,
            ::RPG_Monster_SavingThrowModifiers_Type_pskel& /* saves */,
@@ -1122,8 +1371,10 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::byte_pskel* initiative_parser_;
   ::xml_schema::unsigned_byte_pskel* speed_parser_;
   ::RPG_Monster_NaturalArmorClass_Type_pskel* armorClass_parser_;
+  ::RPG_Monster_SpecialDefenseProperties_Type_pskel* specialDefense_parser_;
   ::RPG_Monster_Attack_Type_pskel* attack_parser_;
   ::RPG_Monster_SpecialAttackProperties_Type_pskel* specialAttack_parser_;
+  ::RPG_Monster_SpecialAbilityProperties_Type_pskel* specialAbility_parser_;
   ::xml_schema::unsigned_byte_pskel* space_parser_;
   ::xml_schema::unsigned_byte_pskel* reach_parser_;
   ::RPG_Monster_SavingThrowModifiers_Type_pskel* saves_parser_;

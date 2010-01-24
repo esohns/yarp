@@ -30,8 +30,8 @@ namespace urn:rpg
   RPG_Combat_SpecialDamageType_Type        RPG_Combat_SpecialDamageType;
   RPG_Combat_DamageTypeUnion_Type          RPG_Combat_DamageTypeUnion;
   RPG_Combat_DamageDuration_Type           RPG_Combat_DamageDuration;
-  RPG_Combat_DamageBonusType_Type          RPG_Combat_DamageBonusType;
-  RPG_Combat_DamageBonus_Type              RPG_Combat_DamageBonus;
+  RPG_Combat_OtherDamageType_Type          RPG_Combat_OtherDamageType;
+  RPG_Combat_OtherDamage_Type              RPG_Combat_OtherDamage;
   RPG_Combat_DamageCounterMeasureType_Type RPG_Combat_DamageCounterMeasureType;
   RPG_Combat_CheckTypeUnion_Type           RPG_Combat_CheckTypeUnion;
   RPG_Combat_Check_Type                    RPG_Combat_Check;

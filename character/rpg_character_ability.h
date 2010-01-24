@@ -24,12 +24,12 @@
 enum RPG_Character_Ability
 {
   ABILITY_ACID_ATTACK = 0,
+  ABILITY_SPELL,
+  ABILITY_CORROSIVE_SLIME,
   ABILITY_ENTANGLE,
+  ABILITY_LEAP_ATTACK,
   ABILITY_SCORE_LOSS,
   ABILITY_THROW_WEB,
-  ABILITY_BLINK,
-  ABILITY_DIMENSION_DOOR,
-  ABILITY_LEAP_ATTACK,
   ABILITY_ALTERNATE_FORM,
   ABILITY_ANTIMAGIC,
   ABILITY_BLINDSIGHT,
@@ -117,12 +117,12 @@ class RPG_Character_AbilityHelper
   {
     myRPG_Character_AbilityToStringTable.clear();
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_ACID_ATTACK, ACE_TEXT_ALWAYS_CHAR("ABILITY_ACID_ATTACK")));
+    myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_SPELL, ACE_TEXT_ALWAYS_CHAR("ABILITY_SPELL")));
+    myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_CORROSIVE_SLIME, ACE_TEXT_ALWAYS_CHAR("ABILITY_CORROSIVE_SLIME")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_ENTANGLE, ACE_TEXT_ALWAYS_CHAR("ABILITY_ENTANGLE")));
+    myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_LEAP_ATTACK, ACE_TEXT_ALWAYS_CHAR("ABILITY_LEAP_ATTACK")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_SCORE_LOSS, ACE_TEXT_ALWAYS_CHAR("ABILITY_SCORE_LOSS")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_THROW_WEB, ACE_TEXT_ALWAYS_CHAR("ABILITY_THROW_WEB")));
-    myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_BLINK, ACE_TEXT_ALWAYS_CHAR("ABILITY_BLINK")));
-    myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_DIMENSION_DOOR, ACE_TEXT_ALWAYS_CHAR("ABILITY_DIMENSION_DOOR")));
-    myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_LEAP_ATTACK, ACE_TEXT_ALWAYS_CHAR("ABILITY_LEAP_ATTACK")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_ALTERNATE_FORM, ACE_TEXT_ALWAYS_CHAR("ABILITY_ALTERNATE_FORM")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_ANTIMAGIC, ACE_TEXT_ALWAYS_CHAR("ABILITY_ANTIMAGIC")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_BLINDSIGHT, ACE_TEXT_ALWAYS_CHAR("ABILITY_BLINDSIGHT")));

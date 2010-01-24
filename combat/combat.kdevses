@@ -3,16 +3,16 @@
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="4" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat.xsd" >
-   <View0 Encoding="" line="120" Type="Source" />
+   <View0 Encoding="" line="166" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat_common_tools.cpp" >
-   <View0 Encoding="" line="912" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat_XML_parser.h" >
+   <View0 Encoding="" line="230" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat_common_tools.h" >
-   <View0 Encoding="" line="79" Type="Source" />
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat_XML_types.h" >
+   <View0 Encoding="" line="85" Type="Source" />
   </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/Makefile.am" >
-   <View0 Encoding="" line="36" Type="Source" />
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat_XML_parser.cpp" >
+   <View0 Encoding="" line="444" Type="Source" />
   </Doc3>
  </DocsAndViews>
  <pluginList>

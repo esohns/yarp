@@ -26,6 +26,7 @@ enum RPG_Character_Terrain
   TERRAIN_UNDERGROUND = 0,
   TERRAIN_PLAINS,
   TERRAIN_FORESTS,
+  TERRAIN_MARSHES,
   TERRAIN_HILLS,
   TERRAIN_MOUNTAINS,
   TERRAIN_DESERTS,
@@ -76,6 +77,7 @@ class RPG_Character_TerrainHelper
     myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_UNDERGROUND, ACE_TEXT_ALWAYS_CHAR("TERRAIN_UNDERGROUND")));
     myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_PLAINS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_PLAINS")));
     myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_FORESTS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_FORESTS")));
+    myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_MARSHES, ACE_TEXT_ALWAYS_CHAR("TERRAIN_MARSHES")));
     myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_HILLS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_HILLS")));
     myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_MOUNTAINS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_MOUNTAINS")));
     myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_DESERTS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_DESERTS")));
