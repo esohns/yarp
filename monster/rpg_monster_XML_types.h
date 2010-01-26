@@ -64,6 +64,7 @@ class RPG_Monster_AttackAction_Type_pskel;
 class RPG_Monster_Attack_Type_pskel;
 class RPG_Monster_SpecialAttackPreCondition_Type_pskel;
 class RPG_Monster_SpecialAttackProperties_Type_pskel;
+class RPG_Monster_SpecialAbilityPreCondition_Type_pskel;
 class RPG_Monster_SpecialAbilityProperties_Type_pskel;
 class RPG_Monster_SavingThrowModifiers_Type_pskel;
 class RPG_Monster_Organization_Type_pskel;
@@ -353,6 +354,15 @@ class RPG_Monster_SpecialDefensePreCondition_Type_pskel: public ::xml_schema::co
   virtual void
   weaponType (const RPG_Monster_WeaponTypeUnion&);
 
+  virtual void
+  ownCondition (const RPG_Character_Condition&);
+
+  virtual void
+  targetCondition (const RPG_Character_Condition&);
+
+  virtual void
+  isMagicalWeapon (bool);
+
   virtual RPG_Monster_SpecialDefensePreCondition
   post_RPG_Monster_SpecialDefensePreCondition_Type () = 0;
 
@@ -362,7 +372,19 @@ class RPG_Monster_SpecialDefensePreCondition_Type_pskel: public ::xml_schema::co
   weaponType_parser (::RPG_Monster_WeaponTypeUnion_Type_pskel&);
 
   void
-  parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& /* weaponType */);
+  ownCondition_parser (::RPG_Character_Condition_Type_pskel&);
+
+  void
+  targetCondition_parser (::RPG_Character_Condition_Type_pskel&);
+
+  void
+  isMagicalWeapon_parser (::xml_schema::boolean_pskel&);
+
+  void
+  parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& /* weaponType */,
+           ::RPG_Character_Condition_Type_pskel& /* ownCondition */,
+           ::RPG_Character_Condition_Type_pskel& /* targetCondition */,
+           ::xml_schema::boolean_pskel& /* isMagicalWeapon */);
 
   // Constructor.
   //
@@ -380,8 +402,16 @@ class RPG_Monster_SpecialDefensePreCondition_Type_pskel: public ::xml_schema::co
   _end_element_impl (const ::xml_schema::ro_string&,
                      const ::xml_schema::ro_string&);
 
+  virtual bool
+  _attribute_impl (const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&);
+
   protected:
   ::RPG_Monster_WeaponTypeUnion_Type_pskel* weaponType_parser_;
+  ::RPG_Character_Condition_Type_pskel* ownCondition_parser_;
+  ::RPG_Character_Condition_Type_pskel* targetCondition_parser_;
+  ::xml_schema::boolean_pskel* isMagicalWeapon_parser_;
 };
 
 class RPG_Monster_DefenseAction_Type_pskel: public ::xml_schema::complex_content
@@ -398,6 +428,9 @@ class RPG_Monster_DefenseAction_Type_pskel: public ::xml_schema::complex_content
   virtual void
   damage (const RPG_Combat_Damage&);
 
+  virtual void
+  ranged (const RPG_Combat_RangedAttackProperties&);
+
   virtual RPG_Monster_DefenseAction
   post_RPG_Monster_DefenseAction_Type () = 0;
 
@@ -410,8 +443,12 @@ class RPG_Monster_DefenseAction_Type_pskel: public ::xml_schema::complex_content
   damage_parser (::RPG_Combat_Damage_Type_pskel&);
 
   void
+  ranged_parser (::RPG_Combat_RangedAttackProperties_Type_pskel&);
+
+  void
   parsers (::RPG_Monster_SpecialDefensePreCondition_Type_pskel& /* preCondition */,
-           ::RPG_Combat_Damage_Type_pskel& /* damage */);
+           ::RPG_Combat_Damage_Type_pskel& /* damage */,
+           ::RPG_Combat_RangedAttackProperties_Type_pskel& /* ranged */);
 
   // Constructor.
   //
@@ -432,6 +469,7 @@ class RPG_Monster_DefenseAction_Type_pskel: public ::xml_schema::complex_content
   protected:
   ::RPG_Monster_SpecialDefensePreCondition_Type_pskel* preCondition_parser_;
   ::RPG_Combat_Damage_Type_pskel* damage_parser_;
+  ::RPG_Combat_RangedAttackProperties_Type_pskel* ranged_parser_;
 };
 
 class RPG_Monster_SpecialDefenseProperties_Type_pskel: public virtual ::RPG_Monster_SpecialBaseProperties_Type_pskel
@@ -798,6 +836,56 @@ class RPG_Monster_SpecialAttackProperties_Type_pskel: public virtual ::RPG_Monst
   ::RPG_Monster_AttackAction_Type_pskel* action_parser_;
 };
 
+class RPG_Monster_SpecialAbilityPreCondition_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  targetCondition (const RPG_Character_Condition&);
+
+  virtual void
+  check (const RPG_Combat_Check&);
+
+  virtual RPG_Monster_SpecialAbilityPreCondition
+  post_RPG_Monster_SpecialAbilityPreCondition_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  targetCondition_parser (::RPG_Character_Condition_Type_pskel&);
+
+  void
+  check_parser (::RPG_Combat_Check_Type_pskel&);
+
+  void
+  parsers (::RPG_Character_Condition_Type_pskel& /* targetCondition */,
+           ::RPG_Combat_Check_Type_pskel& /* check */);
+
+  // Constructor.
+  //
+  RPG_Monster_SpecialAbilityPreCondition_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Character_Condition_Type_pskel* targetCondition_parser_;
+  ::RPG_Combat_Check_Type_pskel* check_parser_;
+};
+
 class RPG_Monster_SpecialAbilityProperties_Type_pskel: public virtual ::RPG_Monster_SpecialBaseProperties_Type_pskel
 {
   public:
@@ -807,10 +895,16 @@ class RPG_Monster_SpecialAbilityProperties_Type_pskel: public virtual ::RPG_Mons
   // pre ();
 
   virtual void
+  preCondition (const RPG_Monster_SpecialAbilityPreCondition&);
+
+  virtual void
   effect (const RPG_Magic_SpellProperties&);
 
   virtual void
   ranged (const RPG_Combat_RangedAttackProperties&);
+
+  virtual void
+  successRate (float);
 
   virtual RPG_Monster_SpecialAbilityProperties
   post_RPG_Monster_SpecialAbilityProperties_Type () = 0;
@@ -818,18 +912,26 @@ class RPG_Monster_SpecialAbilityProperties_Type_pskel: public virtual ::RPG_Mons
   // Parser construction API.
   //
   void
+  preCondition_parser (::RPG_Monster_SpecialAbilityPreCondition_Type_pskel&);
+
+  void
   effect_parser (::RPG_Magic_SpellProperties_Type_pskel&);
 
   void
   ranged_parser (::RPG_Combat_RangedAttackProperties_Type_pskel&);
 
   void
+  successRate_parser (::xml_schema::float_pskel&);
+
+  void
   parsers (::RPG_Magic_AbilityClass_Type_pskel& /* abilityClass */,
            ::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel& /* type */,
            ::RPG_Combat_ActionType_Type_pskel& /* actionType */,
            ::RPG_Common_Usage_Type_pskel& /* usage */,
+           ::RPG_Monster_SpecialAbilityPreCondition_Type_pskel& /* preCondition */,
            ::RPG_Magic_SpellProperties_Type_pskel& /* effect */,
-           ::RPG_Combat_RangedAttackProperties_Type_pskel& /* ranged */);
+           ::RPG_Combat_RangedAttackProperties_Type_pskel& /* ranged */,
+           ::xml_schema::float_pskel& /* successRate */);
 
   // Constructor.
   //
@@ -848,8 +950,10 @@ class RPG_Monster_SpecialAbilityProperties_Type_pskel: public virtual ::RPG_Mons
                      const ::xml_schema::ro_string&);
 
   protected:
+  ::RPG_Monster_SpecialAbilityPreCondition_Type_pskel* preCondition_parser_;
   ::RPG_Magic_SpellProperties_Type_pskel* effect_parser_;
   ::RPG_Combat_RangedAttackProperties_Type_pskel* ranged_parser_;
+  ::xml_schema::float_pskel* successRate_parser_;
 };
 
 class RPG_Monster_SavingThrowModifiers_Type_pskel: public ::xml_schema::complex_content

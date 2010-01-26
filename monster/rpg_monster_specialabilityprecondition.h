@@ -18,34 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_MONSTER_INCL_H
-#define RPG_MONSTER_INCL_H
+#ifndef RPG_MONSTER_SPECIALABILITYPRECONDITION_H
+#define RPG_MONSTER_SPECIALABILITYPRECONDITION_H
 
-#include <vector>
-#include "rpg_monster_metatype.h"
-#include "rpg_monster_subtype.h"
-#include "rpg_monster_type.h"
-#include "rpg_monster_naturalarmorclass.h"
-#include "rpg_monster_specialpropertytypeunion.h"
-#include "rpg_monster_specialbaseproperties.h"
-#include "rpg_monster_naturalweapon.h"
-#include "rpg_monster_weapontypeunion.h"
-#include "rpg_monster_specialdefenseprecondition.h"
-#include "rpg_monster_defenseaction.h"
-#include "rpg_monster_specialdefenseproperties.h"
-#include "rpg_monster_attackaction.h"
-#include "rpg_monster_attack.h"
-#include "rpg_monster_specialattackprecondition.h"
-#include "rpg_monster_specialattackproperties.h"
-#include "rpg_monster_specialabilityprecondition.h"
-#include "rpg_monster_specialabilityproperties.h"
-#include "rpg_monster_savingthrowmodifiers.h"
-#include "rpg_monster_organization.h"
-#include "rpg_monster_organizationslaverstep.h"
-#include "rpg_monster_organizationstep.h"
-#include "rpg_monster_organizations.h"
-#include "rpg_monster_advancementstep.h"
-#include "rpg_monster_advancement.h"
-#include "rpg_monster_propertiesxml.h"
+struct RPG_Monster_SpecialAbilityPreCondition
+{
+  std::vector<RPG_Character_Condition> targetConditions;
+  RPG_Combat_Check check;
+};
 
 #endif

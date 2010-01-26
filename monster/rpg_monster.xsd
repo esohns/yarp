@@ -126,14 +126,18 @@
 
   <xsd:complexType name="RPG_Monster_SpecialDefensePreCondition_Type">
     <xsd:sequence>
-      <xsd:element name="weaponType" type="RPG_Monster_WeaponTypeUnion_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="weaponType" type="RPG_Monster_WeaponTypeUnion_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="ownCondition" type="RPG_Character_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="targetCondition" type="RPG_Character_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
+    <xsd:attribute name="isMagicalWeapon" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Monster_DefenseAction_Type">
     <xsd:sequence>
       <xsd:element name="preCondition" type="RPG_Monster_SpecialDefensePreCondition_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="damage" type="RPG_Combat_Damage_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="ranged" type="RPG_Combat_RangedAttackProperties_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -193,13 +197,21 @@
     </xsd:complexContent>
   </xsd:complexType>
 
+  <xsd:complexType name="RPG_Monster_SpecialAbilityPreCondition_Type">
+    <xsd:sequence>
+      <xsd:element name="targetCondition" type="RPG_Character_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="check" type="RPG_Combat_Check_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
   <xsd:complexType name="RPG_Monster_SpecialAbilityProperties_Type">
     <xsd:complexContent>
       <xsd:extension base="RPG_Monster_SpecialBaseProperties_Type">
         <xsd:sequence>
-<!--           <xsd:element name="preCondition" type="RPG_Monster_SpecialAbilityPreCondition_Type" minOccurs="0" maxOccurs="unbounded"/> -->
+          <xsd:element name="preCondition" type="RPG_Monster_SpecialAbilityPreCondition_Type" minOccurs="0" maxOccurs="unbounded"/>
           <xsd:element name="effect" type="RPG_Magic_SpellProperties_Type" minOccurs="1" maxOccurs="unbounded"/>
           <xsd:element name="ranged" type="RPG_Combat_RangedAttackProperties_Type" minOccurs="0" maxOccurs="1"/>
+          <xsd:element name="successRate" type="xsd:float" minOccurs="0" maxOccurs="1"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -215,6 +227,7 @@
 
   <xsd:simpleType name="RPG_Monster_Organization_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ORGANIZATION_ANY"/>
       <xsd:enumeration value="ORGANIZATION_BAND"/>
       <xsd:enumeration value="ORGANIZATION_BROOD"/>
       <xsd:enumeration value="ORGANIZATION_COLONY"/>
@@ -237,8 +250,7 @@
       <xsd:enumeration value="ORGANIZATION_TEAM"/>
       <xsd:enumeration value="ORGANIZATION_TRIBE"/>
       <xsd:enumeration value="ORGANIZATION_TROOP"/>
-<!--      <xsd:enumeration value="ORGANIZATION_SLAVER"/>-->
-      <xsd:enumeration value="ORGANIZATION_ANY"/>
+      <xsd:enumeration value="ORGANIZATION_TROUPE"/>
     </xsd:restriction>
   </xsd:simpleType>
 

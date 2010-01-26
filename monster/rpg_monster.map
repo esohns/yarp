@@ -50,6 +50,7 @@ namespace urn:rpg
   RPG_Monster_Attack_Type                     RPG_Monster_Attack;
   RPG_Monster_SpecialAttackPreCondition_Type  RPG_Monster_SpecialAttackPreCondition;
   RPG_Monster_SpecialAttackProperties_Type    RPG_Monster_SpecialAttackProperties;
+  RPG_Monster_SpecialAbilityPreCondition_Type RPG_Monster_SpecialAbilityPreCondition;
   RPG_Monster_SpecialAbilityProperties_Type   RPG_Monster_SpecialAbilityProperties;
   RPG_Monster_SavingThrowModifiers_Type       RPG_Monster_SavingThrowModifiers;
   RPG_Monster_Organization_Type               RPG_Monster_Organization;

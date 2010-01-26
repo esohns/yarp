@@ -96,8 +96,13 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                                   usage_p);
 
   RPG_Monster_WeaponTypeUnion_Type               weaponUnion_p;
+  RPG_Character_Condition_Type                   condition_p;
+  ::xml_schema::boolean_pimpl                    bool_p;
   RPG_Monster_SpecialDefensePreCondition_Type    specialDefensePreCondition_p;
-  specialDefensePreCondition_p.parsers(weaponUnion_p);
+  specialDefensePreCondition_p.parsers(weaponUnion_p,
+                                       condition_p,
+                                       condition_p,
+                                       bool_p);
 
   RPG_Combat_DamageTypeUnion_Type                damageType_p;
   ::xml_schema::unsigned_short_pimpl             unsigned_short_p;
@@ -144,9 +149,15 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                           effectType_p);
   RPG_Combat_Damage_Type                         damage_p;
   damage_p.parsers(damageElement_p);
+  RPG_Combat_RangedEffectUnion_Type              rangedEffectUnion_p;
+  RPG_Combat_RangedAttackProperties_Type         rangedProperties_p;
+  rangedProperties_p.parsers(unsigned_byte_p,
+                             unsigned_byte_p,
+                             rangedEffectUnion_p);
   RPG_Monster_DefenseAction_Type                 defenseAction_p;
   defenseAction_p.parsers(specialDefensePreCondition_p,
-                          damage_p);
+                          damage_p,
+                          rangedProperties_p);
   RPG_Monster_SpecialDefenseProperties_Type      specialDefenseProperties_p;
   specialDefenseProperties_p.parsers(abilityClass_p,
                                      specialPropertyTypeUnion_p,
@@ -176,12 +187,8 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                             commonDuration_p,
                             savingThrowCheck_p);
 //   ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
-  RPG_Combat_RangedEffectUnion_Type              rangedEffectUnion_p;
-  RPG_Combat_RangedAttackProperties_Type         rangedProperties_p;
-  rangedProperties_p.parsers(unsigned_byte_p,
-                             unsigned_byte_p,
-                             rangedEffectUnion_p);
-  ::xml_schema::boolean_pimpl                    bool_p;
+//   RPG_Combat_RangedAttackProperties_Type         rangedProperties_p;
+//   ::xml_schema::boolean_pimpl                    bool_p;
   RPG_Monster_AttackAction_Type                  attackAction_p;
   attackAction_p.parsers(weaponUnion_p,
                          byte_p,
@@ -203,7 +210,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
 //   RPG_Combat_ActionType_Type                     actionType_p;
 //   RPG_Common_Usage_Type                          usage_p;
   RPG_Character_Alignment_Type                   alignment_p;
-  RPG_Character_Condition_Type                   condition_p;
+//   RPG_Character_Condition_Type                   condition_p;
 //   RPG_Character_Size_Type                        size_p;
 //   RPG_Combat_Check_Type                          check_p;
   RPG_Monster_SpecialAttackPreCondition_Type     specialAttackPreCondition_p;
@@ -225,14 +232,20 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
 //                           roll_p,
                           );
 
+  RPG_Monster_SpecialAbilityPreCondition_Type    specialAbilityPreCondition_p;
+  specialAbilityPreCondition_p.parsers(condition_p,
+                                       check_p);
 //   RPG_Magic_SpellProperties_Type                 spellProperties_p;
+  ::xml_schema::float_pimpl                      float_p;
   RPG_Monster_SpecialAbilityProperties_Type      specialAbilityProperties_p;
   specialAbilityProperties_p.parsers(abilityClass_p,
                                      specialPropertyTypeUnion_p,
                                      actionType_p,
                                      usage_p,
+                                     specialAbilityPreCondition_p,
                                      spellProperties_p,
-                                     rangedProperties_p);
+                                     rangedProperties_p,
+                                     float_p);
 
 //   unsigned_int_pimpl                      space_p;
 //   unsigned_int_pimpl                      reach_p;

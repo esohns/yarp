@@ -25,6 +25,7 @@ struct RPG_Monster_DefenseAction
 {
   std::vector<RPG_Monster_SpecialDefensePreCondition> preConditions;
   RPG_Combat_Damage damage;
+  RPG_Combat_RangedAttackProperties ranged;
 };
 
 #endif

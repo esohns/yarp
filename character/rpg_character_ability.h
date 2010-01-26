@@ -24,11 +24,13 @@
 enum RPG_Character_Ability
 {
   ABILITY_ACID_ATTACK = 0,
-  ABILITY_SPELL,
   ABILITY_CORROSIVE_SLIME,
+  ABILITY_DEATH_THROES,
   ABILITY_ENTANGLE,
+  ABILITY_FLAMING_BODY,
   ABILITY_LEAP_ATTACK,
   ABILITY_SCORE_LOSS,
+  ABILITY_SNEAK_ATTACK,
   ABILITY_THROW_WEB,
   ABILITY_ALTERNATE_FORM,
   ABILITY_ANTIMAGIC,
@@ -117,11 +119,13 @@ class RPG_Character_AbilityHelper
   {
     myRPG_Character_AbilityToStringTable.clear();
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_ACID_ATTACK, ACE_TEXT_ALWAYS_CHAR("ABILITY_ACID_ATTACK")));
-    myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_SPELL, ACE_TEXT_ALWAYS_CHAR("ABILITY_SPELL")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_CORROSIVE_SLIME, ACE_TEXT_ALWAYS_CHAR("ABILITY_CORROSIVE_SLIME")));
+    myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_DEATH_THROES, ACE_TEXT_ALWAYS_CHAR("ABILITY_DEATH_THROES")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_ENTANGLE, ACE_TEXT_ALWAYS_CHAR("ABILITY_ENTANGLE")));
+    myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_FLAMING_BODY, ACE_TEXT_ALWAYS_CHAR("ABILITY_FLAMING_BODY")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_LEAP_ATTACK, ACE_TEXT_ALWAYS_CHAR("ABILITY_LEAP_ATTACK")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_SCORE_LOSS, ACE_TEXT_ALWAYS_CHAR("ABILITY_SCORE_LOSS")));
+    myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_SNEAK_ATTACK, ACE_TEXT_ALWAYS_CHAR("ABILITY_SNEAK_ATTACK")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_THROW_WEB, ACE_TEXT_ALWAYS_CHAR("ABILITY_THROW_WEB")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_ALTERNATE_FORM, ACE_TEXT_ALWAYS_CHAR("ABILITY_ALTERNATE_FORM")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_ANTIMAGIC, ACE_TEXT_ALWAYS_CHAR("ABILITY_ANTIMAGIC")));

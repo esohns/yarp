@@ -118,6 +118,9 @@ class RPG_Monster_SpecialDefensePreCondition_Type
 
 //   virtual void pre();
     virtual void weaponType(const RPG_Monster_WeaponTypeUnion&);
+    virtual void ownCondition(const RPG_Character_Condition&);
+    virtual void targetCondition(const RPG_Character_Condition&);
+    virtual void isMagicalWeapon(bool);
     virtual RPG_Monster_SpecialDefensePreCondition post_RPG_Monster_SpecialDefensePreCondition_Type();
 
   private:
@@ -133,6 +136,7 @@ class RPG_Monster_DefenseAction_Type
 //   virtual void pre();
     virtual void preCondition(const RPG_Monster_SpecialDefensePreCondition&);
     virtual void damage(const RPG_Combat_Damage&);
+    virtual void ranged(const RPG_Combat_RangedAttackProperties&);
     virtual RPG_Monster_DefenseAction post_RPG_Monster_DefenseAction_Type();
 
   private:
@@ -262,6 +266,21 @@ class RPG_Monster_SpecialAttackProperties_Type
     RPG_Monster_SpecialAttackProperties myCurrentProperties;
 };
 
+class RPG_Monster_SpecialAbilityPreCondition_Type
+  : public RPG_Monster_SpecialAbilityPreCondition_Type_pskel
+{
+  public:
+    RPG_Monster_SpecialAbilityPreCondition_Type();
+
+//   virtual void pre();
+    virtual void targetCondition(const RPG_Character_Condition&);
+    virtual void check(const RPG_Combat_Check&);
+    virtual RPG_Monster_SpecialAbilityPreCondition post_RPG_Monster_SpecialAbilityPreCondition_Type();
+
+  private:
+    RPG_Monster_SpecialAbilityPreCondition myCurrentPreCondition;
+};
+
 class RPG_Monster_SpecialAbilityProperties_Type
   : public RPG_Monster_SpecialAbilityProperties_Type_pskel
 {
@@ -275,8 +294,10 @@ class RPG_Monster_SpecialAbilityProperties_Type
     virtual void usage(const RPG_Common_Usage&);
     virtual RPG_Monster_SpecialBaseProperties post_RPG_Monster_SpecialBaseProperties_Type();
     // ------------------------------------------------------------
+    virtual void preCondition(const RPG_Monster_SpecialAbilityPreCondition&);
     virtual void effect(const RPG_Magic_SpellProperties&);
     virtual void ranged(const RPG_Combat_RangedAttackProperties&);
+    virtual void successRate(float);
     virtual RPG_Monster_SpecialAbilityProperties post_RPG_Monster_SpecialAbilityProperties_Type();
 
   private:

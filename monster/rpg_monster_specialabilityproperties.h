@@ -24,8 +24,10 @@
 struct RPG_Monster_SpecialAbilityProperties
  : public RPG_Monster_SpecialBaseProperties
 {
-  RPG_Magic_SpellProperties effect;
+  std::vector<RPG_Monster_SpecialAbilityPreCondition> preConditions;
+  std::vector<RPG_Magic_SpellProperties> effects;
   RPG_Combat_RangedAttackProperties ranged;
+  float successRate;
 };
 
 #endif

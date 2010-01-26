@@ -23,7 +23,8 @@
 
 enum RPG_Monster_Organization
 {
-  ORGANIZATION_BAND = 0,
+  ORGANIZATION_ANY = 0,
+  ORGANIZATION_BAND,
   ORGANIZATION_BROOD,
   ORGANIZATION_COLONY,
   ORGANIZATION_CLAN,
@@ -45,7 +46,7 @@ enum RPG_Monster_Organization
   ORGANIZATION_TEAM,
   ORGANIZATION_TRIBE,
   ORGANIZATION_TROOP,
-  ORGANIZATION_ANY,
+  ORGANIZATION_TROUPE,
   //
   RPG_MONSTER_ORGANIZATION_MAX,
   RPG_MONSTER_ORGANIZATION_INVALID
@@ -65,6 +66,7 @@ class RPG_Monster_OrganizationHelper
   inline static void init()
   {
     myRPG_Monster_OrganizationToStringTable.clear();
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_ANY, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_ANY")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_BAND, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_BAND")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_BROOD, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_BROOD")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_COLONY, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_COLONY")));
@@ -87,7 +89,7 @@ class RPG_Monster_OrganizationHelper
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_TEAM, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_TEAM")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_TRIBE, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_TRIBE")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_TROOP, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_TROOP")));
-    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_ANY, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_ANY")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_TROUPE, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_TROUPE")));
   };
 
   inline static std::string RPG_Monster_OrganizationToString(const RPG_Monster_Organization& element_in)

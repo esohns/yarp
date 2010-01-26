@@ -48,6 +48,7 @@
 
   <xsd:simpleType name="RPG_Magic_Spell_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SPELL_BLASPHEMY"/>
       <xsd:enumeration value="SPELL_BLINK"/>
       <xsd:enumeration value="SPELL_CANTRIP"/>
       <xsd:enumeration value="SPELL_DARKNESS"/>
@@ -57,23 +58,37 @@
       <xsd:enumeration value="SPELL_DETECT_LAW"/>
       <xsd:enumeration value="SPELL_DETECT_THOUGHTS"/>
       <xsd:enumeration value="SPELL_DIMENSION_DOOR"/>
+      <xsd:enumeration value="SPELL_DISPEL_MAGIC"/>
+      <xsd:enumeration value="SPELL_DISPEL_MAGIC_GREATER"/>
+      <xsd:enumeration value="SPELL_DOMINATE_MONSTER"/>
       <xsd:enumeration value="SPELL_ENTANGLE"/>
       <xsd:enumeration value="SPELL_ETHEREAL_JAUNT"/>
       <xsd:enumeration value="SPELL_FEAR"/>
+      <xsd:enumeration value="SPELL_FIRE_STORM"/>
       <xsd:enumeration value="SPELL_GASEOUS_FORM"/>
       <xsd:enumeration value="SPELL_HEAL"/>
       <xsd:enumeration value="SPELL_HEAL_MASS"/>
       <xsd:enumeration value="SPELL_HOLD_MONSTER"/>
+      <xsd:enumeration value="SPELL_IMPLOSION"/>
+      <xsd:enumeration value="SPELL_INSANITY"/>
       <xsd:enumeration value="SPELL_INVISIBILITY"/>
       <xsd:enumeration value="SPELL_MIRROR_IMAGE"/>
       <xsd:enumeration value="SPELL_PLANE_SHIFT"/>
       <xsd:enumeration value="SPELL_POLYMORPH"/>
+      <xsd:enumeration value="SPELL_POWER_WORD_STUN"/>
       <xsd:enumeration value="SPELL_REMOVE_DISEASE"/>
       <xsd:enumeration value="SPELL_RESTORATION"/>
       <xsd:enumeration value="SPELL_RESTORATION_GREATER"/>
+      <xsd:enumeration value="SPELL_SEE_INVISIBILITY"/>
       <xsd:enumeration value="SPELL_SILENT_IMAGE"/>
       <xsd:enumeration value="SPELL_STONE_SHAPE"/>
+      <xsd:enumeration value="SPELL_SUMMON_MONSTER_III"/>
+      <xsd:enumeration value="SPELL_SUMMON_MONSTER_IX"/>
+      <xsd:enumeration value="SPELL_TELEKINESIS"/>
       <xsd:enumeration value="SPELL_TELEPATHY"/>
+      <xsd:enumeration value="SPELL_TELEPORT_GREATER"/>
+      <xsd:enumeration value="SPELL_TRUE_SEEING"/>
+      <xsd:enumeration value="SPELL_UNHOLY_AURA"/>
     </xsd:restriction>
   </xsd:simpleType>
 
