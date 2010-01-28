@@ -27,6 +27,7 @@ namespace urn:rpg
   RPG_Character_Environment_Type              RPG_Character_Environment;
   RPG_Character_Alignment_Type                RPG_Character_Alignment;
   RPG_Character_Condition_Type                RPG_Character_Condition;
+  RPG_Character_Ability_Type                  RPG_Character_Ability;
 
   RPG_Combat_SpecialAttack_Type               RPG_Combat_SpecialAttack;
   RPG_Combat_AttackForm_Type                  RPG_Combat_AttackForm;
@@ -48,9 +49,11 @@ namespace urn:rpg
   RPG_Monster_WeaponTypeUnion_Type            RPG_Monster_WeaponTypeUnion;
   RPG_Monster_AttackAction_Type               RPG_Monster_AttackAction;
   RPG_Monster_Attack_Type                     RPG_Monster_Attack;
+  RPG_Monster_ActionTrigger_Type              RPG_Monster_ActionTrigger;
   RPG_Monster_SpecialAttackPreCondition_Type  RPG_Monster_SpecialAttackPreCondition;
   RPG_Monster_SpecialAttackProperties_Type    RPG_Monster_SpecialAttackProperties;
   RPG_Monster_SpecialAbilityPreCondition_Type RPG_Monster_SpecialAbilityPreCondition;
+  RPG_Monster_SummonMonster_Type              RPG_Monster_SummonMonster;
   RPG_Monster_SpecialAbilityProperties_Type   RPG_Monster_SpecialAbilityProperties;
   RPG_Monster_SavingThrowModifiers_Type       RPG_Monster_SavingThrowModifiers;
   RPG_Monster_Organization_Type               RPG_Monster_Organization;

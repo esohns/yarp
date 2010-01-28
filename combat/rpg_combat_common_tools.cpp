@@ -1080,7 +1080,7 @@ is_player_miss:
         goto init_monster_standard_actions;
 
       iterator = monster_properties.attack.fullAttackActions.begin();
-      if (!monster_properties.attack.attackActionsAreInclusive)
+      if (!monster_properties.attack.actionsAreInclusive)
       {
         // choose any single appropriate (i.e. possible) (set of) full action(s)
         // step1: count the number of available sets
@@ -1140,7 +1140,7 @@ init_monster_standard_actions:
 
     iterator = monster_properties.attack.standardAttackActions.begin();
     // if the attack actions are not inclusive, we need to choose a single (set of) (suitable) one(s)...
-    if (!monster_properties.attack.attackActionsAreInclusive)
+    if (!monster_properties.attack.actionsAreInclusive)
     {
       // choose any single appropriate standard action instead
       result.clear();
@@ -1397,7 +1397,7 @@ is_monster_miss:
 monster_advance_attack_iterator:
     if (!is_special_attack)
     {
-      if (monster_properties.attack.attackActionsAreInclusive ||
+      if (monster_properties.attack.actionsAreInclusive ||
           (isFullRoundAction_in && (*iterator).fullAttackIncludesNextAction))
       {
         iterator++;

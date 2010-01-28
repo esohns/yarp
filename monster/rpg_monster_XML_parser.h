@@ -200,6 +200,7 @@ class RPG_Monster_AttackAction_Type
   virtual void effect(const RPG_Magic_SpellProperties&);
   virtual void numAttacksPerRound(unsigned char);
   virtual void ranged(const RPG_Combat_RangedAttackProperties&);
+  virtual void trigger(const RPG_Character_Ability&);
   virtual void fullAttackIncludesNextAction(bool);
   virtual RPG_Monster_AttackAction post_RPG_Monster_AttackAction_Type();
 
@@ -218,11 +219,26 @@ class RPG_Monster_Attack_Type
   virtual void grappleBonus(signed char);
   virtual void standardAttackAction(const RPG_Monster_AttackAction&);
   virtual void fullAttackAction(const RPG_Monster_AttackAction&);
-  virtual void attackActionsAreInclusive(bool);
+  virtual void actionsAreInclusive(bool);
   virtual RPG_Monster_Attack post_RPG_Monster_Attack_Type();
 
  private:
   RPG_Monster_Attack myCurrentAttack;
+};
+
+class RPG_Monster_ActionTrigger_Type
+  : public RPG_Monster_ActionTrigger_Type_pskel
+{
+  public:
+    RPG_Monster_ActionTrigger_Type();
+
+//   virtual void pre();
+    virtual void weapon(const RPG_Monster_WeaponTypeUnion&);
+    virtual void numHits(unsigned char);
+    virtual RPG_Monster_ActionTrigger post_RPG_Monster_ActionTrigger_Type();
+
+  private:
+    RPG_Monster_ActionTrigger myCurrentTrigger;
 };
 
 class RPG_Monster_SpecialAttackPreCondition_Type
@@ -281,6 +297,23 @@ class RPG_Monster_SpecialAbilityPreCondition_Type
     RPG_Monster_SpecialAbilityPreCondition myCurrentPreCondition;
 };
 
+class RPG_Monster_SummonMonster_Type
+  : public RPG_Monster_SummonMonster_Type_pskel
+{
+  public:
+    RPG_Monster_SummonMonster_Type();
+
+//   virtual void pre();
+    virtual void name(const ::std::string&);
+    virtual void amount(const RPG_Dice_Roll&);
+    virtual void successRate(float);
+    virtual void actionsAreInclusive(bool);
+    virtual RPG_Monster_SummonMonster post_RPG_Monster_SummonMonster_Type();
+
+  private:
+    RPG_Monster_SummonMonster myCurrentSummonStep;
+};
+
 class RPG_Monster_SpecialAbilityProperties_Type
   : public RPG_Monster_SpecialAbilityProperties_Type_pskel
 {
@@ -295,9 +328,9 @@ class RPG_Monster_SpecialAbilityProperties_Type
     virtual RPG_Monster_SpecialBaseProperties post_RPG_Monster_SpecialBaseProperties_Type();
     // ------------------------------------------------------------
     virtual void preCondition(const RPG_Monster_SpecialAbilityPreCondition&);
-    virtual void effect(const RPG_Magic_SpellProperties&);
+    virtual void summon(const RPG_Monster_SummonMonster&);
+    virtual void spell(const RPG_Magic_SpellProperties&);
     virtual void ranged(const RPG_Combat_RangedAttackProperties&);
-    virtual void successRate(float);
     virtual RPG_Monster_SpecialAbilityProperties post_RPG_Monster_SpecialAbilityProperties_Type();
 
   private:

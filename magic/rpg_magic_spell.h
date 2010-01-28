@@ -26,6 +26,8 @@ enum RPG_Magic_Spell
   SPELL_BLASPHEMY = 0,
   SPELL_BLINK,
   SPELL_CANTRIP,
+  SPELL_CHAOS_HAMMER,
+  SPELL_CONFUSION,
   SPELL_DARKNESS,
   SPELL_DETECT_CHAOS,
   SPELL_DETECT_EVIL,
@@ -54,16 +56,22 @@ enum RPG_Magic_Spell
   SPELL_REMOVE_DISEASE,
   SPELL_RESTORATION,
   SPELL_RESTORATION_GREATER,
+  SPELL_REVERSE_GRAVITY,
+  SPELL_SCARE,
   SPELL_SEE_INVISIBILITY,
   SPELL_SILENT_IMAGE,
+  SPELL_STINKING_CLOUD,
   SPELL_STONE_SHAPE,
+  SPELL_SUMMON_MONSTER_I,
   SPELL_SUMMON_MONSTER_III,
+  SPELL_SUMMON_MONSTER_IV,
   SPELL_SUMMON_MONSTER_IX,
   SPELL_TELEKINESIS,
   SPELL_TELEPATHY,
   SPELL_TELEPORT_GREATER,
   SPELL_TRUE_SEEING,
   SPELL_UNHOLY_AURA,
+  SPELL_UNHOLY_BLIGHT,
   //
   RPG_MAGIC_SPELL_MAX,
   RPG_MAGIC_SPELL_INVALID
@@ -86,6 +94,8 @@ class RPG_Magic_SpellHelper
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_BLASPHEMY, ACE_TEXT_ALWAYS_CHAR("SPELL_BLASPHEMY")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_BLINK, ACE_TEXT_ALWAYS_CHAR("SPELL_BLINK")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_CANTRIP, ACE_TEXT_ALWAYS_CHAR("SPELL_CANTRIP")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_CHAOS_HAMMER, ACE_TEXT_ALWAYS_CHAR("SPELL_CHAOS_HAMMER")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_CONFUSION, ACE_TEXT_ALWAYS_CHAR("SPELL_CONFUSION")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_DARKNESS, ACE_TEXT_ALWAYS_CHAR("SPELL_DARKNESS")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_DETECT_CHAOS, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_CHAOS")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_DETECT_EVIL, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_EVIL")));
@@ -114,16 +124,22 @@ class RPG_Magic_SpellHelper
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_REMOVE_DISEASE, ACE_TEXT_ALWAYS_CHAR("SPELL_REMOVE_DISEASE")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_RESTORATION, ACE_TEXT_ALWAYS_CHAR("SPELL_RESTORATION")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_RESTORATION_GREATER, ACE_TEXT_ALWAYS_CHAR("SPELL_RESTORATION_GREATER")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_REVERSE_GRAVITY, ACE_TEXT_ALWAYS_CHAR("SPELL_REVERSE_GRAVITY")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_SCARE, ACE_TEXT_ALWAYS_CHAR("SPELL_SCARE")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_SEE_INVISIBILITY, ACE_TEXT_ALWAYS_CHAR("SPELL_SEE_INVISIBILITY")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_SILENT_IMAGE, ACE_TEXT_ALWAYS_CHAR("SPELL_SILENT_IMAGE")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_STINKING_CLOUD, ACE_TEXT_ALWAYS_CHAR("SPELL_STINKING_CLOUD")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_STONE_SHAPE, ACE_TEXT_ALWAYS_CHAR("SPELL_STONE_SHAPE")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_SUMMON_MONSTER_I, ACE_TEXT_ALWAYS_CHAR("SPELL_SUMMON_MONSTER_I")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_SUMMON_MONSTER_III, ACE_TEXT_ALWAYS_CHAR("SPELL_SUMMON_MONSTER_III")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_SUMMON_MONSTER_IV, ACE_TEXT_ALWAYS_CHAR("SPELL_SUMMON_MONSTER_IV")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_SUMMON_MONSTER_IX, ACE_TEXT_ALWAYS_CHAR("SPELL_SUMMON_MONSTER_IX")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_TELEKINESIS, ACE_TEXT_ALWAYS_CHAR("SPELL_TELEKINESIS")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_TELEPATHY, ACE_TEXT_ALWAYS_CHAR("SPELL_TELEPATHY")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_TELEPORT_GREATER, ACE_TEXT_ALWAYS_CHAR("SPELL_TELEPORT_GREATER")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_TRUE_SEEING, ACE_TEXT_ALWAYS_CHAR("SPELL_TRUE_SEEING")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_UNHOLY_AURA, ACE_TEXT_ALWAYS_CHAR("SPELL_UNHOLY_AURA")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_UNHOLY_BLIGHT, ACE_TEXT_ALWAYS_CHAR("SPELL_UNHOLY_BLIGHT")));
   };
 
   inline static std::string RPG_Magic_SpellToString(const RPG_Magic_Spell& element_in)

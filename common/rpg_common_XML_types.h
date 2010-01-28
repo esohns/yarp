@@ -71,7 +71,10 @@ class RPG_Common_Camp_Type_pskel;
 
 #include "rpg_XMLSchema_XML_types.h"
 
+#include "rpg_dice_incl.h"
 #include "rpg_common_incl.h"
+
+#include "rpg_dice_XML_types.h"
 
 class RPG_Common_Attribute_Type_pskel: public virtual ::xml_schema::string_pskel
 {
@@ -245,6 +248,9 @@ class RPG_Common_Usage_Type_pskel: public ::xml_schema::complex_content
   virtual void
   period (unsigned int);
 
+  virtual void
+  interval (const RPG_Dice_Roll&);
+
   virtual RPG_Common_Usage
   post_RPG_Common_Usage_Type () = 0;
 
@@ -257,8 +263,12 @@ class RPG_Common_Usage_Type_pskel: public ::xml_schema::complex_content
   period_parser (::xml_schema::unsigned_int_pskel&);
 
   void
+  interval_parser (::RPG_Dice_Roll_Type_pskel&);
+
+  void
   parsers (::xml_schema::unsigned_byte_pskel& /* numUses */,
-           ::xml_schema::unsigned_int_pskel& /* period */);
+           ::xml_schema::unsigned_int_pskel& /* period */,
+           ::RPG_Dice_Roll_Type_pskel& /* interval */);
 
   // Constructor.
   //
@@ -279,6 +289,7 @@ class RPG_Common_Usage_Type_pskel: public ::xml_schema::complex_content
   protected:
   ::xml_schema::unsigned_byte_pskel* numUses_parser_;
   ::xml_schema::unsigned_int_pskel* period_parser_;
+  ::RPG_Dice_Roll_Type_pskel* interval_parser_;
 };
 
 class RPG_Common_Duration_Type_pskel: public ::xml_schema::complex_content

@@ -102,17 +102,26 @@ period_parser (::xml_schema::unsigned_int_pskel& p)
 }
 
 void RPG_Common_Usage_Type_pskel::
+interval_parser (::RPG_Dice_Roll_Type_pskel& p)
+{
+  this->interval_parser_ = &p;
+}
+
+void RPG_Common_Usage_Type_pskel::
 parsers (::xml_schema::unsigned_byte_pskel& numUses,
-         ::xml_schema::unsigned_int_pskel& period)
+         ::xml_schema::unsigned_int_pskel& period,
+         ::RPG_Dice_Roll_Type_pskel& interval)
 {
   this->numUses_parser_ = &numUses;
   this->period_parser_ = &period;
+  this->interval_parser_ = &interval;
 }
 
 RPG_Common_Usage_Type_pskel::
 RPG_Common_Usage_Type_pskel ()
 : numUses_parser_ (0),
-  period_parser_ (0)
+  period_parser_ (0),
+  interval_parser_ (0)
 {
 }
 
@@ -293,6 +302,11 @@ period (unsigned int)
 {
 }
 
+void RPG_Common_Usage_Type_pskel::
+interval (const RPG_Dice_Roll&)
+{
+}
+
 bool RPG_Common_Usage_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
@@ -323,6 +337,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "interval" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->interval_parser_;
+
+    if (this->interval_parser_)
+      this->interval_parser_->pre ();
+
+    return true;
+  }
+
   return false;
 }
 
@@ -345,6 +369,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->period_parser_)
       this->period (this->period_parser_->post_unsigned_int ());
+
+    return true;
+  }
+
+  if (n == "interval" && ns == "urn:rpg")
+  {
+    if (this->interval_parser_)
+      this->interval (this->interval_parser_->post_RPG_Dice_Roll_Type ());
 
     return true;
   }

@@ -30,6 +30,7 @@ struct RPG_Monster_AttackAction
   RPG_Magic_SpellProperties effect;
   unsigned char numAttacksPerRound;
   RPG_Combat_RangedAttackProperties ranged;
+  std::vector<RPG_Character_Ability> triggers;
   bool fullAttackIncludesNextAction;
 };
 

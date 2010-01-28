@@ -19,6 +19,7 @@
  ***************************************************************************/
 #include "rpg_common_tools.h"
 
+#include <rpg_dice_incl.h>
 #include "rpg_common_incl.h"
 
 #include <ace/Log_Msg.h>

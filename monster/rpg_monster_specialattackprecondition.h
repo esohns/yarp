@@ -23,6 +23,7 @@
 
 struct RPG_Monster_SpecialAttackPreCondition
 {
+  RPG_Monster_ActionTrigger action;
   RPG_Character_Alignment targetAlignment;
   std::vector<RPG_Character_Condition> ownConditions;
   std::vector<RPG_Character_Condition> targetConditions;

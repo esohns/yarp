@@ -20,7 +20,10 @@
 #ifndef RPG_CHARACTER_BASE_H
 #define RPG_CHARACTER_BASE_H
 
+#include <rpg_dice_dietype.h>
+#include <rpg_dice_roll.h>
 #include <rpg_common_incl.h>
+#include <rpg_magic_spell.h>
 
 #include "rpg_character_incl.h"
 #include "rpg_character_inventory_common.h"
@@ -29,10 +32,6 @@
 #include "rpg_character_common.h"
 #include "rpg_character_skills_common.h"
 
-#include <rpg_dice_dietype.h>
-#include <rpg_dice_roll.h>
-#include <rpg_common_physicaldamagetype.h>
-#include <rpg_magic_spell.h>
 #include <rpg_combat_incl.h>
 
 #include <ace/Global_Macros.h>

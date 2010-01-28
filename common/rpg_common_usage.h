@@ -25,6 +25,7 @@ struct RPG_Common_Usage
 {
   unsigned char numUses;
   unsigned int period;
+  RPG_Dice_Roll interval;
 };
 
 #endif

@@ -294,6 +294,7 @@ const RPG_Common_PhysicalDamageList_t RPG_Monster_Common_Tools::naturalWeaponToP
       break;
     }
     case NATURALWEAPON_CLAW_TALON:
+    case NATURALWEAPON_PINCER:
     {
 //       result.push_back(PHYSICALDAMAGE_PIERCING);
       result.insert(PHYSICALDAMAGE_SLASHING);

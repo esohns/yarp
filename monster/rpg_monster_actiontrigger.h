@@ -18,16 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_MONSTER_ATTACK_H
-#define RPG_MONSTER_ATTACK_H
+#ifndef RPG_MONSTER_ACTIONTRIGGER_H
+#define RPG_MONSTER_ACTIONTRIGGER_H
 
-struct RPG_Monster_Attack
+struct RPG_Monster_ActionTrigger
 {
-  char baseAttackBonus;
-  char grappleBonus;
-  std::vector<RPG_Monster_AttackAction> standardAttackActions;
-  std::vector<RPG_Monster_AttackAction> fullAttackActions;
-  bool actionsAreInclusive;
+  RPG_Monster_WeaponTypeUnion weapon;
+  unsigned char numHits;
 };
 
 #endif

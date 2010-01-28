@@ -188,6 +188,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                             savingThrowCheck_p);
 //   ::xml_schema::unsigned_byte_pimpl         unsigned_byte_p;
 //   RPG_Combat_RangedAttackProperties_Type         rangedProperties_p;
+  RPG_Character_Ability_Type                     ability_p;
 //   ::xml_schema::boolean_pimpl                    bool_p;
   RPG_Monster_AttackAction_Type                  attackAction_p;
   attackAction_p.parsers(weaponUnion_p,
@@ -197,6 +198,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                          spellProperties_p,
                          unsigned_byte_p,
                          rangedProperties_p,
+                         ability_p,
                          bool_p);
   RPG_Monster_Attack_Type                        attack_p;
   attack_p.parsers(byte_p,
@@ -209,12 +211,16 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
 //   RPG_Monster_SpecialPropertyTypeUnion_Type      specialPropertyTypeUnion_p;
 //   RPG_Combat_ActionType_Type                     actionType_p;
 //   RPG_Common_Usage_Type                          usage_p;
+  RPG_Monster_ActionTrigger_Type                 trigger_p;
+  trigger_p.parsers(weaponUnion_p,
+                    unsigned_byte_p);
   RPG_Character_Alignment_Type                   alignment_p;
 //   RPG_Character_Condition_Type                   condition_p;
 //   RPG_Character_Size_Type                        size_p;
 //   RPG_Combat_Check_Type                          check_p;
   RPG_Monster_SpecialAttackPreCondition_Type     specialAttackPreCondition_p;
-  specialAttackPreCondition_p.parsers(alignment_p,
+  specialAttackPreCondition_p.parsers(trigger_p,
+                                      alignment_p,
                                       condition_p,
                                       condition_p,
                                       size_p,
@@ -235,17 +241,23 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   RPG_Monster_SpecialAbilityPreCondition_Type    specialAbilityPreCondition_p;
   specialAbilityPreCondition_p.parsers(condition_p,
                                        check_p);
-//   RPG_Magic_SpellProperties_Type                 spellProperties_p;
+//   RPG_Dice_Roll_Type                             roll_p;
   ::xml_schema::float_pimpl                      float_p;
+  RPG_Monster_SummonMonster_Type                 summonMonster_p;
+  summonMonster_p.parsers(string_p,
+                          roll_p,
+                          float_p,
+                          bool_p);
+//   RPG_Magic_SpellProperties_Type                 spellProperties_p;
   RPG_Monster_SpecialAbilityProperties_Type      specialAbilityProperties_p;
   specialAbilityProperties_p.parsers(abilityClass_p,
                                      specialPropertyTypeUnion_p,
                                      actionType_p,
                                      usage_p,
                                      specialAbilityPreCondition_p,
+                                     summonMonster_p,
                                      spellProperties_p,
-                                     rangedProperties_p,
-                                     float_p);
+                                     rangedProperties_p);
 
 //   unsigned_int_pimpl                      space_p;
 //   unsigned_int_pimpl                      reach_p;

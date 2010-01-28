@@ -51,6 +51,8 @@
       <xsd:enumeration value="SPELL_BLASPHEMY"/>
       <xsd:enumeration value="SPELL_BLINK"/>
       <xsd:enumeration value="SPELL_CANTRIP"/>
+      <xsd:enumeration value="SPELL_CHAOS_HAMMER"/>
+      <xsd:enumeration value="SPELL_CONFUSION"/>
       <xsd:enumeration value="SPELL_DARKNESS"/>
       <xsd:enumeration value="SPELL_DETECT_CHAOS"/>
       <xsd:enumeration value="SPELL_DETECT_EVIL"/>
@@ -79,16 +81,22 @@
       <xsd:enumeration value="SPELL_REMOVE_DISEASE"/>
       <xsd:enumeration value="SPELL_RESTORATION"/>
       <xsd:enumeration value="SPELL_RESTORATION_GREATER"/>
+      <xsd:enumeration value="SPELL_REVERSE_GRAVITY"/>
+      <xsd:enumeration value="SPELL_SCARE"/>
       <xsd:enumeration value="SPELL_SEE_INVISIBILITY"/>
       <xsd:enumeration value="SPELL_SILENT_IMAGE"/>
+      <xsd:enumeration value="SPELL_STINKING_CLOUD"/>
       <xsd:enumeration value="SPELL_STONE_SHAPE"/>
+      <xsd:enumeration value="SPELL_SUMMON_MONSTER_I"/>
       <xsd:enumeration value="SPELL_SUMMON_MONSTER_III"/>
+      <xsd:enumeration value="SPELL_SUMMON_MONSTER_IV"/>
       <xsd:enumeration value="SPELL_SUMMON_MONSTER_IX"/>
       <xsd:enumeration value="SPELL_TELEKINESIS"/>
       <xsd:enumeration value="SPELL_TELEPATHY"/>
       <xsd:enumeration value="SPELL_TELEPORT_GREATER"/>
       <xsd:enumeration value="SPELL_TRUE_SEEING"/>
       <xsd:enumeration value="SPELL_UNHOLY_AURA"/>
+      <xsd:enumeration value="SPELL_UNHOLY_BLIGHT"/>
     </xsd:restriction>
   </xsd:simpleType>
 

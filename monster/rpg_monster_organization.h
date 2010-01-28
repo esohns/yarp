@@ -31,6 +31,7 @@ enum RPG_Monster_Organization
   ORGANIZATION_CLUSTER,
   ORGANIZATION_CLUTCH,
   ORGANIZATION_COMPANY,
+  ORGANIZATION_CROWD,
   ORGANIZATION_FLIGHT,
   ORGANIZATION_FLOCK,
   ORGANIZATION_GANG,
@@ -74,6 +75,7 @@ class RPG_Monster_OrganizationHelper
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_CLUSTER, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_CLUSTER")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_CLUTCH, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_CLUTCH")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_COMPANY, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_COMPANY")));
+    myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_CROWD, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_CROWD")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_FLIGHT, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_FLIGHT")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_FLOCK, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_FLOCK")));
     myRPG_Monster_OrganizationToStringTable.insert(std::make_pair(ORGANIZATION_GANG, ACE_TEXT_ALWAYS_CHAR("ORGANIZATION_GANG")));

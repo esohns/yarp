@@ -80,9 +80,9 @@ class RPG_Combat_ActionType_Type_pskel;
 
 #include <rpg_XMLSchema_XML_types.h>
 
+#include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
 #include <rpg_magic_incl.h>
-#include <rpg_dice_incl.h>
 #include <rpg_character_incl.h>
 #include "rpg_combat_incl.h"
 
