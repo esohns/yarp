@@ -29,8 +29,10 @@ enum RPG_Character_Ability
   ABILITY_ENTANGLE,
   ABILITY_FLAMING_BODY,
   ABILITY_LEAP_ATTACK,
+  ABILITY_REND_ARMOR,
   ABILITY_SCORE_LOSS,
   ABILITY_SNEAK_ATTACK,
+  ABILITY_STENCH,
   ABILITY_THROW_WEB,
   ABILITY_ALTERNATE_FORM,
   ABILITY_ANTIMAGIC,
@@ -124,8 +126,10 @@ class RPG_Character_AbilityHelper
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_ENTANGLE, ACE_TEXT_ALWAYS_CHAR("ABILITY_ENTANGLE")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_FLAMING_BODY, ACE_TEXT_ALWAYS_CHAR("ABILITY_FLAMING_BODY")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_LEAP_ATTACK, ACE_TEXT_ALWAYS_CHAR("ABILITY_LEAP_ATTACK")));
+    myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_REND_ARMOR, ACE_TEXT_ALWAYS_CHAR("ABILITY_REND_ARMOR")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_SCORE_LOSS, ACE_TEXT_ALWAYS_CHAR("ABILITY_SCORE_LOSS")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_SNEAK_ATTACK, ACE_TEXT_ALWAYS_CHAR("ABILITY_SNEAK_ATTACK")));
+    myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_STENCH, ACE_TEXT_ALWAYS_CHAR("ABILITY_STENCH")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_THROW_WEB, ACE_TEXT_ALWAYS_CHAR("ABILITY_THROW_WEB")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_ALTERNATE_FORM, ACE_TEXT_ALWAYS_CHAR("ABILITY_ALTERNATE_FORM")));
     myRPG_Character_AbilityToStringTable.insert(std::make_pair(ABILITY_ANTIMAGIC, ACE_TEXT_ALWAYS_CHAR("ABILITY_ANTIMAGIC")));

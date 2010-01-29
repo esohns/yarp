@@ -108,8 +108,10 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   ::xml_schema::unsigned_short_pimpl             unsigned_short_p;
   RPG_Combat_DamageDuration_Type                 duration_p;
   duration_p.parsers(roll_p,
+                     roll_p,
                      unsigned_short_p,
-                     unsigned_short_p);
+                     unsigned_short_p,
+                     bool_p);
   RPG_Combat_DamageCounterMeasureType_Type       counterMeasureType_p;
   RPG_Combat_CheckTypeUnion_Type                 checkTypeUnion_p;
   RPG_Common_Attribute_Type                      attribute_p;
@@ -123,12 +125,14 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   commonDuration_p.parsers(unsigned_int_p,
                            unsigned_int_p,
                            unsigned_int_p);
+//   RPG_Character_Condition_Type                   condition_p;
   RPG_Combat_DamageReductionType_Type            reduction_p;
   RPG_Combat_DamageCounterMeasure_Type           counterMeasure_p;
   counterMeasure_p.parsers(counterMeasureType_p,
                            check_p,
                            spell_p,
                            commonDuration_p,
+                           condition_p,
                            reduction_p);
 
   RPG_Combat_OtherDamageType_Type                otherDamageType_p;
@@ -143,6 +147,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                           roll_p,
                           roll_p,
                           attribute_p,
+                          condition_p,
                           duration_p,
                           counterMeasure_p,
                           others_p,

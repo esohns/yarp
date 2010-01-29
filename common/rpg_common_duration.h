@@ -26,7 +26,6 @@ struct RPG_Common_Duration
   unsigned int activation;
   unsigned int interval;
   unsigned int total;
-  bool vicinity;
 };
 
 #endif

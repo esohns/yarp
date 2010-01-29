@@ -29,6 +29,7 @@ enum RPG_Magic_Spell
   SPELL_CHAOS_HAMMER,
   SPELL_CONFUSION,
   SPELL_DARKNESS,
+  SPELL_DELAY_POISON,
   SPELL_DETECT_CHAOS,
   SPELL_DETECT_EVIL,
   SPELL_DETECT_GOOD,
@@ -50,6 +51,7 @@ enum RPG_Magic_Spell
   SPELL_INSANITY,
   SPELL_INVISIBILITY,
   SPELL_MIRROR_IMAGE,
+  SPELL_NEUTRALIZE_POISON,
   SPELL_PLANE_SHIFT,
   SPELL_POLYMORPH,
   SPELL_POWER_WORD_STUN,
@@ -97,6 +99,7 @@ class RPG_Magic_SpellHelper
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_CHAOS_HAMMER, ACE_TEXT_ALWAYS_CHAR("SPELL_CHAOS_HAMMER")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_CONFUSION, ACE_TEXT_ALWAYS_CHAR("SPELL_CONFUSION")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_DARKNESS, ACE_TEXT_ALWAYS_CHAR("SPELL_DARKNESS")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_DELAY_POISON, ACE_TEXT_ALWAYS_CHAR("SPELL_DELAY_POISON")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_DETECT_CHAOS, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_CHAOS")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_DETECT_EVIL, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_EVIL")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_DETECT_GOOD, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_GOOD")));
@@ -118,6 +121,7 @@ class RPG_Magic_SpellHelper
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_INSANITY, ACE_TEXT_ALWAYS_CHAR("SPELL_INSANITY")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_INVISIBILITY, ACE_TEXT_ALWAYS_CHAR("SPELL_INVISIBILITY")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_MIRROR_IMAGE, ACE_TEXT_ALWAYS_CHAR("SPELL_MIRROR_IMAGE")));
+    myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_NEUTRALIZE_POISON, ACE_TEXT_ALWAYS_CHAR("SPELL_NEUTRALIZE_POISON")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_PLANE_SHIFT, ACE_TEXT_ALWAYS_CHAR("SPELL_PLANE_SHIFT")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_POLYMORPH, ACE_TEXT_ALWAYS_CHAR("SPELL_POLYMORPH")));
     myRPG_Magic_SpellToStringTable.insert(std::make_pair(SPELL_POWER_WORD_STUN, ACE_TEXT_ALWAYS_CHAR("SPELL_POWER_WORD_STUN")));

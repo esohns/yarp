@@ -147,29 +147,20 @@ total_parser (::xml_schema::unsigned_int_pskel& p)
 }
 
 void RPG_Common_Duration_Type_pskel::
-vicinity_parser (::xml_schema::boolean_pskel& p)
-{
-  this->vicinity_parser_ = &p;
-}
-
-void RPG_Common_Duration_Type_pskel::
 parsers (::xml_schema::unsigned_int_pskel& activation,
          ::xml_schema::unsigned_int_pskel& interval,
-         ::xml_schema::unsigned_int_pskel& total,
-         ::xml_schema::boolean_pskel& vicinity)
+         ::xml_schema::unsigned_int_pskel& total)
 {
   this->activation_parser_ = &activation;
   this->interval_parser_ = &interval;
   this->total_parser_ = &total;
-  this->vicinity_parser_ = &vicinity;
 }
 
 RPG_Common_Duration_Type_pskel::
 RPG_Common_Duration_Type_pskel ()
 : activation_parser_ (0),
   interval_parser_ (0),
-  total_parser_ (0),
-  vicinity_parser_ (0)
+  total_parser_ (0)
 {
 }
 
@@ -411,11 +402,6 @@ total (unsigned int)
 {
 }
 
-void RPG_Common_Duration_Type_pskel::
-vicinity (bool)
-{
-}
-
 bool RPG_Common_Duration_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
@@ -486,31 +472,6 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->total_parser_)
       this->total (this->total_parser_->post_unsigned_int ());
-
-    return true;
-  }
-
-  return false;
-}
-
-bool RPG_Common_Duration_Type_pskel::
-_attribute_impl (const ::xml_schema::ro_string& ns,
-                 const ::xml_schema::ro_string& n,
-                 const ::xml_schema::ro_string& v)
-{
-  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
-    return true;
-
-  if (n == "vicinity" && ns.empty ())
-  {
-    if (this->vicinity_parser_)
-    {
-      this->vicinity_parser_->pre ();
-      this->vicinity_parser_->_pre_impl ();
-      this->vicinity_parser_->_characters (v);
-      this->vicinity_parser_->_post_impl ();
-      this->vicinity (this->vicinity_parser_->post_boolean ());
-    }
 
     return true;
   }

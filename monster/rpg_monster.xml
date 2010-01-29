@@ -9763,6 +9763,13 @@
           <element>
             <type>DAMAGE_POISON</type>
             <condition>CONDITION_NAUSEATED</condition>
+            <duration vicinity="true">
+              <totalPeriod>
+                <numDice>1</numDice>
+                <typeDice>D_4</typeDice>
+                <modifier>0</modifier>
+              </totalPeriod>
+            </duration>
             <counterMeasure reduction="REDUCTION_PARTIAL">
               <type>COUNTERMEASURE_CHECK</type>
               <check>
@@ -9776,13 +9783,6 @@
               <spell>SPELL_DELAY_POISON</spell>
               <spell>SPELL_NEUTRALIZE_POISON</spell>
             </counterMeasure>
-            <duration vicinity="true">
-              <totalPeriod>
-                <numDice>1</numDice>
-                <typeDice>D_4</typeDice>
-                <modifier>0</modifier>
-              </totalPeriod>
-            </duration>
           </element>
         </damage>
         <ranged>
@@ -9863,7 +9863,7 @@
     </specialAbility>
     <specialAbility>
       <abilityClass>ABILITYCLASS_SPELLLIKE</abilityClass>
-      <type>ABILITY_SPELL</type>
+      <type>ABILITY_SPELLS</type>
       <actionType>ACTION_STANDARD</actionType>
       <usage>
         <numUses>3</numUses>

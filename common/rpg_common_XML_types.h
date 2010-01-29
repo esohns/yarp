@@ -309,9 +309,6 @@ class RPG_Common_Duration_Type_pskel: public ::xml_schema::complex_content
   virtual void
   total (unsigned int);
 
-  virtual void
-  vicinity (bool);
-
   virtual RPG_Common_Duration
   post_RPG_Common_Duration_Type () = 0;
 
@@ -327,13 +324,9 @@ class RPG_Common_Duration_Type_pskel: public ::xml_schema::complex_content
   total_parser (::xml_schema::unsigned_int_pskel&);
 
   void
-  vicinity_parser (::xml_schema::boolean_pskel&);
-
-  void
   parsers (::xml_schema::unsigned_int_pskel& /* activation */,
            ::xml_schema::unsigned_int_pskel& /* interval */,
-           ::xml_schema::unsigned_int_pskel& /* total */,
-           ::xml_schema::boolean_pskel& /* vicinity */);
+           ::xml_schema::unsigned_int_pskel& /* total */);
 
   // Constructor.
   //
@@ -351,16 +344,10 @@ class RPG_Common_Duration_Type_pskel: public ::xml_schema::complex_content
   _end_element_impl (const ::xml_schema::ro_string&,
                      const ::xml_schema::ro_string&);
 
-  virtual bool
-  _attribute_impl (const ::xml_schema::ro_string&,
-                   const ::xml_schema::ro_string&,
-                   const ::xml_schema::ro_string&);
-
   protected:
   ::xml_schema::unsigned_int_pskel* activation_parser_;
   ::xml_schema::unsigned_int_pskel* interval_parser_;
   ::xml_schema::unsigned_int_pskel* total_parser_;
-  ::xml_schema::boolean_pskel* vicinity_parser_;
 };
 
 class RPG_Common_Camp_Type_pskel: public virtual ::xml_schema::string_pskel

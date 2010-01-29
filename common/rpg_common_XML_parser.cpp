@@ -208,7 +208,7 @@ RPG_Common_Duration_Type::RPG_Common_Duration_Type()
   myCurrentDuration.activation = 0;
   myCurrentDuration.interval = 0;
   myCurrentDuration.total = 0;
-  myCurrentDuration.vicinity = false;
+//   myCurrentDuration.vicinity = false;
 }
 
 void RPG_Common_Duration_Type::activation(unsigned int activation_in)
@@ -249,7 +249,7 @@ RPG_Common_Duration RPG_Common_Duration_Type::post_RPG_Common_Duration_Type()
   myCurrentDuration.activation = 0;
   myCurrentDuration.interval = 0;
   myCurrentDuration.total = 0;
-  myCurrentDuration.vicinity = false;
+//   myCurrentDuration.vicinity = false;
 
   return result;
 }
