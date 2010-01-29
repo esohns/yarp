@@ -101,6 +101,7 @@
       <xsd:element name="interval" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="total" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
+<!--    <xsd:attribute name="vicinity" type="xsd:boolean" use="optional" default="false"/>-->
   </xsd:complexType>
 
   <xsd:simpleType name="RPG_Common_Camp_Type">

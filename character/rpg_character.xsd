@@ -140,6 +140,7 @@
       <xsd:enumeration value="ABILITY_REND_ARMOR"/>
       <xsd:enumeration value="ABILITY_SCORE_LOSS"/>
       <xsd:enumeration value="ABILITY_SNEAK_ATTACK"/>
+      <xsd:enumeration value="ABILITY_STENCH"/>
       <xsd:enumeration value="ABILITY_THROW_WEB"/>
       <!--                                          -->
       <xsd:enumeration value="ABILITY_ALTERNATE_FORM"/>

@@ -27,6 +27,7 @@ struct RPG_Combat_DamageCounterMeasure
   RPG_Combat_Check check;
   std::vector<RPG_Magic_Spell> spells;
   RPG_Common_Duration duration;
+  RPG_Character_Condition condition;
   RPG_Combat_DamageReductionType reduction;
 };
 

@@ -23,9 +23,10 @@
 
 enum RPG_Combat_DamageReductionType
 {
-  REDUCTION_TEMPORARY = 0,
+  REDUCTION_FULL = 0,
   REDUCTION_HALF,
-  REDUCTION_FULL,
+  REDUCTION_PARTIAL,
+  REDUCTION_TEMPORARY,
   //
   RPG_COMBAT_DAMAGEREDUCTIONTYPE_MAX,
   RPG_COMBAT_DAMAGEREDUCTIONTYPE_INVALID
@@ -45,9 +46,10 @@ class RPG_Combat_DamageReductionTypeHelper
   inline static void init()
   {
     myRPG_Combat_DamageReductionTypeToStringTable.clear();
-    myRPG_Combat_DamageReductionTypeToStringTable.insert(std::make_pair(REDUCTION_TEMPORARY, ACE_TEXT_ALWAYS_CHAR("REDUCTION_TEMPORARY")));
-    myRPG_Combat_DamageReductionTypeToStringTable.insert(std::make_pair(REDUCTION_HALF, ACE_TEXT_ALWAYS_CHAR("REDUCTION_HALF")));
     myRPG_Combat_DamageReductionTypeToStringTable.insert(std::make_pair(REDUCTION_FULL, ACE_TEXT_ALWAYS_CHAR("REDUCTION_FULL")));
+    myRPG_Combat_DamageReductionTypeToStringTable.insert(std::make_pair(REDUCTION_HALF, ACE_TEXT_ALWAYS_CHAR("REDUCTION_HALF")));
+    myRPG_Combat_DamageReductionTypeToStringTable.insert(std::make_pair(REDUCTION_PARTIAL, ACE_TEXT_ALWAYS_CHAR("REDUCTION_PARTIAL")));
+    myRPG_Combat_DamageReductionTypeToStringTable.insert(std::make_pair(REDUCTION_TEMPORARY, ACE_TEXT_ALWAYS_CHAR("REDUCTION_TEMPORARY")));
   };
 
   inline static std::string RPG_Combat_DamageReductionTypeToString(const RPG_Combat_DamageReductionType& element_in)

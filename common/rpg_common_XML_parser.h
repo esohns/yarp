@@ -138,6 +138,7 @@ class RPG_Common_Duration_Type
   virtual void activation(unsigned int);
   virtual void interval(unsigned int);
   virtual void total(unsigned int);
+//   virtual void vicinity(bool);
   virtual RPG_Common_Duration post_RPG_Common_Duration_Type();
 
  private:

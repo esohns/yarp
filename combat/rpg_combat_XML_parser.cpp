@@ -192,8 +192,12 @@ RPG_Combat_DamageDuration_Type::RPG_Combat_DamageDuration_Type()
   myCurrentDuration.incubationPeriod.numDice = 0;
   myCurrentDuration.incubationPeriod.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentDuration.incubationPeriod.modifier = 0;
+  myCurrentDuration.totalPeriod.numDice = 0;
+  myCurrentDuration.totalPeriod.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentDuration.totalPeriod.modifier = 0;
   myCurrentDuration.interval = 0;
   myCurrentDuration.totalDuration = 0;
+  myCurrentDuration.vicinity = false;
 }
 
 void RPG_Combat_DamageDuration_Type::incubationPeriod(const RPG_Dice_Roll& incubationPeriod_in)
@@ -201,6 +205,13 @@ void RPG_Combat_DamageDuration_Type::incubationPeriod(const RPG_Dice_Roll& incub
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageDuration_Type::incubationPeriod"));
 
   myCurrentDuration.incubationPeriod = incubationPeriod_in;
+}
+
+void RPG_Combat_DamageDuration_Type::totalPeriod(const RPG_Dice_Roll& totalPeriod_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageDuration_Type::totalPeriod"));
+
+  myCurrentDuration.totalPeriod = totalPeriod_in;
 }
 
 void RPG_Combat_DamageDuration_Type::interval(unsigned short interval_in)
@@ -217,6 +228,13 @@ void RPG_Combat_DamageDuration_Type::totalDuration(unsigned short duration_in)
   myCurrentDuration.totalDuration = duration_in;
 }
 
+void RPG_Combat_DamageDuration_Type::vicinity(bool vicinity_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageDuration_Type::vicinity"));
+
+  myCurrentDuration.vicinity = vicinity_in;
+}
+
 RPG_Combat_DamageDuration RPG_Combat_DamageDuration_Type::post_RPG_Combat_DamageDuration_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageDuration_Type::post_RPG_Combat_DamageDuration_Type"));
@@ -227,8 +245,12 @@ RPG_Combat_DamageDuration RPG_Combat_DamageDuration_Type::post_RPG_Combat_Damage
   myCurrentDuration.incubationPeriod.numDice = 0;
   myCurrentDuration.incubationPeriod.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentDuration.incubationPeriod.modifier = 0;
+  myCurrentDuration.totalPeriod.numDice = 0;
+  myCurrentDuration.totalPeriod.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentDuration.totalPeriod.modifier = 0;
   myCurrentDuration.interval = 0;
   myCurrentDuration.totalDuration = 0;
+  myCurrentDuration.vicinity = false;
 
   return result;
 }
@@ -417,6 +439,7 @@ RPG_Combat_DamageCounterMeasure_Type::RPG_Combat_DamageCounterMeasure_Type()
   myCurrentCounterMeasure.duration.activation = 0;
   myCurrentCounterMeasure.duration.interval = 0;
   myCurrentCounterMeasure.duration.total = 0;
+  myCurrentCounterMeasure.condition = RPG_CHARACTER_CONDITION_INVALID;
   myCurrentCounterMeasure.reduction = RPG_COMBAT_DAMAGEREDUCTIONTYPE_INVALID;
 }
 
@@ -448,6 +471,13 @@ void RPG_Combat_DamageCounterMeasure_Type::duration(const RPG_Common_Duration& d
   myCurrentCounterMeasure.duration = duration_in;
 }
 
+void RPG_Combat_DamageCounterMeasure_Type::condition(const RPG_Character_Condition& condition_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasure_Type::condition"));
+
+  myCurrentCounterMeasure.condition = condition_in;
+}
+
 void RPG_Combat_DamageCounterMeasure_Type::reduction(const RPG_Combat_DamageReductionType& reduction_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasure_Type::reduction"));
@@ -471,6 +501,7 @@ RPG_Combat_DamageCounterMeasure RPG_Combat_DamageCounterMeasure_Type::post_RPG_C
   myCurrentCounterMeasure.duration.activation = 0;
   myCurrentCounterMeasure.duration.interval = 0;
   myCurrentCounterMeasure.duration.total = 0;
+  myCurrentCounterMeasure.condition = RPG_CHARACTER_CONDITION_INVALID;
   myCurrentCounterMeasure.reduction = RPG_COMBAT_DAMAGEREDUCTIONTYPE_INVALID;
 
   return result;
@@ -487,14 +518,15 @@ RPG_Combat_DamageElement_Type::RPG_Combat_DamageElement_Type()
   myCurrentDamageElement.secondary.numDice = 0;
   myCurrentDamageElement.secondary.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentDamageElement.secondary.modifier = 0;
+  myCurrentDamageElement.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentDamageElement.condition = RPG_CHARACTER_CONDITION_INVALID;
   myCurrentDamageElement.duration.incubationPeriod.numDice = 0;
   myCurrentDamageElement.duration.incubationPeriod.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentDamageElement.duration.incubationPeriod.modifier = 0;
   myCurrentDamageElement.duration.interval = 0;
   myCurrentDamageElement.duration.totalDuration = 0;
-  myCurrentDamageElement.others.clear();
-  myCurrentDamageElement.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentDamageElement.counterMeasures.clear();
+  myCurrentDamageElement.others.clear();
   myCurrentDamageElement.effect = RPG_COMMON_EFFECTTYPE_INVALID;
 }
 
@@ -517,6 +549,13 @@ void RPG_Combat_DamageElement_Type::secondary(const RPG_Dice_Roll& secondary_in)
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::secondary"));
 
   myCurrentDamageElement.secondary = secondary_in;
+}
+
+void RPG_Combat_DamageElement_Type::condition(const RPG_Character_Condition& condition_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::condition"));
+
+  myCurrentDamageElement.condition = condition_in;
 }
 
 void RPG_Combat_DamageElement_Type::duration(const RPG_Combat_DamageDuration& duration_in)

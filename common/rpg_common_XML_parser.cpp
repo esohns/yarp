@@ -208,6 +208,7 @@ RPG_Common_Duration_Type::RPG_Common_Duration_Type()
   myCurrentDuration.activation = 0;
   myCurrentDuration.interval = 0;
   myCurrentDuration.total = 0;
+  myCurrentDuration.vicinity = false;
 }
 
 void RPG_Common_Duration_Type::activation(unsigned int activation_in)
@@ -231,6 +232,13 @@ void RPG_Common_Duration_Type::total(unsigned int total_in)
   myCurrentDuration.total = total_in;
 }
 
+// void RPG_Common_Duration_Type::vicinity(bool vicinity_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::vicinity"));
+//
+//   myCurrentDuration.vicinity = vicinity_in;
+// }
+
 RPG_Common_Duration RPG_Common_Duration_Type::post_RPG_Common_Duration_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::post_RPG_Common_Duration_Type"));
@@ -241,6 +249,7 @@ RPG_Common_Duration RPG_Common_Duration_Type::post_RPG_Common_Duration_Type()
   myCurrentDuration.activation = 0;
   myCurrentDuration.interval = 0;
   myCurrentDuration.total = 0;
+  myCurrentDuration.vicinity = false;
 
   return result;
 }

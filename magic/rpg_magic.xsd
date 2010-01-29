@@ -54,6 +54,7 @@
       <xsd:enumeration value="SPELL_CHAOS_HAMMER"/>
       <xsd:enumeration value="SPELL_CONFUSION"/>
       <xsd:enumeration value="SPELL_DARKNESS"/>
+      <xsd:enumeration value="SPELL_DELAY_POISON"/>
       <xsd:enumeration value="SPELL_DETECT_CHAOS"/>
       <xsd:enumeration value="SPELL_DETECT_EVIL"/>
       <xsd:enumeration value="SPELL_DETECT_GOOD"/>
@@ -75,6 +76,7 @@
       <xsd:enumeration value="SPELL_INSANITY"/>
       <xsd:enumeration value="SPELL_INVISIBILITY"/>
       <xsd:enumeration value="SPELL_MIRROR_IMAGE"/>
+      <xsd:enumeration value="SPELL_NEUTRALIZE_POISON"/>
       <xsd:enumeration value="SPELL_PLANE_SHIFT"/>
       <xsd:enumeration value="SPELL_POLYMORPH"/>
       <xsd:enumeration value="SPELL_POWER_WORD_STUN"/>

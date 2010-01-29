@@ -19,6 +19,7 @@ namespace urn:rpg
   RPG_Character_Size_Type                  RPG_Character_Size;
   RPG_Character_Skill_Type                 RPG_Character_Skill;
   RPG_Character_Check_Type                 RPG_Character_Check;
+  RPG_Character_Condition_Type             RPG_Character_Condition;
 
   RPG_Combat_AttackForm_Type               RPG_Combat_AttackForm;
   RPG_Combat_AreaOfEffect_Type             RPG_Combat_AreaOfEffect;

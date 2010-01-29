@@ -133,8 +133,10 @@ class RPG_Combat_DamageDuration_Type
 
 //   virtual void pre();
   virtual void incubationPeriod(const RPG_Dice_Roll&);
+  virtual void totalPeriod(const RPG_Dice_Roll&);
   virtual void interval(unsigned short);
   virtual void totalDuration(unsigned short);
+  virtual void vicinity(bool);
   virtual RPG_Combat_DamageDuration post_RPG_Combat_DamageDuration_Type();
 
  private:
@@ -225,6 +227,7 @@ class RPG_Combat_DamageCounterMeasure_Type
    virtual void check(const RPG_Combat_Check&);
    virtual void spell(const RPG_Magic_Spell&);
    virtual void duration(const RPG_Common_Duration&);
+   virtual void condition(const RPG_Character_Condition&);
    virtual void reduction(const RPG_Combat_DamageReductionType&);
    virtual RPG_Combat_DamageCounterMeasure post_RPG_Combat_DamageCounterMeasure_Type();
 
@@ -243,6 +246,7 @@ class RPG_Combat_DamageElement_Type
   virtual void amount(const RPG_Dice_Roll&);
   virtual void secondary(const RPG_Dice_Roll&);
   virtual void attribute(const RPG_Common_Attribute&);
+  virtual void condition(const RPG_Character_Condition&);
   virtual void duration(const RPG_Combat_DamageDuration&);
   virtual void counterMeasure(const RPG_Combat_DamageCounterMeasure&);
   virtual void other(const RPG_Combat_OtherDamage&);

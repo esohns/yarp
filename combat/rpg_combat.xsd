@@ -115,10 +115,11 @@
   <xsd:complexType name="RPG_Combat_DamageDuration_Type">
     <xsd:sequence>
       <xsd:element name="incubationPeriod" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
-<!--       <xsd:element name="incubationCounterMeasure" type="xsd:boolean" minOccurs="0" maxOccurs="1"/> -->
+      <xsd:element name="totalPeriod" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="interval" type="xsd:unsignedShort" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="totalDuration" type="xsd:unsignedShort" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
+    <xsd:attribute name="vicinity" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
 
   <xsd:simpleType name="RPG_Combat_DamageCounterMeasureType_Type">
@@ -142,9 +143,10 @@
 
   <xsd:simpleType name="RPG_Combat_DamageReductionType_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="REDUCTION_TEMPORARY"/>
-      <xsd:enumeration value="REDUCTION_HALF"/>
       <xsd:enumeration value="REDUCTION_FULL"/>
+      <xsd:enumeration value="REDUCTION_HALF"/>
+      <xsd:enumeration value="REDUCTION_PARTIAL"/>
+      <xsd:enumeration value="REDUCTION_TEMPORARY"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -154,6 +156,7 @@
       <xsd:element name="check" type="RPG_Combat_Check_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="spell" type="RPG_Magic_Spell_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="duration" type="RPG_Common_Duration_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="condition" type="RPG_Character_Condition_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="reduction" type="RPG_Combat_DamageReductionType_Type" use="optional" default="REDUCTION_FULL"/>
   </xsd:complexType>
@@ -181,6 +184,7 @@
       <xsd:element name="amount" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="secondary" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="condition" type="RPG_Character_Condition_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="duration" type="RPG_Combat_DamageDuration_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="counterMeasure" type="RPG_Combat_DamageCounterMeasure_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="other" type="RPG_Combat_OtherDamage_Type" minOccurs="0" maxOccurs="unbounded"/>

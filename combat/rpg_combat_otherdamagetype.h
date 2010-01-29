@@ -23,8 +23,10 @@
 
 enum RPG_Combat_OtherDamageType
 {
-  BONUS_HITPOINTS = 0,
-  MALUS_NATURALARMOR,
+  OTHERDAMAGE_DISSOLVEARMOR = 0,
+  OTHERDAMAGE_EXTRAHITPOINTS,
+  OTHERDAMAGE_NATURALARMOR,
+  OTHERDAMAGE_DISSOLVEWEAPON,
   //
   RPG_COMBAT_OTHERDAMAGETYPE_MAX,
   RPG_COMBAT_OTHERDAMAGETYPE_INVALID
@@ -44,8 +46,10 @@ class RPG_Combat_OtherDamageTypeHelper
   inline static void init()
   {
     myRPG_Combat_OtherDamageTypeToStringTable.clear();
-    myRPG_Combat_OtherDamageTypeToStringTable.insert(std::make_pair(BONUS_HITPOINTS, ACE_TEXT_ALWAYS_CHAR("BONUS_HITPOINTS")));
-    myRPG_Combat_OtherDamageTypeToStringTable.insert(std::make_pair(MALUS_NATURALARMOR, ACE_TEXT_ALWAYS_CHAR("MALUS_NATURALARMOR")));
+    myRPG_Combat_OtherDamageTypeToStringTable.insert(std::make_pair(OTHERDAMAGE_DISSOLVEARMOR, ACE_TEXT_ALWAYS_CHAR("OTHERDAMAGE_DISSOLVEARMOR")));
+    myRPG_Combat_OtherDamageTypeToStringTable.insert(std::make_pair(OTHERDAMAGE_EXTRAHITPOINTS, ACE_TEXT_ALWAYS_CHAR("OTHERDAMAGE_EXTRAHITPOINTS")));
+    myRPG_Combat_OtherDamageTypeToStringTable.insert(std::make_pair(OTHERDAMAGE_NATURALARMOR, ACE_TEXT_ALWAYS_CHAR("OTHERDAMAGE_NATURALARMOR")));
+    myRPG_Combat_OtherDamageTypeToStringTable.insert(std::make_pair(OTHERDAMAGE_DISSOLVEWEAPON, ACE_TEXT_ALWAYS_CHAR("OTHERDAMAGE_DISSOLVEWEAPON")));
   };
 
   inline static std::string RPG_Combat_OtherDamageTypeToString(const RPG_Combat_OtherDamageType& element_in)

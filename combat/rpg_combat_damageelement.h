@@ -27,6 +27,7 @@ struct RPG_Combat_DamageElement
   RPG_Dice_Roll amount;
   RPG_Dice_Roll secondary;
   RPG_Common_Attribute attribute;
+  RPG_Character_Condition condition;
   RPG_Combat_DamageDuration duration;
   std::vector<RPG_Combat_DamageCounterMeasure> counterMeasures;
   std::vector<RPG_Combat_OtherDamage> others;

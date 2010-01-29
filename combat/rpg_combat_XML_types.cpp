@@ -87,6 +87,12 @@ incubationPeriod_parser (::RPG_Dice_Roll_Type_pskel& p)
 }
 
 void RPG_Combat_DamageDuration_Type_pskel::
+totalPeriod_parser (::RPG_Dice_Roll_Type_pskel& p)
+{
+  this->totalPeriod_parser_ = &p;
+}
+
+void RPG_Combat_DamageDuration_Type_pskel::
 interval_parser (::xml_schema::unsigned_short_pskel& p)
 {
   this->interval_parser_ = &p;
@@ -99,20 +105,32 @@ totalDuration_parser (::xml_schema::unsigned_short_pskel& p)
 }
 
 void RPG_Combat_DamageDuration_Type_pskel::
+vicinity_parser (::xml_schema::boolean_pskel& p)
+{
+  this->vicinity_parser_ = &p;
+}
+
+void RPG_Combat_DamageDuration_Type_pskel::
 parsers (::RPG_Dice_Roll_Type_pskel& incubationPeriod,
+         ::RPG_Dice_Roll_Type_pskel& totalPeriod,
          ::xml_schema::unsigned_short_pskel& interval,
-         ::xml_schema::unsigned_short_pskel& totalDuration)
+         ::xml_schema::unsigned_short_pskel& totalDuration,
+         ::xml_schema::boolean_pskel& vicinity)
 {
   this->incubationPeriod_parser_ = &incubationPeriod;
+  this->totalPeriod_parser_ = &totalPeriod;
   this->interval_parser_ = &interval;
   this->totalDuration_parser_ = &totalDuration;
+  this->vicinity_parser_ = &vicinity;
 }
 
 RPG_Combat_DamageDuration_Type_pskel::
 RPG_Combat_DamageDuration_Type_pskel ()
 : incubationPeriod_parser_ (0),
+  totalPeriod_parser_ (0),
   interval_parser_ (0),
-  totalDuration_parser_ (0)
+  totalDuration_parser_ (0),
+  vicinity_parser_ (0)
 {
 }
 
@@ -183,6 +201,12 @@ duration_parser (::RPG_Common_Duration_Type_pskel& p)
 }
 
 void RPG_Combat_DamageCounterMeasure_Type_pskel::
+condition_parser (::RPG_Character_Condition_Type_pskel& p)
+{
+  this->condition_parser_ = &p;
+}
+
+void RPG_Combat_DamageCounterMeasure_Type_pskel::
 reduction_parser (::RPG_Combat_DamageReductionType_Type_pskel& p)
 {
   this->reduction_parser_ = &p;
@@ -193,12 +217,14 @@ parsers (::RPG_Combat_DamageCounterMeasureType_Type_pskel& type,
          ::RPG_Combat_Check_Type_pskel& check,
          ::RPG_Magic_Spell_Type_pskel& spell,
          ::RPG_Common_Duration_Type_pskel& duration,
+         ::RPG_Character_Condition_Type_pskel& condition,
          ::RPG_Combat_DamageReductionType_Type_pskel& reduction)
 {
   this->type_parser_ = &type;
   this->check_parser_ = &check;
   this->spell_parser_ = &spell;
   this->duration_parser_ = &duration;
+  this->condition_parser_ = &condition;
   this->reduction_parser_ = &reduction;
 }
 
@@ -208,6 +234,7 @@ RPG_Combat_DamageCounterMeasure_Type_pskel ()
   check_parser_ (0),
   spell_parser_ (0),
   duration_parser_ (0),
+  condition_parser_ (0),
   reduction_parser_ (0)
 {
 }
@@ -279,6 +306,12 @@ attribute_parser (::RPG_Common_Attribute_Type_pskel& p)
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
+condition_parser (::RPG_Character_Condition_Type_pskel& p)
+{
+  this->condition_parser_ = &p;
+}
+
+void RPG_Combat_DamageElement_Type_pskel::
 duration_parser (::RPG_Combat_DamageDuration_Type_pskel& p)
 {
   this->duration_parser_ = &p;
@@ -307,6 +340,7 @@ parsers (::RPG_Combat_DamageTypeUnion_Type_pskel& type,
          ::RPG_Dice_Roll_Type_pskel& amount,
          ::RPG_Dice_Roll_Type_pskel& secondary,
          ::RPG_Common_Attribute_Type_pskel& attribute,
+         ::RPG_Character_Condition_Type_pskel& condition,
          ::RPG_Combat_DamageDuration_Type_pskel& duration,
          ::RPG_Combat_DamageCounterMeasure_Type_pskel& counterMeasure,
          ::RPG_Combat_OtherDamage_Type_pskel& other,
@@ -316,6 +350,7 @@ parsers (::RPG_Combat_DamageTypeUnion_Type_pskel& type,
   this->amount_parser_ = &amount;
   this->secondary_parser_ = &secondary;
   this->attribute_parser_ = &attribute;
+  this->condition_parser_ = &condition;
   this->duration_parser_ = &duration;
   this->counterMeasure_parser_ = &counterMeasure;
   this->other_parser_ = &other;
@@ -328,6 +363,7 @@ RPG_Combat_DamageElement_Type_pskel ()
   amount_parser_ (0),
   secondary_parser_ (0),
   attribute_parser_ (0),
+  condition_parser_ (0),
   duration_parser_ (0),
   counterMeasure_parser_ (0),
   other_parser_ (0),
@@ -467,12 +503,22 @@ incubationPeriod (const RPG_Dice_Roll&)
 }
 
 void RPG_Combat_DamageDuration_Type_pskel::
+totalPeriod (const RPG_Dice_Roll&)
+{
+}
+
+void RPG_Combat_DamageDuration_Type_pskel::
 interval (unsigned short)
 {
 }
 
 void RPG_Combat_DamageDuration_Type_pskel::
 totalDuration (unsigned short)
+{
+}
+
+void RPG_Combat_DamageDuration_Type_pskel::
+vicinity (bool)
 {
 }
 
@@ -492,6 +538,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->incubationPeriod_parser_)
       this->incubationPeriod_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "totalPeriod" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->totalPeriod_parser_;
+
+    if (this->totalPeriod_parser_)
+      this->totalPeriod_parser_->pre ();
 
     return true;
   }
@@ -534,6 +590,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "totalPeriod" && ns == "urn:rpg")
+  {
+    if (this->totalPeriod_parser_)
+      this->totalPeriod (this->totalPeriod_parser_->post_RPG_Dice_Roll_Type ());
+
+    return true;
+  }
+
   if (n == "interval" && ns == "urn:rpg")
   {
     if (this->interval_parser_)
@@ -546,6 +610,31 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->totalDuration_parser_)
       this->totalDuration (this->totalDuration_parser_->post_unsigned_short ());
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Combat_DamageDuration_Type_pskel::
+_attribute_impl (const ::xml_schema::ro_string& ns,
+                 const ::xml_schema::ro_string& n,
+                 const ::xml_schema::ro_string& v)
+{
+  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
+    return true;
+
+  if (n == "vicinity" && ns.empty ())
+  {
+    if (this->vicinity_parser_)
+    {
+      this->vicinity_parser_->pre ();
+      this->vicinity_parser_->_pre_impl ();
+      this->vicinity_parser_->_characters (v);
+      this->vicinity_parser_->_post_impl ();
+      this->vicinity (this->vicinity_parser_->post_boolean ());
+    }
 
     return true;
   }
@@ -672,6 +761,11 @@ duration ()
 }
 
 void RPG_Combat_DamageCounterMeasure_Type_pskel::
+condition (const RPG_Character_Condition&)
+{
+}
+
+void RPG_Combat_DamageCounterMeasure_Type_pskel::
 reduction (const RPG_Combat_DamageReductionType&)
 {
 }
@@ -726,6 +820,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "condition" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->condition_parser_;
+
+    if (this->condition_parser_)
+      this->condition_parser_->pre ();
+
+    return true;
+  }
+
   return false;
 }
 
@@ -767,6 +871,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
       this->duration_parser_->post_RPG_Common_Duration_Type ();
       this->duration ();
     }
+
+    return true;
+  }
+
+  if (n == "condition" && ns == "urn:rpg")
+  {
+    if (this->condition_parser_)
+      this->condition (this->condition_parser_->post_RPG_Character_Condition_Type ());
 
     return true;
   }
@@ -918,6 +1030,11 @@ attribute (const RPG_Common_Attribute&)
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
+condition (const RPG_Character_Condition&)
+{
+}
+
+void RPG_Combat_DamageElement_Type_pskel::
 duration (const RPG_Combat_DamageDuration&)
 {
 }
@@ -983,6 +1100,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->attribute_parser_)
       this->attribute_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "condition" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->condition_parser_;
+
+    if (this->condition_parser_)
+      this->condition_parser_->pre ();
 
     return true;
   }
@@ -1055,6 +1182,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->attribute_parser_)
       this->attribute (this->attribute_parser_->post_RPG_Common_Attribute_Type ());
+
+    return true;
+  }
+
+  if (n == "condition" && ns == "urn:rpg")
+  {
+    if (this->condition_parser_)
+      this->condition (this->condition_parser_->post_RPG_Character_Condition_Type ());
 
     return true;
   }
