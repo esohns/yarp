@@ -555,6 +555,9 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   trigger (const RPG_Character_Ability&);
 
   virtual void
+  allAdjacent (bool);
+
+  virtual void
   fullAttackIncludesNextAction (bool);
 
   virtual RPG_Monster_AttackAction
@@ -587,6 +590,9 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   trigger_parser (::RPG_Character_Ability_Type_pskel&);
 
   void
+  allAdjacent_parser (::xml_schema::boolean_pskel&);
+
+  void
   fullAttackIncludesNextAction_parser (::xml_schema::boolean_pskel&);
 
   void
@@ -598,6 +604,7 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
            ::xml_schema::unsigned_byte_pskel& /* numAttacksPerRound */,
            ::RPG_Combat_RangedAttackProperties_Type_pskel& /* ranged */,
            ::RPG_Character_Ability_Type_pskel& /* trigger */,
+           ::xml_schema::boolean_pskel& /* allAdjacent */,
            ::xml_schema::boolean_pskel& /* fullAttackIncludesNextAction */);
 
   // Constructor.
@@ -630,6 +637,7 @@ class RPG_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_byte_pskel* numAttacksPerRound_parser_;
   ::RPG_Combat_RangedAttackProperties_Type_pskel* ranged_parser_;
   ::RPG_Character_Ability_Type_pskel* trigger_parser_;
+  ::xml_schema::boolean_pskel* allAdjacent_parser_;
   ::xml_schema::boolean_pskel* fullAttackIncludesNextAction_parser_;
 };
 

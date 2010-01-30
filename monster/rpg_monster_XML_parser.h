@@ -201,6 +201,7 @@ class RPG_Monster_AttackAction_Type
   virtual void numAttacksPerRound(unsigned char);
   virtual void ranged(const RPG_Combat_RangedAttackProperties&);
   virtual void trigger(const RPG_Character_Ability&);
+  virtual void allAdjacent(bool);
   virtual void fullAttackIncludesNextAction(bool);
   virtual RPG_Monster_AttackAction post_RPG_Monster_AttackAction_Type();
 

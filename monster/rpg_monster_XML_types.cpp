@@ -323,6 +323,12 @@ trigger_parser (::RPG_Character_Ability_Type_pskel& p)
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
+allAdjacent_parser (::xml_schema::boolean_pskel& p)
+{
+  this->allAdjacent_parser_ = &p;
+}
+
+void RPG_Monster_AttackAction_Type_pskel::
 fullAttackIncludesNextAction_parser (::xml_schema::boolean_pskel& p)
 {
   this->fullAttackIncludesNextAction_parser_ = &p;
@@ -337,6 +343,7 @@ parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& weapon,
          ::xml_schema::unsigned_byte_pskel& numAttacksPerRound,
          ::RPG_Combat_RangedAttackProperties_Type_pskel& ranged,
          ::RPG_Character_Ability_Type_pskel& trigger,
+         ::xml_schema::boolean_pskel& allAdjacent,
          ::xml_schema::boolean_pskel& fullAttackIncludesNextAction)
 {
   this->weapon_parser_ = &weapon;
@@ -347,6 +354,7 @@ parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& weapon,
   this->numAttacksPerRound_parser_ = &numAttacksPerRound;
   this->ranged_parser_ = &ranged;
   this->trigger_parser_ = &trigger;
+  this->allAdjacent_parser_ = &allAdjacent;
   this->fullAttackIncludesNextAction_parser_ = &fullAttackIncludesNextAction;
 }
 
@@ -360,6 +368,7 @@ RPG_Monster_AttackAction_Type_pskel ()
   numAttacksPerRound_parser_ (0),
   ranged_parser_ (0),
   trigger_parser_ (0),
+  allAdjacent_parser_ (0),
   fullAttackIncludesNextAction_parser_ (0)
 {
 }
@@ -1734,6 +1743,11 @@ trigger (const RPG_Character_Ability&)
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
+allAdjacent (bool)
+{
+}
+
+void RPG_Monster_AttackAction_Type_pskel::
 fullAttackIncludesNextAction (bool)
 {
 }
@@ -1912,6 +1926,20 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
 {
   if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
     return true;
+
+  if (n == "allAdjacent" && ns.empty ())
+  {
+    if (this->allAdjacent_parser_)
+    {
+      this->allAdjacent_parser_->pre ();
+      this->allAdjacent_parser_->_pre_impl ();
+      this->allAdjacent_parser_->_characters (v);
+      this->allAdjacent_parser_->_post_impl ();
+      this->allAdjacent (this->allAdjacent_parser_->post_boolean ());
+    }
+
+    return true;
+  }
 
   if (n == "fullAttackIncludesNextAction" && ns.empty ())
   {

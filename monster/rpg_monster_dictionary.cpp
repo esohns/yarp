@@ -205,6 +205,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                          unsigned_byte_p,
                          rangedProperties_p,
                          ability_p,
+                         bool_p,
                          bool_p);
   RPG_Monster_Attack_Type                        attack_p;
   attack_p.parsers(byte_p,

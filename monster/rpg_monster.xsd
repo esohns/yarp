@@ -168,6 +168,7 @@
       <xsd:element name="ranged" type="RPG_Combat_RangedAttackProperties_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="trigger" type="RPG_Character_Ability_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
+    <xsd:attribute name="allAdjacent" type="xsd:boolean" use="optional" default="false"/>
     <xsd:attribute name="fullAttackIncludesNextAction" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
 

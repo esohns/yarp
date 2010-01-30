@@ -31,6 +31,7 @@ struct RPG_Monster_AttackAction
   unsigned char numAttacksPerRound;
   RPG_Combat_RangedAttackProperties ranged;
   std::vector<RPG_Character_Ability> triggers;
+  bool allAdjacent;
   bool fullAttackIncludesNextAction;
 };
 

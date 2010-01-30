@@ -24,6 +24,7 @@
 enum RPG_Combat_SpecialAttack
 {
   SPECIALATTACK_INCORPOREAL_TOUCH = 0,
+  SPECIALATTACK_SMITE,
   //
   RPG_COMBAT_SPECIALATTACK_MAX,
   RPG_COMBAT_SPECIALATTACK_INVALID
@@ -44,6 +45,7 @@ class RPG_Combat_SpecialAttackHelper
   {
     myRPG_Combat_SpecialAttackToStringTable.clear();
     myRPG_Combat_SpecialAttackToStringTable.insert(std::make_pair(SPECIALATTACK_INCORPOREAL_TOUCH, ACE_TEXT_ALWAYS_CHAR("SPECIALATTACK_INCORPOREAL_TOUCH")));
+    myRPG_Combat_SpecialAttackToStringTable.insert(std::make_pair(SPECIALATTACK_SMITE, ACE_TEXT_ALWAYS_CHAR("SPECIALATTACK_SMITE")));
   };
 
   inline static std::string RPG_Combat_SpecialAttackToString(const RPG_Combat_SpecialAttack& element_in)

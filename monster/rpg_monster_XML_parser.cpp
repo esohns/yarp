@@ -560,6 +560,7 @@ RPG_Monster_AttackAction_Type::RPG_Monster_AttackAction_Type()
   myCurrentAttackAction.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
   myCurrentAttackAction.ranged.effect.discriminator = RPG_Combat_RangedEffectUnion::INVALID;
   myCurrentAttackAction.triggers.clear();
+  myCurrentAttackAction.allAdjacent = false;
   myCurrentAttackAction.fullAttackIncludesNextAction = false;
 }
 
@@ -619,6 +620,13 @@ void RPG_Monster_AttackAction_Type::trigger(const RPG_Character_Ability& ability
   myCurrentAttackAction.triggers.push_back(ability_in);
 }
 
+void RPG_Monster_AttackAction_Type::allAdjacent(bool allAdjacent_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_AttackAction_Type::allAdjacent"));
+
+  myCurrentAttackAction.allAdjacent = allAdjacent_in;
+}
+
 void RPG_Monster_AttackAction_Type::fullAttackIncludesNextAction(bool includeNextAction_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_AttackAction_Type::fullAttackIncludesNextAction"));
@@ -652,6 +660,7 @@ RPG_Monster_AttackAction RPG_Monster_AttackAction_Type::post_RPG_Monster_AttackA
   myCurrentAttackAction.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
   myCurrentAttackAction.ranged.effect.discriminator = RPG_Combat_RangedEffectUnion::INVALID;
   myCurrentAttackAction.triggers.clear();
+  myCurrentAttackAction.allAdjacent = false;
   myCurrentAttackAction.fullAttackIncludesNextAction = false;
 
   return result;

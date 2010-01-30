@@ -51,10 +51,12 @@
       <xsd:enumeration value="SPELL_ALIGN_WEAPON"/>
       <xsd:enumeration value="SPELL_BLADE_BARRIER"/>
       <xsd:enumeration value="SPELL_BLASPHEMY"/>
+      <xsd:enumeration value="SPELL_BLESS"/>
       <xsd:enumeration value="SPELL_BLINK"/>
       <xsd:enumeration value="SPELL_CALL_LIGHTNING"/>
       <xsd:enumeration value="SPELL_CANTRIP"/>
       <xsd:enumeration value="SPELL_CHAOS_HAMMER"/>
+      <xsd:enumeration value="SPELL_CHARM_MONSTER"/>
       <xsd:enumeration value="SPELL_COMMUNE"/>
       <xsd:enumeration value="SPELL_CONFUSION"/>
       <xsd:enumeration value="SPELL_DARKNESS"/>
@@ -78,6 +80,7 @@
       <xsd:enumeration value="SPELL_GASEOUS_FORM"/>
       <xsd:enumeration value="SPELL_HEAL"/>
       <xsd:enumeration value="SPELL_HEAL_MASS"/>
+      <xsd:enumeration value="SPELL_HEROISM"/>
       <xsd:enumeration value="SPELL_HOLD_MONSTER"/>
       <xsd:enumeration value="SPELL_IMPLOSION"/>
       <xsd:enumeration value="SPELL_INSANITY"/>
@@ -99,6 +102,7 @@
       <xsd:enumeration value="SPELL_SLOW"/>
       <xsd:enumeration value="SPELL_STINKING_CLOUD"/>
       <xsd:enumeration value="SPELL_STONE_SHAPE"/>
+      <xsd:enumeration value="SPELL_SUGGESTION"/>
       <xsd:enumeration value="SPELL_SUMMON_MONSTER_I"/>
       <xsd:enumeration value="SPELL_SUMMON_MONSTER_III"/>
       <xsd:enumeration value="SPELL_SUMMON_MONSTER_IV"/>
@@ -107,6 +111,7 @@
       <xsd:enumeration value="SPELL_TELEKINESIS"/>
       <xsd:enumeration value="SPELL_TELEPATHY"/>
       <xsd:enumeration value="SPELL_TELEPORT_GREATER"/>
+      <xsd:enumeration value="SPELL_TONGUES"/>
       <xsd:enumeration value="SPELL_TRUE_SEEING"/>
       <xsd:enumeration value="SPELL_UNHOLY_AURA"/>
       <xsd:enumeration value="SPELL_UNHOLY_BLIGHT"/>
