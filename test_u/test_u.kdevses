@@ -3,16 +3,16 @@
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="1" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/combat/combat_simulator.cpp" >
-   <View0 Encoding="" line="199" Type="Source" />
+   <View0 Encoding="" line="203" Type="Source" />
   </Doc0>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
    <breakpointList>
-    <breakpoint0 location="/home/unfv/Projects/RPG/test_u/combat/combat_simulator.cpp:210" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint0 location="/home/unfv/Projects/RPG/test_u/combat/combat_simulator.cpp:206" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint0>
-    <breakpoint1 location="/home/unfv/Projects/RPG/test_u/combat/combat_simulator.cpp:205" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint1 location="/home/unfv/Projects/RPG/test_u/combat/combat_simulator.cpp:209" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint1>
    </breakpointList>
