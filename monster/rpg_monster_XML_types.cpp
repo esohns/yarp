@@ -574,6 +574,12 @@ targetCondition_parser (::RPG_Character_Condition_Type_pskel& p)
 }
 
 void RPG_Monster_SpecialAbilityPreCondition_Type_pskel::
+maxTargetSize_parser (::RPG_Character_Size_Type_pskel& p)
+{
+  this->maxTargetSize_parser_ = &p;
+}
+
+void RPG_Monster_SpecialAbilityPreCondition_Type_pskel::
 check_parser (::RPG_Combat_Check_Type_pskel& p)
 {
   this->check_parser_ = &p;
@@ -581,15 +587,18 @@ check_parser (::RPG_Combat_Check_Type_pskel& p)
 
 void RPG_Monster_SpecialAbilityPreCondition_Type_pskel::
 parsers (::RPG_Character_Condition_Type_pskel& targetCondition,
+         ::RPG_Character_Size_Type_pskel& maxTargetSize,
          ::RPG_Combat_Check_Type_pskel& check)
 {
   this->targetCondition_parser_ = &targetCondition;
+  this->maxTargetSize_parser_ = &maxTargetSize;
   this->check_parser_ = &check;
 }
 
 RPG_Monster_SpecialAbilityPreCondition_Type_pskel::
 RPG_Monster_SpecialAbilityPreCondition_Type_pskel ()
 : targetCondition_parser_ (0),
+  maxTargetSize_parser_ (0),
   check_parser_ (0)
 {
 }
@@ -2409,6 +2418,11 @@ targetCondition (const RPG_Character_Condition&)
 }
 
 void RPG_Monster_SpecialAbilityPreCondition_Type_pskel::
+maxTargetSize (const RPG_Character_Size&)
+{
+}
+
+void RPG_Monster_SpecialAbilityPreCondition_Type_pskel::
 check (const RPG_Combat_Check&)
 {
 }
@@ -2429,6 +2443,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->targetCondition_parser_)
       this->targetCondition_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "maxTargetSize" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->maxTargetSize_parser_;
+
+    if (this->maxTargetSize_parser_)
+      this->maxTargetSize_parser_->pre ();
 
     return true;
   }
@@ -2457,6 +2481,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->targetCondition_parser_)
       this->targetCondition (this->targetCondition_parser_->post_RPG_Character_Condition_Type ());
+
+    return true;
+  }
+
+  if (n == "maxTargetSize" && ns == "urn:rpg")
+  {
+    if (this->maxTargetSize_parser_)
+      this->maxTargetSize (this->maxTargetSize_parser_->post_RPG_Character_Size_Type ());
 
     return true;
   }

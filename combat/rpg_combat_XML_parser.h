@@ -265,6 +265,7 @@ class RPG_Combat_Damage_Type
 
 //   virtual void pre();
   virtual void element(const RPG_Combat_DamageElement&);
+  virtual void elementsAreInclusive(bool);
   virtual RPG_Combat_Damage post_RPG_Combat_Damage_Type();
 
  private:

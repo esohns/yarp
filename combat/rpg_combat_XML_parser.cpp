@@ -625,6 +625,7 @@ RPG_Combat_Damage_Type::RPG_Combat_Damage_Type()
   ACE_TRACE(ACE_TEXT("RPG_Combat_Damage_Type::RPG_Combat_Damage_Type"));
 
   myCurrentDamage.elements.clear();
+  myCurrentDamage.elementsAreInclusive = true;
 }
 
 void RPG_Combat_Damage_Type::element(const RPG_Combat_DamageElement& element_in)
@@ -632,6 +633,13 @@ void RPG_Combat_Damage_Type::element(const RPG_Combat_DamageElement& element_in)
   ACE_TRACE(ACE_TEXT("RPG_Combat_Damage_Type::element"));
 
   myCurrentDamage.elements.push_back(element_in);
+}
+
+void RPG_Combat_Damage_Type::elementsAreInclusive(bool elementsAreInclusive_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Combat_Damage_Type::elementsAreInclusive"));
+
+  myCurrentDamage.elementsAreInclusive = elementsAreInclusive_in;
 }
 
 RPG_Combat_Damage RPG_Combat_Damage_Type::post_RPG_Combat_Damage_Type()
@@ -642,6 +650,7 @@ RPG_Combat_Damage RPG_Combat_Damage_Type::post_RPG_Combat_Damage_Type()
 
   // clear structure
   myCurrentDamage.elements.clear();
+  myCurrentDamage.elementsAreInclusive = true;
 
   return result;
 }

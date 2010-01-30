@@ -153,7 +153,8 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                           others_p,
                           effectType_p);
   RPG_Combat_Damage_Type                         damage_p;
-  damage_p.parsers(damageElement_p);
+  damage_p.parsers(damageElement_p,
+                   bool_p);
   RPG_Combat_RangedEffectUnion_Type              rangedEffectUnion_p;
   RPG_Combat_RangedAttackProperties_Type         rangedProperties_p;
   rangedProperties_p.parsers(unsigned_byte_p,
@@ -245,6 +246,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
 
   RPG_Monster_SpecialAbilityPreCondition_Type    specialAbilityPreCondition_p;
   specialAbilityPreCondition_p.parsers(condition_p,
+                                       size_p,
                                        check_p);
 //   RPG_Dice_Roll_Type                             roll_p;
   ::xml_schema::float_pimpl                      float_p;

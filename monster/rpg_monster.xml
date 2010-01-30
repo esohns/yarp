@@ -10023,952 +10023,1234 @@
     <levelAdjustment>9</levelAdjustment>
   </monster>
   <monster>
-    <name>Delver</name>
-    <size>SIZE_HUGE</size>
+    <name>Marilith</name>
+    <size>SIZE_LARGE</size>
     <type>
-      <metaType>METATYPE_ABERRATION</metaType>
+      <metaType>METATYPE_OUTSIDER</metaType>
+      <subType>SUBTYPE_CHAOTIC</subType>
+      <subType>SUBTYPE_EXTRAPLANAR</subType>
+      <subType>SUBTYPE_EVIL</subType>
     </type>
     <hitDice>
-      <numDice>15</numDice>
+      <numDice>16</numDice>
       <typeDice>D_8</typeDice>
-      <modifier>78</modifier>
+      <modifier>144</modifier>
     </hitDice>
-    <initiative>5</initiative>
-    <speed>30</speed>
+    <initiative>4</initiative>
+    <speed>40</speed>
     <armorClass>
-      <normal>24</normal>
-      <touch>9</touch>
-      <flatFooted>23</flatFooted>
+      <normal>29</normal>
+      <touch>13</touch>
+      <flatFooted>25</flatFooted>
     </armorClass>
-    <specialDefense>
-      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
-      <type>ABILITY_CORROSIVE_SLIME</type>
-      <actionType>ACTION_NOTANACTION</actionType>
-      <action>
-        <damage>
-          <element>
-            <type>DAMAGE_ACID</type>
-            <other>
-              <type>OTHERDAMAGE_DISSOLVEWEAPON</type>
-              <counterMeasure>
-                <type>COUNTERMEASURE_CHECK</type>
-                <check>
-                  <type>SAVE_REFLEX</type>
-                  <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                  <difficultyClass>22</difficultyClass>
-                </check>
-              </counterMeasure>
-            </other>
-          </element>
-        </damage>
-      </action>
-      <action>
-        <preCondition>
-          <weaponType>NATURALWEAPON_ANY</weaponType>
-        </preCondition>
-        <damage>
-          <element>
-            <type>DAMAGE_ACID</type>
-            <amount>
-              <numDice>2</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>0</modifier>
-            </amount>
-            <counterMeasure>
-              <type>COUNTERMEASURE_CHECK</type>
-              <check>
-                <type>SAVE_REFLEX</type>
-                <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                <difficultyClass>22</difficultyClass>
-              </check>
-            </counterMeasure>
-          </element>
-        </damage>
-      </action>
-    </specialDefense>
-    <attack>
-      <baseAttackBonus>11</baseAttackBonus>
-      <grappleBonus>27</grappleBonus>
+    <attack actionsAreInclusive="false">
+      <baseAttackBonus>16</baseAttackBonus>
+      <grappleBonus>29</grappleBonus>
       <standardAttackAction>
-        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
-        <attackBonus>16</attackBonus>
+        <weapon>ONE_HANDED_MELEE_WEAPON_SWORD_LONG</weapon>
+        <attackBonus>25</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
             <amount>
-              <numDice>1</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>8</modifier>
-            </amount>
-          </element>
-          <element>
-            <type>DAMAGE_ACID</type>
-            <amount>
               <numDice>2</numDice>
               <typeDice>D_6</typeDice>
-              <modifier>0</modifier>
+              <modifier>9</modifier>
             </amount>
-            <duration>
-              <interval>6</interval>
-              <totalDuration>12</totalDuration>
-            </duration>
-            <other>
-              <type>OTHERDAMAGE_DISSOLVEARMOR</type>
-              <counterMeasure>
-                <type>COUNTERMEASURE_CHECK</type>
-                <check>
-                  <type>SAVE_REFLEX</type>
-                  <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                  <difficultyClass>22</difficultyClass>
-                </check>
-              </counterMeasure>
-            </other>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
-      <fullAttackAction>
+      <standardAttackAction>
         <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
-        <attackBonus>16</attackBonus>
+        <attackBonus>24</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
             <amount>
               <numDice>1</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>8</modifier>
+              <typeDice>D_8</typeDice>
+              <modifier>9</modifier>
             </amount>
           </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </standardAttackAction>
+      <standardAttackAction>
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
+        <attackBonus>24</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
           <element>
-            <type>DAMAGE_ACID</type>
+            <amount>
+              <numDice>4</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>9</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </standardAttackAction>
+      <fullAttackAction fullAttackIncludesNextAction="true">
+        <weapon>ONE_HANDED_MELEE_WEAPON_SWORD_LONG</weapon>
+        <attackBonus>25</attackBonus>
+        <attackBonus>20</attackBonus>
+        <attackBonus>15</attackBonus>
+        <attackBonus>10</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
             <amount>
               <numDice>2</numDice>
               <typeDice>D_6</typeDice>
-              <modifier>0</modifier>
+              <modifier>9</modifier>
             </amount>
-            <duration>
-              <interval>6</interval>
-              <totalDuration>12</totalDuration>
-            </duration>
-            <other>
-              <type>OTHERDAMAGE_DISSOLVEARMOR</type>
-              <counterMeasure>
-                <type>COUNTERMEASURE_CHECK</type>
-                <check>
-                  <type>SAVE_REFLEX</type>
-                  <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                  <difficultyClass>22</difficultyClass>
-                </check>
-              </counterMeasure>
-            </other>
           </element>
         </damage>
-        <numAttacksPerRound>2</numAttacksPerRound>
+        <numAttacksPerRound>4</numAttacksPerRound>
+      </fullAttackAction>
+      <fullAttackAction fullAttackIncludesNextAction="true">
+        <weapon>ONE_HANDED_MELEE_WEAPON_SWORD_LONG</weapon>
+        <attackBonus>25</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <amount>
+              <numDice>2</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>4</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>5</numAttacksPerRound>
+      </fullAttackAction>
+      <fullAttackAction>
+        <weapon>NATURALWEAPON_TAIL</weapon>
+        <attackBonus>22</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <amount>
+              <numDice>4</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>4</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </fullAttackAction>
+      <fullAttackAction fullAttackIncludesNextAction="true">
+        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
+        <attackBonus>24</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <amount>
+              <numDice>1</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>9</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>6</numAttacksPerRound>
+      </fullAttackAction>
+      <fullAttackAction>
+        <weapon>NATURALWEAPON_TAIL</weapon>
+        <attackBonus>22</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <amount>
+              <numDice>4</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>4</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
       </fullAttackAction>
     </attack>
-    <specialAbility>
+    <specialAttack>
       <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
-      <type>ABILITY_SPELL</type>
+      <type>ABILITY_CONSTRICT</type>
+      <actionType>ACTION_STANDARD</actionType>
+      <preCondition>
+        <targetCondition>CONDITION_GRAPPLING</targetCondition>
+        <targetCondition>CONDITION_PINNED</targetCondition>
+        <check>
+          <type>CHECK_GRAPPLE</type>
+        </check>
+      </preCondition>
+      <action>
+        <weapon>ABILITY_CONSTRICT</weapon>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <type>PHYSICALDAMAGE_CONSTRICT</type>
+            <amount>
+              <numDice>4</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>13</modifier>
+            </amount>
+          </element>
+          <element>
+            <type>PHYSICALDAMAGE_CONSTRICT</type>
+            <condition>CONDITION_UNCONSCIOUS</condition>
+            <duration vicinity="true">
+              <totalPeriod>
+                <numDice>2</numDice>
+                <typeDice>D_4</typeDice>
+                <modifier>0</modifier>
+              </totalPeriod>
+            </duration>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_FORTITUDE</type>
+                <attribute>ATTRIBUTE_STRENGTH</attribute>
+                <difficultyClass>27</difficultyClass>
+              </check>
+            </counterMeasure>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </action>
+    </specialAttack>
+    <specialAbility>
+      <abilityClass>ABILITYCLASS_SPELLLIKE</abilityClass>
+      <type>ABILITY_SPELLS</type>
+      <actionType>ACTION_STANDARD</actionType>
+      <spell>
+        <type>SPELL_ALIGN_WEAPON</type>
+        <casterLevel>16</casterLevel>
+      </spell>
+      <spell>
+        <type>SPELL_BLADE_BARRIER</type>
+        <casterLevel>16</casterLevel>
+        <save>
+          <type>SAVE_WILL</type>
+          <attribute>ATTRIBUTE_CHARISMA</attribute>
+          <difficultyClass>23</difficultyClass>
+        </save>
+      </spell>
+      <spell>
+        <type>SPELL_MAGIC_WEAPON</type>
+        <casterLevel>16</casterLevel>
+      </spell>
+      <spell>
+        <type>SPELL_PROJECT_IMAGE</type>
+        <casterLevel>16</casterLevel>
+        <save>
+          <type>SAVE_WILL</type>
+          <attribute>ATTRIBUTE_CHARISMA</attribute>
+          <difficultyClass>23</difficultyClass>
+        </save>
+      </spell>
+      <spell>
+        <type>SPELL_POLYMORPH</type>
+        <casterLevel>16</casterLevel>
+      </spell>
+      <spell>
+        <type>SPELL_SEE_INVISIBILITY</type>
+        <casterLevel>16</casterLevel>
+      </spell>
+      <spell>
+        <type>SPELL_TELEKINESIS</type>
+        <casterLevel>16</casterLevel>
+        <save>
+          <type>SAVE_WILL</type>
+          <attribute>ATTRIBUTE_CHARISMA</attribute>
+          <difficultyClass>22</difficultyClass>
+        </save>
+      </spell>
+      <spell>
+        <type>SPELL_TELEPORT_GREATER</type>
+        <casterLevel>16</casterLevel>
+      </spell>
+      <spell>
+        <type>SPELL_UNHOLY_AURA</type>
+        <casterLevel>16</casterLevel>
+        <save>
+          <type>SAVE_WILL</type>
+          <attribute>ATTRIBUTE_CHARISMA</attribute>
+          <difficultyClass>25</difficultyClass>
+        </save>
+      </spell>
+    </specialAbility>
+    <specialAbility>
+      <abilityClass>ABILITYCLASS_SPELLLIKE</abilityClass>
+      <type>ABILITY_SUMMON</type>
       <actionType>ACTION_STANDARD</actionType>
       <usage>
         <numUses>1</numUses>
-        <period>600</period>
+        <period>86400</period>
       </usage>
-      <effect>
-        <type>SPELL_STONE_SHAPE</type>
-        <casterLevel>15</casterLevel>
-      </effect>
+      <summon successRate="0.5">
+        <name>Dretch</name>
+        <amount>
+          <numDice>4</numDice>
+          <typeDice>D_10</typeDice>
+          <modifier>0</modifier>
+        </amount>
+      </summon>
+      <summon successRate="0.5">
+        <name>Hezrou</name>
+        <amount>
+          <numDice>1</numDice>
+          <typeDice>D_4</typeDice>
+          <modifier>0</modifier>
+        </amount>
+      </summon>
+      <summon successRate="0.2">
+        <name>Glabrezu</name>
+        <amount>
+          <numDice>0</numDice>
+          <typeDice>D_0</typeDice>
+          <modifier>1</modifier>
+        </amount>
+      </summon>
+      <summon successRate="0.2">
+        <name>Marilith</name>
+        <amount>
+          <numDice>0</numDice>
+          <typeDice>D_0</typeDice>
+          <modifier>1</modifier>
+        </amount>
+      </summon>
+      <spell>
+        <type>SPELL_SUMMON_MONSTER_V</type>
+        <casterLevel>16</casterLevel>
+      </spell>
     </specialAbility>
-    <space>15</space>
+    <specialAbility>
+      <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+      <type>ABILITY_SPELLS</type>
+      <actionType>ACTION_NOTANACTION</actionType>
+      <spell>
+        <type>SPELL_TRUE_SEEING</type>
+        <casterLevel>16</casterLevel>
+      </spell>
+    </specialAbility>
+    <space>10</space>
     <reach>10</reach>
     <saves>
-      <fortitude>12</fortitude>
-      <reflex>6</reflex>
-      <will>11</will>
+      <fortitude>19</fortitude>
+      <reflex>14</reflex>
+      <will>14</will>
     </saves>
     <attributes>
-      <strength>27</strength>
-      <dexterity>13</dexterity>
-      <constitution>21</constitution>
-      <intelligence>14</intelligence>
-      <wisdom>14</wisdom>
-      <charisma>12</charisma>
+      <strength>29</strength>
+      <dexterity>19</dexterity>
+      <constitution>29</constitution>
+      <intelligence>18</intelligence>
+      <wisdom>18</wisdom>
+      <charisma>24</charisma>
     </attributes>
     <skills>
       <skill>
-        <skill>SKILL_KNOWLEDGE_DUNGEONS</skill>
-        <rank>14</rank>
+        <skill>SKILL_BLUFF</skill>
+        <rank>26</rank>
       </skill>
       <skill>
-        <skill>SKILL_KNOWLEDGE_NATURE</skill>
-        <rank>4</rank>
+        <skill>SKILL_CONCENTRATION</skill>
+        <rank>28</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_DIPLOMACY</skill>
+        <rank>30</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_DISGUISE</skill>
+        <rank>7</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_HIDE</skill>
+        <rank>19</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_INTIMIDATE</skill>
+        <rank>28</rank>
       </skill>
       <skill>
         <skill>SKILL_LISTEN</skill>
-        <rank>20</rank>
+        <rank>31</rank>
       </skill>
       <skill>
         <skill>SKILL_MOVE_SILENTLY</skill>
-        <rank>17</rank>
+        <rank>23</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_SEARCH</skill>
+        <rank>23</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_SENSE_MOTIVE</skill>
+        <rank>23</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_SPELLCRAFT</skill>
+        <rank>23</rank>
       </skill>
       <skill>
         <skill>SKILL_SPOT</skill>
-        <rank>20</rank>
+        <rank>31</rank>
       </skill>
       <skill>
         <skill>SKILL_SURVIVAL</skill>
-        <rank>14</rank>
+        <rank>4</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_USE_MAGIC_DEVICE</skill>
+        <rank>26</rank>
       </skill>
     </skills>
     <feats>
-      <feat>FEAT_ALERTNESS</feat>
-      <feat>FEAT_BLIND_FIGHT</feat>
-      <feat>FEAT_GREAT_FORTITUDE</feat>
-      <feat>FEAT_IMPROVED_INITIATIVE</feat>
+      <feat>FEAT_COMBAT_EXPERTISE</feat>
+      <feat>FEAT_COMBAT_REFLEXES</feat>
+      <feat>FEAT_MULTI_ATTACK</feat>
+      <feat>FEAT_MULTIWEAPON_FIGHTING</feat>
       <feat>FEAT_POWER_ATTACK</feat>
-      <feat>FEAT_TOUGHNESS</feat>
+      <feat>FEAT_WEAPON_FOCUS</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_UNDERGROUND</terrain>
+      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
         <type>ORGANIZATION_SOLITARY</type>
       </step>
+      <step>
+        <type>ORGANIZATION_PAIR</type>
+      </step>
     </organizations>
-    <challengeRating>9</challengeRating>
-    <treasureModifier>0</treasureModifier>
+    <challengeRating>17</challengeRating>
+    <treasureModifier>1</treasureModifier>
     <alignment>
-      <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
-      <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
+      <civic>ALIGNMENTCIVIC_CHAOTIC</civic>
+      <ethic>ALIGNMENTETHIC_EVIL</ethic>
     </alignment>
     <advancements>
       <step>
-        <size>SIZE_HUGE</size>
+        <size>SIZE_LARGE</size>
         <range>
-          <begin>16</begin>
-          <end>30</end>
+          <begin>17</begin>
+          <end>20</end>
         </range>
       </step>
       <step>
-        <size>SIZE_GARGANTUAN</size>
+        <size>SIZE_HUGE</size>
         <range>
-          <begin>31</begin>
-          <end>45</end>
+          <begin>21</begin>
+          <end>48</end>
         </range>
       </step>
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
   <monster>
-    <name>Delver</name>
+    <name>Nalfeshnee</name>
     <size>SIZE_HUGE</size>
     <type>
-      <metaType>METATYPE_ABERRATION</metaType>
+      <metaType>METATYPE_OUTSIDER</metaType>
+      <subType>SUBTYPE_CHAOTIC</subType>
+      <subType>SUBTYPE_EXTRAPLANAR</subType>
+      <subType>SUBTYPE_EVIL</subType>
     </type>
     <hitDice>
-      <numDice>15</numDice>
+      <numDice>14</numDice>
       <typeDice>D_8</typeDice>
-      <modifier>78</modifier>
+      <modifier>112</modifier>
     </hitDice>
-    <initiative>5</initiative>
-    <speed>30</speed>
+    <initiative>1</initiative>
+    <speed>40</speed>
     <armorClass>
-      <normal>24</normal>
+      <normal>27</normal>
       <touch>9</touch>
-      <flatFooted>23</flatFooted>
+      <flatFooted>26</flatFooted>
     </armorClass>
-    <specialDefense>
-      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
-      <type>ABILITY_CORROSIVE_SLIME</type>
-      <actionType>ACTION_NOTANACTION</actionType>
-      <action>
-        <damage>
-          <element>
-            <type>DAMAGE_ACID</type>
-            <other>
-              <type>OTHERDAMAGE_DISSOLVEWEAPON</type>
-              <counterMeasure>
-                <type>COUNTERMEASURE_CHECK</type>
-                <check>
-                  <type>SAVE_REFLEX</type>
-                  <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                  <difficultyClass>22</difficultyClass>
-                </check>
-              </counterMeasure>
-            </other>
-          </element>
-        </damage>
-      </action>
-      <action>
-        <preCondition>
-          <weaponType>NATURALWEAPON_ANY</weaponType>
-        </preCondition>
-        <damage>
-          <element>
-            <type>DAMAGE_ACID</type>
-            <amount>
-              <numDice>2</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>0</modifier>
-            </amount>
-            <counterMeasure>
-              <type>COUNTERMEASURE_CHECK</type>
-              <check>
-                <type>SAVE_REFLEX</type>
-                <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                <difficultyClass>22</difficultyClass>
-              </check>
-            </counterMeasure>
-          </element>
-        </damage>
-      </action>
-    </specialDefense>
     <attack>
-      <baseAttackBonus>11</baseAttackBonus>
-      <grappleBonus>27</grappleBonus>
+      <baseAttackBonus>14</baseAttackBonus>
+      <grappleBonus>29</grappleBonus>
       <standardAttackAction>
-        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
-        <attackBonus>16</attackBonus>
+        <weapon>NATURALWEAPON_BITE</weapon>
+        <attackBonus>20</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
             <amount>
-              <numDice>1</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>8</modifier>
-            </amount>
-          </element>
-          <element>
-            <type>DAMAGE_ACID</type>
-            <amount>
               <numDice>2</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>0</modifier>
+              <typeDice>D_8</typeDice>
+              <modifier>7</modifier>
             </amount>
-            <duration>
-              <interval>6</interval>
-              <totalDuration>12</totalDuration>
-            </duration>
-            <other>
-              <type>OTHERDAMAGE_DISSOLVEARMOR</type>
-              <counterMeasure>
-                <type>COUNTERMEASURE_CHECK</type>
-                <check>
-                  <type>SAVE_REFLEX</type>
-                  <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                  <difficultyClass>22</difficultyClass>
-                </check>
-              </counterMeasure>
-            </other>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
       <fullAttackAction>
-        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
-        <attackBonus>16</attackBonus>
+        <weapon>NATURALWEAPON_BITE</weapon>
+        <attackBonus>20</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <amount>
+              <numDice>2</numDice>
+              <typeDice>D_8</typeDice>
+              <modifier>7</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </fullAttackAction>
+      <fullAttackAction>
+        <weapon>NATURALWEAPON_CLAW_TALON</weapon>
+        <attackBonus>17</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
             <amount>
               <numDice>1</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>8</modifier>
+              <typeDice>D_8</typeDice>
+              <modifier>3</modifier>
             </amount>
-          </element>
-          <element>
-            <type>DAMAGE_ACID</type>
-            <amount>
-              <numDice>2</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>0</modifier>
-            </amount>
-            <duration>
-              <interval>6</interval>
-              <totalDuration>12</totalDuration>
-            </duration>
-            <other>
-              <type>OTHERDAMAGE_DISSOLVEARMOR</type>
-              <counterMeasure>
-                <type>COUNTERMEASURE_CHECK</type>
-                <check>
-                  <type>SAVE_REFLEX</type>
-                  <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                  <difficultyClass>22</difficultyClass>
-                </check>
-              </counterMeasure>
-            </other>
           </element>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
       </fullAttackAction>
     </attack>
-    <specialAbility>
-      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
-      <type>ABILITY_SPELL</type>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+      <type>ABILITYTYPE_SMITE</type>
       <actionType>ACTION_STANDARD</actionType>
       <usage>
-        <numUses>1</numUses>
-        <period>600</period>
+        <numUses>3</numUses>
+        <period>86400</period>
       </usage>
-      <effect>
-        <type>SPELL_STONE_SHAPE</type>
-        <casterLevel>15</casterLevel>
-      </effect>
+      <action>
+        <weapon>SPECIALATTACK_SMITE</weapon>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
+        <damage>
+          <element>
+          <type>DAMAGE_MAGIC</type>
+          <condition>CONDITION_DAZED</condition>
+          <duration>
+            <totalPeriod>
+              <numDice>1</numDice>
+              <typeDice>D_10</typeDice>
+              <modifier>0</modifier>
+            </totalPeriod>
+          </duration>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_WILL</type>
+                <attribute>ATTRIBUTE_CHARISMA</attribute>
+                <difficultyClass>22</difficultyClass>
+              </check>
+            </counterMeasure>
+          </element>
+        </damage>
+        <numAttacksPerRound>0</numAttacksPerRound>
+        <ranged>
+          <maxRange>60</maxRange>
+        </ranged>
+      </action>
+    </specialAttack>
+    <specialAbility>
+      <abilityClass>ABILITYCLASS_SPELLLIKE</abilityClass>
+      <type>ABILITY_SPELLS</type>
+      <actionType>ACTION_STANDARD</actionType>
+      <spell>
+        <type>SPELL_CALL_LIGHTNING</type>
+        <casterLevel>12</casterLevel>
+        <save>
+          <type>SAVE_WILL</type>
+          <attribute>ATTRIBUTE_CHARISMA</attribute>
+          <difficultyClass>18</difficultyClass>
+        </save>
+      </spell>
+      <spell>
+        <type>SPELL_FEEBLEMIND</type>
+        <casterLevel>12</casterLevel>
+        <save>
+          <type>SAVE_WILL</type>
+          <attribute>ATTRIBUTE_CHARISMA</attribute>
+          <difficultyClass>20</difficultyClass>
+        </save>
+      </spell>
+      <spell>
+        <type>SPELL_DISPEL_MAGIC_GREATER</type>
+        <casterLevel>12</casterLevel>
+      </spell>
+      <spell>
+        <type>SPELL_SLOW</type>
+        <casterLevel>12</casterLevel>
+        <save>
+          <type>SAVE_WILL</type>
+          <attribute>ATTRIBUTE_CHARISMA</attribute>
+          <difficultyClass>18</difficultyClass>
+        </save>
+      </spell>
+      <spell>
+        <type>SPELL_TELEPORT_GREATER</type>
+        <casterLevel>12</casterLevel>
+      </spell>
+      <spell>
+        <type>SPELL_UNHOLY_AURA</type>
+        <casterLevel>12</casterLevel>
+        <save>
+          <type>SAVE_WILL</type>
+          <attribute>ATTRIBUTE_CHARISMA</attribute>
+          <difficultyClass>23</difficultyClass>
+        </save>
+      </spell>
+    </specialAbility>
+    <specialAbility>
+      <abilityClass>ABILITYCLASS_SPELLLIKE</abilityClass>
+      <type>ABILITY_SUMMON</type>
+      <actionType>ACTION_STANDARD</actionType>
+      <usage>
+        <numUses>2</numUses>
+        <period>86400</period>
+      </usage>
+      <summon successRate="0.5">
+        <name>Vrock</name>
+        <amount>
+          <numDice>1</numDice>
+          <typeDice>D_4</typeDice>
+          <modifier>0</modifier>
+        </amount>
+      </summon>
+      <summon successRate="0.5">
+        <name>Hezrou</name>
+        <amount>
+          <numDice>1</numDice>
+          <typeDice>D_4</typeDice>
+          <modifier>0</modifier>
+        </amount>
+      </summon>
+      <summon successRate="0.5">
+        <name>Glabrezu</name>
+        <amount>
+          <numDice>0</numDice>
+          <typeDice>D_0</typeDice>
+          <modifier>1</modifier>
+        </amount>
+      </summon>
+      <summon successRate="0.2">
+        <name>Nalfeshnee</name>
+        <amount>
+          <numDice>0</numDice>
+          <typeDice>D_0</typeDice>
+          <modifier>1</modifier>
+        </amount>
+      </summon>
+      <spell>
+        <type>SPELL_SUMMON_MONSTER_V</type>
+        <casterLevel>12</casterLevel>
+      </spell>
+    </specialAbility>
+    <specialAbility>
+      <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+      <type>ABILITY_SPELLS</type>
+      <actionType>ACTION_NOTANACTION</actionType>
+      <spell>
+        <type>SPELL_TRUE_SEEING</type>
+        <casterLevel>14</casterLevel>
+      </spell>
     </specialAbility>
     <space>15</space>
-    <reach>10</reach>
+    <reach>15</reach>
     <saves>
-      <fortitude>12</fortitude>
-      <reflex>6</reflex>
-      <will>11</will>
+      <fortitude>17</fortitude>
+      <reflex>10</reflex>
+      <will>15</will>
     </saves>
     <attributes>
-      <strength>27</strength>
+      <strength>25</strength>
       <dexterity>13</dexterity>
-      <constitution>21</constitution>
-      <intelligence>14</intelligence>
-      <wisdom>14</wisdom>
-      <charisma>12</charisma>
+      <constitution>27</constitution>
+      <intelligence>22</intelligence>
+      <wisdom>22</wisdom>
+      <charisma>20</charisma>
     </attributes>
     <skills>
       <skill>
-        <skill>SKILL_KNOWLEDGE_DUNGEONS</skill>
-        <rank>14</rank>
+        <skill>SKILL_BLUFF</skill>
+        <rank>22</rank>
       </skill>
       <skill>
-        <skill>SKILL_KNOWLEDGE_NATURE</skill>
-        <rank>4</rank>
+        <skill>SKILL_CONCENTRATION</skill>
+        <rank>25</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_DIPLOMACY</skill>
+        <rank>26</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_DISGUISE</skill>
+        <rank>5</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_HIDE</skill>
+        <rank>10</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_INTIMIDATE</skill>
+        <rank>22</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_KNOWLEDGE_ARCANA</skill>
+        <rank>23</rank>
       </skill>
       <skill>
         <skill>SKILL_LISTEN</skill>
-        <rank>20</rank>
+        <rank>31</rank>
       </skill>
       <skill>
         <skill>SKILL_MOVE_SILENTLY</skill>
-        <rank>17</rank>
+        <rank>18</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_SEARCH</skill>
+        <rank>23</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_SENSE_MOTIVE</skill>
+        <rank>23</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_SPELLCRAFT</skill>
+        <rank>25</rank>
       </skill>
       <skill>
         <skill>SKILL_SPOT</skill>
-        <rank>20</rank>
+        <rank>31</rank>
       </skill>
       <skill>
         <skill>SKILL_SURVIVAL</skill>
-        <rank>14</rank>
+        <rank>6</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_USE_MAGIC_DEVICE</skill>
+        <rank>22</rank>
       </skill>
     </skills>
     <feats>
-      <feat>FEAT_ALERTNESS</feat>
-      <feat>FEAT_BLIND_FIGHT</feat>
-      <feat>FEAT_GREAT_FORTITUDE</feat>
-      <feat>FEAT_IMPROVED_INITIATIVE</feat>
+      <feat>FEAT_CLEAVE</feat>
+      <feat>FEAT_IMPROVED_BULL_RUSH</feat>
+      <feat>FEAT_MULTI_ATTACK</feat>
       <feat>FEAT_POWER_ATTACK</feat>
-      <feat>FEAT_TOUGHNESS</feat>
+      <feat>FEAT_WEAPON_FOCUS</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_UNDERGROUND</terrain>
+      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
         <type>ORGANIZATION_SOLITARY</type>
       </step>
+      <step>
+        <type>ORGANIZATION_TROUPE</type>
+        <range>
+          <begin>1</begin>
+          <end>1</end>
+        </range>
+        <slaves>
+          <name>Hezrou</name>
+          <range>
+            <begin>1</begin>
+            <end>1</end>
+          </range>
+        </slaves>
+        <slaves>
+          <name>Vrock</name>
+          <range>
+            <begin>2</begin>
+            <end>5</end>
+          </range>
+        </slaves>
+      </step>
     </organizations>
-    <challengeRating>9</challengeRating>
-    <treasureModifier>0</treasureModifier>
+    <challengeRating>14</challengeRating>
+    <treasureModifier>1</treasureModifier>
     <alignment>
-      <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
-      <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
+      <civic>ALIGNMENTCIVIC_CHAOTIC</civic>
+      <ethic>ALIGNMENTETHIC_EVIL</ethic>
     </alignment>
     <advancements>
       <step>
         <size>SIZE_HUGE</size>
         <range>
-          <begin>16</begin>
-          <end>30</end>
+          <begin>15</begin>
+          <end>20</end>
         </range>
       </step>
       <step>
         <size>SIZE_GARGANTUAN</size>
         <range>
-          <begin>31</begin>
-          <end>45</end>
+          <begin>21</begin>
+          <end>42</end>
         </range>
       </step>
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
   <monster>
-    <name>Delver</name>
-    <size>SIZE_HUGE</size>
+    <name>Quasit</name>
+    <size>SIZE_TINY</size>
     <type>
-      <metaType>METATYPE_ABERRATION</metaType>
+      <metaType>METATYPE_OUTSIDER</metaType>
+      <subType>SUBTYPE_CHAOTIC</subType>
+      <subType>SUBTYPE_EXTRAPLANAR</subType>
+      <subType>SUBTYPE_EVIL</subType>
     </type>
     <hitDice>
-      <numDice>15</numDice>
+      <numDice>3</numDice>
       <typeDice>D_8</typeDice>
-      <modifier>78</modifier>
+      <modifier>0</modifier>
     </hitDice>
-    <initiative>5</initiative>
-    <speed>30</speed>
+    <initiative>7</initiative>
+    <speed>50</speed>
     <armorClass>
-      <normal>24</normal>
-      <touch>9</touch>
-      <flatFooted>23</flatFooted>
+      <normal>18</normal>
+      <touch>15</touch>
+      <flatFooted>15</flatFooted>
     </armorClass>
-    <specialDefense>
-      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
-      <type>ABILITY_CORROSIVE_SLIME</type>
-      <actionType>ACTION_NOTANACTION</actionType>
-      <action>
-        <damage>
-          <element>
-            <type>DAMAGE_ACID</type>
-            <other>
-              <type>OTHERDAMAGE_DISSOLVEWEAPON</type>
-              <counterMeasure>
-                <type>COUNTERMEASURE_CHECK</type>
-                <check>
-                  <type>SAVE_REFLEX</type>
-                  <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                  <difficultyClass>22</difficultyClass>
-                </check>
-              </counterMeasure>
-            </other>
-          </element>
-        </damage>
-      </action>
-      <action>
-        <preCondition>
-          <weaponType>NATURALWEAPON_ANY</weaponType>
-        </preCondition>
-        <damage>
-          <element>
-            <type>DAMAGE_ACID</type>
-            <amount>
-              <numDice>2</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>0</modifier>
-            </amount>
-            <counterMeasure>
-              <type>COUNTERMEASURE_CHECK</type>
-              <check>
-                <type>SAVE_REFLEX</type>
-                <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                <difficultyClass>22</difficultyClass>
-              </check>
-            </counterMeasure>
-          </element>
-        </damage>
-      </action>
-    </specialDefense>
     <attack>
-      <baseAttackBonus>11</baseAttackBonus>
-      <grappleBonus>27</grappleBonus>
+      <baseAttackBonus>3</baseAttackBonus>
+      <grappleBonus>-6</grappleBonus>
       <standardAttackAction>
-        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
-        <attackBonus>16</attackBonus>
+        <weapon>NATURALWEAPON_CLAW_TALON</weapon>
+        <attackBonus>8</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
             <amount>
               <numDice>1</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>8</modifier>
+              <typeDice>D_3</typeDice>
+              <modifier>-1</modifier>
             </amount>
           </element>
           <element>
-            <type>DAMAGE_ACID</type>
+            <type>DAMAGE_POISON</type>
             <amount>
-              <numDice>2</numDice>
-              <typeDice>D_6</typeDice>
+              <numDice>1</numDice>
+              <typeDice>D_4</typeDice>
               <modifier>0</modifier>
             </amount>
-            <duration>
-              <interval>6</interval>
-              <totalDuration>12</totalDuration>
-            </duration>
-            <other>
-              <type>OTHERDAMAGE_DISSOLVEARMOR</type>
-              <counterMeasure>
-                <type>COUNTERMEASURE_CHECK</type>
-                <check>
-                  <type>SAVE_REFLEX</type>
-                  <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                  <difficultyClass>22</difficultyClass>
-                </check>
-              </counterMeasure>
-            </other>
+            <secondary>
+              <numDice>2</numDice>
+              <typeDice>D_4</typeDice>
+              <modifier>0</modifier>
+            </secondary>
+            <attribute>ATTRIBUTE_DEXTERITY</attribute>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_FORTITUDE</type>
+                <difficultyClass>13</difficultyClass>
+              </check>
+            </counterMeasure>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
       <fullAttackAction>
-        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
-        <attackBonus>16</attackBonus>
+        <weapon>NATURALWEAPON_CLAW_TALON</weapon>
+        <attackBonus>8</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
             <amount>
               <numDice>1</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>8</modifier>
+              <typeDice>D_3</typeDice>
+              <modifier>-1</modifier>
             </amount>
           </element>
           <element>
-            <type>DAMAGE_ACID</type>
+            <type>DAMAGE_POISON</type>
             <amount>
-              <numDice>2</numDice>
-              <typeDice>D_6</typeDice>
+              <numDice>1</numDice>
+              <typeDice>D_4</typeDice>
               <modifier>0</modifier>
             </amount>
-            <duration>
-              <interval>6</interval>
-              <totalDuration>12</totalDuration>
-            </duration>
-            <other>
-              <type>OTHERDAMAGE_DISSOLVEARMOR</type>
-              <counterMeasure>
-                <type>COUNTERMEASURE_CHECK</type>
-                <check>
-                  <type>SAVE_REFLEX</type>
-                  <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                  <difficultyClass>22</difficultyClass>
-                </check>
-              </counterMeasure>
-            </other>
+            <secondary>
+              <numDice>2</numDice>
+              <typeDice>D_4</typeDice>
+              <modifier>0</modifier>
+            </secondary>
+            <attribute>ATTRIBUTE_DEXTERITY</attribute>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_FORTITUDE</type>
+                <difficultyClass>13</difficultyClass>
+              </check>
+            </counterMeasure>
           </element>
         </damage>
         <numAttacksPerRound>2</numAttacksPerRound>
       </fullAttackAction>
+      <fullAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
+        <attackBonus>3</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <amount>
+              <numDice>1</numDice>
+              <typeDice>D_4</typeDice>
+              <modifier>-1</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </fullAttackAction>
     </attack>
     <specialAbility>
-      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
-      <type>ABILITY_SPELL</type>
+      <abilityClass>ABILITYCLASS_SPELLLIKE</abilityClass>
+      <type>ABILITY_SPELLS</type>
+      <actionType>ACTION_STANDARD</actionType>
+      <spell>
+        <type>SPELL_DETECT_GOOD</type>
+        <casterLevel>6</casterLevel>
+      </spell>
+      <spell>
+        <type>SPELL_DETECT_MAGIC</type>
+        <casterLevel>6</casterLevel>
+      </spell>
+      <spell>
+        <type>SPELL_INVISIBILITY</type>
+        <casterLevel>6</casterLevel>
+      </spell>
+    </specialAbility>
+    <specialAbility>
+      <abilityClass>ABILITYCLASS_SPELLLIKE</abilityClass>
+      <type>ABILITY_SPELLS</type>
       <actionType>ACTION_STANDARD</actionType>
       <usage>
         <numUses>1</numUses>
-        <period>600</period>
+        <period>86400</period>
       </usage>
-      <effect>
-        <type>SPELL_STONE_SHAPE</type>
-        <casterLevel>15</casterLevel>
-      </effect>
+      <spell>
+        <type>SPELL_FEAR</type>
+        <casterLevel>6</casterLevel>
+        <save>
+          <type>SAVE_WILL</type>
+          <attribute>ATTRIBUTE_CHARISMA</attribute>
+          <difficultyClass>11</difficultyClass>
+        </save>
+      </spell>
+      <ranged>
+        <maxRange>30</maxRange>
+      </ranged>
     </specialAbility>
-    <space>15</space>
-    <reach>10</reach>
+    <specialAbility>
+      <abilityClass>ABILITYCLASS_SPELLLIKE</abilityClass>
+      <type>ABILITY_SPELLS</type>
+      <actionType>ACTION_STANDARD</actionType>
+      <usage>
+        <numUses>1</numUses>
+        <period>604800</period>
+      </usage>
+      <spell>
+        <type>SPELL_COMMUNE</type>
+        <casterLevel>12</casterLevel>
+      </spell>
+    </specialAbility>
+    <specialAbility>
+      <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+      <type>ABILITY_ALTERNATE_FORM</type>
+      <actionType>ACTION_STANDARD</actionType>
+      <preCondition>
+        <maxTargetSize>SIZE_MEDIUM</maxTargetSize>
+      </preCondition>
+      <spell>
+        <type>SPELL_POLYMORPH</type>
+        <casterLevel>12</casterLevel>
+      </spell>
+    </specialAbility>
+    <space>3</space>
+    <reach>0</reach>
     <saves>
-      <fortitude>12</fortitude>
+      <fortitude>3</fortitude>
       <reflex>6</reflex>
-      <will>11</will>
+      <will>4</will>
     </saves>
     <attributes>
-      <strength>27</strength>
-      <dexterity>13</dexterity>
-      <constitution>21</constitution>
-      <intelligence>14</intelligence>
-      <wisdom>14</wisdom>
-      <charisma>12</charisma>
+      <strength>8</strength>
+      <dexterity>17</dexterity>
+      <constitution>10</constitution>
+      <intelligence>10</intelligence>
+      <wisdom>12</wisdom>
+      <charisma>10</charisma>
     </attributes>
     <skills>
       <skill>
-        <skill>SKILL_KNOWLEDGE_DUNGEONS</skill>
-        <rank>14</rank>
+        <skill>SKILL_BLUFF</skill>
+        <rank>6</rank>
       </skill>
       <skill>
-        <skill>SKILL_KNOWLEDGE_NATURE</skill>
-        <rank>4</rank>
+        <skill>SKILL_DIPLOMACY</skill>
+        <rank>2</rank>
       </skill>
       <skill>
-        <skill>SKILL_LISTEN</skill>
-        <rank>20</rank>
+        <skill>SKILL_DISGUISE</skill>
+        <rank>0</rank>
       </skill>
       <skill>
-        <skill>SKILL_MOVE_SILENTLY</skill>
+        <skill>SKILL_HIDE</skill>
         <rank>17</rank>
       </skill>
       <skill>
-        <skill>SKILL_SPOT</skill>
-        <rank>20</rank>
+        <skill>SKILL_INTIMIDATE</skill>
+        <rank>2</rank>
       </skill>
       <skill>
-        <skill>SKILL_SURVIVAL</skill>
-        <rank>14</rank>
+        <skill>SKILL_KNOWLEDGE_ANY</skill>
+        <rank>6</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_LISTEN</skill>
+        <rank>7</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_MOVE_SILENTLY</skill>
+        <rank>9</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_SEARCH</skill>
+        <rank>6</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_SPELLCRAFT</skill>
+        <rank>6</rank>
+      </skill>
+      <skill>
+        <skill>SKILL_SPOT</skill>
+        <rank>6</rank>
       </skill>
     </skills>
     <feats>
-      <feat>FEAT_ALERTNESS</feat>
-      <feat>FEAT_BLIND_FIGHT</feat>
-      <feat>FEAT_GREAT_FORTITUDE</feat>
       <feat>FEAT_IMPROVED_INITIATIVE</feat>
-      <feat>FEAT_POWER_ATTACK</feat>
-      <feat>FEAT_TOUGHNESS</feat>
+      <feat>FEAT_WEAPON_FINESSE</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_UNDERGROUND</terrain>
+      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
         <type>ORGANIZATION_SOLITARY</type>
       </step>
     </organizations>
-    <challengeRating>9</challengeRating>
+    <challengeRating>2</challengeRating>
     <treasureModifier>0</treasureModifier>
     <alignment>
-      <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
-      <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
+      <civic>ALIGNMENTCIVIC_CHAOTIC</civic>
+      <ethic>ALIGNMENTETHIC_EVIL</ethic>
     </alignment>
     <advancements>
       <step>
-        <size>SIZE_HUGE</size>
+        <size>SIZE_TINY</size>
         <range>
-          <begin>16</begin>
-          <end>30</end>
-        </range>
-      </step>
-      <step>
-        <size>SIZE_GARGANTUAN</size>
-        <range>
-          <begin>31</begin>
-          <end>45</end>
+          <begin>4</begin>
+          <end>6</end>
         </range>
       </step>
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
   <monster>
-    <name>Delver</name>
+    <name>Retriever</name>
     <size>SIZE_HUGE</size>
     <type>
-      <metaType>METATYPE_ABERRATION</metaType>
+      <metaType>METATYPE_CONSTRUCT</metaType>
+      <subType>SUBTYPE_EXTRAPLANAR</subType>
     </type>
     <hitDice>
-      <numDice>15</numDice>
-      <typeDice>D_8</typeDice>
-      <modifier>78</modifier>
+      <numDice>10</numDice>
+      <typeDice>D_10</typeDice>
+      <modifier>80</modifier>
     </hitDice>
-    <initiative>5</initiative>
-    <speed>30</speed>
+    <initiative>3</initiative>
+    <speed>50</speed>
     <armorClass>
-      <normal>24</normal>
-      <touch>9</touch>
-      <flatFooted>23</flatFooted>
+      <normal>21</normal>
+      <touch>11</touch>
+      <flatFooted>18</flatFooted>
     </armorClass>
-    <specialDefense>
-      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
-      <type>ABILITY_CORROSIVE_SLIME</type>
-      <actionType>ACTION_NOTANACTION</actionType>
-      <action>
-        <damage>
-          <element>
-            <type>DAMAGE_ACID</type>
-            <other>
-              <type>OTHERDAMAGE_DISSOLVEWEAPON</type>
-              <counterMeasure>
-                <type>COUNTERMEASURE_CHECK</type>
-                <check>
-                  <type>SAVE_REFLEX</type>
-                  <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                  <difficultyClass>22</difficultyClass>
-                </check>
-              </counterMeasure>
-            </other>
-          </element>
-        </damage>
-      </action>
-      <action>
-        <preCondition>
-          <weaponType>NATURALWEAPON_ANY</weaponType>
-        </preCondition>
-        <damage>
-          <element>
-            <type>DAMAGE_ACID</type>
-            <amount>
-              <numDice>2</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>0</modifier>
-            </amount>
-            <counterMeasure>
-              <type>COUNTERMEASURE_CHECK</type>
-              <check>
-                <type>SAVE_REFLEX</type>
-                <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                <difficultyClass>22</difficultyClass>
-              </check>
-            </counterMeasure>
-          </element>
-        </damage>
-      </action>
-    </specialDefense>
     <attack>
-      <baseAttackBonus>11</baseAttackBonus>
-      <grappleBonus>27</grappleBonus>
+      <baseAttackBonus>7</baseAttackBonus>
+      <grappleBonus>25</grappleBonus>
       <standardAttackAction>
-        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
-        <attackBonus>16</attackBonus>
+        <weapon>NATURALWEAPON_CLAW_TALON</weapon>
+        <attackBonus>15</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
             <amount>
-              <numDice>1</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>8</modifier>
-            </amount>
-          </element>
-          <element>
-            <type>DAMAGE_ACID</type>
-            <amount>
               <numDice>2</numDice>
               <typeDice>D_6</typeDice>
-              <modifier>0</modifier>
+              <modifier>10</modifier>
             </amount>
-            <duration>
-              <interval>6</interval>
-              <totalDuration>12</totalDuration>
-            </duration>
-            <other>
-              <type>OTHERDAMAGE_DISSOLVEARMOR</type>
-              <counterMeasure>
-                <type>COUNTERMEASURE_CHECK</type>
-                <check>
-                  <type>SAVE_REFLEX</type>
-                  <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                  <difficultyClass>22</difficultyClass>
-                </check>
-              </counterMeasure>
-            </other>
           </element>
         </damage>
         <numAttacksPerRound>1</numAttacksPerRound>
       </standardAttackAction>
       <fullAttackAction>
-        <weapon>NATURALWEAPON_SLAP_SLAM</weapon>
-        <attackBonus>16</attackBonus>
+        <weapon>NATURALWEAPON_CLAW_TALON</weapon>
+        <attackBonus>15</attackBonus>
+        <attackForm>ATTACKFORM_MELEE</attackForm>
+        <damage>
+          <element>
+            <amount>
+              <numDice>2</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>10</modifier>
+            </amount>
+          </element>
+        </damage>
+        <numAttacksPerRound>4</numAttacksPerRound>
+      </fullAttackAction>
+      <fullAttackAction>
+        <weapon>NATURALWEAPON_BITE</weapon>
+        <attackBonus>10</attackBonus>
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
             <amount>
               <numDice>1</numDice>
-              <typeDice>D_6</typeDice>
-              <modifier>8</modifier>
+              <typeDice>D_8</typeDice>
+              <modifier>5</modifier>
             </amount>
           </element>
+        </damage>
+        <numAttacksPerRound>1</numAttacksPerRound>
+      </fullAttackAction>
+    </attack>
+    <specialAttack>
+      <abilityClass>ABILITYCLASS_SUPERNATURAL</abilityClass>
+      <type>ABILITY_RAY_ATTACK</type>
+      <actionType>ACTION_FREE</actionType>
+      <action>
+        <weapon>ABILITY_RAY_ATTACK</weapon>
+        <attackBonus>8</attackBonus>
+        <attackForm>ATTACKFORM_RANGED</attackForm>
+        <attackForm>ATTACKFORM_TOUCH</attackForm>
+        <damage elementsAreInclusive="false">
           <element>
-            <type>DAMAGE_ACID</type>
+            <type>DAMAGE_FIRE</type>
             <amount>
-              <numDice>2</numDice>
+              <numDice>12</numDice>
               <typeDice>D_6</typeDice>
               <modifier>0</modifier>
             </amount>
-            <duration>
-              <interval>6</interval>
-              <totalDuration>12</totalDuration>
-            </duration>
-            <other>
-              <type>OTHERDAMAGE_DISSOLVEARMOR</type>
-              <counterMeasure>
-                <type>COUNTERMEASURE_CHECK</type>
-                <check>
-                  <type>SAVE_REFLEX</type>
-                  <attribute>ATTRIBUTE_CONSTITUTION</attribute>
-                  <difficultyClass>22</difficultyClass>
-                </check>
-              </counterMeasure>
-            </other>
+            <counterMeasure reduction="REDUCTION_HALF">
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_REFLEX</type>
+                <difficultyClass>18</difficultyClass>
+              </check>
+            </counterMeasure>
+          </element>
+          <element>
+            <type>DAMAGE_COLD</type>
+            <amount>
+              <numDice>12</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>0</modifier>
+            </amount>
+            <counterMeasure reduction="REDUCTION_HALF">
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_REFLEX</type>
+                <difficultyClass>18</difficultyClass>
+              </check>
+            </counterMeasure>
+          </element>
+          <element>
+            <type>DAMAGE_ELECTRICITY</type>
+            <amount>
+              <numDice>12</numDice>
+              <typeDice>D_6</typeDice>
+              <modifier>0</modifier>
+            </amount>
+            <counterMeasure reduction="REDUCTION_HALF">
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_REFLEX</type>
+                <difficultyClass>18</difficultyClass>
+              </check>
+            </counterMeasure>
+          </element>
+          <element effect="EFFECT_PERMANENT">
+            <type>DAMAGE_PETRIFY</type>
+            <counterMeasure>
+              <type>COUNTERMEASURE_CHECK</type>
+              <check>
+                <type>SAVE_FORTITUDE</type>
+                <difficultyClass>18</difficultyClass>
+              </check>
+            </counterMeasure>
           </element>
         </damage>
-        <numAttacksPerRound>2</numAttacksPerRound>
-      </fullAttackAction>
-    </attack>
+        <numAttacksPerRound>1</numAttacksPerRound>
+        <ranged>
+          <maxRange>100</maxRange>
+        </ranged>
+      </action>
+    </specialAttack>
     <specialAbility>
-      <abilityClass>ABILITYCLASS_EXTRAORDINARY</abilityClass>
-      <type>ABILITY_SPELL</type>
-      <actionType>ACTION_STANDARD</actionType>
-      <usage>
-        <numUses>1</numUses>
-        <period>600</period>
-      </usage>
-      <effect>
-        <type>SPELL_STONE_SHAPE</type>
-        <casterLevel>15</casterLevel>
-      </effect>
+      <abilityClass>ABILITYCLASS_SPELLLIKE</abilityClass>
+      <type>ABILITY_SPELLS</type>
+      <actionType>ACTION_NOTANACTION</actionType>
+      <spell>
+        <type>SPELL_DISCERN_LOCATION</type>
+        <casterLevel>8</casterLevel>
+      </spell>
     </specialAbility>
     <space>15</space>
     <reach>10</reach>
     <saves>
-      <fortitude>12</fortitude>
+      <fortitude>3</fortitude>
       <reflex>6</reflex>
-      <will>11</will>
+      <will>3</will>
     </saves>
     <attributes>
-      <strength>27</strength>
-      <dexterity>13</dexterity>
-      <constitution>21</constitution>
-      <intelligence>14</intelligence>
-      <wisdom>14</wisdom>
-      <charisma>12</charisma>
+      <strength>31</strength>
+      <dexterity>17</dexterity>
+      <constitution>0</constitution>
+      <intelligence>0</intelligence>
+      <wisdom>11</wisdom>
+      <charisma>1</charisma>
     </attributes>
-    <skills>
-      <skill>
-        <skill>SKILL_KNOWLEDGE_DUNGEONS</skill>
-        <rank>14</rank>
-      </skill>
-      <skill>
-        <skill>SKILL_KNOWLEDGE_NATURE</skill>
-        <rank>4</rank>
-      </skill>
-      <skill>
-        <skill>SKILL_LISTEN</skill>
-        <rank>20</rank>
-      </skill>
-      <skill>
-        <skill>SKILL_MOVE_SILENTLY</skill>
-        <rank>17</rank>
-      </skill>
-      <skill>
-        <skill>SKILL_SPOT</skill>
-        <rank>20</rank>
-      </skill>
-      <skill>
-        <skill>SKILL_SURVIVAL</skill>
-        <rank>14</rank>
-      </skill>
-    </skills>
-    <feats>
-      <feat>FEAT_ALERTNESS</feat>
-      <feat>FEAT_BLIND_FIGHT</feat>
-      <feat>FEAT_GREAT_FORTITUDE</feat>
-      <feat>FEAT_IMPROVED_INITIATIVE</feat>
-      <feat>FEAT_POWER_ATTACK</feat>
-      <feat>FEAT_TOUGHNESS</feat>
-    </feats>
     <environment>
-      <terrain>TERRAIN_UNDERGROUND</terrain>
+      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
         <type>ORGANIZATION_SOLITARY</type>
       </step>
     </organizations>
-    <challengeRating>9</challengeRating>
+    <challengeRating>11</challengeRating>
     <treasureModifier>0</treasureModifier>
     <alignment>
-      <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
-      <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
+      <civic>ALIGNMENTCIVIC_CHAOTIC</civic>
+      <ethic>ALIGNMENTETHIC_EVIL</ethic>
     </alignment>
     <advancements>
       <step>
         <size>SIZE_HUGE</size>
         <range>
-          <begin>16</begin>
-          <end>30</end>
+          <begin>11</begin>
+          <end>15</end>
         </range>
       </step>
       <step>
         <size>SIZE_GARGANTUAN</size>
         <range>
-          <begin>31</begin>
-          <end>45</end>
+          <begin>16</begin>
+          <end>30</end>
         </range>
       </step>
     </advancements>

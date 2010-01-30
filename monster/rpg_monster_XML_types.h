@@ -918,6 +918,9 @@ class RPG_Monster_SpecialAbilityPreCondition_Type_pskel: public ::xml_schema::co
   targetCondition (const RPG_Character_Condition&);
 
   virtual void
+  maxTargetSize (const RPG_Character_Size&);
+
+  virtual void
   check (const RPG_Combat_Check&);
 
   virtual RPG_Monster_SpecialAbilityPreCondition
@@ -929,10 +932,14 @@ class RPG_Monster_SpecialAbilityPreCondition_Type_pskel: public ::xml_schema::co
   targetCondition_parser (::RPG_Character_Condition_Type_pskel&);
 
   void
+  maxTargetSize_parser (::RPG_Character_Size_Type_pskel&);
+
+  void
   check_parser (::RPG_Combat_Check_Type_pskel&);
 
   void
   parsers (::RPG_Character_Condition_Type_pskel& /* targetCondition */,
+           ::RPG_Character_Size_Type_pskel& /* maxTargetSize */,
            ::RPG_Combat_Check_Type_pskel& /* check */);
 
   // Constructor.
@@ -953,6 +960,7 @@ class RPG_Monster_SpecialAbilityPreCondition_Type_pskel: public ::xml_schema::co
 
   protected:
   ::RPG_Character_Condition_Type_pskel* targetCondition_parser_;
+  ::RPG_Character_Size_Type_pskel* maxTargetSize_parser_;
   ::RPG_Combat_Check_Type_pskel* check_parser_;
 };
 

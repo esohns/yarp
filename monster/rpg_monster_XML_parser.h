@@ -290,6 +290,7 @@ class RPG_Monster_SpecialAbilityPreCondition_Type
 
 //   virtual void pre();
     virtual void targetCondition(const RPG_Character_Condition&);
+    virtual void maxTargetSize(const RPG_Character_Size&);
     virtual void check(const RPG_Combat_Check&);
     virtual RPG_Monster_SpecialAbilityPreCondition post_RPG_Monster_SpecialAbilityPreCondition_Type();
 

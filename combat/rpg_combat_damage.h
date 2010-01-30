@@ -24,6 +24,7 @@
 struct RPG_Combat_Damage
 {
   std::vector<RPG_Combat_DamageElement> elements;
+  bool elementsAreInclusive;
 };
 
 #endif

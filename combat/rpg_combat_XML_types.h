@@ -715,6 +715,9 @@ class RPG_Combat_Damage_Type_pskel: public ::xml_schema::complex_content
   virtual void
   element (const RPG_Combat_DamageElement&);
 
+  virtual void
+  elementsAreInclusive (bool);
+
   virtual RPG_Combat_Damage
   post_RPG_Combat_Damage_Type () = 0;
 
@@ -724,7 +727,11 @@ class RPG_Combat_Damage_Type_pskel: public ::xml_schema::complex_content
   element_parser (::RPG_Combat_DamageElement_Type_pskel&);
 
   void
-  parsers (::RPG_Combat_DamageElement_Type_pskel& /* element */);
+  elementsAreInclusive_parser (::xml_schema::boolean_pskel&);
+
+  void
+  parsers (::RPG_Combat_DamageElement_Type_pskel& /* element */,
+           ::xml_schema::boolean_pskel& /* elementsAreInclusive */);
 
   // Constructor.
   //
@@ -742,8 +749,14 @@ class RPG_Combat_Damage_Type_pskel: public ::xml_schema::complex_content
   _end_element_impl (const ::xml_schema::ro_string&,
                      const ::xml_schema::ro_string&);
 
+  virtual bool
+  _attribute_impl (const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&);
+
   protected:
   ::RPG_Combat_DamageElement_Type_pskel* element_parser_;
+  ::xml_schema::boolean_pskel* elementsAreInclusive_parser_;
 };
 
 class RPG_Combat_ActionType_Type_pskel: public virtual ::xml_schema::string_pskel

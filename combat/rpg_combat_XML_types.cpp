@@ -381,14 +381,23 @@ element_parser (::RPG_Combat_DamageElement_Type_pskel& p)
 }
 
 void RPG_Combat_Damage_Type_pskel::
-parsers (::RPG_Combat_DamageElement_Type_pskel& element)
+elementsAreInclusive_parser (::xml_schema::boolean_pskel& p)
+{
+  this->elementsAreInclusive_parser_ = &p;
+}
+
+void RPG_Combat_Damage_Type_pskel::
+parsers (::RPG_Combat_DamageElement_Type_pskel& element,
+         ::xml_schema::boolean_pskel& elementsAreInclusive)
 {
   this->element_parser_ = &element;
+  this->elementsAreInclusive_parser_ = &elementsAreInclusive;
 }
 
 RPG_Combat_Damage_Type_pskel::
 RPG_Combat_Damage_Type_pskel ()
-: element_parser_ (0)
+: element_parser_ (0),
+  elementsAreInclusive_parser_ (0)
 {
 }
 
@@ -1254,6 +1263,11 @@ element (const RPG_Combat_DamageElement&)
 {
 }
 
+void RPG_Combat_Damage_Type_pskel::
+elementsAreInclusive (bool)
+{
+}
+
 bool RPG_Combat_Damage_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
@@ -1288,6 +1302,31 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->element_parser_)
       this->element (this->element_parser_->post_RPG_Combat_DamageElement_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Combat_Damage_Type_pskel::
+_attribute_impl (const ::xml_schema::ro_string& ns,
+                 const ::xml_schema::ro_string& n,
+                 const ::xml_schema::ro_string& v)
+{
+  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
+    return true;
+
+  if (n == "elementsAreInclusive" && ns.empty ())
+  {
+    if (this->elementsAreInclusive_parser_)
+    {
+      this->elementsAreInclusive_parser_->pre ();
+      this->elementsAreInclusive_parser_->_pre_impl ();
+      this->elementsAreInclusive_parser_->_characters (v);
+      this->elementsAreInclusive_parser_->_post_impl ();
+      this->elementsAreInclusive (this->elementsAreInclusive_parser_->post_boolean ());
+    }
 
     return true;
   }

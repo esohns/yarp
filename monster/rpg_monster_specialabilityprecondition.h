@@ -24,6 +24,7 @@
 struct RPG_Monster_SpecialAbilityPreCondition
 {
   std::vector<RPG_Character_Condition> targetConditions;
+  RPG_Character_Size maxTargetSize;
   RPG_Combat_Check check;
 };
 

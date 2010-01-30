@@ -74,7 +74,7 @@
   <xsd:simpleType name="RPG_Combat_SpecialAttack_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SPECIALATTACK_INCORPOREAL_TOUCH"/>
-<!--       <xsd:enumeration value="SPECIALATTACK_SMOKE_CLAWS"/> -->
+      <xsd:enumeration value="SPECIALATTACK_SMITE"/>
 <!--       <xsd:enumeration value="SPECIALATTACK_RAY_LIGHT"/> -->
 <!--       <xsd:enumeration value="SPECIALATTACK_RAY_ELECTRICITY"/> -->
 <!--       <xsd:enumeration value="SPECIALATTACK_GAZE_PETRIFY"/> -->
@@ -196,6 +196,7 @@
     <xsd:sequence>
       <xsd:element name="element" type="RPG_Combat_DamageElement_Type" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
+    <xsd:attribute name="elementsAreInclusive" type="xsd:boolean" use="optional" default="true"/>
   </xsd:complexType>
 
   <xsd:simpleType name="RPG_Combat_ActionType_Type">

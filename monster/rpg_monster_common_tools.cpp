@@ -306,6 +306,7 @@ const RPG_Common_PhysicalDamageList_t RPG_Monster_Common_Tools::naturalWeaponToP
     case NATURALWEAPON_HOOF:
     case NATURALWEAPON_ROCK_STONE:
     case NATURALWEAPON_SLAP_SLAM:
+    case NATURALWEAPON_TAIL:
     case NATURALWEAPON_TENTACLE:
     {
       result.insert(PHYSICALDAMAGE_BLUDGEONING);
