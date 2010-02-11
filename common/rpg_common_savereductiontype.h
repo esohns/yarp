@@ -23,9 +23,10 @@
 
 enum RPG_Common_SaveReductionType
 {
-  SAVE_PARTIAL = 0,
+  SAVE_NEGATES = 0,
+  SAVE_PARTIAL,
   SAVE_HALF,
-  SAVE_FULL,
+  SAVE_NONE,
   //
   RPG_COMMON_SAVEREDUCTIONTYPE_MAX,
   RPG_COMMON_SAVEREDUCTIONTYPE_INVALID
@@ -45,9 +46,10 @@ class RPG_Common_SaveReductionTypeHelper
   inline static void init()
   {
     myRPG_Common_SaveReductionTypeToStringTable.clear();
+    myRPG_Common_SaveReductionTypeToStringTable.insert(std::make_pair(SAVE_NEGATES, ACE_TEXT_ALWAYS_CHAR("SAVE_NEGATES")));
     myRPG_Common_SaveReductionTypeToStringTable.insert(std::make_pair(SAVE_PARTIAL, ACE_TEXT_ALWAYS_CHAR("SAVE_PARTIAL")));
     myRPG_Common_SaveReductionTypeToStringTable.insert(std::make_pair(SAVE_HALF, ACE_TEXT_ALWAYS_CHAR("SAVE_HALF")));
-    myRPG_Common_SaveReductionTypeToStringTable.insert(std::make_pair(SAVE_FULL, ACE_TEXT_ALWAYS_CHAR("SAVE_FULL")));
+    myRPG_Common_SaveReductionTypeToStringTable.insert(std::make_pair(SAVE_NONE, ACE_TEXT_ALWAYS_CHAR("SAVE_NONE")));
   };
 
   inline static std::string RPG_Common_SaveReductionTypeToString(const RPG_Common_SaveReductionType& element_in)

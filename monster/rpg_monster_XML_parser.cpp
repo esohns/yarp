@@ -251,7 +251,7 @@ RPG_Monster_SpecialBaseProperties_Type::RPG_Monster_SpecialBaseProperties_Type()
   myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
   myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
   myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
-  myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
+  myCurrentProperties.actionType = RPG_COMMON_ACTIONTYPE_INVALID;
   myCurrentProperties.usage.numUses = 0;
   myCurrentProperties.usage.period = 0;
 }
@@ -270,7 +270,7 @@ void RPG_Monster_SpecialBaseProperties_Type::type(const RPG_Monster_SpecialPrope
   myCurrentProperties.type = type_in;
 }
 
-void RPG_Monster_SpecialBaseProperties_Type::actionType(const RPG_Combat_ActionType& actionType_in)
+void RPG_Monster_SpecialBaseProperties_Type::actionType(const RPG_Common_ActionType& actionType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialBaseProperties_Type::actionType"));
 
@@ -294,7 +294,7 @@ RPG_Monster_SpecialBaseProperties RPG_Monster_SpecialBaseProperties_Type::post_R
   myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
   myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
   myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
-  myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
+  myCurrentProperties.actionType = RPG_COMMON_ACTIONTYPE_INVALID;
   myCurrentProperties.usage.numUses = 0;
   myCurrentProperties.usage.period = 0;
 
@@ -362,7 +362,7 @@ RPG_Monster_DefenseAction_Type::RPG_Monster_DefenseAction_Type()
   myCurrentAction.damage.elements.clear();
   myCurrentAction.ranged.maxRange = 0;
   myCurrentAction.ranged.increment = 0;
-  myCurrentAction.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
+  myCurrentAction.ranged.effect.areaofeffect = RPG_COMMON_AREAOFEFFECT_INVALID;
   myCurrentAction.ranged.effect.discriminator = RPG_Combat_RangedEffectUnion::INVALID;
 }
 
@@ -398,7 +398,7 @@ RPG_Monster_DefenseAction RPG_Monster_DefenseAction_Type::post_RPG_Monster_Defen
   myCurrentAction.damage.elements.clear();
   myCurrentAction.ranged.maxRange = 0;
   myCurrentAction.ranged.increment = 0;
-  myCurrentAction.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
+  myCurrentAction.ranged.effect.areaofeffect = RPG_COMMON_AREAOFEFFECT_INVALID;
   myCurrentAction.ranged.effect.discriminator = RPG_Combat_RangedEffectUnion::INVALID;
 
   return result;
@@ -411,7 +411,7 @@ RPG_Monster_SpecialDefenseProperties_Type::RPG_Monster_SpecialDefenseProperties_
   myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
   myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
   myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
-  myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
+  myCurrentProperties.actionType = RPG_COMMON_ACTIONTYPE_INVALID;
   myCurrentProperties.usage.numUses = 0;
   myCurrentProperties.usage.period = 0;
   myCurrentProperties.actions.clear();
@@ -431,7 +431,7 @@ void RPG_Monster_SpecialDefenseProperties_Type::type(const RPG_Monster_SpecialPr
   myCurrentProperties.type = type_in;
 }
 
-void RPG_Monster_SpecialDefenseProperties_Type::actionType(const RPG_Combat_ActionType& actionType_in)
+void RPG_Monster_SpecialDefenseProperties_Type::actionType(const RPG_Common_ActionType& actionType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialDefenseProperties_Type::actionType"));
 
@@ -471,7 +471,7 @@ RPG_Monster_SpecialDefenseProperties RPG_Monster_SpecialDefenseProperties_Type::
   myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
   myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
   myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
-  myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
+  myCurrentProperties.actionType = RPG_COMMON_ACTIONTYPE_INVALID;
   myCurrentProperties.usage.numUses = 0;
   myCurrentProperties.usage.period = 0;
   myCurrentProperties.actions.clear();
@@ -543,10 +543,10 @@ RPG_Monster_AttackAction_Type::RPG_Monster_AttackAction_Type()
 
   myCurrentAttackAction.weapon.weapontype = RPG_ITEM_WEAPONTYPE_INVALID;
   myCurrentAttackAction.weapon.discriminator = RPG_Monster_WeaponTypeUnion::INVALID;
-  myCurrentAttackAction.attackBonus.clear();
+  myCurrentAttackAction.attackBonuses.clear();
   myCurrentAttackAction.attackForms.clear();
   myCurrentAttackAction.damage.elements.clear();
-  myCurrentAttackAction.effect.type = RPG_MAGIC_SPELL_INVALID;
+  myCurrentAttackAction.effect.type = RPG_MAGIC_SPELLTYPE_INVALID;
   myCurrentAttackAction.effect.casterLevel = 0;
   myCurrentAttackAction.effect.duration.activation = 0;
   myCurrentAttackAction.effect.duration.interval = 0;
@@ -557,7 +557,7 @@ RPG_Monster_AttackAction_Type::RPG_Monster_AttackAction_Type()
   myCurrentAttackAction.numAttacksPerRound = 0;
   myCurrentAttackAction.ranged.maxRange = 0;
   myCurrentAttackAction.ranged.increment = 0;
-  myCurrentAttackAction.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
+  myCurrentAttackAction.ranged.effect.areaofeffect = RPG_COMMON_AREAOFEFFECT_INVALID;
   myCurrentAttackAction.ranged.effect.discriminator = RPG_Combat_RangedEffectUnion::INVALID;
   myCurrentAttackAction.triggers.clear();
   myCurrentAttackAction.allAdjacent = false;
@@ -575,7 +575,7 @@ void RPG_Monster_AttackAction_Type::attackBonus(signed char attackBonus_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_AttackAction_Type::attackBonus"));
 
-  myCurrentAttackAction.attackBonus.push_back(attackBonus_in);
+  myCurrentAttackAction.attackBonuses.push_back(attackBonus_in);
 }
 
 void RPG_Monster_AttackAction_Type::attackForm(const RPG_Combat_AttackForm& attackForm_in)
@@ -592,7 +592,7 @@ void RPG_Monster_AttackAction_Type::damage(const RPG_Combat_Damage& damage_in)
   myCurrentAttackAction.damage = damage_in;
 }
 
-void RPG_Monster_AttackAction_Type::effect(const RPG_Magic_SpellProperties& effect_in)
+void RPG_Monster_AttackAction_Type::effect(const RPG_Magic_SpellLikeProperties& effect_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_AttackAction_Type::effect"));
 
@@ -643,10 +643,10 @@ RPG_Monster_AttackAction RPG_Monster_AttackAction_Type::post_RPG_Monster_AttackA
   // clear structure
   myCurrentAttackAction.weapon.weapontype = RPG_ITEM_WEAPONTYPE_INVALID;
   myCurrentAttackAction.weapon.discriminator = RPG_Monster_WeaponTypeUnion::INVALID;
-  myCurrentAttackAction.attackBonus.clear();
+  myCurrentAttackAction.attackBonuses.clear();
   myCurrentAttackAction.attackForms.clear();
   myCurrentAttackAction.damage.elements.clear();
-  myCurrentAttackAction.effect.type = RPG_MAGIC_SPELL_INVALID;
+  myCurrentAttackAction.effect.type = RPG_MAGIC_SPELLTYPE_INVALID;
   myCurrentAttackAction.effect.casterLevel = 0;
   myCurrentAttackAction.effect.duration.activation = 0;
   myCurrentAttackAction.effect.duration.interval = 0;
@@ -657,7 +657,7 @@ RPG_Monster_AttackAction RPG_Monster_AttackAction_Type::post_RPG_Monster_AttackA
   myCurrentAttackAction.numAttacksPerRound = 0;
   myCurrentAttackAction.ranged.maxRange = 0;
   myCurrentAttackAction.ranged.increment = 0;
-  myCurrentAttackAction.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
+  myCurrentAttackAction.ranged.effect.areaofeffect = RPG_COMMON_AREAOFEFFECT_INVALID;
   myCurrentAttackAction.ranged.effect.discriminator = RPG_Combat_RangedEffectUnion::INVALID;
   myCurrentAttackAction.triggers.clear();
   myCurrentAttackAction.allAdjacent = false;
@@ -851,19 +851,19 @@ RPG_Monster_SpecialAttackProperties_Type::RPG_Monster_SpecialAttackProperties_Ty
   myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
   myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
   myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
-  myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
+  myCurrentProperties.actionType = RPG_COMMON_ACTIONTYPE_INVALID;
   myCurrentProperties.usage.numUses = 0;
   myCurrentProperties.usage.period = 0;
   myCurrentProperties.preConditions.clear();
   myCurrentProperties.action.weapon.weapontype = RPG_ITEM_WEAPONTYPE_INVALID;
   myCurrentProperties.action.weapon.discriminator = RPG_Monster_WeaponTypeUnion::INVALID;
-  myCurrentProperties.action.attackBonus.clear();
+  myCurrentProperties.action.attackBonuses.clear();
   myCurrentProperties.action.attackForms.clear();
   myCurrentProperties.action.damage.elements.clear();
   myCurrentProperties.action.numAttacksPerRound = 0;
   myCurrentProperties.action.ranged.maxRange = 0;
   myCurrentProperties.action.ranged.increment = 0;
-  myCurrentProperties.action.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
+  myCurrentProperties.action.ranged.effect.areaofeffect = RPG_COMMON_AREAOFEFFECT_INVALID;
   myCurrentProperties.action.ranged.effect.discriminator = RPG_Combat_RangedEffectUnion::INVALID;
   myCurrentProperties.action.fullAttackIncludesNextAction = false;
 //   myCurrentProperties.amount.numDice = 0;
@@ -885,7 +885,7 @@ void RPG_Monster_SpecialAttackProperties_Type::type(const RPG_Monster_SpecialPro
   myCurrentProperties.type = type_in;
 }
 
-void RPG_Monster_SpecialAttackProperties_Type::actionType(const RPG_Combat_ActionType& actionType_in)
+void RPG_Monster_SpecialAttackProperties_Type::actionType(const RPG_Common_ActionType& actionType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackProperties_Type::actionType"));
 
@@ -939,19 +939,19 @@ RPG_Monster_SpecialAttackProperties RPG_Monster_SpecialAttackProperties_Type::po
   myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
   myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
   myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
-  myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
+  myCurrentProperties.actionType = RPG_COMMON_ACTIONTYPE_INVALID;
   myCurrentProperties.usage.numUses = 0;
   myCurrentProperties.usage.period = 0;
   myCurrentProperties.preConditions.clear();
   myCurrentProperties.action.weapon.weapontype = RPG_ITEM_WEAPONTYPE_INVALID;
   myCurrentProperties.action.weapon.discriminator = RPG_Monster_WeaponTypeUnion::INVALID;
-  myCurrentProperties.action.attackBonus.clear();
+  myCurrentProperties.action.attackBonuses.clear();
   myCurrentProperties.action.attackForms.clear();
   myCurrentProperties.action.damage.elements.clear();
   myCurrentProperties.action.numAttacksPerRound = 0;
   myCurrentProperties.action.ranged.maxRange = 0;
   myCurrentProperties.action.ranged.increment = 0;
-  myCurrentProperties.action.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
+  myCurrentProperties.action.ranged.effect.areaofeffect = RPG_COMMON_AREAOFEFFECT_INVALID;
   myCurrentProperties.action.ranged.effect.discriminator = RPG_Combat_RangedEffectUnion::INVALID;
   myCurrentProperties.action.fullAttackIncludesNextAction = false;
 //   myCurrentProperties.amount.numDice = 0;
@@ -1075,14 +1075,14 @@ RPG_Monster_SpecialAbilityProperties_Type::RPG_Monster_SpecialAbilityProperties_
   myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
   myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
   myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
-  myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
+  myCurrentProperties.actionType = RPG_COMMON_ACTIONTYPE_INVALID;
   myCurrentProperties.usage.numUses = 0;
   myCurrentProperties.usage.period = 0;
   myCurrentProperties.summons.clear();
   myCurrentProperties.spells.clear();
   myCurrentProperties.ranged.maxRange = 0;
   myCurrentProperties.ranged.increment = 0;
-  myCurrentProperties.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
+  myCurrentProperties.ranged.effect.areaofeffect = RPG_COMMON_AREAOFEFFECT_INVALID;
   myCurrentProperties.ranged.effect.discriminator = RPG_Combat_RangedEffectUnion::INVALID;
 }
 
@@ -1100,7 +1100,7 @@ void RPG_Monster_SpecialAbilityProperties_Type::type(const RPG_Monster_SpecialPr
   myCurrentProperties.type = type_in;
 }
 
-void RPG_Monster_SpecialAbilityProperties_Type::actionType(const RPG_Combat_ActionType& actionType_in)
+void RPG_Monster_SpecialAbilityProperties_Type::actionType(const RPG_Common_ActionType& actionType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAbilityProperties_Type::actionType"));
 
@@ -1137,7 +1137,7 @@ void RPG_Monster_SpecialAbilityProperties_Type::summon(const RPG_Monster_SummonM
   myCurrentProperties.summons.push_back(summon_in);
 }
 
-void RPG_Monster_SpecialAbilityProperties_Type::spell(const RPG_Magic_SpellProperties& spell_in)
+void RPG_Monster_SpecialAbilityProperties_Type::spell(const RPG_Magic_SpellLikeProperties& spell_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAbilityProperties_Type::spell"));
 
@@ -1161,14 +1161,14 @@ RPG_Monster_SpecialAbilityProperties RPG_Monster_SpecialAbilityProperties_Type::
   myCurrentProperties.abilityClass = RPG_MAGIC_ABILITYCLASS_INVALID;
   myCurrentProperties.type.ability = RPG_CHARACTER_ABILITY_INVALID;
   myCurrentProperties.type.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
-  myCurrentProperties.actionType = RPG_COMBAT_ACTIONTYPE_INVALID;
+  myCurrentProperties.actionType = RPG_COMMON_ACTIONTYPE_INVALID;
   myCurrentProperties.usage.numUses = 0;
   myCurrentProperties.usage.period = 0;
   myCurrentProperties.summons.clear();
   myCurrentProperties.spells.clear();
   myCurrentProperties.ranged.maxRange = 0;
   myCurrentProperties.ranged.increment = 0;
-  myCurrentProperties.ranged.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
+  myCurrentProperties.ranged.effect.areaofeffect = RPG_COMMON_AREAOFEFFECT_INVALID;
   myCurrentProperties.ranged.effect.discriminator = RPG_Combat_RangedEffectUnion::INVALID;
 
   return result;

@@ -20,8 +20,9 @@
 #ifndef RPG_CHARACTER_COMMON_H
 #define RPG_CHARACTER_COMMON_H
 
+#include <rpg_common_subclass.h>
+
 #include "rpg_character_metaclass.h"
-#include "rpg_character_subclass.h"
 #include "rpg_character_class.h"
 #include "rpg_character_condition.h"
 #include "rpg_character_terrain.h"

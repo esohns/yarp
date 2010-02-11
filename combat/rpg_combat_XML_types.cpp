@@ -189,7 +189,7 @@ check_parser (::RPG_Combat_Check_Type_pskel& p)
 }
 
 void RPG_Combat_DamageCounterMeasure_Type_pskel::
-spell_parser (::RPG_Magic_Spell_Type_pskel& p)
+spell_parser (::RPG_Magic_SpellType_Type_pskel& p)
 {
   this->spell_parser_ = &p;
 }
@@ -215,7 +215,7 @@ reduction_parser (::RPG_Combat_DamageReductionType_Type_pskel& p)
 void RPG_Combat_DamageCounterMeasure_Type_pskel::
 parsers (::RPG_Combat_DamageCounterMeasureType_Type_pskel& type,
          ::RPG_Combat_Check_Type_pskel& check,
-         ::RPG_Magic_Spell_Type_pskel& spell,
+         ::RPG_Magic_SpellType_Type_pskel& spell,
          ::RPG_Common_Duration_Type_pskel& duration,
          ::RPG_Character_Condition_Type_pskel& condition,
          ::RPG_Combat_DamageReductionType_Type_pskel& reduction)
@@ -760,7 +760,7 @@ check (const RPG_Combat_Check&)
 }
 
 void RPG_Combat_DamageCounterMeasure_Type_pskel::
-spell (const RPG_Magic_Spell&)
+spell ()
 {
 }
 
@@ -868,7 +868,10 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "spell" && ns == "urn:rpg")
   {
     if (this->spell_parser_)
-      this->spell (this->spell_parser_->post_RPG_Magic_Spell_Type ());
+    {
+      this->spell_parser_->post_RPG_Magic_SpellType_Type ();
+      this->spell ();
+    }
 
     return true;
   }

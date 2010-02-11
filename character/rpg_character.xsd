@@ -51,32 +51,10 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="RPG_Character_SubClass_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="SUBCLASS_NONE"/>
-      <xsd:enumeration value="SUBCLASS_FIGHTER"/>
-      <xsd:enumeration value="SUBCLASS_PALADIN"/>
-      <xsd:enumeration value="SUBCLASS_RANGER"/>
-      <xsd:enumeration value="SUBCLASS_BARBARIAN"/>
-      <xsd:enumeration value="SUBCLASS_WARLORD"/>
-      <xsd:enumeration value="SUBCLASS_WIZARD"/>
-      <xsd:enumeration value="SUBCLASS_SORCERER"/>
-      <xsd:enumeration value="SUBCLASS_WARLOCK"/>
-      <xsd:enumeration value="SUBCLASS_CLERIC"/>
-      <xsd:enumeration value="SUBCLASS_DRUID"/>
-      <xsd:enumeration value="SUBCLASS_MONK"/>
-      <xsd:enumeration value="SUBCLASS_AVENGER"/>
-      <xsd:enumeration value="SUBCLASS_INVOKER"/>
-      <xsd:enumeration value="SUBCLASS_SHAMAN"/>
-      <xsd:enumeration value="SUBCLASS_THIEF"/>
-      <xsd:enumeration value="SUBCLASS_BARD"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
   <xsd:complexType name="RPG_Character_Class_Type">
     <xsd:sequence>
       <xsd:element name="metaClass" type="RPG_Character_MetaClass_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="subClass" type="RPG_Character_SubClass_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="subClass" type="RPG_Common_SubClass_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 

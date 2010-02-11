@@ -18,7 +18,7 @@ include_HEADERS = rpg_character_XML_parser.h rpg_character_XML_types.h \
 	rpg_character_player_base.h rpg_character_player_common.h rpg_character_race.h \
 	rpg_character_race_common.h rpg_character_size.h rpg_character_skill.h rpg_character_skills.h \
 	rpg_character_skills_common.h rpg_character_skills_common_tools.h rpg_character_skillvalue.h \
-	rpg_character_subclass.h rpg_character_terrain.h
+	rpg_character_terrain.h
 
 lib_LTLIBRARIES = libRPG_Character.la
 
@@ -37,8 +37,7 @@ libRPG_Character_la_SOURCES = rpg_XMLSchema_XML_types.h \
 	rpg_character_player_base.h rpg_character_player_common.h rpg_character_race.h \
 	rpg_character_race_common.h rpg_character_size.h rpg_character_skill.h rpg_character_skills.h \
 	rpg_character_skills_common.h rpg_character_skills_common_tools.cpp \
-	rpg_character_skills_common_tools.h rpg_character_skillvalue.h rpg_character_subclass.h \
-	rpg_character_terrain.h
+	rpg_character_skills_common_tools.h rpg_character_skillvalue.h rpg_character_terrain.h
 libRPG_Character_la_LDFLAGS = -L/usr/local/lib
 
 bindata_DATA = rpg_character.xsd

@@ -50,7 +50,6 @@
 // Forward declarations
 //
 class RPG_Combat_AttackForm_Type_pskel;
-class RPG_Combat_AreaOfEffect_Type_pskel;
 class RPG_Combat_RangedEffectUnion_Type_pskel;
 class RPG_Combat_RangedAttackProperties_Type_pskel;
 class RPG_Combat_AttackSituation_Type_pskel;
@@ -68,7 +67,6 @@ class RPG_Combat_OtherDamageType_Type_pskel;
 class RPG_Combat_OtherDamage_Type_pskel;
 class RPG_Combat_DamageElement_Type_pskel;
 class RPG_Combat_Damage_Type_pskel;
-class RPG_Combat_ActionType_Type_pskel;
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -105,18 +103,6 @@ class RPG_Combat_AttackForm_Type_pskel: public virtual ::xml_schema::string_pske
 
   virtual RPG_Combat_AttackForm
   post_RPG_Combat_AttackForm_Type () = 0;
-};
-
-class RPG_Combat_AreaOfEffect_Type_pskel: public virtual ::xml_schema::string_pskel
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual RPG_Combat_AreaOfEffect
-  post_RPG_Combat_AreaOfEffect_Type () = 0;
 };
 
 class RPG_Combat_RangedEffectUnion_Type_pskel: public ::xml_schema::simple_content
@@ -451,7 +437,7 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
   check (const RPG_Combat_Check&);
 
   virtual void
-  spell (const RPG_Magic_Spell&);
+  spell ();
 
   virtual void
   duration ();
@@ -474,7 +460,7 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
   check_parser (::RPG_Combat_Check_Type_pskel&);
 
   void
-  spell_parser (::RPG_Magic_Spell_Type_pskel&);
+  spell_parser (::RPG_Magic_SpellType_Type_pskel&);
 
   void
   duration_parser (::RPG_Common_Duration_Type_pskel&);
@@ -488,7 +474,7 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
   void
   parsers (::RPG_Combat_DamageCounterMeasureType_Type_pskel& /* type */,
            ::RPG_Combat_Check_Type_pskel& /* check */,
-           ::RPG_Magic_Spell_Type_pskel& /* spell */,
+           ::RPG_Magic_SpellType_Type_pskel& /* spell */,
            ::RPG_Common_Duration_Type_pskel& /* duration */,
            ::RPG_Character_Condition_Type_pskel& /* condition */,
            ::RPG_Combat_DamageReductionType_Type_pskel& /* reduction */);
@@ -517,7 +503,7 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
   protected:
   ::RPG_Combat_DamageCounterMeasureType_Type_pskel* type_parser_;
   ::RPG_Combat_Check_Type_pskel* check_parser_;
-  ::RPG_Magic_Spell_Type_pskel* spell_parser_;
+  ::RPG_Magic_SpellType_Type_pskel* spell_parser_;
   ::RPG_Common_Duration_Type_pskel* duration_parser_;
   ::RPG_Character_Condition_Type_pskel* condition_parser_;
   ::RPG_Combat_DamageReductionType_Type_pskel* reduction_parser_;
@@ -757,18 +743,6 @@ class RPG_Combat_Damage_Type_pskel: public ::xml_schema::complex_content
   protected:
   ::RPG_Combat_DamageElement_Type_pskel* element_parser_;
   ::xml_schema::boolean_pskel* elementsAreInclusive_parser_;
-};
-
-class RPG_Combat_ActionType_Type_pskel: public virtual ::xml_schema::string_pskel
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual RPG_Combat_ActionType
-  post_RPG_Combat_ActionType_Type () = 0;
 };
 
 #include <xsd/cxx/post.hxx>

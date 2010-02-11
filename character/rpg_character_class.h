@@ -24,7 +24,7 @@
 struct RPG_Character_Class
 {
   RPG_Character_MetaClass metaClass;
-  RPG_Character_SubClass subClass;
+  RPG_Common_SubClass subClass;
 };
 
 #endif

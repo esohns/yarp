@@ -9,11 +9,11 @@ namespace urn:rpg
   RPG_Dice_ValueRange_Type          RPG_Dice_ValueRange;
 
   RPG_Common_Attribute_Type         RPG_Common_Attribute;
+  RPG_Common_SubClass_Type          RPG_Common_SubClass;
 
   RPG_Character_Gender_Type         RPG_Character_Gender;
   RPG_Character_Race_Type           RPG_Character_Race;
   RPG_Character_MetaClass_Type      RPG_Character_MetaClass;
-  RPG_Character_SubClass_Type       RPG_Character_SubClass;
   RPG_Character_Class_Type          RPG_Character_Class;
   RPG_Character_Condition_Type      RPG_Character_Condition;
   RPG_Character_Ability_Type        RPG_Character_Ability;

@@ -123,7 +123,7 @@ type_parser (::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel& p)
 }
 
 void RPG_Monster_SpecialBaseProperties_Type_pskel::
-actionType_parser (::RPG_Combat_ActionType_Type_pskel& p)
+actionType_parser (::RPG_Common_ActionType_Type_pskel& p)
 {
   this->actionType_parser_ = &p;
 }
@@ -137,7 +137,7 @@ usage_parser (::RPG_Common_Usage_Type_pskel& p)
 void RPG_Monster_SpecialBaseProperties_Type_pskel::
 parsers (::RPG_Magic_AbilityClass_Type_pskel& abilityClass,
          ::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel& type,
-         ::RPG_Combat_ActionType_Type_pskel& actionType,
+         ::RPG_Common_ActionType_Type_pskel& actionType,
          ::RPG_Common_Usage_Type_pskel& usage)
 {
   this->abilityClass_parser_ = &abilityClass;
@@ -254,7 +254,7 @@ action_parser (::RPG_Monster_DefenseAction_Type_pskel& p)
 void RPG_Monster_SpecialDefenseProperties_Type_pskel::
 parsers (::RPG_Magic_AbilityClass_Type_pskel& abilityClass,
          ::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel& type,
-         ::RPG_Combat_ActionType_Type_pskel& actionType,
+         ::RPG_Common_ActionType_Type_pskel& actionType,
          ::RPG_Common_Usage_Type_pskel& usage,
          ::RPG_Monster_DefenseAction_Type_pskel& action)
 {
@@ -299,7 +299,7 @@ damage_parser (::RPG_Combat_Damage_Type_pskel& p)
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
-effect_parser (::RPG_Magic_SpellProperties_Type_pskel& p)
+effect_parser (::RPG_Magic_SpellLikeProperties_Type_pskel& p)
 {
   this->effect_parser_ = &p;
 }
@@ -339,7 +339,7 @@ parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& weapon,
          ::xml_schema::byte_pskel& attackBonus,
          ::RPG_Combat_AttackForm_Type_pskel& attackForm,
          ::RPG_Combat_Damage_Type_pskel& damage,
-         ::RPG_Magic_SpellProperties_Type_pskel& effect,
+         ::RPG_Magic_SpellLikeProperties_Type_pskel& effect,
          ::xml_schema::unsigned_byte_pskel& numAttacksPerRound,
          ::RPG_Combat_RangedAttackProperties_Type_pskel& ranged,
          ::RPG_Character_Ability_Type_pskel& trigger,
@@ -553,7 +553,7 @@ action_parser (::RPG_Monster_AttackAction_Type_pskel& p)
 void RPG_Monster_SpecialAttackProperties_Type_pskel::
 parsers (::RPG_Magic_AbilityClass_Type_pskel& abilityClass,
          ::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel& type,
-         ::RPG_Combat_ActionType_Type_pskel& actionType,
+         ::RPG_Common_ActionType_Type_pskel& actionType,
          ::RPG_Common_Usage_Type_pskel& usage,
          ::RPG_Monster_SpecialAttackPreCondition_Type_pskel& preCondition,
          ::RPG_Monster_AttackAction_Type_pskel& action)
@@ -676,7 +676,7 @@ summon_parser (::RPG_Monster_SummonMonster_Type_pskel& p)
 }
 
 void RPG_Monster_SpecialAbilityProperties_Type_pskel::
-spell_parser (::RPG_Magic_SpellProperties_Type_pskel& p)
+spell_parser (::RPG_Magic_SpellLikeProperties_Type_pskel& p)
 {
   this->spell_parser_ = &p;
 }
@@ -690,11 +690,11 @@ ranged_parser (::RPG_Combat_RangedAttackProperties_Type_pskel& p)
 void RPG_Monster_SpecialAbilityProperties_Type_pskel::
 parsers (::RPG_Magic_AbilityClass_Type_pskel& abilityClass,
          ::RPG_Monster_SpecialPropertyTypeUnion_Type_pskel& type,
-         ::RPG_Combat_ActionType_Type_pskel& actionType,
+         ::RPG_Common_ActionType_Type_pskel& actionType,
          ::RPG_Common_Usage_Type_pskel& usage,
          ::RPG_Monster_SpecialAbilityPreCondition_Type_pskel& preCondition,
          ::RPG_Monster_SummonMonster_Type_pskel& summon,
-         ::RPG_Magic_SpellProperties_Type_pskel& spell,
+         ::RPG_Magic_SpellLikeProperties_Type_pskel& spell,
          ::RPG_Combat_RangedAttackProperties_Type_pskel& ranged)
 {
   this->abilityClass_parser_ = &abilityClass;
@@ -1326,7 +1326,7 @@ type (const RPG_Monster_SpecialPropertyTypeUnion&)
 }
 
 void RPG_Monster_SpecialBaseProperties_Type_pskel::
-actionType (const RPG_Combat_ActionType&)
+actionType (const RPG_Common_ActionType&)
 {
 }
 
@@ -1414,7 +1414,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "actionType" && ns == "urn:rpg")
   {
     if (this->actionType_parser_)
-      this->actionType (this->actionType_parser_->post_RPG_Combat_ActionType_Type ());
+      this->actionType (this->actionType_parser_->post_RPG_Common_ActionType_Type ());
 
     return true;
   }
@@ -1723,7 +1723,7 @@ damage (const RPG_Combat_Damage&)
 }
 
 void RPG_Monster_AttackAction_Type_pskel::
-effect (const RPG_Magic_SpellProperties&)
+effect (const RPG_Magic_SpellLikeProperties&)
 {
 }
 
@@ -1887,7 +1887,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "effect" && ns == "urn:rpg")
   {
     if (this->effect_parser_)
-      this->effect (this->effect_parser_->post_RPG_Magic_SpellProperties_Type ());
+      this->effect (this->effect_parser_->post_RPG_Magic_SpellLikeProperties_Type ());
 
     return true;
   }
@@ -2667,7 +2667,7 @@ summon (const RPG_Monster_SummonMonster&)
 }
 
 void RPG_Monster_SpecialAbilityProperties_Type_pskel::
-spell (const RPG_Magic_SpellProperties&)
+spell (const RPG_Magic_SpellLikeProperties&)
 {
 }
 
@@ -2755,7 +2755,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "spell" && ns == "urn:rpg")
   {
     if (this->spell_parser_)
-      this->spell (this->spell_parser_->post_RPG_Magic_SpellProperties_Type ());
+      this->spell (this->spell_parser_->post_RPG_Magic_SpellLikeProperties_Type ());
 
     return true;
   }

@@ -28,19 +28,12 @@ RPG_Combat_AttackForm RPG_Combat_AttackForm_Type::post_RPG_Combat_AttackForm_Typ
   return RPG_Combat_AttackFormHelper::stringToRPG_Combat_AttackForm(post_string());
 }
 
-RPG_Combat_AreaOfEffect RPG_Combat_AreaOfEffect_Type::post_RPG_Combat_AreaOfEffect_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Combat_AreaOfEffect_Type::post_RPG_Combat_AreaOfEffect_Type"));
-
-  return RPG_Combat_AreaOfEffectHelper::stringToRPG_Combat_AreaOfEffect(post_string());
-}
-
 RPG_Combat_RangedEffectUnion_Type::RPG_Combat_RangedEffectUnion_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_RangedEffectUnion_Type::RPG_Combat_RangedEffectUnion_Type"));
 
   myCurrentRangedEffect.size = RPG_CHARACTER_SIZE_INVALID;
-  myCurrentRangedEffect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
+  myCurrentRangedEffect.areaofeffect = RPG_COMMON_AREAOFEFFECT_INVALID;
 }
 
 void RPG_Combat_RangedEffectUnion_Type::_characters(const ::xml_schema::ro_string& effectType_in)
@@ -49,12 +42,12 @@ void RPG_Combat_RangedEffectUnion_Type::_characters(const ::xml_schema::ro_strin
 
   // can be either:
   // - RPG_Character_Size --> "SIZE_xxx"
-  // - RPG_Combat_AreaOfEffect --> "AREA_xxx"
+  // - RPG_Common_AreaOfEffect --> "AREA_xxx"
   std::string type = effectType_in;
   if (type.find(ACE_TEXT_ALWAYS_CHAR("SIZE_")) == 0)
     myCurrentRangedEffect.size = RPG_Character_SizeHelper::stringToRPG_Character_Size(effectType_in);
   else
-    myCurrentRangedEffect.areaofeffect = RPG_Combat_AreaOfEffectHelper::stringToRPG_Combat_AreaOfEffect(effectType_in);
+    myCurrentRangedEffect.areaofeffect = RPG_Common_AreaOfEffectHelper::stringToRPG_Common_AreaOfEffect(effectType_in);
 }
 
 RPG_Combat_RangedEffectUnion RPG_Combat_RangedEffectUnion_Type::post_RPG_Combat_RangedEffectUnion_Type()
@@ -65,7 +58,7 @@ RPG_Combat_RangedEffectUnion RPG_Combat_RangedEffectUnion_Type::post_RPG_Combat_
 
   // clear structure
   myCurrentRangedEffect.size = RPG_CHARACTER_SIZE_INVALID;
-  myCurrentRangedEffect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
+  myCurrentRangedEffect.areaofeffect = RPG_COMMON_AREAOFEFFECT_INVALID;
 
   return result;
 }
@@ -76,7 +69,7 @@ RPG_Combat_RangedAttackProperties_Type::RPG_Combat_RangedAttackProperties_Type()
 
   myCurrentRangedProperties.maxRange = 0;
   myCurrentRangedProperties.increment = 0;
-  myCurrentRangedProperties.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
+  myCurrentRangedProperties.effect.areaofeffect = RPG_COMMON_AREAOFEFFECT_INVALID;
 }
 
 void RPG_Combat_RangedAttackProperties_Type::maxRange(unsigned char maxRange_in)
@@ -109,7 +102,7 @@ RPG_Combat_RangedAttackProperties RPG_Combat_RangedAttackProperties_Type::post_R
   // clear structure
   myCurrentRangedProperties.maxRange = 0;
   myCurrentRangedProperties.increment = 0;
-  myCurrentRangedProperties.effect.areaofeffect = RPG_COMBAT_AREAOFEFFECT_INVALID;
+  myCurrentRangedProperties.effect.areaofeffect = RPG_COMMON_AREAOFEFFECT_INVALID;
 
   return result;
 }
@@ -457,7 +450,7 @@ void RPG_Combat_DamageCounterMeasure_Type::check(const RPG_Combat_Check& check_i
   myCurrentCounterMeasure.check = check_in;
 }
 
-void RPG_Combat_DamageCounterMeasure_Type::spell(const RPG_Magic_Spell& spell_in)
+void RPG_Combat_DamageCounterMeasure_Type::spell(const RPG_Magic_SpellType& spell_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasure_Type::spell"));
 
@@ -653,11 +646,4 @@ RPG_Combat_Damage RPG_Combat_Damage_Type::post_RPG_Combat_Damage_Type()
   myCurrentDamage.elementsAreInclusive = true;
 
   return result;
-}
-
-RPG_Combat_ActionType RPG_Combat_ActionType_Type::post_RPG_Combat_ActionType_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Combat_ActionType_Type::post_RPG_Combat_ActionType_Type"));
-
-  return RPG_Combat_ActionTypeHelper::stringToRPG_Combat_ActionType(post_string());
 }

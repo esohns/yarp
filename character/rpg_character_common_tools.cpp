@@ -19,7 +19,6 @@
  ***************************************************************************/
 #include "rpg_character_common_tools.h"
 
-#include "rpg_character_incl.h"
 #include "rpg_character_race_common.h"
 #include "rpg_character_skills_common_tools.h"
 
@@ -43,7 +42,6 @@
 RPG_Character_GenderToStringTable_t RPG_Character_GenderHelper::myRPG_Character_GenderToStringTable;
 RPG_Character_RaceToStringTable_t RPG_Character_RaceHelper::myRPG_Character_RaceToStringTable;
 RPG_Character_MetaClassToStringTable_t RPG_Character_MetaClassHelper::myRPG_Character_MetaClassToStringTable;
-RPG_Character_SubClassToStringTable_t RPG_Character_SubClassHelper::myRPG_Character_SubClassToStringTable;
 RPG_Character_ConditionToStringTable_t RPG_Character_ConditionHelper::myRPG_Character_ConditionToStringTable;
 RPG_Character_AbilityToStringTable_t RPG_Character_AbilityHelper::myRPG_Character_AbilityToStringTable;
 RPG_Character_SizeToStringTable_t RPG_Character_SizeHelper::myRPG_Character_SizeToStringTable;
@@ -64,7 +62,6 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   RPG_Character_GenderHelper::init();
   RPG_Character_RaceHelper::init();
   RPG_Character_MetaClassHelper::init();
-  RPG_Character_SubClassHelper::init();
   RPG_Character_ConditionHelper::init();
   RPG_Character_AbilityHelper::init();
   RPG_Character_SizeHelper::init();
@@ -175,7 +172,7 @@ const std::string RPG_Character_Common_Tools::classesToString(const RPG_Characte
   {
     result += RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString((*iterator).metaClass);
     result += ACE_TEXT_ALWAYS_CHAR(" | ");
-    result += RPG_Character_SubClassHelper::RPG_Character_SubClassToString((*iterator).subClass);
+    result += RPG_Common_SubClassHelper::RPG_Common_SubClassToString((*iterator).subClass);
     result += ACE_TEXT_ALWAYS_CHAR("\n");
   } // end FOR
 
@@ -249,7 +246,7 @@ const bool RPG_Character_Common_Tools::getAttributeCheck(const unsigned char& at
   return (result >= attributeAbilityScore_in);
 }
 
-const RPG_Dice_DieType RPG_Character_Common_Tools::getHitDie(const RPG_Character_SubClass& subClass_in)
+const RPG_Dice_DieType RPG_Character_Common_Tools::getHitDie(const RPG_Common_SubClass& subClass_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getHitDie"));
 
@@ -291,7 +288,7 @@ const RPG_Dice_DieType RPG_Character_Common_Tools::getHitDie(const RPG_Character
       // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid subclass: \"%s\" --> check implementation !, aborting\n"),
-                 RPG_Character_SubClassHelper::RPG_Character_SubClassToString(subClass_in).c_str()));
+                 RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
 
       break;
     }
@@ -300,7 +297,7 @@ const RPG_Dice_DieType RPG_Character_Common_Tools::getHitDie(const RPG_Character
   return RPG_DICE_DIETYPE_INVALID;
 }
 
-const RPG_Character_BaseAttackBonus_t RPG_Character_Common_Tools::getBaseAttackBonus(const RPG_Character_SubClass& subClass_in,
+const RPG_Character_BaseAttackBonus_t RPG_Character_Common_Tools::getBaseAttackBonus(const RPG_Common_SubClass& subClass_in,
                                                                                      const unsigned char& classLevel_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getBaseAttackBonus"));
@@ -347,7 +344,7 @@ const RPG_Character_BaseAttackBonus_t RPG_Character_Common_Tools::getBaseAttackB
       // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid subclass: \"%s\" --> check implementation !, aborting\n"),
-                 RPG_Character_SubClassHelper::RPG_Character_SubClassToString(subClass_in).c_str()));
+                 RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
 
       break;
     }
@@ -522,12 +519,12 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   RPG_Character_Classes_t player_classes;
   RPG_Character_Class player_class;
   player_class.metaClass = RPG_CHARACTER_METACLASS_INVALID;
-  player_class.subClass = RPG_CHARACTER_SUBCLASS_INVALID;
+  player_class.subClass = RPG_COMMON_SUBCLASS_INVALID;
   result.clear();
-  RPG_Dice::generateRandomNumbers((RPG_CHARACTER_SUBCLASS_MAX - 1),
+  RPG_Dice::generateRandomNumbers((RPG_COMMON_SUBCLASS_MAX - 1),
                                   1,
                                   result);
-  player_class.subClass = ACE_static_cast(RPG_Character_SubClass, result.front());
+  player_class.subClass = ACE_static_cast(RPG_Common_SubClass, result.front());
   player_class.metaClass = RPG_Character_Class_Common_Tools::subClassToMetaClass(player_class.subClass);
   player_classes.push_back(player_class);
 
@@ -784,7 +781,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
     }
     default:
     {
-      std::string subClass_string = RPG_Character_SubClassHelper::RPG_Character_SubClassToString(player_class.subClass);
+      std::string subClass_string = RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_class.subClass);
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid player sub-class \"%s\", continuing\n"),
                  subClass_string.c_str()));

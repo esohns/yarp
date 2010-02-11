@@ -102,7 +102,7 @@ class RPG_Monster_SpecialBaseProperties_Type
 //     virtual void pre();
     virtual void abilityClass(const RPG_Magic_AbilityClass&);
     virtual void type(const RPG_Monster_SpecialPropertyTypeUnion&);
-    virtual void actionType(const RPG_Combat_ActionType&);
+    virtual void actionType(const RPG_Common_ActionType&);
     virtual void usage(const RPG_Common_Usage&);
     virtual RPG_Monster_SpecialBaseProperties post_RPG_Monster_SpecialBaseProperties_Type();
 
@@ -152,7 +152,7 @@ class RPG_Monster_SpecialDefenseProperties_Type
 //     virtual void pre();
     virtual void abilityClass(const RPG_Magic_AbilityClass&);
     virtual void type(const RPG_Monster_SpecialPropertyTypeUnion&);
-    virtual void actionType(const RPG_Combat_ActionType&);
+    virtual void actionType(const RPG_Common_ActionType&);
     virtual void usage(const RPG_Common_Usage&);
     virtual RPG_Monster_SpecialBaseProperties post_RPG_Monster_SpecialBaseProperties_Type();
     // ------------------------------------------------------------
@@ -197,7 +197,7 @@ class RPG_Monster_AttackAction_Type
   virtual void attackBonus(signed char);
   virtual void attackForm(const RPG_Combat_AttackForm&);
   virtual void damage(const RPG_Combat_Damage&);
-  virtual void effect(const RPG_Magic_SpellProperties&);
+  virtual void effect(const RPG_Magic_SpellLikeProperties&);
   virtual void numAttacksPerRound(unsigned char);
   virtual void ranged(const RPG_Combat_RangedAttackProperties&);
   virtual void trigger(const RPG_Character_Ability&);
@@ -270,7 +270,7 @@ class RPG_Monster_SpecialAttackProperties_Type
 //     virtual void pre();
     virtual void abilityClass(const RPG_Magic_AbilityClass&);
     virtual void type(const RPG_Monster_SpecialPropertyTypeUnion&);
-    virtual void actionType(const RPG_Combat_ActionType&);
+    virtual void actionType(const RPG_Common_ActionType&);
     virtual void usage(const RPG_Common_Usage&);
     virtual RPG_Monster_SpecialBaseProperties post_RPG_Monster_SpecialBaseProperties_Type();
     // ------------------------------------------------------------
@@ -325,13 +325,13 @@ class RPG_Monster_SpecialAbilityProperties_Type
 //     virtual void pre();
     virtual void abilityClass(const RPG_Magic_AbilityClass&);
     virtual void type(const RPG_Monster_SpecialPropertyTypeUnion&);
-    virtual void actionType(const RPG_Combat_ActionType&);
+    virtual void actionType(const RPG_Common_ActionType&);
     virtual void usage(const RPG_Common_Usage&);
     virtual RPG_Monster_SpecialBaseProperties post_RPG_Monster_SpecialBaseProperties_Type();
     // ------------------------------------------------------------
     virtual void preCondition(const RPG_Monster_SpecialAbilityPreCondition&);
     virtual void summon(const RPG_Monster_SummonMonster&);
-    virtual void spell(const RPG_Magic_SpellProperties&);
+    virtual void spell(const RPG_Magic_SpellLikeProperties&);
     virtual void ranged(const RPG_Combat_RangedAttackProperties&);
     virtual RPG_Monster_SpecialAbilityProperties post_RPG_Monster_SpecialAbilityProperties_Type();
 

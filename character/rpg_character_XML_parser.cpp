@@ -44,19 +44,12 @@ RPG_Character_MetaClass RPG_Character_MetaClass_Type::post_RPG_Character_MetaCla
   return RPG_Character_MetaClassHelper::stringToRPG_Character_MetaClass(post_string());
 }
 
-RPG_Character_SubClass RPG_Character_SubClass_Type::post_RPG_Character_SubClass_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_SubClass_Type::post_RPG_Character_SubClass_Type"));
-
-  return RPG_Character_SubClassHelper::stringToRPG_Character_SubClass(post_string());
-}
-
 RPG_Character_Class_Type::RPG_Character_Class_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Class_Type::RPG_Character_Class_Type"));
 
   myCurrentClass.metaClass = RPG_CHARACTER_METACLASS_INVALID;
-  myCurrentClass.subClass = RPG_CHARACTER_SUBCLASS_INVALID;
+  myCurrentClass.subClass = RPG_COMMON_SUBCLASS_INVALID;
 }
 
 void RPG_Character_Class_Type::metaClass(const RPG_Character_MetaClass& metaClass_in)
@@ -66,7 +59,7 @@ void RPG_Character_Class_Type::metaClass(const RPG_Character_MetaClass& metaClas
   myCurrentClass.metaClass = metaClass_in;
 }
 
-void RPG_Character_Class_Type::subClass(const RPG_Character_SubClass& subClass_in)
+void RPG_Character_Class_Type::subClass(const RPG_Common_SubClass& subClass_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Class_Type::subClass"));
 
@@ -81,7 +74,7 @@ RPG_Character_Class RPG_Character_Class_Type::post_RPG_Character_Class_Type()
 
   // clear structure
   myCurrentClass.metaClass = RPG_CHARACTER_METACLASS_INVALID;
-  myCurrentClass.subClass = RPG_CHARACTER_SUBCLASS_INVALID;
+  myCurrentClass.subClass = RPG_COMMON_SUBCLASS_INVALID;
 
   return result;
 }

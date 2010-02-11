@@ -26,13 +26,14 @@
 #include <rpg_dice_dietype.h>
 #include <rpg_dice_common_tools.h>
 
+#include <rpg_common_subclass.h>
+
 #include <rpg_item_weapon.h>
 #include <rpg_item_armor.h>
 #include <rpg_item_common_tools.h>
 #include <rpg_item_dictionary.h>
 
 #include <rpg_character_player.h>
-#include <rpg_character_subclass.h>
 #include <rpg_character_alignmentcivic.h>
 #include <rpg_character_alignmentethic.h>
 #include <rpg_character_alignment.h>
@@ -203,7 +204,7 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
   return true;
 }
 
-const bool print_feats_table(const RPG_Character_SubClass& subClass_in,
+const bool print_feats_table(const RPG_Common_SubClass& subClass_in,
                              const RPG_Character_Attributes& attributes_in,
                              const RPG_Character_Skills_t& skills_in,
                              const RPG_Character_Abilities_t& abilities_in,
@@ -573,7 +574,7 @@ void do_work(const std::string filename_in)
                                                     initialSkillPoints);
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("initial skill points for subClass \"%s\" (INT modifier: %d) is: %d...\n"),
-             RPG_Character_SubClassHelper::RPG_Character_SubClassToString(player_class.subClass).c_str(),
+             RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_class.subClass).c_str(),
              INTmodifier,
              initialSkillPoints));
 
@@ -753,7 +754,7 @@ void do_work(const std::string filename_in)
     }
     default:
     {
-      std::string subClass_string = RPG_Character_SubClassHelper::RPG_Character_SubClassToString(player_class.subClass);
+      std::string subClass_string = RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_class.subClass);
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid class \"%s\", aborting\n"),
                  subClass_string.c_str()));

@@ -54,15 +54,6 @@ class RPG_Character_MetaClass_Type
   virtual RPG_Character_MetaClass post_RPG_Character_MetaClass_Type();
 };
 
-class RPG_Character_SubClass_Type
- : public RPG_Character_SubClass_Type_pskel,
-   public ::xml_schema::string_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Character_SubClass post_RPG_Character_SubClass_Type();
-};
-
 class RPG_Character_Class_Type
  : public RPG_Character_Class_Type_pskel
 {
@@ -71,7 +62,7 @@ class RPG_Character_Class_Type
 
 //   virtual void pre();
   virtual void metaClass(const RPG_Character_MetaClass&);
-  virtual void subClass(const RPG_Character_SubClass&);
+  virtual void subClass(const RPG_Common_SubClass&);
   virtual RPG_Character_Class post_RPG_Character_Class_Type();
 
  private:

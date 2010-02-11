@@ -25,7 +25,6 @@
 #include "rpg_character_gender.h"
 #include "rpg_character_race.h"
 #include "rpg_character_metaclass.h"
-#include "rpg_character_subclass.h"
 #include "rpg_character_class.h"
 #include "rpg_character_condition.h"
 #include "rpg_character_ability.h"

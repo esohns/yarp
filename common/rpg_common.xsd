@@ -21,6 +21,28 @@
     </xsd:documentation>
   </xsd:annotation>
 
+  <xsd:simpleType name="RPG_Common_SubClass_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SUBCLASS_NONE"/>
+      <xsd:enumeration value="SUBCLASS_FIGHTER"/>
+      <xsd:enumeration value="SUBCLASS_PALADIN"/>
+      <xsd:enumeration value="SUBCLASS_RANGER"/>
+      <xsd:enumeration value="SUBCLASS_BARBARIAN"/>
+      <xsd:enumeration value="SUBCLASS_WARLORD"/>
+      <xsd:enumeration value="SUBCLASS_WIZARD"/>
+      <xsd:enumeration value="SUBCLASS_SORCERER"/>
+      <xsd:enumeration value="SUBCLASS_WARLOCK"/>
+      <xsd:enumeration value="SUBCLASS_CLERIC"/>
+      <xsd:enumeration value="SUBCLASS_DRUID"/>
+      <xsd:enumeration value="SUBCLASS_MONK"/>
+      <xsd:enumeration value="SUBCLASS_AVENGER"/>
+      <xsd:enumeration value="SUBCLASS_INVOKER"/>
+      <xsd:enumeration value="SUBCLASS_SHAMAN"/>
+      <xsd:enumeration value="SUBCLASS_THIEF"/>
+      <xsd:enumeration value="SUBCLASS_BARD"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:simpleType name="RPG_Common_Attribute_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ATTRIBUTE_STRENGTH"/>
@@ -42,6 +64,25 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="RPG_Common_ActionType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ACTION_STANDARD"/>
+      <xsd:enumeration value="ACTION_MOVE"/>
+      <xsd:enumeration value="ACTION_FULLROUND"/>
+      <xsd:enumeration value="ACTION_FREE"/>
+      <xsd:enumeration value="ACTION_NOTANACTION"/>
+      <xsd:enumeration value="ACTION_RESTRICTED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_AreaOfEffect_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AREA_LINE"/>
+      <xsd:enumeration value="AREA_CUBE"/>
+      <xsd:enumeration value="AREA_CONE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:simpleType name="RPG_Common_EffectType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="EFFECT_IMMEDIATE"/>
@@ -54,6 +95,7 @@
   <xsd:simpleType name="RPG_Common_CheckType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="CHECK_GRAPPLE"/>
+      <xsd:enumeration value="CHECK_CASTER_LEVEL"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -72,9 +114,10 @@
 
   <xsd:simpleType name="RPG_Common_SaveReductionType_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SAVE_NEGATES"/>
       <xsd:enumeration value="SAVE_PARTIAL"/>
       <xsd:enumeration value="SAVE_HALF"/>
-      <xsd:enumeration value="SAVE_FULL"/>
+      <xsd:enumeration value="SAVE_NONE"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -84,7 +127,7 @@
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
-    <xsd:attribute name="reduction" type="RPG_Common_SaveReductionType_Type" use="optional" default="SAVE_FULL"/>
+    <xsd:attribute name="reduction" type="RPG_Common_SaveReductionType_Type" use="optional" default="SAVE_NEGATES"/>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Common_Usage_Type">

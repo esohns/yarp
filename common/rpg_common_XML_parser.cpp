@@ -23,6 +23,13 @@
 
 #include <ace/Log_Msg.h>
 
+RPG_Common_SubClass RPG_Common_SubClass_Type::post_RPG_Common_SubClass_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_SubClass_Type::post_RPG_Common_SubClass_Type"));
+
+  return RPG_Common_SubClassHelper::stringToRPG_Common_SubClass(post_string());
+}
+
 RPG_Common_Attribute RPG_Common_Attribute_Type::post_RPG_Common_Attribute_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_Attribute_Type::post_RPG_Common_Attribute_Type"));
@@ -35,6 +42,20 @@ RPG_Common_PhysicalDamageType RPG_Common_PhysicalDamageType_Type::post_RPG_Commo
   ACE_TRACE(ACE_TEXT("RPG_Common_PhysicalDamageType_Type::post_RPG_Common_PhysicalDamageType_Type"));
 
   return RPG_Common_PhysicalDamageTypeHelper::stringToRPG_Common_PhysicalDamageType(post_string());
+}
+
+RPG_Common_ActionType RPG_Common_ActionType_Type::post_RPG_Common_ActionType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_ActionType_Type::post_RPG_Common_ActionType_Type"));
+
+  return RPG_Common_ActionTypeHelper::stringToRPG_Common_ActionType(post_string());
+}
+
+RPG_Common_AreaOfEffect RPG_Common_AreaOfEffect_Type::post_RPG_Common_AreaOfEffect_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_AreaOfEffect_Type::post_RPG_Common_AreaOfEffect_Type"));
+
+  return RPG_Common_AreaOfEffectHelper::stringToRPG_Common_AreaOfEffect(post_string());
 }
 
 RPG_Common_EffectType RPG_Common_EffectType_Type::post_RPG_Common_EffectType_Type()

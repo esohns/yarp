@@ -139,10 +139,10 @@ const std::string RPG_Monster_Common_Tools::attackActionToString(const RPG_Monst
   result += ACE_TEXT_ALWAYS_CHAR("weapon: ");
   result += RPG_Monster_Common_Tools::weaponTypeToString(attackAction_in.weapon);
   result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += ACE_TEXT_ALWAYS_CHAR("attackBonus: ");
+  result += ACE_TEXT_ALWAYS_CHAR("attackBonus(es): ");
   std::stringstream str;
-  for (std::vector<char>::const_iterator iterator = attackAction_in.attackBonus.begin();
-       iterator != attackAction_in.attackBonus.end();
+  for (std::vector<char>::const_iterator iterator = attackAction_in.attackBonuses.begin();
+       iterator != attackAction_in.attackBonuses.end();
        iterator++)
   {
     str.str(ACE_TEXT_ALWAYS_CHAR(""));
@@ -150,7 +150,7 @@ const std::string RPG_Monster_Common_Tools::attackActionToString(const RPG_Monst
     result += str.str();
     result += ACE_TEXT_ALWAYS_CHAR("/");
   } // end FOR
-  if (!attackAction_in.attackBonus.empty())
+  if (!attackAction_in.attackBonuses.empty())
   {
     result.erase(--(result.end()));
   } // end IF

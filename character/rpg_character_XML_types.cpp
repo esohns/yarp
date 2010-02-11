@@ -48,14 +48,14 @@ metaClass_parser (::RPG_Character_MetaClass_Type_pskel& p)
 }
 
 void RPG_Character_Class_Type_pskel::
-subClass_parser (::RPG_Character_SubClass_Type_pskel& p)
+subClass_parser (::RPG_Common_SubClass_Type_pskel& p)
 {
   this->subClass_parser_ = &p;
 }
 
 void RPG_Character_Class_Type_pskel::
 parsers (::RPG_Character_MetaClass_Type_pskel& metaClass,
-         ::RPG_Character_SubClass_Type_pskel& subClass)
+         ::RPG_Common_SubClass_Type_pskel& subClass)
 {
   this->metaClass_parser_ = &metaClass;
   this->subClass_parser_ = &subClass;
@@ -305,7 +305,7 @@ metaClass (const RPG_Character_MetaClass&)
 }
 
 void RPG_Character_Class_Type_pskel::
-subClass (const RPG_Character_SubClass&)
+subClass (const RPG_Common_SubClass&)
 {
 }
 
@@ -360,7 +360,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "subClass" && ns == "urn:rpg")
   {
     if (this->subClass_parser_)
-      this->subClass (this->subClass_parser_->post_RPG_Character_SubClass_Type ());
+      this->subClass (this->subClass_parser_->post_RPG_Common_SubClass_Type ());
 
     return true;
   }

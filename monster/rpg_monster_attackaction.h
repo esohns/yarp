@@ -24,10 +24,10 @@
 struct RPG_Monster_AttackAction
 {
   RPG_Monster_WeaponTypeUnion weapon;
-  std::vector<char> attackBonus;
+  std::vector<char> attackBonuses;
   std::vector<RPG_Combat_AttackForm> attackForms;
   RPG_Combat_Damage damage;
-  RPG_Magic_SpellProperties effect;
+  RPG_Magic_SpellLikeProperties effect;
   unsigned char numAttacksPerRound;
   RPG_Combat_RangedAttackProperties ranged;
   std::vector<RPG_Character_Ability> triggers;

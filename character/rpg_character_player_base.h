@@ -20,11 +20,12 @@
 #ifndef RPG_CHARACTER_PLAYER_BASE_H
 #define RPG_CHARACTER_PLAYER_BASE_H
 
+#include <rpg_common_subclass.h>
+
 #include "rpg_character_base.h"
 #include "rpg_character_gender.h"
 #include "rpg_character_race.h"
 #include "rpg_character_metaclass.h"
-#include "rpg_character_subclass.h"
 #include "rpg_character_class.h"
 #include "rpg_character_offhand.h"
 #include "rpg_character_alignmentcivic.h"
@@ -60,7 +61,7 @@ class RPG_Character_Player_Base
 
   const unsigned int getExperience() const;
   // compute dynamically from class/XP
-  const unsigned char getLevel(const RPG_Character_SubClass& = SUBCLASS_NONE) const; // subclass
+  const unsigned char getLevel(const RPG_Common_SubClass& = SUBCLASS_NONE) const; // subclass
 
   const RPG_Character_Equipment* getEquipment() const;
 

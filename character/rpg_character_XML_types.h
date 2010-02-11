@@ -52,7 +52,6 @@
 class RPG_Character_Gender_Type_pskel;
 class RPG_Character_Race_Type_pskel;
 class RPG_Character_MetaClass_Type_pskel;
-class RPG_Character_SubClass_Type_pskel;
 class RPG_Character_Class_Type_pskel;
 class RPG_Character_Condition_Type_pskel;
 class RPG_Character_Ability_Type_pskel;
@@ -127,18 +126,6 @@ class RPG_Character_MetaClass_Type_pskel: public virtual ::xml_schema::string_ps
   post_RPG_Character_MetaClass_Type () = 0;
 };
 
-class RPG_Character_SubClass_Type_pskel: public virtual ::xml_schema::string_pskel
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual RPG_Character_SubClass
-  post_RPG_Character_SubClass_Type () = 0;
-};
-
 class RPG_Character_Class_Type_pskel: public ::xml_schema::complex_content
 {
   public:
@@ -151,7 +138,7 @@ class RPG_Character_Class_Type_pskel: public ::xml_schema::complex_content
   metaClass (const RPG_Character_MetaClass&);
 
   virtual void
-  subClass (const RPG_Character_SubClass&);
+  subClass (const RPG_Common_SubClass&);
 
   virtual RPG_Character_Class
   post_RPG_Character_Class_Type () = 0;
@@ -162,11 +149,11 @@ class RPG_Character_Class_Type_pskel: public ::xml_schema::complex_content
   metaClass_parser (::RPG_Character_MetaClass_Type_pskel&);
 
   void
-  subClass_parser (::RPG_Character_SubClass_Type_pskel&);
+  subClass_parser (::RPG_Common_SubClass_Type_pskel&);
 
   void
   parsers (::RPG_Character_MetaClass_Type_pskel& /* metaClass */,
-           ::RPG_Character_SubClass_Type_pskel& /* subClass */);
+           ::RPG_Common_SubClass_Type_pskel& /* subClass */);
 
   // Constructor.
   //
@@ -186,7 +173,7 @@ class RPG_Character_Class_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::RPG_Character_MetaClass_Type_pskel* metaClass_parser_;
-  ::RPG_Character_SubClass_Type_pskel* subClass_parser_;
+  ::RPG_Common_SubClass_Type_pskel* subClass_parser_;
 };
 
 class RPG_Character_Condition_Type_pskel: public virtual ::xml_schema::string_pskel

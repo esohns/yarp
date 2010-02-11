@@ -25,8 +25,11 @@
 #include <ace/Log_Msg.h>
 
 // init statics
+RPG_Common_SubClassToStringTable_t RPG_Common_SubClassHelper::myRPG_Common_SubClassToStringTable;
 RPG_Common_AttributeToStringTable_t RPG_Common_AttributeHelper::myRPG_Common_AttributeToStringTable;
 RPG_Common_PhysicalDamageTypeToStringTable_t RPG_Common_PhysicalDamageTypeHelper::myRPG_Common_PhysicalDamageTypeToStringTable;
+RPG_Common_ActionTypeToStringTable_t RPG_Common_ActionTypeHelper::myRPG_Common_ActionTypeToStringTable;
+RPG_Common_AreaOfEffectToStringTable_t RPG_Common_AreaOfEffectHelper::myRPG_Common_AreaOfEffectToStringTable;
 RPG_Common_EffectTypeToStringTable_t RPG_Common_EffectTypeHelper::myRPG_Common_EffectTypeToStringTable;
 RPG_Common_CheckTypeToStringTable_t RPG_Common_CheckTypeHelper::myRPG_Common_CheckTypeToStringTable;
 RPG_Common_SavingThrowToStringTable_t RPG_Common_SavingThrowHelper::myRPG_Common_SavingThrowToStringTable;
@@ -37,8 +40,11 @@ void RPG_Common_Tools::initStringConversionTables()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_Tools::initStringConversionTables"));
 
+  RPG_Common_SubClassHelper::init();
   RPG_Common_AttributeHelper::init();
   RPG_Common_PhysicalDamageTypeHelper::init();
+  RPG_Common_ActionTypeHelper::init();
+  RPG_Common_AreaOfEffectHelper::init();
   RPG_Common_EffectTypeHelper::init();
   RPG_Common_CheckTypeHelper::init();
   RPG_Common_SavingThrowHelper::init();

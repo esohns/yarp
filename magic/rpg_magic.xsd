@@ -26,6 +26,7 @@
 
   <xsd:simpleType name="RPG_Magic_School_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SCHOOL_NONE"/>
       <xsd:enumeration value="SCHOOL_ABJURATION"/>
       <xsd:enumeration value="SCHOOL_CONJURATION"/>
       <xsd:enumeration value="SCHOOL_DIVINATION"/>
@@ -37,16 +38,80 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="RPG_Magic_Domain_Type">
+  <xsd:simpleType name="RPG_Magic_SubSchool_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="DOMAIN_GOOD"/>
-      <xsd:enumeration value="DOMAIN_EVIL"/>
-      <xsd:enumeration value="DOMAIN_WAR"/>
-      <xsd:enumeration value="DOMAIN_PEACE"/>
+      <!-- SCHOOL_CONJURATION -->
+      <xsd:enumeration value="SUBSCHOOL_SUMMONING"/>
+      <xsd:enumeration value="SUBSCHOOL_CALLING"/>
+      <xsd:enumeration value="SUBSCHOOL_HEALING"/>
+      <xsd:enumeration value="SUBSCHOOL_TELEPORTATION"/>
+      <xsd:enumeration value="SUBSCHOOL_CREATION"/>
+      <!-- SCHOOL_DIVINATION -->
+      <xsd:enumeration value="SUBSCHOOL_SCRYING"/>
+      <!-- SCHOOL_ENCHANTMENT -->
+      <xsd:enumeration value="SUBSCHOOL_CHARM"/>
+      <xsd:enumeration value="SUBSCHOOL_COMPULSION"/>
+      <!-- SCHOOL_ILLUSION -->
+      <xsd:enumeration value="SUBSCHOOL_FIGMENT"/>
+      <xsd:enumeration value="SUBSCHOOL_GLAMER"/>
+      <xsd:enumeration value="SUBSCHOOL_PATTERN"/>
+      <xsd:enumeration value="SUBSCHOOL_PHANTASM"/>
+      <xsd:enumeration value="SUBSCHOOL_SHADOW"/>
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="RPG_Magic_Spell_Type">
+  <xsd:simpleType name="RPG_Magic_Descriptor_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DESCRIPTOR_ACID"/>
+      <xsd:enumeration value="DESCRIPTOR_AIR"/>
+      <xsd:enumeration value="DESCRIPTOR_CHAOTIC"/>
+      <xsd:enumeration value="DESCRIPTOR_COLD"/>
+      <xsd:enumeration value="DESCRIPTOR_DARKNESS"/>
+      <xsd:enumeration value="DESCRIPTOR_DEATH"/>
+      <xsd:enumeration value="DESCRIPTOR_EARTH"/>
+      <xsd:enumeration value="DESCRIPTOR_ELECTRICITY"/>
+      <xsd:enumeration value="DESCRIPTOR_EVIL"/>
+      <xsd:enumeration value="DESCRIPTOR_FEAR"/>
+      <xsd:enumeration value="DESCRIPTOR_FIRE"/>
+      <xsd:enumeration value="DESCRIPTOR_FORCE"/>
+      <xsd:enumeration value="DESCRIPTOR_GOOD"/>
+      <xsd:enumeration value="DESCRIPTOR_LANGUAGE_DEPENDENT"/>
+      <xsd:enumeration value="DESCRIPTOR_LAWFUL"/>
+      <xsd:enumeration value="DESCRIPTOR_LIGHT"/>
+      <xsd:enumeration value="DESCRIPTOR_MIND_AFFECTING"/>
+      <xsd:enumeration value="DESCRIPTOR_SONIC"/>
+      <xsd:enumeration value="DESCRIPTOR_WATER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Magic_Domain_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DOMAIN_AIR"/>
+      <xsd:enumeration value="DOMAIN_ANIMAL"/>
+      <xsd:enumeration value="DOMAIN_CHAOS"/>
+      <xsd:enumeration value="DOMAIN_DEATH"/>
+      <xsd:enumeration value="DOMAIN_DESTRUCTION"/>
+      <xsd:enumeration value="DOMAIN_EARTH"/>
+      <xsd:enumeration value="DOMAIN_EVIL"/>
+      <xsd:enumeration value="DOMAIN_FIRE"/>
+      <xsd:enumeration value="DOMAIN_GOOD"/>
+      <xsd:enumeration value="DOMAIN_HEALING"/>
+      <xsd:enumeration value="DOMAIN_KNOWLEDGE"/>
+      <xsd:enumeration value="DOMAIN_LAW"/>
+      <xsd:enumeration value="DOMAIN_LUCK"/>
+      <xsd:enumeration value="DOMAIN_MAGIC"/>
+      <xsd:enumeration value="DOMAIN_PLANT"/>
+      <xsd:enumeration value="DOMAIN_PROTECTION"/>
+      <xsd:enumeration value="DOMAIN_STRENGTH"/>
+      <xsd:enumeration value="DOMAIN_SUN"/>
+      <xsd:enumeration value="DOMAIN_TRAVEL"/>
+      <xsd:enumeration value="DOMAIN_TRICKERY"/>
+      <xsd:enumeration value="DOMAIN_WAR"/>
+      <xsd:enumeration value="DOMAIN_WATER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Magic_SpellType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SPELL_ALIGN_WEAPON"/>
       <xsd:enumeration value="SPELL_BLADE_BARRIER"/>
@@ -134,12 +199,75 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:complexType name="RPG_Magic_SpellProperties_Type">
+  <xsd:complexType name="RPG_Magic_Spell_Type_Type">
     <xsd:sequence>
-      <xsd:element name="type" type="RPG_Magic_Spell_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="school" type="RPG_Magic_School_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="subSchool" type="RPG_Magic_SubSchool_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="descriptor" type="RPG_Magic_Descriptor_Type" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Magic_Spell_Effect_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="EFFECT_PERSONAL"/>
+      <xsd:enumeration value="EFFECT_TOUCH"/>
+      <xsd:enumeration value="EFFECT_CLOSE"/>
+      <xsd:enumeration value="EFFECT_MEDIUM"/>
+      <xsd:enumeration value="EFFECT_LONG"/>
+      <xsd:enumeration value="EFFECT_UNLIMITED"/>
+      <xsd:enumeration value="EFFECT_RANGED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Magic_Spell_Range_Type">
+    <xsd:sequence>
+      <xsd:element name="maxRange" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="increment" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="area" type="RPG_Common_AreaOfEffect_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="effect" type="RPG_Magic_Spell_Effect_Type" use="optional" default="EFFECT_PERSONAL"/>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Magic_Spell_Duration_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DURATION_TIMED"/>
+      <xsd:enumeration value="DURATION_INSTANTANEOUS"/>
+      <xsd:enumeration value="DURATION_PERMANENT"/>
+      <xsd:enumeration value="DURATION_CONCENTRATION"/>
+      <xsd:enumeration value="DURATION_DISCHARGE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Magic_Spell_DurationProperties_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Magic_Spell_Duration_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="duration" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="period" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="dismissible" type="xsd:boolean" use="optional" default="false"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Magic_Spell_Properties_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Magic_Spell_Type_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="name" type="RPG_Magic_SpellType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="level" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="casterClass" type="RPG_Common_SubClass_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="domain" type="RPG_Magic_Domain_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="domainLevel" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="cost" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="action" type="RPG_Common_ActionType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="range" type="RPG_Magic_Spell_Range_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="duration" type="RPG_Magic_Spell_DurationProperties_Type" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Magic_SpellLikeProperties_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Magic_SpellType_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="casterLevel" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="duration" type="RPG_Common_Duration_Type" minOccurs="0" maxOccurs="1"/>
-<!--      <xsd:element name="area" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>-->
+      <!--      <xsd:element name="area" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>-->
       <xsd:element name="save" type="RPG_Common_SavingThrowCheck_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>

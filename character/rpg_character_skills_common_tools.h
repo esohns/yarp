@@ -20,7 +20,8 @@
 #ifndef RPG_CHARACTER_SKILLS_COMMON_TOOLS_H
 #define RPG_CHARACTER_SKILLS_COMMON_TOOLS_H
 
-#include "rpg_character_subclass.h"
+#include <rpg_common_subclass.h>
+
 #include "rpg_character_skill.h"
 #include "rpg_character_feat.h"
 #include "rpg_character_race.h"
@@ -44,19 +45,19 @@ class RPG_Character_Skills_Common_Tools
   // init static data
   static void init();
 
-  static const bool isClassSkill(const RPG_Character_SubClass&, // subclass
-                                 const RPG_Character_Skill&);   // skill
-  static const unsigned int getSkillPoints(const RPG_Character_SubClass&, // subclass
-                                           const short int&,              // INT modifier
-                                           unsigned int&);                // initial points (level 1)
-  static const unsigned int getNumFeatsAbilities(const RPG_Character_Race&,     // race
-                                                 const RPG_Character_SubClass&, // subclass
-                                                 const unsigned char&,          // current level
-                                                 RPG_Character_Feats_t&,        // base feats
-                                                 unsigned int&,                 // initial feats (level 1)
-                                                 RPG_Character_Abilities_t&);   // base abilities
+  static const bool isClassSkill(const RPG_Common_SubClass&,  // subclass
+                                 const RPG_Character_Skill&); // skill
+  static const unsigned int getSkillPoints(const RPG_Common_SubClass&, // subclass
+                                           const short int&,           // INT modifier
+                                           unsigned int&);             // initial points (level 1)
+  static const unsigned int getNumFeatsAbilities(const RPG_Character_Race&,   // race
+                                                 const RPG_Common_SubClass&,  // subclass
+                                                 const unsigned char&,        // current level
+                                                 RPG_Character_Feats_t&,      // base feats
+                                                 unsigned int&,               // initial feats (level 1)
+                                                 RPG_Character_Abilities_t&); // base abilities
   static const bool meetsFeatPrerequisites(const RPG_Character_Feat&,         // feat
-                                           const RPG_Character_SubClass&,     // subclass
+                                           const RPG_Common_SubClass&,        // subclass
                                            const unsigned char&,              // current level
                                            const RPG_Character_Attributes&,   // base attributes
                                            const RPG_Character_Skills_t&,     // skills
@@ -80,7 +81,7 @@ class RPG_Character_Skills_Common_Tools
   // some useful types
   typedef std::set<RPG_Character_Skill> RPG_Character_ClassSkillsSet_t;
   typedef RPG_Character_ClassSkillsSet_t::const_iterator RPG_Character_ClassSkillsSetIterator_t;
-  typedef std::map<RPG_Character_SubClass, RPG_Character_ClassSkillsSet_t> RPG_Character_ClassSkillsTable_t;
+  typedef std::map<RPG_Common_SubClass, RPG_Character_ClassSkillsSet_t> RPG_Character_ClassSkillsTable_t;
   typedef RPG_Character_ClassSkillsTable_t::const_iterator RPG_Character_ClassSkillsTableIterator_t;
   typedef std::vector<RPG_Character_Feat_Prerequisite> RPG_Character_Feat_Prerequisites_t;
   typedef RPG_Character_Feat_Prerequisites_t::const_iterator RPG_Character_Feat_PrerequisitesIterator_t;

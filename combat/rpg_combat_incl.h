@@ -23,7 +23,6 @@
 
 #include <vector>
 #include "rpg_combat_attackform.h"
-#include "rpg_combat_areaofeffect.h"
 #include "rpg_combat_rangedeffectunion.h"
 #include "rpg_combat_rangedattackproperties.h"
 #include "rpg_combat_attacksituation.h"
@@ -41,6 +40,5 @@
 #include "rpg_combat_otherdamage.h"
 #include "rpg_combat_damageelement.h"
 #include "rpg_combat_damage.h"
-#include "rpg_combat_actiontype.h"
 
 #endif

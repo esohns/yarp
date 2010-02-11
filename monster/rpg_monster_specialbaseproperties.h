@@ -25,7 +25,7 @@ struct RPG_Monster_SpecialBaseProperties
 {
   RPG_Magic_AbilityClass abilityClass;
   RPG_Monster_SpecialPropertyTypeUnion type;
-  RPG_Combat_ActionType actionType;
+  RPG_Common_ActionType actionType;
   RPG_Common_Usage usage;
 };
 

@@ -49,8 +49,11 @@
 
 // Forward declarations
 //
+class RPG_Common_SubClass_Type_pskel;
 class RPG_Common_Attribute_Type_pskel;
 class RPG_Common_PhysicalDamageType_Type_pskel;
+class RPG_Common_ActionType_Type_pskel;
+class RPG_Common_AreaOfEffect_Type_pskel;
 class RPG_Common_EffectType_Type_pskel;
 class RPG_Common_CheckType_Type_pskel;
 class RPG_Common_SavingThrow_Type_pskel;
@@ -76,6 +79,18 @@ class RPG_Common_Camp_Type_pskel;
 
 #include "rpg_dice_XML_types.h"
 
+class RPG_Common_SubClass_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Common_SubClass
+  post_RPG_Common_SubClass_Type () = 0;
+};
+
 class RPG_Common_Attribute_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
@@ -98,6 +113,30 @@ class RPG_Common_PhysicalDamageType_Type_pskel: public virtual ::xml_schema::str
 
   virtual RPG_Common_PhysicalDamageType
   post_RPG_Common_PhysicalDamageType_Type () = 0;
+};
+
+class RPG_Common_ActionType_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Common_ActionType
+  post_RPG_Common_ActionType_Type () = 0;
+};
+
+class RPG_Common_AreaOfEffect_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Common_AreaOfEffect
+  post_RPG_Common_AreaOfEffect_Type () = 0;
 };
 
 class RPG_Common_EffectType_Type_pskel: public virtual ::xml_schema::string_pskel

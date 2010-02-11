@@ -21,8 +21,11 @@
 #ifndef RPG_COMMON_INCL_H
 #define RPG_COMMON_INCL_H
 
+#include "rpg_common_subclass.h"
 #include "rpg_common_attribute.h"
 #include "rpg_common_physicaldamagetype.h"
+#include "rpg_common_actiontype.h"
+#include "rpg_common_areaofeffect.h"
 #include "rpg_common_effecttype.h"
 #include "rpg_common_checktype.h"
 #include "rpg_common_savingthrow.h"

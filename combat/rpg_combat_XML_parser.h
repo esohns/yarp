@@ -36,15 +36,6 @@ class RPG_Combat_AttackForm_Type
   virtual RPG_Combat_AttackForm post_RPG_Combat_AttackForm_Type();
 };
 
-class RPG_Combat_AreaOfEffect_Type
- : public RPG_Combat_AreaOfEffect_Type_pskel,
-   public ::xml_schema::string_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Combat_AreaOfEffect post_RPG_Combat_AreaOfEffect_Type();
-};
-
 class RPG_Combat_RangedEffectUnion_Type
  : public RPG_Combat_RangedEffectUnion_Type_pskel
 {
@@ -225,7 +216,7 @@ class RPG_Combat_DamageCounterMeasure_Type
 //    virtual void pre();
    virtual void type(const RPG_Combat_DamageCounterMeasureType&);
    virtual void check(const RPG_Combat_Check&);
-   virtual void spell(const RPG_Magic_Spell&);
+   virtual void spell(const RPG_Magic_SpellType&);
    virtual void duration(const RPG_Common_Duration&);
    virtual void condition(const RPG_Character_Condition&);
    virtual void reduction(const RPG_Combat_DamageReductionType&);
@@ -270,15 +261,6 @@ class RPG_Combat_Damage_Type
 
  private:
   RPG_Combat_Damage myCurrentDamage;
-};
-
-class RPG_Combat_ActionType_Type
- : public RPG_Combat_ActionType_Type_pskel,
-   public ::xml_schema::string_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Combat_ActionType post_RPG_Combat_ActionType_Type();
 };
 
 #endif

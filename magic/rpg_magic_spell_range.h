@@ -18,17 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_COMBAT_DAMAGECOUNTERMEASURE_H
-#define RPG_COMBAT_DAMAGECOUNTERMEASURE_H
+#ifndef RPG_MAGIC_SPELL_RANGE_H
+#define RPG_MAGIC_SPELL_RANGE_H
 
-struct RPG_Combat_DamageCounterMeasure
+struct RPG_Magic_Spell_Range
 {
-  RPG_Combat_DamageCounterMeasureType type;
-  RPG_Combat_Check check;
-  std::vector<RPG_Magic_SpellType> spells;
-  RPG_Common_Duration duration;
-  RPG_Character_Condition condition;
-  RPG_Combat_DamageReductionType reduction;
+  unsigned char maxRange;
+  unsigned char increment;
+  RPG_Common_AreaOfEffect area;
+  RPG_Magic_Spell_Effect effect;
 };
 
 #endif

@@ -19,14 +19,11 @@
  ***************************************************************************/
 #include "rpg_character_class_common.h"
 
-#include "rpg_character_metaclass.h"
-#include "rpg_character_subclass.h"
-
 #include <ace/Log_Msg.h>
 
 #include <string>
 
-const RPG_Character_MetaClass RPG_Character_Class_Common_Tools::subClassToMetaClass(const RPG_Character_SubClass& subClass_in)
+const RPG_Character_MetaClass RPG_Character_Class_Common_Tools::subClassToMetaClass(const RPG_Common_SubClass& subClass_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::subClassToMetaClass"));
 
@@ -65,7 +62,7 @@ const RPG_Character_MetaClass RPG_Character_Class_Common_Tools::subClassToMetaCl
       // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid subclass: %s, aborting\n"),
-                 RPG_Character_SubClassHelper::RPG_Character_SubClassToString(subClass_in).c_str()));
+                 RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
     }
   } // end SWITCH
 

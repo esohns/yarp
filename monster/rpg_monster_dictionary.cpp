@@ -87,7 +87,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
 
   RPG_Magic_AbilityClass_Type                    abilityClass_p;
   RPG_Monster_SpecialPropertyTypeUnion_Type      specialPropertyTypeUnion_p;
-  RPG_Combat_ActionType_Type                     actionType_p;
+  RPG_Common_ActionType_Type                     actionType_p;
   RPG_Common_Usage_Type                          usage_p;
   RPG_Monster_SpecialBaseProperties_Type         specialBaseProperties_p;
   specialBaseProperties_p.parsers(abilityClass_p,
@@ -120,7 +120,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   check_p.parsers(checkTypeUnion_p,
                   attribute_p,
                   unsigned_byte_p);
-  RPG_Magic_Spell_Type                           spell_p;
+  RPG_Magic_SpellType_Type                       spell_p;
   RPG_Common_Duration_Type                       commonDuration_p;
   commonDuration_p.parsers(unsigned_int_p,
                            unsigned_int_p,
@@ -187,7 +187,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                              attribute_p,
                              unsigned_byte_p,
                              saveReduction_p);
-  RPG_Magic_SpellProperties_Type                 spellProperties_p;
+  RPG_Magic_SpellLikeProperties_Type             spellProperties_p;
   spellProperties_p.parsers(spell_p,
                             unsigned_byte_p,
                             commonDuration_p,

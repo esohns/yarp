@@ -20,13 +20,11 @@
 #ifndef RPG_CHARACTER_COMMON_TOOLS_H
 #define RPG_CHARACTER_COMMON_TOOLS_H
 
-#include <rpg_common_attribute.h>
-
+#include <rpg_dice_incl.h>
+#include <rpg_common_incl.h>
 #include "rpg_character_incl.h"
 #include "rpg_character_player_common.h"
 #include "rpg_character_player.h"
-
-#include <rpg_dice_dietype.h>
 
 #include <ace/Global_Macros.h>
 
@@ -49,9 +47,9 @@ class RPG_Character_Common_Tools
   static const signed char getAttributeAbilityModifier(const unsigned char&); // attribute ability score
   static const signed char getSizeModifier(const RPG_Character_Size&);
   static const bool getAttributeCheck(const unsigned char&); // attribute ability score
-  static const RPG_Dice_DieType getHitDie(const RPG_Character_SubClass&); // subclass
-  static const RPG_Character_BaseAttackBonus_t getBaseAttackBonus(const RPG_Character_SubClass&, // subClass
-                                                                  const unsigned char&);         // class level
+  static const RPG_Dice_DieType getHitDie(const RPG_Common_SubClass&); // subclass
+  static const RPG_Character_BaseAttackBonus_t getBaseAttackBonus(const RPG_Common_SubClass&, // subClass
+                                                                  const unsigned char&);      // class level
 
   static const RPG_Character_Plane terrainToPlane(const RPG_Character_Terrain&);
   static const unsigned char sizeToReach(const RPG_Character_Size&);

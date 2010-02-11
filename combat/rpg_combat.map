@@ -11,6 +11,7 @@ namespace urn:rpg
 
   RPG_Common_Attribute_Type                RPG_Common_Attribute;
   RPG_Common_PhysicalDamageType_Type       RPG_Common_PhysicalDamageType;
+  RPG_Common_AreaOfEffect_Type             RPG_Common_AreaOfEffect;
   RPG_Common_EffectType_Type               RPG_Common_EffectType;
   RPG_Common_SavingThrowCheck_Type         RPG_Common_SavingThrowCheck;
 
@@ -22,7 +23,6 @@ namespace urn:rpg
   RPG_Character_Condition_Type             RPG_Character_Condition;
 
   RPG_Combat_AttackForm_Type               RPG_Combat_AttackForm;
-  RPG_Combat_AreaOfEffect_Type             RPG_Combat_AreaOfEffect;
   RPG_Combat_RangedEffectUnion_Type        RPG_Combat_RangedEffectUnion;
   RPG_Combat_RangedAttackProperties_Type   RPG_Combat_RangedAttackProperties;
   RPG_Combat_AttackSituation_Type          RPG_Combat_AttackSituation;
@@ -40,5 +40,4 @@ namespace urn:rpg
   RPG_Combat_DamageCounterMeasure_Type     RPG_Combat_DamageCounterMeasure;
   RPG_Combat_DamageElement_Type            RPG_Combat_DamageElement;
   RPG_Combat_Damage_Type                   RPG_Combat_Damage;
-  RPG_Combat_ActionType_Type               RPG_Combat_ActionType;
 }

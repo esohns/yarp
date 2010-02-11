@@ -21,11 +21,20 @@
 #ifndef RPG_MAGIC_INCL_H
 #define RPG_MAGIC_INCL_H
 
+#include <vector>
 #include "rpg_magic_school.h"
+#include "rpg_magic_subschool.h"
+#include "rpg_magic_descriptor.h"
 #include "rpg_magic_domain.h"
-#include "rpg_magic_spell.h"
+#include "rpg_magic_spelltype.h"
 #include "rpg_magic_abilityclass.h"
 #include "rpg_magic_abilitytype.h"
-#include "rpg_magic_spellproperties.h"
+#include "rpg_magic_spell_type.h"
+#include "rpg_magic_spell_effect.h"
+#include "rpg_magic_spell_range.h"
+#include "rpg_magic_spell_duration.h"
+#include "rpg_magic_spell_durationproperties.h"
+#include "rpg_magic_spell_properties.h"
+#include "rpg_magic_spelllikeproperties.h"
 
 #endif

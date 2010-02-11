@@ -23,7 +23,7 @@
 #include <rpg_dice_dietype.h>
 #include <rpg_dice_roll.h>
 #include <rpg_common_incl.h>
-#include <rpg_magic_spell.h>
+#include <rpg_magic_spelltype.h>
 
 #include "rpg_character_incl.h"
 #include "rpg_character_inventory_common.h"

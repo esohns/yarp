@@ -47,7 +47,6 @@
 
 // init statics
 RPG_Combat_AttackFormToStringTable_t RPG_Combat_AttackFormHelper::myRPG_Combat_AttackFormToStringTable;
-RPG_Combat_AreaOfEffectToStringTable_t RPG_Combat_AreaOfEffectHelper::myRPG_Combat_AreaOfEffectToStringTable;
 RPG_Combat_AttackSituationToStringTable_t RPG_Combat_AttackSituationHelper::myRPG_Combat_AttackSituationToStringTable;
 RPG_Combat_DefenseSituationToStringTable_t RPG_Combat_DefenseSituationHelper::myRPG_Combat_DefenseSituationToStringTable;
 RPG_Combat_SpecialAttackToStringTable_t RPG_Combat_SpecialAttackHelper::myRPG_Combat_SpecialAttackToStringTable;
@@ -55,14 +54,12 @@ RPG_Combat_SpecialDamageTypeToStringTable_t RPG_Combat_SpecialDamageTypeHelper::
 RPG_Combat_OtherDamageTypeToStringTable_t RPG_Combat_OtherDamageTypeHelper::myRPG_Combat_OtherDamageTypeToStringTable;
 RPG_Combat_DamageCounterMeasureTypeToStringTable_t RPG_Combat_DamageCounterMeasureTypeHelper::myRPG_Combat_DamageCounterMeasureTypeToStringTable;
 RPG_Combat_DamageReductionTypeToStringTable_t RPG_Combat_DamageReductionTypeHelper::myRPG_Combat_DamageReductionTypeToStringTable;
-RPG_Combat_ActionTypeToStringTable_t RPG_Combat_ActionTypeHelper::myRPG_Combat_ActionTypeToStringTable;
 
 void RPG_Combat_Common_Tools::initStringConversionTables()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::initStringConversionTables"));
 
   RPG_Combat_AttackFormHelper::init();
-  RPG_Combat_AreaOfEffectHelper::init();
   RPG_Combat_AttackSituationHelper::init();
   RPG_Combat_DefenseSituationHelper::init();
   RPG_Combat_SpecialAttackHelper::init();
@@ -70,7 +67,6 @@ void RPG_Combat_Common_Tools::initStringConversionTables()
   RPG_Combat_OtherDamageTypeHelper::init();
   RPG_Combat_DamageCounterMeasureTypeHelper::init();
   RPG_Combat_DamageReductionTypeHelper::init();
-  RPG_Combat_ActionTypeHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
@@ -275,11 +271,11 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
         }
         case COUNTERMEASURE_SPELL:
         {
-          for (std::vector<RPG_Magic_Spell>::const_iterator iterator3 = (*iterator2).spells.begin();
+          for (std::vector<RPG_Magic_SpellType>::const_iterator iterator3 = (*iterator2).spells.begin();
                iterator3 != (*iterator2).spells.end();
                iterator3++)
           {
-            result += RPG_Magic_SpellHelper::RPG_Magic_SpellToString(*iterator3);
+            result += RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator3);
             result += ACE_TEXT_ALWAYS_CHAR("|");
           } // end FOR
           if (!(*iterator2).spells.empty())
@@ -1276,10 +1272,10 @@ monster_perform_single_action:
         goto is_monster_miss;
 
       // attack bonus: [base attack bonus + STR/DEX modifier + size modifier] (+ range penalty)
-      if (current_action->attackBonus.size() == current_action->numAttacksPerRound)
-        currentAttackBonus = current_action->attackBonus[i];
+      if (current_action->attackBonuses.size() == current_action->numAttacksPerRound)
+        currentAttackBonus = current_action->attackBonuses[i];
       else
-        currentAttackBonus = current_action->attackBonus[0];
+        currentAttackBonus = current_action->attackBonuses[0];
 
       // consider range penalty...
       if (current_action->ranged.increment)

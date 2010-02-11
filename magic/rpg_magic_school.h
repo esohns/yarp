@@ -23,7 +23,8 @@
 
 enum RPG_Magic_School
 {
-  SCHOOL_ABJURATION = 0,
+  SCHOOL_NONE = 0,
+  SCHOOL_ABJURATION,
   SCHOOL_CONJURATION,
   SCHOOL_DIVINATION,
   SCHOOL_ENCHANTMENT,
@@ -50,6 +51,7 @@ class RPG_Magic_SchoolHelper
   inline static void init()
   {
     myRPG_Magic_SchoolToStringTable.clear();
+    myRPG_Magic_SchoolToStringTable.insert(std::make_pair(SCHOOL_NONE, ACE_TEXT_ALWAYS_CHAR("SCHOOL_NONE")));
     myRPG_Magic_SchoolToStringTable.insert(std::make_pair(SCHOOL_ABJURATION, ACE_TEXT_ALWAYS_CHAR("SCHOOL_ABJURATION")));
     myRPG_Magic_SchoolToStringTable.insert(std::make_pair(SCHOOL_CONJURATION, ACE_TEXT_ALWAYS_CHAR("SCHOOL_CONJURATION")));
     myRPG_Magic_SchoolToStringTable.insert(std::make_pair(SCHOOL_DIVINATION, ACE_TEXT_ALWAYS_CHAR("SCHOOL_DIVINATION")));

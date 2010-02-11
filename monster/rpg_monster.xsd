@@ -99,7 +99,7 @@
     <xsd:sequence>
       <xsd:element name="abilityClass" type="RPG_Magic_AbilityClass_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="type" type="RPG_Monster_SpecialPropertyTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="actionType" type="RPG_Combat_ActionType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="actionType" type="RPG_Common_ActionType_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="usage" type="RPG_Common_Usage_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -163,7 +163,7 @@
       <xsd:element name="attackBonus" type="xsd:byte" minOccurs="0" maxOccurs="5"/>
       <xsd:element name="attackForm" type="RPG_Combat_AttackForm_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="damage" type="RPG_Combat_Damage_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="effect" type="RPG_Magic_SpellProperties_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="effect" type="RPG_Magic_SpellLikeProperties_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="numAttacksPerRound" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="ranged" type="RPG_Combat_RangedAttackProperties_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="trigger" type="RPG_Character_Ability_Type" minOccurs="0" maxOccurs="unbounded"/>
@@ -236,7 +236,7 @@
         <xsd:sequence>
           <xsd:element name="preCondition" type="RPG_Monster_SpecialAbilityPreCondition_Type" minOccurs="0" maxOccurs="unbounded"/>
           <xsd:element name="summon" type="RPG_Monster_SummonMonster_Type" minOccurs="0" maxOccurs="unbounded"/>
-          <xsd:element name="spell" type="RPG_Magic_SpellProperties_Type" minOccurs="1" maxOccurs="unbounded"/>
+          <xsd:element name="spell" type="RPG_Magic_SpellLikeProperties_Type" minOccurs="1" maxOccurs="unbounded"/>
           <xsd:element name="ranged" type="RPG_Combat_RangedAttackProperties_Type" minOccurs="0" maxOccurs="1"/>
         </xsd:sequence>
       </xsd:extension>

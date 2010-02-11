@@ -21,27 +21,34 @@
 
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
-#include <rpg_character_incl.h>
 #include "rpg_magic_incl.h"
 
 #include <ace/Log_Msg.h>
 
 // init statics
 RPG_Magic_SchoolToStringTable_t RPG_Magic_SchoolHelper::myRPG_Magic_SchoolToStringTable;
+RPG_Magic_SubSchoolToStringTable_t RPG_Magic_SubSchoolHelper::myRPG_Magic_SubSchoolToStringTable;
+RPG_Magic_DescriptorToStringTable_t RPG_Magic_DescriptorHelper::myRPG_Magic_DescriptorToStringTable;
 RPG_Magic_DomainToStringTable_t RPG_Magic_DomainHelper::myRPG_Magic_DomainToStringTable;
-RPG_Magic_SpellToStringTable_t RPG_Magic_SpellHelper::myRPG_Magic_SpellToStringTable;
+RPG_Magic_SpellTypeToStringTable_t RPG_Magic_SpellTypeHelper::myRPG_Magic_SpellTypeToStringTable;
 RPG_Magic_AbilityClassToStringTable_t RPG_Magic_AbilityClassHelper::myRPG_Magic_AbilityClassToStringTable;
 RPG_Magic_AbilityTypeToStringTable_t RPG_Magic_AbilityTypeHelper::myRPG_Magic_AbilityTypeToStringTable;
+RPG_Magic_Spell_EffectToStringTable_t RPG_Magic_Spell_EffectHelper::myRPG_Magic_Spell_EffectToStringTable;
+RPG_Magic_Spell_DurationToStringTable_t RPG_Magic_Spell_DurationHelper::myRPG_Magic_Spell_DurationToStringTable;
 
 void RPG_Magic_Common_Tools::initStringConversionTables()
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::initStringConversionTables"));
 
   RPG_Magic_SchoolHelper::init();
+  RPG_Magic_SubSchoolHelper::init();
+  RPG_Magic_DescriptorHelper::init();
   RPG_Magic_DomainHelper::init();
-  RPG_Magic_SpellHelper::init();
+  RPG_Magic_SpellTypeHelper::init();
   RPG_Magic_AbilityClassHelper::init();
   RPG_Magic_AbilityTypeHelper::init();
+  RPG_Magic_Spell_EffectHelper::init();
+  RPG_Magic_Spell_DurationHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,

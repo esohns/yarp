@@ -1405,7 +1405,7 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
              ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized class skill table...\n")));
 }
 
-const bool RPG_Character_Skills_Common_Tools::isClassSkill(const RPG_Character_SubClass& subClass_in,
+const bool RPG_Character_Skills_Common_Tools::isClassSkill(const RPG_Common_SubClass& subClass_in,
                                                            const RPG_Character_Skill& skill_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::isClassSkill"));
@@ -1416,7 +1416,7 @@ const bool RPG_Character_Skills_Common_Tools::isClassSkill(const RPG_Character_S
     // debug info
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("isClassSkill(\"%s\", \"%s\"): missing table for subclass, aborting\n"),
-               RPG_Character_SubClassHelper::RPG_Character_SubClassToString(subClass_in).c_str(),
+               RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str(),
                RPG_Character_SkillHelper::RPG_Character_SkillToString(skill_in).c_str()));
 
     return false;
@@ -1425,7 +1425,7 @@ const bool RPG_Character_Skills_Common_Tools::isClassSkill(const RPG_Character_S
   return (iterator->second.find(skill_in) != iterator->second.end());
 }
 
-const unsigned int RPG_Character_Skills_Common_Tools::getSkillPoints(const RPG_Character_SubClass& subClass_in,
+const unsigned int RPG_Character_Skills_Common_Tools::getSkillPoints(const RPG_Common_SubClass& subClass_in,
                                                                      const short int& INTModifier_in,
                                                                      unsigned int& initialPoints_out)
 {
@@ -1479,7 +1479,7 @@ const unsigned int RPG_Character_Skills_Common_Tools::getSkillPoints(const RPG_C
       // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid subclass: \"%s\" --> check implementation !, aborting\n"),
-                 RPG_Character_SubClassHelper::RPG_Character_SubClassToString(subClass_in).c_str()));
+                 RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
 
       return 0;
     }
@@ -1492,7 +1492,7 @@ const unsigned int RPG_Character_Skills_Common_Tools::getSkillPoints(const RPG_C
 }
 
 const unsigned int RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race& race_in,
-                                                                           const RPG_Character_SubClass& subClass_in,
+                                                                           const RPG_Common_SubClass& subClass_in,
                                                                            const unsigned char& currentLevel_in,
                                                                            RPG_Character_Feats_t& baseFeats_out,
                                                                            unsigned int& numInitialFeats_out,
@@ -1818,7 +1818,7 @@ const unsigned int RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const
       // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid subclass: \"%s\" --> check implementation !, aborting\n"),
-                 RPG_Character_SubClassHelper::RPG_Character_SubClassToString(subClass_in).c_str()));
+                 RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
 
       return 0;
     }
@@ -1834,7 +1834,7 @@ const unsigned int RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const
 }
 
 const bool RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_Character_Feat& feat_in,
-                                                                     const RPG_Character_SubClass& subClass_in,
+                                                                     const RPG_Common_SubClass& subClass_in,
                                                                      const unsigned char& currentLevel_in,
                                                                      const RPG_Character_Attributes& attributes_in,
                                                                      const RPG_Character_Skills_t& skills_in,

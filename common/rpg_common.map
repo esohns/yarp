@@ -5,8 +5,11 @@ namespace urn:rpg
 
   RPG_Dice_Roll_Type                 RPG_Dice_Roll;
 
+  RPG_Common_SubClass_Type           RPG_Common_SubClass;
   RPG_Common_Attribute_Type          RPG_Common_Attribute;
   RPG_Common_PhysicalDamageType_Type RPG_Common_PhysicalDamageType;
+  RPG_Common_ActionType_Type         RPG_Common_ActionType;
+  RPG_Common_AreaOfEffect_Type       RPG_Common_AreaOfEffect;
   RPG_Common_EffectType_Type         RPG_Common_EffectType;
   RPG_Common_CheckType_Type          RPG_Common_CheckType;
   RPG_Common_SavingThrow_Type        RPG_Common_SavingThrow;

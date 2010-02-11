@@ -26,7 +26,7 @@ struct RPG_Combat_RangedEffectUnion
   union
   {
     RPG_Character_Size size;
-    RPG_Combat_AreaOfEffect areaofeffect;
+    RPG_Common_AreaOfEffect areaofeffect;
   };
 
   enum Discriminator_t

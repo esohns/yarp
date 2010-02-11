@@ -27,6 +27,15 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
+class RPG_Common_SubClass_Type
+  : public RPG_Common_SubClass_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Common_SubClass post_RPG_Common_SubClass_Type();
+};
+
 class RPG_Common_Attribute_Type
  : public RPG_Common_Attribute_Type_pskel,
    public ::xml_schema::string_pimpl
@@ -43,6 +52,24 @@ class RPG_Common_PhysicalDamageType_Type
  public:
 //   virtual void pre();
   virtual RPG_Common_PhysicalDamageType post_RPG_Common_PhysicalDamageType_Type();
+};
+
+class RPG_Common_ActionType_Type
+  : public RPG_Common_ActionType_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Common_ActionType post_RPG_Common_ActionType_Type();
+};
+
+class RPG_Common_AreaOfEffect_Type
+  : public RPG_Common_AreaOfEffect_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Common_AreaOfEffect post_RPG_Common_AreaOfEffect_Type();
 };
 
 class RPG_Common_EffectType_Type

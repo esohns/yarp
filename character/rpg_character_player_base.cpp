@@ -121,7 +121,7 @@ const RPG_Character_OffHand RPG_Character_Player_Base::getOffHand() const
   return myOffHand;
 }
 
-const unsigned char RPG_Character_Player_Base::getLevel(const RPG_Character_SubClass& subClass_in) const
+const unsigned char RPG_Character_Player_Base::getLevel(const RPG_Common_SubClass& subClass_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getLevel"));
 
