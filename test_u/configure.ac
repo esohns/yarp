@@ -43,7 +43,8 @@ AC_CHECK_FUNCS([strerror])
 AC_CONFIG_FILES([Makefile
                  chance/Makefile
                  character/Makefile
-                 monster/Makefile
                  combat/Makefile
-                 item/Makefile])
+                 item/Makefile
+                 magic/Makefile
+                 monster/Makefile])
 AC_OUTPUT

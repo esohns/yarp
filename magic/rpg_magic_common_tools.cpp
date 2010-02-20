@@ -109,7 +109,7 @@ const std::string RPG_Magic_Common_Tools::spellDurationToString(const RPG_Magic_
     if (duration_in.levelIncrement != 0)
     {
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-      converter << duration_in.levelIncrement;
+      converter << ACE_static_cast(unsigned int, duration_in.levelIncrement);
       result += ACE_TEXT_ALWAYS_CHAR(" + [casterLevel / ");
       result += converter.str();
       result += ACE_TEXT_ALWAYS_CHAR("]");

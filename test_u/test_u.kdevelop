@@ -39,18 +39,21 @@
         <combat_simulator>-b 0 -f 1 -i ../../item/rpg_item.xml -m ../../monster/rpg_monster.xml -n 1 -p 6 -t -x</combat_simulator>
         <monster_parser>-m ../../monster/rpg_monster.xml -t</monster_parser>
         <item_parser>-d -i ../../item/rpg_item.xml -t</item_parser>
+        <magic_parser>-d -i ../../magic/rpg_magic.xml -t</magic_parser>
       </runarguments>
       <debugarguments>
         <character_generator>-i ../../item/rpg_item.xml -t</character_generator>
         <combat_simulator>-b 0 -f 1 -i ../../item/rpg_item.xml -m ../../monster/rpg_monster.xml -n 1 -p 6 -t -x</combat_simulator>
         <monster_parser>-m ../../monster/rpg_monster.xml -t</monster_parser>
         <item_parser>-d -i ../../item/rpg_item.xml -t</item_parser>
+        <magic_parser>-d -i ../../magic/rpg_magic.xml -t</magic_parser>
       </debugarguments>
       <cwd>
         <character_generator>/home/unfv/Projects/RPG/test_u/debug/./</character_generator>
         <combat_simulator>/home/unfv/Projects/RPG/test_u/debug/./</combat_simulator>
         <monster_parser>/home/unfv/Projects/RPG/test_u/debug/./</monster_parser>
         <item_parser>/home/unfv/Projects/RPG/test_u/debug/./</item_parser>
+        <magic_parser>/home/unfv/Projects/RPG/test_u/debug/./</magic_parser>
       </cwd>
     </run>
     <configurations>

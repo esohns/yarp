@@ -8,7 +8,7 @@
   <spell>
     <name>Acid Arrow</name>
     <type>
-      <type>SPELL_ACID_ARROW</metaType>
+      <type>SPELL_ACID_ARROW</type>
       <school>SCHOOL_CONJURATION</school>
       <subSchool>SUBSCHOOL_CREATION</subSchool>
       <descriptor>DESCRIPTOR_ACID</descriptor>
@@ -17,9 +17,8 @@
     <casterClass>SUBCLASS_SORCERER</casterClass>
     <casterClass>SUBCLASS_WIZARD</casterClass>
     <action>ACTION_STANDARD</action>
-    <range>
+    <range effect="EFFECT_LONG">
       <area>AREA_LINE</area>
-      <effect>EFFECT_LONG</effect>
     </range>
     <duration>
       <type>DURATION_INSTANTANEOUS</type>
