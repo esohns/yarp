@@ -23,6 +23,7 @@
 
 struct RPG_Magic_Spell_Type
 {
+  RPG_Magic_SpellType type;
   RPG_Magic_School school;
   RPG_Magic_SubSchool subSchool;
   std::vector<RPG_Magic_Descriptor> descriptors;

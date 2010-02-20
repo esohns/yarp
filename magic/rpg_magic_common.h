@@ -20,12 +20,33 @@
 #ifndef RPG_MAGIC_COMMON_H
 #define RPG_MAGIC_COMMON_H
 
-#include "rpg_magic_spell.h"
+#include <rpg_dice_incl.h>
+#include <rpg_common_incl.h>
+#include "rpg_magic_incl.h"
 
 #include <set>
+#include <string>
+#include <map>
 
 // some useful types
-typedef std::set<RPG_Magic_Spell> RPG_Magic_Spells_t;
+typedef std::set<RPG_Magic_SpellType> RPG_Magic_Spells_t;
 typedef RPG_Magic_Spells_t::const_iterator RPG_Magic_SpellsIterator_t;
+
+struct RPG_Magic_Spell_Properties
+{
+//   std::string name;
+  RPG_Magic_Spell_Type type;
+  unsigned char level;
+  std::vector<RPG_Common_SubClass> casterClasses;
+  RPG_Magic_Domain domain;
+  unsigned char domainLevel;
+  unsigned char cost;
+  RPG_Common_ActionType action;
+  RPG_Magic_Spell_Range range;
+  RPG_Magic_Spell_DurationProperties duration;
+};
+
+typedef std::map<std::string, RPG_Magic_Spell_Properties> RPG_Magic_Dictionary_t;
+typedef RPG_Magic_Dictionary_t::const_iterator RPG_Magic_DictionaryIterator_t;
 
 #endif

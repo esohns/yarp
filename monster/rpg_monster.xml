@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- <!DOCTYPE RPG_Character_Dictionary SYSTEM "./rpg_character.xsd"> -->
-<!--  xsi:noNamespaceSchemaLocation="rpg_character.xsd" -->
+<!-- <!DOCTYPE RPG_Monster_Dictionary SYSTEM "./rpg_monster.xsd"> -->
+<!--  xsi:noNamespaceSchemaLocation="rpg_monster.xsd" -->
 
 <monsterDictionary xmlns="urn:rpg"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

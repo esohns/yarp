@@ -20,6 +20,10 @@
 #ifndef RPG_MAGIC_COMMON_TOOLS_H
 #define RPG_MAGIC_COMMON_TOOLS_H
 
+#include <rpg_dice_incl.h>
+#include <rpg_common_incl.h>
+#include <rpg_magic_incl.h>
+
 #include <ace/Global_Macros.h>
 
 /**
@@ -29,6 +33,9 @@ class RPG_Magic_Common_Tools
 {
  public:
   static void initStringConversionTables();
+
+  static const std::string spellTypeToString(const RPG_Magic_Spell_Type&); // type
+  static const std::string spellDurationToString(const RPG_Magic_Spell_DurationProperties&); // duration
 
  private:
   // safety measures

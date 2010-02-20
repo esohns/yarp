@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE RPG_Magic_Dictionary SYSTEM "./rpg_magic.xsd"> -->
+<!--  xsi:noNamespaceSchemaLocation="rpg_magic.xsd" -->
+
+<spellDictionary xmlns="urn:rpg"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="urn:rpg rpg_magic.xsd">
+  <spell>
+    <name>Acid Arrow</name>
+    <type>
+      <type>SPELL_ACID_ARROW</metaType>
+      <school>SCHOOL_CONJURATION</school>
+      <subSchool>SUBSCHOOL_CREATION</subSchool>
+      <descriptor>DESCRIPTOR_ACID</descriptor>
+    </type>
+    <level>2</level>
+    <casterClass>SUBCLASS_SORCERER</casterClass>
+    <casterClass>SUBCLASS_WIZARD</casterClass>
+    <action>ACTION_STANDARD</action>
+    <range>
+      <area>AREA_LINE</area>
+      <effect>EFFECT_LONG</effect>
+    </range>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>1</duration>
+      <levelIncrement>3</levelIncrement>
+    </duration>
+    <precondition>PRECONDITION_RANGED_TOUCH_ATTACK</precondition>
+    <damage>
+      <numDice>2</numDice>
+      <typeDice>D_4</typeDice>
+      <modifier>0</modifier>
+    </damage>
+  </spell>
+
+</spellDictionary>

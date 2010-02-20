@@ -23,7 +23,12 @@
 #include <rpg_common_incl.h>
 #include "rpg_magic_incl.h"
 
+#include <rpg_dice_common_tools.h>
+
 #include <ace/Log_Msg.h>
+
+#include <string>
+#include <sstream>
 
 // init statics
 RPG_Magic_SchoolToStringTable_t RPG_Magic_SchoolHelper::myRPG_Magic_SchoolToStringTable;
@@ -35,6 +40,7 @@ RPG_Magic_AbilityClassToStringTable_t RPG_Magic_AbilityClassHelper::myRPG_Magic_
 RPG_Magic_AbilityTypeToStringTable_t RPG_Magic_AbilityTypeHelper::myRPG_Magic_AbilityTypeToStringTable;
 RPG_Magic_Spell_EffectToStringTable_t RPG_Magic_Spell_EffectHelper::myRPG_Magic_Spell_EffectToStringTable;
 RPG_Magic_Spell_DurationToStringTable_t RPG_Magic_Spell_DurationHelper::myRPG_Magic_Spell_DurationToStringTable;
+RPG_Magic_Spell_PreconditionToStringTable_t RPG_Magic_Spell_PreconditionHelper::myRPG_Magic_Spell_PreconditionToStringTable;
 
 void RPG_Magic_Common_Tools::initStringConversionTables()
 {
@@ -49,8 +55,68 @@ void RPG_Magic_Common_Tools::initStringConversionTables()
   RPG_Magic_AbilityTypeHelper::init();
   RPG_Magic_Spell_EffectHelper::init();
   RPG_Magic_Spell_DurationHelper::init();
+  RPG_Magic_Spell_PreconditionHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Magic_Common_Tools: initialized string conversion tables...\n")));
+}
+
+const std::string RPG_Magic_Common_Tools::spellTypeToString(const RPG_Magic_Spell_Type& type_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellTypeToString"));
+
+  std::string result = RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(type_in.type);
+  result += ACE_TEXT_ALWAYS_CHAR(" (");
+  result += RPG_Magic_SchoolHelper::RPG_Magic_SchoolToString(type_in.school);
+  if (type_in.subSchool != RPG_MAGIC_SUBSCHOOL_INVALID)
+  {
+    result += ACE_TEXT_ALWAYS_CHAR(" / ");
+    result += RPG_Magic_SubSchoolHelper::RPG_Magic_SubSchoolToString(type_in.subSchool);
+  } // end IF
+  result += ACE_TEXT_ALWAYS_CHAR(")");
+  if (!type_in.descriptors.empty())
+  {
+    result += ACE_TEXT_ALWAYS_CHAR(": ");
+    for (std::vector<RPG_Magic_Descriptor>::const_iterator iterator = type_in.descriptors.begin();
+         iterator != type_in.descriptors.end();
+         iterator++)
+    {
+      result += RPG_Magic_DescriptorHelper::RPG_Magic_DescriptorToString(*iterator);
+      result += ACE_TEXT_ALWAYS_CHAR(",");
+    } // end FOR
+    result.erase(--(result.end()));
+  } // end IF
+
+  return result;
+}
+
+const std::string RPG_Magic_Common_Tools::spellDurationToString(const RPG_Magic_Spell_DurationProperties& duration_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellDurationToString"));
+
+  std::string result = RPG_Magic_Spell_DurationHelper::RPG_Magic_Spell_DurationToString(duration_in.type);
+  result += ACE_TEXT_ALWAYS_CHAR(", ");
+  if (duration_in.period.typeDice != RPG_DICE_DIETYPE_INVALID)
+  {
+    result += RPG_Dice_Common_Tools::rollToString(duration_in.period);
+  } // end IF
+  else
+  {
+    std::stringstream converter;
+    converter << duration_in.duration;
+    result += converter.str();
+    if (duration_in.levelIncrement != 0)
+    {
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+      converter << duration_in.levelIncrement;
+      result += ACE_TEXT_ALWAYS_CHAR(" + [casterLevel / ");
+      result += converter.str();
+      result += ACE_TEXT_ALWAYS_CHAR("]");
+    } // end IF
+  } // end ELSE
+  if (duration_in.dismissible)
+    result += ACE_TEXT_ALWAYS_CHAR(", dismissible");
+
+  return result;
 }

@@ -113,6 +113,7 @@
 
   <xsd:simpleType name="RPG_Magic_SpellType_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SPELL_ACID_ARROW"/>
       <xsd:enumeration value="SPELL_ALIGN_WEAPON"/>
       <xsd:enumeration value="SPELL_BLADE_BARRIER"/>
       <xsd:enumeration value="SPELL_BLASPHEMY"/>
@@ -201,6 +202,7 @@
 
   <xsd:complexType name="RPG_Magic_Spell_Type_Type">
     <xsd:sequence>
+      <xsd:element name="type" type="RPG_Magic_SpellType_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="school" type="RPG_Magic_School_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="subSchool" type="RPG_Magic_SubSchool_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="descriptor" type="RPG_Magic_Descriptor_Type" minOccurs="1" maxOccurs="unbounded"/>
@@ -221,9 +223,9 @@
 
   <xsd:complexType name="RPG_Magic_Spell_Range_Type">
     <xsd:sequence>
-      <xsd:element name="maxRange" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="increment" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="area" type="RPG_Common_AreaOfEffect_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="max" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="increment" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="area" type="RPG_Common_AreaOfEffect_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="effect" type="RPG_Magic_Spell_Effect_Type" use="optional" default="EFFECT_PERSONAL"/>
   </xsd:complexType>
@@ -242,15 +244,22 @@
     <xsd:sequence>
       <xsd:element name="type" type="RPG_Magic_Spell_Duration_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="duration" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="levelIncrement" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="period" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="dismissible" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Magic_Spell_Properties_Type">
+  <xsd:simpleType name="RPG_Magic_Spell_Precondition_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="PRECONDITION_RANGED_TOUCH_ATTACK"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Magic_Spell_PropertiesXML_Type">
     <xsd:sequence>
+      <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="type" type="RPG_Magic_Spell_Type_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="name" type="RPG_Magic_SpellType_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="level" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="casterClass" type="RPG_Common_SubClass_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="domain" type="RPG_Magic_Domain_Type" minOccurs="0" maxOccurs="1"/>
@@ -259,7 +268,12 @@
       <xsd:element name="action" type="RPG_Common_ActionType_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="range" type="RPG_Magic_Spell_Range_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="duration" type="RPG_Magic_Spell_DurationProperties_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="precondition" type="RPG_Magic_Spell_Precondition_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="save" type="RPG_Common_SavingThrowCheck_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="damage" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
+    <xsd:attribute name="saveable" type="RPG_Common_SavingThrow_Type" use="optional" default="SAVE_NONE"/>
+    <xsd:attribute name="resistible" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Magic_SpellLikeProperties_Type">
@@ -271,5 +285,14 @@
       <xsd:element name="save" type="RPG_Common_SavingThrowCheck_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
+
+  <xsd:complexType name="RPG_Magic_Dictionary_Type" id="skip0">
+    <xsd:sequence>
+      <xsd:element name="spell" type="RPG_Magic_Spell_PropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- xml instance document(s) will contain a dictionary of different types of spells -->
+  <xsd:element name="spellDictionary" type="RPG_Magic_Dictionary_Type"/>
 
 </xsd:schema>

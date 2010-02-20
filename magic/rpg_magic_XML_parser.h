@@ -21,6 +21,7 @@
 #define RPG_MAGIC_XML_PARSER_H
 
 #include "rpg_magic_XML_types.h"
+#include "rpg_magic_common.h"
 
 #include <ace/Global_Macros.h>
 
@@ -97,6 +98,7 @@ class RPG_Magic_Spell_Type_Type
     RPG_Magic_Spell_Type_Type();
 
 //     virtual void pre();
+    virtual void type(const RPG_Magic_SpellType&);
     virtual void school(const RPG_Magic_School&);
     virtual void subSchool(const RPG_Magic_SubSchool&);
     virtual void descriptor(const RPG_Magic_Descriptor&);
@@ -122,8 +124,8 @@ class RPG_Magic_Spell_Range_Type
     RPG_Magic_Spell_Range_Type();
 
 //     virtual void pre();
-    virtual void maxRange(unsigned char);
-    virtual void increment(unsigned char);
+    virtual void max(unsigned int);
+    virtual void increment(unsigned int);
     virtual void area(const RPG_Common_AreaOfEffect&);
     virtual void effect(const RPG_Magic_Spell_Effect&);
     virtual RPG_Magic_Spell_Range post_RPG_Magic_Spell_Range_Type();
@@ -150,6 +152,7 @@ class RPG_Magic_Spell_DurationProperties_Type
 //     virtual void pre();
     virtual void type(const RPG_Magic_Spell_Duration&);
     virtual void duration(unsigned int);
+    virtual void levelIncrement(unsigned char);
     virtual void period(const RPG_Dice_Roll&);
     virtual void dismissible(bool);
     virtual RPG_Magic_Spell_DurationProperties post_RPG_Magic_Spell_DurationProperties_Type();
@@ -158,15 +161,24 @@ class RPG_Magic_Spell_DurationProperties_Type
     RPG_Magic_Spell_DurationProperties myCurrentProperties;
 };
 
-class RPG_Magic_Spell_Properties_Type
-  : public RPG_Magic_Spell_Properties_Type_pskel
+class RPG_Magic_Spell_Precondition_Type
+  : public RPG_Magic_Spell_Precondition_Type_pskel,
+  public ::xml_schema::string_pimpl
 {
   public:
-    RPG_Magic_Spell_Properties_Type();
+//   virtual void pre();
+    virtual RPG_Magic_Spell_Precondition post_RPG_Magic_Spell_Precondition_Type();
+};
+
+class RPG_Magic_Spell_PropertiesXML_Type
+  : public RPG_Magic_Spell_PropertiesXML_Type_pskel
+{
+  public:
+    RPG_Magic_Spell_PropertiesXML_Type();
 
 //     virtual void pre();
+    virtual void name(const ::std::string&);
     virtual void type(const RPG_Magic_Spell_Type&);
-    virtual void name(const RPG_Magic_SpellType&);
     virtual void level(unsigned char);
     virtual void casterClass(const RPG_Common_SubClass&);
     virtual void domain(const RPG_Magic_Domain&);
@@ -175,10 +187,15 @@ class RPG_Magic_Spell_Properties_Type
     virtual void action(const RPG_Common_ActionType&);
     virtual void range(const RPG_Magic_Spell_Range&);
     virtual void duration(const RPG_Magic_Spell_DurationProperties&);
-    virtual RPG_Magic_Spell_Properties post_RPG_Magic_Spell_Properties_Type();
+    virtual void precondition(const RPG_Magic_Spell_Precondition&);
+    virtual void save(const RPG_Common_SavingThrowCheck&);
+    virtual void damage(const RPG_Dice_Roll&);
+    virtual void saveable(const RPG_Common_SavingThrow&);
+    virtual void resistible(bool);
+    virtual RPG_Magic_Spell_PropertiesXML post_RPG_Magic_Spell_PropertiesXML_Type();
 
   private:
-    RPG_Magic_Spell_Properties myCurrentProperties;
+    RPG_Magic_Spell_PropertiesXML myCurrentProperties;
 };
 
 class RPG_Magic_SpellLikeProperties_Type
@@ -196,6 +213,26 @@ class RPG_Magic_SpellLikeProperties_Type
 
   private:
     RPG_Magic_SpellLikeProperties myCurrentProperties;
+};
+
+class RPG_Magic_Dictionary_Type
+  : public RPG_Magic_Dictionary_Type_pskel
+{
+  public:
+    RPG_Magic_Dictionary_Type(RPG_Magic_Dictionary_t*); // spell dictionary
+    virtual ~RPG_Magic_Dictionary_Type();
+
+//   virtual void pre();
+    virtual void spell(const RPG_Magic_Spell_PropertiesXML&);
+    virtual void post_RPG_Magic_Dictionary_Type();
+
+  private:
+  // safety measures
+    ACE_UNIMPLEMENTED_FUNC(RPG_Magic_Dictionary_Type());
+    ACE_UNIMPLEMENTED_FUNC(RPG_Magic_Dictionary_Type(const RPG_Magic_Dictionary_Type&));
+    ACE_UNIMPLEMENTED_FUNC(RPG_Magic_Dictionary_Type& operator=(const RPG_Magic_Dictionary_Type&));
+
+    RPG_Magic_Dictionary_t* myDictionary;
 };
 
 #endif

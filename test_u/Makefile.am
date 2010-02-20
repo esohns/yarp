@@ -1,2 +1,2 @@
 
-SUBDIRS = chance character combat item monster
+SUBDIRS = chance character combat item magic monster

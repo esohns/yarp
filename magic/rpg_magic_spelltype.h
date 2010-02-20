@@ -23,7 +23,8 @@
 
 enum RPG_Magic_SpellType
 {
-  SPELL_ALIGN_WEAPON = 0,
+  SPELL_ACID_ARROW = 0,
+  SPELL_ALIGN_WEAPON,
   SPELL_BLADE_BARRIER,
   SPELL_BLASPHEMY,
   SPELL_BLESS,
@@ -109,6 +110,7 @@ class RPG_Magic_SpellTypeHelper
   inline static void init()
   {
     myRPG_Magic_SpellTypeToStringTable.clear();
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ACID_ARROW, ACE_TEXT_ALWAYS_CHAR("SPELL_ACID_ARROW")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ALIGN_WEAPON, ACE_TEXT_ALWAYS_CHAR("SPELL_ALIGN_WEAPON")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BLADE_BARRIER, ACE_TEXT_ALWAYS_CHAR("SPELL_BLADE_BARRIER")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BLASPHEMY, ACE_TEXT_ALWAYS_CHAR("SPELL_BLASPHEMY")));

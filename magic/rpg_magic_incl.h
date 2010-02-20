@@ -34,7 +34,8 @@
 #include "rpg_magic_spell_range.h"
 #include "rpg_magic_spell_duration.h"
 #include "rpg_magic_spell_durationproperties.h"
-#include "rpg_magic_spell_properties.h"
+#include "rpg_magic_spell_precondition.h"
+#include "rpg_magic_spell_propertiesxml.h"
 #include "rpg_magic_spelllikeproperties.h"
 
 #endif

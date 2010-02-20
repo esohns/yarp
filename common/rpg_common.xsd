@@ -101,6 +101,7 @@
 
   <xsd:simpleType name="RPG_Common_SavingThrow_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SAVE_NONE"/>
       <xsd:enumeration value="SAVE_FORTITUDE"/>
       <xsd:enumeration value="SAVE_REFLEX"/>
       <xsd:enumeration value="SAVE_WILL"/>
@@ -114,10 +115,9 @@
 
   <xsd:simpleType name="RPG_Common_SaveReductionType_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="SAVE_NEGATES"/>
-      <xsd:enumeration value="SAVE_PARTIAL"/>
-      <xsd:enumeration value="SAVE_HALF"/>
-      <xsd:enumeration value="SAVE_NONE"/>
+      <xsd:enumeration value="SAVEREDUCTION_NEGATES"/>
+      <xsd:enumeration value="SAVEREDUCTION_PARTIAL"/>
+      <xsd:enumeration value="SAVEREDUCTION_HALF"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -127,7 +127,7 @@
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
-    <xsd:attribute name="reduction" type="RPG_Common_SaveReductionType_Type" use="optional" default="SAVE_NEGATES"/>
+    <xsd:attribute name="reduction" type="RPG_Common_SaveReductionType_Type" use="optional" default="SAVEREDUCTION_NEGATES"/>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Common_Usage_Type">
