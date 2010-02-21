@@ -102,6 +102,18 @@ increment_parser (::xml_schema::unsigned_int_pskel& p)
 }
 
 void RPG_Magic_Spell_Range_Type_pskel::
+radius_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->radius_parser_ = &p;
+}
+
+void RPG_Magic_Spell_Range_Type_pskel::
+height_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->height_parser_ = &p;
+}
+
+void RPG_Magic_Spell_Range_Type_pskel::
 area_parser (::RPG_Common_AreaOfEffect_Type_pskel& p)
 {
   this->area_parser_ = &p;
@@ -116,11 +128,15 @@ effect_parser (::RPG_Magic_Spell_Effect_Type_pskel& p)
 void RPG_Magic_Spell_Range_Type_pskel::
 parsers (::xml_schema::unsigned_int_pskel& max,
          ::xml_schema::unsigned_int_pskel& increment,
+         ::xml_schema::unsigned_byte_pskel& radius,
+         ::xml_schema::unsigned_byte_pskel& height,
          ::RPG_Common_AreaOfEffect_Type_pskel& area,
          ::RPG_Magic_Spell_Effect_Type_pskel& effect)
 {
   this->max_parser_ = &max;
   this->increment_parser_ = &increment;
+  this->radius_parser_ = &radius;
+  this->height_parser_ = &height;
   this->area_parser_ = &area;
   this->effect_parser_ = &effect;
 }
@@ -129,6 +145,8 @@ RPG_Magic_Spell_Range_Type_pskel::
 RPG_Magic_Spell_Range_Type_pskel ()
 : max_parser_ (0),
   increment_parser_ (0),
+  radius_parser_ (0),
+  height_parser_ (0),
   area_parser_ (0),
   effect_parser_ (0)
 {
@@ -539,6 +557,16 @@ increment (unsigned int)
 }
 
 void RPG_Magic_Spell_Range_Type_pskel::
+radius (unsigned char)
+{
+}
+
+void RPG_Magic_Spell_Range_Type_pskel::
+height (unsigned char)
+{
+}
+
+void RPG_Magic_Spell_Range_Type_pskel::
 area (const RPG_Common_AreaOfEffect&)
 {
 }
@@ -578,6 +606,26 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "radius" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->radius_parser_;
+
+    if (this->radius_parser_)
+      this->radius_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "height" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->height_parser_;
+
+    if (this->height_parser_)
+      this->height_parser_->pre ();
+
+    return true;
+  }
+
   if (n == "area" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->area_parser_;
@@ -610,6 +658,22 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->increment_parser_)
       this->increment (this->increment_parser_->post_unsigned_int ());
+
+    return true;
+  }
+
+  if (n == "radius" && ns == "urn:rpg")
+  {
+    if (this->radius_parser_)
+      this->radius (this->radius_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  if (n == "height" && ns == "urn:rpg")
+  {
+    if (this->height_parser_)
+      this->height (this->height_parser_->post_unsigned_byte ());
 
     return true;
   }

@@ -77,6 +77,8 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
   RPG_Magic_Spell_Range_Type              range_p;
   range_p.parsers(unsigned_int_p,
                   unsigned_int_p,
+                  unsigned_byte_p,
+                  unsigned_byte_p,
                   area_p,
                   effect_p);
 

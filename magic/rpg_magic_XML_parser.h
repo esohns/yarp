@@ -126,6 +126,8 @@ class RPG_Magic_Spell_Range_Type
 //     virtual void pre();
     virtual void max(unsigned int);
     virtual void increment(unsigned int);
+    virtual void radius(unsigned char);
+    virtual void height(unsigned char);
     virtual void area(const RPG_Common_AreaOfEffect&);
     virtual void effect(const RPG_Magic_Spell_Effect&);
     virtual RPG_Magic_Spell_Range post_RPG_Magic_Spell_Range_Type();

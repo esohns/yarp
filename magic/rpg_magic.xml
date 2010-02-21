@@ -32,5 +32,58 @@
       <modifier>0</modifier>
     </damage>
   </spell>
-
+  <spell>
+    <name>Acid Fog</name>
+    <type>
+      <type>SPELL_ACID_FOG</type>
+      <school>SCHOOL_CONJURATION</school>
+      <subSchool>SUBSCHOOL_CREATION</subSchool>
+      <descriptor>DESCRIPTOR_ACID</descriptor>
+    </type>
+    <level>6</level>
+    <casterClass>SUBCLASS_SORCERER</casterClass>
+    <casterClass>SUBCLASS_WIZARD</casterClass>
+    <domain>DOMAIN_WATER</domain>
+    <domainLevel>7</domainLevel>
+    <action>ACTION_STANDARD</action>
+    <range effect="EFFECT_MEDIUM">
+      <radius>20</radius>
+      <area>AREA_CUBE</area>
+    </range>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>0</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <damage>
+      <numDice>2</numDice>
+      <typeDice>D_6</typeDice>
+      <modifier>0</modifier>
+    </damage>
+  </spell>
+  <spell>
+    <name>Acid Splash</name>
+    <type>
+      <type>SPELL_ACID_SPLASH</type>
+      <school>SCHOOL_CONJURATION</school>
+      <subSchool>SUBSCHOOL_CREATION</subSchool>
+      <descriptor>DESCRIPTOR_ACID</descriptor>
+    </type>
+    <level>0</level>
+    <casterClass>SUBCLASS_SORCERER</casterClass>
+    <casterClass>SUBCLASS_WIZARD</casterClass>
+    <action>ACTION_STANDARD</action>
+    <range effect="EFFECT_CLOSE">
+      <area>AREA_LINE</area>
+    </range>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+    </duration>
+    <precondition>PRECONDITION_RANGED_TOUCH_ATTACK</precondition>
+    <damage>
+      <numDice>1</numDice>
+      <typeDice>D_3</typeDice>
+      <modifier>0</modifier>
+    </damage>
+  </spell>
 </spellDictionary>

@@ -80,6 +80,8 @@
       <xsd:enumeration value="AREA_LINE"/>
       <xsd:enumeration value="AREA_CUBE"/>
       <xsd:enumeration value="AREA_CONE"/>
+      <xsd:enumeration value="AREA_CYLINDER"/>
+      <xsd:enumeration value="AREA_WALL"/>
     </xsd:restriction>
   </xsd:simpleType>
 

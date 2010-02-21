@@ -25,6 +25,8 @@ struct RPG_Magic_Spell_Range
 {
   unsigned int max;
   unsigned int increment;
+  unsigned char radius;
+  unsigned char height;
   RPG_Common_AreaOfEffect area;
   RPG_Magic_Spell_Effect effect;
 };

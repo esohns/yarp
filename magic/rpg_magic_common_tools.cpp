@@ -109,10 +109,26 @@ const std::string RPG_Magic_Common_Tools::spellRangeToString(const RPG_Magic_Spe
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   converter << temp.increment;
   result += converter.str();
-  result += ACE_TEXT_ALWAYS_CHAR(" ft/level\n");
+  result += ACE_TEXT_ALWAYS_CHAR(" ft\n");
   result += ACE_TEXT_ALWAYS_CHAR("area: ");
   result += RPG_Common_AreaOfEffectHelper::RPG_Common_AreaOfEffectToString(temp.area);
   result += ACE_TEXT_ALWAYS_CHAR("\n");
+  if (temp.area == AREA_CUBE)
+  {
+    result += ACE_TEXT_ALWAYS_CHAR("radius: ");
+    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    converter << ACE_static_cast(unsigned int, temp.radius);
+    result += converter.str();
+    result += ACE_TEXT_ALWAYS_CHAR(" ft\n");
+    if (temp.height)
+    {
+      result += ACE_TEXT_ALWAYS_CHAR("height: ");
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+      converter << ACE_static_cast(unsigned int, temp.height);
+      result += converter.str();
+      result += ACE_TEXT_ALWAYS_CHAR(" ft\n");
+    } // end IF
+  } // end IF
   result += ACE_TEXT_ALWAYS_CHAR("effect: ");
   result += RPG_Magic_Spell_EffectHelper::RPG_Magic_Spell_EffectToString(temp.effect);
   result += ACE_TEXT_ALWAYS_CHAR("\n");

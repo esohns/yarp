@@ -261,6 +261,12 @@ class RPG_Magic_Spell_Range_Type_pskel: public ::xml_schema::complex_content
   increment (unsigned int);
 
   virtual void
+  radius (unsigned char);
+
+  virtual void
+  height (unsigned char);
+
+  virtual void
   area (const RPG_Common_AreaOfEffect&);
 
   virtual void
@@ -278,6 +284,12 @@ class RPG_Magic_Spell_Range_Type_pskel: public ::xml_schema::complex_content
   increment_parser (::xml_schema::unsigned_int_pskel&);
 
   void
+  radius_parser (::xml_schema::unsigned_byte_pskel&);
+
+  void
+  height_parser (::xml_schema::unsigned_byte_pskel&);
+
+  void
   area_parser (::RPG_Common_AreaOfEffect_Type_pskel&);
 
   void
@@ -286,6 +298,8 @@ class RPG_Magic_Spell_Range_Type_pskel: public ::xml_schema::complex_content
   void
   parsers (::xml_schema::unsigned_int_pskel& /* max */,
            ::xml_schema::unsigned_int_pskel& /* increment */,
+           ::xml_schema::unsigned_byte_pskel& /* radius */,
+           ::xml_schema::unsigned_byte_pskel& /* height */,
            ::RPG_Common_AreaOfEffect_Type_pskel& /* area */,
            ::RPG_Magic_Spell_Effect_Type_pskel& /* effect */);
 
@@ -313,6 +327,8 @@ class RPG_Magic_Spell_Range_Type_pskel: public ::xml_schema::complex_content
   protected:
   ::xml_schema::unsigned_int_pskel* max_parser_;
   ::xml_schema::unsigned_int_pskel* increment_parser_;
+  ::xml_schema::unsigned_byte_pskel* radius_parser_;
+  ::xml_schema::unsigned_byte_pskel* height_parser_;
   ::RPG_Common_AreaOfEffect_Type_pskel* area_parser_;
   ::RPG_Magic_Spell_Effect_Type_pskel* effect_parser_;
 };

@@ -136,6 +136,8 @@ RPG_Magic_Spell_Range_Type::RPG_Magic_Spell_Range_Type()
 
   myCurrentRange.max = 0;
   myCurrentRange.increment = 0;
+  myCurrentRange.radius = 0;
+  myCurrentRange.height = 0;
   myCurrentRange.area = RPG_COMMON_AREAOFEFFECT_INVALID;
   myCurrentRange.effect = RPG_MAGIC_SPELL_EFFECT_INVALID;
 }
@@ -152,6 +154,20 @@ void RPG_Magic_Spell_Range_Type::increment(unsigned int increment_in)
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Range_Type::increment"));
 
   myCurrentRange.increment = increment_in;
+}
+
+void RPG_Magic_Spell_Range_Type::radius(unsigned char radius_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Range_Type::radius"));
+
+  myCurrentRange.radius = radius_in;
+}
+
+void RPG_Magic_Spell_Range_Type::height(unsigned char height_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Range_Type::height"));
+
+  myCurrentRange.height = height_in;
 }
 
 void RPG_Magic_Spell_Range_Type::area(const RPG_Common_AreaOfEffect& area_in)
@@ -177,6 +193,8 @@ RPG_Magic_Spell_Range RPG_Magic_Spell_Range_Type::post_RPG_Magic_Spell_Range_Typ
   // clear structure
   myCurrentRange.max = 0;
   myCurrentRange.increment = 0;
+  myCurrentRange.radius = 0;
+  myCurrentRange.height = 0;
   myCurrentRange.area = RPG_COMMON_AREAOFEFFECT_INVALID;
   myCurrentRange.effect = RPG_MAGIC_SPELL_EFFECT_INVALID;
 
