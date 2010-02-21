@@ -27,6 +27,7 @@
 #include <rpg_dice_common_tools.h>
 
 #include <rpg_common_subclass.h>
+#include <rpg_common_tools.h>
 
 #include <rpg_item_weapon.h>
 #include <rpg_item_armor.h>
@@ -307,6 +308,7 @@ void do_work(const std::string filename_in)
 
   // step1b: init string conversion facilities
   RPG_Dice_Common_Tools::initStringConversionTables();
+  RPG_Common_Tools::initStringConversionTables();
   RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
 //   RPG_Monster_Common_Tools::initStringConversionTables();

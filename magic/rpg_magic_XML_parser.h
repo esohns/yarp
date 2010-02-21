@@ -183,7 +183,7 @@ class RPG_Magic_Spell_PropertiesXML_Type
     virtual void casterClass(const RPG_Common_SubClass&);
     virtual void domain(const RPG_Magic_Domain&);
     virtual void domainLevel(unsigned char);
-    virtual void cost(unsigned char);
+    virtual void cost(unsigned int);
     virtual void action(const RPG_Common_ActionType&);
     virtual void range(const RPG_Magic_Spell_Range&);
     virtual void duration(const RPG_Magic_Spell_DurationProperties&);

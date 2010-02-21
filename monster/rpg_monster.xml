@@ -3538,7 +3538,7 @@
       <spell>
         <type>SPELL_ENTANGLE</type>
         <casterLevel>4</casterLevel>
-        <save reduction="SAVE_PARTIAL">
+        <save reduction="SAVEREDUCTION_PARTIAL">
           <type>SAVE_REFLEX</type>
           <attribute>ATTRIBUTE_WISDOM</attribute>
           <difficultyClass>13</difficultyClass>
@@ -3941,7 +3941,7 @@
       <spell>
         <type>SPELL_FEAR</type>
         <casterLevel>8</casterLevel>
-        <save reduction="SAVE_FULL">
+        <save>
           <type>SAVE_SPELL</type>
           <attribute>ATTRIBUTE_CHARISMA</attribute>
           <difficultyClass>17</difficultyClass>

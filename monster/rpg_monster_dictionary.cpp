@@ -623,21 +623,28 @@ void RPG_Monster_Dictionary::organizationStepToRoll(const RPG_Monster_Organizati
 
       break;
     }
-    case ORGANIZATION_BROOD:   // 2-4 --> 1d3+1
+    case ORGANIZATION_BAND:
+    case ORGANIZATION_BROOD:
+    case ORGANIZATION_COLONY:
+    case ORGANIZATION_CLAN:
     case ORGANIZATION_CLUSTER:
     case ORGANIZATION_CLUTCH:
-    case ORGANIZATION_PATCH:
+    case ORGANIZATION_COMPANY:
+    case ORGANIZATION_CROWD:
+    case ORGANIZATION_FLIGHT:
+    case ORGANIZATION_FLOCK:
     case ORGANIZATION_GANG:
-    case ORGANIZATION_TEAM: // 3-4 --> 1d2+2
-    case ORGANIZATION_SQUAD: // 3-5, 11-20 + leaders
-    case ORGANIZATION_GROUP: // 4-4
-    case ORGANIZATION_PACK: // 3-6 --> 1d4+2
-    case ORGANIZATION_COLONY:
-    case ORGANIZATION_FLOCK: // 5-8 --> 1d4+4
-    case ORGANIZATION_TRIBE: // 7-12 --> 1d6+6
-//     case ORGANIZATION_SLAVER: // 7-12 slaves
-    case ORGANIZATION_BAND: // 11-20 + 2 sergeants + 1 leader + 150% noncombatants
-    case ORGANIZATION_CLAN: // 30-100 + leaders + 50% noncombatants
+    case ORGANIZATION_GROUP:
+    case ORGANIZATION_MOB:
+    case ORGANIZATION_PACK:
+    case ORGANIZATION_PATCH:
+    case ORGANIZATION_PRIDE:
+    case ORGANIZATION_SQUAD:
+    case ORGANIZATION_SWARM:
+    case ORGANIZATION_TEAM:
+    case ORGANIZATION_TRIBE:
+    case ORGANIZATION_TROOP:
+    case ORGANIZATION_TROUPE:
     {
       RPG_Dice::rangeToRoll(organizationStep_in.range,
                             roll_out);
@@ -647,7 +654,7 @@ void RPG_Monster_Dictionary::organizationStepToRoll(const RPG_Monster_Organizati
     case ORGANIZATION_ANY:
     default:
     {
-      ACE_DEBUG((LM_DEBUG,
+      ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid organization \"%s\" --> check implementation !, returning\n"),
                  RPG_Monster_OrganizationHelper::RPG_Monster_OrganizationToString(organizationStep_in.type).c_str()));
 

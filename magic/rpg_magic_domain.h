@@ -23,7 +23,8 @@
 
 enum RPG_Magic_Domain
 {
-  DOMAIN_AIR = 0,
+  DOMAIN_NONE = 0,
+  DOMAIN_AIR,
   DOMAIN_ANIMAL,
   DOMAIN_CHAOS,
   DOMAIN_DEATH,
@@ -64,6 +65,7 @@ class RPG_Magic_DomainHelper
   inline static void init()
   {
     myRPG_Magic_DomainToStringTable.clear();
+    myRPG_Magic_DomainToStringTable.insert(std::make_pair(DOMAIN_NONE, ACE_TEXT_ALWAYS_CHAR("DOMAIN_NONE")));
     myRPG_Magic_DomainToStringTable.insert(std::make_pair(DOMAIN_AIR, ACE_TEXT_ALWAYS_CHAR("DOMAIN_AIR")));
     myRPG_Magic_DomainToStringTable.insert(std::make_pair(DOMAIN_ANIMAL, ACE_TEXT_ALWAYS_CHAR("DOMAIN_ANIMAL")));
     myRPG_Magic_DomainToStringTable.insert(std::make_pair(DOMAIN_CHAOS, ACE_TEXT_ALWAYS_CHAR("DOMAIN_CHAOS")));

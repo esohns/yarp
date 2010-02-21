@@ -447,7 +447,7 @@ class RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_con
   domainLevel (unsigned char);
 
   virtual void
-  cost (unsigned char);
+  cost (unsigned int);
 
   virtual void
   action (const RPG_Common_ActionType&);
@@ -497,7 +497,7 @@ class RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_con
   domainLevel_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  cost_parser (::xml_schema::unsigned_byte_pskel&);
+  cost_parser (::xml_schema::unsigned_int_pskel&);
 
   void
   action_parser (::RPG_Common_ActionType_Type_pskel&);
@@ -530,7 +530,7 @@ class RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_con
            ::RPG_Common_SubClass_Type_pskel& /* casterClass */,
            ::RPG_Magic_Domain_Type_pskel& /* domain */,
            ::xml_schema::unsigned_byte_pskel& /* domainLevel */,
-           ::xml_schema::unsigned_byte_pskel& /* cost */,
+           ::xml_schema::unsigned_int_pskel& /* cost */,
            ::RPG_Common_ActionType_Type_pskel& /* action */,
            ::RPG_Magic_Spell_Range_Type_pskel& /* range */,
            ::RPG_Magic_Spell_DurationProperties_Type_pskel& /* duration */,
@@ -568,7 +568,7 @@ class RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_con
   ::RPG_Common_SubClass_Type_pskel* casterClass_parser_;
   ::RPG_Magic_Domain_Type_pskel* domain_parser_;
   ::xml_schema::unsigned_byte_pskel* domainLevel_parser_;
-  ::xml_schema::unsigned_byte_pskel* cost_parser_;
+  ::xml_schema::unsigned_int_pskel* cost_parser_;
   ::RPG_Common_ActionType_Type_pskel* action_parser_;
   ::RPG_Magic_Spell_Range_Type_pskel* range_parser_;
   ::RPG_Magic_Spell_DurationProperties_Type_pskel* duration_parser_;

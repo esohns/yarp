@@ -274,7 +274,7 @@ RPG_Magic_Spell_PropertiesXML_Type::RPG_Magic_Spell_PropertiesXML_Type()
   myCurrentProperties.type.descriptors.clear();
   myCurrentProperties.level = 0;
   myCurrentProperties.casterClasses.clear();
-  myCurrentProperties.domain = RPG_MAGIC_DOMAIN_INVALID;
+  myCurrentProperties.domain = DOMAIN_NONE;
   myCurrentProperties.domainLevel = 0;
   myCurrentProperties.cost = 0;
   myCurrentProperties.action = RPG_COMMON_ACTIONTYPE_INVALID;
@@ -342,7 +342,7 @@ void RPG_Magic_Spell_PropertiesXML_Type::domainLevel(unsigned char domainLevel_i
   myCurrentProperties.domainLevel = domainLevel_in;
 }
 
-void RPG_Magic_Spell_PropertiesXML_Type::cost(unsigned char cost_in)
+void RPG_Magic_Spell_PropertiesXML_Type::cost(unsigned int cost_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PropertiesXML_Type::cost"));
 
@@ -419,7 +419,7 @@ RPG_Magic_Spell_PropertiesXML RPG_Magic_Spell_PropertiesXML_Type::post_RPG_Magic
   myCurrentProperties.type.descriptors.clear();
   myCurrentProperties.level = 0;
   myCurrentProperties.casterClasses.clear();
-  myCurrentProperties.domain = RPG_MAGIC_DOMAIN_INVALID;
+  myCurrentProperties.domain = DOMAIN_NONE;
   myCurrentProperties.domainLevel = 0;
   myCurrentProperties.cost = 0;
   myCurrentProperties.action = RPG_COMMON_ACTIONTYPE_INVALID;
@@ -534,13 +534,28 @@ void RPG_Magic_Dictionary_Type::spell(const RPG_Magic_Spell_PropertiesXML& spell
   RPG_Magic_Spell_Properties properties;
   properties.type = spell_in.type;
   properties.level = spell_in.level;
-  properties.casterClasses = spell_in.casterClasses;
+  for (std::vector<RPG_Common_SubClass>::const_iterator iterator = spell_in.casterClasses.begin();
+       iterator != spell_in.casterClasses.end();
+       iterator++)
+  {
+    properties.casterClasses.insert(*iterator);
+  } // end FOR
   properties.domain = spell_in.domain;
   properties.domainLevel = spell_in.domainLevel;
   properties.cost = spell_in.cost;
   properties.action = spell_in.action;
   properties.range = spell_in.range;
   properties.duration = spell_in.duration;
+  for (std::vector<RPG_Magic_Spell_Precondition>::const_iterator iterator = spell_in.preconditions.begin();
+       iterator != spell_in.preconditions.end();
+       iterator++)
+  {
+    properties.preconditions.insert(*iterator);
+  } // end FOR
+  properties.save = spell_in.save;
+  properties.damage = spell_in.damage;
+  properties.saveable = spell_in.saveable;
+  properties.resistible = spell_in.resistible;
 
   myDictionary->insert(std::make_pair(spell_in.name, properties));
 }

@@ -231,7 +231,7 @@ domainLevel_parser (::xml_schema::unsigned_byte_pskel& p)
 }
 
 void RPG_Magic_Spell_PropertiesXML_Type_pskel::
-cost_parser (::xml_schema::unsigned_byte_pskel& p)
+cost_parser (::xml_schema::unsigned_int_pskel& p)
 {
   this->cost_parser_ = &p;
 }
@@ -291,7 +291,7 @@ parsers (::xml_schema::string_pskel& name,
          ::RPG_Common_SubClass_Type_pskel& casterClass,
          ::RPG_Magic_Domain_Type_pskel& domain,
          ::xml_schema::unsigned_byte_pskel& domainLevel,
-         ::xml_schema::unsigned_byte_pskel& cost,
+         ::xml_schema::unsigned_int_pskel& cost,
          ::RPG_Common_ActionType_Type_pskel& action,
          ::RPG_Magic_Spell_Range_Type_pskel& range,
          ::RPG_Magic_Spell_DurationProperties_Type_pskel& duration,
@@ -832,7 +832,7 @@ domainLevel (unsigned char)
 }
 
 void RPG_Magic_Spell_PropertiesXML_Type_pskel::
-cost (unsigned char)
+cost (unsigned int)
 {
 }
 
@@ -1077,7 +1077,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "cost" && ns == "urn:rpg")
   {
     if (this->cost_parser_)
-      this->cost (this->cost_parser_->post_unsigned_byte ());
+      this->cost (this->cost_parser_->post_unsigned_int ());
 
     return true;
   }

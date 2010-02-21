@@ -29,7 +29,7 @@ struct RPG_Magic_Spell_PropertiesXML
   std::vector<RPG_Common_SubClass> casterClasses;
   RPG_Magic_Domain domain;
   unsigned char domainLevel;
-  unsigned char cost;
+  unsigned int cost;
   RPG_Common_ActionType action;
   RPG_Magic_Spell_Range range;
   RPG_Magic_Spell_DurationProperties duration;

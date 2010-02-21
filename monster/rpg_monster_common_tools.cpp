@@ -220,8 +220,6 @@ const std::string RPG_Monster_Common_Tools::organizationsToString(const RPG_Mons
   ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::organizationsToString"));
 
   std::string result;
-
-  std::string range_string;
   for (RPG_Monster_OrganizationListIterator_t iterator = organizations_in.begin();
        iterator != organizations_in.end();
        iterator++)
@@ -243,7 +241,6 @@ const std::string RPG_Monster_Common_Tools::organizationsToString(const RPG_Mons
   ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::organizationsToString"));
 
   std::string result;
-
   std::string range_string;
   for (RPG_Monster_OrganizationsIterator_t iterator = organizations_in.begin();
        iterator != organizations_in.end();

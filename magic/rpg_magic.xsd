@@ -86,6 +86,7 @@
 
   <xsd:simpleType name="RPG_Magic_Domain_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DOMAIN_NONE"/>
       <xsd:enumeration value="DOMAIN_AIR"/>
       <xsd:enumeration value="DOMAIN_ANIMAL"/>
       <xsd:enumeration value="DOMAIN_CHAOS"/>
@@ -264,7 +265,7 @@
       <xsd:element name="casterClass" type="RPG_Common_SubClass_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="domain" type="RPG_Magic_Domain_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="domainLevel" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="cost" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="cost" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="action" type="RPG_Common_ActionType_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="range" type="RPG_Magic_Spell_Range_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="duration" type="RPG_Magic_Spell_DurationProperties_Type" minOccurs="1" maxOccurs="1"/>

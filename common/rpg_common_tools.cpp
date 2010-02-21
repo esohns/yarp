@@ -19,10 +19,9 @@
  ***************************************************************************/
 #include "rpg_common_tools.h"
 
-#include <rpg_dice_incl.h>
-#include "rpg_common_incl.h"
-
 #include <ace/Log_Msg.h>
+
+#include <sstream>
 
 // init statics
 RPG_Common_SubClassToStringTable_t RPG_Common_SubClassHelper::myRPG_Common_SubClassToStringTable;
@@ -54,4 +53,28 @@ void RPG_Common_Tools::initStringConversionTables()
   // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Common_Tools: initialized string conversion tables...\n")));
+}
+
+const std::string RPG_Common_Tools::savingThrowToString(const RPG_Common_SavingThrowCheck& save_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::savingThrowToString"));
+
+  std::string result;
+
+  result += ACE_TEXT_ALWAYS_CHAR("type: ");
+  result += RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString(save_in.type);
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT_ALWAYS_CHAR("attribute: ");
+  result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(save_in.attribute);
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT_ALWAYS_CHAR("DC: ");
+  std::stringstream converter;
+  converter << ACE_static_cast(unsigned int, save_in.difficultyClass);
+  result += converter.str();
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT_ALWAYS_CHAR("reduction: ");
+  result += RPG_Common_SaveReductionTypeHelper::RPG_Common_SaveReductionTypeToString(save_in.reduction);
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+
+  return result;
 }

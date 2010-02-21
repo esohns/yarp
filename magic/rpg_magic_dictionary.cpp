@@ -23,9 +23,10 @@
 #include "rpg_magic_common_tools.h"
 
 #include <rpg_common_XML_parser.h>
-#include <rpg_common_areaofeffect.h>
+#include <rpg_common_tools.h>
 
 #include <rpg_dice_XML_parser.h>
+#include <rpg_dice_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -112,7 +113,7 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
                           subClass_p,
                           domain_p,
                           unsigned_byte_p,
-                          unsigned_byte_p,
+                          unsigned_int_p,
                           actionType_p,
                           range_p,
                           duration_p,
@@ -260,39 +261,26 @@ void RPG_Magic_Dictionary::dump() const
   ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::dump"));
 
   // simply dump the current content of our dictionary
-  std::string casterClasses;
   for (RPG_Magic_DictionaryIterator_t iterator = myDictionary.begin();
        iterator != myDictionary.end();
        iterator++)
   {
-    if (!(iterator->second).casterClasses.empty())
-    {
-      casterClasses.resize(0);
-      for (std::vector<RPG_Common_SubClass>::const_iterator iterator2 = (iterator->second).casterClasses.begin();
-           iterator2 != (iterator->second).casterClasses.end();
-           iterator2++)
-      {
-        casterClasses += RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator2);
-        casterClasses += ACE_TEXT_ALWAYS_CHAR(",");
-      } // end FOR
-      casterClasses.erase(--(casterClasses.end()));
-    } // end IF
-
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("Spell (\"%s\"):\nType: %s\nLevel: %d\nClass(es): %s\nDomain (Level): %s (%d)\nCost: %d\nAction Type: %s\nRange ((max/increment) / area, effect): (%d ft/%d ft) / %s, %s\nDuration (type, [duration|period rds], dismissible): %s\n"),
+               ACE_TEXT("Spell (\"%s\"):\nType: %s\nLevel: %d\nClass(es):\n----------\n%sDomain (Level): %s (%d)\nXP Cost: %d\nAction Type: %s\nRange:\n------\n%sDuration:\n---------\n%s\nPreconditions:\n--------------\n%sSave:\n-----\n%sDamage: %s\nResistible: %s\n"),
                (iterator->first).c_str(),
                RPG_Magic_Common_Tools::spellTypeToString((iterator->second).type).c_str(),
                ACE_static_cast(unsigned int, (iterator->second).level),
-               casterClasses.c_str(),
+               RPG_Magic_Common_Tools::casterClassesToString((iterator->second).casterClasses).c_str(),
                RPG_Magic_DomainHelper::RPG_Magic_DomainToString((iterator->second).domain).c_str(),
                ACE_static_cast(unsigned int, (iterator->second).domainLevel),
-               ACE_static_cast(unsigned int, (iterator->second).cost),
+               (iterator->second).cost,
                RPG_Common_ActionTypeHelper::RPG_Common_ActionTypeToString((iterator->second).action).c_str(),
-               (iterator->second).range.max,
-               (iterator->second).range.increment,
-               RPG_Common_AreaOfEffectHelper::RPG_Common_AreaOfEffectToString((iterator->second).range.area).c_str(),
-               RPG_Magic_Spell_EffectHelper::RPG_Magic_Spell_EffectToString((iterator->second).range.effect).c_str(),
-               RPG_Magic_Common_Tools::spellDurationToString((iterator->second).duration).c_str()));
+               RPG_Magic_Common_Tools::spellRangeToString((iterator->second).range).c_str(),
+               RPG_Magic_Common_Tools::spellDurationToString((iterator->second).duration).c_str(),
+               RPG_Magic_Common_Tools::preconditionsToString((iterator->second).preconditions).c_str(),
+               (((iterator->second).saveable != SAVE_NONE) ? RPG_Common_Tools::savingThrowToString((iterator->second).save).c_str() : ACE_TEXT_ALWAYS_CHAR("")),
+               RPG_Dice_Common_Tools::rollToString((iterator->second).damage).c_str(),
+               ((iterator->second).resistible ? ACE_TEXT_ALWAYS_CHAR("true") : ACE_TEXT_ALWAYS_CHAR("false"))));
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("===========================\n")));
   } // end FOR

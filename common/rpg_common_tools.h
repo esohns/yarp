@@ -20,7 +20,12 @@
 #ifndef RPG_COMMON_TOOLS_H
 #define RPG_COMMON_TOOLS_H
 
+#include <rpg_dice_incl.h>
+#include "rpg_common_incl.h"
+
 #include <ace/Global_Macros.h>
+
+#include <string>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -29,6 +34,8 @@ class RPG_Common_Tools
 {
  public:
   static void initStringConversionTables();
+
+  static const std::string savingThrowToString(const RPG_Common_SavingThrowCheck&); // save
 
  private:
   // safety measures
