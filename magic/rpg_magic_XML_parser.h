@@ -108,6 +108,35 @@ class RPG_Magic_Spell_Type_Type
     RPG_Magic_Spell_Type myCurrentType;
 };
 
+class RPG_Magic_CasterClassUnion_Type
+  : public RPG_Magic_CasterClassUnion_Type_pskel
+{
+  public:
+    RPG_Magic_CasterClassUnion_Type();
+
+//   virtual void pre();
+    virtual void _characters(const ::xml_schema::ro_string&);
+    virtual RPG_Magic_CasterClassUnion post_RPG_Magic_CasterClassUnion_Type();
+
+  private:
+    RPG_Magic_CasterClassUnion myCurrentCasterClassUnion;
+};
+
+class RPG_Magic_Spell_Level_Type
+  : public RPG_Magic_Spell_Level_Type_pskel
+{
+  public:
+    RPG_Magic_Spell_Level_Type();
+
+//     virtual void pre();
+    virtual void casterClass(const RPG_Magic_CasterClassUnion&);
+    virtual void level(unsigned char);
+    virtual RPG_Magic_Spell_Level post_RPG_Magic_Spell_Level_Type();
+
+  private:
+    RPG_Magic_Spell_Level myCurrentSpellLevel;
+};
+
 class RPG_Magic_Spell_Effect_Type
   : public RPG_Magic_Spell_Effect_Type_pskel,
   public ::xml_schema::string_pimpl
@@ -181,10 +210,7 @@ class RPG_Magic_Spell_PropertiesXML_Type
 //     virtual void pre();
     virtual void name(const ::std::string&);
     virtual void type(const RPG_Magic_Spell_Type&);
-    virtual void level(unsigned char);
-    virtual void casterClass(const RPG_Common_SubClass&);
-    virtual void domain(const RPG_Magic_Domain&);
-    virtual void domainLevel(unsigned char);
+    virtual void level(const RPG_Magic_Spell_Level&);
     virtual void cost(unsigned int);
     virtual void action(const RPG_Common_ActionType&);
     virtual void range(const RPG_Magic_Spell_Range&);

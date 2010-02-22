@@ -25,6 +25,8 @@ enum RPG_Magic_SpellType
 {
   SPELL_ACID_ARROW = 0,
   SPELL_ACID_FOG,
+  SPELL_ACID_SPLASH,
+  SPELL_AID,
   SPELL_ALIGN_WEAPON,
   SPELL_BLADE_BARRIER,
   SPELL_BLASPHEMY,
@@ -113,6 +115,8 @@ class RPG_Magic_SpellTypeHelper
     myRPG_Magic_SpellTypeToStringTable.clear();
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ACID_ARROW, ACE_TEXT_ALWAYS_CHAR("SPELL_ACID_ARROW")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ACID_FOG, ACE_TEXT_ALWAYS_CHAR("SPELL_ACID_FOG")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ACID_SPLASH, ACE_TEXT_ALWAYS_CHAR("SPELL_ACID_SPLASH")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_AID, ACE_TEXT_ALWAYS_CHAR("SPELL_AID")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ALIGN_WEAPON, ACE_TEXT_ALWAYS_CHAR("SPELL_ALIGN_WEAPON")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BLADE_BARRIER, ACE_TEXT_ALWAYS_CHAR("SPELL_BLADE_BARRIER")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BLASPHEMY, ACE_TEXT_ALWAYS_CHAR("SPELL_BLASPHEMY")));

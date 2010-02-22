@@ -205,9 +205,8 @@ RPG_Monster_SpecialPropertyTypeUnion_Type::RPG_Monster_SpecialPropertyTypeUnion_
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialPropertyTypeUnion_Type::RPG_Monster_SpecialPropertyTypeUnion_Type"));
 
-  myCurrentUnionType.ability = RPG_CHARACTER_ABILITY_INVALID;
-  myCurrentUnionType.abilitytype = RPG_MAGIC_ABILITYTYPE_INVALID;
   myCurrentUnionType.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
+  myCurrentUnionType.ability = RPG_CHARACTER_ABILITY_INVALID;
 }
 
 void RPG_Monster_SpecialPropertyTypeUnion_Type::_characters(const ::xml_schema::ro_string& abilityType_in)
@@ -237,9 +236,8 @@ RPG_Monster_SpecialPropertyTypeUnion RPG_Monster_SpecialPropertyTypeUnion_Type::
   RPG_Monster_SpecialPropertyTypeUnion result = myCurrentUnionType;
 
   // clear structure
-  myCurrentUnionType.ability = RPG_CHARACTER_ABILITY_INVALID;
-  myCurrentUnionType.abilitytype = RPG_MAGIC_ABILITYTYPE_INVALID;
   myCurrentUnionType.discriminator = RPG_Monster_SpecialPropertyTypeUnion::INVALID;
+  myCurrentUnionType.ability = RPG_CHARACTER_ABILITY_INVALID;
 
   return result;
 }

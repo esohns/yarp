@@ -13,9 +13,14 @@
       <subSchool>SUBSCHOOL_CREATION</subSchool>
       <descriptor>DESCRIPTOR_ACID</descriptor>
     </type>
-    <level>2</level>
-    <casterClass>SUBCLASS_SORCERER</casterClass>
-    <casterClass>SUBCLASS_WIZARD</casterClass>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>2</level>
+    </level>
     <action>ACTION_STANDARD</action>
     <range effect="EFFECT_LONG">
       <area>AREA_LINE</area>
@@ -40,11 +45,18 @@
       <subSchool>SUBSCHOOL_CREATION</subSchool>
       <descriptor>DESCRIPTOR_ACID</descriptor>
     </type>
-    <level>6</level>
-    <casterClass>SUBCLASS_SORCERER</casterClass>
-    <casterClass>SUBCLASS_WIZARD</casterClass>
-    <domain>DOMAIN_WATER</domain>
-    <domainLevel>7</domainLevel>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>6</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>6</level>
+    </level>
+    <level>
+      <casterClass>DOMAIN_WATER</casterClass>
+      <level>7</level>
+    </level>
     <action>ACTION_STANDARD</action>
     <range effect="EFFECT_MEDIUM">
       <radius>20</radius>
@@ -69,9 +81,14 @@
       <subSchool>SUBSCHOOL_CREATION</subSchool>
       <descriptor>DESCRIPTOR_ACID</descriptor>
     </type>
-    <level>0</level>
-    <casterClass>SUBCLASS_SORCERER</casterClass>
-    <casterClass>SUBCLASS_WIZARD</casterClass>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>0</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>0</level>
+    </level>
     <action>ACTION_STANDARD</action>
     <range effect="EFFECT_CLOSE">
       <area>AREA_LINE</area>
@@ -85,5 +102,34 @@
       <typeDice>D_3</typeDice>
       <modifier>0</modifier>
     </damage>
+  </spell>
+  <spell resistible="true">
+    <name>Aid</name>
+    <type>
+      <type>SPELL_AID</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>DOMAIN_GOOD</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>DOMAIN_LUCK</casterClass>
+      <level>2</level>
+    </level>
+    <action>ACTION_STANDARD</action>
+    <range effect="EFFECT_TOUCH">
+    </range>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>10</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
   </spell>
 </spellDictionary>

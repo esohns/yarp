@@ -123,6 +123,84 @@ RPG_Magic_Spell_Type RPG_Magic_Spell_Type_Type::post_RPG_Magic_Spell_Type_Type()
   return result;
 }
 
+RPG_Magic_CasterClassUnion_Type::RPG_Magic_CasterClassUnion_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_CasterClassUnion_Type::RPG_Magic_CasterClassUnion_Type"));
+
+  myCurrentCasterClassUnion.discriminator = RPG_Magic_CasterClassUnion::INVALID;
+  myCurrentCasterClassUnion.subclass = RPG_COMMON_SUBCLASS_INVALID;
+}
+
+void RPG_Magic_CasterClassUnion_Type::_characters(const ::xml_schema::ro_string& casterClass_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_CasterClassUnion_Type::_characters"));
+
+  // can be either:
+  // - RPG_Common_SubClass --> "SUBCLASS_xxx"
+  // - RPG_Magic_Domain --> "DOMAIN_xxx"
+  std::string type = casterClass_in;
+  if (type.find(ACE_TEXT_ALWAYS_CHAR("SUBCLASS_")) == 0)
+  {
+    myCurrentCasterClassUnion.subclass = RPG_Common_SubClassHelper::stringToRPG_Common_SubClass(casterClass_in);
+    myCurrentCasterClassUnion.discriminator = RPG_Magic_CasterClassUnion::SUBCLASS;
+  } // end IF
+  else
+  {
+    myCurrentCasterClassUnion.domain = RPG_Magic_DomainHelper::stringToRPG_Magic_Domain(casterClass_in);
+    myCurrentCasterClassUnion.discriminator = RPG_Magic_CasterClassUnion::DOMAIN;
+  } // end ELSE
+}
+
+RPG_Magic_CasterClassUnion RPG_Magic_CasterClassUnion_Type::post_RPG_Magic_CasterClassUnion_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_CasterClassUnion_Type::post_RPG_Magic_CasterClassUnion_Type"));
+
+  RPG_Magic_CasterClassUnion result = myCurrentCasterClassUnion;
+
+  // clear structure
+  myCurrentCasterClassUnion.discriminator = RPG_Magic_CasterClassUnion::INVALID;
+  myCurrentCasterClassUnion.subclass = RPG_COMMON_SUBCLASS_INVALID;
+
+  return result;
+}
+
+RPG_Magic_Spell_Level_Type::RPG_Magic_Spell_Level_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Level_Type::RPG_Magic_Spell_Level_Type"));
+
+  myCurrentSpellLevel.casterClass.discriminator = RPG_Magic_CasterClassUnion::INVALID;
+  myCurrentSpellLevel.casterClass.subclass = RPG_COMMON_SUBCLASS_INVALID;
+  myCurrentSpellLevel.level = 0;
+}
+
+void RPG_Magic_Spell_Level_Type::casterClass(const RPG_Magic_CasterClassUnion& casterClass_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Level_Type::casterClass"));
+
+  myCurrentSpellLevel.casterClass = casterClass_in;
+}
+
+void RPG_Magic_Spell_Level_Type::level(unsigned char level_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Level_Type::level"));
+
+  myCurrentSpellLevel.level = level_in;
+}
+
+RPG_Magic_Spell_Level RPG_Magic_Spell_Level_Type::post_RPG_Magic_Spell_Level_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Level_Type::post_RPG_Magic_Spell_Level_Type"));
+
+  RPG_Magic_Spell_Level result = myCurrentSpellLevel;
+
+  // clear structure
+  myCurrentSpellLevel.casterClass.discriminator = RPG_Magic_CasterClassUnion::INVALID;
+  myCurrentSpellLevel.casterClass.subclass = RPG_COMMON_SUBCLASS_INVALID;
+  myCurrentSpellLevel.level = 0;
+
+  return result;
+}
+
 RPG_Magic_Spell_Effect RPG_Magic_Spell_Effect_Type::post_RPG_Magic_Spell_Effect_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Effect_Type::post_RPG_Magic_Spell_Effect_Type"));
@@ -290,10 +368,7 @@ RPG_Magic_Spell_PropertiesXML_Type::RPG_Magic_Spell_PropertiesXML_Type()
   myCurrentProperties.type.school = RPG_MAGIC_SCHOOL_INVALID;
   myCurrentProperties.type.subSchool = RPG_MAGIC_SUBSCHOOL_INVALID;
   myCurrentProperties.type.descriptors.clear();
-  myCurrentProperties.level = 0;
-  myCurrentProperties.casterClasses.clear();
-  myCurrentProperties.domain = DOMAIN_NONE;
-  myCurrentProperties.domainLevel = 0;
+  myCurrentProperties.levels.clear();
   myCurrentProperties.cost = 0;
   myCurrentProperties.action = RPG_COMMON_ACTIONTYPE_INVALID;
   myCurrentProperties.range.max = 0;
@@ -332,32 +407,11 @@ void RPG_Magic_Spell_PropertiesXML_Type::type(const RPG_Magic_Spell_Type& type_i
   myCurrentProperties.type = type_in;
 }
 
-void RPG_Magic_Spell_PropertiesXML_Type::level(unsigned char level_in)
+void RPG_Magic_Spell_PropertiesXML_Type::level(const RPG_Magic_Spell_Level& level_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PropertiesXML_Type::level"));
 
-  myCurrentProperties.level = level_in;
-}
-
-void RPG_Magic_Spell_PropertiesXML_Type::casterClass(const RPG_Common_SubClass& casterClass_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PropertiesXML_Type::casterClass"));
-
-  myCurrentProperties.casterClasses.push_back(casterClass_in);
-}
-
-void RPG_Magic_Spell_PropertiesXML_Type::domain(const RPG_Magic_Domain& domain_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PropertiesXML_Type::domain"));
-
-  myCurrentProperties.domain = domain_in;
-}
-
-void RPG_Magic_Spell_PropertiesXML_Type::domainLevel(unsigned char domainLevel_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PropertiesXML_Type::domainLevel"));
-
-  myCurrentProperties.domainLevel = domainLevel_in;
+  myCurrentProperties.levels.push_back(level_in);
 }
 
 void RPG_Magic_Spell_PropertiesXML_Type::cost(unsigned int cost_in)
@@ -435,10 +489,7 @@ RPG_Magic_Spell_PropertiesXML RPG_Magic_Spell_PropertiesXML_Type::post_RPG_Magic
   myCurrentProperties.type.school = RPG_MAGIC_SCHOOL_INVALID;
   myCurrentProperties.type.subSchool = RPG_MAGIC_SUBSCHOOL_INVALID;
   myCurrentProperties.type.descriptors.clear();
-  myCurrentProperties.level = 0;
-  myCurrentProperties.casterClasses.clear();
-  myCurrentProperties.domain = DOMAIN_NONE;
-  myCurrentProperties.domainLevel = 0;
+  myCurrentProperties.levels.clear();
   myCurrentProperties.cost = 0;
   myCurrentProperties.action = RPG_COMMON_ACTIONTYPE_INVALID;
   myCurrentProperties.range.max = 0;
@@ -551,15 +602,7 @@ void RPG_Magic_Dictionary_Type::spell(const RPG_Magic_Spell_PropertiesXML& spell
 
   RPG_Magic_Spell_Properties properties;
   properties.type = spell_in.type;
-  properties.level = spell_in.level;
-  for (std::vector<RPG_Common_SubClass>::const_iterator iterator = spell_in.casterClasses.begin();
-       iterator != spell_in.casterClasses.end();
-       iterator++)
-  {
-    properties.casterClasses.insert(*iterator);
-  } // end FOR
-  properties.domain = spell_in.domain;
-  properties.domainLevel = spell_in.domainLevel;
+  properties.levels = spell_in.levels;
   properties.cost = spell_in.cost;
   properties.action = spell_in.action;
   properties.range = spell_in.range;

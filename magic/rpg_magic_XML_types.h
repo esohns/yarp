@@ -57,6 +57,8 @@ class RPG_Magic_SpellType_Type_pskel;
 class RPG_Magic_AbilityClass_Type_pskel;
 class RPG_Magic_AbilityType_Type_pskel;
 class RPG_Magic_Spell_Type_Type_pskel;
+class RPG_Magic_CasterClassUnion_Type_pskel;
+class RPG_Magic_Spell_Level_Type_pskel;
 class RPG_Magic_Spell_Effect_Type_pskel;
 class RPG_Magic_Spell_Range_Type_pskel;
 class RPG_Magic_Spell_Duration_Type_pskel;
@@ -232,6 +234,71 @@ class RPG_Magic_Spell_Type_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Magic_School_Type_pskel* school_parser_;
   ::RPG_Magic_SubSchool_Type_pskel* subSchool_parser_;
   ::RPG_Magic_Descriptor_Type_pskel* descriptor_parser_;
+};
+
+class RPG_Magic_CasterClassUnion_Type_pskel: public ::xml_schema::simple_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+  //
+  // virtual void
+  // _characters (const ::xml_schema::ro_string&);
+
+  virtual RPG_Magic_CasterClassUnion
+  post_RPG_Magic_CasterClassUnion_Type () = 0;
+};
+
+class RPG_Magic_Spell_Level_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  casterClass (const RPG_Magic_CasterClassUnion&);
+
+  virtual void
+  level (unsigned char);
+
+  virtual RPG_Magic_Spell_Level
+  post_RPG_Magic_Spell_Level_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  casterClass_parser (::RPG_Magic_CasterClassUnion_Type_pskel&);
+
+  void
+  level_parser (::xml_schema::unsigned_byte_pskel&);
+
+  void
+  parsers (::RPG_Magic_CasterClassUnion_Type_pskel& /* casterClass */,
+           ::xml_schema::unsigned_byte_pskel& /* level */);
+
+  // Constructor.
+  //
+  RPG_Magic_Spell_Level_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Magic_CasterClassUnion_Type_pskel* casterClass_parser_;
+  ::xml_schema::unsigned_byte_pskel* level_parser_;
 };
 
 class RPG_Magic_Spell_Effect_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -451,16 +518,7 @@ class RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_con
   type (const RPG_Magic_Spell_Type&);
 
   virtual void
-  level (unsigned char);
-
-  virtual void
-  casterClass (const RPG_Common_SubClass&);
-
-  virtual void
-  domain (const RPG_Magic_Domain&);
-
-  virtual void
-  domainLevel (unsigned char);
+  level (const RPG_Magic_Spell_Level&);
 
   virtual void
   cost (unsigned int);
@@ -501,16 +559,7 @@ class RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_con
   type_parser (::RPG_Magic_Spell_Type_Type_pskel&);
 
   void
-  level_parser (::xml_schema::unsigned_byte_pskel&);
-
-  void
-  casterClass_parser (::RPG_Common_SubClass_Type_pskel&);
-
-  void
-  domain_parser (::RPG_Magic_Domain_Type_pskel&);
-
-  void
-  domainLevel_parser (::xml_schema::unsigned_byte_pskel&);
+  level_parser (::RPG_Magic_Spell_Level_Type_pskel&);
 
   void
   cost_parser (::xml_schema::unsigned_int_pskel&);
@@ -542,10 +591,7 @@ class RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_con
   void
   parsers (::xml_schema::string_pskel& /* name */,
            ::RPG_Magic_Spell_Type_Type_pskel& /* type */,
-           ::xml_schema::unsigned_byte_pskel& /* level */,
-           ::RPG_Common_SubClass_Type_pskel& /* casterClass */,
-           ::RPG_Magic_Domain_Type_pskel& /* domain */,
-           ::xml_schema::unsigned_byte_pskel& /* domainLevel */,
+           ::RPG_Magic_Spell_Level_Type_pskel& /* level */,
            ::xml_schema::unsigned_int_pskel& /* cost */,
            ::RPG_Common_ActionType_Type_pskel& /* action */,
            ::RPG_Magic_Spell_Range_Type_pskel& /* range */,
@@ -580,10 +626,7 @@ class RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_con
   protected:
   ::xml_schema::string_pskel* name_parser_;
   ::RPG_Magic_Spell_Type_Type_pskel* type_parser_;
-  ::xml_schema::unsigned_byte_pskel* level_parser_;
-  ::RPG_Common_SubClass_Type_pskel* casterClass_parser_;
-  ::RPG_Magic_Domain_Type_pskel* domain_parser_;
-  ::xml_schema::unsigned_byte_pskel* domainLevel_parser_;
+  ::RPG_Magic_Spell_Level_Type_pskel* level_parser_;
   ::xml_schema::unsigned_int_pskel* cost_parser_;
   ::RPG_Common_ActionType_Type_pskel* action_parser_;
   ::RPG_Magic_Spell_Range_Type_pskel* range_parser_;

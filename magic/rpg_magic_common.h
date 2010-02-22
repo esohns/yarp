@@ -32,8 +32,8 @@
 typedef std::set<RPG_Magic_SpellType> RPG_Magic_Spells_t;
 typedef RPG_Magic_Spells_t::const_iterator RPG_Magic_SpellsIterator_t;
 
-typedef std::set<RPG_Common_SubClass> RPG_Magic_CasterClassesList_t;
-typedef RPG_Magic_CasterClassesList_t::const_iterator RPG_Magic_CasterClassesListIterator_t;
+typedef std::vector<RPG_Magic_Spell_Level> RPG_Magic_SpellLevelList_t;
+typedef RPG_Magic_SpellLevelList_t::const_iterator RPG_Magic_SpellLevelListIterator_t;
 typedef std::set<RPG_Magic_Spell_Precondition> RPG_Magic_Spell_PreconditionList_t;
 typedef RPG_Magic_Spell_PreconditionList_t::const_iterator RPG_Magic_Spell_PreconditionListIterator_t;
 
@@ -41,10 +41,7 @@ struct RPG_Magic_Spell_Properties
 {
 //   std::string name;
   RPG_Magic_Spell_Type type;
-  unsigned char level;
-  RPG_Magic_CasterClassesList_t casterClasses;
-  RPG_Magic_Domain domain;
-  unsigned char domainLevel;
+  std::vector<RPG_Magic_Spell_Level> levels;
   unsigned char cost;
   RPG_Common_ActionType action;
   RPG_Magic_Spell_Range range;

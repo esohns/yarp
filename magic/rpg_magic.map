@@ -26,6 +26,8 @@ namespace urn:rpg
   RPG_Magic_AbilityClass_Type             RPG_Magic_AbilityClass;
   RPG_Magic_AbilityType_Type              RPG_Magic_AbilityType;
   RPG_Magic_Spell_Type_Type               RPG_Magic_Spell_Type;
+  RPG_Magic_CasterClassUnion_Type         RPG_Magic_CasterClassUnion;
+  RPG_Magic_Spell_Level_Type              RPG_Magic_Spell_Level;
   RPG_Magic_Spell_Effect_Type             RPG_Magic_Spell_Effect;
   RPG_Magic_Spell_Range_Type              RPG_Magic_Spell_Range;
   RPG_Magic_Spell_Duration_Type           RPG_Magic_Spell_Duration;

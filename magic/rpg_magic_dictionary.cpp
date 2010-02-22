@@ -65,10 +65,14 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
                  subSchool_p,
                  descriptor_p);
 
+  RPG_Magic_CasterClassUnion_Type         casterClass_p;
   ::xml_schema::unsigned_byte_pimpl       unsigned_byte_p;
+  RPG_Magic_Spell_Level_Type              level_p;
+  level_p.parsers(casterClass_p,
+                  unsigned_byte_p);
 
   ::xml_schema::unsigned_int_pimpl        unsigned_int_p;
-  RPG_Common_SubClass_Type                subClass_p;
+
   RPG_Magic_Domain_Type                   domain_p;
   RPG_Common_ActionType_Type              actionType_p;
 
@@ -111,10 +115,7 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
   RPG_Magic_Spell_PropertiesXML_Type      propertiesXML_p;
   propertiesXML_p.parsers(string_p,
                           type_p,
-                          unsigned_byte_p,
-                          subClass_p,
-                          domain_p,
-                          unsigned_byte_p,
+                          level_p,
                           unsigned_int_p,
                           actionType_p,
                           range_p,
@@ -268,13 +269,10 @@ void RPG_Magic_Dictionary::dump() const
        iterator++)
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("Spell (\"%s\"):\nType: %s\nLevel: %d\nClass(es):\n----------\n%sDomain (Level): %s (%d)\nXP Cost: %d\nAction Type: %s\nRange:\n------\n%sDuration:\n---------\n%s\nPreconditions:\n--------------\n%sSave:\n-----\n%sDamage: %s\nResistible: %s\n"),
+               ACE_TEXT("Spell (\"%s\"):\nType: %s\nLevel(s):\n---------\n%sXP Cost: %d\nAction Type: %s\nRange:\n------\n%sDuration:\n---------\n%s\nPreconditions:\n--------------\n%sSave:\n-----\n%sDamage: %s\nResistible: %s\n"),
                (iterator->first).c_str(),
                RPG_Magic_Common_Tools::spellTypeToString((iterator->second).type).c_str(),
-               ACE_static_cast(unsigned int, (iterator->second).level),
-               RPG_Magic_Common_Tools::casterClassesToString((iterator->second).casterClasses).c_str(),
-               RPG_Magic_DomainHelper::RPG_Magic_DomainToString((iterator->second).domain).c_str(),
-               ACE_static_cast(unsigned int, (iterator->second).domainLevel),
+               RPG_Magic_Common_Tools::spellLevelsToString((iterator->second).levels).c_str(),
                (iterator->second).cost,
                RPG_Common_ActionTypeHelper::RPG_Common_ActionTypeToString((iterator->second).action).c_str(),
                RPG_Magic_Common_Tools::spellRangeToString((iterator->second).range).c_str(),

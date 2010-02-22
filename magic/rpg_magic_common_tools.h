@@ -37,8 +37,8 @@ class RPG_Magic_Common_Tools
   static void initStringConversionTables();
 
   static const std::string spellTypeToString(const RPG_Magic_Spell_Type&); // type
+  static const std::string spellLevelsToString(const RPG_Magic_SpellLevelList_t&); // levels
   static const std::string spellRangeToString(const RPG_Magic_Spell_Range&); // range
-  static const std::string casterClassesToString(const RPG_Magic_CasterClassesList_t&); // caster classes
   static const std::string spellDurationToString(const RPG_Magic_Spell_DurationProperties&); // duration
   static const std::string preconditionsToString(const RPG_Magic_Spell_PreconditionList_t&); // preconditions
 

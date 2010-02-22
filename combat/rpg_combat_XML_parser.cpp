@@ -32,8 +32,8 @@ RPG_Combat_RangedEffectUnion_Type::RPG_Combat_RangedEffectUnion_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_RangedEffectUnion_Type::RPG_Combat_RangedEffectUnion_Type"));
 
+  myCurrentRangedEffect.discriminator = RPG_Combat_RangedEffectUnion::INVALID;
   myCurrentRangedEffect.size = RPG_CHARACTER_SIZE_INVALID;
-  myCurrentRangedEffect.areaofeffect = RPG_COMMON_AREAOFEFFECT_INVALID;
 }
 
 void RPG_Combat_RangedEffectUnion_Type::_characters(const ::xml_schema::ro_string& effectType_in)
@@ -45,9 +45,15 @@ void RPG_Combat_RangedEffectUnion_Type::_characters(const ::xml_schema::ro_strin
   // - RPG_Common_AreaOfEffect --> "AREA_xxx"
   std::string type = effectType_in;
   if (type.find(ACE_TEXT_ALWAYS_CHAR("SIZE_")) == 0)
+  {
+    myCurrentRangedEffect.discriminator = RPG_Combat_RangedEffectUnion::SIZE;
     myCurrentRangedEffect.size = RPG_Character_SizeHelper::stringToRPG_Character_Size(effectType_in);
+  } // end IF
   else
+  {
+    myCurrentRangedEffect.discriminator = RPG_Combat_RangedEffectUnion::AREAOFEFFECT;
     myCurrentRangedEffect.areaofeffect = RPG_Common_AreaOfEffectHelper::stringToRPG_Common_AreaOfEffect(effectType_in);
+  } // end ELSE
 }
 
 RPG_Combat_RangedEffectUnion RPG_Combat_RangedEffectUnion_Type::post_RPG_Combat_RangedEffectUnion_Type()
@@ -57,8 +63,8 @@ RPG_Combat_RangedEffectUnion RPG_Combat_RangedEffectUnion_Type::post_RPG_Combat_
   RPG_Combat_RangedEffectUnion result = myCurrentRangedEffect;
 
   // clear structure
+  myCurrentRangedEffect.discriminator = RPG_Combat_RangedEffectUnion::INVALID;
   myCurrentRangedEffect.size = RPG_CHARACTER_SIZE_INVALID;
-  myCurrentRangedEffect.areaofeffect = RPG_COMMON_AREAOFEFFECT_INVALID;
 
   return result;
 }
@@ -139,9 +145,8 @@ RPG_Combat_DamageTypeUnion_Type::RPG_Combat_DamageTypeUnion_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageTypeUnion_Type::RPG_Combat_DamageTypeUnion_Type"));
 
-  myCurrentDamageType.physicaldamagetype = RPG_COMMON_PHYSICALDAMAGETYPE_INVALID;
-  myCurrentDamageType.specialdamagetype = RPG_COMBAT_SPECIALDAMAGETYPE_INVALID;
   myCurrentDamageType.discriminator = RPG_Combat_DamageTypeUnion::INVALID;
+  myCurrentDamageType.physicaldamagetype = RPG_COMMON_PHYSICALDAMAGETYPE_INVALID;
 }
 
 void RPG_Combat_DamageTypeUnion_Type::_characters(const ::xml_schema::ro_string& damageType_in)
@@ -171,9 +176,8 @@ RPG_Combat_DamageTypeUnion RPG_Combat_DamageTypeUnion_Type::post_RPG_Combat_Dama
   RPG_Combat_DamageTypeUnion result = myCurrentDamageType;
 
   // clear structure
-  myCurrentDamageType.physicaldamagetype = RPG_COMMON_PHYSICALDAMAGETYPE_INVALID;
-  myCurrentDamageType.specialdamagetype = RPG_COMBAT_SPECIALDAMAGETYPE_INVALID;
   myCurrentDamageType.discriminator = RPG_Combat_DamageTypeUnion::INVALID;
+  myCurrentDamageType.physicaldamagetype = RPG_COMMON_PHYSICALDAMAGETYPE_INVALID;
 
   return result;
 }
@@ -310,11 +314,10 @@ RPG_Combat_CheckTypeUnion_Type::RPG_Combat_CheckTypeUnion_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_CheckTypeUnion_Type::RPG_Combat_CheckTypeUnion_Type"));
 
-  myCurrentCheckTypeUnion.skill = RPG_CHARACTER_SKILL_INVALID;
-  myCurrentCheckTypeUnion.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  myCurrentCheckTypeUnion.basechecktypeunion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
-  myCurrentCheckTypeUnion.basechecktypeunion.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
   myCurrentCheckTypeUnion.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
+  myCurrentCheckTypeUnion.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheckTypeUnion.basechecktypeunion.discriminator = RPG_Common_BaseCheckTypeUnion::INVALID;
+  myCurrentCheckTypeUnion.basechecktypeunion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
 }
 
 void RPG_Combat_CheckTypeUnion_Type::_characters(const ::xml_schema::ro_string& checkType_in)
@@ -357,11 +360,10 @@ RPG_Combat_CheckTypeUnion RPG_Combat_CheckTypeUnion_Type::post_RPG_Combat_CheckT
   RPG_Combat_CheckTypeUnion result = myCurrentCheckTypeUnion;
 
   // clear structure
-  myCurrentCheckTypeUnion.skill = RPG_CHARACTER_SKILL_INVALID;
-  myCurrentCheckTypeUnion.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  myCurrentCheckTypeUnion.basechecktypeunion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
-  myCurrentCheckTypeUnion.basechecktypeunion.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
   myCurrentCheckTypeUnion.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
+  myCurrentCheckTypeUnion.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheckTypeUnion.basechecktypeunion.discriminator = RPG_Common_BaseCheckTypeUnion::INVALID;
+  myCurrentCheckTypeUnion.basechecktypeunion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
 
   return result;
 }

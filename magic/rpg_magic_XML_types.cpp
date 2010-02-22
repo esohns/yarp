@@ -86,6 +86,36 @@ RPG_Magic_Spell_Type_Type_pskel ()
 {
 }
 
+// RPG_Magic_Spell_Level_Type_pskel
+//
+
+void RPG_Magic_Spell_Level_Type_pskel::
+casterClass_parser (::RPG_Magic_CasterClassUnion_Type_pskel& p)
+{
+  this->casterClass_parser_ = &p;
+}
+
+void RPG_Magic_Spell_Level_Type_pskel::
+level_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->level_parser_ = &p;
+}
+
+void RPG_Magic_Spell_Level_Type_pskel::
+parsers (::RPG_Magic_CasterClassUnion_Type_pskel& casterClass,
+         ::xml_schema::unsigned_byte_pskel& level)
+{
+  this->casterClass_parser_ = &casterClass;
+  this->level_parser_ = &level;
+}
+
+RPG_Magic_Spell_Level_Type_pskel::
+RPG_Magic_Spell_Level_Type_pskel ()
+: casterClass_parser_ (0),
+  level_parser_ (0)
+{
+}
+
 // RPG_Magic_Spell_Range_Type_pskel
 //
 
@@ -225,27 +255,9 @@ type_parser (::RPG_Magic_Spell_Type_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_PropertiesXML_Type_pskel::
-level_parser (::xml_schema::unsigned_byte_pskel& p)
+level_parser (::RPG_Magic_Spell_Level_Type_pskel& p)
 {
   this->level_parser_ = &p;
-}
-
-void RPG_Magic_Spell_PropertiesXML_Type_pskel::
-casterClass_parser (::RPG_Common_SubClass_Type_pskel& p)
-{
-  this->casterClass_parser_ = &p;
-}
-
-void RPG_Magic_Spell_PropertiesXML_Type_pskel::
-domain_parser (::RPG_Magic_Domain_Type_pskel& p)
-{
-  this->domain_parser_ = &p;
-}
-
-void RPG_Magic_Spell_PropertiesXML_Type_pskel::
-domainLevel_parser (::xml_schema::unsigned_byte_pskel& p)
-{
-  this->domainLevel_parser_ = &p;
 }
 
 void RPG_Magic_Spell_PropertiesXML_Type_pskel::
@@ -305,10 +317,7 @@ resistible_parser (::xml_schema::boolean_pskel& p)
 void RPG_Magic_Spell_PropertiesXML_Type_pskel::
 parsers (::xml_schema::string_pskel& name,
          ::RPG_Magic_Spell_Type_Type_pskel& type,
-         ::xml_schema::unsigned_byte_pskel& level,
-         ::RPG_Common_SubClass_Type_pskel& casterClass,
-         ::RPG_Magic_Domain_Type_pskel& domain,
-         ::xml_schema::unsigned_byte_pskel& domainLevel,
+         ::RPG_Magic_Spell_Level_Type_pskel& level,
          ::xml_schema::unsigned_int_pskel& cost,
          ::RPG_Common_ActionType_Type_pskel& action,
          ::RPG_Magic_Spell_Range_Type_pskel& range,
@@ -322,9 +331,6 @@ parsers (::xml_schema::string_pskel& name,
   this->name_parser_ = &name;
   this->type_parser_ = &type;
   this->level_parser_ = &level;
-  this->casterClass_parser_ = &casterClass;
-  this->domain_parser_ = &domain;
-  this->domainLevel_parser_ = &domainLevel;
   this->cost_parser_ = &cost;
   this->action_parser_ = &action;
   this->range_parser_ = &range;
@@ -341,9 +347,6 @@ RPG_Magic_Spell_PropertiesXML_Type_pskel ()
 : name_parser_ (0),
   type_parser_ (0),
   level_parser_ (0),
-  casterClass_parser_ (0),
-  domain_parser_ (0),
-  domainLevel_parser_ (0),
   cost_parser_ (0),
   action_parser_ (0),
   range_parser_ (0),
@@ -536,6 +539,78 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->descriptor_parser_)
       this->descriptor (this->descriptor_parser_->post_RPG_Magic_Descriptor_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Magic_Spell_Level_Type_pskel
+//
+
+void RPG_Magic_Spell_Level_Type_pskel::
+casterClass (const RPG_Magic_CasterClassUnion&)
+{
+}
+
+void RPG_Magic_Spell_Level_Type_pskel::
+level (unsigned char)
+{
+}
+
+bool RPG_Magic_Spell_Level_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "casterClass" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->casterClass_parser_;
+
+    if (this->casterClass_parser_)
+      this->casterClass_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "level" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->level_parser_;
+
+    if (this->level_parser_)
+      this->level_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Magic_Spell_Level_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "casterClass" && ns == "urn:rpg")
+  {
+    if (this->casterClass_parser_)
+      this->casterClass (this->casterClass_parser_->post_RPG_Magic_CasterClassUnion_Type ());
+
+    return true;
+  }
+
+  if (n == "level" && ns == "urn:rpg")
+  {
+    if (this->level_parser_)
+      this->level (this->level_parser_->post_unsigned_byte ());
 
     return true;
   }
@@ -876,22 +951,7 @@ type (const RPG_Magic_Spell_Type&)
 }
 
 void RPG_Magic_Spell_PropertiesXML_Type_pskel::
-level (unsigned char)
-{
-}
-
-void RPG_Magic_Spell_PropertiesXML_Type_pskel::
-casterClass (const RPG_Common_SubClass&)
-{
-}
-
-void RPG_Magic_Spell_PropertiesXML_Type_pskel::
-domain (const RPG_Magic_Domain&)
-{
-}
-
-void RPG_Magic_Spell_PropertiesXML_Type_pskel::
-domainLevel (unsigned char)
+level (const RPG_Magic_Spell_Level&)
 {
 }
 
@@ -976,36 +1036,6 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->level_parser_)
       this->level_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "casterClass" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->casterClass_parser_;
-
-    if (this->casterClass_parser_)
-      this->casterClass_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "domain" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->domain_parser_;
-
-    if (this->domain_parser_)
-      this->domain_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "domainLevel" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->domainLevel_parser_;
-
-    if (this->domainLevel_parser_)
-      this->domainLevel_parser_->pre ();
 
     return true;
   }
@@ -1109,31 +1139,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "level" && ns == "urn:rpg")
   {
     if (this->level_parser_)
-      this->level (this->level_parser_->post_unsigned_byte ());
-
-    return true;
-  }
-
-  if (n == "casterClass" && ns == "urn:rpg")
-  {
-    if (this->casterClass_parser_)
-      this->casterClass (this->casterClass_parser_->post_RPG_Common_SubClass_Type ());
-
-    return true;
-  }
-
-  if (n == "domain" && ns == "urn:rpg")
-  {
-    if (this->domain_parser_)
-      this->domain (this->domain_parser_->post_RPG_Magic_Domain_Type ());
-
-    return true;
-  }
-
-  if (n == "domainLevel" && ns == "urn:rpg")
-  {
-    if (this->domainLevel_parser_)
-      this->domainLevel (this->domainLevel_parser_->post_unsigned_byte ());
+      this->level (this->level_parser_->post_RPG_Magic_Spell_Level_Type ());
 
     return true;
   }

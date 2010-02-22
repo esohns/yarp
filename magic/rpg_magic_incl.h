@@ -30,6 +30,8 @@
 #include "rpg_magic_abilityclass.h"
 #include "rpg_magic_abilitytype.h"
 #include "rpg_magic_spell_type.h"
+#include "rpg_magic_casterclassunion.h"
+#include "rpg_magic_spell_level.h"
 #include "rpg_magic_spell_effect.h"
 #include "rpg_magic_spell_range.h"
 #include "rpg_magic_spell_duration.h"

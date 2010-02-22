@@ -117,6 +117,7 @@
       <xsd:enumeration value="SPELL_ACID_ARROW"/>
       <xsd:enumeration value="SPELL_ACID_FOG"/>
       <xsd:enumeration value="SPELL_ACID_SPLASH"/>
+      <xsd:enumeration value="SPELL_AID"/>
       <xsd:enumeration value="SPELL_ALIGN_WEAPON"/>
       <xsd:enumeration value="SPELL_BLADE_BARRIER"/>
       <xsd:enumeration value="SPELL_BLASPHEMY"/>
@@ -212,6 +213,17 @@
     </xsd:sequence>
   </xsd:complexType>
 
+  <xsd:simpleType name="RPG_Magic_CasterClassUnion_Type">
+    <xsd:union memberTypes="RPG_Common_SubClass_Type RPG_Magic_Domain_Type"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Magic_Spell_Level_Type">
+    <xsd:sequence>
+      <xsd:element name="casterClass" type="RPG_Magic_CasterClassUnion_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="level" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
   <xsd:simpleType name="RPG_Magic_Spell_Effect_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="EFFECT_PERSONAL"/>
@@ -230,7 +242,7 @@
       <xsd:element name="increment" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="radius" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="height" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="area" type="RPG_Common_AreaOfEffect_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="area" type="RPG_Common_AreaOfEffect_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="effect" type="RPG_Magic_Spell_Effect_Type" use="optional" default="EFFECT_PERSONAL"/>
   </xsd:complexType>
@@ -265,10 +277,7 @@
     <xsd:sequence>
       <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="type" type="RPG_Magic_Spell_Type_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="level" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="casterClass" type="RPG_Common_SubClass_Type" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="domain" type="RPG_Magic_Domain_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="domainLevel" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="level" type="RPG_Magic_Spell_Level_Type" minOccurs="1" maxOccurs="unbounded"/>
       <xsd:element name="cost" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="action" type="RPG_Common_ActionType_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="range" type="RPG_Magic_Spell_Range_Type" minOccurs="1" maxOccurs="1"/>

@@ -83,6 +83,7 @@ RPG_Common_BaseCheckTypeUnion_Type::RPG_Common_BaseCheckTypeUnion_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_BaseCheckTypeUnion_Type::RPG_Common_BaseCheckTypeUnion_Type"));
 
+  myBaseCheckTypeUnion.discriminator = RPG_Common_BaseCheckTypeUnion::INVALID;
   myBaseCheckTypeUnion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
   myBaseCheckTypeUnion.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
 }
@@ -96,9 +97,15 @@ void RPG_Common_BaseCheckTypeUnion_Type::_characters(const ::xml_schema::ro_stri
   // - RPG_Common_SavingThrow_Type --> "SAVE_xxx"
   std::string type = checkType_in;
   if (type.find(ACE_TEXT_ALWAYS_CHAR("CHECK_")) == 0)
+  {
     myBaseCheckTypeUnion.checktype = RPG_Common_CheckTypeHelper::stringToRPG_Common_CheckType(checkType_in);
+    myBaseCheckTypeUnion.discriminator = RPG_Common_BaseCheckTypeUnion::CHECKTYPE;
+  } // end IF
   else
+  {
     myBaseCheckTypeUnion.savingthrow = RPG_Common_SavingThrowHelper::stringToRPG_Common_SavingThrow(checkType_in);
+    myBaseCheckTypeUnion.discriminator = RPG_Common_BaseCheckTypeUnion::SAVINGTHROW;
+  } // end ELSE
 }
 
 RPG_Common_BaseCheckTypeUnion RPG_Common_BaseCheckTypeUnion_Type::post_RPG_Common_BaseCheckTypeUnion_Type()
@@ -108,6 +115,7 @@ RPG_Common_BaseCheckTypeUnion RPG_Common_BaseCheckTypeUnion_Type::post_RPG_Commo
   RPG_Common_BaseCheckTypeUnion result = myBaseCheckTypeUnion;
 
   // clear structure
+  myBaseCheckTypeUnion.discriminator = RPG_Common_BaseCheckTypeUnion::INVALID;
   myBaseCheckTypeUnion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
   myBaseCheckTypeUnion.savingthrow = RPG_COMMON_SAVINGTHROW_INVALID;
 
