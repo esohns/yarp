@@ -77,14 +77,14 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
   RPG_Common_ActionType_Type              actionType_p;
 
   RPG_Common_AreaOfEffect_Type            area_p;
-  RPG_Magic_Spell_Effect_Type             effect_p;
-  RPG_Magic_Spell_Range_Type              range_p;
+  RPG_Magic_Spell_RangeEffect_Type        rangeEffect_p;
+  RPG_Magic_Spell_RangeProperties_Type    range_p;
   range_p.parsers(unsigned_int_p,
                   unsigned_int_p,
                   unsigned_byte_p,
                   unsigned_byte_p,
                   area_p,
-                  effect_p);
+                  rangeEffect_p);
 
   RPG_Magic_Spell_Duration_Type           durationType_p;
   RPG_Dice_DieType_Type                   dieType_p;
@@ -97,6 +97,7 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
   RPG_Magic_Spell_DurationProperties_Type duration_p;
   duration_p.parsers(durationType_p,
                      unsigned_int_p,
+                     unsigned_byte_p,
                      unsigned_byte_p,
                      roll_p,
                      bool_p);
@@ -112,6 +113,17 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
                  unsigned_byte_p,
                  reduction_p);
 
+  RPG_Magic_Spell_Effect_Type             effect_p;
+  RPG_Common_Amount_Type                  amount_p;
+  ::xml_schema::byte_pimpl                byte_p;
+  amount_p.parsers(byte_p,
+                   roll_p);
+  RPG_Magic_Spell_EffectProperties_Type   effectProperties_p;
+  effectProperties_p.parsers(effect_p,
+                             amount_p,
+                             amount_p,
+                             unsigned_byte_p);
+
   RPG_Magic_Spell_PropertiesXML_Type      propertiesXML_p;
   propertiesXML_p.parsers(string_p,
                           type_p,
@@ -122,7 +134,7 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
                           duration_p,
                           precondition_p,
                           save_p,
-                          roll_p,
+                          effectProperties_p,
                           saveType_p,
                           bool_p);
 
@@ -269,7 +281,7 @@ void RPG_Magic_Dictionary::dump() const
        iterator++)
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("Spell (\"%s\"):\nType: %s\nLevel(s):\n---------\n%sXP Cost: %d\nAction Type: %s\nRange:\n------\n%sDuration:\n---------\n%s\nPreconditions:\n--------------\n%sSave:\n-----\n%sDamage: %s\nResistible: %s\n"),
+               ACE_TEXT("Spell (\"%s\"):\nType: %s\nLevel(s):\n---------\n%sXP Cost: %d\nAction Type: %s\nRange:\n------\n%sDuration:\n---------\n%s\nPreconditions:\n--------------\n%sSave:\n-----\n%sEffect(s):\n----------\n%sResistible: %s\n"),
                (iterator->first).c_str(),
                RPG_Magic_Common_Tools::spellTypeToString((iterator->second).type).c_str(),
                RPG_Magic_Common_Tools::spellLevelsToString((iterator->second).levels).c_str(),
@@ -279,7 +291,7 @@ void RPG_Magic_Dictionary::dump() const
                RPG_Magic_Common_Tools::spellDurationToString((iterator->second).duration).c_str(),
                RPG_Magic_Common_Tools::preconditionsToString((iterator->second).preconditions).c_str(),
                (((iterator->second).saveable != SAVE_NONE) ? RPG_Common_Tools::savingThrowToString((iterator->second).save).c_str() : ACE_TEXT_ALWAYS_CHAR("")),
-               RPG_Dice_Common_Tools::rollToString((iterator->second).damage).c_str(),
+               RPG_Magic_Common_Tools::effectsToString((iterator->second).effects).c_str(),
                ((iterator->second).resistible ? ACE_TEXT_ALWAYS_CHAR("true") : ACE_TEXT_ALWAYS_CHAR("false"))));
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("===========================\n")));

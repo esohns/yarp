@@ -139,6 +139,21 @@ class RPG_Common_SavingThrowCheck_Type
     RPG_Common_SavingThrowCheck myCurrentCheck;
 };
 
+class RPG_Common_Amount_Type
+  : public RPG_Common_Amount_Type_pskel
+{
+  public:
+    RPG_Common_Amount_Type();
+
+//   virtual void pre();
+    virtual void value(signed char);
+    virtual void range(const RPG_Dice_Roll&);
+    virtual RPG_Common_Amount post_RPG_Common_Amount_Type();
+
+  private:
+    RPG_Common_Amount myCurrentAmount;
+};
+
 class RPG_Common_Usage_Type
  : public RPG_Common_Usage_Type_pskel
 {

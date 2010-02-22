@@ -32,6 +32,7 @@
 #include "rpg_common_basechecktypeunion.h"
 #include "rpg_common_savereductiontype.h"
 #include "rpg_common_savingthrowcheck.h"
+#include "rpg_common_amount.h"
 #include "rpg_common_usage.h"
 #include "rpg_common_duration.h"
 #include "rpg_common_camp.h"

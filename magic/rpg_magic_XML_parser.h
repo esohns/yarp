@@ -137,20 +137,20 @@ class RPG_Magic_Spell_Level_Type
     RPG_Magic_Spell_Level myCurrentSpellLevel;
 };
 
-class RPG_Magic_Spell_Effect_Type
-  : public RPG_Magic_Spell_Effect_Type_pskel,
+class RPG_Magic_Spell_RangeEffect_Type
+  : public RPG_Magic_Spell_RangeEffect_Type_pskel,
   public ::xml_schema::string_pimpl
 {
   public:
 //   virtual void pre();
-    virtual RPG_Magic_Spell_Effect post_RPG_Magic_Spell_Effect_Type();
+    virtual RPG_Magic_Spell_RangeEffect post_RPG_Magic_Spell_RangeEffect_Type();
 };
 
-class RPG_Magic_Spell_Range_Type
-  : public RPG_Magic_Spell_Range_Type_pskel
+class RPG_Magic_Spell_RangeProperties_Type
+  : public RPG_Magic_Spell_RangeProperties_Type_pskel
 {
   public:
-    RPG_Magic_Spell_Range_Type();
+    RPG_Magic_Spell_RangeProperties_Type();
 
 //     virtual void pre();
     virtual void max(unsigned int);
@@ -158,11 +158,11 @@ class RPG_Magic_Spell_Range_Type
     virtual void radius(unsigned char);
     virtual void height(unsigned char);
     virtual void area(const RPG_Common_AreaOfEffect&);
-    virtual void effect(const RPG_Magic_Spell_Effect&);
-    virtual RPG_Magic_Spell_Range post_RPG_Magic_Spell_Range_Type();
+    virtual void effect(const RPG_Magic_Spell_RangeEffect&);
+    virtual RPG_Magic_Spell_RangeProperties post_RPG_Magic_Spell_RangeProperties_Type();
 
   private:
-    RPG_Magic_Spell_Range myCurrentRange;
+    RPG_Magic_Spell_RangeProperties myCurrentProperties;
 };
 
 class RPG_Magic_Spell_Duration_Type
@@ -184,6 +184,7 @@ class RPG_Magic_Spell_DurationProperties_Type
     virtual void type(const RPG_Magic_Spell_Duration&);
     virtual void duration(unsigned int);
     virtual void levelIncrement(unsigned char);
+    virtual void levelIncrementMax(unsigned char);
     virtual void period(const RPG_Dice_Roll&);
     virtual void dismissible(bool);
     virtual RPG_Magic_Spell_DurationProperties post_RPG_Magic_Spell_DurationProperties_Type();
@@ -201,6 +202,32 @@ class RPG_Magic_Spell_Precondition_Type
     virtual RPG_Magic_Spell_Precondition post_RPG_Magic_Spell_Precondition_Type();
 };
 
+class RPG_Magic_Spell_Effect_Type
+  : public RPG_Magic_Spell_Effect_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Magic_Spell_Effect post_RPG_Magic_Spell_Effect_Type();
+};
+
+class RPG_Magic_Spell_EffectProperties_Type
+  : public RPG_Magic_Spell_EffectProperties_Type_pskel
+{
+  public:
+    RPG_Magic_Spell_EffectProperties_Type();
+
+//     virtual void pre();
+    virtual void type(const RPG_Magic_Spell_Effect&);
+    virtual void base(const RPG_Common_Amount&);
+    virtual void levelIncrement(const RPG_Common_Amount&);
+    virtual void levelIncrementMax(unsigned char);
+    virtual RPG_Magic_Spell_EffectProperties post_RPG_Magic_Spell_EffectProperties_Type();
+
+  private:
+    RPG_Magic_Spell_EffectProperties myCurrentProperties;
+};
+
 class RPG_Magic_Spell_PropertiesXML_Type
   : public RPG_Magic_Spell_PropertiesXML_Type_pskel
 {
@@ -213,11 +240,11 @@ class RPG_Magic_Spell_PropertiesXML_Type
     virtual void level(const RPG_Magic_Spell_Level&);
     virtual void cost(unsigned int);
     virtual void action(const RPG_Common_ActionType&);
-    virtual void range(const RPG_Magic_Spell_Range&);
+    virtual void range(const RPG_Magic_Spell_RangeProperties&);
     virtual void duration(const RPG_Magic_Spell_DurationProperties&);
     virtual void precondition(const RPG_Magic_Spell_Precondition&);
     virtual void save(const RPG_Common_SavingThrowCheck&);
-    virtual void damage(const RPG_Dice_Roll&);
+    virtual void effect(const RPG_Magic_Spell_EffectProperties&);
     virtual void saveable(const RPG_Common_SavingThrow&);
     virtual void resistible(bool);
     virtual RPG_Magic_Spell_PropertiesXML post_RPG_Magic_Spell_PropertiesXML_Type();

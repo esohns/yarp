@@ -11,6 +11,7 @@ namespace urn:rpg
   RPG_Common_SubClass_Type                RPG_Common_SubClass;
   RPG_Common_ActionType_Type              RPG_Common_ActionType;
   RPG_Common_AreaOfEffect_Type            RPG_Common_AreaOfEffect;
+  RPG_Common_Amount_Type                  RPG_Common_Amount;
   RPG_Common_Usage_Type                   RPG_Common_Usage;
   RPG_Common_SavingThrow_Type             RPG_Common_SavingThrow;
   RPG_Common_SavingThrowCheck_Type        RPG_Common_SavingThrowCheck;
@@ -28,11 +29,13 @@ namespace urn:rpg
   RPG_Magic_Spell_Type_Type               RPG_Magic_Spell_Type;
   RPG_Magic_CasterClassUnion_Type         RPG_Magic_CasterClassUnion;
   RPG_Magic_Spell_Level_Type              RPG_Magic_Spell_Level;
-  RPG_Magic_Spell_Effect_Type             RPG_Magic_Spell_Effect;
-  RPG_Magic_Spell_Range_Type              RPG_Magic_Spell_Range;
+  RPG_Magic_Spell_RangeEffect_Type        RPG_Magic_Spell_RangeEffect;
+  RPG_Magic_Spell_RangeProperties_Type    RPG_Magic_Spell_RangeProperties;
   RPG_Magic_Spell_Duration_Type           RPG_Magic_Spell_Duration;
   RPG_Magic_Spell_DurationProperties_Type RPG_Magic_Spell_DurationProperties;
   RPG_Magic_Spell_Precondition_Type       RPG_Magic_Spell_Precondition;
+  RPG_Magic_Spell_Effect_Type             RPG_Magic_Spell_Effect;
+  RPG_Magic_Spell_EffectProperties_Type   RPG_Magic_Spell_EffectProperties;
   RPG_Magic_Spell_PropertiesXML_Type      RPG_Magic_Spell_PropertiesXML;
   RPG_Magic_SpellLikeProperties_Type      RPG_Magic_SpellLikeProperties;
 #  RPG_Magic_Dictionary_Type                RPG_Magic_Dictionary;

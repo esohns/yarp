@@ -23,13 +23,10 @@
 
 enum RPG_Magic_Spell_Effect
 {
-  EFFECT_PERSONAL = 0,
-  EFFECT_TOUCH,
-  EFFECT_CLOSE,
-  EFFECT_MEDIUM,
-  EFFECT_LONG,
-  EFFECT_UNLIMITED,
-  EFFECT_RANGED,
+  SPELLEFFECT_DAMAGE = 0,
+  SPELLEFFECT_BONUS_HP,
+  SPELLEFFECT_BONUS_MORALE,
+  SPELLEFFECT_RESISTANCE_FEAR,
   //
   RPG_MAGIC_SPELL_EFFECT_MAX,
   RPG_MAGIC_SPELL_EFFECT_INVALID
@@ -49,13 +46,10 @@ class RPG_Magic_Spell_EffectHelper
   inline static void init()
   {
     myRPG_Magic_Spell_EffectToStringTable.clear();
-    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(EFFECT_PERSONAL, ACE_TEXT_ALWAYS_CHAR("EFFECT_PERSONAL")));
-    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(EFFECT_TOUCH, ACE_TEXT_ALWAYS_CHAR("EFFECT_TOUCH")));
-    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(EFFECT_CLOSE, ACE_TEXT_ALWAYS_CHAR("EFFECT_CLOSE")));
-    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(EFFECT_MEDIUM, ACE_TEXT_ALWAYS_CHAR("EFFECT_MEDIUM")));
-    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(EFFECT_LONG, ACE_TEXT_ALWAYS_CHAR("EFFECT_LONG")));
-    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(EFFECT_UNLIMITED, ACE_TEXT_ALWAYS_CHAR("EFFECT_UNLIMITED")));
-    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(EFFECT_RANGED, ACE_TEXT_ALWAYS_CHAR("EFFECT_RANGED")));
+    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_DAMAGE, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_DAMAGE")));
+    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_BONUS_HP, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_BONUS_HP")));
+    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_BONUS_MORALE, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_BONUS_MORALE")));
+    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_RESISTANCE_FEAR, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_RESISTANCE_FEAR")));
   };
 
   inline static std::string RPG_Magic_Spell_EffectToString(const RPG_Magic_Spell_Effect& element_in)

@@ -60,6 +60,7 @@ class RPG_Common_SavingThrow_Type_pskel;
 class RPG_Common_BaseCheckTypeUnion_Type_pskel;
 class RPG_Common_SaveReductionType_Type_pskel;
 class RPG_Common_SavingThrowCheck_Type_pskel;
+class RPG_Common_Amount_Type_pskel;
 class RPG_Common_Usage_Type_pskel;
 class RPG_Common_Duration_Type_pskel;
 class RPG_Common_Camp_Type_pskel;
@@ -271,6 +272,56 @@ class RPG_Common_SavingThrowCheck_Type_pskel: public ::xml_schema::complex_conte
   ::RPG_Common_Attribute_Type_pskel* attribute_parser_;
   ::xml_schema::unsigned_byte_pskel* difficultyClass_parser_;
   ::RPG_Common_SaveReductionType_Type_pskel* reduction_parser_;
+};
+
+class RPG_Common_Amount_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  value (signed char);
+
+  virtual void
+  range (const RPG_Dice_Roll&);
+
+  virtual RPG_Common_Amount
+  post_RPG_Common_Amount_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  value_parser (::xml_schema::byte_pskel&);
+
+  void
+  range_parser (::RPG_Dice_Roll_Type_pskel&);
+
+  void
+  parsers (::xml_schema::byte_pskel& /* value */,
+           ::RPG_Dice_Roll_Type_pskel& /* range */);
+
+  // Constructor.
+  //
+  RPG_Common_Amount_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::xml_schema::byte_pskel* value_parser_;
+  ::RPG_Dice_Roll_Type_pskel* range_parser_;
 };
 
 class RPG_Common_Usage_Type_pskel: public ::xml_schema::complex_content

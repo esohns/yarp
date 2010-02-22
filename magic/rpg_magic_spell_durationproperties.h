@@ -26,6 +26,7 @@ struct RPG_Magic_Spell_DurationProperties
   RPG_Magic_Spell_Duration type;
   unsigned int duration;
   unsigned char levelIncrement;
+  unsigned char levelIncrementMax;
   RPG_Dice_Roll period;
   bool dismissible;
 };

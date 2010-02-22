@@ -38,9 +38,10 @@ RPG_Magic_DomainToStringTable_t RPG_Magic_DomainHelper::myRPG_Magic_DomainToStri
 RPG_Magic_SpellTypeToStringTable_t RPG_Magic_SpellTypeHelper::myRPG_Magic_SpellTypeToStringTable;
 RPG_Magic_AbilityClassToStringTable_t RPG_Magic_AbilityClassHelper::myRPG_Magic_AbilityClassToStringTable;
 RPG_Magic_AbilityTypeToStringTable_t RPG_Magic_AbilityTypeHelper::myRPG_Magic_AbilityTypeToStringTable;
-RPG_Magic_Spell_EffectToStringTable_t RPG_Magic_Spell_EffectHelper::myRPG_Magic_Spell_EffectToStringTable;
+RPG_Magic_Spell_RangeEffectToStringTable_t RPG_Magic_Spell_RangeEffectHelper::myRPG_Magic_Spell_RangeEffectToStringTable;
 RPG_Magic_Spell_DurationToStringTable_t RPG_Magic_Spell_DurationHelper::myRPG_Magic_Spell_DurationToStringTable;
 RPG_Magic_Spell_PreconditionToStringTable_t RPG_Magic_Spell_PreconditionHelper::myRPG_Magic_Spell_PreconditionToStringTable;
+RPG_Magic_Spell_EffectToStringTable_t RPG_Magic_Spell_EffectHelper::myRPG_Magic_Spell_EffectToStringTable;
 
 void RPG_Magic_Common_Tools::initStringConversionTables()
 {
@@ -53,9 +54,10 @@ void RPG_Magic_Common_Tools::initStringConversionTables()
   RPG_Magic_SpellTypeHelper::init();
   RPG_Magic_AbilityClassHelper::init();
   RPG_Magic_AbilityTypeHelper::init();
-  RPG_Magic_Spell_EffectHelper::init();
+  RPG_Magic_Spell_RangeEffectHelper::init();
   RPG_Magic_Spell_DurationHelper::init();
   RPG_Magic_Spell_PreconditionHelper::init();
+  RPG_Magic_Spell_EffectHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
@@ -135,29 +137,29 @@ const std::string RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_Sp
   return result;
 }
 
-const std::string RPG_Magic_Common_Tools::spellRangeToString(const RPG_Magic_Spell_Range& range_in)
+const std::string RPG_Magic_Common_Tools::spellRangeToString(const RPG_Magic_Spell_RangeProperties& range_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellRangeToString"));
 
   std::string result;
   std::stringstream converter;
 
-  RPG_Magic_Spell_Range temp = range_in;
+  RPG_Magic_Spell_RangeProperties temp = range_in;
   if ((range_in.max == 0) || (range_in.increment == 0))
     updateSpellRange(temp);
 
   switch (temp.effect)
   {
-    case EFFECT_PERSONAL:
-    case EFFECT_TOUCH:
+    case RANGEEFFECT_PERSONAL:
+    case RANGEEFFECT_TOUCH:
     {
       break;
     }
-    case EFFECT_CLOSE:
-    case EFFECT_MEDIUM:
-    case EFFECT_LONG:
-    case EFFECT_UNLIMITED:
-    case EFFECT_RANGED:
+    case RANGEEFFECT_CLOSE:
+    case RANGEEFFECT_MEDIUM:
+    case RANGEEFFECT_LONG:
+    case RANGEEFFECT_UNLIMITED:
+    case RANGEEFFECT_RANGED:
     {
       result += ACE_TEXT_ALWAYS_CHAR("max: ");
       converter << temp.max;
@@ -194,13 +196,13 @@ const std::string RPG_Magic_Common_Tools::spellRangeToString(const RPG_Magic_Spe
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid effect \"%s\" --> check implementation !, returning\n"),
-                 RPG_Magic_Spell_EffectHelper::RPG_Magic_Spell_EffectToString(temp.effect).c_str()));
+                 RPG_Magic_Spell_RangeEffectHelper::RPG_Magic_Spell_RangeEffectToString(temp.effect).c_str()));
 
       break;
     }
   } // end SWITCH
   result += ACE_TEXT_ALWAYS_CHAR("effect: ");
-  result += RPG_Magic_Spell_EffectHelper::RPG_Magic_Spell_EffectToString(temp.effect);
+  result += RPG_Magic_Spell_RangeEffectHelper::RPG_Magic_Spell_RangeEffectToString(temp.effect);
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
   return result;
@@ -230,7 +232,16 @@ const std::string RPG_Magic_Common_Tools::spellDurationToString(const RPG_Magic_
         converter << ACE_static_cast(unsigned int, duration_in.levelIncrement);
         result += ACE_TEXT_ALWAYS_CHAR(" + [casterLevel / ");
         result += converter.str();
-        result += ACE_TEXT_ALWAYS_CHAR("]");
+        if (duration_in.levelIncrementMax)
+        {
+          converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+          converter << ACE_static_cast(unsigned int, duration_in.levelIncrementMax);
+          result += ACE_TEXT_ALWAYS_CHAR(" (max: ");
+          result += converter.str();
+          result += ACE_TEXT_ALWAYS_CHAR("th)]");
+        }
+        else
+          result += ACE_TEXT_ALWAYS_CHAR("]");
       } // end IF
     } // end ELSE
 
@@ -258,49 +269,103 @@ const std::string RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_
   return result;
 }
 
-void RPG_Magic_Common_Tools::updateSpellRange(RPG_Magic_Spell_Range& range_inout)
+const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_EffectList_t& effects_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::effectsToString"));
+
+  std::string result;
+  std::stringstream converter;
+  for (RPG_Magic_Spell_EffectListIterator_t iterator = effects_in.begin();
+       iterator != effects_in.end();
+       iterator++)
+  {
+    result += RPG_Magic_Spell_EffectHelper::RPG_Magic_Spell_EffectToString((*iterator).type);
+    result += ACE_TEXT_ALWAYS_CHAR(": ");
+    if ((*iterator).base.range.typeDice == RPG_DICE_DIETYPE_INVALID)
+    {
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+      converter << ACE_static_cast(int, (*iterator).base.value);
+      result += converter.str();
+    } // end IF
+    else
+    {
+      result += RPG_Dice_Common_Tools::rollToString((*iterator).base.range);
+    } // end ELSE
+    if (((*iterator).levelIncrement.value) ||
+        ((*iterator).levelIncrement.range.typeDice != RPG_DICE_DIETYPE_INVALID))
+    {
+      result += ACE_TEXT_ALWAYS_CHAR(" [+ ");
+      if ((*iterator).levelIncrement.range.typeDice == RPG_DICE_DIETYPE_INVALID)
+      {
+        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+        converter << ACE_static_cast(int, (*iterator).levelIncrement.value);
+        result += converter.str();
+      } // end IF
+      else
+      {
+        result += RPG_Dice_Common_Tools::rollToString((*iterator).levelIncrement.range);
+      } // end ELSE
+
+      if ((*iterator).levelIncrementMax)
+      {
+        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+        converter << ACE_static_cast(unsigned int, (*iterator).levelIncrementMax);
+        result += ACE_TEXT_ALWAYS_CHAR(" / casterLevel (max: ");
+        result += converter.str();
+        result += ACE_TEXT_ALWAYS_CHAR("th)]");
+      } // end IF
+      else
+        result += ACE_TEXT_ALWAYS_CHAR(" / casterLevel]");
+    } // end IF
+    result += ACE_TEXT_ALWAYS_CHAR("\n");
+  } // end FOR
+
+  return result;
+}
+
+void RPG_Magic_Common_Tools::updateSpellRange(RPG_Magic_Spell_RangeProperties& range_inout)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::updateSpellRange"));
 
   switch (range_inout.effect)
   {
-    case EFFECT_PERSONAL:
-    case EFFECT_TOUCH:
+    case RANGEEFFECT_PERSONAL:
+    case RANGEEFFECT_TOUCH:
     {
       range_inout.max = 0;
       range_inout.increment = 0;
 
       break;
     }
-    case EFFECT_CLOSE:
+    case RANGEEFFECT_CLOSE:
     {
       range_inout.max = 25;
       range_inout.increment = 5; // per casterLevel/2
 
       break;
     }
-    case EFFECT_MEDIUM:
+    case RANGEEFFECT_MEDIUM:
     {
       range_inout.max = 100;
       range_inout.increment = 10; // per casterLevel
 
       break;
     }
-    case EFFECT_LONG:
+    case RANGEEFFECT_LONG:
     {
       range_inout.max = 400;
       range_inout.increment = 40; // per casterLevel
 
       break;
     }
-    case EFFECT_UNLIMITED:
+    case RANGEEFFECT_UNLIMITED:
     {
       range_inout.max = std::numeric_limits<unsigned int>::max();
       range_inout.increment = std::numeric_limits<unsigned int>::max();
 
       break;
     }
-    case EFFECT_RANGED:
+    case RANGEEFFECT_RANGED:
     {
       break;
     }
@@ -308,7 +373,7 @@ void RPG_Magic_Common_Tools::updateSpellRange(RPG_Magic_Spell_Range& range_inout
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid effect \"%s\" --> check implementation !, returning\n"),
-                 RPG_Magic_Spell_EffectHelper::RPG_Magic_Spell_EffectToString(range_inout.effect).c_str()));
+                 RPG_Magic_Spell_RangeEffectHelper::RPG_Magic_Spell_RangeEffectToString(range_inout.effect).c_str()));
 
       break;
     }

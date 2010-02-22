@@ -38,11 +38,12 @@ class RPG_Magic_Common_Tools
 
   static const std::string spellTypeToString(const RPG_Magic_Spell_Type&); // type
   static const std::string spellLevelsToString(const RPG_Magic_SpellLevelList_t&); // levels
-  static const std::string spellRangeToString(const RPG_Magic_Spell_Range&); // range
+  static const std::string spellRangeToString(const RPG_Magic_Spell_RangeProperties&); // range
   static const std::string spellDurationToString(const RPG_Magic_Spell_DurationProperties&); // duration
   static const std::string preconditionsToString(const RPG_Magic_Spell_PreconditionList_t&); // preconditions
+  static const std::string effectsToString(const RPG_Magic_Spell_EffectList_t&); // effects
 
-  static void updateSpellRange(RPG_Magic_Spell_Range&); // range
+  static void updateSpellRange(RPG_Magic_Spell_RangeProperties&); // range
 
  private:
   // safety measures

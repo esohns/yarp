@@ -182,6 +182,45 @@ RPG_Common_SavingThrowCheck RPG_Common_SavingThrowCheck_Type::post_RPG_Common_Sa
   return result;
 }
 
+RPG_Common_Amount_Type::RPG_Common_Amount_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Amount_Type::RPG_Common_Amount_Type"));
+
+  myCurrentAmount.value = 0;
+  myCurrentAmount.range.numDice = 0;
+  myCurrentAmount.range.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentAmount.range.modifier = 0;
+}
+
+void RPG_Common_Amount_Type::value(signed char value_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Amount_Type::value"));
+
+  myCurrentAmount.value = value_in;
+}
+
+void RPG_Common_Amount_Type::range(const RPG_Dice_Roll& range_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Amount_Type::range"));
+
+  myCurrentAmount.range = range_in;
+}
+
+RPG_Common_Amount RPG_Common_Amount_Type::post_RPG_Common_Amount_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Amount_Type::post_RPG_Common_Amount_Type"));
+
+  RPG_Common_Amount result = myCurrentAmount;
+
+  // clear structure
+  myCurrentAmount.value = 0;
+  myCurrentAmount.range.numDice = 0;
+  myCurrentAmount.range.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentAmount.range.modifier = 0;
+
+  return result;
+}
+
 RPG_Common_Usage_Type::RPG_Common_Usage_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_Usage_Type::RPG_Common_Usage_Type"));

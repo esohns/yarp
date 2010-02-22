@@ -28,11 +28,11 @@ struct RPG_Magic_Spell_PropertiesXML
   std::vector<RPG_Magic_Spell_Level> levels;
   unsigned int cost;
   RPG_Common_ActionType action;
-  RPG_Magic_Spell_Range range;
+  RPG_Magic_Spell_RangeProperties range;
   RPG_Magic_Spell_DurationProperties duration;
   std::vector<RPG_Magic_Spell_Precondition> preconditions;
   RPG_Common_SavingThrowCheck save;
-  RPG_Dice_Roll damage;
+  std::vector<RPG_Magic_Spell_EffectProperties> effects;
   RPG_Common_SavingThrow saveable;
   bool resistible;
 };

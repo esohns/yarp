@@ -12,8 +12,6 @@
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import chance_dice schema (as declared above) -->
 <!--   <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/> -->
-<!--   import item schema (as declared above) -->
-<!--   <xsd:import namespace="urn:rpg_item" schemaLocation="../item/rpg_item.xsd"/> -->
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
@@ -130,6 +128,17 @@
       <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="reduction" type="RPG_Common_SaveReductionType_Type" use="optional" default="SAVEREDUCTION_NEGATES"/>
+  </xsd:complexType>
+
+<!--  <xsd:simpleType name="RPG_Common_Amount_Type">
+    <xsd:union memberTypes="xsd:byte RPG_Dice_Roll_Type"/>
+  </xsd:simpleType>-->
+
+  <xsd:complexType name="RPG_Common_Amount_Type">
+    <xsd:sequence>
+      <xsd:element name="value" type="xsd:byte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="range" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Common_Usage_Type">

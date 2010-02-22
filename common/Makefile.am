@@ -6,7 +6,7 @@ INCLUDES = -I$(top_srcdir)/.
 
 
 include_HEADERS = rpg_common.h rpg_common_XML_parser.h rpg_common_XML_types.h \
-	rpg_common_actiontype.h rpg_common_areaofeffect.h rpg_common_attribute.h \
+	rpg_common_actiontype.h rpg_common_amount.h rpg_common_areaofeffect.h rpg_common_attribute.h \
 	rpg_common_basechecktypeunion.h rpg_common_camp.h rpg_common_checktype.h rpg_common_duration.h \
 	rpg_common_effecttype.h rpg_common_incl.h rpg_common_physicaldamagetype.h \
 	rpg_common_savereductiontype.h rpg_common_savingthrow.h rpg_common_savingthrowcheck.h \
@@ -15,7 +15,7 @@ include_HEADERS = rpg_common.h rpg_common_XML_parser.h rpg_common_XML_types.h \
 lib_LTLIBRARIES = libRPG_Common.la
 libRPG_Common_la_SOURCES = rpg_XMLSchema_XML_types.h rpg_common.h \
 	rpg_common_XML_parser.cpp rpg_common_XML_parser.h rpg_common_XML_types.cpp rpg_common_XML_types.h \
-	rpg_common_actiontype.h rpg_common_areaofeffect.h rpg_common_attribute.h \
+	rpg_common_actiontype.h rpg_common_amount.h rpg_common_areaofeffect.h rpg_common_attribute.h \
 	rpg_common_basechecktypeunion.h rpg_common_camp.h rpg_common_checktype.h rpg_common_duration.h \
 	rpg_common_effecttype.h rpg_common_incl.h rpg_common_physicaldamagetype.h \
 	rpg_common_savereductiontype.h rpg_common_savingthrow.h rpg_common_savingthrowcheck.h \

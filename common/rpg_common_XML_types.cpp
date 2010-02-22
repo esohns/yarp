@@ -86,6 +86,36 @@ RPG_Common_SavingThrowCheck_Type_pskel ()
 {
 }
 
+// RPG_Common_Amount_Type_pskel
+//
+
+void RPG_Common_Amount_Type_pskel::
+value_parser (::xml_schema::byte_pskel& p)
+{
+  this->value_parser_ = &p;
+}
+
+void RPG_Common_Amount_Type_pskel::
+range_parser (::RPG_Dice_Roll_Type_pskel& p)
+{
+  this->range_parser_ = &p;
+}
+
+void RPG_Common_Amount_Type_pskel::
+parsers (::xml_schema::byte_pskel& value,
+         ::RPG_Dice_Roll_Type_pskel& range)
+{
+  this->value_parser_ = &value;
+  this->range_parser_ = &range;
+}
+
+RPG_Common_Amount_Type_pskel::
+RPG_Common_Amount_Type_pskel ()
+: value_parser_ (0),
+  range_parser_ (0)
+{
+}
+
 // RPG_Common_Usage_Type_pskel
 //
 
@@ -282,6 +312,78 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
       this->reduction_parser_->_post_impl ();
       this->reduction (this->reduction_parser_->post_RPG_Common_SaveReductionType_Type ());
     }
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Common_Amount_Type_pskel
+//
+
+void RPG_Common_Amount_Type_pskel::
+value (signed char)
+{
+}
+
+void RPG_Common_Amount_Type_pskel::
+range (const RPG_Dice_Roll&)
+{
+}
+
+bool RPG_Common_Amount_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "value" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->value_parser_;
+
+    if (this->value_parser_)
+      this->value_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "range" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->range_parser_;
+
+    if (this->range_parser_)
+      this->range_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Common_Amount_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "value" && ns == "urn:rpg")
+  {
+    if (this->value_parser_)
+      this->value (this->value_parser_->post_byte ());
+
+    return true;
+  }
+
+  if (n == "range" && ns == "urn:rpg")
+  {
+    if (this->range_parser_)
+      this->range (this->range_parser_->post_RPG_Dice_Roll_Type ());
 
     return true;
   }

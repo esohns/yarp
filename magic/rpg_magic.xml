@@ -22,20 +22,26 @@
       <level>2</level>
     </level>
     <action>ACTION_STANDARD</action>
-    <range effect="EFFECT_LONG">
+    <range effect="RANGEEFFECT_LONG">
       <area>AREA_LINE</area>
     </range>
     <duration>
       <type>DURATION_INSTANTANEOUS</type>
       <duration>1</duration>
       <levelIncrement>3</levelIncrement>
+      <levelIncrementMax>18</levelIncrementMax>
     </duration>
     <precondition>PRECONDITION_RANGED_TOUCH_ATTACK</precondition>
-    <damage>
-      <numDice>2</numDice>
-      <typeDice>D_4</typeDice>
-      <modifier>0</modifier>
-    </damage>
+    <effect>
+      <type>SPELLEFFECT_DAMAGE</type>
+      <base>
+        <range>
+          <numDice>2</numDice>
+          <typeDice>D_4</typeDice>
+          <modifier>0</modifier>
+        </range>
+      </base>
+    </effect>
   </spell>
   <spell>
     <name>Acid Fog</name>
@@ -58,7 +64,7 @@
       <level>7</level>
     </level>
     <action>ACTION_STANDARD</action>
-    <range effect="EFFECT_MEDIUM">
+    <range effect="RANGEEFFECT_MEDIUM">
       <radius>20</radius>
       <area>AREA_CUBE</area>
     </range>
@@ -67,11 +73,16 @@
       <duration>0</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
-    <damage>
-      <numDice>2</numDice>
-      <typeDice>D_6</typeDice>
-      <modifier>0</modifier>
-    </damage>
+    <effect>
+      <type>SPELLEFFECT_DAMAGE</type>
+      <base>
+        <range>
+          <numDice>2</numDice>
+          <typeDice>D_6</typeDice>
+          <modifier>0</modifier>
+        </range>
+      </base>
+    </effect>
   </spell>
   <spell>
     <name>Acid Splash</name>
@@ -90,18 +101,23 @@
       <level>0</level>
     </level>
     <action>ACTION_STANDARD</action>
-    <range effect="EFFECT_CLOSE">
+    <range effect="RANGEEFFECT_CLOSE">
       <area>AREA_LINE</area>
     </range>
     <duration>
       <type>DURATION_INSTANTANEOUS</type>
     </duration>
     <precondition>PRECONDITION_RANGED_TOUCH_ATTACK</precondition>
-    <damage>
-      <numDice>1</numDice>
-      <typeDice>D_3</typeDice>
-      <modifier>0</modifier>
-    </damage>
+    <effect>
+      <type>SPELLEFFECT_DAMAGE</type>
+      <base>
+        <range>
+          <numDice>1</numDice>
+          <typeDice>D_3</typeDice>
+          <modifier>0</modifier>
+        </range>
+      </base>
+    </effect>
   </spell>
   <spell resistible="true">
     <name>Aid</name>
@@ -124,12 +140,42 @@
       <level>2</level>
     </level>
     <action>ACTION_STANDARD</action>
-    <range effect="EFFECT_TOUCH">
+    <range effect="RANGEEFFECT_TOUCH">
     </range>
     <duration>
       <type>DURATION_INSTANTANEOUS</type>
       <duration>10</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
+    <effect>
+      <type>SPELLEFFECT_BONUS_HP</type>
+      <base>
+        <range>
+          <numDice>1</numDice>
+          <typeDice>D_8</typeDice>
+          <modifier>0</modifier>
+        </range>
+      </base>
+      <levelIncrement>
+        <range>
+          <numDice>0</numDice>
+          <typeDice>D_0</typeDice>
+          <modifier>1</modifier>
+        </range>
+      </levelIncrement>
+      <levelIncrementMax>10</levelIncrementMax>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_BONUS_MORALE</type>
+      <base>
+        <value>1</value>
+      </base>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_RESISTANCE_FEAR</type>
+      <base>
+        <value>1</value>
+      </base>
+    </effect>
   </spell>
 </spellDictionary>

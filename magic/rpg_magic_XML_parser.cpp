@@ -201,80 +201,80 @@ RPG_Magic_Spell_Level RPG_Magic_Spell_Level_Type::post_RPG_Magic_Spell_Level_Typ
   return result;
 }
 
-RPG_Magic_Spell_Effect RPG_Magic_Spell_Effect_Type::post_RPG_Magic_Spell_Effect_Type()
+RPG_Magic_Spell_RangeEffect RPG_Magic_Spell_RangeEffect_Type::post_RPG_Magic_Spell_RangeEffect_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Effect_Type::post_RPG_Magic_Spell_Effect_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_RangeEffect_Type::post_RPG_Magic_Spell_RangeEffect_Type"));
 
-  return RPG_Magic_Spell_EffectHelper::stringToRPG_Magic_Spell_Effect(post_string());
+  return RPG_Magic_Spell_RangeEffectHelper::stringToRPG_Magic_Spell_RangeEffect(post_string());
 }
 
-RPG_Magic_Spell_Range_Type::RPG_Magic_Spell_Range_Type()
+RPG_Magic_Spell_RangeProperties_Type::RPG_Magic_Spell_RangeProperties_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Range_Type::RPG_Magic_Spell_Range_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_RangeProperties_Type::RPG_Magic_Spell_RangeProperties_Type"));
 
-  myCurrentRange.max = 0;
-  myCurrentRange.increment = 0;
-  myCurrentRange.radius = 0;
-  myCurrentRange.height = 0;
-  myCurrentRange.area = RPG_COMMON_AREAOFEFFECT_INVALID;
-  myCurrentRange.effect = RPG_MAGIC_SPELL_EFFECT_INVALID;
+  myCurrentProperties.max = 0;
+  myCurrentProperties.increment = 0;
+  myCurrentProperties.radius = 0;
+  myCurrentProperties.height = 0;
+  myCurrentProperties.area = RPG_COMMON_AREAOFEFFECT_INVALID;
+  myCurrentProperties.effect = RPG_MAGIC_SPELL_RANGEEFFECT_INVALID;
 }
 
-void RPG_Magic_Spell_Range_Type::max(unsigned int max_in)
+void RPG_Magic_Spell_RangeProperties_Type::max(unsigned int max_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Range_Type::max"));
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_RangeProperties_Type::max"));
 
-  myCurrentRange.max = max_in;
+  myCurrentProperties.max = max_in;
 }
 
-void RPG_Magic_Spell_Range_Type::increment(unsigned int increment_in)
+void RPG_Magic_Spell_RangeProperties_Type::increment(unsigned int increment_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Range_Type::increment"));
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_RangeProperties_Type::increment"));
 
-  myCurrentRange.increment = increment_in;
+  myCurrentProperties.increment = increment_in;
 }
 
-void RPG_Magic_Spell_Range_Type::radius(unsigned char radius_in)
+void RPG_Magic_Spell_RangeProperties_Type::radius(unsigned char radius_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Range_Type::radius"));
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_RangeProperties_Type::radius"));
 
-  myCurrentRange.radius = radius_in;
+  myCurrentProperties.radius = radius_in;
 }
 
-void RPG_Magic_Spell_Range_Type::height(unsigned char height_in)
+void RPG_Magic_Spell_RangeProperties_Type::height(unsigned char height_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Range_Type::height"));
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_RangeProperties_Type::height"));
 
-  myCurrentRange.height = height_in;
+  myCurrentProperties.height = height_in;
 }
 
-void RPG_Magic_Spell_Range_Type::area(const RPG_Common_AreaOfEffect& area_in)
+void RPG_Magic_Spell_RangeProperties_Type::area(const RPG_Common_AreaOfEffect& area_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Range_Type::area"));
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_RangeProperties_Type::area"));
 
-  myCurrentRange.area = area_in;
+  myCurrentProperties.area = area_in;
 }
 
-void RPG_Magic_Spell_Range_Type::effect(const RPG_Magic_Spell_Effect& effect_in)
+void RPG_Magic_Spell_RangeProperties_Type::effect(const RPG_Magic_Spell_RangeEffect& effect_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Range_Type::effect"));
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_RangeProperties_Type::effect"));
 
-  myCurrentRange.effect = effect_in;
+  myCurrentProperties.effect = effect_in;
 }
 
-RPG_Magic_Spell_Range RPG_Magic_Spell_Range_Type::post_RPG_Magic_Spell_Range_Type()
+RPG_Magic_Spell_RangeProperties RPG_Magic_Spell_RangeProperties_Type::post_RPG_Magic_Spell_RangeProperties_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Range_Type::post_RPG_Magic_Spell_Range_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_RangeProperties_Type::post_RPG_Magic_Spell_RangeProperties_Type"));
 
-  RPG_Magic_Spell_Range result = myCurrentRange;
+  RPG_Magic_Spell_RangeProperties result = myCurrentProperties;
 
   // clear structure
-  myCurrentRange.max = 0;
-  myCurrentRange.increment = 0;
-  myCurrentRange.radius = 0;
-  myCurrentRange.height = 0;
-  myCurrentRange.area = RPG_COMMON_AREAOFEFFECT_INVALID;
-  myCurrentRange.effect = RPG_MAGIC_SPELL_EFFECT_INVALID;
+  myCurrentProperties.max = 0;
+  myCurrentProperties.increment = 0;
+  myCurrentProperties.radius = 0;
+  myCurrentProperties.height = 0;
+  myCurrentProperties.area = RPG_COMMON_AREAOFEFFECT_INVALID;
+  myCurrentProperties.effect = RPG_MAGIC_SPELL_RANGEEFFECT_INVALID;
 
   return result;
 }
@@ -293,6 +293,7 @@ RPG_Magic_Spell_DurationProperties_Type::RPG_Magic_Spell_DurationProperties_Type
   myCurrentProperties.type = RPG_MAGIC_SPELL_DURATION_INVALID;
   myCurrentProperties.duration = 0;
   myCurrentProperties.levelIncrement = 0;
+  myCurrentProperties.levelIncrementMax = 0;
   myCurrentProperties.period.numDice = 0;
   myCurrentProperties.period.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentProperties.period.modifier = 0;
@@ -320,6 +321,13 @@ void RPG_Magic_Spell_DurationProperties_Type::levelIncrement(unsigned char level
   myCurrentProperties.levelIncrement = levelIncrement_in;
 }
 
+void RPG_Magic_Spell_DurationProperties_Type::levelIncrementMax(unsigned char levelIncrementMax_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_DurationProperties_Type::levelIncrementMax"));
+
+  myCurrentProperties.levelIncrementMax = levelIncrementMax_in;
+}
+
 void RPG_Magic_Spell_DurationProperties_Type::period(const RPG_Dice_Roll& period_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_DurationProperties_Type::period"));
@@ -344,6 +352,7 @@ RPG_Magic_Spell_DurationProperties RPG_Magic_Spell_DurationProperties_Type::post
   myCurrentProperties.type = RPG_MAGIC_SPELL_DURATION_INVALID;
   myCurrentProperties.duration = 0;
   myCurrentProperties.levelIncrement = 0;
+  myCurrentProperties.levelIncrementMax = 0;
   myCurrentProperties.period.numDice = 0;
   myCurrentProperties.period.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentProperties.period.modifier = 0;
@@ -357,6 +366,78 @@ RPG_Magic_Spell_Precondition RPG_Magic_Spell_Precondition_Type::post_RPG_Magic_S
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Precondition_Type::post_RPG_Magic_Spell_Precondition_Type"));
 
   return RPG_Magic_Spell_PreconditionHelper::stringToRPG_Magic_Spell_Precondition(post_string());
+}
+
+RPG_Magic_Spell_Effect RPG_Magic_Spell_Effect_Type::post_RPG_Magic_Spell_Effect_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Effect_Type::post_RPG_Magic_Spell_Effect_Type"));
+
+  return RPG_Magic_Spell_EffectHelper::stringToRPG_Magic_Spell_Effect(post_string());
+}
+
+RPG_Magic_Spell_EffectProperties_Type::RPG_Magic_Spell_EffectProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::RPG_Magic_Spell_EffectProperties_Type"));
+
+  myCurrentProperties.type = RPG_MAGIC_SPELL_EFFECT_INVALID;
+  myCurrentProperties.base.value = 0;
+  myCurrentProperties.base.range.numDice = 0;
+  myCurrentProperties.base.range.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentProperties.base.range.modifier = 0;
+  myCurrentProperties.levelIncrement.value = 0;
+  myCurrentProperties.levelIncrement.range.numDice = 0;
+  myCurrentProperties.levelIncrement.range.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentProperties.levelIncrement.range.modifier = 0;
+  myCurrentProperties.levelIncrementMax = 0;
+}
+
+void RPG_Magic_Spell_EffectProperties_Type::type(const RPG_Magic_Spell_Effect& type_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::type"));
+
+  myCurrentProperties.type = type_in;
+}
+
+void RPG_Magic_Spell_EffectProperties_Type::base(const RPG_Common_Amount& base_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::base"));
+
+  myCurrentProperties.base = base_in;
+}
+
+void RPG_Magic_Spell_EffectProperties_Type::levelIncrement(const RPG_Common_Amount& levelIncrement_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::levelIncrement"));
+
+  myCurrentProperties.levelIncrement = levelIncrement_in;
+}
+
+void RPG_Magic_Spell_EffectProperties_Type::levelIncrementMax(unsigned char levelIncrementMax_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::levelIncrementMax"));
+
+  myCurrentProperties.levelIncrementMax = levelIncrementMax_in;
+}
+
+RPG_Magic_Spell_EffectProperties RPG_Magic_Spell_EffectProperties_Type::post_RPG_Magic_Spell_EffectProperties_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::post_RPG_Magic_Spell_EffectProperties_Type"));
+
+  RPG_Magic_Spell_EffectProperties result = myCurrentProperties;
+
+  // clear structure
+  myCurrentProperties.type = RPG_MAGIC_SPELL_EFFECT_INVALID;
+  myCurrentProperties.base.value = 0;
+  myCurrentProperties.base.range.numDice = 0;
+  myCurrentProperties.base.range.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentProperties.base.range.modifier = 0;
+  myCurrentProperties.levelIncrement.value = 0;
+  myCurrentProperties.levelIncrement.range.numDice = 0;
+  myCurrentProperties.levelIncrement.range.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentProperties.levelIncrement.range.modifier = 0;
+  myCurrentProperties.levelIncrementMax = 0;
+
+  return result;
 }
 
 RPG_Magic_Spell_PropertiesXML_Type::RPG_Magic_Spell_PropertiesXML_Type()
@@ -374,7 +455,7 @@ RPG_Magic_Spell_PropertiesXML_Type::RPG_Magic_Spell_PropertiesXML_Type()
   myCurrentProperties.range.max = 0;
   myCurrentProperties.range.increment = 0;
   myCurrentProperties.range.area = RPG_COMMON_AREAOFEFFECT_INVALID;
-  myCurrentProperties.range.effect = RPG_MAGIC_SPELL_EFFECT_INVALID;
+  myCurrentProperties.range.effect = RPG_MAGIC_SPELL_RANGEEFFECT_INVALID;
   myCurrentProperties.duration.type = RPG_MAGIC_SPELL_DURATION_INVALID;
   myCurrentProperties.duration.duration = 0;
   myCurrentProperties.duration.period.numDice = 0;
@@ -386,9 +467,7 @@ RPG_Magic_Spell_PropertiesXML_Type::RPG_Magic_Spell_PropertiesXML_Type()
   myCurrentProperties.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentProperties.save.difficultyClass = 0;
   myCurrentProperties.save.reduction = RPG_COMMON_SAVEREDUCTIONTYPE_INVALID;
-  myCurrentProperties.damage.numDice = 0;
-  myCurrentProperties.damage.typeDice = RPG_DICE_DIETYPE_INVALID;
-  myCurrentProperties.damage.modifier = 0;
+  myCurrentProperties.effects.clear();
   myCurrentProperties.saveable = RPG_COMMON_SAVINGTHROW_INVALID;
   myCurrentProperties.resistible = false;
 }
@@ -428,7 +507,7 @@ void RPG_Magic_Spell_PropertiesXML_Type::action(const RPG_Common_ActionType& act
   myCurrentProperties.action = action_in;
 }
 
-void RPG_Magic_Spell_PropertiesXML_Type::range(const RPG_Magic_Spell_Range& range_in)
+void RPG_Magic_Spell_PropertiesXML_Type::range(const RPG_Magic_Spell_RangeProperties& range_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PropertiesXML_Type::range"));
 
@@ -456,11 +535,11 @@ void RPG_Magic_Spell_PropertiesXML_Type::save(const RPG_Common_SavingThrowCheck&
   myCurrentProperties.save = save_in;
 }
 
-void RPG_Magic_Spell_PropertiesXML_Type::damage(const RPG_Dice_Roll& damage_in)
+void RPG_Magic_Spell_PropertiesXML_Type::effect(const RPG_Magic_Spell_EffectProperties& effect_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PropertiesXML_Type::damage"));
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PropertiesXML_Type::effect"));
 
-  myCurrentProperties.damage = damage_in;
+  myCurrentProperties.effects.push_back(effect_in);
 }
 
 void RPG_Magic_Spell_PropertiesXML_Type::saveable(const RPG_Common_SavingThrow& saveable_in)
@@ -495,7 +574,7 @@ RPG_Magic_Spell_PropertiesXML RPG_Magic_Spell_PropertiesXML_Type::post_RPG_Magic
   myCurrentProperties.range.max = 0;
   myCurrentProperties.range.increment = 0;
   myCurrentProperties.range.area = RPG_COMMON_AREAOFEFFECT_INVALID;
-  myCurrentProperties.range.effect = RPG_MAGIC_SPELL_EFFECT_INVALID;
+  myCurrentProperties.range.effect = RPG_MAGIC_SPELL_RANGEEFFECT_INVALID;
   myCurrentProperties.duration.type = RPG_MAGIC_SPELL_DURATION_INVALID;
   myCurrentProperties.duration.duration = 0;
   myCurrentProperties.duration.period.numDice = 0;
@@ -507,9 +586,7 @@ RPG_Magic_Spell_PropertiesXML RPG_Magic_Spell_PropertiesXML_Type::post_RPG_Magic
   myCurrentProperties.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentProperties.save.difficultyClass = 0;
   myCurrentProperties.save.reduction = RPG_COMMON_SAVEREDUCTIONTYPE_INVALID;
-  myCurrentProperties.damage.numDice = 0;
-  myCurrentProperties.damage.typeDice = RPG_DICE_DIETYPE_INVALID;
-  myCurrentProperties.damage.modifier = 0;
+  myCurrentProperties.effects.clear();
   myCurrentProperties.saveable = RPG_COMMON_SAVINGTHROW_INVALID;
   myCurrentProperties.resistible = false;
 
@@ -614,7 +691,7 @@ void RPG_Magic_Dictionary_Type::spell(const RPG_Magic_Spell_PropertiesXML& spell
     properties.preconditions.insert(*iterator);
   } // end FOR
   properties.save = spell_in.save;
-  properties.damage = spell_in.damage;
+  properties.effects = spell_in.effects;
   properties.saveable = spell_in.saveable;
   properties.resistible = spell_in.resistible;
 
