@@ -23,10 +23,18 @@
 
 enum RPG_Magic_Spell_Effect
 {
-  SPELLEFFECT_DAMAGE = 0,
+  SPELLEFFECT_ALIGN_WEAPON = 0,
   SPELLEFFECT_BONUS_HP,
   SPELLEFFECT_BONUS_MORALE,
+  SPELLEFFECT_DAMAGE,
+  SPELLEFFECT_FASCINATE,
+  SPELLEFFECT_GROW,
+  SPELLEFFECT_IDENTIFY,
+  SPELLEFFECT_LEVITATE,
+  SPELLEFFECT_MESSENGER,
+  SPELLEFFECT_POLYMORPH,
   SPELLEFFECT_RESISTANCE_FEAR,
+  SPELLEFFECT_TRIGGER_ALARM,
   //
   RPG_MAGIC_SPELL_EFFECT_MAX,
   RPG_MAGIC_SPELL_EFFECT_INVALID
@@ -46,10 +54,18 @@ class RPG_Magic_Spell_EffectHelper
   inline static void init()
   {
     myRPG_Magic_Spell_EffectToStringTable.clear();
-    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_DAMAGE, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_DAMAGE")));
+    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_ALIGN_WEAPON, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_ALIGN_WEAPON")));
     myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_BONUS_HP, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_BONUS_HP")));
     myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_BONUS_MORALE, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_BONUS_MORALE")));
+    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_DAMAGE, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_DAMAGE")));
+    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_FASCINATE, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_FASCINATE")));
+    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_GROW, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_GROW")));
+    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_IDENTIFY, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_IDENTIFY")));
+    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_LEVITATE, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_LEVITATE")));
+    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_MESSENGER, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_MESSENGER")));
+    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_POLYMORPH, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_POLYMORPH")));
     myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_RESISTANCE_FEAR, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_RESISTANCE_FEAR")));
+    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_TRIGGER_ALARM, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_TRIGGER_ALARM")));
   };
 
   inline static std::string RPG_Magic_Spell_EffectToString(const RPG_Magic_Spell_Effect& element_in)

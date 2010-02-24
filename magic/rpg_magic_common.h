@@ -22,6 +22,7 @@
 
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
+#include <rpg_character_incl.h>
 #include "rpg_magic_incl.h"
 
 #include <vector>
@@ -35,7 +36,7 @@ typedef RPG_Magic_Spells_t::const_iterator RPG_Magic_SpellsIterator_t;
 
 typedef std::vector<RPG_Magic_Spell_Level> RPG_Magic_SpellLevelList_t;
 typedef RPG_Magic_SpellLevelList_t::const_iterator RPG_Magic_SpellLevelListIterator_t;
-typedef std::set<RPG_Magic_Spell_Precondition> RPG_Magic_Spell_PreconditionList_t;
+typedef std::vector<RPG_Magic_Spell_PreconditionProperties> RPG_Magic_Spell_PreconditionList_t;
 typedef RPG_Magic_Spell_PreconditionList_t::const_iterator RPG_Magic_Spell_PreconditionListIterator_t;
 typedef std::vector<RPG_Magic_Spell_EffectProperties> RPG_Magic_Spell_EffectList_t;
 typedef RPG_Magic_Spell_EffectList_t::const_iterator RPG_Magic_Spell_EffectListIterator_t;
@@ -48,6 +49,7 @@ struct RPG_Magic_Spell_Properties
   unsigned char cost;
   RPG_Common_ActionType action;
   RPG_Magic_Spell_RangeProperties range;
+  RPG_Magic_Spell_TargetProperties target;
   RPG_Magic_Spell_DurationProperties duration;
   RPG_Magic_Spell_PreconditionList_t preconditions;
   RPG_Common_SavingThrowCheck save;

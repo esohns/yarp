@@ -23,15 +23,20 @@
     </level>
     <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_LONG">
-      <area>AREA_LINE</area>
     </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
     <duration>
       <type>DURATION_INSTANTANEOUS</type>
+      <base>1</base>
       <duration>1</duration>
       <levelIncrement>3</levelIncrement>
       <levelIncrementMax>18</levelIncrementMax>
     </duration>
-    <precondition>PRECONDITION_RANGED_TOUCH_ATTACK</precondition>
+    <precondition>
+      <type>PRECONDITION_RANGED_TOUCH_ATTACK</type>
+    </precondition>
     <effect>
       <type>SPELLEFFECT_DAMAGE</type>
       <base>
@@ -65,12 +70,15 @@
     </level>
     <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_MEDIUM">
-      <radius>20</radius>
-      <area>AREA_CUBE</area>
     </range>
+    <target>
+      <type>TARGET_AREA</type>
+      <area>AREA_SPHERE</area>
+      <radius>20</radius>
+    </target>
     <duration>
       <type>DURATION_INSTANTANEOUS</type>
-      <duration>0</duration>
+      <duration>1</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
@@ -102,12 +110,16 @@
     </level>
     <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_CLOSE">
-      <area>AREA_LINE</area>
     </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
     <duration>
       <type>DURATION_INSTANTANEOUS</type>
     </duration>
-    <precondition>PRECONDITION_RANGED_TOUCH_ATTACK</precondition>
+    <precondition>
+      <type>PRECONDITION_RANGED_TOUCH_ATTACK</type>
+    </precondition>
     <effect>
       <type>SPELLEFFECT_DAMAGE</type>
       <base>
@@ -142,11 +154,18 @@
     <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
     <duration>
       <type>DURATION_INSTANTANEOUS</type>
       <duration>10</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
+    <precondition>
+      <type>PRECONDITION_CONDITION</type>
+      <condition>CONDITION_LIVING</condition>
+    </precondition>
     <effect>
       <type>SPELLEFFECT_BONUS_HP</type>
       <base>
@@ -176,6 +195,350 @@
       <base>
         <value>1</value>
       </base>
+    </effect>
+  </spell>
+  <spell resistible="true">
+    <name>Air Walk</name>
+    <type>
+      <type>SPELL_AIR_WALK</type>
+      <school>SCHOOL_TRANSMUTATION</school>
+      <descriptor>DESCRIPTOR_AIR</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>4</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>4</level>
+    </level>
+    <level>
+      <casterClass>DOMAIN_AIR</casterClass>
+      <level>4</level>
+    </level>
+    <action>ACTION_STANDARD</action>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>100</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_SIZE_MAX</type>
+      <size>SIZE_GARGANTUAN</size>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_LEVITATE</type>
+    </effect>
+  </spell>
+  <spell>
+    <name>Alarm</name>
+    <type>
+      <type>SPELL_ALARM</type>
+      <school>SCHOOL_ABJURATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>1</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_RANGER</casterClass>
+      <level>1</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>1</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>1</level>
+    </level>
+    <action>ACTION_STANDARD</action>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target>
+      <type>TARGET_AREA</type>
+      <area>AREA_SPHERE</area>
+      <radius>20</radius>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>1200</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_TRIGGER_ALARM</type>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Align Weapon</name>
+    <type>
+      <type>SPELL_ALIGN_WEAPON</type>
+      <school>SCHOOL_TRANSMUTATION</school>
+      <descriptor>DESCRIPTOR_GOOD</descriptor>
+      <descriptor>DESCRIPTOR_EVIL</descriptor>
+      <descriptor>DESCRIPTOR_LAWFUL</descriptor>
+      <descriptor>DESCRIPTOR_CHAOTIC</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>2</level>
+    </level>
+    <action>ACTION_STANDARD</action>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>10</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_MANUFACTURED</type>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_ALIGN_WEAPON</type>
+    </effect>
+  </spell>
+  <spell>
+    <name>Alter Self</name>
+    <type>
+      <type>SPELL_ALTER_SELF</type>
+      <school>SCHOOL_TRANSMUTATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>2</level>
+    </level>
+    <action>ACTION_STANDARD</action>
+    <range effect="RANGEEFFECT_PERSONAL">
+    </range>
+    <target>
+      <type>TARGET_SELF</type>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>100</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_SIZE_RELATIVE</type>
+      <value>1</value>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_POLYMORPH</type>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL">
+    <name>Analyze Dweomer</name>
+    <type>
+      <type>SPELL_ANALYZE_DWEOMER</type>
+      <school>SCHOOL_DIVINATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>6</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>6</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>6</level>
+    </level>
+    <action>ACTION_STANDARD</action>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target>
+      <type>TARGET_VARIABLE</type>
+      <levelIncrement>1</levelIncrement>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>1</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_IDENTIFY</type>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_FORTITUDE">
+    <name>Animal Growth</name>
+    <type>
+      <type>SPELL_ANIMAL_GROWTH</type>
+      <school>SCHOOL_TRANSMUTATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>5</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_RANGER</casterClass>
+      <level>4</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>5</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>5</level>
+    </level>
+    <action>ACTION_STANDARD</action>
+    <range effect="RANGEEFFECT_MEDIUM">
+    </range>
+    <target>
+      <type>TARGET_VARIABLE</type>
+      <value>0</value>
+      <levelIncrement>2</levelIncrement>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>10</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_ANIMAL</type>
+    </precondition>
+    <precondition>
+      <type>PRECONDITION_SIZE_MAX</type>
+      <size>SIZE_GARGANTUAN</size>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_GROW</type>
+    </effect>
+  </spell>
+  <spell resistible="true">
+    <name>Animal Messenger</name>
+    <type>
+      <type>SPELL_ANIMAL_MESSENGER</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_RANGER</casterClass>
+      <level>1</level>
+    </level>
+    <action>ACTION_STANDARD</action>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>14400</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_ANIMAL</type>
+    </precondition>
+    <precondition>
+      <type>PRECONDITION_SIZE_MAX</type>
+      <size>SIZE_TINY</size>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_GROW</type>
+    </effect>
+  </spell>
+  <spell resistible="true">
+    <name>Animal Shapes</name>
+    <type>
+      <type>SPELL_ANIMAL_SHAPES</type>
+      <school>SCHOOL_TRANSMUTATION</school>
+    </type>
+    <level>
+      <casterClass>DOMAIN_ANIMAL</casterClass>
+      <level>7</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>8</level>
+    </level>
+    <action>ACTION_STANDARD</action>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+      <value>0</value>
+      <levelIncrement>1</levelIncrement>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>600</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_ANIMAL</type>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_POLYMORPH</type>
+    </effect>
+  </spell>
+  <spell resistible="true" saveable="SAVE_WILL">
+    <name>Animal Trance</name>
+    <type>
+      <type>SPELL_ANIMAL_TRANCE</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>2</level>
+    </level>
+    <action>ACTION_STANDARD</action>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target rangeIsInHD="true">
+      <type>TARGET_VARIABLE</type>
+      <range>
+        <numDice>2</numDice>
+        <typeDice>D_6</typeDice>
+        <modifier>0</modifier>
+      </range>
+    </target>
+    <duration>
+      <type>DURATION_CONCENTRATION</type>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_ANIMAL</type>
+    </precondition>
+    <precondition>
+      <type>PRECONDITION_ATTRIBUTE_MAX</type>
+      <value>2</value>
+      <attribute>ATTRIBUTE_INTELLIGENCE</attribute>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_FASCINATE</type>
     </effect>
   </spell>
 </spellDictionary>

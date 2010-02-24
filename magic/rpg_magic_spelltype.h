@@ -27,7 +27,15 @@ enum RPG_Magic_SpellType
   SPELL_ACID_FOG,
   SPELL_ACID_SPLASH,
   SPELL_AID,
+  SPELL_AIR_WALK,
+  SPELL_ALARM,
   SPELL_ALIGN_WEAPON,
+  SPELL_ALTER_SELF,
+  SPELL_ANALYZE_DWEOMER,
+  SPELL_ANIMAL_GROWTH,
+  SPELL_ANIMAL_MESSENGER,
+  SPELL_ANIMAL_SHAPES,
+  SPELL_ANIMAL_TRANCE,
   SPELL_BLADE_BARRIER,
   SPELL_BLASPHEMY,
   SPELL_BLESS,
@@ -117,7 +125,15 @@ class RPG_Magic_SpellTypeHelper
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ACID_FOG, ACE_TEXT_ALWAYS_CHAR("SPELL_ACID_FOG")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ACID_SPLASH, ACE_TEXT_ALWAYS_CHAR("SPELL_ACID_SPLASH")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_AID, ACE_TEXT_ALWAYS_CHAR("SPELL_AID")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_AIR_WALK, ACE_TEXT_ALWAYS_CHAR("SPELL_AIR_WALK")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ALARM, ACE_TEXT_ALWAYS_CHAR("SPELL_ALARM")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ALIGN_WEAPON, ACE_TEXT_ALWAYS_CHAR("SPELL_ALIGN_WEAPON")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ALTER_SELF, ACE_TEXT_ALWAYS_CHAR("SPELL_ALTER_SELF")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ANALYZE_DWEOMER, ACE_TEXT_ALWAYS_CHAR("SPELL_ANALYZE_DWEOMER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ANIMAL_GROWTH, ACE_TEXT_ALWAYS_CHAR("SPELL_ANIMAL_GROWTH")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ANIMAL_MESSENGER, ACE_TEXT_ALWAYS_CHAR("SPELL_ANIMAL_MESSENGER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ANIMAL_SHAPES, ACE_TEXT_ALWAYS_CHAR("SPELL_ANIMAL_SHAPES")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ANIMAL_TRANCE, ACE_TEXT_ALWAYS_CHAR("SPELL_ANIMAL_TRANCE")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BLADE_BARRIER, ACE_TEXT_ALWAYS_CHAR("SPELL_BLADE_BARRIER")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BLASPHEMY, ACE_TEXT_ALWAYS_CHAR("SPELL_BLASPHEMY")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BLESS, ACE_TEXT_ALWAYS_CHAR("SPELL_BLESS")));

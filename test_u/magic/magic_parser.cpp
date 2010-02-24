@@ -25,8 +25,8 @@
 #include <rpg_magic_common_tools.h>
 #include <rpg_magic_dictionary.h>
 
+#include <rpg_character_common_tools.h>
 #include <rpg_common_tools.h>
-
 #include <rpg_dice_common_tools.h>
 
 #include <ace/OS.h>
@@ -131,6 +131,7 @@ void do_work(const bool& dumpDictionary_in,
   // step1: init string conversion tables
   RPG_Dice_Common_Tools::initStringConversionTables();
   RPG_Common_Tools::initStringConversionTables();
+  RPG_Character_Common_Tools::initStringConversionTables();
   RPG_Magic_Common_Tools::initStringConversionTables();
 
   // step2: init spell dictionary

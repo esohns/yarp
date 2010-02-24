@@ -23,7 +23,13 @@
 
 enum RPG_Magic_Spell_Precondition
 {
-  PRECONDITION_RANGED_TOUCH_ATTACK = 0,
+  PRECONDITION_ANIMAL = 0,
+  PRECONDITION_ATTRIBUTE_MAX,
+  PRECONDITION_CONDITION,
+  PRECONDITION_MANUFACTURED,
+  PRECONDITION_RANGED_TOUCH_ATTACK,
+  PRECONDITION_SIZE_MAX,
+  PRECONDITION_SIZE_RELATIVE,
   //
   RPG_MAGIC_SPELL_PRECONDITION_MAX,
   RPG_MAGIC_SPELL_PRECONDITION_INVALID
@@ -43,7 +49,13 @@ class RPG_Magic_Spell_PreconditionHelper
   inline static void init()
   {
     myRPG_Magic_Spell_PreconditionToStringTable.clear();
+    myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_ANIMAL, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_ANIMAL")));
+    myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_ATTRIBUTE_MAX, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_ATTRIBUTE_MAX")));
+    myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_CONDITION, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_CONDITION")));
+    myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_MANUFACTURED, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_MANUFACTURED")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_RANGED_TOUCH_ATTACK, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_RANGED_TOUCH_ATTACK")));
+    myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_SIZE_MAX, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_SIZE_MAX")));
+    myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_SIZE_RELATIVE, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_SIZE_RELATIVE")));
   };
 
   inline static std::string RPG_Magic_Spell_PreconditionToString(const RPG_Magic_Spell_Precondition& element_in)

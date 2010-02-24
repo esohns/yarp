@@ -24,6 +24,7 @@
 struct RPG_Magic_Spell_DurationProperties
 {
   RPG_Magic_Spell_Duration type;
+  unsigned int base;
   unsigned int duration;
   unsigned char levelIncrement;
   unsigned char levelIncrementMax;

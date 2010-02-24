@@ -76,7 +76,7 @@
   <xsd:simpleType name="RPG_Common_AreaOfEffect_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="AREA_LINE"/>
-      <xsd:enumeration value="AREA_CUBE"/>
+      <xsd:enumeration value="AREA_SPHERE"/>
       <xsd:enumeration value="AREA_CONE"/>
       <xsd:enumeration value="AREA_CYLINDER"/>
       <xsd:enumeration value="AREA_WALL"/>

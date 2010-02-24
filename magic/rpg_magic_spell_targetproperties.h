@@ -18,24 +18,19 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_MAGIC_SPELL_PROPERTIESXML_H
-#define RPG_MAGIC_SPELL_PROPERTIESXML_H
+#ifndef RPG_MAGIC_SPELL_TARGETPROPERTIES_H
+#define RPG_MAGIC_SPELL_TARGETPROPERTIES_H
 
-struct RPG_Magic_Spell_PropertiesXML
+struct RPG_Magic_Spell_TargetProperties
 {
-  std::string name;
-  RPG_Magic_Spell_Type type;
-  std::vector<RPG_Magic_Spell_Level> levels;
-  unsigned int cost;
-  RPG_Common_ActionType action;
-  RPG_Magic_Spell_RangeProperties range;
-  RPG_Magic_Spell_TargetProperties target;
-  RPG_Magic_Spell_DurationProperties duration;
-  std::vector<RPG_Magic_Spell_PreconditionProperties> preconditions;
-  RPG_Common_SavingThrowCheck save;
-  std::vector<RPG_Magic_Spell_EffectProperties> effects;
-  RPG_Common_SavingThrow saveable;
-  bool resistible;
+  RPG_Magic_Spell_Target type;
+  unsigned int value;
+  RPG_Dice_Roll range;
+  unsigned char levelIncrement;
+  RPG_Common_AreaOfEffect area;
+  unsigned char radius;
+  unsigned char height;
+  bool rangeIsInHD;
 };
 
 #endif
