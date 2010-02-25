@@ -712,6 +712,9 @@
       <type>PRECONDITION_RANGED_TOUCH_ATTACK</type>
     </precondition>
     <effect>
+      <type>SPELLEFFECT_ANIMATE_DEAD</type>
+    </effect>
+    <effect>
       <type>SPELLEFFECT_ENTANGLE</type>
       <counterMeasure>
         <type>COUNTERMEASURE_CHECK</type>
@@ -725,6 +728,92 @@
         <check>
           <type>SKILL_ESCAPE_ARTIST</type>
           <difficultyClass>20</difficultyClass>
+        </check>
+      </counterMeasure>
+    </effect>
+  </spell>
+  <spell resistible="true">
+    <name>Antilife Shell</name>
+    <type>
+      <type>SPELL_ANTILIFE_SHELL</type>
+      <school>SCHOOL_ABJURATION</school>
+    </type>
+    <level>
+      <casterClass>DOMAIN_ANIMAL</casterClass>
+      <level>6</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>6</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>6</level>
+    </level>
+    <action>ACTION_FULL_ROUND</action>
+    <range effect="RANGEEFFECT_PERSONAL">
+    </range>
+    <target>
+      <type>TARGET_SELF</type>
+      <radius>10</radius>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>100</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_CONDITION</type>
+      <condition>CONDITION_LIVING</condition>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_BARRIER_CREATURE</type>
+    </effect>
+  </spell>
+  <spell resistible="true">
+    <name>Antimagic Field</name>
+    <type>
+      <type>SPELL_ANTIMAGIC_FIELD</type>
+      <school>SCHOOL_ABJURATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>8</level>
+    </level>
+    <level>
+      <casterClass>DOMAIN_MAGIC</casterClass>
+      <level>6</level>
+    </level>
+    <level>
+      <casterClass>DOMAIN_PROTECTION</casterClass>
+      <level>6</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>6</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>6</level>
+    </level>
+    <action>ACTION_STANDARD</action>
+    <range effect="RANGEEFFECT_PERSONAL">
+    </range>
+    <target>
+      <type>TARGET_SELF</type>
+      <radius>10</radius>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>100</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_BARRIER_MAGIC</type>
+      <counterMeasure>
+        <type>COUNTERMEASURE_CHECK</type>
+        <check>
+          <type>CHECK_CASTER_LEVEL</type>
         </check>
       </counterMeasure>
     </effect>

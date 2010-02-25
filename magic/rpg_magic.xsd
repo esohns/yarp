@@ -131,6 +131,8 @@
       <xsd:enumeration value="SPELL_ANIMATE_OBJECTS"/>
       <xsd:enumeration value="SPELL_ANIMATE_PLANTS"/>
       <xsd:enumeration value="SPELL_ANIMATE_ROPE"/>
+      <xsd:enumeration value="SPELL_ANTILIFE_SHELL"/>
+      <xsd:enumeration value="SPELL_ANTIMAGIC_FIELD"/>
       <xsd:enumeration value="SPELL_BLADE_BARRIER"/>
       <xsd:enumeration value="SPELL_BLASPHEMY"/>
       <xsd:enumeration value="SPELL_BLESS"/>
@@ -333,6 +335,8 @@
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SPELLEFFECT_ALIGN_WEAPON"/>
       <xsd:enumeration value="SPELLEFFECT_ANIMATE_DEAD"/>
+      <xsd:enumeration value="SPELLEFFECT_BARRIER_CREATURE"/>
+      <xsd:enumeration value="SPELLEFFECT_BARRIER_MAGIC"/>
       <xsd:enumeration value="SPELLEFFECT_BONUS_HP"/>
       <xsd:enumeration value="SPELLEFFECT_BONUS_MORALE"/>
       <xsd:enumeration value="SPELLEFFECT_DAMAGE"/>

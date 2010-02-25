@@ -37,7 +37,8 @@ RPG_Character_Monster::RPG_Character_Monster(const std::string& name_in,
                                              const RPG_Character_Size& defaultSize_in,
                                              const unsigned short int& hitpoints_in,
                                              const unsigned int& wealth_in,
-                                             const RPG_Item_List_t& inventory_in)
+                                             const RPG_Item_List_t& inventory_in,
+                                             const bool& isSummoned_in)
  : inherited(name_in,
              alignment_in,
              attributes_in,
@@ -48,7 +49,8 @@ RPG_Character_Monster::RPG_Character_Monster(const std::string& name_in,
              hitpoints_in,
              wealth_in,
              inventory_in),
-   myType(type_in)
+   myType(type_in),
+   myIsSummoned(isSummoned_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::RPG_Character_Monster"));
 
@@ -56,7 +58,8 @@ RPG_Character_Monster::RPG_Character_Monster(const std::string& name_in,
 
 RPG_Character_Monster::RPG_Character_Monster(const RPG_Character_Monster& monster_in)
  : inherited(monster_in),
-   myType(monster_in.myType)
+   myType(monster_in.myType),
+   myIsSummoned(monster_in.myIsSummoned)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::RPG_Character_Monster"));
 
@@ -83,6 +86,13 @@ const RPG_Monster_Type RPG_Character_Monster::getType() const
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getType"));
 
   return myType;
+}
+
+const bool RPG_Character_Monster::isSummoned() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Monster::isSummoned"));
+
+  return myIsSummoned;
 }
 
 const signed char RPG_Character_Monster::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_in) const

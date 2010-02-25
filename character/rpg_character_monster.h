@@ -46,12 +46,14 @@ class RPG_Character_Monster
                         const RPG_Character_Size&,        // (default) size
                         const unsigned short int&,        // (starting) HP
                         const unsigned int&,              // (starting) wealth (GP)
-                        const RPG_Item_List_t&);          // (starting) list of (carried) items
+                        const RPG_Item_List_t&,           // (starting) list of (carried) items
+                        const bool& = false);             // summoned ?
   RPG_Character_Monster(const RPG_Character_Monster&);
   virtual ~RPG_Character_Monster();
   RPG_Character_Monster& operator=(const RPG_Character_Monster&);
 
   const RPG_Monster_Type getType() const;
+  const bool isSummoned() const;
 
   virtual const signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
 
@@ -73,6 +75,7 @@ class RPG_Character_Monster
   virtual const signed char getShieldBonus() const;
 
   RPG_Monster_Type myType;
+  bool             myIsSummoned;
 };
 
 #endif
