@@ -23,7 +23,7 @@
 
 struct RPG_Combat_DamageCounterMeasure
 {
-  RPG_Combat_DamageCounterMeasureType type;
+  RPG_Common_CounterMeasure type;
   RPG_Combat_Check check;
   std::vector<RPG_Magic_SpellType> spells;
   RPG_Common_Duration duration;

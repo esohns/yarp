@@ -127,6 +127,10 @@
       <xsd:enumeration value="SPELL_ANIMAL_MESSENGER"/>
       <xsd:enumeration value="SPELL_ANIMAL_SHAPES"/>
       <xsd:enumeration value="SPELL_ANIMAL_TRANCE"/>
+      <xsd:enumeration value="SPELL_ANIMATE_DEAD"/>
+      <xsd:enumeration value="SPELL_ANIMATE_OBJECTS"/>
+      <xsd:enumeration value="SPELL_ANIMATE_PLANTS"/>
+      <xsd:enumeration value="SPELL_ANIMATE_ROPE"/>
       <xsd:enumeration value="SPELL_BLADE_BARRIER"/>
       <xsd:enumeration value="SPELL_BLASPHEMY"/>
       <xsd:enumeration value="SPELL_BLESS"/>
@@ -302,7 +306,11 @@
       <xsd:enumeration value="PRECONDITION_ANIMAL"/>
       <xsd:enumeration value="PRECONDITION_ATTRIBUTE_MAX"/>
       <xsd:enumeration value="PRECONDITION_CONDITION"/>
+      <xsd:enumeration value="PRECONDITION_HD_MAX"/>
       <xsd:enumeration value="PRECONDITION_MANUFACTURED"/>
+      <xsd:enumeration value="PRECONDITION_NON_MAGICAL"/>
+      <xsd:enumeration value="PRECONDITION_OBJECT"/>
+      <xsd:enumeration value="PRECONDITION_PLANT"/>
       <xsd:enumeration value="PRECONDITION_RANGED_TOUCH_ATTACK"/>
       <xsd:enumeration value="PRECONDITION_SIZE_MAX"/>
       <xsd:enumeration value="PRECONDITION_SIZE_RELATIVE"/>
@@ -313,6 +321,8 @@
     <xsd:sequence>
       <xsd:element name="type" type="RPG_Magic_Spell_Precondition_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="value" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="levelIncrement" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="condition" type="RPG_Character_Condition_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="size" type="RPG_Character_Size_Type" minOccurs="0" maxOccurs="1"/>
@@ -322,19 +332,42 @@
   <xsd:simpleType name="RPG_Magic_Spell_Effect_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SPELLEFFECT_ALIGN_WEAPON"/>
+      <xsd:enumeration value="SPELLEFFECT_ANIMATE_DEAD"/>
       <xsd:enumeration value="SPELLEFFECT_BONUS_HP"/>
       <xsd:enumeration value="SPELLEFFECT_BONUS_MORALE"/>
       <xsd:enumeration value="SPELLEFFECT_DAMAGE"/>
+      <xsd:enumeration value="SPELLEFFECT_ENTANGLE"/>
       <xsd:enumeration value="SPELLEFFECT_FASCINATE"/>
       <xsd:enumeration value="SPELLEFFECT_GROW"/>
       <xsd:enumeration value="SPELLEFFECT_IDENTIFY"/>
       <xsd:enumeration value="SPELLEFFECT_LEVITATE"/>
       <xsd:enumeration value="SPELLEFFECT_MESSENGER"/>
       <xsd:enumeration value="SPELLEFFECT_POLYMORPH"/>
+      <xsd:enumeration value="SPELLEFFECT_RAISE_DEAD"/>
       <xsd:enumeration value="SPELLEFFECT_RESISTANCE_FEAR"/>
       <xsd:enumeration value="SPELLEFFECT_TRIGGER_ALARM"/>
     </xsd:restriction>
   </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Magic_CheckTypeUnion_Type">
+    <xsd:union memberTypes="RPG_Character_Skill_Type RPG_Common_Attribute_Type RPG_Common_BaseCheckTypeUnion_Type"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Magic_Check_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Magic_CheckTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Magic_CounterMeasure_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Common_CounterMeasure_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="check" type="RPG_Magic_Check_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="spell" type="RPG_Magic_SpellType_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
 
   <xsd:complexType name="RPG_Magic_Spell_EffectProperties_Type">
     <xsd:sequence>
@@ -342,8 +375,8 @@
       <xsd:element name="base" type="RPG_Common_Amount_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="levelIncrement" type="RPG_Common_Amount_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="counterMeasure" type="RPG_Magic_CounterMeasure_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
-    <xsd:attribute name="effect" type="RPG_Common_EffectType_Type" use="optional" default="EFFECT_IMMEDIATE"/>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Magic_Spell_PropertiesXML_Type">

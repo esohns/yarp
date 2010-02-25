@@ -12,14 +12,13 @@ namespace urn:rpg
   RPG_Common_ActionType_Type                  RPG_Common_ActionType;
   RPG_Common_Attribute_Type                   RPG_Common_Attribute;
   RPG_Common_AreaOfEffect_Type                RPG_Common_AreaOfEffect;
+  RPG_Common_CounterMeasure_Type              RPG_Common_CounterMeasure;
   RPG_Common_Amount_Type                      RPG_Common_Amount;
-  RPG_Common_EffectType_Type                  RPG_Common_EffectType;
   RPG_Common_Usage_Type                       RPG_Common_Usage;
   RPG_Common_SavingThrow_Type                 RPG_Common_SavingThrow;
   RPG_Common_SavingThrowCheck_Type            RPG_Common_SavingThrowCheck;
   RPG_Common_Duration_Type                    RPG_Common_Duration;
 
-#  RPG_Character_Alignment_Type     RPG_Character_Alignment;
   RPG_Character_Condition_Type                RPG_Character_Condition;
   RPG_Character_Size_Type                     RPG_Character_Size;
 
@@ -42,6 +41,9 @@ namespace urn:rpg
   RPG_Magic_Spell_Precondition_Type           RPG_Magic_Spell_Precondition;
   RPG_Magic_Spell_PreconditionProperties_Type RPG_Magic_Spell_PreconditionProperties;
   RPG_Magic_Spell_Effect_Type                 RPG_Magic_Spell_Effect;
+  RPG_Magic_CheckTypeUnion_Type               RPG_Magic_CheckTypeUnion;
+  RPG_Magic_Check_Type                        RPG_Magic_Check;
+  RPG_Magic_CounterMeasure_Type               RPG_Magic_CounterMeasure;
   RPG_Magic_Spell_EffectProperties_Type       RPG_Magic_Spell_EffectProperties;
   RPG_Magic_Spell_PropertiesXML_Type          RPG_Magic_Spell_PropertiesXML;
   RPG_Magic_SpellLikeProperties_Type          RPG_Magic_SpellLikeProperties;

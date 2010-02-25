@@ -58,7 +58,6 @@ class RPG_Combat_SpecialAttack_Type_pskel;
 class RPG_Combat_SpecialDamageType_Type_pskel;
 class RPG_Combat_DamageTypeUnion_Type_pskel;
 class RPG_Combat_DamageDuration_Type_pskel;
-class RPG_Combat_DamageCounterMeasureType_Type_pskel;
 class RPG_Combat_CheckTypeUnion_Type_pskel;
 class RPG_Combat_Check_Type_pskel;
 class RPG_Combat_DamageReductionType_Type_pskel;
@@ -325,18 +324,6 @@ class RPG_Combat_DamageDuration_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::boolean_pskel* vicinity_parser_;
 };
 
-class RPG_Combat_DamageCounterMeasureType_Type_pskel: public virtual ::xml_schema::string_pskel
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual RPG_Combat_DamageCounterMeasureType
-  post_RPG_Combat_DamageCounterMeasureType_Type () = 0;
-};
-
 class RPG_Combat_CheckTypeUnion_Type_pskel: public ::xml_schema::simple_content
 {
   public:
@@ -431,7 +418,7 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
   // pre ();
 
   virtual void
-  type (const RPG_Combat_DamageCounterMeasureType&);
+  type (const RPG_Common_CounterMeasure&);
 
   virtual void
   check (const RPG_Combat_Check&);
@@ -454,7 +441,7 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
   // Parser construction API.
   //
   void
-  type_parser (::RPG_Combat_DamageCounterMeasureType_Type_pskel&);
+  type_parser (::RPG_Common_CounterMeasure_Type_pskel&);
 
   void
   check_parser (::RPG_Combat_Check_Type_pskel&);
@@ -472,7 +459,7 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
   reduction_parser (::RPG_Combat_DamageReductionType_Type_pskel&);
 
   void
-  parsers (::RPG_Combat_DamageCounterMeasureType_Type_pskel& /* type */,
+  parsers (::RPG_Common_CounterMeasure_Type_pskel& /* type */,
            ::RPG_Combat_Check_Type_pskel& /* check */,
            ::RPG_Magic_SpellType_Type_pskel& /* spell */,
            ::RPG_Common_Duration_Type_pskel& /* duration */,
@@ -501,7 +488,7 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
                    const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Combat_DamageCounterMeasureType_Type_pskel* type_parser_;
+  ::RPG_Common_CounterMeasure_Type_pskel* type_parser_;
   ::RPG_Combat_Check_Type_pskel* check_parser_;
   ::RPG_Magic_SpellType_Type_pskel* spell_parser_;
   ::RPG_Common_Duration_Type_pskel* duration_parser_;

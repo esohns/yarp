@@ -18,16 +18,26 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_MAGIC_SPELL_EFFECTPROPERTIES_H
-#define RPG_MAGIC_SPELL_EFFECTPROPERTIES_H
+#ifndef RPG_MAGIC_CHECKTYPEUNION_H
+#define RPG_MAGIC_CHECKTYPEUNION_H
 
-struct RPG_Magic_Spell_EffectProperties
+struct RPG_Magic_CheckTypeUnion
 {
-  RPG_Magic_Spell_Effect type;
-  RPG_Common_Amount base;
-  RPG_Common_Amount levelIncrement;
-  unsigned char levelIncrementMax;
-  std::vector<RPG_Magic_CounterMeasure> counterMeasures;
+  union
+  {
+    RPG_Character_Skill skill;
+    RPG_Common_Attribute attribute;
+    RPG_Common_BaseCheckTypeUnion basechecktypeunion;
+  };
+
+  enum Discriminator_t
+  {
+    SKILL,
+    ATTRIBUTE,
+    BASECHECKTYPEUNION,
+    INVALID
+  };
+  Discriminator_t discriminator;
 };
 
 #endif

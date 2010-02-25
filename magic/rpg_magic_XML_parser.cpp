@@ -456,6 +456,8 @@ RPG_Magic_Spell_PreconditionProperties_Type::RPG_Magic_Spell_PreconditionPropert
 
   myCurrentProperties.type = RPG_MAGIC_SPELL_PRECONDITION_INVALID;
   myCurrentProperties.value = 0;
+  myCurrentProperties.levelIncrement = 0;
+  myCurrentProperties.levelIncrementMax = 0;
   myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentProperties.condition = RPG_CHARACTER_CONDITION_INVALID;
   myCurrentProperties.size = RPG_CHARACTER_SIZE_INVALID;
@@ -473,6 +475,20 @@ void RPG_Magic_Spell_PreconditionProperties_Type::value(long long value_in)
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PreconditionProperties_Type::value"));
 
   myCurrentProperties.value = value_in;
+}
+
+void RPG_Magic_Spell_PreconditionProperties_Type::levelIncrement(unsigned char levelIncrement_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PreconditionProperties_Type::levelIncrement"));
+
+  myCurrentProperties.levelIncrement = levelIncrement_in;
+}
+
+void RPG_Magic_Spell_PreconditionProperties_Type::levelIncrementMax(unsigned char levelIncrementMax_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PreconditionProperties_Type::levelIncrementMax"));
+
+  myCurrentProperties.levelIncrementMax = levelIncrementMax_in;
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type::attribute(const RPG_Common_Attribute& attribute_in)
@@ -505,6 +521,8 @@ RPG_Magic_Spell_PreconditionProperties RPG_Magic_Spell_PreconditionProperties_Ty
   // clear structure
   myCurrentProperties.type = RPG_MAGIC_SPELL_PRECONDITION_INVALID;
   myCurrentProperties.value = 0;
+  myCurrentProperties.levelIncrement = 0;
+  myCurrentProperties.levelIncrementMax = 0;
   myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentProperties.condition = RPG_CHARACTER_CONDITION_INVALID;
   myCurrentProperties.size = RPG_CHARACTER_SIZE_INVALID;
@@ -517,6 +535,160 @@ RPG_Magic_Spell_Effect RPG_Magic_Spell_Effect_Type::post_RPG_Magic_Spell_Effect_
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Effect_Type::post_RPG_Magic_Spell_Effect_Type"));
 
   return RPG_Magic_Spell_EffectHelper::stringToRPG_Magic_Spell_Effect(post_string());
+}
+
+RPG_Magic_CheckTypeUnion_Type::RPG_Magic_CheckTypeUnion_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_CheckTypeUnion_Type::RPG_Magic_CheckTypeUnion_Type"));
+
+  myCurrentCheckTypeUnion.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
+  myCurrentCheckTypeUnion.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheckTypeUnion.basechecktypeunion.discriminator = RPG_Common_BaseCheckTypeUnion::INVALID;
+  myCurrentCheckTypeUnion.basechecktypeunion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
+}
+
+void RPG_Magic_CheckTypeUnion_Type::_characters(const ::xml_schema::ro_string& checkType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_CheckTypeUnion_Type::_characters"));
+
+  // can be either:
+  // - RPG_Character_Skill_Type --> "SKILL_xxx"
+  // - RPG_Common_Attribute_Type --> "ATTRIBUTE_xxx"
+  // - RPG_Common_BaseCheckTypeUnion --> "CHECK_xxx" || "SAVINGTHROW_xxx"
+  std::string type = checkType_in;
+  if (type.find(ACE_TEXT_ALWAYS_CHAR("SKILL_")) == 0)
+  {
+    myCurrentCheckTypeUnion.skill = RPG_Character_SkillHelper::stringToRPG_Character_Skill(checkType_in);
+    myCurrentCheckTypeUnion.discriminator = RPG_Magic_CheckTypeUnion::SKILL;
+  } // end IF
+  else if (type.find(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_")) == 0)
+  {
+    myCurrentCheckTypeUnion.attribute = RPG_Common_AttributeHelper::stringToRPG_Common_Attribute(checkType_in);
+    myCurrentCheckTypeUnion.discriminator = RPG_Magic_CheckTypeUnion::ATTRIBUTE;
+  } // end IF
+  else if (type.find(ACE_TEXT_ALWAYS_CHAR("CHECK_")) == 0)
+  {
+    myCurrentCheckTypeUnion.discriminator = RPG_Magic_CheckTypeUnion::BASECHECKTYPEUNION;
+    myCurrentCheckTypeUnion.basechecktypeunion.checktype = RPG_Common_CheckTypeHelper::stringToRPG_Common_CheckType(checkType_in);
+    myCurrentCheckTypeUnion.basechecktypeunion.discriminator = RPG_Common_BaseCheckTypeUnion::CHECKTYPE;
+  } // end IF
+  else
+  {
+    myCurrentCheckTypeUnion.discriminator = RPG_Magic_CheckTypeUnion::BASECHECKTYPEUNION;
+    myCurrentCheckTypeUnion.basechecktypeunion.savingthrow = RPG_Common_SavingThrowHelper::stringToRPG_Common_SavingThrow(checkType_in);
+    myCurrentCheckTypeUnion.basechecktypeunion.discriminator = RPG_Common_BaseCheckTypeUnion::SAVINGTHROW;
+  } // end ELSE
+}
+
+RPG_Magic_CheckTypeUnion RPG_Magic_CheckTypeUnion_Type::post_RPG_Magic_CheckTypeUnion_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_CheckTypeUnion_Type::post_RPG_Magic_CheckTypeUnion_Type"));
+
+  RPG_Magic_CheckTypeUnion result = myCurrentCheckTypeUnion;
+
+  // clear structure
+  myCurrentCheckTypeUnion.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
+  myCurrentCheckTypeUnion.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheckTypeUnion.basechecktypeunion.discriminator = RPG_Common_BaseCheckTypeUnion::INVALID;
+  myCurrentCheckTypeUnion.basechecktypeunion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
+
+  return result;
+}
+
+RPG_Magic_Check_Type::RPG_Magic_Check_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Check_Type::RPG_Magic_Check_Type"));
+
+  myCurrentCheck.type.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
+  myCurrentCheck.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentCheck.difficultyClass = 0;
+}
+
+void RPG_Magic_Check_Type::type(const RPG_Magic_CheckTypeUnion& checkUnion_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Check_Type::type"));
+
+  myCurrentCheck.type = checkUnion_in;
+}
+
+void RPG_Magic_Check_Type::attribute(const RPG_Common_Attribute& attribute_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Check_Type::attribute"));
+
+  myCurrentCheck.attribute = attribute_in;
+}
+
+void RPG_Magic_Check_Type::difficultyClass(unsigned char difficultyClass_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Check_Type::difficultyClass"));
+
+  myCurrentCheck.difficultyClass = difficultyClass_in;
+}
+
+RPG_Magic_Check RPG_Magic_Check_Type::post_RPG_Magic_Check_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Check_Type::post_RPG_Magic_Check_Type"));
+
+  RPG_Magic_Check result = myCurrentCheck;
+
+  // clear structure
+  myCurrentCheck.type.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
+  myCurrentCheck.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentCheck.difficultyClass = 0;
+
+  return result;
+}
+
+RPG_Magic_CounterMeasure_Type::RPG_Magic_CounterMeasure_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_CounterMeasure_Type::RPG_Magic_CounterMeasure_Type"));
+
+  myCurrentCounterMeasure.type = RPG_COMMON_COUNTERMEASURE_INVALID;
+  myCurrentCounterMeasure.check.type.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
+  myCurrentCounterMeasure.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCounterMeasure.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentCounterMeasure.check.difficultyClass = 0;
+  myCurrentCounterMeasure.spells.clear();
+}
+
+void RPG_Magic_CounterMeasure_Type::type(const RPG_Common_CounterMeasure& type_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_CounterMeasure_Type::type"));
+
+  myCurrentCounterMeasure.type = type_in;
+}
+
+void RPG_Magic_CounterMeasure_Type::check(const RPG_Magic_Check& check_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_CounterMeasure_Type::check"));
+
+  myCurrentCounterMeasure.check = check_in;
+}
+
+void RPG_Magic_CounterMeasure_Type::spell(const RPG_Magic_SpellType& spell_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_CounterMeasure_Type::spell"));
+
+  myCurrentCounterMeasure.spells.push_back(spell_in);
+}
+
+RPG_Magic_CounterMeasure RPG_Magic_CounterMeasure_Type::post_RPG_Magic_CounterMeasure_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_CounterMeasure_Type::post_RPG_Magic_CounterMeasure_Type"));
+
+  RPG_Magic_CounterMeasure result = myCurrentCounterMeasure;
+
+  // clear structure
+  myCurrentCounterMeasure.type = RPG_COMMON_COUNTERMEASURE_INVALID;
+  myCurrentCounterMeasure.check.type.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
+  myCurrentCounterMeasure.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCounterMeasure.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentCounterMeasure.check.difficultyClass = 0;
+  myCurrentCounterMeasure.spells.clear();
+
+  return result;
 }
 
 RPG_Magic_Spell_EffectProperties_Type::RPG_Magic_Spell_EffectProperties_Type()
@@ -533,7 +705,7 @@ RPG_Magic_Spell_EffectProperties_Type::RPG_Magic_Spell_EffectProperties_Type()
   myCurrentProperties.levelIncrement.range.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentProperties.levelIncrement.range.modifier = 0;
   myCurrentProperties.levelIncrementMax = 0;
-  myCurrentProperties.effect = RPG_COMMON_EFFECTTYPE_INVALID;
+  myCurrentProperties.counterMeasures.clear();
 }
 
 void RPG_Magic_Spell_EffectProperties_Type::type(const RPG_Magic_Spell_Effect& type_in)
@@ -564,11 +736,11 @@ void RPG_Magic_Spell_EffectProperties_Type::levelIncrementMax(unsigned char leve
   myCurrentProperties.levelIncrementMax = levelIncrementMax_in;
 }
 
-void RPG_Magic_Spell_EffectProperties_Type::effect(const RPG_Common_EffectType& effect_in)
+void RPG_Magic_Spell_EffectProperties_Type::counterMeasure(const RPG_Magic_CounterMeasure& counterMeasure_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::effect"));
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::counterMeasure"));
 
-  myCurrentProperties.effect = effect_in;
+  myCurrentProperties.counterMeasures.push_back(counterMeasure_in);
 }
 
 RPG_Magic_Spell_EffectProperties RPG_Magic_Spell_EffectProperties_Type::post_RPG_Magic_Spell_EffectProperties_Type()
@@ -588,7 +760,7 @@ RPG_Magic_Spell_EffectProperties RPG_Magic_Spell_EffectProperties_Type::post_RPG
   myCurrentProperties.levelIncrement.range.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentProperties.levelIncrement.range.modifier = 0;
   myCurrentProperties.levelIncrementMax = 0;
-  myCurrentProperties.effect = RPG_COMMON_EFFECTTYPE_INVALID;
+  myCurrentProperties.counterMeasures.clear();
 
   return result;
 }

@@ -114,13 +114,6 @@
     <xsd:attribute name="vicinity" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
 
-  <xsd:simpleType name="RPG_Combat_DamageCounterMeasureType_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="COUNTERMEASURE_CHECK"/>
-      <xsd:enumeration value="COUNTERMEASURE_SPELL"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
   <xsd:simpleType name="RPG_Combat_CheckTypeUnion_Type">
     <xsd:union memberTypes="RPG_Character_Skill_Type RPG_Common_Attribute_Type RPG_Common_BaseCheckTypeUnion_Type"/>
   </xsd:simpleType>
@@ -144,7 +137,7 @@
 
   <xsd:complexType name="RPG_Combat_DamageCounterMeasure_Type">
     <xsd:sequence>
-      <xsd:element name="type" type="RPG_Combat_DamageCounterMeasureType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="type" type="RPG_Common_CounterMeasure_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="check" type="RPG_Combat_Check_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="spell" type="RPG_Magic_SpellType_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="duration" type="RPG_Common_Duration_Type" minOccurs="0" maxOccurs="1"/>

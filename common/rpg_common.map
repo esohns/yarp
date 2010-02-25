@@ -11,6 +11,7 @@ namespace urn:rpg
   RPG_Common_ActionType_Type         RPG_Common_ActionType;
   RPG_Common_AreaOfEffect_Type       RPG_Common_AreaOfEffect;
   RPG_Common_EffectType_Type         RPG_Common_EffectType;
+  RPG_Common_CounterMeasure_Type     RPG_Common_CounterMeasure;
   RPG_Common_CheckType_Type          RPG_Common_CheckType;
   RPG_Common_SavingThrow_Type        RPG_Common_SavingThrow;
   RPG_Common_BaseCheckTypeUnion_Type RPG_Common_BaseCheckTypeUnion;

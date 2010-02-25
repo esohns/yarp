@@ -65,6 +65,13 @@ RPG_Common_EffectType RPG_Common_EffectType_Type::post_RPG_Common_EffectType_Typ
   return RPG_Common_EffectTypeHelper::stringToRPG_Common_EffectType(post_string());
 }
 
+RPG_Common_CounterMeasure RPG_Common_CounterMeasure_Type::post_RPG_Common_CounterMeasure_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_CounterMeasure_Type::post_RPG_Common_CounterMeasure_Type"));
+
+  return RPG_Common_CounterMeasureHelper::stringToRPG_Common_CounterMeasure(post_string());
+}
+
 RPG_Common_CheckType RPG_Common_CheckType_Type::post_RPG_Common_CheckType_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_CheckType_Type::post_RPG_Common_CheckType_Type"));

@@ -23,8 +23,8 @@
 
 enum RPG_Common_CheckType
 {
-  CHECK_GRAPPLE = 0,
-  CHECK_CASTER_LEVEL,
+  CHECK_CASTER_LEVEL = 0,
+  CHECK_GRAPPLE,
   //
   RPG_COMMON_CHECKTYPE_MAX,
   RPG_COMMON_CHECKTYPE_INVALID
@@ -44,8 +44,8 @@ class RPG_Common_CheckTypeHelper
   inline static void init()
   {
     myRPG_Common_CheckTypeToStringTable.clear();
-    myRPG_Common_CheckTypeToStringTable.insert(std::make_pair(CHECK_GRAPPLE, ACE_TEXT_ALWAYS_CHAR("CHECK_GRAPPLE")));
     myRPG_Common_CheckTypeToStringTable.insert(std::make_pair(CHECK_CASTER_LEVEL, ACE_TEXT_ALWAYS_CHAR("CHECK_CASTER_LEVEL")));
+    myRPG_Common_CheckTypeToStringTable.insert(std::make_pair(CHECK_GRAPPLE, ACE_TEXT_ALWAYS_CHAR("CHECK_GRAPPLE")));
   };
 
   inline static std::string RPG_Common_CheckTypeToString(const RPG_Common_CheckType& element_in)

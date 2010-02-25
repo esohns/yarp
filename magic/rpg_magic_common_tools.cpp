@@ -341,12 +341,14 @@ const std::string RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_
     {
       case PRECONDITION_ANIMAL:
       case PRECONDITION_MANUFACTURED:
+      case PRECONDITION_OBJECT:
       case PRECONDITION_RANGED_TOUCH_ATTACK:
       {
         break;
       }
       case PRECONDITION_ATTRIBUTE_MAX:
       case PRECONDITION_CONDITION:
+      case PRECONDITION_HD_MAX:
       case PRECONDITION_SIZE_MAX:
       case PRECONDITION_SIZE_RELATIVE:
       {
@@ -370,8 +372,32 @@ const std::string RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_
           converter.str(ACE_TEXT_ALWAYS_CHAR(""));
           converter << (*iterator).value;
           result += converter.str();
+
+          if ((*iterator).type == PRECONDITION_HD_MAX)
+            result += ACE_TEXT_ALWAYS_CHAR(" HD ");
         } // end ELSE
 
+        if ((*iterator).levelIncrement)
+        {
+          result += ACE_TEXT_ALWAYS_CHAR(" / [casterLevel");
+          if ((*iterator).levelIncrement != 1)
+          {
+            result += ACE_TEXT_ALWAYS_CHAR("/");
+            converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+            converter << ACE_static_cast(unsigned int, (*iterator).levelIncrement);
+            result += converter.str();
+          } // end IF
+          result += ACE_TEXT_ALWAYS_CHAR("]");
+
+          if ((*iterator).levelIncrementMax)
+          {
+            result += ACE_TEXT_ALWAYS_CHAR(" (max: ");
+            converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+            converter << ACE_static_cast(unsigned int, (*iterator).levelIncrementMax);
+            result += converter.str();
+            result += ACE_TEXT_ALWAYS_CHAR("th)");
+          } // end IF
+        } // end IF
         break;
       }
       default:
@@ -442,9 +468,105 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
       } // end IF
     } // end IF
     result += ACE_TEXT_ALWAYS_CHAR("\n");
-    result += ACE_TEXT_ALWAYS_CHAR("effect: ");
-    result += RPG_Common_EffectTypeHelper::RPG_Common_EffectTypeToString((*iterator).effect);
-    result += ACE_TEXT_ALWAYS_CHAR("\n");
+    for (std::vector<RPG_Magic_CounterMeasure>::const_iterator iterator2 = (*iterator).counterMeasures.begin();
+         iterator2 != (*iterator).counterMeasures.end();
+         iterator2++)
+    {
+      result += ACE_TEXT_ALWAYS_CHAR("counterMeasure: ");
+      result += RPG_Common_CounterMeasureHelper::RPG_Common_CounterMeasureToString((*iterator2).type);
+      switch ((*iterator2).type)
+      {
+        case COUNTERMEASURE_CHECK:
+        {
+          result += ACE_TEXT_ALWAYS_CHAR(": ");
+          switch ((*iterator2).check.type.discriminator)
+          {
+            case RPG_Magic_CheckTypeUnion::SKILL:
+            {
+              result += RPG_Character_SkillHelper::RPG_Character_SkillToString((*iterator2).check.type.skill);
+
+              break;
+            }
+            case RPG_Magic_CheckTypeUnion::ATTRIBUTE:
+            {
+              result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator2).check.type.attribute);
+
+              break;
+            }
+            case RPG_Magic_CheckTypeUnion::BASECHECKTYPEUNION:
+            {
+              switch ((*iterator2).check.type.basechecktypeunion.discriminator)
+              {
+                case RPG_Common_BaseCheckTypeUnion::CHECKTYPE:
+                {
+                  result += RPG_Common_CheckTypeHelper::RPG_Common_CheckTypeToString((*iterator2).check.type.basechecktypeunion.checktype);
+
+                  break;
+                }
+                case RPG_Common_BaseCheckTypeUnion::SAVINGTHROW:
+                {
+                  result += RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString((*iterator2).check.type.basechecktypeunion.savingthrow);
+
+                  break;
+                }
+                default:
+                {
+                  // debug info
+                  ACE_DEBUG((LM_ERROR,
+                             ACE_TEXT("invalid RPG_Common_BaseCheckTypeUnion type: %d, continuing\n"),
+                             (*iterator2).check.type.basechecktypeunion.discriminator));
+
+                  break;
+                }
+              } // end SWITCH
+
+              break;
+            }
+            default:
+            {
+              // debug info
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("invalid RPG_Magic_CheckTypeUnion type: %d, continuing\n"),
+                         (*iterator2).check.type.discriminator));
+
+              break;
+            }
+          } // end SWITCH
+          result += ACE_TEXT_ALWAYS_CHAR(" (DC: ");
+          converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+          converter << ACE_static_cast(unsigned int, (*iterator2).check.difficultyClass);
+          result += converter.str();
+          result += ACE_TEXT_ALWAYS_CHAR(")");
+
+          break;
+        }
+        case COUNTERMEASURE_SPELL:
+        {
+          for (std::vector<RPG_Magic_SpellType>::const_iterator iterator3 = (*iterator2).spells.begin();
+               iterator3 != (*iterator2).spells.end();
+               iterator3++)
+          {
+            result += RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator3);
+            result += ACE_TEXT_ALWAYS_CHAR("|");
+          } // end FOR
+          if (!(*iterator2).spells.empty())
+          {
+            result.erase(--(result.end()));
+          } // end IF
+
+          break;
+        }
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid counterMeasure \"%s\" --> check implementation !, continuing\n"),
+                     RPG_Common_CounterMeasureHelper::RPG_Common_CounterMeasureToString((*iterator2).type).c_str()));
+
+          break;
+        }
+      } // end SWITCH
+      result += ACE_TEXT_ALWAYS_CHAR("\n");
+    } // end FOR
   } // end FOR
 
   return result;

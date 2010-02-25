@@ -92,10 +92,19 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="RPG_Common_CounterMeasure_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="COUNTERMEASURE_CHECK"/>
+      <xsd:enumeration value="COUNTERMEASURE_SPELL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:simpleType name="RPG_Common_CheckType_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="CHECK_GRAPPLE"/>
+<!--       <xsd:enumeration value="CHECK_ATTRIBUTE"/> -->
       <xsd:enumeration value="CHECK_CASTER_LEVEL"/>
+      <xsd:enumeration value="CHECK_GRAPPLE"/>
+<!--       <xsd:enumeration value="CHECK_SKILL"/> -->
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -103,9 +112,9 @@
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SAVE_NONE"/>
       <xsd:enumeration value="SAVE_FORTITUDE"/>
+      <xsd:enumeration value="SAVE_MAGIC"/>
       <xsd:enumeration value="SAVE_REFLEX"/>
       <xsd:enumeration value="SAVE_WILL"/>
-      <xsd:enumeration value="SAVE_SPELL"/>
     </xsd:restriction>
   </xsd:simpleType>
 

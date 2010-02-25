@@ -303,13 +303,6 @@ RPG_Combat_OtherDamage RPG_Combat_OtherDamage_Type::post_RPG_Combat_OtherDamage_
   return result;
 }
 
-RPG_Combat_DamageCounterMeasureType RPG_Combat_DamageCounterMeasureType_Type::post_RPG_Combat_DamageCounterMeasureType_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasureType_Type::post_RPG_Combat_DamageCounterMeasureType_Type"));
-
-  return RPG_Combat_DamageCounterMeasureTypeHelper::stringToRPG_Combat_DamageCounterMeasureType(post_string());
-}
-
 RPG_Combat_CheckTypeUnion_Type::RPG_Combat_CheckTypeUnion_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_CheckTypeUnion_Type::RPG_Combat_CheckTypeUnion_Type"));
@@ -425,7 +418,7 @@ RPG_Combat_DamageCounterMeasure_Type::RPG_Combat_DamageCounterMeasure_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasure_Type::RPG_Combat_DamageCounterMeasure_Type"));
 
-  myCurrentCounterMeasure.type = RPG_COMBAT_DAMAGECOUNTERMEASURETYPE_INVALID;
+  myCurrentCounterMeasure.type = RPG_COMMON_COUNTERMEASURE_INVALID;
   myCurrentCounterMeasure.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
   myCurrentCounterMeasure.check.type.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
   myCurrentCounterMeasure.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
@@ -438,7 +431,7 @@ RPG_Combat_DamageCounterMeasure_Type::RPG_Combat_DamageCounterMeasure_Type()
   myCurrentCounterMeasure.reduction = RPG_COMBAT_DAMAGEREDUCTIONTYPE_INVALID;
 }
 
-void RPG_Combat_DamageCounterMeasure_Type::type(const RPG_Combat_DamageCounterMeasureType& type_in)
+void RPG_Combat_DamageCounterMeasure_Type::type(const RPG_Common_CounterMeasure& type_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasure_Type::type"));
 
@@ -487,7 +480,7 @@ RPG_Combat_DamageCounterMeasure RPG_Combat_DamageCounterMeasure_Type::post_RPG_C
   RPG_Combat_DamageCounterMeasure result = myCurrentCounterMeasure;
 
   // clear structure
-  myCurrentCounterMeasure.type = RPG_COMBAT_DAMAGECOUNTERMEASURETYPE_INVALID;
+  myCurrentCounterMeasure.type = RPG_COMMON_COUNTERMEASURE_INVALID;
   myCurrentCounterMeasure.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
   myCurrentCounterMeasure.check.type.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
   myCurrentCounterMeasure.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;

@@ -30,6 +30,7 @@ RPG_Common_PhysicalDamageTypeToStringTable_t RPG_Common_PhysicalDamageTypeHelper
 RPG_Common_ActionTypeToStringTable_t RPG_Common_ActionTypeHelper::myRPG_Common_ActionTypeToStringTable;
 RPG_Common_AreaOfEffectToStringTable_t RPG_Common_AreaOfEffectHelper::myRPG_Common_AreaOfEffectToStringTable;
 RPG_Common_EffectTypeToStringTable_t RPG_Common_EffectTypeHelper::myRPG_Common_EffectTypeToStringTable;
+RPG_Common_CounterMeasureToStringTable_t RPG_Common_CounterMeasureHelper::myRPG_Common_CounterMeasureToStringTable;
 RPG_Common_CheckTypeToStringTable_t RPG_Common_CheckTypeHelper::myRPG_Common_CheckTypeToStringTable;
 RPG_Common_SavingThrowToStringTable_t RPG_Common_SavingThrowHelper::myRPG_Common_SavingThrowToStringTable;
 RPG_Common_SaveReductionTypeToStringTable_t RPG_Common_SaveReductionTypeHelper::myRPG_Common_SaveReductionTypeToStringTable;
@@ -45,6 +46,7 @@ void RPG_Common_Tools::initStringConversionTables()
   RPG_Common_ActionTypeHelper::init();
   RPG_Common_AreaOfEffectHelper::init();
   RPG_Common_EffectTypeHelper::init();
+  RPG_Common_CounterMeasureHelper::init();
   RPG_Common_CheckTypeHelper::init();
   RPG_Common_SavingThrowHelper::init();
   RPG_Common_SaveReductionTypeHelper::init();
@@ -53,6 +55,38 @@ void RPG_Common_Tools::initStringConversionTables()
   // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Common_Tools: initialized string conversion tables...\n")));
+}
+
+const RPG_Common_Attribute RPG_Common_Tools::savingThrowToAttribute(const RPG_Common_SavingThrow& save_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::savingThrowToAttribute"));
+
+  switch (save_in)
+  {
+    case SAVE_FORTITUDE:
+    {
+      return ATTRIBUTE_CONSTITUTION;
+    }
+    case SAVE_REFLEX:
+    {
+      return ATTRIBUTE_DEXTERITY;
+    }
+    case SAVE_WILL:
+    {
+      return ATTRIBUTE_WISDOM;
+    }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("invalid saving throw type: \"%s\", aborting\n"),
+                 RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString(save_in).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  return RPG_COMMON_ATTRIBUTE_INVALID;
 }
 
 const std::string RPG_Common_Tools::savingThrowToString(const RPG_Common_SavingThrowCheck& save_in)

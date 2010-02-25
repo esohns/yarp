@@ -159,15 +159,6 @@ class RPG_Combat_OtherDamage_Type
   RPG_Combat_OtherDamage myCurrentOtherDamage;
 };
 
-class RPG_Combat_DamageCounterMeasureType_Type
- : public RPG_Combat_DamageCounterMeasureType_Type_pskel,
-   public ::xml_schema::string_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Combat_DamageCounterMeasureType post_RPG_Combat_DamageCounterMeasureType_Type();
-};
-
 class RPG_Combat_CheckTypeUnion_Type
  : public RPG_Combat_CheckTypeUnion_Type_pskel
 {
@@ -214,7 +205,7 @@ class RPG_Combat_DamageCounterMeasure_Type
    RPG_Combat_DamageCounterMeasure_Type();
 
 //    virtual void pre();
-   virtual void type(const RPG_Combat_DamageCounterMeasureType&);
+   virtual void type(const RPG_Common_CounterMeasure&);
    virtual void check(const RPG_Combat_Check&);
    virtual void spell(const RPG_Magic_SpellType&);
    virtual void duration(const RPG_Common_Duration&);

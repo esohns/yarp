@@ -120,6 +120,8 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
   RPG_Magic_Spell_PreconditionProperties_Type preconditionProperties_p;
   preconditionProperties_p.parsers(precondition_p,
                                    int_p,
+                                   unsigned_byte_p,
+                                   unsigned_byte_p,
                                    attribute_p,
                                    condition_p,
                                    size_p);
@@ -137,13 +139,22 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
   ::xml_schema::byte_pimpl                    byte_p;
   amount_p.parsers(byte_p,
                    roll_p);
-  RPG_Common_EffectType_Type                  effectType_p;
+  RPG_Common_CounterMeasure_Type              counterType_p;
+  RPG_Magic_CheckTypeUnion_Type               checkType_p;
+  RPG_Magic_Check_Type                        check_p;
+  check_p.parsers(checkType_p,
+                  attribute_p,
+                  unsigned_byte_p);
+  RPG_Magic_CounterMeasure_Type               counterMeasure_p;
+  counterMeasure_p.parsers(counterType_p,
+                           check_p,
+                           spellType_p);
   RPG_Magic_Spell_EffectProperties_Type       effectProperties_p;
   effectProperties_p.parsers(effect_p,
                              amount_p,
                              amount_p,
                              unsigned_byte_p,
-                             effectType_p);
+                             counterMeasure_p);
 
   RPG_Magic_Spell_PropertiesXML_Type          propertiesXML_p;
   propertiesXML_p.parsers(string_p,

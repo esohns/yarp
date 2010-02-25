@@ -27,6 +27,7 @@
 #include "rpg_common_actiontype.h"
 #include "rpg_common_areaofeffect.h"
 #include "rpg_common_effecttype.h"
+#include "rpg_common_countermeasure.h"
 #include "rpg_common_checktype.h"
 #include "rpg_common_savingthrow.h"
 #include "rpg_common_basechecktypeunion.h"

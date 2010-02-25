@@ -25,6 +25,8 @@ struct RPG_Magic_Spell_PreconditionProperties
 {
   RPG_Magic_Spell_Precondition type;
   int value;
+  unsigned char levelIncrement;
+  unsigned char levelIncrementMax;
   RPG_Common_Attribute attribute;
   RPG_Character_Condition condition;
   RPG_Character_Size size;

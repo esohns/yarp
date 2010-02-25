@@ -330,6 +330,18 @@ value_parser (::xml_schema::integer_pskel& p)
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
+levelIncrement_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->levelIncrement_parser_ = &p;
+}
+
+void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
+levelIncrementMax_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->levelIncrementMax_parser_ = &p;
+}
+
+void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
 attribute_parser (::RPG_Common_Attribute_Type_pskel& p)
 {
   this->attribute_parser_ = &p;
@@ -350,12 +362,16 @@ size_parser (::RPG_Character_Size_Type_pskel& p)
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
 parsers (::RPG_Magic_Spell_Precondition_Type_pskel& type,
          ::xml_schema::integer_pskel& value,
+         ::xml_schema::unsigned_byte_pskel& levelIncrement,
+         ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
          ::RPG_Common_Attribute_Type_pskel& attribute,
          ::RPG_Character_Condition_Type_pskel& condition,
          ::RPG_Character_Size_Type_pskel& size)
 {
   this->type_parser_ = &type;
   this->value_parser_ = &value;
+  this->levelIncrement_parser_ = &levelIncrement;
+  this->levelIncrementMax_parser_ = &levelIncrementMax;
   this->attribute_parser_ = &attribute;
   this->condition_parser_ = &condition;
   this->size_parser_ = &size;
@@ -365,9 +381,89 @@ RPG_Magic_Spell_PreconditionProperties_Type_pskel::
 RPG_Magic_Spell_PreconditionProperties_Type_pskel ()
 : type_parser_ (0),
   value_parser_ (0),
+  levelIncrement_parser_ (0),
+  levelIncrementMax_parser_ (0),
   attribute_parser_ (0),
   condition_parser_ (0),
   size_parser_ (0)
+{
+}
+
+// RPG_Magic_Check_Type_pskel
+//
+
+void RPG_Magic_Check_Type_pskel::
+type_parser (::RPG_Magic_CheckTypeUnion_Type_pskel& p)
+{
+  this->type_parser_ = &p;
+}
+
+void RPG_Magic_Check_Type_pskel::
+attribute_parser (::RPG_Common_Attribute_Type_pskel& p)
+{
+  this->attribute_parser_ = &p;
+}
+
+void RPG_Magic_Check_Type_pskel::
+difficultyClass_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->difficultyClass_parser_ = &p;
+}
+
+void RPG_Magic_Check_Type_pskel::
+parsers (::RPG_Magic_CheckTypeUnion_Type_pskel& type,
+         ::RPG_Common_Attribute_Type_pskel& attribute,
+         ::xml_schema::unsigned_byte_pskel& difficultyClass)
+{
+  this->type_parser_ = &type;
+  this->attribute_parser_ = &attribute;
+  this->difficultyClass_parser_ = &difficultyClass;
+}
+
+RPG_Magic_Check_Type_pskel::
+RPG_Magic_Check_Type_pskel ()
+: type_parser_ (0),
+  attribute_parser_ (0),
+  difficultyClass_parser_ (0)
+{
+}
+
+// RPG_Magic_CounterMeasure_Type_pskel
+//
+
+void RPG_Magic_CounterMeasure_Type_pskel::
+type_parser (::RPG_Common_CounterMeasure_Type_pskel& p)
+{
+  this->type_parser_ = &p;
+}
+
+void RPG_Magic_CounterMeasure_Type_pskel::
+check_parser (::RPG_Magic_Check_Type_pskel& p)
+{
+  this->check_parser_ = &p;
+}
+
+void RPG_Magic_CounterMeasure_Type_pskel::
+spell_parser (::RPG_Magic_SpellType_Type_pskel& p)
+{
+  this->spell_parser_ = &p;
+}
+
+void RPG_Magic_CounterMeasure_Type_pskel::
+parsers (::RPG_Common_CounterMeasure_Type_pskel& type,
+         ::RPG_Magic_Check_Type_pskel& check,
+         ::RPG_Magic_SpellType_Type_pskel& spell)
+{
+  this->type_parser_ = &type;
+  this->check_parser_ = &check;
+  this->spell_parser_ = &spell;
+}
+
+RPG_Magic_CounterMeasure_Type_pskel::
+RPG_Magic_CounterMeasure_Type_pskel ()
+: type_parser_ (0),
+  check_parser_ (0),
+  spell_parser_ (0)
 {
 }
 
@@ -399,9 +495,9 @@ levelIncrementMax_parser (::xml_schema::unsigned_byte_pskel& p)
 }
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
-effect_parser (::RPG_Common_EffectType_Type_pskel& p)
+counterMeasure_parser (::RPG_Magic_CounterMeasure_Type_pskel& p)
 {
-  this->effect_parser_ = &p;
+  this->counterMeasure_parser_ = &p;
 }
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
@@ -409,13 +505,13 @@ parsers (::RPG_Magic_Spell_Effect_Type_pskel& type,
          ::RPG_Common_Amount_Type_pskel& base,
          ::RPG_Common_Amount_Type_pskel& levelIncrement,
          ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
-         ::RPG_Common_EffectType_Type_pskel& effect)
+         ::RPG_Magic_CounterMeasure_Type_pskel& counterMeasure)
 {
   this->type_parser_ = &type;
   this->base_parser_ = &base;
   this->levelIncrement_parser_ = &levelIncrement;
   this->levelIncrementMax_parser_ = &levelIncrementMax;
-  this->effect_parser_ = &effect;
+  this->counterMeasure_parser_ = &counterMeasure;
 }
 
 RPG_Magic_Spell_EffectProperties_Type_pskel::
@@ -424,7 +520,7 @@ RPG_Magic_Spell_EffectProperties_Type_pskel ()
   base_parser_ (0),
   levelIncrement_parser_ (0),
   levelIncrementMax_parser_ (0),
-  effect_parser_ (0)
+  counterMeasure_parser_ (0)
 {
 }
 
@@ -1343,6 +1439,16 @@ value (long long)
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
+levelIncrement (unsigned char)
+{
+}
+
+void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
+levelIncrementMax (unsigned char)
+{
+}
+
+void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
 attribute (const RPG_Common_Attribute&)
 {
 }
@@ -1383,6 +1489,26 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->value_parser_)
       this->value_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "levelIncrement" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->levelIncrement_parser_;
+
+    if (this->levelIncrement_parser_)
+      this->levelIncrement_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "levelIncrementMax" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->levelIncrementMax_parser_;
+
+    if (this->levelIncrementMax_parser_)
+      this->levelIncrementMax_parser_->pre ();
 
     return true;
   }
@@ -1443,6 +1569,22 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "levelIncrement" && ns == "urn:rpg")
+  {
+    if (this->levelIncrement_parser_)
+      this->levelIncrement (this->levelIncrement_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  if (n == "levelIncrementMax" && ns == "urn:rpg")
+  {
+    if (this->levelIncrementMax_parser_)
+      this->levelIncrementMax (this->levelIncrementMax_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
   if (n == "attribute" && ns == "urn:rpg")
   {
     if (this->attribute_parser_)
@@ -1463,6 +1605,196 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->size_parser_)
       this->size (this->size_parser_->post_RPG_Character_Size_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Magic_Check_Type_pskel
+//
+
+void RPG_Magic_Check_Type_pskel::
+type (const RPG_Magic_CheckTypeUnion&)
+{
+}
+
+void RPG_Magic_Check_Type_pskel::
+attribute (const RPG_Common_Attribute&)
+{
+}
+
+void RPG_Magic_Check_Type_pskel::
+difficultyClass (unsigned char)
+{
+}
+
+bool RPG_Magic_Check_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
+
+    if (this->type_parser_)
+      this->type_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "attribute" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->attribute_parser_;
+
+    if (this->attribute_parser_)
+      this->attribute_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "difficultyClass" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->difficultyClass_parser_;
+
+    if (this->difficultyClass_parser_)
+      this->difficultyClass_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Magic_Check_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    if (this->type_parser_)
+      this->type (this->type_parser_->post_RPG_Magic_CheckTypeUnion_Type ());
+
+    return true;
+  }
+
+  if (n == "attribute" && ns == "urn:rpg")
+  {
+    if (this->attribute_parser_)
+      this->attribute (this->attribute_parser_->post_RPG_Common_Attribute_Type ());
+
+    return true;
+  }
+
+  if (n == "difficultyClass" && ns == "urn:rpg")
+  {
+    if (this->difficultyClass_parser_)
+      this->difficultyClass (this->difficultyClass_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Magic_CounterMeasure_Type_pskel
+//
+
+void RPG_Magic_CounterMeasure_Type_pskel::
+type (const RPG_Common_CounterMeasure&)
+{
+}
+
+void RPG_Magic_CounterMeasure_Type_pskel::
+check (const RPG_Magic_Check&)
+{
+}
+
+void RPG_Magic_CounterMeasure_Type_pskel::
+spell (const RPG_Magic_SpellType&)
+{
+}
+
+bool RPG_Magic_CounterMeasure_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
+
+    if (this->type_parser_)
+      this->type_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "check" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->check_parser_;
+
+    if (this->check_parser_)
+      this->check_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "spell" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->spell_parser_;
+
+    if (this->spell_parser_)
+      this->spell_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Magic_CounterMeasure_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    if (this->type_parser_)
+      this->type (this->type_parser_->post_RPG_Common_CounterMeasure_Type ());
+
+    return true;
+  }
+
+  if (n == "check" && ns == "urn:rpg")
+  {
+    if (this->check_parser_)
+      this->check (this->check_parser_->post_RPG_Magic_Check_Type ());
+
+    return true;
+  }
+
+  if (n == "spell" && ns == "urn:rpg")
+  {
+    if (this->spell_parser_)
+      this->spell (this->spell_parser_->post_RPG_Magic_SpellType_Type ());
 
     return true;
   }
@@ -1494,7 +1826,7 @@ levelIncrementMax (unsigned char)
 }
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
-effect (const RPG_Common_EffectType&)
+counterMeasure (const RPG_Magic_CounterMeasure&)
 {
 }
 
@@ -1548,6 +1880,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "counterMeasure" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->counterMeasure_parser_;
+
+    if (this->counterMeasure_parser_)
+      this->counterMeasure_parser_->pre ();
+
+    return true;
+  }
+
   return false;
 }
 
@@ -1590,27 +1932,10 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  return false;
-}
-
-bool RPG_Magic_Spell_EffectProperties_Type_pskel::
-_attribute_impl (const ::xml_schema::ro_string& ns,
-                 const ::xml_schema::ro_string& n,
-                 const ::xml_schema::ro_string& v)
-{
-  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
-    return true;
-
-  if (n == "effect" && ns.empty ())
+  if (n == "counterMeasure" && ns == "urn:rpg")
   {
-    if (this->effect_parser_)
-    {
-      this->effect_parser_->pre ();
-      this->effect_parser_->_pre_impl ();
-      this->effect_parser_->_characters (v);
-      this->effect_parser_->_post_impl ();
-      this->effect (this->effect_parser_->post_RPG_Common_EffectType_Type ());
-    }
+    if (this->counterMeasure_parser_)
+      this->counterMeasure (this->counterMeasure_parser_->post_RPG_Magic_CounterMeasure_Type ());
 
     return true;
   }

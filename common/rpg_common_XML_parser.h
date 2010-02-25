@@ -81,6 +81,15 @@ class RPG_Common_EffectType_Type
     virtual RPG_Common_EffectType post_RPG_Common_EffectType_Type();
 };
 
+class RPG_Common_CounterMeasure_Type
+  : public RPG_Common_CounterMeasure_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Common_CounterMeasure post_RPG_Common_CounterMeasure_Type();
+};
+
 class RPG_Common_CheckType_Type
  : public RPG_Common_CheckType_Type_pskel,
    public ::xml_schema::string_pimpl

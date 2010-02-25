@@ -33,6 +33,7 @@
 #include <rpg_item_common_tools.h>
 
 #include <rpg_common_attribute.h>
+#include <rpg_common_tools.h>
 
 #include <rpg_dice.h>
 #include <rpg_dice_common_tools.h>
@@ -52,7 +53,6 @@ RPG_Combat_DefenseSituationToStringTable_t RPG_Combat_DefenseSituationHelper::my
 RPG_Combat_SpecialAttackToStringTable_t RPG_Combat_SpecialAttackHelper::myRPG_Combat_SpecialAttackToStringTable;
 RPG_Combat_SpecialDamageTypeToStringTable_t RPG_Combat_SpecialDamageTypeHelper::myRPG_Combat_SpecialDamageTypeToStringTable;
 RPG_Combat_OtherDamageTypeToStringTable_t RPG_Combat_OtherDamageTypeHelper::myRPG_Combat_OtherDamageTypeToStringTable;
-RPG_Combat_DamageCounterMeasureTypeToStringTable_t RPG_Combat_DamageCounterMeasureTypeHelper::myRPG_Combat_DamageCounterMeasureTypeToStringTable;
 RPG_Combat_DamageReductionTypeToStringTable_t RPG_Combat_DamageReductionTypeHelper::myRPG_Combat_DamageReductionTypeToStringTable;
 
 void RPG_Combat_Common_Tools::initStringConversionTables()
@@ -65,7 +65,6 @@ void RPG_Combat_Common_Tools::initStringConversionTables()
   RPG_Combat_SpecialAttackHelper::init();
   RPG_Combat_SpecialDamageTypeHelper::init();
   RPG_Combat_OtherDamageTypeHelper::init();
-  RPG_Combat_DamageCounterMeasureTypeHelper::init();
   RPG_Combat_DamageReductionTypeHelper::init();
 
   // debug info
@@ -206,35 +205,8 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
                   } // end IF
                   else
                   {
-                    switch ((*iterator2).check.type.basechecktypeunion.savingthrow)
-                    {
-                      case SAVE_FORTITUDE:
-                      {
-                        result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_CONSTITUTION);
-                        result += ACE_TEXT_ALWAYS_CHAR(" ");
-                        break;
-                      }
-                      case SAVE_REFLEX:
-                      {
-                        result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_DEXTERITY);
-                        result += ACE_TEXT_ALWAYS_CHAR(" ");
-                        break;
-                      }
-                      case SAVE_WILL:
-                      {
-                        result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_WISDOM);
-                        result += ACE_TEXT_ALWAYS_CHAR(" ");
-                        break;
-                      }
-                      default:
-                      {
-                        // debug info
-                        ACE_DEBUG((LM_ERROR,
-                                   ACE_TEXT("invalid saving throw type: \"%s\", continuing\n"),
-                                   RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString((*iterator2).check.type.basechecktypeunion.savingthrow).c_str()));
-                        break;
-                      }
-                    } // end SWITCH
+                    result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(RPG_Common_Tools::savingThrowToAttribute((*iterator2).check.type.basechecktypeunion.savingthrow));
+                    result += ACE_TEXT_ALWAYS_CHAR(" ");
                   } // end ELSE
 
                   break;
@@ -289,8 +261,8 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
         {
           // debug info
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid counter-measure type: \"%s\", continuing\n"),
-                     RPG_Combat_DamageCounterMeasureTypeHelper::RPG_Combat_DamageCounterMeasureTypeToString((*iterator2).type).c_str()));
+                     ACE_TEXT("invalid counterMeasure: \"%s\", continuing\n"),
+                     RPG_Common_CounterMeasureHelper::RPG_Common_CounterMeasureToString((*iterator2).type).c_str()));
 
           break;
         }

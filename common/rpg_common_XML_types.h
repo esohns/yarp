@@ -55,6 +55,7 @@ class RPG_Common_PhysicalDamageType_Type_pskel;
 class RPG_Common_ActionType_Type_pskel;
 class RPG_Common_AreaOfEffect_Type_pskel;
 class RPG_Common_EffectType_Type_pskel;
+class RPG_Common_CounterMeasure_Type_pskel;
 class RPG_Common_CheckType_Type_pskel;
 class RPG_Common_SavingThrow_Type_pskel;
 class RPG_Common_BaseCheckTypeUnion_Type_pskel;
@@ -150,6 +151,18 @@ class RPG_Common_EffectType_Type_pskel: public virtual ::xml_schema::string_pske
 
   virtual RPG_Common_EffectType
   post_RPG_Common_EffectType_Type () = 0;
+};
+
+class RPG_Common_CounterMeasure_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Common_CounterMeasure
+  post_RPG_Common_CounterMeasure_Type () = 0;
 };
 
 class RPG_Common_CheckType_Type_pskel: public virtual ::xml_schema::string_pskel

@@ -13,6 +13,7 @@ namespace urn:rpg
   RPG_Common_PhysicalDamageType_Type       RPG_Common_PhysicalDamageType;
   RPG_Common_AreaOfEffect_Type             RPG_Common_AreaOfEffect;
   RPG_Common_EffectType_Type               RPG_Common_EffectType;
+  RPG_Common_CounterMeasure_Type           RPG_Common_CounterMeasure;
   RPG_Common_SavingThrowCheck_Type         RPG_Common_SavingThrowCheck;
 
   RPG_Magic_Spell_Type                     RPG_Magic_Spell;
@@ -33,7 +34,6 @@ namespace urn:rpg
   RPG_Combat_DamageDuration_Type           RPG_Combat_DamageDuration;
   RPG_Combat_OtherDamageType_Type          RPG_Combat_OtherDamageType;
   RPG_Combat_OtherDamage_Type              RPG_Combat_OtherDamage;
-  RPG_Combat_DamageCounterMeasureType_Type RPG_Combat_DamageCounterMeasureType;
   RPG_Combat_CheckTypeUnion_Type           RPG_Combat_CheckTypeUnion;
   RPG_Combat_Check_Type                    RPG_Combat_Check;
   RPG_Combat_DamageReductionType_Type      RPG_Combat_DamageReductionType;
