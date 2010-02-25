@@ -711,15 +711,22 @@
     <precondition>
       <type>PRECONDITION_RANGED_TOUCH_ATTACK</type>
     </precondition>
-<!--    <precondition>
-      <type>PRECONDITION_OBJECT</type>
-    </precondition>-->
-    <save>
-      <type>SAVE_REFLEX</type>
-      <difficultyClass></difficultyClass>
-    </save>
     <effect>
       <type>SPELLEFFECT_ENTANGLE</type>
+      <counterMeasure>
+        <type>COUNTERMEASURE_CHECK</type>
+        <check>
+          <type>ATTRIBUTE_STRENGTH</type>
+          <difficultyClass>23</difficultyClass>
+        </check>
+      </counterMeasure>
+      <counterMeasure>
+        <type>COUNTERMEASURE_CHECK</type>
+        <check>
+          <type>SKILL_ESCAPE_ARTIST</type>
+          <difficultyClass>20</difficultyClass>
+        </check>
+      </counterMeasure>
     </effect>
   </spell>
 </spellDictionary>

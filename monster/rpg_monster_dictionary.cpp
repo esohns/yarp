@@ -112,7 +112,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                      unsigned_short_p,
                      unsigned_short_p,
                      bool_p);
-  RPG_Combat_DamageCounterMeasureType_Type       counterMeasureType_p;
+  RPG_Common_CounterMeasure_Type                 counterMeasureType_p;
   RPG_Combat_CheckTypeUnion_Type                 checkTypeUnion_p;
   RPG_Common_Attribute_Type                      attribute_p;
   ::xml_schema::unsigned_byte_pimpl              unsigned_byte_p;
