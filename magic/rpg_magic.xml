@@ -21,7 +21,6 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>2</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_LONG">
     </range>
     <target>
@@ -68,7 +67,6 @@
       <casterClass>DOMAIN_WATER</casterClass>
       <level>7</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_MEDIUM">
     </range>
     <target>
@@ -108,7 +106,6 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>0</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target>
@@ -151,7 +148,6 @@
       <casterClass>DOMAIN_LUCK</casterClass>
       <level>2</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
@@ -216,7 +212,6 @@
       <casterClass>DOMAIN_AIR</casterClass>
       <level>4</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
@@ -257,7 +252,6 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>1</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target>
@@ -288,7 +282,6 @@
       <casterClass>SUBCLASS_CLERIC</casterClass>
       <level>2</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
@@ -324,7 +317,6 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>2</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_PERSONAL">
     </range>
     <target>
@@ -361,7 +353,6 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>6</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target>
@@ -399,7 +390,6 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>5</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_MEDIUM">
     </range>
     <target>
@@ -443,7 +433,6 @@
       <casterClass>SUBCLASS_RANGER</casterClass>
       <level>1</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target>
@@ -479,7 +468,6 @@
       <casterClass>SUBCLASS_DRUID</casterClass>
       <level>8</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target>
@@ -521,7 +509,6 @@
       <casterClass>SUBCLASS_DRUID</casterClass>
       <level>2</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target rangeIsInHD="true">
@@ -570,7 +557,6 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>4</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target rangeIsInHD="true">
@@ -612,7 +598,6 @@
       <casterClass>SUBCLASS_CLERIC</casterClass>
       <level>6</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_MEDIUM">
     </range>
     <target>
@@ -652,7 +637,6 @@
       <casterClass>DOMAIN_PLANT</casterClass>
       <level>7</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target>
@@ -697,7 +681,6 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>1</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_MEDIUM">
     </range>
     <target>
@@ -750,7 +733,8 @@
       <casterClass>SUBCLASS_DRUID</casterClass>
       <level>6</level>
     </level>
-    <action>ACTION_FULL_ROUND</action>
+    <time action="ACTION_FULLROUND">
+    </time>
     <range effect="RANGEEFFECT_PERSONAL">
     </range>
     <target>
@@ -796,7 +780,6 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>6</level>
     </level>
-    <action>ACTION_STANDARD</action>
     <range effect="RANGEEFFECT_PERSONAL">
     </range>
     <target>
@@ -816,6 +799,59 @@
           <type>CHECK_CASTER_LEVEL</type>
         </check>
       </counterMeasure>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Antipathy</name>
+    <type>
+      <type>SPELL_ANTIPATHY</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>9</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>8</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>8</level>
+    </level>
+    <time action="ACTION_TIME">
+      <rounds>600</rounds>
+    </time>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target>
+      <type>TARGET_AREA</type>
+      <levelIncrement>1</levelIncrement>
+      <area>AREA_CUBE</area>
+      <radius>10</radius>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>1200</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_REPEL_CREATURE</type>
+      <counterMeasure reduction="SAVEREDUCTION_PARTIAL">
+        <type>COUNTERMEASURE_CHECK</type>
+        <check>
+          <type>SAVE_WILL</type>
+        </check>
+      </counterMeasure>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_BONUS_ATTRIBUTE</type>
+      <base>
+        <value>-4</value>
+      </base>
+      <attribute>ATTRIBUTE_DEXTERITY</attribute>
     </effect>
   </spell>
 </spellDictionary>

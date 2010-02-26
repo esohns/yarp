@@ -26,6 +26,7 @@ struct RPG_Magic_CounterMeasure
   RPG_Common_CounterMeasure type;
   RPG_Magic_Check check;
   std::vector<RPG_Magic_SpellType> spells;
+  RPG_Common_SaveReductionType reduction;
 };
 
 #endif

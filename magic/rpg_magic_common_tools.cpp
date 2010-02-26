@@ -131,7 +131,7 @@ const std::string RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_Sp
 
     result += ACE_TEXT_ALWAYS_CHAR(": ");
     converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-    converter << ACE_static_cast(unsigned int,(*iterator).level);
+    converter << ACE_static_cast(unsigned int, (*iterator).level);
     result += converter.str();
     result += ACE_TEXT_ALWAYS_CHAR("\n");
   } // end FOR
@@ -155,6 +155,10 @@ const std::string RPG_Magic_Common_Tools::spellRangeToString(const RPG_Magic_Spe
     case RANGEEFFECT_PERSONAL:
     case RANGEEFFECT_TOUCH:
     {
+      result += ACE_TEXT_ALWAYS_CHAR("effect: ");
+      result += RPG_Magic_Spell_RangeEffectHelper::RPG_Magic_Spell_RangeEffectToString(temp.effect);
+      result += ACE_TEXT_ALWAYS_CHAR("\n");
+
       break;
     }
     case RANGEEFFECT_CLOSE:
@@ -184,9 +188,6 @@ const std::string RPG_Magic_Common_Tools::spellRangeToString(const RPG_Magic_Spe
       break;
     }
   } // end SWITCH
-  result += ACE_TEXT_ALWAYS_CHAR("effect: ");
-  result += RPG_Magic_Spell_RangeEffectHelper::RPG_Magic_Spell_RangeEffectToString(temp.effect);
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
 
   return result;
 }
@@ -204,7 +205,7 @@ const std::string RPG_Magic_Common_Tools::spellTargetToString(const RPG_Magic_Sp
   switch (target_in.type)
   {
     case TARGET_SELF:
-    case TARGET_LOCATION:
+//     case TARGET_LOCATION:
     {
       break;
     }
@@ -238,7 +239,7 @@ const std::string RPG_Magic_Common_Tools::spellTargetToString(const RPG_Magic_Sp
       result += ACE_TEXT_ALWAYS_CHAR("area: ");
       result += RPG_Common_AreaOfEffectHelper::RPG_Common_AreaOfEffectToString(target_in.area);
       result += ACE_TEXT_ALWAYS_CHAR("\n");
-      if (target_in.area == AREA_SPHERE)
+      if (target_in.radius)
       {
         result += ACE_TEXT_ALWAYS_CHAR("radius: ");
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
@@ -282,6 +283,7 @@ const std::string RPG_Magic_Common_Tools::spellDurationToString(const RPG_Magic_
     if (duration_in.period.typeDice != RPG_DICE_DIETYPE_INVALID)
     {
       result += RPG_Dice_Common_Tools::rollToString(duration_in.period);
+      result += ACE_TEXT_ALWAYS_CHAR(" rd(s)");
     } // end IF
     else
     {
@@ -294,31 +296,35 @@ const std::string RPG_Magic_Common_Tools::spellDurationToString(const RPG_Magic_
       } // end IF
       if (duration_in.duration)
       {
-        result += ACE_TEXT_ALWAYS_CHAR(" + ");
+        if (duration_in.base)
+          result += ACE_TEXT_ALWAYS_CHAR(" + ");
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << duration_in.duration;
-        result += ACE_TEXT_ALWAYS_CHAR(" / [casterLevel");
         result += converter.str();
+        if (duration_in.base == 0)
+          result += ACE_TEXT_ALWAYS_CHAR(" rd(s)");
         if (duration_in.levelIncrement)
         {
-          converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-          converter << ACE_static_cast(unsigned int, duration_in.levelIncrement);
-          result += ACE_TEXT_ALWAYS_CHAR("/");
-          result += converter.str();
-          if (duration_in.levelIncrementMax)
+          result += ACE_TEXT_ALWAYS_CHAR(" / [casterLevel");
+          if (duration_in.levelIncrement != 1)
           {
             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-            converter << ACE_static_cast(unsigned int, duration_in.levelIncrementMax);
-            result += ACE_TEXT_ALWAYS_CHAR(" (max: ");
+            converter << ACE_static_cast(unsigned int, duration_in.levelIncrement);
+            result += ACE_TEXT_ALWAYS_CHAR("/");
             result += converter.str();
-            result += ACE_TEXT_ALWAYS_CHAR("th)");
-          }
+          } // end IF
         } // end IF
         result += ACE_TEXT_ALWAYS_CHAR("]");
+        if (duration_in.levelIncrementMax)
+        {
+          converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+          converter << ACE_static_cast(unsigned int, duration_in.levelIncrementMax);
+          result += ACE_TEXT_ALWAYS_CHAR(" (max: ");
+          result += converter.str();
+          result += ACE_TEXT_ALWAYS_CHAR("th)");
+        }
       } // end IF
     } // end ELSE
-
-    result += ACE_TEXT_ALWAYS_CHAR(" rd(s)");
   } // end IF
   if (duration_in.dismissible)
     result += ACE_TEXT_ALWAYS_CHAR(", dismissible");
@@ -425,7 +431,10 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
        iterator != effects_in.end();
        iterator++)
   {
-    result += RPG_Magic_Spell_EffectHelper::RPG_Magic_Spell_EffectToString((*iterator).type);
+    if ((*iterator).type == SPELLEFFECT_BONUS_ATTRIBUTE)
+      result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator).attribute);
+    else
+      result += RPG_Magic_Spell_EffectHelper::RPG_Magic_Spell_EffectToString((*iterator).type);
     if ((*iterator).base.value ||
         ((*iterator).base.range.typeDice != RPG_DICE_DIETYPE_INVALID))
     {
@@ -473,12 +482,12 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
          iterator2++)
     {
       result += ACE_TEXT_ALWAYS_CHAR("counterMeasure: ");
-      result += RPG_Common_CounterMeasureHelper::RPG_Common_CounterMeasureToString((*iterator2).type);
+//       result += RPG_Common_CounterMeasureHelper::RPG_Common_CounterMeasureToString((*iterator2).type);
       switch ((*iterator2).type)
       {
         case COUNTERMEASURE_CHECK:
         {
-          result += ACE_TEXT_ALWAYS_CHAR(": ");
+//           result += ACE_TEXT_ALWAYS_CHAR(": ");
           switch ((*iterator2).check.type.discriminator)
           {
             case RPG_Magic_CheckTypeUnion::SKILL:
@@ -532,11 +541,14 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
               break;
             }
           } // end SWITCH
-          result += ACE_TEXT_ALWAYS_CHAR(" (DC: ");
-          converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-          converter << ACE_static_cast(unsigned int, (*iterator2).check.difficultyClass);
-          result += converter.str();
-          result += ACE_TEXT_ALWAYS_CHAR(")");
+          if ((*iterator2).check.difficultyClass)
+          {
+            result += ACE_TEXT_ALWAYS_CHAR(" (DC: ");
+            converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+            converter << ACE_static_cast(unsigned int, (*iterator2).check.difficultyClass);
+            result += converter.str();
+            result += ACE_TEXT_ALWAYS_CHAR(")");
+          } // end IF
 
           break;
         }
@@ -565,7 +577,12 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
           break;
         }
       } // end SWITCH
-      result += ACE_TEXT_ALWAYS_CHAR("\n");
+      if ((*iterator2).reduction != SAVEREDUCTION_NEGATES)
+      {
+        result += ACE_TEXT_ALWAYS_CHAR(" [");
+        result += RPG_Common_SaveReductionTypeHelper::RPG_Common_SaveReductionTypeToString((*iterator2).reduction);
+        result += ACE_TEXT_ALWAYS_CHAR("]\n");
+      } // end IF
     } // end FOR
   } // end FOR
 

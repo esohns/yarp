@@ -40,6 +40,9 @@ enum RPG_Magic_SpellType
   SPELL_ANIMATE_OBJECTS,
   SPELL_ANIMATE_PLANTS,
   SPELL_ANIMATE_ROPE,
+  SPELL_ANTILIFE_SHELL,
+  SPELL_ANTIMAGIC_FIELD,
+  SPELL_ANTIPATHY,
   SPELL_BLADE_BARRIER,
   SPELL_BLASPHEMY,
   SPELL_BLESS,
@@ -142,6 +145,9 @@ class RPG_Magic_SpellTypeHelper
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ANIMATE_OBJECTS, ACE_TEXT_ALWAYS_CHAR("SPELL_ANIMATE_OBJECTS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ANIMATE_PLANTS, ACE_TEXT_ALWAYS_CHAR("SPELL_ANIMATE_PLANTS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ANIMATE_ROPE, ACE_TEXT_ALWAYS_CHAR("SPELL_ANIMATE_ROPE")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ANTILIFE_SHELL, ACE_TEXT_ALWAYS_CHAR("SPELL_ANTILIFE_SHELL")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ANTIMAGIC_FIELD, ACE_TEXT_ALWAYS_CHAR("SPELL_ANTIMAGIC_FIELD")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ANTIPATHY, ACE_TEXT_ALWAYS_CHAR("SPELL_ANTIPATHY")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BLADE_BARRIER, ACE_TEXT_ALWAYS_CHAR("SPELL_BLADE_BARRIER")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BLASPHEMY, ACE_TEXT_ALWAYS_CHAR("SPELL_BLASPHEMY")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BLESS, ACE_TEXT_ALWAYS_CHAR("SPELL_BLESS")));

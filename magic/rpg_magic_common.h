@@ -47,12 +47,11 @@ struct RPG_Magic_Spell_Properties
   RPG_Magic_Spell_Type type;
   RPG_Magic_SpellLevelList_t levels;
   unsigned char cost;
-  RPG_Common_ActionType action;
+  RPG_Magic_Spell_CastingTime time;
   RPG_Magic_Spell_RangeProperties range;
   RPG_Magic_Spell_TargetProperties target;
   RPG_Magic_Spell_DurationProperties duration;
   RPG_Magic_Spell_PreconditionList_t preconditions;
-  RPG_Common_SavingThrowCheck save;
   RPG_Magic_Spell_EffectList_t effects;
   RPG_Common_SavingThrow saveable;
   bool resistible;

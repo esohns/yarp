@@ -201,6 +201,41 @@ RPG_Magic_Spell_Level RPG_Magic_Spell_Level_Type::post_RPG_Magic_Spell_Level_Typ
   return result;
 }
 
+RPG_Magic_Spell_CastingTime_Type::RPG_Magic_Spell_CastingTime_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_CastingTime_Type::RPG_Magic_Spell_CastingTime_Type"));
+
+  myCurrentCastingTime.rounds = 0;
+  myCurrentCastingTime.action = ACTION_STANDARD;
+}
+
+void RPG_Magic_Spell_CastingTime_Type::rounds(unsigned int rounds_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_CastingTime_Type::rounds"));
+
+  myCurrentCastingTime.rounds = rounds_in;
+}
+
+void RPG_Magic_Spell_CastingTime_Type::action(const RPG_Common_ActionType& action_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_CastingTime_Type::action"));
+
+  myCurrentCastingTime.action = action_in;
+}
+
+RPG_Magic_Spell_CastingTime RPG_Magic_Spell_CastingTime_Type::post_RPG_Magic_Spell_CastingTime_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_CastingTime_Type::post_RPG_Magic_Spell_CastingTime_Type"));
+
+  RPG_Magic_Spell_CastingTime result = myCurrentCastingTime;
+
+  // clear structure
+  myCurrentCastingTime.rounds = 0;
+  myCurrentCastingTime.action = ACTION_STANDARD;
+
+  return result;
+}
+
 RPG_Magic_Spell_RangeEffect RPG_Magic_Spell_RangeEffect_Type::post_RPG_Magic_Spell_RangeEffect_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_RangeEffect_Type::post_RPG_Magic_Spell_RangeEffect_Type"));
@@ -601,7 +636,6 @@ RPG_Magic_Check_Type::RPG_Magic_Check_Type()
 
   myCurrentCheck.type.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
   myCurrentCheck.type.skill = RPG_CHARACTER_SKILL_INVALID;
-  myCurrentCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentCheck.difficultyClass = 0;
 }
 
@@ -610,13 +644,6 @@ void RPG_Magic_Check_Type::type(const RPG_Magic_CheckTypeUnion& checkUnion_in)
   ACE_TRACE(ACE_TEXT("RPG_Magic_Check_Type::type"));
 
   myCurrentCheck.type = checkUnion_in;
-}
-
-void RPG_Magic_Check_Type::attribute(const RPG_Common_Attribute& attribute_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Check_Type::attribute"));
-
-  myCurrentCheck.attribute = attribute_in;
 }
 
 void RPG_Magic_Check_Type::difficultyClass(unsigned char difficultyClass_in)
@@ -635,7 +662,6 @@ RPG_Magic_Check RPG_Magic_Check_Type::post_RPG_Magic_Check_Type()
   // clear structure
   myCurrentCheck.type.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
   myCurrentCheck.type.skill = RPG_CHARACTER_SKILL_INVALID;
-  myCurrentCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentCheck.difficultyClass = 0;
 
   return result;
@@ -648,9 +674,9 @@ RPG_Magic_CounterMeasure_Type::RPG_Magic_CounterMeasure_Type()
   myCurrentCounterMeasure.type = RPG_COMMON_COUNTERMEASURE_INVALID;
   myCurrentCounterMeasure.check.type.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
   myCurrentCounterMeasure.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
-  myCurrentCounterMeasure.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentCounterMeasure.check.difficultyClass = 0;
   myCurrentCounterMeasure.spells.clear();
+  myCurrentCounterMeasure.reduction = RPG_COMMON_SAVEREDUCTIONTYPE_INVALID;
 }
 
 void RPG_Magic_CounterMeasure_Type::type(const RPG_Common_CounterMeasure& type_in)
@@ -674,6 +700,13 @@ void RPG_Magic_CounterMeasure_Type::spell(const RPG_Magic_SpellType& spell_in)
   myCurrentCounterMeasure.spells.push_back(spell_in);
 }
 
+void RPG_Magic_CounterMeasure_Type::reduction(const RPG_Common_SaveReductionType& reduction_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_CounterMeasure_Type::reduction"));
+
+  myCurrentCounterMeasure.reduction = reduction_in;
+}
+
 RPG_Magic_CounterMeasure RPG_Magic_CounterMeasure_Type::post_RPG_Magic_CounterMeasure_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_CounterMeasure_Type::post_RPG_Magic_CounterMeasure_Type"));
@@ -684,9 +717,9 @@ RPG_Magic_CounterMeasure RPG_Magic_CounterMeasure_Type::post_RPG_Magic_CounterMe
   myCurrentCounterMeasure.type = RPG_COMMON_COUNTERMEASURE_INVALID;
   myCurrentCounterMeasure.check.type.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
   myCurrentCounterMeasure.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
-  myCurrentCounterMeasure.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentCounterMeasure.check.difficultyClass = 0;
   myCurrentCounterMeasure.spells.clear();
+  myCurrentCounterMeasure.reduction = RPG_COMMON_SAVEREDUCTIONTYPE_INVALID;
 
   return result;
 }
@@ -705,6 +738,7 @@ RPG_Magic_Spell_EffectProperties_Type::RPG_Magic_Spell_EffectProperties_Type()
   myCurrentProperties.levelIncrement.range.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentProperties.levelIncrement.range.modifier = 0;
   myCurrentProperties.levelIncrementMax = 0;
+  myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentProperties.counterMeasures.clear();
 }
 
@@ -736,6 +770,13 @@ void RPG_Magic_Spell_EffectProperties_Type::levelIncrementMax(unsigned char leve
   myCurrentProperties.levelIncrementMax = levelIncrementMax_in;
 }
 
+void RPG_Magic_Spell_EffectProperties_Type::attribute(const RPG_Common_Attribute& attribute_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::attribute"));
+
+  myCurrentProperties.attribute = attribute_in;
+}
+
 void RPG_Magic_Spell_EffectProperties_Type::counterMeasure(const RPG_Magic_CounterMeasure& counterMeasure_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::counterMeasure"));
@@ -760,6 +801,7 @@ RPG_Magic_Spell_EffectProperties RPG_Magic_Spell_EffectProperties_Type::post_RPG
   myCurrentProperties.levelIncrement.range.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentProperties.levelIncrement.range.modifier = 0;
   myCurrentProperties.levelIncrementMax = 0;
+  myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentProperties.counterMeasures.clear();
 
   return result;
@@ -776,7 +818,8 @@ RPG_Magic_Spell_PropertiesXML_Type::RPG_Magic_Spell_PropertiesXML_Type()
   myCurrentProperties.type.descriptors.clear();
   myCurrentProperties.levels.clear();
   myCurrentProperties.cost = 0;
-  myCurrentProperties.action = RPG_COMMON_ACTIONTYPE_INVALID;
+  myCurrentProperties.time.rounds = 0;
+  myCurrentProperties.time.action = ACTION_STANDARD;
   myCurrentProperties.range.max = 0;
   myCurrentProperties.range.increment = 0;
   myCurrentProperties.range.effect = RPG_MAGIC_SPELL_RANGEEFFECT_INVALID;
@@ -797,10 +840,6 @@ RPG_Magic_Spell_PropertiesXML_Type::RPG_Magic_Spell_PropertiesXML_Type()
   myCurrentProperties.duration.period.modifier = 0;
   myCurrentProperties.duration.dismissible = false;
   myCurrentProperties.preconditions.clear();
-  myCurrentProperties.save.type = RPG_COMMON_SAVINGTHROW_INVALID;
-  myCurrentProperties.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  myCurrentProperties.save.difficultyClass = 0;
-  myCurrentProperties.save.reduction = RPG_COMMON_SAVEREDUCTIONTYPE_INVALID;
   myCurrentProperties.effects.clear();
   myCurrentProperties.saveable = RPG_COMMON_SAVINGTHROW_INVALID;
   myCurrentProperties.resistible = false;
@@ -834,11 +873,11 @@ void RPG_Magic_Spell_PropertiesXML_Type::cost(unsigned int cost_in)
   myCurrentProperties.cost = cost_in;
 }
 
-void RPG_Magic_Spell_PropertiesXML_Type::action(const RPG_Common_ActionType& action_in)
+void RPG_Magic_Spell_PropertiesXML_Type::time(const RPG_Magic_Spell_CastingTime& time_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PropertiesXML_Type::action"));
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PropertiesXML_Type::time"));
 
-  myCurrentProperties.action = action_in;
+  myCurrentProperties.time = time_in;
 }
 
 void RPG_Magic_Spell_PropertiesXML_Type::range(const RPG_Magic_Spell_RangeProperties& range_in)
@@ -867,13 +906,6 @@ void RPG_Magic_Spell_PropertiesXML_Type::precondition(const RPG_Magic_Spell_Prec
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PropertiesXML_Type::precondition"));
 
   myCurrentProperties.preconditions.push_back(precondition_in);
-}
-
-void RPG_Magic_Spell_PropertiesXML_Type::save(const RPG_Common_SavingThrowCheck& save_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PropertiesXML_Type::save"));
-
-  myCurrentProperties.save = save_in;
 }
 
 void RPG_Magic_Spell_PropertiesXML_Type::effect(const RPG_Magic_Spell_EffectProperties& effect_in)
@@ -911,7 +943,8 @@ RPG_Magic_Spell_PropertiesXML RPG_Magic_Spell_PropertiesXML_Type::post_RPG_Magic
   myCurrentProperties.type.descriptors.clear();
   myCurrentProperties.levels.clear();
   myCurrentProperties.cost = 0;
-  myCurrentProperties.action = RPG_COMMON_ACTIONTYPE_INVALID;
+  myCurrentProperties.time.rounds = 0;
+  myCurrentProperties.time.action = ACTION_STANDARD;
   myCurrentProperties.range.max = 0;
   myCurrentProperties.range.increment = 0;
   myCurrentProperties.range.effect = RPG_MAGIC_SPELL_RANGEEFFECT_INVALID;
@@ -932,10 +965,6 @@ RPG_Magic_Spell_PropertiesXML RPG_Magic_Spell_PropertiesXML_Type::post_RPG_Magic
   myCurrentProperties.duration.period.modifier = 0;
   myCurrentProperties.duration.dismissible = false;
   myCurrentProperties.preconditions.clear();
-  myCurrentProperties.save.type = RPG_COMMON_SAVINGTHROW_INVALID;
-  myCurrentProperties.save.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  myCurrentProperties.save.difficultyClass = 0;
-  myCurrentProperties.save.reduction = RPG_COMMON_SAVEREDUCTIONTYPE_INVALID;
   myCurrentProperties.effects.clear();
   myCurrentProperties.saveable = RPG_COMMON_SAVINGTHROW_INVALID;
   myCurrentProperties.resistible = false;
@@ -1031,12 +1060,11 @@ void RPG_Magic_Dictionary_Type::spell(const RPG_Magic_Spell_PropertiesXML& spell
   properties.type = spell_in.type;
   properties.levels = spell_in.levels;
   properties.cost = spell_in.cost;
-  properties.action = spell_in.action;
+  properties.time = spell_in.time;
   properties.range = spell_in.range;
   properties.target = spell_in.target;
   properties.duration = spell_in.duration;
   properties.preconditions = spell_in.preconditions;
-  properties.save = spell_in.save;
   properties.effects = spell_in.effects;
   properties.saveable = spell_in.saveable;
   properties.resistible = spell_in.resistible;

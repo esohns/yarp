@@ -32,6 +32,7 @@
 #include "rpg_magic_spell_type.h"
 #include "rpg_magic_casterclassunion.h"
 #include "rpg_magic_spell_level.h"
+#include "rpg_magic_spell_castingtime.h"
 #include "rpg_magic_spell_rangeeffect.h"
 #include "rpg_magic_spell_rangeproperties.h"
 #include "rpg_magic_spell_target.h"

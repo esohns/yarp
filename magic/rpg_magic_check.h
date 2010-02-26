@@ -24,7 +24,6 @@
 struct RPG_Magic_Check
 {
   RPG_Magic_CheckTypeUnion type;
-  RPG_Common_Attribute attribute;
   unsigned char difficultyClass;
 };
 

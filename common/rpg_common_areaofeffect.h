@@ -23,10 +23,11 @@
 
 enum RPG_Common_AreaOfEffect
 {
-  AREA_LINE = 0,
-  AREA_SPHERE,
-  AREA_CONE,
+  AREA_CONE = 0,
+  AREA_CUBE,
   AREA_CYLINDER,
+  AREA_LINE,
+  AREA_SPHERE,
   AREA_WALL,
   //
   RPG_COMMON_AREAOFEFFECT_MAX,
@@ -47,10 +48,11 @@ class RPG_Common_AreaOfEffectHelper
   inline static void init()
   {
     myRPG_Common_AreaOfEffectToStringTable.clear();
+    myRPG_Common_AreaOfEffectToStringTable.insert(std::make_pair(AREA_CONE, ACE_TEXT_ALWAYS_CHAR("AREA_CONE")));
+    myRPG_Common_AreaOfEffectToStringTable.insert(std::make_pair(AREA_CUBE, ACE_TEXT_ALWAYS_CHAR("AREA_CUBE")));
+    myRPG_Common_AreaOfEffectToStringTable.insert(std::make_pair(AREA_CYLINDER, ACE_TEXT_ALWAYS_CHAR("AREA_CYLINDER")));
     myRPG_Common_AreaOfEffectToStringTable.insert(std::make_pair(AREA_LINE, ACE_TEXT_ALWAYS_CHAR("AREA_LINE")));
     myRPG_Common_AreaOfEffectToStringTable.insert(std::make_pair(AREA_SPHERE, ACE_TEXT_ALWAYS_CHAR("AREA_SPHERE")));
-    myRPG_Common_AreaOfEffectToStringTable.insert(std::make_pair(AREA_CONE, ACE_TEXT_ALWAYS_CHAR("AREA_CONE")));
-    myRPG_Common_AreaOfEffectToStringTable.insert(std::make_pair(AREA_CYLINDER, ACE_TEXT_ALWAYS_CHAR("AREA_CYLINDER")));
     myRPG_Common_AreaOfEffectToStringTable.insert(std::make_pair(AREA_WALL, ACE_TEXT_ALWAYS_CHAR("AREA_WALL")));
   };
 

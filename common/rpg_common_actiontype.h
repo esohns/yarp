@@ -23,12 +23,13 @@
 
 enum RPG_Common_ActionType
 {
-  ACTION_STANDARD = 0,
-  ACTION_MOVE,
+  ACTION_FREE = 0,
   ACTION_FULLROUND,
-  ACTION_FREE,
+  ACTION_MOVE,
   ACTION_NOTANACTION,
   ACTION_RESTRICTED,
+  ACTION_STANDARD,
+  ACTION_TIME,
   //
   RPG_COMMON_ACTIONTYPE_MAX,
   RPG_COMMON_ACTIONTYPE_INVALID
@@ -48,12 +49,13 @@ class RPG_Common_ActionTypeHelper
   inline static void init()
   {
     myRPG_Common_ActionTypeToStringTable.clear();
-    myRPG_Common_ActionTypeToStringTable.insert(std::make_pair(ACTION_STANDARD, ACE_TEXT_ALWAYS_CHAR("ACTION_STANDARD")));
-    myRPG_Common_ActionTypeToStringTable.insert(std::make_pair(ACTION_MOVE, ACE_TEXT_ALWAYS_CHAR("ACTION_MOVE")));
-    myRPG_Common_ActionTypeToStringTable.insert(std::make_pair(ACTION_FULLROUND, ACE_TEXT_ALWAYS_CHAR("ACTION_FULLROUND")));
     myRPG_Common_ActionTypeToStringTable.insert(std::make_pair(ACTION_FREE, ACE_TEXT_ALWAYS_CHAR("ACTION_FREE")));
+    myRPG_Common_ActionTypeToStringTable.insert(std::make_pair(ACTION_FULLROUND, ACE_TEXT_ALWAYS_CHAR("ACTION_FULLROUND")));
+    myRPG_Common_ActionTypeToStringTable.insert(std::make_pair(ACTION_MOVE, ACE_TEXT_ALWAYS_CHAR("ACTION_MOVE")));
     myRPG_Common_ActionTypeToStringTable.insert(std::make_pair(ACTION_NOTANACTION, ACE_TEXT_ALWAYS_CHAR("ACTION_NOTANACTION")));
     myRPG_Common_ActionTypeToStringTable.insert(std::make_pair(ACTION_RESTRICTED, ACE_TEXT_ALWAYS_CHAR("ACTION_RESTRICTED")));
+    myRPG_Common_ActionTypeToStringTable.insert(std::make_pair(ACTION_STANDARD, ACE_TEXT_ALWAYS_CHAR("ACTION_STANDARD")));
+    myRPG_Common_ActionTypeToStringTable.insert(std::make_pair(ACTION_TIME, ACE_TEXT_ALWAYS_CHAR("ACTION_TIME")));
   };
 
   inline static std::string RPG_Common_ActionTypeToString(const RPG_Common_ActionType& element_in)

@@ -137,6 +137,21 @@ class RPG_Magic_Spell_Level_Type
     RPG_Magic_Spell_Level myCurrentSpellLevel;
 };
 
+class RPG_Magic_Spell_CastingTime_Type
+  : public RPG_Magic_Spell_CastingTime_Type_pskel
+{
+  public:
+    RPG_Magic_Spell_CastingTime_Type();
+
+//     virtual void pre();
+    virtual void rounds(unsigned int);
+    virtual void action(const RPG_Common_ActionType&);
+    virtual RPG_Magic_Spell_CastingTime post_RPG_Magic_Spell_CastingTime_Type();
+
+  private:
+    RPG_Magic_Spell_CastingTime myCurrentCastingTime;
+};
+
 class RPG_Magic_Spell_RangeEffect_Type
   : public RPG_Magic_Spell_RangeEffect_Type_pskel,
   public ::xml_schema::string_pimpl
@@ -281,7 +296,6 @@ class RPG_Magic_Check_Type
 
 //   virtual void pre();
     virtual void type(const RPG_Magic_CheckTypeUnion&);
-    virtual void attribute(const RPG_Common_Attribute&);
     virtual void difficultyClass(unsigned char);
     virtual RPG_Magic_Check post_RPG_Magic_Check_Type();
 
@@ -299,6 +313,7 @@ class RPG_Magic_CounterMeasure_Type
     virtual void type(const RPG_Common_CounterMeasure&);
     virtual void check(const RPG_Magic_Check&);
     virtual void spell(const RPG_Magic_SpellType&);
+    virtual void reduction(const RPG_Common_SaveReductionType&);
     virtual RPG_Magic_CounterMeasure post_RPG_Magic_CounterMeasure_Type();
 
   private:
@@ -316,6 +331,7 @@ class RPG_Magic_Spell_EffectProperties_Type
     virtual void base(const RPG_Common_Amount&);
     virtual void levelIncrement(const RPG_Common_Amount&);
     virtual void levelIncrementMax(unsigned char);
+    virtual void attribute(const RPG_Common_Attribute&);
     virtual void counterMeasure(const RPG_Magic_CounterMeasure&);
     virtual RPG_Magic_Spell_EffectProperties post_RPG_Magic_Spell_EffectProperties_Type();
 
@@ -334,12 +350,11 @@ class RPG_Magic_Spell_PropertiesXML_Type
     virtual void type(const RPG_Magic_Spell_Type&);
     virtual void level(const RPG_Magic_Spell_Level&);
     virtual void cost(unsigned int);
-    virtual void action(const RPG_Common_ActionType&);
+    virtual void time(const RPG_Magic_Spell_CastingTime&);
     virtual void range(const RPG_Magic_Spell_RangeProperties&);
     virtual void target(const RPG_Magic_Spell_TargetProperties&);
     virtual void duration(const RPG_Magic_Spell_DurationProperties&);
     virtual void precondition(const RPG_Magic_Spell_PreconditionProperties&);
-    virtual void save(const RPG_Common_SavingThrowCheck&);
     virtual void effect(const RPG_Magic_Spell_EffectProperties&);
     virtual void saveable(const RPG_Common_SavingThrow&);
     virtual void resistible(bool);

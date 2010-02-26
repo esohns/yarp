@@ -16,7 +16,8 @@ namespace urn:rpg
   RPG_Common_Amount_Type                      RPG_Common_Amount;
   RPG_Common_Usage_Type                       RPG_Common_Usage;
   RPG_Common_SavingThrow_Type                 RPG_Common_SavingThrow;
-  RPG_Common_SavingThrowCheck_Type            RPG_Common_SavingThrowCheck;
+  RPG_Common_SaveReductionType_Type           RPG_Common_SaveReductionType;
+#  RPG_Common_SavingThrowCheck_Type            RPG_Common_SavingThrowCheck;
   RPG_Common_Duration_Type                    RPG_Common_Duration;
 
   RPG_Character_Condition_Type                RPG_Character_Condition;
@@ -32,6 +33,7 @@ namespace urn:rpg
   RPG_Magic_Spell_Type_Type                   RPG_Magic_Spell_Type;
   RPG_Magic_CasterClassUnion_Type             RPG_Magic_CasterClassUnion;
   RPG_Magic_Spell_Level_Type                  RPG_Magic_Spell_Level;
+  RPG_Magic_Spell_CastingTime_Type            RPG_Magic_Spell_CastingTime;
   RPG_Magic_Spell_RangeEffect_Type            RPG_Magic_Spell_RangeEffect;
   RPG_Magic_Spell_RangeProperties_Type        RPG_Magic_Spell_RangeProperties;
   RPG_Magic_Spell_Target_Type                 RPG_Magic_Spell_Target;
