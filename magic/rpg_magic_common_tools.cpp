@@ -581,8 +581,9 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
       {
         result += ACE_TEXT_ALWAYS_CHAR(" [");
         result += RPG_Common_SaveReductionTypeHelper::RPG_Common_SaveReductionTypeToString((*iterator2).reduction);
-        result += ACE_TEXT_ALWAYS_CHAR("]\n");
+        result += ACE_TEXT_ALWAYS_CHAR("]");
       } // end IF
+      result += ACE_TEXT_ALWAYS_CHAR("\n");
     } // end FOR
   } // end FOR
 

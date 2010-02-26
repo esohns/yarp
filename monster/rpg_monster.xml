@@ -3942,7 +3942,7 @@
         <type>SPELL_FEAR</type>
         <casterLevel>8</casterLevel>
         <save>
-          <type>SAVE_SPELL</type>
+          <type>SAVE_MAGIC</type>
           <attribute>ATTRIBUTE_CHARISMA</attribute>
           <difficultyClass>17</difficultyClass>
         </save>
