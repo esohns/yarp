@@ -49,6 +49,9 @@
 
 // Forward declarations
 //
+class RPG_Common_CreatureMetaType_Type_pskel;
+class RPG_Common_CreatureSubType_Type_pskel;
+class RPG_Common_CreatureType_Type_pskel;
 class RPG_Common_SubClass_Type_pskel;
 class RPG_Common_Attribute_Type_pskel;
 class RPG_Common_PhysicalDamageType_Type_pskel;
@@ -80,6 +83,80 @@ class RPG_Common_Camp_Type_pskel;
 #include "rpg_common_incl.h"
 
 #include "rpg_dice_XML_types.h"
+
+class RPG_Common_CreatureMetaType_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Common_CreatureMetaType
+  post_RPG_Common_CreatureMetaType_Type () = 0;
+};
+
+class RPG_Common_CreatureSubType_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Common_CreatureSubType
+  post_RPG_Common_CreatureSubType_Type () = 0;
+};
+
+class RPG_Common_CreatureType_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  metaType (const RPG_Common_CreatureMetaType&);
+
+  virtual void
+  subType (const RPG_Common_CreatureSubType&);
+
+  virtual RPG_Common_CreatureType
+  post_RPG_Common_CreatureType_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  metaType_parser (::RPG_Common_CreatureMetaType_Type_pskel&);
+
+  void
+  subType_parser (::RPG_Common_CreatureSubType_Type_pskel&);
+
+  void
+  parsers (::RPG_Common_CreatureMetaType_Type_pskel& /* metaType */,
+           ::RPG_Common_CreatureSubType_Type_pskel& /* subType */);
+
+  // Constructor.
+  //
+  RPG_Common_CreatureType_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Common_CreatureMetaType_Type_pskel* metaType_parser_;
+  ::RPG_Common_CreatureSubType_Type_pskel* subType_parser_;
+};
 
 class RPG_Common_SubClass_Type_pskel: public virtual ::xml_schema::string_pskel
 {

@@ -23,9 +23,8 @@
 
 enum RPG_Character_Condition
 {
-  CONDITION_ALTERNATE_FORM = 0,
-  CONDITION_LIVING,
-  CONDITION_UNDEAD,
+  CONDITION_ALIVE = 0,
+  CONDITION_ALTERNATE_FORM,
   CONDITION_NORMAL,
   CONDITION_ABILITY_DAMAGED,
   CONDITION_ABILITY_DRAINED,
@@ -87,9 +86,8 @@ class RPG_Character_ConditionHelper
   inline static void init()
   {
     myRPG_Character_ConditionToStringTable.clear();
+    myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_ALIVE, ACE_TEXT_ALWAYS_CHAR("CONDITION_ALIVE")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_ALTERNATE_FORM, ACE_TEXT_ALWAYS_CHAR("CONDITION_ALTERNATE_FORM")));
-    myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_LIVING, ACE_TEXT_ALWAYS_CHAR("CONDITION_LIVING")));
-    myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_UNDEAD, ACE_TEXT_ALWAYS_CHAR("CONDITION_UNDEAD")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_NORMAL, ACE_TEXT_ALWAYS_CHAR("CONDITION_NORMAL")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_ABILITY_DAMAGED, ACE_TEXT_ALWAYS_CHAR("CONDITION_ABILITY_DAMAGED")));
     myRPG_Character_ConditionToStringTable.insert(std::make_pair(CONDITION_ABILITY_DRAINED, ACE_TEXT_ALWAYS_CHAR("CONDITION_ABILITY_DRAINED")));

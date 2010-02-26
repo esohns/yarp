@@ -28,6 +28,7 @@ struct RPG_Magic_Spell_EffectProperties
   RPG_Common_Amount levelIncrement;
   unsigned char levelIncrementMax;
   RPG_Common_Attribute attribute;
+  unsigned char maxRange;
   std::vector<RPG_Magic_CounterMeasure> counterMeasures;
 };
 

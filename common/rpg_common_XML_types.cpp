@@ -38,6 +38,36 @@
 
 #include "rpg_common_XML_types.h"
 
+// RPG_Common_CreatureType_Type_pskel
+//
+
+void RPG_Common_CreatureType_Type_pskel::
+metaType_parser (::RPG_Common_CreatureMetaType_Type_pskel& p)
+{
+  this->metaType_parser_ = &p;
+}
+
+void RPG_Common_CreatureType_Type_pskel::
+subType_parser (::RPG_Common_CreatureSubType_Type_pskel& p)
+{
+  this->subType_parser_ = &p;
+}
+
+void RPG_Common_CreatureType_Type_pskel::
+parsers (::RPG_Common_CreatureMetaType_Type_pskel& metaType,
+         ::RPG_Common_CreatureSubType_Type_pskel& subType)
+{
+  this->metaType_parser_ = &metaType;
+  this->subType_parser_ = &subType;
+}
+
+RPG_Common_CreatureType_Type_pskel::
+RPG_Common_CreatureType_Type_pskel ()
+: metaType_parser_ (0),
+  subType_parser_ (0)
+{
+}
+
 // RPG_Common_SavingThrowCheck_Type_pskel
 //
 
@@ -192,6 +222,78 @@ RPG_Common_Duration_Type_pskel ()
   interval_parser_ (0),
   total_parser_ (0)
 {
+}
+
+// RPG_Common_CreatureType_Type_pskel
+//
+
+void RPG_Common_CreatureType_Type_pskel::
+metaType (const RPG_Common_CreatureMetaType&)
+{
+}
+
+void RPG_Common_CreatureType_Type_pskel::
+subType (const RPG_Common_CreatureSubType&)
+{
+}
+
+bool RPG_Common_CreatureType_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "metaType" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->metaType_parser_;
+
+    if (this->metaType_parser_)
+      this->metaType_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "subType" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->subType_parser_;
+
+    if (this->subType_parser_)
+      this->subType_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Common_CreatureType_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "metaType" && ns == "urn:rpg")
+  {
+    if (this->metaType_parser_)
+      this->metaType (this->metaType_parser_->post_RPG_Common_CreatureMetaType_Type ());
+
+    return true;
+  }
+
+  if (n == "subType" && ns == "urn:rpg")
+  {
+    if (this->subType_parser_)
+      this->subType (this->subType_parser_->post_RPG_Common_CreatureSubType_Type ());
+
+    return true;
+  }
+
+  return false;
 }
 
 // RPG_Common_SavingThrowCheck_Type_pskel

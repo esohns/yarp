@@ -19,7 +19,6 @@
  ***************************************************************************/
 #include "rpg_monster_XML_parser.h"
 
-#include "rpg_monster_metatype.h"
 #include "rpg_monster_naturalweapon.h"
 #include "rpg_monster_advancement.h"
 
@@ -106,55 +105,6 @@ void RPG_Monster_Dictionary_Type::monster(const RPG_Monster_PropertiesXML& monst
   properties.levelAdjustment = monster_in.levelAdjustment;
 
   myMonsterDictionary->insert(std::make_pair(monster_in.name, properties));
-}
-
-RPG_Monster_Type_Type::RPG_Monster_Type_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Type_Type::RPG_Monster_Type_Type"));
-
-  myCurrentType.metaType = RPG_MONSTER_METATYPE_INVALID;
-  myCurrentType.subTypes.clear();
-}
-
-void RPG_Monster_Type_Type::metaType(const RPG_Monster_MetaType& metaType_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Type_Type::metaType"));
-
-  myCurrentType.metaType = metaType_in;
-}
-
-void RPG_Monster_Type_Type::subType(const RPG_Monster_SubType& subType_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Type_Type::subType"));
-
-  myCurrentType.subTypes.push_back(subType_in);
-}
-
-RPG_Monster_Type RPG_Monster_Type_Type::post_RPG_Monster_Type_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Type_Type::post_RPG_Monster_Type_Type"));
-
-  RPG_Monster_Type result = myCurrentType;
-
-  // clear structure
-  myCurrentType.metaType = RPG_MONSTER_METATYPE_INVALID;
-  myCurrentType.subTypes.clear();
-
-  return result;
-}
-
-RPG_Monster_MetaType RPG_Monster_MetaType_Type::post_RPG_Monster_MetaType_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster_MetaType_Type::post_RPG_Monster_MetaType_Type"));
-
-  return RPG_Monster_MetaTypeHelper::stringToRPG_Monster_MetaType(post_string());
-}
-
-RPG_Monster_SubType RPG_Monster_SubType_Type::post_RPG_Monster_SubType_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster_SubType_Type::post_RPG_Monster_SubType_Type"));
-
-  return RPG_Monster_SubTypeHelper::stringToRPG_Monster_SubType(post_string());
 }
 
 RPG_Monster_NaturalArmorClass_Type::RPG_Monster_NaturalArmorClass_Type()
@@ -1413,7 +1363,7 @@ RPG_Monster_PropertiesXML_Type::RPG_Monster_PropertiesXML_Type()
 
   myCurrentProperties.name.resize(0);
   myCurrentProperties.size = RPG_CHARACTER_SIZE_INVALID;
-  myCurrentProperties.type.metaType = RPG_MONSTER_METATYPE_INVALID;
+  myCurrentProperties.type.metaType = RPG_COMMON_CREATUREMETATYPE_INVALID;
   myCurrentProperties.type.subTypes.clear();
   myCurrentProperties.hitDice.numDice = 0;
   myCurrentProperties.hitDice.typeDice = RPG_DICE_DIETYPE_INVALID;
@@ -1469,7 +1419,7 @@ void RPG_Monster_PropertiesXML_Type::size(const RPG_Character_Size& size_in)
   myCurrentProperties.size = size_in;
 }
 
-void RPG_Monster_PropertiesXML_Type::type(const RPG_Monster_Type& type_in)
+void RPG_Monster_PropertiesXML_Type::type(const RPG_Common_CreatureType& type_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_PropertiesXML_Type::type"));
 
@@ -1632,7 +1582,7 @@ RPG_Monster_PropertiesXML RPG_Monster_PropertiesXML_Type::post_RPG_Monster_Prope
   // clear structure
   myCurrentProperties.name.resize(0);
   myCurrentProperties.size = RPG_CHARACTER_SIZE_INVALID;
-  myCurrentProperties.type.metaType = RPG_MONSTER_METATYPE_INVALID;
+  myCurrentProperties.type.metaType = RPG_COMMON_CREATUREMETATYPE_INVALID;
   myCurrentProperties.type.subTypes.clear();
   myCurrentProperties.hitDice.numDice = 0;
   myCurrentProperties.hitDice.typeDice = RPG_DICE_DIETYPE_INVALID;

@@ -5,6 +5,9 @@ namespace urn:rpg
 
   RPG_Dice_Roll_Type                 RPG_Dice_Roll;
 
+  RPG_Common_CreatureMetaType_Type   RPG_Common_CreatureMetaType;
+  RPG_Common_CreatureSubType_Type    RPG_Common_CreatureSubType;
+  RPG_Common_CreatureType_Type       RPG_Common_CreatureType;
   RPG_Common_SubClass_Type           RPG_Common_SubClass;
   RPG_Common_Attribute_Type          RPG_Common_Attribute;
   RPG_Common_PhysicalDamageType_Type RPG_Common_PhysicalDamageType;

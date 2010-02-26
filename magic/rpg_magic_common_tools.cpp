@@ -24,6 +24,7 @@
 #include "rpg_magic_incl.h"
 
 #include <rpg_dice_common_tools.h>
+#include <rpg_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -205,7 +206,7 @@ const std::string RPG_Magic_Common_Tools::spellTargetToString(const RPG_Magic_Sp
   switch (target_in.type)
   {
     case TARGET_SELF:
-//     case TARGET_LOCATION:
+    case TARGET_LOCATION:
     {
       break;
     }
@@ -239,22 +240,6 @@ const std::string RPG_Magic_Common_Tools::spellTargetToString(const RPG_Magic_Sp
       result += ACE_TEXT_ALWAYS_CHAR("area: ");
       result += RPG_Common_AreaOfEffectHelper::RPG_Common_AreaOfEffectToString(target_in.area);
       result += ACE_TEXT_ALWAYS_CHAR("\n");
-      if (target_in.radius)
-      {
-        result += ACE_TEXT_ALWAYS_CHAR("radius: ");
-        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << ACE_static_cast(unsigned int, target_in.radius);
-        result += converter.str();
-        result += ACE_TEXT_ALWAYS_CHAR(" ft\n");
-        if (target_in.height)
-        {
-          result += ACE_TEXT_ALWAYS_CHAR("height: ");
-          converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-          converter << ACE_static_cast(unsigned int, target_in.height);
-          result += converter.str();
-          result += ACE_TEXT_ALWAYS_CHAR(" ft\n");
-        } // end IF
-      } // end IF
 
       break;
     }
@@ -267,6 +252,22 @@ const std::string RPG_Magic_Common_Tools::spellTargetToString(const RPG_Magic_Sp
       break;
     }
   } // end SWITCH
+  if (target_in.radius)
+  {
+    result += ACE_TEXT_ALWAYS_CHAR("radius: ");
+    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    converter << ACE_static_cast(unsigned int, target_in.radius);
+    result += converter.str();
+    result += ACE_TEXT_ALWAYS_CHAR(" ft\n");
+    if (target_in.height)
+    {
+      result += ACE_TEXT_ALWAYS_CHAR("height: ");
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+      converter << ACE_static_cast(unsigned int, target_in.height);
+      result += converter.str();
+      result += ACE_TEXT_ALWAYS_CHAR(" ft\n");
+    } // end IF
+  } // end IF
 
   return result;
 }
@@ -342,11 +343,13 @@ const std::string RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_
        iterator != preconditions_in.end();
        iterator++)
   {
+    if ((*iterator).reverse)
+      result += ACE_TEXT_ALWAYS_CHAR("!");
     result += RPG_Magic_Spell_PreconditionHelper::RPG_Magic_Spell_PreconditionToString((*iterator).type);
     switch ((*iterator).type)
     {
-      case PRECONDITION_ANIMAL:
       case PRECONDITION_MANUFACTURED:
+      case PRECONDITION_NONMAGICAL:
       case PRECONDITION_OBJECT:
       case PRECONDITION_RANGED_TOUCH_ATTACK:
       {
@@ -404,6 +407,18 @@ const std::string RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_
             result += ACE_TEXT_ALWAYS_CHAR("th)");
           } // end IF
         } // end IF
+        break;
+      }
+      case PRECONDITION_TYPE:
+      {
+        for (std::vector<RPG_Common_CreatureType>::const_iterator iterator2 = (*iterator).creatures.begin();
+             iterator2 != (*iterator).creatures.end();
+             iterator2++)
+        {
+          result += ACE_TEXT_ALWAYS_CHAR("\n");
+          result += RPG_Common_Tools::creatureTypeToString(*iterator2);
+        } // end FOR
+
         break;
       }
       default:
@@ -477,6 +492,14 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
       } // end IF
     } // end IF
     result += ACE_TEXT_ALWAYS_CHAR("\n");
+    if ((*iterator).maxRange)
+    {
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+      converter << ACE_static_cast(unsigned int, (*iterator).maxRange);
+      result += ACE_TEXT_ALWAYS_CHAR("range: ");
+      result += converter.str();
+      result += ACE_TEXT_ALWAYS_CHAR(" ft\n");
+    } // end IF
     for (std::vector<RPG_Magic_CounterMeasure>::const_iterator iterator2 = (*iterator).counterMeasures.begin();
          iterator2 != (*iterator).counterMeasures.end();
          iterator2++)
@@ -601,7 +624,6 @@ void RPG_Magic_Common_Tools::updateSpellRange(RPG_Magic_Spell_RangeProperties& r
     {
       range_inout.max = 0;
       range_inout.increment = 0;
-//       range_inout.targets = 1;
 
       break;
     }

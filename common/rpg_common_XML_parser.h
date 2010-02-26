@@ -27,6 +27,39 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
+class RPG_Common_CreatureMetaType_Type
+  : public RPG_Common_CreatureMetaType_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Common_CreatureMetaType post_RPG_Common_CreatureMetaType_Type();
+};
+
+class RPG_Common_CreatureSubType_Type
+  : public RPG_Common_CreatureSubType_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Common_CreatureSubType post_RPG_Common_CreatureSubType_Type();
+};
+
+class RPG_Common_CreatureType_Type
+  : public RPG_Common_CreatureType_Type_pskel
+{
+  public:
+    RPG_Common_CreatureType_Type();
+
+//   virtual void pre();
+    virtual void metaType(const RPG_Common_CreatureMetaType&);
+    virtual void subType(const RPG_Common_CreatureSubType&);
+    virtual RPG_Common_CreatureType post_RPG_Common_CreatureType_Type();
+
+  private:
+    RPG_Common_CreatureType myCurrentType;
+};
+
 class RPG_Common_SubClass_Type
   : public RPG_Common_SubClass_Type_pskel,
   public ::xml_schema::string_pimpl

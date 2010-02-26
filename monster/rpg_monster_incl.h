@@ -22,9 +22,6 @@
 #define RPG_MONSTER_INCL_H
 
 #include <vector>
-#include "rpg_monster_metatype.h"
-#include "rpg_monster_subtype.h"
-#include "rpg_monster_type.h"
 #include "rpg_monster_naturalarmorclass.h"
 #include "rpg_monster_specialpropertytypeunion.h"
 #include "rpg_monster_specialbaseproperties.h"

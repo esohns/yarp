@@ -43,7 +43,6 @@ class RPG_Monster_Common_Tools
  public:
   static void initStringConversionTables();
 
-  static const std::string typeToString(const RPG_Monster_Type&); // type
   static const std::string weaponTypeToString(const RPG_Monster_WeaponTypeUnion&); // weapon type
   static const std::string attackToString(const RPG_Monster_Attack&); // attack
   static const std::string organizationsToString(const RPG_Monster_Organizations_t&); // organizations

@@ -29,40 +29,6 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-
-class RPG_Monster_MetaType_Type
- : public RPG_Monster_MetaType_Type_pskel,
-   public ::xml_schema::string_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Monster_MetaType post_RPG_Monster_MetaType_Type();
-};
-
-class RPG_Monster_SubType_Type
- : public RPG_Monster_SubType_Type_pskel,
-   public ::xml_schema::string_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Monster_SubType post_RPG_Monster_SubType_Type();
-};
-
-class RPG_Monster_Type_Type
-  : public RPG_Monster_Type_Type_pskel
-{
-  public:
-    RPG_Monster_Type_Type();
-
-//   virtual void pre();
-    virtual void metaType(const RPG_Monster_MetaType&);
-    virtual void subType(const RPG_Monster_SubType&);
-    virtual RPG_Monster_Type post_RPG_Monster_Type_Type();
-
-  private:
-    RPG_Monster_Type myCurrentType;
-};
-
 class RPG_Monster_NaturalArmorClass_Type
  : public RPG_Monster_NaturalArmorClass_Type_pskel
 {
@@ -447,7 +413,7 @@ class RPG_Monster_PropertiesXML_Type
 //   virtual void pre();
   virtual void name(const std::string&);
   virtual void size(const RPG_Character_Size&);
-  virtual void type(const RPG_Monster_Type&);
+  virtual void type(const RPG_Common_CreatureType&);
   virtual void hitDice(const RPG_Dice_Roll&);
   virtual void initiative(signed char);
   virtual void speed(unsigned char);

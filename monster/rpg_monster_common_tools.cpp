@@ -29,8 +29,6 @@
 #include <sstream>
 
 // init statics
-RPG_Monster_MetaTypeToStringTable_t RPG_Monster_MetaTypeHelper::myRPG_Monster_MetaTypeToStringTable;
-RPG_Monster_SubTypeToStringTable_t RPG_Monster_SubTypeHelper::myRPG_Monster_SubTypeToStringTable;
 RPG_Monster_NaturalWeaponToStringTable_t RPG_Monster_NaturalWeaponHelper::myRPG_Monster_NaturalWeaponToStringTable;
 RPG_Monster_OrganizationToStringTable_t RPG_Monster_OrganizationHelper::myRPG_Monster_OrganizationToStringTable;
 
@@ -38,36 +36,12 @@ void RPG_Monster_Common_Tools::initStringConversionTables()
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::initStringConversionTables"));
 
-  RPG_Monster_MetaTypeHelper::init();
-  RPG_Monster_SubTypeHelper::init();
   RPG_Monster_NaturalWeaponHelper::init();
   RPG_Monster_OrganizationHelper::init();
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Monster_Common_Tools: initialized string conversion tables...\n")));
-}
-
-const std::string RPG_Monster_Common_Tools::typeToString(const RPG_Monster_Type& type_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::typeToString"));
-
-  std::string result = RPG_Monster_MetaTypeHelper::RPG_Monster_MetaTypeToString(type_in.metaType);
-  if (!type_in.subTypes.empty())
-  {
-    result += ACE_TEXT_ALWAYS_CHAR(" / (");
-    for (std::vector<RPG_Monster_SubType>::const_iterator iterator = type_in.subTypes.begin();
-        iterator != type_in.subTypes.end();
-        iterator++)
-    {
-      result += RPG_Monster_SubTypeHelper::RPG_Monster_SubTypeToString(*iterator);
-      result += ACE_TEXT_ALWAYS_CHAR("|");
-    } // end FOR
-    result.erase(--(result.end()));
-    result += ACE_TEXT_ALWAYS_CHAR(")");
-  } // end IF
-
-  return result;
 }
 
 const std::string RPG_Monster_Common_Tools::weaponTypeToString(const RPG_Monster_WeaponTypeUnion& weaponType_in)

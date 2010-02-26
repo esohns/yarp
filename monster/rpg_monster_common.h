@@ -35,7 +35,7 @@
 #include <set>
 #include <map>
 
-typedef std::set<RPG_Monster_SubType> RPG_Monster_SubTypes_t;
+typedef std::set<RPG_Common_CreatureSubType> RPG_Monster_SubTypes_t;
 typedef RPG_Monster_SubTypes_t::const_iterator RPG_Monster_SubTypesIterator_t;
 
 typedef RPG_Dice_Roll RPG_Monster_HitDice;
@@ -55,7 +55,7 @@ struct RPG_Monster_Properties
 {
 //   std::string name;
   RPG_Character_Size size;
-  RPG_Monster_Type type;
+  RPG_Common_CreatureType type;
   RPG_Monster_HitDice hitDice;
   char initiative;
   unsigned char speed;

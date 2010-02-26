@@ -384,9 +384,21 @@ condition_parser (::RPG_Character_Condition_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
+creature_parser (::RPG_Common_CreatureType_Type_pskel& p)
+{
+  this->creature_parser_ = &p;
+}
+
+void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
 size_parser (::RPG_Character_Size_Type_pskel& p)
 {
   this->size_parser_ = &p;
+}
+
+void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
+reverse_parser (::xml_schema::boolean_pskel& p)
+{
+  this->reverse_parser_ = &p;
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
@@ -396,7 +408,9 @@ parsers (::RPG_Magic_Spell_Precondition_Type_pskel& type,
          ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
          ::RPG_Common_Attribute_Type_pskel& attribute,
          ::RPG_Character_Condition_Type_pskel& condition,
-         ::RPG_Character_Size_Type_pskel& size)
+         ::RPG_Common_CreatureType_Type_pskel& creature,
+         ::RPG_Character_Size_Type_pskel& size,
+         ::xml_schema::boolean_pskel& reverse)
 {
   this->type_parser_ = &type;
   this->value_parser_ = &value;
@@ -404,7 +418,9 @@ parsers (::RPG_Magic_Spell_Precondition_Type_pskel& type,
   this->levelIncrementMax_parser_ = &levelIncrementMax;
   this->attribute_parser_ = &attribute;
   this->condition_parser_ = &condition;
+  this->creature_parser_ = &creature;
   this->size_parser_ = &size;
+  this->reverse_parser_ = &reverse;
 }
 
 RPG_Magic_Spell_PreconditionProperties_Type_pskel::
@@ -415,7 +431,9 @@ RPG_Magic_Spell_PreconditionProperties_Type_pskel ()
   levelIncrementMax_parser_ (0),
   attribute_parser_ (0),
   condition_parser_ (0),
-  size_parser_ (0)
+  creature_parser_ (0),
+  size_parser_ (0),
+  reverse_parser_ (0)
 {
 }
 
@@ -531,6 +549,12 @@ attribute_parser (::RPG_Common_Attribute_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
+maxRange_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->maxRange_parser_ = &p;
+}
+
+void RPG_Magic_Spell_EffectProperties_Type_pskel::
 counterMeasure_parser (::RPG_Magic_CounterMeasure_Type_pskel& p)
 {
   this->counterMeasure_parser_ = &p;
@@ -542,6 +566,7 @@ parsers (::RPG_Magic_Spell_Effect_Type_pskel& type,
          ::RPG_Common_Amount_Type_pskel& levelIncrement,
          ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
          ::RPG_Common_Attribute_Type_pskel& attribute,
+         ::xml_schema::unsigned_byte_pskel& maxRange,
          ::RPG_Magic_CounterMeasure_Type_pskel& counterMeasure)
 {
   this->type_parser_ = &type;
@@ -549,6 +574,7 @@ parsers (::RPG_Magic_Spell_Effect_Type_pskel& type,
   this->levelIncrement_parser_ = &levelIncrement;
   this->levelIncrementMax_parser_ = &levelIncrementMax;
   this->attribute_parser_ = &attribute;
+  this->maxRange_parser_ = &maxRange;
   this->counterMeasure_parser_ = &counterMeasure;
 }
 
@@ -559,6 +585,7 @@ RPG_Magic_Spell_EffectProperties_Type_pskel ()
   levelIncrement_parser_ (0),
   levelIncrementMax_parser_ (0),
   attribute_parser_ (0),
+  maxRange_parser_ (0),
   counterMeasure_parser_ (0)
 {
 }
@@ -1568,7 +1595,17 @@ condition (const RPG_Character_Condition&)
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
+creature (const RPG_Common_CreatureType&)
+{
+}
+
+void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
 size (const RPG_Character_Size&)
+{
+}
+
+void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
+reverse (bool)
 {
 }
 
@@ -1642,6 +1679,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "creature" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->creature_parser_;
+
+    if (this->creature_parser_)
+      this->creature_parser_->pre ();
+
+    return true;
+  }
+
   if (n == "size" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->size_parser_;
@@ -1710,10 +1757,43 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "creature" && ns == "urn:rpg")
+  {
+    if (this->creature_parser_)
+      this->creature (this->creature_parser_->post_RPG_Common_CreatureType_Type ());
+
+    return true;
+  }
+
   if (n == "size" && ns == "urn:rpg")
   {
     if (this->size_parser_)
       this->size (this->size_parser_->post_RPG_Character_Size_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Magic_Spell_PreconditionProperties_Type_pskel::
+_attribute_impl (const ::xml_schema::ro_string& ns,
+                 const ::xml_schema::ro_string& n,
+                 const ::xml_schema::ro_string& v)
+{
+  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
+    return true;
+
+  if (n == "reverse" && ns.empty ())
+  {
+    if (this->reverse_parser_)
+    {
+      this->reverse_parser_->pre ();
+      this->reverse_parser_->_pre_impl ();
+      this->reverse_parser_->_characters (v);
+      this->reverse_parser_->_post_impl ();
+      this->reverse (this->reverse_parser_->post_boolean ());
+    }
 
     return true;
   }
@@ -1947,6 +2027,11 @@ attribute (const RPG_Common_Attribute&)
 }
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
+maxRange (unsigned char)
+{
+}
+
+void RPG_Magic_Spell_EffectProperties_Type_pskel::
 counterMeasure (const RPG_Magic_CounterMeasure&)
 {
 }
@@ -2011,6 +2096,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "maxRange" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->maxRange_parser_;
+
+    if (this->maxRange_parser_)
+      this->maxRange_parser_->pre ();
+
+    return true;
+  }
+
   if (n == "counterMeasure" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->counterMeasure_parser_;
@@ -2067,6 +2162,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->attribute_parser_)
       this->attribute (this->attribute_parser_->post_RPG_Common_Attribute_Type ());
+
+    return true;
+  }
+
+  if (n == "maxRange" && ns == "urn:rpg")
+  {
+    if (this->maxRange_parser_)
+      this->maxRange (this->maxRange_parser_->post_unsigned_byte ());
 
     return true;
   }

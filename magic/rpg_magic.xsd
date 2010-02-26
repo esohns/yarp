@@ -134,6 +134,13 @@
       <xsd:enumeration value="SPELL_ANTILIFE_SHELL"/>
       <xsd:enumeration value="SPELL_ANTIMAGIC_FIELD"/>
       <xsd:enumeration value="SPELL_ANTIPATHY"/>
+      <xsd:enumeration value="SPELL_ANTIPLANT_SHELL"/>
+      <xsd:enumeration value="SPELL_ARCANE_EYE"/>
+      <xsd:enumeration value="SPELL_ARCANE_LOCK"/>
+      <xsd:enumeration value="SPELL_ARCANE_MARK"/>
+      <xsd:enumeration value="SPELL_ARCANE_SIGHT"/>
+      <xsd:enumeration value="SPELL_ARCANE_SIGHT_GREATER"/>
+      <xsd:enumeration value="SPELL_ASTRAL_PROJECTION"/>
       <xsd:enumeration value="SPELL_BLADE_BARRIER"/>
       <xsd:enumeration value="SPELL_BLASPHEMY"/>
       <xsd:enumeration value="SPELL_BLESS"/>
@@ -271,7 +278,7 @@
       <xsd:enumeration value="TARGET_SELF"/>
       <xsd:enumeration value="TARGET_FIX"/>
       <xsd:enumeration value="TARGET_VARIABLE"/>
-<!--       <xsd:enumeration value="TARGET_LOCATION"/> -->
+      <xsd:enumeration value="TARGET_LOCATION"/>
       <xsd:enumeration value="TARGET_AREA"/>
     </xsd:restriction>
   </xsd:simpleType>
@@ -313,17 +320,16 @@
 
   <xsd:simpleType name="RPG_Magic_Spell_Precondition_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="PRECONDITION_ANIMAL"/>
       <xsd:enumeration value="PRECONDITION_ATTRIBUTE_MAX"/>
       <xsd:enumeration value="PRECONDITION_CONDITION"/>
       <xsd:enumeration value="PRECONDITION_HD_MAX"/>
       <xsd:enumeration value="PRECONDITION_MANUFACTURED"/>
-      <xsd:enumeration value="PRECONDITION_NON_MAGICAL"/>
+      <xsd:enumeration value="PRECONDITION_NONMAGICAL"/>
       <xsd:enumeration value="PRECONDITION_OBJECT"/>
-      <xsd:enumeration value="PRECONDITION_PLANT"/>
       <xsd:enumeration value="PRECONDITION_RANGED_TOUCH_ATTACK"/>
       <xsd:enumeration value="PRECONDITION_SIZE_MAX"/>
       <xsd:enumeration value="PRECONDITION_SIZE_RELATIVE"/>
+      <xsd:enumeration value="PRECONDITION_TYPE"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -335,8 +341,10 @@
       <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="condition" type="RPG_Character_Condition_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="creature" type="RPG_Common_CreatureType_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="size" type="RPG_Character_Size_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
+    <xsd:attribute name="reverse" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
 
   <xsd:simpleType name="RPG_Magic_Spell_Effect_Type">
@@ -349,16 +357,20 @@
       <xsd:enumeration value="SPELLEFFECT_BONUS_HP"/>
       <xsd:enumeration value="SPELLEFFECT_BONUS_MORALE"/>
       <xsd:enumeration value="SPELLEFFECT_DAMAGE"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_MAGIC"/>
       <xsd:enumeration value="SPELLEFFECT_ENTANGLE"/>
       <xsd:enumeration value="SPELLEFFECT_FASCINATE"/>
       <xsd:enumeration value="SPELLEFFECT_GROW"/>
       <xsd:enumeration value="SPELLEFFECT_IDENTIFY"/>
       <xsd:enumeration value="SPELLEFFECT_LEVITATE"/>
+      <xsd:enumeration value="SPELLEFFECT_LOCK"/>
+      <xsd:enumeration value="SPELLEFFECT_MARK"/>
       <xsd:enumeration value="SPELLEFFECT_MESSENGER"/>
       <xsd:enumeration value="SPELLEFFECT_POLYMORPH"/>
       <xsd:enumeration value="SPELLEFFECT_RAISE_DEAD"/>
-      <xsd:enumeration value="SPELLEFFECT_REPEL_CREATURE"/>
       <xsd:enumeration value="SPELLEFFECT_RESISTANCE_FEAR"/>
+      <xsd:enumeration value="SPELLEFFECT_SENSOR_VISUAL"/>
+      <xsd:enumeration value="SPELLEFFECT_TELEPORT_INTERPLANAR"/>
       <xsd:enumeration value="SPELLEFFECT_TRIGGER_ALARM"/>
     </xsd:restriction>
   </xsd:simpleType>
@@ -390,6 +402,7 @@
       <xsd:element name="levelIncrement" type="RPG_Common_Amount_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="maxRange" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="counterMeasure" type="RPG_Magic_CounterMeasure_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>

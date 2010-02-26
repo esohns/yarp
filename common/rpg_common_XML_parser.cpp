@@ -23,6 +23,55 @@
 
 #include <ace/Log_Msg.h>
 
+RPG_Common_CreatureMetaType RPG_Common_CreatureMetaType_Type::post_RPG_Common_CreatureMetaType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_CreatureMetaType_Type::post_RPG_Common_CreatureMetaType_Type"));
+
+  return RPG_Common_CreatureMetaTypeHelper::stringToRPG_Common_CreatureMetaType(post_string());
+}
+
+RPG_Common_CreatureSubType RPG_Common_CreatureSubType_Type::post_RPG_Common_CreatureSubType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_CreatureSubType_Type::post_RPG_Common_CreatureSubType_Type"));
+
+  return RPG_Common_CreatureSubTypeHelper::stringToRPG_Common_CreatureSubType(post_string());
+}
+
+RPG_Common_CreatureType_Type::RPG_Common_CreatureType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_CreatureType_Type::RPG_Common_CreatureType_Type"));
+
+  myCurrentType.metaType = RPG_COMMON_CREATUREMETATYPE_INVALID;
+  myCurrentType.subTypes.clear();
+}
+
+void RPG_Common_CreatureType_Type::metaType(const RPG_Common_CreatureMetaType& metaType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_CreatureType_Type::metaType"));
+
+  myCurrentType.metaType = metaType_in;
+}
+
+void RPG_Common_CreatureType_Type::subType(const RPG_Common_CreatureSubType& subType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_CreatureType_Type::subType"));
+
+  myCurrentType.subTypes.push_back(subType_in);
+}
+
+RPG_Common_CreatureType RPG_Common_CreatureType_Type::post_RPG_Common_CreatureType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_CreatureType_Type::post_RPG_Common_CreatureType_Type"));
+
+  RPG_Common_CreatureType result = myCurrentType;
+
+  // clear structure
+  myCurrentType.metaType = RPG_COMMON_CREATUREMETATYPE_INVALID;
+  myCurrentType.subTypes.clear();
+
+  return result;
+}
+
 RPG_Common_SubClass RPG_Common_SubClass_Type::post_RPG_Common_SubClass_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_SubClass_Type::post_RPG_Common_SubClass_Type"));

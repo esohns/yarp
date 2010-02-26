@@ -18,13 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_MONSTER_TYPE_H
-#define RPG_MONSTER_TYPE_H
+#ifndef RPG_COMMON_CREATURETYPE_H
+#define RPG_COMMON_CREATURETYPE_H
 
-struct RPG_Monster_Type
+struct RPG_Common_CreatureType
 {
-  RPG_Monster_MetaType metaType;
-  std::vector<RPG_Monster_SubType> subTypes;
+  RPG_Common_CreatureMetaType metaType;
+  std::vector<RPG_Common_CreatureSubType> subTypes;
 };
 
 #endif

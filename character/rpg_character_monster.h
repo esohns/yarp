@@ -23,9 +23,8 @@
 #include "rpg_character_base.h"
 #include "rpg_character_common.h"
 
-#include <rpg_monster_metatype.h>
-#include <rpg_monster_subtype.h>
-#include <rpg_monster_type.h>
+#include <rpg_dice_incl.h>
+#include <rpg_common_incl.h>
 
 #include <ace/Global_Macros.h>
 
@@ -37,7 +36,7 @@ class RPG_Character_Monster
 {
  public:
   RPG_Character_Monster(const std::string&,               // name
-                        const RPG_Monster_Type&,          // type
+                        const RPG_Common_CreatureType&,   // type
                         const RPG_Character_Alignment&,   // (starting) alignment
                         const RPG_Character_Attributes&,  // base attributes
                         const RPG_Character_Skills_t&,    // (starting) skills
@@ -52,7 +51,7 @@ class RPG_Character_Monster
   virtual ~RPG_Character_Monster();
   RPG_Character_Monster& operator=(const RPG_Character_Monster&);
 
-  const RPG_Monster_Type getType() const;
+  const RPG_Common_CreatureType getType() const;
   const bool isSummoned() const;
 
   virtual const signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
@@ -74,8 +73,8 @@ class RPG_Character_Monster
                                                                const RPG_Combat_AttackSituation&) const;
   virtual const signed char getShieldBonus() const;
 
-  RPG_Monster_Type myType;
-  bool             myIsSummoned;
+  RPG_Common_CreatureType myType;
+  bool                    myIsSummoned;
 };
 
 #endif

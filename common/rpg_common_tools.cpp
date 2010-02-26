@@ -24,6 +24,8 @@
 #include <sstream>
 
 // init statics
+RPG_Common_CreatureMetaTypeToStringTable_t RPG_Common_CreatureMetaTypeHelper::myRPG_Common_CreatureMetaTypeToStringTable;
+RPG_Common_CreatureSubTypeToStringTable_t RPG_Common_CreatureSubTypeHelper::myRPG_Common_CreatureSubTypeToStringTable;
 RPG_Common_SubClassToStringTable_t RPG_Common_SubClassHelper::myRPG_Common_SubClassToStringTable;
 RPG_Common_AttributeToStringTable_t RPG_Common_AttributeHelper::myRPG_Common_AttributeToStringTable;
 RPG_Common_PhysicalDamageTypeToStringTable_t RPG_Common_PhysicalDamageTypeHelper::myRPG_Common_PhysicalDamageTypeToStringTable;
@@ -40,6 +42,8 @@ void RPG_Common_Tools::initStringConversionTables()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_Tools::initStringConversionTables"));
 
+  RPG_Common_CreatureMetaTypeHelper::init();
+  RPG_Common_CreatureSubTypeHelper::init();
   RPG_Common_SubClassHelper::init();
   RPG_Common_AttributeHelper::init();
   RPG_Common_PhysicalDamageTypeHelper::init();
@@ -55,6 +59,28 @@ void RPG_Common_Tools::initStringConversionTables()
   // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Common_Tools: initialized string conversion tables...\n")));
+}
+
+const std::string RPG_Common_Tools::creatureTypeToString(const RPG_Common_CreatureType& type_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::creatureTypeToString"));
+
+  std::string result = RPG_Common_CreatureMetaTypeHelper::RPG_Common_CreatureMetaTypeToString(type_in.metaType);
+  if (!type_in.subTypes.empty())
+  {
+    result += ACE_TEXT_ALWAYS_CHAR(" / (");
+    for (std::vector<RPG_Common_CreatureSubType>::const_iterator iterator = type_in.subTypes.begin();
+         iterator != type_in.subTypes.end();
+         iterator++)
+    {
+      result += RPG_Common_CreatureSubTypeHelper::RPG_Common_CreatureSubTypeToString(*iterator);
+      result += ACE_TEXT_ALWAYS_CHAR("|");
+    } // end FOR
+    result.erase(--(result.end()));
+    result += ACE_TEXT_ALWAYS_CHAR(")");
+  } // end IF
+
+  return result;
 }
 
 const RPG_Common_Attribute RPG_Common_Tools::savingThrowToAttribute(const RPG_Common_SavingThrow& save_in)

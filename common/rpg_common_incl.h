@@ -21,6 +21,10 @@
 #ifndef RPG_COMMON_INCL_H
 #define RPG_COMMON_INCL_H
 
+#include <vector>
+#include "rpg_common_creaturemetatype.h"
+#include "rpg_common_creaturesubtype.h"
+#include "rpg_common_creaturetype.h"
 #include "rpg_common_subclass.h"
 #include "rpg_common_attribute.h"
 #include "rpg_common_physicaldamagetype.h"

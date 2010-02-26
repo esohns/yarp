@@ -25,7 +25,7 @@ struct RPG_Monster_PropertiesXML
 {
   std::string name;
   RPG_Character_Size size;
-  RPG_Monster_Type type;
+  RPG_Common_CreatureType type;
   RPG_Dice_Roll hitDice;
   char initiative;
   unsigned char speed;

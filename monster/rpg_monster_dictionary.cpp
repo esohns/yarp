@@ -22,6 +22,11 @@
 #include "rpg_monster_XML_parser.h"
 #include "rpg_monster_common_tools.h"
 
+#include <rpg_dice.h>
+#include <rpg_dice_common_tools.h>
+#include <rpg_dice_XML_parser.h>
+
+#include <rpg_common_tools.h>
 #include <rpg_common_XML_parser.h>
 
 #include <rpg_character_common_tools.h>
@@ -31,10 +36,6 @@
 #include <rpg_magic_XML_parser.h>
 
 #include <rpg_combat_XML_parser.h>
-
-#include <rpg_dice.h>
-#include <rpg_dice_common_tools.h>
-#include <rpg_dice_XML_parser.h>
 
 #include <ace/Log_Msg.h>
 
@@ -64,9 +65,9 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   ::xml_schema::string_pimpl                     string_p;
   RPG_Character_Size_Type                        size_p;
 
-  RPG_Monster_MetaType_Type                      metaType_p;
-  RPG_Monster_SubType_Type                       subType_p;
-  RPG_Monster_Type_Type                          type_p;
+  RPG_Common_CreatureMetaType_Type               metaType_p;
+  RPG_Common_CreatureSubType_Type                subType_p;
+  RPG_Common_CreatureType_Type                   type_p;
   type_p.parsers(metaType_p,
                  subType_p);
 
@@ -920,7 +921,7 @@ void RPG_Monster_Dictionary::dump() const
                ACE_TEXT("Monster (\"%s\"):\nSize: %s\nType: %s\nHit Dice: %s\nInitiative: %d\nSpeed: %d ft/round\nArmor Class (normal/touch/flat-footed): %d / %d / %d\nAttacks:\n-------\n%sSpace: %d ft\nReach: %d ft\nSaves (fortitude/reflex/will): %d / %d / %d\nAttributes:\n-----------\n%sSkills:\n-------\n%sFeats:\n------\n%sEnvironment: %s\nOrganizations:\n--------------\n%sChallenge Rating: %d\nTreasure Modifier: %d\nAlignment: %s\nAdvancement:\n------------\n%sLevel Adjustment: %d\n"),
                (iterator->first).c_str(),
                RPG_Character_SizeHelper::RPG_Character_SizeToString((iterator->second).size).c_str(),
-               RPG_Monster_Common_Tools::typeToString((iterator->second).type).c_str(),
+               RPG_Common_Tools::creatureTypeToString((iterator->second).type).c_str(),
                RPG_Dice_Common_Tools::rollToString((iterator->second).hitDice).c_str(),
                (iterator->second).initiative,
                (iterator->second).speed,

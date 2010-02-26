@@ -28,7 +28,7 @@
 #include <ace/Log_Msg.h>
 
 RPG_Character_Monster::RPG_Character_Monster(const std::string& name_in,
-                                             const RPG_Monster_Type& type_in,
+                                             const RPG_Common_CreatureType& type_in,
                                              const RPG_Character_Alignment& alignment_in,
                                              const RPG_Character_Attributes& attributes_in,
                                              const RPG_Character_Skills_t& skills_in,
@@ -76,12 +76,13 @@ RPG_Character_Monster& RPG_Character_Monster::operator=(const RPG_Character_Mons
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::operator="));
 
   myType = monster_in.myType;
+  myIsSummoned = monster_in.myIsSummoned;
   inherited::operator=(monster_in);
 
   return *this;
 }
 
-const RPG_Monster_Type RPG_Character_Monster::getType() const
+const RPG_Common_CreatureType RPG_Character_Monster::getType() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Monster::getType"));
 

@@ -495,7 +495,9 @@ RPG_Magic_Spell_PreconditionProperties_Type::RPG_Magic_Spell_PreconditionPropert
   myCurrentProperties.levelIncrementMax = 0;
   myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentProperties.condition = RPG_CHARACTER_CONDITION_INVALID;
+  myCurrentProperties.creatures.clear();
   myCurrentProperties.size = RPG_CHARACTER_SIZE_INVALID;
+  myCurrentProperties.reverse = false;
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type::type(const RPG_Magic_Spell_Precondition& type_in)
@@ -540,11 +542,25 @@ void RPG_Magic_Spell_PreconditionProperties_Type::condition(const RPG_Character_
   myCurrentProperties.condition = condition_in;
 }
 
+void RPG_Magic_Spell_PreconditionProperties_Type::creature(const RPG_Common_CreatureType& creature_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PreconditionProperties_Type::creature"));
+
+  myCurrentProperties.creatures.push_back(creature_in);
+}
+
 void RPG_Magic_Spell_PreconditionProperties_Type::size(const RPG_Character_Size& size_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PreconditionProperties_Type::size"));
 
   myCurrentProperties.size = size_in;
+}
+
+void RPG_Magic_Spell_PreconditionProperties_Type::reverse(bool reverse_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PreconditionProperties_Type::reverse"));
+
+  myCurrentProperties.reverse = reverse_in;
 }
 
 RPG_Magic_Spell_PreconditionProperties RPG_Magic_Spell_PreconditionProperties_Type::post_RPG_Magic_Spell_PreconditionProperties_Type()
@@ -560,7 +576,9 @@ RPG_Magic_Spell_PreconditionProperties RPG_Magic_Spell_PreconditionProperties_Ty
   myCurrentProperties.levelIncrementMax = 0;
   myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentProperties.condition = RPG_CHARACTER_CONDITION_INVALID;
+  myCurrentProperties.creatures.clear();
   myCurrentProperties.size = RPG_CHARACTER_SIZE_INVALID;
+  myCurrentProperties.reverse = false;
 
   return result;
 }
@@ -739,6 +757,7 @@ RPG_Magic_Spell_EffectProperties_Type::RPG_Magic_Spell_EffectProperties_Type()
   myCurrentProperties.levelIncrement.range.modifier = 0;
   myCurrentProperties.levelIncrementMax = 0;
   myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentProperties.maxRange = 0;
   myCurrentProperties.counterMeasures.clear();
 }
 
@@ -777,6 +796,13 @@ void RPG_Magic_Spell_EffectProperties_Type::attribute(const RPG_Common_Attribute
   myCurrentProperties.attribute = attribute_in;
 }
 
+void RPG_Magic_Spell_EffectProperties_Type::maxRange(unsigned char maxRange_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::maxRange"));
+
+  myCurrentProperties.maxRange = maxRange_in;
+}
+
 void RPG_Magic_Spell_EffectProperties_Type::counterMeasure(const RPG_Magic_CounterMeasure& counterMeasure_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::counterMeasure"));
@@ -802,6 +828,7 @@ RPG_Magic_Spell_EffectProperties RPG_Magic_Spell_EffectProperties_Type::post_RPG
   myCurrentProperties.levelIncrement.range.modifier = 0;
   myCurrentProperties.levelIncrementMax = 0;
   myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentProperties.maxRange = 0;
   myCurrentProperties.counterMeasures.clear();
 
   return result;

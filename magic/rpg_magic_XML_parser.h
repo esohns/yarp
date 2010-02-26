@@ -258,7 +258,9 @@ class RPG_Magic_Spell_PreconditionProperties_Type
     virtual void levelIncrementMax(unsigned char);
     virtual void attribute(const RPG_Common_Attribute&);
     virtual void condition(const RPG_Character_Condition&);
+    virtual void creature(const RPG_Common_CreatureType&);
     virtual void size(const RPG_Character_Size&);
+    virtual void reverse(bool);
     virtual RPG_Magic_Spell_PreconditionProperties post_RPG_Magic_Spell_PreconditionProperties_Type();
 
   private:
@@ -332,6 +334,7 @@ class RPG_Magic_Spell_EffectProperties_Type
     virtual void levelIncrement(const RPG_Common_Amount&);
     virtual void levelIncrementMax(unsigned char);
     virtual void attribute(const RPG_Common_Attribute&);
+    virtual void maxRange(unsigned char);
     virtual void counterMeasure(const RPG_Magic_CounterMeasure&);
     virtual RPG_Magic_Spell_EffectProperties post_RPG_Magic_Spell_EffectProperties_Type();
 

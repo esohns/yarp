@@ -118,6 +118,11 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
   RPG_Magic_Spell_Precondition_Type           precondition_p;
   RPG_Common_Attribute_Type                   attribute_p;
   RPG_Character_Condition_Type                condition_p;
+  RPG_Common_CreatureMetaType_Type            creatureMetaType_p;
+  RPG_Common_CreatureSubType_Type             creatureSubType_p;
+  RPG_Common_CreatureType_Type                creatureType_p;
+  creatureType_p.parsers(creatureMetaType_p,
+                         creatureSubType_p);
   RPG_Character_Size_Type                     size_p;
   RPG_Magic_Spell_PreconditionProperties_Type preconditionProperties_p;
   preconditionProperties_p.parsers(precondition_p,
@@ -126,7 +131,9 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
                                    unsigned_byte_p,
                                    attribute_p,
                                    condition_p,
-                                   size_p);
+                                   creatureType_p,
+                                   size_p,
+                                   bool_p);
 
   RPG_Magic_Spell_Effect_Type                 effect_p;
   RPG_Common_Amount_Type                      amount_p;
@@ -150,6 +157,7 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
                              amount_p,
                              unsigned_byte_p,
                              attribute_p,
+                             unsigned_byte_p,
                              counterMeasure_p);
 
   RPG_Common_SavingThrow_Type                 saveType_p;

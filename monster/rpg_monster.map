@@ -14,6 +14,9 @@ namespace urn:rpg
   RPG_Dice_Roll_Type                          RPG_Dice_Roll;
   RPG_Dice_ValueRange_Type                    RPG_Dice_ValueRange;
 
+  RPG_Common_CreatureMetaType_Type            RPG_Common_CreatureMetaType;
+  RPG_Common_CreatureSubType_Type             RPG_Common_CreatureSubType;
+  RPG_Common_CreatureType_Type                RPG_Common_CreatureType;
   RPG_Common_Usage_Type                       RPG_Common_Usage;
   RPG_Common_ActionType_Type                  RPG_Common_ActionType;
 
