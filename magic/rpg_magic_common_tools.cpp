@@ -45,6 +45,9 @@ RPG_Magic_Spell_DurationToStringTable_t RPG_Magic_Spell_DurationHelper::myRPG_Ma
 RPG_Magic_Spell_PreconditionToStringTable_t RPG_Magic_Spell_PreconditionHelper::myRPG_Magic_Spell_PreconditionToStringTable;
 RPG_Magic_Spell_EffectToStringTable_t RPG_Magic_Spell_EffectHelper::myRPG_Magic_Spell_EffectToStringTable;
 
+RPG_Magic_Common_Tools::RPG_Magic_NumSpellsTable_t RPG_Magic_Common_Tools::myNumSpellsTable;
+RPG_Magic_Common_Tools::RPG_Magic_NumSpellsTable_t RPG_Magic_Common_Tools::myNumSpellsKnownTable;
+
 void RPG_Magic_Common_Tools::initStringConversionTables()
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::initStringConversionTables"));
@@ -65,6 +68,344 @@ void RPG_Magic_Common_Tools::initStringConversionTables()
   // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Magic_Common_Tools: initialized string conversion tables...\n")));
+}
+
+void RPG_Magic_Common_Tools::initSpellsTables()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::initSpellsTables"));
+
+  // SUBCLASS_BARD
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(1, 0)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(2, 0)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(2, 1)), 0));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(3, 0)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(3, 1)), 1));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(4, 0)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(4, 1)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(4, 2)), 0));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(5, 0)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(5, 1)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(5, 2)), 1));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(6, 0)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(6, 1)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(6, 2)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(7, 0)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(7, 1)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(7, 2)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(7, 3)), 0));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(8, 0)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(8, 1)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(8, 2)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(8, 3)), 1));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(9, 0)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(9, 1)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(9, 2)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(9, 3)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(10, 0)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(10, 1)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(10, 2)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(10, 3)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(10, 4)), 0));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(11, 0)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(11, 1)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(11, 2)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(11, 3)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(11, 4)), 1));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(12, 0)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(12, 1)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(12, 2)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(12, 3)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(12, 4)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(13, 0)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(13, 1)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(13, 2)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(13, 3)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(13, 4)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(13, 5)), 0));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(14, 0)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(14, 1)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(14, 2)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(14, 3)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(14, 4)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(14, 5)), 1));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(15, 0)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(15, 1)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(15, 2)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(15, 3)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(15, 4)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(15, 5)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 0)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 1)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 2)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 3)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 4)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 5)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 6)), 0));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 0)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 1)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 2)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 3)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 4)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 5)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 6)), 1));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(18, 0)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(18, 1)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(18, 2)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(18, 3)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(18, 4)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(18, 5)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(18, 6)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(19, 0)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(19, 1)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(19, 2)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(19, 3)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(19, 4)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(19, 5)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(19, 6)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(20, 0)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(20, 1)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(20, 2)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(20, 3)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(20, 4)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(20, 5)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(20, 6)), 4));
+
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(1, 0)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(2, 0)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(2, 1)), 2));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(3, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(3, 1)), 3));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(4, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(4, 1)), 3));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(4, 2)), 2));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(5, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(5, 1)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(5, 2)), 3));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(6, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(6, 1)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(6, 2)), 3));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(7, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(7, 1)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(7, 2)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(7, 3)), 2));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(8, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(8, 1)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(8, 2)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(8, 3)), 3));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(9, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(9, 1)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(9, 2)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(9, 3)), 3));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(10, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(10, 1)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(10, 2)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(10, 3)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(10, 4)), 2));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(11, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(11, 1)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(11, 2)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(11, 3)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(11, 4)), 3));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(12, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(12, 1)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(12, 2)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(12, 3)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(12, 4)), 3));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(13, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(13, 1)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(13, 2)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(13, 3)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(13, 4)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(13, 5)), 2));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(14, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(14, 1)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(14, 2)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(14, 3)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(14, 4)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(14, 5)), 3));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(15, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(15, 1)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(15, 2)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(15, 3)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(15, 4)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(15, 5)), 3));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 1)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 2)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 3)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 4)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 5)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 6)), 2));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 1)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 2)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 3)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 4)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 5)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 6)), 3));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(18, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(18, 1)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(18, 2)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(18, 3)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(18, 4)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(18, 5)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(18, 6)), 3));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(19, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(19, 1)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(19, 2)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(19, 3)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(19, 4)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(19, 5)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(19, 6)), 4));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(20, 0)), 6));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(20, 1)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(20, 2)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(20, 3)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(20, 4)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(20, 5)), 5));
+  myNumSpellsKnownTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(20, 6)), 4));
+
+  // SUBCLASS_CLERIC
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(1, 0)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(1, 1)), 1));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(2, 0)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(2, 1)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(3, 0)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(3, 1)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(3, 2)), 1));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(4, 0)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(4, 1)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(4, 2)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(5, 0)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(5, 1)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(5, 2)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(5, 3)), 1));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(6, 0)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(6, 1)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(6, 2)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(6, 3)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(7, 0)), 6));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(7, 1)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(7, 2)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(7, 3)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(7, 3)), 1));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(8, 0)), 6));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(8, 1)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(8, 2)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(8, 3)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(8, 4)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(9, 0)), 6));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(9, 1)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(9, 2)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(9, 3)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(9, 4)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(9, 5)), 1));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(10, 0)), 6));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(10, 1)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(10, 2)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(10, 3)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(10, 4)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(10, 5)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(11, 0)), 6));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(11, 1)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(11, 2)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(11, 3)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(11, 4)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(11, 5)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(11, 6)), 1));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(12, 0)), 6));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(12, 1)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(12, 2)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(12, 3)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(12, 4)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(12, 5)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(12, 6)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(13, 0)), 6));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(13, 1)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(13, 2)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(13, 3)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(13, 4)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(13, 5)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(13, 6)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(13, 7)), 1));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(14, 0)), 6));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(14, 1)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(14, 2)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(14, 3)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(14, 4)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(14, 5)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(14, 6)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(14, 7)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(15, 0)), 6));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(15, 1)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(15, 2)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(15, 3)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(15, 4)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(15, 5)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(15, 6)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(15, 7)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(15, 8)), 1));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(16, 0)), 6));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(16, 1)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(16, 2)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(16, 3)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(16, 4)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(16, 5)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(16, 6)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(16, 7)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(16, 8)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(17, 0)), 6));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(17, 1)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(17, 2)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(17, 3)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(17, 4)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(17, 5)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(17, 6)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(17, 7)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(17, 8)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(17, 9)), 1));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(18, 0)), 6));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(18, 1)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(18, 2)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(18, 3)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(18, 4)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(18, 5)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(18, 6)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(18, 7)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(18, 8)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(18, 9)), 2));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(19, 0)), 6));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(19, 1)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(19, 2)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(19, 3)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(19, 4)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(19, 5)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(19, 6)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(19, 7)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(19, 8)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(19, 9)), 3));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(20, 0)), 6));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(20, 1)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(20, 2)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(20, 3)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(20, 4)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(20, 5)), 5));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(20, 6)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(20, 7)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(20, 8)), 4));
+  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_CLERIC, std::make_pair(20, 9)), 4));
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("RPG_Magic_Common_Tools: initialized spells tables...\n")));
+}
+
+void RPG_Magic_Common_Tools::init()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::init"));
+
+  initStringConversionTables();
+  initSpellsTables();
 }
 
 const std::string RPG_Magic_Common_Tools::spellTypeToString(const RPG_Magic_Spell_Type& type_in)
@@ -668,4 +1009,46 @@ void RPG_Magic_Common_Tools::updateSpellRange(RPG_Magic_Spell_RangeProperties& r
       break;
     }
   } // end SWITCH
+}
+
+void RPG_Magic_Common_Tools::getNumSpellsPerLevel(const RPG_Common_SubClass& subClass_in,
+                                                  const unsigned char& classLevel_in,
+                                                  const unsigned char& spellLevel_in,
+                                                  unsigned char& numSpells_out,
+                                                  unsigned char& numSpellsKnown_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::getNumSpellsPerLevel"));
+
+  // init return value(s)
+  numSpells_out = 0;
+  numSpellsKnown_out = 0;
+
+  RPG_Magic_ClassLevelSpellLevelPair_t levelPair = std::make_pair(classLevel_in, spellLevel_in);
+  RPG_Magic_SubClassLevelPair_t combination = std::make_pair(subClass_in, levelPair);
+
+  RPG_Magic_NumSpellsTableIterator_t iterator = myNumSpellsTable.find(combination);
+  if (iterator == myNumSpellsTable.end())
+  {
+    ACE_DEBUG((LM_WARNING,
+               ACE_TEXT("invalid combination (class \"%s\", level %d, spell %d) --> check implementation !, aborting\n"),
+               RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str(),
+               ACE_static_cast(unsigned int, classLevel_in),
+               ACE_static_cast(unsigned int, spellLevel_in)));
+
+    return;
+  } // end IF
+  numSpells_out = iterator->second;
+
+  iterator = myNumSpellsKnownTable.find(combination);
+  if (iterator == myNumSpellsKnownTable.end())
+  {
+    ACE_DEBUG((LM_WARNING,
+               ACE_TEXT("invalid combination (class \"%s\", level %d, spell %d) --> check implementation !, aborting\n"),
+               RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str(),
+               ACE_static_cast(unsigned int, classLevel_in),
+               ACE_static_cast(unsigned int, spellLevel_in)));
+
+    return;
+  } // end IF
+  numSpellsKnown_out = iterator->second;
 }

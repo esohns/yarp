@@ -35,7 +35,7 @@
 class RPG_Magic_Common_Tools
 {
  public:
-  static void initStringConversionTables();
+  static void init();
 
   static const std::string spellTypeToString(const RPG_Magic_Spell_Type&); // type
   static const std::string spellLevelsToString(const RPG_Magic_SpellLevelList_t&); // levels
@@ -45,7 +45,11 @@ class RPG_Magic_Common_Tools
   static const std::string preconditionsToString(const RPG_Magic_Spell_PreconditionList_t&); // preconditions
   static const std::string effectsToString(const RPG_Magic_Spell_EffectList_t&); // effects
 
-  static void updateSpellRange(RPG_Magic_Spell_RangeProperties&); // range
+  static void getNumSpellsPerLevel(const RPG_Common_SubClass&, // subclass
+                                   const unsigned char&,       // class level
+                                   const unsigned char&,       // spell level
+                                   unsigned char&,             // return value: #spells (/day)
+                                   unsigned char&);            // return value: #spells known
 
  private:
   // safety measures
@@ -53,6 +57,19 @@ class RPG_Magic_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(~RPG_Magic_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Magic_Common_Tools(const RPG_Magic_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Magic_Common_Tools& operator=(const RPG_Magic_Common_Tools&));
+
+  // helper methods
+  static void initStringConversionTables();
+  static void initSpellsTables();
+  static void updateSpellRange(RPG_Magic_Spell_RangeProperties&); // range
+
+  typedef std::pair<unsigned char, unsigned char> RPG_Magic_ClassLevelSpellLevelPair_t;
+  typedef std::pair<RPG_Common_SubClass, RPG_Magic_ClassLevelSpellLevelPair_t> RPG_Magic_SubClassLevelPair_t;
+  typedef std::map<RPG_Magic_SubClassLevelPair_t, unsigned char> RPG_Magic_NumSpellsTable_t;
+  typedef RPG_Magic_NumSpellsTable_t::const_iterator RPG_Magic_NumSpellsTableIterator_t;
+
+  static RPG_Magic_NumSpellsTable_t myNumSpellsTable;
+  static RPG_Magic_NumSpellsTable_t myNumSpellsKnownTable;
 };
 
 #endif

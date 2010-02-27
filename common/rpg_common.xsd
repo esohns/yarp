@@ -74,33 +74,33 @@
   <xsd:simpleType name="RPG_Common_SubClass_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SUBCLASS_NONE"/>
-      <xsd:enumeration value="SUBCLASS_FIGHTER"/>
-      <xsd:enumeration value="SUBCLASS_PALADIN"/>
-      <xsd:enumeration value="SUBCLASS_RANGER"/>
+      <xsd:enumeration value="SUBCLASS_AVENGER"/>
       <xsd:enumeration value="SUBCLASS_BARBARIAN"/>
-      <xsd:enumeration value="SUBCLASS_WARLORD"/>
-      <xsd:enumeration value="SUBCLASS_WIZARD"/>
-      <xsd:enumeration value="SUBCLASS_SORCERER"/>
-      <xsd:enumeration value="SUBCLASS_WARLOCK"/>
+      <xsd:enumeration value="SUBCLASS_BARD"/>
       <xsd:enumeration value="SUBCLASS_CLERIC"/>
       <xsd:enumeration value="SUBCLASS_DRUID"/>
-      <xsd:enumeration value="SUBCLASS_MONK"/>
-      <xsd:enumeration value="SUBCLASS_AVENGER"/>
+      <xsd:enumeration value="SUBCLASS_FIGHTER"/>
       <xsd:enumeration value="SUBCLASS_INVOKER"/>
+      <xsd:enumeration value="SUBCLASS_MONK"/>
+      <xsd:enumeration value="SUBCLASS_PALADIN"/>
+      <xsd:enumeration value="SUBCLASS_RANGER"/>
       <xsd:enumeration value="SUBCLASS_SHAMAN"/>
+      <xsd:enumeration value="SUBCLASS_SORCERER"/>
       <xsd:enumeration value="SUBCLASS_THIEF"/>
-      <xsd:enumeration value="SUBCLASS_BARD"/>
+      <xsd:enumeration value="SUBCLASS_WARLOCK"/>
+      <xsd:enumeration value="SUBCLASS_WARLORD"/>
+      <xsd:enumeration value="SUBCLASS_WIZARD"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Common_Attribute_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="ATTRIBUTE_STRENGTH"/>
-      <xsd:enumeration value="ATTRIBUTE_DEXTERITY"/>
-      <xsd:enumeration value="ATTRIBUTE_CONSTITUTION"/>
-      <xsd:enumeration value="ATTRIBUTE_INTELLIGENCE"/>
-      <xsd:enumeration value="ATTRIBUTE_WISDOM"/>
       <xsd:enumeration value="ATTRIBUTE_CHARISMA"/>
+      <xsd:enumeration value="ATTRIBUTE_CONSTITUTION"/>
+      <xsd:enumeration value="ATTRIBUTE_DEXTERITY"/>
+      <xsd:enumeration value="ATTRIBUTE_INTELLIGENCE"/>
+      <xsd:enumeration value="ATTRIBUTE_STRENGTH"/>
+      <xsd:enumeration value="ATTRIBUTE_WISDOM"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -110,6 +110,7 @@
       <xsd:enumeration value="PHYSICALDAMAGE_BLUDGEONING"/>
       <xsd:enumeration value="PHYSICALDAMAGE_PIERCING"/>
       <xsd:enumeration value="PHYSICALDAMAGE_SLASHING"/>
+      <!--                                            -->
       <xsd:enumeration value="PHYSICALDAMAGE_CONSTRICT"/>
     </xsd:restriction>
   </xsd:simpleType>
@@ -139,10 +140,10 @@
 
   <xsd:simpleType name="RPG_Common_EffectType_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="EFFECT_IMMEDIATE"/>
       <xsd:enumeration value="EFFECT_BATTLE"/>
-      <xsd:enumeration value="EFFECT_TEMPORARY"/>
+      <xsd:enumeration value="EFFECT_IMMEDIATE"/>
       <xsd:enumeration value="EFFECT_PERMANENT"/>
+      <xsd:enumeration value="EFFECT_TEMPORARY"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -178,9 +179,9 @@
 
   <xsd:simpleType name="RPG_Common_SaveReductionType_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SAVEREDUCTION_HALF"/>
       <xsd:enumeration value="SAVEREDUCTION_NEGATES"/>
       <xsd:enumeration value="SAVEREDUCTION_PARTIAL"/>
-      <xsd:enumeration value="SAVEREDUCTION_HALF"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -223,8 +224,8 @@
 
   <xsd:simpleType name="RPG_Common_Camp_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="REST_NORMAL"/>
       <xsd:enumeration value="REST_FULL"/>
+      <xsd:enumeration value="REST_NORMAL"/>
     </xsd:restriction>
   </xsd:simpleType>
 
