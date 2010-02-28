@@ -241,6 +241,69 @@ const RPG_Magic_Spell_Properties RPG_Magic_Dictionary::getSpellProperties(const 
   return iterator->second;
 }
 
+const RPG_Magic_Spells_t RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in,
+                                                         const unsigned char& spellLevel_in) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
+
+  // sanity check
+  ACE_ASSERT(casterClass_in.discriminator != RPG_Magic_CasterClassUnion::INVALID);
+
+  RPG_Magic_Spells_t result;
+
+  bool match = false;
+  for (RPG_Magic_DictionaryIterator_t iterator = myDictionary.begin();
+       iterator != myDictionary.end();
+       iterator++)
+  {
+    for (RPG_Magic_SpellLevelListIterator_t iterator2 = (*iterator).second.levels.begin();
+         iterator2 != (*iterator).second.levels.end();
+         iterator2++)
+    {
+      if ((*iterator2).casterClass.discriminator != casterClass_in.discriminator)
+        break;
+
+      match = false;
+      switch ((*iterator2).casterClass.discriminator)
+      {
+        case RPG_Magic_CasterClassUnion::SUBCLASS:
+        {
+          if ((*iterator2).casterClass.subclass == casterClass_in.subclass)
+            match = true;
+
+          break;
+        }
+        case RPG_Magic_CasterClassUnion::DOMAIN:
+        {
+          if ((*iterator2).casterClass.domain == casterClass_in.domain)
+            match = true;
+
+          break;
+        }
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid caster class type: %d --> check implementation !, aborting\n"),
+                     (*iterator2).casterClass.discriminator));
+
+          break;
+        }
+      } // end SWITCH
+
+      if (!match)
+        continue;
+
+      if ((spellLevel_in == 0xFF) ||
+          (spellLevel_in == (*iterator2).level))
+        result.insert((*iterator).second.type.type);
+
+      break;
+    } // end FOR
+  } // end FOR
+
+  return result;
+}
+
 bool RPG_Magic_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
                                                      unsigned long line_in,
                                                      unsigned long column_in,

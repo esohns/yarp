@@ -45,6 +45,8 @@ class RPG_Magic_Dictionary
             const bool& = true); // validate XML ?
 
   const RPG_Magic_Spell_Properties getSpellProperties(const std::string&) const; // name of spell
+  const RPG_Magic_Spells_t getSpells(const RPG_Magic_CasterClassUnion&,  // caster class
+                                     const unsigned char& = 0xFF) const; // spell level (default: ALL)
 
   // debug info
   void dump() const;

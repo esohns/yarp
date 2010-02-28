@@ -19,10 +19,6 @@
  ***************************************************************************/
 #include "rpg_magic_common_tools.h"
 
-#include <rpg_dice_incl.h>
-#include <rpg_common_incl.h>
-#include "rpg_magic_incl.h"
-
 #include <rpg_dice_common_tools.h>
 #include <rpg_common_tools.h>
 
