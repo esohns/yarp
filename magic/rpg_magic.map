@@ -23,6 +23,7 @@ namespace urn:rpg
 
   RPG_Character_Condition_Type                RPG_Character_Condition;
   RPG_Character_Size_Type                     RPG_Character_Size;
+  RPG_Character_Skill_Type                    RPG_Character_Skill;
 
   RPG_Magic_School_Type                       RPG_Magic_School;
   RPG_Magic_SubSchool_Type                    RPG_Magic_SubSchool;

@@ -147,7 +147,7 @@ void RPG_Magic_CasterClassUnion_Type::_characters(const ::xml_schema::ro_string&
   else
   {
     myCurrentCasterClassUnion.domain = RPG_Magic_DomainHelper::stringToRPG_Magic_Domain(casterClass_in);
-    myCurrentCasterClassUnion.discriminator = RPG_Magic_CasterClassUnion::DOMAIN;
+    myCurrentCasterClassUnion.discriminator = RPG_Magic_CasterClassUnion::__GNUC__DOMAIN;
   } // end ELSE
 }
 

@@ -1052,7 +1052,7 @@ const std::string RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_Sp
 
         break;
       }
-      case RPG_Magic_CasterClassUnion::DOMAIN:
+      case RPG_Magic_CasterClassUnion::__GNUC__DOMAIN:
       {
         result += RPG_Magic_DomainHelper::RPG_Magic_DomainToString((*iterator).casterClass.domain);
 

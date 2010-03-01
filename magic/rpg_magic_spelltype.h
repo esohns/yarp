@@ -49,6 +49,7 @@ enum RPG_Magic_SpellType
   SPELL_ARCANE_MARK,
   SPELL_ARCANE_SIGHT,
   SPELL_ARCANE_SIGHT_GREATER,
+  SPELL_ASTRAL_PROJECTION,
   SPELL_BLADE_BARRIER,
   SPELL_BLASPHEMY,
   SPELL_BLESS,
@@ -160,6 +161,7 @@ class RPG_Magic_SpellTypeHelper
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ARCANE_MARK, ACE_TEXT_ALWAYS_CHAR("SPELL_ARCANE_MARK")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ARCANE_SIGHT, ACE_TEXT_ALWAYS_CHAR("SPELL_ARCANE_SIGHT")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ARCANE_SIGHT_GREATER, ACE_TEXT_ALWAYS_CHAR("SPELL_ARCANE_SIGHT_GREATER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ASTRAL_PROJECTION, ACE_TEXT_ALWAYS_CHAR("SPELL_ASTRAL_PROJECTION")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BLADE_BARRIER, ACE_TEXT_ALWAYS_CHAR("SPELL_BLADE_BARRIER")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BLASPHEMY, ACE_TEXT_ALWAYS_CHAR("SPELL_BLASPHEMY")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BLESS, ACE_TEXT_ALWAYS_CHAR("SPELL_BLESS")));

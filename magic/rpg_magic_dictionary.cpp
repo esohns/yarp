@@ -273,7 +273,7 @@ const RPG_Magic_Spells_t RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterC
 
           break;
         }
-        case RPG_Magic_CasterClassUnion::DOMAIN:
+        case RPG_Magic_CasterClassUnion::__GNUC__DOMAIN:
         {
           if ((*iterator2).casterClass.domain == casterClass_in.domain)
             match = true;
