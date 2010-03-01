@@ -38,22 +38,22 @@
 
 #include "rpg_character_XML_types.h"
 
-// RPG_Character_Class_Type_pskel
+// RPG_Character_ClassXML_Type_pskel
 //
 
-void RPG_Character_Class_Type_pskel::
+void RPG_Character_ClassXML_Type_pskel::
 metaClass_parser (::RPG_Character_MetaClass_Type_pskel& p)
 {
   this->metaClass_parser_ = &p;
 }
 
-void RPG_Character_Class_Type_pskel::
+void RPG_Character_ClassXML_Type_pskel::
 subClass_parser (::RPG_Common_SubClass_Type_pskel& p)
 {
   this->subClass_parser_ = &p;
 }
 
-void RPG_Character_Class_Type_pskel::
+void RPG_Character_ClassXML_Type_pskel::
 parsers (::RPG_Character_MetaClass_Type_pskel& metaClass,
          ::RPG_Common_SubClass_Type_pskel& subClass)
 {
@@ -61,8 +61,8 @@ parsers (::RPG_Character_MetaClass_Type_pskel& metaClass,
   this->subClass_parser_ = &subClass;
 }
 
-RPG_Character_Class_Type_pskel::
-RPG_Character_Class_Type_pskel ()
+RPG_Character_ClassXML_Type_pskel::
+RPG_Character_ClassXML_Type_pskel ()
 : metaClass_parser_ (0),
   subClass_parser_ (0)
 {
@@ -138,7 +138,7 @@ RPG_Character_Attributes_Type_pskel ()
 //
 
 void RPG_Character_SkillValue_Type_pskel::
-skill_parser (::RPG_Character_Skill_Type_pskel& p)
+skill_parser (::RPG_Common_Skill_Type_pskel& p)
 {
   this->skill_parser_ = &p;
 }
@@ -150,7 +150,7 @@ rank_parser (::xml_schema::byte_pskel& p)
 }
 
 void RPG_Character_SkillValue_Type_pskel::
-parsers (::RPG_Character_Skill_Type_pskel& skill,
+parsers (::RPG_Common_Skill_Type_pskel& skill,
          ::xml_schema::byte_pskel& rank)
 {
   this->skill_parser_ = &skill;
@@ -296,20 +296,20 @@ RPG_Character_Alignment_Type_pskel ()
 {
 }
 
-// RPG_Character_Class_Type_pskel
+// RPG_Character_ClassXML_Type_pskel
 //
 
-void RPG_Character_Class_Type_pskel::
+void RPG_Character_ClassXML_Type_pskel::
 metaClass (const RPG_Character_MetaClass&)
 {
 }
 
-void RPG_Character_Class_Type_pskel::
+void RPG_Character_ClassXML_Type_pskel::
 subClass (const RPG_Common_SubClass&)
 {
 }
 
-bool RPG_Character_Class_Type_pskel::
+bool RPG_Character_ClassXML_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
@@ -342,7 +342,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Character_Class_Type_pskel::
+bool RPG_Character_ClassXML_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
@@ -536,7 +536,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Character_SkillValue_Type_pskel::
-skill (const RPG_Character_Skill&)
+skill (const RPG_Common_Skill&)
 {
 }
 
@@ -588,7 +588,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "skill" && ns == "urn:rpg")
   {
     if (this->skill_parser_)
-      this->skill (this->skill_parser_->post_RPG_Character_Skill_Type ());
+      this->skill (this->skill_parser_->post_RPG_Common_Skill_Type ());
 
     return true;
   }

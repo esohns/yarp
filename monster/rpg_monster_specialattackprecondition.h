@@ -25,10 +25,10 @@ struct RPG_Monster_SpecialAttackPreCondition
 {
   RPG_Monster_ActionTrigger action;
   RPG_Character_Alignment targetAlignment;
-  std::vector<RPG_Character_Condition> ownConditions;
-  std::vector<RPG_Character_Condition> targetConditions;
-  RPG_Character_Size minTargetSize;
-  RPG_Character_Size maxTargetSize;
+  std::vector<RPG_Common_Condition> ownConditions;
+  std::vector<RPG_Common_Condition> targetConditions;
+  RPG_Common_Size minTargetSize;
+  RPG_Common_Size maxTargetSize;
   RPG_Combat_Check check;
 };
 

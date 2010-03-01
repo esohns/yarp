@@ -24,8 +24,8 @@
 struct RPG_Monster_SpecialDefensePreCondition
 {
   std::vector<RPG_Monster_WeaponTypeUnion> weaponTypes;
-  std::vector<RPG_Character_Condition> ownConditions;
-  std::vector<RPG_Character_Condition> targetConditions;
+  std::vector<RPG_Common_Condition> ownConditions;
+  std::vector<RPG_Common_Condition> targetConditions;
   bool isMagicalWeapon;
 };
 

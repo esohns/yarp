@@ -25,7 +25,7 @@ struct RPG_Combat_CheckTypeUnion
 {
   union
   {
-    RPG_Character_Skill skill;
+    RPG_Common_Skill skill;
     RPG_Common_Attribute attribute;
     RPG_Common_BaseCheckTypeUnion basechecktypeunion;
   };

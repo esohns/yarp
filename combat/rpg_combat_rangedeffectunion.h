@@ -25,7 +25,7 @@ struct RPG_Combat_RangedEffectUnion
 {
   union
   {
-    RPG_Character_Size size;
+    RPG_Common_Size size;
     RPG_Common_AreaOfEffect areaofeffect;
   };
 

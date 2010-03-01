@@ -23,13 +23,13 @@
 
 enum RPG_Character_Terrain
 {
-  TERRAIN_UNDERGROUND = 0,
-  TERRAIN_PLAINS,
+  TERRAIN_DESERTS = 0,
   TERRAIN_FORESTS,
-  TERRAIN_MARSHES,
   TERRAIN_HILLS,
+  TERRAIN_MARSHES,
   TERRAIN_MOUNTAINS,
-  TERRAIN_DESERTS,
+  TERRAIN_PLAINS,
+  TERRAIN_UNDERGROUND,
   TERRAIN_MATERIALPLANE_ANY,
   TERRAIN_TRANSITIVEPLANE_ASTRAL,
   TERRAIN_TRANSITIVEPLANE_ETHERAL,
@@ -74,13 +74,13 @@ class RPG_Character_TerrainHelper
   inline static void init()
   {
     myRPG_Character_TerrainToStringTable.clear();
-    myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_UNDERGROUND, ACE_TEXT_ALWAYS_CHAR("TERRAIN_UNDERGROUND")));
-    myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_PLAINS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_PLAINS")));
-    myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_FORESTS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_FORESTS")));
-    myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_MARSHES, ACE_TEXT_ALWAYS_CHAR("TERRAIN_MARSHES")));
-    myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_HILLS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_HILLS")));
-    myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_MOUNTAINS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_MOUNTAINS")));
     myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_DESERTS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_DESERTS")));
+    myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_FORESTS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_FORESTS")));
+    myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_HILLS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_HILLS")));
+    myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_MARSHES, ACE_TEXT_ALWAYS_CHAR("TERRAIN_MARSHES")));
+    myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_MOUNTAINS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_MOUNTAINS")));
+    myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_PLAINS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_PLAINS")));
+    myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_UNDERGROUND, ACE_TEXT_ALWAYS_CHAR("TERRAIN_UNDERGROUND")));
     myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_MATERIALPLANE_ANY, ACE_TEXT_ALWAYS_CHAR("TERRAIN_MATERIALPLANE_ANY")));
     myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_TRANSITIVEPLANE_ASTRAL, ACE_TEXT_ALWAYS_CHAR("TERRAIN_TRANSITIVEPLANE_ASTRAL")));
     myRPG_Character_TerrainToStringTable.insert(std::make_pair(TERRAIN_TRANSITIVEPLANE_ETHERAL, ACE_TEXT_ALWAYS_CHAR("TERRAIN_TRANSITIVEPLANE_ETHERAL")));

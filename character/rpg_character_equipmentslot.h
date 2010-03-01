@@ -23,19 +23,21 @@
 
 enum RPG_Character_EquipmentSlot
 {
-  EQUIPMENTSLOT_HEAD = 0,
+  EQUIPMENTSLOT_BODY = 0,
   EQUIPMENTSLOT_EYES,
-  EQUIPMENTSLOT_NECK,
-  EQUIPMENTSLOT_TORSO,
-  EQUIPMENTSLOT_BODY,
-  EQUIPMENTSLOT_WAIST,
-  EQUIPMENTSLOT_SHOULDERS,
-  EQUIPMENTSLOT_WRISTS,
-  EQUIPMENTSLOT_RIGHT_HAND,
-  EQUIPMENTSLOT_LEFT_HAND,
-  EQUIPMENTSLOT_HANDS,
-  EQUIPMENTSLOT_FINGERS,
   EQUIPMENTSLOT_FEET,
+  EQUIPMENTSLOT_FINGER,
+  EQUIPMENTSLOT_HAND_LEFT,
+  EQUIPMENTSLOT_HAND_RIGHT,
+  EQUIPMENTSLOT_HANDS,
+  EQUIPMENTSLOT_HEAD,
+  EQUIPMENTSLOT_NECK,
+  EQUIPMENTSLOT_SHOULDERS,
+  EQUIPMENTSLOT_TORSO,
+  EQUIPMENTSLOT_WAIST,
+  EQUIPMENTSLOT_WRIST_LEFT,
+  EQUIPMENTSLOT_WRIST_RIGHT,
+  EQUIPMENTSLOT_WRISTS,
   //
   RPG_CHARACTER_EQUIPMENTSLOT_MAX,
   RPG_CHARACTER_EQUIPMENTSLOT_INVALID
@@ -55,19 +57,21 @@ class RPG_Character_EquipmentSlotHelper
   inline static void init()
   {
     myRPG_Character_EquipmentSlotToStringTable.clear();
-    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_HEAD, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_HEAD")));
-    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_EYES, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_EYES")));
-    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_NECK, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_NECK")));
-    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_TORSO, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_TORSO")));
     myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_BODY, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_BODY")));
-    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_WAIST, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_WAIST")));
-    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_SHOULDERS, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_SHOULDERS")));
-    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_WRISTS, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_WRISTS")));
-    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_RIGHT_HAND, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_RIGHT_HAND")));
-    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_LEFT_HAND, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_LEFT_HAND")));
-    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_HANDS, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_HANDS")));
-    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_FINGERS, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_FINGERS")));
+    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_EYES, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_EYES")));
     myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_FEET, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_FEET")));
+    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_FINGER, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_FINGER")));
+    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_HAND_LEFT, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_HAND_LEFT")));
+    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_HAND_RIGHT, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_HAND_RIGHT")));
+    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_HANDS, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_HANDS")));
+    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_HEAD, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_HEAD")));
+    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_NECK, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_NECK")));
+    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_SHOULDERS, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_SHOULDERS")));
+    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_TORSO, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_TORSO")));
+    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_WAIST, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_WAIST")));
+    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_WRIST_LEFT, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_WRIST_LEFT")));
+    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_WRIST_RIGHT, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_WRIST_RIGHT")));
+    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_WRISTS, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_WRISTS")));
   };
 
   inline static std::string RPG_Character_EquipmentSlotToString(const RPG_Character_EquipmentSlot& element_in)

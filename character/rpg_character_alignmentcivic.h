@@ -23,9 +23,9 @@
 
 enum RPG_Character_AlignmentCivic
 {
-  ALIGNMENTCIVIC_LAWFUL = 0,
+  ALIGNMENTCIVIC_CHAOTIC = 0,
+  ALIGNMENTCIVIC_LAWFUL,
   ALIGNMENTCIVIC_NEUTRAL,
-  ALIGNMENTCIVIC_CHAOTIC,
   ALIGNMENTCIVIC_ANY,
   //
   RPG_CHARACTER_ALIGNMENTCIVIC_MAX,
@@ -46,9 +46,9 @@ class RPG_Character_AlignmentCivicHelper
   inline static void init()
   {
     myRPG_Character_AlignmentCivicToStringTable.clear();
+    myRPG_Character_AlignmentCivicToStringTable.insert(std::make_pair(ALIGNMENTCIVIC_CHAOTIC, ACE_TEXT_ALWAYS_CHAR("ALIGNMENTCIVIC_CHAOTIC")));
     myRPG_Character_AlignmentCivicToStringTable.insert(std::make_pair(ALIGNMENTCIVIC_LAWFUL, ACE_TEXT_ALWAYS_CHAR("ALIGNMENTCIVIC_LAWFUL")));
     myRPG_Character_AlignmentCivicToStringTable.insert(std::make_pair(ALIGNMENTCIVIC_NEUTRAL, ACE_TEXT_ALWAYS_CHAR("ALIGNMENTCIVIC_NEUTRAL")));
-    myRPG_Character_AlignmentCivicToStringTable.insert(std::make_pair(ALIGNMENTCIVIC_CHAOTIC, ACE_TEXT_ALWAYS_CHAR("ALIGNMENTCIVIC_CHAOTIC")));
     myRPG_Character_AlignmentCivicToStringTable.insert(std::make_pair(ALIGNMENTCIVIC_ANY, ACE_TEXT_ALWAYS_CHAR("ALIGNMENTCIVIC_ANY")));
   };
 

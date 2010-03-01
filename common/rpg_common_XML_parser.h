@@ -78,6 +78,33 @@ class RPG_Common_Attribute_Type
   virtual RPG_Common_Attribute post_RPG_Common_Attribute_Type();
 };
 
+class RPG_Common_Size_Type
+  : public RPG_Common_Size_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Common_Size post_RPG_Common_Size_Type();
+};
+
+class RPG_Common_Condition_Type
+  : public RPG_Common_Condition_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Common_Condition post_RPG_Common_Condition_Type();
+};
+
+class RPG_Common_Skill_Type
+  : public RPG_Common_Skill_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Common_Skill post_RPG_Common_Skill_Type();
+};
+
 class RPG_Common_PhysicalDamageType_Type
  : public RPG_Common_PhysicalDamageType_Type_pskel,
    public ::xml_schema::string_pimpl

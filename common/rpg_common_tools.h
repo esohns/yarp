@@ -39,6 +39,9 @@ class RPG_Common_Tools
   static const std::string creatureTypeToString(const RPG_Common_CreatureType&); // type
   static const std::string savingThrowToString(const RPG_Common_SavingThrowCheck&); // save
 
+  static const signed char getSizeModifier(const RPG_Common_Size&);
+  static const unsigned char sizeToReach(const RPG_Common_Size&);
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools());

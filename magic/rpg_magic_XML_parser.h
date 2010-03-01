@@ -257,9 +257,9 @@ class RPG_Magic_Spell_PreconditionProperties_Type
     virtual void levelIncrement(unsigned char);
     virtual void levelIncrementMax(unsigned char);
     virtual void attribute(const RPG_Common_Attribute&);
-    virtual void condition(const RPG_Character_Condition&);
+    virtual void condition(const RPG_Common_Condition&);
     virtual void creature(const RPG_Common_CreatureType&);
-    virtual void size(const RPG_Character_Size&);
+    virtual void size(const RPG_Common_Size&);
     virtual void reverse(bool);
     virtual RPG_Magic_Spell_PreconditionProperties post_RPG_Magic_Spell_PreconditionProperties_Type();
 

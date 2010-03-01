@@ -135,7 +135,7 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
   unsigned int skills_per_line = 4;
   unsigned int index = 1;
   unsigned int choice = 0;
-  RPG_Character_SkillToStringTableIterator_t iterator = RPG_Character_SkillHelper::myRPG_Character_SkillToStringTable.begin();
+  RPG_Common_SkillToStringTableIterator_t iterator = RPG_Common_SkillHelper::myRPG_Common_SkillToStringTable.begin();
   do
   {
     for (unsigned int i = 0;
@@ -143,7 +143,7 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
          i++, iterator++, index++)
     {
       // finished ?
-      if (iterator == RPG_Character_SkillHelper::myRPG_Character_SkillToStringTable.end())
+      if (iterator == RPG_Common_SkillHelper::myRPG_Common_SkillToStringTable.end())
       {
         break;
       } // end IF
@@ -164,7 +164,7 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
     } // end FOR
 
     std::cout << std::endl;
-  } while (iterator != RPG_Character_SkillHelper::myRPG_Character_SkillToStringTable.end());
+  } while (iterator != RPG_Common_SkillHelper::myRPG_Common_SkillToStringTable.end());
 
   index--;
 
@@ -190,7 +190,7 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
 
   // increase skill rank
   choice -= 1;
-  iterator = RPG_Character_SkillHelper::myRPG_Character_SkillToStringTable.begin();
+  iterator = RPG_Common_SkillHelper::myRPG_Common_SkillToStringTable.begin();
   std::advance(iterator, choice);
   skills_iterator = skills_in.find(iterator->first);
   if (skills_iterator != skills_in.end())
@@ -410,10 +410,9 @@ void do_work(const std::string filename_in)
     } // end SWITCH
   } while (race == RACE_NONE);
 
-  RPG_Character_Classes_t classes;
   RPG_Character_Class player_class;
-  player_class.metaClass = METACLASS_NONE;
-  player_class.subClass = SUBCLASS_NONE;
+  player_class.metaClass = RPG_CHARACTER_METACLASS_INVALID;
+  RPG_Common_SubClass player_subclass = RPG_COMMON_SUBCLASS_INVALID;
   c = 'f';
   do
   {
@@ -423,26 +422,22 @@ void do_work(const std::string filename_in)
     {
       case 'f':
       {
-        player_class.metaClass = METACLASS_WARRIOR;
-        player_class.subClass = SUBCLASS_FIGHTER;
+        player_subclass = SUBCLASS_FIGHTER;
         break;
       }
       case 'm':
       {
-        player_class.metaClass = METACLASS_WIZARD;
-        player_class.subClass = SUBCLASS_WIZARD;
+        player_subclass = SUBCLASS_WIZARD;
         break;
       }
       case 'c':
       {
-        player_class.metaClass = METACLASS_PRIEST;
-        player_class.subClass = SUBCLASS_CLERIC;
+        player_subclass = SUBCLASS_CLERIC;
         break;
       }
       case 't':
       {
-        player_class.metaClass = METACLASS_ROGUE;
-        player_class.subClass = SUBCLASS_THIEF;
+        player_subclass = SUBCLASS_THIEF;
         break;
       }
       default:
@@ -453,9 +448,9 @@ void do_work(const std::string filename_in)
         break;
       }
     } // end SWITCH
-  } while ((player_class.metaClass == METACLASS_NONE) &&
-           (player_class.subClass == SUBCLASS_NONE));
-  classes.push_back(player_class);
+  } while (player_subclass == RPG_COMMON_SUBCLASS_INVALID);
+  player_class.subClasses.insert(player_subclass);
+  player_class.metaClass = RPG_Character_Class_Common_Tools::subClassToMetaClass(player_subclass);
 
   RPG_Character_Alignment alignment;
   alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
@@ -571,12 +566,12 @@ void do_work(const std::string filename_in)
              INTmodifier));
 
   unsigned int initialSkillPoints = 0;
-  RPG_Character_Skills_Common_Tools::getSkillPoints(player_class.subClass,
+  RPG_Character_Skills_Common_Tools::getSkillPoints(player_subclass,
                                                     INTmodifier,
                                                     initialSkillPoints);
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("initial skill points for subClass \"%s\" (INT modifier: %d) is: %d...\n"),
-             RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_class.subClass).c_str(),
+             RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_subclass).c_str(),
              INTmodifier,
              initialSkillPoints));
 
@@ -596,7 +591,7 @@ void do_work(const std::string filename_in)
   unsigned int initialFeats = 0;
   RPG_Character_Abilities_t abilities;
   RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(race,
-                                                          player_class.subClass,
+                                                          player_subclass,
                                                           1,
                                                           feats,
                                                           initialFeats,
@@ -610,7 +605,7 @@ void do_work(const std::string filename_in)
     std::cout << ACE_TEXT("remaining feats: ") << initialFeats << std::endl;
     std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
 
-    if (print_feats_table(player_class.subClass,
+    if (print_feats_table(player_subclass,
                           attributes,
                           skills,
                           abilities,
@@ -633,7 +628,7 @@ void do_work(const std::string filename_in)
     offHand = OFFHAND_RIGHT;
 
   roll.numDice = 1;
-  roll.typeDice = RPG_Character_Common_Tools::getHitDie(player_class.subClass);
+  roll.typeDice = RPG_Character_Common_Tools::getHitDie(player_subclass);
   roll.modifier = 0;
   result.clear();
   RPG_Dice::simulateRoll(roll,
@@ -652,7 +647,7 @@ void do_work(const std::string filename_in)
   RPG_Item_Weapon* weapon = NULL;
   RPG_Item_Weapon* bow = NULL;
 
-  switch (player_class.subClass)
+  switch (player_subclass)
   {
     case SUBCLASS_FIGHTER:
     {
@@ -756,10 +751,9 @@ void do_work(const std::string filename_in)
     }
     default:
     {
-      std::string subClass_string = RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_class.subClass);
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid class \"%s\", aborting\n"),
-                 subClass_string.c_str()));
+                 RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_subclass).c_str()));
 
       return;
     }
@@ -769,7 +763,7 @@ void do_work(const std::string filename_in)
   RPG_Character_Player player(name,
                               gender,
                               race,
-                              classes,
+                              player_class,
                               alignment,
                               attributes,
                               skills,

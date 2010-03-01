@@ -23,10 +23,10 @@
 
 enum RPG_Character_Plane
 {
-  PLANE_MATERIAL = 0,
-  PLANE_TRANSITIVE,
-  PLANE_INNER,
+  PLANE_INNER = 0,
+  PLANE_MATERIAL,
   PLANE_OUTER,
+  PLANE_TRANSITIVE,
   PLANE_ANY,
   //
   RPG_CHARACTER_PLANE_MAX,
@@ -47,10 +47,10 @@ class RPG_Character_PlaneHelper
   inline static void init()
   {
     myRPG_Character_PlaneToStringTable.clear();
-    myRPG_Character_PlaneToStringTable.insert(std::make_pair(PLANE_MATERIAL, ACE_TEXT_ALWAYS_CHAR("PLANE_MATERIAL")));
-    myRPG_Character_PlaneToStringTable.insert(std::make_pair(PLANE_TRANSITIVE, ACE_TEXT_ALWAYS_CHAR("PLANE_TRANSITIVE")));
     myRPG_Character_PlaneToStringTable.insert(std::make_pair(PLANE_INNER, ACE_TEXT_ALWAYS_CHAR("PLANE_INNER")));
+    myRPG_Character_PlaneToStringTable.insert(std::make_pair(PLANE_MATERIAL, ACE_TEXT_ALWAYS_CHAR("PLANE_MATERIAL")));
     myRPG_Character_PlaneToStringTable.insert(std::make_pair(PLANE_OUTER, ACE_TEXT_ALWAYS_CHAR("PLANE_OUTER")));
+    myRPG_Character_PlaneToStringTable.insert(std::make_pair(PLANE_TRANSITIVE, ACE_TEXT_ALWAYS_CHAR("PLANE_TRANSITIVE")));
     myRPG_Character_PlaneToStringTable.insert(std::make_pair(PLANE_ANY, ACE_TEXT_ALWAYS_CHAR("PLANE_ANY")));
   };
 

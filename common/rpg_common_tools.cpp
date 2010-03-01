@@ -28,6 +28,9 @@ RPG_Common_CreatureMetaTypeToStringTable_t RPG_Common_CreatureMetaTypeHelper::my
 RPG_Common_CreatureSubTypeToStringTable_t RPG_Common_CreatureSubTypeHelper::myRPG_Common_CreatureSubTypeToStringTable;
 RPG_Common_SubClassToStringTable_t RPG_Common_SubClassHelper::myRPG_Common_SubClassToStringTable;
 RPG_Common_AttributeToStringTable_t RPG_Common_AttributeHelper::myRPG_Common_AttributeToStringTable;
+RPG_Common_ConditionToStringTable_t RPG_Common_ConditionHelper::myRPG_Common_ConditionToStringTable;
+RPG_Common_SizeToStringTable_t RPG_Common_SizeHelper::myRPG_Common_SizeToStringTable;
+RPG_Common_SkillToStringTable_t RPG_Common_SkillHelper::myRPG_Common_SkillToStringTable;
 RPG_Common_PhysicalDamageTypeToStringTable_t RPG_Common_PhysicalDamageTypeHelper::myRPG_Common_PhysicalDamageTypeToStringTable;
 RPG_Common_ActionTypeToStringTable_t RPG_Common_ActionTypeHelper::myRPG_Common_ActionTypeToStringTable;
 RPG_Common_AreaOfEffectToStringTable_t RPG_Common_AreaOfEffectHelper::myRPG_Common_AreaOfEffectToStringTable;
@@ -46,6 +49,9 @@ void RPG_Common_Tools::initStringConversionTables()
   RPG_Common_CreatureSubTypeHelper::init();
   RPG_Common_SubClassHelper::init();
   RPG_Common_AttributeHelper::init();
+  RPG_Common_ConditionHelper::init();
+  RPG_Common_SizeHelper::init();
+  RPG_Common_SkillHelper::init();
   RPG_Common_PhysicalDamageTypeHelper::init();
   RPG_Common_ActionTypeHelper::init();
   RPG_Common_AreaOfEffectHelper::init();
@@ -137,4 +143,68 @@ const std::string RPG_Common_Tools::savingThrowToString(const RPG_Common_SavingT
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
   return result;
+}
+
+const signed char RPG_Common_Tools::getSizeModifier(const RPG_Common_Size& size_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::getSizeModifier"));
+
+  // SIZE_FINE:       8
+  // SIZE_DIMINUTIVE: 4
+  // SIZE_TINY:       2
+  // SIZE_SMALL:      1
+  // SIZE_MEDIUM:     0
+  // SIZE_LARGE:      -1
+  // SIZE_HUGE:       -2
+  // SIZE_GARGANTUAN: -4
+  // SIZE_COLOSSAL:   -8
+  // --> +/-2**(distance to medium - 1);
+  if (size_in == SIZE_MEDIUM)
+    return 0;
+
+  signed char result = 1;
+  result <<= ::abs(SIZE_MEDIUM - size_in - 1);
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("size (\"%s\") --> modifier: %d...\n"),
+             RPG_Common_SizeHelper::RPG_Common_SizeToString(size_in).c_str(),
+             ACE_static_cast(int, ((size_in > SIZE_MEDIUM) ? -result : result))));
+
+  return ((size_in > SIZE_MEDIUM) ? -result : result);
+}
+
+const unsigned char RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::sizeToReach"));
+
+  switch (size_in)
+  {
+    case SIZE_FINE:
+    case SIZE_DIMINUTIVE:
+    case SIZE_TINY:
+    case SIZE_SMALL:
+    case SIZE_MEDIUM:
+    {
+      return 5;
+    }
+    case SIZE_LARGE:
+    case SIZE_HUGE:
+    case SIZE_GARGANTUAN:
+    case SIZE_COLOSSAL:
+    {
+      return 10;
+    }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid size: \"%s\" --> check implementation !, aborting\n"),
+                 RPG_Common_SizeHelper::RPG_Common_SizeToString(size_in).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  return 0;
 }

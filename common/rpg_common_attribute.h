@@ -23,12 +23,12 @@
 
 enum RPG_Common_Attribute
 {
-  ATTRIBUTE_STRENGTH = 0,
-  ATTRIBUTE_DEXTERITY,
+  ATTRIBUTE_CHARISMA = 0,
   ATTRIBUTE_CONSTITUTION,
+  ATTRIBUTE_DEXTERITY,
   ATTRIBUTE_INTELLIGENCE,
+  ATTRIBUTE_STRENGTH,
   ATTRIBUTE_WISDOM,
-  ATTRIBUTE_CHARISMA,
   //
   RPG_COMMON_ATTRIBUTE_MAX,
   RPG_COMMON_ATTRIBUTE_INVALID
@@ -48,12 +48,12 @@ class RPG_Common_AttributeHelper
   inline static void init()
   {
     myRPG_Common_AttributeToStringTable.clear();
-    myRPG_Common_AttributeToStringTable.insert(std::make_pair(ATTRIBUTE_STRENGTH, ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_STRENGTH")));
-    myRPG_Common_AttributeToStringTable.insert(std::make_pair(ATTRIBUTE_DEXTERITY, ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_DEXTERITY")));
-    myRPG_Common_AttributeToStringTable.insert(std::make_pair(ATTRIBUTE_CONSTITUTION, ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_CONSTITUTION")));
-    myRPG_Common_AttributeToStringTable.insert(std::make_pair(ATTRIBUTE_INTELLIGENCE, ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_INTELLIGENCE")));
-    myRPG_Common_AttributeToStringTable.insert(std::make_pair(ATTRIBUTE_WISDOM, ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_WISDOM")));
     myRPG_Common_AttributeToStringTable.insert(std::make_pair(ATTRIBUTE_CHARISMA, ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_CHARISMA")));
+    myRPG_Common_AttributeToStringTable.insert(std::make_pair(ATTRIBUTE_CONSTITUTION, ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_CONSTITUTION")));
+    myRPG_Common_AttributeToStringTable.insert(std::make_pair(ATTRIBUTE_DEXTERITY, ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_DEXTERITY")));
+    myRPG_Common_AttributeToStringTable.insert(std::make_pair(ATTRIBUTE_INTELLIGENCE, ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_INTELLIGENCE")));
+    myRPG_Common_AttributeToStringTable.insert(std::make_pair(ATTRIBUTE_STRENGTH, ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_STRENGTH")));
+    myRPG_Common_AttributeToStringTable.insert(std::make_pair(ATTRIBUTE_WISDOM, ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_WISDOM")));
   };
 
   inline static std::string RPG_Common_AttributeToString(const RPG_Common_Attribute& element_in)

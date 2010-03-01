@@ -494,9 +494,9 @@ RPG_Magic_Spell_PreconditionProperties_Type::RPG_Magic_Spell_PreconditionPropert
   myCurrentProperties.levelIncrement = 0;
   myCurrentProperties.levelIncrementMax = 0;
   myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  myCurrentProperties.condition = RPG_CHARACTER_CONDITION_INVALID;
+  myCurrentProperties.condition = RPG_COMMON_CONDITION_INVALID;
   myCurrentProperties.creatures.clear();
-  myCurrentProperties.size = RPG_CHARACTER_SIZE_INVALID;
+  myCurrentProperties.size = RPG_COMMON_SIZE_INVALID;
   myCurrentProperties.reverse = false;
 }
 
@@ -535,7 +535,7 @@ void RPG_Magic_Spell_PreconditionProperties_Type::attribute(const RPG_Common_Att
   myCurrentProperties.attribute = attribute_in;
 }
 
-void RPG_Magic_Spell_PreconditionProperties_Type::condition(const RPG_Character_Condition& condition_in)
+void RPG_Magic_Spell_PreconditionProperties_Type::condition(const RPG_Common_Condition& condition_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PreconditionProperties_Type::condition"));
 
@@ -549,7 +549,7 @@ void RPG_Magic_Spell_PreconditionProperties_Type::creature(const RPG_Common_Crea
   myCurrentProperties.creatures.push_back(creature_in);
 }
 
-void RPG_Magic_Spell_PreconditionProperties_Type::size(const RPG_Character_Size& size_in)
+void RPG_Magic_Spell_PreconditionProperties_Type::size(const RPG_Common_Size& size_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PreconditionProperties_Type::size"));
 
@@ -575,9 +575,9 @@ RPG_Magic_Spell_PreconditionProperties RPG_Magic_Spell_PreconditionProperties_Ty
   myCurrentProperties.levelIncrement = 0;
   myCurrentProperties.levelIncrementMax = 0;
   myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  myCurrentProperties.condition = RPG_CHARACTER_CONDITION_INVALID;
+  myCurrentProperties.condition = RPG_COMMON_CONDITION_INVALID;
   myCurrentProperties.creatures.clear();
-  myCurrentProperties.size = RPG_CHARACTER_SIZE_INVALID;
+  myCurrentProperties.size = RPG_COMMON_SIZE_INVALID;
   myCurrentProperties.reverse = false;
 
   return result;
@@ -595,7 +595,7 @@ RPG_Magic_CheckTypeUnion_Type::RPG_Magic_CheckTypeUnion_Type()
   ACE_TRACE(ACE_TEXT("RPG_Magic_CheckTypeUnion_Type::RPG_Magic_CheckTypeUnion_Type"));
 
   myCurrentCheckTypeUnion.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
-  myCurrentCheckTypeUnion.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheckTypeUnion.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentCheckTypeUnion.basechecktypeunion.discriminator = RPG_Common_BaseCheckTypeUnion::INVALID;
   myCurrentCheckTypeUnion.basechecktypeunion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
 }
@@ -605,13 +605,13 @@ void RPG_Magic_CheckTypeUnion_Type::_characters(const ::xml_schema::ro_string& c
   ACE_TRACE(ACE_TEXT("RPG_Magic_CheckTypeUnion_Type::_characters"));
 
   // can be either:
-  // - RPG_Character_Skill_Type --> "SKILL_xxx"
+  // - RPG_Common_Skill_Type --> "SKILL_xxx"
   // - RPG_Common_Attribute_Type --> "ATTRIBUTE_xxx"
   // - RPG_Common_BaseCheckTypeUnion --> "CHECK_xxx" || "SAVINGTHROW_xxx"
   std::string type = checkType_in;
   if (type.find(ACE_TEXT_ALWAYS_CHAR("SKILL_")) == 0)
   {
-    myCurrentCheckTypeUnion.skill = RPG_Character_SkillHelper::stringToRPG_Character_Skill(checkType_in);
+    myCurrentCheckTypeUnion.skill = RPG_Common_SkillHelper::stringToRPG_Common_Skill(checkType_in);
     myCurrentCheckTypeUnion.discriminator = RPG_Magic_CheckTypeUnion::SKILL;
   } // end IF
   else if (type.find(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_")) == 0)
@@ -641,7 +641,7 @@ RPG_Magic_CheckTypeUnion RPG_Magic_CheckTypeUnion_Type::post_RPG_Magic_CheckType
 
   // clear structure
   myCurrentCheckTypeUnion.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
-  myCurrentCheckTypeUnion.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheckTypeUnion.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentCheckTypeUnion.basechecktypeunion.discriminator = RPG_Common_BaseCheckTypeUnion::INVALID;
   myCurrentCheckTypeUnion.basechecktypeunion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
 
@@ -653,7 +653,7 @@ RPG_Magic_Check_Type::RPG_Magic_Check_Type()
   ACE_TRACE(ACE_TEXT("RPG_Magic_Check_Type::RPG_Magic_Check_Type"));
 
   myCurrentCheck.type.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
-  myCurrentCheck.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheck.type.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentCheck.difficultyClass = 0;
 }
 
@@ -679,7 +679,7 @@ RPG_Magic_Check RPG_Magic_Check_Type::post_RPG_Magic_Check_Type()
 
   // clear structure
   myCurrentCheck.type.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
-  myCurrentCheck.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheck.type.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentCheck.difficultyClass = 0;
 
   return result;
@@ -691,7 +691,7 @@ RPG_Magic_CounterMeasure_Type::RPG_Magic_CounterMeasure_Type()
 
   myCurrentCounterMeasure.type = RPG_COMMON_COUNTERMEASURE_INVALID;
   myCurrentCounterMeasure.check.type.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
-  myCurrentCounterMeasure.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCounterMeasure.check.type.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentCounterMeasure.check.difficultyClass = 0;
   myCurrentCounterMeasure.spells.clear();
   myCurrentCounterMeasure.reduction = RPG_COMMON_SAVEREDUCTIONTYPE_INVALID;
@@ -734,7 +734,7 @@ RPG_Magic_CounterMeasure RPG_Magic_CounterMeasure_Type::post_RPG_Magic_CounterMe
   // clear structure
   myCurrentCounterMeasure.type = RPG_COMMON_COUNTERMEASURE_INVALID;
   myCurrentCounterMeasure.check.type.discriminator = RPG_Magic_CheckTypeUnion::INVALID;
-  myCurrentCounterMeasure.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCounterMeasure.check.type.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentCounterMeasure.check.difficultyClass = 0;
   myCurrentCounterMeasure.spells.clear();
   myCurrentCounterMeasure.reduction = RPG_COMMON_SAVEREDUCTIONTYPE_INVALID;

@@ -9,12 +9,13 @@ namespace urn:rpg
   RPG_Dice_ValueRange_Type          RPG_Dice_ValueRange;
 
   RPG_Common_Attribute_Type         RPG_Common_Attribute;
+  RPG_Common_Skill_Type             RPG_Common_Skill;
   RPG_Common_SubClass_Type          RPG_Common_SubClass;
 
   RPG_Character_Gender_Type         RPG_Character_Gender;
   RPG_Character_Race_Type           RPG_Character_Race;
   RPG_Character_MetaClass_Type      RPG_Character_MetaClass;
-  RPG_Character_Class_Type          RPG_Character_Class;
+  RPG_Character_ClassXML_Type       RPG_Character_ClassXML;
   RPG_Character_Condition_Type      RPG_Character_Condition;
   RPG_Character_Ability_Type        RPG_Character_Ability;
   RPG_Character_Size_Type           RPG_Character_Size;
@@ -35,48 +36,3 @@ namespace urn:rpg
   RPG_Character_EquipmentSlot_Type  RPG_Character_EquipmentSlot;
   RPG_Character_OffHand_Type        RPG_Character_OffHand;
 }
-
-#namespace urn:rpg_chance_dice
-#{
-#  include <rpg_chance_dice_common.h>;
-
-#  RPG_Chance_DiceRoll_Type                  RPG_Chance_DiceRoll;
-#  RPG_Chance_ValueRange_Type                RPG_Chance_ValueRange;
-#}
-
-#namespace urn:rpg_item
-#{
-
-#}
-
-#namespace urn:rpg_character
-#{
-#  include "rpg_character_common.h";
-#  include "rpg_character_skills_common.h";
-#  include "rpg_character_monster_common.h";
-
-#  RPG_Character_MonsterMetaType_Type        RPG_Character_MonsterMetaType;
-#  RPG_Character_MonsterSubType_Type         RPG_Character_MonsterSubType;
-#  RPG_Character_MonsterType_Type            RPG_Character_MonsterType;
-#  RPG_Character_MonsterArmorClass_Type      RPG_Character_MonsterArmorClass;
-#  RPG_Character_MonsterWeapon_Type          RPG_Character_MonsterWeapon;
-#  RPG_Character_AttackForm_Type             RPG_Character_AttackForm;
-#  RPG_Character_MonsterAttackAction_Type    RPG_Character_MonsterAttackAction;
-#  RPG_Character_MonsterAttack_Type          RPG_Character_MonsterAttack;
-#  RPG_Character_Size_Type                   RPG_Character_Size;
-#  RPG_Character_SavingThrowModifiers_Type   RPG_Character_SavingThrowModifiers;
-#  RPG_Character_Attributes_Type             RPG_Character_Attributes;
-#  RPG_Character_Skill_Type                  RPG_Character_Skill;
-#  RPG_Character_SkillValue_Type             RPG_Character_SkillsItem_t;
-#  RPG_Character_Skills_Type                 RPG_Character_Skills_t;
-#  RPG_Character_Feat_Type                   RPG_Character_Feat;
-#  RPG_Character_Feats_Type                  RPG_Character_Feats_t;
-#  RPG_Character_Environment_Type            RPG_Character_Environment;
-#  RPG_Character_Organization_Type           RPG_Character_Organization;
-#  RPG_Character_AlignmentCivic_Type         RPG_Character_AlignmentCivic;
-#  RPG_Character_AlignmentEthic_Type         RPG_Character_AlignmentEthic;
-#  RPG_Character_Alignment_Type              RPG_Character_Alignment;
-#  RPG_Character_MonsterAdvancementStep_Type RPG_Character_MonsterAdvancementStep_t;
-#  RPG_Character_MonsterAdvancement_Type     RPG_Character_MonsterAdvancement_t;
-#  RPG_Character_MonsterProperties_Type      RPG_Character_MonsterProperties_XML;
-#}

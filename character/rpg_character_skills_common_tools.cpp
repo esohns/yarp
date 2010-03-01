@@ -132,7 +132,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   RPG_Character_Feat_Prerequisite prerequisite;
   prerequisite.minValue = 0;
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
-  prerequisite.skill = RPG_CHARACTER_SKILL_INVALID;
+  prerequisite.skill = RPG_COMMON_SKILL_INVALID;
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_INVALID;
   prerequisite.requiredAbility = RPG_CHARACTER_ABILITY_INVALID;
@@ -748,7 +748,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 1;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.skill = RPG_CHARACTER_SKILL_INVALID;
+  prerequisite.skill = RPG_COMMON_SKILL_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -766,7 +766,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 1;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.skill = RPG_CHARACTER_SKILL_INVALID;
+  prerequisite.skill = RPG_COMMON_SKILL_INVALID;
   prerequisite.minValue = 0;
 
   myFeatPrerequisitesTable.insert(std::make_pair(FEAT_MOUNTED_COMBAT, prerequisites));
@@ -857,7 +857,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 1;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.skill = RPG_CHARACTER_SKILL_INVALID;
+  prerequisite.skill = RPG_COMMON_SKILL_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -952,7 +952,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 1;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.skill = RPG_CHARACTER_SKILL_INVALID;
+  prerequisite.skill = RPG_COMMON_SKILL_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -1014,7 +1014,7 @@ void RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   prerequisite.minValue = 1;
   prerequisites.push_back(prerequisite);
 
-  prerequisite.skill = RPG_CHARACTER_SKILL_INVALID;
+  prerequisite.skill = RPG_COMMON_SKILL_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -1406,7 +1406,7 @@ void RPG_Character_Skills_Common_Tools::initClassSkillsTable()
 }
 
 const bool RPG_Character_Skills_Common_Tools::isClassSkill(const RPG_Common_SubClass& subClass_in,
-                                                           const RPG_Character_Skill& skill_in)
+                                                           const RPG_Common_Skill& skill_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::isClassSkill"));
 
@@ -1417,7 +1417,7 @@ const bool RPG_Character_Skills_Common_Tools::isClassSkill(const RPG_Common_SubC
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("isClassSkill(\"%s\", \"%s\"): missing table for subclass, aborting\n"),
                RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str(),
-               RPG_Character_SkillHelper::RPG_Character_SkillToString(skill_in).c_str()));
+               RPG_Common_SkillHelper::RPG_Common_SkillToString(skill_in).c_str()));
 
     return false;
   } // end IF
@@ -2108,7 +2108,7 @@ const std::string RPG_Character_Skills_Common_Tools::skillsToString(const RPG_Ch
        iterator != skills_in.end();
        iterator++)
   {
-    result += RPG_Character_SkillHelper::RPG_Character_SkillToString(iterator->first);
+    result += RPG_Common_SkillHelper::RPG_Common_SkillToString(iterator->first);
     result += ACE_TEXT_ALWAYS_CHAR(": ");
     str.str(ACE_TEXT_ALWAYS_CHAR(""));
     str << ACE_static_cast(int, iterator->second);

@@ -239,7 +239,7 @@ const std::string RPG_Monster_Common_Tools::advancementToString(const RPG_Monste
        iterator != advancement_in.end();
        iterator++)
   {
-    result += RPG_Character_SizeHelper::RPG_Character_SizeToString((*iterator).size);
+    result += RPG_Common_SizeHelper::RPG_Common_SizeToString((*iterator).size);
     result += ACE_TEXT_ALWAYS_CHAR(": ");
     result += RPG_Dice_Common_Tools::rangeToString((*iterator).range);
     result += ACE_TEXT_ALWAYS_CHAR(" HD\n");

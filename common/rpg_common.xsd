@@ -104,6 +104,131 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="RPG_Common_Size_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SIZE_FINE"/>
+      <xsd:enumeration value="SIZE_DIMINUTIVE"/>
+      <xsd:enumeration value="SIZE_TINY"/>
+      <xsd:enumeration value="SIZE_SMALL"/>
+      <xsd:enumeration value="SIZE_MEDIUM"/>
+      <xsd:enumeration value="SIZE_LARGE"/>
+      <xsd:enumeration value="SIZE_HUGE"/>
+      <xsd:enumeration value="SIZE_GARGANTUAN"/>
+      <xsd:enumeration value="SIZE_COLOSSAL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_Condition_Type">
+    <xsd:restriction base="xsd:string">
+      <!--       <xsd:enumeration value="CONDITION_ALIVE"/> -->
+      <xsd:enumeration value="CONDITION_ALTERNATE_FORM"/>
+      <!--                                     -->
+      <xsd:enumeration value="CONDITION_NORMAL"/>
+      <xsd:enumeration value="CONDITION_ABILITY_DAMAGED"/>
+      <xsd:enumeration value="CONDITION_ABILITY_DRAINED"/>
+      <xsd:enumeration value="CONDITION_BLINDED"/>
+      <xsd:enumeration value="CONDITION_BLOWN_AWAY"/>
+      <xsd:enumeration value="CONDITION_BOUND"/>
+      <xsd:enumeration value="CONDITION_CHECKED"/>
+      <xsd:enumeration value="CONDITION_CONFUSED"/>
+      <xsd:enumeration value="CONDITION_COWERING"/>
+      <xsd:enumeration value="CONDITION_DAZED"/>
+      <xsd:enumeration value="CONDITION_DAZZLED"/>
+      <xsd:enumeration value="CONDITION_DEAD"/>
+      <xsd:enumeration value="CONDITION_DEAFENED"/>
+      <xsd:enumeration value="CONDITION_DISABLED"/>
+      <xsd:enumeration value="CONDITION_DYING"/>
+      <xsd:enumeration value="CONDITION_ENERGY_DRAINED"/>
+      <xsd:enumeration value="CONDITION_ENTANGLED"/>
+      <xsd:enumeration value="CONDITION_EXHAUSTED"/>
+      <xsd:enumeration value="CONDITION_FASCINATED"/>
+      <xsd:enumeration value="CONDITION_FATIGUED"/>
+      <xsd:enumeration value="CONDITION_FLAT_FOOTED"/>
+      <xsd:enumeration value="CONDITION_FRIGHTENED"/>
+      <xsd:enumeration value="CONDITION_GRAPPLING"/>
+      <xsd:enumeration value="CONDITION_HELD"/>
+      <xsd:enumeration value="CONDITION_HELPLESS"/>
+      <xsd:enumeration value="CONDITION_INCORPOREAL"/>
+      <xsd:enumeration value="CONDITION_INVISIBLE"/>
+      <xsd:enumeration value="CONDITION_KNOCKED_DOWN"/>
+      <xsd:enumeration value="CONDITION_NAUSEATED"/>
+      <xsd:enumeration value="CONDITION_PANICKED"/>
+      <xsd:enumeration value="CONDITION_PARALYZED"/>
+      <xsd:enumeration value="CONDITION_PETRIFIED"/>
+      <xsd:enumeration value="CONDITION_PINNED"/>
+      <xsd:enumeration value="CONDITION_PRONE"/>
+      <xsd:enumeration value="CONDITION_SHAKEN"/>
+      <xsd:enumeration value="CONDITION_SICKENED"/>
+      <xsd:enumeration value="CONDITION_SLEEPING"/>
+      <xsd:enumeration value="CONDITION_STABLE"/>
+      <xsd:enumeration value="CONDITION_STAGGERED"/>
+      <xsd:enumeration value="CONDITION_STUNNED"/>
+      <xsd:enumeration value="CONDITION_TURNED"/>
+      <xsd:enumeration value="CONDITION_UNCONSCIOUS"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_Skill_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SKILL_APPRAISE"/>
+      <xsd:enumeration value="SKILL_BALANCE"/>
+      <xsd:enumeration value="SKILL_BLUFF"/>
+      <xsd:enumeration value="SKILL_CLIMB"/>
+      <xsd:enumeration value="SKILL_CONCENTRATION"/>
+      <xsd:enumeration value="SKILL_CRAFT_ANY"/>
+      <xsd:enumeration value="SKILL_CRAFT_ALL"/>
+      <xsd:enumeration value="SKILL_CRAFT_ALCHEMY"/>
+      <xsd:enumeration value="SKILL_CRAFT_FLETCHER"/>
+      <xsd:enumeration value="SKILL_CRAFT_BOWYER"/>
+      <xsd:enumeration value="SKILL_CRAFT_SMITH_ARMOR"/>
+      <xsd:enumeration value="SKILL_CRAFT_SMITH_BLACK"/>
+      <xsd:enumeration value="SKILL_CRAFT_SMITH_WEAPON"/>
+      <xsd:enumeration value="SKILL_CRAFT_TRAP"/>
+      <xsd:enumeration value="SKILL_CRAFT_OTHER"/>
+      <xsd:enumeration value="SKILL_DECIPHER_SCRIPT"/>
+      <xsd:enumeration value="SKILL_DIPLOMACY"/>
+      <xsd:enumeration value="SKILL_DISABLE_DEVICE"/>
+      <xsd:enumeration value="SKILL_DISGUISE"/>
+      <xsd:enumeration value="SKILL_ESCAPE_ARTIST"/>
+      <xsd:enumeration value="SKILL_FORGERY"/>
+      <xsd:enumeration value="SKILL_GATHER_INFORMATION"/>
+      <xsd:enumeration value="SKILL_HANDLE_ANIMAL"/>
+      <xsd:enumeration value="SKILL_HEAL"/>
+      <xsd:enumeration value="SKILL_HIDE"/>
+      <xsd:enumeration value="SKILL_INTIMIDATE"/>
+      <xsd:enumeration value="SKILL_JUMP"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_ANY"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_ALL"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_ARCANA"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_DUNGEONS"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_GEOGRAPHY"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_HISTORY"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_LOCAL"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_NATURE"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_NOBILITY_ROYALTY"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_RELIGION"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_PLANES"/>
+      <xsd:enumeration value="SKILL_LISTEN"/>
+      <xsd:enumeration value="SKILL_MOVE_SILENTLY"/>
+      <xsd:enumeration value="SKILL_OPEN_LOCK"/>
+      <xsd:enumeration value="SKILL_PERFORM"/>
+      <xsd:enumeration value="SKILL_PROFESSION"/>
+      <xsd:enumeration value="SKILL_RIDE"/>
+      <xsd:enumeration value="SKILL_SEARCH"/>
+      <xsd:enumeration value="SKILL_SENSE_MOTIVE"/>
+      <xsd:enumeration value="SKILL_SLEIGHT_OF_HAND"/>
+      <xsd:enumeration value="SKILL_SPEAK_LANGUAGE"/>
+      <xsd:enumeration value="SKILL_SPELLCRAFT"/>
+      <xsd:enumeration value="SKILL_SPOT"/>
+      <xsd:enumeration value="SKILL_SURVIVAL"/>
+      <xsd:enumeration value="SKILL_SWIM"/>
+      <xsd:enumeration value="SKILL_TUMBLE"/>
+      <xsd:enumeration value="SKILL_USE_MAGIC_DEVICE"/>
+      <xsd:enumeration value="SKILL_USE_ROPE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:simpleType name="RPG_Common_PhysicalDamageType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="PHYSICALDAMAGE_NONE"/>

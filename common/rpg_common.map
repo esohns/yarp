@@ -10,6 +10,9 @@ namespace urn:rpg
   RPG_Common_CreatureType_Type       RPG_Common_CreatureType;
   RPG_Common_SubClass_Type           RPG_Common_SubClass;
   RPG_Common_Attribute_Type          RPG_Common_Attribute;
+  RPG_Common_Size_Type               RPG_Common_Size;
+  RPG_Common_Condition_Type          RPG_Common_Condition;
+  RPG_Common_Skill_Type              RPG_Common_Skill;
   RPG_Common_PhysicalDamageType_Type RPG_Common_PhysicalDamageType;
   RPG_Common_ActionType_Type         RPG_Common_ActionType;
   RPG_Common_AreaOfEffect_Type       RPG_Common_AreaOfEffect;

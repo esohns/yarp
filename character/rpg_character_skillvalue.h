@@ -23,7 +23,7 @@
 
 struct RPG_Character_SkillValue
 {
-  RPG_Character_Skill skill;
+  RPG_Common_Skill skill;
   char rank;
 };
 

@@ -22,8 +22,6 @@
 #include "rpg_magic_XML_parser.h"
 #include "rpg_magic_common_tools.h"
 
-#include <rpg_character_XML_parser.h>
-
 #include <rpg_common_XML_parser.h>
 #include <rpg_common_tools.h>
 
@@ -117,13 +115,13 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
 
   RPG_Magic_Spell_Precondition_Type           precondition_p;
   RPG_Common_Attribute_Type                   attribute_p;
-  RPG_Character_Condition_Type                condition_p;
+  RPG_Common_Condition_Type                   condition_p;
   RPG_Common_CreatureMetaType_Type            creatureMetaType_p;
   RPG_Common_CreatureSubType_Type             creatureSubType_p;
   RPG_Common_CreatureType_Type                creatureType_p;
   creatureType_p.parsers(creatureMetaType_p,
                          creatureSubType_p);
-  RPG_Character_Size_Type                     size_p;
+  RPG_Common_Size_Type                        size_p;
   RPG_Magic_Spell_PreconditionProperties_Type preconditionProperties_p;
   preconditionProperties_p.parsers(precondition_p,
                                    int_p,

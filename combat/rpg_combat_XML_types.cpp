@@ -201,7 +201,7 @@ duration_parser (::RPG_Common_Duration_Type_pskel& p)
 }
 
 void RPG_Combat_DamageCounterMeasure_Type_pskel::
-condition_parser (::RPG_Character_Condition_Type_pskel& p)
+condition_parser (::RPG_Common_Condition_Type_pskel& p)
 {
   this->condition_parser_ = &p;
 }
@@ -217,7 +217,7 @@ parsers (::RPG_Common_CounterMeasure_Type_pskel& type,
          ::RPG_Combat_Check_Type_pskel& check,
          ::RPG_Magic_SpellType_Type_pskel& spell,
          ::RPG_Common_Duration_Type_pskel& duration,
-         ::RPG_Character_Condition_Type_pskel& condition,
+         ::RPG_Common_Condition_Type_pskel& condition,
          ::RPG_Combat_DamageReductionType_Type_pskel& reduction)
 {
   this->type_parser_ = &type;
@@ -306,7 +306,7 @@ attribute_parser (::RPG_Common_Attribute_Type_pskel& p)
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
-condition_parser (::RPG_Character_Condition_Type_pskel& p)
+condition_parser (::RPG_Common_Condition_Type_pskel& p)
 {
   this->condition_parser_ = &p;
 }
@@ -340,7 +340,7 @@ parsers (::RPG_Combat_DamageTypeUnion_Type_pskel& type,
          ::RPG_Dice_Roll_Type_pskel& amount,
          ::RPG_Dice_Roll_Type_pskel& secondary,
          ::RPG_Common_Attribute_Type_pskel& attribute,
-         ::RPG_Character_Condition_Type_pskel& condition,
+         ::RPG_Common_Condition_Type_pskel& condition,
          ::RPG_Combat_DamageDuration_Type_pskel& duration,
          ::RPG_Combat_DamageCounterMeasure_Type_pskel& counterMeasure,
          ::RPG_Combat_OtherDamage_Type_pskel& other,
@@ -770,7 +770,7 @@ duration ()
 }
 
 void RPG_Combat_DamageCounterMeasure_Type_pskel::
-condition (const RPG_Character_Condition&)
+condition (const RPG_Common_Condition&)
 {
 }
 
@@ -890,7 +890,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "condition" && ns == "urn:rpg")
   {
     if (this->condition_parser_)
-      this->condition (this->condition_parser_->post_RPG_Character_Condition_Type ());
+      this->condition (this->condition_parser_->post_RPG_Common_Condition_Type ());
 
     return true;
   }
@@ -1042,7 +1042,7 @@ attribute (const RPG_Common_Attribute&)
 }
 
 void RPG_Combat_DamageElement_Type_pskel::
-condition (const RPG_Character_Condition&)
+condition (const RPG_Common_Condition&)
 {
 }
 
@@ -1201,7 +1201,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "condition" && ns == "urn:rpg")
   {
     if (this->condition_parser_)
-      this->condition (this->condition_parser_->post_RPG_Character_Condition_Type ());
+      this->condition (this->condition_parser_->post_RPG_Common_Condition_Type ());
 
     return true;
   }

@@ -35,7 +35,7 @@ class RPG_Character_Player
   RPG_Character_Player(const std::string&,               // name
                        const RPG_Character_Gender&,      // gender
                        const RPG_Character_Race&,        // race
-                       const RPG_Character_Classes_t&,   // (starting) class(es)
+                       const RPG_Character_Class&,       // (starting) class(es)
                        const RPG_Character_Alignment&,   // (starting) alignment
                        const RPG_Character_Attributes&,  // base attributes
                        const RPG_Character_Skills_t&,    // (starting) skills

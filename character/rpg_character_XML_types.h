@@ -52,12 +52,9 @@
 class RPG_Character_Gender_Type_pskel;
 class RPG_Character_Race_Type_pskel;
 class RPG_Character_MetaClass_Type_pskel;
-class RPG_Character_Class_Type_pskel;
-class RPG_Character_Condition_Type_pskel;
+class RPG_Character_ClassXML_Type_pskel;
 class RPG_Character_Ability_Type_pskel;
-class RPG_Character_Size_Type_pskel;
 class RPG_Character_Attributes_Type_pskel;
-class RPG_Character_Skill_Type_pskel;
 class RPG_Character_SkillValue_Type_pskel;
 class RPG_Character_Skills_Type_pskel;
 class RPG_Character_CheckTypeUnion_Type_pskel;
@@ -126,7 +123,7 @@ class RPG_Character_MetaClass_Type_pskel: public virtual ::xml_schema::string_ps
   post_RPG_Character_MetaClass_Type () = 0;
 };
 
-class RPG_Character_Class_Type_pskel: public ::xml_schema::complex_content
+class RPG_Character_ClassXML_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -140,8 +137,8 @@ class RPG_Character_Class_Type_pskel: public ::xml_schema::complex_content
   virtual void
   subClass (const RPG_Common_SubClass&);
 
-  virtual RPG_Character_Class
-  post_RPG_Character_Class_Type () = 0;
+  virtual RPG_Character_ClassXML
+  post_RPG_Character_ClassXML_Type () = 0;
 
   // Parser construction API.
   //
@@ -157,7 +154,7 @@ class RPG_Character_Class_Type_pskel: public ::xml_schema::complex_content
 
   // Constructor.
   //
-  RPG_Character_Class_Type_pskel ();
+  RPG_Character_ClassXML_Type_pskel ();
 
   // Implementation.
   //
@@ -176,18 +173,6 @@ class RPG_Character_Class_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Common_SubClass_Type_pskel* subClass_parser_;
 };
 
-class RPG_Character_Condition_Type_pskel: public virtual ::xml_schema::string_pskel
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual RPG_Character_Condition
-  post_RPG_Character_Condition_Type () = 0;
-};
-
 class RPG_Character_Ability_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
@@ -198,18 +183,6 @@ class RPG_Character_Ability_Type_pskel: public virtual ::xml_schema::string_pske
 
   virtual RPG_Character_Ability
   post_RPG_Character_Ability_Type () = 0;
-};
-
-class RPG_Character_Size_Type_pskel: public virtual ::xml_schema::string_pskel
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual RPG_Character_Size
-  post_RPG_Character_Size_Type () = 0;
 };
 
 class RPG_Character_Attributes_Type_pskel: public ::xml_schema::complex_content
@@ -294,18 +267,6 @@ class RPG_Character_Attributes_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_byte_pskel* charisma_parser_;
 };
 
-class RPG_Character_Skill_Type_pskel: public virtual ::xml_schema::string_pskel
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual RPG_Character_Skill
-  post_RPG_Character_Skill_Type () = 0;
-};
-
 class RPG_Character_SkillValue_Type_pskel: public ::xml_schema::complex_content
 {
   public:
@@ -315,7 +276,7 @@ class RPG_Character_SkillValue_Type_pskel: public ::xml_schema::complex_content
   // pre ();
 
   virtual void
-  skill (const RPG_Character_Skill&);
+  skill (const RPG_Common_Skill&);
 
   virtual void
   rank (signed char);
@@ -326,13 +287,13 @@ class RPG_Character_SkillValue_Type_pskel: public ::xml_schema::complex_content
   // Parser construction API.
   //
   void
-  skill_parser (::RPG_Character_Skill_Type_pskel&);
+  skill_parser (::RPG_Common_Skill_Type_pskel&);
 
   void
   rank_parser (::xml_schema::byte_pskel&);
 
   void
-  parsers (::RPG_Character_Skill_Type_pskel& /* skill */,
+  parsers (::RPG_Common_Skill_Type_pskel& /* skill */,
            ::xml_schema::byte_pskel& /* rank */);
 
   // Constructor.
@@ -352,7 +313,7 @@ class RPG_Character_SkillValue_Type_pskel: public ::xml_schema::complex_content
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Character_Skill_Type_pskel* skill_parser_;
+  ::RPG_Common_Skill_Type_pskel* skill_parser_;
   ::xml_schema::byte_pskel* rank_parser_;
 };
 

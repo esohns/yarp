@@ -25,8 +25,7 @@
 #include "rpg_character_base.h"
 #include "rpg_character_gender.h"
 #include "rpg_character_race.h"
-#include "rpg_character_metaclass.h"
-#include "rpg_character_class.h"
+#include "rpg_character_common.h"
 #include "rpg_character_offhand.h"
 #include "rpg_character_alignmentcivic.h"
 #include "rpg_character_alignmentethic.h"
@@ -56,7 +55,7 @@ class RPG_Character_Player_Base
   // retrieve basic player character data
   const RPG_Character_Gender getGender() const;
   const RPG_Character_Race getRace() const;
-  const RPG_Character_Classes_t getClasses() const;
+  const RPG_Character_Class getClass() const;
   const RPG_Character_OffHand getOffHand() const;
 
   const unsigned int getExperience() const;
@@ -82,7 +81,7 @@ class RPG_Character_Player_Base
   RPG_Character_Player_Base(const std::string&,               // name
                             const RPG_Character_Gender&,      // gender
                             const RPG_Character_Race&,        // race
-                            const RPG_Character_Classes_t&,   // (starting) class(es)
+                            const RPG_Character_Class&,       // (starting) class(es)
                             const RPG_Character_Alignment&,   // (starting) alignment
                             const RPG_Character_Attributes&,  // base attributes
                             const RPG_Character_Skills_t&,    // (starting) skills
@@ -105,12 +104,12 @@ class RPG_Character_Player_Base
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player_Base());
 
-  RPG_Character_Gender    myGender;
-  RPG_Character_Race      myRace;
-  RPG_Character_Classes_t myClasses;
-  RPG_Character_OffHand   myOffHand;
+  RPG_Character_Gender  myGender;
+  RPG_Character_Race    myRace;
+  RPG_Character_Class   myClass;
+  RPG_Character_OffHand myOffHand;
 
-  unsigned int            myExperience;
+  unsigned int          myExperience;
 //  unsigned short int       mySize; // cm
 //  unsigned short int       myWeight; // kg
 //  unsigned int             myAge; // years

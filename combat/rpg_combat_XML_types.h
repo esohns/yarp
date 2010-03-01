@@ -79,16 +79,12 @@ class RPG_Combat_Damage_Type_pskel;
 
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
-#include <rpg_character_incl.h>
 #include <rpg_magic_incl.h>
-
 #include "rpg_combat_incl.h"
 
 #include <rpg_dice_XML_types.h>
 
 #include <rpg_common_XML_types.h>
-
-#include <rpg_character_XML_types.h>
 
 #include <rpg_magic_XML_types.h>
 
@@ -430,7 +426,7 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
   duration ();
 
   virtual void
-  condition (const RPG_Character_Condition&);
+  condition (const RPG_Common_Condition&);
 
   virtual void
   reduction (const RPG_Combat_DamageReductionType&);
@@ -453,7 +449,7 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
   duration_parser (::RPG_Common_Duration_Type_pskel&);
 
   void
-  condition_parser (::RPG_Character_Condition_Type_pskel&);
+  condition_parser (::RPG_Common_Condition_Type_pskel&);
 
   void
   reduction_parser (::RPG_Combat_DamageReductionType_Type_pskel&);
@@ -463,7 +459,7 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
            ::RPG_Combat_Check_Type_pskel& /* check */,
            ::RPG_Magic_SpellType_Type_pskel& /* spell */,
            ::RPG_Common_Duration_Type_pskel& /* duration */,
-           ::RPG_Character_Condition_Type_pskel& /* condition */,
+           ::RPG_Common_Condition_Type_pskel& /* condition */,
            ::RPG_Combat_DamageReductionType_Type_pskel& /* reduction */);
 
   // Constructor.
@@ -492,7 +488,7 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
   ::RPG_Combat_Check_Type_pskel* check_parser_;
   ::RPG_Magic_SpellType_Type_pskel* spell_parser_;
   ::RPG_Common_Duration_Type_pskel* duration_parser_;
-  ::RPG_Character_Condition_Type_pskel* condition_parser_;
+  ::RPG_Common_Condition_Type_pskel* condition_parser_;
   ::RPG_Combat_DamageReductionType_Type_pskel* reduction_parser_;
 };
 
@@ -587,7 +583,7 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   attribute (const RPG_Common_Attribute&);
 
   virtual void
-  condition (const RPG_Character_Condition&);
+  condition (const RPG_Common_Condition&);
 
   virtual void
   duration (const RPG_Combat_DamageDuration&);
@@ -619,7 +615,7 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   attribute_parser (::RPG_Common_Attribute_Type_pskel&);
 
   void
-  condition_parser (::RPG_Character_Condition_Type_pskel&);
+  condition_parser (::RPG_Common_Condition_Type_pskel&);
 
   void
   duration_parser (::RPG_Combat_DamageDuration_Type_pskel&);
@@ -638,7 +634,7 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
            ::RPG_Dice_Roll_Type_pskel& /* amount */,
            ::RPG_Dice_Roll_Type_pskel& /* secondary */,
            ::RPG_Common_Attribute_Type_pskel& /* attribute */,
-           ::RPG_Character_Condition_Type_pskel& /* condition */,
+           ::RPG_Common_Condition_Type_pskel& /* condition */,
            ::RPG_Combat_DamageDuration_Type_pskel& /* duration */,
            ::RPG_Combat_DamageCounterMeasure_Type_pskel& /* counterMeasure */,
            ::RPG_Combat_OtherDamage_Type_pskel& /* other */,
@@ -670,7 +666,7 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Dice_Roll_Type_pskel* amount_parser_;
   ::RPG_Dice_Roll_Type_pskel* secondary_parser_;
   ::RPG_Common_Attribute_Type_pskel* attribute_parser_;
-  ::RPG_Character_Condition_Type_pskel* condition_parser_;
+  ::RPG_Common_Condition_Type_pskel* condition_parser_;
   ::RPG_Combat_DamageDuration_Type_pskel* duration_parser_;
   ::RPG_Combat_DamageCounterMeasure_Type_pskel* counterMeasure_parser_;
   ::RPG_Combat_OtherDamage_Type_pskel* other_parser_;

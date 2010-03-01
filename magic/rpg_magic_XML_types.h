@@ -89,14 +89,11 @@ class RPG_Magic_Dictionary_Type_pskel;
 
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
-#include <rpg_character_incl.h>
 #include "rpg_magic_incl.h"
 
 #include "rpg_dice_XML_types.h"
 
 #include "rpg_common_XML_types.h"
-
-#include "rpg_character_XML_types.h"
 
 class RPG_Magic_School_Type_pskel: public virtual ::xml_schema::string_pskel
 {
@@ -701,13 +698,13 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
   attribute (const RPG_Common_Attribute&);
 
   virtual void
-  condition (const RPG_Character_Condition&);
+  condition (const RPG_Common_Condition&);
 
   virtual void
   creature (const RPG_Common_CreatureType&);
 
   virtual void
-  size (const RPG_Character_Size&);
+  size (const RPG_Common_Size&);
 
   virtual void
   reverse (bool);
@@ -733,13 +730,13 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
   attribute_parser (::RPG_Common_Attribute_Type_pskel&);
 
   void
-  condition_parser (::RPG_Character_Condition_Type_pskel&);
+  condition_parser (::RPG_Common_Condition_Type_pskel&);
 
   void
   creature_parser (::RPG_Common_CreatureType_Type_pskel&);
 
   void
-  size_parser (::RPG_Character_Size_Type_pskel&);
+  size_parser (::RPG_Common_Size_Type_pskel&);
 
   void
   reverse_parser (::xml_schema::boolean_pskel&);
@@ -750,9 +747,9 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
            ::xml_schema::unsigned_byte_pskel& /* levelIncrement */,
            ::xml_schema::unsigned_byte_pskel& /* levelIncrementMax */,
            ::RPG_Common_Attribute_Type_pskel& /* attribute */,
-           ::RPG_Character_Condition_Type_pskel& /* condition */,
+           ::RPG_Common_Condition_Type_pskel& /* condition */,
            ::RPG_Common_CreatureType_Type_pskel& /* creature */,
-           ::RPG_Character_Size_Type_pskel& /* size */,
+           ::RPG_Common_Size_Type_pskel& /* size */,
            ::xml_schema::boolean_pskel& /* reverse */);
 
   // Constructor.
@@ -782,9 +779,9 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
   ::xml_schema::unsigned_byte_pskel* levelIncrement_parser_;
   ::xml_schema::unsigned_byte_pskel* levelIncrementMax_parser_;
   ::RPG_Common_Attribute_Type_pskel* attribute_parser_;
-  ::RPG_Character_Condition_Type_pskel* condition_parser_;
+  ::RPG_Common_Condition_Type_pskel* condition_parser_;
   ::RPG_Common_CreatureType_Type_pskel* creature_parser_;
-  ::RPG_Character_Size_Type_pskel* size_parser_;
+  ::RPG_Common_Size_Type_pskel* size_parser_;
   ::xml_schema::boolean_pskel* reverse_parser_;
 };
 

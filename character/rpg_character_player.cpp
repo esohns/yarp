@@ -31,7 +31,7 @@
 RPG_Character_Player::RPG_Character_Player(const std::string& name_in,
                                            const RPG_Character_Gender& gender_in,
                                            const RPG_Character_Race& race_in,
-                                           const RPG_Character_Classes_t& classes_in,
+                                           const RPG_Character_Class& class_in,
                                            const RPG_Character_Alignment& alignment_in,
                                            const RPG_Character_Attributes& attributes_in,
                                            const RPG_Character_Skills_t& skills_in,
@@ -45,7 +45,7 @@ RPG_Character_Player::RPG_Character_Player(const std::string& name_in,
  : inherited(name_in,
              gender_in,
              race_in,
-             classes_in,
+             class_in,
              alignment_in,
              attributes_in,
              skills_in,
@@ -119,8 +119,8 @@ void RPG_Character_Player::defaultEquip()
         RPG_Character_EquipmentSlot slot = EQUIPMENTSLOT_BODY;
         if (RPG_Item_Common_Tools::isShield(armor_base->getArmorType()))
         {
-          slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_LEFT_HAND
-                                                 : EQUIPMENTSLOT_RIGHT_HAND);
+          slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                                 : EQUIPMENTSLOT_HAND_RIGHT);
         } // end IF
         myEquipment.equip(*iterator, slot);
 
@@ -136,13 +136,13 @@ void RPG_Character_Player::defaultEquip()
         if (!RPG_Item_Common_Tools::isMeleeWeapon(weapon_base->getWeaponType()))
           break;
 
-        RPG_Character_EquipmentSlot slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_RIGHT_HAND
-                                                                           : EQUIPMENTSLOT_LEFT_HAND);
+        RPG_Character_EquipmentSlot slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                                                           : EQUIPMENTSLOT_HAND_LEFT);
         myEquipment.equip(*iterator, slot);
         if (RPG_Item_Common_Tools::isTwoHandedWeapon(weapon_base->getWeaponType()))
         {
-          slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_LEFT_HAND
-                                                 : EQUIPMENTSLOT_RIGHT_HAND);
+          slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                                 : EQUIPMENTSLOT_HAND_RIGHT);
           myEquipment.equip(*iterator, slot);
         } // end IF
 

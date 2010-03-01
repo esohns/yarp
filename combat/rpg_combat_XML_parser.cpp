@@ -33,7 +33,7 @@ RPG_Combat_RangedEffectUnion_Type::RPG_Combat_RangedEffectUnion_Type()
   ACE_TRACE(ACE_TEXT("RPG_Combat_RangedEffectUnion_Type::RPG_Combat_RangedEffectUnion_Type"));
 
   myCurrentRangedEffect.discriminator = RPG_Combat_RangedEffectUnion::INVALID;
-  myCurrentRangedEffect.size = RPG_CHARACTER_SIZE_INVALID;
+  myCurrentRangedEffect.size = RPG_COMMON_SIZE_INVALID;
 }
 
 void RPG_Combat_RangedEffectUnion_Type::_characters(const ::xml_schema::ro_string& effectType_in)
@@ -47,7 +47,7 @@ void RPG_Combat_RangedEffectUnion_Type::_characters(const ::xml_schema::ro_strin
   if (type.find(ACE_TEXT_ALWAYS_CHAR("SIZE_")) == 0)
   {
     myCurrentRangedEffect.discriminator = RPG_Combat_RangedEffectUnion::SIZE;
-    myCurrentRangedEffect.size = RPG_Character_SizeHelper::stringToRPG_Character_Size(effectType_in);
+    myCurrentRangedEffect.size = RPG_Common_SizeHelper::stringToRPG_Common_Size(effectType_in);
   } // end IF
   else
   {
@@ -64,7 +64,7 @@ RPG_Combat_RangedEffectUnion RPG_Combat_RangedEffectUnion_Type::post_RPG_Combat_
 
   // clear structure
   myCurrentRangedEffect.discriminator = RPG_Combat_RangedEffectUnion::INVALID;
-  myCurrentRangedEffect.size = RPG_CHARACTER_SIZE_INVALID;
+  myCurrentRangedEffect.size = RPG_COMMON_SIZE_INVALID;
 
   return result;
 }
@@ -308,7 +308,7 @@ RPG_Combat_CheckTypeUnion_Type::RPG_Combat_CheckTypeUnion_Type()
   ACE_TRACE(ACE_TEXT("RPG_Combat_CheckTypeUnion_Type::RPG_Combat_CheckTypeUnion_Type"));
 
   myCurrentCheckTypeUnion.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
-  myCurrentCheckTypeUnion.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheckTypeUnion.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentCheckTypeUnion.basechecktypeunion.discriminator = RPG_Common_BaseCheckTypeUnion::INVALID;
   myCurrentCheckTypeUnion.basechecktypeunion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
 }
@@ -318,13 +318,13 @@ void RPG_Combat_CheckTypeUnion_Type::_characters(const ::xml_schema::ro_string& 
   ACE_TRACE(ACE_TEXT("RPG_Combat_CheckTypeUnion_Type::_characters"));
 
   // can be either:
-  // - RPG_Character_Skill_Type --> "SKILL_xxx"
+  // - RPG_Common_Skill_Type --> "SKILL_xxx"
   // - RPG_Common_Attribute_Type --> "ATTRIBUTE_xxx"
   // - RPG_Common_BaseCheckTypeUnion --> "CHECK_xxx" || "SAVINGTHROW_xxx"
   std::string type = checkType_in;
   if (type.find(ACE_TEXT_ALWAYS_CHAR("SKILL_")) == 0)
   {
-    myCurrentCheckTypeUnion.skill = RPG_Character_SkillHelper::stringToRPG_Character_Skill(checkType_in);
+    myCurrentCheckTypeUnion.skill = RPG_Common_SkillHelper::stringToRPG_Common_Skill(checkType_in);
     myCurrentCheckTypeUnion.discriminator = RPG_Combat_CheckTypeUnion::SKILL;
   } // end IF
   else if (type.find(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_")) == 0)
@@ -354,7 +354,7 @@ RPG_Combat_CheckTypeUnion RPG_Combat_CheckTypeUnion_Type::post_RPG_Combat_CheckT
 
   // clear structure
   myCurrentCheckTypeUnion.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
-  myCurrentCheckTypeUnion.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheckTypeUnion.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentCheckTypeUnion.basechecktypeunion.discriminator = RPG_Common_BaseCheckTypeUnion::INVALID;
   myCurrentCheckTypeUnion.basechecktypeunion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
 
@@ -365,7 +365,7 @@ RPG_Combat_Check_Type::RPG_Combat_Check_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_Check_Type::RPG_Combat_Check_Type"));
 
-  myCurrentCheck.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheck.type.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentCheck.type.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
   myCurrentCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentCheck.difficultyClass = 0;
@@ -399,7 +399,7 @@ RPG_Combat_Check RPG_Combat_Check_Type::post_RPG_Combat_Check_Type()
   RPG_Combat_Check result = myCurrentCheck;
 
   // clear structure
-  myCurrentCheck.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCheck.type.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentCheck.type.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
   myCurrentCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentCheck.difficultyClass = 0;
@@ -419,7 +419,7 @@ RPG_Combat_DamageCounterMeasure_Type::RPG_Combat_DamageCounterMeasure_Type()
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasure_Type::RPG_Combat_DamageCounterMeasure_Type"));
 
   myCurrentCounterMeasure.type = RPG_COMMON_COUNTERMEASURE_INVALID;
-  myCurrentCounterMeasure.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCounterMeasure.check.type.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentCounterMeasure.check.type.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
   myCurrentCounterMeasure.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentCounterMeasure.check.difficultyClass = 0;
@@ -427,7 +427,7 @@ RPG_Combat_DamageCounterMeasure_Type::RPG_Combat_DamageCounterMeasure_Type()
   myCurrentCounterMeasure.duration.activation = 0;
   myCurrentCounterMeasure.duration.interval = 0;
   myCurrentCounterMeasure.duration.total = 0;
-  myCurrentCounterMeasure.condition = RPG_CHARACTER_CONDITION_INVALID;
+  myCurrentCounterMeasure.condition = RPG_COMMON_CONDITION_INVALID;
   myCurrentCounterMeasure.reduction = RPG_COMBAT_DAMAGEREDUCTIONTYPE_INVALID;
 }
 
@@ -459,7 +459,7 @@ void RPG_Combat_DamageCounterMeasure_Type::duration(const RPG_Common_Duration& d
   myCurrentCounterMeasure.duration = duration_in;
 }
 
-void RPG_Combat_DamageCounterMeasure_Type::condition(const RPG_Character_Condition& condition_in)
+void RPG_Combat_DamageCounterMeasure_Type::condition(const RPG_Common_Condition& condition_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageCounterMeasure_Type::condition"));
 
@@ -481,7 +481,7 @@ RPG_Combat_DamageCounterMeasure RPG_Combat_DamageCounterMeasure_Type::post_RPG_C
 
   // clear structure
   myCurrentCounterMeasure.type = RPG_COMMON_COUNTERMEASURE_INVALID;
-  myCurrentCounterMeasure.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentCounterMeasure.check.type.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentCounterMeasure.check.type.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
   myCurrentCounterMeasure.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentCounterMeasure.check.difficultyClass = 0;
@@ -489,7 +489,7 @@ RPG_Combat_DamageCounterMeasure RPG_Combat_DamageCounterMeasure_Type::post_RPG_C
   myCurrentCounterMeasure.duration.activation = 0;
   myCurrentCounterMeasure.duration.interval = 0;
   myCurrentCounterMeasure.duration.total = 0;
-  myCurrentCounterMeasure.condition = RPG_CHARACTER_CONDITION_INVALID;
+  myCurrentCounterMeasure.condition = RPG_COMMON_CONDITION_INVALID;
   myCurrentCounterMeasure.reduction = RPG_COMBAT_DAMAGEREDUCTIONTYPE_INVALID;
 
   return result;
@@ -507,7 +507,7 @@ RPG_Combat_DamageElement_Type::RPG_Combat_DamageElement_Type()
   myCurrentDamageElement.secondary.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentDamageElement.secondary.modifier = 0;
   myCurrentDamageElement.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  myCurrentDamageElement.condition = RPG_CHARACTER_CONDITION_INVALID;
+  myCurrentDamageElement.condition = RPG_COMMON_CONDITION_INVALID;
   myCurrentDamageElement.duration.incubationPeriod.numDice = 0;
   myCurrentDamageElement.duration.incubationPeriod.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentDamageElement.duration.incubationPeriod.modifier = 0;
@@ -539,7 +539,7 @@ void RPG_Combat_DamageElement_Type::secondary(const RPG_Dice_Roll& secondary_in)
   myCurrentDamageElement.secondary = secondary_in;
 }
 
-void RPG_Combat_DamageElement_Type::condition(const RPG_Character_Condition& condition_in)
+void RPG_Combat_DamageElement_Type::condition(const RPG_Common_Condition& condition_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_DamageElement_Type::condition"));
 
@@ -595,14 +595,15 @@ RPG_Combat_DamageElement RPG_Combat_DamageElement_Type::post_RPG_Combat_DamageEl
   myCurrentDamageElement.secondary.numDice = 0;
   myCurrentDamageElement.secondary.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentDamageElement.secondary.modifier = 0;
+  myCurrentDamageElement.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentDamageElement.condition = RPG_COMMON_CONDITION_INVALID;
   myCurrentDamageElement.duration.incubationPeriod.numDice = 0;
   myCurrentDamageElement.duration.incubationPeriod.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentDamageElement.duration.incubationPeriod.modifier = 0;
   myCurrentDamageElement.duration.interval = 0;
   myCurrentDamageElement.duration.totalDuration = 0;
-  myCurrentDamageElement.others.clear();
-  myCurrentDamageElement.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentDamageElement.counterMeasures.clear();
+  myCurrentDamageElement.others.clear();
   myCurrentDamageElement.effect = RPG_COMMON_EFFECTTYPE_INVALID;
 
   return result;

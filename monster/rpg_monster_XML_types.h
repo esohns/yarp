@@ -88,21 +88,22 @@ class RPG_Monster_Dictionary_Type_pskel;
 #include <rpg_item_weapontype.h>
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
-#include <rpg_character_incl.h>
 #include <rpg_magic_incl.h>
 #include <rpg_combat_incl.h>
-
+#include <rpg_character_incl.h>
 #include "rpg_monster_incl.h"
 
 #include "rpg_dice_XML_types.h"
+
+#include "rpg_common_XML_types.h"
 
 #include "rpg_magic_XML_types.h"
 
 #include "rpg_item_XML_types.h"
 
-#include "rpg_character_XML_types.h"
-
 #include "rpg_combat_XML_types.h"
+
+#include "rpg_character_XML_types.h"
 
 class RPG_Monster_NaturalArmorClass_Type_pskel: public ::xml_schema::complex_content
 {
@@ -282,10 +283,10 @@ class RPG_Monster_SpecialDefensePreCondition_Type_pskel: public ::xml_schema::co
   weaponType (const RPG_Monster_WeaponTypeUnion&);
 
   virtual void
-  ownCondition (const RPG_Character_Condition&);
+  ownCondition (const RPG_Common_Condition&);
 
   virtual void
-  targetCondition (const RPG_Character_Condition&);
+  targetCondition (const RPG_Common_Condition&);
 
   virtual void
   isMagicalWeapon (bool);
@@ -299,18 +300,18 @@ class RPG_Monster_SpecialDefensePreCondition_Type_pskel: public ::xml_schema::co
   weaponType_parser (::RPG_Monster_WeaponTypeUnion_Type_pskel&);
 
   void
-  ownCondition_parser (::RPG_Character_Condition_Type_pskel&);
+  ownCondition_parser (::RPG_Common_Condition_Type_pskel&);
 
   void
-  targetCondition_parser (::RPG_Character_Condition_Type_pskel&);
+  targetCondition_parser (::RPG_Common_Condition_Type_pskel&);
 
   void
   isMagicalWeapon_parser (::xml_schema::boolean_pskel&);
 
   void
   parsers (::RPG_Monster_WeaponTypeUnion_Type_pskel& /* weaponType */,
-           ::RPG_Character_Condition_Type_pskel& /* ownCondition */,
-           ::RPG_Character_Condition_Type_pskel& /* targetCondition */,
+           ::RPG_Common_Condition_Type_pskel& /* ownCondition */,
+           ::RPG_Common_Condition_Type_pskel& /* targetCondition */,
            ::xml_schema::boolean_pskel& /* isMagicalWeapon */);
 
   // Constructor.
@@ -336,8 +337,8 @@ class RPG_Monster_SpecialDefensePreCondition_Type_pskel: public ::xml_schema::co
 
   protected:
   ::RPG_Monster_WeaponTypeUnion_Type_pskel* weaponType_parser_;
-  ::RPG_Character_Condition_Type_pskel* ownCondition_parser_;
-  ::RPG_Character_Condition_Type_pskel* targetCondition_parser_;
+  ::RPG_Common_Condition_Type_pskel* ownCondition_parser_;
+  ::RPG_Common_Condition_Type_pskel* targetCondition_parser_;
   ::xml_schema::boolean_pskel* isMagicalWeapon_parser_;
 };
 
@@ -708,16 +709,16 @@ class RPG_Monster_SpecialAttackPreCondition_Type_pskel: public ::xml_schema::com
   targetAlignment (const RPG_Character_Alignment&);
 
   virtual void
-  ownCondition (const RPG_Character_Condition&);
+  ownCondition (const RPG_Common_Condition&);
 
   virtual void
-  targetCondition (const RPG_Character_Condition&);
+  targetCondition (const RPG_Common_Condition&);
 
   virtual void
-  minTargetSize (const RPG_Character_Size&);
+  minTargetSize (const RPG_Common_Size&);
 
   virtual void
-  maxTargetSize (const RPG_Character_Size&);
+  maxTargetSize (const RPG_Common_Size&);
 
   virtual void
   check (const RPG_Combat_Check&);
@@ -734,16 +735,16 @@ class RPG_Monster_SpecialAttackPreCondition_Type_pskel: public ::xml_schema::com
   targetAlignment_parser (::RPG_Character_Alignment_Type_pskel&);
 
   void
-  ownCondition_parser (::RPG_Character_Condition_Type_pskel&);
+  ownCondition_parser (::RPG_Common_Condition_Type_pskel&);
 
   void
-  targetCondition_parser (::RPG_Character_Condition_Type_pskel&);
+  targetCondition_parser (::RPG_Common_Condition_Type_pskel&);
 
   void
-  minTargetSize_parser (::RPG_Character_Size_Type_pskel&);
+  minTargetSize_parser (::RPG_Common_Size_Type_pskel&);
 
   void
-  maxTargetSize_parser (::RPG_Character_Size_Type_pskel&);
+  maxTargetSize_parser (::RPG_Common_Size_Type_pskel&);
 
   void
   check_parser (::RPG_Combat_Check_Type_pskel&);
@@ -751,10 +752,10 @@ class RPG_Monster_SpecialAttackPreCondition_Type_pskel: public ::xml_schema::com
   void
   parsers (::RPG_Monster_ActionTrigger_Type_pskel& /* action */,
            ::RPG_Character_Alignment_Type_pskel& /* targetAlignment */,
-           ::RPG_Character_Condition_Type_pskel& /* ownCondition */,
-           ::RPG_Character_Condition_Type_pskel& /* targetCondition */,
-           ::RPG_Character_Size_Type_pskel& /* minTargetSize */,
-           ::RPG_Character_Size_Type_pskel& /* maxTargetSize */,
+           ::RPG_Common_Condition_Type_pskel& /* ownCondition */,
+           ::RPG_Common_Condition_Type_pskel& /* targetCondition */,
+           ::RPG_Common_Size_Type_pskel& /* minTargetSize */,
+           ::RPG_Common_Size_Type_pskel& /* maxTargetSize */,
            ::RPG_Combat_Check_Type_pskel& /* check */);
 
   // Constructor.
@@ -776,10 +777,10 @@ class RPG_Monster_SpecialAttackPreCondition_Type_pskel: public ::xml_schema::com
   protected:
   ::RPG_Monster_ActionTrigger_Type_pskel* action_parser_;
   ::RPG_Character_Alignment_Type_pskel* targetAlignment_parser_;
-  ::RPG_Character_Condition_Type_pskel* ownCondition_parser_;
-  ::RPG_Character_Condition_Type_pskel* targetCondition_parser_;
-  ::RPG_Character_Size_Type_pskel* minTargetSize_parser_;
-  ::RPG_Character_Size_Type_pskel* maxTargetSize_parser_;
+  ::RPG_Common_Condition_Type_pskel* ownCondition_parser_;
+  ::RPG_Common_Condition_Type_pskel* targetCondition_parser_;
+  ::RPG_Common_Size_Type_pskel* minTargetSize_parser_;
+  ::RPG_Common_Size_Type_pskel* maxTargetSize_parser_;
   ::RPG_Combat_Check_Type_pskel* check_parser_;
 };
 
@@ -846,10 +847,10 @@ class RPG_Monster_SpecialAbilityPreCondition_Type_pskel: public ::xml_schema::co
   // pre ();
 
   virtual void
-  targetCondition (const RPG_Character_Condition&);
+  targetCondition (const RPG_Common_Condition&);
 
   virtual void
-  maxTargetSize (const RPG_Character_Size&);
+  maxTargetSize (const RPG_Common_Size&);
 
   virtual void
   check (const RPG_Combat_Check&);
@@ -860,17 +861,17 @@ class RPG_Monster_SpecialAbilityPreCondition_Type_pskel: public ::xml_schema::co
   // Parser construction API.
   //
   void
-  targetCondition_parser (::RPG_Character_Condition_Type_pskel&);
+  targetCondition_parser (::RPG_Common_Condition_Type_pskel&);
 
   void
-  maxTargetSize_parser (::RPG_Character_Size_Type_pskel&);
+  maxTargetSize_parser (::RPG_Common_Size_Type_pskel&);
 
   void
   check_parser (::RPG_Combat_Check_Type_pskel&);
 
   void
-  parsers (::RPG_Character_Condition_Type_pskel& /* targetCondition */,
-           ::RPG_Character_Size_Type_pskel& /* maxTargetSize */,
+  parsers (::RPG_Common_Condition_Type_pskel& /* targetCondition */,
+           ::RPG_Common_Size_Type_pskel& /* maxTargetSize */,
            ::RPG_Combat_Check_Type_pskel& /* check */);
 
   // Constructor.
@@ -890,8 +891,8 @@ class RPG_Monster_SpecialAbilityPreCondition_Type_pskel: public ::xml_schema::co
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Character_Condition_Type_pskel* targetCondition_parser_;
-  ::RPG_Character_Size_Type_pskel* maxTargetSize_parser_;
+  ::RPG_Common_Condition_Type_pskel* targetCondition_parser_;
+  ::RPG_Common_Size_Type_pskel* maxTargetSize_parser_;
   ::RPG_Combat_Check_Type_pskel* check_parser_;
 };
 
@@ -1265,7 +1266,7 @@ class RPG_Monster_AdvancementStep_Type_pskel: public ::xml_schema::complex_conte
   // pre ();
 
   virtual void
-  size (const RPG_Character_Size&);
+  size (const RPG_Common_Size&);
 
   virtual void
   range (const RPG_Dice_ValueRange&);
@@ -1276,13 +1277,13 @@ class RPG_Monster_AdvancementStep_Type_pskel: public ::xml_schema::complex_conte
   // Parser construction API.
   //
   void
-  size_parser (::RPG_Character_Size_Type_pskel&);
+  size_parser (::RPG_Common_Size_Type_pskel&);
 
   void
   range_parser (::RPG_Dice_ValueRange_Type_pskel&);
 
   void
-  parsers (::RPG_Character_Size_Type_pskel& /* size */,
+  parsers (::RPG_Common_Size_Type_pskel& /* size */,
            ::RPG_Dice_ValueRange_Type_pskel& /* range */);
 
   // Constructor.
@@ -1302,7 +1303,7 @@ class RPG_Monster_AdvancementStep_Type_pskel: public ::xml_schema::complex_conte
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Character_Size_Type_pskel* size_parser_;
+  ::RPG_Common_Size_Type_pskel* size_parser_;
   ::RPG_Dice_ValueRange_Type_pskel* range_parser_;
 };
 
@@ -1360,7 +1361,7 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
   name (const ::std::string&);
 
   virtual void
-  size (const RPG_Character_Size&);
+  size (const RPG_Common_Size&);
 
   virtual void
   type (const RPG_Common_CreatureType&);
@@ -1437,7 +1438,7 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
   name_parser (::xml_schema::string_pskel&);
 
   void
-  size_parser (::RPG_Character_Size_Type_pskel&);
+  size_parser (::RPG_Common_Size_Type_pskel&);
 
   void
   type_parser (::RPG_Common_CreatureType_Type_pskel&);
@@ -1507,7 +1508,7 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
 
   void
   parsers (::xml_schema::string_pskel& /* name */,
-           ::RPG_Character_Size_Type_pskel& /* size */,
+           ::RPG_Common_Size_Type_pskel& /* size */,
            ::RPG_Common_CreatureType_Type_pskel& /* type */,
            ::RPG_Dice_Roll_Type_pskel& /* hitDice */,
            ::xml_schema::byte_pskel& /* initiative */,
@@ -1549,7 +1550,7 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::xml_schema::string_pskel* name_parser_;
-  ::RPG_Character_Size_Type_pskel* size_parser_;
+  ::RPG_Common_Size_Type_pskel* size_parser_;
   ::RPG_Common_CreatureType_Type_pskel* type_parser_;
   ::RPG_Dice_Roll_Type_pskel* hitDice_parser_;
   ::xml_schema::byte_pskel* initiative_parser_;

@@ -54,6 +54,9 @@ class RPG_Common_CreatureSubType_Type_pskel;
 class RPG_Common_CreatureType_Type_pskel;
 class RPG_Common_SubClass_Type_pskel;
 class RPG_Common_Attribute_Type_pskel;
+class RPG_Common_Size_Type_pskel;
+class RPG_Common_Condition_Type_pskel;
+class RPG_Common_Skill_Type_pskel;
 class RPG_Common_PhysicalDamageType_Type_pskel;
 class RPG_Common_ActionType_Type_pskel;
 class RPG_Common_AreaOfEffect_Type_pskel;
@@ -180,6 +183,42 @@ class RPG_Common_Attribute_Type_pskel: public virtual ::xml_schema::string_pskel
 
   virtual RPG_Common_Attribute
   post_RPG_Common_Attribute_Type () = 0;
+};
+
+class RPG_Common_Size_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Common_Size
+  post_RPG_Common_Size_Type () = 0;
+};
+
+class RPG_Common_Condition_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Common_Condition
+  post_RPG_Common_Condition_Type () = 0;
+};
+
+class RPG_Common_Skill_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Common_Skill
+  post_RPG_Common_Skill_Type () = 0;
 };
 
 class RPG_Common_PhysicalDamageType_Type_pskel: public virtual ::xml_schema::string_pskel

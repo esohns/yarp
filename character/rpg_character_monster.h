@@ -42,7 +42,7 @@ class RPG_Character_Monster
                         const RPG_Character_Skills_t&,    // (starting) skills
                         const RPG_Character_Feats_t&,     // base feats
                         const RPG_Character_Abilities_t&, // base abilities
-                        const RPG_Character_Size&,        // (default) size
+                        const RPG_Common_Size&,           // (default) size
                         const unsigned short int&,        // (starting) HP
                         const unsigned int&,              // (starting) wealth (GP)
                         const RPG_Item_List_t&,           // (starting) list of (carried) items

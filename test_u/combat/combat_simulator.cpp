@@ -302,7 +302,7 @@ void do_work(const std::string& itemDictionaryFilename_in,
   RPG_Dice::init();
   RPG_Dice_Common_Tools::initStringConversionTables();
   RPG_Common_Tools::initStringConversionTables();
-  RPG_Magic_Common_Tools::initStringConversionTables();
+  RPG_Magic_Common_Tools::init();
   RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
   RPG_Monster_Common_Tools::initStringConversionTables();

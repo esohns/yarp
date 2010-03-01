@@ -86,6 +86,27 @@ RPG_Common_Attribute RPG_Common_Attribute_Type::post_RPG_Common_Attribute_Type()
   return RPG_Common_AttributeHelper::stringToRPG_Common_Attribute(post_string());
 }
 
+RPG_Common_Condition RPG_Common_Condition_Type::post_RPG_Common_Condition_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Condition_Type::post_RPG_Common_Condition_Type"));
+
+  return RPG_Common_ConditionHelper::stringToRPG_Common_Condition(post_string());
+}
+
+RPG_Common_Size RPG_Common_Size_Type::post_RPG_Common_Size_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Size_Type::post_RPG_Common_Size_Type"));
+
+  return RPG_Common_SizeHelper::stringToRPG_Common_Size(post_string());
+}
+
+RPG_Common_Skill RPG_Common_Skill_Type::post_RPG_Common_Skill_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Skill_Type::post_RPG_Common_Skill_Type"));
+
+  return RPG_Common_SkillHelper::stringToRPG_Common_Skill(post_string());
+}
+
 RPG_Common_PhysicalDamageType RPG_Common_PhysicalDamageType_Type::post_RPG_Common_PhysicalDamageType_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_PhysicalDamageType_Type::post_RPG_Common_PhysicalDamageType_Type"));

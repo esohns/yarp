@@ -3,13 +3,11 @@ namespace urn:rpg
   include <rpg_item_weapontype.h>;
   include "rpg_monster_incl.h";
 
+  include <rpg_dice_incl.h>;
   include <rpg_common_incl.h>;
   include <rpg_magic_incl.h>;
   include <rpg_combat_incl.h>;
-
   include <rpg_character_incl.h>;
-
-  include <rpg_dice_incl.h>;
 
   RPG_Dice_Roll_Type                          RPG_Dice_Roll;
   RPG_Dice_ValueRange_Type                    RPG_Dice_ValueRange;
@@ -17,6 +15,8 @@ namespace urn:rpg
   RPG_Common_CreatureMetaType_Type            RPG_Common_CreatureMetaType;
   RPG_Common_CreatureSubType_Type             RPG_Common_CreatureSubType;
   RPG_Common_CreatureType_Type                RPG_Common_CreatureType;
+  RPG_Common_Condition_Type                   RPG_Common_Condition;
+  RPG_Common_Size_Type                        RPG_Common_Size;
   RPG_Common_Usage_Type                       RPG_Common_Usage;
   RPG_Common_ActionType_Type                  RPG_Common_ActionType;
 
@@ -24,13 +24,11 @@ namespace urn:rpg
   RPG_Magic_AbilityType_Type                  RPG_Magic_AbilityType;
   RPG_Magic_SpellLikeProperties_Type          RPG_Magic_SpellLikeProperties;
 
-  RPG_Character_Size_Type                     RPG_Character_Size;
   RPG_Character_Attributes_Type               RPG_Character_Attributes;
   RPG_Character_Skills_Type                   RPG_Character_Skills;
   RPG_Character_Feats_Type                    RPG_Character_Feats;
   RPG_Character_Environment_Type              RPG_Character_Environment;
   RPG_Character_Alignment_Type                RPG_Character_Alignment;
-  RPG_Character_Condition_Type                RPG_Character_Condition;
   RPG_Character_Ability_Type                  RPG_Character_Ability;
 
   RPG_Combat_SpecialAttack_Type               RPG_Combat_SpecialAttack;

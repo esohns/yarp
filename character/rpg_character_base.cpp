@@ -40,7 +40,7 @@ RPG_Character_Base::RPG_Character_Base(const std::string& name_in,
                                        const RPG_Character_Skills_t& skills_in,
                                        const RPG_Character_Feats_t& feats_in,
                                        const RPG_Character_Abilities_t& abilities_in,
-                                       const RPG_Character_Size& defaultSize_in,
+                                       const RPG_Common_Size& defaultSize_in,
                                        const unsigned short int& hitpoints_in,
                                        const unsigned int& wealth_in,
                                        const RPG_Item_List_t& inventory_in)
@@ -167,7 +167,7 @@ const unsigned char RPG_Character_Base::getAttribute(const RPG_Common_Attribute&
   return 0;
 }
 
-void RPG_Character_Base::getSkill(const RPG_Character_Skill& skill_in,
+void RPG_Character_Base::getSkill(const RPG_Common_Skill& skill_in,
                                   unsigned char& result_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getSkill"));
@@ -196,7 +196,7 @@ const bool RPG_Character_Base::hasAbility(const RPG_Character_Ability& ability_i
   return (myAbilities.find(ability_in) != myAbilities.end());
 }
 
-const RPG_Character_Size RPG_Character_Base::getSize() const
+const RPG_Common_Size RPG_Character_Base::getSize() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getSize"));
 
@@ -224,7 +224,7 @@ const unsigned int RPG_Character_Base::getCurrentWealth() const
   return myCurrentWealth;
 }
 
-const bool RPG_Character_Base::hasCondition(const RPG_Character_Condition& condition_in) const
+const bool RPG_Character_Base::hasCondition(const RPG_Common_Condition& condition_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::hasCondition"));
 

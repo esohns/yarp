@@ -63,7 +63,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
   // Construct the parser.
   //
   ::xml_schema::string_pimpl                     string_p;
-  RPG_Character_Size_Type                        size_p;
+  RPG_Common_Size_Type                           size_p;
 
   RPG_Common_CreatureMetaType_Type               metaType_p;
   RPG_Common_CreatureSubType_Type                subType_p;
@@ -97,7 +97,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                                   usage_p);
 
   RPG_Monster_WeaponTypeUnion_Type               weaponUnion_p;
-  RPG_Character_Condition_Type                   condition_p;
+  RPG_Common_Condition_Type                      condition_p;
   ::xml_schema::boolean_pimpl                    bool_p;
   RPG_Monster_SpecialDefensePreCondition_Type    specialDefensePreCondition_p;
   specialDefensePreCondition_p.parsers(weaponUnion_p,
@@ -281,7 +281,7 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
                        unsigned_byte_p,
                        unsigned_byte_p,
                        unsigned_byte_p);
-  RPG_Character_Skill_Type                       skill_p;
+  RPG_Common_Skill_Type                          skill_p;
   RPG_Character_SkillValue_Type                  skillvalue_p;
   skillvalue_p.parsers(skill_p,
                        byte_p);
@@ -920,7 +920,7 @@ void RPG_Monster_Dictionary::dump() const
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Monster (\"%s\"):\nSize: %s\nType: %s\nHit Dice: %s\nInitiative: %d\nSpeed: %d ft/round\nArmor Class (normal/touch/flat-footed): %d / %d / %d\nAttacks:\n-------\n%sSpace: %d ft\nReach: %d ft\nSaves (fortitude/reflex/will): %d / %d / %d\nAttributes:\n-----------\n%sSkills:\n-------\n%sFeats:\n------\n%sEnvironment: %s\nOrganizations:\n--------------\n%sChallenge Rating: %d\nTreasure Modifier: %d\nAlignment: %s\nAdvancement:\n------------\n%sLevel Adjustment: %d\n"),
                (iterator->first).c_str(),
-               RPG_Character_SizeHelper::RPG_Character_SizeToString((iterator->second).size).c_str(),
+               RPG_Common_SizeHelper::RPG_Common_SizeToString((iterator->second).size).c_str(),
                RPG_Common_Tools::creatureTypeToString((iterator->second).type).c_str(),
                RPG_Dice_Common_Tools::rollToString((iterator->second).hitDice).c_str(),
                (iterator->second).initiative,

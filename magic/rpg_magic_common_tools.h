@@ -22,9 +22,8 @@
 
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
-#include <rpg_character_incl.h>
-
 #include "rpg_magic_incl.h"
+
 #include "rpg_magic_common.h"
 
 #include <ace/Global_Macros.h>

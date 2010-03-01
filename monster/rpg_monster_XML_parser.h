@@ -84,8 +84,8 @@ class RPG_Monster_SpecialDefensePreCondition_Type
 
 //   virtual void pre();
     virtual void weaponType(const RPG_Monster_WeaponTypeUnion&);
-    virtual void ownCondition(const RPG_Character_Condition&);
-    virtual void targetCondition(const RPG_Character_Condition&);
+    virtual void ownCondition(const RPG_Common_Condition&);
+    virtual void targetCondition(const RPG_Common_Condition&);
     virtual void isMagicalWeapon(bool);
     virtual RPG_Monster_SpecialDefensePreCondition post_RPG_Monster_SpecialDefensePreCondition_Type();
 
@@ -216,10 +216,10 @@ class RPG_Monster_SpecialAttackPreCondition_Type
 
 //   virtual void pre();
     virtual void targetAlignment(const RPG_Character_Alignment&);
-    virtual void ownCondition(const RPG_Character_Condition&);
-    virtual void targetCondition(const RPG_Character_Condition&);
-    virtual void minTargetSize(const RPG_Character_Size&);
-    virtual void maxTargetSize(const RPG_Character_Size&);
+    virtual void ownCondition(const RPG_Common_Condition&);
+    virtual void targetCondition(const RPG_Common_Condition&);
+    virtual void minTargetSize(const RPG_Common_Size&);
+    virtual void maxTargetSize(const RPG_Common_Size&);
     virtual void check(const RPG_Combat_Check&);
     virtual RPG_Monster_SpecialAttackPreCondition post_RPG_Monster_SpecialAttackPreCondition_Type();
 
@@ -256,8 +256,8 @@ class RPG_Monster_SpecialAbilityPreCondition_Type
     RPG_Monster_SpecialAbilityPreCondition_Type();
 
 //   virtual void pre();
-    virtual void targetCondition(const RPG_Character_Condition&);
-    virtual void maxTargetSize(const RPG_Character_Size&);
+    virtual void targetCondition(const RPG_Common_Condition&);
+    virtual void maxTargetSize(const RPG_Common_Size&);
     virtual void check(const RPG_Combat_Check&);
     virtual RPG_Monster_SpecialAbilityPreCondition post_RPG_Monster_SpecialAbilityPreCondition_Type();
 
@@ -382,7 +382,7 @@ class RPG_Monster_AdvancementStep_Type
   RPG_Monster_AdvancementStep_Type();
 
 //   virtual void pre();
-  virtual void size(const RPG_Character_Size&);
+  virtual void size(const RPG_Common_Size&);
   virtual void range(const RPG_Dice_ValueRange&);
   virtual RPG_Monster_AdvancementStep post_RPG_Monster_AdvancementStep_Type();
 
@@ -412,7 +412,7 @@ class RPG_Monster_PropertiesXML_Type
 
 //   virtual void pre();
   virtual void name(const std::string&);
-  virtual void size(const RPG_Character_Size&);
+  virtual void size(const RPG_Common_Size&);
   virtual void type(const RPG_Common_CreatureType&);
   virtual void hitDice(const RPG_Dice_Roll&);
   virtual void initiative(signed char);

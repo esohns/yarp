@@ -378,7 +378,7 @@ attribute_parser (::RPG_Common_Attribute_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
-condition_parser (::RPG_Character_Condition_Type_pskel& p)
+condition_parser (::RPG_Common_Condition_Type_pskel& p)
 {
   this->condition_parser_ = &p;
 }
@@ -390,7 +390,7 @@ creature_parser (::RPG_Common_CreatureType_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
-size_parser (::RPG_Character_Size_Type_pskel& p)
+size_parser (::RPG_Common_Size_Type_pskel& p)
 {
   this->size_parser_ = &p;
 }
@@ -407,9 +407,9 @@ parsers (::RPG_Magic_Spell_Precondition_Type_pskel& type,
          ::xml_schema::unsigned_byte_pskel& levelIncrement,
          ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
          ::RPG_Common_Attribute_Type_pskel& attribute,
-         ::RPG_Character_Condition_Type_pskel& condition,
+         ::RPG_Common_Condition_Type_pskel& condition,
          ::RPG_Common_CreatureType_Type_pskel& creature,
-         ::RPG_Character_Size_Type_pskel& size,
+         ::RPG_Common_Size_Type_pskel& size,
          ::xml_schema::boolean_pskel& reverse)
 {
   this->type_parser_ = &type;
@@ -1590,7 +1590,7 @@ attribute (const RPG_Common_Attribute&)
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
-condition (const RPG_Character_Condition&)
+condition (const RPG_Common_Condition&)
 {
 }
 
@@ -1600,7 +1600,7 @@ creature (const RPG_Common_CreatureType&)
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
-size (const RPG_Character_Size&)
+size (const RPG_Common_Size&)
 {
 }
 
@@ -1752,7 +1752,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "condition" && ns == "urn:rpg")
   {
     if (this->condition_parser_)
-      this->condition (this->condition_parser_->post_RPG_Character_Condition_Type ());
+      this->condition (this->condition_parser_->post_RPG_Common_Condition_Type ());
 
     return true;
   }
@@ -1768,7 +1768,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "size" && ns == "urn:rpg")
   {
     if (this->size_parser_)
-      this->size (this->size_parser_->post_RPG_Character_Size_Type ());
+      this->size (this->size_parser_->post_RPG_Common_Size_Type ());
 
     return true;
   }

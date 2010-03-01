@@ -23,9 +23,9 @@
 
 enum RPG_Character_AlignmentEthic
 {
-  ALIGNMENTETHIC_GOOD = 0,
+  ALIGNMENTETHIC_EVIL = 0,
+  ALIGNMENTETHIC_GOOD,
   ALIGNMENTETHIC_NEUTRAL,
-  ALIGNMENTETHIC_EVIL,
   ALIGNMENTETHIC_ANY,
   //
   RPG_CHARACTER_ALIGNMENTETHIC_MAX,
@@ -46,9 +46,9 @@ class RPG_Character_AlignmentEthicHelper
   inline static void init()
   {
     myRPG_Character_AlignmentEthicToStringTable.clear();
+    myRPG_Character_AlignmentEthicToStringTable.insert(std::make_pair(ALIGNMENTETHIC_EVIL, ACE_TEXT_ALWAYS_CHAR("ALIGNMENTETHIC_EVIL")));
     myRPG_Character_AlignmentEthicToStringTable.insert(std::make_pair(ALIGNMENTETHIC_GOOD, ACE_TEXT_ALWAYS_CHAR("ALIGNMENTETHIC_GOOD")));
     myRPG_Character_AlignmentEthicToStringTable.insert(std::make_pair(ALIGNMENTETHIC_NEUTRAL, ACE_TEXT_ALWAYS_CHAR("ALIGNMENTETHIC_NEUTRAL")));
-    myRPG_Character_AlignmentEthicToStringTable.insert(std::make_pair(ALIGNMENTETHIC_EVIL, ACE_TEXT_ALWAYS_CHAR("ALIGNMENTETHIC_EVIL")));
     myRPG_Character_AlignmentEthicToStringTable.insert(std::make_pair(ALIGNMENTETHIC_ANY, ACE_TEXT_ALWAYS_CHAR("ALIGNMENTETHIC_ANY")));
   };
 

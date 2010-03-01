@@ -26,7 +26,7 @@ struct RPG_Character_CheckTypeUnion
   union
   {
     RPG_Common_Attribute attribute;
-    RPG_Character_Skill skill;
+    RPG_Common_Skill skill;
   };
 
   enum Discriminator_t

@@ -24,8 +24,8 @@
 enum RPG_Character_Gender
 {
   GENDER_NONE = 0,
-  GENDER_MALE,
   GENDER_FEMALE,
+  GENDER_MALE,
   GENDER_ANY,
   //
   RPG_CHARACTER_GENDER_MAX,
@@ -47,8 +47,8 @@ class RPG_Character_GenderHelper
   {
     myRPG_Character_GenderToStringTable.clear();
     myRPG_Character_GenderToStringTable.insert(std::make_pair(GENDER_NONE, ACE_TEXT_ALWAYS_CHAR("GENDER_NONE")));
-    myRPG_Character_GenderToStringTable.insert(std::make_pair(GENDER_MALE, ACE_TEXT_ALWAYS_CHAR("GENDER_MALE")));
     myRPG_Character_GenderToStringTable.insert(std::make_pair(GENDER_FEMALE, ACE_TEXT_ALWAYS_CHAR("GENDER_FEMALE")));
+    myRPG_Character_GenderToStringTable.insert(std::make_pair(GENDER_MALE, ACE_TEXT_ALWAYS_CHAR("GENDER_MALE")));
     myRPG_Character_GenderToStringTable.insert(std::make_pair(GENDER_ANY, ACE_TEXT_ALWAYS_CHAR("GENDER_ANY")));
   };
 

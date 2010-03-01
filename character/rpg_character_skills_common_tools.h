@@ -20,14 +20,14 @@
 #ifndef RPG_CHARACTER_SKILLS_COMMON_TOOLS_H
 #define RPG_CHARACTER_SKILLS_COMMON_TOOLS_H
 
-#include <rpg_common_subclass.h>
-
-#include "rpg_character_skill.h"
 #include "rpg_character_feat.h"
 #include "rpg_character_race.h"
 #include "rpg_character_attributes.h"
 #include "rpg_character_common.h"
 #include "rpg_character_skills_common.h"
+
+#include <rpg_common_subclass.h>
+#include <rpg_common_skill.h>
 
 #include <ace/Global_Macros.h>
 
@@ -45,8 +45,8 @@ class RPG_Character_Skills_Common_Tools
   // init static data
   static void init();
 
-  static const bool isClassSkill(const RPG_Common_SubClass&,  // subclass
-                                 const RPG_Character_Skill&); // skill
+  static const bool isClassSkill(const RPG_Common_SubClass&, // subclass
+                                 const RPG_Common_Skill&);   // skill
   static const unsigned int getSkillPoints(const RPG_Common_SubClass&, // subclass
                                            const short int&,           // INT modifier
                                            unsigned int&);             // initial points (level 1)
@@ -79,7 +79,7 @@ class RPG_Character_Skills_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Skills_Common_Tools& operator=(const RPG_Character_Skills_Common_Tools&));
 
   // some useful types
-  typedef std::set<RPG_Character_Skill> RPG_Character_ClassSkillsSet_t;
+  typedef std::set<RPG_Common_Skill> RPG_Character_ClassSkillsSet_t;
   typedef RPG_Character_ClassSkillsSet_t::const_iterator RPG_Character_ClassSkillsSetIterator_t;
   typedef std::map<RPG_Common_SubClass, RPG_Character_ClassSkillsSet_t> RPG_Character_ClassSkillsTable_t;
   typedef RPG_Character_ClassSkillsTable_t::const_iterator RPG_Character_ClassSkillsTableIterator_t;

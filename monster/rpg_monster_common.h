@@ -23,12 +23,12 @@
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
 #include <rpg_character_incl.h>
-#include <rpg_character_skills_common.h>
 #include <rpg_magic_incl.h>
 #include <rpg_combat_incl.h>
-
 #include <rpg_item_weapontype.h>
 #include "rpg_monster_incl.h"
+
+#include <rpg_character_skills_common.h>
 
 #include <string>
 #include <vector>
@@ -54,7 +54,7 @@ typedef RPG_Monster_Advancement_t::const_iterator RPG_Monster_AdvancementIterato
 struct RPG_Monster_Properties
 {
 //   std::string name;
-  RPG_Character_Size size;
+  RPG_Common_Size size;
   RPG_Common_CreatureType type;
   RPG_Monster_HitDice hitDice;
   char initiative;

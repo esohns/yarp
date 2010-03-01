@@ -24,11 +24,11 @@
 enum RPG_Character_Race
 {
   RACE_NONE = 0,
-  RACE_HUMAN,
   RACE_DWARF,
   RACE_ELF,
-  RACE_HALFLING,
   RACE_GNOME,
+  RACE_HALFLING,
+  RACE_HUMAN,
   RACE_ORC,
   //
   RPG_CHARACTER_RACE_MAX,
@@ -50,11 +50,11 @@ class RPG_Character_RaceHelper
   {
     myRPG_Character_RaceToStringTable.clear();
     myRPG_Character_RaceToStringTable.insert(std::make_pair(RACE_NONE, ACE_TEXT_ALWAYS_CHAR("RACE_NONE")));
-    myRPG_Character_RaceToStringTable.insert(std::make_pair(RACE_HUMAN, ACE_TEXT_ALWAYS_CHAR("RACE_HUMAN")));
     myRPG_Character_RaceToStringTable.insert(std::make_pair(RACE_DWARF, ACE_TEXT_ALWAYS_CHAR("RACE_DWARF")));
     myRPG_Character_RaceToStringTable.insert(std::make_pair(RACE_ELF, ACE_TEXT_ALWAYS_CHAR("RACE_ELF")));
-    myRPG_Character_RaceToStringTable.insert(std::make_pair(RACE_HALFLING, ACE_TEXT_ALWAYS_CHAR("RACE_HALFLING")));
     myRPG_Character_RaceToStringTable.insert(std::make_pair(RACE_GNOME, ACE_TEXT_ALWAYS_CHAR("RACE_GNOME")));
+    myRPG_Character_RaceToStringTable.insert(std::make_pair(RACE_HALFLING, ACE_TEXT_ALWAYS_CHAR("RACE_HALFLING")));
+    myRPG_Character_RaceToStringTable.insert(std::make_pair(RACE_HUMAN, ACE_TEXT_ALWAYS_CHAR("RACE_HUMAN")));
     myRPG_Character_RaceToStringTable.insert(std::make_pair(RACE_ORC, ACE_TEXT_ALWAYS_CHAR("RACE_ORC")));
   };
 

@@ -24,10 +24,10 @@
 enum RPG_Character_MetaClass
 {
   METACLASS_NONE = 0,
-  METACLASS_WARRIOR,
-  METACLASS_WIZARD,
   METACLASS_PRIEST,
   METACLASS_ROGUE,
+  METACLASS_WARRIOR,
+  METACLASS_WIZARD,
   //
   RPG_CHARACTER_METACLASS_MAX,
   RPG_CHARACTER_METACLASS_INVALID
@@ -48,10 +48,10 @@ class RPG_Character_MetaClassHelper
   {
     myRPG_Character_MetaClassToStringTable.clear();
     myRPG_Character_MetaClassToStringTable.insert(std::make_pair(METACLASS_NONE, ACE_TEXT_ALWAYS_CHAR("METACLASS_NONE")));
-    myRPG_Character_MetaClassToStringTable.insert(std::make_pair(METACLASS_WARRIOR, ACE_TEXT_ALWAYS_CHAR("METACLASS_WARRIOR")));
-    myRPG_Character_MetaClassToStringTable.insert(std::make_pair(METACLASS_WIZARD, ACE_TEXT_ALWAYS_CHAR("METACLASS_WIZARD")));
     myRPG_Character_MetaClassToStringTable.insert(std::make_pair(METACLASS_PRIEST, ACE_TEXT_ALWAYS_CHAR("METACLASS_PRIEST")));
     myRPG_Character_MetaClassToStringTable.insert(std::make_pair(METACLASS_ROGUE, ACE_TEXT_ALWAYS_CHAR("METACLASS_ROGUE")));
+    myRPG_Character_MetaClassToStringTable.insert(std::make_pair(METACLASS_WARRIOR, ACE_TEXT_ALWAYS_CHAR("METACLASS_WARRIOR")));
+    myRPG_Character_MetaClassToStringTable.insert(std::make_pair(METACLASS_WIZARD, ACE_TEXT_ALWAYS_CHAR("METACLASS_WIZARD")));
   };
 
   inline static std::string RPG_Character_MetaClassToString(const RPG_Character_MetaClass& element_in)

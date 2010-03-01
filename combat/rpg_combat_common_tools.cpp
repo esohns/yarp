@@ -19,8 +19,6 @@
  ***************************************************************************/
 #include "rpg_combat_common_tools.h"
 
-#include "rpg_combat_incl.h"
-
 #include <rpg_monster_common.h>
 #include <rpg_monster_common_tools.h>
 #include <rpg_monster_attackaction.h>
@@ -170,7 +168,7 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
           {
             case RPG_Combat_CheckTypeUnion::SKILL:
             {
-              result += RPG_Character_SkillHelper::RPG_Character_SkillToString((*iterator2).check.type.skill);
+              result += RPG_Common_SkillHelper::RPG_Common_SkillToString((*iterator2).check.type.skill);
               result += ACE_TEXT_ALWAYS_CHAR(" ");
 
               break;
@@ -785,7 +783,7 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
     // *TODO*: consider that a creature with FEAT_WEAPON_FINESSE may use its DEX modifier for melee attacks...
     attribute = ATTRIBUTE_STRENGTH;
     // consider that the player may (temporarily) have a bigger reach...
-    attackForm = (distance_in > RPG_Character_Common_Tools::sizeToReach(player_base->getSize()) ? ATTACKFORM_RANGED : ATTACKFORM_MELEE);
+    attackForm = (distance_in > RPG_Common_Tools::sizeToReach(player_base->getSize()) ? ATTACKFORM_RANGED : ATTACKFORM_MELEE);
     if (attackForm == ATTACKFORM_RANGED)
       attribute = ATTRIBUTE_DEXTERITY;
     RPG_Character_BaseAttackBonus_t attackBonus = player_base->getAttackBonus(attribute,
@@ -838,7 +836,7 @@ void RPG_Combat_Common_Tools::attackFoe(const RPG_Character_Base* const attacker
                                                                         : (weapon_properties.rangeIncrement * 10);
     if (weapon_properties.rangeIncrement == 0)
     {
-      maxReach = RPG_Character_Common_Tools::sizeToReach(player_base->getSize());
+      maxReach = RPG_Common_Tools::sizeToReach(player_base->getSize());
       // consider reach weapons
       if (weapon_properties.isReachWeapon)
       {
@@ -1026,7 +1024,7 @@ is_player_miss:
 
     // choose appropriate form of attack...
     // consider that the monster may (temporarily) have a bigger reach...
-    attackForm = (distance_in > RPG_Character_Common_Tools::sizeToReach(monster->getSize()) ? ATTACKFORM_RANGED : ATTACKFORM_MELEE);
+    attackForm = (distance_in > RPG_Common_Tools::sizeToReach(monster->getSize()) ? ATTACKFORM_RANGED : ATTACKFORM_MELEE);
 
     // step2: perform attack(s)
     // *TODO*: if available (AND preconditions are met), we MAY also choose a special attack...

@@ -154,7 +154,7 @@ void do_work(const std::string& filename_in,
   RPG_Common_Tools::initStringConversionTables();
   RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
-  RPG_Magic_Common_Tools::initStringConversionTables();
+  RPG_Magic_Common_Tools::init();
   RPG_Combat_Common_Tools::initStringConversionTables();
   RPG_Monster_Common_Tools::initStringConversionTables();
   RPG_Character_Skills_Common_Tools::init();

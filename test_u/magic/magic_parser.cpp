@@ -132,7 +132,7 @@ void do_work(const bool& dumpDictionary_in,
   RPG_Dice_Common_Tools::initStringConversionTables();
   RPG_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
-  RPG_Magic_Common_Tools::initStringConversionTables();
+  RPG_Magic_Common_Tools::init();
 
   // step2: init spell dictionary
   try

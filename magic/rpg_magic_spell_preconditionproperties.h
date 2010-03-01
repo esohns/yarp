@@ -28,9 +28,9 @@ struct RPG_Magic_Spell_PreconditionProperties
   unsigned char levelIncrement;
   unsigned char levelIncrementMax;
   RPG_Common_Attribute attribute;
-  RPG_Character_Condition condition;
+  RPG_Common_Condition condition;
   std::vector<RPG_Common_CreatureType> creatures;
-  RPG_Character_Size size;
+  RPG_Common_Size size;
   bool reverse;
 };
 

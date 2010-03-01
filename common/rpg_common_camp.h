@@ -23,8 +23,8 @@
 
 enum RPG_Common_Camp
 {
-  REST_NORMAL = 0,
-  REST_FULL,
+  REST_FULL = 0,
+  REST_NORMAL,
   //
   RPG_COMMON_CAMP_MAX,
   RPG_COMMON_CAMP_INVALID
@@ -44,8 +44,8 @@ class RPG_Common_CampHelper
   inline static void init()
   {
     myRPG_Common_CampToStringTable.clear();
-    myRPG_Common_CampToStringTable.insert(std::make_pair(REST_NORMAL, ACE_TEXT_ALWAYS_CHAR("REST_NORMAL")));
     myRPG_Common_CampToStringTable.insert(std::make_pair(REST_FULL, ACE_TEXT_ALWAYS_CHAR("REST_FULL")));
+    myRPG_Common_CampToStringTable.insert(std::make_pair(REST_NORMAL, ACE_TEXT_ALWAYS_CHAR("REST_NORMAL")));
   };
 
   inline static std::string RPG_Common_CampToString(const RPG_Common_Camp& element_in)

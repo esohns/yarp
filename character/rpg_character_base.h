@@ -56,18 +56,18 @@ class RPG_Character_Base
   const unsigned char getAttribute(const RPG_Common_Attribute&) const;
 
   // retrieve skill value (if any)
-  void getSkill(const RPG_Character_Skill&, // skill
-                unsigned char&) const;      // result: value (0: doesn't exist)
+  void getSkill(const RPG_Common_Skill&, // skill
+                unsigned char&) const;   // result: value (0: doesn't exist)
 
   const bool hasFeat(const RPG_Character_Feat&) const; // feat
   const bool hasAbility(const RPG_Character_Ability&) const; // ability
-  const bool hasCondition(const RPG_Character_Condition&) const; // condition
+  const bool hasCondition(const RPG_Common_Condition&) const; // condition
 
   const unsigned short int getNumTotalHitPoints() const;
   const short int getNumCurrentHitPoints() const;
 
   const unsigned int getCurrentWealth() const;
-  const RPG_Character_Size getSize() const;
+  const RPG_Common_Size getSize() const;
 
   virtual const RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
                                                                const RPG_Combat_AttackSituation&) const = 0;
@@ -92,7 +92,7 @@ class RPG_Character_Base
                      const RPG_Character_Skills_t&,     // (starting) skills
                      const RPG_Character_Feats_t&,      // base feats
                      const RPG_Character_Abilities_t&,  // base abilities
-                     const RPG_Character_Size&,         // (default) size
+                     const RPG_Common_Size&,            // (default) size
                      const unsigned short int&,         // (starting) HP
                      const unsigned int&,               // (starting) wealth (GP)
                      // base items
@@ -103,7 +103,7 @@ class RPG_Character_Base
   virtual const signed char getShieldBonus() const = 0;
 
   unsigned int               myCurrentWealth;
-  RPG_Character_Size         mySize;
+  RPG_Common_Size            mySize;
 
   RPG_Character_Inventory    myInventory;
   RPG_Character_Equipment    myEquipment;

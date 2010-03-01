@@ -24,13 +24,15 @@
 #include <rpg_item_common.h>
 #include <rpg_item_dictionary.h>
 
+#include <rpg_common_tools.h>
+
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
 RPG_Character_Player_Base::RPG_Character_Player_Base(const std::string& name_in,
                                                      const RPG_Character_Gender& gender_in,
                                                      const RPG_Character_Race& race_in,
-                                                     const RPG_Character_Classes_t& classes_in,
+                                                     const RPG_Character_Class& class_in,
                                                      const RPG_Character_Alignment& alignment_in,
                                                      const RPG_Character_Attributes& attributes_in,
                                                      const RPG_Character_Skills_t& skills_in,
@@ -53,7 +55,7 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(const std::string& name_in,
              inventory_in),
    myGender(gender_in),
    myRace(race_in),
-   myClasses(classes_in),
+   myClass(class_in),
    myOffHand(offhand_in),
    myExperience(experience_in)
 {
@@ -65,7 +67,7 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(const RPG_Character_Player_
  : inherited(playerBase_in),
    myGender(playerBase_in.myGender),
    myRace(playerBase_in.myRace),
-   myClasses(playerBase_in.myClasses),
+   myClass(playerBase_in.myClass),
    myOffHand(playerBase_in.myOffHand),
    myExperience(playerBase_in.myExperience)
 {
@@ -86,7 +88,7 @@ RPG_Character_Player_Base& RPG_Character_Player_Base::operator=(const RPG_Charac
   inherited::operator=(playerBase_in);
   myGender = playerBase_in.myGender;
   myRace = playerBase_in.myRace;
-  myClasses = playerBase_in.myClasses;
+  myClass = playerBase_in.myClass;
   myOffHand = playerBase_in.myOffHand;
   myExperience = playerBase_in.myExperience;
 
@@ -107,11 +109,11 @@ const RPG_Character_Race RPG_Character_Player_Base::getRace() const
   return myRace;
 }
 
-const RPG_Character_Classes_t RPG_Character_Player_Base::getClasses() const
+const RPG_Character_Class RPG_Character_Player_Base::getClass() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getClasses"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getClass"));
 
-  return myClasses;
+  return myClass;
 }
 
 const RPG_Character_OffHand RPG_Character_Player_Base::getOffHand() const
@@ -162,13 +164,12 @@ const RPG_Character_BaseAttackBonus_t RPG_Character_Player_Base::getAttackBonus(
   RPG_Character_BaseAttackBonus_t result;
 
   // attack bonusses stack for multiclass characters...
-  RPG_Character_Classes_t classes = getClasses();
-  for (RPG_Character_ClassesIterator_t iterator = classes.begin();
-       iterator != classes.end();
+  for (RPG_Character_SubClassesIterator_t iterator = myClass.subClasses.begin();
+       iterator != myClass.subClasses.end();
        iterator++)
   {
-    RPG_Character_BaseAttackBonus_t bonus = RPG_Character_Common_Tools::getBaseAttackBonus((*iterator).subClass,
-                                                                                           getLevel((*iterator).subClass));
+    RPG_Character_BaseAttackBonus_t bonus = RPG_Character_Common_Tools::getBaseAttackBonus(*iterator,
+                                                                                           getLevel(*iterator));
     // append necessary entries
     for (int diff = bonus.size() - result.size();
          diff > 0;
@@ -182,7 +183,7 @@ const RPG_Character_BaseAttackBonus_t RPG_Character_Player_Base::getAttackBonus(
   } // end FOR
 
   int abilityModifier = RPG_Character_Common_Tools::getAttributeAbilityModifier(getAttribute(modifier_in));
-  int sizeModifier = RPG_Character_Common_Tools::getSizeModifier(getSize());
+  int sizeModifier = RPG_Common_Tools::getSizeModifier(getSize());
   for (RPG_Character_BaseAttackBonusIterator_t iterator = result.begin();
        iterator != result.end();
        iterator++)
@@ -225,7 +226,7 @@ const signed char RPG_Character_Player_Base::getArmorClass(const RPG_Combat_Defe
   result += DEX_modifier;
 
   // usually, this is irrelevant (SIZE_MEDIUM --> +/-0), but may have changed temporarily, magically etc...
-  result += RPG_Character_Common_Tools::getSizeModifier(getSize());
+  result += RPG_Common_Tools::getSizeModifier(getSize());
 
   return result;
 }
@@ -241,18 +242,18 @@ void RPG_Character_Player_Base::gainExperience(const unsigned int& XP_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::gainExperience"));
 
-  unsigned char old_level = getLevel(myClasses.front().subClass);
+  unsigned char old_level = getLevel(*myClass.subClasses.begin());
 
   myExperience += XP_in;
 
   // *TODO*: trigger level-up
-  if (old_level != getLevel(myClasses.front().subClass))
+  if (old_level != getLevel(*myClass.subClasses.begin()))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("player: \"%s\" (XP: %d) has gained a level (%d)...\n"),
                getName().c_str(),
                myExperience,
-               ACE_static_cast(int, getLevel(myClasses.front().subClass))));
+               ACE_static_cast(int, getLevel(*myClass.subClasses.begin()))));
   } // end IF
 }
 
@@ -319,10 +320,10 @@ void RPG_Character_Player_Base::dump() const
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::dump"));
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("Player: \nGender: %s\nRace: %s\nClass(es):\n%sXP: %d\n"),
+             ACE_TEXT("Player: \nGender: %s\nRace: %s\nClass: %s\nXP: %d\n"),
              RPG_Character_GenderHelper::RPG_Character_GenderToString(myGender).c_str(),
              RPG_Character_RaceHelper::RPG_Character_RaceToString(myRace).c_str(),
-             RPG_Character_Common_Tools::classesToString(myClasses).c_str(),
+             RPG_Character_Common_Tools::classToString(myClass).c_str(),
              myExperience));
 
   inherited::dump();

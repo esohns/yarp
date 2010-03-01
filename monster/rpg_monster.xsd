@@ -9,15 +9,15 @@
   <!-- include chance_dice schema -->
   <xsd:include schemaLocation="rpg_dice.xsd"/>
   <!-- include common schema -->
-<!--   <xsd:include schemaLocation="rpg_common.xsd"/> -->
+  <xsd:include schemaLocation="rpg_common.xsd"/>
   <!-- include magic schema -->
   <xsd:include schemaLocation="rpg_magic.xsd"/>
   <!-- include item schema -->
   <xsd:include schemaLocation="rpg_item.xsd"/>
+<!-- include combat schema -->
+  <xsd:include schemaLocation="rpg_combat.xsd"/>
   <!-- include character schema -->
   <xsd:include schemaLocation="rpg_character.xsd"/>
-  <!-- include combat schema -->
-  <xsd:include schemaLocation="rpg_combat.xsd"/>
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import chance_dice schema (as declared above) -->
 <!--   <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/> -->
@@ -81,8 +81,8 @@
   <xsd:complexType name="RPG_Monster_SpecialDefensePreCondition_Type">
     <xsd:sequence>
       <xsd:element name="weaponType" type="RPG_Monster_WeaponTypeUnion_Type" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="ownCondition" type="RPG_Character_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="targetCondition" type="RPG_Character_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="ownCondition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="targetCondition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
     <xsd:attribute name="isMagicalWeapon" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
@@ -141,10 +141,10 @@
     <xsd:sequence>
       <xsd:element name="action" type="RPG_Monster_ActionTrigger_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="targetAlignment" type="RPG_Character_Alignment_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="ownCondition" type="RPG_Character_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="targetCondition" type="RPG_Character_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="minTargetSize" type="RPG_Character_Size_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="maxTargetSize" type="RPG_Character_Size_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="ownCondition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="targetCondition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="minTargetSize" type="RPG_Common_Size_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="maxTargetSize" type="RPG_Common_Size_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="check" type="RPG_Combat_Check_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -163,8 +163,8 @@
 
   <xsd:complexType name="RPG_Monster_SpecialAbilityPreCondition_Type">
     <xsd:sequence>
-      <xsd:element name="targetCondition" type="RPG_Character_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="maxTargetSize" type="RPG_Character_Size_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="targetCondition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="maxTargetSize" type="RPG_Common_Size_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="check" type="RPG_Combat_Check_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -254,7 +254,7 @@
 
   <xsd:complexType name="RPG_Monster_AdvancementStep_Type">
     <xsd:sequence>
-      <xsd:element name="size" type="RPG_Character_Size_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="size" type="RPG_Common_Size_Type" minOccurs="1" maxOccurs="1"/>
 <!--       <xsd:element name="range" type="rpg_chance_dice:RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/> -->
       <xsd:element name="range" type="RPG_Dice_ValueRange_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
@@ -269,7 +269,7 @@
   <xsd:complexType name="RPG_Monster_PropertiesXML_Type">
     <xsd:sequence>
       <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="size" type="RPG_Character_Size_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="size" type="RPG_Common_Size_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="type" type="RPG_Common_CreatureType_Type" minOccurs="1" maxOccurs="1"/>
 <!--       <xsd:element name="hitDice" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/> -->
       <xsd:element name="hitDice" type="RPG_Dice_Roll_Type" minOccurs="1" maxOccurs="1"/>

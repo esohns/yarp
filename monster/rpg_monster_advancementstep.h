@@ -23,7 +23,7 @@
 
 struct RPG_Monster_AdvancementStep
 {
-  RPG_Character_Size size;
+  RPG_Common_Size size;
   RPG_Dice_ValueRange range;
 };
 

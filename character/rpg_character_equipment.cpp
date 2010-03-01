@@ -98,8 +98,8 @@ const RPG_Item_WeaponType RPG_Character_Equipment::getPrimaryWeapon(const RPG_Ch
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getPrimaryWeapon"));
 
-  RPG_Character_EquipmentSlot slot = ((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_RIGHT_HAND
-                                                                   : EQUIPMENTSLOT_LEFT_HAND);
+  RPG_Character_EquipmentSlot slot = ((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                                                   : EQUIPMENTSLOT_HAND_LEFT);
 
   // *TODO*; consider ambidexterity, etc...
   RPG_Character_EquipmentIterator_t iterator = myEquipment.find(slot);
@@ -188,8 +188,8 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getShield(const RPG_Character_
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getShield"));
 
-  RPG_Character_EquipmentSlot slot = ((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_LEFT_HAND
-                                                                   : EQUIPMENTSLOT_RIGHT_HAND);
+  RPG_Character_EquipmentSlot slot = ((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                                                   : EQUIPMENTSLOT_HAND_RIGHT);
 
   // *TODO*; consider case where shield is in the primary hand, etc...
   RPG_Character_EquipmentIterator_t iterator = myEquipment.find(slot);

@@ -23,10 +23,10 @@
 
 enum RPG_Common_EffectType
 {
-  EFFECT_IMMEDIATE = 0,
-  EFFECT_BATTLE,
-  EFFECT_TEMPORARY,
+  EFFECT_BATTLE = 0,
+  EFFECT_IMMEDIATE,
   EFFECT_PERMANENT,
+  EFFECT_TEMPORARY,
   //
   RPG_COMMON_EFFECTTYPE_MAX,
   RPG_COMMON_EFFECTTYPE_INVALID
@@ -46,10 +46,10 @@ class RPG_Common_EffectTypeHelper
   inline static void init()
   {
     myRPG_Common_EffectTypeToStringTable.clear();
-    myRPG_Common_EffectTypeToStringTable.insert(std::make_pair(EFFECT_IMMEDIATE, ACE_TEXT_ALWAYS_CHAR("EFFECT_IMMEDIATE")));
     myRPG_Common_EffectTypeToStringTable.insert(std::make_pair(EFFECT_BATTLE, ACE_TEXT_ALWAYS_CHAR("EFFECT_BATTLE")));
-    myRPG_Common_EffectTypeToStringTable.insert(std::make_pair(EFFECT_TEMPORARY, ACE_TEXT_ALWAYS_CHAR("EFFECT_TEMPORARY")));
+    myRPG_Common_EffectTypeToStringTable.insert(std::make_pair(EFFECT_IMMEDIATE, ACE_TEXT_ALWAYS_CHAR("EFFECT_IMMEDIATE")));
     myRPG_Common_EffectTypeToStringTable.insert(std::make_pair(EFFECT_PERMANENT, ACE_TEXT_ALWAYS_CHAR("EFFECT_PERMANENT")));
+    myRPG_Common_EffectTypeToStringTable.insert(std::make_pair(EFFECT_TEMPORARY, ACE_TEXT_ALWAYS_CHAR("EFFECT_TEMPORARY")));
   };
 
   inline static std::string RPG_Common_EffectTypeToString(const RPG_Common_EffectType& element_in)

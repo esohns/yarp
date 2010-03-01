@@ -266,14 +266,14 @@ void RPG_Monster_SpecialDefensePreCondition_Type::weaponType(const RPG_Monster_W
   myCurrentPreCondition.weaponTypes.push_back(weaponType_in);
 }
 
-void RPG_Monster_SpecialDefensePreCondition_Type::ownCondition(const RPG_Character_Condition& condition_in)
+void RPG_Monster_SpecialDefensePreCondition_Type::ownCondition(const RPG_Common_Condition& condition_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialDefensePreCondition_Type::ownCondition"));
 
   myCurrentPreCondition.ownConditions.push_back(condition_in);
 }
 
-void RPG_Monster_SpecialDefensePreCondition_Type::targetCondition(const RPG_Character_Condition& condition_in)
+void RPG_Monster_SpecialDefensePreCondition_Type::targetCondition(const RPG_Common_Condition& condition_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialDefensePreCondition_Type::targetCondition"));
 
@@ -721,9 +721,9 @@ RPG_Monster_SpecialAttackPreCondition_Type::RPG_Monster_SpecialAttackPreConditio
   myCurrentPreCondition.targetAlignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
   myCurrentPreCondition.ownConditions.clear();
   myCurrentPreCondition.targetConditions.clear();
-  myCurrentPreCondition.minTargetSize = RPG_CHARACTER_SIZE_INVALID;
-  myCurrentPreCondition.maxTargetSize = RPG_CHARACTER_SIZE_INVALID;
-  myCurrentPreCondition.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentPreCondition.minTargetSize = RPG_COMMON_SIZE_INVALID;
+  myCurrentPreCondition.maxTargetSize = RPG_COMMON_SIZE_INVALID;
+  myCurrentPreCondition.check.type.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentPreCondition.check.type.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
   myCurrentPreCondition.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentPreCondition.check.difficultyClass = 0;
@@ -736,28 +736,28 @@ void RPG_Monster_SpecialAttackPreCondition_Type::targetAlignment(const RPG_Chara
   myCurrentPreCondition.targetAlignment = targetAlignment_in;
 }
 
-void RPG_Monster_SpecialAttackPreCondition_Type::ownCondition(const RPG_Character_Condition& condition_in)
+void RPG_Monster_SpecialAttackPreCondition_Type::ownCondition(const RPG_Common_Condition& condition_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackPreCondition_Type::ownCondition"));
 
   myCurrentPreCondition.ownConditions.push_back(condition_in);
 }
 
-void RPG_Monster_SpecialAttackPreCondition_Type::targetCondition(const RPG_Character_Condition& condition_in)
+void RPG_Monster_SpecialAttackPreCondition_Type::targetCondition(const RPG_Common_Condition& condition_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackPreCondition_Type::targetCondition"));
 
   myCurrentPreCondition.targetConditions.push_back(condition_in);
 }
 
-void RPG_Monster_SpecialAttackPreCondition_Type::minTargetSize(const RPG_Character_Size& minTargetSize_in)
+void RPG_Monster_SpecialAttackPreCondition_Type::minTargetSize(const RPG_Common_Size& minTargetSize_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackPreCondition_Type::minTargetSize"));
 
   myCurrentPreCondition.minTargetSize = minTargetSize_in;
 }
 
-void RPG_Monster_SpecialAttackPreCondition_Type::maxTargetSize(const RPG_Character_Size& maxTargetSize_in)
+void RPG_Monster_SpecialAttackPreCondition_Type::maxTargetSize(const RPG_Common_Size& maxTargetSize_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAttackPreCondition_Type::maxTargetSize"));
 
@@ -782,9 +782,9 @@ RPG_Monster_SpecialAttackPreCondition RPG_Monster_SpecialAttackPreCondition_Type
   myCurrentPreCondition.targetAlignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
   myCurrentPreCondition.ownConditions.clear();
   myCurrentPreCondition.targetConditions.clear();
-  myCurrentPreCondition.minTargetSize = RPG_CHARACTER_SIZE_INVALID;
-  myCurrentPreCondition.maxTargetSize = RPG_CHARACTER_SIZE_INVALID;
-  myCurrentPreCondition.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentPreCondition.minTargetSize = RPG_COMMON_SIZE_INVALID;
+  myCurrentPreCondition.maxTargetSize = RPG_COMMON_SIZE_INVALID;
+  myCurrentPreCondition.check.type.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentPreCondition.check.type.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
   myCurrentPreCondition.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentPreCondition.check.difficultyClass = 0;
@@ -914,21 +914,21 @@ RPG_Monster_SpecialAbilityPreCondition_Type::RPG_Monster_SpecialAbilityPreCondit
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAbilityPreCondition_Type::RPG_Monster_SpecialAbilityPreCondition_Type"));
 
   myCurrentPreCondition.targetConditions.clear();
-  myCurrentPreCondition.maxTargetSize = RPG_CHARACTER_SIZE_INVALID;
-  myCurrentPreCondition.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentPreCondition.maxTargetSize = RPG_COMMON_SIZE_INVALID;
+  myCurrentPreCondition.check.type.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentPreCondition.check.type.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
   myCurrentPreCondition.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentPreCondition.check.difficultyClass = 0;
 }
 
-void RPG_Monster_SpecialAbilityPreCondition_Type::targetCondition(const RPG_Character_Condition& condition_in)
+void RPG_Monster_SpecialAbilityPreCondition_Type::targetCondition(const RPG_Common_Condition& condition_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAbilityPreCondition_Type::targetCondition"));
 
   myCurrentPreCondition.targetConditions.push_back(condition_in);
 }
 
-void RPG_Monster_SpecialAbilityPreCondition_Type::maxTargetSize(const RPG_Character_Size& maxTargetSize_in)
+void RPG_Monster_SpecialAbilityPreCondition_Type::maxTargetSize(const RPG_Common_Size& maxTargetSize_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_SpecialAbilityPreCondition_Type::maxTargetSize"));
 
@@ -950,8 +950,8 @@ RPG_Monster_SpecialAbilityPreCondition RPG_Monster_SpecialAbilityPreCondition_Ty
 
   // clear structure
   myCurrentPreCondition.targetConditions.clear();
-  myCurrentPreCondition.maxTargetSize = RPG_CHARACTER_SIZE_INVALID;
-  myCurrentPreCondition.check.type.skill = RPG_CHARACTER_SKILL_INVALID;
+  myCurrentPreCondition.maxTargetSize = RPG_COMMON_SIZE_INVALID;
+  myCurrentPreCondition.check.type.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentPreCondition.check.type.discriminator = RPG_Combat_CheckTypeUnion::INVALID;
   myCurrentPreCondition.check.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentPreCondition.check.difficultyClass = 0;
@@ -1298,12 +1298,12 @@ RPG_Monster_AdvancementStep_Type::RPG_Monster_AdvancementStep_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_AdvancementStep_Type::RPG_Monster_AdvancementStep_Type"));
 
-  myCurrentAdvancementStep.size = RPG_CHARACTER_SIZE_INVALID;
+  myCurrentAdvancementStep.size = RPG_COMMON_SIZE_INVALID;
   myCurrentAdvancementStep.range.begin = 0;
   myCurrentAdvancementStep.range.end = 0;
 }
 
-void RPG_Monster_AdvancementStep_Type::size(const RPG_Character_Size& size_in)
+void RPG_Monster_AdvancementStep_Type::size(const RPG_Common_Size& size_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_AdvancementStep_Type::size"));
 
@@ -1324,7 +1324,7 @@ RPG_Monster_AdvancementStep RPG_Monster_AdvancementStep_Type::post_RPG_Monster_A
   RPG_Monster_AdvancementStep result = myCurrentAdvancementStep;
 
   // clear structure
-  myCurrentAdvancementStep.size = RPG_CHARACTER_SIZE_INVALID;
+  myCurrentAdvancementStep.size = RPG_COMMON_SIZE_INVALID;
   myCurrentAdvancementStep.range.begin = 0;
   myCurrentAdvancementStep.range.end = 0;
 
@@ -1362,7 +1362,7 @@ RPG_Monster_PropertiesXML_Type::RPG_Monster_PropertiesXML_Type()
   ACE_TRACE(ACE_TEXT("RPG_Monster_PropertiesXML_Type::RPG_Monster_PropertiesXML_Type"));
 
   myCurrentProperties.name.resize(0);
-  myCurrentProperties.size = RPG_CHARACTER_SIZE_INVALID;
+  myCurrentProperties.size = RPG_COMMON_SIZE_INVALID;
   myCurrentProperties.type.metaType = RPG_COMMON_CREATUREMETATYPE_INVALID;
   myCurrentProperties.type.subTypes.clear();
   myCurrentProperties.hitDice.numDice = 0;
@@ -1412,7 +1412,7 @@ void RPG_Monster_PropertiesXML_Type::name(const std::string& name_in)
   myCurrentProperties.name = name_in;
 }
 
-void RPG_Monster_PropertiesXML_Type::size(const RPG_Character_Size& size_in)
+void RPG_Monster_PropertiesXML_Type::size(const RPG_Common_Size& size_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_PropertiesXML_Type::size"));
 
@@ -1581,7 +1581,7 @@ RPG_Monster_PropertiesXML RPG_Monster_PropertiesXML_Type::post_RPG_Monster_Prope
 
   // clear structure
   myCurrentProperties.name.resize(0);
-  myCurrentProperties.size = RPG_CHARACTER_SIZE_INVALID;
+  myCurrentProperties.size = RPG_COMMON_SIZE_INVALID;
   myCurrentProperties.type.metaType = RPG_COMMON_CREATUREMETATYPE_INVALID;
   myCurrentProperties.type.subTypes.clear();
   myCurrentProperties.hitDice.numDice = 0;

@@ -1310,9 +1310,9 @@ const std::string RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_
           result += converter.str();
         } // end IF
         else if ((*iterator).type == PRECONDITION_CONDITION)
-          result += RPG_Character_ConditionHelper::RPG_Character_ConditionToString((*iterator).condition);
+          result += RPG_Common_ConditionHelper::RPG_Common_ConditionToString((*iterator).condition);
         else if ((*iterator).type == PRECONDITION_SIZE_MAX)
-          result += RPG_Character_SizeHelper::RPG_Character_SizeToString((*iterator).size);
+          result += RPG_Common_SizeHelper::RPG_Common_SizeToString((*iterator).size);
         else
         {
           result += ACE_TEXT_ALWAYS_CHAR(" ");
@@ -1453,7 +1453,7 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
           {
             case RPG_Magic_CheckTypeUnion::SKILL:
             {
-              result += RPG_Character_SkillHelper::RPG_Character_SkillToString((*iterator2).check.type.skill);
+              result += RPG_Common_SkillHelper::RPG_Common_SkillToString((*iterator2).check.type.skill);
 
               break;
             }

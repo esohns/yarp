@@ -54,28 +54,19 @@ class RPG_Character_MetaClass_Type
   virtual RPG_Character_MetaClass post_RPG_Character_MetaClass_Type();
 };
 
-class RPG_Character_Class_Type
- : public RPG_Character_Class_Type_pskel
+class RPG_Character_ClassXML_Type
+  : public RPG_Character_ClassXML_Type_pskel
 {
  public:
-  RPG_Character_Class_Type();
+   RPG_Character_ClassXML_Type();
 
 //   virtual void pre();
   virtual void metaClass(const RPG_Character_MetaClass&);
   virtual void subClass(const RPG_Common_SubClass&);
-  virtual RPG_Character_Class post_RPG_Character_Class_Type();
+  virtual RPG_Character_ClassXML post_RPG_Character_ClassXML_Type();
 
  private:
-  RPG_Character_Class myCurrentClass;
-};
-
-class RPG_Character_Condition_Type
- : public RPG_Character_Condition_Type_pskel,
-   public ::xml_schema::string_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Character_Condition post_RPG_Character_Condition_Type();
+   RPG_Character_ClassXML myCurrentClass;
 };
 
 class RPG_Character_Ability_Type
@@ -85,15 +76,6 @@ class RPG_Character_Ability_Type
  public:
 //   virtual void pre();
   virtual RPG_Character_Ability post_RPG_Character_Ability_Type();
-};
-
-class RPG_Character_Size_Type
- : public RPG_Character_Size_Type_pskel,
-   public ::xml_schema::string_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Character_Size post_RPG_Character_Size_Type();
 };
 
 class RPG_Character_Attributes_Type
@@ -115,15 +97,6 @@ class RPG_Character_Attributes_Type
   RPG_Character_Attributes myCurrentAttributes;
 };
 
-class RPG_Character_Skill_Type
- : public RPG_Character_Skill_Type_pskel,
-   public ::xml_schema::string_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Character_Skill post_RPG_Character_Skill_Type();
-};
-
 class RPG_Character_SkillValue_Type
  : public RPG_Character_SkillValue_Type_pskel
 {
@@ -131,7 +104,7 @@ class RPG_Character_SkillValue_Type
   RPG_Character_SkillValue_Type();
 
 //   virtual void pre();
-  virtual void skill(const RPG_Character_Skill&);
+  virtual void skill(const RPG_Common_Skill&);
   virtual void rank(signed char);
   virtual RPG_Character_SkillValue post_RPG_Character_SkillValue_Type();
 
