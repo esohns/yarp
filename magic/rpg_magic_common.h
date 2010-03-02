@@ -32,7 +32,8 @@
 // some useful types
 typedef std::set<RPG_Magic_SpellType> RPG_Magic_Spells_t;
 typedef RPG_Magic_Spells_t::const_iterator RPG_Magic_SpellsIterator_t;
-
+typedef std::vector<RPG_Magic_SpellType> RPG_Magic_SpellList_t;
+typedef RPG_Magic_SpellList_t::const_iterator RPG_Magic_SpellListIterator_t;
 typedef std::vector<RPG_Magic_Spell_Level> RPG_Magic_SpellLevelList_t;
 typedef RPG_Magic_SpellLevelList_t::const_iterator RPG_Magic_SpellLevelListIterator_t;
 typedef std::vector<RPG_Magic_Spell_PreconditionProperties> RPG_Magic_Spell_PreconditionList_t;

@@ -41,6 +41,7 @@ RPG_Character_Player::RPG_Character_Player(const std::string& name_in,
                                            const unsigned int& experience_in,
                                            const unsigned short int& hitpoints_in,
                                            const unsigned int& wealth_in,
+                                           const RPG_Magic_Spells_t& knownSpells_in,
                                            const RPG_Item_List_t& inventory_in)
  : inherited(name_in,
              gender_in,
@@ -55,6 +56,7 @@ RPG_Character_Player::RPG_Character_Player(const std::string& name_in,
              experience_in,
              hitpoints_in,
              wealth_in,
+             knownSpells_in,
              inventory_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player::RPG_Character_Player"));

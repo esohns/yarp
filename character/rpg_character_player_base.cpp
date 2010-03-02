@@ -42,6 +42,7 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(const std::string& name_in,
                                                      const unsigned int& experience_in,
                                                      const unsigned short int& hitpoints_in,
                                                      const unsigned int& wealth_in,
+                                                     const RPG_Magic_Spells_t& knownSpells_in,
                                                      const RPG_Item_List_t& inventory_in)
  : inherited(name_in,
              alignment_in,
@@ -52,6 +53,7 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(const std::string& name_in,
              SIZE_MEDIUM, // standard PCs are all medium-sized
              hitpoints_in,
              wealth_in,
+             knownSpells_in,
              inventory_in),
    myGender(gender_in),
    myRace(race_in),
@@ -263,7 +265,7 @@ const unsigned int RPG_Character_Player_Base::rest(const RPG_Common_Camp& type_i
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::rest"));
 
   // *TODO*: consider dead/dying players !
-  if (myNumCurrentHitPoints < 0)
+  if (myNumHitPoints < 0)
   {
     // cannot rest --> will die
     return 0;
@@ -271,7 +273,7 @@ const unsigned int RPG_Character_Player_Base::rest(const RPG_Common_Camp& type_i
 
   // consider natural healing...
   unsigned int restedPeriod = 0;
-  int missingHPs = getNumTotalHitPoints() - myNumCurrentHitPoints;
+  int missingHPs = getNumTotalHitPoints() - myNumHitPoints;
   unsigned int recoveryRate = getLevel();
   if (type_in == REST_FULL) recoveryRate *= 2;
   if ((missingHPs > 0) && (hours_in >= 24))
@@ -289,11 +291,11 @@ const unsigned int RPG_Character_Player_Base::rest(const RPG_Common_Camp& type_i
 
     if (missingHPs < 0)
       missingHPs = 0;
-    myNumCurrentHitPoints = getNumTotalHitPoints() - missingHPs;
+    myNumHitPoints = getNumTotalHitPoints() - missingHPs;
   } // end IF
 
   // adjust condition
-  if (myNumCurrentHitPoints > 0)
+  if (myNumHitPoints > 0)
   {
     myConditions.insert(CONDITION_NORMAL);
     myConditions.erase(CONDITION_DISABLED);

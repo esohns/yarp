@@ -25,8 +25,9 @@
 #include <rpg_item_common.h>
 #include <rpg_item_dictionary.h>
 
-#include <rpg_dice_dietype.h>
-#include <rpg_dice_roll.h>
+#include <rpg_magic_common_tools.h>
+
+#include <rpg_dice_incl.h>
 #include <rpg_dice_common.h>
 #include <rpg_dice.h>
 
@@ -43,12 +44,14 @@ RPG_Character_Base::RPG_Character_Base(const std::string& name_in,
                                        const RPG_Common_Size& defaultSize_in,
                                        const unsigned short int& hitpoints_in,
                                        const unsigned int& wealth_in,
+                                       const RPG_Magic_Spells_t& knownSpells_in,
                                        const RPG_Item_List_t& inventory_in)
- : myCurrentWealth(wealth_in),
+ : myWealth(wealth_in),
    mySize(defaultSize_in),
+   myKnownSpells(knownSpells_in),
    myInventory(inventory_in),
 //    myEquipment(), // start naked
-   myNumCurrentHitPoints(hitpoints_in), // we start out healthy, don't we ?
+   myNumHitPoints(hitpoints_in), // we start out healthy, don't we ?
 //    myConditions(), // start normal
    myName(name_in),
    myAlignment(alignment_in),
@@ -60,15 +63,17 @@ RPG_Character_Base::RPG_Character_Base(const std::string& name_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
 
+  // start normal
   myConditions.insert(CONDITION_NORMAL);
 }
 
 RPG_Character_Base::RPG_Character_Base(const RPG_Character_Base& playerBase_in)
-  : myCurrentWealth(playerBase_in.myCurrentWealth),
+  : myWealth(playerBase_in.myWealth),
     mySize(playerBase_in.mySize),
+    myKnownSpells(playerBase_in.myKnownSpells),
     myInventory(playerBase_in.myInventory),
     myEquipment(playerBase_in.myEquipment),
-    myNumCurrentHitPoints(playerBase_in.myNumCurrentHitPoints),
+    myNumHitPoints(playerBase_in.myNumHitPoints),
     myConditions(playerBase_in.myConditions),
     myName(playerBase_in.myName),
     myAlignment(playerBase_in.myAlignment),
@@ -86,11 +91,12 @@ RPG_Character_Base& RPG_Character_Base::operator=(const RPG_Character_Base& play
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::operator="));
 
-  myCurrentWealth = playerBase_in.myCurrentWealth;
+  myWealth = playerBase_in.myWealth;
   mySize = playerBase_in.mySize;
+  myKnownSpells = playerBase_in.myKnownSpells;
   myInventory = playerBase_in.myInventory;
   myEquipment = playerBase_in.myEquipment;
-  myNumCurrentHitPoints = playerBase_in.myNumCurrentHitPoints;
+  myNumHitPoints = playerBase_in.myNumHitPoints;
   myConditions = playerBase_in.myConditions;
   myName = playerBase_in.myName;
   myAlignment = playerBase_in.myAlignment;
@@ -210,18 +216,18 @@ const unsigned short int RPG_Character_Base::getNumTotalHitPoints() const
   return myNumTotalHitPoints;
 }
 
-const short int RPG_Character_Base::getNumCurrentHitPoints() const
+const short int RPG_Character_Base::getNumHitPoints() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getNumCurrentHitPoints"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getNumHitPoints"));
 
-  return myNumCurrentHitPoints;
+  return myNumHitPoints;
 }
 
-const unsigned int RPG_Character_Base::getCurrentWealth() const
+const unsigned int RPG_Character_Base::getWealth() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getCurrentWealth"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getWealth"));
 
-  return myCurrentWealth;
+  return myWealth;
 }
 
 const bool RPG_Character_Base::hasCondition(const RPG_Common_Condition& condition_in) const
@@ -257,27 +263,27 @@ void RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
     if (damage_value <= 0)
       damage_value = 1;
 
-    myNumCurrentHitPoints -= damage_value;
+    myNumHitPoints -= damage_value;
 
     total_damage_value += damage_value;
   } // end FOR
 
-  if (myNumCurrentHitPoints < -10)
-    myNumCurrentHitPoints = -10;
+  if (myNumHitPoints < -10)
+    myNumHitPoints = -10;
 
   // adjust condition
-  if (myNumCurrentHitPoints <= 0)
+  if (myNumHitPoints <= 0)
   {
     myConditions.erase(CONDITION_NORMAL);
 
-    if (myNumCurrentHitPoints == -10)
+    if (myNumHitPoints == -10)
       myConditions.insert(CONDITION_DEAD);
-    else if (myNumCurrentHitPoints < 0)
+    else if (myNumHitPoints < 0)
       myConditions.insert(CONDITION_DYING);
     else
       myConditions.insert(CONDITION_DISABLED);
 
-    if (myNumCurrentHitPoints < 0)
+    if (myNumHitPoints < 0)
       myConditions.insert(CONDITION_UNCONSCIOUS);
   } // end IF
 
@@ -285,7 +291,7 @@ void RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("character \"%s\" (HP: %d/%d) suffers damage of %d HP%s...\n"),
              getName().c_str(),
-             myNumCurrentHitPoints,
+             myNumHitPoints,
              myNumTotalHitPoints,
              total_damage_value,
              (!hasCondition(CONDITION_NORMAL) ? ACE_TEXT_ALWAYS_CHAR(" --> DOWN") : ACE_TEXT_ALWAYS_CHAR(""))));
@@ -298,23 +304,36 @@ void RPG_Character_Base::status() const
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("condition: %s\nHP: %d/%d\nwealth: %d GP\n"),
              RPG_Character_Common_Tools::conditionToString(myConditions).c_str(),
-             myNumCurrentHitPoints,
+             myNumHitPoints,
              myNumTotalHitPoints,
-             myCurrentWealth));
+             myWealth));
 }
 
 void RPG_Character_Base::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::dump"));
 
+  std::string spells;
+  if (!myKnownSpells.empty())
+  {
+    spells += ACE_TEXT_ALWAYS_CHAR("known:\n");
+    spells += RPG_Magic_Common_Tools::spellsToString(myKnownSpells);
+  } // end IF
+  if (!mySpells.empty())
+  {
+    spells += ACE_TEXT_ALWAYS_CHAR("memorized:\n");
+    spells += RPG_Magic_Common_Tools::spellsToString(mySpells);
+  } // end IF
+
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("Name: \"%s\"\nAlignment: \"%s\"\nAttributes:\n===========\n%sSkills:\n=======\n%sFeats:\n======\n%sAbilities:\n==========\n%sItems:\n======\n"),
+             ACE_TEXT("Name: \"%s\"\nAlignment: \"%s\"\nAttributes:\n===========\n%sSkills:\n=======\n%sFeats:\n======\n%sAbilities:\n==========\n%sSpells:\n==========\n%sItems:\n======\n"),
              myName.c_str(),
              RPG_Character_Common_Tools::alignmentToString(myAlignment).c_str(),
              RPG_Character_Common_Tools::attributesToString(myAttributes).c_str(),
              RPG_Character_Skills_Common_Tools::skillsToString(mySkills).c_str(),
              RPG_Character_Skills_Common_Tools::featsToString(myFeats).c_str(),
-             RPG_Character_Skills_Common_Tools::abilitiesToString(myAbilities).c_str()));
+             RPG_Character_Skills_Common_Tools::abilitiesToString(myAbilities).c_str(),
+             spells.c_str()));
 
   // dump items
   myInventory.dump();

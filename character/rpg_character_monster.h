@@ -26,6 +26,8 @@
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
 
+#include <rpg_magic_common.h>
+
 #include <ace/Global_Macros.h>
 
 /**
@@ -45,6 +47,7 @@ class RPG_Character_Monster
                         const RPG_Common_Size&,           // (default) size
                         const unsigned short int&,        // (starting) HP
                         const unsigned int&,              // (starting) wealth (GP)
+                        const RPG_Magic_Spells_t&,        // (starting) set of known spells (if any)
                         const RPG_Item_List_t&,           // (starting) list of (carried) items
                         const bool& = false);             // summoned ?
   RPG_Character_Monster(const RPG_Character_Monster&);

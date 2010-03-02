@@ -20,17 +20,17 @@
 #ifndef RPG_CHARACTER_BASE_H
 #define RPG_CHARACTER_BASE_H
 
-#include <rpg_dice_dietype.h>
-#include <rpg_dice_roll.h>
+#include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
-#include <rpg_magic_spelltype.h>
-
 #include "rpg_character_incl.h"
+
 #include "rpg_character_inventory_common.h"
 #include "rpg_character_inventory.h"
 #include "rpg_character_equipment.h"
 #include "rpg_character_common.h"
 #include "rpg_character_skills_common.h"
+
+#include <rpg_magic_common.h>
 
 #include <rpg_combat_incl.h>
 
@@ -64,9 +64,9 @@ class RPG_Character_Base
   const bool hasCondition(const RPG_Common_Condition&) const; // condition
 
   const unsigned short int getNumTotalHitPoints() const;
-  const short int getNumCurrentHitPoints() const;
+  const short int getNumHitPoints() const;
 
-  const unsigned int getCurrentWealth() const;
+  const unsigned int getWealth() const;
   const RPG_Common_Size getSize() const;
 
   virtual const RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
@@ -95,6 +95,8 @@ class RPG_Character_Base
                      const RPG_Common_Size&,            // (default) size
                      const unsigned short int&,         // (starting) HP
                      const unsigned int&,               // (starting) wealth (GP)
+                     // base known spells (bard / sorcerer)
+                     const RPG_Magic_Spells_t&,         // (starting) set of known spells
                      // base items
                      const RPG_Item_List_t&);           // (starting) list of (carried) items
   RPG_Character_Base(const RPG_Character_Base&);
@@ -102,13 +104,16 @@ class RPG_Character_Base
 
   virtual const signed char getShieldBonus() const = 0;
 
-  unsigned int               myCurrentWealth;
+  unsigned int               myWealth;
   RPG_Common_Size            mySize;
+
+  RPG_Magic_Spells_t         myKnownSpells;
+  RPG_Magic_SpellList_t      mySpells;
 
   RPG_Character_Inventory    myInventory;
   RPG_Character_Equipment    myEquipment;
 
-  short int                  myNumCurrentHitPoints;
+  short int                  myNumHitPoints;
   RPG_Character_Conditions_t myConditions;
 
  private:

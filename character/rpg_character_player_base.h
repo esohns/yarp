@@ -25,18 +25,20 @@
 #include "rpg_character_base.h"
 #include "rpg_character_gender.h"
 #include "rpg_character_race.h"
-#include "rpg_character_common.h"
 #include "rpg_character_offhand.h"
 #include "rpg_character_alignmentcivic.h"
 #include "rpg_character_alignmentethic.h"
 #include "rpg_character_alignment.h"
 #include "rpg_character_attributes.h"
+#include "rpg_character_common.h"
 #include "rpg_character_skills_common.h"
 
 #include <rpg_combat_attacksituation.h>
 #include <rpg_combat_defensesituation.h>
 
 #include <rpg_item_instance_common.h>
+
+#include <rpg_magic_common.h>
 
 #include <rpg_common_attribute.h>
 #include <rpg_common_camp.h>
@@ -91,6 +93,7 @@ class RPG_Character_Player_Base
                             const unsigned int&,              // (starting) XP
                             const unsigned short int&,        // (starting) HP
                             const unsigned int&,              // (starting) wealth (GP)
+                            const RPG_Magic_Spells_t&,        // (starting) set of known spells (if any)
                             const RPG_Item_List_t&);          // (starting) list of (carried) items
   RPG_Character_Player_Base(const RPG_Character_Player_Base&);
 

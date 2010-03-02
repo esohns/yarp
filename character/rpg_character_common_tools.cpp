@@ -335,6 +335,36 @@ const RPG_Character_BaseAttackBonus_t RPG_Character_Common_Tools::getBaseAttackB
   return result;
 }
 
+const bool RPG_Character_Common_Tools::isCasterClass(const RPG_Common_SubClass& subClass_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::isCasterClass"));
+
+  switch (subClass_in)
+  {
+    case SUBCLASS_BARD:
+    case SUBCLASS_CLERIC:
+    case SUBCLASS_DRUID:
+    case SUBCLASS_PALADIN:
+    case SUBCLASS_RANGER:
+    case SUBCLASS_SORCERER:
+    case SUBCLASS_WIZARD:
+    {
+      return true;
+    }
+    default:
+    {
+//       // debug info
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("invalid subclass: \"%s\" --> check implementation !, aborting\n"),
+//                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  return false;
+}
+
 const RPG_Character_Plane RPG_Character_Common_Tools::terrainToPlane(const RPG_Character_Terrain& terrain_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::terrainToPlane"));
@@ -601,7 +631,42 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   // our players start with maxed HP...
   hitpoints = RPG_Character_Common_Tools::getHitDie(player_subclass);
 
-  // step11: (initial) set of items
+  // step11: (initial) set of spells
+  unsigned char numKnownSpells = 0;
+  unsigned char numSpells = 0;
+  RPG_Magic_Spells_t knownSpells;
+  RPG_Magic_SpellList_t spells;
+  RPG_Magic_Spells_t available;
+  RPG_Magic_CasterClassUnion casterClass;
+  casterClass.discriminator = RPG_Magic_CasterClassUnion::SUBCLASS;
+  for (RPG_Character_SubClassesIterator_t iterator = player_class.subClasses.begin();
+       iterator != player_class.subClasses.end();
+       iterator++)
+  {
+    for (unsigned char i = 0;
+         i < 10;
+         i++)
+    {
+      RPG_Magic_Common_Tools::getNumSpellsPerLevel(*iterator,
+                                                   0,
+                                                   i,
+                                                   numSpells,
+                                                   numKnownSpells);
+      // only Bards and Sorcerers have a limited set of "known" spells to choose from
+      if ((*iterator == SUBCLASS_BARD) ||
+          (*iterator == SUBCLASS_SORCERER))
+      {
+        // get list of available spells
+        casterClass.subclass = *iterator;
+        available = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
+                                                                          i);
+
+        bla
+      } // end IF
+    } // end FOR
+  } // end FOR
+
+  // step12: (initial) set of items
   // *TODO*: somehow generate these at random too ?
   RPG_Item_List_t items;
   RPG_Item_Armor* armor = NULL;
@@ -739,6 +804,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
                               0,
                               hitpoints,
                               0,
+                              spells,
                               items);
 
   return player;
@@ -761,7 +827,7 @@ const unsigned int RPG_Character_Common_Tools::restParty(RPG_Character_Party_t& 
                index,
                (*iterator).getName().c_str(),
                (*iterator).getLevel(),
-               (*iterator).getNumCurrentHitPoints(),
+               (*iterator).getNumHitPoints(),
                (*iterator).getNumTotalHitPoints(),
                ((*iterator).hasCondition(CONDITION_NORMAL) ? ACE_TEXT_ALWAYS_CHAR("OK") : ACE_TEXT_ALWAYS_CHAR("DOWN"))));
   } // end FOR
@@ -776,10 +842,10 @@ const unsigned int RPG_Character_Common_Tools::restParty(RPG_Character_Party_t& 
        iterator++)
   {
     // *TODO*: consider dead/dying players !
-    if ((*iterator).getNumCurrentHitPoints() < 0)
+    if ((*iterator).getNumHitPoints() < 0)
       continue;
 
-    diff = ((*iterator).getNumTotalHitPoints() - (*iterator).getNumCurrentHitPoints());
+    diff = ((*iterator).getNumTotalHitPoints() - (*iterator).getNumHitPoints());
     fraction = (diff % ((*iterator).getLevel() * 2));
     diff -= fraction;
     recoveryTime = ((diff / ((*iterator).getLevel() * 2)) + // days of complete bed-rest +

@@ -218,7 +218,7 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
 
 //   // debug info
 //   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("finished parsing character dictionary file \"%s\"...\n"),
+//              ACE_TEXT("finished parsing magic dictionary file \"%s\"...\n"),
 //              filename_in.c_str()));
 }
 
@@ -237,6 +237,29 @@ const RPG_Magic_Spell_Properties RPG_Magic_Dictionary::getSpellProperties(const 
   } // end IF
 
   return iterator->second;
+}
+
+const RPG_Magic_Spell_Properties RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
+
+  for (RPG_Magic_DictionaryIterator_t iterator = myDictionary.begin();
+       iterator != myDictionary.end();
+       iterator++)
+  {
+    if ((*iterator).second.type.type == spellType_in)
+      return iterator->second;
+  } // end IF
+
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("invalid spell type \"%s\" --> check implementation !, aborting\n"),
+             RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(spellType_in).c_str()));
+
+  ACE_ASSERT(false);
+  ACE_NOTREACHED();
+
+  RPG_Magic_Spell_Properties dummy;
+  return dummy;
 }
 
 const RPG_Magic_Spells_t RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in,
@@ -271,7 +294,17 @@ const RPG_Magic_Spells_t RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterC
 
           break;
         }
+        // *PORTABILITY*: gcc complains about enum identifiers named "DOMAIN"
+        // this is probably a bug (it only complains in some cases...) or some "internal"
+        // issue --> we provide a (temporary) workaround here...
+        // *TODO*: clean this up...
+#define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+        /* Test for GCC > 4.4.2 */
+#if GCC_VERSION == 40402
         case RPG_Magic_CasterClassUnion::__GNUC__DOMAIN:
+#else
+        case RPG_Magic_CasterClassUnion::DOMAIN:
+#endif
         {
           if ((*iterator2).casterClass.domain == casterClass_in.domain)
             match = true;

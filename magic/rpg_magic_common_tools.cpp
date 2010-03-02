@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "rpg_magic_common_tools.h"
 
+#include "rpg_magic_dictionary.h"
+
 #include <rpg_dice_common_tools.h>
 #include <rpg_common_tools.h>
 
@@ -1052,7 +1054,17 @@ const std::string RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_Sp
 
         break;
       }
+      // *PORTABILITY*: gcc complains about enum identifiers named "DOMAIN"
+      // this is probably a bug (it only complains in some cases...) or some "internal"
+      // issue --> we provide a (temporary) workaround here...
+      // *TODO*: clean this up...
+#define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+      /* Test for GCC 4.4.2 */
+#if GCC_VERSION == 40402
       case RPG_Magic_CasterClassUnion::__GNUC__DOMAIN:
+#else
+      case RPG_Magic_CasterClassUnion::DOMAIN:
+#endif
       {
         result += RPG_Magic_DomainHelper::RPG_Magic_DomainToString((*iterator).casterClass.domain);
 
@@ -1380,6 +1392,7 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
 
   std::string result;
   std::stringstream converter;
+
   for (RPG_Magic_Spell_EffectListIterator_t iterator = effects_in.begin();
        iterator != effects_in.end();
        iterator++)
@@ -1546,6 +1559,67 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
       } // end IF
       result += ACE_TEXT_ALWAYS_CHAR("\n");
     } // end FOR
+  } // end FOR
+
+  return result;
+}
+
+const std::string RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_Spells_t& knownSpells_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellsToString"));
+
+  std::string result;
+
+  for (RPG_Magic_SpellsIterator_t iterator = knownSpells_in.begin();
+       iterator != knownSpells_in.end();
+       iterator++)
+  {
+    result += RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator);
+    result += ACE_TEXT_ALWAYS_CHAR("\n");
+  } // end FOR
+
+  return result;
+}
+
+const std::string RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_SpellList_t& memorizedSpells_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellsToString"));
+
+  std::string result;
+  RPG_Magic_Spells_t completed;
+  unsigned int count = 0;
+  std::stringstream converter;
+
+  for (RPG_Magic_SpellListIterator_t iterator = memorizedSpells_in.begin();
+       iterator != memorizedSpells_in.end();
+       iterator++)
+  {
+    // already treated this type ?
+    if (completed.find(*iterator) != completed.end())
+      continue;
+
+    result += RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator);
+    // search ahead if we have memorized it several times
+    count = 1;
+    for (RPG_Magic_SpellListIterator_t iterator2 = iterator;
+         iterator2 != memorizedSpells_in.end();
+         iterator2++)
+    {
+      if (*iterator2 == *iterator)
+        count++;
+    } // end FOR
+
+    // remember this type
+    completed.insert(*iterator);
+
+    if (count > 1)
+    {
+      result += ACE_TEXT_ALWAYS_CHAR(": ");
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+      converter << count;
+      result += converter.str();
+    } // end IF
+    result += ACE_TEXT_ALWAYS_CHAR("\n");
   } // end FOR
 
   return result;

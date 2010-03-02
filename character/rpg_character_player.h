@@ -21,7 +21,6 @@
 #define RPG_CHARACTER_PLAYER_H
 
 #include "rpg_character_player_base.h"
-#include "rpg_character_equipment.h"
 
 /**
 player character
@@ -45,6 +44,7 @@ class RPG_Character_Player
                        const unsigned int&,              // (starting) XP
                        const unsigned short int&,        // (starting) HP
                        const unsigned int&,              // (starting) wealth (GP)
+                       const RPG_Magic_Spells_t&,        // (starting) set of known spells (if any)
                        const RPG_Item_List_t&);          // (starting) list of (carried) items
   RPG_Character_Player(const RPG_Character_Player&);
   virtual ~RPG_Character_Player();
@@ -54,11 +54,11 @@ class RPG_Character_Player
  private:
   typedef RPG_Character_Player_Base inherited;
 
-  // helper methods
-  void defaultEquip();
-
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player());
+
+  // helper methods
+  void defaultEquip();
 };
 
 #endif
