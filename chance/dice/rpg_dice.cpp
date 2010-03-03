@@ -57,6 +57,8 @@ void RPG_Dice::generateRandomNumbers(const unsigned int& range_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Dice::generateRandomNumbers"));
 
+  ACE_ASSERT(range_in);
+
   // init result(s)
   results_out.clear();
 
@@ -64,7 +66,7 @@ void RPG_Dice::generateRandomNumbers(const unsigned int& range_in,
        i < numRolls_in;
        i++)
   {
-    // *PORTABILITY*: this is most probably not portable...
+    // *PORTABILITY*: this is not widely portable...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     results_out.push_back((::random() % range_in) + 1);
 #else

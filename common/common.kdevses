@@ -1,19 +1,16 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="4" >
+ <DocsAndViews NumberOfDocuments="3" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/rpg_common.xsd" >
-   <View0 Encoding="" line="170" Type="Source" />
+   <View0 Encoding="" line="72" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/rpg_common_XML_parser.h" >
-   <View0 Encoding="" line="77" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/rpg_common_defines.h" >
+   <View0 Encoding="" line="26" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/rpg_common_tools.cpp" >
-   <View0 Encoding="" line="46" Type="Source" />
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/rpg_common_skill.h" >
+   <View0 Encoding="" line="20" Type="Source" />
   </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/rpg_common_XML_parser.cpp" >
-   <View0 Encoding="" line="92" Type="Source" />
-  </Doc3>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>

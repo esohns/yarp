@@ -27,6 +27,10 @@
 #include <rpg_item_common_tools.h>
 #include <rpg_item_dictionary.h>
 
+#include <rpg_magic_dictionary.h>
+#include <rpg_magic_common_tools.h>
+
+#include <rpg_common_defines.h>
 #include <rpg_common_camp.h>
 
 #include <rpg_dice.h>
@@ -637,6 +641,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   RPG_Magic_Spells_t knownSpells;
   RPG_Magic_SpellList_t spells;
   RPG_Magic_Spells_t available;
+  RPG_Magic_SpellsIterator_t available_iterator;
   RPG_Magic_CasterClassUnion casterClass;
   casterClass.discriminator = RPG_Magic_CasterClassUnion::SUBCLASS;
   for (RPG_Character_SubClassesIterator_t iterator = player_class.subClasses.begin();
@@ -644,7 +649,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
        iterator++)
   {
     for (unsigned char i = 0;
-         i < 10;
+         i <= RPG_COMMON_MAX_SPELL_LEVEL;
          i++)
     {
       RPG_Magic_Common_Tools::getNumSpellsPerLevel(*iterator,
@@ -652,16 +657,56 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
                                                    i,
                                                    numSpells,
                                                    numKnownSpells);
+
+      // get list of available spells
+      casterClass.subclass = *iterator;
+      available = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
+                                                                        i);
+
       // only Bards and Sorcerers have a limited set of "known" spells to choose from
       if ((*iterator == SUBCLASS_BARD) ||
           (*iterator == SUBCLASS_SORCERER))
       {
-        // get list of available spells
-        casterClass.subclass = *iterator;
-        available = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
-                                                                          i);
+        do
+        {
+          available_iterator = available.begin();
+          result.clear();
+          RPG_Dice::generateRandomNumbers(available.size(),
+                                          1,
+                                          result);
+          for (int j = 0;
+               j <= (result.front() - 1);
+               j++)
+            available_iterator++;
 
-        bla
+          if (knownSpells.find(*available_iterator) != knownSpells.end())
+            continue; // try again
+
+          knownSpells.insert(*available_iterator);
+        } while (knownSpells.size() < numKnownSpells);
+      } // end IF
+
+      // ... everybody else simply gets to prepare/memorize a number of (available) spells
+      // ... apart from the Bard, who doesn't need to prepare any spells ahead of time
+      if (isCasterClass(*iterator) &&
+          (*iterator != SUBCLASS_BARD))
+      {
+        for (unsigned int j = 0;
+              j < numSpells;
+              j++)
+        {
+          available_iterator = available.begin();
+          result.clear();
+          RPG_Dice::generateRandomNumbers(available.size(),
+                                          1,
+                                          result);
+          for (int j = 0;
+                j <= (result.front() - 1);
+                j++)
+            available_iterator++;
+
+          spells.push_back(*available_iterator);
+        } // end FOR
       } // end IF
     } // end FOR
   } // end FOR
@@ -804,7 +849,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
                               0,
                               hitpoints,
                               0,
-                              spells,
+                              knownSpells,
                               items);
 
   return player;
