@@ -36,6 +36,7 @@ class RPG_Magic_Common_Tools
  public:
   static void init();
 
+  static const std::string spellToName(const RPG_Magic_SpellType&); // type
   static const std::string spellTypeToString(const RPG_Magic_Spell_Type&); // type
   static const std::string spellLevelsToString(const RPG_Magic_SpellLevelList_t&); // levels
   static const std::string spellRangeToString(const RPG_Magic_Spell_RangeProperties&); // range
@@ -43,8 +44,8 @@ class RPG_Magic_Common_Tools
   static const std::string spellDurationToString(const RPG_Magic_Spell_DurationProperties&); // duration
   static const std::string preconditionsToString(const RPG_Magic_Spell_PreconditionList_t&); // preconditions
   static const std::string effectsToString(const RPG_Magic_Spell_EffectList_t&); // effects
-  static const std::string spellsToString(const RPG_Magic_Spells_t&); // "known" spells
-  static const std::string spellsToString(const RPG_Magic_SpellList_t&); // currently) "memorized" spells
+  static const std::string spellsToString(const RPG_Magic_Spells_t&); // spells
+  static const std::string spellsToString(const RPG_Magic_SpellList_t&); // spells
 
   static void getNumSpellsPerLevel(const RPG_Common_SubClass&, // subclass
                                    const unsigned char&,       // class level
@@ -62,13 +63,13 @@ class RPG_Magic_Common_Tools
   // helper methods
   static void initStringConversionTables();
   static void initSpellsTables();
+
   static void updateSpellRange(RPG_Magic_Spell_RangeProperties&); // range
 
   typedef std::pair<unsigned char, unsigned char> RPG_Magic_ClassLevelSpellLevelPair_t;
   typedef std::pair<RPG_Common_SubClass, RPG_Magic_ClassLevelSpellLevelPair_t> RPG_Magic_SubClassLevelPair_t;
   typedef std::map<RPG_Magic_SubClassLevelPair_t, unsigned char> RPG_Magic_NumSpellsTable_t;
   typedef RPG_Magic_NumSpellsTable_t::const_iterator RPG_Magic_NumSpellsTableIterator_t;
-
   static RPG_Magic_NumSpellsTable_t myNumSpellsTable;
   static RPG_Magic_NumSpellsTable_t myNumSpellsKnownTable;
 };

@@ -36,6 +36,7 @@
 #include <rpg_item_dictionary.h>
 #include <rpg_item_common_tools.h>
 
+#include <rpg_magic_dictionary.h>
 #include <rpg_magic_common_tools.h>
 
 #include <rpg_common_tools.h>
@@ -65,6 +66,7 @@ void print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-m [FILE] : monster dictionary (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-n [VALUE]: number of different monster types") << std::endl;
   std::cout << ACE_TEXT("-p [VALUE]: number of players") << std::endl;
+  std::cout << ACE_TEXT("-s [FILE] : magic dictionary (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
   std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x        : endless loop (testing purposes)") << std::endl;
@@ -74,6 +76,7 @@ const bool process_arguments(const int argc_in,
                              ACE_TCHAR* argv_in[], // cannot be const...
                              unsigned int& numBattles_out,
                              unsigned int& numFoes_out,
+                             std::string& magicDictionaryFilename_out,
                              std::string& itemDictionaryFilename_out,
                              std::string& monsterDictionaryFilename_out,
                              unsigned int& numMonsterTypes_out,
@@ -87,6 +90,7 @@ const bool process_arguments(const int argc_in,
   // init results
   numBattles_out = 0;
   numFoes_out = 0;
+  magicDictionaryFilename_out.clear();
   itemDictionaryFilename_out.clear();
   monsterDictionaryFilename_out.clear();
   numMonsterTypes_out = 1;
@@ -97,7 +101,7 @@ const bool process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("b:f:i:m:n:p:tvx"));
+                             ACE_TEXT("b:f:i:m:n:p:s:tvx"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -145,6 +149,12 @@ const bool process_arguments(const int argc_in,
         std::stringstream str;
         str << argumentParser.opt_arg();
         str >> numPlayers_out;
+
+        break;
+      }
+      case 's':
+      {
+        magicDictionaryFilename_out = argumentParser.opt_arg();
 
         break;
       }
@@ -214,8 +224,10 @@ const unsigned int do_battle(RPG_Character_Party_t& party_in,
          iterator2 != results.end();
          iterator2++)
     {
-      // *TODO*: define default monster inventory...
+      // *TODO*: define default monster spells, wealth, inventory (i.e. treasure)...
       unsigned int wealth = 0;
+      RPG_Magic_Spells_t knownSpells;
+      RPG_Magic_SpellList_t spells;
       RPG_Item_List_t items;
       RPG_Character_Monster monster((iterator->first).c_str(),
                                     properties.type,
@@ -227,6 +239,8 @@ const unsigned int do_battle(RPG_Character_Party_t& party_in,
                                     properties.size,
                                     (*iterator2),
                                     wealth,
+                                    knownSpells,
+                                    spells,
                                     items);
 
       // debug info
@@ -288,7 +302,8 @@ const unsigned int do_battle(RPG_Character_Party_t& party_in,
   return (numRound * 6); // each round takes 6 seconds...
 }
 
-void do_work(const std::string& itemDictionaryFilename_in,
+void do_work(const std::string& magicDictionaryFilename_in,
+             const std::string& itemDictionaryFilename_in,
              const std::string& monsterDictionaryFilename_in,
              const unsigned int& numMonsterTypes_in,
              const unsigned int& numFoes_in,
@@ -311,7 +326,20 @@ void do_work(const std::string& itemDictionaryFilename_in,
   // step 1a: init ruleset
   RPG_Character_Skills_Common_Tools::init();
 
-  // step2a: init item dictionary
+  // step2a: init magic dictionary
+  try
+  {
+    RPG_MAGIC_DICTIONARY_SINGLETON::instance()->init(magicDictionaryFilename_in);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Magic_Dictionary::init, returning\n")));
+
+    return;
+  }
+
+  // step2b: init item dictionary
   try
   {
     RPG_ITEM_DICTIONARY_SINGLETON::instance()->initItemDictionary(itemDictionaryFilename_in);
@@ -324,7 +352,7 @@ void do_work(const std::string& itemDictionaryFilename_in,
     return;
   }
 
-  // step2b: init monster dictionary
+  // step2c: init monster dictionary
   try
   {
     RPG_MONSTER_DICTIONARY_SINGLETON::instance()->initMonsterDictionary(monsterDictionaryFilename_in);
@@ -463,6 +491,7 @@ int ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
+  std::string magicDictionaryFilename;
   std::string itemDictionaryFilename;
   std::string monsterDictionaryFilename;
   unsigned int numFoes = 0;
@@ -478,6 +507,7 @@ int ACE_TMAIN(int argc,
                           argv,
                           numBattles,
                           numFoes,
+                          magicDictionaryFilename,
                           itemDictionaryFilename,
                           monsterDictionaryFilename,
                           numMonsterTypes,
@@ -543,7 +573,8 @@ int ACE_TMAIN(int argc,
   timer.start();
 
   // step2: do actual work
-  do_work(itemDictionaryFilename,
+  do_work(magicDictionaryFilename,
+          itemDictionaryFilename,
           monsterDictionaryFilename,
           numMonsterTypes,
           numFoes,

@@ -1007,6 +1007,19 @@ void RPG_Magic_Common_Tools::init()
   initSpellsTables();
 }
 
+const std::string RPG_Magic_Common_Tools::spellToName(const RPG_Magic_SpellType& type_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellToName"));
+
+  std::string result;
+
+  RPG_Magic_Spell_Properties properties;
+  properties = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpellProperties(type_in,
+                                                                              result);
+
+  return result;
+}
+
 const std::string RPG_Magic_Common_Tools::spellTypeToString(const RPG_Magic_Spell_Type& type_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellTypeToString"));
@@ -1581,17 +1594,18 @@ const std::string RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_Spells_
   return result;
 }
 
-const std::string RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_SpellList_t& memorizedSpells_in)
+const std::string RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_SpellList_t& spells_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellsToString"));
 
   std::string result;
+
   RPG_Magic_Spells_t completed;
   unsigned int count = 0;
   std::stringstream converter;
-
-  for (RPG_Magic_SpellListIterator_t iterator = memorizedSpells_in.begin();
-       iterator != memorizedSpells_in.end();
+  RPG_Magic_SpellListIterator_t iterator2;
+  for (RPG_Magic_SpellListIterator_t iterator = spells_in.begin();
+       iterator != spells_in.end();
        iterator++)
   {
     // already treated this type ?
@@ -1599,15 +1613,18 @@ const std::string RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_SpellLi
       continue;
 
     result += RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator);
-    // search ahead if we have memorized it several times
+    // look ahead if we have memorized it several times
     count = 1;
-    for (RPG_Magic_SpellListIterator_t iterator2 = iterator;
-         iterator2 != memorizedSpells_in.end();
+    iterator2 = iterator;
+    std::advance(iterator2, 1);
+    for (;
+         iterator2 != spells_in.end();
          iterator2++)
     {
       if (*iterator2 == *iterator)
         count++;
     } // end FOR
+//     count = spells_in.count(*iterator);
 
     // remember this type
     completed.insert(*iterator);
@@ -1704,11 +1721,11 @@ void RPG_Magic_Common_Tools::getNumSpellsPerLevel(const RPG_Common_SubClass& sub
   RPG_Magic_NumSpellsTableIterator_t iterator = myNumSpellsTable.find(combination);
   if (iterator == myNumSpellsTable.end())
   {
-    ACE_DEBUG((LM_WARNING,
-               ACE_TEXT("invalid combination (class \"%s\", level %d, spell %d) --> check implementation !, aborting\n"),
-               RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str(),
-               ACE_static_cast(unsigned int, classLevel_in),
-               ACE_static_cast(unsigned int, spellLevel_in)));
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("spells table: invalid combination (class \"%s\", level %d, spell %d), aborting\n"),
+//                RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str(),
+//                ACE_static_cast(unsigned int, classLevel_in),
+//                ACE_static_cast(unsigned int, spellLevel_in)));
 
     return;
   } // end IF
@@ -1717,11 +1734,11 @@ void RPG_Magic_Common_Tools::getNumSpellsPerLevel(const RPG_Common_SubClass& sub
   iterator = myNumSpellsKnownTable.find(combination);
   if (iterator == myNumSpellsKnownTable.end())
   {
-    ACE_DEBUG((LM_WARNING,
-               ACE_TEXT("invalid combination (class \"%s\", level %d, spell %d) --> check implementation !, aborting\n"),
-               RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str(),
-               ACE_static_cast(unsigned int, classLevel_in),
-               ACE_static_cast(unsigned int, spellLevel_in)));
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("known spells table: invalid combination (class \"%s\", level %d, spell %d), aborting\n"),
+//                RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str(),
+//                ACE_static_cast(unsigned int, classLevel_in),
+//                ACE_static_cast(unsigned int, spellLevel_in)));
 
     return;
   } // end IF

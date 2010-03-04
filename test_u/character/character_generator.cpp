@@ -22,25 +22,29 @@
 #include <config.h>
 #endif
 
-#include <rpg_dice.h>
-#include <rpg_dice_dietype.h>
-#include <rpg_dice_common_tools.h>
-
-#include <rpg_common_subclass.h>
-#include <rpg_common_tools.h>
+#include <rpg_character_alignmentcivic.h>
+#include <rpg_character_alignmentethic.h>
+#include <rpg_character_alignment.h>
+#include <rpg_character_offhand.h>
+#include <rpg_character_player.h>
+#include <rpg_character_common_tools.h>
+#include <rpg_character_skills_common_tools.h>
 
 #include <rpg_item_weapon.h>
 #include <rpg_item_armor.h>
 #include <rpg_item_common_tools.h>
 #include <rpg_item_dictionary.h>
 
-#include <rpg_character_player.h>
-#include <rpg_character_alignmentcivic.h>
-#include <rpg_character_alignmentethic.h>
-#include <rpg_character_alignment.h>
-#include <rpg_character_offhand.h>
-#include <rpg_character_common_tools.h>
-#include <rpg_character_skills_common_tools.h>
+#include <rpg_magic_dictionary.h>
+#include <rpg_magic_common_tools.h>
+
+#include <rpg_common_defines.h>
+#include <rpg_common_subclass.h>
+#include <rpg_common_tools.h>
+
+#include <rpg_dice.h>
+#include <rpg_dice_dietype.h>
+#include <rpg_dice_common_tools.h>
 
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
@@ -66,19 +70,22 @@ void print_usage(const std::string& programName_in)
 
 const bool process_arguments(const int argc_in,
                              ACE_TCHAR* argv_in[], // cannot be const...
-                             std::string& filename_out,
+                             std::string& magicDictionaryFilename_out,
+                             std::string& itemDictionaryFilename_out,
                              bool& traceInformation_out,
                              bool& printVersionAndExit_out)
 {
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
+  magicDictionaryFilename_out.clear();
+  itemDictionaryFilename_out.clear();
   traceInformation_out = false;
   printVersionAndExit_out = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("i:tv"));
+                             ACE_TEXT("i:m:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -87,7 +94,13 @@ const bool process_arguments(const int argc_in,
     {
       case 'i':
       {
-        filename_out = argumentParser.opt_arg();
+        itemDictionaryFilename_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'm':
+      {
+        magicDictionaryFilename_out = argumentParser.opt_arg();
 
         break;
       }
@@ -299,7 +312,73 @@ const bool print_feats_table(const RPG_Common_SubClass& subClass_in,
   return true;
 }
 
-void do_work(const std::string filename_in)
+const bool print_spells_table(const RPG_Magic_Spells_t& spells_in,
+                              RPG_Magic_SpellType& spell_inout)
+{
+  ACE_TRACE(ACE_TEXT("::print_spells_table"));
+
+  // init return value
+  spell_inout = RPG_MAGIC_SPELLTYPE_INVALID;
+
+  RPG_Magic_SpellsIterator_t iterator = spells_in.begin();
+  unsigned int spells_per_line = 4;
+  unsigned int index = 1;
+  unsigned int choice = 0;
+  do
+  {
+    for (unsigned int i = 0;
+         i < spells_per_line;
+         i++, iterator++, index++)
+    {
+      // finished ?
+      if (iterator == spells_in.end())
+      {
+        break;
+      } // end IF
+
+//         std::cout.setf(ios::right);
+      std::cout << ACE_TEXT("[") << std::setw(2) << std::right << index << ACE_TEXT("]: ") << std::setw(20) << std::left << RPG_Magic_Common_Tools::spellToName(*iterator).c_str();
+//         std::cout.unsetf(ios::right);
+    } // end FOR
+
+    std::cout << std::endl;
+  } while (iterator != spells_in.end());
+
+  index--;
+
+  std::cout << ACE_TEXT("enter index: ");
+  std::cin >> choice;
+  // sanity check
+  if ((choice > index) || (choice < 1))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid index %d (max: %d), try again\n"),
+                        choice,
+                        index));
+
+    // clean input buffer
+    if (!std::cin)
+    {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), ACE_TEXT_ALWAYS_CHAR('\n'));
+    } // end IF
+
+    return false;
+  } // end IF
+
+  // append chosen spell
+  choice -= 1;
+  iterator = spells_in.begin();
+  std::advance(iterator, choice);
+
+  // select chosen spell type
+  spell_inout = *iterator;
+
+  return true;
+}
+
+void do_work(const std::string magicDictionaryFilename_in,
+             const std::string itemDictionaryFilename_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -309,6 +388,7 @@ void do_work(const std::string filename_in)
   // step1b: init string conversion facilities
   RPG_Dice_Common_Tools::initStringConversionTables();
   RPG_Common_Tools::initStringConversionTables();
+  RPG_Magic_Common_Tools::init();
   RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::initStringConversionTables();
 //   RPG_Monster_Common_Tools::initStringConversionTables();
@@ -316,12 +396,25 @@ void do_work(const std::string filename_in)
   // step1c: init ruleset
   RPG_Character_Skills_Common_Tools::init();
 
-  // step1d: init item dictionary
+  // step1d: init magic dictionary
   try
   {
-    RPG_ITEM_DICTIONARY_SINGLETON::instance()->initItemDictionary(filename_in);
+    RPG_MAGIC_DICTIONARY_SINGLETON::instance()->init(magicDictionaryFilename_in);
   }
-  catch(...)
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Magic_Dictionary::init, returning\n")));
+
+    return;
+  }
+
+  // step1e: init item dictionary
+  try
+  {
+    RPG_ITEM_DICTIONARY_SINGLETON::instance()->initItemDictionary(itemDictionaryFilename_in);
+  }
+  catch (...)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in RPG_Item_Dictionary::initCharacterDictionary, returning\n")));
@@ -640,7 +733,100 @@ void do_work(const std::string filename_in)
              RPG_Dice_DieTypeHelper::RPG_Dice_DieTypeToString(roll.typeDice).c_str(),
              hitpoints));
 
-  // step3: choose appropriate initial set of items
+  // step2a: choose initial set of spells
+  unsigned char numKnownSpells = 0;
+  unsigned char numSpells = 0;
+  RPG_Magic_Spells_t knownSpells;
+  RPG_Magic_SpellList_t spells;
+  RPG_Magic_Spells_t available;
+  RPG_Magic_SpellType chosen_spell = RPG_MAGIC_SPELLTYPE_INVALID;
+  int numChosen = 0;
+  RPG_Magic_SpellsIterator_t available_iterator;
+  RPG_Magic_CasterClassUnion casterClass;
+  casterClass.discriminator = RPG_Magic_CasterClassUnion::SUBCLASS;
+  for (RPG_Character_SubClassesIterator_t iterator = player_class.subClasses.begin();
+       iterator != player_class.subClasses.end();
+       iterator++)
+  {
+    for (unsigned char i = 0;
+         i <= RPG_COMMON_MAX_SPELL_LEVEL;
+         i++)
+    {
+      RPG_Magic_Common_Tools::getNumSpellsPerLevel(*iterator,
+                                                   1,
+                                                   i,
+                                                   numSpells,
+                                                   numKnownSpells);
+      if ((numSpells == 0) &&
+          (numKnownSpells == 0))
+        continue;
+
+      // get list of available spells
+      casterClass.subclass = *iterator;
+      available = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
+                                                                        i);
+
+      // only Bards and Sorcerers have a limited set of "known" spells to choose from
+      if (RPG_Character_Common_Tools::isCasterClass(*iterator) &&
+          ((*iterator == SUBCLASS_BARD) ||
+           (*iterator == SUBCLASS_SORCERER)))
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("number of initial known spells (lvl %d) for subClass \"%s\" is: %d...\n"),
+                   i,
+                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_subclass).c_str(),
+                   numKnownSpells));
+
+        numChosen = 0;
+        while (numChosen < numKnownSpells)
+        {
+          chosen_spell = RPG_MAGIC_SPELLTYPE_INVALID;
+          // header line
+          std::cout << ACE_TEXT("remaining spells: ") << (numKnownSpells - numChosen) << std::endl;
+          std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
+
+          if (print_spells_table(available,
+                                 chosen_spell))
+          {
+            knownSpells.insert(chosen_spell);
+            available.erase(chosen_spell);
+            numChosen++;
+          } // end IF
+        } // end WHILE
+      } // end IF
+
+      // ... other magic-users get to prepare/memorize a number of (available) spells
+      // ... again, apart from the Bard/Sorcerer, who don't need to prepare any spells ahead of time
+      if (RPG_Character_Common_Tools::isCasterClass(*iterator) &&
+          ((*iterator != SUBCLASS_BARD) &&
+           (*iterator != SUBCLASS_SORCERER)))
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("number of initial memorized/prepared spells (lvl %d) for subClass \"%s\" is: %d...\n"),
+                   i,
+                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_subclass).c_str(),
+                   numSpells));
+
+        numChosen = 0;
+        while (numChosen < numSpells)
+        {
+          chosen_spell = RPG_MAGIC_SPELLTYPE_INVALID;
+          // header line
+          std::cout << ACE_TEXT("remaining spells: ") << (numSpells - numChosen) << std::endl;
+          std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
+
+          if (print_spells_table(available,
+                                 chosen_spell))
+          {
+            spells.push_back(chosen_spell);
+            numChosen++;
+          } // end IF
+        } // end WHILE
+      } // end IF
+    } // end FOR
+  } // end FOR
+
+  // step2b: choose (appropriate) initial set of items
   RPG_Item_List_t items;
   RPG_Item_Armor* armor = NULL;
   RPG_Item_Armor* shield = NULL;
@@ -773,6 +959,8 @@ void do_work(const std::string filename_in)
                               0,
                               hitpoints,
                               0,
+                              knownSpells,
+                              spells,
                               items);
   // debug info
   player.dump();
@@ -845,14 +1033,16 @@ int ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  std::string filename;
+  std::string magicDictionaryFilename;
+  std::string itemDictionaryFilename;
   bool traceInformation    = false;
   bool printVersionAndExit = false;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
-                          filename,
+                          magicDictionaryFilename,
+                          itemDictionaryFilename,
                           traceInformation,
                           printVersionAndExit)))
   {
@@ -863,11 +1053,11 @@ int ACE_TMAIN(int argc,
   } // end IF
 
   // step1b: validate arguments
-  if (filename.empty())
+  if (magicDictionaryFilename.empty() ||
+      itemDictionaryFilename.empty())
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid (XML) filename \"%s\", aborting\n"),
-               filename.c_str()));
+               ACE_TEXT("missing/invalid (XML) filename, aborting\n")));
 
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
@@ -913,7 +1103,8 @@ int ACE_TMAIN(int argc,
   timer.start();
 
   // step2: do actual work
-  do_work(filename);
+  do_work(magicDictionaryFilename,
+          itemDictionaryFilename);
 
   timer.stop();
 

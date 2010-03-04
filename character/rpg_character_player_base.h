@@ -94,6 +94,7 @@ class RPG_Character_Player_Base
                             const unsigned short int&,        // (starting) HP
                             const unsigned int&,              // (starting) wealth (GP)
                             const RPG_Magic_Spells_t&,        // (starting) set of known spells (if any)
+                            const RPG_Magic_SpellList_t&,     // (starting) set of prepared spells (if any)
                             const RPG_Item_List_t&);          // (starting) list of (carried) items
   RPG_Character_Player_Base(const RPG_Character_Player_Base&);
 

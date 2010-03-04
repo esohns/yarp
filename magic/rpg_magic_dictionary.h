@@ -40,12 +40,13 @@ class RPG_Magic_Dictionary
                              ACE_Thread_Mutex>;
 
  public:
-  // init item dictionary
+  // init magic dictionary
   void init(const std::string&,  // filename
             const bool& = true); // validate XML ?
 
   const RPG_Magic_Spell_Properties getSpellProperties(const std::string&) const; // name of spell
-  const RPG_Magic_Spell_Properties getSpellProperties(const RPG_Magic_SpellType&) const; // type of spell
+  const RPG_Magic_Spell_Properties getSpellProperties(const RPG_Magic_SpellType&, // type of spell
+                                                      std::string&) const;        // return value: name
   const RPG_Magic_Spells_t getSpells(const RPG_Magic_CasterClassUnion&,  // caster class
                                      const unsigned char& = 0xFF) const; // spell level (default: ALL)
 

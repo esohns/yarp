@@ -239,16 +239,23 @@ const RPG_Magic_Spell_Properties RPG_Magic_Dictionary::getSpellProperties(const 
   return iterator->second;
 }
 
-const RPG_Magic_Spell_Properties RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in) const
+const RPG_Magic_Spell_Properties RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in,
+                                                                          std::string& spellName_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
+
+  // reset return value
+  spellName_out.resize(0);
 
   for (RPG_Magic_DictionaryIterator_t iterator = myDictionary.begin();
        iterator != myDictionary.end();
        iterator++)
   {
     if ((*iterator).second.type.type == spellType_in)
+    {
+      spellName_out = iterator->first;
       return iterator->second;
+    } // end IF
   } // end IF
 
   ACE_DEBUG((LM_ERROR,

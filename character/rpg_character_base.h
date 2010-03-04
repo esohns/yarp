@@ -95,8 +95,9 @@ class RPG_Character_Base
                      const RPG_Common_Size&,            // (default) size
                      const unsigned short int&,         // (starting) HP
                      const unsigned int&,               // (starting) wealth (GP)
-                     // base known spells (bard / sorcerer)
-                     const RPG_Magic_Spells_t&,         // (starting) set of known spells
+                     // base spells
+                     const RPG_Magic_Spells_t&,         // (starting) set of known spells (bard / sorcerer)
+                     const RPG_Magic_SpellList_t&,      // (starting) set of memorized/prepared spells (!bard)
                      // base items
                      const RPG_Item_List_t&);           // (starting) list of (carried) items
   RPG_Character_Base(const RPG_Character_Base&);

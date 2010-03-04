@@ -640,6 +640,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   unsigned char numSpells = 0;
   RPG_Magic_Spells_t knownSpells;
   RPG_Magic_SpellList_t spells;
+  int numChosen = 0;
   RPG_Magic_Spells_t available;
   RPG_Magic_SpellsIterator_t available_iterator;
   RPG_Magic_CasterClassUnion casterClass;
@@ -653,10 +654,13 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
          i++)
     {
       RPG_Magic_Common_Tools::getNumSpellsPerLevel(*iterator,
-                                                   0,
+                                                   1,
                                                    i,
                                                    numSpells,
                                                    numKnownSpells);
+      if ((numSpells == 0) &&
+          (numKnownSpells == 0))
+        continue;
 
       // get list of available spells
       casterClass.subclass = *iterator;
@@ -664,46 +668,55 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
                                                                         i);
 
       // only Bards and Sorcerers have a limited set of "known" spells to choose from
-      if ((*iterator == SUBCLASS_BARD) ||
-          (*iterator == SUBCLASS_SORCERER))
+      if (isCasterClass(*iterator) &&
+          ((*iterator == SUBCLASS_BARD) ||
+           (*iterator == SUBCLASS_SORCERER)))
       {
-        do
+        numChosen = 0;
+        while (numChosen < numKnownSpells);
         {
           available_iterator = available.begin();
           result.clear();
           RPG_Dice::generateRandomNumbers(available.size(),
                                           1,
                                           result);
-          for (int j = 0;
-               j <= (result.front() - 1);
-               j++)
-            available_iterator++;
-
+          std::advance(available_iterator, result.front() - 1);
           if (knownSpells.find(*available_iterator) != knownSpells.end())
             continue; // try again
 
+          // debug info
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("chose known spell #%d: \"%s\"\n"),
+                     numChosen + 1,
+                     RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
+
           knownSpells.insert(*available_iterator);
-        } while (knownSpells.size() < numKnownSpells);
+          numChosen++;
+        } // end WHILE
       } // end IF
 
-      // ... everybody else simply gets to prepare/memorize a number of (available) spells
-      // ... apart from the Bard, who doesn't need to prepare any spells ahead of time
+      // ... other magic-users get to prepare/memorize a number of (available) spells
+      // ... again, apart from the Bard/Sorcerer, who don't need to prepare any spells ahead of time
       if (isCasterClass(*iterator) &&
-          (*iterator != SUBCLASS_BARD))
+          (*iterator != SUBCLASS_BARD) &&
+          (*iterator != SUBCLASS_SORCERER))
       {
         for (unsigned int j = 0;
-              j < numSpells;
-              j++)
+             j < numSpells;
+             j++)
         {
           available_iterator = available.begin();
           result.clear();
           RPG_Dice::generateRandomNumbers(available.size(),
                                           1,
                                           result);
-          for (int j = 0;
-                j <= (result.front() - 1);
-                j++)
-            available_iterator++;
+          std::advance(available_iterator, result.front() - 1);
+
+          // debug info
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("chose prepared/memorized spell #%d: \"%s\"\n"),
+                     j + 1,
+                     RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
 
           spells.push_back(*available_iterator);
         } // end FOR
@@ -850,6 +863,7 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
                               hitpoints,
                               0,
                               knownSpells,
+                              spells,
                               items);
 
   return player;
