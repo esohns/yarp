@@ -102,6 +102,7 @@ class RPG_Magic_Spell_Type_Type
     virtual void school(const RPG_Magic_School&);
     virtual void subSchool(const RPG_Magic_SubSchool&);
     virtual void descriptor(const RPG_Magic_Descriptor&);
+    virtual void counterSpell(const RPG_Magic_SpellType&);
     virtual RPG_Magic_Spell_Type post_RPG_Magic_Spell_Type_Type();
 
   private:

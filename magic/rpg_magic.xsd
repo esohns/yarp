@@ -114,6 +114,8 @@
 
   <xsd:simpleType name="RPG_Magic_SpellType_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SPELL_NONE"/>
+      <!--                                    -->
       <xsd:enumeration value="SPELL_ACID_ARROW"/>
       <xsd:enumeration value="SPELL_ACID_FOG"/>
       <xsd:enumeration value="SPELL_ACID_SPLASH"/>
@@ -141,6 +143,11 @@
       <xsd:enumeration value="SPELL_ARCANE_SIGHT"/>
       <xsd:enumeration value="SPELL_ARCANE_SIGHT_GREATER"/>
       <xsd:enumeration value="SPELL_ASTRAL_PROJECTION"/>
+      <xsd:enumeration value="SPELL_ATONEMENT"/>
+      <xsd:enumeration value="SPELL_AUGURY"/>
+      <xsd:enumeration value="SPELL_AWAKEN"/>
+      <xsd:enumeration value="SPELL_BALEFUL_POLYMORPH"/>
+      <xsd:enumeration value="SPELL_BANE"/>
       <xsd:enumeration value="SPELL_BLADE_BARRIER"/>
       <xsd:enumeration value="SPELL_BLASPHEMY"/>
       <xsd:enumeration value="SPELL_BLESS"/>
@@ -233,6 +240,7 @@
       <xsd:element name="subSchool" type="RPG_Magic_SubSchool_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="descriptor" type="RPG_Magic_Descriptor_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
+    <xsd:attribute name="counterSpell" type="RPG_Magic_SpellType_Type" use="optional" default="SPELL_NONE"/>
   </xsd:complexType>
 
   <xsd:simpleType name="RPG_Magic_CasterClassUnion_Type">
@@ -350,12 +358,17 @@
   <xsd:simpleType name="RPG_Magic_Spell_Effect_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SPELLEFFECT_ALIGN_WEAPON"/>
+      <xsd:enumeration value="SPELLEFFECT_ANIMATE_ANIMAL_PLANT"/>
       <xsd:enumeration value="SPELLEFFECT_ANIMATE_DEAD"/>
+      <xsd:enumeration value="SPELLEFFECT_ATONEMENT"/>
+      <xsd:enumeration value="SPELLEFFECT_AUGURY"/>
       <xsd:enumeration value="SPELLEFFECT_BARRIER_CREATURE"/>
       <xsd:enumeration value="SPELLEFFECT_BARRIER_MAGIC"/>
+      <xsd:enumeration value="SPELLEFFECT_BONUS_ATTACK_ROLL"/>
       <xsd:enumeration value="SPELLEFFECT_BONUS_ATTRIBUTE"/>
       <xsd:enumeration value="SPELLEFFECT_BONUS_HP"/>
       <xsd:enumeration value="SPELLEFFECT_BONUS_MORALE"/>
+      <xsd:enumeration value="SPELLEFFECT_BONUS_SAVE_FEAR"/>
       <xsd:enumeration value="SPELLEFFECT_DAMAGE"/>
       <xsd:enumeration value="SPELLEFFECT_DETECT_MAGIC"/>
       <xsd:enumeration value="SPELLEFFECT_ENTANGLE"/>

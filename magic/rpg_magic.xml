@@ -1079,4 +1079,175 @@
       <type>SPELLEFFECT_TELEPORT_INTERPLANAR</type>
     </effect>
   </spell>
+  <spell resistible="true">
+    <name>Atonement</name>
+    <type>
+      <type>SPELL_ATONEMENT</type>
+      <school>SCHOOL_ABJURATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>5</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>5</level>
+    </level>
+    <cost>500</cost>
+    <time action="ACTION_TIME">
+      <rounds>600</rounds>
+    </time>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+    </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_CONDITION</type>
+      <condition>CONDITION_DEAD</condition>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_ATONEMENT</type>
+    </effect>
+  </spell>
+  <spell>
+    <name>Augury</name>
+    <type>
+      <type>SPELL_AUGURY</type>
+      <school>SCHOOL_DIVINATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>2</level>
+    </level>
+    <time action="ACTION_TIME">
+      <rounds>10</rounds>
+    </time>
+    <range effect="RANGEEFFECT_PERSONAL">
+    </range>
+    <target>
+      <type>TARGET_SELF</type>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_AUGURY</type>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Awaken</name>
+    <type>
+      <type>SPELL_AWAKEN</type>
+      <school>SCHOOL_TRANSMUTATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>5</level>
+    </level>
+    <cost>250</cost>
+    <time action="ACTION_TIME">
+      <rounds>14400</rounds>
+    </time>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_TYPE</type>
+      <creature>
+        <metaType>METATYPE_ANIMAL</metaType>
+      </creature>
+      <creature>
+        <metaType>METATYPE_PLANT</metaType>
+      </creature>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_ANIMATE_ANIMAL_PLANT</type>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_FORTITUDE" resistible="true">
+    <name>Baleful Polymorph</name>
+    <type>
+      <type>SPELL_BALEFUL_POLYMORPH</type>
+      <school>SCHOOL_TRANSMUTATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>5</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>5</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>5</level>
+    </level>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration>
+      <type>DURATION_PERMANENT</type>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_POLYMORPH</type>
+      <counterMeasure reduction="SAVEREDUCTION_NEGATES">
+        <type>COUNTERMEASURE_CHECK</type>
+        <check>
+          <type>SAVE_FORTITUDE</type>
+        </check>
+      </counterMeasure>
+      <counterMeasure reduction="SAVEREDUCTION_PARTIAL">
+        <type>COUNTERMEASURE_CHECK</type>
+        <check>
+          <type>SAVE_WILL</type>
+        </check>
+      </counterMeasure>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Bane</name>
+    <type counterSpell="SPELL_BLESS">
+      <type>SPELL_BANE</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_FEAR</descriptor>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>1</level>
+    </level>
+    <range effect="RANGEEFFECT_RANGED">
+      <max>50</max>
+    </range>
+    <target>
+      <type>TARGET_AREA</type>
+      <area>AREA_SPHERE</area>
+      <radius>50</radius>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>10</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_BONUS_ATTACK_ROLL</type>
+      <value>-1</value>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_BONUS_SAVE_FEAR</type>
+      <value>-1</value>
+    </effect>
+  </spell>
 </spellDictionary>

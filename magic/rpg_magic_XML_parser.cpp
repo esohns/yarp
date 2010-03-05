@@ -78,6 +78,7 @@ RPG_Magic_Spell_Type_Type::RPG_Magic_Spell_Type_Type()
   myCurrentType.school = RPG_MAGIC_SCHOOL_INVALID;
   myCurrentType.subSchool = RPG_MAGIC_SUBSCHOOL_INVALID;
   myCurrentType.descriptors.clear();
+  myCurrentType.counterSpell = RPG_MAGIC_SPELLTYPE_INVALID;
 }
 
 void RPG_Magic_Spell_Type_Type::type(const RPG_Magic_SpellType& type_in)
@@ -108,6 +109,13 @@ void RPG_Magic_Spell_Type_Type::descriptor(const RPG_Magic_Descriptor& descripto
   myCurrentType.descriptors.push_back(descriptor_in);
 }
 
+void RPG_Magic_Spell_Type_Type::counterSpell(const RPG_Magic_SpellType& counterSpell_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Type_Type::counterSpell"));
+
+  myCurrentType.counterSpell = counterSpell_in;
+}
+
 RPG_Magic_Spell_Type RPG_Magic_Spell_Type_Type::post_RPG_Magic_Spell_Type_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_Type_Type::post_RPG_Magic_Spell_Type_Type"));
@@ -119,6 +127,7 @@ RPG_Magic_Spell_Type RPG_Magic_Spell_Type_Type::post_RPG_Magic_Spell_Type_Type()
   myCurrentType.school = RPG_MAGIC_SCHOOL_INVALID;
   myCurrentType.subSchool = RPG_MAGIC_SUBSCHOOL_INVALID;
   myCurrentType.descriptors.clear();
+  myCurrentType.counterSpell = RPG_MAGIC_SPELLTYPE_INVALID;
 
   return result;
 }

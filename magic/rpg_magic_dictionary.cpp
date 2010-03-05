@@ -63,7 +63,8 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
   type_p.parsers(spellType_p,
                  school_p,
                  subSchool_p,
-                 descriptor_p);
+                 descriptor_p,
+                 spellType_p);
 
   RPG_Magic_CasterClassUnion_Type             casterClass_p;
   ::xml_schema::unsigned_byte_pimpl           unsigned_byte_p;

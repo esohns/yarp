@@ -199,6 +199,9 @@ class RPG_Magic_Spell_Type_Type_pskel: public ::xml_schema::complex_content
   virtual void
   descriptor (const RPG_Magic_Descriptor&);
 
+  virtual void
+  counterSpell (const RPG_Magic_SpellType&);
+
   virtual RPG_Magic_Spell_Type
   post_RPG_Magic_Spell_Type_Type () = 0;
 
@@ -217,10 +220,14 @@ class RPG_Magic_Spell_Type_Type_pskel: public ::xml_schema::complex_content
   descriptor_parser (::RPG_Magic_Descriptor_Type_pskel&);
 
   void
+  counterSpell_parser (::RPG_Magic_SpellType_Type_pskel&);
+
+  void
   parsers (::RPG_Magic_SpellType_Type_pskel& /* type */,
            ::RPG_Magic_School_Type_pskel& /* school */,
            ::RPG_Magic_SubSchool_Type_pskel& /* subSchool */,
-           ::RPG_Magic_Descriptor_Type_pskel& /* descriptor */);
+           ::RPG_Magic_Descriptor_Type_pskel& /* descriptor */,
+           ::RPG_Magic_SpellType_Type_pskel& /* counterSpell */);
 
   // Constructor.
   //
@@ -238,11 +245,17 @@ class RPG_Magic_Spell_Type_Type_pskel: public ::xml_schema::complex_content
   _end_element_impl (const ::xml_schema::ro_string&,
                      const ::xml_schema::ro_string&);
 
+  virtual bool
+  _attribute_impl (const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&);
+
   protected:
   ::RPG_Magic_SpellType_Type_pskel* type_parser_;
   ::RPG_Magic_School_Type_pskel* school_parser_;
   ::RPG_Magic_SubSchool_Type_pskel* subSchool_parser_;
   ::RPG_Magic_Descriptor_Type_pskel* descriptor_parser_;
+  ::RPG_Magic_SpellType_Type_pskel* counterSpell_parser_;
 };
 
 class RPG_Magic_CasterClassUnion_Type_pskel: public ::xml_schema::simple_content

@@ -66,15 +66,23 @@ descriptor_parser (::RPG_Magic_Descriptor_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_Type_Type_pskel::
+counterSpell_parser (::RPG_Magic_SpellType_Type_pskel& p)
+{
+  this->counterSpell_parser_ = &p;
+}
+
+void RPG_Magic_Spell_Type_Type_pskel::
 parsers (::RPG_Magic_SpellType_Type_pskel& type,
          ::RPG_Magic_School_Type_pskel& school,
          ::RPG_Magic_SubSchool_Type_pskel& subSchool,
-         ::RPG_Magic_Descriptor_Type_pskel& descriptor)
+         ::RPG_Magic_Descriptor_Type_pskel& descriptor,
+         ::RPG_Magic_SpellType_Type_pskel& counterSpell)
 {
   this->type_parser_ = &type;
   this->school_parser_ = &school;
   this->subSchool_parser_ = &subSchool;
   this->descriptor_parser_ = &descriptor;
+  this->counterSpell_parser_ = &counterSpell;
 }
 
 RPG_Magic_Spell_Type_Type_pskel::
@@ -82,7 +90,8 @@ RPG_Magic_Spell_Type_Type_pskel ()
 : type_parser_ (0),
   school_parser_ (0),
   subSchool_parser_ (0),
-  descriptor_parser_ (0)
+  descriptor_parser_ (0),
+  counterSpell_parser_ (0)
 {
 }
 
@@ -802,6 +811,11 @@ descriptor (const RPG_Magic_Descriptor&)
 {
 }
 
+void RPG_Magic_Spell_Type_Type_pskel::
+counterSpell (const RPG_Magic_SpellType&)
+{
+}
+
 bool RPG_Magic_Spell_Type_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
@@ -890,6 +904,31 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->descriptor_parser_)
       this->descriptor (this->descriptor_parser_->post_RPG_Magic_Descriptor_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Magic_Spell_Type_Type_pskel::
+_attribute_impl (const ::xml_schema::ro_string& ns,
+                 const ::xml_schema::ro_string& n,
+                 const ::xml_schema::ro_string& v)
+{
+  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
+    return true;
+
+  if (n == "counterSpell" && ns.empty ())
+  {
+    if (this->counterSpell_parser_)
+    {
+      this->counterSpell_parser_->pre ();
+      this->counterSpell_parser_->_pre_impl ();
+      this->counterSpell_parser_->_characters (v);
+      this->counterSpell_parser_->_post_impl ();
+      this->counterSpell (this->counterSpell_parser_->post_RPG_Magic_SpellType_Type ());
+    }
 
     return true;
   }
