@@ -540,6 +540,12 @@ base_parser (::RPG_Common_Amount_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
+increment_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->increment_parser_ = &p;
+}
+
+void RPG_Magic_Spell_EffectProperties_Type_pskel::
 levelIncrement_parser (::RPG_Common_Amount_Type_pskel& p)
 {
   this->levelIncrement_parser_ = &p;
@@ -570,32 +576,53 @@ counterMeasure_parser (::RPG_Magic_CounterMeasure_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
+includeAdjacent_parser (::xml_schema::boolean_pskel& p)
+{
+  this->includeAdjacent_parser_ = &p;
+}
+
+void RPG_Magic_Spell_EffectProperties_Type_pskel::
+effectsAreInclusive_parser (::xml_schema::boolean_pskel& p)
+{
+  this->effectsAreInclusive_parser_ = &p;
+}
+
+void RPG_Magic_Spell_EffectProperties_Type_pskel::
 parsers (::RPG_Magic_Spell_Effect_Type_pskel& type,
          ::RPG_Common_Amount_Type_pskel& base,
+         ::xml_schema::unsigned_int_pskel& increment,
          ::RPG_Common_Amount_Type_pskel& levelIncrement,
          ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
          ::RPG_Common_Attribute_Type_pskel& attribute,
          ::xml_schema::unsigned_byte_pskel& maxRange,
-         ::RPG_Magic_CounterMeasure_Type_pskel& counterMeasure)
+         ::RPG_Magic_CounterMeasure_Type_pskel& counterMeasure,
+         ::xml_schema::boolean_pskel& includeAdjacent,
+         ::xml_schema::boolean_pskel& effectsAreInclusive)
 {
   this->type_parser_ = &type;
   this->base_parser_ = &base;
+  this->increment_parser_ = &increment;
   this->levelIncrement_parser_ = &levelIncrement;
   this->levelIncrementMax_parser_ = &levelIncrementMax;
   this->attribute_parser_ = &attribute;
   this->maxRange_parser_ = &maxRange;
   this->counterMeasure_parser_ = &counterMeasure;
+  this->includeAdjacent_parser_ = &includeAdjacent;
+  this->effectsAreInclusive_parser_ = &effectsAreInclusive;
 }
 
 RPG_Magic_Spell_EffectProperties_Type_pskel::
 RPG_Magic_Spell_EffectProperties_Type_pskel ()
 : type_parser_ (0),
   base_parser_ (0),
+  increment_parser_ (0),
   levelIncrement_parser_ (0),
   levelIncrementMax_parser_ (0),
   attribute_parser_ (0),
   maxRange_parser_ (0),
-  counterMeasure_parser_ (0)
+  counterMeasure_parser_ (0),
+  includeAdjacent_parser_ (0),
+  effectsAreInclusive_parser_ (0)
 {
 }
 
@@ -663,6 +690,12 @@ effect_parser (::RPG_Magic_Spell_EffectProperties_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_PropertiesXML_Type_pskel::
+counterMeasure_parser (::RPG_Magic_CounterMeasure_Type_pskel& p)
+{
+  this->counterMeasure_parser_ = &p;
+}
+
+void RPG_Magic_Spell_PropertiesXML_Type_pskel::
 saveable_parser (::RPG_Common_SavingThrow_Type_pskel& p)
 {
   this->saveable_parser_ = &p;
@@ -685,6 +718,7 @@ parsers (::xml_schema::string_pskel& name,
          ::RPG_Magic_Spell_DurationProperties_Type_pskel& duration,
          ::RPG_Magic_Spell_PreconditionProperties_Type_pskel& precondition,
          ::RPG_Magic_Spell_EffectProperties_Type_pskel& effect,
+         ::RPG_Magic_CounterMeasure_Type_pskel& counterMeasure,
          ::RPG_Common_SavingThrow_Type_pskel& saveable,
          ::xml_schema::boolean_pskel& resistible)
 {
@@ -698,6 +732,7 @@ parsers (::xml_schema::string_pskel& name,
   this->duration_parser_ = &duration;
   this->precondition_parser_ = &precondition;
   this->effect_parser_ = &effect;
+  this->counterMeasure_parser_ = &counterMeasure;
   this->saveable_parser_ = &saveable;
   this->resistible_parser_ = &resistible;
 }
@@ -714,6 +749,7 @@ RPG_Magic_Spell_PropertiesXML_Type_pskel ()
   duration_parser_ (0),
   precondition_parser_ (0),
   effect_parser_ (0),
+  counterMeasure_parser_ (0),
   saveable_parser_ (0),
   resistible_parser_ (0)
 {
@@ -2051,6 +2087,11 @@ base (const RPG_Common_Amount&)
 }
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
+increment (unsigned int)
+{
+}
+
+void RPG_Magic_Spell_EffectProperties_Type_pskel::
 levelIncrement (const RPG_Common_Amount&)
 {
 }
@@ -2072,6 +2113,16 @@ maxRange (unsigned char)
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
 counterMeasure (const RPG_Magic_CounterMeasure&)
+{
+}
+
+void RPG_Magic_Spell_EffectProperties_Type_pskel::
+includeAdjacent (bool)
+{
+}
+
+void RPG_Magic_Spell_EffectProperties_Type_pskel::
+effectsAreInclusive (bool)
 {
 }
 
@@ -2101,6 +2152,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->base_parser_)
       this->base_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "increment" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->increment_parser_;
+
+    if (this->increment_parser_)
+      this->increment_parser_->pre ();
 
     return true;
   }
@@ -2181,6 +2242,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "increment" && ns == "urn:rpg")
+  {
+    if (this->increment_parser_)
+      this->increment (this->increment_parser_->post_unsigned_int ());
+
+    return true;
+  }
+
   if (n == "levelIncrement" && ns == "urn:rpg")
   {
     if (this->levelIncrement_parser_)
@@ -2217,6 +2286,45 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->counterMeasure_parser_)
       this->counterMeasure (this->counterMeasure_parser_->post_RPG_Magic_CounterMeasure_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Magic_Spell_EffectProperties_Type_pskel::
+_attribute_impl (const ::xml_schema::ro_string& ns,
+                 const ::xml_schema::ro_string& n,
+                 const ::xml_schema::ro_string& v)
+{
+  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
+    return true;
+
+  if (n == "includeAdjacent" && ns.empty ())
+  {
+    if (this->includeAdjacent_parser_)
+    {
+      this->includeAdjacent_parser_->pre ();
+      this->includeAdjacent_parser_->_pre_impl ();
+      this->includeAdjacent_parser_->_characters (v);
+      this->includeAdjacent_parser_->_post_impl ();
+      this->includeAdjacent (this->includeAdjacent_parser_->post_boolean ());
+    }
+
+    return true;
+  }
+
+  if (n == "effectsAreInclusive" && ns.empty ())
+  {
+    if (this->effectsAreInclusive_parser_)
+    {
+      this->effectsAreInclusive_parser_->pre ();
+      this->effectsAreInclusive_parser_->_pre_impl ();
+      this->effectsAreInclusive_parser_->_characters (v);
+      this->effectsAreInclusive_parser_->_post_impl ();
+      this->effectsAreInclusive (this->effectsAreInclusive_parser_->post_boolean ());
+    }
 
     return true;
   }
@@ -2274,6 +2382,11 @@ precondition (const RPG_Magic_Spell_PreconditionProperties&)
 
 void RPG_Magic_Spell_PropertiesXML_Type_pskel::
 effect (const RPG_Magic_Spell_EffectProperties&)
+{
+}
+
+void RPG_Magic_Spell_PropertiesXML_Type_pskel::
+counterMeasure (const RPG_Magic_CounterMeasure&)
 {
 }
 
@@ -2397,6 +2510,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "counterMeasure" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->counterMeasure_parser_;
+
+    if (this->counterMeasure_parser_)
+      this->counterMeasure_parser_->pre ();
+
+    return true;
+  }
+
   return false;
 }
 
@@ -2483,6 +2606,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->effect_parser_)
       this->effect (this->effect_parser_->post_RPG_Magic_Spell_EffectProperties_Type ());
+
+    return true;
+  }
+
+  if (n == "counterMeasure" && ns == "urn:rpg")
+  {
+    if (this->counterMeasure_parser_)
+      this->counterMeasure (this->counterMeasure_parser_->post_RPG_Magic_CounterMeasure_Type ());
 
     return true;
   }

@@ -21,6 +21,8 @@
 
   <xsd:simpleType name="RPG_Common_CreatureMetaType_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="METATYPE_ANY"/>
+      <!--                                -->
       <xsd:enumeration value="METATYPE_ABERRATION"/>
       <xsd:enumeration value="METATYPE_ANIMAL"/>
       <xsd:enumeration value="METATYPE_CONSTRUCT"/>
@@ -74,6 +76,7 @@
   <xsd:simpleType name="RPG_Common_SubClass_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SUBCLASS_NONE"/>
+      <!--                                 -->
       <xsd:enumeration value="SUBCLASS_AVENGER"/>
       <xsd:enumeration value="SUBCLASS_BARBARIAN"/>
       <xsd:enumeration value="SUBCLASS_BARD"/>
@@ -101,6 +104,8 @@
       <xsd:enumeration value="ATTRIBUTE_INTELLIGENCE"/>
       <xsd:enumeration value="ATTRIBUTE_STRENGTH"/>
       <xsd:enumeration value="ATTRIBUTE_WISDOM"/>
+      <!--                                 -->
+      <xsd:enumeration value="ATTRIBUTE_ANY"/>
     </xsd:restriction>
   </xsd:simpleType>
 

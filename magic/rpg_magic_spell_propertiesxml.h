@@ -38,6 +38,7 @@ struct RPG_Magic_Spell_PropertiesXML
   RPG_Magic_Spell_DurationProperties duration;
   std::vector<RPG_Magic_Spell_PreconditionProperties> preconditions;
   std::vector<RPG_Magic_Spell_EffectProperties> effects;
+  std::vector<RPG_Magic_CounterMeasure> counterMeasures;
   RPG_Common_SavingThrow saveable;
   bool resistible;
 };

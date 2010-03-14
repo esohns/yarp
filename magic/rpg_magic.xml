@@ -187,7 +187,7 @@
       </base>
     </effect>
     <effect>
-      <type>SPELLEFFECT_RESISTANCE_FEAR</type>
+      <type>SPELLEFFECT_BONUS_SAVE_FEAR</type>
       <base>
         <value>1</value>
       </base>
@@ -811,17 +811,17 @@
     </duration>
     <effect>
       <type>SPELLEFFECT_BARRIER_MAGIC</type>
-      <counterMeasure>
-        <type>COUNTERMEASURE_CHECK</type>
-        <check>
-          <type>CHECK_CASTER_LEVEL</type>
-        </check>
-      </counterMeasure>
     </effect>
+    <counterMeasure>
+      <type>COUNTERMEASURE_CHECK</type>
+      <check>
+        <type>CHECK_CASTER_LEVEL</type>
+      </check>
+    </counterMeasure>
   </spell>
   <spell saveable="SAVE_WILL" resistible="true">
     <name>Antipathy</name>
-    <type>
+    <type counterSpell="SPELL_SYMPATHY">
       <type>SPELL_ANTIPATHY</type>
       <school>SCHOOL_ENCHANTMENT</school>
       <subSchool>SUBSCHOOL_COMPULSION</subSchool>
@@ -1199,14 +1199,22 @@
     <duration>
       <type>DURATION_PERMANENT</type>
     </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_TYPE</type>
+      <creature>
+        <metaType>METATYPE_ANY</metaType>
+        <subType>SUBTYPE_SHAPECHANGER</subType>
+      </creature>
+    </precondition>
+    <precondition reverse="true">
+      <type>PRECONDITION_CONDITION</type>
+      <condition>CONDITION_INCORPOREAL</condition>
+    </precondition>
     <effect>
       <type>SPELLEFFECT_POLYMORPH</type>
-      <counterMeasure reduction="SAVEREDUCTION_NEGATES">
-        <type>COUNTERMEASURE_CHECK</type>
-        <check>
-          <type>SAVE_FORTITUDE</type>
-        </check>
-      </counterMeasure>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_ABILITIY_LOSS_MAGICAL_ALL</type>
       <counterMeasure reduction="SAVEREDUCTION_PARTIAL">
         <type>COUNTERMEASURE_CHECK</type>
         <check>
@@ -1248,6 +1256,278 @@
     <effect>
       <type>SPELLEFFECT_BONUS_SAVE_FEAR</type>
       <value>-1</value>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Banishment</name>
+    <type>
+      <type>SPELL_BANISHMENT</type>
+      <school>SCHOOL_ABJURATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>6</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>7</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>7</level>
+    </level>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target rangeIsInHD="true">
+      <type>TARGET_VARIABLE</type>
+      <value>2</value>
+      <levelIncrement>1</levelIncrement>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_TYPE</type>
+      <creature>
+        <metaType>METATYPE_EXTRAPLANAR</metaType>
+      </creature>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_BANISH_CREATURE</type>
+    </effect>
+  </spell>
+  <spell resistible="true">
+    <name>Barkskin</name>
+    <type>
+      <type>SPELL_BARKSKIN</type>
+      <school>SCHOOL_TRANSMUTATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_RANGER</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>DOMAIN_PLANT</casterClass>
+      <level>2</level>
+    </level>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>100</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_CONDITION</type>
+      <condition>CONDITION_DEAD</condition>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_BONUS_ARMOR_CLASS</type>
+      <base>
+        <value>2</value>
+      </base>
+      <increment>1</increment>
+      <levelIncrement>3</levelIncrement>
+      <levelIncrementMax>12</levelIncrementMax>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Bear's Endurance</name>
+    <type>
+      <type>SPELL_BEARS_ENDURANCE</type>
+      <school>SCHOOL_TRANSMUTATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_RANGER</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>2</level>
+    </level>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>10</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_BONUS_ATTRIBUTE</type>
+      <base>
+        <value>4</value>
+      </base>
+      <attribute>ATTRIBUTE_CONSTITUTION</attribute>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Mass Bear's Endurance</name>
+    <type>
+      <type>SPELL_BEARS_ENDURANCE_MASS</type>
+      <school>SCHOOL_TRANSMUTATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>6</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>6</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>6</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>6</level>
+    </level>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+      <levelIncrement>1</levelIncrement>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+      <duration>10</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_BONUS_ATTRIBUTE</type>
+      <base>
+        <value>4</value>
+      </base>
+      <attribute>ATTRIBUTE_CONSTITUTION</attribute>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Bestow Curse</name>
+    <type counterSpell="SPELL_REMOVE_CURSE">
+      <type>SPELL_BESTOW_CURSE</type>
+      <school>SCHOOL_NECROMANCY</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>3</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>4</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>4</level>
+    </level>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration>
+      <type>DURATION_PERMANENT</type>
+    </duration>
+    <effect effectsAreInclusive="false">
+      <type>SPELLEFFECT_MODIFIER_ATTRIBUTE</type>
+      <base>
+        <value>-6</value>
+      </base>
+      <attribute>ATTRIBUTE_ANY</attribute>
+    </effect>
+    <effect includeAdjacent="true">
+      <type>SPELLEFFECT_MODIFIER_ATTACK_ROLL</type>
+      <base>
+        <value>-4</value>
+      </base>
+    </effect>
+    <effect includeAdjacent="true">
+      <type>SPELLEFFECT_MODIFIER_SAVE_ALL</type>
+      <base>
+        <value>-4</value>
+      </base>
+    </effect>
+    <effect includeAdjacent="true">
+      <type>SPELLEFFECT_MODIFIER_CHECK_ATTRIBUTE_ALL</type>
+      <base>
+        <value>-4</value>
+      </base>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_MODIFIER_CHECK_SKILL_ALL</type>
+      <base>
+        <value>-4</value>
+      </base>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_PARALYSIS</type>
+      <base>
+        <value>50</value>
+      </base>
+    </effect>
+    <counterMeasure>
+      <type>COUNTERMEASURE_SPELL</type>
+      <spell>SPELL_BREAK_ENCHANTMENT</spell>
+      <spell>SPELL_WISH_LIMITED</spell>
+      <spell>SPELL_MIRACLE</spell>
+      <spell>SPELL_REMOVE_CURSE</spell>
+      <spell>SPELL_WISH</spell>
+    </counterMeasure>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Binding</name>
+    <type>
+      <type>SPELL_BINDING</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>8</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>8</level>
+    </level>
+    <time action="ACTION_TIME">
+      <rounds>10</rounds>
+    </time>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration dismissible="true">
+      <type>DURATION_PERMANENT</type>
+    </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_CONDITION</type>
+      <condition>CONDITION_DEAD</condition>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_HOLD_CREATURE</type>
     </effect>
   </spell>
 </spellDictionary>

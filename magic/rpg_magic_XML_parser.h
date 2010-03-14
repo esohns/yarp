@@ -332,11 +332,14 @@ class RPG_Magic_Spell_EffectProperties_Type
 //     virtual void pre();
     virtual void type(const RPG_Magic_Spell_Effect&);
     virtual void base(const RPG_Common_Amount&);
+    virtual void increment(unsigned int);
     virtual void levelIncrement(const RPG_Common_Amount&);
     virtual void levelIncrementMax(unsigned char);
     virtual void attribute(const RPG_Common_Attribute&);
     virtual void maxRange(unsigned char);
     virtual void counterMeasure(const RPG_Magic_CounterMeasure&);
+    virtual void includeAdjacent(bool);
+    virtual void effectsAreInclusive(bool);
     virtual RPG_Magic_Spell_EffectProperties post_RPG_Magic_Spell_EffectProperties_Type();
 
   private:
@@ -360,6 +363,7 @@ class RPG_Magic_Spell_PropertiesXML_Type
     virtual void duration(const RPG_Magic_Spell_DurationProperties&);
     virtual void precondition(const RPG_Magic_Spell_PreconditionProperties&);
     virtual void effect(const RPG_Magic_Spell_EffectProperties&);
+    virtual void counterMeasure(const RPG_Magic_CounterMeasure&);
     virtual void saveable(const RPG_Common_SavingThrow&);
     virtual void resistible(bool);
     virtual RPG_Magic_Spell_PropertiesXML post_RPG_Magic_Spell_PropertiesXML_Type();

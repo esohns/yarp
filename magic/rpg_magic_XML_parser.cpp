@@ -770,6 +770,7 @@ RPG_Magic_Spell_EffectProperties_Type::RPG_Magic_Spell_EffectProperties_Type()
   myCurrentProperties.base.range.numDice = 0;
   myCurrentProperties.base.range.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentProperties.base.range.modifier = 0;
+  myCurrentProperties.increment = 0;
   myCurrentProperties.levelIncrement.value = 0;
   myCurrentProperties.levelIncrement.range.numDice = 0;
   myCurrentProperties.levelIncrement.range.typeDice = RPG_DICE_DIETYPE_INVALID;
@@ -778,6 +779,8 @@ RPG_Magic_Spell_EffectProperties_Type::RPG_Magic_Spell_EffectProperties_Type()
   myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentProperties.maxRange = 0;
   myCurrentProperties.counterMeasures.clear();
+  myCurrentProperties.includeAdjacent = false;
+  myCurrentProperties.effectsAreInclusive = true;
 }
 
 void RPG_Magic_Spell_EffectProperties_Type::type(const RPG_Magic_Spell_Effect& type_in)
@@ -792,6 +795,13 @@ void RPG_Magic_Spell_EffectProperties_Type::base(const RPG_Common_Amount& base_i
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::base"));
 
   myCurrentProperties.base = base_in;
+}
+
+void RPG_Magic_Spell_EffectProperties_Type::increment(unsigned int increment_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::increment"));
+
+  myCurrentProperties.increment = increment_in;
 }
 
 void RPG_Magic_Spell_EffectProperties_Type::levelIncrement(const RPG_Common_Amount& levelIncrement_in)
@@ -829,6 +839,20 @@ void RPG_Magic_Spell_EffectProperties_Type::counterMeasure(const RPG_Magic_Count
   myCurrentProperties.counterMeasures.push_back(counterMeasure_in);
 }
 
+void RPG_Magic_Spell_EffectProperties_Type::includeAdjacent(bool includeAdjacent_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::includeAdjacent"));
+
+  myCurrentProperties.includeAdjacent = includeAdjacent_in;
+}
+
+void RPG_Magic_Spell_EffectProperties_Type::effectsAreInclusive(bool effectsAreInclusive_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::effectsAreInclusive"));
+
+  myCurrentProperties.effectsAreInclusive = effectsAreInclusive_in;
+}
+
 RPG_Magic_Spell_EffectProperties RPG_Magic_Spell_EffectProperties_Type::post_RPG_Magic_Spell_EffectProperties_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::post_RPG_Magic_Spell_EffectProperties_Type"));
@@ -841,6 +865,7 @@ RPG_Magic_Spell_EffectProperties RPG_Magic_Spell_EffectProperties_Type::post_RPG
   myCurrentProperties.base.range.numDice = 0;
   myCurrentProperties.base.range.typeDice = RPG_DICE_DIETYPE_INVALID;
   myCurrentProperties.base.range.modifier = 0;
+  myCurrentProperties.increment = 0;
   myCurrentProperties.levelIncrement.value = 0;
   myCurrentProperties.levelIncrement.range.numDice = 0;
   myCurrentProperties.levelIncrement.range.typeDice = RPG_DICE_DIETYPE_INVALID;
@@ -849,6 +874,8 @@ RPG_Magic_Spell_EffectProperties RPG_Magic_Spell_EffectProperties_Type::post_RPG
   myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentProperties.maxRange = 0;
   myCurrentProperties.counterMeasures.clear();
+  myCurrentProperties.includeAdjacent = false;
+  myCurrentProperties.effectsAreInclusive = true;
 
   return result;
 }
@@ -887,6 +914,7 @@ RPG_Magic_Spell_PropertiesXML_Type::RPG_Magic_Spell_PropertiesXML_Type()
   myCurrentProperties.duration.dismissible = false;
   myCurrentProperties.preconditions.clear();
   myCurrentProperties.effects.clear();
+  myCurrentProperties.counterMeasures.clear();
   myCurrentProperties.saveable = RPG_COMMON_SAVINGTHROW_INVALID;
   myCurrentProperties.resistible = false;
 }
@@ -961,6 +989,13 @@ void RPG_Magic_Spell_PropertiesXML_Type::effect(const RPG_Magic_Spell_EffectProp
   myCurrentProperties.effects.push_back(effect_in);
 }
 
+void RPG_Magic_Spell_PropertiesXML_Type::counterMeasure(const RPG_Magic_CounterMeasure& counterMeasure_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PropertiesXML_Type::counterMeasure"));
+
+  myCurrentProperties.counterMeasures.push_back(counterMeasure_in);
+}
+
 void RPG_Magic_Spell_PropertiesXML_Type::saveable(const RPG_Common_SavingThrow& saveable_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Spell_PropertiesXML_Type::saveable"));
@@ -1012,6 +1047,7 @@ RPG_Magic_Spell_PropertiesXML RPG_Magic_Spell_PropertiesXML_Type::post_RPG_Magic
   myCurrentProperties.duration.dismissible = false;
   myCurrentProperties.preconditions.clear();
   myCurrentProperties.effects.clear();
+  myCurrentProperties.counterMeasures.clear();
   myCurrentProperties.saveable = RPG_COMMON_SAVINGTHROW_INVALID;
   myCurrentProperties.resistible = false;
 

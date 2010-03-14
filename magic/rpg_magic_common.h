@@ -40,6 +40,8 @@ typedef std::vector<RPG_Magic_Spell_PreconditionProperties> RPG_Magic_Spell_Prec
 typedef RPG_Magic_Spell_PreconditionList_t::const_iterator RPG_Magic_Spell_PreconditionListIterator_t;
 typedef std::vector<RPG_Magic_Spell_EffectProperties> RPG_Magic_Spell_EffectList_t;
 typedef RPG_Magic_Spell_EffectList_t::const_iterator RPG_Magic_Spell_EffectListIterator_t;
+typedef std::vector<RPG_Magic_CounterMeasure> RPG_Magic_Spell_CounterMeasureList_t;
+typedef RPG_Magic_Spell_CounterMeasureList_t::const_iterator RPG_Magic_Spell_CounterMeasureListIterator_t;
 
 struct RPG_Magic_Spell_Properties
 {
@@ -53,6 +55,7 @@ struct RPG_Magic_Spell_Properties
   RPG_Magic_Spell_DurationProperties duration;
   RPG_Magic_Spell_PreconditionList_t preconditions;
   RPG_Magic_Spell_EffectList_t effects;
+  RPG_Magic_Spell_CounterMeasureList_t counterMeasures;
   RPG_Common_SavingThrow saveable;
   bool resistible;
 };

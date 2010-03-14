@@ -1410,7 +1410,7 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
        iterator != effects_in.end();
        iterator++)
   {
-    if ((*iterator).type == SPELLEFFECT_BONUS_ATTRIBUTE)
+    if ((*iterator).type == SPELLEFFECT_MODIFIER_ATTRIBUTE)
       result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator).attribute);
     else
       result += RPG_Magic_Spell_EffectHelper::RPG_Magic_Spell_EffectToString((*iterator).type);
@@ -1572,6 +1572,125 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
       } // end IF
       result += ACE_TEXT_ALWAYS_CHAR("\n");
     } // end FOR
+  } // end FOR
+
+  return result;
+}
+
+const std::string RPG_Magic_Common_Tools::counterMeasuresToString(const RPG_Magic_Spell_CounterMeasureList_t& counterMeasures_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::counterMeasuresToString"));
+
+  std::string result;
+
+  std::stringstream converter;
+  for (std::vector<RPG_Magic_CounterMeasure>::const_iterator iterator = counterMeasures_in.begin();
+       iterator != counterMeasures_in.end();
+       iterator++)
+  {
+    result += ACE_TEXT_ALWAYS_CHAR("counterMeasure: ");
+    result += RPG_Common_CounterMeasureHelper::RPG_Common_CounterMeasureToString((*iterator).type);
+    switch ((*iterator).type)
+    {
+      case COUNTERMEASURE_CHECK:
+      {
+        result += ACE_TEXT_ALWAYS_CHAR(": ");
+        switch ((*iterator).check.type.discriminator)
+        {
+          case RPG_Magic_CheckTypeUnion::SKILL:
+          {
+            result += RPG_Common_SkillHelper::RPG_Common_SkillToString((*iterator).check.type.skill);
+
+            break;
+          }
+          case RPG_Magic_CheckTypeUnion::ATTRIBUTE:
+          {
+            result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator).check.type.attribute);
+
+            break;
+          }
+          case RPG_Magic_CheckTypeUnion::BASECHECKTYPEUNION:
+          {
+            switch ((*iterator).check.type.basechecktypeunion.discriminator)
+            {
+              case RPG_Common_BaseCheckTypeUnion::CHECKTYPE:
+              {
+                result += RPG_Common_CheckTypeHelper::RPG_Common_CheckTypeToString((*iterator).check.type.basechecktypeunion.checktype);
+
+                break;
+              }
+              case RPG_Common_BaseCheckTypeUnion::SAVINGTHROW:
+              {
+                result += RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString((*iterator).check.type.basechecktypeunion.savingthrow);
+
+                break;
+              }
+              default:
+              {
+                // debug info
+                ACE_DEBUG((LM_ERROR,
+                           ACE_TEXT("invalid RPG_Common_BaseCheckTypeUnion type: %d, continuing\n"),
+                           (*iterator).check.type.basechecktypeunion.discriminator));
+
+                break;
+              }
+            } // end SWITCH
+
+            break;
+          }
+          default:
+          {
+            // debug info
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("invalid RPG_Magic_CheckTypeUnion type: %d, continuing\n"),
+                       (*iterator).check.type.discriminator));
+
+            break;
+          }
+        } // end SWITCH
+        if ((*iterator).check.difficultyClass)
+        {
+          result += ACE_TEXT_ALWAYS_CHAR(" (DC: ");
+          converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+          converter << ACE_static_cast(unsigned int, (*iterator).check.difficultyClass);
+          result += converter.str();
+          result += ACE_TEXT_ALWAYS_CHAR(")");
+        } // end IF
+
+        break;
+      }
+      case COUNTERMEASURE_SPELL:
+      {
+        for (std::vector<RPG_Magic_SpellType>::const_iterator iterator2 = (*iterator).spells.begin();
+             iterator2 != (*iterator).spells.end();
+             iterator2++)
+        {
+          result += RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator2);
+          result += ACE_TEXT_ALWAYS_CHAR("|");
+        } // end FOR
+        if (!(*iterator).spells.empty())
+        {
+          result.erase(--(result.end()));
+        } // end IF
+
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid counterMeasure \"%s\" --> check implementation !, continuing\n"),
+                   RPG_Common_CounterMeasureHelper::RPG_Common_CounterMeasureToString((*iterator).type).c_str()));
+
+        break;
+      }
+    } // end SWITCH
+    if ((*iterator).reduction != SAVEREDUCTION_NEGATES)
+    {
+      result += ACE_TEXT_ALWAYS_CHAR(" [");
+      result += RPG_Common_SaveReductionTypeHelper::RPG_Common_SaveReductionTypeToString((*iterator).reduction);
+      result += ACE_TEXT_ALWAYS_CHAR("]");
+    } // end IF
+    result += ACE_TEXT_ALWAYS_CHAR("\n");
   } // end FOR
 
   return result;

@@ -25,6 +25,7 @@
 #include "rpg_magic_incl.h"
 
 #include "rpg_magic_common.h"
+#include "rpg_magic_dictionary.h"
 
 #include <ace/Global_Macros.h>
 
@@ -33,17 +34,14 @@
 */
 class RPG_Magic_Common_Tools
 {
+  // allow access to some specific helper methods
+  friend class RPG_Magic_Dictionary;
+
  public:
+  // init string conversion (and other) tables
   static void init();
 
   static const std::string spellToName(const RPG_Magic_SpellType&); // type
-  static const std::string spellTypeToString(const RPG_Magic_Spell_Type&); // type
-  static const std::string spellLevelsToString(const RPG_Magic_SpellLevelList_t&); // levels
-  static const std::string spellRangeToString(const RPG_Magic_Spell_RangeProperties&); // range
-  static const std::string spellTargetToString(const RPG_Magic_Spell_TargetProperties&); // target
-  static const std::string spellDurationToString(const RPG_Magic_Spell_DurationProperties&); // duration
-  static const std::string preconditionsToString(const RPG_Magic_Spell_PreconditionList_t&); // preconditions
-  static const std::string effectsToString(const RPG_Magic_Spell_EffectList_t&); // effects
   static const std::string spellsToString(const RPG_Magic_Spells_t&); // spells
   static const std::string spellsToString(const RPG_Magic_SpellList_t&); // spells
 
@@ -61,6 +59,16 @@ class RPG_Magic_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Magic_Common_Tools& operator=(const RPG_Magic_Common_Tools&));
 
   // helper methods
+  static const std::string spellTypeToString(const RPG_Magic_Spell_Type&); // type
+  static const std::string spellLevelsToString(const RPG_Magic_SpellLevelList_t&); // levels
+  static const std::string spellRangeToString(const RPG_Magic_Spell_RangeProperties&); // range
+  static const std::string spellTargetToString(const RPG_Magic_Spell_TargetProperties&); // target
+  static const std::string spellDurationToString(const RPG_Magic_Spell_DurationProperties&); // duration
+  static const std::string preconditionsToString(const RPG_Magic_Spell_PreconditionList_t&); // preconditions
+  static const std::string effectsToString(const RPG_Magic_Spell_EffectList_t&); // effects
+  static const std::string counterMeasuresToString(const RPG_Magic_Spell_CounterMeasureList_t&); // counterMeasures
+
+  // (internal) helper methods
   static void initStringConversionTables();
   static void initSpellsTables();
 

@@ -30,11 +30,14 @@ struct RPG_Magic_Spell_EffectProperties
 {
   RPG_Magic_Spell_Effect type;
   RPG_Common_Amount base;
+  unsigned int increment;
   RPG_Common_Amount levelIncrement;
   unsigned char levelIncrementMax;
   RPG_Common_Attribute attribute;
   unsigned char maxRange;
   std::vector<RPG_Magic_CounterMeasure> counterMeasures;
+  bool includeAdjacent;
+  bool effectsAreInclusive;
 };
 
 #endif
