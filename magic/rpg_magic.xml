@@ -163,7 +163,7 @@
       <condition>CONDITION_DEAD</condition>
     </precondition>
     <effect>
-      <type>SPELLEFFECT_BONUS_HP</type>
+      <type>SPELLEFFECT_MODIFIER_HP</type>
       <base>
         <range>
           <numDice>1</numDice>
@@ -181,13 +181,13 @@
       <levelIncrementMax>10</levelIncrementMax>
     </effect>
     <effect>
-      <type>SPELLEFFECT_BONUS_MORALE</type>
+      <type>SPELLEFFECT_MODIFIER_MORALE</type>
       <base>
         <value>1</value>
       </base>
     </effect>
     <effect>
-      <type>SPELLEFFECT_BONUS_SAVE_FEAR</type>
+      <type>SPELLEFFECT_MODIFIER_SAVE_FEAR</type>
       <base>
         <value>1</value>
       </base>
@@ -865,7 +865,7 @@
       </counterMeasure>
     </effect>
     <effect>
-      <type>SPELLEFFECT_BONUS_ATTRIBUTE</type>
+      <type>SPELLEFFECT_MODIFIER_ATTRIBUTE</type>
       <base>
         <value>-4</value>
       </base>
@@ -1170,7 +1170,10 @@
       </creature>
     </precondition>
     <effect>
-      <type>SPELLEFFECT_ANIMATE_ANIMAL_PLANT</type>
+      <type>SPELLEFFECT_ANIMATE_ANIMAL</type>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_ANIMATE_PLANT</type>
     </effect>
   </spell>
   <spell saveable="SAVE_FORTITUDE" resistible="true">
@@ -1250,12 +1253,16 @@
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
-      <type>SPELLEFFECT_BONUS_ATTACK_ROLL</type>
-      <value>-1</value>
+      <type>SPELLEFFECT_MODIFIER_ATTACK_ROLL</type>
+      <base>
+        <value>-1</value>
+      </base>
     </effect>
     <effect>
-      <type>SPELLEFFECT_BONUS_SAVE_FEAR</type>
-      <value>-1</value>
+      <type>SPELLEFFECT_MODIFIER_SAVE_FEAR</type>
+      <base>
+        <value>-1</value>
+      </base>
     </effect>
   </spell>
   <spell saveable="SAVE_WILL" resistible="true">
@@ -1289,7 +1296,8 @@
     <precondition>
       <type>PRECONDITION_TYPE</type>
       <creature>
-        <metaType>METATYPE_EXTRAPLANAR</metaType>
+        <metaType>METATYPE_ANY</metaType>
+        <subType>SUBTYPE_EXTRAPLANAR</subType>
       </creature>
     </precondition>
     <effect>
@@ -1329,12 +1337,14 @@
       <condition>CONDITION_DEAD</condition>
     </precondition>
     <effect>
-      <type>SPELLEFFECT_BONUS_ARMOR_CLASS</type>
+      <type>SPELLEFFECT_MODIFIER_ARMOR_CLASS</type>
       <base>
         <value>2</value>
       </base>
       <increment>1</increment>
-      <levelIncrement>3</levelIncrement>
+      <levelIncrement>
+        <value>3</value>
+      </levelIncrement>
       <levelIncrementMax>12</levelIncrementMax>
     </effect>
   </spell>
@@ -1375,7 +1385,7 @@
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
-      <type>SPELLEFFECT_BONUS_ATTRIBUTE</type>
+      <type>SPELLEFFECT_MODIFIER_ATTRIBUTE</type>
       <base>
         <value>4</value>
       </base>
@@ -1416,7 +1426,7 @@
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
-      <type>SPELLEFFECT_BONUS_ATTRIBUTE</type>
+      <type>SPELLEFFECT_MODIFIER_ATTRIBUTE</type>
       <base>
         <value>4</value>
       </base>
@@ -1463,7 +1473,7 @@
       </base>
     </effect>
     <effect includeAdjacent="true">
-      <type>SPELLEFFECT_MODIFIER_SAVE_ALL</type>
+      <type>SPELLEFFECT_MODIFIER_SAVE</type>
       <base>
         <value>-4</value>
       </base>

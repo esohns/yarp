@@ -672,6 +672,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
           ((*iterator == SUBCLASS_BARD) ||
            (*iterator == SUBCLASS_SORCERER)))
       {
+        // make sure we have enough variety...
+        ACE_ASSERT(numKnownSpells <= available.size());
+
         numChosen = 0;
         while (numChosen < numKnownSpells);
         {
@@ -701,6 +704,9 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
           (*iterator != SUBCLASS_BARD) &&
           (*iterator != SUBCLASS_SORCERER))
       {
+        // make sure we have enough variety...
+        ACE_ASSERT(!available.empty());
+
         for (unsigned int j = 0;
              j < numSpells;
              j++)

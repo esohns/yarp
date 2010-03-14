@@ -1420,6 +1420,8 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
       result += ACE_TEXT_ALWAYS_CHAR(": ");
       if ((*iterator).base.range.typeDice == RPG_DICE_DIETYPE_INVALID)
       {
+        if ((*iterator).base.value > 0)
+          result += ACE_TEXT_ALWAYS_CHAR("+");
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << ACE_static_cast(int, (*iterator).base.value);
         result += converter.str();

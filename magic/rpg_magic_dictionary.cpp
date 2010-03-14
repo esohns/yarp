@@ -437,7 +437,7 @@ void RPG_Magic_Dictionary::dump() const
       castingTime = RPG_Common_ActionTypeHelper::RPG_Common_ActionTypeToString((iterator->second).time.action);
 
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("Spell (\"%s\"):\nType: %s\nLevel(s):\n---------\n%sXP Cost: %d\nCasting Time: %s\nRange:\n------\n%sTarget:\n-------\n%sDuration:\n---------\n%s\nPrecondition(s):\n--------------\n%sSave: %s\nEffect(s):\n----------\n%s\nCounterMeasure(s):\n----------\n%sResistible: %s\n"),
+               ACE_TEXT("Spell (\"%s\"):\nType: %s\nLevel(s):\n---------\n%sXP Cost: %d\nCasting Time: %s\nRange:\n------\n%sTarget:\n-------\n%sDuration:\n---------\n%s\nPrecondition(s):\n--------------\n%sSave: %s\nEffect(s):\n----------\n%sCounterMeasure(s):\n----------\n%sResistible: %s\n"),
                (iterator->first).c_str(),
                RPG_Magic_Common_Tools::spellTypeToString((iterator->second).type).c_str(),
                RPG_Magic_Common_Tools::spellLevelsToString((iterator->second).levels).c_str(),
