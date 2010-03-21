@@ -18,43 +18,28 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_REMOTE_COMM_H
-#define RPG_NET_REMOTE_COMM_H
+#ifndef RPG_COMMON_FILE_TOOLS_H
+#define RPG_COMMON_FILE_TOOLS_H
 
 #include <ace/Global_Macros.h>
 
-class RPG_Net_Remote_Comm
+#include <string>
+
+class RPG_Common_File_Tools
 {
  public:
-  // define different types of messages
-  enum MessageType
-  {
-    RPG_NET_PING = 0,
-    RPG_NET_PONG = 1,
-  };
-
-  // define a common message header
-  struct MessageHeader
-  {
-    // *IMPORTANT NOTE*: messageLength is defined as:
-    // total_message_length - sizeof(messageLength) !
-    unsigned long messageLength;
-    MessageType   messageType;
-  };
-
-  // -----------**** messages ****-----------
-  struct RuntimePing
-  {
-    MessageHeader messageHeader;
-    unsigned long counter;
-  };
-  // -----------**** messages END ****-----------
+  static const bool isReadable(const std::string&); // FQ filename
+  static const bool isEmpty(const std::string&); // FQ filename
+  static const bool isDirectory(const std::string&); // directory
+  static const bool createDirectory(const std::string&); // directory
+  static const bool deleteFile(const std::string&); // FQ filename
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm());
-  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Remote_Comm());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm(const RPG_Net_Remote_Comm&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm& operator=(const RPG_Net_Remote_Comm&));
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Common_File_Tools());
+  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Common_File_Tools());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Common_File_Tools(const RPG_Common_File_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Common_File_Tools& operator=(const RPG_Common_File_Tools&));
 };
 
 #endif

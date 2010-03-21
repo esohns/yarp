@@ -24,6 +24,7 @@
 #include "rpg_common_incl.h"
 
 #include <ace/Global_Macros.h>
+#include <ace/Time_Value.h>
 
 #include <string>
 
@@ -41,6 +42,11 @@ class RPG_Common_Tools
 
   static const signed char getSizeModifier(const RPG_Common_Size&);
   static const unsigned char sizeToReach(const RPG_Common_Size&);
+
+  // use this to generate a "condensed" period string
+  // - uses snprintf internally: "%H:%M:%S.usec"
+  static const bool period2String(const ACE_Time_Value&, // period
+                                  std::string&);         // return value: corresp. string
 
  private:
   // safety measures

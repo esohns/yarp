@@ -23,7 +23,6 @@
 
 #include <rpg_common_iconnection.h>
 
-#include <ace/Event_Handler.h>
 #include <ace/Svc_Handler.h>
 #include <ace/SOCK_Stream.h>
 

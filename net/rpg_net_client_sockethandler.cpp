@@ -1,0 +1,235 @@
+/***************************************************************************
+ *   Copyright (C) 2009 by Erik Sohns   *
+ *   erik.sohns@web.de   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
+#include "rpg_net_client_sockethandler.h"
+
+#include "rpg_net_remote_comm.h"
+#include "rpg_net_common_tools.h"
+
+#include <ace/OS.h>
+#include <ace/Reactor.h>
+
+#include <string>
+
+RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler()
+ : inherited(NULL, // no specific thread manager
+             NULL, // no specific message queue
+             ACE_Reactor::instance())
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler"));
+
+}
+
+RPG_Net_Client_SocketHandler::~RPG_Net_Client_SocketHandler()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::~RPG_Net_Client_SocketHandler"));
+
+}
+
+int
+RPG_Net_Client_SocketHandler::open(void* arg_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::open"));
+
+  // call baseclass...
+  int result = inherited::open(arg_in);
+  if (result == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Svc_Handler::open(): \"%s\", aborting\n"),
+               ACE_OS::strerror(errno)));
+
+    return -1;
+  } // end IF
+
+  // debug info
+  ACE_INET_Addr remoteAddress;
+  if (peer().get_remote_addr(remoteAddress) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%s\", aborting\n"),
+               ACE_OS::strerror(errno)));
+
+    return -1;
+  }
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("connected (handle: %d) to server (host: \"%s\", port: %u)\n"),
+             peer().get_handle(),
+             ACE_TEXT_CHAR_TO_TCHAR(remoteAddress.get_host_name()),
+             remoteAddress.get_port_number()));
+
+  // register with reactor...
+  if (reactor()->register_handler(this,
+                                  READ_MASK) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Reactor::register_handler(): \"%s\", aborting\n"),
+               ACE_OS::strerror(errno)));
+
+    return -1;
+  } // end IF
+
+  return 0;
+}
+
+int
+RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::handle_input"));
+
+  ACE_UNUSED_ARG(handle_in);
+
+  // step1: read data
+  RPG_Net_Remote_Comm::RuntimePing data;
+  size_t bytes_received = 0;
+  // *TODO*: do blocking IO until further notice...
+  if (peer().recv_n(ACE_static_cast(void*, &data),            // buffer
+                    sizeof(RPG_Net_Remote_Comm::RuntimePing), // length
+                    NULL,                                     // timeout --> block
+                    &bytes_received) == -1)                   // number of recieved bytes
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_SOCK_Stream::recv_n(): \"%s\", aborting\n"),
+               ACE_OS::strerror(errno)));
+
+    // --> reactor will invoke handle_close() --> close the socket
+    return -1;
+  } // end IF
+
+  switch (bytes_received)
+  {
+    // *IMPORTANT NOTE*: peer MAY only close this socket for system shutdown/application restart !!!
+    case 0:
+    {
+      // *** peer has closed the socket ***
+
+      // --> reactor will invoke handle_close() --> close the socket
+      return -1;
+    }
+    case -1:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_SOCK_Stream::recv_n(): \"%s\", aborting\n"),
+                 ACE_OS::strerror(errno)));
+
+      // --> reactor will invoke handle_close() --> close the socket
+      return -1;
+    }
+    default:
+    {
+      // --> socket is probably non-blocking...
+      if (bytes_received != sizeof(RPG_Net_Remote_Comm::RuntimePing))
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("only managed to read %u/%u bytes, aborting\n"),
+                   bytes_received,
+                   sizeof(RPG_Net_Remote_Comm::RuntimePing)));
+
+        // --> reactor will invoke handle_close() --> close the socket
+        return -1;
+      }
+
+      break;
+    }
+  } // end SWITCH
+
+  // step2: print data
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("received: %u bytes [length: %u; type: \"%s\"; counter: %u]\n"),
+             bytes_received,
+             data.messageHeader.messageLength,
+             RPG_Net_Common_Tools::messageType2String(data.messageHeader.messageType).c_str(),
+             data.counter));
+
+  switch (data.messageHeader.messageType)
+  {
+    case RPG_Net_Remote_Comm::RPG_NET_PING:
+    {
+      // reply with a "PONG"
+      data.messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PONG;
+
+        // step2: send it over the net...
+      size_t bytes_sent = peer().send_n(ACE_static_cast(const void*,
+                                        &data),                   // buffer
+                                        sizeof(RPG_Net_Remote_Comm::RuntimePing), // length
+                                        NULL,                                     // timeout --> block
+                                        &bytes_sent);                             // number of sent bytes
+      // *IMPORTANT NOTE*: we'll ALSO get here when the client has closed the socket
+      // in a well-behaved way... --> don't treat this as an error !
+      switch (bytes_sent)
+      {
+        case -1:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to ACE_SOCK_Stream::send_n(): \"%s\", aborting\n"),
+                     ACE_OS::strerror(errno)));
+
+          // --> reactor will invoke handle_close() --> close the socket
+          return -1;
+        }
+        case 0:
+        default:
+        {
+          if (bytes_sent == sizeof(RPG_Net_Remote_Comm::RuntimePing))
+          {
+            // *** GOOD CASE ***
+            break;
+          } // end IF
+
+          // --> socket is probably non-blocking...
+          // *TODO*: support/use non-blocking sockets !
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("only managed to send %u/%u bytes, aborting\n"),
+                     bytes_sent,
+                     sizeof(RPG_Net_Remote_Comm::RuntimePing)));
+
+          // --> reactor will invoke handle_close() --> close the socket
+          return -1;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case RPG_Net_Remote_Comm::RPG_NET_PONG:
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("protocol error, aborting\n")));
+
+      // --> reactor will invoke handle_close() --> close the socket
+      return -1;
+    }
+  } // end SWITCH
+
+  return 0;
+}
+
+int
+RPG_Net_Client_SocketHandler::handle_close(ACE_HANDLE handle_in,
+                                           ACE_Reactor_Mask mask_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::handle_close"));
+
+  // *IMPORTANT NOTE*: this is called when:
+  // - the server closes the socket
+  // - we close() ourselves
+  return inherited::handle_close(handle_in,
+                                 mask_in);
+}

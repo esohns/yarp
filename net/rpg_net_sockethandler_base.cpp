@@ -96,6 +96,7 @@ int RPG_Net_SocketHandler_Base::handle_close(ACE_HANDLE handle_in,
 
   // *IMPORTANT NOTE*: this is called when:
   // - the client closes the socket --> child handle_xxx() returns -1
+  // - we reject the connection (too many open)
   return inherited::handle_close(handle_in,
                                  mask_in);
 }

@@ -209,7 +209,7 @@ void do_printVersion(const std::string& programName_in)
   } // end ELSE
   if (version_number << ACE::minor_version())
   {
-    version_number << ".";
+    version_number << ACE_TEXT(".");
 
     if (version_number << ACE::beta_version())
     {

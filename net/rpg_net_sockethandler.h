@@ -23,6 +23,8 @@
 
 #include "rpg_net_sockethandler_base.h"
 
+#include <ace/Global_Macros.h>
+#include <ace/Atomic_Op.h>
 #include <ace/Time_Value.h>
 
 class RPG_Net_SocketHandler
@@ -55,6 +57,26 @@ class RPG_Net_SocketHandler
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler(const RPG_Net_SocketHandler&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler& operator=(const RPG_Net_SocketHandler&));
+
+  // helper methods
+  inline void cancelTimer()
+  {
+    // *IMPORTANT NOTE*: DONT'T invoke our send timer anymore ! Otherwise
+    // there's a racing condition (especially when using a multithreaded
+    // reactor !!!)
+    if (reactor()->cancel_timer(this,    // handler
+                                1) != 1) // don't call handle_close()
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%s\", continuing\n"),
+                 ACE_OS::strerror(errno)));
+    } // end IF
+    myTimerID = -1;
+  };
+
+  // atomic ID generator
+  static ACE_Atomic_Op<ACE_Thread_Mutex,
+                       unsigned long> myCurrentID;
 
   // remember our timer ID
   int myTimerID;

@@ -18,43 +18,46 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_REMOTE_COMM_H
-#define RPG_NET_REMOTE_COMM_H
+#ifndef RPG_NET_SIGNALHANDLER_H
+#define RPG_NET_SIGNALHANDLER_H
 
 #include <ace/Global_Macros.h>
+#include <ace/Event_Handler.h>
+#include <ace/Time_Value.h>
 
-class RPG_Net_Remote_Comm
+#include <string>
+
+// forward declaration(s)
+class RPG_Common_IControl;
+
+class RPG_Net_SignalHandler
+ : public ACE_Event_Handler
 {
  public:
-  // define different types of messages
-  enum MessageType
-  {
-    RPG_NET_PING = 0,
-    RPG_NET_PONG = 1,
-  };
+  RPG_Net_SignalHandler(RPG_Common_IControl*); // controller
+  virtual ~RPG_Net_SignalHandler();
 
-  // define a common message header
-  struct MessageHeader
-  {
-    // *IMPORTANT NOTE*: messageLength is defined as:
-    // total_message_length - sizeof(messageLength) !
-    unsigned long messageLength;
-    MessageType   messageType;
-  };
-
-  // -----------**** messages ****-----------
-  struct RuntimePing
-  {
-    MessageHeader messageHeader;
-    unsigned long counter;
-  };
-  // -----------**** messages END ****-----------
+  // implement specific behaviour
+  virtual int handle_signal(int,          // signal
+                            siginfo_t*,   // not needed on UNIX
+                            ucontext_t*); // not used
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm());
-  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Remote_Comm());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm(const RPG_Net_Remote_Comm&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm& operator=(const RPG_Net_Remote_Comm&));
+  typedef ACE_Event_Handler inherited;
+
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SignalHandler());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SignalHandler(const RPG_Net_SignalHandler&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SignalHandler& operator=(const RPG_Net_SignalHandler&));
+
+  // helper methods
+  // *TODO*: process context information...
+  void retrieveSignalInfo(const int&,        // signal
+                          const siginfo_t&,  // information pertaining to a signal
+//                          const ucontext_t&, // context information
+                          std::string&);     // return value: condensed signal information
+
+  RPG_Common_IControl* myControl;
 };
 
 #endif

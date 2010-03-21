@@ -21,6 +21,9 @@
 #ifndef RPG_COMMON_DEFINES_H
 #define RPG_COMMON_DEFINES_H
 
-#define RPG_COMMON_MAX_SPELL_LEVEL 9
+#define RPG_COMMON_MAX_SPELL_LEVEL             9
+
+// general stuff
+#define RPG_COMMON_MAX_TIMESTAMP_STRING_LENGTH 64
 
 #endif

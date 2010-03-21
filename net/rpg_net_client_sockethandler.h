@@ -18,43 +18,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_REMOTE_COMM_H
-#define RPG_NET_REMOTE_COMM_H
+#ifndef RPG_NET_CLIENT_SOCKETHANDLER_H
+#define RPG_NET_CLIENT_SOCKETHANDLER_H
 
 #include <ace/Global_Macros.h>
+#include <ace/Svc_Handler.h>
+#include <ace/SOCK_Stream.h>
+#include <ace/Connector.h>
+#include <ace/SOCK_Connector.h>
 
-class RPG_Net_Remote_Comm
+class RPG_Net_Client_SocketHandler
+ : public ACE_Svc_Handler<ACE_SOCK_STREAM,
+                          ACE_NULL_SYNCH>
 {
  public:
-  // define different types of messages
-  enum MessageType
-  {
-    RPG_NET_PING = 0,
-    RPG_NET_PONG = 1,
-  };
+  RPG_Net_Client_SocketHandler();
+  virtual ~RPG_Net_Client_SocketHandler();
 
-  // define a common message header
-  struct MessageHeader
-  {
-    // *IMPORTANT NOTE*: messageLength is defined as:
-    // total_message_length - sizeof(messageLength) !
-    unsigned long messageLength;
-    MessageType   messageType;
-  };
-
-  // -----------**** messages ****-----------
-  struct RuntimePing
-  {
-    MessageHeader messageHeader;
-    unsigned long counter;
-  };
-  // -----------**** messages END ****-----------
+  virtual int open(void*); // args
+  virtual int handle_input(ACE_HANDLE);
+  virtual int handle_close(ACE_HANDLE,
+                           ACE_Reactor_Mask);
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm());
-  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Remote_Comm());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm(const RPG_Net_Remote_Comm&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm& operator=(const RPG_Net_Remote_Comm&));
+  typedef ACE_Svc_Handler<ACE_SOCK_STREAM,
+                          ACE_NULL_SYNCH> inherited;
+
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_SocketHandler(const RPG_Net_Client_SocketHandler&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_SocketHandler& operator=(const RPG_Net_Client_SocketHandler&));
 };
+
+// define implementation-specific connector...
+typedef ACE_Connector<RPG_Net_Client_SocketHandler,
+                      ACE_SOCK_CONNECTOR> RPG_Net_Client_Connector;
 
 #endif

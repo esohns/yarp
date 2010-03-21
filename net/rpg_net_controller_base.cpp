@@ -18,43 +18,47 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_REMOTE_COMM_H
-#define RPG_NET_REMOTE_COMM_H
+#include "rpg_net_controller_base.h"
 
-#include <ace/Global_Macros.h>
+#include <ace/Log_Msg.h>
 
-class RPG_Net_Remote_Comm
+RPG_Net_Controller_Base::RPG_Net_Controller_Base()
 {
- public:
-  // define different types of messages
-  enum MessageType
-  {
-    RPG_NET_PING = 0,
-    RPG_NET_PONG = 1,
-  };
+  ACE_TRACE(ACE_TEXT("RPG_Net_Controller_Base::RPG_Net_Controller_Base"));
 
-  // define a common message header
-  struct MessageHeader
-  {
-    // *IMPORTANT NOTE*: messageLength is defined as:
-    // total_message_length - sizeof(messageLength) !
-    unsigned long messageLength;
-    MessageType   messageType;
-  };
+}
 
-  // -----------**** messages ****-----------
-  struct RuntimePing
-  {
-    MessageHeader messageHeader;
-    unsigned long counter;
-  };
-  // -----------**** messages END ****-----------
+RPG_Net_Controller_Base::~RPG_Net_Controller_Base()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Controller_Base::~RPG_Net_Controller_Base"));
 
- private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm());
-  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Remote_Comm());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm(const RPG_Net_Remote_Comm&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm& operator=(const RPG_Net_Remote_Comm&));
-};
+}
 
-#endif
+void
+RPG_Net_Controller_Base::start()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Controller_Base::start"));
+
+  ACE_DEBUG((LM_NOTICE,
+             ACE_TEXT("%D: starting...\n")));
+}
+
+void
+RPG_Net_Controller_Base::stop()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Controller_Base::stop"));
+
+  ACE_DEBUG((LM_NOTICE,
+             ACE_TEXT("%D: stopping...\n")));
+}
+
+const bool
+RPG_Net_Controller_Base::isRunning()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Controller_Base::isRunning"));
+
+  ACE_DEBUG((LM_NOTICE,
+             ACE_TEXT("%D: isRunning ?...\n")));
+
+  return true;
+}

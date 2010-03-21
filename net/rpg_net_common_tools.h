@@ -18,43 +18,42 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_REMOTE_COMM_H
-#define RPG_NET_REMOTE_COMM_H
+#ifndef RPG_NET_COMMON_TOOLS_H
+#define RPG_NET_COMMON_TOOLS_H
+
+#include "rpg_net_remote_comm.h"
 
 #include <ace/Global_Macros.h>
 
-class RPG_Net_Remote_Comm
+#include <string>
+
+// forward declaration(s)
+struct dirent;
+
+class RPG_Net_Common_Tools
 {
  public:
-  // define different types of messages
-  enum MessageType
-  {
-    RPG_NET_PING = 0,
-    RPG_NET_PONG = 1,
-  };
+  // *IMPORTANT NOTE*: this implements log rotation...
+  static const bool getNextLogFilename(const bool&,        // server ?
+                                       const std::string&, // log directory
+                                       std::string&);      // return value: FQ current log filename
 
-  // define a common message header
-  struct MessageHeader
-  {
-    // *IMPORTANT NOTE*: messageLength is defined as:
-    // total_message_length - sizeof(messageLength) !
-    unsigned long messageLength;
-    MessageType   messageType;
-  };
+  static const std::string messageType2String(const RPG_Net_Remote_Comm::MessageType&);
 
-  // -----------**** messages ****-----------
-  struct RuntimePing
-  {
-    MessageHeader messageHeader;
-    unsigned long counter;
-  };
-  // -----------**** messages END ****-----------
+  static unsigned long myMaxNumberOfLogFiles;
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm());
-  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Remote_Comm());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm(const RPG_Net_Remote_Comm&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm& operator=(const RPG_Net_Remote_Comm&));
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Common_Tools(const RPG_Net_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Common_Tools& operator=(const RPG_Net_Common_Tools&));
+
+  // callback used for scandir...
+  static int client_selector(const dirent*); // directory entry
+  static int server_selector(const dirent*); // directory entry
+  static int comparator(const dirent**,  // directory entry
+                        const dirent**); // directory entry
 };
 
 #endif
