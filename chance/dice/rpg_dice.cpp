@@ -21,8 +21,8 @@
 
 #include "rpg_dice_common_tools.h"
 
-#include <ace/Time_Value.h>
 #include <ace/OS.h>
+#include <ace/Time_Value.h>
 #include <ace/Log_Msg.h>
 #include <ace/Assert.h>
 
@@ -38,13 +38,12 @@ void RPG_Dice::init()
              ACE_TEXT("initializing random seed (RAND_MAX = %d)...\n"),
              RAND_MAX));
 
-  // *PORTABILITY*: this is most probably not portable...
   ACE_Time_Value now = ACE_OS::gettimeofday();
+  // *PORTABILITY*: outside glibc, this is not very portable...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   ::srandom(now.sec());
 #else
-  // *TODO*
-  ACE_ASSERT(false);
+  ACE_OS::srand(now.sec());
 #endif
 
   ACE_DEBUG((LM_DEBUG,
@@ -66,12 +65,12 @@ void RPG_Dice::generateRandomNumbers(const unsigned int& range_in,
        i < numRolls_in;
        i++)
   {
-    // *PORTABILITY*: this is not widely portable...
+    // *PORTABILITY*: outside glibc, this is not very portable...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     results_out.push_back((::random() % range_in) + 1);
 #else
-    // *TODO*
-    ACE_ASSERT(false);
+    // *TODO*: use ACE_OS::rand_r() for improved reentrancy !
+    results_out.push_back((ACE_OS::rand() % range_in) + 1);
 #endif
   } // end FOR
 }

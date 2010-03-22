@@ -35,18 +35,26 @@
       <autokdesu>true</autokdesu>
       <envvars/>
       <runarguments>
-        <character_generator>-i ../../item/rpg_item.xml -t</character_generator>
-        <combat_simulator>-b 0 -f 1 -i ../../item/rpg_item.xml -m ../../monster/rpg_monster.xml -n 1 -p 6 -t -x</combat_simulator>
-        <monster_parser>-m ../../monster/rpg_monster.xml -t</monster_parser>
+        <character_generator>-i ../../item/rpg_item.xml -m ../../magic/rpg_magic.xml -t</character_generator>
+        <combat_simulator>-b 0 -f 1 -i ../../item/rpg_item.xml -m ../../monster/rpg_monster.xml -n 1 -p 6 -s ../../magic/rpg_magic.xml -t -x</combat_simulator>
+        <monster_parser>-d -m ../../monster/rpg_monster.xml -t</monster_parser>
         <item_parser>-d -i ../../item/rpg_item.xml -t</item_parser>
         <magic_parser>-d -i ../../magic/rpg_magic.xml -t</magic_parser>
+        <chance_dice>-d 6 -m 0 -n 1 -r 1 -s -t</chance_dice>
+        <chance_rangeToRoll>-p -r 5-12 -t</chance_rangeToRoll>
+        <net_client>-h localhost -i 1 -s 10101 -t -x</net_client>
+        <net_server>-i 5 -k 60 -p 10101 -t</net_server>
       </runarguments>
       <debugarguments>
-        <character_generator>-i ../../item/rpg_item.xml -t</character_generator>
-        <combat_simulator>-b 0 -f 1 -i ../../item/rpg_item.xml -m ../../monster/rpg_monster.xml -n 1 -p 6 -t -x</combat_simulator>
-        <monster_parser>-m ../../monster/rpg_monster.xml -t</monster_parser>
+        <character_generator>-i ../../item/rpg_item.xml -m ../../magic/rpg_magic.xml -t</character_generator>
+        <combat_simulator>-b 0 -f 1 -i ../../item/rpg_item.xml -m ../../monster/rpg_monster.xml -n 1 -p 6 -s ../../magic/rpg_magic.xml -t -x</combat_simulator>
+        <monster_parser>-d -m ../../monster/rpg_monster.xml -t</monster_parser>
         <item_parser>-d -i ../../item/rpg_item.xml -t</item_parser>
         <magic_parser>-d -i ../../magic/rpg_magic.xml -t</magic_parser>
+        <chance_dice>-d 6 -m 0 -n 1 -r 1 -s -t</chance_dice>
+        <chance_rangeToRoll>-p -r 5-12 -t</chance_rangeToRoll>
+        <net_client>-h localhost -i 1 -s 10101 -t -x</net_client>
+        <net_server>-i 5 -k 60 -p 10101 -t</net_server>
       </debugarguments>
       <cwd>
         <character_generator>/home/unfv/Projects/RPG/test_u/debug/./</character_generator>
@@ -54,6 +62,10 @@
         <monster_parser>/home/unfv/Projects/RPG/test_u/debug/./</monster_parser>
         <item_parser>/home/unfv/Projects/RPG/test_u/debug/./</item_parser>
         <magic_parser>/home/unfv/Projects/RPG/test_u/debug/./</magic_parser>
+        <chance_dice>/home/unfv/Projects/RPG/test_u/debug/./combat</chance_dice>
+        <chance_rangeToRoll>/home/unfv/Projects/RPG/test_u/debug/./combat</chance_rangeToRoll>
+        <net_client>/home/unfv/Projects/RPG/test_u/debug/./</net_client>
+        <net_server>/home/unfv/Projects/RPG/test_u/debug/./</net_server>
       </cwd>
     </run>
     <configurations>

@@ -41,7 +41,7 @@
 #include <sstream>
 #include <list>
 
-#define NET_CLIENT_DEF_SERVER_HOSTNAME       ACE_TEXT("localhost")
+#define NET_CLIENT_DEF_SERVER_HOSTNAME       ACE_LOCALHOST
 #define NET_CLIENT_DEF_SERVER_QUERY_INTERVAL 1
 
 void
@@ -84,7 +84,11 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("h:i:ls:tvx"));
+                             ACE_TEXT("h:i:ls:tvx"),
+                             1, // skip command name
+                             1, // report parsing errors
+                             ACE_Get_Opt::PERMUTE_ARGS, // ordering
+                             0); // for now, don't use long options
 
   int option = 0;
   std::stringstream converter;
@@ -139,6 +143,14 @@ process_arguments(const int argc_in,
         break;
       }
       // error handling
+      case ':':
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("option \"%c\" requires an argument, aborting\n"),
+                   argumentParser.opt_opt()));
+
+        return false;
+      }
       case '?':
       {
         ACE_DEBUG((LM_ERROR,
@@ -147,13 +159,20 @@ process_arguments(const int argc_in,
 
         return false;
       }
+      case 0:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("found long option \"%s\", aborting\n"),
+                   argumentParser.long_option()));
+
+        return false;
+      }
       default:
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%c\", continuing\n"),
-                   option));
+                   ACE_TEXT("parse error, aborting\n")));
 
-        break;
+        return false;
       }
     } // end SWITCH
   } // end WHILE

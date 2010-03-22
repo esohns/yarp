@@ -83,7 +83,7 @@ RPG_Net_SocketHandler::open(void* arg_in)
   {
     // *IMPORTANT NOTE*: this might have happened because there are too many
     // open connections... ---> not an error !
-    if (errno)
+    if (ACE_OS::last_error())
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to inherited::open(): \"%s\", aborting\n"),
