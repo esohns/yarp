@@ -3,13 +3,13 @@
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="3" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster.xsd" >
-   <View0 Encoding="" line="279" Type="Source" />
+   <View0 Encoding="" line="131" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster.xml" >
-   <View0 Encoding="" line="52" Type="Source" />
+   <View0 Encoding="" line="3944" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster_dictionary.cpp" >
-   <View0 Encoding="" line="659" Type="Source" />
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster_dictionary.h" >
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc2>
  </DocsAndViews>
  <pluginList>
@@ -31,7 +31,7 @@
   <kdevbookmarks>
    <bookmarks>
     <bookmark url="/home/unfv/Projects/RPG/monster/rpg_monster_XML_parser.cpp" >
-     <mark line="734" />
+     <mark line="683" />
     </bookmark>
    </bookmarks>
   </kdevbookmarks>
