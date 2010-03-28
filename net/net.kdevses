@@ -1,22 +1,13 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="5" >
+ <DocsAndViews NumberOfDocuments="2" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/net/rpg_net_defines.h" >
-   <View0 Encoding="" line="45" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/net/rpg_net_remote_comm.h" >
    <View0 Encoding="" line="27" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/net/rpg_net_headmoduletask_base.h" >
-   <View0 Encoding="" line="29" Type="Source" />
-  </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/net/rpg_net_stream_messagequeue.cpp" >
-   <View0 Encoding="" line="37" Type="Source" />
-  </Doc3>
-  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/net/rpg_net_tsmessagequeue_base.cpp" >
-   <View0 Encoding="" line="0" Type="Source" />
-  </Doc4>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
