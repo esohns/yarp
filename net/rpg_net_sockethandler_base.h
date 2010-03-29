@@ -21,7 +21,7 @@
 #ifndef RPG_NET_SOCKETHANDLER_BASE_H
 #define RPG_NET_SOCKETHANDLER_BASE_H
 
-#include <rpg_common_iconnection.h>
+#include "rpg_net_iconnection.h"
 
 #include <ace/Svc_Handler.h>
 #include <ace/SOCK_Stream.h>
@@ -29,7 +29,7 @@
 class RPG_Net_SocketHandler_Base
  : public ACE_Svc_Handler<ACE_SOCK_STREAM,
                           ACE_NULL_SYNCH>,
-   public RPG_Common_IConnection
+   public RPG_Net_IConnection
 {
  private:
   typedef ACE_Svc_Handler<ACE_SOCK_STREAM,

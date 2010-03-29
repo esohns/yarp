@@ -21,10 +21,10 @@
 #ifndef RPG_NET_ICONNECTION_H
 #define RPG_NET_ICONNECTION_H
 
-#include "rpg_net_idumpstate.h"
+#include <rpg_common_idumpstate.h>
 
 class RPG_Net_IConnection
- : public RPG_Net_IDumpState
+ : public RPG_Common_IDumpState
 {
  public:
   // *IMPORTANT NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set

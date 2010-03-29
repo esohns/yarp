@@ -18,17 +18,48 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_COMMON_H
-#define RPG_NET_COMMON_H
+#ifndef RPG_NET_STATISTICHANDLER_H
+#define RPG_NET_STATISTICHANDLER_H
 
-struct RPG_Net_RuntimeStatistic
+#include <rpg_common_istatistic.h>
+
+#include <ace/Global_Macros.h>
+#include <ace/Event_Handler.h>
+#include <ace/Time_Value.h>
+
+template <typename StatisticsInfoContainer_t>
+class RPG_Net_StatisticHandler
+ : public ACE_Event_Handler
 {
-  unsigned long messagesPerSec;
+ public:
+   // define different types of Actions for this interface
+  enum ActionSpecifier
+  {
+    ACTION_REPORT = 0,
+    ACTION_COLLECT,
+  };
+
+  RPG_Net_StatisticHandler(RPG_Common_IStatistic<StatisticsInfoContainer_t>*, // interface handle
+                           const ActionSpecifier&);                           // action: collect/report
+  virtual ~RPG_Net_StatisticHandler();
+
+  // implement specific behaviour
+  virtual int handle_timeout(const ACE_Time_Value&, // current time
+                             const void*);          // asynchronous completion token
+
+ private:
+  typedef ACE_Event_Handler inherited;
+
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler(const RPG_Net_StatisticHandler&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler& operator=(const RPG_Net_StatisticHandler&));
+
+  RPG_Common_IStatistic<StatisticsInfoContainer_t>* myInterface;
+  ActionSpecifier                                   myAction;
 };
 
-struct RPG_Net_StreamConfig
-{
-  unsigned long todo;
-};
+// include template implementation
+#include "rpg_net_statistichandler.i"
 
 #endif

@@ -18,17 +18,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_COMMON_H
-#define RPG_NET_COMMON_H
+#ifndef RPG_NET_ICOUNTER_H
+#define RPG_NET_ICOUNTER_H
 
-struct RPG_Net_RuntimeStatistic
+class RPG_Net_ICounter
 {
-  unsigned long messagesPerSec;
-};
+ public:
+  // *IMPORTANT NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
+  // -Wno-non-virtual-dtor in the project settings...
 
-struct RPG_Net_StreamConfig
-{
-  unsigned long todo;
+  // exposed interface
+  virtual void reset() = 0;
 };
 
 #endif

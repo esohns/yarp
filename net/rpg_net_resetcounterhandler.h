@@ -18,17 +18,36 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_COMMON_H
-#define RPG_NET_COMMON_H
+#ifndef RPG_NET_RESETCOUNTERHANDLER_H
+#define RPG_NET_RESETCOUNTERHANDLER_H
 
-struct RPG_Net_RuntimeStatistic
-{
-  unsigned long messagesPerSec;
-};
+#include <ace/Global_Macros.h>
+#include <ace/Event_Handler.h>
+#include <ace/Time_Value.h>
 
-struct RPG_Net_StreamConfig
+// forward declaration(s)
+class RPG_Net_ICounter;
+
+class RPG_Net_ResetCounterHandler
+ : public ACE_Event_Handler
 {
-  unsigned long todo;
+ public:
+  RPG_Net_ResetCounterHandler(RPG_Net_ICounter*); // counter interface
+  virtual ~RPG_Net_ResetCounterHandler();
+
+  // implement specific behaviour
+  virtual int handle_timeout(const ACE_Time_Value&, // current time
+                             const void*);          // asynchronous completion token
+
+ private:
+  typedef ACE_Event_Handler inherited;
+
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_ResetCounterHandler());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_ResetCounterHandler(const RPG_Net_ResetCounterHandler&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_ResetCounterHandler& operator=(const RPG_Net_ResetCounterHandler&));
+
+  RPG_Net_ICounter* myCounter;
 };
 
 #endif

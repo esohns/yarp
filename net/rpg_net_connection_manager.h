@@ -29,7 +29,7 @@
 #include <list>
 
 // forward declarations
-class RPG_Common_IConnection;
+class RPG_Net_IConnection;
 
 class RPG_Net_Connection_Manager
 {
@@ -53,12 +53,12 @@ class RPG_Net_Connection_Manager
   void dump() const;
 
  private:
-  typedef std::list<RPG_Common_IConnection*> CONNECTIONLIST_TYPE;
+  typedef std::list<RPG_Net_IConnection*> CONNECTIONLIST_TYPE;
   typedef CONNECTIONLIST_TYPE::const_iterator CONNECTIONLIST_CONSTITERATOR_TYPE;
   typedef CONNECTIONLIST_TYPE::iterator CONNECTIONLIST_ITERATOR_TYPE;
 
   // user interface
-  const bool registerConnection(RPG_Common_IConnection*);
+  const bool registerConnection(RPG_Net_IConnection*);
   void deregisterConnection(const unsigned long&); // connection ID
 
   // safety measures

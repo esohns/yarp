@@ -18,17 +18,4 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_COMMON_H
-#define RPG_NET_COMMON_H
-
-struct RPG_Net_RuntimeStatistic
-{
-  unsigned long messagesPerSec;
-};
-
-struct RPG_Net_StreamConfig
-{
-  unsigned long todo;
-};
-
-#endif
+#include "rpg_net_statistichandler.h"

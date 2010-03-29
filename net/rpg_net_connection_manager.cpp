@@ -21,7 +21,7 @@
 #include "rpg_net_connection_manager.h"
 
 #include "rpg_net_defines.h"
-#include <rpg_common_iconnection.h>
+#include "rpg_net_iconnection.h"
 
 #include <ace/OS.h>
 
@@ -61,7 +61,7 @@ void RPG_Net_Connection_Manager::init(const unsigned long& maxNumConnections_in)
              myMaxNumConnections));
 }
 
-const bool RPG_Net_Connection_Manager::registerConnection(RPG_Common_IConnection* connection_in)
+const bool RPG_Net_Connection_Manager::registerConnection(RPG_Net_IConnection* connection_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::registerConnection"));
 
@@ -238,7 +238,7 @@ void RPG_Net_Connection_Manager::dump() const
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Common_IConnection::dump_state(), continuing")));
+                 ACE_TEXT("caught exception in RPG_Net_IConnection::dump_state(), continuing")));
     }
   } // end FOR
 }

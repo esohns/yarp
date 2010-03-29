@@ -18,17 +18,47 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_COMMON_H
-#define RPG_NET_COMMON_H
+#include "rpg_net_resetcounterhandler.h"
 
-struct RPG_Net_RuntimeStatistic
+#include "rpg_net_icounter.h"
+
+#include <ace/Log_Msg.h>
+
+RPG_Net_ResetCounterHandler::RPG_Net_ResetCounterHandler(RPG_Net_ICounter* counter_in)
+  : inherited(NULL,                            // no reactor
+              ACE_Event_Handler::LO_PRIORITY), // priority
+    myCounter(counter_in)
 {
-  unsigned long messagesPerSec;
-};
+  ACE_TRACE(ACE_TEXT("RPG_Net_ResetCounterHandler::RPG_Net_ResetCounterHandler"));
 
-struct RPG_Net_StreamConfig
+}
+
+RPG_Net_ResetCounterHandler::~RPG_Net_ResetCounterHandler()
 {
-  unsigned long todo;
-};
+  ACE_TRACE(ACE_TEXT("RPG_Net_ResetCounterHandler::~RPG_Net_ResetCounterHandler"));
 
-#endif
+}
+
+int
+RPG_Net_ResetCounterHandler::handle_timeout(const ACE_Time_Value& tv_in,
+                                            const void* arg_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_ResetCounterHandler::handle_timeout"));
+
+  ACE_UNUSED_ARG(tv_in);
+  ACE_UNUSED_ARG(arg_in);
+
+  try
+  {
+    myCounter->reset();
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught an exception in RPG_Net_ICounter::reset() --> check implementation !, continuing\n")));
+
+    // *TODO*: what else can we do ?
+  }
+
+  return 0;
+}

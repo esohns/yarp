@@ -24,31 +24,38 @@
 // trace log
 // *PORTABILITY*: pathnames are not portable, so we (try to) use %TEMP% for Windows...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-#define RPG_NET_DEF_LOG_DIRECTORY            ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR("TEMP"))
+#define RPG_NET_DEF_LOG_DIRECTORY                 ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR("TEMP"))
 #else
-#define RPG_NET_DEF_LOG_DIRECTORY            ACE_TEXT("/var/tmp")
+#define RPG_NET_DEF_LOG_DIRECTORY                 ACE_TEXT("/var/tmp")
 #endif
-#define RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX      ACE_TEXT("net_server")
-#define RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX      ACE_TEXT("net_client")
-#define RPG_NET_DEF_LOG_FILENAME_SUFFIX      ACE_TEXT(".log")
+#define RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX    ACE_TEXT("net_server")
+#define RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX    ACE_TEXT("net_client")
+#define RPG_NET_DEF_LOG_FILENAME_SUFFIX           ACE_TEXT(".log")
 // *IMPORTANT NOTE*:
 // - WARNING: current implementation cannot support numbers that have
 //   more than 7 digits !!!
 // - WARNING: current implementation cannot support 0 !!!
-#define RPG_NET_DEF_LOG_MAXNUMFILES          5
+#define RPG_NET_DEF_LOG_MAXNUMFILES               5
 
-#define RPG_NET_DEF_KEEPALIVE                60
-#define RPG_NET_DEF_PING_INTERVAL            5
-#define RPG_NET_DEF_LISTENING_PORT           10101
-#define RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS 10
+#define RPG_NET_DEF_KEEPALIVE                     60
+#define RPG_NET_DEF_PING_INTERVAL                 5
+#define RPG_NET_DEF_LISTENING_PORT                10101
+#define RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS      10
 
 // stream-related
-#define RPG_NET_DEF_GROUP_ID_TASK            11
+#define RPG_NET_DEF_GROUP_ID_TASK                 11
 // *IMPORTANT NOTE*: set to too small a value, any of these MAY seriously
 // affect performance !!!
-#define RPG_NET_MAX_QUEUE_SLOTS              10000
+#define RPG_NET_DEF_MAX_QUEUE_SLOTS               10000
 // *IMPORTANT NOTE*: static heap memory consumption can be measured roughly
-// as RPG_NET_MAX_MESSAGES * sizeof(RPG_Net_Remote_Comm::RuntimePing) bytes !
-#define RPG_NET_MAX_MESSAGES                 1000
+// as RPG_NET_DEF_MAX_MESSAGES * sizeof(RPG_Net_Remote_Comm::RuntimePing) bytes !
+#define RPG_NET_DEF_MAX_MESSAGES                  1000
+
+// *NOTE*: don't set this too small as this MIGHT affect network performance
+// seconds
+#define RPG_NET_DEF_STATISTICS_COLLECT_INTERVAL   15
+// seconds (5*60 seconds --> 5 minutes)
+#define RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL 300
+
 
 #endif
