@@ -17,24 +17,17 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef RPG_NET_COMMON_H
+#define RPG_NET_COMMON_H
 
-#ifndef RPG_COMMON_ICONNECTION_H
-#define RPG_COMMON_ICONNECTION_H
-
-#include "rpg_common_idumpstate.h"
-
-class RPG_Common_IConnection
-  : public RPG_Common_IDumpState
+struct RPG_Net_RuntimeStatistic
 {
- public:
-  // *IMPORTANT NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  unsigned long messagesPerSec;
+};
 
-  // exposed interface
-  // *TODO*: this clashes with Event_Handler::close()...
-  //virtual void close(void) = 0;
-  virtual void abort() = 0;
-  virtual const unsigned long getID() const = 0;
+struct RPG_Net_StreamConfig
+{
+  unsigned long messagesPerSec;
 };
 
 #endif

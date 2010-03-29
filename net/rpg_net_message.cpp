@@ -18,54 +18,51 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "stream_message.h"
+#include "rpg_net_message.h"
 
-#include "stream_packet_headers.h"
-#include "stream_protocol_layer.h"
+#include "rpg_net_packet_headers.h"
+#include "rpg_net_protocol_layer.h"
+#include "rpg_net_common_tools.h"
 
-#include "stream_asterixheader.h"
-#include "stream_tcpheader.h"
-#include "stream_udpheader.h"
-#include "stream_ipheader.h"
-#include "stream_fddiframeheader.h"
-#include "stream_ethernetframeheader.h"
-#include "stream_packet_headers.h"
+// #include "rpg_net_fddiframeheader.h"
+// #include "rpg_net_ethernetframeheader.h"
+#include "rpg_net_packet_headers.h"
 
 // *IMPORTANT NOTE*: this is implicitly invoked by duplicate() as well...
-Stream_Message::Stream_Message(const Stream_Message& message_in)
+RPG_Net_Message::RPG_Net_Message(const RPG_Net_Message& message_in)
  : inherited(message_in),
    myHeaders(message_in.myHeaders),
    myIsInitialized(true)
 {
-  ACE_TRACE(ACE_TEXT("Stream_Message::Stream_Message"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
 
 }
 
 // *IMPORTANT NOTE*: to be used by allocators ONLY !
-Stream_Message::Stream_Message(ACE_Data_Block* dataBlock_in,
-                               ACE_Allocator* messageAllocator_in)
+RPG_Net_Message::RPG_Net_Message(ACE_Data_Block* dataBlock_in,
+                                 ACE_Allocator* messageAllocator_in)
  : inherited(dataBlock_in,         // use (don't own !) this data block
              messageAllocator_in), // use this when destruction is imminent...
    myIsInitialized(false) // not initialized --> call init() !
 {
-  ACE_TRACE(ACE_TEXT("Stream_Message::Stream_Message"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
 
 }
 
 // *IMPORTANT NOTE*: to be used by allocators ONLY !
-Stream_Message::Stream_Message(ACE_Allocator* messageAllocator_in,
-                               const bool& incrementMessageCounter_in)
+RPG_Net_Message::RPG_Net_Message(ACE_Allocator* messageAllocator_in,
+                                 const bool& incrementMessageCounter_in)
  : inherited(messageAllocator_in,
              incrementMessageCounter_in),
    myIsInitialized(false) // not initialized --> call init() !
 {
-  ACE_TRACE(ACE_TEXT("Stream_Message::Stream_Message"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
 
 }
 
-Stream_Message::~Stream_Message()
+RPG_Net_Message::~RPG_Net_Message()
 {
-  ACE_TRACE(ACE_TEXT("Stream_Message::~Stream_Message"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::~RPG_Net_Message"));
 
   // *IMPORTANT NOTE*: this will be called just BEFORE we're passed back
   // to the allocator !!!
@@ -76,24 +73,9 @@ Stream_Message::~Stream_Message()
 }
 
 void
-Stream_Message::init()
+RPG_Net_Message::init(ACE_Data_Block* dataBlock_in)
 {
-  ACE_TRACE(ACE_TEXT("Stream_Message::init"));
-
-  // sanity check: shouldn't be initialized...
-  ACE_ASSERT(!myIsInitialized);
-
-  // init base class...
-//   inherited::init(scheduledPlaybackTime_in);
-
-  // OK: we're initialized !
-  myIsInitialized = true;
-}
-
-void
-Stream_Message::init(ACE_Data_Block* dataBlock_in)
-{
-  ACE_TRACE(ACE_TEXT("Stream_Message::init"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::init"));
 
   // sanity check: shouldn't be initialized...
   ACE_ASSERT(!myIsInitialized);
@@ -106,9 +88,9 @@ Stream_Message::init(ACE_Data_Block* dataBlock_in)
 }
 
 void
-Stream_Message::addHeader(const Stream_MessageHeader_Type& headerType_in)
+RPG_Net_Message::addHeader(const RPG_Net_MessageHeader_t& headerType_in)
 {
-  ACE_TRACE(ACE_TEXT("Stream_Message::addHeader"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::addHeader"));
 
   // adjust top-level protocol accordingly
   // getToplevelProtocol() throws a warning if myHeaders is empty --> avoid this
@@ -119,15 +101,15 @@ Stream_Message::addHeader(const Stream_MessageHeader_Type& headerType_in)
     // enum...
     // *IMPORTANT NOTE*: this is NOT an error for "adjacent" ASTERIX headers...
     if ((headerType_in <= getToplevelProtocol()) &&
-        (headerType_in != Stream_Protocol_Layer::ASTERIX))
+        (headerType_in != RPG_Net_Protocol_Layer::ASTERIX))
     {
       // debug info
       std::string type_string_in;
       std::string type_string_top;
-      Stream_Protocol_Layer::ProtocolLayer2String(headerType_in,
-                                                          type_string_in);
-      Stream_Protocol_Layer::ProtocolLayer2String(getToplevelProtocol(),
-                                                          type_string_top);
+      RPG_Net_Protocol_Layer::ProtocolLayer2String(headerType_in,
+                                                   type_string_in);
+      RPG_Net_Protocol_Layer::ProtocolLayer2String(getToplevelProtocol(),
+                                                   type_string_top);
 
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("message (ID: %u): failed to add (\"%s\") header to existing stack (top-level protocol: \"%s\") --> check implementation !, returning\n"),
@@ -153,10 +135,10 @@ Stream_Message::addHeader(const Stream_MessageHeader_Type& headerType_in)
 }
 
 const bool
-Stream_Message::getHeaderOffset(const Stream_MessageHeader_Type& headerType_in,
-                                unsigned long& offset_out) const
+RPG_Net_Message::getHeaderOffset(const RPG_Net_MessageHeader_t& headerType_in,
+                                 unsigned long& offset_out) const
 {
-  ACE_TRACE(ACE_TEXT("Stream_Message::getHeaderOffset"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::getHeaderOffset"));
 
   // init return value(s)
   offset_out = 0;
@@ -169,7 +151,7 @@ Stream_Message::getHeaderOffset(const Stream_MessageHeader_Type& headerType_in,
 
     // debug info
     //std::string type_string;
-    //Stream_Protocol_Layer::ProtocolLayer2String(headerType_in,
+    //RPG_Net_Protocol_Layer::ProtocolLayer2String(headerType_in,
     //                                                    type_string);
     //ACE_DEBUG((LM_WARNING,
     //           "message (ID: %u) does not contain a header of type \"%s\", aborting\n",
@@ -186,9 +168,9 @@ Stream_Message::getHeaderOffset(const Stream_MessageHeader_Type& headerType_in,
     // debug info
     std::string type_string_input;
     std::string type_string_found;
-    Stream_Protocol_Layer::ProtocolLayer2String(headerType_in,
+    RPG_Net_Protocol_Layer::ProtocolLayer2String(headerType_in,
                                                         type_string_input);
-    Stream_Protocol_Layer::ProtocolLayer2String(iter->first,
+    RPG_Net_Protocol_Layer::ProtocolLayer2String(iter->first,
                                                         type_string_found);
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("message (ID: %u) doesn't contain a header of type \"%s\" (found \"%s\" instead), aborting\n"),
@@ -208,9 +190,9 @@ Stream_Message::getHeaderOffset(const Stream_MessageHeader_Type& headerType_in,
 }
 
 const bool
-Stream_Message::hasProtocol(const Stream_Protocol_Type& protocolType_in) const
+RPG_Net_Message::hasProtocol(const RPG_Net_Protocol_t& protocolType_in) const
 {
-  ACE_TRACE(ACE_TEXT("Stream_Message::hasProtocol"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::hasProtocol"));
 
   // find the first header whose layer is NOT BELOW headerType_in...
   HEADERCONTAINER_CONSTITERATOR_TYPE iter = myHeaders.lower_bound(protocolType_in);
@@ -221,7 +203,7 @@ Stream_Message::hasProtocol(const Stream_Protocol_Type& protocolType_in) const
 
     // debug info
     //std::string type_string;
-    //Stream_Protocol_Layer::ProtocolLayer2String(protocolType_in,
+    //RPG_Net_Protocol_Layer::ProtocolLayer2String(protocolType_in,
     //                                                    type_string);
     //ACE_DEBUG((LM_WARNING,
     //           "message (ID: %u) does not contain a header of type \"%s\", aborting\n",
@@ -234,10 +216,10 @@ Stream_Message::hasProtocol(const Stream_Protocol_Type& protocolType_in) const
   return true;
 }
 
-const Stream_Protocol_Type
-Stream_Message::getToplevelProtocol() const
+const RPG_Net_Protocol_t
+RPG_Net_Message::getToplevelProtocol() const
 {
-  ACE_TRACE(ACE_TEXT("Stream_Message::getToplevelProtocol"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::getToplevelProtocol"));
 
   // sanity check: no headers ?
   if (myHeaders.empty())
@@ -246,9 +228,7 @@ Stream_Message::getToplevelProtocol() const
 //                ACE_TEXT("message (ID: %u): doesn't contain any headers (yet) --> check implementation !, returning\n"),
 //                getID()));
 
-    // *TODO*: clean this up !
-    static Stream_Protocol_Type dummy = Stream_Protocol_Layer::INVALID_PROTOCOL;
-    return dummy;
+    return RPG_Net_Protocol_Layer::INVALID_PROTOCOL;
   } // end IF
 
   // return last element (ist MAX in a map !)
@@ -257,18 +237,18 @@ Stream_Message::getToplevelProtocol() const
 }
 
 const bool
-Stream_Message::hasTransportLayerHeader() const
+RPG_Net_Message::hasTransportLayerHeader() const
 {
-  ACE_TRACE(ACE_TEXT("Stream_Message::hasTransportLayerHeader"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::hasTransportLayerHeader"));
 
   // *WARNING*: might have to change this in the future !
-  return (getToplevelProtocol() >= Stream_Protocol_Layer::UDP);
+  return (getToplevelProtocol() >= RPG_Net_Protocol_Layer::UDP);
 }
 
 void
-Stream_Message::dump_state() const
+RPG_Net_Message::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("Stream_Message::dump_state"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::dump_state"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("***** Message (ID: %u) *****\n"),
@@ -280,7 +260,7 @@ Stream_Message::dump_state() const
        iter != myHeaders.end();
        iter++)
   {
-    Stream_Protocol_Layer::ProtocolLayer2String(iter->first,
+    RPG_Net_Protocol_Layer::ProtocolLayer2String(iter->first,
                                                         protocol_layer);
 
     ACE_DEBUG((LM_INFO,
@@ -297,95 +277,174 @@ Stream_Message::dump_state() const
   {
     switch (iter->first)
     {
-      case Stream_Protocol_Layer::ASTERIX:
+//       case RPG_Net_Protocol_Layer::ASTERIX:
+//       {
+//         Stream_ASTERIXHeader header(*this,
+//                                     iter->second);
+//
+//         // remember size
+//         sum_header_size += header.length();
+//
+//         header.dump_state();
+//
+//         break;
+//       }
+//       case RPG_Net_Protocol_Layer::ASTERIX_offset: // "resilience" bytes...
+//       {
+//         // remember size
+//         sum_header_size += FLB_RPS_ASTERIX_RESILIENCE_BYTES;
+//
+//         // don't have a header class for this...
+//         ACE_DEBUG((LM_INFO,
+//                    ACE_TEXT(" *** ASTERIX_offset (%u bytes) ***\n"),
+//                    FLB_RPS_ASTERIX_RESILIENCE_BYTES));
+//
+//         break;
+//       }
+      case RPG_Net_Protocol_Layer::TCP:
       {
-        Stream_ASTERIXHeader header(*this,
-                                            iter->second);
+        struct tcphdr* header = ACE_reinterpret_cast(struct tcphdr*,
+                                                     (rd_ptr() + iter->second));
 
         // remember size
-        sum_header_size += header.length();
+        // *NOTE*: TCP header field "Data Offset" gives the size of the
+        // TCP header in 32 bit words...
+        sum_header_size += (header->doff * 4);
 
-        header.dump_state();
+        // debug info
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("*** TCP (%u bytes) ***\nSource#: %u --> %u\nDestination#: %u --> %u\nSequence#: %u --> %u (swapped)\nAcknowledgement#: %u --> %u (swapped)\nReserved: %u\nData Offset: %u --> %u bytes\nFlags: %u\nWindow: %u --> %u (swapped)\nChecksum: %u --> %u (swapped)\nUrgent Pointer: %u --> %u (swapped)\n"),
+                   (header->doff * 4),
+                   header->source,
+                   ACE_NTOHS(header->source), // byte swapping
+                   header->dest,
+                   ACE_NTOHS(header->dest), // byte swapping
+                   header->seq,
+                   ACE_NTOHL(header->seq), // byte swapping
+                   header->ack_seq,
+                   ACE_NTOHL(header->ack_seq), // byte swapping
+                   header->res1,
+                   header->doff,
+                   (header->doff * 4), // convert to bytes (value is in 32 bit words)
+                   0, // *TODO*
+                   header->window,
+                   ACE_NTOHS(header->window), // byte swapping
+                   header->check,
+                   ACE_NTOHS(header->check), // byte swapping
+                   header->urg_ptr,
+                   ACE_NTOHS(header->urg_ptr))); // byte swapping
 
         break;
       }
-      case Stream_Protocol_Layer::ASTERIX_offset: // "resilience" bytes...
+      case RPG_Net_Protocol_Layer::UDP:
       {
-        // remember size
-        sum_header_size += FLB_RPS_ASTERIX_RESILIENCE_BYTES;
+        struct udphdr* header = ACE_reinterpret_cast(struct udphdr*,
+                                                     (rd_ptr() + iter->second));
 
-        // don't have a header class for this...
-        ACE_DEBUG((LM_INFO,
-                   ACE_TEXT(" *** ASTERIX_offset (%u bytes) ***\n"),
-                   FLB_RPS_ASTERIX_RESILIENCE_BYTES));
+        // remember size
+        // *NOTE*: UDP headers are 8 bytes long...
+        sum_header_size += sizeof(struct udphdr);
+
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("*** UDP (%u bytes) ***\nSource#: %u --> %u\nDestination#: %u --> %u\nLength: %u --> %u bytes\nChecksum: %u --> %u (swapped)\n"),
+                   sizeof(struct udphdr),
+                   header->source,
+                   ACE_NTOHS(header->source), // byte swapping
+                   header->dest,
+                   ACE_NTOHS(header->dest), // byte swapping
+                   header->len,
+                   ACE_NTOHS(header->len), // byte swapping
+                   header->check,
+                   ACE_NTOHS(header->check))); // byte swapping
 
         break;
       }
-      case Stream_Protocol_Layer::TCP:
+      case RPG_Net_Protocol_Layer::IPv4:
       {
-        Stream_TCPHeader header(*this,
-                                        iter->second);
+        struct iphdr* header = ACE_reinterpret_cast(struct iphdr*,
+                                                    (rd_ptr() + iter->second));
 
         // remember size
-        sum_header_size += header.length();
+        // *NOTE*: IPv4 header field "Header Length" gives the size of the
+        // IP header in 32 bit words...
+        sum_header_size += (header->ihl * 4);
 
-        header.dump_state();
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("*** IP (%u bytes) ***\nVersion: %u\nHeader Length: %u --> %u bytes\nType-of-Service Flags: %u\nTotal Packet Length: %u --> %u bytes\nFragment Identifier: %u --> %u (swapped)\nFragmentation Flags: %u (3 LSBits)\nFragmentation Offset: %u\nTime-to-Live: %u\nProtocol Identifier: %u --> \"%s\"\nHeader Checksum: %u --> %u (swapped)\nSource#: %u --> \"%s\"\nDestination#: %u --> \"%s\"\nOptions: %u byte(s)\n"),
+                   (header->ihl * 4),
+                   header->version,
+                   header->ihl,
+                   (header->ihl * 4), // <-- Header Length is in in multiples of 32 bits
+                   header->tos,
+                   header->tot_len,
+                   ACE_NTOHS(header->tot_len), // byte swapping
+                   header->id,
+                   ACE_NTOHS(header->id), // byte swapping
+                   (ACE_NTOHS(header->frag_off) >> 13), // consider the head three bits...
+                   (ACE_NTOHS(header->frag_off) & IP_OFFMASK),
+                   header->ttl,
+                   header->protocol,
+                   RPG_Net_Common_Tools::IPProtocol2String(header->protocol).c_str(),
+                   header->check,
+                   ACE_NTOHS(header->check), // byte swapping
+                   header->saddr,
+                   RPG_Net_Common_Tools::IPAddress2String(header->saddr, 0).c_str(), // no port
+                   header->daddr,
+                   RPG_Net_Common_Tools::IPAddress2String(header->daddr, 0).c_str(), // no port
+                   (header->ihl - 5)));
 
         break;
       }
-      case Stream_Protocol_Layer::UDP:
+      case RPG_Net_Protocol_Layer::FDDI_LLC_SNAP:
       {
-        Stream_UDPHeader header(*this,
-                                        iter->second);
+        struct fddihdr* header = ACE_reinterpret_cast(struct fddihdr*,
+                                                      (rd_ptr() + iter->second));
 
         // remember size
-        sum_header_size += header.length();
+        // *NOTE*: for the time being, we only support LLC SNAP...
+        sum_header_size += FDDI_K_SNAP_HLEN;
 
-        header.dump_state();
+        // *TODO*: add Organization Code
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("*** FDDI_LLC_SNAP (%u bytes) ***\nFrame Control: %u\nDestination MAC#: \"%s\"\nSource MAC#: \"%s\"\nDSAP: %u\nSSAP: %u\nControl Field: %u\nPacket Type ID: %u --> %u (swapped) --> \"%s\"\n"),
+                   FDDI_K_SNAP_HLEN,
+                   header->fc,
+                   RPG_Net_Common_Tools::MACAddress2String((rd_ptr() + iter->second) + 1).c_str(),
+                   RPG_Net_Common_Tools::MACAddress2String((rd_ptr() + iter->second) + 1 + FDDI_K_ALEN).c_str(),
+                   header->hdr.llc_snap.dsap,
+                   header->hdr.llc_snap.ssap,
+                   header->hdr.llc_snap.ctrl,
+                   header->hdr.llc_snap.ethertype,
+                   ACE_NTOHS(header->hdr.llc_snap.ethertype), // byte swapping
+                   RPG_Net_Common_Tools::EthernetProtocolTypeID2String(header->hdr.llc_snap.ethertype).c_str()));
 
         break;
       }
-      case Stream_Protocol_Layer::IPv4:
+      case RPG_Net_Protocol_Layer::ETHERNET:
       {
-        Stream_IPHeader header(*this,
-                                       iter->second);
+        struct ether_header* header = ACE_reinterpret_cast(struct ether_header*,
+                                                           (rd_ptr() + iter->second));
 
         // remember size
-        sum_header_size += header.length();
+        // *NOTE*: Ethernet headers are 14 bytes long...
+        sum_header_size += ETH_HLEN;
 
-        header.dump_state();
-
-        break;
-      }
-      case Stream_Protocol_Layer::FDDI_LLC_SNAP:
-      {
-        Stream_FDDIFrameHeader header(*this,
-                                              iter->second);
-
-        // remember size
-        sum_header_size += header.length();
-
-        header.dump_state();
-
-        break;
-      }
-      case Stream_Protocol_Layer::ETHERNET:
-      {
-        Stream_EthernetFrameHeader header(*this,
-                                                  iter->second);
-
-        // remember size
-        sum_header_size += header.length();
-
-        header.dump_state();
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("*** ETHERNET (%u bytes) ***\nDestination MAC#: \"%s\"\nSource MAC#: \"%s\"\nProtocol Type/Length: %u --> %u (swapped) --> \"%s\"\n"),
+                   ETH_HLEN,
+                   RPG_Net_Common_Tools::MACAddress2String((rd_ptr() + iter->second)).c_str(),
+                   RPG_Net_Common_Tools::MACAddress2String((rd_ptr() + iter->second) + ETH_ALEN).c_str(),
+                   header->ether_type,
+                   ACE_NTOHS(header->ether_type), // byte swapping
+                   RPG_Net_Common_Tools::EthernetProtocolTypeID2String(header->ether_type).c_str()));
 
         break;
       }
       default:
       {
         // debug info
-        Stream_Protocol_Layer::ProtocolLayer2String(iter->first,
-                                                            protocol_layer);
+        RPG_Net_Protocol_Layer::ProtocolLayer2String(iter->first,
+                                                     protocol_layer);
 
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("message (ID: %u) contains unknown protocol header type \"%s\" at offset: %u --> check implementation, continuing\n"),
@@ -399,7 +458,7 @@ Stream_Message::dump_state() const
   } // end FOR
 
   // step3: dump total size
-  ACE_DEBUG((LM_INFO,
+  ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("--> total message (ID: %u) size: %u byte(s) (%u header byte(s))\n"),
              getID(),
              (length() + sum_header_size),
@@ -407,13 +466,13 @@ Stream_Message::dump_state() const
 }
 
 ACE_Message_Block*
-Stream_Message::duplicate(void) const
+RPG_Net_Message::duplicate(void) const
 {
-  ACE_TRACE(ACE_TEXT("Stream_Message::duplicate"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::duplicate"));
 
-  Stream_Message* nb = NULL;
+  RPG_Net_Message* nb = NULL;
 
-  // create a new <Stream_Message> that contains unique copies of
+  // create a new <RPG_Net_Message> that contains unique copies of
   // the message block fields, but a (reference counted) shallow duplicate of
   // the <ACE_Data_Block>.
 
@@ -421,18 +480,18 @@ Stream_Message::duplicate(void) const
   if (message_block_allocator_ == NULL)
   {
     ACE_NEW_RETURN(nb,
-                   Stream_Message(*this),
+                   RPG_Net_Message(*this),
                    NULL);
   } // end IF
   else // otherwise, use the existing message_block_allocator
   {
-    // *IMPORTANT NOTE*: by passing the "magic" value of 0 (instead of sizeof(Stream_Message) or the like),
+    // *IMPORTANT NOTE*: by passing the "magic" value of 0 (instead of sizeof(RPG_Net_Message) or the like),
     // we (hopefully) signal the allocator to omit incrementing the running message counter here...
     // *TODO*: find a better way of doing this !
     ACE_NEW_MALLOC_RETURN(nb,
-                          ACE_static_cast(Stream_Message*,
+                          ACE_static_cast(RPG_Net_Message*,
                                           message_block_allocator_->malloc(0)), // DON'T increment running message counter !
-                          Stream_Message(*this),
+                          RPG_Net_Message(*this),
                           NULL);
   } // end ELSE
 
@@ -453,21 +512,21 @@ Stream_Message::duplicate(void) const
 }
 
 const bool
-Stream_Message::getTransportLayerTypeAndOffset(Stream_MessageHeader_Type& headerType_out,
-                                               unsigned long& offset_out) const
+RPG_Net_Message::getTransportLayerTypeAndOffset(RPG_Net_MessageHeader_t& headerType_out,
+                                                unsigned long& offset_out) const
 {
-  ACE_TRACE(ACE_TEXT("Stream_Message::getTransportLayerTypeAndOffset"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::getTransportLayerTypeAndOffset"));
 
   // init return value(s)
-  headerType_out = Stream_Protocol_Layer::ETHERNET;
+  headerType_out = RPG_Net_Protocol_Layer::ETHERNET;
   offset_out     = 0;
 
   for (HEADERCONTAINER_CONSTITERATOR_TYPE iter = myHeaders.begin();
        iter != myHeaders.end();
        iter++)
   {
-    if ((iter->first == Stream_Protocol_Layer::UDP) ||
-        (iter->first == Stream_Protocol_Layer::TCP))
+    if ((iter->first == RPG_Net_Protocol_Layer::UDP) ||
+        (iter->first == RPG_Net_Protocol_Layer::TCP))
     {
       headerType_out = iter->first;
       offset_out = iter->second;
@@ -481,80 +540,80 @@ Stream_Message::getTransportLayerTypeAndOffset(Stream_MessageHeader_Type& header
 }
 
 void
-Stream_Message::adjustDataOffset(const Stream_MessageHeader_Type& headerType_in)
+RPG_Net_Message::adjustDataOffset(const RPG_Net_MessageHeader_t& headerType_in)
 {
-  ACE_TRACE(ACE_TEXT("Stream_Message::adjustDataOffset"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::adjustDataOffset"));
 
   unsigned long dataOffset = 0;
 
   // create header
   switch (headerType_in)
   {
-    case Stream_Protocol_Layer::ETHERNET:
+    case RPG_Net_Protocol_Layer::ETHERNET:
     {
-      // *IMPORTANT NOTE*: Ethernet headers are 14 bytes long...
+      // *NOTE*: Ethernet headers are 14 bytes long...
       dataOffset = ETH_HLEN;
 
       break;
     }
-    case Stream_Protocol_Layer::FDDI_LLC_SNAP:
+    case RPG_Net_Protocol_Layer::FDDI_LLC_SNAP:
     {
-      // *IMPORTANT NOTE*:
+      // *NOTE*:
       // - FDDI LLC headers are 13 bytes long...
       // - FDDI SNAP headers are 8 bytes long...
       dataOffset = FDDI_K_SNAP_HLEN;
 
       break;
     }
-    case Stream_Protocol_Layer::IPv4:
+    case RPG_Net_Protocol_Layer::IPv4:
     {
-      // *IMPORTANT NOTE*: IPv4 header field "Header Length" gives the size of the
+      // *NOTE*: IPv4 header field "Header Length" gives the size of the
       // IP header in 32 bit words...
-      // *IMPORTANT NOTE*: use our current offset...
+      // *NOTE*: use our current offset...
       dataOffset = (ACE_reinterpret_cast(iphdr*,
                                          rd_ptr())->ihl * 4);
 
       break;
     }
-    case Stream_Protocol_Layer::TCP:
+    case RPG_Net_Protocol_Layer::TCP:
     {
-      // *IMOPRTANT NOTE*: TCP header field "Data Offset" gives the size of the
+      // *NOTE*: TCP header field "Data Offset" gives the size of the
       // TCP header in 32 bit words...
-      // *IMPORTANT NOTE*: use our current offset...
+      // *NOTE*: use our current offset...
       dataOffset = (ACE_reinterpret_cast(tcphdr*,
                                          rd_ptr())->doff * 4);
 
       break;
     }
-    case Stream_Protocol_Layer::UDP:
+    case RPG_Net_Protocol_Layer::UDP:
     {
-      // *IMPORTANT NOTE*: UDP headers are 8 bytes long...
+      // *NOTE*: UDP headers are 8 bytes long...
       dataOffset = 8;
 
       break;
     }
-    case Stream_Protocol_Layer::ASTERIX_offset:
-    {
-      // *IMPORTANT NOTE*: ASTERIX "resilience" headers are 4 bytes long...
-      dataOffset = FLB_RPS_ASTERIX_RESILIENCE_BYTES;
-
-      break;
-    }
-    case Stream_Protocol_Layer::ASTERIX:
-    {
-      // *IMPORTANT NOTE*: ASTERIX headers are 3 bytes long...
-      dataOffset = FLB_RPS_ASTERIX_HEADER_SIZE;
-
-      break;
-    }
+//     case RPG_Net_Protocol_Layer::ASTERIX_offset:
+//     {
+//       // *NOTE*: ASTERIX "resilience" headers are 4 bytes long...
+//       dataOffset = FLB_RPS_ASTERIX_RESILIENCE_BYTES;
+//
+//       break;
+//     }
+//     case RPG_Net_Protocol_Layer::ASTERIX:
+//     {
+//       // *NOTE*: ASTERIX headers are 3 bytes long...
+//       dataOffset = FLB_RPS_ASTERIX_HEADER_SIZE;
+//
+//       break;
+//     }
     default:
     {
       // debug info
       std::string type_string;
-      Stream_Protocol_Layer::ProtocolLayer2String(headerType_in,
+      RPG_Net_Protocol_Layer::ProtocolLayer2String(headerType_in,
                                                           type_string);
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("message (ID: %u) header (type: \"%s\") is currently unsupported --> check implementation, continuing\n"),
+                 ACE_TEXT("message (ID: %u) header (type: \"%s\") is currently unsupported, continuing\n"),
                  getID(),
                  type_string.c_str()));
 

@@ -33,12 +33,18 @@ struct dirent;
 class RPG_Net_Common_Tools
 {
  public:
-  // *IMPORTANT NOTE*: this implements log rotation...
+  // *NOTE*: this implements log rotation...
   static const bool getNextLogFilename(const bool&,        // server ?
                                        const std::string&, // log directory
                                        std::string&);      // return value: FQ current log filename
 
   static const std::string messageType2String(const RPG_Net_Remote_Comm::MessageType&);
+  // *NOTE*: if (the first argument == 0), the trailing ":0" will be cropped from the return value !
+  static const std::string IPAddress2String(const unsigned short&, // port (network byte order !)
+                                            const unsigned long&); // IP address (network byte order !)
+  static const std::string IPProtocol2String(const unsigned char&); // protocol
+  static const std::string MACAddress2String(const char* const); // pointer to message data (START of ethernet header address field !)
+  static const std::string EthernetProtocolTypeID2String(const unsigned short&); // ethernet frame type (network byte order !)
 
   static unsigned long myMaxNumberOfLogFiles;
 
