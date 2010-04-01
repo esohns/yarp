@@ -23,6 +23,7 @@
 #include "rpg_net_defines.h"
 #include "rpg_net_packet_headers.h"
 
+#include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
 
 #include <ace/Log_Msg.h>
@@ -977,6 +978,314 @@ RPG_Net_Common_Tools::EthernetProtocolTypeID2String(const unsigned short& frameT
   } // end SWITCH
 
   return result;
+}
+
+// const bool
+// RPG_Net_Common_Tools::selectNetworkInterface(const std::string& defaultInterfaceIdentifier_in,
+//                                              std::string& interfaceIdentifier_out)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::selectNetworkInterface"));
+//
+//   // init return value(s)
+//   interfaceIdentifier_out.resize(0);
+//
+//   pcap_if_t* all_devices = NULL;
+//   char errbuf[PCAP_ERRBUF_SIZE]; // defined in pcap.h
+//   if (pcap_findalldevs(&all_devices,
+//                        errbuf) == -1)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to pcap_findalldevs(): \"%s\", aborting\n"),
+//                errbuf));
+//
+//     return false;
+//   } // end IF
+//
+//   // found default interface ?
+//   unsigned long i = 1;
+//   bool found_default = false;
+//   pcap_if_t* device = NULL;
+//   for (device = all_devices;
+//        device;
+//        device = device->next, i++)
+//   {
+//     // debug info
+//     ACE_DEBUG((LM_INFO,
+//                ACE_TEXT("#%u \"%s\": \"%s\"\n"),
+//                i,
+//                device->name,
+//                (device->description ?
+//                 device->description :
+//                 ACE_TEXT("no description available"))));
+//
+//     if (defaultInterfaceIdentifier_in == std::string(device->name))
+//     {
+//       interfaceIdentifier_out = defaultInterfaceIdentifier_in;
+//       found_default = true;
+//     } // end IF
+//   } // end FOR
+//   i--;
+//
+//   // sanity check: found any suitable device at all ?
+//   if (!all_devices)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("no interfaces found, aborting\n")));
+//
+//     // clean up
+//     pcap_freealldevs(all_devices);
+//
+//     return false;
+//   } // end IF
+//
+//   // couldn't find default interface ? ask user !
+//   if (!found_default)
+//   {
+//     unsigned long device_number = 0;
+//     std::cout << ACE_TEXT("default interface \"")
+//               << defaultInterfaceIdentifier_in.c_str()
+//               << ACE_TEXT("\" not found, please enter a valid interface number (1-")
+//               << i
+//               << ACE_TEXT("): ");
+//     std::cin >> device_number;
+//
+//     // sanity check: out of range ?
+//     if ((device_number < 1) ||
+//          (device_number > i))
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("selection: %u was out of range, aborting\n"),
+//                  device_number));
+//
+//       // clean up
+//       pcap_freealldevs(all_devices);
+//
+//       return false;
+//     } // end IF
+//
+//     // get selected device name
+//     for (device = all_devices, i = 0;
+//          i < (device_number - 1);
+//          device = device->next, i++);
+//
+//     interfaceIdentifier_out = device->name;
+//   } // end IF
+//
+//   // clean up
+//   pcap_freealldevs(all_devices);
+//
+//   return true;
+// }
+
+const bool
+RPG_Net_Common_Tools::retrieveLocalIPAddress(const std::string& interfaceIdentifier_in,
+                                             std::string& IPaddress_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::retrieveLocalIPAddress"));
+
+  // init return value(s)
+  IPaddress_out.resize(0);
+
+//   // validate/retrieve interface identifier index
+//   unsigned long index = 0;
+//   // *PORTABILITY*
+//   index = ACE_OS::if_nametoindex(interfaceIdentifier_in.c_str());
+//   if (!index)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to ACE_OS::if_nametoindex(\"%s\"): \"%s\", aborting\n"),
+//                interfaceIdentifier_in.c_str(),
+//                ACE_OS::strerror(errno)));
+  //
+//     return false;
+//   } // end IF
+
+  // *NOTE*: we ask the kernel...
+  size_t count = 0;
+  ACE_INET_Addr* addr_array = NULL;
+  if (ACE::get_ip_interfaces(count,
+                             addr_array))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE::get_ip_interfaces(): \"%s\", aborting\n"),
+               ACE_OS::strerror(errno)));
+
+    return false;
+  } // end IF
+  if (count == 0)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("could not find any IP network interfaces, aborting\n")));
+
+    return false;
+  } // end IF
+
+  // *NOTE*: beyond this point, we need to clean up addr_array...
+
+  ACE_TCHAR ip[MAXHOSTNAMELEN + 1];
+  ACE_OS::memset(&ip,
+                 0,
+                 sizeof(ip));
+  sockaddr_in* addr_handle = NULL;
+  for (size_t i = 0;
+       i < count;
+       i++)
+  {
+    // reset buffer
+    ACE_OS::memset(&ip,
+                   0,
+                   sizeof(ip));
+
+    // reset address handle
+    addr_handle = NULL;
+
+    // sanity check: only support IPv4 (for now)
+    if (addr_array[i].get_type() != AF_INET)
+    {
+      // try next one...
+      continue;
+    } // end IF
+
+    // sanity check: ignore loopback
+    if (addr_array[i].is_loopback())
+    {
+      // try next one...
+      continue;
+    } // end IF
+
+    if (addr_array[i].get_host_addr(ip,
+                                    MAXHOSTNAMELEN) == NULL)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_INET_Addr::get_host_addr(): \"%s\", aborting\n"),
+                 ACE_OS::strerror(errno)));
+
+      // clean up
+      delete[] addr_array;
+      addr_array = NULL;
+
+      return false;
+    } // end IF
+
+    // debug info
+    // *TODO*: sanity check: correct interface ?
+    // --> how can we find out which interface this address is assigned to ?
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("found host address: \"%s\"...\n"),
+               ip));
+
+//     addr_handle = ACE_static_cast(sockaddr_in*,
+//                                   addr_array[i].get_addr());
+
+    IPaddress_out = ip;
+  } // end FOR
+
+  // clean up
+  delete[] addr_array;
+  addr_array = NULL;
+
+  return true;
+}
+
+const bool
+RPG_Net_Common_Tools::retrieveLocalHostname(std::string& hostname_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::retrieveLocalHostname"));
+
+  // init return value(s)
+  hostname_out.resize(0);
+
+  ACE_TCHAR host[MAXHOSTNAMELEN + 1];
+  ACE_OS::memset(&host,
+                 0,
+                 MAXHOSTNAMELEN + 1);
+  if (ACE_OS::hostname(host, MAXHOSTNAMELEN))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::hostname(): \"%s\", aborting\n"),
+               ACE_OS::strerror(errno)));
+
+    return false;
+  } // end IF
+
+  hostname_out = host;
+
+  return true;
+}
+
+const bool
+RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
+                                      const int& buffer_in,
+                                      const int& size_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::setSocketBuffer"));
+
+  // sanity check
+  ACE_ASSERT((buffer_in == SO_RCVBUF) ||
+             (buffer_in == SO_SNDBUF));
+
+  int size = size_in;
+  // *NOTE*: for some reason, Linux will actually set TWICE the size value
+  // --> we pass it HALF the value so we get our will...
+  if (RPG_Common_Tools::isLinux())
+  {
+    size /= 2;
+  } // end IF
+
+  if (ACE_OS::setsockopt(handle_in,
+                         SOL_SOCKET,
+                         buffer_in,
+                         ACE_reinterpret_cast(const char*, &size),
+                         sizeof(int)))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::setsockopt(%d): \"%s\", aborting\n"),
+               handle_in,
+               ACE_OS::strerror(errno)));
+
+    return false;
+  } // end IF
+
+  // validate result
+  size = 0;
+  int retsize = 0;
+  if (ACE_OS::getsockopt(handle_in,
+                         SOL_SOCKET,
+                         buffer_in,
+                         ACE_reinterpret_cast(char*, &size),
+                         &retsize))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::getsockopt(): \"%s\", aborting\n"),
+               ACE_OS::strerror(errno)));
+
+    return false;
+  } // end IF
+
+  if (size != size_in)
+  {
+    ACE_DEBUG((LM_WARNING,
+               ACE_TEXT("ACE_OS::getsockopt(%s) on handle (ID: %d) returned %d (expected: %d), aborting\n"),
+               ((buffer_in == SO_RCVBUF) ? ACE_TEXT("SO_RCVBUF")
+                                         : ACE_TEXT("SO_SNDBUF")),
+               handle_in,
+               size,
+               size_in));
+
+    // *NOTE*: may happen on Linux systems (IF size_in is odd, see above)
+    if (!RPG_Common_Tools::isLinux())
+      return false;
+  } // end IF
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("set \"%s\" option of socket (ID: %d) to: %d\n"),
+             ((buffer_in == SO_RCVBUF) ? ACE_TEXT("SO_RCVBUF")
+                                       : ACE_TEXT("SO_SNDBUF")),
+             handle_in,
+             size));
+
+  return true;
 }
 
 int

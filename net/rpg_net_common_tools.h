@@ -46,6 +46,14 @@ class RPG_Net_Common_Tools
   static const std::string MACAddress2String(const char* const); // pointer to message data (START of ethernet header address field !)
   static const std::string EthernetProtocolTypeID2String(const unsigned short&); // ethernet frame type (network byte order !)
 
+//   static const bool selectNetworkInterface(const std::string&, // default interface identifier
+//                                            std::string&);      // return value: interface identifier
+  static const bool retrieveLocalIPAddress(const std::string&, // interface identifier
+                                           std::string&);      // return value: IP address (dotted-decimal)
+  static const bool retrieveLocalHostname(std::string&); // return value: hostname
+  static const bool setSocketBuffer(const ACE_HANDLE&, // socket handle
+                                    const int&,        // (SO_RCVBUF || SO_SNDBUF)
+                                    const int&);       // size (bytes)
   static unsigned long myMaxNumberOfLogFiles;
 
  private:

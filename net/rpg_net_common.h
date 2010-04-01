@@ -21,14 +21,17 @@
 #ifndef RPG_NET_COMMON_H
 #define RPG_NET_COMMON_H
 
+#include <ace/Time_Value.h>
+
 struct RPG_Net_RuntimeStatistic
 {
   unsigned long messagesPerSec;
 };
 
-struct RPG_Net_StreamConfig
+struct RPG_Net_StreamConfigPOD
 {
-  unsigned long todo;
+  RPG_Net_RuntimeStatistic currentStatistics;
+  ACE_Time_Value collectionTimestamp; // statistics collection timestamp
 };
 
 #endif

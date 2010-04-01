@@ -25,7 +25,6 @@
 #include <rpg_common_tools.h>
 
 #include <stream_message_base.h>
-#include <stream_session_message.h>
 #include <stream_iallocator.h>
 
 // #include <ace/OS.h>
@@ -265,7 +264,7 @@ RPG_Net_Module_RuntimeStatistic::handleDataMessage(Stream_MessageBase*& message_
 }
 
 void
-RPG_Net_Module_RuntimeStatistic::handleSessionMessage(Stream_SessionMessage*& message_inout,
+RPG_Net_Module_RuntimeStatistic::handleSessionMessage(Stream_SessionMessageBase<RPG_Net_StreamConfigPOD>*& message_inout,
                                                       bool& passMessageDownstream_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::handleSessionMessage"));

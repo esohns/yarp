@@ -31,6 +31,7 @@
 
 #include <stream_task_base_synch.h>
 #include <stream_streammodule_base.h>
+#include <stream_session_message_base.h>
 
 #include <ace/Global_Macros.h>
 #include <ace/Synch.h>
@@ -43,11 +44,10 @@
 
 // forward declaration(s)
 class Stream_MessageBase;
-class Stream_SessionMessage;
 class Stream_IAllocator;
 
 class RPG_Net_Module_RuntimeStatistic
- : public Stream_TaskBaseSynch,
+ : public Stream_TaskBaseSynch<RPG_Net_StreamConfigPOD>,
    public RPG_Net_ICounter,
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
@@ -68,8 +68,8 @@ class RPG_Net_Module_RuntimeStatistic
                                  bool&);            // return value: pass message downstream ?
 
   // implement this so we can print overall statistics after session completes...
-  virtual void handleSessionMessage(Stream_SessionMessage*&, // session message handle
-                                    bool&);                  // return value: pass message downstream ?
+  virtual void handleSessionMessage(Stream_SessionMessageBase<RPG_Net_StreamConfigPOD>*&, // session message handle
+                                    bool&);                                               // return value: pass message downstream ?
 
   // implement RPG_Net_ICounter
   virtual void reset();
@@ -80,7 +80,7 @@ class RPG_Net_Module_RuntimeStatistic
   virtual void report();
 
  private:
-  typedef Stream_TaskBaseSynch inherited;
+  typedef Stream_TaskBaseSynch<RPG_Net_StreamConfigPOD> inherited;
 
   // these typedefs ensure that we use the minimal amount of locking necessary
   typedef ACE_Event_Handler_Handle_Timeout_Upcall<ACE_Null_Mutex> UPCALL_TYPE;

@@ -17,45 +17,37 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_COMMON_TOOLS_H
-#define RPG_COMMON_TOOLS_H
 
-#include <rpg_dice_incl.h>
-#include "rpg_common_incl.h"
+#include "rpg_net_stream_config.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Time_Value.h>
-
-#include <string>
-
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
-class RPG_Common_Tools
+RPG_Net_StreamConfig::RPG_Net_StreamConfig(const RPG_Net_StreamConfigPOD& config_in,
+                                           const ACE_Time_Value& startOfSession_in,
+                                           const bool& userAbort_in)
+ : inherited(config_in,
+             startOfSession_in,
+             userAbort_in)
 {
- public:
-  static void initStringConversionTables();
+  ACE_TRACE(ACE_TEXT("RPG_Net_StreamConfig::RPG_Net_StreamConfig"));
 
-  static const RPG_Common_Attribute savingThrowToAttribute(const RPG_Common_SavingThrow&); // save
-  static const std::string creatureTypeToString(const RPG_Common_CreatureType&); // type
-  static const std::string savingThrowToString(const RPG_Common_SavingThrowCheck&); // save
+}
 
-  static const signed char getSizeModifier(const RPG_Common_Size&);
-  static const unsigned char sizeToReach(const RPG_Common_Size&);
+RPG_Net_StreamConfig::~RPG_Net_StreamConfig()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_StreamConfig::~RPG_Net_StreamConfig"));
 
-  // use this to generate a "condensed" period string
-  // - uses snprintf internally: "%H:%M:%S.usec"
-  static const bool period2String(const ACE_Time_Value&, // period
-                                  std::string&);         // return value: corresp. string
+}
 
-  static const bool isLinux();
+void
+RPG_Net_StreamConfig::dump_state() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_StreamConfig::dump_state"));
 
- private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools(const RPG_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools& operator=(const RPG_Common_Tools&));
-};
-
-#endif
+  // *TODO*
+  ACE_ASSERT(false);
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("start of session: %d\n%s"),
+//              myStartOfSession,
+//              (myUserAbort ? ACE_TEXT("user abort !")
+//                           : ACE_TEXT(""))));
+  inherited::dump_state();
+}

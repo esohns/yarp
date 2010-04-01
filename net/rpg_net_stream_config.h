@@ -17,45 +17,35 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_COMMON_TOOLS_H
-#define RPG_COMMON_TOOLS_H
 
-#include <rpg_dice_incl.h>
-#include "rpg_common_incl.h"
+#ifndef RPG_NET_STREAM_CONFIG_H
+#define RPG_NET_STREAM_CONFIG_H
+
+#include "rpg_net_common.h"
+
+#include <stream_session_config_base.h>
 
 #include <ace/Global_Macros.h>
-#include <ace/Time_Value.h>
 
-#include <string>
-
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
-class RPG_Common_Tools
+class RPG_Net_StreamConfig
+ : public Stream_SessionConfigBase<RPG_Net_StreamConfigPOD>
 {
  public:
-  static void initStringConversionTables();
+  RPG_Net_StreamConfig(const RPG_Net_StreamConfigPOD&,               // user data
+                       const ACE_Time_Value& = ACE_Time_Value::zero, // "official" start of session
+                       const bool& = false);                         // session ended because of user abort ?
 
-  static const RPG_Common_Attribute savingThrowToAttribute(const RPG_Common_SavingThrow&); // save
-  static const std::string creatureTypeToString(const RPG_Common_CreatureType&); // type
-  static const std::string savingThrowToString(const RPG_Common_SavingThrowCheck&); // save
-
-  static const signed char getSizeModifier(const RPG_Common_Size&);
-  static const unsigned char sizeToReach(const RPG_Common_Size&);
-
-  // use this to generate a "condensed" period string
-  // - uses snprintf internally: "%H:%M:%S.usec"
-  static const bool period2String(const ACE_Time_Value&, // period
-                                  std::string&);         // return value: corresp. string
-
-  static const bool isLinux();
+  // override RPG_Common_IDumpState
+  virtual void dump_state() const;
 
  private:
+  typedef Stream_SessionConfigBase<RPG_Net_StreamConfigPOD> inherited;
+
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools(const RPG_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools& operator=(const RPG_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamConfig());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamConfig(const RPG_Net_StreamConfig&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamConfig& operator=(const RPG_Net_StreamConfig&));
+  virtual ~RPG_Net_StreamConfig();
 };
 
 #endif

@@ -41,7 +41,7 @@ class Stream_IAllocator;
 class RPG_Net_Message;
 
 class RPG_Net_Module_SocketHandler
- : public Stream_HeadModuleTaskBase,
+ : public Stream_HeadModuleTaskBase<RPG_Net_StreamConfigPOD>,
    // implement this so we can use a generic (timed) event handler to trigger stat collection...
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
@@ -50,16 +50,12 @@ class RPG_Net_Module_SocketHandler
   virtual ~RPG_Net_Module_SocketHandler();
 
   // configuration / initialization
-  const bool init(Stream_IAllocator*,         // message allocator
-                  const std::string&,         // recording interface
-                  const std::string&,         // libpcap message filter string
-                  const unsigned long& = 0,   // size of socket receive buffer (bytes)
-                                              // 0 --> use default
-                  // *IMPORTANT NOTE*: libpcap provides some statistics via pcap_stats(),
-                  // these will be collected regularly and sent downstream as a specific control message
-                  // which can be picked up by any module (i.e. --> runtime statistic module)
-                  const unsigned long& = 0);  // statistics collecting interval (second(s))
-                                              // 0 --> DON'T collect statistics
+  const bool init(Stream_IAllocator*,        // message allocator
+                  const std::string&,        // network interface
+                  const unsigned long& = 0,  // size of socket receive buffer (bytes)
+                                             // 0 --> use default
+                  const unsigned long& = 0); // statistics collecting interval (second(s))
+                                             // 0 --> DON'T collect statistics
 
   // user interface
   // info
@@ -77,7 +73,7 @@ class RPG_Net_Module_SocketHandler
   virtual void report();
 
  private:
-  typedef Stream_HeadModuleTaskBase inherited;
+  typedef Stream_HeadModuleTaskBase<RPG_Net_StreamConfigPOD> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_SocketHandler(const RPG_Net_Module_SocketHandler&));

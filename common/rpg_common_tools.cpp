@@ -21,6 +21,7 @@
 
 #include "rpg_common_defines.h"
 
+#include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
 #include <sstream>
@@ -248,4 +249,33 @@ RPG_Common_Tools::period2String(const ACE_Time_Value& period_in,
   timeString_out = time_string;
 
   return true;
+}
+
+const bool
+RPG_Common_Tools::isLinux()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::isLinux"));
+
+  // get system information
+  ACE_utsname name;
+  if (ACE_OS::uname(&name) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::uname(): \"%s\" --> check implementation !, aborting\n"),
+               ACE_OS::strerror(errno)));
+
+    return false;
+  } // end IF
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("local system info: %s (%s), %s %s, %s\n"),
+             name.nodename,
+             name.machine,
+             name.sysname,
+             name.release,
+             name.version));
+
+  std::string kernel(name.sysname);
+  return (kernel.find(ACE_TEXT("Linux"), 0) == 0);
 }
