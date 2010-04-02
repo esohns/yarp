@@ -31,11 +31,23 @@
 #define RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX    ACE_TEXT("net_server")
 #define RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX    ACE_TEXT("net_client")
 #define RPG_NET_DEF_LOG_FILENAME_SUFFIX           ACE_TEXT(".log")
-// *IMPORTANT NOTE*:
+
 // - WARNING: current implementation cannot support numbers that have
 //   more than 7 digits !!!
 // - WARNING: current implementation cannot support 0 !!!
 #define RPG_NET_DEF_LOG_MAXNUMFILES               5
+
+// *PORTABILITY*: interface names are not portable, so we let the
+// user choose the interface from a list on Windows (see select_Interface())...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#define RPG_NET_DEF_CNF_NETWORK_INTERFACE         ACE_TEXT("")
+#else
+#define RPG_NET_DEF_CNF_NETWORK_INTERFACE         ACE_TEXT("eth0")
+#endif
+
+// 1024 * 1024 --> 1 MByte
+// *NOTE*: make this an even number so we can cope with Linux oddities...
+#define RPG_NET_DEF_PCAP_SOCK_RECVBUF_SIZE        1048510
 
 #define RPG_NET_DEF_KEEPALIVE                     60
 #define RPG_NET_DEF_PING_INTERVAL                 5

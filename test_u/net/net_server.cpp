@@ -28,8 +28,12 @@
 #include <rpg_net_connection_manager.h>
 #include <rpg_net_signalhandler.h>
 #include <rpg_net_common_tools.h>
+#include <rpg_net_stream.h>
 
 #include <rpg_common_tools.h>
+
+#include <stream_allocatorheap.h>
+#include <stream_messageallocatorheap.h>
 
 #include <ace/OS.h>
 #include <ace/Version.h>
@@ -52,12 +56,14 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-i [VALUE]: client ping interval ([") << RPG_NET_DEF_PING_INTERVAL << ACE_TEXT("] seconds)") << std::endl;
-  std::cout << ACE_TEXT("-k [VALUE]: keep-alive timeout ([") << RPG_NET_DEF_KEEPALIVE << ACE_TEXT("] seconds)") << std::endl;
-  std::cout << ACE_TEXT("-l        : log to a file") << std::endl;
-  std::cout << ACE_TEXT("-p [VALUE]: listening port ([") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("])") << std::endl;
-  std::cout << ACE_TEXT("-t        : trace information") << std::endl;
-  std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
+  std::cout << ACE_TEXT("-i [VALUE] : client ping interval ([") << RPG_NET_DEF_PING_INTERVAL << ACE_TEXT("] seconds)") << std::endl;
+  std::cout << ACE_TEXT("-k [VALUE] : keep-alive timeout ([") << RPG_NET_DEF_KEEPALIVE << ACE_TEXT("] seconds)") << std::endl;
+  std::cout << ACE_TEXT("-l         : log to a file") << std::endl;
+  std::cout << ACE_TEXT("-n [STRING]: network interface [\"") << RPG_NET_DEF_CNF_NETWORK_INTERFACE << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-p [VALUE] : listening port ([") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("])") << std::endl;
+  std::cout << ACE_TEXT("-s [VALUE] : statistics reporting interval ([") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] seconds)") << std::endl;
+  std::cout << ACE_TEXT("-t         : trace information") << std::endl;
+  std::cout << ACE_TEXT("-v         : print version information and exit") << std::endl;
 } // end print_usage
 
 const bool
@@ -66,7 +72,9 @@ process_arguments(const int argc_in,
                   unsigned long& clientPingInterval_out,
                   unsigned long& keepAliveTimeout_out,
                   bool& logToFile_out,
+                  std::string& networkInterface_out,
                   unsigned short& listeningPortNumber_out,
+                  unsigned long& statisticsReportingInterval_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out)
 {
@@ -76,13 +84,15 @@ process_arguments(const int argc_in,
   clientPingInterval_out = RPG_NET_DEF_PING_INTERVAL;
   keepAliveTimeout_out = RPG_NET_DEF_KEEPALIVE;
   logToFile_out = false;
+  networkInterface_out = RPG_NET_DEF_CNF_NETWORK_INTERFACE;
   listeningPortNumber_out = RPG_NET_DEF_LISTENING_PORT;
+  statisticsReportingInterval_out = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL;
   traceInformation_out = false;
   printVersionAndExit_out = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("i:k:lp:tv"));
+                             ACE_TEXT("i:k:ln:p:s:tv"));
 
   int option = 0;
   std::stringstream converter;
@@ -112,11 +122,25 @@ process_arguments(const int argc_in,
 
         break;
       }
+      case 'n':
+      {
+        networkInterface_out = argumentParser.opt_arg();
+
+        break;
+      }
       case 'p':
       {
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> listeningPortNumber_out;
+
+        break;
+      }
+      case 's':
+      {
+        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+        converter << argumentParser.opt_arg();
+        converter >> statisticsReportingInterval_out;
 
         break;
       }
@@ -374,14 +398,16 @@ init_signalHandling(const std::vector<int>& signals_in,
 
 void
 do_work(const unsigned long& clientPingInterval_in,
-        const unsigned short& listeningPortNumber_in)
+        const std::string& networkInterface_in,
+        const unsigned short& listeningPortNumber_in,
+        const unsigned long& statisticsReportingInterval_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
   // - start listening for connections on a TCP port
   // *IMPORTANT NOTE*: need to cancel this for a well-behaved shutdown !
 
-  // step1: signal handling
+  // step0: signal handling
   // event handler for signals
   RPG_Net_SignalHandler signalEventHandler(NULL);
   ACE_Sig_Handlers      signalHandlers;
@@ -393,6 +419,26 @@ do_work(const unsigned long& clientPingInterval_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init_signalHandling(), aborting\n")));
+
+    return;
+  } // end IF
+
+  // step1: init processing stream
+  Stream_AllocatorHeap heapAllocator;
+  Stream_MessageAllocatorHeap messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
+                                               &heapAllocator);
+  RPG_Net_StreamConfigPOD streamConfig;
+  ACE_OS::memset(&streamConfig,
+                 0,
+                 sizeof(RPG_Net_StreamConfigPOD));
+  streamConfig.networkInterface = networkInterface_in;
+  streamConfig.statisticsReportingInterval = statisticsReportingInterval_in;
+  RPG_Net_Stream stream;
+  if (!stream.init(&messageAllocator,
+                   streamConfig))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to init processing stream, aborting\n")));
 
     return;
   } // end IF
@@ -479,12 +525,14 @@ ACE_TMAIN(int argc,
 #endif
 
   // step1a set defaults
-  unsigned long clientPingInterval   = RPG_NET_DEF_PING_INTERVAL;
-  unsigned long keepAliveTimeout     = RPG_NET_DEF_KEEPALIVE;
-  bool logToFile                     = false;
-  unsigned short listeningPortNumber = RPG_NET_DEF_LISTENING_PORT;
-  bool traceInformation              = false;
-  bool printVersionAndExit           = false;
+  unsigned long clientPingInterval          = RPG_NET_DEF_PING_INTERVAL;
+  unsigned long keepAliveTimeout            = RPG_NET_DEF_KEEPALIVE;
+  bool logToFile                            = false;
+  std::string networkInterface              = RPG_NET_DEF_CNF_NETWORK_INTERFACE;
+  unsigned short listeningPortNumber        = RPG_NET_DEF_LISTENING_PORT;
+  unsigned long statisticsReportingInterval = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL;
+  bool traceInformation                     = false;
+  bool printVersionAndExit                  = false;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
@@ -492,7 +540,9 @@ ACE_TMAIN(int argc,
                           clientPingInterval,
                           keepAliveTimeout,
                           logToFile,
+                          networkInterface,
                           listeningPortNumber,
+                          statisticsReportingInterval,
                           traceInformation,
                           printVersionAndExit)))
   {
@@ -550,9 +600,10 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step1f: start logging !
-  // *IMPORTANT NOTE*: the default mode is to log everything to STDERR[/SYSLOG]...
+  // *NOTE*: the default mode is to log everything to STDERR[/SYSLOG]...
   // *TODO*: ACE::basename(argv[0]) doesn't seem to work here :-(
-  if (ACE_LOG_MSG->open(ACE_TEXT("net_server"),
+  if (ACE_LOG_MSG->open(ACE::basename(argv[0]),
+//                         ACE_TEXT("net_server"),
                         (ACE_Log_Msg::STDERR/* | ACE_Log_Msg::SYSLOG*/),
                         NULL) == -1)
   {
@@ -592,7 +643,9 @@ ACE_TMAIN(int argc,
   timer.start();
   // step2: do actual work
   do_work(clientPingInterval,
-          listeningPortNumber);
+          networkInterface,
+          listeningPortNumber,
+          statisticsReportingInterval);
   timer.stop();
 
   // debug info

@@ -20,18 +20,22 @@
 
 #include "rpg_net_stream.h"
 
-#include "rpg_net_iallocator.h"
+#include "rpg_net_defines.h"
+
+#include <stream_iallocator.h>
 
 #include <string>
 
 RPG_Net_Stream::RPG_Net_Stream()
- : inherited(),
+ : //inherited(),
    mySocketHandler(std::string("SocketHandler"),
                    NULL),
+   myHeaderParser(std::string("HeaderParser"),
+                  NULL),
    myRuntimeStatistic(std::string("RuntimeStatistic"),
-                      NULL),
-   myProtocolHandler(std::string("ProtocolHandler"),
-                     NULL)
+                      NULL)
+//    myProtocolHandler(std::string("ProtocolHandler"),
+//                      NULL)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Stream::RPG_Net_Stream"));
 
@@ -41,8 +45,9 @@ RPG_Net_Stream::RPG_Net_Stream()
   // modules which we have NOT enqueued onto the stream (e.g. because init()
   // failed...)
   myAvailableModules.push_back(&mySocketHandler);
+  myAvailableModules.push_back(&myHeaderParser);
   myAvailableModules.push_back(&myRuntimeStatistic);
-  myAvailableModules.push_back(&myProtocolHandler);
+//   myAvailableModules.push_back(&myProtocolHandler);
 
   // fix ACE bug: modules should initialize their "next" member to NULL !
   for (MODULE_CONTAINERITERATOR_TYPE iter = myAvailableModules.begin();
@@ -62,8 +67,8 @@ RPG_Net_Stream::~RPG_Net_Stream()
 }
 
 const bool
-RPG_Net_Stream::init(RPG_Net_IAllocator* allocator_in,
-                     const RPG_Net_StreamConfig& config_in)
+RPG_Net_Stream::init(Stream_IAllocator* allocator_in,
+                     const RPG_Net_StreamConfigPOD& config_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Stream::init"));
 
@@ -81,39 +86,39 @@ RPG_Net_Stream::init(RPG_Net_IAllocator* allocator_in,
   // - create modules (done for the ones we "own")
   // - init modules
   // - push them onto the stream (tail-first) !
-  // ******************* Protocol Handler ************************
-  RPG_Net_Module_ProtocolHandler* protocolHandler_impl = NULL;
-  protocolHandler_impl = ACE_dynamic_cast(RPG_Net_Module_ProtocolHandler*,
-                                          myProtocolHandler.writer());
-  if (!protocolHandler_impl)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_dynamic_cast(RPG_Net_Module_ProtocolHandler) failed, aborting\n")));
-
-    return false;
-  } // end IF
-  if (!protocolHandler_impl->init(config_in.storagePath,
-                                  DEF_CAPTURE_FILENAME_PREFIX,
-                                  DEF_CAPTURE_FILENAME_SUFFIX,
-                                  config_in.recordingIntervalPerFile,
-                                  false)) // try using separate PCAP handle...
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
-               myProtocolHandler.name()));
-
-    return false;
-  } // end IF
-
-  // enqueue the module...
-  if (push(&myProtocolHandler))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
-               myProtocolHandler.name()));
-
-    return false;
-  } // end IF
+//   // ******************* Protocol Handler ************************
+//   RPG_Net_Module_ProtocolHandler* protocolHandler_impl = NULL;
+//   protocolHandler_impl = ACE_dynamic_cast(RPG_Net_Module_ProtocolHandler*,
+//                                           myProtocolHandler.writer());
+//   if (!protocolHandler_impl)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("ACE_dynamic_cast(RPG_Net_Module_ProtocolHandler) failed, aborting\n")));
+//
+//     return false;
+//   } // end IF
+//   if (!protocolHandler_impl->init(config_in.storagePath,
+//                                   DEF_CAPTURE_FILENAME_PREFIX,
+//                                   DEF_CAPTURE_FILENAME_SUFFIX,
+//                                   config_in.recordingIntervalPerFile,
+//                                   false)) // try using separate PCAP handle...
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
+//                myProtocolHandler.name()));
+//
+//     return false;
+//   } // end IF
+//
+//   // enqueue the module...
+//   if (push(&myProtocolHandler))
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
+//                myProtocolHandler.name()));
+//
+//     return false;
+//   } // end IF
 
   // ******************* Runtime Statistics ************************
   RPG_Net_Module_RuntimeStatistic* runtimeStatistic_impl = NULL;
@@ -148,6 +153,36 @@ RPG_Net_Stream::init(RPG_Net_IAllocator* allocator_in,
     return false;
   } // end IF
 
+  // ******************* Header Parser ************************
+  RPG_Net_Module_HeaderParser* headerParser_impl = NULL;
+  headerParser_impl = ACE_dynamic_cast(RPG_Net_Module_HeaderParser*,
+                                       myHeaderParser.writer());
+  if (!headerParser_impl)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("ACE_dynamic_cast(RPG_Net_Module_HeaderParser) failed, aborting\n")));
+
+    return false;
+  } // end IF
+  if (!headerParser_impl->init())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
+               myHeaderParser.name()));
+
+    return false;
+  } // end IF
+
+  // enqueue the module...
+  if (push(&myHeaderParser))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
+               myHeaderParser.name()));
+
+    return false;
+  } // end IF
+
   // ******************* Socket Handler ************************
   RPG_Net_Module_SocketHandler* socketHandler_impl = NULL;
   socketHandler_impl = ACE_dynamic_cast(RPG_Net_Module_SocketHandler*,
@@ -160,11 +195,9 @@ RPG_Net_Stream::init(RPG_Net_IAllocator* allocator_in,
     return false;
   } // end IF
   if (!socketHandler_impl->init(allocator_in,
-                                config_in.recordingInterface,
-                                config_in.libpcapFilterString,
-                                DEF_PCAP_SOCK_RECVBUF_SIZE,
-                                // DEF_STATISTICS_COLLECT_INTERVAL
-                                DEF_STATISTICS_COLLECT_INTERVAL))
+                                config_in.networkInterface,
+                                RPG_NET_DEF_PCAP_SOCK_RECVBUF_SIZE,
+                                RPG_NET_DEF_STATISTICS_COLLECT_INTERVAL))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),

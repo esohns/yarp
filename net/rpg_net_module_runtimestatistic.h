@@ -63,7 +63,7 @@ class RPG_Net_Module_RuntimeStatistic
                   Stream_IAllocator*,
                   const unsigned long&); // (local) reporting interval [seconds: 0 --> OFF]
 
-  // implement (part of) Stream_ITask
+  // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
                                  bool&);            // return value: pass message downstream ?
 

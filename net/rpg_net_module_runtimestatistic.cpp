@@ -27,10 +27,7 @@
 #include <stream_message_base.h>
 #include <stream_iallocator.h>
 
-// #include <ace/OS.h>
 #include <ace/Time_Value.h>
-// #include <ace/Date_Time.h>
-// #include <ace/Message_Block.h>
 
 #include <iostream>
 
@@ -57,8 +54,8 @@ RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic"));
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("activating timer dispatch queue...\n")));
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("activating timer dispatch queue...\n")));
 
   // ok: activate timer queue
   if (myTimerQueue.activate() == -1)
@@ -70,8 +67,8 @@ RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic()
     return;
   } // end IF
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("activating timer dispatch queue...DONE\n")));
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("activating timer dispatch queue...DONE\n")));
 
   // schedule the second-granularity timer
   ACE_Time_Value second_interval(1, 0); // one second interval
@@ -90,9 +87,9 @@ RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic()
   } // end IF
   myResetTimeoutHandlerID = id;
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("scheduled second-interval timer (ID: %d)...\n"),
-//              myResetTimeoutHandlerID));
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("scheduled second-interval timer (ID: %d)...\n"),
+             myResetTimeoutHandlerID));
 }
 
 RPG_Net_Module_RuntimeStatistic::~RPG_Net_Module_RuntimeStatistic()
@@ -106,8 +103,8 @@ RPG_Net_Module_RuntimeStatistic::~RPG_Net_Module_RuntimeStatistic()
   // make sure the dispatcher thread is really dead...
   myTimerQueue.wait();
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("deactivated timers and dispatcher...\n")));
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("deactivated timers and dispatcher...\n")));
 }
 
 const bool
@@ -187,7 +184,7 @@ RPG_Net_Module_RuntimeStatistic::init(const bool& printHashMark_in,
 //   if (!myAllocator)
 //   {
 //     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("invalid argument (was NULL) --> check implementation !, aborting\n")));
+//                ACE_TEXT("invalid argument (was NULL), aborting\n")));
 //
 //     return false;
 //   } // end IF

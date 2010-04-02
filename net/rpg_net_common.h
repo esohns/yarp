@@ -23,6 +23,8 @@
 
 #include <ace/Time_Value.h>
 
+#include <string>
+
 struct RPG_Net_RuntimeStatistic
 {
   unsigned long messagesPerSec;
@@ -30,8 +32,12 @@ struct RPG_Net_RuntimeStatistic
 
 struct RPG_Net_StreamConfigPOD
 {
+  // ************ runtime data ************
   RPG_Net_RuntimeStatistic currentStatistics;
   ACE_Time_Value collectionTimestamp; // statistics collection timestamp
+  // ************ stream config data ************
+  std::string networkInterface;
+  unsigned long statisticsReportingInterval;
 };
 
 #endif

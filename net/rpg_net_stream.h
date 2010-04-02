@@ -23,37 +23,35 @@
 
 #include "rpg_net_common.h"
 #include "rpg_net_module_sockethandler.h"
+#include "rpg_net_module_headerparser.h"
 #include "rpg_net_module_runtimestatistic.h"
-#include "rpg_net_module_protocolhandler.h"
+// #include "rpg_net_module_protocolhandler.h"
 
 #include <rpg_common_istatistic.h>
 
 #include <stream_base.h>
 
 #include <ace/Global_Macros.h>
-// *TODO*: currently, this only needs to be a singleton so the socket handler can get
-// a handle to us from within a signal handler (handle_timeout())... clean this up !
-#include <ace/Singleton.h>
 
 // forward declaration(s)
-class RPG_Net_IAllocator;
+class Stream_IAllocator;
 
 class RPG_Net_Stream
- : public Stream_Base,
+ : public Stream_Base<RPG_Net_StreamConfigPOD>,
    // *NOTE*: implement this in order to successfuly encapsulate stream specifics...
    // --> delegate the actual functionality to one of our modules
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
-  // the singleton implementation needs exclusive access to the ctor/dtors
-  friend class ACE_Singleton<RPG_Net_Stream, ACE_Thread_Mutex>;
-
  public:
+   RPG_Net_Stream();
+   virtual ~RPG_Net_Stream();
+
   // convenience types
   typedef RPG_Common_IStatistic<RPG_Net_RuntimeStatistic> StatisticsInterface_Type;
 
   // init stream
-  const bool init(RPG_Net_IAllocator*,          // message allocator
-                  const RPG_Net_StreamConfig&); // module configuration elements
+  const bool init(Stream_IAllocator*,              // message allocator
+                  const RPG_Net_StreamConfigPOD&); // module configuration
 
   // implement RPG_Common_IStatistic
   // *NOTE*: delegate this to myRuntimeStatistic
@@ -62,22 +60,21 @@ class RPG_Net_Stream
   virtual void report();
 
  private:
-  typedef Stream_Base inherited;
+  typedef Stream_Base<RPG_Net_StreamConfigPOD> inherited;
 
   // safety measures
-  RPG_Net_Stream();
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Stream(const RPG_Net_Stream&));
-  virtual ~RPG_Net_Stream();
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Stream& operator=(const RPG_Net_Stream&));
 
   // fini stream
   // *NOTE*: need this to clean up queued modules if something goes wrong during init() !
-  const bool fini(const RPG_Net_StreamConfig&); // configuration
+  const bool fini(const RPG_Net_StreamConfigPOD&); // configuration
 
   // modules
-  RPG_Net_SocketHandler_Module    mySocketHandler;
-  RPG_Net_RuntimeStatistic_Module myRuntimeStatistic;
-  RPG_Net_ProtocolHandler_Module  myProtocolHandler;
+  RPG_Net_Module_SocketHandler_Module    mySocketHandler;
+  RPG_Net_Module_HeaderParser_Module     myHeaderParser;
+  RPG_Net_Module_RuntimeStatistic_Module myRuntimeStatistic;
+//   RPG_Net_ProtocolHandler_Module  myProtocolHandler;
 };
 
 typedef ACE_Unmanaged_Singleton<RPG_Net_Stream,

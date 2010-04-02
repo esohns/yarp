@@ -20,20 +20,14 @@
 
 #include "rpg_net_module_sockethandler.h"
 
-// #include "rps_flb_common.h"
-// #include "rps_flb_common_tools.h"
-
 #include "rpg_net_message.h"
 #include "rpg_net_common_tools.h"
 #include "rpg_net_stream_config.h"
-// #include "rps_flb_common_message_scheduler.h"
 
 #include <stream_iallocator.h>
 
-// #include <ace/OS.h>
 #include <ace/Time_Value.h>
 #include <ace/INET_Addr.h>
-// #include <ace/Message_Block.h>
 
 RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
  : inherited(false), // DON'T auto-start !
@@ -45,8 +39,8 @@ RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler"));
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("activating timer dispatch queue...\n")));
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("activating timer dispatch queue...\n")));
 
   // ok: activate timer queue
   if (myTimerQueue.activate() == -1)
@@ -58,8 +52,8 @@ RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
     return;
   } // end IF
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("activating timer dispatch queue...DONE\n")));
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("activating timer dispatch queue...DONE\n")));
 }
 
 RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
@@ -84,22 +78,22 @@ RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
     myStatCollectHandlerID = 0;
   } // end IF
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("deactivating timer dispatch queue...\n")));
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("deactivating timer dispatch queue...\n")));
 
   myTimerQueue.deactivate();
   // make sure the dispatcher thread is really dead...
   myTimerQueue.wait();
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("deactivating timer dispatch queue...DONE\n")));
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("deactivating timer dispatch queue...DONE\n")));
 }
 
 const bool
 RPG_Net_Module_SocketHandler::init(Stream_IAllocator* messageAllocator_in,
                                    const std::string& networkInterface_in,
                                    const unsigned long& sizeReceiveBuffer_in,
-                                   const unsigned long& statCollectInterval_in)
+                                   const unsigned long& statisticsCollectionInterval_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::init"));
 
@@ -170,10 +164,10 @@ RPG_Net_Module_SocketHandler::init(Stream_IAllocator* messageAllocator_in,
   } // end IF
 
   // schedule regular statistics collection...
-  if (statCollectInterval_in)
+  if (statisticsCollectionInterval_in)
   {
     myStatCollectHandlerID = 0;
-    ACE_Time_Value collecting_interval(statCollectInterval_in,
+    ACE_Time_Value collecting_interval(statisticsCollectionInterval_in,
                                        0);
     myStatCollectHandlerID = myTimerQueue.schedule(&myStatCollectHandler,
                                                    NULL,
@@ -194,7 +188,7 @@ RPG_Net_Module_SocketHandler::init(Stream_IAllocator* messageAllocator_in,
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("scheduled statistics collecting timer (ID: %d) for intervals of %u second(s)...\n"),
                myStatCollectHandlerID,
-               statCollectInterval_in));
+               statisticsCollectionInterval_in));
   } // end IF
 
   // *NOTE*: need to clean up timer beyond this point !
