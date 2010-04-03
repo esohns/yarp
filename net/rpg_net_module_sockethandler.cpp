@@ -20,11 +20,10 @@
 
 #include "rpg_net_module_sockethandler.h"
 
+#include "rpg_net_defines.h"
 #include "rpg_net_message.h"
-#include "rpg_net_common_tools.h"
+#include "rpg_net_remote_comm.h"
 #include "rpg_net_stream_config.h"
-
-#include <stream_iallocator.h>
 
 #include <ace/Time_Value.h>
 #include <ace/INET_Addr.h>
@@ -35,6 +34,9 @@ RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
    myStatCollectHandler(this,
                         STATISTICHANDLER_TYPE::ACTION_COLLECT),
    myStatCollectHandlerID(0),
+   myCurrentMessageLength(0),
+   myCurrentMessage(NULL),
+   myCurrentBuffer(NULL),
    myAllocator(NULL)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler"));
@@ -61,22 +63,7 @@ RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler"));
 
   // clean up
-  if (myStatCollectHandlerID)
-  {
-    if (myTimerQueue.cancel(myStatCollectHandlerID) == -1)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to cancel statistics collection timer (ID: %u): \"%s\", continuing\n"),
-                 myStatCollectHandlerID,
-                 ACE_OS::strerror(errno)));
-    } // end IF
-
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("deactivated statistics collection timer (ID: %u)...\n"),
-               myStatCollectHandlerID));
-
-    myStatCollectHandlerID = 0;
-  } // end IF
+  cancelTimer();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("deactivating timer dispatch queue...\n")));
@@ -87,80 +74,28 @@ RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("deactivating timer dispatch queue...DONE\n")));
+
+  // clean up any unprocessed (chained) buffer(s)
+  if (myCurrentMessage)
+    myCurrentMessage->release();
 }
 
 const bool
-RPG_Net_Module_SocketHandler::init(Stream_IAllocator* messageAllocator_in,
-                                   const std::string& networkInterface_in,
-                                   const unsigned long& sizeReceiveBuffer_in,
+RPG_Net_Module_SocketHandler::init(Stream_IAllocator* allocator_in,
                                    const unsigned long& statisticsCollectionInterval_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::init"));
 
   // sanity check(s)
+  ACE_ASSERT(allocator_in);
   if (myIsInitialized)
   {
-    ACE_DEBUG((LM_WARNING,
-               ACE_TEXT("already initialized --> nothing to do, aborting\n")));
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("re-initializing...\n")));
 
-    return false;
-  } // end IF
-
-  // sanity check(s)
-  if (!messageAllocator_in)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid argument (was NULL), aborting\n")));
-
-    return false;
-  } // end IF
-
-  myAllocator = messageAllocator_in;
-
-  // *NOTE*: need to do this BEFORE opening any socket because
-  // ::getnameinfo apparently cannot handle AF_PACKET sockets (don't ask !)...
-  // retrieve local IP address
-  std::string ip_address;
-  if (!RPG_Net_Common_Tools::retrieveLocalIPAddress(networkInterface_in,
-                                                    ip_address))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Net_Common_Tools::retrieveLocalIPAddress(\"%s\"), aborting\n"),
-               networkInterface_in.c_str()));
-
-    return false;
-  } // end IF
-
-  // retrieve local hostname
-  std::string hostname;
-  if (!RPG_Net_Common_Tools::retrieveLocalHostname(hostname))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Net_Common_Tools::retrieveLocalHostname(), aborting\n")));
-
-    return false;
-  } // end IF
-
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("local interface (\"%s\") --> hostname [IP address]: \"%s\" [\"%s\"]\n"),
-             networkInterface_in.c_str(),
-             hostname.c_str(),
-             ip_address.c_str()));
-
-  // tweak socket options
-  if (sizeReceiveBuffer_in)
-  {
-    if (!RPG_Net_Common_Tools::setSocketBuffer(get_handle(),
-                                               SO_RCVBUF,
-                                               sizeReceiveBuffer_in))
-    {
-      ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to RPG_Net_Common_Tools::setSocketBuffer(SO_RCVBUF, %u), aborting\n"),
-                sizeReceiveBuffer_in));
-
-      return false;
-    } // end IF
+    // clean up
+    myIsInitialized = false;
+    cancelTimer();
   } // end IF
 
   // schedule regular statistics collection...
@@ -192,228 +127,58 @@ RPG_Net_Module_SocketHandler::init(Stream_IAllocator* messageAllocator_in,
   } // end IF
 
   // *NOTE*: need to clean up timer beyond this point !
-//     // clean up
-//   if (myStatCollectHandlerID)
-//   {
-//     if (myTimerQueue.cancel(myStatCollectHandlerID) == -1)
-//     {
-//       ACE_DEBUG((LM_ERROR,
-//                  ACE_TEXT("failed to cancel timer (ID: %u): \"%s\", continuing\n"),
-//                           myStatCollectHandlerID,
-//                           ACE_OS::strerror(errno)));
-//     } // end IF
-//     myStatCollectHandlerID = 0;
-//   } // end IF
+
+  myAllocator = allocator_in;
 
   // OK: all's well...
   myIsInitialized = true;
 
-  // debug info
-
-
   return myIsInitialized;
 }
 
-int
-RPG_Net_Module_SocketHandler::svc(void)
+void
+RPG_Net_Module_SocketHandler::handleDataMessage(Stream_MessageBase*& message_inout,
+                                                bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::svc"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::handleDataMessage"));
 
-  RPG_Net_StreamConfigPOD sessionConfigData;
-  ACE_OS::memset(&sessionConfigData,
-                 0,
-                 sizeof(RPG_Net_StreamConfigPOD));
-  ACE_Message_Block*      controlMessage   = NULL;
-  ACE_Time_Value          now;
-  int                     ret              = 0;
-  bool                    leaveLoop        = false;
+  // init return value(s), default behavior is to pass all messages along...
+  // --> we don't want that !
+  passMessageDownstream_out = false;
 
   // sanity check(s)
-  if (!myIsInitialized)
+  ACE_ASSERT(message_inout);
+  ACE_ASSERT(myIsInitialized);
+
+  // perhaps we already have part of this message ?
+  if (myCurrentBuffer)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("not initialized, aborting\n")));
-
-    // tell the controller we're finished...
-    finished();
-
-    return -1;
+    // enqueue the incoming buffer onto our chain
+    myCurrentBuffer->cont(message_inout);
   } // end IF
+  myCurrentBuffer = ACE_dynamic_cast(RPG_Net_Message*, message_inout);
 
-  // step1: send initial session message downstream...
-  if (!inherited::putSessionMessage(Stream_SessionMessage::SESSION_BEGIN,
-                                    sessionConfigData,
-                                    ACE_OS::gettimeofday(), // start of session
-                                    false))                 // N/A
+  // sanity check(s)
+  ACE_ASSERT(myCurrentBuffer);
+
+  RPG_Net_Message* complete_message = NULL;
+  while (complete_message = bisectMessages())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("putSessionMessage failed, aborting\n")));
-
-    // tell the controller we're finished...
-    finished();
-
-    return -1;
-  } // end IF
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("entering processing loop...\n")));
-
-  // step2: process incoming data
-  while (!leaveLoop)
-  {
-    // check user stop condition --> someone stopped() the stream ?
-    if (!msg_queue_->is_empty())
+    // push the whole message downstream...
+    if (put_next(complete_message) == -1)
     {
-      now = ACE_OS::gettimeofday();
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Task::put_next(): \"%s\", continuing\n"),
+                 ACE_OS::strerror(errno)));
 
-      // Note: something SHOULD be in the queue...
-      if (getq(controlMessage, &now) == -1)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Task::getq(): \"%s\", aborting\n"),
-                   ACE_OS::strerror(errno)));
-
-        // remember we failed...
-        ret = -1;
-
-        // leave processing loop
-        break;
-      } // end IF
-
-      // handle this control message
-      bool user_abort = false;
-      bool passMessageDownstream = true;
-      inherited::handleControlMessage(controlMessage,
-                                      user_abort,
-                                      passMessageDownstream);
-
-      if (passMessageDownstream)
-      {
-        // we've been told to pass this (control) message downstream...
-        if (put_next(controlMessage) == -1)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to ACE_Task::put_next(): \"%s\", continuing\n"),
-                     ACE_OS::strerror(errno)));
-
-          // remember we failed (at something)...
-          ret = -1;
-        } // end IF
-      } // end IF
-
-      // handle user abort
-      if (user_abort)
-      {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("(user) abort, stopping activities...\n")));
-
-        // leave processing loop
-        break;
-      } // end IF
+      // clean up
+      complete_message->release();
+      complete_message = NULL;
     } // end IF
 
-    // OK: handle data
-/*    ret = pcap_dispatch(myPCAPHandle,
-                        -1, // <-- "A cnt of -1 processes all the packets received
-                            // in one buffer when reading a live capture,..."
-                            // http://www.tcpdump.org/pcap3_man.html
-                        &RPG_Net_Module_SocketHandler::recordPacket,
-                        ACE_reinterpret_cast(u_char*,
-                                             this)); // pass handle to ourselves...
-    switch (ret)
-    {
-      // *** GOOD CASE ***
-      default:
-      {
-
-        break;
-      }
-      case 0:
-      {
-        // no packet processed
-        // probable causes:
-        // - no LAN traffic/read timeout (maybe we are in non-blocking mode ?)
-        // - no packets passed the filter
-        // - someone (temporarily) pulled the network cable
-        // - NIC/network cable broken
-
-        // *IMPORTANT NOTE*: the rationale here is that this state will
-        // eventually be identified (and hopefully resolved) by the
-        // monitoring TSC, otherwise we will just continually grow our logfile...
-        //ACE_DEBUG((LM_WARNING,
-        //           ACE_TEXT("read timeout occurred (check cabling/NIC status LEDs/...), continuing\n")));
-
-        break;
-      }
-      // *** ERROR CASE ***
-      case -1:
-      {
-        // some internal error
-        // Probable cause:
-        // - someone (accidentally ?) shutdown the network service
-        // - no more memory ?
-        // - ...
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to pcap_dispatch(): \"%s\" --> check implementation !, aborting\n"),
-                   pcap_geterr(myPCAPHandle)));
-
-        // *IMPORTANT NOTE*: we shut ourselves down so we don't come here again
-        // and generate (duplicate ?) error messages until we're officially
-        // stop()ed from outside...
-        // *TODO*: what else can we do ?
-        ret = -1;
-        leave_loop = true;
-
-        // *IMPORTANT NOTE*: the rationale here is that this state will
-        // eventually be identified (and hopefully resolved) by the
-        // monitoring TSC, otherwise (problem persists) it MAY happen
-        // that we are just continually restarted by the watchdog...
-        break;
-      }
-      case -2:
-      {
-        // *IMPORTANT NOTE*: we arrive here when pcap_breakloop was called AND there were no packets.
-        // If this was invoked from a signal handler, we should have a stop message in our queue by now
-        // --> just proceed normally
-        ACE_DEBUG((LM_INFO,
-                   ACE_TEXT("pcap_breakloop() invoked, continuing\n")));
-
-        break;
-      }
-    } // end SWITCH*/
+    // reset state
+    myCurrentMessageLength = 0;
   } // end WHILE
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("left processing loop...\n")));
-
-  // step3: send final session message downstream...
-  if (!inherited::putSessionMessage(Stream_SessionMessage::SESSION_END,
-                                    sessionConfigData,
-                                    ACE_Time_Value::zero, // N/A
-                                    true))                // ALWAYS a user abort...
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("putSessionMessage failed, aborting\n")));
-
-    // tell the controller we're finished...
-    finished();
-
-    return -1;
-  } // end IF
-
-  // tell the controller we're finished...
-  finished();
-
-  return ret;
-}
-
-void
-RPG_Net_Module_SocketHandler::stop()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::stop"));
-
-  // invoke base class behaviour
-  inherited::stop();
 }
 
 const bool
@@ -425,30 +190,21 @@ RPG_Net_Module_SocketHandler::collect(RPG_Net_RuntimeStatistic& data_out)
   ACE_UNUSED_ARG(data_out);
 
   // sanity check(s)
-  if (!myIsInitialized)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("not initialized, aborting\n")));
-
-    return false;
-  } // end IF
+  ACE_ASSERT(myIsInitialized);
 
   // step0: init info container POD
   ACE_OS::memset(&data_out,
                  0,
                  sizeof(RPG_Net_RuntimeStatistic));
 
-  // step1: remember time of stats collection
-  ACE_Time_Value collectionTimestamp = ACE_OS::gettimeofday();
+  // step1: *TODO*: collect info
 
-  // step2: *TODO*: collect info
-
-  // step3: send this information downstream
+  // step2: send this information downstream
   if (!putStatisticsMessage(data_out,
-                            collectionTimestamp))
+                            ACE_OS::gettimeofday()))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to putStatisticsMessage(), aborting\n")));
+               ACE_TEXT("failed to putSessionMessage(SESSION_STATISTICS), aborting\n")));
 
     return false;
   } // end IF
@@ -463,53 +219,181 @@ RPG_Net_Module_SocketHandler::report()
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::report"));
 
   // sanity check(s)
-  if (!myIsInitialized)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("not initialized, returning\n")));
-
-    return;
-  } // end IF
+  ACE_ASSERT(myIsInitialized);
 
   // *TODO*: support (local) reporting here as well ?
   // --> leave this to any downstream modules...
   ACE_ASSERT(false);
 }
 
-const bool
-RPG_Net_Module_SocketHandler::allocateMessage(const unsigned long& requiredSize_in,
-                                              RPG_Net_Message*& message_out)
+RPG_Net_Message*
+RPG_Net_Module_SocketHandler::bisectMessages()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::bisectMessages"));
+
+  if (myCurrentMessageLength == 0)
+  {
+    // --> evaluate the incoming message header
+
+    // perhaps we already have part of the header ?
+    if (myCurrentMessage == NULL)
+    {
+      // we really don't know anything --> remember this buffer as our head...
+      myCurrentMessage = myCurrentBuffer;
+    } // end IF
+
+//     // ... and adjust the running message counter
+//     myProcessedMessageBytes += message_inout->length();
+    // OK, perhaps we can start interpreting the message header...
+
+    // check if we received the full header yet...
+    if (myCurrentMessage->total_length() < sizeof(RPG_Net_Remote_Comm::MessageHeader))
+    {
+      // we don't, so keep what we have (default behavior) ...
+
+      // ... and wait for some more data
+      return NULL;
+    } // end IF
+
+    // OK, we can start interpreting this message...
+
+    // sanity check: do we have enough contiguous data ?
+    while (myCurrentMessage->length() < sizeof(RPG_Net_Remote_Comm::MessageHeader))
+    {
+      // *sigh*: copy some data from the chain to allow interpretation
+      // of the message header
+      ACE_Message_Block* source = myCurrentMessage->cont();
+      while (source->length() == 0)
+        source = source->cont();
+      size_t amount = (source->length() > sizeof(RPG_Net_Remote_Comm::MessageHeader) ? sizeof(RPG_Net_Remote_Comm::MessageHeader)
+                                                                                     : source->length());
+      if (myCurrentMessage->copy(source->rd_ptr(),
+                                 amount))
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_Message_Block::copy(): \"%s\", aborting\n"),
+                   ACE_OS::strerror(errno)));
+
+        // clean up
+        myCurrentMessage->release();
+        myCurrentMessage = NULL;
+        myCurrentBuffer = NULL;
+
+        // what else can we do ?
+        return NULL;
+      } // end IF
+
+      // adjust the continuation accordingly...
+      source->rd_ptr(amount);
+    } // end WHILE
+
+    RPG_Net_Remote_Comm::MessageHeader* message_header = ACE_reinterpret_cast(RPG_Net_Remote_Comm::MessageHeader*,
+                                                                              myCurrentMessage->rd_ptr());
+    // *TODO*: *PORTABILITY*: handle endianness && type issues !
+    myCurrentMessageLength = message_header->messageLength + sizeof(unsigned long);
+  } // end IF
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("received %u bytes [current: %u, total: %u]...\n"),
+             myCurrentBuffer->length(),
+             myCurrentMessage->total_length(),
+             myCurrentMessageLength));
+
+  // check if we received the whole message yet...
+  if (myCurrentMessage->total_length() < myCurrentMessageLength)
+  {
+    // we don't, so keep what we have (default behavior) ...
+
+    // ... and wait for some more data
+    return NULL;
+  } // end IF
+
+  // OK, we have all of it !
+  RPG_Net_Message* result = myCurrentMessage;
+
+  // check if we have received (part of) the next message
+  if (myCurrentMessage->total_length() > myCurrentMessageLength)
+  {
+    // remember overlapping bytes
+    size_t overlap = myCurrentMessage->total_length() - myCurrentMessageLength;
+
+    // adjust write pointer of our current buffer so (total_-)length()
+    // reflects the proper size...
+    unsigned long offset = myCurrentMessageLength;
+    // in order to find the correct offset in myCurrentBuffer, we MAY need to
+    // count the total size of the preceding continuation... :-(
+    ACE_Message_Block* current = myCurrentMessage;
+    while (current != myCurrentBuffer)
+    {
+      offset -= current->length();
+      current = current->cont();
+    } // end WHILE
+    myCurrentBuffer->wr_ptr(myCurrentBuffer->rd_ptr() + offset);
+    // sanity check
+    ACE_ASSERT(myCurrentMessage->total_length() == myCurrentMessageLength);
+
+    // --> create a new message head and copy the overlapping data
+    // *TODO*: ...or we could just reference the same data block
+    RPG_Net_Message* new_head = allocateMessage(RPG_NET_DEF_NETWORK_BUFFER_SIZE);
+    if (new_head == NULL)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to allocateMessage(%u), aborting\n"),
+                 RPG_NET_DEF_NETWORK_BUFFER_SIZE));
+
+      // what else can we do ?
+      return result;
+    } // end IF
+    if (new_head->copy(myCurrentBuffer->wr_ptr(),
+                       overlap))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Message_Block::copy(): \"%s\", aborting\n"),
+                 ACE_OS::strerror(errno)));
+
+      // clean up
+      new_head->release();
+
+      // what else can we do ?
+      return result;
+    } // end IF
+
+    // set new message head/current buffer
+    myCurrentMessage = new_head;
+    myCurrentBuffer = myCurrentMessage;
+  } // end IF
+
+  return result;
+}
+
+RPG_Net_Message*
+RPG_Net_Module_SocketHandler::allocateMessage(const unsigned long& requestedSize_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::allocateMessage"));
 
   // init return value(s)
-  message_out = NULL;
+  RPG_Net_Message* message_out = NULL;
 
   try
   {
-    // *NOTE*: the argument we pass to the allocator is irrelevant,
-    // the allocator allocates RPG_Net_Messages...
     message_out = ACE_static_cast(RPG_Net_Message*,
-                                  myAllocator->malloc(requiredSize_in));
+                                  myAllocator->malloc(requestedSize_in));
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in ACE_Allocator::malloc(%u), aborting\n"),
-               requiredSize_in));
-
-    return false;
+               ACE_TEXT("caught exception in Stream_IAllocator::malloc(%u), aborting\n"),
+               requestedSize_in));
   }
   if (!message_out)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Allocator::malloc(%u), aborting\n"),
-               requiredSize_in));
-
-    return false;
+               ACE_TEXT("failed to Stream_IAllocator::malloc(%u), aborting\n"),
+               requestedSize_in));
   } // end IF
 
-  return true;
+  return message_out;
 }
 
 const bool
@@ -519,15 +403,15 @@ RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatisti
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::putStatisticsMessage"));
 
   // step1: init info POD
-  RPG_Net_StreamConfigPOD data;
+  RPG_Net_ConfigPOD data;
   ACE_OS::memset(&data,
                  0,
-                 sizeof(RPG_Net_StreamConfigPOD));
+                 sizeof(RPG_Net_ConfigPOD));
   data.currentStatistics = info_in;
-  data.collectionTimestamp = collectionTime_in;
+  data.lastCollectionTimestamp = collectionTime_in;
 
   // step2: allocate config container
-  RPG_Net_StreamConfig* config = NULL;
+  Stream_SessionConfigBase<RPG_Net_ConfigPOD>* config = NULL;
   try
   {
     config = new RPG_Net_StreamConfig(data);
@@ -549,12 +433,12 @@ RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatisti
 
   // *NOTE*: this is a "fire-and-forget" API, so we don't need to
   // worry about config any longer !
-//   return inherited::putSessionMessage(Stream_SessionMessage::SESSION_STATISTICS,
-//                                       config);
   return inherited::putSessionMessage(Stream_SessionMessage::SESSION_STATISTICS,
-                                      data,
-                                      ACE_Time_Value::zero, // N/A
-                                      false);
+                                      config);
+//   return inherited::putSessionMessage(Stream_SessionMessage::SESSION_STATISTICS,
+//                                       data,
+//                                       ACE_Time_Value::zero, // N/A
+//                                       false);
 }
 /*
 void

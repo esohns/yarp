@@ -23,10 +23,12 @@
 
 #include "rpg_net_sockethandler.h"
 
+#include <stream_iallocator.h>
+
 #include <ace/Global_Macros.h>
 
 // forward declarations
-class ACE_Message_Block;
+class RPG_Net_Message;
 
 template <typename StreamType>
 class RPG_Net_StreamSocketBase
@@ -57,13 +59,15 @@ class RPG_Net_StreamSocketBase
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase(const RPG_Net_StreamSocketBase&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase& operator=(const RPG_Net_StreamSocketBase&));
 
-  // processing stream
-  StreamType    myStream;
+  // helper methods
+  RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
 
-  unsigned long      myCurrentMessageLength;
-  size_t             myReceivedMessageBytes;
-  ACE_Message_Block* myCurrentBuffer;
-  ACE_Message_Block* myCurrentMessage;
+  StreamType         myStream;
+  Stream_IAllocator* myAllocator; // message allocator
+  RPG_Net_Message*   myCurrentBuffer;
 };
+
+// include template implementation
+#include "rpg_net_stream_socket_base.i"
 
 #endif

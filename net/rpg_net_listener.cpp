@@ -24,8 +24,8 @@
 #include <ace/Reactor.h>
 
 RPG_Net_Listener::RPG_Net_Listener()
-  : inherited(ACE_Reactor::instance(), // use global reactor
-              0),                      // flags (*TODO*: ACE_NONBLOCK ?)
+  : inherited(ACE_Reactor::instance(), // use global (default) reactor
+              1),                      // always accept ALL pending connections
     myIsInitialized(false),
     myIsListening(false),
     myIsOpen(false),
@@ -65,6 +65,21 @@ RPG_Net_Listener::isInitialized() const
   ACE_TRACE(ACE_TEXT("RPG_Net_Listener::isInitialized"));
 
   return myIsInitialized;
+}
+
+int
+RPG_Net_Listener::handle_accept_error(void)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Listener::handle_accept_error"));
+
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("failed to accept connection...\n")));
+
+  // *TODO*: what else can we do ?
+  inherited::dump();
+
+  // *NOTE*: we want to remain registered with the reactor...
+  return 0;
 }
 
 void
@@ -112,10 +127,11 @@ RPG_Net_Listener::start()
   // not running --> start listening
   if (open(ACE_INET_Addr(myListeningPort, // local SAP
            // *PORTABILITY*: needed to disambiguate this under Windows :-(
+           // *TODO*: bind to specific interface/address ?
                          ACE_static_cast(ACE_UINT32, INADDR_ANY)),
            ACE_Reactor::instance(),       // corresp. reactor
            0,                             // flags (*TODO*: ACE_NONBLOCK ?)
-           1,                             // accept all pending connections
+           1,                             // always accept ALL pending connections
            1) == -1)                      // try to re-use address
   {
     ACE_DEBUG((LM_ERROR,

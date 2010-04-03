@@ -261,7 +261,7 @@ RPG_Net_Module_RuntimeStatistic::handleDataMessage(Stream_MessageBase*& message_
 }
 
 void
-RPG_Net_Module_RuntimeStatistic::handleSessionMessage(Stream_SessionMessageBase<RPG_Net_StreamConfigPOD>*& message_inout,
+RPG_Net_Module_RuntimeStatistic::handleSessionMessage(Stream_SessionMessageBase<RPG_Net_ConfigPOD>*& message_inout,
                                                       bool& passMessageDownstream_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::handleSessionMessage"));

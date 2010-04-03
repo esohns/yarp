@@ -102,7 +102,7 @@ RPG_Net_SocketHandler::handle_input(ACE_HANDLE handle_in)
   ACE_Message_Block* chunk = NULL;
   try
   {
-    chunk = new ACE_Message_Block(1024,                               // size
+    chunk = new ACE_Message_Block(RPG_NET_DEF_NETWORK_BUFFER_SIZE,    // size
                                   ACE_Message_Block::MB_STOP,         // type
                                   NULL,                               // continuation
                                   NULL,                               // data

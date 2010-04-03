@@ -34,7 +34,7 @@
 class Stream_MessageBase;
 
 class RPG_Net_Module_HeaderParser
- : public Stream_TaskBaseAsynch<RPG_Net_StreamConfigPOD>
+ : public Stream_TaskBaseAsynch<RPG_Net_ConfigPOD>
 {
  public:
   RPG_Net_Module_HeaderParser();
@@ -51,7 +51,7 @@ class RPG_Net_Module_HeaderParser
   virtual void dump_state() const;
 
  private:
-  typedef Stream_TaskBaseAsynch<RPG_Net_StreamConfigPOD> inherited;
+  typedef Stream_TaskBaseAsynch<RPG_Net_ConfigPOD> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_HeaderParser(const RPG_Net_Module_HeaderParser&));

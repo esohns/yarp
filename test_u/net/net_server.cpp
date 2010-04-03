@@ -28,7 +28,7 @@
 #include <rpg_net_connection_manager.h>
 #include <rpg_net_signalhandler.h>
 #include <rpg_net_common_tools.h>
-#include <rpg_net_stream.h>
+// #include <rpg_net_stream.h>
 
 #include <rpg_common_tools.h>
 
@@ -423,25 +423,25 @@ do_work(const unsigned long& clientPingInterval_in,
     return;
   } // end IF
 
-  // step1: init processing stream
+  // step1: init configuration object
   Stream_AllocatorHeap heapAllocator;
   Stream_MessageAllocatorHeap messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
                                                &heapAllocator);
-  RPG_Net_StreamConfigPOD streamConfig;
-  ACE_OS::memset(&streamConfig,
+  RPG_Net_ConfigPOD config;
+  ACE_OS::memset(&config,
                  0,
-                 sizeof(RPG_Net_StreamConfigPOD));
-  streamConfig.networkInterface = networkInterface_in;
-  streamConfig.statisticsReportingInterval = statisticsReportingInterval_in;
-  RPG_Net_Stream stream;
-  if (!stream.init(&messageAllocator,
-                   streamConfig))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init processing stream, aborting\n")));
-
-    return;
-  } // end IF
+                 sizeof(RPG_Net_ConfigPOD));
+  config.socketBufferSize = RPG_NET_DEF_PCAP_SOCK_RECVBUF_SIZE;
+  config.messageAllocator = &heapAllocator;
+  config.statisticsReportingInterval = statisticsReportingInterval_in;
+//   RPG_Net_Stream stream;
+//   if (!stream.init(config))
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to init processing stream, aborting\n")));
+//
+//     return;
+//   } // end IF
 
   // step2: init/start listening
   RPG_NET_LISTENER_SINGLETON::instance()->init(listeningPortNumber_in);
@@ -474,7 +474,7 @@ do_work(const unsigned long& clientPingInterval_in,
     // clean up
     // stop listener, clean up pending connections
     RPG_NET_LISTENER_SINGLETON::instance()->stop();
-    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortAllOpenConnections();
+    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
 
     return;
   } // end IF

@@ -37,7 +37,7 @@
 class Stream_IAllocator;
 
 class RPG_Net_Stream
- : public Stream_Base<RPG_Net_StreamConfigPOD>,
+ : public Stream_Base<RPG_Net_ConfigPOD>,
    // *NOTE*: implement this in order to successfuly encapsulate stream specifics...
    // --> delegate the actual functionality to one of our modules
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
@@ -50,8 +50,7 @@ class RPG_Net_Stream
   typedef RPG_Common_IStatistic<RPG_Net_RuntimeStatistic> StatisticsInterface_Type;
 
   // init stream
-  const bool init(Stream_IAllocator*,              // message allocator
-                  const RPG_Net_StreamConfigPOD&); // module configuration
+  const bool init(const RPG_Net_ConfigPOD&); // stream/module configuration
 
   // implement RPG_Common_IStatistic
   // *NOTE*: delegate this to myRuntimeStatistic
@@ -60,7 +59,7 @@ class RPG_Net_Stream
   virtual void report();
 
  private:
-  typedef Stream_Base<RPG_Net_StreamConfigPOD> inherited;
+  typedef Stream_Base<RPG_Net_ConfigPOD> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Stream(const RPG_Net_Stream&));
@@ -68,7 +67,7 @@ class RPG_Net_Stream
 
   // fini stream
   // *NOTE*: need this to clean up queued modules if something goes wrong during init() !
-  const bool fini(const RPG_Net_StreamConfigPOD&); // configuration
+  const bool fini(const RPG_Net_ConfigPOD&); // configuration
 
   // modules
   RPG_Net_Module_SocketHandler_Module    mySocketHandler;

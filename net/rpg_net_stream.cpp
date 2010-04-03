@@ -67,20 +67,12 @@ RPG_Net_Stream::~RPG_Net_Stream()
 }
 
 const bool
-RPG_Net_Stream::init(Stream_IAllocator* allocator_in,
-                     const RPG_Net_StreamConfigPOD& config_in)
+RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Stream::init"));
 
   // sanity check(s)
-  if (myIsInitialized)
-  {
-    // *TODO*: implement re-initialization ?
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("already initialized, aborting\n")));
-
-    return false;
-  } // end IF
+  ACE_ASSERT(!myIsInitialized);
 
   // things to be done here:
   // - create modules (done for the ones we "own")
@@ -132,8 +124,8 @@ RPG_Net_Stream::init(Stream_IAllocator* allocator_in,
     return false;
   } // end IF
   if (!runtimeStatistic_impl->init(false, // do not print hash ("#") marks...
-                                   true, // print pcap stats...
-                                   allocator_in,
+                                   true,  // print pcap stats...
+                                   config_in.messageAllocator,
                                    config_in.statisticsReportingInterval))
   {
     ACE_DEBUG((LM_ERROR,
@@ -194,9 +186,7 @@ RPG_Net_Stream::init(Stream_IAllocator* allocator_in,
 
     return false;
   } // end IF
-  if (!socketHandler_impl->init(allocator_in,
-                                config_in.networkInterface,
-                                RPG_NET_DEF_PCAP_SOCK_RECVBUF_SIZE,
+  if (!socketHandler_impl->init(config_in.messageAllocator,
                                 RPG_NET_DEF_STATISTICS_COLLECT_INTERVAL))
   {
     ACE_DEBUG((LM_ERROR,

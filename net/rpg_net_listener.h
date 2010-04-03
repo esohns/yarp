@@ -21,7 +21,9 @@
 #ifndef RPG_NET_LISTENER_H
 #define RPG_NET_LISTENER_H
 
-#include "rpg_net_sockethandler.h"
+// #include "rpg_net_sockethandler.h"
+#include "rpg_net_stream.h"
+#include "rpg_net_stream_socket_base.h"
 
 #include <rpg_common_icontrol.h>
 #include <rpg_common_idumpstate.h>
@@ -33,7 +35,8 @@
 #include <ace/Synch.h>
 
 class RPG_Net_Listener
-  : public ACE_Acceptor<RPG_Net_SocketHandler,
+  : public ACE_Acceptor<//RPG_Net_SocketHandler,
+                        RPG_Net_StreamSocketBase<RPG_Net_Stream>,
                         ACE_SOCK_ACCEPTOR>,
     public RPG_Common_IControl
 {
@@ -46,6 +49,11 @@ class RPG_Net_Listener
   void init(const unsigned short&); // port number
   const bool isInitialized() const;
 
+  // override some methods from ACE_Acceptor
+  // *NOTE*: "in the event that an accept fails, this method will be called and
+  // the return value will be returned from handle_input()."
+  virtual int handle_accept_error(void);
+
   // implement RPG_Common_IControl
   // *WARNING*: this API is NOT re-entrant !
   virtual void start();
@@ -56,7 +64,8 @@ class RPG_Net_Listener
   virtual void dump_state() const;
 
  private:
-  typedef ACE_Acceptor<RPG_Net_SocketHandler,
+  typedef ACE_Acceptor<//RPG_Net_SocketHandler,
+                       RPG_Net_StreamSocketBase<RPG_Net_Stream>,
                        ACE_SOCK_ACCEPTOR> inherited;
 
   // safety measures

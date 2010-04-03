@@ -47,7 +47,7 @@ class Stream_MessageBase;
 class Stream_IAllocator;
 
 class RPG_Net_Module_RuntimeStatistic
- : public Stream_TaskBaseSynch<RPG_Net_StreamConfigPOD>,
+ : public Stream_TaskBaseSynch<RPG_Net_ConfigPOD>,
    public RPG_Net_ICounter,
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
@@ -58,9 +58,8 @@ class RPG_Net_Module_RuntimeStatistic
   // initialization
   const bool init(const bool&,           // print hash ("#") mark for every 1000 messages seen to stdout
                   const bool&,           // print libpcap-related stats
-                  // *TODO*: just pass an augmented ACE_Allocator interface !
                   // *NOTE*: if this is non-NULL, cache usage data will be reported !
-                  Stream_IAllocator*,
+                  Stream_IAllocator*,    // message allocator
                   const unsigned long&); // (local) reporting interval [seconds: 0 --> OFF]
 
   // implement (part of) Stream_ITaskBase
@@ -68,8 +67,8 @@ class RPG_Net_Module_RuntimeStatistic
                                  bool&);            // return value: pass message downstream ?
 
   // implement this so we can print overall statistics after session completes...
-  virtual void handleSessionMessage(Stream_SessionMessageBase<RPG_Net_StreamConfigPOD>*&, // session message handle
-                                    bool&);                                               // return value: pass message downstream ?
+  virtual void handleSessionMessage(Stream_SessionMessageBase<RPG_Net_ConfigPOD>*&, // session message handle
+                                    bool&);                                         // return value: pass message downstream ?
 
   // implement RPG_Net_ICounter
   virtual void reset();
@@ -80,7 +79,7 @@ class RPG_Net_Module_RuntimeStatistic
   virtual void report();
 
  private:
-  typedef Stream_TaskBaseSynch<RPG_Net_StreamConfigPOD> inherited;
+  typedef Stream_TaskBaseSynch<RPG_Net_ConfigPOD> inherited;
 
   // these typedefs ensure that we use the minimal amount of locking necessary
   typedef ACE_Event_Handler_Handle_Timeout_Upcall<ACE_Null_Mutex> UPCALL_TYPE;

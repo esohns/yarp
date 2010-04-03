@@ -38,10 +38,11 @@
 
 // forward declaration(s)
 class Stream_IAllocator;
+class Stream_MessageBase;
 class RPG_Net_Message;
 
 class RPG_Net_Module_SocketHandler
- : public Stream_HeadModuleTaskBase<RPG_Net_StreamConfigPOD>,
+ : public Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD>,
    // implement this so we can use a generic (timed) event handler to trigger stat collection...
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
@@ -51,9 +52,6 @@ class RPG_Net_Module_SocketHandler
 
   // configuration / initialization
   const bool init(Stream_IAllocator*,        // message allocator
-                  const std::string&,        // network interface
-                  const unsigned long& = 0,  // size of socket receive buffer (bytes)
-                                             // 0 --> use default
                   const unsigned long& = 0); // statistics collecting interval (second(s))
                                              // 0 --> DON'T collect statistics
 
@@ -61,11 +59,9 @@ class RPG_Net_Module_SocketHandler
   // info
   const bool isInitialized() const;
 
-  // overload task method
-  virtual int svc(void);
-
-  // overload Stream_IControl
-  virtual void stop();
+  // implement (part of) Stream_ITaskBase
+  virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
+                                 bool&);               // return value: pass message downstream ?
 
   // implement RPG_Common_IStatistic
   // *NOTE*: we reuse the interface for our own purposes (to implement timer-based data collection)
@@ -73,7 +69,7 @@ class RPG_Net_Module_SocketHandler
   virtual void report();
 
  private:
-  typedef Stream_HeadModuleTaskBase<RPG_Net_StreamConfigPOD> inherited;
+  typedef Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_SocketHandler(const RPG_Net_Module_SocketHandler&));
@@ -93,20 +89,43 @@ class RPG_Net_Module_SocketHandler
   typedef RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic> STATISTICHANDLER_TYPE;
 
   // helper methods
-  const bool allocateMessage(const unsigned long&, // required size
-                             RPG_Net_Message*&);   // return value: network message
+  RPG_Net_Message* bisectMessages(); // return value: complete message (chain)
+  RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
   const bool putStatisticsMessage(const RPG_Net_RuntimeStatistic&, // statistics info
                                   const ACE_Time_Value&);          // statistics generation time
+  inline void cancelTimer()
+  {
+    if (myStatCollectHandlerID)
+    {
+      if (myTimerQueue.cancel(myStatCollectHandlerID) == -1)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to cancel timer (ID: %u): \"%s\", continuing\n"),
+                   myStatCollectHandlerID,
+                   ACE_OS::strerror(errno)));
+      } // end IF
+      else
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("deactivated statistics collection timer (ID: %u)...\n"),
+                   myStatCollectHandlerID));
+      } // end ELSE
+      myStatCollectHandlerID = 0;
+    } // end IF
+  }; // end IF
 
-  bool                       myIsInitialized;
+  bool                  myIsInitialized;
 
   // timer stuff
-  TIMERQUEUE_TYPE            myTimerQueue;
-  STATISTICHANDLER_TYPE      myStatCollectHandler;
-  int                        myStatCollectHandlerID;
+  TIMERQUEUE_TYPE       myTimerQueue;
+  STATISTICHANDLER_TYPE myStatCollectHandler;
+  int                   myStatCollectHandlerID;
 
-  // message allocator
-  Stream_IAllocator* myAllocator;
+  // protocol stuff
+  unsigned long         myCurrentMessageLength;
+  RPG_Net_Message*      myCurrentMessage;
+  RPG_Net_Message*      myCurrentBuffer;
+  Stream_IAllocator*    myAllocator;
 };
 
 // declare module

@@ -21,6 +21,8 @@
 #ifndef RPG_NET_COMMON_H
 #define RPG_NET_COMMON_H
 
+#include <stream_iallocator.h>
+
 #include <ace/Time_Value.h>
 
 #include <string>
@@ -30,14 +32,16 @@ struct RPG_Net_RuntimeStatistic
   unsigned long messagesPerSec;
 };
 
-struct RPG_Net_StreamConfigPOD
+struct RPG_Net_ConfigPOD
 {
+  // ************ connection config data ************
+  int socketBufferSize;
+  Stream_IAllocator* messageAllocator;
+  // ************ stream config data ************
+  unsigned long statisticsReportingInterval;
   // ************ runtime data ************
   RPG_Net_RuntimeStatistic currentStatistics;
-  ACE_Time_Value collectionTimestamp; // statistics collection timestamp
-  // ************ stream config data ************
-  std::string networkInterface;
-  unsigned long statisticsReportingInterval;
+  ACE_Time_Value lastCollectionTimestamp;
 };
 
 #endif
