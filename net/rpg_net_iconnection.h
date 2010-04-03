@@ -24,10 +24,10 @@
 #include <rpg_common_idumpstate.h>
 
 class RPG_Net_IConnection
- : public RPG_Common_IDumpState
+ : public RPG_Common_IDumpState // we may want to dump some information...
 {
  public:
-  // *IMPORTANT NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
+  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
   // -Wno-non-virtual-dtor in the project settings...
 
   // exposed interface

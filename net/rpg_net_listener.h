@@ -24,6 +24,7 @@
 #include "rpg_net_sockethandler.h"
 
 #include <rpg_common_icontrol.h>
+#include <rpg_common_idumpstate.h>
 
 #include <ace/Global_Macros.h>
 #include <ace/Acceptor.h>
@@ -36,7 +37,7 @@ class RPG_Net_Listener
                         ACE_SOCK_ACCEPTOR>,
     public RPG_Common_IControl
 {
-  // we use the singleton pattern, so we need to enable access to the ctor/dtors
+  // singleton needs access to the ctor/dtors
   friend class ACE_Singleton<RPG_Net_Listener,
                              ACE_Thread_Mutex>;
 
@@ -46,11 +47,13 @@ class RPG_Net_Listener
   const bool isInitialized() const;
 
   // implement RPG_Common_IControl
+  // *WARNING*: this API is NOT re-entrant !
   virtual void start();
   virtual void stop();
   virtual const bool isRunning();
 
-  virtual void dump();
+  // implement RPG_Common_IDumpState
+  virtual void dump_state() const;
 
  private:
   typedef ACE_Acceptor<RPG_Net_SocketHandler,

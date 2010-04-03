@@ -18,21 +18,23 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_SOCKETHANDLER_H
-#define RPG_NET_SOCKETHANDLER_H
+#ifndef RPG_NET_STREAMSOCKET_BASE_H
+#define RPG_NET_STREAMSOCKET_BASE_H
 
-#include "rpg_net_sockethandler_base.h"
+#include "rpg_net_sockethandler.h"
 
 #include <ace/Global_Macros.h>
-#include <ace/Atomic_Op.h>
-#include <ace/Time_Value.h>
 
-class RPG_Net_SocketHandler
- : public RPG_Net_SocketHandler_Base
+// forward declarations
+class ACE_Message_Block;
+
+template <typename StreamType>
+class RPG_Net_StreamSocketBase
+ : public RPG_Net_SocketHandler
 {
  public:
-  RPG_Net_SocketHandler();
-  virtual ~RPG_Net_SocketHandler(); // we'll self-destruct !
+  RPG_Net_StreamSocketBase();
+  virtual ~RPG_Net_StreamSocketBase(); // we'll self-destruct !
 
   virtual int open(void*); // args
 
@@ -40,11 +42,8 @@ class RPG_Net_SocketHandler
   // handle_input and handle_timeout are always invoked SEQUENTIALLY (and NEVER
   // "SIMULTANEOUSLY")
 
-  // *NOTE*: the default behavior simply ignores any received data...
+  // *NOTE*: enqueue any received data onto our stream for further processing
   virtual int handle_input(ACE_HANDLE); // handle
-
-  virtual int handle_timeout(const ACE_Time_Value&, // current time
-                             const void*);          // asynchronous completion token
 
   // *NOTE*: this is called when:
   // - handle_xxx() returns -1
@@ -52,33 +51,19 @@ class RPG_Net_SocketHandler
                            ACE_Reactor_Mask);
 
  private:
-  typedef RPG_Net_SocketHandler_Base inherited;
+  typedef RPG_Net_SocketHandler inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler(const RPG_Net_SocketHandler&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler& operator=(const RPG_Net_SocketHandler&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase(const RPG_Net_StreamSocketBase&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase& operator=(const RPG_Net_StreamSocketBase&));
 
-  // helper methods
-  inline void cancelTimer()
-  {
-    // *NOTE*: DONT'T invoke our send timer anymore ! Otherwise
-    // there's a racing condition (especially when using a multithreaded
-    // reactor !!!)
-    if (reactor()->cancel_timer(this,    // handler
-                                1) != 1) // don't call handle_close()
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%s\", continuing\n"),
-                 ACE_OS::strerror(errno)));
-    } // end IF
-    myTimerID = -1;
-  };
+  // processing stream
+  StreamType    myStream;
 
-  // atomic ID generator
-  static ACE_Atomic_Op<ACE_Thread_Mutex, unsigned long> myCurrentID;
-
-  // remember our timer ID
-  int myTimerID;
+  unsigned long      myCurrentMessageLength;
+  size_t             myReceivedMessageBytes;
+  ACE_Message_Block* myCurrentBuffer;
+  ACE_Message_Block* myCurrentMessage;
 };
 
 #endif

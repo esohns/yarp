@@ -41,7 +41,8 @@ RPG_Net_SocketHandler_Base::~RPG_Net_SocketHandler_Base()
 
 }
 
-int RPG_Net_SocketHandler_Base::open(void* arg_in)
+int
+RPG_Net_SocketHandler_Base::open(void* arg_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::open"));
 
@@ -55,7 +56,7 @@ int RPG_Net_SocketHandler_Base::open(void* arg_in)
     return -1;
   } // end IF
 
-  // *IMPORTANT NOTE*: we're registered with the reactor (READ_MASK) at this point...
+  // *NOTE*: we're registered with the reactor (READ_MASK) at this point...
 
   if (!RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->registerConnection(this))
   {
@@ -80,8 +81,9 @@ int RPG_Net_SocketHandler_Base::open(void* arg_in)
   return 0;
 }
 
-int RPG_Net_SocketHandler_Base::handle_close(ACE_HANDLE handle_in,
-                                             ACE_Reactor_Mask mask_in)
+int
+RPG_Net_SocketHandler_Base::handle_close(ACE_HANDLE handle_in,
+                                         ACE_Reactor_Mask mask_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::handle_close"));
 
@@ -94,18 +96,20 @@ int RPG_Net_SocketHandler_Base::handle_close(ACE_HANDLE handle_in,
     myIsRegistered = false;
   } // end IF
 
-  // *IMPORTANT NOTE*: this is called when:
+  // *NOTE*: this is called when:
   // - the client closes the socket --> child handle_xxx() returns -1
   // - we reject the connection (too many open)
+  // *NOTE*: this will destroy ourself in an ordered way...
   return inherited::handle_close(handle_in,
                                  mask_in);
 }
 
-void RPG_Net_SocketHandler_Base::abort()
+void
+RPG_Net_SocketHandler_Base::abort()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::abort"));
 
-  // call baseclass... --> will clean everything (including ourselves !) up
+  // call baseclass - will clean everything (including ourselves !) up
   // --> invokes handle_close
   int result = inherited::close(0);
   if (result == -1)
@@ -116,7 +120,8 @@ void RPG_Net_SocketHandler_Base::abort()
   } // end IF
 }
 
-void RPG_Net_SocketHandler_Base::dump_state() const
+void
+RPG_Net_SocketHandler_Base::dump_state() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::dump_state"));
 
@@ -125,7 +130,7 @@ void RPG_Net_SocketHandler_Base::dump_state() const
   if (peer().get_remote_addr(remoteAddress) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%s\" --> check implementation, returning\n"),
+               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%s\", returning\n"),
                ACE_OS::strerror(errno)));
 
     return;
@@ -138,11 +143,12 @@ void RPG_Net_SocketHandler_Base::dump_state() const
              peer().get_handle()));
 }
 
-const unsigned long RPG_Net_SocketHandler_Base::getID() const
+const unsigned long
+RPG_Net_SocketHandler_Base::getID() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::getID"));
 
-  // *IMPORTANT NOTE*: this isn't entirely portable...
+  // *NOTE*: this isn't entirely portable...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   return get_handle();
 #else

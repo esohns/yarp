@@ -455,8 +455,8 @@ do_work(const unsigned long& clientPingInterval_in,
     return;
   } // end IF
 
-  // *IMPORTANT NOTE*: from this point on, we need to potentially also clean up
-  //                   any remote connections !
+  // *NOTE*: from this point on, we need to potentially also clean up
+  //         any remote connections !
 
   // event loop:
   // - catch SIGINT/SIGQUIT/SIGTERM/... signals (and perform orderly shutdown)

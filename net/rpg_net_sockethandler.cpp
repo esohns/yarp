@@ -41,16 +41,7 @@ RPG_Net_SocketHandler::~RPG_Net_SocketHandler()
 
   // clean up timer if necessary
   if (myTimerID != -1)
-  {
-    if (reactor()->cancel_timer(this,    // handler
-                                1) != 1) // don't call handle_close()
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%s\", continuing\n"),
-                 ACE_OS::strerror(errno)));
-    } // end IF
-    myTimerID = -1;
-  } // end IF
+    cancelTimer();
 }
 
 int
@@ -74,14 +65,14 @@ RPG_Net_SocketHandler::open(void* arg_in)
     return -1;
   } // end IF
 
-  // *IMPORTANT NOTE*: we're registered with the reactor (TIMER_MASK) at this point...
+  // *NOTE*: we're registered with the reactor (TIMER_MASK) at this point...
 
   // register reading data with reactor...
-  // *IMPORTANT NOTE*: this is done by the base class !
+  // *NOTE*: this is done by the base class !
   int result = inherited::open(arg_in);
   if (result == -1)
   {
-    // *IMPORTANT NOTE*: this might have happened because there are too many
+    // *NOTE*: this might have happened because there are too many
     // open connections... ---> not an error !
     if (ACE_OS::last_error())
     {
@@ -93,7 +84,7 @@ RPG_Net_SocketHandler::open(void* arg_in)
     // clean up
     cancelTimer();
 
-    // --> reactor will invoke handle_close() --> close the socket
+    // reactor will invoke handle_close() --> close the socket
     return -1;
   } // end IF
 
@@ -105,54 +96,50 @@ RPG_Net_SocketHandler::handle_input(ACE_HANDLE handle_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::handle_input"));
 
-  // *IMPORTANT NOTE*: currently, we just ignore all incoming data...
+  // *NOTE*: currently, we just ignore all incoming data...
   ACE_UNUSED_ARG(handle_in);
 
-//   // *TODO*: clean this up !
-//   ACE_Message_Block* chunk = NULL;
-//   try
-//   {
-//     chunk = new ACE_Message_Block(1024,                               // size
-//                                   ACE_Message_Block::MB_STOP,         // type
-//                                   NULL,                               // continuation
-//                                   NULL,                               // data
-//                                   NULL,                               // buffer allocator
-//                                   NULL,                               // locking strategy
-//                                   ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
-//                                   ACE_Time_Value::zero,               // execution time
-//                                   ACE_Time_Value::max_time,           // deadline time
-//                                   NULL,                               // data allocator
-//                                   NULL);                              // message allocator
-//   }
-//   catch (...)
-//   {
-//     ACE_DEBUG((LM_CRITICAL,
-//                ACE_TEXT("caught exception in new, returning\n")));
-//
-//     // clean up
-//     cancelTimer();
-//
-//     // --> reactor will invoke handle_close() --> close the socket
-//     return -1;
-//   }
-//   if (!chunk)
-//   {
-//     ACE_DEBUG((LM_CRITICAL,
-//                ACE_TEXT("unable to allocate memory, returning\n")));
-//
-//     // clean up
-//     cancelTimer();
-//
-//     // --> reactor will invoke handle_close() --> close the socket
-//     return -1;
-//   } // end IF
+  ACE_Message_Block* chunk = NULL;
+  try
+  {
+    chunk = new ACE_Message_Block(1024,                               // size
+                                  ACE_Message_Block::MB_STOP,         // type
+                                  NULL,                               // continuation
+                                  NULL,                               // data
+                                  NULL,                               // buffer allocator
+                                  NULL,                               // locking strategy
+                                  ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
+                                  ACE_Time_Value::zero,               // execution time
+                                  ACE_Time_Value::max_time,           // deadline time
+                                  NULL,                               // data allocator
+                                  NULL);                              // message allocator
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in new, returning\n")));
 
-  // read data from the socket...
-//   size_t bytes_received = peer_.recv(chunk->wr_ptr(),
-//                                      chunk->size());
-  RPG_Net_Remote_Comm::RuntimePing data;
-  size_t bytes_received = peer_.recv(&data,
-                                     sizeof(RPG_Net_Remote_Comm::RuntimePing));
+    // clean up
+    cancelTimer();
+
+    // reactor will invoke handle_close() --> close the socket
+    return -1;
+  }
+  if (!chunk)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("unable to allocate memory, returning\n")));
+
+    // clean up
+    cancelTimer();
+
+    // reactor will invoke handle_close() --> close the socket
+    return -1;
+  } // end IF
+
+  // read some data from the socket...
+  size_t bytes_received = peer_.recv(chunk->wr_ptr(),
+                                     chunk->size());
   switch (bytes_received)
   {
     case -1:
@@ -163,9 +150,10 @@ RPG_Net_SocketHandler::handle_input(ACE_HANDLE handle_in)
 
       // clean up
       cancelTimer();
-//       delete chunk;
+      delete chunk;
+      chunk = NULL;
 
-      // --> reactor will invoke handle_close() --> close the socket
+      // reactor will invoke handle_close() --> close the socket
       return -1;
     }
     // *** GOOD CASES ***
@@ -176,27 +164,30 @@ RPG_Net_SocketHandler::handle_input(ACE_HANDLE handle_in)
 
       // clean up
       cancelTimer();
-//       delete chunk;
+      delete chunk;
+      chunk = NULL;
 
-      // --> reactor will invoke handle_close() --> close the socket
+      // reactor will invoke handle_close() --> close the socket
       return -1;
     }
     default:
     {
       // debug info
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("received: %u bytes [length: %u; type: \"%s\"; counter: %u]\n"),
-                 bytes_received,
-                 data.messageHeader.messageLength,
-                 RPG_Net_Common_Tools::messageType2String(data.messageHeader.messageType).c_str(),
-                 data.counter));
+                 ACE_TEXT("received: %u bytes...\n"),
+                 bytes_received));
 
       // clean up
-//       delete chunk;
+      delete chunk;
+      chunk = NULL;
 
       break;
     }
   } // end SWITCH
+
+  // clean up
+  delete chunk;
+  chunk = NULL;
 
   return 0;
 }
@@ -229,7 +220,7 @@ RPG_Net_SocketHandler::handle_timeout(const ACE_Time_Value& tv_in,
                                     sizeof(RPG_Net_Remote_Comm::RuntimePing), // length
                                     NULL,                                     // timeout --> block
                                     &bytes_sent);                             // number of sent bytes
-  // *IMPORTANT NOTE*: we'll ALSO get here when the client has closed the socket
+  // *NOTE*: we'll ALSO get here when the client has closed the socket
   // in a well-behaved way... --> don't treat this as an error !
   switch (bytes_sent)
   {
@@ -239,7 +230,7 @@ RPG_Net_SocketHandler::handle_timeout(const ACE_Time_Value& tv_in,
                  ACE_TEXT("failed to ACE_SOCK_Stream::send_n(): \"%s\", aborting\n"),
                  ACE_OS::strerror(errno)));
 
-      // --> reactor will invoke handle_close() --> close the socket
+      // reactor will invoke handle_close() --> close the socket
       return -1;
     }
     case 0:
@@ -258,7 +249,7 @@ RPG_Net_SocketHandler::handle_timeout(const ACE_Time_Value& tv_in,
                  bytes_sent,
                  sizeof(RPG_Net_Remote_Comm::RuntimePing)));
 
-      // --> reactor will invoke handle_close() --> close the socket
+      // reactor will invoke handle_close() --> close the socket
       return -1;
     }
   } // end SWITCH
@@ -273,14 +264,11 @@ RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::handle_close"));
 
   // clean up timer, if necessary (i.e. returned -1 from handle_timeout)
-  // *IMPORTANT NOTE*: this works only for single-threaded reactors (see above) !!!
+  // *NOTE*: this works only for single-threaded reactors (see above) !!!
   if (myTimerID != -1)
-  {
-    // clean up
     cancelTimer();
-  } // end IF
 
-  // *IMPORTANT NOTE*: base class will commit suicide properly --> clean us up
+  // *NOTE*: base class will commit suicide properly --> cleans us up
   return inherited::handle_close(handle_in,
                                  mask_in);
 }

@@ -21,7 +21,7 @@
 #ifndef RPG_NET_DEFINES_H
 #define RPG_NET_DEFINES_H
 
-// trace log
+// *** trace log ***
 // *PORTABILITY*: pathnames are not portable, so we (try to) use %TEMP% for Windows...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #define RPG_NET_DEF_LOG_DIRECTORY                 ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR("TEMP"))
@@ -37,6 +37,7 @@
 // - WARNING: current implementation cannot support 0 !!!
 #define RPG_NET_DEF_LOG_MAXNUMFILES               5
 
+// *** network-related ***
 // *PORTABILITY*: interface names are not portable, so we let the
 // user choose the interface from a list on Windows (see select_Interface())...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -53,8 +54,10 @@
 #define RPG_NET_DEF_PING_INTERVAL                 5
 #define RPG_NET_DEF_LISTENING_PORT                10101
 #define RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS      10
+// *WARNING*: this needs to be AT LEAST sizeof(RPG_Net_Remote_Comm::MessageHeader)
+#define RPG_NET_DEF_NETWORK_BUFFER_SIZE           1024 // 1 kB
 
-// stream-related
+// *** stream-related ***
 #define RPG_NET_DEF_GROUP_ID_TASK                 11
 // *IMPORTANT NOTE*: set to too small a value, any of these MAY seriously
 // affect performance !!!

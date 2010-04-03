@@ -22,40 +22,43 @@
 #define RPG_NET_SOCKETHANDLER_BASE_H
 
 #include "rpg_net_iconnection.h"
+// *NOTE*: RPG_Net_IConnection already implements RPG_Common_IDumpState...
+// #include <rpg_common_idumpstate.h>
 
 #include <ace/Svc_Handler.h>
 #include <ace/SOCK_Stream.h>
 
 class RPG_Net_SocketHandler_Base
- : public ACE_Svc_Handler<ACE_SOCK_STREAM,
-                          ACE_NULL_SYNCH>,
-   public RPG_Net_IConnection
+ : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH>,
+   public RPG_Net_IConnection//,
+//    public RPG_Common_IDumpState
 {
- private:
-  typedef ACE_Svc_Handler<ACE_SOCK_STREAM,
-                          ACE_NULL_SYNCH> inherited;
-
  public:
   virtual ~RPG_Net_SocketHandler_Base(); // we'll self-destruct !
 
-  // *IMPORTANT NOTE*: we overload this to automatically (de-)register ourselves
+  // *NOTE*: we overload this to automatically (de-)register ourselves
   // with the connection manager... this way, we can always keep a consistent
   // state of currently open connections
-  // *IMPORTANT NOTE*: if this returns -1, the caller will still need to
+  // *WARNING*: if this returns -1, the caller will still need to
   // clean "this" up !
   virtual int open(void*); // args
   virtual int handle_close(ACE_HANDLE,        // handle
                            ACE_Reactor_Mask); // mask
 
-  // implement RPG_Common_IConnection
+  // implement RPG_Net_IConnection
   virtual void abort();
   virtual const unsigned long getID() const;
+
+  // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
  protected:
+  // we're meant to be subclassed !
   RPG_Net_SocketHandler_Base();
 
  private:
+  typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> inherited;
+
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler_Base(const RPG_Net_SocketHandler_Base&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler_Base& operator=(const RPG_Net_SocketHandler_Base&));

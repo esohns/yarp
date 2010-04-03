@@ -23,8 +23,6 @@
 #include "rpg_net_defines.h"
 #include "rpg_net_iconnection.h"
 
-#include <ace/OS.h>
-
 RPG_Net_Connection_Manager::RPG_Net_Connection_Manager()
  : myMaxNumConnections(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS)
 {
@@ -38,51 +36,54 @@ RPG_Net_Connection_Manager::~RPG_Net_Connection_Manager()
 
   // clean up
   {
-    // *IMPORTANT NOTE*: we should NEVER get here; this is just a precaution !
-
     // synch access to myConnections
     ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
     if (!myConnections.empty())
     {
-      abortAllOpenConnections();
+      // *NOTE*: we should NEVER get here; this is just a precaution !
+      abortConnections();
     } // end IF
   } // end lock scope
 }
 
-void RPG_Net_Connection_Manager::init(const unsigned long& maxNumConnections_in)
+void
+RPG_Net_Connection_Manager::init(const unsigned long& maxNumConnections_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::init"));
 
   myMaxNumConnections = maxNumConnections_in;
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("set maximum #connections: \"%u\"\n"),
+             ACE_TEXT("set maximum # connections: %u\n"),
              myMaxNumConnections));
 }
 
-const bool RPG_Net_Connection_Manager::registerConnection(RPG_Net_IConnection* connection_in)
+const bool
+RPG_Net_Connection_Manager::registerConnection(RPG_Net_IConnection* connection_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::registerConnection"));
 
   // synch access to myConnections
-  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
-
-  if (myConnections.size() >= myMaxNumConnections)
   {
-    // max reached
+    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+
+    if (myConnections.size() >= myMaxNumConnections)
+    {
+      // max reached
+      ACE_DEBUG((LM_DEBUG,
+                ACE_TEXT("rejecting connection (maximum count of %u has been reached), aborting\n"),
+                myMaxNumConnections));
+
+      return false;
+    } // end IF
+
+    myConnections.push_back(connection_in);
+
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("rejecting connection (maximum count of %u has been reached), aborting\n"),
-               myMaxNumConnections));
-
-    return false;
-  } // end IF
-
-  myConnections.push_back(connection_in);
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("registered new client connection (current total: %u)\n"),
-             myConnections.size()));
+              ACE_TEXT("registered new client connection (current total: %u)\n"),
+              myConnections.size()));
+  } // end lock scope
 
   // debug information
   try
@@ -92,18 +93,14 @@ const bool RPG_Net_Connection_Manager::registerConnection(RPG_Net_IConnection* c
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Common_IConnection::dump_state(), aborting\n")));
-
-    // clean up
-    myConnections.pop_back();
-
-    return false;
+               ACE_TEXT("caught exception in RPG_Net_IConnection::dump_state(), continuing\n")));
   }
 
   return true;
 }
 
-void RPG_Net_Connection_Manager::deregisterConnection(const unsigned long& connectionID_in)
+void
+RPG_Net_Connection_Manager::deregisterConnection(const unsigned long& connectionID_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::deregisterConnection"));
 
@@ -124,7 +121,7 @@ void RPG_Net_Connection_Manager::deregisterConnection(const unsigned long& conne
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception (in RPG_Common_IConnection::getID() ?), continuing\n")));
+                 ACE_TEXT("caught exception in RPG_Net_IConnection::getID(), continuing\n")));
 
       continue;
     }
@@ -139,7 +136,10 @@ void RPG_Net_Connection_Manager::deregisterConnection(const unsigned long& conne
       catch (...)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in std::list::erase(), continuing\n")));
+                   ACE_TEXT("caught exception in std::list::erase(), aborting\n")));
+
+        // what else can we do ?
+        return;
       }
 
       // don't need to continue...
@@ -162,11 +162,10 @@ void RPG_Net_Connection_Manager::deregisterConnection(const unsigned long& conne
   } // end ELSE
 }
 
-void RPG_Net_Connection_Manager::abortAllOpenConnections()
+void
+RPG_Net_Connection_Manager::abortConnections()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::abortAllOpenConnections"));
-
-  unsigned long num_clients = 0;
+  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::abortConnections"));
 
   // synch access to myConnections
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
@@ -174,15 +173,15 @@ void RPG_Net_Connection_Manager::abortAllOpenConnections()
   // sanity check: anything to do ?
   if (myConnections.empty())
   {
-    //ACE_DEBUG((LM_TRACE,
-    //           "nothing to do, returning\n"));
+    //ACE_DEBUG((LM_DEBUG,
+    //           ACE_TEXT("nothing to do, returning\n")));
 
     return;
   } // end IF
 
-  num_clients = myConnections.size();
+  unsigned long num_clients = myConnections.size();
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("disconnecting %u client(s)...\n"),
+             ACE_TEXT("aborting %u client(s)...\n"),
              num_clients));
 
   CONNECTIONLIST_CONSTITERATOR_TYPE iter = myConnections.begin();
@@ -193,35 +192,41 @@ void RPG_Net_Connection_Manager::abortAllOpenConnections()
     // close connection
     try
     {
-      // Note: this should implicitly call deregisterConnection !
+      // *NOTE*: this should implicitly call deregisterConnection !
       (*iter)->abort();
     }
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception (in RPG_Common_IConnection::abort() ?), continuing")));
+                 ACE_TEXT("caught exception in RPG_Net_IConnection::abort(), continuing")));
     }
   } // end WHILE
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("disconnecting %u client(s)...DONE\n"),
+             ACE_TEXT("aborting %u client(s)...DONE\n"),
              num_clients));
 }
 
-const unsigned long RPG_Net_Connection_Manager::numOpenConnections() const
+const unsigned long
+RPG_Net_Connection_Manager::numConnections() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::numOpenConnections"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::numConnections"));
 
+  unsigned long num_connections = 0;
   // synch access to myConnections
-  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+  {
+    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
-  return ACE_static_cast(unsigned long,
-                         myConnections.size());
+    num_connections = myConnections.size();
+  } // end lock scope
+
+  return num_connections;
 }
 
-void RPG_Net_Connection_Manager::dump() const
+void
+RPG_Net_Connection_Manager::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::dump"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::dump_state"));
 
   // synch access to myConnections
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
