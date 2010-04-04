@@ -227,8 +227,7 @@ RPG_Net_Module_RuntimeStatistic::handleDataMessage(Stream_MessageBase*& message_
 
   // add message to statistic...
   RPG_Net_Message* message = NULL;
-  message = ACE_dynamic_cast(RPG_Net_Message*,
-                             message_inout);
+  message = ACE_dynamic_cast(RPG_Net_Message*, message_inout);
   if (!message)
   {
     ACE_DEBUG((LM_ERROR,
@@ -237,20 +236,20 @@ RPG_Net_Module_RuntimeStatistic::handleDataMessage(Stream_MessageBase*& message_
     return;
   } // end IF
   // *NOTE*: this only makes sense if message headers have actually been parsed upstream...
-  if (message->getToplevelProtocol() != RPG_Net_Protocol_Layer::INVALID_PROTOCOL)
-  {
-    MESSAGETYPECOUNTCONTAINER_ITERATOR_TYPE iter = myMessageTypeStatistics.end();
-    iter = myMessageTypeStatistics.find(message->getToplevelProtocol());
-    if (iter == myMessageTypeStatistics.end())
-    {
-      myMessageTypeStatistics[message->getToplevelProtocol()] = 1;
-    } // end IF
-    else
-    {
-      // increment corresponding message type counter
-      iter->second++;
-    } // end ELSE
-  } // end IF
+//   if (message->getToplevelProtocol() != RPG_Net_Protocol_Layer::INVALID_PROTOCOL)
+//   {
+//     MESSAGETYPECOUNTCONTAINER_ITERATOR_TYPE iter = myMessageTypeStatistics.end();
+//     iter = myMessageTypeStatistics.find(message->getToplevelProtocol());
+//     if (iter == myMessageTypeStatistics.end())
+//     {
+//       myMessageTypeStatistics[message->getToplevelProtocol()] = 1;
+//     } // end IF
+//     else
+//     {
+//       // increment corresponding message type counter
+//       iter->second++;
+//     } // end ELSE
+//   } // end IF
 
   if (myPrintHashMark && print_hash)
   {

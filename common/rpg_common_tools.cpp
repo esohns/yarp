@@ -267,14 +267,14 @@ RPG_Common_Tools::isLinux()
     return false;
   } // end IF
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("local system info: %s (%s), %s %s, %s\n"),
-             name.nodename,
-             name.machine,
-             name.sysname,
-             name.release,
-             name.version));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("local system info: %s (%s), %s %s, %s\n"),
+//              name.nodename,
+//              name.machine,
+//              name.sysname,
+//              name.release,
+//              name.version));
 
   std::string kernel(name.sysname);
   return (kernel.find(ACE_TEXT("Linux"), 0) == 0);

@@ -21,62 +21,42 @@
 #ifndef RPG_NET_MESSAGE_H
 #define RPG_NET_MESSAGE_H
 
-#include "rpg_net_protocol_layer.h"
+#include "rpg_net_sessionmessage.h"
 
 #include <stream_message_base.h>
 
 #include <ace/Global_Macros.h>
-#include <ace/Time_Value.h>
-#include <ace/Message_Block.h>
-
-#include <map>
 
 // forward declaration(s)
 class ACE_Allocator;
-class RPG_Net_MessageHeaderBase;
+class ACE_Message_Block;
+class ACE_Data_Block;
 
-// *IMPORTANT NOTE*: avoid circular dependency...
-class RPG_Net_Cached_NetworkMessage_Allocator;
-class RPG_Net_Dynamic_RPG_Net_Message_Allocator;
-class RPG_Net_Cached_FixedSize_Allocator;
+// *NOTE*: this avoids a circular dependency...
+class RPG_Net_StreamMessageAllocator;
+template <typename MessageType, typename SessionMessageType> class Stream_MessageAllocatorHeapBase;
 
 class RPG_Net_Message
  : public Stream_MessageBase
 {
-  // we need to enable access to a specific private ctor...
-  friend class RPG_Net_Cached_NetworkMessage_Allocator;
-  friend class RPG_Net_Dynamic_RPG_Net_Message_Allocator;
-  friend class RPG_Net_Cached_FixedSize_Allocator;
+  // enable access to specific private ctors...
+  friend class RPG_Net_StreamMessageAllocator;
+  friend class Stream_MessageAllocatorHeapBase<RPG_Net_Message, RPG_Net_SessionMessage>;
 
  public:
   RPG_Net_Message();
   virtual ~RPG_Net_Message();
 
   // used for pre-allocated messages...
-  void init(// Stream_MessageBase members
-            ACE_Data_Block*); // data block to use
-
-  // header/data info
-  // *IMPORTANT NOTE*: this adjusts the rd_ptr of the message to point at the beginning of the corresponding
-  // message "body" (which MAY be the next header in the protocol stack...)
-  void addHeader(const RPG_Net_MessageHeader_t&); // header type
-
-  const bool getHeaderOffset(const RPG_Net_MessageHeader_t&, // header type
-                             unsigned long&) const;          // return value: offset
-  const bool getTransportLayerTypeAndOffset(RPG_Net_MessageHeader_t&, // return value: transport layer type
-                                            unsigned long&) const;    // return value: transport layer offset
-  const bool hasProtocol(const RPG_Net_Protocol_t&) const; // protocol type
-  const RPG_Net_Protocol_t getToplevelProtocol() const; // return value: top-level (supported) protocol
-
-  // info
-  const bool hasTransportLayerHeader() const;
+  virtual void init(// Stream_MessageBase members
+                    ACE_Data_Block*); // data block to use
 
   // implement RPG_Net_IDumpState
   virtual void dump_state() const;
 
   // overloaded from ACE_Message_Block
   // --> create a "shallow" copy of ourselves that references the same packet
-  // *IMPORTANT NOTE*: this uses our allocator (if any) to create a new message: as a side effect, this MAY
+  // *NOTE*: this uses our allocator (if any) to create a new message: as a side effect, this MAY
   // therefore increment the running message counter --> we signal the allocator we do NOT WANT THIS !
   // *TODO*: clean this up !
   virtual ACE_Message_Block* duplicate(void) const;
@@ -89,31 +69,18 @@ class RPG_Net_Message
  private:
   typedef Stream_MessageBase inherited;
 
-  // list of headers
-  typedef std::map<RPG_Net_MessageHeader_t,
-                   unsigned long> HEADERCONTAINER_TYPE;
-  typedef std::pair<RPG_Net_MessageHeader_t,
-                    unsigned long> HEADERCONTAINERPAIR_TYPE;
-  typedef HEADERCONTAINER_TYPE::const_iterator HEADERCONTAINER_CONSTITERATOR_TYPE;
-  typedef HEADERCONTAINER_TYPE::iterator HEADERCONTAINER_ITERATOR_TYPE;
-
   // safety measures
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Message());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Message& operator=(const RPG_Net_Message&));
 
-  // *IMPORTANT NOTE*: this is used by allocators during init...
+  // *NOTE*: this is used by allocators during init...
   RPG_Net_Message(ACE_Data_Block*, // data block to use
                   ACE_Allocator*); // message allocator
   RPG_Net_Message(ACE_Allocator*,      // message allocator
                   const bool& = true); // increment running message counter ?
 
-  // helper methods
-  void adjustDataOffset(const RPG_Net_MessageHeader_t&); // header type
-
-  HEADERCONTAINER_TYPE myHeaders;
-
-  // *IMPORTANT NOTE*: pre-allocated messages may not have been initialized...
-  bool                 myIsInitialized;
+  // *NOTE*: pre-allocated messages may not have been initialized...
+  bool myIsInitialized;
 };
 
 #endif

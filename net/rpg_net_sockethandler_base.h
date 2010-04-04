@@ -46,6 +46,7 @@ class RPG_Net_SocketHandler_Base
                            ACE_Reactor_Mask); // mask
 
   // implement RPG_Net_IConnection
+  virtual void init(const RPG_Net_ConfigPOD&);
   virtual void abort();
   virtual const unsigned long getID() const;
 
@@ -56,6 +57,8 @@ class RPG_Net_SocketHandler_Base
   // we're meant to be subclassed !
   RPG_Net_SocketHandler_Base();
 
+  RPG_Net_ConfigPOD myUserData;
+
  private:
   typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> inherited;
 
@@ -63,7 +66,7 @@ class RPG_Net_SocketHandler_Base
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler_Base(const RPG_Net_SocketHandler_Base&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler_Base& operator=(const RPG_Net_SocketHandler_Base&));
 
-  bool myIsRegistered;
+  bool              myIsRegistered;
 };
 
 #endif

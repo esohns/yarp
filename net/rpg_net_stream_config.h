@@ -34,6 +34,7 @@ class RPG_Net_StreamConfig
   RPG_Net_StreamConfig(const RPG_Net_ConfigPOD&,                     // user data
                        const ACE_Time_Value& = ACE_Time_Value::zero, // "official" start of session
                        const bool& = false);                         // session ended because of user abort ?
+  virtual ~RPG_Net_StreamConfig();
 
   // override RPG_Common_IDumpState
   virtual void dump_state() const;
@@ -45,7 +46,6 @@ class RPG_Net_StreamConfig
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamConfig());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamConfig(const RPG_Net_StreamConfig&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamConfig& operator=(const RPG_Net_StreamConfig&));
-  virtual ~RPG_Net_StreamConfig();
 };
 
 #endif

@@ -21,15 +21,16 @@
 #include "rpg_net_listener.h"
 
 #include <ace/OS.h>
+#include <ace/INET_Addr.h>
 #include <ace/Reactor.h>
 
 RPG_Net_Listener::RPG_Net_Listener()
-  : inherited(ACE_Reactor::instance(), // use global (default) reactor
-              1),                      // always accept ALL pending connections
-    myIsInitialized(false),
-    myIsListening(false),
-    myIsOpen(false),
-    myListeningPort(0)
+ : inherited(ACE_Reactor::instance(), // use global (default) reactor
+             1),                      // always accept ALL pending connections
+   myIsInitialized(false),
+   myIsListening(false),
+   myIsOpen(false),
+   myListeningPort(0)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Listener::RPG_Net_Listener"));
 

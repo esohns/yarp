@@ -64,9 +64,9 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
                            remote_address/*,              // remote SAP
                            ACE_Synch_Options::defaults, // synch options
                            ACE_INET_Addr::sap_any,      // local SAP
-                           0,                           // flags (*TODO*: ACE_NONBLOCK ?)
-                           1,                           // accept all pending connections on notify
-                           1*/) == -1)                    // try to re-use address (so_reuseaddr)
+                           0,                           // try to re-use address (SO_REUSEADDR)
+                           O_RDWR,                      // flags
+                           0*/) == -1)                  // perms
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Connector::connect(%s:%u): \"%s\", continuing\n"),
@@ -75,34 +75,36 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
                ACE_OS::strerror(errno)));
 
     // rejected ? --> release a connection !
-    if (!myConnectionHandlers->empty())
+    if (!(myConnectionHandlers->empty()))
     {
-      if ((myConnectionHandlers->back())->close(0) == -1)
+      RPG_Net_Client_SocketHandler* handler = myConnectionHandlers->back();
+      // sanity check
+      ACE_ASSERT(handler);
+
+      if (handler->close(0) == -1)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_Svc_Handler::close(): \"%s\", continuing\n"),
                    ACE_OS::strerror(errno)));
       } // end IF
+
       myConnectionHandlers->pop_back();
 
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("...released connection instead (remaining: %u)...\n"),
+                 ACE_TEXT("...released connection instead (remaining: %u)\n"),
                  myConnectionHandlers->size()));
 
       return 0;
     } // end IF
   } // end IF
-  // sanity check !
-  if (!handler)
+  else
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid handler, aborting\n")));
+    // sanity check
+    ACE_ASSERT(handler);
 
-    return -1;
-  } // end IF
-
-  // step2: add to connections
-  myConnectionHandlers->push_front(handler);
+    // step2: add to connections
+    myConnectionHandlers->push_front(handler);
+  } // end ELSE
 
   return 0;
 }

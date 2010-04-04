@@ -21,6 +21,7 @@
 #ifndef RPG_NET_CONNECTION_MANAGER_H
 #define RPG_NET_CONNECTION_MANAGER_H
 
+#include "rpg_net_common.h"
 #include "rpg_net_sockethandler_base.h"
 
 #include <rpg_common_idumpstate.h>
@@ -45,7 +46,8 @@ class RPG_Net_Connection_Manager
 
  public:
   // configuration / initialization
-  void init(const unsigned long&); // maximum number of concurrent connections
+  void init(const unsigned long&,      // maximum number of concurrent connections
+            const RPG_Net_ConfigPOD&); // user data
 
   // *NOTE*: users of this method should be aware of potential race
   //         conditions with this method and (de-)registerConnection.
@@ -78,6 +80,11 @@ class RPG_Net_Connection_Manager
   mutable ACE_Recursive_Thread_Mutex myLock;
   unsigned long                      myMaxNumConnections;
   CONNECTIONLIST_TYPE                myConnections;
+
+  // handler data
+  RPG_Net_ConfigPOD                  myUserData;
+
+  bool                               myIsInitialized;
 };
 
 typedef ACE_Singleton<RPG_Net_Connection_Manager,

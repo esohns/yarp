@@ -18,26 +18,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_ICONNECTION_H
-#define RPG_NET_ICONNECTION_H
+#ifndef RPG_NET_SESSIONMESSAGE_H
+#define RPG_NET_SESSIONMESSAGE_H
 
-#include "rpg_net_common.h"
+#include "rpg_net_stream_config.h"
 
-#include <rpg_common_idumpstate.h>
+#include <stream_session_message_base.h>
 
-class RPG_Net_IConnection
- : public RPG_Common_IDumpState // we may want to dump some information...
+#include <ace/Global_Macros.h>
+
+// forward declarations
+class ACE_Message_Block;
+
+class RPG_Net_SessionMessage
+ : public Stream_SessionMessageBase<RPG_Net_StreamConfig>
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  // *NOTE*: assume lifetime responsibility for the second argument !
+  RPG_Net_SessionMessage(const Stream_SessionMessageType&,                  // message type
+                         Stream_SessionConfigBase<RPG_Net_StreamConfig>*&); // config handle
+  virtual ~RPG_Net_SessionMessage();
 
-  // exposed interface
-  virtual void init(const RPG_Net_ConfigPOD&) = 0;
-  // *TODO*: this clashes with Event_Handler::close()...
-  //virtual void close(void) = 0;
-  virtual void abort() = 0;
-  virtual const unsigned long getID() const = 0;
+  // overriden from ACE_Message_Block
+  // *WARNING*: children need to override this too !
+  virtual ACE_Message_Block* duplicate(void) const;
+
+ private:
+  typedef Stream_SessionMessageBase<RPG_Net_StreamConfig> inherited;
+
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SessionMessage());
+  // copy ctor to be used by duplicate()
+  RPG_Net_SessionMessage(const RPG_Net_SessionMessage&);
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SessionMessage& operator=(const RPG_Net_SessionMessage&));
 };
 
 #endif

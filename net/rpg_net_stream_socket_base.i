@@ -98,24 +98,21 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
              remoteAddress.get_port_number()));
 
   // step0: retrieve config, init ourselves
-  RPG_Net_ConfigPOD* config = ACE_static_cast(RPG_Net_ConfigPOD*,
-                                              arg_in);
-
-  myAllocator = config->messageAllocator;
+  myAllocator = myUserData.messageAllocator;
   // sanity check
   ACE_ASSERT(myAllocator);
 
   // step1: tweak socket
-  if (config->socketBufferSize)
+  if (myUserData.socketBufferSize)
   {
     if (!RPG_Net_Common_Tools::setSocketBuffer(get_handle(),
                                                SO_RCVBUF,
-                                               config->socketBufferSize))
+                                               myUserData.socketBufferSize))
     {
       ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to setSocketBuffer(%u) for %u, aborting\n"),
-                config->socketBufferSize,
-                get_handle()));
+                 ACE_TEXT("failed to setSocketBuffer(%u) for %u, aborting\n"),
+                 myUserData.socketBufferSize,
+                 get_handle()));
 
       // reactor will invoke handle_close() --> we commit suicide
       return -1;
@@ -123,7 +120,7 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
   } // end IF
 
   // step2: init/start data processing stream
-  myStream.init(*config);
+  myStream.init(myUserData);
   myStream.start();
 
   // start client ping timer and register us at the reactor

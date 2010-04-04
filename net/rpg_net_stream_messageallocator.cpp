@@ -18,26 +18,19 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_ICONNECTION_H
-#define RPG_NET_ICONNECTION_H
+#include "rpg_net_stream_messageallocator.h"
 
-#include "rpg_net_common.h"
-
-#include <rpg_common_idumpstate.h>
-
-class RPG_Net_IConnection
- : public RPG_Common_IDumpState // we may want to dump some information...
+RPG_Net_StreamMessageAllocator::RPG_Net_StreamMessageAllocator(const unsigned long& maxNumMessages_in,
+                                                               Stream_AllocatorHeap* allocator_in)
+ : inherited(maxNumMessages_in,
+             allocator_in)
 {
- public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  ACE_TRACE(ACE_TEXT("RPG_Net_StreamMessageAllocator::RPG_Net_StreamMessageAllocator"));
 
-  // exposed interface
-  virtual void init(const RPG_Net_ConfigPOD&) = 0;
-  // *TODO*: this clashes with Event_Handler::close()...
-  //virtual void close(void) = 0;
-  virtual void abort() = 0;
-  virtual const unsigned long getID() const = 0;
-};
+}
 
-#endif
+RPG_Net_StreamMessageAllocator::~RPG_Net_StreamMessageAllocator()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_StreamMessageAllocator::~RPG_Net_StreamMessageAllocator"));
+
+}

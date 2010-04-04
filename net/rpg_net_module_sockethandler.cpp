@@ -364,6 +364,12 @@ RPG_Net_Module_SocketHandler::bisectMessages()
     myCurrentBuffer = myCurrentMessage;
   } // end IF
 
+  // debug info
+  if (myCurrentMessage->length() == myCurrentMessageLength)
+  {
+
+  } // end IF
+
   return result;
 }
 
@@ -435,78 +441,4 @@ RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatisti
   // worry about config any longer !
   return inherited::putSessionMessage(Stream_SessionMessage::SESSION_STATISTICS,
                                       config);
-//   return inherited::putSessionMessage(Stream_SessionMessage::SESSION_STATISTICS,
-//                                       data,
-//                                       ACE_Time_Value::zero, // N/A
-//                                       false);
 }
-/*
-void
-RPG_Net_Module_SocketHandler::recordPacket(u_char* args_in,
-                                           const pcap_pkthdr* header_in,
-                                           const u_char* body_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::recordPacket"));
-
-  static RPG_Net_Message* message;
-  static RPG_Net_Module_SocketHandler* this_ptr = ACE_reinterpret_cast(RPG_Net_Module_SocketHandler*,
-                                                                       args_in);
-
-  // we need to do this:
-  // 1. allocate a message buffer
-  // 2. copy the data into the buffer
-  // 3. perform message initialization
-  // 4. send the message buffer downstream
-
-  // step1
-  message = NULL;
-  if (!this_ptr->allocateMessage(header_in->caplen,
-                                 message))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Net_Module_SocketHandler::allocateMessage(%u), aborting\n"),
-               header_in->caplen));
-
-    return;
-  } // end IF
-
-  // sanity check: message has enough space to hold our data ?
-  ACE_ASSERT(message->capacity() >= header_in->caplen);
-
-  // *NOTE*: from this point on, we need to make sure we recycle message !
-
-  // step2
-  if (message->copy(ACE_reinterpret_cast(const char*,
-                                         body_in),
-                    header_in->caplen) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("message (ID: %u): failed to ACE_Message_Block::copy(): \"%s\", aborting\n"),
-               message->getID(),
-               ACE_OS::strerror(errno)));
-
-    // clean up
-    message->release();
-
-    return;
-  } // end IF
-
-  // step3
-  message->init(//ACE_Time_Value::zero, // this is irrelevant !
-                *header_in);
-
-  // step4
-  if (this_ptr->put_next(message) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Task::put_next(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
-
-    // clean up
-    message->release();
-
-    return;
-  } // end IF
-
-  // OK: all finished !
-}*/

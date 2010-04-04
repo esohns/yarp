@@ -49,15 +49,18 @@ print_usage(const std::string& programName_in)
 {
   ACE_TRACE(ACE_TEXT("::print_usage"));
 
+  // enable verbatim boolean output
+  std::cout.setf(ios::boolalpha);
+
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-h [STRING]: server hostname (default: \"") << NET_CLIENT_DEF_SERVER_HOSTNAME << "\")" << std::endl;
-  std::cout << ACE_TEXT("-i [VALUE] : connection interval ([") << NET_CLIENT_DEF_SERVER_QUERY_INTERVAL << ACE_TEXT("]) seconds") << std::endl;
-  std::cout << ACE_TEXT("-l         : log to a file") << std::endl;
-  std::cout << ACE_TEXT("-s [VALUE] : server port ([") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("])") << std::endl;
-  std::cout << ACE_TEXT("-t         : trace information") << std::endl;
-  std::cout << ACE_TEXT("-v         : print version information and exit") << std::endl;
-  std::cout << ACE_TEXT("-x         : stress-test server") << std::endl;
+  std::cout << ACE_TEXT("-h [STRING]: server hostname [\"") << NET_CLIENT_DEF_SERVER_HOSTNAME << "\"]" << std::endl;
+  std::cout << ACE_TEXT("-i [VALUE] : connection interval ([") << NET_CLIENT_DEF_SERVER_QUERY_INTERVAL << ACE_TEXT("] seconds)") << std::endl;
+  std::cout << ACE_TEXT("-l         : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-s [VALUE] : server port [") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-t         : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-v         : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x         : stress-test server") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 const bool
@@ -192,6 +195,7 @@ do_work(const std::string& serverHostname_in,
   RPG_Net_Client_Connector connector(ACE_Reactor::instance(), // reactor
                                      0);                      // flags (*TODO*: ACE_NONBLOCK ?);
   std::list<RPG_Net_Client_SocketHandler*> connectionHandlers;
+  connectionHandlers.clear();
   long timerID = -1;
   Net_Client_TimeoutHandler timeoutHandler(serverHostname_in,
                                            serverPortNumber_in,
@@ -224,9 +228,9 @@ do_work(const std::string& serverHostname_in,
                           remote_address/*,              // remote SAP
                           ACE_Synch_Options::defaults, // synch options
                           ACE_INET_Addr::sap_any,      // local SAP
-                          0,                           // flags (*TODO*: ACE_NONBLOCK ?)
-                          1,                           // accept all pending connections on notify
-                          1*/) == -1)                    // try to re-use address (so_reuseaddr)
+                          0,                           // try to re-use address (SO_REUSEADDR)
+                          O_RDWR,                      // flags
+                          0*/) == -1)                  // perms
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Connector::connect(%s:%u): \"%s\", aborting\n"),
@@ -236,14 +240,8 @@ do_work(const std::string& serverHostname_in,
 
       return;
     } // end IF
-    // sanity check !
-    if (!handler)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid handler, aborting\n")));
-
-      return;
-    } // end IF
+    // sanity check
+    ACE_ASSERT(handler);
 
     // step2: add to connections
     connectionHandlers.push_front(handler);

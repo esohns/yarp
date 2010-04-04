@@ -18,26 +18,34 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_ICONNECTION_H
-#define RPG_NET_ICONNECTION_H
+#ifndef RPG_NET_STREAM_MESSAGEALLOCATOR_H
+#define RPG_NET_STREAM_MESSAGEALLOCATOR_H
 
-#include "rpg_net_common.h"
+#include "rpg_net_message.h"
+#include "rpg_net_sessionmessage.h"
 
-#include <rpg_common_idumpstate.h>
+#include <stream_messageallocatorheap_base.h>
+#include <stream_datablockallocatorheap.h>
 
-class RPG_Net_IConnection
- : public RPG_Common_IDumpState // we may want to dump some information...
+// forward declarations
+class Stream_AllocatorHeap;
+
+class RPG_Net_StreamMessageAllocator
+ : public Stream_MessageAllocatorHeapBase<RPG_Net_Message,
+                                          RPG_Net_SessionMessage>
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  RPG_Net_StreamMessageAllocator(const unsigned long&,   // total number of concurrent messages
+                                 Stream_AllocatorHeap*); // (heap) memory allocator...
+  virtual ~RPG_Net_StreamMessageAllocator();
 
-  // exposed interface
-  virtual void init(const RPG_Net_ConfigPOD&) = 0;
-  // *TODO*: this clashes with Event_Handler::close()...
-  //virtual void close(void) = 0;
-  virtual void abort() = 0;
-  virtual const unsigned long getID() const = 0;
+ private:
+  typedef Stream_MessageAllocatorHeapBase<RPG_Net_Message,
+                                          RPG_Net_SessionMessage> inherited;
+
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamMessageAllocator(const RPG_Net_StreamMessageAllocator&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamMessageAllocator& operator=(const RPG_Net_StreamMessageAllocator&));
 };
 
 #endif

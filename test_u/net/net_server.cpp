@@ -28,12 +28,11 @@
 #include <rpg_net_connection_manager.h>
 #include <rpg_net_signalhandler.h>
 #include <rpg_net_common_tools.h>
-// #include <rpg_net_stream.h>
+#include "rpg_net_stream_messageallocator.h"
 
 #include <rpg_common_tools.h>
 
 #include <stream_allocatorheap.h>
-#include <stream_messageallocatorheap.h>
 
 #include <ace/OS.h>
 #include <ace/Version.h>
@@ -423,25 +422,21 @@ do_work(const unsigned long& clientPingInterval_in,
     return;
   } // end IF
 
-  // step1: init configuration object
+  // step1a: init configuration object
   Stream_AllocatorHeap heapAllocator;
-  Stream_MessageAllocatorHeap messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
-                                               &heapAllocator);
+  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
+                                                  &heapAllocator);
   RPG_Net_ConfigPOD config;
   ACE_OS::memset(&config,
                  0,
                  sizeof(RPG_Net_ConfigPOD));
   config.socketBufferSize = RPG_NET_DEF_PCAP_SOCK_RECVBUF_SIZE;
-  config.messageAllocator = &heapAllocator;
+  config.messageAllocator = &messageAllocator;
   config.statisticsReportingInterval = statisticsReportingInterval_in;
-//   RPG_Net_Stream stream;
-//   if (!stream.init(config))
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to init processing stream, aborting\n")));
-//
-//     return;
-//   } // end IF
+
+  // step1a: init connection manager
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS,
+                                                        config); // will be passed to all handlers
 
   // step2: init/start listening
   RPG_NET_LISTENER_SINGLETON::instance()->init(listeningPortNumber_in);

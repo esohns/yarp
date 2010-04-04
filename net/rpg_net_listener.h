@@ -74,10 +74,10 @@ class RPG_Net_Listener
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Listener& operator=(const RPG_Net_Listener&));
   virtual ~RPG_Net_Listener();
 
-  bool           myIsInitialized;
-  bool           myIsListening;
-  bool           myIsOpen;
-  unsigned short myListeningPort;
+  bool              myIsInitialized;
+  bool              myIsListening;
+  bool              myIsOpen;
+  unsigned short    myListeningPort;
 };
 
 typedef ACE_Singleton<RPG_Net_Listener,

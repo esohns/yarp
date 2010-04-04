@@ -28,11 +28,22 @@
 RPG_Net_SocketHandler_Base::RPG_Net_SocketHandler_Base()
  : inherited(NULL,                     // no specific thread manager
              NULL,                     // no specific message queue
-             ACE_Reactor::instance()), // default reactor
-   myIsRegistered(false)
+             ACE_Reactor::instance())//, // default reactor
+//    myUserData(),
+//    myIsRegistered(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::RPG_Net_SocketHandler_Base"));
 
+  // init user data
+  ACE_OS::memset(&myUserData,
+                 0,
+                 sizeof(RPG_Net_ConfigPOD));
+
+  // (try to) register with the connection manager...
+  // *NOTE*: this SHOULD init() myUserData
+  // *WARNING*: as we register BEFORE the connection has fully opened, there
+  // may be a small window for races (i.e. problems during shutdown)...
+  myIsRegistered = RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->registerConnection(this);
 }
 
 RPG_Net_SocketHandler_Base::~RPG_Net_SocketHandler_Base()
@@ -46,6 +57,16 @@ RPG_Net_SocketHandler_Base::open(void* arg_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::open"));
 
+  if (!myIsRegistered)
+  {
+    // too many connections...
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to register connection (ID: %u), aborting\n"),
+               getID()));
+
+    return -1;
+  } // end IF
+
   // call baseclass...
   if (inherited::open(arg_in) == -1)
   {
@@ -58,25 +79,22 @@ RPG_Net_SocketHandler_Base::open(void* arg_in)
 
   // *NOTE*: we're registered with the reactor (READ_MASK) at this point...
 
-  if (!RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->registerConnection(this))
-  {
-    // too many connections...
-
-    // clean up
-    if (reactor()->remove_handler(this,
-                                  (ACE_Event_Handler::READ_MASK |
-                                   ACE_Event_Handler::DONT_CALL)) == -1)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::remove_handler(): \"%s\", aborting\n"),
-                 ACE_OS::strerror(errno)));
-    } // end IF
-
-    return -1;
-  } // end IF
-
-  // all is well...
-  myIsRegistered = true;
+//   if (!myIsRegistered)
+//   {
+//     // too many connections...
+//
+//     clean up
+//     if (reactor()->remove_handler(this,
+//                                   (ACE_Event_Handler::READ_MASK |
+//                                    ACE_Event_Handler::DONT_CALL)) == -1)
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to ACE_Reactor::remove_handler(): \"%s\", aborting\n"),
+//                  ACE_OS::strerror(errno)));
+//     } // end IF
+//
+//     return -1;
+//   } // end IF
 
   return 0;
 }
@@ -105,6 +123,14 @@ RPG_Net_SocketHandler_Base::handle_close(ACE_HANDLE handle_in,
 }
 
 void
+RPG_Net_SocketHandler_Base::init(const RPG_Net_ConfigPOD& userData_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::init"));
+
+  myUserData = userData_in;
+}
+
+void
 RPG_Net_SocketHandler_Base::abort()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::abort"));
@@ -118,6 +144,21 @@ RPG_Net_SocketHandler_Base::abort()
                ACE_TEXT("failed to ACE_Svc_Handler::close(): \"%s\", returning\n"),
                ACE_OS::strerror(errno)));
   } // end IF
+}
+
+const unsigned long
+RPG_Net_SocketHandler_Base::getID() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::getID"));
+
+  // *NOTE*: this isn't entirely portable...
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  return get_handle();
+#else
+  // *TODO*: clean this up !
+  return ACE_reinterpret_cast(unsigned long,
+                              get_handle());
+#endif
 }
 
 void
@@ -137,23 +178,8 @@ RPG_Net_SocketHandler_Base::dump_state() const
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("client connection (host: \"%s\", port: %u) --> ID: %d\n"),
+             ACE_TEXT("connection (remote host: \"%s\", port: %u) --> ID: %d\n"),
              remoteAddress.get_host_name(),
              remoteAddress.get_port_number(),
              peer().get_handle()));
-}
-
-const unsigned long
-RPG_Net_SocketHandler_Base::getID() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::getID"));
-
-  // *NOTE*: this isn't entirely portable...
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  return get_handle();
-#else
-  // *TODO*: clean this up !
-  return ACE_reinterpret_cast(unsigned long,
-                              get_handle());
-#endif
 }

@@ -96,8 +96,13 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
 
   ACE_UNUSED_ARG(handle_in);
 
-  // step1: read data
+  // step0: init buffer
   RPG_Net_Remote_Comm::RuntimePing data;
+  ACE_OS::memset(&data,
+                 0,
+                 sizeof(RPG_Net_Remote_Comm::RuntimePing));
+
+  // step1: read data
   size_t bytes_received = 0;
   // *TODO*: do blocking IO until further notice...
   if (peer().recv_n(ACE_static_cast(void*, &data),            // buffer
@@ -115,7 +120,7 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
 
   switch (bytes_received)
   {
-    // *IMPORTANT NOTE*: peer MAY only close this socket for system shutdown/application restart !!!
+    // *NOTE*: peer MAY only close this socket for system shutdown/application restart !!!
     case 0:
     {
       // *** peer has closed the socket ***
@@ -163,15 +168,20 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
     case RPG_Net_Remote_Comm::RPG_NET_PING:
     {
       // reply with a "PONG"
+      RPG_Net_Remote_Comm::RuntimePong reply;
+      ACE_OS::memset(&reply,
+                     0,
+                     sizeof(RPG_Net_Remote_Comm::RuntimePong));
+      data.messageHeader.messageLength = sizeof(RPG_Net_Remote_Comm::RuntimePong) - sizeof(unsigned long);
       data.messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PONG;
 
         // step2: send it over the net...
       size_t bytes_sent = peer().send_n(ACE_static_cast(const void*,
-                                        &data),                   // buffer
-                                        sizeof(RPG_Net_Remote_Comm::RuntimePing), // length
+                                        &reply),                                  // buffer
+                                        sizeof(RPG_Net_Remote_Comm::RuntimePong), // length
                                         NULL,                                     // timeout --> block
                                         &bytes_sent);                             // number of sent bytes
-      // *IMPORTANT NOTE*: we'll ALSO get here when the client has closed the socket
+      // *NOTE*: we'll ALSO get here when the client has closed the socket
       // in a well-behaved way... --> don't treat this as an error !
       switch (bytes_sent)
       {
@@ -187,7 +197,7 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
         case 0:
         default:
         {
-          if (bytes_sent == sizeof(RPG_Net_Remote_Comm::RuntimePing))
+          if (bytes_sent == sizeof(RPG_Net_Remote_Comm::RuntimePong))
           {
             // *** GOOD CASE ***
             break;
@@ -198,7 +208,7 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("only managed to send %u/%u bytes, aborting\n"),
                      bytes_sent,
-                     sizeof(RPG_Net_Remote_Comm::RuntimePing)));
+                     sizeof(RPG_Net_Remote_Comm::RuntimePong)));
 
           // --> reactor will invoke handle_close() --> close the socket
           return -1;
@@ -227,7 +237,7 @@ RPG_Net_Client_SocketHandler::handle_close(ACE_HANDLE handle_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::handle_close"));
 
-  // *IMPORTANT NOTE*: this is called when:
+  // *NOTE*: this is called when:
   // - the server closes the socket
   // - we close() ourselves
   return inherited::handle_close(handle_in,

@@ -23,11 +23,19 @@
 #include "rpg_net_defines.h"
 #include "rpg_net_iconnection.h"
 
+#include <ace/OS.h>
+
 RPG_Net_Connection_Manager::RPG_Net_Connection_Manager()
- : myMaxNumConnections(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS)
+ : myMaxNumConnections(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS),
+   //myUserData(),
+   myIsInitialized(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::RPG_Net_Connection_Manager"));
 
+  // init user data
+  ACE_OS::memset(&myUserData,
+                 0,
+                 sizeof(RPG_Net_ConfigPOD));
 }
 
 RPG_Net_Connection_Manager::~RPG_Net_Connection_Manager()
@@ -48,7 +56,8 @@ RPG_Net_Connection_Manager::~RPG_Net_Connection_Manager()
 }
 
 void
-RPG_Net_Connection_Manager::init(const unsigned long& maxNumConnections_in)
+RPG_Net_Connection_Manager::init(const unsigned long& maxNumConnections_in,
+                                 const RPG_Net_ConfigPOD& userData_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::init"));
 
@@ -57,12 +66,19 @@ RPG_Net_Connection_Manager::init(const unsigned long& maxNumConnections_in)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("set maximum # connections: %u\n"),
              myMaxNumConnections));
+
+  myUserData = userData_in;
+
+  myIsInitialized = true;
 }
 
 const bool
 RPG_Net_Connection_Manager::registerConnection(RPG_Net_IConnection* connection_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::registerConnection"));
+
+  // sanity check
+  ACE_ASSERT(myIsInitialized);
 
   // synch access to myConnections
   {
@@ -85,16 +101,28 @@ RPG_Net_Connection_Manager::registerConnection(RPG_Net_IConnection* connection_i
               myConnections.size()));
   } // end lock scope
 
-  // debug information
+  // init connection
   try
   {
-    connection_in->dump_state();
+    connection_in->init(myUserData);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Net_IConnection::dump_state(), continuing\n")));
+               ACE_TEXT("caught exception in RPG_Net_IConnection::init(), continuing\n")));
   }
+
+  // *WARNING*: can't get valid connection info at this stage...
+//   // debug information
+//   try
+//   {
+//     connection_in->dump_state();
+//   }
+//   catch (...)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("caught exception in RPG_Net_IConnection::dump_state(), continuing\n")));
+//   }
 
   return true;
 }

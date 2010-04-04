@@ -197,6 +197,9 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   } // end IF
 
   // enqueue the module...
+  // *NOTE*: push()ing the module will open() it
+  // --> set the argument that is passed along
+  mySocketHandler.arg(&ACE_const_cast(RPG_Net_ConfigPOD&, config_in));
   if (push(&mySocketHandler))
   {
     ACE_DEBUG((LM_ERROR,
