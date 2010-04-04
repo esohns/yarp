@@ -27,6 +27,7 @@
 #include <ace/Reactor.h>
 
 #include <string>
+#include <iostream>
 
 RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler()
  : inherited(NULL, // no specific thread manager
@@ -155,13 +156,14 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
     }
   } // end SWITCH
 
-  // step2: print data
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("received: %u bytes [length: %u; type: \"%s\"; counter: %u]\n"),
-             bytes_received,
-             data.messageHeader.messageLength,
-             RPG_Net_Common_Tools::messageType2String(data.messageHeader.messageType).c_str(),
-             data.counter));
+//   // step2: print data
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("[%u]: received %u bytes [length: %u; type: \"%s\"; counter: %u]\n"),
+//              handle_in,
+//              bytes_received,
+//              data.messageHeader.messageLength,
+//              RPG_Net_Common_Tools::messageType2String(data.messageHeader.messageType).c_str(),
+//              data.counter));
 
   switch (data.messageHeader.messageType)
   {
@@ -172,8 +174,8 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
       ACE_OS::memset(&reply,
                      0,
                      sizeof(RPG_Net_Remote_Comm::RuntimePong));
-      data.messageHeader.messageLength = sizeof(RPG_Net_Remote_Comm::RuntimePong) - sizeof(unsigned long);
-      data.messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PONG;
+      reply.messageHeader.messageLength = sizeof(RPG_Net_Remote_Comm::RuntimePong) - sizeof(unsigned long);
+      reply.messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PONG;
 
         // step2: send it over the net...
       size_t bytes_sent = peer().send_n(ACE_static_cast(const void*,
@@ -200,6 +202,10 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
           if (bytes_sent == sizeof(RPG_Net_Remote_Comm::RuntimePong))
           {
             // *** GOOD CASE ***
+
+            // debug info
+            std::cout << '.';
+
             break;
           } // end IF
 
@@ -236,6 +242,11 @@ RPG_Net_Client_SocketHandler::handle_close(ACE_HANDLE handle_in,
                                            ACE_Reactor_Mask mask_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::handle_close"));
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("lost connection (handle: %d) to server...\n"),
+             handle_in));
 
   // *NOTE*: this is called when:
   // - the server closes the socket

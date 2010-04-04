@@ -69,8 +69,7 @@
 // *NOTE*: don't set this too small as this MIGHT affect network performance
 // seconds
 #define RPG_NET_DEF_STATISTICS_COLLECT_INTERVAL   15
-// seconds (5*60 seconds --> 5 minutes)
-#define RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL 300
-
+// seconds, 0 --> OFF
+#define RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL 0
 
 #endif

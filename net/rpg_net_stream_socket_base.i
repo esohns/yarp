@@ -48,6 +48,18 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
 
   // sanity check
   ACE_ASSERT(arg_in);
+  // *NOTE*: we should have registered/initialized by now...
+  // --> make sure this was successful before we proceed
+  if (!inherited::isRegistered())
+  {
+    // too many connections...
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to register connection (ID: %u), aborting\n"),
+//                getID()));
+
+    // reactor will invoke handle_close() --> we commit suicide
+    return -1;
+  } // end IF
 
   // *NOTE*: need to do this BEFORE opening any socket because
   // ::getnameinfo apparently cannot handle AF_PACKET sockets (don't ask !)...
@@ -120,8 +132,24 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
   } // end IF
 
   // step2: init/start data processing stream
-  myStream.init(myUserData);
+  myUserData.connectionID = getID();
+  if (!myStream.init(myUserData))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to init processing stream, aborting\n")));
+
+    // reactor will invoke handle_close() --> we commit suicide
+    return -1;
+  } // end IF
   myStream.start();
+  if (!myStream.isRunning())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to start processing stream, aborting\n")));
+
+    // reactor will invoke handle_close() --> we commit suicide
+    return -1;
+  } // end IF
 
   // start client ping timer and register us at the reactor
   // *NOTE*: this is done by the base class !
@@ -158,19 +186,19 @@ RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
 
   size_t bytes_received = 0;
 
+  // sanity check
+  ACE_ASSERT(myCurrentBuffer == NULL);
+
+  // read some data from the socket
+  myCurrentBuffer = allocateMessage(RPG_NET_DEF_NETWORK_BUFFER_SIZE);
   if (myCurrentBuffer == NULL)
   {
-    // don't know anything --> start reading a new message from the socket
-    myCurrentBuffer = allocateMessage(RPG_NET_DEF_NETWORK_BUFFER_SIZE);
-    if (myCurrentBuffer == NULL)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to allocateMessage(%u), aborting\n"),
-                 RPG_NET_DEF_NETWORK_BUFFER_SIZE));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to allocateMessage(%u), aborting\n"),
+               RPG_NET_DEF_NETWORK_BUFFER_SIZE));
 
-      // reactor will invoke handle_close() --> we commit suicide
-      return -1;
-    } // end IF
+    // reactor will invoke handle_close() --> we commit suicide
+    return -1;
   } // end IF
 
   // read some data from the socket...
@@ -195,7 +223,8 @@ RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
     case 0:
     {
       ACE_DEBUG((LM_DEBUG,
-                  ACE_TEXT("socket was closed by the peer...\n")));
+                 ACE_TEXT("[%u]: socket was closed by the peer...\n"),
+                 handle_in));
 
       // clean up
       myCurrentBuffer->release();
@@ -206,13 +235,28 @@ RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
     }
     default:
     {
+      // debug info
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("[%u]: received %u bytes...\n"),
+//                  handle_in,
+//                  bytes_received));
+
       // adjust write pointer
       myCurrentBuffer->wr_ptr(bytes_received);
 
-      // debug info
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("received %u bytes...\n"),
-                 bytes_received));
+//       // check if we received the full header yet...
+//       if (myCurrentBuffer->length() >= sizeof(RPG_Net_Remote_Comm::MessageHeader))
+//       {
+//         RPG_Net_Remote_Comm::MessageHeader* message_header = ACE_reinterpret_cast(RPG_Net_Remote_Comm::MessageHeader*,
+//                                                                                   myCurrentBuffer->rd_ptr());
+//
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("[%u]: received %u bytes [length: %u; type: \"%s\"]\n"),
+//                    handle_in,
+//                    myCurrentBuffer->length(),
+//                    message_header->messageLength,
+//                    RPG_Net_Common_Tools::messageType2String(message_header->messageType).c_str()));
+//       } // end IF
 
       break;
     }
@@ -233,17 +277,8 @@ RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
     return -1;
   } // end IF
 
-  // ... and allocate a new buffer
-  myCurrentBuffer = allocateMessage(RPG_NET_DEF_NETWORK_BUFFER_SIZE);
-  if (!myCurrentBuffer)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocateMessage(%u), aborting\n"),
-               RPG_NET_DEF_NETWORK_BUFFER_SIZE));
-
-    // reactor will invoke handle_close() --> we commit suicide
-    return -1;
-  } // end IF
+  // ... bye bye
+  myCurrentBuffer = NULL;
 
   return 0;
 }
@@ -256,8 +291,11 @@ RPG_Net_StreamSocketBase<StreamType>::handle_close(ACE_HANDLE handle_in,
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::handle_close"));
 
   // clean up
-  myStream.stop();
-  myStream.waitForCompletion();
+  if (myStream.isRunning())
+  {
+    myStream.stop();
+    myStream.waitForCompletion();
+  } // end IF
 
   // *NOTE*: base class will commit suicide properly --> cleans us up
   return inherited::handle_close(handle_in,

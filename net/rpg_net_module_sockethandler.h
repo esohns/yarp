@@ -52,6 +52,7 @@ class RPG_Net_Module_SocketHandler
 
   // configuration / initialization
   const bool init(Stream_IAllocator*,        // message allocator
+                  const unsigned long&,      // connection ID
                   const unsigned long& = 0); // statistics collecting interval (second(s))
                                              // 0 --> DON'T collect statistics
 
@@ -89,7 +90,7 @@ class RPG_Net_Module_SocketHandler
   typedef RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic> STATISTICHANDLER_TYPE;
 
   // helper methods
-  RPG_Net_Message* bisectMessages(); // return value: complete message (chain)
+  const bool bisectMessages(RPG_Net_Message*&); // return value: complete message (chain)
   RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
   const bool putStatisticsMessage(const RPG_Net_RuntimeStatistic&, // statistics info
                                   const ACE_Time_Value&);          // statistics generation time
@@ -104,17 +105,19 @@ class RPG_Net_Module_SocketHandler
                    myStatCollectHandlerID,
                    ACE_OS::strerror(errno)));
       } // end IF
-      else
-      {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("deactivated statistics collection timer (ID: %u)...\n"),
-                   myStatCollectHandlerID));
-      } // end ELSE
+//       else
+//       {
+//         // debug info
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("deactivated statistics collection timer (ID: %u)...\n"),
+//                    myStatCollectHandlerID));
+//       } // end ELSE
       myStatCollectHandlerID = 0;
     } // end IF
   }; // end IF
 
   bool                  myIsInitialized;
+  unsigned long         myConnectionID;
 
   // timer stuff
   TIMERQUEUE_TYPE       myTimerQueue;

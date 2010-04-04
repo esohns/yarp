@@ -47,6 +47,7 @@ class RPG_Net_SocketHandler_Base
 
   // implement RPG_Net_IConnection
   virtual void init(const RPG_Net_ConfigPOD&);
+  virtual const bool isRegistered() const;
   virtual void abort();
   virtual const unsigned long getID() const;
 

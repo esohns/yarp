@@ -49,6 +49,20 @@ RPG_Net_SocketHandler::open(void* arg_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::open"));
 
+  // sanity check
+  // *NOTE*: we should have registered/initialized by now...
+  // --> make sure this was successful before we proceed
+  if (!inherited::isRegistered())
+  {
+    // too many connections...
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to register connection (ID: %u), aborting\n"),
+//                getID()));
+
+    // --> reactor will invoke handle_close() --> close the socket
+    return -1;
+  } // end IF
+
   // create client ping timer... and register it with the reactor !
   ACE_Time_Value interval(RPG_NET_DEF_PING_INTERVAL, 0);
   myTimerID = reactor()->schedule_timer(this,
@@ -72,8 +86,8 @@ RPG_Net_SocketHandler::open(void* arg_in)
   int result = inherited::open(arg_in);
   if (result == -1)
   {
-    // *NOTE*: this might have happened because there are too many
-    // open connections... ---> not an error !
+    // *NOTE*: this MAY have happened because there are too many
+    // open connections... ---> not an error ?
     if (ACE_OS::last_error())
     {
       ACE_DEBUG((LM_ERROR,
@@ -201,9 +215,10 @@ RPG_Net_SocketHandler::handle_timeout(const ACE_Time_Value& tv_in,
   ACE_UNUSED_ARG(tv_in);
   ACE_UNUSED_ARG(arg_in);
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("timer (ID: %d) expired...sending ping\n"),
-             myTimerID));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("timer (ID: %d) expired...sending ping\n"),
+//              myTimerID));
 
   // step1: init ping data
   // *TODO*: clean this up and handle endianness consistently !

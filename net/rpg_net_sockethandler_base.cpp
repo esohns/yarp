@@ -57,12 +57,13 @@ RPG_Net_SocketHandler_Base::open(void* arg_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::open"));
 
+  // sanity check
   if (!myIsRegistered)
   {
     // too many connections...
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to register connection (ID: %u), aborting\n"),
-               getID()));
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to register connection (ID: %u), aborting\n"),
+//                getID()));
 
     return -1;
   } // end IF
@@ -128,6 +129,14 @@ RPG_Net_SocketHandler_Base::init(const RPG_Net_ConfigPOD& userData_in)
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::init"));
 
   myUserData = userData_in;
+}
+
+const bool
+RPG_Net_SocketHandler_Base::isRegistered() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::isRegistered"));
+
+  return myIsRegistered;
 }
 
 void

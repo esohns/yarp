@@ -39,6 +39,7 @@ struct RPG_Net_ConfigPOD
   Stream_IAllocator* messageAllocator;
   // ************ stream config data ************
   unsigned long statisticsReportingInterval;
+  unsigned long connectionID;
   // ************ runtime data ************
   RPG_Net_RuntimeStatistic currentStatistics;
   ACE_Time_Value lastCollectionTimestamp;

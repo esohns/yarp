@@ -31,6 +31,7 @@
 RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
  : inherited(false), // DON'T auto-start !
    myIsInitialized(false),
+   myConnectionID(0),
    myStatCollectHandler(this,
                         STATISTICHANDLER_TYPE::ACTION_COLLECT),
    myStatCollectHandlerID(0),
@@ -41,8 +42,8 @@ RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler"));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("activating timer dispatch queue...\n")));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("activating timer dispatch queue...\n")));
 
   // ok: activate timer queue
   if (myTimerQueue.activate() == -1)
@@ -54,8 +55,8 @@ RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
     return;
   } // end IF
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("activating timer dispatch queue...DONE\n")));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("activating timer dispatch queue...DONE\n")));
 }
 
 RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
@@ -65,15 +66,15 @@ RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
   // clean up
   cancelTimer();
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("deactivating timer dispatch queue...\n")));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("deactivating timer dispatch queue...\n")));
 
   myTimerQueue.deactivate();
   // make sure the dispatcher thread is really dead...
   myTimerQueue.wait();
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("deactivating timer dispatch queue...DONE\n")));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("deactivating timer dispatch queue...DONE\n")));
 
   // clean up any unprocessed (chained) buffer(s)
   if (myCurrentMessage)
@@ -82,6 +83,7 @@ RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
 
 const bool
 RPG_Net_Module_SocketHandler::init(Stream_IAllocator* allocator_in,
+                                   const unsigned long& connectionID_in,
                                    const unsigned long& statisticsCollectionInterval_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::init"));
@@ -90,7 +92,7 @@ RPG_Net_Module_SocketHandler::init(Stream_IAllocator* allocator_in,
   ACE_ASSERT(allocator_in);
   if (myIsInitialized)
   {
-    ACE_DEBUG((LM_DEBUG,
+    ACE_DEBUG((LM_WARNING,
                ACE_TEXT("re-initializing...\n")));
 
     // clean up
@@ -120,14 +122,15 @@ RPG_Net_Module_SocketHandler::init(Stream_IAllocator* allocator_in,
       return false;
     } // end IF
 
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("scheduled statistics collecting timer (ID: %d) for intervals of %u second(s)...\n"),
-               myStatCollectHandlerID,
-               statisticsCollectionInterval_in));
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("scheduled statistics collecting timer (ID: %d) for intervals of %u second(s)...\n"),
+//                myStatCollectHandlerID,
+//                statisticsCollectionInterval_in));
   } // end IF
 
   // *NOTE*: need to clean up timer beyond this point !
 
+  myConnectionID = connectionID_in;
   myAllocator = allocator_in;
 
   // OK: all's well...
@@ -162,22 +165,25 @@ RPG_Net_Module_SocketHandler::handleDataMessage(Stream_MessageBase*& message_ino
   ACE_ASSERT(myCurrentBuffer);
 
   RPG_Net_Message* complete_message = NULL;
-  while (complete_message = bisectMessages())
+  while (bisectMessages(complete_message))
   {
-    // push the whole message downstream...
-    if (put_next(complete_message) == -1)
+    // full message available ?
+    if (complete_message)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Task::put_next(): \"%s\", continuing\n"),
-                 ACE_OS::strerror(errno)));
+      // --> push it downstream...
+      if (put_next(complete_message) == -1)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_Task::put_next(): \"%s\", continuing\n"),
+                   ACE_OS::strerror(errno)));
 
-      // clean up
-      complete_message->release();
+        // clean up
+        complete_message->release();
+      } // end IF
+
+      // reset state
       complete_message = NULL;
     } // end IF
-
-    // reset state
-    myCurrentMessageLength = 0;
   } // end WHILE
 }
 
@@ -226,10 +232,13 @@ RPG_Net_Module_SocketHandler::report()
   ACE_ASSERT(false);
 }
 
-RPG_Net_Message*
-RPG_Net_Module_SocketHandler::bisectMessages()
+const bool
+RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::bisectMessages"));
+
+  // init result
+  message_out = NULL;
 
   if (myCurrentMessageLength == 0)
   {
@@ -238,12 +247,11 @@ RPG_Net_Module_SocketHandler::bisectMessages()
     // perhaps we already have part of the header ?
     if (myCurrentMessage == NULL)
     {
-      // we really don't know anything --> remember this buffer as our head...
+      // we really don't know anything
+      // --> use the current buffer as our head...
       myCurrentMessage = myCurrentBuffer;
     } // end IF
 
-//     // ... and adjust the running message counter
-//     myProcessedMessageBytes += message_inout->length();
     // OK, perhaps we can start interpreting the message header...
 
     // check if we received the full header yet...
@@ -252,12 +260,12 @@ RPG_Net_Module_SocketHandler::bisectMessages()
       // we don't, so keep what we have (default behavior) ...
 
       // ... and wait for some more data
-      return NULL;
+      return false;
     } // end IF
 
     // OK, we can start interpreting this message...
 
-    // sanity check: do we have enough contiguous data ?
+    // sanity check: do we have enough CONTIGUOUS data ?
     while (myCurrentMessage->length() < sizeof(RPG_Net_Remote_Comm::MessageHeader))
     {
       // *sigh*: copy some data from the chain to allow interpretation
@@ -275,12 +283,13 @@ RPG_Net_Module_SocketHandler::bisectMessages()
                    ACE_OS::strerror(errno)));
 
         // clean up
+        myCurrentMessageLength = 0;
         myCurrentMessage->release();
         myCurrentMessage = NULL;
         myCurrentBuffer = NULL;
 
         // what else can we do ?
-        return NULL;
+        return false;
       } // end IF
 
       // adjust the continuation accordingly...
@@ -293,12 +302,13 @@ RPG_Net_Module_SocketHandler::bisectMessages()
     myCurrentMessageLength = message_header->messageLength + sizeof(unsigned long);
   } // end IF
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("received %u bytes [current: %u, total: %u]...\n"),
-             myCurrentBuffer->length(),
-             myCurrentMessage->total_length(),
-             myCurrentMessageLength));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("[%u]: received %u bytes [current: %u, total: %u]...\n"),
+//              myConnectionID,
+//              myCurrentBuffer->length(),
+//              myCurrentMessage->total_length(),
+//              myCurrentMessageLength));
 
   // check if we received the whole message yet...
   if (myCurrentMessage->total_length() < myCurrentMessageLength)
@@ -306,11 +316,11 @@ RPG_Net_Module_SocketHandler::bisectMessages()
     // we don't, so keep what we have (default behavior) ...
 
     // ... and wait for some more data
-    return NULL;
+    return false;
   } // end IF
 
   // OK, we have all of it !
-  RPG_Net_Message* result = myCurrentMessage;
+  message_out = myCurrentMessage;
 
   // check if we have received (part of) the next message
   if (myCurrentMessage->total_length() > myCurrentMessageLength)
@@ -342,8 +352,8 @@ RPG_Net_Module_SocketHandler::bisectMessages()
                  ACE_TEXT("failed to allocateMessage(%u), aborting\n"),
                  RPG_NET_DEF_NETWORK_BUFFER_SIZE));
 
-      // what else can we do ?
-      return result;
+      // *TODO*: what else can we do ?
+      return true;
     } // end IF
     if (new_head->copy(myCurrentBuffer->wr_ptr(),
                        overlap))
@@ -355,8 +365,8 @@ RPG_Net_Module_SocketHandler::bisectMessages()
       // clean up
       new_head->release();
 
-      // what else can we do ?
-      return result;
+      // *TODO*: what else can we do ?
+      return true;
     } // end IF
 
     // set new message head/current buffer
@@ -364,13 +374,10 @@ RPG_Net_Module_SocketHandler::bisectMessages()
     myCurrentBuffer = myCurrentMessage;
   } // end IF
 
-  // debug info
-  if (myCurrentMessage->length() == myCurrentMessageLength)
-  {
+  // don't know anything about the next message...
+  myCurrentMessageLength = 0;
 
-  } // end IF
-
-  return result;
+  return true;
 }
 
 RPG_Net_Message*

@@ -1277,13 +1277,13 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
       return false;
   } // end IF
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("set \"%s\" option of socket (ID: %d) to: %d\n"),
-             ((buffer_in == SO_RCVBUF) ? ACE_TEXT("SO_RCVBUF")
-                                       : ACE_TEXT("SO_SNDBUF")),
-             handle_in,
-             size));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("set \"%s\" option of socket (ID: %d) to: %d\n"),
+//              ((buffer_in == SO_RCVBUF) ? ACE_TEXT("SO_RCVBUF")
+//                                        : ACE_TEXT("SO_SNDBUF")),
+//              handle_in,
+//              size));
 
   return true;
 }

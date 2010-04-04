@@ -54,8 +54,8 @@ RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic"));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("activating timer dispatch queue...\n")));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("activating timer dispatch queue...\n")));
 
   // ok: activate timer queue
   if (myTimerQueue.activate() == -1)
@@ -67,8 +67,8 @@ RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic()
     return;
   } // end IF
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("activating timer dispatch queue...DONE\n")));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("activating timer dispatch queue...DONE\n")));
 
   // schedule the second-granularity timer
   ACE_Time_Value second_interval(1, 0); // one second interval
@@ -87,9 +87,9 @@ RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic()
   } // end IF
   myResetTimeoutHandlerID = id;
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("scheduled second-interval timer (ID: %d)...\n"),
-             myResetTimeoutHandlerID));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("scheduled second-interval timer (ID: %d)...\n"),
+//              myResetTimeoutHandlerID));
 }
 
 RPG_Net_Module_RuntimeStatistic::~RPG_Net_Module_RuntimeStatistic()
@@ -103,8 +103,8 @@ RPG_Net_Module_RuntimeStatistic::~RPG_Net_Module_RuntimeStatistic()
   // make sure the dispatcher thread is really dead...
   myTimerQueue.wait();
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("deactivated timers and dispatcher...\n")));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("deactivated timers and dispatcher...\n")));
 }
 
 const bool
@@ -166,17 +166,17 @@ RPG_Net_Module_RuntimeStatistic::init(const bool& printHashMark_in,
     } // end IF
     myLocalReportingHandlerID = id;
 
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("scheduled (local) reporting timer (ID: %d) for intervals of %u second(s)...\n"),
-               myLocalReportingHandlerID,
-               myLocalReportingInterval));
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("scheduled (local) reporting timer (ID: %d) for intervals of %u second(s)...\n"),
+//                myLocalReportingHandlerID,
+//                myLocalReportingInterval));
   } // end IF
   else
   {
     // *NOTE*: even if we don't report them ourselves, we might still be triggered from
     // outside...
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("(local) statistics reporting has been disabled...\n")));
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("(local) statistics reporting has been disabled...\n")));
   } // end IF
 
   myAllocator = allocator_in;
@@ -297,12 +297,13 @@ RPG_Net_Module_RuntimeStatistic::handleSessionMessage(Stream_SessionMessageBase<
       // need to finish handling their queued work...
       // We only put this here because it is a nice place for this kind
       // of functionality
-      // --> take this with a pinch of salt !
+      // --> take this information with a grain of salt !
       myProfile.stop();
+
 
       // session finished ? --> print overall statistics
       // *TODO*: ...and don't forget to re-init internal counters ?
-      final_report();
+//       final_report();
 
       break;
     }
@@ -417,7 +418,7 @@ RPG_Net_Module_RuntimeStatistic::final_report() const
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::final_report"));
 
   {
-    // *IMPORTANT NOTE*: synchronize access to statistics data
+    // *NOTE*: synchronize access to statistics data
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
     // write some output

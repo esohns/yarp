@@ -60,7 +60,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-l         : log to a file") << std::endl;
   std::cout << ACE_TEXT("-n [STRING]: network interface [\"") << RPG_NET_DEF_CNF_NETWORK_INTERFACE << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-p [VALUE] : listening port ([") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("])") << std::endl;
-  std::cout << ACE_TEXT("-s [VALUE] : statistics reporting interval ([") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] seconds)") << std::endl;
+  std::cout << ACE_TEXT("-s [VALUE] : statistics reporting interval ([") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] seconds {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-t         : trace information") << std::endl;
   std::cout << ACE_TEXT("-v         : print version information and exit") << std::endl;
 } // end print_usage
@@ -296,7 +296,7 @@ init_signals(std::vector<int>& signals_in)
   // *PORTABILITY*: on Windows SIGHUP and SIGQUIT are not defined,
   // so we handle SIGBREAK (21) and SIGABRT (22) instead...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  // *IMPORTANT NOTE*: don't handle SIGHUP !!!! --> program will hang !
+  // *NOTE*: don't handle SIGHUP !!!! --> program will hang !
   //signals_in.push_back(SIGHUP);
 #endif
   signals_in.push_back(SIGINT);
@@ -308,7 +308,7 @@ init_signals(std::vector<int>& signals_in)
   signals_in.push_back(SIGABRT);
 //   signals_in.push_back(SIGBUS);
 //   signals_in.push_back(SIGFPE);
-// //   signals_in.push_back(SIGKILL);
+//   signals_in.push_back(SIGKILL); // cannot catch this one...
 //   signals_in.push_back(SIGUSR1);
 //   signals_in.push_back(SIGSEGV);
 //   signals_in.push_back(SIGUSR2);
@@ -318,11 +318,10 @@ init_signals(std::vector<int>& signals_in)
 //   signals_in.push_back(SIGSTKFLT);
 //   signals_in.push_back(SIGCHLD);
 //   signals_in.push_back(SIGCONT);
-// //   signals_in.push_back(SIGSTOP);
+//   signals_in.push_back(SIGSTOP); // cannot catch this one...
 //   signals_in.push_back(SIGTSTP);
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
 //   signals_in.push_back(SIGTTIN);
-#else
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
   signals_in.push_back(SIGBREAK);
 #endif
 //   signals_in.push_back(SIGTTOU);
@@ -404,11 +403,11 @@ do_work(const unsigned long& clientPingInterval_in,
   ACE_TRACE(ACE_TEXT("::do_work"));
 
   // - start listening for connections on a TCP port
-  // *IMPORTANT NOTE*: need to cancel this for a well-behaved shutdown !
+  // *NOTE*: need to cancel this for a well-behaved shutdown !
 
   // step0: signal handling
   // event handler for signals
-  RPG_Net_SignalHandler signalEventHandler(NULL);
+  RPG_Net_SignalHandler signalEventHandler(RPG_NET_LISTENER_SINGLETON::instance());
   ACE_Sig_Handlers      signalHandlers;
   std::vector<int>      signals;
   init_signals(signals);
@@ -458,7 +457,7 @@ do_work(const unsigned long& clientPingInterval_in,
   // - signal connection attempts to acceptor
   // - signal timer expiration to perform maintenance/local statistics reporting
 
-//   // *IMPORTANT NOTE*: make sure we generally restart system calls (after e.g. EINTR) for the reactor...
+//   // *WARNING*: DON'T restart system calls (after e.g. EINTR) for the reactor
 //   ACE_Reactor::instance()->restart(1);
   if (ACE_Reactor::instance()->run_reactor_event_loop() == -1)
   {
@@ -473,6 +472,13 @@ do_work(const unsigned long& clientPingInterval_in,
 
     return;
   } // end IF
+
+  // clean up
+  // *NOTE*: listener should have been stopped by now
+  // --> clean up active connections
+//   RPG_NET_LISTENER_SINGLETON::instance()->stop();
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));

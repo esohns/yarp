@@ -26,7 +26,8 @@
 #include <ace/OS.h>
 
 RPG_Net_Connection_Manager::RPG_Net_Connection_Manager()
- : myMaxNumConnections(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS),
+ : myCondition(myLock),
+   myMaxNumConnections(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS),
    //myUserData(),
    myIsInitialized(false)
 {
@@ -87,9 +88,9 @@ RPG_Net_Connection_Manager::registerConnection(RPG_Net_IConnection* connection_i
     if (myConnections.size() >= myMaxNumConnections)
     {
       // max reached
-      ACE_DEBUG((LM_DEBUG,
-                ACE_TEXT("rejecting connection (maximum count of %u has been reached), aborting\n"),
-                myMaxNumConnections));
+//       ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("rejecting connection (maximum count of %u has been reached), aborting\n"),
+//                 myMaxNumConnections));
 
       return false;
     } // end IF
@@ -188,6 +189,10 @@ RPG_Net_Connection_Manager::deregisterConnection(const unsigned long& connection
                connectionID_in,
                myConnections.size()));
   } // end ELSE
+
+  // if no more connections, signal any waiters...
+  if (myConnections.empty())
+    myCondition.broadcast();
 }
 
 void
@@ -233,6 +238,29 @@ RPG_Net_Connection_Manager::abortConnections()
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("aborting %u client(s)...DONE\n"),
              num_clients));
+}
+
+void
+RPG_Net_Connection_Manager::waitConnections() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::waitConnections"));
+
+  {
+    // need lock
+    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+
+    while (!myConnections.empty())
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("waiting (count: %d)...\n"),
+                 myConnections.size()));
+
+      myCondition.wait();
+    } // end WHILE
+  } // end lock scope
+
+//  ACE_DEBUG((LM_DEBUG,
+//             ACE_TEXT("leaving...\n")));
 }
 
 const unsigned long

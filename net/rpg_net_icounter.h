@@ -24,7 +24,7 @@
 class RPG_Net_ICounter
 {
  public:
-  // *IMPORTANT NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
+  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
   // -Wno-non-virtual-dtor in the project settings...
 
   // exposed interface

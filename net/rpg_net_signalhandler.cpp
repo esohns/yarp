@@ -104,7 +104,7 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
     }
     default:
     {
-      // *IMPORTANT NOTE*: this means that the set of signals we registered for
+      // *NOTE*: this means that the set of signals we registered for
       // does not correspond to this implementation --> check main.cpp !
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("received unknown signal: \"%S\", continuing\n"),
@@ -118,9 +118,9 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
   if (stop_reactor)
   {
     // stop everything, i.e.
-    // - leave reactor event loop handling signals, socket listeners, maintenance timers...
-    // - break out of (blocking) capture loop (this is done )
-    // --> application terminates in a well-behaved manner
+    // - leave reactor event loop handling signals, sockets (listeners), maintenance timers...
+    // - break out of any (blocking) calls
+    // --> (try to) terminate in a well-behaved manner
 
     // step1: stop reactor
     if (reactor()->end_event_loop() == -1)
@@ -200,7 +200,7 @@ RPG_Net_SignalHandler::retrieveSignalInfo(const int& signal_in,
   information << info_in.si_errno;
   information << ACE_TEXT("[\"");
   information << ACE_OS::strerror(info_in.si_errno);
-  information << ACE_TEXT("\"], \"");
+  information << ACE_TEXT("\"], code: ");
 
   // step1: retrieve signal code...
   switch (info_in.si_code)
@@ -249,17 +249,17 @@ RPG_Net_SignalHandler::retrieveSignalInfo(const int& signal_in,
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid/unknown signal code: %d, continuing\n"),
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("invalid/unknown signal (code: %d), continuing\n"),
                  info_in.si_code));
 
-      information << ACE_TEXT("SI_XXX: ");
+      information << ACE_TEXT("SI_XXX[");
       information << info_in.si_code;
+      information << ACE_TEXT("]");
 
       break;
     }
   } // end SWITCH
-  information << ACE_TEXT("\"");
 
   // step2: retrieve more (signal-dependant) information
   switch (signal_in)
@@ -286,8 +286,8 @@ RPG_Net_SignalHandler::retrieveSignalInfo(const int& signal_in,
         }
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT(", invalid/unknown signal code: %d, continuing\n"),
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("invalid/unknown signal code: %d, continuing\n"),
                      info_in.si_code));
 
           break;
@@ -319,7 +319,7 @@ RPG_Net_SignalHandler::retrieveSignalInfo(const int& signal_in,
     {
       // *TODO*: add more ...
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT(", no additional information for signal: \"%S\"\n"),
+                 ACE_TEXT("no additional information for signal: \"%S\"...\n"),
                  signal_in));
 
       break;

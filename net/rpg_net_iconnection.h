@@ -34,6 +34,7 @@ class RPG_Net_IConnection
 
   // exposed interface
   virtual void init(const RPG_Net_ConfigPOD&) = 0;
+  virtual const bool isRegistered() const = 0;
   // *TODO*: this clashes with Event_Handler::close()...
   //virtual void close(void) = 0;
   virtual void abort() = 0;
