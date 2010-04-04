@@ -61,4 +61,8 @@ class RPG_Net_Remote_Comm
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm& operator=(const RPG_Net_Remote_Comm&));
 };
 
+// convenient typedefs
+typedef RPG_Net_Remote_Comm::MessageType RPG_Net_MessageType;
+typedef RPG_Net_Remote_Comm::MessageHeader RPG_Net_MessageHeader;
+
 #endif

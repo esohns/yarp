@@ -20,17 +20,7 @@
 
 #include "rpg_net_module_headerparser.h"
 
-// #include "rps_flb_common_packet_headers.h"
-// #include "rps_flb_common_network_tools.h"
-// #include "rps_flb_common_protocol_layer.h"
-// #include "rps_flb_common_ethernetframeheader.h"
 #include "rpg_net_common_tools.h"
-
-#include <ace/OS.h>
-#include <ace/Time_Value.h>
-#include <ace/Message_Block.h>
-
-#include <sstream>
 
 RPG_Net_Module_HeaderParser::RPG_Net_Module_HeaderParser()
  : //inherited(),
@@ -54,14 +44,11 @@ RPG_Net_Module_HeaderParser::init()
   // sanity check(s)
   if (myIsInitialized)
   {
-    ACE_DEBUG((LM_DEBUG,
+    ACE_DEBUG((LM_WARNING,
                ACE_TEXT("re-initializing...\n")));
 
-    // reset various maps...
-    myUnknownPacketTypes2MessageID.clear();
-    myIEEE802_3Frames.clear();
-    myFailedMessages.clear();
-
+    // reset message counters...
+    myMessageType2Counter.clear();
     myIsInitialized = false;
   } // end IF
 
@@ -82,16 +69,64 @@ RPG_Net_Module_HeaderParser::handleDataMessage(Stream_MessageBase*& message_inou
   // sanity check(s)
   ACE_ASSERT(message_inout);
 
-  // *TODO*
+  // OK: let's interpret the message header...
+
+  // step0: do we have enough CONTIGUOUS data ?
+  while (message_inout->length() < sizeof(RPG_Net_MessageHeader))
+  {
+    // *sigh*: copy some data from the chain to allow interpretation
+    // of the message header
+    // *WARNING*: for this to work, message_inout->size() must be
+    // AT LEAST sizeof(RPG_Net_MessageHeader)...
+    ACE_Message_Block* source = message_inout->cont();
+    // skip over any "empty" continuations...
+    while (source->length() == 0)
+      source = source->cont();
+
+    // copy some data...
+    size_t amount = (source->length() > sizeof(RPG_Net_MessageHeader) ? sizeof(RPG_Net_MessageHeader)
+                                                                      : source->length());
+    if (message_inout->copy(source->rd_ptr(),
+                            amount))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Message_Block::copy(): \"%s\", aborting\n"),
+                 ACE_OS::strerror(errno)));
+
+        // clean up
+      message_inout->release();
+      passMessageDownstream_out = false;
+
+      // what else can we do ?
+      return;
+    } // end IF
+
+      // adjust the continuation accordingly...
+    source->rd_ptr(amount);
+  } // end WHILE
+
+  // sanity check
+  ACE_ASSERT(message_inout->length() >= sizeof(RPG_Net_MessageHeader));
+
+  // step1: retrieve type of message and other details...
+  RPG_Net_MessageHeader* message_header = ACE_reinterpret_cast(RPG_Net_MessageHeader*,
+                                                               message_inout->rd_ptr());
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("received protocol message (ID: %u): [length: %u; type: \"%s\"]...\n"),
+             message_inout->getID(),
+             message_header->messageLength,
+             RPG_Net_Common_Tools::messageType2String(message_header->messageType).c_str()));
+
+  // increment corresponding counter...
+  myMessageType2Counter[message_header->messageType]++;
 }
 
 void
 RPG_Net_Module_HeaderParser::dump_state() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_HeaderParser::dump_state"));
-
-  std::string line_string;
-  std::ostringstream converter;
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT(" ***** MODULE: \"%s\" state *****\n"),

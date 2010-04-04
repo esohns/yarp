@@ -244,20 +244,6 @@ RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
       // adjust write pointer
       myCurrentBuffer->wr_ptr(bytes_received);
 
-//       // check if we received the full header yet...
-//       if (myCurrentBuffer->length() >= sizeof(RPG_Net_Remote_Comm::MessageHeader))
-//       {
-//         RPG_Net_Remote_Comm::MessageHeader* message_header = ACE_reinterpret_cast(RPG_Net_Remote_Comm::MessageHeader*,
-//                                                                                   myCurrentBuffer->rd_ptr());
-//
-//         ACE_DEBUG((LM_DEBUG,
-//                    ACE_TEXT("[%u]: received %u bytes [length: %u; type: \"%s\"]\n"),
-//                    handle_in,
-//                    myCurrentBuffer->length(),
-//                    message_header->messageLength,
-//                    RPG_Net_Common_Tools::messageType2String(message_header->messageType).c_str()));
-//       } // end IF
-
       break;
     }
   } // end SWITCH

@@ -22,6 +22,7 @@
 #define RPG_NET_MODULE_HEADERPARSER_H
 
 #include "rpg_net_sessionmessage.h"
+#include "rpg_net_remote_comm.h"
 
 #include <stream_task_base_synch.h>
 #include <stream_streammodule_base.h>
@@ -59,19 +60,16 @@ class RPG_Net_Module_HeaderParser
 
   // debug info
   // some convenience typedefs --> save us some typing...
-  typedef std::set<unsigned short> PACKETTYPECONTAINER_TYPE;
-  typedef PACKETTYPECONTAINER_TYPE::const_iterator PACKETTYPECONTAINER_CONSTITERATOR_TYPE;
-  typedef std::multimap<unsigned short,
-                        unsigned long> PACKETTYPE2MESSAGEIDMAP_TYPE;
-  typedef std::pair<unsigned short,
-                    unsigned long> PACKETTYPE2MESSAGEIDPAIR_TYPE;
-  typedef PACKETTYPE2MESSAGEIDMAP_TYPE::const_iterator PACKETTYPE2MESSAGEIDMAP_CONSTITERATOR_TYPE;
+  typedef std::set<RPG_Net_MessageType> MESSAGETYPECONTAINER_TYPE;
+  typedef MESSAGETYPECONTAINER_TYPE::const_iterator MESSAGETYPECONTAINER_CONSTITERATOR_TYPE;
+  typedef std::map<RPG_Net_MessageType,
+                   unsigned long> MESSAGETYPE2COUNT_TYPE;
+  typedef std::pair<RPG_Net_MessageType,
+                    unsigned long> MESSAGETYPE2COUNTPAIR_TYPE;
+  typedef MESSAGETYPE2COUNT_TYPE::const_iterator MESSAGETYPE2COUNT_CONSTITERATOR_TYPE;
 
-  mutable PACKETTYPE2MESSAGEIDMAP_TYPE myUnknownPacketTypes2MessageID; // network byte order !
-  mutable std::vector<unsigned long>   myIEEE802_3Frames;
-  mutable std::vector<unsigned long>   myFailedMessages; // we failed to decode these...
-
-  bool myIsInitialized;
+  MESSAGETYPE2COUNT_TYPE myMessageType2Counter;
+  bool                   myIsInitialized;
 };
 
 // declare module
