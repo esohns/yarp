@@ -1,41 +1,26 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="10" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/net_server.cpp" >
-   <View0 Encoding="" line="447" Type="Source" />
-  </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/net_client.cpp" >
-   <View0 Encoding="" line="168" Type="Source" />
-  </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///usr/local/include/ace/Default_Constants.h" >
-   <View0 Encoding="" line="240" Type="Source" />
-  </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///usr/local/include/ace/ACE.inl" >
-   <View0 Encoding="UTF-8" line="102" Type="Source" />
-  </Doc3>
-  <Doc4 NumberOfViews="1" URL="file:///usr/local/include/ace/OS_NS_sys_socket.inl" >
-   <View0 Encoding="UTF-8" line="549" Type="Source" />
-  </Doc4>
-  <Doc5 NumberOfViews="1" URL="file:///usr/local/include/ace/ACE.h" >
-   <View0 Encoding="" line="760" Type="Source" />
-  </Doc5>
-  <Doc6 NumberOfViews="1" URL="file:///usr/local/src/ACE_wrappers/ace/ACE.cpp" >
-   <View0 Encoding="" line="1135" Type="Source" />
-  </Doc6>
-  <Doc7 NumberOfViews="1" URL="file:///usr/local/include/ace/Svc_Handler.cpp" >
-   <View0 Encoding="" line="146" Type="Source" />
-  </Doc7>
-  <Doc8 NumberOfViews="1" URL="file:///usr/local/include/ace/OS_NS_stdlib.inl" >
-   <View0 Encoding="" line="430" Type="Source" />
-  </Doc8>
-  <Doc9 NumberOfViews="1" URL="file:///usr/include/stdlib.h" >
-   <View0 Encoding="" line="379" Type="Source" />
-  </Doc9>
- </DocsAndViews>
+ <DocsAndViews NumberOfDocuments="0" />
  <pluginList>
   <kdevdebugger>
-   <breakpointList/>
+   <breakpointList>
+    <breakpoint0 location="/home/unfv/Projects/libStream/stream_task_base.i:257" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+     <tracedExpressions/>
+    </breakpoint0>
+    <breakpoint1 location="/home/unfv/Projects/libStream/stream_task_base.i:397" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+     <tracedExpressions/>
+    </breakpoint1>
+    <breakpoint2 location="/home/unfv/Projects/libStream/stream_task_base.i:474" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+     <tracedExpressions/>
+    </breakpoint2>
+    <breakpoint3 location="/home/unfv/Projects/libStream/stream_message_base.cpp:32" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+     <tracedExpressions/>
+    </breakpoint3>
+    <breakpoint4 location="/home/unfv/Projects/libStream/stream_message_base.cpp:50" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+     <tracedExpressions/>
+    </breakpoint4>
+   </breakpointList>
    <showInternalCommands value="0" />
   </kdevdebugger>
   <kdevastyle>
