@@ -131,7 +131,8 @@ RPG_Net_Listener::start()
            // *TODO*: bind to specific interface/address ?
                          ACE_static_cast(ACE_UINT32, INADDR_ANY)),
            ACE_Reactor::instance(),       // corresp. reactor
-           0,                             // flags (*TODO*: ACE_NONBLOCK ?)
+           ACE_NONBLOCK,                  // flags (use non-blocking sockets !)
+//            0,                             // flags (default is blocking sockets)
            1,                             // always accept ALL pending connections
            1) == -1)                      // try to re-use address
   {
