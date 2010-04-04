@@ -204,7 +204,7 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
             // *** GOOD CASE ***
 
             // debug info
-            std::cout << '.';
+            std::cerr << '.';
 
             break;
           } // end IF

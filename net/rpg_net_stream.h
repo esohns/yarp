@@ -22,6 +22,8 @@
 #define RPG_NET_STREAM_H
 
 #include "rpg_net_common.h"
+#include "rpg_net_stream_config.h"
+#include "rpg_net_sessionmessage.h"
 #include "rpg_net_module_sockethandler.h"
 #include "rpg_net_module_headerparser.h"
 #include "rpg_net_module_runtimestatistic.h"
@@ -37,7 +39,9 @@
 class Stream_IAllocator;
 
 class RPG_Net_Stream
- : public Stream_Base<RPG_Net_ConfigPOD>,
+ : public Stream_Base<RPG_Net_ConfigPOD,
+                      RPG_Net_StreamConfig,
+                      RPG_Net_SessionMessage>,
    // *NOTE*: implement this in order to successfuly encapsulate stream specifics...
    // --> delegate the actual functionality to one of our modules
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
@@ -59,7 +63,9 @@ class RPG_Net_Stream
   virtual void report();
 
  private:
-  typedef Stream_Base<RPG_Net_ConfigPOD> inherited;
+  typedef Stream_Base<RPG_Net_ConfigPOD,
+                      RPG_Net_StreamConfig,
+                      RPG_Net_SessionMessage> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Stream(const RPG_Net_Stream&));

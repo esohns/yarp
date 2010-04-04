@@ -35,8 +35,8 @@ class RPG_Net_SessionMessage
 {
  public:
   // *NOTE*: assume lifetime responsibility for the second argument !
-  RPG_Net_SessionMessage(const Stream_SessionMessageType&,                  // message type
-                         Stream_SessionConfigBase<RPG_Net_StreamConfig>*&); // config handle
+  RPG_Net_SessionMessage(const Stream_SessionMessageType&, // message type
+                         RPG_Net_StreamConfig*&);          // config handle
   virtual ~RPG_Net_SessionMessage();
 
   // overriden from ACE_Message_Block

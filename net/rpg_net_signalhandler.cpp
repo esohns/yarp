@@ -59,8 +59,8 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
   // sanity check
   if (info_in == NULL)
   {
-    // *IMPORTANT NOTE*: we want to keep a record of this incident...
-    ACE_DEBUG((LM_NOTICE,
+    // *NOTE*: we want to keep a record of this incident...
+    ACE_DEBUG((LM_INFO,
                ACE_TEXT("%D: received [%S], but no siginfo_t was available, continuing\n"),
                signal_in));
   } // end IF
@@ -73,8 +73,8 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
 //                       (context_in ? *context_in : NULL),
                        information);
 
-    // *IMPORTANT NOTE*: we want to keep a record of this incident...
-    ACE_DEBUG((LM_NOTICE,
+    // *NOTE*: we want to keep a record of this incident...
+    ACE_DEBUG((LM_INFO,
                ACE_TEXT("%D: received [%S]: %s\n"),
                signal_in,
                information.c_str()));
@@ -94,7 +94,7 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
     case SIGABRT:
 #endif
     {
-      ACE_DEBUG((LM_NOTICE,
+      ACE_DEBUG((LM_INFO,
                  ACE_TEXT("shutting down...\n")));
 
       // shutdown...

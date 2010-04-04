@@ -270,6 +270,8 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
     {
       // *sigh*: copy some data from the chain to allow interpretation
       // of the message header
+      // *WARNING*: for this to work, myCurrentMessage->size() must be
+      // AT LEAST sizeof(RPG_Net_Remote_Comm::MessageHeader)...
       ACE_Message_Block* source = myCurrentMessage->cont();
       while (source->length() == 0)
         source = source->cont();
@@ -373,6 +375,12 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
     myCurrentMessage = new_head;
     myCurrentBuffer = myCurrentMessage;
   } // end IF
+  else
+  {
+    // bye bye...
+    myCurrentMessage = NULL;
+    myCurrentBuffer = NULL;
+  } // end ELSE
 
   // don't know anything about the next message...
   myCurrentMessageLength = 0;
@@ -424,7 +432,7 @@ RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatisti
   data.lastCollectionTimestamp = collectionTime_in;
 
   // step2: allocate config container
-  Stream_SessionConfigBase<RPG_Net_ConfigPOD>* config = NULL;
+  RPG_Net_StreamConfig* config = NULL;
   try
   {
     config = new RPG_Net_StreamConfig(data);

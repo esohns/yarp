@@ -110,7 +110,7 @@ RPG_Net_Module_RuntimeStatistic::~RPG_Net_Module_RuntimeStatistic()
 const bool
 RPG_Net_Module_RuntimeStatistic::init(const bool& printHashMark_in,
                                       const bool& printPcapStats_in,
-                                      Stream_IAllocator* allocator_in,
+                                      const Stream_IAllocator* allocator_in,
                                       const unsigned long& reportingInterval_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::init"));
@@ -260,7 +260,7 @@ RPG_Net_Module_RuntimeStatistic::handleDataMessage(Stream_MessageBase*& message_
 }
 
 void
-RPG_Net_Module_RuntimeStatistic::handleSessionMessage(Stream_SessionMessageBase<RPG_Net_ConfigPOD>*& message_inout,
+RPG_Net_Module_RuntimeStatistic::handleSessionMessage(RPG_Net_SessionMessage*& message_inout,
                                                       bool& passMessageDownstream_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::handleSessionMessage"));

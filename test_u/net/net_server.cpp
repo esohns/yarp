@@ -386,10 +386,11 @@ init_signalHandling(const std::vector<int>& signals_in,
                sigkey));
   } // end FOR
 
-  // Note: in fact, we registered a SINGLE handler instance for ALL the signals we're interested in...
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("registered %d signal handler(s)...\n"),
-             signals_in.size()));
+  // *NOTE*: there is only a single handler for ALL signals in the set...
+  // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("handling %d signal(s)...\n"),
+//              signals_in.size()));
 
   return true;
 }

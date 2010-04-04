@@ -22,6 +22,8 @@
 #define RPG_NET_MODULE_SOCKETHANDLER_H
 
 #include "rpg_net_common.h"
+#include "rpg_net_stream_config.h"
+#include "rpg_net_sessionmessage.h"
 #include "rpg_net_statistichandler.h"
 
 #include <rpg_common_istatistic.h>
@@ -42,7 +44,9 @@ class Stream_MessageBase;
 class RPG_Net_Message;
 
 class RPG_Net_Module_SocketHandler
- : public Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD>,
+ : public Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD,
+                                    RPG_Net_StreamConfig,
+                                    RPG_Net_SessionMessage>,
    // implement this so we can use a generic (timed) event handler to trigger stat collection...
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
@@ -70,7 +74,9 @@ class RPG_Net_Module_SocketHandler
   virtual void report();
 
  private:
-  typedef Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD> inherited;
+  typedef Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD,
+                                    RPG_Net_StreamConfig,
+                                    RPG_Net_SessionMessage> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_SocketHandler(const RPG_Net_Module_SocketHandler&));

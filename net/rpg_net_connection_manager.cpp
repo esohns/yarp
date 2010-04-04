@@ -64,9 +64,10 @@ RPG_Net_Connection_Manager::init(const unsigned long& maxNumConnections_in,
 
   myMaxNumConnections = maxNumConnections_in;
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("set maximum # connections: %u\n"),
-             myMaxNumConnections));
+  // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("set maximum # connections: %u\n"),
+//              myMaxNumConnections));
 
   myUserData = userData_in;
 

@@ -21,9 +21,9 @@
 #ifndef RPG_NET_MODULE_HEADERPARSER_H
 #define RPG_NET_MODULE_HEADERPARSER_H
 
-#include "rpg_net_common.h"
+#include "rpg_net_sessionmessage.h"
 
-#include <stream_task_base_asynch.h>
+#include <stream_task_base_synch.h>
 #include <stream_streammodule_base.h>
 
 #include <set>
@@ -34,7 +34,7 @@
 class Stream_MessageBase;
 
 class RPG_Net_Module_HeaderParser
- : public Stream_TaskBaseAsynch<RPG_Net_ConfigPOD>
+ : public Stream_TaskBaseSynch<RPG_Net_SessionMessage>
 {
  public:
   RPG_Net_Module_HeaderParser();
@@ -51,7 +51,7 @@ class RPG_Net_Module_HeaderParser
   virtual void dump_state() const;
 
  private:
-  typedef Stream_TaskBaseAsynch<RPG_Net_ConfigPOD> inherited;
+  typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_HeaderParser(const RPG_Net_Module_HeaderParser&));

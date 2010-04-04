@@ -21,7 +21,7 @@
 #include "rpg_net_sessionmessage.h"
 
 RPG_Net_SessionMessage::RPG_Net_SessionMessage(const Stream_SessionMessageType& messageType_in,
-                                               Stream_SessionConfigBase<RPG_Net_StreamConfig>*& config_inout)
+                                               RPG_Net_StreamConfig*& config_inout)
  : inherited(messageType_in,
              config_inout)
 {

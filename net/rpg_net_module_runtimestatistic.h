@@ -26,12 +26,12 @@
 #include "rpg_net_statistichandler.h"
 #include "rpg_net_resetcounterhandler.h"
 #include "rpg_net_protocol_layer.h"
+#include "rpg_net_sessionmessage.h"
 
 #include <rpg_common_istatistic.h>
 
 #include <stream_task_base_synch.h>
 #include <stream_streammodule_base.h>
-#include <stream_session_message_base.h>
 
 #include <ace/Global_Macros.h>
 #include <ace/Synch.h>
@@ -47,7 +47,7 @@ class Stream_MessageBase;
 class Stream_IAllocator;
 
 class RPG_Net_Module_RuntimeStatistic
- : public Stream_TaskBaseSynch<RPG_Net_ConfigPOD>,
+ : public Stream_TaskBaseSynch<RPG_Net_SessionMessage>,
    public RPG_Net_ICounter,
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
@@ -56,19 +56,19 @@ class RPG_Net_Module_RuntimeStatistic
   virtual ~RPG_Net_Module_RuntimeStatistic();
 
   // initialization
-  const bool init(const bool&,           // print hash ("#") mark for every 1000 messages seen to stdout
-                  const bool&,           // print libpcap-related stats
+  const bool init(const bool&,              // print hash ("#") mark for every 1000 messages seen to stdout
+                  const bool&,              // print libpcap-related stats
                   // *NOTE*: if this is non-NULL, cache usage data will be reported !
-                  Stream_IAllocator*,    // message allocator
-                  const unsigned long&); // (local) reporting interval [seconds: 0 --> OFF]
+                  const Stream_IAllocator*, // message allocator
+                  const unsigned long&);    // (local) reporting interval [seconds: 0 --> OFF]
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
                                  bool&);            // return value: pass message downstream ?
 
   // implement this so we can print overall statistics after session completes...
-  virtual void handleSessionMessage(Stream_SessionMessageBase<RPG_Net_ConfigPOD>*&, // session message handle
-                                    bool&);                                         // return value: pass message downstream ?
+  virtual void handleSessionMessage(RPG_Net_SessionMessage*&, // session message handle
+                                    bool&);                   // return value: pass message downstream ?
 
   // implement RPG_Net_ICounter
   virtual void reset();
@@ -79,7 +79,7 @@ class RPG_Net_Module_RuntimeStatistic
   virtual void report();
 
  private:
-  typedef Stream_TaskBaseSynch<RPG_Net_ConfigPOD> inherited;
+  typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage> inherited;
 
   // these typedefs ensure that we use the minimal amount of locking necessary
   typedef ACE_Event_Handler_Handle_Timeout_Upcall<ACE_Null_Mutex> UPCALL_TYPE;
@@ -137,7 +137,7 @@ class RPG_Net_Module_RuntimeStatistic
   MESSAGETYPECOUNTCONTAINER_TYPE     myMessageTypeStatistics;
 
   // *CACHE STATS*
-  Stream_IAllocator*                myAllocator;
+  const Stream_IAllocator*           myAllocator;
 
   // *PROCESS PROFILE*
   ACE_Profile_Timer                  myProfile;

@@ -53,9 +53,9 @@ RPG_Net_Listener::init(const unsigned short& listeningPort_in)
   myListeningPort = listeningPort_in;
 
   // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("set listening port: %u\n"),
-             myListeningPort));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("set listening port: %u\n"),
+//              myListeningPort));
 
   myIsInitialized = true;
 }
