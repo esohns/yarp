@@ -48,7 +48,7 @@ RPG_Net_Module_HeaderParser::init()
                ACE_TEXT("re-initializing...\n")));
 
     // reset message counters...
-    myMessageType2Counter.clear();
+//     myMessageType2Counter.clear();
     myIsInitialized = false;
   } // end IF
 
@@ -119,8 +119,8 @@ RPG_Net_Module_HeaderParser::handleDataMessage(Stream_MessageBase*& message_inou
              message_header->messageLength,
              RPG_Net_Common_Tools::messageType2String(message_header->messageType).c_str()));
 
-  // increment corresponding counter...
-  myMessageType2Counter[message_header->messageType]++;
+//   increment corresponding counter...
+//   myMessageType2Counter[message_header->messageType]++;
 }
 
 void

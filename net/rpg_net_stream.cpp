@@ -123,10 +123,9 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
 
     return false;
   } // end IF
-  if (!runtimeStatistic_impl->init(false, // do not print hash ("#") marks...
-                                   true,  // print pcap stats...
-                                   config_in.messageAllocator,
-                                   config_in.statisticsReportingInterval))
+  if (!runtimeStatistic_impl->init(config_in.statisticsReportingInterval,
+                                   config_in.messageAllocator, // print cache info ?
+                                   false)) // do not print hash ("#") marks...
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),

@@ -21,12 +21,12 @@
 #ifndef RPG_NET_MODULE_RUNTIMESTATISTIC_H
 #define RPG_NET_MODULE_RUNTIMESTATISTIC_H
 
-#include "rpg_net_common.h"
+#include "rpg_net_sessionmessage.h"
 #include "rpg_net_icounter.h"
 #include "rpg_net_statistichandler.h"
+#include "rpg_net_defines.h"
+#include "rpg_net_remote_comm.h"
 #include "rpg_net_resetcounterhandler.h"
-#include "rpg_net_protocol_layer.h"
-#include "rpg_net_sessionmessage.h"
 
 #include <rpg_common_istatistic.h>
 
@@ -38,8 +38,9 @@
 #include <ace/Timer_Queue_T.h>
 #include <ace/Timer_Heap_T.h>
 #include <ace/Timer_Queue_Adapters.h>
-#include <ace/Profile_Timer.h>
+// #include <ace/Profile_Timer.h>
 
+#include <set>
 #include <map>
 
 // forward declaration(s)
@@ -56,11 +57,10 @@ class RPG_Net_Module_RuntimeStatistic
   virtual ~RPG_Net_Module_RuntimeStatistic();
 
   // initialization
-  const bool init(const bool&,              // print hash ("#") mark for every 1000 messages seen to stdout
-                  const bool&,              // print libpcap-related stats
+  const bool init(const unsigned long& = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL, // (local) reporting interval [seconds: 0 --> OFF]
                   // *NOTE*: if this is non-NULL, cache usage data will be reported !
-                  const Stream_IAllocator*, // message allocator
-                  const unsigned long&);    // (local) reporting interval [seconds: 0 --> OFF]
+                  const Stream_IAllocator* = NULL,                                 // message allocator
+                  const bool& = false);                                            // print hash ("#") mark for every 1000 messages seen to stdout
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
@@ -92,10 +92,13 @@ class RPG_Net_Module_RuntimeStatistic
   typedef ACE_Thread_Timer_Queue_Adapter<TIMERHEAP_TYPE> TIMERQUEUE_TYPE;
 
   // message type counters
-  typedef std::map<RPG_Net_Protocol_t,
-                   unsigned long> MESSAGETYPECOUNTCONTAINER_TYPE;
-  typedef MESSAGETYPECOUNTCONTAINER_TYPE::const_iterator MESSAGETYPECOUNTCONTAINER_CONSTITERATOR_TYPE;
-  typedef MESSAGETYPECOUNTCONTAINER_TYPE::iterator MESSAGETYPECOUNTCONTAINER_ITERATOR_TYPE;
+  typedef std::set<RPG_Net_MessageType> MESSAGETYPECONTAINER_TYPE;
+  typedef MESSAGETYPECONTAINER_TYPE::const_iterator MESSAGETYPECONTAINER_CONSTITERATOR_TYPE;
+  typedef std::map<RPG_Net_MessageType,
+                   unsigned long> MESSAGETYPE2COUNT_TYPE;
+  typedef std::pair<RPG_Net_MessageType,
+                    unsigned long> MESSAGETYPE2COUNTPAIR_TYPE;
+  typedef MESSAGETYPE2COUNT_TYPE::const_iterator MESSAGETYPE2COUNT_CONSTITERATOR_TYPE;
 
   // convenience types
   typedef RPG_Net_RuntimeStatistic STATISTICINTERFACE_TYPE;
@@ -124,27 +127,25 @@ class RPG_Net_Module_RuntimeStatistic
   unsigned long                      myNumTotalMessages;
   // used to compute message throughput...
   unsigned long                      myMessageCounter;
-  // *IMPORTANT NOTE: support asynchronous collecting/reporting of data...
+  // *NOTE: support asynchronous collecting/reporting of data...
   unsigned long                      myLastMessagesPerSecondCount;
 
   double                             myNumTotalBytes;
   // used to compute data throughput...
   unsigned long                      myByteCounter;
-  // *IMPORTANT NOTE: support asynchronous collecting/reporting of data...
+  // *NOTE: support asynchronous collecting/reporting of data...
   unsigned long                      myLastBytesPerSecondCount;
 
   // *MESSAGE TYPE STATS*
-  MESSAGETYPECOUNTCONTAINER_TYPE     myMessageTypeStatistics;
+  MESSAGETYPE2COUNT_TYPE             myMessageTypeStatistics;
 
   // *CACHE STATS*
   const Stream_IAllocator*           myAllocator;
 
   // *PROCESS PROFILE*
-  ACE_Profile_Timer                  myProfile;
+//   ACE_Profile_Timer                  myProfile;
 
   bool                               myPrintHashMark;
-  bool                               myPrintPcapStats;
-  unsigned long                      myLocalReportingInterval;
 };
 
 // declare module

@@ -20,9 +20,7 @@
 
 #include "rpg_net_module_runtimestatistic.h"
 
-#include "rpg_net_message.h"
-
-#include <rpg_common_tools.h>
+#include "rpg_net_common_tools.h"
 
 #include <stream_message_base.h>
 #include <stream_iallocator.h>
@@ -48,9 +46,7 @@ RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic()
    myLastBytesPerSecondCount(0),
 // myMessageTypeStatistics.clear(),
    myAllocator(NULL),
-   myPrintHashMark(false), // silent by default !
-   myPrintPcapStats(false), // silent by default !
-   myLocalReportingInterval(0)
+   myPrintHashMark(false) // silent by default !
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic"));
 
@@ -108,17 +104,16 @@ RPG_Net_Module_RuntimeStatistic::~RPG_Net_Module_RuntimeStatistic()
 }
 
 const bool
-RPG_Net_Module_RuntimeStatistic::init(const bool& printHashMark_in,
-                                      const bool& printPcapStats_in,
+RPG_Net_Module_RuntimeStatistic::init(const unsigned long& reportingInterval_in,
                                       const Stream_IAllocator* allocator_in,
-                                      const unsigned long& reportingInterval_in)
+                                      const bool& printHashMark_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::init"));
 
   // sanity check(s)
   if (myIsInitialized)
   {
-    ACE_DEBUG((LM_DEBUG,
+    ACE_DEBUG((LM_WARNING,
                ACE_TEXT("re-initializing...\n")));
 
     // stop reporting timer
@@ -142,16 +137,12 @@ RPG_Net_Module_RuntimeStatistic::init(const bool& printHashMark_in,
     myIsInitialized = false;
   } // end IF
 
-  myPrintHashMark = printHashMark_in;
-  myPrintPcapStats = printPcapStats_in;
-
   // want runtime statistics reporting at regular intervals ?...
-  myLocalReportingInterval = reportingInterval_in;
-  if (myLocalReportingInterval)
+  if (reportingInterval_in)
   {
     // schedule the reporting interval timer
     int id = -1;
-    ACE_Time_Value reporting_interval(myLocalReportingInterval, 0);
+    ACE_Time_Value reporting_interval(reportingInterval_in, 0);
     id = myTimerQueue.schedule(&myLocalReportingHandler,
                                NULL,
                                ACE_OS::gettimeofday () + reporting_interval,
@@ -189,6 +180,8 @@ RPG_Net_Module_RuntimeStatistic::init(const bool& printHashMark_in,
 //     return false;
 //   } // end IF
 
+  myPrintHashMark = printHashMark_in;
+
   // OK: all's well...
   myIsInitialized = true;
 
@@ -221,35 +214,18 @@ RPG_Net_Module_RuntimeStatistic::handleDataMessage(Stream_MessageBase*& message_
 
     myMessageCounter++;
 
-    myNumTotalBytes += message_inout->length();
-    myByteCounter += message_inout->length();
+    myNumTotalBytes += message_inout->total_length();
+    myByteCounter += message_inout->total_length();
   } // end lock scope
 
   // add message to statistic...
-  RPG_Net_Message* message = NULL;
-  message = ACE_dynamic_cast(RPG_Net_Message*, message_inout);
-  if (!message)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_dynamic_cast(RPG_Net_Message) failed, aborting\n")));
-
-    return;
-  } // end IF
-  // *NOTE*: this only makes sense if message headers have actually been parsed upstream...
-//   if (message->getToplevelProtocol() != RPG_Net_Protocol_Layer::INVALID_PROTOCOL)
-//   {
-//     MESSAGETYPECOUNTCONTAINER_ITERATOR_TYPE iter = myMessageTypeStatistics.end();
-//     iter = myMessageTypeStatistics.find(message->getToplevelProtocol());
-//     if (iter == myMessageTypeStatistics.end())
-//     {
-//       myMessageTypeStatistics[message->getToplevelProtocol()] = 1;
-//     } // end IF
-//     else
-//     {
-//       // increment corresponding message type counter
-//       iter->second++;
-//     } // end ELSE
-//   } // end IF
+  // --> retrieve type of message and other details...
+  // *WARNING*: we silently ASSUME that upstream took care of "crunching" the data
+  // for this to actually work...
+  RPG_Net_MessageHeader* message_header = ACE_reinterpret_cast(RPG_Net_MessageHeader*,
+                                                               message_inout->rd_ptr());
+  // increment corresponding counter...
+  myMessageTypeStatistics[message_header->messageType]++;
 
   if (myPrintHashMark && print_hash)
   {
@@ -285,7 +261,7 @@ RPG_Net_Module_RuntimeStatistic::handleSessionMessage(RPG_Net_SessionMessage*& m
     case Stream_SessionMessage::SESSION_BEGIN:
     {
       // start profile timer...
-      myProfile.start();
+//       myProfile.start();
 
       break;
     }
@@ -298,12 +274,12 @@ RPG_Net_Module_RuntimeStatistic::handleSessionMessage(RPG_Net_SessionMessage*& m
       // We only put this here because it is a nice place for this kind
       // of functionality
       // --> take this information with a grain of salt !
-      myProfile.stop();
+//       myProfile.stop();
 
 
       // session finished ? --> print overall statistics
       // *TODO*: ...and don't forget to re-init internal counters ?
-//       final_report();
+      final_report();
 
       break;
     }
@@ -430,17 +406,13 @@ RPG_Net_Module_RuntimeStatistic::final_report() const
     if (myNumTotalMessages)
     {
       std::string protocol_string;
-      for (MESSAGETYPECOUNTCONTAINER_CONSTITERATOR_TYPE iter = myMessageTypeStatistics.begin();
+      for (MESSAGETYPE2COUNT_CONSTITERATOR_TYPE iter = myMessageTypeStatistics.begin();
           iter != myMessageTypeStatistics.end();
           iter++)
       {
-        // create protocol string
-        RPG_Net_Protocol_Layer::ProtocolLayer2String(iter->first,
-                                                     protocol_string);
-
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("\"%s\": %u --> %.2f %%\n"),
-                   protocol_string.c_str(),
+                   RPG_Net_Common_Tools::messageType2String(iter->first).c_str(),
                    iter->second,
                    ACE_static_cast(double,
                                    ((iter->second * 100.0) / myNumTotalMessages))));
@@ -448,57 +420,57 @@ RPG_Net_Module_RuntimeStatistic::final_report() const
     } // end IF
   } // end lock scope
 
-  // only profile stuff left to do...
-  ACE_Profile_Timer::ACE_Elapsed_Time elapsed_time;
-  elapsed_time.real_time = 0.0;
-  elapsed_time.user_time = 0.0;
-  elapsed_time.system_time = 0.0;
-  if (ACE_const_cast(ACE_Profile_Timer*,
-                     &myProfile)->elapsed_time(elapsed_time) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Profile_Timer::elapsed_time: \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
-
-    return;
-  } // end IF
-  ACE_Profile_Timer::Rusage elapsed_rusage;
-  ACE_OS::memset(&elapsed_rusage,
-                 0,
-                 sizeof(elapsed_rusage));
-  ACE_const_cast(ACE_Profile_Timer*,
-                 &myProfile)->elapsed_rusage(elapsed_rusage);
-
-  ACE_Time_Value user_time(elapsed_rusage.ru_utime);
-  ACE_Time_Value system_time(elapsed_rusage.ru_stime);
-  std::string user_time_string;
-  std::string system_time_string;
-  RPG_Common_Tools::period2String(user_time,
-                                  user_time_string);
-  RPG_Common_Tools::period2String(system_time,
-                                  system_time_string);
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT(" --> Session Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
-             elapsed_time.real_time,
-             elapsed_time.user_time,
-             elapsed_time.system_time,
-             user_time_string.c_str(),
-             system_time_string.c_str(),
-             elapsed_rusage.ru_maxrss,
-             elapsed_rusage.ru_ixrss,
-             elapsed_rusage.ru_idrss,
-             elapsed_rusage.ru_isrss,
-             elapsed_rusage.ru_minflt,
-             elapsed_rusage.ru_majflt,
-             elapsed_rusage.ru_nswap,
-             elapsed_rusage.ru_inblock,
-             elapsed_rusage.ru_oublock,
-             elapsed_rusage.ru_msgsnd,
-             elapsed_rusage.ru_msgrcv,
-             elapsed_rusage.ru_nsignals,
-             elapsed_rusage.ru_nvcsw,
-             elapsed_rusage.ru_nivcsw));
+//   // only profile stuff left to do...
+//   ACE_Profile_Timer::ACE_Elapsed_Time elapsed_time;
+//   elapsed_time.real_time = 0.0;
+//   elapsed_time.user_time = 0.0;
+//   elapsed_time.system_time = 0.0;
+//   if (ACE_const_cast(ACE_Profile_Timer*,
+//                      &myProfile)->elapsed_time(elapsed_time) == -1)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to ACE_Profile_Timer::elapsed_time: \"%s\", returning\n"),
+//                ACE_OS::strerror(errno)));
+//
+//     return;
+//   } // end IF
+//   ACE_Profile_Timer::Rusage elapsed_rusage;
+//   ACE_OS::memset(&elapsed_rusage,
+//                  0,
+//                  sizeof(elapsed_rusage));
+//   ACE_const_cast(ACE_Profile_Timer*,
+//                  &myProfile)->elapsed_rusage(elapsed_rusage);
+//
+//   ACE_Time_Value user_time(elapsed_rusage.ru_utime);
+//   ACE_Time_Value system_time(elapsed_rusage.ru_stime);
+//   std::string user_time_string;
+//   std::string system_time_string;
+//   RPG_Common_Tools::period2String(user_time,
+//                                   user_time_string);
+//   RPG_Common_Tools::period2String(system_time,
+//                                   system_time_string);
+//
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT(" --> Session Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
+//              elapsed_time.real_time,
+//              elapsed_time.user_time,
+//              elapsed_time.system_time,
+//              user_time_string.c_str(),
+//              system_time_string.c_str(),
+//              elapsed_rusage.ru_maxrss,
+//              elapsed_rusage.ru_ixrss,
+//              elapsed_rusage.ru_idrss,
+//              elapsed_rusage.ru_isrss,
+//              elapsed_rusage.ru_minflt,
+//              elapsed_rusage.ru_majflt,
+//              elapsed_rusage.ru_nswap,
+//              elapsed_rusage.ru_inblock,
+//              elapsed_rusage.ru_oublock,
+//              elapsed_rusage.ru_msgsnd,
+//              elapsed_rusage.ru_msgrcv,
+//              elapsed_rusage.ru_nsignals,
+//              elapsed_rusage.ru_nvcsw,
+//              elapsed_rusage.ru_nivcsw));
 
   //double messages_per_sec = double (message_count) / et.real_time;
   //ACE_DEBUG ((LM_DEBUG,

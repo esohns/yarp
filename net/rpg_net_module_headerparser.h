@@ -27,9 +27,8 @@
 #include <stream_task_base_synch.h>
 #include <stream_streammodule_base.h>
 
-#include <set>
-#include <map>
-#include <vector>
+// #include <set>
+// #include <map>
 
 // forward declaration(s)
 class Stream_MessageBase;
@@ -58,17 +57,17 @@ class RPG_Net_Module_HeaderParser
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_HeaderParser(const RPG_Net_Module_HeaderParser&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_HeaderParser& operator=(const RPG_Net_Module_HeaderParser&));
 
-  // debug info
-  // some convenience typedefs --> save us some typing...
-  typedef std::set<RPG_Net_MessageType> MESSAGETYPECONTAINER_TYPE;
-  typedef MESSAGETYPECONTAINER_TYPE::const_iterator MESSAGETYPECONTAINER_CONSTITERATOR_TYPE;
-  typedef std::map<RPG_Net_MessageType,
-                   unsigned long> MESSAGETYPE2COUNT_TYPE;
-  typedef std::pair<RPG_Net_MessageType,
-                    unsigned long> MESSAGETYPE2COUNTPAIR_TYPE;
-  typedef MESSAGETYPE2COUNT_TYPE::const_iterator MESSAGETYPE2COUNT_CONSTITERATOR_TYPE;
-
-  MESSAGETYPE2COUNT_TYPE myMessageType2Counter;
+//   // debug info
+//   // some convenience typedefs --> save us some typing...
+//   typedef std::set<RPG_Net_MessageType> MESSAGETYPECONTAINER_TYPE;
+//   typedef MESSAGETYPECONTAINER_TYPE::const_iterator MESSAGETYPECONTAINER_CONSTITERATOR_TYPE;
+//   typedef std::map<RPG_Net_MessageType,
+//                    unsigned long> MESSAGETYPE2COUNT_TYPE;
+//   typedef std::pair<RPG_Net_MessageType,
+//                     unsigned long> MESSAGETYPE2COUNTPAIR_TYPE;
+//   typedef MESSAGETYPE2COUNT_TYPE::const_iterator MESSAGETYPE2COUNT_CONSTITERATOR_TYPE;
+//
+//   MESSAGETYPE2COUNT_TYPE myMessageType2Counter;
   bool                   myIsInitialized;
 };
 
