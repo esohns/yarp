@@ -82,7 +82,4 @@ class RPG_Net_Stream
 //   RPG_Net_ProtocolHandler_Module  myProtocolHandler;
 };
 
-typedef ACE_Unmanaged_Singleton<RPG_Net_Stream,
-                                ACE_Thread_Mutex> RPG_NET_STREAM_SINGLETON;
-
 #endif
