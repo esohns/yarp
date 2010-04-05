@@ -76,8 +76,8 @@ class RPG_Net_Message
   // *NOTE*: this is used by allocators during init...
   RPG_Net_Message(ACE_Data_Block*, // data block to use
                   ACE_Allocator*); // message allocator
-  RPG_Net_Message(ACE_Allocator*,      // message allocator
-                  const bool& = true); // increment running message counter ?
+//   RPG_Net_Message(ACE_Allocator*,      // message allocator
+//                   const bool& = true); // increment running message counter ?
 
   // *NOTE*: pre-allocated messages may not have been initialized...
   bool myIsInitialized;

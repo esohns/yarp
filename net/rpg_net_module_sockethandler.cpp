@@ -345,31 +345,35 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
     // sanity check
     ACE_ASSERT(myCurrentMessage->total_length() == myCurrentMessageLength);
 
-    // --> create a new message head and copy the overlapping data
-    // *TODO*: ...or we could just reference the same data block
-    RPG_Net_Message* new_head = allocateMessage(RPG_NET_DEF_NETWORK_BUFFER_SIZE);
-    if (new_head == NULL)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to allocateMessage(%u), aborting\n"),
-                 RPG_NET_DEF_NETWORK_BUFFER_SIZE));
+    // --> create a new message head...
+//     RPG_Net_Message* new_head = allocateMessage(RPG_NET_DEF_NETWORK_BUFFER_SIZE);
+//     if (new_head == NULL)
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to allocateMessage(%u), aborting\n"),
+//                  RPG_NET_DEF_NETWORK_BUFFER_SIZE));
+//
+//       // *TODO*: what else can we do ?
+//       return true;
+//     } // end IF
+//     // ...and copy the overlapping data
+//     if (new_head->copy(myCurrentBuffer->wr_ptr(),
+//                        overlap))
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to ACE_Message_Block::copy(): \"%s\", aborting\n"),
+//                  ACE_OS::strerror(errno)));
+//
+//       // clean up
+//       new_head->release();
+//
+//       // *TODO*: what else can we do ?
+//       return true;
+//     } // end IF
 
-      // *TODO*: what else can we do ?
-      return true;
-    } // end IF
-    if (new_head->copy(myCurrentBuffer->wr_ptr(),
-                       overlap))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Message_Block::copy(): \"%s\", aborting\n"),
-                 ACE_OS::strerror(errno)));
-
-      // clean up
-      new_head->release();
-
-      // *TODO*: what else can we do ?
-      return true;
-    } // end IF
+    // ...just reference the same data block instead
+    RPG_Net_Message* new_head = ACE_dynamic_cast(RPG_Net_Message*,
+                                                 myCurrentBuffer->duplicate());
 
     // set new message head/current buffer
     myCurrentMessage = new_head;
