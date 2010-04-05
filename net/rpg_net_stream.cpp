@@ -209,8 +209,13 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
     return false;
   } // end IF
 
+  // set (session) message allocator
+  // *TODO*: clean this up ! --> sanity check
+  ACE_ASSERT(config_in.messageAllocator);
+  inherited::myAllocator = config_in.messageAllocator;
+
   // OK: all went well
-  myIsInitialized = true;
+  inherited::myIsInitialized = true;
 
 //   // debug info
 //   inherited::dump_state();

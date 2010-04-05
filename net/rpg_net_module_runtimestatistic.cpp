@@ -258,14 +258,14 @@ RPG_Net_Module_RuntimeStatistic::handleSessionMessage(RPG_Net_SessionMessage*& m
 
   switch (message_inout->getType())
   {
-    case Stream_SessionMessage::SESSION_BEGIN:
+    case Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
     {
       // start profile timer...
 //       myProfile.start();
 
       break;
     }
-    case Stream_SessionMessage::SESSION_END:
+    case Stream_SessionMessage::MB_STREAM_SESSION_END:
     {
       // stop profile timer...
       // *WARNING*: this cannot be completely accurate unless ALL
@@ -283,7 +283,7 @@ RPG_Net_Module_RuntimeStatistic::handleSessionMessage(RPG_Net_SessionMessage*& m
 
       break;
     }
-    case Stream_SessionMessage::SESSION_STATISTICS:
+    case Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS:
     {
 //       // *NOTE*: protect access to statistics data
 //       // from asynchronous API calls (as well as local reporting)...

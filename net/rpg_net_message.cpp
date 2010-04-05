@@ -25,33 +25,30 @@
 // *NOTE*: this is implicitly invoked by duplicate() as well...
 RPG_Net_Message::RPG_Net_Message(const RPG_Net_Message& message_in)
  : inherited(message_in),
+   myIsInitialized(message_in.myIsInitialized)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
+
+}
+
+RPG_Net_Message::RPG_Net_Message(ACE_Data_Block* dataBlock_in,
+                                 ACE_Allocator* messageAllocator_in)
+ : inherited(dataBlock_in,         // use (don't own !) this data block
+             messageAllocator_in), // use this when destruction is imminent...
    myIsInitialized(true)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
 
 }
 
-// *NOTE*: to be used by allocators ONLY !
-RPG_Net_Message::RPG_Net_Message(ACE_Data_Block* dataBlock_in,
-                                 ACE_Allocator* messageAllocator_in)
- : inherited(dataBlock_in,         // use (don't own !) this data block
-             messageAllocator_in), // use this when destruction is imminent...
-   myIsInitialized(false) // not initialized --> call init() !
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
-
-}
-
-// *NOTE*: to be used by allocators ONLY !
-RPG_Net_Message::RPG_Net_Message(ACE_Allocator* messageAllocator_in,
-                                 const bool& incrementMessageCounter_in)
- : inherited(messageAllocator_in,
-             incrementMessageCounter_in),
-   myIsInitialized(false) // not initialized --> call init() !
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
-
-}
+// RPG_Net_Message::RPG_Net_Message(ACE_Allocator* messageAllocator_in)
+//  : inherited(messageAllocator_in,
+//              true), // usually, we want to increment the running message counter...
+//    myIsInitialized(false) // not initialized --> call init() !
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
+//
+// }
 
 RPG_Net_Message::~RPG_Net_Message()
 {
@@ -319,12 +316,11 @@ RPG_Net_Message::duplicate(void) const
   } // end IF
   else // otherwise, use the existing message_block_allocator
   {
-    // *NOTE*: by passing the "magic" value of 0 (instead of sizeof(RPG_Net_Message) or the like),
-    // we (hopefully) signal the allocator to omit incrementing the running message counter here...
-    // *TODO*: find a better way of doing this !
+    // *NOTE*: the argument to malloc SHOULDN'T really matter, as this will be
+    // a "shallow" copy which just references our data block...
     ACE_NEW_MALLOC_RETURN(nb,
                           ACE_static_cast(RPG_Net_Message*,
-                                          message_block_allocator_->malloc(0)), // DON'T increment running message counter !
+                                          message_block_allocator_->malloc(capacity())),
                           RPG_Net_Message(*this),
                           NULL);
   } // end ELSE
@@ -341,6 +337,8 @@ RPG_Net_Message::duplicate(void) const
       nb = NULL;
     } // end IF
   } // end IF
+
+  // *NOTE*: if "this" is initialized, so is the "clone" (and vice-versa)...
 
   return nb;
 }

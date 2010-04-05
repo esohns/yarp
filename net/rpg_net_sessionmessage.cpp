@@ -20,17 +20,35 @@
 
 #include "rpg_net_sessionmessage.h"
 
-RPG_Net_SessionMessage::RPG_Net_SessionMessage(const Stream_SessionMessageType& messageType_in,
-                                               RPG_Net_StreamConfig*& config_inout)
- : inherited(messageType_in,
-             config_inout)
+#include <ace/Malloc_Base.h>
+
+// RPG_Net_SessionMessage::RPG_Net_SessionMessage(const Stream_SessionMessageType& messageType_in,
+//                                                RPG_Net_StreamConfig*& config_inout)
+//  : inherited(messageType_in,
+//              config_inout)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Net_SessionMessage::RPG_Net_SessionMessage"));
+//
+// }
+
+RPG_Net_SessionMessage::RPG_Net_SessionMessage(const RPG_Net_SessionMessage& message_in)
+ : inherited(message_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SessionMessage::RPG_Net_SessionMessage"));
 
 }
 
-RPG_Net_SessionMessage::RPG_Net_SessionMessage(const RPG_Net_SessionMessage& message_in)
- : inherited(message_in)
+RPG_Net_SessionMessage::RPG_Net_SessionMessage(ACE_Allocator* messageAllocator_in)
+ : inherited(messageAllocator_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_SessionMessage::RPG_Net_SessionMessage"));
+
+}
+
+RPG_Net_SessionMessage::RPG_Net_SessionMessage(ACE_Data_Block* dataBlock_in,
+                                               ACE_Allocator* messageAllocator_in)
+ : inherited(dataBlock_in,
+             messageAllocator_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SessionMessage::RPG_Net_SessionMessage"));
 
@@ -62,11 +80,11 @@ RPG_Net_SessionMessage::duplicate(void) const
                    NULL);
   } // end IF
 
-  // *WARNING*: be aware that this is may be broken for allocators that actually return
-  // handles to e.g. RPG_Net_Messages...
+  // *WARNING*:we tell the allocator to return a RPG_Net_SessionMessage
+  // by passing a 0 as argument to malloc()...
   ACE_NEW_MALLOC_RETURN(nb,
                         ACE_static_cast(RPG_Net_SessionMessage*,
-                                        message_block_allocator_->malloc(sizeof(RPG_Net_SessionMessage))),
+                                        message_block_allocator_->malloc(0)),
                         RPG_Net_SessionMessage(*this),
                         NULL);
 
@@ -82,6 +100,8 @@ RPG_Net_SessionMessage::duplicate(void) const
       nb = NULL;
     } // end IF
   } // end IF
+
+  // *NOTE*: if "this" is initialized, so is the "clone" (and vice-versa)...
 
   return nb;
 }

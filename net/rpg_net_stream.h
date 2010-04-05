@@ -35,9 +35,6 @@
 
 #include <ace/Global_Macros.h>
 
-// forward declaration(s)
-class Stream_IAllocator;
-
 class RPG_Net_Stream
  : public Stream_Base<RPG_Net_ConfigPOD,
                       RPG_Net_StreamConfig,
@@ -68,6 +65,7 @@ class RPG_Net_Stream
                       RPG_Net_SessionMessage> inherited;
 
   // safety measures
+//   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Stream());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Stream(const RPG_Net_Stream&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Stream& operator=(const RPG_Net_Stream&));
 

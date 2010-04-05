@@ -328,7 +328,7 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
   if (myCurrentMessage->total_length() > myCurrentMessageLength)
   {
     // remember overlapping bytes
-    size_t overlap = myCurrentMessage->total_length() - myCurrentMessageLength;
+//     size_t overlap = myCurrentMessage->total_length() - myCurrentMessageLength;
 
     // adjust write pointer of our current buffer so (total_-)length()
     // reflects the proper size...
@@ -458,6 +458,7 @@ RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatisti
 
   // *NOTE*: this is a "fire-and-forget" API, so we don't need to
   // worry about config any longer !
-  return inherited::putSessionMessage(Stream_SessionMessage::SESSION_STATISTICS,
-                                      config);
+  return inherited::putSessionMessage(Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS,
+                                      config,
+                                      myAllocator);
 }
