@@ -44,9 +44,9 @@ class RPG_Net_SessionMessage
   friend class Stream_MessageAllocatorHeapBase<RPG_Net_Message, RPG_Net_SessionMessage>;
 
  public:
-//   // *NOTE*: assume lifetime responsibility for the second argument !
-//   RPG_Net_SessionMessage(const Stream_SessionMessageType&, // message type
-//                          RPG_Net_StreamConfig*&);          // config handle
+  // *NOTE*: assume lifetime responsibility for the second argument !
+  RPG_Net_SessionMessage(const Stream_SessionMessageType&, // message type
+                         RPG_Net_StreamConfig*&);          // config handle
   virtual ~RPG_Net_SessionMessage();
 
   // overloaded from ACE_Message_Block

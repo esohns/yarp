@@ -60,7 +60,7 @@ class RPG_Net_Module_RuntimeStatistic
   const bool init(const unsigned long& = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL, // (local) reporting interval [seconds: 0 --> OFF]
                   // *NOTE*: if this is non-NULL, cache usage data will be reported !
                   const Stream_IAllocator* = NULL,                                 // message allocator
-                  const bool& = false);                                            // print hash ("#") mark for every 1000 messages seen to stdout
+                  const bool& = false);                                            // print hash ("#") mark for every 1000 data messages seen to stdout
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
@@ -124,7 +124,9 @@ class RPG_Net_Module_RuntimeStatistic
   // *GENERIC STATS*
   mutable ACE_Thread_Mutex           myLock;
 
+  // *NOTE*: data messages == (myNumTotalMessages - myNumSessionMessages)
   unsigned long                      myNumTotalMessages;
+  unsigned long                      myNumSessionMessages;
   // used to compute message throughput...
   unsigned long                      myMessageCounter;
   // *NOTE: support asynchronous collecting/reporting of data...

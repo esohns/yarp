@@ -97,7 +97,7 @@ class RPG_Net_Module_SocketHandler
 
   // helper methods
   const bool bisectMessages(RPG_Net_Message*&); // return value: complete message (chain)
-  RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
+//   RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
   const bool putStatisticsMessage(const RPG_Net_RuntimeStatistic&, // statistics info
                                   const ACE_Time_Value&);          // statistics generation time
   inline void cancelTimer()
@@ -134,7 +134,6 @@ class RPG_Net_Module_SocketHandler
   unsigned long         myCurrentMessageLength;
   RPG_Net_Message*      myCurrentMessage;
   RPG_Net_Message*      myCurrentBuffer;
-  Stream_IAllocator*    myAllocator;
 };
 
 // declare module

@@ -37,8 +37,7 @@ RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
    myStatCollectHandlerID(0),
    myCurrentMessageLength(0),
    myCurrentMessage(NULL),
-   myCurrentBuffer(NULL),
-   myAllocator(NULL)
+   myCurrentBuffer(NULL)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler"));
 
@@ -131,7 +130,7 @@ RPG_Net_Module_SocketHandler::init(Stream_IAllocator* allocator_in,
   // *NOTE*: need to clean up timer beyond this point !
 
   myConnectionID = connectionID_in;
-  myAllocator = allocator_in;
+  inherited::myAllocator = allocator_in;
 
   // OK: all's well...
   myIsInitialized = true;
@@ -398,34 +397,34 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
   return true;
 }
 
-RPG_Net_Message*
-RPG_Net_Module_SocketHandler::allocateMessage(const unsigned long& requestedSize_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::allocateMessage"));
-
-  // init return value(s)
-  RPG_Net_Message* message_out = NULL;
-
-  try
-  {
-    message_out = ACE_static_cast(RPG_Net_Message*,
-                                  myAllocator->malloc(requestedSize_in));
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in Stream_IAllocator::malloc(%u), aborting\n"),
-               requestedSize_in));
-  }
-  if (!message_out)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to Stream_IAllocator::malloc(%u), aborting\n"),
-               requestedSize_in));
-  } // end IF
-
-  return message_out;
-}
+// RPG_Net_Message*
+// RPG_Net_Module_SocketHandler::allocateMessage(const unsigned long& requestedSize_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::allocateMessage"));
+//
+//   // init return value(s)
+//   RPG_Net_Message* message_out = NULL;
+//
+//   try
+//   {
+//     message_out = ACE_static_cast(RPG_Net_Message*,
+//                                   inherited::myAllocator->malloc(requestedSize_in));
+//   }
+//   catch (...)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("caught exception in Stream_IAllocator::malloc(%u), aborting\n"),
+//                requestedSize_in));
+//   }
+//   if (!message_out)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to Stream_IAllocator::malloc(%u), aborting\n"),
+//                requestedSize_in));
+//   } // end IF
+//
+//   return message_out;
+// }
 
 const bool
 RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatistic& info_in,
@@ -459,5 +458,5 @@ RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatisti
   // worry about config any longer !
   return inherited::putSessionMessage(Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS,
                                       config,
-                                      myAllocator);
+                                      inherited::myAllocator);
 }
