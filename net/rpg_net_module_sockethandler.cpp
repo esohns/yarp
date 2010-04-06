@@ -341,11 +341,9 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
       offset -= current->length();
       current = current->cont();
     } // end WHILE
-    myCurrentBuffer->wr_ptr(myCurrentBuffer->rd_ptr() + offset);
-    // sanity check
-    ACE_ASSERT(myCurrentMessage->total_length() == myCurrentMessageLength);
 
-    // --> create a new message head...
+//     myCurrentBuffer->wr_ptr(myCurrentBuffer->rd_ptr() + offset);
+//     // --> create a new message head...
 //     RPG_Net_Message* new_head = allocateMessage(RPG_NET_DEF_NETWORK_BUFFER_SIZE);
 //     if (new_head == NULL)
 //     {
@@ -371,9 +369,17 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 //       return true;
 //     } // end IF
 
-    // ...just reference the same data block instead
+    // [instead], use copy ctor and just reference the same data block...
     RPG_Net_Message* new_head = ACE_dynamic_cast(RPG_Net_Message*,
                                                  myCurrentBuffer->duplicate());
+
+    // adjust wr_ptr to make length() work...
+    myCurrentBuffer->wr_ptr(myCurrentBuffer->rd_ptr() + offset);
+    // sanity check
+    ACE_ASSERT(myCurrentMessage->total_length() == myCurrentMessageLength);
+
+    // adjust rd_ptr to point to the beginning of the next message
+    new_head->rd_ptr(offset);
 
     // set new message head/current buffer
     myCurrentMessage = new_head;
