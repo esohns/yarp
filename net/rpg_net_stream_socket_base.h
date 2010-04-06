@@ -29,6 +29,7 @@
 
 // forward declarations
 class RPG_Net_Message;
+class ACE_Message_Block;
 
 template <typename StreamType>
 class RPG_Net_StreamSocketBase
@@ -47,6 +48,9 @@ class RPG_Net_StreamSocketBase
   // *NOTE*: enqueue any received data onto our stream for further processing
   virtual int handle_input(ACE_HANDLE); // handle
 
+  // *NOTE*: send any enqueued data back to the client...
+  virtual int handle_output(ACE_HANDLE); // handle
+
   // *NOTE*: this is called when:
   // - handle_xxx() returns -1
   virtual int handle_close(ACE_HANDLE,
@@ -64,7 +68,8 @@ class RPG_Net_StreamSocketBase
 
   StreamType         myStream;
   Stream_IAllocator* myAllocator; // message allocator
-  RPG_Net_Message*   myCurrentBuffer;
+  RPG_Net_Message*   myCurrentReadBuffer;
+  ACE_Message_Block* myCurrentWriteBuffer;
 };
 
 // include template implementation

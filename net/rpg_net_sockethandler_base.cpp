@@ -150,7 +150,7 @@ RPG_Net_SocketHandler_Base::abort()
   if (result == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Svc_Handler::close(): \"%s\", returning\n"),
+               ACE_TEXT("failed to ACE_Svc_Handler::close(0): \"%s\", returning\n"),
                ACE_OS::strerror(errno)));
   } // end IF
 }
@@ -187,8 +187,8 @@ RPG_Net_SocketHandler_Base::dump_state() const
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("connection (remote host: \"%s\", port: %u) --> ID: %d\n"),
+             ACE_TEXT("connection (remote host: \"%s\", port: %u) --> ID: %u\n"), // (== socket handle)
              remoteAddress.get_host_name(),
              remoteAddress.get_port_number(),
-             peer().get_handle()));
+             getID()));
 }

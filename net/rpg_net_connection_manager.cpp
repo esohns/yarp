@@ -215,7 +215,7 @@ RPG_Net_Connection_Manager::abortConnections()
 
   unsigned long num_clients = myConnections.size();
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("aborting %u client(s)...\n"),
+             ACE_TEXT("aborting %u client connections(s)...\n"),
              num_clients));
 
   CONNECTIONLIST_CONSTITERATOR_TYPE iter = myConnections.begin();
@@ -237,7 +237,7 @@ RPG_Net_Connection_Manager::abortConnections()
   } // end WHILE
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("aborting %u client(s)...DONE\n"),
+             ACE_TEXT("aborting %u client connection(s)...DONE\n"),
              num_clients));
 }
 
@@ -253,7 +253,7 @@ RPG_Net_Connection_Manager::waitConnections() const
     while (!myConnections.empty())
     {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("waiting (count: %d)...\n"),
+                 ACE_TEXT("waiting for client connection(s) to close (count: %d)...\n"),
                  myConnections.size()));
 
       myCondition.wait();

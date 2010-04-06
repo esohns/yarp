@@ -1146,12 +1146,12 @@ RPG_Net_Common_Tools::retrieveLocalIPAddress(const std::string& interfaceIdentif
       continue;
     } // end IF
 
-    // sanity check: ignore loopback
-    if (addr_array[i].is_loopback())
-    {
-      // try next one...
-      continue;
-    } // end IF
+//     // sanity check: ignore loopback
+//     if (addr_array[i].is_loopback())
+//     {
+//       // try next one...
+//       continue;
+//     } // end IF
 
     if (addr_array[i].get_host_addr(ip,
                                     MAXHOSTNAMELEN) == NULL)
