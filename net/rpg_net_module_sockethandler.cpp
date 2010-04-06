@@ -31,7 +31,7 @@
 RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
  : inherited(false), // DON'T auto-start !
    myIsInitialized(false),
-   myConnectionID(0),
+   mySessionID(0),
    myStatCollectHandler(this,
                         STATISTICHANDLER_TYPE::ACTION_COLLECT),
    myStatCollectHandlerID(0),
@@ -82,7 +82,7 @@ RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
 
 const bool
 RPG_Net_Module_SocketHandler::init(Stream_IAllocator* allocator_in,
-                                   const unsigned long& connectionID_in,
+//                                    const unsigned long& connectionID_in,
                                    const unsigned long& statisticsCollectionInterval_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::init"));
@@ -129,7 +129,7 @@ RPG_Net_Module_SocketHandler::init(Stream_IAllocator* allocator_in,
 
   // *NOTE*: need to clean up timer beyond this point !
 
-  myConnectionID = connectionID_in;
+//   myConnectionID = connectionID_in;
   inherited::myAllocator = allocator_in;
 
   // OK: all's well...
@@ -184,6 +184,39 @@ RPG_Net_Module_SocketHandler::handleDataMessage(Stream_MessageBase*& message_ino
       complete_message = NULL;
     } // end IF
   } // end WHILE
+}
+
+void
+RPG_Net_Module_SocketHandler::handleSessionMessage(RPG_Net_SessionMessage*& message_inout,
+                                                   bool& passMessageDownstream_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::handleSessionMessage"));
+
+  // don't care (implies yes per default, if we're part of a stream)
+  ACE_UNUSED_ARG(passMessageDownstream_out);
+
+  // sanity check(s)
+  ACE_ASSERT(message_inout);
+  ACE_ASSERT(myIsInitialized);
+
+  switch (message_inout->getType())
+  {
+    case Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
+    {
+      // remember session ID for reporting...
+      mySessionID = message_inout->getConfig()->getUserData().sessionID;
+
+      // start profile timer...
+//       myProfile.start();
+
+      break;
+    }
+    default:
+    {
+      // don't do anything...
+      break;
+    }
+  } // end SWITCH
 }
 
 const bool
@@ -456,7 +489,8 @@ RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatisti
   // step3: send the data downstream...
   // *NOTE*: this is a "fire-and-forget" API, so we don't need to
   // worry about config any longer !
-  return inherited::putSessionMessage(Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS,
+  return inherited::putSessionMessage(mySessionID,
+                                      Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS,
                                       config,
                                       inherited::myAllocator);
 }

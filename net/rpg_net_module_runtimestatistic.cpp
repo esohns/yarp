@@ -38,6 +38,7 @@ RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic()
    myLocalReportingHandler(this,
                            STATISTICHANDLER_TYPE::ACTION_REPORT),
    myLocalReportingHandlerID(0),
+   mySessionID(0),
    myNumTotalMessages(0),
    myNumSessionMessages(0),
    myMessageCounter(0),
@@ -120,6 +121,7 @@ RPG_Net_Module_RuntimeStatistic::init(const unsigned long& reportingInterval_in,
     // stop reporting timer
     fini_timers(false);
 
+    mySessionID = 0;
     // reset various counters...
     {
       ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
@@ -262,6 +264,9 @@ RPG_Net_Module_RuntimeStatistic::handleSessionMessage(RPG_Net_SessionMessage*& m
   {
     case Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
     {
+      // remember session ID for reporting...
+      mySessionID = message_inout->getConfig()->getUserData().sessionID;
+
       // start profile timer...
 //       myProfile.start();
 

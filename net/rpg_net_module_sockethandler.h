@@ -56,7 +56,7 @@ class RPG_Net_Module_SocketHandler
 
   // configuration / initialization
   const bool init(Stream_IAllocator*,        // message allocator
-                  const unsigned long&,      // connection ID
+//                   const unsigned long&,      // connection ID
                   const unsigned long& = 0); // statistics collecting interval (second(s))
                                              // 0 --> DON'T collect statistics
 
@@ -67,6 +67,10 @@ class RPG_Net_Module_SocketHandler
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
                                  bool&);               // return value: pass message downstream ?
+
+  // catch the session ID...
+  virtual void handleSessionMessage(RPG_Net_SessionMessage*&, // session message handle
+                                    bool&);                   // return value: pass message downstream ?
 
   // implement RPG_Common_IStatistic
   // *NOTE*: we reuse the interface for our own purposes (to implement timer-based data collection)
@@ -123,7 +127,7 @@ class RPG_Net_Module_SocketHandler
   }; // end IF
 
   bool                  myIsInitialized;
-  unsigned long         myConnectionID;
+  unsigned long         mySessionID;
 
   // timer stuff
   TIMERQUEUE_TYPE       myTimerQueue;

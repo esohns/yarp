@@ -123,6 +123,7 @@ class RPG_Net_Module_RuntimeStatistic
 
   // *GENERIC STATS*
   mutable ACE_Thread_Mutex           myLock;
+  unsigned long                      mySessionID;
 
   // *NOTE*: data messages == (myNumTotalMessages - myNumSessionMessages)
   unsigned long                      myNumTotalMessages;

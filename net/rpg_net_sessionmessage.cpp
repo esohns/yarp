@@ -22,9 +22,11 @@
 
 #include <ace/Malloc_Base.h>
 
-RPG_Net_SessionMessage::RPG_Net_SessionMessage(const Stream_SessionMessageType& messageType_in,
+RPG_Net_SessionMessage::RPG_Net_SessionMessage(const unsigned long& sessionID_in,
+                                               const Stream_SessionMessageType& messageType_in,
                                                RPG_Net_StreamConfig*& config_inout)
- : inherited(messageType_in,
+ : inherited(sessionID_in,
+             messageType_in,
              config_inout)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SessionMessage::RPG_Net_SessionMessage"));

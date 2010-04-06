@@ -38,8 +38,9 @@ struct RPG_Net_ConfigPOD
   int socketBufferSize;
   Stream_IAllocator* messageAllocator;
   // ************ stream config data ************
+//   unsigned long connectionID;
+  unsigned long sessionID; // (== socket handle !)
   unsigned long statisticsReportingInterval;
-  unsigned long connectionID;
   // ************ runtime data ************
   RPG_Net_RuntimeStatistic currentStatistics;
   ACE_Time_Value lastCollectionTimestamp;

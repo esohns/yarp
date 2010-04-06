@@ -131,8 +131,30 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
     } // end IF
   } // end IF
 
-  // step2: init/start data processing stream
-  myUserData.connectionID = getID();
+  // step2: start client ping timer and register us at the reactor
+  // *NOTE*: this is done by the base class !
+  // *WARNING*: as soon as this returns, data will start arriving
+  // at handle_input() and fill our stream...
+  int result = inherited::open(arg_in);
+  if (result == -1)
+  {
+    // *NOTE*: this might have happened because there are too many
+    // open connections... --> not an error !
+    if (ACE_OS::last_error())
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to inherited::open(): \"%s\", aborting\n"),
+                 ACE_OS::strerror(errno)));
+    } // end IF
+
+    // reactor will invoke handle_close() --> we commit suicide
+    return -1;
+  } // end IF
+
+  // step3: init/start data processing stream
+  // *NOTE*: need to do this AFTER inherited::open() so that get_handle() works...
+//   myUserData.connectionID = getID();
+  myUserData.sessionID = get_handle();
   if (!myStream.init(myUserData))
   {
     ACE_DEBUG((LM_ERROR,
@@ -146,28 +168,6 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to start processing stream, aborting\n")));
-
-    // reactor will invoke handle_close() --> we commit suicide
-    return -1;
-  } // end IF
-
-  // start client ping timer and register us at the reactor
-  // *NOTE*: this is done by the base class !
-  int result = inherited::open(arg_in);
-  if (result == -1)
-  {
-    // *NOTE*: this might have happened because there are too many
-    // open connections... --> not an error !
-    if (ACE_OS::last_error())
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to inherited::open(): \"%s\", aborting\n"),
-                 ACE_OS::strerror(errno)));
-    } // end IF
-
-    // clean up
-    myStream.stop();
-    myStream.waitForCompletion();
 
     // reactor will invoke handle_close() --> we commit suicide
     return -1;

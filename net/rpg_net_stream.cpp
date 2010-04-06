@@ -186,7 +186,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
     return false;
   } // end IF
   if (!socketHandler_impl->init(config_in.messageAllocator,
-                                config_in.connectionID,
+//                                 config_in.connectionID,
                                 RPG_NET_DEF_STATISTICS_COLLECT_INTERVAL))
   {
     ACE_DEBUG((LM_ERROR,
