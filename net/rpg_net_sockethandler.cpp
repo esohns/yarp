@@ -114,35 +114,24 @@ RPG_Net_SocketHandler::handle_input(ACE_HANDLE handle_in)
   ACE_UNUSED_ARG(handle_in);
 
   ACE_Message_Block* chunk = NULL;
-  try
-  {
-    chunk = new ACE_Message_Block(RPG_NET_DEF_NETWORK_BUFFER_SIZE,    // size
-                                  ACE_Message_Block::MB_STOP,         // type
-                                  NULL,                               // continuation
-                                  NULL,                               // data
-                                  NULL,                               // buffer allocator
-                                  NULL,                               // locking strategy
-                                  ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
-                                  ACE_Time_Value::zero,               // execution time
-                                  ACE_Time_Value::max_time,           // deadline time
-                                  NULL,                               // data allocator
-                                  NULL);                              // message allocator
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in new, returning\n")));
-
-    // clean up
-    cancelTimer();
-
-    // reactor will invoke handle_close() --> close the socket
-    return -1;
-  }
+  ACE_NEW_NORETURN(chunk,
+                   ACE_Message_Block(RPG_NET_DEF_NETWORK_BUFFER_SIZE,    // size
+                                     ACE_Message_Block::MB_STOP,         // type
+                                     NULL,                               // continuation
+                                     NULL,                               // data
+                                     NULL,                               // buffer allocator
+                                     NULL,                               // locking strategy
+                                     ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
+                                     ACE_Time_Value::zero,               // execution time
+                                     ACE_Time_Value::max_time,           // deadline time
+                                     NULL,                               // data allocator
+                                     NULL));                             // message allocator
   if (!chunk)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("unable to allocate memory, returning\n")));
+               ACE_TEXT("failed to allocate ACE_Message_Block(%u): \"%s\", aborting\n"),
+               RPG_NET_DEF_NETWORK_BUFFER_SIZE,
+               ACE_OS::strerror(errno)));
 
     // clean up
     cancelTimer();

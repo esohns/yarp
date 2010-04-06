@@ -437,25 +437,18 @@ RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatisti
 
   // step2: allocate config container
   RPG_Net_StreamConfig* config = NULL;
-  try
-  {
-    config = new RPG_Net_StreamConfig(data);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in new, aborting\n")));
-
-    return false;
-  }
+  ACE_NEW_NORETURN(config,
+                   RPG_Net_StreamConfig(data));
   if (!config)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("unable to allocate memory, aborting\n")));
+               ACE_TEXT("failed to allocate RPG_Net_StreamConfig: \"%s\", aborting\n"),
+               ACE_OS::strerror(errno)));
 
     return false;
   } // end IF
 
+  // step3: send the data downstream...
   // *NOTE*: this is a "fire-and-forget" API, so we don't need to
   // worry about config any longer !
   return inherited::putSessionMessage(Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS,
