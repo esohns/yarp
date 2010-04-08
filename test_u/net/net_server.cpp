@@ -38,6 +38,7 @@
 #include <ace/Version.h>
 #include <ace/Get_Opt.h>
 #include <ace/Reactor.h>
+#include <ace/TP_Reactor.h>
 #include <ace/Signal.h>
 #include <ace/Sig_Handler.h>
 #include <ace/High_Res_Timer.h>
@@ -58,14 +59,15 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-i [VALUE] : client ping interval ([") << RPG_NET_DEF_PING_INTERVAL << ACE_TEXT("] seconds)") << std::endl;
-  std::cout << ACE_TEXT("-k [VALUE] : keep-alive timeout ([") << RPG_NET_DEF_KEEPALIVE << ACE_TEXT("] seconds)") << std::endl;
-  std::cout << ACE_TEXT("-l         : log to a file") << std::endl;
-  std::cout << ACE_TEXT("-n [STRING]: network interface [\"") << RPG_NET_DEF_CNF_NETWORK_INTERFACE << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-p [VALUE] : listening port ([") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("])") << std::endl;
-  std::cout << ACE_TEXT("-s [VALUE] : statistics reporting interval ([") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] seconds {0 --> OFF})") << std::endl;
-  std::cout << ACE_TEXT("-t         : trace information") << std::endl;
-  std::cout << ACE_TEXT("-v         : print version information and exit") << std::endl;
+  std::cout << ACE_TEXT("-i [VALUE]   : client idle ping interval ([") << RPG_NET_DEF_PING_INTERVAL << ACE_TEXT("] seconds)") << std::endl;
+  std::cout << ACE_TEXT("-k [VALUE]   : socket keep-alive timeout ([") << RPG_NET_DEF_KEEPALIVE << ACE_TEXT("] seconds)") << std::endl;
+  std::cout << ACE_TEXT("-l           : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-n [STRING]  : network interface [\"") << RPG_NET_DEF_CNF_NETWORK_INTERFACE << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-p [VALUE]   : listening port ([") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("])") << std::endl;
+  std::cout << ACE_TEXT("-s [VALUE]   : statistics reporting interval") << ACE_TEXT(" [") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] seconds {0 --> OFF})") << std::endl;
+  std::cout << ACE_TEXT("-t           : trace information") << std::endl;
+  std::cout << ACE_TEXT("-v           : print version information and exit") << std::endl;
+  std::cout << ACE_TEXT("-x <[VALUE]> : use thread pool <#threads>")  << ACE_TEXT(" [") << RPG_NET_DEF_SERVER_USES_TP << ACE_TEXT(" : ") << RPG_NET_DEF_SERVER_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 const bool
@@ -78,7 +80,9 @@ process_arguments(const int argc_in,
                   unsigned short& listeningPortNumber_out,
                   unsigned long& statisticsReportingInterval_out,
                   bool& traceInformation_out,
-                  bool& printVersionAndExit_out)
+                  bool& printVersionAndExit_out,
+                  bool& useThreadPool_out,
+                  unsigned long& numThreadPoolThreads_out)
 {
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -91,10 +95,12 @@ process_arguments(const int argc_in,
   statisticsReportingInterval_out = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL;
   traceInformation_out = false;
   printVersionAndExit_out = false;
+  useThreadPool_out = RPG_NET_DEF_SERVER_USES_TP;
+  numThreadPoolThreads_out = RPG_NET_DEF_SERVER_NUM_TP_THREADS;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("i:k:ln:p:s:tv"));
+                             ACE_TEXT("i:k:ln:p:s:tvx::"));
 
   int option = 0;
   std::stringstream converter;
@@ -155,6 +161,15 @@ process_arguments(const int argc_in,
       case 'v':
       {
         printVersionAndExit_out = true;
+
+        break;
+      }
+      case 'x':
+      {
+        useThreadPool_out = true;
+        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+        converter << argumentParser.opt_arg();
+        converter >> numThreadPoolThreads_out;
 
         break;
       }
@@ -275,7 +290,7 @@ init_coreDumping()
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("corefile limits [soft: %u, hard: %u]...\n"),
+             ACE_TEXT("unset corefile limits [soft: %u, hard: %u]...\n"),
              core_limit.rlim_cur,
              core_limit.rlim_max));
 #else
@@ -283,6 +298,25 @@ init_coreDumping()
   ACE_DEBUG((LM_WARNING,
              ACE_TEXT("corefile limits on Windows platforms has not been implemented (yet), continuing\n")));
 #endif
+
+  return true;
+}
+
+const bool
+init_threadPool()
+{
+  ACE_TRACE(ACE_TEXT("::init_threadPool"));
+
+  ACE_TP_Reactor* threadpool_reactor = NULL;
+  ACE_NEW_RETURN(threadpool_reactor,
+                 ACE_TP_Reactor(),
+                 false);
+  ACE_Reactor* new_reactor = NULL;
+  ACE_NEW_RETURN(new_reactor,
+                 ACE_Reactor(threadpool_reactor, 1), // delete in dtor
+                 false);
+  // make this the "default" reactor...
+  ACE_Reactor::instance(new_reactor, 1); // delete in dtor
 
   return true;
 }
@@ -398,18 +432,51 @@ init_signalHandling(const std::vector<int>& signals_in,
   return true;
 }
 
+static
+ACE_THR_FUNC_RETURN
+tp_worker_func(void* args_in)
+{
+  ACE_TRACE(ACE_TEXT("::tp_worker_func"));
+
+  ACE_UNUSED_ARG(args_in);
+
+  while (!ACE_Reactor::event_loop_done())
+  {
+    // block and wait for an event...
+    if (ACE_Reactor::instance()->handle_events(NULL) == -1)
+      ACE_ERROR((LM_ERROR,
+                 ACE_TEXT("(%t) error handling events: \"%p\"\n")));
+  } // end WHILE
+
+  return 0;
+}
+
 void
 do_work(const unsigned long& clientPingInterval_in,
         const std::string& networkInterface_in,
         const unsigned short& listeningPortNumber_in,
-        const unsigned long& statisticsReportingInterval_in)
+        const unsigned long& statisticsReportingInterval_in,
+        const bool& useThreadPool_in,
+        const unsigned long& numThreadPoolThreads_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
   // - start listening for connections on a TCP port
   // *NOTE*: need to cancel this for a well-behaved shutdown !
 
-  // step0: signal handling
+  // step0: (if necessary) init the TP_Reactor
+  if (useThreadPool_in)
+  {
+    if (!init_threadPool())
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to init_threadPool(), aborting\n")));
+
+      return;
+    } // end IF
+  } // end IF
+
+  // step1: signal handling
   // event handler for signals
   RPG_Net_SignalHandler signalEventHandler(RPG_NET_LISTENER_SINGLETON::instance());
   ACE_Sig_Handlers      signalHandlers;
@@ -425,7 +492,7 @@ do_work(const unsigned long& clientPingInterval_in,
     return;
   } // end IF
 
-  // step1a: init configuration object
+  // step2a: init configuration object
   Stream_AllocatorHeap heapAllocator;
   RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
                                                   &heapAllocator);
@@ -433,15 +500,15 @@ do_work(const unsigned long& clientPingInterval_in,
   ACE_OS::memset(&config,
                  0,
                  sizeof(RPG_Net_ConfigPOD));
-  config.socketBufferSize = RPG_NET_DEF_PCAP_SOCK_RECVBUF_SIZE;
+  config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
   config.statisticsReportingInterval = statisticsReportingInterval_in;
 
-  // step1a: init connection manager
+  // step2b: init connection manager
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS,
                                                         config); // will be passed to all handlers
 
-  // step2: init/start listening
+  // step2c: init/start listening
   RPG_NET_LISTENER_SINGLETON::instance()->init(listeningPortNumber_in);
   RPG_NET_LISTENER_SINGLETON::instance()->start();
   if (!RPG_NET_LISTENER_SINGLETON::instance()->isRunning())
@@ -456,6 +523,7 @@ do_work(const unsigned long& clientPingInterval_in,
   // *NOTE*: from this point on, we need to potentially also clean up
   //         any remote connections !
 
+  // step2d: handle events (signals, incoming connections/data, timers, ...)
   // event loop:
   // - catch SIGINT/SIGQUIT/SIGTERM/... signals (and perform orderly shutdown)
   // - signal connection attempts to acceptor
@@ -463,19 +531,62 @@ do_work(const unsigned long& clientPingInterval_in,
 
 //   // *WARNING*: DON'T restart system calls (after e.g. EINTR) for the reactor
 //   ACE_Reactor::instance()->restart(1);
-  if (ACE_Reactor::instance()->run_reactor_event_loop() == -1)
+
+  // *NOTE*: if we use a thread pool, we need to do this differently...
+  if (useThreadPool_in)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+    // start a (group of) worker thread(s)...
+    int grp_id = -1;
+    grp_id = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,     // # threads
+                                                     ::tp_worker_func,            // function
+                                                     NULL,                        // argument
+                                                     (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
+                                                     ACE_DEFAULT_THREAD_PRIORITY, // priority
+                                                     -1,                          // group id --> create new
+                                                     NULL,                        // task
+                                                     NULL,                        // handle(s)
+                                                     NULL,                        // stack(s)
+                                                     NULL,                        // stack size(s)
+                                                     NULL);                       // name(s)
+    if (grp_id == -1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%s\", aborting\n"),
+                 numThreadPoolThreads_in,
+                 ACE_OS::strerror(errno)));
 
-    // clean up
-    // stop listener, clean up pending connections
-    RPG_NET_LISTENER_SINGLETON::instance()->stop();
-    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+      // clean up
+      // stop listener, clean up pending connections
+      RPG_NET_LISTENER_SINGLETON::instance()->stop();
+      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
 
-    return;
+      return;
+    } // end IF
+
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("started group (ID: %u) of %u worker thread(s)...\n"),
+               grp_id,
+               numThreadPoolThreads_in));
+
+    // ... and wait for this group to join
+    ACE_Thread_Manager::instance()->wait_grp(grp_id);
   } // end IF
+  else
+  {
+    if (ACE_Reactor::instance()->run_reactor_event_loop() == -1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%s\", aborting\n"),
+                 ACE_OS::strerror(errno)));
+
+      // clean up
+      // stop listener, clean up pending connections
+      RPG_NET_LISTENER_SINGLETON::instance()->stop();
+      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+
+      return;
+    } // end IF
+  } // end ELSE
 
   // clean up
   // *NOTE*: listener should have been stopped by now
@@ -538,6 +649,8 @@ ACE_TMAIN(int argc,
   unsigned long statisticsReportingInterval = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL;
   bool traceInformation                     = false;
   bool printVersionAndExit                  = false;
+  bool useThreadPool                        = RPG_NET_DEF_SERVER_USES_TP;
+  unsigned long numThreadPoolThreads        = RPG_NET_DEF_SERVER_NUM_TP_THREADS;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
@@ -549,7 +662,9 @@ ACE_TMAIN(int argc,
                           listeningPortNumber,
                           statisticsReportingInterval,
                           traceInformation,
-                          printVersionAndExit)))
+                          printVersionAndExit,
+                          useThreadPool,
+                          numThreadPoolThreads)))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
@@ -568,6 +683,14 @@ ACE_TMAIN(int argc,
 //     print_usage(std::string(ACE::basename(argv[0])));
 //
 //     return EXIT_FAILURE;
+  } // end IF
+  else if (useThreadPool &&
+           (numThreadPoolThreads == 0))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("need at least 1 worker thread in the pool...\n")));
+
+    return EXIT_FAILURE;
   } // end IF
 
   // step1d: set correct trace level
@@ -635,7 +758,7 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step1g: we WILL (try to) coredump !
-  // *IMPORTANT NOTE*: this setting will be inherited by any child processes (daemon mode)
+  // *NOTE*: this setting will be inherited by any child processes (daemon mode)
   if (!init_coreDumping())
   {
     ACE_DEBUG((LM_ERROR,
@@ -650,7 +773,9 @@ ACE_TMAIN(int argc,
   do_work(clientPingInterval,
           networkInterface,
           listeningPortNumber,
-          statisticsReportingInterval);
+          statisticsReportingInterval,
+          useThreadPool,
+          numThreadPoolThreads);
   timer.stop();
 
   // debug info

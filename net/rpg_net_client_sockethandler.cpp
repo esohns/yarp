@@ -61,6 +61,15 @@ RPG_Net_Client_SocketHandler::open(void* arg_in)
   } // end IF
 
   // debug info
+  ACE_INET_Addr localAddress;
+  if (peer().get_local_addr(localAddress) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%s\", aborting\n"),
+               ACE_OS::strerror(errno)));
+
+    return -1;
+  }
   ACE_INET_Addr remoteAddress;
   if (peer().get_remote_addr(remoteAddress) == -1)
   {
@@ -71,9 +80,12 @@ RPG_Net_Client_SocketHandler::open(void* arg_in)
     return -1;
   }
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("connected (handle: %d) to server (host: \"%s\", port: %u)\n"),
+             ACE_TEXT("connected (handle: %d) \"%s\" | \"%s:%u\" <--> \"%s:%u\"\n"),
              peer().get_handle(),
-             ACE_TEXT_CHAR_TO_TCHAR(remoteAddress.get_host_name()),
+             localAddress.get_host_name(),
+             localAddress.get_host_addr(),
+             localAddress.get_port_number(),
+             remoteAddress.get_host_name(),
              remoteAddress.get_port_number()));
 
   // register with reactor...

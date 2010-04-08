@@ -1170,9 +1170,9 @@ RPG_Net_Common_Tools::retrieveLocalIPAddress(const std::string& interfaceIdentif
     // debug info
     // *TODO*: sanity check: correct interface ?
     // --> how can we find out which interface this address is assigned to ?
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("found host address: \"%s\"...\n"),
-               ip));
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("found host address: \"%s\"...\n"),
+//                ip));
 
 //     addr_handle = ACE_static_cast(sockaddr_in*,
 //                                   addr_array[i].get_addr());
@@ -1215,14 +1215,14 @@ RPG_Net_Common_Tools::retrieveLocalHostname(std::string& hostname_out)
 
 const bool
 RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
-                                      const int& buffer_in,
+                                      const int& option_in,
                                       const int& size_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::setSocketBuffer"));
 
   // sanity check
-  ACE_ASSERT((buffer_in == SO_RCVBUF) ||
-             (buffer_in == SO_SNDBUF));
+  ACE_ASSERT((option_in == SO_RCVBUF) ||
+             (option_in == SO_SNDBUF));
 
   int size = size_in;
   // *NOTE*: for some reason, Linux will actually set TWICE the size value
@@ -1230,17 +1230,26 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
   if (RPG_Common_Tools::isLinux())
   {
     size /= 2;
+
+    if (size_in % 2)
+    { // debug info
+      ACE_DEBUG((LM_WARNING,
+                 ACE_TEXT("requested %s buffer size %u is ODD...\n"),
+                 ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF")),
+                 size_in));
+    } // end IF
   } // end IF
 
   if (ACE_OS::setsockopt(handle_in,
                          SOL_SOCKET,
-                         buffer_in,
+                         option_in,
                          ACE_reinterpret_cast(const char*, &size),
                          sizeof(int)))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::setsockopt(%d): \"%s\", aborting\n"),
+               ACE_TEXT("failed to ACE_OS::setsockopt(%u, %s): \"%s\", aborting\n"),
                handle_in,
+               ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF")),
                ACE_OS::strerror(errno)));
 
     return false;
@@ -1248,15 +1257,17 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
 
   // validate result
   size = 0;
-  int retsize = 0;
+  int retsize = sizeof(int);
   if (ACE_OS::getsockopt(handle_in,
                          SOL_SOCKET,
-                         buffer_in,
+                         option_in,
                          ACE_reinterpret_cast(char*, &size),
                          &retsize))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::getsockopt(): \"%s\", aborting\n"),
+               ACE_TEXT("failed to ACE_OS::getsockopt(%u, %s): \"%s\", aborting\n"),
+               handle_in,
+               ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF")),
                ACE_OS::strerror(errno)));
 
     return false;
@@ -1266,14 +1277,15 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
   {
     ACE_DEBUG((LM_WARNING,
                ACE_TEXT("ACE_OS::getsockopt(%s) on handle (ID: %d) returned %d (expected: %d), aborting\n"),
-               ((buffer_in == SO_RCVBUF) ? ACE_TEXT("SO_RCVBUF")
-                                         : ACE_TEXT("SO_SNDBUF")),
+               ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF")),
                handle_in,
                size,
                size_in));
 
-    // *NOTE*: may happen on Linux systems (IF size_in is odd, see above)
-    if (!RPG_Common_Tools::isLinux())
+    // *NOTE*: may happen on Linux systems (e.g. IF size_in is odd, see above)
+    if (RPG_Common_Tools::isLinux() && (size_in % 2))
+      return true; // this may lead to a false positive...
+
       return false;
   } // end IF
 
@@ -1286,6 +1298,47 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
 //              size));
 
   return true;
+}
+
+const bool
+RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
+                                 const bool& noDelay_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::setNoDelay"));
+
+  int value = (noDelay_in ? 1 : 0);
+  if (ACE_OS::setsockopt(handle_in,
+                         IPPROTO_TCP,
+                         TCP_NODELAY,
+                         ACE_reinterpret_cast(const char*, &value),
+                         sizeof(int)))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::setsockopt(%u, TCP_NODELAY): \"%s\", aborting\n"),
+               handle_in,
+               ACE_OS::strerror(errno)));
+
+    return false;
+  } // end IF
+
+  // validate result
+  int retsize = sizeof(int);
+  value = 0;
+  if (ACE_OS::getsockopt(handle_in,
+                         IPPROTO_TCP,
+                         TCP_NODELAY,
+                         ACE_reinterpret_cast(char*, &value),
+                         &retsize))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::getsockopt(%u, TCP_NODELAY): \"%s\", aborting\n"),
+               handle_in,
+               ACE_OS::strerror(errno)));
+
+    return false;
+  } // end IF
+
+  return (noDelay_in ? (value == 1) : (value == 0));
 }
 
 int

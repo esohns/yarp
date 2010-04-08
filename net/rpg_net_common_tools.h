@@ -52,8 +52,11 @@ class RPG_Net_Common_Tools
                                            std::string&);      // return value: IP address (dotted-decimal)
   static const bool retrieveLocalHostname(std::string&); // return value: hostname
   static const bool setSocketBuffer(const ACE_HANDLE&, // socket handle
-                                    const int&,        // (SO_RCVBUF || SO_SNDBUF)
+                                    const int&,        // option (SO_RCVBUF || SO_SNDBUF)
                                     const int&);       // size (bytes)
+  // *NOTE*: this should toggle Nagle's algorithm
+  static const bool setNoDelay(const ACE_HANDLE&, // socket handle
+                               const bool&);      // TCP_NODELAY ?
   static unsigned long myMaxNumberOfLogFiles;
 
  private:

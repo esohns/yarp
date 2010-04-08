@@ -46,9 +46,15 @@
 #define RPG_NET_DEF_CNF_NETWORK_INTERFACE         ACE_TEXT("eth0")
 #endif
 
+// use a thread pool for handling network data ?
+#define RPG_NET_DEF_SERVER_USES_TP                true
+#define RPG_NET_DEF_SERVER_NUM_TP_THREADS         10
+
 // 1024 * 1024 --> 1 MByte
 // *NOTE*: make this an even number so we can cope with Linux oddities...
-#define RPG_NET_DEF_PCAP_SOCK_RECVBUF_SIZE        1048510
+#define RPG_NET_DEF_SOCK_RECVBUF_SIZE             32768
+// #define RPG_NET_DEF_SOCK_RECVBUF_SIZE             1048576 // 1Mb
+#define RPG_NET_DEF_SOCK_NODELAY                  true
 
 #define RPG_NET_DEF_KEEPALIVE                     60
 #define RPG_NET_DEF_PING_INTERVAL                 5

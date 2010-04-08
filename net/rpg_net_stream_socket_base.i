@@ -106,6 +106,17 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
       return -1;
     } // end IF
   } // end IF
+  if (!RPG_Net_Common_Tools::setNoDelay(get_handle(),
+                                        RPG_NET_DEF_SOCK_NODELAY))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to setNoDelay(%u, %s), aborting\n"),
+               get_handle(),
+               (RPG_NET_DEF_SOCK_NODELAY ? ACE_TEXT("true") : ACE_TEXT("false"))));
+
+      // reactor will invoke handle_close() --> we commit suicide
+    return -1;
+  } // end IF
 
   // step3: init/start data processing stream
   // *NOTE*: need to do this AFTER inherited::open() so that get_handle() works...
@@ -129,9 +140,18 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
   } // end IF
 
   // debug info
-  // *NOTE*: need to do this BEFORE opening any socket because
-  // ::getnameinfo apparently cannot handle AF_PACKET sockets (don't ask !)...
   // retrieve local IP address
+  ACE_INET_Addr localAddress;
+  if (peer().get_local_addr(localAddress) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%s\", aborting\n"),
+               ACE_OS::strerror(errno)));
+
+    // reactor will invoke handle_close() --> we commit suicide
+    return -1;
+  } // end IF
+
   std::string ip_address;
   std::string interface;
   if (!RPG_Net_Common_Tools::retrieveLocalIPAddress(interface,
@@ -170,10 +190,13 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("established connection [ID: %u]: \"%s\" | \"%s\" <--> \"%s:%u\"\n"),
+             ACE_TEXT("established connection [ID: %u]: \"%s\" | \"%s:%u\" <--> \"%s:%u\"\n"),
              getID(),
-             hostname.c_str(),
-             ip_address.c_str(),
+             localAddress.get_host_name(),
+//              hostname.c_str(),
+             localAddress.get_host_addr(),
+//              ip_address.c_str(),
+             localAddress.get_port_number(),
              remoteAddress.get_host_name(),
              remoteAddress.get_port_number()));
 
