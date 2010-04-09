@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_MODULE_HEADERPARSER_H
-#define RPG_NET_MODULE_HEADERPARSER_H
+#ifndef RPG_NET_MODULE_PROTOCOLHANDLER_H
+#define RPG_NET_MODULE_PROTOCOLHANDLER_H
 
 #include "rpg_net_sessionmessage.h"
 #include "rpg_net_remote_comm.h"
@@ -28,17 +28,19 @@
 #include <stream_streammodule_base.h>
 
 // forward declaration(s)
+class Stream_IAllocator;
 class Stream_MessageBase;
 
-class RPG_Net_Module_HeaderParser
+class RPG_Net_Module_ProtocolHandler
  : public Stream_TaskBaseSynch<RPG_Net_SessionMessage>
 {
  public:
-  RPG_Net_Module_HeaderParser();
-  virtual ~RPG_Net_Module_HeaderParser();
+  RPG_Net_Module_ProtocolHandler();
+  virtual ~RPG_Net_Module_ProtocolHandler();
 
   // initialization
-  const bool init();
+  const bool init(Stream_IAllocator*,   // message allocator
+                  const bool& = false); // automatically answer "ping" messages
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
@@ -51,13 +53,18 @@ class RPG_Net_Module_HeaderParser
   typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage> inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_HeaderParser(const RPG_Net_Module_HeaderParser&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_HeaderParser& operator=(const RPG_Net_Module_HeaderParser&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_ProtocolHandler(const RPG_Net_Module_ProtocolHandler&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_ProtocolHandler& operator=(const RPG_Net_Module_ProtocolHandler&));
 
-  bool myIsInitialized;
+  // helper methods
+  RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
+
+  Stream_IAllocator* myAllocator;
+  bool               myPlayPong;
+  bool               myIsInitialized;
 };
 
 // declare module
-DATASTREAM_MODULE(RPG_Net_Module_HeaderParser);
+DATASTREAM_MODULE(RPG_Net_Module_ProtocolHandler);
 
 #endif

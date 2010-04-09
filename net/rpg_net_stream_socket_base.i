@@ -81,8 +81,7 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
     if (ACE_OS::last_error())
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to inherited::open(): \"%s\", aborting\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_TEXT("failed to inherited::open(): \"%p\", aborting\n")));
     } // end IF
 
     // reactor will invoke handle_close() --> we commit suicide
@@ -139,67 +138,6 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
     return -1;
   } // end IF
 
-  // debug info
-  // retrieve local IP address
-  ACE_INET_Addr localAddress;
-  if (peer().get_local_addr(localAddress) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
-
-    // reactor will invoke handle_close() --> we commit suicide
-    return -1;
-  } // end IF
-
-  std::string ip_address;
-  std::string interface;
-  if (!RPG_Net_Common_Tools::retrieveLocalIPAddress(interface,
-                                                    ip_address))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Net_Common_Tools::retrieveLocalIPAddress(\"%s\"), aborting\n"),
-               interface.c_str()));
-
-    // reactor will invoke handle_close() --> we commit suicide
-    return -1;
-  } // end IF
-
-  // retrieve local hostname
-  std::string hostname;
-  if (!RPG_Net_Common_Tools::retrieveLocalHostname(hostname))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Net_Common_Tools::retrieveLocalHostname(), aborting\n")));
-
-    // reactor will invoke handle_close() --> we commit suicide
-    return -1;
-  } // end IF
-
-  // retrieve remote host/address/port
-  ACE_INET_Addr remoteAddress;
-  if (peer().get_remote_addr(remoteAddress) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
-
-    // reactor will invoke handle_close() --> we commit suicide
-    return -1;
-  } // end IF
-
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("established connection [ID: %u]: \"%s\" | \"%s:%u\" <--> \"%s:%u\"\n"),
-             getID(),
-             localAddress.get_host_name(),
-//              hostname.c_str(),
-             localAddress.get_host_addr(),
-//              ip_address.c_str(),
-             localAddress.get_port_number(),
-             remoteAddress.get_host_name(),
-             remoteAddress.get_port_number()));
-
   return 0;
 }
 
@@ -236,8 +174,7 @@ RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
     case -1:
     {
       ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("failed to ACE_SOCK_Stream::recv(): \"%s\", returning\n"),
-                  ACE_OS::strerror(errno)));
+                  ACE_TEXT("failed to ACE_SOCK_Stream::recv(): \"%p\", returning\n")));
 
       // clean up
       myCurrentReadBuffer->release();
@@ -279,8 +216,7 @@ RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
   if (myStream.put(myCurrentReadBuffer) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Stream::put(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_Stream::put(): \"%p\", aborting\n")));
 
       // clean up
     myCurrentReadBuffer->release();
@@ -313,8 +249,7 @@ RPG_Net_StreamSocketBase<StreamType>::handle_output(ACE_HANDLE handle_in)
     if (myStream.get(myCurrentWriteBuffer, &nowait)) // don't EVER block !
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Stream::get(): \"%s\", returning\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_TEXT("failed to ACE_Stream::get(): \"%p\", returning\n")));
 
       // *TODO*: maybe there was no data ?
       return 0;
@@ -329,8 +264,7 @@ RPG_Net_StreamSocketBase<StreamType>::handle_output(ACE_HANDLE handle_in)
     case -1:
     {
       ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to ACE_SOCK_Stream::send(): \"%s\", returning\n"),
-                ACE_OS::strerror(errno)));
+                ACE_TEXT("failed to ACE_SOCK_Stream::send(): \"%p\", returning\n")));
 
       // clean up
       myCurrentWriteBuffer->release();

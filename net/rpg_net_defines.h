@@ -57,11 +57,14 @@
 #define RPG_NET_DEF_SOCK_NODELAY                  true
 
 #define RPG_NET_DEF_KEEPALIVE                     60
-#define RPG_NET_DEF_PING_INTERVAL                 5
 #define RPG_NET_DEF_LISTENING_PORT                10101
 #define RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS      10
 // *WARNING*: this needs to be AT LEAST sizeof(RPG_Net_Remote_Comm::MessageHeader)
 #define RPG_NET_DEF_NETWORK_BUFFER_SIZE           1024 // 1 kB
+
+// *** protocol-related ***
+#define RPG_NET_DEF_PING_INTERVAL                 5
+#define RPG_NET_DEF_PING_PONG                     true // play "PONG"
 
 // *** stream-related ***
 #define RPG_NET_DEF_GROUP_ID_TASK                 11

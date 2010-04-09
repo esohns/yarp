@@ -73,7 +73,7 @@ RPG_Net_SocketHandler::open(void* arg_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Reactor::schedule_timer(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     // --> reactor will invoke handle_close() --> close the socket
     return -1;
@@ -92,7 +92,7 @@ RPG_Net_SocketHandler::open(void* arg_in)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to inherited::open(): \"%s\", aborting\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
     } // end IF
 
     // clean up
@@ -131,7 +131,7 @@ RPG_Net_SocketHandler::handle_input(ACE_HANDLE handle_in)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to allocate ACE_Message_Block(%u): \"%s\", aborting\n"),
                RPG_NET_DEF_NETWORK_BUFFER_SIZE,
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     // clean up
     cancelTimer();
@@ -149,7 +149,7 @@ RPG_Net_SocketHandler::handle_input(ACE_HANDLE handle_in)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_SOCK_Stream::recv(): \"%s\", returning\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
 
       // clean up
       cancelTimer();
@@ -211,8 +211,8 @@ RPG_Net_SocketHandler::handle_timeout(const ACE_Time_Value& tv_in,
 
   // step1: init ping data
   // *TODO*: clean this up and handle endianness consistently !
-  RPG_Net_Remote_Comm::RuntimePing data;
-  data.messageHeader.messageLength = (sizeof(RPG_Net_Remote_Comm::RuntimePing) -
+  RPG_Net_Remote_Comm::PingMessage data;
+  data.messageHeader.messageLength = (sizeof(RPG_Net_Remote_Comm::PingMessage) -
                                       sizeof(unsigned long));
   data.messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PING;
    // *WARNING*: prefix increment leads to corruption !
@@ -221,7 +221,7 @@ RPG_Net_SocketHandler::handle_timeout(const ACE_Time_Value& tv_in,
   // step2: send it over the net...
   size_t bytes_sent = peer().send_n(ACE_static_cast(const void*,
                                                     &data),                   // buffer
-                                    sizeof(RPG_Net_Remote_Comm::RuntimePing), // length
+                                    sizeof(RPG_Net_Remote_Comm::PingMessage), // length
                                     NULL,                                     // timeout --> block
                                     &bytes_sent);                             // number of sent bytes
   // *NOTE*: we'll ALSO get here when the client has closed the socket
@@ -232,7 +232,7 @@ RPG_Net_SocketHandler::handle_timeout(const ACE_Time_Value& tv_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_SOCK_Stream::send_n(): \"%s\", aborting\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
 
       // reactor will invoke handle_close() --> close the socket
       return -1;
@@ -240,7 +240,7 @@ RPG_Net_SocketHandler::handle_timeout(const ACE_Time_Value& tv_in,
     case 0:
     default:
     {
-      if (bytes_sent == sizeof(RPG_Net_Remote_Comm::RuntimePing))
+      if (bytes_sent == sizeof(RPG_Net_Remote_Comm::PingMessage))
       {
         // *** GOOD CASE ***
         break;
@@ -251,7 +251,7 @@ RPG_Net_SocketHandler::handle_timeout(const ACE_Time_Value& tv_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("only managed to send %u/%u bytes, aborting\n"),
                  bytes_sent,
-                 sizeof(RPG_Net_Remote_Comm::RuntimePing)));
+                 sizeof(RPG_Net_Remote_Comm::PingMessage)));
 
       // reactor will invoke handle_close() --> close the socket
       return -1;

@@ -72,13 +72,22 @@ RPG_Net_SocketHandler_Base::open(void* arg_in)
   if (inherited::open(arg_in) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Svc_Handler::open(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_Svc_Handler::open(): \"%p\", aborting\n")));
 
     return -1;
   } // end IF
 
-  // *NOTE*: we're registered with the reactor (READ_MASK) at this point...
+  // *NOTE*: we're registered with the reactor (READ_MASK) at this point
+
+  // ...register for writes (WRITE_MASK) as well
+  if (reactor()->register_handler(this,
+                                  ACE_Event_Handler::WRITE_MASK) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Reactor::register_handler(WRITE_MASK): \"%p\", aborting\n")));
+
+    return -1;
+  } // end IF
 
 //   if (!myIsRegistered)
 //   {
@@ -86,12 +95,12 @@ RPG_Net_SocketHandler_Base::open(void* arg_in)
 //
 //     clean up
 //     if (reactor()->remove_handler(this,
-//                                   (ACE_Event_Handler::READ_MASK |
+//                                   (ACE_Event_Handler::ALL_EVENTS_MASK |
 //                                    ACE_Event_Handler::DONT_CALL)) == -1)
 //     {
 //       ACE_DEBUG((LM_ERROR,
 //                  ACE_TEXT("failed to ACE_Reactor::remove_handler(): \"%s\", aborting\n"),
-//                  ACE_OS::strerror(errno)));
+//                  ACE_OS::strerror(ACE_OS::last_error())));
 //     } // end IF
 //
 //     return -1;
@@ -150,8 +159,7 @@ RPG_Net_SocketHandler_Base::abort()
   if (result == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Svc_Handler::close(0): \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_Svc_Handler::close(0): \"%p\", returning\n")));
   } // end IF
 }
 
@@ -176,19 +184,49 @@ RPG_Net_SocketHandler_Base::dump_state() const
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::dump_state"));
 
   // debug info
-  ACE_INET_Addr remoteAddress;
-  if (peer().get_remote_addr(remoteAddress) == -1)
+  ACE_TCHAR buf[BUFSIZ];
+  ACE_OS::memset(buf,
+                 0,
+                 (BUFSIZ * sizeof(ACE_TCHAR)));
+  std::string localAddress;
+  ACE_INET_Addr address;
+  if (peer().get_local_addr(address) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%p\", aborting\n")));
+
+    return;
+  } // end IF
+  else if (address.addr_to_string(buf, (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%p\", aborting\n")));
+
+    return;
+  } // end IF
+  localAddress = buf;
+
+  ACE_OS::memset(buf,
+                 0,
+                 (BUFSIZ * sizeof(ACE_TCHAR)));
+  if (peer().get_remote_addr(address) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%p\", aborting\n")));
+
+    return;
+  } // end IF
+  else if (address.addr_to_string(buf, (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%p\", aborting\n")));
 
     return;
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("connection (remote host: \"%s\", port: %u) --> ID: %u\n"), // (== socket handle)
-             remoteAddress.get_host_name(),
-             remoteAddress.get_port_number(),
-             getID()));
+             ACE_TEXT("connection [%u]: (\"%s\") <--> (\"%s\")\n"),
+             getID(),
+             localAddress.c_str(),
+             buf));
 }

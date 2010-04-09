@@ -93,18 +93,24 @@ RPG_Net_Protocol_Layer::ProtocolLayer2String(const ProtocolLayer& protocolType_i
 
       break;
     }
-    case ASTERIX_offset:
+    case IRC:
     {
-      typeString_out = ACE_TEXT("ASTERIX_offset");
+      typeString_out = ACE_TEXT("IRC");
 
       break;
     }
-    case ASTERIX:
-    {
-      typeString_out = ACE_TEXT("ASTERIX");
-
-      break;
-    }
+//     case ASTERIX_offset:
+//     {
+//       typeString_out = ACE_TEXT("ASTERIX_offset");
+//
+//       break;
+//     }
+//     case ASTERIX:
+//     {
+//       typeString_out = ACE_TEXT("ASTERIX");
+//
+//       break;
+//     }
     default:
     {
       ACE_DEBUG((LM_ERROR,

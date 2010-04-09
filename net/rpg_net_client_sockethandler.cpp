@@ -55,7 +55,7 @@ RPG_Net_Client_SocketHandler::open(void* arg_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Svc_Handler::open(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return -1;
   } // end IF
@@ -66,7 +66,7 @@ RPG_Net_Client_SocketHandler::open(void* arg_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return -1;
   }
@@ -75,7 +75,7 @@ RPG_Net_Client_SocketHandler::open(void* arg_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return -1;
   }
@@ -94,7 +94,7 @@ RPG_Net_Client_SocketHandler::open(void* arg_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Reactor::register_handler(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return -1;
   } // end IF
@@ -110,22 +110,22 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
   ACE_UNUSED_ARG(handle_in);
 
   // step0: init buffer
-  RPG_Net_Remote_Comm::RuntimePing data;
+  RPG_Net_Remote_Comm::PingMessage data;
   ACE_OS::memset(&data,
                  0,
-                 sizeof(RPG_Net_Remote_Comm::RuntimePing));
+                 sizeof(RPG_Net_Remote_Comm::PingMessage));
 
   // step1: read data
   size_t bytes_received = 0;
   // *TODO*: do blocking IO until further notice...
   if (peer().recv_n(ACE_static_cast(void*, &data),            // buffer
-                    sizeof(RPG_Net_Remote_Comm::RuntimePing), // length
+                    sizeof(RPG_Net_Remote_Comm::PingMessage), // length
                     NULL,                                     // timeout --> block
                     &bytes_received) == -1)                   // number of recieved bytes
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Stream::recv_n(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     // --> reactor will invoke handle_close() --> close the socket
     return -1;
@@ -145,7 +145,7 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_SOCK_Stream::recv_n(): \"%s\", aborting\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
 
       // --> reactor will invoke handle_close() --> close the socket
       return -1;
@@ -153,12 +153,12 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
     default:
     {
       // --> socket is probably non-blocking...
-      if (bytes_received != sizeof(RPG_Net_Remote_Comm::RuntimePing))
+      if (bytes_received != sizeof(RPG_Net_Remote_Comm::PingMessage))
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("only managed to read %u/%u bytes, aborting\n"),
                    bytes_received,
-                   sizeof(RPG_Net_Remote_Comm::RuntimePing)));
+                   sizeof(RPG_Net_Remote_Comm::PingMessage)));
 
         // --> reactor will invoke handle_close() --> close the socket
         return -1;
@@ -182,17 +182,17 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
     case RPG_Net_Remote_Comm::RPG_NET_PING:
     {
       // reply with a "PONG"
-      RPG_Net_Remote_Comm::RuntimePong reply;
+      RPG_Net_Remote_Comm::PongMessage reply;
       ACE_OS::memset(&reply,
                      0,
-                     sizeof(RPG_Net_Remote_Comm::RuntimePong));
-      reply.messageHeader.messageLength = sizeof(RPG_Net_Remote_Comm::RuntimePong) - sizeof(unsigned long);
+                     sizeof(RPG_Net_Remote_Comm::PongMessage));
+      reply.messageHeader.messageLength = sizeof(RPG_Net_Remote_Comm::PongMessage) - sizeof(unsigned long);
       reply.messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PONG;
 
         // step2: send it over the net...
       size_t bytes_sent = peer().send_n(ACE_static_cast(const void*,
                                         &reply),                                  // buffer
-                                        sizeof(RPG_Net_Remote_Comm::RuntimePong), // length
+                                        sizeof(RPG_Net_Remote_Comm::PongMessage), // length
                                         NULL,                                     // timeout --> block
                                         &bytes_sent);                             // number of sent bytes
       // *NOTE*: we'll ALSO get here when the client has closed the socket
@@ -203,7 +203,7 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to ACE_SOCK_Stream::send_n(): \"%s\", aborting\n"),
-                     ACE_OS::strerror(errno)));
+                     ACE_OS::strerror(ACE_OS::last_error())));
 
           // --> reactor will invoke handle_close() --> close the socket
           return -1;
@@ -211,7 +211,7 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
         case 0:
         default:
         {
-          if (bytes_sent == sizeof(RPG_Net_Remote_Comm::RuntimePong))
+          if (bytes_sent == sizeof(RPG_Net_Remote_Comm::PongMessage))
           {
             // *** GOOD CASE ***
 
@@ -226,7 +226,7 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("only managed to send %u/%u bytes, aborting\n"),
                      bytes_sent,
-                     sizeof(RPG_Net_Remote_Comm::RuntimePong)));
+                     sizeof(RPG_Net_Remote_Comm::PongMessage)));
 
           // --> reactor will invoke handle_close() --> close the socket
           return -1;

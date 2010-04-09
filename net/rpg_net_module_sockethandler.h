@@ -113,7 +113,7 @@ class RPG_Net_Module_SocketHandler
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to cancel timer (ID: %u): \"%s\", continuing\n"),
                    myStatCollectHandlerID,
-                   ACE_OS::strerror(errno)));
+                   ACE_OS::strerror(ACE_OS::last_error())));
       } // end IF
 //       else
 //       {

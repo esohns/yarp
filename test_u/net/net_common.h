@@ -18,44 +18,19 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef NET_CLIENT_TIMEOUTHANDLER_H
-#define NET_CLIENT_TIMEOUTHANDLER_H
+#ifndef NET_COMMON_H
+#define NET_COMMON_H
 
-#include "net_common.h"
+// #include <rpg_net_client_sockethandler.h>
+#include <rpg_net_stream_socket_base.h>
+#include <rpg_net_stream.h>
 
-#include <ace/Global_Macros.h>
-#include <ace/Event_Handler.h>
-#include <ace/Time_Value.h>
-#include <ace/INET_Addr.h>
+#include <ace/Connector.h>
+#include <ace/SOCK_Connector.h>
 
-#include <string>
-#include <list>
-
-class Net_Client_TimeoutHandler
- : public ACE_Event_Handler
-{
- public:
-  Net_Client_TimeoutHandler(const std::string&,         // target hostname
-                            const unsigned short&,      // target port number
-                            RPG_Net_Client_Connector*,  // connector
-                            std::list<RPG_Net_Client_SocketHandler*>*); // connection repository
-  virtual ~Net_Client_TimeoutHandler();
-
-  // implement specific behaviour
-  virtual int handle_timeout(const ACE_Time_Value&, // current time
-                             const void*);          // asynchronous completion token
-
- private:
-  typedef ACE_Event_Handler inherited;
-
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(Net_Client_TimeoutHandler());
-  ACE_UNIMPLEMENTED_FUNC(Net_Client_TimeoutHandler(const Net_Client_TimeoutHandler&));
-  ACE_UNIMPLEMENTED_FUNC(Net_Client_TimeoutHandler& operator=(const Net_Client_TimeoutHandler&));
-
-  ACE_INET_Addr             myPeerAddress;
-  RPG_Net_Client_Connector* myConnector;
-  std::list<RPG_Net_Client_SocketHandler*>* myConnectionHandlers;
-};
+// convenient types
+typedef RPG_Net_StreamSocketBase<RPG_Net_Stream> RPG_Net_Client_SocketHandler;
+typedef ACE_Connector<RPG_Net_Client_SocketHandler,
+                      ACE_SOCK_CONNECTOR> RPG_Net_Client_Connector;
 
 #endif

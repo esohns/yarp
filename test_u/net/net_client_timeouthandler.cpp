@@ -20,8 +20,6 @@
 
 #include "net_client_timeouthandler.h"
 
-#include <rpg_net_client_sockethandler.h>
-
 #include <ace/Reactor.h>
 
 Net_Client_TimeoutHandler::Net_Client_TimeoutHandler(const std::string& serverHostname_in,
@@ -30,15 +28,13 @@ Net_Client_TimeoutHandler::Net_Client_TimeoutHandler(const std::string& serverHo
                                                      std::list<RPG_Net_Client_SocketHandler*>* connections_in)
  : inherited(ACE_Reactor::instance(),         // corresp. reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
-   myServerHostname(serverHostname_in),
-   myServerPortNumber(serverPort_in),
+   myPeerAddress(serverPort_in,
+                 serverHostname_in.c_str()),
    myConnector(connector_in),
    myConnectionHandlers(connections_in)
 {
   ACE_TRACE(ACE_TEXT("Net_Client_TimeoutHandler::Net_Client_TimeoutHandler"));
 
-  // set corresp. reactor
-  //reactor(reactor_in);
 }
 
 Net_Client_TimeoutHandler::~Net_Client_TimeoutHandler()
@@ -58,21 +54,27 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
 
   // step1: connect to server...
   RPG_Net_Client_SocketHandler* handler = NULL;
-  ACE_INET_Addr remote_address(myServerPortNumber, // remote SAP
-                               myServerHostname.c_str());
   if (myConnector->connect(handler,                     // service handler
-                           remote_address/*,              // remote SAP
+                           myPeerAddress/*,              // remote SAP
                            ACE_Synch_Options::defaults, // synch options
                            ACE_INET_Addr::sap_any,      // local SAP
                            0,                           // try to re-use address (SO_REUSEADDR)
                            O_RDWR,                      // flags
                            0*/) == -1)                  // perms
   {
+    // debug info
+    ACE_TCHAR buf[BUFSIZ];
+    ACE_OS::memset(buf,
+                   0,
+                   (BUFSIZ * sizeof(ACE_TCHAR)));
+    if (myPeerAddress.addr_to_string(buf, (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%p\", continuing\n")));
+    } // end IF
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Connector::connect(%s:%u): \"%s\", continuing\n"),
-               ACE_TEXT_CHAR_TO_TCHAR(remote_address.get_host_name()),
-               remote_address.get_port_number(),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_Connector::connect(%s): \"%p\", continuing\n"),
+               buf));
 
     // rejected ? --> release a connection !
     if (!(myConnectionHandlers->empty()))
@@ -81,13 +83,15 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
       // sanity check
       ACE_ASSERT(handler);
 
+      // close connection
       if (handler->close(0) == -1)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Svc_Handler::close(): \"%s\", continuing\n"),
-                   ACE_OS::strerror(errno)));
+                   ACE_TEXT("failed to ACE_Svc_Handler::close(0): \"%s\", continuing\n"),
+                   ACE_OS::strerror(ACE_OS::last_error())));
       } // end IF
-
+      // free connection
+      delete handler;
       myConnectionHandlers->pop_back();
 
       ACE_DEBUG((LM_DEBUG,

@@ -221,7 +221,7 @@ init_fileLogging(std::ofstream& stream_in)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to std::ofstream::open() file \"%s\": \"%s\", aborting\n"),
                logfilename.c_str(),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return false;
   } // end IF
@@ -253,7 +253,7 @@ init_coreDumping()
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::getrlimit(RLIMIT_CORE): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return false;
   } // end IF
@@ -272,7 +272,7 @@ init_coreDumping()
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::setrlimit(RLIMIT_CORE): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return false;
   } // end IF
@@ -283,7 +283,7 @@ init_coreDumping()
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::getrlimit(RLIMIT_CORE): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return false;
   } // end IF
@@ -410,7 +410,7 @@ init_signalHandling(const std::vector<int>& signals_in,
                  ACE_TEXT("failed to ACE_Sig_Handlers::register_handler(\"%S\": %d): \"%s\", aborting\n"),
                  *iter,
                  *iter,
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
 
       return false;
     } // end IF
@@ -551,9 +551,8 @@ do_work(const unsigned long& clientPingInterval_in,
     if (grp_id == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%s\", aborting\n"),
-                 numThreadPoolThreads_in,
-                 ACE_OS::strerror(errno)));
+                 ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%p\", aborting\n"),
+                 numThreadPoolThreads_in));
 
       // clean up
       // stop listener, clean up pending connections
@@ -576,8 +575,7 @@ do_work(const unsigned long& clientPingInterval_in,
     if (ACE_Reactor::instance()->run_reactor_event_loop() == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%s\", aborting\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%p\", aborting\n")));
 
       // clean up
       // stop listener, clean up pending connections
@@ -634,7 +632,7 @@ ACE_TMAIN(int argc,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE::init(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return EXIT_FAILURE;
   } // end IF
@@ -737,7 +735,7 @@ ACE_TMAIN(int argc,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Log_Msg::open(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return EXIT_FAILURE;
   } // end IF
@@ -795,7 +793,7 @@ ACE_TMAIN(int argc,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE::fini(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return EXIT_FAILURE;
   } // end IF

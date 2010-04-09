@@ -43,12 +43,12 @@ class RPG_Net_Remote_Comm
   }; __attribute__ ((__packed__));
 
   // -----------**** protocol messages ****-----------
-  struct RuntimePing
+  struct PingMessage
   {
     MessageHeader messageHeader;
     unsigned long counter;
   }; __attribute__ ((__packed__));
-  struct RuntimePong
+  struct PongMessage
   {
     MessageHeader messageHeader;
   }; __attribute__ ((__packed__));

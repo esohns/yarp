@@ -103,7 +103,7 @@ RPG_Net_Listener::start()
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Acceptor::resume(): \"%s\", returning\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
     } // end IF
     else
     {
@@ -138,7 +138,7 @@ RPG_Net_Listener::start()
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Acceptor::open(): \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return;
   } // end IF
@@ -172,7 +172,7 @@ RPG_Net_Listener::stop()
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Acceptor::suspend(): \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
   } // end IF
   else
   {

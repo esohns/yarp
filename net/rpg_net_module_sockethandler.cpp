@@ -49,7 +49,7 @@ RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to activate() timer dispatch queue: \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return;
   } // end IF
@@ -113,7 +113,7 @@ RPG_Net_Module_SocketHandler::init(Stream_IAllocator* allocator_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to schedule() timer: \"%s\", aborting\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
 
       // reset so we don't get confused in the dtor !
       myStatCollectHandlerID = 0;
@@ -170,11 +170,11 @@ RPG_Net_Module_SocketHandler::handleDataMessage(Stream_MessageBase*& message_ino
     if (complete_message)
     {
       // --> push it downstream...
-      if (put_next(complete_message) == -1)
+      if (put_next(complete_message, NULL) == -1)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_Task::put_next(): \"%s\", continuing\n"),
-                   ACE_OS::strerror(errno)));
+                   ACE_OS::strerror(ACE_OS::last_error())));
 
         // clean up
         complete_message->release();
@@ -314,7 +314,7 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_Message_Block::copy(): \"%s\", aborting\n"),
-                   ACE_OS::strerror(errno)));
+                   ACE_OS::strerror(ACE_OS::last_error())));
 
         // clean up
         myCurrentMessageLength = 0;
@@ -392,7 +392,7 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 //     {
 //       ACE_DEBUG((LM_ERROR,
 //                  ACE_TEXT("failed to ACE_Message_Block::copy(): \"%s\", aborting\n"),
-//                  ACE_OS::strerror(errno)));
+//                  ACE_OS::strerror(ACE_OS::last_error())));
 //
 //       // clean up
 //       new_head->release();
@@ -481,7 +481,7 @@ RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatisti
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to allocate RPG_Net_StreamConfig: \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return false;
   } // end IF

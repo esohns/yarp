@@ -296,6 +296,50 @@ RPG_Net_Message::dump_state() const
 //              sum_header_size));
 }
 
+const bool
+RPG_Net_Message::crunchForHeader(const unsigned long& headerSize_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::crunchForHeader"));
+
+  // sanity check(s)
+  ACE_ASSERT(length() < headerSize_in);        // something to do ?
+  ACE_ASSERT(size() >= headerSize_in);         // enough space ?
+  ACE_ASSERT(total_length() >= headerSize_in); // enough data ?
+
+  ACE_Message_Block* source_block = this;
+  size_t missing_data = headerSize_in - length();
+  size_t amount = 0;
+  while (missing_data)
+  {
+    // *sigh*: copy some data from the chain...
+    source_block = cont();
+
+    // skip over any "empty" continuations...
+    while (source_block->length() == 0)
+      source_block = source_block->cont();
+
+    // copy some data... this adjusts our write pointer
+    amount = (source_block->length() < missing_data ? source_block->length() : missing_data);
+    if (copy(source_block->rd_ptr(), amount))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Message_Block::copy(): \"%p\", aborting\n")));
+
+      return false;
+    } // end IF
+
+    missing_data -= amount;
+
+    // adjust the continuation accordingly...
+    source_block->rd_ptr(amount);
+  } // end WHILE
+
+  // sanity check
+  ACE_ASSERT(length() == headerSize_in);
+
+  return true;
+}
+
 ACE_Message_Block*
 RPG_Net_Message::duplicate(void) const
 {

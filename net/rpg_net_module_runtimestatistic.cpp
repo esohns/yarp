@@ -60,7 +60,7 @@ RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic()
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to activate() timer dispatch queue: \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return;
   } // end IF
@@ -79,7 +79,7 @@ RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic()
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to schedule() timer: \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return;
   } // end IF
@@ -155,7 +155,7 @@ RPG_Net_Module_RuntimeStatistic::init(const unsigned long& reportingInterval_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to schedule() timer: \"%s\", aborting\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
 
       return false;
     } // end IF
@@ -445,7 +445,7 @@ RPG_Net_Module_RuntimeStatistic::final_report() const
 //   {
 //     ACE_DEBUG((LM_ERROR,
 //                ACE_TEXT("failed to ACE_Profile_Timer::elapsed_time: \"%s\", returning\n"),
-//                ACE_OS::strerror(errno)));
+//                ACE_OS::strerror(ACE_OS::last_error())));
 //
 //     return;
 //   } // end IF
@@ -510,7 +510,7 @@ RPG_Net_Module_RuntimeStatistic::fini_timers(const bool& cancelAllTimers_in)
       {
         ACE_DEBUG((LM_ERROR,
                   ACE_TEXT("failed to cancel() timer: \"%s\", continuing\n"),
-                  ACE_OS::strerror(errno)));
+                  ACE_OS::strerror(ACE_OS::last_error())));
       } // end IF
 
       myResetTimeoutHandlerID = 0;
@@ -523,7 +523,7 @@ RPG_Net_Module_RuntimeStatistic::fini_timers(const bool& cancelAllTimers_in)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to cancel() timer: \"%s\", continuing\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
     } // end IF
 
     myLocalReportingHandlerID = 0;

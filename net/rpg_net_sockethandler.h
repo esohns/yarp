@@ -69,7 +69,7 @@ class RPG_Net_SocketHandler
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%s\", continuing\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
     } // end IF
     myTimerID = -1;
   };

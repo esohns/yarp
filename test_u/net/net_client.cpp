@@ -23,17 +23,20 @@
 #include <config.h>
 #endif
 
+#include "net_common.h"
 #include "net_client_timeouthandler.h"
 
 #include <rpg_net_defines.h>
 #include <rpg_net_common_tools.h>
-#include <rpg_net_client_sockethandler.h>
 
 #include <rpg_common_tools.h>
 
 #include <ace/Version.h>
 #include <ace/Get_Opt.h>
 #include <ace/Reactor.h>
+#include <ace/TP_Reactor.h>
+#include <ace/Connector.h>
+#include <ace/SOCK_Connector.h>
 #include <ace/High_Res_Timer.h>
 
 #include <string>
@@ -41,8 +44,9 @@
 #include <sstream>
 #include <list>
 
-#define NET_CLIENT_DEF_SERVER_HOSTNAME       ACE_LOCALHOST
-#define NET_CLIENT_DEF_SERVER_QUERY_INTERVAL 1
+#define NET_CLIENT_DEF_SERVER_HOSTNAME         ACE_LOCALHOST
+#define NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL 1
+#define NET_CLIENT_DEF_NUM_TP_THREADS          5
 
 void
 print_usage(const std::string& programName_in)
@@ -54,13 +58,14 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-h [STRING]: server hostname [\"") << NET_CLIENT_DEF_SERVER_HOSTNAME << "\"]" << std::endl;
-  std::cout << ACE_TEXT("-i [VALUE] : connection interval ([") << NET_CLIENT_DEF_SERVER_QUERY_INTERVAL << ACE_TEXT("] seconds)") << std::endl;
-  std::cout << ACE_TEXT("-l         : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-s [VALUE] : server port [") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-t         : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-v         : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-x         : stress-test server") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-h [STRING]  : server (host)name [\"") << NET_CLIENT_DEF_SERVER_HOSTNAME << "\"]" << std::endl;
+  std::cout << ACE_TEXT("-i [VALUE]   : connection interval ([") << NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL << ACE_TEXT("] seconds)") << std::endl;
+  std::cout << ACE_TEXT("-l           : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-p [VALUE]   : server port [") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-s           : stress-test server") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-t           : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-v           : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x <[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 const bool
@@ -70,24 +75,28 @@ process_arguments(const int argc_in,
                   unsigned long& connectionInterval_out,
                   bool& logToFile_out,
                   unsigned short& serverPortNumber_out,
+                  bool& stressTestServer_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out,
-                  bool& stressTestServer_out)
+                  bool& useThreadPool_out,
+                  unsigned long& numThreadPoolThreads_out)
 {
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
   serverHostname_out = NET_CLIENT_DEF_SERVER_HOSTNAME;
-  connectionInterval_out = NET_CLIENT_DEF_SERVER_QUERY_INTERVAL;
+  connectionInterval_out = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
   logToFile_out = false;
   serverPortNumber_out = RPG_NET_DEF_LISTENING_PORT;
+  stressTestServer_out = false;
   traceInformation_out = false;
   printVersionAndExit_out = false;
-  stressTestServer_out = false;
+  useThreadPool_out = false;
+  numThreadPoolThreads_out = NET_CLIENT_DEF_NUM_TP_THREADS;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("h:i:ls:tvx"),
+                             ACE_TEXT("h:i:lp:stvx::"),
                              1, // skip command name
                              1, // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
@@ -119,11 +128,17 @@ process_arguments(const int argc_in,
 
         break;
       }
-      case 's':
+      case 'p':
       {
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> serverPortNumber_out;
+
+        break;
+      }
+      case 's':
+      {
+        stressTestServer_out = true;
 
         break;
       }
@@ -141,7 +156,10 @@ process_arguments(const int argc_in,
       }
       case 'x':
       {
-        stressTestServer_out = true;
+        useThreadPool_out = true;
+        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+        converter << argumentParser.opt_arg();
+        converter >> numThreadPoolThreads_out;
 
         break;
       }
@@ -183,19 +201,74 @@ process_arguments(const int argc_in,
   return true;
 }
 
+const bool
+init_threadPool()
+{
+  ACE_TRACE(ACE_TEXT("::init_threadPool"));
+
+  ACE_TP_Reactor* threadpool_reactor = NULL;
+  ACE_NEW_RETURN(threadpool_reactor,
+                 ACE_TP_Reactor(),
+                                false);
+  ACE_Reactor* new_reactor = NULL;
+  ACE_NEW_RETURN(new_reactor,
+                 ACE_Reactor(threadpool_reactor, 1), // delete in dtor
+                             false);
+  // make this the "default" reactor...
+  ACE_Reactor::instance(new_reactor, 1); // delete in dtor
+
+  return true;
+}
+
+static
+ACE_THR_FUNC_RETURN
+tp_worker_func(void* args_in)
+{
+  ACE_TRACE(ACE_TEXT("::tp_worker_func"));
+
+  ACE_UNUSED_ARG(args_in);
+
+  while (!ACE_Reactor::event_loop_done())
+  {
+    // block and wait for an event...
+    if (ACE_Reactor::instance()->handle_events(NULL) == -1)
+      ACE_ERROR((LM_ERROR,
+                 ACE_TEXT("(%t) error handling events: \"%p\"\n")));
+  } // end WHILE
+
+  return 0;
+}
+
 void
 do_work(const std::string& serverHostname_in,
         const unsigned long& connectionInterval_in,
         const unsigned short& serverPortNumber_in,
-        const bool& stressTestServer_in)
+        const bool& stressTestServer_in,
+        const bool& useThreadPool_in,
+        const unsigned long& numThreadPoolThreads_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
-  // step1: init (timer)
+  // step0: (if necessary) init the TP_Reactor
+  if (useThreadPool_in)
+  {
+    if (!init_threadPool())
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to init_threadPool(), aborting\n")));
+
+      return;
+    } // end IF
+  } // end IF
+
+  // step1: init client connector
   RPG_Net_Client_Connector connector(ACE_Reactor::instance(), // reactor
-                                     0);                      // flags (*TODO*: ACE_NONBLOCK ?);
+                                     ACE_NONBLOCK);           // flags: non-blocking I/O
+//                                      0);                      // flags (*TODO*: ACE_NONBLOCK ?);
   std::list<RPG_Net_Client_SocketHandler*> connectionHandlers;
   connectionHandlers.clear();
+
+  // step2a: init (timer)
   long timerID = -1;
   Net_Client_TimeoutHandler timeoutHandler(serverHostname_in,
                                            serverPortNumber_in,
@@ -213,14 +286,14 @@ do_work(const std::string& serverHostname_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Reactor::schedule_timer(): \"%s\", aborting\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
 
       return;
     } // end IF
   } // end IF
   else
   {
-    // step1: connect to server...
+    // step2b: connect to server...
     RPG_Net_Client_SocketHandler* handler = NULL;
     ACE_INET_Addr remote_address(serverPortNumber_in, // remote SAP
                                  serverHostname_in.c_str());
@@ -236,7 +309,7 @@ do_work(const std::string& serverHostname_in,
                  ACE_TEXT("failed to ACE_Connector::connect(%s:%u): \"%s\", aborting\n"),
                  ACE_TEXT_CHAR_TO_TCHAR(remote_address.get_host_name()),
                  remote_address.get_port_number(),
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
 
       return;
     } // end IF
@@ -247,39 +320,111 @@ do_work(const std::string& serverHostname_in,
     connectionHandlers.push_front(handler);
   } // end ELSE
 
+  // *NOTE*: from this point on, we need to clean up any remote connections !
+
   // event loop:
   // - catch SIGINT/SIGQUIT/SIGTERM/... signals (and perform orderly shutdown)
   // - signal timer expiration to perform server queries
 
-//   // *IMPORTANT NOTE*: make sure we generally restart system calls (after e.g. EINTR) for the reactor...
+//   // *NOTE*: make sure we generally restart system calls (after e.g. EINTR) for the reactor...
 //   ACE_Reactor::instance()->restart(1);
-  if (ACE_Reactor::instance()->run_reactor_event_loop() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
 
-    // clean up
-    if (ACE_Reactor::instance()->cancel_timer(timerID,  // timer ID
-                                              NULL,     // pointer to args passed to handler
-                                              1) != 1)  // don't invoke handle_close() on handler
+  // step3: dispatch events...
+  // *NOTE*: if we use a thread pool, we need to do this differently...
+  if (useThreadPool_in)
+  {
+    // start a (group of) worker thread(s)...
+    int grp_id = -1;
+    grp_id = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,     // # threads
+                                                     ::tp_worker_func,            // function
+                                                     NULL,                        // argument
+                                                     (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
+                                                     ACE_DEFAULT_THREAD_PRIORITY, // priority
+                                                     -1,                          // group id --> create new
+                                                     NULL,                        // task
+                                                     NULL,                        // handle(s)
+                                                     NULL,                        // stack(s)
+                                                     NULL,                        // stack size(s)
+                                                     NULL);                       // name(s)
+    if (grp_id == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%s\", continuing\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%p\", aborting\n"),
+                 numThreadPoolThreads_in));
+
+      // clean up
+      if (ACE_Reactor::instance()->cancel_timer(timerID,  // timer ID
+                                                NULL,     // pointer to args passed to handler
+                                                1) != 1)  // don't invoke handle_close() on handler
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
+      } // end IF
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("closing %u connection(s)...\n"),
+                 connectionHandlers.size()));
+      for (std::list<RPG_Net_Client_SocketHandler*>::const_iterator iterator = connectionHandlers.begin();
+           iterator != connectionHandlers.end();
+           iterator++)
+      {
+        // close connection
+        (*iterator)->close(0);
+        // free connection
+        delete *iterator;
+      } // end FOR
+      connectionHandlers.clear();
+
+      return;
     } // end IF
 
-    return;
-  } // end IF
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("started group (ID: %u) of %u worker thread(s)...\n"),
+               grp_id,
+               numThreadPoolThreads_in));
 
-  // clean up
+    // ... and wait for this group to join
+    ACE_Thread_Manager::instance()->wait_grp(grp_id);
+  } // end IF
+  else
+  {
+    if (ACE_Reactor::instance()->run_reactor_event_loop() == -1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%p\", aborting\n")));
+
+      // clean up
+      if (ACE_Reactor::instance()->cancel_timer(timerID,  // timer ID
+                                                NULL,     // pointer to args passed to handler
+                                                1) != 1)  // don't invoke handle_close() on handler
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
+      } // end IF
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("closing %u connection(s)...\n"),
+                 connectionHandlers.size()));
+      for (std::list<RPG_Net_Client_SocketHandler*>::const_iterator iterator = connectionHandlers.begin();
+           iterator != connectionHandlers.end();
+           iterator++)
+      {
+        // close connection
+        (*iterator)->close(0);
+        // free connection
+        delete *iterator;
+      } // end FOR
+      connectionHandlers.clear();
+
+      return;
+    } // end IF
+  } // end ELSE
+
+  // step4: clean up
   if (ACE_Reactor::instance()->cancel_timer(timerID,  // timer ID
                                             NULL,     // pointer to args passed to handler
                                             1) != 1)  // don't invoke handle_close() on handler
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%s\", continuing\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
   } // end IF
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("closing %u connection(s)...\n"),
@@ -290,7 +435,10 @@ do_work(const std::string& serverHostname_in,
   {
     // close connection
     (*iterator)->close(0);
+    // free connection
+    delete *iterator;
   } // end FOR
+  connectionHandlers.clear();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -331,20 +479,22 @@ ACE_TMAIN(int argc,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE::init(): \"%s\", aborting\n"),
-                        ACE_OS::strerror(errno)));
+                        ACE_OS::strerror(ACE_OS::last_error())));
 
     return EXIT_FAILURE;
   } // end IF
 #endif
 
   // step1a set defaults
-  std::string serverHostname       = NET_CLIENT_DEF_SERVER_HOSTNAME;
-  unsigned long connectionInterval = NET_CLIENT_DEF_SERVER_QUERY_INTERVAL;
-  bool logToFile                   = false;
-  unsigned short serverPortNumber  = RPG_NET_DEF_LISTENING_PORT;
-  bool traceInformation            = false;
-  bool printVersionAndExit         = false;
-  bool stressTestServer            = false;
+  std::string serverHostname         = NET_CLIENT_DEF_SERVER_HOSTNAME;
+  unsigned long connectionInterval   = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
+  bool logToFile                     = false;
+  unsigned short serverPortNumber    = RPG_NET_DEF_LISTENING_PORT;
+  bool stressTestServer              = false;
+  bool traceInformation              = false;
+  bool printVersionAndExit           = false;
+  bool useThreadPool                 = false;
+  unsigned long numThreadPoolThreads = NET_CLIENT_DEF_NUM_TP_THREADS;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
@@ -353,9 +503,11 @@ ACE_TMAIN(int argc,
                           connectionInterval,
                           logToFile,
                           serverPortNumber,
+                          stressTestServer,
                           traceInformation,
                           printVersionAndExit,
-                          stressTestServer)))
+                          useThreadPool,
+                          numThreadPoolThreads)))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
@@ -416,7 +568,9 @@ ACE_TMAIN(int argc,
   do_work(serverHostname,
           connectionInterval,
           serverPortNumber,
-          stressTestServer);
+          stressTestServer,
+          useThreadPool,
+          numThreadPoolThreads);
   timer.stop();
 
   // debug info
@@ -436,7 +590,7 @@ ACE_TMAIN(int argc,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE::fini(): \"%s\", aborting\n"),
-                        ACE_OS::strerror(errno)));
+                        ACE_OS::strerror(ACE_OS::last_error())));
 
     return EXIT_FAILURE;
   } // end IF

@@ -29,7 +29,7 @@ class RPG_Net_Protocol_Layer
 {
  public:
   // define different protocol layers
-  // *IMPORTANT NOTE*: code relies on the fact that higher-level protocols are assigned
+  // *NOTE*: code relies on the fact that higher-level protocols are assigned
   // larger values !
   enum ProtocolLayer
   {
@@ -49,8 +49,9 @@ class RPG_Net_Protocol_Layer
     UDP,
     TCP,
     // *** Higher-Level Protocols
-    ASTERIX_offset,
-    ASTERIX
+    IRC
+//     ASTERIX_offset,
+//     ASTERIX
   };
 
   // debug tools

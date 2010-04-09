@@ -88,7 +88,7 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Dirent_Selector::open(\"%s\"): \"%s\", aborting\n"),
                directory_in.c_str(),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return false;
   } // end IF
@@ -143,7 +143,7 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("::sscanf() failed for \"%s\": \"%s\", continuing\n"),
                      entries[i]->d_name,
-                     ACE_OS::strerror(errno)));
+                     ACE_OS::strerror(ACE_OS::last_error())));
         } // end IF
 
         continue;
@@ -154,7 +154,7 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("caught exception in ::sscanf() for \"%s\": \"%s\", continuing\n"),
                  entries[i]->d_name,
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
 
       continue;
     }
@@ -204,7 +204,7 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
                  ACE_TEXT("failed to ACE_OS::rename() \"%s\" to \"%s\": \"%s\", aborting\n"),
                  oldFQfilename.c_str(),
                  newFQfilename.c_str(),
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
 
       return false;
     } // end IF
@@ -236,7 +236,7 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
                  ACE_TEXT("failed to ACE_OS::rename() \"%s\" to \"%s\": \"%s\", aborting\n"),
                  FQLogFilename_out.c_str(),
                  newFQfilename.c_str(),
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
 
       return false;
     } // end IF
@@ -307,7 +307,7 @@ RPG_Net_Common_Tools::IPAddress2String(const unsigned short& port_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Inet_Addr::set: \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return std::string(ACE_TEXT("invalid_IP_address"));
   }
@@ -317,7 +317,7 @@ RPG_Net_Common_Tools::IPAddress2String(const unsigned short& port_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Inet_Addr::addr_to_string: \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return std::string(ACE_TEXT("invalid_IP_address"));
   }
@@ -540,7 +540,7 @@ RPG_Net_Common_Tools::MACAddress2String(const char* const addressDataPtr_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ::ether_ntoa_r(): \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return std::string(ACE_TEXT("invalid_FDDI_address"));
   } // end IF
@@ -1095,7 +1095,7 @@ RPG_Net_Common_Tools::retrieveLocalIPAddress(const std::string& interfaceIdentif
 //     ACE_DEBUG((LM_ERROR,
 //                ACE_TEXT("failed to ACE_OS::if_nametoindex(\"%s\"): \"%s\", aborting\n"),
 //                interfaceIdentifier_in.c_str(),
-//                ACE_OS::strerror(errno)));
+//                ACE_OS::strerror(ACE_OS::last_error())));
   //
 //     return false;
 //   } // end IF
@@ -1108,7 +1108,7 @@ RPG_Net_Common_Tools::retrieveLocalIPAddress(const std::string& interfaceIdentif
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE::get_ip_interfaces(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return false;
   } // end IF
@@ -1158,7 +1158,7 @@ RPG_Net_Common_Tools::retrieveLocalIPAddress(const std::string& interfaceIdentif
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_INET_Addr::get_host_addr(): \"%s\", aborting\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
 
       // clean up
       delete[] addr_array;
@@ -1203,7 +1203,7 @@ RPG_Net_Common_Tools::retrieveLocalHostname(std::string& hostname_out)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::hostname(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return false;
   } // end IF
@@ -1250,7 +1250,7 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
                ACE_TEXT("failed to ACE_OS::setsockopt(%u, %s): \"%s\", aborting\n"),
                handle_in,
                ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF")),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return false;
   } // end IF
@@ -1268,7 +1268,7 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
                ACE_TEXT("failed to ACE_OS::getsockopt(%u, %s): \"%s\", aborting\n"),
                handle_in,
                ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF")),
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return false;
   } // end IF
@@ -1316,7 +1316,7 @@ RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::setsockopt(%u, TCP_NODELAY): \"%s\", aborting\n"),
                handle_in,
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return false;
   } // end IF
@@ -1333,7 +1333,7 @@ RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::getsockopt(%u, TCP_NODELAY): \"%s\", aborting\n"),
                handle_in,
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
 
     return false;
   } // end IF

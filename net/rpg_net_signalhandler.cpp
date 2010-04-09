@@ -128,7 +128,7 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
       // --> application will probably hang ! :-(
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%s\", continuing\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_OS::strerror(ACE_OS::last_error())));
     } // end IF
 
     // step2: signal our controller (if any)
@@ -187,7 +187,7 @@ RPG_Net_SignalHandler::retrieveSignalInfo(const int& signal_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ::getpwuid_r(%d) : \"%s\", continuing\n"),
                info_in.si_uid,
-               ACE_OS::strerror(errno)));
+               ACE_OS::strerror(ACE_OS::last_error())));
   } // end IF
   else
   {

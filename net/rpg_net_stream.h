@@ -27,7 +27,7 @@
 #include "rpg_net_module_sockethandler.h"
 #include "rpg_net_module_headerparser.h"
 #include "rpg_net_module_runtimestatistic.h"
-// #include "rpg_net_module_protocolhandler.h"
+#include "rpg_net_module_protocolhandler.h"
 
 #include <rpg_common_istatistic.h>
 
@@ -77,7 +77,7 @@ class RPG_Net_Stream
   RPG_Net_Module_SocketHandler_Module    mySocketHandler;
   RPG_Net_Module_HeaderParser_Module     myHeaderParser;
   RPG_Net_Module_RuntimeStatistic_Module myRuntimeStatistic;
-//   RPG_Net_ProtocolHandler_Module  myProtocolHandler;
+  RPG_Net_Module_ProtocolHandler_Module  myProtocolHandler;
 };
 
 #endif

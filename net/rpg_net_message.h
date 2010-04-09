@@ -34,14 +34,16 @@ class ACE_Data_Block;
 // *NOTE*: this avoids a circular dependency...
 class RPG_Net_SessionMessage;
 // class RPG_Net_StreamMessageAllocator;
-template <typename MessageType, typename SessionMessageType> class Stream_MessageAllocatorHeapBase;
+template <typename MessageType,
+          typename SessionMessageType> class Stream_MessageAllocatorHeapBase;
 
 class RPG_Net_Message
  : public Stream_MessageBase
 {
   // enable access to specific private ctors...
 //   friend class RPG_Net_StreamMessageAllocator;
-  friend class Stream_MessageAllocatorHeapBase<RPG_Net_Message, RPG_Net_SessionMessage>;
+  friend class Stream_MessageAllocatorHeapBase<RPG_Net_Message,
+                                               RPG_Net_SessionMessage>;
 
  public:
 //   RPG_Net_Message();
@@ -54,7 +56,15 @@ class RPG_Net_Message
   // implement RPG_Net_IDumpState
   virtual void dump_state() const;
 
-  // overloaded from ACE_Message_Block
+  // *NOTE*: this "normalizes" data in this message (fragment) in the sense that
+  // enough contiguous data is available to "comfortably" interpret a message
+  // header of given size by simply using its struct declaration. To do this,
+  // some data may need to be COPIED.
+  // --> if necessary, the missing data is taken from the continuation(s),
+  // adjusting read/write pointers as necessary
+  const bool crunchForHeader(const unsigned long&); // header size
+
+  // overrides from ACE_Message_Block
   // --> create a "shallow" copy of ourselves that references the same packet
   // *NOTE*: this uses our allocator (if any) to create a new message
   virtual ACE_Message_Block* duplicate(void) const;
