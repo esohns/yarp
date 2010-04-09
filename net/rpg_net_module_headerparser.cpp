@@ -67,33 +67,35 @@ RPG_Net_Module_HeaderParser::handleDataMessage(Stream_MessageBase*& message_inou
 
   // let's interpret the message header...
 
-  // *TODO*: upcast doesn't need to be dynamic...
-  RPG_Net_Message* message = ACE_dynamic_cast(RPG_Net_Message*,
-                                              message_inout);
-  if (!message->crunchForHeader(sizeof(RPG_Net_MessageHeader)))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("[%u]: failed to RPG_Net_Message::crunchForHeader(%u), aborting\n"),
-               message->getID(),
-               sizeof(RPG_Net_MessageHeader)));
+  if (message_inout->length() < sizeof(RPG_Net_MessageHeader))
+  { // *TODO*: upcast doesn't need to be dynamic...
+    RPG_Net_Message* message = ACE_dynamic_cast(RPG_Net_Message*,
+                                                message_inout);
+    if (!message->crunchForHeader(sizeof(RPG_Net_MessageHeader)))
+    {
+      ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("[%u]: failed to RPG_Net_Message::crunchForHeader(%u), aborting\n"),
+                message->getID(),
+                sizeof(RPG_Net_MessageHeader)));
 
-    // clean up
-    message_inout->release();
-    passMessageDownstream_out = false;
+      // clean up
+      message_inout->release();
+      passMessageDownstream_out = false;
 
-    return;
+      return;
+    } // end IF
   } // end IF
 
-  // OK: retrieve type of message and other details...
-  RPG_Net_MessageHeader* message_header = ACE_reinterpret_cast(RPG_Net_MessageHeader*,
-                                                               message_inout->rd_ptr());
+//   // OK: retrieve type of message and other details...
+//   RPG_Net_MessageHeader* message_header = ACE_reinterpret_cast(RPG_Net_MessageHeader*,
+//                                                                message_inout->rd_ptr());
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("received protocol message (ID: %u): [length: %u; type: \"%s\"]...\n"),
-             message_inout->getID(),
-             message_header->messageLength,
-             RPG_Net_Common_Tools::messageType2String(message_header->messageType).c_str()));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("received protocol message (ID: %u): [length: %u; type: \"%s\"]...\n"),
+//              message_inout->getID(),
+//              message_header->messageLength,
+//              RPG_Net_Common_Tools::messageType2String(message_header->messageType).c_str()));
 }
 
 void

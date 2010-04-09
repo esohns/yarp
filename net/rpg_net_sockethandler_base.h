@@ -29,13 +29,13 @@
 #include <ace/SOCK_Stream.h>
 #include <ace/Synch.h>
 
-class RPG_Net_SocketHandler_Base
+class RPG_Net_SocketHandlerBase
  : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH>,
    public RPG_Net_IConnection//,
 //    public RPG_Common_IDumpState
 {
  public:
-  virtual ~RPG_Net_SocketHandler_Base(); // we'll self-destruct !
+  virtual ~RPG_Net_SocketHandlerBase(); // we'll self-destruct !
 
   // *NOTE*: we overload this to automatically (de-)register ourselves
   // with the connection manager... this way, we can always keep a consistent
@@ -57,7 +57,7 @@ class RPG_Net_SocketHandler_Base
 
  protected:
   // we're meant to be subclassed !
-  RPG_Net_SocketHandler_Base();
+  RPG_Net_SocketHandlerBase();
 
   RPG_Net_ConfigPOD myUserData;
 
@@ -65,8 +65,8 @@ class RPG_Net_SocketHandler_Base
   typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler_Base(const RPG_Net_SocketHandler_Base&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler_Base& operator=(const RPG_Net_SocketHandler_Base&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase(const RPG_Net_SocketHandlerBase&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase& operator=(const RPG_Net_SocketHandlerBase&));
 
   bool              myIsRegistered;
 };

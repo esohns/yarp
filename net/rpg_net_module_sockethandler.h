@@ -111,9 +111,8 @@ class RPG_Net_Module_SocketHandler
       if (myTimerQueue.cancel(myStatCollectHandlerID) == -1)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to cancel timer (ID: %u): \"%s\", continuing\n"),
-                   myStatCollectHandlerID,
-                   ACE_OS::strerror(ACE_OS::last_error())));
+                   ACE_TEXT("failed to cancel timer (ID: %u): \"%p\", continuing\n"),
+                   myStatCollectHandlerID));
       } // end IF
 //       else
 //       {

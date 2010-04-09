@@ -82,16 +82,8 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
       RPG_Net_Client_SocketHandler* handler = myConnectionHandlers->back();
       // sanity check
       ACE_ASSERT(handler);
-
       // close connection
-      if (handler->close(0) == -1)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Svc_Handler::close(0): \"%s\", continuing\n"),
-                   ACE_OS::strerror(ACE_OS::last_error())));
-      } // end IF
-      // free connection
-      delete handler;
+      handler->abort();
       myConnectionHandlers->pop_back();
 
       ACE_DEBUG((LM_DEBUG,

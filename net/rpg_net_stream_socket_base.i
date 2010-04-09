@@ -248,8 +248,8 @@ RPG_Net_StreamSocketBase<StreamType>::handle_output(ACE_HANDLE handle_in)
     ACE_Time_Value nowait(ACE_OS::gettimeofday());
     if (myStream.get(myCurrentWriteBuffer, &nowait)) // don't EVER block !
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Stream::get(): \"%p\", returning\n")));
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to ACE_Stream::get(): \"%p\", returning\n")));
 
       // *TODO*: maybe there was no data ?
       return 0;
@@ -311,6 +311,14 @@ RPG_Net_StreamSocketBase<StreamType>::handle_output(ACE_HANDLE handle_in)
       break;
     }
   } // end SWITCH
+
+  // immediately reschedule sending ?
+  if (msg_queue()->is_empty() && (myCurrentWriteBuffer == NULL))
+    reactor()->cancel_wakeup(this,
+                             ACE_Event_Handler::WRITE_MASK);
+  else
+    reactor()->schedule_wakeup(this,
+                               ACE_Event_Handler::WRITE_MASK);
 
   return 0;
 }

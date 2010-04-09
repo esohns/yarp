@@ -29,7 +29,8 @@ ACE_Atomic_Op<ACE_Thread_Mutex,
               unsigned long> RPG_Net_SocketHandler::myCurrentID = 1;
 
 RPG_Net_SocketHandler::RPG_Net_SocketHandler()
- : myTimerID(-1)
+ : myScheduleClientPing(false),
+   myTimerID(-1)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::RPG_Net_SocketHandler"));
 
@@ -63,26 +64,28 @@ RPG_Net_SocketHandler::open(void* arg_in)
     return -1;
   } // end IF
 
-  // create client ping timer... and register it with the reactor !
-  ACE_Time_Value interval(RPG_NET_DEF_PING_INTERVAL, 0);
-  myTimerID = reactor()->schedule_timer(this,
-                                        NULL,
-                                        interval,
-                                        interval);
-  if (myTimerID == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::schedule_timer(): \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+  myScheduleClientPing = inherited::myUserData.scheduleClientPing;
+  if (myScheduleClientPing)
+  { // regular client ping timer
+    ACE_Time_Value interval(RPG_NET_DEF_PING_INTERVAL, 0);
+    myTimerID = reactor()->schedule_timer(this,
+                                          NULL,
+                                          interval,
+                                          interval);
+    if (myTimerID == -1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Reactor::schedule_timer(): \"%p\", aborting\n")));
 
-    // --> reactor will invoke handle_close() --> close the socket
-    return -1;
+      // --> reactor will invoke handle_close() --> close the socket
+      return -1;
+    } // end IF
   } // end IF
 
   // *NOTE*: we're registered with the reactor (TIMER_MASK) at this point...
 
   // register reading data with reactor...
-  // *NOTE*: this is done by the base class !
+  // --> done by the base class
   int result = inherited::open(arg_in);
   if (result == -1)
   {
@@ -91,8 +94,7 @@ RPG_Net_SocketHandler::open(void* arg_in)
     if (ACE_OS::last_error())
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to inherited::open(): \"%s\", aborting\n"),
-                 ACE_OS::strerror(ACE_OS::last_error())));
+                 ACE_TEXT("failed to inherited::open(): \"%p\", aborting\n")));
     } // end IF
 
     // clean up
@@ -129,9 +131,8 @@ RPG_Net_SocketHandler::handle_input(ACE_HANDLE handle_in)
   if (!chunk)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate ACE_Message_Block(%u): \"%s\", aborting\n"),
-               RPG_NET_DEF_NETWORK_BUFFER_SIZE,
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to allocate ACE_Message_Block(%u): \"%p\", aborting\n"),
+               RPG_NET_DEF_NETWORK_BUFFER_SIZE));
 
     // clean up
     cancelTimer();
@@ -148,8 +149,7 @@ RPG_Net_SocketHandler::handle_input(ACE_HANDLE handle_in)
     case -1:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_SOCK_Stream::recv(): \"%s\", returning\n"),
-                 ACE_OS::strerror(ACE_OS::last_error())));
+                 ACE_TEXT("failed to ACE_SOCK_Stream::recv(): \"%p\", returning\n")));
 
       // clean up
       cancelTimer();

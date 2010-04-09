@@ -28,17 +28,13 @@
 #include <ace/Time_Value.h>
 
 class RPG_Net_SocketHandler
- : public RPG_Net_SocketHandler_Base
+ : public RPG_Net_SocketHandlerBase
 {
  public:
   RPG_Net_SocketHandler();
   virtual ~RPG_Net_SocketHandler(); // we'll self-destruct !
 
   virtual int open(void*); // args
-
-  // *NOTE*: this will work only for single-threaded reactors where
-  // handle_input and handle_timeout are always invoked SEQUENTIALLY (and NEVER
-  // "SIMULTANEOUSLY")
 
   // *NOTE*: the default behavior simply ignores any received data...
   virtual int handle_input(ACE_HANDLE); // handle
@@ -52,7 +48,7 @@ class RPG_Net_SocketHandler
                            ACE_Reactor_Mask);
 
  private:
-  typedef RPG_Net_SocketHandler_Base inherited;
+  typedef RPG_Net_SocketHandlerBase inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler(const RPG_Net_SocketHandler&));
@@ -61,22 +57,22 @@ class RPG_Net_SocketHandler
   // helper methods
   inline void cancelTimer()
   {
-    // *NOTE*: DONT'T invoke our send timer anymore ! Otherwise
-    // there's a racing condition (especially when using a multithreaded
-    // reactor !!!)
-    if (reactor()->cancel_timer(this,    // handler
-                                1) != 1) // don't call handle_close()
+    if (myTimerID != -1)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%s\", continuing\n"),
-                 ACE_OS::strerror(ACE_OS::last_error())));
+      if (reactor()->cancel_timer(this,    // handler
+                                  1) != 1) // don't call handle_close()
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
+      } // end IF
+      myTimerID = -1;
     } // end IF
-    myTimerID = -1;
   };
 
   // atomic ID generator
   static ACE_Atomic_Op<ACE_Thread_Mutex, unsigned long> myCurrentID;
 
+  bool myScheduleClientPing;
   // remember our timer ID
   int myTimerID;
 };

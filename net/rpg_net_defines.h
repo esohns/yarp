@@ -64,7 +64,7 @@
 
 // *** protocol-related ***
 #define RPG_NET_DEF_PING_INTERVAL                 5
-#define RPG_NET_DEF_PING_PONG                     true // play "PONG"
+#define RPG_NET_DEF_CLIENT_PING_PONG              true // as a client, play "PONG"
 
 // *** stream-related ***
 #define RPG_NET_DEF_GROUP_ID_TASK                 11

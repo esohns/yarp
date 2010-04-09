@@ -28,8 +28,12 @@
 
 #include <rpg_net_defines.h>
 #include <rpg_net_common_tools.h>
+#include <rpg_net_connection_manager.h>
+#include <rpg_net_stream_messageallocator.h>
 
 #include <rpg_common_tools.h>
+
+#include <stream_allocatorheap.h>
 
 #include <ace/Version.h>
 #include <ace/Get_Opt.h>
@@ -261,14 +265,31 @@ do_work(const std::string& serverHostname_in,
     } // end IF
   } // end IF
 
-  // step1: init client connector
+  // step1a: init configuration object
+  Stream_AllocatorHeap heapAllocator;
+  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
+      &heapAllocator);
+  RPG_Net_ConfigPOD config;
+  ACE_OS::memset(&config,
+                  0,
+                  sizeof(RPG_Net_ConfigPOD));
+  config.scheduleClientPing = false; // the server does this...
+  config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
+  config.messageAllocator = &messageAllocator;
+  config.statisticsReportingInterval = 0; // turn off
+
+  // step1b: init connection manager
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max(),
+                                                        config); // will be passed to all handlers
+
+  // step2: init client connector
   RPG_Net_Client_Connector connector(ACE_Reactor::instance(), // reactor
                                      ACE_NONBLOCK);           // flags: non-blocking I/O
 //                                      0);                      // flags (*TODO*: ACE_NONBLOCK ?);
   std::list<RPG_Net_Client_SocketHandler*> connectionHandlers;
   connectionHandlers.clear();
 
-  // step2a: init (timer)
+  // step3a: init (timer)
   long timerID = -1;
   Net_Client_TimeoutHandler timeoutHandler(serverHostname_in,
                                            serverPortNumber_in,
@@ -293,7 +314,7 @@ do_work(const std::string& serverHostname_in,
   } // end IF
   else
   {
-    // step2b: connect to server...
+    // step3b: connect to server...
     RPG_Net_Client_SocketHandler* handler = NULL;
     ACE_INET_Addr remote_address(serverPortNumber_in, // remote SAP
                                  serverHostname_in.c_str());
@@ -316,7 +337,7 @@ do_work(const std::string& serverHostname_in,
     // sanity check
     ACE_ASSERT(handler);
 
-    // step2: add to connections
+    // add to connections
     connectionHandlers.push_front(handler);
   } // end ELSE
 
@@ -329,7 +350,7 @@ do_work(const std::string& serverHostname_in,
 //   // *NOTE*: make sure we generally restart system calls (after e.g. EINTR) for the reactor...
 //   ACE_Reactor::instance()->restart(1);
 
-  // step3: dispatch events...
+  // step4: dispatch events...
   // *NOTE*: if we use a thread pool, we need to do this differently...
   if (useThreadPool_in)
   {
@@ -363,15 +384,8 @@ do_work(const std::string& serverHostname_in,
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("closing %u connection(s)...\n"),
                  connectionHandlers.size()));
-      for (std::list<RPG_Net_Client_SocketHandler*>::const_iterator iterator = connectionHandlers.begin();
-           iterator != connectionHandlers.end();
-           iterator++)
-      {
-        // close connection
-        (*iterator)->close(0);
-        // free connection
-        delete *iterator;
-      } // end FOR
+      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
       connectionHandlers.clear();
 
       return;
@@ -403,22 +417,15 @@ do_work(const std::string& serverHostname_in,
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("closing %u connection(s)...\n"),
                  connectionHandlers.size()));
-      for (std::list<RPG_Net_Client_SocketHandler*>::const_iterator iterator = connectionHandlers.begin();
-           iterator != connectionHandlers.end();
-           iterator++)
-      {
-        // close connection
-        (*iterator)->close(0);
-        // free connection
-        delete *iterator;
-      } // end FOR
+      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
       connectionHandlers.clear();
 
       return;
     } // end IF
   } // end ELSE
 
-  // step4: clean up
+  // step5: clean up
   if (ACE_Reactor::instance()->cancel_timer(timerID,  // timer ID
                                             NULL,     // pointer to args passed to handler
                                             1) != 1)  // don't invoke handle_close() on handler
@@ -429,15 +436,8 @@ do_work(const std::string& serverHostname_in,
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("closing %u connection(s)...\n"),
              connectionHandlers.size()));
-  for (std::list<RPG_Net_Client_SocketHandler*>::const_iterator iterator = connectionHandlers.begin();
-       iterator != connectionHandlers.end();
-       iterator++)
-  {
-    // close connection
-    (*iterator)->close(0);
-    // free connection
-    delete *iterator;
-  } // end FOR
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
   connectionHandlers.clear();
 
   ACE_DEBUG((LM_DEBUG,

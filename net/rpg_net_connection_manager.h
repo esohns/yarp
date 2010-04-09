@@ -45,7 +45,7 @@ class RPG_Net_Connection_Manager
                              ACE_Thread_Mutex>;
 
   // needs access to (de-)register itself with the singleton
-  friend class RPG_Net_SocketHandler_Base;
+  friend class RPG_Net_SocketHandlerBase;
 
  public:
   // configuration / initialization

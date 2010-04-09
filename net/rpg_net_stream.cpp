@@ -32,10 +32,10 @@ RPG_Net_Stream::RPG_Net_Stream()
                    NULL),
    myHeaderParser(std::string("HeaderParser"),
                   NULL),
-   myRuntimeStatistic(std::string("RuntimeStatistic"),
-                      NULL),
    myProtocolHandler(std::string("ProtocolHandler"),
-                     NULL)
+                     NULL),
+   myRuntimeStatistic(std::string("RuntimeStatistic"),
+                      NULL)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Stream::RPG_Net_Stream"));
 
@@ -46,8 +46,8 @@ RPG_Net_Stream::RPG_Net_Stream()
   // failed...)
   myAvailableModules.push_back(&mySocketHandler);
   myAvailableModules.push_back(&myHeaderParser);
-  myAvailableModules.push_back(&myRuntimeStatistic);
   myAvailableModules.push_back(&myProtocolHandler);
+  myAvailableModules.push_back(&myRuntimeStatistic);
 
   // fix ACE bug: modules should initialize their "next" member to NULL !
   for (MODULE_CONTAINERITERATOR_TYPE iter = myAvailableModules.begin();
@@ -78,37 +78,6 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   // - create modules (done for the ones we "own")
   // - init modules
   // - push them onto the stream (tail-first) !
-  // ******************* Protocol Handler ************************
-  RPG_Net_Module_ProtocolHandler* protocolHandler_impl = NULL;
-  protocolHandler_impl = ACE_dynamic_cast(RPG_Net_Module_ProtocolHandler*,
-                                          myProtocolHandler.writer());
-  if (!protocolHandler_impl)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_dynamic_cast(RPG_Net_Module_ProtocolHandler) failed, aborting\n")));
-
-    return false;
-  } // end IF
-  if (!protocolHandler_impl->init(config_in.messageAllocator,
-                                  RPG_NET_DEF_PING_PONG)) // auto-answer "ping" ?...
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
-               myProtocolHandler.name()));
-
-    return false;
-  } // end IF
-
-  // enqueue the module...
-  if (push(&myProtocolHandler))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
-               myProtocolHandler.name()));
-
-    return false;
-  } // end IF
-
   // ******************* Runtime Statistics ************************
   RPG_Net_Module_RuntimeStatistic* runtimeStatistic_impl = NULL;
   runtimeStatistic_impl = ACE_dynamic_cast(RPG_Net_Module_RuntimeStatistic*,
@@ -137,6 +106,39 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
                myRuntimeStatistic.name()));
+
+    return false;
+  } // end IF
+
+  // ******************* Protocol Handler ************************
+  RPG_Net_Module_ProtocolHandler* protocolHandler_impl = NULL;
+  protocolHandler_impl = ACE_dynamic_cast(RPG_Net_Module_ProtocolHandler*,
+                                          myProtocolHandler.writer());
+  if (!protocolHandler_impl)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("ACE_dynamic_cast(RPG_Net_Module_ProtocolHandler) failed, aborting\n")));
+
+    return false;
+  } // end IF
+  if (!protocolHandler_impl->init(config_in.messageAllocator,
+                                  config_in.scheduleClientPing,
+                                  (config_in.scheduleClientPing ? false // servers shouldn't receive "pings" in the first place
+                                                                : RPG_NET_DEF_CLIENT_PING_PONG))) // auto-answer "ping" as a client ?...
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
+               myProtocolHandler.name()));
+
+    return false;
+  } // end IF
+
+  // enqueue the module...
+  if (push(&myProtocolHandler))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
+               myProtocolHandler.name()));
 
     return false;
   } // end IF

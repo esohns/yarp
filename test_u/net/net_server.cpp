@@ -28,7 +28,7 @@
 #include <rpg_net_connection_manager.h>
 #include <rpg_net_signalhandler.h>
 #include <rpg_net_common_tools.h>
-#include "rpg_net_stream_messageallocator.h"
+#include <rpg_net_stream_messageallocator.h>
 
 #include <rpg_common_tools.h>
 
@@ -500,6 +500,7 @@ do_work(const unsigned long& clientPingInterval_in,
   ACE_OS::memset(&config,
                  0,
                  sizeof(RPG_Net_ConfigPOD));
+  config.scheduleClientPing = true; // yes, we want this...
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
   config.statisticsReportingInterval = statisticsReportingInterval_in;
@@ -558,6 +559,7 @@ do_work(const unsigned long& clientPingInterval_in,
       // stop listener, clean up pending connections
       RPG_NET_LISTENER_SINGLETON::instance()->stop();
       RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
       return;
     } // end IF
@@ -581,6 +583,7 @@ do_work(const unsigned long& clientPingInterval_in,
       // stop listener, clean up pending connections
       RPG_NET_LISTENER_SINGLETON::instance()->stop();
       RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
       return;
     } // end IF

@@ -25,14 +25,14 @@
 #include <ace/OS.h>
 #include <ace/Reactor.h>
 
-RPG_Net_SocketHandler_Base::RPG_Net_SocketHandler_Base()
+RPG_Net_SocketHandlerBase::RPG_Net_SocketHandlerBase()
  : inherited(NULL,                     // no specific thread manager
              NULL,                     // no specific message queue
              ACE_Reactor::instance())//, // default reactor
 //    myUserData(),
 //    myIsRegistered(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::RPG_Net_SocketHandler_Base"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::RPG_Net_SocketHandlerBase"));
 
   // init user data
   ACE_OS::memset(&myUserData,
@@ -46,16 +46,16 @@ RPG_Net_SocketHandler_Base::RPG_Net_SocketHandler_Base()
   myIsRegistered = RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->registerConnection(this);
 }
 
-RPG_Net_SocketHandler_Base::~RPG_Net_SocketHandler_Base()
+RPG_Net_SocketHandlerBase::~RPG_Net_SocketHandlerBase()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::~RPG_Net_SocketHandler_Base"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::~RPG_Net_SocketHandlerBase"));
 
 }
 
 int
-RPG_Net_SocketHandler_Base::open(void* arg_in)
+RPG_Net_SocketHandlerBase::open(void* arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::open"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::open"));
 
   // sanity check
   if (!myIsRegistered)
@@ -110,10 +110,10 @@ RPG_Net_SocketHandler_Base::open(void* arg_in)
 }
 
 int
-RPG_Net_SocketHandler_Base::handle_close(ACE_HANDLE handle_in,
+RPG_Net_SocketHandlerBase::handle_close(ACE_HANDLE handle_in,
                                          ACE_Reactor_Mask mask_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::handle_close"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::handle_close"));
 
   // de-register with connection manager
   if (myIsRegistered)
@@ -133,25 +133,25 @@ RPG_Net_SocketHandler_Base::handle_close(ACE_HANDLE handle_in,
 }
 
 void
-RPG_Net_SocketHandler_Base::init(const RPG_Net_ConfigPOD& userData_in)
+RPG_Net_SocketHandlerBase::init(const RPG_Net_ConfigPOD& userData_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::init"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::init"));
 
   myUserData = userData_in;
 }
 
 const bool
-RPG_Net_SocketHandler_Base::isRegistered() const
+RPG_Net_SocketHandlerBase::isRegistered() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::isRegistered"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::isRegistered"));
 
   return myIsRegistered;
 }
 
 void
-RPG_Net_SocketHandler_Base::abort()
+RPG_Net_SocketHandlerBase::abort()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::abort"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::abort"));
 
   // call baseclass - will clean everything (including ourselves !) up
   // --> invokes handle_close
@@ -164,9 +164,9 @@ RPG_Net_SocketHandler_Base::abort()
 }
 
 const unsigned long
-RPG_Net_SocketHandler_Base::getID() const
+RPG_Net_SocketHandlerBase::getID() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::getID"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::getID"));
 
   // *NOTE*: this isn't entirely portable...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
@@ -179,9 +179,9 @@ RPG_Net_SocketHandler_Base::getID() const
 }
 
 void
-RPG_Net_SocketHandler_Base::dump_state() const
+RPG_Net_SocketHandlerBase::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler_Base::dump_state"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::dump_state"));
 
   // debug info
   ACE_TCHAR buf[BUFSIZ];

@@ -20,6 +20,7 @@
 
 #include "rpg_net_module_protocolhandler.h"
 
+#include "rpg_net_defines.h"
 #include "rpg_net_message.h"
 #include "rpg_net_common_tools.h"
 
@@ -28,7 +29,10 @@
 RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler()
  : //inherited(),
    myAllocator(NULL),
-   myPlayPong(false), // *NOTE*: the idea really is not to play PONG...
+   myScheduleClientPing(true),
+   myTimerID(-1),
+   myCounter(1),
+   myAutomaticPong(false), // *NOTE*: the idea really is not to play PONG...
    myIsInitialized(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler"));
@@ -39,10 +43,14 @@ RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler"));
 
+  // clean up timer if necessary
+  if (myTimerID != -1)
+    cancelTimer();
 }
 
 const bool
 RPG_Net_Module_ProtocolHandler::init(Stream_IAllocator* allocator_in,
+                                     const bool& scheduleClientPing_in,
                                      const bool& autoAnswerPings_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::init"));
@@ -57,13 +65,37 @@ RPG_Net_Module_ProtocolHandler::init(Stream_IAllocator* allocator_in,
 
     // reset state
     myAllocator = NULL;
-    myPlayPong = false;
+    myScheduleClientPing = true;
+    cancelTimer();
+    myCounter = 1;
+    myAutomaticPong = false;
 
     myIsInitialized = false;
   } // end IF
 
   myAllocator = allocator_in;
-  myPlayPong = autoAnswerPings_in;
+
+  myScheduleClientPing = scheduleClientPing_in;
+  if (myScheduleClientPing)
+  { // regular client ping timer
+    ACE_Time_Value interval(RPG_NET_DEF_PING_INTERVAL, 0);
+    myTimerID = reactor()->schedule_timer(this,
+                                          NULL,
+                                          interval,
+                                          interval);
+    if (myTimerID == -1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Reactor::schedule_timer(): \"%p\", aborting\n")));
+
+      return false;
+    } // end IF
+  } // end IF
+
+  myAutomaticPong = autoAnswerPings_in;
+  if (myAutomaticPong)
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("auto-answering ping messages...\n")));
 
   myIsInitialized = true;
 
@@ -87,7 +119,7 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(Stream_MessageBase*& message_i
     case RPG_Net_Remote_Comm::RPG_NET_PING:
     {
       // auto-answer ?
-      if (myPlayPong)
+      if (myAutomaticPong)
       {
         // --> reply with a "PONG"
 
@@ -142,6 +174,59 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(Stream_MessageBase*& message_i
       break;
     }
   } // end SWITCH
+}
+
+int
+RPG_Net_Module_ProtocolHandler::handle_timeout(const ACE_Time_Value& tv_in,
+                                               const void* arg_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::handle_timeout"));
+
+  ACE_UNUSED_ARG(tv_in);
+  ACE_UNUSED_ARG(arg_in);
+
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("timer (ID: %d) expired...sending ping\n"),
+//              myTimerID));
+
+  // step0: create ping structure --> get a message buffer
+  RPG_Net_Message* ping_message = allocateMessage(sizeof(RPG_Net_Remote_Comm::PingMessage));
+  if (ping_message == NULL)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to allocate ping message(%u), aborting\n"),
+               sizeof(RPG_Net_Remote_Comm::PingMessage)));
+
+    return -1;
+  } // end IF
+
+  // step1: init ping data
+  // *TODO*: clean this up and handle endianness consistently !
+  RPG_Net_Remote_Comm::PingMessage* ping_struct = ACE_reinterpret_cast(RPG_Net_Remote_Comm::PingMessage*,
+                                                                       ping_message->wr_ptr());
+  ACE_OS::memset(ping_struct,
+                 0,
+                 sizeof(RPG_Net_Remote_Comm::PingMessage));
+  ping_struct->messageHeader.messageLength = (sizeof(RPG_Net_Remote_Comm::PingMessage) -
+                                              sizeof(unsigned long));
+  ping_struct->messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PING;
+  ping_struct->counter = myCounter++;
+  ping_message->wr_ptr(sizeof(RPG_Net_Remote_Comm::PingMessage));
+
+  // step2: send it upstream
+  if (reply(ping_message, NULL) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Task::reply(): \"%p\", aborting\n")));
+
+    // clean up
+    ping_message->release();
+
+    return -1;
+  } // end IF
+
+  return 0;
 }
 
 void

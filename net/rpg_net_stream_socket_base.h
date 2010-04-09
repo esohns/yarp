@@ -21,7 +21,7 @@
 #ifndef RPG_NET_STREAMSOCKET_BASE_H
 #define RPG_NET_STREAMSOCKET_BASE_H
 
-#include "rpg_net_sockethandler.h"
+#include "rpg_net_sockethandler_base.h"
 
 #include <stream_iallocator.h>
 
@@ -33,17 +33,13 @@ class ACE_Message_Block;
 
 template <typename StreamType>
 class RPG_Net_StreamSocketBase
- : public RPG_Net_SocketHandler
+ : public RPG_Net_SocketHandlerBase
 {
  public:
   RPG_Net_StreamSocketBase();
   virtual ~RPG_Net_StreamSocketBase(); // we'll self-destruct !
 
   virtual int open(void*); // args
-
-  // *NOTE*: this will work only for single-threaded reactors where
-  // handle_input and handle_timeout are always invoked SEQUENTIALLY (and NEVER
-  // "SIMULTANEOUSLY")
 
   // *NOTE*: enqueue any received data onto our stream for further processing
   virtual int handle_input(ACE_HANDLE); // handle
@@ -57,7 +53,7 @@ class RPG_Net_StreamSocketBase
                            ACE_Reactor_Mask);
 
  private:
-  typedef RPG_Net_SocketHandler inherited;
+  typedef RPG_Net_SocketHandlerBase inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase(const RPG_Net_StreamSocketBase&));

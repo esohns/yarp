@@ -27,6 +27,9 @@
 #include <stream_task_base_synch.h>
 #include <stream_streammodule_base.h>
 
+#include <ace/Time_Value.h>
+#include <ace/Reactor.h>
+
 // forward declaration(s)
 class Stream_IAllocator;
 class Stream_MessageBase;
@@ -40,11 +43,15 @@ class RPG_Net_Module_ProtocolHandler
 
   // initialization
   const bool init(Stream_IAllocator*,   // message allocator
-                  const bool& = false); // automatically answer "ping" messages
+                  const bool&,          // schedule regular client "pings" (server)
+                  const bool& = false); // automatically answer "ping" messages (client)
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
                                  bool&);               // return value: pass message downstream ?
+
+  virtual int handle_timeout(const ACE_Time_Value&, // current time
+                             const void*);          // asynchronous completion token
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
@@ -58,10 +65,28 @@ class RPG_Net_Module_ProtocolHandler
 
   // helper methods
   RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
+  inline void cancelTimer()
+  {
+    if (myTimerID != -1)
+    {
+      if (reactor()->cancel_timer(this,    // handler
+                                  1) != 1) // don't call handle_close()
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
+      } // end IF
+      myTimerID = -1;
+    } // end IF
+  };
 
   Stream_IAllocator* myAllocator;
-  bool               myPlayPong;
+  bool               myScheduleClientPing;
+  int                myTimerID;
+  unsigned long      myCounter;
+  bool               myAutomaticPong;
   bool               myIsInitialized;
+
+
 };
 
 // declare module
