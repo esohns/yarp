@@ -24,13 +24,8 @@
 #include "rpg_net_remote_comm.h"
 #include "rpg_net_common_tools.h"
 
-// init statics
-ACE_Atomic_Op<ACE_Thread_Mutex,
-              unsigned long> RPG_Net_SocketHandler::myCurrentID = 1;
-
 RPG_Net_SocketHandler::RPG_Net_SocketHandler()
- : myScheduleClientPing(false),
-   myTimerID(-1)
+//  : inherited()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::RPG_Net_SocketHandler"));
 
@@ -40,9 +35,103 @@ RPG_Net_SocketHandler::~RPG_Net_SocketHandler()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::~RPG_Net_SocketHandler"));
 
-  // clean up timer if necessary
-  if (myTimerID != -1)
-    cancelTimer();
+}
+
+int
+RPG_Net_SocketHandler::svc(void)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::svc"));
+
+  ssize_t bytes_sent = 0;
+  while (true)
+  {
+    if (myCurrentWriteBuffer == NULL)
+    {
+      if (myStream.get(myCurrentWriteBuffer, NULL)) // block
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_Stream::get(): \"%p\", aborting\n")));
+
+        // what else can we do ?
+        return -1;
+      } // end IF
+    } // end IF
+
+    // finished ?
+    if (myCurrentWriteBuffer->msg_type() == ACE_Message_Block::MB_STOP)
+    {
+      myCurrentWriteBuffer->release();
+      myCurrentWriteBuffer = NULL;
+
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("[%u]: finished sending...\n"),
+//                  peer_.get_handle()));
+
+      // leave loop, we're finished
+      return 0;
+    } // end IF
+
+    // put some data into the socket...
+    bytes_sent = peer_.send(myCurrentWriteBuffer->rd_ptr(),
+                            myCurrentWriteBuffer->length());
+    switch (bytes_sent)
+    {
+      case -1:
+      {
+        myCurrentWriteBuffer->release();
+        myCurrentWriteBuffer = NULL;
+
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_SOCK_Stream::send(): \"%p\", returning\n")));
+
+        // what else can we do ?
+        return -1;
+      }
+      // *** GOOD CASES ***
+      case 0:
+      {
+        myCurrentWriteBuffer->release();
+        myCurrentWriteBuffer = NULL;
+
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("[%u]: socket was closed by the peer...\n"),
+//                    peer_.get_handle()));
+
+        // nothing to do but wait for our shutdown signal (see above)...
+        break;
+      }
+      default:
+      {
+//         // debug info
+//         ACE_DEBUG((LM_DEBUG,
+//                   ACE_TEXT("[%u]: sent %u bytes...\n"),
+//                   peer_.get_handle(),
+//                   bytes_sent));
+
+        // finished with this buffer ?
+        if (ACE_static_cast(size_t, bytes_sent) == myCurrentWriteBuffer->length())
+        {
+          // get the next one...
+          myCurrentWriteBuffer->release();
+          myCurrentWriteBuffer = NULL;
+        } // end IF
+        else
+        {
+          // there's more data --> adjust read pointer
+          myCurrentWriteBuffer->rd_ptr(bytes_sent);
+        } // end ELSE
+
+        break;
+      }
+    } // end SWITCH
+  } // end WHILE
+
+  // debug info
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("worker thread (ID: %t) failed to ACE_Stream::get(): \"%p\", aborting\n")));
+
+  ACE_ASSERT(false);
+  ACE_NOTREACHED(return -1;)
 }
 
 int
@@ -50,7 +139,6 @@ RPG_Net_SocketHandler::open(void* arg_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::open"));
 
-  // sanity check
   // *NOTE*: we should have registered/initialized by now...
   // --> make sure this was successful before we proceed
   if (!inherited::isRegistered())
@@ -60,203 +148,38 @@ RPG_Net_SocketHandler::open(void* arg_in)
 //                ACE_TEXT("failed to register connection (ID: %u), aborting\n"),
 //                getID()));
 
-    // --> reactor will invoke handle_close() --> close the socket
+    // reactor will invoke handle_close()
     return -1;
   } // end IF
 
-  myScheduleClientPing = inherited::myUserData.scheduleClientPing;
-  if (myScheduleClientPing)
-  { // regular client ping timer
-    ACE_Time_Value interval(RPG_NET_DEF_PING_INTERVAL, 0);
-    myTimerID = reactor()->schedule_timer(this,
-                                          NULL,
-                                          interval,
-                                          interval);
-    if (myTimerID == -1)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::schedule_timer(): \"%p\", aborting\n")));
-
-      // --> reactor will invoke handle_close() --> close the socket
-      return -1;
-    } // end IF
-  } // end IF
-
-  // *NOTE*: we're registered with the reactor (TIMER_MASK) at this point...
-
-  // register reading data with reactor...
-  // --> done by the base class
-  int result = inherited::open(arg_in);
-  if (result == -1)
-  {
-    // *NOTE*: this MAY have happened because there are too many
-    // open connections... ---> not an error ?
-    if (ACE_OS::last_error())
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to inherited::open(): \"%p\", aborting\n")));
-    } // end IF
-
-    // clean up
-    cancelTimer();
-
-    // reactor will invoke handle_close() --> close the socket
-    return -1;
-  } // end IF
-
-  return 0;
-}
-
-int
-RPG_Net_SocketHandler::handle_input(ACE_HANDLE handle_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::handle_input"));
-
-  // *NOTE*: currently, we just ignore all incoming data...
-  ACE_UNUSED_ARG(handle_in);
-
-  ACE_Message_Block* chunk = NULL;
-  ACE_NEW_NORETURN(chunk,
-                   ACE_Message_Block(RPG_NET_DEF_NETWORK_BUFFER_SIZE,    // size
-                                     ACE_Message_Block::MB_STOP,         // type
-                                     NULL,                               // continuation
-                                     NULL,                               // data
-                                     NULL,                               // buffer allocator
-                                     NULL,                               // locking strategy
-                                     ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
-                                     ACE_Time_Value::zero,               // execution time
-                                     ACE_Time_Value::max_time,           // deadline time
-                                     NULL,                               // data allocator
-                                     NULL));                             // message allocator
-  if (!chunk)
+  // register reading data with reactor --> done by the base class
+  if (inherited::open(arg_in))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate ACE_Message_Block(%u): \"%p\", aborting\n"),
-               RPG_NET_DEF_NETWORK_BUFFER_SIZE));
+                 ACE_TEXT("failed to inherited::open(): \"%p\", aborting\n")));
 
-    // clean up
-    cancelTimer();
-
-    // reactor will invoke handle_close() --> close the socket
+    // reactor will invoke handle_close()
     return -1;
   } // end IF
 
-  // read some data from the socket...
-  size_t bytes_received = peer_.recv(chunk->wr_ptr(),
-                                     chunk->size());
-  switch (bytes_received)
+  // OK: start a worker
+  if (activate((THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED),
+               1,                           // # threads
+               0,                           // force spawning
+               ACE_DEFAULT_THREAD_PRIORITY, // priority
+               -1,                          // group id
+               NULL,                        // corresp. task --> use 'this'
+               NULL,                        // thread handle(s)
+               NULL,                        // thread stack(s)
+               NULL,                        // thread stack size(s)
+               NULL))                       // thread id(s)
   {
-    case -1:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_SOCK_Stream::recv(): \"%p\", returning\n")));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to activate(): \"%p\", aborting\n")));
 
-      // clean up
-      cancelTimer();
-      delete chunk;
-      chunk = NULL;
-
-      // reactor will invoke handle_close() --> close the socket
-      return -1;
-    }
-    // *** GOOD CASES ***
-    case 0:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("socket was closed by the peer...\n")));
-
-      // clean up
-      cancelTimer();
-      delete chunk;
-      chunk = NULL;
-
-      // reactor will invoke handle_close() --> close the socket
-      return -1;
-    }
-    default:
-    {
-      // debug info
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("received: %u bytes...\n"),
-                 bytes_received));
-
-      // clean up
-      delete chunk;
-      chunk = NULL;
-
-      break;
-    }
-  } // end SWITCH
-
-  // clean up
-  delete chunk;
-  chunk = NULL;
-
-  return 0;
-}
-
-int
-RPG_Net_SocketHandler::handle_timeout(const ACE_Time_Value& tv_in,
-                                      const void* arg_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::handle_timeout"));
-
-  ACE_UNUSED_ARG(tv_in);
-  ACE_UNUSED_ARG(arg_in);
-
-//   // debug info
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("timer (ID: %d) expired...sending ping\n"),
-//              myTimerID));
-
-  // step1: init ping data
-  // *TODO*: clean this up and handle endianness consistently !
-  RPG_Net_Remote_Comm::PingMessage data;
-  data.messageHeader.messageLength = (sizeof(RPG_Net_Remote_Comm::PingMessage) -
-                                      sizeof(unsigned long));
-  data.messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PING;
-   // *WARNING*: prefix increment leads to corruption !
-  data.counter = myCurrentID++;
-
-  // step2: send it over the net...
-  size_t bytes_sent = peer().send_n(ACE_static_cast(const void*,
-                                                    &data),                   // buffer
-                                    sizeof(RPG_Net_Remote_Comm::PingMessage), // length
-                                    NULL,                                     // timeout --> block
-                                    &bytes_sent);                             // number of sent bytes
-  // *NOTE*: we'll ALSO get here when the client has closed the socket
-  // in a well-behaved way... --> don't treat this as an error !
-  switch (bytes_sent)
-  {
-    case -1:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_SOCK_Stream::send_n(): \"%s\", aborting\n"),
-                 ACE_OS::strerror(ACE_OS::last_error())));
-
-      // reactor will invoke handle_close() --> close the socket
-      return -1;
-    }
-    case 0:
-    default:
-    {
-      if (bytes_sent == sizeof(RPG_Net_Remote_Comm::PingMessage))
-      {
-        // *** GOOD CASE ***
-        break;
-      } // end IF
-
-      // --> socket is probably non-blocking...
-      // *TODO*: support/use non-blocking sockets !
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("only managed to send %u/%u bytes, aborting\n"),
-                 bytes_sent,
-                 sizeof(RPG_Net_Remote_Comm::PingMessage)));
-
-      // reactor will invoke handle_close() --> close the socket
-      return -1;
-    }
-  } // end SWITCH
+    // reactor will invoke handle_close()
+    return -1;
+  } // end IF
 
   return 0;
 }
@@ -267,12 +190,75 @@ RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::handle_close"));
 
-  // clean up timer, if necessary (i.e. returned -1 from handle_timeout)
-  // *NOTE*: this works only for single-threaded reactors (see above) !!!
-  if (myTimerID != -1)
-    cancelTimer();
+  if (thr_count())
+  { // stop worker
+    try
+    {
+      // *NOTE*: cannot flush(), as this deactivates() the queue as well,
+      // which causes mayhem for our (blocked) worker...
+//       myStream.head()->reader()->flush();
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("caught exception in ACE_Task::flush(): \"%p\", continuing\n")));
 
-  // *NOTE*: base class will commit suicide properly --> cleans us up
+      // *NOTE*: what else can we do ?
+    }
+    shutdown();
+    wait();
+  } // end IF
+
+  // ... base class does the rest
   return inherited::handle_close(handle_in,
                                  mask_in);
+}
+
+void
+RPG_Net_SocketHandler::shutdown()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::shutdown"));
+
+  ACE_Message_Block* stop_mb = NULL;
+  ACE_NEW_NORETURN(stop_mb,
+                   ACE_Message_Block(0,                                  // size
+                                     ACE_Message_Block::MB_STOP,         // type
+                                     NULL,                               // continuation
+                                     NULL,                               // data
+                                     NULL,                               // buffer allocator
+                                     NULL,                               // locking strategy
+                                     ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
+                                     ACE_Time_Value::zero,               // execution time
+                                     ACE_Time_Value::max_time,           // deadline time
+                                     NULL,                               // data block allocator
+                                     NULL));                             // message allocator)
+  if (!stop_mb)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to allocate ACE_Message_Block: \"%p\", aborting\n")));
+
+    // what else can we do ?
+    return;
+  } // end IF
+
+  try
+  {
+    if (myStream.head()->reader()->put(stop_mb, NULL) == -1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("failed to ACE_Task::put(): \"%p\", continuing\n")));
+
+      stop_mb->release();
+    } // end IF
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in ACE_Task::put(): \"%p\", aborting\n")));
+
+    stop_mb->release();
+
+    // what else can we do ?
+    return;
+  }
 }

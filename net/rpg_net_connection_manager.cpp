@@ -97,16 +97,15 @@ RPG_Net_Connection_Manager::registerConnection(RPG_Net_IConnection* connection_i
     } // end IF
 
     myConnections.push_back(connection_in);
-
-    ACE_DEBUG((LM_DEBUG,
-              ACE_TEXT("registered new client connection (current total: %u)\n"),
-              myConnections.size()));
   } // end lock scope
 
   // init connection
   try
   {
     connection_in->init(myUserData);
+
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("registered new client connection...\n")));
   }
   catch (...)
   {
@@ -191,7 +190,7 @@ RPG_Net_Connection_Manager::deregisterConnection(const unsigned long& connection
                myConnections.size()));
   } // end ELSE
 
-  // if no more connections, signal any waiters...
+  // if there are no more connections, signal any waiters...
   if (myConnections.empty())
     myCondition.broadcast();
 }

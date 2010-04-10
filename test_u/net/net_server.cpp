@@ -59,15 +59,15 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-i [VALUE]   : client idle ping interval ([") << RPG_NET_DEF_PING_INTERVAL << ACE_TEXT("] seconds)") << std::endl;
-  std::cout << ACE_TEXT("-k [VALUE]   : socket keep-alive timeout ([") << RPG_NET_DEF_KEEPALIVE << ACE_TEXT("] seconds)") << std::endl;
-  std::cout << ACE_TEXT("-l           : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-n [STRING]  : network interface [\"") << RPG_NET_DEF_CNF_NETWORK_INTERFACE << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-p [VALUE]   : listening port ([") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("])") << std::endl;
-  std::cout << ACE_TEXT("-s [VALUE]   : statistics reporting interval") << ACE_TEXT(" [") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] seconds {0 --> OFF})") << std::endl;
-  std::cout << ACE_TEXT("-t           : trace information") << std::endl;
-  std::cout << ACE_TEXT("-v           : print version information and exit") << std::endl;
-  std::cout << ACE_TEXT("-x <[VALUE]> : use thread pool <#threads>")  << ACE_TEXT(" [") << RPG_NET_DEF_SERVER_USES_TP << ACE_TEXT(" : ") << RPG_NET_DEF_SERVER_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-i [VALUE]  : client idle ping interval ([") << RPG_NET_DEF_PING_INTERVAL << ACE_TEXT("] seconds)") << std::endl;
+  std::cout << ACE_TEXT("-k [VALUE]  : socket keep-alive timeout ([") << RPG_NET_DEF_KEEPALIVE << ACE_TEXT("] seconds)") << std::endl;
+  std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-n [STRING] : network interface [\"") << RPG_NET_DEF_CNF_NETWORK_INTERFACE << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-p [VALUE]  : listening port ([") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("])") << std::endl;
+  std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval") << ACE_TEXT(" [") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] seconds {0 --> OFF})") << std::endl;
+  std::cout << ACE_TEXT("-t          : trace information") << std::endl;
+  std::cout << ACE_TEXT("-v          : print version information and exit") << std::endl;
+  std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>")  << ACE_TEXT(" [") << RPG_NET_DEF_SERVER_USES_TP << ACE_TEXT(" : ") << RPG_NET_DEF_SERVER_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 const bool
@@ -500,7 +500,7 @@ do_work(const unsigned long& clientPingInterval_in,
   ACE_OS::memset(&config,
                  0,
                  sizeof(RPG_Net_ConfigPOD));
-  config.scheduleClientPing = true; // yes, we want this...
+  config.clientPingInterval = clientPingInterval_in;
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
   config.statisticsReportingInterval = statisticsReportingInterval_in;

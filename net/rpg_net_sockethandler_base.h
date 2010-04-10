@@ -42,9 +42,9 @@ class RPG_Net_SocketHandlerBase
   // state of currently open connections
   // *WARNING*: if this returns -1, the caller will still need to
   // clean "this" up !
-  virtual int open(void*); // args
-  virtual int handle_close(ACE_HANDLE,        // handle
-                           ACE_Reactor_Mask); // mask
+  virtual int open(void* = NULL); // args
+  virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,                        // handle
+                           ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK); // event mask
 
   // implement RPG_Net_IConnection
   virtual void init(const RPG_Net_ConfigPOD&);
@@ -56,7 +56,7 @@ class RPG_Net_SocketHandlerBase
   virtual void dump_state() const;
 
  protected:
-  // we're meant to be subclassed !
+  // meant to be sub-classed
   RPG_Net_SocketHandlerBase();
 
   RPG_Net_ConfigPOD myUserData;

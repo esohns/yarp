@@ -63,8 +63,8 @@
 #define RPG_NET_DEF_NETWORK_BUFFER_SIZE           1024 // 1 kB
 
 // *** protocol-related ***
-#define RPG_NET_DEF_PING_INTERVAL                 5
-#define RPG_NET_DEF_CLIENT_PING_PONG              true // as a client, play "PONG"
+#define RPG_NET_DEF_PING_INTERVAL                 5 // (server) [0 --> OFF]
+#define RPG_NET_DEF_CLIENT_PING_PONG              true // (client) as a client, play "PONG"
 
 // *** stream-related ***
 #define RPG_NET_DEF_GROUP_ID_TASK                 11
@@ -75,9 +75,8 @@
 // as RPG_NET_DEF_MAX_MESSAGES * sizeof(RPG_Net_Remote_Comm::RuntimePing) bytes !
 #define RPG_NET_DEF_MAX_MESSAGES                  1000
 
-// *NOTE*: don't set this too small as this MIGHT affect network performance
-// seconds
-#define RPG_NET_DEF_STATISTICS_COLLECT_INTERVAL   15
+// seconds, 0 --> OFF
+#define RPG_NET_DEF_STATISTICS_COLLECT_INTERVAL   0
 // seconds, 0 --> OFF
 #define RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL 0
 

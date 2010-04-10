@@ -62,14 +62,14 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-h [STRING]  : server (host)name [\"") << NET_CLIENT_DEF_SERVER_HOSTNAME << "\"]" << std::endl;
-  std::cout << ACE_TEXT("-i [VALUE]   : connection interval ([") << NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL << ACE_TEXT("] seconds)") << std::endl;
-  std::cout << ACE_TEXT("-l           : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-p [VALUE]   : server port [") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-s           : stress-test server") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-t           : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-v           : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-x <[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-h [STRING] : server (host)name [\"") << NET_CLIENT_DEF_SERVER_HOSTNAME << "\"]" << std::endl;
+  std::cout << ACE_TEXT("-i [VALUE]  : connection interval ([") << NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL << ACE_TEXT("] seconds)") << std::endl;
+  std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-p [VALUE]  : server port [") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-s          : stress-test server") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 const bool
@@ -273,7 +273,7 @@ do_work(const std::string& serverHostname_in,
   ACE_OS::memset(&config,
                   0,
                   sizeof(RPG_Net_ConfigPOD));
-  config.scheduleClientPing = false; // the server does this...
+  config.clientPingInterval = 0; // servers do this...
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
   config.statisticsReportingInterval = 0; // turn off
@@ -286,11 +286,10 @@ do_work(const std::string& serverHostname_in,
   RPG_Net_Client_Connector connector(ACE_Reactor::instance(), // reactor
                                      ACE_NONBLOCK);           // flags: non-blocking I/O
 //                                      0);                      // flags (*TODO*: ACE_NONBLOCK ?);
-  std::list<RPG_Net_Client_SocketHandler*> connectionHandlers;
-  connectionHandlers.clear();
 
-  // step3a: init (timer)
+  // step3a: init timer
   long timerID = -1;
+  std::list<RPG_Net_Client_SocketHandler*> connectionHandlers;
   Net_Client_TimeoutHandler timeoutHandler(serverHostname_in,
                                            serverPortNumber_in,
                                            &connector,
@@ -306,8 +305,7 @@ do_work(const std::string& serverHostname_in,
     if (timerID == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::schedule_timer(): \"%s\", aborting\n"),
-                 ACE_OS::strerror(ACE_OS::last_error())));
+                 ACE_TEXT("failed to ACE_Reactor::schedule_timer(): \"%p\", aborting\n")));
 
       return;
     } // end IF
@@ -327,10 +325,9 @@ do_work(const std::string& serverHostname_in,
                           0*/) == -1)                  // perms
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Connector::connect(%s:%u): \"%s\", aborting\n"),
+                 ACE_TEXT("failed to ACE_Connector::connect(%s:%u): \"%p\", aborting\n"),
                  ACE_TEXT_CHAR_TO_TCHAR(remote_address.get_host_name()),
-                 remote_address.get_port_number(),
-                 ACE_OS::strerror(ACE_OS::last_error())));
+                 remote_address.get_port_number()));
 
       return;
     } // end IF
@@ -478,8 +475,7 @@ ACE_TMAIN(int argc,
   if (ACE::init() == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::init(): \"%s\", aborting\n"),
-                        ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE::init(): \"%p\", aborting\n")));
 
     return EXIT_FAILURE;
   } // end IF
@@ -589,8 +585,7 @@ ACE_TMAIN(int argc,
   if (ACE::fini() == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::fini(): \"%s\", aborting\n"),
-                        ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE::fini(): \"%p\", aborting\n")));
 
     return EXIT_FAILURE;
   } // end IF

@@ -27,6 +27,7 @@
 #include <ace/Event_Handler.h>
 #include <ace/Time_Value.h>
 #include <ace/INET_Addr.h>
+#include <ace/Synch.h>
 
 #include <string>
 #include <list>
@@ -55,6 +56,7 @@ class Net_Client_TimeoutHandler
 
   ACE_INET_Addr             myPeerAddress;
   RPG_Net_Client_Connector* myConnector;
+  ACE_Thread_Mutex          myLock;
   std::list<RPG_Net_Client_SocketHandler*>* myConnectionHandlers;
 };
 

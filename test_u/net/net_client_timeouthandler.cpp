@@ -70,28 +70,40 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
     if (myPeerAddress.addr_to_string(buf, (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%p\", continuing\n")));
+                 ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%s\", continuing\n"),
+                 ACE_OS::strerror(ACE_OS::last_error())));
     } // end IF
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Connector::connect(%s): \"%p\", continuing\n"),
-               buf));
+               ACE_TEXT("failed to ACE_Connector::connect(%s): \"%s\", continuing\n"),
+               buf,
+               ACE_OS::strerror(ACE_OS::last_error())));
 
-    // rejected ? --> release a connection !
-    if (!(myConnectionHandlers->empty()))
     {
-      RPG_Net_Client_SocketHandler* handler = myConnectionHandlers->back();
-      // sanity check
-      ACE_ASSERT(handler);
-      // close connection
-      handler->abort();
-      myConnectionHandlers->pop_back();
+      ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("...released connection instead (remaining: %u)\n"),
-                 myConnectionHandlers->size()));
+      // rejected ? --> release a connection !
+      if (!myConnectionHandlers->empty())
+      {
+        RPG_Net_Client_SocketHandler* handler = myConnectionHandlers->back();
+        try
+        {
+          // close connection
+          handler->abort();
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception RPG_Net_Client_SocketHandler::abort(), continuing\n")));
+        }
+        myConnectionHandlers->pop_back();
 
-      return 0;
-    } // end IF
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("...released connection (remaining: %u)\n"),
+                   myConnectionHandlers->size()));
+
+        return 0;
+      } // end IF
+    } // end lock scope
   } // end IF
   else
   {
@@ -99,7 +111,11 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
     ACE_ASSERT(handler);
 
     // step2: add to connections
-    myConnectionHandlers->push_front(handler);
+    {
+      ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+      myConnectionHandlers->push_front(handler);
+    } // end lock scope
   } // end ELSE
 
   return 0;

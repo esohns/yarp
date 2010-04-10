@@ -23,11 +23,10 @@
 
 #include "rpg_net_sockethandler_base.h"
 
-#include <stream_iallocator.h>
-
 #include <ace/Global_Macros.h>
 
 // forward declarations
+class Stream_IAllocator;
 class RPG_Net_Message;
 class ACE_Message_Block;
 
@@ -36,36 +35,34 @@ class RPG_Net_StreamSocketBase
  : public RPG_Net_SocketHandlerBase
 {
  public:
-  RPG_Net_StreamSocketBase();
-  virtual ~RPG_Net_StreamSocketBase(); // we'll self-destruct !
+  virtual ~RPG_Net_StreamSocketBase();
 
-  virtual int open(void*); // args
-
+  virtual int open(void* = NULL); // args
   // *NOTE*: enqueue any received data onto our stream for further processing
-  virtual int handle_input(ACE_HANDLE); // handle
-
+  virtual int handle_input(ACE_HANDLE = ACE_INVALID_HANDLE);
   // *NOTE*: send any enqueued data back to the client...
-  virtual int handle_output(ACE_HANDLE); // handle
-
+  virtual int handle_output(ACE_HANDLE = ACE_INVALID_HANDLE);
   // *NOTE*: this is called when:
   // - handle_xxx() returns -1
-  virtual int handle_close(ACE_HANDLE,
-                           ACE_Reactor_Mask);
+  virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,
+                           ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK);
+
+ protected:
+  RPG_Net_StreamSocketBase();
+
+  StreamType         myStream;
+  ACE_Message_Block* myCurrentWriteBuffer;
 
  private:
   typedef RPG_Net_SocketHandlerBase inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase(const RPG_Net_StreamSocketBase&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase& operator=(const RPG_Net_StreamSocketBase&));
 
-  // helper methods
   RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
 
-  StreamType         myStream;
   Stream_IAllocator* myAllocator; // message allocator
   RPG_Net_Message*   myCurrentReadBuffer;
-  ACE_Message_Block* myCurrentWriteBuffer;
 };
 
 // include template implementation

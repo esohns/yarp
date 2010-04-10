@@ -42,13 +42,16 @@ class RPG_Net_Module_ProtocolHandler
   virtual ~RPG_Net_Module_ProtocolHandler();
 
   // initialization
-  const bool init(Stream_IAllocator*,   // message allocator
-                  const bool&,          // schedule regular client "pings" (server)
-                  const bool& = false); // automatically answer "ping" messages (client)
+  const bool init(Stream_IAllocator*,       // message allocator
+                  const unsigned long& = 0, // client "ping" interval (server) [0 --> OFF]
+                  const bool& = false,      // automatically answer "ping" messages (client)
+                  const bool& = false);     // print dot ('.') for every answered PING to stderr (client)
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
                                  bool&);               // return value: pass message downstream ?
+//   virtual void handleSessionMessage(RPG_Net_SessionMessage*&, // session message handle
+//                                     bool&);                   // return value: pass message downstream ?
 
   virtual int handle_timeout(const ACE_Time_Value&, // current time
                              const void*);          // asynchronous completion token
@@ -80,13 +83,13 @@ class RPG_Net_Module_ProtocolHandler
   };
 
   Stream_IAllocator* myAllocator;
-  bool               myScheduleClientPing;
   int                myTimerID;
   unsigned long      myCounter;
   bool               myAutomaticPong;
+  bool               myPrintPongDot;
   bool               myIsInitialized;
 
-
+//   unsigned long      mySessionID;
 };
 
 // declare module

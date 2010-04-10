@@ -21,9 +21,9 @@
 #ifndef RPG_NET_LISTENER_H
 #define RPG_NET_LISTENER_H
 
-// #include "rpg_net_sockethandler.h"
-#include "rpg_net_stream.h"
-#include "rpg_net_stream_socket_base.h"
+#include "rpg_net_sockethandler.h"
+// #include "rpg_net_stream.h"
+// #include "rpg_net_stream_socket_base.h"
 
 #include <rpg_common_icontrol.h>
 #include <rpg_common_idumpstate.h>
@@ -35,9 +35,9 @@
 #include <ace/Synch.h>
 
 class RPG_Net_Listener
-  : public ACE_Acceptor<//RPG_Net_SocketHandler,
-                        RPG_Net_StreamSocketBase<RPG_Net_Stream>,
-                        ACE_SOCK_ACCEPTOR>,
+ : public ACE_Acceptor<RPG_Net_SocketHandler,
+//                         RPG_Net_StreamSocketBase<RPG_Net_Stream>,
+                       ACE_SOCK_ACCEPTOR>,
     public RPG_Common_IControl
 {
   // singleton needs access to the ctor/dtors
@@ -64,8 +64,8 @@ class RPG_Net_Listener
   virtual void dump_state() const;
 
  private:
-  typedef ACE_Acceptor<//RPG_Net_SocketHandler,
-                       RPG_Net_StreamSocketBase<RPG_Net_Stream>,
+  typedef ACE_Acceptor<RPG_Net_SocketHandler,
+//                        RPG_Net_StreamSocketBase<RPG_Net_Stream>,
                        ACE_SOCK_ACCEPTOR> inherited;
 
   // safety measures

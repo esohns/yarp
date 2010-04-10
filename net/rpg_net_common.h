@@ -35,7 +35,7 @@ struct RPG_Net_RuntimeStatistic
 struct RPG_Net_ConfigPOD
 {
   // ************ connection config data ************
-  bool scheduleClientPing; // used by the server...
+  unsigned long clientPingInterval; // used by the server...
   int socketBufferSize;
   Stream_IAllocator* messageAllocator;
   // ************ stream config data ************

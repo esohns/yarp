@@ -20,20 +20,22 @@
 
 #include "rpg_net_module_protocolhandler.h"
 
-#include "rpg_net_defines.h"
 #include "rpg_net_message.h"
 #include "rpg_net_common_tools.h"
 
 #include <stream_iallocator.h>
 
+#include <iostream>
+
 RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler()
  : //inherited(),
    myAllocator(NULL),
-   myScheduleClientPing(true),
    myTimerID(-1),
    myCounter(1),
    myAutomaticPong(false), // *NOTE*: the idea really is not to play PONG...
-   myIsInitialized(false)
+   myPrintPongDot(false),
+   myIsInitialized(false)//,
+//    mySessionID(0)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler"));
 
@@ -50,8 +52,9 @@ RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler()
 
 const bool
 RPG_Net_Module_ProtocolHandler::init(Stream_IAllocator* allocator_in,
-                                     const bool& scheduleClientPing_in,
-                                     const bool& autoAnswerPings_in)
+                                     const unsigned long& clientPingInterval_in,
+                                     const bool& autoAnswerPings_in,
+                                     const bool& printPongDot_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::init"));
 
@@ -65,20 +68,19 @@ RPG_Net_Module_ProtocolHandler::init(Stream_IAllocator* allocator_in,
 
     // reset state
     myAllocator = NULL;
-    myScheduleClientPing = true;
     cancelTimer();
     myCounter = 1;
     myAutomaticPong = false;
+    myPrintPongDot = false;
 
     myIsInitialized = false;
   } // end IF
 
   myAllocator = allocator_in;
 
-  myScheduleClientPing = scheduleClientPing_in;
-  if (myScheduleClientPing)
+  if (clientPingInterval_in)
   { // regular client ping timer
-    ACE_Time_Value interval(RPG_NET_DEF_PING_INTERVAL, 0);
+    ACE_Time_Value interval(clientPingInterval_in, 0);
     myTimerID = reactor()->schedule_timer(this,
                                           NULL,
                                           interval,
@@ -90,12 +92,18 @@ RPG_Net_Module_ProtocolHandler::init(Stream_IAllocator* allocator_in,
 
       return false;
     } // end IF
+
+//     // debug info
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("scheduled client ping (interval: %u second(s))...\n"),
+//                clientPingInterval_in));
   } // end IF
 
   myAutomaticPong = autoAnswerPings_in;
-  if (myAutomaticPong)
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("auto-answering ping messages...\n")));
+//   if (myAutomaticPong)
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("auto-answering ping messages...\n")));
+  myPrintPongDot = printPongDot_in;
 
   myIsInitialized = true;
 
@@ -156,6 +164,11 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(Stream_MessageBase*& message_i
         } // end IF
       } // end IF
 
+      if (myPrintPongDot)
+      {
+        std::cerr << '.';
+      } // end IF
+
       break;
     }
     case RPG_Net_Remote_Comm::RPG_NET_PONG:
@@ -175,6 +188,36 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(Stream_MessageBase*& message_i
     }
   } // end SWITCH
 }
+
+// void
+// RPG_Net_Module_ProtocolHandler::handleSessionMessage(RPG_Net_SessionMessage*& message_inout,
+//                                                      bool& passMessageDownstream_out)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::handleSessionMessage"));
+//
+//   // don't care (implies yes per default, if we're part of a stream)
+//   ACE_UNUSED_ARG(passMessageDownstream_out);
+//
+//   // sanity check(s)
+//   ACE_ASSERT(message_inout);
+//   ACE_ASSERT(myIsInitialized);
+//
+//   switch (message_inout->getType())
+//   {
+//     case Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
+//     {
+//       // remember session ID for reporting...
+//       mySessionID = message_inout->getConfig()->getUserData().sessionID;
+//
+//       break;
+//     }
+//     default:
+//     {
+//       // don't do anything...
+//       break;
+//     }
+//   } // end SWITCH
+// }
 
 int
 RPG_Net_Module_ProtocolHandler::handle_timeout(const ACE_Time_Value& tv_in,

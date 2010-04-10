@@ -90,8 +90,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
     return false;
   } // end IF
   if (!runtimeStatistic_impl->init(config_in.statisticsReportingInterval,
-                                   config_in.messageAllocator, // print cache info ?
-                                   false)) // do not print hash ("#") marks...
+                                   config_in.messageAllocator)) // print cache info ?
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
@@ -122,9 +121,10 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
     return false;
   } // end IF
   if (!protocolHandler_impl->init(config_in.messageAllocator,
-                                  config_in.scheduleClientPing,
-                                  (config_in.scheduleClientPing ? false // servers shouldn't receive "pings" in the first place
-                                                                : RPG_NET_DEF_CLIENT_PING_PONG))) // auto-answer "ping" as a client ?...
+                                  config_in.clientPingInterval,
+                                  (config_in.clientPingInterval ? false // servers shouldn't receive "pings" in the first place
+                                                                : RPG_NET_DEF_CLIENT_PING_PONG), // auto-answer "ping" as a client ?...
+                                  (config_in.clientPingInterval == 0))) // clients print ('.') dots for received "pings"...
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),

@@ -61,6 +61,8 @@ RPG_Net_SocketHandlerBase::open(void* arg_in)
   if (!myIsRegistered)
   {
     // too many connections...
+    ACE_OS::last_error(EBUSY);
+
 //     ACE_DEBUG((LM_ERROR,
 //                ACE_TEXT("failed to register connection (ID: %u), aborting\n"),
 //                getID()));
@@ -79,15 +81,15 @@ RPG_Net_SocketHandlerBase::open(void* arg_in)
 
   // *NOTE*: we're registered with the reactor (READ_MASK) at this point
 
-  // ...register for writes (WRITE_MASK) as well
-  if (reactor()->register_handler(this,
-                                  ACE_Event_Handler::WRITE_MASK) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::register_handler(WRITE_MASK): \"%p\", aborting\n")));
-
-    return -1;
-  } // end IF
+//   // ...register for writes (WRITE_MASK) as well
+//   if (reactor()->register_handler(this,
+//                                   ACE_Event_Handler::WRITE_MASK) == -1)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to ACE_Reactor::register_handler(WRITE_MASK): \"%p\", aborting\n")));
+//
+//     return -1;
+//   } // end IF
 
 //   if (!myIsRegistered)
 //   {

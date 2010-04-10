@@ -47,8 +47,7 @@ RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic()
    myByteCounter(0),
    myLastBytesPerSecondCount(0),
 // myMessageTypeStatistics.clear(),
-   myAllocator(NULL),
-   myPrintHashMark(false) // silent by default !
+   myAllocator(NULL)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic"));
 
@@ -107,8 +106,7 @@ RPG_Net_Module_RuntimeStatistic::~RPG_Net_Module_RuntimeStatistic()
 
 const bool
 RPG_Net_Module_RuntimeStatistic::init(const unsigned long& reportingInterval_in,
-                                      const Stream_IAllocator* allocator_in,
-                                      const bool& printHashMark_in)
+                                      const Stream_IAllocator* allocator_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::init"));
 
@@ -184,8 +182,6 @@ RPG_Net_Module_RuntimeStatistic::init(const unsigned long& reportingInterval_in,
 //     return false;
 //   } // end IF
 
-  myPrintHashMark = printHashMark_in;
-
   // OK: all's well...
   myIsInitialized = true;
 
@@ -204,17 +200,11 @@ RPG_Net_Module_RuntimeStatistic::handleDataMessage(Stream_MessageBase*& message_
   // sanity check(s)
   ACE_ASSERT(message_inout);
 
-  bool print_hash = false;
-
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
     // update our counters...
     myNumTotalMessages++;
-    if ((myNumTotalMessages % 10000) == 0)
-    {
-      print_hash = true;
-    } // end IF
     myMessageCounter++;
 
     myNumTotalBytes += message_inout->total_length();
@@ -229,13 +219,6 @@ RPG_Net_Module_RuntimeStatistic::handleDataMessage(Stream_MessageBase*& message_
                                                                message_inout->rd_ptr());
   // increment corresponding counter...
   myMessageTypeStatistics[message_header->messageType]++;
-
-  if (myPrintHashMark && print_hash)
-  {
-    // write some output
-    // *TODO*: where ?
-    std::cout << '#';
-  } // end IF
 }
 
 void
@@ -389,7 +372,8 @@ RPG_Net_Module_RuntimeStatistic::report()
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("*** RUNTIME STATISTICS ***\n--> Stream Statistics <--\nmessages seen (last second): %u\nmessages seen (total): %u (data: %.2f %%)\ndata seen (last second): %u bytes\ndata seen (total): %.0f bytes\ncurrent cache usage [%u messages / %u total allocated heap]\n*** RUNTIME STATISTICS ***\\END\n"),
+               ACE_TEXT("*** [%u] RUNTIME STATISTICS [%u] ***\n--> Stream Statistics <--\nmessages seen (last second): %u\nmessages seen (total): %u (data: %.2f %%)\ndata seen (last second): %u bytes\ndata seen (total): %.0f bytes\ncurrent cache usage [%u messages / %u total allocated heap]\n*** RUNTIME STATISTICS ***\\END\n"),
+               mySessionID, mySessionID,
                myLastMessagesPerSecondCount,
                myNumTotalMessages,
                ((myNumTotalMessages - myNumSessionMessages) / 100.0),
@@ -412,14 +396,14 @@ RPG_Net_Module_RuntimeStatistic::final_report() const
     // *NOTE*: synchronize access to statistics data
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    // write some output
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("*** Session Statistics ***\ntotal # data message(s) (as seen): %u\n --> Protocol Info <--\n"),
-               (myNumTotalMessages - myNumSessionMessages)));
-
-    // sanity check (this is not strictly necessary...)
     if (myNumTotalMessages)
     {
+      // write some output
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("*** [%u] SESSION STATISTICS [%u] ***\ntotal # data message(s) (as seen): %u\n --> Protocol Info <--\n"),
+                 mySessionID, mySessionID,
+                 (myNumTotalMessages - myNumSessionMessages)));
+
       std::string protocol_string;
       for (MESSAGETYPE2COUNT_CONSTITERATOR_TYPE iter = myMessageTypeStatistics.begin();
            iter != myMessageTypeStatistics.end();
