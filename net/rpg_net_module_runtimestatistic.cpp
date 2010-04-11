@@ -318,37 +318,30 @@ RPG_Net_Module_RuntimeStatistic::reset()
 }
 
 const bool
-RPG_Net_Module_RuntimeStatistic::collect(RPG_Net_RuntimeStatistic& data_out)
+RPG_Net_Module_RuntimeStatistic::collect(RPG_Net_RuntimeStatistic& data_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::collect"));
 
-  // *NOTE*: this happens asynchronously whenever someone uses our
-  // RPG_Common_IStatistic API
-  // --> we need to fill the argument with meaningful values...
+  // *NOTE*: asynchronous call: someones' using our API
+  // --> fill the argument with meaningful values...
 
   // init return value(s)
   ACE_OS::memset(&data_out,
                  0,
                  sizeof(RPG_Net_RuntimeStatistic));
 
-  // sanity check(s)
-  if (!myIsInitialized)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("not initialized, aborting\n")));
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    return false;
-  } // end IF
+    data_out.numDataMessages = (myNumTotalMessages - myNumSessionMessages);
+    data_out.numBytes = myNumTotalBytes;
+  } // end lock scope
 
-  // *TODO*: do something meaningful here...
-  ACE_ASSERT(false);
-
-  // OK: all is well...
   return true;
 }
 
 void
-RPG_Net_Module_RuntimeStatistic::report()
+RPG_Net_Module_RuntimeStatistic::report() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::report"));
 
@@ -393,10 +386,10 @@ RPG_Net_Module_RuntimeStatistic::final_report() const
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::final_report"));
 
   {
-    // *NOTE*: synchronize access to statistics data
+    // synchronize access to statistics data
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    if (myNumTotalMessages)
+    if (myNumTotalMessages - myNumSessionMessages)
     {
       // write some output
       ACE_DEBUG((LM_DEBUG,
@@ -419,7 +412,7 @@ RPG_Net_Module_RuntimeStatistic::final_report() const
     } // end IF
   } // end lock scope
 
-//   // only profile stuff left to do...
+//   // only process profile left to do...
 //   ACE_Profile_Timer::ACE_Elapsed_Time elapsed_time;
 //   elapsed_time.real_time = 0.0;
 //   elapsed_time.user_time = 0.0;

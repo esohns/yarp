@@ -18,29 +18,25 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_SIGNALHANDLER_H
-#define RPG_NET_SIGNALHANDLER_H
+#ifndef NET_CLIENT_SIGNALHANDLER_H
+#define NET_CLIENT_SIGNALHANDLER_H
 
-#include "rpg_net_common.h"
-
-#include <rpg_common_istatistic.h>
+#include "net_common.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Event_Handler.h>
-#include <ace/Time_Value.h>
+#include <ace/INET_Addr.h>
 
 #include <string>
 
-// forward declaration(s)
-class RPG_Common_IControl;
-
-class RPG_Net_SignalHandler
+class Net_Client_SignalHandler
  : public ACE_Event_Handler
 {
  public:
-  RPG_Net_SignalHandler(RPG_Common_IControl*,                                     // controller
-                        RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>* = NULL); // reporter
-  virtual ~RPG_Net_SignalHandler();
+  Net_Client_SignalHandler(const std::string&,         // target hostname
+                           const unsigned short&,      // target port number
+                           RPG_Net_Client_Connector*); // connector
+  virtual ~Net_Client_SignalHandler();
 
   // implement specific behaviour
   virtual int handle_signal(int,          // signal
@@ -51,12 +47,12 @@ class RPG_Net_SignalHandler
   typedef ACE_Event_Handler inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SignalHandler());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SignalHandler(const RPG_Net_SignalHandler&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SignalHandler& operator=(const RPG_Net_SignalHandler&));
+  ACE_UNIMPLEMENTED_FUNC(Net_Client_SignalHandler());
+  ACE_UNIMPLEMENTED_FUNC(Net_Client_SignalHandler(const Net_Client_SignalHandler&));
+  ACE_UNIMPLEMENTED_FUNC(Net_Client_SignalHandler& operator=(const Net_Client_SignalHandler&));
 
-  RPG_Common_IControl*                             myControl;
-  RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>* myReport;
+  ACE_INET_Addr             myPeerAddress;
+  RPG_Net_Client_Connector* myConnector;
 };
 
 #endif

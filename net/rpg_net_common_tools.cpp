@@ -1341,6 +1341,192 @@ RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
   return (noDelay_in ? (value == 1) : (value == 0));
 }
 
+void
+RPG_Net_Common_Tools::retrieveSignalInfo(const int& signal_in,
+                                         const siginfo_t& info_in,
+//                                           const ucontext_t& context_in,
+                                         std::string& information_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::retrieveSignalInfo"));
+
+  // init return value
+  information_out.resize(0);
+
+  std::ostringstream information;
+  information.clear();
+
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  // step0: retrieve some basic information
+  information << ACE_TEXT("PID/UID: ");
+  information << info_in.si_pid;
+  information << ACE_TEXT("/");
+  information << info_in.si_uid;
+
+  // (try to) get user name
+  char pw_buf[BUFSIZ];
+  passwd pw_struct;
+  passwd* pw_ptr = NULL;
+  // *PORTABILITY*: this isn't completely portable... (man getpwuid_r)
+  if (::getpwuid_r(info_in.si_uid,
+                   &pw_struct,
+                   pw_buf,
+                   sizeof(pw_buf),
+                   &pw_ptr))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ::getpwuid_r(%d) : \"%m\", continuing\n"),
+               info_in.si_uid));
+  } // end IF
+  else
+  {
+    information << ACE_TEXT("[\"");
+    information << pw_struct.pw_name;
+    information << ACE_TEXT("\"]");
+  } // end ELSE
+
+  information << ACE_TEXT(", errno: ");
+  information << info_in.si_errno;
+  information << ACE_TEXT("[\"");
+  information << ACE_OS::strerror(info_in.si_errno);
+  information << ACE_TEXT("\"], code: ");
+
+  // step1: retrieve signal code...
+  switch (info_in.si_code)
+  {
+    case SI_TIMER:
+    {
+      information << ACE_TEXT("SI_TIMER");
+
+      break;
+    }
+    case SI_USER:
+    {
+      information << ACE_TEXT("SI_USER");
+
+      break;
+    }
+    case SI_KERNEL:
+    {
+      information << ACE_TEXT("SI_KERNEL");
+
+      break;
+    }
+    case SI_QUEUE:
+    {
+      information << ACE_TEXT("SI_QUEUE");
+
+      break;
+    }
+    case SI_MESGQ:
+    {
+      information << ACE_TEXT("SI_MESGQ");
+
+      break;
+    }
+    case SI_ASYNCIO:
+    {
+      information << ACE_TEXT("SI_ASYNCIO");
+
+      break;
+    }
+    case SI_SIGIO:
+    {
+      information << ACE_TEXT("SI_SIGIO");
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("invalid/unknown signal (code: %d), continuing\n"),
+                 info_in.si_code));
+
+      information << ACE_TEXT("SI_XXX[");
+      information << info_in.si_code;
+      information << ACE_TEXT("]");
+
+      break;
+    }
+  } // end SWITCH
+
+  // step2: retrieve more (signal-dependant) information
+  switch (signal_in)
+  {
+    case SIGFPE:
+    {
+      switch (info_in.si_code)
+      {
+        case FPE_INTDIV:
+        case FPE_FLTDIV:
+        {
+          information << ACE_TEXT(", divide by zero: ");
+          information << info_in.si_addr;
+
+          break;
+        }
+        case FPE_INTOVF:
+        case FPE_FLTOVF:
+        {
+          information << ACE_TEXT(", numeric overflow: ");
+          information << info_in.si_addr;
+
+          break;
+        }
+        default:
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("invalid/unknown signal code: %d, continuing\n"),
+                     info_in.si_code));
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case SIGSEGV:
+    {
+      // *TODO*: more data ?
+      information << ACE_TEXT(", segmentation fault: ");
+      information << info_in.si_addr;
+
+      break;
+    }
+    case SIGCHLD:
+    {
+      information << ACE_TEXT(", child process has exited (consumed: ");
+      information << info_in.si_utime;
+      information << ACE_TEXT("/");
+      information << info_in.si_stime;
+      information << ACE_TEXT(" time, exit status: ");
+      information << info_in.si_status;
+
+      break;
+    }
+    default:
+    {
+      // *TODO*: handle more signals here...
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("no additional information for signal: \"%S\"...\n"),
+//                  signal_in));
+
+      break;
+    }
+  } // end SWITCH
+#else
+  // *IMPORTANT NOTE*: under Windows (TM), we only have the handle(s)...
+  ACE_UNUSED_ARG(signal_in);
+
+  information << ACE_TEXT(", signalled handle: ");
+  information << info_in.si_handle_;
+  information << ACE_TEXT(", array of signalled handle(s): ");
+  information << info_in.si_handles_;
+#endif
+
+  // OK: set return value
+  information_out = information.str();
+}
+
 int
 RPG_Net_Common_Tools::client_selector(const dirent* dirEntry_in)
 {

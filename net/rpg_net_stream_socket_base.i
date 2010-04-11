@@ -83,7 +83,7 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
     if (ACE_OS::last_error() != EBUSY)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to inherited::open(): \"%p\", aborting\n")));
+                 ACE_TEXT("failed to inherited::open(): \"%m\", aborting\n")));
     } // end IF
 
     // reactor will invoke handle_close()
@@ -164,7 +164,7 @@ RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
                ACE_TEXT("failed to allocateMessage(%u), aborting\n"),
                RPG_NET_DEF_NETWORK_BUFFER_SIZE));
 
-    // reactor will invoke handle_close() --> we commit suicide
+    // reactor will invoke handle_close()
     return -1;
   } // end IF
 
@@ -175,28 +175,30 @@ RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
   {
     case -1:
     {
-      ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("failed to ACE_SOCK_Stream::recv(): \"%p\", returning\n")));
+      // connection reset by peer ? --> not an error
+      if (ACE_OS::last_error() != ECONNRESET)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_SOCK_Stream::recv(): \"%m\", returning\n")));
 
       // clean up
       myCurrentReadBuffer->release();
       myCurrentReadBuffer = NULL;
 
-      // reactor will invoke handle_close() --> we commit suicide
+      // reactor will invoke handle_close()
       return -1;
     }
     // *** GOOD CASES ***
     case 0:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("[%u]: socket was closed by the peer...\n"),
-                 handle_in));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("[%u]: socket was closed by the peer...\n"),
+//                  handle_in));
 
       // clean up
       myCurrentReadBuffer->release();
       myCurrentReadBuffer = NULL;
 
-      // reactor will invoke handle_close() --> we commit suicide
+      // reactor will invoke handle_close()
       return -1;
     }
     default:
@@ -218,13 +220,13 @@ RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
   if (myStream.put(myCurrentReadBuffer) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Stream::put(): \"%p\", aborting\n")));
+               ACE_TEXT("failed to ACE_Stream::put(): \"%m\", aborting\n")));
 
       // clean up
     myCurrentReadBuffer->release();
     myCurrentReadBuffer = NULL;
 
-    // reactor will invoke handle_close() --> we commit suicide
+    // reactor will invoke handle_close()
     return -1;
   } // end IF
 
@@ -234,96 +236,98 @@ RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
   return 0;
 }
 
-template <typename StreamType>
-int
-RPG_Net_StreamSocketBase<StreamType>::handle_output(ACE_HANDLE handle_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::handle_output"));
-
-  ACE_UNUSED_ARG(handle_in);
-
-  ssize_t bytes_sent = 0;
-
-  if (myCurrentWriteBuffer == NULL)
-  {
-    // get a chunk from the stream...
-    ACE_Time_Value nowait(ACE_OS::gettimeofday());
-    if (myStream.get(myCurrentWriteBuffer, &nowait)) // don't block
-    {
-//       ACE_DEBUG((LM_ERROR,
-//                  ACE_TEXT("failed to ACE_Stream::get(): \"%p\", returning\n")));
-
-      // *TODO*: maybe there was no data ?
-      return 0;
-    } // end IF
-  } // end IF
-
-  // put some data into the socket...
-  bytes_sent = peer_.send(myCurrentWriteBuffer->rd_ptr(),
-                          myCurrentWriteBuffer->length());
-  switch (bytes_sent)
-  {
-    case -1:
-    {
-      ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to ACE_SOCK_Stream::send(): \"%p\", returning\n")));
-
-      // clean up
-      myCurrentWriteBuffer->release();
-      myCurrentWriteBuffer = NULL;
-
-      // reactor will invoke handle_close()
-      return -1;
-    }
-    // *** GOOD CASES ***
-    case 0:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("[%u]: socket was closed by the peer...\n"),
-                 handle_in));
-
-      // clean up
-      myCurrentWriteBuffer->release();
-      myCurrentWriteBuffer = NULL;
-
-      // reactor will invoke handle_close()
-      return -1;
-    }
-    default:
-    {
-//       // debug info
-//       ACE_DEBUG((LM_DEBUG,
-//                 ACE_TEXT("[%u]: sent %u bytes...\n"),
-//                 handle_in,
-//                 bytes_sent));
-
-      // finished with this buffer ?
-      if (ACE_static_cast(size_t, bytes_sent) == myCurrentWriteBuffer->length())
-      {
-        // clean up
-        myCurrentWriteBuffer->release();
-        myCurrentWriteBuffer = NULL;
-      } // end IF
-      else
-      {
-        // there's more data --> adjust read pointer
-        myCurrentWriteBuffer->rd_ptr(bytes_sent);
-      } // end ELSE
-
-      break;
-    }
-  } // end SWITCH
-
-  // immediately reschedule sending ?
-  if (msg_queue()->is_empty() && (myCurrentWriteBuffer == NULL))
-    reactor()->cancel_wakeup(this,
-                             ACE_Event_Handler::WRITE_MASK);
-  else
-    reactor()->schedule_wakeup(this,
-                               ACE_Event_Handler::WRITE_MASK);
-
-  return 0;
-}
+// template <typename StreamType>
+// int
+// RPG_Net_StreamSocketBase<StreamType>::handle_output(ACE_HANDLE handle_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::handle_output"));
+//
+//   ACE_UNUSED_ARG(handle_in);
+//
+//   ssize_t bytes_sent = 0;
+//
+//   if (myCurrentWriteBuffer == NULL)
+//   {
+//     // get a chunk from the stream...
+//     ACE_Time_Value nowait(ACE_OS::gettimeofday());
+//     if (myStream.get(myCurrentWriteBuffer, &nowait)) // don't block
+//     {
+// //       ACE_DEBUG((LM_ERROR,
+// //                  ACE_TEXT("failed to ACE_Stream::get(): \"%m\", returning\n")));
+//
+//       // *TODO*: maybe there was no data ?
+//       return 0;
+//     } // end IF
+//   } // end IF
+//
+//   // put some data into the socket...
+//   bytes_sent = peer_.send(myCurrentWriteBuffer->rd_ptr(),
+//                           myCurrentWriteBuffer->length());
+//   switch (bytes_sent)
+//   {
+//     case -1:
+//     {
+//       // connection reset by peer ? --> not an error
+//       if (ACE_OS::last_error() != ECONNRESET)
+//         ACE_DEBUG((LM_ERROR,
+//                    ACE_TEXT("failed to ACE_SOCK_Stream::send(): \"%m\", returning\n")));
+//
+//       // clean up
+//       myCurrentWriteBuffer->release();
+//       myCurrentWriteBuffer = NULL;
+//
+//       // reactor will invoke handle_close()
+//       return -1;
+//     }
+//     // *** GOOD CASES ***
+//     case 0:
+//     {
+// //       ACE_DEBUG((LM_DEBUG,
+// //                  ACE_TEXT("[%u]: socket was closed by the peer...\n"),
+// //                  handle_in));
+//
+//       // clean up
+//       myCurrentWriteBuffer->release();
+//       myCurrentWriteBuffer = NULL;
+//
+//       // reactor will invoke handle_close()
+//       return -1;
+//     }
+//     default:
+//     {
+// //       // debug info
+// //       ACE_DEBUG((LM_DEBUG,
+// //                 ACE_TEXT("[%u]: sent %u bytes...\n"),
+// //                 handle_in,
+// //                 bytes_sent));
+//
+//       // finished with this buffer ?
+//       if (ACE_static_cast(size_t, bytes_sent) == myCurrentWriteBuffer->length())
+//       {
+//         // clean up
+//         myCurrentWriteBuffer->release();
+//         myCurrentWriteBuffer = NULL;
+//       } // end IF
+//       else
+//       {
+//         // there's more data --> adjust read pointer
+//         myCurrentWriteBuffer->rd_ptr(bytes_sent);
+//       } // end ELSE
+//
+//       break;
+//     }
+//   } // end SWITCH
+//
+// //   // immediately reschedule sending ?
+// //   if (msg_queue()->is_empty() && (myCurrentWriteBuffer == NULL))
+// //     reactor()->cancel_wakeup(this,
+// //                              ACE_Event_Handler::WRITE_MASK);
+// //   else
+// //     reactor()->schedule_wakeup(this,
+// //                                ACE_Event_Handler::WRITE_MASK);
+//
+//   return 0;
+// }
 
 template <typename StreamType>
 int
@@ -351,6 +355,42 @@ RPG_Net_StreamSocketBase<StreamType>::handle_close(ACE_HANDLE handle_in,
 
   return inherited::handle_close(handle_in,
                                  mask_in);
+}
+
+template <typename StreamType>
+const bool
+RPG_Net_StreamSocketBase<StreamType>::collect(RPG_Net_RuntimeStatistic& data_out) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::collect"));
+
+  try
+  {
+    return myStream.collect(data_out);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Common_IStatistic::collect(), aborting\n")));
+  }
+
+  return false;
+}
+
+template <typename StreamType>
+void
+RPG_Net_StreamSocketBase<StreamType>::report() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::report"));
+
+  try
+  {
+    return myStream.report();
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Common_IStatistic::report(), aborting\n")));
+  }
 }
 
 template <typename StreamType>

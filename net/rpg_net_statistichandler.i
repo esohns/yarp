@@ -21,7 +21,7 @@
 #include <ace/Log_Msg.h>
 
 template <typename StatisticsInfoContainer_t>
-RPG_Net_StatisticHandler<StatisticsInfoContainer_t>::RPG_Net_StatisticHandler(RPG_Common_IStatistic<StatisticsInfoContainer_t>* interface_in,
+RPG_Net_StatisticHandler<StatisticsInfoContainer_t>::RPG_Net_StatisticHandler(const COLLECTOR_TYPE* interface_in,
                                                                               const ActionSpecifier& action_in)
  : inherited(NULL,                            // no reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
@@ -54,6 +54,10 @@ RPG_Net_StatisticHandler<StatisticsInfoContainer_t>::handle_timeout(const ACE_Ti
     case ACTION_COLLECT:
     {
       StatisticsInfoContainer_t result;
+      ACE_OS::memset(&result,
+                     0,
+                     sizeof(StatisticsInfoContainer_t));
+
       try
       {
         if (!myInterface->collect(result))
@@ -67,9 +71,9 @@ RPG_Net_StatisticHandler<StatisticsInfoContainer_t>::handle_timeout(const ACE_Ti
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("caught an exception in RPG_Common_IStatistic::collect(), continuing\n")));
 
-        // *TODO*: what else can we do ?
       }
 
+      // *TODO*: what else can we do, dump the result somehow ?
       break;
     }
     case ACTION_REPORT:
@@ -82,8 +86,6 @@ RPG_Net_StatisticHandler<StatisticsInfoContainer_t>::handle_timeout(const ACE_Ti
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("caught an exception in RPG_Common_IStatistic::report(), continuing\n")));
-
-        // *TODO*: what else can we do ?
       }
 
       break;
@@ -91,13 +93,14 @@ RPG_Net_StatisticHandler<StatisticsInfoContainer_t>::handle_timeout(const ACE_Ti
     default:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("unknown/invalid action %u, continuing\n"),
+                 ACE_TEXT("unknown/invalid action %u, aborting\n"),
                  myAction));
 
-      break;
+      return -1;
     }
   } // end SWITCH
 
+  // reschedule timer...
   return 0;
 }
 

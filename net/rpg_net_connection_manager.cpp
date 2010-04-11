@@ -97,15 +97,16 @@ RPG_Net_Connection_Manager::registerConnection(RPG_Net_IConnection* connection_i
     } // end IF
 
     myConnections.push_back(connection_in);
+
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("registered new client connection (total: %u)...\n"),
+               myConnections.size()));
   } // end lock scope
 
   // init connection
   try
   {
     connection_in->init(myUserData);
-
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("registered new client connection...\n")));
   }
   catch (...)
   {
@@ -277,6 +278,119 @@ RPG_Net_Connection_Manager::numConnections() const
   } // end lock scope
 
   return num_connections;
+}
+
+void
+RPG_Net_Connection_Manager::abortOldestConnection()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::abortOldestConnection"));
+
+  // synch access to myConnections
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+
+  // sanity check: anything to do ?
+  if (myConnections.empty())
+  {
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("nothing to do, returning\n")));
+
+    return;
+  } // end IF
+
+  // close "oldest" connection --> list head
+  try
+  {
+     // implicitly calls deregisterConnection
+    myConnections.front()->abort();
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Net_IConnection::abort(), continuing")));
+  }
+}
+
+const bool
+RPG_Net_Connection_Manager::collect(RPG_Net_RuntimeStatistic& data_out) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::collect"));
+
+  // init result
+  ACE_OS::memset(&data_out,
+                 0,
+                 sizeof(RPG_Net_RuntimeStatistic));
+
+  RPG_Net_RuntimeStatistic temp;
+  // aggregate statistical data
+  // *WARNING*: this assumes we're holding our lock !
+  for (CONNECTIONLIST_CONSTITERATOR_TYPE iter = myConnections.begin();
+       iter != myConnections.end();
+       iter++)
+  {
+    ACE_OS::memset(&temp,
+                   0,
+                   sizeof(RPG_Net_RuntimeStatistic));
+
+    // collect information
+    try
+    {
+      (*iter)->collect(temp);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                  ACE_TEXT("caught exception in RPG_Common_IStatistic::collect(), continuing\n")));
+    }
+
+    data_out += temp;
+  } // end FOR
+
+  return true;
+}
+
+void
+RPG_Net_Connection_Manager::report() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::report"));
+
+  // init result
+  RPG_Net_RuntimeStatistic result;
+  ACE_OS::memset(&result,
+                 0,
+                 sizeof(RPG_Net_RuntimeStatistic));
+
+  // synch access to myConnections
+  {
+    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+
+    // sanity check: anything to do ?
+    if (myConnections.empty())
+    {
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("nothing to do, returning\n")));
+
+      return;
+    } // end IF
+
+    // collect (aggregated) data from our active connections
+    if (!collect(result))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Common_IStatistic::collect(), aborting\n")));
+
+      // nothing to report
+      return;
+    } // end IF
+
+    // debug info
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("*** RUNTIME STATISTICS ***\n--> [%u] Connection(s) <--\n # data messages: %u (avg.: %u)\ndata: %.0f (avg.: %.2f) bytes\n*** RUNTIME STATISTICS ***\\END\n"),
+               myConnections.size(),
+               result.numDataMessages,
+               (myConnections.size() ? (result.numDataMessages / myConnections.size()) : 0),
+               result.numBytes,
+               (myConnections.size() ? (result.numBytes / myConnections.size()) : 0.0)));
+  } // end lock scope
 }
 
 void

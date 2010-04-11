@@ -39,8 +39,6 @@ class RPG_Net_Stream
  : public Stream_Base<RPG_Net_ConfigPOD,
                       RPG_Net_StreamConfig,
                       RPG_Net_SessionMessage>,
-   // *NOTE*: implement this in order to successfuly encapsulate stream specifics...
-   // --> delegate the actual functionality to one of our modules
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
  public:
@@ -55,9 +53,9 @@ class RPG_Net_Stream
 
   // implement RPG_Common_IStatistic
   // *NOTE*: delegate this to myRuntimeStatistic
-  virtual const bool collect(RPG_Net_RuntimeStatistic&); // return value: statistic data
+  virtual const bool collect(RPG_Net_RuntimeStatistic&) const; // return value: statistic data
   // this is just a dummy (use statisticsReportingInterval instead)
-  virtual void report();
+  virtual void report() const;
 
  private:
   typedef Stream_Base<RPG_Net_ConfigPOD,

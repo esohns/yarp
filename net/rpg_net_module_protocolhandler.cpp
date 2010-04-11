@@ -88,7 +88,7 @@ RPG_Net_Module_ProtocolHandler::init(Stream_IAllocator* allocator_in,
     if (myTimerID == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::schedule_timer(): \"%p\", aborting\n")));
+                 ACE_TEXT("failed to ACE_Reactor::schedule_timer(): \"%m\", aborting\n")));
 
       return false;
     } // end IF
@@ -155,7 +155,7 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(Stream_MessageBase*& message_i
         if (reply(reply_message, NULL) == -1)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to ACE_Task::reply(): \"%p\", aborting\n")));
+                     ACE_TEXT("failed to ACE_Task::reply(): \"%m\", aborting\n")));
 
           // clean up
           reply_message->release();
@@ -261,7 +261,7 @@ RPG_Net_Module_ProtocolHandler::handle_timeout(const ACE_Time_Value& tv_in,
   if (reply(ping_message, NULL) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Task::reply(): \"%p\", aborting\n")));
+               ACE_TEXT("failed to ACE_Task::reply(): \"%m\", aborting\n")));
 
     // clean up
     ping_message->release();

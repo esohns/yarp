@@ -59,12 +59,12 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-i [VALUE]  : client idle ping interval ([") << RPG_NET_DEF_PING_INTERVAL << ACE_TEXT("] seconds)") << std::endl;
-  std::cout << ACE_TEXT("-k [VALUE]  : socket keep-alive timeout ([") << RPG_NET_DEF_KEEPALIVE << ACE_TEXT("] seconds)") << std::endl;
+  std::cout << ACE_TEXT("-i [VALUE]  : client ping interval ([") << RPG_NET_DEF_PING_INTERVAL << ACE_TEXT("] second(s))") << std::endl;
+  std::cout << ACE_TEXT("-k [VALUE]  : socket keep-alive timeout ([") << RPG_NET_DEF_KEEPALIVE << ACE_TEXT("] second(s))") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-n [STRING] : network interface [\"") << RPG_NET_DEF_CNF_NETWORK_INTERFACE << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-p [VALUE]  : listening port ([") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("])") << std::endl;
-  std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval") << ACE_TEXT(" [") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] seconds {0 --> OFF})") << std::endl;
+  std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval") << ACE_TEXT(" [") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>")  << ACE_TEXT(" [") << RPG_NET_DEF_SERVER_USES_TP << ACE_TEXT(" : ") << RPG_NET_DEF_SERVER_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
@@ -322,95 +322,98 @@ init_threadPool()
 }
 
 void
-init_signals(std::vector<int>& signals_in)
+init_signals(const bool& allowUserRuntimeStats_in,
+             std::vector<int>& signals_inout)
 {
   ACE_TRACE(ACE_TEXT("::init_signals"));
 
   // init return value(s)
-  signals_in.clear();
+  signals_inout.clear();
 
   // init list of handled signals...
   // *PORTABILITY*: on Windows SIGHUP and SIGQUIT are not defined,
   // so we handle SIGBREAK (21) and SIGABRT (22) instead...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   // *NOTE*: don't handle SIGHUP !!!! --> program will hang !
-  //signals_in.push_back(SIGHUP);
+  //signals_inout.push_back(SIGHUP);
 #endif
-  signals_in.push_back(SIGINT);
+  signals_inout.push_back(SIGINT);
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  signals_in.push_back(SIGQUIT);
+  signals_inout.push_back(SIGQUIT);
 #endif
-//   signals_in.push_back(SIGILL);
-//   signals_in.push_back(SIGTRAP);
-  signals_in.push_back(SIGABRT);
-//   signals_in.push_back(SIGBUS);
-//   signals_in.push_back(SIGFPE);
-//   signals_in.push_back(SIGKILL); // cannot catch this one...
-//   signals_in.push_back(SIGUSR1);
-//   signals_in.push_back(SIGSEGV);
-//   signals_in.push_back(SIGUSR2);
-//   signals_in.push_back(SIGPIPE);
-//   signals_in.push_back(SIGALRM);
-  signals_in.push_back(SIGTERM);
-//   signals_in.push_back(SIGSTKFLT);
-//   signals_in.push_back(SIGCHLD);
-//   signals_in.push_back(SIGCONT);
-//   signals_in.push_back(SIGSTOP); // cannot catch this one...
-//   signals_in.push_back(SIGTSTP);
-//   signals_in.push_back(SIGTTIN);
+//   signals_inout.push_back(SIGILL);
+//   signals_inout.push_back(SIGTRAP);
+  signals_inout.push_back(SIGABRT);
+//   signals_inout.push_back(SIGBUS);
+//   signals_inout.push_back(SIGFPE);
+//   signals_inout.push_back(SIGKILL); // cannot catch this one...
+  if (allowUserRuntimeStats_in)
+    signals_inout.push_back(SIGUSR1);
+//   signals_inout.push_back(SIGSEGV);
+//   signals_inout.push_back(SIGUSR2);
+//   signals_inout.push_back(SIGPIPE);
+//   signals_inout.push_back(SIGALRM);
+  signals_inout.push_back(SIGTERM);
+//   signals_inout.push_back(SIGSTKFLT);
+//   signals_inout.push_back(SIGCHLD);
+//   signals_inout.push_back(SIGCONT);
+//   signals_inout.push_back(SIGSTOP); // cannot catch this one...
+//   signals_inout.push_back(SIGTSTP);
+//   signals_inout.push_back(SIGTTIN);
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-  signals_in.push_back(SIGBREAK);
+  signals_inout.push_back(SIGBREAK);
 #endif
-//   signals_in.push_back(SIGTTOU);
-//   signals_in.push_back(SIGURG);
-//   signals_in.push_back(SIGXCPU);
-//   signals_in.push_back(SIGXFSZ);
-//   signals_in.push_back(SIGVTALRM);
-//   signals_in.push_back(SIGPROF);
-//   signals_in.push_back(SIGWINCH);
-//   signals_in.push_back(SIGIO);
-//   signals_in.push_back(SIGPWR);
-//   signals_in.push_back(SIGSYS);
-//   signals_in.push_back(SIGRTMIN);
-//   signals_in.push_back(SIGRTMIN+1);
+//   signals_inout.push_back(SIGTTOU);
+//   signals_inout.push_back(SIGURG);
+//   signals_inout.push_back(SIGXCPU);
+//   signals_inout.push_back(SIGXFSZ);
+//   signals_inout.push_back(SIGVTALRM);
+//   signals_inout.push_back(SIGPROF);
+//   signals_inout.push_back(SIGWINCH);
+//   signals_inout.push_back(SIGIO);
+//   signals_inout.push_back(SIGPWR);
+//   signals_inout.push_back(SIGSYS);
+//   signals_inout.push_back(SIGRTMIN);
+//   signals_inout.push_back(SIGRTMIN+1);
 // ...
-//   signals_in.push_back(SIGRTMAX-1);
-//   signals_in.push_back(SIGRTMAX);
+//   signals_inout.push_back(SIGRTMAX-1);
+//   signals_inout.push_back(SIGRTMAX);
 }
 
 const bool
-init_signalHandling(const std::vector<int>& signals_in,
+init_signalHandling(const std::vector<int>& signals_inout,
                     RPG_Net_SignalHandler& eventHandler_in,
                     ACE_Sig_Handlers& signalHandlers_in)
 {
   ACE_TRACE(ACE_TEXT("::init_signalHandling"));
 
+  // step1: register signal handlers for the list of signals we want to catch
+
   // specify (default) action...
-  // Note: we don't actually need to keep this around after registration...
+  // --> we don't actually need to keep this around after registration
   ACE_Sig_Action signalAction((ACE_SignalHandler)SIG_DFL, // default action (will be overridden below)...
                                ACE_Sig_Set(1),            // mask of signals to be blocked when we're servicing
                                                           // --> block them all ! (except KILL off course...)
 //                              (SA_RESTART | SA_SIGINFO)); // flags
                                SA_SIGINFO);               // flags
 
-  // handle different signals...
+  // register different signals...
   int sigkey = -1;
-  for (std::vector<int>::const_iterator iter = signals_in.begin();
-       iter != signals_in.end();
+  for (std::vector<int>::const_iterator iter = signals_inout.begin();
+       iter != signals_inout.end();
        iter++)
   {
-    sigkey = signalHandlers_in.register_handler(*iter,
-                                                &eventHandler_in,
-                                                &signalAction,
-                                                NULL,
-                                                NULL);
+    sigkey = signalHandlers_in.register_handler(*iter,            // signal
+                                                &eventHandler_in, // new handler
+                                                &signalAction,    // new action
+                                                NULL,             // old handler
+                                                NULL);            // old action
     if (sigkey == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Sig_Handlers::register_handler(\"%S\": %d): \"%s\", aborting\n"),
+                 ACE_TEXT("failed to ACE_Sig_Handlers::register_handler(\"%S\": %d): \"%m\", aborting\n"),
                  *iter,
-                 *iter,
-                 ACE_OS::strerror(ACE_OS::last_error())));
+                 *iter));
 
       return false;
     } // end IF
@@ -423,13 +426,74 @@ init_signalHandling(const std::vector<int>& signals_in,
                sigkey));
   } // end FOR
 
-  // *NOTE*: there is only a single handler for ALL signals in the set...
+  // actually, there is only a single handler for ALL signals in the set...
   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("handling %d signal(s)...\n"),
-//              signals_in.size()));
+//              signals_inout.size()));
+
+  // step2: ignore SIGPIPE; need this to enable sending to exit gracefully
+  // after an asynchronous client disconnect (i.e. crash/...)
+  ACE_OS::signal(SIGPIPE, SIG_IGN);
+//   // specify ignore action...
+//   // --> we don't actually need to keep this around after registration
+//   ACE_Sig_Action ignoreAction((ACE_SignalHandler)SIG_IGN, // ignore action...
+//                                ACE_Sig_Set(1),            // mask of signals to be blocked when we're servicing
+//                                                           // --> block them all ! (except KILL off course...)
+// //                              (SA_RESTART | SA_SIGINFO)); // flags
+//                                0);                        // flags
+//   sigkey = signalHandlers_in.register_handler(SIGPIPE,       // signal
+//                                               NULL,          // new handler
+//                                               &ignoreAction, // new action
+//                                               NULL,          // old handler
+//                                               NULL);         // old action
+//   if (sigkey == -1)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to ACE_Sig_Handlers::register_handler(\"%S\": %d): \"%m\", aborting\n"),
+//                SIGPIPE,
+//                SIGPIPE));
+//
+//     return false;
+//   } // end IF
 
   return true;
+}
+
+const bool
+init_statisticsReporting(const unsigned long& reportingInterval_in,
+                         RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic>& handler_in)
+{
+  ACE_TRACE(ACE_TEXT("::init_statisticsReporting"));
+
+  ACE_Time_Value interval(reportingInterval_in, 0);
+  long timerID = -1;
+  timerID = ACE_Reactor::instance()->schedule_timer(&handler_in,
+                                                    NULL,
+                                                    interval,
+                                                    interval);
+  if (timerID == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Reactor::schedule_timer(): \"%m\", aborting\n")));
+
+    return false;
+  } // end IF
+
+  return true;
+}
+
+void
+fini_statisticsReporting(RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic>& handler_in)
+{
+  ACE_TRACE(ACE_TEXT("::fini_statisticsReporting"));
+
+  if (ACE_Reactor::instance()->cancel_timer(&handler_in, // handler
+                                            1) != 1)     // don't call handle_close()
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%m\", returning\n")));
+  } // end IF
 }
 
 static
@@ -476,13 +540,16 @@ do_work(const unsigned long& clientPingInterval_in,
     } // end IF
   } // end IF
 
-  // step1: signal handling
+  // step1a: signal handling
   // event handler for signals
-  RPG_Net_SignalHandler signalEventHandler(RPG_NET_LISTENER_SINGLETON::instance());
+  RPG_Net_SignalHandler signalEventHandler(RPG_NET_LISTENER_SINGLETON::instance(),
+                                           RPG_NET_CONNECTIONMANAGER_SINGLETON::instance());
   ACE_Sig_Handlers      signalHandlers;
-  std::vector<int>      signals;
-  init_signals(signals);
-  if (!init_signalHandling(signals,
+  // *WARNING*: 'signals' appears to be a keyword in some contexts...
+  std::vector<int>      signalss;
+  init_signals((statisticsReportingInterval_in == 0), // allow SIGUSR1 IF regular reporting is off
+               signalss);
+  if (!init_signalHandling(signalss,
                            signalEventHandler,
                            signalHandlers))
   {
@@ -492,19 +559,35 @@ do_work(const unsigned long& clientPingInterval_in,
     return;
   } // end IF
 
-  // step2a: init configuration object
+  // step1b: init regular (global) stats reporting
+  // event handler for timer
+  RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic> statsHandler(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance(),
+                                                                  RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic>::ACTION_REPORT);
+  if (statisticsReportingInterval_in)
+  {
+    if (!init_statisticsReporting(statisticsReportingInterval_in,
+                                  statsHandler))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to init_statisticsReporting(%u), aborting\n"),
+                 statisticsReportingInterval_in));
+
+      return;
+    } // end IF
+  } // end IF
+
+  // step2a: init stream configuration object
   Stream_AllocatorHeap heapAllocator;
   RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
                                                   &heapAllocator);
   RPG_Net_ConfigPOD config;
   ACE_OS::memset(&config,
-                 0,
-                 sizeof(RPG_Net_ConfigPOD));
+                  0,
+                  sizeof(RPG_Net_ConfigPOD));
   config.clientPingInterval = clientPingInterval_in;
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
-  config.statisticsReportingInterval = statisticsReportingInterval_in;
-
+  config.statisticsReportingInterval = 0; // don't do it per stream (see below)...
   // step2b: init connection manager
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS,
                                                         config); // will be passed to all handlers
@@ -565,7 +648,7 @@ do_work(const unsigned long& clientPingInterval_in,
     } // end IF
 
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("started group (ID: %u) of %u worker thread(s)...\n"),
+               ACE_TEXT("started group (ID: %u) of %u worker(s)...\n"),
                grp_id,
                numThreadPoolThreads_in));
 
@@ -590,6 +673,10 @@ do_work(const unsigned long& clientPingInterval_in,
   } // end ELSE
 
   // clean up
+  if (statisticsReportingInterval_in)
+  {
+    fini_statisticsReporting(statsHandler);
+  } // end IF
   // *NOTE*: listener should have been stopped by now
   // --> clean up active connections
 //   RPG_NET_LISTENER_SINGLETON::instance()->stop();

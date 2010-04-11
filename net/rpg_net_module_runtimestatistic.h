@@ -73,9 +73,9 @@ class RPG_Net_Module_RuntimeStatistic
   virtual void reset();
 
   // implement RPG_Common_IStatistic
-  virtual const bool collect(RPG_Net_RuntimeStatistic&); // return value: info
+  virtual const bool collect(RPG_Net_RuntimeStatistic&) const; // return value: info
   // *NOTE*: this also implements locally triggered reporting !
-  virtual void report();
+  virtual void report() const;
 
  private:
   typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage> inherited;

@@ -20,18 +20,18 @@
 
 #include "net_client_timeouthandler.h"
 
+#include <rpg_net_connection_manager.h>
+
 #include <ace/Reactor.h>
 
 Net_Client_TimeoutHandler::Net_Client_TimeoutHandler(const std::string& serverHostname_in,
                                                      const unsigned short& serverPort_in,
-                                                     RPG_Net_Client_Connector* connector_in,
-                                                     std::list<RPG_Net_Client_SocketHandler*>* connections_in)
+                                                     RPG_Net_Client_Connector* connector_in)
  : inherited(ACE_Reactor::instance(),         // corresp. reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
    myPeerAddress(serverPort_in,
                  serverHostname_in.c_str()),
-   myConnector(connector_in),
-   myConnectionHandlers(connections_in)
+   myConnector(connector_in)
 {
   ACE_TRACE(ACE_TEXT("Net_Client_TimeoutHandler::Net_Client_TimeoutHandler"));
 
@@ -67,56 +67,19 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
     ACE_OS::memset(buf,
                    0,
                    (BUFSIZ * sizeof(ACE_TCHAR)));
-    if (myPeerAddress.addr_to_string(buf, (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
+    if (myPeerAddress.addr_to_string(buf,
+                                     (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%s\", continuing\n"),
-                 ACE_OS::strerror(ACE_OS::last_error())));
+                 ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
     } // end IF
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Connector::connect(%s): \"%s\", continuing\n"),
-               buf,
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", continuing\n"),
+               buf));
 
-    {
-      ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-
-      // rejected ? --> release a connection !
-      if (!myConnectionHandlers->empty())
-      {
-        RPG_Net_Client_SocketHandler* handler = myConnectionHandlers->back();
-        try
-        {
-          // close connection
-          handler->abort();
-        }
-        catch (...)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception RPG_Net_Client_SocketHandler::abort(), continuing\n")));
-        }
-        myConnectionHandlers->pop_back();
-
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("...released connection (remaining: %u)\n"),
-                   myConnectionHandlers->size()));
-
-        return 0;
-      } // end IF
-    } // end lock scope
+    // release an existing connection, maybe that helps...
+    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
   } // end IF
-  else
-  {
-    // sanity check
-    ACE_ASSERT(handler);
-
-    // step2: add to connections
-    {
-      ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-
-      myConnectionHandlers->push_front(handler);
-    } // end lock scope
-  } // end ELSE
 
   return 0;
 }

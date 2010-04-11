@@ -76,7 +76,7 @@ class RPG_Net_Module_ProtocolHandler
                                   1) != 1) // don't call handle_close()
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
+                   ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%m\", continuing\n")));
       } // end IF
       myTimerID = -1;
     } // end IF

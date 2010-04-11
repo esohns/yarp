@@ -50,7 +50,7 @@ RPG_Net_SocketHandler::svc(void)
       if (myStream.get(myCurrentWriteBuffer, NULL)) // block
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Stream::get(): \"%p\", aborting\n")));
+                   ACE_TEXT("failed to ACE_Stream::get(): \"%m\", aborting\n")));
 
         // what else can we do ?
         return -1;
@@ -78,14 +78,17 @@ RPG_Net_SocketHandler::svc(void)
     {
       case -1:
       {
+        // connection reset by peer/broken pipe ? --> not an error
+        if ((ACE_OS::last_error() != ECONNRESET) &&
+            (ACE_OS::last_error() != EPIPE))
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to ACE_SOCK_Stream::send(): \"%m\", returning\n")));
+
         myCurrentWriteBuffer->release();
         myCurrentWriteBuffer = NULL;
 
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_SOCK_Stream::send(): \"%p\", returning\n")));
-
-        // what else can we do ?
-        return -1;
+        // nothing to do but wait for our shutdown signal (see above)...
+        break;
       }
       // *** GOOD CASES ***
       case 0:
@@ -128,7 +131,7 @@ RPG_Net_SocketHandler::svc(void)
 
   // debug info
   ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("worker thread (ID: %t) failed to ACE_Stream::get(): \"%p\", aborting\n")));
+             ACE_TEXT("worker thread (ID: %t) failed to ACE_Stream::get(): \"%m\", aborting\n")));
 
   ACE_ASSERT(false);
   ACE_NOTREACHED(return -1;)
@@ -156,14 +159,14 @@ RPG_Net_SocketHandler::open(void* arg_in)
   if (inherited::open(arg_in))
   {
     ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to inherited::open(): \"%p\", aborting\n")));
+                 ACE_TEXT("failed to inherited::open(): \"%m\", aborting\n")));
 
     // reactor will invoke handle_close()
     return -1;
   } // end IF
 
   // OK: start a worker
-  if (activate((THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED),
+  if (activate((THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
                1,                           // # threads
                0,                           // force spawning
                ACE_DEFAULT_THREAD_PRIORITY, // priority
@@ -175,7 +178,7 @@ RPG_Net_SocketHandler::open(void* arg_in)
                NULL))                       // thread id(s)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to activate(): \"%p\", aborting\n")));
+               ACE_TEXT("failed to activate(): \"%m\", aborting\n")));
 
     // reactor will invoke handle_close()
     return -1;
@@ -201,7 +204,7 @@ RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("caught exception in ACE_Task::flush(): \"%p\", continuing\n")));
+                ACE_TEXT("caught exception in ACE_Task::flush(): \"%m\", continuing\n")));
 
       // *NOTE*: what else can we do ?
     }
@@ -235,7 +238,7 @@ RPG_Net_SocketHandler::shutdown()
   if (!stop_mb)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate ACE_Message_Block: \"%p\", aborting\n")));
+               ACE_TEXT("failed to allocate ACE_Message_Block: \"%m\", aborting\n")));
 
     // what else can we do ?
     return;
@@ -246,7 +249,7 @@ RPG_Net_SocketHandler::shutdown()
     if (myStream.head()->reader()->put(stop_mb, NULL) == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to ACE_Task::put(): \"%p\", continuing\n")));
+                ACE_TEXT("failed to ACE_Task::put(): \"%m\", continuing\n")));
 
       stop_mb->release();
     } // end IF
@@ -254,7 +257,7 @@ RPG_Net_SocketHandler::shutdown()
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in ACE_Task::put(): \"%p\", aborting\n")));
+               ACE_TEXT("caught exception in ACE_Task::put(): \"%m\", aborting\n")));
 
     stop_mb->release();
 

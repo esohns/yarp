@@ -52,7 +52,7 @@
 
 // 1024 * 1024 --> 1 MByte
 // *NOTE*: make this an even number so we can cope with Linux oddities...
-#define RPG_NET_DEF_SOCK_RECVBUF_SIZE             32768
+#define RPG_NET_DEF_SOCK_RECVBUF_SIZE             131072 // 128Kb
 // #define RPG_NET_DEF_SOCK_RECVBUF_SIZE             1048576 // 1Mb
 #define RPG_NET_DEF_SOCK_NODELAY                  true
 
@@ -78,6 +78,6 @@
 // seconds, 0 --> OFF
 #define RPG_NET_DEF_STATISTICS_COLLECT_INTERVAL   0
 // seconds, 0 --> OFF
-#define RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL 0
+#define RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL 15
 
 #endif

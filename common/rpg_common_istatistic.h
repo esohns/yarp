@@ -25,14 +25,14 @@ template <typename StatisticsInfoContainer_Type>
 class RPG_Common_IStatistic
 {
  public:
-  // *IMPORTANT NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
+  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
   // -Wno-non-virtual-dtor in the project settings...
 
   // exposed interface
-  // *IMPORTANT NOTE*: the argument MAY act both as input/output,
+  // *NOTE*: the argument MAY act both as input/output,
   // this depends on the implementation...
-  virtual const bool collect(StatisticsInfoContainer_Type&) = 0;
-  virtual void report() = 0;
+  virtual const bool collect(StatisticsInfoContainer_Type&) const = 0;
+  virtual void report() const = 0;
 };
 
 #endif

@@ -18,41 +18,33 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "rpg_net_signalhandler.h"
+#include "net_client_signalhandler.h"
 
-#include "rpg_net_common_tools.h"
-
-#include <rpg_common_icontrol.h>
-
-#include <ace/OS.h>
 #include <ace/Reactor.h>
-#include <ace/Log_Msg.h>
 
-#include <sstream>
-
-RPG_Net_SignalHandler::RPG_Net_SignalHandler(RPG_Common_IControl* control_in,
-                                             RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>* report_in)
+Net_Client_SignalHandler::Net_Client_SignalHandler(const std::string& serverHostname_in,
+                                                   const unsigned short& serverPort_in,
+                                                   RPG_Net_Client_Connector* connector_in)
  : inherited(ACE_Reactor::instance(),         // corresp. reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
-   myControl(control_in),
-   myReport(report_in)
+   myPeerAddress(serverPort_in,
+                 serverHostname_in.c_str()),
+   myConnector(connector_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::RPG_Net_SignalHandler"));
+  ACE_TRACE(ACE_TEXT("Net_Client_SignalHandler::Net_Client_SignalHandler"));
 
-//   // sanity check
-//   ACE_ASSERT(myControl);
 }
 
-RPG_Net_SignalHandler::~RPG_Net_SignalHandler()
+Net_Client_SignalHandler::~Net_Client_SignalHandler()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::~RPG_Net_SignalHandler"));
+  ACE_TRACE(ACE_TEXT("Net_Client_SignalHandler::~Net_Client_SignalHandler"));
 
 }
 
 int
-RPG_Net_SignalHandler::handle_signal(int signal_in,
-                                     siginfo_t* info_in,
-                                     ucontext_t* context_in)
+Net_Client_SignalHandler::handle_signal(int signal_in,
+                                        siginfo_t* info_in,
+                                        ucontext_t* context_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::handle_signal"));
 
@@ -75,15 +67,15 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
 //                                              (context_in ? *context_in : NULL),
                                              information);
 
-    // *PORTABILITY*: tracing in a signal handler context is not portable
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("%D: received [%S]: %s\n"),
-               signal_in,
-               information.c_str()));
+//     // *PORTABILITY*: tracing in a signal handler context is not portable
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("%D: received [%S]: %s\n"),
+//                signal_in,
+//                information.c_str()));
   } // end ELSE
 
   bool stop_reactor = false;
-  bool report = false;
+  bool connect_to_server = false;
   switch (signal_in)
   {
     case SIGINT:
@@ -109,8 +101,8 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
     }
     case SIGUSR1:
     {
-      // dump statistics
-      report = true;
+      // (try to) connect...
+      connect_to_server = true;
 
       break;
     }
@@ -125,21 +117,32 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
     }
   } // end SWITCH
 
-  // report ?
-  if (report)
+  // ...connect ?
+  if (connect_to_server)
   {
-    // step1: invoke our reporter (if any)
-    if (myReport)
+    RPG_Net_Client_SocketHandler* handler = NULL;
+    if (myConnector->connect(handler,                     // service handler
+                             myPeerAddress/*,              // remote SAP
+                             ACE_Synch_Options::defaults, // synch options
+                             ACE_INET_Addr::sap_any,      // local SAP
+                             0,                           // try to re-use address (SO_REUSEADDR)
+                             O_RDWR,                      // flags
+                             0*/) == -1)                  // perms
     {
-      try
-      {
-        myReport->report();
-      }
-      catch (...)
+      // debug info
+      ACE_TCHAR buf[BUFSIZ];
+      ACE_OS::memset(buf,
+                     0,
+                     (BUFSIZ * sizeof(ACE_TCHAR)));
+      if (myPeerAddress.addr_to_string(buf,
+                                       (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Common_IStatistic::report(), continuing\n")));
-      }
+                   ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+      } // end IF
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", continuing\n"),
+                 buf));
     } // end IF
   } // end IF
 
@@ -147,31 +150,17 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
   if (stop_reactor)
   {
     // stop everything, i.e.
-    // - leave reactor event loop handling signals, sockets (listeners), maintenance timers...
+    // - leave reactor event loop handling signals, sockets, (maintenance) timers...
     // - break out of any (blocking) calls
     // --> (try to) terminate in a well-behaved manner
 
-    // step1: stop reactor
+    // stop reactor
     if (reactor()->end_event_loop() == -1)
     {
       // --> application will probably hang ! :-(
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%s\", continuing\n"),
-                 ACE_OS::strerror(ACE_OS::last_error())));
-    } // end IF
-
-    // step2: invoke our controller (if any)
-    if (myControl)
-    {
-      try
-      {
-        myControl->stop();
-      }
-      catch (...)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Common_IControl::stop(), continuing\n")));
-      }
+                          ACE_OS::strerror(ACE_OS::last_error())));
     } // end IF
 
     // de-register ourselves from the reactor...

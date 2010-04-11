@@ -23,16 +23,18 @@
 
 #include "rpg_net_common.h"
 
+#include <rpg_common_istatistic.h>
 #include <rpg_common_idumpstate.h>
 
 class RPG_Net_IConnection
- : public RPG_Common_IDumpState // we may want to dump some information...
+ : public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>, // collect some stats
+   public RPG_Common_IDumpState // ...and dump some information
 {
  public:
   // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
   // -Wno-non-virtual-dtor in the project settings...
 
-  // exposed interface
+  // API
   virtual void init(const RPG_Net_ConfigPOD&) = 0;
   virtual const bool isRegistered() const = 0;
   // *TODO*: this clashes with Event_Handler::close()...

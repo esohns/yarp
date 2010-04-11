@@ -24,6 +24,7 @@
 #include "rpg_net_remote_comm.h"
 
 #include <ace/Global_Macros.h>
+#include <ace/Signal.h>
 
 #include <string>
 
@@ -61,6 +62,11 @@ class RPG_Net_Common_Tools
   // *NOTE*: this should toggle Nagle's algorithm
   static const bool setNoDelay(const ACE_HANDLE&, // socket handle
                                const bool&);      // TCP_NODELAY ?
+
+  static void retrieveSignalInfo(const int&,        // signal
+                                 const siginfo_t&,  // information pertaining to a signal
+//                               const ucontext_t&, // context information
+                                 std::string&);     // return value: condensed signal information
 
  private:
   // safety measures

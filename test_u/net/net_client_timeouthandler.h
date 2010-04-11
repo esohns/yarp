@@ -27,10 +27,8 @@
 #include <ace/Event_Handler.h>
 #include <ace/Time_Value.h>
 #include <ace/INET_Addr.h>
-#include <ace/Synch.h>
 
 #include <string>
-#include <list>
 
 class Net_Client_TimeoutHandler
  : public ACE_Event_Handler
@@ -38,8 +36,7 @@ class Net_Client_TimeoutHandler
  public:
   Net_Client_TimeoutHandler(const std::string&,         // target hostname
                             const unsigned short&,      // target port number
-                            RPG_Net_Client_Connector*,  // connector
-                            std::list<RPG_Net_Client_SocketHandler*>*); // connection repository
+                            RPG_Net_Client_Connector*); // connector
   virtual ~Net_Client_TimeoutHandler();
 
   // implement specific behaviour
@@ -56,8 +53,6 @@ class Net_Client_TimeoutHandler
 
   ACE_INET_Addr             myPeerAddress;
   RPG_Net_Client_Connector* myConnector;
-  ACE_Thread_Mutex          myLock;
-  std::list<RPG_Net_Client_SocketHandler*>* myConnectionHandlers;
 };
 
 #endif

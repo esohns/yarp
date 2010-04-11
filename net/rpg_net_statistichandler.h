@@ -39,8 +39,10 @@ class RPG_Net_StatisticHandler
     ACTION_COLLECT,
   };
 
-  RPG_Net_StatisticHandler(RPG_Common_IStatistic<StatisticsInfoContainer_t>*, // interface handle
-                           const ActionSpecifier&);                           // action: collect/report
+  typedef RPG_Common_IStatistic<StatisticsInfoContainer_t> COLLECTOR_TYPE;
+
+  RPG_Net_StatisticHandler(const COLLECTOR_TYPE*,   // interface handle
+                           const ActionSpecifier&); // action: collect/report
   virtual ~RPG_Net_StatisticHandler();
 
   // implement specific behaviour
@@ -55,8 +57,8 @@ class RPG_Net_StatisticHandler
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler(const RPG_Net_StatisticHandler&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler& operator=(const RPG_Net_StatisticHandler&));
 
-  RPG_Common_IStatistic<StatisticsInfoContainer_t>* myInterface;
-  ActionSpecifier                                   myAction;
+  const COLLECTOR_TYPE* myInterface;
+  ActionSpecifier       myAction;
 };
 
 // include template implementation

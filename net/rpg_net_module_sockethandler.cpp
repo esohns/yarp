@@ -220,7 +220,7 @@ RPG_Net_Module_SocketHandler::handleSessionMessage(RPG_Net_SessionMessage*& mess
 }
 
 const bool
-RPG_Net_Module_SocketHandler::collect(RPG_Net_RuntimeStatistic& data_out)
+RPG_Net_Module_SocketHandler::collect(RPG_Net_RuntimeStatistic& data_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::collect"));
 
@@ -252,7 +252,7 @@ RPG_Net_Module_SocketHandler::collect(RPG_Net_RuntimeStatistic& data_out)
 }
 
 void
-RPG_Net_Module_SocketHandler::report()
+RPG_Net_Module_SocketHandler::report() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::report"));
 
@@ -461,7 +461,7 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 
 const bool
 RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatistic& info_in,
-                                                   const ACE_Time_Value& collectionTime_in)
+                                                   const ACE_Time_Value& collectionTime_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::putStatisticsMessage"));
 

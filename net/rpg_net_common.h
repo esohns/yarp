@@ -29,7 +29,17 @@
 
 struct RPG_Net_RuntimeStatistic
 {
-  unsigned long messagesPerSec;
+  unsigned long numDataMessages; // (protocol) messages
+  double        numBytes;        // amount of processed data
+
+  // convenience
+  inline RPG_Net_RuntimeStatistic operator+=(const RPG_Net_RuntimeStatistic& rhs)
+  {
+    numDataMessages += rhs.numDataMessages;
+    numBytes += rhs.numBytes;
+
+    return *this;
+  };
 };
 
 struct RPG_Net_ConfigPOD

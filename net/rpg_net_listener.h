@@ -42,7 +42,7 @@ class RPG_Net_Listener
 {
   // singleton needs access to the ctor/dtors
   friend class ACE_Singleton<RPG_Net_Listener,
-                             ACE_Thread_Mutex>;
+                             ACE_Recursive_Thread_Mutex>;
 
  public:
   // configuration / initialization
@@ -81,6 +81,6 @@ class RPG_Net_Listener
 };
 
 typedef ACE_Singleton<RPG_Net_Listener,
-                      ACE_Thread_Mutex> RPG_NET_LISTENER_SINGLETON;
+                      ACE_Recursive_Thread_Mutex> RPG_NET_LISTENER_SINGLETON;
 
 #endif

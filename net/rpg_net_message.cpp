@@ -323,7 +323,7 @@ RPG_Net_Message::crunchForHeader(const unsigned long& headerSize_in)
     if (copy(source_block->rd_ptr(), amount))
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Message_Block::copy(): \"%p\", aborting\n")));
+                 ACE_TEXT("failed to ACE_Message_Block::copy(): \"%m\", aborting\n")));
 
       return false;
     } // end IF

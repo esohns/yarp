@@ -21,6 +21,7 @@
 #ifndef RPG_NET_STREAMSOCKET_BASE_H
 #define RPG_NET_STREAMSOCKET_BASE_H
 
+#include "rpg_net_common.h"
 #include "rpg_net_sockethandler_base.h"
 
 #include <ace/Global_Macros.h>
@@ -40,12 +41,17 @@ class RPG_Net_StreamSocketBase
   virtual int open(void* = NULL); // args
   // *NOTE*: enqueue any received data onto our stream for further processing
   virtual int handle_input(ACE_HANDLE = ACE_INVALID_HANDLE);
-  // *NOTE*: send any enqueued data back to the client...
-  virtual int handle_output(ACE_HANDLE = ACE_INVALID_HANDLE);
+//   // *NOTE*: send any enqueued data back to the client...
+//   virtual int handle_output(ACE_HANDLE = ACE_INVALID_HANDLE);
   // *NOTE*: this is called when:
   // - handle_xxx() returns -1
   virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,
                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK);
+
+  // implement RPG_Common_IStatistic
+  // *NOTE*: delegate these to our stream
+  virtual const bool collect(RPG_Net_RuntimeStatistic&) const; // return value: statistic data
+  virtual void report() const;
 
  protected:
   RPG_Net_StreamSocketBase();

@@ -74,7 +74,7 @@ RPG_Net_SocketHandlerBase::open(void* arg_in)
   if (inherited::open(arg_in) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Svc_Handler::open(): \"%p\", aborting\n")));
+               ACE_TEXT("failed to ACE_Svc_Handler::open(): \"%m\", aborting\n")));
 
     return -1;
   } // end IF
@@ -86,7 +86,7 @@ RPG_Net_SocketHandlerBase::open(void* arg_in)
 //                                   ACE_Event_Handler::WRITE_MASK) == -1)
 //   {
 //     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to ACE_Reactor::register_handler(WRITE_MASK): \"%p\", aborting\n")));
+//                ACE_TEXT("failed to ACE_Reactor::register_handler(WRITE_MASK): \"%m\", aborting\n")));
 //
 //     return -1;
 //   } // end IF
@@ -161,7 +161,7 @@ RPG_Net_SocketHandlerBase::abort()
   if (result == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Svc_Handler::close(0): \"%p\", returning\n")));
+               ACE_TEXT("failed to ACE_Svc_Handler::close(0): \"%m\", returning\n")));
   } // end IF
 }
 
@@ -195,14 +195,14 @@ RPG_Net_SocketHandlerBase::dump_state() const
   if (peer().get_local_addr(address) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%p\", aborting\n")));
+               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", aborting\n")));
 
     return;
   } // end IF
   else if (address.addr_to_string(buf, (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%p\", aborting\n")));
+               ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", aborting\n")));
 
     return;
   } // end IF
@@ -214,14 +214,14 @@ RPG_Net_SocketHandlerBase::dump_state() const
   if (peer().get_remote_addr(address) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%p\", aborting\n")));
+               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", aborting\n")));
 
     return;
   } // end IF
   else if (address.addr_to_string(buf, (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%p\", aborting\n")));
+               ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", aborting\n")));
 
     return;
   } // end IF

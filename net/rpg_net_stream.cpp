@@ -223,13 +223,13 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
 }
 
 const bool
-RPG_Net_Stream::collect(RPG_Net_RuntimeStatistic& data_out)
+RPG_Net_Stream::collect(RPG_Net_RuntimeStatistic& data_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Stream::collect"));
 
   RPG_Net_Module_RuntimeStatistic* runtimeStatistic_impl = NULL;
   runtimeStatistic_impl = ACE_dynamic_cast(RPG_Net_Module_RuntimeStatistic*,
-                                           myRuntimeStatistic.writer());
+                                           ACE_const_cast(RPG_Net_Module_RuntimeStatistic_Module&, myRuntimeStatistic).writer());
   if (!runtimeStatistic_impl)
   {
     ACE_DEBUG((LM_ERROR,
@@ -243,7 +243,7 @@ RPG_Net_Stream::collect(RPG_Net_RuntimeStatistic& data_out)
 }
 
 void
-RPG_Net_Stream::report()
+RPG_Net_Stream::report() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Stream::report"));
 

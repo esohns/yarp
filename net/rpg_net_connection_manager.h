@@ -24,7 +24,7 @@
 #include "rpg_net_common.h"
 #include "rpg_net_sockethandler_base.h"
 
-// #include <rpg_common_irefcount.h>
+#include <rpg_common_istatistic.h>
 #include <rpg_common_idumpstate.h>
 
 #include <ace/Singleton.h>
@@ -37,12 +37,12 @@
 class RPG_Net_IConnection;
 
 class RPG_Net_Connection_Manager
- : //RPG_Common_IRefCount,
-   RPG_Common_IDumpState
+ : public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>,
+   public RPG_Common_IDumpState
 {
   // singleton needs access to the ctor/dtors
   friend class ACE_Singleton<RPG_Net_Connection_Manager,
-                             ACE_Thread_Mutex>;
+                             ACE_Recursive_Thread_Mutex>;
 
   // needs access to (de-)register itself with the singleton
   friend class RPG_Net_SocketHandlerBase;
@@ -61,6 +61,12 @@ class RPG_Net_Connection_Manager
   void waitConnections() const;
   const unsigned long numConnections() const;
 
+  // *WARNING*: to be used for testing ONLY !
+  void abortOldestConnection();
+
+  // implement RPG_Common_IStatistic
+  virtual void report() const;
+
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
@@ -73,11 +79,9 @@ class RPG_Net_Connection_Manager
   const bool registerConnection(RPG_Net_IConnection*);
   void deregisterConnection(const unsigned long&); // connection ID
 
-//   // implement RPG_Common_IRefCount
-//   virtual void increase();
-//   virtual void decrease();
-//   virtual const unsigned long refcount();
-//   virtual void waitcount();
+  // implement RPG_Common_IStatistic
+  // *WARNING*: this assumes we're holding our lock !
+  virtual const bool collect(RPG_Net_RuntimeStatistic&) const; // return value: statistic data
 
   // safety measures
   RPG_Net_Connection_Manager();
@@ -101,6 +105,6 @@ class RPG_Net_Connection_Manager
 };
 
 typedef ACE_Singleton<RPG_Net_Connection_Manager,
-                      ACE_Thread_Mutex> RPG_NET_CONNECTIONMANAGER_SINGLETON;
+                      ACE_Recursive_Thread_Mutex> RPG_NET_CONNECTIONMANAGER_SINGLETON;
 
 #endif

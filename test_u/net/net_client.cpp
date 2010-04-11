@@ -25,6 +25,7 @@
 
 #include "net_common.h"
 #include "net_client_timeouthandler.h"
+#include "net_client_signalhandler.h"
 
 #include <rpg_net_defines.h>
 #include <rpg_net_common_tools.h>
@@ -39,6 +40,8 @@
 #include <ace/Get_Opt.h>
 #include <ace/Reactor.h>
 #include <ace/TP_Reactor.h>
+#include <ace/Signal.h>
+#include <ace/Sig_Handler.h>
 #include <ace/Connector.h>
 #include <ace/SOCK_Connector.h>
 #include <ace/High_Res_Timer.h>
@@ -50,6 +53,7 @@
 
 #define NET_CLIENT_DEF_SERVER_HOSTNAME         ACE_LOCALHOST
 #define NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL 1
+#define NET_CLIENT_DEF_CLIENT_USES_TP          false
 #define NET_CLIENT_DEF_NUM_TP_THREADS          5
 
 void
@@ -63,13 +67,13 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-h [STRING] : server (host)name [\"") << NET_CLIENT_DEF_SERVER_HOSTNAME << "\"]" << std::endl;
-  std::cout << ACE_TEXT("-i [VALUE]  : connection interval ([") << NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL << ACE_TEXT("] seconds)") << std::endl;
+  std::cout << ACE_TEXT("-i [VALUE]  : connection interval ([") << NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL << ACE_TEXT("] second(s))") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-p [VALUE]  : server port [") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s          : stress-test server") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << NET_CLIENT_DEF_CLIENT_USES_TP << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 const bool
@@ -95,7 +99,7 @@ process_arguments(const int argc_in,
   stressTestServer_out = false;
   traceInformation_out = false;
   printVersionAndExit_out = false;
-  useThreadPool_out = false;
+  useThreadPool_out = NET_CLIENT_DEF_CLIENT_USES_TP;
   numThreadPoolThreads_out = NET_CLIENT_DEF_NUM_TP_THREADS;
 
   ACE_Get_Opt argumentParser(argc_in,
@@ -224,6 +228,144 @@ init_threadPool()
   return true;
 }
 
+void
+init_signals(const bool& allowUserRuntimeConnect_in,
+             std::vector<int>& signals_inout)
+{
+  ACE_TRACE(ACE_TEXT("::init_signals"));
+
+  // init return value(s)
+  signals_inout.clear();
+
+  // init list of handled signals...
+  // *PORTABILITY*: on Windows SIGHUP and SIGQUIT are not defined,
+  // so we handle SIGBREAK (21) and SIGABRT (22) instead...
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  // *NOTE*: don't handle SIGHUP !!!! --> program will hang !
+  //signals_inout.push_back(SIGHUP);
+#endif
+  signals_inout.push_back(SIGINT);
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  signals_inout.push_back(SIGQUIT);
+#endif
+//   signals_inout.push_back(SIGILL);
+//   signals_inout.push_back(SIGTRAP);
+  signals_inout.push_back(SIGABRT);
+//   signals_inout.push_back(SIGBUS);
+//   signals_inout.push_back(SIGFPE);
+//   signals_inout.push_back(SIGKILL); // cannot catch this one...
+  if (allowUserRuntimeConnect_in)
+    signals_inout.push_back(SIGUSR1);
+//   signals_inout.push_back(SIGSEGV);
+//   signals_inout.push_back(SIGUSR2);
+//   signals_inout.push_back(SIGPIPE);
+//   signals_inout.push_back(SIGALRM);
+  signals_inout.push_back(SIGTERM);
+//   signals_inout.push_back(SIGSTKFLT);
+//   signals_inout.push_back(SIGCHLD);
+//   signals_inout.push_back(SIGCONT);
+//   signals_inout.push_back(SIGSTOP); // cannot catch this one...
+//   signals_inout.push_back(SIGTSTP);
+//   signals_inout.push_back(SIGTTIN);
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  signals_inout.push_back(SIGBREAK);
+#endif
+//   signals_inout.push_back(SIGTTOU);
+//   signals_inout.push_back(SIGURG);
+//   signals_inout.push_back(SIGXCPU);
+//   signals_inout.push_back(SIGXFSZ);
+//   signals_inout.push_back(SIGVTALRM);
+//   signals_inout.push_back(SIGPROF);
+//   signals_inout.push_back(SIGWINCH);
+//   signals_inout.push_back(SIGIO);
+//   signals_inout.push_back(SIGPWR);
+//   signals_inout.push_back(SIGSYS);
+//   signals_inout.push_back(SIGRTMIN);
+//   signals_inout.push_back(SIGRTMIN+1);
+// ...
+//   signals_inout.push_back(SIGRTMAX-1);
+//   signals_inout.push_back(SIGRTMAX);
+}
+
+const bool
+init_signalHandling(const std::vector<int>& signals_inout,
+                    Net_Client_SignalHandler& eventHandler_in,
+                    ACE_Sig_Handlers& signalHandlers_in)
+{
+  ACE_TRACE(ACE_TEXT("::init_signalHandling"));
+
+  // step1: register signal handlers for the list of signals we want to catch
+
+  // specify (default) action...
+  // --> we don't actually need to keep this around after registration
+  ACE_Sig_Action signalAction((ACE_SignalHandler)SIG_DFL, // default action (will be overridden below)...
+                               ACE_Sig_Set(1),            // mask of signals to be blocked when we're servicing
+                                                          // --> block them all ! (except KILL off course...)
+//                              (SA_RESTART | SA_SIGINFO)); // flags
+                               SA_SIGINFO);               // flags
+
+  // register different signals...
+  int sigkey = -1;
+  for (std::vector<int>::const_iterator iter = signals_inout.begin();
+       iter != signals_inout.end();
+       iter++)
+  {
+    sigkey = signalHandlers_in.register_handler(*iter,            // signal
+                                                &eventHandler_in, // new handler
+                                                &signalAction,    // new action
+                                                NULL,             // old handler
+                                                NULL);            // old action
+    if (sigkey == -1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Sig_Handlers::register_handler(\"%S\": %d): \"%m\", aborting\n"),
+                 *iter,
+                 *iter));
+
+      return false;
+    } // end IF
+
+    // debug info
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("registered handler for \"%S\": %d (key: %d)...\n"),
+               *iter,
+               *iter,
+               sigkey));
+  } // end FOR
+
+  // actually, there is only a single handler for ALL signals in the set...
+  // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("handling %d signal(s)...\n"),
+//              signals_inout.size()));
+
+  // step2: ignore SIGPIPE; need this to enable sending to exit gracefully
+  // after an asynchronous client disconnect (i.e. crash/...)
+  ACE_OS::signal(SIGPIPE, SIG_IGN);
+//   // specify ignore action...
+//   // --> we don't actually need to keep this around after registration
+//   ACE_Sig_Action ignoreAction((ACE_SignalHandler)SIG_IGN,  // ignore action...
+//                                ACE_Sig_Set(1),             // mask of signals to be blocked when we're servicing
+//                                                            // --> block them all ! (except KILL off course...)
+//                                (SA_RESTART | SA_SIGINFO)); // flags
+//   sigkey = signalHandlers_in.register_handler(SIGPIPE,       // signal
+//                                               NULL,          // new handler
+//                                               &ignoreAction, // new action
+//                                               NULL,          // old handler
+//                                               NULL);         // old action
+//   if (sigkey == -1)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to ACE_Sig_Handlers::register_handler(\"%S\": %d): \"%m\", aborting\n"),
+//                SIGPIPE,
+//                SIGPIPE));
+//
+//     return false;
+//   } // end IF
+
+  return true;
+}
+
 static
 ACE_THR_FUNC_RETURN
 tp_worker_func(void* args_in)
@@ -237,7 +379,7 @@ tp_worker_func(void* args_in)
     // block and wait for an event...
     if (ACE_Reactor::instance()->handle_events(NULL) == -1)
       ACE_ERROR((LM_ERROR,
-                 ACE_TEXT("(%t) error handling events: \"%p\"\n")));
+                 ACE_TEXT("(%t) error handling events: \"%m\"\n")));
   } // end WHILE
 
   return 0;
@@ -253,7 +395,7 @@ do_work(const std::string& serverHostname_in,
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
-  // step0: (if necessary) init the TP_Reactor
+  // step0a: (if necessary) init the TP_Reactor
   if (useThreadPool_in)
   {
     if (!init_threadPool())
@@ -265,10 +407,35 @@ do_work(const std::string& serverHostname_in,
     } // end IF
   } // end IF
 
-  // step1a: init configuration object
+  // step0b: init client connector
+  RPG_Net_Client_Connector connector(ACE_Reactor::instance(), // reactor
+                                     ACE_NONBLOCK);           // flags: non-blocking I/O
+//                                      0);                      // flags (*TODO*: ACE_NONBLOCK ?);
+
+  // step1: signal handling
+  // event handler for signals
+  Net_Client_SignalHandler signalEventHandler(serverHostname_in,   // target hostname
+                                              serverPortNumber_in, // target port
+                                              &connector);         // connector
+  ACE_Sig_Handlers signalHandlers;
+  // *WARNING*: 'signals' appears to be a keyword in some contexts...
+  std::vector<int> signalss;
+  init_signals((stressTestServer_in == 0),  // allow SIGUSR1 IF regular connections are off
+               signalss);
+  if (!init_signalHandling(signalss,
+                           signalEventHandler,
+                           signalHandlers))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to init_signalHandling(), aborting\n")));
+
+    return;
+  } // end IF
+
+  // step2a: init stream configuration object
   Stream_AllocatorHeap heapAllocator;
   RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
-      &heapAllocator);
+                                                  &heapAllocator);
   RPG_Net_ConfigPOD config;
   ACE_OS::memset(&config,
                   0,
@@ -276,25 +443,18 @@ do_work(const std::string& serverHostname_in,
   config.clientPingInterval = 0; // servers do this...
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
-  config.statisticsReportingInterval = 0; // turn off
+  config.statisticsReportingInterval = 0; // == off
 
-  // step1b: init connection manager
+  // step2b: init connection manager
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max(),
                                                         config); // will be passed to all handlers
 
-  // step2: init client connector
-  RPG_Net_Client_Connector connector(ACE_Reactor::instance(), // reactor
-                                     ACE_NONBLOCK);           // flags: non-blocking I/O
-//                                      0);                      // flags (*TODO*: ACE_NONBLOCK ?);
-
-  // step3a: init timer
+  // step2ca: init timer...
   long timerID = -1;
-  std::list<RPG_Net_Client_SocketHandler*> connectionHandlers;
   Net_Client_TimeoutHandler timeoutHandler(serverHostname_in,
                                            serverPortNumber_in,
-                                           &connector,
-                                           &connectionHandlers);
-  if (stressTestServer_in)
+                                           &connector);
+  if (stressTestServer_in && connectionInterval_in)
   {
     // schedule server query interval timer
     ACE_Time_Value interval(connectionInterval_in, 0);
@@ -305,14 +465,14 @@ do_work(const std::string& serverHostname_in,
     if (timerID == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::schedule_timer(): \"%p\", aborting\n")));
+                 ACE_TEXT("failed to ACE_Reactor::schedule_timer(): \"%m\", aborting\n")));
 
       return;
     } // end IF
   } // end IF
   else
   {
-    // step3b: connect to server...
+    // step2cb: ...or (try to) connect to the server immediately
     RPG_Net_Client_SocketHandler* handler = NULL;
     ACE_INET_Addr remote_address(serverPortNumber_in, // remote SAP
                                  serverHostname_in.c_str());
@@ -325,17 +485,12 @@ do_work(const std::string& serverHostname_in,
                           0*/) == -1)                  // perms
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Connector::connect(%s:%u): \"%p\", aborting\n"),
+                 ACE_TEXT("failed to ACE_Connector::connect(%s:%u): \"%m\", aborting\n"),
                  ACE_TEXT_CHAR_TO_TCHAR(remote_address.get_host_name()),
                  remote_address.get_port_number()));
 
       return;
     } // end IF
-    // sanity check
-    ACE_ASSERT(handler);
-
-    // add to connections
-    connectionHandlers.push_front(handler);
   } // end ELSE
 
   // *NOTE*: from this point on, we need to clean up any remote connections !
@@ -347,11 +502,11 @@ do_work(const std::string& serverHostname_in,
 //   // *NOTE*: make sure we generally restart system calls (after e.g. EINTR) for the reactor...
 //   ACE_Reactor::instance()->restart(1);
 
-  // step4: dispatch events...
+  // step3: dispatch events...
   // *NOTE*: if we use a thread pool, we need to do this differently...
   if (useThreadPool_in)
   {
-    // start a (group of) worker thread(s)...
+    // start a (group of) worker(s)...
     int grp_id = -1;
     grp_id = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,     // # threads
                                                      ::tp_worker_func,            // function
@@ -367,23 +522,22 @@ do_work(const std::string& serverHostname_in,
     if (grp_id == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%p\", aborting\n"),
+                 ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%m\", aborting\n"),
                  numThreadPoolThreads_in));
 
       // clean up
-      if (ACE_Reactor::instance()->cancel_timer(timerID,  // timer ID
-                                                NULL,     // pointer to args passed to handler
-                                                1) != 1)  // don't invoke handle_close() on handler
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
-      } // end IF
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("closing %u connection(s)...\n"),
-                 connectionHandlers.size()));
+//       if (stressTestServer_in)
+//       {
+//         if (ACE_Reactor::instance()->cancel_timer(timerID,  // timer ID
+//             NULL,     // pointer to args passed to handler
+//             1) != 1)  // don't invoke handle_close() on handler
+//         {
+//           ACE_DEBUG((LM_ERROR,
+//                      ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
+//         } // end IF
+//       } // end IF
       RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
       RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
-      connectionHandlers.clear();
 
       return;
     } // end IF
@@ -401,41 +555,42 @@ do_work(const std::string& serverHostname_in,
     if (ACE_Reactor::instance()->run_reactor_event_loop() == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%p\", aborting\n")));
+                 ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%m\", aborting\n")));
 
       // clean up
-      if (ACE_Reactor::instance()->cancel_timer(timerID,  // timer ID
-                                                NULL,     // pointer to args passed to handler
-                                                1) != 1)  // don't invoke handle_close() on handler
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
-      } // end IF
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("closing %u connection(s)...\n"),
-                 connectionHandlers.size()));
+//       if (stressTestServer_in)
+//       {
+//         if (ACE_Reactor::instance()->cancel_timer(timerID,  // timer ID
+//                                                   NULL,     // pointer to args passed to handler
+//                                                   1) != 1)  // don't invoke handle_close() on handler
+//         {
+//           ACE_DEBUG((LM_ERROR,
+//                     ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
+//         } // end IF
+//       } // end IF
       RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
       RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
-      connectionHandlers.clear();
 
       return;
     } // end IF
   } // end ELSE
 
-  // step5: clean up
-  if (ACE_Reactor::instance()->cancel_timer(timerID,  // timer ID
-                                            NULL,     // pointer to args passed to handler
-                                            1) != 1)  // don't invoke handle_close() on handler
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
-  } // end IF
+  // step4: clean up
+//   if (stressTestServer_in)
+//   {
+//     if (ACE_Reactor::instance()->cancel_timer(timerID,  // timer ID
+//                                               NULL,     // pointer to args passed to handler
+//                                               1) != 1)  // don't invoke handle_close() on handler
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
+//     } // end IF
+//   } // end IF
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("closing %u connection(s)...\n"),
-             connectionHandlers.size()));
+             RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections()));
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
-  connectionHandlers.clear();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -475,7 +630,7 @@ ACE_TMAIN(int argc,
   if (ACE::init() == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::init(): \"%p\", aborting\n")));
+               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
 
     return EXIT_FAILURE;
   } // end IF
@@ -489,7 +644,7 @@ ACE_TMAIN(int argc,
   bool stressTestServer              = false;
   bool traceInformation              = false;
   bool printVersionAndExit           = false;
-  bool useThreadPool                 = false;
+  bool useThreadPool                 = NET_CLIENT_DEF_CLIENT_USES_TP;
   unsigned long numThreadPoolThreads = NET_CLIENT_DEF_NUM_TP_THREADS;
 
   // step1b: parse/process/validate configuration
@@ -585,7 +740,7 @@ ACE_TMAIN(int argc,
   if (ACE::fini() == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::fini(): \"%p\", aborting\n")));
+               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
 
     return EXIT_FAILURE;
   } // end IF

@@ -74,8 +74,8 @@ class RPG_Net_Module_SocketHandler
 
   // implement RPG_Common_IStatistic
   // *NOTE*: we reuse the interface for our own purposes (to implement timer-based data collection)
-  virtual const bool collect(RPG_Net_RuntimeStatistic&); // return value: (currently unused !)
-  virtual void report();
+  virtual const bool collect(RPG_Net_RuntimeStatistic&) const; // return value: (currently unused !)
+  virtual void report() const;
 
  private:
   typedef Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD,
@@ -103,7 +103,7 @@ class RPG_Net_Module_SocketHandler
   const bool bisectMessages(RPG_Net_Message*&); // return value: complete message (chain)
 //   RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
   const bool putStatisticsMessage(const RPG_Net_RuntimeStatistic&, // statistics info
-                                  const ACE_Time_Value&);          // statistics generation time
+                                  const ACE_Time_Value&) const;    // statistics generation time
   inline void cancelTimer()
   {
     if (myStatCollectHandlerID)
@@ -111,7 +111,7 @@ class RPG_Net_Module_SocketHandler
       if (myTimerQueue.cancel(myStatCollectHandlerID) == -1)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to cancel timer (ID: %u): \"%p\", continuing\n"),
+                   ACE_TEXT("failed to cancel timer (ID: %u): \"%m\", continuing\n"),
                    myStatCollectHandlerID));
       } // end IF
 //       else
