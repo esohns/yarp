@@ -110,6 +110,7 @@ process_arguments(const int argc_in,
     {
       case 'i':
       {
+        converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> clientPingInterval_out;
@@ -118,6 +119,7 @@ process_arguments(const int argc_in,
       }
       case 'k':
       {
+        converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> keepAliveTimeout_out;
@@ -138,6 +140,7 @@ process_arguments(const int argc_in,
       }
       case 'p':
       {
+        converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> listeningPortNumber_out;
@@ -146,6 +149,7 @@ process_arguments(const int argc_in,
       }
       case 's':
       {
+        converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> statisticsReportingInterval_out;
@@ -167,6 +171,7 @@ process_arguments(const int argc_in,
       case 'x':
       {
         useThreadPool_out = true;
+        converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> numThreadPoolThreads_out;
@@ -434,28 +439,14 @@ init_signalHandling(const std::vector<int>& signals_inout,
 
   // step2: ignore SIGPIPE; need this to enable sending to exit gracefully
   // after an asynchronous client disconnect (i.e. crash/...)
-  ACE_OS::signal(SIGPIPE, SIG_IGN);
-//   // specify ignore action...
-//   // --> we don't actually need to keep this around after registration
-//   ACE_Sig_Action ignoreAction((ACE_SignalHandler)SIG_IGN, // ignore action...
-//                                ACE_Sig_Set(1),            // mask of signals to be blocked when we're servicing
-//                                                           // --> block them all ! (except KILL off course...)
-// //                              (SA_RESTART | SA_SIGINFO)); // flags
-//                                0);                        // flags
-//   sigkey = signalHandlers_in.register_handler(SIGPIPE,       // signal
-//                                               NULL,          // new handler
-//                                               &ignoreAction, // new action
-//                                               NULL,          // old handler
-//                                               NULL);         // old action
-//   if (sigkey == -1)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to ACE_Sig_Handlers::register_handler(\"%S\": %d): \"%m\", aborting\n"),
-//                SIGPIPE,
-//                SIGPIPE));
-//
-//     return false;
-//   } // end IF
+  // specify ignore action...
+  // --> we don't actually need to keep this around after registration
+  ACE_Sig_Action ignoreAction((ACE_SignalHandler)SIG_IGN, // ignore action...
+                               ACE_Sig_Set(1),            // mask of signals to be blocked when we're servicing
+                                                          // --> block them all ! (except KILL off course...)
+                               0);                        // flags
+  ACE_Sig_Action originalAction;
+  ignoreAction.register_action(SIGPIPE, &originalAction);
 
   return true;
 }

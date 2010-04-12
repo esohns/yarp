@@ -158,10 +158,12 @@ RPG_Net_Module_SocketHandler::handleDataMessage(Stream_MessageBase*& message_ino
     // enqueue the incoming buffer onto our chain
     myCurrentBuffer->cont(message_inout);
   } // end IF
-  myCurrentBuffer = ACE_dynamic_cast(RPG_Net_Message*, message_inout);
-
-  // sanity check(s)
-  ACE_ASSERT(myCurrentBuffer);
+  else
+  {
+    myCurrentBuffer = ACE_dynamic_cast(RPG_Net_Message*, message_inout);
+    // sanity check(s)
+    ACE_ASSERT(myCurrentBuffer);
+  } // end ELSE
 
   RPG_Net_Message* complete_message = NULL;
   while (bisectMessages(complete_message))

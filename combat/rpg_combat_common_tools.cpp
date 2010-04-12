@@ -98,14 +98,12 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
   ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::damageToString"));
 
   std::string result;
-  std::stringstream converter;
 
+  std::ostringstream converter;
   for (std::vector<RPG_Combat_DamageElement>::const_iterator iterator = damage_in.elements.begin();
        iterator != damage_in.elements.end();
        iterator++)
   {
-    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-
     result += ACE_TEXT_ALWAYS_CHAR("damage type: ");
     for (std::vector<RPG_Combat_DamageTypeUnion>::const_iterator iterator2 = (*iterator).types.begin();
          iterator2 != (*iterator).types.end();
@@ -123,23 +121,26 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
     {
       result += ACE_TEXT_ALWAYS_CHAR("\nduration (incubation / interval / total): ");
       result += RPG_Dice_Common_Tools::rollToString((*iterator).duration.incubationPeriod);
-      converter << (*iterator).duration.interval;
       result += ACE_TEXT_ALWAYS_CHAR(" / ");
+      converter.clear();
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+      converter << (*iterator).duration.interval;
       result += converter.str();
+      result += ACE_TEXT_ALWAYS_CHAR(" / ");
+      converter.clear();
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
       converter << (*iterator).duration.totalDuration;
-      result += ACE_TEXT_ALWAYS_CHAR(" / ");
       result += converter.str();
     } // end IF
     for (std::vector<RPG_Combat_OtherDamage>::const_iterator iterator2 = (*iterator).others.begin();
          iterator2 != (*iterator).others.end();
          iterator2++)
     {
-      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-
       result += ACE_TEXT_ALWAYS_CHAR("\nother (bonus / modifier): ");
       result += RPG_Combat_OtherDamageTypeHelper::RPG_Combat_OtherDamageTypeToString((*iterator2).type);
       result += ACE_TEXT_ALWAYS_CHAR(" / ");
+      converter.clear();
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
       converter << ACE_static_cast(int, (*iterator2).modifier);
       result += converter.str();
     } // end FOR
@@ -233,6 +234,7 @@ const std::string RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damag
             }
           } // end SWITCH
 
+          converter.clear();
           converter.str(ACE_TEXT_ALWAYS_CHAR(""));
           converter << ACE_static_cast(int, (*iterator2).check.difficultyClass);
           result += converter.str();

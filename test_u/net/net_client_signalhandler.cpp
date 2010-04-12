@@ -64,7 +64,7 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
     std::string information;
     RPG_Net_Common_Tools::retrieveSignalInfo(signal_in,
                                              *info_in,
-//                                              (context_in ? *context_in : NULL),
+                                             context_in,
                                              information);
 
 //     // *PORTABILITY*: tracing in a signal handler context is not portable
@@ -90,9 +90,9 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
     case SIGABRT:
 #endif
     {
-      // *PORTABILITY*: tracing in a signal handler context is not portable
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("shutting down...\n")));
+//       // *PORTABILITY*: tracing in a signal handler context is not portable
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("shutting down...\n")));
 
       // shutdown...
       stop_reactor = true;
@@ -137,9 +137,11 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
       if (myPeerAddress.addr_to_string(buf,
                                        (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
       {
+        // *PORTABILITY*: tracing in a signal handler context is not portable
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
       } // end IF
+      // *PORTABILITY*: tracing in a signal handler context is not portable
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", continuing\n"),
                  buf));
@@ -157,13 +159,12 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
     // stop reactor
     if (reactor()->end_event_loop() == -1)
     {
-      // --> application will probably hang ! :-(
+      // *PORTABILITY*: tracing in a signal handler context is not portable
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%s\", continuing\n"),
-                          ACE_OS::strerror(ACE_OS::last_error())));
+                 ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
     } // end IF
 
-    // de-register ourselves from the reactor...
+    // de-register from the reactor...
     return -1;
   } // end IF
 

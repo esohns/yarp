@@ -47,7 +47,7 @@
 #endif
 
 // use a thread pool for handling network data ?
-#define RPG_NET_DEF_SERVER_USES_TP                true
+#define RPG_NET_DEF_SERVER_USES_TP                false
 #define RPG_NET_DEF_SERVER_NUM_TP_THREADS         10
 
 // 1024 * 1024 --> 1 MByte
@@ -78,6 +78,6 @@
 // seconds, 0 --> OFF
 #define RPG_NET_DEF_STATISTICS_COLLECT_INTERVAL   0
 // seconds, 0 --> OFF
-#define RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL 15
+#define RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL 3600 // 1 hour
 
 #endif

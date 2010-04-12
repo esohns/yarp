@@ -64,9 +64,9 @@ class RPG_Net_Common_Tools
                                const bool&);      // TCP_NODELAY ?
 
   static void retrieveSignalInfo(const int&,        // signal
-                                 const siginfo_t&,  // information pertaining to a signal
-//                               const ucontext_t&, // context information
-                                 std::string&);     // return value: condensed signal information
+                                 const siginfo_t&,  // info
+                                 const ucontext_t*, // context
+                                 std::string&);     // return value: info
 
  private:
   // safety measures

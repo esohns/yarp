@@ -126,12 +126,12 @@ const std::string RPG_Item_Common_Tools::damageToString(const RPG_Item_Damage& d
   ACE_TRACE(ACE_TEXT("RPG_Item_Common_Tools::damageToString"));
 
   std::string result;
-  std::stringstream str;
 
+  std::ostringstream converter;
   if (damage_in.typeDice != D_0)
   {
-    str << damage_in.numDice;
-    result += str.str();
+    converter << damage_in.numDice;
+    result += converter.str();
     result += RPG_Dice_DieTypeHelper::RPG_Dice_DieTypeToString(damage_in.typeDice);
   } // end IF
 
@@ -144,9 +144,10 @@ const std::string RPG_Item_Common_Tools::damageToString(const RPG_Item_Damage& d
   {
     result += ACE_TEXT_ALWAYS_CHAR("+");
   } // end IF
-  str.str(ACE_TEXT_ALWAYS_CHAR(""));
-  str << damage_in.modifier;
-  result += str.str();
+  converter.clear();
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter << damage_in.modifier;
+  result += converter.str();
 
   return result;
 }

@@ -44,8 +44,8 @@ class RPG_Net_SignalHandler
 
   // implement specific behaviour
   virtual int handle_signal(int,          // signal
-                            siginfo_t*,   // not needed on UNIX
-                            ucontext_t*); // not used
+                            siginfo_t*,   // info
+                            ucontext_t*); // context
 
  private:
   typedef ACE_Event_Handler inherited;

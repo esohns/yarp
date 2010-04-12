@@ -114,29 +114,33 @@ const std::string RPG_Monster_Common_Tools::attackActionToString(const RPG_Monst
   result += RPG_Monster_Common_Tools::weaponTypeToString(attackAction_in.weapon);
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("attackBonus(es): ");
-  std::stringstream str;
+
+  std::ostringstream converter;
   for (std::vector<char>::const_iterator iterator = attackAction_in.attackBonuses.begin();
        iterator != attackAction_in.attackBonuses.end();
        iterator++)
   {
-    str.str(ACE_TEXT_ALWAYS_CHAR(""));
-    str << ACE_static_cast(int, *iterator);
-    result += str.str();
+    converter.clear();
+    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    converter << ACE_static_cast(int, *iterator);
+    result += converter.str();
     result += ACE_TEXT_ALWAYS_CHAR("/");
   } // end FOR
   if (!attackAction_in.attackBonuses.empty())
   {
     result.erase(--(result.end()));
   } // end IF
-  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("attackForm: ");
   result += RPG_Combat_Common_Tools::attackFormsToString(attackAction_in.attackForms);
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += RPG_Combat_Common_Tools::damageToString(attackAction_in.damage);
   result += ACE_TEXT_ALWAYS_CHAR("numAttacksPerRound: ");
-  str << ACE_static_cast(int, attackAction_in.numAttacksPerRound);
-  result += str.str();
+  converter.clear();
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter << ACE_static_cast(int, attackAction_in.numAttacksPerRound);
+  result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
   return result;
@@ -147,17 +151,17 @@ const std::string RPG_Monster_Common_Tools::attackToString(const RPG_Monster_Att
   ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::attackToString"));
 
   std::string result;
+  std::ostringstream converter;
 
-  std::stringstream str;
   result += ACE_TEXT_ALWAYS_CHAR("baseAttackBonus: ");
-  str << ACE_static_cast(int, attack_in.baseAttackBonus);
-  result += str.str();
-  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter << ACE_static_cast(int, attack_in.baseAttackBonus);
+  result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("grappleBonus: ");
-  str << ACE_static_cast(int, attack_in.grappleBonus);
-  result += str.str();
-//   str.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter << ACE_static_cast(int, attack_in.grappleBonus);
+  result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("Standard Attack Action(s):\n-----------------------\n");
   int i = 1;
@@ -166,9 +170,10 @@ const std::string RPG_Monster_Common_Tools::attackToString(const RPG_Monster_Att
        iterator++, i++)
   {
     result += ACE_TEXT_ALWAYS_CHAR("action #");
-    str.str(ACE_TEXT_ALWAYS_CHAR(""));
-    str << i;
-    result += str.str();
+    converter.clear();
+    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    converter << i;
+    result += converter.str();
     result += ACE_TEXT_ALWAYS_CHAR("\n");
     result += attackActionToString(*iterator);
   } // end FOR
@@ -179,9 +184,10 @@ const std::string RPG_Monster_Common_Tools::attackToString(const RPG_Monster_Att
        iterator++, i++)
   {
     result += ACE_TEXT_ALWAYS_CHAR("action #");
-    str.str(ACE_TEXT_ALWAYS_CHAR(""));
-    str << i;
-    result += str.str();
+    converter.clear();
+    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    converter << i;
+    result += converter.str();
     result += ACE_TEXT_ALWAYS_CHAR("\n");
     result += attackActionToString(*iterator);
   } // end FOR

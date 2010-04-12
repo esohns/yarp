@@ -1054,7 +1054,7 @@ const std::string RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_Sp
   ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellLevelsToString"));
 
   std::string result;
-  std::stringstream converter;
+  std::ostringstream converter;
   for (RPG_Magic_SpellLevelListIterator_t iterator = levels_in.begin();
        iterator != levels_in.end();
        iterator++)
@@ -1086,7 +1086,7 @@ const std::string RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_Sp
       default:
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid casterClass \"%d\" --> check implementation !, continuing\n"),
+                   ACE_TEXT("invalid casterClass \"%d\", continuing\n"),
                    (*iterator).casterClass.discriminator));
 
         break;
@@ -1094,6 +1094,7 @@ const std::string RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_Sp
     } // end SWITCH
 
     result += ACE_TEXT_ALWAYS_CHAR(": ");
+    converter.clear();
     converter.str(ACE_TEXT_ALWAYS_CHAR(""));
     converter << ACE_static_cast(unsigned int, (*iterator).level);
     result += converter.str();
@@ -1108,8 +1109,8 @@ const std::string RPG_Magic_Common_Tools::spellRangeToString(const RPG_Magic_Spe
   ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellRangeToString"));
 
   std::string result;
-  std::stringstream converter;
 
+  std::ostringstream converter;
   RPG_Magic_Spell_RangeProperties temp = range_in;
   if ((range_in.max == 0) || (range_in.increment == 0))
     updateSpellRange(temp);
@@ -1136,6 +1137,7 @@ const std::string RPG_Magic_Common_Tools::spellRangeToString(const RPG_Magic_Spe
       result += converter.str();
       result += ACE_TEXT_ALWAYS_CHAR(" ft\n");
       result += ACE_TEXT_ALWAYS_CHAR("increment: ");
+      converter.clear();
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
       converter << temp.increment;
       result += converter.str();
@@ -1161,7 +1163,7 @@ const std::string RPG_Magic_Common_Tools::spellTargetToString(const RPG_Magic_Sp
   ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellTargetToString"));
 
   std::string result;
-  std::stringstream converter;
+  std::ostringstream converter;
 
   result += ACE_TEXT_ALWAYS_CHAR("type: ");
   result += RPG_Magic_Spell_TargetHelper::RPG_Magic_Spell_TargetToString(target_in.type);
@@ -1189,6 +1191,7 @@ const std::string RPG_Magic_Common_Tools::spellTargetToString(const RPG_Magic_Sp
       if (target_in.levelIncrement)
       {
         result += ACE_TEXT_ALWAYS_CHAR(" + ");
+        converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << ACE_static_cast(unsigned int, target_in.levelIncrement);
         result += converter.str();
@@ -1218,6 +1221,7 @@ const std::string RPG_Magic_Common_Tools::spellTargetToString(const RPG_Magic_Sp
   if (target_in.radius)
   {
     result += ACE_TEXT_ALWAYS_CHAR("radius: ");
+    converter.clear();
     converter.str(ACE_TEXT_ALWAYS_CHAR(""));
     converter << ACE_static_cast(unsigned int, target_in.radius);
     result += converter.str();
@@ -1225,6 +1229,7 @@ const std::string RPG_Magic_Common_Tools::spellTargetToString(const RPG_Magic_Sp
     if (target_in.height)
     {
       result += ACE_TEXT_ALWAYS_CHAR("height: ");
+      converter.clear();
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
       converter << ACE_static_cast(unsigned int, target_in.height);
       result += converter.str();
@@ -1251,7 +1256,7 @@ const std::string RPG_Magic_Common_Tools::spellDurationToString(const RPG_Magic_
     } // end IF
     else
     {
-      std::stringstream converter;
+      std::ostringstream converter;
       if (duration_in.base)
       {
         converter << duration_in.base;
@@ -1262,6 +1267,7 @@ const std::string RPG_Magic_Common_Tools::spellDurationToString(const RPG_Magic_
       {
         if (duration_in.base)
           result += ACE_TEXT_ALWAYS_CHAR(" + ");
+        converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << duration_in.duration;
         result += converter.str();
@@ -1272,18 +1278,20 @@ const std::string RPG_Magic_Common_Tools::spellDurationToString(const RPG_Magic_
           result += ACE_TEXT_ALWAYS_CHAR(" / [casterLevel");
           if (duration_in.levelIncrement != 1)
           {
+            result += ACE_TEXT_ALWAYS_CHAR("/");
+            converter.clear();
             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
             converter << ACE_static_cast(unsigned int, duration_in.levelIncrement);
-            result += ACE_TEXT_ALWAYS_CHAR("/");
             result += converter.str();
           } // end IF
         } // end IF
         result += ACE_TEXT_ALWAYS_CHAR("]");
         if (duration_in.levelIncrementMax)
         {
+          result += ACE_TEXT_ALWAYS_CHAR(" (max: ");
+          converter.clear();
           converter.str(ACE_TEXT_ALWAYS_CHAR(""));
           converter << ACE_static_cast(unsigned int, duration_in.levelIncrementMax);
-          result += ACE_TEXT_ALWAYS_CHAR(" (max: ");
           result += converter.str();
           result += ACE_TEXT_ALWAYS_CHAR("th)");
         }
@@ -1301,7 +1309,8 @@ const std::string RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_
   ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::preconditionsToString"));
 
   std::string result;
-  std::stringstream converter;
+
+  std::ostringstream converter;
   for (RPG_Magic_Spell_PreconditionListIterator_t iterator = preconditions_in.begin();
        iterator != preconditions_in.end();
        iterator++)
@@ -1330,6 +1339,7 @@ const std::string RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_
         {
           result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator).attribute);
           result += ACE_TEXT_ALWAYS_CHAR(" <= ");
+          converter.clear();
           converter.str(ACE_TEXT_ALWAYS_CHAR(""));
           converter << (*iterator).value;
           result += converter.str();
@@ -1341,6 +1351,7 @@ const std::string RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_
         else
         {
           result += ACE_TEXT_ALWAYS_CHAR(" ");
+          converter.clear();
           converter.str(ACE_TEXT_ALWAYS_CHAR(""));
           converter << (*iterator).value;
           result += converter.str();
@@ -1355,6 +1366,7 @@ const std::string RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_
           if ((*iterator).levelIncrement != 1)
           {
             result += ACE_TEXT_ALWAYS_CHAR("/");
+            converter.clear();
             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
             converter << ACE_static_cast(unsigned int, (*iterator).levelIncrement);
             result += converter.str();
@@ -1364,6 +1376,7 @@ const std::string RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_
           if ((*iterator).levelIncrementMax)
           {
             result += ACE_TEXT_ALWAYS_CHAR(" (max: ");
+            converter.clear();
             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
             converter << ACE_static_cast(unsigned int, (*iterator).levelIncrementMax);
             result += converter.str();
@@ -1404,8 +1417,8 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
   ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::effectsToString"));
 
   std::string result;
-  std::stringstream converter;
 
+  std::ostringstream converter;
   for (RPG_Magic_Spell_EffectListIterator_t iterator = effects_in.begin();
        iterator != effects_in.end();
        iterator++)
@@ -1422,6 +1435,7 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
       {
         if ((*iterator).base.value > 0)
           result += ACE_TEXT_ALWAYS_CHAR("+");
+        converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << ACE_static_cast(int, (*iterator).base.value);
         result += converter.str();
@@ -1436,6 +1450,7 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
         result += ACE_TEXT_ALWAYS_CHAR(" [+ ");
         if ((*iterator).levelIncrement.range.typeDice == RPG_DICE_DIETYPE_INVALID)
         {
+          converter.clear();
           converter.str(ACE_TEXT_ALWAYS_CHAR(""));
           converter << ACE_static_cast(int, (*iterator).levelIncrement.value);
           result += converter.str();
@@ -1447,9 +1462,10 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
 
         if ((*iterator).levelIncrementMax)
         {
+          result += ACE_TEXT_ALWAYS_CHAR(" / casterLevel (max: ");
+          converter.clear();
           converter.str(ACE_TEXT_ALWAYS_CHAR(""));
           converter << ACE_static_cast(unsigned int, (*iterator).levelIncrementMax);
-          result += ACE_TEXT_ALWAYS_CHAR(" / casterLevel (max: ");
           result += converter.str();
           result += ACE_TEXT_ALWAYS_CHAR("th)]");
         } // end IF
@@ -1460,9 +1476,10 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
     result += ACE_TEXT_ALWAYS_CHAR("\n");
     if ((*iterator).maxRange)
     {
+      result += ACE_TEXT_ALWAYS_CHAR("range: ");
+      converter.clear();
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
       converter << ACE_static_cast(unsigned int, (*iterator).maxRange);
-      result += ACE_TEXT_ALWAYS_CHAR("range: ");
       result += converter.str();
       result += ACE_TEXT_ALWAYS_CHAR(" ft\n");
     } // end IF
@@ -1533,6 +1550,7 @@ const std::string RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_
           if ((*iterator2).check.difficultyClass)
           {
             result += ACE_TEXT_ALWAYS_CHAR(" (DC: ");
+            converter.clear();
             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
             converter << ACE_static_cast(unsigned int, (*iterator2).check.difficultyClass);
             result += converter.str();
@@ -1585,7 +1603,7 @@ const std::string RPG_Magic_Common_Tools::counterMeasuresToString(const RPG_Magi
 
   std::string result;
 
-  std::stringstream converter;
+  std::ostringstream converter;
   for (std::vector<RPG_Magic_CounterMeasure>::const_iterator iterator = counterMeasures_in.begin();
        iterator != counterMeasures_in.end();
        iterator++)
@@ -1653,6 +1671,7 @@ const std::string RPG_Magic_Common_Tools::counterMeasuresToString(const RPG_Magi
         if ((*iterator).check.difficultyClass)
         {
           result += ACE_TEXT_ALWAYS_CHAR(" (DC: ");
+          converter.clear();
           converter.str(ACE_TEXT_ALWAYS_CHAR(""));
           converter << ACE_static_cast(unsigned int, (*iterator).check.difficultyClass);
           result += converter.str();
@@ -1723,7 +1742,7 @@ const std::string RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_SpellLi
 
   RPG_Magic_Spells_t completed;
   unsigned int count = 0;
-  std::stringstream converter;
+  std::ostringstream converter;
   RPG_Magic_SpellListIterator_t iterator2;
   for (RPG_Magic_SpellListIterator_t iterator = spells_in.begin();
        iterator != spells_in.end();
@@ -1753,6 +1772,7 @@ const std::string RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_SpellLi
     if (count > 1)
     {
       result += ACE_TEXT_ALWAYS_CHAR(": ");
+      converter.clear();
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
       converter << count;
       result += converter.str();

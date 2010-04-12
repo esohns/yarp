@@ -419,8 +419,7 @@ void RPG_Magic_Dictionary::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::dump"));
 
-  // simply dump the current content of our dictionary
-  std::stringstream converter;
+  std::ostringstream converter;
   for (RPG_Magic_DictionaryIterator_t iterator = myDictionary.begin();
        iterator != myDictionary.end();
        iterator++)
@@ -428,6 +427,7 @@ void RPG_Magic_Dictionary::dump() const
     std::string castingTime;
     if ((iterator->second).time.rounds)
     {
+      converter.clear();
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
       converter << ACE_static_cast(unsigned int, (iterator->second).time.rounds);
       castingTime += converter.str();

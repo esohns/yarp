@@ -119,41 +119,52 @@ const std::string RPG_Character_Common_Tools::attributesToString(const RPG_Chara
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::attributesToString"));
 
   std::string result;
-  std::stringstream str;
+
+  std::ostringstream converter;
   result = RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_STRENGTH);
   result += ACE_TEXT_ALWAYS_CHAR(": ");
-  str << ACE_static_cast(unsigned int, attributes_in.strength);
-  result += str.str();
+  converter << ACE_static_cast(unsigned int, attributes_in.strength);
+  result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
-  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+
   result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_DEXTERITY);
   result += ACE_TEXT_ALWAYS_CHAR(": ");
-  str << ACE_static_cast(unsigned int, attributes_in.dexterity);
-  result += str.str();
+  converter.clear();
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter << ACE_static_cast(unsigned int, attributes_in.dexterity);
+  result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
-  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+
   result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_CONSTITUTION);
   result += ACE_TEXT_ALWAYS_CHAR(": ");
-  str << ACE_static_cast(unsigned int, attributes_in.constitution);
-  result += str.str();
+  converter.clear();
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter << ACE_static_cast(unsigned int, attributes_in.constitution);
+  result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
-  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+
   result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_INTELLIGENCE);
   result += ACE_TEXT_ALWAYS_CHAR(": ");
-  str << ACE_static_cast(unsigned int, attributes_in.intelligence);
-  result += str.str();
+  converter.clear();
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter << ACE_static_cast(unsigned int, attributes_in.intelligence);
+  result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
-  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+
   result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_WISDOM);
   result += ACE_TEXT_ALWAYS_CHAR(": ");
-  str << ACE_static_cast(unsigned int, attributes_in.wisdom);
-  result += str.str();
+  converter.clear();
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter << ACE_static_cast(unsigned int, attributes_in.wisdom);
+  result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
-  str.str(ACE_TEXT_ALWAYS_CHAR(""));
+
   result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_CHARISMA);
   result += ACE_TEXT_ALWAYS_CHAR(": ");
-  str << ACE_static_cast(unsigned int, attributes_in.charisma);
-  result += str.str();
+  converter.clear();
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter << ACE_static_cast(unsigned int, attributes_in.charisma);
+  result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
   return result;

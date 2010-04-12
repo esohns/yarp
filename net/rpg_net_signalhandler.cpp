@@ -56,8 +56,6 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::handle_signal"));
 
-  ACE_UNUSED_ARG(context_in);
-
   // debug info
   if (info_in == NULL)
   {
@@ -72,7 +70,7 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
     std::string information;
     RPG_Net_Common_Tools::retrieveSignalInfo(signal_in,
                                              *info_in,
-//                                              (context_in ? *context_in : NULL),
+                                             context_in,
                                              information);
 
     // *PORTABILITY*: tracing in a signal handler context is not portable
@@ -98,9 +96,9 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
     case SIGABRT:
 #endif
     {
-      // *PORTABILITY*: tracing in a signal handler context is not portable
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("shutting down...\n")));
+//       // *PORTABILITY*: tracing in a signal handler context is not portable
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("shutting down...\n")));
 
       // shutdown...
       stop_reactor = true;
@@ -137,6 +135,7 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
       }
       catch (...)
       {
+        // *PORTABILITY*: tracing in a signal handler context is not portable
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("caught exception in RPG_Common_IStatistic::report(), continuing\n")));
       }
@@ -154,10 +153,9 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
     // step1: stop reactor
     if (reactor()->end_event_loop() == -1)
     {
-      // --> application will probably hang ! :-(
+      // *PORTABILITY*: tracing in a signal handler context is not portable
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%s\", continuing\n"),
-                 ACE_OS::strerror(ACE_OS::last_error())));
+                 ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
     } // end IF
 
     // step2: invoke our controller (if any)
@@ -169,6 +167,7 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
       }
       catch (...)
       {
+        // *PORTABILITY*: tracing in a signal handler context is not portable
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("caught exception in RPG_Common_IControl::stop(), continuing\n")));
       }
