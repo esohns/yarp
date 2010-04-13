@@ -32,11 +32,7 @@
 #include <stream_streammodule_base.h>
 
 #include <ace/Global_Macros.h>
-#include <ace/Timer_Queue_T.h>
-#include <ace/Timer_Heap_T.h>
-#include <ace/Timer_Queue_Adapters.h>
-
-#include <string>
+#include <ace/Time_Value.h>
 
 // forward declaration(s)
 class Stream_IAllocator;
@@ -86,16 +82,6 @@ class RPG_Net_Module_SocketHandler
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_SocketHandler(const RPG_Net_Module_SocketHandler&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_SocketHandler& operator=(const RPG_Net_Module_SocketHandler&));
 
-  // these typedefs ensure that we use the minimal amount of locking necessary
-  typedef ACE_Event_Handler_Handle_Timeout_Upcall<ACE_Null_Mutex> UPCALL_TYPE;
-  typedef ACE_Timer_Heap_T<ACE_Event_Handler*,
-                           UPCALL_TYPE,
-                           ACE_Null_Mutex> TIMERHEAP_TYPE;
-  typedef ACE_Timer_Heap_Iterator_T<ACE_Event_Handler *,
-                                    UPCALL_TYPE,
-                                    ACE_Null_Mutex> TIMERHEAPITERATOR_TYPE;
-  typedef ACE_Thread_Timer_Queue_Adapter<TIMERHEAP_TYPE> TIMERQUEUE_TYPE;
-
   // convenience types
   typedef RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic> STATISTICHANDLER_TYPE;
 
@@ -104,32 +90,11 @@ class RPG_Net_Module_SocketHandler
 //   RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
   const bool putStatisticsMessage(const RPG_Net_RuntimeStatistic&, // statistics info
                                   const ACE_Time_Value&) const;    // statistics generation time
-  inline void cancelTimer()
-  {
-    if (myStatCollectHandlerID)
-    {
-      if (myTimerQueue.cancel(myStatCollectHandlerID) == -1)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to cancel timer (ID: %u): \"%m\", continuing\n"),
-                   myStatCollectHandlerID));
-      } // end IF
-//       else
-//       {
-//         // debug info
-//         ACE_DEBUG((LM_DEBUG,
-//                    ACE_TEXT("deactivated statistics collection timer (ID: %u)...\n"),
-//                    myStatCollectHandlerID));
-//       } // end ELSE
-      myStatCollectHandlerID = 0;
-    } // end IF
-  }; // end IF
 
   bool                  myIsInitialized;
   unsigned long         mySessionID;
 
   // timer stuff
-  TIMERQUEUE_TYPE       myTimerQueue;
   STATISTICHANDLER_TYPE myStatCollectHandler;
   int                   myStatCollectHandlerID;
 

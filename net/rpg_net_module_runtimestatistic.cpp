@@ -22,6 +22,8 @@
 
 #include "rpg_net_common_tools.h"
 
+#include <rpg_common_timer_manager.h>
+
 #include <stream_message_base.h>
 #include <stream_iallocator.h>
 
@@ -31,8 +33,6 @@
 
 RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic()
  : myIsInitialized(false),
-   myTimerQueue(NULL,
-                NULL),
    myResetTimeoutHandler(this),
    myResetTimeoutHandlerID(0),
    myLocalReportingHandler(this,
@@ -51,39 +51,20 @@ RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic"));
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("activating timer dispatch queue...\n")));
-
-  // ok: activate timer queue
-  if (myTimerQueue.activate() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to activate() timer dispatch queue: \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
-
-    return;
-  } // end IF
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("activating timer dispatch queue...DONE\n")));
-
   // schedule the second-granularity timer
   ACE_Time_Value second_interval(1, 0); // one second interval
-  int id = -1;
-  id = myTimerQueue.schedule(&myResetTimeoutHandler,
-                             NULL,
-                             ACE_OS::gettimeofday () + second_interval,
-                             second_interval);
-  if (id == -1)
+  if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(myResetTimeoutHandler,
+                                                                    second_interval,
+                                                                    true,
+                                                                    myResetTimeoutHandlerID))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to schedule() timer: \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to RPG_Common_Timer_Manager::scheduleTimer(%u), aborting\n"),
+               1));
 
+    // what else can we do ?
     return;
   } // end IF
-  myResetTimeoutHandlerID = id;
-
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("scheduled second-interval timer (ID: %d)...\n"),
 //              myResetTimeoutHandlerID));
@@ -95,13 +76,6 @@ RPG_Net_Module_RuntimeStatistic::~RPG_Net_Module_RuntimeStatistic()
 
   // clean up
   fini_timers();
-
-  myTimerQueue.deactivate();
-  // make sure the dispatcher thread is really dead...
-  myTimerQueue.wait();
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("deactivated timers and dispatcher...\n")));
 }
 
 const bool
@@ -143,26 +117,23 @@ RPG_Net_Module_RuntimeStatistic::init(const unsigned long& reportingInterval_in,
   if (reportingInterval_in)
   {
     // schedule the reporting interval timer
-    int id = -1;
     ACE_Time_Value reporting_interval(reportingInterval_in, 0);
-    id = myTimerQueue.schedule(&myLocalReportingHandler,
-                               NULL,
-                               ACE_OS::gettimeofday () + reporting_interval,
-                               reporting_interval);
-    if (id == -1)
+    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(myLocalReportingHandler,
+                                                                      reporting_interval,
+                                                                      true,
+                                                                      myLocalReportingHandlerID))
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to schedule() timer: \"%s\", aborting\n"),
-                 ACE_OS::strerror(ACE_OS::last_error())));
+                 ACE_TEXT("failed to RPG_Common_Timer_Manager::scheduleTimer(%u), aborting\n"),
+                 reportingInterval_in));
 
+      // what else can we do ?
       return false;
     } // end IF
-    myLocalReportingHandlerID = id;
-
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("scheduled (local) reporting timer (ID: %d) for intervals of %u second(s)...\n"),
 //                myLocalReportingHandlerID,
-//                myLocalReportingInterval));
+//                reportingInterval_in));
   } // end IF
   else
   {
@@ -250,23 +221,10 @@ RPG_Net_Module_RuntimeStatistic::handleSessionMessage(RPG_Net_SessionMessage*& m
       // remember session ID for reporting...
       mySessionID = message_inout->getConfig()->getUserData().sessionID;
 
-      // start profile timer...
-//       myProfile.start();
-
       break;
     }
     case Stream_SessionMessage::MB_STREAM_SESSION_END:
     {
-      // stop profile timer...
-      // *WARNING*: this cannot be completely accurate unless ALL
-      // modules are synchronous. Otherwise, downstream modules still
-      // need to finish handling their queued work...
-      // We only put this here because it is a nice place for this kind
-      // of functionality
-      // --> take this information with a grain of salt !
-//       myProfile.stop();
-
-
       // session finished ? --> print overall statistics
       // *TODO*: ...and don't forget to re-init internal counters ?
       final_report();
@@ -410,68 +368,16 @@ RPG_Net_Module_RuntimeStatistic::final_report() const
                                    ((iter->second * 100.0) / (myNumTotalMessages - myNumSessionMessages)))));
       } // end FOR
     } // end IF
+
+//     double messages_per_sec = double (message_count) / et.real_time;
+//     ACE_DEBUG ((LM_DEBUG,
+//                 ACE_TEXT ("\t\tmessages = %d\n\t\ttotal bytes = %d\n\t\tmbits/sec = %f\n\t\tusec-per-message = %f\n\t\tmessages-per-second = %0.00f\n"),
+//                 message_count,
+//                 total_bytes,
+//                 (((double) total_bytes * 8) / et.real_time) / (double) (1024 * 1024),
+//                 (et.real_time / (double) message_count) * 1000000,
+//                 messages_per_sec < 0 ? 0 : messages_per_sec));
   } // end lock scope
-
-//   // only process profile left to do...
-//   ACE_Profile_Timer::ACE_Elapsed_Time elapsed_time;
-//   elapsed_time.real_time = 0.0;
-//   elapsed_time.user_time = 0.0;
-//   elapsed_time.system_time = 0.0;
-//   if (ACE_const_cast(ACE_Profile_Timer*,
-//                      &myProfile)->elapsed_time(elapsed_time) == -1)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to ACE_Profile_Timer::elapsed_time: \"%s\", returning\n"),
-//                ACE_OS::strerror(ACE_OS::last_error())));
-//
-//     return;
-//   } // end IF
-//   ACE_Profile_Timer::Rusage elapsed_rusage;
-//   ACE_OS::memset(&elapsed_rusage,
-//                  0,
-//                  sizeof(elapsed_rusage));
-//   ACE_const_cast(ACE_Profile_Timer*,
-//                  &myProfile)->elapsed_rusage(elapsed_rusage);
-//
-//   ACE_Time_Value user_time(elapsed_rusage.ru_utime);
-//   ACE_Time_Value system_time(elapsed_rusage.ru_stime);
-//   std::string user_time_string;
-//   std::string system_time_string;
-//   RPG_Common_Tools::period2String(user_time,
-//                                   user_time_string);
-//   RPG_Common_Tools::period2String(system_time,
-//                                   system_time_string);
-//
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT(" --> Session Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
-//              elapsed_time.real_time,
-//              elapsed_time.user_time,
-//              elapsed_time.system_time,
-//              user_time_string.c_str(),
-//              system_time_string.c_str(),
-//              elapsed_rusage.ru_maxrss,
-//              elapsed_rusage.ru_ixrss,
-//              elapsed_rusage.ru_idrss,
-//              elapsed_rusage.ru_isrss,
-//              elapsed_rusage.ru_minflt,
-//              elapsed_rusage.ru_majflt,
-//              elapsed_rusage.ru_nswap,
-//              elapsed_rusage.ru_inblock,
-//              elapsed_rusage.ru_oublock,
-//              elapsed_rusage.ru_msgsnd,
-//              elapsed_rusage.ru_msgrcv,
-//              elapsed_rusage.ru_nsignals,
-//              elapsed_rusage.ru_nvcsw,
-//              elapsed_rusage.ru_nivcsw));
-
-  //double messages_per_sec = double (message_count) / et.real_time;
-  //ACE_DEBUG ((LM_DEBUG,
-  //            ACE_TEXT ("\t\tmessages = %d\n\t\ttotal bytes = %d\n\t\tmbits/sec = %f\n\t\tusec-per-message = %f\n\t\tmessages-per-second = %0.00f\n"),
-  //            message_count,
-  //            total_bytes,
-  //            (((double) total_bytes * 8) / et.real_time) / (double) (1024 * 1024),
-  //            (et.real_time / (double) message_count) * 1000000,
-  //            messages_per_sec < 0 ? 0 : messages_per_sec));
 }
 
 void
@@ -483,26 +389,14 @@ RPG_Net_Module_RuntimeStatistic::fini_timers(const bool& cancelAllTimers_in)
   {
     if (myResetTimeoutHandlerID)
     {
-      if (myTimerQueue.cancel(myResetTimeoutHandlerID) == -1)
-      {
-        ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("failed to cancel() timer: \"%s\", continuing\n"),
-                  ACE_OS::strerror(ACE_OS::last_error())));
-      } // end IF
-
+      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myResetTimeoutHandlerID);
       myResetTimeoutHandlerID = 0;
     } // end IF
   } // end IF
 
   if (myLocalReportingHandlerID)
   {
-    if (myTimerQueue.cancel(myLocalReportingHandlerID) == -1)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to cancel() timer: \"%s\", continuing\n"),
-                 ACE_OS::strerror(ACE_OS::last_error())));
-    } // end IF
-
+    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myLocalReportingHandlerID);
     myLocalReportingHandlerID = 0;
   } // end IF
 }

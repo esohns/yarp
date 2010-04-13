@@ -25,7 +25,8 @@
 #include "rpg_net_remote_comm.h"
 #include "rpg_net_stream_config.h"
 
-#include <ace/Time_Value.h>
+#include <rpg_common_timer_manager.h>
+
 #include <ace/INET_Addr.h>
 
 RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
@@ -41,38 +42,15 @@ RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler"));
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("activating timer dispatch queue...\n")));
-
-  // ok: activate timer queue
-  if (myTimerQueue.activate() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to activate() timer dispatch queue: \"%m\", returning\n")));
-
-    return;
-  } // end IF
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("activating timer dispatch queue...DONE\n")));
 }
 
 RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler"));
 
-  // clean up
-  cancelTimer();
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("deactivating timer dispatch queue...\n")));
-
-  myTimerQueue.deactivate();
-  // make sure the dispatcher thread is really dead...
-  myTimerQueue.wait();
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("deactivating timer dispatch queue...DONE\n")));
+  // clean up timer if necessary
+  if (myStatCollectHandlerID)
+    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myStatCollectHandlerID);
 
   // clean up any unprocessed (chained) buffer(s)
   if (myCurrentMessage)
@@ -94,31 +72,35 @@ RPG_Net_Module_SocketHandler::init(Stream_IAllocator* allocator_in,
                ACE_TEXT("re-initializing...\n")));
 
     // clean up
+    mySessionID = 0;
+    if (myStatCollectHandlerID)
+      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myStatCollectHandlerID);
+    myStatCollectHandlerID = 0;
+    myCurrentMessageLength = 0;
+    if (myCurrentMessage)
+      myCurrentMessage->release();
+    myCurrentMessage = NULL;
+    myCurrentBuffer = NULL;
     myIsInitialized = false;
-    cancelTimer();
   } // end IF
 
-  // schedule regular statistics collection...
   if (statisticsCollectionInterval_in)
   {
-    myStatCollectHandlerID = 0;
+    // schedule regular statistics collection...
     ACE_Time_Value collecting_interval(statisticsCollectionInterval_in,
                                        0);
-    myStatCollectHandlerID = myTimerQueue.schedule(&myStatCollectHandler,
-                                                   NULL,
-                                                   ACE_OS::gettimeofday () + collecting_interval,
-                                                   collecting_interval);
-    if (myStatCollectHandlerID == -1)
+    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(myStatCollectHandler,
+                                                                      collecting_interval,
+                                                                      true,
+                                                                      myStatCollectHandlerID))
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to schedule() timer: \"%m\", aborting\n")));
+                 ACE_TEXT("failed to RPG_Common_Timer_Manager::scheduleTimer(%u), aborting\n"),
+                 statisticsCollectionInterval_in));
 
-      // reset so we don't get confused in the dtor !
-      myStatCollectHandlerID = 0;
-
+      // what else can we do ?
       return false;
     } // end IF
-
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("scheduled statistics collecting timer (ID: %d) for intervals of %u second(s)...\n"),
 //                myStatCollectHandlerID,

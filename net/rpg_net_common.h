@@ -25,7 +25,18 @@
 
 #include <ace/Time_Value.h>
 
-#include <string>
+// // timer queue
+// #include <ace/Synch.h>
+// #include <ace/Timer_Queue_T.h>
+// #include <ace/Timer_Heap_T.h>
+// #include <ace/Timer_Queue_Adapters.h>
+//
+// // these typedefs ensure that we use the minimal amount of locking necessary
+// typedef ACE_Event_Handler_Handle_Timeout_Upcall<ACE_Null_Mutex> UPCALL_TYPE;
+// typedef ACE_Timer_Heap_T<ACE_Event_Handler*, UPCALL_TYPE, ACE_Null_Mutex> TIMERHEAP_TYPE;
+// typedef ACE_Timer_Heap_Iterator_T<ACE_Event_Handler*, UPCALL_TYPE, ACE_Null_Mutex> TIMERHEAPITERATOR_TYPE;
+// // typedef ACE_Thread_Timer_Queue_Adapter<TIMERHEAP_TYPE> TIMERQUEUE_TYPE;
+// typedef ACE_Thread_Timer_Queue_Adapter<TIMERHEAP_TYPE> RPG_Net_TimerQueue_t;
 
 struct RPG_Net_RuntimeStatistic
 {

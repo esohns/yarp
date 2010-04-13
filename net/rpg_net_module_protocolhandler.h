@@ -24,6 +24,9 @@
 #include "rpg_net_sessionmessage.h"
 #include "rpg_net_remote_comm.h"
 
+#include <rpg_common_timerhandler.h>
+#include <rpg_common_itimer.h>
+
 #include <stream_task_base_synch.h>
 #include <stream_streammodule_base.h>
 
@@ -35,7 +38,9 @@ class Stream_IAllocator;
 class Stream_MessageBase;
 
 class RPG_Net_Module_ProtocolHandler
- : public Stream_TaskBaseSynch<RPG_Net_SessionMessage>
+ : public Stream_TaskBaseSynch<RPG_Net_SessionMessage>,
+   public RPG_Common_TimerHandler,
+   public RPG_Common_ITimer
 {
  public:
   RPG_Net_Module_ProtocolHandler();
@@ -53,14 +58,15 @@ class RPG_Net_Module_ProtocolHandler
 //   virtual void handleSessionMessage(RPG_Net_SessionMessage*&, // session message handle
 //                                     bool&);                   // return value: pass message downstream ?
 
-  virtual int handle_timeout(const ACE_Time_Value&, // current time
-                             const void*);          // asynchronous completion token
+  // implement RPG_Common_ITimer
+  virtual void handleTimeout(const void*); // asynchronous completion token
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
  private:
   typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage> inherited;
+  typedef RPG_Common_TimerHandler inherited2;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_ProtocolHandler(const RPG_Net_Module_ProtocolHandler&));
@@ -68,27 +74,15 @@ class RPG_Net_Module_ProtocolHandler
 
   // helper methods
   RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
-  inline void cancelTimer()
-  {
-    if (myTimerID != -1)
-    {
-      if (reactor()->cancel_timer(this,    // handler
-                                  1) != 1) // don't call handle_close()
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%m\", continuing\n")));
-      } // end IF
-      myTimerID = -1;
-    } // end IF
-  };
 
-  Stream_IAllocator* myAllocator;
-  int                myTimerID;
-  unsigned long      myCounter;
-  bool               myAutomaticPong;
-  bool               myPrintPongDot;
-  bool               myIsInitialized;
+  // timer stuff
+  int                     myTimerID;
 
+  Stream_IAllocator*      myAllocator;
+  unsigned long           myCounter;
+  bool                    myAutomaticPong;
+  bool                    myPrintPongDot;
+  bool                    myIsInitialized;
 //   unsigned long      mySessionID;
 };
 

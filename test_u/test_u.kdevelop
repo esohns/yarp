@@ -54,7 +54,7 @@
         <chance_dice>-d 6 -m 0 -n 1 -r 1 -s -t</chance_dice>
         <chance_rangeToRoll>-p -r 5-12 -t</chance_rangeToRoll>
         <net_client>-h localhost -i 1 -s 10101 -t -x</net_client>
-        <net_server>-i 5 -k 60 -p 10101 -t</net_server>
+        <net_server>-i 1 -k 60 -p 10101 -t</net_server>
       </debugarguments>
       <cwd>
         <character_generator>/home/unfv/Projects/RPG/test_u/debug/./</character_generator>

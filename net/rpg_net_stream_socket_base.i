@@ -43,6 +43,8 @@ RPG_Net_StreamSocketBase<StreamType>::~RPG_Net_StreamSocketBase()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::~RPG_Net_StreamSocketBase"));
 
+  // wait for all workers within the stream (if any)
+  myStream.waitForCompletion();
 }
 
 template <typename StreamType>
@@ -341,7 +343,6 @@ RPG_Net_StreamSocketBase<StreamType>::handle_close(ACE_HANDLE handle_in,
   if (myStream.isRunning())
   {
     myStream.stop();
-    myStream.waitForCompletion();
   } // end IF
   if (myCurrentReadBuffer)
   {
@@ -354,6 +355,8 @@ RPG_Net_StreamSocketBase<StreamType>::handle_close(ACE_HANDLE handle_in,
     myCurrentWriteBuffer = NULL;
   } // end IF
 
+  // invoke base class maintenance
+  // *NOTE*: in the end, this will "delete this"...
   return inherited::handle_close(handle_in,
                                  mask_in);
 }

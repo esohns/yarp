@@ -69,10 +69,8 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
                    (BUFSIZ * sizeof(ACE_TCHAR)));
     if (myPeerAddress.addr_to_string(buf,
                                      (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
-    {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
-    } // end IF
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", continuing\n"),
                buf));

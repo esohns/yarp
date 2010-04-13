@@ -20,6 +20,8 @@
 
 #include "net_client_signalhandler.h"
 
+#include <rpg_net_connection_manager.h>
+
 #include <ace/Reactor.h>
 
 Net_Client_SignalHandler::Net_Client_SignalHandler(const std::string& serverHostname_in,
@@ -76,6 +78,7 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
 
   bool stop_reactor = false;
   bool connect_to_server = false;
+  bool abort_oldest = false;
   switch (signal_in)
   {
     case SIGINT:
@@ -106,6 +109,13 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
 
       break;
     }
+    case SIGUSR2:
+    {
+      // (try to) abort oldest connection...
+      abort_oldest = true;
+
+      break;
+    }
     default:
     {
       // *PORTABILITY*: tracing in a signal handler context is not portable
@@ -116,6 +126,13 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
       break;
     }
   } // end SWITCH
+
+  // ...abort ?
+  if (abort_oldest)
+  {
+    // release an existing connection...
+    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
+  } // end IF
 
   // ...connect ?
   if (connect_to_server)
@@ -145,11 +162,10 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", continuing\n"),
                  buf));
+
+      // release an existing connection, maybe that helps...
+      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
     } // end IF
-    ACE_ASSERT(handler);
-    // sanity check
-    if (!handler->isRegistered())
-      handler->abort();
   } // end IF
 
   // ...shutdown ?

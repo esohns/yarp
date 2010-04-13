@@ -23,14 +23,18 @@
 #include "rpg_net_message.h"
 #include "rpg_net_common_tools.h"
 
+#include <rpg_common_timer_manager.h>
+
 #include <stream_iallocator.h>
 
 #include <iostream>
 
 RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler()
  : //inherited(),
+   inherited2(this,   // dispatch ourselves
+              false), // ping client at REGULAR intervals...
+   myTimerID(0),
    myAllocator(NULL),
-   myTimerID(-1),
    myCounter(1),
    myAutomaticPong(false), // *NOTE*: the idea really is not to play PONG...
    myPrintPongDot(false),
@@ -46,8 +50,8 @@ RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler()
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler"));
 
   // clean up timer if necessary
-  if (myTimerID != -1)
-    cancelTimer();
+  if (myTimerID)
+    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myTimerID);
 }
 
 const bool
@@ -67,8 +71,10 @@ RPG_Net_Module_ProtocolHandler::init(Stream_IAllocator* allocator_in,
                ACE_TEXT("re-initializing...\n")));
 
     // reset state
+    if (myTimerID != -1)
+      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myTimerID);
+    myTimerID = 0;
     myAllocator = NULL;
-    cancelTimer();
     myCounter = 1;
     myAutomaticPong = false;
     myPrintPongDot = false;
@@ -79,16 +85,17 @@ RPG_Net_Module_ProtocolHandler::init(Stream_IAllocator* allocator_in,
   myAllocator = allocator_in;
 
   if (clientPingInterval_in)
-  { // regular client ping timer
+  {
+    // schedule ourselves...
     ACE_Time_Value interval(clientPingInterval_in, 0);
-    myTimerID = reactor()->schedule_timer(this,
-                                          NULL,
-                                          interval,
-                                          interval);
-    if (myTimerID == -1)
+    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(*this,
+                                                                      interval,
+                                                                      true,
+                                                                      myTimerID))
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::schedule_timer(): \"%m\", aborting\n")));
+                 ACE_TEXT("failed to RPG_Common_Timer_Manager::scheduleTimer(%u), aborting\n"),
+                 clientPingInterval_in));
 
       return false;
     } // end IF
@@ -166,7 +173,7 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(Stream_MessageBase*& message_i
 
       if (myPrintPongDot)
       {
-        std::cerr << '.';
+        std::clog << '.';
       } // end IF
 
       break;
@@ -219,13 +226,11 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(Stream_MessageBase*& message_i
 //   } // end SWITCH
 // }
 
-int
-RPG_Net_Module_ProtocolHandler::handle_timeout(const ACE_Time_Value& tv_in,
-                                               const void* arg_in)
+void
+RPG_Net_Module_ProtocolHandler::handleTimeout(const void* arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::handle_timeout"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::handleTimeout"));
 
-  ACE_UNUSED_ARG(tv_in);
   ACE_UNUSED_ARG(arg_in);
 
 //   // debug info
@@ -241,7 +246,8 @@ RPG_Net_Module_ProtocolHandler::handle_timeout(const ACE_Time_Value& tv_in,
                ACE_TEXT("failed to allocate ping message(%u), aborting\n"),
                sizeof(RPG_Net_Remote_Comm::PingMessage)));
 
-    return -1;
+    // what else can we do ?
+    return;
   } // end IF
 
   // step1: init ping data
@@ -261,15 +267,14 @@ RPG_Net_Module_ProtocolHandler::handle_timeout(const ACE_Time_Value& tv_in,
   if (reply(ping_message, NULL) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Task::reply(): \"%m\", aborting\n")));
+               ACE_TEXT("failed to ACE_Task::reply(): \"%m\", returning\n")));
 
     // clean up
     ping_message->release();
 
-    return -1;
+    // what else can we do ?
+    return;
   } // end IF
-
-  return 0;
 }
 
 void

@@ -35,6 +35,8 @@ RPG_Net_SocketHandler::~RPG_Net_SocketHandler()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::~RPG_Net_SocketHandler"));
 
+  // wait for our worker (if any)
+  wait();
 }
 
 int
@@ -194,6 +196,7 @@ RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::handle_close"));
 
+  // deal with our worker
   if (thr_count())
   { // stop worker
     try
@@ -210,10 +213,12 @@ RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,
       // *NOTE*: what else can we do ?
     }
     shutdown();
-    wait();
+
+    // *NOTE*: we defer waiting for our worker to the dtor
   } // end IF
 
-  // ... base class does the rest
+  // invoke base class maintenance
+  // *NOTE*: in the end, this will "delete this"...
   return inherited::handle_close(handle_in,
                                  mask_in);
 }

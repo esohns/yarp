@@ -21,6 +21,7 @@
 #ifndef RPG_NET_MODULE_RUNTIMESTATISTIC_H
 #define RPG_NET_MODULE_RUNTIMESTATISTIC_H
 
+#include "rpg_net_common.h"
 #include "rpg_net_sessionmessage.h"
 #include "rpg_net_icounter.h"
 #include "rpg_net_statistichandler.h"
@@ -35,10 +36,6 @@
 
 #include <ace/Global_Macros.h>
 #include <ace/Synch.h>
-#include <ace/Timer_Queue_T.h>
-#include <ace/Timer_Heap_T.h>
-#include <ace/Timer_Queue_Adapters.h>
-// #include <ace/Profile_Timer.h>
 
 #include <set>
 #include <map>
@@ -80,16 +77,6 @@ class RPG_Net_Module_RuntimeStatistic
  private:
   typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage> inherited;
 
-  // these typedefs ensure that we use the minimal amount of locking necessary
-  typedef ACE_Event_Handler_Handle_Timeout_Upcall<ACE_Null_Mutex> UPCALL_TYPE;
-  typedef ACE_Timer_Heap_T<ACE_Event_Handler*,
-                           UPCALL_TYPE,
-                           ACE_Null_Mutex> TIMERHEAP_TYPE;
-  typedef ACE_Timer_Heap_Iterator_T<ACE_Event_Handler*,
-                                    UPCALL_TYPE,
-                                    ACE_Null_Mutex> TIMERHEAPITERATOR_TYPE;
-  typedef ACE_Thread_Timer_Queue_Adapter<TIMERHEAP_TYPE> TIMERQUEUE_TYPE;
-
   // message type counters
   typedef std::set<RPG_Net_MessageType> MESSAGETYPECONTAINER_TYPE;
   typedef MESSAGETYPECONTAINER_TYPE::const_iterator MESSAGETYPECONTAINER_CONSTITERATOR_TYPE;
@@ -114,7 +101,7 @@ class RPG_Net_Module_RuntimeStatistic
   bool                               myIsInitialized;
 
   // timer stuff
-  TIMERQUEUE_TYPE                    myTimerQueue;
+//   RPG_Net_TimerQueue_t               myTimerQueue;
   RPG_Net_ResetCounterHandler        myResetTimeoutHandler;
   int                                myResetTimeoutHandlerID;
   STATISTICHANDLER_TYPE              myLocalReportingHandler;
@@ -143,9 +130,6 @@ class RPG_Net_Module_RuntimeStatistic
 
   // *CACHE STATS*
   const Stream_IAllocator*           myAllocator;
-
-  // *PROCESS PROFILE*
-//   ACE_Profile_Timer                  myProfile;
 };
 
 // declare module

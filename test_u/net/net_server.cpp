@@ -34,9 +34,9 @@
 
 #include <stream_allocatorheap.h>
 
-#include <ace/OS.h>
 #include <ace/Version.h>
 #include <ace/Get_Opt.h>
+#include <ace/Profile_Timer.h>
 #include <ace/Reactor.h>
 #include <ace/TP_Reactor.h>
 #include <ace/Signal.h>
@@ -706,6 +706,11 @@ ACE_TMAIN(int argc,
 {
   ACE_TRACE(ACE_TEXT("::main"));
 
+  // *PROCESS PROFILE*
+  ACE_Profile_Timer process_profile;
+  // start profile timer...
+  process_profile.start();
+
   // step1: init
   // *PORTABILITY*: on Windows, we need to init ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -879,6 +884,58 @@ ACE_TMAIN(int argc,
     return EXIT_FAILURE;
   } // end IF
 #endif
+
+  // stop profile timer...
+  process_profile.stop();
+
+  // only process profile left to do...
+  ACE_Profile_Timer::ACE_Elapsed_Time elapsed_time;
+  elapsed_time.real_time = 0.0;
+  elapsed_time.user_time = 0.0;
+  elapsed_time.system_time = 0.0;
+  if (process_profile.elapsed_time(elapsed_time) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Profile_Timer::elapsed_time: \"%m\", aborting\n")));
+
+    return EXIT_FAILURE;
+  } // end IF
+  ACE_Profile_Timer::Rusage elapsed_rusage;
+  ACE_OS::memset(&elapsed_rusage,
+                  0,
+                  sizeof(ACE_Profile_Timer::Rusage));
+  process_profile.elapsed_rusage(elapsed_rusage);
+  ACE_Time_Value user_time(elapsed_rusage.ru_utime);
+  ACE_Time_Value system_time(elapsed_rusage.ru_stime);
+  std::string user_time_string;
+  std::string system_time_string;
+  RPG_Common_Tools::period2String(user_time,
+                                  user_time_string);
+  RPG_Common_Tools::period2String(system_time,
+                                  system_time_string);
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
+             elapsed_time.real_time,
+             elapsed_time.user_time,
+             elapsed_time.system_time,
+             user_time_string.c_str(),
+             system_time_string.c_str(),
+             elapsed_rusage.ru_maxrss,
+             elapsed_rusage.ru_ixrss,
+             elapsed_rusage.ru_idrss,
+             elapsed_rusage.ru_isrss,
+             elapsed_rusage.ru_minflt,
+             elapsed_rusage.ru_majflt,
+             elapsed_rusage.ru_nswap,
+             elapsed_rusage.ru_inblock,
+             elapsed_rusage.ru_oublock,
+             elapsed_rusage.ru_msgsnd,
+             elapsed_rusage.ru_msgrcv,
+             elapsed_rusage.ru_nsignals,
+             elapsed_rusage.ru_nvcsw,
+             elapsed_rusage.ru_nivcsw));
 
   return EXIT_SUCCESS;
 } // end main
