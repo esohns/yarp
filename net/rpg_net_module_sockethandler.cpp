@@ -48,8 +48,7 @@ RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
   if (myTimerQueue.activate() == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to activate() timer dispatch queue: \"%s\", returning\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to activate() timer dispatch queue: \"%m\", returning\n")));
 
     return;
   } // end IF
@@ -112,8 +111,7 @@ RPG_Net_Module_SocketHandler::init(Stream_IAllocator* allocator_in,
     if (myStatCollectHandlerID == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to schedule() timer: \"%s\", aborting\n"),
-                 ACE_OS::strerror(ACE_OS::last_error())));
+                 ACE_TEXT("failed to schedule() timer: \"%m\", aborting\n")));
 
       // reset so we don't get confused in the dtor !
       myStatCollectHandlerID = 0;
@@ -175,8 +173,7 @@ RPG_Net_Module_SocketHandler::handleDataMessage(Stream_MessageBase*& message_ino
       if (put_next(complete_message, NULL) == -1)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Task::put_next(): \"%s\", continuing\n"),
-                   ACE_OS::strerror(ACE_OS::last_error())));
+                   ACE_TEXT("failed to ACE_Task::put_next(): \"%m\", continuing\n")));
 
         // clean up
         complete_message->release();
@@ -282,8 +279,11 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
     if (myCurrentMessage == NULL)
     {
       // we really don't know anything
-      // --> use the current buffer as our head...
-      myCurrentMessage = myCurrentBuffer;
+      // if possible, use the current buffer as our head...
+      if (myCurrentBuffer)
+        myCurrentMessage = myCurrentBuffer;
+      else
+        return false; // don't have data --> cannot proceed
     } // end IF
 
     // OK, perhaps we can start interpreting the message header...
@@ -299,38 +299,15 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 
     // OK, we can start interpreting this message...
 
-    // sanity check: do we have enough CONTIGUOUS data ?
-    while (myCurrentMessage->length() < sizeof(RPG_Net_Remote_Comm::MessageHeader))
+    // make sure we have enough CONTIGUOUS data
+    if (!myCurrentMessage->crunchForHeader(sizeof(RPG_Net_Remote_Comm::MessageHeader)))
     {
-      // *sigh*: copy some data from the chain to allow interpretation
-      // of the message header
-      // *WARNING*: for this to work, myCurrentMessage->size() must be
-      // AT LEAST sizeof(RPG_Net_Remote_Comm::MessageHeader)...
-      ACE_Message_Block* source = myCurrentMessage->cont();
-      while (source->length() == 0)
-        source = source->cont();
-      size_t amount = (source->length() > sizeof(RPG_Net_Remote_Comm::MessageHeader) ? sizeof(RPG_Net_Remote_Comm::MessageHeader)
-                                                                                     : source->length());
-      if (myCurrentMessage->copy(source->rd_ptr(),
-                                 amount))
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Message_Block::copy(): \"%s\", aborting\n"),
-                   ACE_OS::strerror(ACE_OS::last_error())));
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Net_Message::crunchForHeader(%u), aborting\n")));
 
-        // clean up
-        myCurrentMessageLength = 0;
-        myCurrentMessage->release();
-        myCurrentMessage = NULL;
-        myCurrentBuffer = NULL;
-
-        // what else can we do ?
-        return false;
-      } // end IF
-
-      // adjust the continuation accordingly...
-      source->rd_ptr(amount);
-    } // end WHILE
+      // what else can we do ?
+      return false;
+    } // end IF
 
     RPG_Net_Remote_Comm::MessageHeader* message_header = ACE_reinterpret_cast(RPG_Net_Remote_Comm::MessageHeader*,
                                                                               myCurrentMessage->rd_ptr());
@@ -393,8 +370,7 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 //                        overlap))
 //     {
 //       ACE_DEBUG((LM_ERROR,
-//                  ACE_TEXT("failed to ACE_Message_Block::copy(): \"%s\", aborting\n"),
-//                  ACE_OS::strerror(ACE_OS::last_error())));
+//                  ACE_TEXT("failed to ACE_Message_Block::copy(): \"%m\", aborting\n")));
 //
 //       // clean up
 //       new_head->release();
@@ -482,8 +458,7 @@ RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatisti
   if (!config)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate RPG_Net_StreamConfig: \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to allocate RPG_Net_StreamConfig: \"%m\", aborting\n")));
 
     return false;
   } // end IF

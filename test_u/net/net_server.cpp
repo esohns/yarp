@@ -397,10 +397,10 @@ init_signalHandling(const std::vector<int>& signals_inout,
   // specify (default) action...
   // --> we don't actually need to keep this around after registration
   ACE_Sig_Action signalAction((ACE_SignalHandler)SIG_DFL, // default action (will be overridden below)...
-                               ACE_Sig_Set(1),            // mask of signals to be blocked when we're servicing
+                              ACE_Sig_Set(1),             // mask of signals to be blocked when we're servicing
                                                           // --> block them all ! (except KILL off course...)
-//                              (SA_RESTART | SA_SIGINFO)); // flags
-                               SA_SIGINFO);               // flags
+                              (SA_RESTART | SA_SIGINFO)); // flags
+//                                SA_SIGINFO);               // flags
 
   // register different signals...
   int sigkey = -1;
@@ -442,9 +442,9 @@ init_signalHandling(const std::vector<int>& signals_inout,
   // specify ignore action...
   // --> we don't actually need to keep this around after registration
   ACE_Sig_Action ignoreAction((ACE_SignalHandler)SIG_IGN, // ignore action...
-                               ACE_Sig_Set(1),            // mask of signals to be blocked when we're servicing
+                              ACE_Sig_Set(1),             // mask of signals to be blocked when we're servicing
                                                           // --> block them all ! (except KILL off course...)
-                               0);                        // flags
+                              (SA_RESTART | SA_SIGINFO)); // flags
   ACE_Sig_Action originalAction;
   ignoreAction.register_action(SIGPIPE, &originalAction);
 

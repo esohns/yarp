@@ -155,7 +155,8 @@ RPG_Net_SocketHandler::open(void* arg_in)
     return -1;
   } // end IF
 
-  // register reading data with reactor --> done by the base class
+  // register reading data with reactor, init/start stream, ...
+  // --> all done by the base class
   if (inherited::open(arg_in))
   {
     ACE_DEBUG((LM_ERROR,
@@ -204,7 +205,7 @@ RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("caught exception in ACE_Task::flush(): \"%m\", continuing\n")));
+                 ACE_TEXT("caught exception in ACE_Task::flush(): \"%m\", continuing\n")));
 
       // *NOTE*: what else can we do ?
     }

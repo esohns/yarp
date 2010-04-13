@@ -146,6 +146,10 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
                  ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", continuing\n"),
                  buf));
     } // end IF
+    ACE_ASSERT(handler);
+    // sanity check
+    if (!handler->isRegistered())
+      handler->abort();
   } // end IF
 
   // ...shutdown ?

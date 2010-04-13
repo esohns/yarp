@@ -302,9 +302,12 @@ RPG_Net_Message::crunchForHeader(const unsigned long& headerSize_in)
   ACE_TRACE(ACE_TEXT("RPG_Net_Message::crunchForHeader"));
 
   // sanity check(s)
-  ACE_ASSERT(length() < headerSize_in);        // something to do ?
   ACE_ASSERT(size() >= headerSize_in);         // enough space ?
   ACE_ASSERT(total_length() >= headerSize_in); // enough data ?
+
+  // anything to do at all ?
+  if (length() >= headerSize_in)
+    return true; // nothing to do...
 
   ACE_Message_Block* source_block = this;
   size_t missing_data = headerSize_in - length();
@@ -362,6 +365,8 @@ RPG_Net_Message::duplicate(void) const
   {
     // *NOTE*: the argument to malloc SHOULDN'T really matter, as this will be
     // a "shallow" copy which just references our data block...
+    // *TODO*: (depending on the allocator) we senselessly allocate a datablock
+    // anyway, only to immediately release it again...
     ACE_NEW_MALLOC_RETURN(nb,
                           ACE_static_cast(RPG_Net_Message*,
                                           message_block_allocator_->malloc(capacity())),

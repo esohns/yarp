@@ -71,7 +71,7 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
   // sanity check
   ACE_ASSERT(myAllocator);
 
-  // step1: start client ping timer and register us at the reactor
+  // step1: register us at the reactor
   // *NOTE*: this is done by the base class !
   // *WARNING*: as soon as this returns, data will start arriving
   // at handle_input() and fill our stream...
@@ -176,7 +176,8 @@ RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
     case -1:
     {
       // connection reset by peer ? --> not an error
-      if (ACE_OS::last_error() != ECONNRESET)
+      if ((ACE_OS::last_error() != ECONNRESET) &&
+          (ACE_OS::last_error() != EPIPE))
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_SOCK_Stream::recv(): \"%m\", returning\n")));
 
