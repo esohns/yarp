@@ -39,7 +39,6 @@ class Stream_MessageBase;
 
 class RPG_Net_Module_ProtocolHandler
  : public Stream_TaskBaseSynch<RPG_Net_SessionMessage>,
-   public RPG_Common_TimerHandler,
    public RPG_Common_ITimer
 {
  public:
@@ -66,7 +65,6 @@ class RPG_Net_Module_ProtocolHandler
 
  private:
   typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage> inherited;
-  typedef RPG_Common_TimerHandler inherited2;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_ProtocolHandler(const RPG_Net_Module_ProtocolHandler&));
@@ -76,7 +74,8 @@ class RPG_Net_Module_ProtocolHandler
   RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
 
   // timer stuff
-  int                     myTimerID;
+  RPG_Common_TimerHandler myClientPingHandler;
+  int                     myClientPingTimerID;
 
   Stream_IAllocator*      myAllocator;
   unsigned long           myCounter;

@@ -24,6 +24,8 @@
 #include "rpg_net_remote_comm.h"
 #include "rpg_net_common_tools.h"
 
+#include <ace/Thread_Manager.h>
+
 RPG_Net_SocketHandler::RPG_Net_SocketHandler()
 //  : inherited()
 {
@@ -36,6 +38,10 @@ RPG_Net_SocketHandler::~RPG_Net_SocketHandler()
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::~RPG_Net_SocketHandler"));
 
   // wait for our worker (if any)
+
+  // *WARNING*: cannot use wait(), as this dtor is invoked by the reactor itself
+  // on ACE_Svc_Handler::destroy() --> apparently, this deadlocks on some
+  // internal (non-recursive) lock...
   wait();
 }
 
@@ -49,7 +55,7 @@ RPG_Net_SocketHandler::svc(void)
   {
     if (myCurrentWriteBuffer == NULL)
     {
-      if (myStream.get(myCurrentWriteBuffer, NULL)) // block
+      if (myStream.get(myCurrentWriteBuffer, NULL) == -1) // block
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_Stream::get(): \"%m\", aborting\n")));
@@ -75,7 +81,8 @@ RPG_Net_SocketHandler::svc(void)
 
     // put some data into the socket...
     bytes_sent = peer_.send(myCurrentWriteBuffer->rd_ptr(),
-                            myCurrentWriteBuffer->length());
+                            myCurrentWriteBuffer->length(),
+                            NULL); // default behavior
     switch (bytes_sent)
     {
       case -1:
@@ -144,27 +151,17 @@ RPG_Net_SocketHandler::open(void* arg_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::open"));
 
-  // *NOTE*: we should have registered/initialized by now...
-  // --> make sure this was successful before we proceed
-  if (!inherited::isRegistered())
-  {
-    // too many connections...
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to register connection (ID: %u), aborting\n"),
-//                getID()));
-
-    // reactor will invoke handle_close()
-    return -1;
-  } // end IF
-
-  // register reading data with reactor, init/start stream, ...
-  // --> all done by the base class
+  // init/start stream, register reading data with reactor...
+  // --> done by the base class
   if (inherited::open(arg_in))
   {
+    // debug info
     ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to inherited::open(): \"%m\", aborting\n")));
+               ACE_TEXT("failed to inherited::open(): \"%m\", aborting\n")));
 
-    // reactor will invoke handle_close()
+    // MOST PROBABLE REASON: too many open connections...
+
+    // reactor will invoke close() --> handle_close()
     return -1;
   } // end IF
 
@@ -183,7 +180,7 @@ RPG_Net_SocketHandler::open(void* arg_in)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to activate(): \"%m\", aborting\n")));
 
-    // reactor will invoke handle_close()
+    // reactor will invoke close() --> handle_close()
     return -1;
   } // end IF
 

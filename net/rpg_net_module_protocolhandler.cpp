@@ -31,9 +31,9 @@
 
 RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler()
  : //inherited(),
-   inherited2(this,   // dispatch ourselves
-              false), // ping client at REGULAR intervals...
-   myTimerID(0),
+   myClientPingHandler(this,   // dispatch ourselves
+                       false), // ping client at REGULAR intervals...
+   myClientPingTimerID(0),
    myAllocator(NULL),
    myCounter(1),
    myAutomaticPong(false), // *NOTE*: the idea really is not to play PONG...
@@ -50,8 +50,8 @@ RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler()
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler"));
 
   // clean up timer if necessary
-  if (myTimerID)
-    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myTimerID);
+  if (myClientPingTimerID)
+    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myClientPingTimerID);
 }
 
 const bool
@@ -71,9 +71,9 @@ RPG_Net_Module_ProtocolHandler::init(Stream_IAllocator* allocator_in,
                ACE_TEXT("re-initializing...\n")));
 
     // reset state
-    if (myTimerID != -1)
-      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myTimerID);
-    myTimerID = 0;
+    if (myClientPingTimerID != -1)
+      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myClientPingTimerID);
+    myClientPingTimerID = 0;
     myAllocator = NULL;
     myCounter = 1;
     myAutomaticPong = false;
@@ -87,11 +87,11 @@ RPG_Net_Module_ProtocolHandler::init(Stream_IAllocator* allocator_in,
   if (clientPingInterval_in)
   {
     // schedule ourselves...
-    ACE_Time_Value interval(clientPingInterval_in, 0);
-    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(*this,
-                                                                      interval,
-                                                                      true,
-                                                                      myTimerID))
+    ACE_Time_Value clientPing_interval(clientPingInterval_in, 0);
+    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(myClientPingHandler,  // handler
+                                                                      clientPing_interval,  // interval
+                                                                      false,                // recurrent
+                                                                      myClientPingTimerID)) // return value: timer ID
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Common_Timer_Manager::scheduleTimer(%u), aborting\n"),

@@ -53,10 +53,10 @@ RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic()
 
   // schedule the second-granularity timer
   ACE_Time_Value second_interval(1, 0); // one second interval
-  if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(myResetTimeoutHandler,
-                                                                    second_interval,
-                                                                    true,
-                                                                    myResetTimeoutHandlerID))
+  if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(myResetTimeoutHandler,    // handler
+                                                                    second_interval,          // interval
+                                                                    false,                    // one-shot ?
+                                                                    myResetTimeoutHandlerID)) // return value: timer ID
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_Timer_Manager::scheduleTimer(%u), aborting\n"),
@@ -118,10 +118,10 @@ RPG_Net_Module_RuntimeStatistic::init(const unsigned long& reportingInterval_in,
   {
     // schedule the reporting interval timer
     ACE_Time_Value reporting_interval(reportingInterval_in, 0);
-    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(myLocalReportingHandler,
-                                                                      reporting_interval,
-                                                                      true,
-                                                                      myLocalReportingHandlerID))
+    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(myLocalReportingHandler,    // handler
+                                                                      reporting_interval,         // interval
+                                                                      false,                      // one-shot ?
+                                                                      myLocalReportingHandlerID)) // return value: timer ID
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Common_Timer_Manager::scheduleTimer(%u), aborting\n"),

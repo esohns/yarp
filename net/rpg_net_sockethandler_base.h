@@ -37,18 +37,20 @@ class RPG_Net_SocketHandlerBase
  public:
   virtual ~RPG_Net_SocketHandlerBase(); // we'll self-destruct !
 
-  // *NOTE*: we overload this to automatically (de-)register ourselves
-  // with the connection manager... this way, we can always keep a consistent
-  // state of currently open connections
-  // *WARNING*: if this returns -1, the caller will still need to
-  // clean "this" up !
+  //check if registration with the connection manager was OK...
   virtual int open(void* = NULL); // args
+    // *WARNING*: the default ACE_Svc_Handler implementation calls
+  // handle_close(), which we DON'T want in the case where we have our own
+  // worker (registered with the reactor, we would get "handle_closed" twice,
+  // leading to some serious mayhem)
+  // *WARNING*: the current algorithm works only for 1 worker !!!
+  virtual int close(ulong = 0); // args
   virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,                        // handle
                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK); // event mask
 
   // implement RPG_Net_IConnection
   virtual void init(const RPG_Net_ConfigPOD&);
-  virtual const bool isRegistered() const;
+//   virtual const bool isRegistered() const;
   virtual void abort();
   virtual const unsigned long getID() const;
 
@@ -60,6 +62,7 @@ class RPG_Net_SocketHandlerBase
   RPG_Net_SocketHandlerBase();
 
   RPG_Net_ConfigPOD myUserData;
+  bool              myIsInitialized;
 
  private:
   typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> inherited;
@@ -68,6 +71,9 @@ class RPG_Net_SocketHandlerBase
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase(const RPG_Net_SocketHandlerBase&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase& operator=(const RPG_Net_SocketHandlerBase&));
 
+  // *NOTE*: we save this so we can de-register even when our "handle"
+  // (getID()) has gone stale...
+  unsigned long     myID;
   bool              myIsRegistered;
 };
 

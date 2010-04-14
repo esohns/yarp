@@ -24,11 +24,11 @@
 #include "rpg_common_itimer.h"
 
 #include <ace/Global_Macros.h>
-// #include <ace/Event_Handler.h>
+#include <ace/Event_Handler.h>
 #include <ace/Time_Value.h>
 
 class RPG_Common_TimerHandler
-//  : public ACE_Event_Handler
+ : public ACE_Event_Handler
 {
  public:
   RPG_Common_TimerHandler(RPG_Common_ITimer*,                // dispatch interface
@@ -40,7 +40,7 @@ class RPG_Common_TimerHandler
                              const void*);          // asynchronous completion token
 
  private:
-//   typedef ACE_Event_Handler inherited;
+  typedef ACE_Event_Handler inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_TimerHandler());

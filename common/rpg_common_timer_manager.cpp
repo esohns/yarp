@@ -30,16 +30,16 @@ RPG_Common_Timer_Manager::RPG_Common_Timer_Manager()
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::RPG_Common_Timer_Manager"));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("activating timer dispatch queue...\n")));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("activating timer dispatch queue...\n")));
 
   // ok: activate timer queue
   if (myTimerQueue.activate() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to activate() timer dispatch queue: \"%m\", continuing\n")));
-  else
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("activating timer dispatch queue...DONE\n")));
+//   else
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("activating timer dispatch queue...DONE\n")));
 }
 
 RPG_Common_Timer_Manager::~RPG_Common_Timer_Manager()
@@ -58,8 +58,8 @@ RPG_Common_Timer_Manager::~RPG_Common_Timer_Manager()
     myTimerQueue.wait();
   } // end lock scope
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("deactivated timers and dispatcher...\n")));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("deactivated timers and dispatcher...\n")));
 }
 
 void
@@ -88,10 +88,10 @@ RPG_Common_Timer_Manager::scheduleTimer(const ACE_Event_Handler& handler_in,
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
     // schedule a new timer
-    timerID_out = myTimerQueue.schedule(&ACE_const_cast(ACE_Event_Handler&, handler_in),
-                                        NULL,
-                                        ACE_OS::gettimeofday () + wakeup_in,
-                                        (!isOneShot_in ? wakeup_in : ACE_Time_Value::zero));
+    timerID_out = myTimerQueue.schedule(&ACE_const_cast(ACE_Event_Handler&, handler_in),     // handler
+                                        NULL,                                                // argument
+                                        ACE_OS::gettimeofday () + wakeup_in,                 // wakeup time
+                                        (!isOneShot_in ? wakeup_in : ACE_Time_Value::zero)); // interval ?
     if (timerID_out == -1)
     {
       ACE_DEBUG((LM_ERROR,
@@ -103,10 +103,12 @@ RPG_Common_Timer_Manager::scheduleTimer(const ACE_Event_Handler& handler_in,
     } // end IF
   } // end lock scope
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("scheduled new %s timer (ID: %u)...\n"),
-             (isOneShot_in ? ACE_TEXT("(regular)") : ACE_TEXT("")),
-             timerID_out));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("scheduled new %s timer (wakeup: %us; ID: %u)...\n"),
+//              (isOneShot_in ? ACE_TEXT("(regular)") : ACE_TEXT("")),
+//              wakeup_in.sec(),
+//              timerID_out));
 
   return true;
 }
@@ -117,12 +119,23 @@ RPG_Common_Timer_Manager::cancelTimer(const int& timerID_in)
   ACE_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::cancelTimer"));
 
   // synch access to timer queue
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-  if (myTimerQueue.cancel(timerID_in) == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to cancel() timer (ID: %u): \"%m\", continuing\n"),
-               timerID_in));
+    if (myTimerQueue.cancel(timerID_in) == -1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to cancel() timer (ID: %u): \"%m\", returning\n"),
+                 timerID_in));
+
+      return;
+    } // end IF
+  } // end lock scope
+
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("cancelled timer (ID: %u)...\n"),
+//              timerID_in));
 }
 
 void

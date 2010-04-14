@@ -20,17 +20,21 @@
 
 #include "rpg_net_sockethandler_base.h"
 
+#include "rpg_net_defines.h"
 #include "rpg_net_connection_manager.h"
+#include "rpg_net_common_tools.h"
 
 #include <ace/OS.h>
 #include <ace/Reactor.h>
+#include <ace/INET_Addr.h>
 
 RPG_Net_SocketHandlerBase::RPG_Net_SocketHandlerBase()
  : inherited(NULL,                     // no specific thread manager
              NULL,                     // no specific message queue
-             ACE_Reactor::instance())//, // default reactor
+             ACE_Reactor::instance()), // default reactor
 //    myUserData(),
-//    myIsRegistered(false)
+   myIsInitialized(false),
+   myIsRegistered(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::RPG_Net_SocketHandlerBase"));
 
@@ -40,9 +44,9 @@ RPG_Net_SocketHandlerBase::RPG_Net_SocketHandlerBase()
                  sizeof(RPG_Net_ConfigPOD));
 
   // (try to) register with the connection manager...
-  // *NOTE*: this SHOULD init() myUserData
+  // *NOTE*: we do it here because we WANT to init() myUserData early...
   // *WARNING*: as we register BEFORE the connection has fully opened, there
-  // may be a small window for races (i.e. problems during shutdown)...
+  // may be a small window for races...
   myIsRegistered = RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->registerConnection(this);
 }
 
@@ -50,6 +54,9 @@ RPG_Net_SocketHandlerBase::~RPG_Net_SocketHandlerBase()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::~RPG_Net_SocketHandlerBase"));
 
+  // (try to) de-register with connection manager
+  if (myIsRegistered)
+    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->deregisterConnection(getID());
 }
 
 int
@@ -57,7 +64,7 @@ RPG_Net_SocketHandlerBase::open(void* arg_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::open"));
 
-  // sanity check
+  // sanity check(s)
   if (!myIsRegistered)
   {
     // too many connections...
@@ -67,10 +74,40 @@ RPG_Net_SocketHandlerBase::open(void* arg_in)
 //                ACE_TEXT("failed to register connection (ID: %u), aborting\n"),
 //                getID()));
 
+    // acceptor/connector will invoke close() --> handle_close()
+    return -1;
+  } // end IF
+  ACE_ASSERT(myIsInitialized);
+
+  // step1: tweak socket
+  if (myUserData.socketBufferSize)
+  {
+    if (!RPG_Net_Common_Tools::setSocketBuffer(get_handle(),
+                                               SO_RCVBUF,
+                                               myUserData.socketBufferSize))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to setSocketBuffer(%u) for %u, aborting\n"),
+                 myUserData.socketBufferSize,
+                 get_handle()));
+
+      // reactor will invoke close() --> handle_close()
+      return -1;
+    } // end IF
+  } // end IF
+  if (!RPG_Net_Common_Tools::setNoDelay(get_handle(),
+                                        RPG_NET_DEF_SOCK_NODELAY))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to setNoDelay(%u, %s), aborting\n"),
+               get_handle(),
+               (RPG_NET_DEF_SOCK_NODELAY ? ACE_TEXT("true") : ACE_TEXT("false"))));
+
+      // reactor will invoke handle_close()
     return -1;
   } // end IF
 
-  // call baseclass...
+  // register with the reactor...
   if (inherited::open(arg_in) == -1)
   {
     ACE_DEBUG((LM_ERROR,
@@ -112,24 +149,92 @@ RPG_Net_SocketHandlerBase::open(void* arg_in)
 }
 
 int
+RPG_Net_SocketHandlerBase::close(u_long arg_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::close"));
+  // [*NOTE*: hereby we override the default behavior of a ACE_Svc_Handler,
+  // which would call handle_close() AGAIN]
+
+  // *NOTE*: this method will be invoked
+  // - by the worker which calls this after returning from svc()
+  //    --> in this case, this should be a NOP (triggered from handle_close(),
+  //        which was invoked by the reactor) - we override the default
+  //        behavior of a ACE_Svc_Handler, which would call handle_close() AGAIN
+  // - by the connector/acceptor when open() fails (e.g. too many connections !)
+  //    --> in this case, we WANT the default behavior (call handle_close())
+  // - by an external thread closing down the connection (see abort())
+  //    --> close the socket !
+
+  switch (arg_in)
+  {
+    // called by:
+    // - any worker from ACE_Task_Base on clean-up
+    // - acceptor/connector if there are too many connections (i.e. open() returned -1)
+    case 0:
+    {
+      // check specifically for the first case...
+      if (ACE_OS::thr_equal(ACE_Thread::self(), last_thread()))
+      {
+//       if (module())
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("\"%s\" worker thread (ID: %t) leaving...\n"),
+//                    ACE_TEXT_ALWAYS_CHAR(name())));
+//       else
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("worker thread (ID: %t) leaving...\n")));
+
+        // don't do anything...
+        break;
+      } // end IF
+
+      // too many connections: invoke inherited default behavior
+      // --> close() --> handle_close() --> ... --> delete "this"
+      return inherited::close();
+    }
+    // called by external thread wanting to close our connection (see abort())
+    case 1:
+    {
+      int result = inherited::peer_.close();
+      if (result == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_SOCK_Stream::close(): \"%m\", returning\n")));
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid argument: %u, returning\n"),
+                 arg_in));
+
+      // what else can we do ?
+      break;
+    }
+  } // end SWITCH
+
+  return 0;
+}
+
+int
 RPG_Net_SocketHandlerBase::handle_close(ACE_HANDLE handle_in,
-                                         ACE_Reactor_Mask mask_in)
+                                        ACE_Reactor_Mask mask_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::handle_close"));
 
-  // de-register with connection manager
-  if (myIsRegistered)
-  {
-    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->deregisterConnection(getID());
+//   // de-register with connection manager
+//   // *NOTE*: we do it here, while our handle is still "valid"...
+//   if (myIsRegistered)
+//   {
+//     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->deregisterConnection(getID());
+//
+//     // remember this...
+//     myIsRegistered = false;
+//   } // end IF
 
-    // remember this...
-    myIsRegistered = false;
-  } // end IF
-
-  // *NOTE*: this is called when:
+  // *NOTE*: called when:
   // - the client closes the socket --> child handle_xxx() returns -1
   // - we reject the connection (too many open)
-  // *NOTE*: this will destroy ourself in an ordered way...
+  // *NOTE*: will delete "this" in an ordered way...
   return inherited::handle_close(handle_in,
                                  mask_in);
 }
@@ -140,15 +245,16 @@ RPG_Net_SocketHandlerBase::init(const RPG_Net_ConfigPOD& userData_in)
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::init"));
 
   myUserData = userData_in;
+  myIsInitialized = true;
 }
 
-const bool
-RPG_Net_SocketHandlerBase::isRegistered() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::isRegistered"));
-
-  return myIsRegistered;
-}
+// const bool
+// RPG_Net_SocketHandlerBase::isRegistered() const
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::isRegistered"));
+//
+//   return myIsRegistered;
+// }
 
 void
 RPG_Net_SocketHandlerBase::abort()
@@ -156,13 +262,11 @@ RPG_Net_SocketHandlerBase::abort()
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::abort"));
 
   // call baseclass - will clean everything (including ourselves !) up
-  // --> invokes handle_close
-  int result = inherited::close(0);
+  // --> triggers handle_close()
+  int result = close(1);
   if (result == -1)
-  {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Svc_Handler::close(0): \"%m\", returning\n")));
-  } // end IF
+               ACE_TEXT("failed to RPG_Net_SocketHandlerBase::close(1): \"%m\", continuing\n")));
 }
 
 const unsigned long

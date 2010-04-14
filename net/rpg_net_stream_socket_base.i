@@ -55,16 +55,14 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
 
   // sanity check
   ACE_ASSERT(arg_in);
-  // *NOTE*: we should have registered/initialized by now...
+  // *NOTE*: we should have initialized by now...
   // --> make sure this was successful before we proceed
-  if (!inherited::isRegistered())
+  if (!myIsInitialized)
   {
-    // too many connections...
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to register connection (ID: %u), aborting\n"),
-//                getID()));
+    // (most probably) too many connections...
+    ACE_OS::last_error(EBUSY);
 
-    // reactor will invoke handle_close()
+    // reactor will invoke close() --> handle_close()
     return -1;
   } // end IF
 
@@ -73,63 +71,14 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
   // sanity check
   ACE_ASSERT(myAllocator);
 
-  // step1: register us at the reactor
-  // *NOTE*: this is done by the base class !
-  // *WARNING*: as soon as this returns, data will start arriving
-  // at handle_input() and fill our stream...
-  int result = inherited::open(arg_in);
-  if (result == -1)
-  {
-    // *NOTE*: this MAY have happened because there are too many
-    // open local connections... --> not an error !
-    if (ACE_OS::last_error() != EBUSY)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to inherited::open(): \"%m\", aborting\n")));
-    } // end IF
-
-    // reactor will invoke handle_close()
-    return -1;
-  } // end IF
-
-  // step2: tweak socket
-  // *NOTE*: need to do this AFTER inherited::open() so that get_handle() works...
-  if (myUserData.socketBufferSize)
-  {
-    if (!RPG_Net_Common_Tools::setSocketBuffer(get_handle(),
-                                               SO_RCVBUF,
-                                               myUserData.socketBufferSize))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to setSocketBuffer(%u) for %u, aborting\n"),
-                 myUserData.socketBufferSize,
-                 get_handle()));
-
-      // reactor will invoke handle_close()
-      return -1;
-    } // end IF
-  } // end IF
-  if (!RPG_Net_Common_Tools::setNoDelay(get_handle(),
-                                        RPG_NET_DEF_SOCK_NODELAY))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to setNoDelay(%u, %s), aborting\n"),
-               get_handle(),
-               (RPG_NET_DEF_SOCK_NODELAY ? ACE_TEXT("true") : ACE_TEXT("false"))));
-
-      // reactor will invoke handle_close()
-    return -1;
-  } // end IF
-
-  // step3: init/start data processing stream
-  // *NOTE*: need to do this AFTER inherited::open() so that get_handle() works...
+  // step1: init/start data processing stream
   myUserData.sessionID = getID(); // (== socket handle)
   if (!myStream.init(myUserData))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init processing stream, aborting\n")));
 
-    // reactor will invoke handle_close()
+    // reactor will invoke close() --> handle_close()
     return -1;
   } // end IF
   myStream.start();
@@ -138,7 +87,28 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to start processing stream, aborting\n")));
 
-    // reactor will invoke handle_close()
+    // reactor will invoke close() --> handle_close()
+    return -1;
+  } // end IF
+
+  // step2: register our handle with the reactor
+  // *NOTE*: --> done by the base class
+  // *WARNING*: as soon as this returns, data MAY start arriving
+  // at handle_input() and fill our stream (even more so on multithreaded
+  // reactors)
+  int result = inherited::open(arg_in);
+  if (result == -1)
+  {
+    // *NOTE*: this MAY have happened because there are too many
+    // open local connections... --> not an error !
+    if (ACE_OS::last_error() != EBUSY)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to inherited::open(): \"%m\", aborting\n")));
+
+    // clean up
+    myStream.stop();
+
+    // reactor will invoke close() --> handle_close()
     return -1;
   } // end IF
 

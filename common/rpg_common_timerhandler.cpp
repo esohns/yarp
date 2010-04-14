@@ -26,8 +26,8 @@
 
 RPG_Common_TimerHandler::RPG_Common_TimerHandler(RPG_Common_ITimer* dispatch_in,
                                                  const bool& isOneShot_in)
- : //inherited(NULL,                            // no reactor
-//              ACE_Event_Handler::LO_PRIORITY), // priority
+ : inherited(NULL,                            // no reactor
+             ACE_Event_Handler::LO_PRIORITY), // priority
    myDispatch(dispatch_in),
    myIsOneShot(isOneShot_in)
 {

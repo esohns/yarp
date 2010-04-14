@@ -49,6 +49,8 @@ class RPG_Net_SocketHandler
 
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler(const RPG_Net_SocketHandler&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler& operator=(const RPG_Net_SocketHandler&));
+
+//   ACE_thread_t myThreadID;
 };
 
 #endif
