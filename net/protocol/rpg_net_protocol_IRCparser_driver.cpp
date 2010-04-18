@@ -39,6 +39,7 @@ RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& t
   myParser.set_debug_level(myTraceParsing);
 
   // reset the current messge
+  myCurrentMessage.command.discriminator(RPG_Net_Protocol_IRCMessage::INVALID);
   reset();
 }
 
@@ -114,7 +115,49 @@ RPG_Net_Protocol_IRCParserDriver::reset()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::reset"));
 
-  ACE_OS::memset(&myMessage,
-                 0,
-                 sizeof(RPG_Net_Protocol_IRCMessage));
+  if (myCurrentMessage.serverName)
+    delete myCurrentMessage.serverName;
+  myCurrentMessage.serverName = NULL;
+  if (myCurrentMessage.user)
+    delete myCurrentMessage.user;
+  myCurrentMessage.user = NULL;
+  if (myCurrentMessage.host)
+    delete myCurrentMessage.host;
+  myCurrentMessage.host = NULL;
+  switch (myCurrentMessage.command.discriminator)
+  {
+    case RPG_Net_Protocol_IRCMessage::STRING:
+    {
+      if (myCurrentMessage.command.string)
+        delete myCurrentMessage.command.string;
+      myCurrentMessage.command.string = NULL;
+      myCurrentMessage.command.discriminator = INVALID;
+
+      break;
+    }
+    case RPG_Net_Protocol_IRCMessage::NUMERIC:
+    {
+      myCurrentMessage.command.numeric = RPG_NET_PROTOCOL_IRC_CODES_INVALID;
+      myCurrentMessage.command.discriminator = INVALID;
+
+      break;
+    }
+    default:
+    {
+      myCurrentMessage.command.string = NULL;
+      myCurrentMessage.command.numeric = RPG_NET_PROTOCOL_IRC_CODES_INVALID;
+      myCurrentMessage.command.discriminator = INVALID;
+
+      break;
+    }
+  } // end SWITCH
+  if (myCurrentMessage.params)
+  {
+    myCurrentMessage.params->clear();
+    delete myCurrentMessage.params;
+    myCurrentMessage.params = NULL;
+  } // end IF
+//   ACE_OS::memset(&myCurrentMessage,
+//                  0,
+//                  sizeof(RPG_Net_Protocol_IRCMessage));
 }

@@ -21,4 +21,15 @@
 #ifndef RPG_NET_PROTOCOL_DEFINES_H
 #define RPG_NET_PROTOCOL_DEFINES_H
 
+// *WARNING*: according to RFC1459, IRC messages SHALL not exceed 512 bytes.
+// In order to entertain the notion that a message could fit inside a single buffer,
+// we provide an extra 2 '\0' "resilience" bytes needed for scanning (flex)
+#define RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE   514
+
+// "\0\0"
+#define RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE 2
+// CRLF = "\r\n"
+#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY        ACE_TEXT_ALWAYS_CHAR("\r\n")
+#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE   ::strlen(RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY);
+
 #endif

@@ -13,7 +13,7 @@ pushd . >/dev/null 2>&1
 
 cd ${HOME}/Projects/RPG/net/protocol/scripts
 # generate a scanner for bisecting IRC messages from the input stream
-/usr/bin/bison --language=C++ --skeleton="lalr1.cc" --debug --locations --no-lines --token-table --defines --verbose --defines=rpg_net_protocol_IRCparser.h --output=rpg_net_protocol_IRCparser.cpp ./IRCparser.ypp
+/usr/bin/bison --language=C++ --skeleton="lalr1.cc" --debug --locations --no-lines --token-table --defines --verbose --defines=rpg_net_protocol_IRCparser.h --output=rpg_net_protocol_IRCparser.cpp ./IRCparser.y
 
 # move the file into our project directory
 mv -f position.hh ./..

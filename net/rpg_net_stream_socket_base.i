@@ -32,6 +32,7 @@ template <typename StreamType>
 RPG_Net_StreamSocketBase<StreamType>::RPG_Net_StreamSocketBase()
  : myCurrentWriteBuffer(NULL),
    myAllocator(NULL),
+   myDefaultBufferSize(RPG_NET_DEF_NETWORK_BUFFER_SIZE),
    myCurrentReadBuffer(NULL)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::RPG_Net_StreamSocketBase"));
@@ -70,6 +71,10 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
   myAllocator = myUserData.messageAllocator;
   // sanity check
   ACE_ASSERT(myAllocator);
+
+  myDefaultBufferSize = myUserData.defaultBufferSize;
+  // sanity check
+  ACE_ASSERT(myDefaultBufferSize);
 
   // step1: init/start data processing stream
   myUserData.sessionID = getID(); // (== socket handle)
@@ -129,12 +134,12 @@ RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
   ACE_ASSERT(myCurrentReadBuffer == NULL);
 
   // read some data from the socket
-  myCurrentReadBuffer = allocateMessage(RPG_NET_DEF_NETWORK_BUFFER_SIZE);
+  myCurrentReadBuffer = allocateMessage(myDefaultBufferSize);
   if (myCurrentReadBuffer == NULL)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to allocateMessage(%u), aborting\n"),
-               RPG_NET_DEF_NETWORK_BUFFER_SIZE));
+               myDefaultBufferSize));
 
     // reactor will invoke handle_close()
     return -1;

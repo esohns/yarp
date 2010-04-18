@@ -56,16 +56,17 @@ struct RPG_Net_RuntimeStatistic
 struct RPG_Net_ConfigPOD
 {
   // ************ connection config data ************
-  unsigned long clientPingInterval; // used by the server...
-  int socketBufferSize;
-  Stream_IAllocator* messageAllocator;
+  unsigned long            clientPingInterval; // used by the server...
+  int                      socketBufferSize;
+  Stream_IAllocator*       messageAllocator;
+  unsigned long            defaultBufferSize;
   // ************ stream config data ************
 //   unsigned long connectionID;
-  unsigned long sessionID; // (== socket handle !)
-  unsigned long statisticsReportingInterval;
+  unsigned long            sessionID; // (== socket handle !)
+  unsigned long            statisticsReportingInterval;
   // ************ runtime data ************
   RPG_Net_RuntimeStatistic currentStatistics;
-  ACE_Time_Value lastCollectionTimestamp;
+  ACE_Time_Value           lastCollectionTimestamp;
 };
 
 #endif

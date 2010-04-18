@@ -30,16 +30,16 @@ struct RPG_Net_Protocol_IRCMessage
 {
   union
   {
-    std::string serverName;
-    std::string nick;
+    std::string* serverName;
+    std::string* nick;
   };
-  std::string user;
-  std::string host;
+  std::string* user;
+  std::string* host;
   struct
   {
     union
     {
-      std::string string;
+      std::string* string;
       RPG_Net_Protocol_IRC_Codes::RFC1459Numeric numeric;
     };
     enum discriminator_t
@@ -50,7 +50,7 @@ struct RPG_Net_Protocol_IRCMessage
     };
     discriminator_t discriminator;
   } command;
-  std::vector<std::string> params;
+  std::vector<std::string>* params;
 };
 
 #endif

@@ -1,10 +1,8 @@
 %{
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
+#include <string>
 #include <stdlib.h>
-#include <limits.h>
 
+#include <ace/OS_Memory.h>
 #include <ace/Log_Msg.h>
 
 #include "rpg_net_protocol_IRCparser.h"
@@ -32,12 +30,12 @@
 
 COLON          ':'
 SPACE          [ ]+
-HOST           [a-zA-Z0-9]+
+HOST           [:alnum:]+
 SERVERNAME     {HOST}
-LETTER         [a-zA-Z]
-NUMBER         [0-9]
-SPECIAL        [-[]\\`^{}]
-NICK           {LETTER}[{LETTER}{NUMBER}{SPECIAL}]*
+LETTER         [:alpha:]
+NUMBER         [:digit:]
+SPECIAL        [-\[\]\\`^{}]
+NICK           {LETTER}({LETTER}|{NUMBER}|{SPECIAL})*
 EXCLAMATION    '!'
 NONWHITE       [(?s:.)]{-}[ \t\0\r\n]
 USER           {NONWHITE}+
@@ -70,12 +68,15 @@ CRLF           \r\n
                              BEGIN(prefix);
                              return token_type(yytext[0]); }
 <prefix>{SERVERNAME}       { yylloc->step();
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext));
                              return token::SERVERNAME_NICK; }
 <prefix>{NICK}             { yylloc->step();
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext));
                              return token::SERVERNAME_NICK; }
 <prefix>{SPACE}            { yylloc->step();
+                             yylval->ival = yyleng;
                              BEGIN(INITIAL);
                              return token::SPACE; }
 <prefix>{EXCLAMATION}      { yylloc->step();
@@ -83,39 +84,44 @@ CRLF           \r\n
                              return token_type(yytext[0]); }
 <user>{USER}               { yylloc->step();
                              BEGIN(prefix);
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext));
                              return token::USER; }
 <prefix>{AT}               { yylloc->step();
                              BEGIN(host);
                              return token_type(yytext[0]); }
 <host>{HOST}               { yylloc->step();
                              BEGIN(prefix);
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext));
                              return token::HOST; }
 {LETTER}+                  { yylloc->step();
                              BEGIN(params);
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext));
                              return token::CMD_STRING; }
 {NUMBER}{3}                { yylloc->step();
                              BEGIN(params);
                              yylval->ival = ::atoi(yytext);
                              return token::CMD_NUMERIC }
 <params>{SPACE}            { yylloc->step();
+                             yylval->ival = yyleng;
                              return token::SPACE; }
 <params>{COLON}            { yylloc->step();
                              BEGIN(trailing);
                              return token_type(yytext[0]); }
 <trailing>{TRAILING_PARAM} { yylloc->step();
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext));
                              return token::PARAM; }
 <params>{PARAM}            { yylloc->step();
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext));
                              return token::PARAM; }
 {CRLF}                     { yylloc->step();
                              return token::END; }
 (?s:.)                     driver.error(*yylloc, ACE_TEXT("invalid character"));
 %%
-
 const bool
 RPG_Net_Protocol_IRCParserDriver::scan_begin(const char* data_in,
                                              const size_t& length_in)
@@ -127,14 +133,15 @@ RPG_Net_Protocol_IRCParserDriver::scan_begin(const char* data_in,
 
   yy_flex_debug = myTraceScanning;
 
-  // create a new buffer state
-  myCurrentState = yy_scan_buffer(data_in, length_in + 2);
+  // create/init a new buffer state
+  // *WARNING*: length_in IS already adjusted for two trailing \0's
+  myCurrentState = yy_scan_buffer(data_in, length_in);
   if (myCurrentState == NULL)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ::yy_scan_buffer(%@, %d), aborting\n"),
                data_in,
-               (length_in + 2)));
+               (length_in)));
 
     return false;
   } // end IF

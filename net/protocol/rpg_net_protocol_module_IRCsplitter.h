@@ -21,6 +21,8 @@
 #ifndef RPG_NET_PROTOCOL_MODULE_IRCSPLITTER_H
 #define RPG_NET_PROTOCOL_MODULE_IRCSPLITTER_H
 
+#include "rpg_net_protocol_IRCbisect.h"
+
 #include <rpg_net_common.h>
 #include <rpg_net_stream_config.h>
 #include <rpg_net_sessionmessage.h>
@@ -50,10 +52,12 @@ class RPG_Net_Protocol_Module_IRCSplitter
   virtual ~RPG_Net_Protocol_Module_IRCSplitter();
 
   // configuration / initialization
-  const bool init(Stream_IAllocator*,        // message allocator
-//                   const unsigned long&,      // connection ID
-                  const unsigned long& = 0); // statistics collecting interval (second(s))
-                                             // 0 --> DON'T collect statistics
+  const bool init(// *** base class initializers ***
+                  Stream_IAllocator*,        // message allocator
+                  // *** base class initializers END ***
+                  const unsigned long& = 0, // statistics collecting interval (second(s))
+                                            // 0 --> DON'T collect statistics
+                  const bool& = false);     // trace scanning ?
 
   // user interface
   // info
@@ -88,6 +92,10 @@ class RPG_Net_Protocol_Module_IRCSplitter
   const bool bisectMessages(RPG_Net_Message*&); // return value: complete message (chain)
   const bool putStatisticsMessage(const RPG_Net_RuntimeStatistic&, // statistics info
                                   const ACE_Time_Value&) const;    // statistics generation time
+  // helper methods (to drive the scanner)
+  void scan_begin(const char*,    // base address
+                  const size_t&); // length of data block
+  void scan_end();
 
   bool                  myIsInitialized;
   unsigned long         mySessionID;
@@ -96,10 +104,17 @@ class RPG_Net_Protocol_Module_IRCSplitter
   STATISTICHANDLER_TYPE myStatCollectHandler;
   int                   myStatCollectHandlerID;
 
-  // protocol stuff
-  unsigned long         myCurrentMessageLength;
+  // scanner
+  bool                  myTraceScanning;
+  yyscan_t              myScanner;
+//   IRCBisectFlexLexer    myScanner;
+  unsigned long         myCurrentNumMessages;
+  YY_BUFFER_STATE       myCurrentState;
+  // message buffers
   RPG_Net_Message*      myCurrentMessage;
   RPG_Net_Message*      myCurrentBuffer;
+  unsigned long         myCurrentMessageLength;
+  bool                  myCurrentBufferIsResized;
 };
 
 // declare module

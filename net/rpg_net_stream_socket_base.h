@@ -68,6 +68,7 @@ class RPG_Net_StreamSocketBase
   RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
 
   Stream_IAllocator* myAllocator; // message allocator
+  unsigned long      myDefaultBufferSize;
   RPG_Net_Message*   myCurrentReadBuffer;
 };
 

@@ -436,6 +436,7 @@ do_work(const std::string& serverHostname_in,
   config.clientPingInterval = 0; // servers do this...
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
+  config.defaultBufferSize = RPG_NET_DEF_NETWORK_BUFFER_SIZE;
   config.statisticsReportingInterval = 0; // == off
 
   // step2b: init connection manager

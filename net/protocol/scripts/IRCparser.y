@@ -6,6 +6,7 @@
 
 %code requires {
 class RPG_Net_Protocol_IRCParserDriver;
+#include <string>
 }
 
 // The parsing context.
@@ -21,25 +22,24 @@ class RPG_Net_Protocol_IRCParserDriver;
 // Symbols.
 %union
 {
-  int   ival;
-  char* sval;
+  int          ival;
+  std::string* sval;
 };
 
 %code {
 #include "rpg_net_protocol_IRCparser_driver.h"
 #include <ace/Log_Msg.h>
-#include <string>
 }
 
-%token <sval> SPACE           "space"
+%token <ival> SPACE           "space"
 %token <sval> SERVERNAME_NICK "servername_nick"
 %token <sval> USER            "user"
 %token <sval> HOST            "host"
 %token <sval> CMD_STRING      "cmd_string"
 %token <ival> CMD_NUMERIC     "cmd_numeric"
 %token <sval> PARAM           "param"
-%token <sval> END 0           "end of message"
-%type  <sval> prefix extended_prefix command params params_body
+%token        END 0           "end of message"
+/* %type  <sval> prefix extended_prefix command params params_body */
 
 %printer    { debug_stream() << *$$; } <sval>
 %destructor { delete $$; } <sval>
@@ -57,11 +57,16 @@ command:          "cmd_string"                                  { driver.myCurre
                   | "cmd_numeric"                               { driver.myCurrentMessage.command.numeric = RPG_Net_Protocol_IRC_Codes::RFC1459Numeric($1);
                                                                   driver.myCurrentMessage.command.discriminator = RPG_Net_Protocol_IRCMessage::NUMERIC; };
 params:           /* empty */
-                  | "space" params_body                         {};
+                  | "space" params_body                         { if (myCurrentMessage.params == NULL)
+                                                                    ACE_NEW_NORETURN(myCurrentMessage.params,
+                                                                                     std::vector<std::string>());
+                                                                  ACE_ASSERT(myCurrentMessage.params);
+                                                                };
 params_body:      /* empty */
-                  | ':' "param"                                 { driver.myCurrentMessage.params.push_back(std::string($2)); };
-                  | "param" params                              { driver.myCurrentMessage.params.push_back(std::string($1));
-                                                                  $$ = $2; };
+                  | ':' "param"                                 { ACE_ASSERT(myCurrentMessage.params);
+                                                                  driver.myCurrentMessage.params->push_back(*$2); delete $2; };
+                  | "param" params                              { ACE_ASSERT(myCurrentMessage.params);
+                                                                  driver.myCurrentMessage.params->push_back(*$1); delete $1; };
 %%
 void
 IRCParse::RPG_Net_Protocol_IRCParser::error(const location_type& location_in,

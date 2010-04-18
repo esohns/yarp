@@ -50,7 +50,6 @@
 
 #include "rpg_net_protocol_IRCparser_driver.h"
 #include <ace/Log_Msg.h>
-#include <string>
 
 
 
@@ -188,14 +187,9 @@ namespace IRCParse {
     YYUSE (yyvaluep);
     switch (yytype)
       {
-        case 0: /* "\"end of message\"" */
+        case 3: /* "\"space\"" */
 
-	{ debug_stream() << *(yyvaluep->sval); };
-
-	break;
-      case 3: /* "\"space\"" */
-
-	{ debug_stream() << *(yyvaluep->sval); };
+	{ debug_stream() << (yyvaluep->ival); };
 
 	break;
       case 4: /* "\"servername_nick\"" */
@@ -224,31 +218,6 @@ namespace IRCParse {
 
 	break;
       case 9: /* "\"param\"" */
-
-	{ debug_stream() << *(yyvaluep->sval); };
-
-	break;
-      case 15: /* "prefix" */
-
-	{ debug_stream() << *(yyvaluep->sval); };
-
-	break;
-      case 16: /* "extended_prefix" */
-
-	{ debug_stream() << *(yyvaluep->sval); };
-
-	break;
-      case 17: /* "command" */
-
-	{ debug_stream() << *(yyvaluep->sval); };
-
-	break;
-      case 18: /* "params" */
-
-	{ debug_stream() << *(yyvaluep->sval); };
-
-	break;
-      case 19: /* "params_body" */
 
 	{ debug_stream() << *(yyvaluep->sval); };
 
@@ -283,17 +252,7 @@ namespace IRCParse {
 
     switch (yytype)
       {
-        case 0: /* "\"end of message\"" */
-
-	{ delete (yyvaluep->sval); };
-
-	break;
-      case 3: /* "\"space\"" */
-
-	{ delete (yyvaluep->sval); };
-
-	break;
-      case 4: /* "\"servername_nick\"" */
+        case 4: /* "\"servername_nick\"" */
 
 	{ delete (yyvaluep->sval); };
 
@@ -314,31 +273,6 @@ namespace IRCParse {
 
 	break;
       case 9: /* "\"param\"" */
-
-	{ delete (yyvaluep->sval); };
-
-	break;
-      case 15: /* "prefix" */
-
-	{ delete (yyvaluep->sval); };
-
-	break;
-      case 16: /* "extended_prefix" */
-
-	{ delete (yyvaluep->sval); };
-
-	break;
-      case 17: /* "command" */
-
-	{ delete (yyvaluep->sval); };
-
-	break;
-      case 18: /* "params" */
-
-	{ delete (yyvaluep->sval); };
-
-	break;
-      case 19: /* "params_body" */
 
 	{ delete (yyvaluep->sval); };
 
@@ -573,18 +507,23 @@ namespace IRCParse {
 
   case 10:
 
-    {}
+    { if (myCurrentMessage.params == NULL)
+                                                                    ACE_NEW_NORETURN(myCurrentMessage.params,
+                                                                                     std::vector<std::string>());
+                                                                  ACE_ASSERT(myCurrentMessage.params);
+                                                                }
     break;
 
   case 12:
 
-    { driver.myCurrentMessage.params.push_back(std::string((yysemantic_stack_[(2) - (2)].sval))); }
+    { ACE_ASSERT(myCurrentMessage.params);
+                                                                  driver.myCurrentMessage.params->push_back(*(yysemantic_stack_[(2) - (2)].sval)); delete (yysemantic_stack_[(2) - (2)].sval); }
     break;
 
   case 13:
 
-    { driver.myCurrentMessage.params.push_back(std::string((yysemantic_stack_[(2) - (1)].sval)));
-                                                                  (yyval.sval) = (yysemantic_stack_[(2) - (2)].sval); }
+    { ACE_ASSERT(myCurrentMessage.params);
+                                                                  driver.myCurrentMessage.params->push_back(*(yysemantic_stack_[(2) - (1)].sval)); delete (yysemantic_stack_[(2) - (1)].sval); }
     break;
 
 
@@ -922,7 +861,7 @@ namespace IRCParse {
   RPG_Net_Protocol_IRCParser::yyrline_[] =
   {
          0,    50,    50,    51,    52,    53,    54,    55,    57,    59,
-      60,    61,    62,    63
+      60,    65,    66,    68
   };
 
   // Print the state stack on the debug stream.

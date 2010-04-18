@@ -41,6 +41,7 @@
 
 
 class RPG_Net_Protocol_IRCParserDriver;
+#include <string>
 
 
 
@@ -115,8 +116,8 @@ namespace IRCParse {
     {
 
 
-  int   ival;
-  char* sval;
+  int          ival;
+  std::string* sval;
 
 
 
