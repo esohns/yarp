@@ -21,6 +21,7 @@
 #include "rpg_net_protocol_module_IRCsplitter.h"
 
 #include "rpg_net_protocol_defines.h"
+#include "rpg_net_protocol_IRCbisect.h"
 
 #include <rpg_net_message.h>
 
@@ -38,7 +39,7 @@ RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter()
    myTraceScanning(false),
 //    myScanner(NULL,  // no default input stream
 //              NULL), // no default output stream
-   myScanner(NULL),
+   myScannerContext(NULL),
    myCurrentNumMessages(0),
    myCurrentState(NULL),
    myCurrentMessage(NULL),
@@ -59,8 +60,8 @@ RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter()
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myStatCollectHandlerID);
 
   // fini scanner context
-  if (myScanner)
-    yy_destroy(myScanner);
+  if (myScannerContext)
+    yy_destroy(myScannerContext);
 
   // clean up any unprocessed (chained) buffer(s)
   if (myCurrentMessage)
@@ -91,9 +92,9 @@ RPG_Net_Protocol_Module_IRCSplitter::init(Stream_IAllocator* allocator_in,
     myTraceScanning = false;
     // *TODO*: use yyrestart() ?
     // fini scanner context
-    if (myScanner)
-      yy_destroy(myScanner);
-    myScanner = NULL;
+    if (myScannerContext)
+      yy_destroy(myScannerContext);
+    myScannerContext = NULL;
     myCurrentNumMessages = 0;
     if (myCurrentState)
       yy_delete_buffer(myCurrentState);
@@ -137,10 +138,10 @@ RPG_Net_Protocol_Module_IRCSplitter::init(Stream_IAllocator* allocator_in,
 
   // init scanner context
   if (yy_init_extra(&myCurrentNumMessages, // extra data
-                    &myScanner))           // scanner context handle
+                    &myScannerContext))    // scanner context handle
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to yy_init(): \"%m\", aborting\n")));
+               ACE_TEXT("failed to yy_init_extra(): \"%m\", aborting\n")));
 
     // clean up
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myStatCollectHandlerID);
@@ -260,8 +261,8 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(Stream_MessageBase*& mess
 //        i < RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE;
 //        i++)
 //     *(myCurrentBuffer->wr_ptr() + i) = YY_END_OF_BUFFER_CHAR;
-  *(myCurrentBuffer->wr_ptr()) = YY_END_OF_BUFFER_CHAR;
-  *(myCurrentBuffer->wr_ptr() + 1) = YY_END_OF_BUFFER_CHAR;
+  *(myCurrentBuffer->wr_ptr()) = '\0';
+  *(myCurrentBuffer->wr_ptr() + 1) = '\0';
 
   if (!scan_begin(myCurrentBuffer->rd_ptr(),
                   myCurrentBuffer->length() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
@@ -290,7 +291,7 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(Stream_MessageBase*& mess
 //   while (myCurrentMessageLength = myScanner.yylex())
   do
   {
-    myCurrentMessageLength = yylex(myScanner);
+    myCurrentMessageLength = yylex(myScannerContext);
     switch (myCurrentMessageLength)
     {
 //       case -1:

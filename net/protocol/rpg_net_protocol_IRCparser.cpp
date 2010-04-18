@@ -32,8 +32,6 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-// Take the name prefix into account.
-#define yylex   IRCParselex
 
 /* First part of user declarations.  */
 
@@ -116,7 +114,7 @@ do {					\
 
 
 
-namespace IRCParse {
+namespace yy {
 
 #if YYERROR_VERBOSE
 
@@ -160,13 +158,14 @@ namespace IRCParse {
 #endif
 
   /// Build a parser object.
-  RPG_Net_Protocol_IRCParser::RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg)
+  RPG_Net_Protocol_IRCParser::RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg, yyscan_t& context_yyarg)
     :
 #if YYDEBUG
       yydebug_ (false),
       yycdebug_ (&std::cerr),
 #endif
-      driver (driver_yyarg)
+      driver (driver_yyarg),
+      context (context_yyarg)
   {
   }
 
@@ -392,7 +391,7 @@ namespace IRCParse {
     if (yychar == yyempty_)
       {
 	YYCDEBUG << "Reading a token: ";
-	yychar = yylex (&yylval, &yylloc, driver);
+	yychar = yylex (&yylval, &yylloc, driver, context);
       }
 
 
@@ -496,33 +495,33 @@ namespace IRCParse {
   case 7:
 
     { driver.myCurrentMessage.command.string = (yysemantic_stack_[(1) - (1)].sval);
-                                                                  driver.myCurrentMessage.command.discriminator = RPG_Net_Protocol_IRCMessage::STRING; }
+                                                                  driver.myCurrentMessage.command.discriminator = RPG_Net_Protocol_IRCMessageCommand::STRING; }
     break;
 
   case 8:
 
     { driver.myCurrentMessage.command.numeric = RPG_Net_Protocol_IRC_Codes::RFC1459Numeric((yysemantic_stack_[(1) - (1)].ival));
-                                                                  driver.myCurrentMessage.command.discriminator = RPG_Net_Protocol_IRCMessage::NUMERIC; }
+                                                                  driver.myCurrentMessage.command.discriminator = RPG_Net_Protocol_IRCMessageCommand::NUMERIC; }
     break;
 
   case 10:
 
-    { if (myCurrentMessage.params == NULL)
-                                                                    ACE_NEW_NORETURN(myCurrentMessage.params,
+    { if (driver.myCurrentMessage.params == NULL)
+                                                                    ACE_NEW_NORETURN(driver.myCurrentMessage.params,
                                                                                      std::vector<std::string>());
-                                                                  ACE_ASSERT(myCurrentMessage.params);
+                                                                  ACE_ASSERT(driver.myCurrentMessage.params);
                                                                 }
     break;
 
   case 12:
 
-    { ACE_ASSERT(myCurrentMessage.params);
+    { ACE_ASSERT(driver.myCurrentMessage.params);
                                                                   driver.myCurrentMessage.params->push_back(*(yysemantic_stack_[(2) - (2)].sval)); delete (yysemantic_stack_[(2) - (2)].sval); }
     break;
 
   case 13:
 
-    { ACE_ASSERT(myCurrentMessage.params);
+    { ACE_ASSERT(driver.myCurrentMessage.params);
                                                                   driver.myCurrentMessage.params->push_back(*(yysemantic_stack_[(2) - (1)].sval)); delete (yysemantic_stack_[(2) - (1)].sval); }
     break;
 
@@ -860,8 +859,8 @@ namespace IRCParse {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyrline_[] =
   {
-         0,    50,    50,    51,    52,    53,    54,    55,    57,    59,
-      60,    65,    66,    68
+         0,    53,    53,    54,    55,    56,    57,    58,    60,    62,
+      63,    68,    69,    71
   };
 
   // Print the state stack on the debug stream.
@@ -949,14 +948,15 @@ namespace IRCParse {
 
 
 
-} // IRCParse
+} // yy
+
 
 
 
 
 void
-IRCParse::RPG_Net_Protocol_IRCParser::error(const location_type& location_in,
-                                            const std::string& message_in)
+yy::RPG_Net_Protocol_IRCParser::error(const location_type& location_in,
+                                      const std::string& message_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParser::error"));
 

@@ -41,6 +41,7 @@
 
 
 class RPG_Net_Protocol_IRCParserDriver;
+typedef void* yyscan_t;
 #include <string>
 
 
@@ -53,13 +54,13 @@ class RPG_Net_Protocol_IRCParserDriver;
 
 
 
-namespace IRCParse {
+namespace yy {
 
   class position;
   class location;
 
 
-} // IRCParse
+} // yy
 
 
 #include "location.hh"
@@ -103,7 +104,7 @@ do {							\
 
 
 
-namespace IRCParse {
+namespace yy {
 
 
   /// A Bison parser.
@@ -147,7 +148,7 @@ namespace IRCParse {
     typedef token::yytokentype token_type;
 
     /// Build a parser object.
-    RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg);
+    RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg, yyscan_t& context_yyarg);
     virtual ~RPG_Net_Protocol_IRCParser ();
 
     /// Parse.
@@ -308,10 +309,11 @@ namespace IRCParse {
 
     /* User arguments.  */
     RPG_Net_Protocol_IRCParserDriver& driver;
+    yyscan_t& context;
   };
 
 
-} // IRCParse
+} // yy
 
 
 

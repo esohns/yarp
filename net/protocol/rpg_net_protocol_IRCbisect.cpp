@@ -193,7 +193,7 @@ typedef void* yyscan_t;
 #define YY_STATE_EOF(state) (YY_END_OF_BUFFER + state + 1)
 
 /* Special action meaning "start processing a new file". */
-#define YY_NEW_FILE IRCBisectrestart(yyin ,yyscanner )
+#define YY_NEW_FILE yyrestart(yyin ,yyscanner )
 
 #define YY_END_OF_BUFFER_CHAR 0
 
@@ -225,7 +225,7 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 
     /* Note: We specifically omit the test for yy_rule_can_match_eol because it requires
      *       access to the local variable yy_act. Since yyless() is a macro, it would break
-     *       existing scanners that call yyless() from OUTSIDE IRCBisectlex. 
+     *       existing scanners that call yyless() from OUTSIDE yylex. 
      *       One obvious solution it to make yy_act a global. I tried that, and saw
      *       a 5% performance hit in a non-yylineno scanner, because yy_act is
      *       normally declared as a register variable-- so it is not worth it.
@@ -321,7 +321,7 @@ struct yy_buffer_state
 	 * possible backing-up.
 	 *
 	 * When we actually see the EOF, we change the status to "new"
-	 * (via IRCBisectrestart()), so that the user can continue scanning by
+	 * (via yyrestart()), so that the user can continue scanning by
 	 * just pointing yyin at a new input file.
 	 */
 #define YY_BUFFER_EOF_PENDING 2
@@ -362,38 +362,38 @@ struct yy_buffer_state
 
 /* %endif */
 
-void IRCBisectrestart (FILE *input_file ,yyscan_t yyscanner );
-void IRCBisect_switch_to_buffer (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-YY_BUFFER_STATE IRCBisect_create_buffer (FILE *file,int size ,yyscan_t yyscanner );
-void IRCBisect_delete_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void IRCBisect_flush_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void IRCBisectpush_buffer_state (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-void IRCBisectpop_buffer_state (yyscan_t yyscanner );
+void yyrestart (FILE *input_file ,yyscan_t yyscanner );
+void yy_switch_to_buffer (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
+YY_BUFFER_STATE yy_create_buffer (FILE *file,int size ,yyscan_t yyscanner );
+void yy_delete_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
+void yy_flush_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
+void yypush_buffer_state (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
+void yypop_buffer_state (yyscan_t yyscanner );
 
-static void IRCBisectensure_buffer_stack (yyscan_t yyscanner );
-static void IRCBisect_load_buffer_state (yyscan_t yyscanner );
-static void IRCBisect_init_buffer (YY_BUFFER_STATE b,FILE *file ,yyscan_t yyscanner );
+static void yyensure_buffer_stack (yyscan_t yyscanner );
+static void yy_load_buffer_state (yyscan_t yyscanner );
+static void yy_init_buffer (YY_BUFFER_STATE b,FILE *file ,yyscan_t yyscanner );
 
-#define YY_FLUSH_BUFFER IRCBisect_flush_buffer(YY_CURRENT_BUFFER ,yyscanner)
+#define YY_FLUSH_BUFFER yy_flush_buffer(YY_CURRENT_BUFFER ,yyscanner)
 
-YY_BUFFER_STATE IRCBisect_scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
-YY_BUFFER_STATE IRCBisect_scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
-YY_BUFFER_STATE IRCBisect_scan_bytes (yyconst char *bytes,int len ,yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_bytes (yyconst char *bytes,int len ,yyscan_t yyscanner );
 
 /* %endif */
 
-void *IRCBisectalloc (yy_size_t ,yyscan_t yyscanner );
-void *IRCBisectrealloc (void *,yy_size_t ,yyscan_t yyscanner );
-void IRCBisectfree (void * ,yyscan_t yyscanner );
+void *yyalloc (yy_size_t ,yyscan_t yyscanner );
+void *yyrealloc (void *,yy_size_t ,yyscan_t yyscanner );
+void yyfree (void * ,yyscan_t yyscanner );
 
-#define yy_new_buffer IRCBisect_create_buffer
+#define yy_new_buffer yy_create_buffer
 
 #define yy_set_interactive(is_interactive) \
 	{ \
 	if ( ! YY_CURRENT_BUFFER ){ \
-        IRCBisectensure_buffer_stack (yyscanner); \
+        yyensure_buffer_stack (yyscanner); \
 		YY_CURRENT_BUFFER_LVALUE =    \
-            IRCBisect_create_buffer(yyin,YY_BUF_SIZE ,yyscanner); \
+            yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner); \
 	} \
 	YY_CURRENT_BUFFER_LVALUE->yy_is_interactive = is_interactive; \
 	}
@@ -401,9 +401,9 @@ void IRCBisectfree (void * ,yyscan_t yyscanner );
 #define yy_set_bol(at_bol) \
 	{ \
 	if ( ! YY_CURRENT_BUFFER ){\
-        IRCBisectensure_buffer_stack (yyscanner); \
+        yyensure_buffer_stack (yyscanner); \
 		YY_CURRENT_BUFFER_LVALUE =    \
-            IRCBisect_create_buffer(yyin,YY_BUF_SIZE ,yyscanner); \
+            yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner); \
 	} \
 	YY_CURRENT_BUFFER_LVALUE->yy_at_bol = at_bol; \
 	}
@@ -413,7 +413,7 @@ void IRCBisectfree (void * ,yyscan_t yyscanner );
 /* %% [1.0] yytext/yyin/yyout/yy_state_type/yylineno etc. def's & init go here */
 /* Begin user sect3 */
 
-#define IRCBisectwrap(n) 1
+#define yywrap(n) 1
 #define YY_SKIP_YYWRAP
 
 #define FLEX_DEBUG
@@ -458,9 +458,9 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    7,    6,    6,    6,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
-        6,    6,    6,    6,    6,    6,    6,    6,    6,    7,
 
         8,    8,    6,    6,    6,    6,    8,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    6,    8,    6,
@@ -490,9 +490,9 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    7,    6,    6,    6,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
-        6,    6,    6,    6,    6,    6,    6,    6,    6,    7,
         8,    8,    6,    6,    6,    6,    8,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    6,    8,    6,
         6,    6,    6,    8,    6,    6,    6,    6,    6,    6,
@@ -521,10 +521,10 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,    6,    6,    6,    6,    6,    6,    6,    6,    6,
-        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    9,    6,    6,    6,    6,    6,    6,
 
         6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
-        6,    6,    6,    6,    6,    6,    6,    6,    6,    9,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
@@ -553,9 +553,9 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    9,    6,    6,    6,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
-        6,    6,    6,    6,    6,    6,    6,    6,    6,    9,
         6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
 
@@ -648,7 +648,7 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   10,   -7,   -7,   -7,   -7,   -7,   -7,
+       10,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
        -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
        -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
        -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
@@ -679,10 +679,10 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
+       -8,   -8,   -8,   11,   -8,   -8,   -8,   -8,   -8,   -8,
 
        -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   11,
+       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
        12,   12,   -8,   -8,   -8,   -8,   12,   -8,   -8,   -8,
        -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   12,   -8,
        -8,   -8,   -8,   12,   -8,   -8,   -8,   -8,   -8,   -8,
@@ -711,7 +711,7 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   13,   -9,   -9,   -9,   -9,   -9,   -9,
+       13,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
        -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
        -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
        -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
@@ -745,7 +745,7 @@ static yyconst flex_int16_t yy_nxt[][256] =
         5,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
       -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
       -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,   14,
+      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
       -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
       -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
       -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
@@ -774,7 +774,7 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,   10,  -11,  -11,  -11,  -11,  -11,  -11,
+       10,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
       -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
       -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
 
@@ -806,9 +806,9 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
+      -12,  -12,  -12,   11,  -12,  -12,  -12,  -12,  -12,  -12,
       -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
       -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,   11,
        12,   12,  -12,  -12,  -12,  -12,   12,  -12,  -12,  -12,
       -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,   12,  -12,
       -12,  -12,  -12,   12,  -12,  -12,  -12,  -12,  -12,  -12,
@@ -840,7 +840,7 @@ static yyconst flex_int16_t yy_nxt[][256] =
       -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
 
       -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,   15,
+      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
       -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
       -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
       -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
@@ -867,259 +867,6 @@ static yyconst flex_int16_t yy_nxt[][256] =
       -13,  -13,  -13,  -13,  -13,  -13
     },
 
-    {
-        5,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,   16,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14
-
-    },
-
-    {
-        5,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,   17,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15
-    },
-
-    {
-        5,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-       18,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-
-      -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,  -16,
-      -16,  -16,  -16,  -16,  -16,  -16
-    },
-
-    {
-        5,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-       19,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,  -17,
-      -17,  -17,  -17,  -17,  -17,  -17
-    },
-
-    {
-        5,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,   20,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,  -18,
-      -18,  -18,  -18,  -18,  -18,  -18
-    },
-
-    {
-        5,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,   21,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  -19,
-      -19,  -19,  -19,  -19,  -19,  -19
-
-    },
-
-    {
-        5,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,
-      -20,  -20,  -20,  -20,  -20,  -20
-    },
-
-    {
-        5,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-
-      -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,  -21,
-      -21,  -21,  -21,  -21,  -21,  -21
-    },
-
     } ;
 
 /* %if-c-only Standard (non-C++) definition */
@@ -1144,8 +891,8 @@ static void yy_fatal_error (yyconst char msg[] ,yyscan_t yyscanner );
 	yyg->yy_c_buf_p = yy_cp;
 
 /* %% [4.0] data tables for the DFA and the user's section 1 definitions go here */
-#define YY_NUM_RULES 3
-#define YY_END_OF_BUFFER 4
+#define YY_NUM_RULES 4
+#define YY_END_OF_BUFFER 5
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -1153,28 +900,26 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[22] =
+static yyconst flex_int16_t yy_accept[14] =
     {   0,
-        0,    0,    0,    0,    4,    3,    3,    3,    3,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    1,
-        2
+        0,    0,    0,    0,    5,    3,    3,    3,    3,    1,
+        0,    0,    2
     } ;
 
 /* Table of booleans, true if rule could match eol. */
-static yyconst flex_int32_t yy_rule_can_match_eol[4] =
+static yyconst flex_int32_t yy_rule_can_match_eol[5] =
     {   0,
-1, 1, 0,     };
+1, 1, 0, 0,     };
 
-static yyconst yy_state_type yy_NUL_trans[22] =
+static yyconst yy_state_type yy_NUL_trans[14] =
     {   0,
         6,    6,    6,    6,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0
+        0,    0,    0
     } ;
 
-static yyconst flex_int16_t yy_rule_linenum[3] =
+static yyconst flex_int16_t yy_rule_linenum[4] =
     {   0,
-       35,   38
+       25,   28,   30
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -1184,26 +929,16 @@ static yyconst flex_int16_t yy_rule_linenum[3] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
+#include <stdio.h>
 #include <string>
 
 #include <ace/Log_Msg.h>
 
 #include "rpg_net_protocol_module_IRCsplitter.h"
-
-/* Work around an incompatibility in flex (at least versions
-   2.5.31 through 2.5.33): it generates code that does
-   not conform to C89.  See Debian bug 333231
-   <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=333231>.  */
-#undef IRCBisectwrap
-#define IRCBisectwrap() 1
-
-/* By default IRCBisectlex returns int, we use token_type.
-   Unfortunately yyterminate by default returns 0, which is
-   not of token_type.  */
-#define yyterminate() return token::END
 #define YY_NO_UNISTD_H 1
-/* %option c++ outfile="rpg_net_protocol_IRCbisect.cpp" */
+/* %option c++ outfile="rpg_net_protocol_IRCbisect.cpp" prefix="IRCBisect" */
 /* %option   outfile="RPG_Net_Protocol_IRCScanner.cpp" header-file="RPG_Net_Protocol_IRCScanner.h" */
+/* %option bison-bridge bison-locations stack */
 
 #define INITIAL 0
 #define end_of_message 1
@@ -1257,10 +992,6 @@ struct yyguts_t
     int yy_more_flag;
     int yy_more_len;
 
-    YYSTYPE * yylval_r;
-
-    YYLTYPE * yylloc_r;
-
     }; /* end struct yyguts_t */
 
 /* %if-c-only */
@@ -1271,15 +1002,9 @@ static int yy_init_globals (yyscan_t yyscanner );
 
 /* %if-reentrant */
 
-    /* This must go here because YYSTYPE and YYLTYPE are included
-     * from bison output in section 1.*/
-    #    define yylval yyg->yylval_r
-    
-    #    define yylloc yyg->yylloc_r
-    
-int IRCBisectlex_init (yyscan_t* scanner);
+int yylex_init (yyscan_t* scanner);
 
-int IRCBisectlex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
+int yylex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
 
 /* %endif */
 
@@ -1288,42 +1013,33 @@ int IRCBisectlex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
 /* Accessor methods to globals.
    These are made visible to non-reentrant scanners for convenience. */
 
-int IRCBisectlex_destroy (yyscan_t yyscanner );
+int yylex_destroy (yyscan_t yyscanner );
 
-int IRCBisectget_debug (yyscan_t yyscanner );
+int yyget_debug (yyscan_t yyscanner );
 
-void IRCBisectset_debug (int debug_flag ,yyscan_t yyscanner );
+void yyset_debug (int debug_flag ,yyscan_t yyscanner );
 
-YY_EXTRA_TYPE IRCBisectget_extra (yyscan_t yyscanner );
+YY_EXTRA_TYPE yyget_extra (yyscan_t yyscanner );
 
-void IRCBisectset_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
+void yyset_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
 
-FILE *IRCBisectget_in (yyscan_t yyscanner );
+FILE *yyget_in (yyscan_t yyscanner );
 
-void IRCBisectset_in  (FILE * in_str ,yyscan_t yyscanner );
+void yyset_in  (FILE * in_str ,yyscan_t yyscanner );
 
-FILE *IRCBisectget_out (yyscan_t yyscanner );
+FILE *yyget_out (yyscan_t yyscanner );
 
-void IRCBisectset_out  (FILE * out_str ,yyscan_t yyscanner );
+void yyset_out  (FILE * out_str ,yyscan_t yyscanner );
 
-int IRCBisectget_leng (yyscan_t yyscanner );
+int yyget_leng (yyscan_t yyscanner );
 
-char *IRCBisectget_text (yyscan_t yyscanner );
+char *yyget_text (yyscan_t yyscanner );
 
-int IRCBisectget_lineno (yyscan_t yyscanner );
+int yyget_lineno (yyscan_t yyscanner );
 
-void IRCBisectset_lineno (int line_number ,yyscan_t yyscanner );
+void yyset_lineno (int line_number ,yyscan_t yyscanner );
 
 /* %if-bison-bridge */
-
-YYSTYPE * IRCBisectget_lval (yyscan_t yyscanner );
-
-void IRCBisectset_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
-
-       YYLTYPE *IRCBisectget_lloc (yyscan_t yyscanner );
-    
-        void IRCBisectset_lloc (YYLTYPE * yylloc_param ,yyscan_t yyscanner );
-    
 /* %endif */
 
 /* Macros after this point can all be overridden by user definitions in
@@ -1332,9 +1048,9 @@ void IRCBisectset_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
-extern "C" int IRCBisectwrap (yyscan_t yyscanner );
+extern "C" int yywrap (yyscan_t yyscanner );
 #else
-extern int IRCBisectwrap (yyscan_t yyscanner );
+extern int yywrap (yyscan_t yyscanner );
 #endif
 #endif
 
@@ -1368,12 +1084,6 @@ static int input (yyscan_t yyscanner );
 
 /* %if-c-only */
 
-    static void yy_push_state (int new_state ,yyscan_t yyscanner);
-    
-    static void yy_pop_state (yyscan_t yyscanner );
-    
-    static int yy_top_state (yyscan_t yyscanner );
-    
 /* %endif */
 
 /* Amount of stuff to slurp up with each read. */
@@ -1458,11 +1168,9 @@ static int input (yyscan_t yyscanner );
 #define YY_DECL_IS_OURS 1
 /* %if-c-only Standard (non-C++) definition */
 
-extern int IRCBisectlex \
-               (YYSTYPE * yylval_param,YYLTYPE * yylloc_param ,yyscan_t yyscanner);
+extern int yylex (yyscan_t yyscanner);
 
-#define YY_DECL int IRCBisectlex \
-               (YYSTYPE * yylval_param, YYLTYPE * yylloc_param , yyscan_t yyscanner)
+#define YY_DECL int yylex (yyscan_t yyscanner)
 /* %endif */
 /* %if-c++-only C++ definition */
 /* %endif */
@@ -1497,10 +1205,6 @@ YY_DECL
 
 /* %% [7.0] user's declarations go here */
 
-    yylval = yylval_param;
-
-    yylloc = yylloc_param;
-
 	if ( !yyg->yy_init )
 		{
 		yyg->yy_init = 1;
@@ -1527,12 +1231,12 @@ YY_DECL
 /* %endif */
 
 		if ( ! YY_CURRENT_BUFFER ) {
-			IRCBisectensure_buffer_stack (yyscanner);
+			yyensure_buffer_stack (yyscanner);
 			YY_CURRENT_BUFFER_LVALUE =
-				IRCBisect_create_buffer(yyin,YY_BUF_SIZE ,yyscanner);
+				yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner);
 		}
 
-		IRCBisect_load_buffer_state(yyscanner );
+		yy_load_buffer_state(yyscanner );
 		}
 
 	while ( 1 )		/* loops until end-of-file is reached */
@@ -1591,13 +1295,13 @@ do_action:	/* This label is used only to access EOF actions. */
 			{
 			if ( yy_act == 0 )
 				fprintf( stderr, "--scanner backing up\n" );
-			else if ( yy_act < 3 )
+			else if ( yy_act < 4 )
 				fprintf( stderr, "--accepting rule at line %ld (\"%s\")\n",
 				         (long)yy_rule_linenum[yy_act], yytext );
-			else if ( yy_act == 3 )
+			else if ( yy_act == 4 )
 				fprintf( stderr, "--accepting default rule (\"%s\")\n",
 				         yytext );
-			else if ( yy_act == 4 )
+			else if ( yy_act == 5 )
 				fprintf( stderr, "--(end of buffer or a NUL)\n" );
 			else
 				fprintf( stderr, "--EOF (start condition %d)\n", YY_START );
@@ -1616,7 +1320,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 *yy_cp = yyg->yy_hold_char; /* undo effects of setting up yytext */
-yyg->yy_c_buf_p = yy_cp -= 6;
+yyg->yy_c_buf_p = yy_cp -= 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 { BEGIN(end_of_message);
@@ -1626,16 +1330,21 @@ YY_RULE_SETUP
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-{ BEGIN(INITIAL);
-                                return 0; }
-	YY_BREAK
-case 3:
-YY_RULE_SETUP
-YY_FATAL_ERROR( "flex scanner jammed" );
+{ BEGIN(INITIAL); }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(end_of_message):
-	yyterminate();
+{ return 0; }
+	YY_BREAK
+case 3:
+YY_RULE_SETUP
+{ ACE_DEBUG((LM_ERROR,
+                                           ACE_TEXT("invalid character, continuing\n"))); }
+	YY_BREAK
+case 4:
+YY_RULE_SETUP
+YY_FATAL_ERROR( "flex scanner jammed" );
+	YY_BREAK
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1651,7 +1360,7 @@ case YY_STATE_EOF(end_of_message):
 			/* We're scanning a new file or input source.  It's
 			 * possible that this happened because the user
 			 * just pointed yyin at a new source and called
-			 * IRCBisectlex().  If so, then we have to assure
+			 * yylex().  If so, then we have to assure
 			 * consistency between YY_CURRENT_BUFFER and our
 			 * globals.  Here is the right place to do so, because
 			 * this is the first action (other than possibly a
@@ -1712,7 +1421,7 @@ case YY_STATE_EOF(end_of_message):
 				{
 				yyg->yy_did_buffer_switch_on_eof = 0;
 
-				if ( IRCBisectwrap(yyscanner ) )
+				if ( yywrap(yyscanner ) )
 					{
 					/* Note: because we've taken care in
 					 * yy_get_next_buffer() to have set up
@@ -1765,7 +1474,7 @@ case YY_STATE_EOF(end_of_message):
 			"fatal flex scanner internal error--no action found" );
 	} /* end of action switch */
 		} /* end of scanning one token */
-} /* end of IRCBisectlex */
+} /* end of yylex */
 /* %ok-for-header */
 
 /* %if-c++-only */
@@ -1856,7 +1565,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 				b->yy_ch_buf = (char *)
 					/* Include room in for 2 EOB chars. */
-					IRCBisectrealloc((void *) b->yy_ch_buf,b->yy_buf_size + 2 ,yyscanner );
+					yyrealloc((void *) b->yy_ch_buf,b->yy_buf_size + 2 ,yyscanner );
 				}
 			else
 				/* Can't grow it, we don't own it. */
@@ -1888,7 +1597,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 		if ( number_to_move == YY_MORE_ADJ )
 			{
 			ret_val = EOB_ACT_END_OF_FILE;
-			IRCBisectrestart(yyin  ,yyscanner);
+			yyrestart(yyin  ,yyscanner);
 			}
 
 		else
@@ -1905,7 +1614,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	if ((yy_size_t) (yyg->yy_n_chars + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
 		/* Extend the array by 50%, plus the number we really need. */
 		yy_size_t new_size = yyg->yy_n_chars + number_to_move + (yyg->yy_n_chars >> 1);
-		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) IRCBisectrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size ,yyscanner );
+		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size ,yyscanner );
 		if ( ! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
 			YY_FATAL_ERROR( "out of dynamic memory in yy_get_next_buffer()" );
 	}
@@ -2036,13 +1745,13 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 					 */
 
 					/* Reset buffer status. */
-					IRCBisectrestart(yyin ,yyscanner);
+					yyrestart(yyin ,yyscanner);
 
 					/*FALLTHROUGH*/
 
 				case EOB_ACT_END_OF_FILE:
 					{
-					if ( IRCBisectwrap(yyscanner ) )
+					if ( yywrap(yyscanner ) )
 						return EOF;
 
 					if ( ! yyg->yy_did_buffer_switch_on_eof )
@@ -2085,7 +1794,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
  * @note This function does not reset the start condition to @c INITIAL .
  */
 /* %if-c-only */
-    void IRCBisectrestart  (FILE * input_file , yyscan_t yyscanner)
+    void yyrestart  (FILE * input_file , yyscan_t yyscanner)
 /* %endif */
 /* %if-c++-only */
 /* %endif */
@@ -2093,13 +1802,13 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 	if ( ! YY_CURRENT_BUFFER ){
-        IRCBisectensure_buffer_stack (yyscanner);
+        yyensure_buffer_stack (yyscanner);
 		YY_CURRENT_BUFFER_LVALUE =
-            IRCBisect_create_buffer(yyin,YY_BUF_SIZE ,yyscanner);
+            yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner);
 	}
 
-	IRCBisect_init_buffer(YY_CURRENT_BUFFER,input_file ,yyscanner);
-	IRCBisect_load_buffer_state(yyscanner );
+	yy_init_buffer(YY_CURRENT_BUFFER,input_file ,yyscanner);
+	yy_load_buffer_state(yyscanner );
 }
 
 /** Switch to a different input buffer.
@@ -2107,7 +1816,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  */
 /* %if-c-only */
-    void IRCBisect_switch_to_buffer  (YY_BUFFER_STATE  new_buffer , yyscan_t yyscanner)
+    void yy_switch_to_buffer  (YY_BUFFER_STATE  new_buffer , yyscan_t yyscanner)
 /* %endif */
 /* %if-c++-only */
 /* %endif */
@@ -2116,10 +1825,10 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 	/* TODO. We should be able to replace this entire function body
 	 * with
-	 *		IRCBisectpop_buffer_state();
-	 *		IRCBisectpush_buffer_state(new_buffer);
+	 *		yypop_buffer_state();
+	 *		yypush_buffer_state(new_buffer);
      */
-	IRCBisectensure_buffer_stack (yyscanner);
+	yyensure_buffer_stack (yyscanner);
 	if ( YY_CURRENT_BUFFER == new_buffer )
 		return;
 
@@ -2132,18 +1841,18 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 		}
 
 	YY_CURRENT_BUFFER_LVALUE = new_buffer;
-	IRCBisect_load_buffer_state(yyscanner );
+	yy_load_buffer_state(yyscanner );
 
 	/* We don't actually know whether we did this switch during
-	 * EOF (IRCBisectwrap()) processing, but the only time this flag
-	 * is looked at is after IRCBisectwrap() is called, so it's safe
+	 * EOF (yywrap()) processing, but the only time this flag
+	 * is looked at is after yywrap() is called, so it's safe
 	 * to go ahead and always set it.
 	 */
 	yyg->yy_did_buffer_switch_on_eof = 1;
 }
 
 /* %if-c-only */
-static void IRCBisect_load_buffer_state  (yyscan_t yyscanner)
+static void yy_load_buffer_state  (yyscan_t yyscanner)
 /* %endif */
 /* %if-c++-only */
 /* %endif */
@@ -2162,39 +1871,39 @@ static void IRCBisect_load_buffer_state  (yyscan_t yyscanner)
  * @return the allocated buffer state.
  */
 /* %if-c-only */
-    YY_BUFFER_STATE IRCBisect_create_buffer  (FILE * file, int  size , yyscan_t yyscanner)
+    YY_BUFFER_STATE yy_create_buffer  (FILE * file, int  size , yyscan_t yyscanner)
 /* %endif */
 /* %if-c++-only */
 /* %endif */
 {
 	YY_BUFFER_STATE b;
     
-	b = (YY_BUFFER_STATE) IRCBisectalloc(sizeof( struct yy_buffer_state ) ,yyscanner );
+	b = (YY_BUFFER_STATE) yyalloc(sizeof( struct yy_buffer_state ) ,yyscanner );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in IRCBisect_create_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
 	b->yy_buf_size = size;
 
 	/* yy_ch_buf has to be 2 characters longer than the size given because
 	 * we need to put in 2 end-of-buffer characters.
 	 */
-	b->yy_ch_buf = (char *) IRCBisectalloc(b->yy_buf_size + 2 ,yyscanner );
+	b->yy_ch_buf = (char *) yyalloc(b->yy_buf_size + 2 ,yyscanner );
 	if ( ! b->yy_ch_buf )
-		YY_FATAL_ERROR( "out of dynamic memory in IRCBisect_create_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
 	b->yy_is_our_buffer = 1;
 
-	IRCBisect_init_buffer(b,file ,yyscanner);
+	yy_init_buffer(b,file ,yyscanner);
 
 	return b;
 }
 
 /** Destroy the buffer.
- * @param b a buffer created with IRCBisect_create_buffer()
+ * @param b a buffer created with yy_create_buffer()
  * @param yyscanner The scanner object.
  */
 /* %if-c-only */
-    void IRCBisect_delete_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
+    void yy_delete_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
 /* %endif */
 /* %if-c++-only */
 /* %endif */
@@ -2208,9 +1917,9 @@ static void IRCBisect_load_buffer_state  (yyscan_t yyscanner)
 		YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE) 0;
 
 	if ( b->yy_is_our_buffer )
-		IRCBisectfree((void *) b->yy_ch_buf ,yyscanner );
+		yyfree((void *) b->yy_ch_buf ,yyscanner );
 
-	IRCBisectfree((void *) b ,yyscanner );
+	yyfree((void *) b ,yyscanner );
 }
 
 /* %if-c-only */
@@ -2222,10 +1931,10 @@ static void IRCBisect_load_buffer_state  (yyscan_t yyscanner)
 
 /* Initializes or reinitializes a buffer.
  * This function is sometimes called more than once on the same buffer,
- * such as during a IRCBisectrestart() or at EOF.
+ * such as during a yyrestart() or at EOF.
  */
 /* %if-c-only */
-    static void IRCBisect_init_buffer  (YY_BUFFER_STATE  b, FILE * file , yyscan_t yyscanner)
+    static void yy_init_buffer  (YY_BUFFER_STATE  b, FILE * file , yyscan_t yyscanner)
 /* %endif */
 /* %if-c++-only */
 /* %endif */
@@ -2234,13 +1943,13 @@ static void IRCBisect_load_buffer_state  (yyscan_t yyscanner)
 	int oerrno = errno;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
-	IRCBisect_flush_buffer(b ,yyscanner);
+	yy_flush_buffer(b ,yyscanner);
 
 	b->yy_input_file = file;
 	b->yy_fill_buffer = 1;
 
-    /* If b is the current buffer, then IRCBisect_init_buffer was _probably_
-     * called from IRCBisectrestart() or through yy_get_next_buffer.
+    /* If b is the current buffer, then yy_init_buffer was _probably_
+     * called from yyrestart() or through yy_get_next_buffer.
      * In that case, we don't want to reset the lineno or column.
      */
     if (b != YY_CURRENT_BUFFER){
@@ -2263,7 +1972,7 @@ static void IRCBisect_load_buffer_state  (yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  */
 /* %if-c-only */
-    void IRCBisect_flush_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
+    void yy_flush_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
 /* %endif */
 /* %if-c++-only */
 /* %endif */
@@ -2287,7 +1996,7 @@ static void IRCBisect_load_buffer_state  (yyscan_t yyscanner)
 	b->yy_buffer_status = YY_BUFFER_NEW;
 
 	if ( b == YY_CURRENT_BUFFER )
-		IRCBisect_load_buffer_state(yyscanner );
+		yy_load_buffer_state(yyscanner );
 }
 
 /* %if-c-or-c++ */
@@ -2298,7 +2007,7 @@ static void IRCBisect_load_buffer_state  (yyscan_t yyscanner)
  *  @param yyscanner The scanner object.
  */
 /* %if-c-only */
-void IRCBisectpush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner)
+void yypush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner)
 /* %endif */
 /* %if-c++-only */
 /* %endif */
@@ -2307,9 +2016,9 @@ void IRCBisectpush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner
 	if (new_buffer == NULL)
 		return;
 
-	IRCBisectensure_buffer_stack(yyscanner);
+	yyensure_buffer_stack(yyscanner);
 
-	/* This block is copied from IRCBisect_switch_to_buffer. */
+	/* This block is copied from yy_switch_to_buffer. */
 	if ( YY_CURRENT_BUFFER )
 		{
 		/* Flush out information for old buffer. */
@@ -2323,8 +2032,8 @@ void IRCBisectpush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner
 		yyg->yy_buffer_stack_top++;
 	YY_CURRENT_BUFFER_LVALUE = new_buffer;
 
-	/* copied from IRCBisect_switch_to_buffer. */
-	IRCBisect_load_buffer_state(yyscanner );
+	/* copied from yy_switch_to_buffer. */
+	yy_load_buffer_state(yyscanner );
 	yyg->yy_did_buffer_switch_on_eof = 1;
 }
 /* %endif */
@@ -2335,7 +2044,7 @@ void IRCBisectpush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner
  *  @param yyscanner The scanner object.
  */
 /* %if-c-only */
-void IRCBisectpop_buffer_state (yyscan_t yyscanner)
+void yypop_buffer_state (yyscan_t yyscanner)
 /* %endif */
 /* %if-c++-only */
 /* %endif */
@@ -2344,13 +2053,13 @@ void IRCBisectpop_buffer_state (yyscan_t yyscanner)
 	if (!YY_CURRENT_BUFFER)
 		return;
 
-	IRCBisect_delete_buffer(YY_CURRENT_BUFFER ,yyscanner);
+	yy_delete_buffer(YY_CURRENT_BUFFER ,yyscanner);
 	YY_CURRENT_BUFFER_LVALUE = NULL;
 	if (yyg->yy_buffer_stack_top > 0)
 		--yyg->yy_buffer_stack_top;
 
 	if (YY_CURRENT_BUFFER) {
-		IRCBisect_load_buffer_state(yyscanner );
+		yy_load_buffer_state(yyscanner );
 		yyg->yy_did_buffer_switch_on_eof = 1;
 	}
 }
@@ -2361,7 +2070,7 @@ void IRCBisectpop_buffer_state (yyscan_t yyscanner)
  *  Guarantees space for at least one push.
  */
 /* %if-c-only */
-static void IRCBisectensure_buffer_stack (yyscan_t yyscanner)
+static void yyensure_buffer_stack (yyscan_t yyscanner)
 /* %endif */
 /* %if-c++-only */
 /* %endif */
@@ -2376,11 +2085,11 @@ static void IRCBisectensure_buffer_stack (yyscan_t yyscanner)
 		 * immediate realloc on the next call.
          */
 		num_to_alloc = 1;
-		yyg->yy_buffer_stack = (struct yy_buffer_state**)IRCBisectalloc
+		yyg->yy_buffer_stack = (struct yy_buffer_state**)yyalloc
 								(num_to_alloc * sizeof(struct yy_buffer_state*)
 								, yyscanner);
 		if ( ! yyg->yy_buffer_stack )
-			YY_FATAL_ERROR( "out of dynamic memory in IRCBisectensure_buffer_stack()" );
+			YY_FATAL_ERROR( "out of dynamic memory in yyensure_buffer_stack()" );
 								  
 		memset(yyg->yy_buffer_stack, 0, num_to_alloc * sizeof(struct yy_buffer_state*));
 				
@@ -2395,12 +2104,12 @@ static void IRCBisectensure_buffer_stack (yyscan_t yyscanner)
 		int grow_size = 8 /* arbitrary grow size */;
 
 		num_to_alloc = yyg->yy_buffer_stack_max + grow_size;
-		yyg->yy_buffer_stack = (struct yy_buffer_state**)IRCBisectrealloc
+		yyg->yy_buffer_stack = (struct yy_buffer_state**)yyrealloc
 								(yyg->yy_buffer_stack,
 								num_to_alloc * sizeof(struct yy_buffer_state*)
 								, yyscanner);
 		if ( ! yyg->yy_buffer_stack )
-			YY_FATAL_ERROR( "out of dynamic memory in IRCBisectensure_buffer_stack()" );
+			YY_FATAL_ERROR( "out of dynamic memory in yyensure_buffer_stack()" );
 
 		/* zero only the new slots.*/
 		memset(yyg->yy_buffer_stack + yyg->yy_buffer_stack_max, 0, grow_size * sizeof(struct yy_buffer_state*));
@@ -2416,7 +2125,7 @@ static void IRCBisectensure_buffer_stack (yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object. 
  */
-YY_BUFFER_STATE IRCBisect_scan_buffer  (char * base, yy_size_t  size , yyscan_t yyscanner)
+YY_BUFFER_STATE yy_scan_buffer  (char * base, yy_size_t  size , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
     
@@ -2426,9 +2135,9 @@ YY_BUFFER_STATE IRCBisect_scan_buffer  (char * base, yy_size_t  size , yyscan_t 
 		/* They forgot to leave room for the EOB's. */
 		return 0;
 
-	b = (YY_BUFFER_STATE) IRCBisectalloc(sizeof( struct yy_buffer_state ) ,yyscanner );
+	b = (YY_BUFFER_STATE) yyalloc(sizeof( struct yy_buffer_state ) ,yyscanner );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in IRCBisect_scan_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_buffer()" );
 
 	b->yy_buf_size = size - 2;	/* "- 2" to take care of EOB's */
 	b->yy_buf_pos = b->yy_ch_buf = base;
@@ -2440,37 +2149,37 @@ YY_BUFFER_STATE IRCBisect_scan_buffer  (char * base, yy_size_t  size , yyscan_t 
 	b->yy_fill_buffer = 0;
 	b->yy_buffer_status = YY_BUFFER_NEW;
 
-	IRCBisect_switch_to_buffer(b ,yyscanner );
+	yy_switch_to_buffer(b ,yyscanner );
 
 	return b;
 }
 /* %endif */
 
 /* %if-c-only */
-/** Setup the input buffer state to scan a string. The next call to IRCBisectlex() will
+/** Setup the input buffer state to scan a string. The next call to yylex() will
  * scan from a @e copy of @a str.
  * @param yystr a NUL-terminated string to scan
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object.
  * @note If you want to scan bytes that may contain NUL values, then use
- *       IRCBisect_scan_bytes() instead.
+ *       yy_scan_bytes() instead.
  */
-YY_BUFFER_STATE IRCBisect_scan_string (yyconst char * yystr , yyscan_t yyscanner)
+YY_BUFFER_STATE yy_scan_string (yyconst char * yystr , yyscan_t yyscanner)
 {
     
-	return IRCBisect_scan_bytes(yystr,strlen(yystr) ,yyscanner);
+	return yy_scan_bytes(yystr,strlen(yystr) ,yyscanner);
 }
 /* %endif */
 
 /* %if-c-only */
-/** Setup the input buffer state to scan the given bytes. The next call to IRCBisectlex() will
+/** Setup the input buffer state to scan the given bytes. The next call to yylex() will
  * scan from a @e copy of @a bytes.
  * @param bytes the byte buffer to scan
  * @param len the number of bytes in the buffer pointed to by @a bytes.
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE IRCBisect_scan_bytes  (yyconst char * yybytes, int  _yybytes_len , yyscan_t yyscanner)
+YY_BUFFER_STATE yy_scan_bytes  (yyconst char * yybytes, int  _yybytes_len , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
 	char *buf;
@@ -2479,18 +2188,18 @@ YY_BUFFER_STATE IRCBisect_scan_bytes  (yyconst char * yybytes, int  _yybytes_len
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
 	n = _yybytes_len + 2;
-	buf = (char *) IRCBisectalloc(n ,yyscanner );
+	buf = (char *) yyalloc(n ,yyscanner );
 	if ( ! buf )
-		YY_FATAL_ERROR( "out of dynamic memory in IRCBisect_scan_bytes()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_bytes()" );
 
 	for ( i = 0; i < _yybytes_len; ++i )
 		buf[i] = yybytes[i];
 
 	buf[_yybytes_len] = buf[_yybytes_len+1] = YY_END_OF_BUFFER_CHAR;
 
-	b = IRCBisect_scan_buffer(buf,n ,yyscanner);
+	b = yy_scan_buffer(buf,n ,yyscanner);
 	if ( ! b )
-		YY_FATAL_ERROR( "bad buffer in IRCBisect_scan_bytes()" );
+		YY_FATAL_ERROR( "bad buffer in yy_scan_bytes()" );
 
 	/* It's okay to grow etc. this buffer, and we should throw it
 	 * away when we're done.
@@ -2500,58 +2209,6 @@ YY_BUFFER_STATE IRCBisect_scan_bytes  (yyconst char * yybytes, int  _yybytes_len
 	return b;
 }
 /* %endif */
-
-/* %if-c-only */
-    static void yy_push_state (int  new_state , yyscan_t yyscanner)
-/* %endif */
-/* %if-c++-only */
-/* %endif */
-{
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-	if ( yyg->yy_start_stack_ptr >= yyg->yy_start_stack_depth )
-		{
-		yy_size_t new_size;
-
-		yyg->yy_start_stack_depth += YY_START_STACK_INCR;
-		new_size = yyg->yy_start_stack_depth * sizeof( int );
-
-		if ( ! yyg->yy_start_stack )
-			yyg->yy_start_stack = (int *) IRCBisectalloc(new_size ,yyscanner );
-
-		else
-			yyg->yy_start_stack = (int *) IRCBisectrealloc((void *) yyg->yy_start_stack,new_size ,yyscanner );
-
-		if ( ! yyg->yy_start_stack )
-			YY_FATAL_ERROR( "out of memory expanding start-condition stack" );
-		}
-
-	yyg->yy_start_stack[yyg->yy_start_stack_ptr++] = YY_START;
-
-	BEGIN(new_state);
-}
-
-/* %if-c-only */
-    static void yy_pop_state  (yyscan_t yyscanner)
-/* %endif */
-/* %if-c++-only */
-/* %endif */
-{
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-	if ( --yyg->yy_start_stack_ptr < 0 )
-		YY_FATAL_ERROR( "start-condition stack underflow" );
-
-	BEGIN(yyg->yy_start_stack[yyg->yy_start_stack_ptr]);
-}
-
-/* %if-c-only */
-    static int yy_top_state  (yyscan_t yyscanner)
-/* %endif */
-/* %if-c++-only */
-/* %endif */
-{
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-	return yyg->yy_start_stack[yyg->yy_start_stack_ptr - 1];
-}
 
 #ifndef YY_EXIT_FAILURE
 #define YY_EXIT_FAILURE 2
@@ -2592,7 +2249,7 @@ static void yy_fatal_error (yyconst char* msg , yyscan_t yyscanner)
 /** Get the user-defined data for this scanner.
  * @param yyscanner The scanner object.
  */
-YY_EXTRA_TYPE IRCBisectget_extra  (yyscan_t yyscanner)
+YY_EXTRA_TYPE yyget_extra  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyextra;
@@ -2603,7 +2260,7 @@ YY_EXTRA_TYPE IRCBisectget_extra  (yyscan_t yyscanner)
 /** Get the current line number.
  * @param yyscanner The scanner object.
  */
-int IRCBisectget_lineno  (yyscan_t yyscanner)
+int yyget_lineno  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     
@@ -2616,7 +2273,7 @@ int IRCBisectget_lineno  (yyscan_t yyscanner)
 /** Get the current column number.
  * @param yyscanner The scanner object.
  */
-int IRCBisectget_column  (yyscan_t yyscanner)
+int yyget_column  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     
@@ -2629,7 +2286,7 @@ int IRCBisectget_column  (yyscan_t yyscanner)
 /** Get the input stream.
  * @param yyscanner The scanner object.
  */
-FILE *IRCBisectget_in  (yyscan_t yyscanner)
+FILE *yyget_in  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyin;
@@ -2638,7 +2295,7 @@ FILE *IRCBisectget_in  (yyscan_t yyscanner)
 /** Get the output stream.
  * @param yyscanner The scanner object.
  */
-FILE *IRCBisectget_out  (yyscan_t yyscanner)
+FILE *yyget_out  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyout;
@@ -2647,7 +2304,7 @@ FILE *IRCBisectget_out  (yyscan_t yyscanner)
 /** Get the length of the current token.
  * @param yyscanner The scanner object.
  */
-int IRCBisectget_leng  (yyscan_t yyscanner)
+int yyget_leng  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyleng;
@@ -2657,7 +2314,7 @@ int IRCBisectget_leng  (yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  */
 
-char *IRCBisectget_text  (yyscan_t yyscanner)
+char *yyget_text  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yytext;
@@ -2669,7 +2326,7 @@ char *IRCBisectget_text  (yyscan_t yyscanner)
  * @param user_defined The data to be associated with this scanner.
  * @param yyscanner The scanner object.
  */
-void IRCBisectset_extra (YY_EXTRA_TYPE  user_defined , yyscan_t yyscanner)
+void yyset_extra (YY_EXTRA_TYPE  user_defined , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yyextra = user_defined ;
@@ -2681,13 +2338,13 @@ void IRCBisectset_extra (YY_EXTRA_TYPE  user_defined , yyscan_t yyscanner)
  * @param line_number
  * @param yyscanner The scanner object.
  */
-void IRCBisectset_lineno (int  line_number , yyscan_t yyscanner)
+void yyset_lineno (int  line_number , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
         /* lineno is only valid if an input buffer exists. */
         if (! YY_CURRENT_BUFFER )
-           yy_fatal_error( "IRCBisectset_lineno called with no buffer" , yyscanner); 
+           yy_fatal_error( "yyset_lineno called with no buffer" , yyscanner); 
     
     yylineno = line_number;
 }
@@ -2696,13 +2353,13 @@ void IRCBisectset_lineno (int  line_number , yyscan_t yyscanner)
  * @param line_number
  * @param yyscanner The scanner object.
  */
-void IRCBisectset_column (int  column_no , yyscan_t yyscanner)
+void yyset_column (int  column_no , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
         /* column is only valid if an input buffer exists. */
         if (! YY_CURRENT_BUFFER )
-           yy_fatal_error( "IRCBisectset_column called with no buffer" , yyscanner); 
+           yy_fatal_error( "yyset_column called with no buffer" , yyscanner); 
     
     yycolumn = column_no;
 }
@@ -2711,27 +2368,27 @@ void IRCBisectset_column (int  column_no , yyscan_t yyscanner)
  * input buffer.
  * @param in_str A readable stream.
  * @param yyscanner The scanner object.
- * @see IRCBisect_switch_to_buffer
+ * @see yy_switch_to_buffer
  */
-void IRCBisectset_in (FILE *  in_str , yyscan_t yyscanner)
+void yyset_in (FILE *  in_str , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yyin = in_str ;
 }
 
-void IRCBisectset_out (FILE *  out_str , yyscan_t yyscanner)
+void yyset_out (FILE *  out_str , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yyout = out_str ;
 }
 
-int IRCBisectget_debug  (yyscan_t yyscanner)
+int yyget_debug  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yy_flex_debug;
 }
 
-void IRCBisectset_debug (int  bdebug , yyscan_t yyscanner)
+void yyset_debug (int  bdebug , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yy_flex_debug = bdebug ;
@@ -2743,41 +2400,16 @@ void IRCBisectset_debug (int  bdebug , yyscan_t yyscanner)
 /* Accessor methods for yylval and yylloc */
 
 /* %if-bison-bridge */
-
-YYSTYPE * IRCBisectget_lval  (yyscan_t yyscanner)
-{
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-    return yylval;
-}
-
-void IRCBisectset_lval (YYSTYPE *  yylval_param , yyscan_t yyscanner)
-{
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-    yylval = yylval_param;
-}
-
-YYLTYPE *IRCBisectget_lloc  (yyscan_t yyscanner)
-{
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-    return yylloc;
-}
-    
-void IRCBisectset_lloc (YYLTYPE *  yylloc_param , yyscan_t yyscanner)
-{
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-    yylloc = yylloc_param;
-}
-    
 /* %endif */
 
 /* User-visible API */
 
-/* IRCBisectlex_init is special because it creates the scanner itself, so it is
+/* yylex_init is special because it creates the scanner itself, so it is
  * the ONLY reentrant function that doesn't take the scanner as the last argument.
  * That's why we explicitly handle the declaration, instead of using our macros.
  */
 
-int IRCBisectlex_init(yyscan_t* ptr_yy_globals)
+int yylex_init(yyscan_t* ptr_yy_globals)
 
 {
     if (ptr_yy_globals == NULL){
@@ -2785,7 +2417,7 @@ int IRCBisectlex_init(yyscan_t* ptr_yy_globals)
         return 1;
     }
 
-    *ptr_yy_globals = (yyscan_t) IRCBisectalloc ( sizeof( struct yyguts_t ), NULL );
+    *ptr_yy_globals = (yyscan_t) yyalloc ( sizeof( struct yyguts_t ), NULL );
 
     if (*ptr_yy_globals == NULL){
         errno = ENOMEM;
@@ -2798,27 +2430,27 @@ int IRCBisectlex_init(yyscan_t* ptr_yy_globals)
     return yy_init_globals ( *ptr_yy_globals );
 }
 
-/* IRCBisectlex_init_extra has the same functionality as IRCBisectlex_init, but follows the
+/* yylex_init_extra has the same functionality as yylex_init, but follows the
  * convention of taking the scanner as the last argument. Note however, that
  * this is a *pointer* to a scanner, as it will be allocated by this call (and
  * is the reason, too, why this function also must handle its own declaration).
- * The user defined value in the first argument will be available to IRCBisectalloc in
+ * The user defined value in the first argument will be available to yyalloc in
  * the yyextra field.
  */
 
-int IRCBisectlex_init_extra(YY_EXTRA_TYPE yy_user_defined,yyscan_t* ptr_yy_globals )
+int yylex_init_extra(YY_EXTRA_TYPE yy_user_defined,yyscan_t* ptr_yy_globals )
 
 {
     struct yyguts_t dummy_yyguts;
 
-    IRCBisectset_extra (yy_user_defined, &dummy_yyguts);
+    yyset_extra (yy_user_defined, &dummy_yyguts);
 
     if (ptr_yy_globals == NULL){
         errno = EINVAL;
         return 1;
     }
 	
-    *ptr_yy_globals = (yyscan_t) IRCBisectalloc ( sizeof( struct yyguts_t ), &dummy_yyguts );
+    *ptr_yy_globals = (yyscan_t) yyalloc ( sizeof( struct yyguts_t ), &dummy_yyguts );
 	
     if (*ptr_yy_globals == NULL){
         errno = ENOMEM;
@@ -2829,7 +2461,7 @@ int IRCBisectlex_init_extra(YY_EXTRA_TYPE yy_user_defined,yyscan_t* ptr_yy_globa
     yy_init_globals. Leave at 0x00 for releases. */
     memset(*ptr_yy_globals,0x00,sizeof(struct yyguts_t));
     
-    IRCBisectset_extra (yy_user_defined, *ptr_yy_globals);
+    yyset_extra (yy_user_defined, *ptr_yy_globals);
     
     return yy_init_globals ( *ptr_yy_globals );
 }
@@ -2841,7 +2473,7 @@ static int yy_init_globals (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     /* Initialization is the same as for the non-reentrant scanner.
-     * This function is called from IRCBisectlex_destroy(), so don't allocate here.
+     * This function is called from yylex_destroy(), so don't allocate here.
      */
 
     yyg->yy_buffer_stack = 0;
@@ -2865,40 +2497,40 @@ static int yy_init_globals (yyscan_t yyscanner)
 #endif
 
     /* For future reference: Set errno on error, since we are called by
-     * IRCBisectlex_init()
+     * yylex_init()
      */
     return 0;
 }
 /* %endif */
 
 /* %if-c-only SNIP! this currently causes conflicts with the c++ scanner */
-/* IRCBisectlex_destroy is for both reentrant and non-reentrant scanners. */
-int IRCBisectlex_destroy  (yyscan_t yyscanner)
+/* yylex_destroy is for both reentrant and non-reentrant scanners. */
+int yylex_destroy  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
     /* Pop the buffer stack, destroying each element. */
 	while(YY_CURRENT_BUFFER){
-		IRCBisect_delete_buffer(YY_CURRENT_BUFFER ,yyscanner );
+		yy_delete_buffer(YY_CURRENT_BUFFER ,yyscanner );
 		YY_CURRENT_BUFFER_LVALUE = NULL;
-		IRCBisectpop_buffer_state(yyscanner);
+		yypop_buffer_state(yyscanner);
 	}
 
 	/* Destroy the stack itself. */
-	IRCBisectfree(yyg->yy_buffer_stack ,yyscanner);
+	yyfree(yyg->yy_buffer_stack ,yyscanner);
 	yyg->yy_buffer_stack = NULL;
 
     /* Destroy the start condition stack. */
-        IRCBisectfree(yyg->yy_start_stack ,yyscanner );
+        yyfree(yyg->yy_start_stack ,yyscanner );
         yyg->yy_start_stack = NULL;
 
     /* Reset the globals. This is important in a non-reentrant scanner so the next time
-     * IRCBisectlex() is called, initialization will occur. */
+     * yylex() is called, initialization will occur. */
     yy_init_globals( yyscanner);
 
 /* %if-reentrant */
     /* Destroy the main struct (reentrant only). */
-    IRCBisectfree ( yyscanner , yyscanner );
+    yyfree ( yyscanner , yyscanner );
     yyscanner = NULL;
 /* %endif */
     return 0;
@@ -2929,12 +2561,12 @@ static int yy_flex_strlen (yyconst char * s , yyscan_t yyscanner)
 }
 #endif
 
-void *IRCBisectalloc (yy_size_t  size , yyscan_t yyscanner)
+void *yyalloc (yy_size_t  size , yyscan_t yyscanner)
 {
 	return (void *) malloc( size );
 }
 
-void *IRCBisectrealloc  (void * ptr, yy_size_t  size , yyscan_t yyscanner)
+void *yyrealloc  (void * ptr, yy_size_t  size , yyscan_t yyscanner)
 {
 	/* The cast to (char *) in the following accommodates both
 	 * implementations that use char* generic pointers, and those
@@ -2946,9 +2578,9 @@ void *IRCBisectrealloc  (void * ptr, yy_size_t  size , yyscan_t yyscanner)
 	return (void *) realloc( (char *) ptr, size );
 }
 
-void IRCBisectfree (void * ptr , yyscan_t yyscanner)
+void yyfree (void * ptr , yyscan_t yyscanner)
 {
-	free( (char *) ptr );	/* see IRCBisectrealloc() for (char *) cast */
+	free( (char *) ptr );	/* see yyrealloc() for (char *) cast */
 }
 
 /* %if-tables-serialization definitions */
@@ -2959,7 +2591,7 @@ void IRCBisectfree (void * ptr , yyscan_t yyscanner)
 /* %ok-for-header */
 
 const bool
-RPG_Net_Protocol_Module_IRCSplitter::scan_begin(const char* data_in,
+RPG_Net_Protocol_Module_IRCSplitter::scan_begin(char* data_in,
                                                 const size_t& length_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::scan_begin"));
@@ -2967,18 +2599,19 @@ RPG_Net_Protocol_Module_IRCSplitter::scan_begin(const char* data_in,
   // sanity check(s)
   ACE_ASSERT(myCurrentState == NULL);
 
-  yy_flex_debug = myTraceScanning;
+//  yy_flex_debug = myTraceScanning;
 
   // create/init a new buffer state
   // *WARNING*: length_in IS already adjusted for two trailing \0's
-  myCurrentState = IRCBisect_scan_buffer(data_in,length_in);
+  myCurrentState = yy_scan_buffer(data_in,length_in,myScannerContext);
   if (myCurrentState == NULL)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ::IRCBisect_scan_buffer(%@,%d), aborting\n"),
+               ACE_TEXT("failed to ::yy_scan_buffer(%@,%d), aborting\n"),
                data_in,
                length_in));
 
+    // what else can we do ?
     return false;
   } // end IF
 
@@ -2989,6 +2622,8 @@ RPG_Net_Protocol_Module_IRCSplitter::scan_begin(const char* data_in,
 //     error(std::string("cannot open ") + file);
 //     exit(1);
 //   }
+
+  return true;
 }
 
 void
@@ -3000,7 +2635,7 @@ RPG_Net_Protocol_Module_IRCSplitter::scan_end()
   ACE_ASSERT(myCurrentState);
 
   // clean state
-  IRCBisect_delete_buffer(myCurrentState);
+  yy_delete_buffer(myCurrentState,myScannerContext);
   myCurrentState = NULL;
 
 //  fclose(yyin);

@@ -39,7 +39,7 @@
 
 
 
-namespace IRCParse {
+namespace yy {
 
   template <class T, class S = std::deque<T> >
   class stack
@@ -128,7 +128,7 @@ namespace IRCParse {
   };
 
 
-} // IRCParse
+} // yy
 
 
 #endif // not BISON_STACK_HH[]dnl

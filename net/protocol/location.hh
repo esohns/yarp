@@ -33,7 +33,7 @@
 
 /**
  ** \file location.hh
- ** Define the IRCParse::location class.
+ ** Define the yy::location class.
  */
 
 #ifndef BISON_LOCATION_HH
@@ -45,7 +45,7 @@
 
 
 
-namespace IRCParse {
+namespace yy {
 
 
   /// Abstract a location.
@@ -157,7 +157,7 @@ namespace IRCParse {
 
 
 
-} // IRCParse
+} // yy
 
 
 #endif // not BISON_LOCATION_HH

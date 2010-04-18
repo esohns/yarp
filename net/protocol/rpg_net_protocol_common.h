@@ -26,6 +26,22 @@
 #include <string>
 #include <vector>
 
+struct RPG_Net_Protocol_IRCMessageCommand
+{
+  union
+  {
+    std::string* string;
+    RPG_Net_Protocol_IRC_Codes::RFC1459Numeric numeric;
+  };
+  enum discriminator_t
+  {
+    STRING = 0,
+    NUMERIC,
+    INVALID
+  };
+  discriminator_t discriminator;
+};
+
 struct RPG_Net_Protocol_IRCMessage
 {
   union
@@ -35,21 +51,7 @@ struct RPG_Net_Protocol_IRCMessage
   };
   std::string* user;
   std::string* host;
-  struct
-  {
-    union
-    {
-      std::string* string;
-      RPG_Net_Protocol_IRC_Codes::RFC1459Numeric numeric;
-    };
-    enum discriminator_t
-    {
-      STRING = 0,
-      NUMERIC,
-      INVALID
-    };
-    discriminator_t discriminator;
-  } command;
+  RPG_Net_Protocol_IRCMessageCommand command;
   std::vector<std::string>* params;
 };
 

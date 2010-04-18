@@ -19,25 +19,24 @@
 #endif
 
 /* %if-c++-only */
-    /* The c++ scanner is a mess. The FlexLexer.h header file relies on the
-     * following macro. This is required in order to pass the c++-multiple-scanners
-     * test in the regression suite. We get reports that it breaks inheritance.
-     * We will address this in a future release of flex, or omit the C++ scanner
-     * altogether.
-     */
-    #define yyFlexLexer IRCScannerFlexLexer
 /* %endif */
 
 /* %if-c-only */
+    
 /* %endif */
 
 /* %if-c-only */
+
 /* %endif */
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
 
 /* begin standard C headers. */
 /* %if-c-only */
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#include <stdlib.h>
 /* %endif */
 
 /* %if-tables-serialization */
@@ -111,13 +110,6 @@ typedef unsigned int flex_uint32_t;
 /* %endif */
 
 /* %if-c++-only */
-/* begin standard C++ headers. */
-#include <iostream> 
-#include <errno.h>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-/* end standard C++ headers. */
 /* %endif */
 
 #ifdef __cplusplus
@@ -146,10 +138,27 @@ typedef unsigned int flex_uint32_t;
 /* %not-for-header */
 
 /* %if-reentrant */
+
+/* An opaque pointer. */
+#ifndef YY_TYPEDEF_YY_SCANNER_T
+#define YY_TYPEDEF_YY_SCANNER_T
+typedef void* yyscan_t;
+#endif
+
+/* For convenience, these vars (plus the bison vars far below)
+   are macros in the reentrant scanner. */
+#define yyin yyg->yyin_r
+#define yyout yyg->yyout_r
+#define yyextra yyg->yyextra_r
+#define yyleng yyg->yyleng_r
+#define yytext yyg->yytext_r
+#define yylineno (YY_CURRENT_BUFFER_LVALUE->yy_bs_lineno)
+#define yycolumn (YY_CURRENT_BUFFER_LVALUE->yy_bs_column)
+#define yy_flex_debug yyg->yy_flex_debug_r
+
 /* %endif */
 
 /* %if-not-reentrant */
-
 /* %endif */
 
 /* Size of default input buffer. */
@@ -163,7 +172,6 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
 /* %if-not-reentrant */
-extern int yyleng;
 /* %endif */
 
 /* %if-c-only */
@@ -181,10 +189,10 @@ typedef size_t yy_size_t;
 struct yy_buffer_state
 	{
 /* %if-c-only */
+	FILE *yy_input_file;
 /* %endif */
 
 /* %if-c++-only */
-	std::istream* yy_input_file;
 /* %endif */
 
 	char *yy_ch_buf;		/* input buffer */
@@ -238,27 +246,39 @@ struct yy_buffer_state
 /* %endif */
 
 /* %if-c-only Standard (non-C++) definition */
+
 /* %if-not-reentrant */
 /* %not-for-header */
 
 /* %endif */
+
+void IRCScannerrestart (FILE *input_file ,yyscan_t yyscanner );
+void IRCScanner_switch_to_buffer (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
+YY_BUFFER_STATE IRCScanner_create_buffer (FILE *file,int size ,yyscan_t yyscanner );
+void IRCScanner_delete_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
+void IRCScanner_flush_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
+void IRCScannerpush_buffer_state (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
+void IRCScannerpop_buffer_state (yyscan_t yyscanner );
+
+YY_BUFFER_STATE IRCScanner_scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
+YY_BUFFER_STATE IRCScanner_scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
+YY_BUFFER_STATE IRCScanner_scan_bytes (yyconst char *bytes,int len ,yyscan_t yyscanner );
+
 /* %endif */
 
-void *IRCScanneralloc (yy_size_t  );
-void *IRCScannerrealloc (void *,yy_size_t  );
-void IRCScannerfree (void *  );
+void *IRCScanneralloc (yy_size_t ,yyscan_t yyscanner );
+void *IRCScannerrealloc (void *,yy_size_t ,yyscan_t yyscanner );
+void IRCScannerfree (void * ,yyscan_t yyscanner );
 
 /* %% [1.0] yytext/yyin/yyout/yy_state_type/yylineno etc. def's & init go here */
 /* Begin user sect3 */
+
+#define IRCScannerwrap(n) 1
 #define YY_SKIP_YYWRAP
 
 #define FLEX_DEBUG
 
-#define yytext_ptr yytext
-
-#include <FlexLexer.h>
-
-int yyFlexLexer::yywrap() { return 1; }
+#define yytext_ptr yytext_r
 static yyconst flex_int16_t yy_nxt[][256] =
     {
     {
@@ -2823,6 +2843,7 @@ static yyconst flex_int16_t yy_nxt[][256] =
     } ;
 
 /* %if-c-only Standard (non-C++) definition */
+
 /* %endif */
 
 #ifdef YY_HEADER_EXPORT_START_CONDITIONS
@@ -2841,35 +2862,85 @@ static yyconst flex_int16_t yy_nxt[][256] =
  * The user has a chance to override it with an option.
  */
 /* %if-c-only */
+#include <unistd.h>
 /* %endif */
 /* %if-c++-only */
-#include <unistd.h>
 /* %endif */
 #endif
 
-#ifndef YY_EXTRA_TYPE
-#define YY_EXTRA_TYPE void *
-#endif
+#define YY_EXTRA_TYPE unsigned long*
 
 /* %if-c-only Reentrant structure and macros (non-C++). */
 /* %if-reentrant */
+
 /* %if-c-only */
+
 /* %endif */
+
 /* %if-reentrant */
+
+int IRCScannerlex_init (yyscan_t* scanner);
+
+int IRCScannerlex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
+
 /* %endif */
+
 /* %endif End reentrant structures and macros. */
+
+/* Accessor methods to globals.
+   These are made visible to non-reentrant scanners for convenience. */
+
+int IRCScannerlex_destroy (yyscan_t yyscanner );
+
+int IRCScannerget_debug (yyscan_t yyscanner );
+
+void IRCScannerset_debug (int debug_flag ,yyscan_t yyscanner );
+
+YY_EXTRA_TYPE IRCScannerget_extra (yyscan_t yyscanner );
+
+void IRCScannerset_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
+
+FILE *IRCScannerget_in (yyscan_t yyscanner );
+
+void IRCScannerset_in  (FILE * in_str ,yyscan_t yyscanner );
+
+FILE *IRCScannerget_out (yyscan_t yyscanner );
+
+void IRCScannerset_out  (FILE * out_str ,yyscan_t yyscanner );
+
+int IRCScannerget_leng (yyscan_t yyscanner );
+
+char *IRCScannerget_text (yyscan_t yyscanner );
+
+int IRCScannerget_lineno (yyscan_t yyscanner );
+
+void IRCScannerset_lineno (int line_number ,yyscan_t yyscanner );
+
 /* %if-bison-bridge */
 /* %endif */
+
+/* Macros after this point can all be overridden by user definitions in
+ * section 1.
+ */
+
+#ifndef YY_SKIP_YYWRAP
+#ifdef __cplusplus
+extern "C" int IRCScannerwrap (yyscan_t yyscanner );
+#else
+extern int IRCScannerwrap (yyscan_t yyscanner );
+#endif
+#endif
+
 /* %not-for-header */
 
 /* %endif */
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy (char *,yyconst char *,int );
+static void yy_flex_strncpy (char *,yyconst char *,int ,yyscan_t yyscanner);
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen (yyconst char * );
+static int yy_flex_strlen (yyconst char * ,yyscan_t yyscanner);
 #endif
 
 #ifndef YY_NO_INPUT
@@ -2880,6 +2951,7 @@ static int yy_flex_strlen (yyconst char * );
 #endif
 
 /* %if-c-only */
+
 /* %endif */
 
 /* Amount of stuff to slurp up with each read. */
@@ -2903,9 +2975,12 @@ static int yy_flex_strlen (yyconst char * );
 #ifndef YY_DECL
 #define YY_DECL_IS_OURS 1
 /* %if-c-only Standard (non-C++) definition */
+
+extern int IRCScannerlex (yyscan_t yyscanner);
+
+#define YY_DECL int IRCScannerlex (yyscan_t yyscanner)
 /* %endif */
 /* %if-c++-only C++ definition */
-#define YY_DECL int yyFlexLexer::yylex()
 /* %endif */
 #endif /* !YY_DECL */
 
@@ -2933,6 +3008,6 @@ static int yy_flex_strlen (yyconst char * );
 #undef YY_DECL
 #endif
 
-#line 2937 "rpg_net_protocol_IRCscanner.h"
+#line 3012 "rpg_net_protocol_IRCscanner.h"
 #undef IRCScannerIN_HEADER
 #endif /* IRCScannerHEADER_H */

@@ -5,15 +5,8 @@
 #include <ace/OS_Memory.h>
 #include <ace/Log_Msg.h>
 
-#include "rpg_net_protocol_IRCparser.h"
+//#include "rpg_net_protocol_IRCparser.h"
 #include "rpg_net_protocol_IRCparser_driver.h"
-
-/* Work around an incompatibility in flex (at least versions
-   2.5.31 through 2.5.33): it generates code that does
-   not conform to C89.  See Debian bug 333231
-   <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=333231>.  */
-#undef yywrap
-#define yywrap() 1
 
 /* By default yylex returns int, we use token_type.
    Unfortunately yyterminate by default returns 0, which is
@@ -21,11 +14,12 @@
 #define yyterminate() return token::END
 %}
 
-%option pointer full nounistd 8bit stack
-/* %option c++ outfile="rpg_net_protocol_IRCscanner.cpp" */
+%option pointer full nounistd 8bit
+/* %option c++ outfile="rpg_net_protocol_IRCscanner.cpp" prefix="IRCScanner" */
 %option warn nodefault noyywrap nounput
 %option debug perf-report verbose
-/* reentrant bison-bridge bison-locations */
+%option reentrant extra-type="unsigned long*"
+/* %option bison-bridge bison-locations stack */
 %option prefix="IRCScanner" yylineno
 
 COLON          ':'
@@ -60,8 +54,8 @@ CRLF           \r\n
 %%
 %{
   yylloc->step();
-  typedef IRCParse::RPG_Net_Protocol_IRCParser::token token;
-  typedef IRCParse::RPG_Net_Protocol_IRCParser::token_type token_type;
+  typedef yy::RPG_Net_Protocol_IRCParser::token token;
+  typedef yy::RPG_Net_Protocol_IRCParser::token_type token_type;
 %}
 
 <INITIAL>{COLON}           { yylloc->step();
@@ -103,7 +97,7 @@ CRLF           \r\n
 {NUMBER}{3}                { yylloc->step();
                              BEGIN(params);
                              yylval->ival = ::atoi(yytext);
-                             return token::CMD_NUMERIC }
+                             return token::CMD_NUMERIC; }
 <params>{SPACE}            { yylloc->step();
                              yylval->ival = yyleng;
                              return token::SPACE; }
@@ -119,11 +113,14 @@ CRLF           \r\n
                                               std::string(yytext));
                              return token::PARAM; }
 {CRLF}                     { yylloc->step();
+                             BEGIN(INITIAL); }
+<<EOF>>                    { yylloc->step();
                              return token::END; }
 (?s:.)                     driver.error(*yylloc, ACE_TEXT("invalid character"));
 %%
+
 const bool
-RPG_Net_Protocol_IRCParserDriver::scan_begin(const char* data_in,
+RPG_Net_Protocol_IRCParserDriver::scan_begin(char* data_in,
                                              const size_t& length_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::scan_begin"));
@@ -131,18 +128,21 @@ RPG_Net_Protocol_IRCParserDriver::scan_begin(const char* data_in,
   // sanity check(s)
   ACE_ASSERT(myCurrentState == NULL);
 
-  yy_flex_debug = myTraceScanning;
+//  yy_flex_debug = myTraceScanning;
 
   // create/init a new buffer state
   // *WARNING*: length_in IS already adjusted for two trailing \0's
-  myCurrentState = yy_scan_buffer(data_in, length_in);
+    myCurrentState = IRCScanner_scan_buffer(data_in,
+                                            length_in,
+                                            myScannerContext);
   if (myCurrentState == NULL)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ::yy_scan_buffer(%@, %d), aborting\n"),
+               ACE_TEXT("failed to ::IRCScanner_scan_buffer(%@, %d), aborting\n"),
                data_in,
                (length_in)));
 
+    // what else can we do ?
     return false;
   } // end IF
 
@@ -153,6 +153,8 @@ RPG_Net_Protocol_IRCParserDriver::scan_begin(const char* data_in,
 //     error(std::string("cannot open ") + file);
 //     exit(1);
 //   }
+
+  return true;
 }
 
 void
@@ -164,7 +166,8 @@ RPG_Net_Protocol_IRCParserDriver::scan_end()
   ACE_ASSERT(myCurrentState);
 
   // clean state
-  yy_delete_buffer(myCurrentState);
+  IRCScanner_delete_buffer(myCurrentState,
+                           myScannerContext);
   myCurrentState = NULL;
 
 //  fclose(yyin);

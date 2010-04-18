@@ -33,7 +33,7 @@
 
 /**
  ** \file position.hh
- ** Define the IRCParse::position class.
+ ** Define the yy::position class.
  */
 
 #ifndef BISON_POSITION_HH
@@ -45,7 +45,7 @@
 
 
 
-namespace IRCParse {
+namespace yy {
 
   /// Abstract a position.
   class position
@@ -154,6 +154,6 @@ namespace IRCParse {
 
 
 
-} // IRCParse
+} // yy
 
 #endif // not BISON_POSITION_HH

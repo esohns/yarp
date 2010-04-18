@@ -20,6 +20,10 @@
 
 #include "rpg_net_protocol_IRCparser_driver.h"
 
+#include "rpg_net_protocol_defines.h"
+#include "rpg_net_protocol_IRCparser.h"
+#include "rpg_net_protocol_IRCscanner.h"
+
 #include <ace/Message_Block.h>
 #include <ace/Log_Msg.h>
 
@@ -29,9 +33,13 @@
 RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& traceScanning_in,
                                                                    const bool& traceParsing_in)
  : myTraceScanning(traceScanning_in),
+   myScannerContext(NULL),
+   myCurrentNumMessages(0),
+   myCurrentState(),
+   myCurrentBufferIsResized(false),
    myTraceParsing(traceParsing_in),
-   myCurrentState(NULL),
-   myParser(*this)
+   myParser(*this,            // driver
+            myScannerContext) // scanner context
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver"));
 
@@ -39,7 +47,7 @@ RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& t
   myParser.set_debug_level(myTraceParsing);
 
   // reset the current messge
-  myCurrentMessage.command.discriminator(RPG_Net_Protocol_IRCMessage::INVALID);
+  myCurrentMessage.command.discriminator = RPG_Net_Protocol_IRCMessageCommand::INVALID;
   reset();
 }
 
@@ -47,18 +55,88 @@ RPG_Net_Protocol_IRCParserDriver::~RPG_Net_Protocol_IRCParserDriver ()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::~RPG_Net_Protocol_IRCParserDriver"));
 
+  // fini scanner context
+  if (myScannerContext)
+    IRCScannerlex_destroy(myScannerContext);
 }
 
 const bool
-RPG_Net_Protocol_IRCParserDriver::parse(const ACE_Message_Block* data_in)
+RPG_Net_Protocol_IRCParserDriver::parse(ACE_Message_Block* data_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::parse"));
 
+  // sanity check(s)
+  ACE_ASSERT(data_in);
+
+  // *TODO*: use yyrestart() ?
+  // fini scanner context
+  if (myScannerContext)
+    IRCScannerlex_destroy(myScannerContext);
+  myScannerContext = NULL;
+
+  // init scanner context
+  if (IRCScannerlex_init_extra(&myCurrentNumMessages, // extra data
+                               &myScannerContext))    // scanner context handle
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to IRCScannerlex_init_extra(): \"%m\", aborting\n")));
+
+    // what else can we do ?
+    return false;
+  } // end IF
+  ACE_ASSERT(myScannerContext);
+
+  // *WARNING*: clean up myScannerContext beyond this point...
+
+  // *NOTE*: in order to accomodate flex, the buffer needs two trailing
+  // '\0' characters...
+  // --> make sure it has this capacity
+  if (data_in->space() < RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)
+  {
+    // *sigh*: (try to) resize it then...
+    if (data_in->size(data_in->size() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Message_Block::size(%u), aborting\n"),
+                 (data_in->size() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
+
+      // clean up
+      IRCScannerlex_destroy(myScannerContext);
+      myScannerContext = NULL;
+
+      // what else can we do ?
+      return false;
+    } // end IF
+    myCurrentBufferIsResized = true;
+
+    // *WARNING*: beyond this point, make sure we resize the buffer back
+    // to its original length...
+  } // end IF
+//   for (int i = 0;
+//        i < RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE;
+//        i++)
+//     *(myCurrentBuffer->wr_ptr() + i) = YY_END_OF_BUFFER_CHAR;
+  *(data_in->wr_ptr()) = '\0';
+  *(data_in->wr_ptr() + 1) = '\0';
+
   // start scanner
-  if (!scan_begin(data_in->rd_ptr(), data_in->length()))
+  if (!scan_begin(data_in->rd_ptr(),
+                  data_in->length() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to parse IRC message, aborting\n")));
+
+    // clean up
+    IRCScannerlex_destroy(myScannerContext);
+    myScannerContext = NULL;
+    if (myCurrentBufferIsResized)
+    {
+      if (data_in->size(data_in->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_Message_Block::size(%u), continuing\n"),
+                   (data_in->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
+      myCurrentBufferIsResized = false;
+    } // end IF
 
     return false;
   } // end IF
@@ -66,8 +144,18 @@ RPG_Net_Protocol_IRCParserDriver::parse(const ACE_Message_Block* data_in)
   // parse our data
   int result = myParser.parse();
 
-  // fini scanner
+  // clean up
   scan_end();
+  IRCScannerlex_destroy(myScannerContext);
+  myScannerContext = NULL;
+  if (myCurrentBufferIsResized)
+  {
+    if (data_in->size(data_in->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Message_Block::size(%u), continuing\n"),
+                 (data_in->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
+    myCurrentBufferIsResized = false;
+  } // end IF
 
   return (result == 0);
 }
@@ -77,11 +165,11 @@ RPG_Net_Protocol_IRCParserDriver::getIRCMessage() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::getIRCMessage"));
 
-  return myMessage;
+  return myCurrentMessage;
 }
 
 void
-RPG_Net_Protocol_IRCParserDriver::error(const IRCParse::location& location_in,
+RPG_Net_Protocol_IRCParserDriver::error(const yy::location& location_in,
                                         const std::string& message_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::error"));
@@ -91,7 +179,7 @@ RPG_Net_Protocol_IRCParserDriver::error(const IRCParse::location& location_in,
   converter << location_in;
   ACE_DEBUG((LM_ERROR,
              ACE_TEXT("failed to parse IRC message (location: %s): \"%s\"...\n"),
-             converter.str(),
+             converter.str().c_str(),
              message_in.c_str()));
 
 //   std::clog << location_in << ": " << message_in << std::endl;
@@ -126,27 +214,27 @@ RPG_Net_Protocol_IRCParserDriver::reset()
   myCurrentMessage.host = NULL;
   switch (myCurrentMessage.command.discriminator)
   {
-    case RPG_Net_Protocol_IRCMessage::STRING:
+    case RPG_Net_Protocol_IRCMessageCommand::STRING:
     {
       if (myCurrentMessage.command.string)
         delete myCurrentMessage.command.string;
       myCurrentMessage.command.string = NULL;
-      myCurrentMessage.command.discriminator = INVALID;
+      myCurrentMessage.command.discriminator = RPG_Net_Protocol_IRCMessageCommand::INVALID;
 
       break;
     }
-    case RPG_Net_Protocol_IRCMessage::NUMERIC:
+    case RPG_Net_Protocol_IRCMessageCommand::NUMERIC:
     {
-      myCurrentMessage.command.numeric = RPG_NET_PROTOCOL_IRC_CODES_INVALID;
-      myCurrentMessage.command.discriminator = INVALID;
+      myCurrentMessage.command.numeric = RPG_Net_Protocol_IRC_Codes::RPG_NET_PROTOCOL_IRC_CODES_INVALID;
+      myCurrentMessage.command.discriminator = RPG_Net_Protocol_IRCMessageCommand::INVALID;
 
       break;
     }
     default:
     {
       myCurrentMessage.command.string = NULL;
-      myCurrentMessage.command.numeric = RPG_NET_PROTOCOL_IRC_CODES_INVALID;
-      myCurrentMessage.command.discriminator = INVALID;
+      myCurrentMessage.command.numeric = RPG_Net_Protocol_IRC_Codes::RPG_NET_PROTOCOL_IRC_CODES_INVALID;
+      myCurrentMessage.command.discriminator = RPG_Net_Protocol_IRCMessageCommand::INVALID;
 
       break;
     }

@@ -21,8 +21,6 @@
 #ifndef RPG_NET_PROTOCOL_MODULE_IRCSPLITTER_H
 #define RPG_NET_PROTOCOL_MODULE_IRCSPLITTER_H
 
-#include "rpg_net_protocol_IRCbisect.h"
-
 #include <rpg_net_common.h>
 #include <rpg_net_stream_config.h>
 #include <rpg_net_sessionmessage.h>
@@ -39,6 +37,8 @@
 class Stream_IAllocator;
 class Stream_MessageBase;
 class RPG_Net_Message;
+typedef void* yyscan_t;
+typedef struct yy_buffer_state* YY_BUFFER_STATE;
 
 class RPG_Net_Protocol_Module_IRCSplitter
  : public Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD,
@@ -93,8 +93,8 @@ class RPG_Net_Protocol_Module_IRCSplitter
   const bool putStatisticsMessage(const RPG_Net_RuntimeStatistic&, // statistics info
                                   const ACE_Time_Value&) const;    // statistics generation time
   // helper methods (to drive the scanner)
-  void scan_begin(const char*,    // base address
-                  const size_t&); // length of data block
+  const bool scan_begin(char*,          // base address
+                        const size_t&); // length of data block
   void scan_end();
 
   bool                  myIsInitialized;
@@ -106,7 +106,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
 
   // scanner
   bool                  myTraceScanning;
-  yyscan_t              myScanner;
+  yyscan_t              myScannerContext;
 //   IRCBisectFlexLexer    myScanner;
   unsigned long         myCurrentNumMessages;
   YY_BUFFER_STATE       myCurrentState;
