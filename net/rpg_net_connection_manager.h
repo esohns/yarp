@@ -76,8 +76,8 @@ class RPG_Net_Connection_Manager
   typedef CONNECTIONLIST_TYPE::iterator CONNECTIONLIST_ITERATOR_TYPE;
 
   // *NOTE*: these are used by RPG_Net_SocketHandler_Base
-  const bool registerConnection(RPG_Net_IConnection*);
-  void deregisterConnection(const unsigned long&); // connection ID
+  const bool registerConnection(RPG_Net_IConnection*); // connection
+  void deregisterConnection(const RPG_Net_IConnection*); // connection
 
   // implement RPG_Common_IStatistic
   // *WARNING*: this assumes we're holding our lock !

@@ -33,3 +33,5 @@ libRPG_Net_la_SOURCES = rpg_net_client_sockethandler.cpp \
 	rpg_net_stream_config.h rpg_net_stream_messageallocator.cpp rpg_net_stream_messageallocator.h \
 	rpg_net_stream_socket_base.cpp rpg_net_stream_socket_base.h rpg_net_stream_socket_base.i
 libRPG_Net_la_LDFLAGS = -L/usr/local/lib
+
+SUBDIRS = protocol

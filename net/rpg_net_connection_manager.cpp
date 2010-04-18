@@ -99,11 +99,12 @@ RPG_Net_Connection_Manager::registerConnection(RPG_Net_IConnection* connection_i
     myConnections.push_back(connection_in);
 
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("registered new client connection (total: %u)...\n"),
+               ACE_TEXT("registered connection %@ (total: %u)...\n"),
+               connection_in,
                myConnections.size()));
   } // end lock scope
 
-  // init connection
+  // registered connections are initialized...
   try
   {
     connection_in->init(myUserData);
@@ -130,12 +131,11 @@ RPG_Net_Connection_Manager::registerConnection(RPG_Net_IConnection* connection_i
 }
 
 void
-RPG_Net_Connection_Manager::deregisterConnection(const unsigned long& connectionID_in)
+RPG_Net_Connection_Manager::deregisterConnection(const RPG_Net_IConnection* connection_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::deregisterConnection"));
 
-  bool          found   = false;
-  unsigned long temp_id = 0;
+  bool found = false;
 
   // synch access to myConnections
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
@@ -144,19 +144,7 @@ RPG_Net_Connection_Manager::deregisterConnection(const unsigned long& connection
        iter != myConnections.end();
        iter++)
   {
-    try
-    {
-      temp_id = (*iter)->getID();
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Net_IConnection::getID(), continuing\n")));
-
-      continue;
-    }
-
-    if (temp_id == connectionID_in)
+    if (*iter == connection_in)
     {
       found = true;
       try
@@ -180,14 +168,14 @@ RPG_Net_Connection_Manager::deregisterConnection(const unsigned long& connection
   if (!found)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("connection (ID: %u) not registered, returning\n"),
-               connectionID_in));
+               ACE_TEXT("connection (%@) not registered, returning\n"),
+               connection_in));
   } // end IF
   else
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("deregistered connection (ID: %u) (total remaining: %u)\n"),
-               connectionID_in,
+               ACE_TEXT("deregistered connection (%@) (total: %u)\n"),
+               connection_in,
                myConnections.size()));
   } // end ELSE
 
@@ -215,7 +203,7 @@ RPG_Net_Connection_Manager::abortConnections()
 
   unsigned long num_clients = myConnections.size();
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("aborting %u client connections(s)...\n"),
+             ACE_TEXT("aborting %u connections(s)...\n"),
              num_clients));
 
   CONNECTIONLIST_CONSTITERATOR_TYPE iter = myConnections.begin();
@@ -226,7 +214,7 @@ RPG_Net_Connection_Manager::abortConnections()
     // close connection
     try
     {
-      // *NOTE*: this should implicitly call deregisterConnection !
+      // *NOTE*: implicitly, this invokes deregisterConnection
       (*iter)->abort();
     }
     catch (...)
@@ -237,7 +225,7 @@ RPG_Net_Connection_Manager::abortConnections()
   } // end WHILE
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("aborting %u client connection(s)...DONE\n"),
+             ACE_TEXT("aborting %u connection(s)...DONE\n"),
              num_clients));
 }
 
@@ -253,7 +241,7 @@ RPG_Net_Connection_Manager::waitConnections() const
     while (!myConnections.empty())
     {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("waiting for client connection(s) to close (count: %d)...\n"),
+                 ACE_TEXT("waiting for (count: %d) connection(s) to close...\n"),
                  myConnections.size()));
 
       myCondition.wait();
@@ -300,7 +288,7 @@ RPG_Net_Connection_Manager::abortOldestConnection()
   // close "oldest" connection --> list head
   try
   {
-     // implicitly calls deregisterConnection
+    // implicitly invokes deregisterConnection
     myConnections.front()->abort();
   }
   catch (...)

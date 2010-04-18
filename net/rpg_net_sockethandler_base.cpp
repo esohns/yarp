@@ -56,7 +56,7 @@ RPG_Net_SocketHandlerBase::~RPG_Net_SocketHandlerBase()
 
   // (try to) de-register with connection manager
   if (myIsRegistered)
-    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->deregisterConnection(getID());
+    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->deregisterConnection(this);
 }
 
 int
@@ -189,17 +189,19 @@ RPG_Net_SocketHandlerBase::close(u_long arg_in)
 
       // too many connections: invoke inherited default behavior
       // --> close() --> handle_close() --> ... --> delete "this"
-      return inherited::close();
+      // --> simply fall through to the next case
     }
     // called by external thread wanting to close our connection (see abort())
     case 1:
     {
-      int result = inherited::peer_.close();
-      if (result == -1)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_SOCK_Stream::close(): \"%m\", returning\n")));
-
-      break;
+      // *NOTE*: this is NOT the elegant way to go about "aborting" a connection
+      // (even though it works), as it will confuse the reactor
+      // --> simply call handle_close instead...
+//       int result = inherited::peer_.close();
+//       if (result == -1)
+//         ACE_DEBUG((LM_ERROR,
+//                    ACE_TEXT("failed to ACE_SOCK_Stream::close(): \"%m\", returning\n")));
+      return inherited::close();
     }
     default:
     {

@@ -21,7 +21,7 @@
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>net/net_server</activetarget>
+      <activetarget>net/protocol/IRC_client</activetarget>
     </general>
     <run>
       <mainprogram>/home/unfv/Projects/RPG/test_u/debug/monster/monster_parser</mainprogram>
@@ -53,7 +53,7 @@
         <magic_parser>-d -i ../../magic/rpg_magic.xml -t</magic_parser>
         <chance_dice>-d 6 -m 0 -n 1 -r 1 -s -t</chance_dice>
         <chance_rangeToRoll>-p -r 5-12 -t</chance_rangeToRoll>
-        <net_client>-h localhost -i 1 -s 10101 -t -x</net_client>
+        <net_client>-s -t</net_client>
         <net_server>-i 1 -k 60 -p 10101 -t</net_server>
       </debugarguments>
       <cwd>

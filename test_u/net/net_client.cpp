@@ -74,7 +74,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-s          : stress-test server") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << NET_CLIENT_DEF_CLIENT_USES_TP << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << NET_CLIENT_DEF_CLIENT_USES_TP  << ACE_TEXT(" : ") << NET_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 const bool
@@ -306,8 +306,8 @@ init_signalHandling(const std::vector<int>& signals_inout,
   ACE_Sig_Action signalAction((ACE_SignalHandler)SIG_DFL, // default action (will be overridden below)...
                               ACE_Sig_Set(1),             // mask of signals to be blocked when we're servicing
                                                           // --> block them all ! (except KILL off course...)
-                              (SA_RESTART | SA_SIGINFO)); // flags
-//                                SA_SIGINFO);               // flags
+//                               (SA_RESTART | SA_SIGINFO)); // flags
+                              SA_SIGINFO);               // flags
 
   // register different signals...
   int sigkey = -1;
@@ -587,9 +587,7 @@ do_work(const std::string& serverHostname_in,
 //                  ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
 //     } // end IF
 //   } // end IF
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("closing %u connection(s)...\n"),
-             RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections()));
+
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
