@@ -53,7 +53,14 @@ class RPG_Net_Protocol_Module_IRCParser
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCParser(const RPG_Net_Protocol_Module_IRCParser&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCParser& operator=(const RPG_Net_Protocol_Module_IRCParser&));
 
-  bool myIsInitialized;
+  // message allocator
+  Stream_IAllocator*               myAllocator;
+
+  // driver
+  RPG_Net_Protocol_IRCParserDriver myParserDriver;
+  bool                             myBufferIsResized;
+
+  bool                             myIsInitialized;
 };
 
 // declare module

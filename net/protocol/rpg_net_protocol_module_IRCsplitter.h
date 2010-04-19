@@ -55,6 +55,9 @@ class RPG_Net_Protocol_Module_IRCSplitter
   const bool init(// *** base class initializers ***
                   Stream_IAllocator*,        // message allocator
                   // *** base class initializers END ***
+                  // *NOTE*: this option may be useful for (downstream) parsers that
+                  // only work on one CONTIGUOUS buffer (i.e. cannot parse unaligned bits and pieces)
+                  const bool&,              // "crunch" individual messages ?
                   const unsigned long& = 0, // statistics collecting interval (second(s))
                                             // 0 --> DON'T collect statistics
                   const bool& = false);     // trace scanning ?
@@ -97,7 +100,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
                         const size_t&); // length of data block
   void scan_end();
 
-  bool                  myIsInitialized;
+  bool                  myCrunchMessages;
   unsigned long         mySessionID;
 
   // timer stuff
@@ -115,6 +118,8 @@ class RPG_Net_Protocol_Module_IRCSplitter
   RPG_Net_Message*      myCurrentBuffer;
   unsigned long         myCurrentMessageLength;
   bool                  myCurrentBufferIsResized;
+
+  bool                  myIsInitialized;
 };
 
 // declare module

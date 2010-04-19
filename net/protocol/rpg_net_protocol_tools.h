@@ -18,23 +18,28 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_PROTOCOL_DEFINES_H
-#define RPG_NET_PROTOCOL_DEFINES_H
+#ifndef RPG_NET_PROTOCOL_TOOLS_H
+#define RPG_NET_PROTOCOL_TOOLS_H
 
-// *NOTE*: according to RFC1459, IRC messages SHALL not exceed 512 bytes.
-// - a size of 512 bytes will allow "crunching" messages into a single buffer
-//   --> while this arguably "wastes" some memory, it allows easier
-//       scanning / parsing...
-// - provide an extra 2 '\0' "resilience" bytes needed for scanning with "flex"
-// *WARNING*: be aware that a single read from the connected socket may well
-// cover MORE than one complete message at a time, so this value is just a
-// (somewhat balanced) suggestion...
-#define RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE   (512 + 2)
+#include <ace/Global_Macros.h>
 
-// "\0\0"
-#define RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE 2
-// CRLF = "\r\n"
-#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY        ACE_TEXT_ALWAYS_CHAR("\r\n")
-#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE   ::strlen(RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY);
+#include <string>
+
+// forward declaration(s)
+class RPG_Net_Protocol_IRCMessage;
+
+class RPG_Net_Protocol_Tools
+{
+ public:
+  // debug info
+  static const std::string IRCMessage2String(const RPG_Net_Protocol_IRCMessage&);
+
+ private:
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools());
+  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Protocol_Tools());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools(const RPG_Net_Protocol_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools& operator=(const RPG_Net_Protocol_Tools&));
+};
 
 #endif

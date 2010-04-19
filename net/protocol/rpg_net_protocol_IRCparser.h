@@ -135,7 +135,7 @@ namespace yy {
    enum yytokentype {
      END = 0,
      SPACE = 258,
-     SERVERNAME_NICK = 259,
+     ORIGIN = 259,
      USER = 260,
      HOST = 261,
      CMD_STRING = 262,

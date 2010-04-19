@@ -87,7 +87,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& messa
   // don't care (implies yes per default, if we're part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
 
-// From RFC 1459:
+// according to RFC1459:
 //  <message>  ::= [':' <prefix> <SPACE> ] <command> <params> <crlf>
 //  <prefix>   ::= <servername> | <nick> [ '!' <user> ] [ '@' <host> ]
 //  <command>  ::= <letter> { <letter> } | <number> <number> <number>

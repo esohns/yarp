@@ -3474,14 +3474,14 @@ YY_RULE_SETUP
 { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string(yytext));
-                             return token::SERVERNAME_NICK; }
+                             return token::ORIGIN; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string(yytext));
-                             return token::SERVERNAME_NICK; }
+                             return token::ORIGIN; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP

@@ -31,7 +31,7 @@
 
 RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter()
  : inherited(false), // DON'T auto-start !
-   myIsInitialized(false),
+   myCrunchMessages(false),
    mySessionID(0),
    myStatCollectHandler(this,
                         STATISTICHANDLER_TYPE::ACTION_COLLECT),
@@ -45,7 +45,8 @@ RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter()
    myCurrentMessage(NULL),
    myCurrentBuffer(NULL),
    myCurrentMessageLength(0),
-   myCurrentBufferIsResized(false)
+   myCurrentBufferIsResized(false),
+   myIsInitialized(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter"));
 
@@ -70,6 +71,7 @@ RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter()
 
 const bool
 RPG_Net_Protocol_Module_IRCSplitter::init(Stream_IAllocator* allocator_in,
+                                          const bool& crunchMessages_in,
                                           const unsigned long& statisticsCollectionInterval_in,
                                           const bool& traceScanning_in)
 {
@@ -84,7 +86,7 @@ RPG_Net_Protocol_Module_IRCSplitter::init(Stream_IAllocator* allocator_in,
                ACE_TEXT("re-initializing...\n")));
 
     // clean up
-    myIsInitialized = false;
+    myCrunchMessages = false;
     mySessionID = 0;
     if (myStatCollectHandlerID)
       RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myStatCollectHandlerID);
@@ -105,10 +107,13 @@ RPG_Net_Protocol_Module_IRCSplitter::init(Stream_IAllocator* allocator_in,
     myCurrentBuffer = NULL;
     myCurrentMessageLength = 0;
     myCurrentBufferIsResized = false;
+    myIsInitialized = false;
   } // end IF
 
   // set base class initializer(s)
   inherited::myAllocator = allocator_in;
+
+  myCrunchMessages = crunchMessages_in;
 
   if (statisticsCollectionInterval_in)
   {
@@ -214,6 +219,11 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(Stream_MessageBase*& mess
       if (*(preceding_buffer->rd_ptr() + (preceding_buffer->length() - 1)) == '\r')
       {
         // OK, we have all of it !
+        if (myCrunchMessages)
+        {
+          myCurrentMessage->crunch();
+        } // end IF
+
         // --> push it downstream...
         if (put_next(myCurrentMessage, NULL) == -1)
         {
@@ -256,6 +266,7 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(Stream_MessageBase*& mess
 
     // *WARNING*: beyond this point, make sure we resize the buffer back
     // to its original length...
+    // *NOTE*: this is safe, as realloc() just crops the trailing bytes again...
   } // end IF
 //   for (int i = 0;
 //        i < RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE;
@@ -339,6 +350,11 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(Stream_MessageBase*& mess
         myCurrentBuffer->wr_ptr(myCurrentBuffer->rd_ptr() + (myCurrentMessageLength + RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE));
         // adjust rd_ptr to point to the beginning of the next message
         new_head->rd_ptr(myCurrentMessageLength + RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE);
+
+        if (myCrunchMessages)
+        {
+          myCurrentMessage->crunch();
+        } // end IF
 
         // --> push it downstream...
         if (put_next(myCurrentMessage, NULL) == -1)

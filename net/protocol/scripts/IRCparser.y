@@ -31,17 +31,18 @@ typedef void* yyscan_t;
 
 %code {
 #include "rpg_net_protocol_IRCparser_driver.h"
+#include "rpg_net_protocol_common.h"
 #include <ace/Log_Msg.h>
 }
 
-%token <ival> SPACE           "space"
-%token <sval> SERVERNAME_NICK "servername_nick"
-%token <sval> USER            "user"
-%token <sval> HOST            "host"
-%token <sval> CMD_STRING      "cmd_string"
-%token <ival> CMD_NUMERIC     "cmd_numeric"
-%token <sval> PARAM           "param"
-%token        END 0           "end of message"
+%token <ival> SPACE       "space"
+%token <sval> ORIGIN      "origin"
+%token <sval> USER        "user"
+%token <sval> HOST        "host"
+%token <sval> CMD_STRING  "cmd_string"
+%token <ival> CMD_NUMERIC "cmd_numeric"
+%token <sval> PARAM       "param"
+%token        END 0       "end of message"
 /* %type  <sval> prefix extended_prefix command params params_body */
 
 %printer    { debug_stream() << *$$; } <sval>
@@ -51,25 +52,25 @@ typedef void* yyscan_t;
 %%
 %start message;
 message:          prefix command params "end of message"        {};
-prefix:           ':' "servername_nick" extended_prefix "space" { driver.myCurrentMessage.nick = $2; };
+prefix:           ':' "origin" extended_prefix "space"          { driver.myCurrentMessage->prefix.origin = $2; };
 extended_prefix:  /* empty */
-                  | '!' "user"                                  { driver.myCurrentMessage.user = $2; };
-                  | '@' "host"                                  { driver.myCurrentMessage.host = $2; };
-command:          "cmd_string"                                  { driver.myCurrentMessage.command.string = $1;
-                                                                  driver.myCurrentMessage.command.discriminator = RPG_Net_Protocol_IRCMessageCommand::STRING; };
-                  | "cmd_numeric"                               { driver.myCurrentMessage.command.numeric = RPG_Net_Protocol_IRC_Codes::RFC1459Numeric($1);
-                                                                  driver.myCurrentMessage.command.discriminator = RPG_Net_Protocol_IRCMessageCommand::NUMERIC; };
+                  | '!' "user"                                  { driver.myCurrentMessage->prefix.user = $2; };
+                  | '@' "host"                                  { driver.myCurrentMessage->prefix.host = $2; };
+command:          "cmd_string"                                  { driver.myCurrentMessage->command.string = $1;
+                                                                  driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING; };
+                  | "cmd_numeric"                               { driver.myCurrentMessage->command.numeric = RPG_Net_Protocol_IRC_Codes::RFC1459Numeric($1);
+                                                                  driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC; };
 params:           /* empty */
-                  | "space" params_body                         { if (driver.myCurrentMessage.params == NULL)
-                                                                    ACE_NEW_NORETURN(driver.myCurrentMessage.params,
+                  | "space" params_body                         { if (driver.myCurrentMessage->params == NULL)
+                                                                    ACE_NEW_NORETURN(driver.myCurrentMessage->params,
                                                                                      std::vector<std::string>());
-                                                                  ACE_ASSERT(driver.myCurrentMessage.params);
+                                                                  ACE_ASSERT(driver.myCurrentMessage->params);
                                                                 };
 params_body:      /* empty */
-                  | ':' "param"                                 { ACE_ASSERT(driver.myCurrentMessage.params);
-                                                                  driver.myCurrentMessage.params->push_back(*$2); delete $2; };
-                  | "param" params                              { ACE_ASSERT(driver.myCurrentMessage.params);
-                                                                  driver.myCurrentMessage.params->push_back(*$1); delete $1; };
+                  | ':' "param"                                 { ACE_ASSERT(driver.myCurrentMessage->params);
+                                                                  driver.myCurrentMessage->params->push_back(*$2); delete $2; };
+                  | "param" params                              { ACE_ASSERT(driver.myCurrentMessage->params);
+                                                                  driver.myCurrentMessage->params->push_back(*$1); delete $1; };
 %%
 
 void

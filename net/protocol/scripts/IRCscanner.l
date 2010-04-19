@@ -64,11 +64,11 @@ CRLF           \r\n
 <prefix>{SERVERNAME}       { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string(yytext));
-                             return token::SERVERNAME_NICK; }
+                             return token::ORIGIN; }
 <prefix>{NICK}             { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string(yytext));
-                             return token::SERVERNAME_NICK; }
+                             return token::ORIGIN; }
 <prefix>{SPACE}            { yylloc->step();
                              yylval->ival = yyleng;
                              BEGIN(INITIAL);

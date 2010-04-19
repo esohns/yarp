@@ -21,7 +21,6 @@
 #ifndef RPG_NET_PROTOCOL_IRCPARSER_DRIVER_H
 #define RPG_NET_PROTOCOL_IRCPARSER_DRIVER_H
 
-#include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_IRCparser.h"
 
 #include <ace/Global_Macros.h>
@@ -29,6 +28,7 @@
 #include <string>
 
 // forward declaration(s)
+class RPG_Net_Protocol_IRCMessage;
 class ACE_Message_Block;
 // class IRCParse::RPG_Net_Protocol_IRCParser;
 // typedef void* yyscan_t;
@@ -56,8 +56,13 @@ class RPG_Net_Protocol_IRCParserDriver
                                    const bool& = false); // trace parsing ?
   virtual ~RPG_Net_Protocol_IRCParserDriver();
 
+  // target data, needs to be set PRIOR to invoking parse() !
+  void init(RPG_Net_Protocol_IRCMessage&); // target data
+  // *WARNING*: the argument needs to have been prepared for usage by flex:
+  // --> buffers need two trailing '\0's BEYOND their data
+  //    (at positions length() + 1, length() + 2)
   const bool parse(ACE_Message_Block*); // data
-  const RPG_Net_Protocol_IRCMessage getIRCMessage() const;
+//   const RPG_Net_Protocol_IRCMessage getIRCMessage() const;
 
   // error-handling
   void error(const yy::location&, // location
@@ -75,21 +80,23 @@ class RPG_Net_Protocol_IRCParserDriver
                         const size_t&); // length of data block
   void scan_end();
 
-  // clear current message
-  void reset();
+//   // clear current message
+//   void reset();
 
   // scanner
-  bool                                 myTraceScanning;
-  yyscan_t                             myScannerContext;
+  bool                           myTraceScanning;
+  yyscan_t                       myScannerContext;
 //   IRCBisectFlexLexer    myScanner;
-  unsigned long                        myCurrentNumMessages;
-  YY_BUFFER_STATE                      myCurrentState;
-  bool                                 myCurrentBufferIsResized;
+  unsigned long                  myCurrentNumMessages;
+  YY_BUFFER_STATE                myCurrentState;
 
   // parser
-  bool                                 myTraceParsing;
-  yy::RPG_Net_Protocol_IRCParser       myParser;
-  RPG_Net_Protocol_IRCMessage          myCurrentMessage;
+  bool                           myTraceParsing;
+  yy::RPG_Net_Protocol_IRCParser myParser;
+
+  // target
+  RPG_Net_Protocol_IRCMessage*   myCurrentMessage;
+  bool                           myIsInitialized;
 };
 
 #endif

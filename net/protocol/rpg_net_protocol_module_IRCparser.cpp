@@ -26,6 +26,9 @@
 
 RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser()
  : //inherited(),
+   myParserDriver(false,  // trace scanning ?
+                  false), // trace parsing ?
+   myBufferIsResized(false),
    myIsInitialized(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser"));
@@ -68,12 +71,54 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(Stream_MessageBase*& messag
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::handleDataMessage"));
 
-  // init return value(s), default behavior is to pass all messages along...
-  // --> we don't want that !
-  passMessageDownstream_out = false;
+  // don't care (implies yes per default, if we're part of a stream)
+  ACE_UNUSED_ARG(passMessageDownstream_out);
 
-  // sanity check(s)
-  ACE_ASSERT(message_inout);
-  ACE_ASSERT(myIsInitialized);
+  // *NOTE*: in order to accomodate flex, the buffer needs two trailing
+  // '\0' characters...
+  // --> make sure it has this capacity
+  if (message_inout->space() < RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)
+  {
+    // *sigh*: (try to) resize it then...
+    if (message_inout->size(message_inout->size() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Message_Block::size(%u), aborting\n"),
+                 (message_inout->size() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
 
+      // what else can we do ?
+      return;
+    } // end IF
+    myCurrentBufferIsResized = true;
+
+    // *WARNING*: beyond this point, make sure we resize the buffer back
+    // to its original length...
+  } // end IF
+//   for (int i = 0;
+//        i < RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE;
+//        i++)
+//     *(myCurrentBuffer->wr_ptr() + i) = YY_END_OF_BUFFER_CHAR;
+  *(data_in->wr_ptr()) = '\0';
+  *(data_in->wr_ptr() + 1) = '\0';
+
+  // OK: parse this message
+  if (!myParserDriver.parse(message_inout))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Net_Protocol_IRCParserDriver::parse(ID: %u): \"%m\", aborting\n"),
+               message_inout->getID()));
+
+    // what else can we do ?
+    return;
+  } // end IF
+
+  // clean up
+  if (myCurrentBufferIsResized)
+  {
+    if (message_inout->size(data_in->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Message_Block::size(%u), continuing\n"),
+                 (message_inout->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
+    myCurrentBufferIsResized = false;
+  } // end IF
 }
