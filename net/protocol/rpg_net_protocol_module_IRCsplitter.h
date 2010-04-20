@@ -36,9 +36,9 @@
 // forward declaration(s)
 class Stream_IAllocator;
 class Stream_MessageBase;
-class RPG_Net_Message;
 typedef void* yyscan_t;
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
+class RPG_Net_Protocol_Message;
 
 class RPG_Net_Protocol_Module_IRCSplitter
  : public Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD,
@@ -92,7 +92,6 @@ class RPG_Net_Protocol_Module_IRCSplitter
   typedef RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic> STATISTICHANDLER_TYPE;
 
   // helper methods
-  const bool bisectMessages(RPG_Net_Message*&); // return value: complete message (chain)
   const bool putStatisticsMessage(const RPG_Net_RuntimeStatistic&, // statistics info
                                   const ACE_Time_Value&) const;    // statistics generation time
   // helper methods (to drive the scanner)
@@ -100,26 +99,26 @@ class RPG_Net_Protocol_Module_IRCSplitter
                         const size_t&); // length of data block
   void scan_end();
 
-  bool                  myCrunchMessages;
-  unsigned long         mySessionID;
+  bool                      myCrunchMessages;
+  unsigned long             mySessionID;
 
   // timer stuff
-  STATISTICHANDLER_TYPE myStatCollectHandler;
-  int                   myStatCollectHandlerID;
+  STATISTICHANDLER_TYPE     myStatCollectHandler;
+  int                       myStatCollectHandlerID;
 
   // scanner
-  bool                  myTraceScanning;
-  yyscan_t              myScannerContext;
+  bool                      myTraceScanning;
+  yyscan_t                  myScannerContext;
 //   IRCBisectFlexLexer    myScanner;
-  unsigned long         myCurrentNumMessages;
-  YY_BUFFER_STATE       myCurrentState;
+  unsigned long             myCurrentNumMessages;
+  YY_BUFFER_STATE           myCurrentState;
   // message buffers
-  RPG_Net_Message*      myCurrentMessage;
-  RPG_Net_Message*      myCurrentBuffer;
-  unsigned long         myCurrentMessageLength;
-  bool                  myCurrentBufferIsResized;
+  RPG_Net_Protocol_Message* myCurrentMessage;
+  RPG_Net_Protocol_Message* myCurrentBuffer;
+  unsigned long             myCurrentMessageLength;
+  bool                      myCurrentBufferIsResized;
 
-  bool                  myIsInitialized;
+  bool                      myIsInitialized;
 };
 
 // declare module

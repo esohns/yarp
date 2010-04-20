@@ -20,7 +20,7 @@
 
 #include "rpg_net_protocol_module_IRChandler.h"
 
-#include "rpg_net_message.h"
+#include "rpg_net_protocol_message.h"
 
 #include <stream_iallocator.h>
 
@@ -87,182 +87,71 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& messa
   // don't care (implies yes per default, if we're part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
 
-// according to RFC1459:
-//  <message>  ::= [':' <prefix> <SPACE> ] <command> <params> <crlf>
-//  <prefix>   ::= <servername> | <nick> [ '!' <user> ] [ '@' <host> ]
-//  <command>  ::= <letter> { <letter> } | <number> <number> <number>
-//  <SPACE>    ::= ' ' { ' ' }
-//  <params>   ::= <SPACE> [ ':' <trailing> | <middle> <params> ]
-//  <middle>   ::= <Any *non-empty* sequence of octets not including SPACE
-//                 or NUL or CR or LF, the first of which may not be ':'>
-//  <trailing> ::= <Any, possibly *empty*, sequence of octets not including
-//                   NUL or CR or LF>
-
-  // *TODO*: use some kind of generated parser for this...
-
-  // parse string from start to finish
-
-  // assert leading ':'
-  if (!*message_inout->rd_ptr() == ':')
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to parse message (ID: %u), aborting\n"),
-               message_inout->getID()));
-
-    return;
-  } // end IF
-  message_inout->rd_ptr(1); // skip ahead
-
-  // OK
-  // retrieve type of message and other details...
-  RPG_Net_MessageHeader* message_header = ACE_reinterpret_cast(RPG_Net_MessageHeader*,
-                                                               message_inout->rd_ptr());
-  switch (message_header->messageType)
-  {
-    case RPG_Net_Remote_Comm::RPG_NET_PING:
-    {
-      // auto-answer ?
-      if (myAutomaticPong)
-      {
-        // --> reply with a "PONG"
-
-        // step0: create reply structure
-        // --> get a message buffer
-        RPG_Net_Message* reply_message = allocateMessage(sizeof(RPG_Net_Remote_Comm::PongMessage));
-        if (reply_message == NULL)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to allocate reply message(%u), aborting\n"),
-                     sizeof(RPG_Net_Remote_Comm::PongMessage)));
-
-          return;
-        } // end IF
-        // step1: init reply
-        RPG_Net_Remote_Comm::PongMessage* reply_struct = ACE_reinterpret_cast(RPG_Net_Remote_Comm::PongMessage*,
-                                                                              reply_message->wr_ptr());
-        ACE_OS::memset(reply_struct,
-                       0,
-                       sizeof(RPG_Net_Remote_Comm::PongMessage));
-        reply_struct->messageHeader.messageLength = sizeof(RPG_Net_Remote_Comm::PongMessage) - sizeof(unsigned long);
-        reply_struct->messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PONG;
-        reply_message->wr_ptr(sizeof(RPG_Net_Remote_Comm::PongMessage));
-        // step2: send it upstream
-        if (reply(reply_message, NULL) == -1)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to ACE_Task::reply(): \"%m\", aborting\n")));
-
-          // clean up
-          reply_message->release();
-
-          return;
-        } // end IF
-      } // end IF
-
-      if (myPrintPongDot)
-      {
-        std::clog << '.';
-      } // end IF
-
-      break;
-    }
-    case RPG_Net_Remote_Comm::RPG_NET_PONG:
-    {
-      // nothing to do...
-      break;
-    }
-    default:
-    {
-      // debug info
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("[%u]: unknown message type: \"%s\": protocol error, aborting\n"),
-                 message_inout->getID(),
-                 RPG_Net_Common_Tools::messageType2String(message_header->messageType).c_str()));
-
-      break;
-    }
-  } // end SWITCH
-}
-
-// void
-// RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_SessionMessage*& message_inout,
-//                                                      bool& passMessageDownstream_out)
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage"));
-//
-//   // don't care (implies yes per default, if we're part of a stream)
-//   ACE_UNUSED_ARG(passMessageDownstream_out);
-//
-//   // sanity check(s)
-//   ACE_ASSERT(message_inout);
-//   ACE_ASSERT(myIsInitialized);
-//
-//   switch (message_inout->getType())
+//   switch (message_header->messageType)
 //   {
-//     case Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
+//     case RPG_Net_Remote_Comm::RPG_NET_PING:
 //     {
-//       // remember session ID for reporting...
-//       mySessionID = message_inout->getConfig()->getUserData().sessionID;
+//       // auto-answer ?
+//       if (myAutomaticPong)
+//       {
+//         // --> reply with a "PONG"
 //
+//         // step0: create reply structure
+//         // --> get a message buffer
+//         RPG_Net_Message* reply_message = allocateMessage(sizeof(RPG_Net_Remote_Comm::PongMessage));
+//         if (reply_message == NULL)
+//         {
+//           ACE_DEBUG((LM_ERROR,
+//                      ACE_TEXT("failed to allocate reply message(%u), aborting\n"),
+//                      sizeof(RPG_Net_Remote_Comm::PongMessage)));
+//
+//           return;
+//         } // end IF
+//         // step1: init reply
+//         RPG_Net_Remote_Comm::PongMessage* reply_struct = ACE_reinterpret_cast(RPG_Net_Remote_Comm::PongMessage*,
+//                                                                               reply_message->wr_ptr());
+//         ACE_OS::memset(reply_struct,
+//                        0,
+//                        sizeof(RPG_Net_Remote_Comm::PongMessage));
+//         reply_struct->messageHeader.messageLength = sizeof(RPG_Net_Remote_Comm::PongMessage) - sizeof(unsigned long);
+//         reply_struct->messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PONG;
+//         reply_message->wr_ptr(sizeof(RPG_Net_Remote_Comm::PongMessage));
+//         // step2: send it upstream
+//         if (reply(reply_message, NULL) == -1)
+//         {
+//           ACE_DEBUG((LM_ERROR,
+//                      ACE_TEXT("failed to ACE_Task::reply(): \"%m\", aborting\n")));
+//
+//           // clean up
+//           reply_message->release();
+//
+//           return;
+//         } // end IF
+//       } // end IF
+//
+//       if (myPrintPongDot)
+//       {
+//         std::clog << '.';
+//       } // end IF
+//
+//       break;
+//     }
+//     case RPG_Net_Remote_Comm::RPG_NET_PONG:
+//     {
+//       // nothing to do...
 //       break;
 //     }
 //     default:
 //     {
-//       // don't do anything...
+//       // debug info
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("[%u]: unknown message type: \"%s\": protocol error, aborting\n"),
+//                  message_inout->getID(),
+//                  RPG_Net_Common_Tools::messageType2String(message_header->messageType).c_str()));
+//
 //       break;
 //     }
 //   } // end SWITCH
-// }
-
-void
-RPG_Net_Protocol_Module_IRCHandler::handleTimeout(const void* arg_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::handleTimeout"));
-
-  ACE_UNUSED_ARG(arg_in);
-
-//   // debug info
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("timer (ID: %d) expired...sending ping\n"),
-//              myTimerID));
-
-  // step0: create ping structure --> get a message buffer
-  RPG_Net_Message* ping_message = allocateMessage(sizeof(RPG_Net_Remote_Comm::PingMessage));
-  if (ping_message == NULL)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate ping message(%u), aborting\n"),
-               sizeof(RPG_Net_Remote_Comm::PingMessage)));
-
-    // what else can we do ?
-    return;
-  } // end IF
-
-  // step1: init ping data
-  // *TODO*: clean this up and handle endianness consistently !
-  RPG_Net_Remote_Comm::PingMessage* ping_struct = ACE_reinterpret_cast(RPG_Net_Remote_Comm::PingMessage*,
-                                                                       ping_message->wr_ptr());
-  ACE_OS::memset(ping_struct,
-                 0,
-                 sizeof(RPG_Net_Remote_Comm::PingMessage));
-  ping_struct->messageHeader.messageLength = (sizeof(RPG_Net_Remote_Comm::PingMessage) -
-                                              sizeof(unsigned long));
-  ping_struct->messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PING;
-  ping_struct->counter = myCounter++;
-  ping_message->wr_ptr(sizeof(RPG_Net_Remote_Comm::PingMessage));
-
-  // step2: send it upstream
-  if (reply(ping_message, NULL) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Task::reply(): \"%m\", returning\n")));
-
-    // clean up
-    ping_message->release();
-
-    // what else can we do ?
-    return;
-  } // end IF
 }
 
 void
@@ -279,17 +168,17 @@ RPG_Net_Protocol_Module_IRCHandler::dump_state() const
 //              ACE_TEXT_ALWAYS_CHAR(name())));
 }
 
-RPG_Net_Message*
+RPG_Net_Protocol_Message*
 RPG_Net_Protocol_Module_IRCHandler::allocateMessage(const unsigned long& requestedSize_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::allocateMessage"));
 
   // init return value(s)
-  RPG_Net_Message* message_out = NULL;
+  RPG_Net_Protocol_Message* message_out = NULL;
 
   try
   {
-    message_out = ACE_static_cast(RPG_Net_Message*,
+    message_out = ACE_static_cast(RPG_Net_Protocol_Message*,
                                   myAllocator->malloc(requestedSize_in));
   }
   catch (...)

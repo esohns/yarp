@@ -38,7 +38,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
       converter << ACE_TEXT(", [user: \"") << *message_in.prefix.user << ACE_TEXT("\"]");
     if (message_in.prefix.host)
       converter << ACE_TEXT(", [host: \"") << *message_in.prefix.host << ACE_TEXT("\"]");
-    converter << ACE_TEXT(" \PREFIX") << std::endl;
+    converter << ACE_TEXT(" \\PREFIX") << std::endl;
   } // end IF
   converter << ACE_TEXT("COMMAND ");
   switch (message_in.command.discriminator)
@@ -64,7 +64,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
       return converter.str();
     }
   } // end SWITCH
-  converter << ACE_TEXT(" \COMMAND") << std::endl;
+  converter << ACE_TEXT(" \\COMMAND") << std::endl;
   if (message_in.params)
   {
     if (!message_in.params->empty())
@@ -77,7 +77,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
       {
         converter << ACE_TEXT("#") << i << ACE_TEXT(" :\"") << *iterator << ACE_TEXT("\"") << std::endl;
       } // end FOR
-      converter << ACE_TEXT("\PARAMS") << std::endl;
+      converter << ACE_TEXT("\\PARAMS") << std::endl;
     } // end IF
   } // end IF
 

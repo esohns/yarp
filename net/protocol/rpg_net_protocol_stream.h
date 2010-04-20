@@ -38,7 +38,7 @@
 
 class RPG_Net_Protocol_Stream
  : public Stream_Base<RPG_Net_ConfigPOD,
-                      RPG_Net_Protocol_StreamConfig,
+                      RPG_Net_StreamConfig,
                       RPG_Net_SessionMessage>,
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
@@ -60,7 +60,7 @@ class RPG_Net_Protocol_Stream
 
  private:
   typedef Stream_Base<RPG_Net_ConfigPOD,
-                      RPG_Net_Protocol_StreamConfig,
+                      RPG_Net_StreamConfig,
                       RPG_Net_SessionMessage> inherited;
 
   // safety measures

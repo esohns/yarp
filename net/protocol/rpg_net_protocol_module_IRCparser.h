@@ -21,6 +21,8 @@
 #ifndef RPG_NET_PROTOCOL_MODULE_IRCPARSER_H
 #define RPG_NET_PROTOCOL_MODULE_IRCPARSER_H
 
+#include "rpg_net_protocol_IRCparser_driver.h"
+
 #include <rpg_net_sessionmessage.h>
 
 #include <stream_task_base_synch.h>

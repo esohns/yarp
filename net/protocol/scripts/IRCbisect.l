@@ -23,9 +23,9 @@ MESSAGE  [(?s:.)]*
 
 %%
 <INITIAL>{MESSAGE}/{CRLF}     { BEGIN(end_of_message);
-                                (*yyextra)++;
                                 return yyleng; }
-<end_of_message>{CRLF}        { BEGIN(INITIAL); }
+<end_of_message>{CRLF}        { BEGIN(INITIAL);
+                                (*yyextra)++; }
 <<EOF>>                       { return 0; }
 (?s:.)                        { ACE_DEBUG((LM_ERROR,
                                            ACE_TEXT("invalid character, continuing\n"))); }

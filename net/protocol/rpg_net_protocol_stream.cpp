@@ -117,7 +117,6 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_ConfigPOD& config_in)
     return false;
   } // end IF
   if (!IRCHandler_impl->init(config_in.messageAllocator,
-                             config_in.clientPingInterval,
                              (config_in.clientPingInterval ? false // servers shouldn't receive "pings" in the first place
                                                            : RPG_NET_DEF_CLIENT_PING_PONG), // auto-answer "ping" as a client ?...
                              (config_in.clientPingInterval == 0))) // clients print ('.') dots for received "pings"...
@@ -180,7 +179,10 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_ConfigPOD& config_in)
 
     return false;
   } // end IF
-  if (!IRCSplitter_impl->init())
+  if (!IRCSplitter_impl->init(config_in.messageAllocator, // message allocator
+                              true,                       // "crunch" messages
+                              0,                          // DON'T collect statistics
+                              true))                      // trace scanning
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),

@@ -31,7 +31,7 @@
 // forward declaration(s)
 class Stream_IAllocator;
 class Stream_MessageBase;
-class RPG_Net_Message;
+class RPG_Net_Protocol_Message;
 
 class RPG_Net_Protocol_Module_IRCHandler
  : public Stream_TaskBaseSynch<RPG_Net_SessionMessage>
@@ -48,8 +48,6 @@ class RPG_Net_Protocol_Module_IRCHandler
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
                                  bool&);               // return value: pass message downstream ?
-//   virtual void handleSessionMessage(RPG_Net_SessionMessage*&, // session message handle
-//                                     bool&);                   // return value: pass message downstream ?
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
@@ -62,7 +60,7 @@ class RPG_Net_Protocol_Module_IRCHandler
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCHandler& operator=(const RPG_Net_Protocol_Module_IRCHandler&));
 
   // helper methods
-  RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
+  RPG_Net_Protocol_Message* allocateMessage(const unsigned long&); // requested size
 
   Stream_IAllocator* myAllocator;
   bool               myAutomaticPong;

@@ -18,14 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "rpg_net_module_IRCparser.h"
+#include "rpg_net_protocol_module_IRCparser.h"
 
-#include <rpg_net_message.h>
+#include "rpg_net_protocol_defines.h"
+#include "rpg_net_protocol_message.h"
 
 #include <stream_iallocator.h>
 
 RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser()
  : //inherited(),
+   myAllocator(NULL),
    myParserDriver(false,  // trace scanning ?
                   false), // trace parsing ?
    myBufferIsResized(false),
@@ -54,6 +56,7 @@ RPG_Net_Protocol_Module_IRCParser::init(Stream_IAllocator* allocator_in)
                ACE_TEXT("re-initializing...\n")));
 
     myAllocator = NULL;
+    myBufferIsResized = false;
     myIsInitialized = false;
   } // end IF
 
@@ -74,6 +77,17 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(Stream_MessageBase*& messag
   // don't care (implies yes per default, if we're part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
 
+// according to RFC1459:
+//  <message>  ::= [':' <prefix> <SPACE> ] <command> <params> <crlf>
+//  <prefix>   ::= <servername> | <nick> [ '!' <user> ] [ '@' <host> ]
+//  <command>  ::= <letter> { <letter> } | <number> <number> <number>
+//  <SPACE>    ::= ' ' { ' ' }
+//  <params>   ::= <SPACE> [ ':' <trailing> | <middle> <params> ]
+//  <middle>   ::= <Any *non-empty* sequence of octets not including SPACE
+//                 or NUL or CR or LF, the first of which may not be ':'>
+//  <trailing> ::= <Any, possibly *empty*, sequence of octets not including
+//                   NUL or CR or LF>
+
   // *NOTE*: in order to accomodate flex, the buffer needs two trailing
   // '\0' characters...
   // --> make sure it has this capacity
@@ -89,7 +103,7 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(Stream_MessageBase*& messag
       // what else can we do ?
       return;
     } // end IF
-    myCurrentBufferIsResized = true;
+    myBufferIsResized = true;
 
     // *WARNING*: beyond this point, make sure we resize the buffer back
     // to its original length...
@@ -98,10 +112,14 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(Stream_MessageBase*& messag
 //        i < RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE;
 //        i++)
 //     *(myCurrentBuffer->wr_ptr() + i) = YY_END_OF_BUFFER_CHAR;
-  *(data_in->wr_ptr()) = '\0';
-  *(data_in->wr_ptr() + 1) = '\0';
+  *(message_inout->wr_ptr()) = '\0';
+  *(message_inout->wr_ptr() + 1) = '\0';
 
   // OK: parse this message
+  RPG_Net_Protocol_Message* message = ACE_dynamic_cast(RPG_Net_Protocol_Message*,
+                                                       message_inout);
+  ACE_ASSERT(message);
+  myParserDriver.init(ACE_const_cast(RPG_Net_Protocol_IRCMessage&, *message->getData()));
   if (!myParserDriver.parse(message_inout))
   {
     ACE_DEBUG((LM_ERROR,
@@ -113,12 +131,12 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(Stream_MessageBase*& messag
   } // end IF
 
   // clean up
-  if (myCurrentBufferIsResized)
+  if (myBufferIsResized)
   {
-    if (message_inout->size(data_in->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
+    if (message_inout->size(message_inout->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Message_Block::size(%u), continuing\n"),
                  (message_inout->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
-    myCurrentBufferIsResized = false;
+    myBufferIsResized = false;
   } // end IF
 }

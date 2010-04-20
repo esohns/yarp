@@ -26,6 +26,8 @@
 #include "IRC_common.h"
 #include "IRC_client_signalhandler.h"
 
+#include <rpg_net_protocol_defines.h>
+
 #include <rpg_net_defines.h>
 #include <rpg_net_connection_manager.h>
 #include <rpg_net_stream_messageallocator.h>
