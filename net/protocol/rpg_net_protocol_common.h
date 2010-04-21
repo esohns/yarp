@@ -31,7 +31,7 @@
 #include <ace/Global_Macros.h>
 
 #include <string>
-#include <vector>
+#include <list>
 
 class RPG_Net_Protocol_IRCMessage
  : public RPG_Common_ReferenceCounter
@@ -84,7 +84,7 @@ class RPG_Net_Protocol_IRCMessage
     discriminator_t discriminator;
   } command;
 
-  std::vector<std::string>* params;
+  std::list<std::string>* params;
 
  private:
   typedef RPG_Common_ReferenceCounter inherited;

@@ -23,22 +23,24 @@
 %option prefix="IRCScanner" yylineno
 
 /* *TODO*: "see RFC 952 [DNS:4] for details on allowed hostnames..."
-           --> {HOST} is just an (uninformed) suggestion */
+           --> [[:alpha:][:digit:].]+ is just an (uninformed) suggestion */
+
 SPACE          [ ]+
-HOST           [[:alpha:][:digit:][:punct:]]+
+HOST           [[:alpha:][:digit:].]+
 SERVERNAME     {HOST}
-LETTER         [:alpha:]
+/*LETTER         [:alpha:]*/
+LETTER         [a-zA-Z]
 NUMBER         [:digit:]
 SPECIAL        [-\[\]\\`^{}]
 NICK           {LETTER}[{LETTER}{NUMBER}{SPECIAL}]*
 ORIGIN         {SERVERNAME}|{NICK}
-NONWHITE       ([(?s:.)]{-}[ \t\0\r\n])+
+NONWHITE       ([\x00-\xFF]{-}[ \t\0\r\n])+
 USER           {NONWHITE}
-CHSTRING       ([(?s:.)]{-}[ \b\0\r\n,])+
+CHSTRING       ([\x00-\xFF]{-}[ \b\0\r\n,])+
 MASK           [#$]{CHSTRING}
 CHANNEL        [#&]{CHSTRING}
-PARAM          ([(?s:.)]{-}[ \0\r\n])+
-TRAILING_PARAM ([(?s:.)]{-}[\0\r\n])*
+PARAM          ([\x00-\xFF]{-}[: \0\r\n])([\x00-\xFF]{-}[ \0\r\n])*
+TRAILING_PARAM ([\x00-\xFF]{-}[\0\r\n])*
 CRLF           \r\n
 
 %s             prefix
@@ -56,19 +58,20 @@ CRLF           \r\n
   yylloc->step();
   typedef yy::RPG_Net_Protocol_IRCParser::token token;
   typedef yy::RPG_Net_Protocol_IRCParser::token_type token_type;
+//  yy_flex_debug=1;
 %}
 
-<INITIAL>':'               { yylloc->step();
+<INITIAL>":"               { yylloc->step();
                              BEGIN(prefix);
                              return token_type(yytext[0]); }
 <prefix>{
 {SPACE}                    { yylloc->step();
                              BEGIN(INITIAL);
                              return token::SPACE; }
-'!'                        { yylloc->step();
+"!"                        { yylloc->step();
                              BEGIN(user);
                              return token_type(yytext[0]); }
-'@'                        { yylloc->step();
+"@"                        { yylloc->step();
                              BEGIN(host);
                              return token_type(yytext[0]); }
 {ORIGIN}                   { yylloc->step();
@@ -97,9 +100,8 @@ CRLF           \r\n
                              return token::CMD_NUMERIC; }
 <params>{
 {SPACE}                    { yylloc->step();
-                             yylval->ival = yyleng;
                              return token::SPACE; }
-':'                        { yylloc->step();
+":"                        { yylloc->step();
                              BEGIN(trailing);
                              return token_type(yytext[0]); }
 {PARAM}                    { yylloc->step();
@@ -112,10 +114,14 @@ CRLF           \r\n
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string(yytext));
                              return token::PARAM; }
-<INITIAL>{CRLF}            { yylloc->step();
-                             return token::END; }
+<INITIAL>{CRLF}            { yylloc->step(); }
 <<EOF>>                    { yylloc->step();
                              yyterminate(); }
-<*>(?s:.)                  { driver.error(*yylloc, ACE_TEXT("invalid character"));
+(?s:.)                     { driver.error(*yylloc, ACE_TEXT("invalid character"));
+                             // debug info
+                             ACE_DEBUG((LM_ERROR,
+                                        ACE_TEXT("invalid character: \"%c\", aborting\n"),
+                                        yytext[0]));
+
                              return token_type(yytext[0]); }
 %%

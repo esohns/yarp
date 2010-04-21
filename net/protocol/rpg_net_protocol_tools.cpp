@@ -71,11 +71,11 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
     {
       converter << ACE_TEXT("PARAMS") << std::endl;
       int i = 1;
-      for (std::vector<std::string>::const_iterator iterator = message_in.params->begin();
+      for (std::list<std::string>::const_iterator iterator = message_in.params->begin();
            iterator != message_in.params->end();
            iterator++, i++)
       {
-        converter << ACE_TEXT("#") << i << ACE_TEXT(" :\"") << *iterator << ACE_TEXT("\"") << std::endl;
+        converter << ACE_TEXT("#") << i << ACE_TEXT(" : \"") << *iterator << ACE_TEXT("\"") << std::endl;
       } // end FOR
       converter << ACE_TEXT("\\PARAMS") << std::endl;
     } // end IF

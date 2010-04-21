@@ -509,18 +509,18 @@ namespace yy {
 
     { if (driver.myCurrentMessage->params == NULL)
                                                                   ACE_NEW_NORETURN(driver.myCurrentMessage->params,
-                                                                                   std::vector<std::string>());
+                                                                                   std::list<std::string>());
                                                                 ACE_ASSERT(driver.myCurrentMessage->params);
-                                                                driver.myCurrentMessage->params->push_back(*(yysemantic_stack_[(2) - (2)].sval)); }
+                                                                driver.myCurrentMessage->params->push_front(*(yysemantic_stack_[(2) - (2)].sval)); }
     break;
 
   case 13:
 
     { if (driver.myCurrentMessage->params == NULL)
                                                                   ACE_NEW_NORETURN(driver.myCurrentMessage->params,
-                                                                                   std::vector<std::string>());
+                                                                                   std::list<std::string>());
                                                                 ACE_ASSERT(driver.myCurrentMessage->params);
-                                                                driver.myCurrentMessage->params->push_back(*(yysemantic_stack_[(3) - (1)].sval)); }
+                                                                driver.myCurrentMessage->params->push_front(*(yysemantic_stack_[(3) - (1)].sval)); }
     break;
 
 
@@ -862,8 +862,8 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyrline_[] =
   {
-         0,    55,    55,    56,    57,    58,    59,    60,    60,    61,
-      62,    64,    66,    71
+         0,    56,    56,    57,    58,    59,    60,    61,    61,    62,
+      63,    65,    67,    72
   };
 
   // Print the state stack on the debug stream.

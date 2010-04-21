@@ -338,13 +338,13 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(Stream_MessageBase*& mess
         scanned_bytes += RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE;
         myCurrentMessageLength += scanned_bytes;
 
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("message (ID: %u, length: %u): frame boundary [#%u] @ offset %u...\n"),
-                   myCurrentBuffer->getID(),
-                   myCurrentMessageLength,
-                   myCurrentNumFrames,
-                   (scanned_bytes + (myCurrentBuffer->rd_ptr() - myCurrentBuffer->base()))));
+//         // debug info
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("message (ID: %u, length: %u): frame boundary [#%u] @ offset %u...\n"),
+//                    myCurrentBuffer->getID(),
+//                    myCurrentMessageLength,
+//                    myCurrentNumFrames,
+//                    (scanned_bytes + (myCurrentBuffer->rd_ptr() - myCurrentBuffer->base()))));
 
         // OK, so we have all of it !
         // use copy ctor and just reference the same data block...
@@ -407,10 +407,10 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(Stream_MessageBase*& mess
     myCurrentBufferIsResized = false;
   } // end IF
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("found %u frame bounds...\n"),
-             myCurrentNumFrames));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("found %u frame bounds...\n"),
+//              myCurrentNumFrames));
 }
 
 void

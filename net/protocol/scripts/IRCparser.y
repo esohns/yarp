@@ -52,6 +52,7 @@ typedef void* yyscan_t;
 
 %%
 %start message;
+%nonassoc ':' '!' '@';
 message:      ':' "origin" ext_prefix                         { driver.myCurrentMessage->prefix.origin = $2; };
               | body
               | "end of message"
@@ -65,14 +66,14 @@ body:         "cmd_string" "space" params "end of message"    { driver.myCurrent
                                                                 driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC; };
 params:       ':' "param"                                     { if (driver.myCurrentMessage->params == NULL)
                                                                   ACE_NEW_NORETURN(driver.myCurrentMessage->params,
-                                                                                   std::vector<std::string>());
+                                                                                   std::list<std::string>());
                                                                 ACE_ASSERT(driver.myCurrentMessage->params);
-                                                                driver.myCurrentMessage->params->push_back(*$2); };
+                                                                driver.myCurrentMessage->params->push_front(*$2); };
               | "param" "space" params                        { if (driver.myCurrentMessage->params == NULL)
                                                                   ACE_NEW_NORETURN(driver.myCurrentMessage->params,
-                                                                                   std::vector<std::string>());
+                                                                                   std::list<std::string>());
                                                                 ACE_ASSERT(driver.myCurrentMessage->params);
-                                                                driver.myCurrentMessage->params->push_back(*$1); };
+                                                                driver.myCurrentMessage->params->push_front(*$1); };
 %%
 
 void
