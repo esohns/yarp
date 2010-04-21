@@ -22,18 +22,18 @@
 /* %option bison-bridge bison-locations stack */
 %option prefix="IRCScanner" yylineno
 
-COLON          ':'
+/* *TODO*: "see RFC 952 [DNS:4] for details on allowed hostnames..."
+           --> {HOST} is just an (uninformed) suggestion */
 SPACE          [ ]+
-HOST           [:alnum:]+
+HOST           [[:alpha:][:digit:][:punct:]]+
 SERVERNAME     {HOST}
 LETTER         [:alpha:]
 NUMBER         [:digit:]
 SPECIAL        [-\[\]\\`^{}]
-NICK           {LETTER}({LETTER}|{NUMBER}|{SPECIAL})*
-EXCLAMATION    '!'
-NONWHITE       [(?s:.)]{-}[ \t\0\r\n]
-USER           {NONWHITE}+
-AT             '@'
+NICK           {LETTER}[{LETTER}{NUMBER}{SPECIAL}]*
+ORIGIN         {SERVERNAME}|{NICK}
+NONWHITE       ([(?s:.)]{-}[ \t\0\r\n])+
+USER           {NONWHITE}
 CHSTRING       ([(?s:.)]{-}[ \b\0\r\n,])+
 MASK           [#$]{CHSTRING}
 CHANNEL        [#&]{CHSTRING}
@@ -58,25 +58,20 @@ CRLF           \r\n
   typedef yy::RPG_Net_Protocol_IRCParser::token_type token_type;
 %}
 
-<INITIAL>{COLON}           { yylloc->step();
+<INITIAL>':'               { yylloc->step();
                              BEGIN(prefix);
                              return token_type(yytext[0]); }
 <prefix>{
 {SPACE}                    { yylloc->step();
-                             yylval->ival = yyleng;
                              BEGIN(INITIAL);
                              return token::SPACE; }
-{EXCLAMATION}              { yylloc->step();
+'!'                        { yylloc->step();
                              BEGIN(user);
                              return token_type(yytext[0]); }
-{AT}                       { yylloc->step();
+'@'                        { yylloc->step();
                              BEGIN(host);
                              return token_type(yytext[0]); }
-{SERVERNAME}               { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
-                             return token::ORIGIN; }
-{NICK}                     { yylloc->step();
+{ORIGIN}                   { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string(yytext));
                              return token::ORIGIN; }
@@ -104,7 +99,7 @@ CRLF           \r\n
 {SPACE}                    { yylloc->step();
                              yylval->ival = yyleng;
                              return token::SPACE; }
-{COLON}                    { yylloc->step();
+':'                        { yylloc->step();
                              BEGIN(trailing);
                              return token_type(yytext[0]); }
 {PARAM}                    { yylloc->step();
@@ -113,67 +108,14 @@ CRLF           \r\n
                              return token::PARAM; }
 } // end <params>
 <trailing>{TRAILING_PARAM} { yylloc->step();
+                             BEGIN(INITIAL);
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string(yytext));
                              return token::PARAM; }
-<*>{CRLF}                  { yylloc->step();
+<INITIAL>{CRLF}            { yylloc->step();
                              return token::END; }
 <<EOF>>                    { yylloc->step();
-                             return token::END; }
+                             yyterminate(); }
 <*>(?s:.)                  { driver.error(*yylloc, ACE_TEXT("invalid character"));
                              return token_type(yytext[0]); }
 %%
-
-// const bool
-// RPG_Net_Protocol_IRCParserDriver::scan_begin(char* data_in,
-//                                              const size_t& length_in)
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::scan_begin"));
-//
-//   // sanity check(s)
-//   ACE_ASSERT(myCurrentState == NULL);
-//
-// //  yy_flex_debug = myTraceScanning;
-//
-//   // create/init a new buffer state
-//   // *WARNING*: length_in IS already adjusted for two trailing \0's
-//     myCurrentState = IRCScanner_scan_buffer(data_in,
-//                                             length_in,
-//                                             myScannerContext);
-//   if (myCurrentState == NULL)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to ::IRCScanner_scan_buffer(%@, %d), aborting\n"),
-//                data_in,
-//                (length_in)));
-//
-//     // what else can we do ?
-//     return false;
-//   } // end IF
-//
-// //   if (file == "-")
-// //     yyin = stdin;
-// //   else if (!(yyin = fopen(file.c_str (), "r")))
-// //   {
-// //     error(std::string("cannot open ") + file);
-// //     exit(1);
-// //   }
-//
-//   return true;
-// }
-//
-// void
-// RPG_Net_Protocol_IRCParserDriver::scan_end()
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::scan_end"));
-//
-//   // sanity check(s)
-//   ACE_ASSERT(myCurrentState);
-//
-//   // clean state
-//   IRCScanner_delete_buffer(myCurrentState,
-//                            myScannerContext);
-//   myCurrentState = NULL;
-//
-// //  fclose(yyin);
-// }

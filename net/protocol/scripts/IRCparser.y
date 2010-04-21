@@ -36,7 +36,7 @@ typedef void* yyscan_t;
 #include <ace/Log_Msg.h>
 }
 
-%token <ival> SPACE       "space"
+%token        SPACE       "space"
 %token <sval> ORIGIN      "origin"
 %token <sval> USER        "user"
 %token <sval> HOST        "host"
@@ -44,7 +44,7 @@ typedef void* yyscan_t;
 %token <ival> CMD_NUMERIC "cmd_numeric"
 %token <sval> PARAM       "param"
 %token        END 0       "end of message"
-/* %type  <sval> prefix extended_prefix command params params_body */
+/* %type  <sval> message ext_prefix ext_prefix_2 body params */
 
 %printer    { debug_stream() << *$$; } <sval>
 %destructor { delete $$; } <sval>
@@ -52,27 +52,27 @@ typedef void* yyscan_t;
 
 %%
 %start message;
-message:          prefix command params "end of message"        {};
-prefix:           /* empty */
-                  | ':' "origin" extended_prefix "space"        { driver.myCurrentMessage->prefix.origin = $2; };
-extended_prefix:  /* empty */
-                  | '!' "user"                                  { driver.myCurrentMessage->prefix.user = $2; };
-                  | '@' "host"                                  { driver.myCurrentMessage->prefix.host = $2; };
-command:          "cmd_string"                                  { driver.myCurrentMessage->command.string = $1;
-                                                                  driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING; };
-                  | "cmd_numeric"                               { driver.myCurrentMessage->command.numeric = RPG_Net_Protocol_IRC_Codes::RFC1459Numeric($1);
-                                                                  driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC; };
-params:           /* empty */
-                  | "space" params_body                         { if (driver.myCurrentMessage->params == NULL)
-                                                                    ACE_NEW_NORETURN(driver.myCurrentMessage->params,
-                                                                                     std::vector<std::string>());
-                                                                  ACE_ASSERT(driver.myCurrentMessage->params);
-                                                                };
-params_body:      /* empty */
-                  | ':' "param"                                 { ACE_ASSERT(driver.myCurrentMessage->params);
-                                                                  driver.myCurrentMessage->params->push_back(*$2); delete $2; };
-                  | "param" params                              { ACE_ASSERT(driver.myCurrentMessage->params);
-                                                                  driver.myCurrentMessage->params->push_back(*$1); delete $1; };
+message:      ':' "origin" ext_prefix                         { driver.myCurrentMessage->prefix.origin = $2; };
+              | body
+              | "end of message"
+ext_prefix:   '!' "user" ext_prefix_2                         { driver.myCurrentMessage->prefix.user = $2; };
+              | "space" body                                  { };
+ext_prefix_2: | '@' "host" body                               { driver.myCurrentMessage->prefix.host = $2; };
+              | "space" body                                  { };
+body:         "cmd_string" "space" params "end of message"    { driver.myCurrentMessage->command.string = $1;
+                                                                driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING; };
+              | "cmd_numeric" "space" params "end of message" { driver.myCurrentMessage->command.numeric = RPG_Net_Protocol_IRC_Codes::RFC1459Numeric($1);
+                                                                driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC; };
+params:       ':' "param"                                     { if (driver.myCurrentMessage->params == NULL)
+                                                                  ACE_NEW_NORETURN(driver.myCurrentMessage->params,
+                                                                                   std::vector<std::string>());
+                                                                ACE_ASSERT(driver.myCurrentMessage->params);
+                                                                driver.myCurrentMessage->params->push_back(*$2); };
+              | "param" "space" params                        { if (driver.myCurrentMessage->params == NULL)
+                                                                  ACE_NEW_NORETURN(driver.myCurrentMessage->params,
+                                                                                   std::vector<std::string>());
+                                                                ACE_ASSERT(driver.myCurrentMessage->params);
+                                                                driver.myCurrentMessage->params->push_back(*$1); };
 %%
 
 void
