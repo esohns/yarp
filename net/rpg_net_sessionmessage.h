@@ -34,24 +34,27 @@ class ACE_Allocator;
 // *NOTE*: this avoids a circular dependency...
 class RPG_Net_Message;
 // class RPG_Net_StreamMessageAllocator;
-template <typename MessageType, typename SessionMessageType> class Stream_MessageAllocatorHeapBase;
+// template <typename MessageType, typename SessionMessageType> class Stream_MessageAllocatorHeapBase;
 
 class RPG_Net_SessionMessage
  : public Stream_SessionMessageBase<RPG_Net_StreamConfig>
 {
-  // enable access to specific private ctors...
+//   // enable access to private ctor(s)...
 //   friend class RPG_Net_StreamMessageAllocator;
-  friend class Stream_MessageAllocatorHeapBase<RPG_Net_Message, RPG_Net_SessionMessage>;
-
+//   friend class Stream_MessageAllocatorHeapBase<RPG_Net_Message, RPG_Net_SessionMessage>;
  public:
   // *NOTE*: assume lifetime responsibility for the second argument !
   RPG_Net_SessionMessage(const unsigned long&,             // session ID
                          const Stream_SessionMessageType&, // session message type
                          RPG_Net_StreamConfig*&);          // config handle
+    // *NOTE*: to be used by message allocators...
+  RPG_Net_SessionMessage(ACE_Allocator*); // message allocator
+  RPG_Net_SessionMessage(ACE_Data_Block*, // data block
+                         ACE_Allocator*); // message allocator
   virtual ~RPG_Net_SessionMessage();
 
-  // overloaded from ACE_Message_Block
-  // *WARNING*: any children need to override this too !
+  // override from ACE_Message_Block
+  // *WARNING*: any children need to override this as well
   virtual ACE_Message_Block* duplicate(void) const;
 
  private:
@@ -59,15 +62,9 @@ class RPG_Net_SessionMessage
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SessionMessage());
-  // copy ctor to be used by duplicate()
+  // copy ctor (to be used by duplicate())
   RPG_Net_SessionMessage(const RPG_Net_SessionMessage&);
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SessionMessage& operator=(const RPG_Net_SessionMessage&));
-
-  // *NOTE*: these may be used by message allocators...
-  // *WARNING*: these ctors are NOT threadsafe...
-  RPG_Net_SessionMessage(ACE_Allocator*); // message allocator
-  RPG_Net_SessionMessage(ACE_Data_Block*, // data block
-                         ACE_Allocator*); // message allocator
 };
 
 #endif

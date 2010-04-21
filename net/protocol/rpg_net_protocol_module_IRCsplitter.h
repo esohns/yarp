@@ -57,7 +57,8 @@ class RPG_Net_Protocol_Module_IRCSplitter
                   // *** base class initializers END ***
                   // *NOTE*: this option may be useful for (downstream) parsers that
                   // only work on one CONTIGUOUS buffer (i.e. cannot parse unaligned bits and pieces)
-                  const bool&,              // "crunch" individual messages ?
+                  // *WARNING*: will NOT work with multithreaded stream processing --> USE WITH CAUTION !
+                  const bool& = false,      // "crunch" completed messages ?
                   const unsigned long& = 0, // statistics collecting interval (second(s))
                                             // 0 --> DON'T collect statistics
                   const bool& = false);     // trace scanning ?
@@ -110,7 +111,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
   bool                      myTraceScanning;
   yyscan_t                  myScannerContext;
 //   IRCBisectFlexLexer    myScanner;
-  unsigned long             myCurrentNumMessages;
+  unsigned long             myCurrentNumFrames;
   YY_BUFFER_STATE           myCurrentState;
   // message buffers
   RPG_Net_Protocol_Message* myCurrentMessage;

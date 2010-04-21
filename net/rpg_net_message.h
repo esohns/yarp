@@ -44,9 +44,7 @@ class RPG_Net_Message
 //   friend class RPG_Net_StreamMessageAllocator;
   friend class Stream_MessageAllocatorHeapBase<RPG_Net_Message,
                                                RPG_Net_SessionMessage>;
-
  public:
-//   RPG_Net_Message();
   virtual ~RPG_Net_Message();
 
   // used for pre-allocated messages...
@@ -79,12 +77,11 @@ class RPG_Net_Message
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Message());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Message& operator=(const RPG_Net_Message&));
-
-  // *NOTE*: this is used by allocators during init...
+  // *NOTE*: to be used by allocators...
   RPG_Net_Message(ACE_Data_Block*, // data block to use
                   ACE_Allocator*); // message allocator
 //   RPG_Net_Message(ACE_Allocator*); // message allocator
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Message& operator=(const RPG_Net_Message&));
 
   // *NOTE*: pre-allocated messages may not have been initialized...
   bool myIsInitialized;

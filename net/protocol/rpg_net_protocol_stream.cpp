@@ -180,7 +180,7 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_ConfigPOD& config_in)
     return false;
   } // end IF
   if (!IRCSplitter_impl->init(config_in.messageAllocator, // message allocator
-                              true,                       // "crunch" messages
+                              false,                      // "crunch" messages
                               0,                          // DON'T collect statistics
                               true))                      // trace scanning
   {

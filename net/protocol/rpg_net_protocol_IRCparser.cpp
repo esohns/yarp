@@ -478,34 +478,34 @@ namespace yy {
     {}
     break;
 
-  case 3:
+  case 4:
 
     { driver.myCurrentMessage->prefix.origin = (yysemantic_stack_[(4) - (2)].sval); }
     break;
 
-  case 5:
+  case 6:
 
     { driver.myCurrentMessage->prefix.user = (yysemantic_stack_[(2) - (2)].sval); }
     break;
 
-  case 6:
+  case 7:
 
     { driver.myCurrentMessage->prefix.host = (yysemantic_stack_[(2) - (2)].sval); }
     break;
 
-  case 7:
+  case 8:
 
     { driver.myCurrentMessage->command.string = (yysemantic_stack_[(1) - (1)].sval);
                                                                   driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING; }
     break;
 
-  case 8:
+  case 9:
 
     { driver.myCurrentMessage->command.numeric = RPG_Net_Protocol_IRC_Codes::RFC1459Numeric((yysemantic_stack_[(1) - (1)].ival));
                                                                   driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC; }
     break;
 
-  case 10:
+  case 11:
 
     { if (driver.myCurrentMessage->params == NULL)
                                                                     ACE_NEW_NORETURN(driver.myCurrentMessage->params,
@@ -514,13 +514,13 @@ namespace yy {
                                                                 }
     break;
 
-  case 12:
+  case 13:
 
     { ACE_ASSERT(driver.myCurrentMessage->params);
                                                                   driver.myCurrentMessage->params->push_back(*(yysemantic_stack_[(2) - (2)].sval)); delete (yysemantic_stack_[(2) - (2)].sval); }
     break;
 
-  case 13:
+  case 14:
 
     { ACE_ASSERT(driver.myCurrentMessage->params);
                                                                   driver.myCurrentMessage->params->push_back(*(yysemantic_stack_[(2) - (1)].sval)); delete (yysemantic_stack_[(2) - (1)].sval); }
@@ -747,9 +747,9 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yydefact_[] =
   {
-         0,     0,     0,     0,     4,     1,     7,     8,     9,     0,
-       0,     0,    11,     0,     5,     6,     3,     9,     0,    10,
-       2,    13,    12
+         3,     0,     0,     0,     5,     1,     8,     9,    10,     0,
+       0,     0,    12,     0,     6,     7,     4,    10,     0,    11,
+       2,    14,    13
   };
 
   /* YYPGOTO[NTERM-NUM].  */
@@ -810,16 +810,16 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyr1_[] =
   {
-         0,    13,    14,    15,    16,    16,    16,    17,    17,    18,
-      18,    19,    19,    19
+         0,    13,    14,    15,    15,    16,    16,    16,    17,    17,
+      18,    18,    19,    19,    19
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyr2_[] =
   {
-         0,     2,     4,     4,     0,     2,     2,     1,     1,     0,
-       2,     0,     2,     2
+         0,     2,     4,     0,     4,     0,     2,     2,     1,     1,
+       0,     2,     0,     2,     2
   };
 
 #if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
@@ -840,10 +840,10 @@ namespace yy {
   const RPG_Net_Protocol_IRCParser::rhs_number_type
   RPG_Net_Protocol_IRCParser::yyrhs_[] =
   {
-        14,     0,    -1,    15,    17,    18,     0,    -1,    10,     4,
-      16,     3,    -1,    -1,    11,     5,    -1,    12,     6,    -1,
-       7,    -1,     8,    -1,    -1,     3,    19,    -1,    -1,    10,
-       9,    -1,     9,    18,    -1
+        14,     0,    -1,    15,    17,    18,     0,    -1,    -1,    10,
+       4,    16,     3,    -1,    -1,    11,     5,    -1,    12,     6,
+      -1,     7,    -1,     8,    -1,    -1,     3,    19,    -1,    -1,
+      10,     9,    -1,     9,    18,    -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -851,16 +851,16 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyprhs_[] =
   {
-         0,     0,     3,     8,    13,    14,    17,    20,    22,    24,
-      25,    28,    29,    32
+         0,     0,     3,     8,     9,    14,    15,    18,    21,    23,
+      25,    26,    29,    30,    33
   };
 
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyrline_[] =
   {
-         0,    54,    54,    55,    56,    57,    58,    59,    61,    63,
-      64,    69,    70,    72
+         0,    55,    55,    56,    57,    58,    59,    60,    61,    63,
+      65,    66,    71,    72,    74
   };
 
   // Print the state stack on the debug stream.

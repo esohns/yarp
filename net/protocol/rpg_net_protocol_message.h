@@ -46,32 +46,26 @@ class RPG_Net_Protocol_Message
                                                RPG_Net_SessionMessage>;
 
  public:
-//   RPG_Net_Protocol_Message();
   virtual ~RPG_Net_Protocol_Message();
-
-  // used for pre-allocated messages...
-  virtual void init(// Stream_DataMessageBase members
-                    RPG_Net_Protocol_IRCMessage*&, // data handle
-                    // ACE_Message_Block members
-                    ACE_Data_Block*);              // data block to use
 
   // implement RPG_Net_IDumpState
   virtual void dump_state() const;
 
   // "normalize" the data in this message (fragment) by:
-  // - aligning the rd_ptr with base() --> ACE_Message_Block::crunch()/::memmove()
-  // - COPYING all bits from any continuation(s) into our buffer (until
-  //   capacity() has been reached)
-  // - adjusting the write pointer accordingly
-  // - releasing obsoleted continuations
+  // 1. aligning the rd_ptr with base() --> ACE_Message_Block::crunch()/::memmove()
+  // *WARNING*: if we share buffers, this may well clobber data referenced by
+  // preceding messages THAT MAY STILL BE IN USE DOWNSTREAM
+  // --> safe only IFF stream processing is single-threaded !
+  // --> still, we make a "best-effort", simply to reduce fragmentation...
+  // 2. COPYING all bits from any continuation(s) into our buffer (until
+  //    capacity() has been reached)
+  // 3. adjusting the write pointer accordingly
+  // 4. releasing obsoleted continuations
   // --> *NOTE*: IF this is done CONSISTENTLY, AND:
   // - our buffer has capacity for a FULL message (i.e. maximum allowed size)
   // - our peer keeps to the standard and doesn't send oversized messages (!)
   // --> THEN this measure ensures that EVERY single buffer contains a CONTIGUOUS
   //     and COMPLETE message...
-  // *WARNING*: if we share buffers, this may well clobber data referenced by
-  // preceding messages THAT MAY STILL BE IN USE DOWNSTREAM
-  // --> safe only IFF stream processing is single-threaded !
   void crunch();
 
   // overrides from ACE_Message_Block
@@ -91,13 +85,10 @@ class RPG_Net_Protocol_Message
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Message());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Message& operator=(const RPG_Net_Protocol_Message&));
 
-  // *NOTE*: this is used by allocators during init...
+  // *NOTE*: to be used by allocators...
   RPG_Net_Protocol_Message(ACE_Data_Block*, // data block to use
                            ACE_Allocator*); // message allocator
 //   RPG_Net_Protocol_Message(ACE_Allocator*); // message allocator
-
-  // *NOTE*: pre-allocated messages start un-initialized...
-  bool myIsInitialized;
 };
 
 #endif

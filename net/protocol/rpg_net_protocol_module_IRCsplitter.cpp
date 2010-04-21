@@ -41,7 +41,7 @@ RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter()
 //    myScanner(NULL,  // no default input stream
 //              NULL), // no default output stream
    myScannerContext(NULL),
-   myCurrentNumMessages(0),
+   myCurrentNumFrames(0),
    myCurrentState(NULL),
    myCurrentMessage(NULL),
    myCurrentBuffer(NULL),
@@ -98,7 +98,7 @@ RPG_Net_Protocol_Module_IRCSplitter::init(Stream_IAllocator* allocator_in,
     if (myScannerContext)
       yylex_destroy(myScannerContext);
     myScannerContext = NULL;
-    myCurrentNumMessages = 0;
+    myCurrentNumFrames = 0;
     if (myCurrentState)
       yy_delete_buffer(myCurrentState, myScannerContext);
     myCurrentState = NULL;
@@ -143,8 +143,8 @@ RPG_Net_Protocol_Module_IRCSplitter::init(Stream_IAllocator* allocator_in,
   myTraceScanning = traceScanning_in;
 
   // init scanner context
-  if (yylex_init_extra(&myCurrentNumMessages, // extra data
-                       &myScannerContext))    // scanner context handle
+  if (yylex_init_extra(&myCurrentNumFrames, // extra data
+                       &myScannerContext))  // scanner context handle
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to yylex_init_extra(): \"%m\", aborting\n")));
@@ -215,8 +215,8 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(Stream_MessageBase*& mess
     {
       ACE_Message_Block* preceding_buffer = myCurrentMessage;
       for (;
-            preceding_buffer->cont() != myCurrentBuffer;
-            preceding_buffer = preceding_buffer->cont());
+           preceding_buffer->cont() != myCurrentBuffer;
+           preceding_buffer = preceding_buffer->cont());
       if (*(preceding_buffer->rd_ptr() + (preceding_buffer->length() - 1)) == '\r')
       {
         // OK, we have all of it !
@@ -299,32 +299,25 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(Stream_MessageBase*& mess
   } // end IF
 
   // scan it !
-  myCurrentNumMessages = 0;
+  myCurrentNumFrames = 0;
   bool finished_scanning = false;
+  int scanned_bytes = 0;
+  unsigned long scanned_chunk = 0;
 //   while (myCurrentMessageLength = myScanner.yylex())
   do
   {
-    myCurrentMessageLength = yylex(myScannerContext);
-    switch (myCurrentMessageLength)
+    scanned_chunk = yylex(myScannerContext);
+    switch (scanned_chunk)
     {
-//       case -1:
-//       {
-//       //     ACE_DEBUG((LM_ERROR,
-//     //                ACE_TEXT("failed to IRCBisectFlexLexer::yylex(): \"%m\", aborting\n")));
-//         ACE_DEBUG((LM_ERROR,
-//                    ACE_TEXT("failed to yylex(): \"%m\", aborting\n")));
-      //
-//         // what else can we do ?
-//         return false;
-//       }
       case 0:
       {
         // --> finished scanning ?
 
-        // *WARNING*: we may ALSO get here if the message was "empty" ("\r\n")
+        // *WARNING*: we may ALSO get here if the message (or just this
+        // buffer !) was "empty" ("\r\n")
         // --> according to the RFC, this is valid (!)
         // --> pass the message on
-        // --> fall through and continue scanning
+        // --> fall through (and continue scanning !)
         if (::strncmp(myCurrentBuffer->rd_ptr(),
                       RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY,
                       RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE))
@@ -332,30 +325,37 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(Stream_MessageBase*& mess
           // ... that's not the case, so we're done
           finished_scanning = true; // no (more) frame boundaries found
 
+          // remember how much we scanned, though
+          myCurrentMessageLength += scanned_bytes;
+
           break;
         } // end IF
       }
-      default:
+      case -1:
       {
-        // OK: found a frame boundary !
+        // this means we've found a frame border scanned_bytes bytes into
+        // the buffer
+        scanned_bytes += RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE;
+        myCurrentMessageLength += scanned_bytes;
 
         // debug info
         ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("message (ID: %u): found frame #%u (length: %u), boundary at offset %u...\n"),
+                   ACE_TEXT("message (ID: %u, length: %u): frame boundary [#%u] @ offset %u...\n"),
                    myCurrentBuffer->getID(),
-                   myCurrentNumMessages,
-                   (myCurrentMessageLength + RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE),
-                   (myCurrentMessageLength + (myCurrentBuffer->rd_ptr() - myCurrentBuffer->base()))));
+                   myCurrentMessageLength,
+                   myCurrentNumFrames,
+                   (scanned_bytes + (myCurrentBuffer->rd_ptr() - myCurrentBuffer->base()))));
 
-        // OK, we have all of it !
+        // OK, so we have all of it !
         // use copy ctor and just reference the same data block...
         RPG_Net_Protocol_Message* new_head = ACE_dynamic_cast(RPG_Net_Protocol_Message*,
                                                               myCurrentBuffer->duplicate());
-
         // adjust wr_ptr to make (total-)length() work...
-        myCurrentBuffer->wr_ptr(myCurrentBuffer->rd_ptr() + (myCurrentMessageLength + RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE));
+        myCurrentBuffer->wr_ptr(myCurrentBuffer->rd_ptr() + scanned_bytes);
+        // sanity check
+        ACE_ASSERT(myCurrentMessageLength == myCurrentMessage->total_length());
         // adjust rd_ptr to point to the beginning of the next message
-        new_head->rd_ptr(myCurrentMessageLength + RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE);
+        new_head->rd_ptr(scanned_bytes);
 
         if (myCrunchMessages)
         {
@@ -376,18 +376,27 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(Stream_MessageBase*& mess
         myCurrentMessage = new_head;
         myCurrentBuffer = myCurrentMessage;
 
+        // reset state
+        myCurrentMessageLength = 0;
+        scanned_bytes = 0;
+
+        // ...continue scanning !
+        break;
+      }
+      default:
+      {
+        // scanned one/some character(s)...
+        scanned_bytes += scanned_chunk;
+
         break;
       }
     } // end SWITCH
   } while (!finished_scanning);
 
-  // no (more) frames within this buffer...
-  myCurrentMessageLength = 0;
-
   // clean up
   scan_end();
   // *NOTE*: that even if we've sent some frames downstream in the meantime,
-  // we're still referencing the same buffer we resized earlier, as it's always
+  // we're still referencing the same buffer we resized earlier - it's always
   // the new "head" message...
   if (myCurrentBufferIsResized)
   {
@@ -400,9 +409,8 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(Stream_MessageBase*& mess
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("message (ID: %u): contains %u frames...\n"),
-             myCurrentBuffer->getID(),
-             myCurrentNumMessages));
+             ACE_TEXT("found %u frame bounds...\n"),
+             myCurrentNumFrames));
 }
 
 void

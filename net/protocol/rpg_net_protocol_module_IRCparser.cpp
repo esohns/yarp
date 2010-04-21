@@ -30,7 +30,6 @@ RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser()
    myAllocator(NULL),
    myParserDriver(false,  // trace scanning ?
                   false), // trace parsing ?
-   myBufferIsResized(false),
    myIsInitialized(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser"));
@@ -56,7 +55,6 @@ RPG_Net_Protocol_Module_IRCParser::init(Stream_IAllocator* allocator_in)
                ACE_TEXT("re-initializing...\n")));
 
     myAllocator = NULL;
-    myBufferIsResized = false;
     myIsInitialized = false;
   } // end IF
 
@@ -88,55 +86,42 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(Stream_MessageBase*& messag
 //  <trailing> ::= <Any, possibly *empty*, sequence of octets not including
 //                   NUL or CR or LF>
 
-  // *NOTE*: in order to accomodate flex, the buffer needs two trailing
-  // '\0' characters...
-  // --> make sure it has this capacity
-  if (message_inout->space() < RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)
-  {
-    // *sigh*: (try to) resize it then...
-    if (message_inout->size(message_inout->size() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Message_Block::size(%u), aborting\n"),
-                 (message_inout->size() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
-
-      // what else can we do ?
-      return;
-    } // end IF
-    myBufferIsResized = true;
-
-    // *WARNING*: beyond this point, make sure we resize the buffer back
-    // to its original length...
-  } // end IF
-//   for (int i = 0;
-//        i < RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE;
-//        i++)
-//     *(myCurrentBuffer->wr_ptr() + i) = YY_END_OF_BUFFER_CHAR;
-  *(message_inout->wr_ptr()) = '\0';
-  *(message_inout->wr_ptr() + 1) = '\0';
-
-  // OK: parse this message
+  // allocate the target data container and attach it to our current message
   RPG_Net_Protocol_Message* message = ACE_dynamic_cast(RPG_Net_Protocol_Message*,
                                                        message_inout);
   ACE_ASSERT(message);
-  myParserDriver.init(ACE_const_cast(RPG_Net_Protocol_IRCMessage&, *message->getData()));
-  if (!myParserDriver.parse(message_inout))
+  RPG_Net_Protocol_IRCMessage* container = NULL;
+  ACE_NEW_NORETURN(container,
+                   RPG_Net_Protocol_IRCMessage());
+  if (!container)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Net_Protocol_IRCParserDriver::parse(ID: %u): \"%m\", aborting\n"),
-               message_inout->getID()));
+               ACE_TEXT("failed to allocate RPG_Net_Protocol_IRCMessage: \"%m\", aborting\n")));
 
     // what else can we do ?
     return;
   } // end IF
+  message->init(container);
 
-  // clean up
-  if (myBufferIsResized)
+  // *NOTE*: message has assumed control over "container"...
+
+  // OK: parse this message
+
+  // debug info:
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("parsing message(ID: %u, %u byte(s))\n\"%s\"\n"),
+             message->getID(),
+             message->length(),
+             message->rd_ptr()));
+
+  myParserDriver.init(ACE_const_cast(RPG_Net_Protocol_IRCMessage&, *message->getData()));
+  if (!myParserDriver.parse(message))
   {
-    if (message_inout->size(message_inout->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Message_Block::size(%u), continuing\n"),
-                 (message_inout->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
-    myBufferIsResized = false;
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Net_Protocol_IRCParserDriver::parse(ID: %u), aborting\n"),
+               message->getID()));
+
+    // what else can we do ?
+    return;
   } // end IF
 }

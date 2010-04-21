@@ -57,10 +57,8 @@ class RPG_Net_Protocol_Module_IRCParser
 
   // message allocator
   Stream_IAllocator*               myAllocator;
-
   // driver
   RPG_Net_Protocol_IRCParserDriver myParserDriver;
-  bool                             myBufferIsResized;
 
   bool                             myIsInitialized;
 };

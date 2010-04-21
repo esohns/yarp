@@ -75,20 +75,21 @@ class RPG_Net_Protocol_IRCParserDriver
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_IRCParserDriver(const RPG_Net_Protocol_IRCParserDriver&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_IRCParserDriver& operator=(const RPG_Net_Protocol_IRCParserDriver&));
 
-  // helper methods
-  const bool scan_begin(char*,          // base address
-                        const size_t&); // length of data block
-  void scan_end();
-
 //   // clear current message
 //   void reset();
+
+  // helper methods
+  const bool scan_begin();
+  void scan_end();
 
   // scanner
   bool                           myTraceScanning;
   yyscan_t                       myScannerContext;
 //   IRCBisectFlexLexer    myScanner;
   unsigned long                  myCurrentNumMessages;
-  YY_BUFFER_STATE                myCurrentState;
+  ACE_Message_Block*             myCurrentFragment;
+  bool                           myFragmentIsResized;
+  YY_BUFFER_STATE                myCurrentBufferState;
 
   // parser
   bool                           myTraceParsing;

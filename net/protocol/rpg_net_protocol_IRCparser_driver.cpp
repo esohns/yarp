@@ -36,7 +36,9 @@ RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& t
  : myTraceScanning(traceScanning_in),
    myScannerContext(NULL),
    myCurrentNumMessages(0),
-   myCurrentState(),
+   myCurrentFragment(NULL),
+   myFragmentIsResized(false),
+   myCurrentBufferState(NULL),
    myTraceParsing(traceParsing_in),
    myParser(*this,             // driver
             myScannerContext), // scanner context
@@ -88,29 +90,37 @@ RPG_Net_Protocol_IRCParserDriver::parse(ACE_Message_Block* data_in)
   ACE_ASSERT(myIsInitialized);
   ACE_ASSERT(data_in);
 
-  // *TODO*: use yyrestart() ?
+  // start with the first fragment...
+  myCurrentFragment = data_in;
 
-  // init scanner
-  if (!scan_begin(data_in->rd_ptr(),
-                  data_in->length() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to parse IRC message, aborting\n")));
+  // *NOTE*: we parse ALL available message fragments
+  // *TODO*: yyrestart(), yy_create_buffer/yy_switch_to_buffer, YY_INPUT...
+  int result = -1;
+  do
+  { // init scan buffer
+    if (!scan_begin())
+    {
+      ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("failed to parse IRC message fragment, aborting\n")));
 
-    // clean up
-    myIsInitialized = false;
+      // clean up
+      myCurrentFragment = NULL;
 
-    return false;
-  } // end IF
+      break;
+    } // end IF
 
-  // parse our data
-  int result = myParser.parse();
+    // parse our data
+    result = myParser.parse();
+    if (result)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to parse IRC message fragment, continuing\n")));
 
-  // clean up
+    // fini buffer/scanner
+    scan_end();
+  } while (myCurrentFragment);
+
+  // reset state
   myIsInitialized = false;
-
-  // fini scanner
-  scan_end();
 
   return (result == 0);
 }
@@ -151,6 +161,99 @@ RPG_Net_Protocol_IRCParserDriver::error(const std::string& message_in)
              message_in.c_str()));
 
 //   std::clog << message_in << std::endl;
+}
+
+const bool
+RPG_Net_Protocol_IRCParserDriver::scan_begin()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::scan_begin"));
+
+  // sanity check(s)
+  ACE_ASSERT(myCurrentBufferState == NULL);
+  ACE_ASSERT(myCurrentFragment);
+
+  // *NOTE*: in order to accomodate flex, the buffer needs two trailing
+  // '\0' characters...
+  // --> make sure it has this capacity
+  if (myCurrentFragment->space() < RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)
+  {
+  // *sigh*: (try to) resize it then...
+    if (myCurrentFragment->size(myCurrentFragment->size() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
+    {
+      ACE_DEBUG((LM_ERROR,
+                  ACE_TEXT("failed to ACE_Message_Block::size(%u), aborting\n"),
+                  (myCurrentFragment->size() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
+
+    // what else can we do ?
+      return false;
+    } // end IF
+    myFragmentIsResized = true;
+
+    // *WARNING*: beyond this point, make sure we resize the buffer back
+    // to its original length...
+  } // end IF
+//   for (int i = 0;
+//        i < RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE;
+//        i++)
+//     *(myCurrentBuffer->wr_ptr() + i) = YY_END_OF_BUFFER_CHAR;
+  *(myCurrentFragment->wr_ptr()) = '\0';
+  *(myCurrentFragment->wr_ptr() + 1) = '\0';
+
+//  yy_flex_debug = myTraceScanning;
+
+  // create/init a new buffer state
+  myCurrentBufferState = IRCScanner_scan_buffer(myCurrentFragment->rd_ptr(),
+                                                (myCurrentFragment->length() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE),
+                                                myScannerContext);
+  if (myCurrentBufferState == NULL)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ::IRCScanner_scan_buffer(%@, %d), aborting\n"),
+               myCurrentFragment->rd_ptr(),
+               (myCurrentFragment->length() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
+
+    // clean up
+    if (myFragmentIsResized)
+    {
+      if (myCurrentFragment->size(myCurrentFragment->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_Message_Block::size(%u), continuing\n"),
+                   (myCurrentFragment->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
+      myFragmentIsResized = false;
+    } // end IF
+
+    // what else can we do ?
+    return false;
+  } // end IF
+
+  return true;
+}
+
+void
+RPG_Net_Protocol_IRCParserDriver::scan_end()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::scan_end"));
+
+  // sanity check(s)
+  ACE_ASSERT(myCurrentBufferState);
+
+  // clean buffer
+  if (myFragmentIsResized)
+  {
+    if (myCurrentFragment->size(myCurrentFragment->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Message_Block::size(%u), continuing\n"),
+                 (myCurrentFragment->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
+    myFragmentIsResized = false;
+  } // end IF
+
+  // clean state
+  IRCScanner_delete_buffer(myCurrentBufferState,
+                           myScannerContext);
+  myCurrentBufferState = NULL;
+
+  // switch fragment (perhaps we have MORE data in any continuation(s))
+  myCurrentFragment = myCurrentFragment->cont();
 }
 
 // void

@@ -919,7 +919,7 @@ static yyconst yy_state_type yy_NUL_trans[14] =
 
 static yyconst flex_int16_t yy_rule_linenum[4] =
     {   0,
-       25,   28,   30
+       25,   27,   31
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -1324,13 +1324,14 @@ yyg->yy_c_buf_p = yy_cp -= 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 { BEGIN(end_of_message);
-                                (*yyextra)++;
                                 return yyleng; }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-{ BEGIN(INITIAL); }
+{ BEGIN(INITIAL);
+                                (*yyextra)++;
+                                return -1; }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(end_of_message):
@@ -1338,8 +1339,7 @@ case YY_STATE_EOF(end_of_message):
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-{ ACE_DEBUG((LM_ERROR,
-                                           ACE_TEXT("invalid character, continuing\n"))); }
+{ return 1; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP

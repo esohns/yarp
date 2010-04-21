@@ -61,114 +61,119 @@ CRLF           \r\n
 <INITIAL>{COLON}           { yylloc->step();
                              BEGIN(prefix);
                              return token_type(yytext[0]); }
-<prefix>{SERVERNAME}       { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
-                             return token::ORIGIN; }
-<prefix>{NICK}             { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
-                             return token::ORIGIN; }
-<prefix>{SPACE}            { yylloc->step();
+<prefix>{
+{SPACE}                    { yylloc->step();
                              yylval->ival = yyleng;
                              BEGIN(INITIAL);
                              return token::SPACE; }
-<prefix>{EXCLAMATION}      { yylloc->step();
+{EXCLAMATION}              { yylloc->step();
                              BEGIN(user);
                              return token_type(yytext[0]); }
+{AT}                       { yylloc->step();
+                             BEGIN(host);
+                             return token_type(yytext[0]); }
+{SERVERNAME}               { yylloc->step();
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext));
+                             return token::ORIGIN; }
+{NICK}                     { yylloc->step();
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext));
+                             return token::ORIGIN; }
+} // end <prefix>
 <user>{USER}               { yylloc->step();
                              BEGIN(prefix);
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string(yytext));
                              return token::USER; }
-<prefix>{AT}               { yylloc->step();
-                             BEGIN(host);
-                             return token_type(yytext[0]); }
 <host>{HOST}               { yylloc->step();
                              BEGIN(prefix);
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string(yytext));
                              return token::HOST; }
-{LETTER}+                  { yylloc->step();
+<INITIAL>{LETTER}+         { yylloc->step();
                              BEGIN(params);
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string(yytext));
                              return token::CMD_STRING; }
-{NUMBER}{3}                { yylloc->step();
+<INITIAL>{NUMBER}{3}       { yylloc->step();
                              BEGIN(params);
                              yylval->ival = ::atoi(yytext);
                              return token::CMD_NUMERIC; }
-<params>{SPACE}            { yylloc->step();
+<params>{
+{SPACE}                    { yylloc->step();
                              yylval->ival = yyleng;
                              return token::SPACE; }
-<params>{COLON}            { yylloc->step();
+{COLON}                    { yylloc->step();
                              BEGIN(trailing);
                              return token_type(yytext[0]); }
+{PARAM}                    { yylloc->step();
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext));
+                             return token::PARAM; }
+} // end <params>
 <trailing>{TRAILING_PARAM} { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string(yytext));
                              return token::PARAM; }
-<params>{PARAM}            { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
-                             return token::PARAM; }
-{CRLF}                     { yylloc->step();
-                             BEGIN(INITIAL); }
+<*>{CRLF}                  { yylloc->step();
+                             return token::END; }
 <<EOF>>                    { yylloc->step();
                              return token::END; }
-(?s:.)                     driver.error(*yylloc, ACE_TEXT("invalid character"));
+<*>(?s:.)                  { driver.error(*yylloc, ACE_TEXT("invalid character"));
+                             return token_type(yytext[0]); }
 %%
 
-const bool
-RPG_Net_Protocol_IRCParserDriver::scan_begin(char* data_in,
-                                             const size_t& length_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::scan_begin"));
-
-  // sanity check(s)
-  ACE_ASSERT(myCurrentState == NULL);
-
-//  yy_flex_debug = myTraceScanning;
-
-  // create/init a new buffer state
-  // *WARNING*: length_in IS already adjusted for two trailing \0's
-    myCurrentState = IRCScanner_scan_buffer(data_in,
-                                            length_in,
-                                            myScannerContext);
-  if (myCurrentState == NULL)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ::IRCScanner_scan_buffer(%@, %d), aborting\n"),
-               data_in,
-               (length_in)));
-
-    // what else can we do ?
-    return false;
-  } // end IF
-
-//   if (file == "-")
-//     yyin = stdin;
-//   else if (!(yyin = fopen(file.c_str (), "r")))
+// const bool
+// RPG_Net_Protocol_IRCParserDriver::scan_begin(char* data_in,
+//                                              const size_t& length_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::scan_begin"));
+//
+//   // sanity check(s)
+//   ACE_ASSERT(myCurrentState == NULL);
+//
+// //  yy_flex_debug = myTraceScanning;
+//
+//   // create/init a new buffer state
+//   // *WARNING*: length_in IS already adjusted for two trailing \0's
+//     myCurrentState = IRCScanner_scan_buffer(data_in,
+//                                             length_in,
+//                                             myScannerContext);
+//   if (myCurrentState == NULL)
 //   {
-//     error(std::string("cannot open ") + file);
-//     exit(1);
-//   }
-
-  return true;
-}
-
-void
-RPG_Net_Protocol_IRCParserDriver::scan_end()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::scan_end"));
-
-  // sanity check(s)
-  ACE_ASSERT(myCurrentState);
-
-  // clean state
-  IRCScanner_delete_buffer(myCurrentState,
-                           myScannerContext);
-  myCurrentState = NULL;
-
-//  fclose(yyin);
-}
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to ::IRCScanner_scan_buffer(%@, %d), aborting\n"),
+//                data_in,
+//                (length_in)));
+//
+//     // what else can we do ?
+//     return false;
+//   } // end IF
+//
+// //   if (file == "-")
+// //     yyin = stdin;
+// //   else if (!(yyin = fopen(file.c_str (), "r")))
+// //   {
+// //     error(std::string("cannot open ") + file);
+// //     exit(1);
+// //   }
+//
+//   return true;
+// }
+//
+// void
+// RPG_Net_Protocol_IRCParserDriver::scan_end()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::scan_end"));
+//
+//   // sanity check(s)
+//   ACE_ASSERT(myCurrentState);
+//
+//   // clean state
+//   IRCScanner_delete_buffer(myCurrentState,
+//                            myScannerContext);
+//   myCurrentState = NULL;
+//
+// //  fclose(yyin);
+// }

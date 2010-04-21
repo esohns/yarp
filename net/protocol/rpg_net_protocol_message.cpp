@@ -24,8 +24,7 @@
 #include <ace/Malloc_Base.h>
 
 RPG_Net_Protocol_Message::RPG_Net_Protocol_Message(const RPG_Net_Protocol_Message& message_in)
- : inherited(message_in),
-   myIsInitialized(message_in.myIsInitialized)
+ : inherited(message_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::RPG_Net_Protocol_Message"));
 
@@ -33,9 +32,8 @@ RPG_Net_Protocol_Message::RPG_Net_Protocol_Message(const RPG_Net_Protocol_Messag
 
 RPG_Net_Protocol_Message::RPG_Net_Protocol_Message(ACE_Data_Block* dataBlock_in,
                                                    ACE_Allocator* messageAllocator_in)
- : inherited(dataBlock_in,         // use (don't own !) this data block
-             messageAllocator_in), // use this when destruction is imminent...
-   myIsInitialized(false) // not initialized --> call init() !
+ : inherited(dataBlock_in,        // use (don't own !) this data block
+             messageAllocator_in) // use this when destruction is imminent...
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::RPG_Net_Protocol_Message"));
 
@@ -54,28 +52,7 @@ RPG_Net_Protocol_Message::~RPG_Net_Protocol_Message()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::~RPG_Net_Protocol_Message"));
 
-  // *NOTE*: this will be called just BEFORE we're passed back
-  // to the allocator !!!
-
-  // clean up
-  myIsInitialized = false;
-}
-
-void
-RPG_Net_Protocol_Message::init(RPG_Net_Protocol_IRCMessage*& data_in,
-                               ACE_Data_Block* dataBlock_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::init"));
-
-  // sanity check: shouldn't be initialized...
-  ACE_ASSERT(!myIsInitialized);
-
-  // init base class...
-  inherited::init(data_in,
-                  dataBlock_in);
-
-  // OK
-  myIsInitialized = true;
+  // *NOTE*: will be called just BEFORE we're passed back to the allocator
 }
 
 void
@@ -96,17 +73,24 @@ RPG_Net_Protocol_Message::crunch()
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::crunch"));
 
   // sanity check
-  // *WARNING*: this is NOT enough, it might just be a race...
-  ACE_ASSERT(reference_count() == 1);
+  // *WARNING*: this is NOT enough, it's a race.
+  // Anyway, there may be trailing messages and/or pieces referencing the same
+  // buffer...
+  // --> in fact, that should be the norm
+//   ACE_ASSERT(reference_count() == 1);
+  // ... assuming stream processing is indeed single-threaded, then the
+  // reference count at this stage SHOULD be 2: us, and the next,
+  // trailing "message head". Off course, it COULD be just "us"...
+  if (reference_count() <= 2)
+  {  // step1: align rd_ptr() with base()
+    if (inherited::crunch())
+    {
+      ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("failed to ACE_Message_Block::crunch(): \"%m\", aborting\n")));
 
-  // step1: align rd_ptr() with base()
-  if (inherited::crunch())
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Message_Block::crunch(): \"%m\", aborting\n")));
-
-    // what can we do ?
-    return;
+      // what can we do ?
+      return;
+    } // end IF
   } // end IF
 
   // step2: copy the data
@@ -195,7 +179,7 @@ RPG_Net_Protocol_Message::duplicate(void) const
     } // end IF
   } // end IF
 
-  // *NOTE*: if "this" is initialized, so is the "clone" (and vice-versa)...
+  // *NOTE*: the "clone" always starts un-initialized --> use inherited::init()
 
   return nb;
 }

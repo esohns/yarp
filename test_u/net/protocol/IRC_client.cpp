@@ -27,10 +27,10 @@
 #include "IRC_client_signalhandler.h"
 
 #include <rpg_net_protocol_defines.h>
+#include <rpg_net_protocol_messageallocator.h>
 
 #include <rpg_net_defines.h>
 #include <rpg_net_connection_manager.h>
-#include <rpg_net_stream_messageallocator.h>
 
 #include <rpg_common_tools.h>
 
@@ -404,8 +404,8 @@ do_work(const std::string& serverHostname_in,
 
   // step2a: init stream configuration object
   Stream_AllocatorHeap heapAllocator;
-  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
-                                                  &heapAllocator);
+  RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
+                                                     &heapAllocator);
   RPG_Net_ConfigPOD config;
   ACE_OS::memset(&config,
                   0,

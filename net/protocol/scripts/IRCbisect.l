@@ -25,10 +25,10 @@ MESSAGE  [(?s:.)]*
 <INITIAL>{MESSAGE}/{CRLF}     { BEGIN(end_of_message);
                                 return yyleng; }
 <end_of_message>{CRLF}        { BEGIN(INITIAL);
-                                (*yyextra)++; }
+                                (*yyextra)++;
+                                return -1; }
 <<EOF>>                       { return 0; }
-(?s:.)                        { ACE_DEBUG((LM_ERROR,
-                                           ACE_TEXT("invalid character, continuing\n"))); }
+<*>(?s:.)                     { return 1; }
 %%
 
 const bool

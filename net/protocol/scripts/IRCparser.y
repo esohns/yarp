@@ -1,6 +1,7 @@
 %require "2.4.1"
 %error-verbose
 %define parser_class_name "RPG_Net_Protocol_IRCParser"
+/* %define api.pure */
 /* %define namespace "" */
 /* %name-prefix "IRCParse" */
 
@@ -52,7 +53,8 @@ typedef void* yyscan_t;
 %%
 %start message;
 message:          prefix command params "end of message"        {};
-prefix:           ':' "origin" extended_prefix "space"          { driver.myCurrentMessage->prefix.origin = $2; };
+prefix:           /* empty */
+                  | ':' "origin" extended_prefix "space"        { driver.myCurrentMessage->prefix.origin = $2; };
 extended_prefix:  /* empty */
                   | '!' "user"                                  { driver.myCurrentMessage->prefix.user = $2; };
                   | '@' "host"                                  { driver.myCurrentMessage->prefix.host = $2; };
