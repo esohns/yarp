@@ -52,9 +52,9 @@ class RPG_Net_Protocol_IRCMessage
 
     struct Prefix
     {
-      std::string* origin; // <servername> || <nick>
-      std::string* user;
-      std::string* host;
+      std::string origin; // <servername> || <nick>
+      std::string user;
+      std::string host;
     } prefix;
 
     struct Command
@@ -73,7 +73,7 @@ class RPG_Net_Protocol_IRCMessage
       discriminator_t discriminator;
     } command;
 
-    std::list<std::string>* params;
+    std::list<std::string> params;
 
   private:
    typedef RPG_Common_ReferenceCounter inherited;

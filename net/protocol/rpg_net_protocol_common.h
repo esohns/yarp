@@ -26,6 +26,32 @@
 
 #include <stream_streammodule_base.h>
 
+#include <ace/Singleton.h>
+#include <ace/Synch.h>
+
+// forward declaration(s)
+template <typename ConfigType>
+class RPG_Net_Connection_Manager;
+
+struct RPG_Net_Protocol_ConfigPOD
+{
+  // ************ connection config data ************
+  unsigned long            clientPingInterval; // used by the server...
+  int                      socketBufferSize;
+  Stream_IAllocator*       messageAllocator;
+  unsigned long            defaultBufferSize;
+  // ************ stream config data ************
+  bool                     debugParser;
+  unsigned long            sessionID; // (== socket handle !)
+  unsigned long            statisticsReportingInterval;
+  // ************ runtime data ************
+  RPG_Net_RuntimeStatistic currentStatistics;
+  ACE_Time_Value           lastCollectionTimestamp;
+};
+
+typedef ACE_Singleton<RPG_Net_Connection_Manager<RPG_Net_Protocol_ConfigPOD>,
+                      ACE_Recursive_Thread_Mutex> RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON;
+
 // declare module
 DATASTREAM_MODULE_DUPLEX(RPG_Net_Protocol_Module_IRCSplitter,
                          RPG_Net_Protocol_Module_IRCStreamer,

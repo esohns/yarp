@@ -29,9 +29,10 @@
 #include <ace/SOCK_Stream.h>
 #include <ace/Synch.h>
 
+template <typename ConfigType>
 class RPG_Net_SocketHandlerBase
  : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH>,
-   public RPG_Net_IConnection//,
+   public RPG_Net_IConnection<ConfigType>//,
 //    public RPG_Common_IDumpState
 {
  public:
@@ -49,7 +50,7 @@ class RPG_Net_SocketHandlerBase
                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK); // event mask
 
   // implement RPG_Net_IConnection
-  virtual void init(const RPG_Net_ConfigPOD&);
+  virtual void init(const ConfigType&);
 //   virtual const bool isRegistered() const;
   virtual void abort();
   virtual const unsigned long getID() const;
@@ -61,8 +62,8 @@ class RPG_Net_SocketHandlerBase
   // meant to be sub-classed
   RPG_Net_SocketHandlerBase();
 
-  RPG_Net_ConfigPOD myUserData;
-  bool              myIsInitialized;
+  ConfigType    myUserData;
+  bool          myIsInitialized;
 
  private:
   typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> inherited;
@@ -73,8 +74,11 @@ class RPG_Net_SocketHandlerBase
 
   // *NOTE*: we save this so we can de-register even when our "handle"
   // (getID()) has gone stale...
-  unsigned long     myID;
-  bool              myIsRegistered;
+  unsigned long myID;
+  bool          myIsRegistered;
 };
+
+// include template implementation
+#include "rpg_net_sockethandler_base.i"
 
 #endif

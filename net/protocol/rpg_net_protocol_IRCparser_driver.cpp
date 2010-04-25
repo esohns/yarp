@@ -21,7 +21,7 @@
 #include "rpg_net_protocol_IRCparser_driver.h"
 
 #include "rpg_net_protocol_defines.h"
-#include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_IRCmessage.h"
 #include "rpg_net_protocol_IRCparser.h"
 #include "rpg_net_protocol_IRCscanner.h"
 
@@ -54,7 +54,7 @@ RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& t
                ACE_TEXT("failed to IRCScannerlex_init_extra(): \"%m\", continuing\n")));
 
   // init parser
-  myParser.set_debug_level(myTraceParsing);
+  myParser.set_debug_level(myTraceParsing); // binary (see bison manual)
 }
 
 RPG_Net_Protocol_IRCParserDriver::~RPG_Net_Protocol_IRCParserDriver ()
@@ -117,6 +117,20 @@ RPG_Net_Protocol_IRCParserDriver::parse(ACE_Message_Block* data_in)
 
     // fini buffer/scanner
     scan_end();
+
+    // debug info
+    if (myTraceParsing)
+    {
+      try
+      {
+        myCurrentMessage->dump_state();
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Common_IDumpState::dump_state(), continuing\n")));
+      }
+    } // end IF
   } while (myCurrentFragment);
 
   // reset state
@@ -125,13 +139,13 @@ RPG_Net_Protocol_IRCParserDriver::parse(ACE_Message_Block* data_in)
   return (result == 0);
 }
 
-// const RPG_Net_Protocol_IRCMessage
-// RPG_Net_Protocol_IRCParserDriver::getIRCMessage() const
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::getIRCMessage"));
-//
-//   return myCurrentMessage;
-// }
+const bool
+RPG_Net_Protocol_IRCParserDriver::getTraceScanning() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::getTraceScanning"));
+
+  return myTraceScanning;
+}
 
 void
 RPG_Net_Protocol_IRCParserDriver::error(const yy::location& location_in,

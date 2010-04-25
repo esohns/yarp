@@ -1905,8 +1905,8 @@ static yyconst yy_state_type yy_NUL_trans[45] =
 
 static yyconst flex_int16_t yy_rule_linenum[16] =
     {   0,
-       64,   68,   71,   74,   77,   82,   87,   92,   97,  102,
-      104,  107,  112,  117,  120
+       62,   66,   70,   73,   76,   81,   86,   91,   96,  101,
+      104,  107,  112,  117,  121
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -1916,10 +1916,8 @@ static yyconst flex_int16_t yy_rule_linenum[16] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#include <string>
 #include <stdlib.h>
 
-#include <ace/OS_Memory.h>
 #include <ace/Log_Msg.h>
 
 //#include "rpg_net_protocol_IRCparser.h"
@@ -1934,7 +1932,7 @@ static yyconst flex_int16_t yy_rule_linenum[16] =
 /* %option bison-bridge bison-locations stack */
 /* *TODO*: "see RFC 952 [DNS:4] for details on allowed hostnames..."
            --> [[:alpha:][:digit:].]+ is just an (uninformed) suggestion */
-/*LETTER         [:alpha:]*/
+/* LETTER         [:alpha:] <-- for some ODD reason, this matches ":" */
 
 #define YY_USER_ACTION  yylloc->columns(yyleng);
 
@@ -2210,7 +2208,7 @@ YY_DECL
   yylloc->step();
   typedef yy::RPG_Net_Protocol_IRCParser::token token;
   typedef yy::RPG_Net_Protocol_IRCParser::token_type token_type;
-//  yy_flex_debug=1;
+  yy_flex_debug=driver.getTraceScanning();
 
 	if ( !yyg->yy_init )
 		{
@@ -2335,6 +2333,7 @@ case 2:
 YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(INITIAL);
+                             yylval->ival = yyleng;
                              return token::SPACE; }
 	YY_BREAK
 case 3:
@@ -2352,8 +2351,8 @@ YY_RULE_SETUP
 case 5:
 YY_RULE_SETUP
 { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
+                             yylval->ival = yyleng;
+                             yylval->sval = yytext;
                              return token::ORIGIN; }
 	YY_BREAK
 // end <prefix>
@@ -2361,24 +2360,24 @@ case 6:
 YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(prefix);
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
+                             yylval->ival = yyleng;
+                             yylval->sval = yytext;
                              return token::USER; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(prefix);
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
+                             yylval->ival = yyleng;
+                             yylval->sval = yytext;
                              return token::HOST; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(params);
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
+                             yylval->ival = yyleng;
+                             yylval->sval = yytext;
                              return token::CMD_STRING; }
 	YY_BREAK
 case 9:
@@ -2392,6 +2391,7 @@ YY_RULE_SETUP
 case 10:
 YY_RULE_SETUP
 { yylloc->step();
+                             yylval->ival = yyleng;
                              return token::SPACE; }
 	YY_BREAK
 case 11:
@@ -2403,8 +2403,8 @@ YY_RULE_SETUP
 case 12:
 YY_RULE_SETUP
 { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
+                             yylval->ival = yyleng;
+                             yylval->sval = yytext;
                              return token::PARAM; }
 	YY_BREAK
 // end <params>
@@ -2412,14 +2412,15 @@ case 13:
 YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(INITIAL);
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
+                             yylval->ival = yyleng;
+                             yylval->sval = yytext;
                              return token::PARAM; }
 	YY_BREAK
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-{ yylloc->step(); }
+{ (*yyextra)++;
+                             yylloc->step(); }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(prefix):

@@ -70,19 +70,19 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(Stream_MessageBase*& mess
   //                   NUL or CR or LF>
 
   // prefix
-  if (message->getData()->prefix.origin)
+  if (!message->getData()->prefix.origin.empty())
   {
     // prefix the prefix
     *message->wr_ptr() = ':';
     message->wr_ptr(1);
 
-    if (message->copy(message->getData()->prefix.origin->c_str(),
-                      message->getData()->prefix.origin->size()) == -1)
+    if (message->copy(message->getData()->prefix.origin.c_str(),
+                      message->getData()->prefix.origin.size()) == -1)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Message_Block::copy(\"%s\", %u): \"%m\", aborting\n"),
-                 message->getData()->prefix.origin->c_str(),
-                 message->getData()->prefix.origin->size()));
+                 message->getData()->prefix.origin.c_str(),
+                 message->getData()->prefix.origin.size()));
 
       // clean up
       passMessageDownstream_out = false;
@@ -93,19 +93,19 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(Stream_MessageBase*& mess
     } // end IF
 
     // append user
-    if (message->getData()->prefix.user)
+    if (!message->getData()->prefix.user.empty())
     {
       // user prefix
       *message->wr_ptr() = '!';
       message->wr_ptr(1);
 
-      if (message->copy(message->getData()->prefix.user->c_str(),
-                        message->getData()->prefix.user->size()) == -1)
+      if (message->copy(message->getData()->prefix.user.c_str(),
+                        message->getData()->prefix.user.size()) == -1)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_Message_Block::copy(\"%s\", %u): \"%m\", aborting\n"),
-                   message->getData()->prefix.user->c_str(),
-                   message->getData()->prefix.user->size()));
+                   message->getData()->prefix.user.c_str(),
+                   message->getData()->prefix.user.size()));
 
       // clean up
         passMessageDownstream_out = false;
@@ -117,19 +117,19 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(Stream_MessageBase*& mess
     } // end IF
 
     // append host
-    if (message->getData()->prefix.user)
+    if (!message->getData()->prefix.user.empty())
     {
       // user prefix
       *message->wr_ptr() = '@';
       message->wr_ptr(1);
 
-      if (message->copy(message->getData()->prefix.host->c_str(),
-                        message->getData()->prefix.host->size()) == -1)
+      if (message->copy(message->getData()->prefix.host.c_str(),
+                        message->getData()->prefix.host.size()) == -1)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_Message_Block::copy(\"%s\", %u): \"%m\", aborting\n"),
-                   message->getData()->prefix.host->c_str(),
-                   message->getData()->prefix.host->size()));
+                   message->getData()->prefix.host.c_str(),
+                   message->getData()->prefix.host.size()));
 
         // clean up
         passMessageDownstream_out = false;
@@ -205,11 +205,11 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(Stream_MessageBase*& mess
   } // end SWITCH
 
   // parameter(s)
-  if (message->getData()->params)
+  if (!message->getData()->params.empty())
   {
-    int i = message->getData()->params->size();
-    for (std::list<std::string>::const_iterator iterator = message->getData()->params->begin();
-         iterator != message->getData()->params->end();
+    int i = message->getData()->params.size();
+    for (std::list<std::string>::const_iterator iterator = message->getData()->params.begin();
+         iterator != message->getData()->params.end();
          iterator++, i--)
     {
       // add a <SPACE>

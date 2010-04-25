@@ -28,24 +28,14 @@ RPG_Net_Protocol_IRCMessage::RPG_Net_Protocol_IRCMessage()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCMessage::RPG_Net_Protocol_IRCMessage"));
 
-  prefix.origin = NULL;
-  prefix.user = NULL;
-  prefix.host = NULL;
   command.string = NULL;
   command.discriminator = Command::INVALID;
-  params = NULL;
 }
 
 RPG_Net_Protocol_IRCMessage::~RPG_Net_Protocol_IRCMessage()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCMessage::~RPG_Net_Protocol_IRCMessage"));
 
-  if (prefix.origin)
-    delete prefix.origin;
-  if (prefix.user)
-    delete prefix.user;
-  if (prefix.host)
-    delete prefix.host;
   switch (command.discriminator)
   {
     case RPG_Net_Protocol_IRCMessage::Command::STRING:
@@ -58,11 +48,6 @@ RPG_Net_Protocol_IRCMessage::~RPG_Net_Protocol_IRCMessage()
     default:
       break;
   } // end SWITCH
-  if (params)
-  {
-    params->clear();
-    delete params;
-  } // end IF
 }
 
 void

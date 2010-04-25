@@ -121,7 +121,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& messa
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("[%u]: received \"NOTICE\": \"%s\"\n"),
                      message_inout->getID(),
-                     message->getData()->params->back().c_str()));
+                     message->getData()->params.back().c_str()));
 
           break;
         }
@@ -130,7 +130,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& messa
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("[%u]: received \"PING\": \"%s\"\n"),
                      message_inout->getID(),
-                     message->getData()->params->back().c_str()));
+                     message->getData()->params.back().c_str()));
 
           // auto-answer ?
           if (myAutomaticPong)
@@ -156,9 +156,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& messa
             ACE_NEW_NORETURN(reply_struct->command.string,
                              std::string(RPG_Net_Protocol_Tools::IRCCommandType2String(RPG_Net_Protocol_IRCMessage::PONG)));
             reply_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-            ACE_NEW_NORETURN(reply_struct->params,
-                             std::list<std::string>());
-            reply_struct->params->push_back(message->getData()->params->back());
+            reply_struct->params.push_back(message->getData()->params.back());
             // *NOTE*: reply_message assumes control over reply...
             reply_message->init(reply_struct);
 
@@ -187,7 +185,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& messa
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("[%u]: received \"PONG\": \"%s\"\n"),
                      message_inout->getID(),
-                     message->getData()->params->back().c_str()));
+                     message->getData()->params.back().c_str()));
 
           break;
         }

@@ -1,8 +1,6 @@
 %{
-#include <string>
 #include <stdlib.h>
 
-#include <ace/OS_Memory.h>
 #include <ace/Log_Msg.h>
 
 //#include "rpg_net_protocol_IRCparser.h"
@@ -28,7 +26,7 @@
 SPACE          [ ]+
 HOST           [[:alpha:][:digit:].]+
 SERVERNAME     {HOST}
-/*LETTER         [:alpha:]*/
+/* LETTER         [:alpha:] <-- for some ODD reason, this matches ":" */
 LETTER         [a-zA-Z]
 NUMBER         [:digit:]
 SPECIAL        [-\[\]\\`^{}]
@@ -58,7 +56,7 @@ CRLF           \r\n
   yylloc->step();
   typedef yy::RPG_Net_Protocol_IRCParser::token token;
   typedef yy::RPG_Net_Protocol_IRCParser::token_type token_type;
-//  yy_flex_debug=1;
+  yy_flex_debug=driver.getTraceScanning();
 %}
 
 <INITIAL>":"               { yylloc->step();
@@ -67,6 +65,7 @@ CRLF           \r\n
 <prefix>{
 {SPACE}                    { yylloc->step();
                              BEGIN(INITIAL);
+                             yylval->ival = yyleng;
                              return token::SPACE; }
 "!"                        { yylloc->step();
                              BEGIN(user);
@@ -75,24 +74,24 @@ CRLF           \r\n
                              BEGIN(host);
                              return token_type(yytext[0]); }
 {ORIGIN}                   { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
+                             yylval->ival = yyleng;
+                             yylval->sval = yytext;
                              return token::ORIGIN; }
 } // end <prefix>
 <user>{USER}               { yylloc->step();
                              BEGIN(prefix);
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
+                             yylval->ival = yyleng;
+                             yylval->sval = yytext;
                              return token::USER; }
 <host>{HOST}               { yylloc->step();
                              BEGIN(prefix);
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
+                             yylval->ival = yyleng;
+                             yylval->sval = yytext;
                              return token::HOST; }
 <INITIAL>{LETTER}+         { yylloc->step();
                              BEGIN(params);
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
+                             yylval->ival = yyleng;
+                             yylval->sval = yytext;
                              return token::CMD_STRING; }
 <INITIAL>{NUMBER}{3}       { yylloc->step();
                              BEGIN(params);
@@ -100,21 +99,23 @@ CRLF           \r\n
                              return token::CMD_NUMERIC; }
 <params>{
 {SPACE}                    { yylloc->step();
+                             yylval->ival = yyleng;
                              return token::SPACE; }
 ":"                        { yylloc->step();
                              BEGIN(trailing);
                              return token_type(yytext[0]); }
 {PARAM}                    { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
+                             yylval->ival = yyleng;
+                             yylval->sval = yytext;
                              return token::PARAM; }
 } // end <params>
 <trailing>{TRAILING_PARAM} { yylloc->step();
                              BEGIN(INITIAL);
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext));
+                             yylval->ival = yyleng;
+                             yylval->sval = yytext;
                              return token::PARAM; }
-<INITIAL>{CRLF}            { yylloc->step(); }
+<INITIAL>{CRLF}            { (*yyextra)++;
+                             yylloc->step(); }
 <<EOF>>                    { yylloc->step();
                              yyterminate(); }
 (?s:.)                     { driver.error(*yylloc, ACE_TEXT("invalid character"));

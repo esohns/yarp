@@ -62,7 +62,9 @@ class RPG_Net_Protocol_IRCParserDriver
   // --> buffers need two trailing '\0's BEYOND their data
   //    (at positions length() + 1, length() + 2)
   const bool parse(ACE_Message_Block*); // data
-//   const RPG_Net_Protocol_IRCMessage getIRCMessage() const;
+
+  // debug info
+  const bool getTraceScanning() const;
 
   // error-handling
   void error(const yy::location&, // location

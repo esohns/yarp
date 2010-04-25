@@ -22,8 +22,7 @@
 #define RPG_NET_PROTOCOL_MESSAGEALLOCATOR_H
 
 #include "rpg_net_protocol_message.h"
-
-#include <rpg_net_sessionmessage.h>
+#include "rpg_net_protocol_sessionmessage.h"
 
 #include <stream_messageallocatorheap_base.h>
 #include <stream_datablockallocatorheap.h>
@@ -33,7 +32,7 @@ class Stream_AllocatorHeap;
 
 class RPG_Net_Protocol_MessageAllocator
  : public Stream_MessageAllocatorHeapBase<RPG_Net_Protocol_Message,
-                                          RPG_Net_SessionMessage>
+                                          RPG_Net_Protocol_SessionMessage>
 {
  public:
   RPG_Net_Protocol_MessageAllocator(const unsigned long&,   // total number of concurrent messages
@@ -42,7 +41,7 @@ class RPG_Net_Protocol_MessageAllocator
 
  private:
   typedef Stream_MessageAllocatorHeapBase<RPG_Net_Protocol_Message,
-                                          RPG_Net_SessionMessage> inherited;
+                                          RPG_Net_Protocol_SessionMessage> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_MessageAllocator(const RPG_Net_Protocol_MessageAllocator&));

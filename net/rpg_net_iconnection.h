@@ -26,6 +26,7 @@
 #include <rpg_common_istatistic.h>
 #include <rpg_common_idumpstate.h>
 
+template <typename ConfigType>
 class RPG_Net_IConnection
  : public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>, // collect some stats
    public RPG_Common_IDumpState // ...and dump some information
@@ -35,7 +36,7 @@ class RPG_Net_IConnection
   // -Wno-non-virtual-dtor in the project settings...
 
   // API
-  virtual void init(const RPG_Net_ConfigPOD&) = 0;
+  virtual void init(const ConfigType&) = 0;
 //   virtual const bool isRegistered() const = 0;
   // *TODO*: this clashes with Event_Handler::close()...
   //virtual void close(void) = 0;

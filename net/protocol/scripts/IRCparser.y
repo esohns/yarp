@@ -8,10 +8,9 @@
 %code requires {
 class RPG_Net_Protocol_IRCParserDriver;
 typedef void* yyscan_t;
-#include <string>
 }
 
-// The parsing context.
+// parsing context
 %parse-param { RPG_Net_Protocol_IRCParserDriver& driver }
 %parse-param { yyscan_t& context }
 %lex-param   { RPG_Net_Protocol_IRCParserDriver& driver }
@@ -23,20 +22,21 @@ typedef void* yyscan_t;
   //@$.begin.filename = @$.end.filename = &driver.file;
 };
 
-// Symbols.
+// symbols
 %union
 {
-  int          ival;
-  std::string* sval;
+  int   ival;
+  char* sval;
 };
 
 %code {
 #include "rpg_net_protocol_IRCparser_driver.h"
 #include "rpg_net_protocol_IRCmessage.h"
+#include <ace/OS_Memory.h>
 #include <ace/Log_Msg.h>
 }
 
-%token        SPACE       "space"
+%token <ival> SPACE       "space"
 %token <sval> ORIGIN      "origin"
 %token <sval> USER        "user"
 %token <sval> HOST        "host"
@@ -44,36 +44,68 @@ typedef void* yyscan_t;
 %token <ival> CMD_NUMERIC "cmd_numeric"
 %token <sval> PARAM       "param"
 %token        END 0       "end of message"
-/* %type  <sval> message ext_prefix ext_prefix_2 body params */
+/* %type  <sval> message prefix ext_prefix ext_prefix_2 command params */
 
 %printer    { debug_stream() << *$$; } <sval>
-%destructor { delete $$; } <sval>
+/*%destructor { free $$; ACE_DEBUG((LM_DEBUG,
+                                  ACE_TEXT("discarding: \"%s\"...\n"),
+                                  $$)); } <sval>*/
 %printer    { debug_stream() << $$; } <ival>
+%destructor { ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("discarding tagless symbol...\n"))); } <>
 
 %%
 %start message;
 %nonassoc ':' '!' '@';
-message:      ':' "origin" ext_prefix                         { driver.myCurrentMessage->prefix.origin = $2; };
-              | body
-              | "end of message"
-ext_prefix:   '!' "user" ext_prefix_2                         { driver.myCurrentMessage->prefix.user = $2; };
-              | "space" body                                  { };
-ext_prefix_2: | '@' "host" body                               { driver.myCurrentMessage->prefix.host = $2; };
-              | "space" body                                  { };
-body:         "cmd_string" "space" params "end of message"    { driver.myCurrentMessage->command.string = $1;
-                                                                driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING; };
-              | "cmd_numeric" "space" params "end of message" { driver.myCurrentMessage->command.numeric = RPG_Net_Protocol_IRC_Codes::RFC1459Numeric($1);
-                                                                driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC; };
-params:       ':' "param"                                     { if (driver.myCurrentMessage->params == NULL)
-                                                                  ACE_NEW_NORETURN(driver.myCurrentMessage->params,
-                                                                                   std::list<std::string>());
-                                                                ACE_ASSERT(driver.myCurrentMessage->params);
-                                                                driver.myCurrentMessage->params->push_front(*$2); };
-              | "param" "space" params                        { if (driver.myCurrentMessage->params == NULL)
-                                                                  ACE_NEW_NORETURN(driver.myCurrentMessage->params,
-                                                                                   std::list<std::string>());
-                                                                ACE_ASSERT(driver.myCurrentMessage->params);
-                                                                driver.myCurrentMessage->params->push_front(*$1); };
+
+message:      ':' "origin" ext_prefix                         { driver.myCurrentMessage->prefix.origin = $2;
+                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set origin: \"%s\"...\n"),
+                                                                           $2));
+                                                              };
+              | body                                          /* default */
+              | "end of message"                              /* default */
+ext_prefix:   '!' "user" ext_prefix_2                         { driver.myCurrentMessage->prefix.user = $2;
+                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set user: \"%s\"...\n"),
+                                                                           $2));
+                                                              };
+              | "space" body                                  /* default */
+ext_prefix_2: | '@' "host" "space" body                       { driver.myCurrentMessage->prefix.host = $2;
+                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set host: \"%s\"...\n"),
+                                                                           $2));
+                                                              };
+              | "space" body                                  /* default */
+body:         command params "end of message"                 /* default */
+              | command params error "end of message"         /* default */
+command:      "cmd_string"                                    { if (driver.myCurrentMessage->command.string)
+                                                                  delete driver.myCurrentMessage->command.string;
+                                                                ACE_NEW_NORETURN(driver.myCurrentMessage->command.string,
+                                                                                 std::string($1));
+                                                                ACE_ASSERT(driver.myCurrentMessage->command.string);
+                                                                driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set command: \"%s\"...\n"),
+                                                                           $1));
+                                                              };
+              | "cmd_numeric"                                 { driver.myCurrentMessage->command.numeric = RPG_Net_Protocol_IRC_Codes::RFC1459Numeric($1);
+                                                                driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC;
+                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set command (numeric): %d...\n"),
+                                                                           $1));
+                                                              };
+params:       "space" params                                  /* default */
+              | ':' "param"                                   { driver.myCurrentMessage->params.push_front(std::string($2));
+                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set final param: \"%s\"...\n"),
+                                                                           $2));
+                                                              };
+              | "param" params                                { driver.myCurrentMessage->params.push_front(std::string($1));
+                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set param: \"%s\"...\n"),
+                                                                           $1));
+                                                              };
 %%
 
 void

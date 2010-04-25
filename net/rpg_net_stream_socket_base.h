@@ -31,9 +31,10 @@ class Stream_IAllocator;
 class RPG_Net_Message;
 class ACE_Message_Block;
 
-template <typename StreamType>
+template <typename ConfigType,
+          typename StreamType>
 class RPG_Net_StreamSocketBase
- : public RPG_Net_SocketHandlerBase
+ : public RPG_Net_SocketHandlerBase<ConfigType>
 {
  public:
   virtual ~RPG_Net_StreamSocketBase();
@@ -60,7 +61,7 @@ class RPG_Net_StreamSocketBase
   ACE_Message_Block* myCurrentWriteBuffer;
 
  private:
-  typedef RPG_Net_SocketHandlerBase inherited;
+  typedef RPG_Net_SocketHandlerBase<ConfigType> inherited;
 
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase(const RPG_Net_StreamSocketBase&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase& operator=(const RPG_Net_StreamSocketBase&));

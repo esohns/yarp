@@ -65,7 +65,7 @@ RPG_Net_Protocol_Stream::~RPG_Net_Protocol_Stream()
 }
 
 const bool
-RPG_Net_Protocol_Stream::init(const RPG_Net_ConfigPOD& config_in)
+RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Stream::init"));
 
@@ -196,7 +196,7 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_ConfigPOD& config_in)
   // enqueue the module...
   // *NOTE*: push()ing the module will open() it
   // --> set the argument that is passed along
-  myIRCMarshal.arg(&ACE_const_cast(RPG_Net_ConfigPOD&, config_in));
+  myIRCMarshal.arg(&ACE_const_cast(RPG_Net_Protocol_ConfigPOD&, config_in));
   if (push(&myIRCMarshal))
   {
     ACE_DEBUG((LM_ERROR,

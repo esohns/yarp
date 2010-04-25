@@ -28,8 +28,8 @@
 RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser()
  : //inherited(),
    myAllocator(NULL),
-   myParserDriver(false,  // trace scanning ?
-                  false), // trace parsing ?
+   myParserDriver(RPG_NET_PROTOCOL_DEF_TRACE_SCANNING, // trace scanning ?
+                  RPG_NET_PROTOCOL_DEF_TRACE_PARSING), // trace parsing ?
    myIsInitialized(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser"));
@@ -107,12 +107,12 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(Stream_MessageBase*& messag
 
   // OK: parse this message
 
-//   // debug info
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("parsing message(ID: %u, %u byte(s))\n\"%s\"\n"),
-//              message->getID(),
-//              message->length(),
-//              message->rd_ptr()));
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("parsing message(ID: %u, %u byte(s))\n\"%s\"\n"),
+             message->getID(),
+             message->length(),
+             message->rd_ptr()));
 
   myParserDriver.init(ACE_const_cast(RPG_Net_Protocol_IRCMessage&, *message->getData()));
   if (!myParserDriver.parse(message))
@@ -124,15 +124,4 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(Stream_MessageBase*& messag
     // what else can we do ?
     return;
   } // end IF
-
-  // debug info
-  try
-  {
-    message->getData()->dump_state();
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Common_IDumpState::dump_state(), continuing\n")));
-  }
 }

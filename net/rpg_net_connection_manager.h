@@ -21,7 +21,7 @@
 #ifndef RPG_NET_CONNECTION_MANAGER_H
 #define RPG_NET_CONNECTION_MANAGER_H
 
-#include "rpg_net_common.h"
+// #include "rpg_net_common.h"
 #include "rpg_net_sockethandler_base.h"
 
 #include <rpg_common_istatistic.h>
@@ -30,27 +30,30 @@
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
 #include <ace/Condition_T.h>
+#include <ace/Containers_T.h>
 
-#include <list>
+// #include <list>
 
 // forward declarations
+template <typename ConfigType>
 class RPG_Net_IConnection;
 
+template <typename ConfigType>
 class RPG_Net_Connection_Manager
  : public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>,
    public RPG_Common_IDumpState
 {
   // singleton needs access to the ctor/dtors
-  friend class ACE_Singleton<RPG_Net_Connection_Manager,
+  friend class ACE_Singleton<RPG_Net_Connection_Manager<ConfigType>,
                              ACE_Recursive_Thread_Mutex>;
 
   // needs access to (de-)register itself with the singleton
-  friend class RPG_Net_SocketHandlerBase;
+  friend class RPG_Net_SocketHandlerBase<ConfigType>;
 
  public:
   // configuration / initialization
-  void init(const unsigned long&,      // maximum number of concurrent connections
-            const RPG_Net_ConfigPOD&); // user data
+  void init(const unsigned long&, // maximum number of concurrent connections
+            const ConfigType&);   // user data
 
   // *NOTE*: users of this method should be aware of potential race
   //         conditions with this method and (de-)registerConnection.
@@ -71,13 +74,16 @@ class RPG_Net_Connection_Manager
   virtual void dump_state() const;
 
  private:
-  typedef std::list<RPG_Net_IConnection*> CONNECTIONLIST_TYPE;
-  typedef CONNECTIONLIST_TYPE::const_iterator CONNECTIONLIST_CONSTITERATOR_TYPE;
-  typedef CONNECTIONLIST_TYPE::iterator CONNECTIONLIST_ITERATOR_TYPE;
+  typedef RPG_Net_IConnection<ConfigType> CONNECTION_TYPE;
+//   typedef std::list<CONNECTION_TYPE*> CONNECTIONLIST_TYPE;
+  // *NOTE*: cannot write this - it confuses gcc...
+//   typedef CONNECTIONLIST_TYPE::const_iterator CONNECTIONLIST_CONSTITERATOR_TYPE;
+//   typedef CONNECTIONLIST_TYPE::iterator CONNECTIONLIST_ITERATOR_TYPE;
+  typedef ACE_DLList_Iterator<CONNECTION_TYPE> CONNECTIONLIST_ITERATOR_TYPE;
 
   // *NOTE*: these are used by RPG_Net_SocketHandler_Base
-  const bool registerConnection(RPG_Net_IConnection*); // connection
-  void deregisterConnection(const RPG_Net_IConnection*); // connection
+  const bool registerConnection(CONNECTION_TYPE*); // connection
+  void deregisterConnection(const CONNECTION_TYPE*); // connection
 
   // implement RPG_Common_IStatistic
   // *WARNING*: this assumes we're holding our lock !
@@ -96,15 +102,16 @@ class RPG_Net_Connection_Manager
   mutable ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
 
   unsigned long                                     myMaxNumConnections;
-  CONNECTIONLIST_TYPE                               myConnections;
+//   CONNECTIONLIST_TYPE                               myConnections;
+  ACE_DLList<CONNECTION_TYPE>                       myConnections;
 
   // handler data
-  RPG_Net_ConfigPOD                                 myUserData;
+  ConfigType                                        myUserData;
 
   bool                                              myIsInitialized;
 };
 
-typedef ACE_Singleton<RPG_Net_Connection_Manager,
-                      ACE_Recursive_Thread_Mutex> RPG_NET_CONNECTIONMANAGER_SINGLETON;
+// include template implementation
+#include "rpg_net_connection_manager.i"
 
 #endif

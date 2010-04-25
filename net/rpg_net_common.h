@@ -24,6 +24,8 @@
 #include <stream_iallocator.h>
 
 #include <ace/Time_Value.h>
+#include <ace/Singleton.h>
+#include <ace/Synch.h>
 
 // // timer queue
 // #include <ace/Synch.h>
@@ -37,6 +39,10 @@
 // typedef ACE_Timer_Heap_Iterator_T<ACE_Event_Handler*, UPCALL_TYPE, ACE_Null_Mutex> TIMERHEAPITERATOR_TYPE;
 // // typedef ACE_Thread_Timer_Queue_Adapter<TIMERHEAP_TYPE> TIMERQUEUE_TYPE;
 // typedef ACE_Thread_Timer_Queue_Adapter<TIMERHEAP_TYPE> RPG_Net_TimerQueue_t;
+
+// forward declaration(s)
+template <typename ConfigType>
+class RPG_Net_Connection_Manager;
 
 struct RPG_Net_RuntimeStatistic
 {
@@ -68,5 +74,8 @@ struct RPG_Net_ConfigPOD
   RPG_Net_RuntimeStatistic currentStatistics;
   ACE_Time_Value           lastCollectionTimestamp;
 };
+
+typedef ACE_Singleton<RPG_Net_Connection_Manager<RPG_Net_ConfigPOD>,
+                      ACE_Recursive_Thread_Mutex> RPG_NET_CONNECTIONMANAGER_SINGLETON;
 
 #endif

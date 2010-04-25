@@ -22,25 +22,23 @@
 #define RPG_NET_PROTOCOL_STREAM_H
 
 #include "rpg_net_protocol_common.h"
+#include <rpg_net_protocol_sessionmessage.h>
 #include "rpg_net_protocol_module_IRCparser.h"
 #include "rpg_net_protocol_module_IRChandler.h"
 
-#include <rpg_net_common.h>
-#include <rpg_net_stream_config.h>
-#include <rpg_net_sessionmessage.h>
 #include <rpg_net_module_runtimestatistic.h>
 
 #include <rpg_common_istatistic.h>
 
 #include <stream_base.h>
+#include <stream_session_config_base.h>
 
 #include <ace/Global_Macros.h>
 
 class RPG_Net_Protocol_Stream
- : public Stream_Base<
-                      RPG_Net_ConfigPOD,
-                      RPG_Net_StreamConfig,
-                      RPG_Net_SessionMessage>,
+ : public Stream_Base<RPG_Net_Protocol_ConfigPOD,
+                      Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
+                      RPG_Net_Protocol_SessionMessage>,
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
  public:
@@ -51,7 +49,7 @@ class RPG_Net_Protocol_Stream
   typedef RPG_Common_IStatistic<RPG_Net_RuntimeStatistic> StatisticsInterface_Type;
 
   // init stream
-  const bool init(const RPG_Net_ConfigPOD&); // stream/module configuration
+  const bool init(const RPG_Net_Protocol_ConfigPOD&); // stream/module configuration
 
   // implement RPG_Common_IStatistic
   // *NOTE*: delegate this to myRuntimeStatistic
@@ -60,9 +58,9 @@ class RPG_Net_Protocol_Stream
   virtual void report() const;
 
  private:
-  typedef Stream_Base<RPG_Net_ConfigPOD,
-                      RPG_Net_StreamConfig,
-                      RPG_Net_SessionMessage> inherited;
+  typedef Stream_Base<RPG_Net_Protocol_ConfigPOD,
+                      Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
+                      RPG_Net_Protocol_SessionMessage> inherited;
 
   // safety measures
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Stream());

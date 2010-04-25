@@ -32,7 +32,7 @@ class ACE_Allocator;
 class ACE_Message_Block;
 class ACE_Data_Block;
 // *NOTE*: this avoids a circular dependency...
-class RPG_Net_SessionMessage;
+class RPG_Net_Protocol_SessionMessage;
 // class RPG_Net_StreamMessageAllocator;
 template <typename MessageType,
           typename SessionMessageType> class Stream_MessageAllocatorHeapBase;
@@ -43,7 +43,7 @@ class RPG_Net_Protocol_Message
   // enable access to specific private ctors...
 //   friend class RPG_Net_StreamMessageAllocator;
   friend class Stream_MessageAllocatorHeapBase<RPG_Net_Protocol_Message,
-                                               RPG_Net_SessionMessage>;
+                                               RPG_Net_Protocol_SessionMessage>;
 
  public:
   virtual ~RPG_Net_Protocol_Message();

@@ -67,6 +67,7 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
+  std::cout << ACE_TEXT("-d          : debug parser") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-h [STRING] : server (host)name [\"") << IRC_CLIENT_DEF_SERVER_HOSTNAME << "\"]" << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-p [VALUE]  : server port [") << IRC_CLIENT_DEF_SERVER_PORT << ACE_TEXT("]") << std::endl;
@@ -78,6 +79,7 @@ print_usage(const std::string& programName_in)
 const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
+                  bool& debugParser_out,
                   std::string& serverHostname_out,
                   bool& logToFile_out,
                   unsigned short& serverPortNumber_out,
@@ -89,6 +91,7 @@ process_arguments(const int argc_in,
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
+  debugParser_out = false;
   serverHostname_out = IRC_CLIENT_DEF_SERVER_HOSTNAME;
   logToFile_out = false;
   serverPortNumber_out = IRC_CLIENT_DEF_SERVER_PORT;
@@ -99,7 +102,7 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("h:lp:tvx::"),
+                             ACE_TEXT("dh:lp:tvx::"),
                              1, // skip command name
                              1, // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
@@ -111,6 +114,12 @@ process_arguments(const int argc_in,
   {
     switch (option)
     {
+      case 'd':
+      {
+        debugParser_out = true;
+
+        break;
+      }
       case 'h':
       {
         serverHostname_out = argumentParser.opt_arg();
@@ -358,7 +367,8 @@ tp_worker_func(void* args_in)
 }
 
 void
-do_work(const std::string& serverHostname_in,
+do_work(const bool& debugParser_in,
+        const std::string& serverHostname_in,
         const unsigned short& serverPortNumber_in,
         const bool& useThreadPool_in,
         const unsigned long& numThreadPoolThreads_in)
@@ -406,10 +416,11 @@ do_work(const std::string& serverHostname_in,
   Stream_AllocatorHeap heapAllocator;
   RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
                                                      &heapAllocator);
-  RPG_Net_ConfigPOD config;
+  RPG_Net_Protocol_ConfigPOD config;
   ACE_OS::memset(&config,
                   0,
-                  sizeof(RPG_Net_ConfigPOD));
+                  sizeof(RPG_Net_Protocol_ConfigPOD));
+  config.debugParser = debugParser_in;
   config.clientPingInterval = 0; // servers do this...
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
@@ -417,8 +428,8 @@ do_work(const std::string& serverHostname_in,
   config.statisticsReportingInterval = 0; // == off
 
   // step2b: init connection manager
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max(),
-                                                        config); // will be passed to all handlers
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max(),
+                                                                 config); // will be passed to all handlers
 
   // step2c: (try to) connect to the server
   IRC_Client_SocketHandler* handler = NULL;
@@ -491,8 +502,8 @@ do_work(const std::string& serverHostname_in,
 //                      ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
 //         } // end IF
 //       } // end IF
-      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+      RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+      RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
       return;
     } // end IF
@@ -523,16 +534,16 @@ do_work(const std::string& serverHostname_in,
 //                     ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
 //         } // end IF
 //       } // end IF
-      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+      RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+      RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
       return;
     } // end IF
   } // end ELSE
 
   // step4: clean up
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -584,6 +595,7 @@ ACE_TMAIN(int argc,
 #endif
 
   // step1a set defaults
+  bool debugParser                   = false;
   std::string serverHostname         = IRC_CLIENT_DEF_SERVER_HOSTNAME;
   bool logToFile                     = false;
   unsigned short serverPortNumber    = IRC_CLIENT_DEF_SERVER_PORT;
@@ -595,6 +607,7 @@ ACE_TMAIN(int argc,
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
+                          debugParser,
                           serverHostname,
                           logToFile,
                           serverPortNumber,
@@ -659,7 +672,8 @@ ACE_TMAIN(int argc,
   ACE_High_Res_Timer timer;
   timer.start();
   // step2: do actual work
-  do_work(serverHostname,
+  do_work(debugParser,
+          serverHostname,
           serverPortNumber,
           useThreadPool,
           numThreadPoolThreads);

@@ -28,8 +28,9 @@
 
 #include <ace/Message_Block.h>
 
-template <typename StreamType>
-RPG_Net_StreamSocketBase<StreamType>::RPG_Net_StreamSocketBase()
+template <typename ConfigType,
+          typename StreamType>
+RPG_Net_StreamSocketBase<ConfigType, StreamType>::RPG_Net_StreamSocketBase()
  : myCurrentWriteBuffer(NULL),
    myAllocator(NULL),
    myDefaultBufferSize(RPG_NET_DEF_NETWORK_BUFFER_SIZE),
@@ -39,8 +40,9 @@ RPG_Net_StreamSocketBase<StreamType>::RPG_Net_StreamSocketBase()
 
 }
 
-template <typename StreamType>
-RPG_Net_StreamSocketBase<StreamType>::~RPG_Net_StreamSocketBase()
+template <typename ConfigType,
+          typename StreamType>
+RPG_Net_StreamSocketBase<ConfigType, StreamType>::~RPG_Net_StreamSocketBase()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::~RPG_Net_StreamSocketBase"));
 
@@ -48,9 +50,10 @@ RPG_Net_StreamSocketBase<StreamType>::~RPG_Net_StreamSocketBase()
   myStream.waitForCompletion();
 }
 
-template <typename StreamType>
+template <typename ConfigType,
+          typename StreamType>
 int
-RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
+RPG_Net_StreamSocketBase<ConfigType, StreamType>::open(void* arg_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::open"));
 
@@ -58,7 +61,7 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
   ACE_ASSERT(arg_in);
   // *NOTE*: we should have initialized by now...
   // --> make sure this was successful before we proceed
-  if (!myIsInitialized)
+  if (!inherited::myIsInitialized)
   {
     // (most probably) too many connections...
     ACE_OS::last_error(EBUSY);
@@ -68,17 +71,17 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
   } // end IF
 
   // step0: retrieve config, init ourselves
-  myAllocator = myUserData.messageAllocator;
+  myAllocator = inherited::myUserData.messageAllocator;
   // sanity check
   ACE_ASSERT(myAllocator);
 
-  myDefaultBufferSize = myUserData.defaultBufferSize;
+  myDefaultBufferSize = inherited::myUserData.defaultBufferSize;
   // sanity check
   ACE_ASSERT(myDefaultBufferSize);
 
   // step1: init/start data processing stream
-  myUserData.sessionID = getID(); // (== socket handle)
-  if (!myStream.init(myUserData))
+  inherited::myUserData.sessionID = inherited::getID(); // (== socket handle)
+  if (!myStream.init(inherited::myUserData))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init processing stream, aborting\n")));
@@ -120,9 +123,10 @@ RPG_Net_StreamSocketBase<StreamType>::open(void* arg_in)
   return 0;
 }
 
-template <typename StreamType>
+template <typename ConfigType,
+          typename StreamType>
 int
-RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
+RPG_Net_StreamSocketBase<ConfigType, StreamType>::handle_input(ACE_HANDLE handle_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::handle_input"));
 
@@ -146,8 +150,8 @@ RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
   } // end IF
 
   // read some data from the socket...
-  bytes_received = peer_.recv(myCurrentReadBuffer->wr_ptr(),
-                              myCurrentReadBuffer->size());
+  bytes_received = inherited::peer_.recv(myCurrentReadBuffer->wr_ptr(),
+                                         myCurrentReadBuffer->size());
   switch (bytes_received)
   {
     case -1:
@@ -307,9 +311,10 @@ RPG_Net_StreamSocketBase<StreamType>::handle_input(ACE_HANDLE handle_in)
 //   return 0;
 // }
 
-template <typename StreamType>
+template <typename ConfigType,
+          typename StreamType>
 int
-RPG_Net_StreamSocketBase<StreamType>::handle_close(ACE_HANDLE handle_in,
+RPG_Net_StreamSocketBase<ConfigType, StreamType>::handle_close(ACE_HANDLE handle_in,
                                                    ACE_Reactor_Mask mask_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::handle_close"));
@@ -336,9 +341,10 @@ RPG_Net_StreamSocketBase<StreamType>::handle_close(ACE_HANDLE handle_in,
                                  mask_in);
 }
 
-template <typename StreamType>
+template <typename ConfigType,
+          typename StreamType>
 const bool
-RPG_Net_StreamSocketBase<StreamType>::collect(RPG_Net_RuntimeStatistic& data_out) const
+RPG_Net_StreamSocketBase<ConfigType, StreamType>::collect(RPG_Net_RuntimeStatistic& data_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::collect"));
 
@@ -355,9 +361,10 @@ RPG_Net_StreamSocketBase<StreamType>::collect(RPG_Net_RuntimeStatistic& data_out
   return false;
 }
 
-template <typename StreamType>
+template <typename ConfigType,
+          typename StreamType>
 void
-RPG_Net_StreamSocketBase<StreamType>::report() const
+RPG_Net_StreamSocketBase<ConfigType, StreamType>::report() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::report"));
 
@@ -372,9 +379,10 @@ RPG_Net_StreamSocketBase<StreamType>::report() const
   }
 }
 
-template <typename StreamType>
+template <typename ConfigType,
+          typename StreamType>
 RPG_Net_Message*
-RPG_Net_StreamSocketBase<StreamType>::allocateMessage(const unsigned long& requestedSize_in)
+RPG_Net_StreamSocketBase<ConfigType, StreamType>::allocateMessage(const unsigned long& requestedSize_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::allocateMessage"));
 

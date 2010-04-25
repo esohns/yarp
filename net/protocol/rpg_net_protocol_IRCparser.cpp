@@ -48,6 +48,7 @@
 
 #include "rpg_net_protocol_IRCparser_driver.h"
 #include "rpg_net_protocol_IRCmessage.h"
+#include <ace/OS_Memory.h>
 #include <ace/Log_Msg.h>
 
 
@@ -187,7 +188,12 @@ namespace yy {
     YYUSE (yyvaluep);
     switch (yytype)
       {
-        case 4: /* "\"origin\"" */
+        case 3: /* "\"space\"" */
+
+	{ debug_stream() << (yyvaluep->ival); };
+
+	break;
+      case 4: /* "\"origin\"" */
 
 	{ debug_stream() << *(yyvaluep->sval); };
 
@@ -247,29 +253,64 @@ namespace yy {
 
     switch (yytype)
       {
-        case 4: /* "\"origin\"" */
+        case 0: /* "\"end of message\"" */
 
-	{ delete (yyvaluep->sval); };
-
-	break;
-      case 5: /* "\"user\"" */
-
-	{ delete (yyvaluep->sval); };
+	{ ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("discarding tagless symbol...\n"))); };
 
 	break;
-      case 6: /* "\"host\"" */
+      case 10: /* "':'" */
 
-	{ delete (yyvaluep->sval); };
-
-	break;
-      case 7: /* "\"cmd_string\"" */
-
-	{ delete (yyvaluep->sval); };
+	{ ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("discarding tagless symbol...\n"))); };
 
 	break;
-      case 9: /* "\"param\"" */
+      case 11: /* "'!'" */
 
-	{ delete (yyvaluep->sval); };
+	{ ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("discarding tagless symbol...\n"))); };
+
+	break;
+      case 12: /* "'@'" */
+
+	{ ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("discarding tagless symbol...\n"))); };
+
+	break;
+      case 14: /* "message" */
+
+	{ ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("discarding tagless symbol...\n"))); };
+
+	break;
+      case 15: /* "ext_prefix" */
+
+	{ ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("discarding tagless symbol...\n"))); };
+
+	break;
+      case 16: /* "ext_prefix_2" */
+
+	{ ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("discarding tagless symbol...\n"))); };
+
+	break;
+      case 17: /* "body" */
+
+	{ ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("discarding tagless symbol...\n"))); };
+
+	break;
+      case 18: /* "command" */
+
+	{ ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("discarding tagless symbol...\n"))); };
+
+	break;
+      case 19: /* "params" */
+
+	{ ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("discarding tagless symbol...\n"))); };
 
 	break;
 
@@ -470,57 +511,71 @@ namespace yy {
       {
 	  case 2:
 
-    { driver.myCurrentMessage->prefix.origin = (yysemantic_stack_[(3) - (2)].sval); }
+    { driver.myCurrentMessage->prefix.origin = (yysemantic_stack_[(3) - (2)].sval);
+                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set origin: \"%s\"...\n"),
+                                                                           (yysemantic_stack_[(3) - (2)].sval)));
+                                                              }
     break;
 
   case 5:
 
-    { driver.myCurrentMessage->prefix.user = (yysemantic_stack_[(3) - (2)].sval); }
-    break;
-
-  case 6:
-
-    { }
+    { driver.myCurrentMessage->prefix.user = (yysemantic_stack_[(3) - (2)].sval);
+                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set user: \"%s\"...\n"),
+                                                                           (yysemantic_stack_[(3) - (2)].sval)));
+                                                              }
     break;
 
   case 8:
 
-    { driver.myCurrentMessage->prefix.host = (yysemantic_stack_[(3) - (2)].sval); }
-    break;
-
-  case 9:
-
-    { }
-    break;
-
-  case 10:
-
-    { driver.myCurrentMessage->command.string = (yysemantic_stack_[(4) - (1)].sval);
-                                                                driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING; }
-    break;
-
-  case 11:
-
-    { driver.myCurrentMessage->command.numeric = RPG_Net_Protocol_IRC_Codes::RFC1459Numeric((yysemantic_stack_[(4) - (1)].ival));
-                                                                driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC; }
+    { driver.myCurrentMessage->prefix.host = (yysemantic_stack_[(4) - (2)].sval);
+                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set host: \"%s\"...\n"),
+                                                                           (yysemantic_stack_[(4) - (2)].sval)));
+                                                              }
     break;
 
   case 12:
 
-    { if (driver.myCurrentMessage->params == NULL)
-                                                                  ACE_NEW_NORETURN(driver.myCurrentMessage->params,
-                                                                                   std::list<std::string>());
-                                                                ACE_ASSERT(driver.myCurrentMessage->params);
-                                                                driver.myCurrentMessage->params->push_front(*(yysemantic_stack_[(2) - (2)].sval)); }
+    { if (driver.myCurrentMessage->command.string)
+                                                                  delete driver.myCurrentMessage->command.string;
+                                                                ACE_NEW_NORETURN(driver.myCurrentMessage->command.string,
+                                                                                 std::string((yysemantic_stack_[(1) - (1)].sval)));
+                                                                ACE_ASSERT(driver.myCurrentMessage->command.string);
+                                                                driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set command: \"%s\"...\n"),
+                                                                           (yysemantic_stack_[(1) - (1)].sval)));
+                                                              }
     break;
 
   case 13:
 
-    { if (driver.myCurrentMessage->params == NULL)
-                                                                  ACE_NEW_NORETURN(driver.myCurrentMessage->params,
-                                                                                   std::list<std::string>());
-                                                                ACE_ASSERT(driver.myCurrentMessage->params);
-                                                                driver.myCurrentMessage->params->push_front(*(yysemantic_stack_[(3) - (1)].sval)); }
+    { driver.myCurrentMessage->command.numeric = RPG_Net_Protocol_IRC_Codes::RFC1459Numeric((yysemantic_stack_[(1) - (1)].ival));
+                                                                driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC;
+                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set command (numeric): %d...\n"),
+                                                                           (yysemantic_stack_[(1) - (1)].ival)));
+                                                              }
+    break;
+
+  case 15:
+
+    { driver.myCurrentMessage->params.push_front(std::string((yysemantic_stack_[(2) - (2)].sval)));
+                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set final param: \"%s\"...\n"),
+                                                                           (yysemantic_stack_[(2) - (2)].sval)));
+                                                              }
+    break;
+
+  case 16:
+
+    { driver.myCurrentMessage->params.push_front(std::string((yysemantic_stack_[(2) - (1)].sval)));
+                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set param: \"%s\"...\n"),
+                                                                           (yysemantic_stack_[(2) - (1)].sval)));
+                                                              }
     break;
 
 
@@ -729,14 +784,14 @@ namespace yy {
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
      STATE-NUM.  */
-  const signed char RPG_Net_Protocol_IRCParser::yypact_ninf_ = -16;
+  const signed char RPG_Net_Protocol_IRCParser::yypact_ninf_ = -15;
   const signed char
   RPG_Net_Protocol_IRCParser::yypact_[] =
   {
-         1,   -16,     4,    15,    16,    19,   -16,     7,     7,     2,
-     -16,    18,    13,    23,    24,    -4,    20,   -16,     7,   -16,
-     -16,   -16,   -16,     3,   -16,    -4,    21,   -16,   -16,    -4,
-     -16
+         2,   -15,   -15,   -15,    -1,     5,   -15,    -2,     3,   -15,
+      -2,    -2,     6,    17,    12,    18,   -15,   -15,   -15,   -15,
+     -15,    24,   -15,     1,   -15,    12,    19,   -15,   -15,    23,
+      12,   -15
   };
 
   /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
@@ -745,24 +800,24 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yydefact_[] =
   {
-         0,     4,     0,     0,     0,     0,     3,     0,     0,     0,
-       1,     0,     0,     0,     0,     0,     0,     2,     0,    12,
-      10,    11,     6,     7,    13,     0,     0,     5,     9,     0,
-       8
+         0,     4,    12,    13,     0,     0,     3,     0,     0,     1,
+       0,     0,     0,     0,     0,     0,     2,    14,    16,    15,
+      10,     0,     6,     7,    11,     0,     0,     5,     9,     0,
+       0,     8
   };
 
   /* YYPGOTO[NTERM-NUM].  */
   const signed char
   RPG_Net_Protocol_IRCParser::yypgoto_[] =
   {
-       -16,   -16,   -16,   -16,   -15,    -6
+       -15,   -15,   -15,   -15,   -14,   -15,    11
   };
 
   /* YYDEFGOTO[NTERM-NUM].  */
   const signed char
   RPG_Net_Protocol_IRCParser::yydefgoto_[] =
   {
-        -1,     5,    17,    27,     6,    13
+        -1,     5,    16,    27,     6,     7,    13
   };
 
   /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -772,18 +827,18 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yytable_[] =
   {
-        22,     1,    14,     2,     3,    15,    25,     7,     2,     3,
-      28,     4,    24,    16,    30,    26,    11,    12,     8,    10,
-       9,    18,    19,    20,    21,    23,     0,    29
+        22,    10,     1,     8,    25,     9,    14,    11,    12,     2,
+       3,    28,     4,    26,    15,    19,    31,    20,    21,     2,
+       3,    17,    18,    23,    24,    29,    30
   };
 
   /* YYCHECK.  */
-  const signed char
+  const unsigned char
   RPG_Net_Protocol_IRCParser::yycheck_[] =
   {
-        15,     0,     8,     7,     8,     3,     3,     3,     7,     8,
-      25,    10,    18,    11,    29,    12,     9,    10,     3,     0,
-       4,     3,     9,     0,     0,     5,    -1,     6
+        14,     3,     0,     4,     3,     0,     3,     9,    10,     7,
+       8,    25,    10,    12,    11,     9,    30,     0,     1,     7,
+       8,    10,    11,     5,     0,     6,     3
   };
 
   /* STOS_[STATE-NUM] -- The (internal number of the) accessing
@@ -791,10 +846,10 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yystos_[] =
   {
-         0,     0,     7,     8,    10,    14,    17,     3,     3,     4,
-       0,     9,    10,    18,    18,     3,    11,    15,     3,     9,
-       0,     0,    17,     5,    18,     3,    12,    16,    17,     6,
-      17
+         0,     0,     7,     8,    10,    14,    17,    18,     4,     0,
+       3,     9,    10,    19,     3,    11,    15,    19,    19,     9,
+       0,     1,    17,     5,     0,     3,    12,    16,    17,     6,
+       3,    17
   };
 
 #if YYDEBUG
@@ -813,15 +868,15 @@ namespace yy {
   RPG_Net_Protocol_IRCParser::yyr1_[] =
   {
          0,    13,    14,    14,    14,    15,    15,    16,    16,    16,
-      17,    17,    18,    18
+      17,    17,    18,    18,    19,    19,    19
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyr2_[] =
   {
-         0,     2,     3,     1,     1,     3,     2,     0,     3,     2,
-       4,     4,     2,     3
+         0,     2,     3,     1,     1,     3,     2,     0,     4,     2,
+       3,     4,     1,     1,     2,     2,     2
   };
 
 #if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
@@ -833,7 +888,7 @@ namespace yy {
     "\"end of message\"", "error", "$undefined", "\"space\"", "\"origin\"",
   "\"user\"", "\"host\"", "\"cmd_string\"", "\"cmd_numeric\"", "\"param\"",
   "':'", "'!'", "'@'", "$accept", "message", "ext_prefix", "ext_prefix_2",
-  "body", "params", 0
+  "body", "command", "params", 0
   };
 #endif
 
@@ -844,9 +899,9 @@ namespace yy {
   {
         14,     0,    -1,    10,     4,    15,    -1,    17,    -1,     0,
       -1,    11,     5,    16,    -1,     3,    17,    -1,    -1,    12,
-       6,    17,    -1,     3,    17,    -1,     7,     3,    18,     0,
-      -1,     8,     3,    18,     0,    -1,    10,     9,    -1,     9,
-       3,    18,    -1
+       6,     3,    17,    -1,     3,    17,    -1,    18,    19,     0,
+      -1,    18,    19,     1,     0,    -1,     7,    -1,     8,    -1,
+       3,    19,    -1,    10,     9,    -1,     9,    19,    -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -854,16 +909,16 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyprhs_[] =
   {
-         0,     0,     3,     7,     9,    11,    15,    18,    19,    23,
-      26,    31,    36,    39
+         0,     0,     3,     7,     9,    11,    15,    18,    19,    24,
+      27,    31,    36,    38,    40,    43,    46
   };
 
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyrline_[] =
   {
-         0,    56,    56,    57,    58,    59,    60,    61,    61,    62,
-      63,    65,    67,    72
+         0,    61,    61,    66,    67,    68,    73,    74,    74,    79,
+      80,    81,    82,    92,    98,    99,   104
   };
 
   // Print the state stack on the debug stream.
@@ -938,10 +993,10 @@ namespace yy {
   }
 
   const int RPG_Net_Protocol_IRCParser::yyeof_ = 0;
-  const int RPG_Net_Protocol_IRCParser::yylast_ = 27;
-  const int RPG_Net_Protocol_IRCParser::yynnts_ = 6;
+  const int RPG_Net_Protocol_IRCParser::yylast_ = 26;
+  const int RPG_Net_Protocol_IRCParser::yynnts_ = 7;
   const int RPG_Net_Protocol_IRCParser::yyempty_ = -2;
-  const int RPG_Net_Protocol_IRCParser::yyfinal_ = 10;
+  const int RPG_Net_Protocol_IRCParser::yyfinal_ = 9;
   const int RPG_Net_Protocol_IRCParser::yyterror_ = 1;
   const int RPG_Net_Protocol_IRCParser::yyerrcode_ = 256;
   const int RPG_Net_Protocol_IRCParser::yyntokens_ = 13;
