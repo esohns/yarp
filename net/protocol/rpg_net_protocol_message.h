@@ -21,7 +21,7 @@
 #ifndef RPG_NET_PROTOCOL_MESSAGE_H
 #define RPG_NET_PROTOCOL_MESSAGE_H
 
-#include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_IRCmessage.h"
 
 #include <stream_data_message_base.h>
 

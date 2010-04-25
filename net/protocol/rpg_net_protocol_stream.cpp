@@ -24,8 +24,8 @@
 
 RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream()
  : //inherited(),
-   myIRCSplitter(std::string("IRCSplitter"),
-                 NULL),
+   myIRCMarshal(std::string("IRCMarshal"),
+                NULL),
    myIRCParser(std::string("IRCParser"),
                NULL),
    myIRCHandler(std::string("IRCHandler"),
@@ -40,17 +40,19 @@ RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream()
   // *NOTE*: one problem is that we need to explicitly close() all
   // modules which we have NOT enqueued onto the stream (e.g. because init()
   // failed...)
-  myAvailableModules.push_back(&myIRCSplitter);
-  myAvailableModules.push_back(&myIRCParser);
-  myAvailableModules.push_back(&myIRCHandler);
-  myAvailableModules.push_back(&myRuntimeStatistic);
+  myAvailableModules.insert_tail(&myIRCMarshal);
+  myAvailableModules.insert_tail(&myIRCParser);
+  myAvailableModules.insert_tail(&myIRCHandler);
+  myAvailableModules.insert_tail(&myRuntimeStatistic);
 
   // fix ACE bug: modules should initialize their "next" member to NULL !
-  for (MODULE_CONTAINERITERATOR_TYPE iter = myAvailableModules.begin();
-       iter != myAvailableModules.end();
-       iter++)
+//   for (MODULE_CONTAINERITERATOR_TYPE iter = myAvailableModules.begin();
+  Stream_Module::MODULE_TYPE* module = NULL;
+  for (ACE_DLList_Iterator<Stream_Module::MODULE_TYPE> iterator(myAvailableModules);
+       iterator.next(module);
+       iterator.advance())
   {
-    (*iter)->next(NULL);
+    module->next(NULL);
   } // end FOR
 }
 
@@ -168,10 +170,10 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_ConfigPOD& config_in)
     return false;
   } // end IF
 
-  // ******************* IRC Splitter ************************
+  // ******************* IRC Marshal ************************
   RPG_Net_Protocol_Module_IRCSplitter* IRCSplitter_impl = NULL;
   IRCSplitter_impl = ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCSplitter*,
-                                      myIRCSplitter.writer());
+                                      myIRCMarshal.writer());
   if (!IRCSplitter_impl)
   {
     ACE_DEBUG((LM_ERROR,
@@ -186,7 +188,7 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_ConfigPOD& config_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
-               myIRCSplitter.name()));
+               myIRCMarshal.name()));
 
     return false;
   } // end IF
@@ -194,12 +196,12 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_ConfigPOD& config_in)
   // enqueue the module...
   // *NOTE*: push()ing the module will open() it
   // --> set the argument that is passed along
-  myIRCSplitter.arg(&ACE_const_cast(RPG_Net_ConfigPOD&, config_in));
-  if (push(&myIRCSplitter))
+  myIRCMarshal.arg(&ACE_const_cast(RPG_Net_ConfigPOD&, config_in));
+  if (push(&myIRCMarshal))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
-               myIRCSplitter.name()));
+               myIRCMarshal.name()));
 
     return false;
   } // end IF

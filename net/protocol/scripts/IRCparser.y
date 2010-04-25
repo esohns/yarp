@@ -32,7 +32,7 @@ typedef void* yyscan_t;
 
 %code {
 #include "rpg_net_protocol_IRCparser_driver.h"
-#include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_IRCmessage.h"
 #include <ace/Log_Msg.h>
 }
 

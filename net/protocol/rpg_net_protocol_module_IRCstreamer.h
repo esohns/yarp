@@ -18,12 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_PROTOCOL_MODULE_IRCPARSER_H
-#define RPG_NET_PROTOCOL_MODULE_IRCPARSER_H
+#ifndef RPG_NET_PROTOCOL_MODULE_IRCSTREAMER_H
+#define RPG_NET_PROTOCOL_MODULE_IRCSTREAMER_H
 
-#include "rpg_net_protocol_IRCparser_driver.h"
-
-#include <rpg_net_sessionmessage.h>
+#include "rpg_net_sessionmessage.h"
 
 #include <stream_task_base_synch.h>
 #include <stream_streammodule.h>
@@ -31,18 +29,14 @@
 #include <ace/Global_Macros.h>
 
 // forward declaration(s)
-class Stream_IAllocator;
 class Stream_MessageBase;
 
-class RPG_Net_Protocol_Module_IRCParser
+class RPG_Net_Protocol_Module_IRCStreamer
  : public Stream_TaskBaseSynch<RPG_Net_SessionMessage>
 {
  public:
-  RPG_Net_Protocol_Module_IRCParser();
-  virtual ~RPG_Net_Protocol_Module_IRCParser();
-
-  // configuration / initialization
-  const bool init(Stream_IAllocator*); // message allocator
+  RPG_Net_Protocol_Module_IRCStreamer();
+  virtual ~RPG_Net_Protocol_Module_IRCStreamer();
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
@@ -52,18 +46,11 @@ class RPG_Net_Protocol_Module_IRCParser
   typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage> inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCParser(const RPG_Net_Protocol_Module_IRCParser&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCParser& operator=(const RPG_Net_Protocol_Module_IRCParser&));
-
-  // message allocator
-  Stream_IAllocator*               myAllocator;
-  // driver
-  RPG_Net_Protocol_IRCParserDriver myParserDriver;
-
-  bool                             myIsInitialized;
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCStreamer(const RPG_Net_Protocol_Module_IRCStreamer&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCStreamer& operator=(const RPG_Net_Protocol_Module_IRCStreamer&));
 };
 
 // declare module
-DATASTREAM_MODULE(RPG_Net_Protocol_Module_IRCParser);
+DATASTREAM_MODULE(RPG_Net_Protocol_Module_IRCStreamer);
 
 #endif

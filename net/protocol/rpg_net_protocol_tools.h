@@ -21,18 +21,19 @@
 #ifndef RPG_NET_PROTOCOL_TOOLS_H
 #define RPG_NET_PROTOCOL_TOOLS_H
 
+#include "rpg_net_protocol_IRCmessage.h"
+
 #include <ace/Global_Macros.h>
 
 #include <string>
-
-// forward declaration(s)
-class RPG_Net_Protocol_IRCMessage;
 
 class RPG_Net_Protocol_Tools
 {
  public:
   // debug info
   static const std::string IRCMessage2String(const RPG_Net_Protocol_IRCMessage&);
+  static const RPG_Net_Protocol_CommandType_t IRCCommandString2Type(const std::string&);
+  static const std::string IRCCommandType2String(const RPG_Net_Protocol_CommandType_t&);
 
  private:
   // safety measures

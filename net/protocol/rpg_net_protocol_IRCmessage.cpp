@@ -18,17 +18,61 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_PROTOCOL_COMMON_H
-#define RPG_NET_PROTOCOL_COMMON_H
+#include "rpg_net_protocol_IRCmessage.h"
 
-#include "rpg_net_protocol_module_IRCsplitter.h"
-#include "rpg_net_protocol_module_IRCstreamer.h"
+#include "rpg_net_protocol_tools.h"
 
-#include <stream_streammodule_base.h>
+RPG_Net_Protocol_IRCMessage::RPG_Net_Protocol_IRCMessage()
+ : inherited(1,
+             true)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCMessage::RPG_Net_Protocol_IRCMessage"));
 
-// declare module
-DATASTREAM_MODULE_DUPLEX(RPG_Net_Protocol_Module_IRCSplitter,
-                         RPG_Net_Protocol_Module_IRCStreamer,
-                         RPG_Net_Protocol_Module_IRCMarshal);
+  prefix.origin = NULL;
+  prefix.user = NULL;
+  prefix.host = NULL;
+  command.string = NULL;
+  command.discriminator = Command::INVALID;
+  params = NULL;
+}
 
-#endif
+RPG_Net_Protocol_IRCMessage::~RPG_Net_Protocol_IRCMessage()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCMessage::~RPG_Net_Protocol_IRCMessage"));
+
+  if (prefix.origin)
+    delete prefix.origin;
+  if (prefix.user)
+    delete prefix.user;
+  if (prefix.host)
+    delete prefix.host;
+  switch (command.discriminator)
+  {
+    case RPG_Net_Protocol_IRCMessage::Command::STRING:
+    {
+      if (command.string)
+        delete command.string;
+
+      break;
+    }
+    default:
+      break;
+  } // end SWITCH
+  if (params)
+  {
+    params->clear();
+    delete params;
+  } // end IF
+}
+
+void
+RPG_Net_Protocol_IRCMessage::dump_state() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCMessage::dump_state"));
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("%s"),
+             RPG_Net_Protocol_Tools::IRCMessage2String(*this).c_str()));
+  inherited::dump_state();
+}

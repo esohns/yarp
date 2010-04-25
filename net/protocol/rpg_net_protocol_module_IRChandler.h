@@ -24,7 +24,7 @@
 #include "rpg_net_sessionmessage.h"
 
 #include <stream_task_base_synch.h>
-#include <stream_streammodule_base.h>
+#include <stream_streammodule.h>
 
 #include <ace/Global_Macros.h>
 

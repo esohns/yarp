@@ -28,7 +28,7 @@
 #include <rpg_common_itimer.h>
 
 #include <stream_task_base_synch.h>
-#include <stream_streammodule_base.h>
+#include <stream_streammodule.h>
 
 #include <ace/Time_Value.h>
 #include <ace/Reactor.h>

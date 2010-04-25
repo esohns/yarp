@@ -21,7 +21,7 @@
 #ifndef RPG_NET_PROTOCOL_STREAM_H
 #define RPG_NET_PROTOCOL_STREAM_H
 
-#include "rpg_net_protocol_module_IRCsplitter.h"
+#include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_module_IRCparser.h"
 #include "rpg_net_protocol_module_IRChandler.h"
 
@@ -37,7 +37,8 @@
 #include <ace/Global_Macros.h>
 
 class RPG_Net_Protocol_Stream
- : public Stream_Base<RPG_Net_ConfigPOD,
+ : public Stream_Base<
+                      RPG_Net_ConfigPOD,
                       RPG_Net_StreamConfig,
                       RPG_Net_SessionMessage>,
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
@@ -73,10 +74,10 @@ class RPG_Net_Protocol_Stream
   const bool fini(const RPG_Net_ConfigPOD&); // configuration
 
   // modules
-  RPG_Net_Protocol_Module_IRCSplitter_Module myIRCSplitter;
-  RPG_Net_Protocol_Module_IRCParser_Module   myIRCParser;
-  RPG_Net_Protocol_Module_IRCHandler_Module  myIRCHandler;
-  RPG_Net_Module_RuntimeStatistic_Module     myRuntimeStatistic;
+  RPG_Net_Protocol_Module_IRCMarshal_Module myIRCMarshal;
+  RPG_Net_Protocol_Module_IRCParser_Module  myIRCParser;
+  RPG_Net_Protocol_Module_IRCHandler_Module myIRCHandler;
+  RPG_Net_Module_RuntimeStatistic_Module    myRuntimeStatistic;
 };
 
 #endif

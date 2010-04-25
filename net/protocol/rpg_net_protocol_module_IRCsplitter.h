@@ -29,7 +29,7 @@
 #include <rpg_common_istatistic.h>
 
 #include <stream_headmoduletask_base.h>
-#include <stream_streammodule_base.h>
+#include <stream_streammodule.h>
 
 #include <ace/Global_Macros.h>
 

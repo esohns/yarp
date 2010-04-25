@@ -20,7 +20,9 @@
 
 #include "rpg_net_protocol_module_IRChandler.h"
 
+#include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_tools.h"
 
 #include <stream_iallocator.h>
 
@@ -87,71 +89,131 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& messa
   // don't care (implies yes per default, if we're part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
 
-//   switch (message_header->messageType)
-//   {
-//     case RPG_Net_Remote_Comm::RPG_NET_PING:
-//     {
-//       // auto-answer ?
-//       if (myAutomaticPong)
-//       {
-//         // --> reply with a "PONG"
-//
-//         // step0: create reply structure
-//         // --> get a message buffer
-//         RPG_Net_Message* reply_message = allocateMessage(sizeof(RPG_Net_Remote_Comm::PongMessage));
-//         if (reply_message == NULL)
-//         {
-//           ACE_DEBUG((LM_ERROR,
-//                      ACE_TEXT("failed to allocate reply message(%u), aborting\n"),
-//                      sizeof(RPG_Net_Remote_Comm::PongMessage)));
-//
-//           return;
-//         } // end IF
-//         // step1: init reply
-//         RPG_Net_Remote_Comm::PongMessage* reply_struct = ACE_reinterpret_cast(RPG_Net_Remote_Comm::PongMessage*,
-//                                                                               reply_message->wr_ptr());
-//         ACE_OS::memset(reply_struct,
-//                        0,
-//                        sizeof(RPG_Net_Remote_Comm::PongMessage));
-//         reply_struct->messageHeader.messageLength = sizeof(RPG_Net_Remote_Comm::PongMessage) - sizeof(unsigned long);
-//         reply_struct->messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PONG;
-//         reply_message->wr_ptr(sizeof(RPG_Net_Remote_Comm::PongMessage));
-//         // step2: send it upstream
-//         if (reply(reply_message, NULL) == -1)
-//         {
-//           ACE_DEBUG((LM_ERROR,
-//                      ACE_TEXT("failed to ACE_Task::reply(): \"%m\", aborting\n")));
-//
-//           // clean up
-//           reply_message->release();
-//
-//           return;
-//         } // end IF
-//       } // end IF
-//
-//       if (myPrintPongDot)
-//       {
-//         std::clog << '.';
-//       } // end IF
-//
-//       break;
-//     }
-//     case RPG_Net_Remote_Comm::RPG_NET_PONG:
-//     {
-//       // nothing to do...
-//       break;
-//     }
-//     default:
-//     {
-//       // debug info
-//       ACE_DEBUG((LM_ERROR,
-//                  ACE_TEXT("[%u]: unknown message type: \"%s\": protocol error, aborting\n"),
-//                  message_inout->getID(),
-//                  RPG_Net_Common_Tools::messageType2String(message_header->messageType).c_str()));
-//
-//       break;
-//     }
-//   } // end SWITCH
+  RPG_Net_Protocol_Message* message = ACE_dynamic_cast(RPG_Net_Protocol_Message*,
+                                                       message_inout);
+  ACE_ASSERT(message);
+
+  switch (message->getData()->command.discriminator)
+  {
+    case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
+    {
+      switch (message->getData()->command.numeric)
+      {
+        default:
+        {
+          ACE_DEBUG((LM_WARNING,
+                     ACE_TEXT("[%u]: unknown numeric command (was: %u), continuing\n"),
+                     message_inout->getID(),
+                     message->getData()->command.numeric));
+
+          return;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case RPG_Net_Protocol_IRCMessage::Command::STRING:
+    {
+      switch (RPG_Net_Protocol_Tools::IRCCommandString2Type(*message->getData()->command.string))
+      {
+        case RPG_Net_Protocol_IRCMessage::NOTICE:
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("[%u]: received \"NOTICE\": \"%s\"\n"),
+                     message_inout->getID(),
+                     message->getData()->params->back().c_str()));
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::PING:
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("[%u]: received \"PING\": \"%s\"\n"),
+                     message_inout->getID(),
+                     message->getData()->params->back().c_str()));
+
+          // auto-answer ?
+          if (myAutomaticPong)
+          {
+            // --> reply with a "PONG"
+
+            // step0: create reply structure
+            // --> get a message buffer
+            RPG_Net_Protocol_Message* reply_message = allocateMessage(RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE);
+            if (reply_message == NULL)
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("failed to allocate reply message(%u), aborting\n"),
+                         RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE));
+
+              return;
+            } // end IF
+
+            // step1: init reply
+            RPG_Net_Protocol_IRCMessage* reply_struct = NULL;
+            ACE_NEW_NORETURN(reply_struct,
+                             RPG_Net_Protocol_IRCMessage());
+            ACE_NEW_NORETURN(reply_struct->command.string,
+                             std::string(RPG_Net_Protocol_Tools::IRCCommandType2String(RPG_Net_Protocol_IRCMessage::PONG)));
+            reply_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+            ACE_NEW_NORETURN(reply_struct->params,
+                             std::list<std::string>());
+            reply_struct->params->push_back(message->getData()->params->back());
+            // *NOTE*: reply_message assumes control over reply...
+            reply_message->init(reply_struct);
+
+            // step2: send it upstream
+            if (reply(reply_message, NULL) == -1)
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("failed to ACE_Task::reply(): \"%m\", aborting\n")));
+
+              // clean up
+              reply_message->release();
+
+              return;
+            } // end IF
+          } // end IF
+
+          if (myPrintPongDot)
+          {
+            std::clog << '.';
+          } // end IF
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::PONG:
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("[%u]: received \"PONG\": \"%s\"\n"),
+                     message_inout->getID(),
+                     message->getData()->params->back().c_str()));
+
+          break;
+        }
+        default:
+        {
+          ACE_DEBUG((LM_WARNING,
+                     ACE_TEXT("[%u]: received unknown command (was: \"%s\"), aborting\n"),
+                     message_inout->getID(),
+                     message->getData()->command.string->c_str()));
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("[%u]: invalid command type (was: %u), continuing\n"),
+                 message_inout->getID(),
+                 message->getData()->command.discriminator));
+
+      break;
+    }
+  } // end SWITCH
 }
 
 void

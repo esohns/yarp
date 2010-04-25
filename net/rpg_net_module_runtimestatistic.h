@@ -133,5 +133,5 @@ class RPG_Net_Module_RuntimeStatistic
 };
 
 // declare module
-DATASTREAM_MODULE(RPG_Net_Module_RuntimeStatistic);
+DATASTREAM_MODULE_WRITER_ONLY(RPG_Net_Module_RuntimeStatistic);
 #endif

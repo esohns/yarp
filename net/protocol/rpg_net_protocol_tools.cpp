@@ -83,3 +83,65 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
 
   return converter.str();
 }
+
+const RPG_Net_Protocol_CommandType_t
+RPG_Net_Protocol_Tools::IRCCommandString2Type(const std::string& commandString_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCCommandString2Type"));
+
+  if ((commandString_in) == ACE_TEXT("NOTICE"))
+    return RPG_Net_Protocol_IRCMessage::NOTICE;
+  else if (commandString_in == ACE_TEXT("PING"))
+    return RPG_Net_Protocol_IRCMessage::PING;
+  else if (commandString_in == ACE_TEXT("PONG"))
+    return RPG_Net_Protocol_IRCMessage::PONG;
+  else
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid command (was: \"%s\"), aborting\n"),
+               commandString_in.c_str()));
+
+    return RPG_Net_Protocol_IRCMessage::RPG_NET_PROTOCOL_COMMANDTYPE_INVALID;
+  } // end ELSE
+}
+
+const std::string
+RPG_Net_Protocol_Tools::IRCCommandType2String(const RPG_Net_Protocol_CommandType_t& command_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCCommandType2String"));
+
+  std::string result;
+
+  switch (command_in)
+  {
+    case RPG_Net_Protocol_IRCMessage::NOTICE:
+    {
+      result = ACE_TEXT("NOTICE");
+
+      break;
+    }
+    case RPG_Net_Protocol_IRCMessage::PING:
+    {
+      result = ACE_TEXT("PING");
+
+      break;
+    }
+    case RPG_Net_Protocol_IRCMessage::PONG:
+    {
+      result = ACE_TEXT("PONG");
+
+      break;
+    }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid command type (was: %d), aborting\n"),
+                 command_in));
+
+      break;
+    }
+  } // end SWITCH
+
+  return result;
+}

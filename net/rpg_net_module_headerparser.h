@@ -25,7 +25,7 @@
 #include "rpg_net_remote_comm.h"
 
 #include <stream_task_base_synch.h>
-#include <stream_streammodule_base.h>
+#include <stream_streammodule.h>
 
 // forward declaration(s)
 class Stream_MessageBase;

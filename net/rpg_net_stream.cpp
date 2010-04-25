@@ -44,17 +44,19 @@ RPG_Net_Stream::RPG_Net_Stream()
   // *NOTE*: one problem is that we need to explicitly close() all
   // modules which we have NOT enqueued onto the stream (e.g. because init()
   // failed...)
-  myAvailableModules.push_back(&mySocketHandler);
-  myAvailableModules.push_back(&myHeaderParser);
-  myAvailableModules.push_back(&myProtocolHandler);
-  myAvailableModules.push_back(&myRuntimeStatistic);
+  myAvailableModules.insert_tail(&mySocketHandler);
+  myAvailableModules.insert_tail(&myHeaderParser);
+  myAvailableModules.insert_tail(&myProtocolHandler);
+  myAvailableModules.insert_tail(&myRuntimeStatistic);
 
-  // fix ACE bug: modules should initialize their "next" member to NULL !
-  for (MODULE_CONTAINERITERATOR_TYPE iter = myAvailableModules.begin();
-       iter != myAvailableModules.end();
-       iter++)
+    // fix ACE bug: modules should initialize their "next" member to NULL !
+//   for (MODULE_CONTAINERITERATOR_TYPE iter = myAvailableModules.begin();
+  Stream_Module::MODULE_TYPE* module = NULL;
+  for (ACE_DLList_Iterator<Stream_Module::MODULE_TYPE> iterator(myAvailableModules);
+       iterator.next(module);
+       iterator.advance())
   {
-    (*iter)->next(NULL);
+    module->next(NULL);
   } // end FOR
 }
 
