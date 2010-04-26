@@ -1905,8 +1905,8 @@ static yyconst yy_state_type yy_NUL_trans[45] =
 
 static yyconst flex_int16_t yy_rule_linenum[16] =
     {   0,
-       62,   66,   70,   73,   76,   81,   86,   91,   96,  101,
-      104,  107,  112,  117,  121
+       61,   65,   69,   72,   75,   80,   85,   90,   95,  100,
+      103,  106,  111,  116,  120
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -1920,7 +1920,6 @@ static yyconst flex_int16_t yy_rule_linenum[16] =
 
 #include <ace/Log_Msg.h>
 
-//#include "rpg_net_protocol_IRCparser.h"
 #include "rpg_net_protocol_IRCparser_driver.h"
 
 /* By default IRCScannerlex returns int, we use token_type.

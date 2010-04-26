@@ -35,20 +35,22 @@
 // #include <list>
 
 // forward declarations
-template <typename ConfigType> class RPG_Net_IConnection;
+template <typename ConfigType,
+          typename StatisticsContainerType> class RPG_Net_IConnection;
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 class RPG_Net_Connection_Manager
- : public RPG_Net_IConnectionManager<ConfigType>,
-   public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>,
+ : public RPG_Net_IConnectionManager<ConfigType, StatisticsContainerType>,
+   public RPG_Common_IStatistic<StatisticsContainerType>,
    public RPG_Common_IDumpState
 {
   // singleton needs access to the ctor/dtors
-  friend class ACE_Singleton<RPG_Net_Connection_Manager<ConfigType>,
+  friend class ACE_Singleton<RPG_Net_Connection_Manager<ConfigType, StatisticsContainerType>,
                              ACE_Recursive_Thread_Mutex>;
 
   // needs access to (de-)register itself with the singleton
-  friend class RPG_Net_SocketHandlerBase<ConfigType>;
+  friend class RPG_Net_SocketHandlerBase<ConfigType, StatisticsContainerType>;
 
  public:
   // configuration / initialization
@@ -74,7 +76,7 @@ class RPG_Net_Connection_Manager
   virtual void dump_state() const;
 
  private:
-  typedef RPG_Net_IConnection<ConfigType> CONNECTION_TYPE;
+  typedef RPG_Net_IConnection<ConfigType, StatisticsContainerType> CONNECTION_TYPE;
 //   typedef std::list<CONNECTION_TYPE*> CONNECTIONLIST_TYPE;
   // *NOTE*: cannot write this - it confuses gcc...
 //   typedef CONNECTIONLIST_TYPE::const_iterator CONNECTIONLIST_CONSTITERATOR_TYPE;
@@ -87,7 +89,7 @@ class RPG_Net_Connection_Manager
 
   // implement RPG_Common_IStatistic
   // *WARNING*: this assumes we're holding our lock !
-  virtual const bool collect(RPG_Net_RuntimeStatistic&) const; // return value: statistic data
+  virtual const bool collect(StatisticsContainerType&) const; // return value: statistic data
 
   // safety measures
   RPG_Net_Connection_Manager();

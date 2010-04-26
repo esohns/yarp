@@ -21,9 +21,6 @@
 #ifndef RPG_NET_MODULE_PROTOCOLHANDLER_H
 #define RPG_NET_MODULE_PROTOCOLHANDLER_H
 
-#include "rpg_net_sessionmessage.h"
-#include "rpg_net_remote_comm.h"
-
 #include <rpg_common_timerhandler.h>
 #include <rpg_common_itimer.h>
 
@@ -35,10 +32,12 @@
 
 // forward declaration(s)
 class Stream_IAllocator;
-class Stream_MessageBase;
+class RPG_Net_SessionMessage;
+class RPG_Net_Message;
 
 class RPG_Net_Module_ProtocolHandler
- : public Stream_TaskBaseSynch<RPG_Net_SessionMessage>,
+ : public Stream_TaskBaseSynch<RPG_Net_SessionMessage,
+                               RPG_Net_Message>,
    public RPG_Common_ITimer
 {
  public:
@@ -52,8 +51,8 @@ class RPG_Net_Module_ProtocolHandler
                   const bool& = false);     // print dot ('.') for every answered PING to stderr (client)
 
   // implement (part of) Stream_ITaskBase
-  virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
-                                 bool&);               // return value: pass message downstream ?
+  virtual void handleDataMessage(RPG_Net_Message*&, // data message handle
+                                 bool&);            // return value: pass message downstream ?
 //   virtual void handleSessionMessage(RPG_Net_SessionMessage*&, // session message handle
 //                                     bool&);                   // return value: pass message downstream ?
 
@@ -64,7 +63,8 @@ class RPG_Net_Module_ProtocolHandler
   virtual void dump_state() const;
 
  private:
-  typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage> inherited;
+  typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage,
+                               RPG_Net_Message> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_ProtocolHandler(const RPG_Net_Module_ProtocolHandler&));

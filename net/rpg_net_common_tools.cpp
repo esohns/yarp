@@ -255,41 +255,6 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
 }
 
 const std::string
-RPG_Net_Common_Tools::messageType2String(const RPG_Net_Remote_Comm::MessageType& messageType_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::messageType2String"));
-
-  std::string result;
-
-  switch (messageType_in)
-  {
-    case RPG_Net_Remote_Comm::RPG_NET_PING:
-    {
-      result = ACE_TEXT("RPG_NET_PING");
-
-      break;
-    }
-    case RPG_Net_Remote_Comm::RPG_NET_PONG:
-    {
-      result = ACE_TEXT("RPG_NET_PONG");
-
-      break;
-    }
-    default:
-    {
-      // debug info
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid message header: %d, aborting\n"),
-                 messageType_in));
-
-      break;
-    }
-  } // end SWITCH
-
-  return result;
-}
-
-const std::string
 RPG_Net_Common_Tools::IPAddress2String(const unsigned short& port_in,
                                        const unsigned long& IPAddress_in)
 {

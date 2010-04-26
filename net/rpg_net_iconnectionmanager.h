@@ -23,16 +23,19 @@
 
 #include "rpg_net_iconnection.h"
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 class RPG_Net_IConnectionManager
 {
  public:
   // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
   // -Wno-non-virtual-dtor in the project settings...
 
-   // API
-   virtual const bool registerConnection(RPG_Net_IConnection<ConfigType>*) = 0; // connection
-   virtual void deregisterConnection(const RPG_Net_IConnection<ConfigType>*) = 0; // connection
+  // API
+  virtual const bool registerConnection(RPG_Net_IConnection<ConfigType,
+                                                            StatisticsContainerType>*) = 0; // connection
+  virtual void deregisterConnection(const RPG_Net_IConnection<ConfigType,
+                                                              StatisticsContainerType>*) = 0; // connection
 };
 
 #endif

@@ -20,6 +20,8 @@
 
 #include "IRC_client_signalhandler.h"
 
+#include <rpg_net_protocol_common.h>
+
 #include <rpg_net_common_tools.h>
 #include <rpg_net_connection_manager.h>
 
@@ -132,7 +134,7 @@ IRC_Client_SignalHandler::handle_signal(int signal_in,
   if (abort_oldest)
   {
     // release an existing connection...
-    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
+    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
   } // end IF
 
   // ...connect ?
@@ -165,7 +167,7 @@ IRC_Client_SignalHandler::handle_signal(int signal_in,
                  buf));
 
       // release an existing connection, maybe that helps...
-      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
+      RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
     } // end IF
   } // end IF
 

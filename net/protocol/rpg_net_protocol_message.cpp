@@ -183,3 +183,44 @@ RPG_Net_Protocol_Message::duplicate(void) const
 
   return nb;
 }
+
+const std::string
+RPG_Net_Protocol_Message::messageType2String(const RPG_Net_Protocol_CommandType_t& messageType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::messageType2String"));
+
+  std::string result = ACE_TEXT("RPG_NET_PROTOCOL_COMMANDTYPE_INVALID");
+
+  switch (messageType_in)
+  {
+    case RPG_Net_Protocol_IRCMessage::NOTICE:
+    {
+      result = ACE_TEXT("NOTICE");
+
+      break;
+    }
+    case RPG_Net_Protocol_IRCMessage::PING:
+    {
+      result = ACE_TEXT("PING");
+
+      break;
+    }
+    case RPG_Net_Protocol_IRCMessage::PONG:
+    {
+      result = ACE_TEXT("PONG");
+
+      break;
+    }
+    default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid message type (was: %d), aborting\n"),
+                 messageType_in));
+
+      break;
+    }
+  } // end SWITCH
+
+  return result;
+}

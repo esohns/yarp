@@ -158,7 +158,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
             ACE_NEW_NORETURN(reply_struct,
                              RPG_Net_Protocol_IRCMessage());
             ACE_NEW_NORETURN(reply_struct->command.string,
-                             std::string(RPG_Net_Protocol_Tools::IRCCommandType2String(RPG_Net_Protocol_IRCMessage::PONG)));
+                             std::string(RPG_Net_Protocol_Message::messageType2String(RPG_Net_Protocol_IRCMessage::PONG)));
             reply_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
             reply_struct->params.push_back(message_inout->getData()->params.back());
             // *NOTE*: reply_message assumes control over reply...

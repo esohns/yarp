@@ -20,8 +20,8 @@
 
 #include "rpg_net_module_headerparser.h"
 
+#include "rpg_net_sessionmessage.h"
 #include "rpg_net_message.h"
-#include "rpg_net_common_tools.h"
 
 RPG_Net_Module_HeaderParser::RPG_Net_Module_HeaderParser()
  : //inherited(),
@@ -57,7 +57,7 @@ RPG_Net_Module_HeaderParser::init()
 }
 
 void
-RPG_Net_Module_HeaderParser::handleDataMessage(Stream_MessageBase*& message_inout,
+RPG_Net_Module_HeaderParser::handleDataMessage(RPG_Net_Message*& message_inout,
                                                bool& passMessageDownstream_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_HeaderParser::handleDataMessage"));
@@ -68,14 +68,12 @@ RPG_Net_Module_HeaderParser::handleDataMessage(Stream_MessageBase*& message_inou
   // let's interpret the message header...
 
   if (message_inout->length() < sizeof(RPG_Net_MessageHeader))
-  { // *TODO*: upcast doesn't need to be dynamic...
-    RPG_Net_Message* message = ACE_dynamic_cast(RPG_Net_Message*,
-                                                message_inout);
-    if (!message->crunchForHeader(sizeof(RPG_Net_MessageHeader)))
+  {
+    if (!message_inout->crunchForHeader(sizeof(RPG_Net_MessageHeader)))
     {
       ACE_DEBUG((LM_ERROR,
                 ACE_TEXT("[%u]: failed to RPG_Net_Message::crunchForHeader(%u), aborting\n"),
-                message->getID(),
+                message_inout->getID(),
                 sizeof(RPG_Net_MessageHeader)));
 
       // clean up

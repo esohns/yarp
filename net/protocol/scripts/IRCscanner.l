@@ -3,7 +3,6 @@
 
 #include <ace/Log_Msg.h>
 
-//#include "rpg_net_protocol_IRCparser.h"
 #include "rpg_net_protocol_IRCparser_driver.h"
 
 /* By default yylex returns int, we use token_type.

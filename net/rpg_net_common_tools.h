@@ -40,9 +40,6 @@ class RPG_Net_Common_Tools
                                        std::string&);      // return value: FQ current log filename
   static unsigned long myMaxNumberOfLogFiles;
 
-  // debug info
-  static const std::string messageType2String(const RPG_Net_Remote_Comm::MessageType&);
-
   // --- general tools ---
   // *NOTE*: if (the first argument == 0), the trailing ":0" will be cropped from the return value !
   static const std::string IPAddress2String(const unsigned short&, // port (network byte order !)

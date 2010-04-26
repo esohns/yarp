@@ -26,8 +26,11 @@
 #include <ace/Reactor.h>
 #include <ace/INET_Addr.h>
 
-template <typename ConfigType>
-RPG_Net_SocketHandlerBase<ConfigType>::RPG_Net_SocketHandlerBase(RPG_Net_IConnectionManager<ConfigType>* manager_in)
+template <typename ConfigType,
+          typename StatisticsContainerType>
+RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::RPG_Net_SocketHandlerBase(RPG_Net_IConnectionManager<ConfigType,
+                                                                                                         StatisticsContainerType>* manager_in)
  : inherited(NULL,                     // no specific thread manager
              NULL,                     // no specific message queue
              ACE_Reactor::instance()), // default reactor
@@ -62,8 +65,10 @@ RPG_Net_SocketHandlerBase<ConfigType>::RPG_Net_SocketHandlerBase(RPG_Net_IConnec
   } // end IF
 }
 
-template <typename ConfigType>
-RPG_Net_SocketHandlerBase<ConfigType>::~RPG_Net_SocketHandlerBase()
+template <typename ConfigType,
+          typename StatisticsContainerType>
+RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::~RPG_Net_SocketHandlerBase()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::~RPG_Net_SocketHandlerBase"));
 
@@ -84,9 +89,11 @@ RPG_Net_SocketHandlerBase<ConfigType>::~RPG_Net_SocketHandlerBase()
   } // end IF
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 int
-RPG_Net_SocketHandlerBase<ConfigType>::open(void* arg_in)
+RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::open(void* arg_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::open"));
 
@@ -174,9 +181,11 @@ RPG_Net_SocketHandlerBase<ConfigType>::open(void* arg_in)
   return 0;
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 int
-RPG_Net_SocketHandlerBase<ConfigType>::close(u_long arg_in)
+RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::close(u_long arg_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::close"));
   // [*NOTE*: hereby we override the default behavior of a ACE_Svc_Handler,
@@ -244,10 +253,12 @@ RPG_Net_SocketHandlerBase<ConfigType>::close(u_long arg_in)
   return 0;
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 int
-RPG_Net_SocketHandlerBase<ConfigType>::handle_close(ACE_HANDLE handle_in,
-                                                    ACE_Reactor_Mask mask_in)
+RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::handle_close(ACE_HANDLE handle_in,
+                                                                 ACE_Reactor_Mask mask_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::handle_close"));
 
@@ -269,9 +280,11 @@ RPG_Net_SocketHandlerBase<ConfigType>::handle_close(ACE_HANDLE handle_in,
                                  mask_in);
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 void
-RPG_Net_SocketHandlerBase<ConfigType>::init(const ConfigType& userData_in)
+RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::init(const ConfigType& userData_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::init"));
 
@@ -287,9 +300,11 @@ RPG_Net_SocketHandlerBase<ConfigType>::init(const ConfigType& userData_in)
 //   return myIsRegistered;
 // }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 void
-RPG_Net_SocketHandlerBase<ConfigType>::abort()
+RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::abort()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::abort"));
 
@@ -301,9 +316,11 @@ RPG_Net_SocketHandlerBase<ConfigType>::abort()
                ACE_TEXT("failed to RPG_Net_SocketHandlerBase::close(1): \"%m\", continuing\n")));
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 const unsigned long
-RPG_Net_SocketHandlerBase<ConfigType>::getID() const
+RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::getID() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::getID"));
 
@@ -317,9 +334,11 @@ RPG_Net_SocketHandlerBase<ConfigType>::getID() const
 #endif
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 void
-RPG_Net_SocketHandlerBase<ConfigType>::dump_state() const
+RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::dump_state() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::dump_state"));
 

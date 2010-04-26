@@ -23,8 +23,10 @@
 
 #include <ace/OS.h>
 
-template <typename ConfigType>
-RPG_Net_Connection_Manager<ConfigType>::RPG_Net_Connection_Manager()
+template <typename ConfigType,
+          typename StatisticsContainerType>
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::RPG_Net_Connection_Manager()
  : myCondition(myLock),
    myMaxNumConnections(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS),
    //myUserData(),
@@ -35,11 +37,13 @@ RPG_Net_Connection_Manager<ConfigType>::RPG_Net_Connection_Manager()
   // init user data
   ACE_OS::memset(&myUserData,
                  0,
-                 sizeof(RPG_Net_ConfigPOD));
+                 sizeof(ConfigType));
 }
 
-template <typename ConfigType>
-RPG_Net_Connection_Manager<ConfigType>::~RPG_Net_Connection_Manager()
+template <typename ConfigType,
+          typename StatisticsContainerType>
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::~RPG_Net_Connection_Manager()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::~RPG_Net_Connection_Manager"));
 
@@ -56,10 +60,12 @@ RPG_Net_Connection_Manager<ConfigType>::~RPG_Net_Connection_Manager()
   } // end lock scope
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType>::init(const unsigned long& maxNumConnections_in,
-                                             const ConfigType& userData_in)
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::init(const unsigned long& maxNumConnections_in,
+                                                          const ConfigType& userData_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::init"));
 
@@ -75,9 +81,11 @@ RPG_Net_Connection_Manager<ConfigType>::init(const unsigned long& maxNumConnecti
   myIsInitialized = true;
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 const bool
-RPG_Net_Connection_Manager<ConfigType>::registerConnection(CONNECTION_TYPE* connection_in)
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::registerConnection(CONNECTION_TYPE* connection_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::registerConnection"));
 
@@ -132,9 +140,11 @@ RPG_Net_Connection_Manager<ConfigType>::registerConnection(CONNECTION_TYPE* conn
   return true;
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType>::deregisterConnection(const CONNECTION_TYPE* connection_in)
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::deregisterConnection(const CONNECTION_TYPE* connection_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::deregisterConnection"));
 
@@ -182,9 +192,11 @@ RPG_Net_Connection_Manager<ConfigType>::deregisterConnection(const CONNECTION_TY
   } // end ELSE
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType>::abortConnections()
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::abortConnections()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::abortConnections"));
 
@@ -234,9 +246,11 @@ RPG_Net_Connection_Manager<ConfigType>::abortConnections()
              num_clients));
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType>::waitConnections() const
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::waitConnections() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::waitConnections"));
 
@@ -244,7 +258,7 @@ RPG_Net_Connection_Manager<ConfigType>::waitConnections() const
     // need lock
     ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
-    while (!myConnections.empty())
+    while (!myConnections.is_empty())
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("waiting for (count: %d) connection(s) to close...\n"),
@@ -258,9 +272,11 @@ RPG_Net_Connection_Manager<ConfigType>::waitConnections() const
 //             ACE_TEXT("leaving...\n")));
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 const unsigned long
-RPG_Net_Connection_Manager<ConfigType>::numConnections() const
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::numConnections() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::numConnections"));
 
@@ -275,9 +291,11 @@ RPG_Net_Connection_Manager<ConfigType>::numConnections() const
   return num_connections;
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType>::abortOldestConnection()
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::abortOldestConnection()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::abortOldestConnection"));
 
@@ -310,18 +328,20 @@ RPG_Net_Connection_Manager<ConfigType>::abortOldestConnection()
   } // end IF
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 const bool
-RPG_Net_Connection_Manager<ConfigType>::collect(RPG_Net_RuntimeStatistic& data_out) const
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::collect(StatisticsContainerType& data_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::collect"));
 
   // init result
   ACE_OS::memset(&data_out,
                  0,
-                 sizeof(RPG_Net_RuntimeStatistic));
+                 sizeof(StatisticsContainerType));
 
-  RPG_Net_RuntimeStatistic temp;
+  StatisticsContainerType temp;
   // aggregate statistical data
   // *WARNING*: this assumes we're holding our lock !
   CONNECTION_TYPE* connection = NULL;
@@ -335,7 +355,7 @@ RPG_Net_Connection_Manager<ConfigType>::collect(RPG_Net_RuntimeStatistic& data_o
   {
     ACE_OS::memset(&temp,
                    0,
-                   sizeof(RPG_Net_RuntimeStatistic));
+                   sizeof(StatisticsContainerType));
 
     // collect information
     try
@@ -354,17 +374,19 @@ RPG_Net_Connection_Manager<ConfigType>::collect(RPG_Net_RuntimeStatistic& data_o
   return true;
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType>::report() const
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::report() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::report"));
 
   // init result
-  RPG_Net_RuntimeStatistic result;
+  StatisticsContainerType result;
   ACE_OS::memset(&result,
                  0,
-                 sizeof(RPG_Net_RuntimeStatistic));
+                 sizeof(StatisticsContainerType));
 
   // synch access to myConnections
   {
@@ -400,9 +422,11 @@ RPG_Net_Connection_Manager<ConfigType>::report() const
   } // end lock scope
 }
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType>::dump_state() const
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::dump_state() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::dump_state"));
 

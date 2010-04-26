@@ -33,6 +33,7 @@ class ACE_Message_Block;
 
 class RPG_Net_Protocol_SocketHandler
  : public RPG_Net_StreamSocketBase<RPG_Net_Protocol_ConfigPOD,
+                                   RPG_Net_Protocol_RuntimeStatistic,
                                    RPG_Net_Protocol_Stream>
 {
  public:
@@ -49,6 +50,7 @@ class RPG_Net_Protocol_SocketHandler
 
  private:
   typedef RPG_Net_StreamSocketBase<RPG_Net_Protocol_ConfigPOD,
+                                   RPG_Net_Protocol_RuntimeStatistic,
                                    RPG_Net_Protocol_Stream> inherited;
 
   // stop worker

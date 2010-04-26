@@ -22,7 +22,6 @@
 #define RPG_NET_MODULE_RUNTIMESTATISTIC_H
 
 #include "rpg_net_defines.h"
-#include "rpg_net_common.h"
 #include "rpg_net_icounter.h"
 #include "rpg_net_statistichandler.h"
 #include "rpg_net_resetcounterhandler.h"
@@ -43,12 +42,13 @@ class Stream_IAllocator;
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
-          typename ProtocolCommandType>
+          typename ProtocolCommandType,
+          typename StatisticsContainerType>
 class RPG_Net_Module_RuntimeStatistic
  : public Stream_TaskBaseSynch<SessionMessageType,
                                ProtocolMessageType>,
    public RPG_Net_ICounter,
-   public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
+   public RPG_Common_IStatistic<StatisticsContainerType>
 {
  public:
   RPG_Net_Module_RuntimeStatistic();
@@ -70,7 +70,7 @@ class RPG_Net_Module_RuntimeStatistic
   virtual void reset();
 
   // implement RPG_Common_IStatistic
-  virtual const bool collect(RPG_Net_RuntimeStatistic&) const; // return value: info
+  virtual const bool collect(StatisticsContainerType&) const; // return value: info
   // *NOTE*: this also implements locally triggered reporting !
   virtual void report() const;
 
@@ -88,7 +88,7 @@ class RPG_Net_Module_RuntimeStatistic
   typedef typename MESSAGETYPE2COUNT_TYPE::const_iterator MESSAGETYPE2COUNT_CONSTITERATOR_TYPE;
 
   // convenience types
-  typedef RPG_Net_RuntimeStatistic STATISTICINTERFACE_TYPE;
+  typedef StatisticsContainerType STATISTICINTERFACE_TYPE;
   typedef RPG_Net_StatisticHandler<STATISTICINTERFACE_TYPE> STATISTICHANDLER_TYPE;
 
   // safety measures

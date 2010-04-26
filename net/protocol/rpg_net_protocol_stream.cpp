@@ -20,6 +20,9 @@
 
 #include "rpg_net_protocol_stream.h"
 
+#include "rpg_net_protocol_sessionmessage.h"
+#include "rpg_net_protocol_message.h"
+
 #include <string>
 
 RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream()
@@ -221,7 +224,7 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
 }
 
 const bool
-RPG_Net_Protocol_Stream::collect(RPG_Net_RuntimeStatistic& data_out) const
+RPG_Net_Protocol_Stream::collect(RPG_Net_Protocol_RuntimeStatistic& data_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Stream::collect"));
 

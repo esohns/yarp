@@ -20,8 +20,8 @@
 
 #include "rpg_net_module_protocolhandler.h"
 
+#include "rpg_net_sessionmessage.h"
 #include "rpg_net_message.h"
-#include "rpg_net_common_tools.h"
 
 #include <rpg_common_timer_manager.h>
 
@@ -118,7 +118,7 @@ RPG_Net_Module_ProtocolHandler::init(Stream_IAllocator* allocator_in,
 }
 
 void
-RPG_Net_Module_ProtocolHandler::handleDataMessage(Stream_MessageBase*& message_inout,
+RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inout,
                                                   bool& passMessageDownstream_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::handleDataMessage"));
@@ -189,7 +189,7 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(Stream_MessageBase*& message_i
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("[%u]: unknown message type: \"%s\": protocol error, aborting\n"),
                  message_inout->getID(),
-                 RPG_Net_Common_Tools::messageType2String(message_header->messageType).c_str()));
+                 RPG_Net_Message::messageType2String(message_header->messageType).c_str()));
 
       break;
     }

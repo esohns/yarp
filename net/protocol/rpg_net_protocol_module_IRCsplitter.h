@@ -21,6 +21,7 @@
 #ifndef RPG_NET_PROTOCOL_MODULE_IRCSPLITTER_H
 #define RPG_NET_PROTOCOL_MODULE_IRCSPLITTER_H
 
+#include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_common.h"
 
 #include <rpg_net_statistichandler.h>
@@ -46,7 +47,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
                                     RPG_Net_Protocol_SessionMessage,
                                     RPG_Net_Protocol_Message>,
    // implement this so we can use a generic (timed) event handler to trigger stat collection...
-   public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
+   public RPG_Common_IStatistic<RPG_Net_Protocol_RuntimeStatistic>
 {
  public:
   RPG_Net_Protocol_Module_IRCSplitter();
@@ -62,11 +63,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
                   const bool& = false,      // "crunch" completed messages ?
                   const unsigned long& = 0, // statistics collecting interval (second(s))
                                             // 0 --> DON'T collect statistics
-                  const bool& = false);     // trace scanning ?
-
-  // user interface
-  // info
-  const bool isInitialized() const;
+                  const bool& = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING);     // trace scanning ?
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Protocol_Message*&, // data message handle
@@ -78,7 +75,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
 
   // implement RPG_Common_IStatistic
   // *NOTE*: we reuse the interface for our own purposes (to implement timer-based data collection)
-  virtual const bool collect(RPG_Net_RuntimeStatistic&) const; // return value: (currently unused !)
+  virtual const bool collect(RPG_Net_Protocol_RuntimeStatistic&) const; // return value: (currently unused !)
   virtual void report() const;
 
  private:
@@ -92,12 +89,12 @@ class RPG_Net_Protocol_Module_IRCSplitter
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCSplitter& operator=(const RPG_Net_Protocol_Module_IRCSplitter&));
 
   // convenience types
-  typedef RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic> STATISTICHANDLER_TYPE;
+  typedef RPG_Net_StatisticHandler<RPG_Net_Protocol_RuntimeStatistic> STATISTICHANDLER_TYPE;
   typedef Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD> SESSIONCONFIG_TYPE;
 
   // helper methods
-  const bool putStatisticsMessage(const RPG_Net_RuntimeStatistic&, // statistics info
-                                  const ACE_Time_Value&) const;    // statistics generation time
+  const bool putStatisticsMessage(const RPG_Net_Protocol_RuntimeStatistic&, // statistics info
+                                  const ACE_Time_Value&) const;             // statistics generation time
   // helper methods (to drive the scanner)
   const bool scan_begin(char*,          // base address
                         const size_t&); // length of data block
@@ -111,7 +108,6 @@ class RPG_Net_Protocol_Module_IRCSplitter
   int                       myStatCollectHandlerID;
 
   // scanner
-  bool                      myTraceScanning;
   yyscan_t                  myScannerContext;
 //   IRCBisectFlexLexer    myScanner;
   unsigned long             myCurrentNumFrames;

@@ -21,13 +21,12 @@
 #include "rpg_net_module_sockethandler.h"
 
 #include "rpg_net_defines.h"
+#include "rpg_net_sessionmessage.h"
 #include "rpg_net_message.h"
 #include "rpg_net_remote_comm.h"
 #include "rpg_net_stream_config.h"
 
 #include <rpg_common_timer_manager.h>
-
-#include <ace/INET_Addr.h>
 
 RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
  : inherited(false), // DON'T auto-start !
@@ -119,7 +118,7 @@ RPG_Net_Module_SocketHandler::init(Stream_IAllocator* allocator_in,
 }
 
 void
-RPG_Net_Module_SocketHandler::handleDataMessage(Stream_MessageBase*& message_inout,
+RPG_Net_Module_SocketHandler::handleDataMessage(RPG_Net_Message*& message_inout,
                                                 bool& passMessageDownstream_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::handleDataMessage"));
@@ -140,9 +139,7 @@ RPG_Net_Module_SocketHandler::handleDataMessage(Stream_MessageBase*& message_ino
   } // end IF
   else
   {
-    myCurrentBuffer = ACE_dynamic_cast(RPG_Net_Message*, message_inout);
-    // sanity check(s)
-    ACE_ASSERT(myCurrentBuffer);
+    myCurrentBuffer = message_inout;
   } // end ELSE
 
   RPG_Net_Message* complete_message = NULL;

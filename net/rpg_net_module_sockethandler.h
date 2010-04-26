@@ -23,7 +23,6 @@
 
 #include "rpg_net_common.h"
 #include "rpg_net_stream_config.h"
-#include "rpg_net_sessionmessage.h"
 #include "rpg_net_statistichandler.h"
 
 #include <rpg_common_istatistic.h>
@@ -36,13 +35,14 @@
 
 // forward declaration(s)
 class Stream_IAllocator;
-class Stream_MessageBase;
+class RPG_Net_SessionMessage;
 class RPG_Net_Message;
 
 class RPG_Net_Module_SocketHandler
  : public Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD,
                                     RPG_Net_StreamConfig,
-                                    RPG_Net_SessionMessage>,
+                                    RPG_Net_SessionMessage,
+                                    RPG_Net_Message>,
    // implement this so we can use a generic (timed) event handler to trigger stat collection...
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
@@ -61,8 +61,8 @@ class RPG_Net_Module_SocketHandler
   const bool isInitialized() const;
 
   // implement (part of) Stream_ITaskBase
-  virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
-                                 bool&);               // return value: pass message downstream ?
+  virtual void handleDataMessage(RPG_Net_Message*&, // data message handle
+                                 bool&);            // return value: pass message downstream ?
 
   // catch the session ID...
   virtual void handleSessionMessage(RPG_Net_SessionMessage*&, // session message handle
@@ -76,7 +76,8 @@ class RPG_Net_Module_SocketHandler
  private:
   typedef Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD,
                                     RPG_Net_StreamConfig,
-                                    RPG_Net_SessionMessage> inherited;
+                                    RPG_Net_SessionMessage,
+                                    RPG_Net_Message> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_SocketHandler(const RPG_Net_Module_SocketHandler&));

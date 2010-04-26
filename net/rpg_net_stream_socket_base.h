@@ -28,13 +28,21 @@
 // forward declaration(s)
 class Stream_IAllocator;
 class ACE_Message_Block;
-template <typename ConfigType> class RPG_Net_IConnectionManager;
+template <typename ConfigType,
+          typename StatisticsContainerType> class RPG_Net_IConnectionManager;
 
 template <typename ConfigType,
+          typename StatisticsContainerType,
           typename StreamType>
 class RPG_Net_StreamSocketBase
- : public RPG_Net_SocketHandlerBase<ConfigType>
+ : public RPG_Net_SocketHandlerBase<ConfigType,
+                                    StatisticsContainerType>
 {
+ protected:
+  // convenient types
+  typedef RPG_Net_IConnectionManager<ConfigType,
+                                     StatisticsContainerType> MANAGER_t;
+
  public:
   virtual ~RPG_Net_StreamSocketBase();
 
@@ -50,11 +58,11 @@ class RPG_Net_StreamSocketBase
 
   // implement RPG_Common_IStatistic
   // *NOTE*: delegate these to our stream
-  virtual const bool collect(RPG_Net_RuntimeStatistic&) const; // return value: statistic data
+  virtual const bool collect(StatisticsContainerType&) const; // return value: statistic data
   virtual void report() const;
 
  protected:
-  RPG_Net_StreamSocketBase(RPG_Net_IConnectionManager<ConfigType>*);
+  RPG_Net_StreamSocketBase(MANAGER_t*);
 
   StreamType         myStream;
 
@@ -67,7 +75,8 @@ class RPG_Net_StreamSocketBase
   ACE_Message_Block* allocateMessage(const unsigned long&); // requested size
 
  private:
-  typedef RPG_Net_SocketHandlerBase<ConfigType> inherited;
+  typedef RPG_Net_SocketHandlerBase<ConfigType,
+                                    StatisticsContainerType> inherited;
 
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase(const RPG_Net_StreamSocketBase&));

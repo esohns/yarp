@@ -21,17 +21,16 @@
 #ifndef RPG_NET_MODULE_HEADERPARSER_H
 #define RPG_NET_MODULE_HEADERPARSER_H
 
-#include "rpg_net_sessionmessage.h"
-#include "rpg_net_remote_comm.h"
-
 #include <stream_task_base_synch.h>
 #include <stream_streammodule.h>
 
 // forward declaration(s)
-class Stream_MessageBase;
+class RPG_Net_SessionMessage;
+class RPG_Net_Message;
 
 class RPG_Net_Module_HeaderParser
- : public Stream_TaskBaseSynch<RPG_Net_SessionMessage>
+ : public Stream_TaskBaseSynch<RPG_Net_SessionMessage,
+                               RPG_Net_Message>
 {
  public:
   RPG_Net_Module_HeaderParser();
@@ -41,14 +40,15 @@ class RPG_Net_Module_HeaderParser
   const bool init();
 
   // implement (part of) Stream_ITaskBase
-  virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
-                                 bool&);               // return value: pass message downstream ?
+  virtual void handleDataMessage(RPG_Net_Message*&, // data message handle
+                                 bool&);            // return value: pass message downstream ?
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
  private:
-  typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage> inherited;
+  typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage,
+                               RPG_Net_Message> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_HeaderParser(const RPG_Net_Module_HeaderParser&));

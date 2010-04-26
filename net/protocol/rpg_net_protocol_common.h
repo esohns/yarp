@@ -21,41 +21,60 @@
 #ifndef RPG_NET_PROTOCOL_COMMON_H
 #define RPG_NET_PROTOCOL_COMMON_H
 
-// #include "rpg_net_protocol_module_IRCsplitter.h"
-// #include "rpg_net_protocol_module_IRCstreamer.h"
 #include "rpg_net_protocol_IRCmessage.h"
-
-#include <rpg_net_module_runtimestatistic.h>
 
 #include <stream_streammodule_base.h>
 
+#include <ace/Time_Value.h>
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
 
 // forward declaration(s)
-template <typename ConfigType> class RPG_Net_Connection_Manager;
+class Stream_IAllocator;
+template <typename ConfigType,
+          typename StatisticsContainerType> class RPG_Net_Connection_Manager;
 class RPG_Net_Protocol_Module_IRCSplitter;
 class RPG_Net_Protocol_Module_IRCStreamer;
 class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
+template <typename SessionMessageType,
+          typename ProtocolMessageType,
+          typename ProtocolCommandType,
+          typename StatisticsContainerType> class RPG_Net_Module_RuntimeStatistic;
+
+struct RPG_Net_Protocol_RuntimeStatistic
+{
+  unsigned long numDataMessages; // (protocol) messages
+  double        numBytes;        // amount of processed data
+
+  // convenience
+  inline RPG_Net_Protocol_RuntimeStatistic operator+=(const RPG_Net_Protocol_RuntimeStatistic& rhs)
+  {
+    numDataMessages += rhs.numDataMessages;
+    numBytes += rhs.numBytes;
+
+    return *this;
+  };
+};
 
 struct RPG_Net_Protocol_ConfigPOD
 {
   // ************ connection config data ************
-  unsigned long            clientPingInterval; // used by the server...
-  int                      socketBufferSize;
-  Stream_IAllocator*       messageAllocator;
-  unsigned long            defaultBufferSize;
+  unsigned long                     clientPingInterval; // used by the server...
+  int                               socketBufferSize;
+  Stream_IAllocator*                messageAllocator;
+  unsigned long                     defaultBufferSize;
   // ************ stream config data ************
-  bool                     debugParser;
-  unsigned long            sessionID; // (== socket handle !)
-  unsigned long            statisticsReportingInterval;
+  bool                              debugParser;
+  unsigned long                     sessionID; // (== socket handle !)
+  unsigned long                     statisticsReportingInterval;
   // ************ runtime data ************
-  RPG_Net_RuntimeStatistic currentStatistics;
-  ACE_Time_Value           lastCollectionTimestamp;
+  RPG_Net_Protocol_RuntimeStatistic currentStatistics;
+  ACE_Time_Value                    lastCollectionTimestamp;
 };
 
-typedef ACE_Singleton<RPG_Net_Connection_Manager<RPG_Net_Protocol_ConfigPOD>,
+typedef ACE_Singleton<RPG_Net_Connection_Manager<RPG_Net_Protocol_ConfigPOD,
+                                                 RPG_Net_Protocol_RuntimeStatistic>,
                       ACE_Recursive_Thread_Mutex> RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON;
 
 // declare module(s)
@@ -64,7 +83,8 @@ DATASTREAM_MODULE_DUPLEX(RPG_Net_Protocol_Module_IRCSplitter,
                          RPG_Net_Protocol_Module_IRCMarshal);
 typedef RPG_Net_Module_RuntimeStatistic<RPG_Net_Protocol_SessionMessage,
                                         RPG_Net_Protocol_Message,
-                                        RPG_Net_Protocol_CommandType_t> RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T;
+                                        RPG_Net_Protocol_CommandType_t,
+                                        RPG_Net_Protocol_RuntimeStatistic> RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T;
 DATASTREAM_MODULE_WRITER_ONLY_T(RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T,
                                 RPG_Net_Module_RuntimeStatistic);
 

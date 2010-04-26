@@ -22,8 +22,6 @@
 #define RPG_NET_PROTOCOL_STREAM_H
 
 #include "rpg_net_protocol_common.h"
-#include "rpg_net_protocol_sessionmessage.h"
-#include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_module_IRCsplitter.h"
 #include "rpg_net_protocol_module_IRCstreamer.h"
 #include "rpg_net_protocol_module_IRCparser.h"
@@ -38,26 +36,30 @@
 
 #include <ace/Global_Macros.h>
 
+// forward declaration(s)
+class RPG_Net_Protocol_SessionMessage;
+class RPG_Net_Protocol_Message;
+
 class RPG_Net_Protocol_Stream
  : public Stream_Base<RPG_Net_Protocol_ConfigPOD,
                       Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
                       RPG_Net_Protocol_SessionMessage,
                       RPG_Net_Protocol_Message>,
-   public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
+   public RPG_Common_IStatistic<RPG_Net_Protocol_RuntimeStatistic>
 {
  public:
   RPG_Net_Protocol_Stream();
   virtual ~RPG_Net_Protocol_Stream();
 
   // convenience types
-  typedef RPG_Common_IStatistic<RPG_Net_RuntimeStatistic> StatisticsInterface_Type;
+  typedef RPG_Common_IStatistic<RPG_Net_Protocol_RuntimeStatistic> StatisticsInterface_Type;
 
   // init stream
   const bool init(const RPG_Net_Protocol_ConfigPOD&); // stream/module configuration
 
   // implement RPG_Common_IStatistic
   // *NOTE*: delegate this to myRuntimeStatistic
-  virtual const bool collect(RPG_Net_RuntimeStatistic&) const; // return value: statistic data
+  virtual const bool collect(RPG_Net_Protocol_RuntimeStatistic&) const; // return value: statistic data
   // this is just a dummy (use statisticsReportingInterval instead)
   virtual void report() const;
 
@@ -74,7 +76,7 @@ class RPG_Net_Protocol_Stream
 
   // fini stream
   // *NOTE*: need this to clean up queued modules if something goes wrong during init() !
-  const bool fini(const RPG_Net_ConfigPOD&); // configuration
+  const bool fini(const RPG_Net_Protocol_ConfigPOD&); // configuration
 
   // modules
   RPG_Net_Protocol_Module_IRCMarshal_Module myIRCMarshal;

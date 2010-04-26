@@ -26,8 +26,11 @@
 #include <ace/Message_Block.h>
 
 template <typename ConfigType,
+          typename StatisticsContainerType,
           typename StreamType>
-RPG_Net_StreamSocketBase<ConfigType, StreamType>::RPG_Net_StreamSocketBase(RPG_Net_IConnectionManager<ConfigType>* manager_in)
+RPG_Net_StreamSocketBase<ConfigType,
+                         StatisticsContainerType,
+                         StreamType>::RPG_Net_StreamSocketBase(MANAGER_t* manager_in)
  : inherited(manager_in),
    myAllocator(NULL),
    myDefaultBufferSize(RPG_NET_DEF_NETWORK_BUFFER_SIZE),
@@ -39,8 +42,11 @@ RPG_Net_StreamSocketBase<ConfigType, StreamType>::RPG_Net_StreamSocketBase(RPG_N
 }
 
 template <typename ConfigType,
+          typename StatisticsContainerType,
           typename StreamType>
-RPG_Net_StreamSocketBase<ConfigType, StreamType>::~RPG_Net_StreamSocketBase()
+RPG_Net_StreamSocketBase<ConfigType,
+                         StatisticsContainerType,
+                         StreamType>::~RPG_Net_StreamSocketBase()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::~RPG_Net_StreamSocketBase"));
 
@@ -49,9 +55,12 @@ RPG_Net_StreamSocketBase<ConfigType, StreamType>::~RPG_Net_StreamSocketBase()
 }
 
 template <typename ConfigType,
+          typename StatisticsContainerType,
           typename StreamType>
 int
-RPG_Net_StreamSocketBase<ConfigType, StreamType>::open(void* arg_in)
+RPG_Net_StreamSocketBase<ConfigType,
+                         StatisticsContainerType,
+                         StreamType>::open(void* arg_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::open"));
 
@@ -122,9 +131,12 @@ RPG_Net_StreamSocketBase<ConfigType, StreamType>::open(void* arg_in)
 }
 
 template <typename ConfigType,
+          typename StatisticsContainerType,
           typename StreamType>
 int
-RPG_Net_StreamSocketBase<ConfigType, StreamType>::handle_input(ACE_HANDLE handle_in)
+RPG_Net_StreamSocketBase<ConfigType,
+                         StatisticsContainerType,
+                         StreamType>::handle_input(ACE_HANDLE handle_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::handle_input"));
 
@@ -310,10 +322,13 @@ RPG_Net_StreamSocketBase<ConfigType, StreamType>::handle_input(ACE_HANDLE handle
 // }
 
 template <typename ConfigType,
+          typename StatisticsContainerType,
           typename StreamType>
 int
-RPG_Net_StreamSocketBase<ConfigType, StreamType>::handle_close(ACE_HANDLE handle_in,
-                                                               ACE_Reactor_Mask mask_in)
+RPG_Net_StreamSocketBase<ConfigType,
+                         StatisticsContainerType,
+                         StreamType>::handle_close(ACE_HANDLE handle_in,
+                                                   ACE_Reactor_Mask mask_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::handle_close"));
 
@@ -340,9 +355,12 @@ RPG_Net_StreamSocketBase<ConfigType, StreamType>::handle_close(ACE_HANDLE handle
 }
 
 template <typename ConfigType,
+          typename StatisticsContainerType,
           typename StreamType>
 const bool
-RPG_Net_StreamSocketBase<ConfigType, StreamType>::collect(RPG_Net_RuntimeStatistic& data_out) const
+RPG_Net_StreamSocketBase<ConfigType,
+                         StatisticsContainerType,
+                         StreamType>::collect(StatisticsContainerType& data_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::collect"));
 
@@ -360,9 +378,12 @@ RPG_Net_StreamSocketBase<ConfigType, StreamType>::collect(RPG_Net_RuntimeStatist
 }
 
 template <typename ConfigType,
+          typename StatisticsContainerType,
           typename StreamType>
 void
-RPG_Net_StreamSocketBase<ConfigType, StreamType>::report() const
+RPG_Net_StreamSocketBase<ConfigType,
+                         StatisticsContainerType,
+                         StreamType>::report() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::report"));
 
@@ -378,9 +399,12 @@ RPG_Net_StreamSocketBase<ConfigType, StreamType>::report() const
 }
 
 template <typename ConfigType,
+          typename StatisticsContainerType,
           typename StreamType>
 ACE_Message_Block*
-RPG_Net_StreamSocketBase<ConfigType, StreamType>::allocateMessage(const unsigned long& requestedSize_in)
+RPG_Net_StreamSocketBase<ConfigType,
+                         StatisticsContainerType,
+                         StreamType>::allocateMessage(const unsigned long& requestedSize_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::allocateMessage"));
 

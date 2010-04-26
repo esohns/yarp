@@ -30,14 +30,22 @@
 #include <ace/Synch.h>
 
 // forward declaration(s)
-template <typename ConfigType> class RPG_Net_IConnectionManager;
+template <typename ConfigType,
+          typename StatisticsContainerType> class RPG_Net_IConnectionManager;
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 class RPG_Net_SocketHandlerBase
  : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH>,
-   public RPG_Net_IConnection<ConfigType>//,
+   public RPG_Net_IConnection<ConfigType,
+                              StatisticsContainerType>//,
 //    public RPG_Common_IDumpState
 {
+ protected:
+  // convenient types
+  typedef RPG_Net_IConnectionManager<ConfigType,
+                                     StatisticsContainerType> MANAGER_t;
+
  public:
   virtual ~RPG_Net_SocketHandlerBase(); // we'll self-destruct !
 
@@ -63,10 +71,10 @@ class RPG_Net_SocketHandlerBase
 
  protected:
   // meant to be sub-classed
-  RPG_Net_SocketHandlerBase(RPG_Net_IConnectionManager<ConfigType>*); // manager handle
+  RPG_Net_SocketHandlerBase(MANAGER_t*); // manager handle
 
-  ConfigType                              myUserData;
-  bool                                    myIsInitialized;
+  ConfigType    myUserData;
+  bool          myIsInitialized;
 
  private:
   typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> inherited;
@@ -78,9 +86,9 @@ class RPG_Net_SocketHandlerBase
 
   // *NOTE*: we save this so we can de-register even when our "handle"
   // (getID()) has gone stale...
-  unsigned long                           myID;
-  bool                                    myIsRegistered;
-  RPG_Net_IConnectionManager<ConfigType>* myManager;
+  unsigned long myID;
+  bool          myIsRegistered;
+  MANAGER_t*    myManager;
 };
 
 // include template implementation

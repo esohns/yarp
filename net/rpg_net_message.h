@@ -21,6 +21,8 @@
 #ifndef RPG_NET_MESSAGE_H
 #define RPG_NET_MESSAGE_H
 
+#include "rpg_net_remote_comm.h"
+
 #include <stream_message_base.h>
 
 #include <ace/Global_Macros.h>
@@ -65,6 +67,8 @@ class RPG_Net_Message
   // --> create a "shallow" copy of ourselves that references the same packet
   // *NOTE*: this uses our allocator (if any) to create a new message
   virtual ACE_Message_Block* duplicate(void) const;
+
+  static const std::string messageType2String(const RPG_Net_MessageType&);
 
  protected:
   // copy ctor to be used by duplicate() and child classes

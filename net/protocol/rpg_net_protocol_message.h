@@ -73,6 +73,8 @@ class RPG_Net_Protocol_Message
   // *NOTE*: this uses our allocator (if any) to create a new message
   virtual ACE_Message_Block* duplicate(void) const;
 
+  static const std::string messageType2String(const RPG_Net_Protocol_CommandType_t&);
+
  protected:
   // copy ctor to be used by duplicate() and child classes
   // --> uses an (incremented refcount of) the same datablock ("shallow copy")

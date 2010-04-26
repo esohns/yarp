@@ -23,7 +23,6 @@
 
 #include "rpg_net_common.h"
 #include "rpg_net_stream_config.h"
-#include "rpg_net_sessionmessage.h"
 #include "rpg_net_module_sockethandler.h"
 #include "rpg_net_module_headerparser.h"
 #include "rpg_net_module_protocolhandler.h"
@@ -35,10 +34,15 @@
 
 #include <ace/Global_Macros.h>
 
+// forward declaration(s)
+class RPG_Net_SessionMessage;
+class RPG_Net_Message;
+
 class RPG_Net_Stream
  : public Stream_Base<RPG_Net_ConfigPOD,
                       RPG_Net_StreamConfig,
-                      RPG_Net_SessionMessage>,
+                      RPG_Net_SessionMessage,
+                      RPG_Net_Message>,
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
  public:
@@ -60,7 +64,8 @@ class RPG_Net_Stream
  private:
   typedef Stream_Base<RPG_Net_ConfigPOD,
                       RPG_Net_StreamConfig,
-                      RPG_Net_SessionMessage> inherited;
+                      RPG_Net_SessionMessage,
+                      RPG_Net_Message> inherited;
 
   // safety measures
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Stream());

@@ -21,15 +21,14 @@
 #ifndef RPG_NET_ICONNECTION_H
 #define RPG_NET_ICONNECTION_H
 
-#include "rpg_net_common.h"
-
 #include <rpg_common_istatistic.h>
 #include <rpg_common_idumpstate.h>
 
-template <typename ConfigType>
+template <typename ConfigType,
+          typename StatisticsContainerType>
 class RPG_Net_IConnection
- : public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>, // collect some stats
-   public RPG_Common_IDumpState // ...and dump some information
+ : public RPG_Common_IStatistic<StatisticsContainerType>, // collect some stats
+   public RPG_Common_IDumpState                           // ...and dump some information
 {
  public:
   // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set

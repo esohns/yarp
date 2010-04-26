@@ -29,10 +29,12 @@
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
-          typename ProtocolCommandType>
+          typename ProtocolCommandType,
+          typename StatisticsContainerType>
 RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolMessageType,
-                                ProtocolCommandType>::RPG_Net_Module_RuntimeStatistic()
+                                ProtocolCommandType,
+                                StatisticsContainerType>::RPG_Net_Module_RuntimeStatistic()
  : myIsInitialized(false),
    myResetTimeoutHandler(this),
    myResetTimeoutHandlerID(0),
@@ -73,10 +75,12 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
-          typename ProtocolCommandType>
+          typename ProtocolCommandType,
+          typename StatisticsContainerType>
 RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolMessageType,
-                                ProtocolCommandType>::~RPG_Net_Module_RuntimeStatistic()
+                                ProtocolCommandType,
+                                StatisticsContainerType>::~RPG_Net_Module_RuntimeStatistic()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::~RPG_Net_Module_RuntimeStatistic"));
 
@@ -86,12 +90,14 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
-          typename ProtocolCommandType>
+          typename ProtocolCommandType,
+          typename StatisticsContainerType>
 const bool
 RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolMessageType,
-                                ProtocolCommandType>::init(const unsigned long& reportingInterval_in,
-                                                           const Stream_IAllocator* allocator_in)
+                                ProtocolCommandType,
+                                StatisticsContainerType>::init(const unsigned long& reportingInterval_in,
+                                                               const Stream_IAllocator* allocator_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::init"));
 
@@ -172,12 +178,14 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
-          typename ProtocolCommandType>
+          typename ProtocolCommandType,
+          typename StatisticsContainerType>
 void
 RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolMessageType,
-                                ProtocolCommandType>::handleDataMessage(ProtocolMessageType*& message_inout,
-                                                                        bool& passMessageDownstream_out)
+                                ProtocolCommandType,
+                                StatisticsContainerType>::handleDataMessage(ProtocolMessageType*& message_inout,
+                                                                            bool& passMessageDownstream_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::handleDataMessage"));
 
@@ -200,17 +208,19 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
   // add message to statistic...
   // --> increment corresponding counter
-  myMessageTypeStatistics[message_inout->getCommand()]++;
+  myMessageTypeStatistics[ACE_static_cast(ProtocolCommandType, message_inout->getCommand())]++;
 }
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
-          typename ProtocolCommandType>
+          typename ProtocolCommandType,
+          typename StatisticsContainerType>
 void
 RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolMessageType,
-                                ProtocolCommandType>::handleSessionMessage(SessionMessageType*& message_inout,
-                                                                           bool& passMessageDownstream_out)
+                                ProtocolCommandType,
+                                StatisticsContainerType>::handleSessionMessage(SessionMessageType*& message_inout,
+                                                                               bool& passMessageDownstream_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::handleSessionMessage"));
 
@@ -274,11 +284,13 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
-          typename ProtocolCommandType>
+          typename ProtocolCommandType,
+          typename StatisticsContainerType>
 void
 RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolMessageType,
-                                ProtocolCommandType>::reset()
+                                ProtocolCommandType,
+                                StatisticsContainerType>::reset()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::reset"));
 
@@ -298,11 +310,13 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
-          typename ProtocolCommandType>
+          typename ProtocolCommandType,
+          typename StatisticsContainerType>
 const bool
 RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolMessageType,
-                                ProtocolCommandType>::collect(RPG_Net_RuntimeStatistic& data_out) const
+                                ProtocolCommandType,
+                                StatisticsContainerType>::collect(StatisticsContainerType& data_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::collect"));
 
@@ -312,7 +326,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
   // init return value(s)
   ACE_OS::memset(&data_out,
                  0,
-                 sizeof(RPG_Net_RuntimeStatistic));
+                 sizeof(StatisticsContainerType));
 
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
@@ -326,11 +340,13 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
-          typename ProtocolCommandType>
+          typename ProtocolCommandType,
+          typename StatisticsContainerType>
 void
 RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolMessageType,
-                                ProtocolCommandType>::report() const
+                                ProtocolCommandType,
+                                StatisticsContainerType>::report() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::report"));
 
@@ -371,11 +387,13 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
-          typename ProtocolCommandType>
+          typename ProtocolCommandType,
+          typename StatisticsContainerType>
 void
 RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolMessageType,
-                                ProtocolCommandType>::final_report() const
+                                ProtocolCommandType,
+                                StatisticsContainerType>::final_report() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::final_report"));
 
@@ -398,7 +416,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
       {
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("\"%s\": %u --> %.2f %%\n"),
-                   RPG_Net_Common_Tools::messageType2String(iter->first).c_str(),
+                   ProtocolMessageType::messageType2String(iter->first).c_str(),
                    iter->second,
                    ACE_static_cast(double,
                                    ((iter->second * 100.0) / (myNumTotalMessages - myNumSessionMessages)))));
@@ -418,11 +436,13 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
-          typename ProtocolCommandType>
+          typename ProtocolCommandType,
+          typename StatisticsContainerType>
 void
 RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolMessageType,
-                                ProtocolCommandType>::fini_timers(const bool& cancelAllTimers_in)
+                                ProtocolCommandType,
+                                StatisticsContainerType>::fini_timers(const bool& cancelAllTimers_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::fini_timers"));
 

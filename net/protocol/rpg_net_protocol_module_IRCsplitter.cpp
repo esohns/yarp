@@ -20,7 +20,6 @@
 
 #include "rpg_net_protocol_module_IRCsplitter.h"
 
-#include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_IRCbisect.h"
 #include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_message.h"
@@ -36,7 +35,6 @@ RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter()
    myStatCollectHandler(this,
                         STATISTICHANDLER_TYPE::ACTION_COLLECT),
    myStatCollectHandlerID(0),
-   myTraceScanning(false),
 //    myScanner(NULL,  // no default input stream
 //              NULL), // no default output stream
    myScannerContext(NULL),
@@ -91,7 +89,6 @@ RPG_Net_Protocol_Module_IRCSplitter::init(Stream_IAllocator* allocator_in,
     if (myStatCollectHandlerID)
       RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myStatCollectHandlerID);
     myStatCollectHandlerID = 0;
-    myTraceScanning = false;
     // *TODO*: use yyrestart() ?
     // fini scanner context
     if (myScannerContext)
@@ -139,8 +136,6 @@ RPG_Net_Protocol_Module_IRCSplitter::init(Stream_IAllocator* allocator_in,
 
   // *NOTE*: need to clean up timer beyond this point !
 
-  myTraceScanning = traceScanning_in;
-
   // init scanner context
   if (yylex_init_extra(&myCurrentNumFrames, // extra data
                        &myScannerContext))  // scanner context handle
@@ -155,6 +150,7 @@ RPG_Net_Protocol_Module_IRCSplitter::init(Stream_IAllocator* allocator_in,
     // what else can we do ?
     return false;
   } // end IF
+  yyset_debug(traceScanning_in, myScannerContext);
 
   // OK: all's well...
   myIsInitialized = true;
@@ -446,7 +442,7 @@ RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage(RPG_Net_Protocol_Sessi
 }
 
 const bool
-RPG_Net_Protocol_Module_IRCSplitter::collect(RPG_Net_RuntimeStatistic& data_out) const
+RPG_Net_Protocol_Module_IRCSplitter::collect(RPG_Net_Protocol_RuntimeStatistic& data_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::collect"));
 
@@ -459,7 +455,7 @@ RPG_Net_Protocol_Module_IRCSplitter::collect(RPG_Net_RuntimeStatistic& data_out)
   // step0: init info container POD
   ACE_OS::memset(&data_out,
                  0,
-                 sizeof(RPG_Net_RuntimeStatistic));
+                 sizeof(RPG_Net_Protocol_RuntimeStatistic));
 
   // step1: *TODO*: collect info
 
@@ -491,7 +487,7 @@ RPG_Net_Protocol_Module_IRCSplitter::report() const
 }
 
 const bool
-RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage(const RPG_Net_RuntimeStatistic& info_in,
+RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage(const RPG_Net_Protocol_RuntimeStatistic& info_in,
                                                           const ACE_Time_Value& collectionTime_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage"));
@@ -523,4 +519,45 @@ RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage(const RPG_Net_RuntimeS
                                       Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS,
                                       config,
                                       inherited::myAllocator);
+}
+
+const bool
+RPG_Net_Protocol_Module_IRCSplitter::scan_begin(char* data_in,
+                                                const size_t& length_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::scan_begin"));
+
+  // sanity check(s)
+  ACE_ASSERT(myCurrentState == NULL);
+
+//  yy_flex_debug = myTraceScanning;
+
+  // create/init a new buffer state
+  // *WARNING*: length_in IS already adjusted for two trailing \0's
+  myCurrentState = yy_scan_buffer(data_in,length_in,myScannerContext);
+  if (myCurrentState == NULL)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ::yy_scan_buffer(%@,%d), aborting\n"),
+                        data_in,
+                        length_in));
+
+    // what else can we do ?
+    return false;
+  } // end IF
+
+  return true;
+}
+
+void
+RPG_Net_Protocol_Module_IRCSplitter::scan_end()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::scan_end"));
+
+  // sanity check(s)
+  ACE_ASSERT(myCurrentState);
+
+  // clean state
+  yy_delete_buffer(myCurrentState,myScannerContext);
+  myCurrentState = NULL;
 }

@@ -29,6 +29,7 @@
 
 class RPG_Net_SocketHandler
  : public RPG_Net_StreamSocketBase<RPG_Net_ConfigPOD,
+                                   RPG_Net_RuntimeStatistic,
                                    RPG_Net_Stream>
 {
  public:
@@ -48,6 +49,7 @@ class RPG_Net_SocketHandler
 
  private:
   typedef RPG_Net_StreamSocketBase<RPG_Net_ConfigPOD,
+                                   RPG_Net_RuntimeStatistic,
                                    RPG_Net_Stream> inherited;
 
   // stop worker
