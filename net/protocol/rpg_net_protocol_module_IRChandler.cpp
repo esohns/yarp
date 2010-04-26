@@ -21,6 +21,7 @@
 #include "rpg_net_protocol_module_IRChandler.h"
 
 #include "rpg_net_protocol_defines.h"
+#include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_tools.h"
 
@@ -31,6 +32,7 @@
 RPG_Net_Protocol_Module_IRCHandler::RPG_Net_Protocol_Module_IRCHandler()
  : //inherited(),
    myAllocator(NULL),
+   myDefaultBufferSize(RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE),
    myAutomaticPong(false), // *NOTE*: the idea really is not to play PONG...
    myPrintPongDot(false),
    myIsInitialized(false)//,
@@ -48,6 +50,7 @@ RPG_Net_Protocol_Module_IRCHandler::~RPG_Net_Protocol_Module_IRCHandler()
 
 const bool
 RPG_Net_Protocol_Module_IRCHandler::init(Stream_IAllocator* allocator_in,
+                                         const unsigned long& defaultBufferSize_in,
                                          const bool& autoAnswerPings_in,
                                          const bool& printPongDot_in)
 {
@@ -63,12 +66,14 @@ RPG_Net_Protocol_Module_IRCHandler::init(Stream_IAllocator* allocator_in,
 
     // reset state
     myAllocator = NULL;
+    myDefaultBufferSize = RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE;
     myAutomaticPong = false;
     myPrintPongDot = false;
     myIsInitialized = false;
   } // end IF
 
   myAllocator = allocator_in;
+  myDefaultBufferSize = defaultBufferSize_in;
   myAutomaticPong = autoAnswerPings_in;
 //   if (myAutomaticPong)
 //     ACE_DEBUG((LM_DEBUG,
@@ -81,7 +86,7 @@ RPG_Net_Protocol_Module_IRCHandler::init(Stream_IAllocator* allocator_in,
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& message_inout,
+RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*& message_inout,
                                                       bool& passMessageDownstream_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::handleDataMessage"));
@@ -89,22 +94,21 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& messa
   // don't care (implies yes per default, if we're part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
 
-  RPG_Net_Protocol_Message* message = ACE_dynamic_cast(RPG_Net_Protocol_Message*,
-                                                       message_inout);
-  ACE_ASSERT(message);
+  // sanity check(s)
+  ACE_ASSERT(message_inout->getData());
 
-  switch (message->getData()->command.discriminator)
+  switch (message_inout->getData()->command.discriminator)
   {
     case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
     {
-      switch (message->getData()->command.numeric)
+      switch (message_inout->getData()->command.numeric)
       {
         default:
         {
           ACE_DEBUG((LM_WARNING,
                      ACE_TEXT("[%u]: unknown numeric command (was: %u), continuing\n"),
                      message_inout->getID(),
-                     message->getData()->command.numeric));
+                     message_inout->getData()->command.numeric));
 
           return;
         }
@@ -114,14 +118,14 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& messa
     }
     case RPG_Net_Protocol_IRCMessage::Command::STRING:
     {
-      switch (RPG_Net_Protocol_Tools::IRCCommandString2Type(*message->getData()->command.string))
+      switch (RPG_Net_Protocol_Tools::IRCCommandString2Type(*message_inout->getData()->command.string))
       {
         case RPG_Net_Protocol_IRCMessage::NOTICE:
         {
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("[%u]: received \"NOTICE\": \"%s\"\n"),
                      message_inout->getID(),
-                     message->getData()->params.back().c_str()));
+                     message_inout->getData()->params.back().c_str()));
 
           break;
         }
@@ -130,7 +134,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& messa
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("[%u]: received \"PING\": \"%s\"\n"),
                      message_inout->getID(),
-                     message->getData()->params.back().c_str()));
+                     message_inout->getData()->params.back().c_str()));
 
           // auto-answer ?
           if (myAutomaticPong)
@@ -139,12 +143,12 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& messa
 
             // step0: create reply structure
             // --> get a message buffer
-            RPG_Net_Protocol_Message* reply_message = allocateMessage(RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE);
+            RPG_Net_Protocol_Message* reply_message = allocateMessage(myDefaultBufferSize);
             if (reply_message == NULL)
             {
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("failed to allocate reply message(%u), aborting\n"),
-                         RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE));
+                         myDefaultBufferSize));
 
               return;
             } // end IF
@@ -156,7 +160,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& messa
             ACE_NEW_NORETURN(reply_struct->command.string,
                              std::string(RPG_Net_Protocol_Tools::IRCCommandType2String(RPG_Net_Protocol_IRCMessage::PONG)));
             reply_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-            reply_struct->params.push_back(message->getData()->params.back());
+            reply_struct->params.push_back(message_inout->getData()->params.back());
             // *NOTE*: reply_message assumes control over reply...
             reply_message->init(reply_struct);
 
@@ -185,7 +189,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& messa
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("[%u]: received \"PONG\": \"%s\"\n"),
                      message_inout->getID(),
-                     message->getData()->params.back().c_str()));
+                     message_inout->getData()->params.back().c_str()));
 
           break;
         }
@@ -194,7 +198,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& messa
           ACE_DEBUG((LM_WARNING,
                      ACE_TEXT("[%u]: received unknown command (was: \"%s\"), aborting\n"),
                      message_inout->getID(),
-                     message->getData()->command.string->c_str()));
+                     message_inout->getData()->command.string->c_str()));
 
           break;
         }
@@ -207,7 +211,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(Stream_MessageBase*& messa
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("[%u]: invalid command type (was: %u), continuing\n"),
                  message_inout->getID(),
-                 message->getData()->command.discriminator));
+                 message_inout->getData()->command.discriminator));
 
       break;
     }

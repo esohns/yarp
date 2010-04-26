@@ -18,11 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "rpg_net_common.h"
 #include "rpg_net_defines.h"
-#include "rpg_net_remote_comm.h"
-#include "rpg_net_common_tools.h"
-#include "rpg_net_message.h"
+#include "rpg_net_iconnectionmanager.h"
 
 #include <stream_iallocator.h>
 
@@ -30,11 +27,12 @@
 
 template <typename ConfigType,
           typename StreamType>
-RPG_Net_StreamSocketBase<ConfigType, StreamType>::RPG_Net_StreamSocketBase()
- : myCurrentWriteBuffer(NULL),
+RPG_Net_StreamSocketBase<ConfigType, StreamType>::RPG_Net_StreamSocketBase(RPG_Net_IConnectionManager<ConfigType>* manager_in)
+ : inherited(manager_in),
    myAllocator(NULL),
    myDefaultBufferSize(RPG_NET_DEF_NETWORK_BUFFER_SIZE),
-   myCurrentReadBuffer(NULL)
+   myCurrentReadBuffer(NULL),
+   myCurrentWriteBuffer(NULL)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::RPG_Net_StreamSocketBase"));
 
@@ -315,7 +313,7 @@ template <typename ConfigType,
           typename StreamType>
 int
 RPG_Net_StreamSocketBase<ConfigType, StreamType>::handle_close(ACE_HANDLE handle_in,
-                                                   ACE_Reactor_Mask mask_in)
+                                                               ACE_Reactor_Mask mask_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::handle_close"));
 
@@ -381,17 +379,17 @@ RPG_Net_StreamSocketBase<ConfigType, StreamType>::report() const
 
 template <typename ConfigType,
           typename StreamType>
-RPG_Net_Message*
+ACE_Message_Block*
 RPG_Net_StreamSocketBase<ConfigType, StreamType>::allocateMessage(const unsigned long& requestedSize_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::allocateMessage"));
 
   // init return value(s)
-  RPG_Net_Message* message_out = NULL;
+  ACE_Message_Block* message_out = NULL;
 
   try
   {
-    message_out = ACE_static_cast(RPG_Net_Message*,
+    message_out = ACE_static_cast(ACE_Message_Block*,
                                   myAllocator->malloc(requestedSize_in));
   }
   catch (...)

@@ -28,7 +28,6 @@
 #include <ace/Message_Block.h>
 #include <ace/Log_Msg.h>
 
-// #include <iostream>
 #include <sstream>
 
 RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& traceScanning_in,
@@ -39,7 +38,6 @@ RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& t
    myCurrentFragment(NULL),
    myFragmentIsResized(false),
    myCurrentBufferState(NULL),
-   myTraceParsing(traceParsing_in),
    myParser(*this,             // driver
             myScannerContext), // scanner context
    myCurrentMessage(NULL),
@@ -54,7 +52,7 @@ RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& t
                ACE_TEXT("failed to IRCScannerlex_init_extra(): \"%m\", continuing\n")));
 
   // init parser
-  myParser.set_debug_level(myTraceParsing); // binary (see bison manual)
+  myParser.set_debug_level(traceParsing_in); // binary (see bison manual)
 }
 
 RPG_Net_Protocol_IRCParserDriver::~RPG_Net_Protocol_IRCParserDriver ()
@@ -67,7 +65,8 @@ RPG_Net_Protocol_IRCParserDriver::~RPG_Net_Protocol_IRCParserDriver ()
 }
 
 void
-RPG_Net_Protocol_IRCParserDriver::init(RPG_Net_Protocol_IRCMessage& message_in)
+RPG_Net_Protocol_IRCParserDriver::init(RPG_Net_Protocol_IRCMessage& message_in,
+                                       const bool& debugParser_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::parse"));
 
@@ -76,6 +75,14 @@ RPG_Net_Protocol_IRCParserDriver::init(RPG_Net_Protocol_IRCMessage& message_in)
 
   // set parse target
   myCurrentMessage = &message_in;
+
+  if (debugParser_in)
+  {
+    // remember this setting
+    myTraceScanning = debugParser_in;
+    // init parser
+    myParser.set_debug_level(debugParser_in); // binary (see bison manual)
+  } // end IF
 
   // OK
   myIsInitialized = true;
@@ -119,7 +126,7 @@ RPG_Net_Protocol_IRCParserDriver::parse(ACE_Message_Block* data_in)
     scan_end();
 
     // debug info
-    if (myTraceParsing)
+    if (myParser.debug_level())
     {
       try
       {

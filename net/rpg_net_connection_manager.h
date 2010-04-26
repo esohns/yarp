@@ -21,7 +21,7 @@
 #ifndef RPG_NET_CONNECTION_MANAGER_H
 #define RPG_NET_CONNECTION_MANAGER_H
 
-// #include "rpg_net_common.h"
+#include "rpg_net_iconnectionmanager.h"
 #include "rpg_net_sockethandler_base.h"
 
 #include <rpg_common_istatistic.h>
@@ -35,12 +35,12 @@
 // #include <list>
 
 // forward declarations
-template <typename ConfigType>
-class RPG_Net_IConnection;
+template <typename ConfigType> class RPG_Net_IConnection;
 
 template <typename ConfigType>
 class RPG_Net_Connection_Manager
- : public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>,
+ : public RPG_Net_IConnectionManager<ConfigType>,
+   public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>,
    public RPG_Common_IDumpState
 {
   // singleton needs access to the ctor/dtors
@@ -82,8 +82,8 @@ class RPG_Net_Connection_Manager
   typedef ACE_DLList_Iterator<CONNECTION_TYPE> CONNECTIONLIST_ITERATOR_TYPE;
 
   // *NOTE*: these are used by RPG_Net_SocketHandler_Base
-  const bool registerConnection(CONNECTION_TYPE*); // connection
-  void deregisterConnection(const CONNECTION_TYPE*); // connection
+  virtual const bool registerConnection(CONNECTION_TYPE*); // connection
+  virtual void deregisterConnection(const CONNECTION_TYPE*); // connection
 
   // implement RPG_Common_IStatistic
   // *WARNING*: this assumes we're holding our lock !

@@ -77,8 +77,8 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
   // - init modules
   // - push them onto the stream (tail-first) !
   // ******************* Runtime Statistics ************************
-  RPG_Net_Module_RuntimeStatistic* runtimeStatistic_impl = NULL;
-  runtimeStatistic_impl = ACE_dynamic_cast(RPG_Net_Module_RuntimeStatistic*,
+  RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T* runtimeStatistic_impl = NULL;
+  runtimeStatistic_impl = ACE_dynamic_cast(RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T*,
                                            myRuntimeStatistic.writer());
   if (!runtimeStatistic_impl)
   {
@@ -225,8 +225,8 @@ RPG_Net_Protocol_Stream::collect(RPG_Net_RuntimeStatistic& data_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Stream::collect"));
 
-  RPG_Net_Module_RuntimeStatistic* runtimeStatistic_impl = NULL;
-  runtimeStatistic_impl = ACE_dynamic_cast(RPG_Net_Module_RuntimeStatistic*,
+  RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T* runtimeStatistic_impl = NULL;
+  runtimeStatistic_impl = ACE_dynamic_cast(RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T*,
                                            ACE_const_cast(RPG_Net_Module_RuntimeStatistic_Module&, myRuntimeStatistic).writer());
   if (!runtimeStatistic_impl)
   {

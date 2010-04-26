@@ -21,8 +21,6 @@
 #ifndef RPG_NET_PROTOCOL_MODULE_IRCHANDLER_H
 #define RPG_NET_PROTOCOL_MODULE_IRCHANDLER_H
 
-#include "rpg_net_sessionmessage.h"
-
 #include <stream_task_base_synch.h>
 #include <stream_streammodule.h>
 
@@ -30,11 +28,12 @@
 
 // forward declaration(s)
 class Stream_IAllocator;
-class Stream_MessageBase;
+class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
 
 class RPG_Net_Protocol_Module_IRCHandler
- : public Stream_TaskBaseSynch<RPG_Net_SessionMessage>
+ : public Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
+                               RPG_Net_Protocol_Message>
 {
  public:
   RPG_Net_Protocol_Module_IRCHandler();
@@ -42,18 +41,20 @@ class RPG_Net_Protocol_Module_IRCHandler
 
   // initialization
   const bool init(Stream_IAllocator*,       // message allocator
+                  const unsigned long&,     // default (message) buffer size
                   const bool& = false,      // automatically answer "ping" messages (client)
                   const bool& = false);     // print dot ('.') for every answered PING to stdlog (client)
 
   // implement (part of) Stream_ITaskBase
-  virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
-                                 bool&);               // return value: pass message downstream ?
+  virtual void handleDataMessage(RPG_Net_Protocol_Message*&, // data message handle
+                                 bool&);                     // return value: pass message downstream ?
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
  private:
-  typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage> inherited;
+  typedef Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
+                               RPG_Net_Protocol_Message> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCHandler(const RPG_Net_Protocol_Module_IRCHandler&));
@@ -63,6 +64,7 @@ class RPG_Net_Protocol_Module_IRCHandler
   RPG_Net_Protocol_Message* allocateMessage(const unsigned long&); // requested size
 
   Stream_IAllocator* myAllocator;
+  unsigned long      myDefaultBufferSize;
   bool               myAutomaticPong;
   bool               myPrintPongDot;
   bool               myIsInitialized;

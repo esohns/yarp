@@ -22,7 +22,10 @@
 #define RPG_NET_PROTOCOL_STREAM_H
 
 #include "rpg_net_protocol_common.h"
-#include <rpg_net_protocol_sessionmessage.h>
+#include "rpg_net_protocol_sessionmessage.h"
+#include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_module_IRCsplitter.h"
+#include "rpg_net_protocol_module_IRCstreamer.h"
 #include "rpg_net_protocol_module_IRCparser.h"
 #include "rpg_net_protocol_module_IRChandler.h"
 
@@ -38,7 +41,8 @@
 class RPG_Net_Protocol_Stream
  : public Stream_Base<RPG_Net_Protocol_ConfigPOD,
                       Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
-                      RPG_Net_Protocol_SessionMessage>,
+                      RPG_Net_Protocol_SessionMessage,
+                      RPG_Net_Protocol_Message>,
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
  public:
@@ -60,7 +64,8 @@ class RPG_Net_Protocol_Stream
  private:
   typedef Stream_Base<RPG_Net_Protocol_ConfigPOD,
                       Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
-                      RPG_Net_Protocol_SessionMessage> inherited;
+                      RPG_Net_Protocol_SessionMessage,
+                      RPG_Net_Protocol_Message> inherited;
 
   // safety measures
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Stream());

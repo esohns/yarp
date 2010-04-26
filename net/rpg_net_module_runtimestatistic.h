@@ -21,12 +21,10 @@
 #ifndef RPG_NET_MODULE_RUNTIMESTATISTIC_H
 #define RPG_NET_MODULE_RUNTIMESTATISTIC_H
 
+#include "rpg_net_defines.h"
 #include "rpg_net_common.h"
-#include "rpg_net_sessionmessage.h"
 #include "rpg_net_icounter.h"
 #include "rpg_net_statistichandler.h"
-#include "rpg_net_defines.h"
-#include "rpg_net_remote_comm.h"
 #include "rpg_net_resetcounterhandler.h"
 
 #include <rpg_common_istatistic.h>
@@ -41,11 +39,14 @@
 #include <map>
 
 // forward declaration(s)
-class Stream_MessageBase;
 class Stream_IAllocator;
 
+template <typename SessionMessageType,
+          typename ProtocolMessageType,
+          typename ProtocolCommandType>
 class RPG_Net_Module_RuntimeStatistic
- : public Stream_TaskBaseSynch<RPG_Net_SessionMessage>,
+ : public Stream_TaskBaseSynch<SessionMessageType,
+                               ProtocolMessageType>,
    public RPG_Net_ICounter,
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
@@ -55,16 +56,15 @@ class RPG_Net_Module_RuntimeStatistic
 
   // initialization
   const bool init(const unsigned long& = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL, // (local) reporting interval [seconds: 0 --> OFF]
-                  // *NOTE*: if this is non-NULL, cache usage data will be reported !
-                  const Stream_IAllocator* = NULL);                                // message allocator
+                  const Stream_IAllocator* = NULL);                                // report cache usage ?
 
   // implement (part of) Stream_ITaskBase
-  virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
+  virtual void handleDataMessage(ProtocolMessageType*&, // data message handle
                                  bool&);            // return value: pass message downstream ?
 
   // implement this so we can print overall statistics after session completes...
-  virtual void handleSessionMessage(RPG_Net_SessionMessage*&, // session message handle
-                                    bool&);                   // return value: pass message downstream ?
+  virtual void handleSessionMessage(SessionMessageType*&, // session message handle
+                                    bool&);               // return value: pass message downstream ?
 
   // implement RPG_Net_ICounter
   virtual void reset();
@@ -75,16 +75,17 @@ class RPG_Net_Module_RuntimeStatistic
   virtual void report() const;
 
  private:
-  typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage> inherited;
+  typedef Stream_TaskBaseSynch<SessionMessageType,
+                               ProtocolMessageType> inherited;
 
   // message type counters
-  typedef std::set<RPG_Net_MessageType> MESSAGETYPECONTAINER_TYPE;
-  typedef MESSAGETYPECONTAINER_TYPE::const_iterator MESSAGETYPECONTAINER_CONSTITERATOR_TYPE;
-  typedef std::map<RPG_Net_MessageType,
+  typedef std::set<ProtocolCommandType> MESSAGETYPECONTAINER_TYPE;
+  typedef typename MESSAGETYPECONTAINER_TYPE::const_iterator MESSAGETYPECONTAINER_CONSTITERATOR_TYPE;
+  typedef std::map<ProtocolCommandType,
                    unsigned long> MESSAGETYPE2COUNT_TYPE;
-  typedef std::pair<RPG_Net_MessageType,
+  typedef std::pair<ProtocolCommandType,
                     unsigned long> MESSAGETYPE2COUNTPAIR_TYPE;
-  typedef MESSAGETYPE2COUNT_TYPE::const_iterator MESSAGETYPE2COUNT_CONSTITERATOR_TYPE;
+  typedef typename MESSAGETYPE2COUNT_TYPE::const_iterator MESSAGETYPE2COUNT_CONSTITERATOR_TYPE;
 
   // convenience types
   typedef RPG_Net_RuntimeStatistic STATISTICINTERFACE_TYPE;
@@ -132,6 +133,11 @@ class RPG_Net_Module_RuntimeStatistic
   const Stream_IAllocator*           myAllocator;
 };
 
-// declare module
-DATASTREAM_MODULE_WRITER_ONLY(RPG_Net_Module_RuntimeStatistic);
+// // declare module
+// DATASTREAM_MODULE_WRITER_ONLY_T(RPG_Net_Module_RuntimeStatistic<SessionMessageType>, // type
+//                                 RPG_Net_Module_RuntimeStatistic);                    // name
+
+// include template implementation
+#include "rpg_net_module_runtimestatistic.i"
+
 #endif

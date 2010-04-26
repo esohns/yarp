@@ -21,6 +21,7 @@
 #ifndef RPG_NET_PROTOCOL_IRCPARSER_DRIVER_H
 #define RPG_NET_PROTOCOL_IRCPARSER_DRIVER_H
 
+#include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_IRCparser.h"
 
 #include <ace/Global_Macros.h>
@@ -52,12 +53,13 @@ class RPG_Net_Protocol_IRCParserDriver
 //   friend class RPG_Net_Protocol_IRCScanner;
 
  public:
-  RPG_Net_Protocol_IRCParserDriver(const bool& = false,  // trace scanning ?
-                                   const bool& = false); // trace parsing ?
+  RPG_Net_Protocol_IRCParserDriver(const bool& = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING,  // trace scanning ?
+                                   const bool& = RPG_NET_PROTOCOL_DEF_TRACE_PARSING); // trace parsing ?
   virtual ~RPG_Net_Protocol_IRCParserDriver();
 
   // target data, needs to be set PRIOR to invoking parse() !
-  void init(RPG_Net_Protocol_IRCMessage&); // target data
+  void init(RPG_Net_Protocol_IRCMessage&, // target data
+            const bool& = false);         // debug ?
   // *WARNING*: the argument needs to have been prepared for usage by flex:
   // --> buffers need two trailing '\0's BEYOND their data
   //    (at positions length() + 1, length() + 2)
@@ -94,7 +96,6 @@ class RPG_Net_Protocol_IRCParserDriver
   YY_BUFFER_STATE                myCurrentBufferState;
 
   // parser
-  bool                           myTraceParsing;
   yy::RPG_Net_Protocol_IRCParser myParser;
 
   // target

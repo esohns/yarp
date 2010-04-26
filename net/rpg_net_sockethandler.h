@@ -22,12 +22,14 @@
 #define RPG_NET_SOCKETHANDLER_H
 
 #include "rpg_net_stream_socket_base.h"
+#include "rpg_net_common.h"
 #include "rpg_net_stream.h"
 
 #include <ace/Global_Macros.h>
 
 class RPG_Net_SocketHandler
- : public RPG_Net_StreamSocketBase<RPG_Net_Stream>
+ : public RPG_Net_StreamSocketBase<RPG_Net_ConfigPOD,
+                                   RPG_Net_Stream>
 {
  public:
   RPG_Net_SocketHandler();
@@ -36,21 +38,23 @@ class RPG_Net_SocketHandler
   // override some task-based members
   virtual int svc(void);
   virtual int open(void* = NULL); // args
+
+  // *NOTE*: enqueue any received data onto our stream for further processing
+//   virtual int handle_input(ACE_HANDLE = ACE_INVALID_HANDLE);
   // *NOTE*: this is called when:
   // - handle_xxx() returns -1
   virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,
                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK);
 
  private:
-  typedef RPG_Net_StreamSocketBase<RPG_Net_Stream> inherited;
+  typedef RPG_Net_StreamSocketBase<RPG_Net_ConfigPOD,
+                                   RPG_Net_Stream> inherited;
 
   // stop worker
   void shutdown();
 
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler(const RPG_Net_SocketHandler&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler& operator=(const RPG_Net_SocketHandler&));
-
-//   ACE_thread_t myThreadID;
 };
 
 #endif

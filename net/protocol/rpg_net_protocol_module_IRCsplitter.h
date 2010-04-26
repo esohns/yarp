@@ -21,29 +21,30 @@
 #ifndef RPG_NET_PROTOCOL_MODULE_IRCSPLITTER_H
 #define RPG_NET_PROTOCOL_MODULE_IRCSPLITTER_H
 
-#include <rpg_net_common.h>
-#include <rpg_net_stream_config.h>
-#include <rpg_net_sessionmessage.h>
+#include "rpg_net_protocol_common.h"
+
 #include <rpg_net_statistichandler.h>
 
 #include <rpg_common_istatistic.h>
 
 #include <stream_headmoduletask_base.h>
+#include <stream_session_config_base.h>
 #include <stream_streammodule.h>
 
 #include <ace/Global_Macros.h>
 
 // forward declaration(s)
 class Stream_IAllocator;
-class Stream_MessageBase;
 typedef void* yyscan_t;
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
+class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
 
 class RPG_Net_Protocol_Module_IRCSplitter
- : public Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD,
-                                    RPG_Net_StreamConfig,
-                                    RPG_Net_SessionMessage>,
+ : public Stream_HeadModuleTaskBase<RPG_Net_Protocol_ConfigPOD,
+                                    Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
+                                    RPG_Net_Protocol_SessionMessage,
+                                    RPG_Net_Protocol_Message>,
    // implement this so we can use a generic (timed) event handler to trigger stat collection...
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
@@ -68,12 +69,12 @@ class RPG_Net_Protocol_Module_IRCSplitter
   const bool isInitialized() const;
 
   // implement (part of) Stream_ITaskBase
-  virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
-                                 bool&);               // return value: pass message downstream ?
+  virtual void handleDataMessage(RPG_Net_Protocol_Message*&, // data message handle
+                                 bool&);                     // return value: pass message downstream ?
 
   // catch the session ID...
-  virtual void handleSessionMessage(RPG_Net_SessionMessage*&, // session message handle
-                                    bool&);                   // return value: pass message downstream ?
+  virtual void handleSessionMessage(RPG_Net_Protocol_SessionMessage*&, // session message handle
+                                    bool&);                            // return value: pass message downstream ?
 
   // implement RPG_Common_IStatistic
   // *NOTE*: we reuse the interface for our own purposes (to implement timer-based data collection)
@@ -81,9 +82,10 @@ class RPG_Net_Protocol_Module_IRCSplitter
   virtual void report() const;
 
  private:
-  typedef Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD,
-                                    RPG_Net_StreamConfig,
-                                    RPG_Net_SessionMessage> inherited;
+  typedef Stream_HeadModuleTaskBase<RPG_Net_Protocol_ConfigPOD,
+                                    Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
+                                    RPG_Net_Protocol_SessionMessage,
+                                    RPG_Net_Protocol_Message> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCSplitter(const RPG_Net_Protocol_Module_IRCSplitter&));
@@ -91,6 +93,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
 
   // convenience types
   typedef RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic> STATISTICHANDLER_TYPE;
+  typedef Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD> SESSIONCONFIG_TYPE;
 
   // helper methods
   const bool putStatisticsMessage(const RPG_Net_RuntimeStatistic&, // statistics info

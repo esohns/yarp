@@ -21,15 +21,16 @@
 #include "rpg_net_protocol_module_IRCparser.h"
 
 #include "rpg_net_protocol_defines.h"
+#include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_message.h"
 
 #include <stream_iallocator.h>
 
 RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser()
  : //inherited(),
-   myAllocator(NULL),
-   myParserDriver(RPG_NET_PROTOCOL_DEF_TRACE_SCANNING, // trace scanning ?
-                  RPG_NET_PROTOCOL_DEF_TRACE_PARSING), // trace parsing ?
+   myDriver(RPG_NET_PROTOCOL_DEF_TRACE_SCANNING, // trace scanning ?
+            RPG_NET_PROTOCOL_DEF_TRACE_PARSING), // trace parsing ?
+   myDebugParser(RPG_NET_PROTOCOL_DEF_TRACE_PARSING), // trace parsing ?
    myIsInitialized(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser"));
@@ -43,22 +44,21 @@ RPG_Net_Protocol_Module_IRCParser::~RPG_Net_Protocol_Module_IRCParser()
 }
 
 const bool
-RPG_Net_Protocol_Module_IRCParser::init(Stream_IAllocator* allocator_in)
+RPG_Net_Protocol_Module_IRCParser::init(const bool& debugParser_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::init"));
 
   // sanity check(s)
-  ACE_ASSERT(allocator_in);
   if (myIsInitialized)
   {
     ACE_DEBUG((LM_WARNING,
                ACE_TEXT("re-initializing...\n")));
 
-    myAllocator = NULL;
+    myDebugParser = RPG_NET_PROTOCOL_DEF_TRACE_PARSING;
     myIsInitialized = false;
   } // end IF
 
-  myAllocator = allocator_in;
+  myDebugParser = debugParser_in;
 
   // OK: all's well...
   myIsInitialized = true;
@@ -67,7 +67,7 @@ RPG_Net_Protocol_Module_IRCParser::init(Stream_IAllocator* allocator_in)
 }
 
 void
-RPG_Net_Protocol_Module_IRCParser::handleDataMessage(Stream_MessageBase*& message_inout,
+RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& message_inout,
                                                      bool& passMessageDownstream_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::handleDataMessage"));
@@ -86,10 +86,10 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(Stream_MessageBase*& messag
 //  <trailing> ::= <Any, possibly *empty*, sequence of octets not including
 //                   NUL or CR or LF>
 
+  // sanity check(s)
+  ACE_ASSERT(message_inout->getData() == NULL);
+
   // allocate the target data container and attach it to our current message
-  RPG_Net_Protocol_Message* message = ACE_dynamic_cast(RPG_Net_Protocol_Message*,
-                                                       message_inout);
-  ACE_ASSERT(message);
   RPG_Net_Protocol_IRCMessage* container = NULL;
   ACE_NEW_NORETURN(container,
                    RPG_Net_Protocol_IRCMessage());
@@ -101,7 +101,7 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(Stream_MessageBase*& messag
     // what else can we do ?
     return;
   } // end IF
-  message->init(container);
+  message_inout->init(container);
 
   // *NOTE*: message has assumed control over "container"...
 
@@ -110,16 +110,17 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(Stream_MessageBase*& messag
   // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("parsing message(ID: %u, %u byte(s))\n\"%s\"\n"),
-             message->getID(),
-             message->length(),
-             message->rd_ptr()));
+             message_inout->getID(),
+             message_inout->length(),
+             message_inout->rd_ptr()));
 
-  myParserDriver.init(ACE_const_cast(RPG_Net_Protocol_IRCMessage&, *message->getData()));
-  if (!myParserDriver.parse(message))
+  myDriver.init(ACE_const_cast(RPG_Net_Protocol_IRCMessage&, *message_inout->getData()),
+                myDebugParser);
+  if (!myDriver.parse(message_inout))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Net_Protocol_IRCParserDriver::parse(ID: %u), aborting\n"),
-               message->getID()));
+               message_inout->getID()));
 
     // what else can we do ?
     return;

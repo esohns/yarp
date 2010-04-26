@@ -19,34 +19,47 @@
  ***************************************************************************/
 
 #include "rpg_net_defines.h"
-#include "rpg_net_connection_manager.h"
 #include "rpg_net_common_tools.h"
+#include "rpg_net_iconnectionmanager.h"
 
 #include <ace/OS.h>
 #include <ace/Reactor.h>
 #include <ace/INET_Addr.h>
 
 template <typename ConfigType>
-RPG_Net_SocketHandlerBase<ConfigType>::RPG_Net_SocketHandlerBase()
+RPG_Net_SocketHandlerBase<ConfigType>::RPG_Net_SocketHandlerBase(RPG_Net_IConnectionManager<ConfigType>* manager_in)
  : inherited(NULL,                     // no specific thread manager
              NULL,                     // no specific message queue
              ACE_Reactor::instance()), // default reactor
 //    myUserData(),
    myIsInitialized(false),
-   myIsRegistered(false)
+   myID(0),
+   myIsRegistered(false),
+   myManager(manager_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::RPG_Net_SocketHandlerBase"));
 
   // init user data
   ACE_OS::memset(&myUserData,
                  0,
-                 sizeof(RPG_Net_ConfigPOD));
+                 sizeof(ConfigType));
 
-  // (try to) register with the connection manager...
-  // *NOTE*: we do it here because we WANT to init() myUserData early...
-  // *WARNING*: as we register BEFORE the connection has fully opened, there
-  // may be a small window for races...
-  myIsRegistered = RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->registerConnection(this);
+  if (myManager)
+  {
+    // (try to) register with the connection manager...
+    // *NOTE*: we do it here because we WANT to init() myUserData early...
+    // *WARNING*: as we register BEFORE the connection has fully opened, there
+    // may be a small window for races...
+    try
+    {
+      myIsRegistered = myManager->registerConnection(this);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::registerConnection(), continuing\n")));
+    }
+  } // end IF
 }
 
 template <typename ConfigType>
@@ -54,9 +67,21 @@ RPG_Net_SocketHandlerBase<ConfigType>::~RPG_Net_SocketHandlerBase()
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::~RPG_Net_SocketHandlerBase"));
 
-  // (try to) de-register with connection manager
-  if (myIsRegistered)
-    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->deregisterConnection(this);
+  if (myManager)
+  { // (try to) de-register with connection manager
+    if (myIsRegistered)
+    {
+      try
+      {
+        myManager->deregisterConnection(this);
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Net_IConnectionManager::deregisterConnection(), continuing\n")));
+      }
+    } // end IF
+  } // end IF
 }
 
 template <typename ConfigType>

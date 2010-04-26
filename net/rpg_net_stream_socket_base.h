@@ -21,15 +21,14 @@
 #ifndef RPG_NET_STREAMSOCKET_BASE_H
 #define RPG_NET_STREAMSOCKET_BASE_H
 
-#include "rpg_net_common.h"
 #include "rpg_net_sockethandler_base.h"
 
 #include <ace/Global_Macros.h>
 
-// forward declarations
+// forward declaration(s)
 class Stream_IAllocator;
-class RPG_Net_Message;
 class ACE_Message_Block;
+template <typename ConfigType> class RPG_Net_IConnectionManager;
 
 template <typename ConfigType,
           typename StreamType>
@@ -55,22 +54,24 @@ class RPG_Net_StreamSocketBase
   virtual void report() const;
 
  protected:
-  RPG_Net_StreamSocketBase();
+  RPG_Net_StreamSocketBase(RPG_Net_IConnectionManager<ConfigType>*);
 
   StreamType         myStream;
+
+  Stream_IAllocator* myAllocator; // message allocator
+  unsigned long      myDefaultBufferSize;
+  ACE_Message_Block* myCurrentReadBuffer;
   ACE_Message_Block* myCurrentWriteBuffer;
+
+  // helper method(s)
+  ACE_Message_Block* allocateMessage(const unsigned long&); // requested size
 
  private:
   typedef RPG_Net_SocketHandlerBase<ConfigType> inherited;
 
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase(const RPG_Net_StreamSocketBase&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase& operator=(const RPG_Net_StreamSocketBase&));
-
-  RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
-
-  Stream_IAllocator* myAllocator; // message allocator
-  unsigned long      myDefaultBufferSize;
-  RPG_Net_Message*   myCurrentReadBuffer;
 };
 
 // include template implementation

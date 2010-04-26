@@ -21,13 +21,12 @@
 #include "rpg_net_sockethandler.h"
 
 #include "rpg_net_defines.h"
-#include "rpg_net_remote_comm.h"
-#include "rpg_net_common_tools.h"
+#include "rpg_net_connection_manager.h"
 
-#include <ace/Thread_Manager.h>
+#include <ace/Message_Block.h>
 
 RPG_Net_SocketHandler::RPG_Net_SocketHandler()
-//  : inherited()
+ : inherited(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance())
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::RPG_Net_SocketHandler"));
 
@@ -186,6 +185,99 @@ RPG_Net_SocketHandler::open(void* arg_in)
 
   return 0;
 }
+
+// int
+// RPG_Net_SocketHandler::handle_input(ACE_HANDLE handle_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::handle_input"));
+//
+//   ACE_UNUSED_ARG(handle_in);
+//
+//   size_t bytes_received = 0;
+//
+//   // sanity check
+//   ACE_ASSERT(myCurrentReadBuffer == NULL);
+//
+//   // read some data from the socket
+//   myCurrentReadBuffer = allocateMessage(myDefaultBufferSize);
+//   if (myCurrentReadBuffer == NULL)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to allocateMessage(%u), aborting\n"),
+//                myDefaultBufferSize));
+//
+//     // reactor will invoke handle_close()
+//     return -1;
+//   } // end IF
+//
+//   // read some data from the socket...
+//   bytes_received = inherited::peer_.recv(myCurrentReadBuffer->wr_ptr(),
+//                                          myCurrentReadBuffer->size());
+//   switch (bytes_received)
+//   {
+//     case -1:
+//     {
+//       // connection reset by peer ? --> not an error
+//       if ((ACE_OS::last_error() != ECONNRESET) &&
+//           (ACE_OS::last_error() != EPIPE))
+//         ACE_DEBUG((LM_ERROR,
+//                    ACE_TEXT("failed to ACE_SOCK_Stream::recv(): \"%m\", returning\n")));
+//
+//       // clean up
+//       myCurrentReadBuffer->release();
+//       myCurrentReadBuffer = NULL;
+//
+//       // reactor will invoke handle_close()
+//       return -1;
+//     }
+//     // *** GOOD CASES ***
+//     case 0:
+//     {
+// //       ACE_DEBUG((LM_DEBUG,
+// //                  ACE_TEXT("[%u]: socket was closed by the peer...\n"),
+// //                  handle_in));
+//
+//       // clean up
+//       myCurrentReadBuffer->release();
+//       myCurrentReadBuffer = NULL;
+//
+//       // reactor will invoke handle_close()
+//       return -1;
+//     }
+//     default:
+//     {
+//       // debug info
+// //       ACE_DEBUG((LM_DEBUG,
+// //                  ACE_TEXT("[%u]: received %u bytes...\n"),
+// //                  handle_in,
+// //                  bytes_received));
+//
+//       // adjust write pointer
+//       myCurrentReadBuffer->wr_ptr(bytes_received);
+//
+//       break;
+//     }
+//   } // end SWITCH
+//
+//   // push the buffer onto our stream for processing
+//   if (myStream.put(myCurrentReadBuffer) == -1)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to ACE_Stream::put(): \"%m\", aborting\n")));
+//
+//       // clean up
+//     myCurrentReadBuffer->release();
+//     myCurrentReadBuffer = NULL;
+//
+//     // reactor will invoke handle_close()
+//     return -1;
+//   } // end IF
+//
+//   // ... bye bye
+//   myCurrentReadBuffer = NULL;
+//
+//   return 0;
+// }
 
 int
 RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,

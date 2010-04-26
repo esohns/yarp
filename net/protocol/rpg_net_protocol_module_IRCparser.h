@@ -23,33 +23,33 @@
 
 #include "rpg_net_protocol_IRCparser_driver.h"
 
-#include <rpg_net_sessionmessage.h>
-
 #include <stream_task_base_synch.h>
 #include <stream_streammodule.h>
 
 #include <ace/Global_Macros.h>
 
 // forward declaration(s)
-class Stream_IAllocator;
-class Stream_MessageBase;
+class RPG_Net_Protocol_SessionMessage;
+class RPG_Net_Protocol_Message;
 
 class RPG_Net_Protocol_Module_IRCParser
- : public Stream_TaskBaseSynch<RPG_Net_SessionMessage>
+ : public Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
+                               RPG_Net_Protocol_Message>
 {
  public:
   RPG_Net_Protocol_Module_IRCParser();
   virtual ~RPG_Net_Protocol_Module_IRCParser();
 
   // configuration / initialization
-  const bool init(Stream_IAllocator*); // message allocator
+  const bool init(const bool& = false); // debug parser ?
 
   // implement (part of) Stream_ITaskBase
-  virtual void handleDataMessage(Stream_MessageBase*&, // data message handle
-                                 bool&);               // return value: pass message downstream ?
+  virtual void handleDataMessage(RPG_Net_Protocol_Message*&, // data message handle
+                                 bool&);                     // return value: pass message downstream ?
 
  private:
-  typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage> inherited;
+  typedef Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
+                               RPG_Net_Protocol_Message> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCParser(const RPG_Net_Protocol_Module_IRCParser&));
@@ -57,8 +57,10 @@ class RPG_Net_Protocol_Module_IRCParser
 
   // message allocator
   Stream_IAllocator*               myAllocator;
+
   // driver
-  RPG_Net_Protocol_IRCParserDriver myParserDriver;
+  RPG_Net_Protocol_IRCParserDriver myDriver;
+  bool                             myDebugParser;
 
   bool                             myIsInitialized;
 };

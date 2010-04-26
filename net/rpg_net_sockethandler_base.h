@@ -29,6 +29,9 @@
 #include <ace/SOCK_Stream.h>
 #include <ace/Synch.h>
 
+// forward declaration(s)
+template <typename ConfigType> class RPG_Net_IConnectionManager;
+
 template <typename ConfigType>
 class RPG_Net_SocketHandlerBase
  : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH>,
@@ -60,22 +63,24 @@ class RPG_Net_SocketHandlerBase
 
  protected:
   // meant to be sub-classed
-  RPG_Net_SocketHandlerBase();
+  RPG_Net_SocketHandlerBase(RPG_Net_IConnectionManager<ConfigType>*); // manager handle
 
-  ConfigType    myUserData;
-  bool          myIsInitialized;
+  ConfigType                              myUserData;
+  bool                                    myIsInitialized;
 
  private:
   typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> inherited;
 
   // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase(const RPG_Net_SocketHandlerBase&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase& operator=(const RPG_Net_SocketHandlerBase&));
 
   // *NOTE*: we save this so we can de-register even when our "handle"
   // (getID()) has gone stale...
-  unsigned long myID;
-  bool          myIsRegistered;
+  unsigned long                           myID;
+  bool                                    myIsRegistered;
+  RPG_Net_IConnectionManager<ConfigType>* myManager;
 };
 
 // include template implementation

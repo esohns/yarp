@@ -21,7 +21,8 @@
 #ifndef RPG_NET_COMMON_H
 #define RPG_NET_COMMON_H
 
-#include <stream_iallocator.h>
+// *NOTE*: avoid circular dependencies...
+// #include "rpg_net_connection_manager.h"
 
 #include <ace/Time_Value.h>
 #include <ace/Singleton.h>
@@ -41,8 +42,8 @@
 // typedef ACE_Thread_Timer_Queue_Adapter<TIMERHEAP_TYPE> RPG_Net_TimerQueue_t;
 
 // forward declaration(s)
-template <typename ConfigType>
-class RPG_Net_Connection_Manager;
+class Stream_IAllocator;
+template <typename ConfigType> class RPG_Net_Connection_Manager;
 
 struct RPG_Net_RuntimeStatistic
 {

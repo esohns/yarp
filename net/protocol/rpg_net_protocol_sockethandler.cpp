@@ -20,14 +20,12 @@
 
 #include "rpg_net_protocol_sockethandler.h"
 
-#include "rpg_net_defines.h"
-#include "rpg_net_remote_comm.h"
-#include "rpg_net_common_tools.h"
+#include "rpg_net_protocol_common.h"
 
-#include <ace/Thread_Manager.h>
+#include <rpg_net_connection_manager.h>
 
 RPG_Net_Protocol_SocketHandler::RPG_Net_Protocol_SocketHandler()
-//  : inherited()
+ : inherited(RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance())
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::RPG_Net_Protocol_SocketHandler"));
 

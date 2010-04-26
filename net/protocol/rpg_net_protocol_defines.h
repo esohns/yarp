@@ -37,8 +37,8 @@
 #define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY        ACE_TEXT_ALWAYS_CHAR("\r\n")
 #define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE   2
 
-// output debug information
-#define RPG_NET_PROTOCOL_DEF_TRACE_SCANNING        true
-#define RPG_NET_PROTOCOL_DEF_TRACE_PARSING         true
+// output more debugging information
+#define RPG_NET_PROTOCOL_DEF_TRACE_SCANNING        false
+#define RPG_NET_PROTOCOL_DEF_TRACE_PARSING         false
 
 #endif

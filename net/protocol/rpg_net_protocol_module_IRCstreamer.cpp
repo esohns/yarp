@@ -20,6 +20,7 @@
 
 #include "rpg_net_protocol_module_IRCstreamer.h"
 
+#include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_message.h"
 
 RPG_Net_Protocol_Module_IRCStreamer::RPG_Net_Protocol_Module_IRCStreamer()
@@ -36,7 +37,7 @@ RPG_Net_Protocol_Module_IRCStreamer::~RPG_Net_Protocol_Module_IRCStreamer()
 }
 
 void
-RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(Stream_MessageBase*& message_inout,
+RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*& message_inout,
                                                        bool& passMessageDownstream_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage"));
@@ -47,13 +48,7 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(Stream_MessageBase*& mess
   passMessageDownstream_out = true;
 
   // sanity check(s)
-  ACE_ASSERT(message_inout);
-
-  // retrieve IRC message structure
-  RPG_Net_Protocol_Message* message = ACE_dynamic_cast(RPG_Net_Protocol_Message*,
-                                                       message_inout);
-  // sanity check(s)
-  ACE_ASSERT(message);
+  ACE_ASSERT(message_inout->length() == 0);
 
   // serialize our structured data
   // --> create the appropriate bytestream corresponding to its elements
@@ -70,19 +65,19 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(Stream_MessageBase*& mess
   //                   NUL or CR or LF>
 
   // prefix
-  if (!message->getData()->prefix.origin.empty())
+  if (!message_inout->getData()->prefix.origin.empty())
   {
     // prefix the prefix
-    *message->wr_ptr() = ':';
-    message->wr_ptr(1);
+    *message_inout->wr_ptr() = ':';
+    message_inout->wr_ptr(1);
 
-    if (message->copy(message->getData()->prefix.origin.c_str(),
-                      message->getData()->prefix.origin.size()) == -1)
+    if (message_inout->copy(message_inout->getData()->prefix.origin.c_str(),
+                            message_inout->getData()->prefix.origin.size()) == -1)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Message_Block::copy(\"%s\", %u): \"%m\", aborting\n"),
-                 message->getData()->prefix.origin.c_str(),
-                 message->getData()->prefix.origin.size()));
+                 message_inout->getData()->prefix.origin.c_str(),
+                 message_inout->getData()->prefix.origin.size()));
 
       // clean up
       passMessageDownstream_out = false;
@@ -93,19 +88,19 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(Stream_MessageBase*& mess
     } // end IF
 
     // append user
-    if (!message->getData()->prefix.user.empty())
+    if (!message_inout->getData()->prefix.user.empty())
     {
       // user prefix
-      *message->wr_ptr() = '!';
-      message->wr_ptr(1);
+      *message_inout->wr_ptr() = '!';
+      message_inout->wr_ptr(1);
 
-      if (message->copy(message->getData()->prefix.user.c_str(),
-                        message->getData()->prefix.user.size()) == -1)
+      if (message_inout->copy(message_inout->getData()->prefix.user.c_str(),
+                              message_inout->getData()->prefix.user.size()) == -1)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_Message_Block::copy(\"%s\", %u): \"%m\", aborting\n"),
-                   message->getData()->prefix.user.c_str(),
-                   message->getData()->prefix.user.size()));
+                   message_inout->getData()->prefix.user.c_str(),
+                   message_inout->getData()->prefix.user.size()));
 
       // clean up
         passMessageDownstream_out = false;
@@ -117,19 +112,19 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(Stream_MessageBase*& mess
     } // end IF
 
     // append host
-    if (!message->getData()->prefix.user.empty())
+    if (!message_inout->getData()->prefix.user.empty())
     {
       // user prefix
-      *message->wr_ptr() = '@';
-      message->wr_ptr(1);
+      *message_inout->wr_ptr() = '@';
+      message_inout->wr_ptr(1);
 
-      if (message->copy(message->getData()->prefix.host.c_str(),
-                        message->getData()->prefix.host.size()) == -1)
+      if (message_inout->copy(message_inout->getData()->prefix.host.c_str(),
+                              message_inout->getData()->prefix.host.size()) == -1)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_Message_Block::copy(\"%s\", %u): \"%m\", aborting\n"),
-                   message->getData()->prefix.host.c_str(),
-                   message->getData()->prefix.host.size()));
+                   message_inout->getData()->prefix.host.c_str(),
+                   message_inout->getData()->prefix.host.size()));
 
         // clean up
         passMessageDownstream_out = false;
@@ -142,15 +137,15 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(Stream_MessageBase*& mess
   } // end IF
 
   // command
-  switch (message->getData()->command.discriminator)
+  switch (message_inout->getData()->command.discriminator)
   {
     case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
     {
       // convert number into the equivalent 3-letter string
-      if (::snprintf(message->wr_ptr(),            // target
+      if (::snprintf(message_inout->wr_ptr(),            // target
                      4,                            // max length
                      ACE_TEXT_ALWAYS_CHAR("%.3u"), // format string
-                     message->getData()->command.numeric) != 3)
+                     message_inout->getData()->command.numeric) != 3)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ::snprintf: \"%m\", aborting\n")));
@@ -164,19 +159,19 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(Stream_MessageBase*& mess
       } // end IF
 
       //... and adjust the write pointer accordingly
-      message->wr_ptr(3);
+      message_inout->wr_ptr(3);
 
       break;
     }
     case RPG_Net_Protocol_IRCMessage::Command::STRING:
     {
-      if (message->copy(message->getData()->command.string->c_str(),
-                        message->getData()->command.string->size()) == -1)
+      if (message_inout->copy(message_inout->getData()->command.string->c_str(),
+                              message_inout->getData()->command.string->size()) == -1)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_Message_Block::copy(\"%s\", %u): \"%m\", aborting\n"),
-                   message->getData()->command.string->c_str(),
-                   message->getData()->command.string->size()));
+                   message_inout->getData()->command.string->c_str(),
+                   message_inout->getData()->command.string->size()));
 
         // clean up
         passMessageDownstream_out = false;
@@ -193,7 +188,7 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(Stream_MessageBase*& mess
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("[%u]: invalid command type (was: %u), aborting\n"),
                  message_inout->getID(),
-                 message->getData()->command.discriminator));
+                 message_inout->getData()->command.discriminator));
 
       // clean up
       passMessageDownstream_out = false;
@@ -205,27 +200,27 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(Stream_MessageBase*& mess
   } // end SWITCH
 
   // parameter(s)
-  if (!message->getData()->params.empty())
+  if (!message_inout->getData()->params.empty())
   {
-    int i = message->getData()->params.size();
-    for (std::list<std::string>::const_iterator iterator = message->getData()->params.begin();
-         iterator != message->getData()->params.end();
+    int i = message_inout->getData()->params.size();
+    for (std::list<std::string>::const_iterator iterator = message_inout->getData()->params.begin();
+         iterator != message_inout->getData()->params.end();
          iterator++, i--)
     {
       // add a <SPACE>
-      *message->wr_ptr() = ' ';
-      message->wr_ptr(1);
+      *message_inout->wr_ptr() = ' ';
+      message_inout->wr_ptr(1);
 
       // special handling for last parameter
       if (i == 1)
       {
         // prefix the trailing parameter
-        *message->wr_ptr() = ':';
-        message->wr_ptr(1);
+        *message_inout->wr_ptr() = ':';
+        message_inout->wr_ptr(1);
       } // end IF
 
-      if (message->copy((*iterator).c_str(),
-                        (*iterator).size()) == -1)
+      if (message_inout->copy((*iterator).c_str(),
+                              (*iterator).size()) == -1)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_Message_Block::copy(\"%s\", %u): \"%m\", aborting\n"),
@@ -243,7 +238,7 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(Stream_MessageBase*& mess
   } // end IF
 
   // append a <CRLF>
-  *message->wr_ptr() = '\r';
-  *(message->wr_ptr() + 1) = '\n';
-  message->wr_ptr(2);
+  *message_inout->wr_ptr() = '\r';
+  *(message_inout->wr_ptr() + 1) = '\n';
+  message_inout->wr_ptr(2);
 }

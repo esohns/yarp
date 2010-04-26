@@ -345,7 +345,7 @@ RPG_Net_Connection_Manager<ConfigType>::collect(RPG_Net_RuntimeStatistic& data_o
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("caught exception in RPG_Common_IStatistic::collect(), continuing\n")));
+                 ACE_TEXT("caught exception in RPG_Common_IStatistic::collect(), continuing\n")));
     }
 
     data_out += temp;

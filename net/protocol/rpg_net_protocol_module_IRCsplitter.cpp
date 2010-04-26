@@ -22,13 +22,12 @@
 
 #include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_IRCbisect.h"
+#include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_message.h"
 
 #include <rpg_common_timer_manager.h>
 
 #include <stream_iallocator.h>
-
-#include <string.h>
 
 RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter()
  : inherited(false), // DON'T auto-start !
@@ -164,7 +163,7 @@ RPG_Net_Protocol_Module_IRCSplitter::init(Stream_IAllocator* allocator_in,
 }
 
 void
-RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(Stream_MessageBase*& message_inout,
+RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*& message_inout,
                                                        bool& passMessageDownstream_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage"));
@@ -414,7 +413,7 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(Stream_MessageBase*& mess
 }
 
 void
-RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage(RPG_Net_SessionMessage*& message_inout,
+RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage(RPG_Net_Protocol_SessionMessage*& message_inout,
                                                           bool& passMessageDownstream_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage"));
@@ -498,21 +497,21 @@ RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage(const RPG_Net_RuntimeS
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage"));
 
   // step1: init info POD
-  RPG_Net_ConfigPOD data;
+  RPG_Net_Protocol_ConfigPOD data;
   ACE_OS::memset(&data,
                  0,
-                 sizeof(RPG_Net_ConfigPOD));
+                 sizeof(RPG_Net_Protocol_ConfigPOD));
   data.currentStatistics = info_in;
   data.lastCollectionTimestamp = collectionTime_in;
 
   // step2: allocate config container
-  RPG_Net_StreamConfig* config = NULL;
+  SESSIONCONFIG_TYPE* config = NULL;
   ACE_NEW_NORETURN(config,
-                   RPG_Net_StreamConfig(data));
+                   SESSIONCONFIG_TYPE(data));
   if (!config)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate RPG_Net_StreamConfig: \"%m\", aborting\n")));
+               ACE_TEXT("failed to allocate Stream_SessionConfigBase: \"%m\", aborting\n")));
 
     return false;
   } // end IF

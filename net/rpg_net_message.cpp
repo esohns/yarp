@@ -20,6 +20,8 @@
 
 #include "rpg_net_message.h"
 
+#include "rpg_net_remote_comm.h"
+
 #include <ace/Message_Block.h>
 
 // *NOTE*: this is implicitly invoked by duplicate() as well...
@@ -74,6 +76,20 @@ RPG_Net_Message::init(ACE_Data_Block* dataBlock_in)
 
   // OK: we're initialized !
   myIsInitialized = true;
+}
+
+const int
+RPG_Net_Message::getCommand() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::getCommand"));
+
+  // sanity check(s)
+  ACE_ASSERT(length() >= sizeof(RPG_Net_MessageHeader))
+
+  RPG_Net_MessageHeader* message_header = ACE_reinterpret_cast(RPG_Net_MessageHeader*,
+                                                               rd_ptr());
+
+  return message_header->messageType;
 }
 
 void

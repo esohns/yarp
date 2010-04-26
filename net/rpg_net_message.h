@@ -21,8 +21,6 @@
 #ifndef RPG_NET_MESSAGE_H
 #define RPG_NET_MESSAGE_H
 
-// #include "rpg_net_sessionmessage.h"
-
 #include <stream_message_base.h>
 
 #include <ace/Global_Macros.h>
@@ -31,7 +29,6 @@
 class ACE_Allocator;
 class ACE_Message_Block;
 class ACE_Data_Block;
-// *NOTE*: this avoids a circular dependency...
 class RPG_Net_SessionMessage;
 // class RPG_Net_StreamMessageAllocator;
 template <typename MessageType,
@@ -50,6 +47,8 @@ class RPG_Net_Message
   // used for pre-allocated messages...
   virtual void init(// Stream_MessageBase members
                     ACE_Data_Block*); // data block to use
+
+  virtual const int getCommand() const; // return value: (protocol) message type
 
   // implement RPG_Net_IDumpState
   virtual void dump_state() const;
