@@ -154,7 +154,7 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
 
     return false;
   } // end IF
-  if (!IRCParser_impl->init(config_in.messageAllocator)) // message allocator
+  if (!IRCParser_impl->init(config_in.debugParser)) // message allocator
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
@@ -187,7 +187,7 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
   if (!IRCSplitter_impl->init(config_in.messageAllocator, // message allocator
                               false,                      // "crunch" messages
                               0,                          // DON'T collect statistics
-                              true))                      // trace scanning
+                              config_in.debugParser))     // trace scanning
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),

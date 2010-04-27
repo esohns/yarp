@@ -180,9 +180,7 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
   } // end IF
   else
   {
-    myCurrentBuffer = ACE_dynamic_cast(RPG_Net_Protocol_Message*, message_inout);
-    // sanity check(s)
-    ACE_ASSERT(myCurrentBuffer);
+    myCurrentBuffer = message_inout;
   } // end ELSE
 
   // scan the incoming stream for frame bounds "\r\n"
@@ -243,51 +241,54 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
 
   // OK, init our scanner...
 
-  // *NOTE*: in order to accomodate flex, the buffer needs two trailing
-  // '\0' characters...
-  // --> make sure it has this capacity
-  if (myCurrentBuffer->space() < RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)
-  {
-    // *sigh*: (try to) resize it then...
-    if (myCurrentBuffer->size(myCurrentBuffer->size() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Message_Block::size(%u), aborting\n"),
-                 (myCurrentBuffer->size() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
-
-      // what else can we do ?
-      return;
-    } // end IF
-    myCurrentBufferIsResized = true;
-
-    // *WARNING*: beyond this point, make sure we resize the buffer back
-    // to its original length...
-    // *NOTE*: this is safe, as realloc() just crops the trailing bytes again...
-  } // end IF
-//   for (int i = 0;
-//        i < RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE;
-//        i++)
-//     *(myCurrentBuffer->wr_ptr() + i) = YY_END_OF_BUFFER_CHAR;
-  *(myCurrentBuffer->wr_ptr()) = '\0';
-  *(myCurrentBuffer->wr_ptr() + 1) = '\0';
-
+  // *WARNING*: cannot use yy_scan_buffer(), as flex modifies the data... :-(
+//   // *NOTE*: in order to accomodate flex, the buffer needs two trailing
+//   // '\0' characters...
+//   // --> make sure it has this capacity
+//   if (myCurrentBuffer->space() < RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)
+//   {
+//     // *sigh*: (try to) resize it then...
+//     if (myCurrentBuffer->size(myCurrentBuffer->size() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to ACE_Message_Block::size(%u), aborting\n"),
+//                  (myCurrentBuffer->size() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
+//
+//       // what else can we do ?
+//       return;
+//     } // end IF
+//     myCurrentBufferIsResized = true;
+//
+//     // *WARNING*: beyond this point, make sure we resize the buffer back
+//     // to its original length...
+//     // *NOTE*: this is safe, as realloc() just crops the trailing bytes again...
+//   } // end IF
+// //   for (int i = 0;
+// //        i < RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE;
+// //        i++)
+// //     *(myCurrentBuffer->wr_ptr() + i) = YY_END_OF_BUFFER_CHAR;
+//   *(myCurrentBuffer->wr_ptr()) = '\0';
+//   *(myCurrentBuffer->wr_ptr() + 1) = '\0';
+//
+//   if (!scan_begin(myCurrentBuffer->rd_ptr(),
+//                   myCurrentBuffer->length() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
   if (!scan_begin(myCurrentBuffer->rd_ptr(),
-                  myCurrentBuffer->length() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
+                  myCurrentBuffer->length()))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to scan_begin(%@, %u), aborting\n"),
                myCurrentBuffer->rd_ptr(),
-               (myCurrentBuffer->size() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
+               myCurrentBuffer->length()));
 
-    // clean up
-    if (myCurrentBufferIsResized)
-    {
-      if (myCurrentBuffer->size(myCurrentBuffer->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Message_Block::size(%u), continuing\n"),
-                   (myCurrentBuffer->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
-      myCurrentBufferIsResized = false;
-    } // end IF
+//     // clean up
+//     if (myCurrentBufferIsResized)
+//     {
+//       if (myCurrentBuffer->size(myCurrentBuffer->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
+//         ACE_DEBUG((LM_ERROR,
+//                    ACE_TEXT("failed to ACE_Message_Block::size(%u), continuing\n"),
+//                    (myCurrentBuffer->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
+//       myCurrentBufferIsResized = false;
+//     } // end IF
 
     // what else can we do ?
     return;
@@ -297,7 +298,7 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
   myCurrentNumFrames = 0;
   bool finished_scanning = false;
   int scanned_bytes = 0;
-  unsigned long scanned_chunk = 0;
+  int scanned_chunk = 0;
 //   while (myCurrentMessageLength = myScanner.yylex())
   do
   {
@@ -390,17 +391,17 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
 
   // clean up
   scan_end();
-  // *NOTE*: that even if we've sent some frames downstream in the meantime,
-  // we're still referencing the same buffer we resized earlier - it's always
-  // the new "head" message...
-  if (myCurrentBufferIsResized)
-  {
-    if (myCurrentBuffer->size(myCurrentBuffer->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Message_Block::size(%u), continuing\n"),
-                 (myCurrentBuffer->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
-    myCurrentBufferIsResized = false;
-  } // end IF
+//   // *NOTE*: that even if we've sent some frames downstream in the meantime,
+//   // we're still referencing the same buffer we resized earlier - it's always
+//   // the new "head" message...
+//   if (myCurrentBufferIsResized)
+//   {
+//     if (myCurrentBuffer->size(myCurrentBuffer->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE))
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to ACE_Message_Block::size(%u), continuing\n"),
+//                  (myCurrentBuffer->size() - RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)));
+//     myCurrentBufferIsResized = false;
+//   } // end IF
 
 //   // debug info
 //   ACE_DEBUG((LM_DEBUG,
@@ -530,17 +531,21 @@ RPG_Net_Protocol_Module_IRCSplitter::scan_begin(char* data_in,
   // sanity check(s)
   ACE_ASSERT(myCurrentState == NULL);
 
-//  yy_flex_debug = myTraceScanning;
-
   // create/init a new buffer state
-  // *WARNING*: length_in IS already adjusted for two trailing \0's
-  myCurrentState = yy_scan_buffer(data_in,length_in,myScannerContext);
+  // *WARNING*: cannot use yy_scan_buffer(), as flex modifies the data... :-(
+//   // *WARNING*: length_in IS already adjusted for two trailing \0's
+//   myCurrentState = yy_scan_buffer(data_in,
+//                                   length_in,
+//                                   myScannerContext);
+  myCurrentState = yy_scan_bytes(data_in,
+                                 length_in,
+                                 myScannerContext);
   if (myCurrentState == NULL)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ::yy_scan_buffer(%@,%d), aborting\n"),
-                        data_in,
-                        length_in));
+               ACE_TEXT("failed to ::yy_scan_bytes(%@,%d), aborting\n"),
+               data_in,
+               length_in));
 
     // what else can we do ?
     return false;
@@ -558,6 +563,7 @@ RPG_Net_Protocol_Module_IRCSplitter::scan_end()
   ACE_ASSERT(myCurrentState);
 
   // clean state
-  yy_delete_buffer(myCurrentState,myScannerContext);
+  yy_delete_buffer(myCurrentState,
+                   myScannerContext);
   myCurrentState = NULL;
 }

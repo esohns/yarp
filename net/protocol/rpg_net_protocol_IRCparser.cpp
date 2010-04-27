@@ -50,6 +50,7 @@
 #include "rpg_net_protocol_IRCmessage.h"
 #include <ace/OS_Memory.h>
 #include <ace/Log_Msg.h>
+#include <string>
 
 
 
@@ -253,64 +254,29 @@ namespace yy {
 
     switch (yytype)
       {
-        case 0: /* "\"end of message\"" */
+        case 4: /* "\"origin\"" */
 
-	{ ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("discarding tagless symbol...\n"))); };
-
-	break;
-      case 10: /* "':'" */
-
-	{ ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("discarding tagless symbol...\n"))); };
+	{ delete (yyvaluep->sval); };
 
 	break;
-      case 11: /* "'!'" */
+      case 5: /* "\"user\"" */
 
-	{ ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("discarding tagless symbol...\n"))); };
-
-	break;
-      case 12: /* "'@'" */
-
-	{ ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("discarding tagless symbol...\n"))); };
+	{ delete (yyvaluep->sval); };
 
 	break;
-      case 14: /* "message" */
+      case 6: /* "\"host\"" */
 
-	{ ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("discarding tagless symbol...\n"))); };
-
-	break;
-      case 15: /* "ext_prefix" */
-
-	{ ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("discarding tagless symbol...\n"))); };
+	{ delete (yyvaluep->sval); };
 
 	break;
-      case 16: /* "ext_prefix_2" */
+      case 7: /* "\"cmd_string\"" */
 
-	{ ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("discarding tagless symbol...\n"))); };
-
-	break;
-      case 17: /* "body" */
-
-	{ ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("discarding tagless symbol...\n"))); };
+	{ delete (yyvaluep->sval); };
 
 	break;
-      case 18: /* "command" */
+      case 9: /* "\"param\"" */
 
-	{ ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("discarding tagless symbol...\n"))); };
-
-	break;
-      case 19: /* "params" */
-
-	{ ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("discarding tagless symbol...\n"))); };
+	{ delete (yyvaluep->sval); };
 
 	break;
 
@@ -511,28 +477,28 @@ namespace yy {
       {
 	  case 2:
 
-    { driver.myCurrentMessage->prefix.origin = (yysemantic_stack_[(3) - (2)].sval);
-                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set origin: \"%s\"...\n"),
-                                                                           (yysemantic_stack_[(3) - (2)].sval)));
+    { driver.myCurrentMessage->prefix.origin = *(yysemantic_stack_[(3) - (2)].sval);
+/*                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set origin: \"%s\"\n"),
+                                                                           driver.myCurrentMessage->prefix.origin.c_str())); */
                                                               }
     break;
 
   case 5:
 
-    { driver.myCurrentMessage->prefix.user = (yysemantic_stack_[(3) - (2)].sval);
-                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set user: \"%s\"...\n"),
-                                                                           (yysemantic_stack_[(3) - (2)].sval)));
+    { driver.myCurrentMessage->prefix.user = *(yysemantic_stack_[(3) - (2)].sval);
+/*                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set user: \"%s\"\n"),
+                                                                           driver.myCurrentMessage->prefix.user.c_str())); */
                                                               }
     break;
 
   case 8:
 
-    { driver.myCurrentMessage->prefix.host = (yysemantic_stack_[(4) - (2)].sval);
-                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set host: \"%s\"...\n"),
-                                                                           (yysemantic_stack_[(4) - (2)].sval)));
+    { driver.myCurrentMessage->prefix.host = *(yysemantic_stack_[(4) - (2)].sval);
+/*                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set host: \"%s\"\n"),
+                                                                           driver.myCurrentMessage->prefix.host.c_str())); */
                                                               }
     break;
 
@@ -541,12 +507,12 @@ namespace yy {
     { if (driver.myCurrentMessage->command.string)
                                                                   delete driver.myCurrentMessage->command.string;
                                                                 ACE_NEW_NORETURN(driver.myCurrentMessage->command.string,
-                                                                                 std::string((yysemantic_stack_[(1) - (1)].sval)));
+                                                                                 std::string(*(yysemantic_stack_[(1) - (1)].sval)));
                                                                 ACE_ASSERT(driver.myCurrentMessage->command.string);
                                                                 driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set command: \"%s\"...\n"),
-                                                                           (yysemantic_stack_[(1) - (1)].sval)));
+/*                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set command: \"%s\"\n"),
+                                                                           driver.myCurrentMessage->command.string->c_str())); */
                                                               }
     break;
 
@@ -554,27 +520,27 @@ namespace yy {
 
     { driver.myCurrentMessage->command.numeric = RPG_Net_Protocol_IRC_Codes::RFC1459Numeric((yysemantic_stack_[(1) - (1)].ival));
                                                                 driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC;
-                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set command (numeric): %d...\n"),
-                                                                           (yysemantic_stack_[(1) - (1)].ival)));
+/*                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set command (numeric): %d\n"),
+                                                                           $1)); */
                                                               }
     break;
 
   case 15:
 
-    { driver.myCurrentMessage->params.push_front(std::string((yysemantic_stack_[(2) - (2)].sval)));
-                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set final param: \"%s\"...\n"),
-                                                                           (yysemantic_stack_[(2) - (2)].sval)));
+    { driver.myCurrentMessage->params.push_front(*(yysemantic_stack_[(2) - (2)].sval));
+/*                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set final param: \"%s\"\n"),
+                                                                           driver.myCurrentMessage->params.front().c_str())); */
                                                               }
     break;
 
   case 16:
 
-    { driver.myCurrentMessage->params.push_front(std::string((yysemantic_stack_[(2) - (1)].sval)));
-                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set param: \"%s\"...\n"),
-                                                                           (yysemantic_stack_[(2) - (1)].sval)));
+    { driver.myCurrentMessage->params.push_front(*(yysemantic_stack_[(2) - (1)].sval));
+/*                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set param: \"%s\"\n"),
+                                                                           driver.myCurrentMessage->params.front().c_str())); */
                                                               }
     break;
 
@@ -917,8 +883,8 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyrline_[] =
   {
-         0,    61,    61,    66,    67,    68,    73,    74,    74,    79,
-      80,    81,    82,    92,    98,    99,   104
+         0,    60,    60,    65,    66,    67,    72,    73,    73,    78,
+      79,    80,    81,    91,    97,    98,   103
   };
 
   // Print the state stack on the debug stream.

@@ -20,7 +20,6 @@
 
 #include "rpg_net_protocol_module_IRCparser.h"
 
-#include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_message.h"
 
@@ -87,7 +86,7 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
 //                   NUL or CR or LF>
 
   // sanity check(s)
-  ACE_ASSERT(message_inout->getData() == NULL);
+//   ACE_ASSERT(message_inout->getData() == NULL);
 
   // allocate the target data container and attach it to our current message
   RPG_Net_Protocol_IRCMessage* container = NULL;
@@ -107,12 +106,12 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
 
   // OK: parse this message
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("parsing message(ID: %u, %u byte(s))\n\"%s\"\n"),
-             message_inout->getID(),
-             message_inout->length(),
-             message_inout->rd_ptr()));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("parsing message(ID: %u, %u byte(s))\n\"%s\"\n"),
+//              message_inout->getID(),
+//              message_inout->length(),
+//              message_inout->rd_ptr()));
 
   myDriver.init(ACE_const_cast(RPG_Net_Protocol_IRCMessage&, *message_inout->getData()),
                 myDebugParser);

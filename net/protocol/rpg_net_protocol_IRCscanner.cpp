@@ -1905,8 +1905,8 @@ static yyconst yy_state_type yy_NUL_trans[45] =
 
 static yyconst flex_int16_t yy_rule_linenum[16] =
     {   0,
-       61,   65,   69,   72,   75,   80,   85,   90,   95,  100,
-      103,  106,  111,  116,  120
+       64,   68,   72,   75,   78,   83,   88,   93,   98,  103,
+      106,  109,  114,  119,  123
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -1918,6 +1918,9 @@ static yyconst flex_int16_t yy_rule_linenum[16] =
 #define YY_RESTORE_YY_MORE_OFFSET
 #include <stdlib.h>
 
+#include <string>
+
+#include <ace/OS_Memory.h>
 #include <ace/Log_Msg.h>
 
 #include "rpg_net_protocol_IRCparser_driver.h"
@@ -2350,8 +2353,8 @@ YY_RULE_SETUP
 case 5:
 YY_RULE_SETUP
 { yylloc->step();
-                             yylval->ival = yyleng;
-                             yylval->sval = yytext;
+                            ACE_NEW_NORETURN(yylval->sval,
+                                             std::string(yytext, yyleng));
                              return token::ORIGIN; }
 	YY_BREAK
 // end <prefix>
@@ -2359,24 +2362,24 @@ case 6:
 YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(prefix);
-                             yylval->ival = yyleng;
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext, yyleng));
                              return token::USER; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(prefix);
-                             yylval->ival = yyleng;
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext, yyleng));
                              return token::HOST; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(params);
-                             yylval->ival = yyleng;
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext, yyleng));
                              return token::CMD_STRING; }
 	YY_BREAK
 case 9:
@@ -2402,8 +2405,8 @@ YY_RULE_SETUP
 case 12:
 YY_RULE_SETUP
 { yylloc->step();
-                             yylval->ival = yyleng;
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext, yyleng));
                              return token::PARAM; }
 	YY_BREAK
 // end <params>
@@ -2411,8 +2414,8 @@ case 13:
 YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(INITIAL);
-                             yylval->ival = yyleng;
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext, yyleng));
                              return token::PARAM; }
 	YY_BREAK
 case 14:

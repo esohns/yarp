@@ -21,6 +21,7 @@
 #ifndef RPG_NET_PROTOCOL_MODULE_IRCPARSER_H
 #define RPG_NET_PROTOCOL_MODULE_IRCPARSER_H
 
+#include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_IRCparser_driver.h"
 
 #include <stream_task_base_synch.h>
@@ -41,7 +42,7 @@ class RPG_Net_Protocol_Module_IRCParser
   virtual ~RPG_Net_Protocol_Module_IRCParser();
 
   // configuration / initialization
-  const bool init(const bool& = false); // debug parser ?
+  const bool init(const bool& = RPG_NET_PROTOCOL_DEF_TRACE_PARSING); // debug parser ?
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Protocol_Message*&, // data message handle

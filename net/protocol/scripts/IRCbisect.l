@@ -12,7 +12,7 @@
 /* %option bison-bridge bison-locations stack */
 %option yylineno
 
-MESSAGE  [(?s:.)]*
+MESSAGE  ([\x00-\xFF]{-}[\r\n])*
 CRLF     \r\n
 
 %s       end_of_message

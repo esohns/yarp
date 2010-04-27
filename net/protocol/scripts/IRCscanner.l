@@ -1,6 +1,9 @@
 %{
 #include <stdlib.h>
 
+#include <string>
+
+#include <ace/OS_Memory.h>
 #include <ace/Log_Msg.h>
 
 #include "rpg_net_protocol_IRCparser_driver.h"
@@ -73,24 +76,24 @@ CRLF           \r\n
                              BEGIN(host);
                              return token_type(yytext[0]); }
 {ORIGIN}                   { yylloc->step();
-                             yylval->ival = yyleng;
-                             yylval->sval = yytext;
+                            ACE_NEW_NORETURN(yylval->sval,
+                                             std::string(yytext, yyleng));
                              return token::ORIGIN; }
 } // end <prefix>
 <user>{USER}               { yylloc->step();
                              BEGIN(prefix);
-                             yylval->ival = yyleng;
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext, yyleng));
                              return token::USER; }
 <host>{HOST}               { yylloc->step();
                              BEGIN(prefix);
-                             yylval->ival = yyleng;
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext, yyleng));
                              return token::HOST; }
 <INITIAL>{LETTER}+         { yylloc->step();
                              BEGIN(params);
-                             yylval->ival = yyleng;
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext, yyleng));
                              return token::CMD_STRING; }
 <INITIAL>{NUMBER}{3}       { yylloc->step();
                              BEGIN(params);
@@ -104,14 +107,14 @@ CRLF           \r\n
                              BEGIN(trailing);
                              return token_type(yytext[0]); }
 {PARAM}                    { yylloc->step();
-                             yylval->ival = yyleng;
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext, yyleng));
                              return token::PARAM; }
 } // end <params>
 <trailing>{TRAILING_PARAM} { yylloc->step();
                              BEGIN(INITIAL);
-                             yylval->ival = yyleng;
-                             yylval->sval = yytext;
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string(yytext, yyleng));
                              return token::PARAM; }
 <INITIAL>{CRLF}            { (*yyextra)++;
                              yylloc->step(); }

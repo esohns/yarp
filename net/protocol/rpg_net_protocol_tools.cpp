@@ -45,7 +45,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
   {
     case RPG_Net_Protocol_IRCMessage::Command::STRING:
     {
-      converter << ACE_TEXT("[\"") << message_in.command.string << ACE_TEXT("\"]");
+      converter << ACE_TEXT("[\"") << message_in.command.string->c_str() << ACE_TEXT("\"]");
 
       break;
     }

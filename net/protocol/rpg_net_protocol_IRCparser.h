@@ -116,8 +116,8 @@ namespace yy {
     {
 
 
-  int   ival;
-  char* sval;
+  int          ival;
+  std::string* sval;
 
 
 

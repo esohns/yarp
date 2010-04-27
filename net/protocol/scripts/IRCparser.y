@@ -25,8 +25,8 @@ typedef void* yyscan_t;
 // symbols
 %union
 {
-  int   ival;
-  char* sval;
+  int          ival;
+  std::string* sval;
 };
 
 %code {
@@ -34,6 +34,7 @@ typedef void* yyscan_t;
 #include "rpg_net_protocol_IRCmessage.h"
 #include <ace/OS_Memory.h>
 #include <ace/Log_Msg.h>
+#include <string>
 }
 
 %token <ival> SPACE       "space"
@@ -47,34 +48,32 @@ typedef void* yyscan_t;
 /* %type  <sval> message prefix ext_prefix ext_prefix_2 command params */
 
 %printer    { debug_stream() << *$$; } <sval>
-/*%destructor { free $$; ACE_DEBUG((LM_DEBUG,
-                                  ACE_TEXT("discarding: \"%s\"...\n"),
-                                  $$)); } <sval>*/
+%destructor { delete $$; } <sval>
 %printer    { debug_stream() << $$; } <ival>
-%destructor { ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("discarding tagless symbol...\n"))); } <>
+/*%destructor { ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("discarding tagless symbol...\n"))); } <>*/
 
 %%
 %start message;
 %nonassoc ':' '!' '@';
 
-message:      ':' "origin" ext_prefix                         { driver.myCurrentMessage->prefix.origin = $2;
-                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set origin: \"%s\"...\n"),
-                                                                           $2));
+message:      ':' "origin" ext_prefix                         { driver.myCurrentMessage->prefix.origin = *$2;
+/*                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set origin: \"%s\"\n"),
+                                                                           driver.myCurrentMessage->prefix.origin.c_str())); */
                                                               };
               | body                                          /* default */
               | "end of message"                              /* default */
-ext_prefix:   '!' "user" ext_prefix_2                         { driver.myCurrentMessage->prefix.user = $2;
-                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set user: \"%s\"...\n"),
-                                                                           $2));
+ext_prefix:   '!' "user" ext_prefix_2                         { driver.myCurrentMessage->prefix.user = *$2;
+/*                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set user: \"%s\"\n"),
+                                                                           driver.myCurrentMessage->prefix.user.c_str())); */
                                                               };
               | "space" body                                  /* default */
-ext_prefix_2: | '@' "host" "space" body                       { driver.myCurrentMessage->prefix.host = $2;
-                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set host: \"%s\"...\n"),
-                                                                           $2));
+ext_prefix_2: | '@' "host" "space" body                       { driver.myCurrentMessage->prefix.host = *$2;
+/*                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set host: \"%s\"\n"),
+                                                                           driver.myCurrentMessage->prefix.host.c_str())); */
                                                               };
               | "space" body                                  /* default */
 body:         command params "end of message"                 /* default */
@@ -82,29 +81,29 @@ body:         command params "end of message"                 /* default */
 command:      "cmd_string"                                    { if (driver.myCurrentMessage->command.string)
                                                                   delete driver.myCurrentMessage->command.string;
                                                                 ACE_NEW_NORETURN(driver.myCurrentMessage->command.string,
-                                                                                 std::string($1));
+                                                                                 std::string(*$1));
                                                                 ACE_ASSERT(driver.myCurrentMessage->command.string);
                                                                 driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set command: \"%s\"...\n"),
-                                                                           $1));
+/*                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set command: \"%s\"\n"),
+                                                                           driver.myCurrentMessage->command.string->c_str())); */
                                                               };
               | "cmd_numeric"                                 { driver.myCurrentMessage->command.numeric = RPG_Net_Protocol_IRC_Codes::RFC1459Numeric($1);
                                                                 driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC;
-                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set command (numeric): %d...\n"),
-                                                                           $1));
+/*                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set command (numeric): %d\n"),
+                                                                           $1)); */
                                                               };
 params:       "space" params                                  /* default */
-              | ':' "param"                                   { driver.myCurrentMessage->params.push_front(std::string($2));
-                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set final param: \"%s\"...\n"),
-                                                                           $2));
+              | ':' "param"                                   { driver.myCurrentMessage->params.push_front(*$2);
+/*                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set final param: \"%s\"\n"),
+                                                                           driver.myCurrentMessage->params.front().c_str())); */
                                                               };
-              | "param" params                                { driver.myCurrentMessage->params.push_front(std::string($1));
-                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set param: \"%s\"...\n"),
-                                                                           $1));
+              | "param" params                                { driver.myCurrentMessage->params.push_front(*$1);
+/*                                                                ACE_DEBUG((LM_DEBUG,
+                                                                           ACE_TEXT("set param: \"%s\"\n"),
+                                                                           driver.myCurrentMessage->params.front().c_str())); */
                                                               };
 %%
 
