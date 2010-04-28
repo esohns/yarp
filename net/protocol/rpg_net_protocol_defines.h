@@ -29,16 +29,28 @@
 // *WARNING*: be aware that a single read from the connected socket may well
 // cover MORE than one complete message at a time, so this value is just a
 // (somewhat balanced) suggestion...
-#define RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE   (512 + 2)
+#define RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE       (512 + 2)
 
 // "\0\0"
-#define RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE 2
+#define RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE     2
 // CRLF = "\r\n"
-#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY        ACE_TEXT_ALWAYS_CHAR("\r\n")
-#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE   2
+#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY            ACE_TEXT_ALWAYS_CHAR("\r\n")
+#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE       2
 
 // output more debugging information
-#define RPG_NET_PROTOCOL_DEF_TRACE_SCANNING        false
-#define RPG_NET_PROTOCOL_DEF_TRACE_PARSING         false
+#define RPG_NET_PROTOCOL_DEF_TRACE_SCANNING            false
+#define RPG_NET_PROTOCOL_DEF_TRACE_PARSING             false
+
+// default IRC configuration
+#define RPG_NET_PROTOCOL_DEF_IRC_PASSWORD              ACE_TEXT_ALWAYS_CHAR("password")
+#define RPG_NET_PROTOCOL_DEF_IRC_NICK                  ACE_TEXT_ALWAYS_CHAR("nick")
+#define RPG_NET_PROTOCOL_DEF_IRC_USER                  ACE_TEXT_ALWAYS_CHAR("user")
+// *NOTE*: bitset: "1100" [2]: +w; [3]: +i (see rfc2812 3.1.3 and rfc1459 4.1.3)
+#define RPG_NET_PROTOCOL_DEF_IRC_MODE                  0
+#define RPG_NET_PROTOCOL_DEF_IRC_HOSTNAME              ACE_TEXT_ALWAYS_CHAR("localhost")
+// #define RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME                ACE_TEXT_ALWAYS_CHAR("localhost")
+#define RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME            ACE_TEXT_ALWAYS_CHAR("*")
+#define RPG_NET_PROTOCOL_DEF_IRC_REALNAME              ACE_TEXT_ALWAYS_CHAR("real name")
+#define RPG_NET_PROTOCOL_DEF_IRC_CHANNEL               ACE_TEXT_ALWAYS_CHAR("channel")
 
 #endif

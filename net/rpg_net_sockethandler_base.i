@@ -42,10 +42,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::RPG_Net_SocketHandlerBase"));
 
-  // init user data
-  ACE_OS::memset(&myUserData,
-                 0,
-                 sizeof(ConfigType));
+//   // init user data
+//   ACE_OS::memset(&myUserData,
+//                  0,
+//                  sizeof(ConfigType));
 
   if (myManager)
   {

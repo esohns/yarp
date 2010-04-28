@@ -97,6 +97,17 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
   // sanity check(s)
   ACE_ASSERT(message_inout->getData());
 
+//   // debug info
+//   try
+//   {
+//     message_inout->getData()->dump_state();
+//   }
+//   catch (...)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("caught exception in RPG_Common_IDumpState::dump_state(), continuing\n")));
+//   }
+
   switch (message_inout->getData()->command.discriminator)
   {
     case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
@@ -188,6 +199,15 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         {
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("[%u]: received \"PONG\": \"%s\"\n"),
+                     message_inout->getID(),
+                     message_inout->getData()->params.back().c_str()));
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::ERROR:
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("[%u]: received \"ERROR\": \"%s\"\n"),
                      message_inout->getID(),
                      message_inout->getData()->params.back().c_str()));
 

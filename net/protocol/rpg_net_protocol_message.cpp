@@ -20,6 +20,8 @@
 
 #include "rpg_net_protocol_message.h"
 
+#include "rpg_net_protocol_tools.h"
+
 #include <ace/Message_Block.h>
 #include <ace/Malloc_Base.h>
 
@@ -53,6 +55,33 @@ RPG_Net_Protocol_Message::~RPG_Net_Protocol_Message()
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::~RPG_Net_Protocol_Message"));
 
   // *NOTE*: will be called just BEFORE we're passed back to the allocator
+}
+
+const int
+RPG_Net_Protocol_Message::getCommand() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::getCommand"));
+
+  // sanity check(s)
+  ACE_ASSERT(getData());
+
+  switch (getData()->command.discriminator)
+  {
+    case RPG_Net_Protocol_IRCMessage::Command::STRING:
+      return RPG_Net_Protocol_Tools::IRCCommandString2Type(*getData()->command.string);
+    case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
+      return getData()->command.numeric;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid command type (was: %d), aborting\n"),
+                 getData()->command.discriminator));
+
+      break;
+    }
+  } // end SWITCH
+
+  return RPG_Net_Protocol_IRCMessage::RPG_NET_PROTOCOL_COMMANDTYPE_INVALID;
 }
 
 void
@@ -208,6 +237,12 @@ RPG_Net_Protocol_Message::messageType2String(const RPG_Net_Protocol_CommandType_
     case RPG_Net_Protocol_IRCMessage::PONG:
     {
       result = ACE_TEXT("PONG");
+
+      break;
+    }
+    case RPG_Net_Protocol_IRCMessage::ERROR:
+    {
+      result = ACE_TEXT("ERROR");
 
       break;
     }

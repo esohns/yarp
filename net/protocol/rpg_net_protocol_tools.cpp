@@ -92,6 +92,8 @@ RPG_Net_Protocol_Tools::IRCCommandString2Type(const std::string& commandString_i
     return RPG_Net_Protocol_IRCMessage::PING;
   else if (commandString_in == ACE_TEXT("PONG"))
     return RPG_Net_Protocol_IRCMessage::PONG;
+  else if (commandString_in == ACE_TEXT("ERROR"))
+    return RPG_Net_Protocol_IRCMessage::ERROR;
   else
   {
     ACE_DEBUG((LM_ERROR,

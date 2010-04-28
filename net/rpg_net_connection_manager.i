@@ -34,10 +34,10 @@ RPG_Net_Connection_Manager<ConfigType,
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::RPG_Net_Connection_Manager"));
 
-  // init user data
-  ACE_OS::memset(&myUserData,
-                 0,
-                 sizeof(ConfigType));
+//   // init user data
+//   ACE_OS::memset(&myUserData,
+//                  0,
+//                  sizeof(ConfigType));
 }
 
 template <typename ConfigType,

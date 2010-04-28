@@ -29,6 +29,8 @@
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
 
+#include <string>
+
 // forward declaration(s)
 class Stream_IAllocator;
 template <typename ConfigType,
@@ -57,18 +59,49 @@ struct RPG_Net_Protocol_RuntimeStatistic
   };
 };
 
+struct RPG_Net_Protocol_IRCConfig
+{
+  // *NOTE*: corresponds to the [client] section of .ini file
+  std::string password;
+  std::string nick;
+  struct User
+  {
+    std::string username;
+    struct Hostname
+    {
+      union
+      {
+        std::string* string;
+        unsigned char mode;
+      };
+      enum discriminator_t
+      {
+        STRING = 0,
+        BITMASK,
+        INVALID
+      };
+      discriminator_t discriminator;
+    } hostname;
+    std::string servername;
+    std::string realname;
+  } user;
+  std::string channel;
+};
+
 struct RPG_Net_Protocol_ConfigPOD
 {
   // ************ connection config data ************
-  unsigned long                     clientPingInterval; // used by the server...
   int                               socketBufferSize;
   Stream_IAllocator*                messageAllocator;
   unsigned long                     defaultBufferSize;
-  // ************ stream config data ************
+  // ************ protocol config data **************
+  unsigned long                     clientPingInterval; // used by the server...
+  RPG_Net_Protocol_IRCConfig        IRCConfig;
+  // ************ stream config data ****************
   bool                              debugParser;
   unsigned long                     sessionID; // (== socket handle !)
   unsigned long                     statisticsReportingInterval;
-  // ************ runtime data ************
+  // ************ runtime statistics data ***********
   RPG_Net_Protocol_RuntimeStatistic currentStatistics;
   ACE_Time_Value                    lastCollectionTimestamp;
 };

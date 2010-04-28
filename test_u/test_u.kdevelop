@@ -44,6 +44,7 @@
         <chance_rangeToRoll>-p -r 5-12 -t</chance_rangeToRoll>
         <net_client>-h localhost -i 1 -s 10101 -t -x</net_client>
         <net_server>-i 5 -k 60 -p 10101 -t</net_server>
+        <IRC_client>-h localhost -p 6667 -t</IRC_client>
       </runarguments>
       <debugarguments>
         <character_generator>-i ../../item/rpg_item.xml -m ../../magic/rpg_magic.xml -t</character_generator>
@@ -55,6 +56,7 @@
         <chance_rangeToRoll>-p -r 5-12 -t</chance_rangeToRoll>
         <net_client>-s -t</net_client>
         <net_server>-i 1 -k 60 -p 10101 -t</net_server>
+        <IRC_client>-h localhost -p 6667 -t</IRC_client>
       </debugarguments>
       <cwd>
         <character_generator>/home/unfv/Projects/RPG/test_u/debug/./</character_generator>
@@ -66,6 +68,7 @@
         <chance_rangeToRoll>/home/unfv/Projects/RPG/test_u/debug/./combat</chance_rangeToRoll>
         <net_client>/home/unfv/Projects/RPG/test_u/debug/./</net_client>
         <net_server>/home/unfv/Projects/RPG/test_u/debug/./</net_server>
+        <IRC_client>/home/unfv/Projects/RPG/test_u/debug/./net/protocol</IRC_client>
       </cwd>
     </run>
     <configurations>

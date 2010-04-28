@@ -39,6 +39,7 @@ class RPG_Net_Protocol_IRCMessage
       NOTICE = 0,
       PING,
       PONG,
+      ERROR,
       //
       RPG_NET_PROTOCOL_COMMANDTYPE_MAX,
       RPG_NET_PROTOCOL_COMMANDTYPE_INVALID

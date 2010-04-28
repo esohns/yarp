@@ -48,6 +48,8 @@ class RPG_Net_Protocol_Message
  public:
   virtual ~RPG_Net_Protocol_Message();
 
+  virtual const int getCommand() const; // return value: (protocol) message type
+
   // implement RPG_Net_IDumpState
   virtual void dump_state() const;
 

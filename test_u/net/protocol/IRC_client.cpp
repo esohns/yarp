@@ -27,6 +27,7 @@
 #include "IRC_client_signalhandler.h"
 
 #include <rpg_net_protocol_defines.h>
+#include <rpg_net_protocol_common.h>
 #include <rpg_net_protocol_messageallocator.h>
 
 #include <rpg_net_defines.h>
@@ -36,6 +37,7 @@
 
 #include <stream_allocatorheap.h>
 
+#include <ace/ACE.h>
 #include <ace/Version.h>
 #include <ace/Get_Opt.h>
 #include <ace/Profile_Timer.h>
@@ -46,16 +48,20 @@
 #include <ace/Connector.h>
 #include <ace/SOCK_Connector.h>
 #include <ace/High_Res_Timer.h>
+#include <ace/Configuration.h>
+#include <ace/Configuration_Import_Export.h>
 
 #include <string>
 #include <iostream>
 #include <sstream>
 #include <list>
 
-#define IRC_CLIENT_DEF_SERVER_HOSTNAME ACE_LOCALHOST
-#define IRC_CLIENT_DEF_SERVER_PORT     6667
-#define IRC_CLIENT_DEF_CLIENT_USES_TP  false
-#define IRC_CLIENT_DEF_NUM_TP_THREADS  5
+#define IRC_CLIENT_CNF_CLIENT_SECTION_HEADER     ACE_TEXT("client")
+#define IRC_CLIENT_CNF_CONNECTION_SECTION_HEADER ACE_TEXT("connection")
+#define IRC_CLIENT_DEF_SERVER_HOSTNAME           ACE_LOCALHOST
+#define IRC_CLIENT_DEF_SERVER_PORT               6667
+#define IRC_CLIENT_DEF_CLIENT_USES_TP            false
+#define IRC_CLIENT_DEF_NUM_TP_THREADS            5
 
 void
 print_usage(const std::string& programName_in)
@@ -67,10 +73,9 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
+  std::cout << ACE_TEXT("-c [FILE]   : config file") << std::endl;
   std::cout << ACE_TEXT("-d          : debug parser") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-h [STRING] : server (host)name [\"") << IRC_CLIENT_DEF_SERVER_HOSTNAME << "\"]" << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-p [VALUE]  : server port [") << IRC_CLIENT_DEF_SERVER_PORT << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << IRC_CLIENT_DEF_CLIENT_USES_TP  << ACE_TEXT(" : ") << IRC_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
@@ -79,10 +84,9 @@ print_usage(const std::string& programName_in)
 const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
+                  std::string& configFile_out,
                   bool& debugParser_out,
-                  std::string& serverHostname_out,
                   bool& logToFile_out,
-                  unsigned short& serverPortNumber_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out,
                   bool& useThreadPool_out,
@@ -91,18 +95,17 @@ process_arguments(const int argc_in,
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-  debugParser_out = false;
-  serverHostname_out = IRC_CLIENT_DEF_SERVER_HOSTNAME;
-  logToFile_out = false;
-  serverPortNumber_out = IRC_CLIENT_DEF_SERVER_PORT;
-  traceInformation_out = false;
-  printVersionAndExit_out = false;
-  useThreadPool_out = IRC_CLIENT_DEF_CLIENT_USES_TP;
+  configFile_out           = ACE_TEXT(""); // cannot assume this !
+  debugParser_out          = false;
+  logToFile_out            = false;
+  traceInformation_out     = false;
+  printVersionAndExit_out  = false;
+  useThreadPool_out        = IRC_CLIENT_DEF_CLIENT_USES_TP;
   numThreadPoolThreads_out = IRC_CLIENT_DEF_NUM_TP_THREADS;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("dh:lp:tvx::"),
+                             ACE_TEXT("c:dltvx::"),
                              1, // skip command name
                              1, // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
@@ -114,30 +117,21 @@ process_arguments(const int argc_in,
   {
     switch (option)
     {
+      case 'c':
+      {
+        configFile_out = argumentParser.opt_arg();
+
+        break;
+      }
       case 'd':
       {
         debugParser_out = true;
 
         break;
       }
-      case 'h':
-      {
-        serverHostname_out = argumentParser.opt_arg();
-
-        break;
-      }
       case 'l':
       {
         logToFile_out = true;
-
-        break;
-      }
-      case 'p':
-      {
-        converter.clear();
-        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << argumentParser.opt_arg();
-        converter >> serverPortNumber_out;
 
         break;
       }
@@ -367,7 +361,7 @@ tp_worker_func(void* args_in)
 }
 
 void
-do_work(const bool& debugParser_in,
+do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
         const std::string& serverHostname_in,
         const unsigned short& serverPortNumber_in,
         const bool& useThreadPool_in,
@@ -412,26 +406,11 @@ do_work(const bool& debugParser_in,
     return;
   } // end IF
 
-  // step2a: init stream configuration object
-  Stream_AllocatorHeap heapAllocator;
-  RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
-                                                     &heapAllocator);
-  RPG_Net_Protocol_ConfigPOD config;
-  ACE_OS::memset(&config,
-                  0,
-                  sizeof(RPG_Net_Protocol_ConfigPOD));
-  config.debugParser = debugParser_in;
-  config.clientPingInterval = 0; // servers do this...
-  config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
-  config.messageAllocator = &messageAllocator;
-  config.defaultBufferSize = RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE;
-  config.statisticsReportingInterval = 0; // == off
-
-  // step2b: init connection manager
+  // step2a: init connection manager
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max(),
-                                                                 config); // will be passed to all handlers
+                                                                 config_in); // will be passed to all handlers
 
-  // step2c: (try to) connect to the server
+  // step2b: (try to) connect to the server
   IRC_Client_SocketHandler* handler = NULL;
   ACE_INET_Addr remote_address(serverPortNumber_in, // remote SAP
                                serverHostname_in.c_str());
@@ -550,6 +529,187 @@ do_work(const bool& debugParser_in,
 }
 
 void
+do_parseConfigFile(const std::string& configFilename_in,
+                   RPG_Net_Protocol_IRCConfig& IRCConfig_out,
+                   std::string& serverHostname_out,
+                   unsigned short& serverPortNumber_out)
+{
+  ACE_TRACE(ACE_TEXT("::do_parseConfigFile"));
+
+  // init return value(s)
+  if (IRCConfig_out.user.hostname.discriminator == RPG_Net_Protocol_IRCConfig::User::Hostname::STRING)
+  {
+    // clean up
+    delete IRCConfig_out.user.hostname.string;
+    IRCConfig_out.user.hostname.discriminator = RPG_Net_Protocol_IRCConfig::User::Hostname::INVALID;
+  } // end IF
+  IRCConfig_out.user.hostname.discriminator = RPG_Net_Protocol_IRCConfig::User::Hostname::INVALID;
+
+  IRCConfig_out.password                    = RPG_NET_PROTOCOL_DEF_IRC_PASSWORD;
+  IRCConfig_out.nick                        = RPG_NET_PROTOCOL_DEF_IRC_NICK;
+  IRCConfig_out.user.username               = RPG_NET_PROTOCOL_DEF_IRC_USER;
+  IRCConfig_out.user.hostname.mode          = RPG_NET_PROTOCOL_DEF_IRC_MODE;
+  IRCConfig_out.user.hostname.discriminator = RPG_Net_Protocol_IRCConfig::User::Hostname::BITMASK;
+  IRCConfig_out.user.servername             = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
+  IRCConfig_out.user.realname               = RPG_NET_PROTOCOL_DEF_IRC_REALNAME;
+  IRCConfig_out.channel                     = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
+
+  serverHostname_out                        = IRC_CLIENT_DEF_SERVER_HOSTNAME;
+  serverPortNumber_out                      = IRC_CLIENT_DEF_SERVER_PORT;
+
+  ACE_Configuration_Heap config_heap;
+  if (config_heap.open())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("ACE_Configuration_Heap::open failed, returning\n")));
+
+    return;
+  } // end IF
+
+  ACE_Ini_ImpExp import(config_heap);
+  if (import.import_config(configFilename_in.c_str()))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("ACE_Ini_ImpExp::import_config(\"%s\") failed, returning\n"),
+               configFilename_in.c_str()));
+
+    return;
+  } // end IF
+
+  // find/open "client" section...
+  ACE_Configuration_Section_Key section_key;
+  if (config_heap.open_section(config_heap.root_section(),
+                               ACE_TEXT(IRC_CLIENT_CNF_CLIENT_SECTION_HEADER),
+                               0, // MUST exist !
+                               section_key) != 0)
+  {
+    ACE_ERROR((LM_ERROR,
+               ACE_TEXT("failed to ACE_Configuration_Heap::open_section(%s), returning\n"),
+               ACE_TEXT(IRC_CLIENT_CNF_CLIENT_SECTION_HEADER)));
+
+    return;
+  } // end IF
+
+  // import values...
+  int val_index = 0;
+  ACE_TString val_name, val_value;
+  ACE_Configuration::VALUETYPE val_type;
+  while (config_heap.enumerate_values(section_key,
+                                      val_index,
+                                      val_name,
+                                      val_type) == 0)
+  {
+    if (config_heap.get_string_value(section_key,
+                                     val_name.c_str(),
+                                     val_value))
+    {
+      ACE_ERROR((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Configuration_Heap::get_string_value(%s), returning\n"),
+                 val_name.c_str()));
+
+      return;
+    } // end IF
+
+//     // debug info
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("enumerated %s, type %d\n"),
+//                val_name.c_str(),
+//                val_type));
+
+    // *TODO*: move these strings...
+    if (val_name == ACE_TEXT("password"))
+    {
+      IRCConfig_out.password = val_value.c_str();
+    }
+    else if (val_name == ACE_TEXT("nick"))
+    {
+      IRCConfig_out.nick = val_value.c_str();
+    }
+    else if (val_name == ACE_TEXT("user"))
+    {
+      IRCConfig_out.user.username = val_value.c_str();
+    }
+    else if (val_name == ACE_TEXT("realname"))
+    {
+      IRCConfig_out.user.realname = val_value.c_str();
+    }
+    else if (val_name == ACE_TEXT("channel"))
+    {
+      IRCConfig_out.channel = val_value.c_str();
+    }
+    else
+    {
+      ACE_ERROR((LM_ERROR,
+                 ACE_TEXT("unexpected key \"%s\", continuing\n"),
+                 val_name.c_str()));
+    } // end ELSE
+
+    ++val_index;
+  } // end WHILE
+
+  // find/open "connection" section...
+  if (config_heap.open_section(config_heap.root_section(),
+                               ACE_TEXT(IRC_CLIENT_CNF_CONNECTION_SECTION_HEADER),
+                               0, // MUST exist !
+                               section_key) != 0)
+  {
+    ACE_ERROR((LM_ERROR,
+               ACE_TEXT("failed to ACE_Configuration_Heap::open_section(%s), returning\n"),
+               ACE_TEXT(IRC_CLIENT_CNF_CONNECTION_SECTION_HEADER)));
+
+    return;
+  } // end IF
+
+  // import values...
+  val_index = 0;
+  while (config_heap.enumerate_values(section_key,
+                                      val_index,
+                                      val_name,
+                                      val_type) == 0)
+  {
+    if (config_heap.get_string_value(section_key,
+                                     val_name.c_str(),
+                                     val_value))
+    {
+      ACE_ERROR((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Configuration_Heap::get_string_value(%s), returning\n"),
+                 val_name.c_str()));
+
+      return;
+    } // end IF
+
+//     // debug info
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("enumerated %s, type %d\n"),
+//                val_name.c_str(),
+//                val_type));
+
+    // *TODO*: move these strings...
+    if (val_name == ACE_TEXT("server"))
+    {
+      serverHostname_out = val_value.c_str();
+    }
+    else if (val_name == ACE_TEXT("port"))
+    {
+      serverPortNumber_out = ::atoi(val_value.c_str());
+    }
+    else
+    {
+      ACE_ERROR((LM_ERROR,
+                 ACE_TEXT("unexpected key \"%s\", continuing\n"),
+                 val_name.c_str()));
+    } // end ELSE
+
+    ++val_index;
+  } // end WHILE
+
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("imported \"%s\"...\n"),
+//              configFilename_in.c_str()));
+}
+
+void
 do_printVersion(const std::string& programName_in)
 {
   ACE_TRACE(ACE_TEXT("::do_printVersion"));
@@ -594,23 +754,21 @@ ACE_TMAIN(int argc,
   } // end IF
 #endif
 
-  // step1a set defaults
+  // step1 init/validate configuration
+
+  // step1a: process commandline arguments
+  std::string configFile             = ACE_TEXT(""); // cannot assume this !
   bool debugParser                   = false;
-  std::string serverHostname         = IRC_CLIENT_DEF_SERVER_HOSTNAME;
   bool logToFile                     = false;
-  unsigned short serverPortNumber    = IRC_CLIENT_DEF_SERVER_PORT;
   bool traceInformation              = false;
   bool printVersionAndExit           = false;
   bool useThreadPool                 = IRC_CLIENT_DEF_CLIENT_USES_TP;
   unsigned long numThreadPoolThreads = IRC_CLIENT_DEF_NUM_TP_THREADS;
-
-  // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
+                          configFile,
                           debugParser,
-                          serverHostname,
                           logToFile,
-                          serverPortNumber,
                           traceInformation,
                           printVersionAndExit,
                           useThreadPool,
@@ -622,20 +780,15 @@ ACE_TMAIN(int argc,
     return EXIT_FAILURE;
   } // end IF
 
-  // step1c: validate arguments
-  if (serverPortNumber <= 1023)
+  // step1b: handle specific program modes
+  if (printVersionAndExit)
   {
-    ACE_DEBUG((LM_WARNING,
-               ACE_TEXT("using (privileged) port #: %d...\n"),
-               serverPortNumber));
+    do_printVersion(std::string(ACE::basename(argv[0])));
 
-//     // make 'em learn...
-//     print_usage(std::string(ACE::basename(argv[0])));
-    //
-//     return EXIT_FAILURE;
+    return EXIT_SUCCESS;
   } // end IF
 
-  // step1d: set correct trace level
+  // step1c: set correct trace level
   //ACE_Trace::start_tracing();
   if (!traceInformation)
   {
@@ -661,18 +814,45 @@ ACE_TMAIN(int argc,
     //ACE_LOG_MSG->clr_flags(ACE_Log_Msg::VERBOSE_LITE);
   } // end IF
 
-  // step1e: handle specific program modes
-  if (printVersionAndExit)
-  {
-    do_printVersion(std::string(ACE::basename(argv[0])));
+  // step1d: init configuration object
+  Stream_AllocatorHeap heapAllocator;
+  RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
+                                                     &heapAllocator);
+  RPG_Net_Protocol_ConfigPOD config;
+  // step1da: populate config object with default/collected data
+  // ************ connection config data ************
+  config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
+  config.messageAllocator = &messageAllocator;
+  config.defaultBufferSize = RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE;
+  // ************ protocol config data **************
+  config.clientPingInterval = 0; // servers do this...
+  config.IRCConfig.password = RPG_NET_PROTOCOL_DEF_IRC_PASSWORD;
+  config.IRCConfig.nick = RPG_NET_PROTOCOL_DEF_IRC_NICK;
+  config.IRCConfig.user.username = RPG_NET_PROTOCOL_DEF_IRC_USER;
+  config.IRCConfig.user.hostname.mode = RPG_NET_PROTOCOL_DEF_IRC_MODE;
+  config.IRCConfig.user.hostname.discriminator = RPG_Net_Protocol_IRCConfig::User::Hostname::BITMASK;
+  config.IRCConfig.user.servername = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
+  config.IRCConfig.user.realname = RPG_NET_PROTOCOL_DEF_IRC_REALNAME;
+  config.IRCConfig.channel = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
+  // ************ stream config data ****************
+  config.debugParser = debugParser;
+  // *WARNING*: set at runtime, by the appropriate connection handler
+//   unsigned long                     sessionID; // (== socket handle !)
+  config.statisticsReportingInterval = 0; // == off
 
-    return EXIT_SUCCESS;
-  } // end IF
+  // step1db: parse config file (if any)
+  std::string serverHostname      = IRC_CLIENT_DEF_SERVER_HOSTNAME;
+  unsigned short serverPortNumber = IRC_CLIENT_DEF_SERVER_PORT;
+  if (!configFile.empty())
+    do_parseConfigFile(configFile,
+                       config.IRCConfig,
+                       serverHostname,
+                       serverPortNumber);
 
   ACE_High_Res_Timer timer;
   timer.start();
   // step2: do actual work
-  do_work(debugParser,
+  do_work(config,
           serverHostname,
           serverPortNumber,
           useThreadPool,
