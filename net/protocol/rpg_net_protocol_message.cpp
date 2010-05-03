@@ -222,6 +222,42 @@ RPG_Net_Protocol_Message::messageType2String(const RPG_Net_Protocol_CommandType_
 
   switch (messageType_in)
   {
+    case RPG_Net_Protocol_IRCMessage::PASS:
+    {
+      result = ACE_TEXT("PASS");
+
+      break;
+    }
+    case RPG_Net_Protocol_IRCMessage::NICK:
+    {
+      result = ACE_TEXT("NICK");
+
+      break;
+    }
+    case RPG_Net_Protocol_IRCMessage::USER:
+    {
+      result = ACE_TEXT("USER");
+
+      break;
+    }
+    case RPG_Net_Protocol_IRCMessage::QUIT:
+    {
+      result = ACE_TEXT("QUIT");
+
+      break;
+    }
+    case RPG_Net_Protocol_IRCMessage::JOIN:
+    {
+      result = ACE_TEXT("JOIN");
+
+      break;
+    }
+    case RPG_Net_Protocol_IRCMessage::PRIVMSG:
+    {
+      result = ACE_TEXT("PRIVMSG");
+
+      break;
+    }
     case RPG_Net_Protocol_IRCMessage::NOTICE:
     {
       result = ACE_TEXT("NOTICE");

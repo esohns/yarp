@@ -25,7 +25,7 @@
 #include "rpg_net_protocol_module_IRCsplitter.h"
 #include "rpg_net_protocol_module_IRCstreamer.h"
 #include "rpg_net_protocol_module_IRCparser.h"
-#include "rpg_net_protocol_module_IRChandler.h"
+// #include "rpg_net_protocol_module_IRChandler.h"
 
 #include <rpg_net_module_runtimestatistic.h>
 
@@ -81,7 +81,7 @@ class RPG_Net_Protocol_Stream
   // modules
   RPG_Net_Protocol_Module_IRCMarshal_Module myIRCMarshal;
   RPG_Net_Protocol_Module_IRCParser_Module  myIRCParser;
-  RPG_Net_Protocol_Module_IRCHandler_Module myIRCHandler;
+//   RPG_Net_Protocol_Module_IRCHandler_Module myIRCHandler;
   RPG_Net_Module_RuntimeStatistic_Module    myRuntimeStatistic;
 };
 

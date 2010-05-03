@@ -580,6 +580,9 @@ do_work(const unsigned long& clientPingInterval_in,
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
   config.defaultBufferSize = RPG_NET_DEF_NETWORK_BUFFER_SIZE;
+  config.module = NULL; // just use the default stream...
+  // *WARNING*: set at runtime, by the appropriate connection handler
+  config.sessionID = 0; // (== socket handle !)
   config.statisticsReportingInterval = 0; // don't do it per stream (see below)...
   // step2b: init connection manager
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS,

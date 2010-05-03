@@ -31,8 +31,8 @@ RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream()
                 NULL),
    myIRCParser(std::string("IRCParser"),
                NULL),
-   myIRCHandler(std::string("IRCHandler"),
-                NULL),
+//    myIRCHandler(std::string("IRCHandler"),
+//                 NULL),
    myRuntimeStatistic(std::string("RuntimeStatistic"),
                       NULL)
 {
@@ -45,7 +45,7 @@ RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream()
   // failed...)
   myAvailableModules.insert_tail(&myIRCMarshal);
   myAvailableModules.insert_tail(&myIRCParser);
-  myAvailableModules.insert_tail(&myIRCHandler);
+//   myAvailableModules.insert_tail(&myIRCHandler);
   myAvailableModules.insert_tail(&myRuntimeStatistic);
 
   // fix ACE bug: modules should initialize their "next" member to NULL !
@@ -110,38 +110,38 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
     return false;
   } // end IF
 
-  // ******************* IRC Handler ************************
-  RPG_Net_Protocol_Module_IRCHandler* IRCHandler_impl = NULL;
-  IRCHandler_impl = ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler*,
-                                     myIRCHandler.writer());
-  if (!IRCHandler_impl)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler) failed, aborting\n")));
-
-    return false;
-  } // end IF
-  if (!IRCHandler_impl->init(config_in.messageAllocator,
-                             (config_in.clientPingInterval ? false // servers shouldn't receive "pings" in the first place
-                                                           : RPG_NET_DEF_CLIENT_PING_PONG), // auto-answer "ping" as a client ?...
-                             (config_in.clientPingInterval == 0))) // clients print ('.') dots for received "pings"...
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
-               myIRCHandler.name()));
-
-    return false;
-  } // end IF
-
-  // enqueue the module...
-  if (push(&myIRCHandler))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
-               myIRCHandler.name()));
-
-    return false;
-  } // end IF
+//   // ******************* IRC Handler ************************
+//   RPG_Net_Protocol_Module_IRCHandler* IRCHandler_impl = NULL;
+//   IRCHandler_impl = ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler*,
+//                                      myIRCHandler.writer());
+//   if (!IRCHandler_impl)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler) failed, aborting\n")));
+//
+//     return false;
+//   } // end IF
+//   if (!IRCHandler_impl->init(config_in.messageAllocator,
+//                              (config_in.clientPingInterval ? false // servers shouldn't receive "pings" in the first place
+//                                                            : RPG_NET_DEF_CLIENT_PING_PONG), // auto-answer "ping" as a client ?...
+//                              (config_in.clientPingInterval == 0))) // clients print ('.') dots for received "pings"...
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
+//                myIRCHandler.name()));
+//
+//     return false;
+//   } // end IF
+//
+//   // enqueue the module...
+//   if (push(&myIRCHandler))
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
+//                myIRCHandler.name()));
+//
+//     return false;
+//   } // end IF
 
   // ******************* IRC Parser ************************
   RPG_Net_Protocol_Module_IRCParser* IRCParser_impl = NULL;

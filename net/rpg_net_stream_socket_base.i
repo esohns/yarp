@@ -96,6 +96,17 @@ RPG_Net_StreamSocketBase<ConfigType,
     // reactor will invoke close() --> handle_close()
     return -1;
   } // end IF
+  if (inherited::myUserData.module)
+  {
+    if (myStream.push(inherited::myUserData.module))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
+                 inherited::myUserData.module->name()));
+
+      return -1;
+    } // end IF
+  } // end IF
   myStream.start();
   if (!myStream.isRunning())
   {

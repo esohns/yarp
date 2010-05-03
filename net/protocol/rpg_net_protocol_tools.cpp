@@ -86,7 +86,19 @@ RPG_Net_Protocol_Tools::IRCCommandString2Type(const std::string& commandString_i
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCCommandString2Type"));
 
-  if ((commandString_in) == ACE_TEXT("NOTICE"))
+  if ((commandString_in) == ACE_TEXT("PASS"))
+    return RPG_Net_Protocol_IRCMessage::PASS;
+  else if ((commandString_in) == ACE_TEXT("NICK"))
+    return RPG_Net_Protocol_IRCMessage::NICK;
+  else if ((commandString_in) == ACE_TEXT("USER"))
+    return RPG_Net_Protocol_IRCMessage::USER;
+  else if ((commandString_in) == ACE_TEXT("QUIT"))
+    return RPG_Net_Protocol_IRCMessage::QUIT;
+  else if ((commandString_in) == ACE_TEXT("JOIN"))
+    return RPG_Net_Protocol_IRCMessage::JOIN;
+  else if ((commandString_in) == ACE_TEXT("PRIVMSG"))
+    return RPG_Net_Protocol_IRCMessage::PRIVMSG;
+  else if ((commandString_in) == ACE_TEXT("NOTICE"))
     return RPG_Net_Protocol_IRCMessage::NOTICE;
   else if (commandString_in == ACE_TEXT("PING"))
     return RPG_Net_Protocol_IRCMessage::PING;

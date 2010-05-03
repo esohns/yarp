@@ -36,7 +36,13 @@ class RPG_Net_Protocol_IRCMessage
   public:
     enum CommandType
     {
-      NOTICE = 0,
+      PASS = 0,
+      NICK,
+      USER,
+      QUIT,
+      JOIN,
+      PRIVMSG,
+      NOTICE,
       PING,
       PONG,
       ERROR,

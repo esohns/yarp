@@ -1,10 +1,28 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="1" >
+ <DocsAndViews NumberOfDocuments="7" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/protocol/IRC_client.cpp" >
-   <View0 Encoding="UTF-8" line="615" Type="Source" />
+   <View0 Encoding="UTF-8" line="500" Type="Source" />
   </Doc0>
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/net_client.cpp" >
+   <View0 Encoding="" line="439" Type="Source" />
+  </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/net_server.cpp" >
+   <View0 Encoding="" line="584" Type="Source" />
+  </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:///usr/local/include/rpg_net_protocol_module_IRChandler.h" >
+   <View0 Encoding="" line="27" Type="Source" />
+  </Doc3>
+  <Doc4 NumberOfViews="1" URL="file:///usr/local/include/rpg_net_protocol_iIRCControl.h" >
+   <View0 Encoding="" line="25" Type="Source" />
+  </Doc4>
+  <Doc5 NumberOfViews="1" URL="file:///usr/local/src/ACE_wrappers/ace/QtReactor/QtReactor.h" >
+   <View0 Encoding="UTF-8" line="27" Type="Source" />
+  </Doc5>
+  <Doc6 NumberOfViews="1" URL="file:///usr/local/src/ACE_wrappers/ace/QtReactor/QtReactor.cpp" >
+   <View0 Encoding="" line="0" Type="Source" />
+  </Doc6>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
@@ -35,11 +53,7 @@
    <AStyle IndentPreprocessors="0" FillCount="2" PadParenthesesOut="0" IndentNamespaces="0" IndentLabels="1" Fill="Spaces" MaxStatement="40" Brackets="Break" MinConditional="-1" IndentBrackets="0" PadParenthesesUn="1" BlockBreak="0" KeepStatements="0" KeepBlocks="0" BlockIfElse="0" IndentSwitches="1" PadOperators="1" FStyle="UserDefined" IndentCases="0" FillEmptyLines="0" BracketsCloseHeaders="0" BlockBreakAll="0" PadParenthesesIn="0" IndentClasses="1" IndentBlocks="0" FillForce="1" />
   </kdevastyle>
   <kdevbookmarks>
-   <bookmarks>
-    <bookmark url="/home/unfv/Projects/RPG/test_u/character/character_generator.cpp" >
-     <mark line="796" />
-    </bookmark>
-   </bookmarks>
+   <bookmarks/>
   </kdevbookmarks>
   <kdevsubversion>
    <subversion base="" />

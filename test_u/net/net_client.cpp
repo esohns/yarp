@@ -437,6 +437,9 @@ do_work(const std::string& serverHostname_in,
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
   config.defaultBufferSize = RPG_NET_DEF_NETWORK_BUFFER_SIZE;
+  config.module = NULL; // just use the default stream...
+  // *WARNING*: set at runtime, by the appropriate connection handler
+  config.sessionID = 0; // (== socket handle !)
   config.statisticsReportingInterval = 0; // == off
 
   // step2b: init connection manager

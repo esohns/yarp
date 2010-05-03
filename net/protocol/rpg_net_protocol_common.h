@@ -33,6 +33,7 @@
 
 // forward declaration(s)
 class Stream_IAllocator;
+class Stream_Module;
 template <typename ConfigType,
           typename StatisticsContainerType> class RPG_Net_Connection_Manager;
 class RPG_Net_Protocol_Module_IRCSplitter;
@@ -59,7 +60,7 @@ struct RPG_Net_Protocol_RuntimeStatistic
   };
 };
 
-struct RPG_Net_Protocol_IRCConfig
+struct RPG_Net_Protocol_IRCLoginOptions
 {
   // *NOTE*: corresponds to the [client] section of .ini file
   std::string password;
@@ -96,8 +97,9 @@ struct RPG_Net_Protocol_ConfigPOD
   unsigned long                     defaultBufferSize;
   // ************ protocol config data **************
   unsigned long                     clientPingInterval; // used by the server...
-  RPG_Net_Protocol_IRCConfig        IRCConfig;
+  RPG_Net_Protocol_IRCLoginOptions  loginOptions;
   // ************ stream config data ****************
+  Stream_Module*                    module;
   bool                              debugParser;
   unsigned long                     sessionID; // (== socket handle !)
   unsigned long                     statisticsReportingInterval;

@@ -29,6 +29,7 @@
 #include <rpg_net_protocol_defines.h>
 #include <rpg_net_protocol_common.h>
 #include <rpg_net_protocol_messageallocator.h>
+#include <rpg_net_protocol_module_IRChandler.h>
 
 #include <rpg_net_defines.h>
 #include <rpg_net_connection_manager.h>
@@ -530,32 +531,32 @@ do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
 
 void
 do_parseConfigFile(const std::string& configFilename_in,
-                   RPG_Net_Protocol_IRCConfig& IRCConfig_out,
+                   RPG_Net_Protocol_IRCLoginOptions& loginOptions_out,
                    std::string& serverHostname_out,
                    unsigned short& serverPortNumber_out)
 {
   ACE_TRACE(ACE_TEXT("::do_parseConfigFile"));
 
   // init return value(s)
-  if (IRCConfig_out.user.hostname.discriminator == RPG_Net_Protocol_IRCConfig::User::Hostname::STRING)
+  if (loginOptions_out.user.hostname.discriminator == RPG_Net_Protocol_IRCLoginOptions::User::Hostname::STRING)
   {
     // clean up
-    delete IRCConfig_out.user.hostname.string;
-    IRCConfig_out.user.hostname.discriminator = RPG_Net_Protocol_IRCConfig::User::Hostname::INVALID;
+    delete loginOptions_out.user.hostname.string;
+    loginOptions_out.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::INVALID;
   } // end IF
-  IRCConfig_out.user.hostname.discriminator = RPG_Net_Protocol_IRCConfig::User::Hostname::INVALID;
+  loginOptions_out.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::INVALID;
 
-  IRCConfig_out.password                    = RPG_NET_PROTOCOL_DEF_IRC_PASSWORD;
-  IRCConfig_out.nick                        = RPG_NET_PROTOCOL_DEF_IRC_NICK;
-  IRCConfig_out.user.username               = RPG_NET_PROTOCOL_DEF_IRC_USER;
-  IRCConfig_out.user.hostname.mode          = RPG_NET_PROTOCOL_DEF_IRC_MODE;
-  IRCConfig_out.user.hostname.discriminator = RPG_Net_Protocol_IRCConfig::User::Hostname::BITMASK;
-  IRCConfig_out.user.servername             = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
-  IRCConfig_out.user.realname               = RPG_NET_PROTOCOL_DEF_IRC_REALNAME;
-  IRCConfig_out.channel                     = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
+  loginOptions_out.password                    = RPG_NET_PROTOCOL_DEF_IRC_PASSWORD;
+  loginOptions_out.nick                        = RPG_NET_PROTOCOL_DEF_IRC_NICK;
+  loginOptions_out.user.username               = RPG_NET_PROTOCOL_DEF_IRC_USER;
+  loginOptions_out.user.hostname.mode          = RPG_NET_PROTOCOL_DEF_IRC_MODE;
+  loginOptions_out.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::BITMASK;
+  loginOptions_out.user.servername             = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
+  loginOptions_out.user.realname               = RPG_NET_PROTOCOL_DEF_IRC_REALNAME;
+  loginOptions_out.channel                     = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
 
-  serverHostname_out                        = IRC_CLIENT_DEF_SERVER_HOSTNAME;
-  serverPortNumber_out                      = IRC_CLIENT_DEF_SERVER_PORT;
+  serverHostname_out                           = IRC_CLIENT_DEF_SERVER_HOSTNAME;
+  serverPortNumber_out                         = IRC_CLIENT_DEF_SERVER_PORT;
 
   ACE_Configuration_Heap config_heap;
   if (config_heap.open())
@@ -619,23 +620,23 @@ do_parseConfigFile(const std::string& configFilename_in,
     // *TODO*: move these strings...
     if (val_name == ACE_TEXT("password"))
     {
-      IRCConfig_out.password = val_value.c_str();
+      loginOptions_out.password = val_value.c_str();
     }
     else if (val_name == ACE_TEXT("nick"))
     {
-      IRCConfig_out.nick = val_value.c_str();
+      loginOptions_out.nick = val_value.c_str();
     }
     else if (val_name == ACE_TEXT("user"))
     {
-      IRCConfig_out.user.username = val_value.c_str();
+      loginOptions_out.user.username = val_value.c_str();
     }
     else if (val_name == ACE_TEXT("realname"))
     {
-      IRCConfig_out.user.realname = val_value.c_str();
+      loginOptions_out.user.realname = val_value.c_str();
     }
     else if (val_name == ACE_TEXT("channel"))
     {
-      IRCConfig_out.channel = val_value.c_str();
+      loginOptions_out.channel = val_value.c_str();
     }
     else
     {
@@ -818,6 +819,28 @@ ACE_TMAIN(int argc,
   Stream_AllocatorHeap heapAllocator;
   RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
                                                      &heapAllocator);
+  RPG_Net_Protocol_Module_IRCHandler_Module IRChandlerModule(std::string("IRCHandler"),
+                                                             NULL);
+  RPG_Net_Protocol_Module_IRCHandler* IRChandler_impl = NULL;
+  IRChandler_impl = ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler*,
+                                     IRChandlerModule.writer());
+  if (!IRChandler_impl)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler) failed, aborting\n")));
+
+    return EXIT_FAILURE;
+  } // end IF
+  if (!IRChandler_impl->init(&messageAllocator,
+                             RPG_NET_DEF_CLIENT_PING_PONG, // auto-answer "ping" as a client ?...
+                             true))                        // clients print ('.') dots for received "pings"...
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
+               IRChandlerModule.name()));
+
+    return EXIT_FAILURE;
+  } // end IF
   RPG_Net_Protocol_ConfigPOD config;
   // step1da: populate config object with default/collected data
   // ************ connection config data ************
@@ -826,18 +849,19 @@ ACE_TMAIN(int argc,
   config.defaultBufferSize = RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE;
   // ************ protocol config data **************
   config.clientPingInterval = 0; // servers do this...
-  config.IRCConfig.password = RPG_NET_PROTOCOL_DEF_IRC_PASSWORD;
-  config.IRCConfig.nick = RPG_NET_PROTOCOL_DEF_IRC_NICK;
-  config.IRCConfig.user.username = RPG_NET_PROTOCOL_DEF_IRC_USER;
-  config.IRCConfig.user.hostname.mode = RPG_NET_PROTOCOL_DEF_IRC_MODE;
-  config.IRCConfig.user.hostname.discriminator = RPG_Net_Protocol_IRCConfig::User::Hostname::BITMASK;
-  config.IRCConfig.user.servername = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
-  config.IRCConfig.user.realname = RPG_NET_PROTOCOL_DEF_IRC_REALNAME;
-  config.IRCConfig.channel = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
+  config.loginOptions.password = RPG_NET_PROTOCOL_DEF_IRC_PASSWORD;
+  config.loginOptions.nick = RPG_NET_PROTOCOL_DEF_IRC_NICK;
+  config.loginOptions.user.username = RPG_NET_PROTOCOL_DEF_IRC_USER;
+  config.loginOptions.user.hostname.mode = RPG_NET_PROTOCOL_DEF_IRC_MODE;
+  config.loginOptions.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::BITMASK;
+  config.loginOptions.user.servername = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
+  config.loginOptions.user.realname = RPG_NET_PROTOCOL_DEF_IRC_REALNAME;
+  config.loginOptions.channel = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
   // ************ stream config data ****************
   config.debugParser = debugParser;
+  config.module = &IRChandlerModule;
   // *WARNING*: set at runtime, by the appropriate connection handler
-//   unsigned long                     sessionID; // (== socket handle !)
+  config.sessionID = 0; // (== socket handle !)
   config.statisticsReportingInterval = 0; // == off
 
   // step1db: parse config file (if any)
@@ -845,7 +869,7 @@ ACE_TMAIN(int argc,
   unsigned short serverPortNumber = IRC_CLIENT_DEF_SERVER_PORT;
   if (!configFile.empty())
     do_parseConfigFile(configFile,
-                       config.IRCConfig,
+                       config.loginOptions,
                        serverHostname,
                        serverPortNumber);
 

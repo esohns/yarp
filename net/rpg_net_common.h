@@ -44,6 +44,7 @@
 
 // forward declaration(s)
 class Stream_IAllocator;
+class Stream_Module;
 template <typename ConfigType,
           typename StatisticsContainerType> class RPG_Net_Connection_Manager;
 class RPG_Net_SessionMessage;
@@ -76,7 +77,7 @@ struct RPG_Net_ConfigPOD
   Stream_IAllocator*       messageAllocator;
   unsigned long            defaultBufferSize;
   // ************ stream config data ************
-//   unsigned long connectionID;
+  Stream_Module*           module;
   unsigned long            sessionID; // (== socket handle !)
   unsigned long            statisticsReportingInterval;
   // ************ runtime data ************

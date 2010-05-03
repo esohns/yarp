@@ -4,7 +4,7 @@ ACLOCAL_AMFLAGS = `-I m4'
 
 INCLUDES = -I$(top_srcdir)/.
 
-bin_PROGRAMS = IRC_client
+bin_PROGRAMS = IRC_client IRC_client_gui
 
 IRC_client_SOURCES = IRC_client.cpp IRC_client_signalhandler.cpp \
 	IRC_client_signalhandler.h IRC_common.h
