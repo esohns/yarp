@@ -49,4 +49,5 @@ AC_CONFIG_FILES([Makefile
                  monster/Makefile
                  net/Makefile
                  net/protocol/Makefile])
-AC_OUTPUT)
+
+AC_OUTPUT

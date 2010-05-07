@@ -12,5 +12,9 @@ IRC_client_LDFLAGS = -L/usr/local/lib
 IRC_client_LDADD = -lpthread -lfl -lACE -lStream -lRPG_Common -lRPG_Net \
 	-lRPG_Net_Protocol
 
-bindata_DATA = IRC_client.ini
+bindata_DATA = IRC_client.glade IRC_client.ini
 bindatadir = $(bindir)
+IRC_client_gui_SOURCES = IRC_client_gui.cpp IRC_client_gui_messagehandler.cpp \
+	IRC_client_gui_messagehandler.h IRC_common.h
+IRC_client_gui_LDADD = -lpthread -lgtk-x11-2.0 -lACE -lStream -lRPG_Common \
+	-lRPG_Net -lRPG_Net_Protocol

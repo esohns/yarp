@@ -225,20 +225,23 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
   } // end SWITCH
 
   // refer the data back to our client
-  try
+  if (myDataSink)
   {
-    myDataSink->notify(*message_inout->getData());
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Net_Protocol_INotify::notify(), continuing\n")));
-  }
+    try
+    {
+      myDataSink->notify(*message_inout->getData());
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("caught exception in RPG_Net_Protocol_INotify::notify(), continuing\n")));
+    }
+  } // end IF
 }
 
 void
 RPG_Net_Protocol_Module_IRCHandler::joinIRC(const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
-                                            const RPG_Net_Protocol_INotify* dataCallback_in)
+                                            RPG_Net_Protocol_INotify* dataCallback_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::joinIRC"));
 
@@ -358,15 +361,14 @@ RPG_Net_Protocol_Module_IRCHandler::joinIRC(const RPG_Net_Protocol_IRCLoginOptio
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::registerNotification(const RPG_Net_Protocol_INotify* dataCallback_in)
+RPG_Net_Protocol_Module_IRCHandler::registerNotification(RPG_Net_Protocol_INotify* dataCallback_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::registerNotification"));
 
   // sanity check(s)
   ACE_ASSERT(dataCallback_in);
 
-  // *TODO*: implement this
-  ACE_ASSERT(false);
+  myDataSink = dataCallback_in;
 }
 
 void

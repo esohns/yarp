@@ -88,14 +88,6 @@ RPG_Net_StreamSocketBase<ConfigType,
 
   // step1: init/start data processing stream
   inherited::myUserData.sessionID = inherited::getID(); // (== socket handle)
-  if (!myStream.init(inherited::myUserData))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init processing stream, aborting\n")));
-
-    // reactor will invoke close() --> handle_close()
-    return -1;
-  } // end IF
   if (inherited::myUserData.module)
   {
     if (myStream.push(inherited::myUserData.module))
@@ -106,6 +98,14 @@ RPG_Net_StreamSocketBase<ConfigType,
 
       return -1;
     } // end IF
+  } // end IF
+  if (!myStream.init(inherited::myUserData))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to init processing stream, aborting\n")));
+
+    // reactor will invoke close() --> handle_close()
+    return -1;
   } // end IF
   myStream.start();
   if (!myStream.isRunning())

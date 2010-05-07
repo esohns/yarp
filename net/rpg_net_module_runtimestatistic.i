@@ -42,11 +42,12 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                            STATISTICHANDLER_TYPE::ACTION_REPORT),
    myLocalReportingHandlerID(0),
    mySessionID(0),
-   myNumTotalMessages(0),
+   myNumInboundMessages(0),
+   myNumOutboundMessages(0),
    myNumSessionMessages(0),
    myMessageCounter(0),
    myLastMessagesPerSecondCount(0),
-   myNumTotalBytes(0.0),
+   myNumInboundBytes(0.0),
    myByteCounter(0),
    myLastBytesPerSecondCount(0),
 // myMessageTypeStatistics.clear(),
@@ -115,12 +116,13 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
     {
       ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-      myNumTotalMessages = 0;
+      myNumInboundMessages = 0;
+      myNumOutboundMessages = 0;
       myNumSessionMessages = 0;
       myMessageCounter = 0;
       myLastMessagesPerSecondCount = 0;
 
-      myNumTotalBytes = 0.0;
+      myNumInboundBytes = 0.0;
       myByteCounter = 0;
       myLastBytesPerSecondCount = 0;
 
@@ -199,11 +201,15 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
     // update our counters...
-    myNumTotalMessages++;
+    if (inherited::is_writer())
+    {
+      myNumInboundMessages++;
+      myNumInboundBytes += message_inout->total_length();
+      myByteCounter += message_inout->total_length();
+    } // end IF
+    else
+      myNumOutboundMessages++;
     myMessageCounter++;
-
-    myNumTotalBytes += message_inout->total_length();
-    myByteCounter += message_inout->total_length();
   } // end lock scope
 
   // add message to statistic...
@@ -235,7 +241,8 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
     // update our counters...
-    myNumTotalMessages++;
+    // *NOTE*: currently, session messages travel only downstream...
+    myNumInboundMessages++;
     myNumSessionMessages++;
     myMessageCounter++;
   } // end lock scope
@@ -331,8 +338,8 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    data_out.numDataMessages = (myNumTotalMessages - myNumSessionMessages);
-    data_out.numBytes = myNumTotalBytes;
+    data_out.numDataMessages = ((myNumInboundMessages + myNumOutboundMessages) - myNumSessionMessages);
+    data_out.numBytes = myNumInboundBytes;
   } // end lock scope
 
   return true;
@@ -370,13 +377,13 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("*** [%u] RUNTIME STATISTICS [%u] ***\n--> Stream Statistics <--\nmessages seen (last second): %u\nmessages seen (total): %u (data: %.2f %%)\ndata seen (last second): %u bytes\ndata seen (total): %.0f bytes\ncurrent cache usage [%u messages / %u total allocated heap]\n*** RUNTIME STATISTICS ***\\END\n"),
+               ACE_TEXT("*** [%u] RUNTIME STATISTICS [%u] ***\n--> Stream Statistics <--\nmessages seen (last second): %u\nmessages seen (total [in/out]): %u/%u (data: %.2f %%)\n(inbound) data seen (last second): %u bytes\n(inbound)  data seen (total): %.0f bytes\ncurrent cache usage [%u messages / %u total allocated heap]\n*** RUNTIME STATISTICS ***\\END\n"),
                mySessionID, mySessionID,
                myLastMessagesPerSecondCount,
-               myNumTotalMessages,
-               ((myNumTotalMessages - myNumSessionMessages) / 100.0),
+               myNumInboundMessages, myNumOutboundMessages,
+               (((myNumInboundMessages + myNumOutboundMessages) - myNumSessionMessages) / 100.0),
                myLastBytesPerSecondCount,
-               myNumTotalBytes,
+               myNumInboundBytes,
                numMessagesOnline,
                totalHeapBytesAllocated));
 //                cache_used,
@@ -401,13 +408,14 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
     // synchronize access to statistics data
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    if (myNumTotalMessages - myNumSessionMessages)
+    if ((myNumInboundMessages + myNumOutboundMessages) - myNumSessionMessages)
     {
       // write some output
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("*** [%u] SESSION STATISTICS [%u] ***\ntotal # data message(s) (as seen): %u\n --> Protocol Info <--\n"),
+                 ACE_TEXT("*** [%u] SESSION STATISTICS [%u] ***\ntotal # data message(s) (as seen [in/out]): %u/%u\n --> Protocol Info <--\n"),
                  mySessionID, mySessionID,
-                 (myNumTotalMessages - myNumSessionMessages)));
+                 (myNumInboundMessages - myNumSessionMessages),
+                 myNumOutboundMessages));
 
       std::string protocol_string;
       for (MESSAGETYPE2COUNT_CONSTITERATOR_TYPE iter = myMessageTypeStatistics.begin();
@@ -419,7 +427,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                    ProtocolMessageType::messageType2String(iter->first).c_str(),
                    iter->second,
                    ACE_static_cast(double,
-                                   ((iter->second * 100.0) / (myNumTotalMessages - myNumSessionMessages)))));
+                                   ((iter->second * 100.0) / (myNumInboundMessages - myNumSessionMessages)))));
       } // end FOR
     } // end IF
 

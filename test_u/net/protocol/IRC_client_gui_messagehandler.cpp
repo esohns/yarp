@@ -18,27 +18,45 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_PROTOCOL_IIRCCONTROL_H
-#define RPG_NET_PROTOCOL_IIRCCONTROL_H
+#include "IRC_client_gui_messagehandler.h"
+
+#include <rpg_net_protocol_tools.h>
+
+#include <gtk/gtk.h>
 
 #include <string>
 
-// forward declaration(s)
-struct RPG_Net_Protocol_IRCLoginOptions;
-class RPG_Net_Protocol_INotify;
-
-class RPG_Net_Protocol_IIRCControl
+IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkTextBuffer* buffer_in)
+ : myTargetBuffer(buffer_in)
 {
- public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
 
-  // exposed interface
-  virtual void joinIRC(const RPG_Net_Protocol_IRCLoginOptions&, // login details
-                       RPG_Net_Protocol_INotify*) = 0;          // data callback
-  virtual void registerNotification(RPG_Net_Protocol_INotify*) = 0; // data callback
-  virtual void sendMessage(const std::string&) = 0; // message
-  virtual void leaveIRC(const std::string&) = 0; // reason
-};
+}
 
-#endif
+IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler()
+{
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler"));
+
+}
+
+void
+IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::notify"));
+
+  // sanity check(s)
+  ACE_ASSERT(myTargetBuffer);
+
+  std::string message_text = RPG_Net_Protocol_Tools::IRCMessage2String(message_in);
+//   // always insert new text at the END of the buffer...
+//   GtkTextIter iter;
+//   gtk_text_buffer_get_end_iter(myTargetBuffer,
+//                                &iter);
+//   gtk_text_buffer_insert(myTargetBuffer,
+//                          &iter,
+//                          message_text.c_str(),
+//                          message_text.size());
+  gtk_text_buffer_insert_at_cursor(myTargetBuffer,
+                                   message_text.c_str(),
+                                   message_text.size());
+}

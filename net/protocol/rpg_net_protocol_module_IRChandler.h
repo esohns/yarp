@@ -61,8 +61,8 @@ class RPG_Net_Protocol_Module_IRCHandler
 
   // implement RPG_Net_Protocol_IIRCControl
   virtual void joinIRC(const RPG_Net_Protocol_IRCLoginOptions&, // login details
-                       const RPG_Net_Protocol_INotify*);        // data callback
-  virtual void registerNotification(const RPG_Net_Protocol_INotify*); // data
+                       RPG_Net_Protocol_INotify*);              // data callback
+  virtual void registerNotification(RPG_Net_Protocol_INotify*); // data
   virtual void sendMessage(const std::string&); // message
   virtual void leaveIRC(const std::string&); // reason
 

@@ -18,27 +18,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_PROTOCOL_IIRCCONTROL_H
-#define RPG_NET_PROTOCOL_IIRCCONTROL_H
+#ifndef IRC_CLIENT_GUI_MESSAGEHANDLER_H
+#define IRC_CLIENT_GUI_MESSAGEHANDLER_H
 
-#include <string>
+#include "rpg_net_protocol_inotify.h"
+
+#include <ace/Global_Macros.h>
 
 // forward declaration(s)
-struct RPG_Net_Protocol_IRCLoginOptions;
-class RPG_Net_Protocol_INotify;
+typedef struct _GtkTextBuffer GtkTextBuffer;
 
-class RPG_Net_Protocol_IIRCControl
+class IRC_Client_GUI_MessageHandler
+ : public RPG_Net_Protocol_INotify
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  IRC_Client_GUI_MessageHandler(GtkTextBuffer*); // target buffer
+  virtual ~IRC_Client_GUI_MessageHandler();
 
-  // exposed interface
-  virtual void joinIRC(const RPG_Net_Protocol_IRCLoginOptions&, // login details
-                       RPG_Net_Protocol_INotify*) = 0;          // data callback
-  virtual void registerNotification(RPG_Net_Protocol_INotify*) = 0; // data callback
-  virtual void sendMessage(const std::string&) = 0; // message
-  virtual void leaveIRC(const std::string&) = 0; // reason
+  // implement specific behaviour
+  virtual void notify(const RPG_Net_Protocol_IRCMessage&); // message data
+
+ private:
+  typedef RPG_Net_Protocol_INotify inherited;
+
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_MessageHandler());
+  ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_MessageHandler(const IRC_Client_GUI_MessageHandler&));
+  ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_MessageHandler& operator=(const IRC_Client_GUI_MessageHandler&));
+
+  GtkTextBuffer* myTargetBuffer;
 };
 
 #endif

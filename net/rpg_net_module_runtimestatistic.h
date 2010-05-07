@@ -113,14 +113,15 @@ class RPG_Net_Module_RuntimeStatistic
   unsigned long                      mySessionID;
 
   // *NOTE*: data messages == (myNumTotalMessages - myNumSessionMessages)
-  unsigned long                      myNumTotalMessages;
+  unsigned long                      myNumInboundMessages;
+  unsigned long                      myNumOutboundMessages;
   unsigned long                      myNumSessionMessages;
   // used to compute message throughput...
   unsigned long                      myMessageCounter;
   // *NOTE: support asynchronous collecting/reporting of data...
   unsigned long                      myLastMessagesPerSecondCount;
 
-  double                             myNumTotalBytes;
+  double                             myNumInboundBytes;
   // used to compute data throughput...
   unsigned long                      myByteCounter;
   // *NOTE: support asynchronous collecting/reporting of data...
