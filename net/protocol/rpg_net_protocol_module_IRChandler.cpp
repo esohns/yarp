@@ -349,9 +349,9 @@ RPG_Net_Protocol_Module_IRCHandler::joinIRC(const RPG_Net_Protocol_IRCLoginOptio
                    std::string(RPG_Net_Protocol_Message::messageType2String(RPG_Net_Protocol_IRCMessage::JOIN)));
   ACE_ASSERT(join_struct->command.string);
   join_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-  std::string channel_name = ACE_TEXT_ALWAYS_CHAR("#");
-  channel_name += loginOptions_in.channel;
-  join_struct->params.push_back(channel_name);
+//   std::string channel_name = ACE_TEXT_ALWAYS_CHAR("#");
+//   channel_name += loginOptions_in.channel;
+  join_struct->params.push_back(loginOptions_in.channel);
 
   // step5b: send it upstream
   sendMessage(join_struct);

@@ -214,9 +214,12 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
       // special handling for last parameter
       if (i == 1)
       {
-        // prefix the trailing parameter
-        *message_inout->wr_ptr() = ':';
-        message_inout->wr_ptr(1);
+        // if necessary, prefix the trailing parameter
+        if ((*iterator).find(' ') != std::string::npos)
+        {
+          *message_inout->wr_ptr() = ':';
+          message_inout->wr_ptr(1);
+        } // end IF
       } // end IF
 
       if (message_inout->copy((*iterator).c_str(),
