@@ -209,8 +209,8 @@ class RPG_Net_Protocol_IRC_Codes
     ERR_UMODEUNKNOWNFLAG  = 501,
     ERR_USERSDONTMATCH	  = 502,
     //
-    RPG_NET_PROTOCOL_IRC_CODES_MAX,
-    RPG_NET_PROTOCOL_IRC_CODES_INVALID
+    RPG_NET_PROTOCOL_IRC_CODE_MAX,
+    RPG_NET_PROTOCOL_IRC_CODE_INVALID
   };
 
  private:
@@ -220,5 +220,8 @@ class RPG_Net_Protocol_IRC_Codes
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_IRC_Codes& operator=(const RPG_Net_Protocol_IRC_Codes&));
   ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Protocol_IRC_Codes());
 };
+
+// convenience typedef
+typedef RPG_Net_Protocol_IRC_Codes::RFC1459Numeric RPG_Net_Protocol_IRCNumeric_t;
 
 #endif

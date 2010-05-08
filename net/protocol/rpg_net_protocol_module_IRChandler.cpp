@@ -118,8 +118,22 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
   {
     case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
     {
+      // debug info
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("[%u]: received %s\n"),
+                 message_inout->getID(),
+                 RPG_Net_Protocol_Tools::IRCCode2String(message_inout->getData()->command.numeric).c_str()));
+
       switch (message_inout->getData()->command.numeric)
       {
+        case RPG_Net_Protocol_IRC_Codes::RPL_WELCOME:
+        case RPG_Net_Protocol_IRC_Codes::RPL_YOURHOST:
+        case RPG_Net_Protocol_IRC_Codes::RPL_CREATED:
+        case RPG_Net_Protocol_IRC_Codes::RPL_MYINFO:
+        {
+
+          break;
+        }
         default:
         {
           ACE_DEBUG((LM_WARNING,

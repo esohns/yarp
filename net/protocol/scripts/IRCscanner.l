@@ -30,7 +30,8 @@ HOST           [[:alpha:][:digit:].]+
 SERVERNAME     {HOST}
 /* LETTER         [:alpha:] <-- for some ODD reason, this matches ":" */
 LETTER         [a-zA-Z]
-NUMBER         [:digit:]
+/* NUMBER         [:digit:] */
+NUMBER         [0-9]
 SPECIAL        [-\[\]\\`^{}]
 NICK           {LETTER}[{LETTER}{NUMBER}{SPECIAL}]*
 ORIGIN         {SERVERNAME}|{NICK}
