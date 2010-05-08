@@ -111,7 +111,7 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
 //              ACE_TEXT("parsing message(ID: %u, %u byte(s))\n\"%s\"\n"),
 //              message_inout->getID(),
 //              message_inout->length(),
-//              message_inout->rd_ptr()));
+//              std::string(message_inout->rd_ptr(), message_inout->length()).c_str()));
 
   myDriver.init(ACE_const_cast(RPG_Net_Protocol_IRCMessage&, *message_inout->getData()),
                 myDebugParser);

@@ -58,6 +58,8 @@ class RPG_Net_Protocol_Module_IRCHandler
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Protocol_Message*&, // data message handle
                                  bool&);                     // return value: pass message downstream ?
+  virtual void handleSessionMessage(RPG_Net_Protocol_SessionMessage*&, // session message handle
+                                    bool&);                   // return value: pass message downstream ?
 
   // implement RPG_Net_Protocol_IIRCControl
   virtual void joinIRC(const RPG_Net_Protocol_IRCLoginOptions&, // login details
@@ -89,6 +91,8 @@ class RPG_Net_Protocol_Module_IRCHandler
   bool                      myAutomaticPong;
   bool                      myPrintPingPongDot;
   bool                      myIsInitialized;
+  ACE_Thread_Mutex          myLock;
+  bool                      myConnectionIsAlive;
   bool                      myReceivedInitialNotice;
 };
 

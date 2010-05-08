@@ -324,6 +324,15 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
           // remember how much we scanned, though
           myCurrentMessageLength += scanned_bytes;
 
+          // finished parsing this buffer ?
+          if (myCurrentMessage->total_length() == 0)
+          {
+            // clean up
+            myCurrentMessage->release();
+            myCurrentMessage = NULL;
+            myCurrentBuffer = NULL;
+          } // end IF
+
           break;
         } // end IF
       }

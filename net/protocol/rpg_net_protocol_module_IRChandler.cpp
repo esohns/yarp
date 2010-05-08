@@ -39,6 +39,7 @@ RPG_Net_Protocol_Module_IRCHandler::RPG_Net_Protocol_Module_IRCHandler()
    myAutomaticPong(false), // *NOTE*: the idea really is not to play PONG...
    myPrintPingPongDot(false),
    myIsInitialized(false),
+   myConnectionIsAlive(false),
    myReceivedInitialNotice(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::RPG_Net_Protocol_Module_IRCHandler"));
@@ -73,6 +74,7 @@ RPG_Net_Protocol_Module_IRCHandler::init(Stream_IAllocator* allocator_in,
     myAutomaticPong = false;
     myPrintPingPongDot = false;
     myIsInitialized = false;
+    myConnectionIsAlive = false;
     myReceivedInitialNotice = false;
   } // end IF
 
@@ -237,6 +239,47 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
                 ACE_TEXT("caught exception in RPG_Net_Protocol_INotify::notify(), continuing\n")));
     }
   } // end IF
+}
+
+void
+RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_SessionMessage*& message_inout,
+                                                         bool& passMessageDownstream_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage"));
+
+  // don't care (implies yes per default, if we're part of a stream)
+  ACE_UNUSED_ARG(passMessageDownstream_out);
+
+  // sanity check(s)
+  ACE_ASSERT(message_inout);
+  ACE_ASSERT(myIsInitialized);
+
+  switch (message_inout->getType())
+  {
+    case Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
+    {
+      // remember connection has been opened...
+      ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+      myConnectionIsAlive = true;
+
+      break;
+    }
+    case Stream_SessionMessage::MB_STREAM_SESSION_END:
+    {
+      // remember connection has been closed...
+      ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+      myConnectionIsAlive = false;
+
+      break;
+    }
+    default:
+    {
+      // don't do anything...
+      break;
+    }
+  } // end SWITCH
 }
 
 void
@@ -485,6 +528,24 @@ RPG_Net_Protocol_Module_IRCHandler::sendMessage(RPG_Net_Protocol_IRCMessage*& co
   command_in = NULL;
 
   // step3: send it upstream
+  // *WARNING*: protect against async closure of the connection while we
+  // propagate our message...
+  // --> grab our lock
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  // sanity check
+  if (!myConnectionIsAlive)
+  {
+    // debug info
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("no connection - cannot send message, aborting\n")));
+
+    // clean up
+    message->release();
+
+    // what else can we do ?
+    return;
+  } // end IF
+
   if (reply(message, NULL) == -1)
   {
     ACE_DEBUG((LM_ERROR,

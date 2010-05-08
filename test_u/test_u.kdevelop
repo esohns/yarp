@@ -45,6 +45,7 @@
         <net_client>-h localhost -i 1 -s 10101 -t -x</net_client>
         <net_server>-i 5 -k 60 -p 10101 -t</net_server>
         <IRC_client>-c ./../../../net/protocol/IRC_client.ini -t</IRC_client>
+        <IRC_client_gui>-c ./../../../net/protocol/IRC_client.ini -t -u ./../../../net/protocol/IRC_client.glade</IRC_client_gui>
       </runarguments>
       <debugarguments>
         <character_generator>-i ../../item/rpg_item.xml -m ../../magic/rpg_magic.xml -t</character_generator>
@@ -57,6 +58,7 @@
         <net_client>-s -t</net_client>
         <net_server>-i 1 -k 60 -p 10101 -t</net_server>
         <IRC_client>-c ./../../../net/protocol/IRC_client.ini -t</IRC_client>
+        <IRC_client_gui>-c ./../../../net/protocol/IRC_client.ini -t -u ./../../../net/protocol/IRC_client.glade</IRC_client_gui>
       </debugarguments>
       <cwd>
         <character_generator>/home/unfv/Projects/RPG/test_u/debug/./</character_generator>
@@ -69,6 +71,7 @@
         <net_client>/home/unfv/Projects/RPG/test_u/debug/./</net_client>
         <net_server>/home/unfv/Projects/RPG/test_u/debug/./</net_server>
         <IRC_client>/home/unfv/Projects/RPG/test_u/debug/./net/protocol</IRC_client>
+        <IRC_client_gui>/home/unfv/Projects/RPG/test_u/debug/./net/protocol</IRC_client_gui>
       </cwd>
     </run>
     <configurations>
