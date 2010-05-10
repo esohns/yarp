@@ -290,12 +290,12 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
     return;
   } // end IF
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("[%u]: scanning %u byte(s)\n\"%s\"\n"),
-             myCurrentBuffer->getID(),
-             myCurrentBuffer->length(),
-             std::string(myCurrentBuffer->rd_ptr(), myCurrentBuffer->length()).c_str()));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("[%u]: scanning %u byte(s)\n\"%s\"\n"),
+//              myCurrentBuffer->getID(),
+//              myCurrentBuffer->length(),
+//              std::string(myCurrentBuffer->rd_ptr(), myCurrentBuffer->length()).c_str()));
 
   // scan it !
   myCurrentNumFrames = 0;
@@ -324,14 +324,14 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
         scanned_bytes += RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE;
         myCurrentMessageLength += scanned_bytes;
 
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("buffer (ID: %u, length: %u): frame boundary [#%u] @ offset %u\n\"%s\"\n"),
-                   myCurrentBuffer->getID(),
-                   myCurrentMessageLength,
-                   myCurrentNumFrames,
-                   (scanned_bytes + (myCurrentBuffer->rd_ptr() - myCurrentBuffer->base())),
-                   std::string(myCurrentBuffer->rd_ptr(), scanned_bytes).c_str()));
+//         // debug info
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("buffer (ID: %u, length: %u): frame boundary [#%u] @ offset %u\n\"%s\"\n"),
+//                    myCurrentBuffer->getID(),
+//                    myCurrentMessageLength,
+//                    myCurrentNumFrames,
+//                    (scanned_bytes + (myCurrentBuffer->rd_ptr() - myCurrentBuffer->base())),
+//                    std::string(myCurrentBuffer->rd_ptr(), scanned_bytes).c_str()));
 
         RPG_Net_Protocol_Message* message = myCurrentMessage;
         if (myCurrentMessageLength < myCurrentMessage->total_length())
@@ -361,11 +361,11 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
           message->crunch();
         } // end IF
 
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("processing message (ID: %u - %u byte(s))...\n"),
-                   message->getID(),
-                   message->total_length()));
+//         // debug info
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("processing message (ID: %u - %u byte(s))...\n"),
+//                    message->getID(),
+//                    message->total_length()));
 
         // --> push it downstream...
         if (put_next(message, NULL) == -1)
