@@ -38,7 +38,9 @@
 #define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE       2
 
 // "crunch" messages for easier parsing ?
-#define RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES           true
+// *NOTE*: comes at the cost of alloc/free, memcopy and locking per fragmented
+// message --> should be avoided...
+#define RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES           false
 
 // output more debugging information
 #define RPG_NET_PROTOCOL_DEF_TRACE_SCANNING            false

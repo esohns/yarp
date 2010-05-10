@@ -402,12 +402,12 @@ void
 do_builder(const std::string& UIfile_in,
            const cb_data& userData_in,
            const GtkWidget* parentWidget_in,
-           GtkTextBuffer*& textBuffer_out)
+           GtkTextView*& textView_out)
 {
   ACE_TRACE(ACE_TEXT("::do_builder"));
 
   // init return value(s)
-  textBuffer_out = NULL;
+  textView_out = NULL;
 
   // sanity check(s)
   if (!RPG_Common_File_Tools::isReadable(UIfile_in.c_str()))
@@ -459,26 +459,13 @@ do_builder(const std::string& UIfile_in,
     return;
   } // end IF
 
-  // step2: retrieve textbuffer handle
-  GtkTextView* textView = NULL;
-  textView = GTK_TEXT_VIEW(gtk_builder_get_object(builder,
-                                                  ACE_TEXT_ALWAYS_CHAR("textview")));
-  if (!textView)
+  // step2: retrieve textview handle
+  textView_out = GTK_TEXT_VIEW(gtk_builder_get_object(builder,
+                                                      ACE_TEXT_ALWAYS_CHAR("textview")));
+  if (!textView_out)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to gtk_builder_get_object(\"textview\"): \"%m\", aborting\n")));
-
-    // clean up
-    g_object_unref(G_OBJECT(builder));
-    builder = NULL;
-
-    return;
-  } // end IF
-  textBuffer_out = gtk_text_view_get_buffer(textView);
-  if (!textBuffer_out)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_text_view_get_buffer(): \"%m\", aborting\n")));
 
     // clean up
     g_object_unref(G_OBJECT(builder));
@@ -602,12 +589,12 @@ do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
   // *NOTE*: from this point on, we need to clean up any remote connections !
 
   // step2: setup UI
-  GtkTextBuffer* textBuffer = NULL;
+  GtkTextView* textView = NULL;
   do_builder(UIfile_in,   // glade file
              userData_in, // cb data
              NULL,        // there's no parent widget
-             textBuffer); // return value: target buffer
-  IRC_Client_GUI_MessageHandler messageHandler(textBuffer);
+             textView);   // return value: target view
+  IRC_Client_GUI_MessageHandler messageHandler(textView);
   userData_in.messageHandler = &messageHandler;
 
   // event loops:

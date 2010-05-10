@@ -25,6 +25,8 @@
 #include <ace/Message_Block.h>
 #include <ace/Malloc_Base.h>
 
+#include <sstream>
+
 RPG_Net_Protocol_Message::RPG_Net_Protocol_Message(const RPG_Net_Protocol_Message& message_in)
  : inherited(message_in)
 {
@@ -89,9 +91,31 @@ RPG_Net_Protocol_Message::dump_state() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::dump_state"));
 
+  std::ostringstream converter;
+
+  // count continuations
+  unsigned long count = 1;
+  std::string info;
+  for (const ACE_Message_Block* source = this;
+       source != NULL;
+       source = source->cont(), count++)
+  {
+    converter.str(ACE_TEXT(""));
+    converter << count;
+    info += converter.str();
+    info += ACE_TEXT("# [");
+    converter.str(ACE_TEXT(""));
+    converter << source->length();
+    info += converter.str();
+    info += ACE_TEXT(" byte(s)]: \"");
+    info.append(source->rd_ptr(), source->length());
+    info += ACE_TEXT("\"\n");
+  } // end FOR
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("***** Message (ID: %u) *****\n"),
-             getID()));
+             ACE_TEXT("***** Message (ID: %u, %u byte(s)) *****\n%s"),
+             getID(),
+             total_length(),
+             info.c_str()));
   // delegate to base
   inherited::dump_state();
 }

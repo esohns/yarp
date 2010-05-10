@@ -118,12 +118,12 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
   {
     case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
     {
-      // debug info
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("[%u]: received \"%s\" [%u]\n"),
-                 message_inout->getID(),
-                 RPG_Net_Protocol_Tools::IRCCode2String(message_inout->getData()->command.numeric).c_str(),
-                 message_inout->getData()->command.numeric));
+//       // debug info
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("[%u]: received \"%s\" [%u]\n"),
+//                  message_inout->getID(),
+//                  RPG_Net_Protocol_Tools::IRCCode2String(message_inout->getData()->command.numeric).c_str(),
+//                  message_inout->getData()->command.numeric));
 
       switch (message_inout->getData()->command.numeric)
       {
@@ -162,28 +162,28 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
       {
         case RPG_Net_Protocol_IRCMessage::JOIN:
         {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("[%u]: received \"JOIN\": \"%s\"\n"),
-                     message_inout->getID(),
-                     message_inout->getData()->params.back().c_str()));
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"JOIN\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
 
           break;
         }
         case RPG_Net_Protocol_IRCMessage::MODE:
         {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("[%u]: received \"MODE\": \"%s\"\n"),
-                     message_inout->getID(),
-                     message_inout->getData()->params.back().c_str()));
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"MODE\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
 
           break;
         }
         case RPG_Net_Protocol_IRCMessage::NOTICE:
         {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("[%u]: received \"NOTICE\": \"%s\"\n"),
-                     message_inout->getID(),
-                     message_inout->getData()->params.back().c_str()));
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"NOTICE\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
 
           // remember first contact...
           if (!myReceivedInitialNotice)
@@ -193,10 +193,10 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         }
         case RPG_Net_Protocol_IRCMessage::PING:
         {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("[%u]: received \"PING\": \"%s\"\n"),
-                     message_inout->getID(),
-                     message_inout->getData()->params.back().c_str()));
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"PING\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
 
           // auto-answer ?
           if (myAutomaticPong)
@@ -227,10 +227,10 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         }
         case RPG_Net_Protocol_IRCMessage::PONG:
         {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("[%u]: received \"PONG\": \"%s\"\n"),
-                     message_inout->getID(),
-                     message_inout->getData()->params.back().c_str()));
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"PONG\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
 
           break;
         }

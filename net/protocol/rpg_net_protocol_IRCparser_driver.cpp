@@ -24,6 +24,7 @@
 #include "rpg_net_protocol_IRCmessage.h"
 #include "rpg_net_protocol_IRCparser.h"
 #include "rpg_net_protocol_IRCscanner.h"
+#include "rpg_net_protocol_message.h"
 
 #include <ace/Message_Block.h>
 #include <ace/Log_Msg.h>
@@ -206,9 +207,25 @@ RPG_Net_Protocol_IRCParserDriver::error(const yy::location& location_in,
   std::ostringstream converter;
   converter << location_in;
   ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("failed to parse IRC message (location: %s): \"%s\"...\n"),
+             ACE_TEXT("failed to parse \"%s\" (@%s): \"%s\"\n"),
+             std::string(myCurrentFragment->rd_ptr(), myCurrentFragment->length()).c_str(),
              converter.str().c_str(),
              message_in.c_str()));
+
+  // dump message
+  RPG_Net_Protocol_Message* message = NULL;
+  message = ACE_dynamic_cast(RPG_Net_Protocol_Message*,
+                             myCurrentFragment);
+  ACE_ASSERT(message);
+  try
+  {
+    message->dump_state();
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Common_IDumpState::dump_state(), continuing\n")));
+  }
 
 //   std::clog << location_in << ": " << message_in << std::endl;
 }
@@ -220,7 +237,8 @@ RPG_Net_Protocol_IRCParserDriver::error(const std::string& message_in)
 
   // debug info
   ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("failed to parse IRC message: \"%s\"...\n"),
+             ACE_TEXT("failed to parse \"%s\": \"%s\"...\n"),
+             std::string(myCurrentFragment->rd_ptr(), myCurrentFragment->length()).c_str(),
              message_in.c_str()));
 
 //   std::clog << message_in << std::endl;

@@ -51,7 +51,14 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
     }
     case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
     {
-      converter << RPG_Net_Protocol_Tools::IRCCode2String(message_in.command.numeric) << ACE_TEXT(" [") << message_in.command.numeric << ACE_TEXT("]");
+      converter << ACE_TEXT("\"") << RPG_Net_Protocol_Tools::IRCCode2String(message_in.command.numeric) << ACE_TEXT("\"") << ACE_TEXT(" [") << message_in.command.numeric << ACE_TEXT("]");
+
+      break;
+    }
+    // *NOTE*: command hasn't been set (yet)
+    case RPG_Net_Protocol_IRCMessage::Command::INVALID:
+    {
+      converter << ACE_TEXT("\"INVALID\"");
 
       break;
     }
@@ -61,7 +68,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
                  ACE_TEXT("invalid command discriminator (was: %d), aborting\n"),
                  message_in.command.discriminator));
 
-      return converter.str();
+      return std::string();
     }
   } // end SWITCH
   converter << ACE_TEXT(" \\COMMAND") << std::endl;

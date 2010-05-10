@@ -26,11 +26,30 @@
 
 #include <string>
 
-IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkTextBuffer* buffer_in)
- : myTargetBuffer(buffer_in)
+IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkTextView* view_in)
+ : myTargetView(view_in),
+   myTargetBuffer(NULL)
 {
   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
 
+  // step1: retrieve target buffer
+  myTargetBuffer = gtk_text_view_get_buffer(myTargetView);
+  if (!myTargetBuffer)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to gtk_text_view_get_buffer(): \"%m\", aborting\n")));
+
+    return;
+  } // end IF
+
+  // step2: setup auto-scrolling
+  GtkTextIter iter;
+  gtk_text_buffer_get_end_iter(myTargetBuffer,
+                               &iter);
+  gtk_text_buffer_create_mark(myTargetBuffer,
+                              ACE_TEXT_ALWAYS_CHAR("scroll"),
+                              &iter,
+                              TRUE);
 }
 
 IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler()
@@ -48,15 +67,39 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
   ACE_ASSERT(myTargetBuffer);
 
   std::string message_text = RPG_Net_Protocol_Tools::IRCMessage2String(message_in);
-//   // always insert new text at the END of the buffer...
-//   GtkTextIter iter;
+
+  // always insert new text at the END of the buffer...
+  GtkTextIter iter;
+  gtk_text_buffer_get_end_iter(myTargetBuffer,
+                               &iter);
+
+  // *NOTE*: iter should be updated...
+  gtk_text_buffer_insert(myTargetBuffer,
+                         &iter,
+                         message_text.c_str(),
+                         -1);
+
+//   // get the new "end"...
 //   gtk_text_buffer_get_end_iter(myTargetBuffer,
 //                                &iter);
-//   gtk_text_buffer_insert(myTargetBuffer,
-//                          &iter,
-//                          message_text.c_str(),
-//                          message_text.size());
-  gtk_text_buffer_insert_at_cursor(myTargetBuffer,
-                                   message_text.c_str(),
-                                   message_text.size());
+  // move the iterator to the beginning of line, so we don't scroll
+  // in horizontal direction
+  gtk_text_iter_set_line_offset(&iter, 0);
+
+  // ...and place the mark at iter. The mark will stay there after we
+  // insert some text at the end because it has right gravity
+  GtkTextMark* mark = NULL;
+  mark = gtk_text_buffer_get_mark(myTargetBuffer,
+                                  ACE_TEXT_ALWAYS_CHAR("scroll"));
+  gtk_text_buffer_move_mark(myTargetBuffer,
+                            mark,
+                            &iter);
+
+  // scroll the mark onscreen
+  gtk_text_view_scroll_mark_onscreen(myTargetView,
+                                     mark);
+
+//   gtk_text_buffer_insert_at_cursor(myTargetBuffer,
+//                                    message_text.c_str(),
+//                                    message_text.size());
 }

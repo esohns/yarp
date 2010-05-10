@@ -59,5 +59,5 @@ RPG_Net_Protocol_IRCMessage::dump_state() const
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("%s"),
              RPG_Net_Protocol_Tools::IRCMessage2String(*this).c_str()));
-  inherited::dump_state();
+//   inherited::dump_state();
 }
