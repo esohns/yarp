@@ -1,6 +1,5 @@
 %{
-#include <stdio.h>
-#include <string>
+#include <ace/Log_Msg.h>
 %}
 
 %option pointer full nounistd 8bit
@@ -12,17 +11,28 @@
 /* %option bison-bridge bison-locations stack */
 %option yylineno
 
-MESSAGE  ([\x00-\xFF]{-}[\r\n])*
-CRLF     \r\n
+MESSAGE ([\x00-\xFF]{-}[\r\n])+
+CRLF    \r\n
 
-%s       end_of_message
+%s      end_of_frame
 
 %%
-<INITIAL>{MESSAGE}/{CRLF}     { BEGIN(end_of_message);
-                                return yyleng; }
-<end_of_message>{CRLF}        { BEGIN(INITIAL);
-                                (*yyextra)++;
-                                return -1; }
-<<EOF>>                       { return 0; }
-<*>(?s:.)                     { return 1; }
+<INITIAL>{
+"\r"                   { BEGIN(end_of_frame); }
+{CRLF}                 { (*yyextra)++;
+                         return -1; }
+{MESSAGE}              { return yyleng; }
+} // end <INITIAL>
+<end_of_frame>{
+"\n"                   { BEGIN(INITIAL);
+                         (*yyextra)++;
+                         return -1; }
+} // end <end_of_frame>
+<<EOF>>                { return 0; }
+<*>(?s:.)              { // debug info
+                         ACE_DEBUG((LM_ERROR,
+                                    ACE_TEXT("invalid character: \"%c\" (%d), continuing\n"),
+                                    yytext[0],
+                                    yytext[0]));
+                         return 1; }
 %%

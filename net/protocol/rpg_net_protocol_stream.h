@@ -79,10 +79,10 @@ class RPG_Net_Protocol_Stream
   const bool fini(const RPG_Net_Protocol_ConfigPOD&); // configuration
 
   // modules
-  RPG_Net_Protocol_Module_IRCMarshal_Module myIRCMarshal;
-  RPG_Net_Protocol_Module_IRCParser_Module  myIRCParser;
-//   RPG_Net_Protocol_Module_IRCHandler_Module myIRCHandler;
-  RPG_Net_Module_RuntimeStatistic_Module    myRuntimeStatistic;
+  RPG_Net_Protocol_Module_IRCMarshal_Module       myIRCMarshal;
+  RPG_Net_Protocol_Module_IRCParser_Module        myIRCParser;
+  RPG_Net_Protocol_Module_RuntimeStatistic_Module myRuntimeStatistic;
+  //   RPG_Net_Protocol_Module_IRCHandler_Module myIRCHandler;
 };
 
 #endif

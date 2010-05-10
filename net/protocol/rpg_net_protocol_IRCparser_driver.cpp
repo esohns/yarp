@@ -38,16 +38,17 @@ RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& t
    myCurrentFragment(NULL),
    myFragmentIsResized(false),
    myCurrentBufferState(NULL),
-   myParser(*this,             // driver
-            myScannerContext), // scanner context
+   myParser(*this,                // driver
+            myCurrentNumMessages, // counter
+            myScannerContext),    // scanner context
    myCurrentMessage(NULL),
    myIsInitialized(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver"));
 
   // init scanner context
-  if (IRCScannerlex_init_extra(&myCurrentNumMessages, // extra data
-                               &myScannerContext))    // scanner context handle
+  if (IRCScannerlex_init_extra(this,               // extra data
+                               &myScannerContext)) // scanner context handle
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to IRCScannerlex_init_extra(): \"%m\", continuing\n")));
 
@@ -103,8 +104,8 @@ RPG_Net_Protocol_IRCParserDriver::parse(ACE_Message_Block* data_in)
   // *NOTE*: we parse ALL available message fragments
   // *TODO*: yyrestart(), yy_create_buffer/yy_switch_to_buffer, YY_INPUT...
   int result = -1;
-  do
-  { // init scan buffer
+//   do
+//   { // init scan buffer
     if (!scan_begin())
     {
       ACE_DEBUG((LM_ERROR,
@@ -113,7 +114,8 @@ RPG_Net_Protocol_IRCParserDriver::parse(ACE_Message_Block* data_in)
       // clean up
       myCurrentFragment = NULL;
 
-      break;
+//       break;
+      return false;
     } // end IF
 
     // parse our data
@@ -138,12 +140,52 @@ RPG_Net_Protocol_IRCParserDriver::parse(ACE_Message_Block* data_in)
                    ACE_TEXT("caught exception in RPG_Common_IDumpState::dump_state(), continuing\n")));
       }
     } // end IF
-  } while (myCurrentFragment);
+//   } while (myCurrentFragment);
 
   // reset state
   myIsInitialized = false;
 
   return (result == 0);
+}
+
+const bool
+RPG_Net_Protocol_IRCParserDriver::switchBuffer()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::switchBuffer"));
+
+  // sanity check
+  if (myCurrentFragment->cont() == NULL)
+    return false; // <-- nothing to do
+
+  // switch to the next fragment
+  myCurrentFragment = myCurrentFragment->cont();
+
+  // clean state
+  ACE_ASSERT(myCurrentBufferState);
+  IRCScanner_delete_buffer(myCurrentBufferState,
+                           myScannerContext);
+  myCurrentBufferState = NULL;
+
+  // init next buffer
+  myCurrentBufferState = IRCScanner_scan_bytes(myCurrentFragment->rd_ptr(),
+                                               myCurrentFragment->length(),
+                                               myScannerContext);
+  if (myCurrentBufferState == NULL)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ::IRCScanner_scan_bytes(%@, %d), aborting\n"),
+               myCurrentFragment->rd_ptr(),
+               myCurrentFragment->length()));
+
+    // what else can we do ?
+    return false;
+  } // end IF
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("switched to next buffer...\n")));
+
+  return true;
 }
 
 const bool
@@ -274,8 +316,8 @@ RPG_Net_Protocol_IRCParserDriver::scan_end()
                            myScannerContext);
   myCurrentBufferState = NULL;
 
-  // switch fragment (perhaps we have MORE data in any continuation(s))
-  myCurrentFragment = myCurrentFragment->cont();
+//   // switch to the next fragment (if any)
+//   myCurrentFragment = myCurrentFragment->cont();
 }
 
 // void

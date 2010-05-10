@@ -109,7 +109,7 @@ RPG_Net_Protocol_Message::crunch()
 //   ACE_ASSERT(reference_count() == 1);
   // ... assuming stream processing is indeed single-threaded, then the
   // reference count at this stage SHOULD be 2: us, and the next,
-  // trailing "message head". Off course, it COULD be just "us"...
+  // trailing "message head". (Of course, it COULD be just "us"...)
   if (reference_count() <= 2)
   {  // step1: align rd_ptr() with base()
     if (inherited::crunch())

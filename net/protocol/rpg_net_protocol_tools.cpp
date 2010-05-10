@@ -51,7 +51,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
     }
     case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
     {
-      converter << ACE_TEXT("[") << message_in.command.numeric << ACE_TEXT("]");
+      converter << RPG_Net_Protocol_Tools::IRCCode2String(message_in.command.numeric) << ACE_TEXT(" [") << message_in.command.numeric << ACE_TEXT("]");
 
       break;
     }
@@ -96,6 +96,8 @@ RPG_Net_Protocol_Tools::IRCCommandString2Type(const std::string& commandString_i
     return RPG_Net_Protocol_IRCMessage::QUIT;
   else if ((commandString_in) == ACE_TEXT("JOIN"))
     return RPG_Net_Protocol_IRCMessage::JOIN;
+  else if ((commandString_in) == ACE_TEXT("MODE"))
+    return RPG_Net_Protocol_IRCMessage::MODE;
   else if ((commandString_in) == ACE_TEXT("PRIVMSG"))
     return RPG_Net_Protocol_IRCMessage::PRIVMSG;
   else if ((commandString_in) == ACE_TEXT("NOTICE"))
@@ -109,7 +111,7 @@ RPG_Net_Protocol_Tools::IRCCommandString2Type(const std::string& commandString_i
   else
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid command (was: \"%s\"), aborting\n"),
+               ACE_TEXT("invalid/unknown command (was: \"%s\"), aborting\n"),
                commandString_in.c_str()));
 
     return RPG_Net_Protocol_IRCMessage::RPG_NET_PROTOCOL_COMMANDTYPE_INVALID;
@@ -127,7 +129,7 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
   switch (numeric_in)
   {
     case RPG_Net_Protocol_IRC_Codes::RPL_WELCOME:
-      result = ACE_TEXT("RPL_WELCOME");
+      result = ACE_TEXT("RPL_WELCOME"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_YOURHOST:
       result = ACE_TEXT("RPL_YOURHOST"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_CREATED:
@@ -454,8 +456,11 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
 
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid numeric (was: %d), aborting\n"),
+      // *NOTE*: according to the RFC2812, codes between 001-099 are reserved
+      // for client-server connections...
+      // --> maybe in use by some obscure extension
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("invalid/unknown numeric (was: %d), aborting\n"),
                  numeric_in));
 
       break;

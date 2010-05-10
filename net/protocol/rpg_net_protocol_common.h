@@ -23,6 +23,7 @@
 
 #include "rpg_net_protocol_IRCmessage.h"
 
+#include <stream_streammodule.h>
 #include <stream_streammodule_base.h>
 
 #include <ace/Time_Value.h>
@@ -120,7 +121,7 @@ typedef RPG_Net_Module_RuntimeStatistic<RPG_Net_Protocol_SessionMessage,
                                         RPG_Net_Protocol_Message,
                                         RPG_Net_Protocol_CommandType_t,
                                         RPG_Net_Protocol_RuntimeStatistic> RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T;
-DATASTREAM_MODULE_WRITER_ONLY_T(RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T,
-                                RPG_Net_Module_RuntimeStatistic);
+DATASTREAM_MODULE_T(RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T,
+                    RPG_Net_Protocol_Module_RuntimeStatistic);
 
 #endif

@@ -521,7 +521,7 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    9,    7,    7,    7,    7,    7,    7,
+        9,    7,    7,    7,    7,    7,    7,    7,    7,    7,
 
         7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
         7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
@@ -553,7 +553,7 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    9,    7,    7,    7,    7,    7,    7,
+        9,    7,    7,    7,    7,    7,    7,    7,    7,    7,
         7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
         7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
         7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
@@ -616,7 +616,7 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,   10,   10,   10,   10,   10,   10,   10,   10,   10,
-       -6,   10,   10,   11,   10,   10,   10,   10,   10,   10,
+       -6,   10,   10,   -6,   10,   10,   10,   10,   10,   10,
        10,   10,   10,   10,   10,   10,   10,   10,   10,   10,
        10,   10,   10,   10,   10,   10,   10,   10,   10,   10,
 
@@ -679,7 +679,7 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       12,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
+       11,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
 
        -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
        -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
@@ -711,7 +711,7 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       13,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
+       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
        -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
        -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
        -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
@@ -743,7 +743,7 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,   10,   10,   10,   10,   10,   10,   10,   10,   10,
-      -10,   10,   10,   11,   10,   10,   10,   10,   10,   10,
+      -10,   10,   10,  -10,   10,   10,   10,   10,   10,   10,
        10,   10,   10,   10,   10,   10,   10,   10,   10,   10,
        10,   10,   10,   10,   10,   10,   10,   10,   10,   10,
        10,   10,   10,   10,   10,   10,   10,   10,   10,   10,
@@ -774,7 +774,7 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
     {
         5,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-       12,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
+      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
       -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
       -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
 
@@ -804,69 +804,6 @@ static yyconst flex_int16_t yy_nxt[][256] =
       -11,  -11,  -11,  -11,  -11,  -11
     },
 
-    {
-        5,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12
-    },
-
-    {
-        5,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13
-    },
-
     } ;
 
 /* %if-c-only Standard (non-C++) definition */
@@ -891,8 +828,8 @@ static void yy_fatal_error (yyconst char msg[] ,yyscan_t yyscanner );
 	yyg->yy_c_buf_p = yy_cp;
 
 /* %% [4.0] data tables for the DFA and the user's section 1 definitions go here */
-#define YY_NUM_RULES 4
-#define YY_END_OF_BUFFER 5
+#define YY_NUM_RULES 6
+#define YY_END_OF_BUFFER 7
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -900,26 +837,26 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[14] =
+static yyconst flex_int16_t yy_accept[12] =
     {   0,
-        0,    0,    0,    0,    5,    3,    3,    3,    3,    0,
-        0,    1,    2
+        0,    0,    0,    0,    7,    3,    5,    1,    4,    3,
+        2
     } ;
 
 /* Table of booleans, true if rule could match eol. */
-static yyconst flex_int32_t yy_rule_can_match_eol[5] =
+static yyconst flex_int32_t yy_rule_can_match_eol[7] =
     {   0,
-1, 1, 0, 0,     };
+0, 1, 0, 1, 0, 0,     };
 
-static yyconst yy_state_type yy_NUL_trans[14] =
+static yyconst yy_state_type yy_NUL_trans[12] =
     {   0,
         6,    6,    7,    7,    0,   10,    0,    0,    0,   10,
-        0,    0,    0
+        0
     } ;
 
-static yyconst flex_int16_t yy_rule_linenum[4] =
+static yyconst flex_int16_t yy_rule_linenum[6] =
     {   0,
-       21,   23,   27
+       21,   22,   24,   27,   32
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -929,15 +866,14 @@ static yyconst flex_int16_t yy_rule_linenum[4] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#include <stdio.h>
-#include <string>
+#include <ace/Log_Msg.h>
 #define YY_NO_UNISTD_H 1
 /* %option c++ outfile="rpg_net_protocol_IRCbisect.cpp" prefix="IRCBisect" */
 /* %option   outfile="RPG_Net_Protocol_IRCScanner.cpp" header-file="RPG_Net_Protocol_IRCScanner.h" */
 /* %option bison-bridge bison-locations stack */
 
 #define INITIAL 0
-#define end_of_message 1
+#define end_of_frame 1
 
 #ifndef YY_NO_UNISTD_H
 /* Special case for "unistd.h", since it is non-ANSI. We include it way
@@ -1252,15 +1188,7 @@ YY_DECL
 		yy_current_state = yyg->yy_start;
 yy_match:
 		while ( (yy_current_state = yy_nxt[yy_current_state][ YY_SC_TO_UI(*yy_cp) ]) > 0 )
-			{
-			if ( yy_accept[yy_current_state] )
-				{
-				yyg->yy_last_accepting_state = yy_current_state;
-				yyg->yy_last_accepting_cpos = yy_cp;
-				}
-
 			++yy_cp;
-			}
 
 		yy_current_state = -yy_current_state;
 
@@ -1291,13 +1219,13 @@ do_action:	/* This label is used only to access EOF actions. */
 			{
 			if ( yy_act == 0 )
 				fprintf( stderr, "--scanner backing up\n" );
-			else if ( yy_act < 4 )
+			else if ( yy_act < 6 )
 				fprintf( stderr, "--accepting rule at line %ld (\"%s\")\n",
 				         (long)yy_rule_linenum[yy_act], yytext );
-			else if ( yy_act == 4 )
+			else if ( yy_act == 6 )
 				fprintf( stderr, "--accepting default rule (\"%s\")\n",
 				         yytext );
-			else if ( yy_act == 5 )
+			else if ( yy_act == 7 )
 				fprintf( stderr, "--(end of buffer or a NUL)\n" );
 			else
 				fprintf( stderr, "--EOF (start condition %d)\n", YY_START );
@@ -1306,38 +1234,45 @@ do_action:	/* This label is used only to access EOF actions. */
 		switch ( yy_act )
 	{ /* beginning of action switch */
 /* %% [13.0] actions go here */
-			case 0: /* must back up */
-			/* undo the effects of YY_DO_BEFORE_ACTION */
-			*yy_cp = yyg->yy_hold_char;
-			yy_cp = yyg->yy_last_accepting_cpos + 1;
-			yy_current_state = yyg->yy_last_accepting_state;
-			goto yy_find_action;
 
 case 1:
-/* rule 1 can match eol */
-*yy_cp = yyg->yy_hold_char; /* undo effects of setting up yytext */
-yyg->yy_c_buf_p = yy_cp -= 2;
-YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-{ BEGIN(end_of_message);
-                                return yyleng; }
+{ BEGIN(end_of_frame); }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-{ BEGIN(INITIAL);
-                                (*yyextra)++;
-                                return -1; }
-	YY_BREAK
-case YY_STATE_EOF(INITIAL):
-case YY_STATE_EOF(end_of_message):
-{ return 0; }
+{ (*yyextra)++;
+                         return -1; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-{ return 1; }
+{ return yyleng; }
 	YY_BREAK
+// end <INITIAL>
+
 case 4:
+/* rule 4 can match eol */
+YY_RULE_SETUP
+{ BEGIN(INITIAL);
+                         (*yyextra)++;
+                         return -1; }
+	YY_BREAK
+// end <end_of_frame>
+case YY_STATE_EOF(INITIAL):
+case YY_STATE_EOF(end_of_frame):
+{ return 0; }
+	YY_BREAK
+case 5:
+YY_RULE_SETUP
+{ // debug info
+                         ACE_DEBUG((LM_ERROR,
+                                    ACE_TEXT("invalid character: \"%c\" (%d), continuing\n"),
+                                    yytext[0],
+                                    yytext[0]));
+                         return 1; }
+	YY_BREAK
+case 6:
 YY_RULE_SETUP
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
@@ -1650,11 +1585,6 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 			}
 		else
 			yy_current_state = yy_NUL_trans[yy_current_state];
-		if ( yy_accept[yy_current_state] )
-			{
-			yyg->yy_last_accepting_state = yy_current_state;
-			yyg->yy_last_accepting_cpos = yy_cp;
-			}
 		}
 
 	return yy_current_state;
@@ -1674,19 +1604,9 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	register int yy_is_jam;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner; /* This var may be unused depending upon options. */
 /* %% [17.0] code to find the next state, and perhaps do backing up, goes here */
-	register char *yy_cp = yyg->yy_c_buf_p;
 
 	yy_current_state = yy_NUL_trans[yy_current_state];
 	yy_is_jam = (yy_current_state == 0);
-
-	if ( ! yy_is_jam )
-		{
-		if ( yy_accept[yy_current_state] )
-			{
-			yyg->yy_last_accepting_state = yy_current_state;
-			yyg->yy_last_accepting_cpos = yy_cp;
-			}
-		}
 
 	return yy_is_jam ? 0 : yy_current_state;
 }

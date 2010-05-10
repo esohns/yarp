@@ -41,6 +41,7 @@ class RPG_Net_Protocol_IRCMessage
       USER,
       QUIT,
       JOIN,
+      MODE,
       PRIVMSG,
       NOTICE,
       PING,

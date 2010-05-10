@@ -30,6 +30,7 @@
 #include <ace/Global_Macros.h>
 
 // forward declaration(s)
+class Stream_IAllocator;
 class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
 
@@ -42,7 +43,9 @@ class RPG_Net_Protocol_Module_IRCParser
   virtual ~RPG_Net_Protocol_Module_IRCParser();
 
   // configuration / initialization
-  const bool init(const bool& = RPG_NET_PROTOCOL_DEF_TRACE_PARSING); // debug parser ?
+  const bool init(Stream_IAllocator*,                                 // message allocator
+                  const bool& = RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES, // crunch messages ?
+                  const bool& = RPG_NET_PROTOCOL_DEF_TRACE_PARSING);  // debug parser ?
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Protocol_Message*&, // data message handle
@@ -56,6 +59,9 @@ class RPG_Net_Protocol_Module_IRCParser
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCParser(const RPG_Net_Protocol_Module_IRCParser&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCParser& operator=(const RPG_Net_Protocol_Module_IRCParser&));
 
+  // helper methods
+  RPG_Net_Protocol_Message* allocateMessage(const unsigned long&); // requested size
+
   // message allocator
   Stream_IAllocator*               myAllocator;
 
@@ -63,6 +69,7 @@ class RPG_Net_Protocol_Module_IRCParser
   RPG_Net_Protocol_IRCParserDriver myDriver;
   bool                             myDebugParser;
 
+  bool                             myCrunchMessages;
   bool                             myIsInitialized;
 };
 

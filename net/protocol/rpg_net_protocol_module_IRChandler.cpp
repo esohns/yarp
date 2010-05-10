@@ -120,9 +120,10 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
     {
       // debug info
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("[%u]: received %s\n"),
+                 ACE_TEXT("[%u]: received \"%s\" [%u]\n"),
                  message_inout->getID(),
-                 RPG_Net_Protocol_Tools::IRCCode2String(message_inout->getData()->command.numeric).c_str()));
+                 RPG_Net_Protocol_Tools::IRCCode2String(message_inout->getData()->command.numeric).c_str(),
+                 message_inout->getData()->command.numeric));
 
       switch (message_inout->getData()->command.numeric)
       {
@@ -130,6 +131,14 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         case RPG_Net_Protocol_IRC_Codes::RPL_YOURHOST:
         case RPG_Net_Protocol_IRC_Codes::RPL_CREATED:
         case RPG_Net_Protocol_IRC_Codes::RPL_MYINFO:
+        case RPG_Net_Protocol_IRC_Codes::RPL_BOUNCE:
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCLIENT:
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERME:
+        case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:
+        case RPG_Net_Protocol_IRC_Codes::RPL_MOTD:
+        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:
+        case RPG_Net_Protocol_IRC_Codes::RPL_NAMREPLY:
+        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFNAMES:
         {
 
           break;
@@ -151,6 +160,24 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
     {
       switch (RPG_Net_Protocol_Tools::IRCCommandString2Type(*message_inout->getData()->command.string))
       {
+        case RPG_Net_Protocol_IRCMessage::JOIN:
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("[%u]: received \"JOIN\": \"%s\"\n"),
+                     message_inout->getID(),
+                     message_inout->getData()->params.back().c_str()));
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::MODE:
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("[%u]: received \"MODE\": \"%s\"\n"),
+                     message_inout->getID(),
+                     message_inout->getData()->params.back().c_str()));
+
+          break;
+        }
         case RPG_Net_Protocol_IRCMessage::NOTICE:
         {
           ACE_DEBUG((LM_DEBUG,

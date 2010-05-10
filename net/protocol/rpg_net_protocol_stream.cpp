@@ -154,7 +154,9 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
 
     return false;
   } // end IF
-  if (!IRCParser_impl->init(config_in.debugParser)) // message allocator
+  if (!IRCParser_impl->init(config_in.messageAllocator,           // message allocator
+                            RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES, // "crunch" messages ?
+                            config_in.debugParser))               // debug parser ?
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
@@ -185,7 +187,7 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
     return false;
   } // end IF
   if (!IRCSplitter_impl->init(config_in.messageAllocator, // message allocator
-                              false,                      // "crunch" messages
+                              false,                      // "crunch" messages ?
                               0,                          // DON'T collect statistics
                               config_in.debugParser))     // trace scanning
   {
@@ -230,7 +232,8 @@ RPG_Net_Protocol_Stream::collect(RPG_Net_Protocol_RuntimeStatistic& data_out) co
 
   RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T* runtimeStatistic_impl = NULL;
   runtimeStatistic_impl = ACE_dynamic_cast(RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T*,
-                                           ACE_const_cast(RPG_Net_Module_RuntimeStatistic_Module&, myRuntimeStatistic).writer());
+                                           ACE_const_cast(RPG_Net_Protocol_Module_RuntimeStatistic_Module&,
+                                                          myRuntimeStatistic).writer());
   if (!runtimeStatistic_impl)
   {
     ACE_DEBUG((LM_ERROR,

@@ -147,7 +147,7 @@ namespace yy {
     typedef token::yytokentype token_type;
 
     /// Build a parser object.
-    RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg, yyscan_t& context_yyarg);
+    RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg, unsigned long& count_yyarg, yyscan_t& context_yyarg);
     virtual ~RPG_Net_Protocol_IRCParser ();
 
     /// Parse.
@@ -236,7 +236,7 @@ namespace yy {
     static const unsigned char yytable_[];
     static const signed char yytable_ninf_;
 
-    static const unsigned char yycheck_[];
+    static const signed char yycheck_[];
 
     /// For a state, its accessing symbol.
     static const unsigned char yystos_[];
@@ -308,6 +308,7 @@ namespace yy {
 
     /* User arguments.  */
     RPG_Net_Protocol_IRCParserDriver& driver;
+    unsigned long& count;
     yyscan_t& context;
   };
 

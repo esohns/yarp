@@ -36,11 +36,12 @@ class ACE_Message_Block;
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
 
 // Tell Flex the lexer's prototype ...
-#define YY_DECL                                                       \
+#define YY_DECL                                                 \
   yy::RPG_Net_Protocol_IRCParser::token_type                    \
   yylex(yy::RPG_Net_Protocol_IRCParser::semantic_type* yylval,  \
         yy::RPG_Net_Protocol_IRCParser::location_type* yylloc,  \
-        RPG_Net_Protocol_IRCParserDriver& driver,                     \
+        RPG_Net_Protocol_IRCParserDriver& driver,               \
+        unsigned long& count,                                   \
         yyscan_t& yyscanner)
 // ... and declare it for the parser's sake.
 YY_DECL;
@@ -65,13 +66,16 @@ class RPG_Net_Protocol_IRCParserDriver
   //    (at positions length() + 1, length() + 2)
   const bool parse(ACE_Message_Block*); // data
 
+  // invoked by the scanner ONLY !!!
+  const bool switchBuffer();
+
   // debug info
   const bool getTraceScanning() const;
 
   // error-handling
   void error(const yy::location&, // location
-             const std::string&);       // message
-  void error(const std::string&);       // message
+             const std::string&); // message
+  void error(const std::string&); // message
 
  private:
   // safety measures

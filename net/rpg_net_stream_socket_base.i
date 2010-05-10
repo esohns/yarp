@@ -107,6 +107,8 @@ RPG_Net_StreamSocketBase<ConfigType,
     // reactor will invoke close() --> handle_close()
     return -1;
   } // end IF
+  // debug info
+  myStream.dump_state();
   myStream.start();
   if (!myStream.isRunning())
   {

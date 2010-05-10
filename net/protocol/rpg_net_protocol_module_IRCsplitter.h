@@ -116,7 +116,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
   RPG_Net_Protocol_Message* myCurrentMessage;
   RPG_Net_Protocol_Message* myCurrentBuffer;
   unsigned long             myCurrentMessageLength;
-  bool                      myCurrentBufferIsResized;
+//   bool                      myCurrentBufferIsResized;
 
   bool                      myIsInitialized;
 };

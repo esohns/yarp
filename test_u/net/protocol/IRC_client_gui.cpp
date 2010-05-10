@@ -93,8 +93,8 @@ join_clicked_cb(GtkWidget* button_in,
 
   ACE_UNUSED_ARG(button_in);
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("join_clicked_cb...\n")));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("join_clicked_cb...\n")));
 
   // sanity check(s)
   ACE_ASSERT(userData_in);
@@ -120,8 +120,8 @@ part_clicked_cb(GtkWidget* button_in,
 
   ACE_UNUSED_ARG(button_in);
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("part_clicked_cb...\n")));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("part_clicked_cb...\n")));
 
   // sanity check(s)
   ACE_ASSERT(userData_in);
