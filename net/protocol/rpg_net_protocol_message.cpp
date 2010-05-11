@@ -238,80 +238,41 @@ RPG_Net_Protocol_Message::duplicate(void) const
 }
 
 const std::string
-RPG_Net_Protocol_Message::messageType2String(const RPG_Net_Protocol_CommandType_t& messageType_in)
+RPG_Net_Protocol_Message::commandType2String(const RPG_Net_Protocol_CommandType_t& commandType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::messageType2String"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::commandType2String"));
 
-  std::string result = ACE_TEXT("RPG_NET_PROTOCOL_COMMANDTYPE_INVALID");
+  std::string result = ACE_TEXT("INVALID/UNKNOWN");
 
-  switch (messageType_in)
+  switch (commandType_in)
   {
     case RPG_Net_Protocol_IRCMessage::PASS:
-    {
-      result = ACE_TEXT("PASS");
-
-      break;
-    }
+      result = ACE_TEXT("PASS"); break;
     case RPG_Net_Protocol_IRCMessage::NICK:
-    {
-      result = ACE_TEXT("NICK");
-
-      break;
-    }
+      result = ACE_TEXT("NICK"); break;
     case RPG_Net_Protocol_IRCMessage::USER:
-    {
-      result = ACE_TEXT("USER");
-
-      break;
-    }
+      result = ACE_TEXT("USER"); break;
     case RPG_Net_Protocol_IRCMessage::QUIT:
-    {
-      result = ACE_TEXT("QUIT");
-
-      break;
-    }
+      result = ACE_TEXT("QUIT"); break;
     case RPG_Net_Protocol_IRCMessage::JOIN:
-    {
-      result = ACE_TEXT("JOIN");
-
-      break;
-    }
+      result = ACE_TEXT("JOIN"); break;
+    case RPG_Net_Protocol_IRCMessage::MODE:
+      result = ACE_TEXT("MODE"); break;
     case RPG_Net_Protocol_IRCMessage::PRIVMSG:
-    {
-      result = ACE_TEXT("PRIVMSG");
-
-      break;
-    }
+      result = ACE_TEXT("PRIVMSG"); break;
     case RPG_Net_Protocol_IRCMessage::NOTICE:
-    {
-      result = ACE_TEXT("NOTICE");
-
-      break;
-    }
+      result = ACE_TEXT("NOTICE"); break;
     case RPG_Net_Protocol_IRCMessage::PING:
-    {
-      result = ACE_TEXT("PING");
-
-      break;
-    }
+      result = ACE_TEXT("PING"); break;
     case RPG_Net_Protocol_IRCMessage::PONG:
-    {
-      result = ACE_TEXT("PONG");
-
-      break;
-    }
+      result = ACE_TEXT("PONG"); break;
     case RPG_Net_Protocol_IRCMessage::ERROR:
-    {
-      result = ACE_TEXT("ERROR");
-
-      break;
-    }
+      result = ACE_TEXT("ERROR"); break;
     default:
     {
-      // debug info
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid message type (was: %d), aborting\n"),
-                 messageType_in));
+      // try numeric conversion
+      result = RPG_Net_Protocol_Tools::IRCCode2String(ACE_static_cast(RPG_Net_Protocol_IRCNumeric_t,
+                                                                      commandType_in));
 
       break;
     }

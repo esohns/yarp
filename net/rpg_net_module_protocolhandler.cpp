@@ -189,7 +189,7 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inou
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("[%u]: unknown message type: \"%s\": protocol error, aborting\n"),
                  message_inout->getID(),
-                 RPG_Net_Message::messageType2String(message_header->messageType).c_str()));
+                 RPG_Net_Message::commandType2String(message_header->messageType).c_str()));
 
       break;
     }

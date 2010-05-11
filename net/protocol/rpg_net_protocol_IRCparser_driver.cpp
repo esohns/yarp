@@ -190,6 +190,14 @@ RPG_Net_Protocol_IRCParserDriver::switchBuffer()
 }
 
 const bool
+RPG_Net_Protocol_IRCParserDriver::moreData()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::moreData"));
+
+  return (myCurrentFragment->cont() != NULL);
+}
+
+const bool
 RPG_Net_Protocol_IRCParserDriver::getTraceScanning() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::getTraceScanning"));

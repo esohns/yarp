@@ -590,7 +590,7 @@ static yyconst flex_int16_t yy_nxt[][256] =
        26,   26,   16,   26,   26,   26,   26,   26,   26,   26,
        26,   26,   26,   26,   26,   26,   26,   26,   26,   26,
        26,   26,   26,   26,   26,   26,   26,   26,   26,   26,
-       26,   26,   26,   26,   26,   26,   26,   26,   26,   26,
+       26,   26,   26,   26,   16,   26,   26,   26,   26,   26,
        26,   26,   26,   26,   26,   26,   26,   26,   26,   26,
        26,   26,   26,   26,   26,   26,   26,   26,   26,   26,
        26,   26,   26,   26,   26,   26,   26,   26,   26,   26,
@@ -622,7 +622,7 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
        26,   26,   26,   26,   26,   26,   26,   26,   26,   26,
        26,   26,   26,   26,   26,   26,   26,   26,   26,   26,
-       26,   26,   26,   26,   26,   26,   26,   26,   26,   26,
+       26,   26,   26,   26,   16,   26,   26,   26,   26,   26,
        26,   26,   26,   26,   26,   26,   26,   26,   26,   26,
        26,   26,   26,   26,   26,   26,   26,   26,   26,   26,
        26,   26,   26,   26,   26,   26,   26,   26,   26,   26,
@@ -1879,35 +1879,35 @@ static yyconst flex_int16_t yy_nxt[][256] =
     },
 
     {
-       15,   44,   44,   44,   44,   44,   44,   44,   44,  -46,
-      -46,   44,   44,  -46,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   45,   44,   44,   44,   44,   44,   44,   44,
+       15,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
 
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   46,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
 
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
 
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44
+      -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,  -46,
+      -46,  -46,  -46,  -46,  -46,  -46
     },
 
     {
@@ -2382,8 +2382,8 @@ static yyconst yy_state_type yy_NUL_trans[60] =
 
 static yyconst flex_int16_t yy_rule_linenum[20] =
     {   0,
-       71,   75,   79,   82,   85,   89,   93,   99,  104,  110,
-      116,  121,  127,  130,  133,  137,  144,  150,  156
+       77,   81,   85,   88,   91,   95,   99,  105,  110,  116,
+      122,  127,  133,  136,  139,  143,  150,  156,  162
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -2396,6 +2396,7 @@ static yyconst flex_int16_t yy_rule_linenum[20] =
 #include <stdlib.h>
 
 #include <string>
+#include <sstream>
 
 #include <ace/OS_Memory.h>
 #include <ace/Log_Msg.h>
@@ -2404,7 +2405,7 @@ static yyconst flex_int16_t yy_rule_linenum[20] =
 
 /* By default IRCScannerlex returns int, we use token_type.
    Unfortunately yyterminate by default returns 0, which is
-   not of token_type.  */
+   not of token_type. */
 #define yyterminate() return token::END
 #define YY_NO_UNISTD_H 1
 /* %option c++ outfile="rpg_net_protocol_IRCscanner.cpp" prefix="IRCScanner" */
@@ -2414,10 +2415,15 @@ static yyconst flex_int16_t yy_rule_linenum[20] =
            --> [[:alpha:][:digit:].] is just an uninformed suggestion */
 /*LETTER    ==     [a-zA-Z]*/
 /*NUMBER    ==     [0-9]*/
+/* *NOTE*: in order to pickup the hostname in a sequence "!user[@host] ",
+           disallow "@" within a username... */
+/* NONWHITE       [\x00-\xFF]{-}[ \t\0\r\n] */
+/* USER           {NONWHITE}+ */
 
 #define YY_USER_ACTION  yylloc->columns(yyleng);
 /* *NOTE*: it seems that the following "exceptions" are allowed:
-  - the trailing param does NOT need a ':' prefix IF it doesn't contain <SPACE>s...
+           - the trailing param does NOT need a ':' prefix IF it doesn't contain
+             <SPACE>s...
 */
 
 #define INITIAL 0
@@ -2694,6 +2700,7 @@ YY_DECL
   typedef yy::RPG_Net_Protocol_IRCParser::token token;
   typedef yy::RPG_Net_Protocol_IRCParser::token_type token_type;
   yy_flex_debug=driver.getTraceScanning();
+  std::ostringstream converter;
 
 	if ( !yyg->yy_init )
 		{
@@ -2978,8 +2985,8 @@ YY_RULE_SETUP
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-{ count++;
-                             yylloc->step();
+{ yylloc->step();
+                             count++;
                              return token::END; }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
@@ -2995,13 +3002,21 @@ case YY_STATE_EOF(trailing):
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-{ driver.error(*yylloc, ACE_TEXT("invalid character"));
-                             // debug info
-                             ACE_DEBUG((LM_ERROR,
-                                        ACE_TEXT("invalid character: \"%c\" (%d), aborting\n"),
-                                        yytext[0],
-                                        yytext[0]));
-                             return token_type(yytext[0]); }
+{ yylloc->step();
+                             if (!driver.moreData())
+                             {
+                               // debug info
+                               std::string error_message(ACE_TEXT("invalid character (was \""));
+                               error_message += yytext[0];
+                               converter.str(ACE_TEXT(""));
+                               converter << ACE_static_cast(unsigned long, yytext[0]);
+                               error_message += ACE_TEXT("\" - ");
+                               error_message += converter.str();
+                               error_message += ACE_TEXT("), continuing");
+                               driver.error(*yylloc, error_message);
+
+                               return token_type(yytext[0]);
+                             } /* end IF */ }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP

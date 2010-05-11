@@ -424,7 +424,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
       {
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("\"%s\": %u --> %.2f %%\n"),
-                   ProtocolMessageType::messageType2String(iter->first).c_str(),
+                   ProtocolMessageType::commandType2String(iter->first).c_str(),
                    iter->second,
                    ACE_static_cast(double,
                                    ((iter->second * 100.0) / (myNumInboundMessages - myNumSessionMessages)))));

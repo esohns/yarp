@@ -68,6 +68,7 @@ class RPG_Net_Protocol_IRCParserDriver
 
   // invoked by the scanner ONLY !!!
   const bool switchBuffer();
+  const bool moreData();
 
   // debug info
   const bool getTraceScanning() const;

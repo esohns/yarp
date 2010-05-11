@@ -409,32 +409,24 @@ RPG_Net_Message::duplicate(void) const
 }
 
 const std::string
-RPG_Net_Message::messageType2String(const RPG_Net_MessageType& messageType_in)
+RPG_Net_Message::commandType2String(const RPG_Net_MessageType& messageType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Message::messageType2String"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Message::commandType2String"));
 
-  std::string result;
+  std::string result = ACE_TEXT("INVALID");
 
   switch (messageType_in)
   {
     case RPG_Net_Remote_Comm::RPG_NET_PING:
-    {
-      result = ACE_TEXT("RPG_NET_PING");
-
-      break;
-    }
+      result = ACE_TEXT("RPG_NET_PING"); break;
     case RPG_Net_Remote_Comm::RPG_NET_PONG:
-    {
-      result = ACE_TEXT("RPG_NET_PONG");
-
-      break;
-    }
+      result = ACE_TEXT("RPG_NET_PONG"); break;
     default:
     {
       // debug info
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid message header: %d, aborting\n"),
-                          messageType_in));
+                 ACE_TEXT("invalid message type (was %d), aborting\n"),
+                 messageType_in));
 
       break;
     }

@@ -68,7 +68,7 @@ class RPG_Net_Message
   // *NOTE*: this uses our allocator (if any) to create a new message
   virtual ACE_Message_Block* duplicate(void) const;
 
-  static const std::string messageType2String(const RPG_Net_MessageType&);
+  static const std::string commandType2String(const RPG_Net_MessageType&);
 
  protected:
   // copy ctor to be used by duplicate() and child classes

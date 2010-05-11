@@ -150,7 +150,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
                      message_inout->getID(),
                      message_inout->getData()->command.numeric));
 
-          return;
+          break;
         }
       } // end SWITCH
 
@@ -209,7 +209,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
                              RPG_Net_Protocol_IRCMessage());
             ACE_ASSERT(reply_struct);
             ACE_NEW_NORETURN(reply_struct->command.string,
-                             std::string(RPG_Net_Protocol_Message::messageType2String(RPG_Net_Protocol_IRCMessage::PONG)));
+                             std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::PONG)));
             ACE_ASSERT(reply_struct->command.string);
             reply_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
             reply_struct->params.push_back(message_inout->getData()->params.back());
@@ -359,7 +359,7 @@ RPG_Net_Protocol_Module_IRCHandler::joinIRC(const RPG_Net_Protocol_IRCLoginOptio
                    RPG_Net_Protocol_IRCMessage());
   ACE_ASSERT(pass_struct);
   ACE_NEW_NORETURN(pass_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::messageType2String(RPG_Net_Protocol_IRCMessage::PASS)));
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::PASS)));
   ACE_ASSERT(pass_struct->command.string);
   pass_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
   pass_struct->params.push_back(loginOptions_in.password);
@@ -373,7 +373,7 @@ RPG_Net_Protocol_Module_IRCHandler::joinIRC(const RPG_Net_Protocol_IRCLoginOptio
                    RPG_Net_Protocol_IRCMessage());
   ACE_ASSERT(nick_struct);
   ACE_NEW_NORETURN(nick_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::messageType2String(RPG_Net_Protocol_IRCMessage::NICK)));
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::NICK)));
   ACE_ASSERT(nick_struct->command.string);
   nick_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
   nick_struct->params.push_back(loginOptions_in.nick);
@@ -387,7 +387,7 @@ RPG_Net_Protocol_Module_IRCHandler::joinIRC(const RPG_Net_Protocol_IRCLoginOptio
                    RPG_Net_Protocol_IRCMessage());
   ACE_ASSERT(user_struct);
   ACE_NEW_NORETURN(user_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::messageType2String(RPG_Net_Protocol_IRCMessage::USER)));
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::USER)));
   ACE_ASSERT(user_struct->command.string);
   user_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
   user_struct->params.push_back(loginOptions_in.user.username);
@@ -430,7 +430,7 @@ RPG_Net_Protocol_Module_IRCHandler::joinIRC(const RPG_Net_Protocol_IRCLoginOptio
                    RPG_Net_Protocol_IRCMessage());
   ACE_ASSERT(join_struct);
   ACE_NEW_NORETURN(join_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::messageType2String(RPG_Net_Protocol_IRCMessage::JOIN)));
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::JOIN)));
   ACE_ASSERT(join_struct->command.string);
   join_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 //   std::string channel_name = ACE_TEXT_ALWAYS_CHAR("#");
@@ -469,7 +469,7 @@ RPG_Net_Protocol_Module_IRCHandler::sendMessage(const std::string& message_in)
                    RPG_Net_Protocol_IRCMessage());
   ACE_ASSERT(msg_struct);
   ACE_NEW_NORETURN(msg_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::messageType2String(RPG_Net_Protocol_IRCMessage::PRIVMSG)));
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::PRIVMSG)));
   ACE_ASSERT(msg_struct->command.string);
   msg_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
   msg_struct->params.push_back(myChannelName);
@@ -490,7 +490,7 @@ RPG_Net_Protocol_Module_IRCHandler::leaveIRC(const std::string& reason_in)
                    RPG_Net_Protocol_IRCMessage());
   ACE_ASSERT(quit_struct);
   ACE_NEW_NORETURN(quit_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::messageType2String(RPG_Net_Protocol_IRCMessage::QUIT)));
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::QUIT)));
   ACE_ASSERT(quit_struct->command.string);
   quit_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
   if (!reason_in.empty())

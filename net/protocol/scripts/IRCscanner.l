@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include <string>
+#include <sstream>
 
 #include <ace/OS_Memory.h>
 #include <ace/Log_Msg.h>
@@ -10,7 +11,7 @@
 
 /* By default yylex returns int, we use token_type.
    Unfortunately yyterminate by default returns 0, which is
-   not of token_type.  */
+   not of token_type. */
 #define yyterminate() return token::END
 %}
 
@@ -36,8 +37,11 @@ NUMBER         [[:digit:]]
 SPECIAL        [-\[\]\\`^{}]
 NICK           {LETTER}([{LETTER}{NUMBER}{SPECIAL}])*
 ORIGIN         {SERVERNAME}|{NICK}
-NONWHITE       [\x00-\xFF]{-}[ \t\0\r\n]
-USER           {NONWHITE}+
+/* *NOTE*: in order to pickup the hostname in a sequence "!user[@host] ",
+           disallow "@" within a username... */
+USER           ([\x00-\xFF]{-}[ \t\0\r\n@])+
+/* NONWHITE       [\x00-\xFF]{-}[ \t\0\r\n] */
+/* USER           {NONWHITE}+ */
 CHSTRING       ([\x00-\xFF]{-}[ \b\0\r\n,])+
 MASK           [#$]{CHSTRING}
 CHANNEL        [#&]{CHSTRING}
@@ -57,7 +61,8 @@ CRLF           \r\n
 %}
 
 /* *NOTE*: it seems that the following "exceptions" are allowed:
-  - the trailing param does NOT need a ':' prefix IF it doesn't contain <SPACE>s...
+           - the trailing param does NOT need a ':' prefix IF it doesn't contain
+             <SPACE>s...
 */
 
 %%
@@ -66,6 +71,7 @@ CRLF           \r\n
   typedef yy::RPG_Net_Protocol_IRCParser::token token;
   typedef yy::RPG_Net_Protocol_IRCParser::token_type token_type;
   yy_flex_debug=driver.getTraceScanning();
+  std::ostringstream converter;
 %}
 
 <INITIAL>":"               { yylloc->step();
@@ -147,19 +153,27 @@ CRLF           \r\n
                                               std::string(yytext, yyleng));
                              return token::PARAM; }
 } // end <trailing>
-<INITIAL>{CRLF}            { count++;
-                             yylloc->step();
+<INITIAL>{CRLF}            { yylloc->step();
+                             count++;
                              return token::END; }
 <<EOF>>                    { yylloc->step();
                              if (!driver.switchBuffer())
                               yyterminate(); }
-<*>(?s:.)                  { driver.error(*yylloc, ACE_TEXT("invalid character"));
-                             // debug info
-                             ACE_DEBUG((LM_ERROR,
-                                        ACE_TEXT("invalid character: \"%c\" (%d), aborting\n"),
-                                        yytext[0],
-                                        yytext[0]));
-                             return token_type(yytext[0]); }
+<*>(?s:.)                  { yylloc->step();
+                             if (!driver.moreData())
+                             {
+                               // debug info
+                               std::string error_message(ACE_TEXT("invalid character (was \""));
+                               error_message += yytext[0];
+                               converter.str(ACE_TEXT(""));
+                               converter << ACE_static_cast(unsigned long, yytext[0]);
+                               error_message += ACE_TEXT("\" - ");
+                               error_message += converter.str();
+                               error_message += ACE_TEXT("), continuing");
+                               driver.error(*yylloc, error_message);
+
+                               return token_type(yytext[0]);
+                             } /* end IF */ }
 %%
 
 // #ifdef __cplusplus

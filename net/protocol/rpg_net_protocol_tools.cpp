@@ -131,7 +131,7 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCCode2String"));
 
   // init result
-  std::string result = ACE_TEXT("RPG_NET_PROTOCOL_IRC_CODE_INVALID");
+  std::string result = ACE_TEXT("INVALID/UNKNOWN");
 
   switch (numeric_in)
   {
@@ -465,7 +465,7 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
     {
       // *NOTE*: according to the RFC2812, codes between 001-099 are reserved
       // for client-server connections...
-      // --> maybe in use by some obscure extension
+      // --> maybe in use by some extension
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("invalid/unknown numeric (was: %d), aborting\n"),
                  numeric_in));
