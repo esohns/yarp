@@ -140,6 +140,56 @@ part_clicked_cb(GtkWidget* button_in,
 }
 
 void
+send_clicked_cb(GtkWidget* button_in,
+                gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::send_clicked_cb"));
+
+  ACE_UNUSED_ARG(button_in);
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("send_clicked_cb...\n")));
+
+  // step1: retrieve available data
+  // sanity check(s)
+  ACE_ASSERT(builder);
+  // retrieve buffer handle
+  GtkEntryBuffer* buffer = NULL;
+  GtkEntry* entry = NULL;
+  entry = GTK_ENTRY(gtk_builder_get_object(builder,
+                                           ACE_TEXT_ALWAYS_CHAR("entry")));
+  ACE_ASSERT(entry);
+  buffer = gtk_entry_get_buffer(entry);
+  ACE_ASSERT(buffer);
+
+  // retrieve textbuffer data
+  std::string message_string;
+  message_string.append(gtk_entry_buffer_get_text(buffer),
+                        gtk_entry_buffer_get_length(buffer));
+
+  // step2: pass data to controller
+  // sanity check(s)
+  ACE_ASSERT(userData_in);
+
+  cb_data* data = ACE_static_cast(cb_data*,
+                                  userData_in);
+  try
+  {
+    data->controller->sendMessage(message_string);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::leaveIRC(), continuing\n")));
+  }
+
+  // clear buffer
+  gtk_entry_buffer_delete_text(buffer,
+                               0,
+                               gtk_entry_buffer_get_length(buffer));
+}
+
+void
 quit_activated_cb(GtkWidget* widget_in)
 {
   ACE_TRACE(ACE_TEXT("::quit_activated_cb"));
@@ -164,10 +214,9 @@ quit_activated_cb(GtkWidget* widget_in)
 
   // finished processing data, no more data will be advertised
   // --> we can safely close the window...
-  GtkWidget* dialog = NULL;
-  dialog = GTK_WIDGET(gtk_builder_get_object(builder,
-                                             ACE_TEXT_ALWAYS_CHAR("dialog")));
-  gtk_widget_destroy(dialog);
+  // sanity check(s)
+  ACE_ASSERT(window);
+  gtk_widget_destroy(window);
 
   // ...and leave GTK
   gtk_main_quit();
@@ -433,6 +482,7 @@ do_builder(const std::string& UIfile_in,
 
   // step1: load widget tree
   builder = gtk_builder_new();
+  ACE_ASSERT(builder);
   if (!builder)
   {
     ACE_DEBUG((LM_ERROR,
@@ -462,12 +512,12 @@ do_builder(const std::string& UIfile_in,
   // step2: retrieve textview handle
   textView_out = GTK_TEXT_VIEW(gtk_builder_get_object(builder,
                                                       ACE_TEXT_ALWAYS_CHAR("textview")));
+  ACE_ASSERT(textView_out);
   if (!textView_out)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to gtk_builder_get_object(\"textview\"): \"%m\", aborting\n")));
 
-    // clean up
     g_object_unref(G_OBJECT(builder));
     builder = NULL;
 
@@ -477,21 +527,31 @@ do_builder(const std::string& UIfile_in,
   // step3: connect signals/slots
 //   gtk_builder_connect_signals(builder,
 //                               &ACE_const_cast(cb_data&, userData_in));
-  GtkWidget* button = NULL;
-  button = GTK_WIDGET(gtk_builder_get_object(builder,
+  GtkButton* button = NULL;
+  button = GTK_BUTTON(gtk_builder_get_object(builder,
                                              ACE_TEXT_ALWAYS_CHAR("join")));
+  ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(join_clicked_cb),
                    &ACE_const_cast(cb_data&, userData_in));
-  button = GTK_WIDGET(gtk_builder_get_object(builder,
+  button = GTK_BUTTON(gtk_builder_get_object(builder,
                                              ACE_TEXT_ALWAYS_CHAR("part")));
+  ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(part_clicked_cb),
                    &ACE_const_cast(cb_data&, userData_in));
-  button = GTK_WIDGET(gtk_builder_get_object(builder,
+  button = GTK_BUTTON(gtk_builder_get_object(builder,
+                                             ACE_TEXT_ALWAYS_CHAR("send")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(send_clicked_cb),
+                   &ACE_const_cast(cb_data&, userData_in));
+  button = GTK_BUTTON(gtk_builder_get_object(builder,
                                              ACE_TEXT_ALWAYS_CHAR("quit")));
+  ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(quit_activated_cb),
@@ -500,18 +560,27 @@ do_builder(const std::string& UIfile_in,
   // step4: retrieve toplevel handle
   window = GTK_WIDGET(gtk_builder_get_object(builder,
                                              ACE_TEXT_ALWAYS_CHAR("dialog")));
+  ACE_ASSERT(window);
   if (!window)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to gtk_builder_get_object(\"dialog\"): \"%m\", aborting\n")));
 
-    // clean up
     g_object_unref(G_OBJECT(builder));
     builder = NULL;
+    textView_out = NULL;
 
     return;
   } // end IF
-  // connect default signal
+  // connect default signals
+  g_signal_connect(window,
+                   ACE_TEXT_ALWAYS_CHAR("delete-event"),
+                   G_CALLBACK(quit_activated_cb),
+                   &window);
+//   g_signal_connect(window,
+//                    ACE_TEXT_ALWAYS_CHAR("destroy-event"),
+//                    G_CALLBACK(quit_activated_cb),
+//                    &window);
   g_signal_connect(window,
                    ACE_TEXT_ALWAYS_CHAR("destroy"),
                    G_CALLBACK(gtk_widget_destroyed),
@@ -520,7 +589,8 @@ do_builder(const std::string& UIfile_in,
   // use correct screen
   if (parentWidget_in)
     gtk_window_set_screen(GTK_WINDOW(window),
-                          gtk_widget_get_screen(ACE_const_cast(GtkWidget*, parentWidget_in)));
+                          gtk_widget_get_screen(ACE_const_cast(GtkWidget*,
+                                                               parentWidget_in)));
 
   // step5: draw it
   gtk_widget_show_all(window);

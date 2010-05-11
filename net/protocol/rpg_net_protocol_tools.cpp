@@ -99,22 +99,80 @@ RPG_Net_Protocol_Tools::IRCCommandString2Type(const std::string& commandString_i
     return RPG_Net_Protocol_IRCMessage::NICK;
   else if ((commandString_in) == ACE_TEXT("USER"))
     return RPG_Net_Protocol_IRCMessage::USER;
+  else if ((commandString_in) == ACE_TEXT("SERVER"))
+    return RPG_Net_Protocol_IRCMessage::SERVER;
+  else if ((commandString_in) == ACE_TEXT("OPER"))
+    return RPG_Net_Protocol_IRCMessage::OPER;
   else if ((commandString_in) == ACE_TEXT("QUIT"))
     return RPG_Net_Protocol_IRCMessage::QUIT;
+  else if ((commandString_in) == ACE_TEXT("SQUIT"))
+    return RPG_Net_Protocol_IRCMessage::SQUIT;
   else if ((commandString_in) == ACE_TEXT("JOIN"))
     return RPG_Net_Protocol_IRCMessage::JOIN;
+  else if ((commandString_in) == ACE_TEXT("PART"))
+    return RPG_Net_Protocol_IRCMessage::PART;
   else if ((commandString_in) == ACE_TEXT("MODE"))
     return RPG_Net_Protocol_IRCMessage::MODE;
+  else if ((commandString_in) == ACE_TEXT("TOPIC"))
+    return RPG_Net_Protocol_IRCMessage::TOPIC;
+  else if ((commandString_in) == ACE_TEXT("NAMES"))
+    return RPG_Net_Protocol_IRCMessage::NAMES;
+  else if ((commandString_in) == ACE_TEXT("LIST"))
+    return RPG_Net_Protocol_IRCMessage::LIST;
+  else if ((commandString_in) == ACE_TEXT("INVITE"))
+    return RPG_Net_Protocol_IRCMessage::INVITE;
+  else if ((commandString_in) == ACE_TEXT("KICK"))
+    return RPG_Net_Protocol_IRCMessage::KICK;
+  else if ((commandString_in) == ACE_TEXT("VERSION"))
+    return RPG_Net_Protocol_IRCMessage::VERSION;
+  else if ((commandString_in) == ACE_TEXT("STATS"))
+    return RPG_Net_Protocol_IRCMessage::STATS;
+  else if ((commandString_in) == ACE_TEXT("LINKS"))
+    return RPG_Net_Protocol_IRCMessage::LINKS;
+  else if ((commandString_in) == ACE_TEXT("TIME"))
+    return RPG_Net_Protocol_IRCMessage::TIME;
+  else if ((commandString_in) == ACE_TEXT("CONNECT"))
+    return RPG_Net_Protocol_IRCMessage::CONNECT;
+  else if ((commandString_in) == ACE_TEXT("TRACE"))
+    return RPG_Net_Protocol_IRCMessage::TRACE;
+  else if ((commandString_in) == ACE_TEXT("ADMIN"))
+    return RPG_Net_Protocol_IRCMessage::ADMIN;
+  else if ((commandString_in) == ACE_TEXT("INFO"))
+    return RPG_Net_Protocol_IRCMessage::INFO;
   else if ((commandString_in) == ACE_TEXT("PRIVMSG"))
     return RPG_Net_Protocol_IRCMessage::PRIVMSG;
   else if ((commandString_in) == ACE_TEXT("NOTICE"))
     return RPG_Net_Protocol_IRCMessage::NOTICE;
+  else if ((commandString_in) == ACE_TEXT("WHO"))
+    return RPG_Net_Protocol_IRCMessage::WHO;
+  else if ((commandString_in) == ACE_TEXT("WHOIS"))
+    return RPG_Net_Protocol_IRCMessage::WHOIS;
+  else if ((commandString_in) == ACE_TEXT("WHOWAS"))
+    return RPG_Net_Protocol_IRCMessage::WHOWAS;
+  else if ((commandString_in) == ACE_TEXT("KILL"))
+    return RPG_Net_Protocol_IRCMessage::KILL;
   else if (commandString_in == ACE_TEXT("PING"))
     return RPG_Net_Protocol_IRCMessage::PING;
   else if (commandString_in == ACE_TEXT("PONG"))
     return RPG_Net_Protocol_IRCMessage::PONG;
   else if (commandString_in == ACE_TEXT("ERROR"))
     return RPG_Net_Protocol_IRCMessage::ERROR;
+  else if ((commandString_in) == ACE_TEXT("AWAY"))
+    return RPG_Net_Protocol_IRCMessage::AWAY;
+  else if ((commandString_in) == ACE_TEXT("REHASH"))
+    return RPG_Net_Protocol_IRCMessage::REHASH;
+  else if ((commandString_in) == ACE_TEXT("RESTART"))
+    return RPG_Net_Protocol_IRCMessage::RESTART;
+  else if ((commandString_in) == ACE_TEXT("SUMMON"))
+    return RPG_Net_Protocol_IRCMessage::SUMMON;
+  else if ((commandString_in) == ACE_TEXT("USERS"))
+    return RPG_Net_Protocol_IRCMessage::USERS;
+  else if (commandString_in == ACE_TEXT("WALLOPS"))
+    return RPG_Net_Protocol_IRCMessage::WALLOPS;
+  else if (commandString_in == ACE_TEXT("USERHOST"))
+    return RPG_Net_Protocol_IRCMessage::USERHOST;
+  else if (commandString_in == ACE_TEXT("ISON"))
+    return RPG_Net_Protocol_IRCMessage::ISON;
   else
   {
     ACE_DEBUG((LM_ERROR,

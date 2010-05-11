@@ -37,21 +37,50 @@ class RPG_Net_Protocol_IRCMessage
     enum CommandType
     {
       // *NOTE*: in an effort to avoid clashes and still handle IRC commands
-      //         and replies/errors uniformly, start this beyond the (known)
-      //         range of (numeric) commands
+      //         and replies/errors uniformly, start this beyond the
+      //         range of (numeric) commands (== three-digit number)
       //         --> check RFC1459
       //         --> see also: rpg_net_protocol_IRC_codes.h
-      PASS = 900,
+      PASS = 1000,
       NICK,
       USER,
+      SERVER,
+      OPER,
       QUIT,
+      SQUIT,
       JOIN,
+      PART,
       MODE,
+      TOPIC,
+      NAMES,
+      LIST,
+      INVITE,
+      KICK,
+      VERSION,
+      STATS,
+      LINKS,
+      TIME,
+      CONNECT,
+      TRACE,
+      ADMIN,
+      INFO,
       PRIVMSG,
       NOTICE,
+      WHO,
+      WHOIS,
+      WHOWAS,
+      KILL,
       PING,
       PONG,
       ERROR,
+      AWAY,
+      REHASH,
+      RESTART,
+      SUMMON,
+      USERS,
+      WALLOPS,
+      USERHOST,
+      ISON,
       //
       RPG_NET_PROTOCOL_COMMANDTYPE_MAX,
       RPG_NET_PROTOCOL_COMMANDTYPE_INVALID

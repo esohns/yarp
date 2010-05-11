@@ -26,6 +26,7 @@
 #include <ace/Global_Macros.h>
 
 // forward declaration(s)
+typedef struct _GtkBuilder GtkBuilder;
 typedef struct _GtkTextBuffer GtkTextBuffer;
 typedef struct _GtkTextView GtkTextView;
 
@@ -33,7 +34,7 @@ class IRC_Client_GUI_MessageHandler
  : public RPG_Net_Protocol_INotify
 {
  public:
-  IRC_Client_GUI_MessageHandler(GtkTextView*); // target view
+  IRC_Client_GUI_MessageHandler(GtkBuilder*); // widget tree handler
   virtual ~IRC_Client_GUI_MessageHandler();
 
   // implement specific behaviour
@@ -47,6 +48,10 @@ class IRC_Client_GUI_MessageHandler
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_MessageHandler(const IRC_Client_GUI_MessageHandler&));
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_MessageHandler& operator=(const IRC_Client_GUI_MessageHandler&));
 
+  // helper methods
+  void insertText(const std::string&);
+
+  GtkBuilder*    myBuilder;
   GtkTextView*   myTargetView;
   GtkTextBuffer* myTargetBuffer;
 };

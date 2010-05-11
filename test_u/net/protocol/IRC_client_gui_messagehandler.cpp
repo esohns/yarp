@@ -26,12 +26,20 @@
 
 #include <string>
 
-IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkTextView* view_in)
- : myTargetView(view_in),
+IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkBuilder* builder_in)
+ : myBuilder(builder_in),
+   myTargetView(NULL),
    myTargetBuffer(NULL)
 {
   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
 
+  // sanity check(s)
+  ACE_ASSERT(myBuilder);
+
+  // step0: retrieve text view
+  myTargetView = GTK_TEXT_VIEW(gtk_builder_get_object(myBuilder,
+                                                      ACE_TEXT_ALWAYS_CHAR("textview")));
+  ACE_ASSERT(myTargetView);
   // step1: retrieve target buffer
   myTargetBuffer = gtk_text_view_get_buffer(myTargetView);
   if (!myTargetBuffer)
@@ -66,9 +74,72 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
   // sanity check(s)
   ACE_ASSERT(myTargetBuffer);
 
-  std::string message_text = RPG_Net_Protocol_Tools::IRCMessage2String(message_in);
+  switch (message_in.command.discriminator)
+  {
+    case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
+    {
+      break;
+    }
+    case RPG_Net_Protocol_IRCMessage::Command::STRING:
+    {
+      switch (RPG_Net_Protocol_Tools::IRCCommandString2Type(*message_in.command.string))
+      {
+        case RPG_Net_Protocol_IRCMessage::JOIN:
+        {
+          // sanity check(s)
+          ACE_ASSERT(myBuilder);
+          // retrieve button handle
+          GtkButton* button = NULL;
+          button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                                     ACE_TEXT_ALWAYS_CHAR("send")));
+          ACE_ASSERT(button);
+          gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
-  // always insert new text at the END of the buffer...
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::PRIVMSG:
+        case RPG_Net_Protocol_IRCMessage::NOTICE:
+        {
+          std::string message_text(message_in.prefix.origin);
+          message_text += ACE_TEXT(": ");
+          message_text += message_in.params.back();
+          message_text += ACE_TEXT_ALWAYS_CHAR("\n");
+          insertText(message_text);
+
+          break;
+        }
+        default:
+        {
+          // debug info
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid/unknown command (was: \"%s\"), aborting\n"),
+                     message_in.command.string->c_str()));
+
+          message_in.dump_state();
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid command type (was: %u), aborting\n"),
+                 message_in.command.discriminator));
+
+      break;
+    }
+  } // end SWITCH
+}
+
+void
+IRC_Client_GUI_MessageHandler::insertText(const std::string& text_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::insertText"));
+
+    // always insert new text at the END of the buffer...
   GtkTextIter iter;
   gtk_text_buffer_get_end_iter(myTargetBuffer,
                                &iter);
@@ -76,7 +147,7 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
   // *NOTE*: iter should be updated...
   gtk_text_buffer_insert(myTargetBuffer,
                          &iter,
-                         message_text.c_str(),
+                         text_in.c_str(),
                          -1);
 
 //   // get the new "end"...

@@ -252,22 +252,80 @@ RPG_Net_Protocol_Message::commandType2String(const RPG_Net_Protocol_CommandType_
       result = ACE_TEXT("NICK"); break;
     case RPG_Net_Protocol_IRCMessage::USER:
       result = ACE_TEXT("USER"); break;
+    case RPG_Net_Protocol_IRCMessage::SERVER:
+      result = ACE_TEXT("SERVER"); break;
+    case RPG_Net_Protocol_IRCMessage::OPER:
+      result = ACE_TEXT("OPER"); break;
     case RPG_Net_Protocol_IRCMessage::QUIT:
       result = ACE_TEXT("QUIT"); break;
+    case RPG_Net_Protocol_IRCMessage::SQUIT:
+      result = ACE_TEXT("SQUIT"); break;
     case RPG_Net_Protocol_IRCMessage::JOIN:
       result = ACE_TEXT("JOIN"); break;
+    case RPG_Net_Protocol_IRCMessage::PART:
+      result = ACE_TEXT("PART"); break;
     case RPG_Net_Protocol_IRCMessage::MODE:
       result = ACE_TEXT("MODE"); break;
+    case RPG_Net_Protocol_IRCMessage::TOPIC:
+      result = ACE_TEXT("TOPIC"); break;
+    case RPG_Net_Protocol_IRCMessage::NAMES:
+      result = ACE_TEXT("NAMES"); break;
+    case RPG_Net_Protocol_IRCMessage::LIST:
+      result = ACE_TEXT("LIST"); break;
+    case RPG_Net_Protocol_IRCMessage::INVITE:
+      result = ACE_TEXT("INVITE"); break;
+    case RPG_Net_Protocol_IRCMessage::KICK:
+      result = ACE_TEXT("KICK"); break;
+    case RPG_Net_Protocol_IRCMessage::VERSION:
+      result = ACE_TEXT("VERSION"); break;
+    case RPG_Net_Protocol_IRCMessage::STATS:
+      result = ACE_TEXT("STATS"); break;
+    case RPG_Net_Protocol_IRCMessage::LINKS:
+      result = ACE_TEXT("LINKS"); break;
+    case RPG_Net_Protocol_IRCMessage::TIME:
+      result = ACE_TEXT("TIME"); break;
+    case RPG_Net_Protocol_IRCMessage::CONNECT:
+      result = ACE_TEXT("CONNECT"); break;
+    case RPG_Net_Protocol_IRCMessage::TRACE:
+      result = ACE_TEXT("TRACE"); break;
+    case RPG_Net_Protocol_IRCMessage::ADMIN:
+      result = ACE_TEXT("ADMIN"); break;
+    case RPG_Net_Protocol_IRCMessage::INFO:
+      result = ACE_TEXT("INFO"); break;
     case RPG_Net_Protocol_IRCMessage::PRIVMSG:
       result = ACE_TEXT("PRIVMSG"); break;
     case RPG_Net_Protocol_IRCMessage::NOTICE:
       result = ACE_TEXT("NOTICE"); break;
+    case RPG_Net_Protocol_IRCMessage::WHO:
+      result = ACE_TEXT("WHO"); break;
+    case RPG_Net_Protocol_IRCMessage::WHOIS:
+      result = ACE_TEXT("WHOIS"); break;
+    case RPG_Net_Protocol_IRCMessage::WHOWAS:
+      result = ACE_TEXT("WHOWAS"); break;
+    case RPG_Net_Protocol_IRCMessage::KILL:
+      result = ACE_TEXT("KILL"); break;
     case RPG_Net_Protocol_IRCMessage::PING:
       result = ACE_TEXT("PING"); break;
     case RPG_Net_Protocol_IRCMessage::PONG:
       result = ACE_TEXT("PONG"); break;
     case RPG_Net_Protocol_IRCMessage::ERROR:
       result = ACE_TEXT("ERROR"); break;
+    case RPG_Net_Protocol_IRCMessage::AWAY:
+      result = ACE_TEXT("AWAY"); break;
+    case RPG_Net_Protocol_IRCMessage::REHASH:
+      result = ACE_TEXT("REHASH"); break;
+    case RPG_Net_Protocol_IRCMessage::RESTART:
+      result = ACE_TEXT("RESTART"); break;
+    case RPG_Net_Protocol_IRCMessage::SUMMON:
+      result = ACE_TEXT("SUMMON"); break;
+    case RPG_Net_Protocol_IRCMessage::USERS:
+      result = ACE_TEXT("USERS"); break;
+    case RPG_Net_Protocol_IRCMessage::WALLOPS:
+      result = ACE_TEXT("WALLOPS"); break;
+    case RPG_Net_Protocol_IRCMessage::USERHOST:
+      result = ACE_TEXT("USERHOST"); break;
+    case RPG_Net_Protocol_IRCMessage::ISON:
+      result = ACE_TEXT("ISON"); break;
     default:
     {
       // try numeric conversion
