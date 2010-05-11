@@ -36,7 +36,12 @@ class RPG_Net_Protocol_IRCMessage
   public:
     enum CommandType
     {
-      PASS = 0,
+      // *NOTE*: in an effort to avoid clashes and still handle IRC commands
+      //         and replies/errors uniformly, start this beyond the (known)
+      //         range of (numeric) commands
+      //         --> check RFC1459
+      //         --> see also: rpg_net_protocol_IRC_codes.h
+      PASS = 900,
       NICK,
       USER,
       QUIT,
