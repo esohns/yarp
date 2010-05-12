@@ -133,6 +133,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         case RPG_Net_Protocol_IRC_Codes::RPL_MYINFO:
         case RPG_Net_Protocol_IRC_Codes::RPL_BOUNCE:
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCLIENT:
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCHANNELS:
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERME:
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTD:
