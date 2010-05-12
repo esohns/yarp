@@ -124,7 +124,7 @@ RPG_Net_Protocol_Tools::IRCCommandString2Type(const std::string& commandString_i
   else if ((commandString_in) == ACE_TEXT("KICK"))
     return RPG_Net_Protocol_IRCMessage::KICK;
   else if ((commandString_in) == ACE_TEXT("VERSION"))
-    return RPG_Net_Protocol_IRCMessage::VERSION;
+    return RPG_Net_Protocol_IRCMessage::SVERSION;
   else if ((commandString_in) == ACE_TEXT("STATS"))
     return RPG_Net_Protocol_IRCMessage::STATS;
   else if ((commandString_in) == ACE_TEXT("LINKS"))

@@ -21,6 +21,13 @@
 #ifndef RPG_NET_PROTOCOL_DEFINES_H
 #define RPG_NET_PROTOCOL_DEFINES_H
 
+// "\0\0"
+#define RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE     2
+// CRLF = "\r\n"
+#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY            ACE_TEXT_ALWAYS_CHAR("\r\n")
+#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE       2
+#define RPG_NET_PROTOCOL_IRC_FRAME_MAXSIZE             512
+
 // *NOTE*: according to RFC1459, IRC messages SHALL not exceed 512 bytes.
 // - a size of 512 bytes will allow "crunching" messages into a single buffer
 //   --> while this arguably "wastes" some memory, it allows easier
@@ -28,14 +35,8 @@
 // - provide an extra 2 '\0' "resilience" bytes needed for scanning with "flex"
 // *WARNING*: be aware that a single read from the connected socket may well
 // cover MORE than one complete message at a time, so this value is just a
-// (somewhat balanced) suggestion...
-#define RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE       (512 + 2)
-
-// "\0\0"
-#define RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE     2
-// CRLF = "\r\n"
-#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY            ACE_TEXT_ALWAYS_CHAR("\r\n")
-#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE       2
+// (somewhat qualified) suggestion...
+#define RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE       (RPG_NET_PROTOCOL_IRC_FRAME_MAXSIZE + 2)
 
 // "crunch" messages for easier parsing ?
 // *NOTE*: comes at the cost of alloc/free, memcopy and locking per fragmented

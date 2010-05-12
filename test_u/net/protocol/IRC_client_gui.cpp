@@ -76,10 +76,74 @@ struct cb_data
   IRC_Client_GUI_MessageHandler*   messageHandler;
 };
 
-static GtkBuilder* builder  = NULL;
-static GtkWidget*  window   = NULL;
-static int         grp_id   = -1;
-static cb_data     userData;
+static ACE_Thread_Mutex bufferLock;
+static GtkBuilder*      builder   = NULL;
+static GtkWidget*       window    = NULL;
+static int              grp_id    = -1;
+static cb_data          userData;
+
+void
+local_echo(const std::string& message_in)
+{
+  ACE_TRACE(ACE_TEXT("::local_echo"));
+
+  // sanity check
+  if (message_in.empty())
+    return; // nothing to do...
+
+  // synch access to buffer
+  ACE_Guard<ACE_Thread_Mutex> aGuard(bufferLock);
+
+  // sanity check(s)
+  ACE_ASSERT(builder);
+
+  GtkTextView* textView = NULL;
+  textView = GTK_TEXT_VIEW(gtk_builder_get_object(builder,
+                                                  ACE_TEXT_ALWAYS_CHAR("textview")));
+  ACE_ASSERT(textView);
+  GtkTextBuffer* textBuffer = NULL;
+  textBuffer = gtk_text_view_get_buffer(textView);
+
+  // always insert new text at the END of the buffer...
+  GtkTextIter iter;
+  gtk_text_buffer_get_end_iter(textBuffer,
+                               &iter);
+
+  // append '\n'
+  std::string message_string = ACE_TEXT("<me");
+  message_string += message_in;
+  message_string += ACE_TEXT(">");
+  message_string += ACE_TEXT_ALWAYS_CHAR("\n");
+  // *NOTE*: iter should be updated...
+  gtk_text_buffer_insert(textBuffer,
+                         &iter,
+                         message_string.c_str(),
+                         -1);
+
+//   // get the new "end"...
+//   gtk_text_buffer_get_end_iter(myTargetBuffer,
+//                                &iter);
+  // move the iterator to the beginning of line, so we don't scroll
+  // in horizontal direction
+  gtk_text_iter_set_line_offset(&iter, 0);
+
+  // ...and place the mark at iter. The mark will stay there after we
+  // insert some text at the end because it has right gravity
+  GtkTextMark* mark = NULL;
+  mark = gtk_text_buffer_get_mark(textBuffer,
+                                  ACE_TEXT_ALWAYS_CHAR("scroll"));
+  gtk_text_buffer_move_mark(textBuffer,
+                            mark,
+                            &iter);
+
+  // scroll the mark onscreen
+  gtk_text_view_scroll_mark_onscreen(textView,
+                                     mark);
+
+//   gtk_text_buffer_insert_at_cursor(myTargetBuffer,
+//                                    message_text.c_str(),
+//                                    message_text.size());
+}
 
 #ifdef __cplusplus
 extern "C"
@@ -102,13 +166,12 @@ join_clicked_cb(GtkWidget* button_in,
                                   userData_in);
   try
   {
-    data->controller->joinIRC(data->loginOptions,
-                              data->messageHandler);
+    data->controller->join(data->loginOptions.channel);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::joinIRC(), continuing\n")));
+               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::join(), continuing\n")));
   }
 }
 
@@ -125,17 +188,70 @@ part_clicked_cb(GtkWidget* button_in,
 
   // sanity check(s)
   ACE_ASSERT(userData_in);
+  cb_data* data = ACE_static_cast(cb_data*,
+                                  userData_in);
+  try
+  {
+    data->controller->part(data->loginOptions.channel);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::part(), continuing\n")));
+  }
+}
+
+void
+register_clicked_cb(GtkWidget* button_in,
+                    gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::register_clicked_cb"));
+
+  ACE_UNUSED_ARG(button_in);
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("register_clicked_cb...\n")));
+
+  // sanity check(s)
+  ACE_ASSERT(userData_in);
+  cb_data* data = ACE_static_cast(cb_data*,
+                                  userData_in);
+  try
+  {
+    data->controller->registerConnection(data->loginOptions,
+                                         data->messageHandler);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::registerConnection(), continuing\n")));
+  }
+}
+
+void
+disconnect_clicked_cb(GtkWidget* button_in,
+                      gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::disconnect_clicked_cb"));
+
+  ACE_UNUSED_ARG(button_in);
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("disconnect_clicked_cb...\n")));
+
+  // sanity check(s)
+  ACE_ASSERT(userData_in);
 
   cb_data* data = ACE_static_cast(cb_data*,
                                   userData_in);
   try
   {
-    data->controller->leaveIRC(std::string(IRC_CLIENT_DEF_LEAVE_REASON));
+    data->controller->quit(std::string(IRC_CLIENT_DEF_LEAVE_REASON));
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::leaveIRC(), continuing\n")));
+               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::quit(), continuing\n")));
   }
 }
 
@@ -175,18 +291,22 @@ send_clicked_cb(GtkWidget* button_in,
                                   userData_in);
   try
   {
-    data->controller->sendMessage(message_string);
+    data->controller->send(data->loginOptions.channel,
+                           message_string);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::leaveIRC(), continuing\n")));
+               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::send(), continuing\n")));
   }
 
   // clear buffer
   gtk_entry_buffer_delete_text(buffer,
                                0,
                                gtk_entry_buffer_get_length(buffer));
+
+  // echo data locally...
+  local_echo(message_string);
 }
 
 void
@@ -550,6 +670,20 @@ do_builder(const std::string& UIfile_in,
                    G_CALLBACK(send_clicked_cb),
                    &ACE_const_cast(cb_data&, userData_in));
   button = GTK_BUTTON(gtk_builder_get_object(builder,
+                                             ACE_TEXT_ALWAYS_CHAR("register")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(register_clicked_cb),
+                   &ACE_const_cast(cb_data&, userData_in));
+  button = GTK_BUTTON(gtk_builder_get_object(builder,
+                                             ACE_TEXT_ALWAYS_CHAR("disconnect")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(disconnect_clicked_cb),
+                   &ACE_const_cast(cb_data&, userData_in));
+  button = GTK_BUTTON(gtk_builder_get_object(builder,
                                              ACE_TEXT_ALWAYS_CHAR("quit")));
   ACE_ASSERT(button);
   g_signal_connect(button,
@@ -664,7 +798,9 @@ do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
              userData_in, // cb data
              NULL,        // there's no parent widget
              textView);   // return value: target view
-  IRC_Client_GUI_MessageHandler messageHandler(textView);
+  ACE_ASSERT(builder);
+  IRC_Client_GUI_MessageHandler messageHandler(builder,
+                                               bufferLock);
   userData_in.messageHandler = &messageHandler;
 
   // event loops:

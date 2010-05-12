@@ -56,7 +56,7 @@ class RPG_Net_Protocol_IRCMessage
       LIST,
       INVITE,
       KICK,
-      VERSION,
+      SVERSION, // *TODO*: "VERSION" is taken by config.h...
       STATS,
       LINKS,
       TIME,

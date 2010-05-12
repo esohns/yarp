@@ -33,7 +33,7 @@
 
 RPG_Net_Protocol_Module_IRCHandler::RPG_Net_Protocol_Module_IRCHandler()
  : //inherited(),
-   myDataSink(NULL),
+//    mySubscribers(),
    myAllocator(NULL),
    myDefaultBufferSize(RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE),
    myAutomaticPong(false), // *NOTE*: the idea really is not to play PONG...
@@ -146,8 +146,9 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         default:
         {
           ACE_DEBUG((LM_WARNING,
-                     ACE_TEXT("[%u]: unknown numeric command (was: %u), continuing\n"),
+                     ACE_TEXT("[%u]: received (numeric) command/reply: \"%s\" (%u), continuing\n"),
                      message_inout->getID(),
+                     RPG_Net_Protocol_Tools::IRCCode2String(message_inout->getData()->command.numeric).c_str(),
                      message_inout->getData()->command.numeric));
 
           break;
@@ -169,10 +170,28 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
 
           break;
         }
+        case RPG_Net_Protocol_IRCMessage::PART:
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"PART\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
+
+          break;
+        }
         case RPG_Net_Protocol_IRCMessage::MODE:
         {
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("[%u]: received \"MODE\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::PRIVMSG:
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"PRIVMSG\": \"%s\"\n"),
 //                      message_inout->getID(),
 //                      message_inout->getData()->params.back().c_str()));
 
@@ -267,19 +286,30 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
     }
   } // end SWITCH
 
-  // refer the data back to our client
-  if (myDataSink)
+  // refer the data back to our subscriber(s)
+
+  // synch access to our subscribers
   {
-    try
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+    if (!mySubscribers.empty())
     {
-      myDataSink->notify(*message_inout->getData());
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("caught exception in RPG_Net_Protocol_INotify::notify(), continuing\n")));
-    }
-  } // end IF
+      for (SubscribersConstIterator_t iter = mySubscribers.begin();
+           iter != mySubscribers.end();
+           iter++)
+      {
+        try
+        {
+          (*iter)->notify(*message_inout->getData());
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Net_Protocol_INotify::notify(), continuing\n")));
+        }
+      } // end FOR
+    } // end IF
+  } // end lock scope
 }
 
 void
@@ -324,18 +354,17 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::joinIRC(const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
-                                            RPG_Net_Protocol_INotify* dataCallback_in)
+RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
+                                                       RPG_Net_Protocol_INotify* dataCallback_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::joinIRC"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::registerConnection"));
 
-  // in this case, "joining" IRC implies the following 5 distinct steps:
+  // "registering" an IRC connection implies the following 4 distinct steps:
   // --> see also RFC1459
-  // 1. establish a connection (done ?)
+  // 1. establish a connection (done ?!)
   // 2. send PASS
   // 3. send NICK
   // 4. send USER
-  // 5. join a channel
 
   // sanity check(s)
   ACE_ASSERT(dataCallback_in);
@@ -349,7 +378,12 @@ RPG_Net_Protocol_Module_IRCHandler::joinIRC(const RPG_Net_Protocol_IRCLoginOptio
   } // end IF
 
   // step0: init data callback
-  myDataSink = dataCallback_in;
+  // synch access to subscribers
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+    mySubscribers.push_back(dataCallback_in);
+  } // end lock scope
 
   // step1: ...is done, otherwise "this" shouldn't really exist
 
@@ -424,7 +458,43 @@ RPG_Net_Protocol_Module_IRCHandler::joinIRC(const RPG_Net_Protocol_IRCLoginOptio
   // step4b: send it upstream
   sendMessage(user_struct);
 
-  // step5a: init JOIN
+//   // step5a: init JOIN
+//   RPG_Net_Protocol_IRCMessage* join_struct = NULL;
+//   ACE_NEW_NORETURN(join_struct,
+//                    RPG_Net_Protocol_IRCMessage());
+//   ACE_ASSERT(join_struct);
+//   ACE_NEW_NORETURN(join_struct->command.string,
+//                    std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::JOIN)));
+//   ACE_ASSERT(join_struct->command.string);
+//   join_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+// //   std::string channel_name = ACE_TEXT_ALWAYS_CHAR("#");
+// //   channel_name += loginOptions_in.channel;
+//   join_struct->params.push_back(loginOptions_in.channel);
+//
+//   // step5b: send it upstream
+//   sendMessage(join_struct);
+}
+
+void
+RPG_Net_Protocol_Module_IRCHandler::notify(RPG_Net_Protocol_INotify* dataCallback_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::notify"));
+
+  // sanity check(s)
+  ACE_ASSERT(dataCallback_in);
+
+  // synch access to subscribers
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  mySubscribers.push_back(dataCallback_in);
+}
+
+void
+RPG_Net_Protocol_Module_IRCHandler::join(const std::string& channel_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::join"));
+
+  // step1: init JOIN
   RPG_Net_Protocol_IRCMessage* join_struct = NULL;
   ACE_NEW_NORETURN(join_struct,
                    RPG_Net_Protocol_IRCMessage());
@@ -433,35 +503,47 @@ RPG_Net_Protocol_Module_IRCHandler::joinIRC(const RPG_Net_Protocol_IRCLoginOptio
                    std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::JOIN)));
   ACE_ASSERT(join_struct->command.string);
   join_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-//   std::string channel_name = ACE_TEXT_ALWAYS_CHAR("#");
-//   channel_name += loginOptions_in.channel;
-  join_struct->params.push_back(loginOptions_in.channel);
+  //   std::string channel_name = ACE_TEXT_ALWAYS_CHAR("#");
+  //   std::string channel_name = ACE_TEXT_ALWAYS_CHAR("&");
+  //   channel_name += channel_in;
+  join_struct->params.push_back(channel_in);
 
-  // step5b: send it upstream
+  // step2: send it upstream
   sendMessage(join_struct);
-
-  // remember our channel...
-  myChannelName = loginOptions_in.channel;
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::registerNotification(RPG_Net_Protocol_INotify* dataCallback_in)
+RPG_Net_Protocol_Module_IRCHandler::part(const std::string& channel_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::registerNotification"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::part"));
 
-  // sanity check(s)
-  ACE_ASSERT(dataCallback_in);
+  // step1: init QUIT
+  RPG_Net_Protocol_IRCMessage* part_struct = NULL;
+  ACE_NEW_NORETURN(part_struct,
+                   RPG_Net_Protocol_IRCMessage());
+  ACE_ASSERT(part_struct);
+  ACE_NEW_NORETURN(part_struct->command.string,
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::PART)));
+  ACE_ASSERT(part_struct->command.string);
+  part_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  //   std::string channel_name = ACE_TEXT_ALWAYS_CHAR("#");
+  //   std::string channel_name = ACE_TEXT_ALWAYS_CHAR("&");
+  //   channel_name += channel_in;
+  part_struct->params.push_back(channel_in);
 
-  myDataSink = dataCallback_in;
+  // step2: send it upstream
+  sendMessage(part_struct);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::sendMessage(const std::string& message_in)
+RPG_Net_Protocol_Module_IRCHandler::send(const std::string& channel_in,
+                                         const std::string& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::sendMessage"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::send"));
 
-  // sanity check(s)
-  ACE_ASSERT(!myChannelName.empty());
+  // sanity check
+  if (message_in.empty())
+    return; // nothing to do...
 
   // step1: init PRIVMSG
   RPG_Net_Protocol_IRCMessage* msg_struct = NULL;
@@ -472,7 +554,7 @@ RPG_Net_Protocol_Module_IRCHandler::sendMessage(const std::string& message_in)
                    std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::PRIVMSG)));
   ACE_ASSERT(msg_struct->command.string);
   msg_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-  msg_struct->params.push_back(myChannelName);
+  msg_struct->params.push_back(channel_in);
   msg_struct->params.push_back(message_in);
 
   // step2: send it upstream
@@ -480,9 +562,9 @@ RPG_Net_Protocol_Module_IRCHandler::sendMessage(const std::string& message_in)
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::leaveIRC(const std::string& reason_in)
+RPG_Net_Protocol_Module_IRCHandler::quit(const std::string& reason_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::leaveIRC"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::quit"));
 
   // step1: init QUIT
   RPG_Net_Protocol_IRCMessage* quit_struct = NULL;
@@ -498,9 +580,6 @@ RPG_Net_Protocol_Module_IRCHandler::leaveIRC(const std::string& reason_in)
 
   // step2: send it upstream
   sendMessage(quit_struct);
-
-  // forget our channel...
-  myChannelName.clear();
 }
 
 void

@@ -20,6 +20,7 @@
 
 #include "rpg_net_protocol_module_IRCstreamer.h"
 
+#include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_message.h"
 
@@ -49,6 +50,7 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
 
   // sanity check(s)
   ACE_ASSERT(message_inout->length() == 0);
+  ACE_ASSERT(message_inout->space() >= RPG_NET_PROTOCOL_IRC_FRAME_MAXSIZE);
 
   // serialize our structured data
   // --> create the appropriate bytestream corresponding to its elements
@@ -90,6 +92,22 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
     // append user
     if (!message_inout->getData()->prefix.user.empty())
     {
+      // sanity check
+      if (message_inout->space() < 1)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("[%u]: out of buffer space (\"%s\", %u), aborting\n"),
+                   message_inout->getID(),
+                   std::string(message_inout->rd_ptr(), message_inout->length()).c_str(),
+                   message_inout->length()));
+
+        // clean up
+        passMessageDownstream_out = false;
+        message_inout->release();
+        message_inout = NULL;
+
+        return;
+      } // end IF
       // user prefix
       *message_inout->wr_ptr() = '!';
       message_inout->wr_ptr(1);
@@ -112,9 +130,25 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
     } // end IF
 
     // append host
-    if (!message_inout->getData()->prefix.user.empty())
+    if (!message_inout->getData()->prefix.host.empty())
     {
-      // user prefix
+      // sanity check
+      if (message_inout->space() < 1)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("[%u]: out of buffer space (\"%s\", %u), aborting\n"),
+                   message_inout->getID(),
+                   std::string(message_inout->rd_ptr(), message_inout->length()).c_str(),
+                   message_inout->length()));
+
+        // clean up
+        passMessageDownstream_out = false;
+        message_inout->release();
+        message_inout = NULL;
+
+        return;
+      } // end IF
+      // host prefix
       *message_inout->wr_ptr() = '@';
       message_inout->wr_ptr(1);
 
@@ -134,6 +168,26 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
         return;
       } // end IF
     } // end IF
+
+    // sanity check
+    if (message_inout->space() < 1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("[%u]: out of buffer space (\"%s\", %u), aborting\n"),
+                 message_inout->getID(),
+                 std::string(message_inout->rd_ptr(), message_inout->length()).c_str(),
+                 message_inout->length()));
+
+        // clean up
+      passMessageDownstream_out = false;
+      message_inout->release();
+      message_inout = NULL;
+
+      return;
+    } // end IF
+    // add a <SPACE>
+    *message_inout->wr_ptr() = ' ';
+    message_inout->wr_ptr(1);
   } // end IF
 
   // command
@@ -141,8 +195,24 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
   {
     case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
     {
+      // sanity check
+      if (message_inout->space() < 4)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("[%u]: out of buffer space (\"%s\", %u), aborting\n"),
+                   message_inout->getID(),
+                   std::string(message_inout->rd_ptr(), message_inout->length()).c_str(),
+                   message_inout->length()));
+
+        // clean up
+        passMessageDownstream_out = false;
+        message_inout->release();
+        message_inout = NULL;
+
+        return;
+      } // end IF
       // convert number into the equivalent 3-letter string
-      if (::snprintf(message_inout->wr_ptr(),            // target
+      if (::snprintf(message_inout->wr_ptr(),      // target
                      4,                            // max length
                      ACE_TEXT_ALWAYS_CHAR("%.3u"), // format string
                      message_inout->getData()->command.numeric) != 3)
@@ -207,6 +277,22 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
          iterator != message_inout->getData()->params.end();
          iterator++, i--)
     {
+      // sanity check
+      if (message_inout->space() < 1)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("[%u]: out of buffer space (\"%s\", %u), aborting\n"),
+                   message_inout->getID(),
+                   std::string(message_inout->rd_ptr(), message_inout->length()).c_str(),
+                   message_inout->length()));
+
+        // clean up
+        passMessageDownstream_out = false;
+        message_inout->release();
+        message_inout = NULL;
+
+        return;
+      } // end IF
       // add a <SPACE>
       *message_inout->wr_ptr() = ' ';
       message_inout->wr_ptr(1);
@@ -217,6 +303,22 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
         // if necessary, prefix the trailing parameter
         if ((*iterator).find(' ') != std::string::npos)
         {
+          // sanity check
+          if (message_inout->space() < 1)
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("[%u]: out of buffer space (\"%s\", %u), aborting\n"),
+                       message_inout->getID(),
+                       std::string(message_inout->rd_ptr(), message_inout->length()).c_str(),
+                       message_inout->length()));
+
+            // clean up
+            passMessageDownstream_out = false;
+            message_inout->release();
+            message_inout = NULL;
+
+            return;
+          } // end IF
           *message_inout->wr_ptr() = ':';
           message_inout->wr_ptr(1);
         } // end IF
@@ -240,8 +342,24 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
     } // end FOR
   } // end IF
 
+  // sanity check
+  if (message_inout->space() < RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("[%u]: out of buffer space (\"%s\", %u), aborting\n"),
+               message_inout->getID(),
+               std::string(message_inout->rd_ptr(), message_inout->length()).c_str(),
+               message_inout->length()));
+
+    // clean up
+    passMessageDownstream_out = false;
+    message_inout->release();
+    message_inout = NULL;
+
+    return;
+  } // end IF
   // append a <CRLF>
   *message_inout->wr_ptr() = '\r';
   *(message_inout->wr_ptr() + 1) = '\n';
-  message_inout->wr_ptr(2);
+  message_inout->wr_ptr(RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE);
 }

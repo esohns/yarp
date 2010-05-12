@@ -276,7 +276,7 @@ RPG_Net_Protocol_Message::commandType2String(const RPG_Net_Protocol_CommandType_
       result = ACE_TEXT("INVITE"); break;
     case RPG_Net_Protocol_IRCMessage::KICK:
       result = ACE_TEXT("KICK"); break;
-    case RPG_Net_Protocol_IRCMessage::VERSION:
+    case RPG_Net_Protocol_IRCMessage::SVERSION:
       result = ACE_TEXT("VERSION"); break;
     case RPG_Net_Protocol_IRCMessage::STATS:
       result = ACE_TEXT("STATS"); break;

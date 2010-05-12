@@ -34,11 +34,14 @@ class RPG_Net_Protocol_IIRCControl
   // -Wno-non-virtual-dtor in the project settings...
 
   // exposed interface
-  virtual void joinIRC(const RPG_Net_Protocol_IRCLoginOptions&, // login details
-                       RPG_Net_Protocol_INotify*) = 0;          // data callback
-  virtual void registerNotification(RPG_Net_Protocol_INotify*) = 0; // data callback
-  virtual void sendMessage(const std::string&) = 0; // message
-  virtual void leaveIRC(const std::string&) = 0; // reason
+  virtual void registerConnection(const RPG_Net_Protocol_IRCLoginOptions&, // login details
+                                  RPG_Net_Protocol_INotify*) = 0;          // data callback
+  virtual void notify(RPG_Net_Protocol_INotify*) = 0; // (additional) data callback
+  virtual void join(const std::string&) = 0; // channel
+  virtual void part(const std::string&) = 0; // channel
+  virtual void send(const std::string&,      // channel
+                    const std::string&) = 0; // message
+  virtual void quit(const std::string&) = 0; // reason
 };
 
 #endif

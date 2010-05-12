@@ -26,8 +26,10 @@
 
 #include <string>
 
-IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkBuilder* builder_in)
+IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkBuilder* builder_in,
+                                                             ACE_Thread_Mutex& lock_in)
  : myBuilder(builder_in),
+   myLock(lock_in),
    myTargetView(NULL),
    myTargetBuffer(NULL)
 {
@@ -78,6 +80,40 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
   {
     case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
     {
+      switch (message_in.command.numeric)
+      {
+        case RPG_Net_Protocol_IRC_Codes::RPL_WELCOME:
+        {
+          // sanity check(s)
+          ACE_ASSERT(myBuilder);
+          // retrieve button handle
+          GtkButton* button = NULL;
+          button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                                     ACE_TEXT_ALWAYS_CHAR("join")));
+          ACE_ASSERT(button);
+          gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+          button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                                     ACE_TEXT_ALWAYS_CHAR("register")));
+          ACE_ASSERT(button);
+          gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+          button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                                     ACE_TEXT_ALWAYS_CHAR("disconnect")));
+          ACE_ASSERT(button);
+          gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+          break;
+        }
+        default:
+        {
+//           ACE_DEBUG((LM_WARNING,
+//                      ACE_TEXT("received (numeric) command/reply: \"%s\" (%u), continuing\n"),
+//                      RPG_Net_Protocol_Tools::IRCCode2String(message_in.command.numeric).c_str(),
+//                      message_in.command.numeric));
+
+          break;
+        }
+      } // end SWITCH
+
       break;
     }
     case RPG_Net_Protocol_IRCMessage::Command::STRING:
@@ -94,17 +130,58 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
                                                      ACE_TEXT_ALWAYS_CHAR("send")));
           ACE_ASSERT(button);
           gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+          button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                                     ACE_TEXT_ALWAYS_CHAR("join")));
+          ACE_ASSERT(button);
+          gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+          button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                                     ACE_TEXT_ALWAYS_CHAR("part")));
+          ACE_ASSERT(button);
+          gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::PART:
+        {
+          // sanity check(s)
+          ACE_ASSERT(myBuilder);
+          // retrieve button handle
+          GtkButton* button = NULL;
+          button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                              ACE_TEXT_ALWAYS_CHAR("join")));
+          ACE_ASSERT(button);
+          gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+          button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                                     ACE_TEXT_ALWAYS_CHAR("part")));
+          ACE_ASSERT(button);
+          gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+          button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                                     ACE_TEXT_ALWAYS_CHAR("send")));
+          ACE_ASSERT(button);
+          gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
           break;
         }
         case RPG_Net_Protocol_IRCMessage::PRIVMSG:
         case RPG_Net_Protocol_IRCMessage::NOTICE:
+        case RPG_Net_Protocol_IRCMessage::ERROR:
         {
-          std::string message_text(message_in.prefix.origin);
-          message_text += ACE_TEXT(": ");
+          std::string message_text;
+          if (!message_in.prefix.origin.empty())
+          {
+            message_text += ACE_TEXT("<");
+            message_text += message_in.prefix.origin;
+            message_text += ACE_TEXT("> ");
+          } // end IF
           message_text += message_in.params.back();
           message_text += ACE_TEXT_ALWAYS_CHAR("\n");
           insertText(message_text);
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::MODE:
+        case RPG_Net_Protocol_IRCMessage::PING:
+        {
 
           break;
         }
@@ -139,7 +216,10 @@ IRC_Client_GUI_MessageHandler::insertText(const std::string& text_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::insertText"));
 
-    // always insert new text at the END of the buffer...
+  // synch access to buffer
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  // always insert new text at the END of the buffer...
   GtkTextIter iter;
   gtk_text_buffer_get_end_iter(myTargetBuffer,
                                &iter);

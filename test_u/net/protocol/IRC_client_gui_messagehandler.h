@@ -24,6 +24,7 @@
 #include "rpg_net_protocol_inotify.h"
 
 #include <ace/Global_Macros.h>
+#include <ace/Synch.h>
 
 // forward declaration(s)
 typedef struct _GtkBuilder GtkBuilder;
@@ -34,7 +35,8 @@ class IRC_Client_GUI_MessageHandler
  : public RPG_Net_Protocol_INotify
 {
  public:
-  IRC_Client_GUI_MessageHandler(GtkBuilder*); // widget tree handler
+  IRC_Client_GUI_MessageHandler(GtkBuilder*,        // widget tree handler
+                                ACE_Thread_Mutex&); // buffer synch lock
   virtual ~IRC_Client_GUI_MessageHandler();
 
   // implement specific behaviour
@@ -51,9 +53,11 @@ class IRC_Client_GUI_MessageHandler
   // helper methods
   void insertText(const std::string&);
 
-  GtkBuilder*    myBuilder;
-  GtkTextView*   myTargetView;
-  GtkTextBuffer* myTargetBuffer;
+  GtkBuilder*       myBuilder;
+
+  ACE_Thread_Mutex& myLock;
+  GtkTextView*      myTargetView;
+  GtkTextBuffer*    myTargetBuffer;
 };
 
 #endif

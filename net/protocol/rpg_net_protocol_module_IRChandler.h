@@ -29,12 +29,12 @@
 #include <ace/Global_Macros.h>
 
 #include <string>
+#include <list>
 
 // forward declaration(s)
 class Stream_IAllocator;
 class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
-class RPG_Net_Protocol_Stream;
 class RPG_Net_Protocol_IRCMessage;
 
 class RPG_Net_Protocol_Module_IRCHandler
@@ -42,9 +42,6 @@ class RPG_Net_Protocol_Module_IRCHandler
                                RPG_Net_Protocol_Message>,
    public RPG_Net_Protocol_IIRCControl
 {
-//   // grant access to init()
-//   friend class RPG_Net_Protocol_Stream;
-
  public:
   RPG_Net_Protocol_Module_IRCHandler();
   virtual ~RPG_Net_Protocol_Module_IRCHandler();
@@ -62,11 +59,14 @@ class RPG_Net_Protocol_Module_IRCHandler
                                     bool&);                   // return value: pass message downstream ?
 
   // implement RPG_Net_Protocol_IIRCControl
-  virtual void joinIRC(const RPG_Net_Protocol_IRCLoginOptions&, // login details
-                       RPG_Net_Protocol_INotify*);              // data callback
-  virtual void registerNotification(RPG_Net_Protocol_INotify*); // data
-  virtual void sendMessage(const std::string&); // message
-  virtual void leaveIRC(const std::string&); // reason
+  virtual void registerConnection(const RPG_Net_Protocol_IRCLoginOptions&, // login details
+                                  RPG_Net_Protocol_INotify*);              // data callback
+  virtual void notify(RPG_Net_Protocol_INotify*); // data callback
+  virtual void join(const std::string&); // channel
+  virtual void part(const std::string&); // channel
+  virtual void send(const std::string&,  // channel
+                    const std::string&); // message
+  virtual void quit(const std::string&); // reason
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
@@ -84,16 +84,21 @@ class RPG_Net_Protocol_Module_IRCHandler
   // *NOTE*: "fire-and-forget" - the argument is consumed
   void sendMessage(RPG_Net_Protocol_IRCMessage*&); // command handle
 
-  RPG_Net_Protocol_INotify* myDataSink;
-  std::string               myChannelName;
-  Stream_IAllocator*        myAllocator;
-  unsigned long             myDefaultBufferSize;
-  bool                      myAutomaticPong;
-  bool                      myPrintPingPongDot;
-  bool                      myIsInitialized;
-  ACE_Thread_Mutex          myLock;
-  bool                      myConnectionIsAlive;
-  bool                      myReceivedInitialNotice;
+  // convenient types
+  typedef std::list<RPG_Net_Protocol_INotify*> Subscribers_t;
+  typedef Subscribers_t::const_iterator SubscribersConstIterator_t;
+
+  ACE_Thread_Mutex   myLock;
+  Subscribers_t      mySubscribers;
+
+//   std::string        myChannelName;
+  Stream_IAllocator* myAllocator;
+  unsigned long      myDefaultBufferSize;
+  bool               myAutomaticPong;
+  bool               myPrintPingPongDot;
+  bool               myIsInitialized;
+  bool               myConnectionIsAlive;
+  bool               myReceivedInitialNotice;
 };
 
 // declare module
