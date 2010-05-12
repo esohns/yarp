@@ -182,9 +182,9 @@ RPG_Net_Protocol_IRCParserDriver::switchBuffer()
     return false;
   } // end IF
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("switched to next buffer...\n")));
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("switched to next buffer...\n")));
 
   return true;
 }
@@ -345,55 +345,3 @@ RPG_Net_Protocol_IRCParserDriver::scan_end()
 //   // switch to the next fragment (if any)
 //   myCurrentFragment = myCurrentFragment->cont();
 }
-
-// void
-// RPG_Net_Protocol_IRCParserDriver::reset()
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::reset"));
-//
-//   if (myCurrentMessage.prefix.origin)
-//     delete myCurrentMessage.prefix.origin;
-//   myCurrentMessage.prefix.origin = NULL;
-//   if (myCurrentMessage.prefix.user)
-//     delete myCurrentMessage.prefix.user;
-//   myCurrentMessage.prefix.user = NULL;
-//   if (myCurrentMessage.prefix.host)
-//     delete myCurrentMessage.prefix.host;
-//   myCurrentMessage.prefix.host = NULL;
-//   switch (myCurrentMessage.command.discriminator)
-//   {
-//     case RPG_Net_Protocol_IRCMessage::Command::STRING:
-//     {
-//       if (myCurrentMessage.command.string)
-//         delete myCurrentMessage.command.string;
-//       myCurrentMessage.command.string = NULL;
-//       myCurrentMessage.command.discriminator = RPG_Net_Protocol_IRCMessage::Command::INVALID;
-//
-//       break;
-//     }
-//     case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
-//     {
-//       myCurrentMessage.command.numeric = RPG_Net_Protocol_IRC_Codes::RPG_NET_PROTOCOL_IRC_CODES_INVALID;
-//       myCurrentMessage.command.discriminator = RPG_Net_Protocol_IRCMessage::Command::INVALID;
-//
-//       break;
-//     }
-//     default:
-//     {
-//       myCurrentMessage.command.string = NULL;
-//       myCurrentMessage.command.numeric = RPG_Net_Protocol_IRC_Codes::RPG_NET_PROTOCOL_IRC_CODES_INVALID;
-//       myCurrentMessage.command.discriminator = RPG_Net_Protocol_IRCMessage::Command::INVALID;
-//
-//       break;
-//     }
-//   } // end SWITCH
-//   if (myCurrentMessage.params)
-//   {
-//     myCurrentMessage.params->clear();
-//     delete myCurrentMessage.params;
-//     myCurrentMessage.params = NULL;
-//   } // end IF
-// //   ACE_OS::memset(&myCurrentMessage,
-// //                  0,
-// //                  sizeof(RPG_Net_Protocol_IRCMessage));
-// }

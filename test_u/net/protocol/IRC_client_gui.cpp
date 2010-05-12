@@ -110,15 +110,17 @@ local_echo(const std::string& message_in)
                                &iter);
 
   // append '\n'
-  std::string message_string = ACE_TEXT("<me");
+  std::string message_string = ACE_TEXT("<me> ");
   message_string += message_in;
-  message_string += ACE_TEXT(">");
   message_string += ACE_TEXT_ALWAYS_CHAR("\n");
   // *NOTE*: iter should be updated...
   gtk_text_buffer_insert(textBuffer,
                          &iter,
                          message_string.c_str(),
                          -1);
+//   gtk_text_buffer_insert_at_cursor(textBuffer,
+//                                    message_text.c_str(),
+//                                    message_text.size());
 
 //   // get the new "end"...
 //   gtk_text_buffer_get_end_iter(myTargetBuffer,
@@ -140,9 +142,9 @@ local_echo(const std::string& message_in)
   gtk_text_view_scroll_mark_onscreen(textView,
                                      mark);
 
-//   gtk_text_buffer_insert_at_cursor(myTargetBuffer,
-//                                    message_text.c_str(),
-//                                    message_text.size());
+  // queue a redraw...
+  ACE_ASSERT(window);
+  gtk_widget_queue_draw(GTK_WIDGET(window));
 }
 
 #ifdef __cplusplus

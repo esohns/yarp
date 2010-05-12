@@ -98,12 +98,12 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
 //              entries.length()));
 
   // OK: iterate over the entries and perform some magic...
-  // *IMPORTANT NOTE*: entries have been sorted alphabetically:
-  //                   1 current 2 4 3 --> current 1 2 3 4
+  // *NOTE*: entries have been sorted alphabetically:
+  //         1 current 2 4 3 --> current 1 2 3 4
   // *TODO*: some malicious user could inject "fake" logfiles which can
   //         "confuse" this algorithm...
   // skip handling of "<PREFIX><SUFFIX>" (if found)...
-  // *IMPORTANT NOTE*: <PREFIX><SUFFIX> will become <PREFIX>_1<SUFFIX>...
+  // *NOTE*: <PREFIX><SUFFIX> will become <PREFIX>_1<SUFFIX>...
   bool found_current = false;
   // sscanf settings
   int number = 0;
@@ -1296,7 +1296,8 @@ RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
                          IPPROTO_TCP,
                          TCP_NODELAY,
                          ACE_reinterpret_cast(char*, &value),
-                         &retsize))
+                         &retsize) ||
+      (retsize != sizeof(int)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::getsockopt(%u, TCP_NODELAY): \"%s\", aborting\n"),

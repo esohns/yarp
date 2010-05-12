@@ -229,6 +229,9 @@ IRC_Client_GUI_MessageHandler::insertText(const std::string& text_in)
                          &iter,
                          text_in.c_str(),
                          -1);
+//   gtk_text_buffer_insert_at_cursor(myTargetBuffer,
+//                                    message_text.c_str(),
+//                                    message_text.size());
 
 //   // get the new "end"...
 //   gtk_text_buffer_get_end_iter(myTargetBuffer,
@@ -250,7 +253,12 @@ IRC_Client_GUI_MessageHandler::insertText(const std::string& text_in)
   gtk_text_view_scroll_mark_onscreen(myTargetView,
                                      mark);
 
-//   gtk_text_buffer_insert_at_cursor(myTargetBuffer,
-//                                    message_text.c_str(),
-//                                    message_text.size());
+  // queue a redraw...
+  // sanity check(s)
+  ACE_ASSERT(myBuilder);
+  GtkScrolledWindow* window = NULL;
+  window = GTK_SCROLLED_WINDOW(gtk_builder_get_object(myBuilder,
+                                                      ACE_TEXT_ALWAYS_CHAR("scrolledwindow")));
+  ACE_ASSERT(window);
+  gtk_widget_queue_draw(GTK_WIDGET(window));
 }
