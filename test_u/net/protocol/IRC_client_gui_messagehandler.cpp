@@ -27,6 +27,7 @@
 #include <string>
 
 // update callback
+static
 gboolean
 update_display_cb(gpointer userData_in)
 {
@@ -40,12 +41,13 @@ update_display_cb(gpointer userData_in)
 
   messageHandler->update();
 
-  // *WARNING*: this will update the display ASAP, but also causes a busy wait :-(...
-  return TRUE;
+  // remove us from the gtk_main loop idle routine...
+  return FALSE;
 }
 
 IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkBuilder* builder_in)
- : myBuilder(builder_in),
+ : myGtkInitialized(false),
+   myBuilder(builder_in),
    myTargetView(NULL),
    myTargetBuffer(NULL)
 {
@@ -53,6 +55,8 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkBuilder* builder
 
   // sanity check(s)
   ACE_ASSERT(myBuilder);
+
+  GDK_THREADS_ENTER();
 
   // step0: retrieve text view
   myTargetView = GTK_TEXT_VIEW(gtk_builder_get_object(myBuilder,
@@ -76,6 +80,8 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkBuilder* builder
                               ACE_TEXT_ALWAYS_CHAR("scroll"),
                               &iter,
                               TRUE);
+
+  GDK_THREADS_LEAVE();
 }
 
 IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler()
@@ -90,7 +96,13 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
   ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::notify"));
 
   // sanity check(s)
-  ACE_ASSERT(myTargetBuffer);
+  if (!myGtkInitialized)
+  {
+//     gdk_threads_init();
+    myGtkInitialized = true;
+  } // end IF
+
+  GDK_THREADS_ENTER();
 
   switch (message_in.command.discriminator)
   {
@@ -225,6 +237,8 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
       break;
     }
   } // end SWITCH
+
+  GDK_THREADS_LEAVE();
 }
 
 void
@@ -239,8 +253,11 @@ IRC_Client_GUI_MessageHandler::queueForDisplay(const std::string& text_in)
     myDisplayQueue.push_back(text_in);
   } // end lock scope
 
+  GDK_THREADS_ENTER();
   // trigger asnych update
   g_idle_add(update_display_cb, this);
+
+  GDK_THREADS_LEAVE();
 }
 
 void
@@ -251,6 +268,9 @@ IRC_Client_GUI_MessageHandler::update()
   // always insert new text at the END of the buffer...
   GtkTextIter iter;
   ACE_ASSERT(myTargetBuffer);
+
+  GDK_THREADS_ENTER();
+
   gtk_text_buffer_get_end_iter(myTargetBuffer,
                                &iter);
 
@@ -294,12 +314,27 @@ IRC_Client_GUI_MessageHandler::update()
   gtk_text_view_scroll_mark_onscreen(myTargetView,
                                      mark);
 
-  // queue a redraw...
+  // redraw our window...
   // sanity check(s)
   ACE_ASSERT(myBuilder);
-  GtkScrolledWindow* window = NULL;
-  window = GTK_SCROLLED_WINDOW(gtk_builder_get_object(myBuilder,
-                                                      ACE_TEXT_ALWAYS_CHAR("scrolledwindow")));
-  ACE_ASSERT(window);
-  gtk_widget_queue_draw(GTK_WIDGET(window));
+//   GtkScrolledWindow* scrolledwindow = NULL;
+  GtkWindow* dialog = NULL;
+  dialog = GTK_WINDOW(gtk_builder_get_object(myBuilder,
+                                       ACE_TEXT_ALWAYS_CHAR("dialog")));
+  ACE_ASSERT(dialog);
+//   GdkRegion* region = NULL;
+//   region = gdk_drawable_get_clip_region(GTK_WIDGET(dialog)->window);
+//   ACE_ASSERT(region);
+//   gdk_window_invalidate_region(GTK_WIDGET(dialog)->window,
+//                                region,
+//                                TRUE);
+  gdk_window_invalidate_rect(GTK_WIDGET(dialog)->window,
+                             NULL,
+                             TRUE);
+//   gdk_region_destroy(region);
+  gdk_window_process_updates(GTK_WIDGET(dialog)->window, TRUE);
+//   gdk_window_process_all_updates();
+  gtk_widget_queue_draw(GTK_WIDGET(dialog));
+
+  GDK_THREADS_LEAVE();
 }

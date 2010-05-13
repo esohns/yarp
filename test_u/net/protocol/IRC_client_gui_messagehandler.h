@@ -57,12 +57,13 @@ class IRC_Client_GUI_MessageHandler
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_MessageHandler(const IRC_Client_GUI_MessageHandler&));
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_MessageHandler& operator=(const IRC_Client_GUI_MessageHandler&));
 
-  ACE_Thread_Mutex       myLock;
+  ACE_Thread_Mutex        myLock;
   std::deque<std::string> myDisplayQueue;
 
-  GtkBuilder*            myBuilder;
-  GtkTextView*           myTargetView;
-  GtkTextBuffer*         myTargetBuffer;
+  bool                    myGtkInitialized;
+  GtkBuilder*             myBuilder;
+  GtkTextView*            myTargetView;
+  GtkTextBuffer*          myTargetBuffer;
 };
 
 #endif
