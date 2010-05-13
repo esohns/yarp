@@ -76,76 +76,10 @@ struct cb_data
   IRC_Client_GUI_MessageHandler*   messageHandler;
 };
 
-static ACE_Thread_Mutex bufferLock;
-static GtkBuilder*      builder   = NULL;
-static GtkWidget*       window    = NULL;
-static int              grp_id    = -1;
-static cb_data          userData;
-
-void
-local_echo(const std::string& message_in)
-{
-  ACE_TRACE(ACE_TEXT("::local_echo"));
-
-  // sanity check
-  if (message_in.empty())
-    return; // nothing to do...
-
-  // synch access to buffer
-  ACE_Guard<ACE_Thread_Mutex> aGuard(bufferLock);
-
-  // sanity check(s)
-  ACE_ASSERT(builder);
-
-  GtkTextView* textView = NULL;
-  textView = GTK_TEXT_VIEW(gtk_builder_get_object(builder,
-                                                  ACE_TEXT_ALWAYS_CHAR("textview")));
-  ACE_ASSERT(textView);
-  GtkTextBuffer* textBuffer = NULL;
-  textBuffer = gtk_text_view_get_buffer(textView);
-
-  // always insert new text at the END of the buffer...
-  GtkTextIter iter;
-  gtk_text_buffer_get_end_iter(textBuffer,
-                               &iter);
-
-  // append '\n'
-  std::string message_string = ACE_TEXT("<me> ");
-  message_string += message_in;
-  message_string += ACE_TEXT_ALWAYS_CHAR("\n");
-  // *NOTE*: iter should be updated...
-  gtk_text_buffer_insert(textBuffer,
-                         &iter,
-                         message_string.c_str(),
-                         -1);
-//   gtk_text_buffer_insert_at_cursor(textBuffer,
-//                                    message_text.c_str(),
-//                                    message_text.size());
-
-//   // get the new "end"...
-//   gtk_text_buffer_get_end_iter(myTargetBuffer,
-//                                &iter);
-  // move the iterator to the beginning of line, so we don't scroll
-  // in horizontal direction
-  gtk_text_iter_set_line_offset(&iter, 0);
-
-  // ...and place the mark at iter. The mark will stay there after we
-  // insert some text at the end because it has right gravity
-  GtkTextMark* mark = NULL;
-  mark = gtk_text_buffer_get_mark(textBuffer,
-                                  ACE_TEXT_ALWAYS_CHAR("scroll"));
-  gtk_text_buffer_move_mark(textBuffer,
-                            mark,
-                            &iter);
-
-  // scroll the mark onscreen
-  gtk_text_view_scroll_mark_onscreen(textView,
-                                     mark);
-
-  // queue a redraw...
-  ACE_ASSERT(window);
-  gtk_widget_queue_draw(GTK_WIDGET(window));
-}
+static GtkBuilder* builder  = NULL;
+static GtkWidget*  window   = NULL;
+static int         grp_id   = -1;
+static cb_data     userData;
 
 #ifdef __cplusplus
 extern "C"
@@ -280,6 +214,10 @@ send_clicked_cb(GtkWidget* button_in,
   buffer = gtk_entry_get_buffer(entry);
   ACE_ASSERT(buffer);
 
+  // sanity check
+  if (gtk_entry_buffer_get_length(buffer) == 0)
+    return; // nothing to do...
+
   // retrieve textbuffer data
   std::string message_string;
   message_string.append(gtk_entry_buffer_get_text(buffer),
@@ -291,6 +229,7 @@ send_clicked_cb(GtkWidget* button_in,
 
   cb_data* data = ACE_static_cast(cb_data*,
                                   userData_in);
+  ACE_ASSERT(data->controller);
   try
   {
     data->controller->send(data->loginOptions.channel,
@@ -302,13 +241,16 @@ send_clicked_cb(GtkWidget* button_in,
                ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::send(), continuing\n")));
   }
 
+  // echo data locally...
+  message_string.insert(0, ACE_TEXT("<me> "));
+  message_string += ACE_TEXT_ALWAYS_CHAR("\n");
+  ACE_ASSERT(data->messageHandler);
+  data->messageHandler->queueForDisplay(message_string);
+
   // clear buffer
   gtk_entry_buffer_delete_text(buffer,
                                0,
                                gtk_entry_buffer_get_length(buffer));
-
-  // echo data locally...
-  local_echo(message_string);
 }
 
 void
@@ -801,8 +743,7 @@ do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
              NULL,        // there's no parent widget
              textView);   // return value: target view
   ACE_ASSERT(builder);
-  IRC_Client_GUI_MessageHandler messageHandler(builder,
-                                               bufferLock);
+  IRC_Client_GUI_MessageHandler messageHandler(builder);
   userData_in.messageHandler = &messageHandler;
 
   // event loops:

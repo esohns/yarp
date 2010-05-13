@@ -26,10 +26,26 @@
 
 #include <string>
 
-IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkBuilder* builder_in,
-                                                             ACE_Thread_Mutex& lock_in)
+// update callback
+gboolean
+update_display_cb(gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::update_display_cb"));
+
+  // sanity check(s)
+  ACE_ASSERT(userData_in);
+  IRC_Client_GUI_MessageHandler* messageHandler = ACE_static_cast(IRC_Client_GUI_MessageHandler*,
+                                                                  userData_in);
+  ACE_ASSERT(messageHandler);
+
+  messageHandler->update();
+
+  // *WARNING*: this will update the display ASAP, but also causes a busy wait :-(...
+  return TRUE;
+}
+
+IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkBuilder* builder_in)
  : myBuilder(builder_in),
-   myLock(lock_in),
    myTargetView(NULL),
    myTargetBuffer(NULL)
 {
@@ -175,7 +191,7 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
           } // end IF
           message_text += message_in.params.back();
           message_text += ACE_TEXT_ALWAYS_CHAR("\n");
-          insertText(message_text);
+          queueForDisplay(message_text);
 
           break;
         }
@@ -212,26 +228,50 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
 }
 
 void
-IRC_Client_GUI_MessageHandler::insertText(const std::string& text_in)
+IRC_Client_GUI_MessageHandler::queueForDisplay(const std::string& text_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::insertText"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::queueForDisplay"));
 
-  // synch access to buffer
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  {
+    // synch access
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+    myDisplayQueue.push_back(text_in);
+  } // end lock scope
+
+  // trigger asnych update
+  g_idle_add(update_display_cb, this);
+}
+
+void
+IRC_Client_GUI_MessageHandler::update()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::update"));
 
   // always insert new text at the END of the buffer...
   GtkTextIter iter;
+  ACE_ASSERT(myTargetBuffer);
   gtk_text_buffer_get_end_iter(myTargetBuffer,
                                &iter);
 
-  // *NOTE*: iter should be updated...
-  gtk_text_buffer_insert(myTargetBuffer,
-                         &iter,
-                         text_in.c_str(),
-                         -1);
-//   gtk_text_buffer_insert_at_cursor(myTargetBuffer,
-//                                    message_text.c_str(),
-//                                    message_text.size());
+  {  // synch access
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+    // sanity check
+    if (myDisplayQueue.empty())
+      return; // nothing to do...
+
+    // *NOTE*: iter should be updated...
+    gtk_text_buffer_insert(myTargetBuffer,
+                           &iter,
+                           myDisplayQueue.front().c_str(),
+                           -1);
+  //   gtk_text_buffer_insert_at_cursor(myTargetBuffer,
+  //                                    message_text.c_str(),
+  //                                    message_text.size());
+
+    myDisplayQueue.pop_front();
+  } // end lock scope
 
 //   // get the new "end"...
 //   gtk_text_buffer_get_end_iter(myTargetBuffer,
@@ -250,6 +290,7 @@ IRC_Client_GUI_MessageHandler::insertText(const std::string& text_in)
                             &iter);
 
   // scroll the mark onscreen
+  ACE_ASSERT(myTargetView);
   gtk_text_view_scroll_mark_onscreen(myTargetView,
                                      mark);
 

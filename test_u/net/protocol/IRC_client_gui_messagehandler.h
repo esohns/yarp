@@ -26,6 +26,9 @@
 #include <ace/Global_Macros.h>
 #include <ace/Synch.h>
 
+#include <string>
+#include <deque>
+
 // forward declaration(s)
 typedef struct _GtkBuilder GtkBuilder;
 typedef struct _GtkTextBuffer GtkTextBuffer;
@@ -35,12 +38,16 @@ class IRC_Client_GUI_MessageHandler
  : public RPG_Net_Protocol_INotify
 {
  public:
-  IRC_Client_GUI_MessageHandler(GtkBuilder*,        // widget tree handler
-                                ACE_Thread_Mutex&); // buffer synch lock
+  IRC_Client_GUI_MessageHandler(GtkBuilder*); // widget tree handler
   virtual ~IRC_Client_GUI_MessageHandler();
 
-  // implement specific behaviour
+  // asynch arrival of data
   virtual void notify(const RPG_Net_Protocol_IRCMessage&); // message data
+  // display (local) text
+  void queueForDisplay(const std::string&);
+  // *WARNING*: to be called from gtk_main (trigger with g_idle_add())
+  // --> do NOT invoke this from any other context (GTK is NOT threadsafe)
+  void update();
 
  private:
   typedef RPG_Net_Protocol_INotify inherited;
@@ -50,14 +57,12 @@ class IRC_Client_GUI_MessageHandler
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_MessageHandler(const IRC_Client_GUI_MessageHandler&));
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_MessageHandler& operator=(const IRC_Client_GUI_MessageHandler&));
 
-  // helper methods
-  void insertText(const std::string&);
+  ACE_Thread_Mutex       myLock;
+  std::deque<std::string> myDisplayQueue;
 
-  GtkBuilder*       myBuilder;
-
-  ACE_Thread_Mutex& myLock;
-  GtkTextView*      myTargetView;
-  GtkTextBuffer*    myTargetBuffer;
+  GtkBuilder*            myBuilder;
+  GtkTextView*           myTargetView;
+  GtkTextBuffer*         myTargetBuffer;
 };
 
 #endif
