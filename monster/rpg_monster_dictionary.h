@@ -22,7 +22,7 @@
 
 #include "rpg_monster_common.h"
 
-#include "rpg_XMLSchema.h"
+#include "rpg_XMLSchema_XML_types.h"
 
 #include <rpg_character_alignment.h>
 #include <rpg_character_environment.h>

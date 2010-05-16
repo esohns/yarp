@@ -31,3 +31,4 @@ libRPG_Item_la_LDFLAGS = -L/usr/local/lib
 
 bindata_DATA = rpg_item.xsd rpg_item.xml
 bindatadir = $(bindir)
+noinst_HEADERS = rpg_XMLSchema_XML_types.h

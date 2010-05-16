@@ -22,7 +22,7 @@
 
 #include "rpg_magic_common.h"
 
-#include "rpg_XMLSchema.h"
+#include "rpg_XMLSchema_XML_types.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Singleton.h>

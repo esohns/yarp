@@ -1,12 +1,13 @@
 METASOURCES = AUTO
 
-include_HEADERS = rpg_magic_XML_parser.h rpg_magic_XML_types.h \
-	rpg_magic_abilityclass.h rpg_magic_abilitytype.h rpg_magic_casterclassunion.h rpg_magic_check.h \
-	rpg_magic_checktypeunion.h rpg_magic_common.h rpg_magic_common_tools.h rpg_magic_countermeasure.h \
-	rpg_magic_descriptor.h rpg_magic_dictionary.h rpg_magic_domain.h rpg_magic_incl.h \
-	rpg_magic_school.h rpg_magic_spell_castingtime.h rpg_magic_spell_duration.h \
-	rpg_magic_spell_durationproperties.h rpg_magic_spell_effect.h rpg_magic_spell_effectproperties.h \
-	rpg_magic_spell_level.h rpg_magic_spell_precondition.h rpg_magic_spell_preconditionproperties.h \
+include_HEADERS = rpg_XMLSchema_XML_types.h rpg_magic_XML_parser.h \
+	rpg_magic_XML_types.h rpg_magic_abilityclass.h rpg_magic_abilitytype.h \
+	rpg_magic_casterclassunion.h rpg_magic_check.h rpg_magic_checktypeunion.h rpg_magic_common.h \
+	rpg_magic_common_tools.h rpg_magic_countermeasure.h rpg_magic_descriptor.h \
+	rpg_magic_dictionary.h rpg_magic_domain.h rpg_magic_incl.h rpg_magic_school.h \
+	rpg_magic_spell_castingtime.h rpg_magic_spell_duration.h rpg_magic_spell_durationproperties.h \
+	rpg_magic_spell_effect.h rpg_magic_spell_effectproperties.h rpg_magic_spell_level.h \
+	rpg_magic_spell_precondition.h rpg_magic_spell_preconditionproperties.h \
 	rpg_magic_spell_propertiesxml.h rpg_magic_spell_rangeeffect.h rpg_magic_spell_rangeproperties.h \
 	rpg_magic_spell_target.h rpg_magic_spell_targetproperties.h rpg_magic_spell_type.h \
 	rpg_magic_spelllikeproperties.h rpg_magic_spelltype.h rpg_magic_subschool.h

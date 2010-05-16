@@ -35,3 +35,4 @@ libRPG_Monster_la_SOURCES = rpg_XMLSchema_XML_types.h \
 
 bindata_DATA = rpg_monster.xsd rpg_monster.xml
 bindatadir = $(bindir)
+noinst_HEADERS = rpg_XMLSchema_XML_types.h

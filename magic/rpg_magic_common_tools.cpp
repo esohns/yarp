@@ -1072,8 +1072,8 @@ const std::string RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_Sp
       // issue --> we provide a (temporary) workaround here...
       // *TODO*: clean this up...
 #define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
-      /* Test for GCC 4.4.2 */
-#if GCC_VERSION == 40402
+      /* Test for GCC <= 4.4.3 */
+#if GCC_VERSION <= 40403
       case RPG_Magic_CasterClassUnion::__GNUC__DOMAIN:
 #else
       case RPG_Magic_CasterClassUnion::DOMAIN:

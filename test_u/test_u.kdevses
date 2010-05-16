@@ -1,44 +1,20 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="4" >
+ <DocsAndViews NumberOfDocuments="1" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui.cpp" >
-   <View0 Encoding="UTF-8" line="713" Type="Source" />
+   <View0 Encoding="UTF-8" line="121" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/protocol/IRC_client.glade" >
-   <View0 Encoding="" line="41" Type="Source" />
-  </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/net/protocol/rpg_net_protocol_sockethandler.cpp" >
-   <View0 Encoding="" line="83" Type="Source" />
-  </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/protocol/IRC_client.ini" >
-   <View0 Encoding="" line="11" Type="Source" />
-  </Doc3>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
    <breakpointList>
-    <breakpoint0 location="/home/unfv/Projects/libStream/stream_messageallocatorheap_base.i:176" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint0 location="/home/unfv/Projects/RPG/net/rpg_net_module_runtimestatistic.i:217" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint0>
-    <breakpoint1 location="/home/unfv/Projects/RPG/net/rpg_net_stream_socket_base.i:201" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint1 location="/home/unfv/Projects/RPG/net/protocol/rpg_net_protocol_IRCparser_driver.cpp:125" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint1>
-    <breakpoint2 location="/home/unfv/Projects/RPG/net/rpg_net_connection_manager.cpp:230" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
-     <tracedExpressions/>
-    </breakpoint2>
-    <breakpoint3 location="/home/unfv/Projects/RPG/net/rpg_net_connection_manager.cpp:304" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
-     <tracedExpressions/>
-    </breakpoint3>
-    <breakpoint4 location="/home/unfv/Projects/RPG/net/rpg_net_stream_socket_base.i:65" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
-     <tracedExpressions/>
-    </breakpoint4>
-    <breakpoint5 location="/home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui_messagehandler.cpp:48" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
-     <tracedExpressions/>
-    </breakpoint5>
-    <breakpoint6 location="/home/unfv/Projects/RPG/net/rpg_net_module_runtimestatistic.i:193" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
-     <tracedExpressions/>
-    </breakpoint6>
    </breakpointList>
    <showInternalCommands value="0" />
   </kdevdebugger>
@@ -47,20 +23,16 @@
    <AStyle IndentPreprocessors="0" FillCount="2" PadParenthesesOut="0" IndentNamespaces="0" IndentLabels="1" Fill="Spaces" MaxStatement="40" Brackets="Break" MinConditional="-1" IndentBrackets="0" PadParenthesesUn="1" BlockBreak="0" KeepStatements="0" KeepBlocks="0" BlockIfElse="0" IndentSwitches="1" PadOperators="1" FStyle="UserDefined" IndentCases="0" FillEmptyLines="0" BracketsCloseHeaders="0" BlockBreakAll="0" PadParenthesesIn="0" IndentClasses="1" IndentBlocks="0" FillForce="1" />
   </kdevastyle>
   <kdevbookmarks>
-   <bookmarks>
-    <bookmark url="/home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui.cpp" >
-     <mark line="507" />
-    </bookmark>
-   </bookmarks>
+   <bookmarks/>
   </kdevbookmarks>
   <kdevsubversion>
    <subversion base="" />
   </kdevsubversion>
   <kdevvalgrind>
-   <executable path="" params="" />
-   <valgrind path="" params="" />
-   <calltree path="" params="" />
-   <kcachegrind path="" />
+   <executable path="" params="-t" />
+   <valgrind path="/usr/bin/valgrind" params=" --tool=memcheck --leak-check=yes" />
+   <calltree path="/usr/bin/valgrind" params="--tool=callgrind" />
+   <kcachegrind path="kcachegrind" />
   </kdevvalgrind>
  </pluginList>
 </KDevPrjSession>
