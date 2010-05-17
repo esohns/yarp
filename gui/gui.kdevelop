@@ -25,17 +25,17 @@
     </general>
     <run>
       <runarguments>
-        <RPG_client_gui>-c ./../../../gui/RPG_client.ini -t -u ./../../../gui/RPG_client.glade</RPG_client_gui>
+        <RPG_client_gui>-c ./../rpg_client.ini -t -u ./../rpg_client.glade</RPG_client_gui>
       </runarguments>
       <debugarguments>
-        <RPG_client_gui>-c ./../../../gui/RPG_client.ini -t -u ./../../../gui/RPG_client.glade</RPG_client_gui>
+        <RPG_client_gui>-c ./../rpg_client.ini -t -u ./../rpg_client.glade</RPG_client_gui>
       </debugarguments>
       <cwd>
         <RPG_client_gui>/home/unfv/Projects/RPG/gui/debug/./</RPG_client_gui>
       </cwd>
       <mainprogram>/home/unfv/Projects/RPG/gui</mainprogram>
-      <programargs></programargs>
-      <globaldebugarguments></globaldebugarguments>
+      <programargs/>
+      <globaldebugarguments/>
       <globalcwd>/home/unfv/Projects/RPG/gui</globalcwd>
       <useglobalprogram>false</useglobalprogram>
       <terminal>false</terminal>
@@ -53,17 +53,17 @@
         <cxxflags>-g -O2 -march=i686</cxxflags>
         <envvars/>
         <configargs>--disable-static</configargs>
-        <topsourcedir></topsourcedir>
+        <topsourcedir/>
         <cppflags>-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0</cppflags>
-        <ldflags></ldflags>
-        <ccompilerbinary></ccompilerbinary>
-        <cxxcompilerbinary></cxxcompilerbinary>
-        <f77compilerbinary></f77compilerbinary>
-        <cflags></cflags>
-        <f77flags></f77flags>
+        <ldflags/>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <f77flags/>
       </optimized>
       <debug>
-        <configargs>--disable-static</configargs>
+        <configargs></configargs>
         <builddir>debug</builddir>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
@@ -71,7 +71,7 @@
         <cxxflags>-g3 -O0 -march=i686 -Wall</cxxflags>
         <envvars/>
         <topsourcedir></topsourcedir>
-        <cppflags>-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0</cppflags>
+        <cppflags>-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/libgnome-2.0 -I/usr/include/libglade-2.0</cppflags>
         <ldflags></ldflags>
         <ccompilerbinary></ccompilerbinary>
         <cxxcompilerbinary></cxxcompilerbinary>
@@ -83,18 +83,18 @@
         <envvars/>
         <configargs>--disable-static</configargs>
         <builddir>debug</builddir>
-        <topsourcedir></topsourcedir>
+        <topsourcedir/>
         <cppflags>-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0</cppflags>
-        <ldflags></ldflags>
+        <ldflags/>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpgf77options</f77compiler>
-        <ccompilerbinary></ccompilerbinary>
-        <cxxcompilerbinary></cxxcompilerbinary>
-        <f77compilerbinary></f77compilerbinary>
-        <cflags></cflags>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
         <cxxflags>-g3 -O0 -march=i686 -Wall</cxxflags>
-        <f77flags></f77flags>
+        <f77flags/>
       </default>
     </configurations>
     <make>
@@ -106,7 +106,7 @@
       <runmultiplejobs>false</runmultiplejobs>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin></makebin>
+      <makebin/>
       <prio>0</prio>
     </make>
   </kdevautoproject>
@@ -179,7 +179,7 @@
     <projectdoc>
       <docsystem>Doxygen Documentation Collection</docsystem>
       <docurl>gui.tag</docurl>
-      <usermanualurl></usermanualurl>
+      <usermanualurl/>
     </projectdoc>
   </kdevdocumentation>
   <substmap>
@@ -272,7 +272,7 @@
     </display>
   </kdevdebugger>
   <ctagspart>
-    <customArguments></customArguments>
+    <customArguments/>
     <customTagfilePath>/home/unfv/Projects/RPG/gui/tags</customTagfilePath>
     <activeTagsFiles/>
   </ctagspart>

@@ -28,6 +28,8 @@
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
 
+#include <libgnome/gnome-program.h>
+#include <glade/glade.h>
 #include <gtk/gtk.h>
 
 #include <ace/ACE.h>
@@ -47,32 +49,37 @@
 #include <iostream>
 #include <sstream>
 
+#define RPG_CLIENT_DEF_INI_FILE                  ACE_TEXT("rpg_client.ini")
+#define RPG_CLIENT_CNF_GNOME_APPLICATION_ID      ACE_TEXT_ALWAYS_CHAR("rpg_client")
 #define RPG_CLIENT_CNF_CLIENT_SECTION_HEADER     ACE_TEXT("client")
 #define RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER ACE_TEXT("connection")
 #define RPG_CLIENT_DEF_CLIENT_USES_TP            false
 #define RPG_CLIENT_DEF_NUM_TP_THREADS            5
-#define RPG_CLIENT_DEF_UI_FILE                   ACE_TEXT("RPG_client.glade")
+#define RPG_CLIENT_DEF_UI_FILE                   ACE_TEXT("rpg_client.glade")
 
 struct cb_data
 {
   std::string bla;
 };
 
-static GtkBuilder* builder  = NULL;
-static GtkWidget*  toplevel = NULL;
-static int         grp_id   = -1;
-static cb_data     userData;
+// static GtkBuilder* builder  = NULL;
+static GladeXML*  xml      = NULL;
+static GtkWidget* toplevel = NULL;
+static int        grp_id   = -1;
+static cb_data    userData;
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
 void
-quit_activated_cb(GtkWidget* widget_in)
+quit_activated_cb(GtkWidget* widget_in,
+                  gpointer userData_in)
 {
   ACE_TRACE(ACE_TEXT("::quit_activated_cb"));
 
   ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(userData_in);
 
   // stop reactor
   if (ACE_Reactor::instance()->end_event_loop() == -1)
@@ -109,7 +116,7 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-c [FILE]   : config file") << std::endl;
+  std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [") << RPG_CLIENT_DEF_INI_FILE << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-u [FILE]   : UI file") << ACE_TEXT(" [") << RPG_CLIENT_DEF_UI_FILE << ACE_TEXT("]") << std::endl;
@@ -120,7 +127,7 @@ print_usage(const std::string& programName_in)
 const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
-                  std::string& configFile_out,
+                  std::string& iniFile_out,
                   bool& logToFile_out,
                   bool& traceInformation_out,
                   std::string& UIfile_out,
@@ -131,7 +138,7 @@ process_arguments(const int argc_in,
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-  configFile_out           = ACE_TEXT(""); // cannot assume this !
+  iniFile_out              = RPG_CLIENT_DEF_INI_FILE;
   logToFile_out            = false;
   traceInformation_out     = false;
   UIfile_out               = RPG_CLIENT_DEF_UI_FILE;
@@ -155,7 +162,7 @@ process_arguments(const int argc_in,
     {
       case 'c':
       {
-        configFile_out = argumentParser.opt_arg();
+        iniFile_out = argumentParser.opt_arg();
 
         break;
       }
@@ -297,10 +304,10 @@ reactor_worker_func(void* args_in)
 }
 
 void
-do_builder(const std::string& UIfile_in,
-           const cb_data& userData_in)
+do_GUI(const std::string& UIfile_in,
+       const cb_data& userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_builder"));
+  ACE_TRACE(ACE_TEXT("::do_GUI"));
 
   // sanity check(s)
   if (!RPG_Common_File_Tools::isReadable(UIfile_in.c_str()))
@@ -311,11 +318,11 @@ do_builder(const std::string& UIfile_in,
 
     return;
   } // end IF
-  if (builder)
+  if (xml)
   {
     // clean up
-    g_object_unref(G_OBJECT(builder));
-    builder = NULL;
+    g_object_unref(G_OBJECT(xml));
+    xml = NULL;
   } // end IF
   if (toplevel)
   {
@@ -325,84 +332,57 @@ do_builder(const std::string& UIfile_in,
   } // end IF
 
   // step1: load widget tree
-  builder = gtk_builder_new();
-  ACE_ASSERT(builder);
-  if (!builder)
+  xml = glade_xml_new(UIfile_in.c_str(), // definition file
+                      NULL,              // root widget --> construct all
+                      NULL);             // domain
+  ACE_ASSERT(xml);
+  if (!xml)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_builder_new(): \"%m\", aborting\n")));
-
-    return;
-  } // end IF
-  GError* error = NULL;
-  gtk_builder_add_from_file(builder,
-                            UIfile_in.c_str(),
-                            &error);
-  if (error)
-  {
-    ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to gtk_builder_add_from_file(\"%s\"): \"%s\", aborting\n"),
-                UIfile_in.c_str(),
-                error->message));
-
-    // clean up
-    g_error_free(error);
-    g_object_unref(G_OBJECT(builder));
-    builder = NULL;
+               ACE_TEXT("failed to glade_xml_new(): \"%m\", aborting\n")));
 
     return;
   } // end IF
 
-  // step2: connect signals/slots
-//   gtk_builder_connect_signals(builder,
-//                               &ACE_const_cast(cb_data&, userData_in));
-  GtkButton* button = NULL;
-  button = GTK_BUTTON(gtk_builder_get_object(builder,
-                                             ACE_TEXT_ALWAYS_CHAR("quit")));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(quit_activated_cb),
-                   NULL);
+  // step2: auto-connect signals/slots
+  glade_xml_signal_autoconnect(xml);
 
   // step3: retrieve toplevel handle
-  toplevel = GTK_WIDGET(gtk_builder_get_object(builder,
-                                               ACE_TEXT_ALWAYS_CHAR("toplevel")));
+  toplevel = GTK_WIDGET(glade_xml_get_widget(xml,
+                                             ACE_TEXT_ALWAYS_CHAR("toplevel")));
   ACE_ASSERT(toplevel);
   if (!toplevel)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_builder_get_object(\"toplevel\"): \"%m\", aborting\n")));
+               ACE_TEXT("failed to glade_xml_get_widget(\"toplevel\"): \"%m\", aborting\n")));
 
     // clean up
-    g_object_unref(G_OBJECT(builder));
-    builder = NULL;
+    g_object_unref(G_OBJECT(xml));
+    xml = NULL;
 
     return;
   } // end IF
 
   // step4: connect default signals
   g_signal_connect(toplevel,
-                   ACE_TEXT_ALWAYS_CHAR("delete-event"),
-                   G_CALLBACK(quit_activated_cb),
-                   &toplevel);
-//   g_signal_connect(toplevel,
-//                    ACE_TEXT_ALWAYS_CHAR("destroy-event"),
-//                    G_CALLBACK(quit_activated_cb),
-//                    &toplevel);
-  g_signal_connect(toplevel,
                    ACE_TEXT_ALWAYS_CHAR("destroy"),
                    G_CALLBACK(gtk_widget_destroyed),
                    &toplevel);
 
+  // step4a: attach user data
+  glade_xml_signal_connect_data(xml,
+                                ACE_TEXT_ALWAYS_CHAR("quit_activated_cb"),
+                                G_CALLBACK(quit_activated_cb),
+                                &ACE_const_cast(cb_data&, userData_in));
+
 //   // step5: use correct screen
 //   if (parentWidget_in)
-//     gtk_window_set_screen(GTK_WINDOW(window),
+//     gtk_window_set_screen(GTK_WINDOW(toplevel),
 //                           gtk_widget_get_screen(ACE_const_cast(GtkWidget*,
 //                                                                parentWidget_in)));
 
-  // step6: draw it
-  gtk_widget_show_all(toplevel);
+//   // step6: draw it
+//   gtk_widget_show_all(toplevel);
 }
 
 void
@@ -427,9 +407,9 @@ do_work(const RPG_Client_Config& config_in,
   } // end IF
 
   // step1: setup UI
-  do_builder(UIfile_in,    // glade file
-             userData_in); // cb data
-  ACE_ASSERT(builder);
+  do_GUI(UIfile_in,    // glade file
+         userData_in); // cb data
+  ACE_ASSERT(xml);
   ACE_ASSERT(toplevel);
 
   // step2: setup event loops
@@ -493,10 +473,10 @@ do_work(const RPG_Client_Config& config_in,
 }
 
 void
-do_parseConfigFile(const std::string& configFilename_in,
+do_parseIniFile(const std::string& iniFilename_in,
                    RPG_Client_Config& config_out)
 {
-  ACE_TRACE(ACE_TEXT("::do_parseConfigFile"));
+  ACE_TRACE(ACE_TEXT("::do_parseIniFile"));
 
   // init return value(s)
   config_out.bla = ACE_TEXT("");
@@ -511,11 +491,11 @@ do_parseConfigFile(const std::string& configFilename_in,
   } // end IF
 
   ACE_Ini_ImpExp import(config_heap);
-  if (import.import_config(configFilename_in.c_str()))
+  if (import.import_config(iniFilename_in.c_str()))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("ACE_Ini_ImpExp::import_config(\"%s\") failed, returning\n"),
-               configFilename_in.c_str()));
+               iniFilename_in.c_str()));
 
     return;
   } // end IF
@@ -676,8 +656,8 @@ do_printVersion(const std::string& programName_in)
 }
 
 int
-ACE_TMAIN(int argc,
-          ACE_TCHAR* argv[])
+ACE_TMAIN(int argc_in,
+          ACE_TCHAR* argv_in[])
 {
   ACE_TRACE(ACE_TEXT("::main"));
 
@@ -701,16 +681,16 @@ ACE_TMAIN(int argc,
   // step1 init/validate configuration
 
   // step1a: process commandline arguments
-  std::string configFile             = ACE_TEXT(""); // cannot assume this !
+  std::string iniFile                = RPG_CLIENT_DEF_INI_FILE;
   bool logToFile                     = false;
   bool traceInformation              = false;
   std::string UIfile                 = RPG_CLIENT_DEF_UI_FILE;
   bool printVersionAndExit           = false;
   bool useThreadPool                 = RPG_CLIENT_DEF_CLIENT_USES_TP;
   unsigned long numThreadPoolThreads = RPG_CLIENT_DEF_NUM_TP_THREADS;
-  if (!(process_arguments(argc,
-                          argv,
-                          configFile,
+  if (!(process_arguments(argc_in,
+                          argv_in,
+                          iniFile,
                           logToFile,
                           traceInformation,
                           UIfile,
@@ -719,7 +699,7 @@ ACE_TMAIN(int argc,
                           numThreadPoolThreads)))
   {
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    print_usage(std::string(ACE::basename(argv_in[0])));
 
     return EXIT_FAILURE;
   } // end IF
@@ -727,7 +707,7 @@ ACE_TMAIN(int argc,
   // step1b: handle specific program modes
   if (printVersionAndExit)
   {
-    do_printVersion(std::string(ACE::basename(argv[0])));
+    do_printVersion(std::string(ACE::basename(argv_in[0])));
 
     return EXIT_SUCCESS;
   } // end IF
@@ -775,16 +755,29 @@ ACE_TMAIN(int argc,
 //   config.sessionID = 0; // (== socket handle !)
 //   config.statisticsReportingInterval = 0; // == off
 
-  // step1db: parse config file (if any)
-  if (!configFile.empty())
-    do_parseConfigFile(configFile,
-                       config);
+  // step1db: parse .ini file (if any)
+  if (!iniFile.empty())
+    do_parseIniFile(iniFile,
+                    config);
 
   // *TODO*: step1de: init callback user data
   userData.bla = ACE_TEXT("");
 
-  // step2: init GTK
-  gtk_init(&argc, &argv);
+  // step2: init GTK / GTK+ / GNOME
+  gtk_init(&argc_in,
+           &argv_in);
+//   GnomeClient* gnomeSession = NULL;
+//   gnomeSession = gnome_client_new();
+//   ACE_ASSERT(gnomeSession);
+//   gnome_client_set_program(gnomeSession, ACE::basename(argv_in[0]));
+  GnomeProgram* gnomeProgram = NULL;
+  gnomeProgram = gnome_program_init(RPG_CLIENT_CNF_GNOME_APPLICATION_ID, // app ID
+                                    ACE_TEXT_ALWAYS_CHAR(VERSION),       // version
+                                    NULL,                                // module info
+                                    argc_in,                             // cmdline
+                                    argv_in,                             // cmdline
+                                    NULL);                               // property name(s)
+  ACE_ASSERT(gnomeProgram);
 
   ACE_High_Res_Timer timer;
   timer.start();

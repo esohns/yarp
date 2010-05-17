@@ -1,10 +1,232 @@
 <?xml version="1.0"?>
-<interface>
-  <requires lib="gtk+" version="2.16"/>
+<glade-interface>
+  <!-- interface-requires gtk+ 2.16 -->
+  <!-- interface-requires bonobo 0.0 -->
+  <!-- interface-requires bonobo 0.0 -->
+  <!-- interface-requires gnome 0.0 -->
+  <!-- interface-requires gnome 0.0 -->
+  <!-- interface-requires canvas 0.0 -->
+  <!-- interface-requires canvas 0.0 -->
   <!-- interface-naming-policy project-wide -->
-  <object class="GtkWindow" id="toplevel">
-    <child>
-      <placeholder/>
+  <widget class="GnomeApp" id="toplevel">
+    <property name="visible">True</property>
+    <property name="double_buffered">False</property>
+    <property name="title" translatable="yes">RPG client</property>
+    <property name="window_position">center</property>
+    <property name="default_width">1024</property>
+    <property name="default_height">786</property>
+    <property name="app_id">rpg_client</property>
+    <property name="enable_layout_config">True</property>
+    <signal name="delete_event" handler="quit_activated_cb"/>
+    <child internal-child="dock">
+      <widget class="BonoboDock" id="dock">
+        <property name="visible">True</property>
+        <property name="double_buffered">False</property>
+        <property name="allow_floating">True</property>
+        <child>
+          <widget class="BonoboDockItem" id="menu">
+            <property name="visible">True</property>
+            <property name="double_buffered">False</property>
+            <child>
+              <widget class="GtkMenuBar" id="main_menu">
+                <property name="visible">True</property>
+                <property name="double_buffered">False</property>
+                <child>
+                  <widget class="GtkMenuItem" id="file">
+                    <property name="visible">True</property>
+                    <property name="double_buffered">False</property>
+                    <property name="label" translatable="yes">_File</property>
+                    <property name="use_underline">True</property>
+                    <child>
+                      <widget class="GtkMenu" id="file_menu">
+                        <property name="visible">True</property>
+                        <property name="double_buffered">False</property>
+                        <property name="tearoff_title">file menu</property>
+                        <child>
+                          <widget class="GtkImageMenuItem" id="new">
+                            <property name="label">gtk-new</property>
+                            <property name="visible">True</property>
+                            <property name="double_buffered">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <property name="always_show_image">True</property>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkImageMenuItem" id="open">
+                            <property name="label">gtk-open</property>
+                            <property name="visible">True</property>
+                            <property name="double_buffered">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <property name="always_show_image">True</property>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkImageMenuItem" id="save">
+                            <property name="label">gtk-save</property>
+                            <property name="visible">True</property>
+                            <property name="double_buffered">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <property name="always_show_image">True</property>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkImageMenuItem" id="save_as">
+                            <property name="label">gtk-save-as</property>
+                            <property name="visible">True</property>
+                            <property name="double_buffered">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <property name="always_show_image">True</property>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkSeparatorMenuItem" id="separator">
+                            <property name="visible">True</property>
+                            <property name="double_buffered">False</property>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkImageMenuItem" id="quit">
+                            <property name="label">gtk-quit</property>
+                            <property name="visible">True</property>
+                            <property name="double_buffered">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <property name="always_show_image">True</property>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                  </widget>
+                </child>
+                <child>
+                  <widget class="GtkMenuItem" id="edit">
+                    <property name="visible">True</property>
+                    <property name="double_buffered">False</property>
+                    <property name="label" translatable="yes">_Edit</property>
+                    <property name="use_underline">True</property>
+                    <child>
+                      <widget class="GtkMenu" id="edit_menu">
+                        <property name="visible">True</property>
+                        <property name="double_buffered">False</property>
+                        <property name="tearoff_title">edit menu</property>
+                        <child>
+                          <widget class="GtkImageMenuItem" id="cut">
+                            <property name="label">gtk-cut</property>
+                            <property name="visible">True</property>
+                            <property name="double_buffered">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <property name="always_show_image">True</property>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkImageMenuItem" id="copy">
+                            <property name="label">gtk-copy</property>
+                            <property name="visible">True</property>
+                            <property name="double_buffered">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <property name="always_show_image">True</property>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkImageMenuItem" id="paste">
+                            <property name="label">gtk-paste</property>
+                            <property name="visible">True</property>
+                            <property name="double_buffered">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <property name="always_show_image">True</property>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkImageMenuItem" id="delete">
+                            <property name="label">gtk-delete</property>
+                            <property name="visible">True</property>
+                            <property name="double_buffered">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <property name="always_show_image">True</property>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                  </widget>
+                </child>
+                <child>
+                  <widget class="GtkMenuItem" id="view">
+                    <property name="visible">True</property>
+                    <property name="double_buffered">False</property>
+                    <property name="label" translatable="yes">_View</property>
+                    <property name="use_underline">True</property>
+                  </widget>
+                </child>
+                <child>
+                  <widget class="GtkMenuItem" id="help">
+                    <property name="visible">True</property>
+                    <property name="double_buffered">False</property>
+                    <property name="label" translatable="yes">_Help</property>
+                    <property name="use_underline">True</property>
+                    <child>
+                      <widget class="GtkMenu" id="help_menu">
+                        <property name="visible">True</property>
+                        <property name="double_buffered">False</property>
+                        <property name="tearoff_title">help menu</property>
+                        <child>
+                          <widget class="GtkImageMenuItem" id="about">
+                            <property name="label">gtk-about</property>
+                            <property name="visible">True</property>
+                            <property name="double_buffered">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <property name="always_show_image">True</property>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                  </widget>
+                </child>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="behavior">BONOBO_DOCK_ITEM_BEH_EXCLUSIVE | BONOBO_DOCK_ITEM_BEH_NEVER_VERTICAL | BONOBO_DOCK_ITEM_BEH_LOCKED</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GnomeCanvas" id="canvas">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="has_focus">True</property>
+            <property name="is_focus">True</property>
+            <property name="can_default">True</property>
+            <property name="has_default">True</property>
+            <property name="receives_default">True</property>
+            <property name="aa">True</property>
+          </widget>
+        </child>
+      </widget>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+      </packing>
     </child>
-  </object>
-</interface>
+    <child internal-child="appbar">
+      <widget class="GnomeAppBar" id="status">
+        <property name="visible">True</property>
+        <property name="double_buffered">False</property>
+        <property name="spacing">4</property>
+        <property name="has_progress">True</property>
+        <property name="has_status">True</property>
+      </widget>
+      <packing>
+        <property name="position">1</property>
+        <property name="fill">True</property>
+      </packing>
+    </child>
+  </widget>
+</glade-interface>

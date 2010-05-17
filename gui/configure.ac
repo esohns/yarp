@@ -24,6 +24,10 @@ dnl AC_PROG_MKDIR_P
 AM_INIT_AUTOMAKE(gui, 0.1)
 LT_INIT
 
+PKG_CHECK_MODULES(gui, libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0)
+dnl AC_SUBST(MYPROG_CFLAGS)
+dnl AC_SUBST(MYPROG_LIBS)
+
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lACE':
 AC_CHECK_LIB([ACE], [main])
