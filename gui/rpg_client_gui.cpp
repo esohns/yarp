@@ -18,19 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "rpg_client_common.h"
 
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
 
-#include <libgnome/gnome-program.h>
+#include <gnome.h>
 #include <glade/glade.h>
 #include <gtk/gtk.h>
+
+#include <SDL.h>
 
 #include <ace/ACE.h>
 #include <ace/Version.h>
@@ -49,6 +46,11 @@
 #include <iostream>
 #include <sstream>
 
+// *NOTE*: need this to import correct VERSION !
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #define RPG_CLIENT_DEF_INI_FILE                  ACE_TEXT("rpg_client.ini")
 #define RPG_CLIENT_CNF_GNOME_APPLICATION_ID      ACE_TEXT_ALWAYS_CHAR("rpg_client")
 #define RPG_CLIENT_CNF_CLIENT_SECTION_HEADER     ACE_TEXT("client")
@@ -56,24 +58,42 @@
 #define RPG_CLIENT_DEF_CLIENT_USES_TP            false
 #define RPG_CLIENT_DEF_NUM_TP_THREADS            5
 #define RPG_CLIENT_DEF_UI_FILE                   ACE_TEXT("rpg_client.glade")
+#define RPG_CLIENT_DEF_VIDEO_W                   1024
+#define RPG_CLIENT_DEF_VIDEO_H                   786
+#define RPG_CLIENT_DEF_VIDEO_BPP                 32
+#define RPG_CLIENT_DEF_VIDEO_FULLSCREEN          false
+#define RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER        false
 
 struct cb_data
 {
   std::string bla;
 };
 
+// *NOTE* types as used by SDL
+struct video_config
+{
+  int    screen_width;
+  int    screen_height;
+  int    screen_colordepth; // bits/pixel
+  Uint32 screen_flags;
+  bool   fullScreen;
+  bool   doubleBuffer;
+};
+
+static cb_data      userData;
 // static GtkBuilder* builder  = NULL;
-static GladeXML*  xml      = NULL;
-static GtkWidget* toplevel = NULL;
-static int        grp_id   = -1;
-static cb_data    userData;
+static GladeXML*    xml     = NULL;
+static GtkWidget*   dialog  = NULL;
+static SDL_Surface* screen  = NULL;
+static int          grp_id  = -1;
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
-void
+G_MODULE_EXPORT gint
 quit_activated_cb(GtkWidget* widget_in,
+                  GdkEvent* event_in,
                   gpointer userData_in)
 {
   ACE_TRACE(ACE_TEXT("::quit_activated_cb"));
@@ -93,18 +113,134 @@ quit_activated_cb(GtkWidget* widget_in,
 
   // no more data will arrive from here on...
 
-  // finished processing data, no more data will be advertised
-  // --> we can safely close the window...
-  // sanity check(s)
-  ACE_ASSERT(toplevel);
-  gtk_widget_destroy(toplevel);
-
   // ...and leave GTK
   gtk_main_quit();
+
+  // this is the "delete-event" handler
+  // --> destroy the dialog widget
+  return TRUE;
 }
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+int
+filter_events(const SDL_Event* event_in)
+{
+  ACE_TRACE(ACE_TEXT("::filter_events"));
+
+//   static int boycott = 1;
+
+  // sanity check(s)
+  ACE_ASSERT(event_in);
+
+  switch (event_in->type)
+  {
+//     case SDL_QUIT:
+//     {
+//       if (boycott)
+//       {
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("filtered quit event -- try again, aborting\n")));
+//
+//         boycott = 0;
+//
+//         return 0; // drop it, we've handled it
+//       } // end IF
+//
+//       break;
+//     }
+    case SDL_MOUSEMOTION:
+    {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("mouse moved to (%d, %d), aborting\n"),
+//                  event_in->motion.x,
+//                  event_in->motion.y));
+
+      return 0; // drop it, we've handled it
+    }
+    default:
+    {
+
+      break;
+    }
+  } // end SWITCH
+
+  return 1;
+}
+
+void
+do_SDLEventLoop()
+{
+  ACE_TRACE(ACE_TEXT("::do_SDLEventLoop"));
+
+  SDL_Event event;
+  // loop waiting for ESC+Mouse_Button
+  while (SDL_WaitEvent(&event) >= 0)
+  {
+    switch (event.type)
+    {
+      case SDL_ACTIVEEVENT:
+      {
+        if (event.active.state & SDL_APPACTIVE)
+        {
+          if (event.active.gain)
+          {
+//             ACE_DEBUG((LM_DEBUG,
+//                        ACE_TEXT("activated...\n")));
+          } // end IF
+          else
+          {
+//             ACE_DEBUG((LM_DEBUG,
+//                        ACE_TEXT("iconified...\n")));
+          } // end ELSE
+        } // end IF
+
+        break;
+      }
+      case SDL_MOUSEBUTTONDOWN:
+      {
+        Uint8* keys = NULL;
+        keys = SDL_GetKeyState(NULL);
+        ACE_ASSERT(keys);
+        if (keys[SDLK_ESCAPE] == SDL_PRESSED)
+        {
+          // simply fall through !
+        } // end IF
+        else
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("mouse button pressed...\n")));
+
+          break;
+        } // end ELSE
+      }
+      case SDL_QUIT:
+      {
+        // stop reactor
+        if (ACE_Reactor::instance()->end_event_loop() == -1)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
+        } // end IF
+
+        // ... and wait for the reactor worker(s) to join
+        ACE_Thread_Manager::instance()->wait_grp(grp_id);
+
+        // no more data will arrive from here on...
+
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("leaving...\n")));
+
+        return;
+      }
+      default:
+      {
+        break;
+      }
+    } // end SWITCH
+  } // end WHILE
+}
 
 void
 print_usage(const std::string& programName_in)
@@ -305,7 +441,8 @@ reactor_worker_func(void* args_in)
 
 void
 do_GUI(const std::string& UIfile_in,
-       const cb_data& userData_in)
+       const cb_data& userData_in,
+       const video_config& videoConfig_in)
 {
   ACE_TRACE(ACE_TEXT("::do_GUI"));
 
@@ -324,65 +461,242 @@ do_GUI(const std::string& UIfile_in,
     g_object_unref(G_OBJECT(xml));
     xml = NULL;
   } // end IF
-  if (toplevel)
+  if (dialog)
   {
     // clean up
-    gtk_widget_destroy(toplevel);
-    toplevel = NULL;
+    gtk_widget_destroy(dialog);
+    dialog = NULL;
   } // end IF
 
-  // step1: load widget tree
-  xml = glade_xml_new(UIfile_in.c_str(), // definition file
-                      NULL,              // root widget --> construct all
-                      NULL);             // domain
-  ACE_ASSERT(xml);
-  if (!xml)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_new(): \"%m\", aborting\n")));
-
-    return;
-  } // end IF
-
-  // step2: auto-connect signals/slots
-  glade_xml_signal_autoconnect(xml);
-
-  // step3: retrieve toplevel handle
-  toplevel = GTK_WIDGET(glade_xml_get_widget(xml,
-                                             ACE_TEXT_ALWAYS_CHAR("toplevel")));
-  ACE_ASSERT(toplevel);
-  if (!toplevel)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"toplevel\"): \"%m\", aborting\n")));
-
-    // clean up
-    g_object_unref(G_OBJECT(xml));
-    xml = NULL;
-
-    return;
-  } // end IF
-
-  // step4: connect default signals
-  g_signal_connect(toplevel,
-                   ACE_TEXT_ALWAYS_CHAR("destroy"),
-                   G_CALLBACK(gtk_widget_destroyed),
-                   &toplevel);
-
-  // step4a: attach user data
-  glade_xml_signal_connect_data(xml,
-                                ACE_TEXT_ALWAYS_CHAR("quit_activated_cb"),
-                                G_CALLBACK(quit_activated_cb),
-                                &ACE_const_cast(cb_data&, userData_in));
+//   // step1: load widget tree
+//   xml = glade_xml_new(UIfile_in.c_str(), // definition file
+//                       NULL,              // root widget --> construct all
+//                       NULL);             // domain
+//   ACE_ASSERT(xml);
+//   if (!xml)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to glade_xml_new(): \"%m\", aborting\n")));
+//
+//     return;
+//   } // end IF
+//
+//   // step2: auto-connect signals/slots
+// //   glade_xml_signal_autoconnect(xml);
+//
+//   // step3: retrieve dialog handle
+//   dialog = GTK_WIDGET(glade_xml_get_widget(xml,
+//                                            ACE_TEXT_ALWAYS_CHAR("dialog")));
+//   ACE_ASSERT(dialog);
+//   if (!dialog)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to glade_xml_get_widget(\"dialog\"): \"%m\", aborting\n")));
+//
+//     // clean up
+//     g_object_unref(G_OBJECT(xml));
+//     xml = NULL;
+//
+//     return;
+//   } // end IF
+//
+//   // step4: connect default signals
+//   g_signal_connect(dialog,
+//                    ACE_TEXT_ALWAYS_CHAR("destroy"),
+//                    G_CALLBACK(gtk_widget_destroyed),
+//                    &dialog);
+//
+//   GtkButton* button = NULL;
+//   button = GTK_BUTTON(glade_xml_get_widget(xml,
+//                                            ACE_TEXT_ALWAYS_CHAR("quit")));
+//   ACE_ASSERT(button);
+//   g_signal_connect(button,
+//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
+//                    G_CALLBACK(quit_activated_cb),
+//                    &ACE_const_cast(cb_data&, userData_in));
+//
+//   // step4a: attach user data
+//   glade_xml_signal_connect_data(xml,
+//                                 ACE_TEXT_ALWAYS_CHAR("quit_activated_cb"),
+//                                 G_CALLBACK(quit_activated_cb),
+//                                 &ACE_const_cast(cb_data&, userData_in));
 
 //   // step5: use correct screen
 //   if (parentWidget_in)
-//     gtk_window_set_screen(GTK_WINDOW(toplevel),
+//     gtk_window_set_screen(GTK_WINDOW(dialog),
 //                           gtk_widget_get_screen(ACE_const_cast(GtkWidget*,
 //                                                                parentWidget_in)));
 
 //   // step6: draw it
-//   gtk_widget_show_all(toplevel);
+//   gtk_widget_show_all(dialog);
+
+  // init SDL UI handling
+
+  // ***** keyboard setup *****
+  // enable Unicode translation
+  SDL_EnableUNICODE(1);
+  // enable key repeat
+  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,
+                      SDL_DEFAULT_REPEAT_INTERVAL);
+  // ignore key events
+  SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
+  SDL_EventState(SDL_KEYUP, SDL_IGNORE);
+
+  // filter key, mouse and quit events
+  SDL_SetEventFilter(filter_events);
+
+  // ***** window/screen setup *****
+  // set window caption
+  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING), // title
+                    NULL);                                // icon
+  // don't show (double) cursor
+  SDL_ShowCursor(SDL_DISABLE);
+
+  char driver[MAXPATHLEN];
+  ACE_ASSERT(MAXPATHLEN == sizeof(driver));
+  if (!SDL_VideoDriverName(driver, sizeof(driver)))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_VideoDriverName(): \"%s\", aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+  // retrieve/list "best" available video mode
+  const SDL_VideoInfo* videoInfo = NULL;
+  videoInfo = SDL_GetVideoInfo();
+  ACE_ASSERT(videoInfo);
+  // debug info
+  ACE_DEBUG((LM_INFO,
+             ACE_TEXT("*** video capabilities (driver: \"%s\") ***\nhardware surfaces: \"%s\"\nwindow manager: \"%s\"\nhardware to hardware blits accelerated: \"%s\"\nhardware to hardware colorkey blits accelerated: \"%s\"\nhardware to hardware alpha blits accelerated: \"%s\"\nsoftware to hardware blits accelerated: \"%s\"\nsoftware to hardware colorkey blits accelerated: \"%s\"\nsoftware to hardware alpha blits accelerated: \"%s\"\ncolor fills accelerated: \"%s\"\nvideo memory: %d bytes\n*** (suggested) video mode ***\npalette: %@\nbits[bytes]/pixel: %d[%d]\nmask[RGBA]: %x %x %x %x\nshift[RGBA]: %d %d %d %d\nloss[RGBA]: %d %d %d %d\ntransparent colorkey: %d\noverall surface alpha: %d\n"),
+             driver,
+             (videoInfo->hw_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             (videoInfo->wm_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             (videoInfo->blit_hw ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             (videoInfo->blit_hw_CC ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             (videoInfo->blit_hw_A ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             (videoInfo->blit_sw ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             (videoInfo->blit_sw_CC ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             (videoInfo->blit_sw_A ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             (videoInfo->blit_fill ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             videoInfo->video_mem,
+             videoInfo->vfmt->palette,
+             videoInfo->vfmt->BitsPerPixel,
+             videoInfo->vfmt->BytesPerPixel,
+             videoInfo->vfmt->Rmask, videoInfo->vfmt->Gmask, videoInfo->vfmt->Bmask, videoInfo->vfmt->Amask,
+             videoInfo->vfmt->Rshift, videoInfo->vfmt->Gshift, videoInfo->vfmt->Bshift, videoInfo->vfmt->Ashift,
+             videoInfo->vfmt->Rloss, videoInfo->vfmt->Gloss, videoInfo->vfmt->Bloss, videoInfo->vfmt->Aloss,
+             videoInfo->vfmt->colorkey,
+             ACE_static_cast(int, videoInfo->vfmt->alpha)));
+
+  // set flags
+  Uint32 surface_flags = ((videoInfo->hw_available ? (SDL_HWSURFACE |
+                                                      (videoConfig_in.doubleBuffer ? SDL_DOUBLEBUF : SDL_ANYFORMAT))
+                                                   : SDL_SWSURFACE) |
+//                           SDL_ASYNCBLIT | // "...will usually slow down blitting on single CPU machines,
+//                                           //  but may provide a speed increase on SMP systems..."
+                          SDL_ANYFORMAT |    // "...Allow any video depth/pixel-format..."
+                          SDL_HWPALETTE |    // "...Surface has exclusive palette..."
+//                           (videoConfig_in.doubleBuffer ? SDL_DOUBLEBUF : SDL_ANYFORMAT) |
+                          (videoConfig_in.fullScreen ? (SDL_FULLSCREEN | SDL_NOFRAME) : SDL_RESIZABLE));
+  // get available fullscreen/hardware/... modes
+  SDL_Rect** modes = NULL;
+  modes = SDL_ListModes(NULL,           // use same as videoInfo
+                        surface_flags); // surface flags
+  // --> any valid modes available ?
+  if (modes == NULL)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("no available resolutions (flags: %x: change your settings), aborting\n"),
+               surface_flags));
+
+    return;
+  } // end IF
+  else if (modes == ACE_reinterpret_cast(SDL_Rect**, -1))
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("ALL resolutions available (flags: %x)...\n"),
+               surface_flags));
+  }
+  else
+  {
+    // print valid modes
+    ACE_DEBUG((LM_INFO,
+               ACE_TEXT("*** available resolutions [flags: %x] ***\n"),
+               surface_flags));
+    for (unsigned int i = 0;
+         modes[i];
+         i++)
+      ACE_DEBUG((LM_INFO,
+                 ACE_TEXT("[%d]: %d x %d\n"),
+                 i + 1,
+                 modes[i]->w,
+                 modes[i]->h));
+  } // end ELSE
+
+  // check to see whether the requested mode is possible
+  int suggested_bpp = SDL_VideoModeOK(videoConfig_in.screen_width,
+                                      videoConfig_in.screen_height,
+                                      videoConfig_in.screen_colordepth,
+                                      surface_flags);
+  switch (suggested_bpp)
+  {
+    case 0:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("requested mode (width: %d, height: %d, depth: %d, flags: %x) not supported (change your settings), aborting\n"),
+                 videoConfig_in.screen_width,
+                 videoConfig_in.screen_height,
+                 videoConfig_in.screen_colordepth,
+                 surface_flags));
+
+      return;
+    }
+    default:
+    {
+      if (suggested_bpp != videoConfig_in.screen_colordepth)
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("suggested depth: %d...\n"),
+                   suggested_bpp));
+      } // end IF
+
+      break;
+    }
+  } // end SWITCH
+
+  // switch to graphics mode... here we go !
+  screen = SDL_SetVideoMode(videoConfig_in.screen_width,
+                            videoConfig_in.screen_height,
+                            videoConfig_in.screen_colordepth,
+                            surface_flags);
+  if (!screen)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetVideoMode(%d, %d, %d, %x): \"%s\", aborting\n"),
+               videoConfig_in.screen_width,
+               videoConfig_in.screen_height,
+               videoConfig_in.screen_colordepth,
+               surface_flags,
+               SDL_GetError()));
+
+    return;
+  } // end IF
+
+  // debug info
+  ACE_DEBUG((LM_INFO,
+             ACE_TEXT("*** screen flags ***\nsurface: %sRAM\nasynch blits: \"%s\"\nany video depth/pixel-format: \"%s\"\nsurface has exclusive palette: \"%s\"\ndouble-buffered: \"%s\"\nblit uses hardware acceleration: \"%s\"\nblit uses a source color key: \"%s\"\nsurface is RLE encoded: \"%s\"\nblit uses source alpha blending: \"%s\"\nsurface uses preallocated memory: \"%s\"\n"),
+             ((screen->flags & SDL_HWSURFACE) ? ACE_TEXT("Video") : ACE_TEXT("")),
+             ((screen->flags & SDL_ASYNCBLIT) ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             ((screen->flags & SDL_ANYFORMAT) ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             ((screen->flags & SDL_HWPALETTE) ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             ((screen->flags & SDL_DOUBLEBUF) ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             ((screen->flags & SDL_HWACCEL) ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             ((screen->flags & SDL_SRCCOLORKEY) ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             ((screen->flags & SDL_RLEACCEL) ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             ((screen->flags & SDL_SRCALPHA) ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             ((screen->flags & SDL_PREALLOC) ? ACE_TEXT("yes") : ACE_TEXT("no"))));
+
 }
 
 void
@@ -390,7 +704,8 @@ do_work(const RPG_Client_Config& config_in,
         const bool& useThreadPool_in,
         const unsigned long& numThreadPoolThreads_in,
         const std::string& UIfile_in,
-        cb_data& userData_in)
+        cb_data& userData_in,
+        const video_config& videoConfig_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -408,9 +723,10 @@ do_work(const RPG_Client_Config& config_in,
 
   // step1: setup UI
   do_GUI(UIfile_in,    // glade file
-         userData_in); // cb data
-  ACE_ASSERT(xml);
-  ACE_ASSERT(toplevel);
+         userData_in,  // cb data
+         videoConfig_in); // video config
+//   ACE_ASSERT(xml);
+//   ACE_ASSERT(dialog);
 
   // step2: setup event loops
   // - perform (signal handling, socket I/O, ...) --> ACE_Reactor
@@ -465,8 +781,10 @@ do_work(const RPG_Client_Config& config_in,
              grp_id,
              (useThreadPool_in ? numThreadPoolThreads_in : 1)));
 
-  // dispatch GTK events from the "main" thread
-  gtk_main();
+//   // dispatch GTK events from the "main" thread
+//   gtk_main();
+  // dispatch SDL events from the "main" thread
+  do_SDLEventLoop();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -474,12 +792,18 @@ do_work(const RPG_Client_Config& config_in,
 
 void
 do_parseIniFile(const std::string& iniFilename_in,
-                   RPG_Client_Config& config_out)
+                RPG_Client_Config& config_out,
+                video_config& videoConfig_out)
 {
   ACE_TRACE(ACE_TEXT("::do_parseIniFile"));
 
   // init return value(s)
-  config_out.bla = ACE_TEXT("");
+//   config_out.bla = ACE_TEXT("");
+  videoConfig_out.screen_width = RPG_CLIENT_DEF_VIDEO_W;
+  videoConfig_out.screen_height = RPG_CLIENT_DEF_VIDEO_H;
+  videoConfig_out.screen_colordepth = RPG_CLIENT_DEF_VIDEO_BPP;
+  videoConfig_out.fullScreen = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
+  videoConfig_out.doubleBuffer = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
 
   ACE_Configuration_Heap config_heap;
   if (config_heap.open())
@@ -540,33 +864,25 @@ do_parseIniFile(const std::string& iniFilename_in,
 //                val_name.c_str(),
 //                val_type));
 
-//     // *TODO*: move these strings...
-//     if (val_name == ACE_TEXT("password"))
-//     {
-//       loginOptions_out.password = val_value.c_str();
-//     }
-//     else if (val_name == ACE_TEXT("nick"))
-//     {
-//       loginOptions_out.nick = val_value.c_str();
-//     }
-//     else if (val_name == ACE_TEXT("user"))
-//     {
-//       loginOptions_out.user.username = val_value.c_str();
-//     }
-//     else if (val_name == ACE_TEXT("realname"))
-//     {
-//       loginOptions_out.user.realname = val_value.c_str();
-//     }
-//     else if (val_name == ACE_TEXT("channel"))
-//     {
-//       loginOptions_out.channel = val_value.c_str();
-//     }
-//     else
-//     {
-//       ACE_ERROR((LM_ERROR,
-//                  ACE_TEXT("unexpected key \"%s\", continuing\n"),
-//                  val_name.c_str()));
-//     } // end ELSE
+    // *TODO*: move these strings...
+    if (val_name == ACE_TEXT("screen_width"))
+    {
+      videoConfig_out.screen_width = ::atoi(val_value.c_str());
+    }
+    else if (val_name == ACE_TEXT("screen_height"))
+    {
+      videoConfig_out.screen_height = ::atoi(val_value.c_str());
+    }
+    else if (val_name == ACE_TEXT("screen_colordepth"))
+    {
+      videoConfig_out.screen_colordepth = ::atoi(val_value.c_str());
+    }
+    else
+    {
+      ACE_ERROR((LM_ERROR,
+                 ACE_TEXT("unexpected key \"%s\", continuing\n"),
+                 val_name.c_str()));
+    } // end ELSE
 
     ++val_index;
   } // end WHILE
@@ -617,6 +933,26 @@ do_parseIniFile(const std::string& iniFilename_in,
 //     {
 //       serverPortNumber_out = ::atoi(val_value.c_str());
 //     }
+//     else if (val_name == ACE_TEXT("password"))
+//     {
+//       loginOptions_out.password = val_value.c_str();
+//     }
+//     else if (val_name == ACE_TEXT("nick"))
+//     {
+//       loginOptions_out.nick = val_value.c_str();
+//     }
+//     else if (val_name == ACE_TEXT("user"))
+//     {
+//       loginOptions_out.user.username = val_value.c_str();
+//     }
+//     else if (val_name == ACE_TEXT("realname"))
+//     {
+//       loginOptions_out.user.realname = val_value.c_str();
+//     }
+//     else if (val_name == ACE_TEXT("channel"))
+//     {
+//       loginOptions_out.channel = val_value.c_str();
+//     }
 //     else
 //     {
 //       ACE_ERROR((LM_ERROR,
@@ -647,7 +983,11 @@ do_printVersion(const std::string& programName_in)
   version_number << ACE::major_version();
   version_number << ACE_TEXT(".");
   version_number << ACE::minor_version();
-  version_number << ACE_TEXT(".");
+  if (ACE::beta_version())
+  {
+    version_number << ACE_TEXT(".");
+    version_number << ACE::beta_version();
+  } // end IF
 
   std::cout << ACE_TEXT("ACE: ") << version_number.str() << std::endl;
 //   std::cout << "ACE: "
@@ -754,16 +1094,34 @@ ACE_TMAIN(int argc_in,
 //   // *WARNING*: set at runtime, by the appropriate connection handler
 //   config.sessionID = 0; // (== socket handle !)
 //   config.statisticsReportingInterval = 0; // == off
-
+  video_config videoConfig;
+  videoConfig.screen_width = RPG_CLIENT_DEF_VIDEO_W;
+  videoConfig.screen_height = RPG_CLIENT_DEF_VIDEO_H;
+  videoConfig.screen_colordepth = RPG_CLIENT_DEF_VIDEO_BPP;
+  videoConfig.fullScreen = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
+  videoConfig.doubleBuffer = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
   // step1db: parse .ini file (if any)
   if (!iniFile.empty())
     do_parseIniFile(iniFile,
-                    config);
+                    config,
+                    videoConfig);
 
   // *TODO*: step1de: init callback user data
   userData.bla = ACE_TEXT("");
 
-  // step2: init GTK / GTK+ / GNOME
+  // step2a: init SDL
+  if (SDL_Init(SDL_INIT_VIDEO |
+               SDL_INIT_AUDIO |
+               SDL_INIT_NOPARACHUTE) == -1) // "...Prevents SDL from catching fatal signals..."
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_Init(): \"%s\", aborting\n"),
+               SDL_GetError()));
+
+    return EXIT_FAILURE;
+  } // end IF
+
+  // step2b: init GTK / GTK+ / GNOME
   gtk_init(&argc_in,
            &argv_in);
 //   GnomeClient* gnomeSession = NULL;
@@ -773,7 +1131,7 @@ ACE_TMAIN(int argc_in,
   GnomeProgram* gnomeProgram = NULL;
   gnomeProgram = gnome_program_init(RPG_CLIENT_CNF_GNOME_APPLICATION_ID, // app ID
                                     ACE_TEXT_ALWAYS_CHAR(VERSION),       // version
-                                    NULL,                                // module info
+                                    LIBGNOMEUI_MODULE,                   // module info
                                     argc_in,                             // cmdline
                                     argv_in,                             // cmdline
                                     NULL);                               // property name(s)
@@ -786,7 +1144,8 @@ ACE_TMAIN(int argc_in,
           useThreadPool,
           numThreadPoolThreads,
           UIfile,
-          userData);
+          userData,
+          videoConfig);
   timer.stop();
 
   // debug info
@@ -801,6 +1160,8 @@ ACE_TMAIN(int argc_in,
              working_time_string.c_str()));
 
   // step4: clean up
+  SDL_Quit();
+
   // *PORTABILITY*: on Windows, we must fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::fini() == -1)

@@ -253,12 +253,16 @@ send_clicked_cb(GtkWidget* button_in,
                                gtk_entry_buffer_get_length(buffer));
 }
 
-void
-quit_activated_cb(GtkWidget* widget_in)
+gint
+quit_activated_cb(GtkWidget* widget_in,
+                  GdkEvent* event_in,
+                  gpointer userData_in)
 {
   ACE_TRACE(ACE_TEXT("::quit_activated_cb"));
 
   ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(event_in);
+  ACE_UNUSED_ARG(userData_in);
 
   // stop reactor
   if (ACE_Reactor::instance()->end_event_loop() == -1)
@@ -279,11 +283,14 @@ quit_activated_cb(GtkWidget* widget_in)
   // finished processing data, no more data will be advertised
   // --> we can safely close the window...
   // sanity check(s)
-  ACE_ASSERT(window);
-  gtk_widget_destroy(window);
+//   ACE_ASSERT(window);
+//   gtk_widget_destroy(window);
 
   // ...and leave GTK
   gtk_main_quit();
+
+  // destroy the toplevel widget
+  return TRUE;
 }
 #ifdef __cplusplus
 }

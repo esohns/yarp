@@ -55,7 +55,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHButtonBox" id="hbuttonbox1">
+          <object class="GtkHButtonBox" id="hbuttonbox_channel">
             <property name="visible">True</property>
             <property name="homogeneous">True</property>
             <property name="layout_style">spread</property>
@@ -121,7 +121,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHButtonBox" id="hbuttonbox">
+          <object class="GtkHButtonBox" id="hbuttonbox_server">
             <property name="visible">True</property>
             <property name="homogeneous">True</property>
             <property name="layout_style">start</property>
