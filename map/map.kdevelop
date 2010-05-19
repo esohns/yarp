@@ -12,7 +12,7 @@
     </keywords>
     <versioncontrol>kdevsubversion</versioncontrol>
     <ignoreparts/>
-    <projectname>gui</projectname>
+    <projectname>map</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
     <description></description>
@@ -20,27 +20,18 @@
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>RPG_client_gui</activetarget>
+      <activetarget>libRPG_Map.la</activetarget>
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>
-      <runarguments>
-        <RPG_client_gui>-c ./../rpg_client.ini -t -u ./../rpg_client.glade</RPG_client_gui>
-      </runarguments>
-      <debugarguments>
-        <RPG_client_gui>-c ./../rpg_client.ini -t -u ./../rpg_client.glade</RPG_client_gui>
-      </debugarguments>
-      <cwd>
-        <RPG_client_gui>/home/unfv/Projects/RPG/gui/debug/./</RPG_client_gui>
-      </cwd>
-      <mainprogram>/home/unfv/Projects/RPG/gui</mainprogram>
+      <mainprogram>/home/unfv/Projects/RPG/map</mainprogram>
       <programargs/>
       <globaldebugarguments/>
-      <globalcwd>/home/unfv/Projects/RPG/gui</globalcwd>
+      <globalcwd>/home/unfv/Projects/RPG/map</globalcwd>
       <useglobalprogram>false</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
-      <autoinstall>true</autoinstall>
+      <autoinstall>false</autoinstall>
       <autokdesu>true</autokdesu>
       <envvars/>
     </run>
@@ -53,17 +44,17 @@
         <cxxflags>-g -O2 -march=i686</cxxflags>
         <envvars/>
         <configargs>--disable-static</configargs>
-        <topsourcedir/>
-        <cppflags>-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0</cppflags>
-        <ldflags/>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <f77flags/>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <f77flags></f77flags>
       </optimized>
       <debug>
-        <configargs></configargs>
+        <configargs>--disable-static</configargs>
         <builddir>debug</builddir>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
@@ -71,7 +62,7 @@
         <cxxflags>-g3 -O0 -march=i686 -Wall</cxxflags>
         <envvars/>
         <topsourcedir></topsourcedir>
-        <cppflags>-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/libgnome-2.0 -I/usr/include/libbonobo-2.0 -I/usr/include/libbonoboui-2.0 -I/usr/include/libgnomecanvas-2.0 -I/usr/include/libgnomeui-2.0 -I/usr/include/gnome-vfs-2.0 -I/usr/include/libart-2.0 -I/usr/include/libglade-2.0 -I/usr/include/SDL</cppflags>
+        <cppflags></cppflags>
         <ldflags></ldflags>
         <ccompilerbinary></ccompilerbinary>
         <cxxcompilerbinary></cxxcompilerbinary>
@@ -84,7 +75,7 @@
         <configargs>--disable-static</configargs>
         <builddir>debug</builddir>
         <topsourcedir/>
-        <cppflags>-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0</cppflags>
+        <cppflags/>
         <ldflags/>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
@@ -165,36 +156,35 @@
   </kdevfilecreate>
   <kdevfileview>
     <groups>
-      <group pattern="*.h *.i" name="Header files" />
-      <group pattern="*.cpp" name="Source files" />
+      <group pattern="*.h" name="Header files" />
+      <group pattern="*.cpp *.i" name="Source files" />
       <hidenonprojectfiles>false</hidenonprojectfiles>
       <hidenonlocation>false</hidenonlocation>
     </groups>
     <tree>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
       <hidenonprojectfiles>false</hidenonprojectfiles>
-      <showvcsfields>false</showvcsfields>
     </tree>
   </kdevfileview>
   <kdevdocumentation>
     <projectdoc>
       <docsystem>Doxygen Documentation Collection</docsystem>
-      <docurl>gui.tag</docurl>
+      <docurl>map.tag</docurl>
       <usermanualurl/>
     </projectdoc>
   </kdevdocumentation>
   <substmap>
-    <APPNAME>gui</APPNAME>
-    <APPNAMELC>gui</APPNAMELC>
-    <APPNAMESC>Gui</APPNAMESC>
-    <APPNAMEUC>GUI</APPNAMEUC>
+    <APPNAME>map</APPNAME>
+    <APPNAMELC>map</APPNAMELC>
+    <APPNAMESC>Map</APPNAMESC>
+    <APPNAMEUC>MAP</APPNAMEUC>
     <AUTHOR>Erik Sohns</AUTHOR>
     <EMAIL>erik.sohns@web.de</EMAIL>
     <LICENSE>GPL</LICENSE>
     <LICENSEFILE>COPYING</LICENSEFILE>
     <VERSION>0.1</VERSION>
     <YEAR>2010</YEAR>
-    <dest>/home/unfv/Projects/RPG/gui</dest>
+    <dest>/home/unfv/Projects/RPG/map</dest>
   </substmap>
   <kdevcppsupport>
     <qt>
@@ -207,10 +197,6 @@
       <designer>/usr/lib/qt-3.3/bin/designer</designer>
       <designerpluginpaths/>
     </qt>
-    <references>
-      <pcs>gui.code_completion.dat</pcs>
-      <pcs>automatic_%2Fhome%2Funfv%2FProjects%2FRPG%2Fgui</pcs>
-    </references>
     <codecompletion>
       <automaticCodeCompletion>true</automaticCodeCompletion>
       <automaticArgumentsHint>true</automaticArgumentsHint>
@@ -247,6 +233,7 @@
       <synchronize>true</synchronize>
       <orientation>Vertical</orientation>
     </splitheadersource>
+    <references/>
   </kdevcppsupport>
   <cppsupportpart>
     <filetemplates>
@@ -274,7 +261,7 @@
   </kdevdebugger>
   <ctagspart>
     <customArguments/>
-    <customTagfilePath>/home/unfv/Projects/RPG/gui/tags</customTagfilePath>
+    <customTagfilePath>/home/unfv/Projects/RPG/map/tags</customTagfilePath>
     <activeTagsFiles/>
   </ctagspart>
 </kdevelop>

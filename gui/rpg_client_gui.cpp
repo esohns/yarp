@@ -240,6 +240,27 @@ do_SDLEventLoop()
       }
     } // end SWITCH
   } // end WHILE
+
+  // this should never happen
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", returning\n"),
+             SDL_GetError()));
+
+  // clean up
+  // stop reactor
+  if (ACE_Reactor::instance()->end_event_loop() == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
+  } // end IF
+
+  // ... and wait for the reactor worker(s) to join
+  ACE_Thread_Manager::instance()->wait_grp(grp_id);
+
+  // no more data will arrive from here on...
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("leaving...\n")));
 }
 
 void
