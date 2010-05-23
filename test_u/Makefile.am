@@ -1,1 +1,1 @@
-SUBDIRS = chance character combat item magic monster net
+SUBDIRS = chance character combat item magic map monster net

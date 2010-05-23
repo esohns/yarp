@@ -46,7 +46,7 @@ struct RPG_Combat_CombatantSequenceElement
     if (DEXModifier > rhs_in.DEXModifier)
       return false;
 
-    // *IMPORTANT NOTE*: a conflict between monsters doesn't matter, really...
+    // *NOTE*: a conflict between monsters doesn't matter, really...
     // --> if either one is a PC, we have a conflict
     ACE_ASSERT(handle && rhs_in.handle);
     try
@@ -131,7 +131,7 @@ struct RPG_Combat_CombatantSequenceElement
 
 // typedef std::set<RPG_Combat_CombatantSequenceElement,
 //                  lessThanRPG_Combat_CombatantSequenceElement> RPG_Combat_CombatantSequence_t;
-// *IMPORTANT NOTE*: sort in DESCENDING order !
+// *NOTE*: sort in DESCENDING order !
 typedef std::set<RPG_Combat_CombatantSequenceElement,
                  std::greater<RPG_Combat_CombatantSequenceElement> > RPG_Combat_CombatantSequence_t;
 typedef RPG_Combat_CombatantSequence_t::iterator RPG_Combat_CombatantSequenceIterator_t;

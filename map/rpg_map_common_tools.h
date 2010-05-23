@@ -47,20 +47,28 @@ class RPG_Map_Common_Tools
   // helper types/methods
   // *WARNING*: make sure the set of positions forms one (connected) area !
   // (cannot enforce this without a (more complicated) algebraic definition...)
-  typedef RPG_Map_Positions_t RPG_Map_Area_t;
-  typedef std::list<RPG_Map_Area_t> RPG_Map_Partition_t;
-  typedef RPG_Map_Partition_t::const_iterator RPG_Map_PartitionIterator_t;
+  typedef RPG_Map_Positions_t RPG_Map_Zone_t;
+  typedef std::list<RPG_Map_Zone_t> RPG_Map_Partition_t;
+  typedef RPG_Map_Partition_t::const_iterator RPG_Map_PartitionConstIterator_t;
+  typedef RPG_Map_Partition_t::iterator RPG_Map_PartitionIterator_t;
+  static const unsigned long dist2Positions(const RPG_Map_Position_t&,  // position 1
+                                            const RPG_Map_Position_t&); // position 2
   static void makePartition(const unsigned long&,  // dimension x
                             const unsigned long&,  // dimension y
                             const unsigned long&,  // # partitions
                             RPG_Map_Partition_t&); // return value: partition
+  static void displayPartition(const unsigned long&,        // dimension x
+                               const unsigned long&,        // dimension y
+                               const RPG_Map_Positions_t&,  // seed points
+                               const RPG_Map_Positions_t&,  // conflicts
+                               const RPG_Map_Partition_t&); // partition
 
-  typedef std::list<RPG_Map_Area_t> RPG_Map_AreaList_t;
-  typedef RPG_Map_AreaList_t::const_iterator RPG_Map_AreaListIterator_t;
+  typedef std::list<RPG_Map_Zone_t> RPG_Map_ZoneList_t;
+  typedef RPG_Map_ZoneList_t::const_iterator RPG_Map_AreaListIterator_t;
   static void makeRooms(const RPG_Map_Partition_t&, // partition
-                        RPG_Map_AreaList_t&);       // return value: room(s)
+                        RPG_Map_ZoneList_t&);       // return value: room(s)
 
-  static void connectRooms(const RPG_Map_AreaList_t&, // room(s)
+  static void connectRooms(const RPG_Map_ZoneList_t&, // room(s)
                            RPG_Map_DungeonLevel&);    // return value: doors & walls
 };
 

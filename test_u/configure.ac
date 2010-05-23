@@ -48,6 +48,7 @@ AC_CONFIG_FILES([Makefile
                  magic/Makefile
                  monster/Makefile
                  net/Makefile
-                 net/protocol/Makefile])
+                 net/protocol/Makefile
+                 map/Makefile])
 
 AC_OUTPUT
