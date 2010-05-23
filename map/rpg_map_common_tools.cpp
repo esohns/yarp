@@ -99,14 +99,14 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
   // ideas:
   // - one way would be to compare the areas of the resulting partition
   // for rough equality
-  // - another would be to do it here, by enforcing some minimal distance
-  // between the seed points
+  // - another would be to do it at this stage (by enforcing some minimal distance
+  // between the seed points ?)
 
   // *NOTE*; the min. avg. distance is zero (the general case) and
   // *NOTE*: the max avg. distance depends on x/y and n
   // *NOTE*: for the norm square (1x1), it converges around 0.5 (radius of the
   // "inner circle" ?)
-  // --> in "discrete" space, things get even trickier...
+  // --> in "discrete" space, things get (even) trickier...
 
   // init partition (with "seed" points)
   unsigned long index = 0;
@@ -174,7 +174,6 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
           neighbours.insert(*seed_iter);
         } // end IF
       } // end FOR
-
       // sanity check
       ACE_ASSERT(!neighbours.empty());
 
@@ -211,6 +210,7 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
         // conflict
         conflicts.insert(current);
 
+        // resolve by choosing a neighbour at random
         result.clear();
         RPG_Dice::generateRandomNumbers(neighbours.size(),
                                         1,
@@ -239,8 +239,7 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
     } // end FOR
   } // end FOR
 
-  // step3: find any "islands"
-  RPG_Map_PositionList_t islands;
+  // step3: find/resolve any "islands"
   RPG_Map_PositionList_t current_island;
   RPG_Map_PositionListIterator_t current_island_iter;
   RPG_Map_Positions_t neighbour_cells;
@@ -249,366 +248,192 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
   RPG_Map_Position_t current_seed;
   RPG_Map_PartitionIterator_t member_partition;
   RPG_Map_PartitionIterator_t neighbour_partition;
+  RPG_Map_PositionsIterator_t conflict_iter;
   bool found_seed = false;
   bool accounted_for = false;
-  for (RPG_Map_PositionsIterator_t conflict_iter = conflicts.begin();
-       conflict_iter != conflicts.end();
-       conflict_iter++)
+  while (!conflicts.empty())
   {
-    // find corresponding partition / seed
-    for (member_partition = partition_out.begin();
-         member_partition != partition_out.end();
-         member_partition++)
-      if ((*member_partition).find(*conflict_iter) != (*member_partition).end())
-        break;
+    // debug info
+    displayPartition(dimensionX_in,
+                     dimensionY_in,
+                     seed_points,
+                     conflicts,
+                     partition_out);
 
-    // sanity check
-    ACE_ASSERT(member_partition != partition_out.end());
-
-    current_seed = std::make_pair(std::numeric_limits<unsigned long>::max(),
-                                  std::numeric_limits<unsigned long>::max());
-    for (seed_iter = seed_points.begin();
-         seed_iter != seed_points.end();
-         seed_iter++)
+    for (conflict_iter = conflicts.begin();
+         conflict_iter != conflicts.end();
+         conflict_iter++)
     {
-      if ((*member_partition).find(*seed_iter) != (*member_partition).end())
+      current = *conflict_iter;
+      // find corresponding partition / seed
+      for (member_partition = partition_out.begin();
+           member_partition != partition_out.end();
+           member_partition++)
+        if ((*member_partition).find(*conflict_iter) != (*member_partition).end())
+          break;
+      // sanity check
+      ACE_ASSERT(member_partition != partition_out.end());
+      current_seed = std::make_pair(std::numeric_limits<unsigned long>::max(),
+                                    std::numeric_limits<unsigned long>::max());
+      for (seed_iter = seed_points.begin();
+           seed_iter != seed_points.end();
+           seed_iter++)
       {
-        current_seed = *seed_iter;
-        break;
-      } // end IF
-    } // end FOR
-
-    // sanity check
-    ACE_ASSERT(seed_points.find(current_seed) != seed_points.end());
-
-    // perhaps it has become an "island" ?
-    // --> iff the (compact) area has been cut off from the seed cell ("mainland")
-
-    // step1: "grow" the cell
-    current_island.clear();
-    current_island.push_back(*conflict_iter);
-    found_seed = false;
-    for (current_island_iter = current_island.begin();
-         current_island_iter != current_island.end();
-         current_island_iter++)
-    {
-      // check four neighbouring cells (as far as they exist)
-      if ((*current_island_iter).first < (dimensionX_in - 1))
-      {
-        current_neighbour = *current_island_iter;
-        current_neighbour.first++; // east
-        neighbour_cells.insert(current_neighbour);
-      } // end IF
-      if ((*current_island_iter).first > 0)
-      {
-        current_neighbour = *current_island_iter;
-        current_neighbour.first--; // west
-        neighbour_cells.insert(current_neighbour);
-      } // end IF
-
-      if ((*current_island_iter).second < (dimensionY_in - 1))
-      {
-        current_neighbour = *current_island_iter;
-        current_neighbour.second++; // south
-        neighbour_cells.insert(current_neighbour);
-      } // end IF
-      if ((*current_island_iter).second > 0)
-      {
-        current_neighbour = *current_island_iter;
-        current_neighbour.second--; // north
-        neighbour_cells.insert(current_neighbour);
-      } // end IF
-      for (current_neighbour_iter = neighbour_cells.begin();
-           current_neighbour_iter != neighbour_cells.end();
-           current_neighbour_iter++)
-      {
-        // if this neighbour IS the seed point of the conflicting cell
-        // --> stop immediately
-        if ((*current_neighbour_iter) == current_seed)
+        if ((*member_partition).find(*seed_iter) != (*member_partition).end())
         {
-          found_seed = true;
+          current_seed = *seed_iter;
           break;
         } // end IF
-
-        // neighbour already accounted for (i.e. have we "come" this way ?)
-        // --> continue
-        accounted_for = false;
-        for (RPG_Map_PositionListIterator_t current_island_iter2 = current_island.begin();
-             current_island_iter2 != current_island.end();
-             current_island_iter2++)
-          if ((*current_island_iter2) == (*current_neighbour_iter))
-          {
-            accounted_for = true;
-            break;
-          } // end IF
-        if (accounted_for)
-          continue; // try next neighbour
-
-        // find corresponding partition
-        for (neighbour_partition = partition_out.begin();
-             neighbour_partition != partition_out.end();
-             neighbour_partition++)
-          if ((*neighbour_partition).find(*current_neighbour_iter) != (*neighbour_partition).end())
-            break;
-
-        // sanity check
-        ACE_ASSERT(neighbour_partition != partition_out.end());
-
-        // part of the same "island" ?
-        if (member_partition == neighbour_partition)
-          current_island.push_back(*current_neighbour_iter);
       } // end FOR
-    } // end FOR
-
-    // step2: check whether the seed point was found
-    if (found_seed)
-      continue; // NOT and island --> nothing to do
-
-    // debug info
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("(%u,%u) is an island...\n"),
-               (*conflict_iter).first,
-               (*conflict_iter).second));
-
-    // step3: dissolve this island
-    // --> simply assign it to one of the neighbours ? NO !
-    // *NOTE*: some neighbours may not qualify for "ownership"
-    islands.push_back(*conflict_iter);
-  } // end FOR
-
-  // debug info
-  displayPartition(dimensionX_in,
-                   dimensionY_in,
-                   seed_points,
-                   conflicts,
-                   partition_out);
-
-  conflicts.clear();
-  RPG_Map_PositionListIterator_t islands_iter;
-  for (islands_iter = islands.begin();
-       islands_iter != islands.end();
-       islands_iter++)
-    conflicts.insert(*islands_iter);
-
-  // step4: dissolve any islands
-  // --> re-run the algorithm over the remaining cells until none are left
-  RPG_Map_PositionListIterator_t last = --islands.end();
-  RPG_Map_PositionListIterator_t islands_iter2;
-  RPG_Map_PositionListIterator_t current_island_iter2;
-  for (islands_iter = islands.begin();
-       islands_iter != islands.end();
-       islands_iter++)
-  {
-    // find current member partition
-    for (member_partition = partition_out.begin();
-         member_partition != partition_out.end();
-         member_partition++)
-      if ((*member_partition).find(*islands_iter) != (*member_partition).end())
-        break;
-
-    // sanity check
-    ACE_ASSERT(member_partition != partition_out.end());
-
-    min = std::numeric_limits<unsigned long>::max();
-    neighbours.clear();
-    for (seed_iter = seed_points.begin();
-         seed_iter != seed_points.end();
-         seed_iter++)
-    {
-      // find all "nearest neighbours" (again)
-      distance = dist2Positions(*islands_iter, *seed_iter);
-      if (distance < min)
-      {
-        // new minimum
-        min = distance;
-        neighbours.clear();
-        neighbours.insert(*seed_iter);
-      } // end IF
-      else if (distance == min)
-      {
-        // sanity check
-        ACE_ASSERT(!neighbours.empty());
-
-        // new neighbour
-        neighbours.insert(*seed_iter);
-      } // end IF
-    } // end FOR
-
-    // sanity check
-    ACE_ASSERT(neighbours.size() >= 2);
-
-    // to progress, the cell is assigned a DIFFERENT partition
-    do
-    {
-      result.clear();
-      RPG_Dice::generateRandomNumbers(neighbours.size(),
-                                      1,
-                                      result);
-      nearest_neighbour = neighbours.begin();
-      std::advance(nearest_neighbour, result[0] - 1);
-
-      // find corresponding partition
-      for (partition_iter = partition_out.begin();
-           partition_iter != partition_out.end();
-           partition_iter++)
-      {
-        if ((*partition_iter).find(*nearest_neighbour) != (*partition_iter).end())
-          break;
-      } // end FOR
-
       // sanity check
-      ACE_ASSERT(partition_iter != partition_out.end());
-    } while (partition_iter == member_partition);
-    (*member_partition).erase(*islands_iter);
-    (*partition_iter).insert(*islands_iter);
+      ACE_ASSERT(seed_iter != seed_points.end());
+      ACE_ASSERT(seed_points.find(current_seed) != seed_points.end());
 
-    // after each iteration, find any "new" islands
-    // --> check which of the old islands have become "new" ones
-    if (islands_iter == last)
-    {
-      // debug info
-      if (!conflicts.empty())
+      // has it become an "island" ?
+      // --> iff the (compact) area has been cut off from the seed cell ("mainland")
+
+      // step1: "grow" the cell
+      current_island.clear();
+      current_island.push_back(current);
+      found_seed = false;
+      for (current_island_iter = current_island.begin();
+           current_island_iter != current_island.end();
+           current_island_iter++)
       {
-        displayPartition(dimensionX_in,
-                         dimensionY_in,
-                         seed_points,
-                         conflicts,
-                         partition_out);
-
-        conflicts.clear();
-      } // end IF
-
-      for (islands_iter2 = islands.begin();
-           islands_iter2 != last;
-           islands_iter2++)
-      {
-        // find current member partition / seed
-        for (member_partition = partition_out.begin();
-             member_partition != partition_out.end();
-             member_partition++)
-          if ((*member_partition).find(*islands_iter2) != (*member_partition).end())
-            break;
-
-        // sanity check
-        ACE_ASSERT(member_partition != partition_out.end());
-
-        current_seed = std::make_pair(std::numeric_limits<unsigned long>::max(),
-                                      std::numeric_limits<unsigned long>::max());
-        for (seed_iter = seed_points.begin();
-             seed_iter != seed_points.end();
-             seed_iter++)
+        // check four neighbouring cells (as long as they exist)
+        neighbour_cells.clear();
+        if ((*current_island_iter).first < (dimensionX_in - 1))
         {
-          if ((*member_partition).find(*seed_iter) != (*member_partition).end())
+          current_neighbour = *current_island_iter;
+          current_neighbour.first++; // east
+          neighbour_cells.insert(current_neighbour);
+        } // end IF
+        if ((*current_island_iter).first > 0)
+        {
+          current_neighbour = *current_island_iter;
+          current_neighbour.first--; // west
+          neighbour_cells.insert(current_neighbour);
+        } // end IF
+        if ((*current_island_iter).second < (dimensionY_in - 1))
+        {
+          current_neighbour = *current_island_iter;
+          current_neighbour.second++; // south
+          neighbour_cells.insert(current_neighbour);
+        } // end IF
+        if ((*current_island_iter).second > 0)
+        {
+          current_neighbour = *current_island_iter;
+          current_neighbour.second--; // north
+          neighbour_cells.insert(current_neighbour);
+        } // end IF
+        for (current_neighbour_iter = neighbour_cells.begin();
+             current_neighbour_iter != neighbour_cells.end();
+             current_neighbour_iter++)
+        {
+          // if this neighbour IS the seed point of the conflicting cell
+          // --> stop immediately
+          if ((*current_neighbour_iter) == current_seed)
           {
-            current_seed = *seed_iter;
+            found_seed = true;
             break;
           } // end IF
-        } // end FOR
 
-        // sanity check
-        ACE_ASSERT(seed_points.find(current_seed) != seed_points.end());
-
-        // step1: "grow" the cell
-        current_island.clear();
-        current_island.push_back(*islands_iter2);
-        found_seed = false;
-        for (current_island_iter = current_island.begin();
-             current_island_iter != current_island.end();
-             current_island_iter++)
-        {
-          neighbour_cells.clear();
-          // check four neighbouring cells (as far as they exist)
-          if ((*current_island_iter).first < (dimensionX_in - 1))
-          {
-            current_neighbour = *current_island_iter;
-            current_neighbour.first++; // east
-            neighbour_cells.insert(current_neighbour);
-          } // end IF
-          if ((*current_island_iter).first > 0)
-          {
-            current_neighbour = *current_island_iter;
-            current_neighbour.first--; // west
-            neighbour_cells.insert(current_neighbour);
-          } // end IF
-
-          if ((*current_island_iter).second < (dimensionY_in - 1))
-          {
-            current_neighbour = *current_island_iter;
-            current_neighbour.second++; // south
-            neighbour_cells.insert(current_neighbour);
-          } // end IF
-          if ((*current_island_iter).second > 0)
-          {
-            current_neighbour = *current_island_iter;
-            current_neighbour.second--; // north
-            neighbour_cells.insert(current_neighbour);
-          } // end IF
-          for (current_neighbour_iter = neighbour_cells.begin();
-               current_neighbour_iter != neighbour_cells.end();
-               current_neighbour_iter++)
-          {
-            // if this (neighbouring) cell IS the seed point of the conflicting cell
-            // --> stop immediately
-            if ((*current_neighbour_iter) == current_seed)
+          // neighbour already accounted for (i.e. have we "come" this way ?)
+          // --> continue
+          accounted_for = false;
+          for (RPG_Map_PositionListIterator_t current_island_iter2 = current_island.begin();
+               current_island_iter2 != current_island.end();
+               current_island_iter2++)
+            if ((*current_island_iter2) == (*current_neighbour_iter))
             {
-              found_seed = true;
+              accounted_for = true;
               break;
             } // end IF
+          if (accounted_for)
+            continue; // try next neighbour
 
-            // neighbour already accounted for (i.e. have we "come" this way ?)
-            // --> continue
-            accounted_for = false;
-            for (current_island_iter2 = current_island.begin();
-                 current_island_iter2 != current_island.end();
-                 current_island_iter2++)
-              if ((*current_island_iter2) == (*current_neighbour_iter))
-              {
-                accounted_for = true;
-                break;
-              } // end IF
-            if (accounted_for)
-              continue; // try next neighbour
+          // find corresponding partition
+          for (neighbour_partition = partition_out.begin();
+               neighbour_partition != partition_out.end();
+               neighbour_partition++)
+            if ((*neighbour_partition).find(*current_neighbour_iter) != (*neighbour_partition).end())
+              break;
+          // sanity check
+          ACE_ASSERT(neighbour_partition != partition_out.end());
 
-            // find corresponding partition / seed
-            for (neighbour_partition = partition_out.begin();
-                 neighbour_partition != partition_out.end();
-                 neighbour_partition++)
-              if ((*neighbour_partition).find(*current_neighbour_iter) != (*neighbour_partition).end())
-                break;
-
-            // sanity check
-            ACE_ASSERT(neighbour_partition != partition_out.end());
-
-            // part of the same "island" ?
-            if (member_partition == neighbour_partition)
-              current_island.push_back(*current_neighbour_iter);
-          } // end FOR
+          // part of the same "island" ?
+          if (member_partition == neighbour_partition)
+            current_island.push_back(*current_neighbour_iter);
         } // end FOR
-
-        // step2: check whether the seed point was found
-        if (found_seed)
-          continue; // NOT and island (any more) --> nothing (more) to do
-
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("(%u,%u) is (still) an island...\n"),
-                   (*islands_iter2).first,
-                   (*islands_iter2).second));
-
-        // step3: dissolve this island
-        // --> simply assign it to one of the neighbours ? NO !
-        // *NOTE*: some neighbours may not qualify for "ownership"
-        islands.push_back(*islands_iter2);
-        conflicts.insert(*islands_iter2);
       } // end FOR
 
-      // next check
-      last = --islands.end();
-    } // end FOR
-  } // end FOR
+      // step2: check whether the seed point was found
+      if (found_seed)
+      {
+        // NOT and island (any more) --> nothing to do
+        conflicts.erase(current);
+        continue;
+      } // end IF
 
-  // sanity check
-  ACE_ASSERT(conflicts.empty());
+//       // debug info
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("(%u,%u) is an island...\n"),
+//                  current.first,
+//                  current.second));
+
+      // step3: (try to) dissolve this island
+      // --> simply assign it to one of the neighbours ? NO !
+      // *NOTE*: some neighbours may not qualify for "ownership"
+      // --> to progress, the cell is assigned a DIFFERENT partition
+      min = std::numeric_limits<unsigned long>::max();
+      neighbours.clear();
+      for (seed_iter = seed_points.begin();
+           seed_iter != seed_points.end();
+           seed_iter++)
+      {
+        // find all "nearest neighbours"
+        distance = dist2Positions(current, *seed_iter);
+        if (distance < min)
+        {
+          // new minimum
+          min = distance;
+          neighbours.clear();
+          neighbours.insert(*seed_iter);
+        } // end IF
+        else if (distance == min)
+        {
+          // sanity check
+          ACE_ASSERT(!neighbours.empty());
+
+          // new neighbour
+          neighbours.insert(*seed_iter);
+        } // end IF
+      } // end FOR
+      // sanity check
+      ACE_ASSERT(!neighbours.empty());
+      do
+      {
+        result.clear();
+        RPG_Dice::generateRandomNumbers(neighbours.size(),
+                                        1,
+                                        result);
+        nearest_neighbour = neighbours.begin();
+        std::advance(nearest_neighbour, result[0] - 1);
+        // find corresponding partition
+        for (partition_iter = partition_out.begin();
+             partition_iter != partition_out.end();
+             partition_iter++)
+        {
+          if ((*partition_iter).find(*nearest_neighbour) != (*partition_iter).end())
+            break;
+        } // end FOR
+        // sanity check
+        ACE_ASSERT(partition_iter != partition_out.end());
+      } while (partition_iter == member_partition);
+      (*member_partition).erase(current);
+      (*partition_iter).insert(current);
+    } // end FOR
+  } // end WHILE
 
   // debug info
   displayPartition(dimensionX_in,
