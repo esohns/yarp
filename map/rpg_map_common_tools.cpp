@@ -504,12 +504,12 @@ RPG_Map_Common_Tools::displayPartition(const unsigned long& dimensionX_in,
     unsigned long index = 0;
     std::ostringstream converter;
     for (unsigned long y = 0;
-        y < dimensionY_in;
-        y++)
+         y < dimensionY_in;
+         y++)
     {
       for (unsigned long x = 0;
-          x < dimensionX_in;
-          x++)
+           x < dimensionX_in;
+           x++)
       {
         current_position = std::make_pair(x, y);
         index = 0;
@@ -559,20 +559,18 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
   {
     // make square room(s)
     RPG_Map_ZoneConstIterator_t zone_iterator2;
-    RPG_Map_ZoneConstIterator_t end_row;
+    RPG_Map_ZoneConstIterator_t pointer;
     RPG_Map_ZoneConstIterator_t last;
     RPG_Map_Square_t maxSquare;
     unsigned long maxArea = 0;
-    RPG_Map_Square_t current_square;
     unsigned long current_area = 0;
+    unsigned long max_breadth = 0;
     unsigned long current_row = 0;
-    unsigned long max_breadth = 1;
-    bool max_breadth_set = false;
     for (partition_iter = partition_in.begin();
          partition_iter != partition_in.end();
          partition_iter++)
     {
-      // step1: find coordinates of the maximum-size square room
+      // step1: find coordinates of the maximum-size square room(s)
       // --> can fit in smaller rooms anytime...
       maxArea = 0;
       last = (*partition_iter).end(); last--;
@@ -580,56 +578,74 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
            zone_iterator != (*partition_iter).end();
            zone_iterator++)
       {
-        current_square.ul = *zone_iterator;
-        max_breadth = 1;
-        max_breadth_set = false;
+        max_breadth = 0;
         current_row = (*zone_iterator).second;
         for (zone_iterator2 = zone_iterator;
              zone_iterator2 != (*partition_iter).end();
              zone_iterator2++)
         {
-          // compute max. breadth of current square
-          if (!max_breadth_set)
+          // step1: compute max. breadth of current square
+          // --> compute the distance to the LAST cell on the top row
+          if (max_breadth == 0)
           {
-            // reached the end of the running row / this zone ?
-            if (((*zone_iterator2).second == (current_square.ul.second + 1)) ||
+            // reached the end of the first row / this zone ?
+            if (((*zone_iterator2).second == ((*zone_iterator).second + 1)) ||
                 (zone_iterator2 == last))
             {
-              end_row = zone_iterator2;
+              pointer = zone_iterator2;
               if (zone_iterator2 != last)
-                end_row--;
+                pointer--;
 
               // compute max breadth
-              max_breadth = ((*end_row).first - current_square.ul.first + 1);
-              max_breadth_set = true;
+              max_breadth = ((*pointer).first - (*zone_iterator).first + 1);
+              ACE_ASSERT(max_breadth);
+            } // end IF
+
+            // if we're still on the top row
+            // --> compute enclosed area and continue
+            if ((*zone_iterator2).second == ((*zone_iterator).second))
+            {
+              current_area = area2Positions(*zone_iterator, *zone_iterator2);
+              if (maxArea < current_area)
+              {
+                maxArea = current_area;
+                maxSquare.ul = *zone_iterator;
+                maxSquare.lr = *zone_iterator2;
+              } // end IF
+
+              // check next cell
+              continue;
             } // end IF
           } // end IF
 
-          // if we've already left the square spanned by
-          // (current_square.ul, (current_square.ul.first + (max_breadth - 1), y))
-          // --> leave inner loop
-          if ((*zone_iterator2).first > (current_square.ul.first + (max_breadth - 1)))
-            break; // start with next position
+          // we're NOT on the top row anymore...
+          ACE_ASSERT((*zone_iterator2).second != (*zone_iterator).second);
 
-          // reached the end of a row / this zone ?
-          if (((*zone_iterator2).second != current_row) ||
-              (zone_iterator2 == last))
+          // step2: IMMEDIATELY on breaking to a new row:
+          // if our position.x is LARGER than our current square's
+          // --> we've already found the largest square for this position
+          if ((*zone_iterator2).second > current_row)
           {
-            current_row = (*zone_iterator2).second;
+            current_row++;
+            ACE_ASSERT((*zone_iterator2).second == current_row);
 
-            // if we've already left the square spanned by
-            // (current_square.ul, (current_square.ul.first + (max_breadth - 1), y))
-            // --> leave inner loop
-            if ((*zone_iterator2).first != current_square.ul.first)
-              break; // start with next position
+            if ((*zone_iterator2).first > (*zone_iterator).first)
+              break; // start next position
           } // end IF
 
-          // compute enclosed area
-          current_area = area2Positions(current_square.ul, *zone_iterator2);
+          // step3: check if we're within the square spanned by
+          // [current_square.ul, (current_square.ul.x + (max_breadth - 1), y)]
+          if (((*zone_iterator2).first > ((*zone_iterator).first + max_breadth - 1)) ||
+              ((*zone_iterator2).first < (*zone_iterator).first))
+            continue; // no, we're not --> check next cell
+
+          // step4: we're within the current square
+          // --> compute enclosed area
+          current_area = area2Positions(*zone_iterator, *zone_iterator2);
           if (maxArea < current_area)
           {
             maxArea = current_area;
-            maxSquare.ul = current_square.ul;
+            maxSquare.ul = *zone_iterator;
             maxSquare.lr = *zone_iterator2;
           } // end IF
         } // end FOR
@@ -637,11 +653,12 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
 
       // debug info
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("max. square: (%u,%u) - (%u,%u)...\n"),
+                 ACE_TEXT("max. square [(%u,%u),(%u,%u)]: %u cell(s)\n"),
                  maxSquare.ul.first,
                  maxSquare.ul.second,
                  maxSquare.lr.first,
-                 maxSquare.lr.second));
+                 maxSquare.lr.second,
+                 maxArea));
 
       maxSquares.push_back(maxSquare);
     } // end FOR
