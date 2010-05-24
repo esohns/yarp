@@ -30,6 +30,9 @@ void
 RPG_Map_Common_Tools::createDungeonLevel(const unsigned long& dimensionX_in,
                                          const unsigned long& dimensionY_in,
                                          const unsigned long& numRooms_in,
+                                         const bool& wantSquareRooms_in,
+                                         const bool& maximizeArea_in,
+                                         const unsigned long& minArea_in,
                                          RPG_Map_DungeonLevel& level_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::createDungeonLevel"));
@@ -47,10 +50,19 @@ RPG_Map_Common_Tools::createDungeonLevel(const unsigned long& dimensionX_in,
 
   // step2: form rooms within partition(s)
   RPG_Map_ZoneList_t rooms;
-  makeRooms(partition, rooms);
+  makeRooms(partition,
+            wantSquareRooms_in,
+            maximizeArea_in,
+            minArea_in,
+            rooms);
+  // debug info
+  displayRooms(dimensionX_in,
+               dimensionY_in,
+               rooms);
 
   // step3: connect rooms to form the dungeon
-  connectRooms(rooms, level_out);
+  connectRooms(rooms,
+               level_out);
 }
 
 void
@@ -460,7 +472,7 @@ RPG_Map_Common_Tools::displayPartition(const unsigned long& dimensionX_in,
   {
     // debug info
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("partition has %u conflict(s)...\n"),
+               ACE_TEXT("partition (%u conflict(s))...\n"),
                conflicts_in.size()));
 
     for (unsigned long y = 0;
@@ -485,6 +497,10 @@ RPG_Map_Common_Tools::displayPartition(const unsigned long& dimensionX_in,
   } // end IF
   else
   {
+    // debug info
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("partition...\n")));
+
     unsigned long index = 0;
     std::ostringstream converter;
     for (unsigned long y = 0;
@@ -519,11 +535,13 @@ RPG_Map_Common_Tools::displayPartition(const unsigned long& dimensionX_in,
       std::clog << std::endl;
     } // end FOR
   } // end ELSE
-  std::clog << std::endl;
 }
 
 void
 RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
+                                const bool& wantSquareRooms_in,
+                                const bool& maximizeArea_in,
+                                const unsigned long& minArea_in,
                                 RPG_Map_ZoneList_t& rooms_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::makeRooms"));
@@ -531,6 +549,211 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
   // init return value(s)
   rooms_out.clear();
 
+  // place a room into every partition...
+
+  // step1: make some calculations...
+  RPG_Map_SquareList_t maxSquares;
+  RPG_Map_PartitionConstIterator_t partition_iter;
+  RPG_Map_ZoneConstIterator_t zone_iterator;
+  if (wantSquareRooms_in)
+  {
+    // make square room(s)
+    RPG_Map_ZoneConstIterator_t zone_iterator2;
+    RPG_Map_ZoneConstIterator_t end_row;
+    RPG_Map_ZoneConstIterator_t last;
+    RPG_Map_Square_t maxSquare;
+    unsigned long maxArea = 0;
+    RPG_Map_Square_t current_square;
+    unsigned long current_area = 0;
+    unsigned long current_row = 0;
+    unsigned long max_breadth = 1;
+    bool max_breadth_set = false;
+    for (partition_iter = partition_in.begin();
+         partition_iter != partition_in.end();
+         partition_iter++)
+    {
+      // step1: find coordinates of the maximum-size square room
+      // --> can fit in smaller rooms anytime...
+      maxArea = 0;
+      last = (*partition_iter).end(); last--;
+      for (zone_iterator = (*partition_iter).begin();
+           zone_iterator != (*partition_iter).end();
+           zone_iterator++)
+      {
+        current_square.ul = *zone_iterator;
+        max_breadth = 1;
+        max_breadth_set = false;
+        current_row = (*zone_iterator).second;
+        for (zone_iterator2 = zone_iterator;
+             zone_iterator2 != (*partition_iter).end();
+             zone_iterator2++)
+        {
+          // compute max. breadth of current square
+          if (!max_breadth_set)
+          {
+            // reached the end of the running row / this zone ?
+            if (((*zone_iterator2).second == (current_square.ul.second + 1)) ||
+                (zone_iterator2 == last))
+            {
+              end_row = zone_iterator2;
+              if (zone_iterator2 != last)
+                end_row--;
+
+              // compute max breadth
+              max_breadth = ((*end_row).first - current_square.ul.first + 1);
+              max_breadth_set = true;
+            } // end IF
+          } // end IF
+
+          // if we've already left the square spanned by
+          // (current_square.ul, (current_square.ul.first + (max_breadth - 1), y))
+          // --> leave inner loop
+          if ((*zone_iterator2).first > (current_square.ul.first + (max_breadth - 1)))
+            break; // start with next position
+
+          // reached the end of a row / this zone ?
+          if (((*zone_iterator2).second != current_row) ||
+              (zone_iterator2 == last))
+          {
+            current_row = (*zone_iterator2).second;
+
+            // if we've already left the square spanned by
+            // (current_square.ul, (current_square.ul.first + (max_breadth - 1), y))
+            // --> leave inner loop
+            if ((*zone_iterator2).first != current_square.ul.first)
+              break; // start with next position
+          } // end IF
+
+          // compute enclosed area
+          current_area = area2Positions(current_square.ul, *zone_iterator2);
+          if (maxArea < current_area)
+          {
+            maxArea = current_area;
+            maxSquare.ul = current_square.ul;
+            maxSquare.lr = *zone_iterator2;
+          } // end IF
+        } // end FOR
+      } // end FOR
+
+      // debug info
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("max. square: (%u,%u) - (%u,%u)...\n"),
+                 maxSquare.ul.first,
+                 maxSquare.ul.second,
+                 maxSquare.lr.first,
+                 maxSquare.lr.second));
+
+      maxSquares.push_back(maxSquare);
+    } // end FOR
+  } // end ELSE
+
+  // step2: create rooms
+  RPG_Map_Zone_t current_zone;
+  if (maximizeArea_in)
+  {
+    if (wantSquareRooms_in)
+    {
+      RPG_Map_SquareListConstIterator_t squares_iter = maxSquares.begin();
+      for (partition_iter = partition_in.begin();
+           partition_iter != partition_in.end();
+           partition_iter++, squares_iter++)
+      {
+        current_zone.clear();
+        for (zone_iterator = (*partition_iter).begin();
+             zone_iterator != (*partition_iter).end();
+             zone_iterator++)
+        {
+          if (positionInSquare(*zone_iterator, *squares_iter))
+            current_zone.insert(*zone_iterator);
+        } // end FOR
+
+        rooms_out.push_back(current_zone);
+      } // end FOR
+    } // end IF
+    else
+    {
+      // --> the partitions ARE the rooms
+      // *NOTE*: there will be NO corridor(s), only door(s)...
+      rooms_out = partition_in;
+    } // end ELSE
+  } // end IF
+  else
+  {
+    // *TODO*
+    ACE_ASSERT(false);
+  } // end ELSE
+
+  // step3: enforce any other constraint(s)
+  if (minArea_in)
+  {
+    unsigned long index = 0;
+    RPG_Map_ZoneListConstIterator_t zones_iterator;
+    for (zones_iterator = rooms_out.begin();
+         zones_iterator != rooms_out.end();
+         zones_iterator++, index++)
+    {
+      if ((*zones_iterator).size() < minArea_in)
+      {
+        // debug info
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("zone [#%u] is too small (%u < %u)...\n"),
+                   index,
+                   (*zones_iterator).size(),
+                   minArea_in));
+
+          // *TODO*
+        ACE_ASSERT(false);
+      } // end IF
+    } // end FOR
+  } // end IF
+}
+
+void
+RPG_Map_Common_Tools::displayRooms(const unsigned long& dimensionX_in,
+                                   const unsigned long& dimensionY_in,
+                                   const RPG_Map_ZoneList_t& rooms_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayRooms"));
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("room(s)...\n")));
+
+  RPG_Map_Position_t current_position;
+
+  unsigned long index = 0;
+  std::ostringstream converter;
+  bool position_in_room = false;
+  for (unsigned long y = 0;
+       y < dimensionY_in;
+       y++)
+  {
+    for (unsigned long x = 0;
+         x < dimensionX_in;
+         x++)
+    {
+      current_position = std::make_pair(x, y);
+      index = 0;
+      position_in_room = false;
+      for (RPG_Map_ZoneListConstIterator_t iter = rooms_in.begin();
+           iter != rooms_in.end();
+           iter++, index++)
+      {
+        if ((*iter).find(current_position) != (*iter).end())
+        {
+          position_in_room = true;
+          converter.str(ACE_TEXT(""));
+          converter << index;
+          std::clog << converter.str();
+          break;
+        } // end IF
+      } // end FOR
+      if (!position_in_room)
+        std::clog << ACE_TEXT(".");
+    } // end FOR
+    std::clog << std::endl;
+  } // end FOR
+  std::clog << std::endl;
 }
 
 void
@@ -553,4 +776,24 @@ RPG_Map_Common_Tools::dist2Positions(const RPG_Map_Position_t& position1_in,
 
   return (::abs(position1_in.first - position2_in.first) +
           ::abs(position1_in.second - position2_in.second));
+}
+
+const unsigned long
+RPG_Map_Common_Tools::area2Positions(const RPG_Map_Position_t& position1_in,
+                                     const RPG_Map_Position_t& position2_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::area2Positions"));
+
+  return ((::abs(position1_in.first - position2_in.first) + 1) *
+          (::abs(position1_in.second - position2_in.second) + 1));
+}
+
+const bool
+RPG_Map_Common_Tools::positionInSquare(const RPG_Map_Position_t& position_in,
+                                       const RPG_Map_Square_t& square_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::positionInSquare"));
+
+  return ((position_in.first >= square_in.ul.first) &&
+          (position_in.second <= square_in.lr.second));
 }
