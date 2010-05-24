@@ -623,14 +623,13 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
             // retrieve the last cell of the top row
             pointer = zone_iterator2;
             pointer--;
-
             // compute max breadth
             max_breadth = (((*pointer).first - (*zone_iterator).first) + 1);
             ACE_ASSERT(max_breadth);
           } // end IF
 
           // check: IMMEDIATELY on breaking to a new row:
-          // if our position.x is LARGER than our current square's
+          // if our position.x is LARGER than our current_square.ul.x
           // --> we've already found the largest square for this position
           if ((*zone_iterator2).second > current_row)
           {
@@ -640,18 +639,31 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
 
             if ((*zone_iterator2).first > (*zone_iterator).first)
               break; // start next position
+
+            // check: if the last_cell.x of the previous row was
+            // SMALLER than current_square.ul.x
+            // --> we've already found the largest square for this position
+
+            // retrieve the last cell of the previous row
+            pointer = zone_iterator2;
+            pointer--;
+            if ((*pointer).first < (*zone_iterator).first)
+              break; // start next position
+
+            // otherwise, perhaps max_breadth needs subtraction...
+            if ((((*pointer).first - (*zone_iterator).first) + 1) < max_breadth)
+              max_breadth = (((*pointer).first - (*zone_iterator).first) + 1);
+            ACE_ASSERT(max_breadth);
           } // end IF
           else
           {
-            ACE_ASSERT((*zone_iterator2).second == current_row);
-
-            // check: for consecutive positions WITHIN the same row:
-            // if (previous_cell.x + 1) is NOT EQUAL to the current.x
-            // i.e. the current cell is not adjacent to the previous one
-            // --> we've already found the largest square for this position
-            last_x++;
-            if (last_x != (*zone_iterator2).first)
-              break; // start next position
+            // as long as the current_cell.x is EQUAL OR SMALLER than
+            // current_square.ul.x (i.e. we're left/at the reference), ignore
+            // any skips between consecutive positions (see below)
+            if ((*zone_iterator2).first <= (*zone_iterator).first)
+              last_x = (*zone_iterator2).first;
+            else
+              last_x++;
           } // end ELSE
 
           // check: check if we're within the square spanned by
@@ -659,6 +671,15 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
           if (((*zone_iterator2).first > ((*zone_iterator).first + max_breadth - 1)) ||
               ((*zone_iterator2).first < (*zone_iterator).first))
             continue; // no, we're not --> check next cell
+
+          // we're within the current square
+
+          // check: for consecutive positions WITHIN the same row:
+          // if (previous_cell.x + 1) is NOT EQUAL to the current.x
+          // i.e. the current cell is not adjacent to the previous one
+          // --> we've already found the largest square for this position
+          if (last_x != (*zone_iterator2).first)
+            break; // start next position
 
           // step2: we're within the current square
           // --> compute enclosed area
@@ -707,7 +728,17 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
 
         rooms_out.push_back(current_zone);
 
-        // sanity check
+        // debug info
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("zone [%u cell(s)]: bounded by [(%u,%u),(%u,%u)] --> %u cell(s)\n"),
+                   current_zone.size(),
+                   (*squares_iter).ul.first,
+                   (*squares_iter).ul.second,
+                   (*squares_iter).lr.first,
+                   (*squares_iter).lr.second,
+                   area2Positions((*squares_iter).ul,
+                                  (*squares_iter).lr)));
+
         ACE_ASSERT(current_zone.size() == area2Positions((*squares_iter).ul,
                                                          (*squares_iter).lr));
       } // end FOR
@@ -797,7 +828,6 @@ RPG_Map_Common_Tools::displayRooms(const unsigned long& dimensionX_in,
     } // end FOR
     std::clog << std::endl;
   } // end FOR
-  std::clog << std::endl;
 }
 
 void
