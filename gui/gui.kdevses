@@ -1,13 +1,16 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="2" >
+ <DocsAndViews NumberOfDocuments="3" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client_gui.cpp" >
-   <View0 Encoding="" line="449" Type="Source" />
+   <View0 Encoding="" line="351" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client.ini" >
    <View0 Encoding="" line="12" Type="Source" />
   </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/Makefile.am" >
+   <View0 Encoding="" line="8" Type="Source" />
+  </Doc2>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>

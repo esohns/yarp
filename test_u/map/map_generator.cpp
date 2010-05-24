@@ -37,12 +37,13 @@
 #include <sstream>
 #include <iostream>
 
-#define MAP_GENERATOR_DEF_MIN_ROOMSIZE 0
-#define MAP_GENERATOR_DEF_MAX_ROOMSIZE true
-#define MAP_GENERATOR_DEF_NUM_ROOMS    5
-#define MAP_GENERATOR_DEF_SQUARE_ROOMS true
-#define MAP_GENERATOR_DEF_DIMENSION_X  80
-#define MAP_GENERATOR_DEF_DIMENSION_Y  40
+#define MAP_GENERATOR_DEF_MIN_ROOMSIZE       0
+#define MAP_GENERATOR_DEF_MAX_DOORS_PER_ROOM 3
+#define MAP_GENERATOR_DEF_MAX_ROOMSIZE       true
+#define MAP_GENERATOR_DEF_NUM_ROOMS          5
+#define MAP_GENERATOR_DEF_SQUARE_ROOMS       true
+#define MAP_GENERATOR_DEF_DIMENSION_X        80
+#define MAP_GENERATOR_DEF_DIMENSION_Y        40
 
 void print_usage(const std::string& programName_in)
 {
@@ -53,7 +54,8 @@ void print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-a<[VALUE]> : enforce minimum room-size") << ACE_TEXT(" [") << (MAP_GENERATOR_DEF_MIN_ROOMSIZE == 0) << ACE_TEXT(" : ") << MAP_GENERATOR_DEF_MIN_ROOMSIZE << ACE_TEXT("; 0: off]") << std::endl;
+  std::cout << ACE_TEXT("-a<[VALUE]> : enforce minimum room-size") << ACE_TEXT(" [") << (MAP_GENERATOR_DEF_MIN_ROOMSIZE == 0) << ACE_TEXT(" : ") << MAP_GENERATOR_DEF_MIN_ROOMSIZE << ACE_TEXT("; 0:off]") << std::endl;
+  std::cout << ACE_TEXT("-d<[VALUE]> : enforce maximum #doors/room") << ACE_TEXT(" [") << (MAP_GENERATOR_DEF_MAX_DOORS_PER_ROOM == 0) << ACE_TEXT(" : ") << MAP_GENERATOR_DEF_MAX_DOORS_PER_ROOM << ACE_TEXT("; 0:off]") << std::endl;
   std::cout << ACE_TEXT("-m          : maximize room-size(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_MAX_ROOMSIZE << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-r [VALUE]  : #rooms") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_NUM_ROOMS << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s          : square room(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_SQUARE_ROOMS << ACE_TEXT("]") << std::endl;
@@ -66,6 +68,7 @@ void print_usage(const std::string& programName_in)
 const bool process_arguments(const int argc_in,
                              ACE_TCHAR* argv_in[], // cannot be const...
                              unsigned long& minRoomSize_out,
+                             unsigned long& maxDoorsPerRoom_out,
                              bool& maxRoomSize_out,
                              unsigned long& numRooms_out,
                              bool& squareRooms_out,
@@ -78,6 +81,7 @@ const bool process_arguments(const int argc_in,
 
   // init results
   minRoomSize_out = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
+  maxDoorsPerRoom_out = MAP_GENERATOR_DEF_MAX_DOORS_PER_ROOM;
   maxRoomSize_out = MAP_GENERATOR_DEF_MAX_ROOMSIZE;
   numRooms_out = MAP_GENERATOR_DEF_NUM_ROOMS;
   squareRooms_out = MAP_GENERATOR_DEF_SQUARE_ROOMS;
@@ -88,7 +92,7 @@ const bool process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("a::mr:stvx:y:"));
+                             ACE_TEXT("a::d::mr:stvx:y:"));
 
   int option = 0;
   std::stringstream converter;
@@ -102,6 +106,15 @@ const bool process_arguments(const int argc_in,
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> minRoomSize_out;
+
+        break;
+      }
+      case 'd':
+      {
+        converter.clear();
+        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+        converter << argumentParser.opt_arg();
+        converter >> maxDoorsPerRoom_out;
 
         break;
       }
@@ -180,6 +193,7 @@ const bool process_arguments(const int argc_in,
 }
 
 void do_work(const unsigned long& minRoomSize_in,
+             const unsigned long& maxDoorsPerRoom_in,
              const bool& maximizeArea_in,
              const unsigned long& numRooms_in,
              const bool& wantSquareRooms_in,
@@ -200,6 +214,7 @@ void do_work(const unsigned long& minRoomSize_in,
                                            wantSquareRooms_in,
                                            maximizeArea_in,
                                            minRoomSize_in,
+                                           maxDoorsPerRoom_in,
                                            levelMap);
 
   ACE_DEBUG((LM_DEBUG,
@@ -262,19 +277,21 @@ int ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  unsigned long minRoomSize = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
-  bool maxRoomSize          = MAP_GENERATOR_DEF_MAX_ROOMSIZE;
-  unsigned long numRooms    = MAP_GENERATOR_DEF_NUM_ROOMS;
-  bool squareRooms          = MAP_GENERATOR_DEF_SQUARE_ROOMS;
-  bool traceInformation     = false;
-  bool printVersionAndExit  = false;
-  unsigned long dimension_X = MAP_GENERATOR_DEF_DIMENSION_X;
-  unsigned long dimension_Y = MAP_GENERATOR_DEF_DIMENSION_Y;
+  unsigned long minRoomSize     = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
+  unsigned long maxDoorsPerRoom = MAP_GENERATOR_DEF_MAX_DOORS_PER_ROOM;
+  bool maxRoomSize              = MAP_GENERATOR_DEF_MAX_ROOMSIZE;
+  unsigned long numRooms        = MAP_GENERATOR_DEF_NUM_ROOMS;
+  bool squareRooms              = MAP_GENERATOR_DEF_SQUARE_ROOMS;
+  bool traceInformation         = false;
+  bool printVersionAndExit      = false;
+  unsigned long dimension_X     = MAP_GENERATOR_DEF_DIMENSION_X;
+  unsigned long dimension_Y     = MAP_GENERATOR_DEF_DIMENSION_Y;
 
   // step1ba: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
                           minRoomSize,
+                          maxDoorsPerRoom,
                           maxRoomSize,
                           numRooms,
                           squareRooms,
@@ -342,6 +359,7 @@ int ACE_TMAIN(int argc,
 
   // step2: do actual work
   do_work(minRoomSize,
+          maxDoorsPerRoom,
           maxRoomSize,
           numRooms,
           squareRooms,

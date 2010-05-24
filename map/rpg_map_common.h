@@ -57,6 +57,7 @@ struct position_compare
   }
 };
 typedef std::set<RPG_Map_Position_t, position_compare> RPG_Map_Positions_t;
+typedef RPG_Map_Positions_t::const_iterator RPG_Map_PositionsConstIterator_t;
 typedef RPG_Map_Positions_t::iterator RPG_Map_PositionsIterator_t;
 typedef std::list<RPG_Map_Position_t> RPG_Map_PositionList_t;
 typedef RPG_Map_PositionList_t::iterator RPG_Map_PositionListIterator_t;

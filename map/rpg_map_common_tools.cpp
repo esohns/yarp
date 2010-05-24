@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "rpg_map_common_tools.h"
 
+#include "rpg_map_defines.h"
+
 #include <rpg_dice.h>
 
 #include <ace/Log_Msg.h>
@@ -33,6 +35,7 @@ RPG_Map_Common_Tools::createDungeonLevel(const unsigned long& dimensionX_in,
                                          const bool& wantSquareRooms_in,
                                          const bool& maximizeArea_in,
                                          const unsigned long& minArea_in,
+                                         const unsigned long& maxDoorsPerRoom_in,
                                          RPG_Map_DungeonLevel& level_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::createDungeonLevel"));
@@ -60,9 +63,49 @@ RPG_Map_Common_Tools::createDungeonLevel(const unsigned long& dimensionX_in,
                dimensionY_in,
                rooms);
 
-  // step3: connect rooms to form the dungeon
+  // step3: connect rooms to form the level
   connectRooms(rooms,
+               maxDoorsPerRoom_in,
                level_out);
+  // debug info
+  displayDungeonLevel(dimensionX_in,
+                      dimensionY_in,
+                      level_out);
+}
+
+void
+RPG_Map_Common_Tools::displayDungeonLevel(const unsigned long& dimensionX_in,
+                                          const unsigned long& dimensionY_in,
+                                          const RPG_Map_DungeonLevel& level_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayDungeonLevel"));
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("level...\n")));
+
+  RPG_Map_Position_t current_position;
+
+  for (unsigned long y = 0;
+       y < dimensionY_in;
+       y++)
+  {
+    for (unsigned long x = 0;
+         x < dimensionX_in;
+         x++)
+    {
+      current_position = std::make_pair(x, y);
+
+      // wall or door ?
+      if (level_in.walls.find(current_position) != level_in.walls.end())
+        std::clog << ACE_TEXT("#");
+      else if (level_in.doors.find(current_position) != level_in.doors.end())
+        std::clog << ACE_TEXT("=");
+      else
+        std::clog << ACE_TEXT(".");
+    } // end FOR
+    std::clog << std::endl;
+  } // end FOR
 }
 
 void
@@ -728,16 +771,16 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
 
         rooms_out.push_back(current_zone);
 
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("zone [%u cell(s)]: bounded by [(%u,%u),(%u,%u)] --> %u cell(s)\n"),
-                   current_zone.size(),
-                   (*squares_iter).ul.first,
-                   (*squares_iter).ul.second,
-                   (*squares_iter).lr.first,
-                   (*squares_iter).lr.second,
-                   area2Positions((*squares_iter).ul,
-                                  (*squares_iter).lr)));
+//         // debug info
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("zone [%u cell(s)]: bounded by [(%u,%u),(%u,%u)] --> %u cell(s)\n"),
+//                    current_zone.size(),
+//                    (*squares_iter).ul.first,
+//                    (*squares_iter).ul.second,
+//                    (*squares_iter).lr.first,
+//                    (*squares_iter).lr.second,
+//                    area2Positions((*squares_iter).ul,
+//                                   (*squares_iter).lr)));
 
         ACE_ASSERT(current_zone.size() == area2Positions((*squares_iter).ul,
                                                          (*squares_iter).lr));
@@ -832,6 +875,7 @@ RPG_Map_Common_Tools::displayRooms(const unsigned long& dimensionX_in,
 
 void
 RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
+                                   const unsigned long& maxDoorsPerRoom_in,
                                    RPG_Map_DungeonLevel& level_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::connectRooms"));
@@ -840,6 +884,248 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
   level_out.doors.clear();
   level_out.walls.clear();
 
+  // step1: make walls
+  RPG_Map_ZoneList_t shells;
+  RPG_Map_Zone_t current_room;
+  RPG_Map_ZoneListConstIterator_t list_iterator;
+  RPG_Map_ZoneConstIterator_t zone_iterator;
+  RPG_Map_Position_t position;
+  unsigned long max_x = 0;
+  unsigned long max_y = 0;
+  for (list_iterator = rooms_in.begin();
+       list_iterator != rooms_in.end();
+       list_iterator++)
+  {
+    current_room.clear();
+
+    // step1: find outer shell
+    // compute max_x, max_y
+    for (zone_iterator = (*list_iterator).begin();
+         zone_iterator != (*list_iterator).end();
+         zone_iterator++)
+    {
+      if ((*zone_iterator).first > max_x)
+        max_x = (*zone_iterator).first;
+      if ((*zone_iterator).second > max_y)
+        max_y = (*zone_iterator).second;
+    } // end FOR
+
+    // start at top left position and go around clockwise
+    // *NOTE*: as the set is sorted, start with the first element
+    current_room.insert(*((*list_iterator).begin()));
+    // as long as possible, proceed to the right and down, alternatingly
+    position = *((*list_iterator).begin());
+    while ((position.first != max_x) ||
+            (position.second != max_y))
+    {
+      // as long as possible, proceed right
+      position.first++;
+      while ((position.first != (max_x + 1)) &&
+             ((*list_iterator).find(position) != (*list_iterator).end()))
+      {
+        // part of the room
+        current_room.insert(position);
+        position.first++;
+      } // end WHILE
+      position.first--;
+      // as long as possible, proceed downward
+      position.second++;
+      while ((position.second != (max_y + 1)) &&
+             ((*list_iterator).find(position) != (*list_iterator).end()))
+      {
+        // part of the room
+        current_room.insert(position);
+        position.second++;
+      } // end WHILE
+      position.second--;
+    } // end WHILE
+    // part of the room
+    current_room.insert(position);
+    // as long as possible, proceed to the left and up, alternatingly
+    while ((position.first != (*((*list_iterator).begin())).first) &&
+           (position.second != (*((*list_iterator).begin())).second))
+    {
+      // as long as possible, proceed left
+      position.first--;
+      while ((position.first != ((*((*list_iterator).begin())).first - 1)) &&
+             ((*list_iterator).find(position) != (*list_iterator).end()))
+      {
+        // part of the room
+        current_room.insert(position);
+        position.first--;
+      } // end WHILE
+      position.first++;
+      // as long as possible, proceed upward
+      position.second--;
+      while ((position.second != ((*((*list_iterator).begin())).second - 1)) &&
+             ((*list_iterator).find(position) != (*list_iterator).end()))
+      {
+        // part of the room
+        current_room.insert(position);
+        position.second--;
+      } // end WHILE
+      position.second++;
+    } // end WHILE
+    ACE_ASSERT(position == *((*list_iterator).begin()));
+
+    shells.push_back(current_room);
+  } // end FOR
+
+  // step2: make doors
+  // *NOTE*: every room needs at least one (possibly secret) door...
+  // *NOTE*: doors connect rooms
+  RPG_Map_ZoneList_t doors;
+  RPG_Map_Zone_t current_doors;
+  unsigned long num_doors = 0;
+  RPG_Dice_RollResult_t result;
+  RPG_Dice_RollResult_t result_y;
+  unsigned long min_distance = std::numeric_limits<unsigned long>::max();
+  unsigned long distance = 0;
+  unsigned long max_num_doors = 0;
+  RPG_Map_Position_t nearest_neighbour;
+  RPG_Map_Positions_t neighbours;
+  RPG_Map_PositionsConstIterator_t neighbour_iterator;
+  bool position_suitable = false;
+  for (list_iterator = shells.begin();
+       list_iterator != shells.end();
+       list_iterator++)
+  {
+    current_doors.clear();
+
+    // step1: generate (random) number of doors
+    result.clear();
+    // *NOTE*: enforce a physical distance between any 2 doors
+    max_num_doors = numDoorPositions(*list_iterator);
+    RPG_Dice::generateRandomNumbers((maxDoorsPerRoom_in ? ((maxDoorsPerRoom_in > max_num_doors) ? max_num_doors
+                                                                                                : maxDoorsPerRoom_in)
+                                                        : max_num_doors),
+                                    1,
+                                    result);
+    num_doors = result[0];
+
+    // step2: position doors
+    // compute max_x, max_y
+    for (zone_iterator = (*list_iterator).begin();
+         zone_iterator != (*list_iterator).end();
+         zone_iterator++)
+    {
+      if ((*zone_iterator).first > max_x)
+        max_x = (*zone_iterator).first;
+      if ((*zone_iterator).second > max_y)
+        max_y = (*zone_iterator).second;
+    } // end FOR
+
+    while (current_doors.size() < num_doors)
+    {
+      position_suitable = false;
+
+      // step3: generate (random) coordinates
+      result.clear(); result_y.clear();
+      RPG_Dice::generateRandomNumbers((max_x + 1),
+                                      1,
+                                      result);
+      RPG_Dice::generateRandomNumbers((max_y + 1),
+                                      1,
+                                      result_y);
+      position = std::make_pair(result[0] - 1,
+                                result_y[0] - 1);
+      // the position is probably not on the perimeter
+      // --> find the nearest neighbour
+      if ((*list_iterator).find(position) == (*list_iterator).end())
+      {
+        min_distance = std::numeric_limits<unsigned long>::max();
+        for (zone_iterator = (*list_iterator).begin();
+             zone_iterator != (*list_iterator).end();
+             zone_iterator++)
+        {
+          distance = dist2Positions(*zone_iterator, position);
+          if (distance < min_distance)
+          {
+            nearest_neighbour = *zone_iterator;
+            min_distance = distance;
+          } // end IF
+        } // end FOR
+        position = nearest_neighbour;
+      } // end IF
+
+      // it's on the perimeter
+
+      // step4: is this position a suitable spot for a door ?
+      // *NOTE*: for now, corners are unsuitable...
+      // --> check whether the position has two (!) neighbours "facing" different
+      // directions
+      for (zone_iterator = (*list_iterator).begin();
+           zone_iterator != (*list_iterator).end();
+           zone_iterator++)
+      {
+        if (dist2Positions(*zone_iterator, position) == 1)
+          neighbours.insert(*zone_iterator);
+      } // end FOR
+      ACE_ASSERT(neighbours.size() == 2);
+      nearest_neighbour = position;
+      for (neighbour_iterator = neighbours.begin();
+           neighbour_iterator != neighbours.end();
+           neighbour_iterator++)
+      {
+        if (nearest_neighbour == position)
+        {
+          // first iteration, store a neighbour
+          nearest_neighbour = *neighbour_iterator;
+          continue;
+        } // end IF
+
+        // find relation between three positions
+        if (((position.first == nearest_neighbour.first) &&
+             (nearest_neighbour.first == (*neighbour_iterator).first)) ||
+            ((position.second == nearest_neighbour.second) &&
+             (nearest_neighbour.second == (*neighbour_iterator).second)))
+        {
+          // OK, they align
+          position_suitable = true;
+          break;
+        } // end IF
+      } // end FOR
+
+      if (position_suitable)
+      {
+        current_doors.insert(position);
+//         (*list_iterator).erase(position); // not a wall anymore...
+      } // end IF
+    } // end WHILE
+
+    doors.push_back(current_doors);
+  } // end FOR
+
+  // step3: make corridors
+  RPG_Map_ZoneList_t corridors;
+  RPG_Map_Zone_t current_corridor;
+  // *TODO*:
+  ACE_ASSERT(false);
+
+  // step4: put everything together
+  for (list_iterator = shells.begin();
+       list_iterator != shells.end();
+       list_iterator++)
+  {
+    for (zone_iterator = (*list_iterator).begin();
+         zone_iterator != (*list_iterator).end();
+         zone_iterator++)
+    {
+      level_out.walls.insert(*zone_iterator);
+    } // end FOR
+  } // end FOR
+  RPG_Map_ZoneConstIterator_t doors_iterator;
+  for (list_iterator = doors.begin();
+       list_iterator != doors.end();
+       list_iterator++)
+  {
+    for (doors_iterator = (*list_iterator).begin();
+         doors_iterator != (*list_iterator).end();
+         doors_iterator++)
+    {
+      level_out.doors.insert(*doors_iterator);
+    } // end FOR
+  } // end FOR
 }
 
 const unsigned long
@@ -872,4 +1158,17 @@ RPG_Map_Common_Tools::positionInSquare(const RPG_Map_Position_t& position_in,
           (position_in.first <= square_in.lr.first) &&
           (position_in.second >= square_in.ul.second) &&
           (position_in.second <= square_in.lr.second));
+}
+
+const unsigned long
+RPG_Map_Common_Tools::numDoorPositions(const RPG_Map_Zone_t& room_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::numDoorPositions"));
+
+  unsigned long result = 0;
+
+  // *TODO*
+  ACE_ASSERT(false);
+
+  return result;
 }

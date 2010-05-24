@@ -38,7 +38,11 @@ class RPG_Map_Common_Tools
                                  const bool&,            // rooms to be square ?
                                  const bool&,            // maximize area ?
                                  const unsigned long&,   // min. area (0: don't care)
+                                 const unsigned long&,   // max. #doors/room
                                  RPG_Map_DungeonLevel&); // return value: doors & walls
+  static void displayDungeonLevel(const unsigned long&,         // map dimension x
+                                  const unsigned long&,         // map dimension y
+                                  const RPG_Map_DungeonLevel&); // doors & walls
 
  private:
   // safety measures
@@ -89,7 +93,9 @@ class RPG_Map_Common_Tools
                            const unsigned long&,       // dimension y
                            const RPG_Map_ZoneList_t&); // room(s)
 
+  static const unsigned long numDoorPositions(const RPG_Map_Zone_t&); // room (shell !)
   static void connectRooms(const RPG_Map_ZoneList_t&, // room(s)
+                           const unsigned long&,      // max. #doors/room
                            RPG_Map_DungeonLevel&);    // return value: doors & walls
 };
 
