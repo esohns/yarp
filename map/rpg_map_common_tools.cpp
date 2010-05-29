@@ -929,6 +929,7 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
     crawlToPosition(*list_iterator,
                     position,
                     upper_right,
+                    DOWN,
                     trail);
     for (trail_iterator = trail.begin();
          trail_iterator != trail.end();
@@ -938,6 +939,7 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
     crawlToPosition(*list_iterator,
                     upper_right,
                     lower_right,
+                    LEFT,
                     trail);
     for (trail_iterator = trail.begin();
          trail_iterator != trail.end();
@@ -947,6 +949,7 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
     crawlToPosition(*list_iterator,
                      lower_right,
                      lower_left,
+                     UP,
                      trail);
     for (trail_iterator = trail.begin();
          trail_iterator != trail.end();
@@ -956,13 +959,16 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
     crawlToPosition(*list_iterator,
                      lower_left,
                      position,
+                     RIGHT,
                      trail);
     for (trail_iterator = trail.begin();
          trail_iterator != trail.end();
          trail_iterator++)
       current_room.insert(*trail_iterator);
 
-    // step2: if (doorFillsPosition_in), crop the shell accordingly
+    // step2: if doors fill a whole cell, suitable positions on the perimeter
+    // require (at least) one neighbour on each side
+    // --> remove any cruft from the perimeter
     if (doorFillsPosition_in)
       cropShell(current_room);
 
@@ -972,136 +978,62 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
   // step2: make doors
   // *NOTE*: every room needs at least one (possibly secret) door...
   // *NOTE*: doors connect rooms
+  // *NOTE*: to ensure connectivity for n rooms, we need at least (n-1)*2 doors...
   RPG_Map_ZoneList_t doors;
+  unsigned long total_doors = 0;
   RPG_Map_Zone_t current_doors;
   unsigned long num_doors = 0;
   RPG_Dice_RollResult_t result;
-  unsigned long max_x = 0;
-  unsigned long max_y = 0;
-  RPG_Dice_RollResult_t result_y;
-  unsigned long min_distance = std::numeric_limits<unsigned long>::max();
-  unsigned long distance = 0;
-  unsigned long max_num_doors = 0;
-  RPG_Map_Position_t nearest_neighbour;
-  RPG_Map_Positions_t neighbours;
-  RPG_Map_PositionsConstIterator_t neighbour_iterator;
-  bool position_suitable = false;
-  for (list_iterator = shells.begin();
-       list_iterator != shells.end();
-       list_iterator++)
+  RPG_Map_PositionList_t doorPositions;
+  RPG_Map_PositionListConstIterator_t doorPosition_iterator;
+  while (total_doors < ((rooms_in.size() - 1) * 2))
   {
-    current_doors.clear();
-
-    // step1: generate (random) number of doors
-    result.clear();
-    // *NOTE*: enforce a physical distance between any 2 doors
-    max_num_doors = numDoorPositions(*list_iterator,
-                                     doorFillsPosition_in);
-    RPG_Dice::generateRandomNumbers((maxDoorsPerRoom_in ? ((maxDoorsPerRoom_in > max_num_doors) ? max_num_doors
-                                                                                                : maxDoorsPerRoom_in)
-                                                        : max_num_doors),
-                                    1,
-                                    result);
-    num_doors = result[0];
-
-    // step2: position doors
-    // compute max_x, max_y
-    for (zone_iterator = (*list_iterator).begin();
-         zone_iterator != (*list_iterator).end();
-         zone_iterator++)
+    for (list_iterator = shells.begin();
+         list_iterator != shells.end();
+         list_iterator++)
     {
-      if ((*zone_iterator).first > max_x)
-        max_x = (*zone_iterator).first;
-      if ((*zone_iterator).second > max_y)
-        max_y = (*zone_iterator).second;
-    } // end FOR
+      current_doors.clear();
 
-    while (current_doors.size() < num_doors)
-    {
-      position_suitable = false;
+      // step1: find suitable positions
+      doorPositions.clear();
+      findDoorPositions(*list_iterator,
+                        doorFillsPosition_in,
+                        doorPositions);
+      ACE_ASSERT(!doorPositions.empty());
 
-      // step3: generate (random) coordinates
-      result.clear(); result_y.clear();
-      RPG_Dice::generateRandomNumbers((max_x + 1),
+      // step2: generate (random) number of doors
+      result.clear();
+      RPG_Dice::generateRandomNumbers((maxDoorsPerRoom_in ? ((maxDoorsPerRoom_in > doorPositions.size()) ? doorPositions.size()
+                                                                                                         : maxDoorsPerRoom_in)
+                                                          : doorPositions.size()),
                                       1,
                                       result);
-      RPG_Dice::generateRandomNumbers((max_y + 1),
-                                      1,
-                                      result_y);
-      position = std::make_pair(result[0] - 1,
-                                result_y[0] - 1);
-      // the position is probably not on the perimeter
-      // --> find the nearest neighbour
-      if ((*list_iterator).find(position) == (*list_iterator).end())
+      num_doors = result[0];
+
+      // step2: choose num_doors from available positions
+      while (current_doors.size() < num_doors)
       {
-        min_distance = std::numeric_limits<unsigned long>::max();
-        for (zone_iterator = (*list_iterator).begin();
-             zone_iterator != (*list_iterator).end();
-             zone_iterator++)
-        {
-          distance = dist2Positions(*zone_iterator, position);
-          if (distance < min_distance)
-          {
-            nearest_neighbour = *zone_iterator;
-            min_distance = distance;
-          } // end IF
-        } // end FOR
-        position = nearest_neighbour;
-      } // end IF
+        result.clear();
+        RPG_Dice::generateRandomNumbers(doorPositions.size(),
+                                        1,
+                                        result);
+        doorPosition_iterator = doorPositions.begin();
+        std::advance(doorPosition_iterator, result[0] - 1);
 
-      // it's on the perimeter now
+        current_doors.insert(*doorPosition_iterator);
+  //       if (doorFillsPosition_in)
+  //         (*list_iterator).erase(*doorPosition_iterator); // not a wall anymore...
+      } // end WHILE
 
-      // step4: is this position a suitable spot for a door ?
-      // *NOTE*: for now, corners are unsuitable...
-      // --> check whether the position has two (!) neighbours "facing" different
-      // directions
-      for (zone_iterator = (*list_iterator).begin();
-           zone_iterator != (*list_iterator).end();
-           zone_iterator++)
-      {
-        if (dist2Positions(*zone_iterator, position) == 1)
-          neighbours.insert(*zone_iterator);
-      } // end FOR
-      ACE_ASSERT(neighbours.size() == 2);
-      nearest_neighbour = position;
-      for (neighbour_iterator = neighbours.begin();
-           neighbour_iterator != neighbours.end();
-           neighbour_iterator++)
-      {
-        if (nearest_neighbour == position)
-        {
-          // first iteration, store a neighbour
-          nearest_neighbour = *neighbour_iterator;
-          continue;
-        } // end IF
-
-        // find relation between three positions
-        if (((position.first == nearest_neighbour.first) &&
-             (nearest_neighbour.first == (*neighbour_iterator).first)) ||
-            ((position.second == nearest_neighbour.second) &&
-             (nearest_neighbour.second == (*neighbour_iterator).second)))
-        {
-          // OK, they align
-          position_suitable = true;
-          break;
-        } // end IF
-      } // end FOR
-
-      if (position_suitable)
-      {
-        current_doors.insert(position);
-//         (*list_iterator).erase(position); // not a wall anymore...
-      } // end IF
-    } // end WHILE
-
-    doors.push_back(current_doors);
-  } // end FOR
+      doors.push_back(current_doors);
+    } // end FOR
+  } // end WHILE
 
   // step3: make corridors
   RPG_Map_ZoneList_t corridors;
   RPG_Map_Zone_t current_corridor;
   // *TODO*:
-  ACE_ASSERT(false);
+//   ACE_ASSERT(false);
 
   // step4: put everything together
   for (list_iterator = shells.begin();
@@ -1219,6 +1151,7 @@ void
 RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Zone_t& map_in,
                                       const RPG_Map_Position_t& origin_in,
                                       const RPG_Map_Position_t& target_in,
+                                      const ORIGIN& startOrigin_in,
                                       RPG_Map_PositionList_t& trail_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::crawlToPosition"));
@@ -1226,7 +1159,7 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Zone_t& map_in,
   // init return value(s)
   trail_out.clear();
 
-  ORIGIN origin = LEFT;
+  ORIGIN origin = startOrigin_in;
   RPG_Map_Direction_t next = INVALID;
   RPG_Map_Directions_t directions;
 
@@ -1315,13 +1248,29 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Zone_t& map_in,
     switch (next)
     {
       case UP:
-        current.second--; break; // go up
+      {
+        current.second--; // go up
+        origin = DOWN;
+        break;
+      }
       case RIGHT:
-        current.first++; break; // go right
+      {
+        current.first++; // go right
+        origin = LEFT;
+        break;
+      }
       case DOWN:
-        current.second++; break; // go down
+      {
+        current.second++; // go down
+        origin = UP;
+        break;
+      }
       case LEFT:
-        current.first--; break; // go left
+      {
+        current.first--; // go left
+        origin = RIGHT;
+        break;
+      }
       default:
       {
         // debug info
@@ -1338,126 +1287,565 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Zone_t& map_in,
   } while (true);
 }
 
-const void
+void
 RPG_Map_Common_Tools::cropShell(RPG_Map_Zone_t& room_inout)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::cropShell"));
 
-  for (RPG_Map_ZoneConstIterator_t zone_iterator = room_inout.begin();
+  // two-pass algorithm:
+  // 1. iterate over rows
+  // 2. iterate over columns
+  // and remove any sequences of less than 3 consecutive cells
+  RPG_Map_ZoneConstIterator_t begin_sequence = room_inout.begin();
+  RPG_Map_ZoneConstIterator_t line_iterator;
+  unsigned long next_x = 0;
+  unsigned long count = 0;
+
+  // step1
+  RPG_Map_ZoneConstIterator_t zone_iterator;
+  for (zone_iterator = room_inout.begin();
        zone_iterator != room_inout.end();
        zone_iterator++)
   {
+    if ((*zone_iterator).second == (*begin_sequence).second)
+      continue;
+
+    // iterate over row
+    next_x = (*begin_sequence).first;
+    count = 0;
+    line_iterator = begin_sequence;
+    do
+    {
+      while ((*line_iterator).first == next_x)
+      {
+        next_x++;
+        count++;
+        line_iterator++;
+
+        // debug info
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("*line_iterator: (%u,%u)\n"),
+                   (*line_iterator).first,
+                   (*line_iterator).second));
+      } // end IF
+
+      if (line_iterator != zone_iterator)
+      {
+        // there was a gap
+        // --> remove any previous sequence of less than 3 consecutive cells
+        if (count < 3)
+        {
+          for (;
+               begin_sequence != line_iterator;
+               begin_sequence++)
+            room_inout.erase(begin_sequence);
+        } // end IF
+        else
+          begin_sequence = line_iterator;
+        next_x = (*begin_sequence).first;
+        count = 0;
+      } // end IF
+    } while (line_iterator != zone_iterator);
+    begin_sequence = zone_iterator;
   } // end FOR
-}
 
-const unsigned long
-RPG_Map_Common_Tools::numDoorPositions(const RPG_Map_Zone_t& room_in,
-                                       const bool& doorFillsPosition_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::numDoorPositions"));
+  // step2
+  // create alternate sorting
+  RPG_Map_AltPositions_t alt_room;
+  for (zone_iterator = room_inout.begin();
+       zone_iterator != room_inout.end();
+       zone_iterator++)
+    alt_room.insert(*zone_iterator);
 
-  unsigned long result = 0;
-
-  // *NOTE*: constraints:
-  // - corners are unsuitable positions
-  // - minimal distance (to allow corridors) between doors
-
-  // step1: compute 4 corners
-  unsigned long max_x = 0;
-  unsigned long max_y = 0;
-  for (RPG_Map_ZoneConstIterator_t zone_iterator = room_in.begin();
-       zone_iterator != room_in.end();
+  begin_sequence = alt_room.begin();
+  unsigned long next_y = 0;
+  count = 0;
+  for (zone_iterator = alt_room.begin();
+       zone_iterator != alt_room.end();
        zone_iterator++)
   {
-    if ((*zone_iterator).first > max_x)
-      max_x = (*zone_iterator).first;
-    if ((*zone_iterator).second > max_y)
-      max_y = (*zone_iterator).second;
+    if ((*zone_iterator).first == (*begin_sequence).first)
+      continue;
+
+    // iterate over column
+    next_y = (*begin_sequence).second;
+    count = 0;
+    do
+    {
+      while ((*line_iterator).second == next_y)
+      {
+        next_y++;
+        count++;
+        line_iterator++;
+      } // end IF
+
+      if (line_iterator != zone_iterator)
+      {
+        // there is a gap
+        // --> remove any previous sequence of less than 3 consecutive cells
+        if (count < 3)
+        {
+          for (;
+               begin_sequence != line_iterator;
+               begin_sequence++)
+            alt_room.erase(begin_sequence);
+        } // end IF
+        else
+          begin_sequence = line_iterator;
+        next_y = (*begin_sequence).second;
+        count = 0;
+      } // end IF
+    } while (line_iterator != zone_iterator);
+    begin_sequence = zone_iterator;
   } // end FOR
 
-  // step2: list the positions to allow clockwise iteration along the walls
-  // --> start at top left position and go around clockwise
-  // *NOTE*: as the set is sorted, start with the first element
-  RPG_Map_PositionList_t room_positions;
+  // return original sorting
+  room_inout.clear();
+  for (zone_iterator = alt_room.begin();
+       zone_iterator != alt_room.end();
+       zone_iterator++)
+    room_inout.insert(*zone_iterator);
+}
 
-  // as long as possible, proceed to the right and down, alternatingly
+const bool
+RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
+                           const RPG_Map_Position_t& position_in,
+                           const ORIGIN& origin_in,
+                           const bool& clockwise_in,
+                           bool& wasCorner_out,
+                           RPG_Map_Direction_t& next_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::turn"));
+
+  // init return value(s)
+  wasCorner_out = false;
+  next_out = INVALID;
+
+  RPG_Map_Position_t up, right, down, left;
+  up = position_in; up.second--;
+  right = position_in; right.first++;
+  down = position_in; down.second++;
+  left = position_in; left.first--;
+
+  // find possible destination(s)
+  RPG_Map_Directions_t directions;
+  if (map_in.find(up) != map_in.end())
+    directions.insert(UP);
+  if (map_in.find(right) != map_in.end())
+    directions.insert(RIGHT);
+  if (map_in.find(down) != map_in.end())
+    directions.insert(DOWN);
+  if (map_in.find(left) != map_in.end())
+    directions.insert(LEFT);
+
+  // *NOTE*: if position is a dead-end/corner/intersection
+  // --> compute next direction
+  if (directions.size() <= 1)
+  {
+    // dead-end, turn around
+    next_out = origin_in;
+
+    return true;
+  } // end IF
+
+  switch (origin_in)
+  {
+    case UP:
+    {
+      if ((directions.find(DOWN) == directions.end()) || // corner
+          (directions.find((clockwise_in ? RIGHT : LEFT)) != directions.end())) // intersection
+      {
+        // determine next direction
+        if (directions.find((clockwise_in ? RIGHT : LEFT)) != directions.end())
+          next_out = (clockwise_in ? RIGHT : LEFT); // intersection, turn left/right
+        else
+        {
+          next_out = (clockwise_in ? LEFT : RIGHT); // corner, turn right/left
+          wasCorner_out = true;
+        } // end ELSE
+
+        return true;
+      } // end IF
+
+      // --> can continue (and cannot turn left/right)
+      break;
+    }
+    case RIGHT:
+    {
+      if ((directions.find(LEFT) == directions.end()) || // corner
+          (directions.find((clockwise_in ? DOWN : UP)) != directions.end())) // intersection
+      {
+        // determine next direction
+        if (directions.find((clockwise_in ? DOWN : UP)) != directions.end())
+          next_out = (clockwise_in ? DOWN : UP); // intersection, turn left/right
+        else
+        {
+          next_out = (clockwise_in ? UP : DOWN); // corner, turn right/left
+          wasCorner_out = true;
+        } // end ELSE
+
+        return true;
+      } // end IF
+
+      // --> can continue (and cannot turn left/right)
+      break;
+    }
+    case DOWN:
+    {
+      if ((directions.find(UP) == directions.end()) || // corner
+          (directions.find((clockwise_in ? LEFT : RIGHT)) != directions.end())) // intersection
+      {
+        // determine next direction
+        if (directions.find((clockwise_in ? LEFT : RIGHT)) != directions.end())
+          next_out = (clockwise_in ? LEFT : RIGHT); // intersection, turn left/right
+        else
+        {
+          next_out = (clockwise_in ? RIGHT : LEFT); // corner, turn right/left
+          wasCorner_out = true;
+        } // end ELSE
+
+        return true;
+      } // end IF
+
+      // --> can continue (and cannot turn left/right)
+      break;
+    }
+    case LEFT:
+    {
+      if ((directions.find(RIGHT) == directions.end()) || // corner
+          (directions.find((clockwise_in ? UP : DOWN)) != directions.end())) // intersection
+      {
+        // determine next direction
+        if (directions.find((clockwise_in ? UP : DOWN)) != directions.end())
+          next_out = (clockwise_in ? UP : DOWN); // intersection, turn left/right
+        else
+        {
+          next_out = (clockwise_in ? DOWN : UP); // corner, turn right/left
+          wasCorner_out = true;
+        } // end ELSE
+
+        return true;
+      } // end IF
+
+      // --> can continue (and cannot turn left/right)
+      break;
+    }
+    default:
+      break;
+  } // end IF
+
+  return false;
+}
+
+// const bool
+// RPG_Map_Common_Tools::deadEnd(const RPG_Map_Zone_t& map_in,
+//                               const RPG_Map_Position_t& position_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::deadEnd"));
+//
+//   RPG_Map_Position_t up, right, down, left;
+//   up = position_in; up.second--;
+//   right = position_in; right.first++;
+//   down = position_in; down.second++;
+//   left = position_in; left.first--;
+//
+//   // find possible destination(s)
+//   RPG_Map_Directions_t directions;
+//   if (map_in.find(up) != map_in.end())
+//     directions.insert(UP);
+//   if (map_in.find(right) != map_in.end())
+//     directions.insert(RIGHT);
+//   if (map_in.find(down) != map_in.end())
+//     directions.insert(DOWN);
+//   if (map_in.find(left) != map_in.end())
+//     directions.insert(LEFT);
+//
+//   return (directions.size() <= 1);
+// }
+
+void
+RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
+                                        const bool& doorFillsPosition_in,
+                                        RPG_Map_PositionList_t& doorPositions_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::findDoorPositions"));
+
+  // init return value(s)
+  doorPositions_out.clear();
+
+  // *NOTE*: constraints depend on whether doors fill a whole position [] or just
+  // "adorn" the side of a wall (implements the notion that walls are
+  // infinitely thin - which is essentially a design *DECISION*)
+  // - corners/intersections are unsuitable positions
+  // - enforce a minimal distance [i.e. to allow corridors] between any 2 doors
   RPG_Map_Position_t current = *(room_in.begin());
-  room_positions.push_back(current);
-  while ((current.first != max_x) ||
-         (current.second != max_y))
+  RPG_Map_Direction_t next = RIGHT;
+  ORIGIN origin = LEFT;
+  bool was_corner = false; // (else intersection)
+  if (doorFillsPosition_in)
   {
-    // as long as possible, proceed right
-    current.first++;
-    while ((current.first != (max_x + 1)) &&
-           (room_in.find(current) != room_in.end()))
+    // *NOTE*: in this case, the perimeter should already have been prepared
+    // --> see references to cropShell() above
+
+    // what remains is walking the perimeter and checking position, while
+    // omitting corners.
+    // *NOTE*: do this both clock/counter-clockwise to find the maximum number
+    // of suitable position(s)
+
+    // step1: clockwise
+    // *NOTE*: first position is ALWAYS a corner, thus unsuitable
+    // --> next position to the right/down along the wall COULD be suitable
+    // if it's not an intersection...
+    bool next_suitable = true;
+    do
     {
-      // part of the room
-      room_positions.push_back(current);
-      current.first++;
-    } // end WHILE
-    current.first--;
-    // as long as possible, proceed downward
-    current.second++;
-    while ((current.second != (max_y + 1)) &&
-           (room_in.find(current) != room_in.end()))
+      // move along the perimeter
+      // change direction ?
+      if (!turn(room_in,
+                current,
+                origin,
+                true, // turn clockwise
+                was_corner,
+                next)) // <-- will be changed appropriately
+      {
+        if (next_suitable)
+        {
+          // good position for a door !
+          doorPositions_out.push_back(current);
+          next_suitable = false; // flag adjacent position as unsuitable
+        } // end IF
+        else
+          next_suitable = true; // adjacent position COULD be suitable
+      } // end IF
+      else
+        next_suitable = (was_corner ? true : false); // flag next position
+
+      switch (next)
+      {
+        case UP:
+        {
+          current.second--; // go up
+          origin = DOWN;
+          break;
+        }
+        case RIGHT:
+        {
+          current.first++; // go right
+          origin = LEFT;
+          break;
+        }
+        case DOWN:
+        {
+          current.second++; // go down
+          origin = UP;
+          break;
+        }
+        case LEFT:
+        {
+          current.first--; // go left
+          origin = RIGHT;
+          break;
+        }
+        default:
+        {
+          // debug info
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid direction (was %u), continuing\n"),
+                     next));
+
+          // *TODO*: what else can we do ?
+          ACE_ASSERT(false);
+
+          break;
+        }
+      } // end SWITCH
+    } while (current != *(room_in.begin()));
+
+    // step2: counter-clockwise
+    RPG_Map_PositionList_t alt_doorPositions;
+    origin = UP;
+    was_corner = false; // (else intersection)
+    // *NOTE*: first position is ALWAYS a corner, thus unsuitable
+    // --> next position to the right/down along the wall COULD be suitable
+    // if it's not an intersection...
+    next_suitable = true;
+    do
     {
-      // part of the room
-      room_positions.push_back(current);
-      current.second++;
-    } // end WHILE
-    current.second--;
-  } // end WHILE
-  // part of the room
-  room_positions.push_back(current);
-  // as long as possible, proceed to the left and up, alternatingly
-  while ((current.first != (*(room_in.begin())).first) &&
-         (current.second != (*(room_in.begin())).second))
+      // move along the perimeter
+      // change direction ?
+      if (!turn(room_in,
+                current,
+                origin,
+                false, // turn counter-clockwise
+                was_corner,
+                next)) // <-- will be changed appropriately
+      {
+        if (next_suitable)
+        {
+          // good position for a door !
+          alt_doorPositions.push_back(current);
+          next_suitable = false; // flag adjacent position as unsuitable
+        } // end IF
+        else
+          next_suitable = true; // adjacent position COULD be suitable
+      } // end IF
+      else
+        next_suitable = (was_corner ? true : false); // flag next position
+
+      switch (next)
+      {
+        case UP:
+        {
+          current.second--; // go up
+          origin = DOWN;
+          break;
+        }
+        case RIGHT:
+        {
+          current.first++; // go right
+          origin = LEFT;
+          break;
+        }
+        case DOWN:
+        {
+          current.second++; // go down
+          origin = UP;
+          break;
+        }
+        case LEFT:
+        {
+          current.first--; // go left
+          origin = RIGHT;
+          break;
+        }
+        default:
+        {
+          // debug info
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid direction (was %u), continuing\n"),
+                              next));
+
+          // *TODO*: what else can we do ?
+          ACE_ASSERT(false);
+
+          break;
+        }
+      } // end SWITCH
+    } while (current != *(room_in.begin()));
+
+    // step3: return the "better" result (i.e. more options == better)
+    if (alt_doorPositions.size() > doorPositions_out.size())
+      doorPositions_out = alt_doorPositions;
+  } // end IF
+  else
   {
-    // as long as possible, proceed left
-    current.first--;
-    while ((current.first != ((*(room_in.begin())).first - 1)) &&
-           (room_in.find(current) != room_in.end()))
+    // in this case, walls are infinitely thin, so doors can be placed pretty
+    // much everywhere along the perimeter
+    // --> walk the perimeter counting "faces" and divide the result by the
+    // (arbitrary) separation we want to enforce
+
+    // guard against special case
+    if (room_in.size() == 1)
     {
-      // part of the room
-      room_positions.push_back(current);
-      current.first--;
-    } // end WHILE
-    current.first++;
-      // as long as possible, proceed upward
-    current.second--;
-    while ((current.second != ((*(room_in.begin())).second - 1)) &&
-           (room_in.find(current) != room_in.end()))
+      // four positions
+      doorPositions_out.push_back(current);
+      doorPositions_out.push_back(current);
+      doorPositions_out.push_back(current);
+      doorPositions_out.push_back(current);
+    } // end IF
+    else
     {
-      // part of the room
-      room_positions.push_back(current);
-      current.second--;
-    } // end WHILE
-    current.second++;
-  } // end WHILE
-  ACE_ASSERT(current == *(room_in.begin()));
+      do
+      {
+        // change direction ?
+        if (!turn(room_in,
+                  current,
+                  origin,
+                  true, // turn clockwise
+                  was_corner,
+                  next)) // <-- will be changed appropriately
+        {
+          // moving along the wall...
+          doorPositions_out.push_back(current);
+        } // end IF
+        else
+        {
+          // reached a dead-end ?
+          if (next == origin)
+          {
+            // three positions
+            doorPositions_out.push_back(current);
+            doorPositions_out.push_back(current);
+            doorPositions_out.push_back(current);
+          } // end IF
+          else if (was_corner)
+          {
+            // two positions
+            doorPositions_out.push_back(current);
+            doorPositions_out.push_back(current);
+          } // end IF
+        } // end ELSE
 
-  RPG_Map_Position_t first, second, third;
-  RPG_Map_PositionListConstIterator_t list_iterator = room_positions.begin();
-  do
-  {
-    // get next 3 positions
-    first = *list_iterator; list_iterator++;
-    if (list_iterator == room_positions.end())
-      break; // no more positions
-    second = *list_iterator;
-    if (list_iterator == room_positions.end())
-      break; // no more positions
-    third = *list_iterator;
-    if (list_iterator == room_positions.end())
-      break; // no more positions
+        // done ?
+        if (current == *(room_in.begin()))
+          break;
 
-    // find relation between three positions
-    if (((first.first == second.first) &&
-         (second.first == third.first)) ||
-        ((first.second == second.second) &&
-         (second.second == third.second)))
-      result++;
-  } while (true);
+        // move along the perimeter
+        switch (next)
+        {
+          case UP:
+          {
+            current.second--; // go up
+            origin = DOWN;
+            break;
+          }
+          case RIGHT:
+          {
+            current.first++; // go right
+            origin = LEFT;
+            break;
+          }
+          case DOWN:
+          {
+            current.second++; // go down
+            origin = UP;
+            break;
+          }
+          case LEFT:
+          {
+            current.first--; // go left
+            origin = RIGHT;
+            break;
+          }
+          default:
+          {
+            // debug info
+            ACE_DEBUG((LM_ERROR,
+                      ACE_TEXT("invalid direction (was %u), continuing\n"),
+                                next));
 
-  return result;
+            // *TODO*: what else can we do ?
+            ACE_ASSERT(false);
+
+            break;
+          }
+        } // end SWITCH
+      } while (current != *(room_in.begin()));
+
+      // two more positions...
+      doorPositions_out.push_back(current);
+      doorPositions_out.push_back(current);
+    } // end ELSE
+
+    // step2: enforce separation, i.e. spare every (RPG_MAP_DOOR_SEPARATION + 1)
+    // element
+    unsigned long count = 0;
+    for (RPG_Map_PositionListIterator_t list_iterator = doorPositions_out.begin();
+         list_iterator != doorPositions_out.end();
+         list_iterator++, count++)
+    {
+      if (count % (RPG_MAP_DOOR_SEPARATION + 1))
+        doorPositions_out.erase(list_iterator);
+    } // end FOR
+  } // end ELSE
 }

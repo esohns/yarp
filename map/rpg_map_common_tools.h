@@ -104,10 +104,24 @@ class RPG_Map_Common_Tools
   static void crawlToPosition(const RPG_Map_Zone_t&,     // map
                               const RPG_Map_Position_t&, // origin
                               const RPG_Map_Position_t&, // target
+                              const ORIGIN&,             // starting origin
                               RPG_Map_PositionList_t&);  // return value: trail
+  // *NOTE*: this uses alternate sorting left-to-right, top-to-bottom (0,0 is top-left)
+  // --> (0,0), (0,1), ..., (0,dimy-1), (1,0), ..., (1,dimy-1), ..., (dimx-1,dimy-1)
+  typedef std::set<RPG_Map_Position_t> RPG_Map_AltPositions_t;
+  typedef RPG_Map_AltPositions_t::const_iterator RPG_Map_AltPositionsConstIterator_t;
   static void cropShell(RPG_Map_Zone_t&); // room (shell !)
-  static const unsigned long numDoorPositions(const RPG_Map_Zone_t&, // room (shell !)
-                                              const bool&);          // doors to fill positions ?
+  static const bool turn(const RPG_Map_Zone_t&,     // map
+                         const RPG_Map_Position_t&, // position
+                         const ORIGIN&,             // origin
+                         const bool&,               // turn clockwise ?
+                         bool&,                     // return value: was corner ? (else intersection)
+                         RPG_Map_Direction_t&);     // return value: next direction
+//   static const bool deadEnd(const RPG_Map_Zone_t&,      // map
+//                             const RPG_Map_Position_t&); // position
+  static void findDoorPositions(const RPG_Map_Zone_t&,    // room (shell !)
+                                const bool&,              // doors to fill positions ?
+                                RPG_Map_PositionList_t&); // suitable position(s)
   static void connectRooms(const RPG_Map_ZoneList_t&, // room(s)
                            const bool&,               // doors to fill positions ?
                            const unsigned long&,      // max. #doors/room

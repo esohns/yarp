@@ -214,6 +214,7 @@ void do_work(const unsigned long& minRoomSize_in,
                                            wantSquareRooms_in,
                                            maximizeArea_in,
                                            minRoomSize_in,
+                                           true, // doors fill a position
                                            maxDoorsPerRoom_in,
                                            levelMap);
 
@@ -309,7 +310,8 @@ int ACE_TMAIN(int argc,
   // step1bb: validate arguments
   if ((numRooms == 0) ||
       (dimension_X == 0) ||
-      (dimension_Y == 0))
+      (dimension_Y == 0) ||
+      (maxDoorsPerRoom == 1)) // cannot enforce this !
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid argument(s), aborting\n")));
