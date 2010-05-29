@@ -1040,10 +1040,10 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
       // step0: sanity check(s)
       if ((*list_iterator).empty())
       {
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("room[%u] has no walls...\n"),
-                   index));
+//         // debug info
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("room[%u] has no walls...\n"),
+//                    index));
 
         // still insert an (empty) set of doors...
         doors.push_back(current_doors);
@@ -1438,7 +1438,8 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
     line_iterator = begin_sequence;
     while (line_iterator != zone_iterator) // maybe end
     {
-      while ((*line_iterator).first == next_x)
+      while ((line_iterator != room_inout.end()) &&
+             ((*line_iterator).first == next_x))
       {
         next_x++;
         count++;
@@ -1498,7 +1499,8 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
     line_iterator = begin_sequence;
     while (line_iterator != zone_iterator) // maybe end
     {
-      while ((*line_iterator).second == next_y)
+      while ((line_iterator != room_inout.end()) &&
+            ((*line_iterator).second == next_y))
       {
         next_y++;
         count++;
