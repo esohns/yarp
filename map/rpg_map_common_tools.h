@@ -57,6 +57,7 @@ class RPG_Map_Common_Tools
   // (cannot enforce this without a (more complicated) algebraic definition...)
   typedef RPG_Map_Positions_t RPG_Map_Zone_t;
   typedef RPG_Map_Zone_t::const_iterator RPG_Map_ZoneConstIterator_t;
+  static void dump(const RPG_Map_Zone_t&); // zone
   typedef std::list<RPG_Map_Zone_t> RPG_Map_Partition_t;
   typedef RPG_Map_Partition_t::const_iterator RPG_Map_PartitionConstIterator_t;
   typedef RPG_Map_Partition_t::iterator RPG_Map_PartitionIterator_t;
@@ -117,8 +118,6 @@ class RPG_Map_Common_Tools
                          const bool&,               // turn clockwise ?
                          bool&,                     // return value: was corner ? (else intersection)
                          RPG_Map_Direction_t&);     // return value: next direction
-//   static const bool deadEnd(const RPG_Map_Zone_t&,      // map
-//                             const RPG_Map_Position_t&); // position
   static void findDoorPositions(const RPG_Map_Zone_t&,    // room (shell !)
                                 const bool&,              // doors to fill positions ?
                                 RPG_Map_PositionList_t&); // suitable position(s)
