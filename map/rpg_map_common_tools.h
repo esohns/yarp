@@ -38,6 +38,7 @@ class RPG_Map_Common_Tools
                                  const bool&,            // rooms to be square ?
                                  const bool&,            // maximize area ?
                                  const unsigned long&,   // min. area (0: don't care)
+                                 const bool&,            // doors to fill positions ?
                                  const unsigned long&,   // max. #doors/room
                                  RPG_Map_DungeonLevel&); // return value: doors & walls
   static void displayDungeonLevel(const unsigned long&,         // map dimension x
@@ -93,8 +94,22 @@ class RPG_Map_Common_Tools
                            const unsigned long&,       // dimension y
                            const RPG_Map_ZoneList_t&); // room(s)
 
-  static const unsigned long numDoorPositions(const RPG_Map_Zone_t&); // room (shell !)
+  typedef RPG_Map_Direction_t ORIGIN;
+  static const bool intersect(const RPG_Map_Zone_t&,     // map
+                              const RPG_Map_Position_t&, // position
+                              const ORIGIN&,             // origin
+                              RPG_Map_Directions_t&,     // possible direction(s)
+                              RPG_Map_Direction_t&);     // next direction, if NOT an intersection
+  // *NOTE*: proceeds in clockwise direction
+  static void crawlToPosition(const RPG_Map_Zone_t&,     // map
+                              const RPG_Map_Position_t&, // origin
+                              const RPG_Map_Position_t&, // target
+                              RPG_Map_PositionList_t&);  // return value: trail
+  static void cropShell(RPG_Map_Zone_t&); // room (shell !)
+  static const unsigned long numDoorPositions(const RPG_Map_Zone_t&, // room (shell !)
+                                              const bool&);          // doors to fill positions ?
   static void connectRooms(const RPG_Map_ZoneList_t&, // room(s)
+                           const bool&,               // doors to fill positions ?
                            const unsigned long&,      // max. #doors/room
                            RPG_Map_DungeonLevel&);    // return value: doors & walls
 };

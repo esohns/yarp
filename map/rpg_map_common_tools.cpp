@@ -35,6 +35,7 @@ RPG_Map_Common_Tools::createDungeonLevel(const unsigned long& dimensionX_in,
                                          const bool& wantSquareRooms_in,
                                          const bool& maximizeArea_in,
                                          const unsigned long& minArea_in,
+                                         const bool& doorFillsPosition_in,
                                          const unsigned long& maxDoorsPerRoom_in,
                                          RPG_Map_DungeonLevel& level_out)
 {
@@ -65,6 +66,7 @@ RPG_Map_Common_Tools::createDungeonLevel(const unsigned long& dimensionX_in,
 
   // step3: connect rooms to form the level
   connectRooms(rooms,
+               doorFillsPosition_in,
                maxDoorsPerRoom_in,
                level_out);
   // debug info
@@ -875,6 +877,7 @@ RPG_Map_Common_Tools::displayRooms(const unsigned long& dimensionX_in,
 
 void
 RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
+                                   const bool& doorFillsPosition_in,
                                    const unsigned long& maxDoorsPerRoom_in,
                                    RPG_Map_DungeonLevel& level_out)
 {
@@ -890,83 +893,78 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
   RPG_Map_ZoneListConstIterator_t list_iterator;
   RPG_Map_ZoneConstIterator_t zone_iterator;
   RPG_Map_Position_t position;
-  unsigned long max_x = 0;
-  unsigned long max_y = 0;
+  RPG_Map_Position_t upper_right;
+  RPG_Map_Position_t lower_right;
+  RPG_Map_Position_t lower_left;
+  RPG_Map_PositionList_t trail;
+  RPG_Map_PositionListConstIterator_t trail_iterator;
   for (list_iterator = rooms_in.begin();
        list_iterator != rooms_in.end();
        list_iterator++)
   {
     current_room.clear();
 
-    // step1: find outer shell
-    // compute max_x, max_y
-    for (zone_iterator = (*list_iterator).begin();
-         zone_iterator != (*list_iterator).end();
-         zone_iterator++)
-    {
-      if ((*zone_iterator).first > max_x)
-        max_x = (*zone_iterator).first;
-      if ((*zone_iterator).second > max_y)
-        max_y = (*zone_iterator).second;
-    } // end FOR
+    // step1: find outer shell(s)
+    // compute the 4 corners
+    zone_iterator = (*list_iterator).begin();
+    // upper left == first element
+    position = *zone_iterator;
+    // upper right == last element of the first row
+    while ((*zone_iterator).second == position.second)
+      zone_iterator++;
+    zone_iterator--;
+    upper_right = *zone_iterator;
+    // lower_right == last element
+    zone_iterator = (*list_iterator).end();
+    zone_iterator--;
+    lower_right = *zone_iterator;
+    // lower_left == first element of the last row
+    while ((*zone_iterator).second == lower_right.second)
+      zone_iterator--;
+    zone_iterator++;
+    lower_left = *zone_iterator;
 
     // start at top left position and go around clockwise
-    // *NOTE*: as the set is sorted, start with the first element
-    current_room.insert(*((*list_iterator).begin()));
-    // as long as possible, proceed to the right and down, alternatingly
-    position = *((*list_iterator).begin());
-    while ((position.first != max_x) ||
-            (position.second != max_y))
-    {
-      // as long as possible, proceed right
-      position.first++;
-      while ((position.first != (max_x + 1)) &&
-             ((*list_iterator).find(position) != (*list_iterator).end()))
-      {
-        // part of the room
-        current_room.insert(position);
-        position.first++;
-      } // end WHILE
-      position.first--;
-      // as long as possible, proceed downward
-      position.second++;
-      while ((position.second != (max_y + 1)) &&
-             ((*list_iterator).find(position) != (*list_iterator).end()))
-      {
-        // part of the room
-        current_room.insert(position);
-        position.second++;
-      } // end WHILE
-      position.second--;
-    } // end WHILE
-    // part of the room
-    current_room.insert(position);
-    // as long as possible, proceed to the left and up, alternatingly
-    while ((position.first != (*((*list_iterator).begin())).first) &&
-           (position.second != (*((*list_iterator).begin())).second))
-    {
-      // as long as possible, proceed left
-      position.first--;
-      while ((position.first != ((*((*list_iterator).begin())).first - 1)) &&
-             ((*list_iterator).find(position) != (*list_iterator).end()))
-      {
-        // part of the room
-        current_room.insert(position);
-        position.first--;
-      } // end WHILE
-      position.first++;
-      // as long as possible, proceed upward
-      position.second--;
-      while ((position.second != ((*((*list_iterator).begin())).second - 1)) &&
-             ((*list_iterator).find(position) != (*list_iterator).end()))
-      {
-        // part of the room
-        current_room.insert(position);
-        position.second--;
-      } // end WHILE
-      position.second++;
-    } // end WHILE
-    ACE_ASSERT(position == *((*list_iterator).begin()));
+    trail.clear();
+    crawlToPosition(*list_iterator,
+                    position,
+                    upper_right,
+                    trail);
+    for (trail_iterator = trail.begin();
+         trail_iterator != trail.end();
+         trail_iterator++)
+      current_room.insert(*trail_iterator);
+    trail.clear();
+    crawlToPosition(*list_iterator,
+                    upper_right,
+                    lower_right,
+                    trail);
+    for (trail_iterator = trail.begin();
+         trail_iterator != trail.end();
+         trail_iterator++)
+      current_room.insert(*trail_iterator);
+    trail.clear();
+    crawlToPosition(*list_iterator,
+                     lower_right,
+                     lower_left,
+                     trail);
+    for (trail_iterator = trail.begin();
+         trail_iterator != trail.end();
+         trail_iterator++)
+      current_room.insert(*trail_iterator);
+    trail.clear();
+    crawlToPosition(*list_iterator,
+                     lower_left,
+                     position,
+                     trail);
+    for (trail_iterator = trail.begin();
+         trail_iterator != trail.end();
+         trail_iterator++)
+      current_room.insert(*trail_iterator);
+
+    // step2: if (doorFillsPosition_in), crop the shell accordingly
+    if (doorFillsPosition_in)
+      cropShell(current_room);
 
     shells.push_back(current_room);
   } // end FOR
@@ -978,6 +976,8 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
   RPG_Map_Zone_t current_doors;
   unsigned long num_doors = 0;
   RPG_Dice_RollResult_t result;
+  unsigned long max_x = 0;
+  unsigned long max_y = 0;
   RPG_Dice_RollResult_t result_y;
   unsigned long min_distance = std::numeric_limits<unsigned long>::max();
   unsigned long distance = 0;
@@ -995,7 +995,8 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
     // step1: generate (random) number of doors
     result.clear();
     // *NOTE*: enforce a physical distance between any 2 doors
-    max_num_doors = numDoorPositions(*list_iterator);
+    max_num_doors = numDoorPositions(*list_iterator,
+                                     doorFillsPosition_in);
     RPG_Dice::generateRandomNumbers((maxDoorsPerRoom_in ? ((maxDoorsPerRoom_in > max_num_doors) ? max_num_doors
                                                                                                 : maxDoorsPerRoom_in)
                                                         : max_num_doors),
@@ -1048,7 +1049,7 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
         position = nearest_neighbour;
       } // end IF
 
-      // it's on the perimeter
+      // it's on the perimeter now
 
       // step4: is this position a suitable spot for a door ?
       // *NOTE*: for now, corners are unsuitable...
@@ -1160,15 +1161,303 @@ RPG_Map_Common_Tools::positionInSquare(const RPG_Map_Position_t& position_in,
           (position_in.second <= square_in.lr.second));
 }
 
+const bool
+RPG_Map_Common_Tools::intersect(const RPG_Map_Zone_t& map_in,
+                                const RPG_Map_Position_t& position_in,
+                                const ORIGIN& origin_in,
+                                RPG_Map_Directions_t& directions_out,
+                                RPG_Map_Direction_t& next_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::intersect"));
+
+  // init return value(s)
+  directions_out.clear();
+  next_out = INVALID;
+
+  RPG_Map_Position_t up, right, down, left;
+  up = position_in; up.second--;
+  right = position_in; right.first++;
+  down = position_in; down.second++;
+  left = position_in; left.first--;
+
+  // find possible destination(s)
+  if (map_in.find(up) != map_in.end())
+    directions_out.insert(UP);
+  if (map_in.find(right) != map_in.end())
+    directions_out.insert(RIGHT);
+  if (map_in.find(down) != map_in.end())
+    directions_out.insert(DOWN);
+  if (map_in.find(left) != map_in.end())
+    directions_out.insert(LEFT);
+
+  // if NOT an intersection, compute next direction
+  switch (directions_out.size())
+  {
+    case 2:
+    {
+      directions_out.erase(origin_in);
+      // fall through !
+    }
+    case 1:
+    {
+      next_out = *(directions_out.begin());
+      directions_out.clear();
+      // fall through !
+    }
+    case 0:
+    {
+      return false;
+    }
+    default:
+      break;
+  } // end IF
+
+  return true;
+}
+
+void
+RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Zone_t& map_in,
+                                      const RPG_Map_Position_t& origin_in,
+                                      const RPG_Map_Position_t& target_in,
+                                      RPG_Map_PositionList_t& trail_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::crawlToPosition"));
+
+  // init return value(s)
+  trail_out.clear();
+
+  ORIGIN origin = LEFT;
+  RPG_Map_Direction_t next = INVALID;
+  RPG_Map_Directions_t directions;
+
+  // start at origin
+  RPG_Map_Position_t current = origin_in;
+  do
+  {
+    if (intersect(map_in,
+                  current,
+                  origin,
+                  directions,
+                  next))
+    {
+      // compute next direction
+      switch (origin)
+      {
+        case UP:
+        {
+          // proceed right, down or left, in this order
+          if (directions.find(RIGHT) != directions.end())
+            next = RIGHT;
+          else if (directions.find(DOWN) != directions.end())
+            next = DOWN;
+          else
+            next = LEFT;
+
+          break;
+        }
+        case RIGHT:
+        {
+          // proceed down, left or up, in this order
+          if (directions.find(DOWN) != directions.end())
+            next = DOWN;
+          else if (directions.find(LEFT) != directions.end())
+            next = LEFT;
+          else
+            next = UP;
+
+          break;
+        }
+        case DOWN:
+        {
+          // proceed left, up or right, in this order
+          if (directions.find(LEFT) != directions.end())
+            next = LEFT;
+          else if (directions.find(UP) != directions.end())
+            next = UP;
+          else
+            next = RIGHT;
+
+          break;
+        }
+        case LEFT:
+        {
+          // proceed up, right or down, in this order
+          if (directions.find(UP) != directions.end())
+            next = UP;
+          else if (directions.find(RIGHT) != directions.end())
+            next = RIGHT;
+          else
+            next = DOWN;
+
+          break;
+        }
+        default:
+        {
+          // debug info
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid origin (was %u), continuing\n"),
+                     origin));
+
+          // *TODO*: what else can we do ?
+          ACE_ASSERT(false);
+
+          break;
+        }
+      } // end SWITCH
+    } // end IF
+
+    trail_out.push_back(current);
+    // finished ?
+    if (current == target_in)
+      return;
+
+    // move
+    switch (next)
+    {
+      case UP:
+        current.second--; break; // go up
+      case RIGHT:
+        current.first++; break; // go right
+      case DOWN:
+        current.second++; break; // go down
+      case LEFT:
+        current.first--; break; // go left
+      default:
+      {
+        // debug info
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid direction (was %u), continuing\n"),
+                   next));
+
+        // *TODO*: what else can we do ?
+        ACE_ASSERT(false);
+
+        break;
+      }
+    } // end SWITCH
+  } while (true);
+}
+
+const void
+RPG_Map_Common_Tools::cropShell(RPG_Map_Zone_t& room_inout)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::cropShell"));
+
+  for (RPG_Map_ZoneConstIterator_t zone_iterator = room_inout.begin();
+       zone_iterator != room_inout.end();
+       zone_iterator++)
+  {
+  } // end FOR
+}
+
 const unsigned long
-RPG_Map_Common_Tools::numDoorPositions(const RPG_Map_Zone_t& room_in)
+RPG_Map_Common_Tools::numDoorPositions(const RPG_Map_Zone_t& room_in,
+                                       const bool& doorFillsPosition_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::numDoorPositions"));
 
   unsigned long result = 0;
 
-  // *TODO*
-  ACE_ASSERT(false);
+  // *NOTE*: constraints:
+  // - corners are unsuitable positions
+  // - minimal distance (to allow corridors) between doors
+
+  // step1: compute 4 corners
+  unsigned long max_x = 0;
+  unsigned long max_y = 0;
+  for (RPG_Map_ZoneConstIterator_t zone_iterator = room_in.begin();
+       zone_iterator != room_in.end();
+       zone_iterator++)
+  {
+    if ((*zone_iterator).first > max_x)
+      max_x = (*zone_iterator).first;
+    if ((*zone_iterator).second > max_y)
+      max_y = (*zone_iterator).second;
+  } // end FOR
+
+  // step2: list the positions to allow clockwise iteration along the walls
+  // --> start at top left position and go around clockwise
+  // *NOTE*: as the set is sorted, start with the first element
+  RPG_Map_PositionList_t room_positions;
+
+  // as long as possible, proceed to the right and down, alternatingly
+  RPG_Map_Position_t current = *(room_in.begin());
+  room_positions.push_back(current);
+  while ((current.first != max_x) ||
+         (current.second != max_y))
+  {
+    // as long as possible, proceed right
+    current.first++;
+    while ((current.first != (max_x + 1)) &&
+           (room_in.find(current) != room_in.end()))
+    {
+      // part of the room
+      room_positions.push_back(current);
+      current.first++;
+    } // end WHILE
+    current.first--;
+    // as long as possible, proceed downward
+    current.second++;
+    while ((current.second != (max_y + 1)) &&
+           (room_in.find(current) != room_in.end()))
+    {
+      // part of the room
+      room_positions.push_back(current);
+      current.second++;
+    } // end WHILE
+    current.second--;
+  } // end WHILE
+  // part of the room
+  room_positions.push_back(current);
+  // as long as possible, proceed to the left and up, alternatingly
+  while ((current.first != (*(room_in.begin())).first) &&
+         (current.second != (*(room_in.begin())).second))
+  {
+    // as long as possible, proceed left
+    current.first--;
+    while ((current.first != ((*(room_in.begin())).first - 1)) &&
+           (room_in.find(current) != room_in.end()))
+    {
+      // part of the room
+      room_positions.push_back(current);
+      current.first--;
+    } // end WHILE
+    current.first++;
+      // as long as possible, proceed upward
+    current.second--;
+    while ((current.second != ((*(room_in.begin())).second - 1)) &&
+           (room_in.find(current) != room_in.end()))
+    {
+      // part of the room
+      room_positions.push_back(current);
+      current.second--;
+    } // end WHILE
+    current.second++;
+  } // end WHILE
+  ACE_ASSERT(current == *(room_in.begin()));
+
+  RPG_Map_Position_t first, second, third;
+  RPG_Map_PositionListConstIterator_t list_iterator = room_positions.begin();
+  do
+  {
+    // get next 3 positions
+    first = *list_iterator; list_iterator++;
+    if (list_iterator == room_positions.end())
+      break; // no more positions
+    second = *list_iterator;
+    if (list_iterator == room_positions.end())
+      break; // no more positions
+    third = *list_iterator;
+    if (list_iterator == room_positions.end())
+      break; // no more positions
+
+    // find relation between three positions
+    if (((first.first == second.first) &&
+         (second.first == third.first)) ||
+        ((first.second == second.second) &&
+         (second.second == third.second)))
+      result++;
+  } while (true);
 
   return result;
 }
