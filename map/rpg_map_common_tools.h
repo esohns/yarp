@@ -110,7 +110,7 @@ class RPG_Map_Common_Tools
   // --> (0,0), (0,1), ..., (0,dimy-1), (1,0), ..., (1,dimy-1), ..., (dimx-1,dimy-1)
   typedef std::set<RPG_Map_Position_t> RPG_Map_AltPositions_t;
   typedef RPG_Map_AltPositions_t::const_iterator RPG_Map_AltPositionsConstIterator_t;
-  static void cropShell(RPG_Map_Zone_t&); // room (shell !)
+  static void crop(RPG_Map_Zone_t&); // room
   static const bool turn(const RPG_Map_Zone_t&,     // map
                          const RPG_Map_Position_t&, // position
                          const ORIGIN&,             // origin
@@ -122,7 +122,9 @@ class RPG_Map_Common_Tools
   static void findDoorPositions(const RPG_Map_Zone_t&,    // room (shell !)
                                 const bool&,              // doors to fill positions ?
                                 RPG_Map_PositionList_t&); // suitable position(s)
-  static void connectRooms(const RPG_Map_ZoneList_t&, // room(s)
+  static void connectRooms(const unsigned long&,      // dimension x
+                           const unsigned long&,      // dimension y
+                           const RPG_Map_ZoneList_t&, // room(s)
                            const bool&,               // doors to fill positions ?
                            const unsigned long&,      // max. #doors/room
                            RPG_Map_DungeonLevel&);    // return value: doors & walls

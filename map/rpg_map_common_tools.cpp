@@ -65,7 +65,9 @@ RPG_Map_Common_Tools::createDungeonLevel(const unsigned long& dimensionX_in,
                rooms);
 
   // step3: connect rooms to form the level
-  connectRooms(rooms,
+  connectRooms(dimensionX_in,
+               dimensionY_in,
+               rooms,
                doorFillsPosition_in,
                maxDoorsPerRoom_in,
                level_out);
@@ -84,7 +86,11 @@ RPG_Map_Common_Tools::displayDungeonLevel(const unsigned long& dimensionX_in,
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("level...\n")));
+             ACE_TEXT("level ([%ux%u] - %u walls, %u doors)...\n"),
+             dimensionX_in,
+             dimensionY_in,
+             level_in.walls.size(),
+             level_in.doors.size()));
 
   RPG_Map_Position_t current_position;
 
@@ -98,11 +104,11 @@ RPG_Map_Common_Tools::displayDungeonLevel(const unsigned long& dimensionX_in,
     {
       current_position = std::make_pair(x, y);
 
-      // wall or door ?
-      if (level_in.walls.find(current_position) != level_in.walls.end())
-        std::clog << ACE_TEXT("#");
-      else if (level_in.doors.find(current_position) != level_in.doors.end())
+      // door or wall ?
+      if (level_in.doors.find(current_position) != level_in.doors.end())
         std::clog << ACE_TEXT("=");
+      else if (level_in.walls.find(current_position) != level_in.walls.end())
+        std::clog << ACE_TEXT("#");
       else
         std::clog << ACE_TEXT(".");
     } // end FOR
@@ -876,7 +882,9 @@ RPG_Map_Common_Tools::displayRooms(const unsigned long& dimensionX_in,
 }
 
 void
-RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
+RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
+                                   const unsigned long& dimensionY_in,
+                                   const RPG_Map_ZoneList_t& rooms_in,
                                    const bool& doorFillsPosition_in,
                                    const unsigned long& maxDoorsPerRoom_in,
                                    RPG_Map_DungeonLevel& level_out)
@@ -888,8 +896,9 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
   level_out.walls.clear();
 
   // step1: make walls
-  RPG_Map_ZoneList_t shells;
   RPG_Map_Zone_t current_room;
+  RPG_Map_ZoneList_t shells;
+  RPG_Map_Zone_t current_shell;
   RPG_Map_ZoneListConstIterator_t list_iterator;
   RPG_Map_ZoneConstIterator_t zone_iterator;
   RPG_Map_Position_t position;
@@ -898,15 +907,37 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
   RPG_Map_Position_t lower_left;
   RPG_Map_PositionList_t trail;
   RPG_Map_PositionListConstIterator_t trail_iterator;
+  unsigned long index = 0;
   for (list_iterator = rooms_in.begin();
        list_iterator != rooms_in.end();
-       list_iterator++)
+       list_iterator++, index++)
   {
-    current_room.clear();
+    current_shell.clear();
+
+    // need to make a copy... :-(
+    current_room = *list_iterator;
+    // step0: if doors fill a whole cell, suitable positions on the perimeter
+    // require (at least) one neighbour on each side
+    // --> remove any cruft from the perimeter
+    if (doorFillsPosition_in)
+    {
+      crop(current_room);
+      // *NOTE*: there is a chance that the whole room will be cropped...
+      // --> too slim/flat for doors...
+      if (current_room.empty())
+      {
+        // debug info
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("room %u has been cropped...\n"),
+                   index));
+
+        continue;
+      } // end IF
+    } // end IF
 
     // step1: find outer shell(s)
     // compute the 4 corners
-    zone_iterator = (*list_iterator).begin();
+    zone_iterator = current_room.begin();
     // upper left == first element
     position = *zone_iterator;
     // upper right == last element of the first row
@@ -915,7 +946,7 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
     zone_iterator--;
     upper_right = *zone_iterator;
     // lower_right == last element
-    zone_iterator = (*list_iterator).end();
+    zone_iterator = current_room.end();
     zone_iterator--;
     lower_right = *zone_iterator;
     // lower_left == first element of the last row
@@ -926,7 +957,7 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
 
     // start at top left position and go around clockwise
     trail.clear();
-    crawlToPosition(*list_iterator,
+    crawlToPosition(current_room,
                     position,
                     upper_right,
                     DOWN,
@@ -934,9 +965,9 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
     for (trail_iterator = trail.begin();
          trail_iterator != trail.end();
          trail_iterator++)
-      current_room.insert(*trail_iterator);
+      current_shell.insert(*trail_iterator);
     trail.clear();
-    crawlToPosition(*list_iterator,
+    crawlToPosition(current_room,
                     upper_right,
                     lower_right,
                     LEFT,
@@ -944,39 +975,34 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
     for (trail_iterator = trail.begin();
          trail_iterator != trail.end();
          trail_iterator++)
-      current_room.insert(*trail_iterator);
+      current_shell.insert(*trail_iterator);
     trail.clear();
-    crawlToPosition(*list_iterator,
-                     lower_right,
-                     lower_left,
-                     UP,
-                     trail);
+    crawlToPosition(current_room,
+                    lower_right,
+                    lower_left,
+                    UP,
+                    trail);
     for (trail_iterator = trail.begin();
          trail_iterator != trail.end();
          trail_iterator++)
-      current_room.insert(*trail_iterator);
+      current_shell.insert(*trail_iterator);
     trail.clear();
-    crawlToPosition(*list_iterator,
-                     lower_left,
-                     position,
-                     RIGHT,
-                     trail);
+    crawlToPosition(current_room,
+                    lower_left,
+                    position,
+                    RIGHT,
+                    trail);
     for (trail_iterator = trail.begin();
          trail_iterator != trail.end();
          trail_iterator++)
-      current_room.insert(*trail_iterator);
+      current_shell.insert(*trail_iterator);
 
-    // step2: if doors fill a whole cell, suitable positions on the perimeter
-    // require (at least) one neighbour on each side
-    // --> remove any cruft from the perimeter
-    if (doorFillsPosition_in)
-      cropShell(current_room);
-
-    shells.push_back(current_room);
+    shells.push_back(current_shell);
   } // end FOR
 
   // step2: make doors
-  // *NOTE*: every room needs at least one (possibly secret) door...
+  // *NOTE*: every room needs at least one (possibly secret) door
+  // *NOTE*: doors cannot be situated on the boundary of the level
   // *NOTE*: doors connect rooms
   // *NOTE*: to ensure connectivity for n rooms, we need at least (n-1)*2 doors...
   RPG_Map_ZoneList_t doors;
@@ -985,7 +1011,7 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
   unsigned long num_doors = 0;
   RPG_Dice_RollResult_t result;
   RPG_Map_PositionList_t doorPositions;
-  RPG_Map_PositionListConstIterator_t doorPosition_iterator;
+  RPG_Map_PositionListIterator_t doorPosition_iterator;
   while (total_doors < ((rooms_in.size() - 1) * 2))
   {
     for (list_iterator = shells.begin();
@@ -999,6 +1025,18 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
       findDoorPositions(*list_iterator,
                         doorFillsPosition_in,
                         doorPositions);
+      // check: remove all positions on the perimeter of the level
+      doorPosition_iterator = doorPositions.begin();
+      while (doorPosition_iterator != doorPositions.end())
+      {
+        if (((*doorPosition_iterator).first == 0) ||
+            ((*doorPosition_iterator).first == (dimensionX_in - 1)) ||
+            ((*doorPosition_iterator).second == 0) ||
+            ((*doorPosition_iterator).second == (dimensionY_in - 1)))
+          doorPosition_iterator = doorPositions.erase(doorPosition_iterator);
+        else
+          doorPosition_iterator++;
+      } // end FOR
       ACE_ASSERT(!doorPositions.empty());
 
       // step2: generate (random) number of doors
@@ -1026,6 +1064,7 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
       } // end WHILE
 
       doors.push_back(current_doors);
+      total_doors += num_doors;
     } // end FOR
   } // end WHILE
 
@@ -1048,16 +1087,27 @@ RPG_Map_Common_Tools::connectRooms(const RPG_Map_ZoneList_t& rooms_in,
     } // end FOR
   } // end FOR
   RPG_Map_ZoneConstIterator_t doors_iterator;
+  index = 0;
   for (list_iterator = doors.begin();
        list_iterator != doors.end();
        list_iterator++)
   {
     for (doors_iterator = (*list_iterator).begin();
          doors_iterator != (*list_iterator).end();
-         doors_iterator++)
+         doors_iterator++, index++)
     {
       level_out.doors.insert(*doors_iterator);
+
+      // debug info
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("door[%u] at (%u,%u)\n"),
+                 index,
+                 (*doors_iterator).first,
+                 (*doors_iterator).second));
     } // end FOR
+    // debug info
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("----------------------\n")));
   } // end FOR
 }
 
@@ -1288,9 +1338,9 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Zone_t& map_in,
 }
 
 void
-RPG_Map_Common_Tools::cropShell(RPG_Map_Zone_t& room_inout)
+RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::cropShell"));
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::crop"));
 
   // two-pass algorithm:
   // 1. iterate over rows
@@ -1321,12 +1371,6 @@ RPG_Map_Common_Tools::cropShell(RPG_Map_Zone_t& room_inout)
         next_x++;
         count++;
         line_iterator++;
-
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("*line_iterator: (%u,%u)\n"),
-                   (*line_iterator).first,
-                   (*line_iterator).second));
       } // end IF
 
       if (line_iterator != zone_iterator)
@@ -1370,6 +1414,7 @@ RPG_Map_Common_Tools::cropShell(RPG_Map_Zone_t& room_inout)
     // iterate over column
     next_y = (*begin_sequence).second;
     count = 0;
+    line_iterator = begin_sequence;
     do
     {
       while ((*line_iterator).second == next_y)
@@ -1419,7 +1464,8 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
 
   // init return value(s)
   wasCorner_out = false;
-  next_out = INVALID;
+  // *NOTE*: only change next_out if appropriate (i.e. when turning)
+//   next_out = INVALID;
 
   RPG_Map_Position_t up, right, down, left;
   up = position_in; up.second--;
