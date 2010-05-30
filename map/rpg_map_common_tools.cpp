@@ -636,14 +636,14 @@ RPG_Map_Common_Tools::findMaxSquare(const RPG_Map_Zone_t& room_in,
   unsigned long current_area = 0;
   unsigned long max_breadth = 0;
   unsigned long current_row = 0;
-  unsigned long last_x = 0;
+  unsigned long running_x = 0;
   for (RPG_Map_ZoneConstIterator_t zone_iterator = room_in.begin();
        zone_iterator != room_in.end();
        zone_iterator++)
   {
     max_breadth = 0;
     current_row = (*zone_iterator).second;
-    last_x = (*zone_iterator).first;
+    running_x = (*zone_iterator).first;
     for (RPG_Map_ZoneConstIterator_t zone_iterator2 = zone_iterator;
          zone_iterator2 != room_in.end();
          zone_iterator2++)
@@ -652,12 +652,25 @@ RPG_Map_Common_Tools::findMaxSquare(const RPG_Map_Zone_t& room_in,
       if ((*zone_iterator2).second == ((*zone_iterator).second))
       {
         // check: for consecutive positions WITHIN the same row:
-        // if (previous_cell.x + 1) is NOT EQUAL to the current.x
-        // i.e. the current cell is not adjacent to the previous one
-        // --> we've already found the largest square for this position
-        if (last_x != (*zone_iterator2).first)
-          break; // start next position
-        last_x++;
+        //        if (previous_cell.x + 1) is NOT EQUAL to the current.x
+        //        i.e. the current cell is not adjacent to the previous one
+        //        --> skip forward to the next row (and resume checking !)
+        if (running_x != (*zone_iterator2).first)
+        {
+          while ((zone_iterator2 != room_in.end()) &&
+                 ((*zone_iterator2).second == current_row))
+            zone_iterator2++;
+
+          // finished with this position ?
+          if (zone_iterator2 == room_in.end())
+            break; // start next position
+
+          // check next cell
+          continue;
+        } // end IF
+        else
+          max_breadth++; // current cell is adjacent to the last one
+        running_x++; // adjacent cell must have this x-coordinate
 
         // --> compute enclosed area and continue
         current_area = area2Positions(*zone_iterator, *zone_iterator2);
@@ -675,44 +688,38 @@ RPG_Map_Common_Tools::findMaxSquare(const RPG_Map_Zone_t& room_in,
       // we're NOT on the top row anymore...
       ACE_ASSERT((*zone_iterator2).second != (*zone_iterator).second);
 
-      // step1: compute max. breadth of current square
-      // --> compute the distance to the LAST cell on the top row
-      if (max_breadth == 0)
-      {
-        // reached the start of the second row
-        ACE_ASSERT((*zone_iterator2).second == ((*zone_iterator).second + 1));
-
-        // retrieve the last cell of the top row
-        pointer = zone_iterator2;
-        pointer--;
-        // compute max breadth
-        max_breadth = (((*pointer).first - (*zone_iterator).first) + 1);
-        ACE_ASSERT(max_breadth);
-      } // end IF
+      // step1: compute max. breadth for current position
+      // --> has been done implicitely while processing the top row (see above)
+      ACE_ASSERT(max_breadth);
 
       // check: IMMEDIATELY on breaking to a new row:
-      // if our position.x is LARGER than our current_square.ul.x
-      // --> we've already found the largest square for this position
+      //        if our position.x is LARGER than our current_square.ul.x
+      //        --> already found the largest square for this position
       if ((*zone_iterator2).second > current_row)
       {
-        last_x = (*zone_iterator2).first;
+        running_x = (*zone_iterator2).first;
         current_row++;
-        ACE_ASSERT((*zone_iterator2).second == current_row);
+        if ((*zone_iterator2).second != current_row)
+        {
+          // this room is NOT compact (reason: cropped ?)
+          // --> already found the largest square for this position
+          break; // start next position
+        } // end IF
 
         if ((*zone_iterator2).first > (*zone_iterator).first)
           break; // start next position
 
-        // check: if the last_cell.x of the previous row was
-        // SMALLER than current_square.ul.x
-        // --> we've already found the largest square for this position
-
         // retrieve the last cell of the previous row
         pointer = zone_iterator2;
         pointer--;
+
+        // optimization: if last_cell.x of the previous row was SMALLER than
+        //               current_square.ul.x
+        //               --> already found the largest square for this position
         if ((*pointer).first < (*zone_iterator).first)
           break; // start next position
 
-        // otherwise, perhaps max_breadth needs subtraction...
+        // otherwise, perhaps max_breadth needs a reduction...
         if ((((*pointer).first - (*zone_iterator).first) + 1) < max_breadth)
           max_breadth = (((*pointer).first - (*zone_iterator).first) + 1);
         ACE_ASSERT(max_breadth);
@@ -720,16 +727,16 @@ RPG_Map_Common_Tools::findMaxSquare(const RPG_Map_Zone_t& room_in,
       else
       {
         // as long as the current_cell.x is EQUAL OR SMALLER than
-        // current_square.ul.x (i.e. we're left/at the reference), ignore
-        // any skips between consecutive positions (see below)
+        // current_square.ul.x (i.e. we're left/at the reference position),
+        // ignore any skips between consecutive positions (see below)
         if ((*zone_iterator2).first <= (*zone_iterator).first)
-          last_x = (*zone_iterator2).first;
+          running_x = (*zone_iterator2).first;
         else
-          last_x++;
+          running_x++;
       } // end ELSE
 
       // check: check if we're within the square spanned by
-      // [current_square.ul, (current_square.ul.x + (max_breadth - 1), y)]
+      //        [current_square.ul,(current_square.ul.x + (max_breadth - 1),y)]
       if (((*zone_iterator2).first > ((*zone_iterator).first + max_breadth - 1)) ||
           ((*zone_iterator2).first < (*zone_iterator).first))
         continue; // no, we're not --> check next cell
@@ -737,13 +744,12 @@ RPG_Map_Common_Tools::findMaxSquare(const RPG_Map_Zone_t& room_in,
       // we're within the current square
 
       // check: for consecutive positions WITHIN the same row:
-      // if (previous_cell.x + 1) is NOT EQUAL to the current.x
-      // i.e. the current cell is not adjacent to the previous one
-      // --> we've already found the largest square for this position
-      if (last_x != (*zone_iterator2).first)
+      //        if (previous_cell.x + 1) is NOT EQUAL to the current.x
+      //        i.e. the current cell is not adjacent to the previous one
+      //        --> already found the largest square for this position
+      if (running_x != (*zone_iterator2).first)
         break; // start next position
 
-      // step2: we're within the current square
       // --> compute enclosed area
       current_area = area2Positions(*zone_iterator, *zone_iterator2);
       if (maxArea < current_area)
@@ -778,6 +784,7 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
   {
     // --> remove any cruft from the perimeter
     index = 0;
+    unsigned long last_size = 0;
     for (RPG_Map_PartitionConstIterator_t partition_iter = partition_in.begin();
          partition_iter != partition_in.end();
          partition_iter++, index++)
@@ -787,10 +794,14 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
       // make a copy...
       current_zone = *partition_iter;
 
-      // *NOTE*: there is a chance that the whole room will be cropped
-      // (min. breadth/width is 3/3)
+      // *NOTE*: crop until the size is stable
+      // i.e. if (min. breadth/width is <3/3), the whole room will be cropped
       // --> too slim/flat...
-      crop(current_zone);
+      do
+      {
+        last_size = current_zone.size();
+        crop(current_zone);
+      } while (last_size > current_zone.size());
 
       // debug info
       if (current_zone.empty())
@@ -1491,7 +1502,8 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::crop"));
 
   // sanity check
-  ACE_ASSERT(!room_inout.empty());
+  if (room_inout.empty())
+    return; // nothing to do...
 
   // two-pass algorithm:
   // 1. iterate over rows
@@ -1623,13 +1635,13 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
                            const RPG_Map_Position_t& position_in,
                            const ORIGIN& origin_in,
                            const bool& clockwise_in,
-                           bool& wasCorner_out,
+                           bool& isCorner_out,
                            RPG_Map_Direction_t& next_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::turn"));
 
   // init return value(s)
-  wasCorner_out = false;
+  isCorner_out = false;
   // *NOTE*: only change next_out if appropriate (i.e. when turning)
 //   next_out = INVALID;
 
@@ -1650,8 +1662,12 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
   if (map_in.find(left) != map_in.end())
     directions.insert(LEFT);
 
-  // *NOTE*: if position is a dead-end/corner/intersection
+  // *NOTE*: if position is a [dead-end/]corner/intersection
   // --> compute next direction
+
+  // sanity check: reached a dead-end ?
+  // *NOTE*: while walking a perimeter, "dead-ends" cannot happen - unless:
+  // - the room itself is "flat" (i.e. a single row/cell)
   if (directions.size() <= 1)
   {
     // dead-end, turn around
@@ -1660,6 +1676,8 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
     return true;
   } // end IF
 
+  // *NOTE*: while walking a perimeter, intersections cannot happen - unless:
+  // - a section of the room is "flat" (i.e. consists of "solid walls")
   switch (origin_in)
   {
     case UP:
@@ -1673,7 +1691,7 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
         else
         {
           next_out = (clockwise_in ? LEFT : RIGHT); // corner, turn right/left
-          wasCorner_out = true;
+          isCorner_out = true;
         } // end ELSE
 
         return true;
@@ -1693,7 +1711,7 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
         else
         {
           next_out = (clockwise_in ? UP : DOWN); // corner, turn right/left
-          wasCorner_out = true;
+          isCorner_out = true;
         } // end ELSE
 
         return true;
@@ -1713,7 +1731,7 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
         else
         {
           next_out = (clockwise_in ? RIGHT : LEFT); // corner, turn right/left
-          wasCorner_out = true;
+          isCorner_out = true;
         } // end ELSE
 
         return true;
@@ -1733,7 +1751,7 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
         else
         {
           next_out = (clockwise_in ? DOWN : UP); // corner, turn right/left
-          wasCorner_out = true;
+          isCorner_out = true;
         } // end ELSE
 
         return true;
@@ -1743,7 +1761,17 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
       break;
     }
     default:
+    {
+      // debug info
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid origin (was %u), continuing\n"),
+                 origin_in));
+
+      // *TODO*: what else can we do ?
+      ACE_ASSERT(false);
+
       break;
+    }
   } // end IF
 
   return false;
@@ -1759,6 +1787,10 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
   // init return value(s)
   doorPositions_out.clear();
 
+  // sanity check(s)
+  if (room_in.empty())
+    return; // nothing to do
+
   // *NOTE*: constraints depend on whether doors fill a whole position [] or just
   // "adorn" the side of a wall (implements the notion that walls are
   // infinitely thin - which is essentially a design *DECISION*)
@@ -1766,32 +1798,30 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
   // - enforce a minimal distance [i.e. to allow corridors] between any 2 doors
   RPG_Map_Position_t current = *(room_in.begin());
   RPG_Map_Direction_t next = RIGHT;
-  ORIGIN origin = LEFT;
-  bool was_corner = false; // (else intersection)
+  ORIGIN origin = DOWN;
+  bool is_corner = true; // (else intersection)
   if (doorFillsPosition_in)
   {
     // *NOTE*: in this case, the perimeter should already have been prepared
     // --> see references to crop() above
 
-    // what remains is walking the perimeter and checking position, while
+    // what remains is walking the perimeter and checking each position, while
     // omitting corners.
     // *NOTE*: do this both clock/counter-clockwise to find the maximum number
     // of suitable position(s)
 
     // step1: clockwise
     // *NOTE*: first position is ALWAYS a corner, thus unsuitable
-    // --> next position to the right/down along the wall COULD be suitable
-    // if it's not an intersection...
+    // --> next position to the right/down along the wall could be suitable
     bool next_suitable = true;
     do
     {
-      // move along the perimeter
       // change direction ?
       if (!turn(room_in,
                 current,
                 origin,
                 true, // turn clockwise
-                was_corner,
+                is_corner,
                 next)) // <-- will be changed appropriately
       {
         if (next_suitable)
@@ -1801,11 +1831,12 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
           next_suitable = false; // flag adjacent position as unsuitable
         } // end IF
         else
-          next_suitable = true; // adjacent position COULD be suitable
+          next_suitable = true; // adjacent position could be suitable
       } // end IF
       else
-        next_suitable = (was_corner ? true : false); // flag next position
+        next_suitable = is_corner; // flag next position
 
+      // move along the perimeter
       switch (next)
       {
         case UP:
@@ -1849,21 +1880,20 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
 
     // step2: counter-clockwise
     RPG_Map_PositionList_t alt_doorPositions;
-    origin = UP;
-    was_corner = false; // (else intersection)
+    origin = RIGHT;
+    is_corner = true; // (else intersection)
     // *NOTE*: first position is ALWAYS a corner, thus unsuitable
-    // --> next position to the right/down along the wall COULD be suitable
+    // --> next position to the right/down along the wall could be suitable
     // if it's not an intersection...
     next_suitable = true;
     do
     {
-      // move along the perimeter
       // change direction ?
       if (!turn(room_in,
                 current,
                 origin,
                 false, // turn counter-clockwise
-                was_corner,
+                is_corner,
                 next)) // <-- will be changed appropriately
       {
         if (next_suitable)
@@ -1873,11 +1903,12 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
           next_suitable = false; // flag adjacent position as unsuitable
         } // end IF
         else
-          next_suitable = true; // adjacent position COULD be suitable
+          next_suitable = true; // adjacent position could be suitable
       } // end IF
       else
-        next_suitable = (was_corner ? true : false); // flag next position
+        next_suitable = is_corner; // flag next position
 
+      // move along the perimeter
       switch (next)
       {
         case UP:
@@ -1909,7 +1940,7 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
           // debug info
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid direction (was %u), continuing\n"),
-                              next));
+                     next));
 
           // *TODO*: what else can we do ?
           ACE_ASSERT(false);
@@ -1941,41 +1972,9 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
     } // end IF
     else
     {
+      is_corner = false;
       do
       {
-        // change direction ?
-        if (!turn(room_in,
-                  current,
-                  origin,
-                  true, // turn clockwise
-                  was_corner,
-                  next)) // <-- will be changed appropriately
-        {
-          // moving along the wall...
-          doorPositions_out.push_back(current);
-        } // end IF
-        else
-        {
-          // reached a dead-end ?
-          if (next == origin)
-          {
-            // three positions
-            doorPositions_out.push_back(current);
-            doorPositions_out.push_back(current);
-            doorPositions_out.push_back(current);
-          } // end IF
-          else if (was_corner)
-          {
-            // two positions
-            doorPositions_out.push_back(current);
-            doorPositions_out.push_back(current);
-          } // end IF
-        } // end ELSE
-
-        // done ?
-        if (current == *(room_in.begin()))
-          break;
-
         // move along the perimeter
         switch (next)
         {
@@ -2007,8 +2006,8 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
           {
             // debug info
             ACE_DEBUG((LM_ERROR,
-                      ACE_TEXT("invalid direction (was %u), continuing\n"),
-                                next));
+                       ACE_TEXT("invalid direction (was %u), continuing\n"),
+                       next));
 
             // *TODO*: what else can we do ?
             ACE_ASSERT(false);
@@ -2016,11 +2015,36 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
             break;
           }
         } // end SWITCH
-      } while (current != *(room_in.begin()));
 
-      // two more positions...
-      doorPositions_out.push_back(current);
-      doorPositions_out.push_back(current);
+        // change direction ?
+        if (!turn(room_in,
+                  current,
+                  origin,
+                  true, // turn clockwise
+                  is_corner,
+                  next)) // <-- will be changed appropriately
+        {
+          // moving along the wall...
+          doorPositions_out.push_back(current);
+        } // end IF
+        else
+        {
+          // reached a dead-end ?
+          if (next == origin)
+          {
+            // three positions
+            doorPositions_out.push_back(current);
+            doorPositions_out.push_back(current);
+            doorPositions_out.push_back(current);
+          } // end IF
+          else if (is_corner)
+          {
+            // two positions
+            doorPositions_out.push_back(current);
+            doorPositions_out.push_back(current);
+          } // end IF
+        } // end ELSE
+      } while (current != *(room_in.begin()));
     } // end ELSE
 
     // step2: enforce separation, i.e. spare every (RPG_MAP_DOOR_SEPARATION + 1)

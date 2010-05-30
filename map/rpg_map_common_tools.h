@@ -120,7 +120,7 @@ class RPG_Map_Common_Tools
                          const RPG_Map_Position_t&, // position
                          const ORIGIN&,             // origin
                          const bool&,               // turn clockwise ?
-                         bool&,                     // return value: was corner ? (else intersection)
+                         bool&,                     // return value: is corner ? (else intersection)
                          RPG_Map_Direction_t&);     // return value: next direction
   static void findDoorPositions(const RPG_Map_Zone_t&,    // room (shell !)
                                 const bool&,              // doors to fill positions ?
