@@ -45,26 +45,59 @@ RPG_Map_Common_Tools::createDungeonLevel(const unsigned long& dimensionX_in,
   level_out.doors.clear();
   level_out.walls.clear();
 
-  // step1: segment area into numRooms_in partition(s)
   RPG_Map_Partition_t partition;
-  makePartition(dimensionX_in,
-                dimensionY_in,
-                numRooms_in,
-                partition);
-
-  // step2: form rooms within partition(s)
   RPG_Map_ZoneList_t rooms;
-  makeRooms(partition,
-            wantSquareRooms_in,
-            maximizeArea_in,
-            minArea_in,
-            rooms);
+  bool some_rooms_empty = true;
+  bool no_rooms_empty = false;
+  unsigned long index = 1;
+  do
+  {
+    partition.clear();
+    rooms.clear();
+    some_rooms_empty = true;
+    no_rooms_empty = false;
+
+    // step1: segment area into numRooms_in partition(s)
+    makePartition(dimensionX_in,
+                  dimensionY_in,
+                  numRooms_in,
+                  partition);
+
+    // step2: form rooms within partition(s)
+    makeRooms(partition,
+              wantSquareRooms_in,
+              (doorFillsPosition_in ? true : false), // requires cropped rooms !
+              maximizeArea_in,
+              minArea_in,
+              rooms);
+    // check: all rooms are not empty ?
+    no_rooms_empty = true;
+    for (RPG_Map_ZoneListConstIterator_t zonelist_iter = rooms.begin();
+         zonelist_iter != rooms.end();
+         zonelist_iter++)
+      if ((*zonelist_iter).empty())
+      {
+        no_rooms_empty = false;
+        break;
+      } // end IF
+    if (no_rooms_empty)
+      some_rooms_empty = false;
+
+    if (some_rooms_empty)
+    {
+      // debug info
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("result[%u] is invalid, retrying...\n"),
+                 index));
+    } // end IF
+    index++;
+  } while (some_rooms_empty);
   // debug info
   displayRooms(dimensionX_in,
                dimensionY_in,
                rooms);
 
-  // step3: connect rooms to form the level
+  // step3: create doors (and corridors)
   connectRooms(dimensionX_in,
                dimensionY_in,
                rooms,
@@ -89,7 +122,7 @@ RPG_Map_Common_Tools::displayDungeonLevel(const unsigned long& dimensionX_in,
              ACE_TEXT("level ([%ux%u] - %u walls, %u doors)...\n"),
              dimensionX_in,
              dimensionY_in,
-             level_in.walls.size(),
+             (level_in.walls.size() - level_in.doors.size()),
              level_in.doors.size()));
 
   RPG_Map_Position_t current_position;
@@ -589,8 +622,144 @@ RPG_Map_Common_Tools::displayPartition(const unsigned long& dimensionX_in,
 }
 
 void
+RPG_Map_Common_Tools::findMaxSquare(const RPG_Map_Zone_t& room_in,
+                                    RPG_Map_Square_t& maxSquare_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::findMaxSquare"));
+
+  // init return value(s)
+  maxSquare_out.ul = std::make_pair(0, 0);
+  maxSquare_out.lr = std::make_pair(0, 0);
+
+  RPG_Map_ZoneConstIterator_t pointer;
+  unsigned long maxArea = 0;
+  unsigned long current_area = 0;
+  unsigned long max_breadth = 0;
+  unsigned long current_row = 0;
+  unsigned long last_x = 0;
+  for (RPG_Map_ZoneConstIterator_t zone_iterator = room_in.begin();
+       zone_iterator != room_in.end();
+       zone_iterator++)
+  {
+    max_breadth = 0;
+    current_row = (*zone_iterator).second;
+    last_x = (*zone_iterator).first;
+    for (RPG_Map_ZoneConstIterator_t zone_iterator2 = zone_iterator;
+         zone_iterator2 != room_in.end();
+         zone_iterator2++)
+    {
+      // still on the top row ?
+      if ((*zone_iterator2).second == ((*zone_iterator).second))
+      {
+        // check: for consecutive positions WITHIN the same row:
+        // if (previous_cell.x + 1) is NOT EQUAL to the current.x
+        // i.e. the current cell is not adjacent to the previous one
+        // --> we've already found the largest square for this position
+        if (last_x != (*zone_iterator2).first)
+          break; // start next position
+        last_x++;
+
+        // --> compute enclosed area and continue
+        current_area = area2Positions(*zone_iterator, *zone_iterator2);
+        if (maxArea < current_area)
+        {
+          maxArea = current_area;
+          maxSquare_out.ul = *zone_iterator;
+          maxSquare_out.lr = *zone_iterator2;
+        } // end IF
+
+        // check next cell
+        continue;
+      } // end IF
+
+      // we're NOT on the top row anymore...
+      ACE_ASSERT((*zone_iterator2).second != (*zone_iterator).second);
+
+      // step1: compute max. breadth of current square
+      // --> compute the distance to the LAST cell on the top row
+      if (max_breadth == 0)
+      {
+        // reached the start of the second row
+        ACE_ASSERT((*zone_iterator2).second == ((*zone_iterator).second + 1));
+
+        // retrieve the last cell of the top row
+        pointer = zone_iterator2;
+        pointer--;
+        // compute max breadth
+        max_breadth = (((*pointer).first - (*zone_iterator).first) + 1);
+        ACE_ASSERT(max_breadth);
+      } // end IF
+
+      // check: IMMEDIATELY on breaking to a new row:
+      // if our position.x is LARGER than our current_square.ul.x
+      // --> we've already found the largest square for this position
+      if ((*zone_iterator2).second > current_row)
+      {
+        last_x = (*zone_iterator2).first;
+        current_row++;
+        ACE_ASSERT((*zone_iterator2).second == current_row);
+
+        if ((*zone_iterator2).first > (*zone_iterator).first)
+          break; // start next position
+
+        // check: if the last_cell.x of the previous row was
+        // SMALLER than current_square.ul.x
+        // --> we've already found the largest square for this position
+
+        // retrieve the last cell of the previous row
+        pointer = zone_iterator2;
+        pointer--;
+        if ((*pointer).first < (*zone_iterator).first)
+          break; // start next position
+
+        // otherwise, perhaps max_breadth needs subtraction...
+        if ((((*pointer).first - (*zone_iterator).first) + 1) < max_breadth)
+          max_breadth = (((*pointer).first - (*zone_iterator).first) + 1);
+        ACE_ASSERT(max_breadth);
+      } // end IF
+      else
+      {
+        // as long as the current_cell.x is EQUAL OR SMALLER than
+        // current_square.ul.x (i.e. we're left/at the reference), ignore
+        // any skips between consecutive positions (see below)
+        if ((*zone_iterator2).first <= (*zone_iterator).first)
+          last_x = (*zone_iterator2).first;
+        else
+          last_x++;
+      } // end ELSE
+
+      // check: check if we're within the square spanned by
+      // [current_square.ul, (current_square.ul.x + (max_breadth - 1), y)]
+      if (((*zone_iterator2).first > ((*zone_iterator).first + max_breadth - 1)) ||
+          ((*zone_iterator2).first < (*zone_iterator).first))
+        continue; // no, we're not --> check next cell
+
+      // we're within the current square
+
+      // check: for consecutive positions WITHIN the same row:
+      // if (previous_cell.x + 1) is NOT EQUAL to the current.x
+      // i.e. the current cell is not adjacent to the previous one
+      // --> we've already found the largest square for this position
+      if (last_x != (*zone_iterator2).first)
+        break; // start next position
+
+      // step2: we're within the current square
+      // --> compute enclosed area
+      current_area = area2Positions(*zone_iterator, *zone_iterator2);
+      if (maxArea < current_area)
+      {
+        maxArea = current_area;
+        maxSquare_out.ul = *zone_iterator;
+        maxSquare_out.lr = *zone_iterator2;
+      } // end IF
+    } // end FOR
+  } // end FOR
+}
+
+void
 RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
                                 const bool& wantSquareRooms_in,
+                                const bool& cropAreas_in,
                                 const bool& maximizeArea_in,
                                 const unsigned long& minArea_in,
                                 RPG_Map_ZoneList_t& rooms_out)
@@ -601,189 +770,131 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
   rooms_out.clear();
 
   // place a room into every partition...
-
-  // step1: make some calculations...
-  RPG_Map_SquareList_t maxSquares;
-  RPG_Map_PartitionConstIterator_t partition_iter;
-  RPG_Map_ZoneConstIterator_t zone_iterator;
   unsigned long index = 0;
-  if (wantSquareRooms_in)
+  RPG_Map_Zone_t current_zone;
+
+  // step0: make some preparations...
+  if (cropAreas_in)
   {
-    // make square room(s)
-    RPG_Map_ZoneConstIterator_t zone_iterator2;
-    RPG_Map_ZoneConstIterator_t pointer;
-//     RPG_Map_ZoneConstIterator_t last;
-    RPG_Map_Square_t maxSquare;
-    unsigned long maxArea = 0;
-    unsigned long current_area = 0;
-    unsigned long max_breadth = 0;
-    unsigned long current_row = 0;
-    unsigned long last_x = 0;
-    for (partition_iter = partition_in.begin();
+    // --> remove any cruft from the perimeter
+    index = 0;
+    for (RPG_Map_PartitionConstIterator_t partition_iter = partition_in.begin();
          partition_iter != partition_in.end();
          partition_iter++, index++)
     {
-      // step1: find coordinates of the maximum-size square room(s)
-      // --> can fit in smaller rooms anytime...
-      maxArea = 0;
-//       last = (*partition_iter).end(); last--;
-      for (zone_iterator = (*partition_iter).begin();
-           zone_iterator != (*partition_iter).end();
-           zone_iterator++)
-      {
-        max_breadth = 0;
-        current_row = (*zone_iterator).second;
-        last_x = (*zone_iterator).first;
-        for (zone_iterator2 = zone_iterator;
-             zone_iterator2 != (*partition_iter).end();
-             zone_iterator2++)
-        {
-          // still on the top row ?
-          if ((*zone_iterator2).second == ((*zone_iterator).second))
-          {
-            // check: for consecutive positions WITHIN the same row:
-            // if (previous_cell.x + 1) is NOT EQUAL to the current.x
-            // i.e. the current cell is not adjacent to the previous one
-            // --> we've already found the largest square for this position
-            if (last_x != (*zone_iterator2).first)
-              break; // start next position
-            last_x++;
+      current_zone.clear();
 
-            // --> compute enclosed area and continue
-            current_area = area2Positions(*zone_iterator, *zone_iterator2);
-            if (maxArea < current_area)
-            {
-              maxArea = current_area;
-              maxSquare.ul = *zone_iterator;
-              maxSquare.lr = *zone_iterator2;
-            } // end IF
+      // make a copy...
+      current_zone = *partition_iter;
 
-            // check next cell
-            continue;
-          } // end IF
-
-          // we're NOT on the top row anymore...
-          ACE_ASSERT((*zone_iterator2).second != (*zone_iterator).second);
-
-          // step1: compute max. breadth of current square
-          // --> compute the distance to the LAST cell on the top row
-          if (max_breadth == 0)
-          {
-            // reached the start of the second row
-            ACE_ASSERT((*zone_iterator2).second == ((*zone_iterator).second + 1));
-
-            // retrieve the last cell of the top row
-            pointer = zone_iterator2;
-            pointer--;
-            // compute max breadth
-            max_breadth = (((*pointer).first - (*zone_iterator).first) + 1);
-            ACE_ASSERT(max_breadth);
-          } // end IF
-
-          // check: IMMEDIATELY on breaking to a new row:
-          // if our position.x is LARGER than our current_square.ul.x
-          // --> we've already found the largest square for this position
-          if ((*zone_iterator2).second > current_row)
-          {
-            last_x = (*zone_iterator2).first;
-            current_row++;
-            ACE_ASSERT((*zone_iterator2).second == current_row);
-
-            if ((*zone_iterator2).first > (*zone_iterator).first)
-              break; // start next position
-
-            // check: if the last_cell.x of the previous row was
-            // SMALLER than current_square.ul.x
-            // --> we've already found the largest square for this position
-
-            // retrieve the last cell of the previous row
-            pointer = zone_iterator2;
-            pointer--;
-            if ((*pointer).first < (*zone_iterator).first)
-              break; // start next position
-
-            // otherwise, perhaps max_breadth needs subtraction...
-            if ((((*pointer).first - (*zone_iterator).first) + 1) < max_breadth)
-              max_breadth = (((*pointer).first - (*zone_iterator).first) + 1);
-            ACE_ASSERT(max_breadth);
-          } // end IF
-          else
-          {
-            // as long as the current_cell.x is EQUAL OR SMALLER than
-            // current_square.ul.x (i.e. we're left/at the reference), ignore
-            // any skips between consecutive positions (see below)
-            if ((*zone_iterator2).first <= (*zone_iterator).first)
-              last_x = (*zone_iterator2).first;
-            else
-              last_x++;
-          } // end ELSE
-
-          // check: check if we're within the square spanned by
-          // [current_square.ul, (current_square.ul.x + (max_breadth - 1), y)]
-          if (((*zone_iterator2).first > ((*zone_iterator).first + max_breadth - 1)) ||
-              ((*zone_iterator2).first < (*zone_iterator).first))
-            continue; // no, we're not --> check next cell
-
-          // we're within the current square
-
-          // check: for consecutive positions WITHIN the same row:
-          // if (previous_cell.x + 1) is NOT EQUAL to the current.x
-          // i.e. the current cell is not adjacent to the previous one
-          // --> we've already found the largest square for this position
-          if (last_x != (*zone_iterator2).first)
-            break; // start next position
-
-          // step2: we're within the current square
-          // --> compute enclosed area
-          current_area = area2Positions(*zone_iterator, *zone_iterator2);
-          if (maxArea < current_area)
-          {
-            maxArea = current_area;
-            maxSquare.ul = *zone_iterator;
-            maxSquare.lr = *zone_iterator2;
-          } // end IF
-        } // end FOR
-      } // end FOR
+      // *NOTE*: there is a chance that the whole room will be cropped
+      // (min. breadth/width is 3/3)
+      // --> too slim/flat...
+      crop(current_zone);
 
       // debug info
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("max. square[%u]: [(%u,%u),(%u,%u)] - %u cell(s)\n"),
-                 index,
-                 maxSquare.ul.first,
-                 maxSquare.ul.second,
-                 maxSquare.lr.first,
-                 maxSquare.lr.second,
-                 maxArea));
+      if (current_zone.empty())
+      {
+        // debug info
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("zone[%u] has been cropped...\n"),
+                   index));
+      } // end IF
+//       else if (current_zone.size() < (*partition_iter).size())
+//       {
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("zone[%u]: cropped %u position(s)...\n"),
+//                    index,
+//                    ((*partition_iter).size() - current_zone.size())));
+//       } // end ELSE
+
+      rooms_out.push_back(current_zone);
+    } // end FOR
+  } // end IF
+
+  RPG_Map_SquareList_t maxSquares;
+  RPG_Map_ZoneListConstIterator_t zonelist_iter;
+  if (wantSquareRooms_in)
+  {
+    // make square room(s)
+    RPG_Map_Square_t maxSquare;
+    index = 0;
+    for (zonelist_iter = (cropAreas_in ? rooms_out.begin()
+                                       : partition_in.begin());
+         zonelist_iter != (cropAreas_in ? rooms_out.end()
+                                        : partition_in.end());
+         zonelist_iter++, index++)
+    {
+      maxSquare.ul = std::make_pair(0, 0);
+      maxSquare.lr = std::make_pair(0, 0);
+
+      // sanity check
+      if ((*zonelist_iter).empty())
+      {
+        // debug info
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("max. square[%u]: doesn't exist\n"),
+                   index));
+      } // end IF
+      else
+      {
+        // find coordinates of the maximum-size square room(s)
+        // --> can fit in smaller rooms anytime...
+        findMaxSquare(*zonelist_iter, maxSquare);
+
+        // debug info
+        ACE_DEBUG((LM_DEBUG,
+                  ACE_TEXT("max. square[%u]: [(%u,%u),(%u,%u)] - %u cell(s)\n"),
+                  index,
+                  maxSquare.ul.first,
+                  maxSquare.ul.second,
+                  maxSquare.lr.first,
+                  maxSquare.lr.second,
+                  area2Positions(maxSquare.ul, maxSquare.lr)));
+      } // end ELSE
 
       maxSquares.push_back(maxSquare);
     } // end FOR
   } // end IF
 
-  // step2: create rooms
-  RPG_Map_Zone_t current_zone;
+  // step1: create rooms
+  RPG_Map_ZoneListIterator_t zones_iter;
+  RPG_Map_ZoneConstIterator_t zone_iter;
   if (maximizeArea_in)
   {
     if (wantSquareRooms_in)
     {
+      index = 0;
       RPG_Map_SquareListConstIterator_t squares_iter = maxSquares.begin();
-      for (partition_iter = partition_in.begin();
-           partition_iter != partition_in.end();
-           partition_iter++, squares_iter++)
+      for (zones_iter = (cropAreas_in ? rooms_out.begin()
+                                      : ACE_const_cast(RPG_Map_Partition_t&, partition_in).begin());
+           zones_iter != (cropAreas_in ? rooms_out.end()
+                                       : ACE_const_cast(RPG_Map_Partition_t&, partition_in).end());
+           zones_iter++, squares_iter++, index++)
       {
         current_zone.clear();
-        for (zone_iterator = (*partition_iter).begin();
-             zone_iterator != (*partition_iter).end();
-             zone_iterator++)
+        for (zone_iter = (*zones_iter).begin();
+             zone_iter != (*zones_iter).end();
+             zone_iter++)
         {
-          if (positionInSquare(*zone_iterator, *squares_iter))
-            current_zone.insert(*zone_iterator);
+          if (positionInSquare(*zone_iter, *squares_iter))
+            current_zone.insert(*zone_iter);
         } // end FOR
 
-        rooms_out.push_back(current_zone);
+        // sanity check
+        ACE_ASSERT((current_zone.empty() ? true // that's OK (but area2Positions yields 1)...
+                                         : current_zone.size() == area2Positions((*squares_iter).ul,
+                                                                                 (*squares_iter).lr)));
+
+        if (cropAreas_in)
+          *zones_iter = current_zone; // do in-place editing...
+        else
+          rooms_out.push_back(current_zone);
 
 //         // debug info
 //         ACE_DEBUG((LM_DEBUG,
-//                    ACE_TEXT("zone [%u cell(s)]: bounded by [(%u,%u),(%u,%u)] --> %u cell(s)\n"),
+//                    ACE_TEXT("zone[%u] has %u cell(s) - bounded by [(%u,%u),(%u,%u)] --> %u cell(s)\n"),
+//                    index,
 //                    current_zone.size(),
 //                    (*squares_iter).ul.first,
 //                    (*squares_iter).ul.second,
@@ -791,9 +902,6 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
 //                    (*squares_iter).lr.second,
 //                    area2Positions((*squares_iter).ul,
 //                                   (*squares_iter).lr)));
-
-        ACE_ASSERT(current_zone.size() == area2Positions((*squares_iter).ul,
-                                                         (*squares_iter).lr));
       } // end FOR
     } // end IF
     else
@@ -805,33 +913,122 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
   } // end IF
   else
   {
-    // *TODO*
-    ACE_ASSERT(false);
+    // rooms may have been cropped
+    // --> nothing to do...
   } // end ELSE
 
-  // step3: enforce any other constraint(s)
+  // step2: enforce any other constraint(s)
   if (minArea_in)
   {
-    unsigned long index = 0;
-    RPG_Map_ZoneListConstIterator_t zones_iterator;
-    for (zones_iterator = rooms_out.begin();
-         zones_iterator != rooms_out.end();
-         zones_iterator++, index++)
+    index = 0;
+    for (zones_iter = rooms_out.begin();
+         zones_iter != rooms_out.end();
+         zones_iter++, index++)
     {
-      if ((*zones_iterator).size() < minArea_in)
+      if ((*zones_iter).size() < minArea_in)
       {
         // debug info
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("zone [#%u] is too small (%u < %u)...\n"),
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("zone[%u] is too small (%u < %u)...\n"),
                    index,
-                   (*zones_iterator).size(),
+                   (*zones_iter).size(),
                    minArea_in));
 
-          // *TODO*
-        ACE_ASSERT(false);
+        // crop room (what else can we do ?)
+        (*zones_iter).clear();
       } // end IF
     } // end FOR
   } // end IF
+
+  // step3: compute the boundary
+  RPG_Map_ZoneConstIterator_t last;
+  RPG_Map_Position_t upper_left;
+  RPG_Map_Position_t upper_right;
+  RPG_Map_Position_t lower_right;
+  RPG_Map_Position_t lower_left;
+  RPG_Map_PositionList_t trail;
+  RPG_Map_PositionListConstIterator_t trail_iter;
+  index = 0;
+  for (zones_iter = rooms_out.begin();
+       zones_iter != rooms_out.end();
+       zones_iter++, index++)
+  {
+    current_zone.clear();
+
+    // step0: sanity check
+    if ((*zones_iter).empty())
+      continue; // nothing to do...
+
+    zone_iter = (*zones_iter).begin();
+    last = (*zones_iter).end(); last--;
+    // step1: compute the 4 corners
+    // upper left == first element
+    upper_left = *zone_iter;
+    // upper right == last element of the first row
+    while ((zone_iter != (*zones_iter).end()) &&
+           ((*zone_iter).second == upper_left.second))
+      zone_iter++;
+    zone_iter--;
+    upper_right = *zone_iter;
+    // lower_right == last element
+    lower_right = *last;
+    // lower_left == first element of the last row
+    if (upper_left.second == lower_right.second)
+      lower_left = upper_left;
+    else
+    {
+      // there's more than one row
+      zone_iter = last;
+      while ((*zone_iter).second == lower_right.second)
+        zone_iter--;
+      zone_iter++;
+      lower_left = *zone_iter;
+    } // end ELSE
+
+    // step2: start at top left position and go around clockwise
+    trail.clear();
+    crawlToPosition(*zones_iter,
+                    upper_left,
+                    upper_right,
+                    DOWN,
+                    trail);
+    for (trail_iter = trail.begin();
+         trail_iter != trail.end();
+         trail_iter++)
+      current_zone.insert(*trail_iter);
+    trail.clear();
+    crawlToPosition(*zones_iter,
+                    upper_right,
+                    lower_right,
+                    LEFT,
+                    trail);
+    for (trail_iter = trail.begin();
+         trail_iter != trail.end();
+         trail_iter++)
+      current_zone.insert(*trail_iter);
+    trail.clear();
+    crawlToPosition(*zones_iter,
+                    lower_right,
+                    lower_left,
+                    UP,
+                    trail);
+    for (trail_iter = trail.begin();
+         trail_iter != trail.end();
+         trail_iter++)
+      current_zone.insert(*trail_iter);
+    trail.clear();
+    crawlToPosition(*zones_iter,
+                    lower_left,
+                    upper_left,
+                    RIGHT,
+                    trail);
+    for (trail_iter = trail.begin();
+         trail_iter != trail.end();
+         trail_iter++)
+      current_zone.insert(*trail_iter);
+
+    *zones_iter = current_zone; // do in-place editing...
+  } // end FOR
 }
 
 void
@@ -897,130 +1094,15 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
   level_out.doors.clear();
   level_out.walls.clear();
 
-  // step1: make walls
-  RPG_Map_Zone_t current_room;
-  RPG_Map_ZoneList_t shells;
-  RPG_Map_Zone_t current_shell;
-  RPG_Map_ZoneListConstIterator_t list_iterator;
-  RPG_Map_ZoneConstIterator_t zone_iterator;
-  RPG_Map_Position_t position;
-  RPG_Map_Position_t upper_right;
-  RPG_Map_Position_t lower_right;
-  RPG_Map_Position_t lower_left;
-  RPG_Map_PositionList_t trail;
-  RPG_Map_PositionListConstIterator_t trail_iterator;
-  unsigned long index = 0;
-  for (list_iterator = rooms_in.begin();
-       list_iterator != rooms_in.end();
-       list_iterator++, index++)
-  {
-    current_shell.clear();
-
-    // need to make a copy... :-(
-    current_room = *list_iterator;
-    // step0: if doors fill a whole cell, suitable positions on the perimeter
-    // require (at least) one neighbour on each side
-    // --> remove any cruft from the perimeter
-    if (doorFillsPosition_in)
-    {
-      unsigned long size = current_room.size();
-      crop(current_room);
-      // *NOTE*: there is a chance that the whole room will be cropped...
-      // --> too slim/flat for doors...
-      if (current_room.empty())
-      {
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("room[%u] has been cropped...\n"),
-                   index));
-
-        // still insert an (empty) shell...
-        shells.push_back(current_shell);
-
-        continue;
-      } // end IF
-      else if (current_room.size() != size)
-      {
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("room[%u]: cropped %u position(s)...\n"),
-                   index,
-                   (size - current_room.size())));
-      } // end ELSE
-    } // end IF
-
-    // step1: find outer shell(s)
-    // compute the 4 corners
-    zone_iterator = current_room.begin();
-    // upper left == first element
-    position = *zone_iterator;
-    // upper right == last element of the first row
-    while ((*zone_iterator).second == position.second)
-      zone_iterator++;
-    zone_iterator--;
-    upper_right = *zone_iterator;
-    // lower_right == last element
-    zone_iterator = current_room.end();
-    zone_iterator--;
-    lower_right = *zone_iterator;
-    // lower_left == first element of the last row
-    while ((*zone_iterator).second == lower_right.second)
-      zone_iterator--;
-    zone_iterator++;
-    lower_left = *zone_iterator;
-
-    // start at top left position and go around clockwise
-    trail.clear();
-    crawlToPosition(current_room,
-                    position,
-                    upper_right,
-                    DOWN,
-                    trail);
-    for (trail_iterator = trail.begin();
-         trail_iterator != trail.end();
-         trail_iterator++)
-      current_shell.insert(*trail_iterator);
-    trail.clear();
-    crawlToPosition(current_room,
-                    upper_right,
-                    lower_right,
-                    LEFT,
-                    trail);
-    for (trail_iterator = trail.begin();
-         trail_iterator != trail.end();
-         trail_iterator++)
-      current_shell.insert(*trail_iterator);
-    trail.clear();
-    crawlToPosition(current_room,
-                    lower_right,
-                    lower_left,
-                    UP,
-                    trail);
-    for (trail_iterator = trail.begin();
-         trail_iterator != trail.end();
-         trail_iterator++)
-      current_shell.insert(*trail_iterator);
-    trail.clear();
-    crawlToPosition(current_room,
-                    lower_left,
-                    position,
-                    RIGHT,
-                    trail);
-    for (trail_iterator = trail.begin();
-         trail_iterator != trail.end();
-         trail_iterator++)
-      current_shell.insert(*trail_iterator);
-
-    shells.push_back(current_shell);
-  } // end FOR
-
-  // step2: make doors
+  // step1: make doors
   // *NOTE*: every room needs at least one (possibly secret) door
   // *NOTE*: doors cannot be situated on the boundary of the level
   // *NOTE*: doors connect rooms
   // *NOTE*: to ensure connectivity for n rooms, we need at least (n-1)*2 doors...
   RPG_Map_ZoneList_t doors;
   unsigned long total_doors = 0;
+  unsigned long index = 0;
+  RPG_Map_ZoneListConstIterator_t zonelist_iter;
   RPG_Map_Zone_t current_doors;
   unsigned long num_doors = 0;
   RPG_Dice_RollResult_t result;
@@ -1031,21 +1113,21 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
     doors.clear();
     total_doors = 0;
     index = 0;
-    for (list_iterator = shells.begin();
-         list_iterator != shells.end();
-         list_iterator++, index++)
+    for (zonelist_iter = rooms_in.begin();
+         zonelist_iter != rooms_in.end();
+         zonelist_iter++, index++)
     {
       current_doors.clear();
 
       // step0: sanity check(s)
-      if ((*list_iterator).empty())
+      if ((*zonelist_iter).empty())
       {
 //         // debug info
 //         ACE_DEBUG((LM_DEBUG,
 //                    ACE_TEXT("room[%u] has no walls...\n"),
 //                    index));
 
-        // still insert an (empty) set of doors...
+        // still, insert an (empty) set of doors...
         doors.push_back(current_doors);
 
         continue;
@@ -1053,10 +1135,11 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
 
       // step1: find suitable positions
       doorPositions.clear();
-      findDoorPositions(*list_iterator,
+      findDoorPositions(*zonelist_iter,
                         doorFillsPosition_in,
                         doorPositions);
-      // check: remove all positions on the perimeter of the level
+      // check: to be useful, doors must face "inwards"
+      // --> remove all positions on the perimeter of the level
       doorPosition_iterator = doorPositions.begin();
       while (doorPosition_iterator != doorPositions.end())
       {
@@ -1074,9 +1157,9 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("room[%u] cannot have doors...\n"),
                    index));
-        dump(*list_iterator);
+        dump(*zonelist_iter);
 
-        // still insert an (empty) set of doors...
+        // still, insert an (empty) set of doors...
         doors.push_back(current_doors);
 
         continue;
@@ -1091,7 +1174,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
                                       result);
       num_doors = result[0];
 
-      // step2: choose num_doors from available positions
+      // step3: choose num_doors from available positions
       while (current_doors.size() < num_doors)
       {
         result.clear();
@@ -1103,7 +1186,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
 
         current_doors.insert(*doorPosition_iterator);
   //       if (doorFillsPosition_in)
-  //         (*list_iterator).erase(*doorPosition_iterator); // not a wall anymore...
+  //         (*zonelist_iter).erase(*doorPosition_iterator); // not a wall anymore...
       } // end WHILE
 
       doors.push_back(current_doors);
@@ -1111,46 +1194,45 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
     } // end FOR
   } // end WHILE
 
-  // step3: make corridors
+  // step2: make corridors
   RPG_Map_ZoneList_t corridors;
   RPG_Map_Zone_t current_corridor;
   // *TODO*:
 //   ACE_ASSERT(false);
 
-  // step4: put everything together
-  for (list_iterator = shells.begin();
-       list_iterator != shells.end();
-       list_iterator++)
+  // step3: throw everything together
+  for (zonelist_iter = rooms_in.begin();
+       zonelist_iter != rooms_in.end();
+       zonelist_iter++)
   {
-    for (zone_iterator = (*list_iterator).begin();
-         zone_iterator != (*list_iterator).end();
-         zone_iterator++)
+    for (RPG_Map_ZoneConstIterator_t zone_iter = (*zonelist_iter).begin();
+         zone_iter != (*zonelist_iter).end();
+         zone_iter++)
     {
-      level_out.walls.insert(*zone_iterator);
+      level_out.walls.insert(*zone_iter);
     } // end FOR
   } // end FOR
-  RPG_Map_ZoneConstIterator_t doors_iterator;
   index = 0;
-  for (list_iterator = doors.begin();
-       list_iterator != doors.end();
-       list_iterator++)
+  unsigned long index2 = 0;
+  RPG_Map_ZoneConstIterator_t doors_iterator;
+  for (zonelist_iter = doors.begin();
+       zonelist_iter != doors.end();
+       zonelist_iter++, index++)
   {
-    for (doors_iterator = (*list_iterator).begin();
-         doors_iterator != (*list_iterator).end();
-         doors_iterator++, index++)
+    index2 = 0;
+    for (doors_iterator = (*zonelist_iter).begin();
+         doors_iterator != (*zonelist_iter).end();
+         doors_iterator++, index2++)
     {
       level_out.doors.insert(*doors_iterator);
 
       // debug info
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("door[%u] at (%u,%u)\n"),
-                 index,
+                 ACE_TEXT("door[%u,%u] at (%u,%u)\n"),
+                 index, index2,
                  (*doors_iterator).first,
                  (*doors_iterator).second));
     } // end FOR
-    // debug info
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("----------------------\n")));
   } // end FOR
 }
 
