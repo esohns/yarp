@@ -104,10 +104,6 @@ RPG_Map_Common_Tools::createDungeonLevel(const unsigned long& dimensionX_in,
                doorFillsPosition_in,
                maxDoorsPerRoom_in,
                level_out);
-  // debug info
-  displayDungeonLevel(dimensionX_in,
-                      dimensionY_in,
-                      level_out);
 }
 
 void
@@ -139,13 +135,13 @@ RPG_Map_Common_Tools::displayDungeonLevel(const unsigned long& dimensionX_in,
 
       // door or wall ?
       if (level_in.doors.find(current_position) != level_in.doors.end())
-        std::clog << ACE_TEXT("=");
+        std::cout << ACE_TEXT("=");
       else if (level_in.walls.find(current_position) != level_in.walls.end())
-        std::clog << ACE_TEXT("#");
+        std::cout << ACE_TEXT("#");
       else
-        std::clog << ACE_TEXT(".");
+        std::cout << ACE_TEXT(".");
     } // end FOR
-    std::clog << std::endl;
+    std::cout << std::endl;
   } // end FOR
 }
 

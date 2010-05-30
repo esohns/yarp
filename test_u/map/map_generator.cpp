@@ -218,6 +218,11 @@ void do_work(const unsigned long& minRoomSize_in,
                                            maxDoorsPerRoom_in,
                                            levelMap);
 
+  // step3: display the result
+  RPG_Map_Common_Tools::displayDungeonLevel(dimensionX_in,
+                                            dimensionY_in,
+                                            levelMap);
+
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
 } // end do_work
