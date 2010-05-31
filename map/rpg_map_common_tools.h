@@ -119,6 +119,7 @@ class RPG_Map_Common_Tools
   typedef std::set<RPG_Map_Position_t> RPG_Map_AltPositions_t;
   typedef RPG_Map_AltPositions_t::const_iterator RPG_Map_AltPositionsConstIterator_t;
   static void crop(RPG_Map_Zone_t&); // room
+  static void cropSquareBoundary(RPG_Map_Zone_t&); // room
   static const bool turn(const RPG_Map_Zone_t&,     // map
                          const RPG_Map_Position_t&, // position
                          const ORIGIN&,             // origin

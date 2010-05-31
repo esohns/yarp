@@ -1047,62 +1047,56 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
   {
     // enforce a minimal separation
     RPG_Map_Position_t up, right, down, left;
-    RPG_Map_Directions_t crop;
+    RPG_Map_Directions_t crop_walls;
     index = 0;
     for (zones_iter = rooms_out.begin();
          zones_iter != rooms_out.end();
          zones_iter++, index++)
     {
-      crop.clear();
-      for (RPG_Map_ZoneIterator_t zone_iter2 = (*zonelist_iter).begin();
-           zone_iter2 != (*zonelist_iter).end();
-           zone_iter2++)
+      crop_walls.clear();
+      for (zone_iter = (*zones_iter).begin();
+           zone_iter != (*zones_iter).end();
+           zone_iter++)
       {
         // compute neighbours
-        up = *zone_iter2; up.second -= ((up.second == 0) ? 0 : 1);
-        right = *zone_iter2; right.first += ((right.first == (dimensionX_in - 1)) ? 0 : 1);
-        down = *zone_iter2; down.second += ((down.second == (dimensionY_in - 1)) ? 0 : 1);
-        left = *zone_iter2; left.first -= ((left.first == 0) ? 0 : 1);
+        up = *zone_iter; up.second -= ((up.second == 0) ? 0 : 1);
+        right = *zone_iter; right.first += ((right.first == (dimensionX_in - 1)) ? 0 : 1);
+        down = *zone_iter; down.second += ((down.second == (dimensionY_in - 1)) ? 0 : 1);
+        left = *zone_iter; left.first -= ((left.first == 0) ? 0 : 1);
 
-        // (direct) contact with another room ?
-        for (RPG_Map_ZoneListConstIterator_t zonelist_iter2 = rooms_out.begin();
-             zonelist_iter2 != rooms_out.end();
-             zonelist_iter2++)
+        // (direct) contact with ANOTHER room ?
+        for (zonelist_iter = rooms_out.begin();
+             zonelist_iter != rooms_out.end();
+             zonelist_iter++)
         {
-          if ((*zonelist_iter2).find(up) != (*zonelist_iter2).end())
-          {
-            // contact, resize the smaller one...
-            if ((*zones_iter).size() >= (*zonelist_iter2).size())
-              crop.insert(UP);
-          } // end IF
-          if ((*zonelist_iter2).find(right) != (*zonelist_iter2).end())
-          {
-            // contact, resize the smaller one...
-            if ((*zones_iter).size() >= (*zonelist_iter2).size())
-              crop.insert(RIGHT);
-          } // end IF
-          if ((*zonelist_iter2).find(down) != (*zonelist_iter2).end())
-          {
-            // contact, resize the smaller one...
-            if ((*zones_iter).size() >= (*zonelist_iter2).size())
-              crop.insert(DOWN);
-          } // end IF
-          if ((*zonelist_iter2).find(left) != (*zonelist_iter2).end())
-          {
-            // contact, resize the smaller one...
-            if ((*zones_iter).size() >= (*zonelist_iter2).size())
-              crop.insert(LEFT);
-          } // end IF
+          // skip the CURRENT room
+          if (*zonelist_iter == *zones_iter)
+            continue;
+
+          // *NOTE*: if there is contact, resize the larger one...
+          // *TODO*: if this would crop the entire room, we should try to crop
+          // the smaller one instead...
+          if ((*zones_iter).size() < (*zonelist_iter).size())
+            continue;
+
+          if ((*zonelist_iter).find(up) != (*zonelist_iter).end())
+            crop_walls.insert(UP);
+          if ((*zonelist_iter).find(right) != (*zonelist_iter).end())
+            crop_walls.insert(RIGHT);
+          if ((*zonelist_iter).find(down) != (*zonelist_iter).end())
+              crop_walls.insert(DOWN);
+          if ((*zonelist_iter).find(left) != (*zonelist_iter).end())
+              crop_walls.insert(LEFT);
         } // end FOR
       } // end FOR
 
       // if necessary, crop the room
-      if (!crop.empty())
+      if (!crop_walls.empty())
       {
         RPG_Map_Position_t upper_left, upper_right, lower_left, lower_right;
         RPG_Map_PositionsConstIterator_t first, last;
-        for (RPG_Map_DirectionsConstIterator_t crop_iter = crop.begin();
-             crop_iter != crop.end();
+        for (RPG_Map_DirectionsConstIterator_t crop_iter = crop_walls.begin();
+             crop_iter != crop_walls.end();
              crop_iter++)
         {
           switch (*crop_iter)
@@ -1110,8 +1104,8 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
             case UP:
             {
               // erase top row
-              first = (*zonelist_iter).begin();
-              last = (*zonelist_iter).begin();
+              first = (*zones_iter).begin();
+              last = (*zones_iter).begin();
               while ((*last).second == (*first).second)
                 last++;
               // *NOTE*: std::set::erase removes [first, last) !
@@ -1161,14 +1155,14 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
             case DOWN:
             {
               // erase bottom row
-              first = (*zonelist_iter).begin();
-              last = (*zonelist_iter).end(); last--;
-              while ((*first).second == (*last).second)
+              first = (*zones_iter).begin();
+              last = (*zones_iter).end(); last--;
+              while ((*first).second != (*last).second)
                 first++;
               // *NOTE*: std::set::erase removes [first, last) !
-              (*zones_iter).erase(first, (*zonelist_iter).end());
+              (*zones_iter).erase(first, (*zones_iter).end());
               // create new bottom row
-              last = (*zonelist_iter).end(); last--;
+              last = (*zones_iter).end(); last--;
               first = last;
               first--;
               for (unsigned long i = 1;
@@ -1224,6 +1218,24 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
             }
           } // end SWITCH
         } // end FOR
+
+        // (re-)crop the entire room...
+        cropSquareBoundary(*zones_iter);
+        // debug info
+        if ((*zones_iter).empty())
+        {
+          // debug info
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("zone[%u] has been cropped entirely...\n"),
+                     index));
+        } // end IF
+//       else if ((*zones_iter).size() < (*partition_iter).size())
+//       {
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("zone[%u]: cropped %u additional position(s)...\n"),
+//                    index,
+//                    ((*partition_iter).size() - current_zone.size())));
+//       } // end ELSE
       } // end IF
     } // end FOR
   } // end IF
@@ -1826,6 +1838,168 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
        zone_iterator != alt_room.end();
        zone_iterator++)
     room_inout.insert(*zone_iterator);
+}
+
+void
+RPG_Map_Common_Tools::cropSquareBoundary(RPG_Map_Zone_t& room_inout)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::cropSquareBoundary"));
+
+  // sanity check
+  if (room_inout.empty())
+    return; // nothing to do...
+
+  // two-pass algorithm:
+  // 1. iterate over rows
+  // 2. iterate over columns
+  // and remove any sequences of less than 3 consecutive cells
+
+  // *NOTE*: as this is a (square !) boundary, just check the first rows/columns
+  RPG_Map_ZoneConstIterator_t begin_sequence = room_inout.begin();
+  RPG_Map_ZoneConstIterator_t line_iterator;
+  RPG_Map_ZoneConstIterator_t zone_iterator = room_inout.begin();
+  unsigned long next_x = 0;
+  unsigned long count = 0;
+
+  bool is_first_line = true;
+
+  // step1
+  while (true)
+  {
+    if ((zone_iterator != room_inout.end()) &&
+        ((*zone_iterator).second == (*begin_sequence).second))
+    {
+      // skip to next row/end
+      zone_iterator++;
+      continue;
+    } // end IF
+
+    // first row ?
+    if (is_first_line)
+      is_first_line = false;
+    else
+    {
+//       // second row --> skip to last row
+//       RPG_Map_ZoneConstIterator_t last = room_inout.end(); last--;
+//       while ((zone_iterator != room_inout.end()) &&
+//              ((*zone_iterator).second != (*last).second))
+//         zone_iterator++;
+//       begin_sequence = zone_iterator;
+      break;
+    } // end ELSE
+
+    // iterate over row
+    next_x = (*begin_sequence).first;
+    count = 0;
+    line_iterator = begin_sequence;
+    while (line_iterator != zone_iterator) // maybe end
+    {
+      while ((line_iterator != room_inout.end()) &&
+              ((*line_iterator).first == next_x))
+      {
+        next_x++;
+        count++;
+        line_iterator++;
+      } // end IF
+
+      // there was a gap (maybe next row/end)
+      // --> remove any previous sequence of less than 3 consecutive cells
+      if (count < 3)
+      {
+        // *NOTE*: if we crop anything --> crop EVERYTHING !
+        room_inout.clear();
+        break; // done !
+      } // end IF
+      begin_sequence = line_iterator;
+      next_x = (*begin_sequence).first;
+      count = 0;
+    } // end WHILE
+
+    // finished ?
+    if (room_inout.empty() ||
+        (zone_iterator == room_inout.end()))
+      break;
+  } // end WHILE
+
+  // sanity check
+  if (room_inout.empty())
+    return; // nothing more to do...
+
+  // step2
+  // create alternate sorting
+  RPG_Map_AltPositions_t alt_room;
+  for (zone_iterator = room_inout.begin();
+       zone_iterator != room_inout.end();
+       zone_iterator++)
+    alt_room.insert(*zone_iterator);
+
+  begin_sequence = alt_room.begin();
+  zone_iterator = alt_room.begin();
+  unsigned long next_y = 0;
+  count = 0;
+
+  is_first_line = true;
+
+  while (true)
+  {
+    if ((zone_iterator != alt_room.end()) &&
+        ((*zone_iterator).first == (*begin_sequence).first))
+    {
+      // skip to next column/end
+      zone_iterator++;
+      continue;
+    } // end IF
+
+    // first column ?
+    if (is_first_line)
+      is_first_line = false;
+    else
+    {
+//       // second column --> skip to last column
+//       RPG_Map_ZoneConstIterator_t last = room_inout.end(); last--;
+//       while ((zone_iterator != room_inout.end()) &&
+//              ((*zone_iterator).first != (*last).first))
+//         zone_iterator++;
+//       begin_sequence = zone_iterator;
+      break;
+    } // end ELSE
+
+    // iterate over column
+    next_y = (*begin_sequence).second;
+    count = 0;
+    line_iterator = begin_sequence;
+    while (line_iterator != zone_iterator) // maybe end
+    {
+      while ((line_iterator != room_inout.end()) &&
+              ((*line_iterator).second == next_y))
+      {
+        next_y++;
+        count++;
+        line_iterator++;
+      } // end IF
+
+      // there is a gap (maybe next column)
+      // --> remove any previous sequence of less than 3 consecutive cells
+      if (count < 3)
+      {
+        // *NOTE*: if we crop anything --> crop EVERYTHING !
+        alt_room.clear();
+        break; // done !
+      } // end IF
+      begin_sequence = line_iterator;
+      next_y = (*begin_sequence).second;
+      count = 0;
+    } // end WHILE
+
+    // finished ?
+    if (alt_room.empty() ||
+        (zone_iterator == alt_room.end()))
+      break;
+  } // end WHILE
+
+  // return original sorting
+  if (alt_room.empty())
+    room_inout.clear();
 }
 
 const bool
