@@ -111,10 +111,13 @@ const bool process_arguments(const int argc_in,
       }
       case 'd':
       {
+        int temp = 0;
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
-        converter >> maxDoorsPerRoom_out;
+        converter >> temp;
+        if (temp == -1)
+          maxDoorsPerRoom_out = std::numeric_limits<unsigned long>::max();
 
         break;
       }

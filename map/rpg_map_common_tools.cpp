@@ -64,7 +64,9 @@ RPG_Map_Common_Tools::createDungeonLevel(const unsigned long& dimensionX_in,
                   partition);
 
     // step2: form rooms within partition(s)
-    makeRooms(partition,
+    makeRooms(dimensionX_in,
+              dimensionY_in,
+              partition,
               wantSquareRooms_in,
               (doorFillsPosition_in ? true : false), // requires cropped rooms !
               maximizeArea_in,
@@ -759,7 +761,9 @@ RPG_Map_Common_Tools::findMaxSquare(const RPG_Map_Zone_t& room_in,
 }
 
 void
-RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
+RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
+                                const unsigned long& dimensionY_in,
+                                const RPG_Map_Partition_t& partition_in,
                                 const bool& wantSquareRooms_in,
                                 const bool& cropAreas_in,
                                 const bool& maximizeArea_in,
@@ -851,13 +855,13 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
 
         // debug info
         ACE_DEBUG((LM_DEBUG,
-                  ACE_TEXT("max. square[%u]: [(%u,%u),(%u,%u)] - %u cell(s)\n"),
-                  index,
-                  maxSquare.ul.first,
-                  maxSquare.ul.second,
-                  maxSquare.lr.first,
-                  maxSquare.lr.second,
-                  area2Positions(maxSquare.ul, maxSquare.lr)));
+                   ACE_TEXT("max. square[%u]: [(%u,%u),(%u,%u)] - %u cell(s)\n"),
+                   index,
+                   maxSquare.ul.first,
+                   maxSquare.ul.second,
+                   maxSquare.lr.first,
+                   maxSquare.lr.second,
+                   area2Positions(maxSquare.ul, maxSquare.lr)));
       } // end ELSE
 
       maxSquares.push_back(maxSquare);
@@ -920,11 +924,13 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
   } // end IF
   else
   {
-    // rooms may have been cropped
+    // *NOTE*: rooms may have been cropped...
     // --> nothing to do...
   } // end ELSE
 
   // step2: enforce any other constraint(s)
+
+  // minimal area
   if (minArea_in)
   {
     index = 0;
@@ -1036,6 +1042,191 @@ RPG_Map_Common_Tools::makeRooms(const RPG_Map_Partition_t& partition_in,
 
     *zones_iter = current_zone; // do in-place editing...
   } // end FOR
+
+  if (wantSquareRooms_in)
+  {
+    // enforce a minimal separation
+    RPG_Map_Position_t up, right, down, left;
+    RPG_Map_Directions_t crop;
+    index = 0;
+    for (zones_iter = rooms_out.begin();
+         zones_iter != rooms_out.end();
+         zones_iter++, index++)
+    {
+      crop.clear();
+      for (RPG_Map_ZoneIterator_t zone_iter2 = (*zonelist_iter).begin();
+           zone_iter2 != (*zonelist_iter).end();
+           zone_iter2++)
+      {
+        // compute neighbours
+        up = *zone_iter2; up.second -= ((up.second == 0) ? 0 : 1);
+        right = *zone_iter2; right.first += ((right.first == (dimensionX_in - 1)) ? 0 : 1);
+        down = *zone_iter2; down.second += ((down.second == (dimensionY_in - 1)) ? 0 : 1);
+        left = *zone_iter2; left.first -= ((left.first == 0) ? 0 : 1);
+
+        // (direct) contact with another room ?
+        for (RPG_Map_ZoneListConstIterator_t zonelist_iter2 = rooms_out.begin();
+             zonelist_iter2 != rooms_out.end();
+             zonelist_iter2++)
+        {
+          if ((*zonelist_iter2).find(up) != (*zonelist_iter2).end())
+          {
+            // contact, resize the smaller one...
+            if ((*zones_iter).size() >= (*zonelist_iter2).size())
+              crop.insert(UP);
+          } // end IF
+          if ((*zonelist_iter2).find(right) != (*zonelist_iter2).end())
+          {
+            // contact, resize the smaller one...
+            if ((*zones_iter).size() >= (*zonelist_iter2).size())
+              crop.insert(RIGHT);
+          } // end IF
+          if ((*zonelist_iter2).find(down) != (*zonelist_iter2).end())
+          {
+            // contact, resize the smaller one...
+            if ((*zones_iter).size() >= (*zonelist_iter2).size())
+              crop.insert(DOWN);
+          } // end IF
+          if ((*zonelist_iter2).find(left) != (*zonelist_iter2).end())
+          {
+            // contact, resize the smaller one...
+            if ((*zones_iter).size() >= (*zonelist_iter2).size())
+              crop.insert(LEFT);
+          } // end IF
+        } // end FOR
+      } // end FOR
+
+      // if necessary, crop the room
+      if (!crop.empty())
+      {
+        RPG_Map_Position_t upper_left, upper_right, lower_left, lower_right;
+        RPG_Map_PositionsConstIterator_t first, last;
+        for (RPG_Map_DirectionsConstIterator_t crop_iter = crop.begin();
+             crop_iter != crop.end();
+             crop_iter++)
+        {
+          switch (*crop_iter)
+          {
+            case UP:
+            {
+              // erase top row
+              first = (*zonelist_iter).begin();
+              last = (*zonelist_iter).begin();
+              while ((*last).second == (*first).second)
+                last++;
+              // *NOTE*: std::set::erase removes [first, last) !
+              (*zones_iter).erase(first, last);
+              // create new top row
+              first = last;
+              last++;
+              for (unsigned long i = 1;
+                   i <= ((*last).first - (*first).first);
+                   i++)
+                (*zones_iter).insert(std::make_pair(((*first).first + i), (*first).second));
+
+              // debug info
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("zone[%u]: cropped top row...\n"),
+                         index));
+
+              break;
+            }
+            case RIGHT:
+            {
+              // erase rightmost column
+              last = (*zones_iter).end(); last--;
+              unsigned long column_x = (*last).first;
+              for (RPG_Map_ZoneIterator_t zone_iter2 = (*zones_iter).begin();
+                   zone_iter2 != (*zones_iter).end();
+                   zone_iter2++)
+              {
+                if ((*zone_iter2).first == column_x)
+                  (*zones_iter).erase(zone_iter2);
+              } // end FOR
+              // create new rightmost column
+              first = (*zones_iter).begin();
+              last = (*zones_iter).end(); last--;
+              for (unsigned long i = 1;
+                   i <= ((*last).second - (*first).second);
+                   i++)
+                (*zones_iter).insert(std::make_pair((*last).first, ((*last).second - i)));
+
+              // debug info
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("zone[%u]: cropped rightmost column...\n"),
+                         index));
+
+              break;
+            }
+            case DOWN:
+            {
+              // erase bottom row
+              first = (*zonelist_iter).begin();
+              last = (*zonelist_iter).end(); last--;
+              while ((*first).second == (*last).second)
+                first++;
+              // *NOTE*: std::set::erase removes [first, last) !
+              (*zones_iter).erase(first, (*zonelist_iter).end());
+              // create new bottom row
+              last = (*zonelist_iter).end(); last--;
+              first = last;
+              first--;
+              for (unsigned long i = 1;
+                   i <= ((*last).first - (*first).first);
+                   i++)
+                (*zones_iter).insert(std::make_pair(((*first).first + i), (*first).second));
+
+              // debug info
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("zone[%u]: cropped bottom row...\n"),
+                         index));
+
+              break;
+            }
+            case LEFT:
+            {
+              // erase leftmost column
+              first = (*zones_iter).begin();
+              unsigned long column_x = (*first).first;
+              for (RPG_Map_ZoneIterator_t zone_iter2 = (*zones_iter).begin();
+                   zone_iter2 != (*zones_iter).end();
+                   zone_iter2++)
+              {
+                if ((*zone_iter2).first == column_x)
+                  (*zones_iter).erase(zone_iter2);
+              } // end FOR
+              // create new leftmost column
+              first = (*zones_iter).begin();
+              last = (*zones_iter).end(); last--;
+              for (unsigned long i = 1;
+                   i <= ((*last).second - (*first).second);
+                   i++)
+                (*zones_iter).insert(std::make_pair((*first).first, ((*last).second - i)));
+
+              // debug info
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("zone[%u]: cropped leftmost column...\n"),
+                         index));
+
+              break;
+            }
+            default:
+            {
+              // debug info
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("invalid direction (was %u), continuing\n"),
+                         *crop_iter));
+
+              // *TODO*: what else can we do ?
+              ACE_ASSERT(false);
+
+              break;
+            }
+          } // end SWITCH
+        } // end FOR
+      } // end IF
+    } // end FOR
+  } // end IF
 }
 
 void
@@ -1174,27 +1365,38 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
 
       // step2: generate (random) number of doors
       result.clear();
-      RPG_Dice::generateRandomNumbers((maxDoorsPerRoom_in ? ((maxDoorsPerRoom_in > doorPositions.size()) ? doorPositions.size()
-                                                                                                         : maxDoorsPerRoom_in)
-                                                          : doorPositions.size()),
-                                      1,
-                                      result);
-      num_doors = result[0];
-
-      // step3: choose num_doors from available positions
-      while (current_doors.size() < num_doors)
+      if (maxDoorsPerRoom_in == std::numeric_limits<unsigned long>::max())
       {
-        result.clear();
-        RPG_Dice::generateRandomNumbers(doorPositions.size(),
+        // for debugging purposes...
+        num_doors = doorPositions.size();
+        for (doorPosition_iterator = doorPositions.begin();
+             doorPosition_iterator != doorPositions.end();
+             doorPosition_iterator++)
+          current_doors.insert(*doorPosition_iterator);
+      } // end IF
+      else
+      {
+        RPG_Dice::generateRandomNumbers((maxDoorsPerRoom_in ? ((maxDoorsPerRoom_in > doorPositions.size()) ? doorPositions.size()
+                                                                                                           : maxDoorsPerRoom_in)
+                                                            : doorPositions.size()),
                                         1,
                                         result);
-        doorPosition_iterator = doorPositions.begin();
-        std::advance(doorPosition_iterator, result[0] - 1);
+        num_doors = result[0];
+        // step3: choose num_doors from available positions
+        while (current_doors.size() < num_doors)
+        {
+          result.clear();
+          RPG_Dice::generateRandomNumbers(doorPositions.size(),
+                                          1,
+                                          result);
+          doorPosition_iterator = doorPositions.begin();
+          std::advance(doorPosition_iterator, result[0] - 1);
 
-        current_doors.insert(*doorPosition_iterator);
-  //       if (doorFillsPosition_in)
-  //         (*zonelist_iter).erase(*doorPosition_iterator); // not a wall anymore...
-      } // end WHILE
+          current_doors.insert(*doorPosition_iterator);
+    //       if (doorFillsPosition_in)
+    //         (*zonelist_iter).erase(*doorPosition_iterator); // not a wall anymore...
+        } // end WHILE
+      } // end ELSE
 
       doors.push_back(current_doors);
       total_doors += num_doors;

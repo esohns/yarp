@@ -57,6 +57,7 @@ class RPG_Map_Common_Tools
   // (cannot enforce this without a (more complicated) algebraic definition...)
   typedef RPG_Map_Positions_t RPG_Map_Zone_t;
   typedef RPG_Map_Zone_t::const_iterator RPG_Map_ZoneConstIterator_t;
+  typedef RPG_Map_Zone_t::iterator RPG_Map_ZoneIterator_t;
   static void dump(const RPG_Map_Zone_t&); // zone
   typedef std::list<RPG_Map_Zone_t> RPG_Map_Partition_t;
   typedef RPG_Map_Partition_t::const_iterator RPG_Map_PartitionConstIterator_t;
@@ -89,7 +90,9 @@ class RPG_Map_Common_Tools
                                      const RPG_Map_Square_t&);  // square
   static void findMaxSquare(const RPG_Map_Zone_t&, // room
                             RPG_Map_Square_t&);    // return value: max square
-  static void makeRooms(const RPG_Map_Partition_t&, // partition
+  static void makeRooms(const unsigned long&,       // dimension x
+                        const unsigned long&,       // dimension y
+                        const RPG_Map_Partition_t&, // partition
                         const bool&,                // rooms to be square ?
                         const bool&,                // crop areas ?
                         const bool&,                // maximize area ?
