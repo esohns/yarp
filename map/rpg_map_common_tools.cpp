@@ -1436,6 +1436,8 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
   RPG_Map_Zone_t current_corridor;
   RPG_Map_Positions_t used_positions;
   RPG_Map_Path_t current_path;
+  RPG_Map_Position_t wall_position1, wall_position2;
+  RPG_Map_Position_t last_position;
   for (zonelist_iter = doors.begin();
        zonelist_iter != doors.end();
        zonelist_iter++)
@@ -1496,48 +1498,76 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
       } // end IF
 
       // step3: create a corridor along this path
+      last_position = (*doors_iter);
       for (RPG_Map_PathConstIterator_t path_iter = current_path.begin();
            path_iter != current_path.end();
            path_iter++)
       {
+        wall_position1 = last_position;
+        wall_position2 = last_position;
         switch (*path_iter)
         {
           case UP:
           {
+            wall_position1.first--;
+            wall_position1.second--;
+            wall_position2.first++;
+            wall_position2.second--;
 
-          }
-          case RIGHT:
-          {
+            last_position.second--;
 
+            break;
           }
           case DOWN:
           {
+            wall_position1.first--;
+            wall_position1.second++;
+            wall_position2.first++;
+            wall_position2.second++;
 
+            last_position.second++;
+
+            break;
+          }
+          case RIGHT:
+          {
+            wall_position1.first++;
+            wall_position1.second--;
+            wall_position2.first++;
+            wall_position2.second++;
+
+            last_position.first++;
+
+            break;
           }
           case LEFT:
           {
+            wall_position1.first--;
+            wall_position1.second--;
+            wall_position2.first--;
+            wall_position2.second++;
 
+            last_position.first--;
+
+            break;
           }
           default:
           {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("invalid direction (was \"%s\", %u)\n"),
+                       direction2String(*path_iter).c_str(),
+                       *path_iter));
 
+            break;
           }
         } // end SWITCH
+        current_corridor.insert(wall_position1);
+        current_corridor.insert(wall_position2);
       } // end FOR
+      corridors.push_back(current_corridor);
     } // end FOR
 
   // step3: throw everything together
-  for (zonelist_iter = rooms_in.begin();
-       zonelist_iter != rooms_in.end();
-       zonelist_iter++)
-  {
-    for (RPG_Map_ZoneConstIterator_t zone_iter = (*zonelist_iter).begin();
-         zone_iter != (*zonelist_iter).end();
-         zone_iter++)
-    {
-      level_out.walls.insert(*zone_iter);
-    } // end FOR
-  } // end FOR
   for (zonelist_iter = corridors.begin();
        zonelist_iter != corridors.end();
        zonelist_iter++)
