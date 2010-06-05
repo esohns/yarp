@@ -20,6 +20,7 @@
 #include "rpg_map_common_tools.h"
 
 #include "rpg_map_defines.h"
+#include "rpg_map_pathfinding_tools.h"
 
 #include <rpg_dice.h>
 
@@ -1304,6 +1305,17 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
   level_out.doors.clear();
   level_out.walls.clear();
 
+  // step0: add room walls
+  RPG_Map_ZoneListConstIterator_t zonelist_iter;
+  RPG_Map_ZoneConstIterator_t zone_iter;
+  for (zonelist_iter = rooms_in.begin();
+       zonelist_iter != rooms_in.end();
+       zonelist_iter++)
+    for (zone_iter = (*zonelist_iter).begin();
+         zone_iter != (*zonelist_iter).end();
+         zone_iter++)
+      level_out.walls.insert(*zone_iter);
+
   // step1: make doors
   // *NOTE*: every room needs at least one (possibly secret) door
   // *NOTE*: doors cannot be situated on the boundary of the level
@@ -1312,7 +1324,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
   RPG_Map_ZoneList_t doors;
   unsigned long total_doors = 0;
   unsigned long index = 0;
-  RPG_Map_ZoneListConstIterator_t zonelist_iter;
+
   RPG_Map_Zone_t current_doors;
   unsigned long num_doors = 0;
   RPG_Dice_RollResult_t result;
@@ -1417,9 +1429,102 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
 
   // step2: make corridors
   RPG_Map_ZoneList_t corridors;
+  RPG_Map_ZoneListConstIterator_t zonelist_iter2;
+  RPG_Map_ZoneConstIterator_t doors_iter;
+  RPG_Map_ZoneConstIterator_t doors_iter2;
+  RPG_Map_Position_t door_position;
   RPG_Map_Zone_t current_corridor;
-  // *TODO*:
-//   ACE_ASSERT(false);
+  RPG_Map_Positions_t used_positions;
+  RPG_Map_Path_t current_path;
+  for (zonelist_iter = doors.begin();
+       zonelist_iter != doors.end();
+       zonelist_iter++)
+    for (doors_iter = (*zonelist_iter).begin();
+         doors_iter != (*zonelist_iter).end();
+         doors_iter++)
+    {
+      // already connected ?
+      if (used_positions.find(*doors_iter) != used_positions.end())
+        continue;
+
+      current_path.clear();
+      current_corridor.clear();
+
+      do
+      {
+        // step1: (if possible) choose a target door from a different room
+        if (doors.size() > 1)
+        {
+          do
+          {
+            result.clear();
+            RPG_Dice::generateRandomNumbers(doors.size(),
+                                            1,
+                                            result);
+            zonelist_iter2 = doors.begin();
+            std::advance(zonelist_iter2, result[0] - 1);
+          } while (zonelist_iter2 == zonelist_iter);
+        } // end IF
+        else
+          zonelist_iter2 = zonelist_iter;
+        do
+        {
+          result.clear();
+          RPG_Dice::generateRandomNumbers((*zonelist_iter2).size(),
+                                          1,
+                                          result);
+          doors_iter2 = (*zonelist_iter2).begin();
+          std::advance(doors_iter2, result[0] - 1);
+        } while (doors_iter2 == doors_iter);
+      } while (used_positions.find(*doors_iter2) != used_positions.end());
+      door_position = *doors_iter2;
+
+      // step2: find a path from one door to the other
+      if (!RPG_Map_Pathfinding_Tools::findPath(dimensionX_in,
+                                               dimensionY_in,
+                                               level_out.walls,
+                                               *doors_iter,
+                                               *doors_iter2,
+                                               current_path))
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("cannot find path from (%u,%u) to (%u,%u)...\n"),
+                   (*doors_iter).first,
+                   (*doors_iter).second,
+                   (*doors_iter2).first,
+                   (*doors_iter2).second));
+      } // end IF
+
+      // step3: create a corridor along this path
+      for (RPG_Map_PathConstIterator_t path_iter = current_path.begin();
+           path_iter != current_path.end();
+           path_iter++)
+      {
+        switch (*path_iter)
+        {
+          case UP:
+          {
+
+          }
+          case RIGHT:
+          {
+
+          }
+          case DOWN:
+          {
+
+          }
+          case LEFT:
+          {
+
+          }
+          default:
+          {
+
+          }
+        } // end SWITCH
+      } // end FOR
+    } // end FOR
 
   // step3: throw everything together
   for (zonelist_iter = rooms_in.begin();
@@ -1433,6 +1538,16 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
       level_out.walls.insert(*zone_iter);
     } // end FOR
   } // end FOR
+  for (zonelist_iter = corridors.begin();
+       zonelist_iter != corridors.end();
+       zonelist_iter++)
+    for (RPG_Map_ZoneConstIterator_t zone_iter = (*zonelist_iter).begin();
+         zone_iter != (*zonelist_iter).end();
+         zone_iter++)
+    {
+      level_out.walls.insert(*zone_iter);
+    } // end FOR
+
   index = 0;
   unsigned long index2 = 0;
   RPG_Map_ZoneConstIterator_t doors_iterator;
@@ -1488,6 +1603,36 @@ RPG_Map_Common_Tools::dist2Positions(const RPG_Map_Position_t& position1_in,
 
   return (::abs(position1_in.first - position2_in.first) +
           ::abs(position1_in.second - position2_in.second));
+}
+
+const std::string
+RPG_Map_Common_Tools::direction2String(const RPG_Map_Direction_t& direction_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::direction2String"));
+
+  switch (direction_in)
+  {
+    case UP:
+      return std::string("UP");
+    case RIGHT:
+      return std::string("RIGHT");
+    case DOWN:
+      return std::string("DOWN");
+    case LEFT:
+      return std::string("LEFT");
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid direction (was %u), continuing\n"),
+                 direction_in));
+
+      ACE_ASSERT(false);
+
+      break;
+    }
+  } // end SWITCH
+
+  return std::string("INVALID");
 }
 
 const unsigned long

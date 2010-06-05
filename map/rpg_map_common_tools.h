@@ -25,6 +25,8 @@
 #include <ace/Global_Macros.h>
 
 #include <list>
+#include <set>
+#include <string>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -45,6 +47,10 @@ class RPG_Map_Common_Tools
                                   const unsigned long&,         // map dimension y
                                   const RPG_Map_DungeonLevel&); // doors & walls
 
+  static const unsigned long dist2Positions(const RPG_Map_Position_t&,  // position 1
+                                            const RPG_Map_Position_t&); // position 2
+  static const std::string direction2String(const RPG_Map_Direction_t&); // direction
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Common_Tools());
@@ -62,8 +68,6 @@ class RPG_Map_Common_Tools
   typedef std::list<RPG_Map_Zone_t> RPG_Map_Partition_t;
   typedef RPG_Map_Partition_t::const_iterator RPG_Map_PartitionConstIterator_t;
   typedef RPG_Map_Partition_t::iterator RPG_Map_PartitionIterator_t;
-  static const unsigned long dist2Positions(const RPG_Map_Position_t&,  // position 1
-                                            const RPG_Map_Position_t&); // position 2
   static void makePartition(const unsigned long&,  // dimension x
                             const unsigned long&,  // dimension y
                             const unsigned long&,  // #partitions
