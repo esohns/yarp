@@ -41,6 +41,20 @@ class RPG_Map_Pathfinding_Tools
                              const RPG_Map_Position_t&,  // end position
                              RPG_Map_Path_t&);           // return value: path
 
+  struct RPG_Map_AStar_Position_t
+  {
+    RPG_Map_Position_t position;
+    RPG_Map_Position_t last_position;
+
+    inline RPG_Map_AStar_Position_t& operator=(const RPG_Map_AStar_Position_t& rhs_in)
+    { this->position = rhs_in.position;
+      this->last_position = rhs_in.last_position;
+      return *this; }
+    inline bool operator==(const RPG_Map_AStar_Position_t& rhs_in) const
+    { return (this->position == rhs_in.position); }
+  };
+  typedef std::pair<RPG_Map_AStar_Position_t, unsigned long> RPG_Map_AStar_Node_t;
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Pathfinding_Tools());
@@ -48,7 +62,6 @@ class RPG_Map_Pathfinding_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Pathfinding_Tools(const RPG_Map_Pathfinding_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Pathfinding_Tools& operator=(const RPG_Map_Pathfinding_Tools&));
 
-  typedef std::pair<RPG_Map_Position_t, unsigned long> RPG_Map_AStar_Node_t;
   typedef std::list<RPG_Map_AStar_Node_t> RPG_Map_AStar_NodeList_t;
   typedef RPG_Map_AStar_NodeList_t::const_iterator RPG_Map_AStar_NodeListConstIterator_t;
   typedef RPG_Map_AStar_NodeList_t RPG_Map_AStar_ClosedPath_t;
@@ -65,7 +78,7 @@ class RPG_Map_Pathfinding_Tools
                const RPG_Map_AStar_Node_t& __second) const
     {
       return ((__first.second < __second.second) ||
-              (!(__second.second < __first.second) && (__first.first < __second.first)));
+              (!(__second.second < __first.second) && (__first.first.position < __second.first.position)));
     }
   };
   typedef std::set<RPG_Map_AStar_Node_t, node_compare> RPG_Map_AStar_Nodes_t;
@@ -73,5 +86,10 @@ class RPG_Map_Pathfinding_Tools
   typedef RPG_Map_AStar_Nodes_t::iterator RPG_Map_AStar_NodesIterator_t;
   typedef RPG_Map_AStar_Nodes_t RPG_Map_AStar_OpenPath_t;
 };
+
+inline static bool
+operator==(const RPG_Map_Pathfinding_Tools::RPG_Map_AStar_Node_t& __x,
+           const RPG_Map_Pathfinding_Tools::RPG_Map_AStar_Node_t& __y)
+{ return (__x.first == __y.first); };
 
 #endif

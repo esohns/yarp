@@ -79,7 +79,10 @@ enum RPG_Map_Direction_t
 };
 typedef std::set<RPG_Map_Direction_t> RPG_Map_Directions_t;
 typedef RPG_Map_Directions_t::const_iterator RPG_Map_DirectionsConstIterator_t;
-typedef std::list<RPG_Map_Direction_t> RPG_Map_Path_t;
+typedef std::pair<RPG_Map_Position_t, RPG_Map_Direction_t> RPG_Map_PathStep_t;
+typedef std::list<RPG_Map_PathStep_t> RPG_Map_Path_t;
 typedef RPG_Map_Path_t::const_iterator RPG_Map_PathConstIterator_t;
+typedef std::list<RPG_Map_Path_t> RPG_Map_PathList_t;
+typedef RPG_Map_PathList_t::const_iterator RPG_Map_PathListConstIterator_t;
 
 #endif

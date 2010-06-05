@@ -1426,18 +1426,42 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
       total_doors += num_doors;
     } // end FOR
   } // end WHILE
+  // ...add the doors to the level
+  index = 0;
+  unsigned long index2 = 0;
+  RPG_Map_ZoneConstIterator_t doors_iterator;
+  for (zonelist_iter = doors.begin();
+       zonelist_iter != doors.end();
+       zonelist_iter++, index++)
+  {
+    index2 = 0;
+    for (doors_iterator = (*zonelist_iter).begin();
+         doors_iterator != (*zonelist_iter).end();
+         doors_iterator++, index2++)
+    {
+      level_out.doors.insert(*doors_iterator);
+
+      // debug info
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("door[%u,%u] at (%u,%u)\n"),
+                 index, index2,
+                 (*doors_iterator).first,
+                 (*doors_iterator).second));
+    } // end FOR
+  } // end FOR
 
   // step2: make corridors
   RPG_Map_ZoneList_t corridors;
   RPG_Map_ZoneListConstIterator_t zonelist_iter2;
   RPG_Map_ZoneConstIterator_t doors_iter;
   RPG_Map_ZoneConstIterator_t doors_iter2;
-  RPG_Map_Position_t door_position;
   RPG_Map_Zone_t current_corridor;
   RPG_Map_Positions_t used_positions;
   RPG_Map_Path_t current_path;
   RPG_Map_Position_t wall_position1, wall_position2;
   RPG_Map_Position_t last_position;
+  RPG_Map_PathList_t paths;
+  index = 0;
   for (zonelist_iter = doors.begin();
        zonelist_iter != doors.end();
        zonelist_iter++)
@@ -1479,7 +1503,6 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
           std::advance(doors_iter2, result[0] - 1);
         } while (doors_iter2 == doors_iter);
       } while (used_positions.find(*doors_iter2) != used_positions.end());
-      door_position = *doors_iter2;
 
       // step2: find a path from one door to the other
       if (!RPG_Map_Pathfinding_Tools::findPath(dimensionX_in,
@@ -1490,11 +1513,33 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
                                                current_path))
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("cannot find path from (%u,%u) to (%u,%u)...\n"),
+                   ACE_TEXT("cannot find path from (%u,%u) to (%u,%u)\n"),
                    (*doors_iter).first,
                    (*doors_iter).second,
                    (*doors_iter2).first,
                    (*doors_iter2).second));
+      } // end IF
+      else
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("found path from (%u,%u) to (%u,%u)\n"),
+                   (*doors_iter).first,
+                   (*doors_iter).second,
+                   (*doors_iter2).first,
+                   (*doors_iter2).second));
+      } // end ELSE
+
+      used_positions.insert(*doors_iter);
+      used_positions.insert(*doors_iter2);
+      // check: when minimal connectivity has been reached (i.e. every door has
+      //        been attached to some corridor), relax this constraint
+      if (used_positions == level_out.doors)
+      {
+        used_positions.clear();
+
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("connectivity has been established (%u path(s))...\n"),
+                   (paths.size() + 1)));
       } // end IF
 
       // step3: create a corridor along this path
@@ -1505,7 +1550,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
       {
         wall_position1 = last_position;
         wall_position2 = last_position;
-        switch (*path_iter)
+        switch ((*path_iter).second)
         {
           case UP:
           {
@@ -1551,12 +1596,18 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
 
             break;
           }
+          case INVALID:
+          {
+            // reached the endpoint ?
+            if ((*path_iter).first == *doors_iter2)
+              break; // done
+          }
           default:
           {
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("invalid direction (was \"%s\", %u)\n"),
-                       direction2String(*path_iter).c_str(),
-                       *path_iter));
+                       direction2String((*path_iter).second).c_str(),
+                       (*path_iter).second));
 
             break;
           }
@@ -1565,6 +1616,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
         current_corridor.insert(wall_position2);
       } // end FOR
       corridors.push_back(current_corridor);
+      paths.push_back(current_path);
     } // end FOR
 
   // step3: throw everything together
@@ -1574,32 +1626,24 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
     for (RPG_Map_ZoneConstIterator_t zone_iter = (*zonelist_iter).begin();
          zone_iter != (*zonelist_iter).end();
          zone_iter++)
-    {
       level_out.walls.insert(*zone_iter);
-    } // end FOR
 
-  index = 0;
-  unsigned long index2 = 0;
-  RPG_Map_ZoneConstIterator_t doors_iterator;
-  for (zonelist_iter = doors.begin();
-       zonelist_iter != doors.end();
-       zonelist_iter++, index++)
-  {
-    index2 = 0;
-    for (doors_iterator = (*zonelist_iter).begin();
-         doors_iterator != (*zonelist_iter).end();
-         doors_iterator++, index2++)
-    {
-      level_out.doors.insert(*doors_iterator);
+  // step4: clear any rubble that may now block some corridors
+  for (RPG_Map_PathListConstIterator_t paths_iter = paths.begin();
+       paths_iter != paths.end();
+       paths_iter++)
+    for (RPG_Map_PathConstIterator_t path_iter = (*paths_iter).begin();
+         path_iter != (*paths_iter).end();
+         path_iter++)
+      if (level_out.walls.find((*path_iter).first) != level_out.walls.end())
+      {
+        level_out.walls.erase((*path_iter).first);
 
-      // debug info
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("door[%u,%u] at (%u,%u)\n"),
-                 index, index2,
-                 (*doors_iterator).first,
-                 (*doors_iterator).second));
-    } // end FOR
-  } // end FOR
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("cleared rubble at (%u,%u)...\n"),
+                   (*path_iter).first.first,
+                   (*path_iter).first.second));
+      } // end IF
 }
 
 void
