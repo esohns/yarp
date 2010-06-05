@@ -233,7 +233,9 @@
       <synchronize>true</synchronize>
       <orientation>Vertical</orientation>
     </splitheadersource>
-    <references/>
+    <references>
+      <pcs>automatic_%2Fhome%2Funfv%2FProjects%2FRPG%2Fmap</pcs>
+    </references>
   </kdevcppsupport>
   <cppsupportpart>
     <filetemplates>

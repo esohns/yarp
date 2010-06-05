@@ -40,6 +40,7 @@ class RPG_Map_Common_Tools
                                  const bool&,            // rooms to be square ?
                                  const bool&,            // maximize area ?
                                  const unsigned long&,   // min. area (0: don't care)
+                                 const bool&,            // want corridors between rooms ?
                                  const bool&,            // doors to fill positions ?
                                  const unsigned long&,   // max. #doors/room
                                  RPG_Map_DungeonLevel&); // return value: doors & walls
@@ -98,10 +99,12 @@ class RPG_Map_Common_Tools
                         const unsigned long&,       // dimension y
                         const RPG_Map_Partition_t&, // partition
                         const bool&,                // rooms to be square ?
+                        const bool&,                // want room separation ?
                         const bool&,                // crop areas ?
                         const bool&,                // maximize area ?
                         const unsigned long&,       // min. area (0: don't care)
-                        RPG_Map_ZoneList_t&);       // return value: room(s)
+                        RPG_Map_ZoneList_t&,        // return value: room(s)
+                        RPG_Map_ZoneList_t&);       // return value: boundary(s)
   static void displayRooms(const unsigned long&,       // dimension x
                            const unsigned long&,       // dimension y
                            const RPG_Map_ZoneList_t&); // room(s)
@@ -123,7 +126,7 @@ class RPG_Map_Common_Tools
   typedef std::set<RPG_Map_Position_t> RPG_Map_AltPositions_t;
   typedef RPG_Map_AltPositions_t::const_iterator RPG_Map_AltPositionsConstIterator_t;
   static void crop(RPG_Map_Zone_t&); // room
-  static void cropSquareBoundary(RPG_Map_Zone_t&); // room
+//   static void cropSquareBoundary(RPG_Map_Zone_t&); // room
   static const bool turn(const RPG_Map_Zone_t&,     // map
                          const RPG_Map_Position_t&, // position
                          const ORIGIN&,             // origin
@@ -133,9 +136,13 @@ class RPG_Map_Common_Tools
   static void findDoorPositions(const RPG_Map_Zone_t&,    // room (shell !)
                                 const bool&,              // doors to fill positions ?
                                 RPG_Map_PositionList_t&); // suitable position(s)
+  static const RPG_Map_Direction_t door2exitDirection(const RPG_Map_Zone_t&,      // room
+                                                      const RPG_Map_Position_t&); // door
   static void connectRooms(const unsigned long&,      // dimension x
                            const unsigned long&,      // dimension y
-                           const RPG_Map_ZoneList_t&, // room(s)
+                           const RPG_Map_ZoneList_t&, // boundary(s)
+                           const RPG_Map_ZoneList_t&, // room(s) // *TODO*: faster in/out tests ?
+                           const bool&,               // want corridors ?
                            const bool&,               // doors to fill positions ?
                            const unsigned long&,      // max. #doors/room
                            RPG_Map_DungeonLevel&);    // return value: doors & walls

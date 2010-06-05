@@ -21,7 +21,7 @@
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>net/protocol/IRC_client_gui</activetarget>
+      <activetarget>map/map_generator</activetarget>
     </general>
     <run>
       <mainprogram>/home/unfv/Projects/RPG/test_u/debug/monster/monster_parser</mainprogram>
@@ -46,6 +46,7 @@
         <net_server>-i 5 -k 60 -p 10101 -t</net_server>
         <IRC_client>-c ./../../../net/protocol/IRC_client.ini -t</IRC_client>
         <IRC_client_gui>-c ./../../../net/protocol/IRC_client.ini -t -u ./../../../net/protocol/IRC_client.glade</IRC_client_gui>
+        <map_generator>-a 0 -d 0 -m -r 2 -s -t -x 40 -y 20</map_generator>
       </runarguments>
       <debugarguments>
         <character_generator>-i ../../item/rpg_item.xml -m ../../magic/rpg_magic.xml -t</character_generator>
@@ -59,6 +60,7 @@
         <net_server>-i 1 -k 60 -p 10101 -t</net_server>
         <IRC_client>-c ./../../../net/protocol/IRC_client.ini -t</IRC_client>
         <IRC_client_gui>-c ./../../../net/protocol/IRC_client.ini -t -u ./../../../net/protocol/IRC_client.glade</IRC_client_gui>
+        <map_generator>-a 0 -d 0 -m -r 2 -s -t -x 40 -y 20</map_generator>
       </debugarguments>
       <cwd>
         <character_generator>/home/unfv/Projects/RPG/test_u/debug/./</character_generator>
@@ -72,6 +74,7 @@
         <net_server>/home/unfv/Projects/RPG/test_u/debug/./</net_server>
         <IRC_client>/home/unfv/Projects/RPG/test_u/debug/./net/protocol</IRC_client>
         <IRC_client_gui>/home/unfv/Projects/RPG/test_u/debug/./net/protocol</IRC_client_gui>
+        <map_generator>/home/unfv/Projects/RPG/test_u/debug/./map</map_generator>
       </cwd>
     </run>
     <configurations>
