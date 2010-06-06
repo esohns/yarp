@@ -1,0 +1,16 @@
+METASOURCES = AUTO
+
+include_HEADERS = rpg_sound.h rpg_sound_XML_parser.h rpg_sound_XML_types.h \
+	rpg_sound_category.h rpg_sound_common.h rpg_sound_common_tools.h rpg_sound_dictionary.h \
+	rpg_sound_event.h rpg_sound_incl.h
+
+lib_LTLIBRARIES = libRPG_Sound.la
+
+libRPG_Sound_la_LDFLAGS = -L/usr/local/lib
+libRPG_Sound_la_SOURCES = rpg_XMLSchema_XML_types.h rpg_sound.h \
+	rpg_sound_XML_parser.cpp rpg_sound_XML_parser.h rpg_sound_XML_types.cpp rpg_sound_XML_types.h \
+	rpg_sound_category.h rpg_sound_common.h rpg_sound_common_tools.cpp rpg_sound_common_tools.h \
+	rpg_sound_dictionary.cpp rpg_sound_dictionary.h rpg_sound_event.h rpg_sound_incl.h
+
+bindata_DATA = rpg_sound.xml rpg_sound.xsd
+bindatadir = $(bindir)

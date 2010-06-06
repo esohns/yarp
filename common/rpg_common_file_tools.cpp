@@ -35,10 +35,10 @@ RPG_Common_File_Tools::isReadable(const std::string& filename_in)
   if (ACE_OS::stat(filename_in.c_str(),
                    &stat) == -1)
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("failed to ACE_OS::stat(\"%s\"): \"%s\", aborting\n"),
-               filename_in.c_str(),
-               ACE_OS::strerror(errno)));
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("failed to ACE_OS::stat(\"%s\"): \"%s\", aborting\n"),
+//                filename_in.c_str(),
+//                ACE_OS::strerror(errno)));
 
     return false;
   } // end IF

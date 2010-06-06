@@ -1,16 +1,37 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="3" >
+ <DocsAndViews NumberOfDocuments="10" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client_gui.cpp" >
-   <View0 Encoding="" line="351" Type="Source" />
+   <View0 Encoding="" line="1262" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client.ini" >
-   <View0 Encoding="" line="12" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_sdl.cpp" >
+   <View0 Encoding="" line="40" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/Makefile.am" >
-   <View0 Encoding="" line="8" Type="Source" />
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_gra.cpp" >
+   <View0 Encoding="" line="51" Type="Source" />
   </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/winclass/levelwin.cpp" >
+   <View0 Encoding="" line="49" Type="Source" />
+  </Doc3>
+  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/winclass/mainwin.cpp" >
+   <View0 Encoding="" line="73" Type="Source" />
+  </Doc4>
+  <Doc5 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_main.cpp" >
+   <View0 Encoding="" line="179" Type="Source" />
+  </Doc5>
+  <Doc6 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_init.cpp" >
+   <View0 Encoding="" line="359" Type="Source" />
+  </Doc6>
+  <Doc7 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_sound.cpp" >
+   <View0 Encoding="" line="28" Type="Source" />
+  </Doc7>
+  <Doc8 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_sound.h" >
+   <View0 Encoding="" line="44" Type="Source" />
+  </Doc8>
+  <Doc9 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client.ini" >
+   <View0 Encoding="" line="2" Type="Source" />
+  </Doc9>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
@@ -24,9 +45,8 @@
   <kdevbookmarks>
    <bookmarks>
     <bookmark url="/home/unfv/Projects/RPG/gui/rpg_client_gui.cpp" >
-     <mark line="204" />
-     <mark line="62" />
-     <mark line="696" />
+     <mark line="508" />
+     <mark line="67" />
     </bookmark>
    </bookmarks>
   </kdevbookmarks>

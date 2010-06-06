@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE RPG_Sound_Dictionary SYSTEM "./rpg_sound.xsd"> -->
+<!--  xsi:noNamespaceSchemaLocation="rpg_sound.xsd" -->
+
+<soundDictionary xmlns="urn:rpg"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="urn:rpg rpg_sound.xsd">
+  <sound>
+    <category>TYPE_MUSIC_AMBIENT</category>
+    <event>EVENT_MAIN_TITLE</event>
+    <file>music_main_title.ogg</file>
+  </sound>
+</soundDictionary>

@@ -1,0 +1,9 @@
+namespace urn:rpg
+{
+  include "rpg_sound_incl.h";
+
+  RPG_Sound_Category_Type    RPG_Sound_Category;
+  RPG_Sound_Event_Type       RPG_Sound_Event;
+  RPG_Sound_Type             RPG_Sound;
+#  RPG_Sound_Dictionary_Type  RPG_Sound_Dictionary;
+}

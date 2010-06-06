@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="urn:rpg"
+            xmlns="urn:rpg"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+<!-- include chance_dice schema -->
+<!--   <xsd:include schemaLocation="rpg_dice.xsd"/> -->
+<!-- include common schema -->
+<!--   <xsd:include schemaLocation="rpg_common.xsd"/> -->
+<!-- include character schema -->
+<!--  <xsd:include schemaLocation="rpg_character.xsd"/>-->
+<!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
+<!--   import chance_dice schema (as declared above) -->
+<!--   <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/> -->
+<!--   import item schema (as declared above) -->
+<!--   <xsd:import namespace="urn:rpg_item" schemaLocation="../item/rpg_item.xsd"/> -->
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      RPG_Sound: sound/music-related types XML schema
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:simpleType name="RPG_Sound_Category_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="TYPE_EFFECT_ONESHOT"/>
+      <xsd:enumeration value="TYPE_EFFECT_INTERVAL"/>
+      <xsd:enumeration value="TYPE_MUSIC_ONESHOT"/>
+      <xsd:enumeration value="TYPE_MUSIC_AMBIENT"/>
+      <xsd:enumeration value="TYPE_MUSIC_CDTRACK"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Sound_Event_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="EVENT_MAIN_TITLE"/>
+      <xsd:enumeration value="EVENT_HIT"/>
+      <xsd:enumeration value="EVENT_MISS"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Sound_Type">
+    <xsd:sequence>
+      <xsd:element name="category" type="RPG_Sound_Category_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="event" type="RPG_Sound_Event_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="file" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="interval" type="xsd:unsignedByte" use="optional" default="0"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Sound_Dictionary_Type" id="skip0">
+    <xsd:sequence>
+      <xsd:element name="sound" type="RPG_Sound_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- xml instance document(s) will contain a dictionary of available sounds -->
+  <xsd:element name="soundDictionary" type="RPG_Sound_Dictionary_Type"/>
+
+</xsd:schema>

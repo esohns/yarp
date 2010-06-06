@@ -12,31 +12,22 @@
     </keywords>
     <versioncontrol>kdevsubversion</versioncontrol>
     <ignoreparts/>
-    <projectname>gui</projectname>
+    <projectname>sound</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
-    <defaultencoding/>
+    <description></description>
+    <defaultencoding></defaultencoding>
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>RPG_client_gui</activetarget>
+      <activetarget>libRPG_Sound.la</activetarget>
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>
-      <runarguments>
-        <RPG_client_gui>-c ./../rpg_client.ini -t -u ./../rpg_client.glade</RPG_client_gui>
-      </runarguments>
-      <debugarguments>
-        <RPG_client_gui>-c ./../rpg_client.ini -t -u ./../rpg_client.glade</RPG_client_gui>
-      </debugarguments>
-      <cwd>
-        <RPG_client_gui>/home/unfv/Projects/RPG/gui/debug/./</RPG_client_gui>
-      </cwd>
-      <mainprogram>/home/unfv/Projects/RPG/gui</mainprogram>
-      <programargs/>
-      <globaldebugarguments/>
-      <globalcwd>/home/unfv/Projects/RPG/gui</globalcwd>
+      <mainprogram>/home/unfv/Projects/RPG/sound/debug</mainprogram>
+      <programargs></programargs>
+      <globaldebugarguments></globaldebugarguments>
+      <globalcwd>/home/unfv/Projects/RPG/sound/debug</globalcwd>
       <useglobalprogram>false</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
@@ -53,48 +44,48 @@
         <cxxflags>-g -O2 -march=i686</cxxflags>
         <envvars/>
         <configargs>--disable-static</configargs>
-        <topsourcedir/>
-        <cppflags>-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0</cppflags>
-        <ldflags/>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <f77flags/>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <f77flags></f77flags>
       </optimized>
       <debug>
-        <configargs/>
+        <configargs>--disable-static</configargs>
         <builddir>debug</builddir>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
         <cxxflags>-g3 -O0 -march=i686 -Wall</cxxflags>
         <envvars/>
-        <topsourcedir/>
-        <cppflags>-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/libgnome-2.0 -I/usr/include/libbonobo-2.0 -I/usr/include/libbonoboui-2.0 -I/usr/include/libgnomecanvas-2.0 -I/usr/include/libgnomeui-2.0 -I/usr/include/gnome-vfs-2.0 -I/usr/include/libart-2.0 -I/usr/include/libglade-2.0 -I/usr/include/SDL</cppflags>
-        <ldflags/>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <f77flags/>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <f77flags></f77flags>
       </debug>
       <default>
         <envvars/>
         <configargs>--disable-static</configargs>
         <builddir>debug</builddir>
-        <topsourcedir/>
-        <cppflags>-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0</cppflags>
-        <ldflags/>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpgf77options</f77compiler>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <cxxflags>-g3 -O0 -march=i686 -Wall</cxxflags>
-        <f77flags/>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <cxxflags>-g3 -O0 -march=i686</cxxflags>
+        <f77flags></f77flags>
       </default>
     </configurations>
     <make>
@@ -106,7 +97,7 @@
       <runmultiplejobs>false</runmultiplejobs>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin/>
+      <makebin></makebin>
       <prio>0</prio>
     </make>
   </kdevautoproject>
@@ -165,36 +156,33 @@
   </kdevfilecreate>
   <kdevfileview>
     <groups>
-      <group pattern="*.h *.i" name="Header files" />
+      <group pattern="*.h" name="Header files" />
       <group pattern="*.cpp" name="Source files" />
-      <hidenonprojectfiles>false</hidenonprojectfiles>
-      <hidenonlocation>false</hidenonlocation>
     </groups>
     <tree>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
       <hidenonprojectfiles>false</hidenonprojectfiles>
-      <showvcsfields>false</showvcsfields>
     </tree>
   </kdevfileview>
   <kdevdocumentation>
     <projectdoc>
       <docsystem>Doxygen Documentation Collection</docsystem>
-      <docurl>gui.tag</docurl>
-      <usermanualurl/>
+      <docurl>sound.tag</docurl>
+      <usermanualurl></usermanualurl>
     </projectdoc>
   </kdevdocumentation>
   <substmap>
-    <APPNAME>gui</APPNAME>
-    <APPNAMELC>gui</APPNAMELC>
-    <APPNAMESC>Gui</APPNAMESC>
-    <APPNAMEUC>GUI</APPNAMEUC>
+    <APPNAME>sound</APPNAME>
+    <APPNAMELC>sound</APPNAMELC>
+    <APPNAMESC>Sound</APPNAMESC>
+    <APPNAMEUC>SOUND</APPNAMEUC>
     <AUTHOR>Erik Sohns</AUTHOR>
     <EMAIL>erik.sohns@web.de</EMAIL>
     <LICENSE>GPL</LICENSE>
     <LICENSEFILE>COPYING</LICENSEFILE>
     <VERSION>0.1</VERSION>
     <YEAR>2010</YEAR>
-    <dest>/home/unfv/Projects/RPG/gui</dest>
+    <dest>/home/unfv/Projects/RPG/sound</dest>
   </substmap>
   <kdevcppsupport>
     <qt>
@@ -208,6 +196,7 @@
       <designerpluginpaths/>
     </qt>
     <references>
+      <pcs>automatic_%2Fhome%2Funfv%2FProjects%2FRPG%2Fmap</pcs>
       <pcs>automatic_%2Fhome%2Funfv%2FProjects%2FRPG%2Fgui</pcs>
     </references>
     <codecompletion>
@@ -234,7 +223,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -255,11 +244,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath/>
-      <dbgshell/>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <gdbpath></gdbpath>
+      <dbgshell></dbgshell>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -272,8 +261,8 @@
     </display>
   </kdevdebugger>
   <ctagspart>
-    <customArguments/>
-    <customTagfilePath>/home/unfv/Projects/RPG/gui/tags</customTagfilePath>
+    <customArguments></customArguments>
+    <customTagfilePath>/home/unfv/Projects/RPG/sound/tags</customTagfilePath>
     <activeTagsFiles/>
   </ctagspart>
 </kdevelop>
