@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE RPG_Graphics_Dictionary SYSTEM "./rpg_graphics.xsd"> -->
+<!--  xsi:noNamespaceSchemaLocation="rpg_graphics.xsd" -->
+
+<graphicsDictionary xmlns="urn:rpg"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="urn:rpg rpg_graphics.xsd">
+  <graphic>
+    <category>CATEGORY_PICTURE</category>
+    <event>TYPE_MAIN_LOGO</event>
+    <file>music_main_title.ogg</file>
+  </graphic>
+</graphicsDictionary>

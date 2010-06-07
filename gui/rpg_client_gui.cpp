@@ -78,7 +78,7 @@
 
 struct cb_data
 {
-  std::string bla;
+//   std::string bla;
 };
 
 // *NOTE* types as used by SDL
@@ -119,6 +119,7 @@ quit_activated_cb(GtkWidget* widget_in,
   ACE_TRACE(ACE_TEXT("::quit_activated_cb"));
 
   ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(event_in);
   ACE_UNUSED_ARG(userData_in);
 
   // stop reactor
@@ -189,14 +190,18 @@ filter_events(const SDL_Event* event_in)
   return 1;
 }
 
-void
-do_SDLEventLoop()
+G_MODULE_EXPORT gint
+do_SDLEventLoop(gpointer userData_in)
 {
   ACE_TRACE(ACE_TEXT("::do_SDLEventLoop"));
 
+  ACE_UNUSED_ARG(userData_in);
+
   SDL_Event event;
-  // loop waiting for ESC+Mouse_Button
-  while (SDL_WaitEvent(&event) >= 0)
+//   // loop waiting for ESC+Mouse_Button
+//   while (SDL_WaitEvent(&event) >= 0)
+  // poll for ESC+Mouse_Button
+  if (SDL_PollEvent(&event))
   {
     switch (event.type)
     {
@@ -229,58 +234,61 @@ do_SDLEventLoop()
         } // end IF
         else
         {
-//           ACE_DEBUG((LM_DEBUG,
-//                      ACE_TEXT("mouse button pressed...\n")));
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("mouse button pressed...\n")));
 
           break;
         } // end ELSE
       }
       case SDL_QUIT:
       {
-        // stop reactor
-        if (ACE_Reactor::instance()->end_event_loop() == -1)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
-        } // end IF
-
-        // ... and wait for the reactor worker(s) to join
-        ACE_Thread_Manager::instance()->wait_grp(grp_id);
-
-        // no more data will arrive from here on...
-
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("leaving...\n")));
-
-        return;
+//         // stop reactor
+//         if (ACE_Reactor::instance()->end_event_loop() == -1)
+//         {
+//           ACE_DEBUG((LM_ERROR,
+//                      ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
+//         } // end IF
+//
+//         // ... and wait for the reactor worker(s) to join
+//         ACE_Thread_Manager::instance()->wait_grp(grp_id);
+//
+//         // no more data will arrive from here on...
+//
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("leaving...\n")));
+//
+//         return;
       }
       default:
       {
         break;
       }
     } // end SWITCH
-  } // end WHILE
-
-  // this should never happen
-  ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", returning\n"),
-             SDL_GetError()));
-
-  // clean up
-  // stop reactor
-  if (ACE_Reactor::instance()->end_event_loop() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
+//   } // end WHILE
   } // end IF
 
-  // ... and wait for the reactor worker(s) to join
-  ACE_Thread_Manager::instance()->wait_grp(grp_id);
+//   // this should never happen
+//   ACE_DEBUG((LM_ERROR,
+//              ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", returning\n"),
+//              SDL_GetError()));
+//
+//   // clean up
+//   // stop reactor
+//   if (ACE_Reactor::instance()->end_event_loop() == -1)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
+//   } // end IF
+//
+//   // ... and wait for the reactor worker(s) to join
+//   ACE_Thread_Manager::instance()->wait_grp(grp_id);
+//
+//   // no more data will arrive from here on...
+//
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("leaving...\n")));
 
-  // no more data will arrive from here on...
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("leaving...\n")));
+  return 1;
 }
 
 void
@@ -602,58 +610,58 @@ do_GUI(const std::string& UIfile_in,
     dialog = NULL;
   } // end IF
 
-//   // step1: load widget tree
-//   xml = glade_xml_new(UIfile_in.c_str(), // definition file
-//                       NULL,              // root widget --> construct all
-//                       NULL);             // domain
-//   ACE_ASSERT(xml);
-//   if (!xml)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to glade_xml_new(): \"%m\", aborting\n")));
-//
-//     return;
-//   } // end IF
-//
-//   // step2: auto-connect signals/slots
-// //   glade_xml_signal_autoconnect(xml);
-//
-//   // step3: retrieve dialog handle
-//   dialog = GTK_WIDGET(glade_xml_get_widget(xml,
-//                                            ACE_TEXT_ALWAYS_CHAR("dialog")));
-//   ACE_ASSERT(dialog);
-//   if (!dialog)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to glade_xml_get_widget(\"dialog\"): \"%m\", aborting\n")));
-//
-//     // clean up
-//     g_object_unref(G_OBJECT(xml));
-//     xml = NULL;
-//
-//     return;
-//   } // end IF
-//
-//   // step4: connect default signals
-//   g_signal_connect(dialog,
-//                    ACE_TEXT_ALWAYS_CHAR("destroy"),
-//                    G_CALLBACK(gtk_widget_destroyed),
-//                    &dialog);
-//
-//   GtkButton* button = NULL;
-//   button = GTK_BUTTON(glade_xml_get_widget(xml,
-//                                            ACE_TEXT_ALWAYS_CHAR("quit")));
-//   ACE_ASSERT(button);
-//   g_signal_connect(button,
-//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-//                    G_CALLBACK(quit_activated_cb),
-//                    &ACE_const_cast(cb_data&, userData_in));
-//
-//   // step4a: attach user data
-//   glade_xml_signal_connect_data(xml,
-//                                 ACE_TEXT_ALWAYS_CHAR("quit_activated_cb"),
-//                                 G_CALLBACK(quit_activated_cb),
-//                                 &ACE_const_cast(cb_data&, userData_in));
+  // step1: load widget tree
+  xml = glade_xml_new(UIfile_in.c_str(), // definition file
+                      NULL,              // root widget --> construct all
+                      NULL);             // domain
+  ACE_ASSERT(xml);
+  if (!xml)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_new(): \"%m\", aborting\n")));
+
+    return;
+  } // end IF
+
+  // step2: auto-connect signals/slots
+//   glade_xml_signal_autoconnect(xml);
+
+  // step3: retrieve dialog handle
+  dialog = GTK_WIDGET(glade_xml_get_widget(xml,
+                                           ACE_TEXT_ALWAYS_CHAR("dialog")));
+  ACE_ASSERT(dialog);
+  if (!dialog)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_get_widget(\"dialog\"): \"%m\", aborting\n")));
+
+    // clean up
+    g_object_unref(G_OBJECT(xml));
+    xml = NULL;
+
+    return;
+  } // end IF
+
+  // step4: connect default signals
+  g_signal_connect(dialog,
+                   ACE_TEXT_ALWAYS_CHAR("destroy"),
+                   G_CALLBACK(gtk_widget_destroyed),
+                   &dialog);
+
+  GtkButton* button = NULL;
+  button = GTK_BUTTON(glade_xml_get_widget(xml,
+                                           ACE_TEXT_ALWAYS_CHAR("quit")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(quit_activated_cb),
+                   &ACE_const_cast(cb_data&, userData_in));
+
+  // step4a: attach user data
+  glade_xml_signal_connect_data(xml,
+                                ACE_TEXT_ALWAYS_CHAR("quit_activated_cb"),
+                                G_CALLBACK(quit_activated_cb),
+                                &ACE_const_cast(cb_data&, userData_in));
 
 //   // step5: use correct screen
 //   if (parentWidget_in)
@@ -661,8 +669,8 @@ do_GUI(const std::string& UIfile_in,
 //                           gtk_widget_get_screen(ACE_const_cast(GtkWidget*,
 //                                                                parentWidget_in)));
 
-//   // step6: draw it
-//   gtk_widget_show_all(dialog);
+  // step6: draw it
+  gtk_widget_show_all(dialog);
 
   // init SDL UI handling
 
@@ -687,7 +695,8 @@ do_GUI(const std::string& UIfile_in,
   SDL_ShowCursor(SDL_DISABLE);
 
   char driver[MAXPATHLEN];
-  if (!SDL_VideoDriverName(driver, sizeof(driver)))
+  if (!SDL_VideoDriverName(driver,
+                           sizeof(driver)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_VideoDriverName(): \"%s\", aborting\n"),
@@ -832,6 +841,11 @@ do_GUI(const std::string& UIfile_in,
 
   // play intro music
   RPG_Sound_Common_Tools::playSound(EVENT_MAIN_TITLE);
+
+  // show start logo
+  SDL_Surface* logo = NULL;
+
+
 }
 
 void
@@ -941,10 +955,18 @@ do_work(const RPG_Client_Config& config_in,
              grp_id,
              (useThreadPool_in ? numThreadPoolThreads_in : 1)));
 
-//   // dispatch GTK events from the "main" thread
-//   gtk_main();
   // dispatch SDL events from the "main" thread
-  do_SDLEventLoop();
+  guint SDLEventHandlerID = gtk_idle_add(do_SDLEventLoop,
+                                         &userData_in);
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("installed SDL event handler (ID: %u)...\n"),
+             SDLEventHandlerID));
+
+  // dispatch GTK events from the "main" thread
+  gtk_main();
+//   // dispatch SDL events from the "main" thread
+//   do_SDLEventLoop();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -1299,7 +1321,7 @@ ACE_TMAIN(int argc_in,
                     videoConfig);
 
   // *TODO*: step1de: init callback user data
-  userData.bla = ACE_TEXT("");
+//   userData.bla.clear();
 
   // step2a: init SDL
   if (SDL_Init(SDL_INIT_VIDEO |

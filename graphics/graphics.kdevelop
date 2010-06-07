@@ -12,7 +12,7 @@
     </keywords>
     <versioncontrol>kdevsubversion</versioncontrol>
     <ignoreparts/>
-    <projectname>map</projectname>
+    <projectname>graphics</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
     <description/>
@@ -20,18 +20,18 @@
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>libRPG_Map.la</activetarget>
+      <activetarget>libRPG_Graphics.la</activetarget>
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>
-      <mainprogram>/home/unfv/Projects/RPG/map</mainprogram>
+      <mainprogram>/home/unfv/Projects/RPG/graphics/debug</mainprogram>
       <programargs/>
       <globaldebugarguments/>
-      <globalcwd>/home/unfv/Projects/RPG/map</globalcwd>
+      <globalcwd>/home/unfv/Projects/RPG/graphics/debug</globalcwd>
       <useglobalprogram>false</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
-      <autoinstall>false</autoinstall>
+      <autoinstall>true</autoinstall>
       <autokdesu>true</autokdesu>
       <envvars/>
     </run>
@@ -169,22 +169,22 @@
   <kdevdocumentation>
     <projectdoc>
       <docsystem>Doxygen Documentation Collection</docsystem>
-      <docurl>map.tag</docurl>
+      <docurl>graphics.tag</docurl>
       <usermanualurl/>
     </projectdoc>
   </kdevdocumentation>
   <substmap>
-    <APPNAME>map</APPNAME>
-    <APPNAMELC>map</APPNAMELC>
-    <APPNAMESC>Map</APPNAMESC>
-    <APPNAMEUC>MAP</APPNAMEUC>
+    <APPNAME>graphics</APPNAME>
+    <APPNAMELC>graphics</APPNAMELC>
+    <APPNAMESC>Graphics</APPNAMESC>
+    <APPNAMEUC>GRAPHICS</APPNAMEUC>
     <AUTHOR>Erik Sohns</AUTHOR>
     <EMAIL>erik.sohns@web.de</EMAIL>
     <LICENSE>GPL</LICENSE>
     <LICENSEFILE>COPYING</LICENSEFILE>
     <VERSION>0.1</VERSION>
     <YEAR>2010</YEAR>
-    <dest>/home/unfv/Projects/RPG/map</dest>
+    <dest>/home/unfv/Projects/RPG/graphics</dest>
   </substmap>
   <kdevcppsupport>
     <qt>
@@ -234,7 +234,7 @@
       <orientation>Vertical</orientation>
     </splitheadersource>
     <references>
-      <pcs>automatic_%2Fhome%2Funfv%2FProjects%2FRPG%2Fmap</pcs>
+      <pcs>automatic_%2Fhome%2Funfv%2FProjects%2FRPG%2Fgraphics</pcs>
     </references>
   </kdevcppsupport>
   <cppsupportpart>
@@ -263,7 +263,7 @@
   </kdevdebugger>
   <ctagspart>
     <customArguments/>
-    <customTagfilePath>/home/unfv/Projects/RPG/map/tags</customTagfilePath>
+    <customTagfilePath>/home/unfv/Projects/RPG/graphics/tags</customTagfilePath>
     <activeTagsFiles/>
   </ctagspart>
 </kdevelop>

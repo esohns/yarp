@@ -101,15 +101,15 @@ RPG_Sound_Dictionary_Type::~RPG_Sound_Dictionary_Type()
 
 }
 
-// void RPG_Magic_Dictionary_Type::pre()
+// void RPG_Sound_Dictionary_Type::pre()
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary_Type::pre"));
+//   ACE_TRACE(ACE_TEXT("RPG_Sound_Dictionary_Type::pre"));
 //
 // }
 
 void RPG_Sound_Dictionary_Type::sound(const RPG_Sound& sound_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary_Type::sound"));
+  ACE_TRACE(ACE_TEXT("RPG_Sound_Dictionary_Type::sound"));
 
   RPG_Sound_t sound = sound_in;
 

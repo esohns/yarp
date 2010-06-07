@@ -1,0 +1,9 @@
+namespace urn:rpg
+{
+  include "rpg_graphics_incl.h";
+
+  RPG_Graphics_Category_Type    RPG_Graphics_Category;
+  RPG_Graphics_Type_Type        RPG_Graphics_Type;
+  RPG_Graphics_Graphic_Type     RPG_Graphics_Graphic;
+#  RPG_Graphics_Dictionary_Type RPG_Graphics_Dictionary;
+}
