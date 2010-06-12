@@ -138,6 +138,7 @@ void RPG_Sound_Common_Tools::playSound(const RPG_Sound_Event& event_in)
       {
         iter = mySoundCache.begin();
         std::advance(iter, myOldestCacheEntry);
+        // *TODO*: what if it's still being used ?...
         Mix_FreeChunk((*iter).chunk);
         mySoundCache.erase(iter);
         myOldestCacheEntry++;

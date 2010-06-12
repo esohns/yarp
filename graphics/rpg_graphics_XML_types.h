@@ -157,7 +157,7 @@ class RPG_Graphics_Dictionary_Type_pskel: public ::xml_schema::complex_content
   // pre ();
 
   virtual void
-  graphic (const RPG_Graphics_Graphic&);
+  image (const RPG_Graphics_Graphic&);
 
   virtual void
   post_RPG_Graphics_Dictionary_Type ();
@@ -165,10 +165,10 @@ class RPG_Graphics_Dictionary_Type_pskel: public ::xml_schema::complex_content
   // Parser construction API.
   //
   void
-  graphic_parser (::RPG_Graphics_Graphic_Type_pskel&);
+  image_parser (::RPG_Graphics_Graphic_Type_pskel&);
 
   void
-  parsers (::RPG_Graphics_Graphic_Type_pskel& /* graphic */);
+  parsers (::RPG_Graphics_Graphic_Type_pskel& /* image */);
 
   // Constructor.
   //
@@ -187,7 +187,7 @@ class RPG_Graphics_Dictionary_Type_pskel: public ::xml_schema::complex_content
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Graphics_Graphic_Type_pskel* graphic_parser_;
+  ::RPG_Graphics_Graphic_Type_pskel* image_parser_;
 };
 
 #include <xsd/cxx/post.hxx>

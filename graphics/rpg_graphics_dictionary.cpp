@@ -112,7 +112,7 @@ RPG_Graphics_Dictionary::getGraphic(const RPG_Graphics_Type& type_in) const
   if (iterator == myDictionary.end())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid graphic type \"%s\", continuing\n"),
+               ACE_TEXT("invalid graphics type \"%s\", continuing\n"),
                RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
 
     // *TODO*: what else can we do ?

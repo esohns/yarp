@@ -20,6 +20,9 @@
 
 #include "rpg_client_common.h"
 
+#include <rpg_graphics_dictionary.h>
+#include <rpg_graphics_common_tools.h>
+
 #include <rpg_sound_dictionary.h>
 #include <rpg_sound_common_tools.h>
 
@@ -57,6 +60,9 @@
 #endif
 
 #define RPG_CLIENT_DEF_INI_FILE                  ACE_TEXT("rpg_client.ini")
+#define RPG_CLIENT_DEF_GRAPHICS_DICTIONARY       ACE_TEXT("rpg_graphics.xml")
+#define RPG_CLIENT_DEF_GRAPHICS_DIRECTORY        ACE_TEXT(".")
+#define RPG_CLIENT_DEF_GRAPHICS_CACHESIZE        50
 #define RPG_CLIENT_DEF_SOUND_DICTIONARY          ACE_TEXT("rpg_sound.xml")
 #define RPG_CLIENT_DEF_SOUND_DIRECTORY           ACE_TEXT(".")
 #define RPG_CLIENT_DEF_SOUND_CACHESIZE           50
@@ -302,8 +308,9 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [") << RPG_CLIENT_DEF_INI_FILE << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-i [FILE]   : sound dictionary (*.xml)") << std::endl;
+  std::cout << ACE_TEXT("-g [FILE]   : graphics dictionary (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-s [FILE]   : sound dictionary (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-u [FILE]   : UI file") << ACE_TEXT(" [") << RPG_CLIENT_DEF_UI_FILE << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
@@ -314,8 +321,9 @@ const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   std::string& iniFile_out,
-                  std::string& soundDictionary_out,
+                  std::string& graphicsDictionary_out,
                   bool& logToFile_out,
+                  std::string& soundDictionary_out,
                   bool& traceInformation_out,
                   std::string& UIfile_out,
                   bool& printVersionAndExit_out,
@@ -326,8 +334,9 @@ process_arguments(const int argc_in,
 
   // init results
   iniFile_out              = RPG_CLIENT_DEF_INI_FILE;
-  soundDictionary_out      = RPG_CLIENT_DEF_SOUND_DICTIONARY;
+  soundDictionary_out      = RPG_CLIENT_DEF_GRAPHICS_DICTIONARY;
   logToFile_out            = false;
+  soundDictionary_out      = RPG_CLIENT_DEF_SOUND_DICTIONARY;
   traceInformation_out     = false;
   UIfile_out               = RPG_CLIENT_DEF_UI_FILE;
   printVersionAndExit_out  = false;
@@ -336,7 +345,7 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("c:i:ltu:vx::"),
+                             ACE_TEXT("c:g:ls:tu:vx::"),
                              1,                         // skip command name
                              1,                         // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
@@ -354,15 +363,21 @@ process_arguments(const int argc_in,
 
         break;
       }
-      case 'i':
+      case 'g':
       {
-        soundDictionary_out = argumentParser.opt_arg();
+        graphicsDictionary_out = argumentParser.opt_arg();
 
         break;
       }
       case 'l':
       {
         logToFile_out = true;
+
+        break;
+      }
+      case 's':
+      {
+        soundDictionary_out = argumentParser.opt_arg();
 
         break;
       }
@@ -582,11 +597,11 @@ do_initAudio(const audio_config& audioConfig_in)
 }
 
 void
-do_GUI(const std::string& UIfile_in,
-       const cb_data& userData_in,
-       const video_config& videoConfig_in)
+do_initGUI(const std::string& UIfile_in,
+           const cb_data& userData_in,
+           const video_config& videoConfig_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_GUI"));
+  ACE_TRACE(ACE_TEXT("::do_initGUI"));
 
   // sanity check(s)
   if (!RPG_Common_File_Tools::isReadable(UIfile_in.c_str()))
@@ -838,14 +853,6 @@ do_GUI(const std::string& UIfile_in,
              ((screen->flags & SDL_RLEACCEL) ? ACE_TEXT("yes") : ACE_TEXT("no")),
              ((screen->flags & SDL_SRCALPHA) ? ACE_TEXT("yes") : ACE_TEXT("no")),
              ((screen->flags & SDL_PREALLOC) ? ACE_TEXT("yes") : ACE_TEXT("no"))));
-
-  // play intro music
-  RPG_Sound_Common_Tools::playSound(EVENT_MAIN_TITLE);
-
-  // show start logo
-  SDL_Surface* logo = NULL;
-
-
 }
 
 void
@@ -858,7 +865,10 @@ do_work(const RPG_Client_Config& config_in,
         const std::string& soundDirectory_in,
         const unsigned long& soundCacheSize_in,
         const std::string& soundDictionary_in,
-        const video_config& videoConfig_in)
+        const video_config& videoConfig_in,
+        const std::string& graphicsDirectory_in,
+        const unsigned long& graphicsCacheSize_in,
+        const std::string& graphicsDictionary_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -879,7 +889,6 @@ do_work(const RPG_Client_Config& config_in,
   } // end IF
 
   // step1: init audio
-  do_initAudio(audioConfig_in);
   RPG_Sound_Common_Tools::init(soundDirectory_in,
                                soundCacheSize_in);
   //  init sound dictionary
@@ -894,11 +903,52 @@ do_work(const RPG_Client_Config& config_in,
 
     return;
   }
+  do_initAudio(audioConfig_in);
 
-  // step2: setup UI
-  do_GUI(UIfile_in,       // glade file
-         userData_in,     // cb data
-         videoConfig_in); // video config
+  // step2: init UI
+  do_initGUI(UIfile_in,       // glade file
+             userData_in,     // cb data
+             videoConfig_in); // video config
+  RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
+                                  graphicsCacheSize_in);
+  //  init graphics dictionary
+  try
+  {
+    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(graphicsDictionary_in);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Graphics_Dictionary::init, returning\n")));
+
+    return;
+  }
+
+  // step3: run intro
+  // step3a: play intro music
+  RPG_Sound_Common_Tools::playSound(EVENT_MAIN_TITLE);
+
+  // step3b: show start logo
+  SDL_Surface* logo = RPG_Graphics_Common_Tools::loadGraphic(TYPE_MAIN_LOGO);
+  if (!logo)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), aborting\n"),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_MAIN_LOGO).c_str()));
+
+    return;
+  } // end IF
+  // *TODO* stretch this image fullscreen
+  // center logo image
+  RPG_Graphics_Common_Tools::putGraphic((screen->w - logo->w) / 2, // location x
+                                        (screen->h - logo->h) / 2, // location y
+                                        screen,
+                                        logo);
+  RPG_Graphics_Common_Tools::fadeIn(5.0,
+                                    screen);
+  RPG_Graphics_Common_Tools::fadeOut(5.0,
+                                     RPG_Graphics_Common_Tools::CLR32_BLACK,
+                                     screen);
 //   ACE_ASSERT(xml);
 //   ACE_ASSERT(dialog);
 
@@ -1226,10 +1276,13 @@ ACE_TMAIN(int argc_in,
 
   // step1a: process commandline arguments
   std::string iniFile                = RPG_CLIENT_DEF_INI_FILE;
+  std::string graphicsDictionary     = RPG_CLIENT_DEF_GRAPHICS_DICTIONARY;
+  std::string graphicsDirectory      = RPG_CLIENT_DEF_GRAPHICS_DIRECTORY;
+  unsigned long graphicsCacheSize    = RPG_CLIENT_DEF_GRAPHICS_CACHESIZE;
+  bool logToFile                     = false;
   std::string soundDictionary        = RPG_CLIENT_DEF_SOUND_DICTIONARY;
   std::string soundDirectory         = RPG_CLIENT_DEF_SOUND_DIRECTORY;
   unsigned long soundCacheSize       = RPG_CLIENT_DEF_SOUND_CACHESIZE;
-  bool logToFile                     = false;
   bool traceInformation              = false;
   std::string UIfile                 = RPG_CLIENT_DEF_UI_FILE;
   bool printVersionAndExit           = false;
@@ -1238,8 +1291,9 @@ ACE_TMAIN(int argc_in,
   if (!(process_arguments(argc_in,
                           argv_in,
                           iniFile,
-                          soundDictionary,
+                          graphicsDictionary,
                           logToFile,
+                          soundDictionary,
                           traceInformation,
                           UIfile,
                           printVersionAndExit,
@@ -1364,7 +1418,10 @@ ACE_TMAIN(int argc_in,
           soundDirectory,
           soundCacheSize,
           soundDictionary,
-          videoConfig);
+          videoConfig,
+          graphicsDirectory,
+          graphicsCacheSize,
+          graphicsDictionary);
   timer.stop();
 
   // debug info

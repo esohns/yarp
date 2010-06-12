@@ -17,30 +17,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_GRAPHICS_COMMON_H
-#define RPG_GRAPHICS_COMMON_H
 
-#include "rpg_graphics_incl.h"
+#ifndef RPG_GRAPHICS_DEFINES_H
+#define RPG_GRAPHICS_DEFINES_H
 
-#include <SDL/SDL.h>
+// #signature bytes to check for PNG graphics
+#define RPG_GRAPHICS_PNG_SIGNATURE_BYTES 8
 
-#include <string>
-#include <map>
-#include <vector>
-
-typedef RPG_Graphics_Graphic RPG_Graphics_t;
-typedef std::map<RPG_Graphics_Type, RPG_Graphics_t> RPG_Graphics_Dictionary_t;
-typedef RPG_Graphics_Dictionary_t::const_iterator RPG_Graphics_DictionaryIterator_t;
-
-struct RPG_Graphics_GraphicsCacheNode_t
-{
-  RPG_Graphics_Type type;
-  SDL_Surface* image;
-
-  inline bool operator==(const RPG_Graphics_GraphicsCacheNode_t& rhs_in) const
-  { return (this->type == rhs_in.type); }
-};
-typedef std::vector<RPG_Graphics_GraphicsCacheNode_t> RPG_Graphics_GraphicsCache_t;
-typedef RPG_Graphics_GraphicsCache_t::iterator RPG_Graphics_GraphicsCacheIterator_t;
+// #steps / second for fading ("smoothness")
+#define RPG_GRAPHICS_FADESTEPS_PER_SEC   20
 
 #endif

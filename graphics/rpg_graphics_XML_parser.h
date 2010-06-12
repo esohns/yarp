@@ -70,7 +70,7 @@ class RPG_Graphics_Dictionary_Type
   virtual ~RPG_Graphics_Dictionary_Type();
 
 //   virtual void pre();
-  virtual void graphic(const RPG_Graphics_Graphic&);
+  virtual void image(const RPG_Graphics_Graphic&);
   virtual void post_RPG_Graphics_Dictionary_Type();
 
  private:

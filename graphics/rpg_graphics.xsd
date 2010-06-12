@@ -47,7 +47,7 @@
 
   <xsd:complexType name="RPG_Graphics_Dictionary_Type" id="skip0">
     <xsd:sequence>
-      <xsd:element name="graphic" type="RPG_Graphics_Graphic_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="image" type="RPG_Graphics_Graphic_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 

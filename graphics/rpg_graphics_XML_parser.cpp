@@ -98,9 +98,9 @@ RPG_Graphics_Dictionary_Type::~RPG_Graphics_Dictionary_Type()
 //
 // }
 
-void RPG_Graphics_Dictionary_Type::graphic(const RPG_Graphics_Graphic& graphic_in)
+void RPG_Graphics_Dictionary_Type::image(const RPG_Graphics_Graphic& graphic_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Dictionary_Type::graphic"));
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Dictionary_Type::image"));
 
   RPG_Graphics_t graphic = graphic_in;
 
@@ -113,6 +113,6 @@ void RPG_Graphics_Dictionary_Type::post_RPG_Graphics_Dictionary_Type()
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished parsing graphics dictionary, retrieved %d grapihc(s)...\n"),
+             ACE_TEXT("finished parsing graphics dictionary, retrieved %d image(s)...\n"),
              myDictionary->size()));
 }

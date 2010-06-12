@@ -81,20 +81,20 @@ RPG_Graphics_Graphic_Type_pskel ()
 //
 
 void RPG_Graphics_Dictionary_Type_pskel::
-graphic_parser (::RPG_Graphics_Graphic_Type_pskel& p)
+image_parser (::RPG_Graphics_Graphic_Type_pskel& p)
 {
-  this->graphic_parser_ = &p;
+  this->image_parser_ = &p;
 }
 
 void RPG_Graphics_Dictionary_Type_pskel::
-parsers (::RPG_Graphics_Graphic_Type_pskel& graphic)
+parsers (::RPG_Graphics_Graphic_Type_pskel& image)
 {
-  this->graphic_parser_ = &graphic;
+  this->image_parser_ = &image;
 }
 
 RPG_Graphics_Dictionary_Type_pskel::
 RPG_Graphics_Dictionary_Type_pskel ()
-: graphic_parser_ (0)
+: image_parser_ (0)
 {
 }
 
@@ -197,7 +197,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Graphics_Dictionary_Type_pskel::
-graphic (const RPG_Graphics_Graphic&)
+image (const RPG_Graphics_Graphic&)
 {
 }
 
@@ -216,12 +216,12 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "graphic" && ns == "urn:rpg")
+  if (n == "image" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->graphic_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->image_parser_;
 
-    if (this->graphic_parser_)
-      this->graphic_parser_->pre ();
+    if (this->image_parser_)
+      this->image_parser_->pre ();
 
     return true;
   }
@@ -236,10 +236,10 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "graphic" && ns == "urn:rpg")
+  if (n == "image" && ns == "urn:rpg")
   {
-    if (this->graphic_parser_)
-      this->graphic (this->graphic_parser_->post_RPG_Graphics_Graphic_Type ());
+    if (this->image_parser_)
+      this->image (this->image_parser_->post_RPG_Graphics_Graphic_Type ());
 
     return true;
   }

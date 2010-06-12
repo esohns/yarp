@@ -23,8 +23,12 @@
 #include "rpg_graphics_incl.h"
 #include "rpg_graphics_common.h"
 
+#include <png.h>
+
 #include <ace/Global_Macros.h>
 #include <ace/Synch.h>
+
+#include <string>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -32,9 +36,42 @@
 class RPG_Graphics_Common_Tools
 {
  public:
-  static void init(const std::string&,    // graphics directory
-                   const unsigned long&); // cache size
-  static void loadGraphic(const RPG_Graphics_Type&); // graphic
+  // some colors
+  static Uint32 CLR32_BLACK;
+  static Uint32 CLR32_BLACK_A30;
+  static Uint32 CLR32_BLACK_A50;
+  static Uint32 CLR32_BLACK_A70;
+  static Uint32 CLR32_GREEN;
+  static Uint32 CLR32_YELLOW;
+  static Uint32 CLR32_ORANGE;
+  static Uint32 CLR32_RED;
+  static Uint32 CLR32_GRAY20;
+  static Uint32 CLR32_GRAY70;
+  static Uint32 CLR32_GRAY77;
+  static Uint32 CLR32_PURPLE44;
+  static Uint32 CLR32_LIGHTPINK;
+  static Uint32 CLR32_LIGHTGREEN;
+  static Uint32 CLR32_BROWN;
+  static Uint32 CLR32_WHITE;
+  static Uint32 CLR32_BLESS_BLUE;
+  static Uint32 CLR32_CURSE_RED;
+  static Uint32 CLR32_GOLD_SHADE;
+
+  // *WARNING*: this needs to be called AFTER SDL_SetVideoMode !
+  static void init(const std::string&,      // graphics directory
+                   const unsigned long&);   // cache size
+  static void fini();
+  static SDL_Surface* loadGraphic(const RPG_Graphics_Type&); // graphic
+  static void putGraphic(const unsigned long&, // location x
+                         const unsigned long&, // location y
+                         SDL_Surface*,         // target surface (screen !)
+                         const SDL_Surface*);  // graphic
+  // *NOTE*: the target image must already be loaded into the framebuffer !
+  static void fadeIn(const double&, // interval (seconds)
+                     SDL_Surface*); // screen
+  static void fadeOut(const double&, // interval (seconds)
+                      const Uint32&, // target color
+                      SDL_Surface*); // screen
 
  private:
   // safety measures
@@ -46,6 +83,12 @@ class RPG_Graphics_Common_Tools
   // helper methods
   // init string conversion (and any other) tables
   static void initStringConversionTables();
+  static void initColors();
+  static const bool loadPNG(const unsigned char*, // source buffer
+                            SDL_Surface*&);       // return value: SDL surface
+  static void fade(const double&, // interval (seconds)
+                   SDL_Surface*,  // image
+                   SDL_Surface*); // screen
 
   static std::string                  myGraphicsDirectory;
   static ACE_Thread_Mutex             myLock;
