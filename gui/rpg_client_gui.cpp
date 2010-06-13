@@ -1054,6 +1054,44 @@ do_initGUI(const std::string& UIfile_in,
 }
 
 void
+do_runIntro()
+{
+  ACE_TRACE(ACE_TEXT("::do_runIntro"));
+
+  // step1: play intro music
+  RPG_Sound_Common_Tools::playSound(EVENT_MAIN_TITLE);
+
+  // step2: show start logo
+  SDL_Surface* logo = RPG_Graphics_Common_Tools::loadGraphic(TYPE_MAIN_LOGO);
+  if (!logo)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), aborting\n"),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_MAIN_LOGO).c_str()));
+
+    return;
+  } // end IF
+  // *TODO* stretch this image fullscreen
+  // center logo image
+  RPG_Graphics_Common_Tools::putGraphic((screen->w - logo->w) / 2, // location x
+                                        (screen->h - logo->h) / 2, // location y
+                                        *logo,
+                                        screen);
+  RPG_Graphics_Common_Tools::fade(true,                                   // fade in
+                                  5.0,                                    // interval
+                                  RPG_Graphics_Common_Tools::CLR32_BLACK, // fade from black
+                                  screen);                                // screen
+  SDL_Event input;
+  do_waitForSDLInput(10,     // wait 10 seconds max
+                     input);
+  do_handleSDLEvent(input);
+  RPG_Graphics_Common_Tools::fade(false,                                  // fade out
+                                  3.0,                                    // interval
+                                  RPG_Graphics_Common_Tools::CLR32_BLACK, // fade to black
+                                  screen);                                // screen
+}
+
+void
 do_work(const RPG_Client_Config& config_in,
         const bool& useThreadPool_in,
         const unsigned long& numThreadPoolThreads_in,
@@ -1126,37 +1164,7 @@ do_work(const RPG_Client_Config& config_in,
   }
 
   // step3: run intro
-  // step3a: play intro music
-  RPG_Sound_Common_Tools::playSound(EVENT_MAIN_TITLE);
-
-  // step3b: show start logo
-  SDL_Surface* logo = RPG_Graphics_Common_Tools::loadGraphic(TYPE_MAIN_LOGO);
-  if (!logo)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_MAIN_LOGO).c_str()));
-
-    return;
-  } // end IF
-  // *TODO* stretch this image fullscreen
-  // center logo image
-  RPG_Graphics_Common_Tools::putGraphic((screen->w - logo->w) / 2, // location x
-                                        (screen->h - logo->h) / 2, // location y
-                                        *logo,
-                                        screen);
-  RPG_Graphics_Common_Tools::fade(true,                                   // fade in
-                                  5.0,                                    // interval
-                                  RPG_Graphics_Common_Tools::CLR32_WHITE, // fade from black
-                                  screen);                                // screen
-  SDL_Event input;
-  do_waitForSDLInput(10,     // wait 10 seconds max
-                     input);
-  do_handleSDLEvent(input);
-  RPG_Graphics_Common_Tools::fade(false,                                  // fade out
-                                  3.0,                                    // interval
-                                  RPG_Graphics_Common_Tools::CLR32_BLACK, // fade to black
-                                  screen);                                // screen
+  do_runIntro();
 
   // step4: setup event loops
   // - perform (signal handling, socket I/O, ...) --> ACE_Reactor
