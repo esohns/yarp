@@ -314,8 +314,8 @@ do_handleSDLEvent(const SDL_Event& event_in)
     }
     case SDL_VIDEORESIZE:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_VIDEORESIZE event...\n")));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("SDL_VIDEORESIZE event...\n")));
 
       break;
     }
@@ -333,8 +333,8 @@ do_handleSDLEvent(const SDL_Event& event_in)
     }
     case SDL_TIMEREVENT:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_TIMEREVENT event...\n")));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("SDL_TIMEREVENT event...\n")));
 
       break;
     }
@@ -1107,6 +1107,9 @@ do_work(const RPG_Client_Config& config_in,
   do_initGUI(UIfile_in,       // glade file
              userData_in,     // cb data
              videoConfig_in); // video config
+  ACE_ASSERT(xml);
+  ACE_ASSERT(dialog);
+  ACE_ASSERT(screen);
   RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
                                   graphicsCacheSize_in);
   //  init graphics dictionary
@@ -1154,17 +1157,22 @@ do_work(const RPG_Client_Config& config_in,
                                   3.0,                                    // interval
                                   RPG_Graphics_Common_Tools::CLR32_BLACK, // fade to black
                                   screen);                                // screen
-//   ACE_ASSERT(xml);
-//   ACE_ASSERT(dialog);
 
-  // step3: setup event loops
+  // step4: setup event loops
   // - perform (signal handling, socket I/O, ...) --> ACE_Reactor
-  // - UI events --> GTK main loop
+  // - UI events --> GTK main loop [--> SDL event handler]
 
 //   // *NOTE*: make sure we generally restart system calls (after e.g. EINTR) for the reactor...
 //   ACE_Reactor::instance()->restart(1);
 
-  // step4: dispatch events...
+  // dispatch SDL events from the GTK (== "main") thread
+  guint SDLEventHandlerID = gtk_idle_add(do_SDLEventLoop_GTK_cb,
+                                         &userData_in);
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("installed SDL event handler (ID: %u)...\n"),
+             SDLEventHandlerID));
+
+  // step5: dispatch events...
   // *NOTE*: if we use a thread pool, we invoke a different function...
   if (useThreadPool_in)
   {
@@ -1210,17 +1218,9 @@ do_work(const RPG_Client_Config& config_in,
              grp_id,
              (useThreadPool_in ? numThreadPoolThreads_in : 1)));
 
-  // dispatch SDL events from the "main" thread
-  guint SDLEventHandlerID = gtk_idle_add(do_SDLEventLoop_GTK_cb,
-                                         &userData_in);
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("installed SDL event handler (ID: %u)...\n"),
-             SDLEventHandlerID));
-
-  // dispatch GTK events from the "main" thread
+  // dispatch GTK (and SDL-) events
   gtk_main();
-//   // dispatch SDL events from the "main" thread
+//   // dispatch SDL events
 //   do_SDLEventLoop();
 
   ACE_DEBUG((LM_DEBUG,
