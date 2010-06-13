@@ -62,16 +62,15 @@ class RPG_Graphics_Common_Tools
                    const unsigned long&);   // cache size
   static void fini();
   static SDL_Surface* loadGraphic(const RPG_Graphics_Type&); // graphic
-  static void putGraphic(const unsigned long&, // location x
-                         const unsigned long&, // location y
-                         SDL_Surface*,         // target surface (screen !)
-                         const SDL_Surface*);  // graphic
-  // *NOTE*: the target image must already be loaded into the framebuffer !
-  static void fadeIn(const double&, // interval (seconds)
-                     SDL_Surface*); // screen
-  static void fadeOut(const double&, // interval (seconds)
-                      const Uint32&, // target color
-                      SDL_Surface*); // screen
+  static void putGraphic(const unsigned long&, // offset x (upper left == 0,0)
+                         const unsigned long&, // offset y (upper left == 0,0)
+                         const SDL_Surface&,   // image
+                         SDL_Surface*);        // target surface (screen)
+  // *NOTE*: source/target image must already be loaded into the framebuffer !
+  static void fade(const bool&,   // fade in ? (else out)
+                   const float&,  // interval (seconds)
+                   const Uint32&, // fade to/from color
+                   SDL_Surface*); // screen
 
  private:
   // safety measures
@@ -86,8 +85,8 @@ class RPG_Graphics_Common_Tools
   static void initColors();
   static const bool loadPNG(const unsigned char*, // source buffer
                             SDL_Surface*&);       // return value: SDL surface
-  static void fade(const double&, // interval (seconds)
-                   SDL_Surface*,  // image
+  static void fade(const float&,  // interval (seconds)
+                   SDL_Surface*,  // target image
                    SDL_Surface*); // screen
 
   static std::string                  myGraphicsDirectory;

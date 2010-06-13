@@ -303,28 +303,27 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in)
 }
 
 void
-RPG_Graphics_Common_Tools::putGraphic(const unsigned long& locationX_in,
-                                      const unsigned long& locationY_in,
-                                      SDL_Surface* targetSurface_in,
-                                      const SDL_Surface* surface_in)
+RPG_Graphics_Common_Tools::putGraphic(const unsigned long& offsetX_in,
+                                      const unsigned long& offsetY_in,
+                                      const SDL_Surface& image_in,
+                                      SDL_Surface* targetSurface_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::putGraphic"));
 
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);
-  ACE_ASSERT(surface_in);
 
-  // create appropriate bounding box
+  // compute bounding box
   SDL_Rect toRect;
-  toRect.x = locationX_in;
-  toRect.y = locationY_in;
-  toRect.w = surface_in->w;
-  toRect.h = surface_in->h;
+  toRect.x = offsetX_in;
+  toRect.y = offsetY_in;
+  toRect.w = image_in.w;
+  toRect.h = image_in.h;
 
-  if (SDL_BlitSurface(ACE_const_cast(SDL_Surface*, surface_in), // source
-                      NULL,                                     // aspect (--> everything)
-                      targetSurface_in,                         // target
-                      &toRect))                                 // aspect
+  if (SDL_BlitSurface(&ACE_const_cast(SDL_Surface&, image_in), // source
+                      NULL,                                    // aspect (--> everything)
+                      targetSurface_in,                        // target
+                      &toRect))                                // aspect
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
@@ -335,88 +334,17 @@ RPG_Graphics_Common_Tools::putGraphic(const unsigned long& locationX_in,
 }
 
 void
-RPG_Graphics_Common_Tools::fadeIn(const double& interval_in,
-                                  SDL_Surface* screen_in)
+RPG_Graphics_Common_Tools::fade(const bool& fadeIn_in,
+                                const float& interval_in,
+                                const Uint32& color_in,
+                                SDL_Surface* screen_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::fadeIn"));
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::fade"));
 
-  // step1: create a copy of the screen without an alpha-channel
+  SDL_Surface* target_image = NULL;
+  // step1: create a screen-sized surface without an alpha-channel
   // --> i.e. (alpha mask == 0)
-  SDL_Surface* copy = NULL;
-  copy = SDL_CreateRGBSurface((SDL_HWSURFACE | // TRY to (!) place the surface in VideoRAM
-                               SDL_ASYNCBLIT |
-                               SDL_SRCCOLORKEY |
-                               SDL_SRCALPHA),
-                              screen_in->w,
-                              screen_in->h,
-                              screen_in->format->BitsPerPixel,
-                              screen_in->format->Rmask,
-                              screen_in->format->Gmask,
-                              screen_in->format->Bmask,
-                              0);
-  // ...copy the pixel data from the framebuffer
-  if (SDL_BlitSurface(screen_in,
-                      NULL,
-                      copy,
-                      NULL))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-               SDL_GetError()));
-
-    // clean up
-    SDL_FreeSurface(copy);
-
-    return;
-  } // end IF
-
-  // step2: set the screen to all-black
-  if (SDL_FillRect(screen_in,    // screen
-                   NULL,         // fill screen
-                   CLR32_BLACK)) // black
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    // clean up
-    SDL_FreeSurface(copy);
-
-    return;
-  } // end IF
-  // ...and display that
-  if (SDL_Flip(screen_in))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_Flip(): %s, aborting\n"),
-               SDL_GetError()));
-
-    // clean up
-    SDL_FreeSurface(copy);
-
-    return;
-  } // end IF
-
-  // step3: slowly fade in the image
-  fade(interval_in,
-       copy,
-       screen_in);
-
-  // clean up
-  SDL_FreeSurface(copy);
-}
-
-void
-RPG_Graphics_Common_Tools::fadeOut(const double& interval_in,
-                                   const Uint32& targetColor_in,
-                                   SDL_Surface* screen_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::fadeOut"));
-
-  // step1: create a screen-sized (black ?) surface without an alpha-channel
-  // --> i.e. (alpha mask == 0)
-  SDL_Surface* black_screen = NULL;
-  black_screen = SDL_CreateRGBSurface((SDL_HWSURFACE | // TRY to (!) place the surface in VideoRAM
+  target_image = SDL_CreateRGBSurface((SDL_HWSURFACE | // TRY to (!) place the surface in VideoRAM
                                        SDL_ASYNCBLIT |
                                        SDL_SRCCOLORKEY |
                                        SDL_SRCALPHA),
@@ -427,27 +355,85 @@ RPG_Graphics_Common_Tools::fadeOut(const double& interval_in,
                                       screen_in->format->Gmask,
                                       screen_in->format->Bmask,
                                       0);
-  if (SDL_FillRect(black_screen,    // screen
-                   NULL,            // fill screen
-                   targetColor_in)) // target color (black ?)
+  if (!target_image)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
+               ACE_TEXT("failed to SDL_CreateRGBSurface(): %s, aborting\n"),
                SDL_GetError()));
-
-    // clean up
-    SDL_FreeSurface(black_screen);
 
     return;
   } // end IF
 
-  // step2: slowly blend in the (black ?) screen
+  if (fadeIn_in)
+  {
+    // ...copy the pixel data from the framebuffer
+    if (SDL_BlitSurface(screen_in,
+                        NULL,
+                        target_image,
+                        NULL))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+                 SDL_GetError()));
+
+      // clean up
+      SDL_FreeSurface(target_image);
+
+      return;
+    } // end IF
+
+    // set the screen to the background color (black ?)
+    if (SDL_FillRect(screen_in, // screen
+                     NULL,      // fill screen
+                     color_in)) // black ?
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
+                 SDL_GetError()));
+
+      // clean up
+      SDL_FreeSurface(target_image);
+
+      return;
+    } // end IF
+    // ...and display that
+    if (SDL_Flip(screen_in))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_Flip(): %s, aborting\n"),
+                 SDL_GetError()));
+
+      // clean up
+      SDL_FreeSurface(target_image);
+
+      return;
+    } // end IF
+  } // end IF
+  else
+  {
+    // fill the target image with the requested color
+    if (SDL_FillRect(target_image, // screen
+                     NULL,         // fill screen
+                     color_in))    // target color
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
+                 SDL_GetError()));
+
+      // clean up
+      SDL_FreeSurface(target_image);
+
+      return;
+    } // end IF
+  } // end ELSE
+
+  // step4: slowly fade in/out
   fade(interval_in,
-       black_screen,
+       target_image,
        screen_in);
 
   // clean up
-  SDL_FreeSurface(black_screen);
+  SDL_FreeSurface(target_image);
 }
 
 void
@@ -833,17 +819,113 @@ RPG_Graphics_Common_Tools::loadPNG(const unsigned char* buffer_in,
   return true;
 }
 
+// void
+// RPG_Graphics_Common_Tools::fade(const double& interval_in,
+//                                 SDL_Surface* targetImage_in,
+//                                 SDL_Surface* screen_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::fade"));
+//
+//   // *NOTE*: fading works by blitting the target image onto the screen,
+//   // slowly decreasing transparency to reach full brightness/darkness
+//
+//   // initialize/start with maximal transparency
+//   int alpha = SDL_ALPHA_TRANSPARENT; // transparent
+//
+//   Uint32 cur_clock, end_clock, start_clock;
+//   float percentage = 1.0;
+//   start_clock = cur_clock = SDL_GetTicks();
+//   end_clock = start_clock + (interval_in * 1000);
+//   while (cur_clock <= end_clock)
+//   {
+//     // adjust transparency
+//     if (SDL_SetAlpha(targetImage_in,
+//                      (SDL_SRCALPHA | SDL_RLEACCEL), // alpha blending/RLE acceleration
+//                      (SDL_ALPHA_TRANSPARENT + alpha)))
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to SDL_SetAlpha(): %s, aborting\n"),
+//                  SDL_GetError()));
+//
+//       return;
+//     } // end IF
+//     // *NOTE*: only change the framebuffer !
+//     if (SDL_Flip(screen_in))
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to SDL_Flip(): %s, aborting\n"),
+//                  SDL_GetError()));
+//
+//       return;
+//     } // end IF
+//     if (SDL_BlitSurface(targetImage_in,
+//                         NULL,
+//                         screen_in,
+//                         NULL))
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+//                  SDL_GetError()));
+//
+//       return;
+//     } // end IF
+//     if (SDL_Flip(screen_in))
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to SDL_Flip(): %s, aborting\n"),
+//                  SDL_GetError()));
+//
+//       return;
+//     } // end IF
+//
+//     cur_clock = SDL_GetTicks();
+//     percentage = (ACE_static_cast(float, (cur_clock - start_clock)) /
+//                   ACE_static_cast(float, (end_clock - start_clock)));
+//     alpha = ((SDL_ALPHA_OPAQUE - SDL_ALPHA_TRANSPARENT) * percentage);
+//   } // end WHILE
+//
+//   // ensure that the target image is fully faded in
+//   if (SDL_SetAlpha(targetImage_in,
+//                    (SDL_SRCALPHA | SDL_RLEACCEL), // alpha blending/RLE acceleration
+//                    SDL_ALPHA_OPAQUE))
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to SDL_SetAlpha(): %s, aborting\n"),
+//                SDL_GetError()));
+//
+//     return;
+//   } // end IF
+//   if (SDL_BlitSurface(targetImage_in,
+//                       NULL,
+//                       screen_in,
+//                       NULL))
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+//                SDL_GetError()));
+//
+//     return;
+//   } // end IF
+//   if (SDL_Flip(screen_in))
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to SDL_Flip(): %s, aborting\n"),
+//                SDL_GetError()));
+//
+//     return;
+//   } // end IF
+// }
+
 void
-RPG_Graphics_Common_Tools::fade(const double& interval_in,
-                                SDL_Surface* image_in,
+RPG_Graphics_Common_Tools::fade(const float& interval_in,
+                                SDL_Surface* targetImage_in,
                                 SDL_Surface* screen_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::fade"));
 
-  // calculate how many intermediate steps it will take
-  int n_steps = RPG_GRAPHICS_FADESTEPS_PER_SEC * interval_in;
-  // initialize/start with maximal transparency
-  if (SDL_SetAlpha(image_in,                      // image
+  // calculate the number of blends
+  int n_steps = RPG_GRAPHICS_FADE_REFRESH_RATE * interval_in;
+  if (SDL_SetAlpha(targetImage_in,
                    (SDL_SRCALPHA | SDL_RLEACCEL), // alpha blending/RLE acceleration
                    (SDL_ALPHA_OPAQUE / n_steps)))
   {
@@ -854,27 +936,16 @@ RPG_Graphics_Common_Tools::fade(const double& interval_in,
     return;
   } // end IF
 
-  unsigned int cur_clock, end_clock, start_clock, sleeptime, elapsed;
+  Uint32 cur_clock, end_clock, start_clock, sleeptime, elapsed;
   start_clock = cur_clock = SDL_GetTicks();
   end_clock = start_clock + (interval_in * 1000);
-  while (cur_clock < end_clock)
+  while (cur_clock <= end_clock)
   {
-//     // (slowly) decrease transparency
-//     if (SDL_SetAlpha(image_in,
-//                      (SDL_SRCALPHA | SDL_RLEACCEL), // alpha blending/RLE acceleration
-//                      ((SDL_ALPHA_OPAQUE / n_steps) * step_counter)))
-//     {
-//       ACE_DEBUG((LM_ERROR,
-//                  ACE_TEXT("failed to SDL_SetAlpha(): %s, aborting\n"),
-//                  SDL_GetError()));
-//
-//       return;
-//     } // end IF
     // *NOTE*: blitting the image onto the screen repeatedly
     // will slowly add up to full brightness, while
     // drawing over the screen with semi-transparent
     // darkness repeatedly gives a fade-out effect
-    if (SDL_BlitSurface(image_in,
+    if (SDL_BlitSurface(targetImage_in,
                         NULL,
                         screen_in,
                         NULL))
@@ -894,21 +965,37 @@ RPG_Graphics_Common_Tools::fade(const double& interval_in,
       return;
     } // end IF
 
+    // delay a little while, to impress the blended image
     elapsed = SDL_GetTicks() - cur_clock;
-    sleeptime = ((1000 / RPG_GRAPHICS_FADESTEPS_PER_SEC) > elapsed) ? ((1000 / RPG_GRAPHICS_FADESTEPS_PER_SEC) - elapsed)
-                                                                    : 0;
+    sleeptime = ((1000/RPG_GRAPHICS_FADE_REFRESH_RATE) > elapsed) ? ((1000/RPG_GRAPHICS_FADE_REFRESH_RATE) - elapsed)
+                                                                  : 0;
     SDL_Delay(sleeptime);
-    cur_clock = SDL_GetTicks();
+
+    cur_clock += (elapsed + sleeptime);
   } // end WHILE
 
-  // ensure that the screen is fully faded in
-  SDL_SetAlpha(image_in,
-               (SDL_SRCALPHA | SDL_RLEACCEL), // alpha blending/RLE acceleration
-               0);
-  SDL_BlitSurface(image_in,
-                  NULL,
-                  screen_in,
-                  NULL);
+  // ensure that the target image is fully faded in
+  if (SDL_SetAlpha(targetImage_in,
+                   0, // alpha blending/RLE acceleration
+                   0))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetAlpha(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+  if (SDL_BlitSurface(targetImage_in,
+                      NULL,
+                      screen_in,
+                      NULL))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
   if (SDL_Flip(screen_in))
   {
     ACE_DEBUG((LM_ERROR,

@@ -24,7 +24,7 @@
 // #signature bytes to check for PNG graphics
 #define RPG_GRAPHICS_PNG_SIGNATURE_BYTES 8
 
-// #steps / second for fading ("smoothness")
-#define RPG_GRAPHICS_FADESTEPS_PER_SEC   20
+// min #screen refreshes / second of fading
+#define RPG_GRAPHICS_FADE_REFRESH_RATE   10
 
 #endif

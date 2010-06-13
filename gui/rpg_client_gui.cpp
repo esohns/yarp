@@ -82,6 +82,9 @@
 #define RPG_CLIENT_DEF_VIDEO_FULLSCREEN          false
 #define RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER        false
 
+#define SDL_TIMEREVENT   SDL_USEREVENT
+#define SDL_MOUSEMOVEOUT (SDL_USEREVENT+1)
+
 struct cb_data
 {
 //   std::string bla;
@@ -118,11 +121,11 @@ extern "C"
 {
 #endif /* __cplusplus */
 G_MODULE_EXPORT gint
-quit_activated_cb(GtkWidget* widget_in,
-                  GdkEvent* event_in,
-                  gpointer userData_in)
+quit_activated_GTK_cb(GtkWidget* widget_in,
+                      GdkEvent* event_in,
+                      gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::quit_activated_cb"));
+  ACE_TRACE(ACE_TEXT("::quit_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   ACE_UNUSED_ARG(event_in);
@@ -140,8 +143,11 @@ quit_activated_cb(GtkWidget* widget_in,
 
   // no more data will arrive from here on...
 
-  // ...and leave GTK
+  // leave GTK
   gtk_main_quit();
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("leaving...\n")));
 
   // this is the "delete-event" handler
   // --> destroy the dialog widget
@@ -152,9 +158,9 @@ quit_activated_cb(GtkWidget* widget_in,
 #endif /* __cplusplus */
 
 int
-filter_events(const SDL_Event* event_in)
+event_filter_SDL_cb(const SDL_Event* event_in)
 {
-  ACE_TRACE(ACE_TEXT("::filter_events"));
+  ACE_TRACE(ACE_TEXT("::event_filter_SDL_cb"));
 
 //   static int boycott = 1;
 
@@ -196,82 +202,208 @@ filter_events(const SDL_Event* event_in)
   return 1;
 }
 
-G_MODULE_EXPORT gint
-do_SDLEventLoop(gpointer userData_in)
+void
+do_handleSDLEvent(const SDL_Event& event_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_SDLEventLoop"));
+  ACE_TRACE(ACE_TEXT("::do_handleSDLEvent"));
+
+  switch (event_in.type)
+  {
+    // *** visibility ***
+    case SDL_ACTIVEEVENT:
+    {
+      if (event_in.active.state & SDL_APPACTIVE)
+      {
+        if (event_in.active.gain)
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("activated...\n")));
+        } // end IF
+        else
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("iconified...\n")));
+        } // end ELSE
+      } // end IF
+      if (event_in.active.state & SDL_APPMOUSEFOCUS)
+      {
+        if (event_in.active.gain)
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("mouse focus...\n")));
+        } // end IF
+        else
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("NO mouse focus...\n")));
+        } // end ELSE
+      } // end IF
+
+      break;
+    }
+    // *** keyboard ***
+    case SDL_KEYDOWN:
+    {
+      Uint8* keys = NULL;
+      keys = SDL_GetKeyState(NULL);
+      ACE_ASSERT(keys);
+
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("key pressed...\n")));
+
+      break;
+    }
+    case SDL_KEYUP:
+    {
+      Uint8* keys = NULL;
+      keys = SDL_GetKeyState(NULL);
+      ACE_ASSERT(keys);
+
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("key released...\n")));
+
+      break;
+    }
+    // *** mouse ***
+    case SDL_MOUSEMOTION:
+    {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("mouse motion...\n")));
+
+      break;
+    }
+    case SDL_MOUSEBUTTONDOWN:
+    {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("mouse button pressed...\n")));
+
+      break;
+    }
+    case SDL_MOUSEBUTTONUP:
+    {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("mouse button released...\n")));
+
+      break;
+    }
+    // *** joystick ***
+    case SDL_JOYAXISMOTION:
+    case SDL_JOYBALLMOTION:
+    case SDL_JOYHATMOTION:
+    case SDL_JOYBUTTONDOWN:
+    case SDL_JOYBUTTONUP:
+    {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("joystick activity...\n")));
+
+      break;
+    }
+    case SDL_QUIT:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("SDL_QUIT event...\n")));
+
+      break;
+    }
+    case SDL_SYSWMEVENT:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("SDL_SYSWMEVENT event...\n")));
+
+      break;
+    }
+    case SDL_VIDEORESIZE:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("SDL_VIDEORESIZE event...\n")));
+
+      break;
+    }
+    case SDL_VIDEOEXPOSE:
+    {
+      ACE_ASSERT(screen);
+      if (SDL_Flip(screen))
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to SDL_Flip(): %s, continuing\n"),
+                   SDL_GetError()));
+      } // end IF
+
+      break;
+    }
+    case SDL_TIMEREVENT:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("SDL_TIMEREVENT event...\n")));
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("received unknown event (was: %u)...\n"),
+                 ACE_static_cast(unsigned long, event_in.type)));
+
+      break;
+    }
+  } // end SWITCH
+}
+
+G_MODULE_EXPORT gint
+do_SDLEventLoop_GTK_cb(gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::do_SDLEventLoop_GTK_cb"));
 
   ACE_UNUSED_ARG(userData_in);
 
   SDL_Event event;
-//   // loop waiting for ESC+Mouse_Button
-//   while (SDL_WaitEvent(&event) >= 0)
-  // poll for ESC+Mouse_Button
+//   while (SDL_WaitEvent(&event) > 0)
   if (SDL_PollEvent(&event))
   {
+    do_handleSDLEvent(event);
+
+    // check for ESC+MouseButton --> quit
     switch (event.type)
     {
-      case SDL_ACTIVEEVENT:
-      {
-        if (event.active.state & SDL_APPACTIVE)
-        {
-          if (event.active.gain)
-          {
-//             ACE_DEBUG((LM_DEBUG,
-//                        ACE_TEXT("activated...\n")));
-          } // end IF
-          else
-          {
-//             ACE_DEBUG((LM_DEBUG,
-//                        ACE_TEXT("iconified...\n")));
-          } // end ELSE
-        } // end IF
-
-        break;
-      }
       case SDL_MOUSEBUTTONDOWN:
       {
         Uint8* keys = NULL;
         keys = SDL_GetKeyState(NULL);
         ACE_ASSERT(keys);
-        if (keys[SDLK_ESCAPE] == SDL_PRESSED)
-        {
-          // simply fall through !
-        } // end IF
-        else
-        {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("mouse button pressed...\n")));
-
+        if (keys[SDLK_ESCAPE] != SDL_PRESSED)
           break;
-        } // end ELSE
+        // fall through !
       }
       case SDL_QUIT:
       {
-//         // stop reactor
-//         if (ACE_Reactor::instance()->end_event_loop() == -1)
-//         {
-//           ACE_DEBUG((LM_ERROR,
-//                      ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
-//         } // end IF
-//
-//         // ... and wait for the reactor worker(s) to join
-//         ACE_Thread_Manager::instance()->wait_grp(grp_id);
-//
-//         // no more data will arrive from here on...
-//
-//         ACE_DEBUG((LM_DEBUG,
-//                    ACE_TEXT("leaving...\n")));
-//
-//         return;
+        // stop reactor
+        if (ACE_Reactor::instance()->end_event_loop() == -1)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
+        } // end IF
+
+        // ... and wait for the reactor worker(s) to join
+        ACE_Thread_Manager::instance()->wait_grp(grp_id);
+
+        // no more data will arrive from here on...
+
+        // leave GTK
+        gtk_main_quit();
+
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("leaving...\n")));
+
+        // quit idle task
+        return 0;
       }
       default:
       {
         break;
       }
     } // end SWITCH
-//   } // end WHILE
   } // end IF
+  //   } // end WHILE
 
 //   // this should never happen
 //   ACE_DEBUG((LM_ERROR,
@@ -294,7 +426,73 @@ do_SDLEventLoop(gpointer userData_in)
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("leaving...\n")));
 
+  // continue idle task
   return 1;
+}
+
+Uint32
+timer_SDL_cb(Uint32 interval_in,
+             void* argument_in)
+{
+  ACE_TRACE(ACE_TEXT("::timer_SDL_cb"));
+
+  // create an SDL timer event
+  SDL_Event event;
+  event.type = SDL_TIMEREVENT;
+  event.user.data1 = argument_in;
+
+  // push it onto the event queue
+  if (SDL_PushEvent(&event))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+               SDL_GetError()));
+  } // end IF
+
+  // re-schedule
+  return interval_in;
+}
+
+// wait for an input event; stop waiting after timeout_in milliseconds (0: wait forever)
+void
+do_waitForSDLInput(const unsigned long& timeout_in,
+                   SDL_Event& event_out)
+{
+  ACE_TRACE(ACE_TEXT("::do_waitForSDLInput"));
+
+  SDL_TimerID timer = NULL;
+  if (timeout_in)
+    timer = SDL_AddTimer((timeout_in * 1000), // interval (ms)
+                         timer_SDL_cb,        // timeout callback
+                         NULL);               // callback argument
+
+  // loop until something interesting happens
+  do
+  {
+    if (SDL_WaitEvent(&event_out) != 1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", continuing\n"),
+                 SDL_GetError()));
+
+      // what else can we do ?
+      continue;
+    } // end IF
+    if (event_out.type == SDL_KEYDOWN ||
+        event_out.type == SDL_MOUSEBUTTONDOWN ||
+        event_out.type == SDL_TIMEREVENT)
+      break;
+    else
+      do_handleSDLEvent(event_out);
+  } while (true);
+
+  if (timeout_in)
+    if (!SDL_RemoveTimer(timer))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
+                 SDL_GetError()));
+    } // end IF
 }
 
 void
@@ -669,13 +867,13 @@ do_initGUI(const std::string& UIfile_in,
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(quit_activated_cb),
+                   G_CALLBACK(quit_activated_GTK_cb),
                    &ACE_const_cast(cb_data&, userData_in));
 
   // step4a: attach user data
   glade_xml_signal_connect_data(xml,
                                 ACE_TEXT_ALWAYS_CHAR("quit_activated_cb"),
-                                G_CALLBACK(quit_activated_cb),
+                                G_CALLBACK(quit_activated_GTK_cb),
                                 &ACE_const_cast(cb_data&, userData_in));
 
 //   // step5: use correct screen
@@ -695,19 +893,19 @@ do_initGUI(const std::string& UIfile_in,
   // enable key repeat
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,
                       SDL_DEFAULT_REPEAT_INTERVAL);
-  // ignore key events
-  SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
-  SDL_EventState(SDL_KEYUP, SDL_IGNORE);
+//   // ignore keyboard events
+//   SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
+//   SDL_EventState(SDL_KEYUP, SDL_IGNORE);
 
-  // filter key, mouse and quit events
-  SDL_SetEventFilter(filter_events);
+  // SDL event filter (filter mouse motion events and the like)
+  SDL_SetEventFilter(event_filter_SDL_cb);
 
   // ***** window/screen setup *****
   // set window caption
   SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING), // title
                     NULL);                                // icon
-  // don't show (double) cursor
-  SDL_ShowCursor(SDL_DISABLE);
+//   // don't show (double) cursor
+//   SDL_ShowCursor(SDL_DISABLE);
 
   char driver[MAXPATHLEN];
   if (!SDL_VideoDriverName(driver,
@@ -942,13 +1140,20 @@ do_work(const RPG_Client_Config& config_in,
   // center logo image
   RPG_Graphics_Common_Tools::putGraphic((screen->w - logo->w) / 2, // location x
                                         (screen->h - logo->h) / 2, // location y
-                                        screen,
-                                        logo);
-  RPG_Graphics_Common_Tools::fadeIn(5.0,
-                                    screen);
-  RPG_Graphics_Common_Tools::fadeOut(5.0,
-                                     RPG_Graphics_Common_Tools::CLR32_BLACK,
-                                     screen);
+                                        *logo,
+                                        screen);
+  RPG_Graphics_Common_Tools::fade(true,                                   // fade in
+                                  5.0,                                    // interval
+                                  RPG_Graphics_Common_Tools::CLR32_WHITE, // fade from black
+                                  screen);                                // screen
+  SDL_Event input;
+  do_waitForSDLInput(10,     // wait 10 seconds max
+                     input);
+  do_handleSDLEvent(input);
+  RPG_Graphics_Common_Tools::fade(false,                                  // fade out
+                                  3.0,                                    // interval
+                                  RPG_Graphics_Common_Tools::CLR32_BLACK, // fade to black
+                                  screen);                                // screen
 //   ACE_ASSERT(xml);
 //   ACE_ASSERT(dialog);
 
@@ -1006,7 +1211,7 @@ do_work(const RPG_Client_Config& config_in,
              (useThreadPool_in ? numThreadPoolThreads_in : 1)));
 
   // dispatch SDL events from the "main" thread
-  guint SDLEventHandlerID = gtk_idle_add(do_SDLEventLoop,
+  guint SDLEventHandlerID = gtk_idle_add(do_SDLEventLoop_GTK_cb,
                                          &userData_in);
 
   ACE_DEBUG((LM_DEBUG,
@@ -1381,6 +1586,7 @@ ACE_TMAIN(int argc_in,
   if (SDL_Init(SDL_INIT_VIDEO |
                SDL_INIT_AUDIO |
                SDL_INIT_CDROM | // audioCD playback
+               SDL_INIT_TIMER | // timers
                SDL_INIT_NOPARACHUTE) == -1) // "...Prevents SDL from catching fatal signals..."
   {
     ACE_DEBUG((LM_ERROR,
