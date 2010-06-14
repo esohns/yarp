@@ -92,19 +92,16 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned long& dimensionX_in,
     if (no_rooms_empty)
       some_rooms_empty = false;
 
-    if (some_rooms_empty)
-    {
-      // debug info
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("result[%u] is invalid, retrying...\n"),
-                 index));
-    } // end IF
+//     if (some_rooms_empty)
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("result[%u] is invalid, retrying...\n"),
+//                  index));
     index++;
   } while (some_rooms_empty);
-  // debug info
-  displayRooms(dimensionX_in,
-               dimensionY_in,
-               rooms);
+//   // debug info
+//   displayRooms(dimensionX_in,
+//                dimensionY_in,
+//                rooms);
 
   // step3: create doors (and corridors)
   connectRooms(dimensionX_in,
@@ -221,12 +218,11 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
     zone.insert(*seed_iter);
     partition_out.push_back(zone);
 
-    // debug info
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("seed [#%u]: (%u,%u)\n"),
-               index,
-               (*seed_iter).first,
-               (*seed_iter).second));
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("seed [#%u]: (%u,%u)\n"),
+//                index,
+//                (*seed_iter).first,
+//                (*seed_iter).second));
   } // end FOR
 
   // step2: iterate over the plane finding the "nearest neighbour" claiming
@@ -354,12 +350,12 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
   bool accounted_for = false;
   while (!conflicts.empty())
   {
-    // debug info
-    displayPartition(dimensionX_in,
-                     dimensionY_in,
-                     seed_points,
-                     conflicts,
-                     partition_out);
+//     // debug info
+//     displayPartition(dimensionX_in,
+//                      dimensionY_in,
+//                      seed_points,
+//                      conflicts,
+//                      partition_out);
 
     for (conflict_iter = conflicts.begin();
          conflict_iter != conflicts.end();
@@ -536,12 +532,12 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
     } // end FOR
   } // end WHILE
 
-  // debug info
-  displayPartition(dimensionX_in,
-                   dimensionY_in,
-                   seed_points,
-                   conflicts,
-                   partition_out);
+//   // debug info
+//   displayPartition(dimensionX_in,
+//                    dimensionY_in,
+//                    seed_points,
+//                    conflicts,
+//                    partition_out);
 }
 
 void
@@ -813,14 +809,12 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
         crop(current_zone);
       } while (last_size > current_zone.size());
 
-      // debug info
-      if (current_zone.empty())
-      {
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("zone[%u] has been cropped...\n"),
-                   index));
-      } // end IF
+//       if (current_zone.empty())
+//       {
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("zone[%u] has been cropped...\n"),
+//                    index));
+//       } // end IF
 //       else if (current_zone.size() < (*partition_iter).size())
 //       {
 //         ACE_DEBUG((LM_DEBUG,
@@ -852,7 +846,6 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
       // sanity check
       if ((*zonelist_iter).empty())
       {
-        // debug info
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("max. square[%u]: doesn't exist\n"),
                    index));
@@ -863,15 +856,14 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
         // --> can fit in smaller rooms anytime...
         findMaxSquare(*zonelist_iter, maxSquare);
 
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("max. square[%u]: [(%u,%u),(%u,%u)] - %u cell(s)\n"),
-                   index,
-                   maxSquare.ul.first,
-                   maxSquare.ul.second,
-                   maxSquare.lr.first,
-                   maxSquare.lr.second,
-                   area2Positions(maxSquare.ul, maxSquare.lr)));
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("max. square[%u]: [(%u,%u),(%u,%u)] - %u cell(s)\n"),
+//                    index,
+//                    maxSquare.ul.first,
+//                    maxSquare.ul.second,
+//                    maxSquare.lr.first,
+//                    maxSquare.lr.second,
+//                    area2Positions(maxSquare.ul, maxSquare.lr)));
       } // end ELSE
 
       maxSquares.push_back(maxSquare);
@@ -912,7 +904,6 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
         else
           rooms_out.push_back(current_zone);
 
-//         // debug info
 //         ACE_DEBUG((LM_DEBUG,
 //                    ACE_TEXT("zone[%u] has %u cell(s) - bounded by [(%u,%u),(%u,%u)] --> %u cell(s)\n"),
 //                    index,
@@ -950,12 +941,11 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
     {
       if ((*zones_iter).size() < minArea_in)
       {
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("zone[%u] is too small (%u < %u)...\n"),
-                   index,
-                   (*zones_iter).size(),
-                   minArea_in));
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("zone[%u] is too small (%u < %u)...\n"),
+//                    index,
+//                    (*zones_iter).size(),
+//                    minArea_in));
 
         // crop room (what else can we do ?)
         (*zones_iter).clear();
@@ -1038,10 +1028,9 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
 //                    i++)
 //                 (*zones_iter).insert(std::make_pair(((*first).first + i), (*first).second));
 
-              // debug info
-              ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("zone[%u]: cropped top row...\n"),
-                         index));
+//               ACE_DEBUG((LM_DEBUG,
+//                          ACE_TEXT("zone[%u]: cropped top row...\n"),
+//                          index));
 
               break;
             }
@@ -1065,10 +1054,9 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
 //                    i++)
 //                 (*zones_iter).insert(std::make_pair((*last).first, ((*last).second - i)));
 
-              // debug info
-              ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("zone[%u]: cropped rightmost column...\n"),
-                         index));
+//               ACE_DEBUG((LM_DEBUG,
+//                          ACE_TEXT("zone[%u]: cropped rightmost column...\n"),
+//                          index));
 
               break;
             }
@@ -1090,10 +1078,9 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
 //                    i++)
 //                 (*zones_iter).insert(std::make_pair(((*first).first + i), (*first).second));
 
-              // debug info
-              ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("zone[%u]: cropped bottom row...\n"),
-                         index));
+//               ACE_DEBUG((LM_DEBUG,
+//                          ACE_TEXT("zone[%u]: cropped bottom row...\n"),
+//                          index));
 
               break;
             }
@@ -1117,10 +1104,9 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
 //                    i++)
 //                 (*zones_iter).insert(std::make_pair((*first).first, ((*last).second - i)));
 
-              // debug info
-              ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("zone[%u]: cropped leftmost column...\n"),
-                         index));
+//               ACE_DEBUG((LM_DEBUG,
+//                          ACE_TEXT("zone[%u]: cropped leftmost column...\n"),
+//                          index));
 
               break;
             }
@@ -1143,14 +1129,12 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
 //         cropSquareBoundary(*zones_iter);
         crop(*zones_iter);
 
-        // debug info
-        if ((*zones_iter).empty())
-        {
-          // debug info
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("zone[%u] has been cropped entirely...\n"),
-                     index));
-        } // end IF
+//         if ((*zones_iter).empty())
+//         {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("zone[%u] has been cropped entirely...\n"),
+//                      index));
+//         } // end IF
 //       else if ((*zones_iter).size() < (*partition_iter).size())
 //       {
 //         ACE_DEBUG((LM_DEBUG,
@@ -1389,10 +1373,10 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
       } // end FOR
       if (doorPositions.empty())
       {
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("room[%u] cannot have doors...\n"),
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("room[%u] cannot have doors, continuing\n"),
                    index));
+        // debug info
         dump(*zonelist_iter);
 
         // still, insert an (empty) set of doors...
@@ -1455,12 +1439,11 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
     {
       level_out.doors.insert(*doors_iterator);
 
-      // debug info
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("door[%u,%u] at (%u,%u)\n"),
-                 index, index2,
-                 (*doors_iterator).first,
-                 (*doors_iterator).second));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("door[%u,%u] at (%u,%u)\n"),
+//                  index, index2,
+//                  (*doors_iterator).first,
+//                  (*doors_iterator).second));
     } // end FOR
   } // end FOR
 
@@ -1562,21 +1545,21 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
                                                  current_path))
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("cannot find path from (%u,%u) to (%u,%u)\n"),
+                     ACE_TEXT("cannot find path from (%u,%u) to (%u,%u), continuing\n"),
                      (*doors_iter).first,
                      (*doors_iter).second,
                      (*target_door).first,
                      (*target_door).second));
         } // end IF
-        else
-        {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("found path from (%u,%u) to (%u,%u)\n"),
-                     (*doors_iter).first,
-                     (*doors_iter).second,
-                     (*target_door).first,
-                     (*target_door).second));
-        } // end ELSE
+//         else
+//         {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("found path from (%u,%u) to (%u,%u)\n"),
+//                      (*doors_iter).first,
+//                      (*doors_iter).second,
+//                      (*target_door).first,
+//                      (*target_door).second));
+//         } // end ELSE
 
         used_positions.insert(*doors_iter);
         used_positions.insert(*target_door);
@@ -1587,9 +1570,9 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
           //        been attached to some corridor), relax this constraint
           used_positions.clear();
 
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("connectivity has been established (%u path(s))...\n"),
-                     (paths.size() + 1)));
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("connectivity has been established (%u path(s))...\n"),
+//                      (paths.size() + 1)));
 
           connectivity_established = true;
         } // end IF
@@ -1773,7 +1756,6 @@ RPG_Map_Common_Tools::dump(const RPG_Map_Zone_t& zone_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::dump"));
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("zone (%u position(s)):\n"),
              zone_in.size()));
@@ -1782,7 +1764,6 @@ RPG_Map_Common_Tools::dump(const RPG_Map_Zone_t& zone_in)
        zone_iterator != zone_in.end();
        zone_iterator++, index++)
   {
-    // debug info
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("position[%u] at (%u,%u)\n"),
                index,
@@ -1988,7 +1969,6 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Zone_t& map_in,
         }
         default:
         {
-          // debug info
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid origin (was %u), continuing\n"),
                      origin));
@@ -2035,7 +2015,6 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Zone_t& map_in,
       }
       default:
       {
-        // debug info
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid direction (was %u), continuing\n"),
                    next));
@@ -2477,7 +2456,6 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
     }
     default:
     {
-      // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid origin (was %u), continuing\n"),
                  origin_in));
@@ -2580,7 +2558,6 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
         }
         default:
         {
-          // debug info
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid direction (was %u), continuing\n"),
                      next));
@@ -2652,7 +2629,6 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
         }
         default:
         {
-          // debug info
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid direction (was %u), continuing\n"),
                      next));
@@ -2719,7 +2695,6 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
           }
           default:
           {
-            // debug info
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("invalid direction (was %u), continuing\n"),
                        next));

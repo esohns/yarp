@@ -1118,6 +1118,7 @@ do_work(const RPG_Client_Config& config_in)
                                         true, // *NOTE*: currently, doors fill one position
                                         config_in.map_config.max_num_doors_per_room,
                                         floorPlan);
+  RPG_Map_Common_Tools::displayFloorPlan(floorPlan);
   RPG_Map_Level level(floorPlan);
 
   // step4: setup event loops
@@ -1522,7 +1523,7 @@ ACE_TMAIN(int argc_in,
   config.video_config.doubleBuffer         = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
   config.graphics_directory                = RPG_CLIENT_DEF_GRAPHICS_DIRECTORY;
   config.graphics_cache_size               = RPG_CLIENT_DEF_GRAPHICS_CACHESIZE;
-  config.graphics_dictionary               = soundDictionary;
+  config.graphics_dictionary               = graphicsDictionary;
   config.map_config.min_room_area          = RPG_CLIENT_DEF_MAP_MIN_ROOM_AREA;
   config.map_config.corridors              = RPG_CLIENT_DEF_MAP_CORRIDORS;
   config.map_config.max_num_doors_per_room = RPG_CLIENT_DEF_MAP_MAX_NUM_DOORS_PER_ROOM;

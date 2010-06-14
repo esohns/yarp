@@ -143,7 +143,7 @@ bool RPG_Sound_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     case ::xml_schema::error_handler::severity::warning:
     {
       ACE_DEBUG((LM_WARNING,
-                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
@@ -154,7 +154,7 @@ bool RPG_Sound_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     case ::xml_schema::error_handler::severity::error:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
@@ -165,7 +165,7 @@ bool RPG_Sound_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     case ::xml_schema::error_handler::severity::fatal:
     {
       ACE_DEBUG((LM_CRITICAL,
-                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
@@ -176,7 +176,7 @@ bool RPG_Sound_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     default:
     {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
