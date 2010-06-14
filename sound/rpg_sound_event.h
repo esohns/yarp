@@ -29,6 +29,7 @@
 enum RPG_Sound_Event
 {
   EVENT_MAIN_TITLE = 0,
+  EVENT_WALK,
   EVENT_HIT,
   EVENT_MISS,
   //
@@ -51,6 +52,7 @@ class RPG_Sound_EventHelper
   {
     myRPG_Sound_EventToStringTable.clear();
     myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_MAIN_TITLE, ACE_TEXT_ALWAYS_CHAR("EVENT_MAIN_TITLE")));
+    myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_WALK, ACE_TEXT_ALWAYS_CHAR("EVENT_WALK")));
     myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_HIT, ACE_TEXT_ALWAYS_CHAR("EVENT_HIT")));
     myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_MISS, ACE_TEXT_ALWAYS_CHAR("EVENT_MISS")));
   };

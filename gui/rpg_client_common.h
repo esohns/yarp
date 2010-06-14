@@ -21,11 +21,66 @@
 #ifndef RPG_CLIENT_COMMON_H
 #define RPG_CLIENT_COMMON_H
 
+#include <SDL/SDL.h>
+
 #include <string>
+
+struct GTK_cb_data_t
+{
+//   std::string bla;
+};
+
+// *NOTE* types as used by SDL
+struct SDL_audio_config_t
+{
+  int    frequency;
+  Uint16 format;
+//   Uint8  channels;
+  int    channels;
+  Uint16 samples;
+};
+
+// *NOTE* types as used by SDL
+struct SDL_video_config_t
+{
+  int    screen_width;
+  int    screen_height;
+  int    screen_colordepth; // bits/pixel
+  Uint32 screen_flags;
+  bool   fullScreen;
+  bool   doubleBuffer;
+};
+
+struct map_config_t
+{
+  unsigned long min_room_area; // 0: don't care
+  bool          corridors;
+  unsigned long max_num_doors_per_room;
+  bool          maximize_rooms;
+  unsigned long num_rooms;
+  bool          square_rooms;
+  unsigned long map_size_x;
+  unsigned long map_size_y;
+};
 
 struct RPG_Client_Config
 {
-  std::string bla;
+  // *** reactor ***
+  unsigned long num_threadpool_threads; // 0: don't use threadpool
+  // *** UI ***
+  std::string glade_file;
+  GTK_cb_data_t gtk_cb_data;
+  // *** sound ***
+  SDL_audio_config_t audio_config;
+  std::string sound_directory;
+  unsigned long sound_cache_size;
+  std::string sound_dictionary;
+  // *** graphics ***
+  SDL_video_config_t video_config;
+  std::string graphics_directory;
+  unsigned long graphics_cache_size;
+  std::string graphics_dictionary;
+  map_config_t map_config;
 };
 
 #endif

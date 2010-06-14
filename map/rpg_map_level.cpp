@@ -21,7 +21,8 @@
 
 #include <ace/Log_Msg.h>
 
-RPG_Map_Level::RPG_Map_Level()
+RPG_Map_Level::RPG_Map_Level(const RPG_Map_FloorPlan_t& floorPlan_in)
+ : myFloorPlan(floorPlan_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Level::RPG_Map_Level"));
 
@@ -31,4 +32,17 @@ RPG_Map_Level::~RPG_Map_Level()
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Level::~RPG_Map_Level"));
 
+}
+
+const RPG_Map_Element
+RPG_Map_Level::getElement(const RPG_Map_Position_t& position_in) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Level::getElement"));
+
+  if (myFloorPlan.walls.find(position_in) != myFloorPlan.walls.end())
+    return MAPELEMENT_WALL;
+  else if (myFloorPlan.doors.find(position_in) != myFloorPlan.doors.end())
+    return MAPELEMENT_DOOR;
+
+  return MAPELEMENT_FLOOR;
 }

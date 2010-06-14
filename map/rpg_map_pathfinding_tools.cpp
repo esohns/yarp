@@ -28,7 +28,7 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
                                     const unsigned long& dimensionY_in,
                                     const RPG_Map_Positions_t& obstacles_in, // walls
                                     const RPG_Map_Position_t& start_in, // start position
-                                    const RPG_Map_Direction_t& startDirection_in, // initial direction
+                                    const RPG_Map_Direction& startDirection_in, // initial direction
                                     const RPG_Map_Position_t& end_in, // end position
                                     RPG_Map_Path_t& path_out)
 {
@@ -214,7 +214,7 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
 
   // compute trail
   unsigned long index = 0;
-  RPG_Map_Direction_t direction = INVALID;
+  RPG_Map_Direction direction = INVALID;
   // start at the end
   RPG_Map_AStar_NodeListConstIterator_t current_node = closedPath.end();
   current_node--;

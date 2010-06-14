@@ -26,17 +26,18 @@
 
   <xsd:simpleType name="RPG_Sound_Category_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="TYPE_EFFECT_ONESHOT"/>
-      <xsd:enumeration value="TYPE_EFFECT_INTERVAL"/>
-      <xsd:enumeration value="TYPE_MUSIC_ONESHOT"/>
-      <xsd:enumeration value="TYPE_MUSIC_AMBIENT"/>
-      <xsd:enumeration value="TYPE_MUSIC_CDTRACK"/>
+      <xsd:enumeration value="CATEGORY_EFFECT_ONESHOT"/>
+      <xsd:enumeration value="CATEGORY_EFFECT_INTERVAL"/>
+      <xsd:enumeration value="CATEGORY_MUSIC_ONESHOT"/>
+      <xsd:enumeration value="CATEGORY_MUSIC_AMBIENT"/>
+      <xsd:enumeration value="CATEGORY_MUSIC_CDTRACK"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Sound_Event_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="EVENT_MAIN_TITLE"/>
+      <xsd:enumeration value="EVENT_WALK"/>
       <xsd:enumeration value="EVENT_HIT"/>
       <xsd:enumeration value="EVENT_MISS"/>
     </xsd:restriction>

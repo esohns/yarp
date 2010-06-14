@@ -30,20 +30,22 @@
 #include <iostream>
 
 void
-RPG_Map_Common_Tools::createDungeonLevel(const unsigned long& dimensionX_in,
-                                         const unsigned long& dimensionY_in,
-                                         const unsigned long& numRooms_in,
-                                         const bool& wantSquareRooms_in,
-                                         const bool& maximizeArea_in,
-                                         const unsigned long& minArea_in,
-                                         const bool& wantCorridors_in,
-                                         const bool& doorFillsPosition_in,
-                                         const unsigned long& maxDoorsPerRoom_in,
-                                         RPG_Map_DungeonLevel& level_out)
+RPG_Map_Common_Tools::createFloorPlan(const unsigned long& dimensionX_in,
+                                      const unsigned long& dimensionY_in,
+                                      const unsigned long& numRooms_in,
+                                      const bool& wantSquareRooms_in,
+                                      const bool& maximizeArea_in,
+                                      const unsigned long& minArea_in,
+                                      const bool& wantCorridors_in,
+                                      const bool& doorFillsPosition_in,
+                                      const unsigned long& maxDoorsPerRoom_in,
+                                      RPG_Map_FloorPlan_t& level_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::createDungeonLevel"));
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::createFloorPlan"));
 
   // init return value(s)
+  level_out.size_x = dimensionX_in;
+  level_out.size_y = dimensionY_in;
   level_out.doors.clear();
   level_out.walls.clear();
 
@@ -116,28 +118,26 @@ RPG_Map_Common_Tools::createDungeonLevel(const unsigned long& dimensionX_in,
 }
 
 void
-RPG_Map_Common_Tools::displayDungeonLevel(const unsigned long& dimensionX_in,
-                                          const unsigned long& dimensionY_in,
-                                          const RPG_Map_DungeonLevel& level_in)
+RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_FloorPlan_t& level_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayDungeonLevel"));
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayFloorPlan"));
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("level ([%ux%u] - %u walls, %u doors)...\n"),
-             dimensionX_in,
-             dimensionY_in,
+             level_in.size_x,
+             level_in.size_y,
              (level_in.walls.size() - level_in.doors.size()),
              level_in.doors.size()));
 
   RPG_Map_Position_t current_position;
 
   for (unsigned long y = 0;
-       y < dimensionY_in;
+       y < level_in.size_y;
        y++)
   {
     for (unsigned long x = 0;
-         x < dimensionX_in;
+         x < level_in.size_x;
          x++)
     {
       current_position = std::make_pair(x, y);
@@ -1311,7 +1311,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
                                    const bool& wantCorridors_in,
                                    const bool& doorFillsPosition_in,
                                    const unsigned long& maxDoorsPerRoom_in,
-                                   RPG_Map_DungeonLevel& level_out)
+                                   RPG_Map_FloorPlan_t& level_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::connectRooms"));
 
@@ -1475,7 +1475,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
     RPG_Map_PositionsConstIterator_t target_door;
     RPG_Map_Path_t current_path;
     RPG_Map_Position_t wall_position1, wall_position2, last_position;
-    RPG_Map_Direction_t last_direction = INVALID;
+    RPG_Map_Direction last_direction = INVALID;
     RPG_Map_PathConstIterator_t path_iter, last;
     RPG_Map_PathList_t paths;
     index = 0;
@@ -1802,7 +1802,7 @@ RPG_Map_Common_Tools::dist2Positions(const RPG_Map_Position_t& position1_in,
 }
 
 const std::string
-RPG_Map_Common_Tools::direction2String(const RPG_Map_Direction_t& direction_in)
+RPG_Map_Common_Tools::direction2String(const RPG_Map_Direction& direction_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::direction2String"));
 
@@ -1860,7 +1860,7 @@ RPG_Map_Common_Tools::intersect(const RPG_Map_Zone_t& map_in,
                                 const RPG_Map_Position_t& position_in,
                                 const ORIGIN& origin_in,
                                 RPG_Map_Directions_t& directions_out,
-                                RPG_Map_Direction_t& next_out)
+                                RPG_Map_Direction& next_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::intersect"));
 
@@ -1922,7 +1922,7 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Zone_t& map_in,
   trail_out.clear();
 
   ORIGIN origin = startOrigin_in;
-  RPG_Map_Direction_t next = INVALID;
+  RPG_Map_Direction next = INVALID;
   RPG_Map_Directions_t directions;
 
   // start at origin
@@ -2351,7 +2351,7 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
                            const ORIGIN& origin_in,
                            const bool& clockwise_in,
                            bool& isCorner_out,
-                           RPG_Map_Direction_t& next_out)
+                           RPG_Map_Direction& next_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::turn"));
 
@@ -2512,7 +2512,7 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
   // - corners/intersections are unsuitable positions
   // - enforce a minimal distance [i.e. to allow corridors] between any 2 doors
   RPG_Map_Position_t current = *(room_in.begin());
-  RPG_Map_Direction_t next = RIGHT;
+  RPG_Map_Direction next = RIGHT;
   ORIGIN origin = DOWN;
   bool is_corner = true; // (else intersection)
   if (doorFillsPosition_in)
@@ -2775,7 +2775,7 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
   } // end ELSE
 }
 
-const RPG_Map_Direction_t
+const RPG_Map_Direction
 RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Zone_t& room_in,
                                          const RPG_Map_Position_t& door_in)
 {

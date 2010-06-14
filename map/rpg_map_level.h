@@ -20,6 +20,8 @@
 #ifndef RPG_MAP_LEVEL_H
 #define RPG_MAP_LEVEL_H
 
+#include "rpg_map_common.h"
+
 #include <ace/Global_Macros.h>
 
 /**
@@ -28,13 +30,18 @@
 class RPG_Map_Level
 {
  public:
-  RPG_Map_Level();
+  RPG_Map_Level(const RPG_Map_FloorPlan_t&);
   virtual ~RPG_Map_Level();
+
+  const RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
 
  private:
   // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Level());
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Level(const RPG_Map_Level&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Level& operator=(const RPG_Map_Level&));
+
+  RPG_Map_FloorPlan_t myFloorPlan;
 };
 
 #endif

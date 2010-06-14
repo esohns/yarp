@@ -38,7 +38,7 @@ class RPG_Map_Pathfinding_Tools
                              const unsigned long&,       // dimension y
                              const RPG_Map_Positions_t&, // obstacles
                              const RPG_Map_Position_t&,  // start position
-                             const RPG_Map_Direction_t&, // starting direction
+                             const RPG_Map_Direction&,   // starting direction
                              const RPG_Map_Position_t&,  // end position
                              RPG_Map_Path_t&);           // return value: path
 

@@ -28,12 +28,17 @@
 enum RPG_Map_Element
 {
   // *** basic ***
-  MAPITEM_WALL = 0,
-  MAPITEM_DOOR,
+  MAPELEMENT_FLOOR = 0,
+  MAPELEMENT_WALL,
+  MAPELEMENT_DOOR,
   // *** composite ***
-  MAPITEM_ROOM,
-  MAPITEM_SUBROOM,
-  MAPITEM_CORRIDOR
+  MAPELEMENT_VAULT,
+  MAPELEMENT_ROOM,
+  MAPELEMENT_SUBROOM,
+  MAPELEMENT_CORRIDOR,
+  //
+  MAPELEMENT_MAX,
+  MAPELEMENT_INVALID
 };
 
 typedef std::pair<unsigned long, unsigned long> RPG_Map_Position_t;
@@ -63,13 +68,15 @@ typedef std::list<RPG_Map_Position_t> RPG_Map_PositionList_t;
 typedef RPG_Map_PositionList_t::const_iterator RPG_Map_PositionListConstIterator_t;
 typedef RPG_Map_PositionList_t::iterator RPG_Map_PositionListIterator_t;
 
-struct RPG_Map_DungeonLevel
+struct RPG_Map_FloorPlan_t
 {
+  unsigned long size_x;
+  unsigned long size_y;
   RPG_Map_Positions_t doors;
   RPG_Map_Positions_t walls;
 };
 
-enum RPG_Map_Direction_t
+enum RPG_Map_Direction
 {
   UP = 0,
   RIGHT,
@@ -77,9 +84,9 @@ enum RPG_Map_Direction_t
   LEFT,
   INVALID
 };
-typedef std::set<RPG_Map_Direction_t> RPG_Map_Directions_t;
+typedef std::set<RPG_Map_Direction> RPG_Map_Directions_t;
 typedef RPG_Map_Directions_t::const_iterator RPG_Map_DirectionsConstIterator_t;
-typedef std::pair<RPG_Map_Position_t, RPG_Map_Direction_t> RPG_Map_PathStep_t;
+typedef std::pair<RPG_Map_Position_t, RPG_Map_Direction> RPG_Map_PathStep_t;
 typedef std::list<RPG_Map_PathStep_t> RPG_Map_Path_t;
 typedef RPG_Map_Path_t::const_iterator RPG_Map_PathConstIterator_t;
 typedef std::list<RPG_Map_Path_t> RPG_Map_PathList_t;

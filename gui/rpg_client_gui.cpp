@@ -18,7 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include "rpg_client_defines.h"
 #include "rpg_client_common.h"
+
+#include <rpg_map_common_tools.h>
+#include <rpg_map_level.h>
 
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_common_tools.h>
@@ -34,8 +38,8 @@
 #include <glade/glade.h>
 #include <gtk/gtk.h>
 
-#include <SDL.h>
-#include <SDL_mixer.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
 
 #include <ace/ACE.h>
 #include <ace/Version.h>
@@ -59,62 +63,12 @@
 #include <config.h>
 #endif
 
-#define RPG_CLIENT_DEF_INI_FILE                  ACE_TEXT("rpg_client.ini")
-#define RPG_CLIENT_DEF_GRAPHICS_DICTIONARY       ACE_TEXT("rpg_graphics.xml")
-#define RPG_CLIENT_DEF_GRAPHICS_DIRECTORY        ACE_TEXT(".")
-#define RPG_CLIENT_DEF_GRAPHICS_CACHESIZE        50
-#define RPG_CLIENT_DEF_SOUND_DICTIONARY          ACE_TEXT("rpg_sound.xml")
-#define RPG_CLIENT_DEF_SOUND_DIRECTORY           ACE_TEXT(".")
-#define RPG_CLIENT_DEF_SOUND_CACHESIZE           50
-#define RPG_CLIENT_CNF_GNOME_APPLICATION_ID      ACE_TEXT_ALWAYS_CHAR("rpg_client")
-#define RPG_CLIENT_CNF_CLIENT_SECTION_HEADER     ACE_TEXT("client")
-#define RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER ACE_TEXT("connection")
-#define RPG_CLIENT_DEF_CLIENT_USES_TP            false
-#define RPG_CLIENT_DEF_NUM_TP_THREADS            5
-#define RPG_CLIENT_DEF_UI_FILE                   ACE_TEXT("rpg_client.glade")
-#define RPG_CLIENT_DEF_AUDIO_FREQUENCY           44100
-#define RPG_CLIENT_DEF_AUDIO_FORMAT              AUDIO_S16SYS
-#define RPG_CLIENT_DEF_AUDIO_CHANNELS            2
-#define RPG_CLIENT_DEF_AUDIO_SAMPLES             4096
-#define RPG_CLIENT_DEF_VIDEO_W                   1024
-#define RPG_CLIENT_DEF_VIDEO_H                   786
-#define RPG_CLIENT_DEF_VIDEO_BPP                 32
-#define RPG_CLIENT_DEF_VIDEO_FULLSCREEN          false
-#define RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER        false
-
-#define SDL_TIMEREVENT   SDL_USEREVENT
-#define SDL_MOUSEMOVEOUT (SDL_USEREVENT+1)
-
-struct cb_data
-{
-//   std::string bla;
-};
-
-// *NOTE* types as used by SDL
-struct audio_config
-{
-  int    frequency;
-  Uint16 format;
-//   Uint8  channels;
-  int    channels;
-  Uint16 samples;
-};
-struct video_config
-{
-  int    screen_width;
-  int    screen_height;
-  int    screen_colordepth; // bits/pixel
-  Uint32 screen_flags;
-  bool   fullScreen;
-  bool   doubleBuffer;
-};
-
-static cb_data      userData;
+static GTK_cb_data_t userData;
 // static GtkBuilder* builder  = NULL;
-static GladeXML*    xml     = NULL;
-static GtkWidget*   dialog  = NULL;
-static SDL_Surface* screen  = NULL;
-static int          grp_id  = -1;
+static GladeXML*     xml     = NULL;
+static GtkWidget*    dialog  = NULL;
+static SDL_Surface*  screen  = NULL;
+static int           grp_id  = -1;
 
 #ifdef __cplusplus
 extern "C"
@@ -525,7 +479,6 @@ process_arguments(const int argc_in,
                   bool& traceInformation_out,
                   std::string& UIfile_out,
                   bool& printVersionAndExit_out,
-                  bool& useThreadPool_out,
                   unsigned long& numThreadPoolThreads_out)
 {
   ACE_TRACE(ACE_TEXT("::process_arguments"));
@@ -538,8 +491,7 @@ process_arguments(const int argc_in,
   traceInformation_out     = false;
   UIfile_out               = RPG_CLIENT_DEF_UI_FILE;
   printVersionAndExit_out  = false;
-  useThreadPool_out        = RPG_CLIENT_DEF_CLIENT_USES_TP;
-  numThreadPoolThreads_out = RPG_CLIENT_DEF_NUM_TP_THREADS;
+  numThreadPoolThreads_out = (RPG_CLIENT_DEF_CLIENT_USES_TP ? RPG_CLIENT_DEF_NUM_TP_THREADS : 0);
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
@@ -599,7 +551,7 @@ process_arguments(const int argc_in,
       }
       case 'x':
       {
-        useThreadPool_out = true;
+        numThreadPoolThreads_out = RPG_CLIENT_DEF_NUM_TP_THREADS;
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
@@ -711,7 +663,7 @@ reactor_worker_func(void* args_in)
 }
 
 void
-do_initAudio(const audio_config& audioConfig_in)
+do_initAudio(const SDL_audio_config_t& audioConfig_in)
 {
   ACE_TRACE(ACE_TEXT("::do_initAudio"));
 
@@ -745,7 +697,7 @@ do_initAudio(const audio_config& audioConfig_in)
     return;
   } // end IF
 //   Mix_AllocateChannels(4);
-  audio_config obtained;
+  SDL_audio_config_t obtained;
   obtained.frequency = 0;
   obtained.format = 0;
   obtained.channels = 0;
@@ -796,8 +748,8 @@ do_initAudio(const audio_config& audioConfig_in)
 
 void
 do_initGUI(const std::string& UIfile_in,
-           const cb_data& userData_in,
-           const video_config& videoConfig_in)
+           const GTK_cb_data_t& userData_in,
+           const SDL_video_config_t& videoConfig_in)
 {
   ACE_TRACE(ACE_TEXT("::do_initGUI"));
 
@@ -868,13 +820,13 @@ do_initGUI(const std::string& UIfile_in,
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(quit_activated_GTK_cb),
-                   &ACE_const_cast(cb_data&, userData_in));
+                   &ACE_const_cast(GTK_cb_data_t&, userData_in));
 
   // step4a: attach user data
   glade_xml_signal_connect_data(xml,
                                 ACE_TEXT_ALWAYS_CHAR("quit_activated_cb"),
                                 G_CALLBACK(quit_activated_GTK_cb),
-                                &ACE_const_cast(cb_data&, userData_in));
+                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
 
 //   // step5: use correct screen
 //   if (parentWidget_in)
@@ -1092,19 +1044,7 @@ do_runIntro()
 }
 
 void
-do_work(const RPG_Client_Config& config_in,
-        const bool& useThreadPool_in,
-        const unsigned long& numThreadPoolThreads_in,
-        const std::string& UIfile_in,
-        cb_data& userData_in,
-        const audio_config& audioConfig_in,
-        const std::string& soundDirectory_in,
-        const unsigned long& soundCacheSize_in,
-        const std::string& soundDictionary_in,
-        const video_config& videoConfig_in,
-        const std::string& graphicsDirectory_in,
-        const unsigned long& graphicsCacheSize_in,
-        const std::string& graphicsDictionary_in)
+do_work(const RPG_Client_Config& config_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -1113,7 +1053,7 @@ do_work(const RPG_Client_Config& config_in,
   RPG_Common_Tools::initStringConversionTables();
 
   // step0b: (if necessary) init the TP_Reactor
-  if (useThreadPool_in)
+  if (config_in.num_threadpool_threads)
   {
     if (!init_threadPool())
     {
@@ -1125,12 +1065,12 @@ do_work(const RPG_Client_Config& config_in,
   } // end IF
 
   // step1: init audio
-  RPG_Sound_Common_Tools::init(soundDirectory_in,
-                               soundCacheSize_in);
+  RPG_Sound_Common_Tools::init(config_in.sound_directory,
+                               config_in.sound_cache_size);
   //  init sound dictionary
   try
   {
-    RPG_SOUND_DICTIONARY_SINGLETON::instance()->init(soundDictionary_in);
+    RPG_SOUND_DICTIONARY_SINGLETON::instance()->init(config_in.sound_dictionary);
   }
   catch (...)
   {
@@ -1139,21 +1079,21 @@ do_work(const RPG_Client_Config& config_in,
 
     return;
   }
-  do_initAudio(audioConfig_in);
+  do_initAudio(config_in.audio_config);
 
   // step2: init UI
-  do_initGUI(UIfile_in,       // glade file
-             userData_in,     // cb data
-             videoConfig_in); // video config
+  do_initGUI(config_in.glade_file,    // glade file
+             config_in.gtk_cb_data,   // GTK cb data
+             config_in.video_config); // SDL video config
   ACE_ASSERT(xml);
   ACE_ASSERT(dialog);
   ACE_ASSERT(screen);
-  RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
-                                  graphicsCacheSize_in);
+  RPG_Graphics_Common_Tools::init(config_in.graphics_directory,
+                                  config_in.graphics_cache_size);
   //  init graphics dictionary
   try
   {
-    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(graphicsDictionary_in);
+    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(config_in.graphics_dictionary);
   }
   catch (...)
   {
@@ -1166,6 +1106,20 @@ do_work(const RPG_Client_Config& config_in,
   // step3: run intro
   do_runIntro();
 
+  // step4: setup map
+  RPG_Map_FloorPlan_t floorPlan;
+  RPG_Map_Common_Tools::createFloorPlan(config_in.map_config.map_size_x,
+                                        config_in.map_config.map_size_y,
+                                        config_in.map_config.num_rooms,
+                                        config_in.map_config.square_rooms,
+                                        config_in.map_config.maximize_rooms,
+                                        config_in.map_config.min_room_area,
+                                        config_in.map_config.corridors,
+                                        true, // *NOTE*: currently, doors fill one position
+                                        config_in.map_config.max_num_doors_per_room,
+                                        floorPlan);
+  RPG_Map_Level level(floorPlan);
+
   // step4: setup event loops
   // - perform (signal handling, socket I/O, ...) --> ACE_Reactor
   // - UI events --> GTK main loop [--> SDL event handler]
@@ -1175,17 +1129,17 @@ do_work(const RPG_Client_Config& config_in,
 
   // dispatch SDL events from the GTK (== "main") thread
   guint SDLEventHandlerID = gtk_idle_add(do_SDLEventLoop_GTK_cb,
-                                         &userData_in);
+                                         &ACE_const_cast(GTK_cb_data_t&, config_in.gtk_cb_data));
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("installed SDL event handler (ID: %u)...\n"),
              SDLEventHandlerID));
 
   // step5: dispatch events...
   // *NOTE*: if we use a thread pool, we invoke a different function...
-  if (useThreadPool_in)
+  if (config_in.num_threadpool_threads)
   {
     // start a (group of) worker(s)...
-    grp_id = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,     // # threads
+    grp_id = ACE_Thread_Manager::instance()->spawn_n(config_in.num_threadpool_threads, // # threads
                                                      ::tp_worker_func,            // function
                                                      NULL,                        // argument
                                                      (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
@@ -1216,7 +1170,7 @@ do_work(const RPG_Client_Config& config_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%m\", aborting\n"),
-               (useThreadPool_in ? numThreadPoolThreads_in : 1)));
+               (config_in.num_threadpool_threads ? config_in.num_threadpool_threads : 1)));
 
     return;
   } // end IF
@@ -1224,7 +1178,7 @@ do_work(const RPG_Client_Config& config_in,
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("started group (ID: %u) of %u worker thread(s)...\n"),
              grp_id,
-             (useThreadPool_in ? numThreadPoolThreads_in : 1)));
+             (config_in.num_threadpool_threads ? config_in.num_threadpool_threads : 1)));
 
   // dispatch GTK (and SDL-) events
   gtk_main();
@@ -1237,24 +1191,22 @@ do_work(const RPG_Client_Config& config_in,
 
 void
 do_parseIniFile(const std::string& iniFilename_in,
-                RPG_Client_Config& config_out,
-                audio_config& audioConfig_out,
-                video_config& videoConfig_out)
+                RPG_Client_Config& config_out)
 {
   ACE_TRACE(ACE_TEXT("::do_parseIniFile"));
 
   // init return value(s)
 //   config_out.bla = ACE_TEXT("");
-  audioConfig_out.frequency = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
-  audioConfig_out.format = RPG_CLIENT_DEF_AUDIO_FORMAT;
-  audioConfig_out.channels = RPG_CLIENT_DEF_AUDIO_CHANNELS;
-  audioConfig_out.samples = RPG_CLIENT_DEF_AUDIO_SAMPLES;
+  config_out.audio_config.frequency = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
+  config_out.audio_config.format = RPG_CLIENT_DEF_AUDIO_FORMAT;
+  config_out.audio_config.channels = RPG_CLIENT_DEF_AUDIO_CHANNELS;
+  config_out.audio_config.samples = RPG_CLIENT_DEF_AUDIO_SAMPLES;
 
-  videoConfig_out.screen_width = RPG_CLIENT_DEF_VIDEO_W;
-  videoConfig_out.screen_height = RPG_CLIENT_DEF_VIDEO_H;
-  videoConfig_out.screen_colordepth = RPG_CLIENT_DEF_VIDEO_BPP;
-  videoConfig_out.fullScreen = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
-  videoConfig_out.doubleBuffer = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
+  config_out.video_config.screen_width = RPG_CLIENT_DEF_VIDEO_W;
+  config_out.video_config.screen_height = RPG_CLIENT_DEF_VIDEO_H;
+  config_out.video_config.screen_colordepth = RPG_CLIENT_DEF_VIDEO_BPP;
+  config_out.video_config.fullScreen = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
+  config_out.video_config.doubleBuffer = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
 
   ACE_Configuration_Heap config_heap;
   if (config_heap.open())
@@ -1318,7 +1270,7 @@ do_parseIniFile(const std::string& iniFilename_in,
     // *TODO*: move these strings...
     if (val_name == ACE_TEXT("audio_frequency"))
     {
-      audioConfig_out.frequency = ::atoi(val_value.c_str());
+      config_out.audio_config.frequency = ::atoi(val_value.c_str());
     }
 //     else if (val_name == ACE_TEXT("audio_format"))
 //     {
@@ -1326,23 +1278,23 @@ do_parseIniFile(const std::string& iniFilename_in,
 //     }
     else if (val_name == ACE_TEXT("audio_channels"))
     {
-      audioConfig_out.channels = ::atoi(val_value.c_str());
+      config_out.audio_config.channels = ::atoi(val_value.c_str());
     }
     else if (val_name == ACE_TEXT("audio_samples"))
     {
-      audioConfig_out.samples = ::atoi(val_value.c_str());
+      config_out.audio_config.samples = ::atoi(val_value.c_str());
     }
     else if (val_name == ACE_TEXT("screen_width"))
     {
-      videoConfig_out.screen_width = ::atoi(val_value.c_str());
+      config_out.video_config.screen_width = ::atoi(val_value.c_str());
     }
     else if (val_name == ACE_TEXT("screen_height"))
     {
-      videoConfig_out.screen_height = ::atoi(val_value.c_str());
+      config_out.video_config.screen_height = ::atoi(val_value.c_str());
     }
     else if (val_name == ACE_TEXT("screen_colordepth"))
     {
-      videoConfig_out.screen_colordepth = ::atoi(val_value.c_str());
+      config_out.video_config.screen_colordepth = ::atoi(val_value.c_str());
     }
     else
     {
@@ -1490,17 +1442,12 @@ ACE_TMAIN(int argc_in,
   // step1a: process commandline arguments
   std::string iniFile                = RPG_CLIENT_DEF_INI_FILE;
   std::string graphicsDictionary     = RPG_CLIENT_DEF_GRAPHICS_DICTIONARY;
-  std::string graphicsDirectory      = RPG_CLIENT_DEF_GRAPHICS_DIRECTORY;
-  unsigned long graphicsCacheSize    = RPG_CLIENT_DEF_GRAPHICS_CACHESIZE;
   bool logToFile                     = false;
   std::string soundDictionary        = RPG_CLIENT_DEF_SOUND_DICTIONARY;
-  std::string soundDirectory         = RPG_CLIENT_DEF_SOUND_DIRECTORY;
-  unsigned long soundCacheSize       = RPG_CLIENT_DEF_SOUND_CACHESIZE;
   bool traceInformation              = false;
   std::string UIfile                 = RPG_CLIENT_DEF_UI_FILE;
   bool printVersionAndExit           = false;
-  bool useThreadPool                 = RPG_CLIENT_DEF_CLIENT_USES_TP;
-  unsigned long numThreadPoolThreads = RPG_CLIENT_DEF_NUM_TP_THREADS;
+  unsigned long numThreadPoolThreads = (RPG_CLIENT_DEF_CLIENT_USES_TP ? RPG_CLIENT_DEF_NUM_TP_THREADS : 0);
   if (!(process_arguments(argc_in,
                           argv_in,
                           iniFile,
@@ -1510,7 +1457,6 @@ ACE_TMAIN(int argc_in,
                           traceInformation,
                           UIfile,
                           printVersionAndExit,
-                          useThreadPool,
                           numThreadPoolThreads)))
   {
     // make 'em learn...
@@ -1555,6 +1501,36 @@ ACE_TMAIN(int argc_in,
 
   // step1d: init configuration object
   RPG_Client_Config config;
+  // *** reactor ***
+  config.num_threadpool_threads            = numThreadPoolThreads;
+  // *** UI ***
+  config.glade_file                        = UIfile;
+  config.gtk_cb_data                       = userData;
+  // *** sound ***
+  config.audio_config.frequency            = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
+  config.audio_config.format               = RPG_CLIENT_DEF_AUDIO_FORMAT;
+  config.audio_config.channels             = RPG_CLIENT_DEF_AUDIO_CHANNELS;
+  config.audio_config.samples              = RPG_CLIENT_DEF_AUDIO_SAMPLES;
+  config.sound_directory                   = RPG_CLIENT_DEF_SOUND_DIRECTORY;
+  config.sound_cache_size                  = RPG_CLIENT_DEF_SOUND_CACHESIZE;
+  config.sound_dictionary                  = soundDictionary;
+  // *** graphics ***
+  config.video_config.screen_width         = RPG_CLIENT_DEF_VIDEO_W;
+  config.video_config.screen_height        = RPG_CLIENT_DEF_VIDEO_H;
+  config.video_config.screen_colordepth    = RPG_CLIENT_DEF_VIDEO_BPP;
+  config.video_config.fullScreen           = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
+  config.video_config.doubleBuffer         = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
+  config.graphics_directory                = RPG_CLIENT_DEF_GRAPHICS_DIRECTORY;
+  config.graphics_cache_size               = RPG_CLIENT_DEF_GRAPHICS_CACHESIZE;
+  config.graphics_dictionary               = soundDictionary;
+  config.map_config.min_room_area          = RPG_CLIENT_DEF_MAP_MIN_ROOM_AREA;
+  config.map_config.corridors              = RPG_CLIENT_DEF_MAP_CORRIDORS;
+  config.map_config.max_num_doors_per_room = RPG_CLIENT_DEF_MAP_MAX_NUM_DOORS_PER_ROOM;
+  config.map_config.maximize_rooms         = RPG_CLIENT_DEF_MAP_MAXIMIZE_ROOMS;
+  config.map_config.num_rooms              = RPG_CLIENT_DEF_MAP_NUM_ROOMS;
+  config.map_config.square_rooms           = RPG_CLIENT_DEF_MAP_SQUARE_ROOMS;
+  config.map_config.map_size_x             = RPG_CLIENT_DEF_MAP_SIZE_X;
+  config.map_config.map_size_y             = RPG_CLIENT_DEF_MAP_SIZE_Y;
 //   // step1da: populate config object with default/collected data
 //   // ************ connection config data ************
 //   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
@@ -1569,23 +1545,10 @@ ACE_TMAIN(int argc_in,
 //   // *WARNING*: set at runtime, by the appropriate connection handler
 //   config.sessionID = 0; // (== socket handle !)
 //   config.statisticsReportingInterval = 0; // == off
-  audio_config audioConfig;
-  audioConfig.frequency = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
-  audioConfig.format = RPG_CLIENT_DEF_AUDIO_FORMAT;
-  audioConfig.channels = RPG_CLIENT_DEF_AUDIO_CHANNELS;
-  audioConfig.samples = RPG_CLIENT_DEF_AUDIO_SAMPLES;
-  video_config videoConfig;
-  videoConfig.screen_width = RPG_CLIENT_DEF_VIDEO_W;
-  videoConfig.screen_height = RPG_CLIENT_DEF_VIDEO_H;
-  videoConfig.screen_colordepth = RPG_CLIENT_DEF_VIDEO_BPP;
-  videoConfig.fullScreen = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
-  videoConfig.doubleBuffer = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
   // step1db: parse .ini file (if any)
   if (!iniFile.empty())
     do_parseIniFile(iniFile,
-                    config,
-                    audioConfig,
-                    videoConfig);
+                    config);
 
   // *TODO*: step1de: init callback user data
 //   userData.bla.clear();
@@ -1623,19 +1586,7 @@ ACE_TMAIN(int argc_in,
   ACE_High_Res_Timer timer;
   timer.start();
   // step3: do actual work
-  do_work(config,
-          useThreadPool,
-          numThreadPoolThreads,
-          UIfile,
-          userData,
-          audioConfig,
-          soundDirectory,
-          soundCacheSize,
-          soundDictionary,
-          videoConfig,
-          graphicsDirectory,
-          graphicsCacheSize,
-          graphicsDictionary);
+  do_work(config);
   timer.stop();
 
   // debug info

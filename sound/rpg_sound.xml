@@ -6,8 +6,23 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="urn:rpg rpg_sound.xsd">
   <sound>
-    <category>TYPE_MUSIC_AMBIENT</category>
+    <category>CATEGORY_MUSIC_AMBIENT</category>
     <event>EVENT_MAIN_TITLE</event>
     <file>music_main_title.ogg</file>
+  </sound>
+  <sound>
+    <category>CATEGORY_EFFECT_ONESHOT</category>
+    <event>EVENT_WALK</event>
+    <file>sound_walk.ogg</file>
+  </sound>
+  <sound>
+    <category>CATEGORY_EFFECT_ONESHOT</category>
+    <event>EVENT_HIT</event>
+    <file>sound_swordhit.ogg</file>
+  </sound>
+  <sound>
+    <category>CATEGORY_EFFECT_ONESHOT</category>
+    <event>EVENT_MISS</event>
+    <file>sound_swordmiss.ogg</file>
   </sound>
 </soundDictionary>

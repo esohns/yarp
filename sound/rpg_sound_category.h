@@ -28,11 +28,11 @@
 
 enum RPG_Sound_Category
 {
-  TYPE_EFFECT_ONESHOT = 0,
-  TYPE_EFFECT_INTERVAL,
-  TYPE_MUSIC_ONESHOT,
-  TYPE_MUSIC_AMBIENT,
-  TYPE_MUSIC_CDTRACK,
+  CATEGORY_EFFECT_ONESHOT = 0,
+  CATEGORY_EFFECT_INTERVAL,
+  CATEGORY_MUSIC_ONESHOT,
+  CATEGORY_MUSIC_AMBIENT,
+  CATEGORY_MUSIC_CDTRACK,
   //
   RPG_SOUND_CATEGORY_MAX,
   RPG_SOUND_CATEGORY_INVALID
@@ -52,11 +52,11 @@ class RPG_Sound_CategoryHelper
   inline static void init()
   {
     myRPG_Sound_CategoryToStringTable.clear();
-    myRPG_Sound_CategoryToStringTable.insert(std::make_pair(TYPE_EFFECT_ONESHOT, ACE_TEXT_ALWAYS_CHAR("TYPE_EFFECT_ONESHOT")));
-    myRPG_Sound_CategoryToStringTable.insert(std::make_pair(TYPE_EFFECT_INTERVAL, ACE_TEXT_ALWAYS_CHAR("TYPE_EFFECT_INTERVAL")));
-    myRPG_Sound_CategoryToStringTable.insert(std::make_pair(TYPE_MUSIC_ONESHOT, ACE_TEXT_ALWAYS_CHAR("TYPE_MUSIC_ONESHOT")));
-    myRPG_Sound_CategoryToStringTable.insert(std::make_pair(TYPE_MUSIC_AMBIENT, ACE_TEXT_ALWAYS_CHAR("TYPE_MUSIC_AMBIENT")));
-    myRPG_Sound_CategoryToStringTable.insert(std::make_pair(TYPE_MUSIC_CDTRACK, ACE_TEXT_ALWAYS_CHAR("TYPE_MUSIC_CDTRACK")));
+    myRPG_Sound_CategoryToStringTable.insert(std::make_pair(CATEGORY_EFFECT_ONESHOT, ACE_TEXT_ALWAYS_CHAR("CATEGORY_EFFECT_ONESHOT")));
+    myRPG_Sound_CategoryToStringTable.insert(std::make_pair(CATEGORY_EFFECT_INTERVAL, ACE_TEXT_ALWAYS_CHAR("CATEGORY_EFFECT_INTERVAL")));
+    myRPG_Sound_CategoryToStringTable.insert(std::make_pair(CATEGORY_MUSIC_ONESHOT, ACE_TEXT_ALWAYS_CHAR("CATEGORY_MUSIC_ONESHOT")));
+    myRPG_Sound_CategoryToStringTable.insert(std::make_pair(CATEGORY_MUSIC_AMBIENT, ACE_TEXT_ALWAYS_CHAR("CATEGORY_MUSIC_AMBIENT")));
+    myRPG_Sound_CategoryToStringTable.insert(std::make_pair(CATEGORY_MUSIC_CDTRACK, ACE_TEXT_ALWAYS_CHAR("CATEGORY_MUSIC_CDTRACK")));
   };
 
   inline static std::string RPG_Sound_CategoryToString(const RPG_Sound_Category& element_in)
