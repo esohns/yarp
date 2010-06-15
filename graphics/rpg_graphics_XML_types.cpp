@@ -60,7 +60,7 @@ orientation_parser (::RPG_Graphics_TileOrientation_Type_pskel& p)
 }
 
 void RPG_Graphics_Graphic_Type_pskel::
-style_parser (::RPG_Graphics_TileStyleUnion_Type_pskel& p)
+style_parser (::RPG_Graphics_StyleUnion_Type_pskel& p)
 {
   this->style_parser_ = &p;
 }
@@ -75,7 +75,7 @@ void RPG_Graphics_Graphic_Type_pskel::
 parsers (::RPG_Graphics_Category_Type_pskel& category,
          ::RPG_Graphics_Type_Type_pskel& type,
          ::RPG_Graphics_TileOrientation_Type_pskel& orientation,
-         ::RPG_Graphics_TileStyleUnion_Type_pskel& style,
+         ::RPG_Graphics_StyleUnion_Type_pskel& style,
          ::xml_schema::string_pskel& file)
 {
   this->category_parser_ = &category;
@@ -135,7 +135,7 @@ orientation (const RPG_Graphics_TileOrientation&)
 }
 
 void RPG_Graphics_Graphic_Type_pskel::
-style (const RPG_Graphics_TileStyleUnion&)
+style (const RPG_Graphics_StyleUnion&)
 {
 }
 
@@ -241,7 +241,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "style" && ns == "urn:rpg")
   {
     if (this->style_parser_)
-      this->style (this->style_parser_->post_RPG_Graphics_TileStyleUnion_Type ());
+      this->style (this->style_parser_->post_RPG_Graphics_StyleUnion_Type ());
 
     return true;
   }

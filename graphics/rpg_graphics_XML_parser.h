@@ -46,36 +46,54 @@ class RPG_Graphics_TileOrientation_Type
   virtual RPG_Graphics_TileOrientation post_RPG_Graphics_TileOrientation_Type();
 };
 
-class RPG_Graphics_FloorTileStyle_Type
- : public RPG_Graphics_FloorTileStyle_Type_pskel,
+class RPG_Graphics_FloorStyle_Type
+ : public RPG_Graphics_FloorStyle_Type_pskel,
    public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
-  virtual RPG_Graphics_FloorTileStyle post_RPG_Graphics_FloorTileStyle_Type();
+  virtual RPG_Graphics_FloorStyle post_RPG_Graphics_FloorStyle_Type();
 };
 
-class RPG_Graphics_WallTileStyle_Type
- : public RPG_Graphics_WallTileStyle_Type_pskel,
+class RPG_Graphics_StairsStyle_Type
+ : public RPG_Graphics_StairsStyle_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Graphics_StairsStyle post_RPG_Graphics_StairsStyle_Type();
+};
+
+class RPG_Graphics_WallStyle_Type
+ : public RPG_Graphics_WallStyle_Type_pskel,
    public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
-  virtual RPG_Graphics_WallTileStyle post_RPG_Graphics_WallTileStyle_Type();
+  virtual RPG_Graphics_WallStyle post_RPG_Graphics_WallStyle_Type();
 };
 
-class RPG_Graphics_TileStyleUnion_Type
- : public RPG_Graphics_TileStyleUnion_Type_pskel
+class RPG_Graphics_DoorStyle_Type
+ : public RPG_Graphics_DoorStyle_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Graphics_DoorStyle post_RPG_Graphics_DoorStyle_Type();
+};
+
+class RPG_Graphics_StyleUnion_Type
+ : public RPG_Graphics_StyleUnion_Type_pskel
 {
  public:
-  RPG_Graphics_TileStyleUnion_Type();
+  RPG_Graphics_StyleUnion_Type();
 
 //   virtual void pre();
   virtual void _characters(const ::xml_schema::ro_string&);
-  virtual RPG_Graphics_TileStyleUnion post_RPG_Graphics_TileStyleUnion_Type();
+  virtual RPG_Graphics_StyleUnion post_RPG_Graphics_StyleUnion_Type();
 
  private:
-  RPG_Graphics_TileStyleUnion myCurrentTileStyle;
+  RPG_Graphics_StyleUnion myCurrentStyle;
 };
 
 class RPG_Graphics_Type_Type
@@ -97,7 +115,7 @@ class RPG_Graphics_Graphic_Type
   virtual void category(const RPG_Graphics_Category&);
   virtual void type(const RPG_Graphics_Type&);
   virtual void orientation(const RPG_Graphics_TileOrientation&);
-  virtual void style(const RPG_Graphics_TileStyleUnion&);
+  virtual void style(const RPG_Graphics_StyleUnion&);
   virtual void file(const ::std::string&);
   virtual RPG_Graphics_Graphic post_RPG_Graphics_Graphic_Type();
 

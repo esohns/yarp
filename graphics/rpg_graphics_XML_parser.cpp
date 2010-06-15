@@ -35,57 +35,83 @@ RPG_Graphics_TileOrientation RPG_Graphics_TileOrientation_Type::post_RPG_Graphic
   return RPG_Graphics_TileOrientationHelper::stringToRPG_Graphics_TileOrientation(post_string());
 }
 
-RPG_Graphics_FloorTileStyle RPG_Graphics_FloorTileStyle_Type::post_RPG_Graphics_FloorTileStyle_Type()
+RPG_Graphics_FloorStyle RPG_Graphics_FloorStyle_Type::post_RPG_Graphics_FloorStyle_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_FloorTileStyle_Type::post_RPG_Graphics_FloorTileStyle_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_FloorStyle_Type::post_RPG_Graphics_FloorStyle_Type"));
 
-  return RPG_Graphics_FloorTileStyleHelper::stringToRPG_Graphics_FloorTileStyle(post_string());
+  return RPG_Graphics_FloorStyleHelper::stringToRPG_Graphics_FloorStyle(post_string());
 }
 
-RPG_Graphics_WallTileStyle RPG_Graphics_WallTileStyle_Type::post_RPG_Graphics_WallTileStyle_Type()
+RPG_Graphics_StairsStyle RPG_Graphics_StairsStyle_Type::post_RPG_Graphics_StairsStyle_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_WallTileStyle_Type::post_RPG_Graphics_WallTileStyle_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_StairsStyle_Type::post_RPG_Graphics_StairsStyle_Type"));
 
-  return RPG_Graphics_WallTileStyleHelper::stringToRPG_Graphics_WallTileStyle(post_string());
+  return RPG_Graphics_StairsStyleHelper::stringToRPG_Graphics_StairsStyle(post_string());
 }
 
-RPG_Graphics_TileStyleUnion_Type::RPG_Graphics_TileStyleUnion_Type()
+RPG_Graphics_WallStyle RPG_Graphics_WallStyle_Type::post_RPG_Graphics_WallStyle_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_TileStyleUnion_Type::RPG_Graphics_TileStyleUnion_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_WallStyle_Type::post_RPG_Graphics_WallStyle_Type"));
 
-  myCurrentTileStyle.discriminator = RPG_Graphics_TileStyleUnion::INVALID;
-  myCurrentTileStyle.floortilestyle = RPG_GRAPHICS_FLOORTILESTYLE_INVALID;
+  return RPG_Graphics_WallStyleHelper::stringToRPG_Graphics_WallStyle(post_string());
 }
 
-void RPG_Graphics_TileStyleUnion_Type::_characters(const ::xml_schema::ro_string& styleType_in)
+RPG_Graphics_DoorStyle RPG_Graphics_DoorStyle_Type::post_RPG_Graphics_DoorStyle_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_TileStyleUnion_Type::_characters"));
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_DoorStyle_Type::post_RPG_Graphics_DoorStyle_Type"));
+
+  return RPG_Graphics_DoorStyleHelper::stringToRPG_Graphics_DoorStyle(post_string());
+}
+
+RPG_Graphics_StyleUnion_Type::RPG_Graphics_StyleUnion_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_StyleUnion_Type::RPG_Graphics_StyleUnion_Type"));
+
+  myCurrentStyle.discriminator = RPG_Graphics_StyleUnion::INVALID;
+  myCurrentStyle.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
+}
+
+void RPG_Graphics_StyleUnion_Type::_characters(const ::xml_schema::ro_string& styleType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_StyleUnion_Type::_characters"));
 
   // can be either:
-  // - RPG_Graphics_FloorTileStyle --> "FLOORSTYLE_xxx"
-  // - RPG_Graphics_WallTileStyle --> "WALLSTYLE_xxx"
+  // - RPG_Graphics_FloorStyle --> "FLOORSTYLE_xxx"
+  // - RPG_Graphics_StairsStyle --> "STAIRSSTYLE_xxx"
+  // - RPG_Graphics_WallStyle --> "WALLSTYLE_xxx"
+  // - RPG_Graphics_DoorStyle --> "DOORSTYLE_xxx"
   std::string style = styleType_in;
   if (style.find(ACE_TEXT_ALWAYS_CHAR("FLOORSTYLE_")) == 0)
   {
-    myCurrentTileStyle.discriminator = RPG_Graphics_TileStyleUnion::FLOORTILESTYLE;
-    myCurrentTileStyle.floortilestyle = RPG_Graphics_FloorTileStyleHelper::stringToRPG_Graphics_FloorTileStyle(styleType_in);
+    myCurrentStyle.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
+    myCurrentStyle.floorstyle = RPG_Graphics_FloorStyleHelper::stringToRPG_Graphics_FloorStyle(styleType_in);
+  } // end IF
+  else if (style.find(ACE_TEXT_ALWAYS_CHAR("STAIRSSTYLE_")) == 0)
+  {
+    myCurrentStyle.discriminator = RPG_Graphics_StyleUnion::STAIRSSTYLE;
+    myCurrentStyle.stairsstyle = RPG_Graphics_StairsStyleHelper::stringToRPG_Graphics_StairsStyle(styleType_in);
+  } // end IF
+  else if (style.find(ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_")) == 0)
+  {
+    myCurrentStyle.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
+    myCurrentStyle.wallstyle = RPG_Graphics_WallStyleHelper::stringToRPG_Graphics_WallStyle(styleType_in);
   } // end IF
   else
   {
-    myCurrentTileStyle.discriminator = RPG_Graphics_TileStyleUnion::WALLTILESTYLE;
-    myCurrentTileStyle.walltilestyle = RPG_Graphics_WallTileStyleHelper::stringToRPG_Graphics_WallTileStyle(styleType_in);
+    myCurrentStyle.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
+    myCurrentStyle.doorstyle = RPG_Graphics_DoorStyleHelper::stringToRPG_Graphics_DoorStyle(styleType_in);
   } // end ELSE
 }
 
-RPG_Graphics_TileStyleUnion RPG_Graphics_TileStyleUnion_Type::post_RPG_Graphics_TileStyleUnion_Type()
+RPG_Graphics_StyleUnion RPG_Graphics_StyleUnion_Type::post_RPG_Graphics_StyleUnion_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_TileStyleUnion_Type::post_RPG_Graphics_TileStyleUnion_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_StyleUnion_Type::post_RPG_Graphics_StyleUnion_Type"));
 
-  RPG_Graphics_TileStyleUnion result = myCurrentTileStyle;
+  RPG_Graphics_StyleUnion result = myCurrentStyle;
 
   // clear structure
-  myCurrentTileStyle.discriminator = RPG_Graphics_TileStyleUnion::INVALID;
-  myCurrentTileStyle.floortilestyle = RPG_GRAPHICS_FLOORTILESTYLE_INVALID;
+  myCurrentStyle.discriminator = RPG_Graphics_StyleUnion::INVALID;
+  myCurrentStyle.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
 
   return result;
 }
@@ -104,8 +130,8 @@ RPG_Graphics_Graphic_Type::RPG_Graphics_Graphic_Type()
   myCurrentGraphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
   myCurrentGraphic.type = RPG_GRAPHICS_TYPE_INVALID;
   myCurrentGraphic.orientation = RPG_GRAPHICS_TILEORIENTATION_MAX;
-  myCurrentGraphic.style.discriminator = RPG_Graphics_TileStyleUnion::INVALID;
-  myCurrentGraphic.style.floortilestyle = RPG_GRAPHICS_FLOORTILESTYLE_INVALID;
+  myCurrentGraphic.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
+  myCurrentGraphic.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentGraphic.file.clear();
 }
 
@@ -130,7 +156,7 @@ void RPG_Graphics_Graphic_Type::orientation(const RPG_Graphics_TileOrientation& 
   myCurrentGraphic.orientation = orientation_in;
 }
 
-void RPG_Graphics_Graphic_Type::style(const RPG_Graphics_TileStyleUnion& style_in)
+void RPG_Graphics_Graphic_Type::style(const RPG_Graphics_StyleUnion& style_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Graphic_Type::style"));
 
@@ -154,8 +180,8 @@ RPG_Graphics_Graphic RPG_Graphics_Graphic_Type::post_RPG_Graphics_Graphic_Type()
   myCurrentGraphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
   myCurrentGraphic.type = RPG_GRAPHICS_TYPE_INVALID;
   myCurrentGraphic.orientation = RPG_GRAPHICS_TILEORIENTATION_MAX;
-  myCurrentGraphic.style.discriminator = RPG_Graphics_TileStyleUnion::INVALID;
-  myCurrentGraphic.style.floortilestyle = RPG_GRAPHICS_FLOORTILESTYLE_INVALID;
+  myCurrentGraphic.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
+  myCurrentGraphic.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentGraphic.file.clear();
 
   return result;

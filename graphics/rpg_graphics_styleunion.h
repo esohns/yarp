@@ -23,16 +23,28 @@
 // -------------------------------- * * * -------------------------------- //
 
 #pragma once
-#ifndef RPG_GRAPHICS_GRAPHIC_H
-#define RPG_GRAPHICS_GRAPHIC_H
+#ifndef RPG_GRAPHICS_STYLEUNION_H
+#define RPG_GRAPHICS_STYLEUNION_H
 
-struct RPG_Graphics_Graphic
+struct RPG_Graphics_StyleUnion
 {
-  RPG_Graphics_Category category;
-  RPG_Graphics_Type type;
-  RPG_Graphics_TileOrientation orientation;
-  RPG_Graphics_StyleUnion style;
-  std::string file;
+  union
+  {
+    RPG_Graphics_FloorStyle floorstyle;
+    RPG_Graphics_StairsStyle stairsstyle;
+    RPG_Graphics_WallStyle wallstyle;
+    RPG_Graphics_DoorStyle doorstyle;
+  };
+
+  enum Discriminator_t
+  {
+    FLOORSTYLE,
+    STAIRSSTYLE,
+    WALLSTYLE,
+    DOORSTYLE,
+    INVALID
+  };
+  Discriminator_t discriminator;
 };
 
 #endif

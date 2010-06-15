@@ -31,8 +31,10 @@
 // init statics
 RPG_Graphics_CategoryToStringTable_t RPG_Graphics_CategoryHelper::myRPG_Graphics_CategoryToStringTable;
 RPG_Graphics_TileOrientationToStringTable_t RPG_Graphics_TileOrientationHelper::myRPG_Graphics_TileOrientationToStringTable;
-RPG_Graphics_FloorTileStyleToStringTable_t RPG_Graphics_FloorTileStyleHelper::myRPG_Graphics_FloorTileStyleToStringTable;
-RPG_Graphics_WallTileStyleToStringTable_t RPG_Graphics_WallTileStyleHelper::myRPG_Graphics_WallTileStyleToStringTable;
+RPG_Graphics_FloorStyleToStringTable_t RPG_Graphics_FloorStyleHelper::myRPG_Graphics_FloorStyleToStringTable;
+RPG_Graphics_StairsStyleToStringTable_t RPG_Graphics_StairsStyleHelper::myRPG_Graphics_StairsStyleToStringTable;
+RPG_Graphics_WallStyleToStringTable_t RPG_Graphics_WallStyleHelper::myRPG_Graphics_WallStyleToStringTable;
+RPG_Graphics_DoorStyleToStringTable_t RPG_Graphics_DoorStyleHelper::myRPG_Graphics_DoorStyleToStringTable;
 RPG_Graphics_TypeToStringTable_t RPG_Graphics_TypeHelper::myRPG_Graphics_TypeToStringTable;
 
 std::string                  RPG_Graphics_Common_Tools::myGraphicsDirectory;
@@ -446,8 +448,10 @@ RPG_Graphics_Common_Tools::initStringConversionTables()
 
   RPG_Graphics_CategoryHelper::init();
   RPG_Graphics_TileOrientationHelper::init();
-  RPG_Graphics_FloorTileStyleHelper::init();
-  RPG_Graphics_WallTileStyleHelper::init();
+  RPG_Graphics_FloorStyleHelper::init();
+  RPG_Graphics_StairsStyleHelper::init();
+  RPG_Graphics_WallStyleHelper::init();
+  RPG_Graphics_DoorStyleHelper::init();
   RPG_Graphics_TypeHelper::init();
 
   ACE_DEBUG((LM_DEBUG,

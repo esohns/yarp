@@ -28,9 +28,11 @@
 
 #include "rpg_graphics_category.h"
 #include "rpg_graphics_tileorientation.h"
-#include "rpg_graphics_floortilestyle.h"
-#include "rpg_graphics_walltilestyle.h"
-#include "rpg_graphics_tilestyleunion.h"
+#include "rpg_graphics_floorstyle.h"
+#include "rpg_graphics_stairsstyle.h"
+#include "rpg_graphics_wallstyle.h"
+#include "rpg_graphics_doorstyle.h"
+#include "rpg_graphics_styleunion.h"
 #include "rpg_graphics_type.h"
 #include "rpg_graphics_graphic.h"
 
