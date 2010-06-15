@@ -39,8 +39,7 @@ class RPG_Graphics_Dictionary
                              ACE_Thread_Mutex>;
 
  public:
-  // init sound dictionary
-  void init(const std::string&,  // filename
+  void init(const std::string&,  // (XML) dictionary file
             const bool& = true); // validate XML ?
 
   const RPG_Graphics_t getGraphic(const RPG_Graphics_Type&) const; // type

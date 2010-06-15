@@ -27,8 +27,39 @@
   <xsd:simpleType name="RPG_Graphics_Category_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="CATEGORY_TILE"/>
-      <xsd:enumeration value="CATEGORY_PICTURE"/>
+      <xsd:enumeration value="CATEGORY_IMAGE"/>
     </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Graphics_TileOrientation_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ORIENTATION_NORTH"/>
+      <xsd:enumeration value="ORIENTATION_SOUTH"/>
+      <xsd:enumeration value="ORIENTATION_WEST"/>
+      <xsd:enumeration value="ORIENTATION_EAST"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Graphics_FloorTileStyle_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="FLOORSTYLE_DEFAULT"/>
+      <xsd:enumeration value="FLOORSTYLE_AIR"/>
+      <xsd:enumeration value="FLOORSTYLE_WATER"/>
+      <xsd:enumeration value="FLOORSTYLE_DARK"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Graphics_WallTileStyle_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="WALLSTYLE_DEFAULT"/>
+      <xsd:enumeration value="WALLSTYLE_AIR"/>
+      <xsd:enumeration value="WALLSTYLE_WATER"/>
+      <xsd:enumeration value="WALLSTYLE_DARK"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Graphics_TileStyleUnion_Type">
+    <xsd:union memberTypes="RPG_Graphics_FloorTileStyle_Type RPG_Graphics_WallTileStyle_Type"/>
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Graphics_Type_Type">
@@ -41,13 +72,15 @@
     <xsd:sequence>
       <xsd:element name="category" type="RPG_Graphics_Category_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="type" type="RPG_Graphics_Type_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="orientation" type="RPG_Graphics_TileOrientation_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="style" type="RPG_Graphics_TileStyleUnion_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="file" type="xsd:string" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Graphics_Dictionary_Type" id="skip0">
     <xsd:sequence>
-      <xsd:element name="image" type="RPG_Graphics_Graphic_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="graphic" type="RPG_Graphics_Graphic_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 

@@ -30,6 +30,8 @@ struct RPG_Graphics_Graphic
 {
   RPG_Graphics_Category category;
   RPG_Graphics_Type type;
+  RPG_Graphics_TileOrientation orientation;
+  RPG_Graphics_TileStyleUnion style;
   std::string file;
 };
 

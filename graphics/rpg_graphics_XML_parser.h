@@ -37,6 +37,47 @@ class RPG_Graphics_Category_Type
   virtual RPG_Graphics_Category post_RPG_Graphics_Category_Type();
 };
 
+class RPG_Graphics_TileOrientation_Type
+ : public RPG_Graphics_TileOrientation_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Graphics_TileOrientation post_RPG_Graphics_TileOrientation_Type();
+};
+
+class RPG_Graphics_FloorTileStyle_Type
+ : public RPG_Graphics_FloorTileStyle_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Graphics_FloorTileStyle post_RPG_Graphics_FloorTileStyle_Type();
+};
+
+class RPG_Graphics_WallTileStyle_Type
+ : public RPG_Graphics_WallTileStyle_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Graphics_WallTileStyle post_RPG_Graphics_WallTileStyle_Type();
+};
+
+class RPG_Graphics_TileStyleUnion_Type
+ : public RPG_Graphics_TileStyleUnion_Type_pskel
+{
+ public:
+  RPG_Graphics_TileStyleUnion_Type();
+
+//   virtual void pre();
+  virtual void _characters(const ::xml_schema::ro_string&);
+  virtual RPG_Graphics_TileStyleUnion post_RPG_Graphics_TileStyleUnion_Type();
+
+ private:
+  RPG_Graphics_TileStyleUnion myCurrentTileStyle;
+};
+
 class RPG_Graphics_Type_Type
  : public RPG_Graphics_Type_Type_pskel,
    public ::xml_schema::string_pimpl
@@ -55,6 +96,8 @@ class RPG_Graphics_Graphic_Type
 //     virtual void pre();
   virtual void category(const RPG_Graphics_Category&);
   virtual void type(const RPG_Graphics_Type&);
+  virtual void orientation(const RPG_Graphics_TileOrientation&);
+  virtual void style(const RPG_Graphics_TileStyleUnion&);
   virtual void file(const ::std::string&);
   virtual RPG_Graphics_Graphic post_RPG_Graphics_Graphic_Type();
 
@@ -70,7 +113,7 @@ class RPG_Graphics_Dictionary_Type
   virtual ~RPG_Graphics_Dictionary_Type();
 
 //   virtual void pre();
-  virtual void image(const RPG_Graphics_Graphic&);
+  virtual void graphic(const RPG_Graphics_Graphic&);
   virtual void post_RPG_Graphics_Dictionary_Type();
 
  private:

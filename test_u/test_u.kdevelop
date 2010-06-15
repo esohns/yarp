@@ -15,13 +15,13 @@
     <projectname>test_u</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
-    <defaultencoding/>
+    <description></description>
+    <defaultencoding></defaultencoding>
   </general>
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>map/map_generator</activetarget>
+      <activetarget>graphics/graphics_parser</activetarget>
     </general>
     <run>
       <mainprogram>/home/unfv/Projects/RPG/test_u/debug/monster/monster_parser</mainprogram>
@@ -47,6 +47,8 @@
         <IRC_client>-c ./../../../net/protocol/IRC_client.ini -t</IRC_client>
         <IRC_client_gui>-c ./../../../net/protocol/IRC_client.ini -t -u ./../../../net/protocol/IRC_client.glade</IRC_client_gui>
         <map_generator>-a 0 -d 0 -m -r 2 -s -t -x 40 -y 20</map_generator>
+        <sound_parser>-d -s ../../sound/rpg_sound.xml -t</sound_parser>
+        <graphics_parser>-d -g ../../graphics/rpg_graphics.xml -t</graphics_parser>
       </runarguments>
       <debugarguments>
         <character_generator>-i ../../item/rpg_item.xml -m ../../magic/rpg_magic.xml -t</character_generator>
@@ -61,6 +63,8 @@
         <IRC_client>-c ./../../../net/protocol/IRC_client.ini -t</IRC_client>
         <IRC_client_gui>-c ./../../../net/protocol/IRC_client.ini -t -u ./../../../net/protocol/IRC_client.glade</IRC_client_gui>
         <map_generator>-a 0 -d 0 -m -r 2 -s -t -x 40 -y 20</map_generator>
+        <sound_parser>-d -s ../../sound/rpg_sound.xml -t</sound_parser>
+        <graphics_parser>-d -g ../../graphics/rpg_graphics.xml -t</graphics_parser>
       </debugarguments>
       <cwd>
         <character_generator>/home/unfv/Projects/RPG/test_u/debug/./</character_generator>
@@ -75,6 +79,8 @@
         <IRC_client>/home/unfv/Projects/RPG/test_u/debug/./net/protocol</IRC_client>
         <IRC_client_gui>/home/unfv/Projects/RPG/test_u/debug/./net/protocol</IRC_client_gui>
         <map_generator>/home/unfv/Projects/RPG/test_u/debug/./map</map_generator>
+        <sound_parser>/home/unfv/Projects/RPG/test_u/debug/./</sound_parser>
+        <graphics_parser>/home/unfv/Projects/RPG/test_u/debug/./</graphics_parser>
       </cwd>
     </run>
     <configurations>
@@ -255,7 +261,7 @@
       <processPrimaryTypes>true</processPrimaryTypes>
       <processFunctionArguments>true</processFunctionArguments>
       <preProcessAllHeaders>true</preProcessAllHeaders>
-      <parseMissingHeadersExperimental>false</parseMissingHeadersExperimental>
+      <parseMissingHeadersExperimental>true</parseMissingHeadersExperimental>
       <resolveIncludePathsUsingMakeExperimental>true</resolveIncludePathsUsingMakeExperimental>
       <alwaysParseInBackground>true</alwaysParseInBackground>
       <usePermanentCaching>true</usePermanentCaching>
@@ -263,7 +269,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -284,11 +290,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath/>
-      <dbgshell/>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <gdbpath></gdbpath>
+      <dbgshell></dbgshell>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>

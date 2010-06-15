@@ -221,22 +221,20 @@ void do_work(const unsigned long& minRoomSize_in,
   RPG_Dice_Common_Tools::initStringConversionTables();
 
   // step2: generate random dungeon map
-  RPG_Map_DungeonLevel levelMap;
-  RPG_Map_Common_Tools::createDungeonLevel(dimensionX_in,
-                                           dimensionY_in,
-                                           numRooms_in,
-                                           wantSquareRooms_in,
-                                           maximizeArea_in,
-                                           minRoomSize_in,
-                                           corridors_in,
-                                           true, // doors fill a position
-                                           maxDoorsPerRoom_in,
-                                           levelMap);
+  RPG_Map_FloorPlan_t levelMap;
+  RPG_Map_Common_Tools::createFloorPlan(dimensionX_in,
+                                        dimensionY_in,
+                                        numRooms_in,
+                                        wantSquareRooms_in,
+                                        maximizeArea_in,
+                                        minRoomSize_in,
+                                        corridors_in,
+                                        true, // doors fill a position
+                                        maxDoorsPerRoom_in,
+                                        levelMap);
 
   // step3: display the result
-  RPG_Map_Common_Tools::displayDungeonLevel(dimensionX_in,
-                                            dimensionY_in,
-                                            levelMap);
+  RPG_Map_Common_Tools::displayFloorPlan(levelMap);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));

@@ -1500,7 +1500,10 @@ ACE_TMAIN(int argc_in,
     //ACE_LOG_MSG->clr_flags(ACE_Log_Msg::VERBOSE_LITE);
   } // end IF
 
-  // step1d: init configuration object
+  // *TODO*: step1da: init GTK callback user data
+//   userData.bla.clear();
+
+  // step1db: init configuration object
   RPG_Client_Config config;
   // *** reactor ***
   config.num_threadpool_threads            = numThreadPoolThreads;
@@ -1532,7 +1535,7 @@ ACE_TMAIN(int argc_in,
   config.map_config.square_rooms           = RPG_CLIENT_DEF_MAP_SQUARE_ROOMS;
   config.map_config.map_size_x             = RPG_CLIENT_DEF_MAP_SIZE_X;
   config.map_config.map_size_y             = RPG_CLIENT_DEF_MAP_SIZE_Y;
-//   // step1da: populate config object with default/collected data
+//   // step1dc: populate config object with default/collected data
 //   // ************ connection config data ************
 //   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
 //   config.messageAllocator = &messageAllocator;
@@ -1546,13 +1549,11 @@ ACE_TMAIN(int argc_in,
 //   // *WARNING*: set at runtime, by the appropriate connection handler
 //   config.sessionID = 0; // (== socket handle !)
 //   config.statisticsReportingInterval = 0; // == off
-  // step1db: parse .ini file (if any)
+
+  // step1de: parse .ini file (if any)
   if (!iniFile.empty())
     do_parseIniFile(iniFile,
                     config);
-
-  // *TODO*: step1de: init callback user data
-//   userData.bla.clear();
 
   // step2a: init SDL
   if (SDL_Init(SDL_INIT_VIDEO |

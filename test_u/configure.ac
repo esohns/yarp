@@ -46,9 +46,11 @@ AC_CONFIG_FILES([Makefile
                  combat/Makefile
                  item/Makefile
                  magic/Makefile
+                 map/Makefile
                  monster/Makefile
                  net/Makefile
                  net/protocol/Makefile
-                 map/Makefile])
+                 sound/Makefile
+                 graphics/Makefile])
 
 AC_OUTPUT

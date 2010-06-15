@@ -49,10 +49,14 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
   //
   RPG_Graphics_Category_Type                  category_p;
   RPG_Graphics_Type_Type                      type_p;
+  RPG_Graphics_TileOrientation_Type           orientation_p;
+  RPG_Graphics_TileStyleUnion_Type            style_p;
   ::xml_schema::string_pimpl                  string_p;
   RPG_Graphics_Graphic_Type                   graphic_p;
   graphic_p.parsers(category_p,
                     type_p,
+                    orientation_p,
+                    style_p,
                     string_p);
 
   RPG_Graphics_Dictionary_Type                dictionary_p(&myDictionary);

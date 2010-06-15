@@ -1,1 +1,1 @@
-SUBDIRS = chance character combat item magic map monster net
+SUBDIRS = chance character combat graphics item magic map monster net sound

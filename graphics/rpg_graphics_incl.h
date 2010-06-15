@@ -27,6 +27,10 @@
 #define RPG_GRAPHICS_INCL_H
 
 #include "rpg_graphics_category.h"
+#include "rpg_graphics_tileorientation.h"
+#include "rpg_graphics_floortilestyle.h"
+#include "rpg_graphics_walltilestyle.h"
+#include "rpg_graphics_tilestyleunion.h"
 #include "rpg_graphics_type.h"
 #include "rpg_graphics_graphic.h"
 

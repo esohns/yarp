@@ -5,9 +5,9 @@
 <graphicsDictionary xmlns="urn:rpg"
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                     xsi:schemaLocation="urn:rpg rpg_graphics.xsd">
-  <image>
-    <category>CATEGORY_PICTURE</category>
+  <graphic>
+    <category>CATEGORY_IMAGE</category>
     <type>TYPE_MAIN_LOGO</type>
     <file>graphics_main_logo.png</file>
-  </image>
+  </graphic>
 </graphicsDictionary>

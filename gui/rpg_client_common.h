@@ -46,7 +46,7 @@ struct SDL_video_config_t
   int    screen_width;
   int    screen_height;
   int    screen_colordepth; // bits/pixel
-  Uint32 screen_flags;
+//   Uint32 screen_flags;
   bool   fullScreen;
   bool   doubleBuffer;
 };

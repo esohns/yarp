@@ -2,8 +2,12 @@ namespace urn:rpg
 {
   include "rpg_graphics_incl.h";
 
-  RPG_Graphics_Category_Type    RPG_Graphics_Category;
-  RPG_Graphics_Type_Type        RPG_Graphics_Type;
-  RPG_Graphics_Graphic_Type     RPG_Graphics_Graphic;
-#  RPG_Graphics_Dictionary_Type RPG_Graphics_Dictionary;
+  RPG_Graphics_Category_Type        RPG_Graphics_Category;
+  RPG_Graphics_TileOrientation_Type RPG_Graphics_TileOrientation;
+  RPG_Graphics_FloorTileStyle_Type  RPG_Graphics_FloorTileStyle;
+  RPG_Graphics_WallTileStyle_Type   RPG_Graphics_WallTileStyle;
+  RPG_Graphics_TileStyleUnion_Type  RPG_Graphics_TileStyleUnion;
+  RPG_Graphics_Type_Type            RPG_Graphics_Type;
+  RPG_Graphics_Graphic_Type         RPG_Graphics_Graphic;
+#  RPG_Graphics_Dictionary_Type     RPG_Graphics_Dictionary;
 }
