@@ -108,7 +108,7 @@ const signed char RPG_Character_Monster::getArmorClass(const RPG_Combat_DefenseS
   signed char result = 0;
 
   // *TODO*: consider any (additional, equipped) armor...
-  RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getMonsterProperties(getName());
+  RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(getName());
   switch (defenseSituation_in)
   {
     default:

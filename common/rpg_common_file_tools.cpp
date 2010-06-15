@@ -36,9 +36,8 @@ RPG_Common_File_Tools::isReadable(const std::string& filename_in)
                    &stat) == -1)
   {
 //     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("failed to ACE_OS::stat(\"%s\"): \"%s\", aborting\n"),
-//                filename_in.c_str(),
-//                ACE_OS::strerror(errno)));
+//                ACE_TEXT("failed to ACE_OS::stat(\"%s\"): \"%m\", aborting\n"),
+//                filename_in.c_str()));
 
     return false;
   } // end IF
@@ -56,9 +55,8 @@ RPG_Common_File_Tools::isEmpty(const std::string& filename_in)
                    &stat) == -1)
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("failed to ACE_OS::stat(\"%s\"): \"%s\", aborting\n"),
-               filename_in.c_str(),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_OS::stat(\"%s\"): \"%m\", aborting\n"),
+               filename_in.c_str()));
 
     return false;
   } // end IF
@@ -71,6 +69,15 @@ RPG_Common_File_Tools::isDirectory(const std::string& directory_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_File_Tools::isDirectory"));
 
+  // retrieve working directory
+  char cwd[MAXPATHLEN];
+  ACE_OS::memset(cwd,
+                 0,
+                 sizeof(cwd));
+  if (ACE_OS::getcwd(cwd, sizeof(cwd)) == NULL)
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("failed to ACE_OS::getcwd(): \"%m\", continuing\n")));
+
   ACE_stat stat;
   if (ACE_OS::stat(directory_in.c_str(),
                    &stat) == -1)
@@ -79,20 +86,19 @@ RPG_Common_File_Tools::isDirectory(const std::string& directory_in)
     {
       case ENOENT:
       {
-        // debug info
         ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("\"%s\": \"%s\", aborting\n"),
+                   ACE_TEXT("\"%s\": \"%m\" [cwd: \"%s\"], aborting\n"),
                    directory_in.c_str(),
-                   ACE_OS::strerror(errno)));
+                   cwd));
 
         return false;
       }
       default:
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_OS::stat(\"%s\"): \"%s\", aborting\n"),
+                   ACE_TEXT("failed to ACE_OS::stat(\"%s\"): \"%m\" [cwd: \"%s\"], aborting\n"),
                    directory_in.c_str(),
-                   ACE_OS::strerror(errno)));
+                   cwd));
 
         return false;
       }
@@ -142,16 +148,14 @@ RPG_Common_File_Tools::createDirectory(const std::string& directory_in)
       default:
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_OS::mkdir(\"%s\"): %s, aborting\n"),
-                   directory_in.c_str(),
-                   ACE_OS::strerror(errno)));
+                   ACE_TEXT("failed to ACE_OS::mkdir(\"%s\"): \"%m\", aborting\n"),
+                   directory_in.c_str()));
 
         return false;
       }
     } // end SWITCH
   } // end IF
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("created: \"%s\"...\n"),
              directory_in.c_str()));
@@ -169,9 +173,8 @@ RPG_Common_File_Tools::deleteFile(const std::string& filename_in)
   if (address.set(ACE_TEXT_CHAR_TO_TCHAR(filename_in.c_str())) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_FILE_Addr::set() file \"%s\": \"%s\", aborting\n"),
-               filename_in.c_str(),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_FILE_Addr::set() file \"%s\": \"%m\", aborting\n"),
+               filename_in.c_str()));
 
     return false;
   } // end IF
@@ -189,9 +192,8 @@ RPG_Common_File_Tools::deleteFile(const std::string& filename_in)
                         ACE_DEFAULT_FILE_PERMS) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_FILE_Connector::connect() to file \"%s\": \"%s\", aborting\n"),
-               filename_in.c_str(),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_FILE_Connector::connect() to file \"%s\": \"%m\", aborting\n"),
+               filename_in.c_str()));
 
     return false;
   } // end IF
@@ -200,14 +202,12 @@ RPG_Common_File_Tools::deleteFile(const std::string& filename_in)
   if (file.remove() == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_FILE_IO::remove() file \"%s\": \"%s\", aborting\n"),
-               filename_in.c_str(),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_FILE_IO::remove() file \"%s\": \"%m\", aborting\n"),
+               filename_in.c_str()));
 
     return false;
   } // end IF
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("deleted \"%s\"...\n"),
              filename_in.c_str()));

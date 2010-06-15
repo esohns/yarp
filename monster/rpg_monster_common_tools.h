@@ -46,9 +46,16 @@ class RPG_Monster_Common_Tools
   static const std::string weaponTypeToString(const RPG_Monster_WeaponTypeUnion&); // weapon type
   static const std::string attackToString(const RPG_Monster_Attack&); // attack
   static const std::string organizationsToString(const RPG_Monster_Organizations_t&); // organizations
-  static const std::string organizationsToString(const RPG_Monster_OrganizationList_t&); // organizations
+  static const std::string organizationsToString(const RPG_Monster_OrganizationSet_t&); // organizations
   static const std::string advancementToString(const RPG_Monster_Advancement_t&); // advancement
   static const RPG_Common_PhysicalDamageList_t naturalWeaponToPhysicalDamageType(const RPG_Monster_NaturalWeapon&);
+
+  static void generateRandomEncounter(const unsigned int&,                  // # of different monster types
+                                      const unsigned int&,                  // total # of foes (0: random)
+                                      const RPG_Character_Alignment&,       // alignment
+                                      const RPG_Character_Environment&,     // environment
+                                      const RPG_Monster_OrganizationSet_t&, // organization(s)
+                                      RPG_Monster_Encounter_t&);            // return value: encounter
 
  private:
   // safety measures
@@ -57,7 +64,10 @@ class RPG_Monster_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Common_Tools(const RPG_Monster_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Common_Tools& operator=(const RPG_Monster_Common_Tools&));
 
+  // helper methods
   static const std::string attackActionToString(const RPG_Monster_AttackAction&); // attack action
+  static void organizationStepToRoll(const RPG_Monster_OrganizationStep&, // organization step
+                                     RPG_Dice_Roll&);                     // return value: roll
 };
 
 #endif

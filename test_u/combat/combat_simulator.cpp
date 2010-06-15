@@ -211,7 +211,7 @@ const unsigned int do_battle(RPG_Character_Party_t& party_in,
        iterator++)
   {
     RPG_Character_MonsterGroupInstance_t groupInstance;
-    RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getMonsterProperties(iterator->first);
+    RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(iterator->first);
   // *TODO*: define monster abilities !
     RPG_Character_Abilities_t abilities;
 
@@ -355,12 +355,12 @@ void do_work(const std::string& magicDictionaryFilename_in,
   // step2c: init monster dictionary
   try
   {
-    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->initMonsterDictionary(monsterDictionaryFilename_in);
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init(monsterDictionaryFilename_in);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Monster_Dictionary::initMonsterDictionary, returning\n")));
+               ACE_TEXT("caught exception in RPG_Monster_Dictionary::init(), returning\n")));
 
     return;
   }
@@ -399,15 +399,15 @@ void do_work(const std::string& magicDictionaryFilename_in,
       RPG_Character_Environment environment;
       environment.climate = CLIMATE_ANY;
       environment.terrain = TERRAIN_ANY;
-      RPG_Monster_OrganizationList_t organizations;
+      RPG_Monster_OrganizationSet_t organizations;
       organizations.insert(ORGANIZATION_ANY);
       RPG_Monster_Encounter_t encounter;
-      RPG_MONSTER_DICTIONARY_SINGLETON::instance()->generateRandomEncounter(numMonsterTypes_in,
-                                                                            numFoes_in,
-                                                                            alignment,
-                                                                            environment,
-                                                                            organizations,
-                                                                            encounter);
+      RPG_Monster_Common_Tools::generateRandomEncounter(numMonsterTypes_in,
+                                                        numFoes_in,
+                                                        alignment,
+                                                        environment,
+                                                        organizations,
+                                                        encounter);
 
       // step5: FIGHT !
       gameTime += do_battle(party,

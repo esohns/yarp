@@ -17,16 +17,15 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
 
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_common_tools.h>
 
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
+
+#include <rpg_dice.h>
+#include <rpg_dice_common_tools.h>
 
 #include <SDL/SDL.h>
 
@@ -40,8 +39,13 @@
 #include <sstream>
 #include <string>
 
+// *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #define GRAPHICSPARSER_DEF_GRAPHICS_DICTIONARY ACE_TEXT("rpg_graphics.xml")
-#define GRAPHICSPARSER_DEF_GRAPHICS_DIRECTORY  ACE_TEXT(".")
+#define GRAPHICSPARSER_DEF_GRAPHICS_DIRECTORY  ACE_TEXT("./../../graphics/data")
 #define GRAPHICSPARSER_DEF_GRAPHICS_CACHESIZE  50
 
 #define GRAPHICSPARSER_DEF_VIDEO_W             1024
@@ -49,6 +53,8 @@
 #define GRAPHICSPARSER_DEF_VIDEO_BPP           32
 #define GRAPHICSPARSER_DEF_VIDEO_FULLSCREEN    false
 #define GRAPHICSPARSER_DEF_VIDEO_DOUBLEBUFFER  true
+
+#define SDL_TIMEREVENT                         SDL_USEREVENT
 
 // *NOTE* types as used by SDL
 struct SDL_video_config_t
@@ -222,6 +228,71 @@ do_initVideo(const SDL_video_config_t& config_in)
              ((screen->flags & SDL_PREALLOC) ? ACE_TEXT("yes") : ACE_TEXT("no"))));
 }
 
+Uint32
+timer_SDL_cb(Uint32 interval_in,
+             void* argument_in)
+{
+  ACE_TRACE(ACE_TEXT("::timer_SDL_cb"));
+
+  // create an SDL timer event
+  SDL_Event event;
+  event.type = SDL_TIMEREVENT;
+  event.user.data1 = argument_in;
+
+  // push it onto the event queue
+  if (SDL_PushEvent(&event))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+               SDL_GetError()));
+  } // end IF
+
+  // one-shot timer --> cancel
+  return 0;
+}
+
+// wait for an input event; stop after timeout_in second(s) (0: wait forever)
+void
+do_SDL_waitForInput(const unsigned long& timeout_in,
+                    SDL_Event& event_out)
+{
+  ACE_TRACE(ACE_TEXT("::do_SDL_waitForInput"));
+
+  SDL_TimerID timer = NULL;
+  if (timeout_in)
+    timer = SDL_AddTimer((timeout_in * 1000), // interval (ms)
+                         timer_SDL_cb,        // timeout callback
+                         NULL);               // callback argument
+
+  // loop until something interesting happens
+  do
+  {
+    if (SDL_WaitEvent(&event_out) != 1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
+                 SDL_GetError()));
+
+      // what else can we do ?
+      break;
+    } // end IF
+    if (event_out.type == SDL_KEYDOWN ||
+        event_out.type == SDL_MOUSEBUTTONDOWN ||
+        event_out.type == SDL_QUIT ||
+        event_out.type == SDL_TIMEREVENT)
+      break;
+  } while (true);
+
+  if (timeout_in &&
+      (event_out.type != SDL_TIMEREVENT))
+    if (!SDL_RemoveTimer(timer))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
+               SDL_GetError()));
+  } // end IF
+}
+
 void
 print_usage(const std::string& programName_in)
 {
@@ -325,6 +396,10 @@ do_work(const std::string& dictionary_in,
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
+  // step0: init: random seed, string conversion facilities, ...
+  RPG_Dice::init();
+  RPG_Dice_Common_Tools::initStringConversionTables();
+
   // step1: init: graphics directory, cache, string conversion facilities, ...
   RPG_Graphics_Common_Tools::init(path_in,
                                   cacheSize_in);
@@ -348,6 +423,51 @@ do_work(const std::string& dictionary_in,
   {
     RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->dump();
   } // end IF
+
+  // step4: show (random) images
+  RPG_Graphics_Type type = RPG_GRAPHICS_TYPE_INVALID;
+  RPG_Dice_RollResult_t result;
+  SDL_Surface* image = NULL;
+  SDL_Event event;
+  do
+  {
+    result.clear();
+    RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TYPE_MAX,
+                                    1,
+                                    result);
+    type = ACE_static_cast(RPG_Graphics_Type, (result.front() - 1));
+    image = RPG_Graphics_Common_Tools::loadGraphic(type);
+    if (!image)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to load graphics type \"%s\", aborting\n"),
+                 RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type).c_str()));
+
+      break;
+    } // end IF
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("showing graphics type \"%s\"...\n"),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type).c_str()));
+
+    RPG_Graphics_Common_Tools::put((screen->w - image->w) / 2, // location x
+                                   (screen->h - image->h) / 2, // location y
+                                   *image,                    // image
+                                   screen);                   // screen
+    if (SDL_Flip(screen))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_Flip(): \"%s\", aborting\n"),
+                 SDL_GetError()));
+
+      break;
+    } // end IF
+
+    // step5: wait a little while (max: 3 seconds)
+    do_SDL_waitForInput(3,
+                        event);
+    if (event.type == SDL_QUIT)
+      break;
+  } while (true);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -511,7 +631,8 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step2a: init SDL
-  if (SDL_Init(SDL_INIT_VIDEO |
+  if (SDL_Init(SDL_INIT_TIMER |
+               SDL_INIT_VIDEO |
                SDL_INIT_NOPARACHUTE) == -1) // "...Prevents SDL from catching fatal signals..."
   {
     ACE_DEBUG((LM_ERROR,
@@ -520,6 +641,15 @@ ACE_TMAIN(int argc,
 
     return EXIT_FAILURE;
   } // end IF
+  // ***** keyboard setup *****
+  // enable Unicode translation
+  SDL_EnableUNICODE(1);
+  // enable key repeat
+  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,
+                      SDL_DEFAULT_REPEAT_INTERVAL);
+//   // ignore keyboard events
+//   SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
+//   SDL_EventState(SDL_KEYUP, SDL_IGNORE);
 
   // step2b: init Video
   do_initVideo(video_config);

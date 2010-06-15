@@ -22,16 +22,15 @@
 #include "rpg_monster_XML_parser.h"
 #include "rpg_monster_common_tools.h"
 
-#include <rpg_dice.h>
-#include <rpg_dice_common_tools.h>
 #include <rpg_dice_XML_parser.h>
+#include <rpg_dice_common_tools.h>
 
-#include <rpg_common_tools.h>
 #include <rpg_common_XML_parser.h>
+#include <rpg_common_tools.h>
 
+#include <rpg_character_XML_parser.h>
 #include <rpg_character_common_tools.h>
 #include <rpg_character_skills_common_tools.h>
-#include <rpg_character_XML_parser.h>
 
 #include <rpg_magic_XML_parser.h>
 
@@ -55,10 +54,11 @@ RPG_Monster_Dictionary::~RPG_Monster_Dictionary()
 
 }
 
-void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_in,
-                                                   const bool& validateXML_in)
+void
+RPG_Monster_Dictionary::init(const std::string& filename_in,
+                             const bool& validateXML_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::initMonsterDictionary"));
+  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::init"));
 
   // Construct the parser.
   //
@@ -389,22 +389,22 @@ void RPG_Monster_Dictionary::initMonsterDictionary(const std::string& filename_i
 
   dictionary_p.post_RPG_Monster_Dictionary_Type();
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("finished parsing character dictionary file \"%s\"...\n"),
 //              filename_in.c_str()));
 }
 
-const RPG_Monster_Properties RPG_Monster_Dictionary::getMonsterProperties(const std::string& monsterName_in) const
+const RPG_Monster_Properties
+RPG_Monster_Dictionary::getProperties(const std::string& name_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::getMonsterProperties"));
+  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::getProperties"));
 
-  RPG_Monster_DictionaryIterator_t iterator = myMonsterDictionary.find(monsterName_in);
+  RPG_Monster_DictionaryConstIterator_t iterator = myMonsterDictionary.find(name_in);
   if (iterator == myMonsterDictionary.end())
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid monster name \"%s\" --> check implementation !, aborting\n"),
-               monsterName_in.c_str()));
+               ACE_TEXT("invalid monster \"%s\", aborting\n"),
+               name_in.c_str()));
 
     ACE_ASSERT(false);
   } // end IF
@@ -412,40 +412,40 @@ const RPG_Monster_Properties RPG_Monster_Dictionary::getMonsterProperties(const 
   return iterator->second;
 }
 
-void RPG_Monster_Dictionary::generateRandomEncounter(const unsigned int& numDifferentMonsterTypes_in,
-                                                     const unsigned int& numMonsters_in,
-                                                     const RPG_Character_Alignment& alignment_in,
-                                                     const RPG_Character_Environment& environment_in,
-                                                     const RPG_Monster_OrganizationList_t& organizations_in,
-                                                     RPG_Monster_Encounter_t& encounter_out) const
+const unsigned long
+RPG_Monster_Dictionary::numEntries() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::generateRandomEncounter"));
+  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::numEntries"));
 
-  // init result
-  encounter_out.clear();
+  return myMonsterDictionary.size();
+}
 
-  // sanity check(s)
-  ACE_ASSERT(numDifferentMonsterTypes_in <= myMonsterDictionary.size());
-  if (numMonsters_in)
-  {
-    ACE_ASSERT(numDifferentMonsterTypes_in <= numMonsters_in);
-  } // end IF
+void
+RPG_Monster_Dictionary::find(const RPG_Character_Alignment& alignment_in,
+                             const RPG_Character_Environment& environment_in,
+                             const RPG_Monster_OrganizationSet_t& organizations_in,
+                             RPG_Monster_List_t& list_out) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::find"));
 
-  RPG_Monster_List_t list;
-  for (RPG_Monster_DictionaryIterator_t iterator = myMonsterDictionary.begin();
+  // init return value(s)
+  list_out.clear();
+
+  RPG_Monster_OrganizationSet_t possible_organizations;
+  for (RPG_Monster_DictionaryConstIterator_t iterator = myMonsterDictionary.begin();
        iterator != myMonsterDictionary.end();
        iterator++)
   {
-    // check if environment is appropriate
+    // check if environment is compatible
     if (environmentMatches(environment_in,
                            iterator->second.environment))
     {
-      // check if alignment is appropriate
+      // check if alignment is compatible
       if (alignmentMatches(alignment_in,
                            iterator->second.alignment))
       {
-        // check if organizations are appropriate
-        RPG_Monster_OrganizationList_t possible_organizations;
+        // check if organizations are compatible
+        possible_organizations.clear();
         for (RPG_Monster_OrganizationsIterator_t iterator2 = iterator->second.organizations.begin();
              iterator2 != iterator->second.organizations.end();
              iterator2++)
@@ -461,211 +461,16 @@ void RPG_Monster_Dictionary::generateRandomEncounter(const unsigned int& numDiff
         if ((organizations_in.find(ORGANIZATION_ANY) != organizations_in.end()) ||
             !intersection.empty())
         {
-          list.push_back(iterator->first);
+          list_out.push_back(iterator->first);
         } // end IF
       } // end IF
     } // end IF
   } // end FOR
-
-  if (list.empty())
-  {
-    // nothing found in database...
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("found no appropriate monster types (alignment: \"%s\", environment \"%s\", organizations: \"%s\" in dictionary (%d items) --> check implementation !, returning\n"),
-               RPG_Character_Common_Tools::alignmentToString(alignment_in).c_str(),
-               RPG_Character_Common_Tools::environmentToString(environment_in).c_str(),
-               RPG_Monster_Common_Tools::organizationsToString(organizations_in).c_str(),
-               myMonsterDictionary.size()));
-
-    return;
-  } // end IF
-
-  RPG_Dice_RollResult_t result;
-  for (unsigned int i = 0;
-       i < numDifferentMonsterTypes_in;
-       i++)
-  {
-    // step2a: choose new random foe (from the set of possibilities)
-    RPG_Monster_EncounterConstIterator_t iterator;
-    int choiceType = 0;
-    do
-    {
-      result.clear();
-      RPG_Dice::generateRandomNumbers(list.size(),
-                                      1,
-                                      result);
-      choiceType = result.front() - 1; // list index
-      // already used this type ?
-      iterator = encounter_out.find(list[choiceType]);
-    } while (iterator != encounter_out.end());
-
-    // step2b: compute number of foes
-    // step2ba: ...choose a random organization from the intersection
-    RPG_Monster_DictionaryIterator_t iterator2 = myMonsterDictionary.find(list[choiceType]);
-    RPG_Monster_OrganizationList_t possible_organizations;
-    for (RPG_Monster_OrganizationsIterator_t iterator3 = (*iterator2).second.organizations.begin();
-         iterator3 != (*iterator2).second.organizations.end();
-         iterator3++)
-    {
-      possible_organizations.insert((*iterator3).type);
-    } // end FOR
-    if (organizations_in.find(ORGANIZATION_ANY) == organizations_in.end())
-    {
-      std::vector<RPG_Monster_Organization> intersection;
-      std::set_intersection(organizations_in.begin(),
-                            organizations_in.end(),
-                            possible_organizations.begin(),
-                            possible_organizations.end(),
-                            intersection.begin());
-      possible_organizations.clear();
-      for (std::vector<RPG_Monster_Organization>::const_iterator iterator4 = intersection.begin();
-           iterator4 != intersection.end();
-           iterator4++)
-      {
-        possible_organizations.insert(*iterator4);
-      } // end FOR
-    } // end IF
-
-    result.clear();
-    RPG_Dice::generateRandomNumbers(possible_organizations.size(),
-                                    1,
-                                    result);
-    int choiceOrganization = result.front() - 1; // list index
-    RPG_Monster_OrganizationListIterator_t iterator3 = possible_organizations.begin();
-    std::advance(iterator3, choiceOrganization);
-    RPG_Monster_OrganizationsIterator_t iterator4 = (*iterator2).second.organizations.begin();
-    while ((*iterator4).type != *iterator3)
-      iterator4++;
-    ACE_ASSERT(iterator4 != (*iterator2).second.organizations.end());
-    RPG_Dice_Roll roll;
-    organizationStepToRoll(*iterator4,
-                           roll);
-    result.clear();
-    RPG_Dice::simulateRoll(roll,
-                           1,
-                           result);
-
-    encounter_out.insert(std::make_pair(list[choiceType], result.front()));
-  } // end FOR
-
-  // reduce/increase total number of foes to adjust the result
-  // *IMPORTANT NOTE*: this means, however, that the final result doesn't necessarily
-  // correspond to the numbers implied by the requested types of organizations...
-  unsigned int numCurrentFoes = 0;
-  if (numMonsters_in)
-  {
-    for (RPG_Monster_EncounterConstIterator_t iterator = encounter_out.begin();
-        iterator != encounter_out.end();
-        iterator++)
-    {
-      numCurrentFoes += (*iterator).second;
-    } // end FOR
-    RPG_Monster_EncounterIterator_t iterator;
-    int diff = ::abs(numCurrentFoes - numMonsters_in);
-    while (diff)
-    {
-      iterator = encounter_out.begin();
-      result.clear();
-      RPG_Dice::generateRandomNumbers(encounter_out.size(),
-                                      1,
-                                      result);
-      std::advance(iterator, result.front() - 1);
-      if ((*iterator).second) // don't go below 1...
-      {
-        (*iterator).second += ((numCurrentFoes > numMonsters_in) ? -1 : 1);
-        diff--;
-      } // end IF
-    } // end WHILE
-  } // end IF
-
-  numCurrentFoes = 0;
-  int index = 1;
-  for (RPG_Monster_EncounterConstIterator_t iterator = encounter_out.begin();
-       iterator != encounter_out.end();
-       iterator++, index++)
-  {
-    numCurrentFoes += (*iterator).second;
-
-    // debug info
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("group #%d: %d %s\n"),
-               index,
-               (*iterator).second,
-               (*iterator).first.c_str()));
-  } // end FOR
-
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("generated %d foes...\n"),
-             numCurrentFoes));
 }
 
-void RPG_Monster_Dictionary::organizationStepToRoll(const RPG_Monster_OrganizationStep& organizationStep_in,
-                                                    RPG_Dice_Roll& roll_out) const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::organizationStepToRoll"));
-
-  // init result
-  roll_out.numDice = 0;
-  roll_out.typeDice = D_0;
-  roll_out.modifier = 0;
-
-  switch (organizationStep_in.type)
-  {
-    case ORGANIZATION_SOLITARY:
-    {
-      roll_out.modifier = 1;
-
-      break;
-    }
-    case ORGANIZATION_PAIR:
-    {
-      roll_out.modifier = 2;
-
-      break;
-    }
-    case ORGANIZATION_BAND:
-    case ORGANIZATION_BROOD:
-    case ORGANIZATION_COLONY:
-    case ORGANIZATION_CLAN:
-    case ORGANIZATION_CLUSTER:
-    case ORGANIZATION_CLUTCH:
-    case ORGANIZATION_COMPANY:
-    case ORGANIZATION_CROWD:
-    case ORGANIZATION_FLIGHT:
-    case ORGANIZATION_FLOCK:
-    case ORGANIZATION_GANG:
-    case ORGANIZATION_GROUP:
-    case ORGANIZATION_MOB:
-    case ORGANIZATION_PACK:
-    case ORGANIZATION_PATCH:
-    case ORGANIZATION_PRIDE:
-    case ORGANIZATION_SQUAD:
-    case ORGANIZATION_SWARM:
-    case ORGANIZATION_TEAM:
-    case ORGANIZATION_TRIBE:
-    case ORGANIZATION_TROOP:
-    case ORGANIZATION_TROUPE:
-    {
-      RPG_Dice::rangeToRoll(organizationStep_in.range,
-                            roll_out);
-
-      break;
-    }
-    case ORGANIZATION_ANY:
-    default:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid organization \"%s\" --> check implementation !, returning\n"),
-                 RPG_Monster_OrganizationHelper::RPG_Monster_OrganizationToString(organizationStep_in.type).c_str()));
-
-      break;
-    }
-  } // end SWITCH
-}
-
-const bool RPG_Monster_Dictionary::alignmentMatches(const RPG_Character_Alignment& alignmentA_in,
-                                                    const RPG_Character_Alignment& alignmentB_in) const
+const bool
+RPG_Monster_Dictionary::alignmentMatches(const RPG_Character_Alignment& alignmentA_in,
+                                         const RPG_Character_Alignment& alignmentB_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::alignmentMatches"));
 
@@ -730,8 +535,9 @@ const bool RPG_Monster_Dictionary::alignmentMatches(const RPG_Character_Alignmen
   return true;
 }
 
-const bool RPG_Monster_Dictionary::environmentMatches(const RPG_Character_Environment& environmentA_in,
-                                                      const RPG_Character_Environment& environmentB_in) const
+const bool
+RPG_Monster_Dictionary::environmentMatches(const RPG_Character_Environment& environmentA_in,
+                                           const RPG_Character_Environment& environmentB_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::environmentMatches"));
 
@@ -815,9 +621,8 @@ const bool RPG_Monster_Dictionary::environmentMatches(const RPG_Character_Enviro
         case TERRAIN_OUTERPLANE_STRONG_ANY:
         default:
         {
-          // debug info
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid terrain: \"%s\" --> check implementation !, aborting\n"),
+                     ACE_TEXT("invalid terrain: \"%s\", aborting\n"),
                      RPG_Character_TerrainHelper::RPG_Character_TerrainToString(environmentA_in.terrain).c_str()));
 
           break;
@@ -828,9 +633,8 @@ const bool RPG_Monster_Dictionary::environmentMatches(const RPG_Character_Enviro
     }
     default:
     {
-      // debug info
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid plane: \"%s\" --> check implementation !, aborting\n"),
+                 ACE_TEXT("invalid plane: \"%s\", aborting\n"),
                  RPG_Character_PlaneHelper::RPG_Character_PlaneToString(planeA).c_str()));
 
       break;
@@ -840,15 +644,15 @@ const bool RPG_Monster_Dictionary::environmentMatches(const RPG_Character_Enviro
   return false;
 }
 
-bool RPG_Monster_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
-                                                       unsigned long line_in,
-                                                       unsigned long column_in,
-                                                       ::xml_schema::error_handler::severity severity_in,
-                                                       const std::string& message_in)
+bool
+RPG_Monster_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
+                                                  unsigned long line_in,
+                                                  unsigned long column_in,
+                                                  ::xml_schema::error_handler::severity severity_in,
+                                                  const std::string& message_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::XSD_Error_Handler::handle"));
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
 //              id_in.c_str(),
@@ -861,7 +665,7 @@ bool RPG_Monster_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     case ::xml_schema::error_handler::severity::warning:
     {
       ACE_DEBUG((LM_WARNING,
-                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
@@ -872,7 +676,7 @@ bool RPG_Monster_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     case ::xml_schema::error_handler::severity::error:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
@@ -883,7 +687,7 @@ bool RPG_Monster_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     case ::xml_schema::error_handler::severity::fatal:
     {
       ACE_DEBUG((LM_CRITICAL,
-                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
@@ -894,7 +698,7 @@ bool RPG_Monster_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     default:
     {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
@@ -908,12 +712,13 @@ bool RPG_Monster_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
   return true;
 }
 
-void RPG_Monster_Dictionary::dump() const
+void
+RPG_Monster_Dictionary::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::dump"));
 
   // simply dump the current content of our dictionary
-  for (RPG_Monster_DictionaryIterator_t iterator = myMonsterDictionary.begin();
+  for (RPG_Monster_DictionaryConstIterator_t iterator = myMonsterDictionary.begin();
        iterator != myMonsterDictionary.end();
        iterator++)
   {

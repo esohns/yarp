@@ -45,8 +45,8 @@ typedef RPG_Monster_AttackActions_t::const_iterator RPG_Monster_AttackActionsIte
 
 typedef std::vector<RPG_Monster_OrganizationStep> RPG_Monster_Organizations_t;
 typedef RPG_Monster_Organizations_t::const_iterator RPG_Monster_OrganizationsIterator_t;
-typedef std::set<RPG_Monster_Organization> RPG_Monster_OrganizationList_t;
-typedef RPG_Monster_OrganizationList_t::const_iterator RPG_Monster_OrganizationListIterator_t;
+typedef std::set<RPG_Monster_Organization> RPG_Monster_OrganizationSet_t;
+typedef RPG_Monster_OrganizationSet_t::const_iterator RPG_Monster_OrganizationSetIterator_t;
 
 typedef std::vector<RPG_Monster_AdvancementStep> RPG_Monster_Advancement_t;
 typedef RPG_Monster_Advancement_t::const_iterator RPG_Monster_AdvancementIterator_t;
@@ -79,8 +79,6 @@ struct RPG_Monster_Properties
 
 // some more useful types
 typedef std::map<std::string, RPG_Monster_Properties> RPG_Monster_Dictionary_t;
-typedef RPG_Monster_Dictionary_t::const_iterator RPG_Monster_DictionaryIterator_t;
-
 typedef std::vector<std::string> RPG_Monster_List_t;
 typedef RPG_Monster_List_t::const_iterator RPG_Monster_ListIterator_t;
 typedef std::map<std::string, unsigned short int> RPG_Monster_Encounter_t;

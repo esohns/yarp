@@ -29,9 +29,17 @@
 enum RPG_Sound_Event
 {
   EVENT_MAIN_TITLE = 0,
+  EVENT_BELL,
+  EVENT_CONDITION_ILL,
+  EVENT_CONDITION_WEAK,
+  EVENT_COUNTING,
+  EVENT_DOOR_CLOSE,
+  EVENT_DOOR_OPEN,
+  EVENT_FOUNTAIN,
+  EVENT_SWORD_HIT,
+  EVENT_SWORD_MISS,
   EVENT_WALK,
-  EVENT_HIT,
-  EVENT_MISS,
+  EVENT_XP_LEVELUP,
   //
   RPG_SOUND_EVENT_MAX,
   RPG_SOUND_EVENT_INVALID
@@ -52,9 +60,17 @@ class RPG_Sound_EventHelper
   {
     myRPG_Sound_EventToStringTable.clear();
     myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_MAIN_TITLE, ACE_TEXT_ALWAYS_CHAR("EVENT_MAIN_TITLE")));
+    myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_BELL, ACE_TEXT_ALWAYS_CHAR("EVENT_BELL")));
+    myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_CONDITION_ILL, ACE_TEXT_ALWAYS_CHAR("EVENT_CONDITION_ILL")));
+    myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_CONDITION_WEAK, ACE_TEXT_ALWAYS_CHAR("EVENT_CONDITION_WEAK")));
+    myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_COUNTING, ACE_TEXT_ALWAYS_CHAR("EVENT_COUNTING")));
+    myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_DOOR_CLOSE, ACE_TEXT_ALWAYS_CHAR("EVENT_DOOR_CLOSE")));
+    myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_DOOR_OPEN, ACE_TEXT_ALWAYS_CHAR("EVENT_DOOR_OPEN")));
+    myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_FOUNTAIN, ACE_TEXT_ALWAYS_CHAR("EVENT_FOUNTAIN")));
+    myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_SWORD_HIT, ACE_TEXT_ALWAYS_CHAR("EVENT_SWORD_HIT")));
+    myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_SWORD_MISS, ACE_TEXT_ALWAYS_CHAR("EVENT_SWORD_MISS")));
     myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_WALK, ACE_TEXT_ALWAYS_CHAR("EVENT_WALK")));
-    myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_HIT, ACE_TEXT_ALWAYS_CHAR("EVENT_HIT")));
-    myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_MISS, ACE_TEXT_ALWAYS_CHAR("EVENT_MISS")));
+    myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_XP_LEVELUP, ACE_TEXT_ALWAYS_CHAR("EVENT_XP_LEVELUP")));
   };
 
   inline static std::string RPG_Sound_EventToString(const RPG_Sound_Event& element_in)

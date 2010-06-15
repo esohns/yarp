@@ -19,7 +19,12 @@
  ***************************************************************************/
 #include "rpg_monster_common_tools.h"
 
+#include "rpg_monster_dictionary.h"
+
+#include <rpg_dice.h>
 #include <rpg_dice_common_tools.h>
+
+#include <rpg_character_common_tools.h>
 
 #include <rpg_combat_common_tools.h>
 
@@ -32,19 +37,20 @@
 RPG_Monster_NaturalWeaponToStringTable_t RPG_Monster_NaturalWeaponHelper::myRPG_Monster_NaturalWeaponToStringTable;
 RPG_Monster_OrganizationToStringTable_t RPG_Monster_OrganizationHelper::myRPG_Monster_OrganizationToStringTable;
 
-void RPG_Monster_Common_Tools::initStringConversionTables()
+void
+RPG_Monster_Common_Tools::initStringConversionTables()
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::initStringConversionTables"));
 
   RPG_Monster_NaturalWeaponHelper::init();
   RPG_Monster_OrganizationHelper::init();
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Monster_Common_Tools: initialized string conversion tables...\n")));
 }
 
-const std::string RPG_Monster_Common_Tools::weaponTypeToString(const RPG_Monster_WeaponTypeUnion& weaponType_in)
+const std::string
+RPG_Monster_Common_Tools::weaponTypeToString(const RPG_Monster_WeaponTypeUnion& weaponType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::weaponTypeToString"));
 
@@ -70,7 +76,6 @@ const std::string RPG_Monster_Common_Tools::weaponTypeToString(const RPG_Monster
     }
     default:
     {
-      // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid weapon type: %d, aborting\n"),
                  weaponType_in.discriminator));
@@ -82,7 +87,8 @@ const std::string RPG_Monster_Common_Tools::weaponTypeToString(const RPG_Monster
   return result;
 }
 
-const std::string RPG_Combat_Common_Tools::attackFormsToString(const RPG_Combat_AttackForms_t& attackForms_in)
+const std::string
+RPG_Combat_Common_Tools::attackFormsToString(const RPG_Combat_AttackForms_t& attackForms_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::attackFormsToString"));
 
@@ -104,7 +110,8 @@ const std::string RPG_Combat_Common_Tools::attackFormsToString(const RPG_Combat_
   return result;
 }
 
-const std::string RPG_Monster_Common_Tools::attackActionToString(const RPG_Monster_AttackAction& attackAction_in)
+const std::string
+RPG_Monster_Common_Tools::attackActionToString(const RPG_Monster_AttackAction& attackAction_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::attackActionToString"));
 
@@ -146,7 +153,8 @@ const std::string RPG_Monster_Common_Tools::attackActionToString(const RPG_Monst
   return result;
 }
 
-const std::string RPG_Monster_Common_Tools::attackToString(const RPG_Monster_Attack& attack_in)
+const std::string
+RPG_Monster_Common_Tools::attackToString(const RPG_Monster_Attack& attack_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::attackToString"));
 
@@ -195,12 +203,13 @@ const std::string RPG_Monster_Common_Tools::attackToString(const RPG_Monster_Att
   return result;
 }
 
-const std::string RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_OrganizationList_t& organizations_in)
+const std::string
+RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_OrganizationSet_t& organizations_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::organizationsToString"));
 
   std::string result;
-  for (RPG_Monster_OrganizationListIterator_t iterator = organizations_in.begin();
+  for (RPG_Monster_OrganizationSetIterator_t iterator = organizations_in.begin();
        iterator != organizations_in.end();
        iterator++)
   {
@@ -216,7 +225,8 @@ const std::string RPG_Monster_Common_Tools::organizationsToString(const RPG_Mons
   return result;
 }
 
-const std::string RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_Organizations_t& organizations_in)
+const std::string
+RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_Organizations_t& organizations_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::organizationsToString"));
 
@@ -236,7 +246,8 @@ const std::string RPG_Monster_Common_Tools::organizationsToString(const RPG_Mons
   return result;
 }
 
-const std::string RPG_Monster_Common_Tools::advancementToString(const RPG_Monster_Advancement_t& advancement_in)
+const std::string
+RPG_Monster_Common_Tools::advancementToString(const RPG_Monster_Advancement_t& advancement_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::advancementToString"));
 
@@ -254,7 +265,8 @@ const std::string RPG_Monster_Common_Tools::advancementToString(const RPG_Monste
   return result;
 }
 
-const RPG_Common_PhysicalDamageList_t RPG_Monster_Common_Tools::naturalWeaponToPhysicalDamageType(const RPG_Monster_NaturalWeapon& naturalWeapon_in)
+const RPG_Common_PhysicalDamageList_t
+RPG_Monster_Common_Tools::naturalWeaponToPhysicalDamageType(const RPG_Monster_NaturalWeapon& naturalWeapon_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::naturalWeaponToPhysicalDamageType"));
 
@@ -299,7 +311,6 @@ const RPG_Common_PhysicalDamageList_t RPG_Monster_Common_Tools::naturalWeaponToP
     }
     default:
     {
-      // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid natural weapon: \"%s\", aborting\n"),
                  RPG_Monster_NaturalWeaponHelper::RPG_Monster_NaturalWeaponToString(naturalWeapon_in).c_str()));
@@ -309,4 +320,228 @@ const RPG_Common_PhysicalDamageList_t RPG_Monster_Common_Tools::naturalWeaponToP
   } // end SWITCH
 
   return result;
+}
+
+void
+RPG_Monster_Common_Tools::generateRandomEncounter(const unsigned int& numDifferentMonsterTypes_in,
+                                                  const unsigned int& numMonsters_in,
+                                                  const RPG_Character_Alignment& alignment_in,
+                                                  const RPG_Character_Environment& environment_in,
+                                                  const RPG_Monster_OrganizationSet_t& organizations_in,
+                                                  RPG_Monster_Encounter_t& encounter_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::generateRandomEncounter"));
+
+  // init result
+  encounter_out.clear();
+
+  // sanity check(s)
+  ACE_ASSERT(numDifferentMonsterTypes_in <= RPG_MONSTER_DICTIONARY_SINGLETON::instance()->numEntries());
+  if (numMonsters_in)
+  {
+    ACE_ASSERT(numDifferentMonsterTypes_in <= numMonsters_in);
+  } // end IF
+
+  RPG_Monster_List_t list;
+  RPG_MONSTER_DICTIONARY_SINGLETON::instance()->find(alignment_in,
+                                                     environment_in,
+                                                     organizations_in,
+                                                     list);
+  if (list.empty())
+  {
+    // nothing found in database...
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("found no appropriate monster types (alignment: \"%s\", environment \"%s\", organizations: \"%s\" in dictionary (%u entries), returning\n"),
+               RPG_Character_Common_Tools::alignmentToString(alignment_in).c_str(),
+               RPG_Character_Common_Tools::environmentToString(environment_in).c_str(),
+               RPG_Monster_Common_Tools::organizationsToString(organizations_in).c_str(),
+               RPG_MONSTER_DICTIONARY_SINGLETON::instance()->numEntries()));
+
+    return;
+  } // end IF
+
+  RPG_Dice_RollResult_t result;
+  RPG_Monster_Properties properties;
+  RPG_Monster_OrganizationSet_t possible_organizations;
+  for (unsigned int i = 0;
+       i < numDifferentMonsterTypes_in;
+       i++)
+  {
+    // step2a: choose new random foe (from the set of possibilities)
+    RPG_Monster_EncounterConstIterator_t iterator;
+    int choiceType = 0;
+    do
+    {
+      result.clear();
+      RPG_Dice::generateRandomNumbers(list.size(),
+                                      1,
+                                      result);
+      choiceType = result.front() - 1; // list index
+      // already used this type ?
+      iterator = encounter_out.find(list[choiceType]);
+    } while (iterator != encounter_out.end());
+
+    // step2b: compute number of foes
+    // step2ba: ...choose a (random) organization from the possible ones
+    possible_organizations.clear();
+    properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(list[choiceType]);
+    for (RPG_Monster_OrganizationsIterator_t iterator2 = properties.organizations.begin();
+         iterator2 != properties.organizations.end();
+         iterator2++)
+    {
+      possible_organizations.insert((*iterator2).type);
+    } // end FOR
+    if (organizations_in.find(ORGANIZATION_ANY) == organizations_in.end())
+    {
+      // compute intersection
+      std::vector<RPG_Monster_Organization> intersection;
+      std::set_intersection(organizations_in.begin(),
+                            organizations_in.end(),
+                            possible_organizations.begin(),
+                            possible_organizations.end(),
+                            intersection.begin());
+      possible_organizations.clear();
+      for (std::vector<RPG_Monster_Organization>::const_iterator iterator3 = intersection.begin();
+           iterator3 != intersection.end();
+           iterator3++)
+      {
+        possible_organizations.insert(*iterator3);
+      } // end FOR
+    } // end IF
+
+    result.clear();
+    RPG_Dice::generateRandomNumbers(possible_organizations.size(),
+                                    1,
+                                    result);
+    int choiceOrganization = result.front() - 1; // list index
+    RPG_Monster_OrganizationSetIterator_t iterator2 = possible_organizations.begin();
+    std::advance(iterator2, choiceOrganization);
+    RPG_Monster_OrganizationsIterator_t iterator3 = properties.organizations.begin();
+    while ((*iterator3).type != *iterator2)
+      iterator3++;
+    ACE_ASSERT(iterator3 != properties.organizations.end());
+    RPG_Dice_Roll roll;
+    RPG_Monster_Common_Tools::organizationStepToRoll(*iterator3,
+                                                     roll);
+    result.clear();
+    RPG_Dice::simulateRoll(roll,
+                           1,
+                           result);
+
+    encounter_out.insert(std::make_pair(list[choiceType], result.front()));
+  } // end FOR
+
+  // reduce/increase total number of foes to adjust the result
+  // *NOTE*: this means, however, that the final result doesn't necessarily
+  // correspond to the numbers implied by the requested types of organizations...
+  unsigned int numCurrentFoes = 0;
+  if (numMonsters_in)
+  {
+    for (RPG_Monster_EncounterConstIterator_t iterator = encounter_out.begin();
+         iterator != encounter_out.end();
+         iterator++)
+    {
+      numCurrentFoes += (*iterator).second;
+    } // end FOR
+    RPG_Monster_EncounterIterator_t iterator;
+    int diff = ::abs(numCurrentFoes - numMonsters_in);
+    while (diff)
+    {
+      iterator = encounter_out.begin();
+      result.clear();
+      RPG_Dice::generateRandomNumbers(encounter_out.size(),
+                                      1,
+                                      result);
+      std::advance(iterator, result.front() - 1);
+      if ((*iterator).second) // don't go below 1...
+      {
+        (*iterator).second += ((numCurrentFoes > numMonsters_in) ? -1 : 1);
+        diff--;
+      } // end IF
+    } // end WHILE
+  } // end IF
+
+  numCurrentFoes = 0;
+  int index = 1;
+  for (RPG_Monster_EncounterConstIterator_t iterator = encounter_out.begin();
+       iterator != encounter_out.end();
+       iterator++, index++)
+  {
+    numCurrentFoes += (*iterator).second;
+
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("group #%d: %d %s\n"),
+               index,
+               (*iterator).second,
+               (*iterator).first.c_str()));
+  } // end FOR
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("generated %d foes...\n"),
+             numCurrentFoes));
+}
+
+void
+RPG_Monster_Common_Tools::organizationStepToRoll(const RPG_Monster_OrganizationStep& organizationStep_in,
+                                                 RPG_Dice_Roll& roll_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::organizationStepToRoll"));
+
+  // init result
+  roll_out.numDice = 0;
+  roll_out.typeDice = D_0;
+  roll_out.modifier = 0;
+
+  switch (organizationStep_in.type)
+  {
+    case ORGANIZATION_SOLITARY:
+    {
+      roll_out.modifier = 1;
+
+      break;
+    }
+    case ORGANIZATION_PAIR:
+    {
+      roll_out.modifier = 2;
+
+      break;
+    }
+    case ORGANIZATION_BAND:
+    case ORGANIZATION_BROOD:
+    case ORGANIZATION_COLONY:
+    case ORGANIZATION_CLAN:
+    case ORGANIZATION_CLUSTER:
+    case ORGANIZATION_CLUTCH:
+    case ORGANIZATION_COMPANY:
+    case ORGANIZATION_CROWD:
+    case ORGANIZATION_FLIGHT:
+    case ORGANIZATION_FLOCK:
+    case ORGANIZATION_GANG:
+    case ORGANIZATION_GROUP:
+    case ORGANIZATION_MOB:
+    case ORGANIZATION_PACK:
+    case ORGANIZATION_PATCH:
+    case ORGANIZATION_PRIDE:
+    case ORGANIZATION_SQUAD:
+    case ORGANIZATION_SWARM:
+    case ORGANIZATION_TEAM:
+    case ORGANIZATION_TRIBE:
+    case ORGANIZATION_TROOP:
+    case ORGANIZATION_TROUPE:
+    {
+      RPG_Dice::rangeToRoll(organizationStep_in.range,
+                            roll_out);
+
+      break;
+    }
+    case ORGANIZATION_ANY:
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid organization \"%s\", aborting\n"),
+                 RPG_Monster_OrganizationHelper::RPG_Monster_OrganizationToString(organizationStep_in.type).c_str()));
+
+      break;
+    }
+  } // end SWITCH
 }

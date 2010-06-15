@@ -1,14 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="2" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/rpg_common.xsd" >
-   <View0 Encoding="" line="14" Type="Source" />
-  </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/nethack-3.4.3/src/dogmove.c" >
-   <View0 Encoding="UTF-8" line="810" Type="Source" />
-  </Doc1>
- </DocsAndViews>
+ <DocsAndViews NumberOfDocuments="0" />
  <pluginList>
   <kdevdebugger>
    <breakpointList/>

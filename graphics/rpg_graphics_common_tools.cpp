@@ -308,12 +308,12 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in)
 }
 
 void
-RPG_Graphics_Common_Tools::putGraphic(const unsigned long& offsetX_in,
-                                      const unsigned long& offsetY_in,
-                                      const SDL_Surface& image_in,
-                                      SDL_Surface* targetSurface_in)
+RPG_Graphics_Common_Tools::put(const unsigned long& offsetX_in,
+                               const unsigned long& offsetY_in,
+                               const SDL_Surface& image_in,
+                               SDL_Surface* targetSurface_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::putGraphic"));
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::put"));
 
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);

@@ -46,16 +46,15 @@ class RPG_Monster_Dictionary
                              ACE_Thread_Mutex>;
 
  public:
-  // init item dictionary
-  void initMonsterDictionary(const std::string&,  // filename
-                             const bool& = true); // validate XML ?
-  const RPG_Monster_Properties getMonsterProperties(const std::string&) const; // name of monster
-  void generateRandomEncounter(const unsigned int&,                   // # of different monster types
-                               const unsigned int&,                   // total # of foes (0: random)
-                               const RPG_Character_Alignment&,        // alignment
-                               const RPG_Character_Environment&,      // environment
-                               const RPG_Monster_OrganizationList_t&, // allowed organizations
-                               RPG_Monster_Encounter_t&) const;       // return value: encounter
+  // init dictionary
+  void init(const std::string&,  // (XML) dictionary filename
+            const bool& = true); // validate XML ?
+  const RPG_Monster_Properties getProperties(const std::string&) const; // name of monster
+  const unsigned long numEntries() const;
+  void find(const RPG_Character_Alignment&,       // alignment
+            const RPG_Character_Environment&,     // environment
+            const RPG_Monster_OrganizationSet_t&, // organization(s)
+            RPG_Monster_List_t&) const;           // return value: compatible types
 
   // debug info
   void dump() const;
@@ -80,12 +79,13 @@ class RPG_Monster_Dictionary
   };
 
   // helper methods
-  void organizationStepToRoll(const RPG_Monster_OrganizationStep&, // organization step
-                              RPG_Dice_Roll&) const;               // return value: roll
   const bool environmentMatches(const RPG_Character_Environment&,        // a
                                 const RPG_Character_Environment&) const; // b
   const bool alignmentMatches(const RPG_Character_Alignment&,        // a
                               const RPG_Character_Alignment&) const; // b
+
+  // helper types
+  typedef RPG_Monster_Dictionary_t::const_iterator RPG_Monster_DictionaryConstIterator_t;
 
   RPG_Monster_Dictionary_t myMonsterDictionary;
   XSD_Error_Handler        myXSDErrorHandler;

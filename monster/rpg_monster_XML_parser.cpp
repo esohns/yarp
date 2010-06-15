@@ -51,7 +51,6 @@ void RPG_Monster_Dictionary_Type::post_RPG_Monster_Dictionary_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary_Type::post_RPG_Monster_Dictionary_Type"));
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished parsing monster dictionary, retrieved %d monster types...\n"),
              myMonsterDictionary->size()));

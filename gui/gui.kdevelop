@@ -21,7 +21,7 @@
   <kdevautoproject>
     <general>
       <activetarget>RPG_client_gui</activetarget>
-      <useconfiguration>debug</useconfiguration>
+      <useconfiguration>optimized</useconfiguration>
     </general>
     <run>
       <runarguments>

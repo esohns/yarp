@@ -37,9 +37,17 @@
   <xsd:simpleType name="RPG_Sound_Event_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="EVENT_MAIN_TITLE"/>
+      <xsd:enumeration value="EVENT_BELL"/>
+      <xsd:enumeration value="EVENT_CONDITION_ILL"/>
+      <xsd:enumeration value="EVENT_CONDITION_WEAK"/>
+      <xsd:enumeration value="EVENT_COUNTING"/>
+      <xsd:enumeration value="EVENT_DOOR_CLOSE"/>
+      <xsd:enumeration value="EVENT_DOOR_OPEN"/>
+      <xsd:enumeration value="EVENT_FOUNTAIN"/>
+      <xsd:enumeration value="EVENT_SWORD_HIT"/>
+      <xsd:enumeration value="EVENT_SWORD_MISS"/>
       <xsd:enumeration value="EVENT_WALK"/>
-      <xsd:enumeration value="EVENT_HIT"/>
-      <xsd:enumeration value="EVENT_MISS"/>
+      <xsd:enumeration value="EVENT_XP_LEVELUP"/>
     </xsd:restriction>
   </xsd:simpleType>
 

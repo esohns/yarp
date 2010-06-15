@@ -1010,7 +1010,7 @@ is_player_miss:
     // step1a: get monster properties
     const RPG_Character_Monster* monster = ACE_dynamic_cast(const RPG_Character_Monster*, attacker_in);
     ACE_ASSERT(monster);
-    RPG_Monster_Properties monster_properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getMonsterProperties(monster->getName());
+    RPG_Monster_Properties monster_properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(monster->getName());
 
     // step1b: compute target AC
     // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier [+ other modifiers]

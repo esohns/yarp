@@ -12,17 +12,57 @@
   </sound>
   <sound>
     <category>CATEGORY_EFFECT_ONESHOT</category>
+    <event>EVENT_BELL</event>
+    <file>sound_bell.ogg</file>
+  </sound>
+  <sound>
+    <category>CATEGORY_EFFECT_ONESHOT</category>
+    <event>EVENT_CONDITION_ILL</event>
+    <file>sound_condition_ill.ogg</file>
+  </sound>
+  <sound>
+    <category>CATEGORY_EFFECT_ONESHOT</category>
+    <event>EVENT_CONDITION_WEAK</event>
+    <file>sound_condition_weak.ogg</file>
+  </sound>
+  <sound>
+    <category>CATEGORY_EFFECT_ONESHOT</category>
+    <event>EVENT_COUNTING</event>
+    <file>sound_counting.ogg</file>
+  </sound>
+  <sound>
+    <category>CATEGORY_EFFECT_ONESHOT</category>
+    <event>EVENT_DOOR_CLOSE</event>
+    <file>sound_door_close.ogg</file>
+  </sound>
+  <sound>
+    <category>CATEGORY_EFFECT_ONESHOT</category>
+    <event>EVENT_DOOR_OPEN</event>
+    <file>sound_door_open.ogg</file>
+  </sound>
+  <sound>
+    <category>CATEGORY_EFFECT_ONESHOT</category>
+    <event>EVENT_FOUNTAIN</event>
+    <file>sound_fountain.ogg</file>
+  </sound>
+  <sound>
+    <category>CATEGORY_EFFECT_ONESHOT</category>
+    <event>EVENT_SWORD_HIT</event>
+    <file>sound_sword_hit.ogg</file>
+  </sound>
+  <sound>
+    <category>CATEGORY_EFFECT_ONESHOT</category>
+    <event>EVENT_SWORD_MISS</event>
+    <file>sound_sword_miss.ogg</file>
+  </sound>
+  <sound>
+    <category>CATEGORY_EFFECT_ONESHOT</category>
     <event>EVENT_WALK</event>
     <file>sound_walk.ogg</file>
   </sound>
   <sound>
     <category>CATEGORY_EFFECT_ONESHOT</category>
-    <event>EVENT_HIT</event>
-    <file>sound_swordhit.ogg</file>
-  </sound>
-  <sound>
-    <category>CATEGORY_EFFECT_ONESHOT</category>
-    <event>EVENT_MISS</event>
-    <file>sound_swordmiss.ogg</file>
+    <event>EVENT_XP_LEVELUP</event>
+    <file>sound_xp_levelup.ogg</file>
   </sound>
 </soundDictionary>

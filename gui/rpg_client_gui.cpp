@@ -1025,10 +1025,10 @@ do_runIntro()
   } // end IF
   // *TODO* stretch this image fullscreen
   // center logo image
-  RPG_Graphics_Common_Tools::putGraphic((screen->w - logo->w) / 2, // location x
-                                        (screen->h - logo->h) / 2, // location y
-                                        *logo,
-                                        screen);
+  RPG_Graphics_Common_Tools::put((screen->w - logo->w) / 2, // location x
+                                 (screen->h - logo->h) / 2, // location y
+                                 *logo,
+                                 screen);
   RPG_Graphics_Common_Tools::fade(true,                                   // fade in
                                   5.0,                                    // interval
                                   RPG_Graphics_Common_Tools::CLR32_BLACK, // fade from black
@@ -1558,10 +1558,10 @@ ACE_TMAIN(int argc_in,
                     config);
 
   // step2a: init SDL
-  if (SDL_Init(SDL_INIT_VIDEO |
+  if (SDL_Init(SDL_INIT_TIMER | // timers
                SDL_INIT_AUDIO |
+               SDL_INIT_VIDEO |
                SDL_INIT_CDROM | // audioCD playback
-               SDL_INIT_TIMER | // timers
                SDL_INIT_NOPARACHUTE) == -1) // "...Prevents SDL from catching fatal signals..."
   {
     ACE_DEBUG((LM_ERROR,

@@ -161,16 +161,16 @@ void do_work(const std::string& filename_in,
     // step 1a: init ruleset
   RPG_Character_Skills_Common_Tools::init();
 
-  // step2: init character dictionary
+  // step2: init monster dictionary
   try
   {
-    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->initMonsterDictionary(filename_in,
-                                                                        validateXML_in);
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init(filename_in,
+                                                       validateXML_in);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Monster_Dictionary::initMonsterDictionary, returning\n")));
+               ACE_TEXT("caught exception in RPG_Monster_Dictionary::init(), returning\n")));
 
     return;
   }
