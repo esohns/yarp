@@ -37,14 +37,14 @@
 #include <sstream>
 #include <iostream>
 
-#define MAP_GENERATOR_DEF_MIN_ROOMSIZE       0
-#define MAP_GENERATOR_DEF_CORRIDORS          true
-#define MAP_GENERATOR_DEF_MAX_DOORS_PER_ROOM 3
-#define MAP_GENERATOR_DEF_MAX_ROOMSIZE       true
-#define MAP_GENERATOR_DEF_NUM_ROOMS          5
-#define MAP_GENERATOR_DEF_SQUARE_ROOMS       true
-#define MAP_GENERATOR_DEF_DIMENSION_X        80
-#define MAP_GENERATOR_DEF_DIMENSION_Y        40
+#define MAP_GENERATOR_DEF_MIN_ROOMSIZE          0
+#define MAP_GENERATOR_DEF_CORRIDORS             true
+#define MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_AREA 3
+#define MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE     true
+#define MAP_GENERATOR_DEF_NUM_AREAS             5
+#define MAP_GENERATOR_DEF_SQUARE_ROOMS          true
+#define MAP_GENERATOR_DEF_DIMENSION_X           80
+#define MAP_GENERATOR_DEF_DIMENSION_Y           40
 
 void print_usage(const std::string& programName_in)
 {
@@ -57,9 +57,9 @@ void print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-a<[VALUE]> : enforce minimum room-size") << ACE_TEXT(" [") << (MAP_GENERATOR_DEF_MIN_ROOMSIZE == 0) << ACE_TEXT(" : ") << MAP_GENERATOR_DEF_MIN_ROOMSIZE << ACE_TEXT("; 0:off]") << std::endl;
   std::cout << ACE_TEXT("-c          : corridor(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_CORRIDORS << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-d<[VALUE]> : enforce maximum #doors/room") << ACE_TEXT(" [") << (MAP_GENERATOR_DEF_MAX_DOORS_PER_ROOM == 0) << ACE_TEXT(" : ") << MAP_GENERATOR_DEF_MAX_DOORS_PER_ROOM << ACE_TEXT("; 0:off]") << std::endl;
-  std::cout << ACE_TEXT("-m          : maximize room-size(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_MAX_ROOMSIZE << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-r [VALUE]  : #rooms") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_NUM_ROOMS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-d<[VALUE]> : enforce maximum #doors/area") << ACE_TEXT(" [") << (MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_AREA == 0) << ACE_TEXT(" : ") << MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_AREA << ACE_TEXT("; 0:off]") << std::endl;
+  std::cout << ACE_TEXT("-m          : maximize room-size(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-r [VALUE]  : #areas") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_NUM_AREAS << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s          : square room(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_SQUARE_ROOMS << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << std::endl;
@@ -71,9 +71,9 @@ const bool process_arguments(const int argc_in,
                              ACE_TCHAR* argv_in[], // cannot be const...
                              unsigned long& minRoomSize_out,
                              bool& corridors_out,
-                             unsigned long& maxDoorsPerRoom_out,
-                             bool& maxRoomSize_out,
-                             unsigned long& numRooms_out,
+                             unsigned long& maxNumDoorsPerArea_out,
+                             bool& maximizeRoomSize_out,
+                             unsigned long& numAreas_out,
                              bool& squareRooms_out,
                              bool& traceInformation_out,
                              bool& printVersionAndExit_out,
@@ -85,9 +85,9 @@ const bool process_arguments(const int argc_in,
   // init results
   minRoomSize_out = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
   corridors_out = MAP_GENERATOR_DEF_CORRIDORS;
-  maxDoorsPerRoom_out = MAP_GENERATOR_DEF_MAX_DOORS_PER_ROOM;
-  maxRoomSize_out = MAP_GENERATOR_DEF_MAX_ROOMSIZE;
-  numRooms_out = MAP_GENERATOR_DEF_NUM_ROOMS;
+  maxNumDoorsPerArea_out = MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_AREA;
+  maximizeRoomSize_out = MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE;
+  numAreas_out = MAP_GENERATOR_DEF_NUM_AREAS;
   squareRooms_out = MAP_GENERATOR_DEF_SQUARE_ROOMS;
   traceInformation_out = false;
   printVersionAndExit_out = false;
@@ -127,13 +127,13 @@ const bool process_arguments(const int argc_in,
         converter << argumentParser.opt_arg();
         converter >> temp;
         if (temp == -1)
-          maxDoorsPerRoom_out = std::numeric_limits<unsigned long>::max();
+          maxNumDoorsPerArea_out = std::numeric_limits<unsigned long>::max();
 
         break;
       }
       case 'm':
       {
-        maxRoomSize_out = true;
+        maximizeRoomSize_out = true;
 
         break;
       }
@@ -142,7 +142,7 @@ const bool process_arguments(const int argc_in,
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
-        converter >> numRooms_out;
+        converter >> numAreas_out;
 
         break;
       }
@@ -221,6 +221,7 @@ void do_work(const unsigned long& minRoomSize_in,
   RPG_Dice_Common_Tools::initStringConversionTables();
 
   // step2: generate random dungeon map
+  RPG_Map_Positions_t seedPoints;
   RPG_Map_FloorPlan_t levelMap;
   RPG_Map_Common_Tools::createFloorPlan(dimensionX_in,
                                         dimensionY_in,
@@ -231,6 +232,7 @@ void do_work(const unsigned long& minRoomSize_in,
                                         corridors_in,
                                         true, // doors fill a position
                                         maxDoorsPerRoom_in,
+                                        seedPoints,
                                         levelMap);
 
   // step3: display the result
@@ -296,25 +298,25 @@ int ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  unsigned long minRoomSize     = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
-  bool corridors                = MAP_GENERATOR_DEF_CORRIDORS;
-  unsigned long maxDoorsPerRoom = MAP_GENERATOR_DEF_MAX_DOORS_PER_ROOM;
-  bool maxRoomSize              = MAP_GENERATOR_DEF_MAX_ROOMSIZE;
-  unsigned long numRooms        = MAP_GENERATOR_DEF_NUM_ROOMS;
-  bool squareRooms              = MAP_GENERATOR_DEF_SQUARE_ROOMS;
-  bool traceInformation         = false;
-  bool printVersionAndExit      = false;
-  unsigned long dimension_X     = MAP_GENERATOR_DEF_DIMENSION_X;
-  unsigned long dimension_Y     = MAP_GENERATOR_DEF_DIMENSION_Y;
+  unsigned long minRoomSize        = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
+  bool corridors                   = MAP_GENERATOR_DEF_CORRIDORS;
+  unsigned long maxNumDoorsPerArea = MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_AREA;
+  bool maximizeRoomSize            = MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE;
+  unsigned long numAreas           = MAP_GENERATOR_DEF_NUM_AREAS;
+  bool squareRooms                 = MAP_GENERATOR_DEF_SQUARE_ROOMS;
+  bool traceInformation            = false;
+  bool printVersionAndExit         = false;
+  unsigned long dimension_X        = MAP_GENERATOR_DEF_DIMENSION_X;
+  unsigned long dimension_Y        = MAP_GENERATOR_DEF_DIMENSION_Y;
 
   // step1ba: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
                           minRoomSize,
                           corridors,
-                          maxDoorsPerRoom,
-                          maxRoomSize,
-                          numRooms,
+                          maxNumDoorsPerArea,
+                          maximizeRoomSize,
+                          numAreas,
                           squareRooms,
                           traceInformation,
                           printVersionAndExit,
@@ -328,10 +330,10 @@ int ACE_TMAIN(int argc,
   } // end IF
 
   // step1bb: validate arguments
-  if ((numRooms == 0) ||
+  if ((numAreas == 0) ||
       (dimension_X == 0) ||
       (dimension_Y == 0) ||
-      (maxDoorsPerRoom == 1)) // cannot enforce this !
+      (maxNumDoorsPerArea == 1)) // cannot enforce this (just think about it !)
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid argument(s), aborting\n")));
@@ -382,9 +384,9 @@ int ACE_TMAIN(int argc,
   // step2: do actual work
   do_work(minRoomSize,
           corridors,
-          maxDoorsPerRoom,
-          maxRoomSize,
-          numRooms,
+          maxNumDoorsPerArea,
+          maximizeRoomSize,
+          numAreas,
           squareRooms,
           dimension_X,
           dimension_Y);

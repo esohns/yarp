@@ -51,9 +51,9 @@
 
 #define RPG_CLIENT_DEF_MAP_MIN_ROOM_AREA          0 // 0: don't care
 #define RPG_CLIENT_DEF_MAP_CORRIDORS              true
-#define RPG_CLIENT_DEF_MAP_MAX_NUM_DOORS_PER_ROOM 3
+#define RPG_CLIENT_DEF_MAP_MAX_NUM_DOORS_PER_AREA 3
 #define RPG_CLIENT_DEF_MAP_MAXIMIZE_ROOMS         true
-#define RPG_CLIENT_DEF_MAP_NUM_ROOMS              5
+#define RPG_CLIENT_DEF_MAP_NUM_AREAS              5
 #define RPG_CLIENT_DEF_MAP_SQUARE_ROOMS           true
 #define RPG_CLIENT_DEF_MAP_SIZE_X                 80
 #define RPG_CLIENT_DEF_MAP_SIZE_Y                 40

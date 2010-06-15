@@ -55,9 +55,9 @@ struct map_config_t
 {
   unsigned long min_room_area; // 0: don't care
   bool          corridors;
-  unsigned long max_num_doors_per_room;
+  unsigned long max_num_doors_per_area;
   bool          maximize_rooms;
-  unsigned long num_rooms;
+  unsigned long num_areas;
   bool          square_rooms;
   unsigned long map_size_x;
   unsigned long map_size_y;

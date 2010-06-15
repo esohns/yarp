@@ -36,13 +36,14 @@ class RPG_Map_Common_Tools
  public:
   static void createFloorPlan(const unsigned long&,  // map dimension x
                               const unsigned long&,  // map dimension y
-                              const unsigned long&,  // #rooms
+                              const unsigned long&,  // #areas (== "rooms")
                               const bool&,           // rooms to be square ?
-                              const bool&,           // maximize area ?
-                              const unsigned long&,  // min. area (0: don't care)
-                              const bool&,           // want corridors between rooms ?
+                              const bool&,           // maximize rooms ?
+                              const unsigned long&,  // min. room area (0: don't care)
+                              const bool&,           // want corridors (between rooms) ?
                               const bool&,           // doors to fill positions ?
-                              const unsigned long&,  // max. #doors/room
+                              const unsigned long&,  // max. #doors/area (== "room")
+                              RPG_Map_Positions_t&,  // return value: seed points (areas)
                               RPG_Map_FloorPlan_t&); // return value: doors & walls
   static void displayFloorPlan(const RPG_Map_FloorPlan_t&); // doors & walls
 
@@ -70,11 +71,14 @@ class RPG_Map_Common_Tools
   static void makePartition(const unsigned long&,  // dimension x
                             const unsigned long&,  // dimension y
                             const unsigned long&,  // #partitions
+                            const bool&,           // resolve conflicts ?
+                            RPG_Map_Positions_t&,  // return value: conflicts
+                            RPG_Map_Positions_t&,  // return value: seed points
                             RPG_Map_Partition_t&); // return value: partition
   static void displayPartition(const unsigned long&,        // dimension x
                                const unsigned long&,        // dimension y
-                               const RPG_Map_Positions_t&,  // seed points
                                const RPG_Map_Positions_t&,  // conflicts
+                               const RPG_Map_Positions_t&,  // seed points
                                const RPG_Map_Partition_t&); // partition
 
   typedef std::list<RPG_Map_Zone_t> RPG_Map_ZoneList_t;
@@ -99,8 +103,8 @@ class RPG_Map_Common_Tools
                         const bool&,                // rooms to be square ?
                         const bool&,                // want room separation ?
                         const bool&,                // crop areas ?
-                        const bool&,                // maximize area ?
-                        const unsigned long&,       // min. area (0: don't care)
+                        const bool&,                // maximize rooms ?
+                        const unsigned long&,       // min. room area (0: don't care)
                         RPG_Map_ZoneList_t&,        // return value: room(s)
                         RPG_Map_ZoneList_t&);       // return value: boundary(s)
   static void displayRooms(const unsigned long&,       // dimension x
@@ -142,7 +146,7 @@ class RPG_Map_Common_Tools
                            const RPG_Map_ZoneList_t&, // room(s) // *TODO*: faster in/out tests ?
                            const bool&,               // want corridors ?
                            const bool&,               // doors to fill positions ?
-                           const unsigned long&,      // max. #doors/room
+                           const unsigned long&,      // max. #doors/area
                            RPG_Map_FloorPlan_t&);     // return value: doors & walls
 };
 

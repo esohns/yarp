@@ -1107,16 +1107,18 @@ do_work(const RPG_Client_Config& config_in)
   do_runIntro();
 
   // step4: setup map
+  RPG_Map_Positions_t seedPoints;
   RPG_Map_FloorPlan_t floorPlan;
   RPG_Map_Common_Tools::createFloorPlan(config_in.map_config.map_size_x,
                                         config_in.map_config.map_size_y,
-                                        config_in.map_config.num_rooms,
+                                        config_in.map_config.num_areas,
                                         config_in.map_config.square_rooms,
                                         config_in.map_config.maximize_rooms,
                                         config_in.map_config.min_room_area,
                                         config_in.map_config.corridors,
                                         true, // *NOTE*: currently, doors fill one position
-                                        config_in.map_config.max_num_doors_per_room,
+                                        config_in.map_config.max_num_doors_per_area,
+                                        seedPoints,
                                         floorPlan);
   RPG_Map_Common_Tools::displayFloorPlan(floorPlan);
   RPG_Map_Level level(floorPlan);
@@ -1529,9 +1531,9 @@ ACE_TMAIN(int argc_in,
   config.graphics_dictionary               = graphicsDictionary;
   config.map_config.min_room_area          = RPG_CLIENT_DEF_MAP_MIN_ROOM_AREA;
   config.map_config.corridors              = RPG_CLIENT_DEF_MAP_CORRIDORS;
-  config.map_config.max_num_doors_per_room = RPG_CLIENT_DEF_MAP_MAX_NUM_DOORS_PER_ROOM;
+  config.map_config.max_num_doors_per_area = RPG_CLIENT_DEF_MAP_MAX_NUM_DOORS_PER_AREA;
   config.map_config.maximize_rooms         = RPG_CLIENT_DEF_MAP_MAXIMIZE_ROOMS;
-  config.map_config.num_rooms              = RPG_CLIENT_DEF_MAP_NUM_ROOMS;
+  config.map_config.num_areas              = RPG_CLIENT_DEF_MAP_NUM_AREAS;
   config.map_config.square_rooms           = RPG_CLIENT_DEF_MAP_SQUARE_ROOMS;
   config.map_config.map_size_x             = RPG_CLIENT_DEF_MAP_SIZE_X;
   config.map_config.map_size_y             = RPG_CLIENT_DEF_MAP_SIZE_Y;
