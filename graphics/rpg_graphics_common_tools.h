@@ -61,9 +61,16 @@ class RPG_Graphics_Common_Tools
   static void init(const std::string&,      // graphics directory
                    const unsigned long&);   // cache size
   static void fini();
-  static SDL_Surface* loadGraphic(const RPG_Graphics_Type&); // graphic
-  static void put(const unsigned long&, // offset x (upper left == 0,0)
-                  const unsigned long&, // offset y (upper left == 0,0)
+  // *NOTE*: uncached surfaces need to be SDL_FreeSurface()ed by the user !
+  static SDL_Surface* loadGraphic(const RPG_Graphics_Type&, // graphic
+                                  const bool& = true);      // cache graphic ?
+  static SDL_Surface* get(const unsigned long&, // top-left x (top left == 0,0)
+                          const unsigned long&, // top-left y (top left == 0,0)
+                          const unsigned long&, // bottom-right x (top left == 0,0)
+                          const unsigned long&, // bottom-right y (top left == 0,0)
+                          const SDL_Surface*);  // image
+  static void put(const unsigned long&, // offset x (top left == 0,0)
+                  const unsigned long&, // offset y (top left == 0,0)
                   const SDL_Surface&,   // image
                   SDL_Surface*);        // target surface (screen)
   // *NOTE*: source/target image must already be loaded into the framebuffer !

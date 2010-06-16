@@ -26,6 +26,7 @@
 #ifndef RPG_GRAPHICS_INCL_H
 #define RPG_GRAPHICS_INCL_H
 
+#include <vector>
 #include "rpg_graphics_category.h"
 #include "rpg_graphics_tileorientation.h"
 #include "rpg_graphics_floorstyle.h"
@@ -34,6 +35,9 @@
 #include "rpg_graphics_doorstyle.h"
 #include "rpg_graphics_styleunion.h"
 #include "rpg_graphics_type.h"
+#include "rpg_graphics_interfaceelementtype.h"
+#include "rpg_graphics_elementtypeunion.h"
+#include "rpg_graphics_element.h"
 #include "rpg_graphics_graphic.h"
 
 #endif

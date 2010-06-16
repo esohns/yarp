@@ -38,6 +38,63 @@
 
 #include "rpg_graphics_XML_types.h"
 
+// RPG_Graphics_Element_Type_pskel
+//
+
+void RPG_Graphics_Element_Type_pskel::
+type_parser (::RPG_Graphics_ElementTypeUnion_Type_pskel& p)
+{
+  this->type_parser_ = &p;
+}
+
+void RPG_Graphics_Element_Type_pskel::
+offsetX_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->offsetX_parser_ = &p;
+}
+
+void RPG_Graphics_Element_Type_pskel::
+offsetY_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->offsetY_parser_ = &p;
+}
+
+void RPG_Graphics_Element_Type_pskel::
+width_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->width_parser_ = &p;
+}
+
+void RPG_Graphics_Element_Type_pskel::
+height_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->height_parser_ = &p;
+}
+
+void RPG_Graphics_Element_Type_pskel::
+parsers (::RPG_Graphics_ElementTypeUnion_Type_pskel& type,
+         ::xml_schema::unsigned_int_pskel& offsetX,
+         ::xml_schema::unsigned_int_pskel& offsetY,
+         ::xml_schema::unsigned_int_pskel& width,
+         ::xml_schema::unsigned_int_pskel& height)
+{
+  this->type_parser_ = &type;
+  this->offsetX_parser_ = &offsetX;
+  this->offsetY_parser_ = &offsetY;
+  this->width_parser_ = &width;
+  this->height_parser_ = &height;
+}
+
+RPG_Graphics_Element_Type_pskel::
+RPG_Graphics_Element_Type_pskel ()
+: type_parser_ (0),
+  offsetX_parser_ (0),
+  offsetY_parser_ (0),
+  width_parser_ (0),
+  height_parser_ (0)
+{
+}
+
 // RPG_Graphics_Graphic_Type_pskel
 //
 
@@ -66,6 +123,12 @@ style_parser (::RPG_Graphics_StyleUnion_Type_pskel& p)
 }
 
 void RPG_Graphics_Graphic_Type_pskel::
+element_parser (::RPG_Graphics_Element_Type_pskel& p)
+{
+  this->element_parser_ = &p;
+}
+
+void RPG_Graphics_Graphic_Type_pskel::
 file_parser (::xml_schema::string_pskel& p)
 {
   this->file_parser_ = &p;
@@ -76,12 +139,14 @@ parsers (::RPG_Graphics_Category_Type_pskel& category,
          ::RPG_Graphics_Type_Type_pskel& type,
          ::RPG_Graphics_TileOrientation_Type_pskel& orientation,
          ::RPG_Graphics_StyleUnion_Type_pskel& style,
+         ::RPG_Graphics_Element_Type_pskel& element,
          ::xml_schema::string_pskel& file)
 {
   this->category_parser_ = &category;
   this->type_parser_ = &type;
   this->orientation_parser_ = &orientation;
   this->style_parser_ = &style;
+  this->element_parser_ = &element;
   this->file_parser_ = &file;
 }
 
@@ -91,6 +156,7 @@ RPG_Graphics_Graphic_Type_pskel ()
   type_parser_ (0),
   orientation_parser_ (0),
   style_parser_ (0),
+  element_parser_ (0),
   file_parser_ (0)
 {
 }
@@ -116,6 +182,147 @@ RPG_Graphics_Dictionary_Type_pskel ()
 {
 }
 
+// RPG_Graphics_Element_Type_pskel
+//
+
+void RPG_Graphics_Element_Type_pskel::
+type (const RPG_Graphics_ElementTypeUnion&)
+{
+}
+
+void RPG_Graphics_Element_Type_pskel::
+offsetX (unsigned int)
+{
+}
+
+void RPG_Graphics_Element_Type_pskel::
+offsetY (unsigned int)
+{
+}
+
+void RPG_Graphics_Element_Type_pskel::
+width (unsigned int)
+{
+}
+
+void RPG_Graphics_Element_Type_pskel::
+height (unsigned int)
+{
+}
+
+bool RPG_Graphics_Element_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
+
+    if (this->type_parser_)
+      this->type_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "offsetX" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->offsetX_parser_;
+
+    if (this->offsetX_parser_)
+      this->offsetX_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "offsetY" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->offsetY_parser_;
+
+    if (this->offsetY_parser_)
+      this->offsetY_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "width" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->width_parser_;
+
+    if (this->width_parser_)
+      this->width_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "height" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->height_parser_;
+
+    if (this->height_parser_)
+      this->height_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Graphics_Element_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    if (this->type_parser_)
+      this->type (this->type_parser_->post_RPG_Graphics_ElementTypeUnion_Type ());
+
+    return true;
+  }
+
+  if (n == "offsetX" && ns == "urn:rpg")
+  {
+    if (this->offsetX_parser_)
+      this->offsetX (this->offsetX_parser_->post_unsigned_int ());
+
+    return true;
+  }
+
+  if (n == "offsetY" && ns == "urn:rpg")
+  {
+    if (this->offsetY_parser_)
+      this->offsetY (this->offsetY_parser_->post_unsigned_int ());
+
+    return true;
+  }
+
+  if (n == "width" && ns == "urn:rpg")
+  {
+    if (this->width_parser_)
+      this->width (this->width_parser_->post_unsigned_int ());
+
+    return true;
+  }
+
+  if (n == "height" && ns == "urn:rpg")
+  {
+    if (this->height_parser_)
+      this->height (this->height_parser_->post_unsigned_int ());
+
+    return true;
+  }
+
+  return false;
+}
+
 // RPG_Graphics_Graphic_Type_pskel
 //
 
@@ -136,6 +343,11 @@ orientation (const RPG_Graphics_TileOrientation&)
 
 void RPG_Graphics_Graphic_Type_pskel::
 style (const RPG_Graphics_StyleUnion&)
+{
+}
+
+void RPG_Graphics_Graphic_Type_pskel::
+element (const RPG_Graphics_Element&)
 {
 }
 
@@ -194,6 +406,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "element" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->element_parser_;
+
+    if (this->element_parser_)
+      this->element_parser_->pre ();
+
+    return true;
+  }
+
   if (n == "file" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->file_parser_;
@@ -242,6 +464,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->style_parser_)
       this->style (this->style_parser_->post_RPG_Graphics_StyleUnion_Type ());
+
+    return true;
+  }
+
+  if (n == "element" && ns == "urn:rpg")
+  {
+    if (this->element_parser_)
+      this->element (this->element_parser_->post_RPG_Graphics_Element_Type ());
 
     return true;
   }

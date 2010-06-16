@@ -1,13 +1,16 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="2" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/magic/rpg_magic_XML_parser.h" >
-   <View0 Encoding="" line="32" Type="Source" />
+ <DocsAndViews NumberOfDocuments="3" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/magic/rpg_magic.map" >
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/magic/rpg_magic.map" >
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/magic/rpg_magic.xml" >
    <View0 Encoding="" line="0" Type="Source" />
   </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/magic/rpg_magic.xsd" >
+   <View0 Encoding="" line="0" Type="Source" />
+  </Doc2>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
@@ -15,9 +18,10 @@
    <showInternalCommands value="0" />
   </kdevdebugger>
   <kdevfilelist>
-   <projectview name="RPG_Magic Spells" >
-    <file line="220" url="rpg_magic.xsd" col="43" encoding="" />
-    <file line="26" url="rpg_magic.xml" col="15" encoding="" />
+   <projectview name="XML Schema" >
+    <file line="0" url="rpg_magic.map" col="0" encoding="" />
+    <file line="0" url="rpg_magic.xml" col="0" encoding="" />
+    <file line="0" url="rpg_magic.xsd" col="0" encoding="" />
    </projectview>
    <defaultview name="" />
   </kdevfilelist>

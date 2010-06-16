@@ -2,14 +2,17 @@ namespace urn:rpg
 {
   include "rpg_graphics_incl.h";
 
-  RPG_Graphics_Category_Type        RPG_Graphics_Category;
-  RPG_Graphics_TileOrientation_Type RPG_Graphics_TileOrientation;
-  RPG_Graphics_FloorStyle_Type      RPG_Graphics_FloorStyle;
-  RPG_Graphics_StairsStyle_Type     RPG_Graphics_StairsStyle;
-  RPG_Graphics_WallStyle_Type       RPG_Graphics_WallStyle;
-  RPG_Graphics_DoorStyle_Type       RPG_Graphics_DoorStyle;
-  RPG_Graphics_StyleUnion_Type      RPG_Graphics_StyleUnion;
-  RPG_Graphics_Type_Type            RPG_Graphics_Type;
-  RPG_Graphics_Graphic_Type         RPG_Graphics_Graphic;
-#  RPG_Graphics_Dictionary_Type     RPG_Graphics_Dictionary;
+  RPG_Graphics_Category_Type             RPG_Graphics_Category;
+  RPG_Graphics_TileOrientation_Type      RPG_Graphics_TileOrientation;
+  RPG_Graphics_FloorStyle_Type           RPG_Graphics_FloorStyle;
+  RPG_Graphics_StairsStyle_Type          RPG_Graphics_StairsStyle;
+  RPG_Graphics_WallStyle_Type            RPG_Graphics_WallStyle;
+  RPG_Graphics_DoorStyle_Type            RPG_Graphics_DoorStyle;
+  RPG_Graphics_StyleUnion_Type           RPG_Graphics_StyleUnion;
+  RPG_Graphics_Type_Type                 RPG_Graphics_Type;
+  RPG_Graphics_InterfaceElementType_Type RPG_Graphics_InterfaceElementType;
+  RPG_Graphics_ElementTypeUnion_Type     RPG_Graphics_ElementTypeUnion;
+  RPG_Graphics_Element_Type              RPG_Graphics_Element;
+  RPG_Graphics_Graphic_Type              RPG_Graphics_Graphic;
+#  RPG_Graphics_Dictionary_Type          RPG_Graphics_Dictionary;
 }

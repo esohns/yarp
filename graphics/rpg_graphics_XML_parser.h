@@ -105,6 +105,47 @@ class RPG_Graphics_Type_Type
   virtual RPG_Graphics_Type post_RPG_Graphics_Type_Type();
 };
 
+class RPG_Graphics_InterfaceElementType_Type
+ : public RPG_Graphics_InterfaceElementType_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Graphics_InterfaceElementType post_RPG_Graphics_InterfaceElementType_Type();
+};
+
+class RPG_Graphics_ElementTypeUnion_Type
+ : public RPG_Graphics_ElementTypeUnion_Type_pskel
+{
+ public:
+  RPG_Graphics_ElementTypeUnion_Type();
+
+//   virtual void pre();
+  virtual void _characters(const ::xml_schema::ro_string&);
+  virtual RPG_Graphics_ElementTypeUnion post_RPG_Graphics_ElementTypeUnion_Type();
+
+ private:
+  RPG_Graphics_ElementTypeUnion myCurrentElementType;
+};
+
+class RPG_Graphics_Element_Type
+ : public RPG_Graphics_Element_Type_pskel
+{
+ public:
+  RPG_Graphics_Element_Type();
+
+//     virtual void pre();
+  virtual void type(const RPG_Graphics_ElementTypeUnion&);
+  virtual void offsetX(unsigned int);
+  virtual void offsetY(unsigned int);
+  virtual void width(unsigned int);
+  virtual void height(unsigned int);
+  virtual RPG_Graphics_Element post_RPG_Graphics_Element_Type();
+
+ private:
+  RPG_Graphics_Element myCurrentElement;
+};
+
 class RPG_Graphics_Graphic_Type
  : public RPG_Graphics_Graphic_Type_pskel
 {
@@ -116,6 +157,7 @@ class RPG_Graphics_Graphic_Type
   virtual void type(const RPG_Graphics_Type&);
   virtual void orientation(const RPG_Graphics_TileOrientation&);
   virtual void style(const RPG_Graphics_StyleUnion&);
+  virtual void element(const RPG_Graphics_Element&);
   virtual void file(const ::std::string&);
   virtual RPG_Graphics_Graphic post_RPG_Graphics_Graphic_Type();
 

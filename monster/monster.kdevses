@@ -3,7 +3,7 @@
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="3" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster.xsd" >
-   <View0 Encoding="" line="0" Type="Source" />
+   <View0 Encoding="" line="281" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster.xml" >
    <View0 Encoding="" line="0" Type="Source" />
@@ -18,9 +18,9 @@
    <showInternalCommands value="0" />
   </kdevdebugger>
   <kdevfilelist>
-   <projectview name="Monster dictionary" >
-    <file line="0" url="rpg_monster.xml" col="0" encoding="" />
-    <file line="0" url="rpg_monster.map" col="0" encoding="" />
+   <projectview name="XML schema" >
+    <file line="0" url="rpg_monster.xsd" col="0" encoding="" />
+    <file line="8" url="rpg_monster.map" col="0" encoding="" />
    </projectview>
    <defaultview name="" />
   </kdevfilelist>

@@ -23,17 +23,16 @@
 // -------------------------------- * * * -------------------------------- //
 
 #pragma once
-#ifndef RPG_GRAPHICS_GRAPHIC_H
-#define RPG_GRAPHICS_GRAPHIC_H
+#ifndef RPG_GRAPHICS_ELEMENT_H
+#define RPG_GRAPHICS_ELEMENT_H
 
-struct RPG_Graphics_Graphic
+struct RPG_Graphics_Element
 {
-  RPG_Graphics_Category category;
-  RPG_Graphics_Type type;
-  RPG_Graphics_TileOrientation orientation;
-  RPG_Graphics_StyleUnion style;
-  std::vector<RPG_Graphics_Element> elements;
-  std::string file;
+  RPG_Graphics_ElementTypeUnion type;
+  unsigned int offsetX;
+  unsigned int offsetY;
+  unsigned int width;
+  unsigned int height;
 };
 
 #endif

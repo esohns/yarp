@@ -28,8 +28,9 @@
 
 enum RPG_Graphics_Category
 {
-  CATEGORY_TILE = 0,
+  CATEGORY_INTERFACE = 0,
   CATEGORY_IMAGE,
+  CATEGORY_TILE,
   //
   RPG_GRAPHICS_CATEGORY_MAX,
   RPG_GRAPHICS_CATEGORY_INVALID
@@ -49,8 +50,9 @@ class RPG_Graphics_CategoryHelper
   inline static void init()
   {
     myRPG_Graphics_CategoryToStringTable.clear();
-    myRPG_Graphics_CategoryToStringTable.insert(std::make_pair(CATEGORY_TILE, ACE_TEXT_ALWAYS_CHAR("CATEGORY_TILE")));
+    myRPG_Graphics_CategoryToStringTable.insert(std::make_pair(CATEGORY_INTERFACE, ACE_TEXT_ALWAYS_CHAR("CATEGORY_INTERFACE")));
     myRPG_Graphics_CategoryToStringTable.insert(std::make_pair(CATEGORY_IMAGE, ACE_TEXT_ALWAYS_CHAR("CATEGORY_IMAGE")));
+    myRPG_Graphics_CategoryToStringTable.insert(std::make_pair(CATEGORY_TILE, ACE_TEXT_ALWAYS_CHAR("CATEGORY_TILE")));
   };
 
   inline static std::string RPG_Graphics_CategoryToString(const RPG_Graphics_Category& element_in)

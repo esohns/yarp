@@ -1,16 +1,19 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="3" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat.xsd" >
-   <View0 Encoding="" line="108" Type="Source" />
+ <DocsAndViews NumberOfDocuments="4" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat.map" >
+   <View0 Encoding="" line="15" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat.map" >
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat.xsd" >
    <View0 Encoding="" line="15" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat_common_tools.cpp" >
-   <View0 Encoding="" line="1013" Type="Source" />
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat_XML_parser.h" >
+   <View0 Encoding="" line="45" Type="Source" />
   </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat_XML_parser.cpp" >
+   <View0 Encoding="" line="38" Type="Source" />
+  </Doc3>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
@@ -20,6 +23,7 @@
   <kdevfilelist>
    <projectview name="XML schema" >
     <file line="15" url="rpg_combat.map" col="0" encoding="" />
+    <file line="0" url="rpg_combat.xsd" col="0" encoding="" />
    </projectview>
    <defaultview name="" />
   </kdevfilelist>

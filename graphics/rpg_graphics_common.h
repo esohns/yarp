@@ -28,6 +28,14 @@
 #include <map>
 #include <vector>
 
+enum RPG_Graphics_InterfaceWindow_t
+{
+  INTERFACEWINDOW_MAIN = 0,
+  //
+  RPG_GRAPHICS_INTERFACEWINDOW_MAX,
+  RPG_GRAPHICS_INTERFACEWINDOW_INVALID
+};
+
 typedef RPG_Graphics_Graphic RPG_Graphics_t;
 typedef std::map<RPG_Graphics_Type, RPG_Graphics_t> RPG_Graphics_Dictionary_t;
 typedef RPG_Graphics_Dictionary_t::const_iterator RPG_Graphics_DictionaryIterator_t;
@@ -42,5 +50,11 @@ struct RPG_Graphics_GraphicsCacheNode_t
 };
 typedef std::vector<RPG_Graphics_GraphicsCacheNode_t> RPG_Graphics_GraphicsCache_t;
 typedef RPG_Graphics_GraphicsCache_t::iterator RPG_Graphics_GraphicsCacheIterator_t;
+
+typedef std::map<RPG_Graphics_InterfaceElementType, SDL_Surface*> RPG_Graphics_InterfaceElements_t;
+typedef RPG_Graphics_InterfaceElements_t::const_iterator RPG_Graphics_InterfaceElementsConstIterator_t;
+
+typedef std::vector<RPG_Graphics_Element> RPG_Graphics_Elements_t;
+typedef RPG_Graphics_Elements_t::const_iterator RPG_Graphics_ElementsConstIterator_t;
 
 #endif

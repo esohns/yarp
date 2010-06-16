@@ -24,6 +24,7 @@
 #include <rpg_map_common_tools.h>
 #include <rpg_map_level.h>
 
+#include <rpg_graphics_SDLwindow.h>
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_common_tools.h>
 
@@ -1029,6 +1030,7 @@ do_runIntro()
                                  (screen->h - logo->h) / 2, // location y
                                  *logo,
                                  screen);
+//   SDL_FreeSurface(logo);
   RPG_Graphics_Common_Tools::fade(true,                                   // fade in
                                   5.0,                                    // interval
                                   RPG_Graphics_Common_Tools::CLR32_BLACK, // fade from black
@@ -1102,6 +1104,8 @@ do_work(const RPG_Client_Config& config_in)
 
     return;
   }
+  // init main "window"
+  RPG_Graphics_SDLWindow* window = NULL;
 
   // step3: run intro
   do_runIntro();

@@ -28,7 +28,8 @@
 
 enum RPG_Graphics_Type
 {
-  TYPE_MAIN_LOGO = 0,
+  TYPE_INTERFACE = 0,
+  TYPE_MAIN_LOGO,
   //
   RPG_GRAPHICS_TYPE_MAX,
   RPG_GRAPHICS_TYPE_INVALID
@@ -48,6 +49,7 @@ class RPG_Graphics_TypeHelper
   inline static void init()
   {
     myRPG_Graphics_TypeToStringTable.clear();
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_INTERFACE, ACE_TEXT_ALWAYS_CHAR("TYPE_INTERFACE")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_MAIN_LOGO, ACE_TEXT_ALWAYS_CHAR("TYPE_MAIN_LOGO")));
   };
 

@@ -214,3 +214,101 @@ RPG_Common_File_Tools::deleteFile(const std::string& filename_in)
 
   return true;
 }
+
+const bool
+RPG_Common_File_Tools::loadFile(const std::string& filename_in,
+                                unsigned char*& file_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_File_Tools::deleteFile"));
+
+  // init return value(s)
+  file_out = NULL;
+
+  FILE* fp = NULL;
+  long fsize = 0;
+
+  fp = ACE_OS::fopen(filename_in.c_str(),
+                     ACE_TEXT_ALWAYS_CHAR("rb"));
+  if (!fp)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to open file(\"%s\"): %m, aborting\n"),
+               filename_in.c_str()));
+
+    return false;
+  } // end IF
+
+  // obtain file size
+  if (ACE_OS::fseek(fp,
+                    0,
+                    SEEK_END))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to seek file(\"%s\"): %m, aborting\n"),
+               filename_in.c_str()));
+
+    return false;
+  } // end IF
+  fsize = ACE_OS::ftell(fp);
+  if (fsize == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to tell file(\"%s\"): %m, aborting\n"),
+               filename_in.c_str()));
+
+    return false;
+  } // end IF
+  ACE_OS::rewind(fp);
+  // allocate array
+  try
+  {
+    file_out = new unsigned char[fsize];
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to allocate memory(%d): %m, aborting\n"),
+               fsize));
+
+    return false;
+  }
+  if (!file_out)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to allocate memory(%d): %m, aborting\n"),
+               fsize));
+
+    return false;
+  } // end IF
+  // read data
+  if (ACE_OS::fread(ACE_static_cast(void*, file_out), // target buffer
+                    fsize,                            // read everything
+                    1,                                // ... all at once
+                    fp) != 1)                         // handle
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to read file(\"%s\"): %m, aborting\n"),
+               filename_in.c_str()));
+
+    // clean up
+    delete[] file_out;
+    file_out = NULL;
+
+    return false;
+  } // end IF
+
+  if (ACE_OS::fclose(fp))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to close file(\"%s\"): %m, aborting\n"),
+               filename_in.c_str()));
+
+    // clean up
+    delete[] file_out;
+    file_out = NULL;
+
+    return false;
+  } // end IF
+
+  return true;
+}

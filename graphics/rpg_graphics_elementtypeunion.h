@@ -23,17 +23,22 @@
 // -------------------------------- * * * -------------------------------- //
 
 #pragma once
-#ifndef RPG_GRAPHICS_GRAPHIC_H
-#define RPG_GRAPHICS_GRAPHIC_H
+#ifndef RPG_GRAPHICS_ELEMENTTYPEUNION_H
+#define RPG_GRAPHICS_ELEMENTTYPEUNION_H
 
-struct RPG_Graphics_Graphic
+struct RPG_Graphics_ElementTypeUnion
 {
-  RPG_Graphics_Category category;
-  RPG_Graphics_Type type;
-  RPG_Graphics_TileOrientation orientation;
-  RPG_Graphics_StyleUnion style;
-  std::vector<RPG_Graphics_Element> elements;
-  std::string file;
+  union
+  {
+    RPG_Graphics_InterfaceElementType interfaceelementtype;
+  };
+
+  enum Discriminator_t
+  {
+    INTERFACEELEMENTTYPE,
+    INVALID
+  };
+  Discriminator_t discriminator;
 };
 
 #endif

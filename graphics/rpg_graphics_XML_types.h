@@ -57,6 +57,9 @@ class RPG_Graphics_WallStyle_Type_pskel;
 class RPG_Graphics_DoorStyle_Type_pskel;
 class RPG_Graphics_StyleUnion_Type_pskel;
 class RPG_Graphics_Type_Type_pskel;
+class RPG_Graphics_InterfaceElementType_Type_pskel;
+class RPG_Graphics_ElementTypeUnion_Type_pskel;
+class RPG_Graphics_Element_Type_pskel;
 class RPG_Graphics_Graphic_Type_pskel;
 class RPG_Graphics_Dictionary_Type_pskel;
 
@@ -171,6 +174,107 @@ class RPG_Graphics_Type_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Graphics_Type_Type () = 0;
 };
 
+class RPG_Graphics_InterfaceElementType_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Graphics_InterfaceElementType
+  post_RPG_Graphics_InterfaceElementType_Type () = 0;
+};
+
+class RPG_Graphics_ElementTypeUnion_Type_pskel: public ::xml_schema::simple_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+  //
+  // virtual void
+  // _characters (const ::xml_schema::ro_string&);
+
+  virtual RPG_Graphics_ElementTypeUnion
+  post_RPG_Graphics_ElementTypeUnion_Type () = 0;
+};
+
+class RPG_Graphics_Element_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  type (const RPG_Graphics_ElementTypeUnion&);
+
+  virtual void
+  offsetX (unsigned int);
+
+  virtual void
+  offsetY (unsigned int);
+
+  virtual void
+  width (unsigned int);
+
+  virtual void
+  height (unsigned int);
+
+  virtual RPG_Graphics_Element
+  post_RPG_Graphics_Element_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  type_parser (::RPG_Graphics_ElementTypeUnion_Type_pskel&);
+
+  void
+  offsetX_parser (::xml_schema::unsigned_int_pskel&);
+
+  void
+  offsetY_parser (::xml_schema::unsigned_int_pskel&);
+
+  void
+  width_parser (::xml_schema::unsigned_int_pskel&);
+
+  void
+  height_parser (::xml_schema::unsigned_int_pskel&);
+
+  void
+  parsers (::RPG_Graphics_ElementTypeUnion_Type_pskel& /* type */,
+           ::xml_schema::unsigned_int_pskel& /* offsetX */,
+           ::xml_schema::unsigned_int_pskel& /* offsetY */,
+           ::xml_schema::unsigned_int_pskel& /* width */,
+           ::xml_schema::unsigned_int_pskel& /* height */);
+
+  // Constructor.
+  //
+  RPG_Graphics_Element_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Graphics_ElementTypeUnion_Type_pskel* type_parser_;
+  ::xml_schema::unsigned_int_pskel* offsetX_parser_;
+  ::xml_schema::unsigned_int_pskel* offsetY_parser_;
+  ::xml_schema::unsigned_int_pskel* width_parser_;
+  ::xml_schema::unsigned_int_pskel* height_parser_;
+};
+
 class RPG_Graphics_Graphic_Type_pskel: public ::xml_schema::complex_content
 {
   public:
@@ -190,6 +294,9 @@ class RPG_Graphics_Graphic_Type_pskel: public ::xml_schema::complex_content
 
   virtual void
   style (const RPG_Graphics_StyleUnion&);
+
+  virtual void
+  element (const RPG_Graphics_Element&);
 
   virtual void
   file (const ::std::string&);
@@ -212,6 +319,9 @@ class RPG_Graphics_Graphic_Type_pskel: public ::xml_schema::complex_content
   style_parser (::RPG_Graphics_StyleUnion_Type_pskel&);
 
   void
+  element_parser (::RPG_Graphics_Element_Type_pskel&);
+
+  void
   file_parser (::xml_schema::string_pskel&);
 
   void
@@ -219,6 +329,7 @@ class RPG_Graphics_Graphic_Type_pskel: public ::xml_schema::complex_content
            ::RPG_Graphics_Type_Type_pskel& /* type */,
            ::RPG_Graphics_TileOrientation_Type_pskel& /* orientation */,
            ::RPG_Graphics_StyleUnion_Type_pskel& /* style */,
+           ::RPG_Graphics_Element_Type_pskel& /* element */,
            ::xml_schema::string_pskel& /* file */);
 
   // Constructor.
@@ -242,6 +353,7 @@ class RPG_Graphics_Graphic_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Graphics_Type_Type_pskel* type_parser_;
   ::RPG_Graphics_TileOrientation_Type_pskel* orientation_parser_;
   ::RPG_Graphics_StyleUnion_Type_pskel* style_parser_;
+  ::RPG_Graphics_Element_Type_pskel* element_parser_;
   ::xml_schema::string_pskel* file_parser_;
 };
 

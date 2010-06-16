@@ -36,6 +36,7 @@ RPG_Graphics_StairsStyleToStringTable_t RPG_Graphics_StairsStyleHelper::myRPG_Gr
 RPG_Graphics_WallStyleToStringTable_t RPG_Graphics_WallStyleHelper::myRPG_Graphics_WallStyleToStringTable;
 RPG_Graphics_DoorStyleToStringTable_t RPG_Graphics_DoorStyleHelper::myRPG_Graphics_DoorStyleToStringTable;
 RPG_Graphics_TypeToStringTable_t RPG_Graphics_TypeHelper::myRPG_Graphics_TypeToStringTable;
+RPG_Graphics_InterfaceElementTypeToStringTable_t RPG_Graphics_InterfaceElementTypeHelper::myRPG_Graphics_InterfaceElementTypeToStringTable;
 
 std::string                  RPG_Graphics_Common_Tools::myGraphicsDirectory;
 ACE_Thread_Mutex             RPG_Graphics_Common_Tools::myLock;
@@ -152,51 +153,91 @@ RPG_Graphics_Common_Tools::fini()
 }
 
 SDL_Surface*
-RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in)
+RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
+                                       const bool& cacheGraphic_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadGraphic"));
 
-  // init return value(s)
-  SDL_Surface* result = NULL;
-
-  // step1: graphic already cached ?
+  RPG_Graphics_GraphicsCacheIterator_t iter;
   RPG_Graphics_GraphicsCacheNode_t node;
   node.type = type_in;
+  // init return value(s)
   node.image = NULL;
 
-  // synch access to graphics cache
+  // step1: graphic already cached ?
+  if (cacheGraphic_in)
   {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-
-    RPG_Graphics_GraphicsCacheIterator_t iter = myGraphicsCache.begin();
-    for (;
-         iter != myGraphicsCache.end();
-         iter++)
-      if ((*iter) == node)
-        break;
-    if (iter == myGraphicsCache.end())
+    // synch access to graphics cache
     {
-      RPG_Graphics_t graphic;
-      graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
-      graphic.type = RPG_GRAPHICS_TYPE_INVALID;
-      graphic.file.clear();
+      ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-      // retrieve properties from the dictionary
-      graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(type_in);
-      ACE_ASSERT(graphic.type == type_in);
+      for (iter = myGraphicsCache.begin();
+           iter != myGraphicsCache.end();
+           iter++)
+        if ((*iter) == node)
+          break;
 
-      std::string path = myGraphicsDirectory;
-      path += ACE_DIRECTORY_SEPARATOR_STR;
-      path += graphic.file;
-      // sanity check
-      if (!RPG_Common_File_Tools::isReadable(path))
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid argument(\"%s\"): not readable, aborting\n"),
-                   path.c_str()));
+      if (iter != myGraphicsCache.end())
+        return (*iter).image;
+    } // end lock scope
+  } // end IF
 
-        return NULL;
-      } // end IF
+  // step2: load image from file
+  RPG_Graphics_t graphic;
+  graphic.type = RPG_GRAPHICS_TYPE_INVALID;
+
+  // retrieve properties from the dictionary
+  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(type_in);
+  ACE_ASSERT(graphic.type == type_in);
+
+  std::string path = myGraphicsDirectory;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += graphic.file;
+  // sanity check
+  if (!RPG_Common_File_Tools::isReadable(path))
+  {
+    ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("invalid argument(\"%s\"): not readable, aborting\n"),
+                path.c_str()));
+
+    return NULL;
+  } // end IF
+
+  // load complete file into memory
+  // *TODO*: this isn't really necessary...
+  unsigned char* srcbuf = NULL;
+  if (!RPG_Common_File_Tools::loadFile(path,
+                                       srcbuf))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_File_Tools::loadFile(\"%s\"), aborting\n"),
+               path.c_str()));
+
+    return NULL;
+  } // end IF
+
+  // extract SDL surface from PNG
+  if (!loadPNG(srcbuf,
+               node.image))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to loadPNG(\"%s\"), aborting\n"),
+               path.c_str()));
+
+    // clean up
+    delete[] srcbuf;
+
+    return NULL;
+  } // end IF
+
+  // clean up
+  delete[] srcbuf;
+
+  if (cacheGraphic_in)
+  {
+    // synch access to graphics cache
+    {
+      ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
       if (myGraphicsCache.size() == myCacheSize)
       {
@@ -210,99 +251,86 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in)
           myOldestCacheEntry = 0;
       } // end IF
 
-      // load complete file into memory
-      FILE* fp = NULL;
-      long fsize = 0;
-      unsigned char* srcbuf = NULL;
-      fp = ACE_OS::fopen(path.c_str(),
-                         ACE_TEXT_ALWAYS_CHAR("rb"));
-      if (!fp)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to open file(\"%s\"): %m, aborting\n"),
-                   path.c_str()));
+      myGraphicsCache.push_back(node);
+    } // end lock scope
+  } // end IF
 
-        return NULL;
-      } // end IF
-      // obtain file size
-      if (ACE_OS::fseek(fp,
-                        0,
-                        SEEK_END))
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to seek file(\"%s\"): %m, aborting\n"),
-                   path.c_str()));
+  return node.image;
+}
 
-        return NULL;
-      } // end IF
-      fsize = ACE_OS::ftell(fp);
-      ACE_OS::rewind(fp);
+SDL_Surface*
+RPG_Graphics_Common_Tools::get(const unsigned long& topLeftX_in,
+                               const unsigned long& topLeftY_in,
+                               const unsigned long& bottomRightX_in,
+                               const unsigned long& bottomRightY_in,
+                               const SDL_Surface* image_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::get"));
 
-      try
-      {
-        srcbuf = new unsigned char[fsize];
-      }
-      catch (...)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-                   fsize));
+  // sanity check(s)
+  ACE_ASSERT(image_in);
+  ACE_ASSERT(topLeftX_in <= bottomRightX_in);
+  ACE_ASSERT(bottomRightX_in <= (ACE_static_cast(unsigned long, image_in->w) - 1));
+  ACE_ASSERT(topLeftY_in <= bottomRightY_in);
+  ACE_ASSERT(bottomRightY_in <= (ACE_static_cast(unsigned long, image_in->h) - 1));
 
-        return NULL;
-      }
-      if (!srcbuf)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-                   fsize));
+  // init return value
+  SDL_Surface* result = NULL;
+  result = SDL_CreateRGBSurface((SDL_HWSURFACE | // TRY to (!) place the surface in VideoRAM
+                                 SDL_ASYNCBLIT |
+                                 SDL_SRCCOLORKEY |
+                                 SDL_SRCALPHA),
+                                (bottomRightX_in - topLeftX_in) + 1,
+                                (bottomRightY_in - topLeftY_in) + 1,
+                                image_in->format->BitsPerPixel,
+                                image_in->format->Rmask,
+                                image_in->format->Gmask,
+                                image_in->format->Bmask,
+                                image_in->format->Amask);
 
-        return NULL;
-      }
-      if (ACE_OS::fread(ACE_static_cast(void*, srcbuf), // target buffer
-                        fsize,                          // read everything
-                        1,                              // ... all at once
-                        fp) != 1)                       // handle
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to read file(\"%s\"): %m, aborting\n"),
-                   path.c_str()));
+  // *NOTE*: blitting does not preserve the alpha channel...
 
-        return NULL;
-      }
-      if (ACE_OS::fclose(fp))
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to close file(\"%s\"): %m, aborting\n"),
-                   path.c_str()));
-
-        // clean up
-        delete[] srcbuf;
-
-        return NULL;
-      }
-
-      if (!loadPNG(srcbuf,
-                   node.image))
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to loadPNG(\"%s\"), aborting\n"),
-                   path.c_str()));
-
-        // clean up
-        delete[] srcbuf;
-
-        return NULL;
-      } // end IF
+  // lock the surface for direct access to the pixels
+  if (SDL_MUSTLOCK(image_in))
+    if (SDL_LockSurface(ACE_const_cast(SDL_Surface*, image_in)))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
+                 SDL_GetError()));
 
       // clean up
-      delete[] srcbuf;
+      SDL_FreeSurface(result);
 
-      myGraphicsCache.push_back(node);
-      iter = myGraphicsCache.end(); iter--;
+      return NULL;
     } // end IF
 
-    result = (*iter).image;
-  } // end lock scope
+  for (unsigned long i = 0;
+       i < (bottomRightY_in - topLeftY_in + 1);
+       i++)
+    ::memcpy((ACE_static_cast(unsigned char*, result->pixels) + (result->pitch * i) + (topLeftX_in * 4)), // RGBA --> 4 bytes (?!!!)
+             &ACE_static_cast(unsigned char*, image_in->pixels)[((topLeftY_in + i) * image_in->pitch) + (topLeftX_in * 4)],
+             (((bottomRightX_in - topLeftX_in) + 1) * 4));
+
+  if (SDL_MUSTLOCK(image_in))
+    SDL_UnlockSurface(ACE_const_cast(SDL_Surface*, image_in));
+
+//   // bounding box
+//   SDL_Rect toRect;
+//   toRect.x = topLeftX_in;
+//   toRect.y = topLeftY_in;
+//   toRect.w = (bottomRightX_in - topLeftX_in) + 1;
+//   toRect.h = (bottomRightY_in - topLeftY_in) + 1;
+//   if (SDL_BlitSurface(ACE_const_cast(SDL_Surface*, image_in), // source
+//                       &toRect,                                // aspect
+//                       subImage_out,                           // target
+//                       NULL))                                  // aspect (--> everything)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+//                SDL_GetError()));
+//
+//     return;
+//   } // end IF
 
   return result;
 }
@@ -453,6 +481,7 @@ RPG_Graphics_Common_Tools::initStringConversionTables()
   RPG_Graphics_WallStyleHelper::init();
   RPG_Graphics_DoorStyleHelper::init();
   RPG_Graphics_TypeHelper::init();
+  RPG_Graphics_InterfaceElementTypeHelper::init();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Graphics_Common_Tools: initialized string conversion tables...\n")));

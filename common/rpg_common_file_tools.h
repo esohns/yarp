@@ -33,6 +33,9 @@ class RPG_Common_File_Tools
   static const bool isDirectory(const std::string&); // directory
   static const bool createDirectory(const std::string&); // directory
   static const bool deleteFile(const std::string&); // FQ filename
+  // *NOTE*: user needs to free (delete[] !) the returned memory
+  static const bool loadFile(const std::string&, // FQ filename
+                             unsigned char*&);   // return value: memory (array)
 
  private:
   // safety measures

@@ -29,7 +29,11 @@
 enum RPG_Graphics_WallStyle
 {
   WALLSTYLE_AIR = 0,
+  WALLSTYLE_BRICK,
   WALLSTYLE_DARK,
+  WALLSTYLE_MARBLE,
+  WALLSTYLE_ROUGH,
+  WALLSTYLE_ROUGH_VINE_COVERED,
   WALLSTYLE_STONE,
   WALLSTYLE_WATER,
   //
@@ -52,7 +56,11 @@ class RPG_Graphics_WallStyleHelper
   {
     myRPG_Graphics_WallStyleToStringTable.clear();
     myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_AIR, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_AIR")));
+    myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_BRICK, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_BRICK")));
     myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_DARK, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_DARK")));
+    myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_MARBLE, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_MARBLE")));
+    myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_ROUGH, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_ROUGH")));
+    myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_ROUGH_VINE_COVERED, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_ROUGH_VINE_COVERED")));
     myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_STONE, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_STONE")));
     myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_WATER, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_WATER")));
   };

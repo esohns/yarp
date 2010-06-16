@@ -31,6 +31,7 @@ enum RPG_Graphics_DoorStyle
   DOORSTYLE_IRON = 0,
   DOORSTYLE_IRON_GATE,
   DOORSTYLE_STONE,
+  DOORSTYLE_TELEPORTER,
   DOORSTYLE_WOOD,
   DOORSTYLE_WOOD_BROKEN,
   //
@@ -55,6 +56,7 @@ class RPG_Graphics_DoorStyleHelper
     myRPG_Graphics_DoorStyleToStringTable.insert(std::make_pair(DOORSTYLE_IRON, ACE_TEXT_ALWAYS_CHAR("DOORSTYLE_IRON")));
     myRPG_Graphics_DoorStyleToStringTable.insert(std::make_pair(DOORSTYLE_IRON_GATE, ACE_TEXT_ALWAYS_CHAR("DOORSTYLE_IRON_GATE")));
     myRPG_Graphics_DoorStyleToStringTable.insert(std::make_pair(DOORSTYLE_STONE, ACE_TEXT_ALWAYS_CHAR("DOORSTYLE_STONE")));
+    myRPG_Graphics_DoorStyleToStringTable.insert(std::make_pair(DOORSTYLE_TELEPORTER, ACE_TEXT_ALWAYS_CHAR("DOORSTYLE_TELEPORTER")));
     myRPG_Graphics_DoorStyleToStringTable.insert(std::make_pair(DOORSTYLE_WOOD, ACE_TEXT_ALWAYS_CHAR("DOORSTYLE_WOOD")));
     myRPG_Graphics_DoorStyleToStringTable.insert(std::make_pair(DOORSTYLE_WOOD_BROKEN, ACE_TEXT_ALWAYS_CHAR("DOORSTYLE_WOOD_BROKEN")));
   };
