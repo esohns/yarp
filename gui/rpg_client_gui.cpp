@@ -465,9 +465,9 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s [FILE]   : sound dictionary (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-u [FILE]   : UI file") << ACE_TEXT(" [") << RPG_CLIENT_DEF_UI_FILE << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-u [FILE]   : UI file") << ACE_TEXT(" [") << RPG_CLIENT_DEF_GNOME_UI_FILE << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << RPG_CLIENT_DEF_CLIENT_USES_TP  << ACE_TEXT(" : ") << RPG_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << RPG_CLIENT_DEF_ACE_USES_TP  << ACE_TEXT(" : ") << RPG_CLIENT_DEF_ACE_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 const bool
@@ -490,9 +490,9 @@ process_arguments(const int argc_in,
   logToFile_out            = false;
   soundDictionary_out      = RPG_CLIENT_DEF_SOUND_DICTIONARY;
   traceInformation_out     = false;
-  UIfile_out               = RPG_CLIENT_DEF_UI_FILE;
+  UIfile_out               = RPG_CLIENT_DEF_GNOME_UI_FILE;
   printVersionAndExit_out  = false;
-  numThreadPoolThreads_out = (RPG_CLIENT_DEF_CLIENT_USES_TP ? RPG_CLIENT_DEF_NUM_TP_THREADS : 0);
+  numThreadPoolThreads_out = (RPG_CLIENT_DEF_ACE_USES_TP ? RPG_CLIENT_DEF_ACE_NUM_TP_THREADS : 0);
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
@@ -552,7 +552,7 @@ process_arguments(const int argc_in,
       }
       case 'x':
       {
-        numThreadPoolThreads_out = RPG_CLIENT_DEF_NUM_TP_THREADS;
+        numThreadPoolThreads_out = RPG_CLIENT_DEF_ACE_NUM_TP_THREADS;
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
@@ -1105,7 +1105,8 @@ do_work(const RPG_Client_Config& config_in)
     return;
   }
   // init main "window"
-  RPG_Graphics_SDLWindow* window = NULL;
+  RPG_Graphics_SDLWindow window(INTERFACEWINDOW_MAIN,
+                                RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE);
 
   // step3: run intro
   do_runIntro();
@@ -1452,9 +1453,9 @@ ACE_TMAIN(int argc_in,
   bool logToFile                     = false;
   std::string soundDictionary        = RPG_CLIENT_DEF_SOUND_DICTIONARY;
   bool traceInformation              = false;
-  std::string UIfile                 = RPG_CLIENT_DEF_UI_FILE;
+  std::string UIfile                 = RPG_CLIENT_DEF_GNOME_UI_FILE;
   bool printVersionAndExit           = false;
-  unsigned long numThreadPoolThreads = (RPG_CLIENT_DEF_CLIENT_USES_TP ? RPG_CLIENT_DEF_NUM_TP_THREADS : 0);
+  unsigned long numThreadPoolThreads = (RPG_CLIENT_DEF_ACE_USES_TP ? RPG_CLIENT_DEF_ACE_NUM_TP_THREADS : 0);
   if (!(process_arguments(argc_in,
                           argv_in,
                           iniFile,
@@ -1583,7 +1584,7 @@ ACE_TMAIN(int argc_in,
 //   ACE_ASSERT(gnomeSession);
 //   gnome_client_set_program(gnomeSession, ACE::basename(argv_in[0]));
   GnomeProgram* gnomeProgram = NULL;
-  gnomeProgram = gnome_program_init(RPG_CLIENT_CNF_GNOME_APPLICATION_ID, // app ID
+  gnomeProgram = gnome_program_init(RPG_CLIENT_DEF_GNOME_APPLICATION_ID, // app ID
                                     ACE_TEXT_ALWAYS_CHAR(VERSION),       // version
                                     LIBGNOMEUI_MODULE,                   // module info
                                     argc_in,                             // cmdline

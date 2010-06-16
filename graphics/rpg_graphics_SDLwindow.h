@@ -23,6 +23,8 @@
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_type.h"
 
+#include <SDL/SDL.h>
+
 #include <ace/Global_Macros.h>
 
 /**
@@ -35,6 +37,11 @@ class RPG_Graphics_SDLWindow
                          const RPG_Graphics_Type&);             // style
   virtual ~RPG_Graphics_SDLWindow();
 
+  void draw(SDL_Surface*,              // target surface (screen !)
+            const unsigned long& = 0,  // offset x
+            const unsigned long& = 0); // offset y
+  void refresh(SDL_Surface*); // target surface (screen !)
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindow());
@@ -43,6 +50,16 @@ class RPG_Graphics_SDLWindow
 
   // helper methods
   const bool loadGraphics(const RPG_Graphics_Type&); // style
+
+  // helper types
+  typedef std::vector<SDL_Rect> RPG_Graphics_DirtyRegions_t;
+  typedef RPG_Graphics_DirtyRegions_t::const_iterator RPG_Graphics_DirtyRegionsConstIterator_t;
+
+//   // absolute (== screen-) coordinates
+//   unsigned long                    myAbsScreenX;
+//   unsigned long                    myAbsScreenY;
+  // dirty region(s)
+  RPG_Graphics_DirtyRegions_t      myDirtyRegions;
 
   RPG_Graphics_InterfaceWindow_t   myType;
   RPG_Graphics_Type                myGraphicsType;

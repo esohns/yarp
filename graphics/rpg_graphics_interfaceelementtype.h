@@ -36,7 +36,7 @@ enum RPG_Graphics_InterfaceElementType
   INTERFACEELEMENT_BORDER_RIGHT,
   INTERFACEELEMENT_BORDER_LEFT,
   INTERFACEELEMENT_BORDER_BOTTOM,
-  INTERFACEELEMENT_BORDER_CENTER,
+  INTERFACEELEMENT_CENTER,
   //
   RPG_GRAPHICS_INTERFACEELEMENTTYPE_MAX,
   RPG_GRAPHICS_INTERFACEELEMENTTYPE_INVALID
@@ -64,7 +64,7 @@ class RPG_Graphics_InterfaceElementTypeHelper
     myRPG_Graphics_InterfaceElementTypeToStringTable.insert(std::make_pair(INTERFACEELEMENT_BORDER_RIGHT, ACE_TEXT_ALWAYS_CHAR("INTERFACEELEMENT_BORDER_RIGHT")));
     myRPG_Graphics_InterfaceElementTypeToStringTable.insert(std::make_pair(INTERFACEELEMENT_BORDER_LEFT, ACE_TEXT_ALWAYS_CHAR("INTERFACEELEMENT_BORDER_LEFT")));
     myRPG_Graphics_InterfaceElementTypeToStringTable.insert(std::make_pair(INTERFACEELEMENT_BORDER_BOTTOM, ACE_TEXT_ALWAYS_CHAR("INTERFACEELEMENT_BORDER_BOTTOM")));
-    myRPG_Graphics_InterfaceElementTypeToStringTable.insert(std::make_pair(INTERFACEELEMENT_BORDER_CENTER, ACE_TEXT_ALWAYS_CHAR("INTERFACEELEMENT_BORDER_CENTER")));
+    myRPG_Graphics_InterfaceElementTypeToStringTable.insert(std::make_pair(INTERFACEELEMENT_CENTER, ACE_TEXT_ALWAYS_CHAR("INTERFACEELEMENT_CENTER")));
   };
 
   inline static std::string RPG_Graphics_InterfaceElementTypeToString(const RPG_Graphics_InterfaceElementType& element_in)

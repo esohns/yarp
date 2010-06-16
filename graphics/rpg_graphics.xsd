@@ -112,7 +112,7 @@
       <xsd:enumeration value="INTERFACEELEMENT_BORDER_RIGHT"/>
       <xsd:enumeration value="INTERFACEELEMENT_BORDER_LEFT"/>
       <xsd:enumeration value="INTERFACEELEMENT_BORDER_BOTTOM"/>
-      <xsd:enumeration value="INTERFACEELEMENT_BORDER_CENTER"/>
+      <xsd:enumeration value="INTERFACEELEMENT_CENTER"/>
     </xsd:restriction>
   </xsd:simpleType>
 

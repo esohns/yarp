@@ -21,10 +21,11 @@
 #ifndef RPG_CLIENT_DEFINES_H
 #define RPG_CLIENT_DEFINES_H
 
-#define RPG_CLIENT_CNF_GNOME_APPLICATION_ID       ACE_TEXT_ALWAYS_CHAR("rpg_client")
-#define RPG_CLIENT_DEF_UI_FILE                    ACE_TEXT("rpg_client.glade")
-#define RPG_CLIENT_DEF_CLIENT_USES_TP             false
-#define RPG_CLIENT_DEF_NUM_TP_THREADS             5
+#define RPG_CLIENT_DEF_ACE_USES_TP                false
+#define RPG_CLIENT_DEF_ACE_NUM_TP_THREADS         5
+
+#define RPG_CLIENT_DEF_GNOME_APPLICATION_ID       ACE_TEXT_ALWAYS_CHAR("rpg_client")
+#define RPG_CLIENT_DEF_GNOME_UI_FILE              ACE_TEXT("rpg_client.glade")
 
 #define RPG_CLIENT_DEF_INI_FILE                   ACE_TEXT("rpg_client.ini")
 #define RPG_CLIENT_CNF_CLIENT_SECTION_HEADER      ACE_TEXT("client")
@@ -33,6 +34,7 @@
 #define RPG_CLIENT_DEF_GRAPHICS_DICTIONARY        ACE_TEXT("rpg_graphics.xml")
 #define RPG_CLIENT_DEF_GRAPHICS_DIRECTORY         ACE_TEXT(".")
 #define RPG_CLIENT_DEF_GRAPHICS_CACHESIZE         50
+#define RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE  TYPE_INTERFACE
 
 #define RPG_CLIENT_DEF_SOUND_DICTIONARY           ACE_TEXT("rpg_sound.xml")
 #define RPG_CLIENT_DEF_SOUND_DIRECTORY            ACE_TEXT(".")
