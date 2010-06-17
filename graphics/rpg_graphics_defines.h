@@ -22,9 +22,13 @@
 #define RPG_GRAPHICS_DEFINES_H
 
 // #signature bytes to check for PNG graphics
-#define RPG_GRAPHICS_PNG_SIGNATURE_BYTES 8
+#define RPG_GRAPHICS_PNG_SIGNATURE_BYTES    8
 
 // min #screen refreshes / second of fading
-#define RPG_GRAPHICS_FADE_REFRESH_RATE   10
+#define RPG_GRAPHICS_FADE_REFRESH_RATE      10
+
+// default font pointsize
+#define RPG_GRAPHICS_FONT_DEFAULT_POINTSIZE 10
+
 
 #endif

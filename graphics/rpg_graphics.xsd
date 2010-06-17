@@ -26,6 +26,7 @@
 
   <xsd:simpleType name="RPG_Graphics_Category_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="CATEGORY_FONT"/>
       <xsd:enumeration value="CATEGORY_INTERFACE"/>
       <xsd:enumeration value="CATEGORY_IMAGE"/>
       <xsd:enumeration value="CATEGORY_TILE"/>
@@ -97,8 +98,9 @@
 
   <xsd:simpleType name="RPG_Graphics_Type_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="TYPE_FONT_MAIN"/>
       <xsd:enumeration value="TYPE_INTERFACE"/>
-      <xsd:enumeration value="TYPE_MAIN_LOGO"/>
+      <xsd:enumeration value="TYPE_INTRO_MAIN"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -116,8 +118,15 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="RPG_Graphics_HotspotType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="HOTSPOT_ABSOLUTE"/>
+      <xsd:enumeration value="HOTSPOT_RELATIVE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:simpleType name="RPG_Graphics_ElementTypeUnion_Type">
-    <xsd:union memberTypes="RPG_Graphics_InterfaceElementType_Type"/>
+    <xsd:union memberTypes="RPG_Graphics_InterfaceElementType_Type RPG_Graphics_HotspotType_Type"/>
   </xsd:simpleType>
 
   <xsd:complexType name="RPG_Graphics_Element_Type">
@@ -139,6 +148,7 @@
       <xsd:element name="element" type="RPG_Graphics_Element_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="file" type="xsd:string" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
+    <xsd:attribute name="size" type="xsd:unsignedInt" use="optional" default="0"/>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Graphics_Dictionary_Type" id="skip0">

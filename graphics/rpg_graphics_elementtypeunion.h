@@ -31,11 +31,13 @@ struct RPG_Graphics_ElementTypeUnion
   union
   {
     RPG_Graphics_InterfaceElementType interfaceelementtype;
+    RPG_Graphics_HotspotType hotspottype;
   };
 
   enum Discriminator_t
   {
     INTERFACEELEMENTTYPE,
+    HOTSPOTTYPE,
     INVALID
   };
   Discriminator_t discriminator;

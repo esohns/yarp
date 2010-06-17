@@ -23,6 +23,7 @@
 #include "rpg_graphics_incl.h"
 
 #include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 
 #include <string>
 #include <map>
@@ -51,10 +52,22 @@ struct RPG_Graphics_GraphicsCacheNode_t
 typedef std::vector<RPG_Graphics_GraphicsCacheNode_t> RPG_Graphics_GraphicsCache_t;
 typedef RPG_Graphics_GraphicsCache_t::iterator RPG_Graphics_GraphicsCacheIterator_t;
 
+typedef std::map<RPG_Graphics_Type, TTF_Font*> RPG_Graphics_FontCache_t;
+typedef RPG_Graphics_FontCache_t::iterator RPG_Graphics_FontCacheIterator_t;
+
 typedef std::map<RPG_Graphics_InterfaceElementType, SDL_Surface*> RPG_Graphics_InterfaceElements_t;
 typedef RPG_Graphics_InterfaceElements_t::const_iterator RPG_Graphics_InterfaceElementsConstIterator_t;
 
 typedef std::vector<RPG_Graphics_Element> RPG_Graphics_Elements_t;
 typedef RPG_Graphics_Elements_t::const_iterator RPG_Graphics_ElementsConstIterator_t;
+
+struct RPG_Graphics_Font_t
+{
+  RPG_Graphics_Type type;
+  unsigned int size;
+  std::string file;
+};
+typedef std::vector<RPG_Graphics_Font_t> RPG_Graphics_Fonts_t;
+typedef RPG_Graphics_Fonts_t::const_iterator RPG_Graphics_FontsConstIterator_t;
 
 #endif

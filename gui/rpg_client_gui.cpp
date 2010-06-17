@@ -1014,12 +1014,12 @@ do_runIntro()
   RPG_Sound_Common_Tools::playSound(EVENT_MAIN_TITLE);
 
   // step2: show start logo
-  SDL_Surface* logo = RPG_Graphics_Common_Tools::loadGraphic(TYPE_MAIN_LOGO);
+  SDL_Surface* logo = RPG_Graphics_Common_Tools::loadGraphic(TYPE_INTRO_MAIN);
   if (!logo)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_MAIN_LOGO).c_str()));
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_INTRO_MAIN).c_str()));
 
     return;
   } // end IF
@@ -1089,8 +1089,6 @@ do_work(const RPG_Client_Config& config_in)
   ACE_ASSERT(xml);
   ACE_ASSERT(dialog);
   ACE_ASSERT(screen);
-  RPG_Graphics_Common_Tools::init(config_in.graphics_directory,
-                                  config_in.graphics_cache_size);
   //  init graphics dictionary
   try
   {
@@ -1103,6 +1101,8 @@ do_work(const RPG_Client_Config& config_in)
 
     return;
   }
+  RPG_Graphics_Common_Tools::init(config_in.graphics_directory,
+                                  config_in.graphics_cache_size);
 
   // step3: run intro
 //   do_runIntro();
@@ -1579,6 +1579,14 @@ ACE_TMAIN(int argc_in,
 
     return EXIT_FAILURE;
   } // end IF
+  if (TTF_Init() == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to TTF_Init(): \"%s\", aborting\n"),
+               SDL_GetError()));
+
+    return EXIT_FAILURE;
+  } // end IF
 
   // step2b: init GTK / GTK+ / GNOME
   gtk_init(&argc_in,
@@ -1614,6 +1622,7 @@ ACE_TMAIN(int argc_in,
              working_time_string.c_str()));
 
   // step4: clean up
+  TTF_Quit();
   SDL_Quit();
 
   // *PORTABILITY*: on Windows, we must fini ACE...

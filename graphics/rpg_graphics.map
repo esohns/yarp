@@ -11,6 +11,7 @@ namespace urn:rpg
   RPG_Graphics_StyleUnion_Type           RPG_Graphics_StyleUnion;
   RPG_Graphics_Type_Type                 RPG_Graphics_Type;
   RPG_Graphics_InterfaceElementType_Type RPG_Graphics_InterfaceElementType;
+  RPG_Graphics_HotspotType_Type          RPG_Graphics_HotspotType;
   RPG_Graphics_ElementTypeUnion_Type     RPG_Graphics_ElementTypeUnion;
   RPG_Graphics_Element_Type              RPG_Graphics_Element;
   RPG_Graphics_Graphic_Type              RPG_Graphics_Graphic;

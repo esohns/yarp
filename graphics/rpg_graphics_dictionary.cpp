@@ -66,7 +66,8 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
                     orientation_p,
                     style_p,
                     element_p,
-                    string_p);
+                    string_p,
+                    unsigned_int_p);
 
   RPG_Graphics_Dictionary_Type                dictionary_p(&myDictionary);
   dictionary_p.parsers(graphic_p);
@@ -133,6 +134,31 @@ RPG_Graphics_Dictionary::getGraphic(const RPG_Graphics_Type& type_in) const
   } // end IF
 
   return iterator->second;
+}
+
+const RPG_Graphics_Fonts_t
+RPG_Graphics_Dictionary::getFonts() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::getFonts"));
+
+  RPG_Graphics_Fonts_t result;
+
+  RPG_Graphics_Font_t font;
+  font.type = RPG_GRAPHICS_TYPE_INVALID;
+  font.size = 0;
+  font.file.clear();
+  for (RPG_Graphics_DictionaryIterator_t iterator = myDictionary.begin();
+       iterator != myDictionary.end();
+       iterator++)
+    if ((*iterator).second.category == CATEGORY_FONT)
+    {
+      font.type = (*iterator).second.type;
+      font.size = (*iterator).second.size;
+      font.file = (*iterator).second.file;
+      result.push_back(font);
+    } // end IF
+
+  return result;
 }
 
 bool
@@ -216,14 +242,15 @@ RPG_Graphics_Dictionary::dump() const
        iterator++, index++)
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("Graphic[#%u]:\nCategory: %s\nType: %s\nOrientation: %s\nStyle: %s\nElement(s):\n%sFile: %s\n"),
+               ACE_TEXT("Graphic[#%u]:\nCategory: %s\nType: %s\nOrientation: %s\nStyle: %s\nElement(s):\n%sFile: %s\nSize: %u\n"),
                index,
                RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString((iterator->second).category).c_str(),
                RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString((iterator->second).type).c_str(),
                RPG_Graphics_TileOrientationHelper::RPG_Graphics_TileOrientationToString((iterator->second).orientation).c_str(),
                RPG_Graphics_Common_Tools::styleToString((iterator->second).style).c_str(),
                RPG_Graphics_Common_Tools::elementsToString((iterator->second).elements).c_str(),
-               ((iterator->second).file).c_str()));
+               ((iterator->second).file).c_str(),
+               (iterator->second).size));
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("===========================\n")));
   } // end FOR

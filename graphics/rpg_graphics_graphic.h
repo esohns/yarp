@@ -34,6 +34,7 @@ struct RPG_Graphics_Graphic
   RPG_Graphics_StyleUnion style;
   std::vector<RPG_Graphics_Element> elements;
   std::string file;
+  unsigned int size;
 };
 
 #endif

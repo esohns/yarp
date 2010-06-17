@@ -57,7 +57,7 @@ class RPG_Graphics_Common_Tools
   static Uint32 CLR32_CURSE_RED;
   static Uint32 CLR32_GOLD_SHADE;
 
-  // *WARNING*: this needs to be called AFTER SDL_SetVideoMode !
+  // *WARNING*: needs to be called AFTER SDL_SetVideoMode !
   static void init(const std::string&,      // graphics directory
                    const unsigned long&);   // cache size
   static void fini();
@@ -68,6 +68,7 @@ class RPG_Graphics_Common_Tools
   // *NOTE*: uncached surfaces need to be SDL_FreeSurface()ed by the user !
   static SDL_Surface* loadGraphic(const RPG_Graphics_Type&, // graphic
                                   const bool& = true);      // cache graphic ?
+
   static SDL_Surface* get(const unsigned long&, // offset x (top-left == 0,0)
                           const unsigned long&, // offset y (top-left == 0,0)
                           const unsigned long&, // width
@@ -77,6 +78,14 @@ class RPG_Graphics_Common_Tools
                   const unsigned long&, // offset y (top left == 0,0)
                   const SDL_Surface&,   // image
                   SDL_Surface*);        // target surface (screen)
+  static void putText(const RPG_Graphics_Type&, // font
+                      const std::string&,       // string
+                      const SDL_Color&,         // color
+                      const bool&,              // shade ?
+                      const unsigned long&,     // offset x (top left == 0,0)
+                      const unsigned long&,     // offset y (top left == 0,0)
+                      SDL_Surface*);            // target surface (screen)
+
   // *NOTE*: source/target image must already be loaded into the framebuffer !
   static void fade(const bool&,   // fade in ? (else out)
                    const float&,  // interval (seconds)
@@ -94,17 +103,26 @@ class RPG_Graphics_Common_Tools
   // init string conversion (and any other) tables
   static void initStringConversionTables();
   static void initColors();
+  static const bool initFonts();
   static const bool loadPNG(const unsigned char*, // source buffer
                             SDL_Surface*&);       // return value: SDL surface
+  static SDL_Surface* renderText(const RPG_Graphics_Type&, // font
+                                 const std::string&,       // string
+                                 const SDL_Color&);        // color
   static void fade(const float&,  // interval (seconds)
                    SDL_Surface*,  // target image
                    SDL_Surface*); // screen
 
   static std::string                  myGraphicsDirectory;
-  static ACE_Thread_Mutex             myLock;
+
+  static ACE_Thread_Mutex             myCacheLock;
+
   static unsigned long                myOldestCacheEntry;
   static unsigned long                myCacheSize;
   static RPG_Graphics_GraphicsCache_t myGraphicsCache;
+
+  static RPG_Graphics_FontCache_t     myFontCache;
+
   static bool                         myInitialized;
 };
 

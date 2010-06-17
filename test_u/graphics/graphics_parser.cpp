@@ -28,6 +28,7 @@
 #include <rpg_dice_common_tools.h>
 
 #include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
@@ -400,11 +401,7 @@ do_work(const std::string& dictionary_in,
   RPG_Dice::init();
   RPG_Dice_Common_Tools::initStringConversionTables();
 
-  // step1: init: graphics directory, cache, string conversion facilities, ...
-  RPG_Graphics_Common_Tools::init(path_in,
-                                  cacheSize_in);
-
-  // step2: init sound dictionary
+  // step1: init graphics dictionary
   try
   {
     RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(dictionary_in,
@@ -417,6 +414,9 @@ do_work(const std::string& dictionary_in,
 
     return;
   }
+  // step2: init graphics directory, cache, string conversion facilities, fonts, ...
+  RPG_Graphics_Common_Tools::init(path_in,
+                                  cacheSize_in);
 
   // step3: dump monster descriptions
   if (dumpDictionary_in)
@@ -641,6 +641,14 @@ ACE_TMAIN(int argc,
 
     return EXIT_FAILURE;
   } // end IF
+  if (TTF_Init() == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to TTF_Init(): \"%s\", aborting\n"),
+               SDL_GetError()));
+
+    return EXIT_FAILURE;
+  } // end IF
   // ***** keyboard setup *****
   // enable Unicode translation
   SDL_EnableUNICODE(1);
@@ -674,6 +682,7 @@ ACE_TMAIN(int argc,
              working_time_string.c_str()));
 
   // step4a: fini SDL
+  TTF_Quit();
   SDL_Quit();
 
   // *PORTABILITY*: on Windows, we must fini ACE...

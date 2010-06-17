@@ -135,12 +135,19 @@ file_parser (::xml_schema::string_pskel& p)
 }
 
 void RPG_Graphics_Graphic_Type_pskel::
+size_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->size_parser_ = &p;
+}
+
+void RPG_Graphics_Graphic_Type_pskel::
 parsers (::RPG_Graphics_Category_Type_pskel& category,
          ::RPG_Graphics_Type_Type_pskel& type,
          ::RPG_Graphics_TileOrientation_Type_pskel& orientation,
          ::RPG_Graphics_StyleUnion_Type_pskel& style,
          ::RPG_Graphics_Element_Type_pskel& element,
-         ::xml_schema::string_pskel& file)
+         ::xml_schema::string_pskel& file,
+         ::xml_schema::unsigned_int_pskel& size)
 {
   this->category_parser_ = &category;
   this->type_parser_ = &type;
@@ -148,6 +155,7 @@ parsers (::RPG_Graphics_Category_Type_pskel& category,
   this->style_parser_ = &style;
   this->element_parser_ = &element;
   this->file_parser_ = &file;
+  this->size_parser_ = &size;
 }
 
 RPG_Graphics_Graphic_Type_pskel::
@@ -157,7 +165,8 @@ RPG_Graphics_Graphic_Type_pskel ()
   orientation_parser_ (0),
   style_parser_ (0),
   element_parser_ (0),
-  file_parser_ (0)
+  file_parser_ (0),
+  size_parser_ (0)
 {
 }
 
@@ -356,6 +365,11 @@ file (const ::std::string&)
 {
 }
 
+void RPG_Graphics_Graphic_Type_pskel::
+size (unsigned int)
+{
+}
+
 bool RPG_Graphics_Graphic_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
@@ -480,6 +494,31 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->file_parser_)
       this->file (this->file_parser_->post_string ());
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Graphics_Graphic_Type_pskel::
+_attribute_impl (const ::xml_schema::ro_string& ns,
+                 const ::xml_schema::ro_string& n,
+                 const ::xml_schema::ro_string& v)
+{
+  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
+    return true;
+
+  if (n == "size" && ns.empty ())
+  {
+    if (this->size_parser_)
+    {
+      this->size_parser_->pre ();
+      this->size_parser_->_pre_impl ();
+      this->size_parser_->_characters (v);
+      this->size_parser_->_post_impl ();
+      this->size (this->size_parser_->post_unsigned_int ());
+    }
 
     return true;
   }

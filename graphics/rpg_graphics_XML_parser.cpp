@@ -130,6 +130,13 @@ RPG_Graphics_InterfaceElementType RPG_Graphics_InterfaceElementType_Type::post_R
   return RPG_Graphics_InterfaceElementTypeHelper::stringToRPG_Graphics_InterfaceElementType(post_string());
 }
 
+RPG_Graphics_HotspotType RPG_Graphics_HotspotType_Type::post_RPG_Graphics_HotspotType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_HotspotType_Type::post_RPG_Graphics_HotspotType_Type"));
+
+  return RPG_Graphics_HotspotTypeHelper::stringToRPG_Graphics_HotspotType(post_string());
+}
+
 RPG_Graphics_ElementTypeUnion_Type::RPG_Graphics_ElementTypeUnion_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_ElementTypeUnion_Type::RPG_Graphics_ElementTypeUnion_Type"));
@@ -144,11 +151,17 @@ void RPG_Graphics_ElementTypeUnion_Type::_characters(const ::xml_schema::ro_stri
 
   // can be either:
   // - RPG_Graphics_InterfaceElementType --> "INTERFACEELEMENT_xxx"
+  // - RPG_Graphics_HotspotType_Type --> "HOTSPOT_xxx"
   std::string element = elementType_in;
   if (element.find(ACE_TEXT_ALWAYS_CHAR("INTERFACEELEMENT_")) == 0)
   {
     myCurrentElementType.discriminator = RPG_Graphics_ElementTypeUnion::INTERFACEELEMENTTYPE;
     myCurrentElementType.interfaceelementtype = RPG_Graphics_InterfaceElementTypeHelper::stringToRPG_Graphics_InterfaceElementType(elementType_in);
+  } // end IF
+  else if (element.find(ACE_TEXT_ALWAYS_CHAR("HOTSPOT_")) == 0)
+  {
+    myCurrentElementType.discriminator = RPG_Graphics_ElementTypeUnion::HOTSPOTTYPE;
+    myCurrentElementType.hotspottype = RPG_Graphics_HotspotTypeHelper::stringToRPG_Graphics_HotspotType(elementType_in);
   } // end IF
   else
   {
@@ -246,6 +259,7 @@ RPG_Graphics_Graphic_Type::RPG_Graphics_Graphic_Type()
   myCurrentGraphic.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentGraphic.elements.clear();
   myCurrentGraphic.file.clear();
+  myCurrentGraphic.size = 0;
 }
 
 void RPG_Graphics_Graphic_Type::category(const RPG_Graphics_Category& category_in)
@@ -290,6 +304,13 @@ void RPG_Graphics_Graphic_Type::file(const ::std::string& file_in)
   myCurrentGraphic.file = file_in;
 }
 
+void RPG_Graphics_Graphic_Type::size(unsigned int size_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Graphic_Type::size"));
+
+  myCurrentGraphic.size = size_in;
+}
+
 RPG_Graphics_Graphic RPG_Graphics_Graphic_Type::post_RPG_Graphics_Graphic_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Graphic_Type::post_RPG_Graphics_Graphic_Type"));
@@ -304,6 +325,7 @@ RPG_Graphics_Graphic RPG_Graphics_Graphic_Type::post_RPG_Graphics_Graphic_Type()
   myCurrentGraphic.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentGraphic.elements.clear();
   myCurrentGraphic.file.clear();
+  myCurrentGraphic.size = 0;
 
   return result;
 }

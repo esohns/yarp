@@ -36,6 +36,7 @@
 #include "rpg_graphics_styleunion.h"
 #include "rpg_graphics_type.h"
 #include "rpg_graphics_interfaceelementtype.h"
+#include "rpg_graphics_hotspottype.h"
 #include "rpg_graphics_elementtypeunion.h"
 #include "rpg_graphics_element.h"
 #include "rpg_graphics_graphic.h"

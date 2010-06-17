@@ -43,6 +43,7 @@ class RPG_Graphics_Dictionary
             const bool& = true); // validate XML ?
 
   const RPG_Graphics_t getGraphic(const RPG_Graphics_Type&) const; // type
+  const RPG_Graphics_Fonts_t getFonts() const;
 
   // debug info
   void dump() const;

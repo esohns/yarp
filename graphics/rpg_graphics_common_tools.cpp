@@ -39,12 +39,17 @@ RPG_Graphics_WallStyleToStringTable_t RPG_Graphics_WallStyleHelper::myRPG_Graphi
 RPG_Graphics_DoorStyleToStringTable_t RPG_Graphics_DoorStyleHelper::myRPG_Graphics_DoorStyleToStringTable;
 RPG_Graphics_TypeToStringTable_t RPG_Graphics_TypeHelper::myRPG_Graphics_TypeToStringTable;
 RPG_Graphics_InterfaceElementTypeToStringTable_t RPG_Graphics_InterfaceElementTypeHelper::myRPG_Graphics_InterfaceElementTypeToStringTable;
+RPG_Graphics_HotspotTypeToStringTable_t RPG_Graphics_HotspotTypeHelper::myRPG_Graphics_HotspotTypeToStringTable;
 
 std::string                  RPG_Graphics_Common_Tools::myGraphicsDirectory;
-ACE_Thread_Mutex             RPG_Graphics_Common_Tools::myLock;
+
+ACE_Thread_Mutex             RPG_Graphics_Common_Tools::myCacheLock;
 unsigned long                RPG_Graphics_Common_Tools::myOldestCacheEntry = 0;
 unsigned long                RPG_Graphics_Common_Tools::myCacheSize = 0;
 RPG_Graphics_GraphicsCache_t RPG_Graphics_Common_Tools::myGraphicsCache;
+
+RPG_Graphics_FontCache_t     RPG_Graphics_Common_Tools::myFontCache;
+
 bool                         RPG_Graphics_Common_Tools::myInitialized = false;
 
 Uint32 RPG_Graphics_Common_Tools::CLR32_BLACK      = 0;
@@ -100,20 +105,10 @@ RPG_Graphics_Common_Tools::init(const std::string& directory_in,
 
   if (myInitialized)
   {
-    // synch access to graphics cache
-    {
-      ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+    // clean up
+    fini();
 
-      // clear the graphics cache
-      for (RPG_Graphics_GraphicsCacheIterator_t iter = myGraphicsCache.begin();
-           iter != myGraphicsCache.end();
-           iter++)
-      {
-        SDL_FreeSurface((*iter).image);
-      } // end FOR
-      myGraphicsCache.clear();
-      myOldestCacheEntry = 0;
-    } // end lock scope
+    myInitialized = false;
   } // end IF
   else
   {
@@ -123,7 +118,8 @@ RPG_Graphics_Common_Tools::init(const std::string& directory_in,
     initColors();
   } // end ELSE
 
-  myInitialized = true;
+  // init fonts
+  myInitialized = initFonts();
 }
 
 void
@@ -131,27 +127,31 @@ RPG_Graphics_Common_Tools::fini()
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::fini"));
 
-  if (myInitialized)
+  // synch cache access
   {
-    // step1: clear the graphics cache
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
 
-    // synch access to graphics cache
+    // clear the graphics cache
+    for (RPG_Graphics_GraphicsCacheIterator_t iter = myGraphicsCache.begin();
+         iter != myGraphicsCache.end();
+         iter++)
     {
-      ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+      SDL_FreeSurface((*iter).image);
+    } // end FOR
+    myGraphicsCache.clear();
+    myOldestCacheEntry = 0;
 
-      // clear the graphics cache
-      for (RPG_Graphics_GraphicsCacheIterator_t iter = myGraphicsCache.begin();
-           iter != myGraphicsCache.end();
-           iter++)
-      {
-        SDL_FreeSurface((*iter).image);
-      } // end FOR
-      myGraphicsCache.clear();
-      myOldestCacheEntry = 0;
-    } // end lock scope
+    // clear the font cache
+    for (RPG_Graphics_FontCacheIterator_t iter = myFontCache.begin();
+         iter != myFontCache.end();
+         iter++)
+    {
+      TTF_CloseFont((*iter).second);
+    } // end FOR
+    myFontCache.clear();
+  } // end lock scope
 
-    myInitialized = false;
-  } // end IF
+  myInitialized = false;
 }
 
 const std::string
@@ -191,6 +191,8 @@ RPG_Graphics_Common_Tools::elementTypeToString(const RPG_Graphics_ElementTypeUni
   {
     case RPG_Graphics_ElementTypeUnion::INTERFACEELEMENTTYPE:
       return RPG_Graphics_InterfaceElementTypeHelper::RPG_Graphics_InterfaceElementTypeToString(elementType_in.interfaceelementtype);
+    case RPG_Graphics_ElementTypeUnion::HOTSPOTTYPE:
+      return RPG_Graphics_HotspotTypeHelper::RPG_Graphics_HotspotTypeToString(elementType_in.hotspottype);
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -267,7 +269,7 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
   {
     // synch access to graphics cache
     {
-      ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+      ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
 
       for (iter = myGraphicsCache.begin();
            iter != myGraphicsCache.end();
@@ -333,9 +335,9 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
 
   if (cacheGraphic_in)
   {
-    // synch access to graphics cache
+    // synch cache access
     {
-      ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+      ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
 
       if (myGraphicsCache.size() == myCacheSize)
       {
@@ -354,6 +356,41 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
   } // end IF
 
   return node.image;
+}
+
+SDL_Surface*
+RPG_Graphics_Common_Tools::renderText(const RPG_Graphics_Type& type_in,
+                                      const std::string& textString_in,
+                                      const SDL_Color& color_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::renderText"));
+
+  // init return value(s)
+  SDL_Surface* result = NULL;
+
+  // synch cache access
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
+
+    // step1: retrieve font cache entry
+    RPG_Graphics_FontCacheIterator_t iterator = myFontCache.find(type_in);
+    ACE_ASSERT(iterator != myFontCache.end());
+
+    result = TTF_RenderText_Blended((*iterator).second,
+                                    textString_in.c_str(),
+                                    color_in);
+  } // end lock scope
+  if (!result)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to TTF_RenderText_Blended(\"%s\"): %s, aborting\n"),
+               textString_in.c_str(),
+               SDL_GetError()));
+
+    return NULL;
+  } // end IF
+
+  return result;
 }
 
 SDL_Surface*
@@ -462,6 +499,41 @@ RPG_Graphics_Common_Tools::put(const unsigned long& offsetX_in,
 
     return;
   } // end IF
+}
+
+void
+RPG_Graphics_Common_Tools::putText(const RPG_Graphics_Type& type_in,
+                                   const std::string& textString_in,
+                                   const SDL_Color& color_in,
+                                   const bool& shade_in,
+                                   const unsigned long& offsetX_in,
+                                   const unsigned long& offsetY_in,
+                                   SDL_Surface* targetSurface_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::putText"));
+
+  // render text
+  SDL_Surface* rendered_text = NULL;
+  rendered_text = renderText(type_in,
+                             textString_in,
+                             color_in);
+  if (!rendered_text)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::renderText(\"%s\", \"%s\"), aborting\n"),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str(),
+               textString_in.c_str()));
+
+    return;
+  } // end IF
+
+  put(offsetX_in,
+      offsetY_in,
+      *rendered_text,
+      targetSurface_in);
+
+  // clean up
+  SDL_FreeSurface(rendered_text);
 }
 
 void
@@ -580,6 +652,7 @@ RPG_Graphics_Common_Tools::initStringConversionTables()
   RPG_Graphics_DoorStyleHelper::init();
   RPG_Graphics_TypeHelper::init();
   RPG_Graphics_InterfaceElementTypeHelper::init();
+  RPG_Graphics_HotspotTypeHelper::init();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Graphics_Common_Tools: initialized string conversion tables...\n")));
@@ -686,6 +759,85 @@ RPG_Graphics_Common_Tools::initColors()
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Graphics_Common_Tools: initialized colors...\n")));
+}
+
+const bool
+RPG_Graphics_Common_Tools::initFonts()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::initFonts"));
+
+  // step1: retrieve list of configured fonts
+  RPG_Graphics_Fonts_t fonts = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getFonts();
+
+  // step2: load all fonts into the cache
+  std::string path = myGraphicsDirectory;
+  TTF_Font* font = NULL;
+
+  // synch cache access
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
+
+    for (RPG_Graphics_FontsConstIterator_t iterator = fonts.begin();
+         iterator != fonts.end();
+         iterator++)
+    {
+      font = NULL;
+
+      // construct FQ filename
+      path = myGraphicsDirectory;
+      path += ACE_DIRECTORY_SEPARATOR_STR;
+      path += (*iterator).file;
+      // sanity check
+      if (!RPG_Common_File_Tools::isReadable(path))
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid file(\"%s\"): not readable, aborting\n"),
+                   path.c_str()));
+
+        // clean up
+        for (RPG_Graphics_FontCacheIterator_t iter = myFontCache.begin();
+             iter != myFontCache.end();
+             iter++)
+        {
+          TTF_CloseFont((*iter).second);
+        } // end FOR
+        myFontCache.clear();
+
+        return false;
+      } // end IF
+
+      font = TTF_OpenFont(path.c_str(),      // filename
+                          (*iterator).size); // point size
+      if (!font)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to TTF_OpenFont(\"%s\", %u): %s, continuing\n"),
+                   path.c_str(),
+                   (*iterator).size,
+                   SDL_GetError()));
+
+        // clean up
+        for (RPG_Graphics_FontCacheIterator_t iter = myFontCache.begin();
+             iter != myFontCache.end();
+             iter++)
+        {
+          TTF_CloseFont((*iter).second);
+        } // end FOR
+        myFontCache.clear();
+
+        return false;
+      } // end IF
+
+      // cache this font
+      myFontCache.insert(std::make_pair((*iterator).type, font));
+    } // end FOR
+  } // end lock scope
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("RPG_Graphics_Common_Tools: loaded %u font(s)...\n"),
+             fonts.size()));
+
+  return true;
 }
 
 const bool

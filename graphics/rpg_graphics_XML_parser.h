@@ -114,6 +114,15 @@ class RPG_Graphics_InterfaceElementType_Type
   virtual RPG_Graphics_InterfaceElementType post_RPG_Graphics_InterfaceElementType_Type();
 };
 
+class RPG_Graphics_HotspotType_Type
+ : public RPG_Graphics_HotspotType_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Graphics_HotspotType post_RPG_Graphics_HotspotType_Type();
+};
+
 class RPG_Graphics_ElementTypeUnion_Type
  : public RPG_Graphics_ElementTypeUnion_Type_pskel
 {
@@ -159,6 +168,7 @@ class RPG_Graphics_Graphic_Type
   virtual void style(const RPG_Graphics_StyleUnion&);
   virtual void element(const RPG_Graphics_Element&);
   virtual void file(const ::std::string&);
+  virtual void size(unsigned int);
   virtual RPG_Graphics_Graphic post_RPG_Graphics_Graphic_Type();
 
  private:

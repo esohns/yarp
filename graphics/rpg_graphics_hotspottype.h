@@ -23,17 +23,16 @@
 // -------------------------------- * * * -------------------------------- //
 
 #pragma once
-#ifndef RPG_GRAPHICS_TYPE_H
-#define RPG_GRAPHICS_TYPE_H
+#ifndef RPG_GRAPHICS_HOTSPOTTYPE_H
+#define RPG_GRAPHICS_HOTSPOTTYPE_H
 
-enum RPG_Graphics_Type
+enum RPG_Graphics_HotspotType
 {
-  TYPE_FONT_MAIN = 0,
-  TYPE_INTERFACE,
-  TYPE_INTRO_MAIN,
+  HOTSPOT_ABSOLUTE = 0,
+  HOTSPOT_RELATIVE,
   //
-  RPG_GRAPHICS_TYPE_MAX,
-  RPG_GRAPHICS_TYPE_INVALID
+  RPG_GRAPHICS_HOTSPOTTYPE_MAX,
+  RPG_GRAPHICS_HOTSPOTTYPE_INVALID
 };
 
 #include <ace/Global_Macros.h>
@@ -41,52 +40,51 @@ enum RPG_Graphics_Type
 #include <map>
 #include <string>
 
-typedef std::map<RPG_Graphics_Type, std::string> RPG_Graphics_TypeToStringTable_t;
-typedef RPG_Graphics_TypeToStringTable_t::const_iterator RPG_Graphics_TypeToStringTableIterator_t;
+typedef std::map<RPG_Graphics_HotspotType, std::string> RPG_Graphics_HotspotTypeToStringTable_t;
+typedef RPG_Graphics_HotspotTypeToStringTable_t::const_iterator RPG_Graphics_HotspotTypeToStringTableIterator_t;
 
-class RPG_Graphics_TypeHelper
+class RPG_Graphics_HotspotTypeHelper
 {
  public:
   inline static void init()
   {
-    myRPG_Graphics_TypeToStringTable.clear();
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FONT_MAIN, ACE_TEXT_ALWAYS_CHAR("TYPE_FONT_MAIN")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_INTERFACE, ACE_TEXT_ALWAYS_CHAR("TYPE_INTERFACE")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_INTRO_MAIN, ACE_TEXT_ALWAYS_CHAR("TYPE_INTRO_MAIN")));
+    myRPG_Graphics_HotspotTypeToStringTable.clear();
+    myRPG_Graphics_HotspotTypeToStringTable.insert(std::make_pair(HOTSPOT_ABSOLUTE, ACE_TEXT_ALWAYS_CHAR("HOTSPOT_ABSOLUTE")));
+    myRPG_Graphics_HotspotTypeToStringTable.insert(std::make_pair(HOTSPOT_RELATIVE, ACE_TEXT_ALWAYS_CHAR("HOTSPOT_RELATIVE")));
   };
 
-  inline static std::string RPG_Graphics_TypeToString(const RPG_Graphics_Type& element_in)
+  inline static std::string RPG_Graphics_HotspotTypeToString(const RPG_Graphics_HotspotType& element_in)
   {
     std::string result;
-    RPG_Graphics_TypeToStringTableIterator_t iterator = myRPG_Graphics_TypeToStringTable.find(element_in);
-    if (iterator != myRPG_Graphics_TypeToStringTable.end())
+    RPG_Graphics_HotspotTypeToStringTableIterator_t iterator = myRPG_Graphics_HotspotTypeToStringTable.find(element_in);
+    if (iterator != myRPG_Graphics_HotspotTypeToStringTable.end())
       result = iterator->second;
     else
-      result = ACE_TEXT_ALWAYS_CHAR("RPG_GRAPHICS_TYPE_INVALID");
+      result = ACE_TEXT_ALWAYS_CHAR("RPG_GRAPHICS_HOTSPOTTYPE_INVALID");
 
     return result;
   };
 
-  inline static RPG_Graphics_Type stringToRPG_Graphics_Type(const std::string& string_in)
+  inline static RPG_Graphics_HotspotType stringToRPG_Graphics_HotspotType(const std::string& string_in)
   {
-    RPG_Graphics_TypeToStringTableIterator_t iterator = myRPG_Graphics_TypeToStringTable.begin();
+    RPG_Graphics_HotspotTypeToStringTableIterator_t iterator = myRPG_Graphics_HotspotTypeToStringTable.begin();
     do
     {
       if (iterator->second == string_in)
         return iterator->first;
 
       iterator++;
-    } while (iterator != myRPG_Graphics_TypeToStringTable.end());
+    } while (iterator != myRPG_Graphics_HotspotTypeToStringTable.end());
 
-    return RPG_GRAPHICS_TYPE_INVALID;
+    return RPG_GRAPHICS_HOTSPOTTYPE_INVALID;
   };
 
-  static RPG_Graphics_TypeToStringTable_t myRPG_Graphics_TypeToStringTable;
+  static RPG_Graphics_HotspotTypeToStringTable_t myRPG_Graphics_HotspotTypeToStringTable;
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TypeHelper());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TypeHelper(const RPG_Graphics_TypeHelper&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TypeHelper& operator=(const RPG_Graphics_TypeHelper&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_HotspotTypeHelper());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_HotspotTypeHelper(const RPG_Graphics_HotspotTypeHelper&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_HotspotTypeHelper& operator=(const RPG_Graphics_HotspotTypeHelper&));
 };
 
 #endif
