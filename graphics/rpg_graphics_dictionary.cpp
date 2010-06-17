@@ -157,7 +157,7 @@ RPG_Graphics_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     case ::xml_schema::error_handler::severity::warning:
     {
       ACE_DEBUG((LM_WARNING,
-                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
@@ -168,7 +168,7 @@ RPG_Graphics_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     case ::xml_schema::error_handler::severity::error:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
@@ -179,7 +179,7 @@ RPG_Graphics_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     case ::xml_schema::error_handler::severity::fatal:
     {
       ACE_DEBUG((LM_CRITICAL,
-                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
@@ -190,7 +190,7 @@ RPG_Graphics_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     default:
     {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
@@ -216,10 +216,13 @@ RPG_Graphics_Dictionary::dump() const
        iterator++, index++)
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("Graphic[#%u]:\nCategory: %s\nType: %s\nFile: %s\n"),
+               ACE_TEXT("Graphic[#%u]:\nCategory: %s\nType: %s\nOrientation: %s\nStyle: %s\nElement(s):\n%sFile: %s\n"),
                index,
                RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString((iterator->second).category).c_str(),
                RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString((iterator->second).type).c_str(),
+               RPG_Graphics_TileOrientationHelper::RPG_Graphics_TileOrientationToString((iterator->second).orientation).c_str(),
+               RPG_Graphics_Common_Tools::styleToString((iterator->second).style).c_str(),
+               RPG_Graphics_Common_Tools::elementsToString((iterator->second).elements).c_str(),
                ((iterator->second).file).c_str()));
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("===========================\n")));

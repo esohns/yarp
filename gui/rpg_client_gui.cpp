@@ -991,7 +991,6 @@ do_initGUI(const std::string& UIfile_in,
     return;
   } // end IF
 
-  // debug info
   ACE_DEBUG((LM_INFO,
              ACE_TEXT("*** screen flags ***\nsurface: %sRAM\nasynch blits: \"%s\"\nany video depth/pixel-format: \"%s\"\nsurface has exclusive palette: \"%s\"\ndouble-buffered: \"%s\"\nblit uses hardware acceleration: \"%s\"\nblit uses a source color key: \"%s\"\nsurface is RLE encoded: \"%s\"\nblit uses source alpha blending: \"%s\"\nsurface uses preallocated memory: \"%s\"\n"),
              ((screen->flags & SDL_HWSURFACE) ? ACE_TEXT("Video") : ACE_TEXT("")),
@@ -1104,31 +1103,36 @@ do_work(const RPG_Client_Config& config_in)
 
     return;
   }
-  // init main "window"
-  RPG_Graphics_SDLWindow window(INTERFACEWINDOW_MAIN,
-                                RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE);
 
   // step3: run intro
-  do_runIntro();
+//   do_runIntro();
 
-  // step4: setup map
-  RPG_Map_Positions_t seedPoints;
-  RPG_Map_FloorPlan_t floorPlan;
-  RPG_Map_Common_Tools::createFloorPlan(config_in.map_config.map_size_x,
-                                        config_in.map_config.map_size_y,
-                                        config_in.map_config.num_areas,
-                                        config_in.map_config.square_rooms,
-                                        config_in.map_config.maximize_rooms,
-                                        config_in.map_config.min_room_area,
-                                        config_in.map_config.corridors,
-                                        true, // *NOTE*: currently, doors fill one position
-                                        config_in.map_config.max_num_doors_per_area,
-                                        seedPoints,
-                                        floorPlan);
-  RPG_Map_Common_Tools::displayFloorPlan(floorPlan);
-  RPG_Map_Level level(floorPlan);
+  // step4: setup main "window"
+  RPG_Graphics_SDLWindow window(INTERFACEWINDOW_MAIN,
+                                RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE);
+  window.draw(screen,
+              0,
+              0);
+  window.refresh(screen);
 
-  // step4: setup event loops
+//   // step5: setup map
+//   RPG_Map_Positions_t seedPoints;
+//   RPG_Map_FloorPlan_t floorPlan;
+//   RPG_Map_Common_Tools::createFloorPlan(config_in.map_config.map_size_x,
+//                                         config_in.map_config.map_size_y,
+//                                         config_in.map_config.num_areas,
+//                                         config_in.map_config.square_rooms,
+//                                         config_in.map_config.maximize_rooms,
+//                                         config_in.map_config.min_room_area,
+//                                         config_in.map_config.corridors,
+//                                         true, // *NOTE*: currently, doors fill one position
+//                                         config_in.map_config.max_num_doors_per_area,
+//                                         seedPoints,
+//                                         floorPlan);
+//   RPG_Map_Common_Tools::displayFloorPlan(floorPlan);
+//   RPG_Map_Level level(floorPlan);
+
+  // step6: setup event loops
   // - perform (signal handling, socket I/O, ...) --> ACE_Reactor
   // - UI events --> GTK main loop [--> SDL event handler]
 
@@ -1142,7 +1146,7 @@ do_work(const RPG_Client_Config& config_in)
              ACE_TEXT("installed SDL event handler (ID: %u)...\n"),
              SDLEventHandlerID));
 
-  // step5: dispatch events...
+  // step7: dispatch events...
   // *NOTE*: if we use a thread pool, we invoke a different function...
   if (config_in.num_threadpool_threads)
   {

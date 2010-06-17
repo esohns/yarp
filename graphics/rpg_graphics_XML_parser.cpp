@@ -241,7 +241,7 @@ RPG_Graphics_Graphic_Type::RPG_Graphics_Graphic_Type()
 
   myCurrentGraphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
   myCurrentGraphic.type = RPG_GRAPHICS_TYPE_INVALID;
-  myCurrentGraphic.orientation = RPG_GRAPHICS_TILEORIENTATION_MAX;
+  myCurrentGraphic.orientation = RPG_GRAPHICS_TILEORIENTATION_INVALID;
   myCurrentGraphic.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
   myCurrentGraphic.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentGraphic.elements.clear();
@@ -299,7 +299,7 @@ RPG_Graphics_Graphic RPG_Graphics_Graphic_Type::post_RPG_Graphics_Graphic_Type()
   // clear structure
   myCurrentGraphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
   myCurrentGraphic.type = RPG_GRAPHICS_TYPE_INVALID;
-  myCurrentGraphic.orientation = RPG_GRAPHICS_TILEORIENTATION_MAX;
+  myCurrentGraphic.orientation = RPG_GRAPHICS_TILEORIENTATION_INVALID;
   myCurrentGraphic.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
   myCurrentGraphic.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentGraphic.elements.clear();

@@ -61,13 +61,17 @@ class RPG_Graphics_Common_Tools
   static void init(const std::string&,      // graphics directory
                    const unsigned long&);   // cache size
   static void fini();
+  static const std::string styleToString(const RPG_Graphics_StyleUnion&);
+  static const std::string elementTypeToString(const RPG_Graphics_ElementTypeUnion&);
+  static const std::string elementsToString(const RPG_Graphics_Elements_t&);
+
   // *NOTE*: uncached surfaces need to be SDL_FreeSurface()ed by the user !
   static SDL_Surface* loadGraphic(const RPG_Graphics_Type&, // graphic
                                   const bool& = true);      // cache graphic ?
-  static SDL_Surface* get(const unsigned long&, // top-left x (top left == 0,0)
-                          const unsigned long&, // top-left y (top left == 0,0)
-                          const unsigned long&, // bottom-right x (top left == 0,0)
-                          const unsigned long&, // bottom-right y (top left == 0,0)
+  static SDL_Surface* get(const unsigned long&, // offset x (top-left == 0,0)
+                          const unsigned long&, // offset y (top-left == 0,0)
+                          const unsigned long&, // width
+                          const unsigned long&, // height
                           const SDL_Surface*);  // image
   static void put(const unsigned long&, // offset x (top left == 0,0)
                   const unsigned long&, // offset y (top left == 0,0)

@@ -55,9 +55,12 @@ class RPG_Graphics_SDLWindow
   typedef std::vector<SDL_Rect> RPG_Graphics_DirtyRegions_t;
   typedef RPG_Graphics_DirtyRegions_t::const_iterator RPG_Graphics_DirtyRegionsConstIterator_t;
 
-//   // absolute (== screen-) coordinates
-//   unsigned long                    myAbsScreenX;
-//   unsigned long                    myAbsScreenY;
+  // border sizes
+  unsigned long                    myBorderTop;
+  unsigned long                    myBorderBottom;
+  unsigned long                    myBorderLeft;
+  unsigned long                    myBorderRight;
+
   // dirty region(s)
   RPG_Graphics_DirtyRegions_t      myDirtyRegions;
 

@@ -19,7 +19,7 @@
       <type>INTERFACEELEMENT_CORNER_TR</type>
       <offsetX>61</offsetX>
       <offsetY>1</offsetY>
-      <width>23</width>
+      <width>24</width>
       <height>23</height>
     </element>
     <element>
@@ -27,14 +27,14 @@
       <offsetX>1</offsetX>
       <offsetY>58</offsetY>
       <width>23</width>
-      <height>23</height>
+      <height>25</height>
     </element>
     <element>
       <type>INTERFACEELEMENT_CORNER_BR</type>
       <offsetX>61</offsetX>
       <offsetY>58</offsetY>
-      <width>23</width>
-      <height>23</height>
+      <width>24</width>
+      <height>25</height>
     </element>
     <element>
       <type>INTERFACEELEMENT_BORDER_TOP</type>
@@ -54,7 +54,7 @@
       <type>INTERFACEELEMENT_BORDER_RIGHT</type>
       <offsetX>61</offsetX>
       <offsetY>27</offsetY>
-      <width>23</width>
+      <width>24</width>
       <height>28</height>
     </element>
     <element>
@@ -62,10 +62,10 @@
       <offsetX>27</offsetX>
       <offsetY>58</offsetY>
       <width>31</width>
-      <height>23</height>
+      <height>25</height>
     </element>
     <element>
-      <type>INTERFACEELEMENT_BORDER_CENTER</type>
+      <type>INTERFACEELEMENT_CENTER</type>
       <offsetX>141</offsetX>
       <offsetY>1</offsetY>
       <width>98</width>

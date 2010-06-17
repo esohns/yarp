@@ -28,6 +28,8 @@
 
 #include <png.h>
 
+#include <sstream>
+
 // init statics
 RPG_Graphics_CategoryToStringTable_t RPG_Graphics_CategoryHelper::myRPG_Graphics_CategoryToStringTable;
 RPG_Graphics_TileOrientationToStringTable_t RPG_Graphics_TileOrientationHelper::myRPG_Graphics_TileOrientationToStringTable;
@@ -152,6 +154,102 @@ RPG_Graphics_Common_Tools::fini()
   } // end IF
 }
 
+const std::string
+RPG_Graphics_Common_Tools::styleToString(const RPG_Graphics_StyleUnion& style_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::styleToString"));
+
+  switch (style_in.discriminator)
+  {
+    case RPG_Graphics_StyleUnion::FLOORSTYLE:
+      return RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(style_in.floorstyle);
+    case RPG_Graphics_StyleUnion::STAIRSSTYLE:
+      return RPG_Graphics_StairsStyleHelper::RPG_Graphics_StairsStyleToString(style_in.stairsstyle);
+    case RPG_Graphics_StyleUnion::WALLSTYLE:
+      return RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(style_in.wallstyle);
+    case RPG_Graphics_StyleUnion::DOORSTYLE:
+      return RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(style_in.doorstyle);
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid style (was: %d), aborting\n"),
+                 style_in.discriminator));
+
+      break;
+    }
+  } // end SWITCH
+
+  return std::string(ACE_TEXT_ALWAYS_CHAR("INVALID"));
+}
+
+const std::string
+RPG_Graphics_Common_Tools::elementTypeToString(const RPG_Graphics_ElementTypeUnion& elementType_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::elementTypeToString"));
+
+  switch (elementType_in.discriminator)
+  {
+    case RPG_Graphics_ElementTypeUnion::INTERFACEELEMENTTYPE:
+      return RPG_Graphics_InterfaceElementTypeHelper::RPG_Graphics_InterfaceElementTypeToString(elementType_in.interfaceelementtype);
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid element type (was: %d), aborting\n"),
+                 elementType_in.discriminator));
+
+      break;
+    }
+  } // end SWITCH
+
+  return std::string(ACE_TEXT_ALWAYS_CHAR("INVALID"));
+}
+
+const std::string
+RPG_Graphics_Common_Tools::elementsToString(const RPG_Graphics_Elements_t& elements_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::elementsToString"));
+
+  std::string result;
+
+  std::ostringstream converter;
+  unsigned long index = 0;
+  for (RPG_Graphics_ElementsConstIterator_t iterator = elements_in.begin();
+       iterator != elements_in.end();
+       iterator++, index++)
+  {
+    result += ACE_TEXT_ALWAYS_CHAR("#");
+    converter.clear();
+    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    converter << index;
+    result += converter.str();
+    result += ACE_TEXT_ALWAYS_CHAR(" ");
+    result += RPG_Graphics_Common_Tools::elementTypeToString((*iterator).type);
+    result += ACE_TEXT_ALWAYS_CHAR(" {x: ");
+    converter.clear();
+    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    converter << (*iterator).offsetX;
+    result += converter.str();
+    result += ACE_TEXT_ALWAYS_CHAR(", y: ");
+    converter.clear();
+    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    converter << (*iterator).offsetY;
+    result += converter.str();
+    result += ACE_TEXT_ALWAYS_CHAR(", w: ");
+    converter.clear();
+    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    converter << (*iterator).width;
+    result += converter.str();
+    result += ACE_TEXT_ALWAYS_CHAR(", h: ");
+    converter.clear();
+    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    converter << (*iterator).height;
+    result += converter.str();
+    result += ACE_TEXT_ALWAYS_CHAR("}\n");
+  } // end FOR
+
+  return result;
+}
+
 SDL_Surface*
 RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
                                        const bool& cacheGraphic_in)
@@ -197,8 +295,8 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
   if (!RPG_Common_File_Tools::isReadable(path))
   {
     ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("invalid argument(\"%s\"): not readable, aborting\n"),
-                path.c_str()));
+               ACE_TEXT("invalid argument(\"%s\"): not readable, aborting\n"),
+               path.c_str()));
 
     return NULL;
   } // end IF
@@ -259,20 +357,20 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
 }
 
 SDL_Surface*
-RPG_Graphics_Common_Tools::get(const unsigned long& topLeftX_in,
-                               const unsigned long& topLeftY_in,
-                               const unsigned long& bottomRightX_in,
-                               const unsigned long& bottomRightY_in,
+RPG_Graphics_Common_Tools::get(const unsigned long& offsetX_in,
+                               const unsigned long& offsetY_in,
+                               const unsigned long& width_in,
+                               const unsigned long& height_in,
                                const SDL_Surface* image_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::get"));
 
   // sanity check(s)
   ACE_ASSERT(image_in);
-  ACE_ASSERT(topLeftX_in <= bottomRightX_in);
-  ACE_ASSERT(bottomRightX_in <= (ACE_static_cast(unsigned long, image_in->w) - 1));
-  ACE_ASSERT(topLeftY_in <= bottomRightY_in);
-  ACE_ASSERT(bottomRightY_in <= (ACE_static_cast(unsigned long, image_in->h) - 1));
+  ACE_ASSERT(width_in <= ACE_static_cast(unsigned long, image_in->w));
+  ACE_ASSERT((offsetX_in + width_in) <= (ACE_static_cast(unsigned long, image_in->w) - 1));
+  ACE_ASSERT(height_in <= ACE_static_cast(unsigned long, image_in->h));
+  ACE_ASSERT((offsetY_in + height_in) <= (ACE_static_cast(unsigned long, image_in->h) - 1));
 
   // init return value
   SDL_Surface* result = NULL;
@@ -280,8 +378,8 @@ RPG_Graphics_Common_Tools::get(const unsigned long& topLeftX_in,
                                  SDL_ASYNCBLIT |
                                  SDL_SRCCOLORKEY |
                                  SDL_SRCALPHA),
-                                (bottomRightX_in - topLeftX_in) + 1,
-                                (bottomRightY_in - topLeftY_in) + 1,
+                                width_in,
+                                height_in,
                                 image_in->format->BitsPerPixel,
                                 image_in->format->Rmask,
                                 image_in->format->Gmask,
@@ -305,11 +403,11 @@ RPG_Graphics_Common_Tools::get(const unsigned long& topLeftX_in,
     } // end IF
 
   for (unsigned long i = 0;
-       i < (bottomRightY_in - topLeftY_in + 1);
+       i < height_in;
        i++)
-    ::memcpy((ACE_static_cast(unsigned char*, result->pixels) + (result->pitch * i) + (topLeftX_in * 4)), // RGBA --> 4 bytes (?!!!)
-             &ACE_static_cast(unsigned char*, image_in->pixels)[((topLeftY_in + i) * image_in->pitch) + (topLeftX_in * 4)],
-             (((bottomRightX_in - topLeftX_in) + 1) * 4));
+    ::memcpy((ACE_static_cast(unsigned char*, result->pixels) + (result->pitch * i)),
+             (ACE_static_cast(unsigned char*, image_in->pixels) + ((offsetY_in + i) * image_in->pitch) + (offsetX_in * 4)),
+             (width_in * 4)); // RGBA --> 4 bytes (?!!!)
 
   if (SDL_MUSTLOCK(image_in))
     SDL_UnlockSurface(ACE_const_cast(SDL_Surface*, image_in));
