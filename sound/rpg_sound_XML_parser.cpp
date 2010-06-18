@@ -120,8 +120,7 @@ void RPG_Sound_Dictionary_Type::post_RPG_Sound_Dictionary_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Sound_Dictionary_Type::post_RPG_Sound_Dictionary_Type"));
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished parsing sound dictionary, retrieved %d sound(s)...\n"),
+             ACE_TEXT("finished parsing dictionary, retrieved %d sound(s)...\n"),
              myDictionary->size()));
 }

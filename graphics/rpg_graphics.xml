@@ -5,6 +5,16 @@
 <graphicsDictionary xmlns="urn:rpg"
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                     xsi:schemaLocation="urn:rpg rpg_graphics.xsd">
+  <graphic size="12">
+    <category>CATEGORY_FONT</category>
+    <type>TYPE_FONT_MAIN_NORMAL</type>
+    <file>font_main.ttf</file>
+  </graphic>
+  <graphic size="14">
+    <category>CATEGORY_FONT</category>
+    <type>TYPE_FONT_MAIN_LARGE</type>
+    <file>font_main.ttf</file>
+  </graphic>
   <graphic>
     <category>CATEGORY_INTERFACE</category>
     <type>TYPE_INTERFACE</type>
@@ -75,7 +85,12 @@
   </graphic>
   <graphic>
     <category>CATEGORY_IMAGE</category>
-    <type>TYPE_MAIN_LOGO</type>
+    <type>TYPE_INTRO_MAIN</type>
     <file>image_main_logo.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_IMAGE</category>
+    <type>TYPE_WM_ICON</type>
+    <file>image_icon.png</file>
   </graphic>
 </graphicsDictionary>

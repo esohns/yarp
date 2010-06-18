@@ -66,7 +66,7 @@ struct SDL_audio_config_t
 
 static SDL_CD* cdrom = NULL;
 
-void
+const bool
 do_initAudio(const SDL_audio_config_t& config_in)
 {
   ACE_TRACE(ACE_TEXT("::do_initAudio"));
@@ -99,7 +99,7 @@ do_initAudio(const SDL_audio_config_t& config_in)
                ACE_TEXT("failed to Mix_OpenAudio(): \"%s\", aborting\n"),
                SDL_GetError()));
 
-    return;
+    return false;
   } // end IF
 //   Mix_AllocateChannels(4);
   SDL_audio_config_t obtained;
@@ -115,7 +115,7 @@ do_initAudio(const SDL_audio_config_t& config_in)
                ACE_TEXT("failed to Mix_QuerySpec(): \"%s\", aborting\n"),
                SDL_GetError()));
 
-    return;
+    return false;
   } // end IF
   char driver[MAXPATHLEN];
   if (!SDL_AudioDriverName(driver, sizeof(driver)))
@@ -124,7 +124,7 @@ do_initAudio(const SDL_audio_config_t& config_in)
                ACE_TEXT("failed to SDL_AudioDriverName(): \"%s\", aborting\n"),
                SDL_GetError()));
 
-    return;
+    return false;
   } // end IF
 
   // initialize audioCD playing
@@ -143,7 +143,7 @@ do_initAudio(const SDL_audio_config_t& config_in)
                  ACE_TEXT("failed to SDL_CDOpen(0): \"%s\", aborting\n"),
                  SDL_GetError()));
 
-      return;
+      return false;
     } // end IF
   } // end ELSE
 
@@ -156,6 +156,8 @@ do_initAudio(const SDL_audio_config_t& config_in)
              SDL_CDName(0),
              (cdrom ? cdrom->id : -1),
              (cdrom ? cdrom->status : -1)));
+
+  return true;
 }
 
 Uint32
@@ -221,7 +223,8 @@ do_SDL_waitForInput(const unsigned long& timeout_in)
   } // end IF
 }
 
-void print_usage(const std::string& programName_in)
+void
+print_usage(const std::string& programName_in)
 {
   ACE_TRACE(ACE_TEXT("::print_usage"));
 
@@ -234,13 +237,14 @@ void print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-x       : do NOT validate XML") << std::endl;
 } // end print_usage
 
-const bool process_arguments(const int argc_in,
-                             ACE_TCHAR* argv_in[], // cannot be const...
-                             bool& dumpDictionary_out,
-                             std::string& filename_out,
-                             bool& traceInformation_out,
-                             bool& printVersionAndExit_out,
-                             bool& validateXML_out)
+const bool
+process_arguments(const int argc_in,
+                  ACE_TCHAR* argv_in[], // cannot be const...
+                  bool& dumpDictionary_out,
+                  std::string& filename_out,
+                  bool& traceInformation_out,
+                  bool& printVersionAndExit_out,
+                  bool& validateXML_out)
 {
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -313,19 +317,21 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
-void do_work(const std::string& dictionary_in,
-             const std::string& path_in,
-             const unsigned long& cacheSize_in,
-             const bool& validateXML_in,
-             const bool& dumpDictionary_in)
+void
+do_work(const std::string& dictionary_in,
+        const std::string& path_in,
+        const unsigned long& cacheSize_in,
+        const bool& validateXML_in,
+        const bool& dumpDictionary_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
   // step0: init: random seed, string conversion facilities, ...
   RPG_Dice::init();
   RPG_Dice_Common_Tools::initStringConversionTables();
+  RPG_Sound_Common_Tools::initStringConversionTables();
 
-  // step1: init: sound directory, cache, string conversion facilities, ...
+  // step1: init: sound directory, cache, ...
   RPG_Sound_Common_Tools::init(path_in,
                                cacheSize_in);
 
@@ -343,7 +349,7 @@ void do_work(const std::string& dictionary_in,
     return;
   }
 
-  // step3: dump monster descriptions
+  // step3: dump sound descriptions
   if (dumpDictionary_in)
   {
     RPG_SOUND_DICTIONARY_SINGLETON::instance()->dump();
@@ -370,7 +376,8 @@ void do_work(const std::string& dictionary_in,
              ACE_TEXT("finished working...\n")));
 } // end do_work
 
-void do_printVersion(const std::string& programName_in)
+void
+do_printVersion(const std::string& programName_in)
 {
   ACE_TRACE(ACE_TEXT("::do_printVersion"));
 
@@ -420,8 +427,9 @@ void do_printVersion(const std::string& programName_in)
 //             << std::endl;
 }
 
-int ACE_TMAIN(int argc,
-              ACE_TCHAR* argv[])
+int
+ACE_TMAIN(int argc,
+          ACE_TCHAR* argv[])
 {
   ACE_TRACE(ACE_TEXT("::main"));
 
@@ -439,19 +447,19 @@ int ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  bool dumpDictionary      = false;
-  std::string filename     = SOUNDPARSER_DEF_SOUND_DICTIONARY;
-  bool traceInformation    = false;
-  bool printVersionAndExit = false;
-  bool validateXML         = true;
+  bool dumpDictionary        = false;
+  std::string filename       = SOUNDPARSER_DEF_SOUND_DICTIONARY;
+  bool traceInformation      = false;
+  bool printVersionAndExit   = false;
+  bool validateXML           = true;
 
-  std::string path         = SOUNDPARSER_DEF_SOUND_DIRECTORY;
-  unsigned long cacheSize  = SOUNDPARSER_DEF_SOUND_CACHESIZE;
+  std::string soundDirectory = SOUNDPARSER_DEF_SOUND_DIRECTORY;
+  unsigned long cacheSize    = SOUNDPARSER_DEF_SOUND_CACHESIZE;
   SDL_audio_config_t audio_config;
-  audio_config.frequency   = SOUNDPARSER_DEF_AUDIO_FREQUENCY;
-  audio_config.format      = SOUNDPARSER_DEF_AUDIO_FORMAT;
-  audio_config.channels    = SOUNDPARSER_DEF_AUDIO_CHANNELS;
-  audio_config.samples     = SOUNDPARSER_DEF_AUDIO_SAMPLES;
+  audio_config.frequency     = SOUNDPARSER_DEF_AUDIO_FREQUENCY;
+  audio_config.format        = SOUNDPARSER_DEF_AUDIO_FORMAT;
+  audio_config.channels      = SOUNDPARSER_DEF_AUDIO_CHANNELS;
+  audio_config.samples       = SOUNDPARSER_DEF_AUDIO_SAMPLES;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
@@ -464,6 +472,13 @@ int ACE_TMAIN(int argc,
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
+
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -478,13 +493,27 @@ int ACE_TMAIN(int argc,
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
 
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
     return EXIT_FAILURE;
   } // end IF
-  else if (!RPG_Common_File_Tools::isDirectory(path))
+  else if (!RPG_Common_File_Tools::isDirectory(soundDirectory))
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid directory \"%s\", aborting\n"),
-               path.c_str()));
+               ACE_TEXT("invalid sounds directory \"%s\", aborting\n"),
+               soundDirectory.c_str()));
+
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -533,6 +562,13 @@ int ACE_TMAIN(int argc,
                ACE_TEXT("failed to SDL_Init(): \"%s\", aborting\n"),
                SDL_GetError()));
 
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
     return EXIT_FAILURE;
   } // end IF
   // ***** keyboard setup *****
@@ -549,13 +585,27 @@ int ACE_TMAIN(int argc,
 //   SDL_SetEventFilter(event_filter_SDL_cb);
 
   // step2b: init Audio
-  do_initAudio(audio_config);
+  if (!do_initAudio(audio_config))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to initialize audio, aborting\n")));
+
+    SDL_Quit();
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
+    return EXIT_FAILURE;
+  } // end IF
 
   // step3: do actual work
   ACE_High_Res_Timer timer;
   timer.start();
   do_work(filename,
-          path,
+          soundDirectory,
           cacheSize,
           validateXML,
           dumpDictionary);

@@ -362,8 +362,7 @@ void RPG_Graphics_Dictionary_Type::post_RPG_Graphics_Dictionary_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Dictionary_Type::post_RPG_Graphics_Dictionary_Type"));
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished parsing graphics dictionary, retrieved %d image(s)...\n"),
+             ACE_TEXT("finished parsing dictionary, retrieved %d graphic(s)...\n"),
              myDictionary->size()));
 }

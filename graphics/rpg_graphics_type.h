@@ -28,9 +28,11 @@
 
 enum RPG_Graphics_Type
 {
-  TYPE_FONT_MAIN = 0,
+  TYPE_FONT_MAIN_NORMAL = 0,
+  TYPE_FONT_MAIN_LARGE,
   TYPE_INTERFACE,
   TYPE_INTRO_MAIN,
+  TYPE_WM_ICON,
   //
   RPG_GRAPHICS_TYPE_MAX,
   RPG_GRAPHICS_TYPE_INVALID
@@ -50,9 +52,11 @@ class RPG_Graphics_TypeHelper
   inline static void init()
   {
     myRPG_Graphics_TypeToStringTable.clear();
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FONT_MAIN, ACE_TEXT_ALWAYS_CHAR("TYPE_FONT_MAIN")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FONT_MAIN_NORMAL, ACE_TEXT_ALWAYS_CHAR("TYPE_FONT_MAIN_NORMAL")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FONT_MAIN_LARGE, ACE_TEXT_ALWAYS_CHAR("TYPE_FONT_MAIN_LARGE")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_INTERFACE, ACE_TEXT_ALWAYS_CHAR("TYPE_INTERFACE")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_INTRO_MAIN, ACE_TEXT_ALWAYS_CHAR("TYPE_INTRO_MAIN")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_WM_ICON, ACE_TEXT_ALWAYS_CHAR("TYPE_WM_ICON")));
   };
 
   inline static std::string RPG_Graphics_TypeToString(const RPG_Graphics_Type& element_in)

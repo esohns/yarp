@@ -57,6 +57,8 @@ class RPG_Graphics_Common_Tools
   static Uint32 CLR32_CURSE_RED;
   static Uint32 CLR32_GOLD_SHADE;
 
+  // init string conversion facilities
+  static void initStringConversionTables();
   // *WARNING*: needs to be called AFTER SDL_SetVideoMode !
   static void init(const std::string&,      // graphics directory
                    const unsigned long&);   // cache size
@@ -65,9 +67,18 @@ class RPG_Graphics_Common_Tools
   static const std::string elementTypeToString(const RPG_Graphics_ElementTypeUnion&);
   static const std::string elementsToString(const RPG_Graphics_Elements_t&);
 
-  // *NOTE*: uncached surfaces need to be SDL_FreeSurface()ed by the user !
+  static const SDL_Color colorToSDLColor(const Uint32&,       // RGBA value
+                                         const SDL_Surface&); // target surface
+  static const RPG_Graphics_TextSize_t textSize(const RPG_Graphics_Type&, // font
+                                                const std::string&);      // string
+
+  // *NOTE*: uncached (!) surfaces need to be SDL_FreeSurface()ed by the user !
   static SDL_Surface* loadGraphic(const RPG_Graphics_Type&, // graphic
                                   const bool& = true);      // cache graphic ?
+  // *NOTE*: results need to be SDL_FreeSurface()ed by the user !
+  // *WARNING*: display format is not available UNTIL AFTER SDL_SetVideoMode !
+  static SDL_Surface* loadFile(const std::string&, // image file
+                               const bool& = true); // convert to display format ?
 
   static SDL_Surface* get(const unsigned long&, // offset x (top-left == 0,0)
                           const unsigned long&, // offset y (top-left == 0,0)
@@ -82,6 +93,7 @@ class RPG_Graphics_Common_Tools
                       const std::string&,       // string
                       const SDL_Color&,         // color
                       const bool&,              // shade ?
+                      const SDL_Color&,         // shade color
                       const unsigned long&,     // offset x (top left == 0,0)
                       const unsigned long&,     // offset y (top left == 0,0)
                       SDL_Surface*);            // target surface (screen)
@@ -100,8 +112,6 @@ class RPG_Graphics_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools& operator=(const RPG_Graphics_Common_Tools&));
 
   // helper methods
-  // init string conversion (and any other) tables
-  static void initStringConversionTables();
   static void initColors();
   static const bool initFonts();
   static const bool loadPNG(const unsigned char*, // source buffer

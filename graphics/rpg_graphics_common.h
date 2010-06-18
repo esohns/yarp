@@ -70,4 +70,6 @@ struct RPG_Graphics_Font_t
 typedef std::vector<RPG_Graphics_Font_t> RPG_Graphics_Fonts_t;
 typedef RPG_Graphics_Fonts_t::const_iterator RPG_Graphics_FontsConstIterator_t;
 
+typedef std::pair<unsigned long, unsigned long> RPG_Graphics_TextSize_t;
+
 #endif

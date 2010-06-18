@@ -32,8 +32,13 @@
 class RPG_Sound_Common_Tools
 {
  public:
+  // init string conversion facilities
+  static void initStringConversionTables();
+
   static void init(const std::string&,    // sound directory
                    const unsigned long&); // cache size
+  static void fini();
+
   static void playSound(const RPG_Sound_Event&); // event
 
  private:
@@ -43,15 +48,13 @@ class RPG_Sound_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools(const RPG_Sound_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools& operator=(const RPG_Sound_Common_Tools&));
 
-  // helper methods
-  // init string conversion (and any other) tables
-  static void initStringConversionTables();
-
   static std::string            mySoundDirectory;
-  static ACE_Thread_Mutex       myLock;
+
+  static ACE_Thread_Mutex       myCacheLock;
   static unsigned long          myOldestCacheEntry;
   static unsigned long          myCacheSize;
   static RPG_Sound_SoundCache_t mySoundCache;
+
   static bool                   myInitialized;
 };
 

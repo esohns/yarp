@@ -112,8 +112,6 @@ RPG_Graphics_Common_Tools::init(const std::string& directory_in,
   } // end IF
   else
   {
-    // init string conversion
-    initStringConversionTables();
     // init colors
     initColors();
   } // end ELSE
@@ -252,6 +250,59 @@ RPG_Graphics_Common_Tools::elementsToString(const RPG_Graphics_Elements_t& eleme
   return result;
 }
 
+const SDL_Color
+RPG_Graphics_Common_Tools::colorToSDLColor(const Uint32& color_in,
+                                           const SDL_Surface& targetSurface_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::colorToSDLColor"));
+
+  SDL_Color result;
+
+  // extract components from the 32-bit color value
+  result.r = (color_in & targetSurface_in.format->Rmask) >> targetSurface_in.format->Rshift;
+  result.g = (color_in & targetSurface_in.format->Gmask) >> targetSurface_in.format->Gshift;
+  result.b = (color_in & targetSurface_in.format->Bmask) >> targetSurface_in.format->Bshift;
+  result.unused = 0;
+
+  return result;
+}
+
+const RPG_Graphics_TextSize_t
+RPG_Graphics_Common_Tools::textSize(const RPG_Graphics_Type& type_in,
+                                    const std::string& textString_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::textSize"));
+
+  int width = 0;
+  int height = 0;
+
+  // synch cache access
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
+
+    // step1: retrieve font cache entry
+    RPG_Graphics_FontCacheIterator_t iterator = myFontCache.find(type_in);
+    ACE_ASSERT(iterator != myFontCache.end());
+
+    if (TTF_SizeText((*iterator).second,
+                     textString_in.c_str(),
+                     &width,
+                     &height))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to TTF_SizeText(\"%s\", \"%s\"): %s, aborting\n"),
+                 RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str(),
+                 textString_in.c_str(),
+                 SDL_GetError()));
+
+      return RPG_Graphics_TextSize_t(0, 0);
+    } // end IF
+  } // end lock scope
+
+  return RPG_Graphics_TextSize_t(ACE_static_cast(unsigned long, width),
+                                 ACE_static_cast(unsigned long, height));
+}
+
 SDL_Surface*
 RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
                                        const bool& cacheGraphic_in)
@@ -294,44 +345,28 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += graphic.file;
   // sanity check
-  if (!RPG_Common_File_Tools::isReadable(path))
+  if ((graphic.category != CATEGORY_INTERFACE) &&
+      (graphic.category != CATEGORY_IMAGE) &&
+      (graphic.category != CATEGORY_TILE))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid argument(\"%s\"): not readable, aborting\n"),
-               path.c_str()));
+               ACE_TEXT("invalid graphics category (was: \"%s\"): type (\"%s\") is not an image, aborting\n"),
+               RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str(),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphic.type).c_str()));
 
     return NULL;
   } // end IF
 
-  // load complete file into memory
-  // *TODO*: this isn't really necessary...
-  unsigned char* srcbuf = NULL;
-  if (!RPG_Common_File_Tools::loadFile(path,
-                                       srcbuf))
+  node.image = RPG_Graphics_Common_Tools::loadFile(path,  // graphics file
+                                                   true); // convert to display format
+  if (!node.image)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_File_Tools::loadFile(\"%s\"), aborting\n"),
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
                path.c_str()));
 
     return NULL;
   } // end IF
-
-  // extract SDL surface from PNG
-  if (!loadPNG(srcbuf,
-               node.image))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to loadPNG(\"%s\"), aborting\n"),
-               path.c_str()));
-
-    // clean up
-    delete[] srcbuf;
-
-    return NULL;
-  } // end IF
-
-  // clean up
-  delete[] srcbuf;
 
   if (cacheGraphic_in)
   {
@@ -356,6 +391,82 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
   } // end IF
 
   return node.image;
+}
+
+SDL_Surface*
+RPG_Graphics_Common_Tools::loadFile(const std::string& filename_in,
+                                    const bool& convertToDisplayFormat_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadFile"));
+
+  // init return value(s)
+  SDL_Surface* result = NULL;
+
+  // sanity check
+  if (!RPG_Common_File_Tools::isReadable(filename_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid argument(\"%s\"): not readable, aborting\n"),
+               filename_in.c_str()));
+
+    return NULL;
+  } // end IF
+
+  // load complete file into memory
+  // *TODO*: this isn't really necessary...
+  unsigned char* srcbuf = NULL;
+  if (!RPG_Common_File_Tools::loadFile(filename_in,
+                                       srcbuf))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_File_Tools::loadFile(\"%s\"), aborting\n"),
+               filename_in.c_str()));
+
+    return NULL;
+  } // end IF
+
+  // extract SDL surface from PNG
+  if (!loadPNG(srcbuf,
+               result))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadPNG(\"%s\"), aborting\n"),
+               filename_in.c_str()));
+
+    // clean up
+    delete[] srcbuf;
+
+    return NULL;
+  } // end IF
+
+  // clean up
+  delete[] srcbuf;
+
+  if (convertToDisplayFormat_in)
+  {
+    SDL_Surface* convert = NULL;
+    // *TODO*: is this really necessary at all ?
+    // (if possible), convert surface to the pixel format and colors of the
+    // video framebuffer (--> apparently, this allows fast(er) blitting)
+    convert = SDL_DisplayFormatAlpha(result);
+    if (!convert)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_DisplayFormatAlpha(): %s, aborting\n"),
+                 SDL_GetError()));
+
+      // clean up
+      SDL_FreeSurface(result);
+
+      return NULL;
+    } // end IF
+
+    // clean up
+    SDL_FreeSurface(result);
+    result = convert;
+  } // end IF
+
+  return result;
 }
 
 SDL_Surface*
@@ -506,6 +617,7 @@ RPG_Graphics_Common_Tools::putText(const RPG_Graphics_Type& type_in,
                                    const std::string& textString_in,
                                    const SDL_Color& color_in,
                                    const bool& shade_in,
+                                   const SDL_Color& shadeColor_in,
                                    const unsigned long& offsetX_in,
                                    const unsigned long& offsetY_in,
                                    SDL_Surface* targetSurface_in)
@@ -514,6 +626,30 @@ RPG_Graphics_Common_Tools::putText(const RPG_Graphics_Type& type_in,
 
   // render text
   SDL_Surface* rendered_text = NULL;
+  if (shade_in)
+  {
+    rendered_text = renderText(type_in,
+                               textString_in,
+                               shadeColor_in);
+    if (!rendered_text)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Graphics_Common_Tools::renderText(\"%s\", \"%s\"), aborting\n"),
+                 RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str(),
+                 textString_in.c_str()));
+
+      return;
+    } // end IF
+
+    put(offsetX_in + 1,
+        offsetY_in + 1,
+        *rendered_text,
+        targetSurface_in);
+
+    // clean up
+    SDL_FreeSurface(rendered_text);
+    rendered_text = NULL;
+  } // end IF
   rendered_text = renderText(type_in,
                              textString_in,
                              color_in);
@@ -828,6 +964,17 @@ RPG_Graphics_Common_Tools::initFonts()
         return false;
       } // end IF
 
+      ACE_DEBUG((LM_INFO,
+                 ACE_TEXT("loaded font \"%s - %s\" %d face(s) [%s], height: %d (%d,%d), space: %d\n"),
+                 TTF_FontFaceFamilyName(font),
+                 TTF_FontFaceStyleName(font),
+                 TTF_FontFaces(font),
+                 (TTF_FontFaceIsFixedWidth(font) ? ACE_TEXT("fixed") : ACE_TEXT("variable")),
+                 TTF_FontHeight(font),
+                 TTF_FontAscent(font),
+                 TTF_FontDescent(font),
+                 TTF_FontLineSkip(font)));
+
       // cache this font
       myFontCache.insert(std::make_pair((*iterator).type, font));
     } // end FOR
@@ -1082,28 +1229,6 @@ RPG_Graphics_Common_Tools::loadPNG(const unsigned char* buffer_in,
   png_destroy_read_struct(&png_ptr,
                           &info_ptr,
                           NULL);
-
-  SDL_Surface* convert = NULL;
-  // *TODO*: is this really necessary at all ?
-  // (if possible), convert surface to the pixel format and colors of the
-  // video framebuffer (allows fast(er) blitting)
-  convert = SDL_DisplayFormatAlpha(surface_out);
-  if (!convert)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_DisplayFormatAlpha(): %s, aborting\n"),
-               SDL_GetError()));
-
-    // clean up
-    SDL_FreeSurface(surface_out);
-    surface_out = NULL;
-
-    return false;
-  } // end IF
-
-  // clean up
-  SDL_FreeSurface(surface_out);
-  surface_out = convert;
 
   return true;
 }

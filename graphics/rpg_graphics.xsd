@@ -98,9 +98,11 @@
 
   <xsd:simpleType name="RPG_Graphics_Type_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="TYPE_FONT_MAIN"/>
+      <xsd:enumeration value="TYPE_FONT_MAIN_NORMAL"/>
+      <xsd:enumeration value="TYPE_FONT_MAIN_LARGE"/>
       <xsd:enumeration value="TYPE_INTERFACE"/>
       <xsd:enumeration value="TYPE_INTRO_MAIN"/>
+      <xsd:enumeration value="TYPE_WM_ICON"/>
     </xsd:restriction>
   </xsd:simpleType>
 

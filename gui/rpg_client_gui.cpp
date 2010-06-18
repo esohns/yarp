@@ -663,7 +663,7 @@ reactor_worker_func(void* args_in)
   return 0;
 }
 
-void
+const bool
 do_initAudio(const SDL_audio_config_t& audioConfig_in)
 {
   ACE_TRACE(ACE_TEXT("::do_initAudio"));
@@ -695,7 +695,7 @@ do_initAudio(const SDL_audio_config_t& audioConfig_in)
                ACE_TEXT("failed to Mix_OpenAudio(): \"%s\", aborting\n"),
                SDL_GetError()));
 
-    return;
+    return false;
   } // end IF
 //   Mix_AllocateChannels(4);
   SDL_audio_config_t obtained;
@@ -711,7 +711,7 @@ do_initAudio(const SDL_audio_config_t& audioConfig_in)
                ACE_TEXT("failed to Mix_QuerySpec(): \"%s\", aborting\n"),
                SDL_GetError()));
 
-    return;
+    return false;
   } // end IF
   char driver[MAXPATHLEN];
   if (!SDL_AudioDriverName(driver, sizeof(driver)))
@@ -720,7 +720,7 @@ do_initAudio(const SDL_audio_config_t& audioConfig_in)
                ACE_TEXT("failed to SDL_AudioDriverName(): \"%s\", aborting\n"),
                SDL_GetError()));
 
-    return;
+    return false;
   } // end IF
 
   // initialize audioCD playing
@@ -730,12 +730,11 @@ do_initAudio(const SDL_audio_config_t& audioConfig_in)
                ACE_TEXT("failed to SDL_CDNumDrives(): \"%s\", aborting\n"),
                SDL_GetError()));
 
-    return;
+    return false;
   } // end IF
   SDL_CD* cdrom = NULL;
   cdrom = SDL_CDOpen(0); // open default drive
 
-  // debug info
   ACE_DEBUG((LM_INFO,
              ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency: %d\nformat: %u\nchannels: %u\nCD [id, status]: \"%s\" [%d, %d]\n"),
              driver,
@@ -745,23 +744,34 @@ do_initAudio(const SDL_audio_config_t& audioConfig_in)
              SDL_CDName(0),
              cdrom->id,
              cdrom->status));
+
+  return true;
 }
 
-void
-do_initGUI(const std::string& UIfile_in,
+const bool
+do_initGUI(const std::string& graphicsDirectory_in,
+           const std::string& UIfile_in,
            const GTK_cb_data_t& userData_in,
            const SDL_video_config_t& videoConfig_in)
 {
   ACE_TRACE(ACE_TEXT("::do_initGUI"));
 
   // sanity check(s)
+  if (!RPG_Common_File_Tools::isDirectory(graphicsDirectory_in.c_str()))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid directory \"%s\", aborting\n"),
+               graphicsDirectory_in.c_str()));
+
+    return false;
+  } // end IF
   if (!RPG_Common_File_Tools::isReadable(UIfile_in.c_str()))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("UI definition file \"%s\" doesn't exist, aborting\n"),
                UIfile_in.c_str()));
 
-    return;
+    return false;
   } // end IF
   if (xml)
   {
@@ -786,7 +796,7 @@ do_initGUI(const std::string& UIfile_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_new(): \"%m\", aborting\n")));
 
-    return;
+    return false;
   } // end IF
 
   // step2: auto-connect signals/slots
@@ -805,7 +815,7 @@ do_initGUI(const std::string& UIfile_in,
     g_object_unref(G_OBJECT(xml));
     xml = NULL;
 
-    return;
+    return false;
   } // end IF
 
   // step4: connect default signals
@@ -855,8 +865,27 @@ do_initGUI(const std::string& UIfile_in,
 
   // ***** window/screen setup *****
   // set window caption
-  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING), // title
-                    NULL);                                // icon
+  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING),  // window caption
+                    ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING)); // icon caption
+  // set window icon
+  RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(TYPE_WM_ICON);
+  ACE_ASSERT(icon_graphic.type == TYPE_WM_ICON);
+  std::string path = graphicsDirectory_in;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += icon_graphic.file;
+  SDL_Surface* icon_image = NULL;
+  icon_image = RPG_Graphics_Common_Tools::loadFile(path,   // graphics file
+                                                   false); // don't convert to display format (no screen yet !)
+  if (!icon_image)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
+               path.c_str()));
+
+    return false;
+  } // end IF
+  SDL_WM_SetIcon(icon_image, // surface
+                 NULL);      // mask (--> everything)
 //   // don't show (double) cursor
 //   SDL_ShowCursor(SDL_DISABLE);
 
@@ -868,13 +897,13 @@ do_initGUI(const std::string& UIfile_in,
                ACE_TEXT("failed to SDL_VideoDriverName(): \"%s\", aborting\n"),
                SDL_GetError()));
 
-    return;
+    return false;
   } // end IF
   // retrieve/list "best" available video mode
   const SDL_VideoInfo* videoInfo = NULL;
   videoInfo = SDL_GetVideoInfo();
   ACE_ASSERT(videoInfo);
-  // debug info
+
   ACE_DEBUG((LM_INFO,
              ACE_TEXT("*** video capabilities (driver: \"%s\") ***\nhardware surfaces: \"%s\"\nwindow manager: \"%s\"\nhardware to hardware blits accelerated: \"%s\"\nhardware to hardware colorkey blits accelerated: \"%s\"\nhardware to hardware alpha blits accelerated: \"%s\"\nsoftware to hardware blits accelerated: \"%s\"\nsoftware to hardware colorkey blits accelerated: \"%s\"\nsoftware to hardware alpha blits accelerated: \"%s\"\ncolor fills accelerated: \"%s\"\nvideo memory: %d bytes\n*** (suggested) video mode ***\npalette: %@\nbits[bytes]/pixel: %d[%d]\nmask[RGBA]: %x %x %x %x\nshift[RGBA]: %d %d %d %d\nloss[RGBA]: %d %d %d %d\ntransparent colorkey: %d\noverall surface alpha: %d\n"),
              driver,
@@ -918,7 +947,7 @@ do_initGUI(const std::string& UIfile_in,
                ACE_TEXT("no available resolutions (flags: %x: change your settings), aborting\n"),
                surface_flags));
 
-    return;
+    return false;
   } // end IF
   else if (modes == ACE_reinterpret_cast(SDL_Rect**, -1))
   {
@@ -958,7 +987,7 @@ do_initGUI(const std::string& UIfile_in,
                  videoConfig_in.screen_colordepth,
                  surface_flags));
 
-      return;
+      return false;
     }
     default:
     {
@@ -988,7 +1017,7 @@ do_initGUI(const std::string& UIfile_in,
                surface_flags,
                SDL_GetError()));
 
-    return;
+    return false;
   } // end IF
 
   ACE_DEBUG((LM_INFO,
@@ -1003,9 +1032,11 @@ do_initGUI(const std::string& UIfile_in,
              ((screen->flags & SDL_RLEACCEL) ? ACE_TEXT("yes") : ACE_TEXT("no")),
              ((screen->flags & SDL_SRCALPHA) ? ACE_TEXT("yes") : ACE_TEXT("no")),
              ((screen->flags & SDL_PREALLOC) ? ACE_TEXT("yes") : ACE_TEXT("no"))));
+
+  return true;
 }
 
-void
+const bool
 do_runIntro()
 {
   ACE_TRACE(ACE_TEXT("::do_runIntro"));
@@ -1021,7 +1052,7 @@ do_runIntro()
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), aborting\n"),
                RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_INTRO_MAIN).c_str()));
 
-    return;
+    return false;
   } // end IF
   // *TODO* stretch this image fullscreen
   // center logo image
@@ -1042,6 +1073,8 @@ do_runIntro()
                                   3.0,                                    // interval
                                   RPG_Graphics_Common_Tools::CLR32_BLACK, // fade to black
                                   screen);                                // screen
+
+  return true;
 }
 
 void
@@ -1052,6 +1085,8 @@ do_work(const RPG_Client_Config& config_in)
   // step0a: init RPG libs
   RPG_Dice_Common_Tools::initStringConversionTables();
   RPG_Common_Tools::initStringConversionTables();
+  RPG_Sound_Common_Tools::initStringConversionTables();
+  RPG_Graphics_Common_Tools::initStringConversionTables();
 
   // step0b: (if necessary) init the TP_Reactor
   if (config_in.num_threadpool_threads)
@@ -1080,16 +1115,16 @@ do_work(const RPG_Client_Config& config_in)
 
     return;
   }
-  do_initAudio(config_in.audio_config);
+  if (!do_initAudio(config_in.audio_config))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to initialize audio, aborting\n")));
+
+    return;
+  } // end IF
 
   // step2: init UI
-  do_initGUI(config_in.glade_file,    // glade file
-             config_in.gtk_cb_data,   // GTK cb data
-             config_in.video_config); // SDL video config
-  ACE_ASSERT(xml);
-  ACE_ASSERT(dialog);
-  ACE_ASSERT(screen);
-  //  init graphics dictionary
+  // init graphics dictionary
   try
   {
     RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(config_in.graphics_dictionary);
@@ -1101,15 +1136,36 @@ do_work(const RPG_Client_Config& config_in)
 
     return;
   }
+  if (!do_initGUI(config_in.graphics_directory, // graphics directory
+                  config_in.glade_file,         // glade file
+                  config_in.gtk_cb_data,        // GTK cb data
+                  config_in.video_config))      // SDL video config
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to initialize video, aborting\n")));
+
+    return;
+  } // end IF
+  ACE_ASSERT(xml);
+  ACE_ASSERT(dialog);
+  ACE_ASSERT(screen);
   RPG_Graphics_Common_Tools::init(config_in.graphics_directory,
                                   config_in.graphics_cache_size);
 
-  // step3: run intro
-//   do_runIntro();
+//   // step3: run intro
+//   if (!do_runIntro())
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to run intro, aborting\n")));
+//
+//     return;
+//   } // end IF
 
   // step4: setup main "window"
-  RPG_Graphics_SDLWindow window(INTERFACEWINDOW_MAIN,
-                                RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE);
+  std::string title = RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE;
+  RPG_Graphics_SDLWindow window(INTERFACEWINDOW_MAIN,                     // window type
+                                RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE, // interface elements
+                                title);                                   // title (== caption)
   window.draw(screen,
               0,
               0);
@@ -1474,6 +1530,13 @@ ACE_TMAIN(int argc_in,
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv_in[0])));
 
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
     return EXIT_FAILURE;
   } // end IF
 
@@ -1577,6 +1640,13 @@ ACE_TMAIN(int argc_in,
                ACE_TEXT("failed to SDL_Init(): \"%s\", aborting\n"),
                SDL_GetError()));
 
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
     return EXIT_FAILURE;
   } // end IF
   if (TTF_Init() == -1)
@@ -1584,6 +1654,14 @@ ACE_TMAIN(int argc_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to TTF_Init(): \"%s\", aborting\n"),
                SDL_GetError()));
+
+    SDL_Quit();
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -1609,7 +1687,6 @@ ACE_TMAIN(int argc_in,
   // step3: do actual work
   do_work(config);
   timer.stop();
-
   // debug info
   std::string working_time_string;
   ACE_Time_Value working_time;
@@ -1625,17 +1702,6 @@ ACE_TMAIN(int argc_in,
   TTF_Quit();
   SDL_Quit();
 
-  // *PORTABILITY*: on Windows, we must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  if (ACE::fini() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
-
-    return EXIT_FAILURE;
-  } // end IF
-#endif
-
   // stop profile timer...
   process_profile.stop();
 
@@ -1648,6 +1714,13 @@ ACE_TMAIN(int argc_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Profile_Timer::elapsed_time: \"%m\", aborting\n")));
+
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -1664,8 +1737,6 @@ ACE_TMAIN(int argc_in,
                                   user_time_string);
   RPG_Common_Tools::period2String(system_time,
                                   system_time_string);
-
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
              elapsed_time.real_time,
@@ -1687,6 +1758,17 @@ ACE_TMAIN(int argc_in,
              elapsed_rusage.ru_nsignals,
              elapsed_rusage.ru_nvcsw,
              elapsed_rusage.ru_nivcsw));
+
+  // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::fini() == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+
+    return EXIT_FAILURE;
+  } // end IF
+#endif
 
   return EXIT_SUCCESS;
 } // end main

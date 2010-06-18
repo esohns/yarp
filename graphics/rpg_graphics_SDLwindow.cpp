@@ -19,17 +19,22 @@
  ***************************************************************************/
 #include "rpg_graphics_SDLwindow.h"
 
+#include "rpg_graphics_defines.h"
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_common_tools.h"
 
 RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_InterfaceWindow_t& type_in,
-                                               const RPG_Graphics_Type& graphicType_in)
+                                               const RPG_Graphics_Type& graphicType_in,
+                                               const std::string& title_in,
+                                               const RPG_Graphics_Type& fontType_in)
  : myBorderTop(0),
    myBorderBottom(0),
    myBorderLeft(0),
    myBorderRight(0),
    myType(type_in),
    myGraphicsType(graphicType_in),
+   myTitle(title_in),
+   myTitleFont(fontType_in),
    myInitialized(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow"));
@@ -228,6 +233,35 @@ RPG_Graphics_SDLWindow::draw(SDL_Surface* targetSurface_in,
                                      *(*iterator).second,
                                      targetSurface_in);
 
+  // step4: draw title (if any)
+  if (!myTitle.empty())
+  {
+    clipRect.x = myBorderLeft;
+    clipRect.y = 0;
+    clipRect.w = targetSurface_in->w - (myBorderLeft + myBorderRight);
+    clipRect.h = myBorderTop;
+    if (!SDL_SetClipRect(targetSurface_in, &clipRect))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+                 SDL_GetError()));
+
+      return;
+    } // end IF
+    RPG_Graphics_TextSize_t title_size = RPG_Graphics_Common_Tools::textSize(myTitleFont,
+                                                                             myTitle);
+    RPG_Graphics_Common_Tools::putText(myTitleFont,
+                                       myTitle,
+                                       RPG_Graphics_Common_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_COLOR,
+                                                                                  *targetSurface_in),
+                                       true, // add shade
+                                       RPG_Graphics_Common_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+                                                                                  *targetSurface_in),
+                                       myBorderLeft, // top left
+                                       ((myBorderTop - title_size.second) / 2), // center of top border
+                                       targetSurface_in);
+  } // end IF
+
   // reset clipping area
   clipRect.x = 0;
   clipRect.y = 0;
@@ -241,14 +275,6 @@ RPG_Graphics_SDLWindow::draw(SDL_Surface* targetSurface_in,
 
     return;
   } // end IF
-
-  // step4: draw title
-//   pos_x = this->abs_x + border_left;
-//   pos_y = this->abs_y + border_top;
-//
-//   if (!caption.empty())
-//     vultures_put_text_shadow(V_FONT_HEADLINE, caption, vultures_screen, pos_x,
-//                              pos_y, V_COLOR_TEXT, V_COLOR_BACKGROUND);
 
   // whole window needs a refresh...
   myDirtyRegions.push_back(clipRect);

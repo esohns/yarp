@@ -242,12 +242,13 @@ RPG_Graphics_Dictionary::dump() const
        iterator++, index++)
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("Graphic[#%u]:\nCategory: %s\nType: %s\nOrientation: %s\nStyle: %s\nElement(s):\n%sFile: %s\nSize: %u\n"),
+               ACE_TEXT("Graphic[#%u]:\nCategory: %s\nType: %s\nOrientation: %s\nStyle: %s\nElement(s)[%u]:\n%sFile: %s\nSize: %u\n"),
                index,
                RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString((iterator->second).category).c_str(),
                RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString((iterator->second).type).c_str(),
-               RPG_Graphics_TileOrientationHelper::RPG_Graphics_TileOrientationToString((iterator->second).orientation).c_str(),
-               RPG_Graphics_Common_Tools::styleToString((iterator->second).style).c_str(),
+               (((iterator->second).orientation == RPG_GRAPHICS_TILEORIENTATION_INVALID) ? ACE_TEXT("N/A") : RPG_Graphics_TileOrientationHelper::RPG_Graphics_TileOrientationToString((iterator->second).orientation).c_str()),
+               (((iterator->second).style.discriminator == RPG_Graphics_StyleUnion::INVALID) ? ACE_TEXT("N/A") : RPG_Graphics_Common_Tools::styleToString((iterator->second).style).c_str()),
+               (iterator->second).elements.size(),
                RPG_Graphics_Common_Tools::elementsToString((iterator->second).elements).c_str(),
                ((iterator->second).file).c_str(),
                (iterator->second).size));

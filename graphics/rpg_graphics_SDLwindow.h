@@ -27,14 +27,18 @@
 
 #include <ace/Global_Macros.h>
 
+#include <string>
+
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Graphics_SDLWindow
 {
  public:
-  RPG_Graphics_SDLWindow(const RPG_Graphics_InterfaceWindow_t&, // type
-                         const RPG_Graphics_Type&);             // style
+  RPG_Graphics_SDLWindow(const RPG_Graphics_InterfaceWindow_t&,            // type
+                         const RPG_Graphics_Type&,                         // style
+                         const std::string&,                               // title
+                         const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
   virtual ~RPG_Graphics_SDLWindow();
 
   void draw(SDL_Surface*,              // target surface (screen !)
@@ -61,11 +65,17 @@ class RPG_Graphics_SDLWindow
   unsigned long                    myBorderLeft;
   unsigned long                    myBorderRight;
 
+//   // title sizes
+//   unsigned long                    myTitleWidth;
+//   unsigned long                    myTitleHeight;
+
   // dirty region(s)
   RPG_Graphics_DirtyRegions_t      myDirtyRegions;
 
   RPG_Graphics_InterfaceWindow_t   myType;
   RPG_Graphics_Type                myGraphicsType;
+  std::string                      myTitle;
+  RPG_Graphics_Type                myTitleFont;
   bool                             myInitialized;
   RPG_Graphics_InterfaceElements_t myElementGraphics;
 };

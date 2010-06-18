@@ -32,10 +32,12 @@ RPG_Sound_CategoryToStringTable_t RPG_Sound_CategoryHelper::myRPG_Sound_Category
 RPG_Sound_EventToStringTable_t RPG_Sound_EventHelper::myRPG_Sound_EventToStringTable;
 
 std::string            RPG_Sound_Common_Tools::mySoundDirectory;
-ACE_Thread_Mutex       RPG_Sound_Common_Tools::myLock;
+
+ACE_Thread_Mutex       RPG_Sound_Common_Tools::myCacheLock;
 unsigned long          RPG_Sound_Common_Tools::myOldestCacheEntry = 0;
 unsigned long          RPG_Sound_Common_Tools::myCacheSize = 0;
 RPG_Sound_SoundCache_t RPG_Sound_Common_Tools::mySoundCache;
+
 bool                   RPG_Sound_Common_Tools::myInitialized = false;
 
 void RPG_Sound_Common_Tools::init(const std::string& directory_in,
@@ -57,28 +59,40 @@ void RPG_Sound_Common_Tools::init(const std::string& directory_in,
 
   if (myInitialized)
   {
-    // synch access to sound cache
-    {
-      ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+    // clean up
+    fini();
 
-      // clear the sound cache
-      for (RPG_Sound_SoundCacheIterator_t iter = mySoundCache.begin();
-          iter != mySoundCache.end();
-          iter++)
-      {
-        Mix_FreeChunk((*iter).chunk);
-      } // end FOR
-      mySoundCache.clear();
-      myOldestCacheEntry = 0;
-    } // end lock scope
+    myInitialized = false;
   } // end IF
   else
   {
-    // init string conversion
-    initStringConversionTables();
+
   } // end ELSE
 
   myInitialized = true;
+}
+
+void
+RPG_Sound_Common_Tools::fini()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::fini"));
+
+  // synch cache access
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
+
+    // clear the sound cache
+    for (RPG_Sound_SoundCacheIterator_t iter = mySoundCache.begin();
+         iter != mySoundCache.end();
+         iter++)
+    {
+      Mix_FreeChunk((*iter).chunk);
+    } // end FOR
+    mySoundCache.clear();
+    myOldestCacheEntry = 0;
+  } // end lock scope
+
+  myInitialized = false;
 }
 
 void RPG_Sound_Common_Tools::playSound(const RPG_Sound_Event& event_in)
@@ -89,14 +103,14 @@ void RPG_Sound_Common_Tools::playSound(const RPG_Sound_Event& event_in)
   RPG_Sound_SoundCacheNode_t node;
   node.event = event_in;
 
-  // synch access to sound cache
+  // synch cache access
   {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
 
     RPG_Sound_SoundCacheIterator_t iter = mySoundCache.begin();
     for (;
-        iter != mySoundCache.end();
-        iter++)
+         iter != mySoundCache.end();
+         iter++)
       if ((*iter) == node)
         break;
     if (iter == mySoundCache.end())

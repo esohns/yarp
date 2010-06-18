@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <rpg_graphics_dictionary.h>
+#include <rpg_graphics_SDLwindow.h>
 #include <rpg_graphics_common_tools.h>
 
 #include <rpg_common_tools.h>
@@ -45,17 +46,19 @@
 #include <config.h>
 #endif
 
-#define GRAPHICSPARSER_DEF_GRAPHICS_DICTIONARY ACE_TEXT("rpg_graphics.xml")
-#define GRAPHICSPARSER_DEF_GRAPHICS_DIRECTORY  ACE_TEXT("./../../graphics/data")
-#define GRAPHICSPARSER_DEF_GRAPHICS_CACHESIZE  50
+#define GRAPHICSPARSER_DEF_GRAPHICS_DICTIONARY       ACE_TEXT("rpg_graphics.xml")
+#define GRAPHICSPARSER_DEF_GRAPHICS_DIRECTORY        ACE_TEXT("./../../graphics/data")
+#define GRAPHICSPARSER_DEF_GRAPHICS_CACHESIZE        50
+#define GRAPHICSPARSER_DEF_GRAPHICS_WINDOWSTYLE_TYPE TYPE_INTERFACE
+#define GRAPHICSPARSER_DEF_GRAPHICS_MAINWINDOW_TITLE ACE_TEXT_ALWAYS_CHAR("window")
 
-#define GRAPHICSPARSER_DEF_VIDEO_W             1024
-#define GRAPHICSPARSER_DEF_VIDEO_H             786
-#define GRAPHICSPARSER_DEF_VIDEO_BPP           32
-#define GRAPHICSPARSER_DEF_VIDEO_FULLSCREEN    false
-#define GRAPHICSPARSER_DEF_VIDEO_DOUBLEBUFFER  true
+#define GRAPHICSPARSER_DEF_VIDEO_W                   1024
+#define GRAPHICSPARSER_DEF_VIDEO_H                   786
+#define GRAPHICSPARSER_DEF_VIDEO_BPP                 32
+#define GRAPHICSPARSER_DEF_VIDEO_FULLSCREEN          false
+#define GRAPHICSPARSER_DEF_VIDEO_DOUBLEBUFFER        true
 
-#define SDL_TIMEREVENT                         SDL_USEREVENT
+#define SDL_TIMEREVENT                               SDL_USEREVENT
 
 // *NOTE* types as used by SDL
 struct SDL_video_config_t
@@ -70,8 +73,9 @@ struct SDL_video_config_t
 
 static SDL_Surface* screen = NULL;
 
-void
-do_initVideo(const SDL_video_config_t& config_in)
+const bool
+do_initVideo(const std::string& graphicsDirectory_in,
+             const SDL_video_config_t& config_in)
 {
   ACE_TRACE(ACE_TEXT("::do_initVideo"));
 
@@ -79,8 +83,27 @@ do_initVideo(const SDL_video_config_t& config_in)
 
   // ***** window/screen setup *****
   // set window caption
-  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING), // title
-                    NULL);                                // icon
+  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING),  // window caption
+                    ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING)); // icon caption
+  // set window icon
+  RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(TYPE_WM_ICON);
+  ACE_ASSERT(icon_graphic.type == TYPE_WM_ICON);
+  std::string path = graphicsDirectory_in;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += icon_graphic.file;
+  SDL_Surface* icon_image = NULL;
+  icon_image = RPG_Graphics_Common_Tools::loadFile(path,   // graphics file
+                                                   false); // don't convert to display format (no screen yet !)
+  if (!icon_image)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
+               path.c_str()));
+
+    return false;
+  } // end IF
+  SDL_WM_SetIcon(icon_image, // surface
+                 NULL);      // mask (--> everything)
   // enable cursor
   SDL_ShowCursor(SDL_ENABLE);
 
@@ -92,7 +115,7 @@ do_initVideo(const SDL_video_config_t& config_in)
                ACE_TEXT("failed to SDL_VideoDriverName(): \"%s\", aborting\n"),
                SDL_GetError()));
 
-    return;
+    return false;
   } // end IF
   // retrieve/list "best" available video mode
   const SDL_VideoInfo* videoInfo = NULL;
@@ -142,7 +165,7 @@ do_initVideo(const SDL_video_config_t& config_in)
                ACE_TEXT("no available resolutions (flags: %x) --> change settings, aborting\n"),
                surface_flags));
 
-    return;
+    return false;
   } // end IF
   else if (modes == ACE_reinterpret_cast(SDL_Rect**, -1))
   {
@@ -182,7 +205,7 @@ do_initVideo(const SDL_video_config_t& config_in)
                  config_in.screen_colordepth,
                  surface_flags));
 
-      return;
+      return false;
     }
     default:
     {
@@ -212,7 +235,7 @@ do_initVideo(const SDL_video_config_t& config_in)
                surface_flags,
                SDL_GetError()));
 
-    return;
+    return false;
   } // end IF
 
   ACE_DEBUG((LM_INFO,
@@ -227,6 +250,8 @@ do_initVideo(const SDL_video_config_t& config_in)
              ((screen->flags & SDL_RLEACCEL) ? ACE_TEXT("yes") : ACE_TEXT("no")),
              ((screen->flags & SDL_SRCALPHA) ? ACE_TEXT("yes") : ACE_TEXT("no")),
              ((screen->flags & SDL_PREALLOC) ? ACE_TEXT("yes") : ACE_TEXT("no"))));
+
+  return true;
 }
 
 Uint32
@@ -390,7 +415,8 @@ process_arguments(const int argc_in,
 
 void
 do_work(const std::string& dictionary_in,
-        const std::string& path_in,
+        const std::string& graphicsDirectory_in,
+        const SDL_video_config_t& videoConfig_in,
         const unsigned long& cacheSize_in,
         const bool& validateXML_in,
         const bool& dumpDictionary_in)
@@ -400,8 +426,9 @@ do_work(const std::string& dictionary_in,
   // step0: init: random seed, string conversion facilities, ...
   RPG_Dice::init();
   RPG_Dice_Common_Tools::initStringConversionTables();
+  RPG_Graphics_Common_Tools::initStringConversionTables();
 
-  // step1: init graphics dictionary
+  // step1a: init graphics dictionary
   try
   {
     RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(dictionary_in,
@@ -414,17 +441,37 @@ do_work(const std::string& dictionary_in,
 
     return;
   }
-  // step2: init graphics directory, cache, string conversion facilities, fonts, ...
-  RPG_Graphics_Common_Tools::init(path_in,
+
+  // step1b: init Video
+  if (!do_initVideo(graphicsDirectory_in,
+                    videoConfig_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to initialize video, aborting\n")));
+
+    return;
+  } // end IF
+  // step1c: init graphics directory, cache, fonts, ...
+  RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
                                   cacheSize_in);
 
-  // step3: dump monster descriptions
+  // step2: dump graphics descriptions
   if (dumpDictionary_in)
   {
     RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->dump();
   } // end IF
 
-  // step4: show (random) images
+  // step3: setup main "window"
+  std::string title = GRAPHICSPARSER_DEF_GRAPHICS_MAINWINDOW_TITLE;
+  RPG_Graphics_SDLWindow window(INTERFACEWINDOW_MAIN,                         // window type
+                                GRAPHICSPARSER_DEF_GRAPHICS_WINDOWSTYLE_TYPE, // interface elements
+                                title);                                       // title (== caption)
+  window.draw(screen,
+              0,
+              0);
+  window.refresh(screen);
+
+  // step4: show (random) images inside main "window"
   RPG_Graphics_Type type = RPG_GRAPHICS_TYPE_INVALID;
   RPG_Dice_RollResult_t result;
   SDL_Surface* image = NULL;
@@ -440,10 +487,10 @@ do_work(const std::string& dictionary_in,
     if (!image)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to load graphics type \"%s\", aborting\n"),
+                 ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
                  RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type).c_str()));
 
-      break;
+      continue;
     } // end IF
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("showing graphics type \"%s\"...\n"),
@@ -550,7 +597,7 @@ ACE_TMAIN(int argc,
   bool printVersionAndExit       = false;
   bool validateXML               = true;
 
-  std::string path               = GRAPHICSPARSER_DEF_GRAPHICS_DIRECTORY;
+  std::string graphicsDirectory  = GRAPHICSPARSER_DEF_GRAPHICS_DIRECTORY;
   unsigned long cacheSize        = GRAPHICSPARSER_DEF_GRAPHICS_CACHESIZE;
   SDL_video_config_t video_config;
   video_config.screen_width      = GRAPHICSPARSER_DEF_VIDEO_W;
@@ -572,6 +619,13 @@ ACE_TMAIN(int argc,
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
 
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
     return EXIT_FAILURE;
   } // end IF
 
@@ -585,13 +639,27 @@ ACE_TMAIN(int argc,
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
 
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
     return EXIT_FAILURE;
   } // end IF
-  else if (!RPG_Common_File_Tools::isDirectory(path))
+  else if (!RPG_Common_File_Tools::isDirectory(graphicsDirectory))
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid directory \"%s\", aborting\n"),
-               path.c_str()));
+               ACE_TEXT("invalid graphics directory \"%s\", aborting\n"),
+               graphicsDirectory.c_str()));
+
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -630,7 +698,7 @@ ACE_TMAIN(int argc,
     return EXIT_SUCCESS;
   } // end IF
 
-  // step2a: init SDL
+  // step2: init SDL
   if (SDL_Init(SDL_INIT_TIMER |
                SDL_INIT_VIDEO |
                SDL_INIT_NOPARACHUTE) == -1) // "...Prevents SDL from catching fatal signals..."
@@ -639,13 +707,12 @@ ACE_TMAIN(int argc,
                ACE_TEXT("failed to SDL_Init(): \"%s\", aborting\n"),
                SDL_GetError()));
 
-    return EXIT_FAILURE;
-  } // end IF
-  if (TTF_Init() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to TTF_Init(): \"%s\", aborting\n"),
-               SDL_GetError()));
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -658,15 +725,29 @@ ACE_TMAIN(int argc,
 //   // ignore keyboard events
 //   SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
 //   SDL_EventState(SDL_KEYUP, SDL_IGNORE);
+  if (TTF_Init() == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to TTF_Init(): \"%s\", aborting\n"),
+               SDL_GetError()));
 
-  // step2b: init Video
-  do_initVideo(video_config);
+    SDL_Quit();
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
+    return EXIT_FAILURE;
+  } // end IF
 
   // step3: do actual work
   ACE_High_Res_Timer timer;
   timer.start();
   do_work(filename,
-          path,
+          graphicsDirectory,
+          video_config,
           cacheSize,
           validateXML,
           dumpDictionary);
