@@ -9,8 +9,9 @@ include_HEADERS = rpg_graphics_SDLwindow.h rpg_graphics_XML_parser.h \
 	rpg_graphics_common_tools.h rpg_graphics_defines.h rpg_graphics_dictionary.h \
 	rpg_graphics_doorstyle.h rpg_graphics_element.h rpg_graphics_elementtypeunion.h \
 	rpg_graphics_floorstyle.h rpg_graphics_graphic.h rpg_graphics_hotspottype.h rpg_graphics_incl.h \
-	rpg_graphics_interfaceelementtype.h rpg_graphics_stairsstyle.h rpg_graphics_styleunion.h \
-	rpg_graphics_tileorientation.h rpg_graphics_type.h rpg_graphics_wallstyle.h
+	rpg_graphics_interfaceelementtype.h rpg_graphics_iwindow.h rpg_graphics_stairsstyle.h \
+	rpg_graphics_styleunion.h rpg_graphics_tileorientation.h rpg_graphics_type.h \
+	rpg_graphics_wallstyle.h
 
 lib_LTLIBRARIES = libRPG_Graphics.la
 
@@ -23,8 +24,8 @@ libRPG_Graphics_la_SOURCES = rpg_XMLSchema_XML_types.h \
 	rpg_graphics_dictionary.h rpg_graphics_doorstyle.h rpg_graphics_element.h \
 	rpg_graphics_elementtypeunion.h rpg_graphics_floorstyle.h rpg_graphics_graphic.h \
 	rpg_graphics_hotspottype.h rpg_graphics_incl.h rpg_graphics_interfaceelementtype.h \
-	rpg_graphics_stairsstyle.h rpg_graphics_styleunion.h rpg_graphics_tileorientation.h \
-	rpg_graphics_type.h rpg_graphics_wallstyle.h
+	rpg_graphics_iwindow.h rpg_graphics_stairsstyle.h rpg_graphics_styleunion.h \
+	rpg_graphics_tileorientation.h rpg_graphics_type.h rpg_graphics_wallstyle.h
 
 bindata_DATA = rpg_graphics.xml rpg_graphics.xsd
 bindatadir = $(bindir)

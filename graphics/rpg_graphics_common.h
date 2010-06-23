@@ -32,6 +32,7 @@
 enum RPG_Graphics_InterfaceWindow_t
 {
   INTERFACEWINDOW_MAIN = 0,
+  INTERFACEWINDOW_LEVEL,
   //
   RPG_GRAPHICS_INTERFACEWINDOW_MAX,
   RPG_GRAPHICS_INTERFACEWINDOW_INVALID
@@ -71,5 +72,7 @@ typedef std::vector<RPG_Graphics_Font_t> RPG_Graphics_Fonts_t;
 typedef RPG_Graphics_Fonts_t::const_iterator RPG_Graphics_FontsConstIterator_t;
 
 typedef std::pair<unsigned long, unsigned long> RPG_Graphics_TextSize_t;
+
+typedef std::pair<unsigned long, unsigned long> RPG_Graphics_Position_t;
 
 #endif

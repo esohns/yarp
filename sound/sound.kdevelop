@@ -15,8 +15,8 @@
     <projectname>sound</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
-    <defaultencoding></defaultencoding>
+    <description/>
+    <defaultencoding/>
   </general>
   <kdevautoproject>
     <general>
@@ -25,8 +25,8 @@
     </general>
     <run>
       <mainprogram>/home/unfv/Projects/RPG/sound/debug</mainprogram>
-      <programargs></programargs>
-      <globaldebugarguments></globaldebugarguments>
+      <programargs/>
+      <globaldebugarguments/>
       <globalcwd>/home/unfv/Projects/RPG/sound/debug</globalcwd>
       <useglobalprogram>false</useglobalprogram>
       <terminal>false</terminal>
@@ -44,14 +44,14 @@
         <cxxflags>-g -O2 -march=i686</cxxflags>
         <envvars/>
         <configargs>--disable-static</configargs>
-        <topsourcedir></topsourcedir>
-        <cppflags></cppflags>
-        <ldflags></ldflags>
-        <ccompilerbinary></ccompilerbinary>
-        <cxxcompilerbinary></cxxcompilerbinary>
-        <f77compilerbinary></f77compilerbinary>
-        <cflags></cflags>
-        <f77flags></f77flags>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <f77flags/>
       </optimized>
       <debug>
         <configargs>--disable-static</configargs>
@@ -61,31 +61,31 @@
         <f77compiler>kdevg77options</f77compiler>
         <cxxflags>-g3 -O0 -march=i686 -Wall</cxxflags>
         <envvars/>
-        <topsourcedir></topsourcedir>
-        <cppflags></cppflags>
-        <ldflags></ldflags>
-        <ccompilerbinary></ccompilerbinary>
-        <cxxcompilerbinary></cxxcompilerbinary>
-        <f77compilerbinary></f77compilerbinary>
-        <cflags></cflags>
-        <f77flags></f77flags>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <f77flags/>
       </debug>
       <default>
         <envvars/>
         <configargs>--disable-static</configargs>
         <builddir>debug</builddir>
-        <topsourcedir></topsourcedir>
-        <cppflags></cppflags>
-        <ldflags></ldflags>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpgf77options</f77compiler>
-        <ccompilerbinary></ccompilerbinary>
-        <cxxcompilerbinary></cxxcompilerbinary>
-        <f77compilerbinary></f77compilerbinary>
-        <cflags></cflags>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
         <cxxflags>-g3 -O0 -march=i686</cxxflags>
-        <f77flags></f77flags>
+        <f77flags/>
       </default>
     </configurations>
     <make>
@@ -97,7 +97,7 @@
       <runmultiplejobs>false</runmultiplejobs>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin></makebin>
+      <makebin/>
       <prio>0</prio>
     </make>
   </kdevautoproject>
@@ -158,17 +158,20 @@
     <groups>
       <group pattern="*.h" name="Header files" />
       <group pattern="*.cpp" name="Source files" />
+      <hidenonprojectfiles>false</hidenonprojectfiles>
+      <hidenonlocation>false</hidenonlocation>
     </groups>
     <tree>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
       <hidenonprojectfiles>false</hidenonprojectfiles>
+      <showvcsfields>false</showvcsfields>
     </tree>
   </kdevfileview>
   <kdevdocumentation>
     <projectdoc>
       <docsystem>Doxygen Documentation Collection</docsystem>
       <docurl>sound.tag</docurl>
-      <usermanualurl></usermanualurl>
+      <usermanualurl/>
     </projectdoc>
   </kdevdocumentation>
   <substmap>
@@ -196,6 +199,7 @@
       <designerpluginpaths/>
     </qt>
     <references>
+      <pcs>automatic_%2Fhome%2Funfv%2FProjects%2FRPG%2Fsound</pcs>
       <pcs>automatic_%2Fhome%2Funfv%2FProjects%2FRPG%2Fmap</pcs>
       <pcs>automatic_%2Fhome%2Funfv%2FProjects%2FRPG%2Fgui</pcs>
     </references>
@@ -223,7 +227,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -244,11 +248,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath></gdbpath>
-      <dbgshell></dbgshell>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <gdbpath/>
+      <dbgshell/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -261,7 +265,7 @@
     </display>
   </kdevdebugger>
   <ctagspart>
-    <customArguments></customArguments>
+    <customArguments/>
     <customTagfilePath>/home/unfv/Projects/RPG/sound/tags</customTagfilePath>
     <activeTagsFiles/>
   </ctagspart>

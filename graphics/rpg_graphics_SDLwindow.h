@@ -20,6 +20,7 @@
 #ifndef RPG_GRAPHICS_SDLWINDOW_H
 #define RPG_GRAPHICS_SDLWINDOW_H
 
+#include "rpg_graphics_iwindow.h"
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_type.h"
 
@@ -33,32 +34,23 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Graphics_SDLWindow
+ : public RPG_Graphics_IWindow
 {
  public:
   RPG_Graphics_SDLWindow(const RPG_Graphics_InterfaceWindow_t&,            // type
                          const RPG_Graphics_Type&,                         // style
                          const std::string&,                               // title
                          const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
+  // embedded ("child") window(s)
+  RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow&,         // parent
+                         const RPG_Graphics_InterfaceWindow_t&, // type
+                         const RPG_Graphics_Type&);             // (elements) style
   virtual ~RPG_Graphics_SDLWindow();
 
-  void draw(SDL_Surface*,              // target surface (screen !)
-            const unsigned long& = 0,  // offset x
-            const unsigned long& = 0); // offset y
-  void refresh(SDL_Surface*); // target surface (screen !)
+  // implement (part of) RPG_Graphics_IWindow
+  virtual void refresh(SDL_Surface*); // target surface (screen !)
 
- private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindow());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindow& operator=(const RPG_Graphics_SDLWindow&));
-
-  // helper methods
-  const bool loadGraphics(const RPG_Graphics_Type&); // style
-
-  // helper types
-  typedef std::vector<SDL_Rect> RPG_Graphics_DirtyRegions_t;
-  typedef RPG_Graphics_DirtyRegions_t::const_iterator RPG_Graphics_DirtyRegionsConstIterator_t;
-
+ protected:
   // border sizes
   unsigned long                    myBorderTop;
   unsigned long                    myBorderBottom;
@@ -69,15 +61,40 @@ class RPG_Graphics_SDLWindow
 //   unsigned long                    myTitleWidth;
 //   unsigned long                    myTitleHeight;
 
-  // dirty region(s)
+  // helper types
+  typedef std::vector<SDL_Rect> RPG_Graphics_DirtyRegions_t;
+  typedef RPG_Graphics_DirtyRegions_t::const_iterator RPG_Graphics_DirtyRegionsConstIterator_t;
+
+  // helper methods
+  void getBorders(unsigned long&,        // size (top)
+                  unsigned long&,        // size (bottom)
+                  unsigned long&,        // size (left)
+                  unsigned long&) const; // size (right)
+  const RPG_Graphics_SDLWindow* getParent() const;
+
+  // "dirty" region(s)
   RPG_Graphics_DirtyRegions_t      myDirtyRegions;
 
-  RPG_Graphics_InterfaceWindow_t   myType;
-  RPG_Graphics_Type                myGraphicsType;
+  // window element graphic(s)
+  RPG_Graphics_InterfaceElements_t myElementGraphics;
+
+  // window title
   std::string                      myTitle;
   RPG_Graphics_Type                myTitleFont;
+
+ private:
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindow());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindow& operator=(const RPG_Graphics_SDLWindow&));
+
+  // helper methods
+  const bool loadGraphics(const RPG_Graphics_Type&); // style
+
+  const RPG_Graphics_SDLWindow*    myParent;
+  RPG_Graphics_InterfaceWindow_t   myType;
+  RPG_Graphics_Type                myElementGraphicsType;
   bool                             myInitialized;
-  RPG_Graphics_InterfaceElements_t myElementGraphics;
 };
 
 #endif

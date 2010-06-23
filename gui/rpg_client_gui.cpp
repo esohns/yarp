@@ -20,11 +20,11 @@
 
 #include "rpg_client_defines.h"
 #include "rpg_client_common.h"
+#include "rpg_client_window_main.h"
 
 #include <rpg_map_common_tools.h>
 #include <rpg_map_level.h>
 
-#include <rpg_graphics_SDLwindow.h>
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_common_tools.h>
 
@@ -1163,12 +1163,12 @@ do_work(const RPG_Client_Config& config_in)
 
   // step4: setup main "window"
   std::string title = RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE;
-  RPG_Graphics_SDLWindow window(INTERFACEWINDOW_MAIN,                     // window type
-                                RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE, // interface elements
-                                title);                                   // title (== caption)
+  RPG_Client_WindowMain window(INTERFACEWINDOW_MAIN,                     // window type
+                               RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE, // interface elements
+                               title);                                   // title (== caption)
+  RPG_Graphics_Position_t position = std::make_pair(0, 0);
   window.draw(screen,
-              0,
-              0);
+              position);
   window.refresh(screen);
 
 //   // step5: setup map
@@ -1579,11 +1579,14 @@ ACE_TMAIN(int argc_in,
 
   // step1db: init configuration object
   RPG_Client_Config config;
+
   // *** reactor ***
   config.num_threadpool_threads            = numThreadPoolThreads;
+
   // *** UI ***
   config.glade_file                        = UIfile;
   config.gtk_cb_data                       = userData;
+
   // *** sound ***
   config.audio_config.frequency            = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
   config.audio_config.format               = RPG_CLIENT_DEF_AUDIO_FORMAT;
@@ -1592,6 +1595,7 @@ ACE_TMAIN(int argc_in,
   config.sound_directory                   = RPG_CLIENT_DEF_SOUND_DIRECTORY;
   config.sound_cache_size                  = RPG_CLIENT_DEF_SOUND_CACHESIZE;
   config.sound_dictionary                  = soundDictionary;
+
   // *** graphics ***
   config.video_config.screen_width         = RPG_CLIENT_DEF_VIDEO_W;
   config.video_config.screen_height        = RPG_CLIENT_DEF_VIDEO_H;
@@ -1601,6 +1605,8 @@ ACE_TMAIN(int argc_in,
   config.graphics_directory                = RPG_CLIENT_DEF_GRAPHICS_DIRECTORY;
   config.graphics_cache_size               = RPG_CLIENT_DEF_GRAPHICS_CACHESIZE;
   config.graphics_dictionary               = graphicsDictionary;
+
+  // *** map ***
   config.map_config.min_room_area          = RPG_CLIENT_DEF_MAP_MIN_ROOM_AREA;
   config.map_config.corridors              = RPG_CLIENT_DEF_MAP_CORRIDORS;
   config.map_config.max_num_doors_per_area = RPG_CLIENT_DEF_MAP_MAX_NUM_DOORS_PER_AREA;
@@ -1609,6 +1615,7 @@ ACE_TMAIN(int argc_in,
   config.map_config.square_rooms           = RPG_CLIENT_DEF_MAP_SQUARE_ROOMS;
   config.map_config.map_size_x             = RPG_CLIENT_DEF_MAP_SIZE_X;
   config.map_config.map_size_y             = RPG_CLIENT_DEF_MAP_SIZE_Y;
+
 //   // step1dc: populate config object with default/collected data
 //   // ************ connection config data ************
 //   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;

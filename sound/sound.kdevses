@@ -1,17 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="3" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/sound/rpg_sound_common_tools.h" >
-   <View0 Encoding="" line="25" Type="Source" />
-  </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/sound/rpg_sound_common_tools.cpp" >
-   <View0 Encoding="" line="23" Type="Source" />
-  </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/sound/configure.ac" >
-   <View0 Encoding="" line="9" Type="Source" />
-  </Doc2>
- </DocsAndViews>
+ <DocsAndViews NumberOfDocuments="0" />
  <pluginList>
   <kdevdebugger>
    <breakpointList/>

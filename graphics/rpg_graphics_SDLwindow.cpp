@@ -31,16 +31,52 @@ RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_InterfaceWindo
    myBorderBottom(0),
    myBorderLeft(0),
    myBorderRight(0),
-   myType(type_in),
-   myGraphicsType(graphicType_in),
    myTitle(title_in),
    myTitleFont(fontType_in),
+   myParent(NULL),
+   myType(type_in),
+   myElementGraphicsType(graphicType_in),
    myInitialized(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow"));
 
   // (try to) load interface element graphics
-  myInitialized = loadGraphics(myGraphicsType);
+  myInitialized = loadGraphics(myElementGraphicsType);
+}
+
+RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow& parent_in,
+                                               const RPG_Graphics_InterfaceWindow_t& type_in,
+                                               const RPG_Graphics_Type& graphicType_in)
+  : myBorderTop(0),
+    myBorderBottom(0),
+    myBorderLeft(0),
+    myBorderRight(0),
+//     myTitle(),
+    myTitleFont(RPG_GRAPHICS_TYPE_INVALID),
+    myParent(&parent_in),
+    myType(type_in),
+    myElementGraphicsType(graphicType_in),
+    myInitialized(false)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow"));
+
+  // (try to) load interface element graphics
+  if (!loadGraphics(myElementGraphicsType))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to loadGraphics(\"%s\"), aborting\n"),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphicType_in).c_str()));
+
+    return;
+  } // end IF
+
+  // compute parent's borders
+  myParent->getBorders(myBorderTop,
+                       myBorderBottom,
+                       myBorderLeft,
+                       myBorderRight);
+
+  myInitialized = true;
 }
 
 RPG_Graphics_SDLWindow::~RPG_Graphics_SDLWindow()
@@ -59,225 +95,45 @@ RPG_Graphics_SDLWindow::~RPG_Graphics_SDLWindow()
 }
 
 void
-RPG_Graphics_SDLWindow::draw(SDL_Surface* targetSurface_in,
-                             const unsigned long& offsetX_in,
-                             const unsigned long& offsetY_in)
+RPG_Graphics_SDLWindow::getBorders(unsigned long& borderTop_out,
+                                   unsigned long& borderBottom_out,
+                                   unsigned long& borderLeft_out,
+                                   unsigned long& borderRight_out) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::draw"));
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::getBorders"));
 
-  // sanity check(s)
-  ACE_ASSERT(targetSurface_in);
-  ACE_ASSERT(ACE_static_cast(int, offsetX_in) <= targetSurface_in->w);
-  ACE_ASSERT(ACE_static_cast(int, offsetY_in) <= targetSurface_in->h);
+  // init return value(s)
+  borderTop_out = myBorderTop;
+  borderBottom_out = myBorderBottom;
+  borderLeft_out = myBorderLeft;
+  borderRight_out = myBorderRight;
 
-  RPG_Graphics_InterfaceElementsConstIterator_t iterator;
-//   unsigned long border = 0;
-  SDL_Rect clipRect;
-  unsigned long i = 0;
-
-  // step1: draw borders
-  clipRect.x = offsetX_in + myBorderLeft;
-  clipRect.y = offsetY_in;
-  clipRect.w = (targetSurface_in->w - (myBorderLeft + myBorderRight));
-  clipRect.h = myBorderTop;
-  if (!SDL_SetClipRect(targetSurface_in, &clipRect))
+  // iterate over all parent(s)
+  unsigned long borderTop;
+  unsigned long borderBottom;
+  unsigned long borderLeft;
+  unsigned long borderRight;
+  for (const RPG_Graphics_SDLWindow* current = myParent;
+       current != NULL;
+       current = current->getParent())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+    current->getBorders(borderTop,
+                        borderBottom,
+                        borderLeft,
+                        borderRight);
+    borderTop_out += borderTop;
+    borderBottom_out += borderBottom;
+    borderLeft_out += borderLeft;
+    borderRight_out += borderRight;
+  } // end FOR
+}
 
-    return;
-  } // end IF
-  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  for (i = offsetX_in + myBorderLeft;
-       i < (ACE_static_cast(unsigned long, targetSurface_in->w) - myBorderRight);
-       i += (*iterator).second->w)
-    RPG_Graphics_Common_Tools::put(i,
-                                   offsetY_in,
-                                   *(*iterator).second,
-                                   targetSurface_in);
+const RPG_Graphics_SDLWindow*
+RPG_Graphics_SDLWindow::getParent() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::getParent"));
 
-  clipRect.x = offsetX_in;
-  clipRect.y = (offsetY_in + myBorderTop);
-  clipRect.w = myBorderLeft;
-  clipRect.h = (targetSurface_in->h - (myBorderTop + myBorderBottom));
-  if (!SDL_SetClipRect(targetSurface_in, &clipRect))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return;
-  } // end IF
-  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_LEFT);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  for (i = (offsetY_in + myBorderTop);
-       i < (ACE_static_cast(unsigned long, targetSurface_in->h) - myBorderBottom);
-       i += (*iterator).second->h)
-    RPG_Graphics_Common_Tools::put(offsetX_in,
-                                   i,
-                                   *(*iterator).second,
-                                   targetSurface_in);
-
-  clipRect.x = (targetSurface_in->w - myBorderRight);
-  clipRect.y = offsetY_in + myBorderTop;
-  clipRect.w = myBorderRight;
-  clipRect.h = (targetSurface_in->h - (myBorderTop + myBorderBottom));
-  if (!SDL_SetClipRect(targetSurface_in, &clipRect))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return;
-  } // end IF
-  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_RIGHT);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  for (i = (offsetY_in + myBorderTop);
-       i < (ACE_static_cast(unsigned long, targetSurface_in->h) - myBorderBottom);
-       i += (*iterator).second->h)
-    RPG_Graphics_Common_Tools::put((targetSurface_in->w - myBorderRight),
-                                   i,
-                                   *(*iterator).second,
-                                   targetSurface_in);
-
-  clipRect.x = offsetX_in + myBorderLeft;
-  clipRect.y = (targetSurface_in->h - myBorderBottom);
-  clipRect.w = (targetSurface_in->w - (myBorderLeft + myBorderRight));
-  clipRect.h = myBorderBottom;
-  if (!SDL_SetClipRect(targetSurface_in, &clipRect))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return;
-  } // end IF
-  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_BOTTOM);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  for (i = (offsetX_in + myBorderLeft);
-       i < (targetSurface_in->w - myBorderRight);
-       i += (*iterator).second->w)
-    RPG_Graphics_Common_Tools::put(i,
-                                   (targetSurface_in->h - myBorderBottom),
-                                   *(*iterator).second,
-                                   targetSurface_in);
-
-  // reset clipping area
-  clipRect.x = 0;
-  clipRect.y = 0;
-  clipRect.w = targetSurface_in->w;
-  clipRect.h = targetSurface_in->h;
-  if (!SDL_SetClipRect(targetSurface_in, &clipRect))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return;
-  } // end IF
-
-  // step2: draw corners
-  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_TL);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Common_Tools::put(offsetX_in,
-                                 offsetY_in,
-                                 *(*iterator).second,
-                                 targetSurface_in);
-
-  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_TR);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Common_Tools::put((targetSurface_in->w - (*iterator).second->w),
-                                 offsetY_in,
-                                 *(*iterator).second,
-                                 targetSurface_in);
-
-  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_BL);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Common_Tools::put(offsetX_in,
-                                 (targetSurface_in->h - (*iterator).second->h),
-                                 *(*iterator).second,
-                                 targetSurface_in);
-
-  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_BR);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Common_Tools::put((targetSurface_in->w - (*iterator).second->w),
-                                 (targetSurface_in->h - (*iterator).second->h),
-                                 *(*iterator).second,
-                                 targetSurface_in);
-
-  // step3: fill central area
-  iterator = myElementGraphics.find(INTERFACEELEMENT_CENTER);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  clipRect.x = offsetX_in + myBorderLeft;
-  clipRect.y = offsetY_in + myBorderTop;
-  clipRect.w = (targetSurface_in->w - (myBorderLeft + myBorderRight));
-  clipRect.h = (targetSurface_in->h - (myBorderTop + myBorderBottom));
-  if (!SDL_SetClipRect(targetSurface_in, &clipRect))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return;
-  } // end IF
-  for (i = (offsetY_in + myBorderTop);
-       i < (targetSurface_in->h - myBorderBottom);
-       i += (*iterator).second->h)
-    for (unsigned long j = (offsetX_in + myBorderLeft);
-         j < (targetSurface_in->w - myBorderRight);
-         j += (*iterator).second->w)
-      RPG_Graphics_Common_Tools::put(j,
-                                     i,
-                                     *(*iterator).second,
-                                     targetSurface_in);
-
-  // step4: draw title (if any)
-  if (!myTitle.empty())
-  {
-    clipRect.x = myBorderLeft;
-    clipRect.y = 0;
-    clipRect.w = targetSurface_in->w - (myBorderLeft + myBorderRight);
-    clipRect.h = myBorderTop;
-    if (!SDL_SetClipRect(targetSurface_in, &clipRect))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-                 SDL_GetError()));
-
-      return;
-    } // end IF
-    RPG_Graphics_TextSize_t title_size = RPG_Graphics_Common_Tools::textSize(myTitleFont,
-                                                                             myTitle);
-    RPG_Graphics_Common_Tools::putText(myTitleFont,
-                                       myTitle,
-                                       RPG_Graphics_Common_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_COLOR,
-                                                                                  *targetSurface_in),
-                                       true, // add shade
-                                       RPG_Graphics_Common_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
-                                                                                  *targetSurface_in),
-                                       myBorderLeft, // top left
-                                       ((myBorderTop - title_size.second) / 2), // center of top border
-                                       targetSurface_in);
-  } // end IF
-
-  // reset clipping area
-  clipRect.x = 0;
-  clipRect.y = 0;
-  clipRect.w = targetSurface_in->w;
-  clipRect.h = targetSurface_in->h;
-  if (!SDL_SetClipRect(targetSurface_in, &clipRect))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return;
-  } // end IF
-
-  // whole window needs a refresh...
-  myDirtyRegions.push_back(clipRect);
+  return myParent;
 }
 
 void
