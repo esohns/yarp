@@ -17,65 +17,50 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_client_window_level.h"
+#include "SDL_gui_mainwindow.h"
 
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
-RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindow& parent_in,
-                                               const RPG_Graphics_InterfaceWindow_t& type_in,
-                                               const RPG_Graphics_Type& graphicType_in)
- : inherited(parent_in,
-             type_in,
-             graphicType_in),
-   myInitialized(false)
+SDL_GUI_MainWindow::SDL_GUI_MainWindow(const RPG_Graphics_InterfaceWindow_t& type_in,
+                                       const RPG_Graphics_Type& graphicType_in,
+                                       const std::string& title_in,
+                                       const RPG_Graphics_Type& fontType_in)
+ : inherited(type_in,
+             graphicType_in,
+             title_in,
+             fontType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::RPG_Client_WindowLevel"));
+  ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::SDL_GUI_MainWindow"));
 
-  // init level properties
-  myCurrentLevelProperties.floorStyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
-  myCurrentLevelProperties.wallStyle = RPG_GRAPHICS_WALLSTYLE_INVALID;
-  myCurrentLevelProperties.plan.size_x = 0;
-  myCurrentLevelProperties.plan.size_y = 0;
-  myCurrentLevelProperties.plan.walls.clear();
-  myCurrentLevelProperties.plan.doors.clear();
 }
 
-RPG_Client_WindowLevel::~RPG_Client_WindowLevel()
+SDL_GUI_MainWindow::~SDL_GUI_MainWindow()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::~RPG_Client_WindowLevel"));
+  ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::~SDL_GUI_MainWindow"));
 
 }
 
 void
-RPG_Client_WindowLevel::setCurrentLevel(const RPG_Client_DungeonLevel& level_in)
+SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
+                            const RPG_Graphics_Position_t& offset_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setCurrentLevel"));
-
-  if (!myInitialized)
-    myInitialized = true;
-
-  myCurrentLevelProperties = level_in;
-}
-
-void
-RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
-                             const RPG_Graphics_Position_t& offset_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::draw"));
+  ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::draw"));
 
   // sanity check(s)
-  ACE_ASSERT(myInitialized);
   ACE_ASSERT(targetSurface_in);
   ACE_ASSERT(ACE_static_cast(int, offset_in.first) <= targetSurface_in->w);
   ACE_ASSERT(ACE_static_cast(int, offset_in.second) <= targetSurface_in->h);
 
+  RPG_Graphics_InterfaceElementsConstIterator_t iterator;
+//   unsigned long border = 0;
   SDL_Rect clipRect;
+  unsigned long i = 0;
 
-  // step1: draw tiles
-  clipRect.x = offset_in.first;
+  // step1: draw borders
+  clipRect.x = offset_in.first + myBorderLeft;
   clipRect.y = offset_in.second;
   clipRect.w = (targetSurface_in->w - (myBorderLeft + myBorderRight));
   clipRect.h = myBorderTop;

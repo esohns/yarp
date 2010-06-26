@@ -28,7 +28,17 @@
 
 enum RPG_Graphics_Type
 {
-  TYPE_FONT_MAIN_NORMAL = 0,
+  TYPE_FLOOR_AIR_1 = 0,
+  TYPE_FLOOR_AIR_2,
+  TYPE_FLOOR_AIR_3,
+  TYPE_FLOOR_AIR_4,
+  TYPE_FLOOR_AIR_5,
+  TYPE_FLOOR_AIR_6,
+  TYPE_FLOOR_AIR_7,
+  TYPE_FLOOR_AIR_8,
+  TYPE_FLOOR_AIR_9,
+  TYPE_FLOOR_DARK_1,
+  TYPE_FONT_MAIN_NORMAL,
   TYPE_FONT_MAIN_LARGE,
   TYPE_INTERFACE,
   TYPE_INTRO_MAIN,
@@ -52,6 +62,16 @@ class RPG_Graphics_TypeHelper
   inline static void init()
   {
     myRPG_Graphics_TypeToStringTable.clear();
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FLOOR_AIR_1, ACE_TEXT_ALWAYS_CHAR("TYPE_FLOOR_AIR_1")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FLOOR_AIR_2, ACE_TEXT_ALWAYS_CHAR("TYPE_FLOOR_AIR_2")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FLOOR_AIR_3, ACE_TEXT_ALWAYS_CHAR("TYPE_FLOOR_AIR_3")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FLOOR_AIR_4, ACE_TEXT_ALWAYS_CHAR("TYPE_FLOOR_AIR_4")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FLOOR_AIR_5, ACE_TEXT_ALWAYS_CHAR("TYPE_FLOOR_AIR_5")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FLOOR_AIR_6, ACE_TEXT_ALWAYS_CHAR("TYPE_FLOOR_AIR_6")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FLOOR_AIR_7, ACE_TEXT_ALWAYS_CHAR("TYPE_FLOOR_AIR_7")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FLOOR_AIR_8, ACE_TEXT_ALWAYS_CHAR("TYPE_FLOOR_AIR_8")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FLOOR_AIR_9, ACE_TEXT_ALWAYS_CHAR("TYPE_FLOOR_AIR_9")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FLOOR_DARK_1, ACE_TEXT_ALWAYS_CHAR("TYPE_FLOOR_DARK_1")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FONT_MAIN_NORMAL, ACE_TEXT_ALWAYS_CHAR("TYPE_FONT_MAIN_NORMAL")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FONT_MAIN_LARGE, ACE_TEXT_ALWAYS_CHAR("TYPE_FONT_MAIN_LARGE")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_INTERFACE, ACE_TEXT_ALWAYS_CHAR("TYPE_INTERFACE")));

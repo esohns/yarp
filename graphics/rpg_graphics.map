@@ -3,7 +3,8 @@ namespace urn:rpg
   include "rpg_graphics_incl.h";
 
   RPG_Graphics_Category_Type             RPG_Graphics_Category;
-  RPG_Graphics_TileOrientation_Type      RPG_Graphics_TileOrientation;
+  RPG_Graphics_Orientation_Type          RPG_Graphics_Orientation;
+  RPG_Graphics_TileType_Type             RPG_Graphics_TileType;
   RPG_Graphics_FloorStyle_Type           RPG_Graphics_FloorStyle;
   RPG_Graphics_StairsStyle_Type          RPG_Graphics_StairsStyle;
   RPG_Graphics_WallStyle_Type            RPG_Graphics_WallStyle;

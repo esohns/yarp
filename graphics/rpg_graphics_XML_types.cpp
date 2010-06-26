@@ -105,13 +105,13 @@ category_parser (::RPG_Graphics_Category_Type_pskel& p)
 }
 
 void RPG_Graphics_Graphic_Type_pskel::
-type_parser (::RPG_Graphics_Type_Type_pskel& p)
+tile_parser (::RPG_Graphics_TileType_Type_pskel& p)
 {
-  this->type_parser_ = &p;
+  this->tile_parser_ = &p;
 }
 
 void RPG_Graphics_Graphic_Type_pskel::
-orientation_parser (::RPG_Graphics_TileOrientation_Type_pskel& p)
+orientation_parser (::RPG_Graphics_Orientation_Type_pskel& p)
 {
   this->orientation_parser_ = &p;
 }
@@ -129,6 +129,12 @@ element_parser (::RPG_Graphics_Element_Type_pskel& p)
 }
 
 void RPG_Graphics_Graphic_Type_pskel::
+type_parser (::RPG_Graphics_Type_Type_pskel& p)
+{
+  this->type_parser_ = &p;
+}
+
+void RPG_Graphics_Graphic_Type_pskel::
 file_parser (::xml_schema::string_pskel& p)
 {
   this->file_parser_ = &p;
@@ -142,18 +148,20 @@ size_parser (::xml_schema::unsigned_int_pskel& p)
 
 void RPG_Graphics_Graphic_Type_pskel::
 parsers (::RPG_Graphics_Category_Type_pskel& category,
-         ::RPG_Graphics_Type_Type_pskel& type,
-         ::RPG_Graphics_TileOrientation_Type_pskel& orientation,
+         ::RPG_Graphics_TileType_Type_pskel& tile,
+         ::RPG_Graphics_Orientation_Type_pskel& orientation,
          ::RPG_Graphics_StyleUnion_Type_pskel& style,
          ::RPG_Graphics_Element_Type_pskel& element,
+         ::RPG_Graphics_Type_Type_pskel& type,
          ::xml_schema::string_pskel& file,
          ::xml_schema::unsigned_int_pskel& size)
 {
   this->category_parser_ = &category;
-  this->type_parser_ = &type;
+  this->tile_parser_ = &tile;
   this->orientation_parser_ = &orientation;
   this->style_parser_ = &style;
   this->element_parser_ = &element;
+  this->type_parser_ = &type;
   this->file_parser_ = &file;
   this->size_parser_ = &size;
 }
@@ -161,10 +169,11 @@ parsers (::RPG_Graphics_Category_Type_pskel& category,
 RPG_Graphics_Graphic_Type_pskel::
 RPG_Graphics_Graphic_Type_pskel ()
 : category_parser_ (0),
-  type_parser_ (0),
+  tile_parser_ (0),
   orientation_parser_ (0),
   style_parser_ (0),
   element_parser_ (0),
+  type_parser_ (0),
   file_parser_ (0),
   size_parser_ (0)
 {
@@ -341,12 +350,12 @@ category (const RPG_Graphics_Category&)
 }
 
 void RPG_Graphics_Graphic_Type_pskel::
-type (const RPG_Graphics_Type&)
+tile (const RPG_Graphics_TileType&)
 {
 }
 
 void RPG_Graphics_Graphic_Type_pskel::
-orientation (const RPG_Graphics_TileOrientation&)
+orientation (const RPG_Graphics_Orientation&)
 {
 }
 
@@ -357,6 +366,11 @@ style (const RPG_Graphics_StyleUnion&)
 
 void RPG_Graphics_Graphic_Type_pskel::
 element (const RPG_Graphics_Element&)
+{
+}
+
+void RPG_Graphics_Graphic_Type_pskel::
+type (const RPG_Graphics_Type&)
 {
 }
 
@@ -390,12 +404,12 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "type" && ns == "urn:rpg")
+  if (n == "tile" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->tile_parser_;
 
-    if (this->type_parser_)
-      this->type_parser_->pre ();
+    if (this->tile_parser_)
+      this->tile_parser_->pre ();
 
     return true;
   }
@@ -430,6 +444,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "type" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
+
+    if (this->type_parser_)
+      this->type_parser_->pre ();
+
+    return true;
+  }
+
   if (n == "file" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->file_parser_;
@@ -458,10 +482,10 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "type" && ns == "urn:rpg")
+  if (n == "tile" && ns == "urn:rpg")
   {
-    if (this->type_parser_)
-      this->type (this->type_parser_->post_RPG_Graphics_Type_Type ());
+    if (this->tile_parser_)
+      this->tile (this->tile_parser_->post_RPG_Graphics_TileType_Type ());
 
     return true;
   }
@@ -469,7 +493,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "orientation" && ns == "urn:rpg")
   {
     if (this->orientation_parser_)
-      this->orientation (this->orientation_parser_->post_RPG_Graphics_TileOrientation_Type ());
+      this->orientation (this->orientation_parser_->post_RPG_Graphics_Orientation_Type ());
 
     return true;
   }
@@ -486,6 +510,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->element_parser_)
       this->element (this->element_parser_->post_RPG_Graphics_Element_Type ());
+
+    return true;
+  }
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    if (this->type_parser_)
+      this->type (this->type_parser_->post_RPG_Graphics_Type_Type ());
 
     return true;
   }

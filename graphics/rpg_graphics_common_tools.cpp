@@ -32,7 +32,8 @@
 
 // init statics
 RPG_Graphics_CategoryToStringTable_t RPG_Graphics_CategoryHelper::myRPG_Graphics_CategoryToStringTable;
-RPG_Graphics_TileOrientationToStringTable_t RPG_Graphics_TileOrientationHelper::myRPG_Graphics_TileOrientationToStringTable;
+RPG_Graphics_OrientationToStringTable_t RPG_Graphics_OrientationHelper::myRPG_Graphics_OrientationToStringTable;
+RPG_Graphics_TileTypeToStringTable_t RPG_Graphics_TileTypeHelper::myRPG_Graphics_TileTypeToStringTable;
 RPG_Graphics_FloorStyleToStringTable_t RPG_Graphics_FloorStyleHelper::myRPG_Graphics_FloorStyleToStringTable;
 RPG_Graphics_StairsStyleToStringTable_t RPG_Graphics_StairsStyleHelper::myRPG_Graphics_StairsStyleToStringTable;
 RPG_Graphics_WallStyleToStringTable_t RPG_Graphics_WallStyleHelper::myRPG_Graphics_WallStyleToStringTable;
@@ -341,13 +342,10 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
   graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(type_in);
   ACE_ASSERT(graphic.type == type_in);
 
-  std::string path = myGraphicsDirectory;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += graphic.file;
   // sanity check
   if ((graphic.category != CATEGORY_INTERFACE) &&
-      (graphic.category != CATEGORY_IMAGE) &&
-      (graphic.category != CATEGORY_TILE))
+       (graphic.category != CATEGORY_IMAGE) &&
+       (graphic.category != CATEGORY_TILE))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid graphics category (was: \"%s\"): type (\"%s\") is not an image, aborting\n"),
@@ -356,6 +354,28 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
 
     return NULL;
   } // end IF
+
+  // assemble path
+  std::string path = myGraphicsDirectory;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  if (graphic.category == CATEGORY_TILE)
+  {
+    switch (graphic.tile)
+    {
+      case TILETYPE_FLOOR:
+        path += RPG_GRAPHICS_TILES_DEF_FLOORS_SUB; break;
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid tile type (was: \"%s\"), continuing\n"),
+                   RPG_Graphics_TileTypeHelper::RPG_Graphics_TileTypeToString(graphic.tile).c_str()));
+
+        break;
+      }
+    } // end SWITCH
+    path += ACE_DIRECTORY_SEPARATOR_STR;
+  } // end IF
+  path += graphic.file;
 
   node.image = RPG_Graphics_Common_Tools::loadFile(path,  // graphics file
                                                    true); // convert to display format
@@ -781,7 +801,8 @@ RPG_Graphics_Common_Tools::initStringConversionTables()
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::initStringConversionTables"));
 
   RPG_Graphics_CategoryHelper::init();
-  RPG_Graphics_TileOrientationHelper::init();
+  RPG_Graphics_OrientationHelper::init();
+  RPG_Graphics_TileTypeHelper::init();
   RPG_Graphics_FloorStyleHelper::init();
   RPG_Graphics_StairsStyleHelper::init();
   RPG_Graphics_WallStyleHelper::init();

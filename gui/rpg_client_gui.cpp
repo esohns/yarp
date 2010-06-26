@@ -1329,7 +1329,6 @@ do_parseIniFile(const std::string& iniFilename_in,
       return;
     } // end IF
 
-//     // debug info
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("enumerated %s, type %d\n"),
 //                val_name.c_str(),
@@ -1405,7 +1404,6 @@ do_parseIniFile(const std::string& iniFilename_in,
 //       return;
 //     } // end IF
 //
-// //     // debug info
 // //     ACE_DEBUG((LM_DEBUG,
 // //                ACE_TEXT("enumerated %s, type %d\n"),
 // //                val_name.c_str(),

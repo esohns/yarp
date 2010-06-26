@@ -20,11 +20,11 @@
 #ifndef RPG_CLIENT_WINDOWMAIN_H
 #define RPG_CLIENT_WINDOWMAIN_H
 
-#include <rpg_graphics_common.h>
-#include <rpg_graphics_type.h>
-#include <rpg_graphics_SDLwindow.h>
+#include "rpg_client_common.h"
 
-#include <rpg_map_common.h>
+#include <rpg_graphics_common.h>
+#include <rpg_graphics_SDLwindow.h>
+#include <rpg_graphics_type.h>
 
 #include <SDL/SDL.h>
 
@@ -39,13 +39,13 @@ class RPG_Client_WindowLevel
  : public RPG_Graphics_SDLWindow
 {
  public:
-  RPG_Client_WindowLevel(// *** RPG_Graphics_SDLWindow ***
-                         const RPG_Graphics_SDLWindow&,         // parent window
+  RPG_Client_WindowLevel(const RPG_Graphics_SDLWindow&,         // parent window
                          const RPG_Graphics_InterfaceWindow_t&, // type
-                         const RPG_Graphics_Type&,              // style
-                         // *** RPG_Graphics_SDLWindow \end ***
-                         const RPG_Map_FloorPlan_t&);           // floor plan
+                         const RPG_Graphics_Type&);             // style
   virtual ~RPG_Client_WindowLevel();
+
+  // set level properties
+  void setCurrentLevel(const RPG_Client_DungeonLevel&); // level properties
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface*,                    // target surface (screen !)
@@ -59,7 +59,8 @@ class RPG_Client_WindowLevel
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowLevel(const RPG_Client_WindowLevel&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowLevel& operator=(const RPG_Client_WindowLevel&));
 
-  const RPG_Map_FloorPlan_t* myFloorPlan;
+  RPG_Client_DungeonLevel myCurrentLevelProperties;
+  bool                    myInitialized;
 };
 
 #endif

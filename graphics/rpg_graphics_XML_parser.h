@@ -37,13 +37,22 @@ class RPG_Graphics_Category_Type
   virtual RPG_Graphics_Category post_RPG_Graphics_Category_Type();
 };
 
-class RPG_Graphics_TileOrientation_Type
- : public RPG_Graphics_TileOrientation_Type_pskel,
+class RPG_Graphics_Orientation_Type
+ : public RPG_Graphics_Orientation_Type_pskel,
    public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
-  virtual RPG_Graphics_TileOrientation post_RPG_Graphics_TileOrientation_Type();
+  virtual RPG_Graphics_Orientation post_RPG_Graphics_Orientation_Type();
+};
+
+class RPG_Graphics_TileType_Type
+ : public RPG_Graphics_TileType_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Graphics_TileType post_RPG_Graphics_TileType_Type();
 };
 
 class RPG_Graphics_FloorStyle_Type
@@ -163,10 +172,11 @@ class RPG_Graphics_Graphic_Type
 
 //     virtual void pre();
   virtual void category(const RPG_Graphics_Category&);
-  virtual void type(const RPG_Graphics_Type&);
-  virtual void orientation(const RPG_Graphics_TileOrientation&);
+  virtual void tile(const RPG_Graphics_TileType&);
+  virtual void orientation(const RPG_Graphics_Orientation&);
   virtual void style(const RPG_Graphics_StyleUnion&);
   virtual void element(const RPG_Graphics_Element&);
+  virtual void type(const RPG_Graphics_Type&);
   virtual void file(const ::std::string&);
   virtual void size(unsigned int);
   virtual RPG_Graphics_Graphic post_RPG_Graphics_Graphic_Type();

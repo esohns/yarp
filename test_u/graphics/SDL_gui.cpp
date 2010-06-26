@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "SDL_gui_mainwindow.h"
 
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_common_tools.h>
@@ -459,6 +460,75 @@ do_work(const std::string& dictionary_in,
   {
     RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->dump();
   } // end IF
+
+  // step3: setup main "window"
+  std::string title = GRAPHICSPARSER_DEF_GRAPHICS_MAINWINDOW_TITLE;
+  SDL_GUI_MainWindow window(INTERFACEWINDOW_MAIN,                         // window type
+                            GRAPHICSPARSER_DEF_GRAPHICS_WINDOWSTYLE_TYPE, // interface elements
+                            title);                                       // title (== caption)
+  RPG_Graphics_Position_t position = std::make_pair(0, 0);
+  window.draw(screen,
+              position);
+  window.refresh(screen);
+
+  // step4: show (random) images inside main "window"
+  RPG_Graphics_Type type = RPG_GRAPHICS_TYPE_INVALID;
+  RPG_Graphics_t graphic;
+  RPG_Dice_RollResult_t result;
+  SDL_Surface* image = NULL;
+  SDL_Event event;
+  do
+  {
+    result.clear();
+    RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TYPE_MAX,
+                                    1,
+                                    result);
+    type = ACE_static_cast(RPG_Graphics_Type, (result.front() - 1));
+
+    graphic.type = RPG_GRAPHICS_TYPE_INVALID;
+    // *NOTE*: cannot load all types (some are fonts, ...)
+    // --> retrieve properties from the dictionary
+    graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(type);
+    ACE_ASSERT(graphic.type == type);
+    // sanity check
+    if ((graphic.category != CATEGORY_INTERFACE) &&
+        (graphic.category != CATEGORY_IMAGE) &&
+        (graphic.category != CATEGORY_TILE))
+      continue;
+
+    image = RPG_Graphics_Common_Tools::loadGraphic(type);
+    if (!image)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
+                 RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type).c_str()));
+
+      break;
+    } // end IF
+
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("showing graphics type \"%s\"...\n"),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type).c_str()));
+
+    RPG_Graphics_Common_Tools::put((screen->w - image->w) / 2, // location x
+                                   (screen->h - image->h) / 2, // location y
+                                   *image,                    // image
+                                   screen);                   // screen
+    if (SDL_Flip(screen))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_Flip(): \"%s\", aborting\n"),
+                 SDL_GetError()));
+
+      break;
+    } // end IF
+
+    // step5: wait a little while (max: 3 seconds)
+    do_SDL_waitForInput(3,
+                        event);
+    if (event.type == SDL_QUIT)
+      break;
+  } while (true);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));

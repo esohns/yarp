@@ -28,7 +28,8 @@
 
 #include <vector>
 #include "rpg_graphics_category.h"
-#include "rpg_graphics_tileorientation.h"
+#include "rpg_graphics_orientation.h"
+#include "rpg_graphics_tiletype.h"
 #include "rpg_graphics_floorstyle.h"
 #include "rpg_graphics_stairsstyle.h"
 #include "rpg_graphics_wallstyle.h"

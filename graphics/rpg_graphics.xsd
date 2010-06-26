@@ -26,6 +26,7 @@
 
   <xsd:simpleType name="RPG_Graphics_Category_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="CATEGORY_CURSOR"/>
       <xsd:enumeration value="CATEGORY_FONT"/>
       <xsd:enumeration value="CATEGORY_INTERFACE"/>
       <xsd:enumeration value="CATEGORY_IMAGE"/>
@@ -33,12 +34,23 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="RPG_Graphics_TileOrientation_Type">
+  <xsd:simpleType name="RPG_Graphics_Orientation_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ORIENTATION_NORTH"/>
       <xsd:enumeration value="ORIENTATION_SOUTH"/>
       <xsd:enumeration value="ORIENTATION_WEST"/>
       <xsd:enumeration value="ORIENTATION_EAST"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Graphics_TileType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="TILETYPE_EFFECT"/>
+      <xsd:enumeration value="TILETYPE_FIGURINE"/>
+      <xsd:enumeration value="TILETYPE_FLOOR"/>
+      <xsd:enumeration value="TILETYPE_MONSTER"/>
+      <xsd:enumeration value="TILETYPE_OBJECT"/>
+      <xsd:enumeration value="TILETYPE_WALL"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -98,6 +110,16 @@
 
   <xsd:simpleType name="RPG_Graphics_Type_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="TYPE_FLOOR_AIR_1"/>
+      <xsd:enumeration value="TYPE_FLOOR_AIR_2"/>
+      <xsd:enumeration value="TYPE_FLOOR_AIR_3"/>
+      <xsd:enumeration value="TYPE_FLOOR_AIR_4"/>
+      <xsd:enumeration value="TYPE_FLOOR_AIR_5"/>
+      <xsd:enumeration value="TYPE_FLOOR_AIR_6"/>
+      <xsd:enumeration value="TYPE_FLOOR_AIR_7"/>
+      <xsd:enumeration value="TYPE_FLOOR_AIR_8"/>
+      <xsd:enumeration value="TYPE_FLOOR_AIR_9"/>
+      <xsd:enumeration value="TYPE_FLOOR_DARK_1"/>
       <xsd:enumeration value="TYPE_FONT_MAIN_NORMAL"/>
       <xsd:enumeration value="TYPE_FONT_MAIN_LARGE"/>
       <xsd:enumeration value="TYPE_INTERFACE"/>
@@ -144,10 +166,11 @@
   <xsd:complexType name="RPG_Graphics_Graphic_Type">
     <xsd:sequence>
       <xsd:element name="category" type="RPG_Graphics_Category_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="type" type="RPG_Graphics_Type_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="orientation" type="RPG_Graphics_TileOrientation_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="tile" type="RPG_Graphics_TileType_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="orientation" type="RPG_Graphics_Orientation_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="style" type="RPG_Graphics_StyleUnion_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="element" type="RPG_Graphics_Element_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="type" type="RPG_Graphics_Type_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="file" type="xsd:string" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="size" type="xsd:unsignedInt" use="optional" default="0"/>
