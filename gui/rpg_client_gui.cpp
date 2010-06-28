@@ -868,8 +868,8 @@ do_initGUI(const std::string& graphicsDirectory_in,
   SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING),  // window caption
                     ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING)); // icon caption
   // set window icon
-  RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(TYPE_WM_ICON);
-  ACE_ASSERT(icon_graphic.type == TYPE_WM_ICON);
+  RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(TYPE_IMAGE_WM_ICON);
+  ACE_ASSERT(icon_graphic.type == TYPE_IMAGE_WM_ICON);
   std::string path = graphicsDirectory_in;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += icon_graphic.file;
@@ -1045,12 +1045,12 @@ do_runIntro()
   RPG_Sound_Common_Tools::playSound(EVENT_MAIN_TITLE);
 
   // step2: show start logo
-  SDL_Surface* logo = RPG_Graphics_Common_Tools::loadGraphic(TYPE_INTRO_MAIN);
+  SDL_Surface* logo = RPG_Graphics_Common_Tools::loadGraphic(TYPE_IMAGE_INTRO_MAIN);
   if (!logo)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_INTRO_MAIN).c_str()));
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_IMAGE_INTRO_MAIN).c_str()));
 
     return false;
   } // end IF

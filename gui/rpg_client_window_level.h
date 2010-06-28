@@ -25,6 +25,7 @@
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_SDLwindow.h>
 #include <rpg_graphics_type.h>
+#include <rpg_graphics_floorstyle.h>
 
 #include <SDL/SDL.h>
 
@@ -44,8 +45,11 @@ class RPG_Client_WindowLevel
                          const RPG_Graphics_Type&);             // style
   virtual ~RPG_Client_WindowLevel();
 
-  // set level properties
-  void setCurrentLevel(const RPG_Client_DungeonLevel&); // level properties
+  // set view coordinates
+  void setView(const RPG_Graphics_Position_t&); // view coordinates
+
+  // set map properties
+  void setMap(const RPG_Client_DungeonLevel&); // map properties
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface*,                    // target surface (screen !)
@@ -59,7 +63,19 @@ class RPG_Client_WindowLevel
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowLevel(const RPG_Client_WindowLevel&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowLevel& operator=(const RPG_Client_WindowLevel&));
 
-  RPG_Client_DungeonLevel myCurrentLevelProperties;
+  // helper methods
+  void setStyle(const RPG_Graphics_StyleUnion&);
+  static void loadTileset(const RPG_Graphics_Type&, // index type (== offset)
+                          const unsigned long&,     // #tiles in set
+                          RPG_Graphics_Tiles_t&);   // return value: tileset
+
+  RPG_Graphics_TileSet_t  myCurrentFloorSet;
+  RPG_Graphics_TileSet_t  myCurrentWallSet;
+
+  // center of displayed map area (map coordinate system)
+  RPG_Graphics_Position_t myView;
+
+  RPG_Client_DungeonLevel myMap;
   bool                    myInitialized;
 };
 

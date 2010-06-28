@@ -344,8 +344,8 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
 
   // sanity check
   if ((graphic.category != CATEGORY_INTERFACE) &&
-       (graphic.category != CATEGORY_IMAGE) &&
-       (graphic.category != CATEGORY_TILE))
+      (graphic.category != CATEGORY_IMAGE) &&
+      (graphic.category != CATEGORY_TILE))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid graphics category (was: \"%s\"): type (\"%s\") is not an image, aborting\n"),

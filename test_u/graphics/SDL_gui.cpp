@@ -86,8 +86,8 @@ do_initVideo(const std::string& graphicsDirectory_in,
   SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING),  // window caption
                     ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING)); // icon caption
   // set window icon
-  RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(TYPE_WM_ICON);
-  ACE_ASSERT(icon_graphic.type == TYPE_WM_ICON);
+  RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(TYPE_IMAGE_WM_ICON);
+  ACE_ASSERT(icon_graphic.type == TYPE_IMAGE_WM_ICON);
   std::string path = graphicsDirectory_in;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += icon_graphic.file;

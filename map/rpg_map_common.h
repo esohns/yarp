@@ -72,8 +72,9 @@ struct RPG_Map_FloorPlan_t
 {
   unsigned long size_x;
   unsigned long size_y;
-  RPG_Map_Positions_t doors;
+  RPG_Map_Positions_t unmapped; // (!floor)
   RPG_Map_Positions_t walls;
+  RPG_Map_Positions_t doors;
 };
 
 enum RPG_Map_Direction

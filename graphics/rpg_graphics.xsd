@@ -110,21 +110,22 @@
 
   <xsd:simpleType name="RPG_Graphics_Type_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="TYPE_FLOOR_AIR_1"/>
-      <xsd:enumeration value="TYPE_FLOOR_AIR_2"/>
-      <xsd:enumeration value="TYPE_FLOOR_AIR_3"/>
-      <xsd:enumeration value="TYPE_FLOOR_AIR_4"/>
-      <xsd:enumeration value="TYPE_FLOOR_AIR_5"/>
-      <xsd:enumeration value="TYPE_FLOOR_AIR_6"/>
-      <xsd:enumeration value="TYPE_FLOOR_AIR_7"/>
-      <xsd:enumeration value="TYPE_FLOOR_AIR_8"/>
-      <xsd:enumeration value="TYPE_FLOOR_AIR_9"/>
-      <xsd:enumeration value="TYPE_FLOOR_DARK_1"/>
       <xsd:enumeration value="TYPE_FONT_MAIN_NORMAL"/>
       <xsd:enumeration value="TYPE_FONT_MAIN_LARGE"/>
       <xsd:enumeration value="TYPE_INTERFACE"/>
-      <xsd:enumeration value="TYPE_INTRO_MAIN"/>
-      <xsd:enumeration value="TYPE_WM_ICON"/>
+      <xsd:enumeration value="TYPE_IMAGE_INTRO_MAIN"/>
+      <xsd:enumeration value="TYPE_IMAGE_WM_ICON"/>
+      <xsd:enumeration value="TYPE_TILE_FLOOR_AIR_1"/>
+      <xsd:enumeration value="TYPE_TILE_FLOOR_AIR_2"/>
+      <xsd:enumeration value="TYPE_TILE_FLOOR_AIR_3"/>
+      <xsd:enumeration value="TYPE_TILE_FLOOR_AIR_4"/>
+      <xsd:enumeration value="TYPE_TILE_FLOOR_AIR_5"/>
+      <xsd:enumeration value="TYPE_TILE_FLOOR_AIR_6"/>
+      <xsd:enumeration value="TYPE_TILE_FLOOR_AIR_7"/>
+      <xsd:enumeration value="TYPE_TILE_FLOOR_AIR_8"/>
+      <xsd:enumeration value="TYPE_TILE_FLOOR_AIR_9"/>
+      <xsd:enumeration value="TYPE_TILE_FLOOR_DARK_1"/>
+      <xsd:enumeration value="TYPE_TILE_OFF_MAP"/>
     </xsd:restriction>
   </xsd:simpleType>
 

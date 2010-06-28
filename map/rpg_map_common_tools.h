@@ -36,13 +36,14 @@ class RPG_Map_Common_Tools
  public:
   static void createFloorPlan(const unsigned long&,  // map dimension x
                               const unsigned long&,  // map dimension y
-                              const unsigned long&,  // #areas (== "rooms")
+                              const unsigned long&,  // #areas (==> "rooms")
                               const bool&,           // rooms to be square ?
                               const bool&,           // maximize rooms ?
                               const unsigned long&,  // min. room area (0: don't care)
+                              const bool&,           // want doors (==> "rooms") ?
                               const bool&,           // want corridors (between rooms) ?
                               const bool&,           // doors to fill positions ?
-                              const unsigned long&,  // max. #doors/area (== "room")
+                              const unsigned long&,  // max. #doors/room
                               RPG_Map_Positions_t&,  // return value: seed points (areas)
                               RPG_Map_FloorPlan_t&); // return value: doors & walls
   static void displayFloorPlan(const RPG_Map_FloorPlan_t&); // doors & walls
@@ -112,6 +113,22 @@ class RPG_Map_Common_Tools
                            const RPG_Map_ZoneList_t&); // room(s)
 
   typedef RPG_Map_Direction ORIGIN;
+  static const bool turn(const RPG_Map_Zone_t&,     // map
+                         const RPG_Map_Position_t&, // position
+                         const ORIGIN&,             // origin
+                         const bool&,               // turn clockwise ?
+                         bool&,                     // return value: is corner ? (else intersection)
+                         RPG_Map_Direction&);       // return value: next direction
+  static void findDoorPositions(const RPG_Map_Zone_t&,    // room (shell !)
+                                const bool&,              // doors to fill positions ?
+                                RPG_Map_PositionList_t&); // suitable position(s)
+  static void makeDoors(const unsigned long&,      // dimension x
+                        const unsigned long&,      // dimension y
+                        const RPG_Map_ZoneList_t&, // room boundary(s)
+                        const bool&,               // doors to fill positions ?
+                        const unsigned long&,      // max. #doors/room
+                        RPG_Map_ZoneList_t&);      // return value: doors
+
   static const bool intersect(const RPG_Map_Zone_t&,     // map
                               const RPG_Map_Position_t&, // position
                               const ORIGIN&,             // origin
@@ -129,25 +146,19 @@ class RPG_Map_Common_Tools
   typedef RPG_Map_AltPositions_t::const_iterator RPG_Map_AltPositionsConstIterator_t;
   static void crop(RPG_Map_Zone_t&); // room
 //   static void cropSquareBoundary(RPG_Map_Zone_t&); // room
-  static const bool turn(const RPG_Map_Zone_t&,     // map
-                         const RPG_Map_Position_t&, // position
-                         const ORIGIN&,             // origin
-                         const bool&,               // turn clockwise ?
-                         bool&,                     // return value: is corner ? (else intersection)
-                         RPG_Map_Direction&);       // return value: next direction
-  static void findDoorPositions(const RPG_Map_Zone_t&,    // room (shell !)
-                                const bool&,              // doors to fill positions ?
-                                RPG_Map_PositionList_t&); // suitable position(s)
   static const RPG_Map_Direction door2exitDirection(const RPG_Map_Zone_t&,      // room
                                                     const RPG_Map_Position_t&); // door
   static void connectRooms(const unsigned long&,      // dimension x
                            const unsigned long&,      // dimension y
                            const RPG_Map_ZoneList_t&, // boundary(s)
+                           const RPG_Map_ZoneList_t&, // doors
                            const RPG_Map_ZoneList_t&, // room(s) // *TODO*: faster in/out tests ?
-                           const bool&,               // want corridors ?
-                           const bool&,               // doors to fill positions ?
-                           const unsigned long&,      // max. #doors/area
                            RPG_Map_FloorPlan_t&);     // return value: doors & walls
+  static void displayCorridors(const unsigned long&,       // dimension x
+                               const unsigned long&,       // dimension y
+                               const RPG_Map_ZoneList_t&,  // rooms
+                               const RPG_Map_ZoneList_t&,  // doors
+                               const RPG_Map_ZoneList_t&); // corridors
 };
 
 #endif

@@ -23,6 +23,7 @@
 
 #include <rpg_graphics_floorstyle.h>
 #include <rpg_graphics_wallstyle.h>
+#include <rpg_graphics_doorstyle.h>
 
 #include <rpg_map_common.h>
 
@@ -93,6 +94,7 @@ struct RPG_Client_DungeonLevel
 {
   RPG_Graphics_FloorStyle floorStyle;
   RPG_Graphics_WallStyle  wallStyle;
+  RPG_Graphics_DoorStyle  doorstyle;
   RPG_Map_FloorPlan_t     plan;
 };
 
