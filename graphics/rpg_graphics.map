@@ -15,6 +15,7 @@ namespace urn:rpg
   RPG_Graphics_HotspotType_Type          RPG_Graphics_HotspotType;
   RPG_Graphics_ElementTypeUnion_Type     RPG_Graphics_ElementTypeUnion;
   RPG_Graphics_Element_Type              RPG_Graphics_Element;
+  RPG_Graphics_Tile_Type                 RPG_Graphics_Tile;
   RPG_Graphics_Graphic_Type              RPG_Graphics_Graphic;
 #  RPG_Graphics_Dictionary_Type          RPG_Graphics_Dictionary;
 }

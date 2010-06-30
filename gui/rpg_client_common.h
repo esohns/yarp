@@ -98,4 +98,14 @@ struct RPG_Client_DungeonLevel
   RPG_Map_FloorPlan_t     plan;
 };
 
+struct RPG_Client_WallTileSet
+{
+  SDL_Surface* west;
+  SDL_Surface* north;
+  SDL_Surface* east;
+  SDL_Surface* south;
+};
+typedef std::map<RPG_Map_Position_t, RPG_Client_WallTileSet> RPG_Client_WallTiles_t;
+typedef RPG_Client_WallTiles_t::const_iterator RPG_Client_WallTilesConstIterator_t;
+
 #endif

@@ -23,24 +23,16 @@
 // -------------------------------- * * * -------------------------------- //
 
 #pragma once
-#ifndef RPG_GRAPHICS_INCL_H
-#define RPG_GRAPHICS_INCL_H
+#ifndef RPG_GRAPHICS_TILE_H
+#define RPG_GRAPHICS_TILE_H
 
-#include <vector>
-#include "rpg_graphics_category.h"
-#include "rpg_graphics_orientation.h"
-#include "rpg_graphics_tiletype.h"
-#include "rpg_graphics_floorstyle.h"
-#include "rpg_graphics_stairsstyle.h"
-#include "rpg_graphics_wallstyle.h"
-#include "rpg_graphics_doorstyle.h"
-#include "rpg_graphics_styleunion.h"
-#include "rpg_graphics_type.h"
-#include "rpg_graphics_interfaceelementtype.h"
-#include "rpg_graphics_hotspottype.h"
-#include "rpg_graphics_elementtypeunion.h"
-#include "rpg_graphics_element.h"
-#include "rpg_graphics_tile.h"
-#include "rpg_graphics_graphic.h"
+struct RPG_Graphics_Tile
+{
+  RPG_Graphics_TileType type;
+  RPG_Graphics_StyleUnion style;
+  RPG_Graphics_Orientation orientation;
+  unsigned int offsetX;
+  unsigned int offsetY;
+};
 
 #endif

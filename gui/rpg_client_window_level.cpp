@@ -37,16 +37,20 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindow& par
   myCurrentFloorSet.style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
   myCurrentWallSet.style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
 
+  // init view
+  myView = std::make_pair(0, 0);
+
+  // init wall tiles
+  myWallTiles.clear();
+
   // init level properties
   myMap.floorStyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myMap.wallStyle = RPG_GRAPHICS_WALLSTYLE_INVALID;
   myMap.plan.size_x = 0;
   myMap.plan.size_y = 0;
+  myMap.plan.unmapped.clear();
   myMap.plan.walls.clear();
   myMap.plan.doors.clear();
-
-  // init view
-  myView = std::make_pair(0, 0);
 }
 
 RPG_Client_WindowLevel::~RPG_Client_WindowLevel()
@@ -70,12 +74,22 @@ RPG_Client_WindowLevel::setMap(const RPG_Client_DungeonLevel& levelMap_in)
 
   if (!myInitialized)
     myInitialized = true;
+  else
+  {
+    // clean up
+    myWallTiles.clear();
+  } // end ELSE
 
   myMap = levelMap_in;
 
   // init view
   myView.first = myMap.plan.size_x / 2;
   myView.second = myMap.plan.size_y / 2;
+
+  // init wall tiles
+  initWalls(myMap.plan,
+            myCurrentWallSet,
+            myWallTiles);
 }
 
 void
@@ -194,59 +208,78 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         continue;
       } // end IF
 
-      map_back = map_data->get_glyph(MAP_BACK, j, i);
-      map_darkness = map_data->get_glyph(MAP_DARKNESS, j, i);
+//       map_back = map_data->get_glyph(MAP_BACK, j, i);
+//       map_darkness = map_data->get_glyph(MAP_DARKNESS, j, i);
+//
+//       /* 0. init walls and floor edges for this tile*/
+//       if (map_back == V_TILE_WALL_GENERIC ||
+//           map_back == V_MISC_UNMAPPED_AREA)
+//         get_wall_tiles(i, j);
+//       else
+//         /* certain events (amnesia or a secret door being discovered)
+//         * require us to clear walls again. since we cannot check for those cases
+//         * we simply clear walls whenever we don't set any... */
+//         clear_walls(i, j);
+//
+//       if (map_back == V_TILE_FLOOR_WATER ||
+//           map_back == V_TILE_FLOOR_ICE ||
+//           map_back == V_TILE_FLOOR_LAVA ||
+//           map_back == V_TILE_FLOOR_AIR)
+//         /* these tiles get edges */
+//         get_floor_edges(i, j);
+//       else
+//         /* everything else doesn't. However we can't just assume a tile that doesn't need egdes doesn't have any:
+//         * pools may be dried out by fireballs, and suddenly we have a pit with edges :(
+//         * Therefore we always clear them explicitly */
+//         clear_floor_edges(i ,j);
 
-      /* 0. init walls and floor edges for this tile*/
-      if (map_back == V_TILE_WALL_GENERIC ||
-          map_back == V_MISC_UNMAPPED_AREA)
-        get_wall_tiles(i, j);
-      else
-        /* certain events (amnesia or a secret door being discovered)
-        * require us to clear walls again. since we cannot check for those cases
-        * we simply clear walls whenever we don't set any... */
-        clear_walls(i, j);
+      // step1: floor
+      if (RPG_Map_Common_Tools::isFloor(current_map_position,
+                                        myMap.plan))
+      {
+        RPG_Graphics_Common_Tools::put(x,
+                                       y,
+                                       *myCurrentFloorSet.front(),
+                                       targetSurface_in);
 
-      if (map_back == V_TILE_FLOOR_WATER ||
-          map_back == V_TILE_FLOOR_ICE ||
-          map_back == V_TILE_FLOOR_LAVA ||
-          map_back == V_TILE_FLOOR_AIR)
-        /* these tiles get edges */
-        get_floor_edges(i, j);
-      else
-        /* everything else doesn't. However we can't just assume a tile that doesn't need egdes doesn't have any:
-        * pools may be dried out by fireballs, and suddenly we have a pit with edges :(
-        * Therefore we always clear them explicitly */
-        clear_floor_edges(i ,j);
+        // step2: walls
+        if (RPG_Map_Common_Tools::isFloor(current_map_position,
+                                          myMap.plan))
+        {
+          RPG_Graphics_Common_Tools::put(x,
+                                         y,
+                                         *myCurrentFloorSet.front(),
+                                             targetSurface_in);
 
+          continue;
+        } // end IF
+        continue;
+      } // end IF
 
-      /* 2. Floor */
-      tile_id = map_back;
-      shadelevel = 0;
-
-      if ((tile_id >= V_TILE_FLOOR_COBBLESTONE) &&
-           (tile_id <= V_TILE_FLOOR_DARK)) {
-        tile_id = get_floor_tile(tile_id, i, j);
-        shadelevel = map_darkness;
-           }
-           else if(tile_id == V_TILE_NONE || tile_id == V_TILE_WALL_GENERIC)
-             tile_id = V_MISC_UNMAPPED_AREA;
-
-           vultures_put_tile_shaded(x, y, tile_id, shadelevel);
-
-           /* shortcut for unmapped case */
-           if (tile_id == V_MISC_UNMAPPED_AREA)
-             continue;
-
-           if (vultures_opts.highlight_cursor_square &&
-               (j == map_highlight.x && i == map_highlight.y))
-             vultures_put_tile(x, y, V_MISC_FLOOR_HIGHLIGHT);
-
-           /* 3. Floor edges */
-           for (dir_idx = 0; dir_idx < 12; dir_idx++)
-             vultures_put_tile(x, y, maptile_floor_edge[i][j].dir[dir_idx]);
-    }
-  }
+//       tile_id = map_back;
+//       shadelevel = 0;
+//
+//       if ((tile_id >= V_TILE_FLOOR_COBBLESTONE) &&
+//            (tile_id <= V_TILE_FLOOR_DARK)) {
+//         tile_id = get_floor_tile(tile_id, i, j);
+//         shadelevel = map_darkness;
+//            }
+//            else if(tile_id == V_TILE_NONE || tile_id == V_TILE_WALL_GENERIC)
+//              tile_id = V_MISC_UNMAPPED_AREA;
+//
+//            vultures_put_tile_shaded(x, y, tile_id, shadelevel);
+//
+//            /* shortcut for unmapped case */
+//            if (tile_id == V_MISC_UNMAPPED_AREA)
+//              continue;
+//
+//            if (vultures_opts.highlight_cursor_square &&
+//                (j == map_highlight.x && i == map_highlight.y))
+//              vultures_put_tile(x, y, V_MISC_FLOOR_HIGHLIGHT);
+//
+//            /* 3. Floor edges */
+//            for (dir_idx = 0; dir_idx < 12; dir_idx++)
+//              vultures_put_tile(x, y, maptile_floor_edge[i][j].dir[dir_idx]);
 
   for (__i = - map_tr_y; __i <= map_tr_y; __i++)
   {
@@ -481,6 +514,68 @@ RPG_Client_WindowLevel::loadTileset(const RPG_Graphics_Type& typeOffset_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
                  RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(ACE_static_cast(RPG_Graphics_Type, current_type)).c_str()));
+
+      // clean up
+      tileset_out.clear();
+
+      return;
+    } // end IF
+
+    tileset_out.push_back(current_surface);
+  } // end FOR
+}
+
+void
+RPG_Client_WindowLevel::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
+                                  const RPG_Graphics_TileSet_t& tileSet_in,
+                                  RPG_Client_WallTiles_t& wallTiles_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::initWalls"));
+
+  // init return value(s)
+  wallTiles_out.clear();
+
+  RPG_Map_Position_t current_position;
+  RPG_Map_Position_t east, north, west, south;
+  for (unsigned long y = 0;
+       y < levelMap_in.size_y;
+       y++)
+    for (unsigned long x = 0;
+         x < levelMap_in.size_x;
+         x++)
+    {
+      current_position = std::make_pair(x, y);
+      if (RPG_Map_Common_Tools::isFloor(current_position,
+                                        levelMap_in))
+      {
+        // step1: find neighboring walls
+        east = current_position;
+        east.first++;
+        north = current_position;
+        north.second--;
+        west = current_position;
+        west.first--;
+        south = current_position;
+        south.second++;
+
+      } // end IF
+
+    } // end FOR
+
+  SDL_Surface* current_surface = NULL;
+  int current_type = typeOffset_in;
+  for (unsigned long i = 0;
+       i < numTiles_in;
+       i++, current_type++)
+  {
+    current_surface = NULL;
+    current_surface = RPG_Graphics_Common_Tools::loadGraphic(ACE_static_cast(RPG_Graphics_Type, current_type),
+        true);
+    if (!current_surface)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
+                          RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(ACE_static_cast(RPG_Graphics_Type, current_type)).c_str()));
 
       // clean up
       tileset_out.clear();

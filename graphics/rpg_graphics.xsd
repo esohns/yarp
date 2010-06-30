@@ -125,6 +125,14 @@
       <xsd:enumeration value="TYPE_TILE_FLOOR_AIR_8"/>
       <xsd:enumeration value="TYPE_TILE_FLOOR_AIR_9"/>
       <xsd:enumeration value="TYPE_TILE_FLOOR_DARK_1"/>
+      <xsd:enumeration value="TYPE_TILE_WALL_BRICK_HALF_N"/>
+      <xsd:enumeration value="TYPE_TILE_WALL_BRICK_HALF_S"/>
+      <xsd:enumeration value="TYPE_TILE_WALL_BRICK_HALF_W"/>
+      <xsd:enumeration value="TYPE_TILE_WALL_BRICK_HALF_E"/>
+      <xsd:enumeration value="TYPE_TILE_WALL_BRICK_FULL_N"/>
+      <xsd:enumeration value="TYPE_TILE_WALL_BRICK_FULL_S"/>
+      <xsd:enumeration value="TYPE_TILE_WALL_BRICK_FULL_W"/>
+      <xsd:enumeration value="TYPE_TILE_WALL_BRICK_FULL_E"/>
       <xsd:enumeration value="TYPE_TILE_OFF_MAP"/>
     </xsd:restriction>
   </xsd:simpleType>
@@ -164,14 +172,22 @@
     </xsd:sequence>
   </xsd:complexType>
 
+  <xsd:complexType name="RPG_Graphics_Tile_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Graphics_TileType_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="style" type="RPG_Graphics_StyleUnion_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="orientation" type="RPG_Graphics_Orientation_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="offsetX" type="xsd:unsignedInt" use="optional" default="0"/>
+    <xsd:attribute name="offsetY" type="xsd:unsignedInt" use="optional" default="0"/>
+  </xsd:complexType>
+
   <xsd:complexType name="RPG_Graphics_Graphic_Type">
     <xsd:sequence>
       <xsd:element name="category" type="RPG_Graphics_Category_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="tile" type="RPG_Graphics_TileType_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="orientation" type="RPG_Graphics_Orientation_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="style" type="RPG_Graphics_StyleUnion_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="element" type="RPG_Graphics_Element_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="type" type="RPG_Graphics_Type_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="tile" type="RPG_Graphics_Tile_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="element" type="RPG_Graphics_Element_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="file" type="xsd:string" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="size" type="xsd:unsignedInt" use="optional" default="0"/>

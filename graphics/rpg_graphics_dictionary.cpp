@@ -47,27 +47,32 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
 
   // Construct the parser.
   //
+
   RPG_Graphics_Category_Type                  category_p;
+  RPG_Graphics_Type_Type                      type_p;
+  RPG_Graphics_Tile_Type                      tile_p;
   RPG_Graphics_TileType_Type                  tileType_p;
-  RPG_Graphics_Orientation_Type               orientation_p;
   RPG_Graphics_StyleUnion_Type                style_p;
-  RPG_Graphics_ElementTypeUnion_Type          elementType_p;
+  RPG_Graphics_Orientation_Type               orientation_p;
   ::xml_schema::unsigned_int_pimpl            unsigned_int_p;
+  tile_p.parsers(tileType_p,
+                 style_p,
+                 orientation_p,
+                 unsigned_int_p,
+                 unsigned_int_p);
+  RPG_Graphics_ElementTypeUnion_Type          elementType_p;
   RPG_Graphics_Element_Type                   element_p;
   element_p.parsers(elementType_p,
                     unsigned_int_p,
                     unsigned_int_p,
                     unsigned_int_p,
                     unsigned_int_p);
-  RPG_Graphics_Type_Type                      type_p;
   ::xml_schema::string_pimpl                  string_p;
   RPG_Graphics_Graphic_Type                   graphic_p;
   graphic_p.parsers(category_p,
-                    tileType_p,
-                    orientation_p,
-                    style_p,
-                    element_p,
                     type_p,
+                    tile_p,
+                    element_p,
                     string_p,
                     unsigned_int_p);
 
@@ -244,15 +249,13 @@ RPG_Graphics_Dictionary::dump() const
        iterator++, index++)
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("Graphic[#%u]:\nCategory: %s\nTile: %s\nOrientation: %s\nStyle: %s\nElement(s)[%u]:\n%sType: %s\nFile: %s\nSize: %u\n"),
+               ACE_TEXT("Graphic[#%u]:\nCategory: %s\nType: %s\nTile:\n%sElement(s)[%u]:\n%sFile: %s\nSize: %u\n"),
                index,
                RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString((iterator->second).category).c_str(),
-               (((iterator->second).tile == RPG_GRAPHICS_TILETYPE_INVALID) ? ACE_TEXT("N/A") : RPG_Graphics_TileTypeHelper::RPG_Graphics_TileTypeToString((iterator->second).tile).c_str()),
-               (((iterator->second).orientation == RPG_GRAPHICS_ORIENTATION_INVALID) ? ACE_TEXT("N/A") : RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString((iterator->second).orientation).c_str()),
-               (((iterator->second).style.discriminator == RPG_Graphics_StyleUnion::INVALID) ? ACE_TEXT("N/A") : RPG_Graphics_Common_Tools::styleToString((iterator->second).style).c_str()),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString((iterator->second).type).c_str(),
+               RPG_Graphics_Common_Tools::tileToString((iterator->second).tile).c_str(),
                (iterator->second).elements.size(),
                RPG_Graphics_Common_Tools::elementsToString((iterator->second).elements).c_str(),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString((iterator->second).type).c_str(),
                ((iterator->second).file).c_str(),
                (iterator->second).size));
     ACE_DEBUG((LM_DEBUG,

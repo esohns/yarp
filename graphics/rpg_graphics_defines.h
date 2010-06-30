@@ -22,28 +22,29 @@
 #define RPG_GRAPHICS_DEFINES_H
 
 // #signature bytes to check for PNG graphics
-#define RPG_GRAPHICS_PNG_SIGNATURE_BYTES   8
+#define RPG_GRAPHICS_PNG_SIGNATURE_BYTES         8
 
 // min #screen refreshes / second of fading
-#define RPG_GRAPHICS_FADE_REFRESH_RATE     10
+#define RPG_GRAPHICS_FADE_REFRESH_RATE           10
 
 // default font pointsize
-#define RPG_GRAPHICS_FONT_DEF_POINTSIZE    10
+#define RPG_GRAPHICS_FONT_DEF_POINTSIZE          10
 
 // default text colors
-#define RPG_GRAPHICS_FONT_DEF_COLOR        RPG_Graphics_Common_Tools::CLR32_WHITE
-#define RPG_GRAPHICS_FONT_DEF_SHADECOLOR   RPG_Graphics_Common_Tools::CLR32_BLACK
+#define RPG_GRAPHICS_FONT_DEF_COLOR              RPG_Graphics_Common_Tools::CLR32_WHITE
+#define RPG_GRAPHICS_FONT_DEF_SHADECOLOR         RPG_Graphics_Common_Tools::CLR32_BLACK
 
 // default (tiles) data directory tree organization
-#define RPG_GRAPHICS_TILES_DEF_FLOORS_SUB  ACE_TEXT("floors")
+#define RPG_GRAPHICS_TILES_DEF_FLOORS_SUB        ACE_TEXT("floors")
+#define RPG_GRAPHICS_TILES_DEF_WALLS_SUB         ACE_TEXT("walls")
 
 // default #tiles/set (floors, walls, ...)
-#define RPG_GRAPHICS_TILES_DEF_NUMSETTILES 9
+#define RPG_GRAPHICS_TILES_DEF_NUMTILES_FLOORSET 9
 
 // tile drawing: pixel coordinate difference from a square to the one next to
 // it in the map. Because of isometry, this is not the same as the width/height
 // of a tile !
-#define RPG_GRAPHICS_V_MAP_XMOD            56
-#define RPG_GRAPHICS_V_MAP_YMOD            22
+#define RPG_GRAPHICS_V_MAP_XMOD                  56
+#define RPG_GRAPHICS_V_MAP_YMOD                  22
 
 #endif

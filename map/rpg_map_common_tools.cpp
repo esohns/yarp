@@ -1921,6 +1921,17 @@ RPG_Map_Common_Tools::direction2String(const RPG_Map_Direction& direction_in)
   return std::string("INVALID");
 }
 
+const bool
+RPG_Map_Common_Tools::isFloor(const RPG_Map_Position_t& position_in,
+                              const RPG_Map_FloorPlan_t& levelMap_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::isFloor"));
+
+  return ((levelMap_in.doors.find(position_in) == levelMap_in.doors.end()) &&
+          (levelMap_in.walls.find(position_in) == levelMap_in.walls.end()) &&
+          (levelMap_in.unmapped.find(position_in) == levelMap_in.unmapped.end()));
+}
+
 const unsigned long
 RPG_Map_Common_Tools::area2Positions(const RPG_Map_Position_t& position1_in,
                                      const RPG_Map_Position_t& position2_in)

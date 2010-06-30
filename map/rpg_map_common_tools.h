@@ -45,12 +45,15 @@ class RPG_Map_Common_Tools
                               const bool&,           // doors to fill positions ?
                               const unsigned long&,  // max. #doors/room
                               RPG_Map_Positions_t&,  // return value: seed points (areas)
-                              RPG_Map_FloorPlan_t&); // return value: doors & walls
-  static void displayFloorPlan(const RPG_Map_FloorPlan_t&); // doors & walls
+                              RPG_Map_FloorPlan_t&); // return value: level map
+  static void displayFloorPlan(const RPG_Map_FloorPlan_t&); // level map
 
   static const unsigned long dist2Positions(const RPG_Map_Position_t&,  // position 1
                                             const RPG_Map_Position_t&); // position 2
   static const std::string direction2String(const RPG_Map_Direction&); // direction
+
+  static const bool isFloor(const RPG_Map_Position_t&,   // position
+                            const RPG_Map_FloorPlan_t&); // level map
 
  private:
   // safety measures

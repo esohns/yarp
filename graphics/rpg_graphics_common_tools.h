@@ -64,6 +64,7 @@ class RPG_Graphics_Common_Tools
                    const unsigned long&);   // cache size
   static void fini();
   static const std::string styleToString(const RPG_Graphics_StyleUnion&);
+  static const std::string tileToString(const RPG_Graphics_Tile&);
   static const std::string elementTypeToString(const RPG_Graphics_ElementTypeUnion&);
   static const std::string elementsToString(const RPG_Graphics_Elements_t&);
 

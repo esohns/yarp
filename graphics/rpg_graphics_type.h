@@ -43,6 +43,14 @@ enum RPG_Graphics_Type
   TYPE_TILE_FLOOR_AIR_8,
   TYPE_TILE_FLOOR_AIR_9,
   TYPE_TILE_FLOOR_DARK_1,
+  TYPE_TILE_WALL_BRICK_HALF_N,
+  TYPE_TILE_WALL_BRICK_HALF_S,
+  TYPE_TILE_WALL_BRICK_HALF_W,
+  TYPE_TILE_WALL_BRICK_HALF_E,
+  TYPE_TILE_WALL_BRICK_FULL_N,
+  TYPE_TILE_WALL_BRICK_FULL_S,
+  TYPE_TILE_WALL_BRICK_FULL_W,
+  TYPE_TILE_WALL_BRICK_FULL_E,
   TYPE_TILE_OFF_MAP,
   //
   RPG_GRAPHICS_TYPE_MAX,
@@ -78,6 +86,14 @@ class RPG_Graphics_TypeHelper
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_FLOOR_AIR_8, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_FLOOR_AIR_8")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_FLOOR_AIR_9, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_FLOOR_AIR_9")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_FLOOR_DARK_1, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_FLOOR_DARK_1")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_HALF_N, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_HALF_N")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_HALF_S, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_HALF_S")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_HALF_W, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_HALF_W")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_HALF_E, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_HALF_E")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_FULL_N, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_FULL_N")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_FULL_S, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_FULL_S")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_FULL_W, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_FULL_W")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_FULL_E, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_FULL_E")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_OFF_MAP, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_OFF_MAP")));
   };
 

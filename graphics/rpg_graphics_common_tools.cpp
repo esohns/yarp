@@ -182,6 +182,45 @@ RPG_Graphics_Common_Tools::styleToString(const RPG_Graphics_StyleUnion& style_in
 }
 
 const std::string
+RPG_Graphics_Common_Tools::tileToString(const RPG_Graphics_Tile& tile_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::tileToString"));
+
+  std::string result;
+
+  // sanity check
+  if (tile_in.type == RPG_GRAPHICS_TILETYPE_INVALID)
+  {
+    result += ACE_TEXT("N/A\n");
+
+    return result;
+  } // end IF
+
+  result += ACE_TEXT("type: ");
+  result += RPG_Graphics_TileTypeHelper::RPG_Graphics_TileTypeToString(tile_in.type);
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT("style: ");
+  result += RPG_Graphics_Common_Tools::styleToString(tile_in.style);
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT("orientation: ");
+  result += ((tile_in.orientation == RPG_GRAPHICS_ORIENTATION_INVALID) ? ACE_TEXT("N/A")
+  : RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(tile_in.orientation));
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  std::ostringstream converter;
+  result += ACE_TEXT("offset (x,y): ");
+  converter << tile_in.offsetX;
+  result += converter.str();
+  result += ACE_TEXT(",");
+  converter.str(ACE_TEXT(""));
+  converter.clear();
+  converter << tile_in.offsetY;
+  result += converter.str();
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+
+  return result;
+}
+
+const std::string
 RPG_Graphics_Common_Tools::elementTypeToString(const RPG_Graphics_ElementTypeUnion& elementType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::elementTypeToString"));
@@ -360,15 +399,17 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
   path += ACE_DIRECTORY_SEPARATOR_STR;
   if (graphic.category == CATEGORY_TILE)
   {
-    switch (graphic.tile)
+    switch (graphic.tile.type)
     {
       case TILETYPE_FLOOR:
         path += RPG_GRAPHICS_TILES_DEF_FLOORS_SUB; break;
+      case TILETYPE_WALL:
+        path += RPG_GRAPHICS_TILES_DEF_WALLS_SUB; break;
       default:
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid tile type (was: \"%s\"), continuing\n"),
-                   RPG_Graphics_TileTypeHelper::RPG_Graphics_TileTypeToString(graphic.tile).c_str()));
+                   RPG_Graphics_TileTypeHelper::RPG_Graphics_TileTypeToString(graphic.tile.type).c_str()));
 
         break;
       }

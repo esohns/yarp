@@ -29,11 +29,9 @@
 struct RPG_Graphics_Graphic
 {
   RPG_Graphics_Category category;
-  RPG_Graphics_TileType tile;
-  RPG_Graphics_Orientation orientation;
-  RPG_Graphics_StyleUnion style;
-  std::vector<RPG_Graphics_Element> elements;
   RPG_Graphics_Type type;
+  RPG_Graphics_Tile tile;
+  std::vector<RPG_Graphics_Element> elements;
   std::string file;
   unsigned int size;
 };
