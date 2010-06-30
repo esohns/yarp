@@ -85,12 +85,12 @@
   </graphic>
   <graphic>
     <category>CATEGORY_IMAGE</category>
-    <type>TYPE_INTRO_MAIN</type>
+    <type>TYPE_IMAGE_INTRO_MAIN</type>
     <file>image_main_logo.png</file>
   </graphic>
   <graphic>
     <category>CATEGORY_IMAGE</category>
-    <type>TYPE_WM_ICON</type>
+    <type>TYPE_IMAGE_WM_ICON</type>
     <file>image_icon.png</file>
   </graphic>
   <graphic>
@@ -100,30 +100,39 @@
       <type>TILESETTYPE_FLOOR</type>
       <style>FLOORSTYLE_AIR</style>
       <tile>
+        <type>TILETYPE_FLOOR</type>
         <file>floor_air_0_0.png</file>
       </tile>
       <tile>
+        <type>TILETYPE_FLOOR</type>
         <file>floor_air_0_1.png</file>
       </tile>
       <tile>
+        <type>TILETYPE_FLOOR</type>
         <file>floor_air_0_2.png</file>
       </tile>
       <tile>
+        <type>TILETYPE_FLOOR</type>
         <file>floor_air_1_0.png</file>
       </tile>
       <tile>
+        <type>TILETYPE_FLOOR</type>
         <file>floor_air_1_1.png</file>
       </tile>
       <tile>
+        <type>TILETYPE_FLOOR</type>
         <file>floor_air_1_2.png</file>
       </tile>
       <tile>
+        <type>TILETYPE_FLOOR</type>
         <file>floor_air_2_0.png</file>
       </tile>
       <tile>
+        <type>TILETYPE_FLOOR</type>
         <file>floor_air_2_1.png</file>
       </tile>
       <tile>
+        <type>TILETYPE_FLOOR</type>
         <file>floor_air_2_2.png</file>
       </tile>
     </tileset>
@@ -135,6 +144,7 @@
       <type>TILESETTYPE_FLOOR</type>
       <style>FLOORSTYLE_DARK</style>
       <tile>
+        <type>TILETYPE_FLOOR</type>
         <file>floor_dark_0_0.png</file>
       </tile>
     </tileset>
@@ -146,18 +156,22 @@
       <type>TILESETTYPE_WALL</type>
       <style>WALLSTYLE_BRICK</style>
       <tile>
+        <type>TILETYPE_WALL</type>
         <orientation>ORIENTATION_NORTH</orientation>
         <file>wall_brick_f_n.png</file>
       </tile>
       <tile>
+        <type>TILETYPE_WALL</type>
         <orientation>ORIENTATION_SOUTH</orientation>
         <file>wall_brick_f_s.png</file>
       </tile>
       <tile>
+        <type>TILETYPE_WALL</type>
         <orientation>ORIENTATION_EAST</orientation>
         <file>wall_brick_f_e.png</file>
       </tile>
       <tile>
+        <type>TILETYPE_WALL</type>
         <orientation>ORIENTATION_WEST</orientation>
         <file>wall_brick_f_w.png</file>
       </tile>

@@ -22,6 +22,8 @@
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_common_tools.h>
 
+#include <rpg_map_common_tools.h>
+
 #include <ace/Log_Msg.h>
 
 RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindow& parent_in,

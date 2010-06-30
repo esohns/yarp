@@ -189,19 +189,14 @@ RPG_Graphics_Common_Tools::tileToString(const RPG_Graphics_Tile& tile_in)
 
   std::string result;
 
-  // sanity check
-  if (tile_in.type == RPG_GRAPHICS_TILETYPE_INVALID)
-  {
-    result += ACE_TEXT("N/A\n");
-
-    return result;
-  } // end IF
-
   result += ACE_TEXT("type: ");
   result += RPG_Graphics_TileTypeHelper::RPG_Graphics_TileTypeToString(tile_in.type);
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT("style: ");
-  result += RPG_Graphics_Common_Tools::styleToString(tile_in.style);
+  if (tile_in.style.discriminator == RPG_Graphics_StyleUnion::INVALID)
+    result += ACE_TEXT("N/A");
+  else
+    result += RPG_Graphics_Common_Tools::styleToString(tile_in.style);
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT("orientation: ");
   result += ((tile_in.orientation == RPG_GRAPHICS_ORIENTATION_INVALID) ? ACE_TEXT("N/A")
@@ -231,14 +226,6 @@ RPG_Graphics_Common_Tools::tileSetToString(const RPG_Graphics_TileSet& tileSet_i
 
   std::string result;
 
-  // sanity check
-  if (tileSet_in.type == RPG_GRAPHICS_TILESETTYPE_INVALID)
-  {
-    result += ACE_TEXT("N/A\n");
-
-    return result;
-  } // end IF
-
   result += ACE_TEXT("type: ");
   result += RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(tileSet_in.type);
   result += ACE_TEXT_ALWAYS_CHAR("\n");
@@ -250,11 +237,13 @@ RPG_Graphics_Common_Tools::tileSetToString(const RPG_Graphics_TileSet& tileSet_i
   converter << tileSet_in.tiles.size();
   result += converter.str();
   result += ACE_TEXT("]:\n");
+  result += ACE_TEXT("------\n");
   for (RPG_Graphics_TileSetConstIterator_t iterator = tileSet_in.tiles.begin();
        iterator != tileSet_in.tiles.end();
        iterator++)
   {
     result += RPG_Graphics_Common_Tools::tileToString(*iterator);
+    result += ACE_TEXT("------\n");
   } // end FOR
 
   return result;

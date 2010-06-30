@@ -249,22 +249,43 @@ RPG_Graphics_Dictionary::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::dump"));
 
-  std::ostringstream converter;
   unsigned long index = 0;
+  std::string tile, tileset, elements;
   for (RPG_Graphics_DictionaryIterator_t iterator = myDictionary.begin();
        iterator != myDictionary.end();
        iterator++, index++)
   {
+    if ((iterator->second).tile.type == RPG_GRAPHICS_TILETYPE_INVALID)
+      tile = ACE_TEXT_ALWAYS_CHAR("N/A\n");
+    else
+    {
+      tile = ACE_TEXT_ALWAYS_CHAR("\n");
+      tile += RPG_Graphics_Common_Tools::tileToString((iterator->second).tile);
+    } // end ELSE
+    if ((iterator->second).tileset.type == RPG_GRAPHICS_TILESETTYPE_INVALID)
+      tileset = ACE_TEXT_ALWAYS_CHAR("N/A\n");
+    else
+    {
+      tileset = ACE_TEXT_ALWAYS_CHAR("\n");
+      tileset += RPG_Graphics_Common_Tools::tileSetToString((iterator->second).tileset);
+    } // end ELSE
+    if ((iterator->second).elements.empty())
+      elements = ACE_TEXT_ALWAYS_CHAR("N/A\n");
+    else
+    {
+      elements = ACE_TEXT_ALWAYS_CHAR("\n");
+      elements += RPG_Graphics_Common_Tools::elementsToString((iterator->second).elements);
+    } // end ELSE
+
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("Graphic[#%u]:\nCategory: %s\nType: %s\nTile:\n%sTileSet[%u]:\n%sElement(s)[%u]:\n%sFile: %s\nSize: %u\n"),
+               ACE_TEXT("Graphic[#%u]:\nCategory: %s\nType: %s\nTile: %sTileSet: %sElement(s)[%u]: %sFile: %s\nSize: %u\n"),
                index,
                RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString((iterator->second).category).c_str(),
                RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString((iterator->second).type).c_str(),
-               RPG_Graphics_Common_Tools::tileToString((iterator->second).tile).c_str(),
-               (iterator->second).tileset.tiles.size(),
-               RPG_Graphics_Common_Tools::tileSetToString((iterator->second).tileset).c_str(),
+               tile.c_str(),
+               tileset.c_str(),
                (iterator->second).elements.size(),
-               RPG_Graphics_Common_Tools::elementsToString((iterator->second).elements).c_str(),
+               elements.c_str(),
                ((iterator->second).file.empty() ? ACE_TEXT("N/A") : ((iterator->second).file).c_str()),
                (iterator->second).size));
     ACE_DEBUG((LM_DEBUG,
