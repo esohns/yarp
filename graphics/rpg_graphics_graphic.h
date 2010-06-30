@@ -31,6 +31,7 @@ struct RPG_Graphics_Graphic
   RPG_Graphics_Category category;
   RPG_Graphics_Type type;
   RPG_Graphics_Tile tile;
+  RPG_Graphics_TileSet tileset;
   std::vector<RPG_Graphics_Element> elements;
   std::string file;
   unsigned int size;

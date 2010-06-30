@@ -65,6 +65,7 @@ class RPG_Graphics_Common_Tools
   static void fini();
   static const std::string styleToString(const RPG_Graphics_StyleUnion&);
   static const std::string tileToString(const RPG_Graphics_Tile&);
+  static const std::string tileSetToString(const RPG_Graphics_TileSet&);
   static const std::string elementTypeToString(const RPG_Graphics_ElementTypeUnion&);
   static const std::string elementsToString(const RPG_Graphics_Elements_t&);
 

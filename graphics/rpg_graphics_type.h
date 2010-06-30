@@ -33,24 +33,10 @@ enum RPG_Graphics_Type
   TYPE_INTERFACE,
   TYPE_IMAGE_INTRO_MAIN,
   TYPE_IMAGE_WM_ICON,
-  TYPE_TILE_FLOOR_AIR_1,
-  TYPE_TILE_FLOOR_AIR_2,
-  TYPE_TILE_FLOOR_AIR_3,
-  TYPE_TILE_FLOOR_AIR_4,
-  TYPE_TILE_FLOOR_AIR_5,
-  TYPE_TILE_FLOOR_AIR_6,
-  TYPE_TILE_FLOOR_AIR_7,
-  TYPE_TILE_FLOOR_AIR_8,
-  TYPE_TILE_FLOOR_AIR_9,
-  TYPE_TILE_FLOOR_DARK_1,
-  TYPE_TILE_WALL_BRICK_HALF_N,
-  TYPE_TILE_WALL_BRICK_HALF_S,
-  TYPE_TILE_WALL_BRICK_HALF_W,
-  TYPE_TILE_WALL_BRICK_HALF_E,
-  TYPE_TILE_WALL_BRICK_FULL_N,
-  TYPE_TILE_WALL_BRICK_FULL_S,
-  TYPE_TILE_WALL_BRICK_FULL_W,
-  TYPE_TILE_WALL_BRICK_FULL_E,
+  TYPE_TILESET_FLOOR_AIR,
+  TYPE_TILESET_FLOOR_DARK,
+  TYPE_TILESET_WALL_BRICK_HALF,
+  TYPE_TILESET_WALL_BRICK_FULL,
   TYPE_TILE_OFF_MAP,
   //
   RPG_GRAPHICS_TYPE_MAX,
@@ -76,24 +62,10 @@ class RPG_Graphics_TypeHelper
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_INTERFACE, ACE_TEXT_ALWAYS_CHAR("TYPE_INTERFACE")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_IMAGE_INTRO_MAIN, ACE_TEXT_ALWAYS_CHAR("TYPE_IMAGE_INTRO_MAIN")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_IMAGE_WM_ICON, ACE_TEXT_ALWAYS_CHAR("TYPE_IMAGE_WM_ICON")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_FLOOR_AIR_1, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_FLOOR_AIR_1")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_FLOOR_AIR_2, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_FLOOR_AIR_2")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_FLOOR_AIR_3, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_FLOOR_AIR_3")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_FLOOR_AIR_4, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_FLOOR_AIR_4")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_FLOOR_AIR_5, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_FLOOR_AIR_5")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_FLOOR_AIR_6, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_FLOOR_AIR_6")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_FLOOR_AIR_7, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_FLOOR_AIR_7")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_FLOOR_AIR_8, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_FLOOR_AIR_8")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_FLOOR_AIR_9, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_FLOOR_AIR_9")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_FLOOR_DARK_1, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_FLOOR_DARK_1")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_HALF_N, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_HALF_N")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_HALF_S, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_HALF_S")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_HALF_W, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_HALF_W")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_HALF_E, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_HALF_E")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_FULL_N, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_FULL_N")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_FULL_S, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_FULL_S")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_FULL_W, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_FULL_W")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_WALL_BRICK_FULL_E, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_WALL_BRICK_FULL_E")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILESET_FLOOR_AIR, ACE_TEXT_ALWAYS_CHAR("TYPE_TILESET_FLOOR_AIR")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILESET_FLOOR_DARK, ACE_TEXT_ALWAYS_CHAR("TYPE_TILESET_FLOOR_DARK")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILESET_WALL_BRICK_HALF, ACE_TEXT_ALWAYS_CHAR("TYPE_TILESET_WALL_BRICK_HALF")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILESET_WALL_BRICK_FULL, ACE_TEXT_ALWAYS_CHAR("TYPE_TILESET_WALL_BRICK_FULL")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_OFF_MAP, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_OFF_MAP")));
   };
 

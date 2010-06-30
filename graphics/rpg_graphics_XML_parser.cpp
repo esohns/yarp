@@ -263,6 +263,7 @@ RPG_Graphics_Tile_Type::RPG_Graphics_Tile_Type()
   myCurrentTile.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
   myCurrentTile.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentTile.orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
+  myCurrentTile.file.clear();
   myCurrentTile.offsetX = 0;
   myCurrentTile.offsetY = 0;
 }
@@ -286,6 +287,13 @@ void RPG_Graphics_Tile_Type::orientation(const RPG_Graphics_Orientation& orienta
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Tile_Type::orientation"));
 
   myCurrentTile.orientation = orientation_in;
+}
+
+void RPG_Graphics_Tile_Type::file(const ::std::string& file_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Tile_Type::file"));
+
+  myCurrentTile.file = file_in;
 }
 
 void RPG_Graphics_Tile_Type::offsetX(unsigned int offsetX_in)
@@ -313,10 +321,64 @@ RPG_Graphics_Tile RPG_Graphics_Tile_Type::post_RPG_Graphics_Tile_Type()
   myCurrentTile.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
   myCurrentTile.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentTile.orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
+  myCurrentTile.file.clear();
   myCurrentTile.offsetX = 0;
   myCurrentTile.offsetY = 0;
 
   return result;
+}
+
+RPG_Graphics_TileSet_Type::RPG_Graphics_TileSet_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_TileSet_Type::RPG_Graphics_TileSet_Type"));
+
+  myCurrentTileSet.type = RPG_GRAPHICS_TILESETTYPE_INVALID;
+  myCurrentTileSet.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
+  myCurrentTileSet.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
+  myCurrentTileSet.tiles.clear();
+}
+
+void RPG_Graphics_TileSet_Type::type(const RPG_Graphics_TileSetType& type_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_TileSet_Type::type"));
+
+  myCurrentTileSet.type = type_in;
+}
+
+void RPG_Graphics_TileSet_Type::style(const RPG_Graphics_StyleUnion& style_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_TileSet_Type::style"));
+
+  myCurrentTileSet.style = style_in;
+}
+
+void RPG_Graphics_TileSet_Type::tile(const RPG_Graphics_Tile& tile_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_TileSet_Type::tile"));
+
+  myCurrentTileSet.tiles.push_back(tile_in);
+}
+
+RPG_Graphics_TileSet RPG_Graphics_TileSet_Type::post_RPG_Graphics_TileSet_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_TileSet_Type::post_RPG_Graphics_TileSet_Type"));
+
+  RPG_Graphics_TileSet result = myCurrentTileSet;
+
+  // clear structure
+  myCurrentTileSet.type = RPG_GRAPHICS_TILESETTYPE_INVALID;
+  myCurrentTileSet.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
+  myCurrentTileSet.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
+  myCurrentTileSet.tiles.clear();
+
+  return result;
+}
+
+RPG_Graphics_TileSetType RPG_Graphics_TileSetType_Type::post_RPG_Graphics_TileSetType_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_TileSetType_Type::post_RPG_Graphics_TileSetType_Type"));
+
+  return RPG_Graphics_TileSetTypeHelper::stringToRPG_Graphics_TileSetType(post_string());
 }
 
 RPG_Graphics_Graphic_Type::RPG_Graphics_Graphic_Type()
@@ -329,8 +391,13 @@ RPG_Graphics_Graphic_Type::RPG_Graphics_Graphic_Type()
   myCurrentGraphic.tile.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
   myCurrentGraphic.tile.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentGraphic.tile.orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
+  myCurrentGraphic.tile.file.clear();
   myCurrentGraphic.tile.offsetX = 0;
   myCurrentGraphic.tile.offsetY = 0;
+  myCurrentGraphic.tileset.type = RPG_GRAPHICS_TILESETTYPE_INVALID;
+  myCurrentGraphic.tileset.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
+  myCurrentGraphic.tileset.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
+  myCurrentGraphic.tileset.tiles.clear();
   myCurrentGraphic.elements.clear();
   myCurrentGraphic.file.clear();
   myCurrentGraphic.size = 0;
@@ -355,6 +422,13 @@ void RPG_Graphics_Graphic_Type::tile(const RPG_Graphics_Tile& tile_in)
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Graphic_Type::tile"));
 
   myCurrentGraphic.tile = tile_in;
+}
+
+void RPG_Graphics_Graphic_Type::tileset(const RPG_Graphics_TileSet& tileSet_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Graphic_Type::tileset"));
+
+  myCurrentGraphic.tileset = tileSet_in;
 }
 
 void RPG_Graphics_Graphic_Type::element(const RPG_Graphics_Element& element_in)
@@ -393,6 +467,10 @@ RPG_Graphics_Graphic RPG_Graphics_Graphic_Type::post_RPG_Graphics_Graphic_Type()
   myCurrentGraphic.tile.orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
   myCurrentGraphic.tile.offsetX = 0;
   myCurrentGraphic.tile.offsetY = 0;
+  myCurrentGraphic.tileset.type = RPG_GRAPHICS_TILESETTYPE_INVALID;
+  myCurrentGraphic.tileset.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
+  myCurrentGraphic.tileset.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
+  myCurrentGraphic.tileset.tiles.clear();
   myCurrentGraphic.elements.clear();
   myCurrentGraphic.file.clear();
   myCurrentGraphic.size = 0;

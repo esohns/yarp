@@ -558,6 +558,7 @@ RPG_Client_WindowLevel::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
         south = current_position;
         south.second++;
 
+
       } // end IF
 
     } // end FOR

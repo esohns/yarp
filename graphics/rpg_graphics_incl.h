@@ -41,6 +41,8 @@
 #include "rpg_graphics_elementtypeunion.h"
 #include "rpg_graphics_element.h"
 #include "rpg_graphics_tile.h"
+#include "rpg_graphics_tilesettype.h"
+#include "rpg_graphics_tileset.h"
 #include "rpg_graphics_graphic.h"
 
 #endif

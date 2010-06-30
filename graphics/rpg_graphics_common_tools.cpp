@@ -41,6 +41,7 @@ RPG_Graphics_DoorStyleToStringTable_t RPG_Graphics_DoorStyleHelper::myRPG_Graphi
 RPG_Graphics_TypeToStringTable_t RPG_Graphics_TypeHelper::myRPG_Graphics_TypeToStringTable;
 RPG_Graphics_InterfaceElementTypeToStringTable_t RPG_Graphics_InterfaceElementTypeHelper::myRPG_Graphics_InterfaceElementTypeToStringTable;
 RPG_Graphics_HotspotTypeToStringTable_t RPG_Graphics_HotspotTypeHelper::myRPG_Graphics_HotspotTypeToStringTable;
+RPG_Graphics_TileSetTypeToStringTable_t RPG_Graphics_TileSetTypeHelper::myRPG_Graphics_TileSetTypeToStringTable;
 
 std::string                  RPG_Graphics_Common_Tools::myGraphicsDirectory;
 
@@ -206,6 +207,9 @@ RPG_Graphics_Common_Tools::tileToString(const RPG_Graphics_Tile& tile_in)
   result += ((tile_in.orientation == RPG_GRAPHICS_ORIENTATION_INVALID) ? ACE_TEXT("N/A")
   : RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(tile_in.orientation));
   result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT("file: ");
+  result += tile_in.file;
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
   std::ostringstream converter;
   result += ACE_TEXT("offset (x,y): ");
   converter << tile_in.offsetX;
@@ -216,6 +220,42 @@ RPG_Graphics_Common_Tools::tileToString(const RPG_Graphics_Tile& tile_in)
   converter << tile_in.offsetY;
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
+
+  return result;
+}
+
+const std::string
+RPG_Graphics_Common_Tools::tileSetToString(const RPG_Graphics_TileSet& tileSet_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::tileSetToString"));
+
+  std::string result;
+
+  // sanity check
+  if (tileSet_in.type == RPG_GRAPHICS_TILESETTYPE_INVALID)
+  {
+    result += ACE_TEXT("N/A\n");
+
+    return result;
+  } // end IF
+
+  result += ACE_TEXT("type: ");
+  result += RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(tileSet_in.type);
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT("style: ");
+  result += RPG_Graphics_Common_Tools::styleToString(tileSet_in.style);
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT("tiles[");
+  std::ostringstream converter;
+  converter << tileSet_in.tiles.size();
+  result += converter.str();
+  result += ACE_TEXT("]:\n");
+  for (RPG_Graphics_TileSetConstIterator_t iterator = tileSet_in.tiles.begin();
+       iterator != tileSet_in.tiles.end();
+       iterator++)
+  {
+    result += RPG_Graphics_Common_Tools::tileToString(*iterator);
+  } // end FOR
 
   return result;
 }
@@ -851,6 +891,7 @@ RPG_Graphics_Common_Tools::initStringConversionTables()
   RPG_Graphics_TypeHelper::init();
   RPG_Graphics_InterfaceElementTypeHelper::init();
   RPG_Graphics_HotspotTypeHelper::init();
+  RPG_Graphics_TileSetTypeHelper::init();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Graphics_Common_Tools: initialized string conversion tables...\n")));

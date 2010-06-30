@@ -84,4 +84,6 @@ struct RPG_Graphics_TileSet_t
   RPG_Graphics_Tiles_t tiles;
 };
 
+typedef std::vector<RPG_Graphics_Tile>::const_iterator RPG_Graphics_TileSetConstIterator_t;
+
 #endif

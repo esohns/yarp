@@ -54,12 +54,19 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
   RPG_Graphics_TileType_Type                  tileType_p;
   RPG_Graphics_StyleUnion_Type                style_p;
   RPG_Graphics_Orientation_Type               orientation_p;
+  ::xml_schema::string_pimpl                  string_p;
   ::xml_schema::unsigned_int_pimpl            unsigned_int_p;
   tile_p.parsers(tileType_p,
                  style_p,
                  orientation_p,
+                 string_p,
                  unsigned_int_p,
                  unsigned_int_p);
+  RPG_Graphics_TileSetType_Type               tileSetType_p;
+  RPG_Graphics_TileSet_Type                   tileSet_p;
+  tileSet_p.parsers(tileSetType_p,
+                    style_p,
+                    tile_p);
   RPG_Graphics_ElementTypeUnion_Type          elementType_p;
   RPG_Graphics_Element_Type                   element_p;
   element_p.parsers(elementType_p,
@@ -67,11 +74,11 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
                     unsigned_int_p,
                     unsigned_int_p,
                     unsigned_int_p);
-  ::xml_schema::string_pimpl                  string_p;
   RPG_Graphics_Graphic_Type                   graphic_p;
   graphic_p.parsers(category_p,
                     type_p,
                     tile_p,
+                    tileSet_p,
                     element_p,
                     string_p,
                     unsigned_int_p);
@@ -249,14 +256,16 @@ RPG_Graphics_Dictionary::dump() const
        iterator++, index++)
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("Graphic[#%u]:\nCategory: %s\nType: %s\nTile:\n%sElement(s)[%u]:\n%sFile: %s\nSize: %u\n"),
+               ACE_TEXT("Graphic[#%u]:\nCategory: %s\nType: %s\nTile:\n%sTileSet[%u]:\n%sElement(s)[%u]:\n%sFile: %s\nSize: %u\n"),
                index,
                RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString((iterator->second).category).c_str(),
                RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString((iterator->second).type).c_str(),
                RPG_Graphics_Common_Tools::tileToString((iterator->second).tile).c_str(),
+               (iterator->second).tileset.tiles.size(),
+               RPG_Graphics_Common_Tools::tileSetToString((iterator->second).tileset).c_str(),
                (iterator->second).elements.size(),
                RPG_Graphics_Common_Tools::elementsToString((iterator->second).elements).c_str(),
-               ((iterator->second).file).c_str(),
+               ((iterator->second).file.empty() ? ACE_TEXT("N/A") : ((iterator->second).file).c_str()),
                (iterator->second).size));
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("===========================\n")));

@@ -117,6 +117,12 @@ orientation_parser (::RPG_Graphics_Orientation_Type_pskel& p)
 }
 
 void RPG_Graphics_Tile_Type_pskel::
+file_parser (::xml_schema::string_pskel& p)
+{
+  this->file_parser_ = &p;
+}
+
+void RPG_Graphics_Tile_Type_pskel::
 offsetX_parser (::xml_schema::unsigned_int_pskel& p)
 {
   this->offsetX_parser_ = &p;
@@ -132,12 +138,14 @@ void RPG_Graphics_Tile_Type_pskel::
 parsers (::RPG_Graphics_TileType_Type_pskel& type,
          ::RPG_Graphics_StyleUnion_Type_pskel& style,
          ::RPG_Graphics_Orientation_Type_pskel& orientation,
+         ::xml_schema::string_pskel& file,
          ::xml_schema::unsigned_int_pskel& offsetX,
          ::xml_schema::unsigned_int_pskel& offsetY)
 {
   this->type_parser_ = &type;
   this->style_parser_ = &style;
   this->orientation_parser_ = &orientation;
+  this->file_parser_ = &file;
   this->offsetX_parser_ = &offsetX;
   this->offsetY_parser_ = &offsetY;
 }
@@ -147,8 +155,48 @@ RPG_Graphics_Tile_Type_pskel ()
 : type_parser_ (0),
   style_parser_ (0),
   orientation_parser_ (0),
+  file_parser_ (0),
   offsetX_parser_ (0),
   offsetY_parser_ (0)
+{
+}
+
+// RPG_Graphics_TileSet_Type_pskel
+//
+
+void RPG_Graphics_TileSet_Type_pskel::
+type_parser (::RPG_Graphics_TileSetType_Type_pskel& p)
+{
+  this->type_parser_ = &p;
+}
+
+void RPG_Graphics_TileSet_Type_pskel::
+style_parser (::RPG_Graphics_StyleUnion_Type_pskel& p)
+{
+  this->style_parser_ = &p;
+}
+
+void RPG_Graphics_TileSet_Type_pskel::
+tile_parser (::RPG_Graphics_Tile_Type_pskel& p)
+{
+  this->tile_parser_ = &p;
+}
+
+void RPG_Graphics_TileSet_Type_pskel::
+parsers (::RPG_Graphics_TileSetType_Type_pskel& type,
+         ::RPG_Graphics_StyleUnion_Type_pskel& style,
+         ::RPG_Graphics_Tile_Type_pskel& tile)
+{
+  this->type_parser_ = &type;
+  this->style_parser_ = &style;
+  this->tile_parser_ = &tile;
+}
+
+RPG_Graphics_TileSet_Type_pskel::
+RPG_Graphics_TileSet_Type_pskel ()
+: type_parser_ (0),
+  style_parser_ (0),
+  tile_parser_ (0)
 {
 }
 
@@ -174,6 +222,12 @@ tile_parser (::RPG_Graphics_Tile_Type_pskel& p)
 }
 
 void RPG_Graphics_Graphic_Type_pskel::
+tileset_parser (::RPG_Graphics_TileSet_Type_pskel& p)
+{
+  this->tileset_parser_ = &p;
+}
+
+void RPG_Graphics_Graphic_Type_pskel::
 element_parser (::RPG_Graphics_Element_Type_pskel& p)
 {
   this->element_parser_ = &p;
@@ -195,6 +249,7 @@ void RPG_Graphics_Graphic_Type_pskel::
 parsers (::RPG_Graphics_Category_Type_pskel& category,
          ::RPG_Graphics_Type_Type_pskel& type,
          ::RPG_Graphics_Tile_Type_pskel& tile,
+         ::RPG_Graphics_TileSet_Type_pskel& tileset,
          ::RPG_Graphics_Element_Type_pskel& element,
          ::xml_schema::string_pskel& file,
          ::xml_schema::unsigned_int_pskel& size)
@@ -202,6 +257,7 @@ parsers (::RPG_Graphics_Category_Type_pskel& category,
   this->category_parser_ = &category;
   this->type_parser_ = &type;
   this->tile_parser_ = &tile;
+  this->tileset_parser_ = &tileset;
   this->element_parser_ = &element;
   this->file_parser_ = &file;
   this->size_parser_ = &size;
@@ -212,6 +268,7 @@ RPG_Graphics_Graphic_Type_pskel ()
 : category_parser_ (0),
   type_parser_ (0),
   tile_parser_ (0),
+  tileset_parser_ (0),
   element_parser_ (0),
   file_parser_ (0),
   size_parser_ (0)
@@ -399,6 +456,11 @@ orientation (const RPG_Graphics_Orientation&)
 }
 
 void RPG_Graphics_Tile_Type_pskel::
+file (const ::std::string&)
+{
+}
+
+void RPG_Graphics_Tile_Type_pskel::
 offsetX (unsigned int)
 {
 }
@@ -448,6 +510,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "file" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->file_parser_;
+
+    if (this->file_parser_)
+      this->file_parser_->pre ();
+
+    return true;
+  }
+
   return false;
 }
 
@@ -478,6 +550,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->orientation_parser_)
       this->orientation (this->orientation_parser_->post_RPG_Graphics_Orientation_Type ());
+
+    return true;
+  }
+
+  if (n == "file" && ns == "urn:rpg")
+  {
+    if (this->file_parser_)
+      this->file (this->file_parser_->post_string ());
 
     return true;
   }
@@ -524,6 +604,101 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
+// RPG_Graphics_TileSet_Type_pskel
+//
+
+void RPG_Graphics_TileSet_Type_pskel::
+type (const RPG_Graphics_TileSetType&)
+{
+}
+
+void RPG_Graphics_TileSet_Type_pskel::
+style (const RPG_Graphics_StyleUnion&)
+{
+}
+
+void RPG_Graphics_TileSet_Type_pskel::
+tile (const RPG_Graphics_Tile&)
+{
+}
+
+bool RPG_Graphics_TileSet_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
+
+    if (this->type_parser_)
+      this->type_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "style" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->style_parser_;
+
+    if (this->style_parser_)
+      this->style_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "tile" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->tile_parser_;
+
+    if (this->tile_parser_)
+      this->tile_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Graphics_TileSet_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    if (this->type_parser_)
+      this->type (this->type_parser_->post_RPG_Graphics_TileSetType_Type ());
+
+    return true;
+  }
+
+  if (n == "style" && ns == "urn:rpg")
+  {
+    if (this->style_parser_)
+      this->style (this->style_parser_->post_RPG_Graphics_StyleUnion_Type ());
+
+    return true;
+  }
+
+  if (n == "tile" && ns == "urn:rpg")
+  {
+    if (this->tile_parser_)
+      this->tile (this->tile_parser_->post_RPG_Graphics_Tile_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
 // RPG_Graphics_Graphic_Type_pskel
 //
 
@@ -539,6 +714,11 @@ type (const RPG_Graphics_Type&)
 
 void RPG_Graphics_Graphic_Type_pskel::
 tile (const RPG_Graphics_Tile&)
+{
+}
+
+void RPG_Graphics_Graphic_Type_pskel::
+tileset (const RPG_Graphics_TileSet&)
 {
 }
 
@@ -597,6 +777,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "tileset" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->tileset_parser_;
+
+    if (this->tileset_parser_)
+      this->tileset_parser_->pre ();
+
+    return true;
+  }
+
   if (n == "element" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->element_parser_;
@@ -647,6 +837,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->tile_parser_)
       this->tile (this->tile_parser_->post_RPG_Graphics_Tile_Type ());
+
+    return true;
+  }
+
+  if (n == "tileset" && ns == "urn:rpg")
+  {
+    if (this->tileset_parser_)
+      this->tileset (this->tileset_parser_->post_RPG_Graphics_TileSet_Type ());
 
     return true;
   }
