@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CLIENT_WINDOWMAIN_H
-#define RPG_CLIENT_WINDOWMAIN_H
+#ifndef RPG_CLIENT_WINDOWLEVEL_H
+#define RPG_CLIENT_WINDOWLEVEL_H
 
 #include "rpg_client_common.h"
 
@@ -40,9 +40,8 @@ class RPG_Client_WindowLevel
  : public RPG_Graphics_SDLWindow
 {
  public:
-  RPG_Client_WindowLevel(const RPG_Graphics_SDLWindow&,         // parent window
-                         const RPG_Graphics_InterfaceWindow_t&, // type
-                         const RPG_Graphics_Type&);             // style
+  RPG_Client_WindowLevel(const RPG_Graphics_SDLWindow&,          // parent
+                         const RPG_Graphics_InterfaceWindow_t&); // type
   virtual ~RPG_Client_WindowLevel();
 
   // set view coordinates
@@ -65,8 +64,7 @@ class RPG_Client_WindowLevel
 
   // helper methods
   void setStyle(const RPG_Graphics_StyleUnion&);
-  static void loadTileset(const RPG_Graphics_Type&, // index type (== offset)
-                          const unsigned long&,     // #tiles in set
+  static void loadTileSet(const RPG_Graphics_Type&, // index type (== offset)
                           RPG_Graphics_Tiles_t&);   // return value: tileset
   static void initWalls(const RPG_Map_FloorPlan_t&,    // level map
                         const RPG_Graphics_TileSet_t&, // appropriate (style) tileset

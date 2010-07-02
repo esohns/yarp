@@ -42,9 +42,8 @@ class RPG_Graphics_SDLWindow
                          const std::string&,                               // title
                          const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
   // embedded ("child") window(s)
-  RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow&,         // parent
-                         const RPG_Graphics_InterfaceWindow_t&, // type
-                         const RPG_Graphics_Type&);             // (elements) style
+  RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow&,          // parent
+                         const RPG_Graphics_InterfaceWindow_t&); // type
   virtual ~RPG_Graphics_SDLWindow();
 
   // implement (part of) RPG_Graphics_IWindow

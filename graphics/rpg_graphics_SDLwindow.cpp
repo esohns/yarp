@@ -45,8 +45,7 @@ RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_InterfaceWindo
 }
 
 RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow& parent_in,
-                                               const RPG_Graphics_InterfaceWindow_t& type_in,
-                                               const RPG_Graphics_Type& graphicType_in)
+                                               const RPG_Graphics_InterfaceWindow_t& type_in)
   : myBorderTop(0),
     myBorderBottom(0),
     myBorderLeft(0),
@@ -55,20 +54,10 @@ RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow& par
     myTitleFont(RPG_GRAPHICS_TYPE_INVALID),
     myParent(&parent_in),
     myType(type_in),
-    myElementGraphicsType(graphicType_in),
+    myElementGraphicsType(RPG_GRAPHICS_TYPE_INVALID),
     myInitialized(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow"));
-
-  // (try to) load interface element graphics
-  if (!loadGraphics(myElementGraphicsType))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to loadGraphics(\"%s\"), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphicType_in).c_str()));
-
-    return;
-  } // end IF
 
   // compute parent's borders
   myParent->getBorders(myBorderTop,

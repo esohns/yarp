@@ -59,9 +59,10 @@ struct SDL_video_config_t
 
 struct map_config_t
 {
-  unsigned long min_room_area; // 0: don't care
+  unsigned long min_room_size; // 0: don't care
+  bool          doors;
   bool          corridors;
-  unsigned long max_num_doors_per_area;
+  unsigned long max_num_doors_per_room;
   bool          maximize_rooms;
   unsigned long num_areas;
   bool          square_rooms;
@@ -94,7 +95,7 @@ struct RPG_Client_DungeonLevel
 {
   RPG_Graphics_FloorStyle floorStyle;
   RPG_Graphics_WallStyle  wallStyle;
-  RPG_Graphics_DoorStyle  doorstyle;
+  RPG_Graphics_DoorStyle  doorStyle;
   RPG_Map_FloorPlan_t     plan;
 };
 

@@ -74,6 +74,9 @@ class RPG_Graphics_Common_Tools
   static const RPG_Graphics_TextSize_t textSize(const RPG_Graphics_Type&, // font
                                                 const std::string&);      // string
 
+  // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
+  static void loadTileSet(const RPG_Graphics_StyleUnion&, // style
+                          RPG_Graphics_Tiles_t&);         // return value: tileset
   // *NOTE*: uncached (!) surfaces need to be SDL_FreeSurface()ed by the user !
   static SDL_Surface* loadGraphic(const RPG_Graphics_Type&, // graphic
                                   const bool& = true);      // cache graphic ?
@@ -116,11 +119,17 @@ class RPG_Graphics_Common_Tools
   // helper methods
   static void initColors();
   static const bool initFonts();
+
+  // convert style (wall-, floor-, ...) to appropriate graphic metatype
+  static const RPG_Graphics_Type styleToType(const RPG_Graphics_StyleUnion&);
+
   static const bool loadPNG(const unsigned char*, // source buffer
                             SDL_Surface*&);       // return value: SDL surface
+
   static SDL_Surface* renderText(const RPG_Graphics_Type&, // font
                                  const std::string&,       // string
                                  const SDL_Color&);        // color
+
   static void fade(const float&,  // interval (seconds)
                    SDL_Surface*,  // target image
                    SDL_Surface*); // screen

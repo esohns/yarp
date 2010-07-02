@@ -319,6 +319,66 @@ RPG_Graphics_Common_Tools::elementsToString(const RPG_Graphics_Elements_t& eleme
   return result;
 }
 
+const RPG_Graphics_Type
+RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::styleToType"));
+
+  RPG_Graphics_Type result = RPG_GRAPHICS_TYPE_INVALID;
+
+  switch (style_in.discriminator)
+  {
+    case RPG_Graphics_StyleUnion::FLOORSTYLE:
+    {
+      switch (style_in.floorstyle)
+      {
+        case FLOORSTYLE_AIR:
+          result = TYPE_TILESET_FLOOR_AIR; break;
+        case FLOORSTYLE_DARK:
+          result = TYPE_TILESET_FLOOR_DARK; break;
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid floor-style (was: %d), aborting\n"),
+                     RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(style_in.floorstyle).c_str()));
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case RPG_Graphics_StyleUnion::WALLSTYLE:
+    {
+      switch (style_in.wallstyle)
+      {
+        case WALLSTYLE_BRICK:
+          result = TYPE_TILESET_WALL_BRICK_FULL; break;
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid wall-style (was: %d), aborting\n"),
+                     RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(style_in.wallstyle).c_str()));
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid style (was: %d), aborting\n"),
+                 style_in.discriminator));
+
+      break;
+    }
+  } // end SWITCH
+
+  return result;
+}
+
 const SDL_Color
 RPG_Graphics_Common_Tools::colorToSDLColor(const Uint32& color_in,
                                            const SDL_Surface& targetSurface_in)
@@ -370,6 +430,110 @@ RPG_Graphics_Common_Tools::textSize(const RPG_Graphics_Type& type_in,
 
   return RPG_Graphics_TextSize_t(ACE_static_cast(unsigned long, width),
                                  ACE_static_cast(unsigned long, height));
+}
+
+void
+RPG_Graphics_Common_Tools::loadTileSet(const RPG_Graphics_StyleUnion& style_in,
+                                       RPG_Graphics_Tiles_t& tileSet_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadTileSet"));
+
+  // init return value(s)
+  for (RPG_Graphics_TilesConstIterator_t iterator = tileSet_out.begin();
+       iterator != tileSet_out.end();
+       iterator++)
+    SDL_FreeSurface(*iterator);
+  tileSet_out.clear();
+
+  // step0: retrieve appropriate graphic type
+  RPG_Graphics_Type graphic_type = RPG_GRAPHICS_TYPE_INVALID;
+  graphic_type = RPG_Graphics_Common_Tools::styleToType(style_in);
+  // sanity check(s)
+  if (graphic_type == RPG_GRAPHICS_TYPE_INVALID)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::styleToType(\"%s\"), aborting\n"),
+               RPG_Graphics_Common_Tools::styleToString(style_in).c_str()));
+
+    return;
+  } // end IF
+
+  // step1: retrieve list of tiles
+  RPG_Graphics_t graphic;
+  graphic.type = RPG_GRAPHICS_TYPE_INVALID;
+
+  // retrieve properties from the dictionary
+  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(graphic_type);
+  ACE_ASSERT(graphic.type == graphic_type);
+  // sanity check(s)
+  if (graphic.category != CATEGORY_TILESET)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadTileSet(\"%s\"): not a tileset (was: %s), aborting\n"),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphic.type).c_str(),
+               RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str()));
+
+    return;
+  } // end IF
+
+  // assemble base path
+  std::string path_base = myGraphicsDirectory;
+  path_base += ACE_DIRECTORY_SEPARATOR_STR;
+  switch (graphic.tileset.type)
+  {
+    case TILESETTYPE_FLOOR:
+      path_base += RPG_GRAPHICS_TILES_DEF_FLOORS_SUB; break;
+    case TILESETTYPE_WALL:
+      path_base += RPG_GRAPHICS_TILES_DEF_WALLS_SUB; break;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid tileset type (was: \"%s\"), aborting\n"),
+                 RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(graphic.tileset.type).c_str()));
+
+      return;
+    }
+  } // end SWITCH
+  path_base += ACE_DIRECTORY_SEPARATOR_STR;
+
+  std::string path = path_base;
+  SDL_Surface* current_surface = NULL;
+  for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin();
+       iterator != graphic.tileset.tiles.end();
+       iterator++)
+  {
+    current_surface = NULL;
+
+    // load file
+    path = path_base;
+    path += (*iterator).file;
+    current_surface = RPG_Graphics_Common_Tools::loadFile(path,  // file
+                                                          true); // convert to display format
+    if (!current_surface)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
+                 path.c_str()));
+
+      // clean up
+      for (RPG_Graphics_TilesConstIterator_t iterator = tileSet_out.begin();
+           iterator != tileSet_out.end();
+           iterator++)
+        SDL_FreeSurface(*iterator);
+      tileSet_out.clear();
+
+      return;
+    } // end IF
+
+    tileSet_out.push_back(current_surface);
+  } // end FOR
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("loaded tileset \"%s\" (type: %s, style: %s, %u tile(s))...\n"),
+             RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphic.type).c_str(),
+             RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(graphic.tileset.type).c_str(),
+             RPG_Graphics_Common_Tools::styleToString(graphic.tileset.style).c_str(),
+             tileSet_out.size()));
 }
 
 SDL_Surface*

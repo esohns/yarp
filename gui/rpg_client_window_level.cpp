@@ -27,11 +27,9 @@
 #include <ace/Log_Msg.h>
 
 RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindow& parent_in,
-                                               const RPG_Graphics_InterfaceWindow_t& type_in,
-                                               const RPG_Graphics_Type& graphicType_in)
+                                               const RPG_Graphics_InterfaceWindow_t& type_in)
  : inherited(parent_in,
-             type_in,
-             graphicType_in),
+             type_in),
    myInitialized(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::RPG_Client_WindowLevel"));
@@ -59,6 +57,19 @@ RPG_Client_WindowLevel::~RPG_Client_WindowLevel()
 {
   ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::~RPG_Client_WindowLevel"));
 
+  // clean up
+  for (RPG_Graphics_TilesConstIterator_t iterator = myCurrentFloorSet.tiles.begin();
+       iterator != myCurrentFloorSet.tiles.end();
+       iterator++)
+    SDL_FreeSurface(*iterator);
+  myCurrentFloorSet.tiles.clear();
+  myCurrentFloorSet.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
+  for (RPG_Graphics_TilesConstIterator_t iterator = myCurrentWallSet.tiles.begin();
+       iterator != myCurrentWallSet.tiles.end();
+       iterator++)
+    SDL_FreeSurface(*iterator);
+  myCurrentWallSet.tiles.clear();
+  myCurrentWallSet.style.wallstyle = RPG_GRAPHICS_WALLSTYLE_INVALID;
 }
 
 void
@@ -88,7 +99,16 @@ RPG_Client_WindowLevel::setMap(const RPG_Client_DungeonLevel& levelMap_in)
   myView.first = myMap.plan.size_x / 2;
   myView.second = myMap.plan.size_y / 2;
 
-  // init wall tiles
+  // init style
+  RPG_Graphics_StyleUnion style;
+  style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
+  style.floorstyle = myMap.floorStyle;
+  setStyle(style);
+  style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
+  style.wallstyle = myMap.wallStyle;
+  setStyle(style);
+
+  // init wall tiles / position
   initWalls(myMap.plan,
             myCurrentWallSet,
             myWallTiles);
@@ -176,7 +196,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
   int i, j;
   RPG_Map_Position_t current_map_position = std::make_pair(0, 0);
-//   RPG_Map_PositionsConstIterator_t iterator;
+  RPG_Client_WallTilesConstIterator_t iterator;
   unsigned long x, y;
   for (i = -position_tr.second;
        i <= position_tr.second;
@@ -241,21 +261,33 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
       {
         RPG_Graphics_Common_Tools::put(x,
                                        y,
-                                       *myCurrentFloorSet.front(),
+                                       *myCurrentFloorSet.tiles.front(),
                                        targetSurface_in);
 
-        // step2: walls
-        if (RPG_Map_Common_Tools::isFloor(current_map_position,
-                                          myMap.plan))
-        {
+        // step2: walls (west & north)
+        iterator = myWallTiles.find(current_map_position);
+        ACE_ASSERT(iterator != myWallTiles.end());
+        if ((*iterator).second.west)
           RPG_Graphics_Common_Tools::put(x,
                                          y,
-                                         *myCurrentFloorSet.front(),
-                                             targetSurface_in);
-
-          continue;
-        } // end IF
-        continue;
+                                         *(*iterator).second.west,
+                                         targetSurface_in);
+        if ((*iterator).second.north)
+          RPG_Graphics_Common_Tools::put(x,
+                                         y,
+                                         *(*iterator).second.north,
+                                         targetSurface_in);
+        // south & east
+        if ((*iterator).second.south)
+          RPG_Graphics_Common_Tools::put(x,
+                                         y,
+                                         *(*iterator).second.south,
+                                         targetSurface_in);
+        if ((*iterator).second.east)
+          RPG_Graphics_Common_Tools::put(x,
+                                         y,
+                                         *(*iterator).second.east,
+                                         targetSurface_in);
       } // end IF
 
 //       tile_id = map_back;
@@ -283,120 +315,95 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 //            for (dir_idx = 0; dir_idx < 12; dir_idx++)
 //              vultures_put_tile(x, y, maptile_floor_edge[i][j].dir[dir_idx]);
 
-  for (__i = - map_tr_y; __i <= map_tr_y; __i++)
-  {
-    i = view_y + __i;
-    if (i < 0 || i >= ROWNO)
-      continue;
+//   for (__i = - map_tr_y; __i <= map_tr_y; __i++)
+//   {
+//     i = view_y + __i;
+//     if (i < 0 || i >= ROWNO)
+//       continue;
+//
+//     for (__j = diff + __i; __j + __i <= sum; __j++)
+//     {
+//       j = view_x + __j;
+//       if (j < 1 || j >= COLNO)
+//         continue;
+//       /* Find position of tile centre */
+//       x = map_centre_x + V_MAP_XMOD*(__j - __i);
+//       y = map_centre_y + V_MAP_YMOD*(__j + __i);
+//
+//       map_back = map_data->get_glyph(MAP_BACK, j, i);
+//       map_obj = map_data->get_glyph(MAP_OBJ, j, i);
+//       map_mon = map_data->get_glyph(MAP_MON, j, i);
+//
+//       /* 1. West and north walls */
+//       if (j > 1)
+//         vultures_put_tile_shaded(x, y, maptile_wall[i][j].west,
+//                                  map_data->get_glyph(MAP_DARKNESS, j-1, i));
+//       if (i > 1)
+//         vultures_put_tile_shaded(x, y, maptile_wall[i][j].north,
+//                                  map_data->get_glyph(MAP_DARKNESS, j, i-1));
+//
+//       /* shortcut for unmapped case */
+//       if (map_back != V_MISC_UNMAPPED_AREA ||
+//           map_obj != V_TILE_NONE) {
+//         /* 2. Furniture*/
+//         vultures_put_tile(x, y, map_data->get_glyph(MAP_FURNITURE, j, i));
+//
+//
+//         /* 3. Traps */
+//         vultures_put_tile(x, y, map_data->get_glyph(MAP_TRAP, j, i));
+//
+//
+//         /* 4. Objects */
+//         vultures_put_tile(x, y, map_obj);
+//
+//
+//         /* 5. Monsters */
+//         if ((cur_tile = vultures_get_tile(map_mon)) != NULL) {
+//           vultures_put_tile(x, y, map_mon);
+//           if (iflags.hilite_pet && map_data->get_glyph(MAP_PET, j, i))
+//             vultures_put_img(x + cur_tile->xmod, y + cur_tile->ymod - 10,
+//                              vultures_get_tile(V_MISC_HILITE_PET)->graphic);
+//         }
+//
+//         /* 6. Effects */
+//         vultures_put_tile(x, y, map_data->get_glyph(MAP_SPECIAL, j, i));
+//           }
+//
+//           /* 7. South & East walls */
+//           if (i < ROWNO - 1)
+//             vultures_put_tile_shaded(x, y, maptile_wall[i][j].south,
+//                                      map_data->get_glyph(MAP_DARKNESS, j, i+1));
+//           if (j < COLNO - 1)
+//             vultures_put_tile_shaded(x, y, maptile_wall[i][j].east,
+//                                      map_data->get_glyph(MAP_DARKNESS, j+1, i));
+//     }
+//   }
+//
+//   /* draw object highlights if requested */
+//   if (vultures_map_highlight_objects)
+//   {
+//     for (__i = - map_tr_y; __i <= map_tr_y; __i++)
+//     {
+//       i = view_y + __i;
+//       if (i < 0 || i >= ROWNO)
+//         continue;
+//
+//       for (__j = diff + __i; __j + __i <= sum; __j++)
+//       {
+//         j = view_x + __j;
+//         if (j < 1 || j >= COLNO)
+//           continue;
+//
+//         x = map_centre_x + V_MAP_XMOD*(__j - __i);
+//         y = map_centre_y + V_MAP_YMOD*(__j + __i);
+//
+//         vultures_put_tilehighlight(x, y, map_data->get_glyph(MAP_OBJ, j, i));
+//       }
+    } // end FOR
+  } // end FOR
 
-    for (__j = diff + __i; __j + __i <= sum; __j++)
-    {
-      j = view_x + __j;
-      if (j < 1 || j >= COLNO)
-        continue;
-      /* Find position of tile centre */
-      x = map_centre_x + V_MAP_XMOD*(__j - __i);
-      y = map_centre_y + V_MAP_YMOD*(__j + __i);
-
-      map_back = map_data->get_glyph(MAP_BACK, j, i);
-      map_obj = map_data->get_glyph(MAP_OBJ, j, i);
-      map_mon = map_data->get_glyph(MAP_MON, j, i);
-
-      /* 1. West and north walls */
-      if (j > 1)
-        vultures_put_tile_shaded(x, y, maptile_wall[i][j].west,
-                                 map_data->get_glyph(MAP_DARKNESS, j-1, i));
-      if (i > 1)
-        vultures_put_tile_shaded(x, y, maptile_wall[i][j].north,
-                                 map_data->get_glyph(MAP_DARKNESS, j, i-1));
-
-      /* shortcut for unmapped case */
-      if (map_back != V_MISC_UNMAPPED_AREA ||
-          map_obj != V_TILE_NONE) {
-        /* 2. Furniture*/
-        vultures_put_tile(x, y, map_data->get_glyph(MAP_FURNITURE, j, i));
-
-
-        /* 3. Traps */
-        vultures_put_tile(x, y, map_data->get_glyph(MAP_TRAP, j, i));
-
-
-        /* 4. Objects */
-        vultures_put_tile(x, y, map_obj);
-
-
-        /* 5. Monsters */
-        if ((cur_tile = vultures_get_tile(map_mon)) != NULL) {
-          vultures_put_tile(x, y, map_mon);
-          if (iflags.hilite_pet && map_data->get_glyph(MAP_PET, j, i))
-            vultures_put_img(x + cur_tile->xmod, y + cur_tile->ymod - 10,
-                             vultures_get_tile(V_MISC_HILITE_PET)->graphic);
-        }
-
-        /* 6. Effects */
-        vultures_put_tile(x, y, map_data->get_glyph(MAP_SPECIAL, j, i));
-          }
-
-          /* 7. South & East walls */
-          if (i < ROWNO - 1)
-            vultures_put_tile_shaded(x, y, maptile_wall[i][j].south,
-                                     map_data->get_glyph(MAP_DARKNESS, j, i+1));
-          if (j < COLNO - 1)
-            vultures_put_tile_shaded(x, y, maptile_wall[i][j].east,
-                                     map_data->get_glyph(MAP_DARKNESS, j+1, i));
-    }
-  }
-
-  /* draw object highlights if requested */
-  if (vultures_map_highlight_objects)
-  {
-    for (__i = - map_tr_y; __i <= map_tr_y; __i++)
-    {
-      i = view_y + __i;
-      if (i < 0 || i >= ROWNO)
-        continue;
-
-      for (__j = diff + __i; __j + __i <= sum; __j++)
-      {
-        j = view_x + __j;
-        if (j < 1 || j >= COLNO)
-          continue;
-
-        x = map_centre_x + V_MAP_XMOD*(__j - __i);
-        y = map_centre_y + V_MAP_YMOD*(__j + __i);
-
-        vultures_put_tilehighlight(x, y, map_data->get_glyph(MAP_OBJ, j, i));
-      }
-    }
-  }
-  /* Restore drawing region */
-  vultures_set_draw_region(0, 0, vultures_screen->w-1, vultures_screen->h-1);
-
-  vultures_invalidate_region(clip_tl_x, clip_tl_y,
-                             clip_br_x - clip_tl_x,
-                             clip_br_y - clip_tl_y);
-
-  clip_tl_x = 999999;
-  clip_tl_y = 999999;
-  clip_br_x = 0;
-  clip_br_y = 0;
-
-  vultures_tilecache_age();
-
-  vultures_map_draw_msecs = SDL_GetTicks() - startticks;
-  vultures_map_draw_lastmove = moves;
-
-  return true;
-
-  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  for (i = offset_in.first + myBorderLeft;
-       i < (ACE_static_cast(unsigned long, targetSurface_in->w) - myBorderRight);
-       i += (*iterator).second->w)
-    RPG_Graphics_Common_Tools::put(i,
-                                   offset_in.second,
-                                   *(*iterator).second,
-                                   targetSurface_in);
+  // whole viewport needs a refresh...
+  myDirtyRegions.push_back(clipRect);
 
   // reset clipping area
   clipRect.x = 0;
@@ -411,9 +418,6 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
     return;
   } // end IF
-
-  // whole window needs a refresh...
-  myDirtyRegions.push_back(clipRect);
 }
 
 void
@@ -421,8 +425,6 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setStyle"));
 
-  RPG_Graphics_Type current = RPG_GRAPHICS_TYPE_INVALID;
-  unsigned long numTiles = RPG_GRAPHICS_TILES_DEF_NUMSETTILES;
   RPG_Graphics_Tiles_t* tileset = NULL;
   switch (style_in.discriminator)
   {
@@ -431,29 +433,6 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
       // init current set
       myCurrentFloorSet.style.floorstyle = style_in.floorstyle;
       tileset = &myCurrentFloorSet.tiles;
-      switch (myCurrentFloorSet.style.floorstyle)
-      {
-        case FLOORSTYLE_AIR:
-        {
-          current = TYPE_TILE_FLOOR_AIR_1;
-
-          break;
-        }
-        case FLOORSTYLE_DARK:
-        {
-          current = TYPE_TILE_FLOOR_DARK_1;
-
-          break;
-        }
-        default:
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid floor-style: \"%s\", aborting\n"),
-                     RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(myCurrentFloorSet.style.floorstyle).c_str()));
-
-          return;
-        }
-      } // end SWITCH
 
       break;
     }
@@ -462,17 +441,6 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
       // init current set
       myCurrentWallSet.style.wallstyle = style_in.wallstyle;
       tileset = &myCurrentWallSet.tiles;
-      switch (myCurrentWallSet.style.wallstyle)
-      {
-        default:
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid wall-style: \"%s\", aborting\n"),
-                     RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(myCurrentWallSet.style.wallstyle).c_str()));
-
-          return;
-        }
-      } // end SWITCH
 
       break;
     }
@@ -487,44 +455,8 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
   } // end SWITCH
 
   // load appropriate graphics
-  RPG_Client_WindowLevel::loadTileset(current,
-                                      numTiles,
-                                      *tileset);
-}
-
-void
-RPG_Client_WindowLevel::loadTileset(const RPG_Graphics_Type& typeOffset_in,
-                                    const unsigned long& numTiles_in,
-                                    RPG_Graphics_Tiles_t& tileset_out)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::loadTileset"));
-
-  // init return value(s)
-  tileset_out.clear();
-
-  SDL_Surface* current_surface = NULL;
-  int current_type = typeOffset_in;
-  for (unsigned long i = 0;
-       i < numTiles_in;
-       i++, current_type++)
-  {
-    current_surface = NULL;
-    current_surface = RPG_Graphics_Common_Tools::loadGraphic(ACE_static_cast(RPG_Graphics_Type, current_type),
-                                                             true);
-    if (!current_surface)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-                 RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(ACE_static_cast(RPG_Graphics_Type, current_type)).c_str()));
-
-      // clean up
-      tileset_out.clear();
-
-      return;
-    } // end IF
-
-    tileset_out.push_back(current_surface);
-  } // end FOR
+  RPG_Graphics_Common_Tools::loadTileSet(style_in,
+                                         *tileset);
 }
 
 void

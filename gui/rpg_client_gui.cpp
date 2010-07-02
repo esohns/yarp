@@ -21,6 +21,7 @@
 #include "rpg_client_defines.h"
 #include "rpg_client_common.h"
 #include "rpg_client_window_main.h"
+#include "rpg_client_window_level.h"
 
 #include <rpg_map_common_tools.h>
 #include <rpg_map_level.h>
@@ -1163,30 +1164,47 @@ do_work(const RPG_Client_Config& config_in)
 
   // step4: setup main "window"
   std::string title = RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE;
-  RPG_Client_WindowMain window(INTERFACEWINDOW_MAIN,                     // window type
-                               RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE, // interface elements
-                               title);                                   // title (== caption)
+  RPG_Client_WindowMain mainWindow(INTERFACEWINDOW_MAIN,                     // window type
+                                   RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE, // interface elements
+                                   title);                                   // title (== caption)
   RPG_Graphics_Position_t position = std::make_pair(0, 0);
-  window.draw(screen,
-              position);
-  window.refresh(screen);
+  mainWindow.draw(screen,
+                  position);
+  mainWindow.refresh(screen);
 
-//   // step5: setup map
-//   RPG_Map_Positions_t seedPoints;
-//   RPG_Map_FloorPlan_t floorPlan;
-//   RPG_Map_Common_Tools::createFloorPlan(config_in.map_config.map_size_x,
-//                                         config_in.map_config.map_size_y,
-//                                         config_in.map_config.num_areas,
-//                                         config_in.map_config.square_rooms,
-//                                         config_in.map_config.maximize_rooms,
-//                                         config_in.map_config.min_room_area,
-//                                         config_in.map_config.corridors,
-//                                         true, // *NOTE*: currently, doors fill one position
-//                                         config_in.map_config.max_num_doors_per_area,
-//                                         seedPoints,
-//                                         floorPlan);
-//   RPG_Map_Common_Tools::displayFloorPlan(floorPlan);
-//   RPG_Map_Level level(floorPlan);
+  // step5: setup level
+  RPG_Client_DungeonLevel level;
+  //   RPG_Map_Level level(floorPlan);
+  // step5a: setup map
+  RPG_Map_Positions_t seedPoints;
+  RPG_Map_Common_Tools::createFloorPlan(config_in.map_config.map_size_x,
+                                        config_in.map_config.map_size_y,
+                                        config_in.map_config.num_areas,
+                                        config_in.map_config.square_rooms,
+                                        config_in.map_config.maximize_rooms,
+                                        config_in.map_config.min_room_size,
+                                        config_in.map_config.doors,
+                                        config_in.map_config.corridors,
+                                        true, // *NOTE*: currently, doors fill one position
+                                        config_in.map_config.max_num_doors_per_room,
+                                        seedPoints,
+                                        level.plan);
+
+  // debug info
+  RPG_Map_Common_Tools::displayFloorPlan(level.plan);
+
+  // step5b: setup style
+  level.floorStyle = FLOORSTYLE_AIR;
+  level.wallStyle = WALLSTYLE_BRICK;
+  level.doorStyle = RPG_GRAPHICS_DOORSTYLE_INVALID;
+
+  // step6: setup level "window"
+  RPG_Client_WindowLevel levelWindow(mainWindow,             // parent
+                                     INTERFACEWINDOW_LEVEL); // window type
+  levelWindow.setMap(level);
+  levelWindow.draw(screen,
+                   position);
+  levelWindow.refresh(screen);
 
   // step6: setup event loops
   // - perform (signal handling, socket I/O, ...) --> ACE_Reactor
@@ -1605,9 +1623,10 @@ ACE_TMAIN(int argc_in,
   config.graphics_dictionary               = graphicsDictionary;
 
   // *** map ***
-  config.map_config.min_room_area          = RPG_CLIENT_DEF_MAP_MIN_ROOM_AREA;
+  config.map_config.min_room_size          = RPG_CLIENT_DEF_MAP_MIN_ROOM_SIZE;
+  config.map_config.doors                  = RPG_CLIENT_DEF_MAP_DOORS;
   config.map_config.corridors              = RPG_CLIENT_DEF_MAP_CORRIDORS;
-  config.map_config.max_num_doors_per_area = RPG_CLIENT_DEF_MAP_MAX_NUM_DOORS_PER_AREA;
+  config.map_config.max_num_doors_per_room = RPG_CLIENT_DEF_MAP_MAX_NUM_DOORS_PER_ROOM;
   config.map_config.maximize_rooms         = RPG_CLIENT_DEF_MAP_MAXIMIZE_ROOMS;
   config.map_config.num_areas              = RPG_CLIENT_DEF_MAP_NUM_AREAS;
   config.map_config.square_rooms           = RPG_CLIENT_DEF_MAP_SQUARE_ROOMS;
