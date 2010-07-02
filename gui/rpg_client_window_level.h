@@ -64,23 +64,23 @@ class RPG_Client_WindowLevel
 
   // helper methods
   void setStyle(const RPG_Graphics_StyleUnion&);
-  static void loadTileSet(const RPG_Graphics_Type&, // index type (== offset)
-                          RPG_Graphics_Tiles_t&);   // return value: tileset
-  static void initWalls(const RPG_Map_FloorPlan_t&,    // level map
-                        const RPG_Graphics_TileSet_t&, // appropriate (style) tileset
-                        RPG_Client_WallTiles_t&);      // return value: wall tiles / position
+  static void initWalls(const RPG_Map_FloorPlan_t&,        // level map
+                        const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
+                        RPG_Client_WallTiles_t&);          // return value: wall tiles / position
 
-  RPG_Graphics_TileSet_t  myCurrentFloorSet;
-  RPG_Graphics_TileSet_t  myCurrentWallSet;
+  RPG_Graphics_FloorStyle     myCurrentFloorStyle;
+  RPG_Graphics_FloorTileSet_t myCurrentFloorSet;
+  RPG_Graphics_WallStyle      myCurrentWallStyle;
+  RPG_Graphics_WallTileSet_t  myCurrentWallSet;
 
   // center of displayed map area (map coordinate system)
-  RPG_Graphics_Position_t myView;
+  RPG_Graphics_Position_t     myView;
 
   // wall tiles / position
-  RPG_Client_WallTiles_t  myWallTiles;
+  RPG_Client_WallTiles_t      myWallTiles;
 
-  RPG_Client_DungeonLevel myMap;
-  bool                    myInitialized;
+  RPG_Client_DungeonLevel     myMap;
+  bool                        myInitialized;
 };
 
 #endif

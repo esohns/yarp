@@ -75,8 +75,11 @@ class RPG_Graphics_Common_Tools
                                                 const std::string&);      // string
 
   // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
-  static void loadTileSet(const RPG_Graphics_StyleUnion&, // style
-                          RPG_Graphics_Tiles_t&);         // return value: tileset
+  static void loadFloorTileSet(const RPG_Graphics_FloorStyle&, // style
+                               RPG_Graphics_FloorTileSet_t&);  // return value: tileset
+  // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
+  static void loadWallTileSet(const RPG_Graphics_WallStyle&, // style
+                              RPG_Graphics_WallTileSet_t&);  // return value: tileset
   // *NOTE*: uncached (!) surfaces need to be SDL_FreeSurface()ed by the user !
   static SDL_Surface* loadGraphic(const RPG_Graphics_Type&, // graphic
                                   const bool& = true);      // cache graphic ?

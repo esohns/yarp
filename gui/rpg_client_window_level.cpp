@@ -30,12 +30,19 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindow& par
                                                const RPG_Graphics_InterfaceWindow_t& type_in)
  : inherited(parent_in,
              type_in),
+   myCurrentFloorStyle(RPG_GRAPHICS_FLOORSTYLE_INVALID),
+//    myCurrentFloorSet(),
+   myCurrentWallStyle(RPG_GRAPHICS_WALLSTYLE_INVALID),
+//    myCurrentWallSet(),
    myInitialized(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::RPG_Client_WindowLevel"));
 
-  myCurrentFloorSet.style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-  myCurrentWallSet.style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
+  myCurrentFloorSet.clear();
+  myCurrentWallSet.east = NULL;
+  myCurrentWallSet.west = NULL;
+  myCurrentWallSet.north = NULL;
+  myCurrentWallSet.south = NULL;
 
   // init view
   myView = std::make_pair(0, 0);
@@ -58,18 +65,25 @@ RPG_Client_WindowLevel::~RPG_Client_WindowLevel()
   ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::~RPG_Client_WindowLevel"));
 
   // clean up
-  for (RPG_Graphics_TilesConstIterator_t iterator = myCurrentFloorSet.tiles.begin();
-       iterator != myCurrentFloorSet.tiles.end();
+  for (RPG_Graphics_FloorTileSetConstIterator_t iterator = myCurrentFloorSet.begin();
+       iterator != myCurrentFloorSet.end();
        iterator++)
     SDL_FreeSurface(*iterator);
-  myCurrentFloorSet.tiles.clear();
-  myCurrentFloorSet.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
-  for (RPG_Graphics_TilesConstIterator_t iterator = myCurrentWallSet.tiles.begin();
-       iterator != myCurrentWallSet.tiles.end();
-       iterator++)
-    SDL_FreeSurface(*iterator);
-  myCurrentWallSet.tiles.clear();
-  myCurrentWallSet.style.wallstyle = RPG_GRAPHICS_WALLSTYLE_INVALID;
+  myCurrentFloorSet.clear();
+  myCurrentFloorStyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
+  if (myCurrentWallSet.east)
+    SDL_FreeSurface(myCurrentWallSet.east);
+  if (myCurrentWallSet.west)
+    SDL_FreeSurface(myCurrentWallSet.west);
+  if (myCurrentWallSet.north)
+    SDL_FreeSurface(myCurrentWallSet.north);
+  if (myCurrentWallSet.south)
+    SDL_FreeSurface(myCurrentWallSet.south);
+  myCurrentWallSet.east = NULL;
+  myCurrentWallSet.west = NULL;
+  myCurrentWallSet.north = NULL;
+  myCurrentWallSet.south = NULL;
+  myCurrentWallStyle = RPG_GRAPHICS_WALLSTYLE_INVALID;
 }
 
 void
@@ -261,7 +275,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
       {
         RPG_Graphics_Common_Tools::put(x,
                                        y,
-                                       *myCurrentFloorSet.tiles.front(),
+                                       *myCurrentFloorSet.front(),
                                        targetSurface_in);
 
         // step2: walls (west & north)
@@ -425,22 +439,38 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setStyle"));
 
-  RPG_Graphics_Tiles_t* tileset = NULL;
   switch (style_in.discriminator)
   {
     case RPG_Graphics_StyleUnion::FLOORSTYLE:
     {
-      // init current set
-      myCurrentFloorSet.style.floorstyle = style_in.floorstyle;
-      tileset = &myCurrentFloorSet.tiles;
+      RPG_Graphics_Common_Tools::loadFloorTileSet(style_in.floorstyle,
+                                                  myCurrentFloorSet);
+      // sanity check
+      if (myCurrentFloorSet.empty())
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("floor-style \"%s\" has no tiles, continuing\n"),
+                   RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(style_in.floorstyle).c_str()));
+      } // end IF
+      myCurrentFloorStyle = style_in.floorstyle;
 
       break;
     }
     case RPG_Graphics_StyleUnion::WALLSTYLE:
     {
-      // init current set
-      myCurrentWallSet.style.wallstyle = style_in.wallstyle;
-      tileset = &myCurrentWallSet.tiles;
+      RPG_Graphics_Common_Tools::loadWallTileSet(style_in.wallstyle,
+                                                 myCurrentWallSet);
+      // sanity check
+      if ((myCurrentWallSet.east == NULL) ||
+          (myCurrentWallSet.west == NULL) ||
+          (myCurrentWallSet.north == NULL) ||
+          (myCurrentWallSet.south == NULL))
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("wall-style \"%s\" is incomplete, continuing\n"),
+                   RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(style_in.wallstyle).c_str()));
+      } // end IF
+      myCurrentWallStyle = style_in.wallstyle;
 
       break;
     }
@@ -455,13 +485,12 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
   } // end SWITCH
 
   // load appropriate graphics
-  RPG_Graphics_Common_Tools::loadTileSet(style_in,
-                                         *tileset);
+
 }
 
 void
 RPG_Client_WindowLevel::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
-                                  const RPG_Graphics_TileSet_t& tileSet_in,
+                                  const RPG_Graphics_WallTileSet_t& tileSet_in,
                                   RPG_Client_WallTiles_t& wallTiles_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::initWalls"));
