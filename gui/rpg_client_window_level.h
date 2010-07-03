@@ -27,6 +27,8 @@
 #include <rpg_graphics_type.h>
 #include <rpg_graphics_floorstyle.h>
 
+#include <rpg_map_level.h>
+
 #include <SDL/SDL.h>
 
 #include <ace/Global_Macros.h>
@@ -40,8 +42,11 @@ class RPG_Client_WindowLevel
  : public RPG_Graphics_SDLWindow
 {
  public:
-  RPG_Client_WindowLevel(const RPG_Graphics_SDLWindow&,          // parent
-                         const RPG_Graphics_InterfaceWindow_t&); // type
+  RPG_Client_WindowLevel(// *** SDL window ***
+                         const RPG_Graphics_SDLWindow&,         // parent
+                         const RPG_Graphics_InterfaceWindow_t&, // type
+                         // *** level properties ***
+                         const RPG_Client_DungeonLevel&);       // (initial) map
   virtual ~RPG_Client_WindowLevel();
 
   // set view coordinates
@@ -64,23 +69,23 @@ class RPG_Client_WindowLevel
 
   // helper methods
   void setStyle(const RPG_Graphics_StyleUnion&);
-  static void initWalls(const RPG_Map_FloorPlan_t&,        // level map
-                        const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
-                        RPG_Client_WallTiles_t&);          // return value: wall tiles / position
+  void initWalls(const RPG_Map_FloorPlan_t&,        // level map
+                 const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
+                 RPG_Client_WallTiles_t&);          // return value: wall tiles / position
+
+  RPG_Map_Level               myMap;
 
   RPG_Graphics_FloorStyle     myCurrentFloorStyle;
   RPG_Graphics_FloorTileSet_t myCurrentFloorSet;
   RPG_Graphics_WallStyle      myCurrentWallStyle;
   RPG_Graphics_WallTileSet_t  myCurrentWallSet;
-
-  // center of displayed map area (map coordinate system)
-  RPG_Graphics_Position_t     myView;
+  SDL_Surface*                myCurrentOffMapTile;
 
   // wall tiles / position
   RPG_Client_WallTiles_t      myWallTiles;
 
-  RPG_Client_DungeonLevel     myMap;
-  bool                        myInitialized;
+  // center of displayed map area (map coordinate system)
+  RPG_Graphics_Position_t     myView;
 };
 
 #endif

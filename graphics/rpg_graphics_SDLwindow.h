@@ -81,6 +81,8 @@ class RPG_Graphics_SDLWindow
   std::string                      myTitle;
   RPG_Graphics_Type                myTitleFont;
 
+  bool                             myInitialized;
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindow());
@@ -93,7 +95,6 @@ class RPG_Graphics_SDLWindow
   const RPG_Graphics_SDLWindow*    myParent;
   RPG_Graphics_InterfaceWindow_t   myType;
   RPG_Graphics_Type                myElementGraphicsType;
-  bool                             myInitialized;
 };
 
 #endif

@@ -30,9 +30,11 @@
 class RPG_Map_Level
 {
  public:
-  RPG_Map_Level(const RPG_Map_FloorPlan_t&);
+  RPG_Map_Level(const RPG_Map_FloorPlan_t&); // map
   virtual ~RPG_Map_Level();
 
+  void init(const RPG_Map_FloorPlan_t&); // map
+  const RPG_Map_Dimensions_t getDimensions() const;
   const RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
 
  private:

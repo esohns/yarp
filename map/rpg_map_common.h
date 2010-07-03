@@ -28,7 +28,9 @@
 enum RPG_Map_Element
 {
   // *** basic ***
-  MAPELEMENT_FLOOR = 0,
+  MAPELEMENT_UNMAPPED = 0,
+  MAPELEMENT_FLOOR,
+  MAPELEMENT_STAIRS,
   MAPELEMENT_WALL,
   MAPELEMENT_DOOR,
 //   // *** composite ***
@@ -40,6 +42,7 @@ enum RPG_Map_Element
   MAPELEMENT_MAX,
   MAPELEMENT_INVALID
 };
+typedef std::pair<unsigned long, unsigned long> RPG_Map_Dimensions_t;
 
 typedef std::pair<unsigned long, unsigned long> RPG_Map_Position_t;
 // *NOTE*: std::less<_Key> uses default operator< for std::pair<>, which sorts

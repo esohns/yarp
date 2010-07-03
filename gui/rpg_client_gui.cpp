@@ -1199,9 +1199,10 @@ do_work(const RPG_Client_Config& config_in)
   level.doorStyle = RPG_GRAPHICS_DOORSTYLE_INVALID;
 
   // step6: setup level "window"
-  RPG_Client_WindowLevel levelWindow(mainWindow,             // parent
-                                     INTERFACEWINDOW_LEVEL); // window type
-  levelWindow.setMap(level);
+  RPG_Client_WindowLevel levelWindow(mainWindow,            // parent
+                                     INTERFACEWINDOW_LEVEL, // window type
+                                     level);                // map
+//   levelWindow.setMap(level);
   levelWindow.draw(screen,
                    position);
   levelWindow.refresh(screen);

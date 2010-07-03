@@ -27,37 +27,46 @@
 #include <ace/Log_Msg.h>
 
 RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindow& parent_in,
-                                               const RPG_Graphics_InterfaceWindow_t& type_in)
+                                               const RPG_Graphics_InterfaceWindow_t& type_in,
+                                               const RPG_Client_DungeonLevel& level_in)
  : inherited(parent_in,
              type_in),
+   myMap(level_in.plan),
    myCurrentFloorStyle(RPG_GRAPHICS_FLOORSTYLE_INVALID),
 //    myCurrentFloorSet(),
    myCurrentWallStyle(RPG_GRAPHICS_WALLSTYLE_INVALID),
 //    myCurrentWallSet(),
-   myInitialized(false)
+   myCurrentOffMapTile(NULL),
+//    myWallTiles(),
+   myView(std::make_pair(0, 0))
 {
   ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::RPG_Client_WindowLevel"));
 
-  myCurrentFloorSet.clear();
   myCurrentWallSet.east = NULL;
   myCurrentWallSet.west = NULL;
   myCurrentWallSet.north = NULL;
   myCurrentWallSet.south = NULL;
 
-  // init view
-  myView = std::make_pair(0, 0);
+  // init style
+  RPG_Graphics_StyleUnion style;
+  style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
+  style.floorstyle = level_in.floorStyle;
+  setStyle(style);
+  style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
+  style.wallstyle = level_in.wallStyle;
+  setStyle(style);
+  // load tile for unmapped areas
+  myCurrentOffMapTile = RPG_Graphics_Common_Tools::loadGraphic(TYPE_TILE_OFF_MAP, // tile
+                                                               false);            // don't cache
+  if (!myCurrentOffMapTile)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_TILE_OFF_MAP).c_str()));
 
-  // init wall tiles
-  myWallTiles.clear();
-
-  // init level properties
-  myMap.floorStyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
-  myMap.wallStyle = RPG_GRAPHICS_WALLSTYLE_INVALID;
-  myMap.plan.size_x = 0;
-  myMap.plan.size_y = 0;
-  myMap.plan.unmapped.clear();
-  myMap.plan.walls.clear();
-  myMap.plan.doors.clear();
+  // init wall tiles / position
+  initWalls(level_in.plan,
+            myCurrentWallSet,
+            myWallTiles);
 }
 
 RPG_Client_WindowLevel::~RPG_Client_WindowLevel()
@@ -84,6 +93,11 @@ RPG_Client_WindowLevel::~RPG_Client_WindowLevel()
   myCurrentWallSet.north = NULL;
   myCurrentWallSet.south = NULL;
   myCurrentWallStyle = RPG_GRAPHICS_WALLSTYLE_INVALID;
+  if (myCurrentOffMapTile)
+  {
+    SDL_FreeSurface(myCurrentOffMapTile);
+    myCurrentOffMapTile = NULL;
+  } // end IF
 }
 
 void
@@ -99,33 +113,27 @@ RPG_Client_WindowLevel::setMap(const RPG_Client_DungeonLevel& levelMap_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setMap"));
 
-  if (!myInitialized)
-    myInitialized = true;
-  else
-  {
-    // clean up
-    myWallTiles.clear();
-  } // end ELSE
+  // clean up
+  myWallTiles.clear();
 
-  myMap = levelMap_in;
-
-  // init view
-  myView.first = myMap.plan.size_x / 2;
-  myView.second = myMap.plan.size_y / 2;
+  myMap.init(levelMap_in.plan);
 
   // init style
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-  style.floorstyle = myMap.floorStyle;
+  style.floorstyle = levelMap_in.floorStyle;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-  style.wallstyle = myMap.wallStyle;
+  style.wallstyle = levelMap_in.wallStyle;
   setStyle(style);
 
   // init wall tiles / position
-  initWalls(myMap.plan,
+  initWalls(levelMap_in.plan,
             myCurrentWallSet,
             myWallTiles);
+
+  // init view
+  myView = std::make_pair(0, 0);
 }
 
 void
@@ -135,34 +143,13 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::draw"));
 
   // sanity check(s)
-  ACE_ASSERT(myInitialized);
+  ACE_ASSERT(inherited::myInitialized);
+  ACE_ASSERT(myCurrentOffMapTile);
   ACE_ASSERT(targetSurface_in);
   ACE_ASSERT(ACE_static_cast(int, offset_in.first) <= targetSurface_in->w);
   ACE_ASSERT(ACE_static_cast(int, offset_in.second) <= targetSurface_in->h);
 
-  // step1: load (floor- and wall-)style tilesets
-  RPG_Graphics_StyleUnion style;
-  style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-  style.floorstyle = myMap.floorStyle;
-  setStyle(style);
-  style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-  style.wallstyle = myMap.wallStyle;
-  setStyle(style);
-
-  // step2: load tile for unmapped areas
-  SDL_Surface* offmap_surface = NULL;
-  offmap_surface = RPG_Graphics_Common_Tools::loadGraphic(TYPE_TILE_OFF_MAP,
-                                                          true);
-  if (!offmap_surface)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_TILE_OFF_MAP).c_str()));
-
-    return;
-  } // end IF
-
-  // step3: init clipping
+  // init clipping
   SDL_Rect clipRect;
   clipRect.x = offset_in.first;
   clipRect.y = offset_in.second;
@@ -230,15 +217,15 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
       // off the map ?
       // *TODO*: n < 0 ?
       if (((current_map_position.second < 1) ||
-           (current_map_position.second >= myMap.plan.size_y) ||
+           (current_map_position.second >= myMap.getDimensions().second) ||
            (current_map_position.first < 0) ||
-           (current_map_position.first >= myMap.plan.size_x)) ||
-          ((myMap.plan.walls.find(current_map_position) == myMap.plan.walls.end()) &&
-           (myMap.plan.doors.find(current_map_position) == myMap.plan.doors.end())))
+           (current_map_position.first >= myMap.getDimensions().first)) ||
+          ((myMap.getElement(current_map_position) != MAPELEMENT_WALL) &&
+           (myMap.getElement(current_map_position) != MAPELEMENT_DOOR)))
       {
         RPG_Graphics_Common_Tools::put(x,
                                        y,
-                                       *offmap_surface,
+                                       *myCurrentOffMapTile,
                                        targetSurface_in);
 
         continue;
@@ -270,8 +257,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 //         clear_floor_edges(i ,j);
 
       // step1: floor
-      if (RPG_Map_Common_Tools::isFloor(current_map_position,
-                                        myMap.plan))
+      if (myMap.getElement(current_map_position) == MAPELEMENT_FLOOR)
       {
         RPG_Graphics_Common_Tools::put(x,
                                        y,
@@ -443,6 +429,13 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
   {
     case RPG_Graphics_StyleUnion::FLOORSTYLE:
     {
+      // clean up
+      for (RPG_Graphics_FloorTileSetConstIterator_t iterator = myCurrentFloorSet.begin();
+           iterator != myCurrentFloorSet.end();
+           iterator++)
+        SDL_FreeSurface(*iterator);
+      myCurrentFloorSet.clear();
+
       RPG_Graphics_Common_Tools::loadFloorTileSet(style_in.floorstyle,
                                                   myCurrentFloorSet);
       // sanity check
@@ -458,6 +451,20 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
     }
     case RPG_Graphics_StyleUnion::WALLSTYLE:
     {
+      // clean up
+      if (myCurrentWallSet.east)
+        SDL_FreeSurface(myCurrentWallSet.east);
+      if (myCurrentWallSet.west)
+        SDL_FreeSurface(myCurrentWallSet.west);
+      if (myCurrentWallSet.north)
+        SDL_FreeSurface(myCurrentWallSet.north);
+      if (myCurrentWallSet.south)
+        SDL_FreeSurface(myCurrentWallSet.south);
+      myCurrentWallSet.east = NULL;
+      myCurrentWallSet.west = NULL;
+      myCurrentWallSet.north = NULL;
+      myCurrentWallSet.south = NULL;
+
       RPG_Graphics_Common_Tools::loadWallTileSet(style_in.wallstyle,
                                                  myCurrentWallSet);
       // sanity check
@@ -483,9 +490,6 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
       return;
     }
   } // end SWITCH
-
-  // load appropriate graphics
-
 }
 
 void
@@ -500,6 +504,7 @@ RPG_Client_WindowLevel::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
 
   RPG_Map_Position_t current_position;
   RPG_Map_Position_t east, north, west, south;
+  RPG_Client_WallTileSet current_walls;
   for (unsigned long y = 0;
        y < levelMap_in.size_y;
        y++)
@@ -508,8 +513,12 @@ RPG_Client_WindowLevel::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
          x++)
     {
       current_position = std::make_pair(x, y);
-      if (RPG_Map_Common_Tools::isFloor(current_position,
-                                        levelMap_in))
+      current_walls.east = NULL;
+      current_walls.west = NULL;
+      current_walls.north = NULL;
+      current_walls.south = NULL;
+
+      if (myMap.getElement(current_position) == MAPELEMENT_FLOOR)
       {
         // step1: find neighboring walls
         east = current_position;
@@ -521,32 +530,16 @@ RPG_Client_WindowLevel::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
         south = current_position;
         south.second++;
 
-
+        if (myMap.getElement(east) == MAPELEMENT_WALL)
+          current_walls.east = myCurrentWallSet.east;
+        if (myMap.getElement(west) == MAPELEMENT_WALL)
+          current_walls.west = myCurrentWallSet.west;
+        if (myMap.getElement(north) == MAPELEMENT_WALL)
+          current_walls.north = myCurrentWallSet.north;
+        if (myMap.getElement(south) == MAPELEMENT_WALL)
+          current_walls.south = myCurrentWallSet.south;
       } // end IF
 
+      myWallTiles.insert(std::make_pair(current_position, current_walls));
     } // end FOR
-
-  SDL_Surface* current_surface = NULL;
-  int current_type = typeOffset_in;
-  for (unsigned long i = 0;
-       i < numTiles_in;
-       i++, current_type++)
-  {
-    current_surface = NULL;
-    current_surface = RPG_Graphics_Common_Tools::loadGraphic(ACE_static_cast(RPG_Graphics_Type, current_type),
-        true);
-    if (!current_surface)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-                          RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(ACE_static_cast(RPG_Graphics_Type, current_type)).c_str()));
-
-      // clean up
-      tileset_out.clear();
-
-      return;
-    } // end IF
-
-    tileset_out.push_back(current_surface);
-  } // end FOR
 }

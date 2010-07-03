@@ -34,14 +34,36 @@ RPG_Map_Level::~RPG_Map_Level()
 
 }
 
+void
+RPG_Map_Level::init(const RPG_Map_FloorPlan_t& floorPlan_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Level::init"));
+
+  myFloorPlan = floorPlan_in;
+}
+
+const RPG_Map_Dimensions_t
+RPG_Map_Level::getDimensions() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Level::getDimensions"));
+
+  RPG_Map_Dimensions_t result = std::make_pair(myFloorPlan.size_x, myFloorPlan.size_y);
+
+  return result;
+}
+
 const RPG_Map_Element
 RPG_Map_Level::getElement(const RPG_Map_Position_t& position_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Level::getElement"));
 
+  if (myFloorPlan.unmapped.find(position_in) != myFloorPlan.unmapped.end())
+    return MAPELEMENT_UNMAPPED;
+
   if (myFloorPlan.walls.find(position_in) != myFloorPlan.walls.end())
     return MAPELEMENT_WALL;
-  else if (myFloorPlan.doors.find(position_in) != myFloorPlan.doors.end())
+
+  if (myFloorPlan.doors.find(position_in) != myFloorPlan.doors.end())
     return MAPELEMENT_DOOR;
 
   return MAPELEMENT_FLOOR;

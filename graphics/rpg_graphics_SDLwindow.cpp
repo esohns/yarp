@@ -33,10 +33,10 @@ RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_InterfaceWindo
    myBorderRight(0),
    myTitle(title_in),
    myTitleFont(fontType_in),
+   myInitialized(false),
    myParent(NULL),
    myType(type_in),
-   myElementGraphicsType(graphicType_in),
-   myInitialized(false)
+   myElementGraphicsType(graphicType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow"));
 
@@ -52,10 +52,10 @@ RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow& par
     myBorderRight(0),
 //     myTitle(),
     myTitleFont(RPG_GRAPHICS_TYPE_INVALID),
+    myInitialized(false),
     myParent(&parent_in),
     myType(type_in),
-    myElementGraphicsType(RPG_GRAPHICS_TYPE_INVALID),
-    myInitialized(false)
+    myElementGraphicsType(RPG_GRAPHICS_TYPE_INVALID)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow"));
 
