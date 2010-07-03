@@ -183,20 +183,29 @@ tile_parser (::RPG_Graphics_Tile_Type_pskel& p)
 }
 
 void RPG_Graphics_TileSet_Type_pskel::
+half_parser (::xml_schema::boolean_pskel& p)
+{
+  this->half_parser_ = &p;
+}
+
+void RPG_Graphics_TileSet_Type_pskel::
 parsers (::RPG_Graphics_TileSetType_Type_pskel& type,
          ::RPG_Graphics_StyleUnion_Type_pskel& style,
-         ::RPG_Graphics_Tile_Type_pskel& tile)
+         ::RPG_Graphics_Tile_Type_pskel& tile,
+         ::xml_schema::boolean_pskel& half)
 {
   this->type_parser_ = &type;
   this->style_parser_ = &style;
   this->tile_parser_ = &tile;
+  this->half_parser_ = &half;
 }
 
 RPG_Graphics_TileSet_Type_pskel::
 RPG_Graphics_TileSet_Type_pskel ()
 : type_parser_ (0),
   style_parser_ (0),
-  tile_parser_ (0)
+  tile_parser_ (0),
+  half_parser_ (0)
 {
 }
 
@@ -622,6 +631,11 @@ tile (const RPG_Graphics_Tile&)
 {
 }
 
+void RPG_Graphics_TileSet_Type_pskel::
+half (bool)
+{
+}
+
 bool RPG_Graphics_TileSet_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
@@ -692,6 +706,31 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->tile_parser_)
       this->tile (this->tile_parser_->post_RPG_Graphics_Tile_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Graphics_TileSet_Type_pskel::
+_attribute_impl (const ::xml_schema::ro_string& ns,
+                 const ::xml_schema::ro_string& n,
+                 const ::xml_schema::ro_string& v)
+{
+  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
+    return true;
+
+  if (n == "half" && ns.empty ())
+  {
+    if (this->half_parser_)
+    {
+      this->half_parser_->pre ();
+      this->half_parser_->_pre_impl ();
+      this->half_parser_->_characters (v);
+      this->half_parser_->_post_impl ();
+      this->half (this->half_parser_->post_boolean ());
+    }
 
     return true;
   }

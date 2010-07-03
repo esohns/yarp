@@ -336,6 +336,7 @@ RPG_Graphics_TileSet_Type::RPG_Graphics_TileSet_Type()
   myCurrentTileSet.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
   myCurrentTileSet.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentTileSet.tiles.clear();
+  myCurrentTileSet.half = false;
 }
 
 void RPG_Graphics_TileSet_Type::type(const RPG_Graphics_TileSetType& type_in)
@@ -359,6 +360,13 @@ void RPG_Graphics_TileSet_Type::tile(const RPG_Graphics_Tile& tile_in)
   myCurrentTileSet.tiles.push_back(tile_in);
 }
 
+void RPG_Graphics_TileSet_Type::half(bool half_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_TileSet_Type::half"));
+
+  myCurrentTileSet.half = half_in;
+}
+
 RPG_Graphics_TileSet RPG_Graphics_TileSet_Type::post_RPG_Graphics_TileSet_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_TileSet_Type::post_RPG_Graphics_TileSet_Type"));
@@ -370,6 +378,7 @@ RPG_Graphics_TileSet RPG_Graphics_TileSet_Type::post_RPG_Graphics_TileSet_Type()
   myCurrentTileSet.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
   myCurrentTileSet.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentTileSet.tiles.clear();
+  myCurrentTileSet.half = false;
 
   return result;
 }
@@ -398,6 +407,7 @@ RPG_Graphics_Graphic_Type::RPG_Graphics_Graphic_Type()
   myCurrentGraphic.tileset.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
   myCurrentGraphic.tileset.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentGraphic.tileset.tiles.clear();
+  myCurrentGraphic.tileset.half = false;
   myCurrentGraphic.elements.clear();
   myCurrentGraphic.file.clear();
   myCurrentGraphic.size = 0;
@@ -471,6 +481,7 @@ RPG_Graphics_Graphic RPG_Graphics_Graphic_Type::post_RPG_Graphics_Graphic_Type()
   myCurrentGraphic.tileset.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
   myCurrentGraphic.tileset.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentGraphic.tileset.tiles.clear();
+  myCurrentGraphic.tileset.half = false;
   myCurrentGraphic.elements.clear();
   myCurrentGraphic.file.clear();
   myCurrentGraphic.size = 0;

@@ -994,7 +994,6 @@ void RPG_Magic_Common_Tools::initSpellsTables()
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_WIZARD, std::make_pair(20, 8)), 4));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_WIZARD, std::make_pair(20, 9)), 4));
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Magic_Common_Tools: initialized spells tables...\n")));
 }
@@ -1212,7 +1211,7 @@ const std::string RPG_Magic_Common_Tools::spellTargetToString(const RPG_Magic_Sp
     default:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid target \"%s\" --> check implementation !, returning\n"),
+                 ACE_TEXT("invalid target \"%s\", returning\n"),
                  RPG_Magic_Spell_TargetHelper::RPG_Magic_Spell_TargetToString(target_in.type).c_str()));
 
       break;

@@ -17,16 +17,15 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CLIENT_WINDOWLEVEL_H
-#define RPG_CLIENT_WINDOWLEVEL_H
-
-#include "rpg_client_common.h"
+#ifndef SDL_GUI_LEVELWINDOW_H
+#define SDL_GUI_LEVELWINDOW_H
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_SDLwindow.h>
-#include <rpg_graphics_type.h>
 #include <rpg_graphics_floorstyle.h>
+#include <rpg_graphics_wallstyle.h>
 
+#include <rpg_map_common.h>
 #include <rpg_map_level.h>
 
 #include <SDL/SDL.h>
@@ -38,22 +37,26 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Client_WindowLevel
+class SDL_GUI_LevelWindow
  : public RPG_Graphics_SDLWindow
 {
  public:
-  RPG_Client_WindowLevel(// *** SDL window ***
-                         const RPG_Graphics_SDLWindow&,         // parent
-                         const RPG_Graphics_InterfaceWindow_t&, // type
-                         // *** level properties ***
-                         const RPG_Client_DungeonLevel&);       // (initial) map
-  virtual ~RPG_Client_WindowLevel();
+  SDL_GUI_LevelWindow(// *** SDL window ***
+                      const RPG_Graphics_SDLWindow&,         // parent
+                      const RPG_Graphics_InterfaceWindow_t&, // type
+                      // *** level properties ***
+                      const RPG_Graphics_FloorStyle&,        // floor style
+                      const RPG_Graphics_WallStyle&,         // wall style
+                      const RPG_Map_FloorPlan_t&);           // (initial) map
+  virtual ~SDL_GUI_LevelWindow();
 
   // set view coordinates
   void setView(const RPG_Graphics_Position_t&); // view coordinates
 
-  // set map properties
-  void setMap(const RPG_Client_DungeonLevel&); // map properties
+  // set level properties
+  void init(const RPG_Graphics_FloorStyle&, // floor style
+            const RPG_Graphics_WallStyle&,  // wall style
+            const RPG_Map_FloorPlan_t&);    // map
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface*,                    // target surface (screen !)
@@ -63,9 +66,9 @@ class RPG_Client_WindowLevel
   typedef RPG_Graphics_SDLWindow inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowLevel());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowLevel(const RPG_Client_WindowLevel&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowLevel& operator=(const RPG_Client_WindowLevel&));
+  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow());
+  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow(const SDL_GUI_LevelWindow&));
+  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow& operator=(const SDL_GUI_LevelWindow&));
 
   // helper methods
   void setStyle(const RPG_Graphics_StyleUnion&);

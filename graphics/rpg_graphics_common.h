@@ -85,6 +85,8 @@ struct RPG_Graphics_WallTileSet_t
   SDL_Surface* east;
   SDL_Surface* south;
 };
+typedef std::map<RPG_Graphics_Position_t, RPG_Graphics_WallTileSet_t> RPG_Graphics_WallTileMap_t;
+typedef RPG_Graphics_WallTileMap_t::const_iterator RPG_Graphics_WallTileMapConstIterator_t;
 
 typedef std::vector<RPG_Graphics_Tile>::const_iterator RPG_Graphics_TileSetConstIterator_t;
 

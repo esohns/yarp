@@ -63,10 +63,12 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
                  unsigned_int_p,
                  unsigned_int_p);
   RPG_Graphics_TileSetType_Type               tileSetType_p;
+  ::xml_schema::boolean_pimpl                 bool_p;
   RPG_Graphics_TileSet_Type                   tileSet_p;
   tileSet_p.parsers(tileSetType_p,
                     style_p,
-                    tile_p);
+                    tile_p,
+                    bool_p);
   RPG_Graphics_ElementTypeUnion_Type          elementType_p;
   RPG_Graphics_Element_Type                   element_p;
   element_p.parsers(elementType_p,

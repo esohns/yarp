@@ -202,6 +202,7 @@ class RPG_Graphics_TileSet_Type
   virtual void type(const RPG_Graphics_TileSetType&);
   virtual void style(const RPG_Graphics_StyleUnion&);
   virtual void tile(const RPG_Graphics_Tile&);
+  virtual void half(bool);
   virtual RPG_Graphics_TileSet post_RPG_Graphics_TileSet_Type();
 
  private:

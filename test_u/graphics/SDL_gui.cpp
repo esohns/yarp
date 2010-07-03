@@ -18,6 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "SDL_gui_mainwindow.h"
+#include "SDL_gui_levelwindow.h"
+
+#include <rpg_map_common_tools.h>
 
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_common_tools.h>
@@ -46,19 +49,53 @@
 #include <config.h>
 #endif
 
-#define GRAPHICSPARSER_DEF_GRAPHICS_DICTIONARY       ACE_TEXT("rpg_graphics.xml")
-#define GRAPHICSPARSER_DEF_GRAPHICS_DIRECTORY        ACE_TEXT("./../../graphics/data")
-#define GRAPHICSPARSER_DEF_GRAPHICS_CACHESIZE        50
-#define GRAPHICSPARSER_DEF_GRAPHICS_WINDOWSTYLE_TYPE TYPE_INTERFACE
-#define GRAPHICSPARSER_DEF_GRAPHICS_MAINWINDOW_TITLE ACE_TEXT_ALWAYS_CHAR("window")
+#define SDL_GUI_DEF_MODE                       MODE_RANDOM_IMAGES
 
-#define GRAPHICSPARSER_DEF_VIDEO_W                   1024
-#define GRAPHICSPARSER_DEF_VIDEO_H                   786
-#define GRAPHICSPARSER_DEF_VIDEO_BPP                 32
-#define GRAPHICSPARSER_DEF_VIDEO_FULLSCREEN          false
-#define GRAPHICSPARSER_DEF_VIDEO_DOUBLEBUFFER        true
+#define SDL_GUI_DEF_MAP_MIN_ROOM_SIZE          0 // 0: don't care
+#define SDL_GUI_DEF_MAP_DOORS                  true
+#define SDL_GUI_DEF_MAP_CORRIDORS              true
+#define SDL_GUI_DEF_MAP_MAX_NUM_DOORS_PER_ROOM 3
+#define SDL_GUI_DEF_MAP_MAXIMIZE_ROOMS         true
+#define SDL_GUI_DEF_MAP_NUM_AREAS              5
+#define SDL_GUI_DEF_MAP_SQUARE_ROOMS           true
+#define SDL_GUI_DEF_MAP_SIZE_X                 80
+#define SDL_GUI_DEF_MAP_SIZE_Y                 40
 
-#define SDL_TIMEREVENT                               SDL_USEREVENT
+#define SDL_GUI_DEF_GRAPHICS_DICTIONARY        ACE_TEXT("rpg_graphics.xml")
+#define SDL_GUI_DEF_GRAPHICS_DIRECTORY         ACE_TEXT("./../../graphics/data")
+#define SDL_GUI_DEF_GRAPHICS_CACHESIZE         50
+#define SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE  TYPE_INTERFACE
+#define SDL_GUI_DEF_GRAPHICS_MAINWINDOW_TITLE  ACE_TEXT_ALWAYS_CHAR("window")
+
+#define SDL_GUI_DEF_VIDEO_W                    1024
+#define SDL_GUI_DEF_VIDEO_H                    786
+#define SDL_GUI_DEF_VIDEO_BPP                  32
+#define SDL_GUI_DEF_VIDEO_FULLSCREEN           false
+#define SDL_GUI_DEF_VIDEO_DOUBLEBUFFER         true
+
+#define SDL_GUI_SDL_TIMEREVENT                 SDL_USEREVENT
+
+enum userMode_t
+{
+  MODE_RANDOM_IMAGES = 0,
+  MODE_LEVEL_MAP,
+  //
+  MODE_INVALID,
+  MODE_MAX
+};
+
+struct map_config_t
+{
+  unsigned long min_room_size; // 0: don't care
+  bool          doors;
+  bool          corridors;
+  unsigned long max_num_doors_per_room;
+  bool          maximize_rooms;
+  unsigned long num_areas;
+  bool          square_rooms;
+  unsigned long map_size_x;
+  unsigned long map_size_y;
+};
 
 // *NOTE* types as used by SDL
 struct SDL_video_config_t
@@ -262,7 +299,7 @@ timer_SDL_cb(Uint32 interval_in,
 
   // create an SDL timer event
   SDL_Event event;
-  event.type = SDL_TIMEREVENT;
+  event.type = SDL_GUI_SDL_TIMEREVENT;
   event.user.data1 = argument_in;
 
   // push it onto the event queue
@@ -305,12 +342,12 @@ do_SDL_waitForInput(const unsigned long& timeout_in,
     if (event_out.type == SDL_KEYDOWN ||
         event_out.type == SDL_MOUSEBUTTONDOWN ||
         event_out.type == SDL_QUIT ||
-        event_out.type == SDL_TIMEREVENT)
+        event_out.type == SDL_GUI_SDL_TIMEREVENT)
       break;
   } while (true);
 
   if (timeout_in &&
-      (event_out.type != SDL_TIMEREVENT))
+      (event_out.type != SDL_GUI_SDL_TIMEREVENT))
     if (!SDL_RemoveTimer(timer))
   {
     ACE_DEBUG((LM_ERROR,
@@ -326,8 +363,8 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
   std::cout << ACE_TEXT("-g [FILE]: graphics dictionary (*.xml)") << std::endl;
+  std::cout << ACE_TEXT("-l       : generate level map") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x       : do NOT validate XML") << std::endl;
@@ -336,8 +373,8 @@ print_usage(const std::string& programName_in)
 const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
-                  bool& dumpDictionary_out,
                   std::string& filename_out,
+                  bool& levelMap_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out,
                   bool& validateXML_out)
@@ -345,30 +382,30 @@ process_arguments(const int argc_in,
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-  dumpDictionary_out = false;
   filename_out.clear();
+  levelMap_out = (SDL_GUI_DEF_MODE == MODE_LEVEL_MAP);
   traceInformation_out = false;
   printVersionAndExit_out = false;
   validateXML_out = true;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("dg:tvx"));
+                             ACE_TEXT("g:ltvx"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
   {
     switch (option)
     {
-      case 'd':
-      {
-        dumpDictionary_out = true;
-
-        break;
-      }
       case 'g':
       {
         filename_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'l':
+      {
+        levelMap_out = true;
 
         break;
       }
@@ -414,12 +451,13 @@ process_arguments(const int argc_in,
 }
 
 void
-do_work(const std::string& dictionary_in,
-        const std::string& graphicsDirectory_in,
+do_work(const mode_t& mode_in,
+        const map_config_t& mapConfig_in,
         const SDL_video_config_t& videoConfig_in,
+        const std::string& dictionary_in,
+        const std::string& graphicsDirectory_in,
         const unsigned long& cacheSize_in,
-        const bool& validateXML_in,
-        const bool& dumpDictionary_in)
+        const bool& validateXML_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -455,80 +493,146 @@ do_work(const std::string& dictionary_in,
   RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
                                   cacheSize_in);
 
-  // step2: dump graphics descriptions
-  if (dumpDictionary_in)
-  {
-    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->dump();
-  } // end IF
-
-  // step3: setup main "window"
-  std::string title = GRAPHICSPARSER_DEF_GRAPHICS_MAINWINDOW_TITLE;
-  SDL_GUI_MainWindow window(INTERFACEWINDOW_MAIN,                         // window type
-                            GRAPHICSPARSER_DEF_GRAPHICS_WINDOWSTYLE_TYPE, // interface elements
-                            title);                                       // title (== caption)
+  // step2: setup main "window"
+  std::string title = SDL_GUI_DEF_GRAPHICS_MAINWINDOW_TITLE;
+  SDL_GUI_MainWindow mainWindow(INTERFACEWINDOW_MAIN,                  // window type
+                                SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE, // interface elements
+                                title);                                // title (== caption)
   RPG_Graphics_Position_t position = std::make_pair(0, 0);
-  window.draw(screen,
-              position);
-  window.refresh(screen);
+  mainWindow.draw(screen,
+                  position);
+  mainWindow.refresh(screen);
 
-  // step4: show (random) images inside main "window"
-  RPG_Graphics_Type type = RPG_GRAPHICS_TYPE_INVALID;
-  RPG_Graphics_t graphic;
-  RPG_Dice_RollResult_t result;
-  SDL_Surface* image = NULL;
+  // step3a: setup level
+  RPG_Map_FloorPlan_t plan;
+  RPG_Map_Positions_t seedPoints;
+  RPG_Map_Common_Tools::createFloorPlan(mapConfig_in.map_size_x,
+                                        mapConfig_in.map_size_y,
+                                        mapConfig_in.num_areas,
+                                        mapConfig_in.square_rooms,
+                                        mapConfig_in.maximize_rooms,
+                                        mapConfig_in.min_room_size,
+                                        mapConfig_in.doors,
+                                        mapConfig_in.corridors,
+                                        true, // *NOTE*: currently, doors fill one position
+                                        mapConfig_in.max_num_doors_per_room,
+                                        seedPoints,
+                                        plan);
+  // debug info
+  RPG_Map_Common_Tools::displayFloorPlan(plan);
+
+  // step3b: setup style
+  RPG_Graphics_FloorStyle floorStyle = FLOORSTYLE_AIR;
+  RPG_Graphics_WallStyle wallStyle = WALLSTYLE_BRICK;
+//   RPG_Graphics_DoorStyle doorStyle = RPG_GRAPHICS_DOORSTYLE_INVALID;
+
   SDL_Event event;
-  do
+  switch (mode_in)
   {
-    result.clear();
-    RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TYPE_MAX,
-                                    1,
-                                    result);
-    type = ACE_static_cast(RPG_Graphics_Type, (result.front() - 1));
-
-    graphic.type = RPG_GRAPHICS_TYPE_INVALID;
-    // *NOTE*: cannot load all types (some are fonts, ...)
-    // --> retrieve properties from the dictionary
-    graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(type);
-    ACE_ASSERT(graphic.type == type);
-    // sanity check
-    if ((graphic.category != CATEGORY_INTERFACE) &&
-        (graphic.category != CATEGORY_IMAGE) &&
-        (graphic.category != CATEGORY_TILE))
-      continue;
-
-    image = RPG_Graphics_Common_Tools::loadGraphic(type);
-    if (!image)
+    case MODE_RANDOM_IMAGES:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-                 RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type).c_str()));
+      // step4: show (random) images inside main "window"
+      RPG_Graphics_Type type = RPG_GRAPHICS_TYPE_INVALID;
+      RPG_Graphics_t graphic;
+      RPG_Dice_RollResult_t result;
+      SDL_Surface* image = NULL;
+      do
+      {
+        // reset screen
+        mainWindow.draw(screen,
+                        position);
+        mainWindow.refresh(screen);
 
-      break;
-    } // end IF
+        result.clear();
+        RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TYPE_MAX,
+                                        1,
+                                        result);
+        type = ACE_static_cast(RPG_Graphics_Type, (result.front() - 1));
 
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("showing graphics type \"%s\"...\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type).c_str()));
+        graphic.type = RPG_GRAPHICS_TYPE_INVALID;
+        // *NOTE*: cannot load all types (some are fonts, ...)
+        // --> retrieve properties from the dictionary
+        graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(type);
+        ACE_ASSERT(graphic.type == type);
+        // sanity check
+        if ((graphic.category != CATEGORY_INTERFACE) &&
+            (graphic.category != CATEGORY_IMAGE) &&
+            (graphic.category != CATEGORY_TILE))
+          continue;
 
-    RPG_Graphics_Common_Tools::put((screen->w - image->w) / 2, // location x
-                                   (screen->h - image->h) / 2, // location y
-                                   *image,                    // image
-                                   screen);                   // screen
-    if (SDL_Flip(screen))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_Flip(): \"%s\", aborting\n"),
-                 SDL_GetError()));
+        image = RPG_Graphics_Common_Tools::loadGraphic(type);
+        if (!image)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
+                     RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type).c_str()));
 
-      break;
-    } // end IF
+          break;
+        } // end IF
+
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("showing graphics type \"%s\"...\n"),
+                   RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type).c_str()));
+
+        RPG_Graphics_Common_Tools::put((screen->w - image->w) / 2, // location x
+                                       (screen->h - image->h) / 2, // location y
+                                       *image,                     // image
+                                       screen);                    // screen
+        if (SDL_Flip(screen))
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to SDL_Flip(): \"%s\", aborting\n"),
+                     SDL_GetError()));
+
+          break;
+        } // end IF
 
     // step5: wait a little while (max: 3 seconds)
-    do_SDL_waitForInput(3,
-                        event);
-    if (event.type == SDL_QUIT)
+        do_SDL_waitForInput(3,
+                            event);
+        if (event.type == SDL_QUIT)
+          break;
+      } while (true);
+
       break;
-  } while (true);
+    }
+    case MODE_LEVEL_MAP:
+    {
+      // step4: setup level "window"
+      SDL_GUI_LevelWindow levelWindow(mainWindow,            // parent
+                                      INTERFACEWINDOW_LEVEL, // window type
+                                      floorStyle,            // floor style
+                                      wallStyle,             // wall style
+                                      plan);                 // map
+//       levelWindow.init(floorStyle,
+//                        wallStyle,
+//                        plan);
+
+      do
+      {
+        // refresh screen
+        levelWindow.draw(screen,
+                         position);
+        levelWindow.refresh(screen);
+
+        // step5: wait for an event
+        do_SDL_waitForInput(0,      // wait forever...
+                            event);
+        if (event.type == SDL_QUIT)
+          break;
+      } while (true);
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid mode (was: %d), aborting\n"),
+                 mode_in));
+
+      break;
+    }
+  } // end SWITCH
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -605,27 +709,42 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  bool dumpDictionary            = false;
-  std::string filename           = GRAPHICSPARSER_DEF_GRAPHICS_DICTIONARY;
+  std::string filename           = SDL_GUI_DEF_GRAPHICS_DICTIONARY;
+  mode_t mode                    = SDL_GUI_DEF_MODE;
+  bool generateLevelMap          = (SDL_GUI_DEF_MODE == MODE_LEVEL_MAP);
   bool traceInformation          = false;
   bool printVersionAndExit       = false;
   bool validateXML               = true;
 
-  std::string graphicsDirectory  = GRAPHICSPARSER_DEF_GRAPHICS_DIRECTORY;
-  unsigned long cacheSize        = GRAPHICSPARSER_DEF_GRAPHICS_CACHESIZE;
+  // *** map ***
+  map_config_t map_config;
+  map_config.min_room_size          = SDL_GUI_DEF_MAP_MIN_ROOM_SIZE;
+  map_config.doors                  = SDL_GUI_DEF_MAP_DOORS;
+  map_config.corridors              = SDL_GUI_DEF_MAP_CORRIDORS;
+  map_config.max_num_doors_per_room = SDL_GUI_DEF_MAP_MAX_NUM_DOORS_PER_ROOM;
+  map_config.maximize_rooms         = SDL_GUI_DEF_MAP_MAXIMIZE_ROOMS;
+  map_config.num_areas              = SDL_GUI_DEF_MAP_NUM_AREAS;
+  map_config.square_rooms           = SDL_GUI_DEF_MAP_SQUARE_ROOMS;
+  map_config.map_size_x             = SDL_GUI_DEF_MAP_SIZE_X;
+  map_config.map_size_y             = SDL_GUI_DEF_MAP_SIZE_Y;
+
+  // *** video ***
   SDL_video_config_t video_config;
-  video_config.screen_width      = GRAPHICSPARSER_DEF_VIDEO_W;
-  video_config.screen_height     = GRAPHICSPARSER_DEF_VIDEO_H;
-  video_config.screen_colordepth = GRAPHICSPARSER_DEF_VIDEO_BPP;
+  video_config.screen_width      = SDL_GUI_DEF_VIDEO_W;
+  video_config.screen_height     = SDL_GUI_DEF_VIDEO_H;
+  video_config.screen_colordepth = SDL_GUI_DEF_VIDEO_BPP;
 //   video_config.screen_flags      = ;
-  video_config.fullScreen        = GRAPHICSPARSER_DEF_VIDEO_FULLSCREEN;
-  video_config.doubleBuffer      = GRAPHICSPARSER_DEF_VIDEO_DOUBLEBUFFER;
+  video_config.fullScreen        = SDL_GUI_DEF_VIDEO_FULLSCREEN;
+  video_config.doubleBuffer      = SDL_GUI_DEF_VIDEO_DOUBLEBUFFER;
+
+  std::string graphicsDirectory  = SDL_GUI_DEF_GRAPHICS_DIRECTORY;
+  unsigned long cacheSize        = SDL_GUI_DEF_GRAPHICS_CACHESIZE;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
-                          dumpDictionary,
                           filename,
+                          generateLevelMap,
                           traceInformation,
                           printVersionAndExit,
                           validateXML)))
@@ -677,6 +796,7 @@ ACE_TMAIN(int argc,
 
     return EXIT_FAILURE;
   } // end IF
+  mode = (generateLevelMap ? MODE_LEVEL_MAP : mode);
 
   // step1c: set correct trace level
   //ACE_Trace::start_tracing();
@@ -759,12 +879,13 @@ ACE_TMAIN(int argc,
   // step3: do actual work
   ACE_High_Res_Timer timer;
   timer.start();
-  do_work(filename,
-          graphicsDirectory,
+  do_work(mode,
+          map_config,
           video_config,
+          filename,
+          graphicsDirectory,
           cacheSize,
-          validateXML,
-          dumpDictionary);
+          validateXML);
   timer.stop();
   // debug info
   std::string working_time_string;

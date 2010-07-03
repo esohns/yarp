@@ -31,6 +31,7 @@ struct RPG_Graphics_TileSet
   RPG_Graphics_TileSetType type;
   RPG_Graphics_StyleUnion style;
   std::vector<RPG_Graphics_Tile> tiles;
+  bool half;
 };
 
 #endif

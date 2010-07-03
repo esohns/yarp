@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_client_window_level.h"
+#include "SDL_gui_levelwindow.h"
 
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_common_tools.h>
@@ -26,12 +26,14 @@
 
 #include <ace/Log_Msg.h>
 
-RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindow& parent_in,
-                                               const RPG_Graphics_InterfaceWindow_t& type_in,
-                                               const RPG_Client_DungeonLevel& level_in)
+SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindow& parent_in,
+                                         const RPG_Graphics_InterfaceWindow_t& type_in,
+                                         const RPG_Graphics_FloorStyle& floorStyle_in,
+                                         const RPG_Graphics_WallStyle& wallStyle_in,
+                                         const RPG_Map_FloorPlan_t& floorPlan_in)
  : inherited(parent_in,
              type_in),
-   myMap(level_in.plan),
+   myMap(floorPlan_in),
    myCurrentFloorStyle(RPG_GRAPHICS_FLOORSTYLE_INVALID),
 //    myCurrentFloorSet(),
    myCurrentWallStyle(RPG_GRAPHICS_WALLSTYLE_INVALID),
@@ -40,7 +42,7 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindow& par
 //    myWallTiles(),
    myView(std::make_pair(0, 0))
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::RPG_Client_WindowLevel"));
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::SDL_GUI_LevelWindow"));
 
   myCurrentWallSet.east = NULL;
   myCurrentWallSet.west = NULL;
@@ -50,10 +52,10 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindow& par
   // init style
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-  style.floorstyle = level_in.floorStyle;
+  style.floorstyle = floorStyle_in;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-  style.wallstyle = level_in.wallStyle;
+  style.wallstyle = wallStyle_in;
   setStyle(style);
   // load tile for unmapped areas
   myCurrentOffMapTile = RPG_Graphics_Common_Tools::loadGraphic(TYPE_TILE_OFF_MAP, // tile
@@ -64,14 +66,14 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindow& par
                RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_TILE_OFF_MAP).c_str()));
 
   // init wall tiles / position
-  initWalls(level_in.plan,
+  initWalls(floorPlan_in,
             myCurrentWallSet,
             myWallTiles);
 }
 
-RPG_Client_WindowLevel::~RPG_Client_WindowLevel()
+SDL_GUI_LevelWindow::~SDL_GUI_LevelWindow()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::~RPG_Client_WindowLevel"));
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::~SDL_GUI_LevelWindow"));
 
   // clean up
   for (RPG_Graphics_FloorTileSetConstIterator_t iterator = myCurrentFloorSet.begin();
@@ -101,34 +103,36 @@ RPG_Client_WindowLevel::~RPG_Client_WindowLevel()
 }
 
 void
-RPG_Client_WindowLevel::setView(const RPG_Graphics_Position_t& view_in)
+SDL_GUI_LevelWindow::setView(const RPG_Graphics_Position_t& view_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setView"));
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
 
   myView = view_in;
 }
 
 void
-RPG_Client_WindowLevel::setMap(const RPG_Client_DungeonLevel& levelMap_in)
+SDL_GUI_LevelWindow::init(const RPG_Graphics_FloorStyle& floorStyle_in,
+                          const RPG_Graphics_WallStyle& wallStyle_in,
+                          const RPG_Map_FloorPlan_t& floorPlan_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setMap"));
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
 
   // clean up
   myWallTiles.clear();
 
-  myMap.init(levelMap_in.plan);
+  myMap.init(floorPlan_in);
 
   // init style
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-  style.floorstyle = levelMap_in.floorStyle;
+  style.floorstyle = floorStyle_in;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-  style.wallstyle = levelMap_in.wallStyle;
+  style.wallstyle = wallStyle_in;
   setStyle(style);
 
   // init wall tiles / position
-  initWalls(levelMap_in.plan,
+  initWalls(floorPlan_in,
             myCurrentWallSet,
             myWallTiles);
 
@@ -137,10 +141,10 @@ RPG_Client_WindowLevel::setMap(const RPG_Client_DungeonLevel& levelMap_in)
 }
 
 void
-RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
+SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
                              const RPG_Graphics_Position_t& offset_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::draw"));
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::draw"));
 
   // sanity check(s)
   ACE_ASSERT(inherited::myInitialized);
@@ -200,7 +204,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   RPG_Graphics_WallTileMapConstIterator_t iterator;
   unsigned long x, y;
   for (i = -position_tr.second;
-       i <= position_tr.second;
+       i <= ACE_static_cast(int, position_tr.second);
        i++)
   {
     current_map_position.second = myView.second + i;
@@ -421,9 +425,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 }
 
 void
-RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
+SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setStyle"));
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setStyle"));
 
   switch (style_in.discriminator)
   {
@@ -493,11 +497,11 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
 }
 
 void
-RPG_Client_WindowLevel::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
-                                  const RPG_Graphics_WallTileSet_t& tileSet_in,
-                                  RPG_Graphics_WallTileMap_t& wallTiles_out)
+SDL_GUI_LevelWindow::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
+                               const RPG_Graphics_WallTileSet_t& tileSet_in,
+                               RPG_Graphics_WallTileMap_t& wallTiles_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::initWalls"));
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::initWalls"));
 
   // init return value(s)
   wallTiles_out.clear();

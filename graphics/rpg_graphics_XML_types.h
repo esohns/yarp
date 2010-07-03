@@ -420,6 +420,9 @@ class RPG_Graphics_TileSet_Type_pskel: public ::xml_schema::complex_content
   virtual void
   tile (const RPG_Graphics_Tile&);
 
+  virtual void
+  half (bool);
+
   virtual RPG_Graphics_TileSet
   post_RPG_Graphics_TileSet_Type () = 0;
 
@@ -435,9 +438,13 @@ class RPG_Graphics_TileSet_Type_pskel: public ::xml_schema::complex_content
   tile_parser (::RPG_Graphics_Tile_Type_pskel&);
 
   void
+  half_parser (::xml_schema::boolean_pskel&);
+
+  void
   parsers (::RPG_Graphics_TileSetType_Type_pskel& /* type */,
            ::RPG_Graphics_StyleUnion_Type_pskel& /* style */,
-           ::RPG_Graphics_Tile_Type_pskel& /* tile */);
+           ::RPG_Graphics_Tile_Type_pskel& /* tile */,
+           ::xml_schema::boolean_pskel& /* half */);
 
   // Constructor.
   //
@@ -455,10 +462,16 @@ class RPG_Graphics_TileSet_Type_pskel: public ::xml_schema::complex_content
   _end_element_impl (const ::xml_schema::ro_string&,
                      const ::xml_schema::ro_string&);
 
+  virtual bool
+  _attribute_impl (const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&);
+
   protected:
   ::RPG_Graphics_TileSetType_Type_pskel* type_parser_;
   ::RPG_Graphics_StyleUnion_Type_pskel* style_parser_;
   ::RPG_Graphics_Tile_Type_pskel* tile_parser_;
+  ::xml_schema::boolean_pskel* half_parser_;
 };
 
 class RPG_Graphics_Graphic_Type_pskel: public ::xml_schema::complex_content

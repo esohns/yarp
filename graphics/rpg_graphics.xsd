@@ -116,11 +116,11 @@
       <xsd:enumeration value="TYPE_INTERFACE"/>
       <xsd:enumeration value="TYPE_IMAGE_INTRO_MAIN"/>
       <xsd:enumeration value="TYPE_IMAGE_WM_ICON"/>
+      <xsd:enumeration value="TYPE_TILE_OFF_MAP"/>
       <xsd:enumeration value="TYPE_TILESET_FLOOR_AIR"/>
       <xsd:enumeration value="TYPE_TILESET_FLOOR_DARK"/>
       <xsd:enumeration value="TYPE_TILESET_WALL_BRICK_HALF"/>
       <xsd:enumeration value="TYPE_TILESET_WALL_BRICK_FULL"/>
-      <xsd:enumeration value="TYPE_TILE_OFF_MAP"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -183,6 +183,7 @@
       <xsd:element name="style" type="RPG_Graphics_StyleUnion_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="tile" type="RPG_Graphics_Tile_Type" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
+    <xsd:attribute name="half" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Graphics_Graphic_Type">

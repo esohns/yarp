@@ -177,4 +177,40 @@
       </tile>
     </tileset>
   </graphic>
+  <graphic>
+    <category>CATEGORY_TILESET</category>
+    <type>TYPE_TILESET_WALL_BRICK_HALF</type>
+    <tileset half="true">
+      <type>TILESETTYPE_WALL</type>
+      <style>WALLSTYLE_BRICK</style>
+      <tile>
+        <type>TILETYPE_WALL</type>
+        <orientation>ORIENTATION_NORTH</orientation>
+        <file>wall_brick_h_n.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_WALL</type>
+        <orientation>ORIENTATION_SOUTH</orientation>
+        <file>wall_brick_h_s.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_WALL</type>
+        <orientation>ORIENTATION_EAST</orientation>
+        <file>wall_brick_h_e.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_WALL</type>
+        <orientation>ORIENTATION_WEST</orientation>
+        <file>wall_brick_h_w.png</file>
+      </tile>
+    </tileset>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILE</category>
+    <type>TYPE_TILE_OFF_MAP</type>
+    <tile>
+      <type>TILETYPE_FLOOR</type>
+      <file>floor_dark_0_0.png</file>
+    </tile>
+  </graphic>
 </graphicsDictionary>

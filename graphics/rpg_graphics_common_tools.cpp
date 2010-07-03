@@ -231,6 +231,8 @@ RPG_Graphics_Common_Tools::tileSetToString(const RPG_Graphics_TileSet& tileSet_i
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT("style: ");
   result += RPG_Graphics_Common_Tools::styleToString(tileSet_in.style);
+  if (tileSet_in.type == TILESETTYPE_WALL)
+    result += (tileSet_in.half ? ACE_TEXT("[half height]") : ACE_TEXT("[full height]"));
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT("tiles[");
   std::ostringstream converter;
@@ -580,7 +582,7 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
   // assemble base path
   std::string path_base = myGraphicsDirectory;
   path_base += ACE_DIRECTORY_SEPARATOR_STR;
-  path_base += RPG_GRAPHICS_TILES_DEF_FLOORS_SUB;
+  path_base += RPG_GRAPHICS_TILES_DEF_WALLS_SUB;
   path_base += ACE_DIRECTORY_SEPARATOR_STR;
 
   std::string path = path_base;
@@ -734,8 +736,10 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
       }
     } // end SWITCH
     path += ACE_DIRECTORY_SEPARATOR_STR;
+    path += graphic.tile.file;
   } // end IF
-  path += graphic.file;
+  else
+    path += graphic.file;
 
   node.image = RPG_Graphics_Common_Tools::loadFile(path,  // graphics file
                                                    true); // convert to display format
