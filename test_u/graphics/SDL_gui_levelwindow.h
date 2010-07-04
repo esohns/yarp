@@ -50,6 +50,10 @@ class SDL_GUI_LevelWindow
                       const RPG_Map_FloorPlan_t&);           // (initial) map
   virtual ~SDL_GUI_LevelWindow();
 
+  // transformation
+  const RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&); // position (absolute)
+  const RPG_Graphics_Position_t map2Screen(const RPG_Graphics_Position_t&); // position (map)
+
   // set view coordinates
   void setView(const RPG_Graphics_Position_t&); // view coordinates
 

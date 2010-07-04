@@ -76,6 +76,8 @@ typedef std::pair<unsigned long, unsigned long> RPG_Graphics_TextSize_t;
 typedef std::pair<unsigned long, unsigned long> RPG_Graphics_Position_t;
 typedef RPG_Graphics_Position_t RPG_Graphics_Offset_t;
 
+typedef std::pair<unsigned long, unsigned long> RPG_Graphics_WindowSize_t;
+
 // a set of (floor-, wall-, door-, ...) tiles
 typedef std::vector<SDL_Surface*> RPG_Graphics_FloorTileSet_t;
 typedef RPG_Graphics_FloorTileSet_t::const_iterator RPG_Graphics_FloorTileSetConstIterator_t;

@@ -550,3 +550,46 @@ SDL_GUI_LevelWindow::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
       myWallTiles.insert(std::make_pair(current_position, current_walls));
     } // end FOR
 }
+
+const RPG_Graphics_Position_t
+SDL_GUI_LevelWindow::screen2Map(const RPG_Graphics_Position_t& position_in)
+{
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::screen2Map"));
+
+  RPG_Graphics_Position_t offset, map_position;
+
+  offset.first = (position_in.first - (mySize.first / 2) + ((myView.first - myView.second) * RPG_GRAPHICS_MAP_XMOD));
+  offset.second = (position_in.second - (mySize.second / 2) + ((myView.first + myView.second) * RPG_GRAPHICS_MAP_YMOD));
+
+  map_position.first = ((RPG_GRAPHICS_MAP_YMOD * offset.first) +
+                        (RPG_GRAPHICS_MAP_XMOD * offset.second) +
+                        (RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD)) /
+                       (2 * RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD);
+  map_position.second = ((-RPG_GRAPHICS_MAP_YMOD * offset.first) +
+                         (RPG_GRAPHICS_MAP_XMOD * offset.second) +
+                         (RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD)) /
+                        (2 * RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD);
+
+  return map_position;
+}
+
+const RPG_Graphics_Position_t
+SDL_GUI_LevelWindow::map2Screen(const RPG_Graphics_Position_t& position_in)
+{
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::map2Screen"));
+
+  RPG_Graphics_Position_t map_center, screen_position;
+
+  map_center.first = mySize.first / 2;
+  map_center.second = mySize.second / 2;
+
+  screen_position.first = map_center.first +
+                          (RPG_GRAPHICS_MAP_XMOD *
+                           (position_in.first - position_in.second + myView.second - myView.first));
+  screen_position.second = map_center.second +
+                           (RPG_GRAPHICS_MAP_YMOD *
+                            (position_in.first + position_in.second - myView.second - myView.first));
+
+  // *TODO* fix underruns (why does this happen ?)
+  return screen_position;
+}

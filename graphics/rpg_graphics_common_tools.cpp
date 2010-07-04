@@ -21,6 +21,7 @@
 
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_SDL_tools.h"
 
 #include <rpg_common_file_tools.h>
 
@@ -115,7 +116,7 @@ RPG_Graphics_Common_Tools::init(const std::string& directory_in,
   else
   {
     // init colors
-    initColors();
+    RPG_Graphics_SDL_Tools::initColors();
   } // end ELSE
 
   // init fonts
@@ -377,23 +378,6 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in)
       break;
     }
   } // end SWITCH
-
-  return result;
-}
-
-const SDL_Color
-RPG_Graphics_Common_Tools::colorToSDLColor(const Uint32& color_in,
-                                           const SDL_Surface& targetSurface_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::colorToSDLColor"));
-
-  SDL_Color result;
-
-  // extract components from the 32-bit color value
-  result.r = (color_in & targetSurface_in.format->Rmask) >> targetSurface_in.format->Rshift;
-  result.g = (color_in & targetSurface_in.format->Gmask) >> targetSurface_in.format->Gshift;
-  result.b = (color_in & targetSurface_in.format->Bmask) >> targetSurface_in.format->Bshift;
-  result.unused = 0;
 
   return result;
 }
@@ -1178,109 +1162,6 @@ RPG_Graphics_Common_Tools::initStringConversionTables()
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Graphics_Common_Tools: initialized string conversion tables...\n")));
-}
-
-void
-RPG_Graphics_Common_Tools::initColors()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::initColors"));
-
-  // set up the colors used in the game
-  // *NOTE*: the only way to do this without needing graphics to have been loaded first
-  // is to manually create a surface and put it into display format + alpha
-  SDL_Surface* dummy = NULL;
-  dummy = SDL_CreateRGBSurface((SDL_HWSURFACE | // TRY to (!) place the surface in VideoRAM
-                                SDL_ASYNCBLIT |
-                                SDL_SRCCOLORKEY |
-                                SDL_SRCALPHA),
-                                1, // dummy
-                                1, // dummy
-                                32,
-                                ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x000000FF : 0xFF000000),
-                                ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x0000FF00 : 0x00FF0000),
-                                ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x00FF0000 : 0x0000FF00),
-                                ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0xFF000000 : 0x000000FF));
-  if (!dummy)
-  {
-    ACE_DEBUG((LM_ERROR,
-              ACE_TEXT("failed to SDL_CreateRGBSurface(): %s, aborting\n"),
-              SDL_GetError()));
-
-    return;
-  } // end IF
-  SDL_Surface* dummy_converted = NULL;
-  dummy_converted = SDL_DisplayFormatAlpha(dummy);
-  if (!dummy_converted)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_DisplayFormatAlpha(): %s, aborting\n"),
-               SDL_GetError()));
-
-    // clean up
-    SDL_FreeSurface(dummy);
-
-    return;
-  } // end IF
-
-  // clean up
-  SDL_FreeSurface(dummy);
-
-//   SDL_PixelFormat* pixelFormat = NULL;
-//   try
-//   {
-//     pixelFormat = new SDL_PixelFormat;
-//   }
-//   catch (...)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-//                sizeof(SDL_PixelFormat)));
-//
-//     // clean up
-//     SDL_FreeSurface(dummy_converted);
-//
-//     return;
-//   }
-//   if (!pixelFormat)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-//                sizeof(SDL_PixelFormat)));
-//
-//     // clean up
-//     SDL_FreeSurface(dummy_converted);
-//
-//     return;
-//   } // end IF
-//   ACE_OS::memcpy(pixelFormat,
-//                  dummy_converted->format,
-//                  sizeof(SDL_PixelFormat));
-
-  CLR32_BLACK      = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0xff);
-  CLR32_BLACK_A30  = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0x50);
-  CLR32_BLACK_A50  = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0x80);
-  CLR32_BLACK_A70  = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0xB0);
-  CLR32_GREEN      = SDL_MapRGBA(dummy_converted->format, 0x57, 0xff, 0x57, 0xff);
-  CLR32_YELLOW     = SDL_MapRGBA(dummy_converted->format, 0xff, 0xff, 0x57, 0xff);
-  CLR32_ORANGE     = SDL_MapRGBA(dummy_converted->format, 0xff, 0xc7, 0x3b, 0xff);
-  CLR32_RED        = SDL_MapRGBA(dummy_converted->format, 0xff, 0x23, 0x07, 0xff);
-  CLR32_GRAY20     = SDL_MapRGBA(dummy_converted->format, 0xb7, 0xab, 0xab, 0xff);
-  CLR32_GRAY70     = SDL_MapRGBA(dummy_converted->format, 0x53, 0x53, 0x53, 0xff);
-  CLR32_GRAY77     = SDL_MapRGBA(dummy_converted->format, 0x43, 0x3b, 0x3b, 0xff);
-  CLR32_PURPLE44   = SDL_MapRGBA(dummy_converted->format, 0x4f, 0x43, 0x6f, 0xff);
-  CLR32_LIGHTPINK  = SDL_MapRGBA(dummy_converted->format, 0xcf, 0xbb, 0xd3, 0xff);
-  CLR32_LIGHTGREEN = SDL_MapRGBA(dummy_converted->format, 0xaa, 0xff, 0xcc, 0xff);
-  CLR32_BROWN      = SDL_MapRGBA(dummy_converted->format, 0x9b, 0x6f, 0x57, 0xff);
-  CLR32_WHITE      = SDL_MapRGBA(dummy_converted->format, 0xff, 0xff, 0xff, 0xff);
-  CLR32_BLESS_BLUE = SDL_MapRGBA(dummy_converted->format, 0x96, 0xdc, 0xfe, 0x60);
-  CLR32_CURSE_RED  = SDL_MapRGBA(dummy_converted->format, 0x60, 0x00, 0x00, 0x50);
-  CLR32_GOLD_SHADE = SDL_MapRGBA(dummy_converted->format, 0xf0, 0xe0, 0x57, 0x40);
-
-  // clean up
-  SDL_FreeSurface(dummy_converted);
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Graphics_Common_Tools: initialized colors...\n")));
 }
 
 const bool

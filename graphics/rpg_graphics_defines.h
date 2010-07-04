@@ -31,8 +31,8 @@
 #define RPG_GRAPHICS_FONT_DEF_POINTSIZE          10
 
 // default text colors
-#define RPG_GRAPHICS_FONT_DEF_COLOR              RPG_Graphics_Common_Tools::CLR32_WHITE
-#define RPG_GRAPHICS_FONT_DEF_SHADECOLOR         RPG_Graphics_Common_Tools::CLR32_BLACK
+#define RPG_GRAPHICS_FONT_DEF_COLOR              RPG_Graphics_SDL_Tools::CLR32_WHITE
+#define RPG_GRAPHICS_FONT_DEF_SHADECOLOR         RPG_Graphics_SDL_Tools::CLR32_BLACK
 
 // default (tiles) data directory tree organization
 #define RPG_GRAPHICS_TILES_DEF_FLOORS_SUB        ACE_TEXT("floors")
@@ -45,5 +45,8 @@
 // *NOTE*: because of isometry, this is not the same as the width/height of a tile
 #define RPG_GRAPHICS_MAP_XMOD                    56
 #define RPG_GRAPHICS_MAP_YMOD                    22
+
+// buffer for printing keyboard events (debug info)
+#define RPG_GRAPHICS_KEYSYM_BUFFER_SIZE          32
 
 #endif

@@ -23,11 +23,13 @@
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_common_tools.h"
 
-RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_InterfaceWindow_t& type_in,
+RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_WindowSize_t& size_in,
+                                               const RPG_Graphics_InterfaceWindow_t& type_in,
                                                const RPG_Graphics_Type& graphicType_in,
                                                const std::string& title_in,
                                                const RPG_Graphics_Type& fontType_in)
- : myBorderTop(0),
+ : mySize(size_in),
+   myBorderTop(0),
    myBorderBottom(0),
    myBorderLeft(0),
    myBorderRight(0),
@@ -67,6 +69,10 @@ RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow& par
                        myBorderBottom,
                        myBorderLeft,
                        myBorderRight);
+
+  RPG_Graphics_WindowSize_t size_parent = myParent->getSize();
+  mySize.first = size_parent.first - (myBorderLeft + myBorderRight);
+  mySize.second = size_parent.second - (myBorderTop + myBorderBottom);
 
   myInitialized = true;
 }
@@ -158,12 +164,12 @@ RPG_Graphics_SDLWindow::refresh(SDL_Surface* targetSurface_in)
       height = (*iterator).h;
   } // end FOR
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("refreshing bbox [[%d,%d][%d,%d]]...\n"),
-             topLeftX,
-             topLeftY,
-             topLeftX + width - 1,
-             topLeftY + height - 1));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("refreshing bbox [[%d,%d][%d,%d]]...\n"),
+//              topLeftX,
+//              topLeftY,
+//              topLeftX + width - 1,
+//              topLeftY + height - 1));
 
   SDL_UpdateRect(targetSurface_in,
                  topLeftX,
@@ -173,6 +179,17 @@ RPG_Graphics_SDLWindow::refresh(SDL_Surface* targetSurface_in)
 
   // all fresh & shiny !
   myDirtyRegions.clear();
+}
+
+const RPG_Graphics_WindowSize_t
+RPG_Graphics_SDLWindow::getSize() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::getSize"));
+
+  if (myParent)
+    return myParent->getSize();
+
+  return mySize;
 }
 
 const bool

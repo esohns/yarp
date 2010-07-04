@@ -69,8 +69,6 @@ class RPG_Graphics_Common_Tools
   static const std::string elementTypeToString(const RPG_Graphics_ElementTypeUnion&);
   static const std::string elementsToString(const RPG_Graphics_Elements_t&);
 
-  static const SDL_Color colorToSDLColor(const Uint32&,       // RGBA value
-                                         const SDL_Surface&); // target surface
   static const RPG_Graphics_TextSize_t textSize(const RPG_Graphics_Type&, // font
                                                 const std::string&);      // string
 
@@ -120,7 +118,6 @@ class RPG_Graphics_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools& operator=(const RPG_Graphics_Common_Tools&));
 
   // helper methods
-  static void initColors();
   static const bool initFonts();
 
   // convert style (wall-, floor-, ...) to appropriate graphic metatype

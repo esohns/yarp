@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Erik Sohns   *
+ *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,12 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SDL_GUI_MAINWINDOW_H
-#define SDL_GUI_MAINWINDOW_H
-
-#include <rpg_graphics_common.h>
-#include <rpg_graphics_type.h>
-#include <rpg_graphics_SDLwindow.h>
+#ifndef RPG_GRAPHICS_SDL_TOOLS_H
+#define RPG_GRAPHICS_SDL_TOOLS_H
 
 #include <SDL/SDL.h>
 
@@ -33,27 +29,47 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class SDL_GUI_MainWindow
- : public RPG_Graphics_SDLWindow
+class RPG_Graphics_SDL_Tools
 {
- public:
-  SDL_GUI_MainWindow(const RPG_Graphics_WindowSize_t&,                 // size
-                     const RPG_Graphics_InterfaceWindow_t&,            // type
-                     const RPG_Graphics_Type&,                         // style
-                     const std::string&,                               // title
-                     const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
-  virtual ~SDL_GUI_MainWindow();
+  // grant access to initColors()
+  friend class RPG_Graphics_Common_Tools;
 
-  virtual void draw(SDL_Surface*,                    // target surface (screen !)
-                    const RPG_Graphics_Position_t&); // offset
+ public:
+  // some colors
+  static Uint32 CLR32_BLACK;
+  static Uint32 CLR32_BLACK_A30;
+  static Uint32 CLR32_BLACK_A50;
+  static Uint32 CLR32_BLACK_A70;
+  static Uint32 CLR32_GREEN;
+  static Uint32 CLR32_YELLOW;
+  static Uint32 CLR32_ORANGE;
+  static Uint32 CLR32_RED;
+  static Uint32 CLR32_GRAY20;
+  static Uint32 CLR32_GRAY70;
+  static Uint32 CLR32_GRAY77;
+  static Uint32 CLR32_PURPLE44;
+  static Uint32 CLR32_LIGHTPINK;
+  static Uint32 CLR32_LIGHTGREEN;
+  static Uint32 CLR32_BROWN;
+  static Uint32 CLR32_WHITE;
+  static Uint32 CLR32_BLESS_BLUE;
+  static Uint32 CLR32_CURSE_RED;
+  static Uint32 CLR32_GOLD_SHADE;
+
+  static const std::string keyToString(const SDL_keysym&);
+
+  static const SDL_Color colorToSDLColor(const Uint32&,       // RGBA value
+                                         const SDL_Surface&); // target surface
 
  private:
-  typedef RPG_Graphics_SDLWindow inherited;
-
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow());
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow(const SDL_GUI_MainWindow&));
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow& operator=(const SDL_GUI_MainWindow&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDL_Tools());
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Graphics_SDL_Tools());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDL_Tools(const RPG_Graphics_SDL_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDL_Tools& operator=(const RPG_Graphics_SDL_Tools&));
+
+  // helper methods
+  static void initColors();
 };
 
 #endif

@@ -37,7 +37,8 @@ class RPG_Graphics_SDLWindow
  : public RPG_Graphics_IWindow
 {
  public:
-  RPG_Graphics_SDLWindow(const RPG_Graphics_InterfaceWindow_t&,            // type
+  RPG_Graphics_SDLWindow(const RPG_Graphics_WindowSize_t&,                 // size
+                         const RPG_Graphics_InterfaceWindow_t&,            // type
                          const RPG_Graphics_Type&,                         // style
                          const std::string&,                               // title
                          const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
@@ -51,7 +52,12 @@ class RPG_Graphics_SDLWindow
   // implement (part of) RPG_Graphics_IWindow
   virtual void refresh(SDL_Surface*); // target surface (screen !)
 
+  const RPG_Graphics_WindowSize_t getSize() const;
+
  protected:
+  // absolute size
+  RPG_Graphics_WindowSize_t        mySize;
+
   // border sizes
   unsigned long                    myBorderTop;
   unsigned long                    myBorderBottom;

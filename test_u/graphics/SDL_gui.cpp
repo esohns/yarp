@@ -24,6 +24,7 @@
 
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_common_tools.h>
+#include <rpg_graphics_SDL_tools.h>
 
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
@@ -340,6 +341,8 @@ do_SDL_waitForInput(const unsigned long& timeout_in,
       break;
     } // end IF
     if (event_out.type == SDL_KEYDOWN ||
+        event_out.type == SDL_KEYUP ||
+        event_out.type == SDL_MOUSEMOTION ||
         event_out.type == SDL_MOUSEBUTTONDOWN ||
         event_out.type == SDL_QUIT ||
         event_out.type == SDL_GUI_SDL_TIMEREVENT)
@@ -349,11 +352,11 @@ do_SDL_waitForInput(const unsigned long& timeout_in,
   if (timeout_in &&
       (event_out.type != SDL_GUI_SDL_TIMEREVENT))
     if (!SDL_RemoveTimer(timer))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
-               SDL_GetError()));
-  } // end IF
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
+                 SDL_GetError()));
+    } // end IF
 }
 
 void
@@ -495,7 +498,8 @@ do_work(const mode_t& mode_in,
 
   // step2: setup main "window"
   std::string title = SDL_GUI_DEF_GRAPHICS_MAINWINDOW_TITLE;
-  SDL_GUI_MainWindow mainWindow(INTERFACEWINDOW_MAIN,                  // window type
+  SDL_GUI_MainWindow mainWindow(std::make_pair(screen->w, screen->h),  // size
+                                INTERFACEWINDOW_MAIN,                  // window type
                                 SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE, // interface elements
                                 title);                                // title (== caption)
   RPG_Graphics_Position_t position = std::make_pair(0, 0);
@@ -527,6 +531,7 @@ do_work(const mode_t& mode_in,
 //   RPG_Graphics_DoorStyle doorStyle = RPG_GRAPHICS_DOORSTYLE_INVALID;
 
   SDL_Event event;
+  bool done = false;
   switch (mode_in)
   {
     case MODE_RANDOM_IMAGES:
@@ -588,11 +593,43 @@ do_work(const mode_t& mode_in,
         } // end IF
 
         // step5: wait a little while (max: 3 seconds)
-        do_SDL_waitForInput(3,
-                            event);
-        if (event.type == SDL_QUIT)
-          break;
-      } while (true);
+        do
+        {
+          do_SDL_waitForInput(3,
+                              event);
+          switch (event.type)
+          {
+            case SDL_KEYDOWN:
+//             case SDL_KEYUP:
+            {
+              // debug info
+              ACE_DEBUG((LM_DEBUG,
+                        ACE_TEXT("%s key\n%s\n"),
+                        ((event.type == SDL_KEYDOWN) ? ACE_TEXT("pressed") : ACE_TEXT("released")),
+                        RPG_Graphics_SDL_Tools::keyToString(event.key.keysym).c_str()));
+
+              if (event.key.keysym.sym == SDLK_q)
+              {
+                // fall through...
+              } // end IF
+              else
+                break;
+            }
+            case SDL_QUIT:
+            {
+              // finished event processing
+              done = true;
+
+              break;
+            }
+            default:
+            {
+
+              break;
+            }
+          } // end SWITCH
+        } while (event.type == SDL_MOUSEMOTION);
+      } while (!done);
 
       break;
     }
@@ -607,20 +644,62 @@ do_work(const mode_t& mode_in,
 //       levelWindow.init(floorStyle,
 //                        wallStyle,
 //                        plan);
+      // refresh screen
+      levelWindow.draw(screen,
+                       position);
+      levelWindow.refresh(screen);
 
       do
       {
-        // refresh screen
-        levelWindow.draw(screen,
-                         position);
-        levelWindow.refresh(screen);
-
         // step5: wait for an event
-        do_SDL_waitForInput(0,      // wait forever...
+        do_SDL_waitForInput(0,     // wait forever...
                             event);
-        if (event.type == SDL_QUIT)
-          break;
-      } while (true);
+        switch (event.type)
+        {
+          case SDL_MOUSEMOTION:
+          {
+            // debug info
+            RPG_Graphics_Position_t map_position = levelWindow.screen2Map(std::make_pair(event.motion.x,
+                                                                                         event.motion.y));
+            ACE_DEBUG((LM_DEBUG,
+                       ACE_TEXT("mouse motion [%u,%u] --> [%u,%u]\n"),
+                       event.motion.x,
+                       event.motion.y,
+                       map_position.first,
+                       map_position.second));
+
+            break;
+          }
+          case SDL_KEYDOWN:
+//           case SDL_KEYUP:
+          {
+            // debug info
+            ACE_DEBUG((LM_DEBUG,
+                       ACE_TEXT("%s key\n%s\n"),
+                       ((event.type == SDL_KEYDOWN) ? ACE_TEXT("pressed") : ACE_TEXT("released")),
+                       RPG_Graphics_SDL_Tools::keyToString(event.key.keysym).c_str()));
+
+            if (event.key.keysym.sym == SDLK_q)
+            {
+              // fall through...
+            } // end IF
+            else
+              break;
+          }
+          case SDL_QUIT:
+          {
+            // finished event processing
+            done = true;
+
+            break;
+          }
+          default:
+          {
+
+            break;
+          }
+        } // end SWITCH
+      } while (!done);
 
       break;
     }
