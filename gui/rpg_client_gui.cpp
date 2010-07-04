@@ -1164,7 +1164,8 @@ do_work(const RPG_Client_Config& config_in)
 
   // step4: setup main "window"
   std::string title = RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE;
-  RPG_Client_WindowMain mainWindow(INTERFACEWINDOW_MAIN,                     // window type
+  RPG_Client_WindowMain mainWindow(std::make_pair(screen->w, screen->h),     // size
+                                   INTERFACEWINDOW_MAIN,                     // window type
                                    RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE, // interface elements
                                    title);                                   // title (== caption)
   RPG_Graphics_Position_t position = std::make_pair(0, 0);

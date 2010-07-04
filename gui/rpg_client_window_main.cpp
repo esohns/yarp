@@ -21,14 +21,17 @@
 
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_common_tools.h>
+#include <rpg_graphics_SDL_tools.h>
 
 #include <ace/Log_Msg.h>
 
-RPG_Client_WindowMain::RPG_Client_WindowMain(const RPG_Graphics_InterfaceWindow_t& type_in,
+RPG_Client_WindowMain::RPG_Client_WindowMain(const RPG_Graphics_WindowSize_t& size_in,
+                                             const RPG_Graphics_InterfaceWindow_t& type_in,
                                              const RPG_Graphics_Type& graphicType_in,
                                              const std::string& title_in,
                                              const RPG_Graphics_Type& fontType_in)
- : inherited(type_in,
+ : inherited(size_in,
+             type_in,
              graphicType_in,
              title_in,
              fontType_in)
@@ -236,11 +239,11 @@ RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
                                                                              myTitle);
     RPG_Graphics_Common_Tools::putText(myTitleFont,
                                        myTitle,
-                                       RPG_Graphics_Common_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_COLOR,
-                                                                                  *targetSurface_in),
+                                       RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_COLOR,
+                                                                               *targetSurface_in),
                                        true, // add shade
-                                       RPG_Graphics_Common_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
-                                                                                  *targetSurface_in),
+                                       RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+                                                                               *targetSurface_in),
                                        myBorderLeft, // top left
                                        ((myBorderTop - title_size.second) / 2), // center of top border
                                        targetSurface_in);

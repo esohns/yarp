@@ -37,7 +37,8 @@ class RPG_Client_WindowMain
  : public RPG_Graphics_SDLWindow
 {
  public:
-  RPG_Client_WindowMain(const RPG_Graphics_InterfaceWindow_t&,            // type
+  RPG_Client_WindowMain(const RPG_Graphics_WindowSize_t&,                 // size
+                        const RPG_Graphics_InterfaceWindow_t&,            // type
                         const RPG_Graphics_Type&,                         // style
                         const std::string&,                               // title
                         const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font

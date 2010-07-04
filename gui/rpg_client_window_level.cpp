@@ -30,6 +30,7 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindow& par
                                                const RPG_Graphics_InterfaceWindow_t& type_in,
                                                const RPG_Client_DungeonLevel& level_in)
  : inherited(parent_in,
+             std::make_pair(0, 0),
              type_in),
    myMap(level_in.plan),
    myCurrentFloorStyle(RPG_GRAPHICS_FLOORSTYLE_INVALID),
@@ -166,14 +167,14 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
   // position of the top right corner
   RPG_Graphics_Position_t position_tr = std::make_pair(0, 0);
-  position_tr.first = (((-RPG_GRAPHICS_V_MAP_YMOD * ((targetSurface_in->w / 2) + 50)) +
-                        (RPG_GRAPHICS_V_MAP_XMOD * ((targetSurface_in->h / 2) + 50)) +
-                        (RPG_GRAPHICS_V_MAP_XMOD * RPG_GRAPHICS_V_MAP_YMOD)) /
-                       (2 * RPG_GRAPHICS_V_MAP_XMOD * RPG_GRAPHICS_V_MAP_YMOD));
-  position_tr.second = (((RPG_GRAPHICS_V_MAP_YMOD * ((targetSurface_in->w / 2) + 50)) +
-                         (RPG_GRAPHICS_V_MAP_XMOD * ((targetSurface_in->h / 2) + 50)) +
-                         (RPG_GRAPHICS_V_MAP_XMOD * RPG_GRAPHICS_V_MAP_YMOD)) /
-                        (2 * RPG_GRAPHICS_V_MAP_XMOD * RPG_GRAPHICS_V_MAP_YMOD));
+  position_tr.first = (((-RPG_GRAPHICS_MAP_YMOD * ((targetSurface_in->w / 2) + 50)) +
+                        (RPG_GRAPHICS_MAP_XMOD * ((targetSurface_in->h / 2) + 50)) +
+                        (RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD)) /
+                       (2 * RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD));
+  position_tr.second = (((RPG_GRAPHICS_MAP_YMOD * ((targetSurface_in->w / 2) + 50)) +
+                         (RPG_GRAPHICS_MAP_XMOD * ((targetSurface_in->h / 2) + 50)) +
+                         (RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD)) /
+                        (2 * RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD));
 
   // *NOTE*: without the "+-1" small corners within the viewport are not drawn
   int diff = 0;
@@ -211,8 +212,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
       current_map_position.first = myView.first + j;
 
       // transform map coordinates into screen coordinates
-      x = (targetSurface_in->w / 2) + (RPG_GRAPHICS_V_MAP_XMOD * (j - i));
-      y = (targetSurface_in->h / 2) + (RPG_GRAPHICS_V_MAP_YMOD * (j + i));
+      x = (targetSurface_in->w / 2) + (RPG_GRAPHICS_MAP_XMOD * (j - i));
+      y = (targetSurface_in->h / 2) + (RPG_GRAPHICS_MAP_YMOD * (j + i));
 
       // off the map ?
       // *TODO*: n < 0 ?
