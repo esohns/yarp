@@ -56,10 +56,10 @@
 #define SDL_GUI_DEF_MAP_CORRIDORS              true
 #define SDL_GUI_DEF_MAP_MAX_NUM_DOORS_PER_ROOM 3
 #define SDL_GUI_DEF_MAP_MAXIMIZE_ROOMS         true
-#define SDL_GUI_DEF_MAP_NUM_AREAS              5
+#define SDL_GUI_DEF_MAP_NUM_AREAS              3
 #define SDL_GUI_DEF_MAP_SQUARE_ROOMS           true
-#define SDL_GUI_DEF_MAP_SIZE_X                 80
-#define SDL_GUI_DEF_MAP_SIZE_Y                 40
+#define SDL_GUI_DEF_MAP_SIZE_X                 40
+#define SDL_GUI_DEF_MAP_SIZE_Y                 20
 
 #define SDL_GUI_DEF_GRAPHICS_DICTIONARY        ACE_TEXT("rpg_graphics.xml")
 #define SDL_GUI_DEF_GRAPHICS_DIRECTORY         ACE_TEXT("./../../graphics/data")
@@ -587,7 +587,7 @@ do_work(const mode_t& mode_in,
           break;
         } // end IF
 
-    // step5: wait a little while (max: 3 seconds)
+        // step5: wait a little while (max: 3 seconds)
         do_SDL_waitForInput(3,
                             event);
         if (event.type == SDL_QUIT)

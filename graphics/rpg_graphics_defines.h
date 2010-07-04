@@ -41,10 +41,9 @@
 // default #tiles/set (floors, walls, ...)
 #define RPG_GRAPHICS_TILES_DEF_NUMTILES_FLOORSET 9
 
-// tile drawing: pixel coordinate difference from a square to the one next to
-// it in the map. Because of isometry, this is not the same as the width/height
-// of a tile !
-#define RPG_GRAPHICS_V_MAP_XMOD                  56
-#define RPG_GRAPHICS_V_MAP_YMOD                  22
+// pixel coordinate difference from one map square to the next
+// *NOTE*: because of isometry, this is not the same as the width/height of a tile
+#define RPG_GRAPHICS_MAP_XMOD                    56
+#define RPG_GRAPHICS_MAP_YMOD                    22
 
 #endif

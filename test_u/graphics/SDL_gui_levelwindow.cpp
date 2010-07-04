@@ -32,6 +32,7 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindow& parent_in
                                          const RPG_Graphics_WallStyle& wallStyle_in,
                                          const RPG_Map_FloorPlan_t& floorPlan_in)
  : inherited(parent_in,
+             std::make_pair(0, 0),
              type_in),
    myMap(floorPlan_in),
    myCurrentFloorStyle(RPG_GRAPHICS_FLOORSTYLE_INVALID),
@@ -40,7 +41,8 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindow& parent_in
 //    myCurrentWallSet(),
    myCurrentOffMapTile(NULL),
 //    myWallTiles(),
-   myView(std::make_pair(0, 0))
+   myView(std::make_pair(floorPlan_in.size_x / 2,
+                         floorPlan_in.size_y / 2))
 {
   ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::SDL_GUI_LevelWindow"));
 
@@ -137,12 +139,13 @@ SDL_GUI_LevelWindow::init(const RPG_Graphics_FloorStyle& floorStyle_in,
             myWallTiles);
 
   // init view
-  myView = std::make_pair(0, 0);
+  myView = std::make_pair(floorPlan_in.size_x / 2,
+                          floorPlan_in.size_y / 2);
 }
 
 void
 SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
-                             const RPG_Graphics_Position_t& offset_in)
+                          const RPG_Graphics_Position_t& offset_in)
 {
   ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::draw"));
 
@@ -155,10 +158,10 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
   // init clipping
   SDL_Rect clipRect;
-  clipRect.x = offset_in.first;
-  clipRect.y = offset_in.second;
-  clipRect.w = (targetSurface_in->w - (myBorderLeft + myBorderRight));
-  clipRect.h = myBorderTop;
+  clipRect.x = offset_in.first + myBorderLeft + myOffset.first;
+  clipRect.y = offset_in.second + myBorderTop + myOffset.second;
+  clipRect.w = (targetSurface_in->w - offset_in.first - (myBorderLeft + myBorderRight) - myOffset.first);
+  clipRect.h = (targetSurface_in->h - offset_in.second - (myBorderTop + myBorderBottom) - myOffset.second);
   if (!SDL_SetClipRect(targetSurface_in, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,
@@ -170,14 +173,14 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
   // position of the top right corner
   RPG_Graphics_Position_t position_tr = std::make_pair(0, 0);
-  position_tr.first = (((-RPG_GRAPHICS_V_MAP_YMOD * ((targetSurface_in->w / 2) + 50)) +
-                        (RPG_GRAPHICS_V_MAP_XMOD * ((targetSurface_in->h / 2) + 50)) +
-                        (RPG_GRAPHICS_V_MAP_XMOD * RPG_GRAPHICS_V_MAP_YMOD)) /
-                       (2 * RPG_GRAPHICS_V_MAP_XMOD * RPG_GRAPHICS_V_MAP_YMOD));
-  position_tr.second = (((RPG_GRAPHICS_V_MAP_YMOD * ((targetSurface_in->w / 2) + 50)) +
-                         (RPG_GRAPHICS_V_MAP_XMOD * ((targetSurface_in->h / 2) + 50)) +
-                         (RPG_GRAPHICS_V_MAP_XMOD * RPG_GRAPHICS_V_MAP_YMOD)) /
-                        (2 * RPG_GRAPHICS_V_MAP_XMOD * RPG_GRAPHICS_V_MAP_YMOD));
+  position_tr.first = (((-RPG_GRAPHICS_MAP_YMOD * ((targetSurface_in->w / 2) + 50)) +
+                        (RPG_GRAPHICS_MAP_XMOD * ((targetSurface_in->h / 2) + 50)) +
+                        (RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD)) /
+                       (2 * RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD));
+  position_tr.second = (((RPG_GRAPHICS_MAP_YMOD * ((targetSurface_in->w / 2) + 50)) +
+                         (RPG_GRAPHICS_MAP_XMOD * ((targetSurface_in->h / 2) + 50)) +
+                         (RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD)) /
+                        (2 * RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD));
 
   // *NOTE*: without the "+-1" small corners within the viewport are not drawn
   int diff = 0;
@@ -215,8 +218,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       current_map_position.first = myView.first + j;
 
       // transform map coordinates into screen coordinates
-      x = (targetSurface_in->w / 2) + (RPG_GRAPHICS_V_MAP_XMOD * (j - i));
-      y = (targetSurface_in->h / 2) + (RPG_GRAPHICS_V_MAP_YMOD * (j + i));
+      x = (targetSurface_in->w / 2) + (RPG_GRAPHICS_MAP_XMOD * (j - i));
+      y = (targetSurface_in->h / 2) + (RPG_GRAPHICS_MAP_YMOD * (j + i));
 
       // off the map ?
       // *TODO*: n < 0 ?

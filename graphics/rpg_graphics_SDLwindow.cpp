@@ -33,6 +33,7 @@ RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_InterfaceWindo
    myBorderRight(0),
    myTitle(title_in),
    myTitleFont(fontType_in),
+   myOffset(std::make_pair(0, 0)),
    myInitialized(false),
    myParent(NULL),
    myType(type_in),
@@ -45,6 +46,7 @@ RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_InterfaceWindo
 }
 
 RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow& parent_in,
+                                               const RPG_Graphics_Offset_t& offset_in,
                                                const RPG_Graphics_InterfaceWindow_t& type_in)
   : myBorderTop(0),
     myBorderBottom(0),
@@ -52,6 +54,7 @@ RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow& par
     myBorderRight(0),
 //     myTitle(),
     myTitleFont(RPG_GRAPHICS_TYPE_INVALID),
+    myOffset(offset_in),
     myInitialized(false),
     myParent(&parent_in),
     myType(type_in),

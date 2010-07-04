@@ -43,6 +43,8 @@ class RPG_Graphics_SDLWindow
                          const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
   // embedded ("child") window(s)
   RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow&,          // parent
+                         // *NOTE*: offset doesn't include the border !
+                         const RPG_Graphics_Offset_t&,           // offset
                          const RPG_Graphics_InterfaceWindow_t&); // type
   virtual ~RPG_Graphics_SDLWindow();
 
@@ -80,6 +82,8 @@ class RPG_Graphics_SDLWindow
   // window title
   std::string                      myTitle;
   RPG_Graphics_Type                myTitleFont;
+
+  RPG_Graphics_Offset_t            myOffset; // offset to parent
 
   bool                             myInitialized;
 
