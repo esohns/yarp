@@ -24,6 +24,7 @@
 #include <rpg_graphics_SDLwindow.h>
 #include <rpg_graphics_floorstyle.h>
 #include <rpg_graphics_wallstyle.h>
+#include <rpg_graphics_doorstyle.h>
 
 #include <rpg_map_common.h>
 #include <rpg_map_level.h>
@@ -47,6 +48,7 @@ class SDL_GUI_LevelWindow
                       // *** level properties ***
                       const RPG_Graphics_FloorStyle&,        // floor style
                       const RPG_Graphics_WallStyle&,         // wall style
+                      const RPG_Graphics_DoorStyle&,         // door style
                       const RPG_Map_FloorPlan_t&);           // (initial) map
   virtual ~SDL_GUI_LevelWindow();
 
@@ -60,6 +62,7 @@ class SDL_GUI_LevelWindow
   // set level properties
   void init(const RPG_Graphics_FloorStyle&, // floor style
             const RPG_Graphics_WallStyle&,  // wall style
+            const RPG_Graphics_DoorStyle&,  // door style
             const RPG_Map_FloorPlan_t&);    // map
 
   // implement (part of) RPG_Graphics_IWindow
@@ -79,6 +82,12 @@ class SDL_GUI_LevelWindow
   void initWalls(const RPG_Map_FloorPlan_t&,        // level map
                  const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
                  RPG_Graphics_WallTileMap_t&);      // return value: wall tiles / position
+  void initDoors(const RPG_Map_FloorPlan_t&,        // level map
+                 const RPG_Map_Level&,              // level state
+                 const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
+                 RPG_Graphics_DoorTileMap_t&);      // return value: door tiles / position
+  static const RPG_Graphics_Orientation getDoorOrientation(const RPG_Map_Level&,       // level
+                                                           const RPG_Map_Position_t&); // door position
 
   RPG_Map_Level               myMap;
 
@@ -86,10 +95,15 @@ class SDL_GUI_LevelWindow
   RPG_Graphics_FloorTileSet_t myCurrentFloorSet;
   RPG_Graphics_WallStyle      myCurrentWallStyle;
   RPG_Graphics_WallTileSet_t  myCurrentWallSet;
+  RPG_Graphics_DoorStyle      myCurrentDoorStyle;
+  RPG_Graphics_DoorTileSet_t  myCurrentDoorSet;
   SDL_Surface*                myCurrentOffMapTile;
 
   // wall tiles / position
   RPG_Graphics_WallTileMap_t  myWallTiles;
+
+  // door tiles / position
+  RPG_Graphics_DoorTileMap_t  myDoorTiles;
 
   // center of displayed map area (map coordinate system)
   RPG_Graphics_Position_t     myView;

@@ -36,6 +36,10 @@ class RPG_Map_Level
   void init(const RPG_Map_FloorPlan_t&); // map
   const RPG_Map_Dimensions_t getDimensions() const;
   const RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
+  const RPG_Map_Door_t getDoor(const RPG_Map_Position_t& position_in) const;
+
+  void handleDoor(const RPG_Map_Position_t& position_in,
+                  const bool&); // open ? : close
 
  private:
   // safety measures
@@ -43,7 +47,11 @@ class RPG_Map_Level
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Level(const RPG_Map_Level&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Level& operator=(const RPG_Map_Level&));
 
+  // helper methods
+  void initDoors();
+
   RPG_Map_FloorPlan_t myFloorPlan;
+  RPG_Map_Doors_t     myDoors;
 };
 
 #endif

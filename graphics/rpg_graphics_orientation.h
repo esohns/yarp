@@ -32,6 +32,8 @@ enum RPG_Graphics_Orientation
   ORIENTATION_SOUTH,
   ORIENTATION_WEST,
   ORIENTATION_EAST,
+  ORIENTATION_HORIZONTAL,
+  ORIENTATION_VERTICAL,
   //
   RPG_GRAPHICS_ORIENTATION_MAX,
   RPG_GRAPHICS_ORIENTATION_INVALID
@@ -55,6 +57,8 @@ class RPG_Graphics_OrientationHelper
     myRPG_Graphics_OrientationToStringTable.insert(std::make_pair(ORIENTATION_SOUTH, ACE_TEXT_ALWAYS_CHAR("ORIENTATION_SOUTH")));
     myRPG_Graphics_OrientationToStringTable.insert(std::make_pair(ORIENTATION_WEST, ACE_TEXT_ALWAYS_CHAR("ORIENTATION_WEST")));
     myRPG_Graphics_OrientationToStringTable.insert(std::make_pair(ORIENTATION_EAST, ACE_TEXT_ALWAYS_CHAR("ORIENTATION_EAST")));
+    myRPG_Graphics_OrientationToStringTable.insert(std::make_pair(ORIENTATION_HORIZONTAL, ACE_TEXT_ALWAYS_CHAR("ORIENTATION_HORIZONTAL")));
+    myRPG_Graphics_OrientationToStringTable.insert(std::make_pair(ORIENTATION_VERTICAL, ACE_TEXT_ALWAYS_CHAR("ORIENTATION_VERTICAL")));
   };
 
   inline static std::string RPG_Graphics_OrientationToString(const RPG_Graphics_Orientation& element_in)

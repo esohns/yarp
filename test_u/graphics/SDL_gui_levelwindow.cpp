@@ -30,6 +30,7 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindow& parent_in
                                          const RPG_Graphics_InterfaceWindow_t& type_in,
                                          const RPG_Graphics_FloorStyle& floorStyle_in,
                                          const RPG_Graphics_WallStyle& wallStyle_in,
+                                         const RPG_Graphics_DoorStyle& doorStyle_in,
                                          const RPG_Map_FloorPlan_t& floorPlan_in)
  : inherited(parent_in,
              std::make_pair(0, 0),
@@ -39,6 +40,8 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindow& parent_in
 //    myCurrentFloorSet(),
    myCurrentWallStyle(RPG_GRAPHICS_WALLSTYLE_INVALID),
 //    myCurrentWallSet(),
+   myCurrentDoorStyle(RPG_GRAPHICS_DOORSTYLE_INVALID),
+//    myCurrentDoorSet(),
    myCurrentOffMapTile(NULL),
 //    myWallTiles(),
    myView(std::make_pair(floorPlan_in.size_x / 2,
@@ -51,6 +54,12 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindow& parent_in
   myCurrentWallSet.north = NULL;
   myCurrentWallSet.south = NULL;
 
+  myCurrentDoorSet.horizontal_open   = NULL;
+  myCurrentDoorSet.vertical_open     = NULL;
+  myCurrentDoorSet.horizontal_closed = NULL;
+  myCurrentDoorSet.vertical_closed   = NULL;
+  myCurrentDoorSet.broken            = NULL;
+
   // init style
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
@@ -58,6 +67,9 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindow& parent_in
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
   style.wallstyle = wallStyle_in;
+  setStyle(style);
+  style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
+  style.doorstyle = doorStyle_in;
   setStyle(style);
   // load tile for unmapped areas
   myCurrentOffMapTile = RPG_Graphics_Common_Tools::loadGraphic(TYPE_TILE_OFF_MAP, // tile
@@ -71,6 +83,12 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindow& parent_in
   initWalls(floorPlan_in,
             myCurrentWallSet,
             myWallTiles);
+
+  // init door tiles / position
+  initDoors(floorPlan_in,
+            myMap,
+            myCurrentDoorSet,
+            myDoorTiles);
 }
 
 SDL_GUI_LevelWindow::~SDL_GUI_LevelWindow()
@@ -97,6 +115,22 @@ SDL_GUI_LevelWindow::~SDL_GUI_LevelWindow()
   myCurrentWallSet.north = NULL;
   myCurrentWallSet.south = NULL;
   myCurrentWallStyle = RPG_GRAPHICS_WALLSTYLE_INVALID;
+  if (myCurrentDoorSet.horizontal_open)
+    SDL_FreeSurface(myCurrentDoorSet.horizontal_open);
+  if (myCurrentDoorSet.vertical_open)
+    SDL_FreeSurface(myCurrentDoorSet.vertical_open);
+  if (myCurrentDoorSet.horizontal_closed)
+    SDL_FreeSurface(myCurrentDoorSet.horizontal_closed);
+  if (myCurrentDoorSet.vertical_closed)
+    SDL_FreeSurface(myCurrentDoorSet.vertical_closed);
+  if (myCurrentDoorSet.broken)
+    SDL_FreeSurface(myCurrentDoorSet.broken);
+  myCurrentDoorSet.horizontal_open = NULL;
+  myCurrentDoorSet.vertical_open = NULL;
+  myCurrentDoorSet.horizontal_closed = NULL;
+  myCurrentDoorSet.vertical_closed = NULL;
+  myCurrentDoorSet.broken = NULL;
+  myCurrentDoorStyle = RPG_GRAPHICS_DOORSTYLE_INVALID;
   if (myCurrentOffMapTile)
   {
     SDL_FreeSurface(myCurrentOffMapTile);
@@ -115,6 +149,7 @@ SDL_GUI_LevelWindow::setView(const RPG_Graphics_Position_t& view_in)
 void
 SDL_GUI_LevelWindow::init(const RPG_Graphics_FloorStyle& floorStyle_in,
                           const RPG_Graphics_WallStyle& wallStyle_in,
+                          const RPG_Graphics_DoorStyle& doorStyle_in,
                           const RPG_Map_FloorPlan_t& floorPlan_in)
 {
   ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
@@ -132,11 +167,20 @@ SDL_GUI_LevelWindow::init(const RPG_Graphics_FloorStyle& floorStyle_in,
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
   style.wallstyle = wallStyle_in;
   setStyle(style);
+  style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
+  style.doorstyle = doorStyle_in;
+  setStyle(style);
 
   // init wall tiles / position
   initWalls(floorPlan_in,
             myCurrentWallSet,
             myWallTiles);
+
+  // init door tiles / position
+  initDoors(floorPlan_in,
+            myMap,
+            myCurrentDoorSet,
+            myDoorTiles);
 
   // init view
   myView = std::make_pair(floorPlan_in.size_x / 2,
@@ -204,8 +248,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
   int i, j;
   RPG_Map_Position_t current_map_position = std::make_pair(0, 0);
-  RPG_Graphics_WallTileMapConstIterator_t iterator;
   unsigned long x, y;
+  // pass 1
   for (i = -position_tr.second;
        i <= ACE_static_cast(int, position_tr.second);
        i++)
@@ -222,13 +266,13 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       y = (targetSurface_in->h / 2) + (RPG_GRAPHICS_MAP_YMOD * (j + i));
 
       // off the map ?
-      // *TODO*: n < 0 ?
-      if (((current_map_position.second < 1) ||
+      if ((myMap.getElement(current_map_position) == MAPELEMENT_UNMAPPED) ||
+          // *NOTE*: walls are drawn together with the floor...
+          (myMap.getElement(current_map_position) == MAPELEMENT_WALL) ||
+          ((current_map_position.second < 0) ||
            (current_map_position.second >= myMap.getDimensions().second) ||
            (current_map_position.first < 0) ||
-           (current_map_position.first >= myMap.getDimensions().first)) ||
-          ((myMap.getElement(current_map_position) != MAPELEMENT_WALL) &&
-           (myMap.getElement(current_map_position) != MAPELEMENT_DOOR)))
+           (current_map_position.first >= myMap.getDimensions().first)))
       {
         RPG_Graphics_Common_Tools::put(x,
                                        y,
@@ -238,174 +282,99 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
         continue;
       } // end IF
 
-//       map_back = map_data->get_glyph(MAP_BACK, j, i);
-//       map_darkness = map_data->get_glyph(MAP_DARKNESS, j, i);
-//
-//       /* 0. init walls and floor edges for this tile*/
-//       if (map_back == V_TILE_WALL_GENERIC ||
-//           map_back == V_MISC_UNMAPPED_AREA)
-//         get_wall_tiles(i, j);
-//       else
-//         /* certain events (amnesia or a secret door being discovered)
-//         * require us to clear walls again. since we cannot check for those cases
-//         * we simply clear walls whenever we don't set any... */
-//         clear_walls(i, j);
-//
-//       if (map_back == V_TILE_FLOOR_WATER ||
-//           map_back == V_TILE_FLOOR_ICE ||
-//           map_back == V_TILE_FLOOR_LAVA ||
-//           map_back == V_TILE_FLOOR_AIR)
-//         /* these tiles get edges */
-//         get_floor_edges(i, j);
-//       else
-//         /* everything else doesn't. However we can't just assume a tile that doesn't need egdes doesn't have any:
-//         * pools may be dried out by fireballs, and suddenly we have a pit with edges :(
-//         * Therefore we always clear them explicitly */
-//         clear_floor_edges(i ,j);
-
       // step1: floor
-      if (myMap.getElement(current_map_position) == MAPELEMENT_FLOOR)
+      if ((myMap.getElement(current_map_position) == MAPELEMENT_FLOOR) ||
+          (myMap.getElement(current_map_position) == MAPELEMENT_DOOR))
       {
         RPG_Graphics_Common_Tools::put(x,
                                        y,
                                        *myCurrentFloorSet.front(),
                                        targetSurface_in);
+      } // end IF
+    } // end FOR
+  } // end FOR
 
-        // step2: walls (west & north)
-        iterator = myWallTiles.find(current_map_position);
-        ACE_ASSERT(iterator != myWallTiles.end());
-        if ((*iterator).second.west)
+  // pass 2
+  RPG_Graphics_WallTileMapConstIterator_t wall_iterator = myWallTiles.end();
+  RPG_Graphics_DoorTileMapConstIterator_t door_iterator = myDoorTiles.end();
+  for (i = -position_tr.second;
+       i <= ACE_static_cast(int, position_tr.second);
+       i++)
+  {
+    current_map_position.second = myView.second + i;
+    // off the map ? --> continue
+    if ((current_map_position.second < 0) ||
+        (current_map_position.second >= myMap.getDimensions().second))
+      continue;
+
+    for (j = diff + i;
+         (j + i) <= sum;
+         j++)
+    {
+      current_map_position.first = myView.first + j;
+      // off the map ? --> continue
+      if ((current_map_position.first < 0) ||
+          (current_map_position.first >= myMap.getDimensions().first))
+        continue;
+
+      // transform map coordinates into screen coordinates
+      x = (targetSurface_in->w / 2) + (RPG_GRAPHICS_MAP_XMOD * (j - i));
+      y = (targetSurface_in->h / 2) + (RPG_GRAPHICS_MAP_YMOD * (j + i));
+
+      wall_iterator = myWallTiles.find(current_map_position);
+      door_iterator = myDoorTiles.find(current_map_position);
+      // step1: walls (west & north)
+      if (wall_iterator != myWallTiles.end())
+      {
+        if ((*wall_iterator).second.west)
+        {
+          // *NOTE*: west is just a "darkened" version of east...
           RPG_Graphics_Common_Tools::put(x,
-                                         y,
-                                         *(*iterator).second.west,
+                                         y - (*wall_iterator).second.west->h + (myCurrentFloorSet.front()->h / 2),
+                                         *(myCurrentWallSet.east),
                                          targetSurface_in);
-        if ((*iterator).second.north)
           RPG_Graphics_Common_Tools::put(x,
-                                         y,
-                                         *(*iterator).second.north,
+                                         y - (*wall_iterator).second.west->h + (myCurrentFloorSet.front()->h / 2),
+                                         *(*wall_iterator).second.west,
                                          targetSurface_in);
-        // south & east
-        if ((*iterator).second.south)
-          RPG_Graphics_Common_Tools::put(x,
-                                         y,
-                                         *(*iterator).second.south,
+        } // end IF
+        if ((*wall_iterator).second.north)
+        {
+          // *NOTE*: north is just a "darkened" version of south...
+          RPG_Graphics_Common_Tools::put(x + (myCurrentFloorSet.front()->w / 2),
+                                         y - (*wall_iterator).second.north->h + (myCurrentFloorSet.front()->h / 2),
+                                         *(myCurrentWallSet.south),
                                          targetSurface_in);
-        if ((*iterator).second.east)
-          RPG_Graphics_Common_Tools::put(x,
-                                         y,
-                                         *(*iterator).second.east,
+          RPG_Graphics_Common_Tools::put(x + (myCurrentFloorSet.front()->w / 2),
+                                         y - (*wall_iterator).second.north->h + (myCurrentFloorSet.front()->h / 2),
+                                         *(*wall_iterator).second.north,
                                          targetSurface_in);
+        } // end IF
       } // end IF
 
-//       tile_id = map_back;
-//       shadelevel = 0;
-//
-//       if ((tile_id >= V_TILE_FLOOR_COBBLESTONE) &&
-//            (tile_id <= V_TILE_FLOOR_DARK)) {
-//         tile_id = get_floor_tile(tile_id, i, j);
-//         shadelevel = map_darkness;
-//            }
-//            else if(tile_id == V_TILE_NONE || tile_id == V_TILE_WALL_GENERIC)
-//              tile_id = V_MISC_UNMAPPED_AREA;
-//
-//            vultures_put_tile_shaded(x, y, tile_id, shadelevel);
-//
-//            /* shortcut for unmapped case */
-//            if (tile_id == V_MISC_UNMAPPED_AREA)
-//              continue;
-//
-//            if (vultures_opts.highlight_cursor_square &&
-//                (j == map_highlight.x && i == map_highlight.y))
-//              vultures_put_tile(x, y, V_MISC_FLOOR_HIGHLIGHT);
-//
-//            /* 3. Floor edges */
-//            for (dir_idx = 0; dir_idx < 12; dir_idx++)
-//              vultures_put_tile(x, y, maptile_floor_edge[i][j].dir[dir_idx]);
+      // step2: doors
+      if (door_iterator != myDoorTiles.end())
+      {
+        RPG_Graphics_Common_Tools::put(x,
+                                       y - (*door_iterator).second->h + (myCurrentDoorSet.horizontal_open->h / 2),
+                                       *(*door_iterator).second,
+                                       targetSurface_in);
+      } // end IF
 
-//   for (__i = - map_tr_y; __i <= map_tr_y; __i++)
-//   {
-//     i = view_y + __i;
-//     if (i < 0 || i >= ROWNO)
-//       continue;
-//
-//     for (__j = diff + __i; __j + __i <= sum; __j++)
-//     {
-//       j = view_x + __j;
-//       if (j < 1 || j >= COLNO)
-//         continue;
-//       /* Find position of tile centre */
-//       x = map_centre_x + V_MAP_XMOD*(__j - __i);
-//       y = map_centre_y + V_MAP_YMOD*(__j + __i);
-//
-//       map_back = map_data->get_glyph(MAP_BACK, j, i);
-//       map_obj = map_data->get_glyph(MAP_OBJ, j, i);
-//       map_mon = map_data->get_glyph(MAP_MON, j, i);
-//
-//       /* 1. West and north walls */
-//       if (j > 1)
-//         vultures_put_tile_shaded(x, y, maptile_wall[i][j].west,
-//                                  map_data->get_glyph(MAP_DARKNESS, j-1, i));
-//       if (i > 1)
-//         vultures_put_tile_shaded(x, y, maptile_wall[i][j].north,
-//                                  map_data->get_glyph(MAP_DARKNESS, j, i-1));
-//
-//       /* shortcut for unmapped case */
-//       if (map_back != V_MISC_UNMAPPED_AREA ||
-//           map_obj != V_TILE_NONE) {
-//         /* 2. Furniture*/
-//         vultures_put_tile(x, y, map_data->get_glyph(MAP_FURNITURE, j, i));
-//
-//
-//         /* 3. Traps */
-//         vultures_put_tile(x, y, map_data->get_glyph(MAP_TRAP, j, i));
-//
-//
-//         /* 4. Objects */
-//         vultures_put_tile(x, y, map_obj);
-//
-//
-//         /* 5. Monsters */
-//         if ((cur_tile = vultures_get_tile(map_mon)) != NULL) {
-//           vultures_put_tile(x, y, map_mon);
-//           if (iflags.hilite_pet && map_data->get_glyph(MAP_PET, j, i))
-//             vultures_put_img(x + cur_tile->xmod, y + cur_tile->ymod - 10,
-//                              vultures_get_tile(V_MISC_HILITE_PET)->graphic);
-//         }
-//
-//         /* 6. Effects */
-//         vultures_put_tile(x, y, map_data->get_glyph(MAP_SPECIAL, j, i));
-//           }
-//
-//           /* 7. South & East walls */
-//           if (i < ROWNO - 1)
-//             vultures_put_tile_shaded(x, y, maptile_wall[i][j].south,
-//                                      map_data->get_glyph(MAP_DARKNESS, j, i+1));
-//           if (j < COLNO - 1)
-//             vultures_put_tile_shaded(x, y, maptile_wall[i][j].east,
-//                                      map_data->get_glyph(MAP_DARKNESS, j+1, i));
-//     }
-//   }
-//
-//   /* draw object highlights if requested */
-//   if (vultures_map_highlight_objects)
-//   {
-//     for (__i = - map_tr_y; __i <= map_tr_y; __i++)
-//     {
-//       i = view_y + __i;
-//       if (i < 0 || i >= ROWNO)
-//         continue;
-//
-//       for (__j = diff + __i; __j + __i <= sum; __j++)
-//       {
-//         j = view_x + __j;
-//         if (j < 1 || j >= COLNO)
-//           continue;
-//
-//         x = map_centre_x + V_MAP_XMOD*(__j - __i);
-//         y = map_centre_y + V_MAP_YMOD*(__j + __i);
-//
-//         vultures_put_tilehighlight(x, y, map_data->get_glyph(MAP_OBJ, j, i));
-//       }
+      // step3: walls (south & east)
+      if (wall_iterator != myWallTiles.end())
+      {
+        if ((*wall_iterator).second.south)
+          RPG_Graphics_Common_Tools::put(x,
+                                         y - (*wall_iterator).second.south->h + myCurrentFloorSet.front()->h,
+                                         *(*wall_iterator).second.south,
+                                         targetSurface_in);
+        if ((*wall_iterator).second.east)
+          RPG_Graphics_Common_Tools::put(x + (myCurrentFloorSet.front()->w / 2),
+                                         y - (*wall_iterator).second.east->h + myCurrentFloorSet.front()->h,
+                                         *(*wall_iterator).second.east,
+                                         targetSurface_in);
+      } // end IF
     } // end FOR
   } // end FOR
 
@@ -488,6 +457,42 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
       break;
     }
+    case RPG_Graphics_StyleUnion::DOORSTYLE:
+    {
+      // clean up
+      if (myCurrentDoorSet.horizontal_open)
+        SDL_FreeSurface(myCurrentDoorSet.horizontal_open);
+      if (myCurrentDoorSet.vertical_open)
+        SDL_FreeSurface(myCurrentDoorSet.vertical_open);
+      if (myCurrentDoorSet.horizontal_closed)
+        SDL_FreeSurface(myCurrentDoorSet.horizontal_closed);
+      if (myCurrentDoorSet.vertical_closed)
+        SDL_FreeSurface(myCurrentDoorSet.vertical_closed);
+      if (myCurrentDoorSet.broken)
+        SDL_FreeSurface(myCurrentDoorSet.broken);
+      myCurrentDoorSet.horizontal_open = NULL;
+      myCurrentDoorSet.vertical_open = NULL;
+      myCurrentDoorSet.horizontal_closed = NULL;
+      myCurrentDoorSet.vertical_closed = NULL;
+      myCurrentDoorSet.broken = NULL;
+
+      RPG_Graphics_Common_Tools::loadDoorTileSet(style_in.doorstyle,
+                                                 myCurrentDoorSet);
+      // sanity check
+      if ((myCurrentDoorSet.horizontal_open == NULL) ||
+          (myCurrentDoorSet.vertical_open == NULL) ||
+          (myCurrentDoorSet.horizontal_closed == NULL) ||
+          (myCurrentDoorSet.vertical_closed == NULL) ||
+          (myCurrentDoorSet.broken == NULL))
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("door-style \"%s\" is incomplete, continuing\n"),
+                   RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(style_in.doorstyle).c_str()));
+      } // end IF
+      myCurrentDoorStyle = style_in.doorstyle;
+
+      break;
+    }
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -525,7 +530,8 @@ SDL_GUI_LevelWindow::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
       current_walls.north = NULL;
       current_walls.south = NULL;
 
-      if (myMap.getElement(current_position) == MAPELEMENT_FLOOR)
+      if ((myMap.getElement(current_position) == MAPELEMENT_FLOOR) ||
+          (myMap.getElement(current_position) == MAPELEMENT_DOOR))
       {
         // step1: find neighboring walls
         east = current_position;
@@ -545,10 +551,94 @@ SDL_GUI_LevelWindow::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
           current_walls.north = myCurrentWallSet.north;
         if (myMap.getElement(south) == MAPELEMENT_WALL)
           current_walls.south = myCurrentWallSet.south;
-      } // end IF
 
-      myWallTiles.insert(std::make_pair(current_position, current_walls));
+        if (current_walls.east ||
+            current_walls.north ||
+            current_walls.west ||
+            current_walls.south)
+          myWallTiles.insert(std::make_pair(current_position, current_walls));
+      } // end IF
     } // end FOR
+}
+
+void
+SDL_GUI_LevelWindow::initDoors(const RPG_Map_FloorPlan_t& levelMap_in,
+                               const RPG_Map_Level& levelState_in,
+                               const RPG_Graphics_DoorTileSet_t& tileSet_in,
+                               RPG_Graphics_DoorTileMap_t& doorTiles_out)
+{
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::initDoors"));
+
+  // init return value(s)
+  doorTiles_out.clear();
+
+  SDL_Surface* current = NULL;
+  RPG_Map_Door_t current_door;
+  RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
+  for (RPG_Map_PositionsConstIterator_t iterator = levelMap_in.doors.begin();
+       iterator != levelMap_in.doors.end();
+       iterator++)
+  {
+    current = NULL;
+    current_door = levelState_in.getDoor(*iterator);
+    orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
+    if (current_door.is_broken)
+    {
+      current = tileSet_in.broken;
+      continue;
+    } // end IF
+
+    orientation = SDL_GUI_LevelWindow::getDoorOrientation(levelMap_in,
+                                                          *iterator);
+    switch (orientation)
+    {
+      case ORIENTATION_HORIZONTAL:
+      {
+        current = (current_door.is_open ? tileSet_in.horizontal_open
+                                        : tileSet_in.horizontal_closed);
+        break;
+      }
+      case ORIENTATION_VERTICAL:
+      {
+        current = (current_door.is_open ? tileSet_in.vertical_open
+                                        : tileSet_in.vertical_closed);
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid door orientation \"%s\", aborting\n"),
+                   RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
+
+        // clean up
+        myDoorTiles.clear();
+
+        return;
+      }
+    } // end SWITCH
+
+    myDoorTiles.insert(std::make_pair(*iterator, current));
+  } // end FOR
+}
+
+const RPG_Graphics_Orientation
+SDL_GUI_LevelWindow::getDoorOrientation(const RPG_Map_Level& level_in,
+                                        const RPG_Map_Position_t& position_in)
+{
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::getDoorOrientation"));
+
+//   RPG_Graphics_Orientation result = RPG_GRAPHICS_ORIENTATION_INVALID;
+
+  RPG_Map_Position_t east;//, south;
+  east = position_in;
+  east.first++;
+//   south = position_in;
+//   south.second++;
+
+  if (level_in.getElement(east) == MAPELEMENT_WALL)
+    return ORIENTATION_HORIZONTAL;
+
+  return ORIENTATION_VERTICAL;
 }
 
 const RPG_Graphics_Position_t

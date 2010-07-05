@@ -206,6 +206,38 @@
     </tileset>
   </graphic>
   <graphic>
+    <category>CATEGORY_TILESET</category>
+    <type>TYPE_TILESET_DOOR_WOOD</type>
+    <tileset>
+      <type>TILESETTYPE_DOOR</type>
+      <style>DOORSTYLE_WOOD</style>
+      <tile open="true">
+        <type>TILETYPE_DOOR</type>
+        <orientation>ORIENTATION_HORIZONTAL</orientation>
+        <file>door_wood_open_h.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_DOOR</type>
+        <orientation>ORIENTATION_HORIZONTAL</orientation>
+        <file>door_wood_closed_h.png</file>
+      </tile>
+      <tile open="true">
+        <type>TILETYPE_DOOR</type>
+        <orientation>ORIENTATION_VERTICAL</orientation>
+        <file>door_wood_open_v.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_DOOR</type>
+        <orientation>ORIENTATION_VERTICAL</orientation>
+        <file>door_wood_closed_v.png</file>
+      </tile>
+      <tile open="true" broken="true">
+        <type>TILETYPE_DOOR</type>
+        <file>door_wood_broken.png</file>
+      </tile>
+    </tileset>
+  </graphic>
+  <graphic>
     <category>CATEGORY_TILE</category>
     <type>TYPE_TILE_OFF_MAP</type>
     <tile>

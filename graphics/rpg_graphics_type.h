@@ -34,6 +34,7 @@ enum RPG_Graphics_Type
   TYPE_IMAGE_INTRO_MAIN,
   TYPE_IMAGE_WM_ICON,
   TYPE_TILE_OFF_MAP,
+  TYPE_TILESET_DOOR_WOOD,
   TYPE_TILESET_FLOOR_AIR,
   TYPE_TILESET_FLOOR_DARK,
   TYPE_TILESET_WALL_BRICK_HALF,
@@ -63,6 +64,7 @@ class RPG_Graphics_TypeHelper
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_IMAGE_INTRO_MAIN, ACE_TEXT_ALWAYS_CHAR("TYPE_IMAGE_INTRO_MAIN")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_IMAGE_WM_ICON, ACE_TEXT_ALWAYS_CHAR("TYPE_IMAGE_WM_ICON")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_OFF_MAP, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_OFF_MAP")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILESET_DOOR_WOOD, ACE_TEXT_ALWAYS_CHAR("TYPE_TILESET_DOOR_WOOD")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILESET_FLOOR_AIR, ACE_TEXT_ALWAYS_CHAR("TYPE_TILESET_FLOOR_AIR")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILESET_FLOOR_DARK, ACE_TEXT_ALWAYS_CHAR("TYPE_TILESET_FLOOR_DARK")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILESET_WALL_BRICK_HALF, ACE_TEXT_ALWAYS_CHAR("TYPE_TILESET_WALL_BRICK_HALF")));

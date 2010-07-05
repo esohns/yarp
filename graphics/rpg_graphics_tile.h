@@ -34,6 +34,8 @@ struct RPG_Graphics_Tile
   std::string file;
   unsigned int offsetX;
   unsigned int offsetY;
+  bool open;
+  bool broken;
 };
 
 #endif

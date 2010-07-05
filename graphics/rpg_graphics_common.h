@@ -90,6 +90,16 @@ struct RPG_Graphics_WallTileSet_t
 };
 typedef std::map<RPG_Graphics_Position_t, RPG_Graphics_WallTileSet_t> RPG_Graphics_WallTileMap_t;
 typedef RPG_Graphics_WallTileMap_t::const_iterator RPG_Graphics_WallTileMapConstIterator_t;
+struct RPG_Graphics_DoorTileSet_t
+{
+  SDL_Surface* horizontal_open;
+  SDL_Surface* vertical_open;
+  SDL_Surface* horizontal_closed;
+  SDL_Surface* vertical_closed;
+  SDL_Surface* broken;
+};
+typedef std::map<RPG_Graphics_Position_t, SDL_Surface*> RPG_Graphics_DoorTileMap_t;
+typedef RPG_Graphics_DoorTileMap_t::const_iterator RPG_Graphics_DoorTileMapConstIterator_t;
 
 typedef std::vector<RPG_Graphics_Tile>::const_iterator RPG_Graphics_TileSetConstIterator_t;
 

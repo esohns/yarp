@@ -35,6 +35,7 @@
 #define RPG_GRAPHICS_FONT_DEF_SHADECOLOR         RPG_Graphics_SDL_Tools::CLR32_BLACK
 
 // default (tiles) data directory tree organization
+#define RPG_GRAPHICS_TILES_DEF_DOORS_SUB         ACE_TEXT("doors")
 #define RPG_GRAPHICS_TILES_DEF_FLOORS_SUB        ACE_TEXT("floors")
 #define RPG_GRAPHICS_TILES_DEF_WALLS_SUB         ACE_TEXT("walls")
 

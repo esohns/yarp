@@ -55,26 +55,6 @@ RPG_Graphics_FontCache_t     RPG_Graphics_Common_Tools::myFontCache;
 
 bool                         RPG_Graphics_Common_Tools::myInitialized = false;
 
-Uint32 RPG_Graphics_Common_Tools::CLR32_BLACK      = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_BLACK_A30  = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_BLACK_A50  = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_BLACK_A70  = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_GREEN      = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_YELLOW     = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_ORANGE     = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_RED        = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_GRAY20     = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_GRAY70     = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_GRAY77     = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_PURPLE44   = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_LIGHTPINK  = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_LIGHTGREEN = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_BROWN      = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_WHITE      = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_BLESS_BLUE = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_CURSE_RED  = 0;
-Uint32 RPG_Graphics_Common_Tools::CLR32_GOLD_SHADE = 0;
-
 static void
 PNG_read_callback(png_structp png_ptr_in,
                   png_bytep target_inout,
@@ -215,6 +195,11 @@ RPG_Graphics_Common_Tools::tileToString(const RPG_Graphics_Tile& tile_in)
   converter.clear();
   converter << tile_in.offsetY;
   result += converter.str();
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT("open/broken: ");
+  result += (tile_in.open ? ACE_TEXT("true") : ACE_TEXT("false"));
+  result += ACE_TEXT("/");
+  result += (tile_in.broken ? ACE_TEXT("true") : ACE_TEXT("false"));
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
   return result;
@@ -362,6 +347,24 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in)
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid wall-style (was: %d), aborting\n"),
                      RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(style_in.wallstyle).c_str()));
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case RPG_Graphics_StyleUnion::DOORSTYLE:
+    {
+      switch (style_in.doorstyle)
+      {
+        case DOORSTYLE_WOOD:
+          result = TYPE_TILESET_DOOR_WOOD; break;
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid door-style (was: %d), aborting\n"),
+                     RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(style_in.doorstyle).c_str()));
 
           break;
         }
@@ -646,6 +649,173 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
              RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(graphic.tileset.type).c_str(),
              RPG_Graphics_Common_Tools::styleToString(graphic.tileset.style).c_str(),
              4));
+}
+
+void
+RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_in,
+                                           RPG_Graphics_DoorTileSet_t& tileSet_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadDoorTileSet"));
+
+  // init return value(s)
+  if (tileSet_out.horizontal_open)
+    SDL_FreeSurface(tileSet_out.horizontal_open);
+  if (tileSet_out.vertical_open)
+    SDL_FreeSurface(tileSet_out.vertical_open);
+  if (tileSet_out.horizontal_closed)
+    SDL_FreeSurface(tileSet_out.horizontal_closed);
+  if (tileSet_out.vertical_closed)
+    SDL_FreeSurface(tileSet_out.vertical_closed);
+  if (tileSet_out.broken)
+    SDL_FreeSurface(tileSet_out.broken);
+  tileSet_out.horizontal_open = NULL;
+  tileSet_out.vertical_open = NULL;
+  tileSet_out.horizontal_closed = NULL;
+  tileSet_out.vertical_closed = NULL;
+  tileSet_out.broken = NULL;
+
+  // step0: retrieve appropriate graphic type
+  RPG_Graphics_StyleUnion style;
+  style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
+  style.doorstyle = style_in;
+  RPG_Graphics_Type graphic_type = RPG_GRAPHICS_TYPE_INVALID;
+  graphic_type = RPG_Graphics_Common_Tools::styleToType(style);
+  // sanity check(s)
+  if (graphic_type == RPG_GRAPHICS_TYPE_INVALID)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::styleToType(\"%s\"), aborting\n"),
+               RPG_Graphics_Common_Tools::styleToString(style).c_str()));
+
+    return;
+  } // end IF
+
+  // step1: retrieve list of tiles
+  RPG_Graphics_t graphic;
+  graphic.type = RPG_GRAPHICS_TYPE_INVALID;
+  // retrieve properties from the dictionary
+  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(graphic_type);
+  ACE_ASSERT(graphic.type == graphic_type);
+  // sanity check(s)
+  if (graphic.category != CATEGORY_TILESET)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadTileSet(\"%s\"): not a tileset (was: %s), aborting\n"),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphic.type).c_str(),
+               RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str()));
+
+    return;
+  } // end IF
+
+  // assemble base path
+  std::string path_base = myGraphicsDirectory;
+  path_base += ACE_DIRECTORY_SEPARATOR_STR;
+  path_base += RPG_GRAPHICS_TILES_DEF_DOORS_SUB;
+  path_base += ACE_DIRECTORY_SEPARATOR_STR;
+
+  std::string path = path_base;
+  SDL_Surface* current_surface = NULL;
+  for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin();
+       iterator != graphic.tileset.tiles.end();
+       iterator++)
+  {
+    current_surface = NULL;
+
+    // load file
+    path = path_base;
+    path += (*iterator).file;
+    current_surface = RPG_Graphics_Common_Tools::loadFile(path,  // file
+                                                          true); // convert to display format
+    if (!current_surface)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
+                 path.c_str()));
+
+      // clean up
+      if (tileSet_out.horizontal_open)
+        SDL_FreeSurface(tileSet_out.horizontal_open);
+      if (tileSet_out.vertical_open)
+        SDL_FreeSurface(tileSet_out.vertical_open);
+      if (tileSet_out.horizontal_closed)
+        SDL_FreeSurface(tileSet_out.horizontal_closed);
+      if (tileSet_out.vertical_closed)
+        SDL_FreeSurface(tileSet_out.vertical_closed);
+      if (tileSet_out.broken)
+        SDL_FreeSurface(tileSet_out.broken);
+      tileSet_out.horizontal_open = NULL;
+      tileSet_out.vertical_open = NULL;
+      tileSet_out.horizontal_closed = NULL;
+      tileSet_out.vertical_closed = NULL;
+      tileSet_out.broken = NULL;
+
+      return;
+    } // end IF
+
+    switch ((*iterator).orientation)
+    {
+      case ORIENTATION_HORIZONTAL:
+      {
+        if ((*iterator).open)
+          tileSet_out.horizontal_open = current_surface;
+        else
+          tileSet_out.horizontal_closed = current_surface;
+
+        break;
+      }
+      case ORIENTATION_VERTICAL:
+      {
+        if ((*iterator).open)
+          tileSet_out.vertical_open = current_surface;
+        else
+          tileSet_out.vertical_closed = current_surface;
+
+        break;
+      }
+      case RPG_GRAPHICS_ORIENTATION_INVALID:
+      {
+        if ((*iterator).broken)
+        {
+          tileSet_out.broken = current_surface;
+
+          break;
+        } // end IF
+        // *WARNING*: fall through !
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid orientation \"%s\", aborting\n"),
+                   RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString((*iterator).orientation).c_str()));
+
+        // clean up
+        if (tileSet_out.horizontal_open)
+          SDL_FreeSurface(tileSet_out.horizontal_open);
+        if (tileSet_out.vertical_open)
+          SDL_FreeSurface(tileSet_out.vertical_open);
+        if (tileSet_out.horizontal_closed)
+          SDL_FreeSurface(tileSet_out.horizontal_closed);
+        if (tileSet_out.vertical_closed)
+          SDL_FreeSurface(tileSet_out.vertical_closed);
+        if (tileSet_out.broken)
+          SDL_FreeSurface(tileSet_out.broken);
+        tileSet_out.horizontal_open = NULL;
+        tileSet_out.vertical_open = NULL;
+        tileSet_out.horizontal_closed = NULL;
+        tileSet_out.vertical_closed = NULL;
+        tileSet_out.broken = NULL;
+
+        return;
+      }
+    } // end SWITCH
+  } // end FOR
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("loaded tileset \"%s\" (type: %s, style: %s, %u tile(s))...\n"),
+             RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphic.type).c_str(),
+             RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(graphic.tileset.type).c_str(),
+             RPG_Graphics_Common_Tools::styleToString(graphic.tileset.style).c_str(),
+             5));
 }
 
 SDL_Surface*

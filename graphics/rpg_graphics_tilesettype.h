@@ -28,7 +28,8 @@
 
 enum RPG_Graphics_TileSetType
 {
-  TILESETTYPE_FLOOR = 0,
+  TILESETTYPE_DOOR = 0,
+  TILESETTYPE_FLOOR,
   TILESETTYPE_WALL,
   //
   RPG_GRAPHICS_TILESETTYPE_MAX,
@@ -49,6 +50,7 @@ class RPG_Graphics_TileSetTypeHelper
   inline static void init()
   {
     myRPG_Graphics_TileSetTypeToStringTable.clear();
+    myRPG_Graphics_TileSetTypeToStringTable.insert(std::make_pair(TILESETTYPE_DOOR, ACE_TEXT_ALWAYS_CHAR("TILESETTYPE_DOOR")));
     myRPG_Graphics_TileSetTypeToStringTable.insert(std::make_pair(TILESETTYPE_FLOOR, ACE_TEXT_ALWAYS_CHAR("TILESETTYPE_FLOOR")));
     myRPG_Graphics_TileSetTypeToStringTable.insert(std::make_pair(TILESETTYPE_WALL, ACE_TEXT_ALWAYS_CHAR("TILESETTYPE_WALL")));
   };

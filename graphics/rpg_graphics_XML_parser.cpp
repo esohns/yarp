@@ -266,6 +266,8 @@ RPG_Graphics_Tile_Type::RPG_Graphics_Tile_Type()
   myCurrentTile.file.clear();
   myCurrentTile.offsetX = 0;
   myCurrentTile.offsetY = 0;
+  myCurrentTile.open = false;
+  myCurrentTile.broken = false;
 }
 
 void RPG_Graphics_Tile_Type::type(const RPG_Graphics_TileType& type_in)
@@ -310,6 +312,20 @@ void RPG_Graphics_Tile_Type::offsetY(unsigned int offsetY_in)
   myCurrentTile.offsetY = offsetY_in;
 }
 
+void RPG_Graphics_Tile_Type::open(bool open_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Tile_Type::open"));
+
+  myCurrentTile.open = open_in;
+}
+
+void RPG_Graphics_Tile_Type::broken(bool broken_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Tile_Type::broken"));
+
+  myCurrentTile.broken = broken_in;
+}
+
 RPG_Graphics_Tile RPG_Graphics_Tile_Type::post_RPG_Graphics_Tile_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Tile_Type::post_RPG_Graphics_Tile_Type"));
@@ -324,6 +340,8 @@ RPG_Graphics_Tile RPG_Graphics_Tile_Type::post_RPG_Graphics_Tile_Type()
   myCurrentTile.file.clear();
   myCurrentTile.offsetX = 0;
   myCurrentTile.offsetY = 0;
+  myCurrentTile.open = false;
+  myCurrentTile.broken = false;
 
   return result;
 }

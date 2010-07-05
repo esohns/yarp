@@ -57,10 +57,10 @@
 #define SDL_GUI_DEF_MAP_CORRIDORS              true
 #define SDL_GUI_DEF_MAP_MAX_NUM_DOORS_PER_ROOM 3
 #define SDL_GUI_DEF_MAP_MAXIMIZE_ROOMS         true
-#define SDL_GUI_DEF_MAP_NUM_AREAS              3
+#define SDL_GUI_DEF_MAP_NUM_AREAS              2
 #define SDL_GUI_DEF_MAP_SQUARE_ROOMS           true
-#define SDL_GUI_DEF_MAP_SIZE_X                 40
-#define SDL_GUI_DEF_MAP_SIZE_Y                 20
+#define SDL_GUI_DEF_MAP_SIZE_X                 20
+#define SDL_GUI_DEF_MAP_SIZE_Y                 15
 
 #define SDL_GUI_DEF_GRAPHICS_DICTIONARY        ACE_TEXT("rpg_graphics.xml")
 #define SDL_GUI_DEF_GRAPHICS_DIRECTORY         ACE_TEXT("./../../graphics/data")
@@ -366,6 +366,7 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
+  std::cout << ACE_TEXT("-d [DIR] : graphics directory") << std::endl;
   std::cout << ACE_TEXT("-g [FILE]: graphics dictionary (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-l       : generate level map") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
@@ -376,6 +377,7 @@ print_usage(const std::string& programName_in)
 const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
+                  std::string& directory_out,
                   std::string& filename_out,
                   bool& levelMap_out,
                   bool& traceInformation_out,
@@ -385,7 +387,8 @@ process_arguments(const int argc_in,
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-  filename_out.clear();
+  directory_out = SDL_GUI_DEF_GRAPHICS_DIRECTORY;
+  filename_out = SDL_GUI_DEF_GRAPHICS_DICTIONARY;
   levelMap_out = (SDL_GUI_DEF_MODE == MODE_LEVEL_MAP);
   traceInformation_out = false;
   printVersionAndExit_out = false;
@@ -393,13 +396,19 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("g:ltvx"));
+                             ACE_TEXT("d:g:ltvx"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
   {
     switch (option)
     {
+      case 'd':
+      {
+        directory_out = argumentParser.opt_arg();
+
+        break;
+      }
       case 'g':
       {
         filename_out = argumentParser.opt_arg();
@@ -528,7 +537,7 @@ do_work(const mode_t& mode_in,
   // step3b: setup style
   RPG_Graphics_FloorStyle floorStyle = FLOORSTYLE_AIR;
   RPG_Graphics_WallStyle wallStyle = WALLSTYLE_BRICK;
-//   RPG_Graphics_DoorStyle doorStyle = RPG_GRAPHICS_DOORSTYLE_INVALID;
+  RPG_Graphics_DoorStyle doorStyle = DOORSTYLE_WOOD;
 
   SDL_Event event;
   bool done = false;
@@ -640,9 +649,11 @@ do_work(const mode_t& mode_in,
                                       INTERFACEWINDOW_LEVEL, // window type
                                       floorStyle,            // floor style
                                       wallStyle,             // wall style
+                                      doorStyle,             // door style
                                       plan);                 // map
 //       levelWindow.init(floorStyle,
 //                        wallStyle,
+//                        doorStyle,
 //                        plan);
       // refresh screen
       levelWindow.draw(screen,
@@ -656,17 +667,25 @@ do_work(const mode_t& mode_in,
                             event);
         switch (event.type)
         {
-          case SDL_MOUSEMOTION:
+          case SDL_MOUSEBUTTONDOWN:
           {
-            // debug info
-            RPG_Graphics_Position_t map_position = levelWindow.screen2Map(std::make_pair(event.motion.x,
-                                                                                         event.motion.y));
             ACE_DEBUG((LM_DEBUG,
-                       ACE_TEXT("mouse motion [%u,%u] --> [%u,%u]\n"),
-                       event.motion.x,
-                       event.motion.y,
-                       map_position.first,
-                       map_position.second));
+                       ACE_TEXT("mouse button [%u,%u]\n"),
+                       ACE_static_cast(unsigned long, event.button.which),
+                       ACE_static_cast(unsigned long, event.button.button)));
+
+            if (event.button.button == 1) // left-click
+            {
+              // debug info
+              RPG_Graphics_Position_t map_position = levelWindow.screen2Map(std::make_pair(event.button.x,
+                                                                                           event.button.y));
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
+                         event.button.x,
+                         event.button.y,
+                         map_position.first,
+                         map_position.second));
+            } // end IF
 
             break;
           }
@@ -693,6 +712,7 @@ do_work(const mode_t& mode_in,
 
             break;
           }
+          case SDL_MOUSEMOTION:
           default:
           {
 
@@ -788,6 +808,8 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
+  std::string graphicsDirectory  = SDL_GUI_DEF_GRAPHICS_DIRECTORY;
+  unsigned long cacheSize        = SDL_GUI_DEF_GRAPHICS_CACHESIZE;
   std::string filename           = SDL_GUI_DEF_GRAPHICS_DICTIONARY;
   mode_t mode                    = SDL_GUI_DEF_MODE;
   bool generateLevelMap          = (SDL_GUI_DEF_MODE == MODE_LEVEL_MAP);
@@ -816,12 +838,10 @@ ACE_TMAIN(int argc,
   video_config.fullScreen        = SDL_GUI_DEF_VIDEO_FULLSCREEN;
   video_config.doubleBuffer      = SDL_GUI_DEF_VIDEO_DOUBLEBUFFER;
 
-  std::string graphicsDirectory  = SDL_GUI_DEF_GRAPHICS_DIRECTORY;
-  unsigned long cacheSize        = SDL_GUI_DEF_GRAPHICS_CACHESIZE;
-
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
+                          graphicsDirectory,
                           filename,
                           generateLevelMap,
                           traceInformation,
@@ -842,7 +862,8 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step1b: validate arguments
-  if (filename.empty())
+  if (filename.empty() ||
+      !RPG_Common_File_Tools::isReadable(filename))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid (XML) filename \"%s\", aborting\n"),
@@ -860,7 +881,7 @@ ACE_TMAIN(int argc,
 
     return EXIT_FAILURE;
   } // end IF
-  else if (!RPG_Common_File_Tools::isDirectory(graphicsDirectory))
+  if (!RPG_Common_File_Tools::isDirectory(graphicsDirectory))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid graphics directory \"%s\", aborting\n"),

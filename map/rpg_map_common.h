@@ -20,6 +20,7 @@
 #ifndef RPG_MAP_COMMON_H
 #define RPG_MAP_COMMON_H
 
+#include <vector>
 #include <map>
 #include <set>
 #include <list>
@@ -42,6 +43,7 @@ enum RPG_Map_Element
   MAPELEMENT_MAX,
   MAPELEMENT_INVALID
 };
+
 typedef std::pair<unsigned long, unsigned long> RPG_Map_Dimensions_t;
 
 typedef std::pair<unsigned long, unsigned long> RPG_Map_Position_t;
@@ -79,6 +81,17 @@ struct RPG_Map_FloorPlan_t
   RPG_Map_Positions_t walls;
   RPG_Map_Positions_t doors;
 };
+
+struct RPG_Map_Door_t
+{
+  RPG_Map_Position_t position;
+  bool is_open;
+  bool is_locked;
+  bool is_broken;
+};
+typedef std::vector<RPG_Map_Door_t> RPG_Map_Doors_t;
+typedef RPG_Map_Doors_t::const_iterator RPG_Map_DoorsConstIterator_t;
+typedef RPG_Map_Doors_t::iterator RPG_Map_DoorsIterator_t;
 
 enum RPG_Map_Direction
 {

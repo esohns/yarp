@@ -36,27 +36,6 @@
 class RPG_Graphics_Common_Tools
 {
  public:
-  // some colors
-  static Uint32 CLR32_BLACK;
-  static Uint32 CLR32_BLACK_A30;
-  static Uint32 CLR32_BLACK_A50;
-  static Uint32 CLR32_BLACK_A70;
-  static Uint32 CLR32_GREEN;
-  static Uint32 CLR32_YELLOW;
-  static Uint32 CLR32_ORANGE;
-  static Uint32 CLR32_RED;
-  static Uint32 CLR32_GRAY20;
-  static Uint32 CLR32_GRAY70;
-  static Uint32 CLR32_GRAY77;
-  static Uint32 CLR32_PURPLE44;
-  static Uint32 CLR32_LIGHTPINK;
-  static Uint32 CLR32_LIGHTGREEN;
-  static Uint32 CLR32_BROWN;
-  static Uint32 CLR32_WHITE;
-  static Uint32 CLR32_BLESS_BLUE;
-  static Uint32 CLR32_CURSE_RED;
-  static Uint32 CLR32_GOLD_SHADE;
-
   // init string conversion facilities
   static void initStringConversionTables();
   // *WARNING*: needs to be called AFTER SDL_SetVideoMode !
@@ -78,6 +57,9 @@ class RPG_Graphics_Common_Tools
   // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
   static void loadWallTileSet(const RPG_Graphics_WallStyle&, // style
                               RPG_Graphics_WallTileSet_t&);  // return value: tileset
+    // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
+  static void loadDoorTileSet(const RPG_Graphics_DoorStyle&, // style
+                              RPG_Graphics_DoorTileSet_t&);  // return value: tileset
   // *NOTE*: uncached (!) surfaces need to be SDL_FreeSurface()ed by the user !
   static SDL_Surface* loadGraphic(const RPG_Graphics_Type&, // graphic
                                   const bool& = true);      // cache graphic ?

@@ -135,12 +135,26 @@ offsetY_parser (::xml_schema::unsigned_int_pskel& p)
 }
 
 void RPG_Graphics_Tile_Type_pskel::
+open_parser (::xml_schema::boolean_pskel& p)
+{
+  this->open_parser_ = &p;
+}
+
+void RPG_Graphics_Tile_Type_pskel::
+broken_parser (::xml_schema::boolean_pskel& p)
+{
+  this->broken_parser_ = &p;
+}
+
+void RPG_Graphics_Tile_Type_pskel::
 parsers (::RPG_Graphics_TileType_Type_pskel& type,
          ::RPG_Graphics_StyleUnion_Type_pskel& style,
          ::RPG_Graphics_Orientation_Type_pskel& orientation,
          ::xml_schema::string_pskel& file,
          ::xml_schema::unsigned_int_pskel& offsetX,
-         ::xml_schema::unsigned_int_pskel& offsetY)
+         ::xml_schema::unsigned_int_pskel& offsetY,
+         ::xml_schema::boolean_pskel& open,
+         ::xml_schema::boolean_pskel& broken)
 {
   this->type_parser_ = &type;
   this->style_parser_ = &style;
@@ -148,6 +162,8 @@ parsers (::RPG_Graphics_TileType_Type_pskel& type,
   this->file_parser_ = &file;
   this->offsetX_parser_ = &offsetX;
   this->offsetY_parser_ = &offsetY;
+  this->open_parser_ = &open;
+  this->broken_parser_ = &broken;
 }
 
 RPG_Graphics_Tile_Type_pskel::
@@ -157,7 +173,9 @@ RPG_Graphics_Tile_Type_pskel ()
   orientation_parser_ (0),
   file_parser_ (0),
   offsetX_parser_ (0),
-  offsetY_parser_ (0)
+  offsetY_parser_ (0),
+  open_parser_ (0),
+  broken_parser_ (0)
 {
 }
 
@@ -479,6 +497,16 @@ offsetY (unsigned int)
 {
 }
 
+void RPG_Graphics_Tile_Type_pskel::
+open (bool)
+{
+}
+
+void RPG_Graphics_Tile_Type_pskel::
+broken (bool)
+{
+}
+
 bool RPG_Graphics_Tile_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
@@ -605,6 +633,34 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
       this->offsetY_parser_->_characters (v);
       this->offsetY_parser_->_post_impl ();
       this->offsetY (this->offsetY_parser_->post_unsigned_int ());
+    }
+
+    return true;
+  }
+
+  if (n == "open" && ns.empty ())
+  {
+    if (this->open_parser_)
+    {
+      this->open_parser_->pre ();
+      this->open_parser_->_pre_impl ();
+      this->open_parser_->_characters (v);
+      this->open_parser_->_post_impl ();
+      this->open (this->open_parser_->post_boolean ());
+    }
+
+    return true;
+  }
+
+  if (n == "broken" && ns.empty ())
+  {
+    if (this->broken_parser_)
+    {
+      this->broken_parser_->pre ();
+      this->broken_parser_->_pre_impl ();
+      this->broken_parser_->_characters (v);
+      this->broken_parser_->_post_impl ();
+      this->broken (this->broken_parser_->post_boolean ());
     }
 
     return true;

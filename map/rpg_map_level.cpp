@@ -26,6 +26,8 @@ RPG_Map_Level::RPG_Map_Level(const RPG_Map_FloorPlan_t& floorPlan_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Level::RPG_Map_Level"));
 
+  // init doors
+  initDoors();
 }
 
 RPG_Map_Level::~RPG_Map_Level()
@@ -67,4 +69,104 @@ RPG_Map_Level::getElement(const RPG_Map_Position_t& position_in) const
     return MAPELEMENT_DOOR;
 
   return MAPELEMENT_FLOOR;
+}
+
+const RPG_Map_Door_t
+RPG_Map_Level::getDoor(const RPG_Map_Position_t& position_in) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Level::getDoor"));
+
+  RPG_Map_Door_t dummy;
+  dummy.position = std::make_pair(0, 0);
+  dummy.is_open = false;
+  dummy.is_locked = false;
+  dummy.is_broken = false;
+
+  // sanity check
+  ACE_ASSERT(myFloorPlan.doors.find(position_in) != myFloorPlan.doors.end());
+  if (myFloorPlan.doors.find(position_in) == myFloorPlan.doors.end())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid door position (was [%u,%u]), aborting\n"),
+               position_in.first,
+               position_in.second));
+
+    // what else can we do ?
+    ACE_ASSERT(false);
+
+    return dummy;
+  } // end IF
+
+  for (RPG_Map_DoorsConstIterator_t iterator = myDoors.begin();
+       iterator != myDoors.end();
+       iterator++)
+  {
+    if ((*iterator).position == position_in)
+      return *iterator;
+  } // end FOR
+
+  return dummy;
+}
+
+void
+RPG_Map_Level::handleDoor(const RPG_Map_Position_t& position_in,
+                          const bool& open_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Level::handleDoor"));
+
+  for (RPG_Map_DoorsIterator_t iterator = myDoors.begin();
+       iterator != myDoors.end();
+       iterator++)
+  {
+    if ((*iterator).position == position_in)
+    {
+      if (open_in)
+      {
+        // sanity check
+        if ((*iterator).is_open)
+          return;
+
+        // cannot simply open locked doors
+        if ((*iterator).is_locked)
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("door [%u,%u] is locked...\n"),
+                     position_in.first,
+                     position_in.second));
+
+          return;
+        } // end IF
+      } // end IF
+      else
+      {
+        // sanity check
+        if (!(*iterator).is_open)
+          return;
+      } // end ELSE
+
+      (*iterator).is_open = open_in;
+
+      // done
+      return;
+    } // end IF
+  } // end FOR
+}
+
+void
+RPG_Map_Level::initDoors()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Map_Level::initDoors"));
+
+  RPG_Map_Door_t current;
+  for (RPG_Map_PositionsConstIterator_t iterator = myFloorPlan.doors.begin();
+       iterator != myFloorPlan.doors.end();
+       iterator++)
+  {
+    current.position = *iterator;
+    current.is_open = false;
+    current.is_locked = false;
+    current.is_broken = false;
+
+    myDoors.push_back(current);
+  } // end FOR
 }

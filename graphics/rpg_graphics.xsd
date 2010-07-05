@@ -41,11 +41,14 @@
       <xsd:enumeration value="ORIENTATION_SOUTH"/>
       <xsd:enumeration value="ORIENTATION_WEST"/>
       <xsd:enumeration value="ORIENTATION_EAST"/>
+      <xsd:enumeration value="ORIENTATION_HORIZONTAL"/>
+      <xsd:enumeration value="ORIENTATION_VERTICAL"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Graphics_TileType_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="TILETYPE_DOOR"/>
       <xsd:enumeration value="TILETYPE_EFFECT"/>
       <xsd:enumeration value="TILETYPE_FIGURINE"/>
       <xsd:enumeration value="TILETYPE_FLOOR"/>
@@ -101,7 +104,6 @@
       <xsd:enumeration value="DOORSTYLE_STONE"/>
       <xsd:enumeration value="DOORSTYLE_TELEPORTER"/>
       <xsd:enumeration value="DOORSTYLE_WOOD"/>
-      <xsd:enumeration value="DOORSTYLE_WOOD_BROKEN"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -117,6 +119,7 @@
       <xsd:enumeration value="TYPE_IMAGE_INTRO_MAIN"/>
       <xsd:enumeration value="TYPE_IMAGE_WM_ICON"/>
       <xsd:enumeration value="TYPE_TILE_OFF_MAP"/>
+      <xsd:enumeration value="TYPE_TILESET_DOOR_WOOD"/>
       <xsd:enumeration value="TYPE_TILESET_FLOOR_AIR"/>
       <xsd:enumeration value="TYPE_TILESET_FLOOR_DARK"/>
       <xsd:enumeration value="TYPE_TILESET_WALL_BRICK_HALF"/>
@@ -168,10 +171,13 @@
     </xsd:sequence>
     <xsd:attribute name="offsetX" type="xsd:unsignedInt" use="optional" default="0"/>
     <xsd:attribute name="offsetY" type="xsd:unsignedInt" use="optional" default="0"/>
+    <xsd:attribute name="open" type="xsd:boolean" use="optional" default="false"/>
+    <xsd:attribute name="broken" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
 
   <xsd:simpleType name="RPG_Graphics_TileSetType_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="TILESETTYPE_DOOR"/>
       <xsd:enumeration value="TILESETTYPE_FLOOR"/>
       <xsd:enumeration value="TILESETTYPE_WALL"/>
     </xsd:restriction>
