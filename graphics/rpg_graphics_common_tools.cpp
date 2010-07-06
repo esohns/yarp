@@ -667,9 +667,9 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
   ACE_ASSERT(tileSet_out.south);
 
   // *NOTE*: west is just a "darkened" version of east...
-  SDL_Surface* surface = NULL;
-  surface = RPG_Graphics_SDL_Tools::copy(*tileSet_out.east);
-  if (!surface)
+  SDL_Surface* copy = NULL;
+  copy = RPG_Graphics_SDL_Tools::copy(*tileSet_out.east);
+  if (!copy)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_SDL_Tools::copy(), aborting\n")));
@@ -686,13 +686,13 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
 
     return;
   } // end IF
-  RPG_Graphics_Common_Tools::blend(*tileSet_out.west,
-                                   surface);
+//   RPG_Graphics_Common_Tools::blend(*myWallBlend,
+//                                    copy);
   SDL_FreeSurface(tileSet_out.west);
-  tileSet_out.west = surface;
+  tileSet_out.west = copy;
   // *NOTE*: north is just a "darkened" version of south...
-  surface = RPG_Graphics_SDL_Tools::copy(*tileSet_out.south);
-  if (!surface)
+  copy = RPG_Graphics_SDL_Tools::copy(*tileSet_out.south);
+  if (!copy)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_SDL_Tools::copy(), aborting\n")));
@@ -709,10 +709,10 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
 
     return;
   } // end IF
-  RPG_Graphics_Common_Tools::blend(*tileSet_out.north,
-                                   surface);
+//   RPG_Graphics_Common_Tools::blend(*myWallBlend,
+//                                    copy);
   SDL_FreeSurface(tileSet_out.north);
-  tileSet_out.north = surface;
+  tileSet_out.north = copy;
 
 //   // set wall opacity
 //   SDL_Surface* shaded_wall = NULL;

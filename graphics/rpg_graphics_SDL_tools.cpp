@@ -235,7 +235,7 @@ RPG_Graphics_SDL_Tools::copy(const SDL_Surface& sourceImage_in)
                                 sourceImage_in.format->Rmask,
                                 sourceImage_in.format->Gmask,
                                 sourceImage_in.format->Bmask,
-                                sourceImage_in.format->Amask);
+                                0);
   if (!result)
   {
     ACE_DEBUG((LM_ERROR,
