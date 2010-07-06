@@ -51,6 +51,8 @@ unsigned long                RPG_Graphics_Common_Tools::myOldestCacheEntry = 0;
 unsigned long                RPG_Graphics_Common_Tools::myCacheSize = 0;
 RPG_Graphics_GraphicsCache_t RPG_Graphics_Common_Tools::myGraphicsCache;
 
+SDL_Surface*                 RPG_Graphics_Common_Tools::myWallBlend = NULL;
+
 RPG_Graphics_FontCache_t     RPG_Graphics_Common_Tools::myFontCache;
 
 bool                         RPG_Graphics_Common_Tools::myInitialized = false;
@@ -100,7 +102,15 @@ RPG_Graphics_Common_Tools::init(const std::string& directory_in,
   } // end ELSE
 
   // init fonts
-  myInitialized = initFonts();
+  if (!initFonts())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to initFonts(), aborting\n")));
+
+    return;
+  } // end IF
+
+  myInitialized = initWallBlend();
 }
 
 void
@@ -131,6 +141,13 @@ RPG_Graphics_Common_Tools::fini()
     } // end FOR
     myFontCache.clear();
   } // end lock scope
+
+  // free the wall blend
+  if (myWallBlend)
+  {
+    SDL_FreeSurface(myWallBlend);
+    myWallBlend = NULL;
+  } // end IF
 
   myInitialized = false;
 }
@@ -484,8 +501,9 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
     // load file
     path = path_base;
     path += (*iterator).file;
-    current_surface = RPG_Graphics_Common_Tools::loadFile(path,  // file
-                                                          true); // convert to display format
+    current_surface = RPG_Graphics_Common_Tools::loadFile(path,             // file
+                                                          SDL_ALPHA_OPAQUE, // opaque
+                                                          true);            // convert to display format
     if (!current_surface)
     {
       ACE_DEBUG((LM_ERROR,
@@ -572,19 +590,61 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
   path_base += RPG_GRAPHICS_TILES_DEF_WALLS_SUB;
   path_base += ACE_DIRECTORY_SEPARATOR_STR;
 
+  // debug info
+  std::string dump_path_base = RPG_GRAPHICS_DUMP_DIR;
+  dump_path_base += ACE_DIRECTORY_SEPARATOR_STR;
+  std::string dump_path = dump_path_base;
+
   std::string path = path_base;
   SDL_Surface* current_surface = NULL;
+  Uint8 opacity = SDL_ALPHA_OPAQUE;
+
   for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin();
        iterator != graphic.tileset.tiles.end();
        iterator++)
   {
     current_surface = NULL;
+    opacity = SDL_ALPHA_OPAQUE;
+
+    // set wall opacity
+    switch ((*iterator).orientation)
+    {
+      case ORIENTATION_SOUTH:
+      case ORIENTATION_EAST:
+        opacity = ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE)); break;
+      case ORIENTATION_NORTH:
+      case ORIENTATION_WEST:
+        opacity = ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE)); break;
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid orientation \"%s\", aborting\n"),
+                   RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString((*iterator).orientation).c_str()));
+
+        // clean up
+        if (tileSet_out.west)
+          SDL_FreeSurface(tileSet_out.west);
+        if (tileSet_out.east)
+          SDL_FreeSurface(tileSet_out.east);
+        if (tileSet_out.north)
+          SDL_FreeSurface(tileSet_out.north);
+        if (tileSet_out.south)
+          SDL_FreeSurface(tileSet_out.south);
+        tileSet_out.west = NULL;
+        tileSet_out.east = NULL;
+        tileSet_out.north = NULL;
+        tileSet_out.south = NULL;
+
+        return;
+      }
+    } // end SWITCH
 
     // load file
     path = path_base;
     path += (*iterator).file;
-    current_surface = RPG_Graphics_Common_Tools::loadFile(path,  // file
-                                                          true); // convert to display format
+    current_surface = RPG_Graphics_Common_Tools::loadFile(path,    // file
+                                                          opacity, // opacity
+                                                          true);   // convert to display format
     if (!current_surface)
     {
       ACE_DEBUG((LM_ERROR,
@@ -608,16 +668,37 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
       return;
     } // end IF
 
+    // debug info
+    dump_path = dump_path_base;
+    dump_path += (*iterator).file;
+    RPG_Graphics_Common_Tools::savePNG(*current_surface, // image
+                                       dump_path,        // file
+                                       true);            // WITH alpha
+
     switch ((*iterator).orientation)
     {
       case ORIENTATION_EAST:
-        tileSet_out.east = current_surface; break;
+      {
+//         // blend surface
+//         RPG_Graphics_Common_Tools::shade(*myWallBlend,
+//                                          current_surface);
+        tileSet_out.east = current_surface;
+
+        break;
+      }
       case ORIENTATION_WEST:
         tileSet_out.west = current_surface; break;
       case ORIENTATION_NORTH:
         tileSet_out.north = current_surface; break;
       case ORIENTATION_SOUTH:
-        tileSet_out.south = current_surface; break;
+      {
+//         // blend surface
+//         RPG_Graphics_Common_Tools::shade(*myWallBlend,
+//                                          current_surface);
+        tileSet_out.south = current_surface;
+
+        break;
+      }
       default:
       {
         ACE_DEBUG((LM_ERROR,
@@ -724,8 +805,9 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
     // load file
     path = path_base;
     path += (*iterator).file;
-    current_surface = RPG_Graphics_Common_Tools::loadFile(path,  // file
-                                                          true); // convert to display format
+    current_surface = RPG_Graphics_Common_Tools::loadFile(path,             // file
+                                                          SDL_ALPHA_OPAQUE, // opaque
+                                                          true);            // convert to display format
     if (!current_surface)
     {
       ACE_DEBUG((LM_ERROR,
@@ -880,6 +962,8 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
         path += RPG_GRAPHICS_TILES_DEF_FLOORS_SUB; break;
       case TILETYPE_WALL:
         path += RPG_GRAPHICS_TILES_DEF_WALLS_SUB; break;
+      case TILETYPE_DOOR:
+        path += RPG_GRAPHICS_TILES_DEF_DOORS_SUB; break;
       default:
       {
         ACE_DEBUG((LM_ERROR,
@@ -895,8 +979,9 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
   else
     path += graphic.file;
 
-  node.image = RPG_Graphics_Common_Tools::loadFile(path,  // graphics file
-                                                   true); // convert to display format
+  node.image = RPG_Graphics_Common_Tools::loadFile(path,             // file
+                                                   SDL_ALPHA_OPAQUE, // opaque
+                                                   true);            // convert to display format
   if (!node.image)
   {
     ACE_DEBUG((LM_ERROR,
@@ -933,6 +1018,7 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
 
 SDL_Surface*
 RPG_Graphics_Common_Tools::loadFile(const std::string& filename_in,
+                                    const Uint8& alpha_in,
                                     const bool& convertToDisplayFormat_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadFile"));
@@ -965,6 +1051,7 @@ RPG_Graphics_Common_Tools::loadFile(const std::string& filename_in,
 
   // extract SDL surface from PNG
   if (!loadPNG(srcbuf,
+//                alpha_in,
                result))
   {
     ACE_DEBUG((LM_ERROR,
@@ -983,13 +1070,85 @@ RPG_Graphics_Common_Tools::loadFile(const std::string& filename_in,
   if (convertToDisplayFormat_in)
   {
     SDL_Surface* convert = NULL;
-    // *TODO*: is this really necessary at all ?
-    // (if possible), convert surface to the pixel format and colors of the
-    // video framebuffer (--> apparently, this allows fast(er) blitting)
+
+    if (alpha_in != SDL_ALPHA_OPAQUE)
+    {
+      // *NOTE*: SDL_SetAlpha will not work, as we want transparent pixels to remain that way...
+      // --> do it manually
+        // lock surface during pixel access
+      if (SDL_MUSTLOCK(result))
+        if (SDL_LockSurface(result))
+        {
+          ACE_DEBUG((LM_ERROR,
+                    ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
+                    SDL_GetError()));
+
+          // clean up
+          SDL_FreeSurface(result);
+
+          return NULL;
+        } // end IF
+
+        Uint32* pixels = ACE_static_cast(Uint32*, result->pixels);
+        Uint32 zero_alpha_mask = ~ACE_static_cast(Uint32, (SDL_ALPHA_OPAQUE << result->format->Ashift));
+        for (unsigned long j = 0;
+             j < ACE_static_cast(unsigned long, result->h);
+             j++)
+          for (unsigned long i = 0;
+               i < ACE_static_cast(unsigned long, result->w);
+               i++)
+          {
+//             ACE_DEBUG((LM_DEBUG,
+//                        ACE_TEXT("[%u,%u]; %x (alpha: %u)\n"),
+//                        i,
+//                        j,
+//                        pixels[(result->w * j) + i],
+//                        ((pixels[(result->w * j) + i] & result->format->Amask) >> result->format->Ashift)));
+
+            // ignore transparent pixels
+            if (((pixels[(result->w * j) + i] & result->format->Amask) >> result->format->Ashift) == SDL_ALPHA_TRANSPARENT)
+              continue;
+
+            pixels[(result->w * j) + i] &= zero_alpha_mask;
+            pixels[(result->w * j) + i] |= (ACE_static_cast(Uint32, alpha_in) << result->format->Ashift);
+
+//             ACE_DEBUG((LM_DEBUG,
+//                        ACE_TEXT("[%u,%u]; %x (alpha: %u) AFTER\n"),
+//                        i,
+//                        j,
+//                        pixels[(result->w * j) + i],
+//                        ((pixels[(result->w * j) + i] & result->format->Amask) >> result->format->Ashift)));
+          } // end FOR
+
+        if (SDL_MUSTLOCK(result))
+          SDL_UnlockSurface(result);
+
+  //     // enable "per-surface" alpha blending
+  //     if (SDL_SetAlpha(result,
+  //                      (SDL_SRCALPHA | SDL_RLEACCEL), // alpha blending/RLE acceleration
+  //                      alpha_in))
+  //     {
+  //       ACE_DEBUG((LM_ERROR,
+  //                  ACE_TEXT("failed to SDL_SetAlpha(%u): %s, aborting\n"),
+  //                  ACE_static_cast(unsigned long, alpha_in),
+  //                  SDL_GetError()));
+  //
+  //       // clean up
+  //       SDL_FreeSurface(result);
+  //
+  //       return NULL;
+  //     } // end IF
+    } // end IF
+
+    // convert surface to the pixel format and colors of the
+    // video framebuffer
+    // --> allows fast(er) blitting
+//     convert = SDL_DisplayFormat(result);
     convert = SDL_DisplayFormatAlpha(result);
     if (!convert)
     {
       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to SDL_DisplayFormat(): %s, aborting\n"),
                  ACE_TEXT("failed to SDL_DisplayFormatAlpha(): %s, aborting\n"),
                  SDL_GetError()));
 
@@ -1047,16 +1206,15 @@ RPG_Graphics_Common_Tools::get(const unsigned long& offsetX_in,
                                const unsigned long& offsetY_in,
                                const unsigned long& width_in,
                                const unsigned long& height_in,
-                               const SDL_Surface* image_in)
+                               const SDL_Surface& image_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::get"));
 
   // sanity check(s)
-  ACE_ASSERT(image_in);
-  ACE_ASSERT(width_in <= ACE_static_cast(unsigned long, image_in->w));
-  ACE_ASSERT((offsetX_in + width_in) <= (ACE_static_cast(unsigned long, image_in->w) - 1));
-  ACE_ASSERT(height_in <= ACE_static_cast(unsigned long, image_in->h));
-  ACE_ASSERT((offsetY_in + height_in) <= (ACE_static_cast(unsigned long, image_in->h) - 1));
+  ACE_ASSERT(width_in <= ACE_static_cast(unsigned long, image_in.w));
+  ACE_ASSERT((offsetX_in + width_in) <= (ACE_static_cast(unsigned long, image_in.w) - 1));
+  ACE_ASSERT(height_in <= ACE_static_cast(unsigned long, image_in.h));
+  ACE_ASSERT((offsetY_in + height_in) <= (ACE_static_cast(unsigned long, image_in.h) - 1));
 
   // init return value
   SDL_Surface* result = NULL;
@@ -1066,17 +1224,17 @@ RPG_Graphics_Common_Tools::get(const unsigned long& offsetX_in,
                                  SDL_SRCALPHA),
                                 width_in,
                                 height_in,
-                                image_in->format->BitsPerPixel,
-                                image_in->format->Rmask,
-                                image_in->format->Gmask,
-                                image_in->format->Bmask,
-                                image_in->format->Amask);
+                                image_in.format->BitsPerPixel,
+                                image_in.format->Rmask,
+                                image_in.format->Gmask,
+                                image_in.format->Bmask,
+                                image_in.format->Amask);
 
   // *NOTE*: blitting does not preserve the alpha channel...
 
-  // lock the surface for direct access to the pixels
-  if (SDL_MUSTLOCK(image_in))
-    if (SDL_LockSurface(ACE_const_cast(SDL_Surface*, image_in)))
+  // lock surface during pixel access
+  if (SDL_MUSTLOCK((&image_in)))
+    if (SDL_LockSurface(&ACE_const_cast(SDL_Surface&, image_in)))
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
@@ -1092,11 +1250,11 @@ RPG_Graphics_Common_Tools::get(const unsigned long& offsetX_in,
        i < height_in;
        i++)
     ::memcpy((ACE_static_cast(unsigned char*, result->pixels) + (result->pitch * i)),
-             (ACE_static_cast(unsigned char*, image_in->pixels) + ((offsetY_in + i) * image_in->pitch) + (offsetX_in * 4)),
-             (width_in * 4)); // RGBA --> 4 bytes (?!!!)
+             (ACE_static_cast(unsigned char*, image_in.pixels) + ((offsetY_in + i) * image_in.pitch) + (offsetX_in * 4)),
+             (width_in * image_in.format->BytesPerPixel)); // RGBA --> 4 bytes (?!!!)
 
-  if (SDL_MUSTLOCK(image_in))
-    SDL_UnlockSurface(ACE_const_cast(SDL_Surface*, image_in));
+  if (SDL_MUSTLOCK((&image_in)))
+    SDL_UnlockSurface(&ACE_const_cast(SDL_Surface&, image_in));
 
 //   // bounding box
 //   SDL_Rect toRect;
@@ -1425,7 +1583,291 @@ RPG_Graphics_Common_Tools::initFonts()
 }
 
 const bool
+RPG_Graphics_Common_Tools::initWallBlend()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::initWallBlend"));
+
+  // sanity check
+  ACE_ASSERT(myWallBlend == NULL);
+
+  myWallBlend = SDL_CreateRGBSurface((SDL_HWSURFACE | // TRY to (!) place the surface in VideoRAM
+                                      SDL_ASYNCBLIT |
+                                      SDL_SRCCOLORKEY |
+                                      SDL_SRCALPHA),
+                                     RPG_GRAPHICS_WALLTILE_SIZE_X,
+                                     RPG_GRAPHICS_WALLTILE_SIZE_Y,
+//                                      (bit_depth * 8),
+                                     32,
+                                     ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x000000FF : 0xFF000000),
+                                     ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x0000FF00 : 0x00FF0000),
+                                     ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x00FF0000 : 0x0000FF00),
+                                     ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0xFF000000 : 0x000000FF));
+//                                      Rmask,
+//                                      Gmask,
+//                                      Bmask,
+//                                      Amask);
+  if (!myWallBlend)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_CreateRGBSurface(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return false;
+  } // end IF
+
+  if (SDL_FillRect(myWallBlend,
+                   NULL,
+                   RPG_Graphics_SDL_Tools::CLR32_BLACK_A30))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    // clean up
+    SDL_FreeSurface(myWallBlend);
+    myWallBlend = NULL;
+
+    return false;
+  } // end IF
+
+  return true;
+}
+
+void
+RPG_Graphics_Common_Tools::savePNG(const SDL_Surface& surface_in,
+                                   const std::string& targetFile_in,
+                                   const bool& alpha_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::savePNG"));
+
+  // sanity check(s)
+  if (RPG_Common_File_Tools::isReadable(targetFile_in))
+  {
+    if (!RPG_Common_File_Tools::deleteFile(targetFile_in))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), aborting\n"),
+                 targetFile_in.c_str()));
+
+      return;
+    } // end IF
+  } // end IF
+
+  unsigned char* output = NULL;
+  try
+  {
+    output = new unsigned char[(surface_in.w * surface_in.h * (alpha_in ? surface_in.format->BytesPerPixel
+                                                                        : (surface_in.format->BytesPerPixel - 1)))];
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
+               (surface_in.w * surface_in.h * (alpha_in ? surface_in.format->BytesPerPixel
+                                                        : (surface_in.format->BytesPerPixel - 1)))));
+
+    return;
+  }
+  if (!output)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
+               (surface_in.w * surface_in.h * (alpha_in ? surface_in.format->BytesPerPixel
+                                                        : (surface_in.format->BytesPerPixel - 1)))));
+
+    return;
+  } // end IF
+
+  png_bytep* image = NULL;
+  try
+  {
+    image = new png_bytep[surface_in.h];
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
+               (sizeof(png_bytep) * surface_in.h)));
+
+    return;
+  }
+  if (!image)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
+               (sizeof(png_bytep) * surface_in.h)));
+
+    return;
+  } // end IF
+
+  // lock surface during pixel access
+  if (SDL_MUSTLOCK((&surface_in)))
+    if (SDL_LockSurface(&ACE_const_cast(SDL_Surface&, surface_in)))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
+                 SDL_GetError()));
+
+      return;
+    } // end IF
+
+  // (if neccessary,) strip out alpha bytes and reorder the image bytes to RGB
+  Uint32* pixels = ACE_static_cast(Uint32*, surface_in.pixels);
+  for (unsigned long j = 0;
+       j < ACE_static_cast(unsigned long, surface_in.h);
+       j++)
+  {
+    image[j] = output;
+
+    for (unsigned long i = 0;
+         i < ACE_static_cast(unsigned long, surface_in.w);
+         i++)
+    {
+      *output++ = (((*pixels) & surface_in.format->Rmask) >> surface_in.format->Rshift);   /* red   */
+      *output++ = (((*pixels) & surface_in.format->Gmask) >> surface_in.format->Gshift);   /* green */
+      *output++ = (((*pixels) & surface_in.format->Bmask) >> surface_in.format->Bshift);   /* blue  */
+      if (alpha_in)
+        *output++ = (((*pixels) & surface_in.format->Amask) >> surface_in.format->Ashift); /* alpha */
+
+      pixels++;
+    } // end FOR
+  } // end FOR
+
+  if (SDL_MUSTLOCK((&surface_in)))
+    SDL_UnlockSurface(&ACE_const_cast(SDL_Surface&, surface_in));
+
+  // open the file
+  FILE* fp = NULL;
+  fp = ACE_OS::fopen(targetFile_in.c_str(),
+                     ACE_TEXT_ALWAYS_CHAR("wb"));
+  if (!fp)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to open file(\"%s\"): %m, aborting\n"),
+               targetFile_in.c_str()));
+
+    // clean up
+    // *NOTE*: output has been modified, but the value is still present in image[0]
+    delete[] image[0];
+    delete[] image;
+
+    return;
+  } // end IF
+
+  // create png image data structures
+  png_structp png_ptr = NULL;
+  png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, // version
+                                    NULL,                  // error
+                                    NULL,                  // error handler
+                                    NULL);                 // warning handler
+  if (!png_ptr)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to png_create_write_struct(): %m, aborting\n")));
+
+    // clean up
+    if (ACE_OS::fclose(fp))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to close file(\"%s\"): %m, continuing\n"),
+                 targetFile_in.c_str()));
+    } // end IF
+    // *NOTE*: output has been modified, but the value is still present in image[0]
+    delete[] image[0];
+    delete[] image;
+
+    return;
+  } // end IF
+
+  png_infop info_ptr = NULL;
+  info_ptr = png_create_info_struct(png_ptr);
+  if (!info_ptr)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to png_create_info_struct(): %m, aborting\n")));
+
+    // clean up
+    png_destroy_write_struct(&png_ptr,
+                             NULL);
+    if (ACE_OS::fclose(fp))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to close file(\"%s\"): %m, continuing\n"),
+                 targetFile_in.c_str()));
+    } // end IF
+    // *NOTE*: output has been modified, but the value is still present in image[0]
+    delete[] image[0];
+    delete[] image;
+
+    return;
+  } // end IF
+
+  // save stack context, set up error handling
+  if (::setjmp(png_ptr->jmpbuf))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ::setjmp(): %m, aborting\n")));
+
+    // clean up
+    png_destroy_write_struct(&png_ptr,
+                             &info_ptr);
+    if (ACE_OS::fclose(fp))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to close file(\"%s\"): %m, continuing\n"),
+                 targetFile_in.c_str()));
+    } // end IF
+    // *NOTE*: output has been modified, but the value is still present in image[0]
+    delete[] image[0];
+    delete[] image;
+
+    return;
+  } // end IF
+
+  // write the image
+  png_init_io(png_ptr, fp);
+
+  png_set_IHDR(png_ptr,                         // context
+               info_ptr,                        // header info
+               surface_in.w,                    // width
+               surface_in.h,                    // height
+               8,                               // bit-depth
+               (alpha_in ? PNG_COLOR_TYPE_RGBA  // color-type
+                         : PNG_COLOR_TYPE_RGB),
+               PNG_INTERLACE_NONE,              // interlace
+               PNG_COMPRESSION_TYPE_DEFAULT,    // compression
+               PNG_FILTER_TYPE_DEFAULT);        // filter
+
+  png_set_rows(png_ptr,
+               info_ptr,
+               image);
+
+  png_write_png(png_ptr,  // context
+                info_ptr, // header info
+                0,        // transforms
+                NULL);    // params
+
+  // clean up
+  png_destroy_write_struct(&png_ptr,
+                           &info_ptr);
+  if (ACE_OS::fclose(fp))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to close file(\"%s\"): %m, continuing\n"),
+               targetFile_in.c_str()));
+  } // end IF
+  // *NOTE*: output has been modified, but the value is still present in image[0]
+  delete[] image[0];
+  delete[] image;
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("wrote PNG file \"%s\"...\n"),
+             targetFile_in.c_str()));
+}
+
+const bool
 RPG_Graphics_Common_Tools::loadPNG(const unsigned char* buffer_in,
+//                                    const unsigned char& alpha_in,
                                    SDL_Surface*& surface_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadPNG"));
@@ -1520,7 +1962,7 @@ RPG_Graphics_Common_Tools::loadPNG(const unsigned char* buffer_in,
                &filter);
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("loading PNG [h,w,d,#c,t,i,c,f]: %u,%u,%d,%u,%d,%d,%d,%d...\n"),
+             ACE_TEXT("loading PNG [w,h,d,#c,t,i,c,f]: %u,%u,%d,%u,%d,%d,%d,%d...\n"),
              width,
              height,
              bit_depth,
@@ -1545,32 +1987,21 @@ RPG_Graphics_Common_Tools::loadPNG(const unsigned char* buffer_in,
   // --> expand the grayscale to 24-bit RGB if necessary
   png_set_gray_to_rgb(png_ptr);
 
-  // add an opaque alpha channel to anything that doesn't have one yet
+//   // *NOTE*: we're using per-surface alpha only
+//   // --> strip any alpha channel
+//   png_set_strip_alpha(png_ptr);
+
+  // add an (opaque) alpha channel to anything that doesn't have one yet
   // --> add a filler byte to 8-bit Gray or 24-bit RGB images
   png_set_filler(png_ptr,
-                 0xff,
+                 0xFF,
+//                  alpha_in,
                  PNG_FILLER_AFTER);
   png_set_add_alpha(png_ptr,
-                    0xff,
+                    0xFF,
+//                     alpha_in,
                     PNG_FILLER_AFTER);
   info_ptr->color_type |= PNG_COLOR_MASK_ALPHA;
-
-//   Uint32 Rmask, Gmask, Bmask, Amask = 0;
-//   // get the component mask for the surface
-//   if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
-//   {
-//     Rmask = 0x000000FF;
-//     Gmask = 0x0000FF00;
-//     Bmask = 0x00FF0000;
-//     Amask = 0xFF000000;
-//   } // end IF
-//   else
-//   {
-//     Rmask = 0xFF000000;
-//     Gmask = 0x00FF0000;
-//     Bmask = 0x0000FF00;
-//     Amask = 0x000000FF;
-//   } // end ELSE
 
   // allocate surface
   // *NOTE*:
@@ -1600,8 +2031,8 @@ RPG_Graphics_Common_Tools::loadPNG(const unsigned char* buffer_in,
 
     // clean up
     png_destroy_read_struct(&png_ptr,
-                             &info_ptr,
-                             NULL);
+                            &info_ptr,
+                            NULL);
 
     return false;
   } // end IF
@@ -1650,6 +2081,25 @@ RPG_Graphics_Common_Tools::loadPNG(const unsigned char* buffer_in,
   // - "surface_out"
   // - "row_pointers"
 
+  // lock surface during pixel access
+  if (SDL_MUSTLOCK(surface_out))
+    if (SDL_LockSurface(surface_out))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
+                 SDL_GetError()));
+
+      // clean up
+      delete[] row_pointers;
+      png_destroy_read_struct(&png_ptr,
+                              &info_ptr,
+                              NULL);
+      SDL_FreeSurface(surface_out);
+      surface_out = NULL;
+
+      return false;
+    } // end IF
+
   for (unsigned long row = 0;
        row < height;
        row++)
@@ -1660,6 +2110,10 @@ RPG_Graphics_Common_Tools::loadPNG(const unsigned char* buffer_in,
   // read the image from the memory buffer onto the surface buffer
   // --> read the whole image into memory at once
   png_read_image(png_ptr, row_pointers);
+
+  // unlock surface
+  if (SDL_MUSTLOCK(surface_out))
+    SDL_UnlockSurface(surface_out);
 
   // clean up
   delete[] row_pointers;
@@ -1766,6 +2220,23 @@ RPG_Graphics_Common_Tools::loadPNG(const unsigned char* buffer_in,
 //     return;
 //   } // end IF
 // }
+
+void
+RPG_Graphics_Common_Tools::shade(const SDL_Surface& source_in,
+                                 SDL_Surface* target_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::shade"));
+
+  if (SDL_BlitSurface(&ACE_const_cast(SDL_Surface&, source_in),
+                      NULL,
+                      target_out,
+                      NULL))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing\n"),
+               SDL_GetError()));
+  } // end IF
+}
 
 void
 RPG_Graphics_Common_Tools::fade(const float& interval_in,

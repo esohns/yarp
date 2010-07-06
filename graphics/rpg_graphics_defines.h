@@ -44,8 +44,19 @@
 
 // pixel coordinate difference from one map square to the next
 // *NOTE*: because of isometry, this is not the same as the width/height of a tile
-#define RPG_GRAPHICS_MAP_XMOD                    56
-#define RPG_GRAPHICS_MAP_YMOD                    22
+#define RPG_GRAPHICS_MAPTILE_SIZE_X              56
+#define RPG_GRAPHICS_MAPTILE_SIZE_Y              22
+
+// used for shading different tiles
+#define RPG_GRAPHICS_FLOORTILE_SIZE_X            109
+#define RPG_GRAPHICS_FLOORTILE_SIZE_Y            44
+#define RPG_GRAPHICS_WALLTILE_SIZE_X             56
+#define RPG_GRAPHICS_WALLTILE_SIZE_Y             98
+// *NOTE*: 0.0: transparent --> 1.0: opaque
+#define RPG_GRAPHICS_WALLTILE_SE_OPACITY         0.35
+#define RPG_GRAPHICS_WALLTILE_NW_OPACITY         0.6
+
+#define RPG_GRAPHICS_DUMP_DIR                    ACE_TEXT("/var/tmp")
 
 // buffer for printing keyboard events (debug info)
 #define RPG_GRAPHICS_KEYSYM_BUFFER_SIZE          32

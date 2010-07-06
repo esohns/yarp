@@ -65,14 +65,15 @@ class RPG_Graphics_Common_Tools
                                   const bool& = true);      // cache graphic ?
   // *NOTE*: results need to be SDL_FreeSurface()ed by the user !
   // *WARNING*: display format is not available UNTIL AFTER SDL_SetVideoMode !
-  static SDL_Surface* loadFile(const std::string&, // image file
-                               const bool& = true); // convert to display format ?
+  static SDL_Surface* loadFile(const std::string&,              // image file
+                               const Uint8& = SDL_ALPHA_OPAQUE, // alpha (0: transparent --> 255: opaque)
+                               const bool& = true);             // convert to display format ?
 
   static SDL_Surface* get(const unsigned long&, // offset x (top-left == 0,0)
                           const unsigned long&, // offset y (top-left == 0,0)
                           const unsigned long&, // width
                           const unsigned long&, // height
-                          const SDL_Surface*);  // image
+                          const SDL_Surface&);  // image
   static void put(const unsigned long&, // offset x (top left == 0,0)
                   const unsigned long&, // offset y (top left == 0,0)
                   const SDL_Surface&,   // image
@@ -92,6 +93,10 @@ class RPG_Graphics_Common_Tools
                    const Uint32&, // fade to/from color
                    SDL_Surface*); // screen
 
+  static void savePNG(const SDL_Surface&, // image
+                      const std::string&, // file
+                      const bool&);       // with alpha ?
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools());
@@ -101,16 +106,21 @@ class RPG_Graphics_Common_Tools
 
   // helper methods
   static const bool initFonts();
+  static const bool initWallBlend();
 
   // convert style (wall-, floor-, ...) to appropriate graphic metatype
   static const RPG_Graphics_Type styleToType(const RPG_Graphics_StyleUnion&);
 
   static const bool loadPNG(const unsigned char*, // source buffer
+//                             const unsigned char&, // alpha (0: transparent --> 255: opaque)
                             SDL_Surface*&);       // return value: SDL surface
 
   static SDL_Surface* renderText(const RPG_Graphics_Type&, // font
                                  const std::string&,       // string
                                  const SDL_Color&);        // color
+
+  static void shade(const SDL_Surface&, // source image
+                    SDL_Surface*);      // target image
 
   static void fade(const float&,  // interval (seconds)
                    SDL_Surface*,  // target image
@@ -123,6 +133,8 @@ class RPG_Graphics_Common_Tools
   static unsigned long                myOldestCacheEntry;
   static unsigned long                myCacheSize;
   static RPG_Graphics_GraphicsCache_t myGraphicsCache;
+
+  static SDL_Surface*                 myWallBlend;
 
   static RPG_Graphics_FontCache_t     myFontCache;
 

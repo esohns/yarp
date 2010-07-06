@@ -238,7 +238,7 @@ RPG_Graphics_SDLWindow::loadGraphics(const RPG_Graphics_Type& graphicType_in)
                                                      (*iterator).offsetY,
                                                      (*iterator).width,
                                                      (*iterator).height,
-                                                     interface_image);
+                                                     *interface_image);
       if (!element_image)
       {
         ACE_DEBUG((LM_ERROR,

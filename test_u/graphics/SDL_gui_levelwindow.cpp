@@ -217,14 +217,14 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
   // position of the top right corner
   RPG_Graphics_Position_t position_tr = std::make_pair(0, 0);
-  position_tr.first = (((-RPG_GRAPHICS_MAP_YMOD * ((targetSurface_in->w / 2) + 50)) +
-                        (RPG_GRAPHICS_MAP_XMOD * ((targetSurface_in->h / 2) + 50)) +
-                        (RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD)) /
-                       (2 * RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD));
-  position_tr.second = (((RPG_GRAPHICS_MAP_YMOD * ((targetSurface_in->w / 2) + 50)) +
-                         (RPG_GRAPHICS_MAP_XMOD * ((targetSurface_in->h / 2) + 50)) +
-                         (RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD)) /
-                        (2 * RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD));
+  position_tr.first = (((-RPG_GRAPHICS_MAPTILE_SIZE_Y * ((targetSurface_in->w / 2) + 50)) +
+                        (RPG_GRAPHICS_MAPTILE_SIZE_X * ((targetSurface_in->h / 2) + 50)) +
+                        (RPG_GRAPHICS_MAPTILE_SIZE_X * RPG_GRAPHICS_MAPTILE_SIZE_Y)) /
+                       (2 * RPG_GRAPHICS_MAPTILE_SIZE_X * RPG_GRAPHICS_MAPTILE_SIZE_Y));
+  position_tr.second = (((RPG_GRAPHICS_MAPTILE_SIZE_Y * ((targetSurface_in->w / 2) + 50)) +
+                         (RPG_GRAPHICS_MAPTILE_SIZE_X * ((targetSurface_in->h / 2) + 50)) +
+                         (RPG_GRAPHICS_MAPTILE_SIZE_X * RPG_GRAPHICS_MAPTILE_SIZE_Y)) /
+                        (2 * RPG_GRAPHICS_MAPTILE_SIZE_X * RPG_GRAPHICS_MAPTILE_SIZE_Y));
 
   // *NOTE*: without the "+-1" small corners within the viewport are not drawn
   int diff = 0;
@@ -262,8 +262,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       current_map_position.first = myView.first + j;
 
       // transform map coordinates into screen coordinates
-      x = (targetSurface_in->w / 2) + (RPG_GRAPHICS_MAP_XMOD * (j - i));
-      y = (targetSurface_in->h / 2) + (RPG_GRAPHICS_MAP_YMOD * (j + i));
+      x = (targetSurface_in->w / 2) + (RPG_GRAPHICS_MAPTILE_SIZE_X * (j - i));
+      y = (targetSurface_in->h / 2) + (RPG_GRAPHICS_MAPTILE_SIZE_Y * (j + i));
 
       // off the map ?
       if ((myMap.getElement(current_map_position) == MAPELEMENT_UNMAPPED) ||
@@ -318,8 +318,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
         continue;
 
       // transform map coordinates into screen coordinates
-      x = (targetSurface_in->w / 2) + (RPG_GRAPHICS_MAP_XMOD * (j - i));
-      y = (targetSurface_in->h / 2) + (RPG_GRAPHICS_MAP_YMOD * (j + i));
+      x = (targetSurface_in->w / 2) + (RPG_GRAPHICS_MAPTILE_SIZE_X * (j - i));
+      y = (targetSurface_in->h / 2) + (RPG_GRAPHICS_MAPTILE_SIZE_Y * (j + i));
 
       wall_iterator = myWallTiles.find(current_map_position);
       door_iterator = myDoorTiles.find(current_map_position);
@@ -333,10 +333,10 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
                                          y - (*wall_iterator).second.west->h + (myCurrentFloorSet.front()->h / 2),
                                          *(myCurrentWallSet.east),
                                          targetSurface_in);
-          RPG_Graphics_Common_Tools::put(x,
-                                         y - (*wall_iterator).second.west->h + (myCurrentFloorSet.front()->h / 2),
-                                         *(*wall_iterator).second.west,
-                                         targetSurface_in);
+//           RPG_Graphics_Common_Tools::put(x,
+//                                          y - (*wall_iterator).second.west->h + (myCurrentFloorSet.front()->h / 2),
+//                                          *(*wall_iterator).second.west,
+//                                          targetSurface_in);
         } // end IF
         if ((*wall_iterator).second.north)
         {
@@ -345,18 +345,18 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
                                          y - (*wall_iterator).second.north->h + (myCurrentFloorSet.front()->h / 2),
                                          *(myCurrentWallSet.south),
                                          targetSurface_in);
-          RPG_Graphics_Common_Tools::put(x + (myCurrentFloorSet.front()->w / 2),
-                                         y - (*wall_iterator).second.north->h + (myCurrentFloorSet.front()->h / 2),
-                                         *(*wall_iterator).second.north,
-                                         targetSurface_in);
+//           RPG_Graphics_Common_Tools::put(x + (myCurrentFloorSet.front()->w / 2),
+//                                          y - (*wall_iterator).second.north->h + (myCurrentFloorSet.front()->h / 2),
+//                                          *(*wall_iterator).second.north,
+//                                          targetSurface_in);
         } // end IF
       } // end IF
 
       // step2: doors
       if (door_iterator != myDoorTiles.end())
       {
-        RPG_Graphics_Common_Tools::put(x,
-                                       y - (*door_iterator).second->h + (myCurrentDoorSet.horizontal_open->h / 2),
+        RPG_Graphics_Common_Tools::put(x + (myCurrentFloorSet.front()->w / 4),
+                                       y - (*door_iterator).second->h + (myCurrentDoorSet.horizontal_open->h / 2) - (myCurrentFloorSet.front()->h / 4),
                                        *(*door_iterator).second,
                                        targetSurface_in);
       } // end IF
@@ -648,17 +648,17 @@ SDL_GUI_LevelWindow::screen2Map(const RPG_Graphics_Position_t& position_in)
 
   RPG_Graphics_Position_t offset, map_position;
 
-  offset.first = (position_in.first - (mySize.first / 2) + ((myView.first - myView.second) * RPG_GRAPHICS_MAP_XMOD));
-  offset.second = (position_in.second - (mySize.second / 2) + ((myView.first + myView.second) * RPG_GRAPHICS_MAP_YMOD));
+  offset.first = (position_in.first - (mySize.first / 2) + ((myView.first - myView.second) * RPG_GRAPHICS_MAPTILE_SIZE_X));
+  offset.second = (position_in.second - (mySize.second / 2) + ((myView.first + myView.second) * RPG_GRAPHICS_MAPTILE_SIZE_Y));
 
-  map_position.first = ((RPG_GRAPHICS_MAP_YMOD * offset.first) +
-                        (RPG_GRAPHICS_MAP_XMOD * offset.second) +
-                        (RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD)) /
-                       (2 * RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD);
-  map_position.second = ((-RPG_GRAPHICS_MAP_YMOD * offset.first) +
-                         (RPG_GRAPHICS_MAP_XMOD * offset.second) +
-                         (RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD)) /
-                        (2 * RPG_GRAPHICS_MAP_XMOD * RPG_GRAPHICS_MAP_YMOD);
+  map_position.first = ((RPG_GRAPHICS_MAPTILE_SIZE_Y * offset.first) +
+                        (RPG_GRAPHICS_MAPTILE_SIZE_X * offset.second) +
+                        (RPG_GRAPHICS_MAPTILE_SIZE_X * RPG_GRAPHICS_MAPTILE_SIZE_Y)) /
+                       (2 * RPG_GRAPHICS_MAPTILE_SIZE_X * RPG_GRAPHICS_MAPTILE_SIZE_Y);
+  map_position.second = ((-RPG_GRAPHICS_MAPTILE_SIZE_Y * offset.first) +
+                         (RPG_GRAPHICS_MAPTILE_SIZE_X * offset.second) +
+                         (RPG_GRAPHICS_MAPTILE_SIZE_X * RPG_GRAPHICS_MAPTILE_SIZE_Y)) /
+                        (2 * RPG_GRAPHICS_MAPTILE_SIZE_X * RPG_GRAPHICS_MAPTILE_SIZE_Y);
 
   return map_position;
 }
@@ -674,10 +674,10 @@ SDL_GUI_LevelWindow::map2Screen(const RPG_Graphics_Position_t& position_in)
   map_center.second = mySize.second / 2;
 
   screen_position.first = map_center.first +
-                          (RPG_GRAPHICS_MAP_XMOD *
+                          (RPG_GRAPHICS_MAPTILE_SIZE_X *
                            (position_in.first - position_in.second + myView.second - myView.first));
   screen_position.second = map_center.second +
-                           (RPG_GRAPHICS_MAP_YMOD *
+                           (RPG_GRAPHICS_MAPTILE_SIZE_Y *
                             (position_in.first + position_in.second - myView.second - myView.first));
 
   // *TODO* fix underruns (why does this happen ?)
