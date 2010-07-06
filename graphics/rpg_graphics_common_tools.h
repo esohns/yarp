@@ -65,9 +65,8 @@ class RPG_Graphics_Common_Tools
                                   const bool& = true);      // cache graphic ?
   // *NOTE*: results need to be SDL_FreeSurface()ed by the user !
   // *WARNING*: display format is not available UNTIL AFTER SDL_SetVideoMode !
-  static SDL_Surface* loadFile(const std::string&,              // image file
-                               const Uint8& = SDL_ALPHA_OPAQUE, // alpha (0: transparent --> 255: opaque)
-                               const bool& = true);             // convert to display format ?
+  static SDL_Surface* loadFile(const std::string&,  // image file
+                               const bool& = true); // convert to display format ?
 
   static SDL_Surface* get(const unsigned long&, // offset x (top-left == 0,0)
                           const unsigned long&, // offset y (top-left == 0,0)
@@ -119,8 +118,11 @@ class RPG_Graphics_Common_Tools
                                  const std::string&,       // string
                                  const SDL_Color&);        // color
 
-  static void shade(const SDL_Surface&, // source image
+  static void blend(const SDL_Surface&, // source image
                     SDL_Surface*);      // target image
+  // *NOTE*: results need to be SDL_FreeSurface()ed by the user !
+  static SDL_Surface* shade(const SDL_Surface&,               // source image
+                            const Uint8& = SDL_ALPHA_OPAQUE); // alpha (0: transparent --> 255: opaque)
 
   static void fade(const float&,  // interval (seconds)
                    SDL_Surface*,  // target image

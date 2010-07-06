@@ -130,9 +130,8 @@ do_initVideo(const std::string& graphicsDirectory_in,
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += icon_graphic.file;
   SDL_Surface* icon_image = NULL;
-  icon_image = RPG_Graphics_Common_Tools::loadFile(path,             // file
-                                                   SDL_ALPHA_OPAQUE, // opaque
-                                                   false);           // DON'T convert to display format (no screen yet !)
+  icon_image = RPG_Graphics_Common_Tools::loadFile(path,   // file
+                                                   false); // DON'T convert to display format (no screen yet !)
   if (!icon_image)
   {
     ACE_DEBUG((LM_ERROR,

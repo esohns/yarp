@@ -218,3 +218,46 @@ RPG_Graphics_SDL_Tools::initColors()
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Graphics_SDL_Tools: initialized colors...\n")));
 }
+
+SDL_Surface*
+RPG_Graphics_SDL_Tools::copy(const SDL_Surface& sourceImage_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::copy"));
+
+  SDL_Surface* result = NULL;
+  result = SDL_CreateRGBSurface((SDL_HWSURFACE | // TRY to (!) place the surface in VideoRAM
+                                 SDL_ASYNCBLIT |
+                                 SDL_SRCCOLORKEY |
+                                 SDL_SRCALPHA),
+                                sourceImage_in.w,
+                                sourceImage_in.h,
+                                sourceImage_in.format->BitsPerPixel,
+                                sourceImage_in.format->Rmask,
+                                sourceImage_in.format->Gmask,
+                                sourceImage_in.format->Bmask,
+                                sourceImage_in.format->Amask);
+  if (!result)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_CreateRGBSurface(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return NULL;
+  } // end IF
+  if (SDL_BlitSurface(&ACE_const_cast(SDL_Surface&, sourceImage_in),
+                      NULL,
+                      result,
+                      NULL))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+               SDL_GetError()));
+
+    // clean up
+    SDL_FreeSurface(result);
+
+    return NULL;
+  } // end IF
+
+  return result;
+}

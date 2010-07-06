@@ -61,6 +61,9 @@ class RPG_Graphics_SDL_Tools
   static const SDL_Color colorToSDLColor(const Uint32&,       // RGBA value
                                          const SDL_Surface&); // target surface
 
+  // *NOTE*: results need to be SDL_FreeSurface()ed by the user !
+  static SDL_Surface* copy(const SDL_Surface&); // source image
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDL_Tools());
