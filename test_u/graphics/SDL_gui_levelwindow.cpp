@@ -50,16 +50,12 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindow& parent_in
 {
   ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::SDL_GUI_LevelWindow"));
 
-  myCurrentWallSet.east = NULL;
-  myCurrentWallSet.west = NULL;
-  myCurrentWallSet.north = NULL;
-  myCurrentWallSet.south = NULL;
-
-  myCurrentDoorSet.horizontal_open   = NULL;
-  myCurrentDoorSet.vertical_open     = NULL;
-  myCurrentDoorSet.horizontal_closed = NULL;
-  myCurrentDoorSet.vertical_closed   = NULL;
-  myCurrentDoorSet.broken            = NULL;
+  ACE_OS::memset(&myCurrentWallSet,
+                 0,
+                 sizeof(myCurrentWallSet));
+  ACE_OS::memset(&myCurrentDoorSet,
+                 0,
+                 sizeof(myCurrentDoorSet));
 
   // init style
   RPG_Graphics_StyleUnion style;
@@ -100,38 +96,32 @@ SDL_GUI_LevelWindow::~SDL_GUI_LevelWindow()
   for (RPG_Graphics_FloorTileSetConstIterator_t iterator = myCurrentFloorSet.begin();
        iterator != myCurrentFloorSet.end();
        iterator++)
-    SDL_FreeSurface(*iterator);
+    SDL_FreeSurface((*iterator).surface);
   myCurrentFloorSet.clear();
   myCurrentFloorStyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
-  if (myCurrentWallSet.east)
-    SDL_FreeSurface(myCurrentWallSet.east);
-  if (myCurrentWallSet.west)
-    SDL_FreeSurface(myCurrentWallSet.west);
-  if (myCurrentWallSet.north)
-    SDL_FreeSurface(myCurrentWallSet.north);
-  if (myCurrentWallSet.south)
-    SDL_FreeSurface(myCurrentWallSet.south);
-  myCurrentWallSet.east = NULL;
-  myCurrentWallSet.west = NULL;
-  myCurrentWallSet.north = NULL;
-  myCurrentWallSet.south = NULL;
+
+  if (myCurrentWallSet.east.surface)
+    SDL_FreeSurface(myCurrentWallSet.east.surface);
+  if (myCurrentWallSet.west.surface)
+    SDL_FreeSurface(myCurrentWallSet.west.surface);
+  if (myCurrentWallSet.north.surface)
+    SDL_FreeSurface(myCurrentWallSet.north.surface);
+  if (myCurrentWallSet.south.surface)
+    SDL_FreeSurface(myCurrentWallSet.south.surface);
   myCurrentWallStyle = RPG_GRAPHICS_WALLSTYLE_INVALID;
-  if (myCurrentDoorSet.horizontal_open)
-    SDL_FreeSurface(myCurrentDoorSet.horizontal_open);
-  if (myCurrentDoorSet.vertical_open)
-    SDL_FreeSurface(myCurrentDoorSet.vertical_open);
-  if (myCurrentDoorSet.horizontal_closed)
-    SDL_FreeSurface(myCurrentDoorSet.horizontal_closed);
-  if (myCurrentDoorSet.vertical_closed)
-    SDL_FreeSurface(myCurrentDoorSet.vertical_closed);
-  if (myCurrentDoorSet.broken)
-    SDL_FreeSurface(myCurrentDoorSet.broken);
-  myCurrentDoorSet.horizontal_open = NULL;
-  myCurrentDoorSet.vertical_open = NULL;
-  myCurrentDoorSet.horizontal_closed = NULL;
-  myCurrentDoorSet.vertical_closed = NULL;
-  myCurrentDoorSet.broken = NULL;
+
+  if (myCurrentDoorSet.horizontal_open.surface)
+    SDL_FreeSurface(myCurrentDoorSet.horizontal_open.surface);
+  if (myCurrentDoorSet.vertical_open.surface)
+    SDL_FreeSurface(myCurrentDoorSet.vertical_open.surface);
+  if (myCurrentDoorSet.horizontal_closed.surface)
+    SDL_FreeSurface(myCurrentDoorSet.horizontal_closed.surface);
+  if (myCurrentDoorSet.vertical_closed.surface)
+    SDL_FreeSurface(myCurrentDoorSet.vertical_closed.surface);
+  if (myCurrentDoorSet.broken.surface)
+    SDL_FreeSurface(myCurrentDoorSet.broken.surface);
   myCurrentDoorStyle = RPG_GRAPHICS_DOORSTYLE_INVALID;
+
   if (myCurrentOffMapTile)
   {
     SDL_FreeSurface(myCurrentOffMapTile);
@@ -289,7 +279,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       {
         RPG_Graphics_Surface::put(x,
                                   y,
-                                  *myCurrentFloorSet.front(),
+                                  *myCurrentFloorSet.front().surface,
                                   targetSurface_in);
       } // end IF
     } // end FOR
@@ -327,53 +317,46 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       // step1: walls (west & north)
       if (wall_iterator != myWallTiles.end())
       {
-        if ((*wall_iterator).second.west)
-        {
-          // *NOTE*: west is just a "darkened" version of east...
+        if ((*wall_iterator).second.west.surface)
           RPG_Graphics_Surface::put(x,
-                                    y - (*wall_iterator).second.west->h + (myCurrentFloorSet.front()->h / 2),
-                                    *(myCurrentWallSet.east),
+                                    y - (*wall_iterator).second.west.surface->h + (myCurrentFloorSet.front().surface->h / 2),
+                                    *(myCurrentWallSet.west.surface),
                                     targetSurface_in);
-//           RPG_Graphics_Common_Tools::put(x,
-//                                          y - (*wall_iterator).second.west->h + (myCurrentFloorSet.front()->h / 2),
-//                                          *(*wall_iterator).second.west,
-//                                          targetSurface_in);
-        } // end IF
-        if ((*wall_iterator).second.north)
-        {
-          // *NOTE*: north is just a "darkened" version of south...
-          RPG_Graphics_Surface::put(x + (myCurrentFloorSet.front()->w / 2),
-                                    y - (*wall_iterator).second.north->h + (myCurrentFloorSet.front()->h / 2),
-                                    *(myCurrentWallSet.south),
+        if ((*wall_iterator).second.north.surface)
+          RPG_Graphics_Surface::put(x + (myCurrentFloorSet.front().surface->w / 2),
+                                    y - (*wall_iterator).second.north.surface->h + (myCurrentFloorSet.front().surface->h / 2),
+                                    *(myCurrentWallSet.north.surface),
                                     targetSurface_in);
-//           RPG_Graphics_Common_Tools::put(x + (myCurrentFloorSet.front()->w / 2),
-//                                          y - (*wall_iterator).second.north->h + (myCurrentFloorSet.front()->h / 2),
-//                                          *(*wall_iterator).second.north,
-//                                          targetSurface_in);
-        } // end IF
       } // end IF
 
       // step2: doors
       if (door_iterator != myDoorTiles.end())
       {
-        RPG_Graphics_Surface::put(x + (myCurrentFloorSet.front()->w / 4),
-                                  y - (*door_iterator).second->h + (myCurrentDoorSet.horizontal_open->h / 2) - (myCurrentFloorSet.front()->h / 4),
-                                  *(*door_iterator).second,
+        // *NOTE*: door are drawn in the "middle" of the floor tile
+        RPG_Graphics_Surface::put((x +
+                                   (*door_iterator).second.offset_x +
+                                   (myCurrentFloorSet.front().surface->w / 4)),
+                                  (y +
+                                   (*door_iterator).second.offset_y -
+                                   (*door_iterator).second.surface->h +
+                                   (myCurrentDoorSet.horizontal_open.surface->h / 2) -
+                                   (myCurrentFloorSet.front().surface->h / 4)),
+                                  *(*door_iterator).second.surface,
                                   targetSurface_in);
       } // end IF
 
       // step3: walls (south & east)
       if (wall_iterator != myWallTiles.end())
       {
-        if ((*wall_iterator).second.south)
+        if ((*wall_iterator).second.south.surface)
           RPG_Graphics_Surface::put(x,
-                                    y - (*wall_iterator).second.south->h + myCurrentFloorSet.front()->h,
-                                    *(*wall_iterator).second.south,
+                                    y - (*wall_iterator).second.south.surface->h + myCurrentFloorSet.front().surface->h,
+                                    *(*wall_iterator).second.south.surface,
                                     targetSurface_in);
-        if ((*wall_iterator).second.east)
-          RPG_Graphics_Surface::put(x + (myCurrentFloorSet.front()->w / 2),
-                                    y - (*wall_iterator).second.east->h + myCurrentFloorSet.front()->h,
-                                    *(*wall_iterator).second.east,
+        if ((*wall_iterator).second.east.surface)
+          RPG_Graphics_Surface::put(x + (myCurrentFloorSet.front().surface->w / 2),
+                                    y - (*wall_iterator).second.east.surface->h + myCurrentFloorSet.front().surface->h,
+                                    *(*wall_iterator).second.east.surface,
                                     targetSurface_in);
       } // end IF
     } // end FOR
@@ -410,7 +393,7 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
       for (RPG_Graphics_FloorTileSetConstIterator_t iterator = myCurrentFloorSet.begin();
            iterator != myCurrentFloorSet.end();
            iterator++)
-        SDL_FreeSurface(*iterator);
+        SDL_FreeSurface((*iterator).surface);
       myCurrentFloorSet.clear();
 
       RPG_Graphics_Common_Tools::loadFloorTileSet(style_in.floorstyle,
@@ -429,26 +412,25 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
     case RPG_Graphics_StyleUnion::WALLSTYLE:
     {
       // clean up
-      if (myCurrentWallSet.east)
-        SDL_FreeSurface(myCurrentWallSet.east);
-      if (myCurrentWallSet.west)
-        SDL_FreeSurface(myCurrentWallSet.west);
-      if (myCurrentWallSet.north)
-        SDL_FreeSurface(myCurrentWallSet.north);
-      if (myCurrentWallSet.south)
-        SDL_FreeSurface(myCurrentWallSet.south);
-      myCurrentWallSet.east = NULL;
-      myCurrentWallSet.west = NULL;
-      myCurrentWallSet.north = NULL;
-      myCurrentWallSet.south = NULL;
+      if (myCurrentWallSet.east.surface)
+        SDL_FreeSurface(myCurrentWallSet.east.surface);
+      if (myCurrentWallSet.west.surface)
+        SDL_FreeSurface(myCurrentWallSet.west.surface);
+      if (myCurrentWallSet.north.surface)
+        SDL_FreeSurface(myCurrentWallSet.north.surface);
+      if (myCurrentWallSet.south.surface)
+        SDL_FreeSurface(myCurrentWallSet.south.surface);
+      ACE_OS::memset(&myCurrentWallSet,
+                     0,
+                     sizeof(myCurrentWallSet));
 
       RPG_Graphics_Common_Tools::loadWallTileSet(style_in.wallstyle,
                                                  myCurrentWallSet);
       // sanity check
-      if ((myCurrentWallSet.east == NULL) ||
-          (myCurrentWallSet.west == NULL) ||
-          (myCurrentWallSet.north == NULL) ||
-          (myCurrentWallSet.south == NULL))
+      if ((myCurrentWallSet.east.surface == NULL) ||
+          (myCurrentWallSet.west.surface == NULL) ||
+          (myCurrentWallSet.north.surface == NULL) ||
+          (myCurrentWallSet.south.surface == NULL))
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("wall-style \"%s\" is incomplete, continuing\n"),
@@ -461,30 +443,28 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
     case RPG_Graphics_StyleUnion::DOORSTYLE:
     {
       // clean up
-      if (myCurrentDoorSet.horizontal_open)
-        SDL_FreeSurface(myCurrentDoorSet.horizontal_open);
-      if (myCurrentDoorSet.vertical_open)
-        SDL_FreeSurface(myCurrentDoorSet.vertical_open);
-      if (myCurrentDoorSet.horizontal_closed)
-        SDL_FreeSurface(myCurrentDoorSet.horizontal_closed);
-      if (myCurrentDoorSet.vertical_closed)
-        SDL_FreeSurface(myCurrentDoorSet.vertical_closed);
-      if (myCurrentDoorSet.broken)
-        SDL_FreeSurface(myCurrentDoorSet.broken);
-      myCurrentDoorSet.horizontal_open = NULL;
-      myCurrentDoorSet.vertical_open = NULL;
-      myCurrentDoorSet.horizontal_closed = NULL;
-      myCurrentDoorSet.vertical_closed = NULL;
-      myCurrentDoorSet.broken = NULL;
+      if (myCurrentDoorSet.horizontal_open.surface)
+        SDL_FreeSurface(myCurrentDoorSet.horizontal_open.surface);
+      if (myCurrentDoorSet.vertical_open.surface)
+        SDL_FreeSurface(myCurrentDoorSet.vertical_open.surface);
+      if (myCurrentDoorSet.horizontal_closed.surface)
+        SDL_FreeSurface(myCurrentDoorSet.horizontal_closed.surface);
+      if (myCurrentDoorSet.vertical_closed.surface)
+        SDL_FreeSurface(myCurrentDoorSet.vertical_closed.surface);
+      if (myCurrentDoorSet.broken.surface)
+        SDL_FreeSurface(myCurrentDoorSet.broken.surface);
+      ACE_OS::memset(&myCurrentDoorSet,
+                     0,
+                     sizeof(myCurrentDoorSet));
 
       RPG_Graphics_Common_Tools::loadDoorTileSet(style_in.doorstyle,
                                                  myCurrentDoorSet);
       // sanity check
-      if ((myCurrentDoorSet.horizontal_open == NULL) ||
-          (myCurrentDoorSet.vertical_open == NULL) ||
-          (myCurrentDoorSet.horizontal_closed == NULL) ||
-          (myCurrentDoorSet.vertical_closed == NULL) ||
-          (myCurrentDoorSet.broken == NULL))
+      if ((myCurrentDoorSet.horizontal_open.surface == NULL) ||
+          (myCurrentDoorSet.vertical_open.surface == NULL) ||
+          (myCurrentDoorSet.horizontal_closed.surface == NULL) ||
+          (myCurrentDoorSet.vertical_closed.surface == NULL) ||
+          (myCurrentDoorSet.broken.surface == NULL))
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("door-style \"%s\" is incomplete, continuing\n"),
@@ -526,10 +506,9 @@ SDL_GUI_LevelWindow::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
          x++)
     {
       current_position = std::make_pair(x, y);
-      current_walls.east = NULL;
-      current_walls.west = NULL;
-      current_walls.north = NULL;
-      current_walls.south = NULL;
+      ACE_OS::memset(&current_walls,
+                     0,
+                     sizeof(current_walls));
 
       if ((myMap.getElement(current_position) == MAPELEMENT_FLOOR) ||
           (myMap.getElement(current_position) == MAPELEMENT_DOOR))
@@ -553,10 +532,10 @@ SDL_GUI_LevelWindow::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
         if (myMap.getElement(south) == MAPELEMENT_WALL)
           current_walls.south = myCurrentWallSet.south;
 
-        if (current_walls.east ||
-            current_walls.north ||
-            current_walls.west ||
-            current_walls.south)
+        if (current_walls.east.surface ||
+            current_walls.north.surface ||
+            current_walls.west.surface ||
+            current_walls.south.surface)
           myWallTiles.insert(std::make_pair(current_position, current_walls));
       } // end IF
     } // end FOR
@@ -573,19 +552,21 @@ SDL_GUI_LevelWindow::initDoors(const RPG_Map_FloorPlan_t& levelMap_in,
   // init return value(s)
   doorTiles_out.clear();
 
-  SDL_Surface* current = NULL;
+  RPG_Graphics_Tile_t current_tile;
   RPG_Map_Door_t current_door;
   RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
   for (RPG_Map_PositionsConstIterator_t iterator = levelMap_in.doors.begin();
        iterator != levelMap_in.doors.end();
        iterator++)
   {
-    current = NULL;
+    ACE_OS::memset(&current_tile,
+                   0,
+                   sizeof(current_tile));
     current_door = levelState_in.getDoor(*iterator);
     orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
     if (current_door.is_broken)
     {
-      current = tileSet_in.broken;
+      current_tile = tileSet_in.broken;
       continue;
     } // end IF
 
@@ -595,14 +576,14 @@ SDL_GUI_LevelWindow::initDoors(const RPG_Map_FloorPlan_t& levelMap_in,
     {
       case ORIENTATION_HORIZONTAL:
       {
-        current = (current_door.is_open ? tileSet_in.horizontal_open
-                                        : tileSet_in.horizontal_closed);
+        current_tile = (current_door.is_open ? tileSet_in.horizontal_open
+                                             : tileSet_in.horizontal_closed);
         break;
       }
       case ORIENTATION_VERTICAL:
       {
-        current = (current_door.is_open ? tileSet_in.vertical_open
-                                        : tileSet_in.vertical_closed);
+        current_tile = (current_door.is_open ? tileSet_in.vertical_open
+                                             : tileSet_in.vertical_closed);
         break;
       }
       default:
@@ -618,7 +599,7 @@ SDL_GUI_LevelWindow::initDoors(const RPG_Map_FloorPlan_t& levelMap_in,
       }
     } // end SWITCH
 
-    myDoorTiles.insert(std::make_pair(*iterator, current));
+    myDoorTiles.insert(std::make_pair(*iterator, current_tile));
   } // end FOR
 }
 

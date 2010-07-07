@@ -50,11 +50,12 @@
 // used for shading different tiles
 #define RPG_GRAPHICS_FLOORTILE_SIZE_X            109
 #define RPG_GRAPHICS_FLOORTILE_SIZE_Y            44
-#define RPG_GRAPHICS_WALLTILE_SIZE_X             56
+// *TODO*: some are south/east are 56, north/west 57...
+#define RPG_GRAPHICS_WALLTILE_SIZE_X             57
 #define RPG_GRAPHICS_WALLTILE_SIZE_Y             98
 // *NOTE*: 0.0: transparent --> 1.0: opaque
-#define RPG_GRAPHICS_WALLTILE_SE_OPACITY         0.5
-#define RPG_GRAPHICS_WALLTILE_NW_OPACITY         1.0
+#define RPG_GRAPHICS_WALLTILE_SE_OPACITY         0.6
+#define RPG_GRAPHICS_WALLTILE_NW_OPACITY         0.8
 
 #define RPG_GRAPHICS_DUMP_DIR                    ACE_TEXT("/var/tmp")
 

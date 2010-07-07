@@ -244,13 +244,30 @@ RPG_Graphics_SDL_Tools::copy(const SDL_Surface& sourceImage_in)
 
     return NULL;
   } // end IF
-  if (SDL_BlitSurface(&ACE_const_cast(SDL_Surface&, sourceImage_in),
-                      NULL,
-                      result,
-                      NULL))
+
+  // *NOTE*: blitting does not preserve the alpha channel...
+  // --> do it manually
+//   if (SDL_BlitSurface(&ACE_const_cast(SDL_Surface&, sourceImage_in),
+//                       NULL,
+//                       result,
+//                       NULL))
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+//                SDL_GetError()));
+//
+//     // clean up
+//     SDL_FreeSurface(result);
+//
+//     return NULL;
+//   } // end IF
+
+  // lock surface during pixel access
+  if (SDL_MUSTLOCK((&sourceImage_in)))
+    if (SDL_LockSurface(&ACE_const_cast(SDL_Surface&, sourceImage_in)))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+               ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
                SDL_GetError()));
 
     // clean up
@@ -258,6 +275,16 @@ RPG_Graphics_SDL_Tools::copy(const SDL_Surface& sourceImage_in)
 
     return NULL;
   } // end IF
+
+  for (unsigned long i = 0;
+       i < ACE_static_cast(unsigned long, sourceImage_in.h);
+       i++)
+    ::memcpy((ACE_static_cast(unsigned char*, result->pixels) + (result->pitch * i)),
+             (ACE_static_cast(unsigned char*, sourceImage_in.pixels) + (sourceImage_in.pitch * i)),
+             (sourceImage_in.w * sourceImage_in.format->BytesPerPixel)); // RGBA --> 4 bytes (?!!!)
+
+  if (SDL_MUSTLOCK((&sourceImage_in)))
+    SDL_UnlockSurface(&ACE_const_cast(SDL_Surface&, sourceImage_in));
 
   return result;
 }

@@ -21,6 +21,7 @@
 
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_SDL_tools.h"
 
 #include <rpg_common_file_tools.h>
 
@@ -570,36 +571,11 @@ RPG_Graphics_Surface::shade(const SDL_Surface& sourceImage_in,
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Surface::shade"));
 
   SDL_Surface* result = NULL;
-  result = SDL_CreateRGBSurface((SDL_HWSURFACE | // TRY to (!) place the surface in VideoRAM
-                                 SDL_ASYNCBLIT |
-                                 SDL_SRCCOLORKEY |
-                                 SDL_SRCALPHA),
-                                sourceImage_in.w,
-                                sourceImage_in.h,
-                                sourceImage_in.format->BitsPerPixel,
-                                sourceImage_in.format->Rmask,
-                                sourceImage_in.format->Gmask,
-                                sourceImage_in.format->Bmask,
-                                sourceImage_in.format->Amask);
+  result = RPG_Graphics_SDL_Tools::copy(sourceImage_in);
   if (!result)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_CreateRGBSurface(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return NULL;
-  } // end IF
-  if (SDL_BlitSurface(&ACE_const_cast(SDL_Surface&, sourceImage_in),
-                      NULL,
-                      result,
-                      NULL))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-               SDL_GetError()));
-
-    // clean up
-    SDL_FreeSurface(result);
+               ACE_TEXT("failed to RPG_Graphics_SDL_Tools::copy(), aborting\n")));
 
     return NULL;
   } // end IF
@@ -614,7 +590,7 @@ RPG_Graphics_Surface::shade(const SDL_Surface& sourceImage_in,
                 ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
                 SDL_GetError()));
 
-            // clean up
+      // clean up
       SDL_FreeSurface(result);
 
       return NULL;

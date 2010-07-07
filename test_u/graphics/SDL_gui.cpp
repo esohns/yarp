@@ -22,6 +22,7 @@
 
 #include <rpg_map_common_tools.h>
 
+#include <rpg_graphics_defines.h>
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_surface.h>
 #include <rpg_graphics_common_tools.h>
@@ -542,6 +543,11 @@ do_work(const mode_t& mode_in,
 
   SDL_Event event;
   bool done = false;
+  std::string dump_path_base = RPG_GRAPHICS_DUMP_DIR;
+  dump_path_base += ACE_DIRECTORY_SEPARATOR_STR;
+  std::string dump_path;
+  unsigned long index = 0;
+  std::ostringstream converter;
   switch (mode_in)
   {
     case MODE_RANDOM_IMAGES:
@@ -612,18 +618,43 @@ do_work(const mode_t& mode_in,
             case SDL_KEYDOWN:
 //             case SDL_KEYUP:
             {
-              // debug info
               ACE_DEBUG((LM_DEBUG,
                         ACE_TEXT("%s key\n%s\n"),
                         ((event.type == SDL_KEYDOWN) ? ACE_TEXT("pressed") : ACE_TEXT("released")),
                         RPG_Graphics_SDL_Tools::keyToString(event.key.keysym).c_str()));
 
-              if (event.key.keysym.sym == SDLK_q)
+              switch (event.key.keysym.sym)
               {
-                // fall through...
-              } // end IF
-              else
-                break;
+                case SDLK_s:
+                {
+                  converter.str(ACE_TEXT(""));
+                  converter.clear();
+                  converter << index++;
+                  dump_path = dump_path_base;
+                  dump_path += ACE_TEXT("screenshot_");
+                  dump_path += converter.str();
+                  dump_path += ACE_TEXT(".png");
+                  RPG_Graphics_Surface::savePNG(*SDL_GetVideoSurface(), // image
+                                                dump_path,              // file
+                                                true);                  // WITH alpha
+
+                  break;
+                }
+                case SDLK_q:
+                {
+                  // finished event processing
+                  done = true;
+
+                  break;
+                } // end IF
+                default:
+                {
+
+                  break;
+                }
+              } // end SWITCH
+
+              break;
             }
             case SDL_QUIT:
             {
@@ -693,18 +724,43 @@ do_work(const mode_t& mode_in,
           case SDL_KEYDOWN:
 //           case SDL_KEYUP:
           {
-            // debug info
             ACE_DEBUG((LM_DEBUG,
                        ACE_TEXT("%s key\n%s\n"),
                        ((event.type == SDL_KEYDOWN) ? ACE_TEXT("pressed") : ACE_TEXT("released")),
                        RPG_Graphics_SDL_Tools::keyToString(event.key.keysym).c_str()));
 
-            if (event.key.keysym.sym == SDLK_q)
+            switch (event.key.keysym.sym)
             {
-              // fall through...
-            } // end IF
-            else
-              break;
+              case SDLK_s:
+              {
+                converter.str(ACE_TEXT(""));
+                converter.clear();
+                converter << index++;
+                dump_path = dump_path_base;
+                dump_path += ACE_TEXT("screenshot_");
+                dump_path += converter.str();
+                dump_path += ACE_TEXT(".png");
+                RPG_Graphics_Surface::savePNG(*SDL_GetVideoSurface(), // image
+                                              dump_path,              // file
+                                              true);                  // WITH alpha
+
+                break;
+              }
+              case SDLK_q:
+              {
+                // finished event processing
+                done = true;
+
+                break;
+              } // end IF
+              default:
+              {
+
+                break;
+              }
+            } // end SWITCH
+
+            break;
           }
           case SDL_QUIT:
           {

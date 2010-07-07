@@ -175,8 +175,8 @@ class RPG_Graphics_Tile_Type
   virtual void style(const RPG_Graphics_StyleUnion&);
   virtual void orientation(const RPG_Graphics_Orientation&);
   virtual void file(const ::std::string&);
-  virtual void offsetX(unsigned int);
-  virtual void offsetY(unsigned int);
+  virtual void offsetX(long long);
+  virtual void offsetY(long long);
   virtual void open(bool);
   virtual void broken(bool);
   virtual RPG_Graphics_Tile post_RPG_Graphics_Tile_Type();

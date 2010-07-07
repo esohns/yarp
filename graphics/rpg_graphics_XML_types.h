@@ -325,10 +325,10 @@ class RPG_Graphics_Tile_Type_pskel: public ::xml_schema::complex_content
   file (const ::std::string&);
 
   virtual void
-  offsetX (unsigned int);
+  offsetX (long long);
 
   virtual void
-  offsetY (unsigned int);
+  offsetY (long long);
 
   virtual void
   open (bool);
@@ -354,10 +354,10 @@ class RPG_Graphics_Tile_Type_pskel: public ::xml_schema::complex_content
   file_parser (::xml_schema::string_pskel&);
 
   void
-  offsetX_parser (::xml_schema::unsigned_int_pskel&);
+  offsetX_parser (::xml_schema::integer_pskel&);
 
   void
-  offsetY_parser (::xml_schema::unsigned_int_pskel&);
+  offsetY_parser (::xml_schema::integer_pskel&);
 
   void
   open_parser (::xml_schema::boolean_pskel&);
@@ -370,8 +370,8 @@ class RPG_Graphics_Tile_Type_pskel: public ::xml_schema::complex_content
            ::RPG_Graphics_StyleUnion_Type_pskel& /* style */,
            ::RPG_Graphics_Orientation_Type_pskel& /* orientation */,
            ::xml_schema::string_pskel& /* file */,
-           ::xml_schema::unsigned_int_pskel& /* offsetX */,
-           ::xml_schema::unsigned_int_pskel& /* offsetY */,
+           ::xml_schema::integer_pskel& /* offsetX */,
+           ::xml_schema::integer_pskel& /* offsetY */,
            ::xml_schema::boolean_pskel& /* open */,
            ::xml_schema::boolean_pskel& /* broken */);
 
@@ -401,8 +401,8 @@ class RPG_Graphics_Tile_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Graphics_StyleUnion_Type_pskel* style_parser_;
   ::RPG_Graphics_Orientation_Type_pskel* orientation_parser_;
   ::xml_schema::string_pskel* file_parser_;
-  ::xml_schema::unsigned_int_pskel* offsetX_parser_;
-  ::xml_schema::unsigned_int_pskel* offsetY_parser_;
+  ::xml_schema::integer_pskel* offsetX_parser_;
+  ::xml_schema::integer_pskel* offsetY_parser_;
   ::xml_schema::boolean_pskel* open_parser_;
   ::xml_schema::boolean_pskel* broken_parser_;
 };

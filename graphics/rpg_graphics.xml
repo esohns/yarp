@@ -216,7 +216,7 @@
         <orientation>ORIENTATION_HORIZONTAL</orientation>
         <file>door_wood_open_h.png</file>
       </tile>
-      <tile>
+      <tile offsetX="-3" offsetY="-4">
         <type>TILETYPE_DOOR</type>
         <orientation>ORIENTATION_HORIZONTAL</orientation>
         <file>door_wood_closed_h.png</file>

@@ -123,13 +123,13 @@ file_parser (::xml_schema::string_pskel& p)
 }
 
 void RPG_Graphics_Tile_Type_pskel::
-offsetX_parser (::xml_schema::unsigned_int_pskel& p)
+offsetX_parser (::xml_schema::integer_pskel& p)
 {
   this->offsetX_parser_ = &p;
 }
 
 void RPG_Graphics_Tile_Type_pskel::
-offsetY_parser (::xml_schema::unsigned_int_pskel& p)
+offsetY_parser (::xml_schema::integer_pskel& p)
 {
   this->offsetY_parser_ = &p;
 }
@@ -151,8 +151,8 @@ parsers (::RPG_Graphics_TileType_Type_pskel& type,
          ::RPG_Graphics_StyleUnion_Type_pskel& style,
          ::RPG_Graphics_Orientation_Type_pskel& orientation,
          ::xml_schema::string_pskel& file,
-         ::xml_schema::unsigned_int_pskel& offsetX,
-         ::xml_schema::unsigned_int_pskel& offsetY,
+         ::xml_schema::integer_pskel& offsetX,
+         ::xml_schema::integer_pskel& offsetY,
          ::xml_schema::boolean_pskel& open,
          ::xml_schema::boolean_pskel& broken)
 {
@@ -488,12 +488,12 @@ file (const ::std::string&)
 }
 
 void RPG_Graphics_Tile_Type_pskel::
-offsetX (unsigned int)
+offsetX (long long)
 {
 }
 
 void RPG_Graphics_Tile_Type_pskel::
-offsetY (unsigned int)
+offsetY (long long)
 {
 }
 
@@ -618,7 +618,7 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
       this->offsetX_parser_->_pre_impl ();
       this->offsetX_parser_->_characters (v);
       this->offsetX_parser_->_post_impl ();
-      this->offsetX (this->offsetX_parser_->post_unsigned_int ());
+      this->offsetX (this->offsetX_parser_->post_integer ());
     }
 
     return true;
@@ -632,7 +632,7 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
       this->offsetY_parser_->_pre_impl ();
       this->offsetY_parser_->_characters (v);
       this->offsetY_parser_->_post_impl ();
-      this->offsetY (this->offsetY_parser_->post_unsigned_int ());
+      this->offsetY (this->offsetY_parser_->post_integer ());
     }
 
     return true;

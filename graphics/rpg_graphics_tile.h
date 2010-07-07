@@ -32,8 +32,8 @@ struct RPG_Graphics_Tile
   RPG_Graphics_StyleUnion style;
   RPG_Graphics_Orientation orientation;
   std::string file;
-  unsigned int offsetX;
-  unsigned int offsetY;
+  int offsetX;
+  int offsetY;
   bool open;
   bool broken;
 };

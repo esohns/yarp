@@ -169,8 +169,8 @@
       <xsd:element name="orientation" type="RPG_Graphics_Orientation_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="file" type="xsd:string" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
-    <xsd:attribute name="offsetX" type="xsd:unsignedInt" use="optional" default="0"/>
-    <xsd:attribute name="offsetY" type="xsd:unsignedInt" use="optional" default="0"/>
+    <xsd:attribute name="offsetX" type="xsd:integer" use="optional" default="0"/>
+    <xsd:attribute name="offsetY" type="xsd:integer" use="optional" default="0"/>
     <xsd:attribute name="open" type="xsd:boolean" use="optional" default="false"/>
     <xsd:attribute name="broken" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>

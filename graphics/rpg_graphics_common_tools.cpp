@@ -436,7 +436,7 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
   for (RPG_Graphics_FloorTileSetConstIterator_t iterator = tileSet_out.begin();
        iterator != tileSet_out.end();
        iterator++)
-    SDL_FreeSurface(*iterator);
+    SDL_FreeSurface((*iterator).surface);
   tileSet_out.clear();
 
   // step0: retrieve appropriate graphic type
@@ -479,19 +479,21 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
   path_base += ACE_DIRECTORY_SEPARATOR_STR;
 
   std::string path = path_base;
-  SDL_Surface* current_surface = NULL;
+  RPG_Graphics_Tile_t current_tile;
   for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin();
        iterator != graphic.tileset.tiles.end();
        iterator++)
   {
-    current_surface = NULL;
+    current_tile.offset_x = (*iterator).offsetX;
+    current_tile.offset_y = (*iterator).offsetY;
+    current_tile.surface = NULL;
 
     // load file
     path = path_base;
     path += (*iterator).file;
-    current_surface = RPG_Graphics_Surface::load(path,  // file
-                                                 true); // convert to display format
-    if (!current_surface)
+    current_tile.surface = RPG_Graphics_Surface::load(path,  // file
+                                                      true); // convert to display format
+    if (!current_tile.surface)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
@@ -501,13 +503,13 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
       for (RPG_Graphics_FloorTileSetConstIterator_t iterator = tileSet_out.begin();
            iterator != tileSet_out.end();
            iterator++)
-        SDL_FreeSurface(*iterator);
+        SDL_FreeSurface((*iterator).surface);
       tileSet_out.clear();
 
       return;
     } // end IF
 
-    tileSet_out.push_back(current_surface);
+    tileSet_out.push_back(current_tile);
   } // end FOR
 
   ACE_DEBUG((LM_DEBUG,
@@ -525,18 +527,26 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadWallTileSet"));
 
   // init return value(s)
-  if (tileSet_out.west)
-    SDL_FreeSurface(tileSet_out.west);
-  if (tileSet_out.east)
-    SDL_FreeSurface(tileSet_out.east);
-  if (tileSet_out.north)
-    SDL_FreeSurface(tileSet_out.north);
-  if (tileSet_out.south)
-    SDL_FreeSurface(tileSet_out.south);
-  tileSet_out.west = NULL;
-  tileSet_out.east = NULL;
-  tileSet_out.north = NULL;
-  tileSet_out.south = NULL;
+  if (tileSet_out.west.surface)
+    SDL_FreeSurface(tileSet_out.west.surface);
+  if (tileSet_out.east.surface)
+    SDL_FreeSurface(tileSet_out.east.surface);
+  if (tileSet_out.north.surface)
+    SDL_FreeSurface(tileSet_out.north.surface);
+  if (tileSet_out.south.surface)
+    SDL_FreeSurface(tileSet_out.south.surface);
+  tileSet_out.west.offset_x = 0;
+  tileSet_out.west.offset_y = 0;
+  tileSet_out.west.surface = NULL;
+  tileSet_out.east.offset_x = 0;
+  tileSet_out.east.offset_y = 0;
+  tileSet_out.east.surface = NULL;
+  tileSet_out.north.offset_x = 0;
+  tileSet_out.north.offset_y = 0;
+  tileSet_out.north.surface = NULL;
+  tileSet_out.south.offset_x = 0;
+  tileSet_out.south.offset_y = 0;
+  tileSet_out.south.surface = NULL;
 
   // step0: retrieve appropriate graphic type
   RPG_Graphics_StyleUnion style;
@@ -578,37 +588,47 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
   path_base += ACE_DIRECTORY_SEPARATOR_STR;
 
   std::string path = path_base;
-  SDL_Surface* current_surface = NULL;
+  RPG_Graphics_Tile_t current_tile;
   for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin();
        iterator != graphic.tileset.tiles.end();
        iterator++)
   {
-    current_surface = NULL;
+    current_tile.offset_x = (*iterator).offsetX;
+    current_tile.offset_y = (*iterator).offsetY;
+    current_tile.surface = NULL;
 
     // load file
     path = path_base;
     path += (*iterator).file;
-    current_surface = RPG_Graphics_Surface::load(path,  // file
-                                                 true); // convert to display format
-    if (!current_surface)
+    current_tile.surface = RPG_Graphics_Surface::load(path,  // file
+                                                      true); // convert to display format
+    if (!current_tile.surface)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
                  path.c_str()));
 
       // clean up
-      if (tileSet_out.west)
-        SDL_FreeSurface(tileSet_out.west);
-      if (tileSet_out.east)
-        SDL_FreeSurface(tileSet_out.east);
-      if (tileSet_out.north)
-        SDL_FreeSurface(tileSet_out.north);
-      if (tileSet_out.south)
-        SDL_FreeSurface(tileSet_out.south);
-      tileSet_out.west = NULL;
-      tileSet_out.east = NULL;
-      tileSet_out.north = NULL;
-      tileSet_out.south = NULL;
+      if (tileSet_out.west.surface)
+        SDL_FreeSurface(tileSet_out.west.surface);
+      if (tileSet_out.east.surface)
+        SDL_FreeSurface(tileSet_out.east.surface);
+      if (tileSet_out.north.surface)
+        SDL_FreeSurface(tileSet_out.north.surface);
+      if (tileSet_out.south.surface)
+        SDL_FreeSurface(tileSet_out.south.surface);
+      tileSet_out.west.offset_x = 0;
+      tileSet_out.west.offset_y = 0;
+      tileSet_out.west.surface = NULL;
+      tileSet_out.east.offset_x = 0;
+      tileSet_out.east.offset_y = 0;
+      tileSet_out.east.surface = NULL;
+      tileSet_out.north.offset_x = 0;
+      tileSet_out.north.offset_y = 0;
+      tileSet_out.north.surface = NULL;
+      tileSet_out.south.offset_x = 0;
+      tileSet_out.south.offset_y = 0;
+      tileSet_out.south.surface = NULL;
 
       return;
     } // end IF
@@ -616,13 +636,13 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
     switch ((*iterator).orientation)
     {
       case ORIENTATION_EAST:
-        tileSet_out.east = current_surface; break;
+        tileSet_out.east = current_tile; break;
       case ORIENTATION_WEST:
-        tileSet_out.west = current_surface; break;
+        tileSet_out.west = current_tile; break;
       case ORIENTATION_NORTH:
-        tileSet_out.north = current_surface; break;
+        tileSet_out.north = current_tile; break;
       case ORIENTATION_SOUTH:
-        tileSet_out.south = current_surface; break;
+        tileSet_out.south = current_tile; break;
       default:
       {
         ACE_DEBUG((LM_ERROR,
@@ -630,18 +650,26 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
                    RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString((*iterator).orientation).c_str()));
 
         // clean up
-        if (tileSet_out.west)
-          SDL_FreeSurface(tileSet_out.west);
-        if (tileSet_out.east)
-          SDL_FreeSurface(tileSet_out.east);
-        if (tileSet_out.north)
-          SDL_FreeSurface(tileSet_out.north);
-        if (tileSet_out.south)
-          SDL_FreeSurface(tileSet_out.south);
-        tileSet_out.west = NULL;
-        tileSet_out.east = NULL;
-        tileSet_out.north = NULL;
-        tileSet_out.south = NULL;
+        if (tileSet_out.west.surface)
+          SDL_FreeSurface(tileSet_out.west.surface);
+        if (tileSet_out.east.surface)
+          SDL_FreeSurface(tileSet_out.east.surface);
+        if (tileSet_out.north.surface)
+          SDL_FreeSurface(tileSet_out.north.surface);
+        if (tileSet_out.south.surface)
+          SDL_FreeSurface(tileSet_out.south.surface);
+        tileSet_out.west.offset_x = 0;
+        tileSet_out.west.offset_y = 0;
+        tileSet_out.west.surface = NULL;
+        tileSet_out.east.offset_x = 0;
+        tileSet_out.east.offset_y = 0;
+        tileSet_out.east.surface = NULL;
+        tileSet_out.north.offset_x = 0;
+        tileSet_out.north.offset_y = 0;
+        tileSet_out.north.surface = NULL;
+        tileSet_out.south.offset_x = 0;
+        tileSet_out.south.offset_y = 0;
+        tileSet_out.south.surface = NULL;
 
         return;
       }
@@ -649,28 +677,36 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
   } // end FOR
 
   // sanity checks
-  ACE_ASSERT(tileSet_out.west);
-  ACE_ASSERT(tileSet_out.east);
-  ACE_ASSERT(tileSet_out.north);
-  ACE_ASSERT(tileSet_out.south);
+  ACE_ASSERT(tileSet_out.west.surface);
+  ACE_ASSERT(tileSet_out.east.surface);
+  ACE_ASSERT(tileSet_out.north.surface);
+  ACE_ASSERT(tileSet_out.south.surface);
 
   // *NOTE*: west is just a "darkened" version of east...
   SDL_Surface* copy = NULL;
-  copy = RPG_Graphics_SDL_Tools::copy(*tileSet_out.east);
+  copy = RPG_Graphics_SDL_Tools::copy(*tileSet_out.east.surface);
   if (!copy)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_SDL_Tools::copy(), aborting\n")));
 
     // clean up
-    SDL_FreeSurface(tileSet_out.west);
-    SDL_FreeSurface(tileSet_out.east);
-    SDL_FreeSurface(tileSet_out.north);
-    SDL_FreeSurface(tileSet_out.south);
-    tileSet_out.west = NULL;
-    tileSet_out.east = NULL;
-    tileSet_out.north = NULL;
-    tileSet_out.south = NULL;
+    SDL_FreeSurface(tileSet_out.west.surface);
+    SDL_FreeSurface(tileSet_out.east.surface);
+    SDL_FreeSurface(tileSet_out.north.surface);
+    SDL_FreeSurface(tileSet_out.south.surface);
+    tileSet_out.west.offset_x = 0;
+    tileSet_out.west.offset_y = 0;
+    tileSet_out.west.surface = NULL;
+    tileSet_out.east.offset_x = 0;
+    tileSet_out.east.offset_y = 0;
+    tileSet_out.east.surface = NULL;
+    tileSet_out.north.offset_x = 0;
+    tileSet_out.north.offset_y = 0;
+    tileSet_out.north.surface = NULL;
+    tileSet_out.south.offset_x = 0;
+    tileSet_out.south.offset_y = 0;
+    tileSet_out.south.surface = NULL;
 
     return;
   } // end IF
@@ -684,36 +720,52 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
                SDL_GetError()));
 
     // clean up
-    SDL_FreeSurface(tileSet_out.west);
-    SDL_FreeSurface(tileSet_out.east);
-    SDL_FreeSurface(tileSet_out.north);
-    SDL_FreeSurface(tileSet_out.south);
-    tileSet_out.west = NULL;
-    tileSet_out.east = NULL;
-    tileSet_out.north = NULL;
-    tileSet_out.south = NULL;
+    SDL_FreeSurface(tileSet_out.west.surface);
+    SDL_FreeSurface(tileSet_out.east.surface);
+    SDL_FreeSurface(tileSet_out.north.surface);
+    SDL_FreeSurface(tileSet_out.south.surface);
+    tileSet_out.west.offset_x = 0;
+    tileSet_out.west.offset_y = 0;
+    tileSet_out.west.surface = NULL;
+    tileSet_out.east.offset_x = 0;
+    tileSet_out.east.offset_y = 0;
+    tileSet_out.east.surface = NULL;
+    tileSet_out.north.offset_x = 0;
+    tileSet_out.north.offset_y = 0;
+    tileSet_out.north.surface = NULL;
+    tileSet_out.south.offset_x = 0;
+    tileSet_out.south.offset_y = 0;
+    tileSet_out.south.surface = NULL;
+    SDL_FreeSurface(copy);
 
     return;
   } // end IF
-  SDL_FreeSurface(tileSet_out.west);
-  tileSet_out.west = copy;
+  SDL_FreeSurface(tileSet_out.west.surface);
+  tileSet_out.west.surface = copy;
   // *NOTE*: north is just a "darkened" version of south...
-  copy = RPG_Graphics_SDL_Tools::copy(*tileSet_out.south);
+  copy = RPG_Graphics_SDL_Tools::copy(*tileSet_out.south.surface);
   if (!copy)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_SDL_Tools::copy(), aborting\n")));
 
     // clean up
-    SDL_FreeSurface(tileSet_out.west);
-    SDL_FreeSurface(tileSet_out.east);
-    SDL_FreeSurface(tileSet_out.north);
-    SDL_FreeSurface(tileSet_out.south);
-    tileSet_out.west = NULL;
-    tileSet_out.east = NULL;
-    tileSet_out.north = NULL;
-    tileSet_out.south = NULL;
-    SDL_FreeSurface(copy);
+    SDL_FreeSurface(tileSet_out.west.surface);
+    SDL_FreeSurface(tileSet_out.east.surface);
+    SDL_FreeSurface(tileSet_out.north.surface);
+    SDL_FreeSurface(tileSet_out.south.surface);
+    tileSet_out.west.offset_x = 0;
+    tileSet_out.west.offset_y = 0;
+    tileSet_out.west.surface = NULL;
+    tileSet_out.east.offset_x = 0;
+    tileSet_out.east.offset_y = 0;
+    tileSet_out.east.surface = NULL;
+    tileSet_out.north.offset_x = 0;
+    tileSet_out.north.offset_y = 0;
+    tileSet_out.north.surface = NULL;
+    tileSet_out.south.offset_x = 0;
+    tileSet_out.south.offset_y = 0;
+    tileSet_out.south.surface = NULL;
 
     return;
   } // end IF
@@ -727,139 +779,179 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
                SDL_GetError()));
 
     // clean up
-    SDL_FreeSurface(tileSet_out.west);
-    SDL_FreeSurface(tileSet_out.east);
-    SDL_FreeSurface(tileSet_out.north);
-    SDL_FreeSurface(tileSet_out.south);
-    tileSet_out.west = NULL;
-    tileSet_out.east = NULL;
-    tileSet_out.north = NULL;
-    tileSet_out.south = NULL;
+    SDL_FreeSurface(tileSet_out.west.surface);
+    SDL_FreeSurface(tileSet_out.east.surface);
+    SDL_FreeSurface(tileSet_out.north.surface);
+    SDL_FreeSurface(tileSet_out.south.surface);
+    tileSet_out.west.offset_x = 0;
+    tileSet_out.west.offset_y = 0;
+    tileSet_out.west.surface = NULL;
+    tileSet_out.east.offset_x = 0;
+    tileSet_out.east.offset_y = 0;
+    tileSet_out.east.surface = NULL;
+    tileSet_out.north.offset_x = 0;
+    tileSet_out.north.offset_y = 0;
+    tileSet_out.north.surface = NULL;
+    tileSet_out.south.offset_x = 0;
+    tileSet_out.south.offset_y = 0;
+    tileSet_out.south.surface = NULL;
     SDL_FreeSurface(copy);
 
     return;
   } // end IF
-  SDL_FreeSurface(tileSet_out.north);
-  tileSet_out.north = copy;
+  SDL_FreeSurface(tileSet_out.north.surface);
+  tileSet_out.north.surface = copy;
 
-//   // set wall opacity
-//   SDL_Surface* shaded_wall = NULL;
-//   shaded_wall = RPG_Graphics_Common_Tools::shade(*tileSet_out.east,
-//                                                  ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE)));
-//   if (!shaded_wall)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to RPG_Graphics_Common_Tools::shade(%u), aborting\n"),
-//                ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE))));
-//
-//     // clean up
-//     SDL_FreeSurface(tileSet_out.west);
-//     SDL_FreeSurface(tileSet_out.east);
-//     SDL_FreeSurface(tileSet_out.north);
-//     SDL_FreeSurface(tileSet_out.south);
-//     tileSet_out.west = NULL;
-//     tileSet_out.east = NULL;
-//     tileSet_out.north = NULL;
-//     tileSet_out.south = NULL;
-//
-//     return;
-//   } // end IF
-//   SDL_FreeSurface(tileSet_out.east);
-//   tileSet_out.east = shaded_wall;
-//
-//   shaded_wall = RPG_Graphics_Common_Tools::shade(*tileSet_out.west,
-//                                                  ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE)));
-//   if (!shaded_wall)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to RPG_Graphics_Common_Tools::shade(%u), aborting\n"),
-//                ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE))));
-//
-//     // clean up
-//     SDL_FreeSurface(tileSet_out.west);
-//     SDL_FreeSurface(tileSet_out.east);
-//     SDL_FreeSurface(tileSet_out.north);
-//     SDL_FreeSurface(tileSet_out.south);
-//     tileSet_out.west = NULL;
-//     tileSet_out.east = NULL;
-//     tileSet_out.north = NULL;
-//     tileSet_out.south = NULL;
-//
-//     return;
-//   } // end IF
-//   SDL_FreeSurface(tileSet_out.west);
-//   tileSet_out.west = shaded_wall;
-//
-//   shaded_wall = RPG_Graphics_Common_Tools::shade(*tileSet_out.south,
-//                                                  ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE)));
-//   if (!shaded_wall)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to RPG_Graphics_Common_Tools::shade(%u), aborting\n"),
-//                ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE))));
-//
-//     // clean up
-//     SDL_FreeSurface(tileSet_out.west);
-//     SDL_FreeSurface(tileSet_out.east);
-//     SDL_FreeSurface(tileSet_out.north);
-//     SDL_FreeSurface(tileSet_out.south);
-//     tileSet_out.west = NULL;
-//     tileSet_out.east = NULL;
-//     tileSet_out.north = NULL;
-//     tileSet_out.south = NULL;
-//
-//     return;
-//   } // end IF
-//   SDL_FreeSurface(tileSet_out.south);
-//   tileSet_out.south = shaded_wall;
-//
-//   shaded_wall = RPG_Graphics_Common_Tools::shade(*tileSet_out.north,
-//                                                  ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE)));
-//   if (!shaded_wall)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to RPG_Graphics_Common_Tools::shade(%u), aborting\n"),
-//                ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE))));
-//
-//     // clean up
-//     SDL_FreeSurface(tileSet_out.west);
-//     SDL_FreeSurface(tileSet_out.east);
-//     SDL_FreeSurface(tileSet_out.north);
-//     SDL_FreeSurface(tileSet_out.south);
-//     tileSet_out.west = NULL;
-//     tileSet_out.east = NULL;
-//     tileSet_out.north = NULL;
-//     tileSet_out.south = NULL;
-//
-//     return;
-//   } // end IF
-//   SDL_FreeSurface(tileSet_out.north);
-//   tileSet_out.north = shaded_wall;
+  // set wall opacity
+  SDL_Surface* shaded_wall = NULL;
+  shaded_wall = RPG_Graphics_Surface::shade(*tileSet_out.east.surface,
+                                            ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+  if (!shaded_wall)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
+               ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
-  // debug info
-  std::string dump_path_base = RPG_GRAPHICS_DUMP_DIR;
-  dump_path_base += ACE_DIRECTORY_SEPARATOR_STR;
+    // clean up
+    SDL_FreeSurface(tileSet_out.west.surface);
+    SDL_FreeSurface(tileSet_out.east.surface);
+    SDL_FreeSurface(tileSet_out.north.surface);
+    SDL_FreeSurface(tileSet_out.south.surface);
+    tileSet_out.west.offset_x = 0;
+    tileSet_out.west.offset_y = 0;
+    tileSet_out.west.surface = NULL;
+    tileSet_out.east.offset_x = 0;
+    tileSet_out.east.offset_y = 0;
+    tileSet_out.east.surface = NULL;
+    tileSet_out.north.offset_x = 0;
+    tileSet_out.north.offset_y = 0;
+    tileSet_out.north.surface = NULL;
+    tileSet_out.south.offset_x = 0;
+    tileSet_out.south.offset_y = 0;
+    tileSet_out.south.surface = NULL;
 
-  std::string dump_path = dump_path_base;
-  dump_path += ACE_TEXT("wall_n.png");
-  RPG_Graphics_Surface::savePNG(*tileSet_out.north, // image
-                                dump_path,          // file
-                                true);              // WITH alpha
-  dump_path = dump_path_base;
-  dump_path += ACE_TEXT("wall_s.png");
-  RPG_Graphics_Surface::savePNG(*tileSet_out.south, // image
-                                dump_path,          // file
-                                true);              // WITH alpha
-  dump_path = dump_path_base;
-  dump_path += ACE_TEXT("wall_w.png");
-  RPG_Graphics_Surface::savePNG(*tileSet_out.west, // image
-                                dump_path,         // file
-                                true);             // WITH alpha
-  dump_path = dump_path_base;
-  dump_path += ACE_TEXT("wall_e.png");
-  RPG_Graphics_Surface::savePNG(*tileSet_out.east, // image
-                                dump_path,         // file
-                                true);             // WITH alpha
+    return;
+  } // end IF
+  SDL_FreeSurface(tileSet_out.east.surface);
+  tileSet_out.east.surface = shaded_wall;
+
+  shaded_wall = RPG_Graphics_Surface::shade(*tileSet_out.west.surface,
+                                            ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+  if (!shaded_wall)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
+               ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+
+    // clean up
+    SDL_FreeSurface(tileSet_out.west.surface);
+    SDL_FreeSurface(tileSet_out.east.surface);
+    SDL_FreeSurface(tileSet_out.north.surface);
+    SDL_FreeSurface(tileSet_out.south.surface);
+    tileSet_out.west.offset_x = 0;
+    tileSet_out.west.offset_y = 0;
+    tileSet_out.west.surface = NULL;
+    tileSet_out.east.offset_x = 0;
+    tileSet_out.east.offset_y = 0;
+    tileSet_out.east.surface = NULL;
+    tileSet_out.north.offset_x = 0;
+    tileSet_out.north.offset_y = 0;
+    tileSet_out.north.surface = NULL;
+    tileSet_out.south.offset_x = 0;
+    tileSet_out.south.offset_y = 0;
+    tileSet_out.south.surface = NULL;
+
+    return;
+  } // end IF
+  SDL_FreeSurface(tileSet_out.west.surface);
+  tileSet_out.west.surface = shaded_wall;
+
+  shaded_wall = RPG_Graphics_Surface::shade(*tileSet_out.south.surface,
+                                            ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+  if (!shaded_wall)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
+               ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE))));
+
+    // clean up
+    SDL_FreeSurface(tileSet_out.west.surface);
+    SDL_FreeSurface(tileSet_out.east.surface);
+    SDL_FreeSurface(tileSet_out.north.surface);
+    SDL_FreeSurface(tileSet_out.south.surface);
+    tileSet_out.west.offset_x = 0;
+    tileSet_out.west.offset_y = 0;
+    tileSet_out.west.surface = NULL;
+    tileSet_out.east.offset_x = 0;
+    tileSet_out.east.offset_y = 0;
+    tileSet_out.east.surface = NULL;
+    tileSet_out.north.offset_x = 0;
+    tileSet_out.north.offset_y = 0;
+    tileSet_out.north.surface = NULL;
+    tileSet_out.south.offset_x = 0;
+    tileSet_out.south.offset_y = 0;
+    tileSet_out.south.surface = NULL;
+
+    return;
+  } // end IF
+  SDL_FreeSurface(tileSet_out.south.surface);
+  tileSet_out.south.surface = shaded_wall;
+
+  shaded_wall = RPG_Graphics_Surface::shade(*tileSet_out.north.surface,
+                                            ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+  if (!shaded_wall)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
+               ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+
+    // clean up
+    SDL_FreeSurface(tileSet_out.west.surface);
+    SDL_FreeSurface(tileSet_out.east.surface);
+    SDL_FreeSurface(tileSet_out.north.surface);
+    SDL_FreeSurface(tileSet_out.south.surface);
+    tileSet_out.west.offset_x = 0;
+    tileSet_out.west.offset_y = 0;
+    tileSet_out.west.surface = NULL;
+    tileSet_out.east.offset_x = 0;
+    tileSet_out.east.offset_y = 0;
+    tileSet_out.east.surface = NULL;
+    tileSet_out.north.offset_x = 0;
+    tileSet_out.north.offset_y = 0;
+    tileSet_out.north.surface = NULL;
+    tileSet_out.south.offset_x = 0;
+    tileSet_out.south.offset_y = 0;
+    tileSet_out.south.surface = NULL;
+
+    return;
+  } // end IF
+  SDL_FreeSurface(tileSet_out.north.surface);
+  tileSet_out.north.surface = shaded_wall;
+
+//   // debug info
+//   std::string dump_path_base = RPG_GRAPHICS_DUMP_DIR;
+//   dump_path_base += ACE_DIRECTORY_SEPARATOR_STR;
+//
+//   std::string dump_path = dump_path_base;
+//   dump_path += ACE_TEXT("wall_n.png");
+//   RPG_Graphics_Surface::savePNG(*tileSet_out.north.surface, // image
+//                                 dump_path,                  // file
+//                                 true);                      // WITH alpha
+//   dump_path = dump_path_base;
+//   dump_path += ACE_TEXT("wall_s.png");
+//   RPG_Graphics_Surface::savePNG(*tileSet_out.south.surface, // image
+//                                 dump_path,                  // file
+//                                 true);                      // WITH alpha
+//   dump_path = dump_path_base;
+//   dump_path += ACE_TEXT("wall_w.png");
+//   RPG_Graphics_Surface::savePNG(*tileSet_out.west.surface, // image
+//                                 dump_path,                 // file
+//                                 true);                     // WITH alpha
+//   dump_path = dump_path_base;
+//   dump_path += ACE_TEXT("wall_e.png");
+//   RPG_Graphics_Surface::savePNG(*tileSet_out.east.surface, // image
+//                                 dump_path,                 // file
+//                                 true);                     // WITH alpha
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("loaded tileset \"%s\" (type: %s, style: %s, %u tile(s))...\n"),
@@ -876,21 +968,31 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadDoorTileSet"));
 
   // init return value(s)
-  if (tileSet_out.horizontal_open)
-    SDL_FreeSurface(tileSet_out.horizontal_open);
-  if (tileSet_out.vertical_open)
-    SDL_FreeSurface(tileSet_out.vertical_open);
-  if (tileSet_out.horizontal_closed)
-    SDL_FreeSurface(tileSet_out.horizontal_closed);
-  if (tileSet_out.vertical_closed)
-    SDL_FreeSurface(tileSet_out.vertical_closed);
-  if (tileSet_out.broken)
-    SDL_FreeSurface(tileSet_out.broken);
-  tileSet_out.horizontal_open = NULL;
-  tileSet_out.vertical_open = NULL;
-  tileSet_out.horizontal_closed = NULL;
-  tileSet_out.vertical_closed = NULL;
-  tileSet_out.broken = NULL;
+  if (tileSet_out.horizontal_open.surface)
+    SDL_FreeSurface(tileSet_out.horizontal_open.surface);
+  if (tileSet_out.vertical_open.surface)
+    SDL_FreeSurface(tileSet_out.vertical_open.surface);
+  if (tileSet_out.horizontal_closed.surface)
+    SDL_FreeSurface(tileSet_out.horizontal_closed.surface);
+  if (tileSet_out.vertical_closed.surface)
+    SDL_FreeSurface(tileSet_out.vertical_closed.surface);
+  if (tileSet_out.broken.surface)
+    SDL_FreeSurface(tileSet_out.broken.surface);
+  tileSet_out.horizontal_open.offset_x = 0;
+  tileSet_out.horizontal_open.offset_y = 0;
+  tileSet_out.horizontal_open.surface = NULL;
+  tileSet_out.vertical_open.offset_x = 0;
+  tileSet_out.vertical_open.offset_y = 0;
+  tileSet_out.vertical_open.surface = NULL;
+  tileSet_out.horizontal_closed.offset_x = 0;
+  tileSet_out.horizontal_closed.offset_y = 0;
+  tileSet_out.horizontal_closed.surface = NULL;
+  tileSet_out.vertical_closed.offset_x = 0;
+  tileSet_out.vertical_closed.offset_y = 0;
+  tileSet_out.vertical_closed.surface = NULL;
+  tileSet_out.broken.offset_x = 0;
+  tileSet_out.broken.offset_y = 0;
+  tileSet_out.broken.surface = NULL;
 
   // step0: retrieve appropriate graphic type
   RPG_Graphics_StyleUnion style;
@@ -932,40 +1034,52 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
   path_base += ACE_DIRECTORY_SEPARATOR_STR;
 
   std::string path = path_base;
-  SDL_Surface* current_surface = NULL;
+  RPG_Graphics_Tile_t current_tile;
   for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin();
        iterator != graphic.tileset.tiles.end();
        iterator++)
   {
-    current_surface = NULL;
+    current_tile.offset_x = (*iterator).offsetX;
+    current_tile.offset_y = (*iterator).offsetY;
+    current_tile.surface = NULL;
 
     // load file
     path = path_base;
     path += (*iterator).file;
-    current_surface = RPG_Graphics_Surface::load(path,  // file
-                                                 true); // convert to display format
-    if (!current_surface)
+    current_tile.surface = RPG_Graphics_Surface::load(path,  // file
+                                                      true); // convert to display format
+    if (!current_tile.surface)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
                  path.c_str()));
 
       // clean up
-      if (tileSet_out.horizontal_open)
-        SDL_FreeSurface(tileSet_out.horizontal_open);
-      if (tileSet_out.vertical_open)
-        SDL_FreeSurface(tileSet_out.vertical_open);
-      if (tileSet_out.horizontal_closed)
-        SDL_FreeSurface(tileSet_out.horizontal_closed);
-      if (tileSet_out.vertical_closed)
-        SDL_FreeSurface(tileSet_out.vertical_closed);
-      if (tileSet_out.broken)
-        SDL_FreeSurface(tileSet_out.broken);
-      tileSet_out.horizontal_open = NULL;
-      tileSet_out.vertical_open = NULL;
-      tileSet_out.horizontal_closed = NULL;
-      tileSet_out.vertical_closed = NULL;
-      tileSet_out.broken = NULL;
+      if (tileSet_out.horizontal_open.surface)
+        SDL_FreeSurface(tileSet_out.horizontal_open.surface);
+      if (tileSet_out.vertical_open.surface)
+        SDL_FreeSurface(tileSet_out.vertical_open.surface);
+      if (tileSet_out.horizontal_closed.surface)
+        SDL_FreeSurface(tileSet_out.horizontal_closed.surface);
+      if (tileSet_out.vertical_closed.surface)
+        SDL_FreeSurface(tileSet_out.vertical_closed.surface);
+      if (tileSet_out.broken.surface)
+        SDL_FreeSurface(tileSet_out.broken.surface);
+      tileSet_out.horizontal_open.offset_x = 0;
+      tileSet_out.horizontal_open.offset_y = 0;
+      tileSet_out.horizontal_open.surface = NULL;
+      tileSet_out.vertical_open.offset_x = 0;
+      tileSet_out.vertical_open.offset_y = 0;
+      tileSet_out.vertical_open.surface = NULL;
+      tileSet_out.horizontal_closed.offset_x = 0;
+      tileSet_out.horizontal_closed.offset_y = 0;
+      tileSet_out.horizontal_closed.surface = NULL;
+      tileSet_out.vertical_closed.offset_x = 0;
+      tileSet_out.vertical_closed.offset_y = 0;
+      tileSet_out.vertical_closed.surface = NULL;
+      tileSet_out.broken.offset_x = 0;
+      tileSet_out.broken.offset_y = 0;
+      tileSet_out.broken.surface = NULL;
 
       return;
     } // end IF
@@ -975,18 +1089,18 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
       case ORIENTATION_HORIZONTAL:
       {
         if ((*iterator).open)
-          tileSet_out.horizontal_open = current_surface;
+          tileSet_out.horizontal_open = current_tile;
         else
-          tileSet_out.horizontal_closed = current_surface;
+          tileSet_out.horizontal_closed = current_tile;
 
         break;
       }
       case ORIENTATION_VERTICAL:
       {
         if ((*iterator).open)
-          tileSet_out.vertical_open = current_surface;
+          tileSet_out.vertical_open = current_tile;
         else
-          tileSet_out.vertical_closed = current_surface;
+          tileSet_out.vertical_closed = current_tile;
 
         break;
       }
@@ -994,7 +1108,7 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
       {
         if ((*iterator).broken)
         {
-          tileSet_out.broken = current_surface;
+          tileSet_out.broken = current_tile;
 
           break;
         } // end IF
@@ -1007,21 +1121,31 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
                    RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString((*iterator).orientation).c_str()));
 
         // clean up
-        if (tileSet_out.horizontal_open)
-          SDL_FreeSurface(tileSet_out.horizontal_open);
-        if (tileSet_out.vertical_open)
-          SDL_FreeSurface(tileSet_out.vertical_open);
-        if (tileSet_out.horizontal_closed)
-          SDL_FreeSurface(tileSet_out.horizontal_closed);
-        if (tileSet_out.vertical_closed)
-          SDL_FreeSurface(tileSet_out.vertical_closed);
-        if (tileSet_out.broken)
-          SDL_FreeSurface(tileSet_out.broken);
-        tileSet_out.horizontal_open = NULL;
-        tileSet_out.vertical_open = NULL;
-        tileSet_out.horizontal_closed = NULL;
-        tileSet_out.vertical_closed = NULL;
-        tileSet_out.broken = NULL;
+        if (tileSet_out.horizontal_open.surface)
+          SDL_FreeSurface(tileSet_out.horizontal_open.surface);
+        if (tileSet_out.vertical_open.surface)
+          SDL_FreeSurface(tileSet_out.vertical_open.surface);
+        if (tileSet_out.horizontal_closed.surface)
+          SDL_FreeSurface(tileSet_out.horizontal_closed.surface);
+        if (tileSet_out.vertical_closed.surface)
+          SDL_FreeSurface(tileSet_out.vertical_closed.surface);
+        if (tileSet_out.broken.surface)
+          SDL_FreeSurface(tileSet_out.broken.surface);
+        tileSet_out.horizontal_open.offset_x = 0;
+        tileSet_out.horizontal_open.offset_y = 0;
+        tileSet_out.horizontal_open.surface = NULL;
+        tileSet_out.vertical_open.offset_x = 0;
+        tileSet_out.vertical_open.offset_y = 0;
+        tileSet_out.vertical_open.surface = NULL;
+        tileSet_out.horizontal_closed.offset_x = 0;
+        tileSet_out.horizontal_closed.offset_y = 0;
+        tileSet_out.horizontal_closed.surface = NULL;
+        tileSet_out.vertical_closed.offset_x = 0;
+        tileSet_out.vertical_closed.offset_y = 0;
+        tileSet_out.vertical_closed.surface = NULL;
+        tileSet_out.broken.offset_x = 0;
+        tileSet_out.broken.offset_y = 0;
+        tileSet_out.broken.surface = NULL;
 
         return;
       }
