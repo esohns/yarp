@@ -23,6 +23,7 @@
 #include <rpg_map_common_tools.h>
 
 #include <rpg_graphics_dictionary.h>
+#include <rpg_graphics_surface.h>
 #include <rpg_graphics_common_tools.h>
 #include <rpg_graphics_SDL_tools.h>
 
@@ -130,12 +131,12 @@ do_initVideo(const std::string& graphicsDirectory_in,
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += icon_graphic.file;
   SDL_Surface* icon_image = NULL;
-  icon_image = RPG_Graphics_Common_Tools::loadFile(path,   // file
-                                                   false); // DON'T convert to display format (no screen yet !)
+  icon_image = RPG_Graphics_Surface::load(path,   // file
+                                          false); // DON'T convert to display format (no screen yet !)
   if (!icon_image)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
+               ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
                path.c_str()));
 
     return false;
@@ -588,10 +589,10 @@ do_work(const mode_t& mode_in,
                    ACE_TEXT("showing graphics type \"%s\"...\n"),
                    RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type).c_str()));
 
-        RPG_Graphics_Common_Tools::put((screen->w - image->w) / 2, // location x
-                                       (screen->h - image->h) / 2, // location y
-                                       *image,                     // image
-                                       screen);                    // screen
+        RPG_Graphics_Surface::put((screen->w - image->w) / 2, // location x
+                                  (screen->h - image->h) / 2, // location y
+                                  *image,                     // image
+                                  screen);                    // screen
         if (SDL_Flip(screen))
         {
           ACE_DEBUG((LM_ERROR,

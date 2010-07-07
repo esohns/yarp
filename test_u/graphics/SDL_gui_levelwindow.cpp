@@ -20,6 +20,7 @@
 #include "SDL_gui_levelwindow.h"
 
 #include <rpg_graphics_defines.h>
+#include <rpg_graphics_surface.h>
 #include <rpg_graphics_common_tools.h>
 
 #include <rpg_map_common_tools.h>
@@ -274,10 +275,10 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
            (current_map_position.first < 0) ||
            (current_map_position.first >= myMap.getDimensions().first)))
       {
-        RPG_Graphics_Common_Tools::put(x,
-                                       y,
-                                       *myCurrentOffMapTile,
-                                       targetSurface_in);
+        RPG_Graphics_Surface::put(x,
+                                  y,
+                                  *myCurrentOffMapTile,
+                                  targetSurface_in);
 
         continue;
       } // end IF
@@ -286,10 +287,10 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       if ((myMap.getElement(current_map_position) == MAPELEMENT_FLOOR) ||
           (myMap.getElement(current_map_position) == MAPELEMENT_DOOR))
       {
-        RPG_Graphics_Common_Tools::put(x,
-                                       y,
-                                       *myCurrentFloorSet.front(),
-                                       targetSurface_in);
+        RPG_Graphics_Surface::put(x,
+                                  y,
+                                  *myCurrentFloorSet.front(),
+                                  targetSurface_in);
       } // end IF
     } // end FOR
   } // end FOR
@@ -329,10 +330,10 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
         if ((*wall_iterator).second.west)
         {
           // *NOTE*: west is just a "darkened" version of east...
-          RPG_Graphics_Common_Tools::put(x,
-                                         y - (*wall_iterator).second.west->h + (myCurrentFloorSet.front()->h / 2),
-                                         *(myCurrentWallSet.east),
-                                         targetSurface_in);
+          RPG_Graphics_Surface::put(x,
+                                    y - (*wall_iterator).second.west->h + (myCurrentFloorSet.front()->h / 2),
+                                    *(myCurrentWallSet.east),
+                                    targetSurface_in);
 //           RPG_Graphics_Common_Tools::put(x,
 //                                          y - (*wall_iterator).second.west->h + (myCurrentFloorSet.front()->h / 2),
 //                                          *(*wall_iterator).second.west,
@@ -341,10 +342,10 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
         if ((*wall_iterator).second.north)
         {
           // *NOTE*: north is just a "darkened" version of south...
-          RPG_Graphics_Common_Tools::put(x + (myCurrentFloorSet.front()->w / 2),
-                                         y - (*wall_iterator).second.north->h + (myCurrentFloorSet.front()->h / 2),
-                                         *(myCurrentWallSet.south),
-                                         targetSurface_in);
+          RPG_Graphics_Surface::put(x + (myCurrentFloorSet.front()->w / 2),
+                                    y - (*wall_iterator).second.north->h + (myCurrentFloorSet.front()->h / 2),
+                                    *(myCurrentWallSet.south),
+                                    targetSurface_in);
 //           RPG_Graphics_Common_Tools::put(x + (myCurrentFloorSet.front()->w / 2),
 //                                          y - (*wall_iterator).second.north->h + (myCurrentFloorSet.front()->h / 2),
 //                                          *(*wall_iterator).second.north,
@@ -355,25 +356,25 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       // step2: doors
       if (door_iterator != myDoorTiles.end())
       {
-        RPG_Graphics_Common_Tools::put(x + (myCurrentFloorSet.front()->w / 4),
-                                       y - (*door_iterator).second->h + (myCurrentDoorSet.horizontal_open->h / 2) - (myCurrentFloorSet.front()->h / 4),
-                                       *(*door_iterator).second,
-                                       targetSurface_in);
+        RPG_Graphics_Surface::put(x + (myCurrentFloorSet.front()->w / 4),
+                                  y - (*door_iterator).second->h + (myCurrentDoorSet.horizontal_open->h / 2) - (myCurrentFloorSet.front()->h / 4),
+                                  *(*door_iterator).second,
+                                  targetSurface_in);
       } // end IF
 
       // step3: walls (south & east)
       if (wall_iterator != myWallTiles.end())
       {
         if ((*wall_iterator).second.south)
-          RPG_Graphics_Common_Tools::put(x,
-                                         y - (*wall_iterator).second.south->h + myCurrentFloorSet.front()->h,
-                                         *(*wall_iterator).second.south,
-                                         targetSurface_in);
+          RPG_Graphics_Surface::put(x,
+                                    y - (*wall_iterator).second.south->h + myCurrentFloorSet.front()->h,
+                                    *(*wall_iterator).second.south,
+                                    targetSurface_in);
         if ((*wall_iterator).second.east)
-          RPG_Graphics_Common_Tools::put(x + (myCurrentFloorSet.front()->w / 2),
-                                         y - (*wall_iterator).second.east->h + myCurrentFloorSet.front()->h,
-                                         *(*wall_iterator).second.east,
-                                         targetSurface_in);
+          RPG_Graphics_Surface::put(x + (myCurrentFloorSet.front()->w / 2),
+                                    y - (*wall_iterator).second.east->h + myCurrentFloorSet.front()->h,
+                                    *(*wall_iterator).second.east,
+                                    targetSurface_in);
       } // end IF
     } // end FOR
   } // end FOR

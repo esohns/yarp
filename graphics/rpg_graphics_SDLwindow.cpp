@@ -21,6 +21,7 @@
 
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_surface.h"
 #include "rpg_graphics_common_tools.h"
 
 RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_WindowSize_t& size_in,
@@ -234,15 +235,15 @@ RPG_Graphics_SDLWindow::loadGraphics(const RPG_Graphics_Type& graphicType_in)
     // element part of the interface ?
     if ((*iterator).type.discriminator == RPG_Graphics_ElementTypeUnion::INTERFACEELEMENTTYPE)
     {
-      element_image = RPG_Graphics_Common_Tools::get((*iterator).offsetX,
-                                                     (*iterator).offsetY,
-                                                     (*iterator).width,
-                                                     (*iterator).height,
-                                                     *interface_image);
+      element_image = RPG_Graphics_Surface::get((*iterator).offsetX,
+                                                (*iterator).offsetY,
+                                                (*iterator).width,
+                                                (*iterator).height,
+                                                *interface_image);
       if (!element_image)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Common_Tools::get(%u,%u,%u,%u) from \"%s\", aborting\n"),
+                   ACE_TEXT("failed to RPG_Graphics_Surface::get(%u,%u,%u,%u) from \"%s\", aborting\n"),
                    (*iterator).offsetX,
                    (*iterator).offsetY,
                    ((*iterator).offsetX + (*iterator).width),

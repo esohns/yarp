@@ -63,38 +63,16 @@ class RPG_Graphics_Common_Tools
   // *NOTE*: uncached (!) surfaces need to be SDL_FreeSurface()ed by the user !
   static SDL_Surface* loadGraphic(const RPG_Graphics_Type&, // graphic
                                   const bool& = true);      // cache graphic ?
-  // *NOTE*: results need to be SDL_FreeSurface()ed by the user !
-  // *WARNING*: display format is not available UNTIL AFTER SDL_SetVideoMode !
-  static SDL_Surface* loadFile(const std::string&,  // image file
-                               const bool& = true); // convert to display format ?
 
-  static SDL_Surface* get(const unsigned long&, // offset x (top-left == 0,0)
-                          const unsigned long&, // offset y (top-left == 0,0)
-                          const unsigned long&, // width
-                          const unsigned long&, // height
-                          const SDL_Surface&);  // image
-  static void put(const unsigned long&, // offset x (top left == 0,0)
-                  const unsigned long&, // offset y (top left == 0,0)
-                  const SDL_Surface&,   // image
-                  SDL_Surface*);        // target surface (screen)
-  static void putText(const RPG_Graphics_Type&, // font
-                      const std::string&,       // string
-                      const SDL_Color&,         // color
-                      const bool&,              // shade ?
-                      const SDL_Color&,         // shade color
-                      const unsigned long&,     // offset x (top left == 0,0)
-                      const unsigned long&,     // offset y (top left == 0,0)
-                      SDL_Surface*);            // target surface (screen)
+  static SDL_Surface* renderText(const RPG_Graphics_Type&, // font
+                                 const std::string&,       // string
+                                 const SDL_Color&);        // color
 
   // *NOTE*: source/target image must already be loaded into the framebuffer !
   static void fade(const bool&,   // fade in ? (else out)
                    const float&,  // interval (seconds)
                    const Uint32&, // fade to/from color
                    SDL_Surface*); // screen
-
-  static void savePNG(const SDL_Surface&, // image
-                      const std::string&, // file
-                      const bool&);       // with alpha ?
 
  private:
   // safety measures
@@ -109,20 +87,6 @@ class RPG_Graphics_Common_Tools
 
   // convert style (wall-, floor-, ...) to appropriate graphic metatype
   static const RPG_Graphics_Type styleToType(const RPG_Graphics_StyleUnion&);
-
-  static const bool loadPNG(const unsigned char*, // source buffer
-//                             const unsigned char&, // alpha (0: transparent --> 255: opaque)
-                            SDL_Surface*&);       // return value: SDL surface
-
-  static SDL_Surface* renderText(const RPG_Graphics_Type&, // font
-                                 const std::string&,       // string
-                                 const SDL_Color&);        // color
-
-  static void blend(const SDL_Surface&, // source image
-                    SDL_Surface*);      // target image
-  // *NOTE*: results need to be SDL_FreeSurface()ed by the user !
-  static SDL_Surface* shade(const SDL_Surface&,               // source image
-                            const Uint8& = SDL_ALPHA_OPAQUE); // alpha (0: transparent --> 255: opaque)
 
   static void fade(const float&,  // interval (seconds)
                    SDL_Surface*,  // target image

@@ -20,6 +20,7 @@
 #include "SDL_gui_mainwindow.h"
 
 #include <rpg_graphics_defines.h>
+#include <rpg_graphics_surface.h>
 #include <rpg_graphics_common_tools.h>
 #include <rpg_graphics_SDL_tools.h>
 
@@ -80,10 +81,10 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   for (i = offset_in.first + myBorderLeft;
        i < (ACE_static_cast(unsigned long, targetSurface_in->w) - myBorderRight);
        i += (*iterator).second->w)
-    RPG_Graphics_Common_Tools::put(i,
-                                   offset_in.second,
-                                   *(*iterator).second,
-                                   targetSurface_in);
+    RPG_Graphics_Surface::put(i,
+                              offset_in.second,
+                              *(*iterator).second,
+                              targetSurface_in);
 
   clipRect.x = offset_in.first;
   clipRect.y = (offset_in.second + myBorderTop);
@@ -102,10 +103,10 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   for (i = (offset_in.second + myBorderTop);
        i < (ACE_static_cast(unsigned long, targetSurface_in->h) - myBorderBottom);
        i += (*iterator).second->h)
-    RPG_Graphics_Common_Tools::put(offset_in.first,
-                                   i,
-                                   *(*iterator).second,
-                                   targetSurface_in);
+    RPG_Graphics_Surface::put(offset_in.first,
+                              i,
+                              *(*iterator).second,
+                              targetSurface_in);
 
   clipRect.x = (targetSurface_in->w - myBorderRight);
   clipRect.y = offset_in.second + myBorderTop;
@@ -124,10 +125,10 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   for (i = (offset_in.second + myBorderTop);
        i < (ACE_static_cast(unsigned long, targetSurface_in->h) - myBorderBottom);
        i += (*iterator).second->h)
-    RPG_Graphics_Common_Tools::put((targetSurface_in->w - myBorderRight),
-                                   i,
-                                   *(*iterator).second,
-                                   targetSurface_in);
+    RPG_Graphics_Surface::put((targetSurface_in->w - myBorderRight),
+                              i,
+                              *(*iterator).second,
+                              targetSurface_in);
 
   clipRect.x = offset_in.first + myBorderLeft;
   clipRect.y = (targetSurface_in->h - myBorderBottom);
@@ -146,10 +147,10 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   for (i = (offset_in.first + myBorderLeft);
        i < (targetSurface_in->w - myBorderRight);
        i += (*iterator).second->w)
-    RPG_Graphics_Common_Tools::put(i,
-                                   (targetSurface_in->h - myBorderBottom),
-                                   *(*iterator).second,
-                                   targetSurface_in);
+    RPG_Graphics_Surface::put(i,
+                              (targetSurface_in->h - myBorderBottom),
+                              *(*iterator).second,
+                              targetSurface_in);
 
   // reset clipping area
   clipRect.x = 0;
@@ -168,31 +169,31 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   // step2: draw corners
   iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_TL);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Common_Tools::put(offset_in.first,
-                                 offset_in.second,
-                                 *(*iterator).second,
-                                 targetSurface_in);
+  RPG_Graphics_Surface::put(offset_in.first,
+                            offset_in.second,
+                            *(*iterator).second,
+                            targetSurface_in);
 
   iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_TR);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Common_Tools::put((targetSurface_in->w - (*iterator).second->w),
-                                 offset_in.second,
-                                 *(*iterator).second,
-                                 targetSurface_in);
+  RPG_Graphics_Surface::put((targetSurface_in->w - (*iterator).second->w),
+                            offset_in.second,
+                            *(*iterator).second,
+                            targetSurface_in);
 
   iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_BL);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Common_Tools::put(offset_in.first,
-                                 (targetSurface_in->h - (*iterator).second->h),
-                                 *(*iterator).second,
-                                 targetSurface_in);
+  RPG_Graphics_Surface::put(offset_in.first,
+                            (targetSurface_in->h - (*iterator).second->h),
+                            *(*iterator).second,
+                            targetSurface_in);
 
   iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_BR);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Common_Tools::put((targetSurface_in->w - (*iterator).second->w),
-                                 (targetSurface_in->h - (*iterator).second->h),
-                                 *(*iterator).second,
-                                 targetSurface_in);
+  RPG_Graphics_Surface::put((targetSurface_in->w - (*iterator).second->w),
+                            (targetSurface_in->h - (*iterator).second->h),
+                            *(*iterator).second,
+                            targetSurface_in);
 
   // step3: fill central area
   iterator = myElementGraphics.find(INTERFACEELEMENT_CENTER);
@@ -215,10 +216,10 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
     for (unsigned long j = (offset_in.first + myBorderLeft);
          j < (targetSurface_in->w - myBorderRight);
          j += (*iterator).second->w)
-      RPG_Graphics_Common_Tools::put(j,
-                                     i,
-                                     *(*iterator).second,
-                                     targetSurface_in);
+      RPG_Graphics_Surface::put(j,
+                                i,
+                                *(*iterator).second,
+                                targetSurface_in);
 
   // step4: draw title (if any)
   if (!myTitle.empty())
@@ -237,16 +238,16 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
     } // end IF
     RPG_Graphics_TextSize_t title_size = RPG_Graphics_Common_Tools::textSize(myTitleFont,
                                                                              myTitle);
-    RPG_Graphics_Common_Tools::putText(myTitleFont,
-                                       myTitle,
-                                       RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_COLOR,
-                                                                               *targetSurface_in),
-                                       true, // add shade
-                                       RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
-                                                                               *targetSurface_in),
-                                       myBorderLeft, // top left
-                                       ((myBorderTop - title_size.second) / 2), // center of top border
-                                       targetSurface_in);
+    RPG_Graphics_Surface::putText(myTitleFont,
+                                  myTitle,
+                                  RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_COLOR,
+                                                                          *targetSurface_in),
+                                  true, // add shade
+                                  RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+                                                                          *targetSurface_in),
+                                  myBorderLeft, // top left
+                                  ((myBorderTop - title_size.second) / 2), // center of top border
+                                  targetSurface_in);
   } // end IF
 
   // reset clipping area
