@@ -172,6 +172,7 @@ class RPG_Graphics_Tile_Type
 
 //     virtual void pre();
   virtual void type(const RPG_Graphics_TileType&);
+  virtual void reference(const RPG_Graphics_Type&);
   virtual void style(const RPG_Graphics_StyleUnion&);
   virtual void orientation(const RPG_Graphics_Orientation&);
   virtual void file(const ::std::string&);

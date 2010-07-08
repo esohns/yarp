@@ -47,7 +47,6 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
 
   // Construct the parser.
   //
-
   RPG_Graphics_Category_Type                  category_p;
   RPG_Graphics_Type_Type                      type_p;
   RPG_Graphics_Tile_Type                      tile_p;
@@ -58,6 +57,7 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
   ::xml_schema::integer_pimpl                 int_p;
   ::xml_schema::boolean_pimpl                 bool_p;
   tile_p.parsers(tileType_p,
+                 type_p,
                  style_p,
                  orientation_p,
                  string_p,

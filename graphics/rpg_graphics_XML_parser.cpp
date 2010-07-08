@@ -260,6 +260,7 @@ RPG_Graphics_Tile_Type::RPG_Graphics_Tile_Type()
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Tile_Type::RPG_Graphics_Tile_Type"));
 
   myCurrentTile.type = RPG_GRAPHICS_TILETYPE_INVALID;
+  myCurrentTile.reference = RPG_GRAPHICS_TYPE_INVALID;
   myCurrentTile.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
   myCurrentTile.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentTile.orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
@@ -275,6 +276,13 @@ void RPG_Graphics_Tile_Type::type(const RPG_Graphics_TileType& type_in)
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Tile_Type::type"));
 
   myCurrentTile.type = type_in;
+}
+
+void RPG_Graphics_Tile_Type::reference(const RPG_Graphics_Type& reference_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Tile_Type::reference"));
+
+  myCurrentTile.reference = reference_in;
 }
 
 void RPG_Graphics_Tile_Type::style(const RPG_Graphics_StyleUnion& style_in)
@@ -334,6 +342,7 @@ RPG_Graphics_Tile RPG_Graphics_Tile_Type::post_RPG_Graphics_Tile_Type()
 
   // clear structure
   myCurrentTile.type = RPG_GRAPHICS_TILETYPE_INVALID;
+  myCurrentTile.reference = RPG_GRAPHICS_TYPE_INVALID;
   myCurrentTile.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
   myCurrentTile.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentTile.orientation = RPG_GRAPHICS_ORIENTATION_INVALID;

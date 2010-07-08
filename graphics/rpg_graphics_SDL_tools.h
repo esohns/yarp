@@ -37,14 +37,17 @@ class RPG_Graphics_SDL_Tools
  public:
   // some colors
   static Uint32 CLR32_BLACK;
+  static Uint32 CLR32_BLACK_A10;
   static Uint32 CLR32_BLACK_A30;
   static Uint32 CLR32_BLACK_A50;
   static Uint32 CLR32_BLACK_A70;
+  static Uint32 CLR32_BLACK_A90;
   static Uint32 CLR32_GREEN;
   static Uint32 CLR32_YELLOW;
   static Uint32 CLR32_ORANGE;
   static Uint32 CLR32_RED;
   static Uint32 CLR32_GRAY20;
+  static Uint32 CLR32_GRAY20_A10;
   static Uint32 CLR32_GRAY70;
   static Uint32 CLR32_GRAY77;
   static Uint32 CLR32_PURPLE44;

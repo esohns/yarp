@@ -636,7 +636,7 @@ do_work(const mode_t& mode_in,
                   dump_path += ACE_TEXT(".png");
                   RPG_Graphics_Surface::savePNG(*SDL_GetVideoSurface(), // image
                                                 dump_path,              // file
-                                                true);                  // WITH alpha
+                                                false);                 // no alpha
 
                   break;
                 }
@@ -742,7 +742,7 @@ do_work(const mode_t& mode_in,
                 dump_path += ACE_TEXT(".png");
                 RPG_Graphics_Surface::savePNG(*SDL_GetVideoSurface(), // image
                                               dump_path,              // file
-                                              true);                  // WITH alpha
+                                              false);                 // no alpha
 
                 break;
               }

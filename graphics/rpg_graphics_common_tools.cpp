@@ -52,8 +52,6 @@ unsigned long                RPG_Graphics_Common_Tools::myOldestCacheEntry = 0;
 unsigned long                RPG_Graphics_Common_Tools::myCacheSize = 0;
 RPG_Graphics_GraphicsCache_t RPG_Graphics_Common_Tools::myGraphicsCache;
 
-SDL_Surface*                 RPG_Graphics_Common_Tools::myWallBlend = NULL;
-
 RPG_Graphics_FontCache_t     RPG_Graphics_Common_Tools::myFontCache;
 
 bool                         RPG_Graphics_Common_Tools::myInitialized = false;
@@ -98,7 +96,7 @@ RPG_Graphics_Common_Tools::init(const std::string& directory_in,
     return;
   } // end IF
 
-  myInitialized = initWallBlend();
+  myInitialized = true;
 }
 
 void
@@ -129,13 +127,6 @@ RPG_Graphics_Common_Tools::fini()
     } // end FOR
     myFontCache.clear();
   } // end lock scope
-
-  // free the wall blend
-  if (myWallBlend)
-  {
-    SDL_FreeSurface(myWallBlend);
-    myWallBlend = NULL;
-  } // end IF
 
   myInitialized = false;
 }
@@ -177,6 +168,12 @@ RPG_Graphics_Common_Tools::tileToString(const RPG_Graphics_Tile& tile_in)
 
   result += ACE_TEXT("type: ");
   result += RPG_Graphics_TileTypeHelper::RPG_Graphics_TileTypeToString(tile_in.type);
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT("reference: ");
+  if (tile_in.reference != RPG_GRAPHICS_TYPE_INVALID)
+    result += RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(tile_in.reference);
+  else
+    result += ACE_TEXT("N/A");
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT("style: ");
   if (tile_in.style.discriminator == RPG_Graphics_StyleUnion::INVALID)
@@ -676,283 +673,6 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
     } // end SWITCH
   } // end FOR
 
-  // sanity checks
-  ACE_ASSERT(tileSet_out.west.surface);
-  ACE_ASSERT(tileSet_out.east.surface);
-  ACE_ASSERT(tileSet_out.north.surface);
-  ACE_ASSERT(tileSet_out.south.surface);
-
-  // *NOTE*: west is just a "darkened" version of east...
-  SDL_Surface* copy = NULL;
-  copy = RPG_Graphics_SDL_Tools::copy(*tileSet_out.east.surface);
-  if (!copy)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_SDL_Tools::copy(), aborting\n")));
-
-    // clean up
-    SDL_FreeSurface(tileSet_out.west.surface);
-    SDL_FreeSurface(tileSet_out.east.surface);
-    SDL_FreeSurface(tileSet_out.north.surface);
-    SDL_FreeSurface(tileSet_out.south.surface);
-    tileSet_out.west.offset_x = 0;
-    tileSet_out.west.offset_y = 0;
-    tileSet_out.west.surface = NULL;
-    tileSet_out.east.offset_x = 0;
-    tileSet_out.east.offset_y = 0;
-    tileSet_out.east.surface = NULL;
-    tileSet_out.north.offset_x = 0;
-    tileSet_out.north.offset_y = 0;
-    tileSet_out.north.surface = NULL;
-    tileSet_out.south.offset_x = 0;
-    tileSet_out.south.offset_y = 0;
-    tileSet_out.south.surface = NULL;
-
-    return;
-  } // end IF
-  if (SDL_BlitSurface(myWallBlend,
-                      NULL,
-                      copy,
-                      NULL))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-               SDL_GetError()));
-
-    // clean up
-    SDL_FreeSurface(tileSet_out.west.surface);
-    SDL_FreeSurface(tileSet_out.east.surface);
-    SDL_FreeSurface(tileSet_out.north.surface);
-    SDL_FreeSurface(tileSet_out.south.surface);
-    tileSet_out.west.offset_x = 0;
-    tileSet_out.west.offset_y = 0;
-    tileSet_out.west.surface = NULL;
-    tileSet_out.east.offset_x = 0;
-    tileSet_out.east.offset_y = 0;
-    tileSet_out.east.surface = NULL;
-    tileSet_out.north.offset_x = 0;
-    tileSet_out.north.offset_y = 0;
-    tileSet_out.north.surface = NULL;
-    tileSet_out.south.offset_x = 0;
-    tileSet_out.south.offset_y = 0;
-    tileSet_out.south.surface = NULL;
-    SDL_FreeSurface(copy);
-
-    return;
-  } // end IF
-  SDL_FreeSurface(tileSet_out.west.surface);
-  tileSet_out.west.surface = copy;
-  // *NOTE*: north is just a "darkened" version of south...
-  copy = RPG_Graphics_SDL_Tools::copy(*tileSet_out.south.surface);
-  if (!copy)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_SDL_Tools::copy(), aborting\n")));
-
-    // clean up
-    SDL_FreeSurface(tileSet_out.west.surface);
-    SDL_FreeSurface(tileSet_out.east.surface);
-    SDL_FreeSurface(tileSet_out.north.surface);
-    SDL_FreeSurface(tileSet_out.south.surface);
-    tileSet_out.west.offset_x = 0;
-    tileSet_out.west.offset_y = 0;
-    tileSet_out.west.surface = NULL;
-    tileSet_out.east.offset_x = 0;
-    tileSet_out.east.offset_y = 0;
-    tileSet_out.east.surface = NULL;
-    tileSet_out.north.offset_x = 0;
-    tileSet_out.north.offset_y = 0;
-    tileSet_out.north.surface = NULL;
-    tileSet_out.south.offset_x = 0;
-    tileSet_out.south.offset_y = 0;
-    tileSet_out.south.surface = NULL;
-
-    return;
-  } // end IF
-  if (SDL_BlitSurface(myWallBlend,
-                      NULL,
-                      copy,
-                      NULL))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-               SDL_GetError()));
-
-    // clean up
-    SDL_FreeSurface(tileSet_out.west.surface);
-    SDL_FreeSurface(tileSet_out.east.surface);
-    SDL_FreeSurface(tileSet_out.north.surface);
-    SDL_FreeSurface(tileSet_out.south.surface);
-    tileSet_out.west.offset_x = 0;
-    tileSet_out.west.offset_y = 0;
-    tileSet_out.west.surface = NULL;
-    tileSet_out.east.offset_x = 0;
-    tileSet_out.east.offset_y = 0;
-    tileSet_out.east.surface = NULL;
-    tileSet_out.north.offset_x = 0;
-    tileSet_out.north.offset_y = 0;
-    tileSet_out.north.surface = NULL;
-    tileSet_out.south.offset_x = 0;
-    tileSet_out.south.offset_y = 0;
-    tileSet_out.south.surface = NULL;
-    SDL_FreeSurface(copy);
-
-    return;
-  } // end IF
-  SDL_FreeSurface(tileSet_out.north.surface);
-  tileSet_out.north.surface = copy;
-
-  // set wall opacity
-  SDL_Surface* shaded_wall = NULL;
-  shaded_wall = RPG_Graphics_Surface::shade(*tileSet_out.east.surface,
-                                            ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE)));
-  if (!shaded_wall)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-               ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE))));
-
-    // clean up
-    SDL_FreeSurface(tileSet_out.west.surface);
-    SDL_FreeSurface(tileSet_out.east.surface);
-    SDL_FreeSurface(tileSet_out.north.surface);
-    SDL_FreeSurface(tileSet_out.south.surface);
-    tileSet_out.west.offset_x = 0;
-    tileSet_out.west.offset_y = 0;
-    tileSet_out.west.surface = NULL;
-    tileSet_out.east.offset_x = 0;
-    tileSet_out.east.offset_y = 0;
-    tileSet_out.east.surface = NULL;
-    tileSet_out.north.offset_x = 0;
-    tileSet_out.north.offset_y = 0;
-    tileSet_out.north.surface = NULL;
-    tileSet_out.south.offset_x = 0;
-    tileSet_out.south.offset_y = 0;
-    tileSet_out.south.surface = NULL;
-
-    return;
-  } // end IF
-  SDL_FreeSurface(tileSet_out.east.surface);
-  tileSet_out.east.surface = shaded_wall;
-
-  shaded_wall = RPG_Graphics_Surface::shade(*tileSet_out.west.surface,
-                                            ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE)));
-  if (!shaded_wall)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-               ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE))));
-
-    // clean up
-    SDL_FreeSurface(tileSet_out.west.surface);
-    SDL_FreeSurface(tileSet_out.east.surface);
-    SDL_FreeSurface(tileSet_out.north.surface);
-    SDL_FreeSurface(tileSet_out.south.surface);
-    tileSet_out.west.offset_x = 0;
-    tileSet_out.west.offset_y = 0;
-    tileSet_out.west.surface = NULL;
-    tileSet_out.east.offset_x = 0;
-    tileSet_out.east.offset_y = 0;
-    tileSet_out.east.surface = NULL;
-    tileSet_out.north.offset_x = 0;
-    tileSet_out.north.offset_y = 0;
-    tileSet_out.north.surface = NULL;
-    tileSet_out.south.offset_x = 0;
-    tileSet_out.south.offset_y = 0;
-    tileSet_out.south.surface = NULL;
-
-    return;
-  } // end IF
-  SDL_FreeSurface(tileSet_out.west.surface);
-  tileSet_out.west.surface = shaded_wall;
-
-  shaded_wall = RPG_Graphics_Surface::shade(*tileSet_out.south.surface,
-                                            ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE)));
-  if (!shaded_wall)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-               ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE))));
-
-    // clean up
-    SDL_FreeSurface(tileSet_out.west.surface);
-    SDL_FreeSurface(tileSet_out.east.surface);
-    SDL_FreeSurface(tileSet_out.north.surface);
-    SDL_FreeSurface(tileSet_out.south.surface);
-    tileSet_out.west.offset_x = 0;
-    tileSet_out.west.offset_y = 0;
-    tileSet_out.west.surface = NULL;
-    tileSet_out.east.offset_x = 0;
-    tileSet_out.east.offset_y = 0;
-    tileSet_out.east.surface = NULL;
-    tileSet_out.north.offset_x = 0;
-    tileSet_out.north.offset_y = 0;
-    tileSet_out.north.surface = NULL;
-    tileSet_out.south.offset_x = 0;
-    tileSet_out.south.offset_y = 0;
-    tileSet_out.south.surface = NULL;
-
-    return;
-  } // end IF
-  SDL_FreeSurface(tileSet_out.south.surface);
-  tileSet_out.south.surface = shaded_wall;
-
-  shaded_wall = RPG_Graphics_Surface::shade(*tileSet_out.north.surface,
-                                            ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE)));
-  if (!shaded_wall)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-               ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE))));
-
-    // clean up
-    SDL_FreeSurface(tileSet_out.west.surface);
-    SDL_FreeSurface(tileSet_out.east.surface);
-    SDL_FreeSurface(tileSet_out.north.surface);
-    SDL_FreeSurface(tileSet_out.south.surface);
-    tileSet_out.west.offset_x = 0;
-    tileSet_out.west.offset_y = 0;
-    tileSet_out.west.surface = NULL;
-    tileSet_out.east.offset_x = 0;
-    tileSet_out.east.offset_y = 0;
-    tileSet_out.east.surface = NULL;
-    tileSet_out.north.offset_x = 0;
-    tileSet_out.north.offset_y = 0;
-    tileSet_out.north.surface = NULL;
-    tileSet_out.south.offset_x = 0;
-    tileSet_out.south.offset_y = 0;
-    tileSet_out.south.surface = NULL;
-
-    return;
-  } // end IF
-  SDL_FreeSurface(tileSet_out.north.surface);
-  tileSet_out.north.surface = shaded_wall;
-
-//   // debug info
-//   std::string dump_path_base = RPG_GRAPHICS_DUMP_DIR;
-//   dump_path_base += ACE_DIRECTORY_SEPARATOR_STR;
-//
-//   std::string dump_path = dump_path_base;
-//   dump_path += ACE_TEXT("wall_n.png");
-//   RPG_Graphics_Surface::savePNG(*tileSet_out.north.surface, // image
-//                                 dump_path,                  // file
-//                                 true);                      // WITH alpha
-//   dump_path = dump_path_base;
-//   dump_path += ACE_TEXT("wall_s.png");
-//   RPG_Graphics_Surface::savePNG(*tileSet_out.south.surface, // image
-//                                 dump_path,                  // file
-//                                 true);                      // WITH alpha
-//   dump_path = dump_path_base;
-//   dump_path += ACE_TEXT("wall_w.png");
-//   RPG_Graphics_Surface::savePNG(*tileSet_out.west.surface, // image
-//                                 dump_path,                 // file
-//                                 true);                     // WITH alpha
-//   dump_path = dump_path_base;
-//   dump_path += ACE_TEXT("wall_e.png");
-//   RPG_Graphics_Surface::savePNG(*tileSet_out.east.surface, // image
-//                                 dump_path,                 // file
-//                                 true);                     // WITH alpha
-
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("loaded tileset \"%s\" (type: %s, style: %s, %u tile(s))...\n"),
              RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphic.type).c_str(),
@@ -1211,11 +931,25 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
     return NULL;
   } // end IF
 
-  // assemble path
   std::string path = myGraphicsDirectory;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   if (graphic.category == CATEGORY_TILE)
   {
+    // follow references
+    RPG_Graphics_Type current_type = type_in;
+    while (graphic.tile.reference != RPG_GRAPHICS_TYPE_INVALID)
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("%s --> %s\n"),
+                 RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(current_type).c_str(),
+                 RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphic.tile.reference).c_str()));
+      current_type = graphic.tile.reference;
+
+      // retrieve properties from the dictionary
+      graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(graphic.tile.reference);
+    } // end WHILE
+
+    // assemble path
     switch (graphic.tile.type)
     {
       case TILETYPE_FLOOR:
@@ -1520,57 +1254,6 @@ RPG_Graphics_Common_Tools::initFonts()
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Graphics_Common_Tools: loaded %u font(s)...\n"),
              fonts.size()));
-
-  return true;
-}
-
-const bool
-RPG_Graphics_Common_Tools::initWallBlend()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::initWallBlend"));
-
-  // sanity check
-  ACE_ASSERT(myWallBlend == NULL);
-
-  myWallBlend = SDL_CreateRGBSurface((SDL_HWSURFACE | // TRY to (!) place the surface in VideoRAM
-                                      SDL_ASYNCBLIT |
-                                      SDL_SRCCOLORKEY |
-                                      SDL_SRCALPHA),
-                                     RPG_GRAPHICS_WALLTILE_SIZE_X,
-                                     RPG_GRAPHICS_WALLTILE_SIZE_Y,
-//                                      (bit_depth * 8),
-                                     32,
-                                     ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x000000FF : 0xFF000000),
-                                     ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x0000FF00 : 0x00FF0000),
-                                     ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x00FF0000 : 0x0000FF00),
-                                     ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0xFF000000 : 0x000000FF));
-//                                      Rmask,
-//                                      Gmask,
-//                                      Bmask,
-//                                      Amask);
-  if (!myWallBlend)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_CreateRGBSurface(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return false;
-  } // end IF
-
-  if (SDL_FillRect(myWallBlend,
-                   NULL,
-                   RPG_Graphics_SDL_Tools::CLR32_BLACK_A30))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    // clean up
-    SDL_FreeSurface(myWallBlend);
-    myWallBlend = NULL;
-
-    return false;
-  } // end IF
 
   return true;
 }

@@ -105,6 +105,12 @@ type_parser (::RPG_Graphics_TileType_Type_pskel& p)
 }
 
 void RPG_Graphics_Tile_Type_pskel::
+reference_parser (::RPG_Graphics_Type_Type_pskel& p)
+{
+  this->reference_parser_ = &p;
+}
+
+void RPG_Graphics_Tile_Type_pskel::
 style_parser (::RPG_Graphics_StyleUnion_Type_pskel& p)
 {
   this->style_parser_ = &p;
@@ -148,6 +154,7 @@ broken_parser (::xml_schema::boolean_pskel& p)
 
 void RPG_Graphics_Tile_Type_pskel::
 parsers (::RPG_Graphics_TileType_Type_pskel& type,
+         ::RPG_Graphics_Type_Type_pskel& reference,
          ::RPG_Graphics_StyleUnion_Type_pskel& style,
          ::RPG_Graphics_Orientation_Type_pskel& orientation,
          ::xml_schema::string_pskel& file,
@@ -157,6 +164,7 @@ parsers (::RPG_Graphics_TileType_Type_pskel& type,
          ::xml_schema::boolean_pskel& broken)
 {
   this->type_parser_ = &type;
+  this->reference_parser_ = &reference;
   this->style_parser_ = &style;
   this->orientation_parser_ = &orientation;
   this->file_parser_ = &file;
@@ -169,6 +177,7 @@ parsers (::RPG_Graphics_TileType_Type_pskel& type,
 RPG_Graphics_Tile_Type_pskel::
 RPG_Graphics_Tile_Type_pskel ()
 : type_parser_ (0),
+  reference_parser_ (0),
   style_parser_ (0),
   orientation_parser_ (0),
   file_parser_ (0),
@@ -473,6 +482,11 @@ type (const RPG_Graphics_TileType&)
 }
 
 void RPG_Graphics_Tile_Type_pskel::
+reference (const RPG_Graphics_Type&)
+{
+}
+
+void RPG_Graphics_Tile_Type_pskel::
 style (const RPG_Graphics_StyleUnion&)
 {
 }
@@ -527,6 +541,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "reference" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->reference_parser_;
+
+    if (this->reference_parser_)
+      this->reference_parser_->pre ();
+
+    return true;
+  }
+
   if (n == "style" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->style_parser_;
@@ -571,6 +595,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->type_parser_)
       this->type (this->type_parser_->post_RPG_Graphics_TileType_Type ());
+
+    return true;
+  }
+
+  if (n == "reference" && ns == "urn:rpg")
+  {
+    if (this->reference_parser_)
+      this->reference (this->reference_parser_->post_RPG_Graphics_Type_Type ());
 
     return true;
   }

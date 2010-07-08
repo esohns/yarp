@@ -83,7 +83,6 @@ class RPG_Graphics_Common_Tools
 
   // helper methods
   static const bool initFonts();
-  static const bool initWallBlend();
 
   // convert style (wall-, floor-, ...) to appropriate graphic metatype
   static const RPG_Graphics_Type styleToType(const RPG_Graphics_StyleUnion&);
@@ -99,8 +98,6 @@ class RPG_Graphics_Common_Tools
   static unsigned long                myOldestCacheEntry;
   static unsigned long                myCacheSize;
   static RPG_Graphics_GraphicsCache_t myGraphicsCache;
-
-  static SDL_Surface*                 myWallBlend;
 
   static RPG_Graphics_FontCache_t     myFontCache;
 

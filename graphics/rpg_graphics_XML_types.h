@@ -316,6 +316,9 @@ class RPG_Graphics_Tile_Type_pskel: public ::xml_schema::complex_content
   type (const RPG_Graphics_TileType&);
 
   virtual void
+  reference (const RPG_Graphics_Type&);
+
+  virtual void
   style (const RPG_Graphics_StyleUnion&);
 
   virtual void
@@ -345,6 +348,9 @@ class RPG_Graphics_Tile_Type_pskel: public ::xml_schema::complex_content
   type_parser (::RPG_Graphics_TileType_Type_pskel&);
 
   void
+  reference_parser (::RPG_Graphics_Type_Type_pskel&);
+
+  void
   style_parser (::RPG_Graphics_StyleUnion_Type_pskel&);
 
   void
@@ -367,6 +373,7 @@ class RPG_Graphics_Tile_Type_pskel: public ::xml_schema::complex_content
 
   void
   parsers (::RPG_Graphics_TileType_Type_pskel& /* type */,
+           ::RPG_Graphics_Type_Type_pskel& /* reference */,
            ::RPG_Graphics_StyleUnion_Type_pskel& /* style */,
            ::RPG_Graphics_Orientation_Type_pskel& /* orientation */,
            ::xml_schema::string_pskel& /* file */,
@@ -398,6 +405,7 @@ class RPG_Graphics_Tile_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::RPG_Graphics_TileType_Type_pskel* type_parser_;
+  ::RPG_Graphics_Type_Type_pskel* reference_parser_;
   ::RPG_Graphics_StyleUnion_Type_pskel* style_parser_;
   ::RPG_Graphics_Orientation_Type_pskel* orientation_parser_;
   ::xml_schema::string_pskel* file_parser_;

@@ -216,7 +216,7 @@
         <orientation>ORIENTATION_HORIZONTAL</orientation>
         <file>door_wood_open_h.png</file>
       </tile>
-      <tile offsetX="-3" offsetY="-4">
+      <tile offsetX="-2" offsetY="-4">
         <type>TILETYPE_DOOR</type>
         <orientation>ORIENTATION_HORIZONTAL</orientation>
         <file>door_wood_closed_h.png</file>
@@ -226,7 +226,7 @@
         <orientation>ORIENTATION_VERTICAL</orientation>
         <file>door_wood_open_v.png</file>
       </tile>
-      <tile>
+      <tile offsetX="-3">
         <type>TILETYPE_DOOR</type>
         <orientation>ORIENTATION_VERTICAL</orientation>
         <file>door_wood_closed_v.png</file>
@@ -243,6 +243,14 @@
     <tile>
       <type>TILETYPE_FLOOR</type>
       <file>floor_dark_0_0.png</file>
+    </tile>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILE</category>
+    <type>TYPE_TILE_CEILING</type>
+    <tile>
+      <type>TILETYPE_FLOOR</type>
+      <reference>TYPE_TILE_OFF_MAP</reference>
     </tile>
   </graphic>
 </graphicsDictionary>

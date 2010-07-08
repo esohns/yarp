@@ -79,15 +79,20 @@ class SDL_GUI_LevelWindow
 
   // helper methods
   void setStyle(const RPG_Graphics_StyleUnion&);
+  void initCeiling();
   void initWalls(const RPG_Map_FloorPlan_t&,        // level map
                  const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
                  RPG_Graphics_WallTileMap_t&);      // return value: wall tiles / position
+  void initWallBlend();
+
   void initDoors(const RPG_Map_FloorPlan_t&,        // level map
                  const RPG_Map_Level&,              // level state
                  const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
                  RPG_Graphics_DoorTileMap_t&);      // return value: door tiles / position
   static const RPG_Graphics_Orientation getDoorOrientation(const RPG_Map_Level&,       // level
                                                            const RPG_Map_Position_t&); // door position
+  static const bool hasCeiling(const RPG_Map_Position_t&, // position
+                               const RPG_Map_Level&);
 
   RPG_Map_Level               myMap;
 
@@ -95,12 +100,15 @@ class SDL_GUI_LevelWindow
   RPG_Graphics_FloorTileSet_t myCurrentFloorSet;
   RPG_Graphics_WallStyle      myCurrentWallStyle;
   RPG_Graphics_WallTileSet_t  myCurrentWallSet;
+  SDL_Surface*                myCurrentCeilingTile;
   RPG_Graphics_DoorStyle      myCurrentDoorStyle;
   RPG_Graphics_DoorTileSet_t  myCurrentDoorSet;
   SDL_Surface*                myCurrentOffMapTile;
 
   // wall tiles / position
   RPG_Graphics_WallTileMap_t  myWallTiles;
+
+  SDL_Surface*                myWallBlend;
 
   // door tiles / position
   RPG_Graphics_DoorTileMap_t  myDoorTiles;

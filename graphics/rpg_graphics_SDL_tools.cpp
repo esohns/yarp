@@ -25,14 +25,17 @@
 
 // init statics
 Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK      = 0;
+Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A10  = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A30  = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A50  = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A70  = 0;
+Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A90  = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_GREEN      = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_YELLOW     = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_ORANGE     = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_RED        = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_GRAY20     = 0;
+Uint32 RPG_Graphics_SDL_Tools::CLR32_GRAY20_A10 = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_GRAY70     = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_GRAY77     = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_PURPLE44   = 0;
@@ -193,14 +196,17 @@ RPG_Graphics_SDL_Tools::initColors()
 //                  sizeof(SDL_PixelFormat));
 
   CLR32_BLACK      = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0xff);
-  CLR32_BLACK_A30  = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0x50);
+  CLR32_BLACK_A10  = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0x1a);
+  CLR32_BLACK_A30  = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0x4d);
   CLR32_BLACK_A50  = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0x80);
-  CLR32_BLACK_A70  = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0xB0);
+  CLR32_BLACK_A70  = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0xb3);
+  CLR32_BLACK_A90  = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0xe7);
   CLR32_GREEN      = SDL_MapRGBA(dummy_converted->format, 0x57, 0xff, 0x57, 0xff);
   CLR32_YELLOW     = SDL_MapRGBA(dummy_converted->format, 0xff, 0xff, 0x57, 0xff);
   CLR32_ORANGE     = SDL_MapRGBA(dummy_converted->format, 0xff, 0xc7, 0x3b, 0xff);
   CLR32_RED        = SDL_MapRGBA(dummy_converted->format, 0xff, 0x23, 0x07, 0xff);
   CLR32_GRAY20     = SDL_MapRGBA(dummy_converted->format, 0xb7, 0xab, 0xab, 0xff);
+  CLR32_GRAY20_A10 = SDL_MapRGBA(dummy_converted->format, 0xb7, 0xab, 0xab, 0x1a);
   CLR32_GRAY70     = SDL_MapRGBA(dummy_converted->format, 0x53, 0x53, 0x53, 0xff);
   CLR32_GRAY77     = SDL_MapRGBA(dummy_converted->format, 0x43, 0x3b, 0x3b, 0xff);
   CLR32_PURPLE44   = SDL_MapRGBA(dummy_converted->format, 0x4f, 0x43, 0x6f, 0xff);

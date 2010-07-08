@@ -59,6 +59,11 @@ RPG_Map_Level::getElement(const RPG_Map_Position_t& position_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Level::getElement"));
 
+  // sanity check
+  if ((position_in.first > (myFloorPlan.size_x - 1)) ||
+      (position_in.second > (myFloorPlan.size_y - 1)))
+    return MAPELEMENT_INVALID;
+
   if (myFloorPlan.unmapped.find(position_in) != myFloorPlan.unmapped.end())
     return MAPELEMENT_UNMAPPED;
 

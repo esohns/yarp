@@ -118,6 +118,7 @@
       <xsd:enumeration value="TYPE_INTERFACE"/>
       <xsd:enumeration value="TYPE_IMAGE_INTRO_MAIN"/>
       <xsd:enumeration value="TYPE_IMAGE_WM_ICON"/>
+      <xsd:enumeration value="TYPE_TILE_CEILING"/>
       <xsd:enumeration value="TYPE_TILE_OFF_MAP"/>
       <xsd:enumeration value="TYPE_TILESET_DOOR_WOOD"/>
       <xsd:enumeration value="TYPE_TILESET_FLOOR_AIR"/>
@@ -165,9 +166,10 @@
   <xsd:complexType name="RPG_Graphics_Tile_Type">
     <xsd:sequence>
       <xsd:element name="type" type="RPG_Graphics_TileType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="reference" type="RPG_Graphics_Type_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="style" type="RPG_Graphics_StyleUnion_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="orientation" type="RPG_Graphics_Orientation_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="file" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="file" type="xsd:string" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="offsetX" type="xsd:integer" use="optional" default="0"/>
     <xsd:attribute name="offsetY" type="xsd:integer" use="optional" default="0"/>

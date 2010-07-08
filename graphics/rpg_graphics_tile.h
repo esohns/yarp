@@ -29,6 +29,7 @@
 struct RPG_Graphics_Tile
 {
   RPG_Graphics_TileType type;
+  RPG_Graphics_Type reference;
   RPG_Graphics_StyleUnion style;
   RPG_Graphics_Orientation orientation;
   std::string file;
