@@ -49,7 +49,7 @@ SDL_GUI_MainWindow::~SDL_GUI_MainWindow()
 
 void
 SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
-                            const RPG_Graphics_Position_t& offset_in)
+                         const RPG_Graphics_Offset_t& offset_in)
 {
   ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::draw"));
 
@@ -266,4 +266,7 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
 
   // whole window needs a refresh...
   myDirtyRegions.push_back(clipRect);
+
+  // remember position of last realization
+  myLastAbsolutePosition = offset_in;
 }

@@ -253,4 +253,20 @@
       <reference>TYPE_TILE_OFF_MAP</reference>
     </tile>
   </graphic>
+  <graphic>
+    <category>CATEGORY_TILE</category>
+    <type>TYPE_TILE_CURSOR_HIGHLIGHT</type>
+    <tile>
+      <type>TILETYPE_FLOOR</type>
+      <file>floor_highlight.png</file>
+    </tile>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILE</category>
+    <type>TYPE_TILE_FLOOR_INVISIBLE</type>
+    <tile>
+      <type>TILETYPE_FLOOR</type>
+      <file>floor_invisible.png</file>
+    </tile>
+  </graphic>
 </graphicsDictionary>

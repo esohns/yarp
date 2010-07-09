@@ -54,7 +54,7 @@ RPG_Graphics_SDL_Tools::keyToString(const SDL_keysym& key_in)
 
   std::string result;
 
-  char buffer[RPG_GRAPHICS_KEYSYM_BUFFER_SIZE];
+  char buffer[RPG_GRAPHICS_SDL_KEYSYM_BUFFER_SIZE];
   result += ACE_TEXT("scancode: ");
   ACE_OS::sprintf(buffer,
                   ACE_TEXT_ALWAYS_CHAR("0x%02X"),

@@ -49,7 +49,10 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindow& parent_in
 //    myWallTiles(),
    myWallBlend(NULL),
    myView(std::make_pair(floorPlan_in.size_x / 2,
-                         floorPlan_in.size_y / 2))
+                         floorPlan_in.size_y / 2)),
+   myHighlightPosition(std::make_pair(floorPlan_in.size_x / 2,
+                                      floorPlan_in.size_y / 2)),
+   myHighlightTile(NULL)
 {
   ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::SDL_GUI_LevelWindow"));
 
@@ -95,6 +98,14 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindow& parent_in
             myMap,
             myCurrentDoorSet,
             myDoorTiles);
+
+  // load tile for cursor highlighting
+  myHighlightTile = RPG_Graphics_Common_Tools::loadGraphic(TYPE_TILE_CURSOR_HIGHLIGHT, // tile
+                                                           false);                     // don't cache
+  if (!myHighlightTile)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_TILE_CURSOR_HIGHLIGHT).c_str()));
 }
 
 SDL_GUI_LevelWindow::~SDL_GUI_LevelWindow()
@@ -139,6 +150,9 @@ SDL_GUI_LevelWindow::~SDL_GUI_LevelWindow()
 
   if (myCurrentOffMapTile)
     SDL_FreeSurface(myCurrentOffMapTile);
+
+  if (myHighlightTile)
+    SDL_FreeSurface(myHighlightTile);
 }
 
 void
@@ -192,7 +206,7 @@ SDL_GUI_LevelWindow::init(const RPG_Graphics_FloorStyle& floorStyle_in,
 
 void
 SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
-                          const RPG_Graphics_Position_t& offset_in)
+                          const RPG_Graphics_Offset_t& offset_in)
 {
   ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::draw"));
 
@@ -219,27 +233,30 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   } // end IF
 
   // position of the top right corner
-  RPG_Graphics_Position_t position_tr = std::make_pair(0, 0);
-  position_tr.first = (((-RPG_GRAPHICS_MAPTILE_HEIGHT * ((targetSurface_in->w / 2) + 50)) +
-                        (RPG_GRAPHICS_MAPTILE_WIDTH * ((targetSurface_in->h / 2) + 50)) +
-                        (RPG_GRAPHICS_MAPTILE_WIDTH * RPG_GRAPHICS_MAPTILE_HEIGHT)) /
-                       (2 * RPG_GRAPHICS_MAPTILE_WIDTH * RPG_GRAPHICS_MAPTILE_HEIGHT));
-  position_tr.second = (((RPG_GRAPHICS_MAPTILE_HEIGHT * ((targetSurface_in->w / 2) + 50)) +
-                         (RPG_GRAPHICS_MAPTILE_WIDTH * ((targetSurface_in->h / 2) + 50)) +
-                         (RPG_GRAPHICS_MAPTILE_WIDTH * RPG_GRAPHICS_MAPTILE_HEIGHT)) /
-                        (2 * RPG_GRAPHICS_MAPTILE_WIDTH * RPG_GRAPHICS_MAPTILE_HEIGHT));
+  RPG_Graphics_Position_t top_right = std::make_pair(0, 0);
+  top_right.first = (((-RPG_GRAPHICS_TILE_HEIGHT_MOD * ((targetSurface_in->w / 2) + 50)) +
+                      (RPG_GRAPHICS_TILE_WIDTH_MOD * ((targetSurface_in->h / 2) + 50)) +
+                      (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+                     (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
+  top_right.second = (((RPG_GRAPHICS_TILE_HEIGHT_MOD * ((targetSurface_in->w / 2) + 50)) +
+                       (RPG_GRAPHICS_TILE_WIDTH_MOD * ((targetSurface_in->h / 2) + 50)) +
+                       (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+                      (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
 
-  // *NOTE*: without the "+-1" small corners within the viewport are not drawn
+//   // *NOTE*: without the "+-1" small corners within the viewport are not drawn
   int diff = 0;
   int sum = 0;
-  diff = position_tr.first - position_tr.second - 1;
-  sum  = position_tr.first + position_tr.second + 1;
+//   diff = top_right.first - top_right.second - 1;
+//   sum  = top_right.first + top_right.second + 1;
+  diff = top_right.first - top_right.second;
+  sum  = top_right.first + top_right.second;
 
   // draw tiles
   // pass 1:
   //   1. off-map & unmapped areas
   //   2. floor
   //   3. floor edges
+  //   [4. cursor highlight]
   //
   // pass 2:
   //   1. north & west walls
@@ -253,22 +270,45 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
   int i, j;
   RPG_Map_Position_t current_map_position = std::make_pair(0, 0);
+  RPG_Graphics_FloorTileSetConstIterator_t floor_iterator = myCurrentFloorSet.begin();
+  RPG_Graphics_FloorTileSetConstIterator_t begin_row = myCurrentFloorSet.begin();
+  unsigned long floor_row = 0;
+  unsigned long floor_index = 0;
   unsigned long x, y;
   // pass 1
-  for (i = -position_tr.second;
-       i <= ACE_static_cast(int, position_tr.second);
+  for (i = -top_right.second;
+       i <= ACE_static_cast(int, top_right.second);
        i++)
   {
     current_map_position.second = myView.second + i;
+
+    // floor tile rotation
+    if ((current_map_position.second == 0) || // init
+        (floor_row == (RPG_GRAPHICS_TILE_FLOORSET_NUMTILES / RPG_GRAPHICS_TILE_FLOORSET_ROWTILES)))
+      floor_row = 0;
+    begin_row = myCurrentFloorSet.begin();
+    std::advance(begin_row, floor_row);
+    floor_iterator = begin_row;
+    floor_row++;
+
     for (j = diff + i;
          (j + i) <= sum;
          j++)
     {
       current_map_position.first = myView.first + j;
 
-      // transform map coordinates into screen coordinates
-      x = (targetSurface_in->w / 2) + (RPG_GRAPHICS_MAPTILE_WIDTH * (j - i));
-      y = (targetSurface_in->h / 2) + (RPG_GRAPHICS_MAPTILE_HEIGHT * (j + i));
+      // floor tile rotation
+      if ((current_map_position.first == 0) || // init
+          (floor_index == RPG_GRAPHICS_TILE_FLOORSET_ROWTILES))
+      {
+        floor_index = 0;
+        floor_iterator = begin_row;
+      } // end IF
+      floor_index++;
+
+      // map --> screen coordinates
+      x = (targetSurface_in->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
+      y = (targetSurface_in->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
 
       // step1: off-map & unmapped areas
       if (((current_map_position.second < 0) ||
@@ -289,6 +329,10 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 //             (current_map_position.second >= myMap.getDimensions().second) ||
 //             (current_map_position.first < 0) ||
 //             (current_map_position.first >= myMap.getDimensions().first))
+
+          // advance floor iterator
+          std::advance(floor_iterator, RPG_GRAPHICS_TILE_FLOORSET_ROWTILES);
+
           continue;
       } // end IF
 
@@ -298,17 +342,31 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       {
         RPG_Graphics_Surface::put(x,
                                   y,
-                                  *myCurrentFloorSet.front().surface,
+                                  *(*floor_iterator).surface,
                                   targetSurface_in);
       } // end IF
+
+      // *TODO*: step3: floor edges
+
+      // step4: cursor highlight
+      if (current_map_position == myHighlightPosition)
+      {
+        RPG_Graphics_Surface::put(x,
+                                  y,
+                                  *myHighlightTile,
+                                  targetSurface_in);
+      } // end IF
+
+      // advance floor iterator
+      std::advance(floor_iterator, RPG_GRAPHICS_TILE_FLOORSET_ROWTILES);
     } // end FOR
   } // end FOR
 
   // pass 2
   RPG_Graphics_WallTileMapConstIterator_t wall_iterator = myWallTiles.end();
   RPG_Graphics_DoorTileMapConstIterator_t door_iterator = myDoorTiles.end();
-  for (i = -position_tr.second;
-       i <= ACE_static_cast(int, position_tr.second);
+  for (i = -top_right.second;
+       i <= ACE_static_cast(int, top_right.second);
        i++)
   {
     current_map_position.second = myView.second + i;
@@ -328,8 +386,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
         continue;
 
       // transform map coordinates into screen coordinates
-      x = (targetSurface_in->w / 2) + (RPG_GRAPHICS_MAPTILE_WIDTH * (j - i));
-      y = (targetSurface_in->h / 2) + (RPG_GRAPHICS_MAPTILE_HEIGHT * (j + i));
+      x = (targetSurface_in->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
+      y = (targetSurface_in->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
 
       wall_iterator = myWallTiles.find(current_map_position);
       door_iterator = myDoorTiles.find(current_map_position);
@@ -340,15 +398,15 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
           RPG_Graphics_Surface::put(x,
                                     (y -
                                      (*wall_iterator).second.west.surface->h +
-                                     (RPG_GRAPHICS_FLOORTILE_HEIGHT / 2)),
+                                     (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
                                     *(myCurrentWallSet.west.surface),
                                     targetSurface_in);
         if ((*wall_iterator).second.north.surface)
           RPG_Graphics_Surface::put((x +
-                                     (RPG_GRAPHICS_FLOORTILE_WIDTH / 2)),
+                                     (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
                                     (y -
                                      (*wall_iterator).second.north.surface->h +
-                                     (RPG_GRAPHICS_FLOORTILE_HEIGHT / 2)),
+                                     (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
                                     *(myCurrentWallSet.north.surface),
                                     targetSurface_in);
       } // end IF
@@ -359,12 +417,12 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
         // *NOTE*: door are drawn in the "middle" of the floor tile
         RPG_Graphics_Surface::put((x +
                                    (*door_iterator).second.offset_x +
-                                   (RPG_GRAPHICS_FLOORTILE_WIDTH / 4)),
+                                   (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 4)),
                                   (y +
                                    (*door_iterator).second.offset_y -
                                    (*door_iterator).second.surface->h +
-                                   (RPG_GRAPHICS_WALLTILE_HEIGHT / 2) -
-                                   (RPG_GRAPHICS_FLOORTILE_HEIGHT / 4)),
+                                   (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2) -
+                                   (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 4)),
                                   *(*door_iterator).second.surface,
                                   targetSurface_in);
       } // end IF
@@ -376,15 +434,15 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
           RPG_Graphics_Surface::put(x,
                                     (y -
                                      (*wall_iterator).second.south.surface->h +
-                                     RPG_GRAPHICS_FLOORTILE_HEIGHT),
+                                     RPG_GRAPHICS_TILE_FLOOR_HEIGHT),
                                     *(*wall_iterator).second.south.surface,
                                     targetSurface_in);
         if ((*wall_iterator).second.east.surface)
           RPG_Graphics_Surface::put((x +
-                                     (RPG_GRAPHICS_FLOORTILE_WIDTH / 2)),
+                                     (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
                                     (y -
                                      (*wall_iterator).second.east.surface->h +
-                                     RPG_GRAPHICS_FLOORTILE_HEIGHT),
+                                     RPG_GRAPHICS_TILE_FLOOR_HEIGHT),
                                     *(*wall_iterator).second.east.surface,
                                     targetSurface_in);
       } // end IF
@@ -395,8 +453,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       {
         RPG_Graphics_Surface::put(x,
                                   (y -
-                                   RPG_GRAPHICS_WALLTILE_HEIGHT +
-                                   (RPG_GRAPHICS_FLOORTILE_HEIGHT / 2)),
+                                   RPG_GRAPHICS_TILE_WALL_HEIGHT +
+                                   (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
                                   *myCurrentCeilingTile,
                                   targetSurface_in);
       } // end IF
@@ -419,6 +477,158 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
     return;
   } // end IF
+
+  // remember position of last realization
+  myLastAbsolutePosition = offset_in;
+}
+
+void
+SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in)
+{
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::handleEvent"));
+
+  switch (event_in.type)
+  {
+    // *** visibility ***
+    case SDL_ACTIVEEVENT:
+    {
+      if (event_in.active.state & SDL_APPACTIVE)
+      {
+        if (event_in.active.gain)
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("activated...\n")));
+        } // end IF
+        else
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("iconified...\n")));
+        } // end ELSE
+      } // end IF
+      if (event_in.active.state & SDL_APPMOUSEFOCUS)
+      {
+        if (event_in.active.gain)
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("mouse focus...\n")));
+        } // end IF
+        else
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("lost mouse focus...\n")));
+        } // end ELSE
+      } // end IF
+
+      break;
+    }
+    // *** keyboard ***
+    case SDL_KEYDOWN:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("key pressed...\n")));
+
+      break;
+    }
+    case SDL_KEYUP:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("key released...\n")));
+
+      break;
+    }
+    // *** mouse ***
+    case SDL_MOUSEMOTION:
+    {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("mouse motion...\n")));
+
+      break;
+    }
+    case SDL_MOUSEBUTTONDOWN:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("mouse button [%u,%u]\n"),
+                 ACE_static_cast(unsigned long, event_in.button.which),
+                 ACE_static_cast(unsigned long, event_in.button.button)));
+
+      if (event_in.button.button == 1) // left-click
+      {
+        // debug info
+        RPG_Graphics_Position_t map_position = screen2Map(std::make_pair(event_in.button.x,
+                                                                         event_in.button.y));
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
+                   event_in.button.x,
+                   event_in.button.y,
+                   map_position.first,
+                   map_position.second));
+      } // end IF
+
+      break;
+    }
+    case SDL_MOUSEBUTTONUP:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("mouse button released...\n")));
+
+      break;
+    }
+    // *** joystick ***
+    case SDL_JOYAXISMOTION:
+    case SDL_JOYBALLMOTION:
+    case SDL_JOYHATMOTION:
+    case SDL_JOYBUTTONDOWN:
+    case SDL_JOYBUTTONUP:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("joystick activity...\n")));
+
+      break;
+    }
+    case SDL_QUIT:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("SDL_QUIT event...\n")));
+
+      break;
+    }
+    case SDL_SYSWMEVENT:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("SDL_SYSWMEVENT event...\n")));
+
+      break;
+    }
+    case SDL_VIDEORESIZE:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("SDL_VIDEORESIZE event...\n")));
+
+      break;
+    }
+    case SDL_VIDEOEXPOSE:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("SDL_VIDEOEXPOSE event...\n")));
+
+      break;
+    }
+    case SDL_USEREVENT:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("SDL_USEREVENT event...\n")));
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("received unknown event (was: %u)...\n"),
+                 ACE_static_cast(unsigned long, event_in.type)));
+
+      break;
+    }
+  } // end SWITCH
 }
 
 void
@@ -596,12 +806,12 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
       // set wall opacity
       SDL_Surface* shaded_wall = NULL;
       shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.east.surface,
-                                                ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+                                                ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-                   ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE))));
+                   ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
         // clean up
         if (myCurrentWallSet.east.surface)
@@ -622,12 +832,12 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
       myCurrentWallSet.east.surface = shaded_wall;
 
       shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.west.surface,
-                                                ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+                                                ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-                   ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+                   ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
         // clean up
         if (myCurrentWallSet.east.surface)
@@ -648,12 +858,12 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
       myCurrentWallSet.west.surface = shaded_wall;
 
       shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.south.surface,
-                                                ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+                                                ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-                   ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_SE_OPACITY * SDL_ALPHA_OPAQUE))));
+                   ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
         // clean up
         if (myCurrentWallSet.east.surface)
@@ -674,12 +884,12 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
       myCurrentWallSet.south.surface = shaded_wall;
 
       shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.north.surface,
-                                                ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+                                                ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-                   ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+                   ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
         // clean up
         if (myCurrentWallSet.east.surface)
@@ -799,12 +1009,12 @@ SDL_GUI_LevelWindow::initCeiling()
 
   SDL_Surface* shaded_ceiling = NULL;
   shaded_ceiling = RPG_Graphics_Surface::shade(*myCurrentCeilingTile,
-                                               ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+                                               ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
   if (!shaded_ceiling)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-               ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+               ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
     // clean up
     SDL_FreeSurface(myCurrentCeilingTile);
@@ -889,8 +1099,8 @@ SDL_GUI_LevelWindow::initWallBlend()
                                       SDL_ASYNCBLIT |
                                       SDL_SRCCOLORKEY |
                                       SDL_SRCALPHA),
-                                     RPG_GRAPHICS_WALLTILE_WIDTH,
-                                     RPG_GRAPHICS_WALLTILE_HEIGHT,
+                                     RPG_GRAPHICS_TILE_WALL_WIDTH,
+                                     RPG_GRAPHICS_TILE_WALL_HEIGHT,
 //                                      (bit_depth * 8),
                                      32,
                                      ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x000000FF : 0xFF000000),
@@ -927,12 +1137,12 @@ SDL_GUI_LevelWindow::initWallBlend()
 
 //   SDL_Surface* shaded_blend = NULL;
 //   shaded_blend = RPG_Graphics_Surface::shade(*myWallBlend,
-//                                              ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+//                                              ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
 //   if (!shaded_blend)
 //   {
 //     ACE_DEBUG((LM_ERROR,
 //                ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-//                ACE_static_cast(Uint8, (RPG_GRAPHICS_WALLTILE_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+//                ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 //
 //     // clean up
 //     SDL_FreeSurface(myWallBlend);
@@ -1071,17 +1281,17 @@ SDL_GUI_LevelWindow::screen2Map(const RPG_Graphics_Position_t& position_in)
 
   RPG_Graphics_Position_t offset, map_position;
 
-  offset.first = (position_in.first - (mySize.first / 2) + ((myView.first - myView.second) * RPG_GRAPHICS_MAPTILE_WIDTH));
-  offset.second = (position_in.second - (mySize.second / 2) + ((myView.first + myView.second) * RPG_GRAPHICS_MAPTILE_HEIGHT));
+  offset.first = (position_in.first - (mySize.first / 2) + ((myView.first - myView.second) * RPG_GRAPHICS_TILE_WIDTH_MOD));
+  offset.second = (position_in.second - (mySize.second / 2) + ((myView.first + myView.second) * RPG_GRAPHICS_TILE_HEIGHT_MOD));
 
-  map_position.first = ((RPG_GRAPHICS_MAPTILE_HEIGHT * offset.first) +
-                        (RPG_GRAPHICS_MAPTILE_WIDTH * offset.second) +
-                        (RPG_GRAPHICS_MAPTILE_WIDTH * RPG_GRAPHICS_MAPTILE_HEIGHT)) /
-                       (2 * RPG_GRAPHICS_MAPTILE_WIDTH * RPG_GRAPHICS_MAPTILE_HEIGHT);
-  map_position.second = ((-RPG_GRAPHICS_MAPTILE_HEIGHT * offset.first) +
-                         (RPG_GRAPHICS_MAPTILE_WIDTH * offset.second) +
-                         (RPG_GRAPHICS_MAPTILE_WIDTH * RPG_GRAPHICS_MAPTILE_HEIGHT)) /
-                        (2 * RPG_GRAPHICS_MAPTILE_WIDTH * RPG_GRAPHICS_MAPTILE_HEIGHT);
+  map_position.first = ((RPG_GRAPHICS_TILE_HEIGHT_MOD * offset.first) +
+                        (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
+                        (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+                       (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
+  map_position.second = ((-RPG_GRAPHICS_TILE_HEIGHT_MOD * offset.first) +
+                         (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
+                         (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+                        (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
 
   return map_position;
 }
@@ -1097,10 +1307,10 @@ SDL_GUI_LevelWindow::map2Screen(const RPG_Graphics_Position_t& position_in)
   map_center.second = mySize.second / 2;
 
   screen_position.first = map_center.first +
-                          (RPG_GRAPHICS_MAPTILE_WIDTH *
+                          (RPG_GRAPHICS_TILE_WIDTH_MOD *
                            (position_in.first - position_in.second + myView.second - myView.first));
   screen_position.second = map_center.second +
-                           (RPG_GRAPHICS_MAPTILE_HEIGHT *
+                           (RPG_GRAPHICS_TILE_HEIGHT_MOD *
                             (position_in.first + position_in.second - myView.second - myView.first));
 
   // *TODO* fix underruns (why does this happen ?)

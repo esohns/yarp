@@ -44,8 +44,8 @@ class SDL_GUI_MainWindow
                      const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
   virtual ~SDL_GUI_MainWindow();
 
-  virtual void draw(SDL_Surface*,                    // target surface (screen !)
-                    const RPG_Graphics_Position_t&); // offset
+  virtual void draw(SDL_Surface*,                  // target surface (screen !)
+                    const RPG_Graphics_Offset_t&); // offset
 
  private:
   typedef RPG_Graphics_SDLWindow inherited;

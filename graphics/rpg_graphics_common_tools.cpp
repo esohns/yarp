@@ -472,7 +472,7 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
   // assemble base path
   std::string path_base = myGraphicsDirectory;
   path_base += ACE_DIRECTORY_SEPARATOR_STR;
-  path_base += RPG_GRAPHICS_TILES_DEF_FLOORS_SUB;
+  path_base += RPG_GRAPHICS_TILE_DEF_FLOORS_SUB;
   path_base += ACE_DIRECTORY_SEPARATOR_STR;
 
   std::string path = path_base;
@@ -581,7 +581,7 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
   // assemble base path
   std::string path_base = myGraphicsDirectory;
   path_base += ACE_DIRECTORY_SEPARATOR_STR;
-  path_base += RPG_GRAPHICS_TILES_DEF_WALLS_SUB;
+  path_base += RPG_GRAPHICS_TILE_DEF_WALLS_SUB;
   path_base += ACE_DIRECTORY_SEPARATOR_STR;
 
   std::string path = path_base;
@@ -750,7 +750,7 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
   // assemble base path
   std::string path_base = myGraphicsDirectory;
   path_base += ACE_DIRECTORY_SEPARATOR_STR;
-  path_base += RPG_GRAPHICS_TILES_DEF_DOORS_SUB;
+  path_base += RPG_GRAPHICS_TILE_DEF_DOORS_SUB;
   path_base += ACE_DIRECTORY_SEPARATOR_STR;
 
   std::string path = path_base;
@@ -953,11 +953,11 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
     switch (graphic.tile.type)
     {
       case TILETYPE_FLOOR:
-        path += RPG_GRAPHICS_TILES_DEF_FLOORS_SUB; break;
+        path += RPG_GRAPHICS_TILE_DEF_FLOORS_SUB; break;
       case TILETYPE_WALL:
-        path += RPG_GRAPHICS_TILES_DEF_WALLS_SUB; break;
+        path += RPG_GRAPHICS_TILE_DEF_WALLS_SUB; break;
       case TILETYPE_DOOR:
-        path += RPG_GRAPHICS_TILES_DEF_DOORS_SUB; break;
+        path += RPG_GRAPHICS_TILE_DEF_DOORS_SUB; break;
       default:
       {
         ACE_DEBUG((LM_ERROR,

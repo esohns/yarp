@@ -51,8 +51,10 @@ class RPG_Graphics_SDLWindow
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void refresh(SDL_Surface*); // target surface (screen !)
+  virtual void handleEvent(const SDL_Event&); // event
 
-  const RPG_Graphics_WindowSize_t getSize() const;
+  const RPG_Graphics_WindowSize_t getSize(const bool& = false) const; // top-level ?
+  RPG_Graphics_IWindow* getWindow(const RPG_Graphics_Position_t&); // position (e.g. mouse-)
 
  protected:
   // absolute size
@@ -71,6 +73,10 @@ class RPG_Graphics_SDLWindow
   // helper types
   typedef std::vector<SDL_Rect> RPG_Graphics_DirtyRegions_t;
   typedef RPG_Graphics_DirtyRegions_t::const_iterator RPG_Graphics_DirtyRegionsConstIterator_t;
+  typedef std::vector<RPG_Graphics_SDLWindow*> RPG_Graphics_Windows_t;
+  typedef RPG_Graphics_Windows_t::const_iterator RPG_Graphics_WindowsConstIterator_t;
+  typedef RPG_Graphics_Windows_t::iterator RPG_Graphics_WindowsIterator_t;
+  typedef RPG_Graphics_Windows_t::const_reverse_iterator RPG_Graphics_WindowsRIterator_t;
 
   // helper methods
   void getBorders(unsigned long&,        // size (top)
@@ -78,6 +84,8 @@ class RPG_Graphics_SDLWindow
                   unsigned long&,        // size (left)
                   unsigned long&) const; // size (right)
   const RPG_Graphics_SDLWindow* getParent() const;
+  void addChild(RPG_Graphics_SDLWindow*);
+  void removeChild(RPG_Graphics_SDLWindow*);
 
   // "dirty" region(s)
   RPG_Graphics_DirtyRegions_t      myDirtyRegions;
@@ -90,10 +98,15 @@ class RPG_Graphics_SDLWindow
   RPG_Graphics_Type                myTitleFont;
 
   RPG_Graphics_Offset_t            myOffset; // offset to parent
+  RPG_Graphics_Windows_t           myChildren;
+
+  RPG_Graphics_Position_t          myLastAbsolutePosition;
 
   bool                             myInitialized;
 
  private:
+  typedef RPG_Graphics_IWindow inherited;
+
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindow());
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow&));
@@ -102,7 +115,7 @@ class RPG_Graphics_SDLWindow
   // helper methods
   const bool loadGraphics(const RPG_Graphics_Type&); // style
 
-  const RPG_Graphics_SDLWindow*    myParent;
+  RPG_Graphics_SDLWindow*          myParent;
   RPG_Graphics_InterfaceWindow_t   myType;
   RPG_Graphics_Type                myElementGraphicsType;
 };

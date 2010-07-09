@@ -29,7 +29,8 @@ RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_WindowSize_t& 
                                                const RPG_Graphics_Type& graphicType_in,
                                                const std::string& title_in,
                                                const RPG_Graphics_Type& fontType_in)
- : mySize(size_in),
+ : inherited(),
+   mySize(size_in),
    myBorderTop(0),
    myBorderBottom(0),
    myBorderLeft(0),
@@ -37,6 +38,7 @@ RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_WindowSize_t& 
    myTitle(title_in),
    myTitleFont(fontType_in),
    myOffset(std::make_pair(0, 0)),
+   myLastAbsolutePosition(std::make_pair(0, 0)),
    myInitialized(false),
    myParent(NULL),
    myType(type_in),
@@ -51,7 +53,8 @@ RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_WindowSize_t& 
 RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow& parent_in,
                                                const RPG_Graphics_Offset_t& offset_in,
                                                const RPG_Graphics_InterfaceWindow_t& type_in)
-  : myBorderTop(0),
+  : inherited(),
+    myBorderTop(0),
     myBorderBottom(0),
     myBorderLeft(0),
     myBorderRight(0),
@@ -59,7 +62,7 @@ RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow& par
     myTitleFont(RPG_GRAPHICS_TYPE_INVALID),
     myOffset(offset_in),
     myInitialized(false),
-    myParent(&parent_in),
+    myParent(&ACE_const_cast(RPG_Graphics_SDLWindow&, parent_in)),
     myType(type_in),
     myElementGraphicsType(RPG_GRAPHICS_TYPE_INVALID)
 {
@@ -71,9 +74,12 @@ RPG_Graphics_SDLWindow::RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow& par
                        myBorderLeft,
                        myBorderRight);
 
-  RPG_Graphics_WindowSize_t size_parent = myParent->getSize();
+  RPG_Graphics_WindowSize_t size_parent = myParent->getSize(true); // top-level
   mySize.first = size_parent.first - (myBorderLeft + myBorderRight);
   mySize.second = size_parent.second - (myBorderTop + myBorderBottom);
+
+  // register with parent
+  myParent->addChild(this);
 
   myInitialized = true;
 }
@@ -136,6 +142,31 @@ RPG_Graphics_SDLWindow::getParent() const
 }
 
 void
+RPG_Graphics_SDLWindow::addChild(RPG_Graphics_SDLWindow* child_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::addChild"));
+
+  myChildren.push_back(child_in);
+}
+
+void
+RPG_Graphics_SDLWindow::removeChild(RPG_Graphics_SDLWindow* child_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::removeChild"));
+
+  RPG_Graphics_WindowsIterator_t iterator;
+  for (iterator = myChildren.begin();
+       iterator != myChildren.end();
+       iterator++)
+    if (*iterator == child_in)
+      break;
+
+  ACE_ASSERT(iterator != myChildren.end());
+  if (iterator != myChildren.end())
+    myChildren.erase(iterator);
+}
+
+void
 RPG_Graphics_SDLWindow::refresh(SDL_Surface* targetSurface_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::refresh"));
@@ -182,15 +213,182 @@ RPG_Graphics_SDLWindow::refresh(SDL_Surface* targetSurface_in)
   myDirtyRegions.clear();
 }
 
+void
+RPG_Graphics_SDLWindow::handleEvent(const SDL_Event& event_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::handleEvent"));
+
+  switch (event_in.type)
+  {
+    // *** visibility ***
+    case SDL_ACTIVEEVENT:
+    {
+      if (event_in.active.state & SDL_APPACTIVE)
+      {
+        if (event_in.active.gain)
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("activated...\n")));
+        } // end IF
+        else
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("iconified...\n")));
+        } // end ELSE
+      } // end IF
+      if (event_in.active.state & SDL_APPMOUSEFOCUS)
+      {
+        if (event_in.active.gain)
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("mouse focus...\n")));
+        } // end IF
+        else
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("lost mouse focus...\n")));
+        } // end ELSE
+      } // end IF
+
+      break;
+    }
+    // *** keyboard ***
+    case SDL_KEYDOWN:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("key pressed...\n")));
+
+      break;
+    }
+    case SDL_KEYUP:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("key released...\n")));
+
+      break;
+    }
+    // *** mouse ***
+    case SDL_MOUSEMOTION:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("mouse motion...\n")));
+
+      break;
+    }
+    case SDL_MOUSEBUTTONDOWN:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("mouse button pressed...\n")));
+
+      break;
+    }
+    case SDL_MOUSEBUTTONUP:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("mouse button released...\n")));
+
+      break;
+    }
+    // *** joystick ***
+    case SDL_JOYAXISMOTION:
+    case SDL_JOYBALLMOTION:
+    case SDL_JOYHATMOTION:
+    case SDL_JOYBUTTONDOWN:
+    case SDL_JOYBUTTONUP:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("joystick activity...\n")));
+
+      break;
+    }
+    case SDL_QUIT:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("SDL_QUIT event...\n")));
+
+      break;
+    }
+    case SDL_SYSWMEVENT:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("SDL_SYSWMEVENT event...\n")));
+
+      break;
+    }
+    case SDL_VIDEORESIZE:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("SDL_VIDEORESIZE event...\n")));
+
+      break;
+    }
+    case SDL_VIDEOEXPOSE:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("SDL_VIDEOEXPOSE event...\n")));
+
+      break;
+    }
+    case SDL_USEREVENT:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("SDL_USEREVENT event...\n")));
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("received unknown event (was: %u)...\n"),
+                 ACE_static_cast(unsigned long, event_in.type)));
+
+      break;
+    }
+  } // end SWITCH
+}
+
 const RPG_Graphics_WindowSize_t
-RPG_Graphics_SDLWindow::getSize() const
+RPG_Graphics_SDLWindow::getSize(const bool& topLevel_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::getSize"));
 
-  if (myParent)
-    return myParent->getSize();
+  if (topLevel_in && myParent)
+    return myParent->getSize(true);
 
   return mySize;
+}
+
+RPG_Graphics_IWindow*
+RPG_Graphics_SDLWindow::getWindow(const RPG_Graphics_Position_t& position_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::getWindow"));
+
+  if ((position_in.first < myLastAbsolutePosition.first) ||
+      (position_in.second < myLastAbsolutePosition.second) ||
+      (position_in.first >= (myLastAbsolutePosition.first + mySize.first)) ||
+      (position_in.second >= (myLastAbsolutePosition.second + mySize.second)))
+    return NULL;
+
+  // OK "this" currently "owns" position_in
+  // *TODO*: ...unless it's minimized/hidden
+  // --> check any children
+
+  // *NOTE*: check in reverse order, because "newer", overlapping children are
+  // considered to be "on-top"
+  RPG_Graphics_IWindow* child = NULL;
+  for (RPG_Graphics_WindowsRIterator_t iterator = myChildren.rbegin();
+       iterator != myChildren.rend();
+       iterator++)
+  {
+    // *NOTE*: also check child's children
+    child = (*iterator)->getWindow(position_in);
+    if (!child)
+      continue; // try next child
+
+    return child;
+  } // end FOR
+
+  return this;
 }
 
 const bool

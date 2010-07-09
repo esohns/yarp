@@ -692,35 +692,14 @@ do_work(const mode_t& mode_in,
                        position);
       levelWindow.refresh(screen);
 
+      RPG_Graphics_IWindow* window = NULL;
       do
       {
         // step5: wait for an event
-        do_SDL_waitForInput(0,     // wait forever...
-                            event);
+        do_SDL_waitForInput(0,      // wait forever...
+                            event); // return value: SDL event
         switch (event.type)
         {
-          case SDL_MOUSEBUTTONDOWN:
-          {
-            ACE_DEBUG((LM_DEBUG,
-                       ACE_TEXT("mouse button [%u,%u]\n"),
-                       ACE_static_cast(unsigned long, event.button.which),
-                       ACE_static_cast(unsigned long, event.button.button)));
-
-            if (event.button.button == 1) // left-click
-            {
-              // debug info
-              RPG_Graphics_Position_t map_position = levelWindow.screen2Map(std::make_pair(event.button.x,
-                                                                                           event.button.y));
-              ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
-                         event.button.x,
-                         event.button.y,
-                         map_position.first,
-                         map_position.second));
-            } // end IF
-
-            break;
-          }
           case SDL_KEYDOWN:
 //           case SDL_KEYUP:
           {
@@ -769,7 +748,25 @@ do_work(const mode_t& mode_in,
 
             break;
           }
+          case SDL_MOUSEBUTTONDOWN:
           case SDL_MOUSEMOTION:
+          {
+            // find window
+            window = mainWindow.getWindow(std::make_pair(event.motion.x,
+                                                         event.motion.y));
+            ACE_ASSERT(window);
+            try
+            {
+              window->handleEvent(event);
+            }
+            catch (...)
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+            }
+
+            break;
+          }
           default:
           {
 

@@ -52,10 +52,6 @@ class SDL_GUI_LevelWindow
                       const RPG_Map_FloorPlan_t&);           // (initial) map
   virtual ~SDL_GUI_LevelWindow();
 
-  // transformation
-  const RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&); // position (absolute)
-  const RPG_Graphics_Position_t map2Screen(const RPG_Graphics_Position_t&); // position (map)
-
   // set view coordinates
   void setView(const RPG_Graphics_Position_t&); // view coordinates
 
@@ -66,8 +62,9 @@ class SDL_GUI_LevelWindow
             const RPG_Map_FloorPlan_t&);    // map
 
   // implement (part of) RPG_Graphics_IWindow
-  virtual void draw(SDL_Surface*,                    // target surface (screen !)
-                    const RPG_Graphics_Position_t&); // offset
+  virtual void draw(SDL_Surface*,                  // target surface (screen !)
+                    const RPG_Graphics_Offset_t&); // offset
+  virtual void handleEvent(const SDL_Event&); // event
 
  private:
   typedef RPG_Graphics_SDLWindow inherited;
@@ -84,7 +81,6 @@ class SDL_GUI_LevelWindow
                  const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
                  RPG_Graphics_WallTileMap_t&);      // return value: wall tiles / position
   void initWallBlend();
-
   void initDoors(const RPG_Map_FloorPlan_t&,        // level map
                  const RPG_Map_Level&,              // level state
                  const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
@@ -93,6 +89,10 @@ class SDL_GUI_LevelWindow
                                                            const RPG_Map_Position_t&); // door position
   static const bool hasCeiling(const RPG_Map_Position_t&, // position
                                const RPG_Map_Level&);
+
+  // transformation
+  const RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&); // position (absolute)
+  const RPG_Graphics_Position_t map2Screen(const RPG_Graphics_Position_t&); // position (map)
 
   RPG_Map_Level               myMap;
 
@@ -115,6 +115,10 @@ class SDL_GUI_LevelWindow
 
   // center of displayed map area (map coordinate system)
   RPG_Graphics_Position_t     myView;
+
+  // cursor highlight
+  RPG_Graphics_Position_t     myHighlightPosition;
+  SDL_Surface*                myHighlightTile;
 };
 
 #endif
