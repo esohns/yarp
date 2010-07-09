@@ -17,44 +17,56 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SDL_GUI_MAINWINDOW_H
-#define SDL_GUI_MAINWINDOW_H
+#ifndef RPG_GRAPHICS_HOTSPOT_H
+#define RPG_GRAPHICS_HOTSPOT_H
 
-#include <rpg_graphics_common.h>
-#include <rpg_graphics_type.h>
-#include <rpg_graphics_toplevel.h>
+#include "rpg_graphics_SDLwindow.h"
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_type.h"
 
 #include <SDL/SDL.h>
 
 #include <ace/Global_Macros.h>
 
-#include <string>
-
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class SDL_GUI_MainWindow
- : public RPG_Graphics_TopLevel
+class RPG_Graphics_HotSpot
+ : public RPG_Graphics_SDLWindow
 {
  public:
-  SDL_GUI_MainWindow(const RPG_Graphics_WindowSize_t&,                 // size
-                     const RPG_Graphics_Type&,                         // style
-                     const std::string&,                               // title
-                     const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
-  virtual ~SDL_GUI_MainWindow();
+  RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindow&,    // parent
+                       const RPG_Graphics_WindowSize_t&, // size
+                       // *NOTE*: offset doesn't include any border(s) !
+                       const RPG_Graphics_Offset_t&,     // offset
+                       const RPG_Graphics_Type&);        // (hover) cursor graphic
+  virtual ~RPG_Graphics_HotSpot();
 
+  // implement (part of) RPG_Graphics_IWindow
+  virtual void handleEvent(const SDL_Event&, // event
+                           bool&);           // return value: redraw ?
   virtual void draw(SDL_Surface*,                  // target surface (screen !)
                     const RPG_Graphics_Offset_t&); // offset
-//   virtual void handleEvent(const SDL_Event&, // event
-//                            bool&);           // return value: redraw ?
+
+  static void init(const RPG_Graphics_SDLWindow&,    // parent
+                   const RPG_Graphics_WindowSize_t&, // size
+                   // *NOTE*: offset doesn't include any border(s) !
+                   const RPG_Graphics_Offset_t&,     // offset
+                   const RPG_Graphics_Type&);        // (hover) cursor graphic
 
  private:
-  typedef RPG_Graphics_TopLevel inherited;
+  typedef RPG_Graphics_SDLWindow inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow());
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow(const SDL_GUI_MainWindow&));
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow& operator=(const SDL_GUI_MainWindow&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_HotSpot());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_HotSpot(const RPG_Graphics_HotSpot&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_HotSpot& operator=(const RPG_Graphics_HotSpot&));
+
+  // helper methods
+  const bool loadGraphics(const RPG_Graphics_Type&); // (hover) cursor graphic
+
+  SDL_Surface* myCursor;
+  bool         myInitialized;
 };
 
 #endif

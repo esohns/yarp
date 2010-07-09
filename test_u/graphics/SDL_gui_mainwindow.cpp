@@ -27,12 +27,10 @@
 #include <ace/Log_Msg.h>
 
 SDL_GUI_MainWindow::SDL_GUI_MainWindow(const RPG_Graphics_WindowSize_t& size_in,
-                                       const RPG_Graphics_InterfaceWindow_t& type_in,
                                        const RPG_Graphics_Type& graphicType_in,
                                        const std::string& title_in,
                                        const RPG_Graphics_Type& fontType_in)
  : inherited(size_in,
-             type_in,
              graphicType_in,
              title_in,
              fontType_in)

@@ -28,7 +28,15 @@
 
 enum RPG_Graphics_Type
 {
-  TYPE_FONT_MAIN_NORMAL = 0,
+  TYPE_CURSOR_SCROLL_D = 0,
+  TYPE_CURSOR_SCROLL_DL,
+  TYPE_CURSOR_SCROLL_DR,
+  TYPE_CURSOR_SCROLL_L,
+  TYPE_CURSOR_SCROLL_R,
+  TYPE_CURSOR_SCROLL_U,
+  TYPE_CURSOR_SCROLL_UL,
+  TYPE_CURSOR_SCROLL_UR,
+  TYPE_FONT_MAIN_NORMAL,
   TYPE_FONT_MAIN_LARGE,
   TYPE_INTERFACE,
   TYPE_IMAGE_INTRO_MAIN,
@@ -61,6 +69,14 @@ class RPG_Graphics_TypeHelper
   inline static void init()
   {
     myRPG_Graphics_TypeToStringTable.clear();
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_SCROLL_D, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_SCROLL_D")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_SCROLL_DL, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_SCROLL_DL")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_SCROLL_DR, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_SCROLL_DR")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_SCROLL_L, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_SCROLL_L")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_SCROLL_R, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_SCROLL_R")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_SCROLL_U, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_SCROLL_U")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_SCROLL_UL, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_SCROLL_UL")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_SCROLL_UR, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_SCROLL_UR")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FONT_MAIN_NORMAL, ACE_TEXT_ALWAYS_CHAR("TYPE_FONT_MAIN_NORMAL")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FONT_MAIN_LARGE, ACE_TEXT_ALWAYS_CHAR("TYPE_FONT_MAIN_LARGE")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_INTERFACE, ACE_TEXT_ALWAYS_CHAR("TYPE_INTERFACE")));

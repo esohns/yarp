@@ -43,13 +43,12 @@ class SDL_GUI_LevelWindow
 {
  public:
   SDL_GUI_LevelWindow(// *** SDL window ***
-                      const RPG_Graphics_SDLWindow&,         // parent
-                      const RPG_Graphics_InterfaceWindow_t&, // type
+                      const RPG_Graphics_SDLWindow&,  // parent
                       // *** level properties ***
-                      const RPG_Graphics_FloorStyle&,        // floor style
-                      const RPG_Graphics_WallStyle&,         // wall style
-                      const RPG_Graphics_DoorStyle&,         // door style
-                      const RPG_Map_FloorPlan_t&);           // (initial) map
+                      const RPG_Graphics_FloorStyle&, // floor style
+                      const RPG_Graphics_WallStyle&,  // wall style
+                      const RPG_Graphics_DoorStyle&,  // door style
+                      const RPG_Map_FloorPlan_t&);    // (initial) map
   virtual ~SDL_GUI_LevelWindow();
 
   // set view coordinates
@@ -64,7 +63,8 @@ class SDL_GUI_LevelWindow
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface*,                  // target surface (screen !)
                     const RPG_Graphics_Offset_t&); // offset
-  virtual void handleEvent(const SDL_Event&); // event
+  virtual void handleEvent(const SDL_Event&, // event
+                           bool&);           // return value: redraw ?
 
  private:
   typedef RPG_Graphics_SDLWindow inherited;
@@ -85,6 +85,9 @@ class SDL_GUI_LevelWindow
                  const RPG_Map_Level&,              // level state
                  const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
                  RPG_Graphics_DoorTileMap_t&);      // return value: door tiles / position
+
+  void initHotSpots();
+
   static const RPG_Graphics_Orientation getDoorOrientation(const RPG_Map_Level&,       // level
                                                            const RPG_Map_Position_t&); // door position
   static const bool hasCeiling(const RPG_Map_Position_t&, // position

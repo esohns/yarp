@@ -37,26 +37,27 @@ class RPG_Graphics_SDLWindow
  : public RPG_Graphics_IWindow
 {
  public:
-  RPG_Graphics_SDLWindow(const RPG_Graphics_WindowSize_t&,                 // size
-                         const RPG_Graphics_InterfaceWindow_t&,            // type
-                         const RPG_Graphics_Type&,                         // style
-                         const std::string&,                               // title
-                         const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
-  // embedded ("child") window(s)
-  RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow&,          // parent
-                         // *NOTE*: offset doesn't include the border !
-                         const RPG_Graphics_Offset_t&,           // offset
-                         const RPG_Graphics_InterfaceWindow_t&); // type
   virtual ~RPG_Graphics_SDLWindow();
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void refresh(SDL_Surface*); // target surface (screen !)
-  virtual void handleEvent(const SDL_Event&); // event
+  virtual void handleEvent(const SDL_Event&, // event
+                           bool&);           // return value: redraw ?
 
   const RPG_Graphics_WindowSize_t getSize(const bool& = false) const; // top-level ?
   RPG_Graphics_IWindow* getWindow(const RPG_Graphics_Position_t&); // position (e.g. mouse-)
 
  protected:
+  RPG_Graphics_SDLWindow(const RPG_Graphics_WindowSize_t&,                 // size
+                         const RPG_Graphics_WindowType&,                   // type
+                         const std::string&,                               // title
+                         const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
+  // embedded ("child") window(s)
+  RPG_Graphics_SDLWindow(const RPG_Graphics_WindowType&, // type
+                         const RPG_Graphics_SDLWindow&,  // parent
+                         // *NOTE*: offset doesn't include any border(s) !
+                         const RPG_Graphics_Offset_t&);  // offset
+
   // absolute size
   RPG_Graphics_WindowSize_t        mySize;
 
@@ -84,14 +85,9 @@ class RPG_Graphics_SDLWindow
                   unsigned long&,        // size (left)
                   unsigned long&) const; // size (right)
   const RPG_Graphics_SDLWindow* getParent() const;
-  void addChild(RPG_Graphics_SDLWindow*);
-  void removeChild(RPG_Graphics_SDLWindow*);
 
   // "dirty" region(s)
   RPG_Graphics_DirtyRegions_t      myDirtyRegions;
-
-  // window element graphic(s)
-  RPG_Graphics_InterfaceElements_t myElementGraphics;
 
   // window title
   std::string                      myTitle;
@@ -102,8 +98,6 @@ class RPG_Graphics_SDLWindow
 
   RPG_Graphics_Position_t          myLastAbsolutePosition;
 
-  bool                             myInitialized;
-
  private:
   typedef RPG_Graphics_IWindow inherited;
 
@@ -113,11 +107,11 @@ class RPG_Graphics_SDLWindow
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindow& operator=(const RPG_Graphics_SDLWindow&));
 
   // helper methods
-  const bool loadGraphics(const RPG_Graphics_Type&); // style
+  void addChild(RPG_Graphics_SDLWindow*);
+  void removeChild(RPG_Graphics_SDLWindow*);
 
   RPG_Graphics_SDLWindow*          myParent;
-  RPG_Graphics_InterfaceWindow_t   myType;
-  RPG_Graphics_Type                myElementGraphicsType;
+  RPG_Graphics_WindowType          myType;
 };
 
 #endif

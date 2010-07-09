@@ -919,7 +919,8 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
   ACE_ASSERT(graphic.type == type_in);
 
   // sanity check
-  if ((graphic.category != CATEGORY_INTERFACE) &&
+  if ((graphic.category != CATEGORY_CURSOR) &&
+      (graphic.category != CATEGORY_INTERFACE) &&
       (graphic.category != CATEGORY_IMAGE) &&
       (graphic.category != CATEGORY_TILE))
   {
@@ -969,6 +970,13 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
     } // end SWITCH
     path += ACE_DIRECTORY_SEPARATOR_STR;
     path += graphic.tile.file;
+  } // end IF
+  else if (graphic.category == CATEGORY_CURSOR)
+  {
+    // assemble path
+    path += RPG_GRAPHICS_TILE_DEF_CURSORS_SUB;
+    path += ACE_DIRECTORY_SEPARATOR_STR;
+    path += graphic.file;
   } // end IF
   else
     path += graphic.file;

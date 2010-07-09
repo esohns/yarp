@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Erik Sohns   *
+ *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,26 +17,47 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef RPG_GRAPHICS_TOPLEVEL_H
+#define RPG_GRAPHICS_TOPLEVEL_H
 
-#ifndef RPG_GRAPHICS_IWINDOW_H
-#define RPG_GRAPHICS_IWINDOW_H
-
+#include "rpg_graphics_SDLwindow.h"
 #include "rpg_graphics_common.h"
+#include "rpg_graphics_type.h"
 
 #include <SDL/SDL.h>
 
-class RPG_Graphics_IWindow
+#include <ace/Global_Macros.h>
+
+/**
+	@author Erik Sohns <erik.sohns@web.de>
+*/
+class RPG_Graphics_TopLevel
+ : public RPG_Graphics_SDLWindow
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  RPG_Graphics_TopLevel(const RPG_Graphics_WindowSize_t&,                 // size
+                        const RPG_Graphics_Type&,                         // style
+                        const std::string&,                               // title
+                        const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
+  virtual ~RPG_Graphics_TopLevel();
 
-  // exposed interface
-  virtual void draw(SDL_Surface*,                      // target surface (screen !)
-                    const RPG_Graphics_Offset_t&) = 0; // offset
-  virtual void refresh(SDL_Surface*) = 0; // target surface (screen !)
-  virtual void handleEvent(const SDL_Event&, // event
-                           bool&) = 0;       // return value: redraw ?
+ protected:
+  // window element graphic(s)
+  RPG_Graphics_Type                myElementGraphicsType;
+  RPG_Graphics_InterfaceElements_t myElementGraphics;
+
+ private:
+  typedef RPG_Graphics_SDLWindow inherited;
+
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel(const RPG_Graphics_TopLevel&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel& operator=(const RPG_Graphics_TopLevel&));
+
+  // helper methods
+  const bool loadGraphics(const RPG_Graphics_Type&); // (hover) cursor graphic
+
+  bool                             myInitialized;
 };
 
 #endif

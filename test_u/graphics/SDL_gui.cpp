@@ -489,7 +489,7 @@ do_work(const mode_t& mode_in,
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Graphics_Dictionary::init(), returning\n")));
+               ACE_TEXT("caught exception in RPG_Graphics_Dictionary::init(), aborting\n")));
 
     return;
   }
@@ -510,9 +510,9 @@ do_work(const mode_t& mode_in,
   // step2: setup main "window"
   std::string title = SDL_GUI_DEF_GRAPHICS_MAINWINDOW_TITLE;
   SDL_GUI_MainWindow mainWindow(std::make_pair(screen->w, screen->h),  // size
-                                INTERFACEWINDOW_MAIN,                  // window type
                                 SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE, // interface elements
-                                title);                                // title (== caption)
+                                title,                                 // title (== caption)
+                                TYPE_FONT_MAIN_LARGE);                 // title font
   RPG_Graphics_Position_t position = std::make_pair(0, 0);
   mainWindow.draw(screen,
                   position);
@@ -588,7 +588,7 @@ do_work(const mode_t& mode_in,
                      ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
                      RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type).c_str()));
 
-          break;
+          return;
         } // end IF
 
         ACE_DEBUG((LM_DEBUG,
@@ -605,7 +605,7 @@ do_work(const mode_t& mode_in,
                      ACE_TEXT("failed to SDL_Flip(): \"%s\", aborting\n"),
                      SDL_GetError()));
 
-          break;
+          return;
         } // end IF
 
         // step5: wait a little while (max: 3 seconds)
@@ -677,24 +677,51 @@ do_work(const mode_t& mode_in,
     case MODE_LEVEL_MAP:
     {
       // step4: setup level "window"
-      SDL_GUI_LevelWindow levelWindow(mainWindow,            // parent
-                                      INTERFACEWINDOW_LEVEL, // window type
-                                      floorStyle,            // floor style
-                                      wallStyle,             // wall style
-                                      doorStyle,             // door style
-                                      plan);                 // map
-//       levelWindow.init(floorStyle,
-//                        wallStyle,
-//                        doorStyle,
-//                        plan);
+      // *NOTE*: need to allocate this dynamically so parent window can
+      // assume ownership...
+      SDL_GUI_LevelWindow* levelWindow = NULL;
+      try
+      {
+        levelWindow = new SDL_GUI_LevelWindow(mainWindow,     // parent
+                                              floorStyle,     // floor style
+                                              wallStyle,      // wall style
+                                              doorStyle,      // door style
+                                              plan);          // map
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
+                   sizeof(SDL_GUI_LevelWindow)));
+
+        return;
+      }
+      if (!levelWindow)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
+                   sizeof(SDL_GUI_LevelWindow)));
+
+        return;
+      } // end IF
+
+//       levelWindow->init(floorStyle,
+//                         wallStyle,
+//                         doorStyle,
+//                         plan);
+
       // refresh screen
-      levelWindow.draw(screen,
-                       position);
-      levelWindow.refresh(screen);
+      levelWindow->draw(screen,
+                        position);
+      levelWindow->refresh(screen);
 
       RPG_Graphics_IWindow* window = NULL;
+      bool redraw = false;
       do
       {
+        window = NULL;
+        redraw = false;
+
         // step5: wait for an event
         do_SDL_waitForInput(0,      // wait forever...
                             event); // return value: SDL event
@@ -757,13 +784,30 @@ do_work(const mode_t& mode_in,
             ACE_ASSERT(window);
             try
             {
-              window->handleEvent(event);
+              window->handleEvent(event,
+                                  redraw);
             }
             catch (...)
             {
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
             }
+
+            if (redraw)
+            {
+              // refresh screen
+              try
+              {
+                window->draw(screen,
+                             position);
+                window->refresh(screen);
+              }
+              catch (...)
+              {
+                ACE_DEBUG((LM_ERROR,
+                           ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
+              }
+            } // end IF
 
             break;
           }

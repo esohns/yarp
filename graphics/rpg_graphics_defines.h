@@ -22,46 +22,49 @@
 #define RPG_GRAPHICS_DEFINES_H
 
 // #signature bytes to check for PNG graphics
-#define RPG_GRAPHICS_PNG_SIGNATURE_BYTES      8
+#define RPG_GRAPHICS_PNG_SIGNATURE_BYTES              8
 
 // min #screen refreshes / second of fading
-#define RPG_GRAPHICS_FADE_REFRESH_RATE        10
+#define RPG_GRAPHICS_FADE_REFRESH_RATE                10
 
 // default font pointsize
-#define RPG_GRAPHICS_FONT_DEF_POINTSIZE       10
+#define RPG_GRAPHICS_FONT_DEF_POINTSIZE               10
 
 // default text colors
-#define RPG_GRAPHICS_FONT_DEF_COLOR           RPG_Graphics_SDL_Tools::CLR32_WHITE
-#define RPG_GRAPHICS_FONT_DEF_SHADECOLOR      RPG_Graphics_SDL_Tools::CLR32_BLACK
+#define RPG_GRAPHICS_FONT_DEF_COLOR                   RPG_Graphics_SDL_Tools::CLR32_WHITE
+#define RPG_GRAPHICS_FONT_DEF_SHADECOLOR              RPG_Graphics_SDL_Tools::CLR32_BLACK
 
 // default (tiles) data directory tree organization
-#define RPG_GRAPHICS_TILE_DEF_DOORS_SUB       ACE_TEXT("doors")
-#define RPG_GRAPHICS_TILE_DEF_FLOORS_SUB      ACE_TEXT("floors")
-#define RPG_GRAPHICS_TILE_DEF_WALLS_SUB       ACE_TEXT("walls")
+#define RPG_GRAPHICS_TILE_DEF_CURSORS_SUB             ACE_TEXT("cursors")
+#define RPG_GRAPHICS_TILE_DEF_DOORS_SUB               ACE_TEXT("doors")
+#define RPG_GRAPHICS_TILE_DEF_FLOORS_SUB              ACE_TEXT("floors")
+#define RPG_GRAPHICS_TILE_DEF_WALLS_SUB               ACE_TEXT("walls")
 
 // default #tiles/set (floors, walls, ...)
-#define RPG_GRAPHICS_TILE_FLOORSET_NUMTILES   9
-#define RPG_GRAPHICS_TILE_FLOORSET_ROWTILES   3
+#define RPG_GRAPHICS_TILE_FLOORSET_NUMTILES           9
+#define RPG_GRAPHICS_TILE_FLOORSET_ROWTILES           3
 
 // pixel coordinate difference from one map square to the next
 // *NOTE*: because of isometry, this is not the same as the width/height of a tile
-#define RPG_GRAPHICS_TILE_WIDTH_MOD           56
-#define RPG_GRAPHICS_TILE_HEIGHT_MOD          22
+#define RPG_GRAPHICS_TILE_WIDTH_MOD                   56
+#define RPG_GRAPHICS_TILE_HEIGHT_MOD                  22
 
 // used for shading different tiles
-#define RPG_GRAPHICS_TILE_FLOOR_WIDTH         109
-#define RPG_GRAPHICS_TILE_FLOOR_HEIGHT        44
+#define RPG_GRAPHICS_TILE_FLOOR_WIDTH                 109
+#define RPG_GRAPHICS_TILE_FLOOR_HEIGHT                44
 
 // *TODO*: some are south/east are 56, north/west 57...
-#define RPG_GRAPHICS_TILE_WALL_WIDTH          57
-#define RPG_GRAPHICS_TILE_WALL_HEIGHT         98
+#define RPG_GRAPHICS_TILE_WALL_WIDTH                  57
+#define RPG_GRAPHICS_TILE_WALL_HEIGHT                 98
 // *NOTE*: 0.0: transparent --> 1.0: opaque
-#define RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY 0.6
-#define RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY 0.8
+#define RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY         0.6
+#define RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY         0.8
 
-#define RPG_GRAPHICS_DUMP_DIR                 ACE_TEXT("/var/tmp")
+#define RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN     20
+
+#define RPG_GRAPHICS_DUMP_DIR                         ACE_TEXT("/var/tmp")
 
 // buffer for printing keyboard events (debug info)
-#define RPG_GRAPHICS_SDL_KEYSYM_BUFFER_SIZE   32
+#define RPG_GRAPHICS_SDL_KEYSYM_BUFFER_SIZE           32
 
 #endif

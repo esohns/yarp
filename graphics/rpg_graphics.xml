@@ -5,6 +5,46 @@
 <graphicsDictionary xmlns="urn:rpg"
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                     xsi:schemaLocation="urn:rpg rpg_graphics.xsd">
+  <graphic>
+    <category>CATEGORY_CURSOR</category>
+    <type>TYPE_CURSOR_SCROLL_D</type>
+    <file>cursor_scroll_down.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_CURSOR</category>
+    <type>TYPE_CURSOR_SCROLL_DL</type>
+    <file>cursor_scroll_downleft.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_CURSOR</category>
+    <type>TYPE_CURSOR_SCROLL_DR</type>
+    <file>cursor_scroll_downright.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_CURSOR</category>
+    <type>TYPE_CURSOR_SCROLL_L</type>
+    <file>cursor_scroll_left.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_CURSOR</category>
+    <type>TYPE_CURSOR_SCROLL_R</type>
+    <file>cursor_scroll_right.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_CURSOR</category>
+    <type>TYPE_CURSOR_SCROLL_U</type>
+    <file>cursor_scroll_up.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_CURSOR</category>
+    <type>TYPE_CURSOR_SCROLL_UL</type>
+    <file>cursor_scroll_upleft.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_CURSOR</category>
+    <type>TYPE_CURSOR_SCROLL_UR</type>
+    <file>cursor_scroll_upright.png</file>
+  </graphic>
   <graphic size="12">
     <category>CATEGORY_FONT</category>
     <type>TYPE_FONT_MAIN_NORMAL</type>
