@@ -125,7 +125,7 @@ RPG_Graphics_SDLWindow::getBorders(unsigned long& borderTop_out,
   } // end FOR
 }
 
-const RPG_Graphics_SDLWindow*
+RPG_Graphics_SDLWindow*
 RPG_Graphics_SDLWindow::getParent() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::getParent"));
@@ -207,9 +207,12 @@ RPG_Graphics_SDLWindow::refresh(SDL_Surface* targetSurface_in)
 
 void
 RPG_Graphics_SDLWindow::handleEvent(const SDL_Event& event_in,
+                                    RPG_Graphics_IWindow* window_in,
                                     bool& redraw_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::handleEvent"));
+
+  ACE_UNUSED_ARG(window_in);
 
   // init return value(s)
   redraw_out = false;
@@ -344,6 +347,17 @@ RPG_Graphics_SDLWindow::handleEvent(const SDL_Event& event_in,
       break;
     }
   } // end SWITCH
+
+  // *NOTE*: should never get here...
+  ACE_ASSERT(false);
+}
+
+const RPG_Graphics_WindowType
+RPG_Graphics_SDLWindow::getType() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindow::getType"));
+
+  return myType;
 }
 
 const RPG_Graphics_WindowSize_t

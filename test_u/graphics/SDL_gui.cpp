@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "SDL_gui_defines.h"
 #include "SDL_gui_mainwindow.h"
 #include "SDL_gui_levelwindow.h"
 
@@ -41,6 +42,7 @@
 #include <ace/Log_Msg.h>
 #include <ace/Get_Opt.h>
 #include <ace/High_Res_Timer.h>
+#include <ace/Synch.h>
 
 #include <iostream>
 #include <iomanip>
@@ -51,32 +53,6 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-
-#define SDL_GUI_DEF_MODE                       MODE_RANDOM_IMAGES
-
-#define SDL_GUI_DEF_MAP_MIN_ROOM_SIZE          0 // 0: don't care
-#define SDL_GUI_DEF_MAP_DOORS                  true
-#define SDL_GUI_DEF_MAP_CORRIDORS              true
-#define SDL_GUI_DEF_MAP_MAX_NUM_DOORS_PER_ROOM 3
-#define SDL_GUI_DEF_MAP_MAXIMIZE_ROOMS         true
-#define SDL_GUI_DEF_MAP_NUM_AREAS              2
-#define SDL_GUI_DEF_MAP_SQUARE_ROOMS           true
-#define SDL_GUI_DEF_MAP_SIZE_X                 20
-#define SDL_GUI_DEF_MAP_SIZE_Y                 15
-
-#define SDL_GUI_DEF_GRAPHICS_DICTIONARY        ACE_TEXT("rpg_graphics.xml")
-#define SDL_GUI_DEF_GRAPHICS_DIRECTORY         ACE_TEXT("./../../graphics/data")
-#define SDL_GUI_DEF_GRAPHICS_CACHESIZE         50
-#define SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE  TYPE_INTERFACE
-#define SDL_GUI_DEF_GRAPHICS_MAINWINDOW_TITLE  ACE_TEXT_ALWAYS_CHAR("window")
-
-#define SDL_GUI_DEF_VIDEO_W                    1024
-#define SDL_GUI_DEF_VIDEO_H                    786
-#define SDL_GUI_DEF_VIDEO_BPP                  32
-#define SDL_GUI_DEF_VIDEO_FULLSCREEN           false
-#define SDL_GUI_DEF_VIDEO_DOUBLEBUFFER         true
-
-#define SDL_GUI_SDL_TIMEREVENT                 SDL_USEREVENT
 
 enum userMode_t
 {
@@ -111,7 +87,9 @@ struct SDL_video_config_t
   bool   doubleBuffer;
 };
 
-static SDL_Surface* screen = NULL;
+static SDL_Surface*     screen     = NULL;
+static ACE_Thread_Mutex hover_lock;
+static unsigned long    hover_time = 0;
 
 const bool
 do_initVideo(const std::string& graphicsDirectory_in,
@@ -295,12 +273,46 @@ do_initVideo(const std::string& graphicsDirectory_in,
 }
 
 Uint32
-timer_SDL_cb(Uint32 interval_in,
-             void* argument_in)
+event_timer_SDL_cb(Uint32 interval_in,
+                   void* argument_in)
 {
-  ACE_TRACE(ACE_TEXT("::timer_SDL_cb"));
+  ACE_TRACE(ACE_TEXT("::event_timer_SDL_cb"));
 
-  // create an SDL timer event
+  unsigned long* current_hovertime_p = ACE_static_cast(unsigned long*, argument_in);
+  ACE_ASSERT(current_hovertime_p);
+
+  // synch access
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(hover_lock);
+
+    *current_hovertime_p += interval_in;
+    if (*current_hovertime_p > RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY)
+    {
+      // mouse is hovering --> trigger an event
+      SDL_Event event;
+      event.type = SDL_GUI_SDL_HOVEREVENT;
+      event.user.code = ACE_static_cast(int, *current_hovertime_p);
+
+      if (SDL_PushEvent(&event))
+      {
+        ACE_DEBUG((LM_ERROR,
+                  ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+                  SDL_GetError()));
+      } // end IF
+    } // end IF
+  } // end lock scope
+
+  // re-schedule
+  return interval_in;
+}
+
+Uint32
+input_timer_SDL_cb(Uint32 interval_in,
+                   void* argument_in)
+{
+  ACE_TRACE(ACE_TEXT("::input_timer_SDL_cb"));
+
+  // create a timer event
   SDL_Event event;
   event.type = SDL_GUI_SDL_TIMEREVENT;
   event.user.data1 = argument_in;
@@ -327,8 +339,18 @@ do_SDL_waitForInput(const unsigned long& timeout_in,
   SDL_TimerID timer = NULL;
   if (timeout_in)
     timer = SDL_AddTimer((timeout_in * 1000), // interval (ms)
-                         timer_SDL_cb,        // timeout callback
+                         input_timer_SDL_cb,  // timeout callback
                          NULL);               // callback argument
+  ACE_ASSERT(timer);
+  if (!timer)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
+               (timeout_in * 1000),
+               SDL_GetError()));
+
+    return;
+  } // end IF
 
   // loop until something interesting happens
   do
@@ -351,6 +373,7 @@ do_SDL_waitForInput(const unsigned long& timeout_in,
       break;
   } while (true);
 
+  // clean up
   if (timeout_in &&
       (event_out.type != SDL_GUI_SDL_TIMEREVENT))
     if (!SDL_RemoveTimer(timer))
@@ -543,11 +566,8 @@ do_work(const mode_t& mode_in,
 
   SDL_Event event;
   bool done = false;
-  std::string dump_path_base = RPG_GRAPHICS_DUMP_DIR;
-  dump_path_base += ACE_DIRECTORY_SEPARATOR_STR;
-  std::string dump_path;
-  unsigned long index = 0;
-  std::ostringstream converter;
+  RPG_Graphics_IWindow* window = NULL;
+  bool redraw_map = false;
   switch (mode_in)
   {
     case MODE_RANDOM_IMAGES:
@@ -559,6 +579,9 @@ do_work(const mode_t& mode_in,
       SDL_Surface* image = NULL;
       do
       {
+        window = NULL;
+        redraw_map = false;
+
         // reset screen
         mainWindow.draw(screen,
                         position);
@@ -611,35 +634,14 @@ do_work(const mode_t& mode_in,
         // step5: wait a little while (max: 3 seconds)
         do
         {
-          do_SDL_waitForInput(3,
-                              event);
+          do_SDL_waitForInput(3,      // second(s)
+                              event); // return value: event
           switch (event.type)
           {
             case SDL_KEYDOWN:
-//             case SDL_KEYUP:
             {
-              ACE_DEBUG((LM_DEBUG,
-                        ACE_TEXT("%s key\n%s\n"),
-                        ((event.type == SDL_KEYDOWN) ? ACE_TEXT("pressed") : ACE_TEXT("released")),
-                        RPG_Graphics_SDL_Tools::keyToString(event.key.keysym).c_str()));
-
               switch (event.key.keysym.sym)
               {
-                case SDLK_s:
-                {
-                  converter.str(ACE_TEXT(""));
-                  converter.clear();
-                  converter << index++;
-                  dump_path = dump_path_base;
-                  dump_path += ACE_TEXT("screenshot_");
-                  dump_path += converter.str();
-                  dump_path += ACE_TEXT(".png");
-                  RPG_Graphics_Surface::savePNG(*SDL_GetVideoSurface(), // image
-                                                dump_path,              // file
-                                                false);                 // no alpha
-
-                  break;
-                }
                 case SDLK_q:
                 {
                   // finished event processing
@@ -648,11 +650,51 @@ do_work(const mode_t& mode_in,
                   break;
                 } // end IF
                 default:
+                  break;
+              } // end SWITCH
+
+              if (done)
+                break;
+              // *WARNING*: falls through !
+            }
+            case SDL_ACTIVEEVENT:
+//             case SDL_MOUSEMOTION:
+            case SDL_MOUSEBUTTONDOWN:
+//             case SDL_GUI_SDL_HOVEREVENT: // hovering...
+            {
+              // find window
+              RPG_Graphics_Position_t mouse_position(0, 0);
+              switch (event.type)
+              {
+                case SDL_MOUSEMOTION:
+                  mouse_position = std::make_pair(event.motion.x,
+                                                  event.motion.y); break;
+                case SDL_MOUSEBUTTONDOWN:
+                  mouse_position = std::make_pair(event.button.x,
+                                                  event.button.y); break;
+                default:
                 {
+                  int x,y;
+                  SDL_GetMouseState(&x, &y);
+                  mouse_position = std::make_pair(x,
+                                                  y);
 
                   break;
                 }
               } // end SWITCH
+              window = mainWindow.getWindow(mouse_position);
+              ACE_ASSERT(window);
+              try
+              {
+                window->handleEvent(event,
+                                    window,
+                                    redraw_map);
+              }
+              catch (...)
+              {
+                ACE_DEBUG((LM_ERROR,
+                           ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+              }
 
               break;
             }
@@ -663,6 +705,17 @@ do_work(const mode_t& mode_in,
 
               break;
             }
+            case SDL_KEYUP:
+            case SDL_MOUSEBUTTONUP:
+            case SDL_JOYAXISMOTION:
+            case SDL_JOYBALLMOTION:
+            case SDL_JOYHATMOTION:
+            case SDL_JOYBUTTONDOWN:
+            case SDL_JOYBUTTONUP:
+            case SDL_SYSWMEVENT:
+            case SDL_VIDEORESIZE:
+            case SDL_VIDEOEXPOSE:
+            case SDL_GUI_SDL_TIMEREVENT:
             default:
             {
 
@@ -679,14 +732,14 @@ do_work(const mode_t& mode_in,
       // step4: setup level "window"
       // *NOTE*: need to allocate this dynamically so parent window can
       // assume ownership...
-      SDL_GUI_LevelWindow* levelWindow = NULL;
+      SDL_GUI_LevelWindow* mapWindow = NULL;
       try
       {
-        levelWindow = new SDL_GUI_LevelWindow(mainWindow,     // parent
-                                              floorStyle,     // floor style
-                                              wallStyle,      // wall style
-                                              doorStyle,      // door style
-                                              plan);          // map
+        mapWindow = new SDL_GUI_LevelWindow(mainWindow, // parent
+                                            floorStyle, // floor style
+                                            wallStyle,  // wall style
+                                            doorStyle,  // door style
+                                            plan);      // map
       }
       catch (...)
       {
@@ -696,7 +749,7 @@ do_work(const mode_t& mode_in,
 
         return;
       }
-      if (!levelWindow)
+      if (!mapWindow)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
@@ -705,66 +758,115 @@ do_work(const mode_t& mode_in,
         return;
       } // end IF
 
-//       levelWindow->init(floorStyle,
+//       mapWindow->init(floorStyle,
 //                         wallStyle,
 //                         doorStyle,
 //                         plan);
 
       // refresh screen
-      levelWindow->draw(screen,
+      try
+      {
+        mapWindow->draw(screen,
                         position);
-      levelWindow->refresh(screen);
+        mapWindow->refresh(screen);
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
+      }
 
-      RPG_Graphics_IWindow* window = NULL;
-      bool redraw = false;
+      // start timer (triggers hover events)
+      SDL_TimerID timer = NULL;
+      timer = SDL_AddTimer(SDL_GUI_SDL_EVENT_TIMEOUT, // interval (ms)
+                           event_timer_SDL_cb,        // event timer callback
+                           &hover_time);              // callback argument
+
       do
       {
         window = NULL;
-        redraw = false;
+        redraw_map = false;
 
-        // step5: wait for an event
-        do_SDL_waitForInput(0,      // wait forever...
-                            event); // return value: SDL event
+        // step5: process events
+        if (SDL_WaitEvent(&event) != 1)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
+                     SDL_GetError()));
+
+          return;
+        } // end IF
+
+        // if necessary, reset hover_time
+        if (event.type != SDL_GUI_SDL_HOVEREVENT)
+        {
+          // synch access
+          ACE_Guard<ACE_Thread_Mutex> aGuard(hover_lock);
+
+          hover_time = 0;
+        } // end IF
+
         switch (event.type)
         {
           case SDL_KEYDOWN:
-//           case SDL_KEYUP:
           {
-            ACE_DEBUG((LM_DEBUG,
-                       ACE_TEXT("%s key\n%s\n"),
-                       ((event.type == SDL_KEYDOWN) ? ACE_TEXT("pressed") : ACE_TEXT("released")),
-                       RPG_Graphics_SDL_Tools::keyToString(event.key.keysym).c_str()));
-
             switch (event.key.keysym.sym)
             {
-              case SDLK_s:
-              {
-                converter.str(ACE_TEXT(""));
-                converter.clear();
-                converter << index++;
-                dump_path = dump_path_base;
-                dump_path += ACE_TEXT("screenshot_");
-                dump_path += converter.str();
-                dump_path += ACE_TEXT(".png");
-                RPG_Graphics_Surface::savePNG(*SDL_GetVideoSurface(), // image
-                                              dump_path,              // file
-                                              false);                 // no alpha
-
-                break;
-              }
               case SDLK_q:
               {
                 // finished event processing
                 done = true;
 
                 break;
-              } // end IF
+              }
               default:
               {
+                break;
+              }
+            } // end SWITCH
+
+            if (done)
+              break; // leave
+            // *WARNING*: falls through !
+          }
+          case SDL_ACTIVEEVENT:
+          case SDL_MOUSEMOTION:
+          case SDL_MOUSEBUTTONDOWN:
+          case SDL_GUI_SDL_HOVEREVENT: // hovering...
+          {
+            // find window
+            RPG_Graphics_Position_t mouse_position(0, 0);
+            switch (event.type)
+            {
+              case SDL_MOUSEMOTION:
+                mouse_position = std::make_pair(event.motion.x,
+                                                event.motion.y); break;
+              case SDL_MOUSEBUTTONDOWN:
+                mouse_position = std::make_pair(event.button.x,
+                                                event.button.y); break;
+              default:
+              {
+                int x,y;
+                SDL_GetMouseState(&x, &y);
+                mouse_position = std::make_pair(x,
+                                                y);
 
                 break;
               }
             } // end SWITCH
+            window = mainWindow.getWindow(mouse_position);
+            ACE_ASSERT(window);
+            try
+            {
+              window->handleEvent(event,
+                                  window,
+                                  redraw_map);
+            }
+            catch (...)
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+            }
 
             break;
           }
@@ -775,48 +877,39 @@ do_work(const mode_t& mode_in,
 
             break;
           }
-          case SDL_MOUSEBUTTONDOWN:
-          case SDL_MOUSEMOTION:
-          {
-            // find window
-            window = mainWindow.getWindow(std::make_pair(event.motion.x,
-                                                         event.motion.y));
-            ACE_ASSERT(window);
-            try
-            {
-              window->handleEvent(event,
-                                  redraw);
-            }
-            catch (...)
-            {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
-            }
-
-            if (redraw)
-            {
-              // refresh screen
-              try
-              {
-                window->draw(screen,
-                             position);
-                window->refresh(screen);
-              }
-              catch (...)
-              {
-                ACE_DEBUG((LM_ERROR,
-                           ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
-              }
-            } // end IF
-
-            break;
-          }
+          case SDL_KEYUP:
+          case SDL_MOUSEBUTTONUP:
+          case SDL_JOYAXISMOTION:
+          case SDL_JOYBALLMOTION:
+          case SDL_JOYHATMOTION:
+          case SDL_JOYBUTTONDOWN:
+          case SDL_JOYBUTTONUP:
+          case SDL_SYSWMEVENT:
+          case SDL_VIDEORESIZE:
+          case SDL_VIDEOEXPOSE:
+          case SDL_GUI_SDL_TIMEREVENT:
           default:
           {
 
             break;
           }
         } // end SWITCH
+
+        if (redraw_map)
+        {
+          // refresh map
+          try
+          {
+            mapWindow->draw(screen,
+                            position);
+            mapWindow->refresh(screen);
+          }
+          catch (...)
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
+          }
+        } // end IF
       } while (!done);
 
       break;
@@ -1054,9 +1147,7 @@ ACE_TMAIN(int argc,
   // enable key repeat
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,
                       SDL_DEFAULT_REPEAT_INTERVAL);
-//   // ignore keyboard events
-//   SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
-//   SDL_EventState(SDL_KEYUP, SDL_IGNORE);
+  // setup font engine
   if (TTF_Init() == -1)
   {
     ACE_DEBUG((LM_ERROR,
@@ -1072,6 +1163,26 @@ ACE_TMAIN(int argc,
 #endif
 
     return EXIT_FAILURE;
+  } // end IF
+  // enable WM events
+  Uint8 event_state = 0;
+  event_state = SDL_EventState(SDL_SYSWMEVENT, SDL_QUERY);
+  if ((event_state == SDL_IGNORE) ||
+      (event_state == SDL_DISABLE))
+  {
+    SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
+
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("enabled SDL_SYSWMEVENT events...\n")));
+  } // end IF
+  event_state = SDL_EventState(SDL_ACTIVEEVENT, SDL_QUERY);
+  if ((event_state == SDL_IGNORE) ||
+      (event_state == SDL_DISABLE))
+  {
+    SDL_EventState(SDL_ACTIVEEVENT, SDL_ENABLE);
+
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("enabled SDL_ACTIVEEVENT events...\n")));
   } // end IF
 
   // step3: do actual work

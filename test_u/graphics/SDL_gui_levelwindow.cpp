@@ -19,9 +19,10 @@
  ***************************************************************************/
 #include "SDL_gui_levelwindow.h"
 
+#include "SDL_gui_defines.h"
+
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_surface.h>
-#include <rpg_graphics_hotspot.h>
 #include <rpg_graphics_common_tools.h>
 #include <rpg_graphics_SDL_tools.h>
 
@@ -164,6 +165,26 @@ SDL_GUI_LevelWindow::setView(const RPG_Graphics_Position_t& view_in)
 }
 
 void
+SDL_GUI_LevelWindow::setView(const int& offsetX_in,
+                             const int& offsetY_in)
+{
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
+
+  myView.first += offsetX_in;
+  myView.second += offsetY_in;
+}
+
+void
+SDL_GUI_LevelWindow::centerView()
+{
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::centerView"));
+
+  RPG_Map_Dimensions_t dimensions = myMap.getDimensions();
+  myView = std::make_pair(dimensions.first / 2,
+                          dimensions.second / 2);
+}
+
+void
 SDL_GUI_LevelWindow::init(const RPG_Graphics_FloorStyle& floorStyle_in,
                           const RPG_Graphics_WallStyle& wallStyle_in,
                           const RPG_Graphics_DoorStyle& doorStyle_in,
@@ -212,6 +233,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
   // sanity check(s)
   ACE_ASSERT(myCurrentOffMapTile);
+//   ACE_ASSERT(myCurrentCeilingTile);
   ACE_ASSERT(targetSurface_in);
   ACE_ASSERT(ACE_static_cast(int, offset_in.first) <= targetSurface_in->w);
   ACE_ASSERT(ACE_static_cast(int, offset_in.second) <= targetSurface_in->h);
@@ -282,13 +304,9 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
     current_map_position.second = myView.second + i;
 
     // floor tile rotation
-    if ((current_map_position.second == 0) || // init
-        (floor_row == (RPG_GRAPHICS_TILE_FLOORSET_NUMTILES / RPG_GRAPHICS_TILE_FLOORSET_ROWTILES)))
-      floor_row = 0;
+    floor_row = (current_map_position.second % (RPG_GRAPHICS_TILE_FLOORSET_NUMTILES / RPG_GRAPHICS_TILE_FLOORSET_ROWTILES));
     begin_row = myCurrentFloorSet.begin();
     std::advance(begin_row, floor_row);
-    floor_iterator = begin_row;
-    floor_row++;
 
     for (j = diff + i;
          (j + i) <= sum;
@@ -297,13 +315,9 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       current_map_position.first = myView.first + j;
 
       // floor tile rotation
-      if ((current_map_position.first == 0) || // init
-          (floor_index == RPG_GRAPHICS_TILE_FLOORSET_ROWTILES))
-      {
-        floor_index = 0;
-        floor_iterator = begin_row;
-      } // end IF
-      floor_index++;
+      floor_index = (current_map_position.first % RPG_GRAPHICS_TILE_FLOORSET_ROWTILES);
+      floor_iterator = begin_row;
+      std::advance(floor_iterator, (RPG_GRAPHICS_TILE_FLOORSET_ROWTILES * floor_index));
 
       // map --> screen coordinates
       x = (targetSurface_in->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
@@ -478,11 +492,13 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   } // end IF
 
   // remember position of last realization
-  myLastAbsolutePosition = offset_in;
+  myLastAbsolutePosition = std::make_pair(offset_in.first + myBorderLeft + myOffset.first,
+                                          offset_in.second + myBorderTop + myOffset.second);
 }
 
 void
 SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
+                                 RPG_Graphics_IWindow* window_in,
                                  bool& redraw_out)
 {
   ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::handleEvent"));
@@ -492,65 +508,107 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 
   switch (event_in.type)
   {
-    // *** visibility ***
-    case SDL_ACTIVEEVENT:
-    {
-      if (event_in.active.state & SDL_APPACTIVE)
-      {
-        if (event_in.active.gain)
-        {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("activated...\n")));
-        } // end IF
-        else
-        {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("iconified...\n")));
-        } // end ELSE
-      } // end IF
-      if (event_in.active.state & SDL_APPMOUSEFOCUS)
-      {
-        if (event_in.active.gain)
-        {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("mouse focus...\n")));
-        } // end IF
-        else
-        {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("lost mouse focus...\n")));
-        } // end ELSE
-      } // end IF
-
-      break;
-    }
     // *** keyboard ***
     case SDL_KEYDOWN:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("key pressed...\n")));
+      switch (event_in.key.keysym.sym)
+      {
+        // implement keypad navigation
+        case SDLK_c:
+        case SDLK_UP:
+        case SDLK_DOWN:
+        case SDLK_LEFT:
+        case SDLK_RIGHT:
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("%s key\n%s\n"),
+                     ((event_in.type == SDL_KEYDOWN) ? ACE_TEXT("pressed") : ACE_TEXT("released")),
+                     RPG_Graphics_SDL_Tools::keyToString(event_in.key.keysym).c_str()));
 
-      break;
-    }
-    case SDL_KEYUP:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("key released...\n")));
+          switch (event_in.key.keysym.sym)
+          {
+            case SDLK_c:
+              centerView(); break;
+//                   case SDLK_UP:
+//                     mapWindow->setView(0,
+//                                          -RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET); break;
+//                   case SDLK_DOWN:
+//                     mapWindow->setView(0,
+//                                          RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET); break;
+//                   case SDLK_LEFT:
+//                     mapWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
+//                                          0); break;
+//                   case SDLK_RIGHT:
+//                     mapWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
+//                                          0); break;
+            case SDLK_UP:
+              setView(-RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
+                      -RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET); break;
+            case SDLK_DOWN:
+              setView(RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
+                      RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET); break;
+            case SDLK_LEFT:
+              setView(-RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
+                      RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET); break;
+            case SDLK_RIGHT:
+              setView(RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
+                      -RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET); break;
+            default:
+              break;
+          } // end SWITCH
 
-      break;
+          // need a redraw
+          redraw_out = true;
+
+          // done with this event
+          return;
+        }
+        default:
+        {
+
+          break;
+        }
+      } // end SWITCH
+
+      // delegate all other keypresses to the parent...
+      return getParent()->handleEvent(event_in,
+                                      window_in,
+                                      redraw_out);
     }
     // *** mouse ***
     case SDL_MOUSEMOTION:
     {
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("mouse motion...\n")));
+      // find map square
+      RPG_Graphics_Position_t map_position = screen2Map(std::make_pair(event_in.motion.x,
+                                                                       event_in.motion.y));
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
+                 event_in.button.x,
+                 event_in.button.y,
+                 map_position.first,
+                 map_position.second));
+
+      // draw highlight ?
+      if (map_position != myHighlightPosition)
+      {
+//         RPG_Graphics_Position_t screen_position = map2Screen(map_position);
+//         RPG_Graphics_Surface::put(screen_position.first,
+//                                   screen_position.second,
+//                                   *myHighlightTile,
+//                                   targetSurface_in);
+
+        myHighlightPosition = map_position;
+
+        // need a redraw
+        redraw_out = true;
+      } // end IF
 
       break;
     }
     case SDL_MOUSEBUTTONDOWN:
     {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("mouse button [%u,%u]\n"),
+                 ACE_TEXT("mouse button [%u,%u] pressed\n"),
                  ACE_static_cast(unsigned long, event_in.button.which),
                  ACE_static_cast(unsigned long, event_in.button.button)));
 
@@ -569,65 +627,31 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 
       break;
     }
-    case SDL_MOUSEBUTTONUP:
+    case SDL_GUI_SDL_HOVEREVENT:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("mouse button released...\n")));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("SDL_GUI_SDL_HOVEREVENT event...\n")));
 
       break;
     }
-    // *** joystick ***
+    case SDL_ACTIVEEVENT:
+    case SDL_KEYUP:
+    case SDL_MOUSEBUTTONUP:
     case SDL_JOYAXISMOTION:
     case SDL_JOYBALLMOTION:
     case SDL_JOYHATMOTION:
     case SDL_JOYBUTTONDOWN:
     case SDL_JOYBUTTONUP:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("joystick activity...\n")));
-
-      break;
-    }
     case SDL_QUIT:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_QUIT event...\n")));
-
-      break;
-    }
     case SDL_SYSWMEVENT:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_SYSWMEVENT event...\n")));
-
-      break;
-    }
     case SDL_VIDEORESIZE:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_VIDEORESIZE event...\n")));
-
-      break;
-    }
     case SDL_VIDEOEXPOSE:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_VIDEOEXPOSE event...\n")));
-
-      break;
-    }
-    case SDL_USEREVENT:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_USEREVENT event...\n")));
-
-      break;
-    }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("received unknown event (was: %u)...\n"),
-                 ACE_static_cast(unsigned long, event_in.type)));
+      // delegate these to the parent...
+      return getParent()->handleEvent(event_in,
+                                      window_in,
+                                      redraw_out);
 
       break;
     }
@@ -1068,13 +1092,17 @@ SDL_GUI_LevelWindow::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
         south = current_position;
         south.second++;
 
-        if (myMap.getElement(east) == MAPELEMENT_WALL)
+        if ((myMap.getElement(east) == MAPELEMENT_WALL) ||
+            (current_position.first == (levelMap_in.size_x - 1))) // perimeter
           current_walls.east = myCurrentWallSet.east;
-        if (myMap.getElement(west) == MAPELEMENT_WALL)
+        if ((myMap.getElement(west) == MAPELEMENT_WALL) ||
+            (current_position.first == 0)) // perimeter
           current_walls.west = myCurrentWallSet.west;
-        if (myMap.getElement(north) == MAPELEMENT_WALL)
+        if ((myMap.getElement(north) == MAPELEMENT_WALL) ||
+            (current_position.second == 0)) // perimeter
           current_walls.north = myCurrentWallSet.north;
-        if (myMap.getElement(south) == MAPELEMENT_WALL)
+        if ((myMap.getElement(south) == MAPELEMENT_WALL) ||
+            (current_position.second == (levelMap_in.size_y - 1))) // perimeter
           current_walls.south = myCurrentWallSet.south;
 
         if (current_walls.east.surface ||
@@ -1220,69 +1248,6 @@ SDL_GUI_LevelWindow::initDoors(const RPG_Map_FloorPlan_t& levelMap_in,
   } // end FOR
 }
 
-void
-SDL_GUI_LevelWindow::initHotSpots()
-{
-  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::initHotSpots"));
-
-  // upper left
-  RPG_Graphics_HotSpot::init(*this,                  // parent
-                             std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
-                             std::make_pair(0,
-                                            0),   // offset
-                             TYPE_CURSOR_SCROLL_UL); // (hover) cursor graphic
-  // up
-  RPG_Graphics_HotSpot::init(*this,                 // parent
-                             std::make_pair(mySize.first - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
-                             std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            0),     // offset
-                             TYPE_CURSOR_SCROLL_U); // (hover) cursor graphic
-  // upper right
-  RPG_Graphics_HotSpot::init(*this,                  // parent
-                             std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
-                             std::make_pair(mySize.first - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            0),      // offset
-                             TYPE_CURSOR_SCROLL_UR); // (hover) cursor graphic
-  // left
-  RPG_Graphics_HotSpot::init(*this,                 // parent
-                             std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            mySize.second - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // size
-                             std::make_pair(0,
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
-                             TYPE_CURSOR_SCROLL_L); // (hover) cursor graphic
-  // right
-  RPG_Graphics_HotSpot::init(*this,                 // parent
-                             std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            mySize.second - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // size
-                             std::make_pair(mySize.first - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
-                             TYPE_CURSOR_SCROLL_R); // (hover) cursor graphic
-  // lower left
-  RPG_Graphics_HotSpot::init(*this,                  // parent
-                             std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
-                             std::make_pair(0,
-                                            mySize.second -RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
-                             TYPE_CURSOR_SCROLL_DL); // (hover) cursor graphic
-  // down
-  RPG_Graphics_HotSpot::init(*this,                 // parent
-                             std::make_pair(mySize.first - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
-                             std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            mySize.second - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
-                             TYPE_CURSOR_SCROLL_D); // (hover) cursor graphic
-  // lower right
-  RPG_Graphics_HotSpot::init(*this,                  // parent
-                             std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
-                             std::make_pair(mySize.first - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            mySize.second - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
-                             TYPE_CURSOR_SCROLL_DR); // (hover) cursor graphic
-}
-
 const RPG_Graphics_Orientation
 SDL_GUI_LevelWindow::getDoorOrientation(const RPG_Map_Level& level_in,
                                         const RPG_Map_Position_t& position_in)
@@ -1325,16 +1290,51 @@ SDL_GUI_LevelWindow::hasCeiling(const RPG_Map_Position_t& position_in,
   south = position_in;
   south.second++;
 
+  // "corridors"
+  // vertical
   if (((level_in.getElement(east) == MAPELEMENT_FLOOR) ||
        (level_in.getElement(east) == MAPELEMENT_DOOR)) &&
       ((level_in.getElement(west) == MAPELEMENT_FLOOR) ||
        (level_in.getElement(west) == MAPELEMENT_DOOR)))
     return true;
-
+  // horizontal
   if (((level_in.getElement(north) == MAPELEMENT_FLOOR) ||
        (level_in.getElement(north) == MAPELEMENT_DOOR)) &&
       ((level_in.getElement(south) == MAPELEMENT_FLOOR) ||
        (level_in.getElement(south) == MAPELEMENT_DOOR)))
+    return true;
+  // "corners"
+  // SW
+  if (((level_in.getElement(west) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(west) == MAPELEMENT_DOOR)) &&
+      ((level_in.getElement(south) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(south) == MAPELEMENT_DOOR)) &&
+      (level_in.getElement(north) == MAPELEMENT_UNMAPPED) &&
+      (level_in.getElement(east) == MAPELEMENT_UNMAPPED))
+    return true;
+  // SE
+  if (((level_in.getElement(east) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(east) == MAPELEMENT_DOOR)) &&
+      ((level_in.getElement(south) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(south) == MAPELEMENT_DOOR)) &&
+      (level_in.getElement(north) == MAPELEMENT_UNMAPPED) &&
+      (level_in.getElement(west) == MAPELEMENT_UNMAPPED))
+    return true;
+  // NW
+  if (((level_in.getElement(west) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(west) == MAPELEMENT_DOOR)) &&
+      ((level_in.getElement(north) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(north) == MAPELEMENT_DOOR)) &&
+      (level_in.getElement(south) == MAPELEMENT_UNMAPPED) &&
+      (level_in.getElement(east) == MAPELEMENT_UNMAPPED))
+    return true;
+  // NE
+  if (((level_in.getElement(east) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(east) == MAPELEMENT_DOOR)) &&
+      ((level_in.getElement(north) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(north) == MAPELEMENT_DOOR)) &&
+      (level_in.getElement(south) == MAPELEMENT_UNMAPPED) &&
+      (level_in.getElement(west) == MAPELEMENT_UNMAPPED))
     return true;
 
   return false;
@@ -1358,6 +1358,14 @@ SDL_GUI_LevelWindow::screen2Map(const RPG_Graphics_Position_t& position_in)
                          (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
                          (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
                         (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
+
+  // sanity check: off-map position ?
+  if ((map_position.first >= myMap.getDimensions().first) ||
+      (map_position.second >= myMap.getDimensions().second))
+  {
+    map_position.first = std::numeric_limits<unsigned long>::max();
+    map_position.second = std::numeric_limits<unsigned long>::max();
+  } // end IF
 
   return map_position;
 }

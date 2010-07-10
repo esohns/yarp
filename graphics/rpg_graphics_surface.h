@@ -64,6 +64,9 @@ class RPG_Graphics_Surface
                       const unsigned long&,     // offset x (top left == 0,0)
                       const unsigned long&,     // offset y (top left == 0,0)
                       SDL_Surface*);            // target surface (e.g. screen)
+  static void putRect(const SDL_Rect&, // rectangle
+                      const Uint32&,   // color
+                      SDL_Surface*);   // target surface (e.g. screen)
 
     // *NOTE*: results need to be SDL_FreeSurface()ed by the user !
   static SDL_Surface* shade(const SDL_Surface&,               // source surface

@@ -45,8 +45,9 @@ class SDL_GUI_MainWindow
 
   virtual void draw(SDL_Surface*,                  // target surface (screen !)
                     const RPG_Graphics_Offset_t&); // offset
-//   virtual void handleEvent(const SDL_Event&, // event
-//                            bool&);           // return value: redraw ?
+  virtual void handleEvent(const SDL_Event&,      // event
+                           RPG_Graphics_IWindow*, // target window (NULL: this)
+                           bool&);                // return value: redraw ?
 
  private:
   typedef RPG_Graphics_TopLevel inherited;
@@ -55,6 +56,15 @@ class SDL_GUI_MainWindow
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow());
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow(const SDL_GUI_MainWindow&));
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow& operator=(const SDL_GUI_MainWindow&));
+
+  // helper methods
+  void initScrollSpots();
+
+  // counter
+  static unsigned long screenshot_index;
+
+  unsigned long myLastHoverTime;
+  bool          myHaveMouseFocus;
 };
 
 #endif

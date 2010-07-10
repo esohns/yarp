@@ -41,8 +41,10 @@ class RPG_Graphics_SDLWindow
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void refresh(SDL_Surface*); // target surface (screen !)
-  virtual void handleEvent(const SDL_Event&, // event
-                           bool&);           // return value: redraw ?
+  virtual void handleEvent(const SDL_Event&,      // event
+                           RPG_Graphics_IWindow*, // target window (NULL: this)
+                           bool&);                // return value: redraw ?
+  virtual const RPG_Graphics_WindowType getType() const;
 
   const RPG_Graphics_WindowSize_t getSize(const bool& = false) const; // top-level ?
   RPG_Graphics_IWindow* getWindow(const RPG_Graphics_Position_t&); // position (e.g. mouse-)
@@ -84,7 +86,7 @@ class RPG_Graphics_SDLWindow
                   unsigned long&,        // size (bottom)
                   unsigned long&,        // size (left)
                   unsigned long&) const; // size (right)
-  const RPG_Graphics_SDLWindow* getParent() const;
+  RPG_Graphics_SDLWindow* getParent() const;
 
   // "dirty" region(s)
   RPG_Graphics_DirtyRegions_t      myDirtyRegions;

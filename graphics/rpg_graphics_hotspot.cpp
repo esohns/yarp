@@ -19,18 +19,21 @@
  ***************************************************************************/
 #include "rpg_graphics_hotspot.h"
 
+#include "rpg_graphics_defines.h"
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_surface.h"
 #include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_SDL_tools.h"
 
 RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindow& parent_in,
                                            const RPG_Graphics_WindowSize_t& size_in,
                                            // *NOTE*: offset doesn't include any border(s) !
                                            const RPG_Graphics_Offset_t& offset_in,
                                            const RPG_Graphics_Type& graphicsType_in)
- : inherited(WINDOWTYPE_HOTSPOT,
-             parent_in,
-             offset_in),
+ : inherited(WINDOWTYPE_HOTSPOT, // type
+             parent_in,          // parent
+             offset_in),         // offset
+   myType(graphicsType_in),
    myCursor(NULL),
    myInitialized(false)
 {
@@ -41,7 +44,16 @@ RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindow& parent_
   mySize = size_in;
 
   // (try to) load cursor graphic
-  myInitialized = loadGraphics(graphicsType_in);
+  if (!loadGraphics(myType))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_HotSpot::loadGraphics(%s), aborting\n"),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(myType).c_str()));
+
+    return;
+  } // end IF
+
+  myInitialized = true;
 }
 
 RPG_Graphics_HotSpot::~RPG_Graphics_HotSpot()
@@ -56,8 +68,17 @@ RPG_Graphics_HotSpot::~RPG_Graphics_HotSpot()
   } // end IF
 }
 
+const RPG_Graphics_Type
+RPG_Graphics_HotSpot::getHotSpotType() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::getHotSpotType"));
+
+  return myType;
+}
+
 void
 RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
+                                  RPG_Graphics_IWindow* window_in,
                                   bool& redraw_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::handleEvent"));
@@ -65,136 +86,144 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
   // init return value(s)
   redraw_out = false;
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Graphics_HotSpot::handleEvent\n")));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("RPG_Graphics_HotSpot::handleEvent(%s)\n"),
+//              RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(myType).c_str()));
 
-  switch (event_in.type)
-  {
-    // *** visibility ***
-    case SDL_ACTIVEEVENT:
-    {
-      if (event_in.active.state & SDL_APPACTIVE)
-      {
-        if (event_in.active.gain)
-        {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("activated...\n")));
-        } // end IF
-        else
-        {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("iconified...\n")));
-        } // end ELSE
-      } // end IF
-      if (event_in.active.state & SDL_APPMOUSEFOCUS)
-      {
-        if (event_in.active.gain)
-        {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("mouse focus...\n")));
-        } // end IF
-        else
-        {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("lost mouse focus...\n")));
-        } // end ELSE
-      } // end IF
+  // *TODO*: switch cursor graphics
 
-      break;
-    }
-    // *** keyboard ***
-    case SDL_KEYDOWN:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("key pressed...\n")));
+  // delegate all events to parent...
+  return getParent()->handleEvent(event_in,
+                                  window_in,
+                                  redraw_out);
 
-      break;
-    }
-    case SDL_KEYUP:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("key released...\n")));
-
-      break;
-    }
-    // *** mouse ***
-    case SDL_MOUSEMOTION:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("mouse motion...\n")));
-
-      break;
-    }
-    case SDL_MOUSEBUTTONDOWN:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("mouse button pressed...\n")));
-
-      break;
-    }
-    case SDL_MOUSEBUTTONUP:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("mouse button released...\n")));
-
-      break;
-    }
-    // *** joystick ***
-    case SDL_JOYAXISMOTION:
-    case SDL_JOYBALLMOTION:
-    case SDL_JOYHATMOTION:
-    case SDL_JOYBUTTONDOWN:
-    case SDL_JOYBUTTONUP:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("joystick activity...\n")));
-
-      break;
-    }
-    case SDL_QUIT:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_QUIT event...\n")));
-
-      break;
-    }
-    case SDL_SYSWMEVENT:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_SYSWMEVENT event...\n")));
-
-      break;
-    }
-    case SDL_VIDEORESIZE:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_VIDEORESIZE event...\n")));
-
-      break;
-    }
-    case SDL_VIDEOEXPOSE:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_VIDEOEXPOSE event...\n")));
-
-      break;
-    }
-    case SDL_USEREVENT:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_USEREVENT event...\n")));
-
-      break;
-    }
-    default:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("received unknown event (was: %u)...\n"),
-                 ACE_static_cast(unsigned long, event_in.type)));
-
-      break;
-    }
-  } // end SWITCH
+//   switch (event_in.type)
+//   {
+//     // *** visibility ***
+//     case SDL_ACTIVEEVENT:
+//     {
+//       if (event_in.active.state & SDL_APPACTIVE)
+//       {
+//         if (event_in.active.gain)
+//         {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("activated...\n")));
+//         } // end IF
+//         else
+//         {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("iconified...\n")));
+//         } // end ELSE
+//       } // end IF
+//       if (event_in.active.state & SDL_APPMOUSEFOCUS)
+//       {
+//         if (event_in.active.gain)
+//         {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("mouse focus...\n")));
+//         } // end IF
+//         else
+//         {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("lost mouse focus...\n")));
+//         } // end ELSE
+//       } // end IF
+//
+//       break;
+//     }
+//     // *** keyboard ***
+//     case SDL_KEYDOWN:
+//     {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("key pressed...\n")));
+//
+//       break;
+//     }
+//     case SDL_KEYUP:
+//     {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("key released...\n")));
+//
+//       break;
+//     }
+//     // *** mouse ***
+//     case SDL_MOUSEMOTION:
+//     {
+// //       ACE_DEBUG((LM_DEBUG,
+// //                  ACE_TEXT("mouse motion...\n")));
+//
+//       break;
+//     }
+//     case SDL_MOUSEBUTTONDOWN:
+//     {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("mouse button pressed...\n")));
+//
+//       break;
+//     }
+//     case SDL_MOUSEBUTTONUP:
+//     {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("mouse button released...\n")));
+//
+//       break;
+//     }
+//     // *** joystick ***
+//     case SDL_JOYAXISMOTION:
+//     case SDL_JOYBALLMOTION:
+//     case SDL_JOYHATMOTION:
+//     case SDL_JOYBUTTONDOWN:
+//     case SDL_JOYBUTTONUP:
+//     {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("joystick activity...\n")));
+//
+//       break;
+//     }
+//     case SDL_QUIT:
+//     {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("SDL_QUIT event...\n")));
+//
+//       break;
+//     }
+//     case SDL_SYSWMEVENT:
+//     {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("SDL_SYSWMEVENT event...\n")));
+//
+//       break;
+//     }
+//     case SDL_VIDEORESIZE:
+//     {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("SDL_VIDEORESIZE event...\n")));
+//
+//       break;
+//     }
+//     case SDL_VIDEOEXPOSE:
+//     {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("SDL_VIDEOEXPOSE event...\n")));
+//
+//       break;
+//     }
+//     case SDL_USEREVENT:
+//     {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("SDL_USEREVENT event...\n")));
+//
+//       break;
+//     }
+//     default:
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("received unknown event (was: %u)...\n"),
+//                  ACE_static_cast(unsigned long, event_in.type)));
+//
+//       break;
+//     }
+//   } // end SWITCH
 }
 
 void
@@ -203,10 +232,34 @@ RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::draw"));
 
-  ACE_UNUSED_ARG(targetSurface_in);
-  ACE_UNUSED_ARG(offset_in);
+  // sanity check(s)
+  ACE_ASSERT(targetSurface_in);
+  ACE_ASSERT(ACE_static_cast(int, offset_in.first) <= targetSurface_in->w);
+  ACE_ASSERT(ACE_static_cast(int, offset_in.second) <= targetSurface_in->h);
 
-  // nothing to do here...
+  // init clipping
+  SDL_Rect clipRect;
+  clipRect.x = offset_in.first + myOffset.first;
+  clipRect.y = offset_in.second + myOffset.second;
+  clipRect.w = mySize.first;
+  clipRect.h = mySize.second;
+  if (!SDL_SetClipRect(targetSurface_in, &clipRect))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+
+//   // debug info
+//   RPG_Graphics_Surface::putRect(clipRect,                          // rectangle
+//                                 RPG_GRAPHICS_WINDOW_HOTSPOT_COLOR, // color
+//                                 targetSurface_in);                 // target surface
+
+  // remember position of last realization
+  myLastAbsolutePosition = std::make_pair(offset_in.first + myOffset.first,
+                                          offset_in.second + myOffset.second);
 }
 
 void

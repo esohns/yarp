@@ -35,8 +35,10 @@ class RPG_Graphics_IWindow
   virtual void draw(SDL_Surface*,                      // target surface (screen !)
                     const RPG_Graphics_Offset_t&) = 0; // offset
   virtual void refresh(SDL_Surface*) = 0; // target surface (screen !)
-  virtual void handleEvent(const SDL_Event&, // event
-                           bool&) = 0;       // return value: redraw ?
+  virtual void handleEvent(const SDL_Event&,      // event
+                           RPG_Graphics_IWindow*, // target window (NULL: this)
+                           bool&) = 0;            // return value: redraw ?
+  virtual const RPG_Graphics_WindowType getType() const = 0;
 };
 
 #endif

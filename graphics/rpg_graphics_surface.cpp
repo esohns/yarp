@@ -564,6 +564,51 @@ RPG_Graphics_Surface::putText(const RPG_Graphics_Type& type_in,
   SDL_FreeSurface(rendered_text);
 }
 
+void
+RPG_Graphics_Surface::putRect(const SDL_Rect& rectangle_in,
+                              const Uint32& color_in,
+                              SDL_Surface* targetSurface_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Surface::putRect"));
+
+  // sanity check
+  ACE_ASSERT(targetSurface_in);
+
+  // lock surface during pixel access
+  if (SDL_MUSTLOCK((targetSurface_in)))
+    if (SDL_LockSurface(targetSurface_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+
+  Uint32* pixels = ACE_static_cast(Uint32*, targetSurface_in->pixels);
+  for (unsigned long y = rectangle_in.y;
+       y < ACE_static_cast(unsigned long, (rectangle_in.y + rectangle_in.h));
+       y++)
+  {
+    if ((y == ACE_static_cast(unsigned long, rectangle_in.y)) ||
+        (y == ACE_static_cast(unsigned long, (rectangle_in.y  + rectangle_in.h - 1))))
+    {
+      for (unsigned long x = rectangle_in.x;
+           x < ACE_static_cast(unsigned long, (rectangle_in.x + rectangle_in.w));
+           x++)
+        pixels[(targetSurface_in->w * y) + x] = color_in;
+
+      continue;
+    } // end IF
+
+    pixels[(targetSurface_in->w * y) + rectangle_in.x] = color_in;
+    pixels[(targetSurface_in->w * y) + rectangle_in.x + (rectangle_in.w - 1)] = color_in;
+  } // end FOR
+
+  if (SDL_MUSTLOCK(targetSurface_in))
+    SDL_UnlockSurface(targetSurface_in);
+}
+
 SDL_Surface*
 RPG_Graphics_Surface::shade(const SDL_Surface& sourceImage_in,
                             const Uint8& opacity_in)
