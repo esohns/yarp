@@ -20,7 +20,7 @@
 #ifndef RPG_GRAPHICS_TOPLEVEL_H
 #define RPG_GRAPHICS_TOPLEVEL_H
 
-#include "rpg_graphics_SDLwindow.h"
+#include "rpg_graphics_SDL_window_base.h"
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_type.h"
 
@@ -32,7 +32,7 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Graphics_TopLevel
- : public RPG_Graphics_SDLWindow
+ : public RPG_Graphics_SDLWindowBase
 {
  public:
   RPG_Graphics_TopLevel(const RPG_Graphics_WindowSize_t&,                 // size
@@ -47,7 +47,7 @@ class RPG_Graphics_TopLevel
   RPG_Graphics_InterfaceElements_t myElementGraphics;
 
  private:
-  typedef RPG_Graphics_SDLWindow inherited;
+  typedef RPG_Graphics_SDLWindowBase inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel());

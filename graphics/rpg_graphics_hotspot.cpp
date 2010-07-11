@@ -26,7 +26,7 @@
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
 
-RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindow& parent_in,
+RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindowBase& parent_in,
                                            const RPG_Graphics_WindowSize_t& size_in,
                                            // *NOTE*: offset doesn't include any border(s) !
                                            const RPG_Graphics_Offset_t& offset_in,
@@ -118,19 +118,20 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
 
 void
 RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
-                           const RPG_Graphics_Offset_t& offset_in)
+                           const unsigned long& offsetX_in,
+                           const unsigned long& offsetY_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::draw"));
 
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);
-  ACE_ASSERT(ACE_static_cast(int, offset_in.first) <= targetSurface_in->w);
-  ACE_ASSERT(ACE_static_cast(int, offset_in.second) <= targetSurface_in->h);
+  ACE_ASSERT(ACE_static_cast(int, offsetX_in) <= targetSurface_in->w);
+  ACE_ASSERT(ACE_static_cast(int, offsetY_in) <= targetSurface_in->h);
 
   // init clipping
   SDL_Rect clipRect;
-  clipRect.x = offset_in.first + myOffset.first;
-  clipRect.y = offset_in.second + myOffset.second;
+  clipRect.x = offsetX_in + myOffset.first;
+  clipRect.y = offsetY_in + myOffset.second;
   clipRect.w = mySize.first;
   clipRect.h = mySize.second;
   if (!SDL_SetClipRect(targetSurface_in, &clipRect))
@@ -148,12 +149,12 @@ RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
 //                                 targetSurface_in);                 // target surface
 
   // remember position of last realization
-  myLastAbsolutePosition = std::make_pair(offset_in.first + myOffset.first,
-                                          offset_in.second + myOffset.second);
+  myLastAbsolutePosition = std::make_pair(offsetX_in + myOffset.first,
+                                          offsetY_in + myOffset.second);
 }
 
 void
-RPG_Graphics_HotSpot::init(const RPG_Graphics_SDLWindow& parent_in,
+RPG_Graphics_HotSpot::init(const RPG_Graphics_SDLWindowBase& parent_in,
                            const RPG_Graphics_WindowSize_t& size_in,
                            const RPG_Graphics_Offset_t& offset_in,
                            const RPG_Graphics_Type& type_in)

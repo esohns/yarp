@@ -21,7 +21,7 @@
 #define SDL_GUI_LEVELWINDOW_H
 
 #include <rpg_graphics_common.h>
-#include <rpg_graphics_SDLwindow.h>
+#include <rpg_graphics_SDL_window_base.h>
 #include <rpg_graphics_floorstyle.h>
 #include <rpg_graphics_wallstyle.h>
 #include <rpg_graphics_doorstyle.h>
@@ -39,16 +39,16 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class SDL_GUI_LevelWindow
- : public RPG_Graphics_SDLWindow
+ : public RPG_Graphics_SDLWindowBase
 {
  public:
   SDL_GUI_LevelWindow(// *** SDL window ***
-                      const RPG_Graphics_SDLWindow&,  // parent
+                      const RPG_Graphics_SDLWindowBase&, // parent
                       // *** level properties ***
-                      const RPG_Graphics_FloorStyle&, // floor style
-                      const RPG_Graphics_WallStyle&,  // wall style
-                      const RPG_Graphics_DoorStyle&,  // door style
-                      const RPG_Map_FloorPlan_t&);    // (initial) map
+                      const RPG_Graphics_FloorStyle&,    // floor style
+                      const RPG_Graphics_WallStyle&,     // wall style
+                      const RPG_Graphics_DoorStyle&,     // door style
+                      const RPG_Map_FloorPlan_t&);       // (initial) map
   virtual ~SDL_GUI_LevelWindow();
 
   // adjust viewport
@@ -64,14 +64,15 @@ class SDL_GUI_LevelWindow
             const RPG_Map_FloorPlan_t&);    // map
 
   // implement (part of) RPG_Graphics_IWindow
-  virtual void draw(SDL_Surface*,                  // target surface (screen !)
-                    const RPG_Graphics_Offset_t&); // offset
+  virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
+                    const unsigned long& = 0,  // offset x (top-left = [0,0])
+                    const unsigned long& = 0); // offset y (top-left = [0,0])
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
 
  private:
-  typedef RPG_Graphics_SDLWindow inherited;
+  typedef RPG_Graphics_SDLWindowBase inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow());
@@ -122,7 +123,8 @@ class SDL_GUI_LevelWindow
   RPG_Graphics_Position_t     myView;
 
   // cursor highlight
-  RPG_Graphics_Position_t     myHighlightPosition; // map coordinates
+  RPG_Graphics_Position_t     myHighlightBGPosition; // map coordinates
+  SDL_Surface*                myHighlightBG;
   SDL_Surface*                myHighlightTile;
 };
 

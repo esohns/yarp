@@ -20,6 +20,7 @@
 #include "rpg_graphics_SDL_tools.h"
 
 #include "rpg_graphics_defines.h"
+#include "rpg_graphics_common.h"
 
 #include <ace/Log_Msg.h>
 
@@ -225,72 +226,22 @@ RPG_Graphics_SDL_Tools::initColors()
              ACE_TEXT("RPG_Graphics_SDL_Tools: initialized colors...\n")));
 }
 
-SDL_Surface*
-RPG_Graphics_SDL_Tools::copy(const SDL_Surface& sourceImage_in)
+const SDL_Rect
+RPG_Graphics_SDL_Tools::boundingBox(const SDL_Rect& rect1_in,
+                                    const SDL_Rect& rect2_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::copy"));
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::boundingBox"));
 
-  SDL_Surface* result = NULL;
-  result = SDL_CreateRGBSurface((SDL_HWSURFACE | // TRY to (!) place the surface in VideoRAM
-                                 SDL_ASYNCBLIT |
-                                 SDL_SRCCOLORKEY |
-                                 SDL_SRCALPHA),
-                                sourceImage_in.w,
-                                sourceImage_in.h,
-                                sourceImage_in.format->BitsPerPixel,
-                                sourceImage_in.format->Rmask,
-                                sourceImage_in.format->Gmask,
-                                sourceImage_in.format->Bmask,
-                                sourceImage_in.format->Amask);
-  if (!result)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_CreateRGBSurface(): %s, aborting\n"),
-               SDL_GetError()));
+  RPG_Graphics_Position_t lower_right;
+  lower_right.first = ((rect1_in.x > rect2_in.x) ? rect1_in.x : rect2_in.x);
+  lower_right.second = ((rect1_in.y > rect2_in.y) ? rect1_in.y : rect2_in.y);
 
-    return NULL;
-  } // end IF
-
-  // *NOTE*: blitting does not preserve the alpha channel...
-  // --> do it manually
-//   if (SDL_BlitSurface(&ACE_const_cast(SDL_Surface&, sourceImage_in),
-//                       NULL,
-//                       result,
-//                       NULL))
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-//                SDL_GetError()));
-//
-//     // clean up
-//     SDL_FreeSurface(result);
-//
-//     return NULL;
-//   } // end IF
-
-  // lock surface during pixel access
-  if (SDL_MUSTLOCK((&sourceImage_in)))
-    if (SDL_LockSurface(&ACE_const_cast(SDL_Surface&, sourceImage_in)))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
-               SDL_GetError()));
-
-    // clean up
-    SDL_FreeSurface(result);
-
-    return NULL;
-  } // end IF
-
-  for (unsigned long i = 0;
-       i < ACE_static_cast(unsigned long, sourceImage_in.h);
-       i++)
-    ::memcpy((ACE_static_cast(unsigned char*, result->pixels) + (result->pitch * i)),
-             (ACE_static_cast(unsigned char*, sourceImage_in.pixels) + (sourceImage_in.pitch * i)),
-             (sourceImage_in.w * sourceImage_in.format->BytesPerPixel)); // RGBA --> 4 bytes (?!!!)
-
-  if (SDL_MUSTLOCK((&sourceImage_in)))
-    SDL_UnlockSurface(&ACE_const_cast(SDL_Surface&, sourceImage_in));
+  // init result
+  SDL_Rect result;
+  result.x = ((rect1_in.x < rect2_in.x) ? rect1_in.x : rect2_in.x);
+  result.y = ((rect1_in.y < rect2_in.y) ? rect1_in.y : rect2_in.y);
+  result.w = (lower_right.first - result.x) + 1;
+  result.h = (lower_right.second - result.y) + 1;
 
   return result;
 }

@@ -20,6 +20,7 @@
 #ifndef RPG_GRAPHICS_CURSOR_H
 #define RPG_GRAPHICS_CURSOR_H
 
+#include "rpg_graphics_common.h"
 #include "rpg_graphics_type.h"
 #include "rpg_graphics_surface.h"
 
@@ -61,6 +62,10 @@ class RPG_Graphics_Cursor
   // helper types
   typedef std::map<RPG_Graphics_Type, SDL_Surface*> RPG_Graphics_CursorCache_t;
   typedef RPG_Graphics_CursorCache_t::const_iterator RPG_Graphics_CursorCacheConstIterator_t;
+
+  // fast(er) updates
+  RPG_Graphics_Position_t    myCursorBGPosition;
+  SDL_Surface*               myCursorBG;
 
   RPG_Graphics_CursorCache_t myCache;
 };

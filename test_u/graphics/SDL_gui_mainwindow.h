@@ -43,8 +43,10 @@ class SDL_GUI_MainWindow
                      const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
   virtual ~SDL_GUI_MainWindow();
 
-  virtual void draw(SDL_Surface*,                  // target surface (screen !)
-                    const RPG_Graphics_Offset_t&); // offset
+  // implement (part of) RPG_Graphics_IWindow
+  virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
+                    const unsigned long& = 0,  // offset x (top-left = [0,0])
+                    const unsigned long& = 0); // offset y (top-left = [0,0])
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?

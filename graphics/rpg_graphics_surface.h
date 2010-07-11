@@ -41,7 +41,7 @@ class RPG_Graphics_Surface
                        const bool&); // assume ownership ?
   virtual ~RPG_Graphics_Surface();
 
-  // *NOTE*: result need to be SDL_FreeSurface()d !
+  // *NOTE*: results need to be SDL_FreeSurface()d !
   // *WARNING*: display format is not available until AFTER SDL_SetVideoMode() !
   static SDL_Surface* load(const std::string&,  // file
                            const bool& = true); // convert to display format ?
@@ -50,11 +50,19 @@ class RPG_Graphics_Surface
                       const std::string&, // file
                       const bool&);       // with alpha ?
 
+  // *NOTE*: results need to be SDL_FreeSurface()d !
+  static SDL_Surface* create(const unsigned long&,  // width
+                             const unsigned long&); // height
+  // *NOTE*: results need to be SDL_FreeSurface()d !
   static SDL_Surface* get(const unsigned long&, // offset x (top-left == 0,0)
                           const unsigned long&, // offset y (top-left == 0,0)
                           const unsigned long&, // width
                           const unsigned long&, // height
                           const SDL_Surface&);  // source surface
+  static void get(const unsigned long&, // offset x (top-left == 0,0)
+                  const unsigned long&, // offset y (top-left == 0,0)
+                  const SDL_Surface&,   // source surface
+                  SDL_Surface&);        // target surface
   static void put(const unsigned long&, // offset x (top left == 0,0)
                   const unsigned long&, // offset y (top left == 0,0)
                   const SDL_Surface&,   // source surface
@@ -74,6 +82,8 @@ class RPG_Graphics_Surface
     // *NOTE*: results need to be SDL_FreeSurface()ed by the user !
   static SDL_Surface* shade(const SDL_Surface&,               // source surface
                             const Uint8& = SDL_ALPHA_OPAQUE); // alpha (0: transparent --> 255: opaque)
+  // *NOTE*: results need to be SDL_FreeSurface()ed by the user !
+  static SDL_Surface* copy(const SDL_Surface&); // source surface
 
  protected:
   // safety measures

@@ -56,10 +56,10 @@ class RPG_Graphics_SDLWindowBase
                              const std::string&,                               // title
                              const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
   // embedded ("child") window(s)
-  RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowType&, // type
-                             const RPG_Graphics_SDLWindowBase&,  // parent
+  RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowType&,    // type
+                             const RPG_Graphics_SDLWindowBase&, // parent
                              // *NOTE*: offset doesn't include any border(s) !
-                             const RPG_Graphics_Offset_t&);  // offset
+                             const RPG_Graphics_Offset_t&);     // offset
 
   // default screen
   SDL_Surface*                     myScreen;

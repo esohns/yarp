@@ -178,8 +178,12 @@ RPG_Graphics_SDLWindowBase::refresh(SDL_Surface* targetSurface_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::refresh"));
 
+  // set target surface
+  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
+
   // sanity check(s)
-  ACE_ASSERT(targetSurface_in);
+  ACE_ASSERT(targetSurface);
+
   if (myDirtyRegions.empty())
     return; // nothing to do !
 
@@ -210,7 +214,7 @@ RPG_Graphics_SDLWindowBase::refresh(SDL_Surface* targetSurface_in)
 //              topLeftX + width - 1,
 //              topLeftY + height - 1));
 
-  SDL_UpdateRect(targetSurface_in,
+  SDL_UpdateRect(targetSurface,
                  topLeftX,
                  topLeftY,
                  width,

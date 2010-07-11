@@ -21,6 +21,7 @@
 #include "SDL_gui_mainwindow.h"
 #include "SDL_gui_levelwindow.h"
 
+#include <rpg_map_defines.h>
 #include <rpg_map_common_tools.h>
 
 #include <rpg_graphics_defines.h>
@@ -537,10 +538,9 @@ do_work(const mode_t& mode_in,
                                 SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE, // interface elements
                                 title,                                 // title (== caption)
                                 TYPE_FONT_MAIN_LARGE);                 // title font
-  RPG_Graphics_Position_t position = std::make_pair(0, 0);
-  mainWindow.draw(screen,
-                  position);
-  mainWindow.refresh(screen);
+  mainWindow.setScreen(screen);
+  mainWindow.draw();
+  mainWindow.refresh();
 
   // step3a: setup level
   RPG_Map_FloorPlan_t plan;
@@ -557,8 +557,8 @@ do_work(const mode_t& mode_in,
                                         mapConfig_in.max_num_doors_per_room,
                                         seedPoints,
                                         plan);
-  // debug info
-  RPG_Map_Common_Tools::displayFloorPlan(plan);
+//   // debug info
+//   RPG_Map_Common_Tools::displayFloorPlan(plan);
 
   // step3b: setup style
   RPG_Graphics_FloorStyle floorStyle = FLOORSTYLE_AIR;
@@ -584,9 +584,8 @@ do_work(const mode_t& mode_in,
         redraw_map = false;
 
         // reset screen
-        mainWindow.draw(screen,
-                        position);
-        mainWindow.refresh(screen);
+        mainWindow.draw();
+        mainWindow.refresh();
 
         result.clear();
         RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TYPE_MAX,
@@ -762,17 +761,17 @@ do_work(const mode_t& mode_in,
         return;
       } // end IF
 
+      mapWindow->setScreen(screen);
 //       mapWindow->init(floorStyle,
-//                         wallStyle,
-//                         doorStyle,
-//                         plan);
+//                       wallStyle,
+//                       doorStyle,
+//                       plan);
 
       // refresh screen
       try
       {
-        mapWindow->draw(screen,
-                        position);
-        mapWindow->refresh(screen);
+        mapWindow->draw();
+        mapWindow->refresh();
       }
       catch (...)
       {
@@ -826,6 +825,17 @@ do_work(const mode_t& mode_in,
           {
             switch (event.key.keysym.sym)
             {
+              case SDLK_m:
+              {
+                std::string dump_path = RPG_MAP_DUMP_DIR;
+                dump_path += ACE_DIRECTORY_SEPARATOR_STR;
+                dump_path += ACE_TEXT("map.txt");
+                RPG_Map_Common_Tools::save(dump_path,  // file
+                                           seedPoints, // seed points
+                                           plan);      // plan
+
+                break;
+              }
               case SDLK_q:
               {
                 // finished event processing
@@ -882,17 +892,17 @@ do_work(const mode_t& mode_in,
                          ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
             }
 
-            // (re-)draw the cursor
-            if (event.type == SDL_MOUSEMOTION)
-            {
-              SDL_Rect dirtyRegion;
-              RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(mouse_position.first,
-                                                             mouse_position.second,
-                                                             screen,
-                                                             dirtyRegion);
-
-              redraw_map = true;
-            } // end IF
+//             // (re-)draw the cursor
+//             if (event.type == SDL_MOUSEMOTION)
+//             {
+//               SDL_Rect dirtyRegion;
+//               RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(mouse_position.first,
+//                                                              mouse_position.second,
+//                                                              screen,
+//                                                              dirtyRegion);
+//
+//               redraw_map = true;
+//             } // end IF
 
             break;
           }
@@ -926,9 +936,8 @@ do_work(const mode_t& mode_in,
           // refresh map
           try
           {
-            mapWindow->draw(screen,
-                            position);
-            mapWindow->refresh(screen);
+            mapWindow->draw();
+            mapWindow->refresh();
           }
           catch (...)
           {
