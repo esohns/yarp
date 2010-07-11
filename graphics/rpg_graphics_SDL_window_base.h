@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_GRAPHICS_SDLWINDOW_H
-#define RPG_GRAPHICS_SDLWINDOW_H
+#ifndef RPG_GRAPHICS_SDL_WINDOW_BASE_H
+#define RPG_GRAPHICS_SDL_WINDOW_BASE_H
 
 #include "rpg_graphics_iwindow.h"
 #include "rpg_graphics_common.h"
@@ -33,14 +33,15 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Graphics_SDLWindow
+class RPG_Graphics_SDLWindowBase
  : public RPG_Graphics_IWindow
 {
  public:
-  virtual ~RPG_Graphics_SDLWindow();
+  virtual ~RPG_Graphics_SDLWindowBase();
 
   // implement (part of) RPG_Graphics_IWindow
-  virtual void refresh(SDL_Surface*); // target surface (screen !)
+  virtual void setScreen(SDL_Surface*); // (default) screen
+  virtual void refresh(SDL_Surface* = NULL); // target surface (default: screen)
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
@@ -50,15 +51,18 @@ class RPG_Graphics_SDLWindow
   RPG_Graphics_IWindow* getWindow(const RPG_Graphics_Position_t&); // position (e.g. mouse-)
 
  protected:
-  RPG_Graphics_SDLWindow(const RPG_Graphics_WindowSize_t&,                 // size
-                         const RPG_Graphics_WindowType&,                   // type
-                         const std::string&,                               // title
-                         const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
+  RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowSize_t&,                 // size
+                             const RPG_Graphics_WindowType&,                   // type
+                             const std::string&,                               // title
+                             const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
   // embedded ("child") window(s)
-  RPG_Graphics_SDLWindow(const RPG_Graphics_WindowType&, // type
-                         const RPG_Graphics_SDLWindow&,  // parent
-                         // *NOTE*: offset doesn't include any border(s) !
-                         const RPG_Graphics_Offset_t&);  // offset
+  RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowType&, // type
+                             const RPG_Graphics_SDLWindowBase&,  // parent
+                             // *NOTE*: offset doesn't include any border(s) !
+                             const RPG_Graphics_Offset_t&);  // offset
+
+  // default screen
+  SDL_Surface*                     myScreen;
 
   // absolute size
   RPG_Graphics_WindowSize_t        mySize;
@@ -76,7 +80,7 @@ class RPG_Graphics_SDLWindow
   // helper types
   typedef std::vector<SDL_Rect> RPG_Graphics_DirtyRegions_t;
   typedef RPG_Graphics_DirtyRegions_t::const_iterator RPG_Graphics_DirtyRegionsConstIterator_t;
-  typedef std::vector<RPG_Graphics_SDLWindow*> RPG_Graphics_Windows_t;
+  typedef std::vector<RPG_Graphics_SDLWindowBase*> RPG_Graphics_Windows_t;
   typedef RPG_Graphics_Windows_t::const_iterator RPG_Graphics_WindowsConstIterator_t;
   typedef RPG_Graphics_Windows_t::iterator RPG_Graphics_WindowsIterator_t;
   typedef RPG_Graphics_Windows_t::const_reverse_iterator RPG_Graphics_WindowsRIterator_t;
@@ -86,7 +90,7 @@ class RPG_Graphics_SDLWindow
                   unsigned long&,        // size (bottom)
                   unsigned long&,        // size (left)
                   unsigned long&) const; // size (right)
-  RPG_Graphics_SDLWindow* getParent() const;
+  RPG_Graphics_SDLWindowBase* getParent() const;
 
   // "dirty" region(s)
   RPG_Graphics_DirtyRegions_t      myDirtyRegions;
@@ -104,15 +108,15 @@ class RPG_Graphics_SDLWindow
   typedef RPG_Graphics_IWindow inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindow());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindow(const RPG_Graphics_SDLWindow&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindow& operator=(const RPG_Graphics_SDLWindow&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowBase());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowBase(const RPG_Graphics_SDLWindowBase&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowBase& operator=(const RPG_Graphics_SDLWindowBase&));
 
   // helper methods
-  void addChild(RPG_Graphics_SDLWindow*);
-  void removeChild(RPG_Graphics_SDLWindow*);
+  void addChild(RPG_Graphics_SDLWindowBase*);
+  void removeChild(RPG_Graphics_SDLWindowBase*);
 
-  RPG_Graphics_SDLWindow*          myParent;
+  RPG_Graphics_SDLWindowBase*          myParent;
   RPG_Graphics_WindowType          myType;
 };
 

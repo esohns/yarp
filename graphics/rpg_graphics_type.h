@@ -28,7 +28,9 @@
 
 enum RPG_Graphics_Type
 {
-  TYPE_CURSOR_SCROLL_D = 0,
+  TYPE_CURSOR_DOOR_OPEN = 0,
+  TYPE_CURSOR_NORMAL,
+  TYPE_CURSOR_SCROLL_D,
   TYPE_CURSOR_SCROLL_DL,
   TYPE_CURSOR_SCROLL_DR,
   TYPE_CURSOR_SCROLL_L,
@@ -36,6 +38,8 @@ enum RPG_Graphics_Type
   TYPE_CURSOR_SCROLL_U,
   TYPE_CURSOR_SCROLL_UL,
   TYPE_CURSOR_SCROLL_UR,
+  TYPE_CURSOR_STAIRS,
+  TYPE_CURSOR_WAIT,
   TYPE_FONT_MAIN_NORMAL,
   TYPE_FONT_MAIN_LARGE,
   TYPE_INTERFACE,
@@ -69,6 +73,8 @@ class RPG_Graphics_TypeHelper
   inline static void init()
   {
     myRPG_Graphics_TypeToStringTable.clear();
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_DOOR_OPEN, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_DOOR_OPEN")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_NORMAL, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_NORMAL")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_SCROLL_D, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_SCROLL_D")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_SCROLL_DL, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_SCROLL_DL")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_SCROLL_DR, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_SCROLL_DR")));
@@ -77,6 +83,8 @@ class RPG_Graphics_TypeHelper
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_SCROLL_U, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_SCROLL_U")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_SCROLL_UL, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_SCROLL_UL")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_SCROLL_UR, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_SCROLL_UR")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_STAIRS, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_STAIRS")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_WAIT, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_WAIT")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FONT_MAIN_NORMAL, ACE_TEXT_ALWAYS_CHAR("TYPE_FONT_MAIN_NORMAL")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FONT_MAIN_LARGE, ACE_TEXT_ALWAYS_CHAR("TYPE_FONT_MAIN_LARGE")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_INTERFACE, ACE_TEXT_ALWAYS_CHAR("TYPE_INTERFACE")));

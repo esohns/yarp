@@ -35,7 +35,7 @@
 */
 class RPG_Magic_Dictionary
 {
-  // we use the singleton pattern, so we need to enable access to the ctor/dtors
+  // singleton requires access to the ctor/dtor
   friend class ACE_Singleton<RPG_Magic_Dictionary,
                              ACE_Thread_Mutex>;
 

@@ -113,6 +113,8 @@
 
   <xsd:simpleType name="RPG_Graphics_Type_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="TYPE_CURSOR_DOOR_OPEN"/>
+      <xsd:enumeration value="TYPE_CURSOR_NORMAL"/>
       <xsd:enumeration value="TYPE_CURSOR_SCROLL_D"/>
       <xsd:enumeration value="TYPE_CURSOR_SCROLL_DL"/>
       <xsd:enumeration value="TYPE_CURSOR_SCROLL_DR"/>
@@ -121,6 +123,8 @@
       <xsd:enumeration value="TYPE_CURSOR_SCROLL_U"/>
       <xsd:enumeration value="TYPE_CURSOR_SCROLL_UL"/>
       <xsd:enumeration value="TYPE_CURSOR_SCROLL_UR"/>
+      <xsd:enumeration value="TYPE_CURSOR_STAIRS"/>
+      <xsd:enumeration value="TYPE_CURSOR_WAIT"/>
       <xsd:enumeration value="TYPE_FONT_MAIN_NORMAL"/>
       <xsd:enumeration value="TYPE_FONT_MAIN_LARGE"/>
       <xsd:enumeration value="TYPE_INTERFACE"/>

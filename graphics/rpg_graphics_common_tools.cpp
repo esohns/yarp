@@ -387,6 +387,69 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in)
   return result;
 }
 
+void
+RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
+                                         std::string& file_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::graphicToFile"));
+
+  // init return value(s)
+  file_out.clear();
+
+  std::string filename = myGraphicsDirectory;
+  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  if (graphic_in.category == CATEGORY_TILE)
+  {
+    // follow references
+    RPG_Graphics_Type current_type = graphic_in.type;
+    RPG_Graphics_t graphic = graphic_in;
+    while (graphic.tile.reference != RPG_GRAPHICS_TYPE_INVALID)
+    {
+      // debug info
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("%s --> %s\n"),
+                 RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(current_type).c_str(),
+                 RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphic.tile.reference).c_str()));
+      current_type = graphic.tile.reference;
+
+      // retrieve properties from the dictionary
+      graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(graphic.tile.reference);
+    } // end WHILE
+
+    // assemble path
+    switch (graphic.tile.type)
+    {
+      case TILETYPE_FLOOR:
+        filename += RPG_GRAPHICS_TILE_DEF_FLOORS_SUB; break;
+      case TILETYPE_WALL:
+        filename += RPG_GRAPHICS_TILE_DEF_WALLS_SUB; break;
+      case TILETYPE_DOOR:
+        filename += RPG_GRAPHICS_TILE_DEF_DOORS_SUB; break;
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid tile type (was: \"%s\"), aborting\n"),
+                   RPG_Graphics_TileTypeHelper::RPG_Graphics_TileTypeToString(graphic.tile.type).c_str()));
+
+        return;
+      }
+    } // end SWITCH
+    filename += ACE_DIRECTORY_SEPARATOR_STR;
+    filename += graphic.tile.file;
+  } // end IF
+  else if (graphic_in.category == CATEGORY_CURSOR)
+  {
+    // assemble path
+    filename += RPG_GRAPHICS_TILE_DEF_CURSORS_SUB;
+    filename += ACE_DIRECTORY_SEPARATOR_STR;
+    filename += graphic_in.file;
+  } // end IF
+  else
+    filename += graphic_in.file;
+
+  file_out = filename;
+}
+
 const RPG_Graphics_TextSize_t
 RPG_Graphics_Common_Tools::textSize(const RPG_Graphics_Type& type_in,
                                     const std::string& textString_in)
@@ -911,13 +974,12 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
   } // end IF
 
   // step2: load image from file
-  RPG_Graphics_t graphic;
-  graphic.type = RPG_GRAPHICS_TYPE_INVALID;
-
   // retrieve properties from the dictionary
+  RPG_Graphics_t graphic;
+  graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
+  graphic.type = RPG_GRAPHICS_TYPE_INVALID;
   graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(type_in);
   ACE_ASSERT(graphic.type == type_in);
-
   // sanity check
   if ((graphic.category != CATEGORY_CURSOR) &&
       (graphic.category != CATEGORY_INTERFACE) &&
@@ -925,73 +987,31 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
       (graphic.category != CATEGORY_TILE))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid graphics category (was: \"%s\"): type (\"%s\") is not an image, aborting\n"),
+               ACE_TEXT("invalid category (was: \"%s\"): \"%s\" not an image type, aborting\n"),
                RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str(),
                RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphic.type).c_str()));
 
     return NULL;
   } // end IF
 
-  std::string path = myGraphicsDirectory;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  if (graphic.category == CATEGORY_TILE)
-  {
-    // follow references
-    RPG_Graphics_Type current_type = type_in;
-    while (graphic.tile.reference != RPG_GRAPHICS_TYPE_INVALID)
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("%s --> %s\n"),
-                 RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(current_type).c_str(),
-                 RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphic.tile.reference).c_str()));
-      current_type = graphic.tile.reference;
+  // assemble path
+  std::string filename;
+  RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
+  ACE_ASSERT(!filename.empty());
 
-      // retrieve properties from the dictionary
-      graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(graphic.tile.reference);
-    } // end WHILE
-
-    // assemble path
-    switch (graphic.tile.type)
-    {
-      case TILETYPE_FLOOR:
-        path += RPG_GRAPHICS_TILE_DEF_FLOORS_SUB; break;
-      case TILETYPE_WALL:
-        path += RPG_GRAPHICS_TILE_DEF_WALLS_SUB; break;
-      case TILETYPE_DOOR:
-        path += RPG_GRAPHICS_TILE_DEF_DOORS_SUB; break;
-      default:
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid tile type (was: \"%s\"), continuing\n"),
-                   RPG_Graphics_TileTypeHelper::RPG_Graphics_TileTypeToString(graphic.tile.type).c_str()));
-
-        break;
-      }
-    } // end SWITCH
-    path += ACE_DIRECTORY_SEPARATOR_STR;
-    path += graphic.tile.file;
-  } // end IF
-  else if (graphic.category == CATEGORY_CURSOR)
-  {
-    // assemble path
-    path += RPG_GRAPHICS_TILE_DEF_CURSORS_SUB;
-    path += ACE_DIRECTORY_SEPARATOR_STR;
-    path += graphic.file;
-  } // end IF
-  else
-    path += graphic.file;
-
-  node.image = RPG_Graphics_Surface::load(path,  // file
-                                          true); // convert to display format
+  // load file
+  node.image = RPG_Graphics_Surface::load(filename, // file
+                                          true);    // convert to display format
   if (!node.image)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
-               path.c_str()));
+               filename.c_str()));
 
     return NULL;
   } // end IF
 
+  // step3: update cache
   if (cacheGraphic_in)
   {
     // synch cache access

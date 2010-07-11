@@ -43,10 +43,40 @@ PNG_read_callback(png_structp png_ptr_in,
   png_ptr_in->io_ptr = (ACE_static_cast(unsigned char*, png_ptr_in->io_ptr) + size_in);
 }
 
+RPG_Graphics_Surface::RPG_Graphics_Surface(const RPG_Graphics_Type& type_in,
+                                           const bool& ownSurface_in)
+ : mySurface(NULL),
+   myOwnSurface(false)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Surface::RPG_Graphics_Surface"));
+
+  // (try to) load graphic
+  mySurface = RPG_Graphics_Common_Tools::loadGraphic(type_in,         // graphic
+                                                     !ownSurface_in); // cache graphic ?
+  if (!mySurface)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), aborting\n"),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
+
+    return;
+  } // end IF
+
+  myOwnSurface = ownSurface_in;
+}
+
 RPG_Graphics_Surface::RPG_Graphics_Surface(SDL_Surface* surface_in,
                                            const bool& ownSurface_in)
  : mySurface(surface_in),
    myOwnSurface(ownSurface_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Surface::RPG_Graphics_Surface"));
+
+}
+
+RPG_Graphics_Surface::RPG_Graphics_Surface()
+ : mySurface(NULL),
+   myOwnSurface(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Surface::RPG_Graphics_Surface"));
 
@@ -57,8 +87,64 @@ RPG_Graphics_Surface::~RPG_Graphics_Surface()
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Surface::~RPG_Graphics_Surface"));
 
   // clean up
-  if (myOwnSurface)
+  if (myOwnSurface && mySurface)
     SDL_FreeSurface(mySurface);
+}
+
+void
+RPG_Graphics_Surface::init(const RPG_Graphics_Type& type_in,
+                           const bool& ownSurface_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Surface::init"));
+
+  // clean up
+  if (mySurface)
+  {
+    if (myOwnSurface)
+    {
+      SDL_FreeSurface(mySurface);
+      myOwnSurface = false;
+    } // end IF
+    mySurface = NULL;
+  } // end IF
+
+  // (try to) load graphic
+  mySurface = RPG_Graphics_Common_Tools::loadGraphic(type_in,         // graphic
+                                                     !ownSurface_in); // cache graphic ?
+  if (!mySurface)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), aborting\n"),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
+
+    return;
+  } // end IF
+
+  myOwnSurface = ownSurface_in;
+}
+
+void
+RPG_Graphics_Surface::init(SDL_Surface* surface_in,
+                           const bool& ownSurface_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Surface::init"));
+
+  // sanity check(s)
+  ACE_ASSERT(surface_in);
+
+  // clean up
+  if (mySurface)
+  {
+    if (myOwnSurface)
+    {
+      SDL_FreeSurface(mySurface);
+      myOwnSurface = false;
+    } // end IF
+    mySurface = NULL;
+  } // end IF
+
+  mySurface = surface_in;
+  myOwnSurface = ownSurface_in;
 }
 
 SDL_Surface*

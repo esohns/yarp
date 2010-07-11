@@ -22,6 +22,7 @@
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_surface.h"
+#include "rpg_graphics_cursor.h"
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
 
@@ -33,47 +34,27 @@ RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindow& parent_
  : inherited(WINDOWTYPE_HOTSPOT, // type
              parent_in,          // parent
              offset_in),         // offset
-   myType(graphicsType_in),
-   myCursor(NULL),
-   myInitialized(false)
+   myCursorType(graphicsType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::RPG_Graphics_HotSpot"));
 
   // *NOTE*: hotspots don't have borders
   // --> overwrite size
   mySize = size_in;
-
-  // (try to) load cursor graphic
-  if (!loadGraphics(myType))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_HotSpot::loadGraphics(%s), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(myType).c_str()));
-
-    return;
-  } // end IF
-
-  myInitialized = true;
 }
 
 RPG_Graphics_HotSpot::~RPG_Graphics_HotSpot()
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::~RPG_Graphics_HotSpot"));
 
-  // clean up
-  if (myInitialized)
-  {
-    if (myCursor)
-      SDL_FreeSurface(myCursor);
-  } // end IF
 }
 
 const RPG_Graphics_Type
-RPG_Graphics_HotSpot::getHotSpotType() const
+RPG_Graphics_HotSpot::getCursorType() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::getHotSpotType"));
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::getCursorType"));
 
-  return myType;
+  return myCursorType;
 }
 
 void
@@ -90,131 +71,40 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
 //              ACE_TEXT("RPG_Graphics_HotSpot::handleEvent(%s)\n"),
 //              RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(myType).c_str()));
 
-  // *TODO*: switch cursor graphics
+  switch (event_in.type)
+  {
+    // *** mouse ***
+    case SDL_MOUSEMOTION:
+    {
+      // set appropriate cursor
+      RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(myCursorType);
 
-  // delegate all events to parent...
-  return getParent()->handleEvent(event_in,
-                                  window_in,
-                                  redraw_out);
+      // *WARNING*: falls through !
+    }
+    case SDL_ACTIVEEVENT:
+    case SDL_KEYDOWN:
+    case SDL_KEYUP:
+    case SDL_MOUSEBUTTONDOWN:
+    case SDL_MOUSEBUTTONUP:
+    case SDL_JOYAXISMOTION:
+    case SDL_JOYBALLMOTION:
+    case SDL_JOYHATMOTION:
+    case SDL_JOYBUTTONDOWN:
+    case SDL_JOYBUTTONUP:
+    case SDL_QUIT:
+    case SDL_SYSWMEVENT:
+    case SDL_VIDEORESIZE:
+    case SDL_VIDEOEXPOSE:
+    case SDL_USEREVENT:
+    default:
+    {
+      // delegate these to the parent...
+      return getParent()->handleEvent(event_in,
+                                      window_in,
+                                      redraw_out);
 
-//   switch (event_in.type)
-//   {
-//     // *** visibility ***
-//     case SDL_ACTIVEEVENT:
-//     {
-//       if (event_in.active.state & SDL_APPACTIVE)
-//       {
-//         if (event_in.active.gain)
-//         {
-//           ACE_DEBUG((LM_DEBUG,
-//                      ACE_TEXT("activated...\n")));
-//         } // end IF
-//         else
-//         {
-//           ACE_DEBUG((LM_DEBUG,
-//                      ACE_TEXT("iconified...\n")));
-//         } // end ELSE
-//       } // end IF
-//       if (event_in.active.state & SDL_APPMOUSEFOCUS)
-//       {
-//         if (event_in.active.gain)
-//         {
-//           ACE_DEBUG((LM_DEBUG,
-//                      ACE_TEXT("mouse focus...\n")));
-//         } // end IF
-//         else
-//         {
-//           ACE_DEBUG((LM_DEBUG,
-//                      ACE_TEXT("lost mouse focus...\n")));
-//         } // end ELSE
-//       } // end IF
-//
-//       break;
-//     }
-//     // *** keyboard ***
-//     case SDL_KEYDOWN:
-//     {
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("key pressed...\n")));
-//
-//       break;
-//     }
-//     case SDL_KEYUP:
-//     {
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("key released...\n")));
-//
-//       break;
-//     }
-//     // *** mouse ***
-//     case SDL_MOUSEMOTION:
-//     {
-// //       ACE_DEBUG((LM_DEBUG,
-// //                  ACE_TEXT("mouse motion...\n")));
-//
-//       break;
-//     }
-//     case SDL_MOUSEBUTTONDOWN:
-//     {
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("mouse button pressed...\n")));
-//
-//       break;
-//     }
-//     case SDL_MOUSEBUTTONUP:
-//     {
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("mouse button released...\n")));
-//
-//       break;
-//     }
-//     // *** joystick ***
-//     case SDL_JOYAXISMOTION:
-//     case SDL_JOYBALLMOTION:
-//     case SDL_JOYHATMOTION:
-//     case SDL_JOYBUTTONDOWN:
-//     case SDL_JOYBUTTONUP:
-//     {
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("joystick activity...\n")));
-//
-//       break;
-//     }
-//     case SDL_QUIT:
-//     {
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("SDL_QUIT event...\n")));
-//
-//       break;
-//     }
-//     case SDL_SYSWMEVENT:
-//     {
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("SDL_SYSWMEVENT event...\n")));
-//
-//       break;
-//     }
-//     case SDL_VIDEORESIZE:
-//     {
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("SDL_VIDEORESIZE event...\n")));
-//
-//       break;
-//     }
-//     case SDL_VIDEOEXPOSE:
-//     {
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("SDL_VIDEOEXPOSE event...\n")));
-//
-//       break;
-//     }
-//     case SDL_USEREVENT:
-//     {
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("SDL_USEREVENT event...\n")));
-//
-//       break;
-//     }
+      break;
+    }
 //     default:
 //     {
 //       ACE_DEBUG((LM_ERROR,
@@ -223,7 +113,7 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
 //
 //       break;
 //     }
-//   } // end SWITCH
+  } // end SWITCH
 }
 
 void
@@ -295,44 +185,4 @@ RPG_Graphics_HotSpot::init(const RPG_Graphics_SDLWindow& parent_in,
 
     return;
   } // end IF
-}
-
-const bool
-RPG_Graphics_HotSpot::loadGraphics(const RPG_Graphics_Type& graphicType_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::loadGraphics"));
-
-  // sanity check
-  if (myCursor)
-  {
-    SDL_FreeSurface(myCursor);
-    myCursor = NULL;
-  } // end IF
-
-  // load cursor graphic
-  RPG_Graphics_t graphic;
-  graphic.type = graphicType_in;
-  // retrieve properties from the dictionary
-  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(graphicType_in);
-  if (graphic.type != graphicType_in)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Dictionary::getGraphic(\"%s\"), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphicType_in).c_str()));
-
-    return false;
-  } // end IF
-
-  myCursor = RPG_Graphics_Common_Tools::loadGraphic(graphicType_in,
-                                                    false); // don't cache this one
-  if (!myCursor)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphicType_in).c_str()));
-
-    return false;
-  } // end IF
-
-  return true;
 }

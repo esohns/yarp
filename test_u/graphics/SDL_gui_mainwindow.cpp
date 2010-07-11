@@ -409,7 +409,6 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse motion...\n")));
-
       break;
     }
     case SDL_MOUSEBUTTONDOWN:
@@ -526,77 +525,77 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
       } // end ELSE
       myLastHoverTime = event_in.user.code;
 
-      switch (hotspot->getHotSpotType())
+      switch (hotspot->getCursorType())
       {
         case TYPE_CURSOR_SCROLL_UL:
         {
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET);
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET);
+          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case TYPE_CURSOR_SCROLL_U:
         {
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET);
+          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case TYPE_CURSOR_SCROLL_UR:
         {
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET);
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET);
+          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case TYPE_CURSOR_SCROLL_L:
         {
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET);
+          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case TYPE_CURSOR_SCROLL_R:
         {
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET);
+          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case TYPE_CURSOR_SCROLL_DL:
         {
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET);
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET);
+          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case TYPE_CURSOR_SCROLL_D:
         {
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET);
+          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case TYPE_CURSOR_SCROLL_DR:
         {
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET);
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET);
+          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         default:
         {
           ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("invalid/unknown hotspot type (was: %s), aborting\n"),
-                     RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(hotspot->getHotSpotType()).c_str()));
+                     ACE_TEXT("invalid/unknown cursor type (was: %s), aborting\n"),
+                     RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(hotspot->getCursorType()).c_str()));
 
           return;
         }

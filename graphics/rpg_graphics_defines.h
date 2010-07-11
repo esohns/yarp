@@ -66,8 +66,8 @@
 #define RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_SCROLL_DELAY 150 // ms
 #define RPG_GRAPHICS_WINDOW_HOTSPOT_COLOR              RPG_Graphics_SDL_Tools::CLR32_YELLOW
 
-// *NOTE*: view coordinates are measured by map squares
-#define RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET     1
+// *NOTE*: offsets are measured in view coordinates (i.e. map squares)
+#define RPG_GRAPHICS_WINDOW_SCROLL_OFFSET              1
 
 #define RPG_GRAPHICS_DUMP_DIR                          ACE_TEXT("/var/tmp")
 

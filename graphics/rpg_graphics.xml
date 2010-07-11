@@ -7,6 +7,16 @@
                     xsi:schemaLocation="urn:rpg rpg_graphics.xsd">
   <graphic>
     <category>CATEGORY_CURSOR</category>
+    <type>TYPE_CURSOR_DOOR_OPEN</type>
+    <file>cursor_door_open.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_CURSOR</category>
+    <type>TYPE_CURSOR_NORMAL</type>
+    <file>cursor_normal.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_CURSOR</category>
     <type>TYPE_CURSOR_SCROLL_D</type>
     <file>cursor_scroll_down.png</file>
   </graphic>
@@ -44,6 +54,16 @@
     <category>CATEGORY_CURSOR</category>
     <type>TYPE_CURSOR_SCROLL_UR</type>
     <file>cursor_scroll_upright.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_CURSOR</category>
+    <type>TYPE_CURSOR_STAIRS</type>
+    <file>cursor_stairs.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_CURSOR</category>
+    <type>TYPE_CURSOR_WAIT</type>
+    <file>cursor_hourglass.png</file>
   </graphic>
   <graphic size="12">
     <category>CATEGORY_FONT</category>

@@ -48,6 +48,8 @@ class RPG_Graphics_Common_Tools
   static const std::string elementTypeToString(const RPG_Graphics_ElementTypeUnion&);
   static const std::string elementsToString(const RPG_Graphics_Elements_t&);
 
+  static void graphicToFile(const RPG_Graphics_t&, // graphic
+                            std::string&);         // return value: FQ filename
   static const RPG_Graphics_TextSize_t textSize(const RPG_Graphics_Type&, // font
                                                 const std::string&);      // string
 

@@ -32,9 +32,11 @@ class RPG_Graphics_IWindow
   // -Wno-non-virtual-dtor in the project settings...
 
   // exposed interface
-  virtual void draw(SDL_Surface*,                      // target surface (screen !)
-                    const RPG_Graphics_Offset_t&) = 0; // offset
-  virtual void refresh(SDL_Surface*) = 0; // target surface (screen !)
+  virtual void setScreen(SDL_Surface*) = 0;        // (default) screen
+  virtual void draw(SDL_Surface* = NULL,           // target surface (default: screen)
+                    const unsigned long& = 0,      // offset x (top-left = [0,0])
+                    const unsigned long& = 0) = 0; // offset y (top-left = [0,0])
+  virtual void refresh(SDL_Surface* = NULL) = 0; // target surface (default: screen)
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&) = 0;            // return value: redraw ?

@@ -42,14 +42,14 @@ class RPG_Graphics_HotSpot
                        const RPG_Graphics_Type&);        // (hover) cursor graphic
   virtual ~RPG_Graphics_HotSpot();
 
+  const RPG_Graphics_Type getCursorType() const;
+
   // implement (part of) RPG_Graphics_IWindow
+  virtual void draw(SDL_Surface*,                  // target surface (screen !)
+                    const RPG_Graphics_Offset_t&); // offset
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
-  virtual void draw(SDL_Surface*,                  // target surface (screen !)
-                    const RPG_Graphics_Offset_t&); // offset
-
-  const RPG_Graphics_Type getHotSpotType() const;
 
   static void init(const RPG_Graphics_SDLWindow&,    // parent
                    const RPG_Graphics_WindowSize_t&, // size
@@ -65,12 +65,7 @@ class RPG_Graphics_HotSpot
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_HotSpot(const RPG_Graphics_HotSpot&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_HotSpot& operator=(const RPG_Graphics_HotSpot&));
 
-  // helper methods
-  const bool loadGraphics(const RPG_Graphics_Type&); // (hover) cursor graphic
-
-  RPG_Graphics_Type myType;
-  SDL_Surface*      myCursor;
-  bool              myInitialized;
+  RPG_Graphics_Type myCursorType;
 };
 
 #endif

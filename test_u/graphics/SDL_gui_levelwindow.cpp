@@ -170,8 +170,25 @@ SDL_GUI_LevelWindow::setView(const int& offsetX_in,
 {
   ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
 
-  myView.first += offsetX_in;
-  myView.second += offsetY_in;
+  RPG_Map_Dimensions_t dimensions = myMap.getDimensions();
+
+  // handle over-/underruns
+  if ((offsetX_in < 0) &&
+      (ACE_static_cast(unsigned long, -offsetX_in) > myView.first))
+    myView.first = 0;
+  else
+    myView.first += offsetX_in;
+
+  if ((offsetY_in < 0) &&
+      (ACE_static_cast(unsigned long, -offsetY_in) > myView.second))
+    myView.second = 0;
+  else
+    myView.second += offsetY_in;
+
+  if (myView.first >= dimensions.first)
+    myView.first = (dimensions.first - 1);
+  if (myView.second >= dimensions.second)
+    myView.second = (dimensions.second - 1);
 }
 
 void
@@ -529,30 +546,30 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
           {
             case SDLK_c:
               centerView(); break;
-//                   case SDLK_UP:
-//                     mapWindow->setView(0,
-//                                          -RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET); break;
-//                   case SDLK_DOWN:
-//                     mapWindow->setView(0,
-//                                          RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET); break;
-//                   case SDLK_LEFT:
-//                     mapWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-//                                          0); break;
-//                   case SDLK_RIGHT:
-//                     mapWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-//                                          0); break;
+//             case SDLK_UP:
+//               mapWindow->setView(0,
+//                                  -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
+//             case SDLK_DOWN:
+//               mapWindow->setView(0,
+//                                  RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
+//             case SDLK_LEFT:
+//               mapWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+//                                  0); break;
+//             case SDLK_RIGHT:
+//               mapWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+//                                  0); break;
             case SDLK_UP:
-              setView(-RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                      -RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET); break;
+              setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
             case SDLK_DOWN:
-              setView(RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                      RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET); break;
+              setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
             case SDLK_LEFT:
-              setView(-RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                      RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET); break;
+              setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
             case SDLK_RIGHT:
-              setView(RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET,
-                      -RPG_GRAPHICS_WINDOW_SCROLL_KEYPRESS_OFFSET); break;
+              setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
             default:
               break;
           } // end SWITCH
@@ -581,15 +598,17 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       // find map square
       RPG_Graphics_Position_t map_position = screen2Map(std::make_pair(event_in.motion.x,
                                                                        event_in.motion.y));
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
-                 event_in.button.x,
-                 event_in.button.y,
-                 map_position.first,
-                 map_position.second));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
+//                  event_in.button.x,
+//                  event_in.button.y,
+//                  map_position.first,
+//                  map_position.second));
 
       // draw highlight ?
-      if (map_position != myHighlightPosition)
+      if ((map_position != std::make_pair(std::numeric_limits<unsigned long>::max(),
+                                          std::numeric_limits<unsigned long>::max())) &&
+          (map_position != myHighlightPosition))
       {
 //         RPG_Graphics_Position_t screen_position = map2Screen(map_position);
 //         RPG_Graphics_Surface::put(screen_position.first,

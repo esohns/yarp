@@ -26,6 +26,7 @@
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_surface.h>
+#include <rpg_graphics_cursor.h>
 #include <rpg_graphics_common_tools.h>
 #include <rpg_graphics_SDL_tools.h>
 
@@ -729,7 +730,10 @@ do_work(const mode_t& mode_in,
     }
     case MODE_LEVEL_MAP:
     {
-      // step4: setup level "window"
+      // step4: set default cursor
+      RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(TYPE_CURSOR_NORMAL);
+
+      // step5: setup level "window"
       // *NOTE*: need to allocate this dynamically so parent window can
       // assume ownership...
       SDL_GUI_LevelWindow* mapWindow = NULL;
@@ -781,6 +785,16 @@ do_work(const mode_t& mode_in,
       timer = SDL_AddTimer(SDL_GUI_SDL_EVENT_TIMEOUT, // interval (ms)
                            event_timer_SDL_cb,        // event timer callback
                            &hover_time);              // callback argument
+      ACE_ASSERT(timer);
+      if (!timer)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
+                   SDL_GUI_SDL_EVENT_TIMEOUT,
+                   SDL_GetError()));
+
+        return;
+      } // end IF
 
       do
       {
@@ -868,6 +882,18 @@ do_work(const mode_t& mode_in,
                          ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
             }
 
+            // (re-)draw the cursor
+            if (event.type == SDL_MOUSEMOTION)
+            {
+              SDL_Rect dirtyRegion;
+              RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(mouse_position.first,
+                                                             mouse_position.second,
+                                                             screen,
+                                                             dirtyRegion);
+
+              redraw_map = true;
+            } // end IF
+
             break;
           }
           case SDL_QUIT:
@@ -911,6 +937,14 @@ do_work(const mode_t& mode_in,
           }
         } // end IF
       } while (!done);
+
+      // clean up
+      if (!SDL_RemoveTimer(timer))
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
+                   SDL_GetError()));
+      } // end IF
 
       break;
     }

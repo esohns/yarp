@@ -34,6 +34,9 @@
 class RPG_Graphics_Surface
 {
  public:
+  // *NOTE*: if ownership is rejected, the surface will be cached...
+  RPG_Graphics_Surface(const RPG_Graphics_Type&, // graphic type
+                       const bool&);             // assume ownership ?
   RPG_Graphics_Surface(SDL_Surface*, // SDL surface
                        const bool&); // assume ownership ?
   virtual ~RPG_Graphics_Surface();
@@ -72,9 +75,19 @@ class RPG_Graphics_Surface
   static SDL_Surface* shade(const SDL_Surface&,               // source surface
                             const Uint8& = SDL_ALPHA_OPAQUE); // alpha (0: transparent --> 255: opaque)
 
+ protected:
+  // safety measures
+  RPG_Graphics_Surface();
+  // *NOTE*: if ownership is rejected, the surface will be cached...
+  void init(const RPG_Graphics_Type&, // graphic type
+            const bool&);             // assume ownership ?
+  void init(SDL_Surface*, // SDL surface
+            const bool&); // assume ownership ?
+
+  SDL_Surface* mySurface;
+
  private:
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Surface());
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Surface(const RPG_Graphics_Surface&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Surface& operator=(const RPG_Graphics_Surface&));
 
@@ -82,7 +95,6 @@ class RPG_Graphics_Surface
   static SDL_Surface* loadPNG(const unsigned char*); // source buffer
 //                             const unsigned char&); // alpha (0: transparent --> 255: opaque)
 
-  SDL_Surface* mySurface;
   bool         myOwnSurface;
 };
 
