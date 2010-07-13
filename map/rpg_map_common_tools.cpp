@@ -20,6 +20,7 @@
 #include "rpg_map_common_tools.h"
 
 #include "rpg_map_defines.h"
+#include "rpg_map_parser_driver.h"
 #include "rpg_map_pathfinding_tools.h"
 
 #include <rpg_common_file_tools.h>
@@ -35,7 +36,7 @@
 #include <sstream>
 #include <iostream>
 
-void
+const bool
 RPG_Map_Common_Tools::load(const std::string& filename_in,
                            RPG_Map_Positions_t& seedPoints_out,
                            RPG_Map_FloorPlan_t& level_out)
@@ -49,69 +50,28 @@ RPG_Map_Common_Tools::load(const std::string& filename_in,
                ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
                filename_in.c_str()));
 
-    return;
+    return false;
   } // end IF
 
-  ACE_FILE_IO fileStream;
-  ACE_FILE_Addr file_addr(ACE_TEXT_CHAR_TO_TCHAR(filename_in.c_str()));
-  // don't want to block on file creation (see ACE doc)...
-  ACE_Time_Value zero_timeout(0, 0);
-  ACE_FILE_Connector file_connector;
-  if (file_connector.connect(fileStream,
-                             file_addr,
-                             &zero_timeout,
-                             ACE_Addr::sap_any,
-                             0,
-                             (O_RDONLY | O_TEXT), // read-only textmode
-                             ACE_DEFAULT_FILE_PERMS) == -1)
+  // (try to) parse file
+  RPG_Map_ParserDriver parser_driver(RPG_MAP_DEF_TRACE_SCANNING,
+                                     RPG_MAP_DEF_TRACE_PARSING);
+  parser_driver.init(&level_out,      // floor plan
+                     &seedPoints_out, // seed points
+                     true);           // debug ?
+  if (!parser_driver.parse(filename_in))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_FILE_Connector::connect(\"%s\"): %m, aborting\n"),
+               ACE_TEXT("failed to RPG_Map_ParserDriver::parse(\"%s\"), aborting\n"),
                filename_in.c_str()));
 
-    return;
+    return false;
   } // end IF
 
-  // retrieve status info...
-  ACE_FILE_Info info;
-  if (fileStream.get_info(info) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_FILE_IO::get_info(): %m, aborting\n")));
-
-    // clean up
-    if (fileStream.close() == -1)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_FILE_IO::close(): %m, aborting\n")));
-    } // end IF
-
-    return;
-  } // end IF
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("openend file (%u bytes): \"%s\"...\n"),
-             filename_in.c_str(),
-             ACE_static_cast(unsigned long, info.size_)));
-
-  // *TODO*: parse file
-  ACE_ASSERT(false);
-
-  // clean up
-  if (fileStream.close() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_FILE_IO::close(): %m, aborting\n")));
-
-    return;
-  } // end IF
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("closed target file: \"%s\"...\n"),
-             filename_in.c_str()));
+  return true;
 }
 
-void
+const bool
 RPG_Map_Common_Tools::save(const std::string& filename_in,
                            const RPG_Map_Positions_t& seedPoints_in,
                            const RPG_Map_FloorPlan_t& level_in)
@@ -126,7 +86,7 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
                  ACE_TEXT("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), aborting\n"),
                  filename_in.c_str()));
 
-      return;
+      return false;
     } // end IF
 
   ACE_FILE_IO fileStream;
@@ -146,7 +106,7 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
                ACE_TEXT("failed to ACE_FILE_Connector::connect(\"%s\"): %m, aborting\n"),
                filename_in.c_str()));
 
-    return;
+    return false;
   } // end IF
 
 //   ACE_DEBUG((LM_DEBUG,
@@ -169,7 +129,17 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
       // seed point ?
       if (seedPoints_in.find(current_position) != seedPoints_in.end())
       {
-        row += '@'; // seed
+        // *TODO*: with the current naive formatting, seed points can only be
+        // stored as long as they don't interfere with the integrity of other
+        // structures (i.e. walls and doors)
+        if ((level_in.walls.find(current_position) == level_in.walls.end()) &&
+            (level_in.doors.find(current_position) == level_in.doors.end()))
+          row += '@'; // seed
+        else
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("cannot save seed position (%u,%u), continuing\n"),
+                     current_position.first,
+                     current_position.second));
 
         continue;
       } // end IF
@@ -205,7 +175,7 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
                      ACE_TEXT("failed to ACE_FILE_IO::close(): %m, aborting\n")));
         } // end IF
 
-        return;
+        return false;
       }
       default:
       {
@@ -223,7 +193,7 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
                        ACE_TEXT("failed to ACE_FILE_IO::close(): %m, aborting\n")));
           } // end IF
 
-          return;
+          return false;
         } // end IF
 
         break;
@@ -247,10 +217,10 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
                  ACE_TEXT("failed to ACE_FILE_IO::close(): %m, aborting\n")));
     } // end IF
 
-    return;
+    return false;
   } // end IF
 
-  // unlink empty files
+  // sanity check: empty ?
   if (info.size_ == 0)
   {
     // --> remove() instead of close()...
@@ -259,29 +229,30 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_FILE_IO::remove(): %m, aborting\n")));
 
-      return;
+      return false;
     } // end IF
 
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("removed empty TXT file \"%s\"...\n"),
                filename_in.c_str()));
-
-    return;
   } // end IF
-
-  // OK (not empty)
-  if (fileStream.close() == -1)
+  else
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_FILE_IO::close(): %m, aborting\n")));
+    if (fileStream.close() == -1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_FILE_IO::close(): %m, aborting\n")));
 
-    return;
-  } // end IF
+      return false;
+    } // end IF
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("wrote TXT file \"%s\" (%u byte(s))...\n"),
-             filename_in.c_str(),
-             ACE_static_cast(unsigned long, info.size_)));
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("wrote TXT file \"%s\" (%u byte(s))...\n"),
+               filename_in.c_str(),
+               ACE_static_cast(unsigned long, info.size_)));
+  } // end ELSE
+
+  return true;
 }
 
 void

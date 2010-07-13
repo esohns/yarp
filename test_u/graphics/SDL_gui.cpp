@@ -395,7 +395,8 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d [DIR] : graphics directory") << std::endl;
   std::cout << ACE_TEXT("-g [FILE]: graphics dictionary (*.xml)") << std::endl;
-  std::cout << ACE_TEXT("-l       : generate level map") << std::endl;
+  std::cout << ACE_TEXT("-m [FILE]: level map (*.txt)") << std::endl;
+  std::cout << ACE_TEXT("-s       : slideshow mode (show random graphics)") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x       : do NOT validate XML") << std::endl;
@@ -405,8 +406,9 @@ const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   std::string& directory_out,
+                  std::string& dictionary_out,
                   std::string& filename_out,
-                  bool& levelMap_out,
+                  bool& slideShowMode_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out,
                   bool& validateXML_out)
@@ -415,15 +417,16 @@ process_arguments(const int argc_in,
 
   // init results
   directory_out = SDL_GUI_DEF_GRAPHICS_DIRECTORY;
-  filename_out = SDL_GUI_DEF_GRAPHICS_DICTIONARY;
-  levelMap_out = (SDL_GUI_DEF_MODE == MODE_LEVEL_MAP);
+  dictionary_out = SDL_GUI_DEF_GRAPHICS_DICTIONARY;
+  filename_out.clear();
+  slideShowMode_out = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
   traceInformation_out = false;
   printVersionAndExit_out = false;
   validateXML_out = true;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("d:g:ltvx"));
+                             ACE_TEXT("d:g:m:stvx"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -438,13 +441,19 @@ process_arguments(const int argc_in,
       }
       case 'g':
       {
+        dictionary_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'm':
+      {
         filename_out = argumentParser.opt_arg();
 
         break;
       }
-      case 'l':
+      case 's':
       {
-        levelMap_out = true;
+        slideShowMode_out = true;
 
         break;
       }
@@ -491,6 +500,7 @@ process_arguments(const int argc_in,
 
 void
 do_work(const mode_t& mode_in,
+        const std::string& map_in,
         const map_config_t& mapConfig_in,
         const SDL_video_config_t& videoConfig_in,
         const std::string& dictionary_in,
@@ -542,29 +552,6 @@ do_work(const mode_t& mode_in,
   mainWindow.draw();
   mainWindow.refresh();
 
-  // step3a: setup level
-  RPG_Map_FloorPlan_t plan;
-  RPG_Map_Positions_t seedPoints;
-  RPG_Map_Common_Tools::createFloorPlan(mapConfig_in.map_size_x,
-                                        mapConfig_in.map_size_y,
-                                        mapConfig_in.num_areas,
-                                        mapConfig_in.square_rooms,
-                                        mapConfig_in.maximize_rooms,
-                                        mapConfig_in.min_room_size,
-                                        mapConfig_in.doors,
-                                        mapConfig_in.corridors,
-                                        true, // *NOTE*: currently, doors fill one position
-                                        mapConfig_in.max_num_doors_per_room,
-                                        seedPoints,
-                                        plan);
-//   // debug info
-//   RPG_Map_Common_Tools::displayFloorPlan(plan);
-
-  // step3b: setup style
-  RPG_Graphics_FloorStyle floorStyle = FLOORSTYLE_AIR;
-  RPG_Graphics_WallStyle wallStyle = WALLSTYLE_BRICK;
-  RPG_Graphics_DoorStyle doorStyle = DOORSTYLE_WOOD;
-
   SDL_Event event;
   bool done = false;
   RPG_Graphics_IWindow* window = NULL;
@@ -573,7 +560,7 @@ do_work(const mode_t& mode_in,
   {
     case MODE_RANDOM_IMAGES:
     {
-      // step4: show (random) images inside main "window"
+      // step3: show (random) images inside main "window"
       RPG_Graphics_Type type = RPG_GRAPHICS_TYPE_INVALID;
       RPG_Graphics_t graphic;
       RPG_Dice_RollResult_t result;
@@ -631,7 +618,7 @@ do_work(const mode_t& mode_in,
           return;
         } // end IF
 
-        // step5: wait a little while (max: 3 seconds)
+        // step4: wait a little while (max: 3 seconds)
         do
         {
           do_SDL_waitForInput(3,      // second(s)
@@ -729,6 +716,44 @@ do_work(const mode_t& mode_in,
     }
     case MODE_LEVEL_MAP:
     {
+      // step3a: setup level
+      RPG_Map_FloorPlan_t plan;
+      RPG_Map_Positions_t seedPoints;
+      if (map_in.empty())
+        RPG_Map_Common_Tools::createFloorPlan(mapConfig_in.map_size_x,
+                                              mapConfig_in.map_size_y,
+                                              mapConfig_in.num_areas,
+                                              mapConfig_in.square_rooms,
+                                              mapConfig_in.maximize_rooms,
+                                              mapConfig_in.min_room_size,
+                                              mapConfig_in.doors,
+                                              mapConfig_in.corridors,
+                                              true, // *NOTE*: currently, doors fill one position
+                                              mapConfig_in.max_num_doors_per_room,
+                                              seedPoints,
+                                              plan);
+      else
+      {
+        if (!RPG_Map_Common_Tools::load(map_in,
+                                        seedPoints,
+                                        plan))
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to RPG_Map_Common_Tools::load(\"%s\"), aborting\n"),
+                     map_in.c_str()));
+
+          return;
+        } // end IF
+      } // end ELSE
+
+      // debug info
+      RPG_Map_Common_Tools::displayFloorPlan(plan);
+
+      // step3b: setup style
+      RPG_Graphics_FloorStyle floorStyle = FLOORSTYLE_AIR;
+      RPG_Graphics_WallStyle wallStyle = WALLSTYLE_BRICK;
+      RPG_Graphics_DoorStyle doorStyle = DOORSTYLE_WOOD;
+
       // step4: set default cursor
       RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(TYPE_CURSOR_NORMAL);
 
@@ -830,9 +855,16 @@ do_work(const mode_t& mode_in,
                 std::string dump_path = RPG_MAP_DUMP_DIR;
                 dump_path += ACE_DIRECTORY_SEPARATOR_STR;
                 dump_path += ACE_TEXT("map.txt");
-                RPG_Map_Common_Tools::save(dump_path,  // file
-                                           seedPoints, // seed points
-                                           plan);      // plan
+                if (!RPG_Map_Common_Tools::save(dump_path,  // file
+                                                seedPoints, // seed points
+                                                plan))      // plan
+                {
+                  ACE_DEBUG((LM_ERROR,
+                             ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),
+                             dump_path.c_str()));
+
+                  return;
+                } // end IF
 
                 break;
               }
@@ -1044,9 +1076,10 @@ ACE_TMAIN(int argc,
   // step1a set defaults
   std::string graphicsDirectory  = SDL_GUI_DEF_GRAPHICS_DIRECTORY;
   unsigned long cacheSize        = SDL_GUI_DEF_GRAPHICS_CACHESIZE;
-  std::string filename           = SDL_GUI_DEF_GRAPHICS_DICTIONARY;
+  std::string dictionary         = SDL_GUI_DEF_GRAPHICS_DICTIONARY;
   mode_t mode                    = SDL_GUI_DEF_MODE;
-  bool generateLevelMap          = (SDL_GUI_DEF_MODE == MODE_LEVEL_MAP);
+  std::string mapFilename;
+  bool slideShowMode             = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
   bool traceInformation          = false;
   bool printVersionAndExit       = false;
   bool validateXML               = true;
@@ -1076,8 +1109,9 @@ ACE_TMAIN(int argc,
   if (!(process_arguments(argc,
                           argv,
                           graphicsDirectory,
-                          filename,
-                          generateLevelMap,
+                          dictionary,
+                          mapFilename,
+                          slideShowMode,
                           traceInformation,
                           printVersionAndExit,
                           validateXML)))
@@ -1096,12 +1130,31 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step1b: validate arguments
-  if (filename.empty() ||
-      !RPG_Common_File_Tools::isReadable(filename))
+  if (dictionary.empty() ||
+      !RPG_Common_File_Tools::isReadable(dictionary))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid (XML) filename \"%s\", aborting\n"),
-               filename.c_str()));
+               dictionary.c_str()));
+
+    // make 'em learn...
+    print_usage(std::string(ACE::basename(argv[0])));
+
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
+    return EXIT_FAILURE;
+  } // end IF
+  if (!mapFilename.empty() &&
+      !RPG_Common_File_Tools::isReadable(mapFilename))
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("invalid map filename \"%s\", aborting\n"),
+               mapFilename.c_str()));
 
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
@@ -1130,7 +1183,7 @@ ACE_TMAIN(int argc,
 
     return EXIT_FAILURE;
   } // end IF
-  mode = (generateLevelMap ? MODE_LEVEL_MAP : mode);
+  mode = (slideShowMode ? MODE_RANDOM_IMAGES : mode);
 
   // step1c: set correct trace level
   //ACE_Trace::start_tracing();
@@ -1232,9 +1285,10 @@ ACE_TMAIN(int argc,
   ACE_High_Res_Timer timer;
   timer.start();
   do_work(mode,
+          mapFilename,
           map_config,
           video_config,
-          filename,
+          dictionary,
           graphicsDirectory,
           cacheSize,
           validateXML);

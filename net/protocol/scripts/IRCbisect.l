@@ -29,7 +29,7 @@ CRLF    \r\n
                          return -1; }
 } // end <end_of_frame>
 <<EOF>>                { return 0; }
-<*>(?s:.)              { // debug info
+<*>(?s:.)              {
                          ACE_DEBUG((LM_ERROR,
                                     ACE_TEXT("invalid character: \"%c\" (%d), continuing\n"),
                                     yytext[0],

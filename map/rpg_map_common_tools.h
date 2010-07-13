@@ -34,12 +34,12 @@
 class RPG_Map_Common_Tools
 {
  public:
-  static void load(const std::string&,    // FQ filename
-                   RPG_Map_Positions_t&,  // return value: seed points (areas)
-                   RPG_Map_FloorPlan_t&); // return value: level map
-  static void save(const std::string&,          // FQ filename
-                   const RPG_Map_Positions_t&,  // seed points (areas)
-                   const RPG_Map_FloorPlan_t&); // level map
+  static const bool load(const std::string&,    // FQ filename
+                         RPG_Map_Positions_t&,  // return value: seed points (areas)
+                         RPG_Map_FloorPlan_t&); // return value: level map
+  static const bool save(const std::string&,          // FQ filename
+                         const RPG_Map_Positions_t&,  // seed points (areas)
+                         const RPG_Map_FloorPlan_t&); // level map
 
   static void createFloorPlan(const unsigned long&,  // map dimension x
                               const unsigned long&,  // map dimension y

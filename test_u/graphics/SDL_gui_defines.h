@@ -20,7 +20,7 @@
 #ifndef SDL_GUI_DEFINES_H
 #define SDL_GUI_DEFINES_H
 
-#define SDL_GUI_DEF_MODE                       MODE_RANDOM_IMAGES
+#define SDL_GUI_DEF_MODE                       MODE_LEVEL_MAP
 
 #define SDL_GUI_DEF_MAP_MIN_ROOM_SIZE          0 // 0: don't care
 #define SDL_GUI_DEF_MAP_DOORS                  true

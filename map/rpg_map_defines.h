@@ -22,8 +22,12 @@
 #define RPG_MAP_DEFINES_H
 
 // min distance between any 2 doors of a single room
-#define RPG_MAP_DOOR_SEPARATION 1
+#define RPG_MAP_DOOR_SEPARATION    1
 
-#define RPG_MAP_DUMP_DIR        ACE_TEXT("/var/tmp")
+// output more debugging information
+#define RPG_MAP_DEF_TRACE_SCANNING false
+#define RPG_MAP_DEF_TRACE_PARSING  false
+
+#define RPG_MAP_DUMP_DIR           ACE_TEXT("/var/tmp")
 
 #endif
