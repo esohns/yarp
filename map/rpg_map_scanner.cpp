@@ -1183,7 +1183,7 @@ case YY_STATE_EOF(INITIAL):
 case 3:
 YY_RULE_SETUP
 { yylloc->step();
-                             //yylval->val = yytext[0];
+                             yylval->val = yytext[0];
 
                              // debug info
                              std::string error_message(ACE_TEXT("invalid character (was \""));
@@ -1196,7 +1196,8 @@ YY_RULE_SETUP
                              error_message += ACE_TEXT("), continuing");
                              driver.error(*yylloc, error_message);
 
-                             return token_type(yytext[0]);
+                             return token::GLYPH;
+//                              return token_type(yytext[0]);
                            }
 	YY_BREAK
 case 4:

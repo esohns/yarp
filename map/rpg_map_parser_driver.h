@@ -94,6 +94,7 @@ class RPG_Map_ParserDriver
 
   // parser
   yy::RPG_Map_Parser   myParser;
+  unsigned long        myCurrentSizeX;
   RPG_Map_Position_t   myCurrentPosition;
 
   // target data

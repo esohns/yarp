@@ -747,6 +747,19 @@ do_work(const mode_t& mode_in,
       } // end ELSE
 
       // debug info
+      std::cout << ACE_TEXT("seed point(s): [");
+      RPG_Map_PositionsConstIterator_t next = seedPoints.begin();
+      for (RPG_Map_PositionsConstIterator_t iterator = seedPoints.begin();
+           iterator != seedPoints.end();
+           iterator++)
+      {
+        std::cout << ACE_TEXT("[") << (*iterator).first << ACE_TEXT(",") << (*iterator).second << ACE_TEXT("]");
+        next = iterator;
+        std::advance(next, 1);
+        if (next != seedPoints.end())
+          std::cout << ACE_TEXT(", ");
+      } // end FOR
+      std::cout << std::endl;
       RPG_Map_Common_Tools::displayFloorPlan(plan);
 
       // step3b: setup style

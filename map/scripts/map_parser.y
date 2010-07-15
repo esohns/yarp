@@ -47,20 +47,15 @@ typedef void* yyscan_t;
 debug_stream() << $$;
 } <val>
 
-// *NOTE*: because the last row MAY not be terminated with "\n", the parser
-// MAY actually need to gobble the whole file before it can start parsing...
-// This is reflected by the second rule of the non-terminal "file" which implies
-// a shift/reduce conflict. This conflict is mitigated by giving END a lower
-// (left-associative) precedence than the other tokens.
-/* %expect 1 */
-
 %%
 %start file;
-%left GLYPH;
 %left END_OF_ROW;
+%left GLYPH;
 
 file:    chars "end_of_file"     /* default */
-chars:   "glyph" chars           {
+chars:                           /* empty */
+         | row chars             /* default */
+row:     "glyph"                 {
                                    switch ($1)
                                    {
                                      case ' ':
@@ -111,11 +106,12 @@ chars:   "glyph" chars           {
                                      }
                                    } // end SWITCH
                                  };
-         | "end_of_row" chars    {
+         | "end_of_row"          {
+                                   if (driver.myCurrentSizeX == 0)
+                                     driver.myCurrentSizeX = driver.myCurrentPosition.first;
                                    driver.myCurrentPosition.first = 0;
                                    driver.myCurrentPosition.second++;
                                  };
-         |                       /* empty */
 %%
 
 void

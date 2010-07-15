@@ -58,7 +58,7 @@ RPG_Map_Common_Tools::load(const std::string& filename_in,
                                      RPG_MAP_DEF_TRACE_PARSING);
   parser_driver.init(&level_out,      // floor plan
                      &seedPoints_out, // seed points
-                     true);           // debug ?
+                     false);          // debug ?
   if (!parser_driver.parse(filename_in))
   {
     ACE_DEBUG((LM_ERROR,
@@ -387,6 +387,47 @@ RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_FloorPlan_t& level_in)
              level_in.unmapped.size(),
              level_in.walls.size(),
              level_in.doors.size()));
+
+//   // debug sequences
+//   std::cout << ACE_TEXT("unmapped: [");
+//   RPG_Map_PositionsConstIterator_t next = level_in.unmapped.begin();
+//   for (RPG_Map_PositionsConstIterator_t iterator = level_in.unmapped.begin();
+//        iterator != level_in.unmapped.end();
+//        iterator++)
+//   {
+//     std::cout << ACE_TEXT("[") << (*iterator).first << ACE_TEXT(",") << (*iterator).second << ACE_TEXT("]");
+//     next = iterator;
+//     std::advance(next, 1);
+//     if (next != level_in.unmapped.end())
+//       std::cout << ACE_TEXT(", ");
+//   } // end FOR
+//   std::cout << std::endl;
+//   std::cout << ACE_TEXT("walls: [");
+//   next = level_in.walls.begin();
+//   for (RPG_Map_PositionsConstIterator_t iterator = level_in.walls.begin();
+//        iterator != level_in.walls.end();
+//        iterator++)
+//   {
+//     std::cout << ACE_TEXT("[") << (*iterator).first << ACE_TEXT(",") << (*iterator).second << ACE_TEXT("]");
+//     next = iterator;
+//     std::advance(next, 1);
+//     if (next != level_in.walls.end())
+//       std::cout << ACE_TEXT(", ");
+//   } // end FOR
+//   std::cout << std::endl;
+//   std::cout << ACE_TEXT("doors: [");
+//   next = level_in.doors.begin();
+//   for (RPG_Map_PositionsConstIterator_t iterator = level_in.doors.begin();
+//        iterator != level_in.doors.end();
+//        iterator++)
+//   {
+//     std::cout << ACE_TEXT("[") << (*iterator).first << ACE_TEXT(",") << (*iterator).second << ACE_TEXT("]");
+//     next = iterator;
+//     std::advance(next, 1);
+//     if (next != level_in.doors.end())
+//       std::cout << ACE_TEXT(", ");
+//   } // end FOR
+//   std::cout << std::endl;
 
   RPG_Map_Position_t current_position;
   for (unsigned long y = 0;

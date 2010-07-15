@@ -1375,33 +1375,53 @@ SDL_GUI_LevelWindow::hasCeiling(const RPG_Map_Position_t& position_in,
        (level_in.getElement(west) == MAPELEMENT_DOOR)) &&
       ((level_in.getElement(south) == MAPELEMENT_FLOOR) ||
        (level_in.getElement(south) == MAPELEMENT_DOOR)) &&
-      (level_in.getElement(north) == MAPELEMENT_UNMAPPED) &&
-      (level_in.getElement(east) == MAPELEMENT_UNMAPPED))
-    return true;
+      ((level_in.getElement(north) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(north) == MAPELEMENT_WALL)) &&
+      ((level_in.getElement(east) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(east) == MAPELEMENT_WALL)))
+    return (SDL_GUI_LevelWindow::hasCeiling(north,
+                                            level_in) ||
+            SDL_GUI_LevelWindow::hasCeiling(east,
+                                            level_in));
   // SE
   if (((level_in.getElement(east) == MAPELEMENT_FLOOR) ||
        (level_in.getElement(east) == MAPELEMENT_DOOR)) &&
       ((level_in.getElement(south) == MAPELEMENT_FLOOR) ||
        (level_in.getElement(south) == MAPELEMENT_DOOR)) &&
-      (level_in.getElement(north) == MAPELEMENT_UNMAPPED) &&
-      (level_in.getElement(west) == MAPELEMENT_UNMAPPED))
-    return true;
+      ((level_in.getElement(north) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(north) == MAPELEMENT_WALL)) &&
+      ((level_in.getElement(west) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(west) == MAPELEMENT_WALL)))
+    return (SDL_GUI_LevelWindow::hasCeiling(north,
+                                            level_in) ||
+            SDL_GUI_LevelWindow::hasCeiling(west,
+                                            level_in));
   // NW
   if (((level_in.getElement(west) == MAPELEMENT_FLOOR) ||
        (level_in.getElement(west) == MAPELEMENT_DOOR)) &&
       ((level_in.getElement(north) == MAPELEMENT_FLOOR) ||
        (level_in.getElement(north) == MAPELEMENT_DOOR)) &&
-      (level_in.getElement(south) == MAPELEMENT_UNMAPPED) &&
-      (level_in.getElement(east) == MAPELEMENT_UNMAPPED))
-    return true;
+      ((level_in.getElement(south) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(south) == MAPELEMENT_WALL)) &&
+      ((level_in.getElement(east) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(east) == MAPELEMENT_WALL)))
+    return (SDL_GUI_LevelWindow::hasCeiling(south,
+                                            level_in) ||
+            SDL_GUI_LevelWindow::hasCeiling(east,
+                                            level_in));
   // NE
   if (((level_in.getElement(east) == MAPELEMENT_FLOOR) ||
        (level_in.getElement(east) == MAPELEMENT_DOOR)) &&
       ((level_in.getElement(north) == MAPELEMENT_FLOOR) ||
        (level_in.getElement(north) == MAPELEMENT_DOOR)) &&
-      (level_in.getElement(south) == MAPELEMENT_UNMAPPED) &&
-      (level_in.getElement(west) == MAPELEMENT_UNMAPPED))
-    return true;
+      ((level_in.getElement(south) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(south) == MAPELEMENT_WALL)) &&
+      ((level_in.getElement(west) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(west) == MAPELEMENT_WALL)))
+    return (SDL_GUI_LevelWindow::hasCeiling(south,
+                                            level_in) ||
+            SDL_GUI_LevelWindow::hasCeiling(west,
+                                            level_in));;
 
   return false;
 }

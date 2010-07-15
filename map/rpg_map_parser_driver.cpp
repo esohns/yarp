@@ -37,6 +37,7 @@ RPG_Map_ParserDriver::RPG_Map_ParserDriver(const bool& traceScanning_in,
    myParser(*this,             // driver
             myCurrentNumLines, // counter
             myScannerContext), // scanner context
+   myCurrentSizeX(0),
    myCurrentPosition(std::make_pair(0, 0)),
    myCurrentPlan(NULL),
    myCurrentSeedPoints(NULL),
@@ -80,6 +81,7 @@ RPG_Map_ParserDriver::init(RPG_Map_FloorPlan_t* plan_in,
   if (myCurrentBufferState)
     scan_end();
   myCurrentPosition = std::make_pair(0, 0);
+  myCurrentSizeX = 0;
 
   // set parse target data
   myCurrentPlan = plan_in;
@@ -167,7 +169,10 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
   } // end IF
 
   // set dimensions
-  myCurrentPlan->size_x = myCurrentPosition.first;
+  myCurrentPlan->size_x = myCurrentSizeX;
+  // skip trailing newline
+  if (myCurrentPosition.first == 0)
+    myCurrentPosition.second--;
   myCurrentPlan->size_y = myCurrentPosition.second;
 
   // fini buffer/scanner

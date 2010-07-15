@@ -431,10 +431,10 @@ debug_stream() << (yyvaluep->val);
     YY_REDUCE_PRINT (yyn);
     switch (yyn)
       {
-	  case 3:
+	  case 5:
 
     {
-                                   switch ((yysemantic_stack_[(2) - (1)].val))
+                                   switch ((yysemantic_stack_[(1) - (1)].val))
                                    {
                                      case ' ':
                                      {
@@ -476,7 +476,7 @@ debug_stream() << (yyvaluep->val);
                                      {
                                        ACE_DEBUG((LM_ERROR,
                                                   ACE_TEXT("invalid/unknown glyph: \"%c\", continuing\n"),
-                                                  (yysemantic_stack_[(2) - (1)].val)));
+                                                  (yysemantic_stack_[(1) - (1)].val)));
 
                                        driver.myCurrentPosition.first++;
 
@@ -486,9 +486,11 @@ debug_stream() << (yyvaluep->val);
                                  }
     break;
 
-  case 4:
+  case 6:
 
     {
+                                   if (driver.myCurrentSizeX == 0)
+                                     driver.myCurrentSizeX = driver.myCurrentPosition.first;
                                    driver.myCurrentPosition.first = 0;
                                    driver.myCurrentPosition.second++;
                                  }
@@ -704,7 +706,7 @@ debug_stream() << (yyvaluep->val);
   const signed char
   RPG_Map_Parser::yypact_[] =
   {
-        -3,    -3,    -3,     4,     5,    -4,    -4,    -4,    -4
+        -3,    -4,    -4,     2,     3,    -3,    -4,    -4,    -4
   };
 
   /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
@@ -713,21 +715,21 @@ debug_stream() << (yyvaluep->val);
   const unsigned char
   RPG_Map_Parser::yydefact_[] =
   {
-         5,     5,     5,     0,     0,     3,     4,     1,     2
+         3,     5,     6,     0,     0,     3,     1,     2,     4
   };
 
   /* YYPGOTO[NTERM-NUM].  */
   const signed char
   RPG_Map_Parser::yypgoto_[] =
   {
-        -4,    -4,     1
+        -4,    -4,    -1,    -4
   };
 
   /* YYDEFGOTO[NTERM-NUM].  */
   const signed char
   RPG_Map_Parser::yydefgoto_[] =
   {
-        -1,     3,     4
+        -1,     3,     4,     5
   };
 
   /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -737,14 +739,14 @@ debug_stream() << (yyvaluep->val);
   const unsigned char
   RPG_Map_Parser::yytable_[] =
   {
-         1,     2,     5,     6,     7,     8
+         1,     2,     6,     7,     8
   };
 
   /* YYCHECK.  */
   const unsigned char
   RPG_Map_Parser::yycheck_[] =
   {
-         3,     4,     1,     2,     0,     0
+         3,     4,     0,     0,     5
   };
 
   /* STOS_[STATE-NUM] -- The (internal number of the) accessing
@@ -752,7 +754,7 @@ debug_stream() << (yyvaluep->val);
   const unsigned char
   RPG_Map_Parser::yystos_[] =
   {
-         0,     3,     4,     6,     7,     7,     7,     0,     0
+         0,     3,     4,     6,     7,     8,     0,     0,     7
   };
 
 #if YYDEBUG
@@ -769,14 +771,14 @@ debug_stream() << (yyvaluep->val);
   const unsigned char
   RPG_Map_Parser::yyr1_[] =
   {
-         0,     5,     6,     7,     7,     7
+         0,     5,     6,     7,     7,     8,     8
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
   const unsigned char
   RPG_Map_Parser::yyr2_[] =
   {
-         0,     2,     2,     2,     2,     0
+         0,     2,     2,     0,     2,     1,     1
   };
 
 #if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
@@ -786,7 +788,7 @@ debug_stream() << (yyvaluep->val);
   const RPG_Map_Parser::yytname_[] =
   {
     "\"end_of_file\"", "error", "$undefined", "\"glyph\"", "\"end_of_row\"",
-  "$accept", "file", "chars", 0
+  "$accept", "file", "chars", "row", 0
   };
 #endif
 
@@ -795,8 +797,8 @@ debug_stream() << (yyvaluep->val);
   const RPG_Map_Parser::rhs_number_type
   RPG_Map_Parser::yyrhs_[] =
   {
-         6,     0,    -1,     7,     0,    -1,     3,     7,    -1,     4,
-       7,    -1,    -1
+         6,     0,    -1,     7,     0,    -1,    -1,     8,     7,    -1,
+       3,    -1,     4,    -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -804,14 +806,14 @@ debug_stream() << (yyvaluep->val);
   const unsigned char
   RPG_Map_Parser::yyprhs_[] =
   {
-         0,     0,     3,     6,     9,    12
+         0,     0,     3,     6,     7,    10,    12
   };
 
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
   const unsigned char
   RPG_Map_Parser::yyrline_[] =
   {
-         0,    62,    62,    63,   114,   118
+         0,    55,    55,    56,    57,    58,   109
   };
 
   // Print the state stack on the debug stream.
@@ -885,10 +887,10 @@ debug_stream() << (yyvaluep->val);
   }
 
   const int RPG_Map_Parser::yyeof_ = 0;
-  const int RPG_Map_Parser::yylast_ = 5;
-  const int RPG_Map_Parser::yynnts_ = 3;
+  const int RPG_Map_Parser::yylast_ = 4;
+  const int RPG_Map_Parser::yynnts_ = 4;
   const int RPG_Map_Parser::yyempty_ = -2;
-  const int RPG_Map_Parser::yyfinal_ = 7;
+  const int RPG_Map_Parser::yyfinal_ = 6;
   const int RPG_Map_Parser::yyterror_ = 1;
   const int RPG_Map_Parser::yyerrcode_ = 256;
   const int RPG_Map_Parser::yyntokens_ = 5;

@@ -63,7 +63,7 @@ END_OF_LINE    {LF}|{CRLF}
 <<EOF>>                    { yylloc->step();
                              yyterminate(); }
 <*>(?s:.)                  { yylloc->step();
-                             //yylval->val = yytext[0];
+                             yylval->val = yytext[0];
 
                              // debug info
                              std::string error_message(ACE_TEXT("invalid character (was \""));
@@ -76,6 +76,7 @@ END_OF_LINE    {LF}|{CRLF}
                              error_message += ACE_TEXT("), continuing");
                              driver.error(*yylloc, error_message);
 
-                             return token_type(yytext[0]);
+                             return token::GLYPH;
+//                              return token_type(yytext[0]);
                            }
 %%
