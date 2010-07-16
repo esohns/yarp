@@ -49,7 +49,7 @@
         <map_generator>-a 0 -d 0 -m -r 2 -s -t -x 40 -y 20</map_generator>
         <sound_parser>-d -s ../../sound/rpg_sound.xml -t</sound_parser>
         <graphics_parser>-d -g ../../graphics/rpg_graphics.xml -t</graphics_parser>
-        <SDL_gui>-g ../../graphics/rpg_graphics.xml -l -t</SDL_gui>
+        <SDL_gui>-g ../../graphics/rpg_graphics.xml -m /var/tmp/map.txt -t</SDL_gui>
       </runarguments>
       <debugarguments>
         <character_generator>-i ../../item/rpg_item.xml -m ../../magic/rpg_magic.xml -t</character_generator>
@@ -66,7 +66,7 @@
         <map_generator>-a 0 -d 0 -m -r 2 -s -t -x 40 -y 20</map_generator>
         <sound_parser>-d -s ../../sound/rpg_sound.xml -t</sound_parser>
         <graphics_parser>-d -g ../../graphics/rpg_graphics.xml -t</graphics_parser>
-        <SDL_gui>-g ../../graphics/rpg_graphics.xml -l -t</SDL_gui>
+        <SDL_gui>-g ../../graphics/rpg_graphics.xml -m /var/tmp/map.txt -t</SDL_gui>
       </debugarguments>
       <cwd>
         <character_generator>/home/unfv/Projects/RPG/test_u/debug/./</character_generator>

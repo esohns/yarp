@@ -552,6 +552,10 @@ do_work(const mode_t& mode_in,
   mainWindow.draw();
   mainWindow.refresh();
 
+  // ***** mouse setup *****
+  SDL_WarpMouse((screen->w / 2),
+                (screen->h / 2));
+
   SDL_Event event;
   bool done = false;
   RPG_Graphics_IWindow* window = NULL;

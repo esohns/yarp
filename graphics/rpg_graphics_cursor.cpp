@@ -164,6 +164,7 @@ RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
 
       return;
     } // end IF
+
     // clean up
     myCursorBGPosition = std::make_pair(0, 0);
     SDL_FreeSurface(myCursorBG);

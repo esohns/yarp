@@ -614,14 +614,6 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
     // *** mouse ***
     case SDL_MOUSEMOTION:
     {
-      // (re-)draw the cursor
-      SDL_Rect dirtyRegion;
-      RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(event_in.motion.x,
-                                                     event_in.motion.y,
-                                                     myScreen,
-                                                     dirtyRegion);
-      myDirtyRegions.push_back(dirtyRegion);
-
       // find map square
       RPG_Graphics_Position_t map_position = screen2Map(std::make_pair(event_in.motion.x,
                                                                        event_in.motion.y));
@@ -633,6 +625,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 //                  map_position.second));
 
       // draw highlight ?
+      SDL_Rect dirtyRegion;
       if ((map_position != std::make_pair(std::numeric_limits<unsigned long>::max(),
                                           std::numeric_limits<unsigned long>::max())) &&
           (map_position != myHighlightBGPosition))
@@ -643,28 +636,81 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         if (myHighlightBG)
         {
           tile_position = map2Screen(myHighlightBGPosition);
+          // map square center --> top-left position
+          tile_position.first -= RPG_GRAPHICS_TILE_WIDTH_MOD;
+          tile_position.second -= RPG_GRAPHICS_TILE_HEIGHT_MOD;
           RPG_Graphics_Surface::put(tile_position.first,
                                     tile_position.second,
                                     *myHighlightBG,
                                     myScreen);
+
+          dirtyRegion.x = tile_position.first;
+          dirtyRegion.y = tile_position.second;
+          dirtyRegion.w = myHighlightBG->w;
+          dirtyRegion.h = myHighlightBG->h;
+
+          myDirtyRegions.push_back(dirtyRegion);
         } // end IF
         // store current background
         tile_position = map2Screen(map_position);
+        // map square center --> top-left position
+        tile_position.first -= RPG_GRAPHICS_TILE_WIDTH_MOD;
+        tile_position.second -= RPG_GRAPHICS_TILE_HEIGHT_MOD;
         RPG_Graphics_Surface::get(tile_position.first,
                                   tile_position.second,
                                   *myScreen,
                                   *myHighlightBG);
         myHighlightBGPosition = map_position;
 
-        // draw highlight
-        RPG_Graphics_Surface::put(tile_position.first,
-                                  tile_position.second,
-                                  *myHighlightTile,
-                                  myScreen);
+//         // draw highlight
+//         SDL_Rect clipRect;
+//         clipRect.x = tile_position.first;
+//         clipRect.y = tile_position.second;
+//         clipRect.w = myHighlightTile->w;
+//         clipRect.h = myHighlightTile->h;
+//         if (!SDL_SetClipRect(myScreen, &clipRect))
+//         {
+//           ACE_DEBUG((LM_ERROR,
+//                      ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+//                      SDL_GetError()));
+//
+//           return;
+//         } // end IF
+//         ACE_DEBUG((LM_ERROR,
+//                    ACE_TEXT("highlight @ (%u,%u) --> (%u,%u)\n"),
+//                    map_position.first,
+//                    map_position.second,
+//                    tile_position.first,
+//                    tile_position.second));
+//
+//         RPG_Graphics_Surface::put(tile_position.first,
+//                                   tile_position.second,
+//                                   *myHighlightTile,
+//                                   myScreen);
+//
+//         dirtyRegion.x = tile_position.first;
+//         dirtyRegion.y = tile_position.second;
+//         dirtyRegion.w = myHighlightTile->w;
+//         dirtyRegion.h = myHighlightTile->h;
+//
+//         myDirtyRegions.push_back(dirtyRegion);
 
 //         // need a redraw
 //         redraw_out = true;
       } // end IF
+
+      // (re-)draw the cursor
+//       RPG_Graphics_Type cursor_type;
+//       SDL_GUI_LevelWindow::getCursor(std::make_pair(event_in.motion.x,
+//                                                     event_in.motion.y),
+//                                      myMap,
+//                                      cursor_type);
+//       RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(cursor_type);
+//       RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(event_in.motion.x,
+//                                                      event_in.motion.y,
+//                                                      myScreen,
+//                                                      dirtyRegion);
+//       myDirtyRegions.push_back(dirtyRegion);
 
       // show changes
       refresh();
@@ -1424,6 +1470,24 @@ SDL_GUI_LevelWindow::hasCeiling(const RPG_Map_Position_t& position_in,
                                             level_in));;
 
   return false;
+}
+
+void
+SDL_GUI_LevelWindow::getCursor(const RPG_Map_Position_t& position_in,
+                               const RPG_Map_Level& level_in,
+                               RPG_Graphics_Type& cursor_out)
+{
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::getCursor"));
+
+  cursor_out = TYPE_CURSOR_NORMAL;
+
+  // (closed) door ?
+  if (level_in.getElement(position_in) == MAPELEMENT_DOOR)
+  {
+    RPG_Map_Door_t door = level_in.getDoor(position_in);
+    if (!door.is_open)
+      cursor_out = TYPE_CURSOR_DOOR_OPEN;
+  } // end IF
 }
 
 const RPG_Graphics_Position_t

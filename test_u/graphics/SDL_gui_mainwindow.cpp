@@ -45,7 +45,7 @@ SDL_GUI_MainWindow::SDL_GUI_MainWindow(const RPG_Graphics_WindowSize_t& size_in,
              title_in,
              fontType_in),
    myLastHoverTime(0),
-   myHaveMouseFocus(false)
+   myHaveMouseFocus(true) // *NOTE*: enforced with SDL_WarpMouse()
 {
   ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::SDL_GUI_MainWindow"));
 
@@ -418,12 +418,12 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 //                  ACE_TEXT("mouse motion...\n")));
 
       // (re-)draw the cursor
-      SDL_Rect dirtyRegion;
-      RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(event_in.motion.x,
-                                                     event_in.motion.y,
-                                                     myScreen,
-                                                     dirtyRegion);
-      myDirtyRegions.push_back(dirtyRegion);
+//       SDL_Rect dirtyRegion;
+//       RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(event_in.motion.x,
+//                                                      event_in.motion.y,
+//                                                      myScreen,
+//                                                      dirtyRegion);
+//       myDirtyRegions.push_back(dirtyRegion);
       refresh();
 
       break;

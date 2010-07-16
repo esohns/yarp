@@ -45,7 +45,7 @@
 #define RPG_GRAPHICS_TILE_FLOORSET_ROWTILES            3
 
 // pixel coordinate difference from one map square to the next
-// *NOTE*: because of isometry, this is not the same as the width/height of a tile
+// *NOTE*: due to isometry, this is not the same as the width/height of a tile
 #define RPG_GRAPHICS_TILE_WIDTH_MOD                    56
 #define RPG_GRAPHICS_TILE_HEIGHT_MOD                   22
 
