@@ -373,10 +373,10 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
     // *** keyboard ***
     case SDL_KEYDOWN:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("%s key\n%s\n"),
-                 ((event_in.type == SDL_KEYDOWN) ? ACE_TEXT("pressed") : ACE_TEXT("released")),
-                 RPG_Graphics_SDL_Tools::keyToString(event_in.key.keysym).c_str()));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("%s key\n%s\n"),
+//                  ((event_in.type == SDL_KEYDOWN) ? ACE_TEXT("pressed") : ACE_TEXT("released")),
+//                  RPG_Graphics_SDL_Tools::keyToString(event_in.key.keysym).c_str()));
 
       switch (event_in.key.keysym.sym)
       {
@@ -417,14 +417,16 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse motion...\n")));
 
-      // (re-)draw the cursor
+//       // (re-)draw the cursor
 //       SDL_Rect dirtyRegion;
 //       RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(event_in.motion.x,
 //                                                      event_in.motion.y,
 //                                                      myScreen,
 //                                                      dirtyRegion);
 //       myDirtyRegions.push_back(dirtyRegion);
-      refresh();
+//
+//       // show changes
+//       refresh();
 
       break;
     }
@@ -605,10 +607,10 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 
       break;
     }
-    case SDL_GUI_SDL_HOVEREVENT:
+    case RPG_GRAPHICS_SDL_HOVEREVENT:
     {
 //       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("SDL_GUI_SDL_HOVEREVENT event (%d ms)...\n"),
+//                  ACE_TEXT("RPG_GRAPHICS_SDL_HOVEREVENT event (%d ms)...\n"),
 //                  event_in.user.code));
 
       // don't hover if we've lost the mouse in the meantime...
@@ -746,6 +748,13 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 
       break;
     }
+    case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
+    {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("RPG_GRAPHICS_SDL_MOUSEMOVEOUT event...\n")));
+
+      break;
+    }
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -757,7 +766,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
   } // end SWITCH
 
   // if necessary, reset last hover time
-  if (event_in.type != SDL_GUI_SDL_HOVEREVENT)
+  if (event_in.type != RPG_GRAPHICS_SDL_HOVEREVENT)
     myLastHoverTime = 0;
 }
 

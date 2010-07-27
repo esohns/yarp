@@ -45,7 +45,6 @@
 #define SDL_GUI_DEF_VIDEO_DOUBLEBUFFER         true
 
 #define SDL_GUI_SDL_TIMEREVENT                 SDL_USEREVENT
-#define SDL_GUI_SDL_HOVEREVENT                 SDL_USEREVENT + 1
 // *NOTE*: this defines the input resolution or "interactivity"
 // *WARNING*: apparently, the maximum SDL timer resolution is 10 ms
 #define SDL_GUI_SDL_EVENT_TIMEOUT              50 // ms

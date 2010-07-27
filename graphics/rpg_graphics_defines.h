@@ -74,4 +74,9 @@
 // buffer for printing keyboard events (debug info)
 #define RPG_GRAPHICS_SDL_KEYSYM_BUFFER_SIZE            32
 
+// SDL event types
+// *WARNING*: make sure that these are used consistently !
+#define RPG_GRAPHICS_SDL_HOVEREVENT                    SDL_USEREVENT + 1
+#define RPG_GRAPHICS_SDL_MOUSEMOVEOUT                  SDL_USEREVENT + 2
+
 #endif

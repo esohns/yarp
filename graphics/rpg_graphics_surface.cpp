@@ -25,6 +25,7 @@
 
 #include <rpg_common_file_tools.h>
 
+#include <ace/ACE.h>
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
@@ -183,7 +184,8 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
   // - delete[] srcbuf
 
   // extract SDL surface from PNG
-  result = RPG_Graphics_Surface::loadPNG(srcbuf);
+  result = RPG_Graphics_Surface::loadPNG(std::string(ACE::basename(filename_in.c_str())),
+                                         srcbuf);
 //                                          alpha_in);
   if (!result)
   {
@@ -603,6 +605,7 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
 void
 RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
                           const unsigned long& offsetY_in,
+                          const bool& blit_in,
                           const SDL_Surface& source_in,
                           SDL_Surface& target_inout)
 {
@@ -611,6 +614,7 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
   // sanity check(s)
   ACE_ASSERT(target_inout.w <= source_in.w);
   ACE_ASSERT(target_inout.h <= source_in.h);
+
   // clip where necessary...
   unsigned long clipped_width, clipped_height;
   clipped_width = (source_in.w - offsetX_in); // available width
@@ -619,6 +623,28 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
   clipped_height = ((clipped_height > ACE_static_cast(unsigned long, target_inout.h)) ? target_inout.h : clipped_height);
 
   // *NOTE*: blitting does not preserve the alpha channel...
+  if (blit_in)
+  {
+    // bounding box
+    SDL_Rect clipRect;
+    clipRect.x = offsetX_in;
+    clipRect.y = offsetY_in;
+    clipRect.w = clipped_width;
+    clipRect.h = clipped_height;
+    if (SDL_BlitSurface(ACE_const_cast(SDL_Surface*, &source_in), // source
+                        &clipRect,                                // aspect
+                        &target_inout,                            // target
+                        NULL))                                    // aspect (--> everything)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+                 SDL_GetError()));
+
+      return;
+    } // end IF
+
+    return;
+  } // end IF
 
   // lock surfaces during pixel access
   if (SDL_MUSTLOCK((&source_in)))
@@ -655,24 +681,6 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
     SDL_UnlockSurface(&ACE_const_cast(SDL_Surface&, source_in));
   if (SDL_MUSTLOCK((&target_inout)))
     SDL_UnlockSurface(&ACE_const_cast(SDL_Surface&, target_inout));
-
-//   // bounding box
-//   SDL_Rect toRect;
-//   toRect.x = topLeftX_in;
-//   toRect.y = topLeftY_in;
-//   toRect.w = (bottomRightX_in - topLeftX_in) + 1;
-//   toRect.h = (bottomRightY_in - topLeftY_in) + 1;
-//   if (SDL_BlitSurface(ACE_const_cast(SDL_Surface*, image_in), // source
-//                       &toRect,                                // aspect
-//                       subImage_out,                           // target
-//                       NULL))                                  // aspect (--> everything)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-//                SDL_GetError()));
-  //
-//     return;
-//   } // end IF
 }
 
 void
@@ -935,8 +943,20 @@ RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in)
   return result;
 }
 
+void
+RPG_Graphics_Surface::update(const SDL_Rect& dirty_in,
+                             SDL_Surface* targetSurface_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Surface::update"));
+
+  SDL_UpdateRects(targetSurface_in,
+                  1,
+                  &ACE_const_cast(SDL_Rect&, dirty_in));
+}
+
 SDL_Surface*
-RPG_Graphics_Surface::loadPNG(const unsigned char* buffer_in)
+RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
+                              const unsigned char* buffer_in)
 //                               const unsigned char& alpha_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Surface::loadPNG"));
@@ -1035,7 +1055,8 @@ RPG_Graphics_Surface::loadPNG(const unsigned char* buffer_in)
                &filter);
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("loading PNG [w,h,d,#c,t,i,c,f]: %u,%u,%d,%u,%d,%d,%d,%d...\n"),
+             ACE_TEXT("loading PNG \"%s\" [wxh,d,#c,t,i,c,f]: %ux%u,%d,%u,%d,%d,%d,%d...\n"),
+             filename_in.c_str(),
              width,
              height,
              bit_depth,

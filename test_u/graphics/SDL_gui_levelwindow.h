@@ -95,9 +95,8 @@ class SDL_GUI_LevelWindow
                                                            const RPG_Map_Position_t&); // door position
   static const bool hasCeiling(const RPG_Map_Position_t&, // position
                                const RPG_Map_Level&);
-  static void getCursor(const RPG_Map_Position_t&, // position
-                        const RPG_Map_Level&,      // level
-                        RPG_Graphics_Type&);       // return value: cursor
+  static const RPG_Graphics_Type getCursor(const RPG_Map_Position_t&, // position
+                                           const RPG_Map_Level&);     // level
 
   // transformation
   const RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&); // position (absolute)
@@ -125,6 +124,9 @@ class SDL_GUI_LevelWindow
 
   // center of displayed map area (map coordinates)
   RPG_Graphics_Position_t     myView;
+
+  // cursor type
+  RPG_Graphics_Type           myCursor;
 
   // cursor highlight
   RPG_Graphics_Position_t     myHighlightBGPosition; // map coordinates

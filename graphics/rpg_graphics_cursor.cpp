@@ -27,8 +27,8 @@
 
 RPG_Graphics_Cursor::RPG_Graphics_Cursor()
  : inherited(),
-   myCursorBGPosition(std::make_pair(0, 0)),
-   myCursorBG(NULL)//,
+   myBGPosition(std::make_pair(0, 0)),
+   myBG(NULL)//,
 //    myCache()
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::RPG_Graphics_Cursor"));
@@ -40,8 +40,8 @@ RPG_Graphics_Cursor::~RPG_Graphics_Cursor()
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::~RPG_Graphics_Cursor"));
 
   // clean up
-  if (myCursorBG)
-    SDL_FreeSurface(myCursorBG);
+  if (myBG)
+    SDL_FreeSurface(myBG);
 
   for (RPG_Graphics_CursorCacheConstIterator_t iterator = myCache.begin();
        iterator != myCache.end();
@@ -61,6 +61,29 @@ RPG_Graphics_Cursor::set(const RPG_Graphics_Type& type_in)
     init((*iterator).second, // image
          false);             // don't "own" it
 
+    // create background surface
+    if (myBG)
+    {
+      SDL_FreeSurface(myBG);
+      myBG = NULL;
+    } // end IF
+    myBG = RPG_Graphics_Surface::create((*iterator).second->w,
+                                        (*iterator).second->h);
+    if (!myBG)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), aborting\n"),
+                 (*iterator).second->w,
+                 (*iterator).second->h));
+
+      return;
+    } // end IF
+    myBGPosition = std::make_pair(0, 0);
+
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("set cursor to: \"%s\"\n"),
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
+
     return;
   } // end IF
 
@@ -77,7 +100,7 @@ RPG_Graphics_Cursor::set(const RPG_Graphics_Type& type_in)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid category (was: \"%s\"): \"%s\" not a cursor type, aborting\n"),
                RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str(),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphic.type).c_str()));
+               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
 
     return;
   } // end IF
@@ -106,6 +129,29 @@ RPG_Graphics_Cursor::set(const RPG_Graphics_Type& type_in)
 
   // update cache
   myCache.insert(std::make_pair(type_in, surface));
+
+  // create background surface
+  if (myBG)
+  {
+    SDL_FreeSurface(myBG);
+    myBG = NULL;
+  } // end IF
+  myBG = RPG_Graphics_Surface::create(surface->w,
+                                      surface->h);
+  if (!myBG)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), aborting\n"),
+               surface->w,
+               surface->h));
+
+    return;
+  } // end IF
+  myBGPosition = std::make_pair(0, 0);
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("set cursor to: \"%s\"\n"),
+             RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
 }
 
 SDL_Surface*
@@ -117,6 +163,14 @@ RPG_Graphics_Cursor::get() const
   ACE_ASSERT(mySurface);
 
   return mySurface;
+}
+
+const RPG_Graphics_Position_t
+RPG_Graphics_Cursor::last() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::last"));
+
+  return myBGPosition;
 }
 
 void
@@ -133,21 +187,31 @@ RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
 //   ACE_ASSERT(offsetX_in < ACE_static_cast(unsigned long, targetSurface_in->w));
 //   ACE_ASSERT(offsetY_in < ACE_static_cast(unsigned long, targetSurface_in->h));
 
-  // step1: reset old, get new background
+  // step0: init return value(s)
+  dirtyRegion_out.x = 0;
+  dirtyRegion_out.y = 0;
+  dirtyRegion_out.w = 0;
+  dirtyRegion_out.h = 0;
+
+  // step1: restore old background
   SDL_Rect bgRect;
   bgRect.x = 0;
   bgRect.y = 0;
   bgRect.w = 0;
   bgRect.h = 0;
-  if (myCursorBG)
+  if ((myBGPosition.first != 0) &&
+      (myBGPosition.second != 0))
   {
-    bgRect.x = myCursorBGPosition.first;
-    bgRect.y = myCursorBGPosition.second;
-    bgRect.w = myCursorBG->w;
-    bgRect.h = myCursorBG->h;
+    // sanity check(s)
+    ACE_ASSERT(myBG);
+
+    bgRect.x = myBGPosition.first;
+    bgRect.y = myBGPosition.second;
+    bgRect.w = myBG->w;
+    bgRect.h = myBG->h;
 
     // restore background
-    if (SDL_BlitSurface(myCursorBG,       // source
+    if (SDL_BlitSurface(myBG,             // source
                         NULL,             // aspect (--> everything)
                         targetSurface_in, // target
                         &bgRect))         // aspect
@@ -156,43 +220,29 @@ RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
                  ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
                  SDL_GetError()));
 
-      // clean up
-      dirtyRegion_out.x = 0;
-      dirtyRegion_out.y = 0;
-      dirtyRegion_out.w = 0;
-      dirtyRegion_out.h = 0;
-
       return;
     } // end IF
+  } // end IF
 
-    // clean up
-    myCursorBGPosition = std::make_pair(0, 0);
-    SDL_FreeSurface(myCursorBG);
-    myCursorBG = NULL;
-  } // end IF
-  myCursorBG = RPG_Graphics_Surface::get(offsetX_in,
-                                         offsetY_in,
-                                         mySurface->w,
-                                         mySurface->h,
-                                         *targetSurface_in);
-  if (!myCursorBG)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::get(%u,%u,%d,%d,%@), continuing\n"),
-               offsetX_in,
-               offsetY_in,
-               mySurface->w,
-               mySurface->h,
-               targetSurface_in));
-  } // end IF
-  myCursorBGPosition.first = offsetX_in;
-  myCursorBGPosition.second = offsetY_in;
+  // step2: get new background
+  RPG_Graphics_Surface::get(offsetX_in,
+                            offsetY_in,
+                            true, // use (fast) blitting method
+                            *targetSurface_in,
+                            *myBG);
+  myBGPosition.first = offsetX_in;
+  myBGPosition.second = offsetY_in;
 
   // compute bounding box
   dirtyRegion_out.x = offsetX_in;
   dirtyRegion_out.y = offsetY_in;
   dirtyRegion_out.w = mySurface->w;
   dirtyRegion_out.h = mySurface->h;
+//   // set up clip area
+//   if ((dirtyRegion_out.x + dirtyRegion_out.w) > targetSurface_in->w)
+//     dirtyRegion_out.w -= ((dirtyRegion_out.x + dirtyRegion_out.w) - targetSurface_in->w);
+//   if ((dirtyRegion_out.y + dirtyRegion_out.h) > targetSurface_in->h)
+//     dirtyRegion_out.h -= ((dirtyRegion_out.y + dirtyRegion_out.h) - targetSurface_in->h);
 
   // place cursor
   if (SDL_BlitSurface(mySurface,         // source
@@ -205,16 +255,23 @@ RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
                SDL_GetError()));
 
     // clean up
-    dirtyRegion_out.x = 0;
-    dirtyRegion_out.y = 0;
-    dirtyRegion_out.w = 0;
-    dirtyRegion_out.h = 0;
+    if ((bgRect.w != 0) &&
+        (bgRect.h != 0))
+      dirtyRegion_out = bgRect;
+    else
+    {
+      dirtyRegion_out.x = 0;
+      dirtyRegion_out.y = 0;
+      dirtyRegion_out.w = 0;
+      dirtyRegion_out.h = 0;
+    } // end ELSE
 
     return;
   } // end IF
 
   // if necessary, adjust dirty region
-  if (bgRect.w && bgRect.h)
+  if ((bgRect.w != 0) &&
+      (bgRect.h != 0))
     dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(bgRect,
                                                           dirtyRegion_out);
 }

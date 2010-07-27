@@ -67,6 +67,7 @@ class RPG_Graphics_HotSpot
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_HotSpot& operator=(const RPG_Graphics_HotSpot&));
 
   RPG_Graphics_Type myCursorType;
+  bool              myCursorHasBeenSet;
 };
 
 #endif

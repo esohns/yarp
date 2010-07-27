@@ -61,6 +61,7 @@ class RPG_Graphics_Surface
                           const SDL_Surface&);  // source surface
   static void get(const unsigned long&, // offset x (top-left == 0,0)
                   const unsigned long&, // offset y (top-left == 0,0)
+                  const bool&,          // blit to target surface ?
                   const SDL_Surface&,   // source surface
                   SDL_Surface&);        // target surface
   static void put(const unsigned long&, // offset x (top left == 0,0)
@@ -85,6 +86,10 @@ class RPG_Graphics_Surface
   // *NOTE*: results need to be SDL_FreeSurface()ed by the user !
   static SDL_Surface* copy(const SDL_Surface&); // source surface
 
+  // refresh (partial) screen surface
+  static void update(const SDL_Rect&, // "dirty" rectangle
+                     SDL_Surface*);   // target surface (e.g. screen)
+
  protected:
   // safety measures
   RPG_Graphics_Surface();
@@ -102,7 +107,8 @@ class RPG_Graphics_Surface
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Surface& operator=(const RPG_Graphics_Surface&));
 
   // helper methods
-  static SDL_Surface* loadPNG(const unsigned char*); // source buffer
+  static SDL_Surface* loadPNG(const std::string&,    // filename
+                              const unsigned char*); // source buffer
 //                             const unsigned char&); // alpha (0: transparent --> 255: opaque)
 
   bool         myOwnSurface;

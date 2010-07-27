@@ -292,7 +292,7 @@ event_timer_SDL_cb(Uint32 interval_in,
     {
       // mouse is hovering --> trigger an event
       SDL_Event event;
-      event.type = SDL_GUI_SDL_HOVEREVENT;
+      event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
       event.user.code = ACE_static_cast(int, *current_hovertime_p);
 
       if (SDL_PushEvent(&event))
@@ -559,6 +559,7 @@ do_work(const mode_t& mode_in,
   SDL_Event event;
   bool done = false;
   RPG_Graphics_IWindow* window = NULL;
+  RPG_Graphics_IWindow* previous_window = NULL;
   bool redraw_map = false;
   switch (mode_in)
   {
@@ -826,7 +827,6 @@ do_work(const mode_t& mode_in,
       timer = SDL_AddTimer(SDL_GUI_SDL_EVENT_TIMEOUT, // interval (ms)
                            event_timer_SDL_cb,        // event timer callback
                            &hover_time);              // callback argument
-      ACE_ASSERT(timer);
       if (!timer)
       {
         ACE_DEBUG((LM_ERROR,
@@ -853,7 +853,7 @@ do_work(const mode_t& mode_in,
         } // end IF
 
         // if necessary, reset hover_time
-        if (event.type != SDL_GUI_SDL_HOVEREVENT)
+        if (event.type != RPG_GRAPHICS_SDL_HOVEREVENT)
         {
           // synch access
           ACE_Guard<ACE_Thread_Mutex> aGuard(hover_lock);
@@ -905,7 +905,7 @@ do_work(const mode_t& mode_in,
           case SDL_ACTIVEEVENT:
           case SDL_MOUSEMOTION:
           case SDL_MOUSEBUTTONDOWN:
-          case SDL_GUI_SDL_HOVEREVENT: // hovering...
+          case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
           {
             // find window
             RPG_Graphics_Position_t mouse_position(0, 0);
@@ -929,6 +929,33 @@ do_work(const mode_t& mode_in,
             } // end SWITCH
             window = mainWindow.getWindow(mouse_position);
             ACE_ASSERT(window);
+
+            // notify previously "active" window upon losing "focus"
+            if (event.type == SDL_MOUSEMOTION)
+            {
+              if (previous_window &&
+  //                 (previous_window != mainWindow)
+                  (previous_window != window))
+              {
+                event.type = RPG_GRAPHICS_SDL_MOUSEMOVEOUT;
+                try
+                {
+                  previous_window->handleEvent(event,
+                                               previous_window,
+                                               redraw_map);
+                }
+                catch (...)
+                {
+                  ACE_DEBUG((LM_ERROR,
+                             ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+                }
+                event.type = SDL_MOUSEMOTION;
+              } // end IF
+            } // end IF
+            // remember last "active" window
+            previous_window = window;
+
+            // notify "active" window
             try
             {
               window->handleEvent(event,
@@ -940,18 +967,6 @@ do_work(const mode_t& mode_in,
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
             }
-
-//             // (re-)draw the cursor
-//             if (event.type == SDL_MOUSEMOTION)
-//             {
-//               SDL_Rect dirtyRegion;
-//               RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(mouse_position.first,
-//                                                              mouse_position.second,
-//                                                              screen,
-//                                                              dirtyRegion);
-//
-//               redraw_map = true;
-//             } // end IF
 
             break;
           }
@@ -980,9 +995,9 @@ do_work(const mode_t& mode_in,
           }
         } // end SWITCH
 
+        // refresh map
         if (redraw_map)
         {
-          // refresh map
           try
           {
             mapWindow->draw();
@@ -993,6 +1008,18 @@ do_work(const mode_t& mode_in,
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
           }
+        } // end IF
+
+        // refresh cursor
+        if (event.type == SDL_MOUSEMOTION)
+        {
+          SDL_Rect dirtyRegion;
+          RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(event.motion.x,
+                                                         event.motion.y,
+                                                         screen,
+                                                         dirtyRegion);
+          RPG_Graphics_Surface::update(dirtyRegion,
+                                       screen);
         } // end IF
       } while (!done);
 

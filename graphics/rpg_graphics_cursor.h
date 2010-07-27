@@ -49,6 +49,7 @@ class RPG_Graphics_Cursor
            const unsigned long&, // offset y (top left == 0,0)
            SDL_Surface*,         // target surface (e.g. screen)
            SDL_Rect&);           // return value: "dirty" region
+  const RPG_Graphics_Position_t last() const;
 
  private:
   typedef RPG_Graphics_Surface inherited;
@@ -64,8 +65,8 @@ class RPG_Graphics_Cursor
   typedef RPG_Graphics_CursorCache_t::const_iterator RPG_Graphics_CursorCacheConstIterator_t;
 
   // fast(er) updates
-  RPG_Graphics_Position_t    myCursorBGPosition;
-  SDL_Surface*               myCursorBG;
+  RPG_Graphics_Position_t    myBGPosition;
+  SDL_Surface*               myBG;
 
   RPG_Graphics_CursorCache_t myCache;
 };

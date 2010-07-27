@@ -34,7 +34,8 @@ RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindowBase& par
  : inherited(WINDOWTYPE_HOTSPOT, // type
              parent_in,          // parent
              offset_in),         // offset
-   myCursorType(graphicsType_in)
+   myCursorType(graphicsType_in),
+   myCursorHasBeenSet(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::RPG_Graphics_HotSpot"));
 
@@ -74,10 +75,22 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
   switch (event_in.type)
   {
     // *** mouse ***
+    case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
+    {
+      // reset cursor
+      RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(TYPE_CURSOR_NORMAL);
+      myCursorHasBeenSet = false;
+
+      break;
+    }
     case SDL_MOUSEMOTION:
     {
-      // set appropriate cursor
-      RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(myCursorType);
+      // upon entry, set appropriate cursor
+      if (!myCursorHasBeenSet)
+      {
+        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(myCursorType);
+        myCursorHasBeenSet = true;
+      } // end IF
 
       // *WARNING*: falls through !
     }
@@ -96,6 +109,7 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
     case SDL_VIDEORESIZE:
     case SDL_VIDEOEXPOSE:
     case SDL_USEREVENT:
+    case RPG_GRAPHICS_SDL_HOVEREVENT:
     default:
     {
       // delegate these to the parent...

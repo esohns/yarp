@@ -1264,7 +1264,7 @@ RPG_Graphics_Common_Tools::initFonts()
       } // end IF
 
       ACE_DEBUG((LM_INFO,
-                 ACE_TEXT("loaded font \"%s - %s\" %d face(s) [%s], height: %d (%d,%d), space: %d\n"),
+                 ACE_TEXT("loaded font \"%s - %s\" %d face(s) [%s], height [+/-]: %d (%d,%d), space: %d\n"),
                  TTF_FontFaceFamilyName(font),
                  TTF_FontFaceStyleName(font),
                  TTF_FontFaces(font),
