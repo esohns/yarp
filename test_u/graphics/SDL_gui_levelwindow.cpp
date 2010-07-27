@@ -174,6 +174,9 @@ SDL_GUI_LevelWindow::setView(const RPG_Graphics_Position_t& view_in)
   ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
 
   myView = view_in;
+
+  // *NOTE*: fiddling with the view invalidates the cursor !
+  RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidate();
 }
 
 void
@@ -201,6 +204,9 @@ SDL_GUI_LevelWindow::setView(const int& offsetX_in,
     myView.first = (dimensions.first - 1);
   if (myView.second >= dimensions.second)
     myView.second = (dimensions.second - 1);
+
+  // *NOTE*: fiddling with the view invalidates the cursor !
+  RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidate();
 }
 
 void
@@ -211,6 +217,9 @@ SDL_GUI_LevelWindow::centerView()
   RPG_Map_Dimensions_t dimensions = myMap.getDimensions();
   myView = std::make_pair(dimensions.first / 2,
                           dimensions.second / 2);
+
+  // *NOTE*: fiddling with the view invalidates the cursor !
+  RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidate();
 }
 
 void
@@ -250,8 +259,7 @@ SDL_GUI_LevelWindow::init(const RPG_Graphics_FloorStyle& floorStyle_in,
             myDoorTiles);
 
   // init view
-  myView = std::make_pair(floorPlan_in.size_x / 2,
-                          floorPlan_in.size_y / 2);
+  centerView();
 
   // init cursor highlighting
   myHighlightBGPosition = std::make_pair(floorPlan_in.size_x / 2,

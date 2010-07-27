@@ -165,14 +165,6 @@ RPG_Graphics_Cursor::get() const
   return mySurface;
 }
 
-const RPG_Graphics_Position_t
-RPG_Graphics_Cursor::last() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::last"));
-
-  return myBGPosition;
-}
-
 void
 RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
                          const unsigned long& offsetY_in,
@@ -279,4 +271,61 @@ RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
       (bgRect.h != 0))
     dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(bgRect,
                                                           dirtyRegion_out);
+}
+
+void
+RPG_Graphics_Cursor::restore(SDL_Surface* targetSurface_in,
+                             SDL_Rect& dirtyRegion_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::restore"));
+
+  // sanity check(s)
+  ACE_ASSERT(targetSurface_in);
+  ACE_ASSERT(myBG);
+//   ACE_ASSERT(myBGPosition.first != 0);
+//   ACE_ASSERT(myBGPosition.second != 0);
+
+  dirtyRegion_out.x = myBGPosition.first;
+  dirtyRegion_out.y = myBGPosition.second;
+  dirtyRegion_out.w = myBG->w;
+  dirtyRegion_out.h = myBG->h;
+  // handle clipping
+  if ((dirtyRegion_out.x + dirtyRegion_out.w) > targetSurface_in->w)
+    dirtyRegion_out.w -= ((dirtyRegion_out.x + dirtyRegion_out.w) - targetSurface_in->w);
+  if ((dirtyRegion_out.y + dirtyRegion_out.h) > targetSurface_in->h)
+    dirtyRegion_out.h -= ((dirtyRegion_out.y + dirtyRegion_out.h) - targetSurface_in->h);
+
+  // restore background
+  if (SDL_BlitSurface(myBG,              // source
+                      NULL,              // aspect (--> everything)
+                      targetSurface_in,  // target
+                      &dirtyRegion_out)) // aspect
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+}
+
+void
+RPG_Graphics_Cursor::invalidate()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::invalidate"));
+
+  // sanity check
+  ACE_ASSERT(myBG);
+
+  // fill with "transparency"...
+  if (SDL_FillRect(myBG,                                    // target
+                   NULL,                                    // aspect (--> everything)
+                   RPG_Graphics_SDL_Tools::CLR32_BLACK_A0)) // "transparency"
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
 }

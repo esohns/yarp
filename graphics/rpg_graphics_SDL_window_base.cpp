@@ -50,7 +50,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
                                                        const RPG_Graphics_SDLWindowBase& parent_in,
                                                        const RPG_Graphics_Offset_t& offset_in)
   : //inherited(),
-    myScreen(NULL),
+    myScreen(parent_in.myScreen),
     mySize(std::make_pair(0, 0)),
     myBorderTop(0),
     myBorderBottom(0),

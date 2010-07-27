@@ -25,12 +25,13 @@
 #include <ace/Log_Msg.h>
 
 // init statics
-Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK      = 0;
+Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A0   = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A10  = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A30  = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A50  = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A70  = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A90  = 0;
+Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK      = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_GREEN      = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_YELLOW     = 0;
 Uint32 RPG_Graphics_SDL_Tools::CLR32_ORANGE     = 0;
@@ -196,12 +197,13 @@ RPG_Graphics_SDL_Tools::initColors()
 //                  dummy_converted->format,
 //                  sizeof(SDL_PixelFormat));
 
-  CLR32_BLACK      = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0xff);
-  CLR32_BLACK_A10  = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0x1a);
-  CLR32_BLACK_A30  = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0x4d);
-  CLR32_BLACK_A50  = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0x80);
-  CLR32_BLACK_A70  = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0xb3);
-  CLR32_BLACK_A90  = SDL_MapRGBA(dummy_converted->format, 0,0,0, 0xe7);
+  CLR32_BLACK_A0   = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0);
+  CLR32_BLACK_A10  = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0x1a);
+  CLR32_BLACK_A30  = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0x4d);
+  CLR32_BLACK_A50  = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0x80);
+  CLR32_BLACK_A70  = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0xb3);
+  CLR32_BLACK_A90  = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0xe7);
+  CLR32_BLACK      = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0xff);
   CLR32_GREEN      = SDL_MapRGBA(dummy_converted->format, 0x57, 0xff, 0x57, 0xff);
   CLR32_YELLOW     = SDL_MapRGBA(dummy_converted->format, 0xff, 0xff, 0x57, 0xff);
   CLR32_ORANGE     = SDL_MapRGBA(dummy_converted->format, 0xff, 0xc7, 0x3b, 0xff);

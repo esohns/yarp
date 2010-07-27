@@ -49,7 +49,9 @@ class RPG_Graphics_Cursor
            const unsigned long&, // offset y (top left == 0,0)
            SDL_Surface*,         // target surface (e.g. screen)
            SDL_Rect&);           // return value: "dirty" region
-  const RPG_Graphics_Position_t last() const;
+  void restore(SDL_Surface*, // target surface (e.g. screen)
+               SDL_Rect&);   // return value: "dirty" region
+  void invalidate();
 
  private:
   typedef RPG_Graphics_Surface inherited;

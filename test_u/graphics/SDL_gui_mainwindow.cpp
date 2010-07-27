@@ -49,14 +49,21 @@ SDL_GUI_MainWindow::SDL_GUI_MainWindow(const RPG_Graphics_WindowSize_t& size_in,
 {
   ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::SDL_GUI_MainWindow"));
 
-  // init scroll margins
-  initScrollSpots();
 }
 
 SDL_GUI_MainWindow::~SDL_GUI_MainWindow()
 {
   ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::~SDL_GUI_MainWindow"));
 
+}
+
+void
+SDL_GUI_MainWindow::init()
+{
+  ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::init"));
+
+  // init scroll margins
+  initScrollSpots();
 }
 
 void

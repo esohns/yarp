@@ -549,6 +549,7 @@ do_work(const mode_t& mode_in,
                                 title,                                 // title (== caption)
                                 TYPE_FONT_MAIN_LARGE);                 // title font
   mainWindow.setScreen(screen);
+  mainWindow.init();
   mainWindow.draw();
   mainWindow.refresh();
 

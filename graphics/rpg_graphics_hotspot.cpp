@@ -78,6 +78,13 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
     case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
     {
       // reset cursor
+      // --> restore background first
+      SDL_Rect dirtyRegion;
+      RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
+                                                         dirtyRegion);
+      RPG_Graphics_Surface::update(dirtyRegion,
+                                   myScreen);
+
       RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(TYPE_CURSOR_NORMAL);
       myCursorHasBeenSet = false;
 
@@ -88,6 +95,13 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
       // upon entry, set appropriate cursor
       if (!myCursorHasBeenSet)
       {
+        // --> restore background first
+        SDL_Rect dirtyRegion;
+        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
+                                                           dirtyRegion);
+        RPG_Graphics_Surface::update(dirtyRegion,
+                                     myScreen);
+
         RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(myCursorType);
         myCursorHasBeenSet = true;
       } // end IF

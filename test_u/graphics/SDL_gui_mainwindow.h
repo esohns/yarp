@@ -43,6 +43,10 @@ class SDL_GUI_MainWindow
                      const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
   virtual ~SDL_GUI_MainWindow();
 
+  // initialize different hotspots
+  // *WARNING*: call this AFTER setScreen() !
+  void init();
+
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
                     const unsigned long& = 0,  // offset x (top-left = [0,0])
