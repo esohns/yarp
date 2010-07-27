@@ -837,10 +837,12 @@ do_work(const mode_t& mode_in,
         return;
       } // end IF
 
+      RPG_Graphics_Position_t mouse_position;
       do
       {
         window = NULL;
         redraw_map = false;
+        mouse_position = std::make_pair(0, 0);
 
         // step5: process events
         if (SDL_WaitEvent(&event) != 1)
@@ -908,7 +910,6 @@ do_work(const mode_t& mode_in,
           case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
           {
             // find window
-            RPG_Graphics_Position_t mouse_position(0, 0);
             switch (event.type)
             {
               case SDL_MOUSEMOTION:
@@ -1011,16 +1012,27 @@ do_work(const mode_t& mode_in,
         } // end IF
 
         // refresh cursor
-        if (event.type == SDL_MOUSEMOTION)
+        switch (event.type)
         {
-          SDL_Rect dirtyRegion;
-          RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(event.motion.x,
-                                                         event.motion.y,
-                                                         screen,
-                                                         dirtyRegion);
-          RPG_Graphics_Surface::update(dirtyRegion,
-                                       screen);
-        } // end IF
+          case SDL_KEYDOWN:
+          case SDL_MOUSEMOTION:
+          case RPG_GRAPHICS_SDL_HOVEREVENT:
+          {
+            SDL_Rect dirtyRegion;
+            RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(mouse_position.first,
+                                                           mouse_position.second,
+                                                           screen,
+                                                           dirtyRegion);
+            RPG_Graphics_Surface::update(dirtyRegion,
+                                         screen);
+
+            break;
+          }
+          default:
+          {
+            break;
+          }
+        } // end SWITCH
       } while (!done);
 
       // clean up
