@@ -233,8 +233,8 @@ RPG_Graphics_SDL_Tools::boundingBox(const SDL_Rect& rect1_in,
   ACE_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::boundingBox"));
 
   RPG_Graphics_Position_t lower_right;
-  lower_right.first = (((rect1_in.x + rect1_in.w) > (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w) : (rect2_in.x + rect2_in.w));
-  lower_right.second = (((rect1_in.y + rect1_in.h) > (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h) : (rect2_in.y + rect2_in.h));
+  lower_right.first = (((rect1_in.x + rect1_in.w) > (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1) : (rect2_in.x + rect2_in.w - 1));
+  lower_right.second = (((rect1_in.y + rect1_in.h) > (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1) : (rect2_in.y + rect2_in.h - 1));
 
   // init result
   SDL_Rect result;

@@ -209,6 +209,11 @@ RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
     bgRect.y = myBGPosition.second;
     bgRect.w = myBG->w;
     bgRect.h = myBG->h;
+    // set up clip area
+    if ((bgRect.x + bgRect.w) > targetSurface_in->w)
+      bgRect.w -= ((bgRect.x + bgRect.w) - targetSurface_in->w);
+    if ((bgRect.y + bgRect.h) > targetSurface_in->h)
+      bgRect.h -= ((bgRect.y + bgRect.h) - targetSurface_in->h);
 
     // restore background
     if (SDL_BlitSurface(myBG,             // source
@@ -238,13 +243,14 @@ RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
   dirtyRegion_out.y = offsetY_in;
   dirtyRegion_out.w = mySurface->w;
   dirtyRegion_out.h = mySurface->h;
-//   // set up clip area
-//   if ((dirtyRegion_out.x + dirtyRegion_out.w) > targetSurface_in->w)
-//     dirtyRegion_out.w -= ((dirtyRegion_out.x + dirtyRegion_out.w) - targetSurface_in->w);
-//   if ((dirtyRegion_out.y + dirtyRegion_out.h) > targetSurface_in->h)
-//     dirtyRegion_out.h -= ((dirtyRegion_out.y + dirtyRegion_out.h) - targetSurface_in->h);
+  // set up clip area
+  if ((dirtyRegion_out.x + dirtyRegion_out.w) > targetSurface_in->w)
+    dirtyRegion_out.w -= ((dirtyRegion_out.x + dirtyRegion_out.w) - targetSurface_in->w);
+  if ((dirtyRegion_out.y + dirtyRegion_out.h) > targetSurface_in->h)
+    dirtyRegion_out.h -= ((dirtyRegion_out.y + dirtyRegion_out.h) - targetSurface_in->h);
 
   // place cursor
+  // *WARNING*: clip appropriately !
   if (SDL_BlitSurface(mySurface,         // source
                       NULL,              // aspect (--> everything)
                       targetSurface_in,  // target
