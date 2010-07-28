@@ -80,6 +80,7 @@ class SDL_GUI_LevelWindow
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow& operator=(const SDL_GUI_LevelWindow&));
 
   // helper methods
+  void clear();
   void setStyle(const RPG_Graphics_StyleUnion&);
   void initCeiling();
   void initWalls(const RPG_Map_FloorPlan_t&,        // level map

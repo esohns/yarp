@@ -781,8 +781,13 @@ RPG_Graphics_Surface::putRect(const SDL_Rect& rectangle_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Surface::putRect"));
 
-  // sanity check
+  // sanity check(s)
   ACE_ASSERT(targetSurface_in);
+  if ((rectangle_in.x < 0) ||
+      (rectangle_in.y < 0) ||
+      (rectangle_in.x >= targetSurface_in->w) ||
+      (rectangle_in.y >= targetSurface_in->h))
+    return; // rectangle is outside of target surface --> nothing to do...
 
   // lock surface during pixel access
   if (SDL_MUSTLOCK((targetSurface_in)))
@@ -806,12 +811,28 @@ RPG_Graphics_Surface::putRect(const SDL_Rect& rectangle_in,
       for (unsigned long x = rectangle_in.x;
            x < ACE_static_cast(unsigned long, (rectangle_in.x + rectangle_in.w));
            x++)
+      {
+        // sanity check
+        if ((y >= ACE_static_cast(unsigned long, targetSurface_in->h)) ||
+            (x >= ACE_static_cast(unsigned long, targetSurface_in->w)))
+          break;
+
         pixels[(targetSurface_in->w * y) + x] = color_in;
+      } // end FOR
 
       continue;
     } // end IF
 
+    // sanity check
+    if (y >= ACE_static_cast(unsigned long, targetSurface_in->h))
+      break;
+
     pixels[(targetSurface_in->w * y) + rectangle_in.x] = color_in;
+
+    // sanity check
+    if ((rectangle_in.x + rectangle_in.w) >= targetSurface_in->w)
+      continue;
+
     pixels[(targetSurface_in->w * y) + rectangle_in.x + (rectangle_in.w - 1)] = color_in;
   } // end FOR
 

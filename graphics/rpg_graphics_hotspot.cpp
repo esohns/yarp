@@ -82,6 +82,7 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
       SDL_Rect dirtyRegion;
       RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
                                                          dirtyRegion);
+      // *NOTE*: updating straight away reduces ugly smears...
       RPG_Graphics_Surface::update(dirtyRegion,
                                    myScreen);
 
@@ -99,6 +100,7 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
         SDL_Rect dirtyRegion;
         RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
                                                            dirtyRegion);
+        // *NOTE*: updating straight away reduces ugly smears...
         RPG_Graphics_Surface::update(dirtyRegion,
                                      myScreen);
 
@@ -156,20 +158,20 @@ RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
   ACE_ASSERT(ACE_static_cast(int, offsetX_in) <= targetSurface_in->w);
   ACE_ASSERT(ACE_static_cast(int, offsetY_in) <= targetSurface_in->h);
 
-  // init clipping
-  SDL_Rect clipRect;
-  clipRect.x = offsetX_in + myOffset.first;
-  clipRect.y = offsetY_in + myOffset.second;
-  clipRect.w = mySize.first;
-  clipRect.h = mySize.second;
-  if (!SDL_SetClipRect(targetSurface_in, &clipRect))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return;
-  } // end IF
+//   // init clipping
+//   SDL_Rect clipRect;
+//   clipRect.x = offsetX_in + myOffset.first;
+//   clipRect.y = offsetY_in + myOffset.second;
+//   clipRect.w = mySize.first;
+//   clipRect.h = mySize.second;
+//   if (!SDL_SetClipRect(targetSurface_in, &clipRect))
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+//                SDL_GetError()));
+//
+//     return;
+//   } // end IF
 
 //   // debug info
 //   RPG_Graphics_Surface::putRect(clipRect,                          // rectangle

@@ -176,11 +176,7 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
                               targetSurface);
 
   // reset clipping area
-  clipRect.x = 0;
-  clipRect.y = 0;
-  clipRect.w = targetSurface->w;
-  clipRect.h = targetSurface->h;
-  if (!SDL_SetClipRect(targetSurface, &clipRect))
+  if (!SDL_SetClipRect(targetSurface, NULL))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -292,11 +288,7 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   } // end FOR
 
   // reset clipping area
-  clipRect.x = 0;
-  clipRect.y = 0;
-  clipRect.w = targetSurface->w;
-  clipRect.h = targetSurface->h;
-  if (!SDL_SetClipRect(targetSurface, &clipRect))
+  if (!SDL_SetClipRect(targetSurface, NULL))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -306,6 +298,10 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   } // end IF
 
   // whole window needs a refresh...
+  clipRect.x = 0;
+  clipRect.y = 0;
+  clipRect.w = targetSurface->w;
+  clipRect.h = targetSurface->h;
   myDirtyRegions.push_back(clipRect);
 
   // remember position of last realization
@@ -337,6 +333,13 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         {
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("gained mouse coverage...\n")));
+
+          // --> restore background
+          SDL_Rect dirtyRegion;
+          RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
+                                                             dirtyRegion);
+//           RPG_Graphics_Surface::update(dirtyRegion,
+//                                        myScreen);
 
           myHaveMouseFocus = true;
         } // end IF
@@ -555,6 +558,13 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
           }
         } // end SWITCH
 
+        // --> restore background
+        SDL_Rect dirtyRegion;
+        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
+                                                           dirtyRegion);
+//       RPG_Graphics_Surface::update(dirtyRegion,
+//                                    myScreen);
+
         // need a redraw
         redraw_out = true;
 
@@ -746,6 +756,13 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         }
       } // end SWITCH
 
+      // --> restore background
+      SDL_Rect dirtyRegion;
+      RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
+                                                         dirtyRegion);
+//       RPG_Graphics_Surface::update(dirtyRegion,
+//                                    myScreen);
+
       // need a redraw
       redraw_out = true;
 
@@ -759,6 +776,13 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("RPG_GRAPHICS_SDL_MOUSEMOVEOUT event...\n")));
+
+//       // --> restore background
+//       SDL_Rect dirtyRegion;
+//       RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
+//                                               dirtyRegion);
+// //           RPG_Graphics_Surface::update(dirtyRegion,
+// //                                        myScreen);
 
       break;
     }

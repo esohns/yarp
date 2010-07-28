@@ -40,6 +40,7 @@ enum RPG_Graphics_Type
   TYPE_CURSOR_SCROLL_UR,
   TYPE_CURSOR_STAIRS,
   TYPE_CURSOR_WAIT,
+  TYPE_FONT_MAIN_SMALL,
   TYPE_FONT_MAIN_NORMAL,
   TYPE_FONT_MAIN_LARGE,
   TYPE_INTERFACE,
@@ -85,6 +86,7 @@ class RPG_Graphics_TypeHelper
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_SCROLL_UR, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_SCROLL_UR")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_STAIRS, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_STAIRS")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_CURSOR_WAIT, ACE_TEXT_ALWAYS_CHAR("TYPE_CURSOR_WAIT")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FONT_MAIN_SMALL, ACE_TEXT_ALWAYS_CHAR("TYPE_FONT_MAIN_SMALL")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FONT_MAIN_NORMAL, ACE_TEXT_ALWAYS_CHAR("TYPE_FONT_MAIN_NORMAL")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_FONT_MAIN_LARGE, ACE_TEXT_ALWAYS_CHAR("TYPE_FONT_MAIN_LARGE")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_INTERFACE, ACE_TEXT_ALWAYS_CHAR("TYPE_INTERFACE")));

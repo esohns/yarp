@@ -65,6 +65,11 @@
     <type>TYPE_CURSOR_WAIT</type>
     <file>cursor_hourglass.png</file>
   </graphic>
+  <graphic size="10">
+    <category>CATEGORY_FONT</category>
+    <type>TYPE_FONT_MAIN_SMALL</type>
+    <file>font_main.ttf</file>
+  </graphic>
   <graphic size="12">
     <category>CATEGORY_FONT</category>
     <type>TYPE_FONT_MAIN_NORMAL</type>

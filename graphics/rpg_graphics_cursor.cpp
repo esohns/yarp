@@ -80,9 +80,9 @@ RPG_Graphics_Cursor::set(const RPG_Graphics_Type& type_in)
     } // end IF
     myBGPosition = std::make_pair(0, 0);
 
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("set cursor to: \"%s\"\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("set cursor to: \"%s\"\n"),
+//                RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
 
     return;
   } // end IF
@@ -149,9 +149,9 @@ RPG_Graphics_Cursor::set(const RPG_Graphics_Type& type_in)
   } // end IF
   myBGPosition = std::make_pair(0, 0);
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("set cursor to: \"%s\"\n"),
-             RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("set cursor to: \"%s\"\n"),
+//              RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
 }
 
 SDL_Surface*
