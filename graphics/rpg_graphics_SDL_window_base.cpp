@@ -187,24 +187,39 @@ RPG_Graphics_SDLWindowBase::refresh(SDL_Surface* targetSurface_in)
   if (myDirtyRegions.empty())
     return; // nothing to do !
 
-  Sint32 topLeftX = std::numeric_limits<int>::max();
-  Sint32 topLeftY = std::numeric_limits<int>::max();
-  Sint32 width = 0;
-  Sint32 height = 0;
+  Sint32 topLeftX = (*myDirtyRegions.begin()).x;
+  Sint32 topLeftY = (*myDirtyRegions.begin()).y;
+  Sint32 width = (*myDirtyRegions.begin()).w;
+  Sint32 height = (*myDirtyRegions.begin()).h;
 
   // find bounding box of dirty areas
   for (RPG_Graphics_DirtyRegionsConstIterator_t iterator = myDirtyRegions.begin();
        iterator != myDirtyRegions.end();
        iterator++)
   {
-    if ((*iterator).x < topLeftX)
-      topLeftX = (*iterator).x;
-    if ((*iterator).y < topLeftY)
-      topLeftY = (*iterator).y;
-    if (width < (*iterator).w)
-      width = (*iterator).w;
-    if (height < (*iterator).h)
-      height = (*iterator).h;
+    if (((*iterator).x < topLeftX) ||
+        ((*iterator).y < topLeftY))
+    {
+      if ((*iterator).x < topLeftX)
+      {
+        width += topLeftX - (*iterator).x;
+        topLeftX = (*iterator).x;
+      } // end IF
+      if ((*iterator).y < topLeftY)
+      {
+        height += topLeftY - (*iterator).y;
+        topLeftY = (*iterator).y;
+      } // end IF
+    } // end IF
+    else
+    {
+      int overlap = ((*iterator).x + (*iterator).w - 1) - (topLeftX + width - 1);
+      if (overlap > 0)
+        width += overlap;
+      overlap = ((*iterator).y + (*iterator).h - 1) - (topLeftY + height - 1);
+      if (overlap > 0)
+        height += overlap;
+    } // end ELSE
   } // end FOR
 
 //   ACE_DEBUG((LM_DEBUG,
@@ -226,8 +241,8 @@ RPG_Graphics_SDLWindowBase::refresh(SDL_Surface* targetSurface_in)
 
 void
 RPG_Graphics_SDLWindowBase::handleEvent(const SDL_Event& event_in,
-                                    RPG_Graphics_IWindow* window_in,
-                                    bool& redraw_out)
+                                        RPG_Graphics_IWindow* window_in,
+                                        bool& redraw_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::handleEvent"));
 

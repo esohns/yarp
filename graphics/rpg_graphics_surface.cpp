@@ -783,11 +783,9 @@ RPG_Graphics_Surface::putRect(const SDL_Rect& rectangle_in,
 
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);
-  if ((rectangle_in.x < 0) ||
-      (rectangle_in.y < 0) ||
-      (rectangle_in.x >= targetSurface_in->w) ||
+  if ((rectangle_in.x >= targetSurface_in->w) ||
       (rectangle_in.y >= targetSurface_in->h))
-    return; // rectangle is outside of target surface --> nothing to do...
+    return; // rectangle is COMPLETELY outside of target surface...
 
   // lock surface during pixel access
   if (SDL_MUSTLOCK((targetSurface_in)))
@@ -801,20 +799,28 @@ RPG_Graphics_Surface::putRect(const SDL_Rect& rectangle_in,
   } // end IF
 
   Uint32* pixels = ACE_static_cast(Uint32*, targetSurface_in->pixels);
-  for (unsigned long y = rectangle_in.y;
-       y < ACE_static_cast(unsigned long, (rectangle_in.y + rectangle_in.h));
+  for (int y = rectangle_in.y;
+       y < (rectangle_in.y + rectangle_in.h);
        y++)
   {
-    if ((y == ACE_static_cast(unsigned long, rectangle_in.y)) ||
-        (y == ACE_static_cast(unsigned long, (rectangle_in.y  + rectangle_in.h - 1))))
+    // sanity check
+    if (y < 0)
+      continue;
+    else if (y >= targetSurface_in->h)
+      break;
+
+    // top/bottom row(s)
+    if ((y == rectangle_in.y) ||
+        (y == (rectangle_in.y  + rectangle_in.h - 1)))
     {
-      for (unsigned long x = rectangle_in.x;
-           x < ACE_static_cast(unsigned long, (rectangle_in.x + rectangle_in.w));
+      for (int x = rectangle_in.x;
+           x < (rectangle_in.x + rectangle_in.w);
            x++)
       {
         // sanity check
-        if ((y >= ACE_static_cast(unsigned long, targetSurface_in->h)) ||
-            (x >= ACE_static_cast(unsigned long, targetSurface_in->w)))
+        if (x < 0)
+          continue;
+        else if (x >= targetSurface_in->w)
           break;
 
         pixels[(targetSurface_in->w * y) + x] = color_in;
@@ -823,11 +829,9 @@ RPG_Graphics_Surface::putRect(const SDL_Rect& rectangle_in,
       continue;
     } // end IF
 
-    // sanity check
-    if (y >= ACE_static_cast(unsigned long, targetSurface_in->h))
-      break;
-
-    pixels[(targetSurface_in->w * y) + rectangle_in.x] = color_in;
+    // left/right column(s)
+    if (rectangle_in.x > 0) // sanity check
+      pixels[(targetSurface_in->w * y) + rectangle_in.x] = color_in;
 
     // sanity check
     if ((rectangle_in.x + rectangle_in.w) >= targetSurface_in->w)

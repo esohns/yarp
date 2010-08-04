@@ -79,6 +79,9 @@ class SDL_GUI_LevelWindow
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow(const SDL_GUI_LevelWindow&));
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow& operator=(const SDL_GUI_LevelWindow&));
 
+  // helper types
+  typedef std::pair<int, int> RPG_Position_t;
+
   // helper methods
   void clear();
   void setStyle(const RPG_Graphics_StyleUnion&);
