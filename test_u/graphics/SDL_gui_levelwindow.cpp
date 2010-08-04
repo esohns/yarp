@@ -694,9 +694,11 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         if (myHighlightBG)
         {
           tile_position = map2Screen(myHighlightBGPosition);
-//           // map square center --> top-left position
-//           tile_position.first -= RPG_GRAPHICS_TILE_WIDTH_MOD;
-//           tile_position.second -= RPG_GRAPHICS_TILE_HEIGHT_MOD;
+          // sanity check for underruns
+          if ((tile_position.first >= ACE_static_cast(unsigned long, myScreen->w)) &&
+              (tile_position.second >= ACE_static_cast(unsigned long, myScreen->h)))
+            break;
+
           RPG_Graphics_Surface::put(tile_position.first,
                                     tile_position.second,
                                     *myHighlightBG,
@@ -723,75 +725,88 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         if (myHighlightBG)
         {
           tile_position = map2Screen(myHighlightBGPosition);
-//           // map square center --> top-left position
-//           tile_position.first -= RPG_GRAPHICS_TILE_WIDTH_MOD;
-//           tile_position.second -= RPG_GRAPHICS_TILE_HEIGHT_MOD;
-          RPG_Graphics_Surface::put(tile_position.first,
-                                    tile_position.second,
-                                    *myHighlightBG,
-                                    myScreen);
+          // sanity check for underruns
+          if ((tile_position.first < ACE_static_cast(unsigned long, myScreen->w)) &&
+              (tile_position.second < ACE_static_cast(unsigned long, myScreen->h)))
+          {
+            RPG_Graphics_Surface::put(tile_position.first,
+                                      tile_position.second,
+                                      *myHighlightBG,
+                                      myScreen);
 
-          dirtyRegion.x = tile_position.first;
-          dirtyRegion.y = tile_position.second;
-          dirtyRegion.w = myHighlightBG->w;
-          dirtyRegion.h = myHighlightBG->h;
+            dirtyRegion.x = tile_position.first;
+            dirtyRegion.y = tile_position.second;
+            dirtyRegion.w = myHighlightBG->w;
+            dirtyRegion.h = myHighlightBG->h;
 
-          myDirtyRegions.push_back(dirtyRegion);
+            myDirtyRegions.push_back(dirtyRegion);
+          } // end IF
         } // end IF
 
         // store current background
         tile_position = map2Screen(map_position);
-//         // map square center --> top-left position
-//         tile_position.first -= RPG_GRAPHICS_TILE_WIDTH_MOD;
-//         tile_position.second -= RPG_GRAPHICS_TILE_HEIGHT_MOD;
+        // sanity check for underruns
+        if ((tile_position.first < ACE_static_cast(unsigned long, myScreen->w)) &&
+            (tile_position.second < ACE_static_cast(unsigned long, myScreen->h)))
+        {
+          // *NOTE*: restore cursor BG first
+          RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
+                                                            dirtyRegion);
+          myDirtyRegions.push_back(dirtyRegion);
 
-        // *NOTE*: erase current cursor first
-        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
-                                                           dirtyRegion);
-        myDirtyRegions.push_back(dirtyRegion);
+          RPG_Graphics_Surface::get(tile_position.first,
+                                    tile_position.second,
+                                    true, // use (fast) blitting method
+                                    *myScreen,
+                                    *myHighlightBG);
+          myHighlightBGPosition = map_position;
 
-        RPG_Graphics_Surface::get(tile_position.first,
-                                  tile_position.second,
-                                  true, // use (fast) blitting method
-                                  *myScreen,
-                                  *myHighlightBG);
-        myHighlightBGPosition = map_position;
+          // draw highlight
+          SDL_Rect clipRect;
+          clipRect.x = myBorderLeft + myOffset.first;
+          clipRect.y = myBorderTop + myOffset.second;
+          clipRect.w = (myScreen->w - (myBorderLeft + myBorderRight) - myOffset.first);
+          clipRect.h = (myScreen->h - (myBorderTop + myBorderBottom) - myOffset.second);
+  //         clipRect.x = tile_position.first;
+  //         clipRect.y = tile_position.second;
+  //         clipRect.w = myHighlightTile->w;
+  //         clipRect.h = myHighlightTile->h;
+          if (!SDL_SetClipRect(myScreen, &clipRect))
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+                       SDL_GetError()));
 
-        // draw highlight
-//         SDL_Rect clipRect;
-//         clipRect.x = tile_position.first;
-//         clipRect.y = tile_position.second;
-//         clipRect.w = myHighlightTile->w;
-//         clipRect.h = myHighlightTile->h;
-//         if (!SDL_SetClipRect(myScreen, &clipRect))
-//         {
-//           ACE_DEBUG((LM_ERROR,
-//                      ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-//                      SDL_GetError()));
-//
-//           return;
-//         } // end IF
-//         ACE_DEBUG((LM_DEBUG,
-//                    ACE_TEXT("highlight @ (%u,%u) --> (%u,%u)\n"),
-//                    map_position.first,
-//                    map_position.second,
-//                    tile_position.first,
-//                    tile_position.second));
+            return;
+          } // end IF
 
-        RPG_Graphics_Surface::put(tile_position.first,
-                                  tile_position.second,
-                                  *myHighlightTile,
-                                  myScreen);
+  //         ACE_DEBUG((LM_DEBUG,
+  //                    ACE_TEXT("highlight @ (%u,%u) --> (%u,%u)\n"),
+  //                    map_position.first,
+  //                    map_position.second,
+  //                    tile_position.first,
+  //                    tile_position.second));
 
-        dirtyRegion.x = tile_position.first;
-        dirtyRegion.y = tile_position.second;
-        dirtyRegion.w = myHighlightTile->w;
-        dirtyRegion.h = myHighlightTile->h;
+          RPG_Graphics_Surface::put(tile_position.first,
+                                    tile_position.second,
+                                    *myHighlightTile,
+                                    myScreen);
 
-        myDirtyRegions.push_back(dirtyRegion);
+          if (!SDL_SetClipRect(myScreen, NULL))
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+                       SDL_GetError()));
 
-        // show changes
-        refresh();
+            return;
+          } // end IF
+
+          dirtyRegion.x = tile_position.first;
+          dirtyRegion.y = tile_position.second;
+          dirtyRegion.w = myHighlightTile->w;
+          dirtyRegion.h = myHighlightTile->h;
+          myDirtyRegions.push_back(dirtyRegion);
+        } // end IF
       } // end IF
 
       // set an appropriate cursor

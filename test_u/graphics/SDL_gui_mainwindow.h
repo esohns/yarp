@@ -65,6 +65,9 @@ class SDL_GUI_MainWindow
 
   // helper methods
   void initScrollSpots();
+  void drawBorder(SDL_Surface* = NULL,       // target surface (default: screen)
+                  const unsigned long& = 0,  // offset x (top-left = [0,0])
+                  const unsigned long& = 0); // offset y (top-left = [0,0])
 
   // counter
   static unsigned long screenshot_index;

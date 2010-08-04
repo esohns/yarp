@@ -561,7 +561,7 @@ do_work(const mode_t& mode_in,
   bool done = false;
   RPG_Graphics_IWindow* window = NULL;
   RPG_Graphics_IWindow* previous_window = NULL;
-  bool redraw_map = false;
+  bool need_redraw = false;
   switch (mode_in)
   {
     case MODE_RANDOM_IMAGES:
@@ -574,7 +574,7 @@ do_work(const mode_t& mode_in,
       do
       {
         window = NULL;
-        redraw_map = false;
+        need_redraw = false;
 
         // reset screen
         mainWindow.draw();
@@ -681,7 +681,7 @@ do_work(const mode_t& mode_in,
               {
                 window->handleEvent(event,
                                     window,
-                                    redraw_map);
+                                    need_redraw);
               }
               catch (...)
               {
@@ -842,7 +842,7 @@ do_work(const mode_t& mode_in,
       do
       {
         window = NULL;
-        redraw_map = false;
+        need_redraw = false;
         mouse_position = std::make_pair(0, 0);
 
         // step5: process events
@@ -944,7 +944,7 @@ do_work(const mode_t& mode_in,
                 {
                   previous_window->handleEvent(event,
                                                previous_window,
-                                               redraw_map);
+                                               need_redraw);
                 }
                 catch (...)
                 {
@@ -962,7 +962,7 @@ do_work(const mode_t& mode_in,
             {
               window->handleEvent(event,
                                   window,
-                                  redraw_map);
+                                  need_redraw);
             }
             catch (...)
             {
@@ -998,7 +998,7 @@ do_work(const mode_t& mode_in,
         } // end SWITCH
 
         // refresh map
-        if (redraw_map)
+        if (need_redraw)
         {
           try
           {
@@ -1294,6 +1294,9 @@ ACE_TMAIN(int argc,
 
     return EXIT_FAILURE;
   } // end IF
+  // ***** mouse setup *****
+  // don't show (double) cursor
+  SDL_ShowCursor(SDL_DISABLE);
   // ***** keyboard setup *****
   // enable Unicode translation
   SDL_EnableUNICODE(1);

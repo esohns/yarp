@@ -87,134 +87,11 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   unsigned long i = 0;
 
   // step1: draw borders
-  clipRect.x = offsetX_in + myBorderLeft;
-  clipRect.y = offsetY_in;
-  clipRect.w = (targetSurface->w - (myBorderLeft + myBorderRight));
-  clipRect.h = myBorderTop;
-  if (!SDL_SetClipRect(targetSurface, &clipRect))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+  drawBorder(targetSurface_in,
+             offsetX_in,
+             offsetY_in);
 
-    return;
-  } // end IF
-  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  for (i = offsetX_in + myBorderLeft;
-       i < (ACE_static_cast(unsigned long, targetSurface->w) - myBorderRight);
-       i += (*iterator).second->w)
-    RPG_Graphics_Surface::put(i,
-                              offsetY_in,
-                              *(*iterator).second,
-                              targetSurface);
-
-  clipRect.x = offsetX_in;
-  clipRect.y = (offsetY_in + myBorderTop);
-  clipRect.w = myBorderLeft;
-  clipRect.h = (targetSurface->h - (myBorderTop + myBorderBottom));
-  if (!SDL_SetClipRect(targetSurface, &clipRect))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return;
-  } // end IF
-  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_LEFT);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  for (i = (offsetY_in + myBorderTop);
-       i < (ACE_static_cast(unsigned long, targetSurface->h) - myBorderBottom);
-       i += (*iterator).second->h)
-    RPG_Graphics_Surface::put(offsetX_in,
-                              i,
-                              *(*iterator).second,
-                              targetSurface);
-
-  clipRect.x = (targetSurface->w - myBorderRight);
-  clipRect.y = offsetY_in + myBorderTop;
-  clipRect.w = myBorderRight;
-  clipRect.h = (targetSurface->h - (myBorderTop + myBorderBottom));
-  if (!SDL_SetClipRect(targetSurface, &clipRect))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return;
-  } // end IF
-  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_RIGHT);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  for (i = (offsetY_in + myBorderTop);
-       i < (ACE_static_cast(unsigned long, targetSurface->h) - myBorderBottom);
-       i += (*iterator).second->h)
-    RPG_Graphics_Surface::put((targetSurface->w - myBorderRight),
-                              i,
-                              *(*iterator).second,
-                              targetSurface);
-
-  clipRect.x = offsetX_in + myBorderLeft;
-  clipRect.y = (targetSurface->h - myBorderBottom);
-  clipRect.w = (targetSurface->w - (myBorderLeft + myBorderRight));
-  clipRect.h = myBorderBottom;
-  if (!SDL_SetClipRect(targetSurface, &clipRect))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return;
-  } // end IF
-  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_BOTTOM);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  for (i = (offsetX_in + myBorderLeft);
-       i < (targetSurface->w - myBorderRight);
-       i += (*iterator).second->w)
-    RPG_Graphics_Surface::put(i,
-                              (targetSurface->h - myBorderBottom),
-                              *(*iterator).second,
-                              targetSurface);
-
-  // reset clipping area
-  if (!SDL_SetClipRect(targetSurface, NULL))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return;
-  } // end IF
-
-  // step2: draw corners
-  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_TL);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Surface::put(offsetX_in,
-                            offsetY_in,
-                            *(*iterator).second,
-                            targetSurface);
-
-  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_TR);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Surface::put((targetSurface->w - (*iterator).second->w),
-                            offsetY_in,
-                            *(*iterator).second,
-                            targetSurface);
-
-  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_BL);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Surface::put(offsetX_in,
-                            (targetSurface->h - (*iterator).second->h),
-                            *(*iterator).second,
-                            targetSurface);
-
-  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_BR);
-  ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Surface::put((targetSurface->w - (*iterator).second->w),
-                            (targetSurface->h - (*iterator).second->h),
-                            *(*iterator).second,
-                            targetSurface);
-
-  // step3: fill central area
+  // step2: fill central area
   iterator = myElementGraphics.find(INTERFACEELEMENT_CENTER);
   ACE_ASSERT(iterator != myElementGraphics.end());
   clipRect.x = offsetX_in + myBorderLeft;
@@ -240,7 +117,7 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
                                 *(*iterator).second,
                                 targetSurface);
 
-  // step4: draw title (if any)
+  // step3: draw title (if any)
   if (!myTitle.empty())
   {
     clipRect.x = myBorderLeft;
@@ -269,7 +146,7 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
                                   targetSurface);
   } // end IF
 
-  // step5: realize hotspots (and any other children)
+  // step4: realize hotspots (and any other children)
   for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
        iterator != myChildren.end();
        iterator++)
@@ -341,12 +218,24 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 //           RPG_Graphics_Surface::update(dirtyRegion,
 //                                        myScreen);
 
+          // *TODO*: prevents MOST "mouse trails"...
+          drawBorder(myScreen,
+                     0,
+                     0);
+          refresh();
+
           myHaveMouseFocus = true;
         } // end IF
         else
         {
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("lost mouse coverage...\n")));
+
+          // *TODO*: prevents MOST "mouse trails"...
+          drawBorder(myScreen,
+                     0,
+                     0);
+          refresh();
 
           myHaveMouseFocus = false;
         } // end ELSE
@@ -862,4 +751,170 @@ SDL_GUI_MainWindow::initScrollSpots()
                              std::make_pair(mySize.first - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             mySize.second - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
                              TYPE_CURSOR_SCROLL_DR); // (hover) cursor graphic
+}
+
+void
+SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
+                               const unsigned long& offsetX_in,
+                               const unsigned long& offsetY_in)
+{
+  ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::drawBorder"));
+
+  // set target surface
+  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
+
+  // sanity check(s)
+  ACE_ASSERT(targetSurface);
+  ACE_ASSERT(ACE_static_cast(int, offsetX_in) <= targetSurface->w);
+  ACE_ASSERT(ACE_static_cast(int, offsetY_in) <= targetSurface->h);
+
+  RPG_Graphics_InterfaceElementsConstIterator_t iterator;
+//   unsigned long border = 0;
+  SDL_Rect clipRect;
+  unsigned long i = 0;
+
+  // step1: draw borders
+  clipRect.x = offsetX_in + myBorderLeft;
+  clipRect.y = offsetY_in;
+  clipRect.w = (targetSurface->w - (myBorderLeft + myBorderRight));
+  clipRect.h = myBorderTop;
+  if (!SDL_SetClipRect(targetSurface, &clipRect))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP);
+  ACE_ASSERT(iterator != myElementGraphics.end());
+  for (i = offsetX_in + myBorderLeft;
+       i < (ACE_static_cast(unsigned long, targetSurface->w) - myBorderRight);
+       i += (*iterator).second->w)
+    RPG_Graphics_Surface::put(i,
+                              offsetY_in,
+                              *(*iterator).second,
+                              targetSurface);
+
+  clipRect.x = offsetX_in;
+  clipRect.y = (offsetY_in + myBorderTop);
+  clipRect.w = myBorderLeft;
+  clipRect.h = (targetSurface->h - (myBorderTop + myBorderBottom));
+  if (!SDL_SetClipRect(targetSurface, &clipRect))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_LEFT);
+  ACE_ASSERT(iterator != myElementGraphics.end());
+  for (i = (offsetY_in + myBorderTop);
+       i < (ACE_static_cast(unsigned long, targetSurface->h) - myBorderBottom);
+       i += (*iterator).second->h)
+    RPG_Graphics_Surface::put(offsetX_in,
+                              i,
+                              *(*iterator).second,
+                              targetSurface);
+
+  clipRect.x = (targetSurface->w - myBorderRight);
+  clipRect.y = offsetY_in + myBorderTop;
+  clipRect.w = myBorderRight;
+  clipRect.h = (targetSurface->h - (myBorderTop + myBorderBottom));
+  if (!SDL_SetClipRect(targetSurface, &clipRect))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_RIGHT);
+  ACE_ASSERT(iterator != myElementGraphics.end());
+  for (i = (offsetY_in + myBorderTop);
+       i < (ACE_static_cast(unsigned long, targetSurface->h) - myBorderBottom);
+       i += (*iterator).second->h)
+    RPG_Graphics_Surface::put((targetSurface->w - myBorderRight),
+                               i,
+                               *(*iterator).second,
+                               targetSurface);
+
+  clipRect.x = offsetX_in + myBorderLeft;
+  clipRect.y = (targetSurface->h - myBorderBottom);
+  clipRect.w = (targetSurface->w - (myBorderLeft + myBorderRight));
+  clipRect.h = myBorderBottom;
+  if (!SDL_SetClipRect(targetSurface, &clipRect))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_BOTTOM);
+  ACE_ASSERT(iterator != myElementGraphics.end());
+  for (i = (offsetX_in + myBorderLeft);
+       i < (targetSurface->w - myBorderRight);
+       i += (*iterator).second->w)
+    RPG_Graphics_Surface::put(i,
+                              (targetSurface->h - myBorderBottom),
+                              *(*iterator).second,
+                              targetSurface);
+
+  // reset clipping area
+  if (!SDL_SetClipRect(targetSurface, NULL))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+
+  // step2: draw corners
+  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_TL);
+  ACE_ASSERT(iterator != myElementGraphics.end());
+  RPG_Graphics_Surface::put(offsetX_in,
+                            offsetY_in,
+                            *(*iterator).second,
+                            targetSurface);
+
+  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_TR);
+  ACE_ASSERT(iterator != myElementGraphics.end());
+  RPG_Graphics_Surface::put((targetSurface->w - (*iterator).second->w),
+                             offsetY_in,
+                             *(*iterator).second,
+                             targetSurface);
+
+  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_BL);
+  ACE_ASSERT(iterator != myElementGraphics.end());
+  RPG_Graphics_Surface::put(offsetX_in,
+                            (targetSurface->h - (*iterator).second->h),
+                            *(*iterator).second,
+                            targetSurface);
+
+  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_BR);
+  ACE_ASSERT(iterator != myElementGraphics.end());
+  RPG_Graphics_Surface::put((targetSurface->w - (*iterator).second->w),
+                             (targetSurface->h - (*iterator).second->h),
+                             *(*iterator).second,
+                             targetSurface);
+
+  // reset clipping area
+  if (!SDL_SetClipRect(targetSurface, NULL))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+
+  // whole window needs a refresh...
+  clipRect.x = 0;
+  clipRect.y = 0;
+  clipRect.w = targetSurface->w;
+  clipRect.h = targetSurface->h;
+  myDirtyRegions.push_back(clipRect);
 }
