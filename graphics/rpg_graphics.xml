@@ -204,6 +204,50 @@
   </graphic>
   <graphic>
     <category>CATEGORY_TILESET</category>
+    <type>TYPE_TILESET_FLOOR_STONE_COBBLED</type>
+    <tileset>
+      <type>TILESETTYPE_FLOOR</type>
+      <style>FLOORSTYLE_STONE_COBBLED</style>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_cobblestone_0_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_cobblestone_0_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_cobblestone_0_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_cobblestone_1_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_cobblestone_1_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_cobblestone_1_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_cobblestone_2_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_cobblestone_2_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_cobblestone_2_2.png</file>
+      </tile>
+    </tileset>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILESET</category>
     <type>TYPE_TILESET_FLOOR_DARK</type>
     <tileset>
       <type>TILESETTYPE_FLOOR</type>
@@ -216,7 +260,7 @@
   </graphic>
   <graphic>
     <category>CATEGORY_TILESET</category>
-    <type>TYPE_TILESET_WALL_BRICK_FULL</type>
+    <type>TYPE_TILESET_WALL_BRICK</type>
     <tileset>
       <type>TILESETTYPE_WALL</type>
       <style>WALLSTYLE_BRICK</style>

@@ -27,6 +27,7 @@
 
 RPG_Graphics_Cursor::RPG_Graphics_Cursor()
  : inherited(),
+   myCurrentType(TYPE_CURSOR_NORMAL),
    myBGPosition(std::make_pair(0, 0)),
    myBG(NULL)//,
 //    myCache()
@@ -47,6 +48,14 @@ RPG_Graphics_Cursor::~RPG_Graphics_Cursor()
        iterator != myCache.end();
        iterator++)
     SDL_FreeSurface((*iterator).second);
+}
+
+const RPG_Graphics_Type
+RPG_Graphics_Cursor::type() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::type"));
+
+  return myCurrentType;
 }
 
 void
@@ -83,6 +92,8 @@ RPG_Graphics_Cursor::set(const RPG_Graphics_Type& type_in)
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("set cursor to: \"%s\"\n"),
 //                RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
+
+    myCurrentType = type_in;
 
     return;
   } // end IF
@@ -149,21 +160,23 @@ RPG_Graphics_Cursor::set(const RPG_Graphics_Type& type_in)
   } // end IF
   myBGPosition = std::make_pair(0, 0);
 
+  myCurrentType = type_in;
+
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("set cursor to: \"%s\"\n"),
 //              RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
 }
 
-SDL_Surface*
-RPG_Graphics_Cursor::get() const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::get"));
-
-  // sanity check(s)
-  ACE_ASSERT(mySurface);
-
-  return mySurface;
-}
+// SDL_Surface*
+// RPG_Graphics_Cursor::get() const
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::get"));
+//
+//   // sanity check(s)
+//   ACE_ASSERT(mySurface);
+//
+//   return mySurface;
+// }
 
 void
 RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
@@ -274,10 +287,10 @@ RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
 }
 
 void
-RPG_Graphics_Cursor::restore(SDL_Surface* targetSurface_in,
-                             SDL_Rect& dirtyRegion_out)
+RPG_Graphics_Cursor::restoreBG(SDL_Surface* targetSurface_in,
+                               SDL_Rect& dirtyRegion_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::restore"));
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::restoreBG"));
 
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);
@@ -295,7 +308,7 @@ RPG_Graphics_Cursor::restore(SDL_Surface* targetSurface_in,
   if ((dirtyRegion_out.y + dirtyRegion_out.h) > targetSurface_in->h)
     dirtyRegion_out.h -= ((dirtyRegion_out.y + dirtyRegion_out.h) - targetSurface_in->h);
 
-  // restore background
+  // restore/clear background
   if (SDL_BlitSurface(myBG,              // source
                       NULL,              // aspect (--> everything)
                       targetSurface_in,  // target
@@ -307,25 +320,16 @@ RPG_Graphics_Cursor::restore(SDL_Surface* targetSurface_in,
 
     return;
   } // end IF
+  RPG_Graphics_Surface::clear(myBG);
 }
 
 void
-RPG_Graphics_Cursor::invalidate()
+RPG_Graphics_Cursor::invalidateBG()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::invalidate"));
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::invalidateBG"));
 
   // sanity check
   ACE_ASSERT(myBG);
 
-  // fill with "transparency"...
-  if (SDL_FillRect(myBG,                                    // target
-                   NULL,                                    // aspect (--> everything)
-                   RPG_Graphics_SDL_Tools::CLR32_BLACK_A0)) // "transparency"
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return;
-  } // end IF
+  RPG_Graphics_Surface::clear(myBG);
 }

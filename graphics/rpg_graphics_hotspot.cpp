@@ -80,8 +80,8 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
       // reset cursor
       // --> restore background first
       SDL_Rect dirtyRegion;
-      RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
-                                                         dirtyRegion);
+      RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen,
+                                                           dirtyRegion);
       // *NOTE*: updating straight away reduces ugly smears...
       RPG_Graphics_Surface::update(dirtyRegion,
                                    myScreen);
@@ -98,8 +98,8 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
       {
         // --> restore background first
         SDL_Rect dirtyRegion;
-        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
-                                                           dirtyRegion);
+        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen,
+                                                             dirtyRegion);
         // *NOTE*: updating straight away reduces ugly smears...
         RPG_Graphics_Surface::update(dirtyRegion,
                                      myScreen);

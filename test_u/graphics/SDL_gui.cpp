@@ -769,9 +769,11 @@ do_work(const mode_t& mode_in,
       RPG_Map_Common_Tools::displayFloorPlan(plan);
 
       // step3b: setup style
-      RPG_Graphics_FloorStyle floorStyle = FLOORSTYLE_AIR;
-      RPG_Graphics_WallStyle wallStyle = WALLSTYLE_BRICK;
-      RPG_Graphics_DoorStyle doorStyle = DOORSTYLE_WOOD;
+      RPG_Graphics_MapStyle_t mapStyle;
+      mapStyle.floor_style = SDL_GUI_DEF_GRAPHICS_FLOORSTYLE;
+      mapStyle.wall_style = SDL_GUI_DEF_GRAPHICS_WALLSTYLE;
+      mapStyle.half_height_walls = SDL_GUI_DEF_GRAPHICS_WALLSTYLE_HALF;
+      mapStyle.door_style = SDL_GUI_DEF_GRAPHICS_DOORSTYLE;
 
       // step4: set default cursor
       RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(TYPE_CURSOR_NORMAL);
@@ -783,9 +785,7 @@ do_work(const mode_t& mode_in,
       try
       {
         mapWindow = new SDL_GUI_LevelWindow(mainWindow, // parent
-                                            floorStyle, // floor style
-                                            wallStyle,  // wall style
-                                            doorStyle,  // door style
+                                            mapStyle,   // map style
                                             plan);      // map
       }
       catch (...)
@@ -997,7 +997,7 @@ do_work(const mode_t& mode_in,
           }
         } // end SWITCH
 
-        // refresh map
+        // redraw map ?
         if (need_redraw)
         {
           try
@@ -1012,10 +1012,18 @@ do_work(const mode_t& mode_in,
           }
         } // end IF
 
-        // refresh cursor
+        // redraw cursor ?
         switch (event.type)
         {
           case SDL_KEYDOWN:
+          case SDL_MOUSEBUTTONDOWN:
+          {
+            // map hasn't changed --> no need to redraw
+            if (!need_redraw)
+              break;
+
+            // *WARNING*: falls through !
+          }
           case SDL_MOUSEMOTION:
           case RPG_GRAPHICS_SDL_HOVEREVENT:
           {

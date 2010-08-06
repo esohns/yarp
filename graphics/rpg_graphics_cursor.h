@@ -42,16 +42,22 @@ class RPG_Graphics_Cursor
   friend class ACE_Singleton<RPG_Graphics_Cursor, ACE_Thread_Mutex>;
 
  public:
-  void set(const RPG_Graphics_Type&); // cursor graphic
-  SDL_Surface* get() const;
+  const RPG_Graphics_Type type() const;
 
+  void set(const RPG_Graphics_Type&); // cursor graphic
+//   SDL_Surface* get() const;
+
+  // draw the cursor
   void put(const unsigned long&, // offset x (top left == 0,0)
            const unsigned long&, // offset y (top left == 0,0)
            SDL_Surface*,         // target surface (e.g. screen)
            SDL_Rect&);           // return value: "dirty" region
-  void restore(SDL_Surface*, // target surface (e.g. screen)
-               SDL_Rect&);   // return value: "dirty" region
-  void invalidate();
+
+  // restore the BG
+  void restoreBG(SDL_Surface*, // target surface (e.g. screen)
+                 SDL_Rect&);   // return value: "dirty" region
+  // clear the BG
+  void invalidateBG();
 
  private:
   typedef RPG_Graphics_Surface inherited;
@@ -65,6 +71,8 @@ class RPG_Graphics_Cursor
   // helper types
   typedef std::map<RPG_Graphics_Type, SDL_Surface*> RPG_Graphics_CursorCache_t;
   typedef RPG_Graphics_CursorCache_t::const_iterator RPG_Graphics_CursorCacheConstIterator_t;
+
+  RPG_Graphics_Type          myCurrentType;
 
   // fast(er) updates
   RPG_Graphics_Position_t    myBGPosition;

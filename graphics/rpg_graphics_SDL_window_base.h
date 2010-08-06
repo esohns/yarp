@@ -91,9 +91,7 @@ class RPG_Graphics_SDLWindowBase
                   unsigned long&,        // size (left)
                   unsigned long&) const; // size (right)
   RPG_Graphics_SDLWindowBase* getParent() const;
-
-  // "dirty" region(s)
-  RPG_Graphics_DirtyRegions_t      myDirtyRegions;
+  void invalidate(const SDL_Rect&); // "dirty" area
 
   // window title
   std::string                      myTitle;
@@ -107,6 +105,10 @@ class RPG_Graphics_SDLWindowBase
  private:
   typedef RPG_Graphics_IWindow inherited;
 
+  // helper types
+  typedef std::vector<SDL_Rect> RPG_Graphics_InvalidRegions_t;
+  typedef RPG_Graphics_InvalidRegions_t::const_iterator RPG_Graphics_InvalidRegionsConstIterator_t;
+
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowBase());
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowBase(const RPG_Graphics_SDLWindowBase&));
@@ -116,7 +118,10 @@ class RPG_Graphics_SDLWindowBase
   void addChild(RPG_Graphics_SDLWindowBase*);
   void removeChild(RPG_Graphics_SDLWindowBase*);
 
-  RPG_Graphics_SDLWindowBase*          myParent;
+  // "dirty" region(s)
+  RPG_Graphics_InvalidRegions_t    myInvalidRegions;
+
+  RPG_Graphics_SDLWindowBase*      myParent;
   RPG_Graphics_WindowType          myType;
 };
 

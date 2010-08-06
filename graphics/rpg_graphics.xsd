@@ -137,9 +137,10 @@
       <xsd:enumeration value="TYPE_TILE_OFF_MAP"/>
       <xsd:enumeration value="TYPE_TILESET_DOOR_WOOD"/>
       <xsd:enumeration value="TYPE_TILESET_FLOOR_AIR"/>
+      <xsd:enumeration value="TYPE_TILESET_FLOOR_STONE_COBBLED"/>
       <xsd:enumeration value="TYPE_TILESET_FLOOR_DARK"/>
+      <xsd:enumeration value="TYPE_TILESET_WALL_BRICK"/>
       <xsd:enumeration value="TYPE_TILESET_WALL_BRICK_HALF"/>
-      <xsd:enumeration value="TYPE_TILESET_WALL_BRICK_FULL"/>
     </xsd:restriction>
   </xsd:simpleType>
 

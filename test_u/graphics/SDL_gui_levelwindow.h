@@ -45,9 +45,7 @@ class SDL_GUI_LevelWindow
   SDL_GUI_LevelWindow(// *** SDL window ***
                       const RPG_Graphics_SDLWindowBase&, // parent
                       // *** level properties ***
-                      const RPG_Graphics_FloorStyle&,    // floor style
-                      const RPG_Graphics_WallStyle&,     // wall style
-                      const RPG_Graphics_DoorStyle&,     // door style
+                      const RPG_Graphics_MapStyle_t&,    // map style
                       const RPG_Map_FloorPlan_t&);       // (initial) map
   virtual ~SDL_GUI_LevelWindow();
 
@@ -91,16 +89,16 @@ class SDL_GUI_LevelWindow
                  RPG_Graphics_WallTileMap_t&);      // return value: wall tiles / position
   void initWallBlend();
   void initDoors(const RPG_Map_FloorPlan_t&,        // level map
-                 const RPG_Map_Level&,              // level state
+                 const RPG_Map_Level&,              // state
                  const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
                  RPG_Graphics_DoorTileMap_t&);      // return value: door tiles / position
 
-  static const RPG_Graphics_Orientation getDoorOrientation(const RPG_Map_Level&,       // level
+  static const RPG_Graphics_Orientation getDoorOrientation(const RPG_Map_Level&,       // state
                                                            const RPG_Map_Position_t&); // door position
   static const bool hasCeiling(const RPG_Map_Position_t&, // position
-                               const RPG_Map_Level&);
+                               const RPG_Map_Level&);     // state
   static const RPG_Graphics_Type getCursor(const RPG_Map_Position_t&, // position
-                                           const RPG_Map_Level&);     // level
+                                           const RPG_Map_Level&);     // state
 
   // transformation
   const RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&); // position (absolute)
@@ -109,12 +107,10 @@ class SDL_GUI_LevelWindow
 
   RPG_Map_Level               myMap;
 
-  RPG_Graphics_FloorStyle     myCurrentFloorStyle;
+  RPG_Graphics_MapStyle_t     myCurrentMapStyle;
   RPG_Graphics_FloorTileSet_t myCurrentFloorSet;
-  RPG_Graphics_WallStyle      myCurrentWallStyle;
   RPG_Graphics_WallTileSet_t  myCurrentWallSet;
   SDL_Surface*                myCurrentCeilingTile;
-  RPG_Graphics_DoorStyle      myCurrentDoorStyle;
   RPG_Graphics_DoorTileSet_t  myCurrentDoorSet;
   SDL_Surface*                myCurrentOffMapTile;
 
@@ -128,9 +124,6 @@ class SDL_GUI_LevelWindow
 
   // center of displayed map area (map coordinates)
   RPG_Graphics_Position_t     myView;
-
-  // cursor type
-  RPG_Graphics_Type           myCursor;
 
   // cursor highlight
   RPG_Graphics_Position_t     myHighlightBGPosition; // map coordinates

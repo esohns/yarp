@@ -131,7 +131,7 @@ RPG_Map_Level::handleDoor(const RPG_Map_Position_t& position_in,
         if ((*iterator).is_open)
           return;
 
-        // cannot simply open locked doors
+        // cannot simply open locked doors...
         if ((*iterator).is_locked)
         {
           ACE_DEBUG((LM_DEBUG,

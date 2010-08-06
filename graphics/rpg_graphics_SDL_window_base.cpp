@@ -138,6 +138,24 @@ RPG_Graphics_SDLWindowBase::getParent() const
 }
 
 void
+RPG_Graphics_SDLWindowBase::invalidate(const SDL_Rect& rect_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::invalidate"));
+
+  // sanity check(s)
+  ACE_ASSERT((rect_in.x >= 0) &&
+             (rect_in.x < myScreen->w) &&
+             (rect_in.y >= 0) &&
+             (rect_in.y < myScreen->h) &&
+             (rect_in.w >= 0) &&
+//              ((rect_in.x + rect_in.w) <= myScreen->w) &&
+             (rect_in.h >= 0)/* &&
+             ((rect_in.y + rect_in.h) <= myScreen->h)*/);
+
+  myInvalidRegions.push_back(rect_in);
+}
+
+void
 RPG_Graphics_SDLWindowBase::addChild(RPG_Graphics_SDLWindowBase* child_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::addChild"));
@@ -184,19 +202,28 @@ RPG_Graphics_SDLWindowBase::refresh(SDL_Surface* targetSurface_in)
   // sanity check(s)
   ACE_ASSERT(targetSurface);
 
-  if (myDirtyRegions.empty())
+  if (myInvalidRegions.empty())
     return; // nothing to do !
 
-  Sint32 topLeftX = (*myDirtyRegions.begin()).x;
-  Sint32 topLeftY = (*myDirtyRegions.begin()).y;
-  Sint32 width = (*myDirtyRegions.begin()).w;
-  Sint32 height = (*myDirtyRegions.begin()).h;
+  Sint32 topLeftX = (*myInvalidRegions.begin()).x;
+  Sint32 topLeftY = (*myInvalidRegions.begin()).y;
+  Sint32 width = (*myInvalidRegions.begin()).w;
+  Sint32 height = (*myInvalidRegions.begin()).h;
 
   // find bounding box of dirty areas
-  for (RPG_Graphics_DirtyRegionsConstIterator_t iterator = myDirtyRegions.begin();
-       iterator != myDirtyRegions.end();
-       iterator++)
+  unsigned long index = 0;
+  for (RPG_Graphics_InvalidRegionsConstIterator_t iterator = myInvalidRegions.begin();
+       iterator != myInvalidRegions.end();
+       iterator++, index++)
   {
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("dirty[%u]: [[%d,%d][%d,%d]]...\n"),
+//                index,
+//                (*iterator).x,
+//                (*iterator).y,
+//                (*iterator).x + (*iterator).w - 1,
+//                (*iterator).y + (*iterator).h - 1));
+
     if (((*iterator).x < topLeftX) ||
         ((*iterator).y < topLeftY))
     {
@@ -236,7 +263,7 @@ RPG_Graphics_SDLWindowBase::refresh(SDL_Surface* targetSurface_in)
                  height);
 
   // all fresh & shiny !
-  myDirtyRegions.clear();
+  myInvalidRegions.clear();
 }
 
 void

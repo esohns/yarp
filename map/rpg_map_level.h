@@ -34,12 +34,13 @@ class RPG_Map_Level
   virtual ~RPG_Map_Level();
 
   void init(const RPG_Map_FloorPlan_t&); // map
+
   const RPG_Map_Dimensions_t getDimensions() const;
   const RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
-  const RPG_Map_Door_t getDoor(const RPG_Map_Position_t& position_in) const;
 
-  void handleDoor(const RPG_Map_Position_t& position_in,
-                  const bool&); // open ? : close
+  const RPG_Map_Door_t getDoor(const RPG_Map_Position_t&) const;
+  void handleDoor(const RPG_Map_Position_t&,
+                  const bool&);              // open ? : close
 
  private:
   // safety measures

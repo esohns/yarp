@@ -898,6 +898,27 @@ RPG_Graphics_Surface::shade(const SDL_Surface& sourceImage_in,
   return result;
 }
 
+void
+RPG_Graphics_Surface::clear(SDL_Surface* targetSurface_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_Surface::clear"));
+
+  // sanity check
+  ACE_ASSERT(targetSurface_in);
+
+  // fill with "transparency"...
+  if (SDL_FillRect(targetSurface_in,                        // target
+                   NULL,                                    // aspect (--> everything)
+                   RPG_Graphics_SDL_Tools::CLR32_BLACK_A0)) // "transparency"
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+}
+
 SDL_Surface*
 RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in)
 {

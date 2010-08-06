@@ -33,9 +33,6 @@
 
 #include <sstream>
 
-// init statics
-unsigned long SDL_GUI_MainWindow::screenshot_index = 0;
-
 SDL_GUI_MainWindow::SDL_GUI_MainWindow(const RPG_Graphics_WindowSize_t& size_in,
                                        const RPG_Graphics_Type& graphicType_in,
                                        const std::string& title_in,
@@ -44,6 +41,7 @@ SDL_GUI_MainWindow::SDL_GUI_MainWindow(const RPG_Graphics_WindowSize_t& size_in,
              graphicType_in,
              title_in,
              fontType_in),
+   myScreenshotIndex(1),
    myLastHoverTime(0),
    myHaveMouseFocus(true) // *NOTE*: enforced with SDL_WarpMouse()
 {
@@ -179,7 +177,7 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   clipRect.y = 0;
   clipRect.w = targetSurface->w;
   clipRect.h = targetSurface->h;
-  myDirtyRegions.push_back(clipRect);
+  invalidate(clipRect);
 
   // remember position of last realization
   myLastAbsolutePosition = std::make_pair(offsetX_in,
@@ -213,8 +211,8 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 
           // --> restore background
           SDL_Rect dirtyRegion;
-          RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
-                                                             dirtyRegion);
+          RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen,
+                                                               dirtyRegion);
 //           RPG_Graphics_Surface::update(dirtyRegion,
 //                                        myScreen);
 
@@ -282,7 +280,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         case SDLK_s:
         {
           std::ostringstream converter;
-          converter << screenshot_index++;
+          converter << myScreenshotIndex++;
           std::string dump_path = RPG_GRAPHICS_DUMP_DIR;
           dump_path += ACE_DIRECTORY_SEPARATOR_STR;
           dump_path += ACE_TEXT("screenshot_");
@@ -447,12 +445,12 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
           }
         } // end SWITCH
 
-        // --> restore background
+        // *NOTE*: fiddling with the view invalidates the cursor !
+        // --> restore/invalidate cursor BG
         SDL_Rect dirtyRegion;
-        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
-                                                           dirtyRegion);
-//       RPG_Graphics_Surface::update(dirtyRegion,
-//                                    myScreen);
+        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen,
+                                                             dirtyRegion);
+        invalidate(dirtyRegion);
 
         // need a redraw
         redraw_out = true;
@@ -645,12 +643,12 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         }
       } // end SWITCH
 
-      // --> restore background
+      // *NOTE*: fiddling with the view invalidates the cursor !
+      // --> restore/invalidate cursor BG
       SDL_Rect dirtyRegion;
-      RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
-                                                         dirtyRegion);
-//       RPG_Graphics_Surface::update(dirtyRegion,
-//                                    myScreen);
+      RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen,
+                                                           dirtyRegion);
+      invalidate(dirtyRegion);
 
       // need a redraw
       redraw_out = true;
@@ -916,5 +914,5 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   clipRect.y = 0;
   clipRect.w = targetSurface->w;
   clipRect.h = targetSurface->h;
-  myDirtyRegions.push_back(clipRect);
+  invalidate(clipRect);
 }

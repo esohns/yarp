@@ -70,7 +70,7 @@ class SDL_GUI_MainWindow
                   const unsigned long& = 0); // offset y (top-left = [0,0])
 
   // counter
-  static unsigned long screenshot_index;
+  unsigned long myScreenshotIndex;
 
   unsigned long myLastHoverTime;
   bool          myHaveMouseFocus;

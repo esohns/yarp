@@ -54,6 +54,9 @@ class RPG_Graphics_Surface
   static SDL_Surface* create(const unsigned long&,  // width
                              const unsigned long&); // height
   // *NOTE*: results need to be SDL_FreeSurface()d !
+  static SDL_Surface* copy(const SDL_Surface&); // source surface
+
+  // *NOTE*: results need to be SDL_FreeSurface()d !
   static SDL_Surface* get(const unsigned long&, // offset x (top-left == 0,0)
                           const unsigned long&, // offset y (top-left == 0,0)
                           const unsigned long&, // width
@@ -80,11 +83,10 @@ class RPG_Graphics_Surface
                       const Uint32&,   // color
                       SDL_Surface*);   // target surface (e.g. screen)
 
-    // *NOTE*: results need to be SDL_FreeSurface()ed by the user !
+    // *NOTE*: results need to be SDL_FreeSurface()d !
   static SDL_Surface* shade(const SDL_Surface&,               // source surface
                             const Uint8& = SDL_ALPHA_OPAQUE); // alpha (0: transparent --> 255: opaque)
-  // *NOTE*: results need to be SDL_FreeSurface()ed by the user !
-  static SDL_Surface* copy(const SDL_Surface&); // source surface
+  static void clear(SDL_Surface*); // target surface
 
   // refresh (partial) screen surface
   static void update(const SDL_Rect&, // "dirty" rectangle

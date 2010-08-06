@@ -310,7 +310,8 @@ RPG_Graphics_Common_Tools::elementsToString(const RPG_Graphics_Elements_t& eleme
 }
 
 const RPG_Graphics_Type
-RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in)
+RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in,
+                                       const bool& halfHeight_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::styleToType"));
 
@@ -324,6 +325,8 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in)
       {
         case FLOORSTYLE_AIR:
           result = TYPE_TILESET_FLOOR_AIR; break;
+        case FLOORSTYLE_STONE_COBBLED:
+          result = TYPE_TILESET_FLOOR_STONE_COBBLED; break;
         case FLOORSTYLE_DARK:
           result = TYPE_TILESET_FLOOR_DARK; break;
         default:
@@ -343,7 +346,11 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in)
       switch (style_in.wallstyle)
       {
         case WALLSTYLE_BRICK:
-          result = TYPE_TILESET_WALL_BRICK_FULL; break;
+        {
+          result = (halfHeight_in ? TYPE_TILESET_WALL_BRICK_HALF : TYPE_TILESET_WALL_BRICK);
+
+          break;
+        }
         default:
         {
           ACE_DEBUG((LM_ERROR,
@@ -582,6 +589,7 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
 
 void
 RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_in,
+                                           const bool& halfHeight_in,
                                            RPG_Graphics_WallTileSet_t& tileSet_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadWallTileSet"));
@@ -613,7 +621,8 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
   style.wallstyle = style_in;
   RPG_Graphics_Type graphic_type = RPG_GRAPHICS_TYPE_INVALID;
-  graphic_type = RPG_Graphics_Common_Tools::styleToType(style);
+  graphic_type = RPG_Graphics_Common_Tools::styleToType(style,
+                                                        halfHeight_in);
   // sanity check(s)
   if (graphic_type == RPG_GRAPHICS_TYPE_INVALID)
   {

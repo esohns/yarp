@@ -52,9 +52,10 @@ enum RPG_Graphics_Type
   TYPE_TILE_OFF_MAP,
   TYPE_TILESET_DOOR_WOOD,
   TYPE_TILESET_FLOOR_AIR,
+  TYPE_TILESET_FLOOR_STONE_COBBLED,
   TYPE_TILESET_FLOOR_DARK,
+  TYPE_TILESET_WALL_BRICK,
   TYPE_TILESET_WALL_BRICK_HALF,
-  TYPE_TILESET_WALL_BRICK_FULL,
   //
   RPG_GRAPHICS_TYPE_MAX,
   RPG_GRAPHICS_TYPE_INVALID
@@ -98,9 +99,10 @@ class RPG_Graphics_TypeHelper
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILE_OFF_MAP, ACE_TEXT_ALWAYS_CHAR("TYPE_TILE_OFF_MAP")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILESET_DOOR_WOOD, ACE_TEXT_ALWAYS_CHAR("TYPE_TILESET_DOOR_WOOD")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILESET_FLOOR_AIR, ACE_TEXT_ALWAYS_CHAR("TYPE_TILESET_FLOOR_AIR")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILESET_FLOOR_STONE_COBBLED, ACE_TEXT_ALWAYS_CHAR("TYPE_TILESET_FLOOR_STONE_COBBLED")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILESET_FLOOR_DARK, ACE_TEXT_ALWAYS_CHAR("TYPE_TILESET_FLOOR_DARK")));
+    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILESET_WALL_BRICK, ACE_TEXT_ALWAYS_CHAR("TYPE_TILESET_WALL_BRICK")));
     myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILESET_WALL_BRICK_HALF, ACE_TEXT_ALWAYS_CHAR("TYPE_TILESET_WALL_BRICK_HALF")));
-    myRPG_Graphics_TypeToStringTable.insert(std::make_pair(TYPE_TILESET_WALL_BRICK_FULL, ACE_TEXT_ALWAYS_CHAR("TYPE_TILESET_WALL_BRICK_FULL")));
   };
 
   inline static std::string RPG_Graphics_TypeToString(const RPG_Graphics_Type& element_in)

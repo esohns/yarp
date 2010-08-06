@@ -110,4 +110,12 @@ typedef RPG_Graphics_DoorTileMap_t::const_iterator RPG_Graphics_DoorTileMapConst
 
 typedef std::vector<RPG_Graphics_Tile>::const_iterator RPG_Graphics_TileSetConstIterator_t;
 
+struct RPG_Graphics_MapStyle_t
+{
+  RPG_Graphics_FloorStyle floor_style;
+  RPG_Graphics_WallStyle wall_style;
+  bool half_height_walls;
+  RPG_Graphics_DoorStyle door_style;
+};
+
 #endif
