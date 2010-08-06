@@ -82,7 +82,9 @@ class SDL_GUI_LevelWindow
 
   // helper methods
   void clear();
+
   void setStyle(const RPG_Graphics_StyleUnion&);
+
   void initCeiling();
   void initWalls(const RPG_Map_FloorPlan_t&,        // level map
                  const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
@@ -97,6 +99,7 @@ class SDL_GUI_LevelWindow
                                                            const RPG_Map_Position_t&); // door position
   static const bool hasCeiling(const RPG_Map_Position_t&, // position
                                const RPG_Map_Level&);     // state
+
   static const RPG_Graphics_Type getCursor(const RPG_Map_Position_t&, // position
                                            const RPG_Map_Level&);     // state
 
@@ -104,6 +107,8 @@ class SDL_GUI_LevelWindow
   const RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&); // position (absolute)
   // *NOTE*: translates the center of the map square to screen coordinates
   const RPG_Graphics_Position_t map2Screen(const RPG_Graphics_Position_t&); // position (map)
+
+  void getTileHighlightBG(const RPG_Map_Position_t&); // position
 
   RPG_Map_Level               myMap;
 

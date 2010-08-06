@@ -450,15 +450,6 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
       // *TODO*: step3: floor edges
 
-//       // step4: cursor highlight
-//       if (current_map_position == myHighlightBGPosition)
-//       {
-//         RPG_Graphics_Surface::put(x,
-//                                   y,
-//                                   *myHighlightTile,
-//                                   targetSurface);
-//       } // end IF
-
       // advance floor iterator
       std::advance(floor_iterator, RPG_GRAPHICS_TILE_FLOORSET_ROWTILES);
     } // end FOR
@@ -565,6 +556,24 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
     } // end FOR
   } // end FOR
 
+  // refresh cursor highlight
+  screen_position = map2Screen(myHighlightBGPosition);
+  // grab BG
+  // sanity check for underruns
+  if ((screen_position.first < targetSurface->w) &&
+      (screen_position.second < targetSurface->h))
+  {
+    RPG_Graphics_Surface::get(screen_position.first,
+                              screen_position.second,
+                              true, // use (fast) blitting method
+                              *targetSurface,
+                              *myHighlightBG);
+  } // end IF
+  RPG_Graphics_Surface::put(screen_position.first,
+                            screen_position.second,
+                            *myHighlightTile,
+                            targetSurface);
+
   // whole viewport needs a refresh...
   clipRect.x = 0;
   clipRect.y = 0;
@@ -650,6 +659,8 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 
           // *NOTE*: fiddling with the view invalidates the cursor !
           RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidateBG();
+          // clear highlight BG
+          RPG_Graphics_Surface::clear(myHighlightBG);
 
           // need a redraw
           redraw_out = true;
@@ -705,7 +716,6 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                                     myScreen);
           // clear highlight BG
           RPG_Graphics_Surface::clear(myHighlightBG);
-          myHighlightBGPosition = std::make_pair(0, 0);
 
           dirtyRegion.x = tile_position.first;
           dirtyRegion.y = tile_position.second;
@@ -723,6 +733,11 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       // change "active" tile ?
       if (map_position != myHighlightBGPosition)
       {
+        // *NOTE*: restore cursor BG first
+        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen,
+                                                             dirtyRegion);
+        invalidate(dirtyRegion);
+
         // step1: restore/clear old background
         if (myHighlightBG)
         {
@@ -737,7 +752,6 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                                       myScreen);
             // clear highlight BG
             RPG_Graphics_Surface::clear(myHighlightBG);
-            myHighlightBGPosition = std::make_pair(0, 0);
 
             dirtyRegion.x = tile_position.first;
             dirtyRegion.y = tile_position.second;
@@ -753,19 +767,6 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         if ((tile_position.first < ACE_static_cast(unsigned long, myScreen->w)) &&
             (tile_position.second < ACE_static_cast(unsigned long, myScreen->h)))
         {
-          // *NOTE*: restore cursor BG first
-          RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen,
-                                                               dirtyRegion);
-          invalidate(dirtyRegion);
-
-          RPG_Graphics_Surface::get(tile_position.first,
-                                    tile_position.second,
-                                    true, // use (fast) blitting method
-                                    *myScreen,
-                                    *myHighlightBG);
-          myHighlightBGPosition = map_position;
-
-          // step3: draw highlight
           SDL_Rect clipRect;
           clipRect.x = myBorderLeft + myOffset.first;
           clipRect.y = myBorderTop + myOffset.second;
@@ -784,6 +785,14 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
             return;
           } // end IF
 
+          RPG_Graphics_Surface::get(tile_position.first,
+                                    tile_position.second,
+                                    true, // use (fast) blitting method
+                                    *myScreen,
+                                    *myHighlightBG);
+          myHighlightBGPosition = map_position;
+
+          // step3: draw highlight
   //         ACE_DEBUG((LM_DEBUG,
   //                    ACE_TEXT("highlight @ (%u,%u) --> (%u,%u)\n"),
   //                    map_position.first,
@@ -893,11 +902,10 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
               }
             } // end SWITCH
 
-            // *NOTE*: invalidate cursor BG
+            // invalidate cursor BG
             RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidateBG();
             // clear highlight BG
             RPG_Graphics_Surface::clear(myHighlightBG);
-            myHighlightBGPosition = std::make_pair(0, 0);
 
             // need a redraw
             redraw_out = true;
@@ -921,7 +929,6 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 
       // clear highlight BG
       RPG_Graphics_Surface::clear(myHighlightBG);
-      myHighlightBGPosition = std::make_pair(0, 0);
 
       break;
     }
@@ -1753,4 +1760,24 @@ SDL_GUI_LevelWindow::map2Screen(const RPG_Graphics_Position_t& position_in)
 
   // *TODO* fix underruns (why does this happen ?)
   return screen_position;
+}
+
+void
+SDL_GUI_LevelWindow::getTileHighlightBG(const RPG_Map_Position_t& position_in)
+{
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::getTileHighlightBG"));
+
+  RPG_Graphics_Position_t tile_position = map2Screen(position_in);
+  // sanity check for underruns
+  if ((tile_position.first < ACE_static_cast(unsigned long, myScreen->w)) &&
+      (tile_position.second < ACE_static_cast(unsigned long, myScreen->h)))
+  {
+    RPG_Graphics_Surface::get(tile_position.first,
+                              tile_position.second,
+                              true, // use (fast) blitting method
+                              *myScreen,
+                              *myHighlightBG);
+
+    myHighlightBGPosition = position_in;
+  } // end IF
 }
