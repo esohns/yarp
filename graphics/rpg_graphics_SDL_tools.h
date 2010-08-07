@@ -67,6 +67,8 @@ class RPG_Graphics_SDL_Tools
 
   static const SDL_Rect boundingBox(const SDL_Rect&,  // rect 1
                                     const SDL_Rect&); // rect 2
+  static const SDL_Rect intersect(const SDL_Rect&,  // rect 1
+                                  const SDL_Rect&); // rect 2
 
  private:
   // safety measures

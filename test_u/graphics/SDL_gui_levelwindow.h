@@ -108,7 +108,7 @@ class SDL_GUI_LevelWindow
   // *NOTE*: translates the center of the map square to screen coordinates
   const RPG_Graphics_Position_t map2Screen(const RPG_Graphics_Position_t&); // position (map)
 
-  void getTileHighlightBG(const RPG_Map_Position_t&); // position
+  void restoreBG();
 
   RPG_Map_Level               myMap;
 

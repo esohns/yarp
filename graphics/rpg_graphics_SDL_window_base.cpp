@@ -44,6 +44,9 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
 
+  ACE_OS::memset(&myClipRect,
+                 0,
+                 sizeof(myClipRect));
 }
 
 RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowType& type_in,
@@ -77,6 +80,12 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
 
   // register with parent
   myParent->addChild(this);
+
+  // init clip rect
+  myClipRect.x = myBorderLeft + myOffset.first;
+  myClipRect.y = myBorderTop + myOffset.second;
+  myClipRect.w = (myBorderLeft + myBorderRight) - myOffset.first;
+  myClipRect.h = (myBorderTop + myBorderBottom) - myOffset.second;
 }
 
 RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase()
@@ -463,4 +472,50 @@ RPG_Graphics_SDLWindowBase::getWindow(const RPG_Graphics_Position_t& position_in
   } // end FOR
 
   return this;
+}
+
+void
+RPG_Graphics_SDLWindowBase::clip(SDL_Surface* targetSurface_in,
+                                 const unsigned long& offsetX_in,
+                                 const unsigned long& offsetY_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::clip"));
+
+  // set target surface
+  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
+
+  // save previous clip rect
+  SDL_GetClipRect(targetSurface, &myClipRect);
+
+  SDL_Rect clipRect;
+  clipRect.x = offsetX_in + myBorderLeft + myOffset.first;
+  clipRect.y = offsetY_in + myBorderTop + myOffset.second;
+  clipRect.w = (targetSurface->w - offsetX_in - (myBorderLeft + myBorderRight) - myOffset.first);
+  clipRect.h = (targetSurface->h - offsetY_in - (myBorderTop + myBorderBottom) - myOffset.second);
+  if (!SDL_SetClipRect(targetSurface, &clipRect))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+}
+
+void
+RPG_Graphics_SDLWindowBase::unclip(SDL_Surface* targetSurface_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::unclip"));
+
+  // set target surface
+  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
+
+  if (!SDL_SetClipRect(targetSurface, &myClipRect))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
 }

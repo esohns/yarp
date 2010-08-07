@@ -247,3 +247,23 @@ RPG_Graphics_SDL_Tools::boundingBox(const SDL_Rect& rect1_in,
 
   return result;
 }
+
+const SDL_Rect
+RPG_Graphics_SDL_Tools::intersect(const SDL_Rect& rect1_in,
+                                  const SDL_Rect& rect2_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::intersect"));
+
+  RPG_Graphics_Position_t lower_right;
+  lower_right.first = (((rect1_in.x + rect1_in.w) < (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1) : (rect2_in.x + rect2_in.w - 1));
+  lower_right.second = (((rect1_in.y + rect1_in.h) < (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1) : (rect2_in.y + rect2_in.h - 1));
+
+  // init result
+  SDL_Rect result;
+  result.x = ((rect1_in.x > rect2_in.x) ? rect1_in.x : rect2_in.x);
+  result.y = ((rect1_in.y > rect2_in.y) ? rect1_in.y : rect2_in.y);
+  result.w = (lower_right.first - result.x) + 1;
+  result.h = (lower_right.second - result.y) + 1;
+
+  return result;
+}

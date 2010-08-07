@@ -50,6 +50,11 @@ class RPG_Graphics_SDLWindowBase
   const RPG_Graphics_WindowSize_t getSize(const bool& = false) const; // top-level ?
   RPG_Graphics_IWindow* getWindow(const RPG_Graphics_Position_t&); // position (e.g. mouse-)
 
+  void clip(SDL_Surface* = NULL,       // target surface (default: screen)
+            const unsigned long& = 0,  // offset x (top-left = [0,0])
+            const unsigned long& = 0); // offset y (top-left = [0,0]));
+  void unclip(SDL_Surface* = NULL); // target surface (default: screen)
+
  protected:
   RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowSize_t&,                 // size
                              const RPG_Graphics_WindowType&,                   // type
@@ -123,6 +128,8 @@ class RPG_Graphics_SDLWindowBase
 
   RPG_Graphics_SDLWindowBase*      myParent;
   RPG_Graphics_WindowType          myType;
+
+  SDL_Rect                         myClipRect;
 };
 
 #endif

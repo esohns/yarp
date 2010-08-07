@@ -1027,6 +1027,8 @@ do_work(const mode_t& mode_in,
           case SDL_MOUSEMOTION:
           case RPG_GRAPHICS_SDL_HOVEREVENT:
           {
+            // map has changed, cursor MAY have been drawn over...
+            // --> redraw cursor
             SDL_Rect dirtyRegion;
             RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(mouse_position.first,
                                                            mouse_position.second,

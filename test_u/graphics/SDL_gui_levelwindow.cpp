@@ -275,19 +275,9 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   ACE_ASSERT(ACE_static_cast(int, offsetY_in) <= targetSurface->h);
 
   // init clipping
-  SDL_Rect clipRect;
-  clipRect.x = offsetX_in + myBorderLeft + myOffset.first;
-  clipRect.y = offsetY_in + myBorderTop + myOffset.second;
-  clipRect.w = (targetSurface->w - offsetX_in - (myBorderLeft + myBorderRight) - myOffset.first);
-  clipRect.h = (targetSurface->h - offsetY_in - (myBorderTop + myBorderBottom) - myOffset.second);
-  if (!SDL_SetClipRect(targetSurface, &clipRect))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return;
-  } // end IF
+  clip(targetSurface_in,
+       offsetX_in,
+       offsetY_in);
 
   // position of the top right corner
   RPG_Graphics_Position_t top_right = std::make_pair(0, 0);
@@ -574,22 +564,16 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
                             *myHighlightTile,
                             targetSurface);
 
-  // whole viewport needs a refresh...
-  clipRect.x = 0;
-  clipRect.y = 0;
-  clipRect.w = targetSurface->w;
-  clipRect.h = targetSurface->h;
-  invalidate(clipRect);
-
   // reset clipping area
-  if (!SDL_SetClipRect(targetSurface, NULL))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+  unclip(targetSurface);
 
-    return;
-  } // end IF
+  // whole viewport needs a refresh...
+  SDL_Rect dirtyRegion;
+  dirtyRegion.x = offsetX_in + myBorderLeft + myOffset.first;
+  dirtyRegion.y = offsetY_in + myBorderTop + myOffset.second;
+  dirtyRegion.w = (targetSurface->w - offsetX_in - (myBorderLeft + myBorderRight) - myOffset.first);
+  dirtyRegion.h = (targetSurface->h - offsetY_in - (myBorderTop + myBorderBottom) - myOffset.second);
+  invalidate(dirtyRegion);
 
   // remember position of last realization
   myLastAbsolutePosition = std::make_pair(offsetX_in + myBorderLeft + myOffset.first,
@@ -694,38 +678,15 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 //                  map_position.second));
 
       // (re-)draw "active" tile highlight ?
-      SDL_Rect dirtyRegion;
+      SDL_Rect clipRect, dirtyRegion;
       RPG_Graphics_Position_t tile_position;
 
       // inside map ?
       if (map_position == std::make_pair(std::numeric_limits<unsigned long>::max(),
                                          std::numeric_limits<unsigned long>::max()))
       {
-        // left-/off the map --> remove "active" tile highlight
-        if (myHighlightBG)
-        {
-          tile_position = map2Screen(myHighlightBGPosition);
-          // sanity check for underruns
-          if ((tile_position.first >= ACE_static_cast(unsigned long, myScreen->w)) ||
-              (tile_position.second >= ACE_static_cast(unsigned long, myScreen->h)))
-            break;
-
-          RPG_Graphics_Surface::put(tile_position.first,
-                                    tile_position.second,
-                                    *myHighlightBG,
-                                    myScreen);
-          // clear highlight BG
-          RPG_Graphics_Surface::clear(myHighlightBG);
-
-          dirtyRegion.x = tile_position.first;
-          dirtyRegion.y = tile_position.second;
-          dirtyRegion.w = myHighlightBG->w;
-          dirtyRegion.h = myHighlightBG->h;
-          invalidate(dirtyRegion);
-        } // end IF
-
-        // show changes
-        refresh();
+        // off the map --> remove "active" tile highlight
+        restoreBG();
 
         break;
       } // end IF
@@ -736,30 +697,13 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         // *NOTE*: restore cursor BG first
         RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen,
                                                              dirtyRegion);
-        invalidate(dirtyRegion);
+//         invalidate(dirtyRegion);
+        // *NOTE*: updating straight away reduces ugly smears...
+        RPG_Graphics_Surface::update(dirtyRegion,
+                                     myScreen);
 
         // step1: restore/clear old background
-        if (myHighlightBG)
-        {
-          tile_position = map2Screen(myHighlightBGPosition);
-          // sanity check for underruns
-          if ((tile_position.first < ACE_static_cast(unsigned long, myScreen->w)) &&
-              (tile_position.second < ACE_static_cast(unsigned long, myScreen->h)))
-          {
-            RPG_Graphics_Surface::put(tile_position.first,
-                                      tile_position.second,
-                                      *myHighlightBG,
-                                      myScreen);
-            // clear highlight BG
-            RPG_Graphics_Surface::clear(myHighlightBG);
-
-            dirtyRegion.x = tile_position.first;
-            dirtyRegion.y = tile_position.second;
-            dirtyRegion.w = myHighlightBG->w;
-            dirtyRegion.h = myHighlightBG->h;
-            invalidate(dirtyRegion);
-          } // end IF
-        } // end IF
+        restoreBG();
 
         // step2: store current background
         tile_position = map2Screen(map_position);
@@ -767,24 +711,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         if ((tile_position.first < ACE_static_cast(unsigned long, myScreen->w)) &&
             (tile_position.second < ACE_static_cast(unsigned long, myScreen->h)))
         {
-          SDL_Rect clipRect;
-          clipRect.x = myBorderLeft + myOffset.first;
-          clipRect.y = myBorderTop + myOffset.second;
-          clipRect.w = (myScreen->w - (myBorderLeft + myBorderRight) - myOffset.first);
-          clipRect.h = (myScreen->h - (myBorderTop + myBorderBottom) - myOffset.second);
-  //         clipRect.x = tile_position.first;
-  //         clipRect.y = tile_position.second;
-  //         clipRect.w = myHighlightTile->w;
-  //         clipRect.h = myHighlightTile->h;
-          if (!SDL_SetClipRect(myScreen, &clipRect))
-          {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-                       SDL_GetError()));
-
-            return;
-          } // end IF
-
+          clip();
           RPG_Graphics_Surface::get(tile_position.first,
                                     tile_position.second,
                                     true, // use (fast) blitting method
@@ -805,20 +732,16 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                                     *myHighlightTile,
                                     myScreen);
 
-          if (!SDL_SetClipRect(myScreen, NULL))
-          {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-                       SDL_GetError()));
-
-            return;
-          } // end IF
-
           dirtyRegion.x = tile_position.first;
           dirtyRegion.y = tile_position.second;
           dirtyRegion.w = myHighlightTile->w;
           dirtyRegion.h = myHighlightTile->h;
-          invalidate(dirtyRegion);
+          SDL_GetClipRect(myScreen, &clipRect);
+          unclip();
+//           invalidate(dirtyRegion);
+          // *NOTE*: updating straight away reduces ugly smears...
+          RPG_Graphics_Surface::update(RPG_Graphics_SDL_Tools::intersect(clipRect, dirtyRegion),
+                                       myScreen);
         } // end IF
       } // end IF
 
@@ -830,19 +753,13 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         // *NOTE*: restore cursor BG first
         RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen,
                                                              dirtyRegion);
-        invalidate(dirtyRegion);
+//         invalidate(dirtyRegion);
+        // *NOTE*: updating straight away reduces ugly smears...
+        RPG_Graphics_Surface::update(dirtyRegion,
+                                     myScreen);
 
         RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(cursor_type);
       } // end IF
-
-//       RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(event_in.motion.x,
-//                                                      event_in.motion.y,
-//                                                      myScreen,
-//                                                      dirtyRegion);
-//       myDirtyRegions.push_back(dirtyRegion);
-
-      // show changes
-      refresh();
 
       break;
     }
@@ -927,8 +844,9 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("RPG_GRAPHICS_SDL_MOUSEMOVEOUT event...\n")));
 
-      // clear highlight BG
-      RPG_Graphics_Surface::clear(myHighlightBG);
+      // restore/clear highlight BG
+      // *CONSIDER*: is this really useful/necessary ?
+      restoreBG();
 
       break;
     }
@@ -1763,21 +1681,39 @@ SDL_GUI_LevelWindow::map2Screen(const RPG_Graphics_Position_t& position_in)
 }
 
 void
-SDL_GUI_LevelWindow::getTileHighlightBG(const RPG_Map_Position_t& position_in)
+SDL_GUI_LevelWindow::restoreBG()
 {
-  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::getTileHighlightBG"));
+  ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::restoreBG"));
 
-  RPG_Graphics_Position_t tile_position = map2Screen(position_in);
-  // sanity check for underruns
-  if ((tile_position.first < ACE_static_cast(unsigned long, myScreen->w)) &&
-      (tile_position.second < ACE_static_cast(unsigned long, myScreen->h)))
+  SDL_Rect dirtyRegion, clipRect;
+  RPG_Graphics_Position_t tile_position;
+
+  if (myHighlightBG)
   {
-    RPG_Graphics_Surface::get(tile_position.first,
-                              tile_position.second,
-                              true, // use (fast) blitting method
-                              *myScreen,
-                              *myHighlightBG);
+    tile_position = map2Screen(myHighlightBGPosition);
+    // sanity check for underruns
+    if ((tile_position.first < ACE_static_cast(unsigned long, myScreen->w)) &&
+        (tile_position.second < ACE_static_cast(unsigned long, myScreen->h)))
+    {
+      clip();
+      RPG_Graphics_Surface::put(tile_position.first,
+                                tile_position.second,
+                                *myHighlightBG,
+                                myScreen);
 
-    myHighlightBGPosition = position_in;
+      dirtyRegion.x = tile_position.first;
+      dirtyRegion.y = tile_position.second;
+      dirtyRegion.w = myHighlightBG->w;
+      dirtyRegion.h = myHighlightBG->h;
+      SDL_GetClipRect(myScreen, &clipRect);
+      unclip();
+//             invalidate(dirtyRegion);
+      // *NOTE*: updating straight away reduces ugly smears...
+      RPG_Graphics_Surface::update(RPG_Graphics_SDL_Tools::intersect(clipRect, dirtyRegion),
+                                   myScreen);
+
+      // clear highlight BG
+      RPG_Graphics_Surface::clear(myHighlightBG);
+    } // end IF
   } // end IF
 }

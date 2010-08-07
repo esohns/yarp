@@ -193,17 +193,16 @@ RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
 //   ACE_ASSERT(offsetY_in < ACE_static_cast(unsigned long, targetSurface_in->h));
 
   // step0: init return value(s)
-  dirtyRegion_out.x = 0;
-  dirtyRegion_out.y = 0;
-  dirtyRegion_out.w = 0;
-  dirtyRegion_out.h = 0;
+  ACE_OS::memset(&dirtyRegion_out,
+                 0,
+                 sizeof(dirtyRegion_out));
 
   // step1: restore old background
   SDL_Rect bgRect;
-  bgRect.x = 0;
-  bgRect.y = 0;
-  bgRect.w = 0;
-  bgRect.h = 0;
+  ACE_OS::memset(&bgRect,
+                 0,
+                 sizeof(bgRect));
+
   if ((myBGPosition.first != 0) &&
       (myBGPosition.second != 0))
   {
