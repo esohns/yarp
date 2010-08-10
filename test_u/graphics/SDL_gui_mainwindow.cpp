@@ -80,7 +80,7 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   ACE_ASSERT(ACE_static_cast(int, offsetY_in) <= targetSurface->h);
 
   // step1: draw borders
-  drawBorder(targetSurface_in,
+  drawBorder(targetSurface,
              offsetX_in,
              offsetY_in);
 
@@ -112,6 +112,14 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
                                 *(*iterator).second,
                                 targetSurface);
   invalidate(clipRect);
+  if (!SDL_SetClipRect(targetSurface, NULL))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
 
   // step3: draw title (if any)
   if (!myTitle.empty())
@@ -142,10 +150,18 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
                                   ((myBorderTop - title_size.second) / 2), // center of top border
                                   targetSurface);
     invalidate(clipRect);
+    if (!SDL_SetClipRect(targetSurface, NULL))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+                 SDL_GetError()));
+
+      return;
+    } // end IF
   } // end IF
 
   // init clipping
-  clip(targetSurface_in,
+  clip(targetSurface,
        offsetX_in,
        offsetY_in);
 
@@ -446,7 +462,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
           }
         } // end SWITCH
 
-//         // *NOTE*: fiddling with the view invalidates the cursor !
+//         // *NOTE*: fiddling with the view invalidates the cursor BG !
 //         RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidateBG();
 
         // need a redraw
@@ -640,7 +656,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         }
       } // end SWITCH
 
-//       // *NOTE*: fiddling with the view invalidates the cursor !
+//       // *NOTE*: fiddling with the view invalidates the cursor BG !
 //       RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidateBG();
 
       // need a redraw

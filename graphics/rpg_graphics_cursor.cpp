@@ -231,6 +231,11 @@ RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
 
       return;
     } // end IF
+
+    // *HACK*: somehow, SDL_BlitSurface zeroes bgRect.w, bgRect.h...
+    // --> reset them
+    bgRect.w = myBG->w;
+    bgRect.h = myBG->h;
   } // end IF
 
   // step2: get new background
@@ -278,6 +283,11 @@ RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
     return;
   } // end IF
 
+  // *HACK*: somehow, SDL_BlitSurface zeroes dirtyRegion_out.w, dirtyRegion_out.h...
+  // --> reset them
+  dirtyRegion_out.w = mySurface->w;
+  dirtyRegion_out.h = mySurface->h;
+
   // if necessary, adjust dirty region
   if ((bgRect.w != 0) &&
       (bgRect.h != 0))
@@ -319,6 +329,12 @@ RPG_Graphics_Cursor::restoreBG(SDL_Surface* targetSurface_in,
 
     return;
   } // end IF
+
+  // *HACK*: somehow, SDL_BlitSurface zeroes dirtyRegion_out.w, dirtyRegion_out.h...
+  // --> reset them
+  dirtyRegion_out.w = myBG->w;
+  dirtyRegion_out.h = myBG->h;
+
   RPG_Graphics_Surface::clear(myBG);
 }
 

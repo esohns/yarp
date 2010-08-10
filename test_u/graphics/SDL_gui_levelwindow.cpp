@@ -249,8 +249,10 @@ SDL_GUI_LevelWindow::init(const RPG_Graphics_FloorStyle& floorStyle_in,
   // init view
   centerView();
 
-  // *NOTE*: fiddling with the view invalidates the cursor !
+  // *NOTE*: fiddling with the view invalidates the cursor BG !
   RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidateBG();
+  // clear highlight BG
+  RPG_Graphics_Surface::clear(myHighlightBG);
 
   // init cursor highlighting
   myHighlightBGPosition = std::make_pair(floorPlan_in.size_x / 2,
@@ -275,7 +277,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   ACE_ASSERT(ACE_static_cast(int, offsetY_in) <= targetSurface->h);
 
   // init clipping
-  clip(targetSurface_in,
+  clip(targetSurface,
        offsetX_in,
        offsetY_in);
 
@@ -552,13 +554,12 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   // sanity check for underruns
   if ((screen_position.first < targetSurface->w) &&
       (screen_position.second < targetSurface->h))
-  {
     RPG_Graphics_Surface::get(screen_position.first,
                               screen_position.second,
                               true, // use (fast) blitting method
                               *targetSurface,
                               *myHighlightBG);
-  } // end IF
+
   RPG_Graphics_Surface::put(screen_position.first,
                             screen_position.second,
                             *myHighlightTile,
@@ -641,7 +642,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
               break;
           } // end SWITCH
 
-          // *NOTE*: fiddling with the view invalidates the cursor !
+          // *NOTE*: fiddling with the view invalidates the cursor BG !
           RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidateBG();
           // clear highlight BG
           RPG_Graphics_Surface::clear(myHighlightBG);

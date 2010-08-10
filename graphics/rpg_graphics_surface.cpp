@@ -995,9 +995,24 @@ RPG_Graphics_Surface::update(const SDL_Rect& dirty_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_Surface::update"));
 
+  SDL_Rect updateRect = dirty_in;
+
+  // sanity check: handle clipping
+  if ((updateRect.x >= targetSurface_in->w) ||
+      (updateRect.y >= targetSurface_in->h))
+    return; // nothing to do...
+  else
+  {
+    // clip as necessary
+    if ((updateRect.x + updateRect.w) > targetSurface_in->w)
+      updateRect.w -= ((updateRect.x + updateRect.w) - targetSurface_in->w);
+    if ((updateRect.y + updateRect.h) > targetSurface_in->h)
+      updateRect.h -= ((updateRect.y + updateRect.h) - targetSurface_in->h);
+  } // end ELSE
+
   SDL_UpdateRects(targetSurface_in,
                   1,
-                  &ACE_const_cast(SDL_Rect&, dirty_in));
+                  &updateRect);
 }
 
 SDL_Surface*
