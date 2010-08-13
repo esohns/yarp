@@ -30,7 +30,7 @@
 class RPG_Map_Level
 {
  public:
-  RPG_Map_Level(const RPG_Map_FloorPlan_t&); // map
+  RPG_Map_Level();
   virtual ~RPG_Map_Level();
 
   void init(const RPG_Map_FloorPlan_t&); // map
@@ -44,7 +44,6 @@ class RPG_Map_Level
 
  private:
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Level());
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Level(const RPG_Map_Level&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Level& operator=(const RPG_Map_Level&));
 

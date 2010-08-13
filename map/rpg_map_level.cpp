@@ -21,13 +21,12 @@
 
 #include <ace/Log_Msg.h>
 
-RPG_Map_Level::RPG_Map_Level(const RPG_Map_FloorPlan_t& floorPlan_in)
- : myFloorPlan(floorPlan_in)
+RPG_Map_Level::RPG_Map_Level()
+//  : myFloorPlan(),
+//    myDoors()
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Level::RPG_Map_Level"));
 
-  // init doors
-  initDoors();
 }
 
 RPG_Map_Level::~RPG_Map_Level()
@@ -42,6 +41,9 @@ RPG_Map_Level::init(const RPG_Map_FloorPlan_t& floorPlan_in)
   ACE_TRACE(ACE_TEXT("RPG_Map_Level::init"));
 
   myFloorPlan = floorPlan_in;
+
+  // init doors
+  initDoors();
 }
 
 const RPG_Map_Dimensions_t
@@ -161,6 +163,9 @@ void
 RPG_Map_Level::initDoors()
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Level::initDoors"));
+
+  // reset door states
+  myDoors.clear();
 
   RPG_Map_Door_t current;
   for (RPG_Map_PositionsConstIterator_t iterator = myFloorPlan.doors.begin();

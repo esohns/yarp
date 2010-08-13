@@ -33,14 +33,12 @@
 
 #include <sstream>
 
-RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase& parent_in,
-                                               const RPG_Graphics_MapStyle_t& mapStyle_in,
-                                               const RPG_Map_FloorPlan_t& floorPlan_in)
+RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase& parent_in)
  : inherited(WINDOWTYPE_MAP,
              parent_in,
              std::make_pair(0, 0)),
-   myMap(floorPlan_in),
-   myCurrentMapStyle(mapStyle_in),
+//    myMap(floorPlan_in),
+//    myCurrentMapStyle(mapStyle_in),
 //    myCurrentFloorSet(),
 //    myCurrentWallSet(),
    myCurrentCeilingTile(NULL),
@@ -48,10 +46,8 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
    myCurrentOffMapTile(NULL),
 //    myWallTiles(),
    myWallBlend(NULL),
-   myView(std::make_pair(floorPlan_in.size_x / 2,
-                         floorPlan_in.size_y / 2)),
-   myHighlightBGPosition(std::make_pair(floorPlan_in.size_x / 2,
-                                        floorPlan_in.size_y / 2)),
+   myView(std::make_pair(0, 0)),
+   myHighlightBGPosition(std::make_pair(0, 0)),
    myHighlightBG(NULL),
    myHighlightTile(NULL)
 {
@@ -66,18 +62,6 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
 
   initWallBlend();
 
-  // init style
-  RPG_Graphics_StyleUnion style;
-  style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-  style.floorstyle = myCurrentMapStyle.floor_style;
-  setStyle(style);
-  style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-  style.wallstyle = myCurrentMapStyle.wall_style;
-  setStyle(style);
-  style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
-  style.doorstyle = myCurrentMapStyle.door_style;
-  setStyle(style);
-
   // init ceiling tile
   initCeiling();
 
@@ -88,17 +72,6 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
                RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_TILE_OFF_MAP).c_str()));
-
-  // init wall tiles / position
-  initWalls(floorPlan_in,
-            myCurrentWallSet,
-            myWallTiles);
-
-  // init door tiles / position
-  initDoors(floorPlan_in,
-            myMap,
-            myCurrentDoorSet,
-            myDoorTiles);
 
   // init cursor highlighting
   myHighlightBG = RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_FLOOR_WIDTH,
@@ -212,7 +185,7 @@ RPG_Client_WindowLevel::centerView()
 
 void
 RPG_Client_WindowLevel::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
-                          const RPG_Map_FloorPlan_t& floorPlan_in)
+                             const RPG_Map_FloorPlan_t& floorPlan_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::init"));
 
@@ -1197,31 +1170,6 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
       SDL_FreeSurface(myCurrentWallSet.north.surface);
       myCurrentWallSet.north.surface = shaded_wall;
 
-      // debug info
-      std::string dump_path_base = RPG_GRAPHICS_DUMP_DIR;
-      dump_path_base += ACE_DIRECTORY_SEPARATOR_STR;
-
-      std::string dump_path = dump_path_base;
-      dump_path += ACE_TEXT("wall_n.png");
-      RPG_Graphics_Surface::savePNG(*myCurrentWallSet.north.surface, // image
-                                    dump_path,                       // file
-                                    true);                           // WITH alpha
-      dump_path = dump_path_base;
-      dump_path += ACE_TEXT("wall_s.png");
-      RPG_Graphics_Surface::savePNG(*myCurrentWallSet.south.surface, // image
-                                    dump_path,                       // file
-                                    true);                           // WITH alpha
-      dump_path = dump_path_base;
-      dump_path += ACE_TEXT("wall_w.png");
-      RPG_Graphics_Surface::savePNG(*myCurrentWallSet.west.surface, // image
-                                    dump_path,                      // file
-                                    true);                          // WITH alpha
-      dump_path = dump_path_base;
-      dump_path += ACE_TEXT("wall_e.png");
-      RPG_Graphics_Surface::savePNG(*myCurrentWallSet.east.surface, // image
-                                    dump_path,                      // file
-                                    true);                          // WITH alpha
-
       myCurrentMapStyle.wall_style = style_in.wallstyle;
 
       break;
@@ -1318,8 +1266,8 @@ RPG_Client_WindowLevel::initCeiling()
 
 void
 RPG_Client_WindowLevel::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
-                               const RPG_Graphics_WallTileSet_t& tileSet_in,
-                               RPG_Graphics_WallTileMap_t& wallTiles_out)
+                                  const RPG_Graphics_WallTileSet_t& tileSet_in,
+                                  RPG_Graphics_WallTileMap_t& wallTiles_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::initWalls"));
 
@@ -1437,9 +1385,9 @@ RPG_Client_WindowLevel::initWallBlend()
 
 void
 RPG_Client_WindowLevel::initDoors(const RPG_Map_FloorPlan_t& levelMap_in,
-                               const RPG_Map_Level& levelState_in,
-                               const RPG_Graphics_DoorTileSet_t& tileSet_in,
-                               RPG_Graphics_DoorTileMap_t& doorTiles_out)
+                                  const RPG_Map_Level& levelState_in,
+                                  const RPG_Graphics_DoorTileSet_t& tileSet_in,
+                                  RPG_Graphics_DoorTileMap_t& doorTiles_out)
 {
   ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::initDoors"));
 
@@ -1464,8 +1412,8 @@ RPG_Client_WindowLevel::initDoors(const RPG_Map_FloorPlan_t& levelMap_in,
       continue;
     } // end IF
 
-    orientation = RPG_Client_WindowLevel::getDoorOrientation(levelMap_in,
-                                                          *iterator);
+    orientation = RPG_Client_WindowLevel::getDoorOrientation(levelState_in,
+                                                             *iterator);
     switch (orientation)
     {
       case ORIENTATION_HORIZONTAL:
@@ -1499,7 +1447,7 @@ RPG_Client_WindowLevel::initDoors(const RPG_Map_FloorPlan_t& levelMap_in,
 
 const RPG_Graphics_Orientation
 RPG_Client_WindowLevel::getDoorOrientation(const RPG_Map_Level& level_in,
-                                        const RPG_Map_Position_t& position_in)
+                                           const RPG_Map_Position_t& position_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::getDoorOrientation"));
 

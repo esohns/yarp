@@ -40,10 +40,7 @@ class RPG_Client_WindowLevel
 {
  public:
   RPG_Client_WindowLevel(// *** SDL window ***
-                         const RPG_Graphics_SDLWindowBase&, // parent
-                         // *** level properties ***
-                         const RPG_Graphics_MapStyle_t&,    // map style
-                         const RPG_Map_FloorPlan_t&);       // (initial) map
+                         const RPG_Graphics_SDLWindowBase&); // parent
   virtual ~RPG_Client_WindowLevel();
 
   // adjust viewport

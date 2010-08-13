@@ -1211,7 +1211,33 @@ do_work(const RPG_Client_Config& config_in)
   SDL_WarpMouse((screen->w / 2),
                 (screen->h / 2));
 
+  // step4b: set default cursor
+  RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(TYPE_CURSOR_NORMAL);
+
+  // step5: setup level "window"
+  RPG_Client_WindowLevel mapWindow(mainWindow); // parent
+  mapWindow.setScreen(screen);
+  // refresh screen
+  try
+  {
+    mapWindow.draw();
+    mapWindow.refresh();
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
+  }
+
   // step5: setup level
+  // step5a: setup style
+  RPG_Graphics_MapStyle_t mapStyle;
+  mapStyle.floor_style = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
+  mapStyle.wall_style = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
+  mapStyle.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
+  mapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
+
+  // step5a: setup map
   userData.plan.size_x = 0;
   userData.plan.size_y = 0;
   userData.plan.unmapped.clear();
@@ -1245,29 +1271,12 @@ do_work(const RPG_Client_Config& config_in)
     } // end IF
   } // end ELSE
 
-  // debug info
-  RPG_Map_Common_Tools::displayFloorPlan(userData.seedPoints,
-                                         userData.plan);
+//   // debug info
+//   RPG_Map_Common_Tools::displayFloorPlan(userData.seedPoints,
+//                                          userData.plan);
 
-  // step5b: setup style
-  RPG_Graphics_MapStyle_t mapStyle;
-  mapStyle.floor_style = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
-  mapStyle.wall_style = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
-  mapStyle.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
-  mapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
-
-  // step5c: set default cursor
-  RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(TYPE_CURSOR_NORMAL);
-
-  // step6: setup level "window"
-  RPG_Client_WindowLevel mapWindow(mainWindow,     // parent
-                                   mapStyle,       // map style
-                                   userData.plan); // map
-
-  mapWindow.setScreen(screen);
-//       mapWindow->init(mapStyle,
-//                       userData.plan);
-
+  mapWindow.init(mapStyle,
+                 userData.plan);
   // refresh screen
   try
   {
@@ -1374,7 +1383,6 @@ do_parseIniFile(const std::string& iniFilename_in,
   ACE_TRACE(ACE_TEXT("::do_parseIniFile"));
 
   // init return value(s)
-//   config_out.bla = ACE_TEXT("");
   config_out.audio_config.frequency = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
   config_out.audio_config.format = RPG_CLIENT_DEF_AUDIO_FORMAT;
   config_out.audio_config.channels = RPG_CLIENT_DEF_AUDIO_CHANNELS;
