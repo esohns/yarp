@@ -17,12 +17,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CLIENT_WINDOWMAIN_H
-#define RPG_CLIENT_WINDOWMAIN_H
+#ifndef RPG_CLIENT_WINDOW_MAIN_H
+#define RPG_CLIENT_WINDOW_MAIN_H
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_type.h>
-#include <rpg_graphics_SDLwindow.h>
+#include <rpg_graphics_toplevel.h>
 
 #include <SDL/SDL.h>
 
@@ -34,26 +34,46 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Client_WindowMain
- : public RPG_Graphics_SDLWindow
+ : public RPG_Graphics_TopLevel
 {
  public:
   RPG_Client_WindowMain(const RPG_Graphics_WindowSize_t&,                 // size
-                        const RPG_Graphics_WindowType&,                   // type
                         const RPG_Graphics_Type&,                         // style
                         const std::string&,                               // title
                         const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
   virtual ~RPG_Client_WindowMain();
 
-  virtual void draw(SDL_Surface*,                    // target surface (screen !)
-                    const RPG_Graphics_Position_t&); // offset
+  // initialize different hotspots
+  // *WARNING*: call this AFTER setScreen() !
+  void init();
+
+  // implement (part of) RPG_Graphics_IWindow
+  virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
+                    const unsigned long& = 0,  // offset x (top-left = [0,0])
+                    const unsigned long& = 0); // offset y (top-left = [0,0])
+  virtual void handleEvent(const SDL_Event&,      // event
+                           RPG_Graphics_IWindow*, // target window (NULL: this)
+                           bool&);                // return value: redraw ?
 
  private:
-  typedef RPG_Graphics_SDLWindow inherited;
+  typedef RPG_Graphics_TopLevel inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowMain());
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowMain(const RPG_Client_WindowMain&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowMain& operator=(const RPG_Client_WindowMain&));
+
+  // helper methods
+  void initScrollSpots();
+  void drawBorder(SDL_Surface* = NULL,       // target surface (default: screen)
+                  const unsigned long& = 0,  // offset x (top-left = [0,0])
+                  const unsigned long& = 0); // offset y (top-left = [0,0])
+
+  // counter
+  unsigned long myScreenshotIndex;
+
+  unsigned long myLastHoverTime;
+  bool          myHaveMouseFocus;
 };
 
 #endif

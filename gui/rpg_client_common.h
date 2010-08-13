@@ -21,9 +21,11 @@
 #ifndef RPG_CLIENT_COMMON_H
 #define RPG_CLIENT_COMMON_H
 
-#include <rpg_graphics_floorstyle.h>
-#include <rpg_graphics_wallstyle.h>
-#include <rpg_graphics_doorstyle.h>
+#include "rpg_client_window_main.h"
+#include "rpg_client_window_level.h"
+
+#include <rpg_graphics_common.h>
+#include <rpg_graphics_iwindow.h>
 
 #include <rpg_map_common.h>
 
@@ -33,7 +35,12 @@
 
 struct GTK_cb_data_t
 {
-//   std::string bla;
+  RPG_Map_FloorPlan_t plan;
+  RPG_Map_Positions_t seedPoints;
+  SDL_TimerID event_timer;
+  RPG_Graphics_IWindow* previous_window;
+  RPG_Client_WindowMain* main_window;
+  RPG_Client_WindowLevel* map_window;
 };
 
 // *NOTE* types as used by SDL
@@ -76,7 +83,7 @@ struct RPG_Client_Config
   unsigned long      num_threadpool_threads; // 0: don't use threadpool
   // *** UI ***
   std::string        glade_file;
-  GTK_cb_data_t      gtk_cb_data;
+//   GTK_cb_data_t      gtk_cb_data;
   // *** sound ***
   SDL_audio_config_t audio_config;
   std::string        sound_directory;
@@ -89,14 +96,7 @@ struct RPG_Client_Config
   std::string        graphics_dictionary;
   // *** map ***
   map_config_t       map_config;
-};
-
-struct RPG_Client_DungeonLevel
-{
-  RPG_Graphics_FloorStyle floorStyle;
-  RPG_Graphics_WallStyle  wallStyle;
-  RPG_Graphics_DoorStyle  doorStyle;
-  RPG_Map_FloorPlan_t     plan;
+  std::string        map_file;
 };
 
 #endif

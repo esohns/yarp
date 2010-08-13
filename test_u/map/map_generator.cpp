@@ -239,7 +239,8 @@ void do_work(const unsigned long& minRoomSize_in,
                                         levelMap);
 
   // step3: display the result
-  RPG_Map_Common_Tools::displayFloorPlan(levelMap);
+  RPG_Map_Common_Tools::displayFloorPlan(seedPoints,
+                                         levelMap);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));

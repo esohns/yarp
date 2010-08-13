@@ -544,7 +544,8 @@ do_work(const mode_t& mode_in,
 
   // step2: setup main "window"
   std::string title = SDL_GUI_DEF_GRAPHICS_MAINWINDOW_TITLE;
-  SDL_GUI_MainWindow mainWindow(std::make_pair(screen->w, screen->h),  // size
+  SDL_GUI_MainWindow mainWindow(RPG_Graphics_WindowSize_t(screen->w,
+                                                          screen->h),  // size
                                 SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE, // interface elements
                                 title,                                 // title (== caption)
                                 TYPE_FONT_MAIN_LARGE);                 // title font
@@ -766,7 +767,8 @@ do_work(const mode_t& mode_in,
           std::cout << ACE_TEXT(", ");
       } // end FOR
       std::cout << std::endl;
-      RPG_Map_Common_Tools::displayFloorPlan(plan);
+      RPG_Map_Common_Tools::displayFloorPlan(seedPoints,
+                                             plan);
 
       // step3b: setup style
       RPG_Graphics_MapStyle_t mapStyle;

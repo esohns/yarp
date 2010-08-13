@@ -53,7 +53,8 @@ class RPG_Map_Common_Tools
                               const unsigned long&,  // max. #doors/room
                               RPG_Map_Positions_t&,  // return value: seed points (areas)
                               RPG_Map_FloorPlan_t&); // return value: level map
-  static void displayFloorPlan(const RPG_Map_FloorPlan_t&); // level map
+  static void displayFloorPlan(const RPG_Map_Positions_t&,  // seed points (areas)
+                               const RPG_Map_FloorPlan_t&); // level map
 
   static const unsigned long dist2Positions(const RPG_Map_Position_t&,  // position 1
                                             const RPG_Map_Position_t&); // position 2

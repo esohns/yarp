@@ -211,9 +211,7 @@ SDL_GUI_LevelWindow::centerView()
 }
 
 void
-SDL_GUI_LevelWindow::init(const RPG_Graphics_FloorStyle& floorStyle_in,
-                          const RPG_Graphics_WallStyle& wallStyle_in,
-                          const RPG_Graphics_DoorStyle& doorStyle_in,
+SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
                           const RPG_Map_FloorPlan_t& floorPlan_in)
 {
   ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
@@ -226,13 +224,13 @@ SDL_GUI_LevelWindow::init(const RPG_Graphics_FloorStyle& floorStyle_in,
   // init style
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-  style.floorstyle = floorStyle_in;
+  style.floorstyle = mapStyle_in.floor_style;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-  style.wallstyle = wallStyle_in;
+  style.wallstyle = mapStyle_in.wall_style;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
-  style.doorstyle = doorStyle_in;
+  style.doorstyle = mapStyle_in.door_style;
   setStyle(style);
 
   // init wall tiles / position

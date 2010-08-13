@@ -376,9 +376,32 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned long& dimensionX_in,
 }
 
 void
-RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_FloorPlan_t& level_in)
+RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_Positions_t& seedPoints_in,
+                                       const RPG_Map_FloorPlan_t& level_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayFloorPlan"));
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("seed point(s): [")));
+  RPG_Map_PositionsConstIterator_t next = seedPoints_in.begin();
+  for (RPG_Map_PositionsConstIterator_t iterator = seedPoints_in.begin();
+       iterator != seedPoints_in.end();
+       iterator++)
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("[%u,%u]"),
+               (*iterator).first,
+               (*iterator).second));
+
+    next = iterator;
+    std::advance(next, 1);
+    if (next != seedPoints_in.end())
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT(", ")));
+  } // end FOR
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("]\n")));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("level ([%ux%u] - %u unmapped, %u walls, %u doors)...\n"),
@@ -430,6 +453,7 @@ RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_FloorPlan_t& level_in)
 //   std::cout << std::endl;
 
   RPG_Map_Position_t current_position;
+  bool is_seed = false;
   for (unsigned long y = 0;
        y < level_in.size_y;
        y++)
@@ -439,16 +463,19 @@ RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_FloorPlan_t& level_in)
          x++)
     {
       current_position = std::make_pair(x, y);
+      is_seed = seedPoints_in.find(current_position) != seedPoints_in.end();
 
       // unmapped, floor, wall, or door ?
+      // *TODO*: cannot draw seed points that are not "unmapped"/"floor" without
+      // losing essential information...
       if (level_in.unmapped.find(current_position) != level_in.unmapped.end())
-        std::cout << ACE_TEXT(" "); // unmapped
+        std::cout << (is_seed ? ACE_TEXT("@") : ACE_TEXT(" ")); // unmapped
       else if (level_in.walls.find(current_position) != level_in.walls.end())
         std::cout << ACE_TEXT("#"); // wall
       else if (level_in.doors.find(current_position) != level_in.doors.end())
         std::cout << ACE_TEXT("="); // door
       else
-        std::cout << ACE_TEXT("."); // floor
+        std::cout << (is_seed ? ACE_TEXT("@") : ACE_TEXT(".")); // floor
     } // end FOR
     std::cout << std::endl;
   } // end FOR

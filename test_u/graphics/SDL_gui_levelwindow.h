@@ -22,9 +22,6 @@
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_SDL_window_base.h>
-#include <rpg_graphics_floorstyle.h>
-#include <rpg_graphics_wallstyle.h>
-#include <rpg_graphics_doorstyle.h>
 
 #include <rpg_map_common.h>
 #include <rpg_map_level.h>
@@ -56,9 +53,7 @@ class SDL_GUI_LevelWindow
   void centerView();
 
   // set level properties
-  void init(const RPG_Graphics_FloorStyle&, // floor style
-            const RPG_Graphics_WallStyle&,  // wall style
-            const RPG_Graphics_DoorStyle&,  // door style
+  void init(const RPG_Graphics_MapStyle_t&, // map style
             const RPG_Map_FloorPlan_t&);    // map
 
   // implement (part of) RPG_Graphics_IWindow
