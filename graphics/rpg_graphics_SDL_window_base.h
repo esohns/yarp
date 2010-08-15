@@ -56,15 +56,19 @@ class RPG_Graphics_SDLWindowBase
   void unclip(SDL_Surface* = NULL); // target surface (default: screen)
 
  protected:
-  RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowSize_t&,                 // size
-                             const RPG_Graphics_WindowType&,                   // type
-                             const std::string&,                               // title
-                             const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
+  // *NOTE*: window assumes responsibility for its background surface
+  RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowSize_t&, // size
+                             const RPG_Graphics_WindowType&,   // type
+                             const std::string&,               // title
+                             SDL_Surface* = NULL);             // background
   // embedded ("child") window(s)
+  // *NOTE*: window assumes responsibility for its background surface
   RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowType&,    // type
                              const RPG_Graphics_SDLWindowBase&, // parent
                              // *NOTE*: offset doesn't include any border(s) !
-                             const RPG_Graphics_Offset_t&);     // offset
+                             const RPG_Graphics_Offset_t&,      // offset
+                             const std::string&,                // title
+                             SDL_Surface* = NULL);              // background
 
   // default screen
   SDL_Surface*                     myScreen;
@@ -98,9 +102,8 @@ class RPG_Graphics_SDLWindowBase
   RPG_Graphics_SDLWindowBase* getParent() const;
   void invalidate(const SDL_Rect&); // "dirty" area
 
-  // window title
   std::string                      myTitle;
-  RPG_Graphics_Type                myTitleFont;
+  SDL_Surface*                     myBackGround;
 
   RPG_Graphics_Offset_t            myOffset; // offset to parent
   RPG_Graphics_Windows_t           myChildren;

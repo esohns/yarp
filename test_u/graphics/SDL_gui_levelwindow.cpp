@@ -36,10 +36,12 @@
 SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& parent_in,
                                          const RPG_Graphics_MapStyle_t& mapStyle_in,
                                          const RPG_Map_FloorPlan_t& floorPlan_in)
- : inherited(WINDOWTYPE_MAP,
-             parent_in,
-             std::make_pair(0, 0)),
-   myMap(floorPlan_in),
+ : inherited(WINDOWTYPE_MAP,       // type
+             parent_in,            // parent
+             std::make_pair(0, 0), // offset
+             std::string(),        // title
+             NULL),                // background
+//    myMap(),
    myCurrentMapStyle(mapStyle_in),
 //    myCurrentFloorSet(),
 //    myCurrentWallSet(),
@@ -56,6 +58,9 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
    myHighlightTile(NULL)
 {
   ACE_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::SDL_GUI_LevelWindow"));
+
+  // init map state
+  myMap.init(floorPlan_in);
 
   ACE_OS::memset(&myCurrentWallSet,
                  0,
@@ -1464,7 +1469,7 @@ SDL_GUI_LevelWindow::initDoors(const RPG_Map_FloorPlan_t& levelMap_in,
       continue;
     } // end IF
 
-    orientation = SDL_GUI_LevelWindow::getDoorOrientation(levelMap_in,
+    orientation = SDL_GUI_LevelWindow::getDoorOrientation(levelState_in,
                                                           *iterator);
     switch (orientation)
     {

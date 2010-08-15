@@ -34,9 +34,11 @@
 #include <sstream>
 
 RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase& parent_in)
- : inherited(WINDOWTYPE_MAP,
-             parent_in,
-             std::make_pair(0, 0)),
+ : inherited(WINDOWTYPE_MAP,       // type
+             parent_in,            // parent
+             std::make_pair(0, 0), // offset
+             std::string(),        // title
+             NULL),                // background
 //    myMap(floorPlan_in),
 //    myCurrentMapStyle(mapStyle_in),
 //    myCurrentFloorSet(),

@@ -34,16 +34,17 @@
 #include <sstream>
 
 SDL_GUI_MainWindow::SDL_GUI_MainWindow(const RPG_Graphics_WindowSize_t& size_in,
-                                       const RPG_Graphics_Type& graphicType_in,
+                                       const RPG_Graphics_Type& elementType_in,
                                        const std::string& title_in,
                                        const RPG_Graphics_Type& fontType_in)
- : inherited(size_in,
-             graphicType_in,
-             title_in,
-             fontType_in),
+ : inherited(size_in,        // size
+             elementType_in, // element type
+             title_in,       // title
+             NULL),          // background
    myScreenshotIndex(1),
    myLastHoverTime(0),
-   myHaveMouseFocus(true) // *NOTE*: enforced with SDL_WarpMouse()
+   myHaveMouseFocus(true), // *NOTE*: enforced with SDL_WarpMouse()
+   myTitleFont(fontType_in)
 {
   ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::SDL_GUI_MainWindow"));
 
@@ -99,7 +100,7 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
     return;
   } // end IF
   RPG_Graphics_InterfaceElementsConstIterator_t iterator;
-  iterator = myElementGraphics.find(INTERFACEELEMENT_CENTER);
+  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_CENTER);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (unsigned long i = (offsetY_in + myBorderTop);
        i < (targetSurface->h - myBorderBottom);
@@ -880,7 +881,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   // NW
   clipRect.x = offsetX_in;
   clipRect.y = offsetY_in;
-  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_TL);
+  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP_LEFT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   clipRect.w = (*iterator).second->w;
   clipRect.h = (*iterator).second->h;
@@ -900,7 +901,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 
   // NE
   clipRect.y = offsetY_in;
-  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_TR);
+  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP_RIGHT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   clipRect.x = (targetSurface->w - (*iterator).second->w);
   clipRect.w = (*iterator).second->w;
@@ -921,7 +922,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 
   // SW
   clipRect.x = offsetX_in;
-  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_BL);
+  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_BOTTOM_LEFT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   clipRect.y = (targetSurface->h - (*iterator).second->h);
   clipRect.w = (*iterator).second->w;
@@ -941,7 +942,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   invalidate(clipRect);
 
   // SE
-  iterator = myElementGraphics.find(INTERFACEELEMENT_CORNER_BR);
+  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_BOTTOM_RIGHT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   clipRect.x = (targetSurface->w - (*iterator).second->w);
   clipRect.y = (targetSurface->h - (*iterator).second->h);

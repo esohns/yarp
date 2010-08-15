@@ -27,7 +27,7 @@
 RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowSize_t& size_in,
                                                        const RPG_Graphics_WindowType& type_in,
                                                        const std::string& title_in,
-                                                       const RPG_Graphics_Type& fontType_in)
+                                                       SDL_Surface* backGround_in)
  : //inherited(),
    myScreen(NULL),
    mySize(size_in),
@@ -36,7 +36,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
    myBorderLeft(0),
    myBorderRight(0),
    myTitle(title_in),
-   myTitleFont(fontType_in),
+   myBackGround(backGround_in),
    myOffset(std::make_pair(0, 0)),
    myLastAbsolutePosition(std::make_pair(0, 0)),
    myParent(NULL),
@@ -51,7 +51,9 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
 
 RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowType& type_in,
                                                        const RPG_Graphics_SDLWindowBase& parent_in,
-                                                       const RPG_Graphics_Offset_t& offset_in)
+                                                       const RPG_Graphics_Offset_t& offset_in,
+                                                       const std::string& title_in,
+                                                       SDL_Surface* backGround_in)
   : //inherited(),
     myScreen(parent_in.myScreen),
     mySize(std::make_pair(0, 0)),
@@ -59,8 +61,8 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
     myBorderBottom(0),
     myBorderLeft(0),
     myBorderRight(0),
-//     myTitle(),
-    myTitleFont(RPG_GRAPHICS_TYPE_INVALID),
+    myTitle(title_in),
+    myBackGround(backGround_in),
     myOffset(offset_in),
     myLastAbsolutePosition(std::make_pair(0, 0)),
     myParent(&ACE_const_cast(RPG_Graphics_SDLWindowBase&, parent_in)),
@@ -102,6 +104,10 @@ RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase()
        iterator++)
     delete *iterator; // *NOTE*: this will invoke removeChild() on us (see above !)
   ACE_ASSERT(myChildren.empty());
+
+  // free surface
+  if (myBackGround)
+    SDL_FreeSurface(myBackGround);
 }
 
 void
@@ -405,6 +411,20 @@ RPG_Graphics_SDLWindowBase::handleEvent(const SDL_Event& event_in,
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("SDL_USEREVENT event...\n")));
+
+      break;
+    }
+    case RPG_GRAPHICS_SDL_HOVEREVENT:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("RPG_GRAPHICS_SDL_HOVEREVENT event...\n")));
+
+      break;
+    }
+    case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("RPG_GRAPHICS_SDL_MOUSEMOVEOUT event...\n")));
 
       break;
     }

@@ -38,7 +38,7 @@ class RPG_Client_WindowMain
 {
  public:
   RPG_Client_WindowMain(const RPG_Graphics_WindowSize_t&,                 // size
-                        const RPG_Graphics_Type&,                         // style
+                        const RPG_Graphics_Type&,                         // element type
                         const std::string&,                               // title
                         const RPG_Graphics_Type& = TYPE_FONT_MAIN_LARGE); // title font
   virtual ~RPG_Client_WindowMain();
@@ -70,10 +70,11 @@ class RPG_Client_WindowMain
                   const unsigned long& = 0); // offset y (top-left = [0,0])
 
   // counter
-  unsigned long myScreenshotIndex;
+  unsigned long     myScreenshotIndex;
 
-  unsigned long myLastHoverTime;
-  bool          myHaveMouseFocus;
+  unsigned long     myLastHoverTime;
+  bool              myHaveMouseFocus;
+  RPG_Graphics_Type myTitleFont;
 };
 
 #endif

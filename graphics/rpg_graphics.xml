@@ -84,28 +84,28 @@
     <category>CATEGORY_INTERFACE</category>
     <type>TYPE_INTERFACE</type>
     <element>
-      <type>INTERFACEELEMENT_CORNER_TL</type>
+      <type>INTERFACEELEMENT_BORDER_TOP_LEFT</type>
       <offsetX>1</offsetX>
       <offsetY>1</offsetY>
       <width>23</width>
       <height>23</height>
     </element>
     <element>
-      <type>INTERFACEELEMENT_CORNER_TR</type>
+      <type>INTERFACEELEMENT_BORDER_TOP_RIGHT</type>
       <offsetX>61</offsetX>
       <offsetY>1</offsetY>
       <width>24</width>
       <height>23</height>
     </element>
     <element>
-      <type>INTERFACEELEMENT_CORNER_BL</type>
+      <type>INTERFACEELEMENT_BORDER_BOTTOM_LEFT</type>
       <offsetX>1</offsetX>
       <offsetY>58</offsetY>
       <width>23</width>
       <height>25</height>
     </element>
     <element>
-      <type>INTERFACEELEMENT_CORNER_BR</type>
+      <type>INTERFACEELEMENT_BORDER_BOTTOM_RIGHT</type>
       <offsetX>61</offsetX>
       <offsetY>58</offsetY>
       <width>24</width>
@@ -140,7 +140,14 @@
       <height>25</height>
     </element>
     <element>
-      <type>INTERFACEELEMENT_CENTER</type>
+      <type>INTERFACEELEMENT_BORDER_CENTER</type>
+      <offsetX>27</offsetX>
+      <offsetY>27</offsetY>
+      <width>31</width>
+      <height>28</height>
+    </element>
+    <element>
+      <type>INTERFACEELEMENT_BACKGROUND</type>
       <offsetX>141</offsetX>
       <offsetY>1</offsetY>
       <width>98</width>

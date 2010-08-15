@@ -825,7 +825,7 @@ do_work(const mode_t& mode_in,
                    ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
       }
 
-      // start timer (triggers hover events)
+      // step6: start timer (triggers hover events)
       SDL_TimerID timer = NULL;
       timer = SDL_AddTimer(SDL_GUI_SDL_EVENT_TIMEOUT, // interval (ms)
                            event_timer_SDL_cb,        // event timer callback
@@ -847,7 +847,7 @@ do_work(const mode_t& mode_in,
         need_redraw = false;
         mouse_position = std::make_pair(0, 0);
 
-        // step5: process events
+        // step7: process events
         if (SDL_WaitEvent(&event) != 1)
         {
           ACE_DEBUG((LM_ERROR,
@@ -1048,7 +1048,7 @@ do_work(const mode_t& mode_in,
         } // end SWITCH
       } while (!done);
 
-      // clean up
+      // step8: clean up
       if (!SDL_RemoveTimer(timer))
       {
         ACE_DEBUG((LM_ERROR,

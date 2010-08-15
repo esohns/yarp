@@ -24,19 +24,31 @@
 #include "rpg_graphics_common_tools.h"
 
 RPG_Graphics_TopLevel::RPG_Graphics_TopLevel(const RPG_Graphics_WindowSize_t& size_in,
-                                             const RPG_Graphics_Type& graphicType_in,
+                                             const RPG_Graphics_Type& elementType_in,
                                              const std::string& title_in,
-                                             const RPG_Graphics_Type& fontType_in)
+                                             SDL_Surface* backGround_in)
  : inherited(size_in,
              WINDOWTYPE_TOPLEVEL,
              title_in,
-             fontType_in),
-   myElementGraphicsType(graphicType_in)
+             backGround_in),
+   myElementGraphicsType(elementType_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::RPG_Graphics_TopLevel"));
 
   // (try to) load interface element graphics
   myInitialized = loadGraphics(myElementGraphicsType);
+
+  if (myInitialized)
+  {
+    // init background
+    RPG_Graphics_InterfaceElementsConstIterator_t iterator;
+    iterator = myElementGraphics.find(INTERFACEELEMENT_BACKGROUND);
+    ACE_ASSERT(iterator != myElementGraphics.end());
+    // *NOTE*: copy (window assumes responsibility for its background surface)
+    SDL_Surface* backGround = RPG_Graphics_Surface::copy(*(*iterator).second);
+    ACE_ASSERT(backGround);
+    myBackGround = backGround;
+  } // end IF
 }
 
 RPG_Graphics_TopLevel::~RPG_Graphics_TopLevel()
@@ -48,6 +60,16 @@ RPG_Graphics_TopLevel::~RPG_Graphics_TopLevel()
        iterator != myElementGraphics.end();
        iterator++)
     SDL_FreeSurface((*iterator).second);
+}
+
+void
+RPG_Graphics_TopLevel::child(const RPG_Graphics_WindowSize_t& size_in,
+                             const RPG_Graphics_WindowType& type_in,
+                             const RPG_Graphics_Offset_t& offset_in,
+                             SDL_Surface* backGround_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::child"));
+
 }
 
 const bool

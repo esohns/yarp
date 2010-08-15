@@ -146,15 +146,16 @@
 
   <xsd:simpleType name="RPG_Graphics_InterfaceElementType_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="INTERFACEELEMENT_CORNER_TL"/>
-      <xsd:enumeration value="INTERFACEELEMENT_CORNER_TR"/>
-      <xsd:enumeration value="INTERFACEELEMENT_CORNER_BL"/>
-      <xsd:enumeration value="INTERFACEELEMENT_CORNER_BR"/>
+      <xsd:enumeration value="INTERFACEELEMENT_BORDER_TOP_LEFT"/>
+      <xsd:enumeration value="INTERFACEELEMENT_BORDER_TOP_RIGHT"/>
+      <xsd:enumeration value="INTERFACEELEMENT_BORDER_BOTTOM_LEFT"/>
+      <xsd:enumeration value="INTERFACEELEMENT_BORDER_BOTTOM_RIGHT"/>
       <xsd:enumeration value="INTERFACEELEMENT_BORDER_TOP"/>
       <xsd:enumeration value="INTERFACEELEMENT_BORDER_RIGHT"/>
       <xsd:enumeration value="INTERFACEELEMENT_BORDER_LEFT"/>
       <xsd:enumeration value="INTERFACEELEMENT_BORDER_BOTTOM"/>
-      <xsd:enumeration value="INTERFACEELEMENT_CENTER"/>
+      <xsd:enumeration value="INTERFACEELEMENT_BORDER_CENTER"/>
+      <xsd:enumeration value="INTERFACEELEMENT_BACKGROUND"/>
     </xsd:restriction>
   </xsd:simpleType>
 

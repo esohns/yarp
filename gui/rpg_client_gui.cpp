@@ -72,17 +72,65 @@
 
 static GTK_cb_data_t    userData;
 // static GtkBuilder* builder  = NULL;
-static GladeXML*        xml     = NULL;
-static GtkWidget*       dialog  = NULL;
-static SDL_Surface*     screen  = NULL;
-static int              grp_id  = -1;
+static GladeXML*        xml         = NULL;
+static GtkWidget*       main_dialog = NULL;
+static SDL_Surface*     screen      = NULL;
+static int              grp_id      = -1;
 static ACE_Thread_Mutex hover_lock;
-static unsigned long    hover_time = 0;
+static unsigned long    hover_time  = 0;
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
+G_MODULE_EXPORT gint
+about_activated_GTK_cb(GtkWidget* widget_in,
+                       GdkEvent* event_in,
+                       gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::about_activated_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(event_in);
+  ACE_UNUSED_ARG(userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(xml);
+
+  // retrieve about dialog handle
+  GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(xml,
+                                                            RPG_CLIENT_GRAPHICS_ABOUTDIALOG_NAME));
+  ACE_ASSERT(about_dialog);
+  if (!about_dialog)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
+               RPG_CLIENT_GRAPHICS_ABOUTDIALOG_NAME));
+
+    // clean up
+    g_object_unref(G_OBJECT(xml));
+    xml = NULL;
+  } // end IF
+
+  // draw it
+  gtk_widget_show_all(about_dialog);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+settings_activated_GTK_cb(GtkWidget* widget_in,
+                          GdkEvent* event_in,
+                          gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::settings_activated_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(event_in);
+  ACE_UNUSED_ARG(userData_in);
+
+}
+
 G_MODULE_EXPORT gint
 quit_activated_GTK_cb(GtkWidget* widget_in,
                       GdkEvent* event_in,
@@ -113,7 +161,7 @@ quit_activated_GTK_cb(GtkWidget* widget_in,
              ACE_TEXT("leaving...\n")));
 
   // this is the "delete-event" handler
-  // --> destroy the dialog widget
+  // --> destroy the main dialog widget
   return TRUE;
 }
 #ifdef __cplusplus
@@ -813,11 +861,11 @@ do_initGUI(const std::string& graphicsDirectory_in,
     g_object_unref(G_OBJECT(xml));
     xml = NULL;
   } // end IF
-  if (dialog)
+  if (main_dialog)
   {
     // clean up
-    gtk_widget_destroy(dialog);
-    dialog = NULL;
+    gtk_widget_destroy(main_dialog);
+    main_dialog = NULL;
   } // end IF
 
   // step1: load widget tree
@@ -833,17 +881,15 @@ do_initGUI(const std::string& graphicsDirectory_in,
     return false;
   } // end IF
 
-  // step2: auto-connect signals/slots
-//   glade_xml_signal_autoconnect(xml);
-
-  // step3: retrieve dialog handle
-  dialog = GTK_WIDGET(glade_xml_get_widget(xml,
-                                           ACE_TEXT_ALWAYS_CHAR("dialog")));
-  ACE_ASSERT(dialog);
-  if (!dialog)
+  // step2: retrieve dialog handles
+  main_dialog = GTK_WIDGET(glade_xml_get_widget(xml,
+                                                RPG_CLIENT_GRAPHICS_MAINDIALOG_NAME));
+  ACE_ASSERT(main_dialog);
+  if (!main_dialog)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"dialog\"): \"%m\", aborting\n")));
+               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
+               RPG_CLIENT_GRAPHICS_MAINDIALOG_NAME));
 
     // clean up
     g_object_unref(G_OBJECT(xml));
@@ -852,35 +898,81 @@ do_initGUI(const std::string& graphicsDirectory_in,
     return false;
   } // end IF
 
-  // step4: connect default signals
-  g_signal_connect(dialog,
-                   ACE_TEXT_ALWAYS_CHAR("destroy"),
-                   G_CALLBACK(gtk_widget_destroyed),
-                   &dialog);
+  GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(xml,
+                                                            RPG_CLIENT_GRAPHICS_ABOUTDIALOG_NAME));
+  ACE_ASSERT(about_dialog);
+  if (!about_dialog)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
+               RPG_CLIENT_GRAPHICS_ABOUTDIALOG_NAME));
 
-  GtkButton* button = NULL;
-  button = GTK_BUTTON(glade_xml_get_widget(xml,
-                                           ACE_TEXT_ALWAYS_CHAR("quit")));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(quit_activated_GTK_cb),
-                   &ACE_const_cast(GTK_cb_data_t&, userData_in));
+    // clean up
+    g_object_unref(G_OBJECT(xml));
+    xml = NULL;
 
-  // step4a: attach user data
+    return false;
+  } // end IF
+
+//   // step3: connect default signals
+//   g_signal_connect(main_dialog,
+//                    ACE_TEXT_ALWAYS_CHAR("destroy"),
+//                    G_CALLBACK(gtk_widget_destroyed),
+//                    &main_dialog);
+//   g_signal_connect(about_dialog,
+//                    ACE_TEXT_ALWAYS_CHAR("close"),
+//                    G_CALLBACK(gtk_widget_hide),
+//                    &about_dialog);
+
+//   // step4: connect custom signals
+//   GtkButton* button = NULL;
+//   button = GTK_BUTTON(glade_xml_get_widget(xml,
+//                                            ACE_TEXT_ALWAYS_CHAR("quit")));
+//   ACE_ASSERT(button);
+//   g_signal_connect(button,
+//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
+//                    G_CALLBACK(quit_activated_GTK_cb),
+//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
   glade_xml_signal_connect_data(xml,
-                                ACE_TEXT_ALWAYS_CHAR("quit_activated_cb"),
+                                ACE_TEXT_ALWAYS_CHAR("quit_activated_GTK_cb"),
                                 G_CALLBACK(quit_activated_GTK_cb),
                                 &ACE_const_cast(GTK_cb_data_t&, userData_in));
 
-//   // step5: use correct screen
+//   button = GTK_BUTTON(glade_xml_get_widget(xml,
+//                       ACE_TEXT_ALWAYS_CHAR("about")));
+//   ACE_ASSERT(button);
+//   g_signal_connect(button,
+//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
+//                    G_CALLBACK(about_activated_GTK_cb),
+//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  glade_xml_signal_connect_data(xml,
+                                ACE_TEXT_ALWAYS_CHAR("about_activated_GTK_cb"),
+                                G_CALLBACK(about_activated_GTK_cb),
+                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+
+//   button = GTK_BUTTON(glade_xml_get_widget(xml,
+//                       ACE_TEXT_ALWAYS_CHAR("settings")));
+//   ACE_ASSERT(button);
+//   g_signal_connect(button,
+//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
+//                    G_CALLBACK(settings_activated_GTK_cb),
+//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  glade_xml_signal_connect_data(xml,
+                                ACE_TEXT_ALWAYS_CHAR("settings_activated_GTK_cb"),
+                                G_CALLBACK(settings_activated_GTK_cb),
+                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+
+  // step5: auto-connect signals/slots
+  glade_xml_signal_autoconnect(xml);
+
+//   // step6: use correct screen
 //   if (parentWidget_in)
 //     gtk_window_set_screen(GTK_WINDOW(dialog),
 //                           gtk_widget_get_screen(ACE_const_cast(GtkWidget*,
 //                                                                parentWidget_in)));
 
   // step6: draw it
-  gtk_widget_show_all(dialog);
+  gtk_widget_show_all(main_dialog);
 
   // init SDL UI handling
 
@@ -1181,7 +1273,7 @@ do_work(const RPG_Client_Config& config_in)
     return;
   } // end IF
   ACE_ASSERT(xml);
-  ACE_ASSERT(dialog);
+  ACE_ASSERT(main_dialog);
   ACE_ASSERT(screen);
   RPG_Graphics_Common_Tools::init(config_in.graphics_directory,
                                   config_in.graphics_cache_size);

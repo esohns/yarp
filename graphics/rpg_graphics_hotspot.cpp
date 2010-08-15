@@ -33,7 +33,9 @@ RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindowBase& par
                                            const RPG_Graphics_Type& graphicsType_in)
  : inherited(WINDOWTYPE_HOTSPOT, // type
              parent_in,          // parent
-             offset_in),         // offset
+             offset_in,          // offset
+             std::string(),      // title
+             NULL),              // background
    myCursorType(graphicsType_in),
    myCursorHasBeenSet(false)
 {
