@@ -61,10 +61,6 @@ class RPG_Character_CheckTypeUnion_Type_pskel;
 class RPG_Character_Check_Type_pskel;
 class RPG_Character_Feat_Type_pskel;
 class RPG_Character_Feats_Type_pskel;
-class RPG_Character_Plane_Type_pskel;
-class RPG_Character_Terrain_Type_pskel;
-class RPG_Character_Climate_Type_pskel;
-class RPG_Character_Environment_Type_pskel;
 class RPG_Character_AlignmentCivic_Type_pskel;
 class RPG_Character_AlignmentEthic_Type_pskel;
 class RPG_Character_Alignment_Type_pskel;
@@ -476,92 +472,6 @@ class RPG_Character_Feats_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::RPG_Character_Feat_Type_pskel* feat_parser_;
-};
-
-class RPG_Character_Plane_Type_pskel: public virtual ::xml_schema::string_pskel
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual void
-  post_RPG_Character_Plane_Type ();
-};
-
-class RPG_Character_Terrain_Type_pskel: public virtual ::xml_schema::string_pskel
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual RPG_Character_Terrain
-  post_RPG_Character_Terrain_Type () = 0;
-};
-
-class RPG_Character_Climate_Type_pskel: public virtual ::xml_schema::string_pskel
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual RPG_Character_Climate
-  post_RPG_Character_Climate_Type () = 0;
-};
-
-class RPG_Character_Environment_Type_pskel: public ::xml_schema::complex_content
-{
-  public:
-  // Parser callbacks. Override them in your implementation.
-  //
-  // virtual void
-  // pre ();
-
-  virtual void
-  terrain (const RPG_Character_Terrain&);
-
-  virtual void
-  climate (const RPG_Character_Climate&);
-
-  virtual RPG_Character_Environment
-  post_RPG_Character_Environment_Type () = 0;
-
-  // Parser construction API.
-  //
-  void
-  terrain_parser (::RPG_Character_Terrain_Type_pskel&);
-
-  void
-  climate_parser (::RPG_Character_Climate_Type_pskel&);
-
-  void
-  parsers (::RPG_Character_Terrain_Type_pskel& /* terrain */,
-           ::RPG_Character_Climate_Type_pskel& /* climate */);
-
-  // Constructor.
-  //
-  RPG_Character_Environment_Type_pskel ();
-
-  // Implementation.
-  //
-  protected:
-  virtual bool
-  _start_element_impl (const ::xml_schema::ro_string&,
-                       const ::xml_schema::ro_string&,
-                       const ::xml_schema::ro_string*);
-
-  virtual bool
-  _end_element_impl (const ::xml_schema::ro_string&,
-                     const ::xml_schema::ro_string&);
-
-  protected:
-  ::RPG_Character_Terrain_Type_pskel* terrain_parser_;
-  ::RPG_Character_Climate_Type_pskel* climate_parser_;
 };
 
 class RPG_Character_AlignmentCivic_Type_pskel: public virtual ::xml_schema::string_pskel

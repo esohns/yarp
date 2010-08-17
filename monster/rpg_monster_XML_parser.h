@@ -428,7 +428,7 @@ class RPG_Monster_PropertiesXML_Type
   virtual void attributes(const RPG_Character_Attributes&);
   virtual void skills(const RPG_Character_Skills&);
   virtual void feats(const RPG_Character_Feats&);
-  virtual void environment(const RPG_Character_Environment&);
+  virtual void environment(const RPG_Common_Environment&);
   virtual void organizations(const RPG_Monster_Organizations&);
   virtual void challengeRating(unsigned char);
   virtual void treasureModifier(unsigned char);

@@ -10,6 +10,8 @@
   <xsd:include schemaLocation="rpg_dice.xsd"/>
   <!-- include common schema -->
   <xsd:include schemaLocation="rpg_common.xsd"/>
+  <!-- include common environment schema -->
+  <xsd:include schemaLocation="rpg_common_environment.xsd"/>
   <!-- include magic schema -->
   <xsd:include schemaLocation="rpg_magic.xsd"/>
   <!-- include item schema -->
@@ -286,7 +288,7 @@
       <xsd:element name="attributes" type="RPG_Character_Attributes_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="skills" type="RPG_Character_Skills_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="feats" type="RPG_Character_Feats_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="environment" type="RPG_Character_Environment_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="environment" type="RPG_Common_Environment_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="organizations" type="RPG_Monster_Organizations_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="challengeRating" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="treasureModifier" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>

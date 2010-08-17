@@ -22,11 +22,14 @@
 
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
+#include <rpg_common_environment_incl.h>
 #include <rpg_character_incl.h>
 #include <rpg_magic_incl.h>
 #include <rpg_combat_incl.h>
 #include <rpg_item_weapontype.h>
 #include "rpg_monster_incl.h"
+
+#include "rpg_monster.h"
 
 #include <rpg_character_skills_common.h>
 
@@ -68,7 +71,7 @@ struct RPG_Monster_Properties
   RPG_Character_Attributes attributes;
   RPG_Character_Skills_t skills;
   RPG_Character_Feats_t feats;
-  RPG_Character_Environment environment;
+  RPG_Common_Environment environment;
   RPG_Monster_Organizations_t organizations;
   unsigned char challengeRating;
   unsigned char treasureModifier; // standard times x
@@ -76,6 +79,11 @@ struct RPG_Monster_Properties
   RPG_Monster_Advancement_t advancements;
   unsigned char levelAdjustment;
 };
+
+typedef std::vector<RPG_Monster> RPG_Monster_Group_t;
+typedef RPG_Monster_Group_t::const_iterator RPG_Monster_GroupIterator_t;
+typedef std::vector<RPG_Monster_Group_t> RPG_Monster_Groups_t;
+typedef RPG_Monster_Groups_t::const_iterator RPG_Monster_GroupsIterator_t;
 
 // some more useful types
 typedef std::map<std::string, RPG_Monster_Properties> RPG_Monster_Dictionary_t;

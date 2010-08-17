@@ -5,6 +5,7 @@ namespace urn:rpg
 
   RPG_Dice_Roll_Type                 RPG_Dice_Roll;
 
+# common types
   RPG_Common_CreatureMetaType_Type   RPG_Common_CreatureMetaType;
   RPG_Common_CreatureSubType_Type    RPG_Common_CreatureSubType;
   RPG_Common_CreatureType_Type       RPG_Common_CreatureType;
@@ -27,4 +28,10 @@ namespace urn:rpg
   RPG_Common_Usage_Type              RPG_Common_Usage;
   RPG_Common_Duration_Type           RPG_Common_Duration;
   RPG_Common_Camp_Type               RPG_Common_Camp;
+
+# environment types
+  RPG_Common_Plane_Type              RPG_Common_Plane;
+  RPG_Common_Terrain_Type            RPG_Common_Terrain;
+  RPG_Common_Climate_Type            RPG_Common_Climate;
+  RPG_Common_Environment_Type        RPG_Common_Environment;
 }

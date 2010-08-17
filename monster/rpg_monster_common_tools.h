@@ -24,6 +24,7 @@
 
 #include <rpg_common.h>
 #include <rpg_common_incl.h>
+#include <rpg_common_environment_incl.h>
 #include <rpg_item_weapontype.h>
 #include <rpg_character_incl.h>
 #include <rpg_magic_incl.h>
@@ -53,7 +54,7 @@ class RPG_Monster_Common_Tools
   static void generateRandomEncounter(const unsigned int&,                  // # of different monster types
                                       const unsigned int&,                  // total # of foes (0: random)
                                       const RPG_Character_Alignment&,       // alignment
-                                      const RPG_Character_Environment&,     // environment
+                                      const RPG_Common_Environment&,        // environment
                                       const RPG_Monster_OrganizationSet_t&, // organization(s)
                                       RPG_Monster_Encounter_t&);            // return value: encounter
 

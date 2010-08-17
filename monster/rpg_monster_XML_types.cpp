@@ -972,7 +972,7 @@ feats_parser (::RPG_Character_Feats_Type_pskel& p)
 }
 
 void RPG_Monster_PropertiesXML_Type_pskel::
-environment_parser (::RPG_Character_Environment_Type_pskel& p)
+environment_parser (::RPG_Common_Environment_Type_pskel& p)
 {
   this->environment_parser_ = &p;
 }
@@ -1031,7 +1031,7 @@ parsers (::xml_schema::string_pskel& name,
          ::RPG_Character_Attributes_Type_pskel& attributes,
          ::RPG_Character_Skills_Type_pskel& skills,
          ::RPG_Character_Feats_Type_pskel& feats,
-         ::RPG_Character_Environment_Type_pskel& environment,
+         ::RPG_Common_Environment_Type_pskel& environment,
          ::RPG_Monster_Organizations_Type_pskel& organizations,
          ::xml_schema::unsigned_byte_pskel& challengeRating,
          ::xml_schema::unsigned_byte_pskel& treasureModifier,
@@ -3190,7 +3190,7 @@ feats (const RPG_Character_Feats&)
 }
 
 void RPG_Monster_PropertiesXML_Type_pskel::
-environment (const RPG_Character_Environment&)
+environment (const RPG_Common_Environment&)
 {
 }
 
@@ -3623,7 +3623,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "environment" && ns == "urn:rpg")
   {
     if (this->environment_parser_)
-      this->environment (this->environment_parser_->post_RPG_Character_Environment_Type ());
+      this->environment (this->environment_parser_->post_RPG_Common_Environment_Type ());
 
     return true;
   }

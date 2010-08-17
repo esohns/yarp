@@ -311,69 +311,6 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:simpleType name="RPG_Character_Plane_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="PLANE_INNER"/>
-      <xsd:enumeration value="PLANE_MATERIAL"/>
-      <xsd:enumeration value="PLANE_OUTER"/>
-      <xsd:enumeration value="PLANE_TRANSITIVE"/>
-      <xsd:enumeration value="PLANE_ANY"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
-  <xsd:simpleType name="RPG_Character_Terrain_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="TERRAIN_DESERTS"/>
-      <xsd:enumeration value="TERRAIN_FORESTS"/>
-      <xsd:enumeration value="TERRAIN_HILLS"/>
-      <xsd:enumeration value="TERRAIN_MARSHES"/>
-      <xsd:enumeration value="TERRAIN_MOUNTAINS"/>
-      <xsd:enumeration value="TERRAIN_PLAINS"/>
-      <xsd:enumeration value="TERRAIN_UNDERGROUND"/>
-      <xsd:enumeration value="TERRAIN_MATERIALPLANE_ANY"/>
-      <xsd:enumeration value="TERRAIN_TRANSITIVEPLANE_ASTRAL"/>
-      <xsd:enumeration value="TERRAIN_TRANSITIVEPLANE_ETHERAL"/>
-      <xsd:enumeration value="TERRAIN_TRANSITIVEPLANE_SHADOW"/>
-      <xsd:enumeration value="TERRAIN_TRANSITIVEPLANE_ANY"/>
-      <xsd:enumeration value="TERRAIN_INNERPLANE_AIR"/>
-      <xsd:enumeration value="TERRAIN_INNERPLANE_EARTH"/>
-      <xsd:enumeration value="TERRAIN_INNERPLANE_FIRE"/>
-      <xsd:enumeration value="TERRAIN_INNERPLANE_WATER"/>
-      <xsd:enumeration value="TERRAIN_INNERPLANE_POSITIVE"/>
-      <xsd:enumeration value="TERRAIN_INNERPLANE_NEGATIVE"/>
-      <xsd:enumeration value="TERRAIN_INNERPLANE_ANY"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_LAWFUL_ANY"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_CHAOTIC_ANY"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_GOOD_ANY"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_EVIL_ANY"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_LAWFUL_GOOD"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_LAWFUL_EVIL"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_CHAOTIC_GOOD"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_CHAOTIC_EVIL"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_NEUTRAL"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_MILD_ANY"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_STRONG_ANY"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_ANY"/>
-      <xsd:enumeration value="TERRAIN_ANY"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
-  <xsd:simpleType name="RPG_Character_Climate_Type">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="CLIMATE_COLD"/>
-      <xsd:enumeration value="CLIMATE_TEMPERATE"/>
-      <xsd:enumeration value="CLIMATE_WARM"/>
-      <xsd:enumeration value="CLIMATE_ANY"/>
-    </xsd:restriction>
-  </xsd:simpleType>
-
-  <xsd:complexType name="RPG_Character_Environment_Type">
-    <xsd:sequence>
-      <xsd:element name="terrain" type="RPG_Character_Terrain_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="climate" type="RPG_Character_Climate_Type" minOccurs="0" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
   <xsd:simpleType name="RPG_Character_AlignmentCivic_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ALIGNMENTCIVIC_CHAOTIC"/>

@@ -88,6 +88,7 @@ class RPG_Monster_Dictionary_Type_pskel;
 #include <rpg_item_weapontype.h>
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
+#include <rpg_common_environment_incl.h>
 #include <rpg_magic_incl.h>
 #include <rpg_combat_incl.h>
 #include <rpg_character_incl.h>
@@ -96,6 +97,8 @@ class RPG_Monster_Dictionary_Type_pskel;
 #include "rpg_dice_XML_types.h"
 
 #include "rpg_common_XML_types.h"
+
+#include "rpg_common_environment_XML_types.h"
 
 #include "rpg_magic_XML_types.h"
 
@@ -1409,7 +1412,7 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
   feats (const RPG_Character_Feats&);
 
   virtual void
-  environment (const RPG_Character_Environment&);
+  environment (const RPG_Common_Environment&);
 
   virtual void
   organizations (const RPG_Monster_Organizations&);
@@ -1486,7 +1489,7 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
   feats_parser (::RPG_Character_Feats_Type_pskel&);
 
   void
-  environment_parser (::RPG_Character_Environment_Type_pskel&);
+  environment_parser (::RPG_Common_Environment_Type_pskel&);
 
   void
   organizations_parser (::RPG_Monster_Organizations_Type_pskel&);
@@ -1524,7 +1527,7 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
            ::RPG_Character_Attributes_Type_pskel& /* attributes */,
            ::RPG_Character_Skills_Type_pskel& /* skills */,
            ::RPG_Character_Feats_Type_pskel& /* feats */,
-           ::RPG_Character_Environment_Type_pskel& /* environment */,
+           ::RPG_Common_Environment_Type_pskel& /* environment */,
            ::RPG_Monster_Organizations_Type_pskel& /* organizations */,
            ::xml_schema::unsigned_byte_pskel& /* challengeRating */,
            ::xml_schema::unsigned_byte_pskel& /* treasureModifier */,
@@ -1566,7 +1569,7 @@ class RPG_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Character_Attributes_Type_pskel* attributes_parser_;
   ::RPG_Character_Skills_Type_pskel* skills_parser_;
   ::RPG_Character_Feats_Type_pskel* feats_parser_;
-  ::RPG_Character_Environment_Type_pskel* environment_parser_;
+  ::RPG_Common_Environment_Type_pskel* environment_parser_;
   ::RPG_Monster_Organizations_Type_pskel* organizations_parser_;
   ::xml_schema::unsigned_byte_pskel* challengeRating_parser_;
   ::xml_schema::unsigned_byte_pskel* treasureModifier_parser_;

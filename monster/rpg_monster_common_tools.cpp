@@ -24,8 +24,8 @@
 #include <rpg_dice.h>
 #include <rpg_dice_common_tools.h>
 
+#include <rpg_common_tools.h>
 #include <rpg_character_common_tools.h>
-
 #include <rpg_combat_common_tools.h>
 
 #include <ace/Log_Msg.h>
@@ -83,29 +83,6 @@ RPG_Monster_Common_Tools::weaponTypeToString(const RPG_Monster_WeaponTypeUnion& 
       break;
     }
   } // end SWITCH
-
-  return result;
-}
-
-const std::string
-RPG_Combat_Common_Tools::attackFormsToString(const RPG_Combat_AttackForms_t& attackForms_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::attackFormsToString"));
-
-  std::string result;
-
-  for (RPG_Combat_AttackFormsIterator_t iterator = attackForms_in.begin();
-       iterator != attackForms_in.end();
-       iterator++)
-  {
-    result += RPG_Combat_AttackFormHelper::RPG_Combat_AttackFormToString(*iterator);
-    result += ACE_TEXT_ALWAYS_CHAR("|");
-  } // end FOR
-
-  if (!result.empty())
-  {
-    result.erase(--(result.end()));
-  } // end IF
 
   return result;
 }
@@ -326,7 +303,7 @@ void
 RPG_Monster_Common_Tools::generateRandomEncounter(const unsigned int& numDifferentMonsterTypes_in,
                                                   const unsigned int& numMonsters_in,
                                                   const RPG_Character_Alignment& alignment_in,
-                                                  const RPG_Character_Environment& environment_in,
+                                                  const RPG_Common_Environment& environment_in,
                                                   const RPG_Monster_OrganizationSet_t& organizations_in,
                                                   RPG_Monster_Encounter_t& encounter_out)
 {
@@ -353,7 +330,7 @@ RPG_Monster_Common_Tools::generateRandomEncounter(const unsigned int& numDiffere
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("found no appropriate monster types (alignment: \"%s\", environment \"%s\", organizations: \"%s\" in dictionary (%u entries), returning\n"),
                RPG_Character_Common_Tools::alignmentToString(alignment_in).c_str(),
-               RPG_Character_Common_Tools::environmentToString(environment_in).c_str(),
+               RPG_Common_Tools::environmentToString(environment_in).c_str(),
                RPG_Monster_Common_Tools::organizationsToString(organizations_in).c_str(),
                RPG_MONSTER_DICTIONARY_SINGLETON::instance()->numEntries()));
 

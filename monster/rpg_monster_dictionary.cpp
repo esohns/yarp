@@ -290,9 +290,9 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
   RPG_Character_Feat_Type                        feat_p;
   RPG_Character_Feats_Type                       feats_p;
   feats_p.parsers(feat_p);
-  RPG_Character_Terrain_Type                     terrain_p;
-  RPG_Character_Climate_Type                     climate_p;
-  RPG_Character_Environment_Type                 environment_p;
+  RPG_Common_Terrain_Type                        terrain_p;
+  RPG_Common_Climate_Type                        climate_p;
+  RPG_Common_Environment_Type                    environment_p;
   environment_p.parsers(terrain_p,
                         climate_p);
   RPG_Monster_Organization_Type                  organization_p;
@@ -422,7 +422,7 @@ RPG_Monster_Dictionary::numEntries() const
 
 void
 RPG_Monster_Dictionary::find(const RPG_Character_Alignment& alignment_in,
-                             const RPG_Character_Environment& environment_in,
+                             const RPG_Common_Environment& environment_in,
                              const RPG_Monster_OrganizationSet_t& organizations_in,
                              RPG_Monster_List_t& list_out) const
 {
@@ -437,12 +437,12 @@ RPG_Monster_Dictionary::find(const RPG_Character_Alignment& alignment_in,
        iterator++)
   {
     // check if environment is compatible
-    if (environmentMatches(environment_in,
-                           iterator->second.environment))
+    if (RPG_Common_Tools::match(environment_in,
+                                iterator->second.environment))
     {
       // check if alignment is compatible
-      if (alignmentMatches(alignment_in,
-                           iterator->second.alignment))
+      if (RPG_Character_Common_Tools::match(alignment_in,
+                                            iterator->second.alignment))
       {
         // check if organizations are compatible
         possible_organizations.clear();
@@ -466,182 +466,6 @@ RPG_Monster_Dictionary::find(const RPG_Character_Alignment& alignment_in,
       } // end IF
     } // end IF
   } // end FOR
-}
-
-const bool
-RPG_Monster_Dictionary::alignmentMatches(const RPG_Character_Alignment& alignmentA_in,
-                                         const RPG_Character_Alignment& alignmentB_in) const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::alignmentMatches"));
-
-  // check civics
-  switch (alignmentA_in.civic)
-  {
-    case ALIGNMENTCIVIC_ANY:
-    {
-      // OK
-      break;
-    }
-    default:
-    {
-      switch (alignmentB_in.civic)
-      {
-        case ALIGNMENTCIVIC_ANY:
-        {
-          // OK
-          break;
-        }
-        default:
-        {
-          if (alignmentA_in.civic != alignmentB_in.civic)
-            return false;
-
-          // OK
-          break;
-        }
-      } // end SWITCH
-    }
-  } // end SWITCH
-
-  // check ethics
-  switch (alignmentA_in.ethic)
-  {
-    case ALIGNMENTETHIC_ANY:
-    {
-      // OK
-      break;
-    }
-    default:
-    {
-      switch (alignmentB_in.ethic)
-      {
-        case ALIGNMENTETHIC_ANY:
-        {
-          // OK
-          break;
-        }
-        default:
-        {
-          if (alignmentA_in.ethic != alignmentB_in.ethic)
-            return false;
-
-          // OK
-          break;
-        }
-      } // end SWITCH
-    }
-  } // end SWITCH
-
-  return true;
-}
-
-const bool
-RPG_Monster_Dictionary::environmentMatches(const RPG_Character_Environment& environmentA_in,
-                                           const RPG_Character_Environment& environmentB_in) const
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::environmentMatches"));
-
-  if ((environmentA_in.terrain == TERRAIN_ANY) ||
-      (environmentB_in.terrain == TERRAIN_ANY))
-    return true;
-
-  // different planes don't match: determine planes
-  RPG_Character_Plane planeA = RPG_Character_Common_Tools::terrainToPlane(environmentA_in.terrain);
-  RPG_Character_Plane planeB = RPG_Character_Common_Tools::terrainToPlane(environmentB_in.terrain);
-  if (planeA != planeB)
-    return false;
-
-  switch (planeA)
-  {
-    case PLANE_MATERIAL:
-    {
-      if ((environmentA_in.terrain == TERRAIN_MATERIALPLANE_ANY) ||
-          (environmentB_in.terrain == TERRAIN_MATERIALPLANE_ANY))
-        return true;
-
-      // handle climate
-      if ((environmentA_in.climate == CLIMATE_ANY) ||
-          (environmentB_in.climate == CLIMATE_ANY))
-        return true;
-
-      return ((environmentA_in.terrain == environmentB_in.terrain) &&
-              (environmentA_in.climate == environmentB_in.climate));
-    }
-    case PLANE_TRANSITIVE:
-    {
-      if ((environmentA_in.terrain == TERRAIN_TRANSITIVEPLANE_ANY) ||
-          (environmentB_in.terrain == TERRAIN_TRANSITIVEPLANE_ANY))
-        return true;
-
-      return (environmentA_in.terrain == environmentB_in.terrain);
-    }
-    case PLANE_INNER:
-    {
-      if ((environmentA_in.terrain == TERRAIN_INNERPLANE_ANY) ||
-          (environmentB_in.terrain == TERRAIN_INNERPLANE_ANY))
-        return true;
-
-      return (environmentA_in.terrain == environmentB_in.terrain);
-    }
-    case PLANE_OUTER:
-    {
-      if ((environmentA_in.terrain == TERRAIN_OUTERPLANE_ANY) ||
-          (environmentB_in.terrain == TERRAIN_OUTERPLANE_ANY))
-        return true;
-
-      switch (environmentA_in.terrain)
-      {
-        case TERRAIN_OUTERPLANE_LAWFUL_ANY:
-        {
-          return ((environmentB_in.terrain == TERRAIN_OUTERPLANE_LAWFUL_GOOD) ||
-                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_LAWFUL_EVIL));
-        }
-        case TERRAIN_OUTERPLANE_CHAOTIC_ANY:
-        {
-          return ((environmentB_in.terrain == TERRAIN_OUTERPLANE_CHAOTIC_GOOD) ||
-                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_CHAOTIC_EVIL));
-        }
-        case TERRAIN_OUTERPLANE_GOOD_ANY:
-        {
-          return ((environmentB_in.terrain == TERRAIN_OUTERPLANE_LAWFUL_GOOD) ||
-                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_CHAOTIC_GOOD));
-        }
-        case TERRAIN_OUTERPLANE_EVIL_ANY:
-        {
-          return ((environmentB_in.terrain == TERRAIN_OUTERPLANE_LAWFUL_EVIL) ||
-                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_CHAOTIC_EVIL));
-        }
-        case TERRAIN_OUTERPLANE_NEUTRAL:
-        {
-          return ((environmentB_in.terrain == TERRAIN_OUTERPLANE_NEUTRAL) ||
-                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_MILD_ANY) ||
-                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_STRONG_ANY));
-        }
-        case TERRAIN_OUTERPLANE_MILD_ANY:
-        case TERRAIN_OUTERPLANE_STRONG_ANY:
-        default:
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid terrain: \"%s\", aborting\n"),
-                     RPG_Character_TerrainHelper::RPG_Character_TerrainToString(environmentA_in.terrain).c_str()));
-
-          break;
-        }
-      } // end SWITCH
-
-      break;
-    }
-    default:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid plane: \"%s\", aborting\n"),
-                 RPG_Character_PlaneHelper::RPG_Character_PlaneToString(planeA).c_str()));
-
-      break;
-    }
-  } // end SWITCH
-
-  return false;
 }
 
 bool
@@ -742,7 +566,7 @@ RPG_Monster_Dictionary::dump() const
                RPG_Character_Common_Tools::attributesToString((iterator->second).attributes).c_str(),
                RPG_Character_Skills_Common_Tools::skillsToString((iterator->second).skills).c_str(),
                RPG_Character_Skills_Common_Tools::featsToString((iterator->second).feats).c_str(),
-               RPG_Character_Common_Tools::environmentToString((iterator->second).environment).c_str(),
+               RPG_Common_Tools::environmentToString((iterator->second).environment).c_str(),
                RPG_Monster_Common_Tools::organizationsToString((iterator->second).organizations).c_str(),
                (iterator->second).challengeRating,
                (iterator->second).treasureModifier,

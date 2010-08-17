@@ -405,3 +405,59 @@ RPG_Common_Camp RPG_Common_Camp_Type::post_RPG_Common_Camp_Type()
 
   return RPG_Common_CampHelper::stringToRPG_Common_Camp(post_string());
 }
+
+RPG_Common_Plane RPG_Common_Plane_Type::post_RPG_Common_Plane_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Plane_Type::post_RPG_Common_Plane_Type"));
+
+  return RPG_Common_PlaneHelper::stringToRPG_Common_Plane(post_string());
+}
+
+RPG_Common_Terrain RPG_Common_Terrain_Type::post_RPG_Common_Terrain_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Terrain_Type::post_RPG_Common_Terrain_Type"));
+
+  return RPG_Common_TerrainHelper::stringToRPG_Common_Terrain(post_string());
+}
+
+RPG_Common_Climate RPG_Common_Climate_Type::post_RPG_Common_Climate_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Climate_Type::post_RPG_Common_Climate_Type"));
+
+  return RPG_Common_ClimateHelper::stringToRPG_Common_Climate(post_string());
+}
+
+RPG_Common_Environment_Type::RPG_Common_Environment_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Environment_Type::RPG_Common_Environment_Type"));
+
+  myCurrentEnvironment.terrain = RPG_COMMON_TERRAIN_INVALID;
+  myCurrentEnvironment.climate = RPG_COMMON_CLIMATE_INVALID;
+}
+
+void RPG_Common_Environment_Type::terrain(const RPG_Common_Terrain& terrain_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Environment_Type::terrain"));
+
+  myCurrentEnvironment.terrain = terrain_in;
+}
+
+void RPG_Common_Environment_Type::climate(const RPG_Common_Climate& climate_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Environment_Type::climate"));
+
+  myCurrentEnvironment.climate = climate_in;
+}
+
+RPG_Common_Environment RPG_Common_Environment_Type::post_RPG_Common_Environment_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Environment_Type::post_RPG_Common_Environment_Type"));
+
+  RPG_Common_Environment result = myCurrentEnvironment;
+
+  // clear structure
+  myCurrentEnvironment.terrain = RPG_COMMON_TERRAIN_INVALID;
+  myCurrentEnvironment.climate = RPG_COMMON_CLIMATE_INVALID;
+
+  return result;
+}

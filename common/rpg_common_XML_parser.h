@@ -21,6 +21,7 @@
 #define RPG_COMMON_XML_PARSER_H
 
 #include "rpg_common_XML_types.h"
+#include "rpg_common_environment_XML_types.h"
 
 #include <ace/Global_Macros.h>
 
@@ -263,6 +264,49 @@ class RPG_Common_Camp_Type
   public:
 //   virtual void pre();
     virtual RPG_Common_Camp post_RPG_Common_Camp_Type();
+};
+
+// ************************* environment types *************************
+class RPG_Common_Plane_Type
+  : public RPG_Common_Plane_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+  // virtual void pre();
+  virtual RPG_Common_Plane post_RPG_Common_Plane_Type();
+};
+
+class RPG_Common_Terrain_Type
+ : public RPG_Common_Terrain_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+  // virtual void pre();
+  virtual RPG_Common_Terrain post_RPG_Common_Terrain_Type();
+};
+
+class RPG_Common_Climate_Type
+ : public RPG_Common_Climate_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+  // virtual void pre();
+  virtual RPG_Common_Climate post_RPG_Common_Climate_Type();
+};
+
+class RPG_Common_Environment_Type
+ : public RPG_Common_Environment_Type_pskel
+{
+ public:
+  RPG_Common_Environment_Type();
+
+//   virtual void pre();
+  virtual void terrain(const RPG_Common_Terrain&);
+  virtual void climate(const RPG_Common_Climate&);
+  virtual RPG_Common_Environment post_RPG_Common_Environment_Type();
+
+ private:
+  RPG_Common_Environment myCurrentEnvironment;
 };
 
 #endif

@@ -329,55 +329,6 @@ RPG_Character_Feats RPG_Character_Feats_Type::post_RPG_Character_Feats_Type()
   return result;
 }
 
-RPG_Character_Terrain RPG_Character_Terrain_Type::post_RPG_Character_Terrain_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Terrain_Type::post_RPG_Character_Terrain_Type"));
-
-  return RPG_Character_TerrainHelper::stringToRPG_Character_Terrain(post_string());
-}
-
-RPG_Character_Climate RPG_Character_Climate_Type::post_RPG_Character_Climate_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Climate_Type::post_RPG_Character_Climate_Type"));
-
-  return RPG_Character_ClimateHelper::stringToRPG_Character_Climate(post_string());
-}
-
-RPG_Character_Environment_Type::RPG_Character_Environment_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Environment_Type::RPG_Character_Environment_Type"));
-
-  myCurrentEnvironment.terrain = RPG_CHARACTER_TERRAIN_INVALID;
-  myCurrentEnvironment.climate = RPG_CHARACTER_CLIMATE_INVALID;
-}
-
-void RPG_Character_Environment_Type::terrain(const RPG_Character_Terrain& terrain_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Environment_Type::terrain"));
-
-  myCurrentEnvironment.terrain = terrain_in;
-}
-
-void RPG_Character_Environment_Type::climate(const RPG_Character_Climate& climate_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Environment_Type::climate"));
-
-  myCurrentEnvironment.climate = climate_in;
-}
-
-RPG_Character_Environment RPG_Character_Environment_Type::post_RPG_Character_Environment_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Environment_Type::post_RPG_Character_Environment_Type"));
-
-  RPG_Character_Environment result = myCurrentEnvironment;
-
-  // clear structure
-  myCurrentEnvironment.terrain = RPG_CHARACTER_TERRAIN_INVALID;
-  myCurrentEnvironment.climate = RPG_CHARACTER_CLIMATE_INVALID;
-
-  return result;
-}
-
 RPG_Character_AlignmentCivic RPG_Character_AlignmentCivic_Type::post_RPG_Character_AlignmentCivic_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_AlignmentCivic_Type::post_RPG_Character_AlignmentCivic_Type"));

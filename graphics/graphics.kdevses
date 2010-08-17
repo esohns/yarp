@@ -1,25 +1,13 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="6" >
+ <DocsAndViews NumberOfDocuments="2" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics.xsd" >
-   <View0 Encoding="" line="129" Type="Source" />
+   <View0 Encoding="" line="140" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics.xml" >
    <View0 Encoding="" line="76" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics_common_tools.cpp" >
-   <View0 Encoding="" line="1054" Type="Source" />
-  </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics_surface.cpp" >
-   <View0 Encoding="" line="717" Type="Source" />
-  </Doc3>
-  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics_SDL_tools.h" >
-   <View0 Encoding="" line="44" Type="Source" />
-  </Doc4>
-  <Doc5 NumberOfViews="1" URL="file:///usr/include/SDL/SDL_video.h" >
-   <View0 Encoding="" line="716" Type="Source" />
-  </Doc5>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>

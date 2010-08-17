@@ -48,15 +48,13 @@ RPG_Character_RaceToStringTable_t RPG_Character_RaceHelper::myRPG_Character_Race
 RPG_Character_MetaClassToStringTable_t RPG_Character_MetaClassHelper::myRPG_Character_MetaClassToStringTable;
 RPG_Character_AbilityToStringTable_t RPG_Character_AbilityHelper::myRPG_Character_AbilityToStringTable;
 RPG_Character_FeatToStringTable_t RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable;
-RPG_Character_PlaneToStringTable_t RPG_Character_PlaneHelper::myRPG_Character_PlaneToStringTable;
-RPG_Character_TerrainToStringTable_t RPG_Character_TerrainHelper::myRPG_Character_TerrainToStringTable;
-RPG_Character_ClimateToStringTable_t RPG_Character_ClimateHelper::myRPG_Character_ClimateToStringTable;
 RPG_Character_AlignmentCivicToStringTable_t RPG_Character_AlignmentCivicHelper::myRPG_Character_AlignmentCivicToStringTable;
 RPG_Character_AlignmentEthicToStringTable_t RPG_Character_AlignmentEthicHelper::myRPG_Character_AlignmentEthicToStringTable;
 RPG_Character_EquipmentSlotToStringTable_t RPG_Character_EquipmentSlotHelper::myRPG_Character_EquipmentSlotToStringTable;
 RPG_Character_OffHandToStringTable_t RPG_Character_OffHandHelper::myRPG_Character_OffHandToStringTable;
 
-void RPG_Character_Common_Tools::initStringConversionTables()
+void
+RPG_Character_Common_Tools::initStringConversionTables()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::initStringConversionTables"));
 
@@ -65,20 +63,17 @@ void RPG_Character_Common_Tools::initStringConversionTables()
   RPG_Character_MetaClassHelper::init();
   RPG_Character_AbilityHelper::init();
   RPG_Character_FeatHelper::init();
-  RPG_Character_PlaneHelper::init();
-  RPG_Character_TerrainHelper::init();
-  RPG_Character_ClimateHelper::init();
   RPG_Character_AlignmentCivicHelper::init();
   RPG_Character_AlignmentEthicHelper::init();
   RPG_Character_EquipmentSlotHelper::init();
   RPG_Character_OffHandHelper::init();
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Character_Common_Tools: initialized string conversion tables...\n")));
 }
 
-const std::string RPG_Character_Common_Tools::alignmentToString(const RPG_Character_Alignment& alignment_in)
+const std::string
+RPG_Character_Common_Tools::alignmentToString(const RPG_Character_Alignment& alignment_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::alignmentToString"));
 
@@ -98,23 +93,8 @@ const std::string RPG_Character_Common_Tools::alignmentToString(const RPG_Charac
   return result;
 }
 
-const std::string RPG_Character_Common_Tools::environmentToString(const RPG_Character_Environment& environment_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::environmentToString"));
-
-  std::string result;
-
-  result += RPG_Character_TerrainHelper::RPG_Character_TerrainToString(environment_in.terrain);
-  if (environment_in.climate != RPG_CHARACTER_CLIMATE_INVALID)
-  {
-    result += ACE_TEXT_ALWAYS_CHAR("|");
-    result += RPG_Character_ClimateHelper::RPG_Character_ClimateToString(environment_in.climate);
-  } // end IF
-
-  return result;
-}
-
-const std::string RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& attributes_in)
+const std::string
+RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& attributes_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::attributesToString"));
 
@@ -170,7 +150,8 @@ const std::string RPG_Character_Common_Tools::attributesToString(const RPG_Chara
   return result;
 }
 
-const std::string RPG_Character_Common_Tools::classToString(const RPG_Character_Class& class_in)
+const std::string
+RPG_Character_Common_Tools::classToString(const RPG_Character_Class& class_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::classToString"));
 
@@ -195,7 +176,8 @@ const std::string RPG_Character_Common_Tools::classToString(const RPG_Character_
   return result;
 }
 
-const std::string RPG_Character_Common_Tools::conditionToString(const RPG_Character_Conditions_t& condition_in)
+const std::string
+RPG_Character_Common_Tools::conditionToString(const RPG_Character_Conditions_t& condition_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::conditionToString"));
 
@@ -213,7 +195,75 @@ const std::string RPG_Character_Common_Tools::conditionToString(const RPG_Charac
   return result;
 }
 
-const signed char RPG_Character_Common_Tools::getAttributeAbilityModifier(const unsigned char& attributeAbility_in)
+const bool
+RPG_Character_Common_Tools::match(const RPG_Character_Alignment& alignmentA_in,
+                                  const RPG_Character_Alignment& alignmentB_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::match"));
+
+  // check civics
+  switch (alignmentA_in.civic)
+  {
+    case ALIGNMENTCIVIC_ANY:
+    {
+      // OK
+      break;
+    }
+    default:
+    {
+      switch (alignmentB_in.civic)
+      {
+        case ALIGNMENTCIVIC_ANY:
+        {
+          // OK
+          break;
+        }
+        default:
+        {
+          if (alignmentA_in.civic != alignmentB_in.civic)
+            return false;
+
+          // OK
+          break;
+        }
+      } // end SWITCH
+    }
+  } // end SWITCH
+
+  // check ethics
+  switch (alignmentA_in.ethic)
+  {
+    case ALIGNMENTETHIC_ANY:
+    {
+      // OK
+      break;
+    }
+    default:
+    {
+      switch (alignmentB_in.ethic)
+      {
+        case ALIGNMENTETHIC_ANY:
+        {
+          // OK
+          break;
+        }
+        default:
+        {
+          if (alignmentA_in.ethic != alignmentB_in.ethic)
+            return false;
+
+          // OK
+          break;
+        }
+      } // end SWITCH
+    }
+  } // end SWITCH
+
+  return true;
+}
+
+const signed char
+RPG_Character_Common_Tools::getAttributeAbilityModifier(const unsigned char& attributeAbility_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getAttributeAbilityModifier"));
 
@@ -224,7 +274,8 @@ const signed char RPG_Character_Common_Tools::getAttributeAbilityModifier(const 
   return baseValue;
 }
 
-const bool RPG_Character_Common_Tools::getAttributeCheck(const unsigned char& attributeAbilityScore_in)
+const bool
+RPG_Character_Common_Tools::getAttributeCheck(const unsigned char& attributeAbilityScore_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getAttributeCheck"));
 
@@ -233,7 +284,8 @@ const bool RPG_Character_Common_Tools::getAttributeCheck(const unsigned char& at
   return (result >= attributeAbilityScore_in);
 }
 
-const RPG_Dice_DieType RPG_Character_Common_Tools::getHitDie(const RPG_Common_SubClass& subClass_in)
+const RPG_Dice_DieType
+RPG_Character_Common_Tools::getHitDie(const RPG_Common_SubClass& subClass_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getHitDie"));
 
@@ -284,8 +336,9 @@ const RPG_Dice_DieType RPG_Character_Common_Tools::getHitDie(const RPG_Common_Su
   return RPG_DICE_DIETYPE_INVALID;
 }
 
-const RPG_Character_BaseAttackBonus_t RPG_Character_Common_Tools::getBaseAttackBonus(const RPG_Common_SubClass& subClass_in,
-                                                                                     const unsigned char& classLevel_in)
+const RPG_Character_BaseAttackBonus_t
+RPG_Character_Common_Tools::getBaseAttackBonus(const RPG_Common_SubClass& subClass_in,
+                                               const unsigned char& classLevel_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getBaseAttackBonus"));
 
@@ -350,7 +403,8 @@ const RPG_Character_BaseAttackBonus_t RPG_Character_Common_Tools::getBaseAttackB
   return result;
 }
 
-const bool RPG_Character_Common_Tools::isCasterClass(const RPG_Common_SubClass& subClass_in)
+const bool
+RPG_Character_Common_Tools::isCasterClass(const RPG_Common_SubClass& subClass_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::isCasterClass"));
 
@@ -380,69 +434,8 @@ const bool RPG_Character_Common_Tools::isCasterClass(const RPG_Common_SubClass& 
   return false;
 }
 
-const RPG_Character_Plane RPG_Character_Common_Tools::terrainToPlane(const RPG_Character_Terrain& terrain_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::terrainToPlane"));
-
-  switch (terrain_in)
-  {
-    case TERRAIN_UNDERGROUND:
-    case TERRAIN_PLAINS:
-    case TERRAIN_FORESTS:
-    case TERRAIN_HILLS:
-    case TERRAIN_MOUNTAINS:
-    case TERRAIN_DESERTS:
-    case TERRAIN_MATERIALPLANE_ANY:
-    {
-      return PLANE_MATERIAL;
-    }
-    case TERRAIN_TRANSITIVEPLANE_ASTRAL:
-    case TERRAIN_TRANSITIVEPLANE_ETHERAL:
-    case TERRAIN_TRANSITIVEPLANE_SHADOW:
-    case TERRAIN_TRANSITIVEPLANE_ANY:
-    {
-      return PLANE_TRANSITIVE;
-    }
-    case TERRAIN_INNERPLANE_AIR:
-    case TERRAIN_INNERPLANE_EARTH:
-    case TERRAIN_INNERPLANE_FIRE:
-    case TERRAIN_INNERPLANE_WATER:
-    case TERRAIN_INNERPLANE_POSITIVE:
-    case TERRAIN_INNERPLANE_NEGATIVE:
-    case TERRAIN_INNERPLANE_ANY:
-    {
-      return PLANE_INNER;
-    }
-    case TERRAIN_OUTERPLANE_LAWFUL_ANY:
-    case TERRAIN_OUTERPLANE_CHAOTIC_ANY:
-    case TERRAIN_OUTERPLANE_GOOD_ANY:
-    case TERRAIN_OUTERPLANE_EVIL_ANY:
-    case TERRAIN_OUTERPLANE_LAWFUL_GOOD:
-    case TERRAIN_OUTERPLANE_LAWFUL_EVIL:
-    case TERRAIN_OUTERPLANE_CHAOTIC_GOOD:
-    case TERRAIN_OUTERPLANE_CHAOTIC_EVIL:
-    case TERRAIN_OUTERPLANE_NEUTRAL:
-    case TERRAIN_OUTERPLANE_MILD_ANY:
-    case TERRAIN_OUTERPLANE_STRONG_ANY:
-    case TERRAIN_OUTERPLANE_ANY:
-    {
-      return PLANE_OUTER;
-    }
-    default:
-    {
-      // debug info
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid terrain: \"%s\" --> check implementation !, aborting\n"),
-                 RPG_Character_TerrainHelper::RPG_Character_TerrainToString(terrain_in).c_str()));
-
-      break;
-    }
-  } // end SWITCH
-
-  return RPG_CHARACTER_PLANE_INVALID;
-}
-
-const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
+const RPG_Character_Player
+RPG_Character_Common_Tools::generatePlayerCharacter()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::generatePlayerCharacter"));
 
@@ -886,7 +879,8 @@ const RPG_Character_Player RPG_Character_Common_Tools::generatePlayerCharacter()
   return player;
 }
 
-const unsigned int RPG_Character_Common_Tools::restParty(RPG_Character_Party_t& party_in)
+const unsigned int
+RPG_Character_Common_Tools::restParty(RPG_Character_Party_t& party_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::restParty"));
 

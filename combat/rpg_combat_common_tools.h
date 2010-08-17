@@ -28,14 +28,9 @@
 
 #include "rpg_combat_common.h"
 
-#include <rpg_monster_common.h>
-
-#include <rpg_character_player_common.h>
-
 #include <ace/Global_Macros.h>
 
 #include <string>
-#include <deque>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -48,16 +43,6 @@ class RPG_Combat_Common_Tools
   static const std::string attackFormsToString(const RPG_Combat_AttackForms_t&); // attack forms
   static const std::string damageToString(const RPG_Combat_Damage&); // damage
 
-  static const bool isPartyHelpless(const RPG_Character_Party_t&); // party
-  static const bool areMonstersHelpless(const RPG_Character_Monsters_t&); // monsters
-
-  static void getCombatantSequence(const RPG_Character_Party_t&,     // party
-                                   const RPG_Character_Monsters_t&,  // monsters
-                                   RPG_Combat_CombatantSequence_t&); // battle sequence
-  static void performCombatRound(const RPG_Combat_AttackSituation&,      // attack situation
-                                 const RPG_Combat_DefenseSituation&,     // defense situation
-                                 const RPG_Combat_CombatantSequence_t&); // battle sequence
-
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools());
@@ -66,27 +51,6 @@ class RPG_Combat_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools& operator=(const RPG_Combat_Common_Tools&));
 
   static const std::string damageTypeToString(const RPG_Combat_DamageTypeUnion&); // damage type
-
-  // helper types
-  typedef std::deque<RPG_Combat_CombatantSequenceElement> RPG_Combat_CombatSequenceList_t;
-  typedef RPG_Combat_CombatSequenceList_t::iterator RPG_Combat_CombatSequenceListIterator_t;
-
-  static const bool isMonsterGroupHelpless(const RPG_Character_MonsterGroupInstance_t&); // group instance
-  static const bool isCharacterHelpless(const RPG_Character_Base* const); // character handle
-  static const bool isValidFoeAvailable(const bool&,                            // monsters ? : players
-                                        const RPG_Combat_CombatantSequence_t&); // battle sequence
-  static const bool isCharacterDisabled(const RPG_Character_Base* const); // character handle
-
-  static const unsigned int numCompatibleMonsterAttackActions(const RPG_Combat_AttackForm&,
-                                                              const RPG_Monster_AttackActions_t&);
-  static const bool isCompatibleMonsterAttackAction(const RPG_Combat_AttackForm&,
-                                                    const RPG_Monster_AttackAction&);
-  static void attackFoe(const RPG_Character_Base* const,    // attacker
-                        RPG_Character_Base* const,          // target
-                        const RPG_Combat_AttackSituation&,  // attacker situation
-                        const RPG_Combat_DefenseSituation&, // defender situation
-                        const bool&,                        // is this a Full-Round Action ?
-                        const unsigned short&);             // distance (feet)
 };
 
 #endif

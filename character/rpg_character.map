@@ -27,9 +27,6 @@ namespace urn:rpg
   RPG_Character_Check_Type          RPG_Character_Check;
   RPG_Character_Feat_Type           RPG_Character_Feat;
   RPG_Character_Feats_Type          RPG_Character_Feats;
-  RPG_Character_Terrain_Type        RPG_Character_Terrain;
-  RPG_Character_Climate_Type        RPG_Character_Climate;
-  RPG_Character_Environment_Type    RPG_Character_Environment;
   RPG_Character_AlignmentCivic_Type RPG_Character_AlignmentCivic;
   RPG_Character_AlignmentEthic_Type RPG_Character_AlignmentEthic;
   RPG_Character_Alignment_Type      RPG_Character_Alignment;

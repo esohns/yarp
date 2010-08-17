@@ -236,36 +236,6 @@ RPG_Character_Feats_Type_pskel ()
 {
 }
 
-// RPG_Character_Environment_Type_pskel
-//
-
-void RPG_Character_Environment_Type_pskel::
-terrain_parser (::RPG_Character_Terrain_Type_pskel& p)
-{
-  this->terrain_parser_ = &p;
-}
-
-void RPG_Character_Environment_Type_pskel::
-climate_parser (::RPG_Character_Climate_Type_pskel& p)
-{
-  this->climate_parser_ = &p;
-}
-
-void RPG_Character_Environment_Type_pskel::
-parsers (::RPG_Character_Terrain_Type_pskel& terrain,
-         ::RPG_Character_Climate_Type_pskel& climate)
-{
-  this->terrain_parser_ = &terrain;
-  this->climate_parser_ = &climate;
-}
-
-RPG_Character_Environment_Type_pskel::
-RPG_Character_Environment_Type_pskel ()
-: terrain_parser_ (0),
-  climate_parser_ (0)
-{
-}
-
 // RPG_Character_Alignment_Type_pskel
 //
 
@@ -767,86 +737,6 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->feat_parser_)
       this->feat (this->feat_parser_->post_RPG_Character_Feat_Type ());
-
-    return true;
-  }
-
-  return false;
-}
-
-// RPG_Character_Plane_Type_pskel
-//
-
-void RPG_Character_Plane_Type_pskel::
-post_RPG_Character_Plane_Type ()
-{
-}
-
-// RPG_Character_Environment_Type_pskel
-//
-
-void RPG_Character_Environment_Type_pskel::
-terrain (const RPG_Character_Terrain&)
-{
-}
-
-void RPG_Character_Environment_Type_pskel::
-climate (const RPG_Character_Climate&)
-{
-}
-
-bool RPG_Character_Environment_Type_pskel::
-_start_element_impl (const ::xml_schema::ro_string& ns,
-                     const ::xml_schema::ro_string& n,
-                     const ::xml_schema::ro_string* t)
-{
-  XSD_UNUSED (t);
-
-  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
-    return true;
-
-  if (n == "terrain" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->terrain_parser_;
-
-    if (this->terrain_parser_)
-      this->terrain_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "climate" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->climate_parser_;
-
-    if (this->climate_parser_)
-      this->climate_parser_->pre ();
-
-    return true;
-  }
-
-  return false;
-}
-
-bool RPG_Character_Environment_Type_pskel::
-_end_element_impl (const ::xml_schema::ro_string& ns,
-                   const ::xml_schema::ro_string& n)
-{
-  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
-    return true;
-
-  if (n == "terrain" && ns == "urn:rpg")
-  {
-    if (this->terrain_parser_)
-      this->terrain (this->terrain_parser_->post_RPG_Character_Terrain_Type ());
-
-    return true;
-  }
-
-  if (n == "climate" && ns == "urn:rpg")
-  {
-    if (this->climate_parser_)
-      this->climate (this->climate_parser_->post_RPG_Character_Climate_Type ());
 
     return true;
   }

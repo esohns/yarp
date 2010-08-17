@@ -22,7 +22,6 @@
 
 #include "rpg_character_base.h"
 #include "rpg_character_player.h"
-#include "rpg_character_monster.h"
 
 #include <vector>
 
@@ -32,11 +31,5 @@ typedef RPG_Character_List_t::const_iterator RPG_Character_ListIterator_t;
 typedef std::vector<RPG_Character_Player> RPG_Character_Party_t;
 typedef RPG_Character_Party_t::iterator RPG_Character_PartyIterator_t;
 typedef RPG_Character_Party_t::const_iterator RPG_Character_PartyConstIterator_t;
-
-typedef std::vector<RPG_Character_Monster> RPG_Character_MonsterGroupInstance_t;
-typedef RPG_Character_MonsterGroupInstance_t::const_iterator RPG_Character_MonsterGroupInstanceIterator_t;
-
-typedef std::vector<RPG_Character_MonsterGroupInstance_t> RPG_Character_Monsters_t;
-typedef RPG_Character_Monsters_t::const_iterator RPG_Character_MonstersIterator_t;
 
 #endif

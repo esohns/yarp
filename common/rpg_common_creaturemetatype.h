@@ -28,7 +28,8 @@
 
 enum RPG_Common_CreatureMetaType
 {
-  METATYPE_ABERRATION = 0,
+  METATYPE_ANY = 0,
+  METATYPE_ABERRATION,
   METATYPE_ANIMAL,
   METATYPE_CONSTRUCT,
   METATYPE_DRAGON,
@@ -62,6 +63,7 @@ class RPG_Common_CreatureMetaTypeHelper
   inline static void init()
   {
     myRPG_Common_CreatureMetaTypeToStringTable.clear();
+    myRPG_Common_CreatureMetaTypeToStringTable.insert(std::make_pair(METATYPE_ANY, ACE_TEXT_ALWAYS_CHAR("METATYPE_ANY")));
     myRPG_Common_CreatureMetaTypeToStringTable.insert(std::make_pair(METATYPE_ABERRATION, ACE_TEXT_ALWAYS_CHAR("METATYPE_ABERRATION")));
     myRPG_Common_CreatureMetaTypeToStringTable.insert(std::make_pair(METATYPE_ANIMAL, ACE_TEXT_ALWAYS_CHAR("METATYPE_ANIMAL")));
     myRPG_Common_CreatureMetaTypeToStringTable.insert(std::make_pair(METATYPE_CONSTRUCT, ACE_TEXT_ALWAYS_CHAR("METATYPE_CONSTRUCT")));

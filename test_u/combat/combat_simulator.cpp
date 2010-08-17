@@ -17,21 +17,24 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-// *IMPORTANT NOTE*: need this to import correct VERSION !
+// *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#include <rpg_combat_common_tools.h>
+#include <rpg_engine_common.h>
+#include <rpg_engine_common_tools.h>
 
+#include <rpg_monster.h>
 #include <rpg_monster_dictionary.h>
 #include <rpg_monster_common_tools.h>
+
+#include <rpg_combat_common_tools.h>
 
 #include <rpg_character_common_tools.h>
 #include <rpg_character_skills_common_tools.h>
 #include <rpg_character_player.h>
 #include <rpg_character_player_common.h>
-#include <rpg_character_monster.h>
 
 #include <rpg_item_dictionary.h>
 #include <rpg_item_common_tools.h>
@@ -205,12 +208,12 @@ const unsigned int do_battle(RPG_Character_Party_t& party_in,
   ACE_TRACE(ACE_TEXT("::do_battle"));
 
   // step1: instantiate monster(s)
-  RPG_Character_Monsters_t monsters;
+  RPG_Monster_Groups_t monsters;
   for (RPG_Monster_EncounterConstIterator_t iterator = encounter_in.begin();
        iterator != encounter_in.end();
        iterator++)
   {
-    RPG_Character_MonsterGroupInstance_t groupInstance;
+    RPG_Monster_Group_t groupInstance;
     RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(iterator->first);
   // *TODO*: define monster abilities !
     RPG_Character_Abilities_t abilities;
@@ -229,21 +232,21 @@ const unsigned int do_battle(RPG_Character_Party_t& party_in,
       RPG_Magic_Spells_t knownSpells;
       RPG_Magic_SpellList_t spells;
       RPG_Item_List_t items;
-      RPG_Character_Monster monster((iterator->first).c_str(),
-                                    properties.type,
-                                    properties.alignment,
-                                    properties.attributes,
-                                    properties.skills,
-                                    properties.feats,
-                                    abilities,
-                                    properties.size,
-                                    (*iterator2),
-                                    wealth,
-                                    knownSpells,
-                                    spells,
-                                    items);
+      RPG_Monster monster((iterator->first).c_str(),
+                          properties.type,
+                          properties.alignment,
+                          properties.attributes,
+                          properties.skills,
+                          properties.feats,
+                          abilities,
+                          properties.size,
+                          (*iterator2),
+                          wealth,
+                          knownSpells,
+                          spells,
+                          items);
 
-      // debug info
+//       // debug info
 //       monster.dump();
 
       groupInstance.push_back(monster);
@@ -253,8 +256,8 @@ const unsigned int do_battle(RPG_Character_Party_t& party_in,
   } // end FOR
 
   // step2: compute initiative and battle sequence
-  RPG_Combat_CombatantSequence_t battleSequence;
-  RPG_Combat_Common_Tools::getCombatantSequence(party_in,
+  RPG_Engine_CombatantSequence_t battleSequence;
+  RPG_Engine_Common_Tools::getCombatantSequence(party_in,
                                                 monsters,
                                                 battleSequence);
   // perform a combat round
@@ -266,27 +269,27 @@ const unsigned int do_battle(RPG_Character_Party_t& party_in,
                numRound));
 
     // *TODO*: consider surprise round
-    RPG_Combat_Common_Tools::performCombatRound(ATTACK_NORMAL,
+    RPG_Engine_Common_Tools::performCombatRound(ATTACK_NORMAL,
                                                 ((numRound == 1) ? DEFENSE_FLATFOOTED
                                                                  : DEFENSE_NORMAL),
                                                 battleSequence);
 
-    if (RPG_Combat_Common_Tools::isPartyHelpless(party_in) ||
-        RPG_Combat_Common_Tools::areMonstersHelpless(monsters))
+    if (RPG_Engine_Common_Tools::isPartyHelpless(party_in) ||
+        RPG_Engine_Common_Tools::areMonstersHelpless(monsters))
       break;
 
     numRound++;
   } while (true);
 
   // sanity check
-  if (RPG_Combat_Common_Tools::isPartyHelpless(party_in) &&
-      RPG_Combat_Common_Tools::areMonstersHelpless(monsters))
+  if (RPG_Engine_Common_Tools::isPartyHelpless(party_in) &&
+      RPG_Engine_Common_Tools::areMonstersHelpless(monsters))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("everybody is HELPLESS --> check implementation !\n")));
   } // end IF
 
-  if (!RPG_Combat_Common_Tools::isPartyHelpless(party_in))
+  if (!RPG_Engine_Common_Tools::isPartyHelpless(party_in))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("party has WON !\n")));
@@ -396,7 +399,7 @@ void do_work(const std::string& magicDictionaryFilename_in,
       RPG_Character_Alignment alignment;
       alignment.civic = ALIGNMENTCIVIC_ANY;
       alignment.ethic = ALIGNMENTETHIC_ANY;
-      RPG_Character_Environment environment;
+      RPG_Common_Environment environment;
       environment.climate = CLIMATE_ANY;
       environment.terrain = TERRAIN_ANY;
       RPG_Monster_OrganizationSet_t organizations;
@@ -413,7 +416,7 @@ void do_work(const std::string& magicDictionaryFilename_in,
       gameTime += do_battle(party,
                             encounter);
 
-      if (RPG_Combat_Common_Tools::isPartyHelpless(party))
+      if (RPG_Engine_Common_Tools::isPartyHelpless(party))
         break;
 
       // party has survived --> rest/recover...

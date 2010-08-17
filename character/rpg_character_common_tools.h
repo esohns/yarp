@@ -40,9 +40,11 @@ class RPG_Character_Common_Tools
 
   static const std::string alignmentToString(const RPG_Character_Alignment&); // alignment
   static const std::string attributesToString(const RPG_Character_Attributes&); // attributes
-  static const std::string environmentToString(const RPG_Character_Environment&); // environment
   static const std::string classToString(const RPG_Character_Class&); // class(es)
   static const std::string conditionToString(const RPG_Character_Conditions_t&); // condition
+
+  static const bool match(const RPG_Character_Alignment&,  // a
+                          const RPG_Character_Alignment&); // b
 
   static const signed char getAttributeAbilityModifier(const unsigned char&); // attribute ability score
   static const bool getAttributeCheck(const unsigned char&); // attribute ability score
@@ -50,8 +52,6 @@ class RPG_Character_Common_Tools
   static const RPG_Character_BaseAttackBonus_t getBaseAttackBonus(const RPG_Common_SubClass&, // subClass
                                                                   const unsigned char&);      // class level
   static const bool isCasterClass(const RPG_Common_SubClass&); // subClass
-
-  static const RPG_Character_Plane terrainToPlane(const RPG_Character_Terrain&);
 
   static const RPG_Character_Player generatePlayerCharacter(); // return value: (random) player
   static const unsigned int restParty(RPG_Character_Party_t&); // party of players

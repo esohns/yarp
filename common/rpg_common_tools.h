@@ -22,6 +22,7 @@
 
 #include <rpg_dice_incl.h>
 #include "rpg_common_incl.h"
+#include "rpg_common_environment_incl.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Time_Value.h>
@@ -39,6 +40,11 @@ class RPG_Common_Tools
   static const RPG_Common_Attribute savingThrowToAttribute(const RPG_Common_SavingThrow&); // save
   static const std::string creatureTypeToString(const RPG_Common_CreatureType&); // type
   static const std::string savingThrowToString(const RPG_Common_SavingThrowCheck&); // save
+  static const std::string environmentToString(const RPG_Common_Environment&); // environment
+
+  static const RPG_Common_Plane terrainToPlane(const RPG_Common_Terrain&);
+  static const bool match(const RPG_Common_Environment&,  // a
+                          const RPG_Common_Environment&); // b
 
   static const signed char getSizeModifier(const RPG_Common_Size&);
   static const unsigned char sizeToReach(const RPG_Common_Size&);

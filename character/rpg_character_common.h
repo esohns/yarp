@@ -20,11 +20,9 @@
 #ifndef RPG_CHARACTER_COMMON_H
 #define RPG_CHARACTER_COMMON_H
 
-#include <rpg_common_subclass.h>
-
 #include "rpg_character_metaclass.h"
-#include "rpg_character_terrain.h"
 
+#include <rpg_common_subclass.h>
 #include <rpg_common_condition.h>
 
 #include <vector>
@@ -46,8 +44,5 @@ typedef RPG_Character_BaseAttackBonus_t::const_iterator RPG_Character_BaseAttack
 
 typedef std::set<RPG_Common_Condition> RPG_Character_Conditions_t;
 typedef RPG_Character_Conditions_t::const_iterator RPG_Character_ConditionsIterator_t;
-
-typedef std::set<RPG_Character_Terrain> RPG_Character_Terrains_t;
-typedef RPG_Character_Terrains_t::const_iterator RPG_Character_TerrainsIterator_t;
 
 #endif

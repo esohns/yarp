@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Erik Sohns   *
+ *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,14 +17,3 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
-#ifndef RPG_CHARACTER_ENVIRONMENT_H
-#define RPG_CHARACTER_ENVIRONMENT_H
-
-struct RPG_Character_Environment
-{
-  RPG_Character_Terrain terrain;
-  RPG_Character_Climate climate;
-};
-
-#endif

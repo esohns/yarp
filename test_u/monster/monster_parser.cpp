@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-// *IMPORTANT NOTE*: need this to import correct VERSION !
+// *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -29,7 +29,6 @@
 
 #include <rpg_character_common_tools.h>
 #include <rpg_character_skills_common_tools.h>
-#include <rpg_character_monster.h>
 
 #include <rpg_magic_common_tools.h>
 
@@ -158,7 +157,7 @@ void do_work(const std::string& filename_in,
   RPG_Combat_Common_Tools::initStringConversionTables();
   RPG_Monster_Common_Tools::initStringConversionTables();
 
-    // step 1a: init ruleset
+  // step 1a: init ruleset
   RPG_Character_Skills_Common_Tools::init();
 
   // step2: init monster dictionary

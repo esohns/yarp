@@ -1393,8 +1393,8 @@ RPG_Monster_PropertiesXML_Type::RPG_Monster_PropertiesXML_Type()
   myCurrentProperties.attributes.charisma = 0;
   myCurrentProperties.skills.skills.clear();
   myCurrentProperties.feats.feats.clear();
-  myCurrentProperties.environment.climate = RPG_CHARACTER_CLIMATE_INVALID;
-  myCurrentProperties.environment.terrain = RPG_CHARACTER_TERRAIN_INVALID;
+  myCurrentProperties.environment.climate = RPG_COMMON_CLIMATE_INVALID;
+  myCurrentProperties.environment.terrain = RPG_COMMON_TERRAIN_INVALID;
   myCurrentProperties.organizations.steps.clear();
   myCurrentProperties.challengeRating = 0;
   myCurrentProperties.treasureModifier = 0;
@@ -1523,7 +1523,7 @@ void RPG_Monster_PropertiesXML_Type::feats(const RPG_Character_Feats& feats_in)
   myCurrentProperties.feats = feats_in;
 }
 
-void RPG_Monster_PropertiesXML_Type::environment(const RPG_Character_Environment& environment_in)
+void RPG_Monster_PropertiesXML_Type::environment(const RPG_Common_Environment& environment_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_PropertiesXML_Type::environment"));
 
@@ -1612,8 +1612,8 @@ RPG_Monster_PropertiesXML RPG_Monster_PropertiesXML_Type::post_RPG_Monster_Prope
   myCurrentProperties.attributes.charisma = 0;
   myCurrentProperties.skills.skills.clear();
   myCurrentProperties.feats.feats.clear();
-  myCurrentProperties.environment.climate = RPG_CHARACTER_CLIMATE_INVALID;
-  myCurrentProperties.environment.terrain = RPG_CHARACTER_TERRAIN_INVALID;
+  myCurrentProperties.environment.climate = RPG_COMMON_CLIMATE_INVALID;
+  myCurrentProperties.environment.terrain = RPG_COMMON_TERRAIN_INVALID;
   myCurrentProperties.organizations.steps.clear();
   myCurrentProperties.challengeRating = 0;
   myCurrentProperties.treasureModifier = 0;

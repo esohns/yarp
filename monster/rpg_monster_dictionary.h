@@ -25,7 +25,7 @@
 #include "rpg_XMLSchema_XML_types.h"
 
 #include <rpg_character_alignment.h>
-#include <rpg_character_environment.h>
+#include <rpg_common_environment.h>
 
 #include <rpg_dice_dietype.h>
 #include <rpg_dice_roll.h>
@@ -52,7 +52,7 @@ class RPG_Monster_Dictionary
   const RPG_Monster_Properties getProperties(const std::string&) const; // name of monster
   const unsigned long numEntries() const;
   void find(const RPG_Character_Alignment&,       // alignment
-            const RPG_Character_Environment&,     // environment
+            const RPG_Common_Environment&,        // environment
             const RPG_Monster_OrganizationSet_t&, // organization(s)
             RPG_Monster_List_t&) const;           // return value: compatible types
 
@@ -77,12 +77,6 @@ class RPG_Monster_Dictionary
                         ::xml_schema::error_handler::severity, // severity
                         const std::string&);                   // message
   };
-
-  // helper methods
-  const bool environmentMatches(const RPG_Character_Environment&,        // a
-                                const RPG_Character_Environment&) const; // b
-  const bool alignmentMatches(const RPG_Character_Alignment&,        // a
-                              const RPG_Character_Alignment&) const; // b
 
   // helper types
   typedef RPG_Monster_Dictionary_t::const_iterator RPG_Monster_DictionaryConstIterator_t;

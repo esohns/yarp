@@ -5,6 +5,7 @@ namespace urn:rpg
 
   include <rpg_dice_incl.h>;
   include <rpg_common_incl.h>;
+  include <rpg_common_environment_incl.h>;
   include <rpg_magic_incl.h>;
   include <rpg_combat_incl.h>;
   include <rpg_character_incl.h>;
@@ -19,6 +20,7 @@ namespace urn:rpg
   RPG_Common_Size_Type                        RPG_Common_Size;
   RPG_Common_Usage_Type                       RPG_Common_Usage;
   RPG_Common_ActionType_Type                  RPG_Common_ActionType;
+  RPG_Common_Environment_Type                 RPG_Common_Environment;
 
   RPG_Magic_AbilityClass_Type                 RPG_Magic_AbilityClass;
   RPG_Magic_AbilityType_Type                  RPG_Magic_AbilityType;
@@ -27,7 +29,6 @@ namespace urn:rpg
   RPG_Character_Attributes_Type               RPG_Character_Attributes;
   RPG_Character_Skills_Type                   RPG_Character_Skills;
   RPG_Character_Feats_Type                    RPG_Character_Feats;
-  RPG_Character_Environment_Type              RPG_Character_Environment;
   RPG_Character_Alignment_Type                RPG_Character_Alignment;
   RPG_Character_Ability_Type                  RPG_Character_Ability;
 

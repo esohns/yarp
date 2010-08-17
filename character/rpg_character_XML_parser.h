@@ -178,39 +178,6 @@ class RPG_Character_Feats_Type
   RPG_Character_Feats myCurrentFeats;
 };
 
-class RPG_Character_Terrain_Type
- : public RPG_Character_Terrain_Type_pskel,
-   public ::xml_schema::string_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Character_Terrain post_RPG_Character_Terrain_Type();
-};
-
-class RPG_Character_Climate_Type
- : public RPG_Character_Climate_Type_pskel,
-   public ::xml_schema::string_pimpl
-{
- public:
-//   virtual void pre();
-  virtual RPG_Character_Climate post_RPG_Character_Climate_Type();
-};
-
-class RPG_Character_Environment_Type
- : public RPG_Character_Environment_Type_pskel
-{
- public:
-  RPG_Character_Environment_Type();
-
-//   virtual void pre();
-  virtual void terrain(const RPG_Character_Terrain&);
-  virtual void climate(const RPG_Character_Climate&);
-  virtual RPG_Character_Environment post_RPG_Character_Environment_Type();
-
- private:
-  RPG_Character_Environment myCurrentEnvironment;
-};
-
 class RPG_Character_AlignmentCivic_Type
  : public RPG_Character_AlignmentCivic_Type_pskel,
    public ::xml_schema::string_pimpl
