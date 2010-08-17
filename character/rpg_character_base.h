@@ -41,95 +41,95 @@
 /**
 base class of all PCs, NPCs and monsters
 
-	@author Erik Sohns <erik.sohns@web.de>
-*/
+  @author Erik Sohns <erik.sohns@web.de>
+ */
 class RPG_Character_Base
 {
- public:
-  virtual ~RPG_Character_Base();
+  public:
+    virtual ~RPG_Character_Base();
 
   // retrieve basic character data
-  const std::string getName() const;
-  const RPG_Character_Alignment getAlignment() const;
+    const std::string getName() const;
+    const RPG_Character_Alignment getAlignment() const;
 
   // retrieve base attributes
-  const unsigned char getAttribute(const RPG_Common_Attribute&) const;
+    const unsigned char getAttribute(const RPG_Common_Attribute&) const;
 
   // retrieve skill value (if any)
-  void getSkill(const RPG_Common_Skill&, // skill
-                unsigned char&) const;   // result: value (0: doesn't exist)
+    void getSkill(const RPG_Common_Skill&, // skill
+                  unsigned char&) const;   // result: value (0: doesn't exist)
 
-  const bool hasFeat(const RPG_Character_Feat&) const; // feat
-  const bool hasAbility(const RPG_Character_Ability&) const; // ability
-  const bool hasCondition(const RPG_Common_Condition&) const; // condition
+    const bool hasFeat(const RPG_Character_Feat&) const; // feat
+    const bool hasAbility(const RPG_Character_Ability&) const; // ability
+    const bool hasCondition(const RPG_Common_Condition&) const; // condition
 
-  const unsigned short int getNumTotalHitPoints() const;
-  const short int getNumHitPoints() const;
+    const unsigned short int getNumTotalHitPoints() const;
+    const short int getNumHitPoints() const;
 
-  const unsigned int getWealth() const;
-  const RPG_Common_Size getSize() const;
+    const unsigned int getWealth() const;
+    const RPG_Common_Size getSize() const;
 
-  virtual const RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
-                                                               const RPG_Combat_AttackSituation&) const = 0;
-  virtual const signed char getArmorClass(const RPG_Combat_DefenseSituation&) const = 0;
+    virtual const RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
+        const RPG_Combat_AttackSituation&) const = 0;
+    virtual const signed char getArmorClass(const RPG_Combat_DefenseSituation&) const = 0;
 
     // get a hint if this is a PC/NPC
-  virtual const bool isPlayerCharacter() const = 0;
+    virtual const bool isPlayerCharacter() const = 0;
   // sustain some damage (melee, magic, ...)
-  void sustainDamage(const RPG_Combat_Damage&); // damage
+    void sustainDamage(const RPG_Combat_Damage&); // damage
   // we just got wiser...
-  virtual void gainExperience(const unsigned int&) = 0; // XP
+    virtual void gainExperience(const unsigned int&) = 0; // XP
 
-  virtual void status() const;
+    virtual void status() const;
 
-  virtual void dump() const;
+    virtual void dump() const;
 
- protected:
-  RPG_Character_Base(// base attributes
-                     const std::string&,                // name
-                     const RPG_Character_Alignment&,    // (starting) alignment
-                     const RPG_Character_Attributes&,   // base attributes
-                     const RPG_Character_Skills_t&,     // (starting) skills
-                     const RPG_Character_Feats_t&,      // base feats
-                     const RPG_Character_Abilities_t&,  // base abilities
-                     const RPG_Common_Size&,            // (default) size
-                     const unsigned short int&,         // (starting) HP
-                     const unsigned int&,               // (starting) wealth (GP)
+  protected:
+    RPG_Character_Base(// base attributes
+                       const std::string&,                // name
+                       const RPG_Character_Alignment&,    // (starting) alignment
+                       const RPG_Character_Attributes&,   // base attributes
+                       const RPG_Character_Skills_t&,     // (starting) skills
+                       const RPG_Character_Feats_t&,      // base feats
+                       const RPG_Character_Abilities_t&,  // base abilities
+                       const RPG_Common_Size&,            // (default) size
+                       const unsigned short int&,         // (starting) HP
+                       const unsigned int&,               // (starting) wealth (GP)
                      // base spells
-                     const RPG_Magic_Spells_t&,         // (starting) set of known spells (bard / sorcerer)
-                     const RPG_Magic_SpellList_t&,      // (starting) set of memorized/prepared spells (!bard)
+                       const RPG_Magic_Spells_t&,         // (starting) set of known spells (bard / sorcerer)
+                       const RPG_Magic_SpellList_t&,      // (starting) set of memorized/prepared spells (!bard)
                      // base items
-                     const RPG_Item_List_t&);           // (starting) list of (carried) items
-  RPG_Character_Base(const RPG_Character_Base&);
-  RPG_Character_Base& operator=(const RPG_Character_Base&);
+                       const RPG_Item_List_t&);           // (starting) list of (carried) items
+    RPG_Character_Base(const RPG_Character_Base&);
+    RPG_Character_Base& operator=(const RPG_Character_Base&);
 
-  virtual const signed char getShieldBonus() const = 0;
+    virtual const signed char getShieldBonus() const = 0;
 
-  unsigned int               myWealth;
-  RPG_Common_Size            mySize;
+    unsigned int               myWealth;
+    RPG_Common_Size            mySize;
 
-  RPG_Magic_Spells_t         myKnownSpells;
-  RPG_Magic_SpellList_t      mySpells;
+    RPG_Magic_Spells_t         myKnownSpells;
+    RPG_Magic_SpellList_t      mySpells;
 
-  RPG_Character_Inventory    myInventory;
-  RPG_Character_Equipment    myEquipment;
+    RPG_Character_Inventory    myInventory;
+    RPG_Character_Equipment    myEquipment;
 
-  short int                  myNumHitPoints;
-  RPG_Character_Conditions_t myConditions;
+    short int                  myNumHitPoints;
+    RPG_Character_Conditions_t myConditions;
 
- private:
+  private:
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Base());
+    ACE_UNIMPLEMENTED_FUNC(RPG_Character_Base());
 
-  std::string                myName;
-  RPG_Character_Alignment    myAlignment;
+    std::string                myName;
+    RPG_Character_Alignment    myAlignment;
 
-  RPG_Character_Attributes   myAttributes;
-  RPG_Character_Skills_t     mySkills;
-  RPG_Character_Feats_t      myFeats;
-  RPG_Character_Abilities_t  myAbilities;
+    RPG_Character_Attributes   myAttributes;
+    RPG_Character_Skills_t     mySkills;
+    RPG_Character_Feats_t      myFeats;
+    RPG_Character_Abilities_t  myAbilities;
 
-  unsigned short int         myNumTotalHitPoints;
+    unsigned short int         myNumTotalHitPoints;
 };
 
 #endif

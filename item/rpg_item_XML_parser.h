@@ -136,8 +136,8 @@ class RPG_Item_MagicalProperties_Type
   RPG_Item_MagicalProperties_Type();
 
 //   virtual void pre();
-  virtual void Aura(const RPG_Magic_School&);
-  virtual void Prerequisites(const RPG_Item_MagicalPrerequisites&);
+  virtual void aura(const RPG_Magic_School&);
+  virtual void prerequisites(const RPG_Item_MagicalPrerequisites&);
   virtual RPG_Item_MagicalProperties post_RPG_Item_MagicalProperties_Type();
 
  private:

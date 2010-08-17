@@ -23,29 +23,22 @@
 // -------------------------------- * * * -------------------------------- //
 
 #pragma once
-#ifndef RPG_CHARACTER_INCL_H
-#define RPG_CHARACTER_INCL_H
+#ifndef RPG_CHARACTER_BASEXML_H
+#define RPG_CHARACTER_BASEXML_H
 
-#include <vector>
-#include "rpg_character_gender.h"
-#include "rpg_character_race.h"
-#include "rpg_character_metaclass.h"
-#include "rpg_character_classxml.h"
-#include "rpg_character_ability.h"
-#include "rpg_character_abilities.h"
-#include "rpg_character_attributes.h"
-#include "rpg_character_skillvalue.h"
-#include "rpg_character_skills.h"
-#include "rpg_character_checktypeunion.h"
-#include "rpg_character_check.h"
-#include "rpg_character_feat.h"
-#include "rpg_character_feats.h"
-#include "rpg_character_alignmentcivic.h"
-#include "rpg_character_alignmentethic.h"
-#include "rpg_character_alignment.h"
-#include "rpg_character_equipmentslot.h"
-#include "rpg_character_offhand.h"
-#include "rpg_character_basexml.h"
-#include "rpg_character_playerxml.h"
+struct RPG_Character_BaseXML
+{
+  RPG_Character_Gender gender;
+  RPG_Character_Alignment alignment;
+  RPG_Character_Attributes attributes;
+  RPG_Character_Skills skills;
+  RPG_Character_Feats feats;
+  RPG_Character_Abilities abilities;
+  unsigned int XP;
+  int HP;
+  unsigned int maxHP;
+  unsigned int gold;
+  std::vector<RPG_Common_Condition> conditions;
+};
 
 #endif

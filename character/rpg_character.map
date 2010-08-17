@@ -8,9 +8,10 @@ namespace urn:rpg
   RPG_Dice_Roll_Type                RPG_Dice_Roll;
   RPG_Dice_ValueRange_Type          RPG_Dice_ValueRange;
 
-  RPG_Common_Attribute_Type         RPG_Common_Attribute;
-  RPG_Common_Skill_Type             RPG_Common_Skill;
   RPG_Common_SubClass_Type          RPG_Common_SubClass;
+  RPG_Common_Attribute_Type         RPG_Common_Attribute;
+  RPG_Common_Condition_Type         RPG_Common_Condition;
+  RPG_Common_Skill_Type             RPG_Common_Skill;
 
   RPG_Character_Gender_Type         RPG_Character_Gender;
   RPG_Character_Race_Type           RPG_Character_Race;
@@ -18,6 +19,7 @@ namespace urn:rpg
   RPG_Character_ClassXML_Type       RPG_Character_ClassXML;
   RPG_Character_Condition_Type      RPG_Character_Condition;
   RPG_Character_Ability_Type        RPG_Character_Ability;
+  RPG_Character_Abilities_Type      RPG_Character_Abilities;
   RPG_Character_Size_Type           RPG_Character_Size;
   RPG_Character_Attributes_Type     RPG_Character_Attributes;
   RPG_Character_Skill_Type          RPG_Character_Skill;
@@ -32,4 +34,7 @@ namespace urn:rpg
   RPG_Character_Alignment_Type      RPG_Character_Alignment;
   RPG_Character_EquipmentSlot_Type  RPG_Character_EquipmentSlot;
   RPG_Character_OffHand_Type        RPG_Character_OffHand;
+
+  RPG_Character_BaseXML_Type        RPG_Character_BaseXML;
+  RPG_Character_PlayerXML_Type      RPG_Character_PlayerXML;
 }

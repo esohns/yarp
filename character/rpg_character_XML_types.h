@@ -54,6 +54,7 @@ class RPG_Character_Race_Type_pskel;
 class RPG_Character_MetaClass_Type_pskel;
 class RPG_Character_ClassXML_Type_pskel;
 class RPG_Character_Ability_Type_pskel;
+class RPG_Character_Abilities_Type_pskel;
 class RPG_Character_Attributes_Type_pskel;
 class RPG_Character_SkillValue_Type_pskel;
 class RPG_Character_Skills_Type_pskel;
@@ -66,6 +67,8 @@ class RPG_Character_AlignmentEthic_Type_pskel;
 class RPG_Character_Alignment_Type_pskel;
 class RPG_Character_EquipmentSlot_Type_pskel;
 class RPG_Character_OffHand_Type_pskel;
+class RPG_Character_BaseXML_Type_pskel;
+class RPG_Character_PlayerXML_Type_pskel;
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -179,6 +182,48 @@ class RPG_Character_Ability_Type_pskel: public virtual ::xml_schema::string_pske
 
   virtual RPG_Character_Ability
   post_RPG_Character_Ability_Type () = 0;
+};
+
+class RPG_Character_Abilities_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  ability (const RPG_Character_Ability&);
+
+  virtual RPG_Character_Abilities
+  post_RPG_Character_Abilities_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  ability_parser (::RPG_Character_Ability_Type_pskel&);
+
+  void
+  parsers (::RPG_Character_Ability_Type_pskel& /* ability */);
+
+  // Constructor.
+  //
+  RPG_Character_Abilities_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Character_Ability_Type_pskel* ability_parser_;
 };
 
 class RPG_Character_Attributes_Type_pskel: public ::xml_schema::complex_content
@@ -570,6 +615,205 @@ class RPG_Character_OffHand_Type_pskel: public virtual ::xml_schema::string_pske
 
   virtual RPG_Character_OffHand
   post_RPG_Character_OffHand_Type () = 0;
+};
+
+class RPG_Character_BaseXML_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  gender (const RPG_Character_Gender&);
+
+  virtual void
+  alignment (const RPG_Character_Alignment&);
+
+  virtual void
+  attributes (const RPG_Character_Attributes&);
+
+  virtual void
+  skills (const RPG_Character_Skills&);
+
+  virtual void
+  feats (const RPG_Character_Feats&);
+
+  virtual void
+  abilities (const RPG_Character_Abilities&);
+
+  virtual void
+  XP (unsigned int);
+
+  virtual void
+  HP (long long);
+
+  virtual void
+  maxHP (unsigned int);
+
+  virtual void
+  gold (unsigned int);
+
+  virtual void
+  condition (const RPG_Common_Condition&);
+
+  virtual RPG_Character_BaseXML
+  post_RPG_Character_BaseXML_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  gender_parser (::RPG_Character_Gender_Type_pskel&);
+
+  void
+  alignment_parser (::RPG_Character_Alignment_Type_pskel&);
+
+  void
+  attributes_parser (::RPG_Character_Attributes_Type_pskel&);
+
+  void
+  skills_parser (::RPG_Character_Skills_Type_pskel&);
+
+  void
+  feats_parser (::RPG_Character_Feats_Type_pskel&);
+
+  void
+  abilities_parser (::RPG_Character_Abilities_Type_pskel&);
+
+  void
+  XP_parser (::xml_schema::unsigned_int_pskel&);
+
+  void
+  HP_parser (::xml_schema::integer_pskel&);
+
+  void
+  maxHP_parser (::xml_schema::unsigned_int_pskel&);
+
+  void
+  gold_parser (::xml_schema::unsigned_int_pskel&);
+
+  void
+  condition_parser (::RPG_Common_Condition_Type_pskel&);
+
+  void
+  parsers (::RPG_Character_Gender_Type_pskel& /* gender */,
+           ::RPG_Character_Alignment_Type_pskel& /* alignment */,
+           ::RPG_Character_Attributes_Type_pskel& /* attributes */,
+           ::RPG_Character_Skills_Type_pskel& /* skills */,
+           ::RPG_Character_Feats_Type_pskel& /* feats */,
+           ::RPG_Character_Abilities_Type_pskel& /* abilities */,
+           ::xml_schema::unsigned_int_pskel& /* XP */,
+           ::xml_schema::integer_pskel& /* HP */,
+           ::xml_schema::unsigned_int_pskel& /* maxHP */,
+           ::xml_schema::unsigned_int_pskel& /* gold */,
+           ::RPG_Common_Condition_Type_pskel& /* condition */);
+
+  // Constructor.
+  //
+  RPG_Character_BaseXML_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Character_Gender_Type_pskel* gender_parser_;
+  ::RPG_Character_Alignment_Type_pskel* alignment_parser_;
+  ::RPG_Character_Attributes_Type_pskel* attributes_parser_;
+  ::RPG_Character_Skills_Type_pskel* skills_parser_;
+  ::RPG_Character_Feats_Type_pskel* feats_parser_;
+  ::RPG_Character_Abilities_Type_pskel* abilities_parser_;
+  ::xml_schema::unsigned_int_pskel* XP_parser_;
+  ::xml_schema::integer_pskel* HP_parser_;
+  ::xml_schema::unsigned_int_pskel* maxHP_parser_;
+  ::xml_schema::unsigned_int_pskel* gold_parser_;
+  ::RPG_Common_Condition_Type_pskel* condition_parser_;
+};
+
+class RPG_Character_PlayerXML_Type_pskel: public virtual ::RPG_Character_BaseXML_Type_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  name (const ::std::string&);
+
+  virtual void
+  race (const RPG_Character_Race&);
+
+  virtual void
+  classXML (const RPG_Character_ClassXML&);
+
+  virtual void
+  offhand (const RPG_Character_OffHand&);
+
+  virtual RPG_Character_PlayerXML
+  post_RPG_Character_PlayerXML_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  name_parser (::xml_schema::string_pskel&);
+
+  void
+  race_parser (::RPG_Character_Race_Type_pskel&);
+
+  void
+  classXML_parser (::RPG_Character_ClassXML_Type_pskel&);
+
+  void
+  offhand_parser (::RPG_Character_OffHand_Type_pskel&);
+
+  void
+  parsers (::RPG_Character_Gender_Type_pskel& /* gender */,
+           ::RPG_Character_Alignment_Type_pskel& /* alignment */,
+           ::RPG_Character_Attributes_Type_pskel& /* attributes */,
+           ::RPG_Character_Skills_Type_pskel& /* skills */,
+           ::RPG_Character_Feats_Type_pskel& /* feats */,
+           ::RPG_Character_Abilities_Type_pskel& /* abilities */,
+           ::xml_schema::unsigned_int_pskel& /* XP */,
+           ::xml_schema::integer_pskel& /* HP */,
+           ::xml_schema::unsigned_int_pskel& /* maxHP */,
+           ::xml_schema::unsigned_int_pskel& /* gold */,
+           ::RPG_Common_Condition_Type_pskel& /* condition */,
+           ::xml_schema::string_pskel& /* name */,
+           ::RPG_Character_Race_Type_pskel& /* race */,
+           ::RPG_Character_ClassXML_Type_pskel& /* classXML */,
+           ::RPG_Character_OffHand_Type_pskel& /* offhand */);
+
+  // Constructor.
+  //
+  RPG_Character_PlayerXML_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::xml_schema::string_pskel* name_parser_;
+  ::RPG_Character_Race_Type_pskel* race_parser_;
+  ::RPG_Character_ClassXML_Type_pskel* classXML_parser_;
+  ::RPG_Character_OffHand_Type_pskel* offhand_parser_;
 };
 
 #include <xsd/cxx/post.hxx>

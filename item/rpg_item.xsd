@@ -177,8 +177,8 @@
 
   <xsd:complexType name="RPG_Item_MagicalProperties_Type">
     <xsd:sequence>
-      <xsd:element name="Aura" type="RPG_Magic_School_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="Prerequisites" type="RPG_Item_MagicalPrerequisites_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="aura" type="RPG_Magic_School_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="prerequisites" type="RPG_Item_MagicalPrerequisites_Type" minOccurs="1" maxOccurs="1"/>
 <!--       <xsd:element name="marketPrice" type="RPG_Item_StorePrice_Type" minOccurs="1" maxOccurs="1"/> -->
 <!--       <xsd:element name="costToCreate" type="RPG_Item_CreationCost_Type" minOccurs="1" maxOccurs="1"/> -->
 <!--       <xsd:element name="baseWeight" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/> -->

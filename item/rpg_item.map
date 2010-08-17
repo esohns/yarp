@@ -19,7 +19,9 @@ namespace urn:rpg
   RPG_Item_StorePrice_Type               RPG_Item_StorePrice;
   RPG_Item_CriticalHitProperties_Type    RPG_Item_CriticalHitProperties;
   RPG_Item_CreationCost_Type             RPG_Item_CreationCost;
+
   RPG_Item_BaseProperties_Type           RPG_Item_BaseProperties;
+
   RPG_Item_MagicalPrerequisites_Type     RPG_Item_MagicalPrerequisites;
   RPG_Item_MagicalProperties_Type        RPG_Item_MagicalProperties;
   RPG_Item_WeaponPropertiesXML_Type      RPG_Item_WeaponPropertiesXML;

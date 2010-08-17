@@ -1,16 +1,19 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="3" >
+ <DocsAndViews NumberOfDocuments="4" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster.xsd" >
-   <View0 Encoding="" line="281" Type="Source" />
+   <View0 Encoding="" line="277" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster.xml" >
-   <View0 Encoding="" line="0" Type="Source" />
-  </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster.map" >
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster.map" >
    <View0 Encoding="" line="8" Type="Source" />
+  </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster.xml" >
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster_common.h" >
+   <View0 Encoding="" line="82" Type="Source" />
+  </Doc3>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
@@ -19,8 +22,9 @@
   </kdevdebugger>
   <kdevfilelist>
    <projectview name="XML schema" >
-    <file line="0" url="rpg_monster.xsd" col="0" encoding="" />
+    <file line="277" url="rpg_monster.xsd" col="47" encoding="" />
     <file line="8" url="rpg_monster.map" col="0" encoding="" />
+    <file line="0" url="rpg_monster.xml" col="0" encoding="" />
    </projectview>
    <defaultview name="" />
   </kdevfilelist>

@@ -384,22 +384,22 @@ RPG_Item_MagicalProperties_Type::RPG_Item_MagicalProperties_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_MagicalProperties_Type::RPG_Item_MagicalProperties_Type"));
 
-  myCurrentProperties.Aura = RPG_MAGIC_SCHOOL_INVALID;
-  myCurrentProperties.Prerequisites.minCasterLevel = 0;
+  myCurrentProperties.aura = RPG_MAGIC_SCHOOL_INVALID;
+  myCurrentProperties.prerequisites.minCasterLevel = 0;
 }
 
-void RPG_Item_MagicalProperties_Type::Aura(const RPG_Magic_School& school_in)
+void RPG_Item_MagicalProperties_Type::aura(const RPG_Magic_School& school_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_MagicalProperties_Type::Aura"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_MagicalProperties_Type::aura"));
 
-  myCurrentProperties.Aura = school_in;
+  myCurrentProperties.aura = school_in;
 }
 
-void RPG_Item_MagicalProperties_Type::Prerequisites(const RPG_Item_MagicalPrerequisites& prerequisites_in)
+void RPG_Item_MagicalProperties_Type::prerequisites(const RPG_Item_MagicalPrerequisites& prerequisites_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_MagicalProperties_Type::Prerequisites"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_MagicalProperties_Type::prerequisites"));
 
-  myCurrentProperties.Prerequisites = prerequisites_in;
+  myCurrentProperties.prerequisites = prerequisites_in;
 }
 
 RPG_Item_MagicalProperties RPG_Item_MagicalProperties_Type::post_RPG_Item_MagicalProperties_Type()
@@ -408,8 +408,8 @@ RPG_Item_MagicalProperties RPG_Item_MagicalProperties_Type::post_RPG_Item_Magica
 
   RPG_Item_MagicalProperties result = myCurrentProperties;
 
-  myCurrentProperties.Aura = RPG_MAGIC_SCHOOL_INVALID;
-  myCurrentProperties.Prerequisites.minCasterLevel = 0;
+  myCurrentProperties.aura = RPG_MAGIC_SCHOOL_INVALID;
+  myCurrentProperties.prerequisites.minCasterLevel = 0;
 
   return result;
 }

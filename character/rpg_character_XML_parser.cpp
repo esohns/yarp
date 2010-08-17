@@ -86,6 +86,32 @@ RPG_Character_Ability RPG_Character_Ability_Type::post_RPG_Character_Ability_Typ
   return RPG_Character_AbilityHelper::stringToRPG_Character_Ability(post_string());
 }
 
+RPG_Character_Abilities_Type::RPG_Character_Abilities_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Abilities_Type::RPG_Character_Abilities_Type"));
+
+  myCurrentAbilities.abilities.clear();
+}
+
+void RPG_Character_Abilities_Type::ability(const RPG_Character_Ability& ability_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Abilities_Type::ability"));
+
+  myCurrentAbilities.abilities.push_back(ability_in);
+}
+
+RPG_Character_Abilities RPG_Character_Abilities_Type::post_RPG_Character_Abilities_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Abilities_Type::post_RPG_Character_Abilities_Type"));
+
+  RPG_Character_Abilities result = myCurrentAbilities;
+
+  // clear structure
+  myCurrentAbilities.abilities.clear();
+
+  return result;
+}
+
 RPG_Character_Attributes_Type::RPG_Character_Attributes_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::RPG_Character_Attributes_Type"));
@@ -390,4 +416,298 @@ RPG_Character_OffHand RPG_Character_OffHand_Type::post_RPG_Character_OffHand_Typ
   ACE_TRACE(ACE_TEXT("RPG_Character_OffHand_Type::post_RPG_Character_OffHand_Type"));
 
   return RPG_Character_OffHandHelper::stringToRPG_Character_OffHand(post_string());
+}
+
+// RPG_Character_BaseXML_Type::RPG_Character_BaseXML_Type()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_BaseXML_Type::RPG_Character_BaseXML_Type"));
+//
+//   myCurrentCharacterBaseXML.gender = RPG_CHARACTER_GENDER_INVALID;
+//   myCurrentCharacterBaseXML.alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
+//   myCurrentCharacterBaseXML.alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
+//   myCurrentCharacterBaseXML.attributes.strength = 0;
+//   myCurrentCharacterBaseXML.attributes.dexterity = 0;
+//   myCurrentCharacterBaseXML.attributes.constitution = 0;
+//   myCurrentCharacterBaseXML.attributes.intelligence = 0;
+//   myCurrentCharacterBaseXML.attributes.wisdom = 0;
+//   myCurrentCharacterBaseXML.attributes.charisma = 0;
+//   myCurrentCharacterBaseXML.skills.skills.clear();
+//   myCurrentCharacterBaseXML.feats.feats.clear();
+//   myCurrentCharacterBaseXML.abilities.abilities.clear();
+//   myCurrentCharacterBaseXML.XP = 0;
+//   myCurrentCharacterBaseXML.HP = 0;
+//   myCurrentCharacterBaseXML.maxHP = 0;
+//   myCurrentCharacterBaseXML.gold = 0;
+//   myCurrentCharacterBaseXML.conditions.clear();
+// }
+//
+// void RPG_Character_BaseXML_Type::gender(const RPG_Character_Gender& gender_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_BaseXML_Type::gender"));
+//
+//   myCurrentCharacterBaseXML.gender = gender_in;
+// }
+//
+// void RPG_Character_BaseXML_Type::alignment(const RPG_Character_Alignment& alignment_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_BaseXML_Type::alignment"));
+//
+//   myCurrentCharacterBaseXML.alignment = alignment_in;
+// }
+//
+// void RPG_Character_BaseXML_Type::attributes(const RPG_Character_Attributes& attributes_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_BaseXML_Type::attributes"));
+//
+//   myCurrentCharacterBaseXML.attributes = attributes_in;
+// }
+//
+// void RPG_Character_BaseXML_Type::skills(const RPG_Character_Skills& skills_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_BaseXML_Type::skills"));
+//
+//   myCurrentCharacterBaseXML.skills = skills_in;
+// }
+//
+// void RPG_Character_BaseXML_Type::feats(const RPG_Character_Feats& feats_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_BaseXML_Type::feats"));
+//
+//   myCurrentCharacterBaseXML.feats = feats_in;
+// }
+//
+// void RPG_Character_BaseXML_Type::abilities(const RPG_Character_Abilities& abilities_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_BaseXML_Type::abilities"));
+//
+//   myCurrentCharacterBaseXML.abilities = abilities_in;
+// }
+//
+// void RPG_Character_BaseXML_Type::XP(unsigned int XP_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_BaseXML_Type::XP"));
+//
+//   myCurrentCharacterBaseXML.XP = XP_in;
+// }
+//
+// void RPG_Character_BaseXML_Type::HP(long long HP_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_BaseXML_Type::HP"));
+//
+//   myCurrentCharacterBaseXML.HP = HP_in;
+// }
+//
+// void RPG_Character_BaseXML_Type::maxHP(unsigned int maxHP_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_BaseXML_Type::maxHP"));
+//
+//   myCurrentCharacterBaseXML.maxHP = maxHP_in;
+// }
+//
+// void RPG_Character_BaseXML_Type::gold(unsigned int gold_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_BaseXML_Type::gold"));
+//
+//   myCurrentCharacterBaseXML.gold = gold_in;
+// }
+//
+// void RPG_Character_BaseXML_Type::condition(const RPG_Common_Condition& condition_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_BaseXML_Type::condition"));
+//
+//   myCurrentCharacterBaseXML.conditions.push_back(condition_in);
+// }
+//
+// RPG_Character_BaseXML RPG_Character_BaseXML_Type::post_RPG_Character_BaseXML_Type()
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_BaseXML_Type::post_RPG_Character_BaseXML_Type"));
+//
+//   RPG_Character_BaseXML result = myCurrentCharacterBaseXML;
+//
+//   myCurrentCharacterBaseXML.gender = RPG_CHARACTER_GENDER_INVALID;
+//   myCurrentCharacterBaseXML.alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
+//   myCurrentCharacterBaseXML.alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
+//   myCurrentCharacterBaseXML.attributes.strength = 0;
+//   myCurrentCharacterBaseXML.attributes.dexterity = 0;
+//   myCurrentCharacterBaseXML.attributes.constitution = 0;
+//   myCurrentCharacterBaseXML.attributes.intelligence = 0;
+//   myCurrentCharacterBaseXML.attributes.wisdom = 0;
+//   myCurrentCharacterBaseXML.attributes.charisma = 0;
+//   myCurrentCharacterBaseXML.skills.skills.clear();
+//   myCurrentCharacterBaseXML.feats.feats.clear();
+//   myCurrentCharacterBaseXML.abilities.abilities.clear();
+//   myCurrentCharacterBaseXML.XP = 0;
+//   myCurrentCharacterBaseXML.HP = 0;
+//   myCurrentCharacterBaseXML.maxHP = 0;
+//   myCurrentCharacterBaseXML.gold = 0;
+//   myCurrentCharacterBaseXML.conditions.clear();
+//
+//   return result;
+// }
+
+RPG_Character_PlayerXML_Type::RPG_Character_PlayerXML_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::RPG_Character_PlayerXML_Type"));
+
+  myCurrentCharacterXML.gender = RPG_CHARACTER_GENDER_INVALID;
+  myCurrentCharacterXML.alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
+  myCurrentCharacterXML.alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
+  myCurrentCharacterXML.attributes.strength = 0;
+  myCurrentCharacterXML.attributes.dexterity = 0;
+  myCurrentCharacterXML.attributes.constitution = 0;
+  myCurrentCharacterXML.attributes.intelligence = 0;
+  myCurrentCharacterXML.attributes.wisdom = 0;
+  myCurrentCharacterXML.attributes.charisma = 0;
+  myCurrentCharacterXML.skills.skills.clear();
+  myCurrentCharacterXML.feats.feats.clear();
+  myCurrentCharacterXML.abilities.abilities.clear();
+  myCurrentCharacterXML.XP = 0;
+  myCurrentCharacterXML.HP = 0;
+  myCurrentCharacterXML.maxHP = 0;
+  myCurrentCharacterXML.gold = 0;
+  myCurrentCharacterXML.conditions.clear();
+  // -----------------------------------
+  myCurrentCharacterXML.name.clear();
+  myCurrentCharacterXML.races.clear();
+  myCurrentCharacterXML.classXML.metaClass = RPG_CHARACTER_METACLASS_INVALID;
+  myCurrentCharacterXML.classXML.subClasses.clear();
+  myCurrentCharacterXML.offhand = RPG_CHARACTER_OFFHAND_INVALID;
+}
+
+void RPG_Character_PlayerXML_Type::gender(const RPG_Character_Gender& gender_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::gender"));
+
+  myCurrentCharacterXML.gender = gender_in;
+}
+
+void RPG_Character_PlayerXML_Type::alignment(const RPG_Character_Alignment& alignment_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::alignment"));
+
+  myCurrentCharacterXML.alignment = alignment_in;
+}
+
+void RPG_Character_PlayerXML_Type::attributes(const RPG_Character_Attributes& attributes_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::attributes"));
+
+  myCurrentCharacterXML.attributes = attributes_in;
+}
+
+void RPG_Character_PlayerXML_Type::skills(const RPG_Character_Skills& skills_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::skills"));
+
+  myCurrentCharacterXML.skills = skills_in;
+}
+
+void RPG_Character_PlayerXML_Type::feats(const RPG_Character_Feats& feats_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::feats"));
+
+  myCurrentCharacterXML.feats = feats_in;
+}
+
+void RPG_Character_PlayerXML_Type::abilities(const RPG_Character_Abilities& abilities_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::abilities"));
+
+  myCurrentCharacterXML.abilities = abilities_in;
+}
+
+void RPG_Character_PlayerXML_Type::XP(unsigned int XP_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::XP"));
+
+  myCurrentCharacterXML.XP = XP_in;
+}
+
+void RPG_Character_PlayerXML_Type::HP(long long HP_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::HP"));
+
+  myCurrentCharacterXML.HP = HP_in;
+}
+
+void RPG_Character_PlayerXML_Type::maxHP(unsigned int maxHP_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::maxHP"));
+
+  myCurrentCharacterXML.maxHP = maxHP_in;
+}
+
+void RPG_Character_PlayerXML_Type::gold(unsigned int gold_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::gold"));
+
+  myCurrentCharacterXML.gold = gold_in;
+}
+
+void RPG_Character_PlayerXML_Type::condition(const RPG_Common_Condition& condition_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::condition"));
+
+  myCurrentCharacterXML.conditions.push_back(condition_in);
+}
+
+void RPG_Character_PlayerXML_Type::name(const ::std::string& name_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::name"));
+
+  myCurrentCharacterXML.name = name_in;
+}
+
+void RPG_Character_PlayerXML_Type::race(const RPG_Character_Race& race_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::race"));
+
+  myCurrentCharacterXML.races.push_back(race_in);
+}
+
+void RPG_Character_PlayerXML_Type::classXML(const RPG_Character_ClassXML& classXML_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::classXML"));
+
+  myCurrentCharacterXML.classXML = classXML_in;
+}
+
+void RPG_Character_PlayerXML_Type::offhand(const RPG_Character_OffHand& offhand_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::offhand"));
+
+  myCurrentCharacterXML.offhand = offhand_in;
+}
+
+RPG_Character_PlayerXML RPG_Character_PlayerXML_Type::post_RPG_Character_PlayerXML_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_PlayerXML_Type::post_RPG_Character_PlayerXML_Type"));
+
+  RPG_Character_PlayerXML result = myCurrentCharacterXML;
+
+  myCurrentCharacterXML.gender = RPG_CHARACTER_GENDER_INVALID;
+  myCurrentCharacterXML.alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
+  myCurrentCharacterXML.alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
+  myCurrentCharacterXML.attributes.strength = 0;
+  myCurrentCharacterXML.attributes.dexterity = 0;
+  myCurrentCharacterXML.attributes.constitution = 0;
+  myCurrentCharacterXML.attributes.intelligence = 0;
+  myCurrentCharacterXML.attributes.wisdom = 0;
+  myCurrentCharacterXML.attributes.charisma = 0;
+  myCurrentCharacterXML.skills.skills.clear();
+  myCurrentCharacterXML.feats.feats.clear();
+  myCurrentCharacterXML.abilities.abilities.clear();
+  myCurrentCharacterXML.XP = 0;
+  myCurrentCharacterXML.HP = 0;
+  myCurrentCharacterXML.maxHP = 0;
+  myCurrentCharacterXML.gold = 0;
+  myCurrentCharacterXML.conditions.clear();
+  // -----------------------------------
+  myCurrentCharacterXML.name.clear();
+  myCurrentCharacterXML.races.clear();
+  myCurrentCharacterXML.classXML.metaClass = RPG_CHARACTER_METACLASS_INVALID;
+  myCurrentCharacterXML.classXML.subClasses.clear();
+  myCurrentCharacterXML.offhand = RPG_CHARACTER_OFFHAND_INVALID;
+
+  return result;
 }

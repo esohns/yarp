@@ -83,7 +83,6 @@ class RPG_Item_Dictionary_Type_pskel;
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
 #include <rpg_magic_incl.h>
-
 #include "rpg_item_incl.h"
 #include "rpg_item_common.h"
 
@@ -412,10 +411,10 @@ class RPG_Item_MagicalProperties_Type_pskel: public ::xml_schema::complex_conten
   // pre ();
 
   virtual void
-  Aura (const RPG_Magic_School&);
+  aura (const RPG_Magic_School&);
 
   virtual void
-  Prerequisites (const RPG_Item_MagicalPrerequisites&);
+  prerequisites (const RPG_Item_MagicalPrerequisites&);
 
   virtual RPG_Item_MagicalProperties
   post_RPG_Item_MagicalProperties_Type () = 0;
@@ -423,14 +422,14 @@ class RPG_Item_MagicalProperties_Type_pskel: public ::xml_schema::complex_conten
   // Parser construction API.
   //
   void
-  Aura_parser (::RPG_Magic_School_Type_pskel&);
+  aura_parser (::RPG_Magic_School_Type_pskel&);
 
   void
-  Prerequisites_parser (::RPG_Item_MagicalPrerequisites_Type_pskel&);
+  prerequisites_parser (::RPG_Item_MagicalPrerequisites_Type_pskel&);
 
   void
-  parsers (::RPG_Magic_School_Type_pskel& /* Aura */,
-           ::RPG_Item_MagicalPrerequisites_Type_pskel& /* Prerequisites */);
+  parsers (::RPG_Magic_School_Type_pskel& /* aura */,
+           ::RPG_Item_MagicalPrerequisites_Type_pskel& /* prerequisites */);
 
   // Constructor.
   //
@@ -449,8 +448,8 @@ class RPG_Item_MagicalProperties_Type_pskel: public ::xml_schema::complex_conten
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Magic_School_Type_pskel* Aura_parser_;
-  ::RPG_Item_MagicalPrerequisites_Type_pskel* Prerequisites_parser_;
+  ::RPG_Magic_School_Type_pskel* aura_parser_;
+  ::RPG_Item_MagicalPrerequisites_Type_pskel* prerequisites_parser_;
 };
 
 class RPG_Item_WeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_BaseProperties_Type_pskel

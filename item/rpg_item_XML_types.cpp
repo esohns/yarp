@@ -192,29 +192,29 @@ RPG_Item_MagicalPrerequisites_Type_pskel ()
 //
 
 void RPG_Item_MagicalProperties_Type_pskel::
-Aura_parser (::RPG_Magic_School_Type_pskel& p)
+aura_parser (::RPG_Magic_School_Type_pskel& p)
 {
-  this->Aura_parser_ = &p;
+  this->aura_parser_ = &p;
 }
 
 void RPG_Item_MagicalProperties_Type_pskel::
-Prerequisites_parser (::RPG_Item_MagicalPrerequisites_Type_pskel& p)
+prerequisites_parser (::RPG_Item_MagicalPrerequisites_Type_pskel& p)
 {
-  this->Prerequisites_parser_ = &p;
+  this->prerequisites_parser_ = &p;
 }
 
 void RPG_Item_MagicalProperties_Type_pskel::
-parsers (::RPG_Magic_School_Type_pskel& Aura,
-         ::RPG_Item_MagicalPrerequisites_Type_pskel& Prerequisites)
+parsers (::RPG_Magic_School_Type_pskel& aura,
+         ::RPG_Item_MagicalPrerequisites_Type_pskel& prerequisites)
 {
-  this->Aura_parser_ = &Aura;
-  this->Prerequisites_parser_ = &Prerequisites;
+  this->aura_parser_ = &aura;
+  this->prerequisites_parser_ = &prerequisites;
 }
 
 RPG_Item_MagicalProperties_Type_pskel::
 RPG_Item_MagicalProperties_Type_pskel ()
-: Aura_parser_ (0),
-  Prerequisites_parser_ (0)
+: aura_parser_ (0),
+  prerequisites_parser_ (0)
 {
 }
 
@@ -947,12 +947,12 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Item_MagicalProperties_Type_pskel::
-Aura (const RPG_Magic_School&)
+aura (const RPG_Magic_School&)
 {
 }
 
 void RPG_Item_MagicalProperties_Type_pskel::
-Prerequisites (const RPG_Item_MagicalPrerequisites&)
+prerequisites (const RPG_Item_MagicalPrerequisites&)
 {
 }
 
@@ -966,22 +966,22 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "Aura" && ns == "urn:rpg")
+  if (n == "aura" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->Aura_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->aura_parser_;
 
-    if (this->Aura_parser_)
-      this->Aura_parser_->pre ();
+    if (this->aura_parser_)
+      this->aura_parser_->pre ();
 
     return true;
   }
 
-  if (n == "Prerequisites" && ns == "urn:rpg")
+  if (n == "prerequisites" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->Prerequisites_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->prerequisites_parser_;
 
-    if (this->Prerequisites_parser_)
-      this->Prerequisites_parser_->pre ();
+    if (this->prerequisites_parser_)
+      this->prerequisites_parser_->pre ();
 
     return true;
   }
@@ -996,18 +996,18 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "Aura" && ns == "urn:rpg")
+  if (n == "aura" && ns == "urn:rpg")
   {
-    if (this->Aura_parser_)
-      this->Aura (this->Aura_parser_->post_RPG_Magic_School_Type ());
+    if (this->aura_parser_)
+      this->aura (this->aura_parser_->post_RPG_Magic_School_Type ());
 
     return true;
   }
 
-  if (n == "Prerequisites" && ns == "urn:rpg")
+  if (n == "prerequisites" && ns == "urn:rpg")
   {
-    if (this->Prerequisites_parser_)
-      this->Prerequisites (this->Prerequisites_parser_->post_RPG_Item_MagicalPrerequisites_Type ());
+    if (this->prerequisites_parser_)
+      this->prerequisites (this->prerequisites_parser_->post_RPG_Item_MagicalPrerequisites_Type ());
 
     return true;
   }
