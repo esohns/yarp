@@ -81,7 +81,8 @@ RPG_Character_Player::~RPG_Character_Player()
 
 }
 
-RPG_Character_Player& RPG_Character_Player::operator=(const RPG_Character_Player& player_in)
+RPG_Character_Player&
+RPG_Character_Player::operator=(const RPG_Character_Player& player_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player::operator="));
 
@@ -90,7 +91,8 @@ RPG_Character_Player& RPG_Character_Player::operator=(const RPG_Character_Player
   return *this;
 }
 
-void RPG_Character_Player::defaultEquip()
+void
+RPG_Character_Player::defaultEquip()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player::operator="));
 
@@ -102,7 +104,6 @@ void RPG_Character_Player::defaultEquip()
     handle = NULL;
     if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem(*iterator, handle))
     {
-      // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid item ID: %d, aborting\n"),
                  *iterator));
@@ -154,7 +155,6 @@ void RPG_Character_Player::defaultEquip()
       }
       default:
       {
-        // debug info
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("item ID %d: invalid type: \"%s\", continuing\n"),
                    *iterator,

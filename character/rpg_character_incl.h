@@ -45,7 +45,5 @@
 #include "rpg_character_alignment.h"
 #include "rpg_character_equipmentslot.h"
 #include "rpg_character_offhand.h"
-#include "rpg_character_basexml.h"
-#include "rpg_character_playerxml.h"
 
 #endif

@@ -267,33 +267,33 @@ class RPG_Character_OffHand_Type
 //   RPG_Character_BaseXML myCurrentCharacterBaseXML;
 // };
 
-class RPG_Character_PlayerXML_Type
- : public RPG_Character_PlayerXML_Type_pskel
-{
- public:
-  RPG_Character_PlayerXML_Type();
-
-  // virtual void pre();
-  virtual void gender(const RPG_Character_Gender&);
-  virtual void alignment(const RPG_Character_Alignment&);
-  virtual void attributes(const RPG_Character_Attributes&);
-  virtual void skills(const RPG_Character_Skills&);
-  virtual void feats(const RPG_Character_Feats&);
-  virtual void abilities(const RPG_Character_Abilities&);
-  virtual void XP(unsigned int);
-  virtual void HP(long long);
-  virtual void maxHP(unsigned int);
-  virtual void gold(unsigned int);
-  virtual void condition(const RPG_Common_Condition&);
-  // ------------------------------------------------------------
-  virtual void name(const ::std::string&);
-  virtual void race(const RPG_Character_Race&);
-  virtual void classXML(const RPG_Character_ClassXML&);
-  virtual void offhand(const RPG_Character_OffHand&);
-  virtual RPG_Character_PlayerXML post_RPG_Character_PlayerXML_Type();
-
- private:
-  RPG_Character_PlayerXML myCurrentCharacterXML;
-};
+// class RPG_Character_PlayerXML_Type
+//  : public RPG_Character_PlayerXML_Type_pskel
+// {
+//  public:
+//   RPG_Character_PlayerXML_Type();
+//
+//   // virtual void pre();
+//   virtual void gender(const RPG_Character_Gender&);
+//   virtual void alignment(const RPG_Character_Alignment&);
+//   virtual void attributes(const RPG_Character_Attributes&);
+//   virtual void skills(const RPG_Character_Skills&);
+//   virtual void feats(const RPG_Character_Feats&);
+//   virtual void abilities(const RPG_Character_Abilities&);
+//   virtual void XP(unsigned int);
+//   virtual void HP(long long);
+//   virtual void maxHP(unsigned int);
+//   virtual void gold(unsigned int);
+//   virtual void condition(const RPG_Common_Condition&);
+//   // ------------------------------------------------------------
+//   virtual void name(const ::std::string&);
+//   virtual void race(const RPG_Character_Race&);
+//   virtual void classXML(const RPG_Character_ClassXML&);
+//   virtual void offhand(const RPG_Character_OffHand&);
+//   virtual RPG_Character_PlayerXML post_RPG_Character_PlayerXML_Type();
+//
+//  private:
+//   RPG_Character_PlayerXML myCurrentCharacterXML;
+// };
 
 #endif

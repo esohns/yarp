@@ -35,6 +35,6 @@ namespace urn:rpg
   RPG_Character_EquipmentSlot_Type  RPG_Character_EquipmentSlot;
   RPG_Character_OffHand_Type        RPG_Character_OffHand;
 
-  RPG_Character_BaseXML_Type        RPG_Character_BaseXML;
-  RPG_Character_PlayerXML_Type      RPG_Character_PlayerXML;
+#  RPG_Character_BaseXML_Type        RPG_Character_BaseXML;
+#  RPG_Character_PlayerXML_Type      RPG_Character_PlayerXML;
 }
