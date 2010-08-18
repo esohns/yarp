@@ -19,12 +19,16 @@
  ***************************************************************************/
 #include "rpg_character_player.h"
 
+#include "rpg_character_player_XML_tree.h"
+
 #include <rpg_item_instance_common.h>
 #include <rpg_item_instance_manager.h>
 #include <rpg_item_base.h>
 #include <rpg_item_armor_base.h>
 #include <rpg_item_weapon_base.h>
 #include <rpg_item_common_tools.h>
+
+#include <rpg_common_file_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -89,6 +93,48 @@ RPG_Character_Player::operator=(const RPG_Character_Player& player_in)
   inherited::operator=(player_in);
 
   return *this;
+}
+
+const RPG_Character_Player
+RPG_Character_Player::load(const std::string& filename_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player::load"));
+
+  // init result
+  RPG_Character_Player result;
+
+  // sanity check(s)
+  if (!RPG_Common_File_Tools::isReadable(filename_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+               filename_in.c_str()));
+
+    // *TODO*: returning undefined result !
+    return result;
+  } // end IF
+
+  RPG_Character_PlayerXML_XMLTree_Type playerXML();
+
+  return result;
+}
+
+const bool
+RPG_Character_Player::save(const std::string& filename_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player::save"));
+
+  // sanity check(s)
+  if (!RPG_Common_File_Tools::isReadable(filename_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+                        filename_in.c_str()));
+
+    return false;
+  } // end IF
+
+  return true;
 }
 
 void
