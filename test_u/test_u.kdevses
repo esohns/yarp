@@ -1,28 +1,13 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="7" >
+ <DocsAndViews NumberOfDocuments="2" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/graphics/SDL_gui.cpp" >
-   <View0 Encoding="" line="1004" Type="Source" />
+   <View0 Encoding="" line="1032" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/graphics/SDL_gui_levelwindow.cpp" >
-   <View0 Encoding="" line="837" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/character/character_generator.cpp" >
+   <View0 Encoding="" line="391" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/graphics/SDL_gui_mainwindow.cpp" >
-   <View0 Encoding="" line="256" Type="Source" />
-  </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/graphics/SDL_gui_levelwindow.h" >
-   <View0 Encoding="" line="83" Type="Source" />
-  </Doc3>
-  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics_cursor.cpp" >
-   <View0 Encoding="" line="274" Type="Source" />
-  </Doc4>
-  <Doc5 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/graphics/SDL_gui_mainwindow.h" >
-   <View0 Encoding="" line="47" Type="Source" />
-  </Doc5>
-  <Doc6 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics_surface.cpp" >
-   <View0 Encoding="" line="796" Type="Source" />
-  </Doc6>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
@@ -36,9 +21,6 @@
     <breakpoint2 location="lower_right.second" type="2" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="0" >
      <tracedExpressions/>
     </breakpoint2>
-    <breakpoint3 location="/home/unfv/Projects/RPG/test_u/graphics/SDL_gui_levelwindow.cpp:1566" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
-     <tracedExpressions/>
-    </breakpoint3>
    </breakpointList>
    <showInternalCommands value="0" />
   </kdevdebugger>

@@ -21,7 +21,7 @@
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>graphics/SDL_gui</activetarget>
+      <activetarget>combat/combat_simulator</activetarget>
     </general>
     <run>
       <mainprogram>/home/unfv/Projects/RPG/test_u/debug/monster/monster_parser</mainprogram>

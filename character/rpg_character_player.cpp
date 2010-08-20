@@ -129,7 +129,7 @@ RPG_Character_Player::save(const std::string& filename_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-                        filename_in.c_str()));
+               filename_in.c_str()));
 
     return false;
   } // end IF

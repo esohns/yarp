@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-// *IMPORTANT NOTE*: need this to import correct VERSION !
+// *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -29,6 +29,7 @@
 #include <rpg_character_player.h>
 #include <rpg_character_common_tools.h>
 #include <rpg_character_skills_common_tools.h>
+#include <rpg_character_player_XML_tree.h>
 
 #include <rpg_item_weapon.h>
 #include <rpg_item_armor.h>
@@ -57,7 +58,8 @@
 #include <string>
 #include <algorithm>
 
-void print_usage(const std::string& programName_in)
+void
+print_usage(const std::string& programName_in)
 {
   ACE_TRACE(ACE_TEXT("::print_usage"));
 
@@ -68,12 +70,13 @@ void print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
 } // end print_usage
 
-const bool process_arguments(const int argc_in,
-                             ACE_TCHAR* argv_in[], // cannot be const...
-                             std::string& magicDictionaryFilename_out,
-                             std::string& itemDictionaryFilename_out,
-                             bool& traceInformation_out,
-                             bool& printVersionAndExit_out)
+const bool
+process_arguments(const int argc_in,
+                  ACE_TCHAR* argv_in[], // cannot be const...
+                  std::string& magicDictionaryFilename_out,
+                  std::string& itemDictionaryFilename_out,
+                  bool& traceInformation_out,
+                  bool& printVersionAndExit_out)
 {
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -139,7 +142,8 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
-const bool print_skills_table(RPG_Character_Skills_t& skills_in)
+const bool
+print_skills_table(RPG_Character_Skills_t& skills_in)
 {
   ACE_TRACE(ACE_TEXT("::print_skills_table"));
 
@@ -218,11 +222,12 @@ const bool print_skills_table(RPG_Character_Skills_t& skills_in)
   return true;
 }
 
-const bool print_feats_table(const RPG_Common_SubClass& subClass_in,
-                             const RPG_Character_Attributes& attributes_in,
-                             const RPG_Character_Skills_t& skills_in,
-                             const RPG_Character_Abilities_t& abilities_in,
-                             RPG_Character_Feats_t& feats_inout)
+const bool
+print_feats_table(const RPG_Common_SubClass& subClass_in,
+                  const RPG_Character_Attributes& attributes_in,
+                  const RPG_Character_Skills_t& skills_in,
+                  const RPG_Character_Abilities_t& abilities_in,
+                  RPG_Character_Feats_t& feats_inout)
 {
   ACE_TRACE(ACE_TEXT("::print_feats_table"));
 
@@ -312,8 +317,9 @@ const bool print_feats_table(const RPG_Common_SubClass& subClass_in,
   return true;
 }
 
-const bool print_spells_table(const RPG_Magic_Spells_t& spells_in,
-                              RPG_Magic_SpellType& spell_inout)
+const bool
+print_spells_table(const RPG_Magic_Spells_t& spells_in,
+                   RPG_Magic_SpellType& spell_inout)
 {
   ACE_TRACE(ACE_TEXT("::print_spells_table"));
 
@@ -377,8 +383,16 @@ const bool print_spells_table(const RPG_Magic_Spells_t& spells_in,
   return true;
 }
 
-void do_work(const std::string magicDictionaryFilename_in,
-             const std::string itemDictionaryFilename_in)
+RPG_Character_Player
+generate_player_character()
+{
+  ACE_TRACE(ACE_TEXT("::do_work"));
+
+}
+
+void
+do_work(const std::string magicDictionaryFilename_in,
+        const std::string itemDictionaryFilename_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -978,7 +992,7 @@ void do_printVersion()
             << std::endl;
 
   // create version string...
-  // *IMPORTANT NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
+  // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
   // number... We need this, as the library soname is compared to this string.
   std::ostringstream version_number;
   if (version_number << ACE::major_version())

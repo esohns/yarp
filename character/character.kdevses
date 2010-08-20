@@ -1,13 +1,10 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="2" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character.xsd" >
-   <View0 Encoding="" line="402" Type="Source" />
+ <DocsAndViews NumberOfDocuments="1" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character_player.h" >
+   <View0 Encoding="" line="53" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character.map" >
-   <View0 Encoding="" line="0" Type="Source" />
-  </Doc1>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
@@ -26,8 +23,8 @@
   </kdevdebugger>
   <kdevfilelist>
    <projectview name="XML schema" >
-    <file line="390" url="file:///home/unfv/Projects/RPG/character/rpg_character.xsd" col="0" encoding="" />
-    <file line="0" url="file:///home/unfv/Projects/RPG/character/rpg_character.map" col="0" encoding="" />
+    <file line="390" url="rpg_character.xsd" col="0" encoding="" />
+    <file line="0" url="rpg_character.map" col="0" encoding="" />
    </projectview>
    <defaultview name="" />
   </kdevfilelist>
