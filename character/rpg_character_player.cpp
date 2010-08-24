@@ -19,7 +19,10 @@
  ***************************************************************************/
 #include "rpg_character_player.h"
 
+#include "rpg_character_defines.h"
 #include "rpg_character_player_XML_tree.h"
+
+#include "rpg_XMLSchema_XML_tree.h"
 
 #include <rpg_item_instance_common.h>
 #include <rpg_item_instance_manager.h>
@@ -31,6 +34,11 @@
 #include <rpg_common_file_tools.h>
 
 #include <ace/Log_Msg.h>
+
+#include <fstream>
+
+// init statics
+RPG_Character_Player::XSD_Error_Handler RPG_Character_Player::myXSDErrorHandler;
 
 RPG_Character_Player::RPG_Character_Player(const std::string& name_in,
                                            const RPG_Character_Gender& gender_in,
@@ -79,6 +87,13 @@ RPG_Character_Player::RPG_Character_Player(const RPG_Character_Player& player_in
 
 }
 
+RPG_Character_Player::RPG_Character_Player()
+ : inherited()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player::RPG_Character_Player"));
+
+}
+
 RPG_Character_Player::~RPG_Character_Player()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player::~RPG_Character_Player"));
@@ -110,11 +125,56 @@ RPG_Character_Player::load(const std::string& filename_in)
                ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
                filename_in.c_str()));
 
-    // *TODO*: returning undefined result !
+    // *TODO*: returning an unininitialized result !
     return result;
   } // end IF
 
-  RPG_Character_PlayerXML_XMLTree_Type playerXML();
+  std::ifstream ifs;
+  ifs.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+//   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
+  ::xml_schema::flags flags = 0;
+  ::xml_schema::properties props;
+  props.no_namespace_schema_location(RPG_CHARACTER_PLAYER_SCHEMA_FILE);
+//   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
+  try
+  {
+    ifs.open(filename_in.c_str(),
+             std::ios_base::in);
+
+    ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type > player_p = player(ifs,
+                                                                                RPG_Character_Player::myXSDErrorHandler,
+                                                                                flags,
+                                                                                props);
+  }
+  catch (const std::ifstream::failure&)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("\"%s\": unable to open or read error, aborting\n"),
+               filename_in.c_str()));
+
+    // *TODO*: returning an unininitialized result !
+    return result;
+  }
+  catch (const ::xml_schema::parsing& exception)
+  {
+    std::ostringstream converter;
+    converter << exception;
+    std::string text = converter.str();
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Character_Player::load(\"%s\"): exception occurred: \"%s\", aborting\n"),
+               filename_in.c_str(),
+               text.c_str()));
+
+    throw exception;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Character_Player::load(\"%s\"): exception occurred, aborting\n"),
+               filename_in.c_str()));
+
+    throw;
+  }
 
   return result;
 }
@@ -125,14 +185,95 @@ RPG_Character_Player::save(const std::string& filename_in)
   ACE_TRACE(ACE_TEXT("RPG_Character_Player::save"));
 
   // sanity check(s)
-  if (!RPG_Common_File_Tools::isReadable(filename_in))
+  if (RPG_Common_File_Tools::isReadable(filename_in))
+  {
+    // *TODO*: warn user ?
+//     if (!RPG_Common_File_Tools::deleteFile(filename_in))
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), aborting\n"),
+//                  filename_in.c_str()));
+//
+//       return false;
+//     } // end IF
+  } // end IF
+
+  std::ofstream ofs;
+  ofs.exceptions(std::ofstream::badbit | std::ofstream::failbit);
+  ::xml_schema::namespace_infomap map;
+  map[""].schema = RPG_CHARACTER_PLAYER_SCHEMA_FILE;
+  std::string character_set(RPG_CHARACTER_PLAYER_SCHEMA_CHARSET);
+  //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
+  ::xml_schema::flags flags = 0;
+
+  try
+  {
+    ofs.open(filename_in.c_str(),
+             (std::ios_base::out | std::ios_base::trunc));
+
+    RPG_Character_Alignment_XMLTree_Type alignment(RPG_Character_AlignmentCivicHelper::RPG_Character_AlignmentCivicToString(getAlignment().civic),
+              RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString(getAlignment().ethic));
+    RPG_Character_Attributes_XMLTree_Type attributes(getAttribute(ATTRIBUTE_STRENGTH),
+                                                     getAttribute(ATTRIBUTE_DEXTERITY),
+                                                     getAttribute(ATTRIBUTE_CONSTITUTION),
+                                                     getAttribute(ATTRIBUTE_INTELLIGENCE),
+                                                     getAttribute(ATTRIBUTE_WISDOM),
+                                                     getAttribute(ATTRIBUTE_CHARISMA));
+    RPG_Character_Skills_XMLTree_Type skills;
+    RPG_Character_Feats_XMLTree_Type feats;
+    RPG_Character_Abilities_XMLTree_Type abilities;
+    RPG_Character_ClassXML_XMLTree_Type classXML(RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString(getClass().metaClass));
+    for (RPG_Character_SubClassesIterator_t iterator = getClass().subClasses.begin();
+         iterator != getClass().subClasses.end();
+         iterator++)
+      classXML.subClass().push_back(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator));
+    RPG_Character_PlayerXML_XMLTree_Type player_model(RPG_Character_GenderHelper::RPG_Character_GenderToString(getGender()),
+                                                      alignment,
+                                                      attributes,
+                                                      skills,
+                                                      feats,
+                                                      abilities,
+                                                      getExperience(),
+                                                      getNumHitPoints(),
+                                                      getNumTotalHitPoints(),
+                                                      getWealth(),
+                                                      getName(),
+                                                      classXML,
+                                                      RPG_Character_OffHandHelper::RPG_Character_OffHandToString(getOffHand()));
+    player(ofs,
+           player_model,
+           map,
+           character_set,
+           flags);
+  }
+  catch (const std::ofstream::failure&)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+               ACE_TEXT("\"%s\": unable to open or write error, aborting\n"),
                filename_in.c_str()));
 
     return false;
-  } // end IF
+  }
+  catch (const ::xml_schema::serialization& exception)
+  {
+    std::ostringstream converter;
+    converter << exception;
+    std::string text = converter.str();
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Character_Player::save(\"%s\"): exception occurred: \"%s\", aborting\n"),
+               filename_in.c_str(),
+               text.c_str()));
+
+    throw exception;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Character_Player::save(\"%s\"): exception occurred, aborting\n"),
+               filename_in.c_str()));
+
+    throw;
+  }
 
   return true;
 }
@@ -210,4 +351,72 @@ RPG_Character_Player::defaultEquip()
       }
     } // end SWITCH
   } // end FOR
+}
+
+bool
+RPG_Character_Player::XSD_Error_Handler::handle(const std::string& id_in,
+                                                unsigned long line_in,
+                                                unsigned long column_in,
+                                                ::xsd::cxx::xml::error_handler<char>::severity severity_in,
+                                                const std::string& message_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player::XSD_Error_Handler::handle"));
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
+//              id_in.c_str(),
+//              line_in,
+//              column_in,
+//              message_in.c_str()));
+
+  switch (severity_in)
+  {
+    case ::xml_schema::error_handler::severity::warning:
+    {
+      ACE_DEBUG((LM_WARNING,
+                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
+                 id_in.c_str(),
+                 line_in,
+                 column_in,
+                 message_in.c_str()));
+
+      break;
+    }
+    case ::xml_schema::error_handler::severity::error:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
+                 id_in.c_str(),
+                 line_in,
+                 column_in,
+                 message_in.c_str()));
+
+      break;
+    }
+    case ::xml_schema::error_handler::severity::fatal:
+    {
+      ACE_DEBUG((LM_CRITICAL,
+                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
+                 id_in.c_str(),
+                 line_in,
+                 column_in,
+                 message_in.c_str()));
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
+                 id_in.c_str(),
+                 line_in,
+                 column_in,
+                 message_in.c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  // try to continue anyway...
+  return true;
 }

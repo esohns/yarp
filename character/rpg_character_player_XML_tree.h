@@ -490,6 +490,99 @@ operator<< (::std::ostream&, const RPG_Character_PlayerXML_XMLTree_Type&);
 #include <xercesc/dom/DOMDocument.hpp>
 #include <xercesc/dom/DOMErrorHandler.hpp>
 
+// Parse a URI or a local file.
+//
+
+::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
+player (const ::std::string& uri,
+        ::xml_schema::flags f = 0,
+        const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
+player (const ::std::string& uri,
+        ::xml_schema::error_handler& eh,
+        ::xml_schema::flags f = 0,
+        const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
+player (const ::std::string& uri,
+        ::xercesc::DOMErrorHandler& eh,
+        ::xml_schema::flags f = 0,
+        const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+// Parse std::istream.
+//
+
+::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
+player (::std::istream& is,
+        ::xml_schema::flags f = 0,
+        const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
+player (::std::istream& is,
+        ::xml_schema::error_handler& eh,
+        ::xml_schema::flags f = 0,
+        const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
+player (::std::istream& is,
+        ::xercesc::DOMErrorHandler& eh,
+        ::xml_schema::flags f = 0,
+        const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
+player (::std::istream& is,
+        const ::std::string& id,
+        ::xml_schema::flags f = 0,
+        const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
+player (::std::istream& is,
+        const ::std::string& id,
+        ::xml_schema::error_handler& eh,
+        ::xml_schema::flags f = 0,
+        const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
+player (::std::istream& is,
+        const ::std::string& id,
+        ::xercesc::DOMErrorHandler& eh,
+        ::xml_schema::flags f = 0,
+        const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+// Parse xercesc::InputSource.
+//
+
+::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
+player (::xercesc::InputSource& is,
+        ::xml_schema::flags f = 0,
+        const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
+player (::xercesc::InputSource& is,
+        ::xml_schema::error_handler& eh,
+        ::xml_schema::flags f = 0,
+        const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
+player (::xercesc::InputSource& is,
+        ::xercesc::DOMErrorHandler& eh,
+        ::xml_schema::flags f = 0,
+        const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+// Parse xercesc::DOMDocument.
+//
+
+::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
+player (const ::xercesc::DOMDocument& d,
+        ::xml_schema::flags f = 0,
+        const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
+player (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
+        ::xml_schema::flags f = 0,
+        const ::xml_schema::properties& p = ::xml_schema::properties ());
+
 #include <iosfwd>
 
 #include <xercesc/dom/DOMDocument.hpp>
@@ -503,6 +596,74 @@ operator<< (::xercesc::DOMElement&, const RPG_Character_BaseXML_XMLTree_Type&);
 
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_PlayerXML_XMLTree_Type&);
+
+// Serialize to std::ostream.
+//
+
+void
+player (::std::ostream& os,
+        const ::RPG_Character_PlayerXML_XMLTree_Type& x, 
+        const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
+        const ::std::string& e = "UTF-8",
+        ::xml_schema::flags f = 0);
+
+void
+player (::std::ostream& os,
+        const ::RPG_Character_PlayerXML_XMLTree_Type& x, 
+        ::xml_schema::error_handler& eh,
+        const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
+        const ::std::string& e = "UTF-8",
+        ::xml_schema::flags f = 0);
+
+void
+player (::std::ostream& os,
+        const ::RPG_Character_PlayerXML_XMLTree_Type& x, 
+        ::xercesc::DOMErrorHandler& eh,
+        const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
+        const ::std::string& e = "UTF-8",
+        ::xml_schema::flags f = 0);
+
+// Serialize to xercesc::XMLFormatTarget.
+//
+
+void
+player (::xercesc::XMLFormatTarget& ft,
+        const ::RPG_Character_PlayerXML_XMLTree_Type& x, 
+        const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
+        const ::std::string& e = "UTF-8",
+        ::xml_schema::flags f = 0);
+
+void
+player (::xercesc::XMLFormatTarget& ft,
+        const ::RPG_Character_PlayerXML_XMLTree_Type& x, 
+        ::xml_schema::error_handler& eh,
+        const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
+        const ::std::string& e = "UTF-8",
+        ::xml_schema::flags f = 0);
+
+void
+player (::xercesc::XMLFormatTarget& ft,
+        const ::RPG_Character_PlayerXML_XMLTree_Type& x, 
+        ::xercesc::DOMErrorHandler& eh,
+        const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
+        const ::std::string& e = "UTF-8",
+        ::xml_schema::flags f = 0);
+
+// Serialize to an existing xercesc::DOMDocument.
+//
+
+void
+player (::xercesc::DOMDocument& d,
+        const ::RPG_Character_PlayerXML_XMLTree_Type& x,
+        ::xml_schema::flags f = 0);
+
+// Serialize to a new xercesc::DOMDocument.
+//
+
+::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >
+player (const ::RPG_Character_PlayerXML_XMLTree_Type& x, 
+        const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
+        ::xml_schema::flags f = 0);
 
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,

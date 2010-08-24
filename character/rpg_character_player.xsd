@@ -51,4 +51,7 @@
     </xsd:complexContent>
   </xsd:complexType>
 
+  <!-- substitution group root -->
+  <xsd:element name="player" type="RPG_Character_PlayerXML_Type"/>
+
 </xsd:schema>

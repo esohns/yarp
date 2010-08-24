@@ -49,13 +49,13 @@ class RPG_Character_Skills_Common_Tools
                                  const RPG_Common_Skill&);   // skill
   static const unsigned int getSkillPoints(const RPG_Common_SubClass&, // subclass
                                            const short int&,           // INT modifier
-                                           unsigned int&);             // initial points (level 1)
+                                           unsigned int&);             // return value: initial points (level 1)
   static const unsigned int getNumFeatsAbilities(const RPG_Character_Race&,   // race
                                                  const RPG_Common_SubClass&,  // subclass
                                                  const unsigned char&,        // current level
-                                                 RPG_Character_Feats_t&,      // base feats
-                                                 unsigned int&,               // initial feats (level 1)
-                                                 RPG_Character_Abilities_t&); // base abilities
+                                                 RPG_Character_Feats_t&,      // return value: base feats
+                                                 unsigned int&,               // return value: initial feats (level 1)
+                                                 RPG_Character_Abilities_t&); // return value: base abilities
   static const bool meetsFeatPrerequisites(const RPG_Character_Feat&,         // feat
                                            const RPG_Common_SubClass&,        // subclass
                                            const unsigned char&,              // current level

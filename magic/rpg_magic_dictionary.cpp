@@ -46,8 +46,9 @@ RPG_Magic_Dictionary::~RPG_Magic_Dictionary()
 
 }
 
-void RPG_Magic_Dictionary::init(const std::string& filename_in,
-                                const bool& validateXML_in)
+void
+RPG_Magic_Dictionary::init(const std::string& filename_in,
+                           const bool& validateXML_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::init"));
 
@@ -227,7 +228,8 @@ void RPG_Magic_Dictionary::init(const std::string& filename_in,
 //              filename_in.c_str()));
 }
 
-const RPG_Magic_Spell_Properties RPG_Magic_Dictionary::getSpellProperties(const std::string& spellName_in) const
+const RPG_Magic_Spell_Properties
+RPG_Magic_Dictionary::getSpellProperties(const std::string& spellName_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
 
@@ -244,8 +246,9 @@ const RPG_Magic_Spell_Properties RPG_Magic_Dictionary::getSpellProperties(const 
   return iterator->second;
 }
 
-const RPG_Magic_Spell_Properties RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in,
-                                                                          std::string& spellName_out) const
+const RPG_Magic_Spell_Properties
+RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in,
+                                         std::string& spellName_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
 
@@ -274,8 +277,9 @@ const RPG_Magic_Spell_Properties RPG_Magic_Dictionary::getSpellProperties(const 
   return dummy;
 }
 
-const RPG_Magic_Spells_t RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in,
-                                                         const unsigned char& spellLevel_in) const
+const RPG_Magic_Spells_t
+RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in,
+                                const unsigned char& spellLevel_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
 
@@ -347,17 +351,17 @@ const RPG_Magic_Spells_t RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterC
   return result;
 }
 
-bool RPG_Magic_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
-                                                     unsigned long line_in,
-                                                     unsigned long column_in,
-                                                     ::xml_schema::error_handler::severity severity_in,
-                                                     const std::string& message_in)
+bool
+RPG_Magic_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
+                                                unsigned long line_in,
+                                                unsigned long column_in,
+                                                ::xsd::cxx::xml::error_handler<char>::severity severity_in,
+                                                const std::string& message_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::XSD_Error_Handler::handle"));
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+//              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
 //              id_in.c_str(),
 //              line_in,
 //              column_in,
@@ -368,7 +372,7 @@ bool RPG_Magic_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     case ::xml_schema::error_handler::severity::warning:
     {
       ACE_DEBUG((LM_WARNING,
-                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
@@ -379,7 +383,7 @@ bool RPG_Magic_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     case ::xml_schema::error_handler::severity::error:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
@@ -390,7 +394,7 @@ bool RPG_Magic_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     case ::xml_schema::error_handler::severity::fatal:
     {
       ACE_DEBUG((LM_CRITICAL,
-                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
@@ -401,7 +405,7 @@ bool RPG_Magic_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
     default:
     {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
                  id_in.c_str(),
                  line_in,
                  column_in,
@@ -415,7 +419,8 @@ bool RPG_Magic_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
   return true;
 }
 
-void RPG_Magic_Dictionary::dump() const
+void
+RPG_Magic_Dictionary::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::dump"));
 

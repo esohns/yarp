@@ -138,19 +138,19 @@ three</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkHBox" id="sex_hbox">
+                              <widget class="GtkHBox" id="gender_hbox">
                                 <property name="visible">True</property>
                                 <child>
-                                  <widget class="GtkLabel" id="sex_label">
+                                  <widget class="GtkLabel" id="gender_label">
                                     <property name="visible">True</property>
-                                    <property name="label" translatable="yes">Sex:</property>
+                                    <property name="label" translatable="yes">Gender:</property>
                                   </widget>
                                   <packing>
                                     <property name="position">0</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkLabel" id="sex">
+                                  <widget class="GtkLabel" id="gender">
                                     <property name="visible">True</property>
                                   </widget>
                                   <packing>
@@ -210,6 +210,31 @@ three</property>
                               </widget>
                               <packing>
                                 <property name="position">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkHBox" id="alignment_hbox">
+                                <property name="visible">True</property>
+                                <child>
+                                  <widget class="GtkLabel" id="alignment_label">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Alignment:</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="alignment">
+                                    <property name="visible">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="position">4</property>
                               </packing>
                             </child>
                             <child>
@@ -391,7 +416,7 @@ three</property>
                                 </child>
                               </widget>
                               <packing>
-                                <property name="position">4</property>
+                                <property name="position">5</property>
                               </packing>
                             </child>
                             <child>
@@ -573,7 +598,7 @@ three</property>
                                 </child>
                               </widget>
                               <packing>
-                                <property name="position">5</property>
+                                <property name="position">6</property>
                               </packing>
                             </child>
                             <child>
@@ -620,7 +645,7 @@ three</property>
                                 </child>
                               </widget>
                               <packing>
-                                <property name="position">6</property>
+                                <property name="position">7</property>
                               </packing>
                             </child>
                             <child>
@@ -667,7 +692,7 @@ three</property>
                                 </child>
                               </widget>
                               <packing>
-                                <property name="position">7</property>
+                                <property name="position">8</property>
                               </packing>
                             </child>
                             <child>
@@ -714,7 +739,7 @@ three</property>
                                 </child>
                               </widget>
                               <packing>
-                                <property name="position">8</property>
+                                <property name="position">9</property>
                               </packing>
                             </child>
                           </widget>

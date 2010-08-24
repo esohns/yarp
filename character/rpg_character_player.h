@@ -22,6 +22,8 @@
 
 #include "rpg_character_player_base.h"
 
+#include <xsd/cxx/xml/error-handler.hxx>
+
 /**
 player character
 
@@ -54,16 +56,30 @@ class RPG_Character_Player
 
   // load/save player from/to an XML file
   static const RPG_Character_Player load(const std::string&); // FQ filename
-  static const bool save(const std::string&); // FQ filename
+  const bool save(const std::string&); // FQ filename
 
  private:
   typedef RPG_Character_Player_Base inherited;
 
+  // private error handler
+  class XSD_Error_Handler
+   : public ::xsd::cxx::xml::error_handler<char>
+  {
+   public:
+    virtual bool handle(const std::string&,                             // id
+                        unsigned long,                                  // line
+                        unsigned long,                                  // column
+                        ::xsd::cxx::xml::error_handler<char>::severity, // severity
+                        const std::string&);                            // message
+  };
+
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player());
+  RPG_Character_Player();
 
   // helper methods
   void defaultEquip();
+
+  static XSD_Error_Handler myXSDErrorHandler;
 };
 
 #endif

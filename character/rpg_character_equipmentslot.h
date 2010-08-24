@@ -43,6 +43,7 @@ enum RPG_Character_EquipmentSlot
   EQUIPMENTSLOT_WRIST_LEFT,
   EQUIPMENTSLOT_WRIST_RIGHT,
   EQUIPMENTSLOT_WRISTS,
+  EQUIPMENTSLOT_ANY,
   //
   RPG_CHARACTER_EQUIPMENTSLOT_MAX,
   RPG_CHARACTER_EQUIPMENTSLOT_INVALID
@@ -77,6 +78,7 @@ class RPG_Character_EquipmentSlotHelper
     myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_WRIST_LEFT, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_WRIST_LEFT")));
     myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_WRIST_RIGHT, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_WRIST_RIGHT")));
     myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_WRISTS, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_WRISTS")));
+    myRPG_Character_EquipmentSlotToStringTable.insert(std::make_pair(EQUIPMENTSLOT_ANY, ACE_TEXT_ALWAYS_CHAR("EQUIPMENTSLOT_ANY")));
   };
 
   inline static std::string RPG_Character_EquipmentSlotToString(const RPG_Character_EquipmentSlot& element_in)

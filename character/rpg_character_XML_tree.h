@@ -1442,7 +1442,8 @@ class RPG_Character_EquipmentSlot_XMLTree_Type: public ::xml_schema::string
     EQUIPMENTSLOT_WAIST,
     EQUIPMENTSLOT_WRIST_LEFT,
     EQUIPMENTSLOT_WRIST_RIGHT,
-    EQUIPMENTSLOT_WRISTS
+    EQUIPMENTSLOT_WRISTS,
+    EQUIPMENTSLOT_ANY
   };
 
   RPG_Character_EquipmentSlot_XMLTree_Type (value v);
@@ -1492,8 +1493,8 @@ class RPG_Character_EquipmentSlot_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_literals_[15];
-  static const value _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_indexes_[15];
+  static const char* const _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_literals_[16];
+  static const value _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_indexes_[16];
 };
 
 class RPG_Character_OffHand_XMLTree_Type: public ::xml_schema::string

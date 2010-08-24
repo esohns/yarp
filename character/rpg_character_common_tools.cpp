@@ -501,6 +501,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   player_subclass = ACE_static_cast(RPG_Common_SubClass, result.front());
   player_class.metaClass = RPG_Character_Class_Common_Tools::subClassToMetaClass(player_subclass);
   player_class.subClasses.insert(player_subclass);
+//   player_class.subClasses.push_back(player_subclass);
 
   // step5: alignment
   RPG_Character_Alignment alignment;

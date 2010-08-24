@@ -17,48 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_CHARACTER_EQUIPMENT_H
-#define RPG_CHARACTER_EQUIPMENT_H
 
-#include "rpg_character_equipment_common.h"
-#include "rpg_character_offhand.h"
+#ifndef RPG_CHARACTER_DEFINES_H
+#define RPG_CHARACTER_DEFINES_H
 
-#include <rpg_item_instance_common.h>
-#include <rpg_item_weapontype.h>
-#include <rpg_item_armortype.h>
-
-#include <ace/Global_Macros.h>
-
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
-class RPG_Character_Equipment
-{
- public:
-  RPG_Character_Equipment();
-  // *TODO*: implement reference counted items...
-  RPG_Character_Equipment(const RPG_Character_Equipment&);
-  virtual ~RPG_Character_Equipment();
-  RPG_Character_Equipment& operator=(const RPG_Character_Equipment&);
-
-  void equip(const RPG_Item_ID_t&, // item ID
-             const RPG_Character_EquipmentSlot&); // where ?
-  void unequip(const RPG_Character_EquipmentSlot&); // where ?
-  void strip();
-
-  // weapon in EQUIPMENTSLOT_RIGHT_HAND/EQUIPMENTSLOT_LEFT_HAND
-  const RPG_Item_WeaponType getPrimaryWeapon(const RPG_Character_OffHand&) const;
-  // armor in EQUIPMENTSLOT_BODY/TORSO
-  const RPG_Item_ArmorType getArmor() const;
-  // armor in EQUIPMENTSLOT_LEFT/RIGHT_HAND, IF ARMOR
-  const RPG_Item_ArmorType getShield(const RPG_Character_OffHand&) const;
-
-  // dump equipment
-  void dump() const;
-
- private:
-  // map of equipped items (values index corresponding items in the inventory !)
-  RPG_Character_Equipment_t myEquipment;
-};
+#define RPG_CHARACTER_DUMP_DIR              ACE_TEXT("/var/tmp")
+#define RPG_CHARACTER_PLAYER_SCHEMA_FILE    ACE_TEXT("rpg_character_player.xsd")
+// *NOTE*: refer to the XSD C++/Tree manual for details
+#define RPG_CHARACTER_PLAYER_SCHEMA_CHARSET ACE_TEXT("UTF-8")
 
 #endif

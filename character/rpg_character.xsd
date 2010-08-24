@@ -23,8 +23,10 @@
   <xsd:simpleType name="RPG_Character_Gender_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="GENDER_NONE"/>
+      <!--                                          -->
       <xsd:enumeration value="GENDER_FEMALE"/>
       <xsd:enumeration value="GENDER_MALE"/>
+      <!--                                          -->
       <xsd:enumeration value="GENDER_ANY"/>
     </xsd:restriction>
   </xsd:simpleType>
@@ -32,6 +34,7 @@
   <xsd:simpleType name="RPG_Character_Race_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="RACE_NONE"/>
+      <!--                                          -->
       <xsd:enumeration value="RACE_DWARF"/>
       <xsd:enumeration value="RACE_ELF"/>
       <xsd:enumeration value="RACE_GNOME"/>
@@ -44,6 +47,7 @@
   <xsd:simpleType name="RPG_Character_MetaClass_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="METACLASS_NONE"/>
+      <!--                                          -->
       <xsd:enumeration value="METACLASS_PRIEST"/>
       <xsd:enumeration value="METACLASS_ROGUE"/>
       <xsd:enumeration value="METACLASS_WARRIOR"/>
@@ -322,6 +326,7 @@
       <xsd:enumeration value="ALIGNMENTCIVIC_CHAOTIC"/>
       <xsd:enumeration value="ALIGNMENTCIVIC_LAWFUL"/>
       <xsd:enumeration value="ALIGNMENTCIVIC_NEUTRAL"/>
+      <!--                                          -->
       <xsd:enumeration value="ALIGNMENTCIVIC_ANY"/>
     </xsd:restriction>
   </xsd:simpleType>
@@ -331,6 +336,7 @@
       <xsd:enumeration value="ALIGNMENTETHIC_EVIL"/>
       <xsd:enumeration value="ALIGNMENTETHIC_GOOD"/>
       <xsd:enumeration value="ALIGNMENTETHIC_NEUTRAL"/>
+      <!--                                          -->
       <xsd:enumeration value="ALIGNMENTETHIC_ANY"/>
     </xsd:restriction>
   </xsd:simpleType>
@@ -359,6 +365,8 @@
       <xsd:enumeration value="EQUIPMENTSLOT_WRIST_LEFT"/>
       <xsd:enumeration value="EQUIPMENTSLOT_WRIST_RIGHT"/>
       <xsd:enumeration value="EQUIPMENTSLOT_WRISTS"/>
+      <!--                                          -->
+      <xsd:enumeration value="EQUIPMENTSLOT_ANY"/>
     </xsd:restriction>
   </xsd:simpleType>
 

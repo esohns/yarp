@@ -46,7 +46,8 @@ RPG_Character_Equipment::~RPG_Character_Equipment()
 
 }
 
-RPG_Character_Equipment& RPG_Character_Equipment::operator=(const RPG_Character_Equipment& equipment_in)
+RPG_Character_Equipment&
+RPG_Character_Equipment::operator=(const RPG_Character_Equipment& equipment_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::operator="));
 
@@ -55,10 +56,14 @@ RPG_Character_Equipment& RPG_Character_Equipment::operator=(const RPG_Character_
   return *this;
 }
 
-void RPG_Character_Equipment::equip(const RPG_Item_ID_t& itemID_in,
-                                    const RPG_Character_EquipmentSlot& slot_in)
+void
+RPG_Character_Equipment::equip(const RPG_Item_ID_t& itemID_in,
+                               const RPG_Character_EquipmentSlot& slot_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::equip"));
+
+  // *TODO*: auto-choose slot
+  ACE_ASSERT(slot_in != EQUIPMENTSLOT_ANY);
 
   myEquipment.insert(std::make_pair(slot_in, itemID_in));
 
@@ -82,19 +87,35 @@ void RPG_Character_Equipment::equip(const RPG_Item_ID_t& itemID_in,
 //              RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(slot_in).c_str()));
 }
 
-void RPG_Character_Equipment::unequip(const RPG_Character_EquipmentSlot& slot_in)
+void
+RPG_Character_Equipment::unequip(const RPG_Character_EquipmentSlot& slot_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::unequip"));
 
+  // sanity check
+  if (slot_in == EQUIPMENTSLOT_ANY)
+    strip();
+
   myEquipment.erase(slot_in);
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("unequipped \"%s\"\n"),
 //              RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(slot_in).c_str()));
 }
 
-const RPG_Item_WeaponType RPG_Character_Equipment::getPrimaryWeapon(const RPG_Character_OffHand& offHand_in) const
+void
+RPG_Character_Equipment::strip()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::strip"));
+
+  myEquipment.clear();
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("unequipped ALL\n")));
+}
+
+const RPG_Item_WeaponType
+RPG_Character_Equipment::getPrimaryWeapon(const RPG_Character_OffHand& offHand_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getPrimaryWeapon"));
 
@@ -114,7 +135,6 @@ const RPG_Item_WeaponType RPG_Character_Equipment::getPrimaryWeapon(const RPG_Ch
   if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem((*iterator).second,
                                                                 handle))
   {
-    // debug info
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid item (ID: %d), aborting\n"),
                (*iterator).second));
@@ -141,7 +161,8 @@ const RPG_Item_WeaponType RPG_Character_Equipment::getPrimaryWeapon(const RPG_Ch
   return weapon_base->getWeaponType();
 }
 
-const RPG_Item_ArmorType RPG_Character_Equipment::getArmor() const
+const RPG_Item_ArmorType
+RPG_Character_Equipment::getArmor() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getArmor"));
 
@@ -163,7 +184,6 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getArmor() const
   if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem((*iterator).second,
                                                                 handle))
   {
-    // debug info
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid item (ID: %d), aborting\n"),
                (*iterator).second));
@@ -184,7 +204,8 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getArmor() const
   return armor_base->getArmorType();
 }
 
-const RPG_Item_ArmorType RPG_Character_Equipment::getShield(const RPG_Character_OffHand& offHand_in) const
+const RPG_Item_ArmorType
+RPG_Character_Equipment::getShield(const RPG_Character_OffHand& offHand_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getShield"));
 
@@ -203,7 +224,6 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getShield(const RPG_Character_
   RPG_Item_Base* handle = NULL;
   if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem((*iterator).second, handle))
   {
-    // debug info
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid item (ID: %d), aborting\n"),
                (*iterator).second));
@@ -224,7 +244,6 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getShield(const RPG_Character_
   // sanity check
   if (!RPG_Item_Common_Tools::isShield(armor_base->getArmorType()))
   {
-    // debug info
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("equipped armor (ID: %d, type: \"%s\") is not a shield: returning \"%s\"...\n"),
                (*iterator).second,
@@ -238,7 +257,8 @@ const RPG_Item_ArmorType RPG_Character_Equipment::getShield(const RPG_Character_
   return armor_base->getArmorType();
 }
 
-void RPG_Character_Equipment::dump() const
+void
+RPG_Character_Equipment::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::dump"));
 
@@ -250,7 +270,6 @@ void RPG_Character_Equipment::dump() const
     // find item type
     if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem((*iterator).second, handle))
     {
-      // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid item (ID: %d), continuing\n"),
                  (*iterator).second));
@@ -265,7 +284,6 @@ void RPG_Character_Equipment::dump() const
         RPG_Item_Weapon_Base* weapon_base = ACE_dynamic_cast(RPG_Item_Weapon_Base*, handle);
         ACE_ASSERT(weapon_base);
 
-        // debug info
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("slot \"%s\" --> weapon (ID: %d, type: %s)\n"),
                    RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),
@@ -279,7 +297,6 @@ void RPG_Character_Equipment::dump() const
         RPG_Item_Armor_Base* armor_base = ACE_dynamic_cast(RPG_Item_Armor_Base*, handle);
         ACE_ASSERT(armor_base);
 
-        // debug info
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("slot \"%s\" --> armor (ID: %d, type: %s)\n"),
                    RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),
@@ -290,7 +307,6 @@ void RPG_Character_Equipment::dump() const
       }
       default:
       {
-        // debug info
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("slot \"%s\" --> item (ID: %d, type: %s)\n"),
                    RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),

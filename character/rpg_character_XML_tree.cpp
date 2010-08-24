@@ -2776,11 +2776,11 @@ _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Character_EquipmentSlot_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_indexes_,
-                    _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_indexes_ + 15,
+                    _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_indexes_ + 16,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_indexes_ + 15 || _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_indexes_ + 16 || _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -2789,7 +2789,7 @@ _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Character_EquipmentSlot_XMLTree_Type::
-_xsd_RPG_Character_EquipmentSlot_XMLTree_Type_literals_[15] =
+_xsd_RPG_Character_EquipmentSlot_XMLTree_Type_literals_[16] =
 {
   "EQUIPMENTSLOT_BODY",
   "EQUIPMENTSLOT_EYES",
@@ -2805,12 +2805,14 @@ _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_literals_[15] =
   "EQUIPMENTSLOT_WAIST",
   "EQUIPMENTSLOT_WRIST_LEFT",
   "EQUIPMENTSLOT_WRIST_RIGHT",
-  "EQUIPMENTSLOT_WRISTS"
+  "EQUIPMENTSLOT_WRISTS",
+  "EQUIPMENTSLOT_ANY"
 };
 
 const RPG_Character_EquipmentSlot_XMLTree_Type::value RPG_Character_EquipmentSlot_XMLTree_Type::
-_xsd_RPG_Character_EquipmentSlot_XMLTree_Type_indexes_[15] =
+_xsd_RPG_Character_EquipmentSlot_XMLTree_Type_indexes_[16] =
 {
+  ::RPG_Character_EquipmentSlot_XMLTree_Type::EQUIPMENTSLOT_ANY,
   ::RPG_Character_EquipmentSlot_XMLTree_Type::EQUIPMENTSLOT_BODY,
   ::RPG_Character_EquipmentSlot_XMLTree_Type::EQUIPMENTSLOT_EYES,
   ::RPG_Character_EquipmentSlot_XMLTree_Type::EQUIPMENTSLOT_FEET,

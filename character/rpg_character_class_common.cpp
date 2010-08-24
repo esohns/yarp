@@ -23,7 +23,8 @@
 
 #include <string>
 
-const RPG_Character_MetaClass RPG_Character_Class_Common_Tools::subClassToMetaClass(const RPG_Common_SubClass& subClass_in)
+const RPG_Character_MetaClass
+RPG_Character_Class_Common_Tools::subClassToMetaClass(const RPG_Common_SubClass& subClass_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::subClassToMetaClass"));
 
@@ -59,7 +60,6 @@ const RPG_Character_MetaClass RPG_Character_Class_Common_Tools::subClassToMetaCl
     }
     default:
     {
-      // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid subclass: %s, aborting\n"),
                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
@@ -67,4 +67,20 @@ const RPG_Character_MetaClass RPG_Character_Class_Common_Tools::subClassToMetaCl
   } // end SWITCH
 
   return RPG_CHARACTER_METACLASS_INVALID;
+}
+
+const RPG_Character_ClassXML
+RPG_Character_Class_Common_Tools::subClassTosubClassXML(const RPG_Character_Class& class_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::subClassTosubClassXML"));
+
+  RPG_Character_ClassXML result;
+
+  result.metaClass = class_in.metaClass;
+  for (RPG_Character_SubClassesIterator_t iterator = class_in.subClasses.begin();
+       iterator != class_in.subClasses.end();
+       iterator++)
+    result.subClasses.push_back(*iterator);
+
+  return result;
 }

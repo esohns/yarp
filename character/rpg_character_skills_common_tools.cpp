@@ -310,6 +310,8 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   // ability to turn or rebuke creatures
   prerequisite.restrictedSubClasses.insert(SUBCLASS_PALADIN);
   prerequisite.restrictedSubClasses.insert(SUBCLASS_CLERIC);
+//   prerequisite.restrictedSubClasses.push_back(SUBCLASS_PALADIN);
+//   prerequisite.restrictedSubClasses.push_back(SUBCLASS_CLERIC);
   prerequisites.push_back(prerequisite);
 
   prerequisite.restrictedSubClasses.clear();
@@ -422,6 +424,7 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
   prerequisite.restrictedSubClasses.insert(SUBCLASS_FIGHTER);
+//   prerequisite.restrictedSubClasses.push_back(SUBCLASS_FIGHTER);
   prerequisites.push_back(prerequisite);
 
   prerequisite.restrictedSubClasses.clear();
@@ -459,6 +462,7 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
   prerequisite.restrictedSubClasses.insert(SUBCLASS_FIGHTER);
+//   prerequisite.restrictedSubClasses.push_back(SUBCLASS_FIGHTER);
   prerequisites.push_back(prerequisite);
 
   prerequisite.restrictedSubClasses.clear();
@@ -657,6 +661,8 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   // ability to turn or rebuke creatures
   prerequisite.restrictedSubClasses.insert(SUBCLASS_PALADIN);
   prerequisite.restrictedSubClasses.insert(SUBCLASS_CLERIC);
+//   prerequisite.restrictedSubClasses.push_back(SUBCLASS_PALADIN);
+//   prerequisite.restrictedSubClasses.push_back(SUBCLASS_CLERIC);
   prerequisites.push_back(prerequisite);
 
   prerequisite.restrictedSubClasses.clear();
@@ -942,6 +948,7 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
   prerequisite.restrictedSubClasses.insert(SUBCLASS_WIZARD);
+//   prerequisite.restrictedSubClasses.push_back(SUBCLASS_WIZARD);
   prerequisites.push_back(prerequisite);
 
   prerequisite.restrictedSubClasses.clear();
@@ -1110,6 +1117,7 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
   prerequisite.restrictedSubClasses.insert(SUBCLASS_FIGHTER);
+//   prerequisite.restrictedSubClasses.push_back(SUBCLASS_FIGHTER);
   prerequisites.push_back(prerequisite);
 
   prerequisite.restrictedSubClasses.clear();

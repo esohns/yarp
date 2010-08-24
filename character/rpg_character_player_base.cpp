@@ -99,6 +99,47 @@ RPG_Character_Player_Base& RPG_Character_Player_Base::operator=(const RPG_Charac
   return *this;
 }
 
+void
+RPG_Character_Player_Base::init(const std::string& name_in,
+                                const RPG_Character_Gender& gender_in,
+                                const RPG_Character_Race& race_in,
+                                const RPG_Character_Class& class_in,
+                                const RPG_Character_Alignment& alignment_in,
+                                const RPG_Character_Attributes& attributes_in,
+                                const RPG_Character_Skills_t& skills_in,
+                                const RPG_Character_Feats_t& feats_in,
+                                const RPG_Character_Abilities_t& abilities_in,
+                                const RPG_Character_OffHand& offhand_in,
+                                const unsigned int& experience_in,
+                                const unsigned short int& hitpoints_in,
+                                const unsigned int& wealth_in,
+                                const RPG_Magic_Spells_t& knownSpells_in,
+                                const RPG_Magic_SpellList_t& spells_in,
+                                const RPG_Item_List_t& inventory_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::init"));
+
+  // init base class
+  inherited::init(name_in,
+                  alignment_in,
+                  attributes_in,
+                  skills_in,
+                  feats_in,
+                  abilities_in,
+                  SIZE_MEDIUM, // standard PCs are all medium-sized
+                  hitpoints_in,
+                  wealth_in,
+                  knownSpells_in,
+                  spells_in,
+                  inventory_in);
+
+  myGender     = gender_in;
+  myRace       = race_in;
+  myClass      = class_in;
+  myOffHand    = offhand_in;
+  myExperience = experience_in;
+}
+
 const RPG_Character_Gender RPG_Character_Player_Base::getGender() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getGender"));
