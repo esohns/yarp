@@ -34,6 +34,7 @@
 #include <rpg_item_weapon_base.h>
 #include <rpg_item_common_tools.h>
 
+#include <rpg_common_defines.h>
 #include <rpg_common_file_tools.h>
 
 #include <ace/Log_Msg.h>
@@ -237,8 +238,9 @@ RPG_Character_Player::save(const std::string& filename_in) const
   std::ofstream ofs;
   ofs.exceptions(std::ofstream::badbit | std::ofstream::failbit);
   ::xml_schema::namespace_infomap map;
+  map[""].name = RPG_COMMON_XML_TARGET_NAMESPACE;
   map[""].schema = RPG_CHARACTER_PLAYER_SCHEMA_FILE;
-  std::string character_set(RPG_CHARACTER_PLAYER_SCHEMA_CHARSET);
+  std::string character_set(RPG_COMMON_XML_SCHEMA_CHARSET);
   //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
 

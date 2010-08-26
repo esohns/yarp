@@ -26,4 +26,9 @@
 // general stuff
 #define RPG_COMMON_MAX_TIMESTAMP_STRING_LENGTH 64
 
+// XML-specific
+// *NOTE*: refer to the XSD C++/Tree manual for details
+#define RPG_COMMON_XML_SCHEMA_CHARSET          ACE_TEXT("UTF-8")
+#define RPG_COMMON_XML_TARGET_NAMESPACE        ACE_TEXT("urn:rpg")
+
 #endif

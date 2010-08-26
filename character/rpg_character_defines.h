@@ -25,7 +25,5 @@
 
 #define RPG_CHARACTER_PLAYER_START_MONEY    0
 #define RPG_CHARACTER_PLAYER_SCHEMA_FILE    ACE_TEXT("rpg_character_player.xsd")
-// *NOTE*: refer to the XSD C++/Tree manual for details
-#define RPG_CHARACTER_PLAYER_SCHEMA_CHARSET ACE_TEXT("UTF-8")
 
 #endif
