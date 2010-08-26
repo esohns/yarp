@@ -133,7 +133,12 @@ class RPG_Character_Base
   RPG_Character_Equipment    myEquipment;
 
   short int                  myNumHitPoints;
-  RPG_Character_Conditions_t myConditions;
+  RPG_Character_Conditions_t myCondition;
+
+  RPG_Character_Attributes   myAttributes;
+  RPG_Character_Feats_t      myFeats;
+  RPG_Character_Abilities_t  myAbilities;
+  RPG_Character_Skills_t     mySkills;
 
  private:
   // safety measures
@@ -141,12 +146,6 @@ class RPG_Character_Base
 
   std::string                myName;
   RPG_Character_Alignment    myAlignment;
-
-  RPG_Character_Attributes   myAttributes;
-  RPG_Character_Skills_t     mySkills;
-  RPG_Character_Feats_t      myFeats;
-  RPG_Character_Abilities_t  myAbilities;
-
   unsigned short int         myNumTotalHitPoints;
 };
 

@@ -67,11 +67,12 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-i [FILE]: item dictionary (*.xml)") << std::endl;
-  std::cout << ACE_TEXT("-m [FILE]: magic dictionary (*.xml)") << std::endl;
-  std::cout << ACE_TEXT("-r       : random (non-interactive)") << std::endl;
-  std::cout << ACE_TEXT("-t       : trace information") << std::endl;
-  std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
+  std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << std::endl;
+  std::cout << ACE_TEXT("-m [FILE] : magic dictionary (*.xml)") << std::endl;
+  std::cout << ACE_TEXT("-n [VALUE]: generate (party of) #players") << std::endl;
+  std::cout << ACE_TEXT("-r        : random (non-interactive)") << std::endl;
+  std::cout << ACE_TEXT("-t        : trace information") << std::endl;
+  std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
 } // end print_usage
 
 const bool
@@ -79,6 +80,7 @@ process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   std::string& itemDictionaryFilename_out,
                   std::string& magicDictionaryFilename_out,
+                  unsigned int& generateParty_out,
                   bool& random_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out)
@@ -88,15 +90,17 @@ process_arguments(const int argc_in,
   // init results
   itemDictionaryFilename_out.clear();
   magicDictionaryFilename_out.clear();
+  generateParty_out = 0;
   random_out = false;
   traceInformation_out = false;
   printVersionAndExit_out = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("i:m:rtv"));
+                             ACE_TEXT("i:m:n:rtv"));
 
   int option = 0;
+  std::stringstream converter;
   while ((option = argumentParser()) != EOF)
   {
     switch (option)
@@ -110,6 +114,15 @@ process_arguments(const int argc_in,
       case 'm':
       {
         magicDictionaryFilename_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'n':
+      {
+        converter.clear();
+        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+        converter << argumentParser.opt_arg();
+        converter >> generateParty_out;
 
         break;
       }
@@ -272,7 +285,7 @@ print_feats_table(const RPG_Common_SubClass& subClass_in,
                                                                      abilities_in)))
       {
 //         std::cout.setf(ios::right);
-        std::cout << ACE_TEXT("[") << std::setw(2) << std::right << index << ACE_TEXT("]: ") << std::setw(20) << std::left << iterator->second.c_str();
+        std::cout << ACE_TEXT("[") << std::setw(2) << std::right << index << ACE_TEXT("]: ") << std::setw(20) << std::left << iterator->second.c_str() << ACE_TEXT(" ");
 //         std::cout.unsetf(ios::right);
       } // end IF
     } // end FOR
@@ -406,117 +419,125 @@ generate_standard_items(const RPG_Common_SubClass& subClass_in)
   RPG_Item_Armor* shield = NULL;
   RPG_Item_Weapon* weapon = NULL;
   RPG_Item_Weapon* bow = NULL;
-  switch (subClass_in)
+  try
   {
-    case SUBCLASS_FIGHTER:
+    switch (subClass_in)
     {
-      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
-      armor  = new RPG_Item_Armor(ARMOR_MAIL_SPLINT);
-      shield = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
+      case SUBCLASS_FIGHTER:
+      {
+        weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        armor  = new RPG_Item_Armor(ARMOR_MAIL_SPLINT);
+        shield = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
 
-      result.insert(weapon->getID());
-      result.insert(armor->getID());
-      result.insert(shield->getID());
+        result.insert(weapon->getID());
+        result.insert(armor->getID());
+        result.insert(shield->getID());
 
-      break;
-    }
-    case SUBCLASS_PALADIN:
-    {
-      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
-      armor  = new RPG_Item_Armor(ARMOR_PLATE_FULL);
-      shield = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_STEEL);
+        break;
+      }
+      case SUBCLASS_PALADIN:
+      {
+        weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        armor  = new RPG_Item_Armor(ARMOR_PLATE_FULL);
+        shield = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_STEEL);
 
-      result.insert(weapon->getID());
-      result.insert(armor->getID());
-      result.insert(shield->getID());
+        result.insert(weapon->getID());
+        result.insert(armor->getID());
+        result.insert(shield->getID());
 
-      break;
-    }
-    case SUBCLASS_RANGER:
-    {
-      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
-      bow    = new RPG_Item_Weapon(RANGED_WEAPON_BOW_LONG);
-      armor  = new RPG_Item_Armor(ARMOR_HIDE);
+        break;
+      }
+      case SUBCLASS_RANGER:
+      {
+        weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        bow    = new RPG_Item_Weapon(RANGED_WEAPON_BOW_LONG);
+        armor  = new RPG_Item_Armor(ARMOR_HIDE);
 
-      result.insert(weapon->getID());
-      result.insert(bow->getID());
-      result.insert(armor->getID());
+        result.insert(weapon->getID());
+        result.insert(bow->getID());
+        result.insert(armor->getID());
 
-      break;
-    }
-    case SUBCLASS_BARBARIAN:
-    {
-      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
-      armor  = new RPG_Item_Armor(ARMOR_HIDE);
+        break;
+      }
+      case SUBCLASS_BARBARIAN:
+      {
+        weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        armor  = new RPG_Item_Armor(ARMOR_HIDE);
 
-      result.insert(weapon->getID());
-      result.insert(armor->getID());
+        result.insert(weapon->getID());
+        result.insert(armor->getID());
 
-      break;
-    }
-    case SUBCLASS_WIZARD:
-    case SUBCLASS_SORCERER:
-    {
-      weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+        break;
+      }
+      case SUBCLASS_WIZARD:
+      case SUBCLASS_SORCERER:
+      {
+        weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
 
-      result.insert(weapon->getID());
+        result.insert(weapon->getID());
 
-      break;
-    }
-    case SUBCLASS_CLERIC:
-    {
-      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
-      armor  = new RPG_Item_Armor(ARMOR_MAIL_CHAIN);
-      shield = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
+        break;
+      }
+      case SUBCLASS_CLERIC:
+      {
+        weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
+        armor  = new RPG_Item_Armor(ARMOR_MAIL_CHAIN);
+        shield = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
 
-      result.insert(weapon->getID());
-      result.insert(armor->getID());
-      result.insert(shield->getID());
+        result.insert(weapon->getID());
+        result.insert(armor->getID());
+        result.insert(shield->getID());
 
-      break;
-    }
-    case SUBCLASS_DRUID:
-    {
-      weapon = new RPG_Item_Weapon(LIGHT_MELEE_WEAPON_SICKLE);
-      armor  = new RPG_Item_Armor(ARMOR_HIDE);
-      shield = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_WOODEN);
+        break;
+      }
+      case SUBCLASS_DRUID:
+      {
+        weapon = new RPG_Item_Weapon(LIGHT_MELEE_WEAPON_SICKLE);
+        armor  = new RPG_Item_Armor(ARMOR_HIDE);
+        shield = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_WOODEN);
 
-      result.insert(weapon->getID());
-      result.insert(armor->getID());
-      result.insert(shield->getID());
+        result.insert(weapon->getID());
+        result.insert(armor->getID());
+        result.insert(shield->getID());
 
-      break;
-    }
-    case SUBCLASS_MONK:
-    {
-      weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+        break;
+      }
+      case SUBCLASS_MONK:
+      {
+        weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
 
-      result.insert(weapon->getID());
+        result.insert(weapon->getID());
 
-      break;
-    }
-    case SUBCLASS_THIEF:
-    case SUBCLASS_BARD:
-    {
-      weapon = new RPG_Item_Weapon(LIGHT_MELEE_WEAPON_SWORD_SHORT);
-      armor  = new RPG_Item_Armor(ARMOR_LEATHER);
-      shield = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_STEEL);
+        break;
+      }
+      case SUBCLASS_THIEF:
+      case SUBCLASS_BARD:
+      {
+        weapon = new RPG_Item_Weapon(LIGHT_MELEE_WEAPON_SWORD_SHORT);
+        armor  = new RPG_Item_Armor(ARMOR_LEATHER);
+        shield = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_STEEL);
 
-      result.insert(weapon->getID());
-      result.insert(armor->getID());
-      result.insert(shield->getID());
+        result.insert(weapon->getID());
+        result.insert(armor->getID());
+        result.insert(shield->getID());
 
-      break;
-    }
-    default:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid class \"%s\", aborting\n"),
-                 RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid class \"%s\", aborting\n"),
+                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
 
-      break;
-    }
-  } // end SWITCH
+        break;
+      }
+    } // end SWITCH
+  }
+  catch (const std::bad_alloc& exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught std::bad_alloc, continuing\n")));
+  }
 
   return result;
 }
@@ -608,6 +629,8 @@ generate_player_character()
       }
     } // end SWITCH
   } while (race == RACE_NONE);
+  RPG_Character_Race_t playerRace(0);
+  playerRace.flip(race - 1);
 
   // step4: class(es)
   RPG_Character_Class playerClass;
@@ -835,14 +858,18 @@ generate_player_character()
     offHand = OFFHAND_RIGHT;
 
   // step10: HP
+  unsigned short int hitPoints = 0;
   roll.numDice = 1;
   roll.typeDice = RPG_Character_Common_Tools::getHitDie(playerSubClass);
   roll.modifier = 0;
   result.clear();
-  RPG_Dice::simulateRoll(roll,
-                         1,
-                         result);
-  unsigned short int hitPoints = result[0];
+//   RPG_Dice::simulateRoll(roll,
+//                          1,
+//                          result);
+//   hitPoints = result[0];
+  // *NOTE*: players start with maxed HP...
+  hitPoints = RPG_Character_Common_Tools::getHitDie(playerSubClass);
+
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("initial hit points (hit die: \"%s\"): %d...\n"),
              RPG_Dice_DieTypeHelper::RPG_Dice_DieTypeToString(roll.typeDice).c_str(),
@@ -952,7 +979,7 @@ generate_player_character()
   RPG_Character_Player player(// base attributes
                               name,
                               gender,
-                              race,
+                              playerRace,
                               playerClass,
                               alignment,
                               attributes,
@@ -1004,6 +1031,7 @@ generate_random_player_character()
 void
 do_work(const std::string magicDictionaryFilename_in,
         const std::string itemDictionaryFilename_in,
+        const unsigned int& numPartyMembers_in,
         const bool& random_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
@@ -1052,6 +1080,7 @@ do_work(const std::string magicDictionaryFilename_in,
   RPG_Character_Player player = RPG_Character_Player::dummy();
   bool done = false;
   char c = ' ';
+  unsigned int numPlayers = 0;
   do
   {
     // step1: generate new player character
@@ -1059,46 +1088,74 @@ do_work(const std::string magicDictionaryFilename_in,
                         : generate_player_character());
     player.dump();
 
-    // step2: display menu options
-    c = ' ';
-    do
+    if (numPartyMembers_in == 0)
     {
-      std::cout << ACE_TEXT("menu options (rETRY/sAVE/qUIT): ");
-      std::cin >> c;
-      switch (c)
+      // step2: display menu options
+      c = ' ';
+      do
       {
-        case 'r':
+        std::cout << ACE_TEXT("menu options (rETRY/sAVE/qUIT): ");
+        std::cin >> c;
+        switch (c)
         {
-          break;
-        }
-        case 's':
-        {
-          std::string path = RPG_CHARACTER_DUMP_DIR;
-          path += ACE_DIRECTORY_SEPARATOR_STR;
-          path += player.getName();
-          path += ACE_TEXT_ALWAYS_CHAR(".xml");
-          if (!player.save(path))
+          case 'r':
+            break;
+          case 's':
+          {
+            std::string path = RPG_CHARACTER_DUMP_DIR;
+            path += ACE_DIRECTORY_SEPARATOR_STR;
+            path += player.getName();
+            path += ACE_TEXT_ALWAYS_CHAR(".xml");
+            if (!player.save(path))
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("failed to RPG_Character_Player::save(\"%s\"), continuing\n"),
+                         path.c_str()));
+            else
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
+                         player.getName().c_str(),
+                         path.c_str()));
+
+            break;
+          }
+          case 'q':
+          {
+            done = true;
+
+            break;
+          }
+          default:
+          {
             ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("failed to RPG_Character_Player::save(\"%s\"), continuing\n"),
-                       path.c_str()));
+                       ACE_TEXT("unrecognized (gender) option \"%c\", try again\n"),
+                       c));
+            break;
+          }
+        } // end SWITCH
+      } while ((c != 'r') &&
+               (c != 'q'));
+    } // end IF
+    else
+    {
+      // save player
+      std::string path = RPG_CHARACTER_DUMP_DIR;
+      path += ACE_DIRECTORY_SEPARATOR_STR;
+      path += player.getName();
+      path += ACE_TEXT_ALWAYS_CHAR(".xml");
+      if (!player.save(path))
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to RPG_Character_Player::save(\"%s\"), continuing\n"),
+                   path.c_str()));
+      else
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
+                   player.getName().c_str(),
+                   path.c_str()));
 
-          break;
-        }
-        case 'q':
-        {
-          done = true;
-
-          break;
-        }
-        default:
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("unrecognized (gender) option \"%c\", try again\n"),
-                     c));
-          break;
-        }
-      } // end SWITCH
-    } while (c != 'q');
+      numPlayers++;
+      if (numPlayers == numPartyMembers_in)
+        done = true;
+    } // end ELSE
   } while (!done);
 
   ACE_DEBUG((LM_DEBUG,
@@ -1171,15 +1228,17 @@ int ACE_TMAIN(int argc,
   // step1a set defaults
   std::string itemDictionaryFilename;
   std::string magicDictionaryFilename;
-  bool random              = false;
-  bool traceInformation    = false;
-  bool printVersionAndExit = false;
+  unsigned int numPartyMembers = 0;
+  bool random                  = false;
+  bool traceInformation        = false;
+  bool printVersionAndExit     = false;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
                           itemDictionaryFilename,
                           magicDictionaryFilename,
+                          numPartyMembers,
                           random,
                           traceInformation,
                           printVersionAndExit)))
@@ -1243,6 +1302,7 @@ int ACE_TMAIN(int argc,
   // step2: do actual work
   do_work(magicDictionaryFilename,
           itemDictionaryFilename,
+          numPartyMembers,
           random);
 
   timer.stop();

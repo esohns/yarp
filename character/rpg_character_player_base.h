@@ -129,16 +129,16 @@ class RPG_Character_Player_Base
 
   virtual const signed char getShieldBonus() const;
 
+  RPG_Character_Gender  myGender;
+  RPG_Character_Race_t  myRace;
+  RPG_Character_Class   myClass;
+  RPG_Character_OffHand myOffHand;
+
  private:
   typedef RPG_Character_Base inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player_Base());
-
-  RPG_Character_Gender  myGender;
-  RPG_Character_Race_t  myRace;
-  RPG_Character_Class   myClass;
-  RPG_Character_OffHand myOffHand;
 
   unsigned int          myExperience;
 //  unsigned short int       mySize; // cm

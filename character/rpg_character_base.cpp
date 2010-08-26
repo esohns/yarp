@@ -58,13 +58,13 @@ RPG_Character_Base::RPG_Character_Base(// base attributes
    myInventory(inventory_in),
 //    myEquipment(), // start naked
    myNumHitPoints(hitpoints_in),
-   myConditions(condition_in),
-   myName(name_in),
-   myAlignment(alignment_in),
+   myCondition(condition_in),
    myAttributes(attributes_in),
-   mySkills(skills_in),
    myFeats(feats_in),
    myAbilities(abilities_in),
+   mySkills(skills_in),
+   myName(name_in),
+   myAlignment(alignment_in),
    myNumTotalHitPoints(maxHitPoints_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
@@ -79,13 +79,13 @@ RPG_Character_Base::RPG_Character_Base(const RPG_Character_Base& playerBase_in)
    myInventory(playerBase_in.myInventory),
    myEquipment(playerBase_in.myEquipment),
    myNumHitPoints(playerBase_in.myNumHitPoints),
-   myConditions(playerBase_in.myConditions),
-   myName(playerBase_in.myName),
-   myAlignment(playerBase_in.myAlignment),
+   myCondition(playerBase_in.myCondition),
    myAttributes(playerBase_in.myAttributes),
-   mySkills(playerBase_in.mySkills),
    myFeats(playerBase_in.myFeats),
    myAbilities(playerBase_in.myAbilities),
+   mySkills(playerBase_in.mySkills),
+   myName(playerBase_in.myName),
+   myAlignment(playerBase_in.myAlignment),
    myNumTotalHitPoints(playerBase_in.myNumTotalHitPoints)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
@@ -104,13 +104,13 @@ RPG_Character_Base::operator=(const RPG_Character_Base& playerBase_in)
   myInventory = playerBase_in.myInventory;
   myEquipment = playerBase_in.myEquipment;
   myNumHitPoints = playerBase_in.myNumHitPoints;
-  myConditions = playerBase_in.myConditions;
-  myName = playerBase_in.myName;
-  myAlignment = playerBase_in.myAlignment;
+  myCondition = playerBase_in.myCondition;
   myAttributes = playerBase_in.myAttributes;
-  mySkills = playerBase_in.mySkills;
   myFeats = playerBase_in.myFeats;
   myAbilities = playerBase_in.myAbilities;
+  mySkills = playerBase_in.mySkills;
+  myName = playerBase_in.myName;
+  myAlignment = playerBase_in.myAlignment;
   myNumTotalHitPoints = playerBase_in.myNumTotalHitPoints;
 
   return *this;
@@ -143,13 +143,13 @@ RPG_Character_Base::init(// base attributes
   myInventory         = inventory_in;
   myEquipment.strip();
   myNumHitPoints      = hitpoints_in;
-  myConditions        = condition_in;
-  myName              = name_in;
-  myAlignment         = alignment_in;
+  myCondition         = condition_in;
   myAttributes        = attributes_in;
-  mySkills            = skills_in;
   myFeats             = feats_in;
   myAbilities         = abilities_in;
+  mySkills            = skills_in;
+  myName              = name_in;
+  myAlignment         = alignment_in;
   myNumTotalHitPoints = hitpoints_in;
 }
 
@@ -159,21 +159,24 @@ RPG_Character_Base::~RPG_Character_Base()
 
 }
 
-const std::string RPG_Character_Base::getName() const
+const std::string
+RPG_Character_Base::getName() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getName"));
 
   return myName;
 }
 
-const RPG_Character_Alignment RPG_Character_Base::getAlignment() const
+const RPG_Character_Alignment
+RPG_Character_Base::getAlignment() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getAlignment"));
 
   return myAlignment;
 }
 
-const unsigned char RPG_Character_Base::getAttribute(const RPG_Common_Attribute& attribute_in) const
+const unsigned char
+RPG_Character_Base::getAttribute(const RPG_Common_Attribute& attribute_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getAttribute"));
 
@@ -205,7 +208,6 @@ const unsigned char RPG_Character_Base::getAttribute(const RPG_Common_Attribute&
     }
     default:
     {
-      // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid attribute: \"%s\", aborting\n"),
                  RPG_Common_AttributeHelper::RPG_Common_AttributeToString(attribute_in).c_str()));
@@ -217,8 +219,9 @@ const unsigned char RPG_Character_Base::getAttribute(const RPG_Common_Attribute&
   return 0;
 }
 
-void RPG_Character_Base::getSkill(const RPG_Common_Skill& skill_in,
-                                  unsigned char& result_out) const
+void
+RPG_Character_Base::getSkill(const RPG_Common_Skill& skill_in,
+                             unsigned char& result_out) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getSkill"));
 
@@ -232,56 +235,64 @@ void RPG_Character_Base::getSkill(const RPG_Common_Skill& skill_in,
   } // end IF
 }
 
-const bool RPG_Character_Base::hasFeat(const RPG_Character_Feat& feat_in) const
+const bool
+RPG_Character_Base::hasFeat(const RPG_Character_Feat& feat_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::hasFeat"));
 
   return (myFeats.find(feat_in) != myFeats.end());
 }
 
-const bool RPG_Character_Base::hasAbility(const RPG_Character_Ability& ability_in) const
+const bool
+RPG_Character_Base::hasAbility(const RPG_Character_Ability& ability_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::hasAbility"));
 
   return (myAbilities.find(ability_in) != myAbilities.end());
 }
 
-const RPG_Common_Size RPG_Character_Base::getSize() const
+const RPG_Common_Size
+RPG_Character_Base::getSize() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getSize"));
 
   return mySize;
 }
 
-const unsigned short int RPG_Character_Base::getNumTotalHitPoints() const
+const unsigned short int
+RPG_Character_Base::getNumTotalHitPoints() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getNumTotalHitPoints"));
 
   return myNumTotalHitPoints;
 }
 
-const short int RPG_Character_Base::getNumHitPoints() const
+const short int
+RPG_Character_Base::getNumHitPoints() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getNumHitPoints"));
 
   return myNumHitPoints;
 }
 
-const unsigned int RPG_Character_Base::getWealth() const
+const unsigned int
+RPG_Character_Base::getWealth() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getWealth"));
 
   return myWealth;
 }
 
-const bool RPG_Character_Base::hasCondition(const RPG_Common_Condition& condition_in) const
+const bool
+RPG_Character_Base::hasCondition(const RPG_Common_Condition& condition_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::hasCondition"));
 
-  return (myConditions.find(condition_in) != myConditions.end());
+  return (myCondition.find(condition_in) != myCondition.end());
 }
 
-void RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
+void
+RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::sustainDamage"));
 
@@ -318,20 +329,19 @@ void RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
   // adjust condition
   if (myNumHitPoints <= 0)
   {
-    myConditions.erase(CONDITION_NORMAL);
+    myCondition.erase(CONDITION_NORMAL);
 
     if (myNumHitPoints == -10)
-      myConditions.insert(CONDITION_DEAD);
+      myCondition.insert(CONDITION_DEAD);
     else if (myNumHitPoints < 0)
-      myConditions.insert(CONDITION_DYING);
+      myCondition.insert(CONDITION_DYING);
     else
-      myConditions.insert(CONDITION_DISABLED);
+      myCondition.insert(CONDITION_DISABLED);
 
     if (myNumHitPoints < 0)
-      myConditions.insert(CONDITION_UNCONSCIOUS);
+      myCondition.insert(CONDITION_UNCONSCIOUS);
   } // end IF
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("character \"%s\" (HP: %d/%d) suffers damage of %d HP%s...\n"),
              getName().c_str(),
@@ -341,19 +351,21 @@ void RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
              (!hasCondition(CONDITION_NORMAL) ? ACE_TEXT_ALWAYS_CHAR(" --> DOWN") : ACE_TEXT_ALWAYS_CHAR(""))));
 }
 
-void RPG_Character_Base::status() const
+void
+RPG_Character_Base::status() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::status"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("condition: %s\nHP: %d/%d\nwealth: %d GP\n"),
-             RPG_Character_Common_Tools::conditionToString(myConditions).c_str(),
+             RPG_Character_Common_Tools::conditionToString(myCondition).c_str(),
              myNumHitPoints,
              myNumTotalHitPoints,
              myWealth));
 }
 
-void RPG_Character_Base::dump() const
+void
+RPG_Character_Base::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::dump"));
 

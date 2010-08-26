@@ -182,7 +182,6 @@ RPG_Character_Common_Tools::raceToString(const RPG_Character_Race_t& race_in)
       result += ACE_TEXT_ALWAYS_CHAR("|");
     } // end IF
   } // end FOR
-
   result.erase(--result.end());
   if (race_in.count() > 1)
     result += ACE_TEXT_ALWAYS_CHAR(")");
@@ -222,15 +221,20 @@ RPG_Character_Common_Tools::conditionToString(const RPG_Character_Conditions_t& 
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::conditionToString"));
 
   std::string result;
+
+  if (condition_in.size() > 1)
+    result += ACE_TEXT_ALWAYS_CHAR("(");
   for (RPG_Character_ConditionsIterator_t iterator = condition_in.begin();
        iterator != condition_in.end();
        iterator++)
   {
     result += RPG_Common_ConditionHelper::RPG_Common_ConditionToString(*iterator);
-    result += ACE_TEXT_ALWAYS_CHAR(" | ");
+    result += ACE_TEXT_ALWAYS_CHAR("|");
   } // end FOR
-  if (!result.empty())
+  if (!condition_in.empty())
     result.erase(--result.end());
+  if (condition_in.size() > 1)
+    result += ACE_TEXT_ALWAYS_CHAR(")");
 
   return result;
 }
@@ -364,9 +368,8 @@ RPG_Character_Common_Tools::getHitDie(const RPG_Common_SubClass& subClass_in)
     }
     default:
     {
-      // debug info
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid subclass: \"%s\" --> check implementation !, aborting\n"),
+                 ACE_TEXT("invalid subclass: \"%s\", aborting\n"),
                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
 
       break;
@@ -421,9 +424,8 @@ RPG_Character_Common_Tools::getBaseAttackBonus(const RPG_Common_SubClass& subCla
     }
     default:
     {
-      // debug info
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid subclass: \"%s\" --> check implementation !, aborting\n"),
+                 ACE_TEXT("invalid subclass: \"%s\", aborting\n"),
                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
 
       break;
@@ -462,11 +464,6 @@ RPG_Character_Common_Tools::isCasterClass(const RPG_Common_SubClass& subClass_in
     }
     default:
     {
-//       // debug info
-//       ACE_DEBUG((LM_ERROR,
-//                  ACE_TEXT("invalid subclass: \"%s\" --> check implementation !, aborting\n"),
-//                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
-
       break;
     }
   } // end SWITCH
@@ -527,7 +524,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
                                   1,
                                   result);
   race = ACE_static_cast(RPG_Character_Race, result.front());
-  player_race.set(race - 1);
+  player_race.flip(race - 1);
 
   // step4: class
   RPG_Character_Class player_class;
@@ -681,7 +678,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
 //                          1,
 //                          result);
 //   hitpoints = result.front();
-  // our players start with maxed HP...
+  // *NOTE*: players start with maxed HP...
   hitpoints = RPG_Character_Common_Tools::getHitDie(player_subclass);
 
   // step11: (initial) set of spells
@@ -736,7 +733,6 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
           if (knownSpells.find(*available_iterator) != knownSpells.end())
             continue; // try again
 
-          // debug info
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("chose known spell #%d: \"%s\"\n"),
                      numChosen + 1,
@@ -767,7 +763,6 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
                                           result);
           std::advance(available_iterator, result.front() - 1);
 
-          // debug info
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("chose prepared/memorized spell #%d: \"%s\"\n"),
                      j + 1,
@@ -790,124 +785,132 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   RPG_Item_Armor* shield = NULL;
   RPG_Item_Weapon* weapon = NULL;
   RPG_Item_Weapon* bow = NULL;
-  switch (player_subclass)
+  try
   {
-    case SUBCLASS_FIGHTER:
+    switch (player_subclass)
     {
-      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
-      armor  = new RPG_Item_Armor(ARMOR_MAIL_SPLINT);
-      shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
+      case SUBCLASS_FIGHTER:
+      {
+        weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        armor  = new RPG_Item_Armor(ARMOR_MAIL_SPLINT);
+        shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
 
-      items.insert(weapon->getID());
-      items.insert(armor->getID());
-      items.insert(shield->getID());
+        items.insert(weapon->getID());
+        items.insert(armor->getID());
+        items.insert(shield->getID());
 
-      break;
-    }
-    case SUBCLASS_PALADIN:
-    case SUBCLASS_WARLORD:
-    {
-      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
-      armor  = new RPG_Item_Armor(ARMOR_PLATE_FULL);
-      shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_STEEL);
+        break;
+      }
+      case SUBCLASS_PALADIN:
+      case SUBCLASS_WARLORD:
+      {
+        weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        armor  = new RPG_Item_Armor(ARMOR_PLATE_FULL);
+        shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_STEEL);
 
-      items.insert(weapon->getID());
-      items.insert(armor->getID());
-      items.insert(shield->getID());
+        items.insert(weapon->getID());
+        items.insert(armor->getID());
+        items.insert(shield->getID());
 
-      break;
-    }
-    case SUBCLASS_RANGER:
-    {
-      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
-      bow    = new RPG_Item_Weapon(RANGED_WEAPON_BOW_LONG);
-      armor  = new RPG_Item_Armor(ARMOR_HIDE);
+        break;
+      }
+      case SUBCLASS_RANGER:
+      {
+        weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        bow    = new RPG_Item_Weapon(RANGED_WEAPON_BOW_LONG);
+        armor  = new RPG_Item_Armor(ARMOR_HIDE);
 
-      items.insert(weapon->getID());
-      items.insert(bow->getID());
-      items.insert(armor->getID());
+        items.insert(weapon->getID());
+        items.insert(bow->getID());
+        items.insert(armor->getID());
 
-      break;
-    }
-    case SUBCLASS_BARBARIAN:
-    {
-      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
-      armor  = new RPG_Item_Armor(ARMOR_HIDE);
+        break;
+      }
+      case SUBCLASS_BARBARIAN:
+      {
+        weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        armor  = new RPG_Item_Armor(ARMOR_HIDE);
 
-      items.insert(weapon->getID());
-      items.insert(armor->getID());
+        items.insert(weapon->getID());
+        items.insert(armor->getID());
 
-      break;
-    }
-    case SUBCLASS_WIZARD:
-    case SUBCLASS_SORCERER:
-    case SUBCLASS_WARLOCK:
-    {
-      weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+        break;
+      }
+      case SUBCLASS_WIZARD:
+      case SUBCLASS_SORCERER:
+      case SUBCLASS_WARLOCK:
+      {
+        weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
 
-      items.insert(weapon->getID());
+        items.insert(weapon->getID());
 
-      break;
-    }
-    case SUBCLASS_CLERIC:
-    case SUBCLASS_AVENGER:
-    case SUBCLASS_INVOKER:
-    {
-      weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
-      armor  = new RPG_Item_Armor(ARMOR_MAIL_CHAIN);
-      shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
+        break;
+      }
+      case SUBCLASS_CLERIC:
+      case SUBCLASS_AVENGER:
+      case SUBCLASS_INVOKER:
+      {
+        weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
+        armor  = new RPG_Item_Armor(ARMOR_MAIL_CHAIN);
+        shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
 
-      items.insert(weapon->getID());
-      items.insert(armor->getID());
-      items.insert(shield->getID());
+        items.insert(weapon->getID());
+        items.insert(armor->getID());
+        items.insert(shield->getID());
 
-      break;
-    }
-    case SUBCLASS_DRUID:
-    case SUBCLASS_SHAMAN:
-    {
-      weapon = new RPG_Item_Weapon(LIGHT_MELEE_WEAPON_SICKLE);
-      armor  = new RPG_Item_Armor(ARMOR_HIDE);
-      shield  = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_WOODEN);
+        break;
+      }
+      case SUBCLASS_DRUID:
+      case SUBCLASS_SHAMAN:
+      {
+        weapon = new RPG_Item_Weapon(LIGHT_MELEE_WEAPON_SICKLE);
+        armor  = new RPG_Item_Armor(ARMOR_HIDE);
+        shield  = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_WOODEN);
 
-      items.insert(weapon->getID());
-      items.insert(armor->getID());
-      items.insert(shield->getID());
+        items.insert(weapon->getID());
+        items.insert(armor->getID());
+        items.insert(shield->getID());
 
-      break;
-    }
-    case SUBCLASS_MONK:
-    {
-      weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+        break;
+      }
+      case SUBCLASS_MONK:
+      {
+        weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
 
-      items.insert(weapon->getID());
+        items.insert(weapon->getID());
 
-      break;
-    }
-    case SUBCLASS_THIEF:
-    case SUBCLASS_BARD:
-    {
-      weapon = new RPG_Item_Weapon(LIGHT_MELEE_WEAPON_SWORD_SHORT);
-      armor  = new RPG_Item_Armor(ARMOR_LEATHER);
-      shield  = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_STEEL);
+        break;
+      }
+      case SUBCLASS_THIEF:
+      case SUBCLASS_BARD:
+      {
+        weapon = new RPG_Item_Weapon(LIGHT_MELEE_WEAPON_SWORD_SHORT);
+        armor  = new RPG_Item_Armor(ARMOR_LEATHER);
+        shield  = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_STEEL);
 
-      items.insert(weapon->getID());
-      items.insert(armor->getID());
-      items.insert(shield->getID());
+        items.insert(weapon->getID());
+        items.insert(armor->getID());
+        items.insert(shield->getID());
 
-      break;
-    }
-    default:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid player sub-class \"%s\", continuing\n"),
-                 RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_subclass).c_str()));
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                  ACE_TEXT("invalid player sub-class \"%s\", continuing\n"),
+                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_subclass).c_str()));
 
-      break;
-    }
-  } // end SWITCH
+        break;
+      }
+    } // end SWITCH
+  }
+  catch (const std::bad_alloc& exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught std::bad_alloc, continuing\n")));
+  }
 
-  // step11: instantiate player character
+  // step14: instantiate player character
   RPG_Character_Player player(name,
                               gender,
                               race,

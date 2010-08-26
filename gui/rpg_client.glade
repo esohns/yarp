@@ -40,8 +40,8 @@
                   <widget class="GtkButton" id="load">
                     <property name="label" translatable="yes">_Load Character</property>
                     <property name="visible">True</property>
-                    <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
+                    <property name="has_default">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_underline">True</property>
                   </widget>
@@ -70,6 +70,7 @@
                   <widget class="GtkButton" id="join">
                     <property name="label" translatable="yes">_Join Game</property>
                     <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_underline">True</property>
@@ -86,11 +87,9 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkComboBoxEntry" id="available_characters">
+              <widget class="GtkComboBox" id="available_characters">
                 <property name="visible">True</property>
-                <property name="items" translatable="yes">one
-two
-three</property>
+                <property name="sensitive">False</property>
               </widget>
               <packing>
                 <property name="position">1</property>
@@ -99,6 +98,7 @@ three</property>
             <child>
               <widget class="GtkFrame" id="character">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="label_xalign">0</property>
                 <property name="shadow_type">etched-out</property>
                 <child>
@@ -752,35 +752,6 @@ three</property>
                             <property name="visible">True</property>
                             <property name="orientation">vertical</property>
                             <child>
-                              <widget class="GtkFrame" id="inventory_frame">
-                                <property name="visible">True</property>
-                                <property name="label_xalign">0</property>
-                                <property name="shadow_type">etched-out</property>
-                                <child>
-                                  <widget class="GtkAlignment" id="inventory_alignment">
-                                    <property name="visible">True</property>
-                                    <property name="left_padding">12</property>
-                                    <child>
-                                      <placeholder/>
-                                    </child>
-                                  </widget>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="inventory_label">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes">&lt;b&gt;Inventory&lt;/b&gt;</property>
-                                    <property name="use_markup">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="type">label_item</property>
-                                  </packing>
-                                </child>
-                              </widget>
-                              <packing>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
                               <widget class="GtkFrame" id="spells_frame">
                                 <property name="visible">True</property>
                                 <property name="label_xalign">0</property>
@@ -798,6 +769,35 @@ three</property>
                                   <widget class="GtkLabel" id="spells_label">
                                     <property name="visible">True</property>
                                     <property name="label" translatable="yes">&lt;b&gt;Spells&lt;/b&gt;</property>
+                                    <property name="use_markup">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="type">label_item</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkFrame" id="inventory_frame">
+                                <property name="visible">True</property>
+                                <property name="label_xalign">0</property>
+                                <property name="shadow_type">etched-out</property>
+                                <child>
+                                  <widget class="GtkAlignment" id="inventory_alignment">
+                                    <property name="visible">True</property>
+                                    <property name="left_padding">12</property>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                  </widget>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="inventory_label">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">&lt;b&gt;Inventory&lt;/b&gt;</property>
                                     <property name="use_markup">True</property>
                                   </widget>
                                   <packing>
@@ -885,9 +885,10 @@ three</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="settings">
+              <widget class="GtkButton" id="properties">
                 <property name="label">gtk-properties</property>
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>

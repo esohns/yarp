@@ -23,7 +23,6 @@
 #include "rpg_character_player_common_tools.h"
 #include "rpg_character_race_common_tools.h"
 #include "rpg_character_class_common_tools.h"
-// #include "rpg_character_skills_common_tools.h"
 #include "rpg_character_player_XML_tree.h"
 
 #include "rpg_XMLSchema_XML_tree.h"
@@ -179,6 +178,11 @@ RPG_Character_Player::load(const std::string& filename_in)
                                 RPG_Character_Player_Common_Tools::spellXMLTreeToSpells(player_p->spell()),
                                 items);
 
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("loaded player \"%s\" from file: \"%s\"\n"),
+//                player.getName().c_str(),
+//                filename_in.c_str()));
+
     return player;
   }
   catch (const std::ifstream::failure&)
@@ -254,9 +258,9 @@ RPG_Character_Player::save(const std::string& filename_in) const
     RPG_Character_Skills_XMLTree_Type skills;
     RPG_Character_Feats_XMLTree_Type feats;
     RPG_Character_Abilities_XMLTree_Type abilities;
-    RPG_Character_ClassXML_XMLTree_Type classXML(RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString(getClass().metaClass));
-    for (RPG_Character_SubClassesIterator_t iterator = getClass().subClasses.begin();
-         iterator != getClass().subClasses.end();
+    RPG_Character_ClassXML_XMLTree_Type classXML(RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString(myClass.metaClass));
+    for (RPG_Character_SubClassesIterator_t iterator = myClass.subClasses.begin();
+         iterator != myClass.subClasses.end();
          iterator++)
       classXML.subClass().push_back(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator));
     RPG_Character_PlayerXML_XMLTree_Type player_model(getName(),
@@ -308,6 +312,11 @@ RPG_Character_Player::save(const std::string& filename_in) const
 
     throw;
   }
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
+//              getName().c_str(),
+//              filename_in.c_str()));
 
   return true;
 }

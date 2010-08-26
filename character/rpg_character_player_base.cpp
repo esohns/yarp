@@ -20,9 +20,12 @@
 #include "rpg_character_player_base.h"
 
 #include "rpg_character_common_tools.h"
+#include "rpg_character_skills_common_tools.h"
 
 #include <rpg_item_common.h>
 #include <rpg_item_dictionary.h>
+
+#include <rpg_magic_common_tools.h>
 
 #include <rpg_common_tools.h>
 
@@ -369,8 +372,8 @@ RPG_Character_Player_Base::rest(const RPG_Common_Camp& type_in,
   // adjust condition
   if (myNumHitPoints > 0)
   {
-    myConditions.insert(CONDITION_NORMAL);
-    myConditions.erase(CONDITION_DISABLED);
+    myCondition.insert(CONDITION_NORMAL);
+    myCondition.erase(CONDITION_DISABLED);
   } // end IF
 
   return (restedPeriod * 24);
@@ -395,14 +398,25 @@ RPG_Character_Player_Base::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::dump"));
 
+  // *TODO*: add items
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("Player: \nGender: %s\nRace: %s\nClass: %s\nXP: %d\n"),
+             ACE_TEXT("Player \"%s\": \nGender: %s\nRace: %s\nClass: %s\nAlignment: %s\nCondition: %s\nHP: %d/%u\nXP: %u\nGold: %u\nAttributes:\n===========\n%sFeats:\n======\n%sAbilities:\n==========\n%sSkills:\n=======\n%sSpells (known):\n=======\n%sSpells (prepared):\n=======\n%sItems:\n======\n"),
+             getName().c_str(),
              RPG_Character_GenderHelper::RPG_Character_GenderToString(myGender).c_str(),
              RPG_Character_Common_Tools::raceToString(myRace).c_str(),
              RPG_Character_Common_Tools::classToString(myClass).c_str(),
-             myExperience));
-
-  inherited::dump();
+             RPG_Character_Common_Tools::alignmentToString(getAlignment()).c_str(),
+             RPG_Character_Common_Tools::conditionToString(myCondition).c_str(),
+             myNumHitPoints,
+             getNumTotalHitPoints(),
+             myExperience,
+             myWealth,
+             RPG_Character_Common_Tools::attributesToString(myAttributes).c_str(),
+             RPG_Character_Skills_Common_Tools::featsToString(myFeats).c_str(),
+             RPG_Character_Skills_Common_Tools::abilitiesToString(myAbilities).c_str(),
+             RPG_Character_Skills_Common_Tools::skillsToString(mySkills).c_str(),
+             RPG_Magic_Common_Tools::spellsToString(myKnownSpells).c_str(),
+             RPG_Magic_Common_Tools::spellsToString(mySpells).c_str()));
 }
 
 const signed char
