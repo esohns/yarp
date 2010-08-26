@@ -135,7 +135,9 @@ RPG_Character_Player::load(const std::string& filename_in)
 //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
   ::xml_schema::properties props;
-  props.no_namespace_schema_location(RPG_CHARACTER_PLAYER_SCHEMA_FILE);
+  props.schema_location(RPG_COMMON_XML_TARGET_NAMESPACE,
+                        RPG_CHARACTER_PLAYER_SCHEMA_FILE);
+//   props.no_namespace_schema_location(RPG_CHARACTER_PLAYER_SCHEMA_FILE);
 //   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
   try
   {
