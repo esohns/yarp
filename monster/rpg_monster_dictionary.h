@@ -22,13 +22,13 @@
 
 #include "rpg_monster_common.h"
 
-#include "rpg_XMLSchema_XML_types.h"
-
 #include <rpg_character_alignment.h>
 #include <rpg_common_environment.h>
 
 #include <rpg_dice_dietype.h>
 #include <rpg_dice_roll.h>
+
+#include <xsd/cxx/xml/error-handler.hxx>
 
 #include <ace/Global_Macros.h>
 #include <ace/Singleton.h>
@@ -68,14 +68,14 @@ class RPG_Monster_Dictionary
 
   // private error handler
   class XSD_Error_Handler
-   : public ::xml_schema::error_handler
+   : public ::xsd::cxx::xml::error_handler<char>
   {
    public:
-    virtual bool handle(const std::string&,                    // id
-                        unsigned long,                         // line
-                        unsigned long,                         // column
-                        ::xml_schema::error_handler::severity, // severity
-                        const std::string&);                   // message
+    virtual bool handle(const std::string&,                             // id
+                        unsigned long,                                  // line
+                        unsigned long,                                  // column
+                        ::xsd::cxx::xml::error_handler<char>::severity, // severity
+                        const std::string&);                            // message
   };
 
   // helper types

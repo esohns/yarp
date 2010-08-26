@@ -35,16 +35,20 @@
 
 #include <string>
 
-RPG_Character_Base::RPG_Character_Base(const std::string& name_in,
+RPG_Character_Base::RPG_Character_Base(// base attributes
+                                       const std::string& name_in,
                                        const RPG_Character_Alignment& alignment_in,
                                        const RPG_Character_Attributes& attributes_in,
                                        const RPG_Character_Skills_t& skills_in,
                                        const RPG_Character_Feats_t& feats_in,
                                        const RPG_Character_Abilities_t& abilities_in,
                                        const RPG_Common_Size& defaultSize_in,
+                                       const unsigned short int& maxHitPoints_in,
+                                       const RPG_Magic_Spells_t& knownSpells_in,
+                                       // current status
+                                       const RPG_Character_Conditions_t& condition_in,
                                        const unsigned short int& hitpoints_in,
                                        const unsigned int& wealth_in,
-                                       const RPG_Magic_Spells_t& knownSpells_in,
                                        const RPG_Magic_SpellList_t& spells_in,
                                        const RPG_Item_List_t& inventory_in)
  : myWealth(wealth_in),
@@ -53,20 +57,18 @@ RPG_Character_Base::RPG_Character_Base(const std::string& name_in,
    mySpells(spells_in),
    myInventory(inventory_in),
 //    myEquipment(), // start naked
-   myNumHitPoints(hitpoints_in), // start out healthy
-//    myConditions(), // start normal
+   myNumHitPoints(hitpoints_in),
+   myConditions(condition_in),
    myName(name_in),
    myAlignment(alignment_in),
    myAttributes(attributes_in),
    mySkills(skills_in),
    myFeats(feats_in),
    myAbilities(abilities_in),
-   myNumTotalHitPoints(hitpoints_in)
+   myNumTotalHitPoints(maxHitPoints_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
 
-  // start normal
-  myConditions.insert(CONDITION_NORMAL);
 }
 
 RPG_Character_Base::RPG_Character_Base(const RPG_Character_Base& playerBase_in)
@@ -115,16 +117,20 @@ RPG_Character_Base::operator=(const RPG_Character_Base& playerBase_in)
 }
 
 void
-RPG_Character_Base::init(const std::string& name_in,
+RPG_Character_Base::init(// base attributes
+                         const std::string& name_in,
                          const RPG_Character_Alignment& alignment_in,
                          const RPG_Character_Attributes& attributes_in,
                          const RPG_Character_Skills_t& skills_in,
                          const RPG_Character_Feats_t& feats_in,
                          const RPG_Character_Abilities_t& abilities_in,
                          const RPG_Common_Size& defaultSize_in,
+                         const unsigned short int& maxHitPoints_in,
+                         const RPG_Magic_Spells_t& knownSpells_in,
+                         // current status
+                         const RPG_Character_Conditions_t& condition_in,
                          const unsigned short int& hitpoints_in,
                          const unsigned int& wealth_in,
-                         const RPG_Magic_Spells_t& knownSpells_in,
                          const RPG_Magic_SpellList_t& spells_in,
                          const RPG_Item_List_t& inventory_in)
 {
@@ -137,7 +143,7 @@ RPG_Character_Base::init(const std::string& name_in,
   myInventory         = inventory_in;
   myEquipment.strip();
   myNumHitPoints      = hitpoints_in;
-  myConditions.clear();
+  myConditions        = condition_in;
   myName              = name_in;
   myAlignment         = alignment_in;
   myAttributes        = attributes_in;

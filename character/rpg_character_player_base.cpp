@@ -29,20 +29,24 @@
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
-RPG_Character_Player_Base::RPG_Character_Player_Base(const std::string& name_in,
+RPG_Character_Player_Base::RPG_Character_Player_Base(// base attributes
+                                                     const std::string& name_in,
                                                      const RPG_Character_Gender& gender_in,
-                                                     const RPG_Character_Race& race_in,
+                                                     const RPG_Character_Race_t& race_in,
                                                      const RPG_Character_Class& class_in,
                                                      const RPG_Character_Alignment& alignment_in,
                                                      const RPG_Character_Attributes& attributes_in,
                                                      const RPG_Character_Skills_t& skills_in,
                                                      const RPG_Character_Feats_t& feats_in,
                                                      const RPG_Character_Abilities_t& abilities_in,
-                                                     const RPG_Character_OffHand& offhand_in,
-                                                     const unsigned int& experience_in,
-                                                     const unsigned short int& hitpoints_in,
-                                                     const unsigned int& wealth_in,
+                                                     const RPG_Character_OffHand& offHand_in,
+                                                     const unsigned short int& maxHitPoints_in,
                                                      const RPG_Magic_Spells_t& knownSpells_in,
+                                                     // current status
+                                                     const RPG_Character_Conditions_t& condition_in,
+                                                     const unsigned short int& hitpoints_in,
+                                                     const unsigned int& experience_in,
+                                                     const unsigned int& wealth_in,
                                                      const RPG_Magic_SpellList_t& spells_in,
                                                      const RPG_Item_List_t& inventory_in)
  : inherited(name_in,
@@ -52,15 +56,17 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(const std::string& name_in,
              feats_in,
              abilities_in,
              SIZE_MEDIUM, // standard PCs are all medium-sized
+             maxHitPoints_in,
+             knownSpells_in,
+             condition_in,
              hitpoints_in,
              wealth_in,
-             knownSpells_in,
              spells_in,
              inventory_in),
    myGender(gender_in),
    myRace(race_in),
    myClass(class_in),
-   myOffHand(offhand_in),
+   myOffHand(offHand_in),
    myExperience(experience_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::RPG_Character_Player_Base"));
@@ -85,11 +91,14 @@ RPG_Character_Player_Base::~RPG_Character_Player_Base()
 
 }
 
-RPG_Character_Player_Base& RPG_Character_Player_Base::operator=(const RPG_Character_Player_Base& playerBase_in)
+RPG_Character_Player_Base&
+RPG_Character_Player_Base::operator=(const RPG_Character_Player_Base& playerBase_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::operator="));
 
+  // init base class
   inherited::operator=(playerBase_in);
+
   myGender = playerBase_in.myGender;
   myRace = playerBase_in.myRace;
   myClass = playerBase_in.myClass;
@@ -100,75 +109,88 @@ RPG_Character_Player_Base& RPG_Character_Player_Base::operator=(const RPG_Charac
 }
 
 void
-RPG_Character_Player_Base::init(const std::string& name_in,
+RPG_Character_Player_Base::init(// base attributes
+                                const std::string& name_in,
                                 const RPG_Character_Gender& gender_in,
-                                const RPG_Character_Race& race_in,
+                                const RPG_Character_Race_t& race_in,
                                 const RPG_Character_Class& class_in,
                                 const RPG_Character_Alignment& alignment_in,
                                 const RPG_Character_Attributes& attributes_in,
                                 const RPG_Character_Skills_t& skills_in,
                                 const RPG_Character_Feats_t& feats_in,
                                 const RPG_Character_Abilities_t& abilities_in,
-                                const RPG_Character_OffHand& offhand_in,
-                                const unsigned int& experience_in,
-                                const unsigned short int& hitpoints_in,
-                                const unsigned int& wealth_in,
+                                const RPG_Character_OffHand& offHand_in,
+                                const unsigned short int& maxHitPoints_in,
                                 const RPG_Magic_Spells_t& knownSpells_in,
+                                // current status
+                                const RPG_Character_Conditions_t& condition_in,
+                                const unsigned short int& hitpoints_in,
+                                const unsigned int& experience_in,
+                                const unsigned int& wealth_in,
                                 const RPG_Magic_SpellList_t& spells_in,
                                 const RPG_Item_List_t& inventory_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::init"));
 
   // init base class
-  inherited::init(name_in,
+  inherited::init(// base attributes
+                  name_in,
                   alignment_in,
                   attributes_in,
                   skills_in,
                   feats_in,
                   abilities_in,
                   SIZE_MEDIUM, // standard PCs are all medium-sized
+                  maxHitPoints_in,
+                  knownSpells_in,
+                  // current status
+                  condition_in,
                   hitpoints_in,
                   wealth_in,
-                  knownSpells_in,
                   spells_in,
                   inventory_in);
 
   myGender     = gender_in;
   myRace       = race_in;
   myClass      = class_in;
-  myOffHand    = offhand_in;
+  myOffHand    = offHand_in;
   myExperience = experience_in;
 }
 
-const RPG_Character_Gender RPG_Character_Player_Base::getGender() const
+const RPG_Character_Gender
+RPG_Character_Player_Base::getGender() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getGender"));
 
   return myGender;
 }
 
-const RPG_Character_Race RPG_Character_Player_Base::getRace() const
+const RPG_Character_Race_t
+RPG_Character_Player_Base::getRace() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getRace"));
 
   return myRace;
 }
 
-const RPG_Character_Class RPG_Character_Player_Base::getClass() const
+const RPG_Character_Class
+RPG_Character_Player_Base::getClass() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getClass"));
 
   return myClass;
 }
 
-const RPG_Character_OffHand RPG_Character_Player_Base::getOffHand() const
+const RPG_Character_OffHand
+RPG_Character_Player_Base::getOffHand() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getOffHand"));
 
   return myOffHand;
 }
 
-const unsigned char RPG_Character_Player_Base::getLevel(const RPG_Common_SubClass& subClass_in) const
+const unsigned char
+RPG_Character_Player_Base::getLevel(const RPG_Common_SubClass& subClass_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getLevel"));
 
@@ -183,22 +205,25 @@ const unsigned char RPG_Character_Player_Base::getLevel(const RPG_Common_SubClas
   return result;
 }
 
-const unsigned int RPG_Character_Player_Base::getExperience() const
+const unsigned int
+RPG_Character_Player_Base::getExperience() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getExperience"));
 
   return myExperience;
 }
 
-const RPG_Character_Equipment* RPG_Character_Player_Base::getEquipment() const
+const RPG_Character_Equipment*
+RPG_Character_Player_Base::getEquipment() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getEquipment"));
 
   return &(inherited::myEquipment);
 }
 
-const RPG_Character_BaseAttackBonus_t RPG_Character_Player_Base::getAttackBonus(const RPG_Common_Attribute& modifier_in,
-                                                                                const RPG_Combat_AttackSituation& attackSituation_in) const
+const RPG_Character_BaseAttackBonus_t
+RPG_Character_Player_Base::getAttackBonus(const RPG_Common_Attribute& modifier_in,
+                                          const RPG_Combat_AttackSituation& attackSituation_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getAttackBonus"));
 
@@ -240,7 +265,8 @@ const RPG_Character_BaseAttackBonus_t RPG_Character_Player_Base::getAttackBonus(
   return result;
 }
 
-const signed char RPG_Character_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_in) const
+const signed char
+RPG_Character_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getArmorClass"));
 
@@ -276,14 +302,16 @@ const signed char RPG_Character_Player_Base::getArmorClass(const RPG_Combat_Defe
   return result;
 }
 
-const bool RPG_Character_Player_Base::isPlayerCharacter() const
+const bool
+RPG_Character_Player_Base::isPlayerCharacter() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::isPlayerCharacter"));
 
   return true;
 }
 
-void RPG_Character_Player_Base::gainExperience(const unsigned int& XP_in)
+void
+RPG_Character_Player_Base::gainExperience(const unsigned int& XP_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::gainExperience"));
 
@@ -302,8 +330,9 @@ void RPG_Character_Player_Base::gainExperience(const unsigned int& XP_in)
   } // end IF
 }
 
-const unsigned int RPG_Character_Player_Base::rest(const RPG_Common_Camp& type_in,
-                                                   const unsigned int& hours_in)
+const unsigned int
+RPG_Character_Player_Base::rest(const RPG_Common_Camp& type_in,
+                                const unsigned int& hours_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::rest"));
 
@@ -347,7 +376,8 @@ const unsigned int RPG_Character_Player_Base::rest(const RPG_Common_Camp& type_i
   return (restedPeriod * 24);
 }
 
-void RPG_Character_Player_Base::status() const
+void
+RPG_Character_Player_Base::status() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::status"));
 
@@ -360,21 +390,23 @@ void RPG_Character_Player_Base::status() const
   inherited::status();
 }
 
-void RPG_Character_Player_Base::dump() const
+void
+RPG_Character_Player_Base::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::dump"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("Player: \nGender: %s\nRace: %s\nClass: %s\nXP: %d\n"),
              RPG_Character_GenderHelper::RPG_Character_GenderToString(myGender).c_str(),
-             RPG_Character_RaceHelper::RPG_Character_RaceToString(myRace).c_str(),
+             RPG_Character_Common_Tools::raceToString(myRace).c_str(),
              RPG_Character_Common_Tools::classToString(myClass).c_str(),
              myExperience));
 
   inherited::dump();
 }
 
-const signed char RPG_Character_Player_Base::getShieldBonus() const
+const signed char
+RPG_Character_Player_Base::getShieldBonus() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getShieldBonus"));
 

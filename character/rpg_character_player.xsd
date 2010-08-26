@@ -8,6 +8,10 @@
 
   <!-- include common schema -->
   <xsd:include schemaLocation="rpg_common.xsd"/>
+  <!-- include magic schema -->
+  <xsd:include schemaLocation="rpg_magic.xsd"/>
+  <!-- include item schema -->
+  <xsd:include schemaLocation="rpg_item.xsd"/>
   <!-- include character schema -->
   <xsd:include schemaLocation="rpg_character.xsd"/>
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
@@ -24,17 +28,22 @@
 
   <xsd:complexType name="RPG_Character_BaseXML_Type">
     <xsd:sequence>
-      <xsd:element name="gender" type="RPG_Character_Gender_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="alignment" type="RPG_Character_Alignment_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attributes" type="RPG_Character_Attributes_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="skills" type="RPG_Character_Skills_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="feats" type="RPG_Character_Feats_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="abilities" type="RPG_Character_Abilities_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="XP" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="HP" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="defaultSize" type="RPG_Common_Size_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="maxHP" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="gold" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="knownSpell" type="RPG_Magic_SpellType_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="condition" type="RPG_Common_Condition_Type" minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element name="HP" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="XP" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="gold" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="spell" type="RPG_Magic_SpellType_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="weapon" type="RPG_Item_WeaponPropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="armor" type="RPG_Item_ArmorPropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -42,8 +51,8 @@
     <xsd:complexContent>
       <xsd:extension base="RPG_Character_BaseXML_Type">
         <xsd:sequence>
-          <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="race" type="RPG_Character_Race_Type" minOccurs="1" maxOccurs="unbounded"/>
+          <xsd:element name="gender" type="RPG_Character_Gender_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="race" type="RPG_Character_Race_Type" minOccurs="1" maxOccurs="2"/>
           <xsd:element name="classXML" type="RPG_Character_ClassXML_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="offhand" type="RPG_Character_OffHand_Type" minOccurs="1" maxOccurs="1"/>
         </xsd:sequence>

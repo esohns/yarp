@@ -13,6 +13,11 @@ namespace urn:rpg
 
   RPG_Magic_School_Type                  RPG_Magic_School;
 
+  RPG_Item_BaseProperties_Type           RPG_Item_BaseProperties;
+
+  RPG_Item_MagicalPrerequisites_Type     RPG_Item_MagicalPrerequisites;
+  RPG_Item_PropertiesBase_Type           RPG_Item_PropertiesBase;
+
   RPG_Item_WeaponCategory_Type           RPG_Item_WeaponCategory;
   RPG_Item_WeaponClass_Type              RPG_Item_WeaponClass;
   RPG_Item_WeaponType_Type               RPG_Item_WeaponType;
@@ -20,20 +25,14 @@ namespace urn:rpg
   RPG_Item_CriticalHitProperties_Type    RPG_Item_CriticalHitProperties;
   RPG_Item_CreationCost_Type             RPG_Item_CreationCost;
 
-  RPG_Item_BaseProperties_Type           RPG_Item_BaseProperties;
-
-  RPG_Item_MagicalPrerequisites_Type     RPG_Item_MagicalPrerequisites;
-  RPG_Item_MagicalProperties_Type        RPG_Item_MagicalProperties;
+  RPG_Item_WeaponPropertiesBase_Type     RPG_Item_WeaponPropertiesBase;
   RPG_Item_WeaponPropertiesXML_Type      RPG_Item_WeaponPropertiesXML;
-  RPG_Item_MagicWeaponPropertiesXML_Type RPG_Item_MagicWeaponPropertiesXML;
 
   RPG_Item_ArmorCategory_Type            RPG_Item_ArmorCategory;
   RPG_Item_ArmorType_Type                RPG_Item_ArmorType;
-  RPG_Item_ArmorPropertiesXML_Type       RPG_Item_ArmorPropertiesXML;
-  RPG_Item_MagicArmorPropertiesXML_Type  RPG_Item_MagicArmorPropertiesXML;
 
-#  RPG_Item_WeaponDictionary_Type        RPG_Item_WeaponDictionary_t*;
-#  RPG_Item_ArmorDictionary_Type         RPG_Item_ArmorDictionary_t*;
+  RPG_Item_ArmorPropertiesBase_Type      RPG_Item_ArmorPropertiesBase;
+  RPG_Item_ArmorPropertiesXML_Type       RPG_Item_ArmorPropertiesXML;
 
 #  RPG_Item_Dictionary_Type              RPG_Item_Dictionary;
 }

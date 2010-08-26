@@ -29,6 +29,7 @@
 #include <rpg_character_offhand.h>
 #include <rpg_character_player.h>
 #include <rpg_character_common_tools.h>
+#include <rpg_character_class_common_tools.h>
 #include <rpg_character_skills_common_tools.h>
 
 #include <rpg_item_weapon.h>
@@ -923,11 +924,16 @@ generate_player_character()
     } // end FOR
   } // end FOR
 
-  // step12: choose (appropriate) initial set of items
+  // step12: initialize condition
+  RPG_Character_Conditions_t condition;
+  condition.insert(CONDITION_NORMAL);
+
+  // step13: choose (appropriate) initial set of items
   RPG_Item_List_t items = generate_standard_items(playerSubClass);
 
   // instantiate player character
-  RPG_Character_Player player(name,
+  RPG_Character_Player player(// base attributes
+                              name,
                               gender,
                               race,
                               playerClass,
@@ -937,10 +943,13 @@ generate_player_character()
                               feats,
                               abilities,
                               offHand,
-                              0,
+                              hitPoints,
+                              knownSpells,
+                              // current status
+                              condition,
                               hitPoints,
                               0,
-                              knownSpells,
+                              RPG_CHARACTER_PLAYER_START_MONEY,
                               spells,
                               items);
 

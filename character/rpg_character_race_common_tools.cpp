@@ -17,15 +17,28 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "rpg_character_race_common_tools.h"
 
-#ifndef RPG_CHARACTER_DEFINES_H
-#define RPG_CHARACTER_DEFINES_H
+#include "rpg_character_race.h"
 
-#define RPG_CHARACTER_DUMP_DIR              ACE_TEXT("/var/tmp")
+#include <ace/Log_Msg.h>
 
-#define RPG_CHARACTER_PLAYER_START_MONEY    0
-#define RPG_CHARACTER_PLAYER_SCHEMA_FILE    ACE_TEXT("rpg_character_player.xsd")
-// *NOTE*: refer to the XSD C++/Tree manual for details
-#define RPG_CHARACTER_PLAYER_SCHEMA_CHARSET ACE_TEXT("UTF-8")
+RPG_Character_Race_t
+RPG_Character_Race_Common_Tools::raceXMLTreeToRace(const RPG_Character_PlayerXML_XMLTree_Type::race_sequence& races_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Race_Common_Tools::raceXMLTreeToRace"));
 
-#endif
+  RPG_Character_Race_t result;
+
+  RPG_Character_Race current;
+  for (RPG_Character_PlayerXML_XMLTree_Type::race_const_iterator iterator = races_in.begin();
+       iterator != races_in.end();
+       iterator++)
+  {
+    current = RPG_Character_RaceHelper::stringToRPG_Character_Race(*iterator);
+    if (current > RACE_NONE)
+      result.set(current - 1); // *NOTE*: -1 !
+  } // end FOR
+
+  return result;
+}

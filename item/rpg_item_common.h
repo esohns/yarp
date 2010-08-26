@@ -23,6 +23,8 @@
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
 
+#include <rpg_magic_school.h>
+
 #include "rpg_item_weapontype.h"
 #include "rpg_item_weaponcategory.h"
 #include "rpg_item_weaponclass.h"
@@ -30,10 +32,14 @@
 #include "rpg_item_criticalhitproperties.h"
 #include "rpg_item_creationcost.h"
 #include "rpg_item_baseproperties.h"
+#include "rpg_item_magicalprerequisites.h"
+#include "rpg_item_propertiesbase.h"
 #include <vector>
+#include "rpg_item_weaponpropertiesbase.h"
 #include "rpg_item_weaponpropertiesxml.h"
 #include "rpg_item_armortype.h"
 #include "rpg_item_armorcategory.h"
+#include "rpg_item_armorpropertiesbase.h"
 #include "rpg_item_armorpropertiesxml.h"
 
 #include <bitset>

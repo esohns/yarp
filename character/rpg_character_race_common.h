@@ -20,11 +20,12 @@
 #ifndef RPG_CHARACTER_RACE_COMMON_H
 #define RPG_CHARACTER_RACE_COMMON_H
 
-#include "rpg_character_race.h"
+// #include "rpg_character_race.h"
 
 #include <bitset>
 
+// *TODO*: find a better way to express multi-race
 // typedef std::bitset<(RPG_CHARACTER_RACE_MAX - 1)> RPG_Character_PlayerRace;
-typedef std::bitset<6> RPG_Character_PlayerRace;
+typedef std::bitset<6> RPG_Character_Race_t;
 
 #endif

@@ -17,15 +17,27 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef RPG_CHARACTER_CLASS_COMMON_TOOLS_H
+#define RPG_CHARACTER_CLASS_COMMON_TOOLS_H
 
-#ifndef RPG_CHARACTER_DEFINES_H
-#define RPG_CHARACTER_DEFINES_H
+#include "rpg_character_class_common.h"
+#include "rpg_character_metaclass.h"
+#include "rpg_character_XML_tree.h"
 
-#define RPG_CHARACTER_DUMP_DIR              ACE_TEXT("/var/tmp")
+#include <rpg_common_subclass.h>
 
-#define RPG_CHARACTER_PLAYER_START_MONEY    0
-#define RPG_CHARACTER_PLAYER_SCHEMA_FILE    ACE_TEXT("rpg_character_player.xsd")
-// *NOTE*: refer to the XSD C++/Tree manual for details
-#define RPG_CHARACTER_PLAYER_SCHEMA_CHARSET ACE_TEXT("UTF-8")
+class RPG_Character_Class_Common_Tools
+{
+ public:
+  static const RPG_Character_MetaClass subClassToMetaClass(const RPG_Common_SubClass&); // subclass
+  static RPG_Character_Class classXMLTreeToClass(const RPG_Character_ClassXML_XMLTree_Type&); // class (XML format)
+
+ private:
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Class_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Class_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Class_Common_Tools(const RPG_Character_Class_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Class_Common_Tools& operator=(const RPG_Character_Class_Common_Tools&));
+};
 
 #endif

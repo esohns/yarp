@@ -27,7 +27,8 @@
 
 #include <ace/Log_Msg.h>
 
-RPG_Monster::RPG_Monster(const std::string& name_in,
+RPG_Monster::RPG_Monster(// base attributes
+                         const std::string& name_in,
                          const RPG_Common_CreatureType& type_in,
                          const RPG_Character_Alignment& alignment_in,
                          const RPG_Character_Attributes& attributes_in,
@@ -35,22 +36,29 @@ RPG_Monster::RPG_Monster(const std::string& name_in,
                          const RPG_Character_Feats_t& feats_in,
                          const RPG_Character_Abilities_t& abilities_in,
                          const RPG_Common_Size& defaultSize_in,
+                         const unsigned short int& maxHitPoints_in,
+                         const RPG_Magic_Spells_t& knownSpells_in,
+                         // current status
+                         const RPG_Character_Conditions_t& condition_in,
                          const unsigned short int& hitpoints_in,
                          const unsigned int& wealth_in,
-                         const RPG_Magic_Spells_t& knownSpells_in,
                          const RPG_Magic_SpellList_t& spells_in,
                          const RPG_Item_List_t& inventory_in,
                          const bool& isSummoned_in)
- : inherited(name_in,
+ : inherited(// base attributes
+             name_in,
              alignment_in,
              attributes_in,
              skills_in,
              feats_in,
              abilities_in,
              defaultSize_in,
+             maxHitPoints_in,
+             knownSpells_in,
+             // current status
+             condition_in,
              hitpoints_in,
              wealth_in,
-             knownSpells_in,
              spells_in,
              inventory_in),
    myType(type_in),

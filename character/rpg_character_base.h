@@ -87,36 +87,39 @@ class RPG_Character_Base
  protected:
   RPG_Character_Base(// base attributes
                      const std::string&,                // name
-                     const RPG_Character_Alignment&,    // (starting) alignment
+                     const RPG_Character_Alignment&,    // alignment
                      const RPG_Character_Attributes&,   // base attributes
-                     const RPG_Character_Skills_t&,     // (starting) skills
+                     const RPG_Character_Skills_t&,     // skills
                      const RPG_Character_Feats_t&,      // base feats
                      const RPG_Character_Abilities_t&,  // base abilities
                      const RPG_Common_Size&,            // (default) size
-                     const unsigned short int&,         // (starting) HP
-                     const unsigned int&,               // (starting) wealth (GP)
-                     // base spells
-                     const RPG_Magic_Spells_t&,         // (starting) set of known spells (bard / sorcerer)
-                     const RPG_Magic_SpellList_t&,      // (starting) set of memorized/prepared spells (!bard)
-                     // base items
-                     const RPG_Item_List_t&);           // (starting) list of (carried) items
+                     const unsigned short int&,         // max HP
+                     const RPG_Magic_Spells_t&,         // set of known spells (bard / sorcerer)
+                     // current status
+                     const RPG_Character_Conditions_t&, // condition
+                     const unsigned short int&,         // HP
+                     const unsigned int&,               // wealth (GP)
+                     const RPG_Magic_SpellList_t&,      // set of memorized/prepared spells (!bard)
+                     const RPG_Item_List_t&);           // list of (carried) items
   RPG_Character_Base(const RPG_Character_Base&);
 
   RPG_Character_Base& operator=(const RPG_Character_Base&);
-  void init(const std::string&,               // name
-            const RPG_Character_Alignment&,   // (starting) alignment
-            const RPG_Character_Attributes&,  // base attributes
-            const RPG_Character_Skills_t&,    // (starting) skills
-            const RPG_Character_Feats_t&,     // base feats
-            const RPG_Character_Abilities_t&, // base abilities
-            const RPG_Common_Size&,           // (default) size
-            const unsigned short int&,        // (starting) HP
-            const unsigned int&,              // (starting) wealth (GP)
-            // base spells
-            const RPG_Magic_Spells_t&,        // (starting) set of known spells (bard / sorcerer)
-            const RPG_Magic_SpellList_t&,     // (starting) set of memorized/prepared spells (!bard)
-            // base items
-            const RPG_Item_List_t&);          // (starting) list of (carried) items
+  void init(// base attributes
+            const std::string&,                // name
+            const RPG_Character_Alignment&,    // alignment
+            const RPG_Character_Attributes&,   // base attributes
+            const RPG_Character_Skills_t&,     // skills
+            const RPG_Character_Feats_t&,      // base feats
+            const RPG_Character_Abilities_t&,  // base abilities
+            const RPG_Common_Size&,            // (default) size
+            const unsigned short int&,         // max HP
+            const RPG_Magic_Spells_t&,         // set of known spells (bard / sorcerer)
+            // current status
+            const RPG_Character_Conditions_t&, // condition
+            const unsigned short int&,         // HP
+            const unsigned int&,               // wealth (GP)
+            const RPG_Magic_SpellList_t&,      // set of memorized/prepared spells (!bard)
+            const RPG_Item_List_t&);           // list of (carried) items
 
   virtual const signed char getShieldBonus() const = 0;
 

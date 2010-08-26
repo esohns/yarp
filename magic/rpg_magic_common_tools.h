@@ -26,6 +26,7 @@
 
 #include "rpg_magic_common.h"
 #include "rpg_magic_dictionary.h"
+// #include "rpg_magic_XML_tree.h"
 
 #include <ace/Global_Macros.h>
 
@@ -42,6 +43,8 @@ class RPG_Magic_Common_Tools
   static void init();
 
   static const std::string spellToName(const RPG_Magic_SpellType&); // type
+
+  // debug info
   static const std::string spellsToString(const RPG_Magic_Spells_t&); // spells
   static const std::string spellsToString(const RPG_Magic_SpellList_t&); // spells
 

@@ -175,19 +175,20 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Item_MagicalProperties_Type">
-    <xsd:sequence>
-      <xsd:element name="aura" type="RPG_Magic_School_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="prerequisites" type="RPG_Item_MagicalPrerequisites_Type" minOccurs="1" maxOccurs="1"/>
-<!--       <xsd:element name="marketPrice" type="RPG_Item_StorePrice_Type" minOccurs="1" maxOccurs="1"/> -->
-<!--       <xsd:element name="costToCreate" type="RPG_Item_CreationCost_Type" minOccurs="1" maxOccurs="1"/> -->
-<!--       <xsd:element name="baseWeight" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/> -->
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="RPG_Item_WeaponPropertiesXML_Type">
+  <xsd:complexType name="RPG_Item_PropertiesBase_Type">
     <xsd:complexContent>
       <xsd:extension base="RPG_Item_BaseProperties_Type">
+        <xsd:sequence>
+          <xsd:element name="aura" type="RPG_Magic_School_Type" minOccurs="0" maxOccurs="1"/>
+          <xsd:element name="prerequisites" type="RPG_Item_MagicalPrerequisites_Type" minOccurs="0" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Item_WeaponPropertiesBase_Type">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Item_PropertiesBase_Type">
         <xsd:sequence>
           <xsd:element name="weaponType" type="RPG_Item_WeaponType_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="weaponCategory" type="RPG_Item_WeaponCategory_Type" minOccurs="1" maxOccurs="1"/>
@@ -204,21 +205,14 @@
     </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Item_MagicWeaponPropertiesXML_Type">
+  <xsd:complexType name="RPG_Item_WeaponPropertiesXML_Type">
     <xsd:complexContent>
-<!--       <xsd:extension base="RPG_Item_MagicalProperties_Type"></xsd:extension> -->
-      <xsd:extension base="RPG_Item_WeaponPropertiesXML_Type">
+      <xsd:extension base="RPG_Item_WeaponPropertiesBase_Type">
         <xsd:sequence>
-          <xsd:element name="toHitModifier" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="toHitModifier" type="xsd:byte" minOccurs="0" maxOccurs="1"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
-  </xsd:complexType>
-
-  <xsd:complexType name="RPG_Item_WeaponDictionary_Type" id="skip0">
-    <xsd:sequence>
-      <xsd:element name="weapon" type="RPG_Item_WeaponPropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
   </xsd:complexType>
 
   <xsd:simpleType name="RPG_Item_ArmorCategory_Type">
@@ -254,9 +248,9 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:complexType name="RPG_Item_ArmorPropertiesXML_Type">
+  <xsd:complexType name="RPG_Item_ArmorPropertiesBase_Type">
     <xsd:complexContent>
-      <xsd:extension base="RPG_Item_BaseProperties_Type">
+      <xsd:extension base="RPG_Item_PropertiesBase_Type">
         <xsd:sequence>
           <xsd:element name="armorType" type="RPG_Item_ArmorType_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="armorCategory" type="RPG_Item_ArmorCategory_Type" minOccurs="1" maxOccurs="1"/>
@@ -270,27 +264,24 @@
     </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Item_MagicArmorPropertiesXML_Type">
+  <xsd:complexType name="RPG_Item_ArmorPropertiesXML_Type">
     <xsd:complexContent>
-<!--       <xsd:extension base="RPG_Item_MagicalProperties_Type"></xsd:extension> -->
-      <xsd:extension base="RPG_Item_ArmorPropertiesXML_Type">
+      <xsd:extension base="RPG_Item_ArmorPropertiesBase_Type">
         <xsd:sequence>
-          <xsd:element name="defenseModifier" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="defenseModifier" type="xsd:byte" minOccurs="0" maxOccurs="1"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Item_ArmorDictionary_Type" id="skip1">
-    <xsd:sequence>
-      <xsd:element name="armor" type="RPG_Item_ArmorPropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
-  </xsd:complexType>
+<!--  <xsd:simpleType name="RPG_Item_PropertiesUnion_Type">
+    <xsd:union memberTypes="RPG_Item_WeaponPropertiesXML_Type RPG_Item_ArmorPropertiesXML_Type"/>
+  </xsd:simpleType> -->
 
-  <xsd:complexType name="RPG_Item_Dictionary_Type" id="skip2">
+  <xsd:complexType name="RPG_Item_Dictionary_Type" id="skip0">
     <xsd:sequence>
-      <xsd:element name="weaponDictionary" type="RPG_Item_WeaponDictionary_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="armorDictionary" type="RPG_Item_ArmorDictionary_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="weapon" type="RPG_Item_WeaponPropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="armor" type="RPG_Item_ArmorPropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 

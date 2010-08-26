@@ -38,9 +38,10 @@ class RPG_Character_Common_Tools
  public:
   static void initStringConversionTables();
 
+  static const std::string raceToString(const RPG_Character_Race_t&); // race(es)
+  static const std::string classToString(const RPG_Character_Class&); // class(es)
   static const std::string alignmentToString(const RPG_Character_Alignment&); // alignment
   static const std::string attributesToString(const RPG_Character_Attributes&); // attributes
-  static const std::string classToString(const RPG_Character_Class&); // class(es)
   static const std::string conditionToString(const RPG_Character_Conditions_t&); // condition
 
   static const bool match(const RPG_Character_Alignment&,  // a
@@ -53,7 +54,7 @@ class RPG_Character_Common_Tools
                                                                   const unsigned char&);      // class level
   static const bool isCasterClass(const RPG_Common_SubClass&); // subClass
 
-  static const RPG_Character_Player generatePlayerCharacter(); // return value: (random) player
+  static RPG_Character_Player generatePlayerCharacter(); // return value: (random) player
   static const unsigned int restParty(RPG_Character_Party_t&); // party of players
 
  private:

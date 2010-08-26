@@ -27,6 +27,7 @@
 
 #include <rpg_dice_XML_parser.h>
 #include <rpg_common_XML_parser.h>
+#include <rpg_magic_XML_parser.h>
 
 #include <ace/Log_Msg.h>
 
@@ -58,6 +59,10 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
   RPG_Item_CreationCost_Type              creationCost_p;
   creationCost_p.parsers(unsigned_int_p,
                          unsigned_int_p);
+  RPG_Magic_School_Type                   school_p;
+  ::xml_schema::unsigned_byte_pimpl       unsigned_byte_p;
+  RPG_Item_MagicalPrerequisites_Type      magicalPreRequisites_p;
+  magicalPreRequisites_p.parsers(unsigned_byte_p);
   RPG_Item_WeaponType_Type                weaponType_p;
   RPG_Item_WeaponCategory_Type            weaponCategory_p;
   RPG_Item_WeaponClass_Type               weaponClass_p;
@@ -67,17 +72,19 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
   roll_p.parsers(unsigned_int_p,
                  dieType_p,
                  int_p);
-  ::xml_schema::unsigned_byte_pimpl       unsigned_byte_p;
   RPG_Item_CriticalHitProperties_Type     criticalHitProperties_p;
   criticalHitProperties_p.parsers(unsigned_byte_p,
                                   unsigned_byte_p);
 //   unsigned_byte_pimpl                       rangeIncrement_p;
   RPG_Common_PhysicalDamageType_Type      damageType_p;
   ::xml_schema::boolean_pimpl             bool_p;
+  ::xml_schema::byte_pimpl                byte_p;
   RPG_Item_WeaponPropertiesXML_Type       weaponPropertiesXML_p;
   weaponPropertiesXML_p.parsers(unsigned_short_p,
                                 baseStorePrice_p,
                                 creationCost_p,
+                                school_p,
+                                magicalPreRequisites_p,
                                 weaponType_p,
                                 weaponCategory_p,
                                 weaponClass_p,
@@ -87,38 +94,28 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
                                 damageType_p,
                                 bool_p,
                                 bool_p,
-                                bool_p);
+                                bool_p,
+                                byte_p);
   RPG_Item_ArmorType_Type                 armorType_p;
   RPG_Item_ArmorCategory_Type             armorCategory_p;
-//  RPG_Item_StorePrice_Type_pimpl          baseStorePrice_p;
-//  unsigned_int_pimpl                      baseArmorBonus_p;
-//  unsigned_int_pimpl                      maxDexterityBonus_p;
-//  int_pimpl                               armorCheckPenalty_p;
-//  unsigned_int_pimpl                      arcaneSpellFailure_p;
-//  unsigned_int_pimpl                      baseSpeed_p;
-//  unsigned_int_pimpl                      baseWeight_p;
-  ::xml_schema::byte_pimpl                byte_p;
   RPG_Item_ArmorPropertiesXML_Type        armorPropertiesXML_p;
   armorPropertiesXML_p.parsers(unsigned_short_p,
                                baseStorePrice_p,
                                creationCost_p,
+                               school_p,
+                               magicalPreRequisites_p,
                                armorType_p,
                                armorCategory_p,
                                unsigned_byte_p,
                                unsigned_byte_p,
                                byte_p,
                                unsigned_byte_p,
-                               unsigned_short_p);
-
-  RPG_Item_WeaponDictionary_Type          weaponDictionary_p(&myWeaponDictionary);
-  weaponDictionary_p.parsers(weaponPropertiesXML_p);
-  RPG_Item_ArmorDictionary_Type           armorDictionary_p(&myArmorDictionary);
-  armorDictionary_p.parsers(armorPropertiesXML_p);
-
+                               unsigned_short_p,
+                               byte_p);
   RPG_Item_Dictionary_Type                itemDictionary_p(&myWeaponDictionary,
                                                            &myArmorDictionary);
-  itemDictionary_p.parsers(weaponDictionary_p,
-                           armorDictionary_p);
+  itemDictionary_p.parsers(weaponPropertiesXML_p,
+                           armorPropertiesXML_p);
 
   // Parse the document to obtain the object model.
   //

@@ -22,11 +22,7 @@
 #include "rpg_monster_XML_parser.h"
 #include "rpg_monster_common_tools.h"
 
-#include <rpg_dice_XML_parser.h>
-#include <rpg_dice_common_tools.h>
-
-#include <rpg_common_XML_parser.h>
-#include <rpg_common_tools.h>
+#include <rpg_combat_XML_parser.h>
 
 #include <rpg_character_XML_parser.h>
 #include <rpg_character_common_tools.h>
@@ -34,7 +30,11 @@
 
 #include <rpg_magic_XML_parser.h>
 
-#include <rpg_combat_XML_parser.h>
+#include <rpg_common_XML_parser.h>
+#include <rpg_common_tools.h>
+
+#include <rpg_dice_XML_parser.h>
+#include <rpg_dice_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -472,7 +472,7 @@ bool
 RPG_Monster_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
                                                   unsigned long line_in,
                                                   unsigned long column_in,
-                                                  ::xml_schema::error_handler::severity severity_in,
+                                                  ::xsd::cxx::xml::error_handler<char>::severity severity_in,
                                                   const std::string& message_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::XSD_Error_Handler::handle"));

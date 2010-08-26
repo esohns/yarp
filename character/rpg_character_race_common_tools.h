@@ -17,15 +17,25 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef RPG_CHARACTER_RACE_COMMON_TOOLS_H
+#define RPG_CHARACTER_RACE_COMMON_TOOLS_H
 
-#ifndef RPG_CHARACTER_DEFINES_H
-#define RPG_CHARACTER_DEFINES_H
+#include "rpg_character_race_common.h"
+#include "rpg_character_player_XML_tree.h"
 
-#define RPG_CHARACTER_DUMP_DIR              ACE_TEXT("/var/tmp")
+#include <ace/Global_Macros.h>
 
-#define RPG_CHARACTER_PLAYER_START_MONEY    0
-#define RPG_CHARACTER_PLAYER_SCHEMA_FILE    ACE_TEXT("rpg_character_player.xsd")
-// *NOTE*: refer to the XSD C++/Tree manual for details
-#define RPG_CHARACTER_PLAYER_SCHEMA_CHARSET ACE_TEXT("UTF-8")
+class RPG_Character_Race_Common_Tools
+{
+ public:
+  static RPG_Character_Race_t raceXMLTreeToRace(const RPG_Character_PlayerXML_XMLTree_Type::race_sequence&); // race (XML format)
+
+  private:
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Race_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Race_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Race_Common_Tools(const RPG_Character_Race_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Race_Common_Tools& operator=(const RPG_Character_Race_Common_Tools&));
+};
 
 #endif

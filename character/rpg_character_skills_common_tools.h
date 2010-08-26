@@ -64,6 +64,7 @@ class RPG_Character_Skills_Common_Tools
                                            const RPG_Character_Feats_t&,      // feats
                                            const RPG_Character_Abilities_t&); // abilities
 
+  // debug info
   static const std::string skillsToString(const RPG_Character_Skills_t&); // skills
   static const std::string featsToString(const RPG_Character_Feats_t&); // feats
   static const std::string abilitiesToString(const RPG_Character_Abilities_t&); // abilities

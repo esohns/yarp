@@ -115,6 +115,21 @@ class RPG_Item_CreationCost_Type
 //   RPG_Item_BaseProperties myBaseProperties;
 // };
 
+// class RPG_Item_PropertiesBase_Type
+//  : public RPG_Item_PropertiesBase_Type_pskel
+// {
+//  public:
+//   RPG_Item_PropertiesBase_Type();
+//
+// //   virtual void pre();
+//   virtual void aura(const RPG_Magic_School&);
+//   virtual void prerequisites(const RPG_Item_MagicalPrerequisites&);
+//   virtual RPG_Item_PropertiesBase post_RPG_Item_PropertiesBase_Type();
+//
+//  private:
+//   RPG_Item_PropertiesBase myPropertiesBase;
+// };
+
 class RPG_Item_MagicalPrerequisites_Type
  : public RPG_Item_MagicalPrerequisites_Type_pskel
 {
@@ -129,20 +144,28 @@ class RPG_Item_MagicalPrerequisites_Type
   RPG_Item_MagicalPrerequisites myCurrentPrerequisites;
 };
 
-class RPG_Item_MagicalProperties_Type
- : public RPG_Item_MagicalProperties_Type_pskel
-{
- public:
-  RPG_Item_MagicalProperties_Type();
-
-//   virtual void pre();
-  virtual void aura(const RPG_Magic_School&);
-  virtual void prerequisites(const RPG_Item_MagicalPrerequisites&);
-  virtual RPG_Item_MagicalProperties post_RPG_Item_MagicalProperties_Type();
-
- private:
-  RPG_Item_MagicalProperties myCurrentProperties;
-};
+// class RPG_Item_WeaponPropertiesBase_Type
+//  : public RPG_Item_WeaponPropertiesBase_Type_pskel
+// {
+//  public:
+//   RPG_Item_WeaponPropertiesBase_Type();
+//
+// //   virtual void pre();
+//   virtual void weaponType(const RPG_Item_WeaponType&);
+//   virtual void weaponCategory(const RPG_Item_WeaponCategory&);
+//   virtual void weaponClass(const RPG_Item_WeaponClass&);
+//   virtual void baseDamage(const RPG_Item_Damage&);
+//   virtual void criticalHit(const RPG_Item_CriticalHitProperties&);
+//   virtual void rangeIncrement(unsigned char);
+//   virtual void typeOfDamage(const RPG_Common_PhysicalDamageType&);
+//   virtual void isNonLethal(bool);
+//   virtual void isReachWeapon(bool);
+//   virtual void isDoubleWeapon(bool);
+//   virtual RPG_Item_WeaponPropertiesBase post_RPG_Item_WeaponPropertiesBase_Type();
+//
+//  private:
+//   RPG_Item_WeaponPropertiesBase myCurrentProperties;
+// };
 
 class RPG_Item_WeaponPropertiesXML_Type
  : public RPG_Item_WeaponPropertiesXML_Type_pskel
@@ -156,6 +179,10 @@ class RPG_Item_WeaponPropertiesXML_Type
   virtual void costToCreate(const RPG_Item_CreationCost&);
   virtual RPG_Item_BaseProperties post_RPG_Item_BaseProperties_Type();
   // ------------------------------------------------------------
+  virtual void aura(const RPG_Magic_School&);
+  virtual void prerequisites(const RPG_Item_MagicalPrerequisites&);
+  virtual RPG_Item_PropertiesBase post_RPG_Item_PropertiesBase_Type();
+  // ------------------------------------------------------------
   virtual void weaponType(const RPG_Item_WeaponType&);
   virtual void weaponCategory(const RPG_Item_WeaponCategory&);
   virtual void weaponClass(const RPG_Item_WeaponClass&);
@@ -166,6 +193,9 @@ class RPG_Item_WeaponPropertiesXML_Type
   virtual void isNonLethal(bool);
   virtual void isReachWeapon(bool);
   virtual void isDoubleWeapon(bool);
+  virtual RPG_Item_WeaponPropertiesBase post_RPG_Item_WeaponPropertiesBase_Type();
+  // ------------------------------------------------------------
+  virtual void toHitModifier(signed char);
   virtual RPG_Item_WeaponPropertiesXML post_RPG_Item_WeaponPropertiesXML_Type();
 
  private:
@@ -190,6 +220,26 @@ class RPG_Item_ArmorType_Type
   virtual RPG_Item_ArmorType post_RPG_Item_ArmorType_Type();
 };
 
+// class RPG_Item_ArmorPropertiesBase_Type
+//  : public RPG_Item_ArmorPropertiesBase_Type_pskel
+// {
+//  public:
+//   RPG_Item_ArmorPropertiesBase_Type();
+//
+// //   virtual void pre();
+//   virtual void armorType(const RPG_Item_ArmorType&);
+//   virtual void armorCategory(const RPG_Item_ArmorCategory&);
+//   virtual void baseArmorBonus(unsigned char);
+//   virtual void maxDexterityBonus(unsigned char);
+//   virtual void armorCheckPenalty(signed char);
+//   virtual void arcaneSpellFailure(unsigned char);
+//   virtual void baseSpeed(unsigned short);
+//   virtual RPG_Item_ArmorPropertiesBase post_RPG_Item_ArmorPropertiesBase_Type();
+//
+//  private:
+//   RPG_Item_ArmorPropertiesBase myCurrentArmorProperties;
+// };
+
 class RPG_Item_ArmorPropertiesXML_Type
  : public RPG_Item_ArmorPropertiesXML_Type_pskel
 {
@@ -202,6 +252,10 @@ class RPG_Item_ArmorPropertiesXML_Type
   virtual void costToCreate(const RPG_Item_CreationCost&);
   virtual RPG_Item_BaseProperties post_RPG_Item_BaseProperties_Type();
   // ------------------------------------------------------------
+  virtual void aura(const RPG_Magic_School&);
+  virtual void prerequisites(const RPG_Item_MagicalPrerequisites&);
+  virtual RPG_Item_PropertiesBase post_RPG_Item_PropertiesBase_Type();
+  // ------------------------------------------------------------
   virtual void armorType(const RPG_Item_ArmorType&);
   virtual void armorCategory(const RPG_Item_ArmorCategory&);
   virtual void baseArmorBonus(unsigned char);
@@ -209,71 +263,36 @@ class RPG_Item_ArmorPropertiesXML_Type
   virtual void armorCheckPenalty(signed char);
   virtual void arcaneSpellFailure(unsigned char);
   virtual void baseSpeed(unsigned short);
+  virtual RPG_Item_ArmorPropertiesBase post_RPG_Item_ArmorPropertiesBase_Type();
+  // ------------------------------------------------------------
+  virtual void defenseModifier(signed char);
   virtual RPG_Item_ArmorPropertiesXML post_RPG_Item_ArmorPropertiesXML_Type();
 
  private:
   RPG_Item_ArmorPropertiesXML myCurrentArmorProperties;
 };
 
-class RPG_Item_WeaponDictionary_Type
-  : public RPG_Item_WeaponDictionary_Type_pskel
-{
-  public:
-    RPG_Item_WeaponDictionary_Type(RPG_Item_WeaponDictionary_t*); // weapon dictionary
-
-//   virtual void pre();
-    virtual void weapon(const RPG_Item_WeaponPropertiesXML&);
-    virtual void post_RPG_Item_WeaponDictionary_Type();
-
-  private:
-  // safety measures
-    ACE_UNIMPLEMENTED_FUNC(RPG_Item_WeaponDictionary_Type());
-    ACE_UNIMPLEMENTED_FUNC(RPG_Item_WeaponDictionary_Type(const RPG_Item_WeaponDictionary_Type&));
-    ACE_UNIMPLEMENTED_FUNC(RPG_Item_WeaponDictionary_Type& operator=(const RPG_Item_WeaponDictionary_Type&));
-
-    RPG_Item_WeaponDictionary_t* myWeaponDictionary;
-};
-
-class RPG_Item_ArmorDictionary_Type
-  : public RPG_Item_ArmorDictionary_Type_pskel
-{
-  public:
-    RPG_Item_ArmorDictionary_Type(RPG_Item_ArmorDictionary_t*); // armor dictionary
-
-//   virtual void pre();
-    virtual void armor(const RPG_Item_ArmorPropertiesXML&);
-    virtual void post_RPG_Item_ArmorDictionary_Type();
-
-  private:
-  // safety measures
-    ACE_UNIMPLEMENTED_FUNC(RPG_Item_ArmorDictionary_Type());
-    ACE_UNIMPLEMENTED_FUNC(RPG_Item_ArmorDictionary_Type(const RPG_Item_ArmorDictionary_Type&));
-    ACE_UNIMPLEMENTED_FUNC(RPG_Item_ArmorDictionary_Type& operator=(const RPG_Item_ArmorDictionary_Type&));
-
-    RPG_Item_ArmorDictionary_t* myArmorDictionary;
-};
-
 class RPG_Item_Dictionary_Type
-  : public RPG_Item_Dictionary_Type_pskel
+ : public RPG_Item_Dictionary_Type_pskel
 {
-  public:
-    RPG_Item_Dictionary_Type(RPG_Item_WeaponDictionary_t*, // weapon dictionary
-                             RPG_Item_ArmorDictionary_t*); // armor dictionary
-    virtual ~RPG_Item_Dictionary_Type();
+ public:
+  RPG_Item_Dictionary_Type(RPG_Item_WeaponDictionary_t*, // weapon dictionary
+                           RPG_Item_ArmorDictionary_t*); // armor dictionary
+  virtual ~RPG_Item_Dictionary_Type();
 
 //   virtual void pre();
-//   virtual void RPG_Item_WeaponDictionary();
-//   virtual void RPG_Item_ArmorDictionary();
-    virtual void post_RPG_Item_Dictionary_Type();
+  virtual void weapon(const RPG_Item_WeaponPropertiesXML&);
+  virtual void armor(const RPG_Item_ArmorPropertiesXML&);
+  virtual void post_RPG_Item_Dictionary_Type();
 
-  private:
+ private:
   // safety measures
-    ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary_Type());
-    ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary_Type(const RPG_Item_Dictionary_Type&));
-    ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary_Type& operator=(const RPG_Item_Dictionary_Type&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary_Type());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary_Type(const RPG_Item_Dictionary_Type&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary_Type& operator=(const RPG_Item_Dictionary_Type&));
 
-    RPG_Item_WeaponDictionary_t* myWeaponDictionary;
-    RPG_Item_ArmorDictionary_t*  myArmorDictionary;
+  RPG_Item_WeaponDictionary_t* myWeaponDictionary;
+  RPG_Item_ArmorDictionary_t*  myArmorDictionary;
 };
 
 #endif

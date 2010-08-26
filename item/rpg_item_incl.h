@@ -37,12 +37,12 @@
 #include "rpg_item_creationcost.h"
 #include "rpg_item_baseproperties.h"
 #include "rpg_item_magicalprerequisites.h"
-#include "rpg_item_magicalproperties.h"
+#include "rpg_item_propertiesbase.h"
+#include "rpg_item_weaponpropertiesbase.h"
 #include "rpg_item_weaponpropertiesxml.h"
-#include "rpg_item_magicweaponpropertiesxml.h"
 #include "rpg_item_armorcategory.h"
 #include "rpg_item_armortype.h"
+#include "rpg_item_armorpropertiesbase.h"
 #include "rpg_item_armorpropertiesxml.h"
-#include "rpg_item_magicarmorpropertiesxml.h"
 
 #endif

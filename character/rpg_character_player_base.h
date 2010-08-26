@@ -24,13 +24,14 @@
 
 #include "rpg_character_base.h"
 #include "rpg_character_gender.h"
-#include "rpg_character_race.h"
+#include "rpg_character_race_common.h"
+#include "rpg_character_class_common.h"
 #include "rpg_character_offhand.h"
 #include "rpg_character_alignmentcivic.h"
 #include "rpg_character_alignmentethic.h"
 #include "rpg_character_alignment.h"
 #include "rpg_character_attributes.h"
-#include "rpg_character_common.h"
+// #include "rpg_character_common.h"
 #include "rpg_character_skills_common.h"
 
 #include <rpg_combat_attacksituation.h>
@@ -42,6 +43,8 @@
 
 #include <rpg_common_attribute.h>
 #include <rpg_common_camp.h>
+
+#include <ace/Global_Macros.h>
 
 #include <string>
 
@@ -56,7 +59,7 @@ class RPG_Character_Player_Base
 
   // retrieve basic player character data
   const RPG_Character_Gender getGender() const;
-  const RPG_Character_Race getRace() const;
+  const RPG_Character_Race_t getRace() const;
   const RPG_Character_Class getClass() const;
   const RPG_Character_OffHand getOffHand() const;
 
@@ -80,51 +83,60 @@ class RPG_Character_Player_Base
   virtual void dump() const;
 
  protected:
-  // safety measures
-  RPG_Character_Player_Base();
-  RPG_Character_Player_Base(const std::string&,               // name
-                            const RPG_Character_Gender&,      // gender
-                            const RPG_Character_Race&,        // race
-                            const RPG_Character_Class&,       // (starting) class(es)
-                            const RPG_Character_Alignment&,   // (starting) alignment
-                            const RPG_Character_Attributes&,  // base attributes
-                            const RPG_Character_Skills_t&,    // (starting) skills
-                            const RPG_Character_Feats_t&,     // base feats
-                            const RPG_Character_Abilities_t&, // base abilities
-                            const RPG_Character_OffHand&,     // off-hand
-                            const unsigned int&,              // (starting) XP
-                            const unsigned short int&,        // (starting) HP
-                            const unsigned int&,              // (starting) wealth (GP)
-                            const RPG_Magic_Spells_t&,        // (starting) set of known spells (if any)
-                            const RPG_Magic_SpellList_t&,     // (starting) set of prepared spells (if any)
-                            const RPG_Item_List_t&);          // (starting) list of (carried) items
+  RPG_Character_Player_Base(// base attributes
+                            const std::string&,                // name
+                            const RPG_Character_Gender&,       // gender
+                            const RPG_Character_Race_t&,       // race
+                            const RPG_Character_Class&,        // class(es)
+                            const RPG_Character_Alignment&,    // alignment
+                            const RPG_Character_Attributes&,   // base attributes
+                            const RPG_Character_Skills_t&,     // skills
+                            const RPG_Character_Feats_t&,      // base feats
+                            const RPG_Character_Abilities_t&,  // base abilities
+                            const RPG_Character_OffHand&,      // off-hand
+                            const unsigned short int&,         // max HP
+                            const RPG_Magic_Spells_t&,         // set of known spells (if any)
+                            // current status
+                            const RPG_Character_Conditions_t&, // condition
+                            const unsigned short int&,         // HP
+                            const unsigned int&,               // XP
+                            const unsigned int&,               // wealth (GP)
+                            const RPG_Magic_SpellList_t&,      // set of prepared spells (if any)
+                            const RPG_Item_List_t&);           // list of (carried) items
   RPG_Character_Player_Base(const RPG_Character_Player_Base&);
 
   RPG_Character_Player_Base& operator=(const RPG_Character_Player_Base&);
-  void init(const std::string&,               // name
-            const RPG_Character_Gender&,      // gender
-            const RPG_Character_Race&,        // race
-            const RPG_Character_Class&,       // (starting) class(es)
-            const RPG_Character_Alignment&,   // (starting) alignment
-            const RPG_Character_Attributes&,  // base attributes
-            const RPG_Character_Skills_t&,    // (starting) skills
-            const RPG_Character_Feats_t&,     // base feats
-            const RPG_Character_Abilities_t&, // base abilities
-            const RPG_Character_OffHand&,     // off-hand
-            const unsigned int&,              // (starting) XP
-            const unsigned short int&,        // (starting) HP
-            const unsigned int&,              // (starting) wealth (GP)
-            const RPG_Magic_Spells_t&,        // (starting) set of known spells (if any)
-            const RPG_Magic_SpellList_t&,     // (starting) set of prepared spells (if any)
-            const RPG_Item_List_t&);          // (starting) list of (carried) items
+  void init(// base attributes
+            const std::string&,                // name
+            const RPG_Character_Gender&,       // gender
+            const RPG_Character_Race_t&,       // race
+            const RPG_Character_Class&,        // class(es)
+            const RPG_Character_Alignment&,    // alignment
+            const RPG_Character_Attributes&,   // base attributes
+            const RPG_Character_Skills_t&,     // skills
+            const RPG_Character_Feats_t&,      // base feats
+            const RPG_Character_Abilities_t&,  // base abilities
+            const RPG_Character_OffHand&,      // off-hand
+            const unsigned short int&,         // max HP
+            const RPG_Magic_Spells_t&,         // set of known spells (if any)
+            // current status
+            const RPG_Character_Conditions_t&, // condition
+            const unsigned short int&,         // HP
+            const unsigned int&,               // XP
+            const unsigned int&,               // wealth (GP)
+            const RPG_Magic_SpellList_t&,      // set of prepared spells (if any)
+            const RPG_Item_List_t&);           // list of (carried) items
 
   virtual const signed char getShieldBonus() const;
 
  private:
   typedef RPG_Character_Base inherited;
 
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player_Base());
+
   RPG_Character_Gender  myGender;
-  RPG_Character_Race    myRace;
+  RPG_Character_Race_t  myRace;
   RPG_Character_Class   myClass;
   RPG_Character_OffHand myOffHand;
 

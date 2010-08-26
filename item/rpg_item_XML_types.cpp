@@ -188,103 +188,111 @@ RPG_Item_MagicalPrerequisites_Type_pskel ()
 {
 }
 
-// RPG_Item_MagicalProperties_Type_pskel
+// RPG_Item_PropertiesBase_Type_pskel
 //
 
-void RPG_Item_MagicalProperties_Type_pskel::
+void RPG_Item_PropertiesBase_Type_pskel::
 aura_parser (::RPG_Magic_School_Type_pskel& p)
 {
   this->aura_parser_ = &p;
 }
 
-void RPG_Item_MagicalProperties_Type_pskel::
+void RPG_Item_PropertiesBase_Type_pskel::
 prerequisites_parser (::RPG_Item_MagicalPrerequisites_Type_pskel& p)
 {
   this->prerequisites_parser_ = &p;
 }
 
-void RPG_Item_MagicalProperties_Type_pskel::
-parsers (::RPG_Magic_School_Type_pskel& aura,
+void RPG_Item_PropertiesBase_Type_pskel::
+parsers (::xml_schema::unsigned_short_pskel& baseWeight,
+         ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
+         ::RPG_Item_CreationCost_Type_pskel& costToCreate,
+         ::RPG_Magic_School_Type_pskel& aura,
          ::RPG_Item_MagicalPrerequisites_Type_pskel& prerequisites)
 {
+  this->baseWeight_parser_ = &baseWeight;
+  this->baseStorePrice_parser_ = &baseStorePrice;
+  this->costToCreate_parser_ = &costToCreate;
   this->aura_parser_ = &aura;
   this->prerequisites_parser_ = &prerequisites;
 }
 
-RPG_Item_MagicalProperties_Type_pskel::
-RPG_Item_MagicalProperties_Type_pskel ()
+RPG_Item_PropertiesBase_Type_pskel::
+RPG_Item_PropertiesBase_Type_pskel ()
 : aura_parser_ (0),
   prerequisites_parser_ (0)
 {
 }
 
-// RPG_Item_WeaponPropertiesXML_Type_pskel
+// RPG_Item_WeaponPropertiesBase_Type_pskel
 //
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 weaponType_parser (::RPG_Item_WeaponType_Type_pskel& p)
 {
   this->weaponType_parser_ = &p;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 weaponCategory_parser (::RPG_Item_WeaponCategory_Type_pskel& p)
 {
   this->weaponCategory_parser_ = &p;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 weaponClass_parser (::RPG_Item_WeaponClass_Type_pskel& p)
 {
   this->weaponClass_parser_ = &p;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 baseDamage_parser (::RPG_Dice_Roll_Type_pskel& p)
 {
   this->baseDamage_parser_ = &p;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 criticalHit_parser (::RPG_Item_CriticalHitProperties_Type_pskel& p)
 {
   this->criticalHit_parser_ = &p;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 rangeIncrement_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->rangeIncrement_parser_ = &p;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 typeOfDamage_parser (::RPG_Common_PhysicalDamageType_Type_pskel& p)
 {
   this->typeOfDamage_parser_ = &p;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 isNonLethal_parser (::xml_schema::boolean_pskel& p)
 {
   this->isNonLethal_parser_ = &p;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 isReachWeapon_parser (::xml_schema::boolean_pskel& p)
 {
   this->isReachWeapon_parser_ = &p;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 isDoubleWeapon_parser (::xml_schema::boolean_pskel& p)
 {
   this->isDoubleWeapon_parser_ = &p;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 parsers (::xml_schema::unsigned_short_pskel& baseWeight,
          ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
          ::RPG_Item_CreationCost_Type_pskel& costToCreate,
+         ::RPG_Magic_School_Type_pskel& aura,
+         ::RPG_Item_MagicalPrerequisites_Type_pskel& prerequisites,
          ::RPG_Item_WeaponType_Type_pskel& weaponType,
          ::RPG_Item_WeaponCategory_Type_pskel& weaponCategory,
          ::RPG_Item_WeaponClass_Type_pskel& weaponClass,
@@ -299,6 +307,8 @@ parsers (::xml_schema::unsigned_short_pskel& baseWeight,
   this->baseWeight_parser_ = &baseWeight;
   this->baseStorePrice_parser_ = &baseStorePrice;
   this->costToCreate_parser_ = &costToCreate;
+  this->aura_parser_ = &aura;
+  this->prerequisites_parser_ = &prerequisites;
   this->weaponType_parser_ = &weaponType;
   this->weaponCategory_parser_ = &weaponCategory;
   this->weaponClass_parser_ = &weaponClass;
@@ -311,8 +321,8 @@ parsers (::xml_schema::unsigned_short_pskel& baseWeight,
   this->isDoubleWeapon_parser_ = &isDoubleWeapon;
 }
 
-RPG_Item_WeaponPropertiesXML_Type_pskel::
-RPG_Item_WeaponPropertiesXML_Type_pskel ()
+RPG_Item_WeaponPropertiesBase_Type_pskel::
+RPG_Item_WeaponPropertiesBase_Type_pskel ()
 : weaponType_parser_ (0),
   weaponCategory_parser_ (0),
   weaponClass_parser_ (0),
@@ -326,19 +336,21 @@ RPG_Item_WeaponPropertiesXML_Type_pskel ()
 {
 }
 
-// RPG_Item_MagicWeaponPropertiesXML_Type_pskel
+// RPG_Item_WeaponPropertiesXML_Type_pskel
 //
 
-void RPG_Item_MagicWeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesXML_Type_pskel::
 toHitModifier_parser (::xml_schema::byte_pskel& p)
 {
   this->toHitModifier_parser_ = &p;
 }
 
-void RPG_Item_MagicWeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesXML_Type_pskel::
 parsers (::xml_schema::unsigned_short_pskel& baseWeight,
          ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
          ::RPG_Item_CreationCost_Type_pskel& costToCreate,
+         ::RPG_Magic_School_Type_pskel& aura,
+         ::RPG_Item_MagicalPrerequisites_Type_pskel& prerequisites,
          ::RPG_Item_WeaponType_Type_pskel& weaponType,
          ::RPG_Item_WeaponCategory_Type_pskel& weaponCategory,
          ::RPG_Item_WeaponClass_Type_pskel& weaponClass,
@@ -354,6 +366,8 @@ parsers (::xml_schema::unsigned_short_pskel& baseWeight,
   this->baseWeight_parser_ = &baseWeight;
   this->baseStorePrice_parser_ = &baseStorePrice;
   this->costToCreate_parser_ = &costToCreate;
+  this->aura_parser_ = &aura;
+  this->prerequisites_parser_ = &prerequisites;
   this->weaponType_parser_ = &weaponType;
   this->weaponCategory_parser_ = &weaponCategory;
   this->weaponClass_parser_ = &weaponClass;
@@ -367,82 +381,63 @@ parsers (::xml_schema::unsigned_short_pskel& baseWeight,
   this->toHitModifier_parser_ = &toHitModifier;
 }
 
-RPG_Item_MagicWeaponPropertiesXML_Type_pskel::
-RPG_Item_MagicWeaponPropertiesXML_Type_pskel ()
+RPG_Item_WeaponPropertiesXML_Type_pskel::
+RPG_Item_WeaponPropertiesXML_Type_pskel ()
 : toHitModifier_parser_ (0)
 {
 }
 
-// RPG_Item_WeaponDictionary_Type_pskel
+// RPG_Item_ArmorPropertiesBase_Type_pskel
 //
 
-void RPG_Item_WeaponDictionary_Type_pskel::
-weapon_parser (::RPG_Item_WeaponPropertiesXML_Type_pskel& p)
-{
-  this->weapon_parser_ = &p;
-}
-
-void RPG_Item_WeaponDictionary_Type_pskel::
-parsers (::RPG_Item_WeaponPropertiesXML_Type_pskel& weapon)
-{
-  this->weapon_parser_ = &weapon;
-}
-
-RPG_Item_WeaponDictionary_Type_pskel::
-RPG_Item_WeaponDictionary_Type_pskel ()
-: weapon_parser_ (0)
-{
-}
-
-// RPG_Item_ArmorPropertiesXML_Type_pskel
-//
-
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesBase_Type_pskel::
 armorType_parser (::RPG_Item_ArmorType_Type_pskel& p)
 {
   this->armorType_parser_ = &p;
 }
 
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesBase_Type_pskel::
 armorCategory_parser (::RPG_Item_ArmorCategory_Type_pskel& p)
 {
   this->armorCategory_parser_ = &p;
 }
 
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesBase_Type_pskel::
 baseArmorBonus_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->baseArmorBonus_parser_ = &p;
 }
 
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesBase_Type_pskel::
 maxDexterityBonus_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->maxDexterityBonus_parser_ = &p;
 }
 
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesBase_Type_pskel::
 armorCheckPenalty_parser (::xml_schema::byte_pskel& p)
 {
   this->armorCheckPenalty_parser_ = &p;
 }
 
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesBase_Type_pskel::
 arcaneSpellFailure_parser (::xml_schema::unsigned_byte_pskel& p)
 {
   this->arcaneSpellFailure_parser_ = &p;
 }
 
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesBase_Type_pskel::
 baseSpeed_parser (::xml_schema::unsigned_short_pskel& p)
 {
   this->baseSpeed_parser_ = &p;
 }
 
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesBase_Type_pskel::
 parsers (::xml_schema::unsigned_short_pskel& baseWeight,
          ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
          ::RPG_Item_CreationCost_Type_pskel& costToCreate,
+         ::RPG_Magic_School_Type_pskel& aura,
+         ::RPG_Item_MagicalPrerequisites_Type_pskel& prerequisites,
          ::RPG_Item_ArmorType_Type_pskel& armorType,
          ::RPG_Item_ArmorCategory_Type_pskel& armorCategory,
          ::xml_schema::unsigned_byte_pskel& baseArmorBonus,
@@ -454,6 +449,8 @@ parsers (::xml_schema::unsigned_short_pskel& baseWeight,
   this->baseWeight_parser_ = &baseWeight;
   this->baseStorePrice_parser_ = &baseStorePrice;
   this->costToCreate_parser_ = &costToCreate;
+  this->aura_parser_ = &aura;
+  this->prerequisites_parser_ = &prerequisites;
   this->armorType_parser_ = &armorType;
   this->armorCategory_parser_ = &armorCategory;
   this->baseArmorBonus_parser_ = &baseArmorBonus;
@@ -463,8 +460,8 @@ parsers (::xml_schema::unsigned_short_pskel& baseWeight,
   this->baseSpeed_parser_ = &baseSpeed;
 }
 
-RPG_Item_ArmorPropertiesXML_Type_pskel::
-RPG_Item_ArmorPropertiesXML_Type_pskel ()
+RPG_Item_ArmorPropertiesBase_Type_pskel::
+RPG_Item_ArmorPropertiesBase_Type_pskel ()
 : armorType_parser_ (0),
   armorCategory_parser_ (0),
   baseArmorBonus_parser_ (0),
@@ -475,19 +472,21 @@ RPG_Item_ArmorPropertiesXML_Type_pskel ()
 {
 }
 
-// RPG_Item_MagicArmorPropertiesXML_Type_pskel
+// RPG_Item_ArmorPropertiesXML_Type_pskel
 //
 
-void RPG_Item_MagicArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesXML_Type_pskel::
 defenseModifier_parser (::xml_schema::byte_pskel& p)
 {
   this->defenseModifier_parser_ = &p;
 }
 
-void RPG_Item_MagicArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesXML_Type_pskel::
 parsers (::xml_schema::unsigned_short_pskel& baseWeight,
          ::RPG_Item_StorePrice_Type_pskel& baseStorePrice,
          ::RPG_Item_CreationCost_Type_pskel& costToCreate,
+         ::RPG_Magic_School_Type_pskel& aura,
+         ::RPG_Item_MagicalPrerequisites_Type_pskel& prerequisites,
          ::RPG_Item_ArmorType_Type_pskel& armorType,
          ::RPG_Item_ArmorCategory_Type_pskel& armorCategory,
          ::xml_schema::unsigned_byte_pskel& baseArmorBonus,
@@ -500,6 +499,8 @@ parsers (::xml_schema::unsigned_short_pskel& baseWeight,
   this->baseWeight_parser_ = &baseWeight;
   this->baseStorePrice_parser_ = &baseStorePrice;
   this->costToCreate_parser_ = &costToCreate;
+  this->aura_parser_ = &aura;
+  this->prerequisites_parser_ = &prerequisites;
   this->armorType_parser_ = &armorType;
   this->armorCategory_parser_ = &armorCategory;
   this->baseArmorBonus_parser_ = &baseArmorBonus;
@@ -510,30 +511,9 @@ parsers (::xml_schema::unsigned_short_pskel& baseWeight,
   this->defenseModifier_parser_ = &defenseModifier;
 }
 
-RPG_Item_MagicArmorPropertiesXML_Type_pskel::
-RPG_Item_MagicArmorPropertiesXML_Type_pskel ()
+RPG_Item_ArmorPropertiesXML_Type_pskel::
+RPG_Item_ArmorPropertiesXML_Type_pskel ()
 : defenseModifier_parser_ (0)
-{
-}
-
-// RPG_Item_ArmorDictionary_Type_pskel
-//
-
-void RPG_Item_ArmorDictionary_Type_pskel::
-armor_parser (::RPG_Item_ArmorPropertiesXML_Type_pskel& p)
-{
-  this->armor_parser_ = &p;
-}
-
-void RPG_Item_ArmorDictionary_Type_pskel::
-parsers (::RPG_Item_ArmorPropertiesXML_Type_pskel& armor)
-{
-  this->armor_parser_ = &armor;
-}
-
-RPG_Item_ArmorDictionary_Type_pskel::
-RPG_Item_ArmorDictionary_Type_pskel ()
-: armor_parser_ (0)
 {
 }
 
@@ -541,29 +521,29 @@ RPG_Item_ArmorDictionary_Type_pskel ()
 //
 
 void RPG_Item_Dictionary_Type_pskel::
-weaponDictionary_parser (::RPG_Item_WeaponDictionary_Type_pskel& p)
+weapon_parser (::RPG_Item_WeaponPropertiesXML_Type_pskel& p)
 {
-  this->weaponDictionary_parser_ = &p;
+  this->weapon_parser_ = &p;
 }
 
 void RPG_Item_Dictionary_Type_pskel::
-armorDictionary_parser (::RPG_Item_ArmorDictionary_Type_pskel& p)
+armor_parser (::RPG_Item_ArmorPropertiesXML_Type_pskel& p)
 {
-  this->armorDictionary_parser_ = &p;
+  this->armor_parser_ = &p;
 }
 
 void RPG_Item_Dictionary_Type_pskel::
-parsers (::RPG_Item_WeaponDictionary_Type_pskel& weaponDictionary,
-         ::RPG_Item_ArmorDictionary_Type_pskel& armorDictionary)
+parsers (::RPG_Item_WeaponPropertiesXML_Type_pskel& weapon,
+         ::RPG_Item_ArmorPropertiesXML_Type_pskel& armor)
 {
-  this->weaponDictionary_parser_ = &weaponDictionary;
-  this->armorDictionary_parser_ = &armorDictionary;
+  this->weapon_parser_ = &weapon;
+  this->armor_parser_ = &armor;
 }
 
 RPG_Item_Dictionary_Type_pskel::
 RPG_Item_Dictionary_Type_pskel ()
-: weaponDictionary_parser_ (0),
-  armorDictionary_parser_ (0)
+: weapon_parser_ (0),
+  armor_parser_ (0)
 {
 }
 
@@ -943,27 +923,27 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-// RPG_Item_MagicalProperties_Type_pskel
+// RPG_Item_PropertiesBase_Type_pskel
 //
 
-void RPG_Item_MagicalProperties_Type_pskel::
+void RPG_Item_PropertiesBase_Type_pskel::
 aura (const RPG_Magic_School&)
 {
 }
 
-void RPG_Item_MagicalProperties_Type_pskel::
+void RPG_Item_PropertiesBase_Type_pskel::
 prerequisites (const RPG_Item_MagicalPrerequisites&)
 {
 }
 
-bool RPG_Item_MagicalProperties_Type_pskel::
+bool RPG_Item_PropertiesBase_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
 {
   XSD_UNUSED (t);
 
-  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+  if (this->::RPG_Item_BaseProperties_Type_pskel::_start_element_impl (ns, n, t))
     return true;
 
   if (n == "aura" && ns == "urn:rpg")
@@ -989,11 +969,11 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Item_MagicalProperties_Type_pskel::
+bool RPG_Item_PropertiesBase_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
-  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+  if (this->::RPG_Item_BaseProperties_Type_pskel::_end_element_impl (ns, n))
     return true;
 
   if (n == "aura" && ns == "urn:rpg")
@@ -1015,67 +995,67 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-// RPG_Item_WeaponPropertiesXML_Type_pskel
+// RPG_Item_WeaponPropertiesBase_Type_pskel
 //
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 weaponType (const RPG_Item_WeaponType&)
 {
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 weaponCategory (const RPG_Item_WeaponCategory&)
 {
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 weaponClass (const RPG_Item_WeaponClass&)
 {
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 baseDamage (const RPG_Item_Damage&)
 {
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 criticalHit (const RPG_Item_CriticalHitProperties&)
 {
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 rangeIncrement (unsigned char)
 {
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 typeOfDamage (const RPG_Common_PhysicalDamageType&)
 {
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 isNonLethal (bool)
 {
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 isReachWeapon (bool)
 {
 }
 
-void RPG_Item_WeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesBase_Type_pskel::
 isDoubleWeapon (bool)
 {
 }
 
-bool RPG_Item_WeaponPropertiesXML_Type_pskel::
+bool RPG_Item_WeaponPropertiesBase_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
 {
   XSD_UNUSED (t);
 
-  if (this->::RPG_Item_BaseProperties_Type_pskel::_start_element_impl (ns, n, t))
+  if (this->::RPG_Item_PropertiesBase_Type_pskel::_start_element_impl (ns, n, t))
     return true;
 
   if (n == "weaponType" && ns == "urn:rpg")
@@ -1151,11 +1131,11 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Item_WeaponPropertiesXML_Type_pskel::
+bool RPG_Item_WeaponPropertiesBase_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
-  if (this->::RPG_Item_BaseProperties_Type_pskel::_end_element_impl (ns, n))
+  if (this->::RPG_Item_PropertiesBase_Type_pskel::_end_element_impl (ns, n))
     return true;
 
   if (n == "weaponType" && ns == "urn:rpg")
@@ -1217,12 +1197,12 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Item_WeaponPropertiesXML_Type_pskel::
+bool RPG_Item_WeaponPropertiesBase_Type_pskel::
 _attribute_impl (const ::xml_schema::ro_string& ns,
                  const ::xml_schema::ro_string& n,
                  const ::xml_schema::ro_string& v)
 {
-  if (this->::RPG_Item_BaseProperties_Type_pskel::_attribute_impl (ns, n, v))
+  if (this->::RPG_Item_PropertiesBase_Type_pskel::_attribute_impl (ns, n, v))
     return true;
 
   if (n == "isNonLethal" && ns.empty ())
@@ -1270,22 +1250,22 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-// RPG_Item_MagicWeaponPropertiesXML_Type_pskel
+// RPG_Item_WeaponPropertiesXML_Type_pskel
 //
 
-void RPG_Item_MagicWeaponPropertiesXML_Type_pskel::
+void RPG_Item_WeaponPropertiesXML_Type_pskel::
 toHitModifier (signed char)
 {
 }
 
-bool RPG_Item_MagicWeaponPropertiesXML_Type_pskel::
+bool RPG_Item_WeaponPropertiesXML_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
 {
   XSD_UNUSED (t);
 
-  if (this->::RPG_Item_WeaponPropertiesXML_Type_pskel::_start_element_impl (ns, n, t))
+  if (this->::RPG_Item_WeaponPropertiesBase_Type_pskel::_start_element_impl (ns, n, t))
     return true;
 
   if (n == "toHitModifier" && ns == "urn:rpg")
@@ -1301,11 +1281,11 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Item_MagicWeaponPropertiesXML_Type_pskel::
+bool RPG_Item_WeaponPropertiesXML_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
-  if (this->::RPG_Item_WeaponPropertiesXML_Type_pskel::_end_element_impl (ns, n))
+  if (this->::RPG_Item_WeaponPropertiesBase_Type_pskel::_end_element_impl (ns, n))
     return true;
 
   if (n == "toHitModifier" && ns == "urn:rpg")
@@ -1319,106 +1299,52 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-// RPG_Item_WeaponDictionary_Type_pskel
+// RPG_Item_ArmorPropertiesBase_Type_pskel
 //
 
-void RPG_Item_WeaponDictionary_Type_pskel::
-weapon (const RPG_Item_WeaponPropertiesXML&)
-{
-}
-
-void RPG_Item_WeaponDictionary_Type_pskel::
-post_RPG_Item_WeaponDictionary_Type ()
-{
-}
-
-bool RPG_Item_WeaponDictionary_Type_pskel::
-_start_element_impl (const ::xml_schema::ro_string& ns,
-                     const ::xml_schema::ro_string& n,
-                     const ::xml_schema::ro_string* t)
-{
-  XSD_UNUSED (t);
-
-  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
-    return true;
-
-  if (n == "weapon" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->weapon_parser_;
-
-    if (this->weapon_parser_)
-      this->weapon_parser_->pre ();
-
-    return true;
-  }
-
-  return false;
-}
-
-bool RPG_Item_WeaponDictionary_Type_pskel::
-_end_element_impl (const ::xml_schema::ro_string& ns,
-                   const ::xml_schema::ro_string& n)
-{
-  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
-    return true;
-
-  if (n == "weapon" && ns == "urn:rpg")
-  {
-    if (this->weapon_parser_)
-      this->weapon (this->weapon_parser_->post_RPG_Item_WeaponPropertiesXML_Type ());
-
-    return true;
-  }
-
-  return false;
-}
-
-// RPG_Item_ArmorPropertiesXML_Type_pskel
-//
-
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesBase_Type_pskel::
 armorType (const RPG_Item_ArmorType&)
 {
 }
 
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesBase_Type_pskel::
 armorCategory (const RPG_Item_ArmorCategory&)
 {
 }
 
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesBase_Type_pskel::
 baseArmorBonus (unsigned char)
 {
 }
 
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesBase_Type_pskel::
 maxDexterityBonus (unsigned char)
 {
 }
 
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesBase_Type_pskel::
 armorCheckPenalty (signed char)
 {
 }
 
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesBase_Type_pskel::
 arcaneSpellFailure (unsigned char)
 {
 }
 
-void RPG_Item_ArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesBase_Type_pskel::
 baseSpeed (unsigned short)
 {
 }
 
-bool RPG_Item_ArmorPropertiesXML_Type_pskel::
+bool RPG_Item_ArmorPropertiesBase_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
 {
   XSD_UNUSED (t);
 
-  if (this->::RPG_Item_BaseProperties_Type_pskel::_start_element_impl (ns, n, t))
+  if (this->::RPG_Item_PropertiesBase_Type_pskel::_start_element_impl (ns, n, t))
     return true;
 
   if (n == "armorType" && ns == "urn:rpg")
@@ -1494,11 +1420,11 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Item_ArmorPropertiesXML_Type_pskel::
+bool RPG_Item_ArmorPropertiesBase_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
-  if (this->::RPG_Item_BaseProperties_Type_pskel::_end_element_impl (ns, n))
+  if (this->::RPG_Item_PropertiesBase_Type_pskel::_end_element_impl (ns, n))
     return true;
 
   if (n == "armorType" && ns == "urn:rpg")
@@ -1560,22 +1486,22 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-// RPG_Item_MagicArmorPropertiesXML_Type_pskel
+// RPG_Item_ArmorPropertiesXML_Type_pskel
 //
 
-void RPG_Item_MagicArmorPropertiesXML_Type_pskel::
+void RPG_Item_ArmorPropertiesXML_Type_pskel::
 defenseModifier (signed char)
 {
 }
 
-bool RPG_Item_MagicArmorPropertiesXML_Type_pskel::
+bool RPG_Item_ArmorPropertiesXML_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
 {
   XSD_UNUSED (t);
 
-  if (this->::RPG_Item_ArmorPropertiesXML_Type_pskel::_start_element_impl (ns, n, t))
+  if (this->::RPG_Item_ArmorPropertiesBase_Type_pskel::_start_element_impl (ns, n, t))
     return true;
 
   if (n == "defenseModifier" && ns == "urn:rpg")
@@ -1591,11 +1517,11 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Item_MagicArmorPropertiesXML_Type_pskel::
+bool RPG_Item_ArmorPropertiesXML_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
-  if (this->::RPG_Item_ArmorPropertiesXML_Type_pskel::_end_element_impl (ns, n))
+  if (this->::RPG_Item_ArmorPropertiesBase_Type_pskel::_end_element_impl (ns, n))
     return true;
 
   if (n == "defenseModifier" && ns == "urn:rpg")
@@ -1609,70 +1535,16 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-// RPG_Item_ArmorDictionary_Type_pskel
-//
-
-void RPG_Item_ArmorDictionary_Type_pskel::
-armor (const RPG_Item_ArmorPropertiesXML&)
-{
-}
-
-void RPG_Item_ArmorDictionary_Type_pskel::
-post_RPG_Item_ArmorDictionary_Type ()
-{
-}
-
-bool RPG_Item_ArmorDictionary_Type_pskel::
-_start_element_impl (const ::xml_schema::ro_string& ns,
-                     const ::xml_schema::ro_string& n,
-                     const ::xml_schema::ro_string* t)
-{
-  XSD_UNUSED (t);
-
-  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
-    return true;
-
-  if (n == "armor" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->armor_parser_;
-
-    if (this->armor_parser_)
-      this->armor_parser_->pre ();
-
-    return true;
-  }
-
-  return false;
-}
-
-bool RPG_Item_ArmorDictionary_Type_pskel::
-_end_element_impl (const ::xml_schema::ro_string& ns,
-                   const ::xml_schema::ro_string& n)
-{
-  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
-    return true;
-
-  if (n == "armor" && ns == "urn:rpg")
-  {
-    if (this->armor_parser_)
-      this->armor (this->armor_parser_->post_RPG_Item_ArmorPropertiesXML_Type ());
-
-    return true;
-  }
-
-  return false;
-}
-
 // RPG_Item_Dictionary_Type_pskel
 //
 
 void RPG_Item_Dictionary_Type_pskel::
-weaponDictionary ()
+weapon (const RPG_Item_WeaponPropertiesXML&)
 {
 }
 
 void RPG_Item_Dictionary_Type_pskel::
-armorDictionary ()
+armor (const RPG_Item_ArmorPropertiesXML&)
 {
 }
 
@@ -1691,22 +1563,22 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "weaponDictionary" && ns == "urn:rpg")
+  if (n == "weapon" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->weaponDictionary_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->weapon_parser_;
 
-    if (this->weaponDictionary_parser_)
-      this->weaponDictionary_parser_->pre ();
+    if (this->weapon_parser_)
+      this->weapon_parser_->pre ();
 
     return true;
   }
 
-  if (n == "armorDictionary" && ns == "urn:rpg")
+  if (n == "armor" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->armorDictionary_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->armor_parser_;
 
-    if (this->armorDictionary_parser_)
-      this->armorDictionary_parser_->pre ();
+    if (this->armor_parser_)
+      this->armor_parser_->pre ();
 
     return true;
   }
@@ -1721,24 +1593,18 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "weaponDictionary" && ns == "urn:rpg")
+  if (n == "weapon" && ns == "urn:rpg")
   {
-    if (this->weaponDictionary_parser_)
-    {
-      this->weaponDictionary_parser_->post_RPG_Item_WeaponDictionary_Type ();
-      this->weaponDictionary ();
-    }
+    if (this->weapon_parser_)
+      this->weapon (this->weapon_parser_->post_RPG_Item_WeaponPropertiesXML_Type ());
 
     return true;
   }
 
-  if (n == "armorDictionary" && ns == "urn:rpg")
+  if (n == "armor" && ns == "urn:rpg")
   {
-    if (this->armorDictionary_parser_)
-    {
-      this->armorDictionary_parser_->post_RPG_Item_ArmorDictionary_Type ();
-      this->armorDictionary ();
-    }
+    if (this->armor_parser_)
+      this->armor (this->armor_parser_->post_RPG_Item_ArmorPropertiesXML_Type ());
 
     return true;
   }

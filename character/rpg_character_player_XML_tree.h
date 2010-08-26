@@ -76,27 +76,31 @@ class RPG_Character_PlayerXML_XMLTree_Type;
 
 #include "rpg_common_XML_tree.h"
 
+#include "rpg_magic_XML_tree.h"
+
+#include "rpg_item_XML_tree.h"
+
 #include "rpg_character_XML_tree.h"
 
 class RPG_Character_BaseXML_XMLTree_Type: public ::xml_schema::type
 {
   public:
-  // gender
+  // name
   // 
-  typedef ::RPG_Character_Gender_XMLTree_Type gender_type;
-  typedef ::xsd::cxx::tree::traits< gender_type, char > gender_traits;
+  typedef ::xml_schema::string name_type;
+  typedef ::xsd::cxx::tree::traits< name_type, char > name_traits;
 
-  const gender_type&
-  gender () const;
+  const name_type&
+  name () const;
 
-  gender_type&
-  gender ();
-
-  void
-  gender (const gender_type& x);
+  name_type&
+  name ();
 
   void
-  gender (::std::auto_ptr< gender_type > p);
+  name (const name_type& x);
+
+  void
+  name (::std::auto_ptr< name_type > p);
 
   // alignment
   // 
@@ -183,33 +187,22 @@ class RPG_Character_BaseXML_XMLTree_Type: public ::xml_schema::type
   void
   abilities (::std::auto_ptr< abilities_type > p);
 
-  // XP
+  // defaultSize
   // 
-  typedef ::xml_schema::unsigned_int XP_type;
-  typedef ::xsd::cxx::tree::traits< XP_type, char > XP_traits;
+  typedef ::RPG_Common_Size_XMLTree_Type defaultSize_type;
+  typedef ::xsd::cxx::tree::traits< defaultSize_type, char > defaultSize_traits;
 
-  const XP_type&
-  XP () const;
+  const defaultSize_type&
+  defaultSize () const;
 
-  XP_type&
-  XP ();
+  defaultSize_type&
+  defaultSize ();
 
   void
-  XP (const XP_type& x);
-
-  // HP
-  // 
-  typedef ::xml_schema::integer HP_type;
-  typedef ::xsd::cxx::tree::traits< HP_type, char > HP_traits;
-
-  const HP_type&
-  HP () const;
-
-  HP_type&
-  HP ();
+  defaultSize (const defaultSize_type& x);
 
   void
-  HP (const HP_type& x);
+  defaultSize (::std::auto_ptr< defaultSize_type > p);
 
   // maxHP
   // 
@@ -225,19 +218,22 @@ class RPG_Character_BaseXML_XMLTree_Type: public ::xml_schema::type
   void
   maxHP (const maxHP_type& x);
 
-  // gold
+  // knownSpell
   // 
-  typedef ::xml_schema::unsigned_int gold_type;
-  typedef ::xsd::cxx::tree::traits< gold_type, char > gold_traits;
+  typedef ::RPG_Magic_SpellType_XMLTree_Type knownSpell_type;
+  typedef ::xsd::cxx::tree::sequence< knownSpell_type > knownSpell_sequence;
+  typedef knownSpell_sequence::iterator knownSpell_iterator;
+  typedef knownSpell_sequence::const_iterator knownSpell_const_iterator;
+  typedef ::xsd::cxx::tree::traits< knownSpell_type, char > knownSpell_traits;
 
-  const gold_type&
-  gold () const;
+  const knownSpell_sequence&
+  knownSpell () const;
 
-  gold_type&
-  gold ();
+  knownSpell_sequence&
+  knownSpell ();
 
   void
-  gold (const gold_type& x);
+  knownSpell (const knownSpell_sequence& s);
 
   // condition
   // 
@@ -256,28 +252,123 @@ class RPG_Character_BaseXML_XMLTree_Type: public ::xml_schema::type
   void
   condition (const condition_sequence& s);
 
+  // HP
+  // 
+  typedef ::xml_schema::integer HP_type;
+  typedef ::xsd::cxx::tree::traits< HP_type, char > HP_traits;
+
+  const HP_type&
+  HP () const;
+
+  HP_type&
+  HP ();
+
+  void
+  HP (const HP_type& x);
+
+  // XP
+  // 
+  typedef ::xml_schema::unsigned_int XP_type;
+  typedef ::xsd::cxx::tree::traits< XP_type, char > XP_traits;
+
+  const XP_type&
+  XP () const;
+
+  XP_type&
+  XP ();
+
+  void
+  XP (const XP_type& x);
+
+  // gold
+  // 
+  typedef ::xml_schema::unsigned_int gold_type;
+  typedef ::xsd::cxx::tree::traits< gold_type, char > gold_traits;
+
+  const gold_type&
+  gold () const;
+
+  gold_type&
+  gold ();
+
+  void
+  gold (const gold_type& x);
+
+  // spell
+  // 
+  typedef ::RPG_Magic_SpellType_XMLTree_Type spell_type;
+  typedef ::xsd::cxx::tree::sequence< spell_type > spell_sequence;
+  typedef spell_sequence::iterator spell_iterator;
+  typedef spell_sequence::const_iterator spell_const_iterator;
+  typedef ::xsd::cxx::tree::traits< spell_type, char > spell_traits;
+
+  const spell_sequence&
+  spell () const;
+
+  spell_sequence&
+  spell ();
+
+  void
+  spell (const spell_sequence& s);
+
+  // weapon
+  // 
+  typedef ::RPG_Item_WeaponPropertiesXML_XMLTree_Type weapon_type;
+  typedef ::xsd::cxx::tree::sequence< weapon_type > weapon_sequence;
+  typedef weapon_sequence::iterator weapon_iterator;
+  typedef weapon_sequence::const_iterator weapon_const_iterator;
+  typedef ::xsd::cxx::tree::traits< weapon_type, char > weapon_traits;
+
+  const weapon_sequence&
+  weapon () const;
+
+  weapon_sequence&
+  weapon ();
+
+  void
+  weapon (const weapon_sequence& s);
+
+  // armor
+  // 
+  typedef ::RPG_Item_ArmorPropertiesXML_XMLTree_Type armor_type;
+  typedef ::xsd::cxx::tree::sequence< armor_type > armor_sequence;
+  typedef armor_sequence::iterator armor_iterator;
+  typedef armor_sequence::const_iterator armor_const_iterator;
+  typedef ::xsd::cxx::tree::traits< armor_type, char > armor_traits;
+
+  const armor_sequence&
+  armor () const;
+
+  armor_sequence&
+  armor ();
+
+  void
+  armor (const armor_sequence& s);
+
   // Constructors.
   //
-  RPG_Character_BaseXML_XMLTree_Type (const gender_type&,
+  RPG_Character_BaseXML_XMLTree_Type (const name_type&,
                                       const alignment_type&,
                                       const attributes_type&,
                                       const skills_type&,
                                       const feats_type&,
                                       const abilities_type&,
-                                      const XP_type&,
-                                      const HP_type&,
+                                      const defaultSize_type&,
                                       const maxHP_type&,
+                                      const HP_type&,
+                                      const XP_type&,
                                       const gold_type&);
 
-  RPG_Character_BaseXML_XMLTree_Type (const gender_type&,
+  RPG_Character_BaseXML_XMLTree_Type (const name_type&,
                                       ::std::auto_ptr< alignment_type >&,
                                       ::std::auto_ptr< attributes_type >&,
                                       ::std::auto_ptr< skills_type >&,
                                       ::std::auto_ptr< feats_type >&,
                                       ::std::auto_ptr< abilities_type >&,
-                                      const XP_type&,
-                                      const HP_type&,
+                                      const defaultSize_type&,
                                       const maxHP_type&,
+                                      const HP_type&,
+                                      const XP_type&,
                                       const gold_type&);
 
   RPG_Character_BaseXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
@@ -311,17 +402,22 @@ class RPG_Character_BaseXML_XMLTree_Type: public ::xml_schema::type
   parse (::xml_schema::istream< ACE_InputCDR >&,
          ::xml_schema::flags);
 
-  ::xsd::cxx::tree::one< gender_type > gender_;
+  ::xsd::cxx::tree::one< name_type > name_;
   ::xsd::cxx::tree::one< alignment_type > alignment_;
   ::xsd::cxx::tree::one< attributes_type > attributes_;
   ::xsd::cxx::tree::one< skills_type > skills_;
   ::xsd::cxx::tree::one< feats_type > feats_;
   ::xsd::cxx::tree::one< abilities_type > abilities_;
-  ::xsd::cxx::tree::one< XP_type > XP_;
-  ::xsd::cxx::tree::one< HP_type > HP_;
+  ::xsd::cxx::tree::one< defaultSize_type > defaultSize_;
   ::xsd::cxx::tree::one< maxHP_type > maxHP_;
-  ::xsd::cxx::tree::one< gold_type > gold_;
+  knownSpell_sequence knownSpell_;
   condition_sequence condition_;
+  ::xsd::cxx::tree::one< HP_type > HP_;
+  ::xsd::cxx::tree::one< XP_type > XP_;
+  ::xsd::cxx::tree::one< gold_type > gold_;
+  spell_sequence spell_;
+  weapon_sequence weapon_;
+  armor_sequence armor_;
 };
 
 bool
@@ -334,22 +430,22 @@ operator!= (const RPG_Character_BaseXML_XMLTree_Type&, const RPG_Character_BaseX
 class RPG_Character_PlayerXML_XMLTree_Type: public ::RPG_Character_BaseXML_XMLTree_Type
 {
   public:
-  // name
+  // gender
   // 
-  typedef ::xml_schema::string name_type;
-  typedef ::xsd::cxx::tree::traits< name_type, char > name_traits;
+  typedef ::RPG_Character_Gender_XMLTree_Type gender_type;
+  typedef ::xsd::cxx::tree::traits< gender_type, char > gender_traits;
 
-  const name_type&
-  name () const;
+  const gender_type&
+  gender () const;
 
-  name_type&
-  name ();
-
-  void
-  name (const name_type& x);
+  gender_type&
+  gender ();
 
   void
-  name (::std::auto_ptr< name_type > p);
+  gender (const gender_type& x);
+
+  void
+  gender (::std::auto_ptr< gender_type > p);
 
   // race
   // 
@@ -404,31 +500,33 @@ class RPG_Character_PlayerXML_XMLTree_Type: public ::RPG_Character_BaseXML_XMLTr
 
   // Constructors.
   //
-  RPG_Character_PlayerXML_XMLTree_Type (const gender_type&,
+  RPG_Character_PlayerXML_XMLTree_Type (const name_type&,
                                         const alignment_type&,
                                         const attributes_type&,
                                         const skills_type&,
                                         const feats_type&,
                                         const abilities_type&,
-                                        const XP_type&,
-                                        const HP_type&,
+                                        const defaultSize_type&,
                                         const maxHP_type&,
+                                        const HP_type&,
+                                        const XP_type&,
                                         const gold_type&,
-                                        const name_type&,
+                                        const gender_type&,
                                         const classXML_type&,
                                         const offhand_type&);
 
-  RPG_Character_PlayerXML_XMLTree_Type (const gender_type&,
+  RPG_Character_PlayerXML_XMLTree_Type (const name_type&,
                                         ::std::auto_ptr< alignment_type >&,
                                         ::std::auto_ptr< attributes_type >&,
                                         ::std::auto_ptr< skills_type >&,
                                         ::std::auto_ptr< feats_type >&,
                                         ::std::auto_ptr< abilities_type >&,
-                                        const XP_type&,
-                                        const HP_type&,
+                                        const defaultSize_type&,
                                         const maxHP_type&,
+                                        const HP_type&,
+                                        const XP_type&,
                                         const gold_type&,
-                                        const name_type&,
+                                        const gender_type&,
                                         ::std::auto_ptr< classXML_type >&,
                                         const offhand_type&);
 
@@ -463,7 +561,7 @@ class RPG_Character_PlayerXML_XMLTree_Type: public ::RPG_Character_BaseXML_XMLTr
   parse (::xml_schema::istream< ACE_InputCDR >&,
          ::xml_schema::flags);
 
-  ::xsd::cxx::tree::one< name_type > name_;
+  ::xsd::cxx::tree::one< gender_type > gender_;
   race_sequence race_;
   ::xsd::cxx::tree::one< classXML_type > classXML_;
   ::xsd::cxx::tree::one< offhand_type > offhand_;

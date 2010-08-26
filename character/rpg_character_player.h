@@ -33,30 +33,37 @@ class RPG_Character_Player
  : public RPG_Character_Player_Base
 {
  public:
-  RPG_Character_Player(const std::string&,               // name
-                       const RPG_Character_Gender&,      // gender
-                       const RPG_Character_Race&,        // race
-                       const RPG_Character_Class&,       // (starting) class(es)
-                       const RPG_Character_Alignment&,   // (starting) alignment
-                       const RPG_Character_Attributes&,  // base attributes
-                       const RPG_Character_Skills_t&,    // (starting) skills
-                       const RPG_Character_Feats_t&,     // base feats
-                       const RPG_Character_Abilities_t&, // base abilities
-                       const RPG_Character_OffHand&,     // off-hand
-                       const unsigned int&,              // (starting) XP
-                       const unsigned short int&,        // (starting) HP
-                       const unsigned int&,              // (starting) wealth (GP)
-                       const RPG_Magic_Spells_t&,        // (starting) set of known spells (if any)
-                       const RPG_Magic_SpellList_t&,     // (starting) set of prepared spells (if any)
-                       const RPG_Item_List_t&);          // (starting) list of (carried) items
+  RPG_Character_Player(// base attributes
+                       const std::string&,                // name
+                       const RPG_Character_Gender&,       // gender
+                       const RPG_Character_Race_t&,       // race
+                       const RPG_Character_Class&,        // class(es)
+                       const RPG_Character_Alignment&,    // alignment
+                       const RPG_Character_Attributes&,   // base attributes
+                       const RPG_Character_Skills_t&,     // skills
+                       const RPG_Character_Feats_t&,      // base feats
+                       const RPG_Character_Abilities_t&,  // base abilities
+                       const RPG_Character_OffHand&,      // off-hand
+                       const unsigned short int&,         // max HP
+                       const RPG_Magic_Spells_t&,         // set of known spells (if any)
+                       // current status
+                       const RPG_Character_Conditions_t&, // condition
+                       const unsigned short int&,         // HP
+                       const unsigned int&,               // XP
+                       const unsigned int&,               // wealth (GP)
+                       const RPG_Magic_SpellList_t&,      // set of prepared spells (if any)
+                       const RPG_Item_List_t&);           // list of (carried) items
   RPG_Character_Player(const RPG_Character_Player&);
   virtual ~RPG_Character_Player();
 
   RPG_Character_Player& operator=(const RPG_Character_Player&);
 
   // load/save player from/to an XML file
-  static const RPG_Character_Player load(const std::string&); // FQ filename
-  const bool save(const std::string&); // FQ filename
+  static RPG_Character_Player load(const std::string&); // FQ filename
+  const bool save(const std::string&) const; // FQ filename
+
+  // "empty" player
+  static RPG_Character_Player dummy();
 
  private:
   typedef RPG_Character_Player_Base inherited;
@@ -74,7 +81,7 @@ class RPG_Character_Player
   };
 
   // safety measures
-  RPG_Character_Player();
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Player());
 
   // helper methods
   void defaultEquip();

@@ -47,49 +47,9 @@ RPG_Item_Dictionary_Type::~RPG_Item_Dictionary_Type()
 //
 // }
 
-// void RPG_Item_Dictionary_Type::RPG_Item_WeaponDictionary()
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::RPG_Item_WeaponDictionary"));
-//
-//   // TODO
-//   //
-// }
-//
-// void RPG_Item_Dictionary_Type::RPG_Item_ArmorDictionary()
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::RPG_Item_ArmorDictionary"));
-//
-//   // TODO
-//   //
-// }
-
-void RPG_Item_Dictionary_Type::post_RPG_Item_Dictionary_Type()
+void RPG_Item_Dictionary_Type::weapon(const RPG_Item_WeaponPropertiesXML& weapon_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::post_RPG_Item_Dictionary_Type"));
-
-//   // debug info
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("finished parsing item dictionary, retrieved %d weapon and %d armor types...\n"),
-//              myWeaponDictionary->size(),
-//              myArmorDictionary->size()));
-}
-
-RPG_Item_WeaponDictionary_Type::RPG_Item_WeaponDictionary_Type(RPG_Item_WeaponDictionary_t* weaponDictionary_in)
- : myWeaponDictionary(weaponDictionary_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponDictionary_Type::RPG_Item_WeaponDictionary_Type"));
-
-}
-
-// void RPG_Item_WeaponDictionary_Type::pre()
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponDictionary_Type::pre"));
-//
-// }
-
-void RPG_Item_WeaponDictionary_Type::weapon(const RPG_Item_WeaponPropertiesXML& weapon_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponDictionary_Type::weapon"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::weapon"));
 
   RPG_Item_WeaponProperties prop;
   prop.weaponCategory = weapon_in.weaponCategory;
@@ -121,32 +81,9 @@ void RPG_Item_WeaponDictionary_Type::weapon(const RPG_Item_WeaponPropertiesXML& 
   myWeaponDictionary->insert(std::make_pair(weapon_in.weaponType, prop));
 }
 
-void RPG_Item_WeaponDictionary_Type::post_RPG_Item_WeaponDictionary_Type()
+void RPG_Item_Dictionary_Type::armor(const RPG_Item_ArmorPropertiesXML& armor_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponDictionary_Type::post_RPG_Item_WeaponDictionary_Type"));
-
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished parsing weapon dictionary, retrieved %d types...\n"),
-             myWeaponDictionary->size()));
-}
-
-RPG_Item_ArmorDictionary_Type::RPG_Item_ArmorDictionary_Type(RPG_Item_ArmorDictionary_t* armorDictionary_in)
- : myArmorDictionary(armorDictionary_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorDictionary_Type::RPG_Item_ArmorDictionary_Type"));
-
-}
-
-// void RPG_Item_ArmorDictionary_Type::pre()
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorDictionary_Type::pre"));
-//
-// }
-
-void RPG_Item_ArmorDictionary_Type::armor(const RPG_Item_ArmorPropertiesXML& armor_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorDictionary_Type::armor"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::armor"));
 
   RPG_Item_ArmorProperties prop;
   prop.armorCategory = armor_in.armorCategory;
@@ -161,21 +98,15 @@ void RPG_Item_ArmorDictionary_Type::armor(const RPG_Item_ArmorPropertiesXML& arm
   myArmorDictionary->insert(std::make_pair(armor_in.armorType, prop));
 }
 
-void RPG_Item_ArmorDictionary_Type::post_RPG_Item_ArmorDictionary_Type()
+void RPG_Item_Dictionary_Type::post_RPG_Item_Dictionary_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorDictionary_Type::post_RPG_Item_ArmorDictionary_Type"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::post_RPG_Item_Dictionary_Type"));
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished parsing armor dictionary, retrieved %d types...\n"),
+             ACE_TEXT("finished parsing item dictionary, retrieved %d weapon and %d armor types...\n"),
+             myWeaponDictionary->size(),
              myArmorDictionary->size()));
 }
-
-// void RPG_Item_WeaponCategory_Type::pre()
-// {
-//   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponCategory_Type::pre"));
-//
-// }
 
 RPG_Item_WeaponCategory RPG_Item_WeaponCategory_Type::post_RPG_Item_WeaponCategory_Type()
 {
@@ -380,40 +311,6 @@ RPG_Item_MagicalPrerequisites RPG_Item_MagicalPrerequisites_Type::post_RPG_Item_
   return result;
 }
 
-RPG_Item_MagicalProperties_Type::RPG_Item_MagicalProperties_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_MagicalProperties_Type::RPG_Item_MagicalProperties_Type"));
-
-  myCurrentProperties.aura = RPG_MAGIC_SCHOOL_INVALID;
-  myCurrentProperties.prerequisites.minCasterLevel = 0;
-}
-
-void RPG_Item_MagicalProperties_Type::aura(const RPG_Magic_School& school_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_MagicalProperties_Type::aura"));
-
-  myCurrentProperties.aura = school_in;
-}
-
-void RPG_Item_MagicalProperties_Type::prerequisites(const RPG_Item_MagicalPrerequisites& prerequisites_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_MagicalProperties_Type::prerequisites"));
-
-  myCurrentProperties.prerequisites = prerequisites_in;
-}
-
-RPG_Item_MagicalProperties RPG_Item_MagicalProperties_Type::post_RPG_Item_MagicalProperties_Type()
-{
-  ACE_TRACE(ACE_TEXT("RPG_Item_MagicalProperties_Type::post_RPG_Item_MagicalProperties_Type"));
-
-  RPG_Item_MagicalProperties result = myCurrentProperties;
-
-  myCurrentProperties.aura = RPG_MAGIC_SCHOOL_INVALID;
-  myCurrentProperties.prerequisites.minCasterLevel = 0;
-
-  return result;
-}
-
 RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type"));
@@ -424,6 +321,9 @@ RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type()
   myCurrentWeaponProperties.baseStorePrice.numSilverPieces = 0;
   myCurrentWeaponProperties.costToCreate.numGoldPieces = 0;
   myCurrentWeaponProperties.costToCreate.numExperiencePoints = 0;
+  // -------------------------------------------------------------
+  myCurrentWeaponProperties.aura = RPG_MAGIC_SCHOOL_INVALID;
+  myCurrentWeaponProperties.prerequisites.minCasterLevel = 0;
   // -------------------------------------------------------------
   myCurrentWeaponProperties.weaponType = RPG_ITEM_WEAPONTYPE_INVALID;
   myCurrentWeaponProperties.weaponCategory = RPG_ITEM_WEAPONCATEGORY_INVALID;
@@ -441,6 +341,8 @@ RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type()
   myCurrentWeaponProperties.isNonLethal = false;
   myCurrentWeaponProperties.isReachWeapon = false;
   myCurrentWeaponProperties.isDoubleWeapon = false;
+  // -------------------------------------------------------------
+  myCurrentWeaponProperties.toHitModifier = 0;
 }
 
 // void RPG_Item_WeaponProperties_Type::pre()
@@ -475,6 +377,29 @@ RPG_Item_BaseProperties RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_BasePro
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_BaseProperties_Type"));
 
   RPG_Item_BaseProperties result = myCurrentWeaponProperties;
+
+  return result;
+}
+
+void RPG_Item_WeaponPropertiesXML_Type::aura(const RPG_Magic_School& school_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::aura"));
+
+  myCurrentWeaponProperties.aura = school_in;
+}
+
+void RPG_Item_WeaponPropertiesXML_Type::prerequisites(const RPG_Item_MagicalPrerequisites& prerequisites_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::prerequisites"));
+
+  myCurrentWeaponProperties.prerequisites = prerequisites_in;
+}
+
+RPG_Item_PropertiesBase RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_PropertiesBase_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_PropertiesBase_Type"));
+
+  RPG_Item_PropertiesBase result = myCurrentWeaponProperties;
 
   return result;
 }
@@ -549,6 +474,22 @@ void RPG_Item_WeaponPropertiesXML_Type::isDoubleWeapon(bool isDoubleWeapon_in)
   myCurrentWeaponProperties.isDoubleWeapon = isDoubleWeapon_in;
 }
 
+RPG_Item_WeaponPropertiesBase RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_WeaponPropertiesBase_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_WeaponPropertiesBase_Type"));
+
+  RPG_Item_WeaponPropertiesBase result = myCurrentWeaponProperties;
+
+  return result;
+}
+
+void RPG_Item_WeaponPropertiesXML_Type::toHitModifier(signed char toHitModifier_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::toHitModifier"));
+
+  myCurrentWeaponProperties.toHitModifier = toHitModifier_in;
+}
+
 RPG_Item_WeaponPropertiesXML RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_WeaponPropertiesXML_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_WeaponPropertiesXML_Type"));
@@ -561,6 +502,9 @@ RPG_Item_WeaponPropertiesXML RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_We
   myCurrentWeaponProperties.baseStorePrice.numSilverPieces = 0;
   myCurrentWeaponProperties.costToCreate.numGoldPieces = 0;
   myCurrentWeaponProperties.costToCreate.numExperiencePoints = 0;
+  // -------------------------------------------------------------
+  myCurrentWeaponProperties.aura = RPG_MAGIC_SCHOOL_INVALID;
+  myCurrentWeaponProperties.prerequisites.minCasterLevel = 0;
   // -------------------------------------------------------------
   myCurrentWeaponProperties.weaponType = RPG_ITEM_WEAPONTYPE_INVALID;
   myCurrentWeaponProperties.weaponCategory = RPG_ITEM_WEAPONCATEGORY_INVALID;
@@ -578,6 +522,8 @@ RPG_Item_WeaponPropertiesXML RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_We
   myCurrentWeaponProperties.isNonLethal = false;
   myCurrentWeaponProperties.isReachWeapon = false;
   myCurrentWeaponProperties.isDoubleWeapon = false;
+  // -------------------------------------------------------------
+  myCurrentWeaponProperties.toHitModifier = 0;
 
   return result;
 }
@@ -619,6 +565,9 @@ RPG_Item_ArmorPropertiesXML_Type::RPG_Item_ArmorPropertiesXML_Type()
   myCurrentArmorProperties.costToCreate.numGoldPieces = 0;
   myCurrentArmorProperties.costToCreate.numExperiencePoints = 0;
   // -------------------------------------------------------------
+  myCurrentArmorProperties.aura = RPG_MAGIC_SCHOOL_INVALID;
+  myCurrentArmorProperties.prerequisites.minCasterLevel = 0;
+  // -------------------------------------------------------------
   myCurrentArmorProperties.armorType = RPG_ITEM_ARMORTYPE_INVALID;
   myCurrentArmorProperties.armorCategory = RPG_ITEM_ARMORCATEGORY_INVALID;
   myCurrentArmorProperties.baseStorePrice.numGoldPieces = 0;
@@ -629,6 +578,8 @@ RPG_Item_ArmorPropertiesXML_Type::RPG_Item_ArmorPropertiesXML_Type()
   myCurrentArmorProperties.arcaneSpellFailure = 0;
   myCurrentArmorProperties.baseSpeed = 0;
   myCurrentArmorProperties.baseWeight = 0;
+  // -------------------------------------------------------------
+  myCurrentArmorProperties.defenseModifier = 0;
 }
 
 // void RPG_Item_ArmorProperties_Type::pre()
@@ -663,6 +614,29 @@ RPG_Item_BaseProperties RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_BaseProp
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_BaseProperties_Type"));
 
   RPG_Item_BaseProperties result = myCurrentArmorProperties;
+
+  return result;
+}
+
+void RPG_Item_ArmorPropertiesXML_Type::aura(const RPG_Magic_School& school_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::aura"));
+
+  myCurrentArmorProperties.aura = school_in;
+}
+
+void RPG_Item_ArmorPropertiesXML_Type::prerequisites(const RPG_Item_MagicalPrerequisites& prerequisites_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::prerequisites"));
+
+  myCurrentArmorProperties.prerequisites = prerequisites_in;
+}
+
+RPG_Item_PropertiesBase RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_PropertiesBase_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_PropertiesBase_Type"));
+
+  RPG_Item_PropertiesBase result = myCurrentArmorProperties;
 
   return result;
 }
@@ -716,6 +690,22 @@ void RPG_Item_ArmorPropertiesXML_Type::baseSpeed(unsigned short baseSpeed_in)
   myCurrentArmorProperties.baseSpeed = baseSpeed_in;
 }
 
+RPG_Item_ArmorPropertiesBase RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_ArmorPropertiesBase_Type()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_ArmorPropertiesBase_Type"));
+
+  RPG_Item_ArmorPropertiesBase result = myCurrentArmorProperties;
+
+  return result;
+}
+
+void RPG_Item_ArmorPropertiesXML_Type::defenseModifier(signed char defenseModifier_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::defenseModifier"));
+
+  myCurrentArmorProperties.defenseModifier = defenseModifier_in;
+}
+
 RPG_Item_ArmorPropertiesXML RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_ArmorPropertiesXML_Type()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_ArmorPropertiesXML_Type"));
@@ -729,6 +719,9 @@ RPG_Item_ArmorPropertiesXML RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_Armo
   myCurrentArmorProperties.costToCreate.numGoldPieces = 0;
   myCurrentArmorProperties.costToCreate.numExperiencePoints = 0;
   // -------------------------------------------------------------
+  myCurrentArmorProperties.aura = RPG_MAGIC_SCHOOL_INVALID;
+  myCurrentArmorProperties.prerequisites.minCasterLevel = 0;
+  // -------------------------------------------------------------
   myCurrentArmorProperties.armorType = RPG_ITEM_ARMORTYPE_INVALID;
   myCurrentArmorProperties.armorCategory = RPG_ITEM_ARMORCATEGORY_INVALID;
   myCurrentArmorProperties.baseStorePrice.numGoldPieces = 0;
@@ -739,6 +732,8 @@ RPG_Item_ArmorPropertiesXML RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_Armo
   myCurrentArmorProperties.arcaneSpellFailure = 0;
   myCurrentArmorProperties.baseSpeed = 0;
   myCurrentArmorProperties.baseWeight = 0;
+  // -------------------------------------------------------------
+  myCurrentArmorProperties.defenseModifier = 0;
 
   return result;
 }

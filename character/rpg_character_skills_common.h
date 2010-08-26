@@ -49,6 +49,7 @@ struct RPG_Character_Feat_Prerequisite
 {
   RPG_Character_Feat_Prerequisite_Type prerequisiteType;
 
+  // *CONSIDER*: use a union ?
   RPG_Character_Feat requiredOtherFeat;            // if applicable
   RPG_Common_Attribute attribute;                  // if applicable
   unsigned char minValue;                          // if applicable

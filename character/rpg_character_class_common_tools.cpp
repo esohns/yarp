@@ -17,11 +17,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_character_class_common.h"
+#include "rpg_character_class_common_tools.h"
 
 #include <ace/Log_Msg.h>
-
-#include <string>
 
 const RPG_Character_MetaClass
 RPG_Character_Class_Common_Tools::subClassToMetaClass(const RPG_Common_SubClass& subClass_in)
@@ -69,18 +67,18 @@ RPG_Character_Class_Common_Tools::subClassToMetaClass(const RPG_Common_SubClass&
   return RPG_CHARACTER_METACLASS_INVALID;
 }
 
-const RPG_Character_ClassXML
-RPG_Character_Class_Common_Tools::subClassTosubClassXML(const RPG_Character_Class& class_in)
+RPG_Character_Class
+RPG_Character_Class_Common_Tools::classXMLTreeToClass(const RPG_Character_ClassXML_XMLTree_Type& class_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::subClassTosubClassXML"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::classXMLTreeToClass"));
 
-  RPG_Character_ClassXML result;
+  RPG_Character_Class result;
 
-  result.metaClass = class_in.metaClass;
-  for (RPG_Character_SubClassesIterator_t iterator = class_in.subClasses.begin();
-       iterator != class_in.subClasses.end();
+  result.metaClass = RPG_Character_MetaClassHelper::stringToRPG_Character_MetaClass(class_in.metaClass());
+  for (RPG_Character_ClassXML_XMLTree_Type::subClass_const_iterator iterator = class_in.subClass().begin();
+       iterator != class_in.subClass().end();
        iterator++)
-    result.subClasses.push_back(*iterator);
+    result.subClasses.insert(RPG_Common_SubClassHelper::stringToRPG_Common_SubClass(*iterator));
 
   return result;
 }

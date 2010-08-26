@@ -19,7 +19,9 @@
  ***************************************************************************/
 #include "rpg_character_common_tools.h"
 
+#include "rpg_character_defines.h"
 #include "rpg_character_race_common.h"
+#include "rpg_character_class_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
 
 #include <rpg_item_weapon.h>
@@ -146,6 +148,43 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
   converter << ACE_static_cast(unsigned int, attributes_in.charisma);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
+
+  return result;
+}
+
+const std::string
+RPG_Character_Common_Tools::raceToString(const RPG_Character_Race_t& race_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::raceToString"));
+
+  std::string result;
+
+  if (race_in.count() == 0)
+  {
+    result += RPG_Character_RaceHelper::RPG_Character_RaceToString(RACE_NONE);
+
+    // done
+    return result;
+  } // end IF
+  else if (race_in.count() > 1)
+    result += ACE_TEXT_ALWAYS_CHAR("(");
+
+  unsigned int race_index = 1;
+  for (unsigned int index = 0;
+       index < race_in.size();
+       index++, race_index++)
+  {
+    if (race_in.test(index))
+    {
+      result += RPG_Character_RaceHelper::RPG_Character_RaceToString(ACE_static_cast(RPG_Character_Race,
+                                                                                     race_index));
+      result += ACE_TEXT_ALWAYS_CHAR("|");
+    } // end IF
+  } // end FOR
+
+  result.erase(--result.end());
+  if (race_in.count() > 1)
+    result += ACE_TEXT_ALWAYS_CHAR(")");
 
   return result;
 }
@@ -434,7 +473,7 @@ RPG_Character_Common_Tools::isCasterClass(const RPG_Common_SubClass& subClass_in
   return false;
 }
 
-const RPG_Character_Player
+RPG_Character_Player
 RPG_Character_Common_Tools::generatePlayerCharacter()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::generatePlayerCharacter"));
@@ -466,7 +505,6 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
     name += ACE_static_cast(char, (lowercase ? 96 : 64) + result[i]); // 97 == 'a', 65 == 'A'
   } // end FOR
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("generated name: \"%s\"\n"),
 //              name.c_str()));
@@ -480,7 +518,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   gender = ACE_static_cast(RPG_Character_Gender, result.front());
 
   // step3: race
-  RPG_Character_PlayerRace player_race(0);
+  RPG_Character_Race_t player_race(0);
   // *TODO*: consider allowing multi-race like Half-Elf etc.
   RPG_Character_Race race = RPG_CHARACTER_RACE_INVALID;
   result.clear();
@@ -523,7 +561,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   roll.typeDice = D_10;
   roll.modifier = -2; // add +1 if result is 0 --> stats interval 1-18
   // make sure the result is somewhat balanced (average == 6 * 9)...
-  // *IMPORTANT NOTE*: INT must be > 2 (smaller values are reserved for animals...)
+  // *NOTE*: INT must be > 2 (smaller values are reserved for animals...)
   int sum = 0;
   do
   {
@@ -735,7 +773,11 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
     } // end FOR
   } // end FOR
 
-  // step12: (initial) set of items
+  // step12: initialize condition
+  RPG_Character_Conditions_t condition;
+  condition.insert(CONDITION_NORMAL); // start "normal"
+
+  // step13: (initial) set of items
   // *TODO*: somehow generate these at random too ?
   RPG_Item_List_t items;
   RPG_Item_Armor* armor = NULL;
@@ -870,10 +912,12 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
                               feats,
                               abilities,
                               offHand,
-                              0,
                               hitpoints,
-                              0,
                               knownSpells,
+                              condition,
+                              hitpoints, // start healthy
+                              0,
+                              RPG_CHARACTER_PLAYER_START_MONEY,
                               spells,
                               items);
 

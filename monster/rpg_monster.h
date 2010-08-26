@@ -37,20 +37,24 @@ class RPG_Monster
  : public RPG_Character_Base
 {
  public:
-  RPG_Monster(const std::string&,               // name
-              const RPG_Common_CreatureType&,   // type
-              const RPG_Character_Alignment&,   // (starting) alignment
-              const RPG_Character_Attributes&,  // base attributes
-              const RPG_Character_Skills_t&,    // (starting) skills
-              const RPG_Character_Feats_t&,     // base feats
-              const RPG_Character_Abilities_t&, // base abilities
-              const RPG_Common_Size&,           // (default) size
-              const unsigned short int&,        // (starting) HP
-              const unsigned int&,              // (starting) wealth (GP)
-              const RPG_Magic_Spells_t&,        // (starting) set of known spells (if any)
-              const RPG_Magic_SpellList_t&,     // (starting) set of prepared spells (if any)
-              const RPG_Item_List_t&,           // (starting) list of (carried) items
-              const bool& = false);             // summoned ?
+  RPG_Monster(// base attributes
+              const std::string&,                // name
+              const RPG_Common_CreatureType&,    // type
+              const RPG_Character_Alignment&,    // alignment
+              const RPG_Character_Attributes&,   // base attributes
+              const RPG_Character_Skills_t&,     // skills
+              const RPG_Character_Feats_t&,      // base feats
+              const RPG_Character_Abilities_t&,  // base abilities
+              const RPG_Common_Size&,            // (default) size
+              const unsigned short int&,         // max HP
+              const RPG_Magic_Spells_t&,         // set of known spells (if any)
+              // current status
+              const RPG_Character_Conditions_t&, // condition
+              const unsigned short int&,         // HP
+              const unsigned int&,               // wealth (GP)
+              const RPG_Magic_SpellList_t&,      // set of memorized/prepared spells (if any)
+              const RPG_Item_List_t&,            // list of (carried) items
+              const bool& = false);              // summoned ?
   RPG_Monster(const RPG_Monster&);
   virtual ~RPG_Monster();
   RPG_Monster& operator=(const RPG_Monster&);

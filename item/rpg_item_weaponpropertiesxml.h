@@ -27,18 +27,9 @@
 #define RPG_ITEM_WEAPONPROPERTIESXML_H
 
 struct RPG_Item_WeaponPropertiesXML
- : public RPG_Item_BaseProperties
+ : public RPG_Item_WeaponPropertiesBase
 {
-  RPG_Item_WeaponType weaponType;
-  RPG_Item_WeaponCategory weaponCategory;
-  RPG_Item_WeaponClass weaponClass;
-  RPG_Dice_Roll baseDamage;
-  RPG_Item_CriticalHitProperties criticalHit;
-  unsigned char rangeIncrement;
-  std::vector<RPG_Common_PhysicalDamageType> typeOfDamages;
-  bool isNonLethal;
-  bool isReachWeapon;
-  bool isDoubleWeapon;
+  char toHitModifier;
 };
 
 #endif
