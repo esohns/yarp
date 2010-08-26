@@ -37,6 +37,7 @@
 #include <rpg_common_defines.h>
 #include <rpg_common_file_tools.h>
 
+#include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
 #include <fstream>
@@ -135,8 +136,21 @@ RPG_Character_Player::load(const std::string& filename_in)
 //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
   ::xml_schema::properties props;
+  // *NOTE*: by default, schema files are searched for in the location of the
+  // instance document. This will not work...
+  char current_working_dir[PATH_MAX];
+  if (ACE_OS::getcwd(current_working_dir, PATH_MAX) == NULL)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::getcwd(): \"%m\", aborting\n")));
+
+    return RPG_Character_Player::dummy();
+  } // end IF
+  std::string path = current_working_dir;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_CHARACTER_PLAYER_SCHEMA_FILE;
   props.schema_location(RPG_COMMON_XML_TARGET_NAMESPACE,
-                        RPG_CHARACTER_PLAYER_SCHEMA_FILE);
+                        path);
 //   props.no_namespace_schema_location(RPG_CHARACTER_PLAYER_SCHEMA_FILE);
 //   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
   try
@@ -193,8 +207,6 @@ RPG_Character_Player::load(const std::string& filename_in)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("\"%s\": unable to open or read error, aborting\n"),
                filename_in.c_str()));
-
-    return RPG_Character_Player::dummy();
   }
   catch (const ::xml_schema::parsing& exception)
   {
@@ -205,17 +217,15 @@ RPG_Character_Player::load(const std::string& filename_in)
                ACE_TEXT("RPG_Character_Player::load(\"%s\"): exception occurred: \"%s\", aborting\n"),
                filename_in.c_str(),
                text.c_str()));
-
-    throw exception;
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Character_Player::load(\"%s\"): exception occurred, aborting\n"),
                filename_in.c_str()));
-
-    throw;
   }
+
+  return RPG_Character_Player::dummy();
 }
 
 const bool
@@ -260,8 +270,24 @@ RPG_Character_Player::save(const std::string& filename_in) const
                                                      getAttribute(ATTRIBUTE_WISDOM),
                                                      getAttribute(ATTRIBUTE_CHARISMA));
     RPG_Character_Skills_XMLTree_Type skills;
+    for (RPG_Character_SkillsConstIterator_t iterator = mySkills.begin();
+         iterator != mySkills.end();
+         iterator++)
+    {
+      RPG_Character_SkillValue_XMLTree_Type skill(RPG_Common_SkillHelper::RPG_Common_SkillToString((*iterator).first),
+                                                  (*iterator).second);
+      skills.skill().push_back(skill);
+    } // end FOR
     RPG_Character_Feats_XMLTree_Type feats;
+    for (RPG_Character_FeatsConstIterator_t iterator = myFeats.begin();
+         iterator != myFeats.end();
+         iterator++)
+      feats.feat().push_back(RPG_Character_FeatHelper::RPG_Character_FeatToString(*iterator));
     RPG_Character_Abilities_XMLTree_Type abilities;
+    for (RPG_Character_AbilitiesConstIterator_t iterator = myAbilities.begin();
+         iterator != myAbilities.end();
+         iterator++)
+      abilities.ability().push_back(RPG_Character_AbilityHelper::RPG_Character_AbilityToString(*iterator));
     RPG_Character_ClassXML_XMLTree_Type classXML(RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString(myClass.metaClass));
     for (RPG_Character_SubClassesIterator_t iterator = myClass.subClasses.begin();
          iterator != myClass.subClasses.end();
@@ -281,7 +307,30 @@ RPG_Character_Player::save(const std::string& filename_in) const
                                                       RPG_Character_GenderHelper::RPG_Character_GenderToString(getGender()),
                                                       classXML,
                                                       RPG_Character_OffHandHelper::RPG_Character_OffHandToString(getOffHand()));
-    // *TODO*: add known spells, condition, prepared spells and item sequences
+    // *NOTE*: add race, known spells, condition, prepared spells sequences "manually"
+    unsigned int race_index = 1;
+    for (unsigned int index = 0;
+         index < myRace.size();
+         index++, race_index++)
+    {
+      if (myRace.test(index))
+        player_model.race().push_back(RPG_Character_RaceHelper::RPG_Character_RaceToString(ACE_static_cast(RPG_Character_Race,
+                                                                                                           race_index)));
+    } // end IF
+    for (RPG_Magic_SpellsIterator_t iterator = myKnownSpells.begin();
+         iterator != myKnownSpells.end();
+         iterator++)
+      player_model.knownSpell().push_back(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
+    for (RPG_Character_ConditionsIterator_t iterator = myCondition.begin();
+         iterator != myCondition.end();
+         iterator++)
+      player_model.condition().push_back(RPG_Common_ConditionHelper::RPG_Common_ConditionToString(*iterator));
+    for (RPG_Magic_SpellListIterator_t iterator = mySpells.begin();
+         iterator != mySpells.end();
+         iterator++)
+      player_model.spell().push_back(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
+    // *TODO*: add item sequence
+
     player(ofs,
            player_model,
            map,

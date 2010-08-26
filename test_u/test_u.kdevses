@@ -1,27 +1,14 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="2" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/graphics/SDL_gui.cpp" >
-   <View0 Encoding="" line="1032" Type="Source" />
+ <DocsAndViews NumberOfDocuments="1" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/character/character_parser.cpp" >
+   <View0 Encoding="UTF-8" line="340" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/character/character_generator.cpp" >
-   <View0 Encoding="" line="391" Type="Source" />
-  </Doc1>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
-   <breakpointList>
-    <breakpoint0 location="/home/unfv/Projects/RPG/map/rpg_map_common_tools.cpp:1551" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
-     <tracedExpressions/>
-    </breakpoint0>
-    <breakpoint1 location="lower_right.first" type="2" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="0" >
-     <tracedExpressions/>
-    </breakpoint1>
-    <breakpoint2 location="lower_right.second" type="2" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="0" >
-     <tracedExpressions/>
-    </breakpoint2>
-   </breakpointList>
+   <breakpointList/>
    <showInternalCommands value="0" />
   </kdevdebugger>
   <kdevastyle>
