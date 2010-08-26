@@ -209,14 +209,23 @@ const unsigned int do_battle(RPG_Character_Party_t& party_in,
 
   // step1: instantiate monster(s)
   RPG_Monster_Groups_t monsters;
+  RPG_Character_Conditions_t condition;
+  condition.insert(CONDITION_NORMAL);
+  // *TODO*: define monster abilities, spells, wealth, inventory (i.e. treasure)...
+  RPG_Character_Abilities_t abilities;
+  RPG_Magic_Spells_t knownSpells;
+  unsigned int wealth = 0;
+  RPG_Magic_SpellList_t spells;
+  RPG_Item_List_t items;
+
+  RPG_Monster_Group_t groupInstance;
+  RPG_Monster_Properties properties;
   for (RPG_Monster_EncounterConstIterator_t iterator = encounter_in.begin();
        iterator != encounter_in.end();
        iterator++)
   {
-    RPG_Monster_Group_t groupInstance;
-    RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(iterator->first);
-  // *TODO*: define monster abilities !
-    RPG_Character_Abilities_t abilities;
+    groupInstance.clear();
+    properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(iterator->first);
 
     // compute individual hitpoints
     RPG_Dice_RollResult_t results;
@@ -227,12 +236,8 @@ const unsigned int do_battle(RPG_Character_Party_t& party_in,
          iterator2 != results.end();
          iterator2++)
     {
-      // *TODO*: define default monster spells, wealth, inventory (i.e. treasure)...
-      unsigned int wealth = 0;
-      RPG_Magic_Spells_t knownSpells;
-      RPG_Magic_SpellList_t spells;
-      RPG_Item_List_t items;
-      RPG_Monster monster((iterator->first).c_str(),
+      RPG_Monster monster(// base attributes
+                          (iterator->first).c_str(),
                           properties.type,
                           properties.alignment,
                           properties.attributes,
@@ -241,10 +246,14 @@ const unsigned int do_battle(RPG_Character_Party_t& party_in,
                           abilities,
                           properties.size,
                           (*iterator2),
-                          wealth,
                           knownSpells,
+                          // current status
+                          condition,
+                          (*iterator2),
+                          wealth,
                           spells,
-                          items);
+                          items,
+                          false);
 
 //       // debug info
 //       monster.dump();

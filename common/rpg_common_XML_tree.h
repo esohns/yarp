@@ -1433,7 +1433,7 @@ class RPG_Common_Amount_XMLTree_Type: public ::xml_schema::type
 
   // range
   // 
-  typedef ::RPG_Dice_Roll_Type range_type;
+  typedef ::RPG_Dice_Roll_XMLTree_Type range_type;
   typedef ::xsd::cxx::tree::optional< range_type > range_optional;
   typedef ::xsd::cxx::tree::traits< range_type, char > range_traits;
 
@@ -1535,7 +1535,7 @@ class RPG_Common_Usage_XMLTree_Type: public ::xml_schema::type
 
   // interval
   // 
-  typedef ::RPG_Dice_Roll_Type interval_type;
+  typedef ::RPG_Dice_Roll_XMLTree_Type interval_type;
   typedef ::xsd::cxx::tree::optional< interval_type > interval_optional;
   typedef ::xsd::cxx::tree::traits< interval_type, char > interval_traits;
 

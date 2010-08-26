@@ -222,7 +222,6 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
 
   dictionary_p.post_RPG_Magic_Dictionary_Type();
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("finished parsing magic dictionary file \"%s\"...\n"),
 //              filename_in.c_str()));

@@ -59,9 +59,9 @@
 
 // Forward declarations.
 //
-class RPG_Dice_DieType_Type;
-class RPG_Dice_Roll_Type;
-class RPG_Dice_ValueRange_Type;
+class RPG_Dice_DieType_XMLTree_Type;
+class RPG_Dice_Roll_XMLTree_Type;
+class RPG_Dice_ValueRange_XMLTree_Type;
 
 #include <memory>    // std::auto_ptr
 #include <algorithm> // std::binary_search
@@ -75,7 +75,7 @@ class RPG_Dice_ValueRange_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
-class RPG_Dice_DieType_Type: public ::xml_schema::string
+class RPG_Dice_DieType_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -92,58 +92,58 @@ class RPG_Dice_DieType_Type: public ::xml_schema::string
     D_100
   };
 
-  RPG_Dice_DieType_Type (value v);
+  RPG_Dice_DieType_XMLTree_Type (value v);
 
-  RPG_Dice_DieType_Type (const char* v);
+  RPG_Dice_DieType_XMLTree_Type (const char* v);
 
-  RPG_Dice_DieType_Type (const ::std::string& v);
+  RPG_Dice_DieType_XMLTree_Type (const ::std::string& v);
 
-  RPG_Dice_DieType_Type (const ::xml_schema::string& v);
+  RPG_Dice_DieType_XMLTree_Type (const ::xml_schema::string& v);
 
-  RPG_Dice_DieType_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                         ::xml_schema::flags f = 0,
-                         ::xml_schema::container* c = 0);
+  RPG_Dice_DieType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
 
-  RPG_Dice_DieType_Type (const ::xercesc::DOMElement& e,
-                         ::xml_schema::flags f = 0,
-                         ::xml_schema::container* c = 0);
+  RPG_Dice_DieType_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
 
-  RPG_Dice_DieType_Type (const ::xercesc::DOMAttr& a,
-                         ::xml_schema::flags f = 0,
-                         ::xml_schema::container* c = 0);
+  RPG_Dice_DieType_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
 
-  RPG_Dice_DieType_Type (const ::std::string& s,
-                         const ::xercesc::DOMElement* e,
-                         ::xml_schema::flags f = 0,
-                         ::xml_schema::container* c = 0);
+  RPG_Dice_DieType_XMLTree_Type (const ::std::string& s,
+                                 const ::xercesc::DOMElement* e,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
 
-  RPG_Dice_DieType_Type (const RPG_Dice_DieType_Type& x,
-                         ::xml_schema::flags f = 0,
-                         ::xml_schema::container* c = 0);
+  RPG_Dice_DieType_XMLTree_Type (const RPG_Dice_DieType_XMLTree_Type& x,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
 
-  virtual RPG_Dice_DieType_Type*
+  virtual RPG_Dice_DieType_XMLTree_Type*
   _clone (::xml_schema::flags f = 0,
           ::xml_schema::container* c = 0) const;
 
-  RPG_Dice_DieType_Type&
+  RPG_Dice_DieType_XMLTree_Type&
   operator= (value v);
 
   virtual
   operator value () const
   {
-    return _xsd_RPG_Dice_DieType_Type_convert ();
+    return _xsd_RPG_Dice_DieType_XMLTree_Type_convert ();
   }
 
   protected:
   value
-  _xsd_RPG_Dice_DieType_Type_convert () const;
+  _xsd_RPG_Dice_DieType_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Dice_DieType_Type_literals_[10];
-  static const value _xsd_RPG_Dice_DieType_Type_indexes_[10];
+  static const char* const _xsd_RPG_Dice_DieType_XMLTree_Type_literals_[10];
+  static const value _xsd_RPG_Dice_DieType_XMLTree_Type_indexes_[10];
 };
 
-class RPG_Dice_Roll_Type: public ::xml_schema::type
+class RPG_Dice_Roll_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // numDice
@@ -162,7 +162,7 @@ class RPG_Dice_Roll_Type: public ::xml_schema::type
 
   // typeDice
   // 
-  typedef ::RPG_Dice_DieType_Type typeDice_type;
+  typedef ::RPG_Dice_DieType_XMLTree_Type typeDice_type;
   typedef ::xsd::cxx::tree::traits< typeDice_type, char > typeDice_traits;
 
   const typeDice_type&
@@ -193,32 +193,32 @@ class RPG_Dice_Roll_Type: public ::xml_schema::type
 
   // Constructors.
   //
-  RPG_Dice_Roll_Type (const numDice_type&,
-                      const typeDice_type&,
-                      const modifier_type&);
+  RPG_Dice_Roll_XMLTree_Type (const numDice_type&,
+                              const typeDice_type&,
+                              const modifier_type&);
 
-  RPG_Dice_Roll_Type (const numDice_type&,
-                      ::std::auto_ptr< typeDice_type >&,
-                      const modifier_type&);
+  RPG_Dice_Roll_XMLTree_Type (const numDice_type&,
+                              ::std::auto_ptr< typeDice_type >&,
+                              const modifier_type&);
 
-  RPG_Dice_Roll_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                      ::xml_schema::flags f = 0,
-                      ::xml_schema::container* c = 0);
+  RPG_Dice_Roll_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                              ::xml_schema::flags f = 0,
+                              ::xml_schema::container* c = 0);
 
-  RPG_Dice_Roll_Type (const ::xercesc::DOMElement& e,
-                      ::xml_schema::flags f = 0,
-                      ::xml_schema::container* c = 0);
+  RPG_Dice_Roll_XMLTree_Type (const ::xercesc::DOMElement& e,
+                              ::xml_schema::flags f = 0,
+                              ::xml_schema::container* c = 0);
 
-  RPG_Dice_Roll_Type (const RPG_Dice_Roll_Type& x,
-                      ::xml_schema::flags f = 0,
-                      ::xml_schema::container* c = 0);
+  RPG_Dice_Roll_XMLTree_Type (const RPG_Dice_Roll_XMLTree_Type& x,
+                              ::xml_schema::flags f = 0,
+                              ::xml_schema::container* c = 0);
 
-  virtual RPG_Dice_Roll_Type*
+  virtual RPG_Dice_Roll_XMLTree_Type*
   _clone (::xml_schema::flags f = 0,
           ::xml_schema::container* c = 0) const;
 
   virtual 
-  ~RPG_Dice_Roll_Type ();
+  ~RPG_Dice_Roll_XMLTree_Type ();
 
   // Implementation.
   //
@@ -238,13 +238,13 @@ class RPG_Dice_Roll_Type: public ::xml_schema::type
 };
 
 bool
-operator== (const RPG_Dice_Roll_Type&, const RPG_Dice_Roll_Type&);
+operator== (const RPG_Dice_Roll_XMLTree_Type&, const RPG_Dice_Roll_XMLTree_Type&);
 
 bool
-operator!= (const RPG_Dice_Roll_Type&, const RPG_Dice_Roll_Type&);
+operator!= (const RPG_Dice_Roll_XMLTree_Type&, const RPG_Dice_Roll_XMLTree_Type&);
 
 
-class RPG_Dice_ValueRange_Type: public ::xml_schema::type
+class RPG_Dice_ValueRange_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // begin
@@ -277,27 +277,27 @@ class RPG_Dice_ValueRange_Type: public ::xml_schema::type
 
   // Constructors.
   //
-  RPG_Dice_ValueRange_Type (const begin_type&,
-                            const end_type&);
+  RPG_Dice_ValueRange_XMLTree_Type (const begin_type&,
+                                    const end_type&);
 
-  RPG_Dice_ValueRange_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                            ::xml_schema::flags f = 0,
-                            ::xml_schema::container* c = 0);
+  RPG_Dice_ValueRange_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f = 0,
+                                    ::xml_schema::container* c = 0);
 
-  RPG_Dice_ValueRange_Type (const ::xercesc::DOMElement& e,
-                            ::xml_schema::flags f = 0,
-                            ::xml_schema::container* c = 0);
+  RPG_Dice_ValueRange_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                    ::xml_schema::flags f = 0,
+                                    ::xml_schema::container* c = 0);
 
-  RPG_Dice_ValueRange_Type (const RPG_Dice_ValueRange_Type& x,
-                            ::xml_schema::flags f = 0,
-                            ::xml_schema::container* c = 0);
+  RPG_Dice_ValueRange_XMLTree_Type (const RPG_Dice_ValueRange_XMLTree_Type& x,
+                                    ::xml_schema::flags f = 0,
+                                    ::xml_schema::container* c = 0);
 
-  virtual RPG_Dice_ValueRange_Type*
+  virtual RPG_Dice_ValueRange_XMLTree_Type*
   _clone (::xml_schema::flags f = 0,
           ::xml_schema::container* c = 0) const;
 
   virtual 
-  ~RPG_Dice_ValueRange_Type ();
+  ~RPG_Dice_ValueRange_XMLTree_Type ();
 
   // Implementation.
   //
@@ -316,25 +316,25 @@ class RPG_Dice_ValueRange_Type: public ::xml_schema::type
 };
 
 bool
-operator== (const RPG_Dice_ValueRange_Type&, const RPG_Dice_ValueRange_Type&);
+operator== (const RPG_Dice_ValueRange_XMLTree_Type&, const RPG_Dice_ValueRange_XMLTree_Type&);
 
 bool
-operator!= (const RPG_Dice_ValueRange_Type&, const RPG_Dice_ValueRange_Type&);
+operator!= (const RPG_Dice_ValueRange_XMLTree_Type&, const RPG_Dice_ValueRange_XMLTree_Type&);
 
 
 #include <iosfwd>
 
 ::std::ostream&
-operator<< (::std::ostream&, RPG_Dice_DieType_Type::value);
+operator<< (::std::ostream&, RPG_Dice_DieType_XMLTree_Type::value);
 
 ::std::ostream&
-operator<< (::std::ostream&, const RPG_Dice_DieType_Type&);
+operator<< (::std::ostream&, const RPG_Dice_DieType_XMLTree_Type&);
 
 ::std::ostream&
-operator<< (::std::ostream&, const RPG_Dice_Roll_Type&);
+operator<< (::std::ostream&, const RPG_Dice_Roll_XMLTree_Type&);
 
 ::std::ostream&
-operator<< (::std::ostream&, const RPG_Dice_ValueRange_Type&);
+operator<< (::std::ostream&, const RPG_Dice_ValueRange_XMLTree_Type&);
 
 #include <iosfwd>
 
@@ -351,32 +351,32 @@ operator<< (::std::ostream&, const RPG_Dice_ValueRange_Type&);
 #include <xsd/cxx/xml/dom/auto-ptr.hxx>
 
 void
-operator<< (::xercesc::DOMElement&, const RPG_Dice_DieType_Type&);
+operator<< (::xercesc::DOMElement&, const RPG_Dice_DieType_XMLTree_Type&);
 
 void
-operator<< (::xercesc::DOMAttr&, const RPG_Dice_DieType_Type&);
+operator<< (::xercesc::DOMAttr&, const RPG_Dice_DieType_XMLTree_Type&);
 
 void
 operator<< (::xml_schema::list_stream&,
-            const RPG_Dice_DieType_Type&);
+            const RPG_Dice_DieType_XMLTree_Type&);
 
 void
-operator<< (::xercesc::DOMElement&, const RPG_Dice_Roll_Type&);
+operator<< (::xercesc::DOMElement&, const RPG_Dice_Roll_XMLTree_Type&);
 
 void
-operator<< (::xercesc::DOMElement&, const RPG_Dice_ValueRange_Type&);
+operator<< (::xercesc::DOMElement&, const RPG_Dice_ValueRange_XMLTree_Type&);
 
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Dice_DieType_Type&);
+            const RPG_Dice_DieType_XMLTree_Type&);
 
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Dice_Roll_Type&);
+            const RPG_Dice_Roll_XMLTree_Type&);
 
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Dice_ValueRange_Type&);
+            const RPG_Dice_ValueRange_XMLTree_Type&);
 
 #include <xsd/cxx/post.hxx>
 
