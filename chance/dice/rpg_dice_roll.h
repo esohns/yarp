@@ -28,6 +28,17 @@
 
 struct RPG_Dice_Roll
 {
+  // *TODO*: this operator has been added after generation
+  // --> will be clobbered by subsequent updates of the schema
+  // (refer to rpg_dice_common.h for a template)
+  // allow multiplier
+  inline RPG_Dice_Roll& operator*=(const int& multiplier_in)
+  {
+    numDice *= multiplier_in;
+    modifier *= multiplier_in;
+    return (*this);
+  };
+
   unsigned int numDice;
   RPG_Dice_DieType typeDice;
   int modifier;
