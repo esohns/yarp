@@ -34,6 +34,26 @@ typedef RPG_Dice_Rolls_t::const_iterator RPG_Dice_RollsIterator_t;
 typedef std::vector<int> RPG_Dice_RollResult_t;
 typedef RPG_Dice_RollResult_t::const_iterator RPG_Dice_RollResultIterator_t;
 
+// enum RPG_Dice_DieType
+// {
+//   // *TODO*: enum values need to reflect the number of faces
+//   // --> will be clobbered by subsequent updates of the schema
+//   // (refer to rpg_dice_common.h for a template)
+//   D_0   = 0,
+//   D_2   = 2,
+//   D_3   = 3,
+//   D_4   = 4,
+//   D_6   = 6,
+//   D_8   = 8,
+//   D_10  = 10,
+//   D_12  = 12,
+//   D_20  = 20,
+//   D_100 = 100,
+//   //
+//   RPG_DICE_DIETYPE_MAX,
+//   RPG_DICE_DIETYPE_INVALID
+// };
+
 // enhance some (existing) definition(s)
 // prefix increment
 inline RPG_Dice_DieType& operator++(RPG_Dice_DieType& dieType_inout)

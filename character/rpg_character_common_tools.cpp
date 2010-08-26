@@ -42,7 +42,8 @@
 
 #include <string>
 #include <sstream>
-#include <cctype>
+#include <algorithm>
+#include <numeric>
 
 // init statics
 RPG_Character_GenderToStringTable_t RPG_Character_GenderHelper::myRPG_Character_GenderToStringTable;
@@ -559,25 +560,30 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   RPG_Dice_Roll roll;
   roll.numDice = 2;
   roll.typeDice = D_10;
-  roll.modifier = -2; // add +1 if result is 0 --> stats interval 1-18
+  roll.modifier = -2; // interval: 0-18
   // make sure the result is somewhat balanced (average == 6 * 9)...
   // *NOTE*: INT must be > 2 (smaller values are reserved for animals...)
   int sum = 0;
   do
   {
+    sum = 0;
     result.clear();
     RPG_Dice::simulateRoll(roll,
                            6,
                            result);
-    sum = result[0] + result[1] + result[2] + result[3] + result[4] + result[5];
+    sum = std::accumulate(result.begin(),
+                          result.end(),
+                          0);
   } while ((sum <= 54) ||
-           (*(std::min_element(result.begin(), result.end())) <= 9) ||
+           (*(std::min_element(result.begin(),
+                               result.end())) <= 9) ||
            (result[3] < 3)); // Note: this is already covered by the last case...
   for (int i = 0;
        i < 6;
        i++, p++)
   {
-    *p = result[i];
+    // add +1 if result is 0 --> stats interval 1-18
+    *p = (result[i] == 0 ? 1 : result[i]);
   } // end FOR
 
   // step7: (initial) skills

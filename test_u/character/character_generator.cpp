@@ -58,6 +58,7 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
+#include <numeric>
 
 void
 print_usage(const std::string& programName_in)
@@ -68,6 +69,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-i [FILE]: item dictionary (*.xml)") << std::endl;
   std::cout << ACE_TEXT("-m [FILE]: magic dictionary (*.xml)") << std::endl;
+  std::cout << ACE_TEXT("-r       : random (non-interactive)") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
 } // end print_usage
@@ -75,22 +77,24 @@ print_usage(const std::string& programName_in)
 const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
-                  std::string& magicDictionaryFilename_out,
                   std::string& itemDictionaryFilename_out,
+                  std::string& magicDictionaryFilename_out,
+                  bool& random_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out)
 {
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-  magicDictionaryFilename_out.clear();
   itemDictionaryFilename_out.clear();
+  magicDictionaryFilename_out.clear();
+  random_out = false;
   traceInformation_out = false;
   printVersionAndExit_out = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("i:m:tv"));
+                             ACE_TEXT("i:m:rtv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -106,6 +110,12 @@ process_arguments(const int argc_in,
       case 'm':
       {
         magicDictionaryFilename_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'r':
+      {
+        random_out = true;
 
         break;
       }
@@ -518,7 +528,7 @@ generate_player_character()
 
   // step1: name
   std::string name;
-  std::cout << ACE_TEXT("type player name: ");
+  std::cout << ACE_TEXT("name: ");
   std::cin >> name;
 
   // step2: gender
@@ -713,7 +723,7 @@ generate_player_character()
   RPG_Dice_Roll roll;
   roll.numDice = 2;
   roll.typeDice = D_10;
-  roll.modifier = -2; // add +1 if result is 0 --> stats interval 1-18
+  roll.modifier = -2; // interval: 0-18
   RPG_Dice_RollResult_t result;
   c = 'n';
   do
@@ -725,17 +735,23 @@ generate_player_character()
     int sum = 0;
     do
     {
+      sum = 0;
       result.clear();
       RPG_Dice::simulateRoll(roll,
                              6,
                              result);
-      sum = result[0] + result[1] + result[2] + result[3] + result[4] + result[5];
-    } while ((sum <= 54) || (*(std::min_element(result.begin(), result.end())) < 9));
-
+      sum = std::accumulate(result.begin(),
+                            result.end(),
+                            0);
+    } while ((sum <= 54) ||
+             (*(std::min_element(result.begin(),
+                                 result.end())) <= 9) ||
+             (result[3] < 3)); // Note: this is already covered by the last case...
     for (int i = 0;
          i < 6;
          i++, p++)
     {
+      // add +1 if result is 0 --> stats interval 1-18
       *p = (result[i] == 0 ? 1 : result[i]);
     } // end FOR
 
@@ -746,7 +762,7 @@ generate_player_character()
     std::cout << ACE_TEXT("intelligence: ") << ACE_static_cast(int, attributes.intelligence) << std::endl;
     std::cout << ACE_TEXT("wisdom: ") << ACE_static_cast(int, attributes.wisdom) << std::endl;
     std::cout << ACE_TEXT("charisma: ") << ACE_static_cast(int, attributes.charisma) << std::endl;
-    std::cout << ACE_TEXT("OK ? (y/n): ");
+    std::cout << ACE_TEXT("[sum: ") << sum << ACE_TEXT("] --> OK ? (y/n): ");
     std::cin >> c;
   } while (c == 'n');
 
@@ -957,9 +973,38 @@ generate_player_character()
   return player;
 }
 
+RPG_Character_Player
+generate_random_player_character()
+{
+  ACE_TRACE(ACE_TEXT("::generate_random_player_character"));
+
+//   // init result
+//   RPG_Character_Player player = RPG_Character_Player::dummy();
+//
+//   char c = ' ';
+//   do
+//   {
+//     c = ' ';
+//
+//     // generate random player
+//     player = RPG_Character_Common_Tools::generatePlayerCharacter();
+//
+//     // dump player
+//     std::cout << player;
+//
+//     std::cout << ACE_TEXT("OK ? (y/n): ");
+//     std::cin >> c;
+//   } while (c == 'n');
+//
+//   return player;
+
+  return RPG_Character_Common_Tools::generatePlayerCharacter();
+}
+
 void
 do_work(const std::string magicDictionaryFilename_in,
-        const std::string itemDictionaryFilename_in)
+        const std::string itemDictionaryFilename_in,
+        const bool& random_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -1004,12 +1049,14 @@ do_work(const std::string magicDictionaryFilename_in,
   }
 
   // step2: display menu options
+  RPG_Character_Player player = RPG_Character_Player::dummy();
   bool done = false;
   char c = ' ';
   do
   {
     // step1: generate new player character
-    RPG_Character_Player player = generate_player_character();
+    player = (random_in ? generate_random_player_character()
+                        : generate_player_character());
     player.dump();
 
     // step2: display menu options
@@ -1122,16 +1169,18 @@ int ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  std::string magicDictionaryFilename;
   std::string itemDictionaryFilename;
+  std::string magicDictionaryFilename;
+  bool random              = false;
   bool traceInformation    = false;
   bool printVersionAndExit = false;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
-                          magicDictionaryFilename,
                           itemDictionaryFilename,
+                          magicDictionaryFilename,
+                          random,
                           traceInformation,
                           printVersionAndExit)))
   {
@@ -1193,7 +1242,8 @@ int ACE_TMAIN(int argc,
 
   // step2: do actual work
   do_work(magicDictionaryFilename,
-          itemDictionaryFilename);
+          itemDictionaryFilename,
+          random);
 
   timer.stop();
 
