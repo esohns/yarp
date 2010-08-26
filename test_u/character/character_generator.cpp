@@ -43,6 +43,7 @@
 #include <rpg_common_defines.h>
 #include <rpg_common_subclass.h>
 #include <rpg_common_tools.h>
+#include <rpg_common_file_tools.h>
 
 #include <rpg_dice.h>
 #include <rpg_dice_dietype.h>
@@ -1106,6 +1107,41 @@ do_work(const std::string magicDictionaryFilename_in,
             path += ACE_DIRECTORY_SEPARATOR_STR;
             path += player.getName();
             path += ACE_TEXT_ALWAYS_CHAR(".xml");
+
+            // sanity check
+            if (RPG_Common_File_Tools::isReadable(path))
+            {
+              bool proceed = false;
+              c = ' ';
+              do
+              {
+                std::cout << ACE_TEXT("file \"") << path << ACE_TEXT("\" exists, overwrite ? (y/n): ");
+                std::cin >> c;
+                switch (c)
+                {
+                  case 'y':
+                  {
+                    proceed = true;
+
+                    break;
+                  }
+                  case 'n':
+                    break;
+                  default:
+                  {
+                    ACE_DEBUG((LM_ERROR,
+                               ACE_TEXT("unrecognized (gender) option \"%c\", try again\n"),
+                               c));
+                    break;
+                  }
+                } // end SWITCH
+              } while ((c != 'y') &&
+                       (c != 'n'));
+
+              if (!proceed)
+                break;
+            } // end IF
+
             if (!player.save(path))
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("failed to RPG_Character_Player::save(\"%s\"), continuing\n"),
