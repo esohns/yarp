@@ -103,7 +103,7 @@ class RPG_Character_Base
                      const RPG_Item_List_t&);           // list of (carried) items
   RPG_Character_Base(const RPG_Character_Base&);
 
-  RPG_Character_Base& operator=(const RPG_Character_Base&);
+//   RPG_Character_Base& operator=(const RPG_Character_Base&);
   void init(// base attributes
             const std::string&,                // name
             const RPG_Character_Alignment&,    // alignment

@@ -106,15 +106,13 @@ RPG_Character_Player::~RPG_Character_Player()
 
 }
 
-RPG_Character_Player&
-RPG_Character_Player::operator=(const RPG_Character_Player& player_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player::operator="));
-
-  inherited::operator=(player_in);
-
-  return *this;
-}
+// RPG_Character_Player&
+// RPG_Character_Player::operator=(const RPG_Character_Player& player_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_Player::operator="));
+//
+//   return *this;
+// }
 
 RPG_Character_Player
 RPG_Character_Player::load(const std::string& filename_in)

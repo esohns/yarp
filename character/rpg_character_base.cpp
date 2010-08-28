@@ -92,29 +92,30 @@ RPG_Character_Base::RPG_Character_Base(const RPG_Character_Base& playerBase_in)
 
 }
 
-RPG_Character_Base&
-RPG_Character_Base::operator=(const RPG_Character_Base& playerBase_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::operator="));
-
-  myWealth = playerBase_in.myWealth;
-  mySize = playerBase_in.mySize;
-  myKnownSpells = playerBase_in.myKnownSpells;
-  mySpells = playerBase_in.mySpells;
-  myInventory = playerBase_in.myInventory;
-  myEquipment = playerBase_in.myEquipment;
-  myNumHitPoints = playerBase_in.myNumHitPoints;
-  myCondition = playerBase_in.myCondition;
-  myAttributes = playerBase_in.myAttributes;
-  myFeats = playerBase_in.myFeats;
-  myAbilities = playerBase_in.myAbilities;
-  mySkills = playerBase_in.mySkills;
-  myName = playerBase_in.myName;
-  myAlignment = playerBase_in.myAlignment;
-  myNumTotalHitPoints = playerBase_in.myNumTotalHitPoints;
-
-  return *this;
-}
+// RPG_Character_Base&
+// RPG_Character_Base::operator=(const RPG_Character_Base& playerBase_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_Base::operator="));
+//
+//   myWealth = playerBase_in.myWealth;
+//   mySize = playerBase_in.mySize;
+//   myKnownSpells = playerBase_in.myKnownSpells;
+//   mySpells = playerBase_in.mySpells;
+//   myInventory = playerBase_in.myInventory;
+//   myEquipment = playerBase_in.myEquipment;
+//   myNumHitPoints = playerBase_in.myNumHitPoints;
+//   myCondition = playerBase_in.myCondition;
+//   myAttributes = playerBase_in.myAttributes;
+//   myFeats = playerBase_in.myFeats;
+//   myAbilities = playerBase_in.myAbilities;
+//   mySkills = playerBase_in.mySkills;
+//
+//   myName = playerBase_in.myName;
+//   myAlignment = playerBase_in.myAlignment;
+//   myNumTotalHitPoints = playerBase_in.myNumTotalHitPoints;
+//
+//   return *this;
+// }
 
 void
 RPG_Character_Base::init(// base attributes

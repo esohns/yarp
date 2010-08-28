@@ -31,7 +31,6 @@
 #include "rpg_character_alignmentethic.h"
 #include "rpg_character_alignment.h"
 #include "rpg_character_attributes.h"
-// #include "rpg_character_common.h"
 #include "rpg_character_skills_common.h"
 
 #include <rpg_combat_attacksituation.h>
@@ -105,7 +104,7 @@ class RPG_Character_Player_Base
                             const RPG_Item_List_t&);           // list of (carried) items
   RPG_Character_Player_Base(const RPG_Character_Player_Base&);
 
-  RPG_Character_Player_Base& operator=(const RPG_Character_Player_Base&);
+//   RPG_Character_Player_Base& operator=(const RPG_Character_Player_Base&);
   void init(// base attributes
             const std::string&,                // name
             const RPG_Character_Gender&,       // gender

@@ -415,6 +415,36 @@ RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in)
   return 0;
 }
 
+const std::string
+RPG_Common_Tools::enumToString(const std::string& enumString_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::enumToString"));
+
+  std::string result = enumString_in;
+
+  // *NOTE*: this converts "SUBCLASS_MONK" --> "Monk"
+
+  // step1: chop off everything before (and including) the first underscore ('_')
+  std::string::size_type underscore = result.find('_', 0);
+  if (underscore != std::string::npos)
+  {
+    std::string::iterator last = result.begin();
+    std::advance(last, underscore + 1); // *NOTE*: move one past '_'
+    result.erase(result.begin(),
+                 last);
+  } // end IF
+
+  // step2: convert everything past the first character to lower-case
+  std::string::iterator first = result.begin();
+  std::advance(first, 1); // *NOTE*: skip first character
+  std::transform(first,
+                 result.end(),
+                 first,
+                 ACE_static_cast(int(*)(int), std::tolower));
+
+  return result;
+}
+
 const bool
 RPG_Common_Tools::period2String(const ACE_Time_Value& period_in,
                                 std::string& timeString_out)

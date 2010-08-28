@@ -38,6 +38,7 @@
 #include <rpg_sound_common_tools.h>
 
 #include <rpg_character_defines.h>
+#include <rpg_character_player.h>
 
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
@@ -73,7 +74,17 @@
 #include <config.h>
 #endif
 
-static GTK_cb_data_t    userData;
+static GTK_cb_data_t    userData    = {0,
+                                       NULL,
+                                       NULL,
+                                       NULL,
+                                       {0,
+                                        0,
+                                        RPG_Map_Positions_t(),
+                                        RPG_Map_Positions_t(),
+                                        RPG_Map_Positions_t()},
+                                       RPG_Map_Positions_t(),
+                                       RPG_Character_Player::dummy()};
 // static GtkBuilder* builder  = NULL;
 static GladeXML*        xml         = NULL;
 static GtkWidget*       main_dialog = NULL;
@@ -81,6 +92,185 @@ static SDL_Surface*     screen      = NULL;
 static int              grp_id      = -1;
 static ACE_Thread_Mutex hover_lock;
 static unsigned long    hover_time  = 0;
+
+void
+update_character_profile(const RPG_Character_Player& player_in)
+{
+  ACE_TRACE(ACE_TEXT("::update_character_profile"));
+
+  // sanity check(s)
+  ACE_ASSERT(xml);
+
+  std::string text;
+  GtkWidget* current = NULL;
+
+  // step1: name
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                                            ACE_TEXT_ALWAYS_CHAR("name")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     player_in.getName().c_str());
+
+  // step2: gender
+  text.clear();
+  switch (player_in.getGender())
+  {
+    case GENDER_NONE:
+      text = ACE_TEXT_ALWAYS_CHAR("N/A"); break;
+    case GENDER_FEMALE:
+      text = ACE_TEXT_ALWAYS_CHAR("F"); break;
+    case GENDER_MALE:
+      text = ACE_TEXT_ALWAYS_CHAR("M"); break;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid gender (was: \"%s\"), aborting\n"),
+                 RPG_Character_GenderHelper::RPG_Character_GenderToString(player_in.getGender()).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("gender")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     text.c_str());
+
+  // step3: race
+  text.clear();
+  RPG_Character_Race_t player_race = player_in.getRace();
+  if (player_race.count() == 0)
+    text = ACE_TEXT_ALWAYS_CHAR("N/A");
+  else
+  {
+    unsigned int race_index = 1;
+    for (unsigned int index = 0;
+         index < player_race.size();
+         index++, race_index++)
+    {
+      if (player_race.test(index))
+      {
+        switch (ACE_static_cast(RPG_Character_Race,
+                                race_index))
+        {
+          case RACE_DWARF:
+          case RACE_ELF:
+          case RACE_GNOME:
+          case RACE_HALFLING:
+          case RACE_HUMAN:
+          case RACE_ORC:
+            text = RPG_Common_Tools::enumToString(RPG_Character_RaceHelper::RPG_Character_RaceToString(ACE_static_cast(RPG_Character_Race,
+                                                                                                                race_index))); break;
+          default:
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("invalid race (was: \"%s\"), aborting\n"),
+                       RPG_Character_RaceHelper::RPG_Character_RaceToString(ACE_static_cast(RPG_Character_Race,
+                                                                                            race_index)).c_str()));
+
+            break;
+          }
+        } // end SWITCH
+        text += ACE_TEXT_ALWAYS_CHAR(",");
+      } // end IF
+    } // end FOR
+    text.erase(--text.end());
+  } // end ELSE
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("race")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     text.c_str());
+
+  // step4: class
+  text.clear();
+  RPG_Character_Class player_class = player_in.getClass();
+  switch (player_class.metaClass)
+  {
+    case METACLASS_NONE:
+      text = ACE_TEXT_ALWAYS_CHAR("N/A"); break;
+    case METACLASS_PRIEST:
+    case METACLASS_ROGUE:
+    case METACLASS_WARRIOR:
+    case METACLASS_WIZARD:
+      text = RPG_Common_Tools::enumToString(RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString(player_class.metaClass)); break;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid metaclass (was: \"%s\"), aborting\n"),
+                 RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString(player_class.metaClass).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+  if (!player_class.subClasses.empty())
+    text += ACE_TEXT_ALWAYS_CHAR(" (");
+  for (RPG_Character_SubClassesIterator_t iterator = player_class.subClasses.begin();
+       iterator != player_class.subClasses.end();
+       iterator++)
+  {
+    switch (*iterator)
+    {
+      case SUBCLASS_NONE:
+        text = ACE_TEXT_ALWAYS_CHAR("N/A"); break;
+      case SUBCLASS_AVENGER:
+      case SUBCLASS_BARBARIAN:
+      case SUBCLASS_BARD:
+      case SUBCLASS_CLERIC:
+      case SUBCLASS_DRUID:
+      case SUBCLASS_FIGHTER:
+      case SUBCLASS_INVOKER:
+      case SUBCLASS_MONK:
+      case SUBCLASS_PALADIN:
+      case SUBCLASS_RANGER:
+      case SUBCLASS_SHAMAN:
+      case SUBCLASS_SORCERER:
+      case SUBCLASS_THIEF:
+      case SUBCLASS_WARLOCK:
+      case SUBCLASS_WARLORD:
+      case SUBCLASS_WIZARD:
+        text = RPG_Common_Tools::enumToString(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator)); break;
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid subclass (was: \"%s\"), aborting\n"),
+                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str()));
+
+        break;
+      }
+    } // end SWITCH
+    text += ACE_TEXT_ALWAYS_CHAR(",");
+  } // end FOR
+  if (!player_class.subClasses.empty())
+  {
+    text.erase(--text.end());
+    text += ACE_TEXT_ALWAYS_CHAR(")");
+  } // end IF
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("class")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     text.c_str());
+
+  // step5: alignment
+  text.clear();
+  RPG_Character_Alignment player_alignment = player_in.getAlignment();
+  // "Neutral" "Neutral" --> "True Neutral"
+  if ((player_alignment.civic == ALIGNMENTCIVIC_NEUTRAL) &&
+       (player_alignment.ethic == ALIGNMENTETHIC_NEUTRAL))
+    text = ACE_TEXT_ALWAYS_CHAR("True Neutral");
+  else
+  {
+    text = RPG_Common_Tools::enumToString(RPG_Character_AlignmentCivicHelper::RPG_Character_AlignmentCivicToString(player_alignment.civic));
+    text += ACE_TEXT_ALWAYS_CHAR(" ");
+    text += RPG_Common_Tools::enumToString(RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString(player_alignment.ethic));
+  } // end ELSE
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("alignment")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     text.c_str());
+}
 
 #ifdef __cplusplus
 extern "C"
@@ -113,6 +303,8 @@ about_activated_GTK_cb(GtkWidget* widget_in,
     // clean up
     g_object_unref(G_OBJECT(xml));
     xml = NULL;
+
+    return FALSE;
   } // end IF
 
   // draw it
@@ -167,6 +359,142 @@ quit_activated_GTK_cb(GtkWidget* widget_in,
   // this is the "delete-event" handler
   // --> destroy the main dialog widget
   return TRUE;
+}
+
+G_MODULE_EXPORT gint
+create_character_actived_GTK_cb(GtkWidget* widget_in,
+                                GdkEvent* event_in,
+                                gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::create_character_actived_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(event_in);
+  ACE_UNUSED_ARG(userData_in);
+
+}
+
+G_MODULE_EXPORT gint
+load_character_actived_GTK_cb(GtkWidget* widget_in,
+                              GdkEvent* event_in,
+                              gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::load_character_actived_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(event_in);
+  ACE_UNUSED_ARG(userData_in);
+
+  // *NOTE*: this callback just presents the file picker
+  // --> the business logic happens in character_file_actived_GTK_cb
+
+  // sanity check(s)
+  ACE_ASSERT(xml);
+
+  // retrieve file chooser dialog handle
+  GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(xml,
+                                                                                          RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
+  ACE_ASSERT(filechooser_dialog);
+  if (!filechooser_dialog)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
+               RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
+
+    // clean up
+    g_object_unref(G_OBJECT(xml));
+    xml = NULL;
+
+    return FALSE;
+  } // end IF
+
+  // draw it
+  if (!GTK_WIDGET_VISIBLE(filechooser_dialog))
+    gtk_widget_show_all(GTK_WIDGET(filechooser_dialog));
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+character_file_activated_GTK_cb(GtkWidget* widget_in,
+                                GdkEvent* event_in,
+                                gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::character_file_activated_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(event_in);
+  GTK_cb_data_t* userData_p = ACE_static_cast(GTK_cb_data_t*, userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(userData_p);
+  ACE_ASSERT(xml);
+
+  // retrieve file chooser dialog handle
+  GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(xml,
+                                                                     RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
+  ACE_ASSERT(filechooser_dialog);
+  if (!filechooser_dialog)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
+               RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
+
+    // clean up
+    g_object_unref(G_OBJECT(xml));
+    xml = NULL;
+
+    return FALSE;
+  } // end IF
+
+  // hide widget
+  gtk_widget_hide(GTK_WIDGET(filechooser_dialog));
+
+  // retrieve selected filename
+  std::string filename(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser_dialog)));
+  // sanity check
+  if (!RPG_Common_File_Tools::isReadable(filename))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid file (was: \"%s\"): not readable, aborting\n"),
+               filename.c_str()));
+
+    return FALSE;
+  } // end IF
+
+  // load player profile
+  userData_p->player = RPG_Character_Player::load(filename);
+
+  // update character profile widgets
+  ::update_character_profile(userData_p->player);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+save_character_actived_GTK_cb(GtkWidget* widget_in,
+                              GdkEvent* event_in,
+                              gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::save_character_actived_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(event_in);
+  ACE_UNUSED_ARG(userData_in);
+
+}
+
+G_MODULE_EXPORT gint
+join_game_actived_GTK_cb(GtkWidget* widget_in,
+                         GdkEvent* event_in,
+                         gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::join_game_actived_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(event_in);
+  ACE_UNUSED_ARG(userData_in);
+
 }
 
 G_MODULE_EXPORT gint
@@ -302,8 +630,8 @@ do_SDLEventLoop_GTK_cb(gpointer userData_in)
 {
   ACE_TRACE(ACE_TEXT("::do_SDLEventLoop_GTK_cb"));
 
-  GTK_cb_data_t* userData = ACE_static_cast(GTK_cb_data_t*, userData_in);
-  ACE_ASSERT(userData);
+  GTK_cb_data_t* userData_p = ACE_static_cast(GTK_cb_data_t*, userData_in);
+  ACE_ASSERT(userData_p);
 
   SDL_Event event;
   RPG_Graphics_Position_t mouse_position = std::make_pair(0, 0);
@@ -334,8 +662,8 @@ do_SDLEventLoop_GTK_cb(gpointer userData_in)
             dump_path += ACE_DIRECTORY_SEPARATOR_STR;
             dump_path += ACE_TEXT("map.txt");
             if (!RPG_Map_Common_Tools::save(dump_path,  // file
-                                            userData->seedPoints, // seed points
-                                            userData->plan))      // plan
+                                            userData_p->seedPoints, // seed points
+                                            userData_p->plan))      // plan
             {
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),
@@ -388,22 +716,22 @@ do_SDLEventLoop_GTK_cb(gpointer userData_in)
           }
         } // end SWITCH
 
-        window = userData->main_window->getWindow(mouse_position);
+        window = userData_p->main_window->getWindow(mouse_position);
         ACE_ASSERT(window);
 
         // notify previously "active" window upon losing "focus"
         if (event.type == SDL_MOUSEMOTION)
         {
-          if (userData->previous_window &&
-//                 (userData->previous_window != mainWindow)
-              (userData->previous_window != window))
+          if (userData_p->previous_window &&
+//                 (userData_p->previous_window != mainWindow)
+              (userData_p->previous_window != window))
           {
             event.type = RPG_GRAPHICS_SDL_MOUSEMOVEOUT;
             try
             {
-              userData->previous_window->handleEvent(event,
-                                                     userData->previous_window,
-                                                     need_redraw);
+              userData_p->previous_window->handleEvent(event,
+                                                       userData_p->previous_window,
+                                                       need_redraw);
             }
             catch (...)
             {
@@ -414,9 +742,9 @@ do_SDLEventLoop_GTK_cb(gpointer userData_in)
           } // end IF
         } // end IF
         // remember last "active" window
-        userData->previous_window = window;
+        userData_p->previous_window = window;
 
-          // notify "active" window
+        // notify "active" window
         try
         {
           window->handleEvent(event,
@@ -461,8 +789,8 @@ do_SDLEventLoop_GTK_cb(gpointer userData_in)
     {
       try
       {
-        userData->map_window->draw();
-        userData->map_window->refresh();
+        userData_p->map_window->draw();
+        userData_p->map_window->refresh();
       }
       catch (...)
       {
@@ -506,7 +834,7 @@ do_SDLEventLoop_GTK_cb(gpointer userData_in)
 
     if (done)
     {
-      if (!SDL_RemoveTimer(userData->event_timer))
+      if (!SDL_RemoveTimer(userData_p->event_timer))
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
@@ -1060,34 +1388,34 @@ do_initGUI(const std::string& graphicsDirectory_in,
 //                               list,
                               available_characters))
     gtk_widget_set_sensitive(GTK_WIDGET(available_characters), TRUE);
-  // render cells
-  GtkCellRenderer* renderer = NULL;
-//   GtkTreePath* path = NULL;
-//   GtkTreeIter iter;
-  renderer = gtk_cell_renderer_text_new();
-  ACE_ASSERT(renderer);
-  if (!renderer)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_cell_renderer_text_new(): \"%m\", aborting\n")));
-
-    // clean up
-    g_object_unref(G_OBJECT(xml));
-    xml = NULL;
-
-    return false;
-  } // end IF
-  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(available_characters), renderer,
-                                 ACE_TEXT_ALWAYS_CHAR("text"), 0,
-                                 NULL);
-//   gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(available_characters), renderer,
-//                                      set_sensitive,
-//                                      NULL, NULL);
-//   gtk_combo_box_set_row_separator_func(GTK_COMBO_BOX(available_characters),
-//                                        is_separator,
-//                                        NULL, NULL);
-  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(available_characters), renderer,
-                             TRUE);
+//   // render cells
+//   GtkCellRenderer* renderer = NULL;
+// //   GtkTreePath* path = NULL;
+// //   GtkTreeIter iter;
+//   renderer = gtk_cell_renderer_text_new();
+//   ACE_ASSERT(renderer);
+//   if (!renderer)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to gtk_cell_renderer_text_new(): \"%m\", aborting\n")));
+//
+//     // clean up
+//     g_object_unref(G_OBJECT(xml));
+//     xml = NULL;
+//
+//     return false;
+//   } // end IF
+//   gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(available_characters), renderer,
+//                                  ACE_TEXT_ALWAYS_CHAR("text"), 0,
+//                                  NULL);
+// //   gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(available_characters), renderer,
+// //                                      set_sensitive,
+// //                                      NULL, NULL);
+// //   gtk_combo_box_set_row_separator_func(GTK_COMBO_BOX(available_characters),
+// //                                        is_separator,
+// //                                        NULL, NULL);
+//   gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(available_characters), renderer,
+//                              TRUE);
 
   // step4a: connect default signals
 //   g_signal_connect(main_dialog,
@@ -1100,12 +1428,81 @@ do_initGUI(const std::string& graphicsDirectory_in,
 //                    &about_dialog);
 
    // step4b: connect custom signals
+//   GtkButton* button = NULL;
+//   button = GTK_BUTTON(glade_xml_get_widget(xml,
+//                                            ACE_TEXT_ALWAYS_CHAR("create")));
+//   ACE_ASSERT(button);
+//   g_signal_connect(button,
+//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
+//                    G_CALLBACK(create_character_actived_GTK_cb),
+//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  glade_xml_signal_connect_data(xml,
+                                ACE_TEXT_ALWAYS_CHAR("create_character_actived_GTK_cb"),
+                                G_CALLBACK(create_character_actived_GTK_cb),
+                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+
+//   GtkFileChooser* filechooser = NULL;
+//   filechooser = GTK_FILE_CHOOSER(glade_xml_get_widget(xml,
+//                                                       RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
+//   ACE_ASSERT(filechooser);
+//   g_signal_connect(filechooser,
+//                    ACE_TEXT_ALWAYS_CHAR("file-activated"),
+//                    G_CALLBACK(character_file_activated_GTK_cb),
+//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  glade_xml_signal_connect_data(xml,
+                                ACE_TEXT_ALWAYS_CHAR("character_file_activated_GTK_cb"),
+                                G_CALLBACK(character_file_activated_GTK_cb),
+                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+
+//   button = GTK_BUTTON(glade_xml_get_widget(xml,
+//                                            ACE_TEXT_ALWAYS_CHAR("load")));
+//   ACE_ASSERT(button);
+//   g_signal_connect(button,
+//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
+//                    G_CALLBACK(load_character_actived_GTK_cb),
+//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  glade_xml_signal_connect_data(xml,
+                                ACE_TEXT_ALWAYS_CHAR("load_character_actived_GTK_cb"),
+                                G_CALLBACK(load_character_actived_GTK_cb),
+                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+
+//   button = GTK_BUTTON(glade_xml_get_widget(xml,
+//                                            ACE_TEXT_ALWAYS_CHAR("save")));
+//   ACE_ASSERT(button);
+//   g_signal_connect(button,
+//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
+//                    G_CALLBACK(save_character_actived_GTK_cb),
+//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  glade_xml_signal_connect_data(xml,
+                                ACE_TEXT_ALWAYS_CHAR("save_character_actived_GTK_cb"),
+                                G_CALLBACK(save_character_actived_GTK_cb),
+                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+
+//   button = GTK_BUTTON(glade_xml_get_widget(xml,
+//                                            ACE_TEXT_ALWAYS_CHAR("join")));
+//   ACE_ASSERT(button);
+//   g_signal_connect(button,
+//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
+//                    G_CALLBACK(join_game_actived_GTK_cb),
+//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  glade_xml_signal_connect_data(xml,
+                                ACE_TEXT_ALWAYS_CHAR("join_game_actived_GTK_cb"),
+                                G_CALLBACK(join_game_actived_GTK_cb),
+                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+
+//   GtkComboBox* combobox = NULL;
+//   combobox = GTK_COMBO_BOX(glade_xml_get_widget(xml,
+//                                                 RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+//   ACE_ASSERT(combobox);
+//   g_signal_connect(combobox,
+//                    ACE_TEXT_ALWAYS_CHAR("changed"),
+//                    G_CALLBACK(characters_actived_GTK_cb),
+//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
   glade_xml_signal_connect_data(xml,
                                 ACE_TEXT_ALWAYS_CHAR("characters_actived_GTK_cb"),
                                 G_CALLBACK(characters_actived_GTK_cb),
                                 &ACE_const_cast(GTK_cb_data_t&, userData_in));
 
-//   GtkButton* button = NULL;
 //   button = GTK_BUTTON(glade_xml_get_widget(xml,
 //                                            ACE_TEXT_ALWAYS_CHAR("quit")));
 //   ACE_ASSERT(button);

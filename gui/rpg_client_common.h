@@ -29,18 +29,21 @@
 
 #include <rpg_map_common.h>
 
+#include <rpg_character_player.h>
+
 #include <SDL/SDL.h>
 
 #include <string>
 
 struct GTK_cb_data_t
 {
-  RPG_Map_FloorPlan_t plan;
-  RPG_Map_Positions_t seedPoints;
   SDL_TimerID event_timer;
   RPG_Graphics_IWindow* previous_window;
   RPG_Client_WindowMain* main_window;
   RPG_Client_WindowLevel* map_window;
+  RPG_Map_FloorPlan_t plan;
+  RPG_Map_Positions_t seedPoints;
+  RPG_Character_Player player;
 };
 
 // *NOTE* types as used by SDL

@@ -94,22 +94,20 @@ RPG_Character_Player_Base::~RPG_Character_Player_Base()
 
 }
 
-RPG_Character_Player_Base&
-RPG_Character_Player_Base::operator=(const RPG_Character_Player_Base& playerBase_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::operator="));
-
-  // init base class
-  inherited::operator=(playerBase_in);
-
-  myGender = playerBase_in.myGender;
-  myRace = playerBase_in.myRace;
-  myClass = playerBase_in.myClass;
-  myOffHand = playerBase_in.myOffHand;
-  myExperience = playerBase_in.myExperience;
-
-  return *this;
-}
+// RPG_Character_Player_Base&
+// RPG_Character_Player_Base::operator=(const RPG_Character_Player_Base& playerBase_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::operator="));
+//
+//   myGender = playerBase_in.myGender;
+//   myRace = playerBase_in.myRace;
+//   myClass = playerBase_in.myClass;
+//   myOffHand = playerBase_in.myOffHand;
+//
+//   myExperience = playerBase_in.myExperience;
+//
+//   return *this;
+// }
 
 void
 RPG_Character_Player_Base::init(// base attributes

@@ -49,6 +49,10 @@ class RPG_Common_Tools
   static const signed char getSizeModifier(const RPG_Common_Size&);
   static const unsigned char sizeToReach(const RPG_Common_Size&);
 
+  // use this to "pretty-print" enumerated (i.e. XML-) values
+  // e.g. "SUBCLASS_MONK" --> "Monk"
+  static const std::string enumToString(const std::string&); // string representation
+
   // use this to generate a "condensed" period string
   // - uses snprintf internally: "%H:%M:%S.usec"
   static const bool period2String(const ACE_Time_Value&, // period
