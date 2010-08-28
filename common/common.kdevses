@@ -3,10 +3,10 @@
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="4" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/rpg_common_environment.xsd" >
-   <View0 Encoding="UTF-8" line="0" Type="Source" />
+   <View0 Encoding="UTF-8" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/rpg_common.xsd" >
-   <View0 Encoding="" line="328" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc1>
   <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/rpg_common_environment.map" >
    <View0 Encoding="" Type="Source" />

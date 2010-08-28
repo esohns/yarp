@@ -25,5 +25,6 @@
 
 #define RPG_CHARACTER_PLAYER_START_MONEY    0
 #define RPG_CHARACTER_PLAYER_SCHEMA_FILE    ACE_TEXT("rpg_character_player.xsd")
+#define RPG_CHARACTER_PLAYER_PROFILE_EXT    ACE_TEXT(".xml")
 
 #endif

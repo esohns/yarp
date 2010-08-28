@@ -37,6 +37,8 @@
 #include <rpg_sound_dictionary.h>
 #include <rpg_sound_common_tools.h>
 
+#include <rpg_character_defines.h>
+
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
 #include <rpg_dice_common_tools.h>
@@ -60,6 +62,7 @@
 #include <ace/Configuration.h>
 #include <ace/Configuration_Import_Export.h>
 #include <ace/Thread_Manager.h>
+#include <ace/Dirent_Selector.h>
 
 #include <string>
 #include <iostream>
@@ -99,13 +102,13 @@ about_activated_GTK_cb(GtkWidget* widget_in,
 
   // retrieve about dialog handle
   GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(xml,
-                                                            RPG_CLIENT_GRAPHICS_ABOUTDIALOG_NAME));
+                                                            RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME));
   ACE_ASSERT(about_dialog);
   if (!about_dialog)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               RPG_CLIENT_GRAPHICS_ABOUTDIALOG_NAME));
+               RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME));
 
     // clean up
     g_object_unref(G_OBJECT(xml));
@@ -113,7 +116,8 @@ about_activated_GTK_cb(GtkWidget* widget_in,
   } // end IF
 
   // draw it
-  gtk_widget_show_all(about_dialog);
+  if (!GTK_WIDGET_VISIBLE(about_dialog))
+    gtk_widget_show_all(about_dialog);
 
   return FALSE;
 }
@@ -163,6 +167,19 @@ quit_activated_GTK_cb(GtkWidget* widget_in,
   // this is the "delete-event" handler
   // --> destroy the main dialog widget
   return TRUE;
+}
+
+G_MODULE_EXPORT gint
+characters_actived_GTK_cb(GtkWidget* widget_in,
+                          GdkEvent* event_in,
+                          gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::characters_actived_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(event_in);
+  ACE_UNUSED_ARG(userData_in);
+
 }
 #ifdef __cplusplus
 }
@@ -521,6 +538,99 @@ do_SDLEventLoop_GTK_cb(gpointer userData_in)
 
   // continue idle task
   return 1;
+}
+
+// callbacks used by ::scandir...
+static int
+dirent_selector(const dirent* entry_in)
+{
+  ACE_TRACE(ACE_TEXT("::dirent_selector"));
+
+  // *NOTE*: select *.xml files
+  std::string filename(entry_in->d_name);
+  std::string extension(RPG_CHARACTER_PLAYER_PROFILE_EXT);
+  if (filename.rfind(extension,
+                     std::string::npos) != (filename.size() - extension.size()))
+  {
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("ignoring \"%s\"...\n"),
+//                entry_in->d_name));
+
+    return 0;
+  } // end IF
+
+  return 1;
+}
+
+static int
+dirent_comparator(const dirent** entry1_in,
+                  const dirent** entry2_in)
+{
+  ACE_TRACE(ACE_TEXT("::dirent_comparator"));
+
+  return ACE_OS::strcmp((*entry1_in)->d_name,
+                        (*entry2_in)->d_name);
+}
+
+const unsigned int
+load_character_profiles(const std::string& repository_in,
+//                         GtkListStore* listStore_in,
+                        GtkComboBox* comboBox_in)
+{
+  ACE_TRACE(ACE_TEXT("::load_character_profiles"));
+
+  // sanity check(s): directory exists ?
+  if (!RPG_Common_File_Tools::isDirectory(repository_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to load_character_profiles(\"%s\"), not a directory, aborting\n"),
+               repository_in.c_str()));
+
+    return 0;
+  } // end IF
+
+  // retrieve all existing character profiles (*.xml) and sort them alphabetically...
+  ACE_Dirent_Selector entries;
+  if (entries.open(repository_in.c_str(),
+                   &::dirent_selector,
+                   &::dirent_comparator) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Dirent_Selector::open(\"%s\"): \"%m\", aborting\n"),
+               repository_in.c_str()));
+
+    return 0;
+  } // end IF
+
+  // iterate over entries
+  std::string entry;
+  std::string extension(RPG_CHARACTER_PLAYER_PROFILE_EXT);
+  GtkTreeIter iter;
+  for (unsigned int i = 0;
+       i < entries.length();
+       i++)
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("character profile[%u]: %s\n"),
+               i,
+               entries[i]->d_name));
+
+    // sanitize name
+    entry = entries[i]->d_name;
+    entry.erase(entry.rfind(extension,
+                            std::string::npos),
+                std::string::npos);
+
+    // append text entry
+//     gtk_list_store_append(listStore_in, &iter);
+//     gtk_list_store_set(listStore_in, &iter,
+//                        0, entry.c_str(),
+//                        -1);
+    gtk_combo_box_append_text(comboBox_in,
+                              entry.c_str());
+  } // end FOR
+
+  return entries.length();
 }
 
 void
@@ -883,13 +993,13 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
   // step2: retrieve dialog handles
   main_dialog = GTK_WIDGET(glade_xml_get_widget(xml,
-                                                RPG_CLIENT_GRAPHICS_MAINDIALOG_NAME));
+                                                RPG_CLIENT_DEF_GNOME_MAINDIALOG_NAME));
   ACE_ASSERT(main_dialog);
   if (!main_dialog)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               RPG_CLIENT_GRAPHICS_MAINDIALOG_NAME));
+               RPG_CLIENT_DEF_GNOME_MAINDIALOG_NAME));
 
     // clean up
     g_object_unref(G_OBJECT(xml));
@@ -899,13 +1009,13 @@ do_initGUI(const std::string& graphicsDirectory_in,
   } // end IF
 
   GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(xml,
-                                                            RPG_CLIENT_GRAPHICS_ABOUTDIALOG_NAME));
+                                                            RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME));
   ACE_ASSERT(about_dialog);
   if (!about_dialog)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               RPG_CLIENT_GRAPHICS_ABOUTDIALOG_NAME));
+               RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME));
 
     // clean up
     g_object_unref(G_OBJECT(xml));
@@ -914,7 +1024,72 @@ do_initGUI(const std::string& graphicsDirectory_in,
     return false;
   } // end IF
 
-//   // step3: connect default signals
+  // step3: populate combobox
+  GtkComboBox* available_characters = GTK_COMBO_BOX(glade_xml_get_widget(xml,
+                                                                         RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+  ACE_ASSERT(available_characters);
+  if (!available_characters)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
+               RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+
+    // clean up
+    g_object_unref(G_OBJECT(xml));
+    xml = NULL;
+
+    return false;
+  } // end IF
+  GtkListStore* list = gtk_list_store_new(1,
+                                          G_TYPE_STRING);
+  ACE_ASSERT(list);
+  if (!list)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to gtk_list_store_new(): \"%m\", aborting\n")));
+
+    // clean up
+    g_object_unref(G_OBJECT(xml));
+    xml = NULL;
+
+    return false;
+  } // end IF
+  gtk_combo_box_set_model(available_characters,
+                          GTK_TREE_MODEL(list));
+  if (load_character_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
+//                               list,
+                              available_characters))
+    gtk_widget_set_sensitive(GTK_WIDGET(available_characters), TRUE);
+  // render cells
+  GtkCellRenderer* renderer = NULL;
+//   GtkTreePath* path = NULL;
+//   GtkTreeIter iter;
+  renderer = gtk_cell_renderer_text_new();
+  ACE_ASSERT(renderer);
+  if (!renderer)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to gtk_cell_renderer_text_new(): \"%m\", aborting\n")));
+
+    // clean up
+    g_object_unref(G_OBJECT(xml));
+    xml = NULL;
+
+    return false;
+  } // end IF
+  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(available_characters), renderer,
+                                 ACE_TEXT_ALWAYS_CHAR("text"), 0,
+                                 NULL);
+//   gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(available_characters), renderer,
+//                                      set_sensitive,
+//                                      NULL, NULL);
+//   gtk_combo_box_set_row_separator_func(GTK_COMBO_BOX(available_characters),
+//                                        is_separator,
+//                                        NULL, NULL);
+  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(available_characters), renderer,
+                             TRUE);
+
+  // step4a: connect default signals
 //   g_signal_connect(main_dialog,
 //                    ACE_TEXT_ALWAYS_CHAR("destroy"),
 //                    G_CALLBACK(gtk_widget_destroyed),
@@ -924,7 +1099,12 @@ do_initGUI(const std::string& graphicsDirectory_in,
 //                    G_CALLBACK(gtk_widget_hide),
 //                    &about_dialog);
 
-//   // step4: connect custom signals
+   // step4b: connect custom signals
+  glade_xml_signal_connect_data(xml,
+                                ACE_TEXT_ALWAYS_CHAR("characters_actived_GTK_cb"),
+                                G_CALLBACK(characters_actived_GTK_cb),
+                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+
 //   GtkButton* button = NULL;
 //   button = GTK_BUTTON(glade_xml_get_widget(xml,
 //                                            ACE_TEXT_ALWAYS_CHAR("quit")));
@@ -973,6 +1153,10 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
   // step6: draw it
   gtk_widget_show_all(main_dialog);
+
+  // step7: activate first repository entry (if any)
+  if (gtk_widget_is_sensitive(GTK_WIDGET(available_characters)))
+    gtk_combo_box_set_active(GTK_COMBO_BOX(available_characters), 0);
 
   // init SDL UI handling
 

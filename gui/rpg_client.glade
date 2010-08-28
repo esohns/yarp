@@ -10,7 +10,7 @@
     <property name="type_hint">normal</property>
     <signal name="delete_event" handler="quit_activated_GTK_cb"/>
     <child internal-child="vbox">
-      <widget class="GtkVBox" id="general_vbox">
+      <widget class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
@@ -18,81 +18,119 @@
           <widget class="GtkHBox" id="hbox">
             <property name="visible">True</property>
             <child>
-              <widget class="GtkVButtonBox" id="game_actions">
+              <widget class="GtkVBox" id="vbox">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
-                <property name="layout_style">spread</property>
                 <child>
-                  <widget class="GtkButton" id="create">
-                    <property name="label" translatable="yes">_Create Character</property>
+                  <widget class="GtkVButtonBox" id="game_actions">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_underline">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="layout_style">spread</property>
+                    <child>
+                      <widget class="GtkButton" id="create">
+                        <property name="label" translatable="yes">_Create Character</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_underline">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkButton" id="load">
+                        <property name="label" translatable="yes">_Load Character</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="can_default">True</property>
+                        <property name="has_default">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_underline">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkButton" id="save">
+                        <property name="label" translatable="yes">_Save Character</property>
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_underline">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkButton" id="join">
+                        <property name="label" translatable="yes">_Join Game</property>
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_underline">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">4</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="load">
-                    <property name="label" translatable="yes">_Load Character</property>
+                  <widget class="GtkFrame" id="available_characters_frame">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="has_default">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_underline">True</property>
+                    <property name="label_xalign">0</property>
+                    <property name="shadow_type">etched-out</property>
+                    <child>
+                      <widget class="GtkAlignment" id="available_characters_alignment">
+                        <property name="visible">True</property>
+                        <property name="left_padding">12</property>
+                        <child>
+                          <widget class="GtkComboBox" id="available_characters">
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="has_frame">False</property>
+                            <property name="focus_on_click">False</property>
+                            <signal name="changed" handler="characters_actived_GTK_cb"/>
+                            <signal name="move_active" handler="characters_actived_GTK_cb"/>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="available_characters_label">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Repository&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="type">label_item</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="fill">False</property>
                     <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkButton" id="save">
-                    <property name="label" translatable="yes">_Save Character</property>
-                    <property name="visible">True</property>
-                    <property name="sensitive">False</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_underline">True</property>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkButton" id="join">
-                    <property name="label" translatable="yes">_Join Game</property>
-                    <property name="visible">True</property>
-                    <property name="sensitive">False</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_underline">True</property>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">4</property>
                   </packing>
                 </child>
               </widget>
               <packing>
                 <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkComboBox" id="available_characters">
-                <property name="visible">True</property>
-                <property name="sensitive">False</property>
-              </widget>
-              <packing>
-                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -831,7 +869,7 @@
                 </child>
               </widget>
               <packing>
-                <property name="position">2</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </widget>
@@ -932,11 +970,12 @@
     <property name="modal">True</property>
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">normal</property>
+    <property name="deletable">False</property>
     <property name="program_name">Project RPG GUI</property>
     <property name="version">0.1</property>
     <property name="authors">Erik Sohns</property>
     <property name="wrap_license">True</property>
-    <signal name="close" handler="gtk_widget_hide"/>
+    <signal name="response" handler="gtk_widget_hide"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="about_vbox">
         <property name="visible">True</property>
