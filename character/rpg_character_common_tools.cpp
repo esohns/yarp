@@ -57,6 +57,15 @@ RPG_Character_EquipmentSlotToStringTable_t RPG_Character_EquipmentSlotHelper::my
 RPG_Character_OffHandToStringTable_t RPG_Character_OffHandHelper::myRPG_Character_OffHandToStringTable;
 
 void
+RPG_Character_Common_Tools::init()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::init"));
+
+  initStringConversionTables();
+  RPG_Character_Skills_Common_Tools::init();
+}
+
+void
 RPG_Character_Common_Tools::initStringConversionTables()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Common_Tools::initStringConversionTables"));

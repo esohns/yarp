@@ -27,8 +27,8 @@ BUILD_DIR=${PROJECT_ROOT}/gui/${BUILD}
 [ ! -d ${BUILD_DIR} ] && echo "ERROR: invalid build dir \"${BUILD_DIR}\" (not a directory), aborting" && exit 1
 cd ${BUILD_DIR}
 
-PROJECT=graphics
 # cp graphics data
+PROJECT=graphics
 GRAPHICS_DIR=${PROJECT_ROOT}/${PROJECT}
 # sanity check(s)
 [ ! -d ${GRAPHICS_DIR} ] && echo "ERROR: invalid graphics dir \"${GRAPHICS_DIR}\" (not a directory), aborting" && exit 1
@@ -54,6 +54,34 @@ SOUNDS_RES_DIR=${SOUND_DIR}/data
 # sanity check(s)
 [ ! -d ${SOUNDS_RES_DIR} ] && echo "ERROR: invalid sounds resource dir \"${SOUNDS_RES_DIR}\" (not a directory), aborting" && exit 1
 cp -rf ${SOUNDS_RES_DIR}/* ./data/sounds
+
+# cp XML schemas
+
+# goto project root
+cd ${PROJECT_ROOT}
+
+NUMFILES=0
+
+# iterate over list of other subprojects (== RPG project subdirectories)
+# for project in $(ls ${PROJECT_DIR} | sort); do
+PROJECT_LIST="chance/dice common magic item character combat monster"
+for project in ${PROJECT_LIST}; do
+# sanity checks: (project) directory exists ?
+  [ ! -d ${project} ] && echo "INFO: ignoring entry \"${project}\"..." && continue
+  # copy all XML schema files
+  for filename in $(ls ${PROJECT_ROOT}/${project}/*.xsd 2>/dev/null  | sort); do
+    echo "INFO: copying ${filename}..."
+    cp -f ${filename} ${BUILD_DIR}
+#     [ $? -eq 0 ] && NUMFILES=$${NUMFILES} + 1
+  done
+# copy all XML instance files
+  for filename in $(ls ${PROJECT_ROOT}/${project}/*.xml 2>/dev/null | sort); do
+    echo "INFO: copying ${filename}..."
+    cp -f ${filename} ${BUILD_DIR}
+#     [ $? -eq 0 ] && NUMFILES=$(${NUMFILES}++)
+  done
+done
+# echo "INFO: copied ${NUMFILES} file(s)..."
 
 # ...go back where we came from
 popd >/dev/null 2>&1

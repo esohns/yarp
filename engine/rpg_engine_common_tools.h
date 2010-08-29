@@ -36,6 +36,15 @@
 class RPG_Engine_Common_Tools
 {
  public:
+  // *NOTE*: initializes (static) data from ALL individual modules
+  // namely: - randomization
+  //         - string conversion facilities
+  //         - static tables (skills, spells, ...)
+  //         - dictionaries (spells, items, monsters, ...)
+  static void init(const std::string&,  // magic dictionary file
+                   const std::string&,  // item dictionary file
+                   const std::string&); // monster dictionary file
+
   static const bool isPartyHelpless(const RPG_Character_Party_t&); // party
   static const bool areMonstersHelpless(const RPG_Monster_Groups_t&); // monsters
 

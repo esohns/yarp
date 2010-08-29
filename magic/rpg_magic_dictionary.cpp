@@ -210,14 +210,14 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
                ACE_TEXT("RPG_Magic_Dictionary::init(): exception occurred: \"%s\", returning\n"),
                text.c_str()));
 
-    throw(exception);
+    return;
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Magic_Dictionary::init(): exception occurred, returning\n")));
 
-    throw;
+    return;
   }
 
   dictionary_p.post_RPG_Magic_Dictionary_Type();

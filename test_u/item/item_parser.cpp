@@ -136,12 +136,12 @@ void do_work(const bool& dumpItemDictionary_in,
   // step2: init item dictionary
   try
   {
-    RPG_ITEM_DICTIONARY_SINGLETON::instance()->initItemDictionary(fileName_in);
+    RPG_ITEM_DICTIONARY_SINGLETON::instance()->init(fileName_in);
   }
   catch(...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Item_Dictionary::initItemDictionary, returning\n")));
+               ACE_TEXT("caught exception in RPG_Item_Dictionary::init, returning\n")));
 
     return;
   }

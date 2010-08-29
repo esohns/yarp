@@ -61,6 +61,12 @@
 #define RPG_CLIENT_DEF_VIDEO_FULLSCREEN             false
 #define RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER           false
 
+#define RPG_CLIENT_DEF_MAGIC_DICTIONARY             ACE_TEXT("rpg_magic.xml")
+
+#define RPG_CLIENT_DEF_ITEM_DICTIONARY              ACE_TEXT("rpg_item.xml")
+
+#define RPG_CLIENT_DEF_MONSTER_DICTIONARY           ACE_TEXT("rpg_monster.xml")
+
 #define RPG_CLIENT_DEF_MAP_MIN_ROOM_SIZE            0 // 0: don't care
 #define RPG_CLIENT_DEF_MAP_DOORS                    true
 #define RPG_CLIENT_DEF_MAP_CORRIDORS                true

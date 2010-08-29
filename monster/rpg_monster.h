@@ -57,7 +57,7 @@ class RPG_Monster
               const bool& = false);              // summoned ?
   RPG_Monster(const RPG_Monster&);
   virtual ~RPG_Monster();
-  RPG_Monster& operator=(const RPG_Monster&);
+//   RPG_Monster& operator=(const RPG_Monster&);
 
   const RPG_Common_CreatureType getType() const;
   const bool isSummoned() const;

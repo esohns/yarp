@@ -22,6 +22,8 @@
 
 #include "rpg_item_common.h"
 
+#include <xsd/cxx/xml/error-handler.hxx>
+
 #include <ace/Global_Macros.h>
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
@@ -33,28 +35,42 @@
  */
 class RPG_Item_Dictionary
 {
-  // we use the singleton pattern, so we need to enable access to the ctor/dtors
-  friend class ACE_Singleton<RPG_Item_Dictionary,
-  ACE_Thread_Mutex>;
+  // singleton requires access to the ctor/dtor
+ friend class ACE_Singleton<RPG_Item_Dictionary,
+                            ACE_Thread_Mutex>;
 
-  public:
+ public:
   // init item dictionary
-    void initItemDictionary(const std::string&); // filename
-    const RPG_Item_WeaponProperties getWeaponProperties(const RPG_Item_WeaponType&) const;
-    const RPG_Item_ArmorProperties getArmorProperties(const RPG_Item_ArmorType&) const;
+  void init(const std::string&,  // filename
+            const bool& = true); // validate XML ?
+  const RPG_Item_WeaponProperties getWeaponProperties(const RPG_Item_WeaponType&) const;
+  const RPG_Item_ArmorProperties getArmorProperties(const RPG_Item_ArmorType&) const;
 
-  // debug info
-    void dump() const;
+ // debug info
+ void dump() const;
 
-  private:
+ private:
   // safety measures
-    RPG_Item_Dictionary();
-    virtual ~RPG_Item_Dictionary();
-    ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary(const RPG_Item_Dictionary&));
-    ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary& operator=(const RPG_Item_Dictionary&));
+  RPG_Item_Dictionary();
+  virtual ~RPG_Item_Dictionary();
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary(const RPG_Item_Dictionary&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary& operator=(const RPG_Item_Dictionary&));
 
-    RPG_Item_WeaponDictionary_t myWeaponDictionary;
-    RPG_Item_ArmorDictionary_t  myArmorDictionary;
+  // private error handler
+  class XSD_Error_Handler
+   : public ::xsd::cxx::xml::error_handler<char>
+  {
+   public:
+    virtual bool handle(const std::string&,                             // id
+                        unsigned long,                                  // line
+                        unsigned long,                                  // column
+                        ::xsd::cxx::xml::error_handler<char>::severity, // severity
+                        const std::string&);                            // message
+  };
+
+  RPG_Item_WeaponDictionary_t myWeaponDictionary;
+  RPG_Item_ArmorDictionary_t  myArmorDictionary;
+  XSD_Error_Handler           myXSDErrorHandler;
 };
 
 typedef ACE_Singleton<RPG_Item_Dictionary,

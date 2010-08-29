@@ -83,17 +83,17 @@ RPG_Monster::~RPG_Monster()
 
 }
 
-RPG_Monster&
-RPG_Monster::operator=(const RPG_Monster& monster_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Monster::operator="));
-
-  myType = monster_in.myType;
-  myIsSummoned = monster_in.myIsSummoned;
-  inherited::operator=(monster_in);
-
-  return *this;
-}
+// RPG_Monster&
+// RPG_Monster::operator=(const RPG_Monster& monster_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Monster::operator="));
+//
+//   myType = monster_in.myType;
+//   myIsSummoned = monster_in.myIsSummoned;
+//   inherited::operator=(monster_in);
+//
+//   return *this;
+// }
 
 const RPG_Common_CreatureType
 RPG_Monster::getType() const

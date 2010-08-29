@@ -36,7 +36,8 @@
 class RPG_Character_Common_Tools
 {
  public:
-  static void initStringConversionTables();
+  // init string conversion (and other) tables
+  static void init();
 
   static const std::string raceToString(const RPG_Character_Race_t&); // race(es)
   static const std::string classToString(const RPG_Character_Class&); // class(es)
@@ -63,6 +64,8 @@ class RPG_Character_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools(const RPG_Character_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools& operator=(const RPG_Character_Common_Tools&));
+
+  static void initStringConversionTables();
 };
 
 #endif

@@ -26,7 +26,6 @@
 
 #include "rpg_magic_common.h"
 #include "rpg_magic_dictionary.h"
-// #include "rpg_magic_XML_tree.h"
 
 #include <ace/Global_Macros.h>
 

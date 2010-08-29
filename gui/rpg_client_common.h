@@ -97,6 +97,12 @@ struct RPG_Client_Config
   std::string        graphics_directory;
   unsigned long      graphics_cache_size;
   std::string        graphics_dictionary;
+  // *** magic ***
+  std::string        magic_dictionary;
+  // *** item ***
+  std::string        item_dictionary;
+  // *** monster ***
+  std::string        monster_dictionary;
   // *** map ***
   map_config_t       map_config;
   std::string        map_file;

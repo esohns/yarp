@@ -24,11 +24,16 @@
 #include <rpg_monster_attackaction.h>
 #include <rpg_monster_dictionary.h>
 
+#include <rpg_combat_common_tools.h>
+
 #include <rpg_character_common_tools.h>
 
 #include <rpg_item_common.h>
 #include <rpg_item_dictionary.h>
 #include <rpg_item_common_tools.h>
+
+#include <rpg_magic_dictionary.h>
+#include <rpg_magic_common_tools.h>
 
 #include <rpg_common_attribute.h>
 #include <rpg_common_tools.h>
@@ -43,6 +48,68 @@
 #include <sstream>
 
 #include <math.h>
+
+void
+RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
+                              const std::string& itemDictionaryFile_in,
+                              const std::string& monsterDictionaryFile_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::init"));
+
+  // step1a: init randomization
+  RPG_Dice::init();
+
+  // step1b: init other static data
+  RPG_Dice_Common_Tools::initStringConversionTables();
+  RPG_Common_Tools::initStringConversionTables();
+
+  RPG_Magic_Common_Tools::init();
+  RPG_Item_Common_Tools::initStringConversionTables();
+  RPG_Character_Common_Tools::init();
+  RPG_Combat_Common_Tools::initStringConversionTables();
+  RPG_Monster_Common_Tools::initStringConversionTables();
+
+  // step1c: init dictionaries
+
+  // step1ca: init magic dictionary
+  try
+  {
+    RPG_MAGIC_DICTIONARY_SINGLETON::instance()->init(magicDictionaryFile_in);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Magic_Dictionary::init, returning\n")));
+
+    return;
+  }
+
+  // step1cb: init item dictionary
+  try
+  {
+    RPG_ITEM_DICTIONARY_SINGLETON::instance()->init(itemDictionaryFile_in);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Item_Dictionary::init, returning\n")));
+
+    return;
+  }
+
+  // step1cc: init monster dictionary
+  try
+  {
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init(monsterDictionaryFile_in);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Monster_Dictionary::init, returning\n")));
+
+    return;
+  }
+}
 
 const bool
 RPG_Engine_Common_Tools::isPartyHelpless(const RPG_Character_Party_t& party_in)

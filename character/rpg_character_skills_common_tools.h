@@ -25,6 +25,7 @@
 #include "rpg_character_attributes.h"
 #include "rpg_character_common.h"
 #include "rpg_character_skills_common.h"
+#include "rpg_character_common_tools.h"
 
 #include <rpg_common_subclass.h>
 #include <rpg_common_skill.h>
@@ -41,10 +42,10 @@
 */
 class RPG_Character_Skills_Common_Tools
 {
- public:
-  // init static data
-  static void init();
+  // allow access to initialization methods
+  friend class RPG_Character_Common_Tools;
 
+ public:
   static const bool isClassSkill(const RPG_Common_SubClass&, // subclass
                                  const RPG_Common_Skill&);   // skill
   static const unsigned int getSkillPoints(const RPG_Common_SubClass&, // subclass
@@ -88,6 +89,9 @@ class RPG_Character_Skills_Common_Tools
   typedef RPG_Character_Feat_Prerequisites_t::const_iterator RPG_Character_Feat_PrerequisitesIterator_t;
   typedef std::map<RPG_Character_Feat, RPG_Character_Feat_Prerequisites_t> RPG_Character_FeatPrerequisitesTable_t;
   typedef RPG_Character_FeatPrerequisitesTable_t::const_iterator RPG_Character_FeatPrerequisitesTableIterator_t;
+
+  // init static data
+  static void init();
 
   // helper methods
   static void initStringConversionTables();

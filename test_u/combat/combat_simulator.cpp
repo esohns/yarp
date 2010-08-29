@@ -331,12 +331,9 @@ void do_work(const std::string& magicDictionaryFilename_in,
   RPG_Common_Tools::initStringConversionTables();
   RPG_Magic_Common_Tools::init();
   RPG_Item_Common_Tools::initStringConversionTables();
-  RPG_Character_Common_Tools::initStringConversionTables();
+  RPG_Character_Common_Tools::init();
   RPG_Monster_Common_Tools::initStringConversionTables();
   RPG_Combat_Common_Tools::initStringConversionTables();
-
-  // step 1a: init ruleset
-  RPG_Character_Skills_Common_Tools::init();
 
   // step2a: init magic dictionary
   try
@@ -354,12 +351,12 @@ void do_work(const std::string& magicDictionaryFilename_in,
   // step2b: init item dictionary
   try
   {
-    RPG_ITEM_DICTIONARY_SINGLETON::instance()->initItemDictionary(itemDictionaryFilename_in);
+    RPG_ITEM_DICTIONARY_SINGLETON::instance()->init(itemDictionaryFilename_in);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Item_Dictionary::initItemDictionary, returning\n")));
+               ACE_TEXT("caught exception in RPG_Item_Dictionary::init, returning\n")));
 
     return;
   }

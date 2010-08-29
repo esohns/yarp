@@ -152,13 +152,10 @@ void do_work(const std::string& filename_in,
   RPG_Dice_Common_Tools::initStringConversionTables();
   RPG_Common_Tools::initStringConversionTables();
   RPG_Item_Common_Tools::initStringConversionTables();
-  RPG_Character_Common_Tools::initStringConversionTables();
+  RPG_Character_Common_Tools::init();
   RPG_Magic_Common_Tools::init();
   RPG_Combat_Common_Tools::initStringConversionTables();
   RPG_Monster_Common_Tools::initStringConversionTables();
-
-  // step 1a: init ruleset
-  RPG_Character_Skills_Common_Tools::init();
 
   // step2: init monster dictionary
   try

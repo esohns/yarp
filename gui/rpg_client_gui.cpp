@@ -27,6 +27,14 @@
 #include <rpg_map_common_tools.h>
 #include <rpg_map_level.h>
 
+#include <rpg_engine_common_tools.h>
+
+#include <rpg_character_defines.h>
+#include <rpg_character_player.h>
+
+#include <rpg_common_tools.h>
+#include <rpg_common_file_tools.h>
+
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_surface.h>
@@ -36,13 +44,6 @@
 
 #include <rpg_sound_dictionary.h>
 #include <rpg_sound_common_tools.h>
-
-#include <rpg_character_defines.h>
-#include <rpg_character_player.h>
-
-#include <rpg_common_tools.h>
-#include <rpg_common_file_tools.h>
-#include <rpg_dice_common_tools.h>
 
 #include <gnome.h>
 #include <glade/glade.h>
@@ -315,16 +316,17 @@ about_activated_GTK_cb(GtkWidget* widget_in,
 }
 
 G_MODULE_EXPORT gint
-settings_activated_GTK_cb(GtkWidget* widget_in,
-                          GdkEvent* event_in,
-                          gpointer userData_in)
+properties_activated_GTK_cb(GtkWidget* widget_in,
+                            GdkEvent* event_in,
+                            gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::settings_activated_GTK_cb"));
+  ACE_TRACE(ACE_TEXT("::properties_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   ACE_UNUSED_ARG(event_in);
   ACE_UNUSED_ARG(userData_in);
 
+  return FALSE;
 }
 
 G_MODULE_EXPORT gint
@@ -362,24 +364,25 @@ quit_activated_GTK_cb(GtkWidget* widget_in,
 }
 
 G_MODULE_EXPORT gint
-create_character_actived_GTK_cb(GtkWidget* widget_in,
-                                GdkEvent* event_in,
-                                gpointer userData_in)
+create_character_activated_GTK_cb(GtkWidget* widget_in,
+                                  GdkEvent* event_in,
+                                  gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::create_character_actived_GTK_cb"));
+  ACE_TRACE(ACE_TEXT("::create_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   ACE_UNUSED_ARG(event_in);
   ACE_UNUSED_ARG(userData_in);
 
+  return FALSE;
 }
 
 G_MODULE_EXPORT gint
-load_character_actived_GTK_cb(GtkWidget* widget_in,
-                              GdkEvent* event_in,
-                              gpointer userData_in)
+load_character_activated_GTK_cb(GtkWidget* widget_in,
+                                GdkEvent* event_in,
+                                gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::load_character_actived_GTK_cb"));
+  ACE_TRACE(ACE_TEXT("::load_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   ACE_UNUSED_ARG(event_in);
@@ -424,7 +427,7 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
 
   ACE_UNUSED_ARG(widget_in);
   ACE_UNUSED_ARG(event_in);
-  GTK_cb_data_t* userData_p = ACE_static_cast(GTK_cb_data_t*, userData_in);
+  GTK_cb_data_t* userData_p = ACE_reinterpret_cast(GTK_cb_data_t*, userData_in);
 
   // sanity check(s)
   ACE_ASSERT(userData_p);
@@ -472,42 +475,45 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
 }
 
 G_MODULE_EXPORT gint
-save_character_actived_GTK_cb(GtkWidget* widget_in,
-                              GdkEvent* event_in,
-                              gpointer userData_in)
+save_character_activated_GTK_cb(GtkWidget* widget_in,
+                                GdkEvent* event_in,
+                                gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::save_character_actived_GTK_cb"));
+  ACE_TRACE(ACE_TEXT("::save_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   ACE_UNUSED_ARG(event_in);
   ACE_UNUSED_ARG(userData_in);
 
+  return FALSE;
 }
 
 G_MODULE_EXPORT gint
-join_game_actived_GTK_cb(GtkWidget* widget_in,
-                         GdkEvent* event_in,
-                         gpointer userData_in)
+join_game_activated_GTK_cb(GtkWidget* widget_in,
+                           GdkEvent* event_in,
+                           gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::join_game_actived_GTK_cb"));
+  ACE_TRACE(ACE_TEXT("::join_game_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   ACE_UNUSED_ARG(event_in);
   ACE_UNUSED_ARG(userData_in);
 
+  return FALSE;
 }
 
 G_MODULE_EXPORT gint
-characters_actived_GTK_cb(GtkWidget* widget_in,
+characters_activated_GTK_cb(GtkWidget* widget_in,
                           GdkEvent* event_in,
                           gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::characters_actived_GTK_cb"));
+  ACE_TRACE(ACE_TEXT("::characters_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   ACE_UNUSED_ARG(event_in);
   ACE_UNUSED_ARG(userData_in);
 
+  return FALSE;
 }
 #ifdef __cplusplus
 }
@@ -902,12 +908,13 @@ dirent_comparator(const dirent** entry1_in,
 
 const unsigned int
 load_character_profiles(const std::string& repository_in,
-//                         GtkListStore* listStore_in,
-                        GtkComboBox* comboBox_in)
+                        GtkListStore* listStore_in)
+//                         GtkComboBox* comboBox_in)
 {
   ACE_TRACE(ACE_TEXT("::load_character_profiles"));
 
-  // sanity check(s): directory exists ?
+  // sanity check(s)
+  ACE_ASSERT(listStore_in);
   if (!RPG_Common_File_Tools::isDirectory(repository_in))
   {
     ACE_DEBUG((LM_ERROR,
@@ -930,35 +937,75 @@ load_character_profiles(const std::string& repository_in,
     return 0;
   } // end IF
 
+  // clear existing entries
+  gtk_list_store_clear(listStore_in);
+
   // iterate over entries
   std::string entry;
   std::string extension(RPG_CHARACTER_PLAYER_PROFILE_EXT);
   GtkTreeIter iter;
-  for (unsigned int i = 0;
-       i < entries.length();
-       i++)
+  unsigned int num_profiles = 0;
+  for (;
+       num_profiles < ACE_static_cast(unsigned int, entries.length());
+       num_profiles++)
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("character profile[%u]: %s\n"),
-               i,
-               entries[i]->d_name));
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("character profile[%u]: %s\n"),
+//                num_profiles,
+//                entries[i]->d_name));
 
-    // sanitize name
-    entry = entries[i]->d_name;
+    // sanitize name (chop off extension)
+    entry = entries[num_profiles]->d_name;
     entry.erase(entry.rfind(extension,
                             std::string::npos),
                 std::string::npos);
 
-    // append text entry
-//     gtk_list_store_append(listStore_in, &iter);
-//     gtk_list_store_set(listStore_in, &iter,
-//                        0, entry.c_str(),
-//                        -1);
-    gtk_combo_box_append_text(comboBox_in,
-                              entry.c_str());
+    // append new (text) entry
+    gtk_list_store_append(listStore_in, &iter);
+    gtk_list_store_set(listStore_in, &iter,
+                       0, entry.c_str(), // column 0
+                       -1);
+//     gtk_combo_box_append_text(comboBox_in,
+//                               entry.c_str());
   } // end FOR
 
-  return entries.length();
+  // clean up
+  entries.close();
+
+  // sanity check: iterate over list entries
+  if (num_profiles)
+  {
+    const gchar* text = NULL;
+    GValue value;
+    ACE_OS::memset(&value,
+                   0,
+                   sizeof(value));
+    ACE_ASSERT(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(listStore_in),
+                                             &iter));
+    gtk_tree_model_get_value(GTK_TREE_MODEL(listStore_in), &iter,
+                             0, &value);
+    text = g_value_get_string(&value);
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("character profile[0]: %s\n"),
+               std::string(text).c_str()));
+    g_value_unset(&value);
+    for (unsigned int i = 1;
+         gtk_tree_model_iter_next(GTK_TREE_MODEL(listStore_in),
+                                  &iter);
+         i++)
+    {
+      gtk_tree_model_get_value(GTK_TREE_MODEL(listStore_in), &iter,
+                               0, &value);
+      text = g_value_get_string(&value);
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("character profile[%u]: %s\n"),
+                 i - 1,
+                 std::string(text).c_str()));
+      g_value_unset(&value);
+    } // end FOR
+  } // end IF
+
+  return num_profiles;
 }
 
 void
@@ -972,10 +1019,13 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [") << RPG_CLIENT_DEF_INI_FILE << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-g [FILE]   : graphics dictionary (*.xml)") << std::endl;
+  std::cout << ACE_TEXT("-e [FILE]   : monster dictionary (*.xml)") << ACE_TEXT(" [") << RPG_CLIENT_DEF_MONSTER_DICTIONARY << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-f [FILE]   : floor plan (*.txt)") << std::endl;
+  std::cout << ACE_TEXT("-g [FILE]   : graphics dictionary (*.xml)") << ACE_TEXT(" [") << RPG_CLIENT_DEF_GRAPHICS_DICTIONARY << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-i [FILE]   : item dictionary (*.xml)") << ACE_TEXT(" [") << RPG_CLIENT_DEF_ITEM_DICTIONARY << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-m [FILE]   : level map (*.txt)") << std::endl;
-  std::cout << ACE_TEXT("-s [FILE]   : sound dictionary (*.xml)") << std::endl;
+  std::cout << ACE_TEXT("-m [FILE]   : magic dictionary (*.xml)") << ACE_TEXT(" [") << RPG_CLIENT_DEF_MAGIC_DICTIONARY << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-s [FILE]   : sound dictionary (*.xml)") << ACE_TEXT(" [") << RPG_CLIENT_DEF_SOUND_DICTIONARY << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-u [FILE]   : UI file") << ACE_TEXT(" [") << RPG_CLIENT_DEF_GNOME_UI_FILE << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
@@ -986,9 +1036,12 @@ const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   std::string& iniFile_out,
+                  std::string& monsterDictionary_out,
+                  std::string& floorPlan_out,
                   std::string& graphicsDictionary_out,
+                  std::string& itemDictionary_out,
                   bool& logToFile_out,
-                  std::string& mapFile_out,
+                  std::string& magicDictionary_out,
                   std::string& soundDictionary_out,
                   bool& traceInformation_out,
                   std::string& UIfile_out,
@@ -999,9 +1052,12 @@ process_arguments(const int argc_in,
 
   // init results
   iniFile_out              = RPG_CLIENT_DEF_INI_FILE;
+  monsterDictionary_out    = RPG_CLIENT_DEF_MONSTER_DICTIONARY;
+  floorPlan_out.clear();
   soundDictionary_out      = RPG_CLIENT_DEF_GRAPHICS_DICTIONARY;
+  itemDictionary_out       = RPG_CLIENT_DEF_ITEM_DICTIONARY;
   logToFile_out            = false;
-  mapFile_out.clear();
+  magicDictionary_out      = RPG_CLIENT_DEF_MAGIC_DICTIONARY;
   soundDictionary_out      = RPG_CLIENT_DEF_SOUND_DICTIONARY;
   traceInformation_out     = false;
   UIfile_out               = RPG_CLIENT_DEF_GNOME_UI_FILE;
@@ -1010,7 +1066,7 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("c:g:lm:s:tu:vx::"),
+                             ACE_TEXT("c:e:f:g:i:lm:s:tu:vx::"),
                              1,                         // skip command name
                              1,                         // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
@@ -1028,9 +1084,27 @@ process_arguments(const int argc_in,
 
         break;
       }
+      case 'e':
+      {
+        monsterDictionary_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'f':
+      {
+        floorPlan_out = argumentParser.opt_arg();
+
+        break;
+      }
       case 'g':
       {
         graphicsDictionary_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'i':
+      {
+        itemDictionary_out = argumentParser.opt_arg();
 
         break;
       }
@@ -1042,7 +1116,7 @@ process_arguments(const int argc_in,
       }
       case 'm':
       {
-        mapFile_out = argumentParser.opt_arg();
+        magicDictionary_out = argumentParser.opt_arg();
 
         break;
       }
@@ -1384,38 +1458,29 @@ do_initGUI(const std::string& graphicsDirectory_in,
   } // end IF
   gtk_combo_box_set_model(available_characters,
                           GTK_TREE_MODEL(list));
+  GtkCellRenderer* renderer = gtk_cell_renderer_text_new();
+  ACE_ASSERT(renderer);
+  if (!renderer)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to gtk_cell_renderer_text_new(): \"%m\", aborting\n")));
+
+    // clean up
+    g_object_unref(G_OBJECT(xml));
+    xml = NULL;
+
+    return false;
+  } // end IF
+  gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(available_characters), renderer,
+                                ACE_TEXT_ALWAYS_CHAR("text"), 0);
+  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(available_characters), renderer,
+                                 ACE_TEXT_ALWAYS_CHAR("text"), 1,
+                                 NULL);
   if (load_character_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
-//                               list,
-                              available_characters))
+                              list))
     gtk_widget_set_sensitive(GTK_WIDGET(available_characters), TRUE);
-//   // render cells
-//   GtkCellRenderer* renderer = NULL;
-// //   GtkTreePath* path = NULL;
-// //   GtkTreeIter iter;
-//   renderer = gtk_cell_renderer_text_new();
-//   ACE_ASSERT(renderer);
-//   if (!renderer)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to gtk_cell_renderer_text_new(): \"%m\", aborting\n")));
-//
-//     // clean up
-//     g_object_unref(G_OBJECT(xml));
-//     xml = NULL;
-//
-//     return false;
-//   } // end IF
-//   gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(available_characters), renderer,
-//                                  ACE_TEXT_ALWAYS_CHAR("text"), 0,
-//                                  NULL);
-// //   gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(available_characters), renderer,
-// //                                      set_sensitive,
-// //                                      NULL, NULL);
-// //   gtk_combo_box_set_row_separator_func(GTK_COMBO_BOX(available_characters),
-// //                                        is_separator,
-// //                                        NULL, NULL);
-//   gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(available_characters), renderer,
-//                              TRUE);
+  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(available_characters), renderer,
+                             TRUE); // expand ?
 
   // step4a: connect default signals
 //   g_signal_connect(main_dialog,
@@ -1428,119 +1493,120 @@ do_initGUI(const std::string& graphicsDirectory_in,
 //                    &about_dialog);
 
    // step4b: connect custom signals
-//   GtkButton* button = NULL;
-//   button = GTK_BUTTON(glade_xml_get_widget(xml,
-//                                            ACE_TEXT_ALWAYS_CHAR("create")));
-//   ACE_ASSERT(button);
-//   g_signal_connect(button,
-//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-//                    G_CALLBACK(create_character_actived_GTK_cb),
-//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
-  glade_xml_signal_connect_data(xml,
-                                ACE_TEXT_ALWAYS_CHAR("create_character_actived_GTK_cb"),
-                                G_CALLBACK(create_character_actived_GTK_cb),
-                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  gpointer userData_p = ACE_const_cast(GTK_cb_data_t*, &userData_in);
+  GtkButton* button = NULL;
+  button = GTK_BUTTON(glade_xml_get_widget(xml,
+                                           ACE_TEXT_ALWAYS_CHAR("create")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(create_character_activated_GTK_cb),
+                   userData_p);
+//   glade_xml_signal_connect_data(xml,
+//                                 ACE_TEXT_ALWAYS_CHAR("create_character_activated_GTK_cb"),
+//                                 G_CALLBACK(create_character_activated_GTK_cb),
+//                                 userData_p);
 
-//   GtkFileChooser* filechooser = NULL;
-//   filechooser = GTK_FILE_CHOOSER(glade_xml_get_widget(xml,
-//                                                       RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
-//   ACE_ASSERT(filechooser);
-//   g_signal_connect(filechooser,
-//                    ACE_TEXT_ALWAYS_CHAR("file-activated"),
-//                    G_CALLBACK(character_file_activated_GTK_cb),
-//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
-  glade_xml_signal_connect_data(xml,
-                                ACE_TEXT_ALWAYS_CHAR("character_file_activated_GTK_cb"),
-                                G_CALLBACK(character_file_activated_GTK_cb),
-                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  GtkFileChooser* filechooser = NULL;
+  filechooser = GTK_FILE_CHOOSER(glade_xml_get_widget(xml,
+                                                      RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
+  ACE_ASSERT(filechooser);
+  g_signal_connect(filechooser,
+                   ACE_TEXT_ALWAYS_CHAR("file-activated"),
+                   G_CALLBACK(character_file_activated_GTK_cb),
+                   userData_p);
+//   glade_xml_signal_connect_data(xml,
+//                                 ACE_TEXT_ALWAYS_CHAR("character_file_activated_GTK_cb"),
+//                                 G_CALLBACK(character_file_activated_GTK_cb),
+//                                 userData_p);
 
-//   button = GTK_BUTTON(glade_xml_get_widget(xml,
-//                                            ACE_TEXT_ALWAYS_CHAR("load")));
-//   ACE_ASSERT(button);
-//   g_signal_connect(button,
-//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-//                    G_CALLBACK(load_character_actived_GTK_cb),
-//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
-  glade_xml_signal_connect_data(xml,
-                                ACE_TEXT_ALWAYS_CHAR("load_character_actived_GTK_cb"),
-                                G_CALLBACK(load_character_actived_GTK_cb),
-                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  button = GTK_BUTTON(glade_xml_get_widget(xml,
+                                           ACE_TEXT_ALWAYS_CHAR("load")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(load_character_activated_GTK_cb),
+                   userData_p);
+//   glade_xml_signal_connect_data(xml,
+//                                 ACE_TEXT_ALWAYS_CHAR("load_character_activated_GTK_cb"),
+//                                 G_CALLBACK(load_character_activated_GTK_cb),
+//                                 userData_p);
 
-//   button = GTK_BUTTON(glade_xml_get_widget(xml,
-//                                            ACE_TEXT_ALWAYS_CHAR("save")));
-//   ACE_ASSERT(button);
-//   g_signal_connect(button,
-//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-//                    G_CALLBACK(save_character_actived_GTK_cb),
-//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
-  glade_xml_signal_connect_data(xml,
-                                ACE_TEXT_ALWAYS_CHAR("save_character_actived_GTK_cb"),
-                                G_CALLBACK(save_character_actived_GTK_cb),
-                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  button = GTK_BUTTON(glade_xml_get_widget(xml,
+                                           ACE_TEXT_ALWAYS_CHAR("save")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(save_character_activated_GTK_cb),
+                   userData_p);
+//   glade_xml_signal_connect_data(xml,
+//                                 ACE_TEXT_ALWAYS_CHAR("save_character_activated_GTK_cb"),
+//                                 G_CALLBACK(save_character_activated_GTK_cb),
+//                                 userData_p);
 
-//   button = GTK_BUTTON(glade_xml_get_widget(xml,
-//                                            ACE_TEXT_ALWAYS_CHAR("join")));
-//   ACE_ASSERT(button);
-//   g_signal_connect(button,
-//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-//                    G_CALLBACK(join_game_actived_GTK_cb),
-//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
-  glade_xml_signal_connect_data(xml,
-                                ACE_TEXT_ALWAYS_CHAR("join_game_actived_GTK_cb"),
-                                G_CALLBACK(join_game_actived_GTK_cb),
-                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  button = GTK_BUTTON(glade_xml_get_widget(xml,
+                                           ACE_TEXT_ALWAYS_CHAR("join")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(join_game_activated_GTK_cb),
+                   userData_p);
+//   glade_xml_signal_connect_data(xml,
+//                                 ACE_TEXT_ALWAYS_CHAR("join_game_activated_GTK_cb"),
+//                                 G_CALLBACK(join_game_activated_GTK_cb),
+//                                 userData_p);
 
-//   GtkComboBox* combobox = NULL;
-//   combobox = GTK_COMBO_BOX(glade_xml_get_widget(xml,
-//                                                 RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
-//   ACE_ASSERT(combobox);
-//   g_signal_connect(combobox,
-//                    ACE_TEXT_ALWAYS_CHAR("changed"),
-//                    G_CALLBACK(characters_actived_GTK_cb),
-//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
-  glade_xml_signal_connect_data(xml,
-                                ACE_TEXT_ALWAYS_CHAR("characters_actived_GTK_cb"),
-                                G_CALLBACK(characters_actived_GTK_cb),
-                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  GtkComboBox* combobox = NULL;
+  combobox = GTK_COMBO_BOX(glade_xml_get_widget(xml,
+                                                RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+  ACE_ASSERT(combobox);
+  g_signal_connect(combobox,
+                   ACE_TEXT_ALWAYS_CHAR("changed"),
+                   G_CALLBACK(characters_activated_GTK_cb),
+                   userData_p);
+//   glade_xml_signal_connect_data(xml,
+//                                 ACE_TEXT_ALWAYS_CHAR("characters_activated_GTK_cb"),
+//                                 G_CALLBACK(characters_activated_GTK_cb),
+//                                 userData_p);
 
-//   button = GTK_BUTTON(glade_xml_get_widget(xml,
-//                                            ACE_TEXT_ALWAYS_CHAR("quit")));
-//   ACE_ASSERT(button);
-//   g_signal_connect(button,
-//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-//                    G_CALLBACK(quit_activated_GTK_cb),
-//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
-  glade_xml_signal_connect_data(xml,
-                                ACE_TEXT_ALWAYS_CHAR("quit_activated_GTK_cb"),
-                                G_CALLBACK(quit_activated_GTK_cb),
-                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  button = GTK_BUTTON(glade_xml_get_widget(xml,
+                                           ACE_TEXT_ALWAYS_CHAR("quit")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(quit_activated_GTK_cb),
+                   userData_p);
+//   glade_xml_signal_connect_data(xml,
+//                                 ACE_TEXT_ALWAYS_CHAR("quit_activated_GTK_cb"),
+//                                 G_CALLBACK(quit_activated_GTK_cb),
+//                                 userData_p);
 
-//   button = GTK_BUTTON(glade_xml_get_widget(xml,
-//                       ACE_TEXT_ALWAYS_CHAR("about")));
-//   ACE_ASSERT(button);
-//   g_signal_connect(button,
-//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-//                    G_CALLBACK(about_activated_GTK_cb),
-//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
-  glade_xml_signal_connect_data(xml,
-                                ACE_TEXT_ALWAYS_CHAR("about_activated_GTK_cb"),
-                                G_CALLBACK(about_activated_GTK_cb),
-                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  button = GTK_BUTTON(glade_xml_get_widget(xml,
+                                           ACE_TEXT_ALWAYS_CHAR("about")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(about_activated_GTK_cb),
+                   userData_p);
+//   glade_xml_signal_connect_data(xml,
+//                                 ACE_TEXT_ALWAYS_CHAR("about_activated_GTK_cb"),
+//                                 G_CALLBACK(about_activated_GTK_cb),
+//                                 userData_p);
 
-//   button = GTK_BUTTON(glade_xml_get_widget(xml,
-//                       ACE_TEXT_ALWAYS_CHAR("settings")));
-//   ACE_ASSERT(button);
-//   g_signal_connect(button,
-//                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-//                    G_CALLBACK(settings_activated_GTK_cb),
-//                    &ACE_const_cast(GTK_cb_data_t&, userData_in));
-  glade_xml_signal_connect_data(xml,
-                                ACE_TEXT_ALWAYS_CHAR("settings_activated_GTK_cb"),
-                                G_CALLBACK(settings_activated_GTK_cb),
-                                &ACE_const_cast(GTK_cb_data_t&, userData_in));
+  button = GTK_BUTTON(glade_xml_get_widget(xml,
+                                           ACE_TEXT_ALWAYS_CHAR("properties")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(properties_activated_GTK_cb),
+                   userData_p);
+//   glade_xml_signal_connect_data(xml,
+//                                 ACE_TEXT_ALWAYS_CHAR("properties_activated_GTK_cb"),
+//                                 G_CALLBACK(properties_activated_GTK_cb),
+//                                 userData_p);
 
   // step5: auto-connect signals/slots
-  glade_xml_signal_autoconnect(xml);
+//   glade_xml_signal_autoconnect(xml);
 
 //   // step6: use correct screen
 //   if (parentWidget_in)
@@ -1553,7 +1619,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
   // step7: activate first repository entry (if any)
   if (gtk_widget_is_sensitive(GTK_WIDGET(available_characters)))
-    gtk_combo_box_set_active(GTK_COMBO_BOX(available_characters), 0);
+    gtk_combo_box_set_active(available_characters, 0);
 
   // init SDL UI handling
 
@@ -1789,9 +1855,10 @@ do_work(const RPG_Client_Config& config_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
-  // step0a: init RPG libs
-  RPG_Dice_Common_Tools::initStringConversionTables();
-  RPG_Common_Tools::initStringConversionTables();
+  // step0a: init RPG engine
+  RPG_Engine_Common_Tools::init(config_in.magic_dictionary,
+                                config_in.item_dictionary,
+                                config_in.monster_dictionary);
   RPG_Sound_Common_Tools::initStringConversionTables();
   RPG_Graphics_Common_Tools::initStringConversionTables();
 
@@ -2298,9 +2365,12 @@ ACE_TMAIN(int argc_in,
 
   // step1a: process commandline arguments
   std::string iniFile                = RPG_CLIENT_DEF_INI_FILE;
+  std::string monsterDictionary      = RPG_CLIENT_DEF_MONSTER_DICTIONARY;
   std::string graphicsDictionary     = RPG_CLIENT_DEF_GRAPHICS_DICTIONARY;
-  std::string mapFile;
+  std::string floorPlan;
+  std::string itemDictionary         = RPG_CLIENT_DEF_ITEM_DICTIONARY;
   bool logToFile                     = false;
+  std::string magicDictionary        = RPG_CLIENT_DEF_MAGIC_DICTIONARY;
   std::string soundDictionary        = RPG_CLIENT_DEF_SOUND_DICTIONARY;
   bool traceInformation              = false;
   std::string UIfile                 = RPG_CLIENT_DEF_GNOME_UI_FILE;
@@ -2309,9 +2379,12 @@ ACE_TMAIN(int argc_in,
   if (!(process_arguments(argc_in,
                           argv_in,
                           iniFile,
+                          monsterDictionary,
+                          floorPlan,
                           graphicsDictionary,
+                          itemDictionary,
                           logToFile,
-                          mapFile,
+                          magicDictionary,
                           soundDictionary,
                           traceInformation,
                           UIfile,
@@ -2406,6 +2479,15 @@ ACE_TMAIN(int argc_in,
   config.graphics_cache_size               = RPG_CLIENT_DEF_GRAPHICS_CACHESIZE;
   config.graphics_dictionary               = graphicsDictionary;
 
+  // *** magic ***
+  config.magic_dictionary                  = magicDictionary;
+
+  // *** item ***
+  config.item_dictionary                  = itemDictionary;
+
+  // *** monster ***
+  config.monster_dictionary               = monsterDictionary;
+
   // *** map ***
   config.map_config.min_room_size          = RPG_CLIENT_DEF_MAP_MIN_ROOM_SIZE;
   config.map_config.doors                  = RPG_CLIENT_DEF_MAP_DOORS;
@@ -2416,7 +2498,7 @@ ACE_TMAIN(int argc_in,
   config.map_config.square_rooms           = RPG_CLIENT_DEF_MAP_SQUARE_ROOMS;
   config.map_config.map_size_x             = RPG_CLIENT_DEF_MAP_SIZE_X;
   config.map_config.map_size_y             = RPG_CLIENT_DEF_MAP_SIZE_Y;
-  config.map_file                          = mapFile;
+  config.map_file                          = floorPlan;
 
 //   // step1dc: populate config object with default/collected data
 //   // ************ connection config data ************

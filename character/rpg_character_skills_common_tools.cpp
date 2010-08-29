@@ -122,6 +122,9 @@ RPG_Character_Skills_Common_Tools::initBonusFeatsTables()
   myWizardBonusFeatsTable.insert(FEAT_FORGE_RING);
   myWizardBonusFeatsTable.insert(FEAT_SCRIBE_SCROLL);
   myWizardBonusFeatsTable.insert(FEAT_SPELL_MASTERY);
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized bonus feat tables...\n")));
 }
 
 void
@@ -405,13 +408,13 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   // FEAT_GREATER_WEAPON_FOCUS
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_MARTIAL_WEAPONS;
-  // TODO requires proficiency for a SPECIFIC weapon !
+  // *TODO* requires proficiency for a SPECIFIC weapon !
   // FEAT_PROFICIENCY_SIMPLE_WEAPONS
   // FEAT_PROFICIENCY_EXOTIC_WEAPONS
   prerequisites.push_back(prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_WEAPON_FOCUS;
-  // TODO requires focus for a SPECIFIC weapon !
+  // *TODO* requires focus for a SPECIFIC weapon !
   prerequisites.push_back(prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
@@ -435,21 +438,21 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   // FEAT_GREATER_WEAPON_SPECIALIZATION
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_MARTIAL_WEAPONS;
-  // TODO requires proficiency for a SPECIFIC weapon !
+  // *TODO* requires proficiency for a SPECIFIC weapon !
   // FEAT_PROFICIENCY_SIMPLE_WEAPONS
   // FEAT_PROFICIENCY_EXOTIC_WEAPONS
   prerequisites.push_back(prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_GREATER_WEAPON_FOCUS;
-  // TODO requires greater focus for a SPECIFIC weapon !
+  // *TODO* requires greater focus for a SPECIFIC weapon !
   prerequisites.push_back(prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_WEAPON_FOCUS;
-  // TODO requires focus for a SPECIFIC weapon !
+  // *TODO* requires focus for a SPECIFIC weapon !
   prerequisites.push_back(prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_WEAPON_SPECIALIZATION;
-  // TODO requires specialization for a SPECIFIC weapon !
+  // *TODO* requires specialization for a SPECIFIC weapon !
   prerequisites.push_back(prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
@@ -491,7 +494,7 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   // FEAT_IMPROVED_CRITICAL
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_MARTIAL_WEAPONS;
-  // TODO requires proficiency for a SPECIFIC weapon !
+  // *TODO* requires proficiency for a SPECIFIC weapon !
   // FEAT_PROFICIENCY_SIMPLE_WEAPONS
   // FEAT_PROFICIENCY_EXOTIC_WEAPONS
   prerequisites.push_back(prerequisite);
@@ -525,7 +528,7 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_DISARM, prerequisites));
   prerequisites.clear();
 
-  // TODO: FEAT_IMPROVED_FAMILIAR
+  // *TODO*: FEAT_IMPROVED_FAMILIAR
 
   // FEAT_IMPROVED_FEINT
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
@@ -834,7 +837,7 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   // FEAT_RAPID_RELOAD
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_MARTIAL_WEAPONS;
-  // TODO: requires proficiency with SPECIAL weapon (crossbow) !
+  // *TODO*: requires proficiency with SPECIAL weapon (crossbow) !
   prerequisites.push_back(prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
@@ -1079,7 +1082,7 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   // FEAT_WEAPON_FOCUS
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_MARTIAL_WEAPONS;
-  // TODO requires proficiency for a SPECIFIC weapon !
+  // *TODO* requires proficiency for a SPECIFIC weapon !
   // FEAT_PROFICIENCY_SIMPLE_WEAPONS
   // FEAT_PROFICIENCY_EXOTIC_WEAPONS
   prerequisites.push_back(prerequisite);
@@ -1098,13 +1101,13 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   // FEAT_WEAPON_SPECIALIZATION
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_MARTIAL_WEAPONS;
-  // TODO requires proficiency for a SPECIFIC weapon !
+  // *TODO* requires proficiency for a SPECIFIC weapon !
   // FEAT_PROFICIENCY_SIMPLE_WEAPONS
   // FEAT_PROFICIENCY_EXOTIC_WEAPONS
   prerequisites.push_back(prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_WEAPON_FOCUS;
-  // TODO requires focus for a SPECIFIC weapon !
+  // *TODO* requires focus for a SPECIFIC weapon !
   prerequisites.push_back(prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
@@ -1162,9 +1165,9 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
   myFeatPrerequisitesTable.insert(std::make_pair(FEAT_WHIRLWIND_ATTACK, prerequisites));
   prerequisites.clear();
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized feat prerequisite table...\n")));
+             ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized feat prerequisite table (%u rule(s))...\n"),
+             myFeatPrerequisitesTable.size()));
 }
 
 void
@@ -1412,7 +1415,6 @@ RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   skillSet.insert(SKILL_USE_MAGIC_DEVICE);
   myClassSkillsTable.insert(std::make_pair(SUBCLASS_BARD, skillSet));
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized class skill table...\n")));
 }

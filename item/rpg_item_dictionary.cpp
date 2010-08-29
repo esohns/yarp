@@ -31,7 +31,7 @@
 
 #include <ace/Log_Msg.h>
 
-#include <iostream>
+#include <sstream>
 
 RPG_Item_Dictionary::RPG_Item_Dictionary()
 {
@@ -45,9 +45,11 @@ RPG_Item_Dictionary::~RPG_Item_Dictionary()
 
 }
 
-void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
+void
+RPG_Item_Dictionary::init(const std::string& filename_in,
+                          const bool& validateXML_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::initItemDictionary"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::init"));
 
   // Construct the parser.
   //
@@ -126,36 +128,43 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
   itemDictionary_p.pre();
 
   // OK: parse the file...
+  ::xml_schema::flags flags;
+  if (!validateXML_in)
+    flags = flags | ::xml_schema::flags::dont_validate;
   try
   {
-    doc_p.parse(filename_in);
+    doc_p.parse(filename_in,
+                myXSDErrorHandler,
+                flags);
   }
-  catch(const ::xml_schema::parsing& exception)
+  catch (const ::xml_schema::parsing& exception)
   {
+    std::ostringstream converter;
+    converter << exception;
+    std::string text = converter.str();
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Item_Dictionary::initItemDictionary(): exception occurred, returning\n")));
-
-    std::cerr << exception << std::endl;
+               ACE_TEXT("RPG_Item_Dictionary::init(): exception occurred: \"%s\", returning\n"),
+               text.c_str()));
 
     return;
   }
   catch(...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Item_Dictionary::initItemDictionary(): exception occurred, returning\n")));
+               ACE_TEXT("RPG_Item_Dictionary::init(): exception occurred, returning\n")));
 
     return;
   }
 
   itemDictionary_p.post_RPG_Item_Dictionary_Type();
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("finished parsing item dictionary file \"%s\"...\n"),
 //              filename_in.c_str()));
 }
 
-const RPG_Item_WeaponProperties RPG_Item_Dictionary::getWeaponProperties(const RPG_Item_WeaponType& weaponType_in) const
+const RPG_Item_WeaponProperties
+RPG_Item_Dictionary::getWeaponProperties(const RPG_Item_WeaponType& weaponType_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::getWeaponProperties"));
 
@@ -163,34 +172,105 @@ const RPG_Item_WeaponProperties RPG_Item_Dictionary::getWeaponProperties(const R
   if (iterator == myWeaponDictionary.end())
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid weapon type \"%s\" --> check implementation !, aborting\n"),
+               ACE_TEXT("invalid weapon type \"%s\", aborting\n"),
                RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weaponType_in).c_str()));
 
+    // *TODO*: what else can we do ?
     ACE_ASSERT(false);
   } // end IF
 
   return iterator->second;
 }
 
-const RPG_Item_ArmorProperties RPG_Item_Dictionary::getArmorProperties(const RPG_Item_ArmorType& armorType_in) const
+const RPG_Item_ArmorProperties
+RPG_Item_Dictionary::getArmorProperties(const RPG_Item_ArmorType& armorType_in) const
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::getArmorProperties"));
 
   RPG_Item_ArmorDictionaryIterator_t iterator = myArmorDictionary.find(armorType_in);
   if (iterator == myArmorDictionary.end())
   {
-    std::string armorType_string = RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armorType_in);
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid armor type \"%s\" --> check implementation !, aborting\n"),
-               armorType_string.c_str()));
+               ACE_TEXT("invalid armor type \"%s\", aborting\n"),
+               RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armorType_in).c_str()));
 
+    // *TODO*: what else can we do ?
     ACE_ASSERT(false);
   } // end IF
 
   return iterator->second;
 }
 
-void RPG_Item_Dictionary::dump() const
+bool
+RPG_Item_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
+                                               unsigned long line_in,
+                                               unsigned long column_in,
+                                               ::xsd::cxx::xml::error_handler<char>::severity severity_in,
+                                               const std::string& message_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::XSD_Error_Handler::handle"));
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
+//              id_in.c_str(),
+//              line_in,
+//              column_in,
+//              message_in.c_str()));
+
+  switch (severity_in)
+  {
+    case ::xml_schema::error_handler::severity::warning:
+    {
+      ACE_DEBUG((LM_WARNING,
+                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
+                 id_in.c_str(),
+                 line_in,
+                 column_in,
+                 message_in.c_str()));
+
+      break;
+    }
+    case ::xml_schema::error_handler::severity::error:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
+                 id_in.c_str(),
+                 line_in,
+                 column_in,
+                 message_in.c_str()));
+
+      break;
+    }
+    case ::xml_schema::error_handler::severity::fatal:
+    {
+      ACE_DEBUG((LM_CRITICAL,
+                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
+                 id_in.c_str(),
+                 line_in,
+                 column_in,
+                 message_in.c_str()));
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
+                 id_in.c_str(),
+                 line_in,
+                 column_in,
+                 message_in.c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  // try to continue anyway...
+  return true;
+}
+
+void
+RPG_Item_Dictionary::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::dump"));
 
