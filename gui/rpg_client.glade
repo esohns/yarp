@@ -109,14 +109,35 @@
                         <property name="visible">True</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <widget class="GtkComboBox" id="available_characters">
+                          <widget class="GtkHBox" id="available_characters_hbox">
                             <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="has_frame">False</property>
-                            <property name="focus_on_click">False</property>
-                            <signal name="changed" handler="characters_activated_GTK_cb"/>
+                            <child>
+                              <widget class="GtkComboBox" id="available_characters">
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="has_frame">False</property>
+                                <property name="focus_on_click">False</property>
+                                <signal name="changed" handler="characters_activated_GTK_cb"/>
+                              </widget>
+                              <packing>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkButton" id="refresh">
+                                <property name="label">gtk-refresh</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="use_stock">True</property>
+                                <signal name="clicked" handler="characters_refresh_activated_GTK_cb"/>
+                              </widget>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
                           </widget>
                         </child>
                       </widget>
@@ -162,6 +183,7 @@
                             <child>
                               <widget class="GtkHBox" id="name_hbox">
                                 <property name="visible">True</property>
+                                <property name="homogeneous">True</property>
                                 <child>
                                   <widget class="GtkLabel" id="name_label">
                                     <property name="visible">True</property>
@@ -187,6 +209,7 @@
                             <child>
                               <widget class="GtkHBox" id="gender_hbox">
                                 <property name="visible">True</property>
+                                <property name="homogeneous">True</property>
                                 <child>
                                   <widget class="GtkLabel" id="gender_label">
                                     <property name="visible">True</property>
@@ -212,6 +235,7 @@
                             <child>
                               <widget class="GtkHBox" id="race_hbox">
                                 <property name="visible">True</property>
+                                <property name="homogeneous">True</property>
                                 <child>
                                   <widget class="GtkLabel" id="race_label">
                                     <property name="visible">True</property>
@@ -237,6 +261,7 @@
                             <child>
                               <widget class="GtkHBox" id="class_hbox">
                                 <property name="visible">True</property>
+                                <property name="homogeneous">True</property>
                                 <child>
                                   <widget class="GtkLabel" id="class_label">
                                     <property name="visible">True</property>
@@ -300,6 +325,7 @@
                                         <child>
                                           <widget class="GtkHBox" id="condition_hbox">
                                             <property name="visible">True</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <widget class="GtkLabel" id="condition_label">
                                                 <property name="visible">True</property>
@@ -325,6 +351,7 @@
                                         <child>
                                           <widget class="GtkHBox" id="hitpoints_hbox">
                                             <property name="visible">True</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <widget class="GtkLabel" id="hitpoints_label">
                                                 <property name="visible">True</property>
@@ -350,6 +377,7 @@
                                         <child>
                                           <widget class="GtkHBox" id="armorclass_hbox">
                                             <property name="visible">True</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <widget class="GtkLabel" id="armorclass_label">
                                                 <property name="visible">True</property>
@@ -375,6 +403,7 @@
                                         <child>
                                           <widget class="GtkHBox" id="experience_hbox">
                                             <property name="visible">True</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <widget class="GtkLabel" id="experience_label">
                                                 <property name="visible">True</property>
@@ -400,6 +429,7 @@
                                         <child>
                                           <widget class="GtkHBox" id="level_hbox">
                                             <property name="visible">True</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <widget class="GtkLabel" id="level_label">
                                                 <property name="visible">True</property>
@@ -425,6 +455,7 @@
                                         <child>
                                           <widget class="GtkHBox" id="gold_hbox">
                                             <property name="visible">True</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <widget class="GtkLabel" id="gold_label">
                                                 <property name="visible">True</property>
@@ -482,6 +513,7 @@
                                         <child>
                                           <widget class="GtkHBox" id="strength_hbox">
                                             <property name="visible">True</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <widget class="GtkLabel" id="strength_label">
                                                 <property name="visible">True</property>
@@ -507,6 +539,7 @@
                                         <child>
                                           <widget class="GtkHBox" id="dexterity_hbox">
                                             <property name="visible">True</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <widget class="GtkLabel" id="dexterity_label">
                                                 <property name="visible">True</property>
@@ -532,6 +565,7 @@
                                         <child>
                                           <widget class="GtkHBox" id="constitution_hbox">
                                             <property name="visible">True</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <widget class="GtkLabel" id="constitution_label">
                                                 <property name="visible">True</property>
@@ -557,6 +591,7 @@
                                         <child>
                                           <widget class="GtkHBox" id="intelligence_hbox">
                                             <property name="visible">True</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <widget class="GtkLabel" id="intelligence_label">
                                                 <property name="visible">True</property>
@@ -582,6 +617,7 @@
                                         <child>
                                           <widget class="GtkHBox" id="wisdom_hbox">
                                             <property name="visible">True</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <widget class="GtkLabel" id="wisdom_label">
                                                 <property name="visible">True</property>
@@ -607,6 +643,7 @@
                                         <child>
                                           <widget class="GtkHBox" id="charisma_hbox">
                                             <property name="visible">True</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <widget class="GtkLabel" id="charisma_label">
                                                 <property name="visible">True</property>
