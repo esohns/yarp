@@ -57,9 +57,13 @@ class RPG_Character_Base
   // retrieve base attributes
   const unsigned char getAttribute(const RPG_Common_Attribute&) const;
 
+  const RPG_Character_Feats_t getFeats() const;
+  const RPG_Character_Abilities_t getAbilities() const;
+  const RPG_Character_Skills_t getSkills() const;
+
   // retrieve skill value (if any)
-  void getSkill(const RPG_Common_Skill&, // skill
-                unsigned char&) const;   // result: value (0: doesn't exist)
+  void getSkillRank(const RPG_Common_Skill&, // skill
+                    unsigned char&) const;   // result: value (0: doesn't exist)
 
   const bool hasFeat(const RPG_Character_Feat&) const; // feat
   const bool hasAbility(const RPG_Character_Ability&) const; // ability

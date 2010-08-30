@@ -203,6 +203,7 @@
                                 </child>
                               </widget>
                               <packing>
+                                <property name="expand">False</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
@@ -229,6 +230,7 @@
                                 </child>
                               </widget>
                               <packing>
+                                <property name="expand">False</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
@@ -255,6 +257,7 @@
                                 </child>
                               </widget>
                               <packing>
+                                <property name="expand">False</property>
                                 <property name="position">2</property>
                               </packing>
                             </child>
@@ -281,6 +284,7 @@
                                 </child>
                               </widget>
                               <packing>
+                                <property name="expand">False</property>
                                 <property name="position">3</property>
                               </packing>
                             </child>
@@ -306,6 +310,7 @@
                                 </child>
                               </widget>
                               <packing>
+                                <property name="expand">False</property>
                                 <property name="position">4</property>
                               </packing>
                             </child>
@@ -494,6 +499,7 @@
                                 </child>
                               </widget>
                               <packing>
+                                <property name="expand">False</property>
                                 <property name="position">5</property>
                               </packing>
                             </child>
@@ -682,6 +688,7 @@
                                 </child>
                               </widget>
                               <packing>
+                                <property name="expand">False</property>
                                 <property name="position">6</property>
                               </packing>
                             </child>
@@ -695,21 +702,10 @@
                                     <property name="visible">True</property>
                                     <property name="left_padding">12</property>
                                     <child>
-                                      <widget class="GtkVBox" id="skills_vbox">
+                                      <widget class="GtkVBox" id="feats_vbox">
                                         <property name="visible">True</property>
                                         <property name="orientation">vertical</property>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
+                                        <property name="homogeneous">True</property>
                                         <child>
                                           <placeholder/>
                                         </child>
@@ -729,6 +725,7 @@
                                 </child>
                               </widget>
                               <packing>
+                                <property name="expand">False</property>
                                 <property name="position">7</property>
                               </packing>
                             </child>
@@ -745,18 +742,7 @@
                                       <widget class="GtkVBox" id="abilities_vbox">
                                         <property name="visible">True</property>
                                         <property name="orientation">vertical</property>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
+                                        <property name="homogeneous">True</property>
                                         <child>
                                           <placeholder/>
                                         </child>
@@ -776,6 +762,7 @@
                                 </child>
                               </widget>
                               <packing>
+                                <property name="expand">False</property>
                                 <property name="position">8</property>
                               </packing>
                             </child>
@@ -789,21 +776,10 @@
                                     <property name="visible">True</property>
                                     <property name="left_padding">12</property>
                                     <child>
-                                      <widget class="GtkVBox" id="skill_vbox">
+                                      <widget class="GtkVBox" id="skills_vbox">
                                         <property name="visible">True</property>
                                         <property name="orientation">vertical</property>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
+                                        <property name="homogeneous">True</property>
                                         <child>
                                           <placeholder/>
                                         </child>
@@ -823,6 +799,7 @@
                                 </child>
                               </widget>
                               <packing>
+                                <property name="expand">False</property>
                                 <property name="position">9</property>
                               </packing>
                             </child>
@@ -845,7 +822,14 @@
                                     <property name="visible">True</property>
                                     <property name="left_padding">12</property>
                                     <child>
-                                      <placeholder/>
+                                      <widget class="GtkVBox" id="spells_vbox">
+                                        <property name="visible">True</property>
+                                        <property name="orientation">vertical</property>
+                                        <property name="homogeneous">True</property>
+                                        <child>
+                                          <placeholder/>
+                                        </child>
+                                      </widget>
                                     </child>
                                   </widget>
                                 </child>
@@ -861,6 +845,7 @@
                                 </child>
                               </widget>
                               <packing>
+                                <property name="expand">False</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
@@ -874,7 +859,14 @@
                                     <property name="visible">True</property>
                                     <property name="left_padding">12</property>
                                     <child>
-                                      <placeholder/>
+                                      <widget class="GtkVBox" id="inventory_items_vbox">
+                                        <property name="visible">True</property>
+                                        <property name="orientation">vertical</property>
+                                        <property name="homogeneous">True</property>
+                                        <child>
+                                          <placeholder/>
+                                        </child>
+                                      </widget>
                                     </child>
                                   </widget>
                                 </child>
@@ -890,6 +882,7 @@
                                 </child>
                               </widget>
                               <packing>
+                                <property name="expand">False</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>

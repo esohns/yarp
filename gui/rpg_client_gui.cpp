@@ -457,6 +457,26 @@ update_character_profile(const RPG_Character_Player& player_in)
   ACE_ASSERT(current);
   gtk_label_set_text(GTK_LABEL(current),
                      converter.str().c_str());
+
+  // step13: feats
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                                            ACE_TEXT_ALWAYS_CHAR("feats_vbox")));
+  ACE_ASSERT(current);
+  GtkWidget* label = NULL;
+  RPG_Character_Feats_t player_feats = player_in.getFeats();
+  for (RPG_Character_FeatsConstIterator_t iterator = player_feats.begin();
+       iterator != player_feats.end();
+       iterator++)
+  {
+    label = NULL;
+    label = gtk_label_new(RPG_Character_FeatHelper::RPG_Character_FeatToString(*iterator).c_str());
+    ACE_ASSERT(label);
+//     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+  } // end FOR
 }
 
 // callbacks used by ::scandir...

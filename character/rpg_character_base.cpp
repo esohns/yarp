@@ -228,11 +228,35 @@ RPG_Character_Base::getAttribute(const RPG_Common_Attribute& attribute_in) const
   return 0;
 }
 
-void
-RPG_Character_Base::getSkill(const RPG_Common_Skill& skill_in,
-                             unsigned char& result_out) const
+const RPG_Character_Feats_t
+RPG_Character_Base::getFeats() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getSkill"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getFeats"));
+
+  return myFeats;
+}
+
+const RPG_Character_Abilities_t
+RPG_Character_Base::getAbilities() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getAbilities"));
+
+  return myAbilities;
+}
+
+const RPG_Character_Skills_t
+RPG_Character_Base::getSkills() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getSkills"));
+
+  return mySkills;
+}
+
+void
+RPG_Character_Base::getSkillRank(const RPG_Common_Skill& skill_in,
+                                 unsigned char& result_out) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getSkillRank"));
 
   // init return value
   result_out = 0;
