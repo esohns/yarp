@@ -103,6 +103,7 @@ update_character_profile(const RPG_Character_Player& player_in)
   ACE_ASSERT(xml);
 
   std::string text;
+  std::stringstream converter;
   GtkWidget* current = NULL;
 
   // step1: name
@@ -116,12 +117,8 @@ update_character_profile(const RPG_Character_Player& player_in)
   text.clear();
   switch (player_in.getGender())
   {
-    case GENDER_NONE:
-      text = ACE_TEXT_ALWAYS_CHAR("N/A"); break;
-    case GENDER_FEMALE:
-    case GENDER_MALE:
-      text = RPG_Common_Tools::enumToString(RPG_Character_GenderHelper::RPG_Character_GenderToString(player_in.getGender())); break;
-    default:
+    case RPG_CHARACTER_GENDER_MAX:
+    case RPG_CHARACTER_GENDER_INVALID:
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid gender (was: \"%s\"), aborting\n"),
@@ -129,6 +126,10 @@ update_character_profile(const RPG_Character_Player& player_in)
 
       break;
     }
+    case GENDER_NONE:
+      text = ACE_TEXT_ALWAYS_CHAR("N/A"); break;
+    default:
+      text = RPG_Common_Tools::enumToString(RPG_Character_GenderHelper::RPG_Character_GenderToString(player_in.getGender())); break;
   } // end SWITCH
   current = GTK_WIDGET(glade_xml_get_widget(xml,
                        ACE_TEXT_ALWAYS_CHAR("gender")));
@@ -153,15 +154,8 @@ update_character_profile(const RPG_Character_Player& player_in)
         switch (ACE_static_cast(RPG_Character_Race,
                                 race_index))
         {
-          case RACE_DWARF:
-          case RACE_ELF:
-          case RACE_GNOME:
-          case RACE_HALFLING:
-          case RACE_HUMAN:
-          case RACE_ORC:
-            text = RPG_Common_Tools::enumToString(RPG_Character_RaceHelper::RPG_Character_RaceToString(ACE_static_cast(RPG_Character_Race,
-                                                                                                                race_index))); break;
-          default:
+          case RPG_CHARACTER_RACE_MAX:
+          case RPG_CHARACTER_RACE_INVALID:
           {
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("invalid race (was: \"%s\"), aborting\n"),
@@ -170,6 +164,9 @@ update_character_profile(const RPG_Character_Player& player_in)
 
             break;
           }
+          default:
+            text = RPG_Common_Tools::enumToString(RPG_Character_RaceHelper::RPG_Character_RaceToString(ACE_static_cast(RPG_Character_Race,
+                                                                                                                race_index))); break;
         } // end SWITCH
         text += ACE_TEXT_ALWAYS_CHAR(",");
       } // end IF
@@ -187,14 +184,8 @@ update_character_profile(const RPG_Character_Player& player_in)
   RPG_Character_Class player_class = player_in.getClass();
   switch (player_class.metaClass)
   {
-    case METACLASS_NONE:
-      text = ACE_TEXT_ALWAYS_CHAR("N/A"); break;
-    case METACLASS_PRIEST:
-    case METACLASS_ROGUE:
-    case METACLASS_WARRIOR:
-    case METACLASS_WIZARD:
-      text = RPG_Common_Tools::enumToString(RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString(player_class.metaClass)); break;
-    default:
+    case RPG_CHARACTER_METACLASS_MAX:
+    case RPG_CHARACTER_METACLASS_INVALID:
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid metaclass (was: \"%s\"), aborting\n"),
@@ -202,6 +193,10 @@ update_character_profile(const RPG_Character_Player& player_in)
 
       break;
     }
+    case METACLASS_NONE:
+      text = ACE_TEXT_ALWAYS_CHAR("N/A"); break;
+    default:
+      text = RPG_Common_Tools::enumToString(RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString(player_class.metaClass)); break;
   } // end SWITCH
   if (!player_class.subClasses.empty())
     text += ACE_TEXT_ALWAYS_CHAR(" (");
@@ -211,26 +206,8 @@ update_character_profile(const RPG_Character_Player& player_in)
   {
     switch (*iterator)
     {
-      case SUBCLASS_NONE:
-        text += ACE_TEXT_ALWAYS_CHAR("N/A"); break;
-      case SUBCLASS_AVENGER:
-      case SUBCLASS_BARBARIAN:
-      case SUBCLASS_BARD:
-      case SUBCLASS_CLERIC:
-      case SUBCLASS_DRUID:
-      case SUBCLASS_FIGHTER:
-      case SUBCLASS_INVOKER:
-      case SUBCLASS_MONK:
-      case SUBCLASS_PALADIN:
-      case SUBCLASS_RANGER:
-      case SUBCLASS_SHAMAN:
-      case SUBCLASS_SORCERER:
-      case SUBCLASS_THIEF:
-      case SUBCLASS_WARLOCK:
-      case SUBCLASS_WARLORD:
-      case SUBCLASS_WIZARD:
-        text += RPG_Common_Tools::enumToString(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator)); break;
-      default:
+      case RPG_COMMON_SUBCLASS_MAX:
+      case RPG_COMMON_SUBCLASS_INVALID:
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid subclass (was: \"%s\"), aborting\n"),
@@ -238,6 +215,10 @@ update_character_profile(const RPG_Character_Player& player_in)
 
         break;
       }
+      case SUBCLASS_NONE:
+        text += ACE_TEXT_ALWAYS_CHAR("N/A"); break;
+      default:
+        text += RPG_Common_Tools::enumToString(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator)); break;
     } // end SWITCH
     text += ACE_TEXT_ALWAYS_CHAR(",");
   } // end FOR
@@ -257,19 +238,225 @@ update_character_profile(const RPG_Character_Player& player_in)
   RPG_Character_Alignment player_alignment = player_in.getAlignment();
   // "Neutral" "Neutral" --> "True Neutral"
   if ((player_alignment.civic == ALIGNMENTCIVIC_NEUTRAL) &&
-       (player_alignment.ethic == ALIGNMENTETHIC_NEUTRAL))
+      (player_alignment.ethic == ALIGNMENTETHIC_NEUTRAL))
     text = ACE_TEXT_ALWAYS_CHAR("True Neutral");
   else
   {
-    text = RPG_Common_Tools::enumToString(RPG_Character_AlignmentCivicHelper::RPG_Character_AlignmentCivicToString(player_alignment.civic));
+    switch (player_alignment.civic)
+    {
+      case RPG_CHARACTER_ALIGNMENTCIVIC_MAX:
+      case RPG_CHARACTER_ALIGNMENTCIVIC_INVALID:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid alignment (civic) (was: \"%s\"), aborting\n"),
+                   RPG_Character_AlignmentCivicHelper::RPG_Character_AlignmentCivicToString(player_alignment.civic).c_str()));
+
+        break;
+      }
+      default:
+        text += RPG_Common_Tools::enumToString(RPG_Character_AlignmentCivicHelper::RPG_Character_AlignmentCivicToString(player_alignment.civic)); break;
+    } // end SWITCH
     text += ACE_TEXT_ALWAYS_CHAR(" ");
-    text += RPG_Common_Tools::enumToString(RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString(player_alignment.ethic));
+    switch (player_alignment.civic)
+    {
+      case RPG_CHARACTER_ALIGNMENTETHIC_MAX:
+      case RPG_CHARACTER_ALIGNMENTETHIC_INVALID:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid alignment (ethic) (was: \"%s\"), aborting\n"),
+                   RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString(player_alignment.ethic).c_str()));
+
+        break;
+      }
+      default:
+        text += RPG_Common_Tools::enumToString(RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString(player_alignment.ethic)); break;
+    } // end SWITCH
   } // end ELSE
   current = GTK_WIDGET(glade_xml_get_widget(xml,
                        ACE_TEXT_ALWAYS_CHAR("alignment")));
   ACE_ASSERT(current);
   gtk_label_set_text(GTK_LABEL(current),
                      text.c_str());
+
+  // step6: condition
+  text.clear();
+  RPG_Character_Conditions_t player_condition = player_in.getCondition();
+  if (player_condition.size() > 1)
+    text += ACE_TEXT_ALWAYS_CHAR(" (");
+  for (RPG_Character_ConditionsIterator_t iterator = player_condition.begin();
+       iterator != player_condition.end();
+       iterator++)
+  {
+    switch (*iterator)
+    {
+      case RPG_COMMON_CONDITION_MAX:
+      case RPG_COMMON_CONDITION_INVALID:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid condition (was: \"%s\"), aborting\n"),
+                   RPG_Common_ConditionHelper::RPG_Common_ConditionToString(*iterator).c_str()));
+
+        break;
+      }
+      default:
+        text += RPG_Common_Tools::enumToString(RPG_Common_ConditionHelper::RPG_Common_ConditionToString(*iterator)); break;
+    } // end SWITCH
+    text += ACE_TEXT_ALWAYS_CHAR(",");
+  } // end FOR
+  if (!player_condition.empty())
+    text.erase(--text.end());
+  if (player_condition.size() > 1)
+    text += ACE_TEXT_ALWAYS_CHAR(")");
+
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("condition")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     text.c_str());
+
+  // step7: HP
+  unsigned short int total_hp = player_in.getNumTotalHitPoints();
+  short int hp = player_in.getNumHitPoints();
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << hp;
+  converter << ACE_TEXT_ALWAYS_CHAR(" / ");
+  converter << total_hp;
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("hitpoints")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+
+  // step8: AC
+  signed char armor_class_normal = player_in.getArmorClass(DEFENSE_NORMAL);
+  signed char armor_class_touch = player_in.getArmorClass(DEFENSE_TOUCH);
+  signed char armor_class_flatfooted = player_in.getArmorClass(DEFENSE_FLATFOOTED);
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << ACE_static_cast(int, armor_class_normal);
+  converter << ACE_TEXT_ALWAYS_CHAR(" / ");
+  converter << ACE_static_cast(int, armor_class_touch);
+  converter << ACE_TEXT_ALWAYS_CHAR(" / ");
+  converter << ACE_static_cast(int, armor_class_flatfooted);
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("armorclass")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+
+  // step9: XP
+  unsigned int experience = player_in.getExperience();
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << experience;
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("experience")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+
+  // step10: level(s)
+  text.clear();
+  unsigned char level = 0;
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  if (player_class.subClasses.empty())
+  {
+    converter << ACE_static_cast(unsigned int, level);
+  } // end IF
+  else
+  {
+    for (RPG_Character_SubClassesIterator_t iterator = player_class.subClasses.begin();
+         iterator != player_class.subClasses.end();
+         iterator++)
+    {
+      level = player_in.getLevel(*iterator);
+      converter << ACE_static_cast(unsigned int, level);
+      converter << ACE_TEXT_ALWAYS_CHAR(" / ");
+    } // end FOR
+  } // end ELSE
+  text = converter.str();
+  if (!player_class.subClasses.empty())
+  {
+    // trim tailing " / "
+    std::string::iterator iterator = text.end();
+    std::advance(iterator, -3);
+    text.erase(iterator, text.end());
+  } // end IF
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("level")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     text.c_str());
+
+  // step11: gold
+  unsigned int gold = player_in.getWealth();
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << gold;
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("gold")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+
+  // step12: attributes
+  unsigned int attribute = 0;
+  attribute = player_in.getAttribute(ATTRIBUTE_STRENGTH);
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << attribute;
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("strength")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+  attribute = player_in.getAttribute(ATTRIBUTE_DEXTERITY);
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << attribute;
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("dexterity")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+  attribute = player_in.getAttribute(ATTRIBUTE_CONSTITUTION);
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << attribute;
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("constitution")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+  attribute = player_in.getAttribute(ATTRIBUTE_INTELLIGENCE);
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << attribute;
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("intelligence")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+  attribute = player_in.getAttribute(ATTRIBUTE_WISDOM);
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << attribute;
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("wisdom")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+  attribute = player_in.getAttribute(ATTRIBUTE_CHARISMA);
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << attribute;
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("charisma")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
 }
 
 // callbacks used by ::scandir...

@@ -52,6 +52,8 @@ class RPG_Character_Base
   const std::string getName() const;
   const RPG_Character_Alignment getAlignment() const;
 
+  const RPG_Character_Conditions_t getCondition() const;
+
   // retrieve base attributes
   const unsigned char getAttribute(const RPG_Common_Attribute&) const;
 

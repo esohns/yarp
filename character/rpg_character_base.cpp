@@ -176,6 +176,14 @@ RPG_Character_Base::getAlignment() const
   return myAlignment;
 }
 
+const RPG_Character_Conditions_t
+RPG_Character_Base::getCondition() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getCondition"));
+
+  return myCondition;
+}
+
 const unsigned char
 RPG_Character_Base::getAttribute(const RPG_Common_Attribute& attribute_in) const
 {

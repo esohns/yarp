@@ -473,7 +473,7 @@ RPG_Common_Tools::period2String(const ACE_Time_Value& period_in,
                       temp.usec()) < 0)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::snprintf(): \"%s\" --> check implementation !, aborting\n"),
+               ACE_TEXT("failed to ACE_OS::snprintf(): \"%s\", aborting\n"),
                ACE_OS::strerror(errno)));
 
     return false;
