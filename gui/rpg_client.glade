@@ -24,6 +24,9 @@
                 <child>
                   <widget class="GtkVButtonBox" id="game_actions">
                     <property name="visible">True</property>
+                    <property name="can_default">True</property>
+                    <property name="has_default">True</property>
+                    <property name="receives_default">True</property>
                     <property name="orientation">vertical</property>
                     <property name="layout_style">spread</property>
                     <child>
@@ -993,6 +996,9 @@
         <child internal-child="action_area">
           <widget class="GtkHButtonBox" id="about_actions">
             <property name="visible">True</property>
+            <property name="can_default">True</property>
+            <property name="has_default">True</property>
+            <property name="receives_default">True</property>
             <property name="layout_style">end</property>
           </widget>
           <packing>
@@ -1025,6 +1031,9 @@
         <child internal-child="action_area">
           <widget class="GtkHButtonBox" id="filechooser_actions">
             <property name="visible">True</property>
+            <property name="can_default">True</property>
+            <property name="has_default">True</property>
+            <property name="receives_default">True</property>
             <property name="layout_style">end</property>
             <child>
               <placeholder/>

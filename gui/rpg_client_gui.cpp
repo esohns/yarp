@@ -279,13 +279,13 @@ extern "C"
 #endif /* __cplusplus */
 G_MODULE_EXPORT gint
 about_activated_GTK_cb(GtkWidget* widget_in,
-                       GdkEvent* event_in,
+//                        GdkEvent* event_in,
                        gpointer userData_in)
 {
   ACE_TRACE(ACE_TEXT("::about_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(event_in);
+//   ACE_UNUSED_ARG(event_in);
   ACE_UNUSED_ARG(userData_in);
 
   // sanity check(s)
@@ -317,13 +317,13 @@ about_activated_GTK_cb(GtkWidget* widget_in,
 
 G_MODULE_EXPORT gint
 properties_activated_GTK_cb(GtkWidget* widget_in,
-                            GdkEvent* event_in,
+//                             GdkEvent* event_in,
                             gpointer userData_in)
 {
   ACE_TRACE(ACE_TEXT("::properties_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(event_in);
+//   ACE_UNUSED_ARG(event_in);
   ACE_UNUSED_ARG(userData_in);
 
   return FALSE;
@@ -331,13 +331,13 @@ properties_activated_GTK_cb(GtkWidget* widget_in,
 
 G_MODULE_EXPORT gint
 quit_activated_GTK_cb(GtkWidget* widget_in,
-                      GdkEvent* event_in,
+//                       GdkEvent* event_in,
                       gpointer userData_in)
 {
   ACE_TRACE(ACE_TEXT("::quit_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(event_in);
+//   ACE_UNUSED_ARG(event_in);
   ACE_UNUSED_ARG(userData_in);
 
   // stop reactor
@@ -365,13 +365,13 @@ quit_activated_GTK_cb(GtkWidget* widget_in,
 
 G_MODULE_EXPORT gint
 create_character_activated_GTK_cb(GtkWidget* widget_in,
-                                  GdkEvent* event_in,
+//                                   GdkEvent* event_in,
                                   gpointer userData_in)
 {
   ACE_TRACE(ACE_TEXT("::create_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(event_in);
+//   ACE_UNUSED_ARG(event_in);
   ACE_UNUSED_ARG(userData_in);
 
   return FALSE;
@@ -379,13 +379,13 @@ create_character_activated_GTK_cb(GtkWidget* widget_in,
 
 G_MODULE_EXPORT gint
 load_character_activated_GTK_cb(GtkWidget* widget_in,
-                                GdkEvent* event_in,
+//                                 GdkEvent* event_in,
                                 gpointer userData_in)
 {
   ACE_TRACE(ACE_TEXT("::load_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(event_in);
+//   ACE_UNUSED_ARG(event_in);
   ACE_UNUSED_ARG(userData_in);
 
   // *NOTE*: this callback just presents the file picker
@@ -420,14 +420,14 @@ load_character_activated_GTK_cb(GtkWidget* widget_in,
 
 G_MODULE_EXPORT gint
 character_file_activated_GTK_cb(GtkWidget* widget_in,
-                                GdkEvent* event_in,
+//                                 GdkEvent* event_in,
                                 gpointer userData_in)
 {
   ACE_TRACE(ACE_TEXT("::character_file_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(event_in);
-  GTK_cb_data_t* userData_p = ACE_reinterpret_cast(GTK_cb_data_t*, userData_in);
+//   ACE_UNUSED_ARG(event_in);
+  GTK_cb_data_t* userData_p = ACE_static_cast(GTK_cb_data_t*, userData_in);
 
   // sanity check(s)
   ACE_ASSERT(userData_p);
@@ -437,33 +437,12 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(xml,
                                                                      RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
   ACE_ASSERT(filechooser_dialog);
-  if (!filechooser_dialog)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
-
-    // clean up
-    g_object_unref(G_OBJECT(xml));
-    xml = NULL;
-
-    return FALSE;
-  } // end IF
 
   // hide widget
   gtk_widget_hide(GTK_WIDGET(filechooser_dialog));
 
   // retrieve selected filename
   std::string filename(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser_dialog)));
-  // sanity check
-  if (!RPG_Common_File_Tools::isReadable(filename))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid file (was: \"%s\"): not readable, aborting\n"),
-               filename.c_str()));
-
-    return FALSE;
-  } // end IF
 
   // load player profile
   userData_p->player = RPG_Character_Player::load(filename);
@@ -471,18 +450,24 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   // update character profile widgets
   ::update_character_profile(userData_p->player);
 
+  // make character display frame sensitive (if it's not already)
+  GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(xml,
+                                                             ACE_TEXT_ALWAYS_CHAR("character")));
+  ACE_ASSERT(character_frame);
+  gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
+
   return FALSE;
 }
 
 G_MODULE_EXPORT gint
 save_character_activated_GTK_cb(GtkWidget* widget_in,
-                                GdkEvent* event_in,
+//                                 GdkEvent* event_in,
                                 gpointer userData_in)
 {
   ACE_TRACE(ACE_TEXT("::save_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(event_in);
+//   ACE_UNUSED_ARG(event_in);
   ACE_UNUSED_ARG(userData_in);
 
   return FALSE;
@@ -490,13 +475,13 @@ save_character_activated_GTK_cb(GtkWidget* widget_in,
 
 G_MODULE_EXPORT gint
 join_game_activated_GTK_cb(GtkWidget* widget_in,
-                           GdkEvent* event_in,
+//                            GdkEvent* event_in,
                            gpointer userData_in)
 {
   ACE_TRACE(ACE_TEXT("::join_game_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(event_in);
+//   ACE_UNUSED_ARG(event_in);
   ACE_UNUSED_ARG(userData_in);
 
   return FALSE;
@@ -504,14 +489,54 @@ join_game_activated_GTK_cb(GtkWidget* widget_in,
 
 G_MODULE_EXPORT gint
 characters_activated_GTK_cb(GtkWidget* widget_in,
-                          GdkEvent* event_in,
-                          gpointer userData_in)
+//                             GdkEvent* event_in,
+                            gpointer userData_in)
 {
   ACE_TRACE(ACE_TEXT("::characters_activated_GTK_cb"));
 
-  ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(event_in);
-  ACE_UNUSED_ARG(userData_in);
+//   ACE_UNUSED_ARG(event_in);
+  GTK_cb_data_t* userData_p = ACE_static_cast(GTK_cb_data_t*, userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(widget_in);
+  ACE_ASSERT(userData_p);
+
+  // retrieve active item
+  std::string active_item;
+  GtkTreeIter selected;
+  GtkTreeModel* model = NULL;
+  GValue value;
+  const gchar* text = NULL;
+  gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget_in), &selected);
+  model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget_in));
+  ACE_ASSERT(model);
+  ACE_OS::memset(&value,
+                 0,
+                 sizeof(value));
+  gtk_tree_model_get_value(model, &selected,
+                           0, &value);
+  text = g_value_get_string(&value);
+  ACE_ASSERT(text);
+  active_item = text;
+  g_value_unset(&value);
+
+  // construct filename
+  std::string filename = RPG_CLIENT_DEF_CHARACTER_REPOSITORY;
+  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += active_item;
+  filename += RPG_CHARACTER_PLAYER_PROFILE_EXT;
+
+  // load player profile
+  userData_p->player = RPG_Character_Player::load(filename);
+
+  // update character profile widgets
+  ::update_character_profile(userData_p->player);
+
+  // make character display frame sensitive (if it's not already)
+  GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(xml,
+                                                             ACE_TEXT_ALWAYS_CHAR("character")));
+  ACE_ASSERT(character_frame);
+  gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
 
   return FALSE;
 }
@@ -906,7 +931,7 @@ dirent_comparator(const dirent** entry1_in,
                         (*entry2_in)->d_name);
 }
 
-const unsigned int
+void
 load_character_profiles(const std::string& repository_in,
                         GtkListStore* listStore_in)
 //                         GtkComboBox* comboBox_in)
@@ -921,7 +946,7 @@ load_character_profiles(const std::string& repository_in,
                ACE_TEXT("failed to load_character_profiles(\"%s\"), not a directory, aborting\n"),
                repository_in.c_str()));
 
-    return 0;
+    return;
   } // end IF
 
   // retrieve all existing character profiles (*.xml) and sort them alphabetically...
@@ -934,7 +959,7 @@ load_character_profiles(const std::string& repository_in,
                ACE_TEXT("failed to ACE_Dirent_Selector::open(\"%s\"): \"%m\", aborting\n"),
                repository_in.c_str()));
 
-    return 0;
+    return;
   } // end IF
 
   // clear existing entries
@@ -944,10 +969,9 @@ load_character_profiles(const std::string& repository_in,
   std::string entry;
   std::string extension(RPG_CHARACTER_PLAYER_PROFILE_EXT);
   GtkTreeIter iter;
-  unsigned int num_profiles = 0;
-  for (;
-       num_profiles < ACE_static_cast(unsigned int, entries.length());
-       num_profiles++)
+  for (unsigned int i = 0;
+       i < ACE_static_cast(unsigned int, entries.length());
+       i++)
   {
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("character profile[%u]: %s\n"),
@@ -955,7 +979,7 @@ load_character_profiles(const std::string& repository_in,
 //                entries[i]->d_name));
 
     // sanitize name (chop off extension)
-    entry = entries[num_profiles]->d_name;
+    entry = entries[i]->d_name;
     entry.erase(entry.rfind(extension,
                             std::string::npos),
                 std::string::npos);
@@ -972,40 +996,44 @@ load_character_profiles(const std::string& repository_in,
   // clean up
   entries.close();
 
-  // sanity check: iterate over list entries
-  if (num_profiles)
+  // debug info
+  GValue value;
+  ACE_OS::memset(&value,
+                  0,
+                  sizeof(value));
+  const gchar* text = NULL;
+  if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(listStore_in),
+                                    &iter))
   {
-    const gchar* text = NULL;
-    GValue value;
+    gtk_tree_model_get_value(GTK_TREE_MODEL(listStore_in), &iter,
+                              0, &value);
+    text = g_value_get_string(&value);
+    ACE_DEBUG((LM_DEBUG,
+                ACE_TEXT("character profile[0]: %s\n"),
+                std::string(text).c_str()));
+
+    g_value_unset(&value);
+  } // end IF
+  for (unsigned int i = 1;
+        gtk_tree_model_iter_next(GTK_TREE_MODEL(listStore_in),
+                                &iter);
+        i++)
+  {
     ACE_OS::memset(&value,
                    0,
                    sizeof(value));
-    ACE_ASSERT(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(listStore_in),
-                                             &iter));
+    text = NULL;
+
     gtk_tree_model_get_value(GTK_TREE_MODEL(listStore_in), &iter,
                              0, &value);
     text = g_value_get_string(&value);
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("character profile[0]: %s\n"),
-               std::string(text).c_str()));
-    g_value_unset(&value);
-    for (unsigned int i = 1;
-         gtk_tree_model_iter_next(GTK_TREE_MODEL(listStore_in),
-                                  &iter);
-         i++)
-    {
-      gtk_tree_model_get_value(GTK_TREE_MODEL(listStore_in), &iter,
-                               0, &value);
-      text = g_value_get_string(&value);
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("character profile[%u]: %s\n"),
-                 i - 1,
-                 std::string(text).c_str()));
-      g_value_unset(&value);
-    } // end FOR
-  } // end IF
+                ACE_TEXT("character profile[%u]: %s\n"),
+                i - 1,
+                std::string(text).c_str()));
 
-  return num_profiles;
+    g_value_unset(&value);
+  } // end FOR
 }
 
 void
@@ -1442,6 +1470,27 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
+  gtk_cell_layout_clear(GTK_CELL_LAYOUT(available_characters));
+  GtkCellRenderer* renderer = gtk_cell_renderer_text_new();
+  ACE_ASSERT(renderer);
+  if (!renderer)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to gtk_cell_renderer_text_new(): \"%m\", aborting\n")));
+
+    // clean up
+    g_object_unref(G_OBJECT(xml));
+    xml = NULL;
+
+    return false;
+  } // end IF
+  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(available_characters), renderer,
+                             TRUE); // expand ?
+//   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(available_characters), renderer,
+//                                 ACE_TEXT_ALWAYS_CHAR("text"), 0);
+  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(available_characters), renderer,
+                                 ACE_TEXT_ALWAYS_CHAR("text"), 0,
+                                 NULL);
   GtkListStore* list = gtk_list_store_new(1,
                                           G_TYPE_STRING);
   ACE_ASSERT(list);
@@ -1456,44 +1505,28 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
+  load_character_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
+                          list);
   gtk_combo_box_set_model(available_characters,
                           GTK_TREE_MODEL(list));
-  GtkCellRenderer* renderer = gtk_cell_renderer_text_new();
-  ACE_ASSERT(renderer);
-  if (!renderer)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_cell_renderer_text_new(): \"%m\", aborting\n")));
-
-    // clean up
-    g_object_unref(G_OBJECT(xml));
-    xml = NULL;
-
-    return false;
-  } // end IF
-  gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(available_characters), renderer,
-                                ACE_TEXT_ALWAYS_CHAR("text"), 0);
-  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(available_characters), renderer,
-                                 ACE_TEXT_ALWAYS_CHAR("text"), 1,
-                                 NULL);
-  if (load_character_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
-                              list))
+  g_object_unref(G_OBJECT(list));
+  if (g_list_length(gtk_container_get_children(GTK_CONTAINER(available_characters))))
     gtk_widget_set_sensitive(GTK_WIDGET(available_characters), TRUE);
-  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(available_characters), renderer,
-                             TRUE); // expand ?
 
   // step4a: connect default signals
-//   g_signal_connect(main_dialog,
-//                    ACE_TEXT_ALWAYS_CHAR("destroy"),
+  gpointer userData_p = ACE_const_cast(GTK_cb_data_t*, &userData_in);
+  g_signal_connect(main_dialog,
+                   ACE_TEXT_ALWAYS_CHAR("destroy"),
+                   G_CALLBACK(quit_activated_GTK_cb),
 //                    G_CALLBACK(gtk_widget_destroyed),
-//                    &main_dialog);
-//   g_signal_connect(about_dialog,
-//                    ACE_TEXT_ALWAYS_CHAR("close"),
-//                    G_CALLBACK(gtk_widget_hide),
-//                    &about_dialog);
+//                    &main_dialog,
+                   userData_p);
+  g_signal_connect(about_dialog,
+                   ACE_TEXT_ALWAYS_CHAR("response"),
+                   G_CALLBACK(gtk_widget_hide),
+                   &about_dialog);
 
    // step4b: connect custom signals
-  gpointer userData_p = ACE_const_cast(GTK_cb_data_t*, &userData_in);
   GtkButton* button = NULL;
   button = GTK_BUTTON(glade_xml_get_widget(xml,
                                            ACE_TEXT_ALWAYS_CHAR("create")));
