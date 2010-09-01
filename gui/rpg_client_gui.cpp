@@ -534,7 +534,7 @@ update_character_profile(const RPG_Character_Player& player_in)
     text += ACE_TEXT_ALWAYS_CHAR(" : ");
     converter.str(ACE_TEXT(""));
     converter.clear();
-    converter << (*iterator).second;
+    converter << ACE_static_cast(int, (*iterator).second);
     text += converter.str();
     label = NULL;
     label = gtk_label_new(text.c_str());
@@ -605,7 +605,7 @@ update_character_profile(const RPG_Character_Player& player_in)
     // *TODO*: clear all entries
   } // end IF
   RPG_Character_Inventory player_inventory = player_in.getInventory();
-  RPG_Character_Equipment player_equipment = player_in.getEquipment();
+//   RPG_Character_Equipment player_equipment = player_in.getEquipment();
   RPG_Item_Base* item = NULL;
   for (RPG_Item_ListIterator_t iterator = player_inventory.myItems.begin();
        iterator != player_inventory.myItems.end();
@@ -657,14 +657,8 @@ update_character_profile(const RPG_Character_Player& player_in)
     } // end SWITCH
 
     // equipped ? --> add '*'
-    for (RPG_Character_EquipmentIterator_t iterator2 = player_equipment.myEquipment.begin();
-         iterator2 != player_equipment.myEquipment.end();
-         iterator2++)
-      if ((*iterator2).second == *iterator)
-      {
-        text += ACE_TEXT_ALWAYS_CHAR(" *");
-        break; // done
-      } // end IF
+    if (player_in.getEquipment()->isEquipped(*iterator))
+      text += ACE_TEXT_ALWAYS_CHAR(" *");
 
     label = NULL;
     label = gtk_label_new(text.c_str());

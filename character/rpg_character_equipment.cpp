@@ -241,6 +241,20 @@ RPG_Character_Equipment::getShield(const RPG_Character_OffHand& offHand_in) cons
   return armor->getArmorType();
 }
 
+const bool
+RPG_Character_Equipment::isEquipped(const RPG_Item_ID_t& itemID_in) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::isEquipped"));
+
+  for (RPG_Character_EquipmentIterator_t iterator = myEquipment.begin();
+       iterator != myEquipment.end();
+       iterator++)
+    if ((*iterator).second == itemID_in)
+      return true;
+
+  return false;
+}
+
 void
 RPG_Character_Equipment::dump() const
 {

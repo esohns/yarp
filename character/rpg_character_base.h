@@ -79,7 +79,7 @@ class RPG_Character_Base
   const RPG_Magic_SpellList_t getSpells() const;
 
   RPG_Character_Inventory getInventory() const;
-  const RPG_Character_Equipment getEquipment() const;
+//   const RPG_Character_Equipment getEquipment() const;
 
   virtual const RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
                                                                const RPG_Combat_AttackSituation&) const = 0;

@@ -51,6 +51,8 @@ class RPG_Character_Equipment
   // armor in EQUIPMENTSLOT_LEFT/RIGHT_HAND, IF ARMOR
   const RPG_Item_ArmorType getShield(const RPG_Character_OffHand&) const;
 
+  const bool isEquipped(const RPG_Item_ID_t&) const; // item ID
+
   // dump equipment
   void dump() const;
 
