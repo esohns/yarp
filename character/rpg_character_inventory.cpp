@@ -76,8 +76,8 @@ void RPG_Character_Inventory::dump() const
        iterator != myItems.end();
        iterator++)
   {
-    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem(*iterator,
-                                                                  base))
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
+                                                              base))
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid item (ID: %d), continuing\n"),

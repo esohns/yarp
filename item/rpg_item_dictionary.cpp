@@ -19,11 +19,11 @@
  ***************************************************************************/
 #include "rpg_item_dictionary.h"
 
+#include "rpg_item_common.h"
+#include "rpg_item_common_tools.h"
 #include "rpg_item_XML_parser.h"
-#include "rpg_item_weapontype.h"
-#include "rpg_item_armortype.h"
-#include "rpg_item_weapon.h"
-#include "rpg_item_armor.h"
+
+#include <rpg_dice_common_tools.h>
 
 #include <rpg_dice_XML_parser.h>
 #include <rpg_common_XML_parser.h>
@@ -279,8 +279,20 @@ RPG_Item_Dictionary::dump() const
        iterator != myWeaponDictionary.end();
        iterator++)
   {
-    RPG_Item_Weapon weapon(iterator->first);
-    weapon.dump();
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("Item: Weapon\nType: %s\nCategory: %s\nClass: %s\nPrice: %d GP, %d SP\nDamage: %s\ncritical: %d, x%d\nRange: %d\nWeight: %d\nDamage Type: %s\n"),
+               RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString((*iterator).first).c_str(),
+               RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString((*iterator).second.weaponCategory).c_str(),
+               RPG_Item_WeaponClassHelper::RPG_Item_WeaponClassToString((*iterator).second.weaponClass).c_str(),
+               (*iterator).second.baseStorePrice.numGoldPieces,
+               (*iterator).second.baseStorePrice.numSilverPieces,
+               RPG_Dice_Common_Tools::rollToString((*iterator).second.baseDamage).c_str(),
+               (*iterator).second.criticalHit.minToHitRoll,
+               (*iterator).second.criticalHit.damageModifier,
+               (*iterator).second.rangeIncrement,
+               (*iterator).second.baseWeight,
+               RPG_Item_Common_Tools::weaponDamageTypeToString((*iterator).second.typeOfDamage).c_str()));
+
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("==================================\n")));
   } // end FOR
@@ -289,8 +301,19 @@ RPG_Item_Dictionary::dump() const
        iterator != myArmorDictionary.end();
        iterator++)
   {
-    RPG_Item_Armor armor(iterator->first);
-    armor.dump();
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("Item: Armor\nType: %s\nCategory: %s\nPrice: %d GP, %d SP\nAC Bonus: %d\nmax Dex Bonus: %d\nPenalty: %d\nSpell Failure: %d%%\nSpeed: %d\nWeight: %d\n"),
+               RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString((*iterator).first).c_str(),
+               RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString((*iterator).second.armorCategory).c_str(),
+               (*iterator).second.baseStorePrice.numGoldPieces,
+               (*iterator).second.baseStorePrice.numSilverPieces,
+               (*iterator).second.baseArmorBonus,
+               (*iterator).second.maxDexterityBonus,
+               (*iterator).second.armorCheckPenalty,
+               (*iterator).second.arcaneSpellFailure,
+               (*iterator).second.baseSpeed,
+               (*iterator).second.baseWeight));
+
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("==================================\n")));
   } // end FOR

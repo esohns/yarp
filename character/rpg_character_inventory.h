@@ -30,8 +30,8 @@
 class RPG_Character_Inventory
 {
  public:
-  RPG_Character_Inventory(const RPG_Item_List_t&); // list of initial items
-  // *IMPORTANT NOTE*: this could prove problematic (add reference counting ?)
+  RPG_Character_Inventory(const RPG_Item_List_t&); // list of (initial) items
+  // *TODO*: could prove problematic (add reference counting ?)
   RPG_Character_Inventory(const RPG_Character_Inventory&);
   virtual ~RPG_Character_Inventory();
 

@@ -24,9 +24,8 @@
 #include "rpg_character_class_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
 
-#include <rpg_item_weapon.h>
-#include <rpg_item_armor.h>
 #include <rpg_item_common_tools.h>
+#include <rpg_item_instance_manager.h>
 #include <rpg_item_dictionary.h>
 
 #include <rpg_magic_dictionary.h>
@@ -790,58 +789,75 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   // step13: (initial) set of items
   // *TODO*: somehow generate these at random too ?
   RPG_Item_List_t items;
-  RPG_Item_Armor* armor = NULL;
-  RPG_Item_Armor* shield = NULL;
-  RPG_Item_Weapon* weapon = NULL;
-  RPG_Item_Weapon* bow = NULL;
+  RPG_Item_Instance_Base* current = NULL;
   try
   {
     switch (player_subclass)
     {
       case SUBCLASS_FIGHTER:
       {
-        weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
-        armor  = new RPG_Item_Armor(ARMOR_MAIL_SPLINT);
-        shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
-
-        items.insert(weapon->getID());
-        items.insert(armor->getID());
-        items.insert(shield->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_MAIL_SPLINT);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_SHIELD_HEAVY_WOODEN);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
 
         break;
       }
       case SUBCLASS_PALADIN:
       case SUBCLASS_WARLORD:
       {
-        weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
-        armor  = new RPG_Item_Armor(ARMOR_PLATE_FULL);
-        shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_STEEL);
-
-        items.insert(weapon->getID());
-        items.insert(armor->getID());
-        items.insert(shield->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_PLATE_FULL);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_SHIELD_HEAVY_STEEL);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
 
         break;
       }
       case SUBCLASS_RANGER:
       {
-        weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
-        bow    = new RPG_Item_Weapon(RANGED_WEAPON_BOW_LONG);
-        armor  = new RPG_Item_Armor(ARMOR_HIDE);
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            RANGED_WEAPON_BOW_LONG);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_HIDE);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
 
-        items.insert(weapon->getID());
-        items.insert(bow->getID());
-        items.insert(armor->getID());
+        // *TODO*: no arrows ?
 
         break;
       }
       case SUBCLASS_BARBARIAN:
       {
-        weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
-        armor  = new RPG_Item_Armor(ARMOR_HIDE);
-
-        items.insert(weapon->getID());
-        items.insert(armor->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_HIDE);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
 
         break;
       }
@@ -849,9 +865,10 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
       case SUBCLASS_SORCERER:
       case SUBCLASS_WARLOCK:
       {
-        weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
-
-        items.insert(weapon->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
 
         break;
       }
@@ -859,55 +876,71 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
       case SUBCLASS_AVENGER:
       case SUBCLASS_INVOKER:
       {
-        weapon = new RPG_Item_Weapon(ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
-        armor  = new RPG_Item_Armor(ARMOR_MAIL_CHAIN);
-        shield  = new RPG_Item_Armor(ARMOR_SHIELD_HEAVY_WOODEN);
-
-        items.insert(weapon->getID());
-        items.insert(armor->getID());
-        items.insert(shield->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_MAIL_CHAIN);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_SHIELD_HEAVY_WOODEN);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
 
         break;
       }
       case SUBCLASS_DRUID:
       case SUBCLASS_SHAMAN:
       {
-        weapon = new RPG_Item_Weapon(LIGHT_MELEE_WEAPON_SICKLE);
-        armor  = new RPG_Item_Armor(ARMOR_HIDE);
-        shield  = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_WOODEN);
-
-        items.insert(weapon->getID());
-        items.insert(armor->getID());
-        items.insert(shield->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            LIGHT_MELEE_WEAPON_SICKLE);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_HIDE);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_SHIELD_LIGHT_WOODEN);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
 
         break;
       }
       case SUBCLASS_MONK:
       {
-        weapon = new RPG_Item_Weapon(TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
-
-        items.insert(weapon->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
 
         break;
       }
       case SUBCLASS_THIEF:
       case SUBCLASS_BARD:
       {
-        weapon = new RPG_Item_Weapon(LIGHT_MELEE_WEAPON_SWORD_SHORT);
-        armor  = new RPG_Item_Armor(ARMOR_LEATHER);
-        shield  = new RPG_Item_Armor(ARMOR_SHIELD_LIGHT_STEEL);
-
-        items.insert(weapon->getID());
-        items.insert(armor->getID());
-        items.insert(shield->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            LIGHT_MELEE_WEAPON_SWORD_SHORT);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_LEATHER);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_SHIELD_LIGHT_STEEL);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
 
         break;
       }
       default:
       {
         ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("invalid player sub-class \"%s\", continuing\n"),
-                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_subclass).c_str()));
+                   ACE_TEXT("invalid subclass \"%s\", aborting\n"),
+                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_subclass).c_str()));
 
         break;
       }

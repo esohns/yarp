@@ -23,7 +23,9 @@
 ACE_Atomic_Op<ACE_Thread_Mutex, RPG_Item_ID_t> RPG_Item_Instance_Base::myCurrentID = 1;
 
 RPG_Item_Instance_Base::RPG_Item_Instance_Base()
- : myID(myCurrentID++) // *WARNING*: prefix increment leads to corruption !
+ : inherited(1,     // initial reference count
+             true), // "delete this" on refcount == 0
+   myID(myCurrentID++) // *WARNING*: prefix increment leads to corruption !
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Instance_Base::RPG_Item_Instance_Base"));
 

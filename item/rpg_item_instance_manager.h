@@ -41,10 +41,10 @@ class RPG_Item_Instance_Manager
   friend class RPG_Item_Base;
 
  public:
-/*  RPG_Item_Base* createItem(const RPG_Item_Type&, // type of item
-                            const unsigned int&); // specific (sub)type*/
-  const bool getItem(const RPG_Item_ID_t&,   // id
-                     RPG_Item_Base*&) const; // return value: handle
+  RPG_Item_Instance_Base* create(const RPG_Item_Type&, // type of item
+                                 const unsigned int&); // specific (sub)type
+  const bool get(const RPG_Item_ID_t&,   // id
+                 RPG_Item_Base*&) const; // return value: handle
 
  private:
   typedef std::map<RPG_Item_ID_t, RPG_Item_Base*> RPG_Item_InstanceTable_t;
@@ -57,7 +57,7 @@ class RPG_Item_Instance_Manager
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Instance_Manager(const RPG_Item_Instance_Manager&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Instance_Manager& operator=(const RPG_Item_Instance_Manager&));
 
-  // *IMPORTANT NOTE*: these are called from RPG_Item_Base ctors/dtors...
+  // *NOTE*: these are called from RPG_Item_Base ctors/dtors...
   virtual void registerItem(const RPG_Item_ID_t&, // id
                             RPG_Item_Base*);      // handle
   virtual void deregisterItem(RPG_Item_Base*); // handle

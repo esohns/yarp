@@ -48,10 +48,12 @@ class RPG_Common_ReferenceCounter
   // any waiters (or in ANY multithreaded context, for that matter)...
   RPG_Common_ReferenceCounter(const unsigned long& = 1, // initial reference count
                               const bool& = true);      // destroy on 0 --> delete this ?
+  // *TODO*: should be 'private'
   virtual ~RPG_Common_ReferenceCounter();
 
  private:
   // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Common_ReferenceCounter());
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_ReferenceCounter(const RPG_Common_ReferenceCounter&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_ReferenceCounter& operator=(const RPG_Common_ReferenceCounter&));
 

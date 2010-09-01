@@ -30,8 +30,8 @@
 #include <rpg_item_instance_common.h>
 #include <rpg_item_instance_manager.h>
 #include <rpg_item_base.h>
-#include <rpg_item_armor_base.h>
-#include <rpg_item_weapon_base.h>
+#include <rpg_item_armor.h>
+#include <rpg_item_weapon.h>
 #include <rpg_item_common_tools.h>
 
 #include <rpg_common_defines.h>
@@ -434,7 +434,8 @@ RPG_Character_Player::defaultEquip()
        iterator++)
   {
     handle = NULL;
-    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem(*iterator, handle))
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
+                                                              handle))
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid item ID: %d, aborting\n"),
@@ -448,13 +449,13 @@ RPG_Character_Player::defaultEquip()
     {
       case ITEM_ARMOR:
       {
-        RPG_Item_Armor_Base* armor_base = ACE_dynamic_cast(RPG_Item_Armor_Base*, handle);
-        ACE_ASSERT(armor_base);
+        RPG_Item_Armor* armor = ACE_dynamic_cast(RPG_Item_Armor*, handle);
+        ACE_ASSERT(armor);
 //         RPG_Item_ArmorProperties armor_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_base->getArmorType());
         // shield or (body) armor ?
         // *TODO*: what about other types of armor ?
         RPG_Character_EquipmentSlot slot = EQUIPMENTSLOT_BODY;
-        if (RPG_Item_Common_Tools::isShield(armor_base->getArmorType()))
+        if (RPG_Item_Common_Tools::isShield(armor->getArmorType()))
         {
           slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
                                                  : EQUIPMENTSLOT_HAND_RIGHT);
@@ -465,18 +466,18 @@ RPG_Character_Player::defaultEquip()
       }
       case ITEM_WEAPON:
       {
-        RPG_Item_Weapon_Base* weapon_base = ACE_dynamic_cast(RPG_Item_Weapon_Base*, handle);
-        ACE_ASSERT(weapon_base);
+        RPG_Item_Weapon* weapon = ACE_dynamic_cast(RPG_Item_Weapon*, handle);
+        ACE_ASSERT(weapon);
 //         RPG_Item_WeaponProperties weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_base->getWeaponType());
         // - by default, equip melee weapons only
         // *TODO*: what about other types of weapons ?
-        if (!RPG_Item_Common_Tools::isMeleeWeapon(weapon_base->getWeaponType()))
+        if (!RPG_Item_Common_Tools::isMeleeWeapon(weapon->getWeaponType()))
           break;
 
         RPG_Character_EquipmentSlot slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
                                                                            : EQUIPMENTSLOT_HAND_LEFT);
         myEquipment.equip(*iterator, slot);
-        if (RPG_Item_Common_Tools::isTwoHandedWeapon(weapon_base->getWeaponType()))
+        if (RPG_Item_Common_Tools::isTwoHandedWeapon(weapon->getWeaponType()))
         {
           slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
                                                  : EQUIPMENTSLOT_HAND_RIGHT);

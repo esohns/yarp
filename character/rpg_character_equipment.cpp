@@ -20,8 +20,8 @@
 #include "rpg_character_equipment.h"
 
 #include <rpg_item_base.h>
-#include <rpg_item_weapon_base.h>
-#include <rpg_item_armor_base.h>
+#include <rpg_item_weapon.h>
+#include <rpg_item_armor.h>
 #include <rpg_item_instance_manager.h>
 #include <rpg_item_common_tools.h>
 
@@ -132,8 +132,8 @@ RPG_Character_Equipment::getPrimaryWeapon(const RPG_Character_OffHand& offHand_i
 
   // find item type
   RPG_Item_Base* handle = NULL;
-  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem((*iterator).second,
-                                                                handle))
+  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get((*iterator).second,
+                                                            handle))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid item (ID: %d), aborting\n"),
@@ -154,11 +154,11 @@ RPG_Character_Equipment::getPrimaryWeapon(const RPG_Character_OffHand& offHand_i
     return RPG_ITEM_WEAPONTYPE_INVALID;
   } // end IF
 
-  RPG_Item_Weapon_Base* weapon_base = ACE_dynamic_cast(RPG_Item_Weapon_Base*,
-                                                       handle);
-  ACE_ASSERT(weapon_base);
+  RPG_Item_Weapon* weapon = ACE_dynamic_cast(RPG_Item_Weapon*,
+                                             handle);
+  ACE_ASSERT(weapon);
 
-  return weapon_base->getWeaponType();
+  return weapon->getWeaponType();
 }
 
 const RPG_Item_ArmorType
@@ -181,8 +181,8 @@ RPG_Character_Equipment::getArmor() const
 
   // find item type
   RPG_Item_Base* handle = NULL;
-  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem((*iterator).second,
-                                                                handle))
+  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get((*iterator).second,
+                                                            handle))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid item (ID: %d), aborting\n"),
@@ -198,10 +198,10 @@ RPG_Character_Equipment::getArmor() const
     return ARMOR_NONE;
   } // end IF
 
-  RPG_Item_Armor_Base* armor_base = ACE_dynamic_cast(RPG_Item_Armor_Base*, handle);
-  ACE_ASSERT(armor_base);
+  RPG_Item_Armor* armor = ACE_dynamic_cast(RPG_Item_Armor*, handle);
+  ACE_ASSERT(armor);
 
-  return armor_base->getArmorType();
+  return armor->getArmorType();
 }
 
 const RPG_Item_ArmorType
@@ -222,7 +222,8 @@ RPG_Character_Equipment::getShield(const RPG_Character_OffHand& offHand_in) cons
 
   // find item type
   RPG_Item_Base* handle = NULL;
-  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem((*iterator).second, handle))
+  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get((*iterator).second,
+                                                            handle))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid item (ID: %d), aborting\n"),
@@ -238,23 +239,23 @@ RPG_Character_Equipment::getShield(const RPG_Character_OffHand& offHand_in) cons
     return ARMOR_NONE;
   } // end IF
 
-  RPG_Item_Armor_Base* armor_base = ACE_dynamic_cast(RPG_Item_Armor_Base*, handle);
-  ACE_ASSERT(armor_base);
+  RPG_Item_Armor* armor = ACE_dynamic_cast(RPG_Item_Armor*, handle);
+  ACE_ASSERT(armor);
 
   // sanity check
-  if (!RPG_Item_Common_Tools::isShield(armor_base->getArmorType()))
+  if (!RPG_Item_Common_Tools::isShield(armor->getArmorType()))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("equipped armor (ID: %d, type: \"%s\") is not a shield: returning \"%s\"...\n"),
                (*iterator).second,
-               RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor_base->getArmorType()).c_str(),
+               RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()).c_str(),
                RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(ARMOR_NONE).c_str()));
 
     // some kind of armor is equipped here, but it's not a shield...
     return ARMOR_NONE;
   } // end IF
 
-  return armor_base->getArmorType();
+  return armor->getArmorType();
 }
 
 void
@@ -268,7 +269,8 @@ RPG_Character_Equipment::dump() const
        iterator++)
   {
     // find item type
-    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem((*iterator).second, handle))
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get((*iterator).second,
+                                                              handle))
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid item (ID: %d), continuing\n"),
@@ -281,27 +283,27 @@ RPG_Character_Equipment::dump() const
     {
       case ITEM_WEAPON:
       {
-        RPG_Item_Weapon_Base* weapon_base = ACE_dynamic_cast(RPG_Item_Weapon_Base*, handle);
-        ACE_ASSERT(weapon_base);
+        RPG_Item_Weapon* weapon = ACE_dynamic_cast(RPG_Item_Weapon*, handle);
+        ACE_ASSERT(weapon);
 
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("slot \"%s\" --> weapon (ID: %d, type: %s)\n"),
                    RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),
                    (*iterator).second,
-                   RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_base->getWeaponType()).c_str()));
+                   RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->getWeaponType()).c_str()));
 
         break;
       }
       case ITEM_ARMOR:
       {
-        RPG_Item_Armor_Base* armor_base = ACE_dynamic_cast(RPG_Item_Armor_Base*, handle);
-        ACE_ASSERT(armor_base);
+        RPG_Item_Armor* armor = ACE_dynamic_cast(RPG_Item_Armor*, handle);
+        ACE_ASSERT(armor);
 
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("slot \"%s\" --> armor (ID: %d, type: %s)\n"),
                    RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),
                    (*iterator).second,
-                   RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor_base->getArmorType()).c_str()));
+                   RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()).c_str()));
 
         break;
       }

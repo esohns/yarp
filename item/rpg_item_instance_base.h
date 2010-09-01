@@ -22,6 +22,8 @@
 
 #include "rpg_item_instance_common.h"
 
+#include <rpg_common_referencecounter.h>
+
 #include <ace/Global_Macros.h>
 #include <ace/Atomic_Op.h>
 #include <ace/Synch.h>
@@ -30,17 +32,21 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Item_Instance_Base
+ : public RPG_Common_ReferenceCounter
 {
  public:
-  virtual ~RPG_Item_Instance_Base();
-
   // info
   const RPG_Item_ID_t getID() const;
 
  protected:
+  // *NOTE*: invocation generates a new item ID
   RPG_Item_Instance_Base();
+  // *TODO*: should be 'private'
+  virtual ~RPG_Item_Instance_Base();
 
  private:
+  typedef RPG_Common_ReferenceCounter inherited;
+
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Instance_Base(const RPG_Item_Instance_Base&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Instance_Base& operator=(const RPG_Item_Instance_Base&));

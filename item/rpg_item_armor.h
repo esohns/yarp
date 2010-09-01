@@ -21,8 +21,9 @@
 #define RPG_ITEM_ARMOR_H
 
 #include "rpg_item_instance_base.h"
-#include "rpg_item_armor_base.h"
-#include "rpg_item_common.h"
+#include "rpg_item_base.h"
+#include "rpg_item_instance_manager.h"
+#include "rpg_item_armortype.h"
 
 #include <ace/Global_Macros.h>
 
@@ -31,20 +32,29 @@
 */
 class RPG_Item_Armor
  : public RPG_Item_Instance_Base,
-   public RPG_Item_Armor_Base
+   public RPG_Item_Base
 {
+  // grant access to ctor
+  friend class RPG_Item_Instance_Manager;
+
  public:
-  RPG_Item_Armor(const RPG_Item_ArmorType&);
-  virtual ~RPG_Item_Armor();
+  // what am I ?
+  const RPG_Item_ArmorType getArmorType() const;
+
+  virtual void dump() const;
 
  private:
   typedef RPG_Item_Instance_Base inherited;
-  typedef RPG_Item_Armor_Base inherited2;
+  typedef RPG_Item_Base inherited2;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Armor());
+  RPG_Item_Armor(const RPG_Item_ArmorType&);
+  virtual ~RPG_Item_Armor();
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Armor(const RPG_Item_Armor&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Armor& operator=(const RPG_Item_Armor&));
+
+  RPG_Item_ArmorType myArmorType;
 };
 
 #endif

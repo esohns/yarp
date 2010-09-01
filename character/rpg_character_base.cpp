@@ -292,6 +292,22 @@ RPG_Character_Base::getSize() const
   return mySize;
 }
 
+const RPG_Magic_Spells_t
+RPG_Character_Base::getKnownSpells() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getKnownSpells"));
+
+  return myKnownSpells;
+}
+
+const RPG_Magic_SpellList_t
+RPG_Character_Base::getSpells() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getSpells"));
+
+  return mySpells;
+}
+
 const unsigned short int
 RPG_Character_Base::getNumTotalHitPoints() const
 {

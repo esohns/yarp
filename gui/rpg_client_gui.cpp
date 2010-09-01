@@ -462,6 +462,12 @@ update_character_profile(const RPG_Character_Player& player_in)
   current = GTK_WIDGET(glade_xml_get_widget(xml,
                                             ACE_TEXT_ALWAYS_CHAR("feats_vbox")));
   ACE_ASSERT(current);
+  GList* entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    // *TODO*: clear all entries
+  } // end IF
   GtkWidget* label = NULL;
   RPG_Character_Feats_t player_feats = player_in.getFeats();
   for (RPG_Character_FeatsConstIterator_t iterator = player_feats.begin();
@@ -469,7 +475,160 @@ update_character_profile(const RPG_Character_Player& player_in)
        iterator++)
   {
     label = NULL;
-    label = gtk_label_new(RPG_Character_FeatHelper::RPG_Character_FeatToString(*iterator).c_str());
+    label = gtk_label_new(RPG_Common_Tools::enumToString(RPG_Character_FeatHelper::RPG_Character_FeatToString(*iterator)).c_str());
+    ACE_ASSERT(label);
+//     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+  } // end FOR
+
+  // step14: abilities
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                                            ACE_TEXT_ALWAYS_CHAR("abilities_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    // *TODO*: clear all entries
+  } // end IF
+  RPG_Character_Abilities_t player_abilities = player_in.getAbilities();
+  for (RPG_Character_AbilitiesConstIterator_t iterator = player_abilities.begin();
+       iterator != player_abilities.end();
+       iterator++)
+  {
+    label = NULL;
+    label = gtk_label_new(RPG_Common_Tools::enumToString(RPG_Character_AbilityHelper::RPG_Character_AbilityToString(*iterator)).c_str());
+    ACE_ASSERT(label);
+//     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+  } // end FOR
+
+  // step15: skills
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                                            ACE_TEXT_ALWAYS_CHAR("skills_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    // *TODO*: clear all entries
+  } // end IF
+  RPG_Character_Skills_t player_skills = player_in.getSkills();
+  for (RPG_Character_SkillsConstIterator_t iterator = player_skills.begin();
+       iterator != player_skills.end();
+       iterator++)
+  {
+    text.clear();
+    text += RPG_Common_Tools::enumToString(RPG_Common_SkillHelper::RPG_Common_SkillToString((*iterator).first));
+    text += ACE_TEXT_ALWAYS_CHAR(" : ");
+    converter.str(ACE_TEXT(""));
+    converter.clear();
+    converter << (*iterator).second;
+    text += converter.str();
+    label = NULL;
+    label = gtk_label_new(text.c_str());
+    ACE_ASSERT(label);
+//     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+  } // end FOR
+
+  // step16: spells
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                                            ACE_TEXT_ALWAYS_CHAR("spells_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    // *TODO*: clear all entries
+  } // end IF
+  RPG_Magic_Spells_t player_known_spells = player_in.getKnownSpells();
+  RPG_Magic_SpellList_t player_spells = player_in.getSpells();
+  unsigned int number = 0;
+  for (RPG_Magic_SpellsIterator_t iterator = player_known_spells.begin();
+       iterator != player_known_spells.end();
+       iterator++)
+  {
+    // *NOTE*: these spells are KNOWN
+    // --> for each spells, check whether (and how often) it has been prepared/memorized
+    // i.e. Wizard/Cleric and other classes
+    number = 0;
+    for (RPG_Magic_SpellListIterator_t iterator2 = player_spells.begin();
+         iterator2 != player_spells.end();
+         iterator2++)
+      if (*iterator2 == *iterator)
+        number++;
+
+    text.clear();
+    text += RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
+    if (number)
+    {
+      text += ACE_TEXT_ALWAYS_CHAR(" : ");
+      converter.str(ACE_TEXT(""));
+      converter.clear();
+      converter << number;
+      text += converter.str();
+    } // end IF
+
+    label = NULL;
+    label = gtk_label_new(text.c_str());
+    ACE_ASSERT(label);
+//     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+  } // end FOR
+
+  // step17: inventory
+  current = GTK_WIDGET(glade_xml_get_widget(xml,
+                       ACE_TEXT_ALWAYS_CHAR("inventory_items_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    // *TODO*: clear all entries
+  } // end IF
+  RPG_Magic_Spells_t player_known_spells = player_in.getKnownSpells();
+  RPG_Magic_SpellList_t player_spells = player_in.getSpells();
+  unsigned int number = 0;
+  for (RPG_Magic_SpellsIterator_t iterator = player_known_spells.begin();
+       iterator != player_known_spells.end();
+       iterator++)
+  {
+    // *NOTE*: these spells are KNOWN
+    // --> for each spells, check whether (and how often) it has been prepared/memorized
+    // i.e. Wizard/Cleric and other classes
+    number = 0;
+    for (RPG_Magic_SpellListIterator_t iterator2 = player_spells.begin();
+         iterator2 != player_spells.end();
+         iterator2++)
+      if (*iterator2 == *iterator)
+        number++;
+
+    text.clear();
+    text += RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
+    if (number)
+    {
+      text += ACE_TEXT_ALWAYS_CHAR(" : ");
+      converter.str(ACE_TEXT(""));
+      converter.clear();
+      converter << number;
+      text += converter.str();
+    } // end IF
+
+    label = NULL;
+    label = gtk_label_new(text.c_str());
     ACE_ASSERT(label);
 //     gtk_container_add(GTK_CONTAINER(current), label);
     gtk_box_pack_start(GTK_BOX(current), label,

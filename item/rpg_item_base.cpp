@@ -31,6 +31,8 @@ RPG_Item_Base::RPG_Item_Base(const RPG_Item_Type& itemType_in,
   ACE_TRACE(ACE_TEXT("RPG_Item_Base::RPG_Item_Base"));
 
   // register with instance manager
+  // *NOTE*: the manager stores references to RPG_Item_Base (instead of RPG_Item_Instance_Base)
+  // --> allows easier/consistent upcasts !
   RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->registerItem(itemID_in, this);
 }
 

@@ -19,6 +19,11 @@
  ***************************************************************************/
 #include "rpg_item_instance_manager.h"
 
+#include "rpg_item_weapontype.h"
+#include "rpg_item_armortype.h"
+#include "rpg_item_weapon.h"
+#include "rpg_item_armor.h"
+
 RPG_Item_Instance_Manager::RPG_Item_Instance_Manager()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::RPG_Item_Instance_Manager"));
@@ -31,10 +36,83 @@ RPG_Item_Instance_Manager::~RPG_Item_Instance_Manager()
 
 }
 
-const bool RPG_Item_Instance_Manager::getItem(const RPG_Item_ID_t& itemID_in,
-                                              RPG_Item_Base*& handle_out) const
+RPG_Item_Instance_Base*
+RPG_Item_Instance_Manager::create(const RPG_Item_Type& itemType_in,
+                                  const unsigned int& itemSubType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::getItem"));
+  ACE_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::create"));
+
+  // init return value(s)
+  RPG_Item_Instance_Base* handle = NULL;
+
+  switch (itemType_in)
+  {
+    case ITEM_ARMOR:
+    {
+      RPG_Item_ArmorType armorType = ACE_static_cast(RPG_Item_ArmorType, itemSubType_in);
+
+      try
+      {
+        handle = new RPG_Item_Armor(armorType);
+      }
+      catch (const std::bad_alloc& exception)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught std::bad_alloc, aborting\n")));
+      }
+      if (!handle)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to allocate RPG_Item_Armor(\"%s\"), aborting\n"),
+                   RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armorType).c_str()));
+      }
+
+      break;
+    }
+    case ITEM_WEAPON:
+    {
+      RPG_Item_WeaponType weaponType = ACE_static_cast(RPG_Item_WeaponType, itemSubType_in);
+
+      try
+      {
+        handle = new RPG_Item_Weapon(weaponType);
+      }
+      catch (const std::bad_alloc& exception)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught std::bad_alloc, aborting\n")));
+      }
+      if (!handle)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to allocate RPG_Item_Weapon(\"%s\"), aborting\n"),
+                   RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weaponType).c_str()));
+      }
+
+      break;
+    }
+    // *TODO*: create these as well
+    case ITEM_GOODS:
+    case ITEM_OTHER:
+    case ITEM_VALUABLE:
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid item type (was: \"%s\"), aborting\n"),
+                 RPG_Item_TypeHelper::RPG_Item_TypeToString(itemType_in).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  return handle;
+}
+
+const bool
+RPG_Item_Instance_Manager::get(const RPG_Item_ID_t& itemID_in,
+                               RPG_Item_Base*& handle_out) const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::get"));
 
   // init return value(s)
   handle_out = NULL;
@@ -48,19 +126,25 @@ const bool RPG_Item_Instance_Manager::getItem(const RPG_Item_ID_t& itemID_in,
   return (iterator != myInstanceTable.end());
 }
 
-void RPG_Item_Instance_Manager::registerItem(const RPG_Item_ID_t& itemID_in,
-                                             RPG_Item_Base* handle_in)
+void
+RPG_Item_Instance_Manager::registerItem(const RPG_Item_ID_t& itemID_in,
+                                        RPG_Item_Base* handle_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::registerItem"));
+
+  // sanity check(s)
+  ACE_ASSERT(handle_in);
 
   myInstanceTable.insert(std::make_pair(itemID_in, handle_in));
 }
 
-void RPG_Item_Instance_Manager::deregisterItem(RPG_Item_Base* handle_in)
+void
+RPG_Item_Instance_Manager::deregisterItem(RPG_Item_Base* handle_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::deregisterItem"));
 
-  // sanity check
+  // sanity check(s)
+  ACE_ASSERT(handle_in);
   ACE_ASSERT(!myInstanceTable.empty());
 
   // need to iterate...
@@ -78,6 +162,10 @@ void RPG_Item_Instance_Manager::deregisterItem(RPG_Item_Base* handle_in)
     iterator++;
   } while (iterator != myInstanceTable.end());
 
+  // debug info
+  RPG_Item_Instance_Base* instance_handle = ACE_dynamic_cast(RPG_Item_Instance_Base*, handle_in);
+  ACE_ASSERT(instance_handle);
   ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("item not found --> check implementation !, returning\n")));
+             ACE_TEXT("item (ID: %u) not found, returning\n"),
+             instance_handle->getID()));
 }

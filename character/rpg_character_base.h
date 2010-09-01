@@ -75,6 +75,9 @@ class RPG_Character_Base
   const unsigned int getWealth() const;
   const RPG_Common_Size getSize() const;
 
+  const RPG_Magic_Spells_t getKnownSpells() const;
+  const RPG_Magic_SpellList_t getSpells() const;
+
   virtual const RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
                                                                const RPG_Combat_AttackSituation&) const = 0;
   virtual const signed char getArmorClass(const RPG_Combat_DefenseSituation&) const = 0;
