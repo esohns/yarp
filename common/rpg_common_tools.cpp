@@ -370,7 +370,6 @@ RPG_Common_Tools::getSizeModifier(const RPG_Common_Size& size_in)
   signed char result = 1;
   result <<= ::abs(SIZE_MEDIUM - size_in - 1);
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("size (\"%s\") --> modifier: %d...\n"),
              RPG_Common_SizeHelper::RPG_Common_SizeToString(size_in).c_str(),
@@ -403,9 +402,8 @@ RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in)
     }
     default:
     {
-      // debug info
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid size: \"%s\" --> check implementation !, aborting\n"),
+                 ACE_TEXT("invalid size: \"%s\", aborting\n"),
                  RPG_Common_SizeHelper::RPG_Common_SizeToString(size_in).c_str()));
 
       break;
@@ -416,7 +414,8 @@ RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in)
 }
 
 const std::string
-RPG_Common_Tools::enumToString(const std::string& enumString_in)
+RPG_Common_Tools::enumToString(const std::string& enumString_in,
+                               const bool& chopPrefix_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Common_Tools::enumToString"));
 
@@ -425,13 +424,16 @@ RPG_Common_Tools::enumToString(const std::string& enumString_in)
   // *NOTE*: this converts "SUBCLASS_MONK" --> "Monk"
 
   // step1: chop off everything before (and including) the first underscore ('_')
-  std::string::size_type underscore = result.find('_', 0);
-  if (underscore != std::string::npos)
+  if (chopPrefix_in)
   {
-    std::string::iterator last = result.begin();
-    std::advance(last, underscore + 1); // *NOTE*: move one past '_'
-    result.erase(result.begin(),
-                 last);
+    std::string::size_type underscore = result.find('_', 0);
+    if (underscore != std::string::npos)
+    {
+      std::string::iterator last = result.begin();
+      std::advance(last, underscore + 1); // *NOTE*: move one past '_'
+      result.erase(result.begin(),
+                  last);
+    } // end IF
   } // end IF
 
   // step2: convert everything past the first character to lower-case

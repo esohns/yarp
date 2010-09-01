@@ -51,7 +51,8 @@ class RPG_Common_Tools
 
   // use this to "pretty-print" enumerated (i.e. XML-) values
   // e.g. "SUBCLASS_MONK" --> "Monk"
-  static const std::string enumToString(const std::string&); // string representation
+  static const std::string enumToString(const std::string&,  // string representation
+                                        const bool& = true); // chop prefix ?
 
   // use this to generate a "condensed" period string
   // - uses snprintf internally: "%H:%M:%S.usec"

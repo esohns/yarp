@@ -66,6 +66,7 @@ class RPG_Character_Player_Base
   // compute dynamically from class/XP
   const unsigned char getLevel(const RPG_Common_SubClass& = SUBCLASS_NONE) const; // subclass
 
+  // access current equipment
   const RPG_Character_Equipment* getEquipment() const;
 
   virtual const RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier

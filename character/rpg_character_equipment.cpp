@@ -33,27 +33,10 @@ RPG_Character_Equipment::RPG_Character_Equipment()
 
 }
 
-RPG_Character_Equipment::RPG_Character_Equipment(const RPG_Character_Equipment& equipment_in)
- : myEquipment(equipment_in.myEquipment)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::RPG_Character_Equipment"));
-
-}
-
 RPG_Character_Equipment::~RPG_Character_Equipment()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::RPG_Character_Equipment"));
 
-}
-
-RPG_Character_Equipment&
-RPG_Character_Equipment::operator=(const RPG_Character_Equipment& equipment_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::operator="));
-
-  myEquipment = equipment_in.myEquipment;
-
-  return *this;
 }
 
 void
@@ -62,7 +45,7 @@ RPG_Character_Equipment::equip(const RPG_Item_ID_t& itemID_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::equip"));
 
-  // *TODO*: auto-choose slot
+  // *TODO*: auto-choose appropriate slot
   ACE_ASSERT(slot_in != EQUIPMENTSLOT_ANY);
 
   myEquipment.insert(std::make_pair(slot_in, itemID_in));
@@ -162,9 +145,9 @@ RPG_Character_Equipment::getPrimaryWeapon(const RPG_Character_OffHand& offHand_i
 }
 
 const RPG_Item_ArmorType
-RPG_Character_Equipment::getArmor() const
+RPG_Character_Equipment::getBodyArmor() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getArmor"));
+  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getBodyArmor"));
 
   // *TODO*; consider helmets/gauntlets/boots/shields, etc...
   RPG_Character_EquipmentIterator_t iterator = myEquipment.find(EQUIPMENTSLOT_BODY);

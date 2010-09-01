@@ -32,6 +32,11 @@
 #include <rpg_character_defines.h>
 #include <rpg_character_player.h>
 
+#include <rpg_item_base.h>
+#include <rpg_item_instance_manager.h>
+#include <rpg_item_weapon.h>
+#include <rpg_item_armor.h>
+
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
 
@@ -591,7 +596,7 @@ update_character_profile(const RPG_Character_Player& player_in)
 
   // step17: inventory
   current = GTK_WIDGET(glade_xml_get_widget(xml,
-                       ACE_TEXT_ALWAYS_CHAR("inventory_items_vbox")));
+                                            ACE_TEXT_ALWAYS_CHAR("inventory_items_vbox")));
   ACE_ASSERT(current);
   entries = gtk_container_get_children(GTK_CONTAINER(current));
 //   ACE_ASSERT(entries);
@@ -599,33 +604,67 @@ update_character_profile(const RPG_Character_Player& player_in)
   {
     // *TODO*: clear all entries
   } // end IF
-  RPG_Magic_Spells_t player_known_spells = player_in.getKnownSpells();
-  RPG_Magic_SpellList_t player_spells = player_in.getSpells();
-  unsigned int number = 0;
-  for (RPG_Magic_SpellsIterator_t iterator = player_known_spells.begin();
-       iterator != player_known_spells.end();
+  RPG_Character_Inventory player_inventory = player_in.getInventory();
+  RPG_Character_Equipment player_equipment = player_in.getEquipment();
+  RPG_Item_Base* item = NULL;
+  for (RPG_Item_ListIterator_t iterator = player_inventory.myItems.begin();
+       iterator != player_inventory.myItems.end();
        iterator++)
   {
-    // *NOTE*: these spells are KNOWN
-    // --> for each spells, check whether (and how often) it has been prepared/memorized
-    // i.e. Wizard/Cleric and other classes
-    number = 0;
-    for (RPG_Magic_SpellListIterator_t iterator2 = player_spells.begin();
-         iterator2 != player_spells.end();
-         iterator2++)
-      if (*iterator2 == *iterator)
-        number++;
-
     text.clear();
-    text += RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
-    if (number)
+    item = NULL;
+
+    // retrieve item handle
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
+                                                              item))
     {
-      text += ACE_TEXT_ALWAYS_CHAR(" : ");
-      converter.str(ACE_TEXT(""));
-      converter.clear();
-      converter << number;
-      text += converter.str();
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid item (ID: %d), continuing\n"),
+                 *iterator));
+
+      continue;
     } // end IF
+    ACE_ASSERT(item);
+
+    switch (item->getType())
+    {
+      case ITEM_WEAPON:
+      {
+        RPG_Item_Weapon* weapon = ACE_dynamic_cast(RPG_Item_Weapon*, item);
+        ACE_ASSERT(weapon);
+
+        // *TODO*: pretty-print this string
+        text += RPG_Common_Tools::enumToString(RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->getWeaponType()),
+                                               false); // don't strip leading "xxx_"
+
+        break;
+      }
+      case ITEM_ARMOR:
+      {
+        RPG_Item_Armor* armor = ACE_dynamic_cast(RPG_Item_Armor*, item);
+        ACE_ASSERT(armor);
+
+        text += RPG_Common_Tools::enumToString(RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()));
+
+        break;
+      }
+      default:
+      {
+        // *TODO*: pretty-print this string
+
+        break;
+      }
+    } // end SWITCH
+
+    // equipped ? --> add '*'
+    for (RPG_Character_EquipmentIterator_t iterator2 = player_equipment.myEquipment.begin();
+         iterator2 != player_equipment.myEquipment.end();
+         iterator2++)
+      if ((*iterator2).second == *iterator)
+      {
+        text += ACE_TEXT_ALWAYS_CHAR(" *");
+        break; // done
+      } // end IF
 
     label = NULL;
     label = gtk_label_new(text.c_str());

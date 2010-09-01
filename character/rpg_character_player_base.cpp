@@ -275,7 +275,7 @@ RPG_Character_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defe
   signed char result = 10;
 
   // retrieve equipped armor type
-  RPG_Item_ArmorType type = myEquipment.getArmor();
+  RPG_Item_ArmorType type = myEquipment.getBodyArmor();
   RPG_Item_ArmorProperties properties;
   if (type != ARMOR_NONE)
   {

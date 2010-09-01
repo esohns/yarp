@@ -29,6 +29,30 @@ RPG_Character_Inventory::RPG_Character_Inventory(const RPG_Item_List_t& items_in
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::RPG_Character_Inventory"));
 
+  // increase item references
+  RPG_Item_Base* item = NULL;
+  RPG_Item_Instance_Base* instance = NULL;
+  for (RPG_Item_ListIterator_t iterator = myItems.begin();
+       iterator != myItems.end();
+       iterator++)
+  {
+    // retrieve item handle
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
+                                                              item))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid item (ID: %d), continuing\n"),
+                 *iterator));
+
+      continue;
+    } // end IF
+    ACE_ASSERT(item);
+
+    // retrieve instance handle
+    instance = ACE_dynamic_cast(RPG_Item_Instance_Base*, item);
+    ACE_ASSERT(instance);
+    instance->increase();
+  } // end FOR
 }
 
 RPG_Character_Inventory::RPG_Character_Inventory(const RPG_Character_Inventory& inventory_in)
@@ -36,38 +60,186 @@ RPG_Character_Inventory::RPG_Character_Inventory(const RPG_Character_Inventory& 
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::RPG_Character_Inventory"));
 
+  // increase item references
+  RPG_Item_Base* item = NULL;
+  RPG_Item_Instance_Base* instance = NULL;
+  for (RPG_Item_ListIterator_t iterator = myItems.begin();
+       iterator != myItems.end();
+       iterator++)
+  {
+    // retrieve item handle
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
+                                                              item))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid item (ID: %d), continuing\n"),
+                 *iterator));
+
+      continue;
+    } // end IF
+    ACE_ASSERT(item);
+
+    // retrieve instance handle
+    instance = ACE_dynamic_cast(RPG_Item_Instance_Base*, item);
+    ACE_ASSERT(instance);
+    instance->increase();
+  } // end FOR
 }
 
 RPG_Character_Inventory::~RPG_Character_Inventory()
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::~RPG_Character_Inventory"));
 
+  // remove item references
+  RPG_Item_Base* item = NULL;
+  RPG_Item_Instance_Base* instance = NULL;
+  for (RPG_Item_ListIterator_t iterator = myItems.begin();
+       iterator != myItems.end();
+       iterator++)
+  {
+    // retrieve item handle
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
+                                                              item))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid item (ID: %d), continuing\n"),
+                 *iterator));
+
+      continue;
+    } // end IF
+    ACE_ASSERT(item);
+
+    // retrieve instance handle
+    instance = ACE_dynamic_cast(RPG_Item_Instance_Base*, item);
+    ACE_ASSERT(instance);
+    instance->decrease();
+  } // end FOR
 }
 
-RPG_Character_Inventory& RPG_Character_Inventory::operator=(const RPG_Character_Inventory& inventory_in)
+RPG_Character_Inventory&
+RPG_Character_Inventory::operator=(const RPG_Character_Inventory& inventory_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::operator="));
 
+  // remove item references
+  RPG_Item_Base* item = NULL;
+  RPG_Item_Instance_Base* instance = NULL;
+  for (RPG_Item_ListIterator_t iterator = myItems.begin();
+       iterator != myItems.end();
+       iterator++)
+  {
+    // retrieve item handle
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
+                                                             item))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid item (ID: %d), continuing\n"),
+                 *iterator));
+
+      continue;
+    } // end IF
+    ACE_ASSERT(item);
+
+    // retrieve instance handle
+    instance = ACE_dynamic_cast(RPG_Item_Instance_Base*, item);
+    ACE_ASSERT(instance);
+    instance->decrease();
+  } // end FOR
+
   myItems = inventory_in.myItems;
+
+  // increase item references
+  for (RPG_Item_ListIterator_t iterator = myItems.begin();
+       iterator != myItems.end();
+       iterator++)
+  {
+    // retrieve item handle
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
+                                                              item))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid item (ID: %d), continuing\n"),
+                 *iterator));
+
+      continue;
+    } // end IF
+    ACE_ASSERT(item);
+
+    // retrieve instance handle
+    instance = ACE_dynamic_cast(RPG_Item_Instance_Base*, item);
+    ACE_ASSERT(instance);
+    instance->increase();
+  } // end FOR
 
   return *this;
 }
 
-void RPG_Character_Inventory::pickUp(const RPG_Item_ID_t& itemID_in)
+void
+RPG_Character_Inventory::pickUp(const RPG_Item_ID_t& itemID_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::pickUp"));
+
+  // increase item reference
+  RPG_Item_Base* item = NULL;
+  RPG_Item_Instance_Base* instance = NULL;
+  // retrieve item handle
+  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(itemID_in,
+                                                            item))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid item (ID: %d), aborting\n"),
+               itemID_in));
+
+    return;
+  } // end IF
+  ACE_ASSERT(item);
+  // retrieve instance handle
+  instance = ACE_dynamic_cast(RPG_Item_Instance_Base*, item);
+  ACE_ASSERT(instance);
+  instance->increase();
 
   myItems.insert(itemID_in);
 }
 
-void RPG_Character_Inventory::drop(const RPG_Item_ID_t& itemID_in)
+void
+RPG_Character_Inventory::drop(const RPG_Item_ID_t& itemID_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::drop"));
+
+  // sanity check
+  if (myItems.find(itemID_in) == myItems.end())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid item (ID: %d), aborting\n"),
+               itemID_in));
+
+    return;
+  } // end IF
+
+  // decrease item reference
+  RPG_Item_Base* item = NULL;
+  RPG_Item_Instance_Base* instance = NULL;
+  // retrieve item handle
+  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(itemID_in,
+                                                            item))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid item (ID: %d), aborting\n"),
+               itemID_in));
+
+    return;
+  } // end IF
+  ACE_ASSERT(item);
+  // retrieve instance handle
+  instance = ACE_dynamic_cast(RPG_Item_Instance_Base*, item);
+  ACE_ASSERT(instance);
+  instance->decrease();
 
   myItems.erase(itemID_in);
 }
 
-void RPG_Character_Inventory::dump() const
+void
+RPG_Character_Inventory::dump() const
 {
   ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::dump"));
 

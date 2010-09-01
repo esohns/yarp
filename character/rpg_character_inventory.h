@@ -31,7 +31,6 @@ class RPG_Character_Inventory
 {
  public:
   RPG_Character_Inventory(const RPG_Item_List_t&); // list of (initial) items
-  // *TODO*: could prove problematic (add reference counting ?)
   RPG_Character_Inventory(const RPG_Character_Inventory&);
   virtual ~RPG_Character_Inventory();
 
@@ -42,6 +41,7 @@ class RPG_Character_Inventory
 
   void dump() const;
 
+  // *WARNING*: do NOT insert/remove elements directly (use the API instead)
   RPG_Item_List_t myItems;
 
  private:

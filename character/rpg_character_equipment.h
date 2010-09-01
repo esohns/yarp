@@ -36,11 +36,9 @@ class RPG_Character_Equipment
 {
  public:
   RPG_Character_Equipment();
-  // *TODO*: implement reference counted items...
-  RPG_Character_Equipment(const RPG_Character_Equipment&);
   virtual ~RPG_Character_Equipment();
-  RPG_Character_Equipment& operator=(const RPG_Character_Equipment&);
 
+  // *NOTE*: equipped items SHALL be part of the inventory !
   void equip(const RPG_Item_ID_t&, // item ID
              const RPG_Character_EquipmentSlot&); // where ?
   void unequip(const RPG_Character_EquipmentSlot&); // where ?
@@ -49,16 +47,20 @@ class RPG_Character_Equipment
   // weapon in EQUIPMENTSLOT_RIGHT_HAND/EQUIPMENTSLOT_LEFT_HAND
   const RPG_Item_WeaponType getPrimaryWeapon(const RPG_Character_OffHand&) const;
   // armor in EQUIPMENTSLOT_BODY/TORSO
-  const RPG_Item_ArmorType getArmor() const;
+  const RPG_Item_ArmorType getBodyArmor() const;
   // armor in EQUIPMENTSLOT_LEFT/RIGHT_HAND, IF ARMOR
   const RPG_Item_ArmorType getShield(const RPG_Character_OffHand&) const;
 
   // dump equipment
   void dump() const;
 
- private:
-  // map of equipped items (values index corresponding items in the inventory !)
+  // *WARNING*: do NOT insert/remove elements directly (use the API instead)
   RPG_Character_Equipment_t myEquipment;
+
+ private:
+  // safety measures
+//   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Equipment(const RPG_Character_Equipment&));
+//   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Equipment& operator=(const RPG_Character_Equipment&));
 };
 
 #endif

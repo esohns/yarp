@@ -308,6 +308,22 @@ RPG_Character_Base::getSpells() const
   return mySpells;
 }
 
+RPG_Character_Inventory
+RPG_Character_Base::getInventory() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getInventory"));
+
+  return myInventory;
+}
+
+const RPG_Character_Equipment
+RPG_Character_Base::getEquipment() const
+{
+  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getEquipment"));
+
+  return myEquipment;
+}
+
 const unsigned short int
 RPG_Character_Base::getNumTotalHitPoints() const
 {
