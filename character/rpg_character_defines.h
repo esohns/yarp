@@ -24,6 +24,7 @@
 #define RPG_CHARACTER_DUMP_DIR              ACE_TEXT("/var/tmp")
 
 #define RPG_CHARACTER_PLAYER_START_MONEY    0
+#define RPG_CHARACTER_PLAYER_ATTR_MIN_SUM   80
 #define RPG_CHARACTER_PLAYER_SCHEMA_FILE    ACE_TEXT("rpg_character_player.xsd")
 #define RPG_CHARACTER_PLAYER_PROFILE_EXT    ACE_TEXT(".xml")
 

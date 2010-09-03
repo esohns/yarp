@@ -1,12 +1,12 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="16" >
+ <DocsAndViews NumberOfDocuments="15" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client_gui.cpp" >
-   <View0 Encoding="" Type="Source" />
+   <View0 Encoding="" line="550" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_gra.cpp" >
-   <View0 Encoding="" Type="Source" />
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc1>
   <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_tile.cpp" >
    <View0 Encoding="" Type="Source" />
@@ -33,23 +33,20 @@
    <View0 Encoding="" Type="Source" />
   </Doc9>
   <Doc10 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/winclass/objitemwin.cpp" >
-   <View0 Encoding="" Type="Source" />
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc10>
-  <Doc11 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client_window_level.h" >
-   <View0 Encoding="" Type="Source" />
+  <Doc11 NumberOfViews="1" URL="file:///usr/include/gtk-2.0/gtk/gtkbox.h" >
+   <View0 Encoding="UTF-8" line="66" Type="Source" />
   </Doc11>
-  <Doc12 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client_window_main.cpp" >
-   <View0 Encoding="" Type="Source" />
+  <Doc12 NumberOfViews="1" URL="file:///usr/include/gtk-2.0/gtk/gtkcontainer.h" >
+   <View0 Encoding="UTF-8" line="122" Type="Source" />
   </Doc12>
-  <Doc13 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client_window_main.h" >
-   <View0 Encoding="" Type="Source" />
+  <Doc13 NumberOfViews="1" URL="file:///usr/include/gtk-2.0/gtk/gtklabel.h" >
+   <View0 Encoding="UTF-8" line="107" Type="Source" />
   </Doc13>
-  <Doc14 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics_toplevel.cpp" >
-   <View0 Encoding="" Type="Source" />
+  <Doc14 NumberOfViews="1" URL="file:///usr/include/glib-2.0/glib/glist.h" >
+   <View0 Encoding="UTF-8" line="74" Type="Source" />
   </Doc14>
-  <Doc15 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client.glade" >
-   <View0 Encoding="" line="123" Type="Source" />
-  </Doc15>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
@@ -63,7 +60,9 @@
   <kdevbookmarks>
    <bookmarks>
     <bookmark url="/home/unfv/Projects/RPG/gui/rpg_client_gui.cpp" >
-     <mark line="919" />
+     <mark line="481" />
+     <mark line="1111" />
+     <mark line="1966" />
     </bookmark>
    </bookmarks>
   </kdevbookmarks>

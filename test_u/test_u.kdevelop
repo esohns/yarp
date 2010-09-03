@@ -15,13 +15,13 @@
     <projectname>test_u</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
-    <defaultencoding></defaultencoding>
+    <description/>
+    <defaultencoding/>
   </general>
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>character/character_generator</activetarget>
+      <activetarget>character/character_parser</activetarget>
     </general>
     <run>
       <mainprogram>/home/unfv/Projects/RPG/test_u/debug/monster/monster_parser</mainprogram>
@@ -50,6 +50,7 @@
         <sound_parser>-d -s ../../sound/rpg_sound.xml -t</sound_parser>
         <graphics_parser>-d -g ../../graphics/rpg_graphics.xml -t</graphics_parser>
         <SDL_gui>-g ../../graphics/rpg_graphics.xml -m /var/tmp/map.txt -t</SDL_gui>
+        <character_parser>-i ../../item/rpg_item.xml -m ../../magic/rpg_magic.xml -f /var/tmp/Xerxes.xml -t</character_parser>
       </runarguments>
       <debugarguments>
         <character_generator>-i ../../item/rpg_item.xml -m ../../magic/rpg_magic.xml -n 6 -r -t</character_generator>
@@ -67,6 +68,7 @@
         <sound_parser>-d -s ../../sound/rpg_sound.xml -t</sound_parser>
         <graphics_parser>-d -g ../../graphics/rpg_graphics.xml -t</graphics_parser>
         <SDL_gui>-g ../../graphics/rpg_graphics.xml -m /var/tmp/map.txt -t</SDL_gui>
+        <character_parser>-i ../../item/rpg_item.xml -m ../../magic/rpg_magic.xml -f /var/tmp/Xerxes.xml -t</character_parser>
       </debugarguments>
       <cwd>
         <character_generator>/home/unfv/Projects/RPG/test_u/debug/./</character_generator>
@@ -84,6 +86,7 @@
         <sound_parser>/home/unfv/Projects/RPG/test_u/debug/./</sound_parser>
         <graphics_parser>/home/unfv/Projects/RPG/test_u/debug/./</graphics_parser>
         <SDL_gui>/home/unfv/Projects/RPG/test_u/debug/</SDL_gui>
+        <character_parser>/home/unfv/Projects/RPG/test_u/debug/./</character_parser>
       </cwd>
     </run>
     <configurations>
@@ -148,7 +151,7 @@
       <runmultiplejobs>false</runmultiplejobs>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin></makebin>
+      <makebin/>
       <prio>0</prio>
     </make>
   </kdevautoproject>
@@ -272,7 +275,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -293,11 +296,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath></gdbpath>
-      <dbgshell></dbgshell>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <gdbpath/>
+      <dbgshell/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>false</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>

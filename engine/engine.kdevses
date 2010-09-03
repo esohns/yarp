@@ -3,10 +3,10 @@
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="2" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/engine/rpg_engine_common_tools.h" >
-   <View0 Encoding="" line="42" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/engine/rpg_engine_common_tools.cpp" >
-   <View0 Encoding="" line="22" Type="Source" />
+   <View0 Encoding="" line="620" Type="Source" />
   </Doc1>
  </DocsAndViews>
  <pluginList>

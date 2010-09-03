@@ -566,7 +566,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   roll.numDice = 2;
   roll.typeDice = D_10;
   roll.modifier = -2; // interval: 0-18
-  // make sure the result is somewhat balanced (average == 6 * 9)...
+  // make sure the result is somewhat balanced (average == 6 * 9 ?)...
   // *NOTE*: INT must be > 2 (smaller values are reserved for animals...)
   int sum = 0;
   do
@@ -579,7 +579,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
     sum = std::accumulate(result.begin(),
                           result.end(),
                           0);
-  } while ((sum <= 54) ||
+  } while ((sum <= RPG_CHARACTER_PLAYER_ATTR_MIN_SUM) ||
            (*(std::min_element(result.begin(),
                                result.end())) <= 9) ||
            (result[3] < 3)); // Note: this is already covered by the last case...

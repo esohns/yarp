@@ -806,7 +806,7 @@ generate_player_character()
       sum = std::accumulate(result.begin(),
                             result.end(),
                             0);
-    } while ((sum <= 54) ||
+    } while ((sum <= RPG_CHARACTER_PLAYER_ATTR_MIN_SUM) ||
              (*(std::min_element(result.begin(),
                                  result.end())) <= 9) ||
              (result[3] < 3)); // Note: this is already covered by the last case...

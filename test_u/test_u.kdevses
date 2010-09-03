@@ -2,8 +2,8 @@
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="1" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/character/character_parser.cpp" >
-   <View0 Encoding="UTF-8" line="340" Type="Source" />
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/character/character_generator.cpp" >
+   <View0 Encoding="" line="422" Type="Source" />
   </Doc0>
  </DocsAndViews>
  <pluginList>
