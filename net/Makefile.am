@@ -1,8 +1,10 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = `-I m4'
+ACLOCAL_AMFLAGS = -I m4
 
-INCLUDES = -I$(top_srcdir)/.
+#INCLUDES = -I$(top_srcdir)/.
+
+SUBDIRS = protocol
 
 include_HEADERS = rpg_net_client_sockethandler.h rpg_net_common.h \
 	rpg_net_common_tools.h rpg_net_connection_manager.h rpg_net_connection_manager.i \
@@ -16,6 +18,7 @@ include_HEADERS = rpg_net_client_sockethandler.h rpg_net_common.h \
 	rpg_net_stream_messageallocator.h rpg_net_stream_socket_base.h rpg_net_stream_socket_base.i
 
 lib_LTLIBRARIES = libRPG_Net.la
+
 libRPG_Net_la_SOURCES = rpg_net_client_sockethandler.cpp \
 	rpg_net_client_sockethandler.h rpg_net_common.h rpg_net_common_tools.cpp rpg_net_common_tools.h \
 	rpg_net_connection_manager.cpp rpg_net_connection_manager.h rpg_net_connection_manager.i \
@@ -35,5 +38,3 @@ libRPG_Net_la_SOURCES = rpg_net_client_sockethandler.cpp \
 	rpg_net_stream_messageallocator.h rpg_net_stream_socket_base.cpp rpg_net_stream_socket_base.h \
 	rpg_net_stream_socket_base.i
 libRPG_Net_la_LDFLAGS = -L/usr/local/lib
-
-SUBDIRS = protocol

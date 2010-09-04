@@ -1,8 +1,8 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = `-I m4'
+ACLOCAL_AMFLAGS = -I m4
 
-INCLUDES = -I$(top_srcdir)/.
+#INCLUDES = -I$(top_srcdir)/.
 
 include_HEADERS = location.hh position.hh rpg_net_protocol_IRC_codes.h \
 	rpg_net_protocol_IRCmessage.h rpg_net_protocol_IRCparser.h rpg_net_protocol_IRCparser_driver.h \
@@ -13,6 +13,7 @@ include_HEADERS = location.hh position.hh rpg_net_protocol_IRC_codes.h \
 	rpg_net_protocol_sockethandler.h rpg_net_protocol_stream.h rpg_net_protocol_tools.h stack.hh
 
 lib_LTLIBRARIES = libRPG_Net_Protocol.la
+
 libRPG_Net_Protocol_la_SOURCES = location.hh position.hh \
 	rpg_net_protocol_IRC_codes.h rpg_net_protocol_IRCbisect.cpp rpg_net_protocol_IRCbisect.h \
 	rpg_net_protocol_IRCmessage.cpp rpg_net_protocol_IRCmessage.h rpg_net_protocol_IRCparser.cpp \

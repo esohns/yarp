@@ -1,5 +1,9 @@
 METASOURCES = AUTO
 
+ACLOCAL_AMFLAGS = -I m4
+
+noinst_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h
+
 include_HEADERS = rpg_magic_XML_parser.h rpg_magic_XML_tree.h \
 	rpg_magic_XML_types.h rpg_magic_abilityclass.h rpg_magic_abilitytype.h \
 	rpg_magic_casterclassunion.h rpg_magic_check.h rpg_magic_checktypeunion.h rpg_magic_common.h \
@@ -31,4 +35,3 @@ libRPG_Magic_la_SOURCES = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \
 
 bindata_DATA = rpg_magic.xml rpg_magic.xsd
 bindatadir = $(bindir)
-noinst_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h

@@ -1,9 +1,10 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = `-I m4'
+ACLOCAL_AMFLAGS = -I m4
 
-INCLUDES = -I$(top_srcdir)/.
+#INCLUDES = -I$(top_srcdir)/.
 
+noinst_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h
 
 include_HEADERS = rpg_character_XML_parser.h rpg_character_XML_tree.h \
 	rpg_character_XML_types.h rpg_character_abilities.h rpg_character_ability.h \
@@ -45,4 +46,3 @@ libRPG_Character_la_LDFLAGS = -L/usr/local/lib
 
 bindata_DATA = rpg_character.xsd rpg_character_player.xsd
 bindatadir = $(bindir)
-noinst_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h

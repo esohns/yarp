@@ -1,6 +1,8 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = `-I m4'
+ACLOCAL_AMFLAGS = -I m4
+
+noinst_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h
 
 include_HEADERS = rpg_item_XML_parser.h rpg_item_XML_tree.h \
 	rpg_item_XML_types.h rpg_item_armor.h rpg_item_armorcategory.h \
@@ -27,7 +29,5 @@ libRPG_Item_la_SOURCES = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \
 	rpg_item_weaponpropertiesbase.h rpg_item_weaponpropertiesxml.h rpg_item_weapontype.h
 libRPG_Item_la_LDFLAGS = -L/usr/local/lib
 
-
 bindata_DATA = rpg_item.xsd rpg_item.xml
 bindatadir = $(bindir)
-noinst_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h

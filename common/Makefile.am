@@ -1,8 +1,8 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = `-I m4'
+ACLOCAL_AMFLAGS = -I m4
 
-INCLUDES = -I$(top_srcdir)/.
+#INCLUDES = -I$(top_srcdir)/.
 
 include_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \
 	rpg_common.h rpg_common_XML_parser.h rpg_common_XML_tree.h rpg_common_XML_types.h \
@@ -19,6 +19,7 @@ include_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \
 	rpg_common_timer_manager.h rpg_common_timerhandler.h rpg_common_tools.h rpg_common_usage.h
 
 lib_LTLIBRARIES = libRPG_Common.la
+
 libRPG_Common_la_SOURCES = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \
 	rpg_common.h rpg_common_XML_parser.cpp rpg_common_XML_parser.h \
 	rpg_common_XML_tree.cpp rpg_common_XML_tree.h rpg_common_XML_types.cpp rpg_common_XML_types.h \

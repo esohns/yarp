@@ -1,6 +1,8 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = `-I m4'
+ACLOCAL_AMFLAGS = -I m4
+
+noinst_HEADERS = rpg_XMLSchema_XML_types.h
 
 include_HEADERS = rpg_monster.h rpg_monster_XML_parser.h \
 	rpg_monster_XML_types.h rpg_monster_actiontrigger.h rpg_monster_advancement.h \
@@ -35,4 +37,3 @@ libRPG_Monster_la_SOURCES = rpg_XMLSchema_XML_types.h rpg_monster.cpp \
 
 bindata_DATA = rpg_monster.xsd rpg_monster.xml
 bindatadir = $(bindir)
-noinst_HEADERS = rpg_XMLSchema_XML_types.h

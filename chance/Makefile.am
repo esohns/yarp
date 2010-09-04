@@ -1,6 +1,6 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = `-I m4'
+ACLOCAL_AMFLAGS = -I m4
 
 INCLUDES = -I$(top_srcdir)/. -I$(top_srcdir)/dice
 

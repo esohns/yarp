@@ -1,5 +1,7 @@
 METASOURCES = AUTO
 
+ACLOCAL_AMFLAGS = -I m4
+
 include_HEADERS = rpg_sound.h rpg_sound_XML_parser.h rpg_sound_XML_types.h \
 	rpg_sound_category.h rpg_sound_common.h rpg_sound_common_tools.h rpg_sound_dictionary.h \
 	rpg_sound_event.h rpg_sound_incl.h

@@ -2,8 +2,8 @@
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="1" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/map/rpg_map_common.h" >
-   <View0 Encoding="" line="79" Type="Source" />
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/map/Makefile.am" >
+   <View0 Encoding="" line="18" Type="Source" />
   </Doc0>
  </DocsAndViews>
  <pluginList>

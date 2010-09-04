@@ -1,7 +1,11 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(gui, 0.1, erik.sohns@web.de)
+AC_INIT([gui],
+        [0.1],
+        [erik.sohns@web.de],
+        [gui],
+        [http://www.rpg.org])
 AC_PREREQ([2.63])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADERS([config.h])

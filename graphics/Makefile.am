@@ -1,8 +1,8 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = `-I m4'
+ACLOCAL_AMFLAGS = -I m4
 
-INCLUDES = -I$(top_srcdir)/.
+#INCLUDES = -I$(top_srcdir)/.
 
 include_HEADERS = rpg_graphics_SDL_tools.h rpg_graphics_SDL_window_base.h \
 	rpg_graphics_SDL_window_sub.h rpg_graphics_XML_parser.h rpg_graphics_XML_types.h \
@@ -36,4 +36,3 @@ libRPG_Graphics_la_SOURCES = rpg_XMLSchema_XML_types.h \
 
 bindata_DATA = rpg_graphics.xml rpg_graphics.xsd
 bindatadir = $(bindir)
-noinst_HEADERS = rpg_graphics_surface.h

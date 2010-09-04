@@ -1,13 +1,16 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="2" >
+ <DocsAndViews NumberOfDocuments="3" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat.map" >
    <View0 Encoding="" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/rpg_combat.xsd" >
    <View0 Encoding="" line="57" Type="Source" />
   </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/combat/Makefile.am" >
+   <View0 Encoding="" line="3" Type="Source" />
+  </Doc2>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>

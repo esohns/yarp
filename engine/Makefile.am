@@ -1,6 +1,6 @@
 METASOURCES = AUTO
 
-noinst_HEADERS =
+ACLOCAL_AMFLAGS = -I m4
 
 include_HEADERS = rpg_engine_common.h rpg_engine_common_tools.h
 
