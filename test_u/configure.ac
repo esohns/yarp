@@ -24,10 +24,14 @@ AC_PROG_MAKE_SET
 AM_PROG_LIBTOOL
 
 # init other tools.
+#AM_INIT_AUTOMAKE([gnu nostdinc -Wall])
 AM_INIT_AUTOMAKE(test_u, 0.1)
 # build time sanity check...
 AM_SANITY_CHECK
 LT_INIT
+
+# prefix config.h
+AX_PREFIX_CONFIG_H
 
 # get the cpp compiler flags
 CXXFLAGS="${CXXFLAGS=}"

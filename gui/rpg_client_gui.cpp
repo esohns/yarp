@@ -18,6 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+// *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
+#ifdef HAVE_CONFIG_H
+#include <gui-config.h>
+#endif
+
 #include "rpg_client_defines.h"
 #include "rpg_client_common.h"
 #include "rpg_client_window_main.h"
@@ -74,11 +79,6 @@
 #include <string>
 #include <iostream>
 #include <sstream>
-
-// *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
 
 static GTK_cb_data_t    userData    = {0,
                                        NULL,
@@ -2812,7 +2812,8 @@ do_printVersion(const std::string& programName_in)
 {
   ACE_TRACE(ACE_TEXT("::do_printVersion"));
 
-  std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
+//   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
+  std::cout << programName_in << ACE_TEXT(" : ") << GUI_VERSION << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
@@ -3061,7 +3062,8 @@ ACE_TMAIN(int argc_in,
 //   gnome_client_set_program(gnomeSession, ACE::basename(argv_in[0]));
   GnomeProgram* gnomeProgram = NULL;
   gnomeProgram = gnome_program_init(RPG_CLIENT_DEF_GNOME_APPLICATION_ID, // app ID
-                                    ACE_TEXT_ALWAYS_CHAR(VERSION),       // version
+//                                     ACE_TEXT_ALWAYS_CHAR(VERSION),       // version
+                                    ACE_TEXT_ALWAYS_CHAR(GUI_VERSION),   // version
                                     LIBGNOMEUI_MODULE,                   // module info
                                     argc_in,                             // cmdline
                                     argv_in,                             // cmdline

@@ -18,6 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+// *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
+#ifdef HAVE_CONFIG_H
+#include <test_u-config.h>
+#endif
+
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_common_tools.h>
 
@@ -36,11 +41,6 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
-
-// *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
 
 #define GRAPHICSPARSER_DEF_GRAPHICS_DICTIONARY ACE_TEXT("rpg_graphics.xml")
 
@@ -179,7 +179,8 @@ do_printVersion(const std::string& programName_in)
 {
   ACE_TRACE(ACE_TEXT("::do_printVersion"));
 
-  std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
+//   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
+  std::cout << programName_in << ACE_TEXT(" : ") << TEST_U_VERSION << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version

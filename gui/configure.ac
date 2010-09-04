@@ -8,6 +8,7 @@ AC_INIT([gui],
         [http://www.rpg.org])
 AC_PREREQ([2.63])
 AC_CONFIG_SRCDIR([config.h.in])
+AC_CONFIG_AUX_DIR([.])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -28,10 +29,14 @@ AC_PROG_MAKE_SET
 AM_PROG_LIBTOOL
 
 # init other tools.
+#AM_INIT_AUTOMAKE([gnu nostdinc -Wall])
 AM_INIT_AUTOMAKE(gui, 0.1)
 # build time sanity check...
 AM_SANITY_CHECK
 LT_INIT
+
+# prefix config.h
+AX_PREFIX_CONFIG_H
 
 # get the cpp compiler flags
 CXXFLAGS="${CXXFLAGS=}"
@@ -77,3 +82,4 @@ AC_CHECK_FUNCS([memset])
 AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT
+

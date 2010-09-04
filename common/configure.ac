@@ -24,7 +24,7 @@ AC_PROG_MAKE_SET
 AM_PROG_LIBTOOL
 
 # init other tools.
-AM_INIT_AUTOMAKE(common, 0.1)
+AM_INIT_AUTOMAKE
 # build time sanity check...
 AM_SANITY_CHECK
 LT_INIT
