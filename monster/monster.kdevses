@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="3" >
+ <DocsAndViews NumberOfDocuments="4" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster.xsd" >
    <View0 Encoding="" Type="Source" />
   </Doc0>
@@ -11,6 +11,9 @@
   <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/rpg_monster.xml" >
    <View0 Encoding="" line="3" Type="Source" />
   </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/monster/configure.ac" >
+   <View0 Encoding="" line="74" Type="Source" />
+  </Doc3>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>

@@ -54,8 +54,8 @@
         <envvars/>
         <configargs>--disable-static</configargs>
         <topsourcedir></topsourcedir>
-        <cppflags>`pkg-config --cflags sdl` `pkg-config --cflags libgnomeui-2.0` `pkg-config --cflags libglade-2.0`</cppflags>
-        <ldflags>`pkg-config --libs sdl` `pkg-config --libs libgnomeui-2.0` `pkg-config --libs libglade-2.0` -L/usr/local/lib</ldflags>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
         <ccompilerbinary></ccompilerbinary>
         <cxxcompilerbinary></cxxcompilerbinary>
         <f77compilerbinary></f77compilerbinary>
@@ -63,7 +63,7 @@
         <f77flags></f77flags>
       </optimized>
       <debug>
-        <configargs>--disable-static</configargs>
+        <configargs>--disable-static --enable-debug</configargs>
         <builddir>debug</builddir>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
@@ -71,8 +71,8 @@
         <cxxflags>-g3 -O0 -march=i686 -Wall</cxxflags>
         <envvars/>
         <topsourcedir></topsourcedir>
-        <cppflags>`pkg-config --cflags sdl` `pkg-config --cflags libgnomeui-2.0` `pkg-config --cflags libglade-2.0`</cppflags>
-        <ldflags>`pkg-config --libs sdl` `pkg-config --libs libgnomeui-2.0` `pkg-config --libs libglade-2.0` -L/usr/local/lib</ldflags>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
         <ccompilerbinary></ccompilerbinary>
         <cxxcompilerbinary></cxxcompilerbinary>
         <f77compilerbinary></f77compilerbinary>

@@ -1,28 +1,56 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.63])
 AC_INIT(chance, 0.1, erik.sohns@web.de)
+AC_PREREQ([2.63])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
+
+# get system information
+AC_CANONICAL_SYSTEM
 
 AC_LANG_CPLUSPLUS
 
 # Checks for programs.
 AC_PROG_CXX
-AC_PROG_AWK
+#AC_PROG_AWK
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-dnl AC_PROG_RANLIB
+# AC_PROG_RANLIB
 AM_PROG_LIBTOOL
 
 # init other tools.
 AM_INIT_AUTOMAKE(chance, 0.1)
+# build time sanity check...
+AM_SANITY_CHECK
 LT_INIT
+
+# get the cpp compiler flags
+CXXFLAGS="${CXXFLAGS=}"
+# this macro is used to get the arguments supplied
+# to the configure script (./configure --enable-debug)
+# Check if we have enable debug support.
+AC_MSG_CHECKING(whether to enable debugging)
+debug_default="no"
+AC_ARG_ENABLE(debug,
+              [ --enable-debug=[no/yes] turn on debugging [default=$debug_default]],
+              ,
+              enable_debug=$debug_default)
+if test "x$enable_debug" = "xyes"; then
+  CXXFLAGS="${CXXFLAGS} -g3 -O0 -march=i686 -Wall"
+  AC_MSG_RESULT(yes)
+else
+  CXXFLAGS="${CXXFLAGS} -O3 -march=i686"
+  AC_MSG_RESULT(no)
+fi
+
+# export these variable (so Makefile substitutions
+# can be made.
+AC_SUBST(CXXFLAGS)
 
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lACE':
@@ -33,10 +61,13 @@ AC_CHECK_LIB([pthread], [main])
 AC_CHECK_LIB([xerces-c], [main])
 
 # Checks for header files.
+AC_HEADER_STDBOOL
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_C_INLINE
 
 # Checks for library functions.
+AC_CHECK_FUNCS([strerror])
 AC_CHECK_FUNCS([gettimeofday])
 
 AC_CONFIG_FILES([Makefile
