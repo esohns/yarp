@@ -37,7 +37,7 @@ struct RPG_Magic_CasterClassUnion
   enum Discriminator_t
   {
     SUBCLASS,
-    __GNUC__DOMAIN,
+    __GCC_QUIRK__DOMAIN,
     INVALID
   };
   Discriminator_t discriminator;

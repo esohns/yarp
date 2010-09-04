@@ -161,10 +161,12 @@ void RPG_Magic_CasterClassUnion_Type::_characters(const ::xml_schema::ro_string&
     // issue --> we provide a (temporary) workaround here...
     // *TODO*: clean this up...
 #define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
-    /* Test for GCC <= 4.4.3 */
-#if GCC_VERSION <= 40403
-    myCurrentCasterClassUnion.discriminator = RPG_Magic_CasterClassUnion::__GNUC__DOMAIN;
+    /* Test for GCC <= 4.4.4 */
+#if GCC_VERSION <= 40404
+#pragma message "applying gcc quirk code for this compiler version..."
+   myCurrentCasterClassUnion.discriminator = RPG_Magic_CasterClassUnion::__GCC_QUIRK__DOMAIN;
 #else
+#pragma message "re-check code for this compiler version"
     myCurrentCasterClassUnion.discriminator = RPG_Magic_CasterClassUnion::DOMAIN;
 #endif
   } // end ELSE

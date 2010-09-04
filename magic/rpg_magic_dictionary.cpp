@@ -315,9 +315,11 @@ RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in
         // *TODO*: clean this up...
 #define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
         /* Test for GCC <= 4.4.3 */
-#if GCC_VERSION == 40403
-        case RPG_Magic_CasterClassUnion::__GNUC__DOMAIN:
+#if GCC_VERSION == 40404
+#pragma message "applying gcc quirk code for this compiler version..."
+        case RPG_Magic_CasterClassUnion::__GCC_QUIRK__DOMAIN:
 #else
+#pragma message "re-check code for this compiler version"
         case RPG_Magic_CasterClassUnion::DOMAIN:
 #endif
         {

@@ -15,8 +15,8 @@
     <projectname>character</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
-    <defaultencoding/>
+    <description></description>
+    <defaultencoding></defaultencoding>
   </general>
   <kdevautoproject>
     <general>
@@ -24,11 +24,11 @@
       <activetarget>libRPG_Character.la</activetarget>
     </general>
     <run>
-      <mainprogram>/home/unfv/Projects/RPG/character/debug/monster/.libs/monster_parser</mainprogram>
-      <programargs>-f ./../monster/rpg_monster.xml -t</programargs>
-      <globaldebugarguments>-f ./../monster/rpg_monster.xml -t -x</globaldebugarguments>
+      <mainprogram></mainprogram>
+      <programargs></programargs>
+      <globaldebugarguments></globaldebugarguments>
       <globalcwd>/home/unfv/Projects/RPG/character/debug</globalcwd>
-      <useglobalprogram>true</useglobalprogram>
+      <useglobalprogram>false</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <autoinstall>false</autoinstall>
@@ -82,14 +82,14 @@
         <f77compiler>kdevg77options</f77compiler>
         <cxxflags>-g3 -O0 -march=i686 -Wall</cxxflags>
         <envvars/>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags>-g3 -O0 -march=i686</cflags>
-        <f77flags>-g3 -O0 -march=i686</f77flags>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <f77flags></f77flags>
       </debug>
       <default>
         <envvars/>
@@ -243,7 +243,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -265,11 +265,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath/>
-      <dbgshell/>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <gdbpath></gdbpath>
+      <dbgshell></dbgshell>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
