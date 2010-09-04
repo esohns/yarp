@@ -1,5 +1,7 @@
 METASOURCES = AUTO
 
+ACLOCAL_AMFLAGS = -I m4
+
 bin_PROGRAMS = character_generator character_parser
 
 character_generator_SOURCES = character_generator.cpp
