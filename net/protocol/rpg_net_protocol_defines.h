@@ -28,6 +28,9 @@
 #define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE       2
 #define RPG_NET_PROTOCOL_IRC_FRAME_MAXSIZE             512
 
+// seconds
+#define RPG_NET_PROTOCOL_IRC_MAX_WELCOME_DELAY         3
+
 // *NOTE*: according to RFC1459, IRC messages SHALL not exceed 512 bytes.
 // - a size of 512 bytes will allow "crunching" messages into a single buffer
 //   --> while this arguably "wastes" some memory, it allows easier

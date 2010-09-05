@@ -27,6 +27,8 @@
 #include <stream_streammodule.h>
 
 #include <ace/Global_Macros.h>
+#include <ace/Condition_T.h>
+#include <ace/Synch.h>
 
 #include <string>
 #include <list>
@@ -47,21 +49,20 @@ class RPG_Net_Protocol_Module_IRCHandler
   virtual ~RPG_Net_Protocol_Module_IRCHandler();
 
   // initialization
-  const bool init(Stream_IAllocator*,        // message allocator
-                  const unsigned long&,      // default (message) buffer size
-                  const bool& = false,       // automatically answer "ping" messages (client)
-                  const bool& = false);      // print dot ('.') for every answered PING to stdlog (client)
+  const bool init(Stream_IAllocator*,   // message allocator
+                  const unsigned long&, // default (message) buffer size
+                  const bool& = false,  // automatically answer "ping" messages (client)
+                  const bool& = false); // print dot ('.') for every answered PING to stdlog (client)
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Protocol_Message*&, // data message handle
                                  bool&);                     // return value: pass message downstream ?
   virtual void handleSessionMessage(RPG_Net_Protocol_SessionMessage*&, // session message handle
-                                    bool&);                   // return value: pass message downstream ?
+                                    bool&);                            // return value: pass message downstream ?
 
   // implement RPG_Net_Protocol_IIRCControl
-  virtual void registerConnection(const RPG_Net_Protocol_IRCLoginOptions&, // login details
-                                  RPG_Net_Protocol_INotify*);              // data callback
-  virtual void notify(RPG_Net_Protocol_INotify*); // data callback
+  virtual void registerConnection(const RPG_Net_Protocol_IRCLoginOptions&); // login details
+  virtual void notify(RPG_Net_Protocol_INotify*); // (additional) subscriber
   virtual void join(const std::string&); // channel
   virtual void part(const std::string&); // channel
   virtual void send(const std::string&,  // channel
@@ -88,17 +89,24 @@ class RPG_Net_Protocol_Module_IRCHandler
   typedef std::list<RPG_Net_Protocol_INotify*> Subscribers_t;
   typedef Subscribers_t::const_iterator SubscribersConstIterator_t;
 
+  // lock to protect mySubscribers and myConnectionIsAlive
   ACE_Thread_Mutex   myLock;
   Subscribers_t      mySubscribers;
 
 //   std::string        myChannelName;
-  Stream_IAllocator* myAllocator;
-  unsigned long      myDefaultBufferSize;
-  bool               myAutomaticPong;
-  bool               myPrintPingPongDot;
-  bool               myIsInitialized;
-  bool               myConnectionIsAlive;
-  bool               myReceivedInitialNotice;
+  Stream_IAllocator*                     myAllocator;
+  unsigned long                          myDefaultBufferSize;
+  bool                                   myAutomaticPong;
+  bool                                   myPrintPingPongDot;
+  bool                                   myIsInitialized;
+  bool                                   myConnectionIsAlive;
+
+  // *NOTE*: obviously, there is a delay between connection establishment and
+  // reception of the welcome NOTICE: let the user wait for it so he can safely
+  // start registering his connection
+  ACE_Thread_Mutex                       myConditionLock;
+  ACE_Thread_Condition<ACE_Thread_Mutex> myCondition;
+  bool                                   myReceivedInitialNotice;
 };
 
 // declare module

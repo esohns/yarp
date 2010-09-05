@@ -41,8 +41,12 @@ class IRC_Client_GUI_MessageHandler
   IRC_Client_GUI_MessageHandler(GtkBuilder*); // widget tree handler
   virtual ~IRC_Client_GUI_MessageHandler();
 
+  // asynch start of session (connection has been opened)
+  virtual void start();
   // asynch arrival of data
   virtual void notify(const RPG_Net_Protocol_IRCMessage&); // message data
+  // asynch end of session (connection has been closed)
+  virtual void end();
   // display (local) text
   void queueForDisplay(const std::string&);
   // *WARNING*: to be called from gtk_main (trigger with g_idle_add())

@@ -57,8 +57,8 @@ class RPG_Net_SocketHandlerBase
   // leading to some serious mayhem)
   // *WARNING*: the current algorithm works only for 1 worker !!!
   virtual int close(ulong = 0); // args
-  virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,                        // handle
-                           ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK); // event mask
+//   virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,                        // handle
+//                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK); // event mask
 
   // implement RPG_Net_IConnection
   virtual void init(const ConfigType&);

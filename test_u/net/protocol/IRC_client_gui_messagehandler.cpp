@@ -20,6 +20,8 @@
 
 #include "IRC_client_gui_messagehandler.h"
 
+#include "IRC_client_gui_defines.h"
+
 #include <rpg_net_protocol_tools.h>
 
 #include <gtk/gtk.h>
@@ -91,9 +93,18 @@ IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler()
 }
 
 void
+IRC_Client_GUI_MessageHandler::start()
+{
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::start"));
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("connected...\n")));
+}
+
+void
 IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::notify"));
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::notify"));
 
   // sanity check(s)
   if (!myGtkInitialized)
@@ -166,6 +177,13 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
                                                      ACE_TEXT_ALWAYS_CHAR("part")));
           ACE_ASSERT(button);
           gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+          // retrieve label handle
+          GtkLabel* label = NULL;
+          label = GTK_LABEL(gtk_builder_get_object(myBuilder,
+                                                   ACE_TEXT_ALWAYS_CHAR("channel_label")));
+          ACE_ASSERT(label);
+          gtk_label_set_text(label,
+                             message_in.params.front().c_str());
 
           break;
         }
@@ -187,6 +205,13 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
                                                      ACE_TEXT_ALWAYS_CHAR("send")));
           ACE_ASSERT(button);
           gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+          // retrieve label handle
+          GtkLabel* label = NULL;
+          label = GTK_LABEL(gtk_builder_get_object(myBuilder,
+                            ACE_TEXT_ALWAYS_CHAR("channel_label")));
+          ACE_ASSERT(label);
+          gtk_label_set_text(label,
+                             IRC_CLIENT_GUI_DEFAULT_CHANNEL_TEXT);
 
           break;
         }
@@ -215,7 +240,6 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
         }
         default:
         {
-          // debug info
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid/unknown command (was: \"%s\"), aborting\n"),
                      message_in.command.string->c_str()));
@@ -239,6 +263,44 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
   } // end SWITCH
 
   GDK_THREADS_LEAVE();
+}
+
+void
+IRC_Client_GUI_MessageHandler::end()
+{
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::end"));
+
+  // sanity check(s)
+  ACE_ASSERT(myBuilder);
+
+  GDK_THREADS_ENTER();
+
+  // retrieve button handle
+  GtkButton* button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                                        ACE_TEXT_ALWAYS_CHAR("disconnect")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+  button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                             ACE_TEXT_ALWAYS_CHAR("register")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+  button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                             ACE_TEXT_ALWAYS_CHAR("send")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+  button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                             ACE_TEXT_ALWAYS_CHAR("join")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+  button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                             ACE_TEXT_ALWAYS_CHAR("part")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+
+  GDK_THREADS_LEAVE();
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("connection lost...\n")));
 }
 
 void

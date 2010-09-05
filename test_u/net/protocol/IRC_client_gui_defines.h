@@ -18,21 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_PROTOCOL_INOTIFY_H
-#define RPG_NET_PROTOCOL_INOTIFY_H
+#ifndef IRC_CLIENT_GUI_DEFINES_H
+#define IRC_CLIENT_GUI_DEFINES_H
 
-#include "rpg_net_protocol_IRCmessage.h"
-
-class RPG_Net_Protocol_INotify
-{
- public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
-
-  // exposed interface
-  virtual void start() = 0;
-  virtual void notify(const RPG_Net_Protocol_IRCMessage&) = 0; // data
-  virtual void end() = 0;
-};
+#define IRC_CLIENT_GUI_DEFAULT_CHANNEL_TEXT ACE_TEXT_ALWAYS_CHAR("no channel")
 
 #endif

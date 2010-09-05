@@ -48,6 +48,14 @@ RPG_Net_Protocol_SocketHandler::svc(void)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::svc"));
 
+  // *NOTE*: asynchronous writing to a closed socket triggers the
+  // SIGPIPE signal (default action: abort).
+  // --> as this doesn't use select(), guard against this (ignore the signal)
+  ACE_Sig_Action no_sigpipe(ACE_static_cast(ACE_SignalHandler, SIG_IGN));
+  ACE_Sig_Action original_action;
+  no_sigpipe.register_action(SIGPIPE, &original_action);
+
+  int return_value = 0;
   ssize_t bytes_sent = 0;
   while (true)
   {
@@ -56,10 +64,12 @@ RPG_Net_Protocol_SocketHandler::svc(void)
       if (myStream.get(myCurrentWriteBuffer, NULL) == -1) // block
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Stream::get(): \"%m\", aborting\n")));
+                   ACE_TEXT("worker thread (ID: %t) failed to ACE_Stream::get(): \"%m\", aborting\n")));
 
         // what else can we do ?
-        return -1;
+        return_value = -1;
+
+        break;
       } // end IF
     } // end IF
 
@@ -74,7 +84,7 @@ RPG_Net_Protocol_SocketHandler::svc(void)
 //                  peer_.get_handle()));
 
       // leave loop, we're finished
-      return 0;
+      break;
     } // end IF
 
     // put some data into the socket...
@@ -94,6 +104,9 @@ RPG_Net_Protocol_SocketHandler::svc(void)
         myCurrentWriteBuffer->release();
         myCurrentWriteBuffer = NULL;
 
+        // what else can we do ?
+        return_value = -1;
+
         // nothing to do but wait for our shutdown signal (see above)...
         break;
       }
@@ -112,7 +125,6 @@ RPG_Net_Protocol_SocketHandler::svc(void)
       }
       default:
       {
-//         // debug info
 //         ACE_DEBUG((LM_DEBUG,
 //                   ACE_TEXT("[%u]: sent %u bytes...\n"),
 //                   peer_.get_handle(),
@@ -136,18 +148,29 @@ RPG_Net_Protocol_SocketHandler::svc(void)
     } // end SWITCH
   } // end WHILE
 
-  // debug info
-  ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("worker thread (ID: %t) failed to ACE_Stream::get(): \"%m\", aborting\n")));
+  // clean up
+  no_sigpipe.restore_action(SIGPIPE, original_action);
 
-  ACE_ASSERT(false);
-  ACE_NOTREACHED(return -1;)
+  return return_value;
 }
 
 int
 RPG_Net_Protocol_SocketHandler::open(void* arg_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::open"));
+
+  // *NOTE*: fini() on the stream invokes close() which will reset any module's
+  // writer/reader tasks --> in order to allow module reuse, reset this here !
+  ACE_ASSERT(myUserData.module);
+  try
+  {
+    myUserData.module->resetReaderWriter();
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in Stream_Module::resetReaderWriter(), continuing\n")));
+  }
 
   // init/start stream, register reading data with reactor...
   // --> done by the base class

@@ -1,3 +1,4 @@
+#include "/home/unfv/Projects/RPG/net/protocol/rpg_net_protocol_module_IRChandler.h" /* defines RPG_Net_Protocol_Module_IRCHandler_Module */
 /***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
@@ -20,7 +21,7 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include <test_u-config.h>
 #endif
 
 #include "IRC_common.h"
@@ -71,6 +72,8 @@
 
 struct cb_data
 {
+  std::string                      serverName;
+  unsigned short                   serverPort;
   RPG_Net_Protocol_IRCLoginOptions loginOptions;
   RPG_Net_Protocol_IIRCControl*    controller;
   IRC_Client_GUI_MessageHandler*   messageHandler;
@@ -80,6 +83,54 @@ static GtkBuilder* builder  = NULL;
 static GtkWidget*  window   = NULL;
 static int         grp_id   = -1;
 static cb_data     userData;
+
+const bool
+connect_to_server(const std::string& serverHostname_in,
+                  const unsigned short& serverPortNumber_in)
+{
+  ACE_TRACE(ACE_TEXT("::connect_to_server"));
+
+  // step0b: init client connector
+  IRC_Client_Connector connector(ACE_Reactor::instance(), // reactor
+                                 ACE_NONBLOCK);           // flags: non-blocking I/O
+//                                  0);                      // flags (*TODO*: ACE_NONBLOCK ?);
+
+  // step1b: (try to) connect to the server
+  IRC_Client_SocketHandler* handler = NULL;
+  ACE_INET_Addr remote_address(serverPortNumber_in, // remote SAP
+                               serverHostname_in.c_str());
+  if (connector.connect(handler,                     // service handler
+                        remote_address/*,              // remote SAP
+                            ACE_Synch_Options::defaults, // synch options
+                            ACE_INET_Addr::sap_any,      // local SAP
+                            0,                           // try to re-use address (SO_REUSEADDR)
+                            O_RDWR,                      // flags
+                            0*/) == -1)                  // perms
+  {
+    // debug info
+    ACE_TCHAR buf[BUFSIZ];
+    ACE_OS::memset(buf,
+                   0,
+                   (BUFSIZ * sizeof(ACE_TCHAR)));
+    if (remote_address.addr_to_string(buf,
+        (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", aborting\n"),
+               buf));
+
+    return false;
+  } // end IF
+
+  // sanity check
+  ACE_ASSERT(handler);
+
+  // *NOTE* handlers automagically register with the connection manager and
+  // will also de-register and self-destruct on disconnects !
+
+  return true;
+}
 
 #ifdef __cplusplus
 extern "C"
@@ -143,25 +194,60 @@ register_clicked_cb(GtkWidget* button_in,
 {
   ACE_TRACE(ACE_TEXT("::register_clicked_cb"));
 
-  ACE_UNUSED_ARG(button_in);
-
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("register_clicked_cb...\n")));
 
-  // sanity check(s)
-  ACE_ASSERT(userData_in);
+  GtkButton* button = GTK_BUTTON(button_in);
   cb_data* data = ACE_static_cast(cb_data*,
                                   userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(button);
+  ACE_ASSERT(data);
+  ACE_ASSERT(builder);
+
+  // step0: subscribe our message handler
   try
   {
-    data->controller->registerConnection(data->loginOptions,
-                                         data->messageHandler);
+    data->controller->notify(data->messageHandler);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::notify(%@), continuing\n"),
+               data->messageHandler));
+  }
+
+  // step1: connect to the server
+  if (!connect_to_server(data->serverName,
+                         data->serverPort))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to connect_to_server(\"%s\", %u), aborting\n"),
+               data->serverName.c_str(),
+               data->serverPort));
+
+    return;
+  } // end IF
+
+  // step2: register our connection with the server
+  try
+  {
+    // *NOTE*: this entails a little delay waiting for the welcome notice...
+    data->controller->registerConnection(data->loginOptions);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::registerConnection(), continuing\n")));
   }
+
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+  // retrieve button handle
+  button = GTK_BUTTON(gtk_builder_get_object(builder,
+                      ACE_TEXT_ALWAYS_CHAR("disconnect")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 }
 
 void
@@ -170,16 +256,18 @@ disconnect_clicked_cb(GtkWidget* button_in,
 {
   ACE_TRACE(ACE_TEXT("::disconnect_clicked_cb"));
 
-  ACE_UNUSED_ARG(button_in);
-
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("disconnect_clicked_cb...\n")));
 
-  // sanity check(s)
-  ACE_ASSERT(userData_in);
-
+  GtkButton* button = GTK_BUTTON(button_in);
   cb_data* data = ACE_static_cast(cb_data*,
                                   userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(button);
+  ACE_ASSERT(data);
+  ACE_ASSERT(builder);
+
   try
   {
     data->controller->quit(std::string(IRC_CLIENT_DEF_LEAVE_REASON));
@@ -189,6 +277,8 @@ disconnect_clicked_cb(GtkWidget* button_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::quit(), continuing\n")));
   }
+
+  // *NOTE*: the server should close the connection after this...
 }
 
 void
@@ -683,8 +773,6 @@ do_builder(const std::string& UIfile_in,
 
 void
 do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
-        const std::string& serverHostname_in,
-        const unsigned short& serverPortNumber_in,
         const bool& useThreadPool_in,
         const unsigned long& numThreadPoolThreads_in,
         const std::string& UIfile_in,
@@ -704,46 +792,22 @@ do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
     } // end IF
   } // end IF
 
-  // step0b: init client connector
-  IRC_Client_Connector connector(ACE_Reactor::instance(), // reactor
-                                 ACE_NONBLOCK);           // flags: non-blocking I/O
-//                                  0);                      // flags (*TODO*: ACE_NONBLOCK ?);
-
-  // step1a: init connection manager
+  // step0b: init connection manager
+  // *NOTE*: the connection handler will pass a handle to the last module of the processing
+  // stream to new connections
+  // --> i.e. data from ALL open connections will land in that SAME module.
+  // *CONSIDER* in theory, this is not a problem for the receiving end...
+  // *WARNING* when the module is enqueued onto the stream, it will be "registered" to it
+  // --> reply() will always forward the data onto the LAST stream the module was registered with
+  // i.e. the LAST connection
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max(),
                                                                  config_in); // will be passed to all handlers
 
-  // step1b: (try to) connect to the server
-  IRC_Client_SocketHandler* handler = NULL;
-  ACE_INET_Addr remote_address(serverPortNumber_in, // remote SAP
-                               serverHostname_in.c_str());
-  if (connector.connect(handler,                     // service handler
-                        remote_address/*,              // remote SAP
-                        ACE_Synch_Options::defaults, // synch options
-                        ACE_INET_Addr::sap_any,      // local SAP
-                        0,                           // try to re-use address (SO_REUSEADDR)
-                        O_RDWR,                      // flags
-                        0*/) == -1)                  // perms
-  {
-    // debug info
-    ACE_TCHAR buf[BUFSIZ];
-    ACE_OS::memset(buf,
-                   0,
-                   (BUFSIZ * sizeof(ACE_TCHAR)));
-    if (remote_address.addr_to_string(buf,
-                                      (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
-      ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", aborting\n"),
-               buf));
+  // *WARNING*: from this point on, we need to clean up any remote connections !
+  // *NOTE* handlers register with the connection manager and will self-destruct
+  // on disconnects !
 
-    return;
-  } // end IF
-
-  // *NOTE*: from this point on, we need to clean up any remote connections !
-
-  // step2: setup UI
+  // step1: setup UI
   GtkTextView* textView = NULL;
   do_builder(UIfile_in,   // glade file
              userData_in, // cb data
@@ -760,7 +824,7 @@ do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
 //   // *NOTE*: make sure we generally restart system calls (after e.g. EINTR) for the reactor...
 //   ACE_Reactor::instance()->restart(1);
 
-  // step3: dispatch events...
+  // step2: dispatch events...
   // *NOTE*: if we use a thread pool, we invoke a different function...
 //   int grp_id = -1;
   if (useThreadPool_in)
@@ -1021,10 +1085,11 @@ do_printVersion(const std::string& programName_in)
 {
   ACE_TRACE(ACE_TEXT("::do_printVersion"));
 
-  std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
+//   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
+  std::cout << programName_in << ACE_TEXT(" : ") << TEST_U_VERSION << std::endl;
 
   // create version string...
-  // *IMPORTANT NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
+  // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
   // number... We need this, as the library soname is compared to this string.
   std::ostringstream version_number;
   version_number << ACE::major_version();
@@ -1151,16 +1216,6 @@ ACE_TMAIN(int argc,
     return EXIT_FAILURE;
   } // end IF
 
-  userData.loginOptions.password = RPG_NET_PROTOCOL_DEF_IRC_PASSWORD;
-  userData.loginOptions.nick = RPG_NET_PROTOCOL_DEF_IRC_NICK;
-  userData.loginOptions.user.username = RPG_NET_PROTOCOL_DEF_IRC_USER;
-  userData.loginOptions.user.hostname.mode = RPG_NET_PROTOCOL_DEF_IRC_MODE;
-  userData.loginOptions.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::BITMASK;
-  userData.loginOptions.user.servername = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
-  userData.loginOptions.user.realname = RPG_NET_PROTOCOL_DEF_IRC_REALNAME;
-  userData.loginOptions.channel = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
-  userData.controller = IRChandler_impl;
-  userData.messageHandler = NULL; // MUST be set in do_work !
   RPG_Net_Protocol_ConfigPOD config;
   // step1da: populate config object with default/collected data
   // ************ connection config data ************
@@ -1178,13 +1233,23 @@ ACE_TMAIN(int argc,
   config.statisticsReportingInterval = 0; // == off
 
   // step1db: parse config file (if any)
-  std::string serverHostname      = IRC_CLIENT_DEF_SERVER_HOSTNAME;
-  unsigned short serverPortNumber = IRC_CLIENT_DEF_SERVER_PORT;
+  userData.serverName = IRC_CLIENT_DEF_SERVER_HOSTNAME;
+  userData.serverPort = IRC_CLIENT_DEF_SERVER_PORT;
+  userData.loginOptions.password = RPG_NET_PROTOCOL_DEF_IRC_PASSWORD;
+  userData.loginOptions.nick = RPG_NET_PROTOCOL_DEF_IRC_NICK;
+  userData.loginOptions.user.username = RPG_NET_PROTOCOL_DEF_IRC_USER;
+  userData.loginOptions.user.hostname.mode = RPG_NET_PROTOCOL_DEF_IRC_MODE;
+  userData.loginOptions.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::BITMASK;
+  userData.loginOptions.user.servername = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
+  userData.loginOptions.user.realname = RPG_NET_PROTOCOL_DEF_IRC_REALNAME;
+  userData.loginOptions.channel = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
+  userData.controller = IRChandler_impl;
+  userData.messageHandler = NULL; // MUST be set in do_work !
   if (!configFile.empty())
     do_parseConfigFile(configFile,
                        userData.loginOptions,
-                       serverHostname,
-                       serverPortNumber);
+                       userData.serverName,
+                       userData.serverPort);
   config.loginOptions = userData.loginOptions;
 
   // step1e: init GTK
@@ -1194,8 +1259,6 @@ ACE_TMAIN(int argc,
   timer.start();
   // step2: do actual work
   do_work(config,
-          serverHostname,
-          serverPortNumber,
           useThreadPool,
           numThreadPoolThreads,
           UIfile,

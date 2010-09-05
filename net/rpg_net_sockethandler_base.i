@@ -113,6 +113,8 @@ RPG_Net_SocketHandlerBase<ConfigType,
   ACE_ASSERT(myIsInitialized);
 
   // step1: tweak socket
+  // *TODO*: assumptions about ConfigType ?!?: clearly a design glitch
+  // --> implement higher up !
   if (myUserData.socketBufferSize)
   {
     if (!RPG_Net_Common_Tools::setSocketBuffer(get_handle(),
@@ -253,32 +255,32 @@ RPG_Net_SocketHandlerBase<ConfigType,
   return 0;
 }
 
-template <typename ConfigType,
-          typename StatisticsContainerType>
-int
-RPG_Net_SocketHandlerBase<ConfigType,
-                          StatisticsContainerType>::handle_close(ACE_HANDLE handle_in,
-                                                                 ACE_Reactor_Mask mask_in)
-{
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::handle_close"));
-
-//   // de-register with connection manager
-//   // *NOTE*: we do it here, while our handle is still "valid"...
-//   if (myIsRegistered)
-//   {
-//     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->deregisterConnection(getID());
+// template <typename ConfigType,
+//           typename StatisticsContainerType>
+// int
+// RPG_Net_SocketHandlerBase<ConfigType,
+//                           StatisticsContainerType>::handle_close(ACE_HANDLE handle_in,
+//                                                                  ACE_Reactor_Mask mask_in)
+// {
+//   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::handle_close"));
 //
-//     // remember this...
-//     myIsRegistered = false;
-//   } // end IF
-
-  // *NOTE*: called when:
-  // - the client closes the socket --> child handle_xxx() returns -1
-  // - we reject the connection (too many open)
-  // *NOTE*: will delete "this" in an ordered way...
-  return inherited::handle_close(handle_in,
-                                 mask_in);
-}
+// //   // de-register with connection manager
+// //   // *NOTE*: we do it here, while our handle is still "valid"...
+// //   if (myIsRegistered)
+// //   {
+// //     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->deregisterConnection(getID());
+// //
+// //     // remember this...
+// //     myIsRegistered = false;
+// //   } // end IF
+//
+//   // *NOTE*: called when:
+//   // - the client closes the socket --> child handle_xxx() returns -1
+//   // - we reject the connection (too many open)
+//   // *NOTE*: will delete "this" in an ordered way...
+//   return inherited::handle_close(handle_in,
+//                                  mask_in);
+// }
 
 template <typename ConfigType,
           typename StatisticsContainerType>

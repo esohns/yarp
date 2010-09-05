@@ -71,7 +71,6 @@ RPG_Net_Connection_Manager<ConfigType,
 
   myMaxNumConnections = maxNumConnections_in;
 
-  // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("set maximum # connections: %u\n"),
 //              myMaxNumConnections));

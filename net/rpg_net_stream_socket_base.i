@@ -77,6 +77,9 @@ RPG_Net_StreamSocketBase<ConfigType,
     return -1;
   } // end IF
 
+  // *TODO*: assumptions about ConfigType ?!?: clearly a design glitch
+  // --> implement higher up !
+
   // step0: retrieve config, init ourselves
   myAllocator = inherited::myUserData.messageAllocator;
   // sanity check
