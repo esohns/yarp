@@ -203,6 +203,16 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
       result = ACE_TEXT("RPL_MYINFO"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_BOUNCE:
       result = ACE_TEXT("RPL_BOUNCE"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_MAPMORE:
+      result = ACE_TEXT("RPL_MAPMORE"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_MAPEND:
+      result = ACE_TEXT("RPL_MAPEND"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_SNOMASK:
+      result = ACE_TEXT("RPL_SNOMASK"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATMEMTOT:
+      result = ACE_TEXT("RPL_STATMEMTOT"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATMEM:
+      result = ACE_TEXT("RPL_STATMEM"); break;
 
     case RPG_Net_Protocol_IRC_Codes::RPL_TRACELINK:
       result = ACE_TEXT("RPL_TRACELINK"); break;
@@ -224,20 +234,37 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
       result = ACE_TEXT("RPL_TRACENEWTYPE"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_TRACECLASS:
       result = ACE_TEXT("RPL_TRACECLASS"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_TRACERECONNECT:
+      result = ACE_TEXT("RPL_TRACERECONNECT"); break;
 
     case RPG_Net_Protocol_IRC_Codes::RPL_STATSLINKINFO:
       result = ACE_TEXT("RPL_STATSLINKINFO"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_STATSCOMMANDS:
       result = ACE_TEXT("RPL_STATSCOMMANDS"); break;
-
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSCLINE:
+      result = ACE_TEXT("RPL_STATSCLINE"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSNLINE:
+      result = ACE_TEXT("RPL_STATSNLINE"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSILINE:
+      result = ACE_TEXT("RPL_STATSILINE"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_STATSQLINE:
       result = ACE_TEXT("RPL_STATSQLINE"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSYLINE:
+      result = ACE_TEXT("RPL_STATSYLINE"); break;
 
     case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFSTATS:
       result = ACE_TEXT("RPL_ENDOFSTATS"); break;
 
     case RPG_Net_Protocol_IRC_Codes::RPL_UMODEIS:
       result = ACE_TEXT("RPL_UMODEIS"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_SQLINE_NICK:
+      result = ACE_TEXT("RPL_SQLINE_NICK"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSELINE:
+      result = ACE_TEXT("RPL_STATSELINE"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSFLINE:
+      result = ACE_TEXT("RPL_STATSFLINE"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSGLINE:
+      result = ACE_TEXT("RPL_STATSGLINE"); break;
 
     case RPG_Net_Protocol_IRC_Codes::RPL_SERVICEINFO:
       result = ACE_TEXT("RPL_SERVICEINFO"); break;
@@ -250,10 +277,26 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
     case RPG_Net_Protocol_IRC_Codes::RPL_SERVLISTEND:
       result = ACE_TEXT("RPL_SERVLISTEND"); break;
 
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSVLINE:
+      result = ACE_TEXT("RPL_STATSVLINE"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSLLINE:
+      result = ACE_TEXT("RPL_STATSLLINE"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_STATSUPTIME:
       result = ACE_TEXT("RPL_STATSUPTIME"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_STATSOLINE:
       result = ACE_TEXT("RPL_STATSOLINE"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSHLINE:
+      result = ACE_TEXT("RPL_STATSHLINE"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSSLINE:
+      result = ACE_TEXT("RPL_STATSSLINE"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSPING:
+      result = ACE_TEXT("RPL_STATSPING"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSBLINE:
+      result = ACE_TEXT("RPL_STATSBLINE"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSDEFINE:
+      result = ACE_TEXT("RPL_STATSDEFINE"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSDLINE:
+      result = ACE_TEXT("RPL_STATSDLINE"); break;
 
     case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCLIENT:
       result = ACE_TEXT("RPL_LUSERCLIENT"); break;
@@ -280,6 +323,33 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
       result = ACE_TEXT("RPL_TRACEEND"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_TRYAGAIN:
       result = ACE_TEXT("RPL_TRYAGAIN"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_LOCALUSERS:
+      result = ACE_TEXT("RPL_LOCALUSERS"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_GLOBALUSERS:
+      result = ACE_TEXT("RPL_GLOBALUSERS"); break;
+
+    case RPG_Net_Protocol_IRC_Codes::RPL_SILELIST:
+      result = ACE_TEXT("RPL_SILELIST"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFSILELIST:
+      result = ACE_TEXT("RPL_ENDOFSILELIST"); break;
+
+    case RPG_Net_Protocol_IRC_Codes::RPL_GLIST:
+      result = ACE_TEXT("RPL_GLIST"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFGLIST:
+      result = ACE_TEXT("RPL_ENDOFGLIST"); break;
+
+    case RPG_Net_Protocol_IRC_Codes::RPL_HELPHDR:
+      result = ACE_TEXT("RPL_HELPHDR"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_HELPOP:
+      result = ACE_TEXT("RPL_HELPOP"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_HELPTLR:
+      result = ACE_TEXT("RPL_HELPTLR"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_HELPHLP:
+      result = ACE_TEXT("RPL_HELPHLP"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_HELPFWD:
+      result = ACE_TEXT("RPL_HELPFWD"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_HELPIGN:
+      result = ACE_TEXT("RPL_HELPIGN"); break;
 
     case RPG_Net_Protocol_IRC_Codes::RPL_AWAY:
       result = ACE_TEXT("RPL_AWAY"); break;
@@ -292,6 +362,14 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
       result = ACE_TEXT("RPL_UNAWAY"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_NOWAWAY:
       result = ACE_TEXT("RPL_NOWAWAY"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_USERIP:
+      result = ACE_TEXT("RPL_USERIP"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_WHOISADMIN:
+      result = ACE_TEXT("RPL_WHOISADMIN"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_WHOISSADMIN:
+      result = ACE_TEXT("RPL_WHOISSADMIN"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_WHOISHELPOP:
+      result = ACE_TEXT("RPL_WHOISHELPOP"); break;
 
     case RPG_Net_Protocol_IRC_Codes::RPL_WHOISUSER:
       result = ACE_TEXT("RPL_WHOISUSER"); break;
@@ -320,11 +398,17 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
       result = ACE_TEXT("RPL_CHANNELMODEIS"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_UNIQOPIS:
       result = ACE_TEXT("RPL_UNIQOPIS"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_CREATIONTIME:
+      result = ACE_TEXT("RPL_CREATIONTIME"); break;
 
     case RPG_Net_Protocol_IRC_Codes::RPL_NOTOPIC:
       result = ACE_TEXT("RPL_NOTOPIC"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_TOPIC:
       result = ACE_TEXT("RPL_TOPIC"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_TOPICWHOTIME:
+      result = ACE_TEXT("RPL_TOPICWHOTIME"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_LISTUSAGE:
+      result = ACE_TEXT("RPL_LISTUSAGE"); break;
 
     case RPG_Net_Protocol_IRC_Codes::RPL_INVITING:
       result = ACE_TEXT("RPL_INVITING"); break;
@@ -346,6 +430,8 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
       result = ACE_TEXT("RPL_WHOREPLY"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_NAMREPLY:
       result = ACE_TEXT("RPL_NAMREPLY"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_WHOSPCRPL:
+      result = ACE_TEXT("RPL_WHOSPCRPL"); break;
 
     case RPG_Net_Protocol_IRC_Codes::RPL_KILLDONE:
       result = ACE_TEXT("RPL_KILLDONE"); break;
@@ -378,6 +464,8 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
       result = ACE_TEXT("RPL_MOTDSTART"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:
       result = ACE_TEXT("RPL_ENDOFMOTD"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_FORCE_MOTD:
+      result = ACE_TEXT("RPL_FORCE_MOTD"); break;
 
     case RPG_Net_Protocol_IRC_Codes::RPL_YOUREOPER:
       result = ACE_TEXT("RPL_YOUREOPER"); break;
@@ -428,6 +516,8 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
       result = ACE_TEXT("ERR_WILDTOPLEVEL"); break;
     case RPG_Net_Protocol_IRC_Codes::ERR_BADMASK:
       result = ACE_TEXT("ERR_BADMASK"); break;
+    case RPG_Net_Protocol_IRC_Codes::ERR_TOOMANYMATCHES:
+      result = ACE_TEXT("ERR_TOOMANYMATCHES"); break;
 
     case RPG_Net_Protocol_IRC_Codes::ERR_UNKNOWNCOMMAND:
       result = ACE_TEXT("ERR_UNKNOWNCOMMAND"); break;
@@ -444,11 +534,21 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
       result = ACE_TEXT("ERR_ERRONEUSNICKNAME"); break;
     case RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE:
       result = ACE_TEXT("ERR_NICKNAMEINUSE"); break;
+    case RPG_Net_Protocol_IRC_Codes::ERR_SERVICENAMEINUSE:
+      result = ACE_TEXT("ERR_SERVICENAMEINUSE"); break;
+    case RPG_Net_Protocol_IRC_Codes::ERR_SERVICECONFUSED:
+      result = ACE_TEXT("ERR_SERVICECONFUSED"); break;
 
     case RPG_Net_Protocol_IRC_Codes::ERR_NICKCOLLISION:
       result = ACE_TEXT("ERR_NICKCOLLISION"); break;
     case RPG_Net_Protocol_IRC_Codes::ERR_UNAVAILRESOURCE:
       result = ACE_TEXT("ERR_UNAVAILRESOURCE"); break;
+    case RPG_Net_Protocol_IRC_Codes::ERR_NICKTOOFAST:
+      result = ACE_TEXT("ERR_NICKTOOFAST"); break;
+    case RPG_Net_Protocol_IRC_Codes::ERR_TARGETTOOFAST:
+      result = ACE_TEXT("ERR_TARGETTOOFAST"); break;
+    case RPG_Net_Protocol_IRC_Codes::ERR_SERVICESDOWN:
+      result = ACE_TEXT("ERR_SERVICESDOWN"); break;
 
     case RPG_Net_Protocol_IRC_Codes::ERR_USERNOTINCHANNEL:
       result = ACE_TEXT("ERR_USERNOTINCHANNEL"); break;
@@ -465,6 +565,8 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
 
     case RPG_Net_Protocol_IRC_Codes::ERR_NOTREGISTERED:
       result = ACE_TEXT("ERR_NOTREGISTERED"); break;
+    case RPG_Net_Protocol_IRC_Codes::ERR_HOSTILENAME:
+      result = ACE_TEXT("ERR_HOSTILENAME"); break;
 
     case RPG_Net_Protocol_IRC_Codes::ERR_NEEDMOREPARAMS:
       result = ACE_TEXT("ERR_NEEDMOREPARAMS"); break;
@@ -480,6 +582,8 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
       result = ACE_TEXT("ERR_YOUWILLBEBANNED"); break;
     case RPG_Net_Protocol_IRC_Codes::ERR_KEYSET:
       result = ACE_TEXT("ERR_KEYSET"); break;
+    case RPG_Net_Protocol_IRC_Codes::ERR_ONLYSERVERSCANCHANGE:
+      result = ACE_TEXT("ERR_ONLYSERVERSCANCHANGE"); break;
 
     case RPG_Net_Protocol_IRC_Codes::ERR_CHANNELISFULL:
       result = ACE_TEXT("ERR_CHANNELISFULL"); break;
@@ -518,6 +622,37 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
       result = ACE_TEXT("ERR_UMODEUNKNOWNFLAG"); break;
     case RPG_Net_Protocol_IRC_Codes::ERR_USERSDONTMATCH:
       result = ACE_TEXT("ERR_USERSDONTMATCH"); break;
+    case RPG_Net_Protocol_IRC_Codes::ERR_GHOSTEDCLIENT:
+      result = ACE_TEXT("ERR_GHOSTEDCLIENT"); break;
+    case RPG_Net_Protocol_IRC_Codes::ERR_LAST_ERR_MSG:
+      result = ACE_TEXT("ERR_LAST_ERR_MSG"); break;
+
+    case RPG_Net_Protocol_IRC_Codes::ERR_SILELISTFULL:
+      result = ACE_TEXT("ERR_SILELISTFULL"); break;
+    case RPG_Net_Protocol_IRC_Codes::ERR_NOSUCHGLINE:
+      result = ACE_TEXT("ERR_NOSUCHGLINE"); break;
+    case RPG_Net_Protocol_IRC_Codes::ERR_BADPING:
+      result = ACE_TEXT("ERR_BADPING"); break;
+
+    case RPG_Net_Protocol_IRC_Codes::ERR_LISTSYNTAX:
+      result = ACE_TEXT("ERR_LISTSYNTAX"); break;
+
+    case RPG_Net_Protocol_IRC_Codes::RPL_LOGON:
+      result = ACE_TEXT("RPL_LOGON"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_LOGOFF:
+      result = ACE_TEXT("RPL_LOGOFF"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_WATCHOFF:
+      result = ACE_TEXT("RPL_WATCHOFF"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_WATCHSTAT:
+      result = ACE_TEXT("RPL_WATCHSTAT"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_NOWON:
+      result = ACE_TEXT("RPL_NOWON"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_NOWOFF:
+      result = ACE_TEXT("RPL_NOWOFF"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_WATCHLIST:
+      result = ACE_TEXT("RPL_WATCHLIST"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFWATCHLIST:
+      result = ACE_TEXT("RPL_ENDOFWATCHLIST"); break;
 
     default:
     {

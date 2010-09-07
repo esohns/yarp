@@ -451,7 +451,7 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
     if (!myReceivedInitialNotice)
     {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("waiting for initial NOTICE...\n")));
+                 ACE_TEXT("waiting for initial RPL_WELCOME...\n")));
 
       // *NOTE*: can happen when trying to register IMMEDIATELY after connecting
       // --> allow a little delay for the welcome NOTICE to arrive before proceeding
