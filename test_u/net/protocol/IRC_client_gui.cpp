@@ -174,9 +174,11 @@ part_clicked_cb(GtkWidget* button_in,
 //              ACE_TEXT("part_clicked_cb...\n")));
 
   // sanity check(s)
-  ACE_ASSERT(userData_in);
   cb_data* data = ACE_static_cast(cb_data*,
                                   userData_in);
+  ACE_ASSERT(data);
+  ACE_ASSERT(builder);
+
   try
   {
     data->controller->part(data->loginOptions.channel);
@@ -685,7 +687,42 @@ do_builder(const std::string& UIfile_in,
     return;
   } // end IF
 
-  // step3: connect signals/slots
+//   // step3: setup member list
+//   GtkTreeView* channel_member_list = GTK_TREE_VIEW(gtk_builder_get_object(builder,
+//                                                                           ACE_TEXT_ALWAYS_CHAR("treeview")));
+//   ACE_ASSERT(channel_member_list);
+//   if (!channel_member_list)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to gtk_builder_get_object(\"treeview\"): \"%m\", aborting\n")));
+//
+//     g_object_unref(G_OBJECT(builder));
+//     builder = NULL;
+//
+//     return;
+//   } // end IF
+//   gtk_cell_layout_clear(GTK_CELL_LAYOUT(channel_member_list));
+//   GtkCellRenderer* renderer = gtk_cell_renderer_text_new();
+//   ACE_ASSERT(renderer);
+//   if (!renderer)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to gtk_cell_renderer_text_new(): \"%m\", aborting\n")));
+//
+//     g_object_unref(G_OBJECT(builder));
+//     builder = NULL;
+//
+//     return;
+//   } // end IF
+//   gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(channel_member_list), renderer,
+//                              TRUE); // expand ?
+// //   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(available_characters), renderer,
+// //                                 ACE_TEXT_ALWAYS_CHAR("text"), 0);
+//   gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(channel_member_list), renderer,
+//                                  ACE_TEXT_ALWAYS_CHAR("text"), 0,
+//                                  NULL);
+
+  // step4: connect signals/slots
 //   gtk_builder_connect_signals(builder,
 //                               &ACE_const_cast(cb_data&, userData_in));
   GtkButton* button = NULL;

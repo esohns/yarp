@@ -51,7 +51,8 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkBuilder* builder
  : myGtkInitialized(false),
    myBuilder(builder_in),
    myTargetView(NULL),
-   myTargetBuffer(NULL)
+   myTargetBuffer(NULL),
+   myIsFirstNameListMsg(true)
 {
   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
 
@@ -107,6 +108,7 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::notify"));
 
   // sanity check(s)
+  ACE_ASSERT(myBuilder);
   if (!myGtkInitialized)
   {
 //     gdk_threads_init();
@@ -123,8 +125,6 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
       {
         case RPG_Net_Protocol_IRC_Codes::RPL_WELCOME:
         {
-          // sanity check(s)
-          ACE_ASSERT(myBuilder);
           // retrieve button handle
           GtkButton* button = NULL;
           button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
@@ -139,6 +139,91 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
                                                      ACE_TEXT_ALWAYS_CHAR("disconnect")));
           ACE_ASSERT(button);
           gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+          break;
+        }
+        case RPG_Net_Protocol_IRC_Codes::RPL_NOTOPIC:
+        case RPG_Net_Protocol_IRC_Codes::RPL_TOPIC:
+        {
+          // re-retrieve channel name
+          RPG_Net_Protocol_ParametersIterator_t iterator = message_in.params.begin();
+          iterator++;
+          std::string channel_label = *iterator;
+
+          if (message_in.command.numeric != RPG_Net_Protocol_IRC_Codes::RPL_NOTOPIC)
+          {
+            channel_label += ACE_TEXT_ALWAYS_CHAR(": ");
+            channel_label += message_in.params.back();
+          } // end IF
+
+          // retrieve label handle
+          GtkLabel* label = NULL;
+          label = GTK_LABEL(gtk_builder_get_object(myBuilder,
+                                                   ACE_TEXT_ALWAYS_CHAR("channel_label")));
+          ACE_ASSERT(label);
+          gtk_label_set_text(label,
+                             channel_label.c_str());
+
+          break;
+        }
+        case RPG_Net_Protocol_IRC_Codes::RPL_NAMREPLY:
+        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFNAMES:
+        {
+          if (message_in.command.numeric == RPG_Net_Protocol_IRC_Codes::RPL_ENDOFNAMES)
+          {
+            // retrieve treeview handle
+            GtkTreeView* treeview = NULL;
+            treeview = GTK_TREE_VIEW(gtk_builder_get_object(myBuilder,
+                                                            ACE_TEXT_ALWAYS_CHAR("treeview")));
+            ACE_ASSERT(treeview);
+            gtk_widget_set_sensitive(GTK_WIDGET(treeview), TRUE);
+
+            // clean up
+            myIsFirstNameListMsg = true;
+
+            // done
+            break;
+          } // end IF
+
+          // retrieve liststore handle
+          GtkListStore* liststore = NULL;
+          liststore = GTK_LIST_STORE(gtk_builder_get_object(myBuilder,
+                                                            ACE_TEXT_ALWAYS_CHAR("liststore")));
+          ACE_ASSERT(liststore);
+
+          if (myIsFirstNameListMsg)
+          {
+            // clear liststore
+            gtk_list_store_clear(liststore);
+
+            myIsFirstNameListMsg = false;
+          } // end IF
+
+          // bisect (WS-separated) nicknames from the final parameter string
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("bisecting nicknames: \"%s\"...\n"),
+//                      message_in.params.back().c_str()));
+
+          std::string::size_type current_position = 0;
+          std::string::size_type last_position = 0;
+          std::string nick;
+          GtkTreeIter iter;
+          do
+          {
+            current_position = message_in.params.back().find(' ', last_position);
+
+            nick = message_in.params.back().substr(last_position,
+                                                   (((current_position == std::string::npos) ? message_in.params.back().size()
+                                                                                             : current_position) - last_position));
+
+            // append new (text) entry
+            gtk_list_store_append(liststore, &iter);
+            gtk_list_store_set(liststore, &iter,
+                               0, nick.c_str(), // column 0
+                               -1);
+
+            last_position = current_position + 1;
+          } while (current_position != std::string::npos);
 
           break;
         }
@@ -212,6 +297,19 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
           ACE_ASSERT(label);
           gtk_label_set_text(label,
                              IRC_CLIENT_GUI_DEFAULT_CHANNEL_TEXT);
+          // retrieve liststore handle
+          GtkListStore* liststore = NULL;
+          liststore = GTK_LIST_STORE(gtk_builder_get_object(myBuilder,
+                                     ACE_TEXT_ALWAYS_CHAR("liststore")));
+          ACE_ASSERT(liststore);
+          // clear liststore
+          gtk_list_store_clear(liststore);
+          // retrieve treeview handle
+          GtkTreeView* treeview = NULL;
+          treeview = GTK_TREE_VIEW(gtk_builder_get_object(myBuilder,
+                                   ACE_TEXT_ALWAYS_CHAR("treeview")));
+          ACE_ASSERT(treeview);
+          gtk_widget_set_sensitive(GTK_WIDGET(treeview), FALSE);
 
           break;
         }
@@ -280,22 +378,46 @@ IRC_Client_GUI_MessageHandler::end()
                                                         ACE_TEXT_ALWAYS_CHAR("disconnect")));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+  // retrieve button handle
   button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
                                              ACE_TEXT_ALWAYS_CHAR("register")));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+  // retrieve button handle
   button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
                                              ACE_TEXT_ALWAYS_CHAR("send")));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+  // retrieve button handle
   button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
                                              ACE_TEXT_ALWAYS_CHAR("join")));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+  // retrieve button handle
   button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
                                              ACE_TEXT_ALWAYS_CHAR("part")));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+  // retrieve label handle
+  GtkLabel* label = NULL;
+  label = GTK_LABEL(gtk_builder_get_object(myBuilder,
+                    ACE_TEXT_ALWAYS_CHAR("channel_label")));
+  ACE_ASSERT(label);
+  gtk_label_set_text(label,
+                     IRC_CLIENT_GUI_DEFAULT_CHANNEL_TEXT);
+  // retrieve liststore handle
+  GtkListStore* liststore = NULL;
+  liststore = GTK_LIST_STORE(gtk_builder_get_object(myBuilder,
+                             ACE_TEXT_ALWAYS_CHAR("liststore")));
+  ACE_ASSERT(liststore);
+  // clear liststore
+  gtk_list_store_clear(liststore);
+  // retrieve treeview handle
+  GtkTreeView* treeview = NULL;
+  treeview = GTK_TREE_VIEW(gtk_builder_get_object(myBuilder,
+                           ACE_TEXT_ALWAYS_CHAR("treeview")));
+  ACE_ASSERT(treeview);
+  gtk_widget_set_sensitive(GTK_WIDGET(treeview), FALSE);
 
   GDK_THREADS_LEAVE();
 

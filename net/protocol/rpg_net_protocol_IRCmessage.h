@@ -128,5 +128,7 @@ class RPG_Net_Protocol_IRCMessage
 };
 
 typedef RPG_Net_Protocol_IRCMessage::CommandType RPG_Net_Protocol_CommandType_t;
+typedef std::list<std::string> RPG_Net_Protocol_Parameters_t;
+typedef RPG_Net_Protocol_Parameters_t::const_iterator RPG_Net_Protocol_ParametersIterator_t;
 
 #endif

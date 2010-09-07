@@ -2,6 +2,12 @@
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
+  <object class="GtkListStore" id="liststore">
+    <columns>
+      <!-- column-name text -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkWindow" id="dialog">
     <property name="visible">True</property>
     <property name="title" translatable="yes">IRC client</property>
@@ -23,8 +29,11 @@
               <object class="GtkAlignment" id="channel_alignment">
                 <property name="visible">True</property>
                 <child>
-                  <object class="GtkHBox" id="hbox">
+                  <object class="GtkHPaned" id="hpaned">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="position">300</property>
+                    <property name="position_set">True</property>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow">
                         <property name="visible">True</property>
@@ -32,6 +41,7 @@
                         <property name="events">GDK_EXPOSURE_MASK | GDK_STRUCTURE_MASK | GDK_SCROLL_MASK</property>
                         <property name="hscrollbar_policy">automatic</property>
                         <property name="vscrollbar_policy">automatic</property>
+                        <property name="shadow_type">etched-out</property>
                         <child>
                           <object class="GtkTextView" id="textview">
                             <property name="visible">True</property>
@@ -46,25 +56,40 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="position">0</property>
+                        <property name="resize">True</property>
+                        <property name="shrink">True</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHandleBox" id="handlebox">
+                      <object class="GtkTreeView" id="treeview">
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">True</property>
+                        <property name="model">liststore</property>
+                        <property name="headers_visible">False</property>
+                        <property name="headers_clickable">False</property>
+                        <property name="search_column">0</property>
+                        <property name="show_expanders">False</property>
                         <child>
-                          <object class="GtkTreeView" id="treeview">
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="model">liststore</property>
-                            <property name="enable_search">False</property>
-                            <property name="fixed_height_mode">True</property>
+                          <object class="GtkTreeViewColumn" id="treeviewcolumn1">
+                            <property name="sizing">autosize</property>
+                            <property name="title">nicknames</property>
+                            <property name="expand">True</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="cellrenderertext1">
+                                <property name="font">Normal</property>
+                                <property name="foreground_gdk">#000000000000</property>
+                              </object>
+                              <attributes>
+                                <attribute name="text">0</attribute>
+                              </attributes>
+                            </child>
                           </object>
                         </child>
                       </object>
                       <packing>
-                        <property name="position">1</property>
+                        <property name="resize">True</property>
+                        <property name="shrink">True</property>
                       </packing>
                     </child>
                   </object>
@@ -245,5 +270,4 @@
   <object class="GtkTextBuffer" id="textbuffer">
     <property name="tag_table">texttagtable</property>
   </object>
-  <object class="GtkListStore" id="liststore"/>
 </interface>
