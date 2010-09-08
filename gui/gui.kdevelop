@@ -276,4 +276,28 @@
     <customTagfilePath>/home/unfv/Projects/RPG/gui/tags</customTagfilePath>
     <activeTagsFiles/>
   </ctagspart>
+  <dist>
+    <custom>false</custom>
+    <bzip>false</bzip>
+    <archname></archname>
+    <appname>gui</appname>
+    <version>0.1</version>
+    <release></release>
+    <vendor></vendor>
+    <licence></licence>
+    <summary></summary>
+    <group></group>
+    <packager></packager>
+    <description></description>
+    <changelog></changelog>
+    <devpackage>false</devpackage>
+    <docspackage>false</docspackage>
+    <appicon>false</appicon>
+    <arch>0</arch>
+    <genHTML>false</genHTML>
+    <useRPM>false</useRPM>
+    <ftpkde>false</ftpkde>
+    <appskde>false</appskde>
+    <url></url>
+  </dist>
 </kdevelop>

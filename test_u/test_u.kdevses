@@ -1,14 +1,42 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="1" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/character/character_generator.cpp" >
-   <View0 Encoding="" line="422" Type="Source" />
+ <DocsAndViews NumberOfDocuments="8" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui.cpp" >
+   <View0 Encoding="" line="1084" Type="Source" />
   </Doc0>
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui_messagehandler.cpp" >
+   <View0 Encoding="" line="35" Type="Source" />
+  </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/net/protocol/rpg_net_protocol_sockethandler.cpp" >
+   <View0 Encoding="" line="55" Type="Source" />
+  </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui_connection_handler.cpp" >
+   <View0 Encoding="" line="20" Type="Source" />
+  </Doc3>
+  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui_connection_handler.h" >
+   <View0 Encoding="" line="38" Type="Source" />
+  </Doc4>
+  <Doc5 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/protocol/IRC_client.ini" >
+   <View0 Encoding="" line="12" Type="Source" />
+  </Doc5>
+  <Doc6 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_defines.h" >
+   <View0 Encoding="" line="24" Type="Source" />
+  </Doc6>
+  <Doc7 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui_defines.h" >
+   <View0 Encoding="" line="23" Type="Source" />
+  </Doc7>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
-   <breakpointList/>
+   <breakpointList>
+    <breakpoint0 location="/home/unfv/Projects/RPG/net/rpg_net_connection_manager.i:119" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+     <tracedExpressions/>
+    </breakpoint0>
+    <breakpoint1 location="/home/unfv/Projects/RPG/net/rpg_net_connection_manager.i:110" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+     <tracedExpressions/>
+    </breakpoint1>
+   </breakpointList>
    <showInternalCommands value="0" />
   </kdevdebugger>
   <kdevastyle>
@@ -16,7 +44,20 @@
    <AStyle IndentPreprocessors="0" FillCount="2" PadParenthesesOut="0" IndentNamespaces="0" IndentLabels="1" Fill="Spaces" MaxStatement="40" Brackets="Break" MinConditional="-1" IndentBrackets="0" PadParenthesesUn="1" BlockBreak="0" KeepStatements="0" KeepBlocks="0" BlockIfElse="0" IndentSwitches="1" PadOperators="1" FStyle="UserDefined" IndentCases="0" FillEmptyLines="0" BracketsCloseHeaders="0" BlockBreakAll="0" PadParenthesesIn="0" IndentClasses="1" IndentBlocks="0" FillForce="1" />
   </kdevastyle>
   <kdevbookmarks>
-   <bookmarks/>
+   <bookmarks>
+    <bookmark url="/home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui.cpp" >
+     <mark line="171" />
+     <mark line="871" />
+     <mark line="1262" />
+    </bookmark>
+    <bookmark url="/home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui_messagehandler.cpp" >
+     <mark line="527" />
+     <mark line="280" />
+    </bookmark>
+    <bookmark url="/home/unfv/Projects/RPG/net/protocol/rpg_net_protocol_module_IRChandler.cpp" >
+     <mark line="346" />
+    </bookmark>
+   </bookmarks>
   </kdevbookmarks>
   <kdevsubversion>
    <subversion base="" />

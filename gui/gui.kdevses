@@ -1,52 +1,58 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="15" >
+ <DocsAndViews NumberOfDocuments="17" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client_gui.cpp" >
-   <View0 Encoding="" line="550" Type="Source" />
+   <View0 Encoding="" line="1937" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_gra.cpp" >
-   <View0 Encoding="" line="0" Type="Source" />
+   <View0 Encoding="" line="17" Type="Source" />
   </Doc1>
   <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_tile.cpp" >
-   <View0 Encoding="" Type="Source" />
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc2>
   <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_mou.cpp" >
-   <View0 Encoding="" Type="Source" />
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc3>
   <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_win.cpp" >
-   <View0 Encoding="" Type="Source" />
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc4>
   <Doc5 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/winclass/levelwin.h" >
-   <View0 Encoding="" Type="Source" />
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc5>
   <Doc6 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_sdl.h" >
-   <View0 Encoding="" Type="Source" />
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc6>
   <Doc7 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/winclass/objitemwin.h" >
-   <View0 Encoding="" Type="Source" />
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc7>
   <Doc8 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/winclass/optionwin.h" >
-   <View0 Encoding="" Type="Source" />
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc8>
   <Doc9 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/winclass/optionwin.cpp" >
-   <View0 Encoding="" Type="Source" />
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc9>
   <Doc10 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/winclass/objitemwin.cpp" >
    <View0 Encoding="" line="0" Type="Source" />
   </Doc10>
   <Doc11 NumberOfViews="1" URL="file:///usr/include/gtk-2.0/gtk/gtkbox.h" >
-   <View0 Encoding="UTF-8" line="66" Type="Source" />
+   <View0 Encoding="UTF-8" Type="Source" />
   </Doc11>
   <Doc12 NumberOfViews="1" URL="file:///usr/include/gtk-2.0/gtk/gtkcontainer.h" >
-   <View0 Encoding="UTF-8" line="122" Type="Source" />
+   <View0 Encoding="UTF-8" Type="Source" />
   </Doc12>
   <Doc13 NumberOfViews="1" URL="file:///usr/include/gtk-2.0/gtk/gtklabel.h" >
-   <View0 Encoding="UTF-8" line="107" Type="Source" />
+   <View0 Encoding="UTF-8" Type="Source" />
   </Doc13>
   <Doc14 NumberOfViews="1" URL="file:///usr/include/glib-2.0/glib/glist.h" >
    <View0 Encoding="UTF-8" line="74" Type="Source" />
   </Doc14>
+  <Doc15 NumberOfViews="1" URL="file:///usr/include/glib-2.0/gobject/gtype.h" >
+   <View0 Encoding="" line="156" Type="Source" />
+  </Doc15>
+  <Doc16 NumberOfViews="1" URL="file:///usr/include/glib-2.0/gobject/gvaluetypes.h" >
+   <View0 Encoding="" line="231" Type="Source" />
+  </Doc16>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
