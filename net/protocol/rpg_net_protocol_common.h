@@ -31,6 +31,7 @@
 #include <ace/Synch.h>
 
 #include <string>
+#include <map>
 
 // forward declaration(s)
 class Stream_IAllocator;
@@ -52,10 +53,10 @@ struct RPG_Net_Protocol_RuntimeStatistic
   double        numBytes;        // amount of processed data
 
   // convenience
-  inline RPG_Net_Protocol_RuntimeStatistic operator+=(const RPG_Net_Protocol_RuntimeStatistic& rhs)
+  inline RPG_Net_Protocol_RuntimeStatistic operator+=(const RPG_Net_Protocol_RuntimeStatistic& rhs_in)
   {
-    numDataMessages += rhs.numDataMessages;
-    numBytes += rhs.numBytes;
+    numDataMessages += rhs_in.numDataMessages;
+    numBytes += rhs_in.numBytes;
 
     return *this;
   };
@@ -63,7 +64,6 @@ struct RPG_Net_Protocol_RuntimeStatistic
 
 struct RPG_Net_Protocol_IRCLoginOptions
 {
-  // *NOTE*: corresponds to the [client] section of .ini file
   std::string password;
   std::string nick;
   struct User
@@ -89,6 +89,15 @@ struct RPG_Net_Protocol_IRCLoginOptions
   } user;
   std::string channel;
 };
+
+// phonebook
+struct RPG_Net_Protocol_ConnectionEntry
+{
+  std::string    serverName;
+  unsigned short serverPort;
+};
+typedef std::map<std::string, RPG_Net_Protocol_ConnectionEntry> RPG_Net_Protocol_Servers_t;
+typedef RPG_Net_Protocol_Servers_t::const_iterator RPG_Net_Protocol_ServersIterator_t;
 
 struct RPG_Net_Protocol_ConfigPOD
 {

@@ -54,8 +54,9 @@ class RPG_Net_Connection_Manager
 
  public:
   // configuration / initialization
-  void init(const unsigned long&, // maximum number of concurrent connections
-            const ConfigType&);   // user data
+  void init(const unsigned long&); // maximum number of concurrent connections
+  // *NOTE*: argument is passed in init() to EVERY new connection during registration
+  void set(const ConfigType&); // (user) data
 
   // *NOTE*: users of this method should be aware of potential race
   //         conditions with this method and (de-)registerConnection.
@@ -101,6 +102,7 @@ class RPG_Net_Connection_Manager
   // *TODO*: get rid of this lock --> find a better solution
   mutable ACE_Recursive_Thread_Mutex                myLock;
   // implement blocking wait...
+  // *TODO*: fix ACE to use ACE_Thread_Condition ?
   mutable ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
 
   unsigned long                                     myMaxNumConnections;

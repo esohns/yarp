@@ -39,8 +39,8 @@ RPG_Net_Protocol_Module_IRCHandler::RPG_Net_Protocol_Module_IRCHandler()
    myAutomaticPong(false), // *NOTE*: the idea really is not to play PONG...
    myPrintPingPongDot(false),
    myIsInitialized(false),
-   myConnectionIsAlive(false),
    myCondition(myConditionLock),
+   myConnectionIsAlive(false),
    myReceivedInitialNotice(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::RPG_Net_Protocol_Module_IRCHandler"));
@@ -75,12 +75,12 @@ RPG_Net_Protocol_Module_IRCHandler::init(Stream_IAllocator* allocator_in,
     myAutomaticPong = false;
     myPrintPingPongDot = false;
     myIsInitialized = false;
-    myConnectionIsAlive = false;
     {
       ACE_Guard<ACE_Thread_Mutex> aGuard(myConditionLock);
 
-      myReceivedInitialNotice = false;
+      myConnectionIsAlive = false;
     } // end lock scope
+    myReceivedInitialNotice = false;
   } // end IF
 
   myAllocator = allocator_in;
@@ -132,19 +132,26 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
 
       switch (message_inout->getData()->command.numeric)
       {
-        case RPG_Net_Protocol_IRC_Codes::RPL_WELCOME:
-        case RPG_Net_Protocol_IRC_Codes::RPL_YOURHOST:
-        case RPG_Net_Protocol_IRC_Codes::RPL_CREATED:
-        case RPG_Net_Protocol_IRC_Codes::RPL_MYINFO:
-        case RPG_Net_Protocol_IRC_Codes::RPL_BOUNCE:
-        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCLIENT:
-        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCHANNELS:
-        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERME:
-        case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:
-        case RPG_Net_Protocol_IRC_Codes::RPL_MOTD:
-        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:
-        case RPG_Net_Protocol_IRC_Codes::RPL_NAMREPLY:
-        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFNAMES:
+        // *NOTE* these are the "regular" (== known) codes sent by
+        // ircd-hybrid-7.2.3
+        case RPG_Net_Protocol_IRC_Codes::RPL_WELCOME:              // 1
+        case RPG_Net_Protocol_IRC_Codes::RPL_YOURHOST:             // 2
+        case RPG_Net_Protocol_IRC_Codes::RPL_CREATED:              // 3
+        case RPG_Net_Protocol_IRC_Codes::RPL_MYINFO:               // 4
+        case RPG_Net_Protocol_IRC_Codes::RPL_PROTOCTL:             // 5
+        case RPG_Net_Protocol_IRC_Codes::RPL_STATSCONN:            // 250
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCLIENT:          // 251
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCHANNELS:        // 254
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERME:              // 255
+        case RPG_Net_Protocol_IRC_Codes::RPL_LOCALUSERS:           // 265
+        case RPG_Net_Protocol_IRC_Codes::RPL_GLOBALUSERS:          // 266
+        case RPG_Net_Protocol_IRC_Codes::RPL_TOPIC:                // 332
+        case RPG_Net_Protocol_IRC_Codes::RPL_TOPICWHOTIME:         // 333
+        case RPG_Net_Protocol_IRC_Codes::RPL_NAMREPLY:             // 353
+        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFNAMES:           // 366
+        case RPG_Net_Protocol_IRC_Codes::RPL_MOTD:                 // 372
+        case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:            // 375
+        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:            // 376
         {
 
           break;
@@ -210,20 +217,9 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
 //                      message_inout->getID(),
 //                      message_inout->getData()->params.back().c_str()));
 
-          // remember first contact (and signal any potential waiters)
-//           bool signal_waiters = false;
-          {
-            ACE_Guard<ACE_Thread_Mutex> aGuard(myConditionLock);
-
-            if (!myReceivedInitialNotice)
-            {
-              myReceivedInitialNotice = true;
-              myCondition.broadcast();
-//               signal_waiters = true;
-            } // end IF
-          } // end lock scope
-//           if (signal_waiters)
-//             myCondition.broadcast();
+          // remember first contact
+          if (!myReceivedInitialNotice)
+            myReceivedInitialNotice = true;
 
           break;
         }
@@ -345,9 +341,12 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
     {
       // remember connection has been opened...
       {
-        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+        ACE_Guard<ACE_Thread_Mutex> aGuard(myConditionLock);
 
         myConnectionIsAlive = true;
+
+        // signal any waiter(s)
+        myCondition.broadcast();
       } // end lock scope
 
       // refer this information back to our subscriber(s)
@@ -376,7 +375,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
     {
       // remember connection has been closed...
       {
-        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+        ACE_Guard<ACE_Thread_Mutex> aGuard(myConditionLock);
 
         myConnectionIsAlive = false;
       } // end lock scope
@@ -426,7 +425,7 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
   // "registering" an IRC connection implies the following 4 distinct steps:
   // --> see also RFC1459
   // 1. establish a connection (done ?!)
-  // 2. wait for initial welcome NOTICE (done ?!)
+  // [2. wait for initial NOTICE (done ?!)]
   // 3. send PASS
   // 4. send NICK
   // 5. send USER
@@ -435,26 +434,18 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
   ACE_ASSERT(myIsInitialized);
   // step1: ...is done ?
   {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myConditionLock);
 
     if (!myConnectionIsAlive)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("not (yet ?) connected, aborting\n")));
-
-      return;
-    } // end IF
-  } // end lock scope
-  // step2: ...is done ?
-  {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(myConditionLock);
-    if (!myReceivedInitialNotice)
-    {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("waiting for initial RPL_WELCOME...\n")));
+                 ACE_TEXT("waiting for connection...\n")));
 
       // *NOTE*: can happen when trying to register IMMEDIATELY after connecting
-      // --> allow a little delay for the welcome NOTICE to arrive before proceeding
+      // --> allow a little delay for:
+      // - connection to establish
+      // [- the welcome NOTICE to arrive]
+      // before proceeding...
       ACE_Time_Value abs_deadline = ACE_OS::gettimeofday();
       abs_deadline += RPG_NET_PROTOCOL_IRC_MAX_WELCOME_DELAY;
       if ((myCondition.wait(&abs_deadline) == -1) &&
@@ -466,7 +457,7 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
         return;
       } // end IF
 
-      if (!myReceivedInitialNotice)
+      if (!myConnectionIsAlive)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("not (yet ?) connected, aborting\n")));
@@ -476,8 +467,40 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
 
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("proceeding...\n")));
+
+      return;
     } // end IF
   } // end lock scope
+  // step2: ...is done ?
+//   if (!myReceivedInitialNotice)
+//   {
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("waiting for connection...\n")));
+//
+//     // *NOTE*: can happen when trying to register IMMEDIATELY after connecting
+//     // --> allow a little delay for the welcome NOTICE to arrive before proceeding
+//     ACE_Time_Value abs_deadline = ACE_OS::gettimeofday();
+//     abs_deadline += RPG_NET_PROTOCOL_IRC_MAX_WELCOME_DELAY;
+//     if ((myCondition.wait(&abs_deadline) == -1) &&
+//         (ACE_OS::last_error() != ETIME))
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                   ACE_TEXT("failed to ACE_Thread_Condition::wait(), aborting\n")));
+//
+//       return;
+//     } // end IF
+//
+//     if (!myReceivedInitialNotice)
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                   ACE_TEXT("not (yet ?) connected, aborting\n")));
+//
+//       return;
+//     } // end IF
+//
+//     ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("proceeding...\n")));
+//   } // end IF
 
   // step3a: init PASS
   RPG_Net_Protocol_IRCMessage* pass_struct = NULL;
@@ -741,10 +764,10 @@ RPG_Net_Protocol_Module_IRCHandler::sendMessage(RPG_Net_Protocol_IRCMessage*& co
 
   // step3: send it upstream
   // *NOTE*: while there is NO way to prevent async close of the CONNECTION,
-  // this does protect against async closure of the STREAM while we propagate
+  // this does protect against async closure of the STREAM WHILE we propagate
   // our message...
   // --> grab our lock and check myConnectionIsAlive
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myConditionLock);
   // sanity check
   if (!myConnectionIsAlive)
   {

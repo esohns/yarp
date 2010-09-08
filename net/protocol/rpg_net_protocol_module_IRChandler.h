@@ -99,13 +99,13 @@ class RPG_Net_Protocol_Module_IRCHandler
   bool                                   myAutomaticPong;
   bool                                   myPrintPingPongDot;
   bool                                   myIsInitialized;
-  bool                                   myConnectionIsAlive;
 
   // *NOTE*: obviously, there is a delay between connection establishment and
   // reception of the welcome NOTICE: let the user wait for it so he can safely
   // start registering his connection
   ACE_Thread_Mutex                       myConditionLock;
   ACE_Thread_Condition<ACE_Thread_Mutex> myCondition;
+  bool                                   myConnectionIsAlive;
   bool                                   myReceivedInitialNotice;
 };
 

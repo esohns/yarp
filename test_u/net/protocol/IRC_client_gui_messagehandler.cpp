@@ -208,6 +208,8 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
           std::string::size_type last_position = 0;
           std::string nick;
           GtkTreeIter iter;
+          gchar* converted_text = NULL;
+          GError* conversion_error = NULL;
           do
           {
             current_position = message_in.params.back().find(' ', last_position);
@@ -216,12 +218,39 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
                                                    (((current_position == std::string::npos) ? message_in.params.back().size()
                                                                                              : current_position) - last_position));
 
-            // append new (text) entry
-            gtk_list_store_append(liststore, &iter);
-            gtk_list_store_set(liststore, &iter,
-                               0, nick.c_str(), // column 0
-                               -1);
+            // step1: convert text
+            converted_text = NULL;
+            conversion_error = NULL;
+            converted_text = g_locale_to_utf8(nick.c_str(), // text
+                                              -1,   // \0-terminated
+                                              NULL, // bytes read (don't care)
+                                              NULL, // bytes written (don't care)
+                                              &conversion_error); // return value: error
+            if (conversion_error)
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("failed to convert nickname: \"%s\", continuing\n"),
+                         conversion_error->message));
 
+              // clean up
+              g_error_free(conversion_error);
+            } // end IF
+            else
+            {
+              // sanity check
+              ACE_ASSERT(converted_text);
+
+              // step2: append new (text) entry
+              gtk_list_store_append(liststore, &iter);
+              gtk_list_store_set(liststore, &iter,
+                                 0, converted_text, // column 0
+                                 -1);
+
+              // clean up
+              g_free(converted_text);
+            } // end ELSE
+
+            // step3: advance to next nickname
             last_position = current_position + 1;
           } while (current_position != std::string::npos);
 
@@ -248,18 +277,34 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
         {
           // sanity check(s)
           ACE_ASSERT(myBuilder);
+
+          // clear text buffer
+          GtkTextIter start, end;
+          gtk_text_buffer_get_bounds(myTargetBuffer,
+                                     &start,
+                                     &end);
+          gtk_text_buffer_delete(myTargetBuffer,
+                                 &start,
+                                 &end);
+
+          // retrieve entry handle
+          GtkEntry* entry = NULL;
+          entry = GTK_ENTRY(gtk_builder_get_object(myBuilder,
+                                                   ACE_TEXT_ALWAYS_CHAR("entry")));
+          ACE_ASSERT(entry);
+          gtk_widget_set_sensitive(GTK_WIDGET(entry), TRUE);
           // retrieve button handle
           GtkButton* button = NULL;
-          button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
-                                                     ACE_TEXT_ALWAYS_CHAR("send")));
-          ACE_ASSERT(button);
-          gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
           button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
                                                      ACE_TEXT_ALWAYS_CHAR("join")));
           ACE_ASSERT(button);
           gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
           button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
                                                      ACE_TEXT_ALWAYS_CHAR("part")));
+          ACE_ASSERT(button);
+          gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+          button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                                     ACE_TEXT_ALWAYS_CHAR("send")));
           ACE_ASSERT(button);
           gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
           // retrieve label handle
@@ -276,10 +321,17 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
         {
           // sanity check(s)
           ACE_ASSERT(myBuilder);
+
+          // retrieve entry handle
+          GtkEntry* entry = NULL;
+          entry = GTK_ENTRY(gtk_builder_get_object(myBuilder,
+                                                   ACE_TEXT_ALWAYS_CHAR("entry")));
+          ACE_ASSERT(entry);
+          gtk_widget_set_sensitive(GTK_WIDGET(entry), FALSE);
           // retrieve button handle
           GtkButton* button = NULL;
           button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
-                              ACE_TEXT_ALWAYS_CHAR("join")));
+                                                     ACE_TEXT_ALWAYS_CHAR("join")));
           ACE_ASSERT(button);
           gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
           button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
@@ -373,24 +425,35 @@ IRC_Client_GUI_MessageHandler::end()
 
   GDK_THREADS_ENTER();
 
+  // retrieve label handle
+  GtkLabel* label = NULL;
+  label = GTK_LABEL(gtk_builder_get_object(myBuilder,
+                                           ACE_TEXT_ALWAYS_CHAR("channel_label")));
+  ACE_ASSERT(label);
+  gtk_label_set_text(label,
+                     IRC_CLIENT_GUI_DEFAULT_CHANNEL_TEXT);
+  // retrieve liststore handle
+  GtkListStore* liststore = NULL;
+  liststore = GTK_LIST_STORE(gtk_builder_get_object(myBuilder,
+                                                    ACE_TEXT_ALWAYS_CHAR("liststore")));
+  ACE_ASSERT(liststore);
+  // clear liststore
+  gtk_list_store_clear(liststore);
+  // retrieve treeview handle
+  GtkTreeView* treeview = NULL;
+  treeview = GTK_TREE_VIEW(gtk_builder_get_object(myBuilder,
+                                                  ACE_TEXT_ALWAYS_CHAR("treeview")));
+  ACE_ASSERT(treeview);
+  gtk_widget_set_sensitive(GTK_WIDGET(treeview), FALSE);
+  // retrieve entry handle
+  GtkEntry* entry = NULL;
+  entry = GTK_ENTRY(gtk_builder_get_object(myBuilder,
+                                           ACE_TEXT_ALWAYS_CHAR("entry")));
+  ACE_ASSERT(entry);
+  gtk_widget_set_sensitive(GTK_WIDGET(entry), FALSE);
   // retrieve button handle
   GtkButton* button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
-                                                        ACE_TEXT_ALWAYS_CHAR("disconnect")));
-  ACE_ASSERT(button);
-  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
-  // retrieve button handle
-  button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
-                                             ACE_TEXT_ALWAYS_CHAR("register")));
-  ACE_ASSERT(button);
-  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
-  // retrieve button handle
-  button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
-                                             ACE_TEXT_ALWAYS_CHAR("send")));
-  ACE_ASSERT(button);
-  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
-  // retrieve button handle
-  button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
-                                             ACE_TEXT_ALWAYS_CHAR("join")));
+                                                        ACE_TEXT_ALWAYS_CHAR("join")));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
   // retrieve button handle
@@ -398,26 +461,21 @@ IRC_Client_GUI_MessageHandler::end()
                                              ACE_TEXT_ALWAYS_CHAR("part")));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
-  // retrieve label handle
-  GtkLabel* label = NULL;
-  label = GTK_LABEL(gtk_builder_get_object(myBuilder,
-                    ACE_TEXT_ALWAYS_CHAR("channel_label")));
-  ACE_ASSERT(label);
-  gtk_label_set_text(label,
-                     IRC_CLIENT_GUI_DEFAULT_CHANNEL_TEXT);
-  // retrieve liststore handle
-  GtkListStore* liststore = NULL;
-  liststore = GTK_LIST_STORE(gtk_builder_get_object(myBuilder,
-                             ACE_TEXT_ALWAYS_CHAR("liststore")));
-  ACE_ASSERT(liststore);
-  // clear liststore
-  gtk_list_store_clear(liststore);
-  // retrieve treeview handle
-  GtkTreeView* treeview = NULL;
-  treeview = GTK_TREE_VIEW(gtk_builder_get_object(myBuilder,
-                           ACE_TEXT_ALWAYS_CHAR("treeview")));
-  ACE_ASSERT(treeview);
-  gtk_widget_set_sensitive(GTK_WIDGET(treeview), FALSE);
+  // retrieve button handle
+  button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                             ACE_TEXT_ALWAYS_CHAR("send")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+    // retrieve button handle
+  button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                             ACE_TEXT_ALWAYS_CHAR("register")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+  // retrieve button handle
+  button = GTK_BUTTON(gtk_builder_get_object(myBuilder,
+                                             ACE_TEXT_ALWAYS_CHAR("disconnect")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   GDK_THREADS_LEAVE();
 
@@ -450,11 +508,11 @@ IRC_Client_GUI_MessageHandler::update()
   ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::update"));
 
   // always insert new text at the END of the buffer...
-  GtkTextIter iter;
   ACE_ASSERT(myTargetBuffer);
 
   GDK_THREADS_ENTER();
 
+  GtkTextIter iter;
   gtk_text_buffer_get_end_iter(myTargetBuffer,
                                &iter);
 
@@ -465,15 +523,42 @@ IRC_Client_GUI_MessageHandler::update()
     if (myDisplayQueue.empty())
       return; // nothing to do...
 
-    // *NOTE*: iter should be updated...
-    gtk_text_buffer_insert(myTargetBuffer,
-                           &iter,
-                           myDisplayQueue.front().c_str(),
-                           -1);
+    // step1: convert text
+    gchar* converted_text = NULL;
+    GError* conversion_error = NULL;
+    converted_text = g_locale_to_utf8(myDisplayQueue.front().c_str(), // text
+                                      -1,   // \0-terminated
+                                      NULL, // bytes read (don't care)
+                                      NULL, // bytes written (don't care)
+                                      &conversion_error); // return value: error
+    if (conversion_error)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to convert message text: \"%s\", continuing\n"),
+                 conversion_error->message));
+
+      // clean up
+      g_error_free(conversion_error);
+    } // end IF
+    else
+    {
+      // sanity check
+      ACE_ASSERT(converted_text);
+
+      // step2: display text
+      gtk_text_buffer_insert(myTargetBuffer,
+                             &iter,
+                             converted_text,
+                             -1);
   //   gtk_text_buffer_insert_at_cursor(myTargetBuffer,
   //                                    message_text.c_str(),
   //                                    message_text.size());
 
+      // clean up
+      g_free(converted_text);
+    } // end ELSE
+
+    // step3: pop stack
     myDisplayQueue.pop_front();
   } // end lock scope
 

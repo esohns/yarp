@@ -28,8 +28,10 @@ template <typename ConfigType,
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::RPG_Net_Connection_Manager()
  : myCondition(myLock),
+//                ACE_TEXT_ALWAYS_CHAR(""),
+//                NULL),
    myMaxNumConnections(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS),
-   //myUserData(),
+   myUserData(),
    myIsInitialized(false)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::RPG_Net_Connection_Manager"));
@@ -64,8 +66,7 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 void
 RPG_Net_Connection_Manager<ConfigType,
-                           StatisticsContainerType>::init(const unsigned long& maxNumConnections_in,
-                                                          const ConfigType& userData_in)
+                           StatisticsContainerType>::init(const unsigned long& maxNumConnections_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::init"));
 
@@ -74,6 +75,15 @@ RPG_Net_Connection_Manager<ConfigType,
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("set maximum # connections: %u\n"),
 //              myMaxNumConnections));
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
+void
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::set(const ConfigType& userData_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::set"));
 
   myUserData = userData_in;
 
@@ -113,7 +123,7 @@ RPG_Net_Connection_Manager<ConfigType,
                myConnections.size()));
   } // end lock scope
 
-  // registered connections are initialized...
+  // initialize registered connection...
   try
   {
     connection_in->init(myUserData);

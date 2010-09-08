@@ -18,11 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef IRC_CLIENT_GUI_DEFINES_H
-#define IRC_CLIENT_GUI_DEFINES_H
+#ifndef IRC_CLIENT_DEFINES_H
+#define IRC_CLIENT_DEFINES_H
 
-#define IRC_CLIENT_GUI_DEF_UI_FILE            ACE_TEXT("IRC_client.glade")
-#define IRC_CLIENT_GUI_DEF_SERVER_LABEL_TEXT  ACE_TEXT_ALWAYS_CHAR("no server")
-#define IRC_CLIENT_GUI_DEF_CHANNEL_LABEL_TEXT ACE_TEXT_ALWAYS_CHAR("no channel")
+#define IRC_CLIENT_CNF_LOGIN_SECTION_HEADER      ACE_TEXT("login")
+#define IRC_CLIENT_CNF_CONNECTION_SECTION_HEADER ACE_TEXT("connections")
+#define IRC_CLIENT_DEF_SERVER_HOSTNAME           ACE_LOCALHOST
+#define IRC_CLIENT_DEF_SERVER_PORT               6667
+#define IRC_CLIENT_DEF_CLIENT_USES_TP            false
+#define IRC_CLIENT_DEF_NUM_TP_THREADS            5
+#define IRC_CLIENT_DEF_LEAVE_REASON              ACE_TEXT("quitting...")
 
 #endif

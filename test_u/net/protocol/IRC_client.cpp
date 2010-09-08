@@ -24,6 +24,7 @@
 #endif
 
 #include "IRC_common.h"
+#include "IRC_client_defines.h"
 #include "IRC_client_signalhandler.h"
 
 #include <rpg_net_protocol_defines.h>
@@ -56,13 +57,6 @@
 #include <iostream>
 #include <sstream>
 #include <list>
-
-#define IRC_CLIENT_CNF_CLIENT_SECTION_HEADER     ACE_TEXT("client")
-#define IRC_CLIENT_CNF_CONNECTION_SECTION_HEADER ACE_TEXT("connection")
-#define IRC_CLIENT_DEF_SERVER_HOSTNAME           ACE_LOCALHOST
-#define IRC_CLIENT_DEF_SERVER_PORT               6667
-#define IRC_CLIENT_DEF_CLIENT_USES_TP            false
-#define IRC_CLIENT_DEF_NUM_TP_THREADS            5
 
 void
 print_usage(const std::string& programName_in)
@@ -408,8 +402,8 @@ do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
   } // end IF
 
   // step2a: init connection manager
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max(),
-                                                                 config_in); // will be passed to all handlers
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max());
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->set(config_in); // will be passed to all handlers
 
   // step2b: (try to) connect to the server
   IRC_Client_SocketHandler* handler = NULL;

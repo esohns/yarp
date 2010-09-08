@@ -201,8 +201,8 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
       result = ACE_TEXT("RPL_CREATED"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_MYINFO:
       result = ACE_TEXT("RPL_MYINFO"); break;
-    case RPG_Net_Protocol_IRC_Codes::RPL_BOUNCE:
-      result = ACE_TEXT("RPL_BOUNCE"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_PROTOCTL:
+      result = ACE_TEXT("RPL_PROTOCTL"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_MAPMORE:
       result = ACE_TEXT("RPL_MAPMORE"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_MAPEND:
@@ -295,8 +295,8 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
       result = ACE_TEXT("RPL_STATSBLINE"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_STATSDEFINE:
       result = ACE_TEXT("RPL_STATSDEFINE"); break;
-    case RPG_Net_Protocol_IRC_Codes::RPL_STATSDLINE:
-      result = ACE_TEXT("RPL_STATSDLINE"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSCONN:
+      result = ACE_TEXT("RPL_STATSCONN"); break;
 
     case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCLIENT:
       result = ACE_TEXT("RPL_LUSERCLIENT"); break;
@@ -332,6 +332,8 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
       result = ACE_TEXT("RPL_SILELIST"); break;
     case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFSILELIST:
       result = ACE_TEXT("RPL_ENDOFSILELIST"); break;
+    case RPG_Net_Protocol_IRC_Codes::RPL_STATSDLINE:
+      result = ACE_TEXT("RPL_STATSDLINE"); break;
 
     case RPG_Net_Protocol_IRC_Codes::RPL_GLIST:
       result = ACE_TEXT("RPL_GLIST"); break;

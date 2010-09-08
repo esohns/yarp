@@ -17,12 +17,25 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef IRC_CLIENT_GUI_CONNECTION_HANDLER_H
+#define IRC_CLIENT_GUI_CONNECTION_HANDLER_H
 
-#ifndef IRC_CLIENT_GUI_DEFINES_H
-#define IRC_CLIENT_GUI_DEFINES_H
+#include <ace/Global_Macros.h>
 
-#define IRC_CLIENT_GUI_DEF_UI_FILE            ACE_TEXT("IRC_client.glade")
-#define IRC_CLIENT_GUI_DEF_SERVER_LABEL_TEXT  ACE_TEXT_ALWAYS_CHAR("no server")
-#define IRC_CLIENT_GUI_DEF_CHANNEL_LABEL_TEXT ACE_TEXT_ALWAYS_CHAR("no channel")
+/**
+	@author Erik Sohns <erik.sohns@web.de>
+*/
+class IRC_Client_GUI_Connection_Handler
+{
+ public:
+  IRC_Client_GUI_Connection_Handler();
+  virtual~IRC_Client_GUI_Connection_Handler();
+
+ private:
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_Connection_Handler());
+  ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_Connection_Handler(const IRC_Client_GUI_Connection_Handler&));
+  ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_Connection_Handler& operator=(const IRC_Client_GUI_Connection_Handler&));
+};
 
 #endif

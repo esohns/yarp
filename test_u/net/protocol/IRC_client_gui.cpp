@@ -25,6 +25,8 @@
 #endif
 
 #include "IRC_common.h"
+#include "IRC_client_defines.h"
+#include "IRC_client_gui_defines.h"
 #include "IRC_client_gui_messagehandler.h"
 
 #include <rpg_net_protocol_defines.h>
@@ -61,41 +63,121 @@
 #include <sstream>
 #include <list>
 
-#define IRC_CLIENT_CNF_CLIENT_SECTION_HEADER     ACE_TEXT("client")
-#define IRC_CLIENT_CNF_CONNECTION_SECTION_HEADER ACE_TEXT("connection")
-#define IRC_CLIENT_DEF_SERVER_HOSTNAME           ACE_LOCALHOST
-#define IRC_CLIENT_DEF_SERVER_PORT               6667
-#define IRC_CLIENT_DEF_CLIENT_USES_TP            false
-#define IRC_CLIENT_DEF_NUM_TP_THREADS            5
-#define IRC_CLIENT_DEF_UI_FILE                   ACE_TEXT("IRC_client.glade")
-#define IRC_CLIENT_DEF_LEAVE_REASON              ACE_TEXT("quitting...")
-
 struct cb_data
 {
   std::string                      serverName;
   unsigned short                   serverPort;
+  RPG_Net_Protocol_Servers_t       servers;
   RPG_Net_Protocol_IRCLoginOptions loginOptions;
   RPG_Net_Protocol_IIRCControl*    controller;
   IRC_Client_GUI_MessageHandler*   messageHandler;
+  GtkBuilder*                      mainBuilder;
+  GtkBuilder*                      builder;
 };
 
-static GtkBuilder* builder  = NULL;
-static GtkWidget*  window   = NULL;
-static int         grp_id   = -1;
-static cb_data     userData;
+// init statics
+static GtkBuilder                        main_builder;
+static int                               grp_id        = -1;
+static Stream_AllocatorHeap              heap_allocator;
+static RPG_Net_Protocol_MessageAllocator message_allocator(RPG_NET_DEF_MAX_MESSAGES,
+                                                           &heap_allocator);
+// static cb_data     userData;
 
 const bool
-connect_to_server(const std::string& serverHostname_in,
+connect_to_server(const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
+                  const bool& debugParser_in,
+                  const unsigned long& statisticsReportingInterval_in,
+                  const std::string& serverHostname_in,
                   const unsigned short& serverPortNumber_in)
 {
   ACE_TRACE(ACE_TEXT("::connect_to_server"));
 
-  // step0b: init client connector
+  // step1: create /init new final module
+  std::string module_name = ACE_TEXT_ALWAYS_CHAR("IRCHandler");
+  RPG_Net_Protocol_Module_IRCHandler_Module* module = NULL;
+  try
+  {
+    module = new RPG_Net_Protocol_Module_IRCHandler_Module(module_name,
+                                                           NULL);
+  }
+  catch (const std::bad_alloc& exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught std::bad_alloc: \"%s\", aborting\n"),
+               exception.what()));
+
+    return false;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to allocate RPG_Net_Protocol_Module_IRCHandler_Module, aborting\n")));
+
+    return false;
+  }
+  if (!module)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to allocate RPG_Net_Protocol_Module_IRCHandler_Module, aborting\n")));
+
+    return false;
+  } // end IF
+
+  RPG_Net_Protocol_Module_IRCHandler* IRChandler_impl = NULL;
+  IRChandler_impl = ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler*,
+                                     module->writer());
+  if (!IRChandler_impl)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler) failed, aborting\n")));
+
+    // clean up
+    delete module;
+
+    return false;
+  } // end IF
+  if (!IRChandler_impl->init(&message_allocator,
+                             RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE,
+                             RPG_NET_DEF_CLIENT_PING_PONG, // auto-answer "ping" as a client ?...
+                             false))                       // clients print ('.') dots for received "pings"...
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
+               module->name()));
+
+    // clean up
+    delete module;
+
+    return false;
+  } // end IF
+
+  // step2: setup configuration passed to processing stream
+  RPG_Net_Protocol_ConfigPOD stream_config;
+  // ************ connection config data ************
+  stream_config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
+  stream_config.messageAllocator = &message_allocator;
+  stream_config.defaultBufferSize = RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE;
+  // ************ protocol config data **************
+  stream_config.clientPingInterval = 0; // servers do this...
+  stream_config.loginOptions = loginOptions_in;
+  // ************ stream config data ****************
+  stream_config.module = module;
+  stream_config.debugParser = debugParser_in;
+  // *WARNING*: set at runtime (by the connection handler)
+  stream_config.sessionID = 0; // (== socket handle !)
+  stream_config.statisticsReportingInterval = statisticsReportingInterval_in;
+  // ************ runtime statistics data ***********
+  stream_config.currentStatistics.numDataMessages = 0;
+  stream_config.currentStatistics.numBytes = 0;
+  stream_config.lastCollectionTimestamp = ACE_Time_Value::zero;
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->set(stream_config);
+
+  // step2: init client connector
   IRC_Client_Connector connector(ACE_Reactor::instance(), // reactor
                                  ACE_NONBLOCK);           // flags: non-blocking I/O
 //                                  0);                      // flags (*TODO*: ACE_NONBLOCK ?);
 
-  // step1b: (try to) connect to the server
+  // step3: (try to) connect to the server
   IRC_Client_SocketHandler* handler = NULL;
   ACE_INET_Addr remote_address(serverPortNumber_in, // remote SAP
                                serverHostname_in.c_str());
@@ -177,7 +259,7 @@ part_clicked_cb(GtkWidget* button_in,
   cb_data* data = ACE_static_cast(cb_data*,
                                   userData_in);
   ACE_ASSERT(data);
-  ACE_ASSERT(builder);
+  ACE_ASSERT(data->builder);
 
   try
   {
@@ -206,7 +288,7 @@ register_clicked_cb(GtkWidget* button_in,
   // sanity check(s)
   ACE_ASSERT(button);
   ACE_ASSERT(data);
-  ACE_ASSERT(builder);
+  ACE_ASSERT(data->builder);
 
   // step0: subscribe our message handler
   try
@@ -221,8 +303,11 @@ register_clicked_cb(GtkWidget* button_in,
   }
 
   // step1: connect to the server
-  if (!connect_to_server(data->serverName,
-                         data->serverPort))
+  if (!connect_to_server(data->loginOptions, // login options
+                         false,              // debug parser ? (NO)
+                         0,                  // statistics reporting interval (OFF)
+                         data->serverName,   // server hostname
+                         data->serverPort))  // server listening port
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to connect_to_server(\"%s\", %u), aborting\n"),
@@ -246,8 +331,8 @@ register_clicked_cb(GtkWidget* button_in,
 
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
   // retrieve button handle
-  button = GTK_BUTTON(gtk_builder_get_object(builder,
-                      ACE_TEXT_ALWAYS_CHAR("disconnect")));
+  button = GTK_BUTTON(gtk_builder_get_object(data->builder,
+                                             ACE_TEXT_ALWAYS_CHAR("disconnect")));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 }
@@ -268,7 +353,7 @@ disconnect_clicked_cb(GtkWidget* button_in,
   // sanity check(s)
   ACE_ASSERT(button);
   ACE_ASSERT(data);
-  ACE_ASSERT(builder);
+  ACE_ASSERT(data->builder);
 
   try
   {
@@ -289,18 +374,23 @@ send_clicked_cb(GtkWidget* button_in,
 {
   ACE_TRACE(ACE_TEXT("::send_clicked_cb"));
 
-  ACE_UNUSED_ARG(button_in);
-
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("send_clicked_cb...\n")));
 
-  // step1: retrieve available data
+  ACE_UNUSED_ARG(button_in);
+  cb_data* data = ACE_static_cast(cb_data*,
+                                  userData_in);
+
   // sanity check(s)
-  ACE_ASSERT(builder);
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->builder);
+  ACE_ASSERT(data->controller);
+
+  // step1: retrieve available data
   // retrieve buffer handle
   GtkEntryBuffer* buffer = NULL;
   GtkEntry* entry = NULL;
-  entry = GTK_ENTRY(gtk_builder_get_object(builder,
+  entry = GTK_ENTRY(gtk_builder_get_object(data->builder,
                                            ACE_TEXT_ALWAYS_CHAR("entry")));
   ACE_ASSERT(entry);
   buffer = gtk_entry_get_buffer(entry);
@@ -312,16 +402,34 @@ send_clicked_cb(GtkWidget* button_in,
 
   // retrieve textbuffer data
   std::string message_string;
-  message_string.append(gtk_entry_buffer_get_text(buffer),
-                        gtk_entry_buffer_get_length(buffer));
+  // convert UTF8 to locale
+  gchar* converted_text = NULL;
+  GError* conversion_error = NULL;
+  converted_text = g_locale_from_utf8(gtk_entry_buffer_get_text(buffer),   // text
+                                      gtk_entry_buffer_get_length(buffer), // number of bytes
+                                      NULL, // bytes read (don't care)
+                                      NULL, // bytes written (don't care)
+                                      &conversion_error); // return value: error
+  if (conversion_error)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to convert message text: \"%s\", aborting\n"),
+               conversion_error->message));
+
+    // clean up
+    g_error_free(conversion_error);
+    gtk_entry_buffer_delete_text(buffer, // buffer
+                                 0,      // start at position 0
+                                 -1);    // delete everything
+
+    return;
+  } // end IF
+  message_string.append(converted_text);
+
+  // clean up
+  g_free(converted_text);
 
   // step2: pass data to controller
-  // sanity check(s)
-  ACE_ASSERT(userData_in);
-
-  cb_data* data = ACE_static_cast(cb_data*,
-                                  userData_in);
-  ACE_ASSERT(data->controller);
   try
   {
     data->controller->send(data->loginOptions.channel,
@@ -340,9 +448,9 @@ send_clicked_cb(GtkWidget* button_in,
   data->messageHandler->queueForDisplay(message_string);
 
   // clear buffer
-  gtk_entry_buffer_delete_text(buffer,
-                               0,
-                               gtk_entry_buffer_get_length(buffer));
+  gtk_entry_buffer_delete_text(buffer, // buffer
+                               0,      // start at position 0
+                               -1);    // delete everything
 }
 
 gint
@@ -402,7 +510,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-d          : debug parser") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-u [FILE]   : UI file") << ACE_TEXT(" [") << IRC_CLIENT_DEF_UI_FILE << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-u [FILE]   : UI file") << ACE_TEXT(" [") << IRC_CLIENT_GUI_DEF_UI_FILE << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << IRC_CLIENT_DEF_CLIENT_USES_TP  << ACE_TEXT(" : ") << IRC_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
@@ -426,7 +534,7 @@ process_arguments(const int argc_in,
   debugParser_out          = false;
   logToFile_out            = false;
   traceInformation_out     = false;
-  UIfile_out               = IRC_CLIENT_DEF_UI_FILE;
+  UIfile_out               = IRC_CLIENT_GUI_DEF_UI_FILE;
   printVersionAndExit_out  = false;
   useThreadPool_out        = IRC_CLIENT_DEF_CLIENT_USES_TP;
   numThreadPoolThreads_out = IRC_CLIENT_DEF_NUM_TP_THREADS;
@@ -611,15 +719,11 @@ reactor_worker_func(void* args_in)
 }
 
 void
-do_builder(const std::string& UIfile_in,
-           const cb_data& userData_in,
-           const GtkWidget* parentWidget_in,
-           GtkTextView*& textView_out)
+do_main_window(const std::string& UIfile_in,
+               const cb_data& userData_in,
+               const GtkWidget* parentWidget_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_builder"));
-
-  // init return value(s)
-  textView_out = NULL;
+  ACE_TRACE(ACE_TEXT("::do_main_window"));
 
   // sanity check(s)
   if (!RPG_Common_File_Tools::isReadable(UIfile_in.c_str()))
@@ -630,138 +734,65 @@ do_builder(const std::string& UIfile_in,
 
     return;
   } // end IF
-  if (builder)
-  {
-    // clean up
-    g_object_unref(G_OBJECT(builder));
-    builder = NULL;
-  } // end IF
-  if (window)
-  {
-    // clean up
-    gtk_widget_destroy(window);
-    window = NULL;
-  } // end IF
 
   // step1: load widget tree
-  builder = gtk_builder_new();
-  ACE_ASSERT(builder);
-  if (!builder)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_builder_new(): \"%m\", aborting\n")));
-
-    return;
-  } // end IF
   GError* error = NULL;
-  gtk_builder_add_from_file(builder,
+  gtk_builder_add_from_file(&main_builder,
                             UIfile_in.c_str(),
                             &error);
   if (error)
   {
     ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to gtk_builder_add_from_file(\"%s\"): \"%s\", aborting\n"),
-                UIfile_in.c_str(),
-                error->message));
+               ACE_TEXT("failed to gtk_builder_add_from_file(\"%s\"): \"%s\", aborting\n"),
+               UIfile_in.c_str(),
+               error->message));
 
     // clean up
     g_error_free(error);
-    g_object_unref(G_OBJECT(builder));
-    builder = NULL;
 
     return;
   } // end IF
 
-  // step2: retrieve textview handle
-  textView_out = GTK_TEXT_VIEW(gtk_builder_get_object(builder,
-                                                      ACE_TEXT_ALWAYS_CHAR("textview")));
-  ACE_ASSERT(textView_out);
-  if (!textView_out)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_builder_get_object(\"textview\"): \"%m\", aborting\n")));
-
-    g_object_unref(G_OBJECT(builder));
-    builder = NULL;
-
-    return;
-  } // end IF
-
-//   // step3: setup member list
-//   GtkTreeView* channel_member_list = GTK_TREE_VIEW(gtk_builder_get_object(builder,
-//                                                                           ACE_TEXT_ALWAYS_CHAR("treeview")));
-//   ACE_ASSERT(channel_member_list);
-//   if (!channel_member_list)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to gtk_builder_get_object(\"treeview\"): \"%m\", aborting\n")));
-//
-//     g_object_unref(G_OBJECT(builder));
-//     builder = NULL;
-//
-//     return;
-//   } // end IF
-//   gtk_cell_layout_clear(GTK_CELL_LAYOUT(channel_member_list));
-//   GtkCellRenderer* renderer = gtk_cell_renderer_text_new();
-//   ACE_ASSERT(renderer);
-//   if (!renderer)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to gtk_cell_renderer_text_new(): \"%m\", aborting\n")));
-//
-//     g_object_unref(G_OBJECT(builder));
-//     builder = NULL;
-//
-//     return;
-//   } // end IF
-//   gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(channel_member_list), renderer,
-//                              TRUE); // expand ?
-// //   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(available_characters), renderer,
-// //                                 ACE_TEXT_ALWAYS_CHAR("text"), 0);
-//   gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(channel_member_list), renderer,
-//                                  ACE_TEXT_ALWAYS_CHAR("text"), 0,
-//                                  NULL);
-
-  // step4: connect signals/slots
+  // step2: connect signals/slots
 //   gtk_builder_connect_signals(builder,
 //                               &ACE_const_cast(cb_data&, userData_in));
   GtkButton* button = NULL;
-  button = GTK_BUTTON(gtk_builder_get_object(builder,
+  button = GTK_BUTTON(gtk_builder_get_object(&main_builder,
                                              ACE_TEXT_ALWAYS_CHAR("join")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(join_clicked_cb),
                    &ACE_const_cast(cb_data&, userData_in));
-  button = GTK_BUTTON(gtk_builder_get_object(builder,
+  button = GTK_BUTTON(gtk_builder_get_object(&main_builder,
                                              ACE_TEXT_ALWAYS_CHAR("part")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(part_clicked_cb),
                    &ACE_const_cast(cb_data&, userData_in));
-  button = GTK_BUTTON(gtk_builder_get_object(builder,
+  button = GTK_BUTTON(gtk_builder_get_object(&main_builder,
                                              ACE_TEXT_ALWAYS_CHAR("send")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(send_clicked_cb),
                    &ACE_const_cast(cb_data&, userData_in));
-  button = GTK_BUTTON(gtk_builder_get_object(builder,
+  button = GTK_BUTTON(gtk_builder_get_object(&main_builder,
                                              ACE_TEXT_ALWAYS_CHAR("register")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(register_clicked_cb),
                    &ACE_const_cast(cb_data&, userData_in));
-  button = GTK_BUTTON(gtk_builder_get_object(builder,
+  button = GTK_BUTTON(gtk_builder_get_object(&main_builder,
                                              ACE_TEXT_ALWAYS_CHAR("disconnect")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(disconnect_clicked_cb),
                    &ACE_const_cast(cb_data&, userData_in));
-  button = GTK_BUTTON(gtk_builder_get_object(builder,
+  button = GTK_BUTTON(gtk_builder_get_object(&main_builder,
                                              ACE_TEXT_ALWAYS_CHAR("quit")));
   ACE_ASSERT(button);
   g_signal_connect(button,
@@ -769,43 +800,39 @@ do_builder(const std::string& UIfile_in,
                    G_CALLBACK(quit_activated_cb),
                    NULL);
 
-  // step4: retrieve toplevel handle
-  window = GTK_WIDGET(gtk_builder_get_object(builder,
-                                             ACE_TEXT_ALWAYS_CHAR("dialog")));
-  ACE_ASSERT(window);
-  if (!window)
+  // step3: retrieve toplevel handle
+  GtkWindow* dialog = GTK_WINDOW(gtk_builder_get_object(&main_builder,
+                                                        ACE_TEXT_ALWAYS_CHAR("dialog")));
+  ACE_ASSERT(dialog);
+  if (!dialog)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to gtk_builder_get_object(\"dialog\"): \"%m\", aborting\n")));
 
-    g_object_unref(G_OBJECT(builder));
-    builder = NULL;
-    textView_out = NULL;
-
     return;
   } // end IF
   // connect default signals
-  g_signal_connect(window,
+  g_signal_connect(dialog,
                    ACE_TEXT_ALWAYS_CHAR("delete-event"),
                    G_CALLBACK(quit_activated_cb),
-                   &window);
+                   dialog);
 //   g_signal_connect(window,
 //                    ACE_TEXT_ALWAYS_CHAR("destroy-event"),
 //                    G_CALLBACK(quit_activated_cb),
-//                    &window);
-  g_signal_connect(window,
+//                    window);
+  g_signal_connect(dialog,
                    ACE_TEXT_ALWAYS_CHAR("destroy"),
                    G_CALLBACK(gtk_widget_destroyed),
-                   &window);
+                   dialog);
 
   // use correct screen
   if (parentWidget_in)
-    gtk_window_set_screen(GTK_WINDOW(window),
+    gtk_window_set_screen(dialog,
                           gtk_widget_get_screen(ACE_const_cast(GtkWidget*,
                                                                parentWidget_in)));
 
-  // step5: draw it
-  gtk_widget_show_all(window);
+  // step4: draw it
+  gtk_widget_show_all(GTK_WIDGET(dialog));
 }
 
 void
@@ -830,29 +857,21 @@ do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
   } // end IF
 
   // step0b: init connection manager
-  // *NOTE*: the connection handler will pass a handle to the last module of the processing
-  // stream to new connections
-  // --> i.e. data from ALL open connections will land in that SAME module.
-  // *CONSIDER* in theory, this is not a problem for the receiving end...
-  // *WARNING* when the module is enqueued onto the stream, it will be "registered" to it
-  // --> reply() will always forward the data onto the LAST stream the module was registered with
-  // i.e. the LAST connection
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max(),
-                                                                 config_in); // will be passed to all handlers
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max());
 
   // *WARNING*: from this point on, we need to clean up any remote connections !
   // *NOTE* handlers register with the connection manager and will self-destruct
   // on disconnects !
 
   // step1: setup UI
-  GtkTextView* textView = NULL;
-  do_builder(UIfile_in,   // glade file
-             userData_in, // cb data
-             NULL,        // there's no parent widget
-             textView);   // return value: target view
-  ACE_ASSERT(builder);
-  IRC_Client_GUI_MessageHandler messageHandler(builder);
+  do_main_window(UIfile_in,   // glade file
+                 userData_in, // cb data
+                 NULL);       // there's no parent widget
+
+
+  IRC_Client_GUI_MessageHandler messageHandler(&main_builder);
   userData_in.messageHandler = &messageHandler;
+
 
   // event loops:
   // - perform socket I/O --> ACE_Reactor
@@ -939,8 +958,7 @@ do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
 void
 do_parseConfigFile(const std::string& configFilename_in,
                    RPG_Net_Protocol_IRCLoginOptions& loginOptions_out,
-                   std::string& serverHostname_out,
-                   unsigned short& serverPortNumber_out)
+                   RPG_Net_Protocol_Servers_t& phoneBook_out)
 {
   ACE_TRACE(ACE_TEXT("::do_parseConfigFile"));
 
@@ -952,7 +970,6 @@ do_parseConfigFile(const std::string& configFilename_in,
     loginOptions_out.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::INVALID;
   } // end IF
   loginOptions_out.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::INVALID;
-
   loginOptions_out.password                    = RPG_NET_PROTOCOL_DEF_IRC_PASSWORD;
   loginOptions_out.nick                        = RPG_NET_PROTOCOL_DEF_IRC_NICK;
   loginOptions_out.user.username               = RPG_NET_PROTOCOL_DEF_IRC_USER;
@@ -962,8 +979,7 @@ do_parseConfigFile(const std::string& configFilename_in,
   loginOptions_out.user.realname               = RPG_NET_PROTOCOL_DEF_IRC_REALNAME;
   loginOptions_out.channel                     = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
 
-  serverHostname_out                           = IRC_CLIENT_DEF_SERVER_HOSTNAME;
-  serverPortNumber_out                         = IRC_CLIENT_DEF_SERVER_PORT;
+  phoneBook_out.clear();
 
   ACE_Configuration_Heap config_heap;
   if (config_heap.open())
@@ -984,16 +1000,16 @@ do_parseConfigFile(const std::string& configFilename_in,
     return;
   } // end IF
 
-  // find/open "client" section...
+  // find/open "login" section...
   ACE_Configuration_Section_Key section_key;
   if (config_heap.open_section(config_heap.root_section(),
-                               ACE_TEXT(IRC_CLIENT_CNF_CLIENT_SECTION_HEADER),
+                               ACE_TEXT(IRC_CLIENT_CNF_LOGIN_SECTION_HEADER),
                                0, // MUST exist !
                                section_key) != 0)
   {
     ACE_ERROR((LM_ERROR,
                ACE_TEXT("failed to ACE_Configuration_Heap::open_section(%s), returning\n"),
-               ACE_TEXT(IRC_CLIENT_CNF_CLIENT_SECTION_HEADER)));
+               ACE_TEXT(IRC_CLIENT_CNF_LOGIN_SECTION_HEADER)));
 
     return;
   } // end IF
@@ -1018,7 +1034,6 @@ do_parseConfigFile(const std::string& configFilename_in,
       return;
     } // end IF
 
-//     // debug info
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("enumerated %s, type %d\n"),
 //                val_name.c_str(),
@@ -1225,51 +1240,8 @@ ACE_TMAIN(int argc,
     //ACE_LOG_MSG->clr_flags(ACE_Log_Msg::VERBOSE_LITE);
   } // end IF
 
-  // step1d: init configuration object
-  Stream_AllocatorHeap heapAllocator;
-  RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
-                                                     &heapAllocator);
-  RPG_Net_Protocol_Module_IRCHandler_Module IRChandlerModule(std::string("IRCHandler"),
-                                                             NULL);
-  RPG_Net_Protocol_Module_IRCHandler* IRChandler_impl = NULL;
-  IRChandler_impl = ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler*,
-                                     IRChandlerModule.writer());
-  if (!IRChandler_impl)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler) failed, aborting\n")));
-
-    return EXIT_FAILURE;
-  } // end IF
-  if (!IRChandler_impl->init(&messageAllocator,
-                             RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE,
-                             RPG_NET_DEF_CLIENT_PING_PONG, // auto-answer "ping" as a client ?...
-                             true))                        // clients print ('.') dots for received "pings"...
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
-               IRChandlerModule.name()));
-
-    return EXIT_FAILURE;
-  } // end IF
-
-  RPG_Net_Protocol_ConfigPOD config;
-  // step1da: populate config object with default/collected data
-  // ************ connection config data ************
-  config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
-  config.messageAllocator = &messageAllocator;
-  config.defaultBufferSize = RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE;
-  // ************ protocol config data **************
-  config.clientPingInterval = 0; // servers do this...
-//   config.loginOptions = userData.loginOptions;
-  // ************ stream config data ****************
-  config.debugParser = debugParser;
-  config.module = &IRChandlerModule;
-  // *WARNING*: set at runtime, by the appropriate connection handler
-  config.sessionID = 0; // (== socket handle !)
-  config.statisticsReportingInterval = 0; // == off
-
-  // step1db: parse config file (if any)
+  // step1d: init callback data
+  cb_data userData;
   userData.serverName = IRC_CLIENT_DEF_SERVER_HOSTNAME;
   userData.serverPort = IRC_CLIENT_DEF_SERVER_PORT;
   userData.loginOptions.password = RPG_NET_PROTOCOL_DEF_IRC_PASSWORD;
@@ -1280,26 +1252,29 @@ ACE_TMAIN(int argc,
   userData.loginOptions.user.servername = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
   userData.loginOptions.user.realname = RPG_NET_PROTOCOL_DEF_IRC_REALNAME;
   userData.loginOptions.channel = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
-  userData.controller = IRChandler_impl;
-  userData.messageHandler = NULL; // MUST be set in do_work !
+  userData.controller = NULL; // set by connection handlers
+  userData.messageHandler = NULL; // set by connection handlers
+  userData.mainBuilder = &main_builder;
+  userData.builder = NULL; // set by connection handlers
+
+  // step1e: parse config file (if any)
+  RPG_Net_Protocol_Servers_t server_phonebook;
   if (!configFile.empty())
     do_parseConfigFile(configFile,
                        userData.loginOptions,
-                       userData.serverName,
-                       userData.serverPort);
-  config.loginOptions = userData.loginOptions;
+                       server_phonebook);
 
-  // step1e: init GTK
+  // step1f: init GTK
   gtk_init(&argc, &argv);
 
   ACE_High_Res_Timer timer;
   timer.start();
   // step2: do actual work
-  do_work(config,
-          useThreadPool,
+  do_work(useThreadPool,
           numThreadPoolThreads,
           UIfile,
-          userData);
+          userData,
+          server_phonebook);
   timer.stop();
 
   // clean up

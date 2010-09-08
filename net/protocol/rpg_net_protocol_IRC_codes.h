@@ -33,8 +33,8 @@ class RPG_Net_Protocol_IRC_Codes
     RPL_YOURHOST	        = 2,
     RPL_CREATED	          = 3,
     RPL_MYINFO	          = 4,
-    RPL_BOUNCE	          = 5,
-//     RPL_PROTOCTL          = 5,
+    RPL_PROTOCTL          = 5,
+//     RPL_BOUNCE            = 5,
     RPL_MAPMORE           = 6,
     RPL_MAPEND            = 7,
     RPL_SNOMASK           = 8,
@@ -92,8 +92,8 @@ class RPG_Net_Protocol_IRC_Codes
 //     RPL_STATSXLINE        = 247,
     RPL_STATSDEFINE       = 248,
 //     RPL_STATSULINE        = 248,
-    RPL_STATSDLINE        = 250,
-//     RPL_STATSCONN         = 250,
+    RPL_STATSCONN         = 250,
+//     RPL_STATSDLINE        = 250,
 
     RPL_LUSERCLIENT	      = 251,
     RPL_LUSEROP	          = 252,
@@ -116,7 +116,7 @@ class RPG_Net_Protocol_IRC_Codes
 
     RPL_SILELIST          = 271,
     RPL_ENDOFSILELIST     = 272,
-//     RPL_STATSDLINE        = 275,
+    RPL_STATSDLINE        = 275,
 
     RPL_GLIST             = 280,
     RPL_ENDOFGLIST        = 281,
