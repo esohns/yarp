@@ -28,7 +28,7 @@
 class IRC_Client_GUI_Connection_Handler
 {
  public:
-  IRC_Client_GUI_Connection_Handler();
+//   IRC_Client_GUI_Connection_Handler();
   virtual~IRC_Client_GUI_Connection_Handler();
 
  private:

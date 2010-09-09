@@ -27,10 +27,12 @@
 #include <stream_streammodule_base.h>
 
 #include <ace/Time_Value.h>
+#include <ace/Date_Time.h>
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
 
 #include <string>
+#include <vector>
 #include <map>
 
 // forward declaration(s)
@@ -91,13 +93,26 @@ struct RPG_Net_Protocol_IRCLoginOptions
 };
 
 // phonebook
+typedef std::vector<std::string> RPG_Net_Protocol_Networks_t;
+typedef RPG_Net_Protocol_Networks_t::const_iterator RPG_Net_Protocol_NetworksIterator_t;
+typedef std::pair<unsigned short, unsigned short> RPG_Net_Protocol_PortRange_t;
+typedef std::vector<RPG_Net_Protocol_PortRange_t> RPG_Net_Protocol_PortRanges_t;
+typedef RPG_Net_Protocol_PortRanges_t::const_iterator RPG_Net_Protocol_PortRangesIterator_t;
 struct RPG_Net_Protocol_ConnectionEntry
 {
-  std::string    serverName;
-  unsigned short serverPort;
+  std::string                   hostName;
+  RPG_Net_Protocol_PortRanges_t listeningPorts;
+  std::string                   network;
 };
-typedef std::map<std::string, RPG_Net_Protocol_ConnectionEntry> RPG_Net_Protocol_Servers_t;
+typedef std::multimap<std::string, RPG_Net_Protocol_ConnectionEntry> RPG_Net_Protocol_Servers_t;
 typedef RPG_Net_Protocol_Servers_t::const_iterator RPG_Net_Protocol_ServersIterator_t;
+struct RPG_Net_Protocol_PhoneBook
+{
+  ACE_Date_Time  timestamp;
+  // *NOTE*: this member is redundant (but still useful ?)...
+  RPG_Net_Protocol_Networks_t networks;
+  RPG_Net_Protocol_Servers_t servers;
+};
 
 struct RPG_Net_Protocol_ConfigPOD
 {

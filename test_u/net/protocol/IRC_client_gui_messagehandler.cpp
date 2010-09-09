@@ -348,7 +348,7 @@ IRC_Client_GUI_MessageHandler::notify(const RPG_Net_Protocol_IRCMessage& message
                             ACE_TEXT_ALWAYS_CHAR("channel_label")));
           ACE_ASSERT(label);
           gtk_label_set_text(label,
-                             IRC_CLIENT_GUI_DEFAULT_CHANNEL_TEXT);
+                             IRC_CLIENT_GUI_DEF_CHANNEL_LABEL_TEXT);
           // retrieve liststore handle
           GtkListStore* liststore = NULL;
           liststore = GTK_LIST_STORE(gtk_builder_get_object(myBuilder,
@@ -431,7 +431,7 @@ IRC_Client_GUI_MessageHandler::end()
                                            ACE_TEXT_ALWAYS_CHAR("channel_label")));
   ACE_ASSERT(label);
   gtk_label_set_text(label,
-                     IRC_CLIENT_GUI_DEFAULT_CHANNEL_TEXT);
+                     IRC_CLIENT_GUI_DEF_CHANNEL_LABEL_TEXT);
   // retrieve liststore handle
   GtkListStore* liststore = NULL;
   liststore = GTK_LIST_STORE(gtk_builder_get_object(myBuilder,

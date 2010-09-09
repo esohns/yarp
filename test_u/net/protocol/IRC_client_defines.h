@@ -21,8 +21,16 @@
 #ifndef IRC_CLIENT_DEFINES_H
 #define IRC_CLIENT_DEFINES_H
 
+#define IRC_CLIENT_CNF_DEF_INI_FILE              ACE_TEXT("./IRC_client.ini")
+// ini section headers
 #define IRC_CLIENT_CNF_LOGIN_SECTION_HEADER      ACE_TEXT("login")
 #define IRC_CLIENT_CNF_CONNECTION_SECTION_HEADER ACE_TEXT("connections")
+
+// phonebook section headers
+#define IRC_CLIENT_CNF_TIMESTAMP_SECTION_HEADER  ACE_TEXT("timestamp")
+#define IRC_CLIENT_CNF_NETWORKS_SECTION_HEADER   ACE_TEXT("networks")
+#define IRC_CLIENT_CNF_SERVERS_SECTION_HEADER    ACE_TEXT("servers")
+
 #define IRC_CLIENT_DEF_SERVER_HOSTNAME           ACE_LOCALHOST
 #define IRC_CLIENT_DEF_SERVER_PORT               6667
 #define IRC_CLIENT_DEF_CLIENT_USES_TP            false

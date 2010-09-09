@@ -20,5 +20,5 @@ IRC_client_gui_LDFLAGS = -L/usr/local/lib `pkg-config --libs gtk+-2.0`
 IRC_client_gui_LDADD = -lpthread -lACE -lStream -lRPG_Dice \
 	-lRPG_Common -lRPG_Net -lRPG_Net_Protocol
 
-bindata_DATA = IRC_client.glade IRC_client.ini
+bindata_DATA = IRC_client.glade IRC_client.ini servers.ini
 bindatadir = $(bindir)

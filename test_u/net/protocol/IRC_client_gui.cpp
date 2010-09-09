@@ -76,12 +76,10 @@ struct cb_data
 };
 
 // init statics
-static GtkBuilder                        main_builder;
-static int                               grp_id        = -1;
+static int                               grp_id            = -1;
 static Stream_AllocatorHeap              heap_allocator;
 static RPG_Net_Protocol_MessageAllocator message_allocator(RPG_NET_DEF_MAX_MESSAGES,
                                                            &heap_allocator);
-// static cb_data     userData;
 
 const bool
 connect_to_server(const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
@@ -506,9 +504,10 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-c [FILE]   : config file") << std::endl;
+  std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [") << IRC_CLIENT_CNF_DEF_INI_FILE << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-d          : debug parser") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-s [FILE]   : server config file") << ACE_TEXT(" [") << IRC_CLIENT_GUI_DEF_SERVERS_FILE << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-u [FILE]   : UI file") << ACE_TEXT(" [") << IRC_CLIENT_GUI_DEF_UI_FILE << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
@@ -521,6 +520,7 @@ process_arguments(const int argc_in,
                   std::string& configFile_out,
                   bool& debugParser_out,
                   bool& logToFile_out,
+                  std::string& serverConfigFile_out,
                   bool& traceInformation_out,
                   std::string& UIfile_out,
                   bool& printVersionAndExit_out,
@@ -530,9 +530,10 @@ process_arguments(const int argc_in,
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-  configFile_out           = ACE_TEXT(""); // cannot assume this !
+  configFile_out           = IRC_CLIENT_CNF_DEF_INI_FILE;
   debugParser_out          = false;
   logToFile_out            = false;
+  serverConfigFile_out     = IRC_CLIENT_GUI_DEF_SERVERS_FILE;
   traceInformation_out     = false;
   UIfile_out               = IRC_CLIENT_GUI_DEF_UI_FILE;
   printVersionAndExit_out  = false;
@@ -541,7 +542,7 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("c:dltu:vx::"),
+                             ACE_TEXT("c:dls:tu:vx::"),
                              1, // skip command name
                              1, // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
@@ -568,6 +569,12 @@ process_arguments(const int argc_in,
       case 'l':
       {
         logToFile_out = true;
+
+        break;
+      }
+      case 's':
+      {
+        serverConfigFile_out = argumentParser.opt_arg();
 
         break;
       }
@@ -734,10 +741,11 @@ do_main_window(const std::string& UIfile_in,
 
     return;
   } // end IF
+  ACE_ASSERT(userData_in.mainBuilder);
 
   // step1: load widget tree
   GError* error = NULL;
-  gtk_builder_add_from_file(&main_builder,
+  gtk_builder_add_from_file(userData_in.mainBuilder,
                             UIfile_in.c_str(),
                             &error);
   if (error)
@@ -757,42 +765,42 @@ do_main_window(const std::string& UIfile_in,
 //   gtk_builder_connect_signals(builder,
 //                               &ACE_const_cast(cb_data&, userData_in));
   GtkButton* button = NULL;
-  button = GTK_BUTTON(gtk_builder_get_object(&main_builder,
+  button = GTK_BUTTON(gtk_builder_get_object(userData_in.mainBuilder,
                                              ACE_TEXT_ALWAYS_CHAR("join")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(join_clicked_cb),
                    &ACE_const_cast(cb_data&, userData_in));
-  button = GTK_BUTTON(gtk_builder_get_object(&main_builder,
+  button = GTK_BUTTON(gtk_builder_get_object(userData_in.mainBuilder,
                                              ACE_TEXT_ALWAYS_CHAR("part")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(part_clicked_cb),
                    &ACE_const_cast(cb_data&, userData_in));
-  button = GTK_BUTTON(gtk_builder_get_object(&main_builder,
+  button = GTK_BUTTON(gtk_builder_get_object(userData_in.mainBuilder,
                                              ACE_TEXT_ALWAYS_CHAR("send")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(send_clicked_cb),
                    &ACE_const_cast(cb_data&, userData_in));
-  button = GTK_BUTTON(gtk_builder_get_object(&main_builder,
+  button = GTK_BUTTON(gtk_builder_get_object(userData_in.mainBuilder,
                                              ACE_TEXT_ALWAYS_CHAR("register")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(register_clicked_cb),
                    &ACE_const_cast(cb_data&, userData_in));
-  button = GTK_BUTTON(gtk_builder_get_object(&main_builder,
+  button = GTK_BUTTON(gtk_builder_get_object(userData_in.mainBuilder,
                                              ACE_TEXT_ALWAYS_CHAR("disconnect")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(disconnect_clicked_cb),
                    &ACE_const_cast(cb_data&, userData_in));
-  button = GTK_BUTTON(gtk_builder_get_object(&main_builder,
+  button = GTK_BUTTON(gtk_builder_get_object(userData_in.mainBuilder,
                                              ACE_TEXT_ALWAYS_CHAR("quit")));
   ACE_ASSERT(button);
   g_signal_connect(button,
@@ -801,7 +809,7 @@ do_main_window(const std::string& UIfile_in,
                    NULL);
 
   // step3: retrieve toplevel handle
-  GtkWindow* dialog = GTK_WINDOW(gtk_builder_get_object(&main_builder,
+  GtkWindow* dialog = GTK_WINDOW(gtk_builder_get_object(userData_in.mainBuilder,
                                                         ACE_TEXT_ALWAYS_CHAR("dialog")));
   ACE_ASSERT(dialog);
   if (!dialog)
@@ -836,11 +844,11 @@ do_main_window(const std::string& UIfile_in,
 }
 
 void
-do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
-        const bool& useThreadPool_in,
+do_work(const bool& useThreadPool_in,
         const unsigned long& numThreadPoolThreads_in,
         const std::string& UIfile_in,
-        cb_data& userData_in)
+        cb_data& userData_in,
+        const RPG_Net_Protocol_PhoneBook& phoneBook_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -869,7 +877,7 @@ do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
                  NULL);       // there's no parent widget
 
 
-  IRC_Client_GUI_MessageHandler messageHandler(&main_builder);
+  IRC_Client_GUI_MessageHandler messageHandler(userData_in.mainBuilder);
   userData_in.messageHandler = &messageHandler;
 
 
@@ -956,9 +964,332 @@ do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
 }
 
 void
+do_parseServerConfigFile(const std::string& serverConfigFile_in,
+                         RPG_Net_Protocol_PhoneBook& phoneBook_out)
+{
+  ACE_TRACE(ACE_TEXT("::do_parseServerConfigFile"));
+
+  // init return value(s)
+  phoneBook_out.timestamp.update(ACE_Time_Value::zero);
+  phoneBook_out.networks.clear();
+  phoneBook_out.servers.clear();
+
+  ACE_Configuration_Heap config_heap;
+  if (config_heap.open())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("ACE_Configuration_Heap::open() failed, aborting\n")));
+
+    return;
+  } // end IF
+
+  ACE_Ini_ImpExp import(config_heap);
+  if (import.import_config(serverConfigFile_in.c_str()))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("ACE_Ini_ImpExp::import_config(\"%s\") failed, aborting\n"),
+               serverConfigFile_in.c_str()));
+
+    return;
+  } // end IF
+
+  // step1: find/open "timestamp" section...
+  ACE_Configuration_Section_Key section_key;
+  if (config_heap.open_section(config_heap.root_section(),
+                               IRC_CLIENT_CNF_TIMESTAMP_SECTION_HEADER,
+                               0, // MUST exist !
+                               section_key) != 0)
+  {
+    ACE_ERROR((LM_ERROR,
+               ACE_TEXT("failed to ACE_Configuration_Heap::open_section(\"%s\"), aborting\n"),
+               IRC_CLIENT_CNF_TIMESTAMP_SECTION_HEADER));
+
+    return;
+  } // end IF
+
+  // import value...
+  int val_index = 0;
+  ACE_TString val_name, val_value;
+  ACE_Configuration::VALUETYPE val_type;
+  std::stringstream converter;
+  while (config_heap.enumerate_values(section_key,
+                                      val_index,
+                                      val_name,
+                                      val_type) == 0)
+  {
+    if (config_heap.get_string_value(section_key,
+                                     val_name.c_str(),
+                                     val_value))
+    {
+      ACE_ERROR((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Configuration_Heap::get_string_value(\"%s\"), aborting\n"),
+                 val_name.c_str()));
+
+      return;
+    } // end IF
+
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("enumerated %s, type %d\n"),
+//                val_name.c_str(),
+//                val_type));
+
+    // *TODO*: move these strings...
+    if (val_name == ACE_TEXT("date"))
+    {
+      std::string timestamp = val_value.c_str();
+      // parse timestamp
+      std::string::size_type current_fwd_slash = 0;
+      std::string::size_type last_fwd_slash = 0;
+      current_fwd_slash = timestamp.find('/', 0);
+      if (current_fwd_slash == std::string::npos)
+      {
+        ACE_ERROR((LM_ERROR,
+                   ACE_TEXT("\"%s\": failed to parse timestamp (was: \"%s\"), aborting\n"),
+                   serverConfigFile_in.c_str(),
+                   val_value.c_str()));
+
+        return;
+      } // end IF
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+      converter.clear();
+      converter << timestamp.substr(0,
+                                    current_fwd_slash);
+      long day = 0;
+      converter >> day;
+      phoneBook_out.timestamp.day(day);
+      last_fwd_slash = current_fwd_slash;
+      current_fwd_slash = timestamp.find('/', current_fwd_slash + 1);
+      if (current_fwd_slash == std::string::npos)
+      {
+        ACE_ERROR((LM_ERROR,
+                   ACE_TEXT("\"%s\": failed to parse timestamp (was: \"%s\"), aborting\n"),
+                   serverConfigFile_in.c_str(),
+                   val_value.c_str()));
+
+        return;
+      } // end IF
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+      converter.clear();
+      converter << timestamp.substr(last_fwd_slash + 1,
+                                    last_fwd_slash - current_fwd_slash - 1);
+      long month = 0;
+      converter >> month;
+      phoneBook_out.timestamp.month(month);
+      last_fwd_slash = current_fwd_slash;
+      current_fwd_slash = timestamp.find('/', current_fwd_slash + 1);
+      if (current_fwd_slash != std::string::npos)
+      {
+        ACE_ERROR((LM_ERROR,
+                   ACE_TEXT("\"%s\": failed to parse timestamp (was: \"%s\"), aborting\n"),
+                   serverConfigFile_in.c_str(),
+                   val_value.c_str()));
+
+        return;
+      } // end IF
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+      converter.clear();
+      converter << timestamp.substr(last_fwd_slash + 1,
+                                    std::string::npos);
+      long year = 0;
+      converter >> year;
+      phoneBook_out.timestamp.year(year);
+    }
+
+    ++val_index;
+  } // end WHILE
+
+  // step2: find/open "networks" section...
+  if (config_heap.open_section(config_heap.root_section(),
+                               IRC_CLIENT_CNF_NETWORKS_SECTION_HEADER,
+                               0, // MUST exist !
+                               section_key) != 0)
+  {
+    ACE_ERROR((LM_ERROR,
+               ACE_TEXT("failed to ACE_Configuration_Heap::open_section(\"%s\"), aborting\n"),
+               IRC_CLIENT_CNF_NETWORKS_SECTION_HEADER));
+
+    return;
+  } // end IF
+
+  // import values...
+  val_index = 0;
+  while (config_heap.enumerate_values(section_key,
+                                      val_index,
+                                      val_name,
+                                      val_type) == 0)
+  {
+    if (config_heap.get_string_value(section_key,
+                                     val_name.c_str(),
+                                     val_value))
+    {
+      ACE_ERROR((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Configuration_Heap::get_string_value(\"%s\"), aborting\n"),
+                 val_name.c_str()));
+
+      return;
+    } // end IF
+
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("enumerated %s, type %d\n"),
+//                val_name.c_str(),
+//                val_type));
+
+    phoneBook_out.networks.push_back(std::string(val_value.c_str()));
+
+    ++val_index;
+  } // end WHILE
+
+  // step3: find/open "servers" section...
+  if (config_heap.open_section(config_heap.root_section(),
+                               IRC_CLIENT_CNF_SERVERS_SECTION_HEADER,
+                               0, // MUST exist !
+                               section_key) != 0)
+  {
+    ACE_ERROR((LM_ERROR,
+               ACE_TEXT("failed to ACE_Configuration_Heap::open_section(\"%s\"), aborting\n"),
+               IRC_CLIENT_CNF_SERVERS_SECTION_HEADER));
+
+    return;
+  } // end IF
+
+  // import values...
+  val_index = 0;
+  RPG_Net_Protocol_ConnectionEntry entry;
+  std::string entry_name;
+  RPG_Net_Protocol_PortRange_t port_range;
+  bool no_range = false;
+  while (config_heap.enumerate_values(section_key,
+                                      val_index,
+                                      val_name,
+                                      val_type) == 0)
+  {
+    entry.listeningPorts.clear();
+
+    if (config_heap.get_string_value(section_key,
+                                     val_name.c_str(),
+                                     val_value))
+    {
+      ACE_ERROR((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Configuration_Heap::get_string_value(\"%s\"), aborting\n"),
+                 val_name.c_str()));
+
+      return;
+    } // end IF
+
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("enumerated %s, type %d\n"),
+//                val_name.c_str(),
+//                val_type));
+
+    std::string server_line_string = val_value.c_str();
+
+    // parse connection name
+    std::string::size_type current_position = 0;
+    std::string::size_type last_position = std::string::npos;
+    current_position = server_line_string.find(ACE_TEXT_ALWAYS_CHAR("SERVER:"), 0);
+    if (current_position == std::string::npos)
+    {
+      ACE_ERROR((LM_ERROR,
+                 ACE_TEXT("\"%s\": failed to parse server (was: \"%s\"), aborting\n"),
+                 serverConfigFile_in.c_str(),
+                 val_value.c_str()));
+
+      return;
+    } // end IF
+    // *TODO*: needs further parsing...
+    entry_name = server_line_string.substr(0,
+                                           current_position);
+    last_position = current_position;
+
+    // parse hostname
+    current_position = server_line_string.find(':', current_position + 1);
+    if (current_position == std::string::npos)
+    {
+      ACE_ERROR((LM_ERROR,
+                 ACE_TEXT("\"%s\": failed to parse server (was: \"%s\"), aborting\n"),
+                 serverConfigFile_in.c_str(),
+                 val_value.c_str()));
+
+      return;
+    } // end IF
+    entry.hostName = server_line_string.substr(last_position + 1,
+                                               current_position - last_position - 1);
+    last_position = current_position;
+
+    // parse (list of) port ranges
+    std::string::size_type next_comma = std::string::npos;
+    do
+    {
+      no_range = false;
+
+      next_comma = server_line_string.find(',', current_position + 1);
+      if (next_comma == std::string::npos)
+      {
+        // this means we've reached the end of the list...
+        next_comma = server_line_string.find(ACE_TEXT_ALWAYS_CHAR("GROUP:"),
+                                             current_position + 1);
+        // --> skip over "GROUP:"
+        last_position = server_line_string.find(':', current_position + 1);
+        if ((next_comma == std::string::npos) ||
+            (last_position == std::string::npos))
+        {
+          ACE_ERROR((LM_ERROR,
+                      ACE_TEXT("\"%s\": failed to parse server (was: \"%s\"), aborting\n"),
+                      serverConfigFile_in.c_str(),
+                      val_value.c_str()));
+
+          return;
+        } // end IF
+
+        // proceed
+        break;
+      } // end IF
+
+      // port range ?
+      current_position = server_line_string.find('-', current_position + 1);
+      if ((current_position == std::string::npos) ||
+          ((current_position != std::string::npos) &&
+           (current_position > next_comma)))
+      {
+        // this means there is no port range, but only a single port...
+        no_range = true;
+      } // end IF
+      else
+      {
+        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+        converter.clear();
+        converter << server_line_string.substr(last_position + 1,
+                                               current_position - last_position - 1);
+        converter >> port_range.first;
+      } // end ELSE
+      current_position = next_comma;
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+      converter.clear();
+      converter << server_line_string.substr(last_position + 1,
+                                            current_position - last_position - 1);
+      converter >> port_range.second;
+      if (no_range)
+        port_range.first = port_range.second;
+      entry.listeningPorts.push_back(port_range);
+    } while (true);
+
+    // parse "group" (== network)
+    entry.network = server_line_string.substr(last_position + 1);
+
+    phoneBook_out.servers.insert(std::make_pair(entry_name, entry));
+
+    ++val_index;
+  } // end WHILE
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("parsed %u phonebook entries...\n"),
+             phoneBook_out.servers.size()));
+}
+
+void
 do_parseConfigFile(const std::string& configFilename_in,
                    RPG_Net_Protocol_IRCLoginOptions& loginOptions_out,
-                   RPG_Net_Protocol_Servers_t& phoneBook_out)
+                   RPG_Net_Protocol_PhoneBook& phoneBook_out)
 {
   ACE_TRACE(ACE_TEXT("::do_parseConfigFile"));
 
@@ -978,8 +1309,6 @@ do_parseConfigFile(const std::string& configFilename_in,
   loginOptions_out.user.servername             = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
   loginOptions_out.user.realname               = RPG_NET_PROTOCOL_DEF_IRC_REALNAME;
   loginOptions_out.channel                     = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
-
-  phoneBook_out.clear();
 
   ACE_Configuration_Heap config_heap;
   if (config_heap.open())
@@ -1085,11 +1414,15 @@ do_parseConfigFile(const std::string& configFilename_in,
 
   // import values...
   val_index = 0;
+  RPG_Net_Protocol_ConnectionEntry entry;
+  std::stringstream converter;
   while (config_heap.enumerate_values(section_key,
                                       val_index,
                                       val_name,
                                       val_type) == 0)
   {
+    entry.listeningPorts.clear();
+
     if (config_heap.get_string_value(section_key,
                                      val_name.c_str(),
                                      val_value))
@@ -1101,7 +1434,6 @@ do_parseConfigFile(const std::string& configFilename_in,
       return;
     } // end IF
 
-//     // debug info
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("enumerated %s, type %d\n"),
 //                val_name.c_str(),
@@ -1110,11 +1442,18 @@ do_parseConfigFile(const std::string& configFilename_in,
     // *TODO*: move these strings...
     if (val_name == ACE_TEXT("server"))
     {
-      serverHostname_out = val_value.c_str();
+      entry.hostName = val_value.c_str();
     }
     else if (val_name == ACE_TEXT("port"))
     {
-      serverPortNumber_out = ::atoi(val_value.c_str());
+      RPG_Net_Protocol_PortRange_t port_range;
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+      converter.clear();
+      converter << val_value.c_str();
+      converter >> port_range.first;
+      port_range.second = port_range.first;
+
+      phoneBook_out.servers.insert(std::make_pair(entry.hostName, entry));
     }
     else
     {
@@ -1126,7 +1465,6 @@ do_parseConfigFile(const std::string& configFilename_in,
     ++val_index;
   } // end WHILE
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("imported \"%s\"...\n"),
 //              configFilename_in.c_str()));
@@ -1161,12 +1499,7 @@ ACE_TMAIN(int argc,
 {
   ACE_TRACE(ACE_TEXT("::main"));
 
-  // *PROCESS PROFILE*
-  ACE_Profile_Timer process_profile;
-  // start profile timer...
-  process_profile.start();
-
-  // step1: init
+  // step1: init libraries
   // *PORTABILITY*: on Windows, we need to init ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::init() == -1)
@@ -1178,14 +1511,23 @@ ACE_TMAIN(int argc,
   } // end IF
 #endif
 
-  // step1 init/validate configuration
+  // *PROCESS PROFILE*
+  ACE_Profile_Timer process_profile;
+  // start profile timer...
+  process_profile.start();
 
-  // step1a: process commandline arguments
-  std::string configFile             = ACE_TEXT(""); // cannot assume this !
+  // init GTK
+  gtk_init(&argc, &argv);
+
+  // step2 init/validate configuration
+
+  // step2a: process commandline arguments
+  std::string configFile             = IRC_CLIENT_CNF_DEF_INI_FILE;
   bool debugParser                   = false;
   bool logToFile                     = false;
+  std::string serverConfigFile       = IRC_CLIENT_GUI_DEF_SERVERS_FILE;
   bool traceInformation              = false;
-  std::string UIfile                 = IRC_CLIENT_DEF_UI_FILE;
+  std::string UIfile                 = IRC_CLIENT_GUI_DEF_UI_FILE;
   bool printVersionAndExit           = false;
   bool useThreadPool                 = IRC_CLIENT_DEF_CLIENT_USES_TP;
   unsigned long numThreadPoolThreads = IRC_CLIENT_DEF_NUM_TP_THREADS;
@@ -1194,6 +1536,7 @@ ACE_TMAIN(int argc,
                           configFile,
                           debugParser,
                           logToFile,
+                          serverConfigFile,
                           traceInformation,
                           UIfile,
                           printVersionAndExit,
@@ -1206,7 +1549,7 @@ ACE_TMAIN(int argc,
     return EXIT_FAILURE;
   } // end IF
 
-  // step1b: handle specific program modes
+  // step2b: handle specific program modes
   if (printVersionAndExit)
   {
     do_printVersion(std::string(ACE::basename(argv[0])));
@@ -1214,7 +1557,7 @@ ACE_TMAIN(int argc,
     return EXIT_SUCCESS;
   } // end IF
 
-  // step1c: set correct trace level
+  // step2c: set correct trace level
   //ACE_Trace::start_tracing();
   if (!traceInformation)
   {
@@ -1240,7 +1583,7 @@ ACE_TMAIN(int argc,
     //ACE_LOG_MSG->clr_flags(ACE_Log_Msg::VERBOSE_LITE);
   } // end IF
 
-  // step1d: init callback data
+  // step2d: init callback data
   cb_data userData;
   userData.serverName = IRC_CLIENT_DEF_SERVER_HOSTNAME;
   userData.serverPort = IRC_CLIENT_DEF_SERVER_PORT;
@@ -1254,58 +1597,45 @@ ACE_TMAIN(int argc,
   userData.loginOptions.channel = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
   userData.controller = NULL; // set by connection handlers
   userData.messageHandler = NULL; // set by connection handlers
-  userData.mainBuilder = &main_builder;
+  userData.mainBuilder = gtk_builder_new();
+  ACE_ASSERT(userData.mainBuilder);
   userData.builder = NULL; // set by connection handlers
 
-  // step1e: parse config file (if any)
-  RPG_Net_Protocol_Servers_t server_phonebook;
+  // step2e: parse config file(s) (if any)
+  RPG_Net_Protocol_PhoneBook server_phonebook;
+  if (!serverConfigFile.empty())
+    do_parseServerConfigFile(serverConfigFile,
+                             server_phonebook);
   if (!configFile.empty())
     do_parseConfigFile(configFile,
                        userData.loginOptions,
                        server_phonebook);
 
-  // step1f: init GTK
-  gtk_init(&argc, &argv);
-
+  // step3: do actual work
   ACE_High_Res_Timer timer;
   timer.start();
-  // step2: do actual work
   do_work(useThreadPool,
           numThreadPoolThreads,
           UIfile,
           userData,
           server_phonebook);
-  timer.stop();
-
-  // clean up
-  IRChandlerModule.close();
 
   // debug info
+  timer.stop();
   std::string working_time_string;
   ACE_Time_Value working_time;
   timer.elapsed_time(working_time);
   RPG_Common_Tools::period2String(working_time,
                                   working_time_string);
-
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
              working_time_string.c_str()));
 
-  // *PORTABILITY*: on Windows, we must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  if (ACE::fini() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+  // clean up
+  g_object_unref(userData.mainBuilder);
 
-    return EXIT_FAILURE;
-  } // end IF
-#endif
-
-  // stop profile timer...
+  // debug info
   process_profile.stop();
-
-  // only process profile left to do...
   ACE_Profile_Timer::ACE_Elapsed_Time elapsed_time;
   elapsed_time.real_time = 0.0;
   elapsed_time.user_time = 0.0;
@@ -1330,8 +1660,6 @@ ACE_TMAIN(int argc,
                                   user_time_string);
   RPG_Common_Tools::period2String(system_time,
                                   system_time_string);
-
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
              elapsed_time.real_time,
@@ -1353,6 +1681,18 @@ ACE_TMAIN(int argc,
              elapsed_rusage.ru_nsignals,
              elapsed_rusage.ru_nvcsw,
              elapsed_rusage.ru_nivcsw));
+
+  // step4: fini libraries
+  // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::fini() == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+
+    return EXIT_FAILURE;
+  } // end IF
+#endif
 
   return EXIT_SUCCESS;
 } // end main

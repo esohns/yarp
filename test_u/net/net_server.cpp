@@ -585,8 +585,8 @@ do_work(const unsigned long& clientPingInterval_in,
   config.sessionID = 0; // (== socket handle !)
   config.statisticsReportingInterval = 0; // don't do it per stream (see below)...
   // step2b: init connection manager
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS,
-                                                        config); // will be passed to all handlers
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS);
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
 
   // step2c: init/start listening
   RPG_NET_LISTENER_SINGLETON::instance()->init(listeningPortNumber_in);

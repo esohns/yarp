@@ -21,7 +21,9 @@
 #ifndef IRC_CLIENT_GUI_DEFINES_H
 #define IRC_CLIENT_GUI_DEFINES_H
 
-#define IRC_CLIENT_GUI_DEF_UI_FILE            ACE_TEXT("IRC_client.glade")
+#define IRC_CLIENT_GUI_DEF_UI_FILE            ACE_TEXT("./IRC_client.glade")
+#define IRC_CLIENT_GUI_DEF_SERVERS_FILE       ACE_TEXT("./servers.ini")
+
 #define IRC_CLIENT_GUI_DEF_SERVER_LABEL_TEXT  ACE_TEXT_ALWAYS_CHAR("no server")
 #define IRC_CLIENT_GUI_DEF_CHANNEL_LABEL_TEXT ACE_TEXT_ALWAYS_CHAR("no channel")
 

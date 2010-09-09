@@ -443,8 +443,8 @@ do_work(const std::string& serverHostname_in,
   config.statisticsReportingInterval = 0; // == off
 
   // step2b: init connection manager
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max(),
-                                                        config); // will be passed to all handlers
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max());
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
 
   // step2ca: init timer...
   long timerID = -1;

@@ -45,7 +45,7 @@
         <net_client>-h localhost -i 1 -s 10101 -t -x</net_client>
         <net_server>-i 5 -k 60 -p 10101 -t</net_server>
         <IRC_client>-c ./../../../net/protocol/IRC_client.ini -t</IRC_client>
-        <IRC_client_gui>-c ./../../../net/protocol/IRC_client.ini -t -u ./../../../net/protocol/IRC_client.glade</IRC_client_gui>
+        <IRC_client_gui>-c ./../../../net/protocol/IRC_client.ini -s ./../../../net/protocol/servers.ini -t -u ./../../../net/protocol/IRC_client.glade</IRC_client_gui>
         <map_generator>-a 0 -d 0 -m -r 2 -s -t -x 40 -y 20</map_generator>
         <sound_parser>-d -s ../../sound/rpg_sound.xml -t</sound_parser>
         <graphics_parser>-d -g ../../graphics/rpg_graphics.xml -t</graphics_parser>
@@ -63,7 +63,7 @@
         <net_client>-s -t</net_client>
         <net_server>-i 1 -k 60 -p 10101 -t</net_server>
         <IRC_client>-c ./../../../net/protocol/IRC_client.ini -t</IRC_client>
-        <IRC_client_gui>-c ./../../../net/protocol/IRC_client.ini -t -u ./../../../net/protocol/IRC_client.glade</IRC_client_gui>
+        <IRC_client_gui>-c ./../../../net/protocol/IRC_client.ini -s ./../../../net/protocol/servers.ini -t -u ./../../../net/protocol/IRC_client.glade</IRC_client_gui>
         <map_generator>-a 0 -d 0 -m -r 2 -s -t -x 40 -y 20</map_generator>
         <sound_parser>-d -s ../../sound/rpg_sound.xml -t</sound_parser>
         <graphics_parser>-d -g ../../graphics/rpg_graphics.xml -t</graphics_parser>
@@ -115,14 +115,14 @@
         <f77compiler>kdevg77options</f77compiler>
         <cxxflags>-g3 -O0 -march=i686 -Wall</cxxflags>
         <envvars/>
-        <topsourcedir></topsourcedir>
-        <cppflags></cppflags>
-        <ldflags></ldflags>
-        <ccompilerbinary></ccompilerbinary>
-        <cxxcompilerbinary></cxxcompilerbinary>
-        <f77compilerbinary></f77compilerbinary>
-        <cflags></cflags>
-        <f77flags></f77flags>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <f77flags/>
       </debug>
       <default>
         <envvars/>
@@ -301,7 +301,7 @@
       <configGdbScript></configGdbScript>
       <runShellScript></runShellScript>
       <runGdbScript></runGdbScript>
-      <breakonloadinglibs>false</breakonloadinglibs>
+      <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
       <raiseGDBOnStart>false</raiseGDBOnStart>

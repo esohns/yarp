@@ -68,7 +68,7 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-c [FILE]   : config file") << std::endl;
+  std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [") << IRC_CLIENT_CNF_DEF_INI_FILE << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-d          : debug parser") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
@@ -90,7 +90,7 @@ process_arguments(const int argc_in,
   ACE_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-  configFile_out           = ACE_TEXT(""); // cannot assume this !
+  configFile_out           = IRC_CLIENT_CNF_DEF_INI_FILE;
   debugParser_out          = false;
   logToFile_out            = false;
   traceInformation_out     = false;
@@ -571,16 +571,16 @@ do_parseConfigFile(const std::string& configFilename_in,
     return;
   } // end IF
 
-  // find/open "client" section...
+  // find/open "login" section...
   ACE_Configuration_Section_Key section_key;
   if (config_heap.open_section(config_heap.root_section(),
-                               ACE_TEXT(IRC_CLIENT_CNF_CLIENT_SECTION_HEADER),
+                               IRC_CLIENT_CNF_LOGIN_SECTION_HEADER,
                                0, // MUST exist !
                                section_key) != 0)
   {
     ACE_ERROR((LM_ERROR,
                ACE_TEXT("failed to ACE_Configuration_Heap::open_section(%s), returning\n"),
-               ACE_TEXT(IRC_CLIENT_CNF_CLIENT_SECTION_HEADER)));
+               IRC_CLIENT_CNF_LOGIN_SECTION_HEADER));
 
     return;
   } // end IF
@@ -752,7 +752,7 @@ ACE_TMAIN(int argc,
   // step1 init/validate configuration
 
   // step1a: process commandline arguments
-  std::string configFile             = ACE_TEXT(""); // cannot assume this !
+  std::string configFile             = IRC_CLIENT_CNF_DEF_INI_FILE;
   bool debugParser                   = false;
   bool logToFile                     = false;
   bool traceInformation              = false;
