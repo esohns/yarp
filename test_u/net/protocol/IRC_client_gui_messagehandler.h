@@ -21,7 +21,9 @@
 #ifndef IRC_CLIENT_GUI_MESSAGEHANDLER_H
 #define IRC_CLIENT_GUI_MESSAGEHANDLER_H
 
-#include "rpg_net_protocol_inotify.h"
+#include "IRC_client_gui_common.h"
+
+#include <gtk/gtk.h>
 
 #include <ace/Global_Macros.h>
 #include <ace/Synch.h>
@@ -29,47 +31,44 @@
 #include <string>
 #include <deque>
 
-// forward declaration(s)
-typedef struct _GtkBuilder GtkBuilder;
-typedef struct _GtkTextBuffer GtkTextBuffer;
-typedef struct _GtkTextView GtkTextView;
-
 class IRC_Client_GUI_MessageHandler
- : public RPG_Net_Protocol_INotify
 {
  public:
-  IRC_Client_GUI_MessageHandler(GtkBuilder*); // widget tree handler
+  IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_IIRCControl*, // controller handle
+                                const std::string&,            // label
+                                const std::string&,            // glade file
+                                GtkNotebook*,                  // parent widget
+                                const bool& = false);          // is default handler ? (== server log)
   virtual ~IRC_Client_GUI_MessageHandler();
 
-  // asynch start of session (connection has been opened)
-  virtual void start();
-  // asynch arrival of data
-  virtual void notify(const RPG_Net_Protocol_IRCMessage&); // message data
-  // asynch end of session (connection has been closed)
-  virtual void end();
   // display (local) text
   void queueForDisplay(const std::string&);
   // *WARNING*: to be called from gtk_main (trigger with g_idle_add())
   // --> do NOT invoke this from any other context (GTK is NOT threadsafe)
   void update();
 
- private:
-  typedef RPG_Net_Protocol_INotify inherited;
+  // *NOTE*: returns the toplevel widget FOR THIS CHANNEL TAB
+  GtkWidget* getTopLevel();
+  void setTopic(const std::string&);
+  void appendMembers(const string_list_t&);
+  void endMembers();
 
+ private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_MessageHandler());
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_MessageHandler(const IRC_Client_GUI_MessageHandler&));
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_MessageHandler& operator=(const IRC_Client_GUI_MessageHandler&));
 
-  ACE_Thread_Mutex         myLock;
-  std::deque<std::string>  myDisplayQueue;
+  // helper methods
+  void clearMembers();
 
-  bool                     myGtkInitialized;
-  GtkBuilder*              myBuilder;
-  GtkTextView*             myTargetView;
-  GtkTextBuffer*           myTargetBuffer;
+  channel_cb_data_t       myCBData;
 
-  bool                     myIsFirstNameListMsg;
+  ACE_Thread_Mutex        myLock;
+  std::deque<std::string> myDisplayQueue;
+  GtkTextView*            myView;
+
+  bool                    myIsFirstNameListMsg;
 };
 
 #endif

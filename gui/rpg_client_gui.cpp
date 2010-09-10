@@ -762,8 +762,6 @@ load_character_profiles(const std::string& repository_in,
     gtk_list_store_set(listStore_in, &iter,
                        0, entry.c_str(), // column 0
                        -1);
-//     gtk_combo_box_append_text(comboBox_in,
-//                               entry.c_str());
   } // end FOR
 
   // clean up

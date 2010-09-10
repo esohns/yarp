@@ -18,16 +18,30 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef IRC_CLIENT_GUI_DEFINES_H
-#define IRC_CLIENT_GUI_DEFINES_H
+#ifndef IRC_CLIENT_GUI_COMMON_H
+#define IRC_CLIENT_GUI_COMMON_H
 
-#define IRC_CLIENT_GUI_DEF_UI_MAIN_FILE        ACE_TEXT("./IRC_client_main.glade")
-#define IRC_CLIENT_GUI_DEF_UI_CHANNEL_TAB_FILE ACE_TEXT("./IRC_client_channel_tab.glade")
-#define IRC_CLIENT_GUI_DEF_UI_SERVER_PAGE_FILE ACE_TEXT("./IRC_client_server_page.glade")
-#define IRC_CLIENT_GUI_DEF_SERVERS_FILE        ACE_TEXT("./servers.ini")
+#include <rpg_net_protocol_iIRCControl.h>
 
-#define IRC_CLIENT_GUI_DEF_SERVER_LABEL_TEXT   ACE_TEXT_ALWAYS_CHAR("no server")
-#define IRC_CLIENT_GUI_DEF_CHANNEL_LABEL_TEXT  ACE_TEXT_ALWAYS_CHAR("no channel")
-#define IRC_CLIENT_GUI_DEF_TOPIC_LABEL_TEXT    ACE_TEXT_ALWAYS_CHAR("no topic")
+#include <gtk/gtk.h>
+
+#include <vector>
+#include <string>
+
+struct connection_cb_data_t
+{
+  GtkBuilder*                    builder;
+  RPG_Net_Protocol_IIRCControl*  controller;
+};
+
+struct channel_cb_data_t
+{
+  GtkBuilder*                   builder;
+  std::string                   channel;
+  RPG_Net_Protocol_IIRCControl* controller;
+};
+
+typedef std::vector<std::string> string_list_t;
+typedef string_list_t::const_iterator string_list_iterator_t;
 
 #endif
