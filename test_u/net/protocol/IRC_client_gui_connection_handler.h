@@ -42,7 +42,7 @@ class IRC_Client_GUI_Connection_Handler
  public:
   IRC_Client_GUI_Connection_Handler(RPG_Net_Protocol_IIRCControl*, // controller handle
                                     const std::string&,            // label
-                                    const std::string&,            // glade file
+                                    const std::string&,            // UI (glade) file directory
                                     GtkNotebook*);                 // parent widget
   virtual~IRC_Client_GUI_Connection_Handler();
 
@@ -69,8 +69,11 @@ class IRC_Client_GUI_Connection_Handler
   // helper methods
   IRC_Client_GUI_MessageHandler* getHandler(const std::string&); // channel name
 
+  std::string          myUIFileDirectory;
   connection_cb_data_t myCBData;
   message_handlers_t   myMessageHandlers;
+  GtkNotebook*         myParent;
+  gint                 myPageNum;
 };
 
 #endif

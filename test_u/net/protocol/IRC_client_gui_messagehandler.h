@@ -34,11 +34,12 @@
 class IRC_Client_GUI_MessageHandler
 {
  public:
+  // ctor for default handler (== server log)
+  IRC_Client_GUI_MessageHandler(GtkTextView*);                 // text view
   IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_IIRCControl*, // controller handle
-                                const std::string&,            // label
-                                const std::string&,            // glade file
-                                GtkNotebook*,                  // parent widget
-                                const bool& = false);          // is default handler ? (== server log)
+                                const std::string&,            // channel
+                                const std::string&,            // UI (glade) file directory
+                                GtkNotebook*);                 // parent widget
   virtual ~IRC_Client_GUI_MessageHandler();
 
   // display (local) text
@@ -69,6 +70,8 @@ class IRC_Client_GUI_MessageHandler
   GtkTextView*            myView;
 
   bool                    myIsFirstNameListMsg;
+  GtkNotebook*            myParent;
+  gint                    myPageNum;
 };
 
 #endif

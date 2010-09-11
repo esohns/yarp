@@ -24,6 +24,8 @@
 
 #include <rpg_net_protocol_tools.h>
 
+#include <rpg_common_file_tools.h>
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -113,7 +115,14 @@ join_clicked_cb(GtkWidget* button_in,
 
     return;
   } // end IF
-  channel_string.append(converted_text);
+  channel_string = converted_text;
+
+  // sanity check: has '#' prefix ?
+  if (channel_string.find('#', 0) != 0);
+  {
+    channel_string = ACE_TEXT_ALWAYS_CHAR("#");
+    channel_string += converted_text;
+  } // end IF
 
   // clean up
   g_free(converted_text);
@@ -139,14 +148,27 @@ join_clicked_cb(GtkWidget* button_in,
 
 IRC_Client_GUI_Connection_Handler::IRC_Client_GUI_Connection_Handler(RPG_Net_Protocol_IIRCControl* controller_in,
                                                                      const std::string& label_in,
-                                                                     const std::string& UIfile_in,
+                                                                     const std::string& UIFileDirectory_in,
                                                                      GtkNotebook* notebook_in)
+ : myUIFileDirectory(),
+   myParent(notebook_in),
+   myPageNum(-1)
 {
   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection_Handler::IRC_Client_GUI_Connection_Handler"));
 
   // sanity check(s)
   ACE_ASSERT(notebook_in);
   ACE_ASSERT(controller_in);
+  if (!RPG_Common_File_Tools::isDirectory(UIFileDirectory_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid argument (was: \"%s\"): not a directory, aborting\n"),
+               UIFileDirectory_in.c_str()));
+
+    return;
+  } // end IF
+
+  myUIFileDirectory = UIFileDirectory_in;
 
   // init cb data
   myCBData.builder = NULL;
@@ -157,15 +179,26 @@ IRC_Client_GUI_Connection_Handler::IRC_Client_GUI_Connection_Handler(RPG_Net_Pro
   ACE_ASSERT(myCBData.builder);
 
   // init builder (load widget tree)
+  std::string filename = myUIFileDirectory;
+  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += IRC_CLIENT_GUI_DEF_UI_SERVER_PAGE_FILE;
+  if (!RPG_Common_File_Tools::isReadable(filename))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid UI file (was: \"%s\"): not readable, aborting\n"),
+               filename.c_str()));
+
+    return;
+  } // end IF
   GError* error = NULL;
   gtk_builder_add_from_file(myCBData.builder,
-                            UIfile_in.c_str(),
+                            filename.c_str(),
                             &error);
   if (error)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to gtk_builder_add_from_file(\"%s\"): \"%s\", aborting\n"),
-               UIfile_in.c_str(),
+               filename.c_str(),
                error->message));
 
     // clean up
@@ -175,30 +208,50 @@ IRC_Client_GUI_Connection_Handler::IRC_Client_GUI_Connection_Handler(RPG_Net_Pro
   } // end IF
 
   // add new server page to notebook
+  // retrieve (dummy) parent window
+  GtkWindow* parent = GTK_WINDOW(gtk_builder_get_object(myCBData.builder,
+                                                        ACE_TEXT_ALWAYS_CHAR("server_tab_label_template")));
+  ACE_ASSERT(parent);
   // retrieve server tab label
   GtkHBox* server_tab_label_hbox = GTK_HBOX(gtk_builder_get_object(myCBData.builder,
                                                                    ACE_TEXT_ALWAYS_CHAR("server_tab_label_hbox")));
   ACE_ASSERT(server_tab_label_hbox);
+  g_object_ref(server_tab_label_hbox);
+  gtk_container_remove(GTK_CONTAINER(parent), GTK_WIDGET(server_tab_label_hbox));
   // set tab label
   GtkLabel* server_tab_label = GTK_LABEL(gtk_builder_get_object(myCBData.builder,
                                                                 ACE_TEXT_ALWAYS_CHAR("server_tab_label")));
   ACE_ASSERT(server_tab_label);
   gtk_label_set_text(server_tab_label,
                      label_in.c_str());
+  // retrieve (dummy) parent window
+  parent = GTK_WINDOW(gtk_builder_get_object(myCBData.builder,
+                                             ACE_TEXT_ALWAYS_CHAR("server_tab_template")));
+  ACE_ASSERT(parent);
   // retrieve server tab
   GtkVBox* server_tab_vbox = GTK_VBOX(gtk_builder_get_object(myCBData.builder,
                                                              ACE_TEXT_ALWAYS_CHAR("server_tab_vbox")));
   ACE_ASSERT(server_tab_vbox);
-  gint page_num = gtk_notebook_append_page(notebook_in,
-                                           GTK_WIDGET(server_tab_vbox),
-                                           GTK_WIDGET(server_tab_label_hbox));
-  if (page_num == -1)
+  g_object_ref(server_tab_vbox);
+  gtk_container_remove(GTK_CONTAINER(parent), GTK_WIDGET(server_tab_vbox));
+  myPageNum = gtk_notebook_append_page(notebook_in,
+                                       GTK_WIDGET(server_tab_vbox),
+                                       GTK_WIDGET(server_tab_label_hbox));
+  if (myPageNum == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to gtk_notebook_append_page(), aborting\n")));
 
+    // clean up
+    g_object_unref(server_tab_label_hbox);
+    g_object_unref(server_tab_vbox);
+
     return;
   } // end IF
+
+  // clean up
+  g_object_unref(server_tab_label_hbox);
+  g_object_unref(server_tab_vbox);
 
   // connect signal(s)
   GtkButton* button = GTK_BUTTON(gtk_builder_get_object(myCBData.builder,
@@ -221,14 +274,14 @@ IRC_Client_GUI_Connection_Handler::IRC_Client_GUI_Connection_Handler(RPG_Net_Pro
                                                                              ACE_TEXT_ALWAYS_CHAR("server_tab_channel_tabs")));
   ACE_ASSERT(server_tab_channel_tabs);
   // create default IRC_Client_GUI_MessageHandler (== server log)
+  // retrieve server log textview
+  GtkTextView* server_tab_log_textview = GTK_TEXT_VIEW(gtk_builder_get_object(myCBData.builder,
+                                                                              ACE_TEXT_ALWAYS_CHAR("server_tab_log_textview")));
+  ACE_ASSERT(server_tab_log_textview);
   IRC_Client_GUI_MessageHandler* message_handler = NULL;
   try
   {
-    message_handler = new IRC_Client_GUI_MessageHandler(controller_in,
-                                                        std::string(),
-                                                        std::string(IRC_CLIENT_GUI_DEF_UI_CHANNEL_TAB_FILE),
-                                                        server_tab_channel_tabs,
-                                                        true);
+    message_handler = new IRC_Client_GUI_MessageHandler(server_tab_log_textview);
   }
   catch (const std::bad_alloc& exception)
   {
@@ -249,15 +302,15 @@ IRC_Client_GUI_Connection_Handler::IRC_Client_GUI_Connection_Handler(RPG_Net_Pro
     return;
   } // end IF
 
-  // subscribe connection handler
+  // subscribe to updates from the controller
   try
   {
-    myCBData.controller->notify(this);
+    myCBData.controller->subscribe(this);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::notify(%@), continuing\n"),
+               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::subscribe(%@), continuing\n"),
                message_handler));
   }
 
@@ -269,11 +322,35 @@ IRC_Client_GUI_Connection_Handler::~IRC_Client_GUI_Connection_Handler()
 {
   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection_Handler::~IRC_Client_GUI_Connection_Handler"));
 
-  // clean up
+  // unsubscribe to updates from the controller
+  try
+  {
+    myCBData.controller->unsubscribe(this);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::unsubscribe(%@), continuing\n"),
+               this));
+  }
+
+  // clean up message handlers
+  for (message_handlers_iterator_t iterator = myMessageHandlers.begin();
+       iterator != myMessageHandlers.end();
+       iterator++)
+    delete (*iterator).second;
+
+  GDK_THREADS_ENTER();
+
+  // remove server page from parent notebook
+  gtk_notebook_remove_page(myParent,
+                           myPageNum);
+
   if (myCBData.builder)
     g_object_unref(myCBData.builder);
-}
 
+  GDK_THREADS_LEAVE();
+}
 
 void
 IRC_Client_GUI_Connection_Handler::start()
@@ -332,8 +409,8 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFNAMES:
         {
           // re-retrieve channel name
-          RPG_Net_Protocol_ParametersIterator_t iterator = message_in.params.begin();
-          iterator++;
+          RPG_Net_Protocol_ParametersIterator_t iterator = message_in.params.end();
+          iterator--; iterator--;
 
           // retrieve message handler for this channel
           IRC_Client_GUI_MessageHandler* message_handler = getHandler(*iterator);
@@ -404,9 +481,8 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
           {
             message_handler = new IRC_Client_GUI_MessageHandler(myCBData.controller,
                                                                 message_in.params.front(),
-                                                                std::string(IRC_CLIENT_GUI_DEF_UI_CHANNEL_TAB_FILE),
-                                                                server_tab_channel_tabs,
-                                                                false);
+                                                                myUIFileDirectory,
+                                                                server_tab_channel_tabs);
           }
           catch (const std::bad_alloc& exception)
           {
@@ -426,7 +502,7 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
 
             break;
           } // end IF
-          myMessageHandlers.insert(std::make_pair(message_in.params.front(), message_handler));
+          myMessageHandlers.insert(std::make_pair(message_in.params.back(), message_handler));
 
           // activate new channel (page)
           gtk_notebook_set_current_page(server_tab_channel_tabs,
@@ -454,12 +530,8 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
           ACE_ASSERT(server_tab_channel_tabs);
 
           // retrieve message handler
-          message_handlers_iterator_t iterator = myMessageHandlers.find(message_in.params.front());
+          message_handlers_iterator_t iterator = myMessageHandlers.find(message_in.params.back());
           ACE_ASSERT(iterator != myMessageHandlers.end());
-
-          gtk_notebook_remove_page(server_tab_channel_tabs,
-                                   gtk_notebook_page_num(server_tab_channel_tabs,
-                                                         (*iterator).second->getTopLevel()));
 
           // clean up
           delete (*iterator).second;
@@ -484,8 +556,8 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRCMessage::ERROR:
         {
           // re-retrieve channel name
+          // *TODO*: works for PRIVMSG !
           RPG_Net_Protocol_ParametersIterator_t iterator = message_in.params.begin();
-          iterator++;
 
           std::string message_text;
           if (!message_in.prefix.origin.empty())
@@ -546,13 +618,11 @@ IRC_Client_GUI_Connection_Handler::end()
 {
   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection_Handler::end"));
 
-  // sanity check(s)
-  ACE_ASSERT(myCBData.builder);
-
-  // *TODO*: remove page from the notebook...
-
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("connection lost...\n")));
+
+  // commit suicide
+  delete this;
 }
 
 RPG_Net_Protocol_IIRCControl*

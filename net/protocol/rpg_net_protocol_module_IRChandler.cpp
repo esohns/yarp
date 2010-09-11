@@ -132,8 +132,8 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
 
       switch (message_inout->getData()->command.numeric)
       {
-        // *NOTE* these are the "regular" (== known) codes sent by
-        // ircd-hybrid-7.2.3
+        // *NOTE* these are the "regular" (== known) codes
+        // [sent by ircd-hybrid-7.2.3 and others]...
         case RPG_Net_Protocol_IRC_Codes::RPL_WELCOME:              // 1
         case RPG_Net_Protocol_IRC_Codes::RPL_YOURHOST:             // 2
         case RPG_Net_Protocol_IRC_Codes::RPL_CREATED:              // 3
@@ -141,6 +141,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         case RPG_Net_Protocol_IRC_Codes::RPL_PROTOCTL:             // 5
         case RPG_Net_Protocol_IRC_Codes::RPL_STATSCONN:            // 250
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCLIENT:          // 251
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSEROP:              // 252
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCHANNELS:        // 254
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERME:              // 255
         case RPG_Net_Protocol_IRC_Codes::RPL_LOCALUSERS:           // 265
@@ -305,7 +306,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    for (SubscribersConstIterator_t iter = mySubscribers.begin();
+    for (SubscribersIterator_t iter = mySubscribers.begin();
          iter != mySubscribers.end();
          iter++)
     {
@@ -353,7 +354,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
       {
         ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-        for (SubscribersConstIterator_t iter = mySubscribers.begin();
+        for (SubscribersIterator_t iter = mySubscribers.begin();
              iter != mySubscribers.end();
              iter++)
         {
@@ -384,7 +385,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
       {
         ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-        for (SubscribersConstIterator_t iter = mySubscribers.begin();
+        for (SubscribersIterator_t iter = mySubscribers.begin();
              iter != mySubscribers.end();
              iter++)
         {
@@ -591,9 +592,9 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::notify(RPG_Net_Protocol_INotify* dataCallback_in)
+RPG_Net_Protocol_Module_IRCHandler::subscribe(RPG_Net_Protocol_INotify* dataCallback_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::notify"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::subscribe"));
 
   // sanity check(s)
   ACE_ASSERT(dataCallback_in);
@@ -602,6 +603,32 @@ RPG_Net_Protocol_Module_IRCHandler::notify(RPG_Net_Protocol_INotify* dataCallbac
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
   mySubscribers.push_back(dataCallback_in);
+}
+
+void
+RPG_Net_Protocol_Module_IRCHandler::unsubscribe(RPG_Net_Protocol_INotify* dataCallback_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::unsubscribe"));
+
+  // sanity check(s)
+  ACE_ASSERT(dataCallback_in);
+
+  // synch access to subscribers
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  SubscribersIterator_t iterator = mySubscribers.begin();
+  for (;
+       iterator != mySubscribers.end();
+       iterator++)
+    if ((*iterator) == dataCallback_in)
+      break;
+
+  if (iterator != mySubscribers.end())
+    mySubscribers.erase(iterator);
+  else
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid argument (was: %@), aborting\n"),
+               dataCallback_in));
 }
 
 void

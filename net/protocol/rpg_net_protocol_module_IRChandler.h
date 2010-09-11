@@ -61,8 +61,9 @@ class RPG_Net_Protocol_Module_IRCHandler
                                     bool&);                            // return value: pass message downstream ?
 
   // implement RPG_Net_Protocol_IIRCControl
+  virtual void subscribe(RPG_Net_Protocol_INotify*); // new subscriber
+  virtual void unsubscribe(RPG_Net_Protocol_INotify*); // existing subscriber
   virtual void registerConnection(const RPG_Net_Protocol_IRCLoginOptions&); // login details
-  virtual void notify(RPG_Net_Protocol_INotify*); // (additional) subscriber
   virtual void join(const std::string&); // channel
   virtual void part(const std::string&); // channel
   virtual void send(const std::string&,  // channel
@@ -87,7 +88,7 @@ class RPG_Net_Protocol_Module_IRCHandler
 
   // convenient types
   typedef std::list<RPG_Net_Protocol_INotify*> Subscribers_t;
-  typedef Subscribers_t::const_iterator SubscribersConstIterator_t;
+  typedef Subscribers_t::iterator SubscribersIterator_t;
 
   // lock to protect mySubscribers and myConnectionIsAlive
   ACE_Thread_Mutex   myLock;

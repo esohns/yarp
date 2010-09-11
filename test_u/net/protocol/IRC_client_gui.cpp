@@ -1,4 +1,3 @@
-#include "/home/unfv/Projects/RPG/net/protocol/rpg_net_protocol_module_IRChandler.h" /* defines RPG_Net_Protocol_Module_IRCHandler_Module */
 /***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
@@ -69,6 +68,7 @@ typedef connections_t::const_iterator connections_iterator_t;
 
 struct cb_data
 {
+  std::string                      UIFileDirectory;
   GtkBuilder*                      builder;
   RPG_Net_Protocol_PhoneBook       phoneBook;
   RPG_Net_Protocol_IRCLoginOptions loginOptions;
@@ -80,6 +80,22 @@ static int                               grp_id            = -1;
 static Stream_AllocatorHeap              heap_allocator;
 static RPG_Net_Protocol_MessageAllocator message_allocator(RPG_NET_DEF_MAX_MESSAGES,
                                                            &heap_allocator);
+
+static void
+is_entry_sensitive(GtkCellLayout*   layout_in,
+                   GtkCellRenderer* renderer_in,
+                   GtkTreeModel*    model_in,
+                   GtkTreeIter*     iter_in,
+                   gpointer         data_in)
+{
+  ACE_TRACE(ACE_TEXT("::is_entry_sensitive"));
+
+  gboolean sensitive = !gtk_tree_model_iter_has_child(model_in, iter_in);
+  // set corresponding property
+  g_object_set(renderer_in,
+               ACE_TEXT_ALWAYS_CHAR("sensitive"), sensitive,
+               NULL);
+}
 
 const bool
 connect_to_server(const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
@@ -184,7 +200,8 @@ connect_clicked_cb(GtkWidget* button_in,
                                                                  ACE_TEXT_ALWAYS_CHAR("serverlist")));
   ACE_ASSERT(serverlist);
   GtkTreeIter active_iter;
-  GValue active_item;
+//   GValue active_value;
+  gchar* active_value = NULL;
   std::string entry_name;
   if (!gtk_combo_box_get_active_iter(serverlist,
                                      &active_iter))
@@ -195,15 +212,22 @@ connect_clicked_cb(GtkWidget* button_in,
 
     return;
   } // end IF
-  gtk_tree_model_get_value(gtk_combo_box_get_model(serverlist),
-                           &active_iter,
-                           0,
-                           &active_item);
+//   gtk_tree_model_get_value(gtk_combo_box_get_model(serverlist),
+//                            &active_iter,
+//                            0, &active_value);
+  gtk_tree_model_get(gtk_combo_box_get_model(serverlist),
+                     &active_iter,
+                     0, &active_value,
+                     -1);
+//   ACE_ASSERT(G_VALUE_HOLDS_STRING(&active_value));
+  ACE_ASSERT(active_value);
   // *TODO*: convert UTF8 to locale ?
-  entry_name = g_value_get_string(&active_item);
+  entry_name = active_value;
+//   entry_name = g_value_get_string(&active_value);
 
   // clean up
-  g_value_unset(&active_item);
+//   g_value_unset(&active_value);
+  g_free(active_value);
 
   RPG_Net_Protocol_ServersIterator_t phonebook_iter = data->phoneBook.servers.find(entry_name);
   if (phonebook_iter == data->phoneBook.servers.end())
@@ -284,7 +308,7 @@ connect_clicked_cb(GtkWidget* button_in,
   {
     connection_handler = new IRC_Client_GUI_Connection_Handler(IRChandler_impl,
                                                                entry_name,
-                                                               std::string(IRC_CLIENT_GUI_DEF_UI_SERVER_PAGE_FILE),
+                                                               data->UIFileDirectory,
                                                                server_tabs);
   }
   catch (const std::bad_alloc& exception)
@@ -387,12 +411,7 @@ connect_clicked_cb(GtkWidget* button_in,
   // *TODO*: who deletes the module ? (the stream won't do it !)
   data->connections.insert(std::make_pair(entry_name, connection_handler));
 
-  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
-  // retrieve button handle
-  button = GTK_BUTTON(gtk_builder_get_object(data->builder,
-                                             ACE_TEXT_ALWAYS_CHAR("disconnect")));
-  ACE_ASSERT(button);
-  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+//   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 }
 
 void
@@ -569,7 +588,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s [FILE]   : server config file") << ACE_TEXT(" [") << IRC_CLIENT_GUI_DEF_SERVERS_FILE << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-u [FILE]   : UI file") << ACE_TEXT(" [") << IRC_CLIENT_GUI_DEF_UI_MAIN_FILE << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-u [DIR]    : UI file directory") << ACE_TEXT(" [\"") << IRC_CLIENT_GUI_DEF_UI_FILE_DIR << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << IRC_CLIENT_DEF_CLIENT_USES_TP  << ACE_TEXT(" : ") << IRC_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
@@ -582,7 +601,7 @@ process_arguments(const int argc_in,
                   bool& logToFile_out,
                   std::string& serverConfigFile_out,
                   bool& traceInformation_out,
-                  std::string& UIfile_out,
+                  std::string& UIFileDirectory_out,
                   bool& printVersionAndExit_out,
                   bool& useThreadPool_out,
                   unsigned long& numThreadPoolThreads_out)
@@ -595,7 +614,7 @@ process_arguments(const int argc_in,
   logToFile_out            = false;
   serverConfigFile_out     = IRC_CLIENT_GUI_DEF_SERVERS_FILE;
   traceInformation_out     = false;
-  UIfile_out               = IRC_CLIENT_GUI_DEF_UI_MAIN_FILE;
+  UIFileDirectory_out      = IRC_CLIENT_GUI_DEF_UI_FILE_DIR;
   printVersionAndExit_out  = false;
   useThreadPool_out        = IRC_CLIENT_DEF_CLIENT_USES_TP;
   numThreadPoolThreads_out = IRC_CLIENT_DEF_NUM_TP_THREADS;
@@ -646,7 +665,7 @@ process_arguments(const int argc_in,
       }
       case 'u':
       {
-        UIfile_out = argumentParser.opt_arg();
+        UIFileDirectory_out = argumentParser.opt_arg();
 
         break;
       }
@@ -786,33 +805,37 @@ reactor_worker_func(void* args_in)
 }
 
 void
-do_main_window(const std::string& UIfile_in,
+do_main_window(const std::string& UIFileDirectory_in,
                const cb_data& userData_in,
                const GtkWidget* parentWidget_in)
 {
   ACE_TRACE(ACE_TEXT("::do_main_window"));
 
-  // sanity check(s)
-  if (!RPG_Common_File_Tools::isReadable(UIfile_in.c_str()))
+  ACE_ASSERT(userData_in.builder);
+
+  // step0: assemble FQ filename (Glade-UI XML)
+  std::string filename = UIFileDirectory_in;
+  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += IRC_CLIENT_GUI_DEF_UI_MAIN_FILE;
+  if (!RPG_Common_File_Tools::isReadable(filename))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("file \"%s\" doesn't exist, aborting\n"),
-               UIfile_in.c_str()));
+               ACE_TEXT("invalid UI file (was \"%s\"): not readable, aborting\n"),
+               filename.c_str()));
 
     return;
   } // end IF
-  ACE_ASSERT(userData_in.builder);
 
   // step1: load widget tree
   GError* error = NULL;
   gtk_builder_add_from_file(userData_in.builder,
-                            UIfile_in.c_str(),
+                            filename.c_str(),
                             &error);
   if (error)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to gtk_builder_add_from_file(\"%s\"): \"%s\", aborting\n"),
-               UIfile_in.c_str(),
+               filename.c_str(),
                error->message));
 
     // clean up
@@ -822,30 +845,70 @@ do_main_window(const std::string& UIfile_in,
   } // end IF
 
   // step2: populate phonebook liststore
-  GtkListStore* serverlist_store = NULL;
-  serverlist_store = GTK_LIST_STORE(gtk_builder_get_object(userData_in.builder,
-                                                           ACE_TEXT_ALWAYS_CHAR("serverlist_store")));
-  ACE_ASSERT(serverlist_store);
+  GtkTreeStore* serverlist_treestore = NULL;
+  serverlist_treestore = GTK_TREE_STORE(gtk_builder_get_object(userData_in.builder,
+                                                               ACE_TEXT_ALWAYS_CHAR("serverlist_treestore")));
+  ACE_ASSERT(serverlist_treestore);
   GtkComboBox* serverlist = NULL;
   serverlist = GTK_COMBO_BOX(gtk_builder_get_object(userData_in.builder,
                                                     ACE_TEXT_ALWAYS_CHAR("serverlist")));
   ACE_ASSERT(serverlist);
-  GtkTreeIter iter;
+  // *NOTE*: the combobox will display (selectable) column headers --> don't want that
+  GList* renderers = gtk_cell_layout_get_cells(GTK_CELL_LAYOUT(serverlist));
+  GtkCellRenderer* renderer = GTK_CELL_RENDERER(g_list_first(renderers)->data);
+  ACE_ASSERT(renderer);
+  g_list_free(renderers);
+  gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(serverlist), renderer,
+                                     is_entry_sensitive,
+                                     NULL, NULL);
+  std::map<std::string, GtkTreeIter> network_map;
+  std::map<std::string, GtkTreeIter>::iterator network_map_iterator;
+  GtkTreeIter tree_iterator, current_row;
   for (RPG_Net_Protocol_ServersIterator_t iterator = userData_in.phoneBook.servers.begin();
        iterator != userData_in.phoneBook.servers.end();
        iterator++)
   {
+    // known network ?
+    network_map_iterator = network_map.find((*iterator).second.network);
+    if (network_map_iterator == network_map.end())
+    {
+      // new toplevel row
+      gtk_tree_store_append(serverlist_treestore,
+                            &tree_iterator,
+                            NULL);
+      std::string network_label = ((*iterator).second.network.empty() ? ACE_TEXT_ALWAYS_CHAR("<none>")
+                                                                      : (*iterator).second.network);
+      gtk_tree_store_set(serverlist_treestore, &tree_iterator,
+                         0, network_label.c_str(),
+                         -1);
+
+      network_map.insert(std::make_pair((*iterator).second.network, tree_iterator));
+
+      network_map_iterator = network_map.find((*iterator).second.network);
+      ACE_ASSERT(network_map_iterator != network_map.end());
+    } // end IF
+
     // append new (text) entry
-    gtk_list_store_append(serverlist_store, &iter);
-    gtk_list_store_set(serverlist_store, &iter,
+    gtk_tree_store_append(serverlist_treestore,
+                          &current_row,
+                          &(*network_map_iterator).second);
+    gtk_tree_store_set(serverlist_treestore, &current_row,
                        0, (*iterator).first.c_str(), // column 0
                        -1);
 
     // set active item
     if ((*iterator).first == IRC_CLIENT_DEF_SERVER_HOSTNAME)
       gtk_combo_box_set_active_iter(serverlist,
-                                    &iter);
+                                    &current_row);
   } // end FOR
+  if (!userData_in.phoneBook.servers.empty())
+  {
+    // sort entries (toplevel: ascending)
+    gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(serverlist_treestore),
+                                         0, GTK_SORT_ASCENDING);
+
+    gtk_widget_set_sensitive(GTK_WIDGET(serverlist), TRUE);
+  } // end IF
 
   // step3: connect signals/slots
 //   gtk_builder_connect_signals(builder,
@@ -911,7 +974,7 @@ do_main_window(const std::string& UIfile_in,
 void
 do_work(const bool& useThreadPool_in,
         const unsigned long& numThreadPoolThreads_in,
-        const std::string& UIfile_in,
+        const std::string& UIFileDirectory_in,
         cb_data& userData_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
@@ -936,9 +999,9 @@ do_work(const bool& useThreadPool_in,
   // on disconnects !
 
   // step1: setup UI
-  do_main_window(UIfile_in,   // glade file
-                 userData_in, // cb data
-                 NULL);       // there's no parent widget
+  do_main_window(UIFileDirectory_in, // glade file directory
+                 userData_in,        // cb data
+                 NULL);              // there's no parent widget
 
   // event loops:
   // - perform socket I/O --> ACE_Reactor
@@ -1157,6 +1220,16 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
     ++val_index;
   } // end WHILE
 
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("timestamp (d/m/y, h:m:s.u): %d/%d/%d, %d:%d:%d.%d\n"),
+//              phoneBook_out.timestamp.day(),
+//              phoneBook_out.timestamp.month(),
+//              phoneBook_out.timestamp.year(),
+//              phoneBook_out.timestamp.hour(),
+//              phoneBook_out.timestamp.minute(),
+//              phoneBook_out.timestamp.second(),
+//              phoneBook_out.timestamp.microsec()));
+
   // step2: find/open "networks" section...
   if (config_heap.open_section(config_heap.root_section(),
                                IRC_CLIENT_CNF_NETWORKS_SECTION_HEADER,
@@ -1193,7 +1266,7 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
 //                val_name.c_str(),
 //                val_type));
 
-    phoneBook_out.networks.push_back(std::string(val_value.c_str()));
+    phoneBook_out.networks.insert(std::string(val_value.c_str()));
 
     ++val_index;
   } // end WHILE
@@ -1258,10 +1331,10 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
     // *TODO*: needs further parsing...
     entry_name = server_line_string.substr(0,
                                            current_position);
-    last_position = current_position;
+    last_position = current_position + 6;
 
     // parse hostname
-    current_position = server_line_string.find(':', current_position + 1);
+    current_position = server_line_string.find(':', last_position + 1);
     if (current_position == std::string::npos)
     {
       ACE_ERROR((LM_ERROR,
@@ -1277,42 +1350,29 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
 
     // parse (list of) port ranges
     std::string::size_type next_comma = std::string::npos;
+    std::string::size_type group = server_line_string.find(ACE_TEXT_ALWAYS_CHAR("GROUP:"), current_position + 1);
+    if (group == std::string::npos)
+    {
+      ACE_ERROR((LM_ERROR,
+                 ACE_TEXT("\"%s\": failed to parse server (was: \"%s\"), aborting\n"),
+                 serverConfigFile_in.c_str(),
+                 val_value.c_str()));
+
+      return;
+    } // end IF
     do
     {
       no_range = false;
 
       next_comma = server_line_string.find(',', current_position + 1);
-      if (next_comma == std::string::npos)
-      {
-        // this means we've reached the end of the list...
-        next_comma = server_line_string.find(ACE_TEXT_ALWAYS_CHAR("GROUP:"),
-                                             current_position + 1);
-        // --> skip over "GROUP:"
-        last_position = server_line_string.find(':', current_position + 1);
-        if ((next_comma == std::string::npos) ||
-            (last_position == std::string::npos))
-        {
-          ACE_ERROR((LM_ERROR,
-                      ACE_TEXT("\"%s\": failed to parse server (was: \"%s\"), aborting\n"),
-                      serverConfigFile_in.c_str(),
-                      val_value.c_str()));
-
-          return;
-        } // end IF
-
-        // proceed
-        break;
-      } // end IF
+      if (next_comma > group)
+        next_comma = group;
 
       // port range ?
       current_position = server_line_string.find('-', current_position + 1);
       if ((current_position == std::string::npos) ||
-          ((current_position != std::string::npos) &&
-           (current_position > next_comma)))
-      {
-        // this means there is no port range, but only a single port...
+          (current_position > next_comma))
         no_range = true;
-      } // end IF
       else
       {
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
@@ -1320,29 +1380,56 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
         converter << server_line_string.substr(last_position + 1,
                                                current_position - last_position - 1);
         converter >> port_range.first;
+
+        last_position = current_position;
       } // end ELSE
       current_position = next_comma;
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
       converter.clear();
       converter << server_line_string.substr(last_position + 1,
-                                            current_position - last_position - 1);
+                                             current_position - last_position - 1);
       converter >> port_range.second;
       if (no_range)
         port_range.first = port_range.second;
       entry.listeningPorts.push_back(port_range);
+
+      // skip to next port(range)
+      if (next_comma == group)
+      {
+        // this means we've reached the end of the list...
+        // --> skip over "GROUP:"
+        last_position = next_comma + 5;
+
+        // proceed
+        break;
+      } // end IF
+
+      last_position = current_position;
     } while (true);
 
     // parse "group" (== network)
     entry.network = server_line_string.substr(last_position + 1);
 
+    phoneBook_out.networks.insert(entry.network);
     phoneBook_out.servers.insert(std::make_pair(entry_name, entry));
 
     ++val_index;
   } // end WHILE
 
+//   for (RPG_Net_Protocol_NetworksIterator_t iterator = phoneBook_out.networks.begin();
+//        iterator != phoneBook_out.networks.end();
+//        iterator++)
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("network: \"%s\"\n"),
+//                (*iterator).c_str()));
+
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("parsed %u phonebook entries...\n"),
-             phoneBook_out.servers.size()));
+             ACE_TEXT("parsed %u phonebook (timestamp: %u/%u/%u) entries (%u network(s))...\n"),
+             phoneBook_out.servers.size(),
+             phoneBook_out.timestamp.month(),
+             phoneBook_out.timestamp.day(),
+             phoneBook_out.timestamp.year(),
+             phoneBook_out.networks.size()));
 }
 
 void
@@ -1404,23 +1491,24 @@ do_parseConfigFile(const std::string& configFilename_in,
 
   // import values...
   int val_index = 0;
-  ACE_TString val_name, val_value;
+  ACE_TString val_name, val_string_value;
   ACE_Configuration::VALUETYPE val_type;
   while (config_heap.enumerate_values(section_key,
                                       val_index,
                                       val_name,
                                       val_type) == 0)
   {
-    if (config_heap.get_string_value(section_key,
-                                     val_name.c_str(),
-                                     val_value))
-    {
-      ACE_ERROR((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Configuration_Heap::get_string_value(%s), returning\n"),
-                 val_name.c_str()));
+    if (val_type == ACE_Configuration::STRING)
+      if (config_heap.get_string_value(section_key,
+                                       val_name.c_str(),
+                                       val_string_value))
+      {
+        ACE_ERROR((LM_ERROR,
+                   ACE_TEXT("failed to ACE_Configuration_Heap::get_string_value(%s), returning\n"),
+                   val_name.c_str()));
 
-      return;
-    } // end IF
+        return;
+      } // end IF
 
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("enumerated %s, type %d\n"),
@@ -1430,23 +1518,23 @@ do_parseConfigFile(const std::string& configFilename_in,
     // *TODO*: move these strings...
     if (val_name == ACE_TEXT("password"))
     {
-      loginOptions_out.password = val_value.c_str();
+      loginOptions_out.password = val_string_value.c_str();
     }
     else if (val_name == ACE_TEXT("nick"))
     {
-      loginOptions_out.nick = val_value.c_str();
+      loginOptions_out.nick = val_string_value.c_str();
     }
     else if (val_name == ACE_TEXT("user"))
     {
-      loginOptions_out.user.username = val_value.c_str();
+      loginOptions_out.user.username = val_string_value.c_str();
     }
     else if (val_name == ACE_TEXT("realname"))
     {
-      loginOptions_out.user.realname = val_value.c_str();
+      loginOptions_out.user.realname = val_string_value.c_str();
     }
     else if (val_name == ACE_TEXT("channel"))
     {
-      loginOptions_out.channel = val_value.c_str();
+      loginOptions_out.channel = val_string_value.c_str();
     }
     else
     {
@@ -1474,17 +1562,22 @@ do_parseConfigFile(const std::string& configFilename_in,
   // import values...
   val_index = 0;
   RPG_Net_Protocol_ConnectionEntry entry;
+//   u_int port = 0;
   std::stringstream converter;
   while (config_heap.enumerate_values(section_key,
                                       val_index,
                                       val_name,
                                       val_type) == 0)
   {
-    entry.listeningPorts.clear();
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("enumerated %s, type %d\n"),
+//                val_name.c_str(),
+//                val_type));
 
+    ACE_ASSERT(val_type == ACE_Configuration::STRING);
     if (config_heap.get_string_value(section_key,
                                      val_name.c_str(),
-                                     val_value))
+                                     val_string_value))
     {
       ACE_ERROR((LM_ERROR,
                  ACE_TEXT("failed to ACE_Configuration_Heap::get_string_value(%s), returning\n"),
@@ -1493,26 +1586,38 @@ do_parseConfigFile(const std::string& configFilename_in,
       return;
     } // end IF
 
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("enumerated %s, type %d\n"),
-//                val_name.c_str(),
-//                val_type));
-
     // *TODO*: move these strings...
     if (val_name == ACE_TEXT("server"))
     {
-      entry.hostName = val_value.c_str();
+      entry.hostName = val_string_value.c_str();
+
+      if (!entry.listeningPorts.empty())
+        phoneBook_out.servers.insert(std::make_pair(entry.hostName, entry));
     }
     else if (val_name == ACE_TEXT("port"))
     {
+//       ACE_ASSERT(val_type == ACE_Configuration::INTEGER);
+//       if (config_heap.get_integer_value(section_key,
+//                                         val_name.c_str(),
+//                                         port))
+//       {
+//         ACE_ERROR((LM_ERROR,
+//                    ACE_TEXT("failed to ACE_Configuration_Heap::get_integer_value(%s), returning\n"),
+//                    val_name.c_str()));
+//
+//         return;
+//       } // end IF
       RPG_Net_Protocol_PortRange_t port_range;
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
       converter.clear();
-      converter << val_value.c_str();
+      converter << val_string_value.c_str();
       converter >> port_range.first;
+//       port_range.first = ACE_static_cast(unsigned short, port);
       port_range.second = port_range.first;
+      entry.listeningPorts.push_back(port_range);
 
-      phoneBook_out.servers.insert(std::make_pair(entry.hostName, entry));
+      if (!entry.hostName.empty())
+        phoneBook_out.servers.insert(std::make_pair(entry.hostName, entry));
     }
     else
     {
@@ -1586,7 +1691,7 @@ ACE_TMAIN(int argc,
   bool logToFile                     = false;
   std::string serverConfigFile       = IRC_CLIENT_GUI_DEF_SERVERS_FILE;
   bool traceInformation              = false;
-  std::string UIfile                 = IRC_CLIENT_GUI_DEF_UI_MAIN_FILE;
+  std::string UIFileDirectory        = IRC_CLIENT_GUI_DEF_UI_FILE_DIR;
   bool printVersionAndExit           = false;
   bool useThreadPool                 = IRC_CLIENT_DEF_CLIENT_USES_TP;
   unsigned long numThreadPoolThreads = IRC_CLIENT_DEF_NUM_TP_THREADS;
@@ -1597,10 +1702,19 @@ ACE_TMAIN(int argc,
                           logToFile,
                           serverConfigFile,
                           traceInformation,
-                          UIfile,
+                          UIFileDirectory,
                           printVersionAndExit,
                           useThreadPool,
                           numThreadPoolThreads)))
+  {
+    // make 'em learn...
+    print_usage(std::string(ACE::basename(argv[0])));
+
+    return EXIT_FAILURE;
+  } // end IF
+
+  // validate argument(s)
+  if (!RPG_Common_File_Tools::isDirectory(UIFileDirectory))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
@@ -1644,6 +1758,7 @@ ACE_TMAIN(int argc,
 
   // step2d: init callback data
   cb_data userData;
+  userData.UIFileDirectory = UIFileDirectory;
   userData.builder = gtk_builder_new();
   ACE_ASSERT(userData.builder);
 //   userData.phoneBook;
@@ -1671,7 +1786,7 @@ ACE_TMAIN(int argc,
   timer.start();
   do_work(useThreadPool,
           numThreadPoolThreads,
-          UIfile,
+          UIFileDirectory,
           userData);
 
   // debug info

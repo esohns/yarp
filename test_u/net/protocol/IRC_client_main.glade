@@ -38,7 +38,6 @@
             <child>
               <object class="GtkEntry" id="entry">
                 <property name="visible">True</property>
-                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="max_length">480</property>
                 <property name="invisible_char">&#x25CF;</property>
@@ -100,26 +99,18 @@
             <child>
               <object class="GtkComboBox" id="serverlist">
                 <property name="visible">True</property>
-                <property name="model">serverlist_store</property>
+                <property name="sensitive">False</property>
+                <property name="model">serverlist_treestore</property>
                 <property name="has_frame">False</property>
                 <property name="focus_on_click">False</property>
                 <child>
-                  <object class="GtkCellRendererText" id="serverlist_cellrenderertext">
-                    <property name="cell_background_gdk">#000000000000</property>
-                    <property name="xalign">0</property>
-                    <property name="background_gdk">#000000000000</property>
-                    <property name="font">Normal</property>
-                    <property name="foreground_gdk">#000000000000</property>
-                    <property name="single_paragraph_mode">True</property>
-                  </object>
+                  <object class="GtkCellRendererText" id="serverlist_cellrenderertext"/>
                   <attributes>
                     <attribute name="text">0</attribute>
                   </attributes>
                 </child>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -144,6 +135,7 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">False</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -160,7 +152,7 @@
       </object>
     </child>
   </object>
-  <object class="GtkListStore" id="serverlist_store">
+  <object class="GtkTreeStore" id="serverlist_treestore">
     <columns>
       <!-- column-name text -->
       <column type="gchararray"/>

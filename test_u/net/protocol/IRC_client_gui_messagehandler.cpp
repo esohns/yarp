@@ -22,6 +22,8 @@
 
 #include "IRC_client_gui_defines.h"
 
+#include <rpg_common_file_tools.h>
+
 // update callback
 static
 gboolean
@@ -75,23 +77,60 @@ part_clicked_cb(GtkWidget* button_in,
 }
 #endif /* __cplusplus */
 
+IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkTextView* view_in)
+ : myView(view_in),
+   myIsFirstNameListMsg(true),
+   myParent(NULL),
+   myPageNum(-1) // *NOTE*: in fact, this is 0 (== server log)
+{
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
+
+  // sanity check(s)
+  ACE_ASSERT(myView);
+
+  // init cb data
+  myCBData.builder = NULL;
+  myCBData.channel.clear();
+  myCBData.controller = NULL;
+
+  // setup auto-scrolling
+  GtkTextIter iter;
+  gtk_text_buffer_get_end_iter(gtk_text_view_get_buffer(myView),
+                               &iter);
+  gtk_text_buffer_create_mark(gtk_text_view_get_buffer(myView),
+                              ACE_TEXT_ALWAYS_CHAR("scroll"),
+                              &iter,
+                              TRUE);
+}
+
 IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_IIRCControl* controller_in,
-                                                             const std::string& label_in,
-                                                             const std::string& UIfile_in,
-                                                             GtkNotebook* notebook_in,
-                                                             const bool& isDefaultHandler_in)
+                                                             const std::string& channel_in,
+                                                             const std::string& UIFileDirectory_in,
+                                                             GtkNotebook* notebook_in)
  : myView(NULL),
-   myIsFirstNameListMsg(true)
+   myIsFirstNameListMsg(true),
+   myParent(notebook_in),
+   myPageNum(-1)
 {
   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
 
   // sanity check(s)
   ACE_ASSERT(controller_in);
+  ACE_ASSERT(!channel_in.empty() &&
+             (channel_in.find('#', 0) == 0));
+  if (!RPG_Common_File_Tools::isDirectory(UIFileDirectory_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid argument (was: \"%s\"): not a directory, aborting\n"),
+               UIFileDirectory_in.c_str()));
+
+    return;
+  } // end IF
   ACE_ASSERT(notebook_in);
 
   // init cb data
   myCBData.builder = NULL;
-  myCBData.channel.clear();
+  myCBData.channel = channel_in;
   myCBData.controller = controller_in;
 
   // create new GtkBuilder
@@ -99,15 +138,26 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
   ACE_ASSERT(myCBData.builder);
 
   // init builder (load widget tree)
+  std::string filename = UIFileDirectory_in;
+  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += IRC_CLIENT_GUI_DEF_UI_CHANNEL_TAB_FILE;
+  if (!RPG_Common_File_Tools::isReadable(filename))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid UI file (was: \"%s\"): not readable, aborting\n"),
+               filename.c_str()));
+
+    return;
+  } // end IF
   GError* error = NULL;
   gtk_builder_add_from_file(myCBData.builder,
-                            UIfile_in.c_str(),
+                            filename.c_str(),
                             &error);
   if (error)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to gtk_builder_add_from_file(\"%s\"): \"%s\", aborting\n"),
-               UIfile_in.c_str(),
+               filename.c_str(),
                error->message));
 
     // clean up
@@ -117,49 +167,62 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
   } // end IF
 
   // add new channel page to notebook (== server log)
+  // retrieve (dummy) parent window
+  GtkWindow* parent = GTK_WINDOW(gtk_builder_get_object(myCBData.builder,
+                                                        ACE_TEXT_ALWAYS_CHAR("channel_tab_label_template")));
+  ACE_ASSERT(parent);
   // retrieve channel tab label
-  GtkHBox* channel_tab_label_hbox = NULL;
-  if (isDefaultHandler_in)
-  {
-    channel_tab_label_hbox = GTK_HBOX(gtk_builder_get_object(myCBData.builder,
-                                                             ACE_TEXT_ALWAYS_CHAR("channel_tab_label_hbox")));
-    ACE_ASSERT(channel_tab_label_hbox);
-  } // end IF
+  GtkHBox* channel_tab_label_hbox = GTK_HBOX(gtk_builder_get_object(myCBData.builder,
+                                                                    ACE_TEXT_ALWAYS_CHAR("channel_tab_label_hbox")));
+  ACE_ASSERT(channel_tab_label_hbox);
+  g_object_ref(channel_tab_label_hbox);
+  gtk_container_remove(GTK_CONTAINER(parent), GTK_WIDGET(channel_tab_label_hbox));
   // set tab label
-  if (!label_in.empty())
-  {
-    GtkLabel* channel_tab_label = GTK_LABEL(gtk_builder_get_object(myCBData.builder,
-                                                                  ACE_TEXT_ALWAYS_CHAR("channel_tab_label")));
-    ACE_ASSERT(channel_tab_label);
-    gtk_label_set_text(channel_tab_label,
-                      label_in.c_str());
-  } // end IF
+  GtkLabel* channel_tab_label = GTK_LABEL(gtk_builder_get_object(myCBData.builder,
+                                                                 ACE_TEXT_ALWAYS_CHAR("channel_tab_label")));
+  ACE_ASSERT(channel_tab_label);
+  // crop leading '#'
+  std::string channel_tab_label_string = channel_in;
+  channel_tab_label_string.erase(channel_tab_label_string.begin());
+  gtk_label_set_text(channel_tab_label,
+                     channel_tab_label_string.c_str());
+  // retrieve (dummy) parent window
+  parent = GTK_WINDOW(gtk_builder_get_object(myCBData.builder,
+                                             ACE_TEXT_ALWAYS_CHAR("channel_tab_template")));
+  ACE_ASSERT(parent);
   // retrieve channel tab
   GtkFrame* channel_tab_frame = GTK_FRAME(gtk_builder_get_object(myCBData.builder,
                                                                  ACE_TEXT_ALWAYS_CHAR("channel_tab_frame")));
   ACE_ASSERT(channel_tab_frame);
-  gint page_num = gtk_notebook_append_page(notebook_in,
-                                           GTK_WIDGET(channel_tab_frame),
-                                           GTK_WIDGET(channel_tab_label_hbox));
-  if (page_num == -1)
+  g_object_ref(channel_tab_frame);
+  gtk_container_remove(GTK_CONTAINER(parent), GTK_WIDGET(channel_tab_frame));
+  myPageNum = gtk_notebook_append_page(myParent,
+                                       GTK_WIDGET(channel_tab_frame),
+                                       GTK_WIDGET(channel_tab_label_hbox));
+  if (myPageNum == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to gtk_notebook_append_page(), aborting\n")));
 
+    // clean up
+    g_object_unref(channel_tab_label_hbox);
+    g_object_unref(channel_tab_frame);
+
     return;
   } // end IF
 
-  if (isDefaultHandler_in)
-  {
-    // connect signal(s)
-    GtkButton* channel_tab_label_button = GTK_BUTTON(gtk_builder_get_object(myCBData.builder,
-                                                                            ACE_TEXT_ALWAYS_CHAR("channel_tab_label_button")));
-    ACE_ASSERT(channel_tab_label_button);
-    g_signal_connect(channel_tab_label_button,
-                     ACE_TEXT_ALWAYS_CHAR("clicked"),
-                     G_CALLBACK(part_clicked_cb),
-                     &myCBData);
-  } // end IF
+  // clean up
+  g_object_unref(channel_tab_label_hbox);
+  g_object_unref(channel_tab_frame);
+
+  // connect signal(s)
+  GtkButton* channel_tab_label_button = GTK_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                                          ACE_TEXT_ALWAYS_CHAR("channel_tab_label_button")));
+  ACE_ASSERT(channel_tab_label_button);
+  g_signal_connect(channel_tab_label_button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(part_clicked_cb),
+                   &myCBData);
 
   // retrieve text view
   myView = GTK_TEXT_VIEW(gtk_builder_get_object(myCBData.builder,
@@ -180,9 +243,22 @@ IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler()
 {
   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler"));
 
+  GDK_THREADS_ENTER();
+
+  // remove outstanding events
+  g_idle_remove_by_data(this);
+
+  // remove server page from parent notebook
+  if (myParent &&
+      (myPageNum > 0))
+    gtk_notebook_remove_page(myParent,
+                             myPageNum);
+
   // clean up
   if (myCBData.builder)
     g_object_unref(myCBData.builder);
+
+  GDK_THREADS_LEAVE();
 }
 
 void
@@ -198,6 +274,7 @@ IRC_Client_GUI_MessageHandler::queueForDisplay(const std::string& text_in)
   } // end lock scope
 
   GDK_THREADS_ENTER();
+
   // trigger asnych update
   g_idle_add(update_display_cb, this);
 

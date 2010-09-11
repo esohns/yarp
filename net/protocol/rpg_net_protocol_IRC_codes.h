@@ -33,13 +33,16 @@ class RPG_Net_Protocol_IRC_Codes
     RPL_YOURHOST	        = 2,
     RPL_CREATED	          = 3,
     RPL_MYINFO	          = 4,
+    //     RPL_BOUNCE            = 5,
+    //     RPL_MAP               = 5,
     RPL_PROTOCTL          = 5,
-//     RPL_BOUNCE            = 5,
     RPL_MAPMORE           = 6,
     RPL_MAPEND            = 7,
     RPL_SNOMASK           = 8,
     RPL_STATMEMTOT        = 9,
     RPL_STATMEM           = 10,
+
+    RPL_YOURCOOKIE        = 14,
 
     RPL_TRACELINK	        = 200,
     RPL_TRACECONNECTING	  = 201,
@@ -58,11 +61,13 @@ class RPG_Net_Protocol_IRC_Codes
     RPL_STATSCLINE        = 213,
     RPL_STATSNLINE        = 214,
     RPL_STATSILINE        = 215,
+    RPL_STATSKLINE        = 216,
     RPL_STATSQLINE        = 217,
 //     RPL_STATSPLINE        = 217,
     RPL_STATSYLINE        = 218,
     RPL_ENDOFSTATS	      = 219,
 //     RPL_STATSBLINE        = 220,
+//     RPL_STATSPLINE        = 220,
 
     RPL_UMODEIS	          = 221,
     RPL_SQLINE_NICK       = 222,
@@ -72,12 +77,16 @@ class RPG_Net_Protocol_IRC_Codes
 //     RPL_STATSDLINE        = 224,
     RPL_STATSGLINE        = 225,
 //     RPL_STATSDLINE        = 225,
+//     RPL_STATSZLINE        = 225,
+    RPL_STATSCOUNT        = 226,
+//     RPL_STATSGLINE        = 227,
 
     RPL_SERVICEINFO       = 231,
     RPL_ENDOFSERVICES     = 232,
     RPL_SERVICE           = 233,
     RPL_SERVLIST	        = 234,
     RPL_SERVLISTEND	      = 235,
+    RPL_STATSIAUTH        = 239,
 
     RPL_STATSVLINE        = 240,
     RPL_STATSLLINE        = 241,
@@ -87,11 +96,13 @@ class RPG_Net_Protocol_IRC_Codes
     RPL_STATSSLINE        = 245,
     RPL_STATSPING         = 246,
 //     RPL_STATSTLINE        = 246,
+//     RPL_STATSULINE        = 246,
     RPL_STATSBLINE        = 247,
 //     RPL_STATSGLINE        = 247,
 //     RPL_STATSXLINE        = 247,
     RPL_STATSDEFINE       = 248,
 //     RPL_STATSULINE        = 248,
+    RPL_STATSDEBUG        = 249,
     RPL_STATSCONN         = 250,
 //     RPL_STATSDLINE        = 250,
 
@@ -116,6 +127,7 @@ class RPG_Net_Protocol_IRC_Codes
 
     RPL_SILELIST          = 271,
     RPL_ENDOFSILELIST     = 272,
+    RPL_STATSDELTA        = 274,
     RPL_STATSDLINE        = 275,
 
     RPL_GLIST             = 280,
@@ -128,10 +140,11 @@ class RPG_Net_Protocol_IRC_Codes
     RPL_HELPFWD           = 294,
     RPL_HELPIGN           = 295,
 
+    RPL_NONE              = 300,
     RPL_AWAY              = 301,
     RPL_USERHOST          = 302,
     RPL_ISON              = 303,
-
+    RPL_TEXT              = 304,
     RPL_UNAWAY            = 305,
     RPL_NOWAWAY           = 306,
     RPL_USERIP            = 307,
@@ -139,6 +152,7 @@ class RPG_Net_Protocol_IRC_Codes
     RPL_WHOISADMIN        = 308,
     RPL_WHOISSADMIN       = 309,
     RPL_WHOISHELPOP       = 310,
+//     RPL_WHOISSVCMSG       = 310,
 
     RPL_WHOISUSER         = 311,
     RPL_WHOISSERVER       = 312,
@@ -150,10 +164,13 @@ class RPG_Net_Protocol_IRC_Codes
     RPL_ENDOFWHOIS        = 318,
     RPL_WHOISCHANNELS     = 319,
 
+    RPL_LISTSTART         = 321,
     RPL_LIST              = 322,
     RPL_LISTEND           = 323,
     RPL_CHANNELMODEIS     = 324,
     RPL_UNIQOPIS          = 325,
+    RPL_NOCHANPASS        = 326,
+    RPL_CHPASSUNKNOWN     = 327,
     RPL_CREATIONTIME      = 329,
 
     RPL_NOTOPIC           = 331,
@@ -161,6 +178,9 @@ class RPG_Net_Protocol_IRC_Codes
     RPL_TOPICWHOTIME      = 333,
     RPL_LISTUSAGE         = 334,
 //     RPL_LISTSYNTAX        = 334,
+//     RPL_COMMANDSYNTAX     = 334,
+    RPL_CHANPASSOK        = 338,
+    RPL_BADCHANPASS       = 339,
 
     RPL_INVITING          = 341,
     RPL_SUMMONING         = 342,
@@ -197,6 +217,7 @@ class RPG_Net_Protocol_IRC_Codes
     RPL_REHASHING         = 382,
     RPL_YOURESERVICE      = 383,
     RPL_MYPORTIS          = 384,
+    RPL_NOTOPERANYMORE    = 385,
 
     RPL_TIME              = 391,
     RPL_USERSSTART        = 392,
@@ -212,6 +233,7 @@ class RPG_Net_Protocol_IRC_Codes
     ERR_WASNOSUCHNICK     = 406,
     ERR_TOOMANYTARGETS    = 407,
     ERR_NOSUCHSERVICE     = 408,
+//     ERR_NOCOLORSONCHAN    = 408,
     ERR_NOORIGIN          = 409,
 
     ERR_NORECIPIENT	      = 411,
@@ -226,17 +248,20 @@ class RPG_Net_Protocol_IRC_Codes
     ERR_NOMOTD	          = 422,
     ERR_NOADMININFO	      = 423,
     ERR_FILEERROR	        = 424,
+    ERR_TOOMANYAWAY       = 429,
 
     ERR_NONICKNAMEGIVEN	  = 431,
     ERR_ERRONEUSNICKNAME  = 432,
     ERR_NICKNAMEINUSE	    = 433,
     ERR_SERVICENAMEINUSE  = 434,
     ERR_SERVICECONFUSED   = 435,
+//     ERR_BANONCHAN         = 435,
     ERR_NICKCOLLISION	    = 436,
     ERR_UNAVAILRESOURCE	  = 437,
 //     ERR_BANNICKCHANGE     = 437,
 //     ERR_TOOMANYNICKS      = 437,
     ERR_NICKTOOFAST       = 438,
+//     ERR_DEAD              = 438,
 //     ERR_NCHANGETOOFAST    = 438,
     ERR_TARGETTOOFAST     = 439,
     ERR_SERVICESDOWN      = 440,
@@ -249,6 +274,8 @@ class RPG_Net_Protocol_IRC_Codes
     ERR_USERSDISABLED	    = 446,
 
     ERR_NOTREGISTERED	    = 451,
+    ERR_IDCOLLISION       = 452,
+    ERR_NICKLOST          = 453,
     ERR_HOSTILENAME       = 455,
 
     ERR_NEEDMOREPARAMS	  = 461,
@@ -259,6 +286,7 @@ class RPG_Net_Protocol_IRC_Codes
     ERR_YOUWILLBEBANNED	  = 466,
     ERR_KEYSET	          = 467,
     ERR_ONLYSERVERSCANCHANGE = 468,
+//     ERR_INVALIDUSERNAME   = 468,
 
     ERR_CHANNELISFULL	    = 471,
     ERR_UNKNOWNMODE	      = 472,
@@ -270,6 +298,7 @@ class RPG_Net_Protocol_IRC_Codes
 //     ERR_MODELESS          = 477,
 //     ERR_NEEDREGGEDNICK    = 477,
     ERR_BANLISTFULL	      = 478,
+    ERR_BADCHANNAME       = 479,
 
     ERR_NOPRIVILEGES	    = 481,
     ERR_CHANOPRIVSNEEDED  = 482,
@@ -278,6 +307,9 @@ class RPG_Net_Protocol_IRC_Codes
 //     ERR_ISCHANSERVICE     = 484,
 //     ERR_DESYNC            = 484,
     ERR_UNIQOPPRIVSNEEDED = 485,
+    ERR_CHANTOORECENT     = 487,
+    ERR_TSLESSCHAN        = 488,
+    ERR_VOICENEEDED       = 489,
 
     ERR_NOOPERHOST	      = 491,
     ERR_NOSERVICEHOST     = 492,
@@ -292,8 +324,11 @@ class RPG_Net_Protocol_IRC_Codes
 //     ERR_TOOMANYWATCH      = 512,
     ERR_BADPING           = 513,
 //     ERR_NEEDPONG          = 513,
+    ERR_TOOMANYDCC        = 514,
 
     ERR_LISTSYNTAX        = 521,
+    ERR_WHOSYNTAX         = 522,
+    ERR_WHOLIMEXCEED      = 523,
 
     RPL_LOGON             = 600,
     RPL_LOGOFF            = 601,
@@ -303,6 +338,13 @@ class RPG_Net_Protocol_IRC_Codes
     RPL_NOWOFF            = 605,
     RPL_WATCHLIST         = 606,
     RPL_ENDOFWATCHLIST    = 607,
+
+    RPL_DCCSTATUS         = 617,
+    RPL_DCCLIST           = 618,
+    RPL_ENDOFDCCLIST      = 619,
+    RPL_DCCINFO           = 620,
+
+    ERR_NUMERIC_ERR       = 999,
     //
     RPG_NET_PROTOCOL_IRC_CODE_MAX,
     RPG_NET_PROTOCOL_IRC_CODE_INVALID

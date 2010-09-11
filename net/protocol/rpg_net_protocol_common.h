@@ -32,6 +32,7 @@
 #include <ace/Synch.h>
 
 #include <string>
+#include <set>
 #include <vector>
 #include <map>
 
@@ -93,7 +94,7 @@ struct RPG_Net_Protocol_IRCLoginOptions
 };
 
 // phonebook
-typedef std::vector<std::string> RPG_Net_Protocol_Networks_t;
+typedef std::set<std::string> RPG_Net_Protocol_Networks_t;
 typedef RPG_Net_Protocol_Networks_t::const_iterator RPG_Net_Protocol_NetworksIterator_t;
 typedef std::pair<unsigned short, unsigned short> RPG_Net_Protocol_PortRange_t;
 typedef std::vector<RPG_Net_Protocol_PortRange_t> RPG_Net_Protocol_PortRanges_t;
