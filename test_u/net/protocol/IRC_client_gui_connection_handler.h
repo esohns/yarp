@@ -21,7 +21,6 @@
 #define IRC_CLIENT_GUI_CONNECTION_HANDLER_H
 
 #include "IRC_client_gui_common.h"
-#include "IRC_client_gui_messagehandler.h"
 
 #include <rpg_net_protocol_iIRCControl.h>
 #include <rpg_net_protocol_inotify.h>
@@ -29,9 +28,13 @@
 #include <gtk/gtk.h>
 
 #include <ace/Global_Macros.h>
+#include <ace/Synch.h>
 
 #include <string>
 #include <map>
+
+// forward declaration(s)
+class IRC_Client_GUI_MessageHandler;
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -40,8 +43,15 @@ class IRC_Client_GUI_Connection_Handler
  : public RPG_Net_Protocol_INotify
 {
  public:
-  IRC_Client_GUI_Connection_Handler(RPG_Net_Protocol_IIRCControl*, // controller handle
-                                    const std::string&,            // label
+  // *WARNING*: make sure the ctor/dtor calls are made either:
+  // - by the main thread (servicing the gtk_main event loop)
+  // - protected by GDK_THREADS_ENTER/GDK_THREADS_LEAVE
+  IRC_Client_GUI_Connection_Handler(GtkBuilder*,                   // main builder handle
+                                    RPG_Net_Protocol_IIRCControl*, // controller handle
+                                    ACE_Thread_Mutex*,             // connections lock handle
+                                    connections_t*,                // connections handle
+//                                     const std::string&,            // (starting) nickname
+                                    const std::string&,            // (server tab) label
                                     const std::string&,            // UI (glade) file directory
                                     GtkNotebook*);                 // parent widget
   virtual~IRC_Client_GUI_Connection_Handler();
@@ -52,6 +62,10 @@ class IRC_Client_GUI_Connection_Handler
   virtual void end();
 
   RPG_Net_Protocol_IIRCControl* getController();
+
+  // *WARNING*: callers need protection
+  // - by the main thread (servicing the gtk_main event loop)
+  // - protected by GDK_THREADS_ENTER/GDK_THREADS_LEAVE
   const std::string getActiveChannel();
   IRC_Client_GUI_MessageHandler* getActiveHandler();
 
@@ -66,14 +80,20 @@ class IRC_Client_GUI_Connection_Handler
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_Connection_Handler(const IRC_Client_GUI_Connection_Handler&));
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_Connection_Handler& operator=(const IRC_Client_GUI_Connection_Handler&));
 
-  // helper methods
-  IRC_Client_GUI_MessageHandler* getHandler(const std::string&); // channel name
+//   // helper methods
+//   IRC_Client_GUI_MessageHandler* getHandler(const std::string&); // channel name
+  void log(const RPG_Net_Protocol_IRCMessage&);
 
   std::string          myUIFileDirectory;
   connection_cb_data_t myCBData;
+
+  ACE_Thread_Mutex     myLock;
   message_handlers_t   myMessageHandlers;
+
   GtkNotebook*         myParent;
-  gint                 myPageNum;
+  guint                myContextID;
+
+  std::string          myCurrentNickname;
 };
 
 #endif

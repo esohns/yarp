@@ -28,9 +28,9 @@
 #include "IRC_client_gui_defines.h"
 #include "IRC_client_gui_common.h"
 #include "IRC_client_gui_connection_handler.h"
+#include "IRC_client_gui_messagehandler.h"
 
 #include <rpg_net_protocol_defines.h>
-#include <rpg_net_protocol_common.h>
 #include <rpg_net_protocol_messageallocator.h>
 #include <rpg_net_protocol_module_IRChandler.h>
 
@@ -62,18 +62,6 @@
 #include <iostream>
 #include <sstream>
 #include <map>
-
-typedef std::map<std::string, IRC_Client_GUI_Connection_Handler*> connections_t;
-typedef connections_t::const_iterator connections_iterator_t;
-
-struct cb_data
-{
-  std::string                      UIFileDirectory;
-  GtkBuilder*                      builder;
-  RPG_Net_Protocol_PhoneBook       phoneBook;
-  RPG_Net_Protocol_IRCLoginOptions loginOptions;
-  connections_t                    connections;
-};
 
 // init statics
 static int                               grp_id            = -1;
@@ -186,8 +174,8 @@ connect_clicked_cb(GtkWidget* button_in,
 //              ACE_TEXT("connect_clicked_cb...\n")));
 
   GtkButton* button = GTK_BUTTON(button_in);
-  cb_data* data = ACE_static_cast(cb_data*,
-                                  userData_in);
+  main_cb_data* data = ACE_static_cast(main_cb_data*,
+                                       userData_in);
 
   // sanity check(s)
   ACE_ASSERT(button);
@@ -196,26 +184,26 @@ connect_clicked_cb(GtkWidget* button_in,
 
   // step1: retrieve active phonebook entry
   // retrieve serverlist handle
-  GtkComboBox* serverlist = GTK_COMBO_BOX(gtk_builder_get_object(data->builder,
-                                                                 ACE_TEXT_ALWAYS_CHAR("serverlist")));
-  ACE_ASSERT(serverlist);
+  GtkComboBox* main_servers_combobox = GTK_COMBO_BOX(gtk_builder_get_object(data->builder,
+                                                                            ACE_TEXT_ALWAYS_CHAR("main_servers_combobox")));
+  ACE_ASSERT(main_servers_combobox);
   GtkTreeIter active_iter;
 //   GValue active_value;
   gchar* active_value = NULL;
   std::string entry_name;
-  if (!gtk_combo_box_get_active_iter(serverlist,
+  if (!gtk_combo_box_get_active_iter(main_servers_combobox,
                                      &active_iter))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to gtk_combo_box_get_active_iter(%@), aborting\n"),
-               serverlist));
+               main_servers_combobox));
 
     return;
   } // end IF
 //   gtk_tree_model_get_value(gtk_combo_box_get_model(serverlist),
 //                            &active_iter,
 //                            0, &active_value);
-  gtk_tree_model_get(gtk_combo_box_get_model(serverlist),
+  gtk_tree_model_get(gtk_combo_box_get_model(main_servers_combobox),
                      &active_iter,
                      0, &active_value,
                      -1);
@@ -300,16 +288,19 @@ connect_clicked_cb(GtkWidget* button_in,
 
   // step3: create/init new connection handler
   // retrieve server tabs handle
-  GtkNotebook* server_tabs = GTK_NOTEBOOK(gtk_builder_get_object(data->builder,
-                                                                 ACE_TEXT_ALWAYS_CHAR("server_tabs")));
-  ACE_ASSERT(server_tabs);
+  GtkNotebook* main_server_tabs = GTK_NOTEBOOK(gtk_builder_get_object(data->builder,
+                                                                      ACE_TEXT_ALWAYS_CHAR("main_server_tabs")));
+  ACE_ASSERT(main_server_tabs);
   IRC_Client_GUI_Connection_Handler* connection_handler = NULL;
   try
   {
-    connection_handler = new IRC_Client_GUI_Connection_Handler(IRChandler_impl,
+    connection_handler = new IRC_Client_GUI_Connection_Handler(data->builder,
+                                                               IRChandler_impl,
+                                                               &data->connectionsLock,
+                                                               &data->connections,
                                                                entry_name,
                                                                data->UIFileDirectory,
-                                                               server_tabs);
+                                                               main_server_tabs);
   }
   catch (const std::bad_alloc& exception)
   {
@@ -408,10 +399,13 @@ connect_clicked_cb(GtkWidget* button_in,
                ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::registerConnection(), continuing\n")));
   }
 
-  // *TODO*: who deletes the module ? (the stream won't do it !)
-  data->connections.insert(std::make_pair(entry_name, connection_handler));
+  // synch access
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(data->connectionsLock);
 
-//   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+    // *TODO*: who deletes the module ? (the stream won't do it !)
+    data->connections.insert(std::make_pair(entry_name, connection_handler));
+  } // end lock scope
 }
 
 void
@@ -424,7 +418,7 @@ send_clicked_cb(GtkWidget* button_in,
 //              ACE_TEXT("send_clicked_cb...\n")));
 
   ACE_UNUSED_ARG(button_in);
-  cb_data* data = ACE_static_cast(cb_data*,
+  main_cb_data* data = ACE_static_cast(main_cb_data*,
                                   userData_in);
 
   // sanity check(s)
@@ -497,10 +491,21 @@ send_clicked_cb(GtkWidget* button_in,
   // clean up
   g_free(converted_text);
 
-  // step2: pass data to controller
+  // step2: retrieve active channel
+  std::string active_channel = (*connections_iterator).second->getActiveChannel();
+  // sanity check
+  if (active_channel.empty())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("no active channel, aborting\n")));
+
+    return;
+  } // end IF
+
+  // step3: pass data to controller
   try
   {
-    (*connections_iterator).second->getController()->send((*connections_iterator).second->getActiveChannel(),
+    (*connections_iterator).second->getController()->send(active_channel,
                                                           message_string);
   }
   catch (...)
@@ -509,7 +514,7 @@ send_clicked_cb(GtkWidget* button_in,
                ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::send(), continuing\n")));
   }
 
-  // echo data locally...
+  // step4: echo data locally...
   message_string.insert(0, ACE_TEXT("<me> "));
   message_string += ACE_TEXT_ALWAYS_CHAR("\n");
   IRC_Client_GUI_MessageHandler* message_handler = (*connections_iterator).second->getActiveHandler();
@@ -806,7 +811,7 @@ reactor_worker_func(void* args_in)
 
 void
 do_main_window(const std::string& UIFileDirectory_in,
-               const cb_data& userData_in,
+               const main_cb_data& userData_in,
                const GtkWidget* parentWidget_in)
 {
   ACE_TRACE(ACE_TEXT("::do_main_window"));
@@ -845,20 +850,20 @@ do_main_window(const std::string& UIFileDirectory_in,
   } // end IF
 
   // step2: populate phonebook liststore
-  GtkTreeStore* serverlist_treestore = NULL;
-  serverlist_treestore = GTK_TREE_STORE(gtk_builder_get_object(userData_in.builder,
-                                                               ACE_TEXT_ALWAYS_CHAR("serverlist_treestore")));
-  ACE_ASSERT(serverlist_treestore);
-  GtkComboBox* serverlist = NULL;
-  serverlist = GTK_COMBO_BOX(gtk_builder_get_object(userData_in.builder,
-                                                    ACE_TEXT_ALWAYS_CHAR("serverlist")));
-  ACE_ASSERT(serverlist);
+  GtkTreeStore* main_servers_treestore = NULL;
+  main_servers_treestore = GTK_TREE_STORE(gtk_builder_get_object(userData_in.builder,
+                                          ACE_TEXT_ALWAYS_CHAR("main_servers_treestore")));
+  ACE_ASSERT(main_servers_treestore);
+  GtkComboBox* main_servers_combobox = NULL;
+  main_servers_combobox = GTK_COMBO_BOX(gtk_builder_get_object(userData_in.builder,
+                                        ACE_TEXT_ALWAYS_CHAR("main_servers_combobox")));
+  ACE_ASSERT(main_servers_combobox);
   // *NOTE*: the combobox will display (selectable) column headers --> don't want that
-  GList* renderers = gtk_cell_layout_get_cells(GTK_CELL_LAYOUT(serverlist));
+  GList* renderers = gtk_cell_layout_get_cells(GTK_CELL_LAYOUT(main_servers_combobox));
   GtkCellRenderer* renderer = GTK_CELL_RENDERER(g_list_first(renderers)->data);
   ACE_ASSERT(renderer);
   g_list_free(renderers);
-  gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(serverlist), renderer,
+  gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(main_servers_combobox), renderer,
                                      is_entry_sensitive,
                                      NULL, NULL);
   std::map<std::string, GtkTreeIter> network_map;
@@ -873,12 +878,12 @@ do_main_window(const std::string& UIFileDirectory_in,
     if (network_map_iterator == network_map.end())
     {
       // new toplevel row
-      gtk_tree_store_append(serverlist_treestore,
+      gtk_tree_store_append(main_servers_treestore,
                             &tree_iterator,
                             NULL);
       std::string network_label = ((*iterator).second.network.empty() ? ACE_TEXT_ALWAYS_CHAR("<none>")
                                                                       : (*iterator).second.network);
-      gtk_tree_store_set(serverlist_treestore, &tree_iterator,
+      gtk_tree_store_set(main_servers_treestore, &tree_iterator,
                          0, network_label.c_str(),
                          -1);
 
@@ -889,47 +894,47 @@ do_main_window(const std::string& UIFileDirectory_in,
     } // end IF
 
     // append new (text) entry
-    gtk_tree_store_append(serverlist_treestore,
+    gtk_tree_store_append(main_servers_treestore,
                           &current_row,
                           &(*network_map_iterator).second);
-    gtk_tree_store_set(serverlist_treestore, &current_row,
+    gtk_tree_store_set(main_servers_treestore, &current_row,
                        0, (*iterator).first.c_str(), // column 0
                        -1);
 
     // set active item
     if ((*iterator).first == IRC_CLIENT_DEF_SERVER_HOSTNAME)
-      gtk_combo_box_set_active_iter(serverlist,
+      gtk_combo_box_set_active_iter(main_servers_combobox,
                                     &current_row);
   } // end FOR
   if (!userData_in.phoneBook.servers.empty())
   {
     // sort entries (toplevel: ascending)
-    gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(serverlist_treestore),
+    gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(main_servers_treestore),
                                          0, GTK_SORT_ASCENDING);
 
-    gtk_widget_set_sensitive(GTK_WIDGET(serverlist), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(main_servers_combobox), TRUE);
   } // end IF
 
   // step3: connect signals/slots
 //   gtk_builder_connect_signals(builder,
-//                               &ACE_const_cast(cb_data&, userData_in));
+//                               &ACE_const_cast(main_cb_data&, userData_in));
   GtkButton* button = NULL;
   button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
-                                             ACE_TEXT_ALWAYS_CHAR("send")));
+                                             ACE_TEXT_ALWAYS_CHAR("main_send_button")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(send_clicked_cb),
-                   &ACE_const_cast(cb_data&, userData_in));
+                   &ACE_const_cast(main_cb_data&, userData_in));
   button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
-                                             ACE_TEXT_ALWAYS_CHAR("connect")));
+                                             ACE_TEXT_ALWAYS_CHAR("main_connect_button")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(connect_clicked_cb),
-                   &ACE_const_cast(cb_data&, userData_in));
+                   &ACE_const_cast(main_cb_data&, userData_in));
   button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
-                                             ACE_TEXT_ALWAYS_CHAR("quit")));
+                                             ACE_TEXT_ALWAYS_CHAR("main_quit_buton")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -937,45 +942,45 @@ do_main_window(const std::string& UIFileDirectory_in,
                    NULL);
 
   // step4: retrieve toplevel handle
-  GtkWindow* dialog = GTK_WINDOW(gtk_builder_get_object(userData_in.builder,
-                                                        ACE_TEXT_ALWAYS_CHAR("dialog")));
-  ACE_ASSERT(dialog);
-  if (!dialog)
+  GtkWindow* window = GTK_WINDOW(gtk_builder_get_object(userData_in.builder,
+                                                        ACE_TEXT_ALWAYS_CHAR("main_dialog")));
+  ACE_ASSERT(window);
+  if (!window)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_builder_get_object(\"dialog\"): \"%m\", aborting\n")));
+               ACE_TEXT("failed to gtk_builder_get_object(\"main_dialog\"): \"%m\", aborting\n")));
 
     return;
   } // end IF
   // connect default signals
-  g_signal_connect(dialog,
+  g_signal_connect(window,
                    ACE_TEXT_ALWAYS_CHAR("delete-event"),
                    G_CALLBACK(quit_activated_cb),
-                   dialog);
+                   window);
 //   g_signal_connect(window,
 //                    ACE_TEXT_ALWAYS_CHAR("destroy-event"),
 //                    G_CALLBACK(quit_activated_cb),
 //                    window);
-  g_signal_connect(dialog,
+  g_signal_connect(window,
                    ACE_TEXT_ALWAYS_CHAR("destroy"),
                    G_CALLBACK(gtk_widget_destroyed),
-                   dialog);
+                   window);
 
   // use correct screen
   if (parentWidget_in)
-    gtk_window_set_screen(dialog,
+    gtk_window_set_screen(window,
                           gtk_widget_get_screen(ACE_const_cast(GtkWidget*,
                                                                parentWidget_in)));
 
   // step5: draw it
-  gtk_widget_show_all(GTK_WIDGET(dialog));
+  gtk_widget_show_all(GTK_WIDGET(window));
 }
 
 void
 do_work(const bool& useThreadPool_in,
         const unsigned long& numThreadPoolThreads_in,
         const std::string& UIFileDirectory_in,
-        cb_data& userData_in)
+        main_cb_data& userData_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -1757,7 +1762,7 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step2d: init callback data
-  cb_data userData;
+  main_cb_data userData;
   userData.UIFileDirectory = UIFileDirectory;
   userData.builder = gtk_builder_new();
   ACE_ASSERT(userData.builder);

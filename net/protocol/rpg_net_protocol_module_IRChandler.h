@@ -91,8 +91,10 @@ class RPG_Net_Protocol_Module_IRCHandler
   typedef Subscribers_t::iterator SubscribersIterator_t;
 
   // lock to protect mySubscribers and myConnectionIsAlive
-  ACE_Thread_Mutex   myLock;
-  Subscribers_t      mySubscribers;
+  // *NOTE*: make this recursive so that users may unsubscribe from within the
+  // notification callbacks...
+  ACE_Recursive_Thread_Mutex             myLock;
+  Subscribers_t                          mySubscribers;
 
 //   std::string        myChannelName;
   Stream_IAllocator*                     myAllocator;

@@ -134,12 +134,13 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
       {
         // *NOTE* these are the "regular" (== known) codes
         // [sent by ircd-hybrid-7.2.3 and others]...
-        case RPG_Net_Protocol_IRC_Codes::RPL_WELCOME:              // 1
-        case RPG_Net_Protocol_IRC_Codes::RPL_YOURHOST:             // 2
-        case RPG_Net_Protocol_IRC_Codes::RPL_CREATED:              // 3
-        case RPG_Net_Protocol_IRC_Codes::RPL_MYINFO:               // 4
-        case RPG_Net_Protocol_IRC_Codes::RPL_PROTOCTL:             // 5
-        case RPG_Net_Protocol_IRC_Codes::RPL_STATSCONN:            // 250
+        case RPG_Net_Protocol_IRC_Codes::RPL_WELCOME:              //   1
+        case RPG_Net_Protocol_IRC_Codes::RPL_YOURHOST:             //   2
+        case RPG_Net_Protocol_IRC_Codes::RPL_CREATED:              //   3
+        case RPG_Net_Protocol_IRC_Codes::RPL_MYINFO:               //   4
+        case RPG_Net_Protocol_IRC_Codes::RPL_PROTOCTL:             //   5
+        case RPG_Net_Protocol_IRC_Codes::RPL_YOURID:               //  42
+        case RPG_Net_Protocol_IRC_Codes::RPL_STATSDLINE:           // 250
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCLIENT:          // 251
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSEROP:              // 252
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCHANNELS:        // 254
@@ -304,7 +305,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
 
   // synch access to our subscribers
   {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
     for (SubscribersIterator_t iter = mySubscribers.begin();
          iter != mySubscribers.end();
@@ -352,7 +353,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
 
       // refer this information back to our subscriber(s)
       {
-        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+        ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
         for (SubscribersIterator_t iter = mySubscribers.begin();
              iter != mySubscribers.end();
@@ -374,16 +375,9 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
     }
     case Stream_SessionMessage::MB_STREAM_SESSION_END:
     {
-      // remember connection has been closed...
-      {
-        ACE_Guard<ACE_Thread_Mutex> aGuard(myConditionLock);
-
-        myConnectionIsAlive = false;
-      } // end lock scope
-
       // refer this information back to our subscriber(s)
       {
-        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+        ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
         for (SubscribersIterator_t iter = mySubscribers.begin();
              iter != mySubscribers.end();
@@ -406,6 +400,16 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
 
         // clean subscribers
         mySubscribers.clear();
+      } // end lock scope
+
+      // remember connection has been closed...
+      {
+        ACE_Guard<ACE_Thread_Mutex> aGuard(myConditionLock);
+
+        myConnectionIsAlive = false;
+
+        // signal any waiter(s)
+        myCondition.broadcast();
       } // end lock scope
 
       break;
@@ -600,7 +604,7 @@ RPG_Net_Protocol_Module_IRCHandler::subscribe(RPG_Net_Protocol_INotify* dataCall
   ACE_ASSERT(dataCallback_in);
 
   // synch access to subscribers
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
   mySubscribers.push_back(dataCallback_in);
 }
@@ -614,7 +618,7 @@ RPG_Net_Protocol_Module_IRCHandler::unsubscribe(RPG_Net_Protocol_INotify* dataCa
   ACE_ASSERT(dataCallback_in);
 
   // synch access to subscribers
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
   SubscribersIterator_t iterator = mySubscribers.begin();
   for (;

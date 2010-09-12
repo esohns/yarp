@@ -80,8 +80,7 @@ part_clicked_cb(GtkWidget* button_in,
 IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkTextView* view_in)
  : myView(view_in),
    myIsFirstNameListMsg(true),
-   myParent(NULL),
-   myPageNum(-1) // *NOTE*: in fact, this is 0 (== server log)
+   myParent(NULL)
 {
   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
 
@@ -109,8 +108,7 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
                                                              GtkNotebook* notebook_in)
  : myView(NULL),
    myIsFirstNameListMsg(true),
-   myParent(notebook_in),
-   myPageNum(-1)
+   myParent(notebook_in)
 {
   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
 
@@ -196,13 +194,14 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
   ACE_ASSERT(channel_tab_frame);
   g_object_ref(channel_tab_frame);
   gtk_container_remove(GTK_CONTAINER(parent), GTK_WIDGET(channel_tab_frame));
-  myPageNum = gtk_notebook_append_page(myParent,
-                                       GTK_WIDGET(channel_tab_frame),
-                                       GTK_WIDGET(channel_tab_label_hbox));
-  if (myPageNum == -1)
+  gint page_num = gtk_notebook_append_page(myParent,
+                                           GTK_WIDGET(channel_tab_frame),
+                                           GTK_WIDGET(channel_tab_label_hbox));
+  if (page_num == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_notebook_append_page(), aborting\n")));
+               ACE_TEXT("failed to gtk_notebook_append_page(%@), aborting\n"),
+               myParent));
 
     // clean up
     g_object_unref(channel_tab_label_hbox);
@@ -210,6 +209,13 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
 
     return;
   } // end IF
+  // allow reordering
+  gtk_notebook_set_tab_reorderable(myParent,
+                                   GTK_WIDGET(channel_tab_frame),
+                                   TRUE);
+  // activate new page
+  gtk_notebook_set_current_page(myParent,
+                                page_num);
 
   // clean up
   g_object_unref(channel_tab_label_hbox);
@@ -243,22 +249,29 @@ IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler()
 {
   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler"));
 
-  GDK_THREADS_ENTER();
+  // remove queued events
+  while (g_idle_remove_by_data(this));
 
-  // remove outstanding events
-  g_idle_remove_by_data(this);
+  // *NOTE*: the server log handler MUST NOT do this...
+  if (myParent)
+  {
+//   // change active page ?
+//   if (gtk_notebook_get_current_page(myParent) == myPageNum)
+//     gtk_notebook_prev_page(myParent);
 
-  // remove server page from parent notebook
-  if (myParent &&
-      (myPageNum > 0))
-    gtk_notebook_remove_page(myParent,
-                             myPageNum);
+    GtkFrame* channel_tab_frame = GTK_FRAME(gtk_builder_get_object(myCBData.builder,
+                                                                   ACE_TEXT_ALWAYS_CHAR("channel_tab_frame")));
+    ACE_ASSERT(channel_tab_frame);
+    gint page_num = gtk_notebook_page_num(myParent,
+                                          GTK_WIDGET(channel_tab_frame));
+    // remove channel page from channel tabs notebook
+    if (page_num > 0)
+      gtk_notebook_remove_page(myParent,
+                               page_num);
 
-  // clean up
-  if (myCBData.builder)
+    // clean up
     g_object_unref(myCBData.builder);
-
-  GDK_THREADS_LEAVE();
+  } // end IF
 }
 
 void
@@ -393,6 +406,14 @@ IRC_Client_GUI_MessageHandler::getTopLevel()
   // retrieve button handle
   return GTK_WIDGET(gtk_builder_get_object(myCBData.builder,
                                            ACE_TEXT_ALWAYS_CHAR("channel_tab_frame")));
+}
+
+const std::string
+IRC_Client_GUI_MessageHandler::getChannel() const
+{
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::getChannel"));
+
+  return myCBData.channel;
 }
 
 void

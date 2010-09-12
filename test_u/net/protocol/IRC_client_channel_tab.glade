@@ -34,7 +34,6 @@
                     <child>
                       <object class="GtkTextView" id="channel_tab_textview">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
                         <property name="events">GDK_STRUCTURE_MASK | GDK_SCROLL_MASK</property>
                         <property name="editable">False</property>
                         <property name="wrap_mode">word</property>
@@ -98,6 +97,7 @@
     <child>
       <object class="GtkHBox" id="channel_tab_label_hbox">
         <property name="visible">True</property>
+        <property name="homogeneous">True</property>
         <child>
           <object class="GtkLabel" id="channel_tab_label">
             <property name="visible">True</property>
@@ -119,6 +119,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
+            <property name="pack_type">end</property>
             <property name="position">1</property>
           </packing>
         </child>

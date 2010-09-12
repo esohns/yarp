@@ -21,17 +21,41 @@
 #ifndef IRC_CLIENT_GUI_COMMON_H
 #define IRC_CLIENT_GUI_COMMON_H
 
+#include <rpg_net_protocol_common.h>
 #include <rpg_net_protocol_iIRCControl.h>
 
 #include <gtk/gtk.h>
 
+#include <ace/Synch.h>
+
 #include <vector>
 #include <string>
 
+// forward declaration(s)
+class IRC_Client_GUI_Connection_Handler;
+
+typedef std::map<std::string, IRC_Client_GUI_Connection_Handler*> connections_t;
+typedef connections_t::iterator connections_iterator_t;
+
+struct main_cb_data
+{
+  std::string                      UIFileDirectory;
+  // *WARNING*: mainBuilder needs exclusive access under the "connectionsLock"
+  GtkBuilder*                      builder;
+  RPG_Net_Protocol_PhoneBook       phoneBook;
+  RPG_Net_Protocol_IRCLoginOptions loginOptions;
+  ACE_Thread_Mutex                 connectionsLock;
+  connections_t                    connections;
+};
+
 struct connection_cb_data_t
 {
-  GtkBuilder*                    builder;
-  RPG_Net_Protocol_IIRCControl*  controller;
+  // *WARNING*: mainBuilder needs exclusive access under the "connectionsLock"
+  GtkBuilder*                   mainBuilder;
+  GtkBuilder*                   builder;
+  RPG_Net_Protocol_IIRCControl* controller;
+  ACE_Thread_Mutex*             connectionsLock;
+  connections_t*                connections;
 };
 
 struct channel_cb_data_t

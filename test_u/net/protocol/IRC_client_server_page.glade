@@ -15,8 +15,9 @@
               <object class="GtkEntry" id="server_tab_channel_entry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="max_length">200</property>
                 <property name="invisible_char">&#x25CF;</property>
-                <property name="activates_default">True</property>
                 <property name="truncate_multiline">True</property>
                 <property name="shadow_type">etched-out</property>
                 <property name="overwrite_mode">True</property>
@@ -31,6 +32,7 @@
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
+                <property name="can_default">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
                 <property name="focus_on_click">False</property>
@@ -46,6 +48,8 @@
               <object class="GtkComboBox" id="server_tab_channels_combobox">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
                 <property name="model">server_tab_channels_store</property>
                 <property name="has_frame">False</property>
                 <property name="focus_on_click">False</property>
@@ -70,16 +74,18 @@
           <object class="GtkNotebook" id="server_tab_channel_tabs">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="show_border">False</property>
+            <property name="receives_default">True</property>
             <property name="scrollable">True</property>
             <property name="tab_border">0</property>
             <property name="tab_hborder">0</property>
             <property name="tab_vborder">0</property>
+            <property name="enable_popup">True</property>
             <property name="homogeneous">True</property>
+            <signal name="switch_page" handler="switch_channel_cb"/>
             <child>
               <object class="GtkScrolledWindow" id="server_tab_log_scrolledwindow">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="can_focus">False</property>
                 <property name="events">GDK_EXPOSURE_MASK | GDK_STRUCTURE_MASK | GDK_SCROLL_MASK</property>
                 <property name="hscrollbar_policy">automatic</property>
                 <property name="vscrollbar_policy">automatic</property>
@@ -87,7 +93,6 @@
                 <child>
                   <object class="GtkTextView" id="server_tab_log_textview">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="events">GDK_STRUCTURE_MASK | GDK_SCROLL_MASK</property>
                     <property name="editable">False</property>
                     <property name="wrap_mode">word</property>
@@ -101,8 +106,11 @@
             <child type="tab">
               <object class="GtkLabel" id="server_tab_log_label">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">log</property>
+                <property name="label" translatable="yes">server log</property>
                 <property name="track_visited_links">False</property>
+                <attributes>
+                  <attribute name="weight" value="semibold"/>
+                </attributes>
               </object>
               <packing>
                 <property name="tab_fill">False</property>
@@ -120,6 +128,7 @@
     <child>
       <object class="GtkHBox" id="server_tab_label_hbox">
         <property name="visible">True</property>
+        <property name="homogeneous">True</property>
         <child>
           <object class="GtkLabel" id="server_tab_label">
             <property name="visible">True</property>
@@ -141,6 +150,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
+            <property name="pack_type">end</property>
             <property name="position">1</property>
           </packing>
         </child>

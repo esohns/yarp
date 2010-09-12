@@ -23,6 +23,8 @@
 
 #include "IRC_client_gui_common.h"
 
+#include <rpg_net_protocol_iIRCControl.h>
+
 #include <gtk/gtk.h>
 
 #include <ace/Global_Macros.h>
@@ -35,6 +37,9 @@ class IRC_Client_GUI_MessageHandler
 {
  public:
   // ctor for default handler (== server log)
+  // *WARNING*: make sure the ctor/dtor calls are made either:
+  // - by the main thread (servicing the gtk_main event loop)
+  // - protected by GDK_THREADS_ENTER/GDK_THREADS_LEAVE
   IRC_Client_GUI_MessageHandler(GtkTextView*);                 // text view
   IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_IIRCControl*, // controller handle
                                 const std::string&,            // channel
@@ -48,8 +53,11 @@ class IRC_Client_GUI_MessageHandler
   // --> do NOT invoke this from any other context (GTK is NOT threadsafe)
   void update();
 
-  // *NOTE*: returns the toplevel widget FOR THIS CHANNEL TAB
+  // *WARNING*: returns the toplevel widget FOR THIS CHANNEL TAB
+  // --> use with care !
   GtkWidget* getTopLevel();
+
+  const std::string getChannel() const;
   void setTopic(const std::string&);
   void appendMembers(const string_list_t&);
   void endMembers();
@@ -71,7 +79,6 @@ class IRC_Client_GUI_MessageHandler
 
   bool                    myIsFirstNameListMsg;
   GtkNotebook*            myParent;
-  gint                    myPageNum;
 };
 
 #endif
