@@ -475,8 +475,7 @@ RPG_Common_Tools::period2String(const ACE_Time_Value& period_in,
                       temp.usec()) < 0)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::snprintf(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_OS::snprintf(): \"%m\", aborting\n")));
 
     return false;
   } // end IF
@@ -496,13 +495,11 @@ RPG_Common_Tools::isLinux()
   if (ACE_OS::uname(&name) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::uname(): \"%s\" --> check implementation !, aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_OS::uname(): \"%m\", aborting\n")));
 
     return false;
   } // end IF
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("local system info: %s (%s), %s %s, %s\n"),
 //              name.nodename,
@@ -513,4 +510,60 @@ RPG_Common_Tools::isLinux()
 
   std::string kernel(name.sysname);
   return (kernel.find(ACE_TEXT("Linux"), 0) == 0);
+}
+
+const bool
+RPG_Common_Tools::getUserName(std::string& username_out,
+                              std::string& realname_out)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::getUserName"));
+
+  // init return value(s)
+  username_out.clear();
+  realname_out.clear();
+
+  char user_name[ACE_MAX_USERID];
+  if (ACE_OS::cuserid(user_name, ACE_MAX_USERID) == NULL)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::cuserid(): \"%m\", aborting\n")));
+
+    return false;
+  } // end IF
+  username_out = user_name;
+
+  char pw_buf[BUFSIZ];
+  struct passwd pw_struct;
+  if (ACE_OS::getpwnam_r(user_name,
+                         &pw_struct,
+                         pw_buf,
+                         sizeof(pw_buf)) == NULL)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::getpwnam_r(): \"%m\", aborting\n")));
+
+    return false;
+  } // end IF
+  realname_out = pw_struct.pw_gecos;
+
+  return true;
+}
+
+const std::string
+RPG_Common_Tools::getHostName()
+{
+  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::getHostName"));
+
+  std::string result;
+
+  ACE_TCHAR host_name[MAXHOSTNAMELEN];
+  if (ACE_OS::hostname(host_name, sizeof(host_name)) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::hostname(): \"%m\", aborting\n")));
+  } // end IF
+  else
+    result = host_name;
+
+  return result;
 }

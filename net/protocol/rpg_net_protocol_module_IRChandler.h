@@ -93,6 +93,8 @@ class RPG_Net_Protocol_Module_IRCHandler
   // lock to protect mySubscribers and myConnectionIsAlive
   // *NOTE*: make this recursive so that users may unsubscribe from within the
   // notification callbacks...
+  // *WARNING*: implies CAREFUL iteration
+  // we use as a lock...
   ACE_Recursive_Thread_Mutex             myLock;
   Subscribers_t                          mySubscribers;
 

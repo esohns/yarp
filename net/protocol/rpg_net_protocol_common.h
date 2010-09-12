@@ -76,7 +76,9 @@ struct RPG_Net_Protocol_IRCLoginOptions
     {
       union
       {
+        // *NOTE*: "traditional" connects (see RFC1459 Section 4.1.3)
         std::string* string;
+        // *NOTE*: "modern" connects (see RFC2812 Section 3.1.3)
         unsigned char mode;
       };
       enum discriminator_t

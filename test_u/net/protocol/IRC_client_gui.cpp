@@ -1444,23 +1444,6 @@ do_parseConfigFile(const std::string& configFilename_in,
 {
   ACE_TRACE(ACE_TEXT("::do_parseConfigFile"));
 
-  // init return value(s)
-  if (loginOptions_out.user.hostname.discriminator == RPG_Net_Protocol_IRCLoginOptions::User::Hostname::STRING)
-  {
-    // clean up
-    delete loginOptions_out.user.hostname.string;
-    loginOptions_out.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::INVALID;
-  } // end IF
-  loginOptions_out.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::INVALID;
-  loginOptions_out.password                    = RPG_NET_PROTOCOL_DEF_IRC_PASSWORD;
-  loginOptions_out.nick                        = RPG_NET_PROTOCOL_DEF_IRC_NICK;
-  loginOptions_out.user.username               = RPG_NET_PROTOCOL_DEF_IRC_USER;
-  loginOptions_out.user.hostname.mode          = RPG_NET_PROTOCOL_DEF_IRC_MODE;
-  loginOptions_out.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::BITMASK;
-  loginOptions_out.user.servername             = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
-  loginOptions_out.user.realname               = RPG_NET_PROTOCOL_DEF_IRC_REALNAME;
-  loginOptions_out.channel                     = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
-
   ACE_Configuration_Heap config_heap;
   if (config_heap.open())
   {
@@ -1685,6 +1668,9 @@ ACE_TMAIN(int argc,
   // start profile timer...
   process_profile.start();
 
+  // *NOTE*: ignore SIGPIPE in this program...
+  ACE_Sig_Action no_sigpipe((ACE_SignalHandler)SIG_IGN, SIGPIPE);
+
   // init GTK
   gtk_init(&argc, &argv);
 
@@ -1767,15 +1753,35 @@ ACE_TMAIN(int argc,
   userData.builder = gtk_builder_new();
   ACE_ASSERT(userData.builder);
 //   userData.phoneBook;
-  userData.loginOptions.password = RPG_NET_PROTOCOL_DEF_IRC_PASSWORD;
-  userData.loginOptions.nick = RPG_NET_PROTOCOL_DEF_IRC_NICK;
-  userData.loginOptions.user.username = RPG_NET_PROTOCOL_DEF_IRC_USER;
-  userData.loginOptions.user.hostname.mode = RPG_NET_PROTOCOL_DEF_IRC_MODE;
-  userData.loginOptions.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::BITMASK;
+//   userData.loginOptions.password = ;
+  userData.loginOptions.nick = IRC_CLIENT_DEF_IRC_NICK;
+//   userData.loginOptions.user.username = ;
+  std::string hostname = RPG_Common_Tools::getHostName();
+  if (IRC_CLIENT_CNF_IRC_USERMSG_TRADITIONAL)
+  {
+    userData.loginOptions.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::STRING;
+    userData.loginOptions.user.hostname.string = &hostname;
+  } // end IF
+  else
+  {
+    userData.loginOptions.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::BITMASK;
+    // *NOTE*: hybrid-7.2.3 seems to have a bug: 4 --> +i
+    userData.loginOptions.user.hostname.mode = IRC_CLIENT_DEF_IRC_USERMODE;
+  } // end ELSE
   userData.loginOptions.user.servername = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
-  userData.loginOptions.user.realname = RPG_NET_PROTOCOL_DEF_IRC_REALNAME;
-  userData.loginOptions.channel = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
+//   userData.loginOptions.user.realname = ;
+  userData.loginOptions.channel = IRC_CLIENT_DEF_IRC_CHANNEL;
   userData.connections.clear();
+
+  // populate user/realname
+  if (!RPG_Common_Tools::getUserName(userData.loginOptions.user.username,
+                                     userData.loginOptions.user.realname))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_Tools::getUserName(), aborting\n")));
+
+    return EXIT_FAILURE;
+  } // end IF
 
   // step2e: parse config file(s) (if any)
   if (!serverConfigFile.empty())

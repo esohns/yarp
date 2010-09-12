@@ -32,9 +32,11 @@ class RPG_Net_Protocol_Tools
 {
  public:
   // debug info
-  static const std::string IRCMessage2String(const RPG_Net_Protocol_IRCMessage&);
+  static const std::string dump(const RPG_Net_Protocol_IRCMessage&);
   static const RPG_Net_Protocol_CommandType_t IRCCommandString2Type(const std::string&);
   static const std::string IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t&);
+
+  static const std::string IRCMessage2String(const RPG_Net_Protocol_IRCMessage&);
 
  private:
   // safety measures
@@ -42,6 +44,10 @@ class RPG_Net_Protocol_Tools
   ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Protocol_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools(const RPG_Net_Protocol_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools& operator=(const RPG_Net_Protocol_Tools&));
+
+  // helper methods
+  static const std::string concatParams(const RPG_Net_Protocol_Parameters_t&, // parameters
+                                        const unsigned long&);                // starting index
 };
 
 #endif

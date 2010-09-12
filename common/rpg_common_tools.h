@@ -61,6 +61,10 @@ class RPG_Common_Tools
 
   static const bool isLinux();
 
+  static const bool getUserName(std::string&,  // return value: username
+                                std::string&); // return value: "real" name
+  static const std::string getHostName(); // return value: hostname
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools());

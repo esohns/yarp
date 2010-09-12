@@ -355,6 +355,10 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
       {
         ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("session starting, notifying %u subscriber(s)...\n"),
+                   mySubscribers.size()));
+
         for (SubscribersIterator_t iter = mySubscribers.begin();
              iter != mySubscribers.end();
              iter++)
@@ -379,6 +383,14 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
       {
         ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("session ending, notifying %u subscriber(s)...\n"),
+                   mySubscribers.size()));
+
+        // *WARNING* if the user unsubscribes() within the callback
+        // BAD THINGS (TM) happen, because iter is invalidated...
+        // *NOTE*: this can happen due to the ACE_Recursive_Thread_Mutex
+        // we use as a lock...
         for (SubscribersIterator_t iter = mySubscribers.begin();
              iter != mySubscribers.end();
              iter++)

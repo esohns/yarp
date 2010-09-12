@@ -532,23 +532,6 @@ do_parseConfigFile(const std::string& configFilename_in,
   ACE_TRACE(ACE_TEXT("::do_parseConfigFile"));
 
   // init return value(s)
-  if (loginOptions_out.user.hostname.discriminator == RPG_Net_Protocol_IRCLoginOptions::User::Hostname::STRING)
-  {
-    // clean up
-    delete loginOptions_out.user.hostname.string;
-    loginOptions_out.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::INVALID;
-  } // end IF
-  loginOptions_out.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::INVALID;
-
-  loginOptions_out.password                    = RPG_NET_PROTOCOL_DEF_IRC_PASSWORD;
-  loginOptions_out.nick                        = RPG_NET_PROTOCOL_DEF_IRC_NICK;
-  loginOptions_out.user.username               = RPG_NET_PROTOCOL_DEF_IRC_USER;
-  loginOptions_out.user.hostname.mode          = RPG_NET_PROTOCOL_DEF_IRC_MODE;
-  loginOptions_out.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::BITMASK;
-  loginOptions_out.user.servername             = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
-  loginOptions_out.user.realname               = RPG_NET_PROTOCOL_DEF_IRC_REALNAME;
-  loginOptions_out.channel                     = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
-
   serverHostname_out                           = IRC_CLIENT_DEF_SERVER_HOSTNAME;
   serverPortNumber_out                         = IRC_CLIENT_DEF_SERVER_PORT;
 
@@ -605,7 +588,6 @@ do_parseConfigFile(const std::string& configFilename_in,
       return;
     } // end IF
 
-//     // debug info
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("enumerated %s, type %d\n"),
 //                val_name.c_str(),
@@ -673,7 +655,6 @@ do_parseConfigFile(const std::string& configFilename_in,
       return;
     } // end IF
 
-//     // debug info
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("enumerated %s, type %d\n"),
 //                val_name.c_str(),
@@ -835,6 +816,7 @@ ACE_TMAIN(int argc,
 
     return EXIT_FAILURE;
   } // end IF
+
   RPG_Net_Protocol_ConfigPOD config;
   // step1da: populate config object with default/collected data
   // ************ connection config data ************
@@ -843,20 +825,40 @@ ACE_TMAIN(int argc,
   config.defaultBufferSize = RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE;
   // ************ protocol config data **************
   config.clientPingInterval = 0; // servers do this...
-  config.loginOptions.password = RPG_NET_PROTOCOL_DEF_IRC_PASSWORD;
-  config.loginOptions.nick = RPG_NET_PROTOCOL_DEF_IRC_NICK;
-  config.loginOptions.user.username = RPG_NET_PROTOCOL_DEF_IRC_USER;
-  config.loginOptions.user.hostname.mode = RPG_NET_PROTOCOL_DEF_IRC_MODE;
-  config.loginOptions.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::BITMASK;
+//   config.loginOptions.password = ;
+  config.loginOptions.nick = IRC_CLIENT_DEF_IRC_NICK;
+//   config.loginOptions.user.username = ;
+  std::string hostname = RPG_Common_Tools::getHostName();
+  if (IRC_CLIENT_CNF_IRC_USERMSG_TRADITIONAL)
+  {
+    config.loginOptions.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::STRING;
+    config.loginOptions.user.hostname.string = &hostname;
+  } // end IF
+  else
+  {
+    config.loginOptions.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::BITMASK;
+    // *NOTE*: hybrid-7.2.3 seems to have a bug: 4 --> +i
+    config.loginOptions.user.hostname.mode = IRC_CLIENT_DEF_IRC_USERMODE;
+  } // end ELSE
   config.loginOptions.user.servername = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
-  config.loginOptions.user.realname = RPG_NET_PROTOCOL_DEF_IRC_REALNAME;
-  config.loginOptions.channel = RPG_NET_PROTOCOL_DEF_IRC_CHANNEL;
+//   config.loginOptions.user.realname = ;
+  config.loginOptions.channel = IRC_CLIENT_DEF_IRC_CHANNEL;
   // ************ stream config data ****************
   config.debugParser = debugParser;
   config.module = &IRChandlerModule;
   // *WARNING*: set at runtime, by the appropriate connection handler
   config.sessionID = 0; // (== socket handle !)
   config.statisticsReportingInterval = 0; // == off
+
+  // populate user/realname
+  if (!RPG_Common_Tools::getUserName(config.loginOptions.user.username,
+                                     config.loginOptions.user.realname))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_Tools::getUserName(), aborting\n")));
+
+    return EXIT_FAILURE;
+  } // end IF
 
   // step1db: parse config file (if any)
   std::string serverHostname      = IRC_CLIENT_DEF_SERVER_HOSTNAME;

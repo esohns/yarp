@@ -265,7 +265,7 @@ IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler()
     gint page_num = gtk_notebook_page_num(myParent,
                                           GTK_WIDGET(channel_tab_frame));
     // remove channel page from channel tabs notebook
-    if (page_num > 0)
+    if (page_num > 1)
       gtk_notebook_remove_page(myParent,
                                page_num);
 

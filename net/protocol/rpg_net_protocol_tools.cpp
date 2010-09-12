@@ -25,9 +25,9 @@
 #include <sstream>
 
 const std::string
-RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& message_in)
+RPG_Net_Protocol_Tools::dump(const RPG_Net_Protocol_IRCMessage& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCMessage2String"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::dump"));
 
   std::ostringstream converter;
   // see RFC1459
@@ -1023,6 +1023,125 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
       break;
     }
   } // end SWITCH
+
+  return result;
+}
+
+const std::string
+RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& message_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCMessage2String"));
+
+  // init result
+  std::string result;
+
+  switch (message_in.command.discriminator)
+  {
+    case RPG_Net_Protocol_IRCMessage::Command::STRING:
+    {
+      RPG_Net_Protocol_IRCMessage::CommandType command = RPG_Net_Protocol_Tools::IRCCommandString2Type(*message_in.command.string);
+      switch (command)
+      {
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid command (was: \"%s\"), continuing\n"),
+                     message_in.command.string->c_str()));
+
+          message_in.dump_state();
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
+    {
+      switch (message_in.command.numeric)
+      {
+        case RPG_Net_Protocol_IRC_Codes::RPL_WELCOME:       //   1
+        case RPG_Net_Protocol_IRC_Codes::RPL_YOURHOST:      //   2
+        case RPG_Net_Protocol_IRC_Codes::RPL_CREATED:       //   3
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCLIENT:   // 251
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERME:       // 255
+        case RPG_Net_Protocol_IRC_Codes::RPL_LOCALUSERS:    // 265
+        case RPG_Net_Protocol_IRC_Codes::RPL_GLOBALUSERS:   // 266
+        case RPG_Net_Protocol_IRC_Codes::RPL_MOTD:          // 372
+        case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:     // 375
+        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:     // 376
+        {
+          result = message_in.params.back();
+
+          break;
+        }
+        case RPG_Net_Protocol_IRC_Codes::RPL_MYINFO:        //   4
+        case RPG_Net_Protocol_IRC_Codes::RPL_PROTOCTL:      //   5
+        case RPG_Net_Protocol_IRC_Codes::RPL_YOURID:        //  42
+        case RPG_Net_Protocol_IRC_Codes::RPL_STATSDLINE:    // 250
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCHANNELS: // 254
+        {
+          result = RPG_Net_Protocol_Tools::concatParams(message_in.params,
+                                                        1);
+
+          break;
+        }
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid (numeric) command (was: %u [\"%s\"]), continuing\n"),
+                     message_in.command.numeric,
+                     RPG_Net_Protocol_Tools::IRCCode2String(message_in.command.numeric).c_str()));
+
+          message_in.dump_state();
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid command discriminator (was: %d), aborting\n"),
+                 message_in.command.discriminator));
+
+      break;
+    }
+  } // end SWITCH
+
+  // append newline
+  result += ACE_TEXT_ALWAYS_CHAR("\n");
+
+  return result;
+}
+
+const std::string
+RPG_Net_Protocol_Tools::concatParams(const RPG_Net_Protocol_Parameters_t& params_in,
+                                     const unsigned long& index_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::concatParams"));
+
+  std::string result;
+
+  // sanity check(s)
+  if (params_in.empty() ||
+      (index_in > (params_in.size() - 1)))
+    return result;
+
+  RPG_Net_Protocol_ParametersIterator_t iterator = params_in.begin();
+  std::advance(iterator, index_in);
+  ACE_ASSERT(iterator != params_in.end());
+  for (;
+       iterator != params_in.end();
+       iterator++)
+  {
+    result += *iterator;
+    result += ACE_TEXT_ALWAYS_CHAR(" ");
+  } // end FOR
+  if (index_in < (params_in.size() - 1))
+    result.erase(--result.end());
 
   return result;
 }

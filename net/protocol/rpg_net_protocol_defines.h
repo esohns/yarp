@@ -50,16 +50,11 @@
 #define RPG_NET_PROTOCOL_DEF_TRACE_SCANNING            false
 #define RPG_NET_PROTOCOL_DEF_TRACE_PARSING             false
 
-// default IRC configuration
-#define RPG_NET_PROTOCOL_DEF_IRC_PASSWORD              ACE_TEXT_ALWAYS_CHAR("secretpasswordhere")
-#define RPG_NET_PROTOCOL_DEF_IRC_NICK                  ACE_TEXT_ALWAYS_CHAR("Wiz")
-#define RPG_NET_PROTOCOL_DEF_IRC_USER                  ACE_TEXT_ALWAYS_CHAR("guest")
-// *NOTE*: bitset: "1100" [2]: +w; [3]: +i (see rfc2812 3.1.3 and rfc1459 4.1.3)
-#define RPG_NET_PROTOCOL_DEF_IRC_MODE                  0
-#define RPG_NET_PROTOCOL_DEF_IRC_HOSTNAME              ACE_TEXT_ALWAYS_CHAR("localhost")
-// #define RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME                ACE_TEXT_ALWAYS_CHAR("localhost")
+// // default IRC configuration
+// *NOTE*: bitset: "1100" [2]: +w; [3]: +i (see rfc2812 3.1.3/3.1.5 and rfc1459 4.1.3)
+#define RPG_NET_PROTOCOL_DEF_IRC_USERMODE              0 // (!wallops && !invisible)
+// #define RPG_NET_PROTOCOL_DEF_IRC_HOSTNAME              ACE_TEXT_ALWAYS_CHAR("localhost")
+// // #define RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME                ACE_TEXT_ALWAYS_CHAR("localhost")
 #define RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME            ACE_TEXT_ALWAYS_CHAR("*")
-#define RPG_NET_PROTOCOL_DEF_IRC_REALNAME              ACE_TEXT_ALWAYS_CHAR("Ronnie Reagan")
-#define RPG_NET_PROTOCOL_DEF_IRC_CHANNEL               ACE_TEXT_ALWAYS_CHAR("#foobar")
 
 #endif

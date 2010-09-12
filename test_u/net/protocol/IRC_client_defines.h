@@ -31,10 +31,19 @@
 #define IRC_CLIENT_CNF_NETWORKS_SECTION_HEADER   ACE_TEXT("networks")
 #define IRC_CLIENT_CNF_SERVERS_SECTION_HEADER    ACE_TEXT("servers")
 
-#define IRC_CLIENT_DEF_SERVER_HOSTNAME           ACE_LOCALHOST
-#define IRC_CLIENT_DEF_SERVER_PORT               6667
 #define IRC_CLIENT_DEF_CLIENT_USES_TP            false
 #define IRC_CLIENT_DEF_NUM_TP_THREADS            5
-#define IRC_CLIENT_DEF_LEAVE_REASON              ACE_TEXT("quitting...")
+
+#define IRC_CLIENT_DEF_SERVER_HOSTNAME           ACE_LOCALHOST
+#define IRC_CLIENT_DEF_SERVER_PORT               6667
+
+// use traditional/modern USER message syntax for connections ?
+// *NOTE*: refer to RFC1459 Section 4.1.3 - RFC2812 Section 3.1.3
+#define IRC_CLIENT_CNF_IRC_USERMSG_TRADITIONAL   false
+// *NOTE*: hybrid-7.2.3 seems to have a bug: 4 --> +i
+#define IRC_CLIENT_DEF_IRC_USERMODE              8
+#define IRC_CLIENT_DEF_IRC_NICK                  ACE_TEXT_ALWAYS_CHAR("Wiz")
+#define IRC_CLIENT_DEF_IRC_CHANNEL               ACE_TEXT_ALWAYS_CHAR("#foobar")
+#define IRC_CLIENT_DEF_IRC_LEAVE_REASON          ACE_TEXT("quitting...")
 
 #endif

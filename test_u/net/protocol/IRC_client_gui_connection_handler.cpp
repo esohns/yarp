@@ -50,7 +50,7 @@ disconnect_clicked_cb(GtkWidget* button_in,
 
   try
   {
-    data->controller->quit(std::string(IRC_CLIENT_DEF_LEAVE_REASON));
+    data->controller->quit(std::string(IRC_CLIENT_DEF_IRC_LEAVE_REASON));
   }
   catch (...)
   {
@@ -441,7 +441,7 @@ IRC_Client_GUI_Connection_Handler::~IRC_Client_GUI_Connection_Handler()
   ACE_ASSERT(server_tab_vbox);
   gint page_num = gtk_notebook_page_num(myParent,
                                         GTK_WIDGET(server_tab_vbox));
-  if (page_num >= 0)
+  if (page_num >= 1)
     gtk_notebook_remove_page(myParent,
                              page_num);
 
@@ -614,7 +614,7 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
 
             gtk_statusbar_push(main_statusbar,
                                myContextID,
-                               RPG_Net_Protocol_Tools::IRCMessage2String(message_in).c_str());
+                               RPG_Net_Protocol_Tools::dump(message_in).c_str());
           } // end lock scope
 
           message_in.dump_state();
@@ -796,7 +796,7 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
 
             gtk_statusbar_push(main_statusbar,
                                myContextID,
-                               RPG_Net_Protocol_Tools::IRCMessage2String(message_in).c_str());
+                               RPG_Net_Protocol_Tools::dump(message_in).c_str());
           } // end lock scope
 
           message_in.dump_state();
@@ -964,8 +964,6 @@ IRC_Client_GUI_Connection_Handler::log(const RPG_Net_Protocol_IRCMessage& messag
   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection_Handler::log"));
 
   // --> pass to server log
-  std::string message_text = message_in.params.back();
-  message_text += ACE_TEXT_ALWAYS_CHAR("\n");
 
   // retrieve message handler
   // synch access
@@ -974,6 +972,6 @@ IRC_Client_GUI_Connection_Handler::log(const RPG_Net_Protocol_IRCMessage& messag
 
     message_handlers_iterator_t handler_iterator = myMessageHandlers.find(std::string());
     ACE_ASSERT(handler_iterator != myMessageHandlers.end());
-    (*handler_iterator).second->queueForDisplay(message_text);
+    (*handler_iterator).second->queueForDisplay(RPG_Net_Protocol_Tools::IRCMessage2String(message_in));
   } // end lock scope
 }
