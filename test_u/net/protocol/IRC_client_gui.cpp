@@ -27,7 +27,7 @@
 #include "IRC_client_defines.h"
 #include "IRC_client_gui_defines.h"
 #include "IRC_client_gui_common.h"
-#include "IRC_client_gui_connection_handler.h"
+#include "IRC_client_gui_connection.h"
 #include "IRC_client_gui_messagehandler.h"
 
 #include <rpg_net_protocol_defines.h>
@@ -174,8 +174,8 @@ connect_clicked_cb(GtkWidget* button_in,
 //              ACE_TEXT("connect_clicked_cb...\n")));
 
   GtkButton* button = GTK_BUTTON(button_in);
-  main_cb_data* data = ACE_static_cast(main_cb_data*,
-                                       userData_in);
+  main_cb_data_t* data = ACE_static_cast(main_cb_data_t*,
+                                         userData_in);
 
   // sanity check(s)
   ACE_ASSERT(button);
@@ -291,16 +291,16 @@ connect_clicked_cb(GtkWidget* button_in,
   GtkNotebook* main_server_tabs = GTK_NOTEBOOK(gtk_builder_get_object(data->builder,
                                                                       ACE_TEXT_ALWAYS_CHAR("main_server_tabs")));
   ACE_ASSERT(main_server_tabs);
-  IRC_Client_GUI_Connection_Handler* connection_handler = NULL;
+  IRC_Client_GUI_Connection* connection = NULL;
   try
   {
-    connection_handler = new IRC_Client_GUI_Connection_Handler(data->builder,
-                                                               IRChandler_impl,
-                                                               &data->connectionsLock,
-                                                               &data->connections,
-                                                               entry_name,
-                                                               data->UIFileDirectory,
-                                                               main_server_tabs);
+    connection = new IRC_Client_GUI_Connection(data->builder,
+                                               IRChandler_impl,
+                                               &data->connectionsLock,
+                                               &data->connections,
+                                               entry_name,
+                                               data->UIFileDirectory,
+                                               main_server_tabs);
   }
   catch (const std::bad_alloc& exception)
   {
@@ -316,17 +316,17 @@ connect_clicked_cb(GtkWidget* button_in,
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate IRC_Client_GUI_Connection_Handler, aborting\n")));
+               ACE_TEXT("failed to allocate IRC_Client_GUI_Connection, aborting\n")));
 
     // clean up
     delete module;
 
     return;
   }
-  if (!connection_handler)
+  if (!connection)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate IRC_Client_GUI_Connection_Handler, aborting\n")));
+               ACE_TEXT("failed to allocate IRC_Client_GUI_Connection, aborting\n")));
 
     // clean up
     delete module;
@@ -382,7 +382,7 @@ connect_clicked_cb(GtkWidget* button_in,
 
     // clean up
     delete module;
-    delete connection_handler;
+    delete connection;
 
     return;
   } // end IF
@@ -404,8 +404,37 @@ connect_clicked_cb(GtkWidget* button_in,
     ACE_Guard<ACE_Thread_Mutex> aGuard(data->connectionsLock);
 
     // *TODO*: who deletes the module ? (the stream won't do it !)
-    data->connections.insert(std::make_pair(entry_name, connection_handler));
+    data->connections.insert(std::make_pair(entry_name, connection));
   } // end lock scope
+}
+
+gboolean
+send_entry_kb_focused_cb(GtkWidget* widget_in,
+                         GdkEventFocus* event_in,
+                         gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::send_entry_kb_focused_cb"));
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("send_entry_kb_focused_cb...\n")));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(event_in);
+  main_cb_data_t* data = ACE_static_cast(main_cb_data_t*,
+                                         userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->builder);
+
+  // make the "change" button the default widget...
+  GtkButton* main_send_button = GTK_BUTTON(gtk_builder_get_object(data->builder,
+                                                                  ACE_TEXT_ALWAYS_CHAR("main_send_button")));
+  ACE_ASSERT(main_send_button);
+  gtk_widget_grab_default(GTK_WIDGET(main_send_button));
+
+  // propagate the event further...
+  return FALSE;
 }
 
 void
@@ -418,25 +447,32 @@ send_clicked_cb(GtkWidget* button_in,
 //              ACE_TEXT("send_clicked_cb...\n")));
 
   ACE_UNUSED_ARG(button_in);
-  main_cb_data* data = ACE_static_cast(main_cb_data*,
-                                  userData_in);
+  main_cb_data_t* data = ACE_static_cast(main_cb_data_t*,
+                                         userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
   ACE_ASSERT(data->builder);
 
   // step0: retrieve active connection
-  GtkNotebook* server_tabs = NULL;
-  server_tabs = GTK_NOTEBOOK(gtk_builder_get_object(data->builder,
-                                                    ACE_TEXT_ALWAYS_CHAR("server_tabs")));
-  ACE_ASSERT(server_tabs);
-  gint server_tab_num = gtk_notebook_get_current_page(server_tabs);
+  GtkNotebook* main_server_tabs = NULL;
+  main_server_tabs = GTK_NOTEBOOK(gtk_builder_get_object(data->builder,
+                                                         ACE_TEXT_ALWAYS_CHAR("main_server_tabs")));
+  ACE_ASSERT(main_server_tabs);
+  gint server_tab_num = gtk_notebook_get_current_page(main_server_tabs);
   ACE_ASSERT(server_tab_num >= 0);
-  GtkWidget* server_tab_child = gtk_notebook_get_nth_page(server_tabs,
+  GtkWidget* server_tab_child = gtk_notebook_get_nth_page(main_server_tabs,
                                                           server_tab_num);
   ACE_ASSERT(server_tab_child);
-  GtkLabel* server_tab_label = GTK_LABEL(gtk_notebook_get_tab_label(server_tabs,
-                                                                    server_tab_child));
+  // *TODO*: the structure of the tab label is an implementation detail
+  // --> should be encapsulated by the connection somehow...
+  GtkHBox* server_tab_label_hbox = GTK_HBOX(gtk_notebook_get_tab_label(main_server_tabs,
+                                                                       server_tab_child));
+  ACE_ASSERT(server_tab_label_hbox);
+  GList* server_tab_label_children = gtk_container_get_children(GTK_CONTAINER(server_tab_label_hbox));
+  ACE_ASSERT(server_tab_label_children);
+  GtkLabel* server_tab_label = GTK_LABEL(g_list_first(server_tab_label_children)->data);
+  ACE_ASSERT(server_tab_label);
   std::string connection = gtk_label_get_text(server_tab_label);
   connections_iterator_t connections_iterator = data->connections.find(connection);
   if (connections_iterator == data->connections.end())
@@ -451,11 +487,11 @@ send_clicked_cb(GtkWidget* button_in,
   // step1: retrieve available data
   // retrieve buffer handle
   GtkEntryBuffer* buffer = NULL;
-  GtkEntry* entry = NULL;
-  entry = GTK_ENTRY(gtk_builder_get_object(data->builder,
-                                           ACE_TEXT_ALWAYS_CHAR("entry")));
-  ACE_ASSERT(entry);
-  buffer = gtk_entry_get_buffer(entry);
+  GtkEntry* main_send_entry = NULL;
+  main_send_entry = GTK_ENTRY(gtk_builder_get_object(data->builder,
+                                                     ACE_TEXT_ALWAYS_CHAR("main_send_entry")));
+  ACE_ASSERT(main_send_entry);
+  buffer = gtk_entry_get_buffer(main_send_entry);
   ACE_ASSERT(buffer);
 
   // sanity check
@@ -811,7 +847,7 @@ reactor_worker_func(void* args_in)
 
 void
 do_main_window(const std::string& UIFileDirectory_in,
-               const main_cb_data& userData_in,
+               const main_cb_data_t& userData_in,
                const GtkWidget* parentWidget_in)
 {
   ACE_TRACE(ACE_TEXT("::do_main_window"));
@@ -918,21 +954,27 @@ do_main_window(const std::string& UIFileDirectory_in,
   // step3: connect signals/slots
 //   gtk_builder_connect_signals(builder,
 //                               &ACE_const_cast(main_cb_data&, userData_in));
-  GtkButton* button = NULL;
-  button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
-                                             ACE_TEXT_ALWAYS_CHAR("main_send_button")));
+  GtkEntry* entry = GTK_ENTRY(gtk_builder_get_object(userData_in.builder,
+                                                     ACE_TEXT_ALWAYS_CHAR("main_send_entry")));
+  ACE_ASSERT(entry);
+  g_signal_connect(entry,
+                   ACE_TEXT_ALWAYS_CHAR("focus-in-event"),
+                   G_CALLBACK(send_entry_kb_focused_cb),
+                   &ACE_const_cast(main_cb_data_t&, userData_in));
+  GtkButton* button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
+                                                        ACE_TEXT_ALWAYS_CHAR("main_send_button")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(send_clicked_cb),
-                   &ACE_const_cast(main_cb_data&, userData_in));
+                   &ACE_const_cast(main_cb_data_t&, userData_in));
   button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
                                              ACE_TEXT_ALWAYS_CHAR("main_connect_button")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(connect_clicked_cb),
-                   &ACE_const_cast(main_cb_data&, userData_in));
+                   &ACE_const_cast(main_cb_data_t&, userData_in));
   button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
                                              ACE_TEXT_ALWAYS_CHAR("main_quit_buton")));
   ACE_ASSERT(button);
@@ -980,7 +1022,7 @@ void
 do_work(const bool& useThreadPool_in,
         const unsigned long& numThreadPoolThreads_in,
         const std::string& UIFileDirectory_in,
-        main_cb_data& userData_in)
+        main_cb_data_t& userData_in)
 {
   ACE_TRACE(ACE_TEXT("::do_work"));
 
@@ -1668,8 +1710,8 @@ ACE_TMAIN(int argc,
   // start profile timer...
   process_profile.start();
 
-  // *NOTE*: ignore SIGPIPE in this program...
-  ACE_Sig_Action no_sigpipe((ACE_SignalHandler)SIG_IGN, SIGPIPE);
+//   // *NOTE*: ignore SIGPIPE in this program...
+//   ACE_Sig_Action no_sigpipe((ACE_SignalHandler)SIG_IGN, SIGPIPE);
 
   // init GTK
   gtk_init(&argc, &argv);
@@ -1748,7 +1790,7 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step2d: init callback data
-  main_cb_data userData;
+  main_cb_data_t userData;
   userData.UIFileDirectory = UIFileDirectory;
   userData.builder = gtk_builder_new();
   ACE_ASSERT(userData.builder);

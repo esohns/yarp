@@ -307,13 +307,18 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
   {
     ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
+    // *WARNING* if the user unsubscribes() within the callback
+    // BAD THINGS (TM) WILL happen, because the current iter WILL be invalidated
+    // --> use a slightly modified for-loop (advance first and THEN invoke the callback,
+    // works for MOST containers)
+    // *NOTE*: this can only happen due to the ACE_RECURSIVE_Thread_Mutex
+    // we use as a lock in order to avoid deadlocks in precisely this situation...
     for (SubscribersIterator_t iter = mySubscribers.begin();
-         iter != mySubscribers.end();
-         iter++)
+         iter != mySubscribers.end();)
     {
       try
       {
-        (*iter)->notify(*message_inout->getData());
+        (*iter++)->notify(*message_inout->getData());
       }
       catch (...)
       {
@@ -355,17 +360,22 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
       {
         ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("session starting, notifying %u subscriber(s)...\n"),
-                   mySubscribers.size()));
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("session starting, notifying %u subscriber(s)...\n"),
+//                    mySubscribers.size()));
 
+        // *WARNING* if the user unsubscribes() within the callback
+        // BAD THINGS (TM) WILL happen, because the current iter WILL be invalidated
+        // --> use a slightly modified for-loop (advance first and THEN invoke the callback,
+        // works for MOST containers)
+        // *NOTE*: this can only happen due to the ACE_RECURSIVE_Thread_Mutex
+        // we use as a lock in order to avoid deadlocks in precisely this situation...
         for (SubscribersIterator_t iter = mySubscribers.begin();
-             iter != mySubscribers.end();
-             iter++)
+             iter != mySubscribers.end();)
         {
           try
           {
-            (*iter)->start();
+            (*iter++)->start();
           }
           catch (...)
           {
@@ -383,21 +393,22 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
       {
         ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("session ending, notifying %u subscriber(s)...\n"),
-                   mySubscribers.size()));
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("session ending, notifying %u subscriber(s)...\n"),
+//                    mySubscribers.size()));
 
         // *WARNING* if the user unsubscribes() within the callback
-        // BAD THINGS (TM) happen, because iter is invalidated...
-        // *NOTE*: this can happen due to the ACE_Recursive_Thread_Mutex
-        // we use as a lock...
+        // BAD THINGS (TM) WILL happen, because the current iter WILL be invalidated
+        // --> use a slightly modified for-loop (advance first and THEN invoke the callback,
+        // works for MOST containers)
+        // *NOTE*: this can only happen due to the ACE_RECURSIVE_Thread_Mutex
+        // we use as a lock in order to avoid deadlocks in precisely this situation...
         for (SubscribersIterator_t iter = mySubscribers.begin();
-             iter != mySubscribers.end();
-             iter++)
+             iter != mySubscribers.end();)
         {
           try
           {
-            (*iter)->end();
+            (*(iter++))->end();
           }
           catch (...)
           {
@@ -406,9 +417,10 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
           }
         } // end FOR
 
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("removing %u subscription(s)...\n"),
-                   mySubscribers.size()));
+        if (!mySubscribers.empty())
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("removing %u subscription(s)...\n"),
+                     mySubscribers.size()));
 
         // clean subscribers
         mySubscribers.clear();

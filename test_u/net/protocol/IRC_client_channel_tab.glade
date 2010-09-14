@@ -20,8 +20,10 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkHPaned" id="channel_tab_hpaned">
+                <property name="width_request">600</property>
+                <property name="height_request">500</property>
                 <property name="visible">True</property>
-                <property name="position">400</property>
+                <property name="position">470</property>
                 <property name="position_set">True</property>
                 <child>
                   <object class="GtkScrolledWindow" id="channel_tab_scrolledwindow">
@@ -110,8 +112,8 @@
         <child>
           <object class="GtkButton" id="channel_tab_label_button">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">False</property>
             <property name="image">part_button_image</property>
             <property name="focus_on_click">False</property>
             <property name="image_position">right</property>

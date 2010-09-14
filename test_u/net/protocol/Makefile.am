@@ -13,9 +13,9 @@ IRC_client_LDADD = -lpthread -lACE -lfl -lStream -lRPG_Dice -lRPG_Common \
 	-lRPG_Net -lRPG_Net_Protocol
 
 IRC_client_gui_SOURCES = IRC_client_defines.h IRC_client_gui.cpp \
-	IRC_client_gui_common.h IRC_client_gui_connection_handler.cpp \
-	IRC_client_gui_connection_handler.h IRC_client_gui_defines.h IRC_client_gui_messagehandler.cpp \
-	IRC_client_gui_messagehandler.h IRC_common.h
+	IRC_client_gui_common.h IRC_client_gui_connection.cpp IRC_client_gui_connection.h \
+	IRC_client_gui_defines.h IRC_client_gui_messagehandler.cpp IRC_client_gui_messagehandler.h \
+	IRC_common.h
 IRC_client_gui_CPPFLAGS = `pkg-config --cflags gtk+-2.0`
 IRC_client_gui_LDFLAGS = -L/usr/local/lib `pkg-config --libs gtk+-2.0`
 IRC_client_gui_LDADD = -lpthread -lACE -lStream -lRPG_Dice \

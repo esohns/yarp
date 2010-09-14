@@ -47,7 +47,7 @@ class RPG_Net_Protocol_Tools
 
   // helper methods
   static const std::string concatParams(const RPG_Net_Protocol_Parameters_t&, // parameters
-                                        const unsigned long&);                // starting index
+                                        const unsigned long& = 0);            // starting index
 };
 
 #endif

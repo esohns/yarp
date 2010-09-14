@@ -53,9 +53,9 @@ class IRC_Client_GUI_MessageHandler
   // --> do NOT invoke this from any other context (GTK is NOT threadsafe)
   void update();
 
-  // *WARNING*: returns the toplevel widget FOR THIS CHANNEL TAB
-  // --> use with care !
-  GtkWidget* getTopLevel();
+  // *NOTE*: returns the toplevel widget of the channel page tab child
+  // *WARNING*: the server log handler doesn't have dynamic children --> use with care !
+  GtkWidget* getTopLevelPageChild();
 
   const std::string getChannel() const;
   void setTopic(const std::string&);

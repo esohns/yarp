@@ -1042,15 +1042,28 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
       RPG_Net_Protocol_IRCMessage::CommandType command = RPG_Net_Protocol_Tools::IRCCommandString2Type(*message_in.command.string);
       switch (command)
       {
+        case RPG_Net_Protocol_IRCMessage::NOTICE:
+        {
+          result = RPG_Net_Protocol_Tools::concatParams(message_in.params,
+                                                        1);
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::ERROR:
+        {
+          result = RPG_Net_Protocol_Tools::concatParams(message_in.params);
+
+          break;
+        }
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid command (was: \"%s\"), continuing\n"),
+                     ACE_TEXT("invalid command (was: \"%s\"), aborting\n"),
                      message_in.command.string->c_str()));
 
           message_in.dump_state();
 
-          break;
+          return result;
         }
       } // end SWITCH
 
@@ -1080,6 +1093,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRC_Codes::RPL_YOURID:        //  42
         case RPG_Net_Protocol_IRC_Codes::RPL_STATSDLINE:    // 250
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCHANNELS: // 254
+        case RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE: // 433
         {
           result = RPG_Net_Protocol_Tools::concatParams(message_in.params,
                                                         1);
@@ -1089,13 +1103,13 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid (numeric) command (was: %u [\"%s\"]), continuing\n"),
+                     ACE_TEXT("invalid (numeric) command (was: %u [\"%s\"]), aborting\n"),
                      message_in.command.numeric,
                      RPG_Net_Protocol_Tools::IRCCode2String(message_in.command.numeric).c_str()));
 
           message_in.dump_state();
 
-          break;
+          return result;
         }
       } // end SWITCH
 
@@ -1107,7 +1121,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
                  ACE_TEXT("invalid command discriminator (was: %d), aborting\n"),
                  message_in.command.discriminator));
 
-      break;
+      return result;
     }
   } // end SWITCH
 

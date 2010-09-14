@@ -32,12 +32,12 @@
 #include <string>
 
 // forward declaration(s)
-class IRC_Client_GUI_Connection_Handler;
+class IRC_Client_GUI_Connection;
 
-typedef std::map<std::string, IRC_Client_GUI_Connection_Handler*> connections_t;
+typedef std::map<std::string, IRC_Client_GUI_Connection*> connections_t;
 typedef connections_t::iterator connections_iterator_t;
 
-struct main_cb_data
+struct main_cb_data_t
 {
   std::string                      UIFileDirectory;
   // *WARNING*: mainBuilder needs exclusive access under the "connectionsLock"

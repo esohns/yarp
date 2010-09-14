@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "IRC_client_gui_connection_handler.h"
+#include "IRC_client_gui_connection.h"
 
 #include "IRC_client_defines.h"
 #include "IRC_client_gui_defines.h"
@@ -61,6 +61,143 @@ disconnect_clicked_cb(GtkWidget* button_in,
   // *NOTE*: the server should close the connection after this...
 }
 
+gboolean
+nick_entry_kb_focused_cb(GtkWidget* widget_in,
+                         GdkEventFocus* event_in,
+                         gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::nick_entry_kb_focused_cb"));
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("nick_entry_kb_focused_cb...\n")));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(event_in);
+  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
+                                               userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->builder);
+
+  // make the "change" button the default widget...
+  GtkButton* server_tab_nick_button = GTK_BUTTON(gtk_builder_get_object(data->builder,
+                                                                        ACE_TEXT_ALWAYS_CHAR("server_tab_nick_button")));
+  ACE_ASSERT(server_tab_nick_button);
+  gtk_widget_grab_default(GTK_WIDGET(server_tab_nick_button));
+
+  // propagate the event further...
+  return FALSE;
+}
+
+void
+change_clicked_cb(GtkWidget* button_in,
+                  gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::change_clicked_cb"));
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("change_clicked_cb...\n")));
+
+  ACE_UNUSED_ARG(button_in);
+  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
+                                               userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->builder);
+
+  // step1: retrieve available data
+  // retrieve buffer handle
+  GtkEntry* server_tab_nick_entry = GTK_ENTRY(gtk_builder_get_object(data->builder,
+                                                                     ACE_TEXT_ALWAYS_CHAR("server_tab_nick_entry")));
+  ACE_ASSERT(server_tab_nick_entry);
+  GtkEntryBuffer* buffer = gtk_entry_get_buffer(server_tab_nick_entry);
+  ACE_ASSERT(buffer);
+
+  // sanity check
+  if (gtk_entry_buffer_get_length(buffer) == 0)
+    return; // nothing to do...
+
+  // retrieve textbuffer data
+  std::string nick_string;
+  // convert UTF8 to locale
+  gchar* converted_text = NULL;
+  GError* conversion_error = NULL;
+  converted_text = g_locale_from_utf8(gtk_entry_buffer_get_text(buffer),   // text
+                                      gtk_entry_buffer_get_length(buffer), // number of bytes
+                                      NULL, // bytes read (don't care)
+                                      NULL, // bytes written (don't care)
+                                      &conversion_error); // return value: error
+  if (conversion_error)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to convert nick text: \"%s\", aborting\n"),
+               conversion_error->message));
+
+    // clean up
+    g_error_free(conversion_error);
+    gtk_entry_buffer_delete_text(buffer, // buffer
+                                 0,      // start at position 0
+                                 -1);    // delete everything
+
+    return;
+  } // end IF
+  nick_string = converted_text;
+
+  // clean up
+  g_free(converted_text);
+
+  // sanity check: <= 9 characters ?
+  if (nick_string.size() > 9);
+    nick_string.resize(9);
+
+  // *TODO*
+//   try
+//   {
+//     data->controller->nick(nick_string);
+//   }
+//   catch (...)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::nick(), continuing\n")));
+//   }
+
+  // clear buffer
+  gtk_entry_buffer_delete_text(buffer, // buffer
+                               0,      // start at position 0
+                               -1);    // delete everything
+}
+
+gboolean
+channel_entry_kb_focused_cb(GtkWidget* widget_in,
+                            GdkEventFocus* event_in,
+                            gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::channel_entry_kb_focused_cb"));
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("channel_entry_kb_focused_cb...\n")));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(event_in);
+  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
+                                               userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->builder);
+
+  // make the "change" button the default widget...
+  GtkButton* server_tab_join_button = GTK_BUTTON(gtk_builder_get_object(data->builder,
+                                                                        ACE_TEXT_ALWAYS_CHAR("server_tab_join_button")));
+  ACE_ASSERT(server_tab_join_button);
+  gtk_widget_grab_default(GTK_WIDGET(server_tab_join_button));
+
+  // propagate the event further...
+  return FALSE;
+}
+
 void
 join_clicked_cb(GtkWidget* button_in,
                 gpointer userData_in)
@@ -80,12 +217,10 @@ join_clicked_cb(GtkWidget* button_in,
 
   // step1: retrieve available data
   // retrieve buffer handle
-  GtkEntryBuffer* buffer = NULL;
-  GtkEntry* server_tab_channel_entry = NULL;
-  server_tab_channel_entry = GTK_ENTRY(gtk_builder_get_object(data->builder,
-                                                              ACE_TEXT_ALWAYS_CHAR("server_tab_channel_entry")));
+  GtkEntry* server_tab_channel_entry = GTK_ENTRY(gtk_builder_get_object(data->builder,
+                                                                        ACE_TEXT_ALWAYS_CHAR("server_tab_channel_entry")));
   ACE_ASSERT(server_tab_channel_entry);
-  buffer = gtk_entry_get_buffer(server_tab_channel_entry);
+  GtkEntryBuffer* buffer = gtk_entry_get_buffer(server_tab_channel_entry);
   ACE_ASSERT(buffer);
 
   // sanity check
@@ -105,7 +240,7 @@ join_clicked_cb(GtkWidget* button_in,
   if (conversion_error)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert message text: \"%s\", aborting\n"),
+               ACE_TEXT("failed to convert channel text: \"%s\", aborting\n"),
                conversion_error->message));
 
     // clean up
@@ -118,12 +253,15 @@ join_clicked_cb(GtkWidget* button_in,
   } // end IF
   channel_string = converted_text;
 
-  // sanity check: has '#' prefix ?
+  // sanity check(s): has '#' prefix ?
   if (channel_string.find('#', 0) != 0);
   {
     channel_string = ACE_TEXT_ALWAYS_CHAR("#");
     channel_string += converted_text;
   } // end IF
+  // sanity check(s): larger than 200 characters ?
+  if (channel_string.size() > 200)
+    channel_string.resize(200);
 
   // clean up
   g_free(converted_text);
@@ -181,22 +319,22 @@ switch_channel_cb(GtkNotebook* notebook_in,
 }
 #endif /* __cplusplus */
 
-IRC_Client_GUI_Connection_Handler::IRC_Client_GUI_Connection_Handler(GtkBuilder* builder_in,
-                                                                     RPG_Net_Protocol_IIRCControl* controller_in,
-                                                                     ACE_Thread_Mutex* lock_in,
-                                                                     connections_t* connections_in,
-                                                                     const std::string& label_in,
-                                                                     const std::string& UIFileDirectory_in,
-                                                                     GtkNotebook* notebook_in)
+IRC_Client_GUI_Connection::IRC_Client_GUI_Connection(GtkBuilder* builder_in,
+                                                     RPG_Net_Protocol_IIRCControl* controller_in,
+                                                     ACE_Thread_Mutex* lock_in,
+                                                     connections_t* connections_in,
+                                                     const std::string& label_in,
+                                                     const std::string& UIFileDirectory_in,
+                                                     GtkNotebook* parent_in)
  : myUIFileDirectory(),
-   myParent(notebook_in),
+   myParent(parent_in),
    myContextID(0)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection_Handler::IRC_Client_GUI_Connection_Handler"));
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::IRC_Client_GUI_Connection"));
 
   // sanity check(s)
   ACE_ASSERT(builder_in);
-  ACE_ASSERT(notebook_in);
+  ACE_ASSERT(parent_in);
   ACE_ASSERT(controller_in);
   ACE_ASSERT(lock_in);
   ACE_ASSERT(connections_in);
@@ -312,6 +450,9 @@ IRC_Client_GUI_Connection_Handler::IRC_Client_GUI_Connection_Handler(GtkBuilder*
   gtk_notebook_set_tab_reorderable(myParent,
                                    GTK_WIDGET(server_tab_vbox),
                                    TRUE);
+  // activate new page
+  gtk_notebook_set_current_page(myParent,
+                                page_num);
 
   // clean up
   g_object_unref(server_tab_label_hbox);
@@ -324,6 +465,27 @@ IRC_Client_GUI_Connection_Handler::IRC_Client_GUI_Connection_Handler(GtkBuilder*
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(disconnect_clicked_cb),
+                   &myCBData);
+  GtkEntry* entry = GTK_ENTRY(gtk_builder_get_object(myCBData.builder,
+                                                     ACE_TEXT_ALWAYS_CHAR("server_tab_nick_entry")));
+  ACE_ASSERT(entry);
+  g_signal_connect(entry,
+                   ACE_TEXT_ALWAYS_CHAR("focus-in-event"),
+                   G_CALLBACK(nick_entry_kb_focused_cb),
+                   &myCBData);
+  button = GTK_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                             ACE_TEXT_ALWAYS_CHAR("server_tab_nick_button")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(change_clicked_cb),
+                   &myCBData);
+  entry = GTK_ENTRY(gtk_builder_get_object(myCBData.builder,
+                                           ACE_TEXT_ALWAYS_CHAR("server_tab_channel_entry")));
+  ACE_ASSERT(entry);
+  g_signal_connect(entry,
+                   ACE_TEXT_ALWAYS_CHAR("focus-in-event"),
+                   G_CALLBACK(channel_entry_kb_focused_cb),
                    &myCBData);
   button = GTK_BUTTON(gtk_builder_get_object(myCBData.builder,
                                              ACE_TEXT_ALWAYS_CHAR("server_tab_join_button")));
@@ -399,9 +561,9 @@ IRC_Client_GUI_Connection_Handler::IRC_Client_GUI_Connection_Handler(GtkBuilder*
   }
 }
 
-IRC_Client_GUI_Connection_Handler::~IRC_Client_GUI_Connection_Handler()
+IRC_Client_GUI_Connection::~IRC_Client_GUI_Connection()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection_Handler::~IRC_Client_GUI_Connection_Handler"));
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::~IRC_Client_GUI_Connection"));
 
   // unsubscribe to updates from the controller
   try
@@ -439,11 +601,17 @@ IRC_Client_GUI_Connection_Handler::~IRC_Client_GUI_Connection_Handler()
   GtkVBox* server_tab_vbox = GTK_VBOX(gtk_builder_get_object(myCBData.builder,
                                                              ACE_TEXT_ALWAYS_CHAR("server_tab_vbox")));
   ACE_ASSERT(server_tab_vbox);
-  gint page_num = gtk_notebook_page_num(myParent,
-                                        GTK_WIDGET(server_tab_vbox));
-  if (page_num >= 1)
-    gtk_notebook_remove_page(myParent,
-                             page_num);
+  if (gtk_notebook_get_n_pages(myParent) > 1)
+  {
+    if (gtk_notebook_page_num(myParent,
+                              GTK_WIDGET(server_tab_vbox)) > 0)
+      gtk_notebook_prev_page(myParent);
+    else
+      gtk_notebook_next_page(myParent);
+  } // end IF
+  gtk_notebook_remove_page(myParent,
+                           gtk_notebook_page_num(myParent,
+                                                 GTK_WIDGET(server_tab_vbox)));
 
   // clean up
   g_object_unref(myCBData.builder);
@@ -462,18 +630,18 @@ IRC_Client_GUI_Connection_Handler::~IRC_Client_GUI_Connection_Handler()
 }
 
 void
-IRC_Client_GUI_Connection_Handler::start()
+IRC_Client_GUI_Connection::start()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection_Handler::start"));
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::start"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("connected...\n")));
 }
 
 void
-IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& message_in)
+IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection_Handler::notify"));
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::notify"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
@@ -484,35 +652,49 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
     {
       switch (message_in.command.numeric)
       {
-        case RPG_Net_Protocol_IRC_Codes::RPL_WELCOME:
+        case RPG_Net_Protocol_IRC_Codes::RPL_WELCOME:          //   1
         {
           GDK_THREADS_ENTER();
 
+          // *NOTE*: this is the first message in any connection !
+          // --> display (starting) nickname
+
+          // retrieve server tab nickname label
+          GtkLabel* server_tab_nick_label = GTK_LABEL(gtk_builder_get_object(myCBData.builder,
+                                                                             ACE_TEXT_ALWAYS_CHAR("server_tab_nick_label")));
+          ACE_ASSERT(server_tab_nick_label);
+          // *NOTE*: the current nickname is the first BOLD string in the label...
+          // --> see Pango Text Attribute Markup Language...
+          std::string nickname_string = ACE_TEXT_ALWAYS_CHAR("nickname: <b>");
+          nickname_string += message_in.params.front();
+          nickname_string += ACE_TEXT_ALWAYS_CHAR("</b>");
+          gtk_label_set_text(server_tab_nick_label,
+                             nickname_string.c_str());
+
           // retrieve button handle
-          GtkButton* button = NULL;
-          button = GTK_BUTTON(gtk_builder_get_object(myCBData.builder,
-                                                     ACE_TEXT_ALWAYS_CHAR("server_tab_join_button")));
-          ACE_ASSERT(button);
-          gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+          GtkHBox* server_tab_hbox = GTK_HBOX(gtk_builder_get_object(myCBData.builder,
+                                                                     ACE_TEXT_ALWAYS_CHAR("server_tab_hbox")));
+          ACE_ASSERT(server_tab_hbox);
+          gtk_widget_set_sensitive(GTK_WIDGET(server_tab_hbox), TRUE);
 
           GDK_THREADS_LEAVE();
 
           // *WARNING*: falls through !
         }
-        case RPG_Net_Protocol_IRC_Codes::RPL_YOURHOST:
-        case RPG_Net_Protocol_IRC_Codes::RPL_CREATED:
-        case RPG_Net_Protocol_IRC_Codes::RPL_MYINFO:
-        case RPG_Net_Protocol_IRC_Codes::RPL_PROTOCTL:
-        case RPG_Net_Protocol_IRC_Codes::RPL_YOURID:
-        case RPG_Net_Protocol_IRC_Codes::RPL_STATSDLINE:
-        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCLIENT:
-        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCHANNELS:
-        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERME:
-        case RPG_Net_Protocol_IRC_Codes::RPL_LOCALUSERS:
-        case RPG_Net_Protocol_IRC_Codes::RPL_GLOBALUSERS:
+        case RPG_Net_Protocol_IRC_Codes::RPL_YOURHOST:         //   2
+        case RPG_Net_Protocol_IRC_Codes::RPL_CREATED:          //   3
+        case RPG_Net_Protocol_IRC_Codes::RPL_MYINFO:           //   4
+        case RPG_Net_Protocol_IRC_Codes::RPL_PROTOCTL:         //   5
+        case RPG_Net_Protocol_IRC_Codes::RPL_YOURID:           //  42
+        case RPG_Net_Protocol_IRC_Codes::RPL_STATSDLINE:       // 250
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCLIENT:      // 251
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCHANNELS:    // 254
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERME:          // 255
+        case RPG_Net_Protocol_IRC_Codes::RPL_LOCALUSERS:       // 265
+        case RPG_Net_Protocol_IRC_Codes::RPL_GLOBALUSERS:      // 266
           log(message_in); break;
-        case RPG_Net_Protocol_IRC_Codes::RPL_NOTOPIC:
-        case RPG_Net_Protocol_IRC_Codes::RPL_TOPIC:
+        case RPG_Net_Protocol_IRC_Codes::RPL_NOTOPIC:          // 331
+        case RPG_Net_Protocol_IRC_Codes::RPL_TOPIC:            // 332
         {
           // retrieve channel name
           RPG_Net_Protocol_ParametersIterator_t iterator = message_in.params.begin();
@@ -533,7 +715,7 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
 
           break;
         }
-        case RPG_Net_Protocol_IRC_Codes::RPL_NAMREPLY:
+        case RPG_Net_Protocol_IRC_Codes::RPL_NAMREPLY:         // 353
         {
           // re-retrieve channel name
           RPG_Net_Protocol_ParametersIterator_t iterator = message_in.params.end();
@@ -574,7 +756,7 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
 
           break;
         }
-        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFNAMES:
+        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFNAMES:       // 366
         {
           // retrieve channel name
           RPG_Net_Protocol_ParametersIterator_t iterator = message_in.params.end();
@@ -592,30 +774,24 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
 
           break;
         }
-        case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:
-        case RPG_Net_Protocol_IRC_Codes::RPL_MOTD:
-        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:
-          log(message_in); break;
+        case RPG_Net_Protocol_IRC_Codes::RPL_MOTD:             // 372
+        case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:        // 375
+        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:        // 376
+        case RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE:    // 433
+        {
+          log(message_in);
+
+          if (message_in.command.numeric == RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE)
+            error(message_in); // show in statusbar as well...
+
+          break;
+        }
         default:
         {
 //           ACE_DEBUG((LM_WARNING,
 //                      ACE_TEXT("received unhandled (numeric) command/reply: \"%s\" (%u), continuing\n"),
 //                      RPG_Net_Protocol_Tools::IRCCode2String(message_in.command.numeric).c_str(),
 //                      message_in.command.numeric));
-
-          // unhandled numeric reply/error --> print to statusbar
-          // synch access
-          {
-            ACE_Guard<ACE_Thread_Mutex> aGuard(*myCBData.connectionsLock);
-
-            GtkStatusbar* main_statusbar = GTK_STATUSBAR(gtk_builder_get_object(myCBData.mainBuilder,
-                                                                                ACE_TEXT_ALWAYS_CHAR("main_statusbar")));
-            ACE_ASSERT(main_statusbar);
-
-            gtk_statusbar_push(main_statusbar,
-                               myContextID,
-                               RPG_Net_Protocol_Tools::dump(message_in).c_str());
-          } // end lock scope
 
           message_in.dump_state();
 
@@ -630,66 +806,110 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
       RPG_Net_Protocol_IRCMessage::CommandType command = RPG_Net_Protocol_Tools::IRCCommandString2Type(*message_in.command.string);
       switch (command)
       {
+        case RPG_Net_Protocol_IRCMessage::NICK:
+        case RPG_Net_Protocol_IRCMessage::USER:
+        {
+
+
+          break;
+        }
         case RPG_Net_Protocol_IRCMessage::JOIN:
         {
           GDK_THREADS_ENTER();
 
-          // retrieve channel tabs
-          GtkNotebook* server_tab_channel_tabs = GTK_NOTEBOOK(gtk_builder_get_object(myCBData.builder,
-                                                                                     ACE_TEXT_ALWAYS_CHAR("server_tab_channel_tabs")));
-          ACE_ASSERT(server_tab_channel_tabs);
+          // there are two possibilities:
+          // - reply from a successful join request ?
+          // - stranger entering the channel
 
-          // create new IRC_Client_GUI_MessageHandler
-          IRC_Client_GUI_MessageHandler* message_handler = NULL;
-          try
-          {
-            message_handler = new IRC_Client_GUI_MessageHandler(myCBData.controller,
-                                                                message_in.params.front(),
-                                                                myUIFileDirectory,
-                                                                server_tab_channel_tabs);
-          }
-          catch (const std::bad_alloc& exception)
-          {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("caught std::bad_alloc: \"%s\", aborting\n"),
-                       exception.what()));
-          }
-          catch (...)
+          // retrieve current nickname
+          GtkLabel* server_tab_nick_label = GTK_LABEL(gtk_builder_get_object(myCBData.builder,
+                                                                             ACE_TEXT_ALWAYS_CHAR("server_tab_nick_label")));
+          ACE_ASSERT(server_tab_nick_label);
+          // *NOTE*: the current nickname is the first BOLD string in the label...
+          // --> see Pango Text Attribute Markup Language...
+          std::string nickname_string = gtk_label_get_text(server_tab_nick_label);
+          std::string::size_type nick_pos = nickname_string.find(ACE_TEXT_ALWAYS_CHAR("<b>"), 0);
+          std::string::size_type nick_pos_end = nickname_string.find(ACE_TEXT_ALWAYS_CHAR("</b>"), 0);
+          if ((nick_pos == std::string::npos) ||
+              (nick_pos_end == std::string::npos) ||
+              !(nick_pos < nick_pos_end))
           {
             ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("caught exception, aborting\n")));
-          }
-          if (!message_handler)
-          {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("failed to allocate IRC_Client_GUI_MessageHandler, aborting\n")));
+                       ACE_TEXT("invalid nickname (was: \"%s\"), aborting\n"),
+                       nickname_string.c_str()));
 
             break;
           } // end IF
+          else
+            nick_pos += 3;
+          nickname_string = nickname_string.substr(nick_pos,
+                                                   (nick_pos_end - nick_pos));
 
-          // synch access
+          // reply from a successful join request ?
+          if (message_in.prefix.origin == nickname_string)
           {
-            ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+            // retrieve channel tabs
+            GtkNotebook* server_tab_channel_tabs = GTK_NOTEBOOK(gtk_builder_get_object(myCBData.builder,
+                                                                                       ACE_TEXT_ALWAYS_CHAR("server_tab_channel_tabs")));
+            ACE_ASSERT(server_tab_channel_tabs);
 
-            myMessageHandlers.insert(std::make_pair(message_in.params.front(), message_handler));
+            // create new IRC_Client_GUI_MessageHandler
+            IRC_Client_GUI_MessageHandler* message_handler = NULL;
+            try
+            {
+              message_handler = new IRC_Client_GUI_MessageHandler(myCBData.controller,
+                                                                  message_in.params.front(),
+                                                                  myUIFileDirectory,
+                                                                  server_tab_channel_tabs);
+            }
+            catch (const std::bad_alloc& exception)
+            {
+              ACE_DEBUG((LM_ERROR,
+                        ACE_TEXT("caught std::bad_alloc: \"%s\", aborting\n"),
+                        exception.what()));
+            }
+            catch (...)
+            {
+              ACE_DEBUG((LM_ERROR,
+                        ACE_TEXT("caught exception, aborting\n")));
+            }
+            if (!message_handler)
+            {
+              ACE_DEBUG((LM_ERROR,
+                        ACE_TEXT("failed to allocate IRC_Client_GUI_MessageHandler, aborting\n")));
 
-            // check whether this is the first channel of the first connection
-            // --> enable corresponding widgets in the main UI
+              break;
+            } // end IF
+
             // synch access
             {
-              ACE_Guard<ACE_Thread_Mutex> aGuard2(*myCBData.connectionsLock);
+              ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-              if ((myCBData.connections->size() == 1) &&
-                  (myMessageHandlers.size() == 2)) // server log + first channel
+              myMessageHandlers.insert(std::make_pair(message_in.params.front(), message_handler));
+
+              // check whether this is the first channel of the first connection
+              // --> enable corresponding widgets in the main UI
+              // synch access
               {
-                GtkHBox* main_send_hbox = GTK_HBOX(gtk_builder_get_object(myCBData.mainBuilder,
-                                                                          ACE_TEXT_ALWAYS_CHAR("main_send_hbox")));
-                ACE_ASSERT(main_send_hbox);
-                gtk_widget_set_sensitive(GTK_WIDGET(main_send_hbox),
-                                         TRUE);
-              } // end IF
+                ACE_Guard<ACE_Thread_Mutex> aGuard2(*myCBData.connectionsLock);
+
+                if ((myCBData.connections->size() == 1) &&
+                    (myMessageHandlers.size() == 2)) // server log + first channel
+                {
+                  GtkHBox* main_send_hbox = GTK_HBOX(gtk_builder_get_object(myCBData.mainBuilder,
+                                                                            ACE_TEXT_ALWAYS_CHAR("main_send_hbox")));
+                  ACE_ASSERT(main_send_hbox);
+                  gtk_widget_set_sensitive(GTK_WIDGET(main_send_hbox),
+                                           TRUE);
+                } // end IF
+              } // end lock scope
             } // end lock scope
-          } // end lock scope
+          } // end IF
+          else
+          {
+            // someone joined this channel...
+
+          } // end ELSE
 
           GDK_THREADS_LEAVE();
 
@@ -741,11 +961,8 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
           break;
         }
         case RPG_Net_Protocol_IRCMessage::PRIVMSG:
-        case RPG_Net_Protocol_IRCMessage::NOTICE:
-        case RPG_Net_Protocol_IRCMessage::ERROR:
         {
           // retrieve channel name
-          // *TODO*: currently, this works for PRIVMSG...
           RPG_Net_Protocol_ParametersIterator_t iterator = message_in.params.begin();
 
           std::string message_text;
@@ -763,13 +980,20 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
           {
             ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-            // *NOTE*: the empty string denotes the server log handler
-            message_handlers_iterator_t handler_iterator = myMessageHandlers.find(((command == RPG_Net_Protocol_IRCMessage::NOTICE) ||
-                                                                                   (command == RPG_Net_Protocol_IRCMessage::ERROR)) ? std::string()
-                                                                                                                        : *iterator);
+            message_handlers_iterator_t handler_iterator = myMessageHandlers.find(*iterator);
             if (handler_iterator != myMessageHandlers.end())
               (*handler_iterator).second->queueForDisplay(message_text);
           } // end lock scope
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::NOTICE:
+        case RPG_Net_Protocol_IRCMessage::ERROR:
+        {
+          log(message_in);
+
+          if (command == RPG_Net_Protocol_IRCMessage::ERROR)
+            error(message_in); // --> show on statusbar as well...
 
           break;
         }
@@ -784,20 +1008,6 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
 //           ACE_DEBUG((LM_WARNING,
 //                      ACE_TEXT("received unhandled command (was: \"%s\"), continuing\n"),
 //                      message_in.command.string->c_str()));
-
-          // unhandled command --> print to statusbar
-          // synch access
-          {
-            ACE_Guard<ACE_Thread_Mutex> aGuard(*myCBData.connectionsLock);
-
-            GtkStatusbar* main_statusbar = GTK_STATUSBAR(gtk_builder_get_object(myCBData.mainBuilder,
-                                                                                ACE_TEXT_ALWAYS_CHAR("main_statusbar")));
-            ACE_ASSERT(main_statusbar);
-
-            gtk_statusbar_push(main_statusbar,
-                               myContextID,
-                               RPG_Net_Protocol_Tools::dump(message_in).c_str());
-          } // end lock scope
 
           message_in.dump_state();
 
@@ -819,9 +1029,9 @@ IRC_Client_GUI_Connection_Handler::notify(const RPG_Net_Protocol_IRCMessage& mes
 }
 
 void
-IRC_Client_GUI_Connection_Handler::end()
+IRC_Client_GUI_Connection::end()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection_Handler::end"));
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::end"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("connection lost...\n")));
@@ -831,9 +1041,9 @@ IRC_Client_GUI_Connection_Handler::end()
 }
 
 RPG_Net_Protocol_IIRCControl*
-IRC_Client_GUI_Connection_Handler::getController()
+IRC_Client_GUI_Connection::getController()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection_Handler::getController"));
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::getController"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.controller);
@@ -842,9 +1052,9 @@ IRC_Client_GUI_Connection_Handler::getController()
 }
 
 const std::string
-IRC_Client_GUI_Connection_Handler::getActiveChannel()
+IRC_Client_GUI_Connection::getActiveChannel()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection_Handler::getActiveChannel"));
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::getActiveChannel"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
@@ -870,8 +1080,8 @@ IRC_Client_GUI_Connection_Handler::getActiveChannel()
   // server log ? --> no active channel --> return empty string
   if (page_num == 0)
   {
-    ACE_DEBUG((LM_WARNING,
-               ACE_TEXT("no active channel, returning\n")));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("no active channel, aborting\n")));
 
     return result;
   } // end IF
@@ -883,7 +1093,7 @@ IRC_Client_GUI_Connection_Handler::getActiveChannel()
        iterator != myMessageHandlers.end();
        iterator++)
   {
-    if ((*iterator).second->getTopLevel() == channel_tab)
+    if ((*iterator).second->getTopLevelPageChild() == channel_tab)
     {
       result = (*iterator).first;
 
@@ -900,9 +1110,9 @@ IRC_Client_GUI_Connection_Handler::getActiveChannel()
 }
 
 IRC_Client_GUI_MessageHandler*
-IRC_Client_GUI_Connection_Handler::getActiveHandler()
+IRC_Client_GUI_Connection::getActiveHandler()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection_Handler::getActiveHandler"));
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::getActiveHandler"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
@@ -928,7 +1138,7 @@ IRC_Client_GUI_Connection_Handler::getActiveHandler()
        iterator != myMessageHandlers.end();
        iterator++)
   {
-    if ((*iterator).second->getTopLevel() == channel_tab)
+    if ((*iterator).second->getTopLevelPageChild() == channel_tab)
       return (*iterator).second;
   } // end FOR
 
@@ -939,9 +1149,9 @@ IRC_Client_GUI_Connection_Handler::getActiveHandler()
 }
 
 // IRC_Client_GUI_MessageHandler*
-// IRC_Client_GUI_Connection_Handler::getHandler(const std::string& channelName_in)
+// IRC_Client_GUI_Connection::getHandler(const std::string& channelName_in)
 // {
-//   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection_Handler::getHandler"));
+//   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::getHandler"));
 //
 //   for (message_handlers_iterator_t iterator = myMessageHandlers.begin();
 //        iterator != myMessageHandlers.end();
@@ -959,9 +1169,9 @@ IRC_Client_GUI_Connection_Handler::getActiveHandler()
 // }
 
 void
-IRC_Client_GUI_Connection_Handler::log(const RPG_Net_Protocol_IRCMessage& message_in)
+IRC_Client_GUI_Connection::log(const RPG_Net_Protocol_IRCMessage& message_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection_Handler::log"));
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::log"));
 
   // --> pass to server log
 
@@ -973,5 +1183,26 @@ IRC_Client_GUI_Connection_Handler::log(const RPG_Net_Protocol_IRCMessage& messag
     message_handlers_iterator_t handler_iterator = myMessageHandlers.find(std::string());
     ACE_ASSERT(handler_iterator != myMessageHandlers.end());
     (*handler_iterator).second->queueForDisplay(RPG_Net_Protocol_Tools::IRCMessage2String(message_in));
+  } // end lock scope
+}
+
+void
+IRC_Client_GUI_Connection::error(const RPG_Net_Protocol_IRCMessage& message_in)
+{
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::error"));
+
+  // error --> print on statusbar
+
+  // synch access
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(*myCBData.connectionsLock);
+
+    GtkStatusbar* main_statusbar = GTK_STATUSBAR(gtk_builder_get_object(myCBData.mainBuilder,
+                                                                        ACE_TEXT_ALWAYS_CHAR("main_statusbar")));
+    ACE_ASSERT(main_statusbar);
+
+    gtk_statusbar_push(main_statusbar,
+                       myContextID,
+                       RPG_Net_Protocol_Tools::dump(message_in).c_str());
   } // end lock scope
 }

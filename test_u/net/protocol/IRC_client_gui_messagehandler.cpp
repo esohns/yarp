@@ -262,12 +262,16 @@ IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler()
     GtkFrame* channel_tab_frame = GTK_FRAME(gtk_builder_get_object(myCBData.builder,
                                                                    ACE_TEXT_ALWAYS_CHAR("channel_tab_frame")));
     ACE_ASSERT(channel_tab_frame);
-    gint page_num = gtk_notebook_page_num(myParent,
-                                          GTK_WIDGET(channel_tab_frame));
+    if (gtk_notebook_page_num(myParent,
+                              GTK_WIDGET(channel_tab_frame)) > 1)
+      gtk_notebook_prev_page(myParent);
+    else
+      gtk_notebook_next_page(myParent);
+
     // remove channel page from channel tabs notebook
-    if (page_num > 1)
-      gtk_notebook_remove_page(myParent,
-                               page_num);
+    gtk_notebook_remove_page(myParent,
+                             gtk_notebook_page_num(myParent,
+                                                   GTK_WIDGET(channel_tab_frame)));
 
     // clean up
     g_object_unref(myCBData.builder);
@@ -396,9 +400,19 @@ IRC_Client_GUI_MessageHandler::update()
 }
 
 GtkWidget*
-IRC_Client_GUI_MessageHandler::getTopLevel()
+IRC_Client_GUI_MessageHandler::getTopLevelPageChild()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::getTopLevel"));
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::getTopLevelPageChild"));
+
+  // *WARNING*: the server log handler doesn't have a builder...
+  if (!myParent)
+  {
+    // sanity check(s)
+    ACE_ASSERT(myView);
+
+    return gtk_widget_get_ancestor(GTK_WIDGET(myView),
+                                   GTK_TYPE_WIDGET);
+  } // end IF
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
