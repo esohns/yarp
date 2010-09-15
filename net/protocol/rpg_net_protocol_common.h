@@ -35,6 +35,7 @@
 #include <set>
 #include <vector>
 #include <map>
+#include <bitset>
 
 // forward declaration(s)
 class Stream_IAllocator;
@@ -94,6 +95,48 @@ struct RPG_Net_Protocol_IRCLoginOptions
   } user;
   std::string channel;
 };
+
+// see (RFC1459 section 4.2.3.1)
+//            o - give/take channel operator privileges;
+//            p - private channel flag;
+//            s - secret channel flag;
+//            i - invite-only channel flag;
+//            t - topic settable by channel operator only flag;
+//            n - no messages to channel from clients on the outside;
+//            m - moderated channel;
+//            l - set the user limit to channel;
+enum RPG_Net_Protocol_ChannelMode
+{
+  CHANNELMODE_USERLIMIT = 0,
+  CHANNELMODE_MODERATED,
+  CHANNELMODE_NOMSGFROMBEYOND,
+  CHANNELMODE_RESTRICTEDTOPIC,
+  CHANNELMODE_INVITEONLY,
+  CHANNELMODE_SECRET,
+  CHANNELMODE_PRIVATE,
+  CHANNELMODE_ALLOWCHANOPPRIV,
+  //
+  CHANNELMODE_MAX,
+  CHANNELMODE_INVALID
+};
+typedef std::bitset<8> RPG_Net_Protocol_ChannelModes_t;
+
+// see (RFC1459 section 4.2.3.2)
+//            i - marks a users as invisible;
+//            s - marks a user for receipt of server notices;
+//            w - user receives wallops;
+//            o - operator flag.
+enum RPG_Net_Protocol_UserMode
+{
+  USERMODE_OPERATOR = 0,
+  USERMODE_RECVWALLOPS,
+  USERMODE_RECVNOTICES,
+  USERMODE_INVISIBLE,
+  //
+  USERMODE_MAX,
+  USERMODE_INVALID
+};
+typedef std::bitset<4> RPG_Net_Protocol_UserModes_t;
 
 // phonebook
 typedef std::set<std::string> RPG_Net_Protocol_Networks_t;

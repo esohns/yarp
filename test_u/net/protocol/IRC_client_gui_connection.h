@@ -22,6 +22,7 @@
 
 #include "IRC_client_gui_common.h"
 
+#include <rpg_net_protocol_common.h>
 #include <rpg_net_protocol_iIRCControl.h>
 #include <rpg_net_protocol_inotify.h>
 
@@ -84,15 +85,18 @@ class IRC_Client_GUI_Connection
 //   IRC_Client_GUI_MessageHandler* getHandler(const std::string&); // channel name
   void log(const RPG_Net_Protocol_IRCMessage&);
   void error(const RPG_Net_Protocol_IRCMessage&);
+  const std::string nick();
 
-  std::string          myUIFileDirectory;
-  connection_cb_data_t myCBData;
+  std::string                  myUIFileDirectory;
+  connection_cb_data_t         myCBData;
 
-  ACE_Thread_Mutex     myLock;
-  message_handlers_t   myMessageHandlers;
+  ACE_Thread_Mutex             myLock;
+  message_handlers_t           myMessageHandlers;
 
-  GtkNotebook*         myParent;
-  guint                myContextID;
+  RPG_Net_Protocol_UserModes_t myUserModes;
+
+  GtkNotebook*                 myParent;
+  guint                        myContextID;
 };
 
 #endif

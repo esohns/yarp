@@ -23,6 +23,7 @@
 
 #include "IRC_client_gui_common.h"
 
+#include <rpg_net_protocol_common.h>
 #include <rpg_net_protocol_iIRCControl.h>
 
 #include <gtk/gtk.h>
@@ -58,9 +59,15 @@ class IRC_Client_GUI_MessageHandler
   GtkWidget* getTopLevelPageChild();
 
   const std::string getChannel() const;
+
   void setTopic(const std::string&);
-  void appendMembers(const string_list_t&);
-  void endMembers();
+  void setMode(const RPG_Net_Protocol_ChannelMode&,
+               const bool&);
+
+  void add(const std::string&);
+  void remove(const std::string&);
+  void append(const string_list_t&);
+  void end();
 
  private:
   // safety measures
@@ -69,16 +76,18 @@ class IRC_Client_GUI_MessageHandler
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_MessageHandler& operator=(const IRC_Client_GUI_MessageHandler&));
 
   // helper methods
-  void clearMembers();
+  void clear();
 
-  channel_cb_data_t       myCBData;
+  channel_cb_data_t               myCBData;
 
-  ACE_Thread_Mutex        myLock;
-  std::deque<std::string> myDisplayQueue;
-  GtkTextView*            myView;
+  ACE_Thread_Mutex                myLock;
+  std::deque<std::string>         myDisplayQueue;
+  GtkTextView*                    myView;
 
-  bool                    myIsFirstNameListMsg;
-  GtkNotebook*            myParent;
+  RPG_Net_Protocol_ChannelModes_t myChannelModes;
+
+  bool                            myIsFirstNameListMsg;
+  GtkNotebook*                    myParent;
 };
 
 #endif

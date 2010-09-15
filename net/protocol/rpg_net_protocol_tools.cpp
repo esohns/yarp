@@ -1027,6 +1027,146 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
   return result;
 }
 
+const RPG_Net_Protocol_ChannelMode
+RPG_Net_Protocol_Tools::IRCChannelModeChar2ChannelMode(const char& mode_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCChannelModeChar2ChannelMode"));
+
+  // init result
+  RPG_Net_Protocol_ChannelMode result = CHANNELMODE_INVALID;
+
+  switch (mode_in)
+  {
+    case 'l':
+      result = CHANNELMODE_USERLIMIT; break;
+    case 'm':
+      result = CHANNELMODE_MODERATED; break;
+    case 'n':
+      result = CHANNELMODE_NOMSGFROMBEYOND; break;
+    case 't':
+      result = CHANNELMODE_RESTRICTEDTOPIC; break;
+    case 'i':
+      result = CHANNELMODE_INVITEONLY; break;
+    case 's':
+      result = CHANNELMODE_SECRET; break;
+    case 'p':
+      result = CHANNELMODE_PRIVATE; break;
+    case 'o':
+      result = CHANNELMODE_ALLOWCHANOPPRIV; break;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid channel mode (was: %d), aborting\n"),
+                 mode_in));
+
+      break;
+    }
+  } // end SWITCH
+
+  return result;
+}
+
+const RPG_Net_Protocol_UserMode
+RPG_Net_Protocol_Tools::IRCUserModeChar2UserMode(const char& mode_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCUserModeChar2UserMode"));
+
+  // init result
+  RPG_Net_Protocol_UserMode result = USERMODE_INVALID;
+
+  switch (mode_in)
+  {
+    case 'o':
+      result = USERMODE_OPERATOR; break;
+    case 'w':
+      result = USERMODE_RECVWALLOPS; break;
+    case 's':
+      result = USERMODE_RECVNOTICES; break;
+    case 'i':
+      result = USERMODE_INVISIBLE; break;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid user mode (was: %d), aborting\n"),
+                 mode_in));
+
+      break;
+    }
+  } // end SWITCH
+
+  return result;
+}
+
+const std::string
+RPG_Net_Protocol_Tools::IRCChannelMode2String(const RPG_Net_Protocol_ChannelMode& mode_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCChannelMode2String"));
+
+  // init result
+  std::string result;
+
+  switch (mode_in)
+  {
+    case CHANNELMODE_USERLIMIT:
+      result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_USERLIMIT"); break;
+    case CHANNELMODE_MODERATED:
+      result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_MODERATED"); break;
+    case CHANNELMODE_NOMSGFROMBEYOND:
+      result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_NOMSGFROMBEYOND"); break;
+    case CHANNELMODE_RESTRICTEDTOPIC:
+      result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_RESTRICTEDTOPIC"); break;
+    case CHANNELMODE_INVITEONLY:
+      result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_INVITEONLY"); break;
+    case CHANNELMODE_SECRET:
+      result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_SECRET"); break;
+    case CHANNELMODE_PRIVATE:
+      result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_PRIVATE"); break;
+    case CHANNELMODE_ALLOWCHANOPPRIV:
+      result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_ALLOWCHANOPPRIV"); break;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid channel mode (was: %d), aborting\n"),
+                 mode_in));
+
+      break;
+    }
+  } // end SWITCH
+
+  return result;
+}
+
+const std::string
+RPG_Net_Protocol_Tools::IRCUserMode2String(const RPG_Net_Protocol_UserMode& mode_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCUserMode2String"));
+
+  // init result
+  std::string result;
+
+  switch (mode_in)
+  {
+    case USERMODE_OPERATOR:
+      result = ACE_TEXT_ALWAYS_CHAR("USERMODE_OPERATOR"); break;
+    case USERMODE_RECVWALLOPS:
+      result = ACE_TEXT_ALWAYS_CHAR("USERMODE_RECVWALLOPS"); break;
+    case USERMODE_RECVNOTICES:
+      result = ACE_TEXT_ALWAYS_CHAR("USERMODE_RECVNOTICES"); break;
+    case USERMODE_INVISIBLE:
+      result = ACE_TEXT_ALWAYS_CHAR("USERMODE_INVISIBLE"); break;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid user mode (was: %d), aborting\n"),
+                 mode_in));
+
+      break;
+    }
+  } // end SWITCH
+
+  return result;
+}
+
 const std::string
 RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& message_in)
 {

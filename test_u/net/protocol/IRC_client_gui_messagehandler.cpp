@@ -448,9 +448,21 @@ IRC_Client_GUI_MessageHandler::setTopic(const std::string& topic_in)
 }
 
 void
-IRC_Client_GUI_MessageHandler::clearMembers()
+IRC_Client_GUI_MessageHandler::setMode(const RPG_Net_Protocol_ChannelMode& mode_in,
+                                       const bool& enable_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::clearMembers"));
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::setMode"));
+
+  // sanity check(s)
+  ACE_ASSERT(mode_in < ACE_static_cast(int, myChannelModes.size()));
+
+  myChannelModes.set(mode_in, enable_in);
+}
+
+void
+IRC_Client_GUI_MessageHandler::clear()
+{
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::clear"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
@@ -466,16 +478,151 @@ IRC_Client_GUI_MessageHandler::clearMembers()
 }
 
 void
-IRC_Client_GUI_MessageHandler::appendMembers(const string_list_t& list_in)
+IRC_Client_GUI_MessageHandler::add(const std::string& nick_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::appendMembers"));
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::add"));
+
+  // retrieve channel liststore handle
+  GtkListStore* channel_liststore = NULL;
+  channel_liststore = GTK_LIST_STORE(gtk_builder_get_object(myCBData.builder,
+                                                            ACE_TEXT_ALWAYS_CHAR("channel_liststore")));
+  ACE_ASSERT(channel_liststore);
+
+  // step1: convert text
+  GtkTreeIter iter;
+  gchar* converted_text = NULL;
+  GError* conversion_error = NULL;
+  converted_text = g_locale_to_utf8(nick_in.c_str(), // text
+                                    -1,   // \0-terminated
+                                    NULL, // bytes read (don't care)
+                                    NULL, // bytes written (don't care)
+                                    &conversion_error); // return value: error
+  if (conversion_error)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to convert nickname: \"%s\", aborting\n"),
+               conversion_error->message));
+
+      // clean up
+    g_error_free(conversion_error);
+
+    return;
+  } // end IF
+
+  // sanity check
+  ACE_ASSERT(converted_text);
+
+  // step2: append new (text) entry
+  gtk_list_store_append(channel_liststore, &iter);
+  gtk_list_store_set(channel_liststore, &iter,
+                     0, converted_text, // column 0
+                     -1);
+
+  // clean up
+  g_free(converted_text);
+}
+
+void
+IRC_Client_GUI_MessageHandler::remove(const std::string& nick_in)
+{
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::remove"));
+
+  // retrieve channel liststore handle
+  GtkListStore* channel_liststore = NULL;
+  channel_liststore = GTK_LIST_STORE(gtk_builder_get_object(myCBData.builder,
+                                                            ACE_TEXT_ALWAYS_CHAR("channel_liststore")));
+  ACE_ASSERT(channel_liststore);
+
+  // step1: convert text
+  gchar* converted_text = NULL;
+  GError* conversion_error = NULL;
+  converted_text = g_locale_to_utf8(nick_in.c_str(), // text
+                                    -1,   // \0-terminated
+                                    NULL, // bytes read (don't care)
+                                    NULL, // bytes written (don't care)
+                                    &conversion_error); // return value: error
+  if (conversion_error)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to convert nickname: \"%s\", aborting\n"),
+               conversion_error->message));
+
+      // clean up
+    g_error_free(conversion_error);
+
+    return;
+  } // end IF
+
+  // sanity check
+  ACE_ASSERT(converted_text);
+
+  // step2: find matching entry
+  GtkTreeIter current_iter;
+//   GValue current_value;
+  gchar* current_value_string = NULL;
+  if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(channel_liststore),
+                                     &current_iter))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to gtk_tree_model_get_iter_first(%@), aborting\n"),
+               channel_liststore));
+
+    // clean up
+    g_free(converted_text);
+
+    return;
+  } // end IF
+  bool found_row = false;
+  do
+  {
+    current_value_string = NULL;
+
+    // retrieve value
+//     gtk_tree_model_get_value(GTK_TREE_MODEL(channel_liststore),
+//                              current_iter,
+//                              0, &current_value);
+    gtk_tree_model_get(GTK_TREE_MODEL(channel_liststore),
+                       &current_iter,
+                       0, &current_value_string,
+                       -1);
+    if (g_strcasecmp(converted_text, current_value_string) == 0)
+    {
+      found_row = true;
+
+      // clean up
+      g_free(current_value_string);
+
+      break; // found value
+    }
+
+    // clean up
+    g_free(current_value_string);
+  } while (gtk_tree_model_iter_next(GTK_TREE_MODEL(channel_liststore),
+                                    &current_iter));
+
+  // clean up
+  g_free(converted_text);
+
+  if (found_row)
+    gtk_list_store_remove(channel_liststore,
+                          &current_iter);
+  else
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to remove nick (was: \"%s\"), aborting\n"),
+               nick_in.c_str()));
+}
+
+void
+IRC_Client_GUI_MessageHandler::append(const string_list_t& list_in)
+{
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::append"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
 
   if (myIsFirstNameListMsg)
   {
-    clearMembers();
+    clear();
 
     myIsFirstNameListMsg = false;
   } // end IF
@@ -528,9 +675,9 @@ IRC_Client_GUI_MessageHandler::appendMembers(const string_list_t& list_in)
 }
 
 void
-IRC_Client_GUI_MessageHandler::endMembers()
+IRC_Client_GUI_MessageHandler::end()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::endMembers"));
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::end"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
