@@ -45,7 +45,7 @@ AC_ARG_ENABLE(debug,
               ,
               enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
-  CXXFLAGS="${CXXFLAGS} -g3 -O0 -march=i686 -Wall"
+  CXXFLAGS="${CXXFLAGS} -g -march=i686 -Wall"
   AC_MSG_RESULT(yes)
 else
   CXXFLAGS="${CXXFLAGS} -O3 -march=i686"

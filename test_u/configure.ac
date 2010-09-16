@@ -4,13 +4,14 @@
 AC_INIT(test_u, 0.1, erik.sohns@web.de)
 AC_PREREQ([2.63])
 AC_CONFIG_SRCDIR([config.h.in])
+AC_CONFIG_AUX_DIR([.])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 # get system information
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_TARGET
 
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -21,7 +22,7 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 # AC_PROG_RANLIB
-AM_PROG_LIBTOOL
+# AM_PROG_LIBTOOL
 
 # init other tools.
 #AM_INIT_AUTOMAKE([gnu nostdinc -Wall])
@@ -45,7 +46,7 @@ AC_ARG_ENABLE(debug,
               ,
               enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
-  CXXFLAGS="${CXXFLAGS} -g3 -O0 -march=i686 -Wall"
+  CXXFLAGS="${CXXFLAGS} -g -march=i686 -Wall"
   AC_MSG_RESULT(yes)
 else
   CXXFLAGS="${CXXFLAGS} -O3 -march=i686"
@@ -57,12 +58,13 @@ fi
 AC_SUBST(CXXFLAGS)
 
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-lACE':
-AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lpthread':
 AC_CHECK_LIB([pthread], [main])
+# FIXME: Replace `main' with a function in `-lACE':
+AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lxerces-c':
 AC_CHECK_LIB([xerces-c], [main])
+AC_CHECK_LIB(gthread-2.0, g_thread_init)
 
 # Checks for header files.
 AC_HEADER_STDBOOL

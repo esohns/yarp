@@ -38,7 +38,11 @@ update_display_cb(gpointer userData_in)
                                                                   userData_in);
   ACE_ASSERT(messageHandler);
 
+  GDK_THREADS_ENTER();
+
   messageHandler->update();
+
+  GDK_THREADS_LEAVE();
 
   // remove us from the gtk_main loop idle routine...
   return FALSE;
@@ -607,9 +611,9 @@ IRC_Client_GUI_MessageHandler::update()
                              NULL,
                              TRUE);
 //   gdk_region_destroy(region);
+//   gtk_widget_queue_draw(GTK_WIDGET(myView));
   gdk_window_process_updates(GTK_WIDGET(myView)->window, TRUE);
 //   gdk_window_process_all_updates();
-  gtk_widget_queue_draw(GTK_WIDGET(myView));
 }
 
 GtkWidget*

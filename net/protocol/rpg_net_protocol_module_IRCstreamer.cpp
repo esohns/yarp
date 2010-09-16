@@ -285,8 +285,8 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
   // parameter(s)
   if (!message_inout->getData()->params.empty())
   {
-    int i = message_inout->getData()->params.size();
-    for (std::list<std::string>::const_iterator iterator = message_inout->getData()->params.begin();
+    unsigned long  i = message_inout->getData()->params.size();
+    for (RPG_Net_Protocol_ParametersIterator_t iterator = message_inout->getData()->params.begin();
          iterator != message_inout->getData()->params.end();
          iterator++, i--)
     {
@@ -307,7 +307,10 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
         return;
       } // end IF
       // add a <SPACE>
-      *message_inout->wr_ptr() = param_separator;
+      if (i == message_inout->getData()->params.size())
+        *message_inout->wr_ptr() = ' ';
+      else
+        *message_inout->wr_ptr() = param_separator;
       message_inout->wr_ptr(1);
 
       // special handling for last parameter
@@ -376,4 +379,9 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
   *message_inout->wr_ptr() = '\r';
   *(message_inout->wr_ptr() + 1) = '\n';
   message_inout->wr_ptr(RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE);
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("[%u]: streamed [%u byte(s)]...\n"),
+             message_inout->getID(),
+             message_inout->length()));
 }

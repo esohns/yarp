@@ -125,10 +125,10 @@ RPG_Net_Protocol_SocketHandler::svc(void)
       }
       default:
       {
-//         ACE_DEBUG((LM_DEBUG,
-//                   ACE_TEXT("[%u]: sent %u bytes...\n"),
-//                   peer_.get_handle(),
-//                   bytes_sent));
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("[%u]: sent %u bytes...\n"),
+                   peer_.get_handle(),
+                   bytes_sent));
 
         // finished with this buffer ?
         if (ACE_static_cast(size_t, bytes_sent) == myCurrentWriteBuffer->length())

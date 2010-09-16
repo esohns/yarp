@@ -387,6 +387,9 @@ connect_clicked_cb(GtkWidget* button_in,
     return;
   } // end IF
 
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("registering...\n")));
+
   // step5: register our connection with the server
   try
   {
@@ -398,6 +401,9 @@ connect_clicked_cb(GtkWidget* button_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::registerConnection(), continuing\n")));
   }
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("registering...DONE\n")));
 
   // synch access
   {
@@ -1714,7 +1720,10 @@ ACE_TMAIN(int argc,
 //   ACE_Sig_Action no_sigpipe((ACE_SignalHandler)SIG_IGN, SIGPIPE);
 
   // init GTK
+  g_thread_init(NULL);
+  gdk_threads_init();
   gtk_init(&argc, &argv);
+  GDK_THREADS_ENTER();
 
   // step2 init/validate configuration
 
@@ -1855,6 +1864,7 @@ ACE_TMAIN(int argc,
 
   // clean up
   g_object_unref(userData.builder);
+  GDK_THREADS_LEAVE();
 
   // debug info
   process_profile.stop();
