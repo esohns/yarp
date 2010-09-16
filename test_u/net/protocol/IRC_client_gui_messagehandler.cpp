@@ -22,6 +22,7 @@
 
 #include "IRC_client_gui_defines.h"
 
+#include <rpg_net_protocol_tools.h>
 #include <rpg_common_file_tools.h>
 
 // update callback
@@ -107,6 +108,7 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
                                                              const std::string& UIFileDirectory_in,
                                                              GtkNotebook* notebook_in)
  : myView(NULL),
+   myChannelModes(0),
    myIsFirstNameListMsg(true),
    myParent(notebook_in)
 {
@@ -290,12 +292,8 @@ IRC_Client_GUI_MessageHandler::queueForDisplay(const std::string& text_in)
     myDisplayQueue.push_back(text_in);
   } // end lock scope
 
-  GDK_THREADS_ENTER();
-
   // trigger asnych update
   g_idle_add(update_display_cb, this);
-
-  GDK_THREADS_LEAVE();
 }
 
 void
@@ -448,15 +446,13 @@ IRC_Client_GUI_MessageHandler::setTopic(const std::string& topic_in)
 }
 
 void
-IRC_Client_GUI_MessageHandler::setMode(const RPG_Net_Protocol_ChannelMode& mode_in,
-                                       const bool& enable_in)
+IRC_Client_GUI_MessageHandler::setModes(const std::string& modes_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::setMode"));
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::setModes"));
 
-  // sanity check(s)
-  ACE_ASSERT(mode_in < ACE_static_cast(int, myChannelModes.size()));
+  RPG_Net_Protocol_Tools::merge(modes_in,
+                                myChannelModes);
 
-  myChannelModes.set(mode_in, enable_in);
 }
 
 void

@@ -38,9 +38,8 @@ class IRC_Client_GUI_MessageHandler
 {
  public:
   // ctor for default handler (== server log)
-  // *WARNING*: make sure the ctor/dtor calls are made either:
-  // - by the main thread (servicing the gtk_main event loop)
-  // - protected by GDK_THREADS_ENTER/GDK_THREADS_LEAVE
+  // *WARNING*: ctors/dtor need GDK_THREADS_ENTER/GDK_THREADS_LEAVE protection
+  // (or call from gtk_main context...)
   IRC_Client_GUI_MessageHandler(GtkTextView*);                 // text view
   IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_IIRCControl*, // controller handle
                                 const std::string&,            // channel
@@ -48,21 +47,26 @@ class IRC_Client_GUI_MessageHandler
                                 GtkNotebook*);                 // parent widget
   virtual ~IRC_Client_GUI_MessageHandler();
 
-  // display (local) text
-  void queueForDisplay(const std::string&);
-  // *WARNING*: to be called from gtk_main (trigger with g_idle_add())
-  // --> do NOT invoke this from any other context (GTK is NOT threadsafe)
+  // *WARNING*: to be called from gtk_main context ONLY (trigger with g_idle_add())
+  // DO NOT USE DO NOT USE DO NOT USE DO NOT USE DO NOT USE DO NOT USE DO NOT USE !
+  // [cannot make this a private member :-(]
   void update();
-
-  // *NOTE*: returns the toplevel widget of the channel page tab child
-  // *WARNING*: the server log handler doesn't have dynamic children --> use with care !
-  GtkWidget* getTopLevelPageChild();
 
   const std::string getChannel() const;
 
+  // *WARNING*: any method below this point needs to be either:
+  // - protected by GDK_THREADS_ENTER/GDK_THREADS_LEAVE
+  // - called from gtk_main context
+
+  // display (local) text
+  void queueForDisplay(const std::string&);
+
+  // returns the toplevel widget of the channel page tab child
+  // *NOTE*: the server log handler page doesn't have dynamic (!) children...
+  GtkWidget* getTopLevelPageChild();
+
   void setTopic(const std::string&);
-  void setMode(const RPG_Net_Protocol_ChannelMode&,
-               const bool&);
+  void setModes(const std::string&);
 
   void add(const std::string&);
   void remove(const std::string&);

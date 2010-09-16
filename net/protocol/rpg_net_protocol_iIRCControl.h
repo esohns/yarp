@@ -37,9 +37,15 @@ class RPG_Net_Protocol_IIRCControl
   virtual void subscribe(RPG_Net_Protocol_INotify*) = 0; // new subscriber
   virtual void unsubscribe(RPG_Net_Protocol_INotify*) = 0; // existing subscriber
   virtual void registerConnection(const RPG_Net_Protocol_IRCLoginOptions&) = 0; // login details
+  virtual void nick(const std::string&) = 0; // nick
   virtual void join(const std::string&) = 0; // channel
   virtual void part(const std::string&) = 0; // channel
-  virtual void send(const std::string&,      // channel
+  virtual void mode(const std::string&, // nick/channel
+                    const char&,        // user/channel mode
+                    const bool&) = 0;   // enable ?
+  virtual void topic(const std::string&,      // channel
+                     const std::string&) = 0; // topic
+  virtual void send(const std::string&,      // nick/channel
                     const std::string&) = 0; // message
   virtual void quit(const std::string&) = 0; // reason
 };

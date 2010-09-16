@@ -81,11 +81,12 @@ class IRC_Client_GUI_Connection
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_Connection(const IRC_Client_GUI_Connection&));
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_Connection& operator=(const IRC_Client_GUI_Connection&));
 
-//   // helper methods
-//   IRC_Client_GUI_MessageHandler* getHandler(const std::string&); // channel name
+  // helper methods
+  const bool forward(const std::string&,  // channel
+                     const std::string&); // message text
   void log(const RPG_Net_Protocol_IRCMessage&);
   void error(const RPG_Net_Protocol_IRCMessage&);
-  const std::string nick();
+//   const std::string nick();
 
   std::string                  myUIFileDirectory;
   connection_cb_data_t         myCBData;

@@ -53,6 +53,7 @@ struct connection_cb_data_t
   // *WARNING*: mainBuilder needs exclusive access under the "connectionsLock"
   GtkBuilder*                   mainBuilder;
   GtkBuilder*                   builder;
+  std::string                   nickname;
   RPG_Net_Protocol_IIRCControl* controller;
   ACE_Thread_Mutex*             connectionsLock;
   connections_t*                connections;

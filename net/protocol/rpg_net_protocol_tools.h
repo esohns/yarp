@@ -34,14 +34,18 @@ class RPG_Net_Protocol_Tools
  public:
   // debug info
   static const std::string dump(const RPG_Net_Protocol_IRCMessage&);
-  static const RPG_Net_Protocol_CommandType_t IRCCommandString2Type(const std::string&);
   static const std::string IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t&);
-  static const RPG_Net_Protocol_UserMode IRCUserModeChar2UserMode(const char&);
-  static const RPG_Net_Protocol_ChannelMode IRCChannelModeChar2ChannelMode(const char&);
   static const std::string IRCChannelMode2String(const RPG_Net_Protocol_ChannelMode&);
   static const std::string IRCUserMode2String(const RPG_Net_Protocol_UserMode&);
-
   static const std::string IRCMessage2String(const RPG_Net_Protocol_IRCMessage&);
+
+  static const RPG_Net_Protocol_CommandType_t IRCCommandString2Type(const std::string&);
+  static void merge(const std::string&,             // mode string (e.g. "+i")
+                    RPG_Net_Protocol_UserModes_t&); // input/return value: (merged) user modes
+  static void merge(const std::string&,                // mode string (e.g. "+i")
+                    RPG_Net_Protocol_ChannelModes_t&); // input/return value: (merged) channel modes
+  static const char IRCChannelMode2Char(const RPG_Net_Protocol_ChannelMode&);
+  static const char IRCUserMode2Char(const RPG_Net_Protocol_UserMode&);
 
  private:
   // safety measures
@@ -51,6 +55,8 @@ class RPG_Net_Protocol_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools& operator=(const RPG_Net_Protocol_Tools&));
 
   // helper methods
+  static const RPG_Net_Protocol_UserMode IRCUserModeChar2UserMode(const char&);
+  static const RPG_Net_Protocol_ChannelMode IRCChannelModeChar2ChannelMode(const char&);
   static const std::string concatParams(const RPG_Net_Protocol_Parameters_t&, // parameters
                                         const unsigned long& = 0);            // starting index
 };
