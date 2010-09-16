@@ -204,7 +204,7 @@ RPG_Net_Protocol_Tools::merge(const std::string& modes_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::merge"));
 
-  // *NOTE* format is {[+|-]|o|p|s|i|t|n|b|v}
+  // *NOTE* format is {[+|-]|o|p|s|i|t|n|m|l|b|v|k}
   bool assign = (modes_in[0] == '+');
   std::string::const_iterator iterator = modes_in.begin();
   for (iterator++;
@@ -220,11 +220,17 @@ RPG_Net_Protocol_Tools::IRCChannelMode2Char(const RPG_Net_Protocol_ChannelMode& 
 
   switch (mode_in)
   {
+    case CHANNELMODE_PASSWORD:
+      return 'k';
+    case CHANNELMODE_VOICE:
+      return 'v';
+    case CHANNELMODE_BAN:
+      return 'b';
     case CHANNELMODE_USERLIMIT:
       return 'l';
     case CHANNELMODE_MODERATED:
       return 'm';
-    case CHANNELMODE_NOMSGFROMBEYOND:
+    case CHANNELMODE_BLOCKFOREIGNMSGS:
       return 'n';
     case CHANNELMODE_RESTRICTEDTOPIC:
       return 't';
@@ -234,7 +240,7 @@ RPG_Net_Protocol_Tools::IRCChannelMode2Char(const RPG_Net_Protocol_ChannelMode& 
       return 's';
     case CHANNELMODE_PRIVATE:
       return 'p';
-    case CHANNELMODE_CHANNELOPERATOR:
+    case CHANNELMODE_OPERATOR:
       return 'o';
     default:
     {
@@ -1138,7 +1144,7 @@ RPG_Net_Protocol_Tools::IRCChannelModeChar2ChannelMode(const char& mode_in)
     case 'm':
       result = CHANNELMODE_MODERATED; break;
     case 'n':
-      result = CHANNELMODE_NOMSGFROMBEYOND; break;
+      result = CHANNELMODE_BLOCKFOREIGNMSGS; break;
     case 't':
       result = CHANNELMODE_RESTRICTEDTOPIC; break;
     case 'i':
@@ -1148,7 +1154,7 @@ RPG_Net_Protocol_Tools::IRCChannelModeChar2ChannelMode(const char& mode_in)
     case 'p':
       result = CHANNELMODE_PRIVATE; break;
     case 'o':
-      result = CHANNELMODE_CHANNELOPERATOR; break;
+      result = CHANNELMODE_OPERATOR; break;
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -1203,12 +1209,18 @@ RPG_Net_Protocol_Tools::IRCChannelMode2String(const RPG_Net_Protocol_ChannelMode
 
   switch (mode_in)
   {
+    case CHANNELMODE_PASSWORD:
+      result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_PASSWORD"); break;
+    case CHANNELMODE_VOICE:
+      result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_VOICE"); break;
+    case CHANNELMODE_BAN:
+      result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_BAN"); break;
     case CHANNELMODE_USERLIMIT:
       result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_USERLIMIT"); break;
     case CHANNELMODE_MODERATED:
       result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_MODERATED"); break;
-    case CHANNELMODE_NOMSGFROMBEYOND:
-      result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_NOMSGFROMBEYOND"); break;
+    case CHANNELMODE_BLOCKFOREIGNMSGS:
+      result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_BLOCKFOREIGNMSGS"); break;
     case CHANNELMODE_RESTRICTEDTOPIC:
       result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_RESTRICTEDTOPIC"); break;
     case CHANNELMODE_INVITEONLY:
@@ -1217,8 +1229,8 @@ RPG_Net_Protocol_Tools::IRCChannelMode2String(const RPG_Net_Protocol_ChannelMode
       result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_SECRET"); break;
     case CHANNELMODE_PRIVATE:
       result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_PRIVATE"); break;
-    case CHANNELMODE_CHANNELOPERATOR:
-      result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_CHANNELOPERATOR"); break;
+    case CHANNELMODE_OPERATOR:
+      result = ACE_TEXT_ALWAYS_CHAR("CHANNELMODE_OPERATOR"); break;
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -1317,11 +1329,13 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRC_Codes::RPL_CREATED:       //   3
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCLIENT:   // 251
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERME:       // 255
+        case RPG_Net_Protocol_IRC_Codes::RPL_TRYAGAIN:      // 263
         case RPG_Net_Protocol_IRC_Codes::RPL_LOCALUSERS:    // 265
         case RPG_Net_Protocol_IRC_Codes::RPL_GLOBALUSERS:   // 266
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTD:          // 372
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:     // 375
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:     // 376
+        case RPG_Net_Protocol_IRC_Codes::ERR_CHANOPRIVSNEEDED: // 482
         {
           result = message_in.params.back();
 
@@ -1332,6 +1346,9 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRC_Codes::RPL_YOURID:        //  42
         case RPG_Net_Protocol_IRC_Codes::RPL_STATSDLINE:    // 250
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCHANNELS: // 254
+        case RPG_Net_Protocol_IRC_Codes::RPL_LISTSTART:     // 321
+        case RPG_Net_Protocol_IRC_Codes::RPL_LIST:          // 322
+        case RPG_Net_Protocol_IRC_Codes::RPL_LISTEND:       // 323
         case RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE: // 433
         {
           result = RPG_Net_Protocol_Tools::concatParams(message_in.params,

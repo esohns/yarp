@@ -23,6 +23,7 @@
 #include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_tools.h"
 
 RPG_Net_Protocol_Module_IRCStreamer::RPG_Net_Protocol_Module_IRCStreamer()
 //  : inherited()
@@ -191,6 +192,8 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
   } // end IF
 
   // command
+  // *NOTE*: select correct parameter separator (either ' ' (default) or ',' (list))
+  char param_separator = ' ';
   switch (message_inout->getData()->command.discriminator)
   {
     case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
@@ -251,6 +254,16 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
         return;
       } // end IF
 
+      // find correct parameter separator
+      switch (RPG_Net_Protocol_Tools::IRCCommandString2Type(*message_inout->getData()->command.string))
+      {
+        case RPG_Net_Protocol_IRCMessage::NAMES:
+        case RPG_Net_Protocol_IRCMessage::LIST:
+          param_separator = ','; break;
+        default:
+          break;
+      } // end SWITCH
+
       break;
     }
     default:
@@ -294,11 +307,12 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
         return;
       } // end IF
       // add a <SPACE>
-      *message_inout->wr_ptr() = ' ';
+      *message_inout->wr_ptr() = param_separator;
       message_inout->wr_ptr(1);
 
       // special handling for last parameter
-      if (i == 1)
+      if ((i == 1) &&
+          (param_separator == ' ')) // doesn't make sense for lists...
       {
         // if necessary, prefix the trailing parameter
         if ((*iterator).find(' ') != std::string::npos)

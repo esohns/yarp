@@ -49,15 +49,153 @@ extern "C"
 {
 #endif /* __cplusplus */
 void
+channel_mode_toggled_cb(GtkToggleButton* toggleButton_in,
+                        gpointer userData_in)
+{
+  ACE_TRACE(ACE_TEXT("::channel_mode_toggled_cb"));
+
+  //   ACE_DEBUG((LM_DEBUG,
+  //              ACE_TEXT("channel_mode_toggled_cb...\n")));
+
+  channel_cb_data_t* data = ACE_static_cast(channel_cb_data_t*,
+                                            userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(toggleButton_in);
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->builder);
+  ACE_ASSERT(!data->channel.empty());
+
+  RPG_Net_Protocol_ChannelMode mode = CHANNELMODE_INVALID;
+  // find out which button toggled...
+  GtkToggleButton* button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
+                                              ACE_TEXT_ALWAYS_CHAR("mode_key_togglebutton")));
+  ACE_ASSERT(button);
+  if (button == toggleButton_in)
+    mode = CHANNELMODE_PASSWORD;
+  else
+  {
+    button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
+                               ACE_TEXT_ALWAYS_CHAR("mode_voice_togglebutton")));
+    ACE_ASSERT(button);
+    if (button == toggleButton_in)
+      mode = CHANNELMODE_VOICE;
+    else
+    {
+      button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
+                                 ACE_TEXT_ALWAYS_CHAR("mode_ban_togglebutton")));
+      ACE_ASSERT(button);
+      if (button == toggleButton_in)
+        mode = CHANNELMODE_BAN;
+      else
+      {
+        button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
+                                               ACE_TEXT_ALWAYS_CHAR("mode_userlimit_togglebutton")));
+        ACE_ASSERT(button);
+        if (button == toggleButton_in)
+          mode = CHANNELMODE_USERLIMIT;
+        else
+        {
+          button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
+                                     ACE_TEXT_ALWAYS_CHAR("mode_moderated_togglebutton")));
+          ACE_ASSERT(button);
+          if (button == toggleButton_in)
+            mode = CHANNELMODE_MODERATED;
+          else
+          {
+            button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
+                                       ACE_TEXT_ALWAYS_CHAR("mode_blockforeign_togglebutton")));
+            ACE_ASSERT(button);
+            if (button == toggleButton_in)
+              mode = CHANNELMODE_BLOCKFOREIGNMSGS;
+            else
+            {
+              button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
+                                         ACE_TEXT_ALWAYS_CHAR("mode_restricttopic_togglebutton")));
+              ACE_ASSERT(button);
+              if (button == toggleButton_in)
+                mode = CHANNELMODE_RESTRICTEDTOPIC;
+              else
+              {
+                button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
+                                           ACE_TEXT_ALWAYS_CHAR("mode_inviteonly_togglebutton")));
+                ACE_ASSERT(button);
+                if (button == toggleButton_in)
+                  mode = CHANNELMODE_INVITEONLY;
+                else
+                {
+                  button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
+                                             ACE_TEXT_ALWAYS_CHAR("mode_secret_togglebutton")));
+                  ACE_ASSERT(button);
+                  if (button == toggleButton_in)
+                    mode = CHANNELMODE_SECRET;
+                  else
+                  {
+                    button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
+                                               ACE_TEXT_ALWAYS_CHAR("mode_private_togglebutton")));
+                    ACE_ASSERT(button);
+                    if (button == toggleButton_in)
+                      mode = CHANNELMODE_PRIVATE;
+                    else
+                    {
+                      button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
+                                                 ACE_TEXT_ALWAYS_CHAR("mode_operator_togglebutton")));
+                      ACE_ASSERT(button);
+                      if (button == toggleButton_in)
+                        mode = CHANNELMODE_OPERATOR;
+                      else
+                      {
+                        ACE_DEBUG((LM_ERROR,
+                                   ACE_TEXT("invalid channel mode toggled (was: %@), aborting\n"),
+                                   toggleButton_in));
+
+                        return;
+                      } // end ELSE
+                    } // end ELSE
+                  } // end ELSE
+                } // end ELSE
+              } // end ELSE
+            } // end ELSE
+          } // end ELSE
+        } // end ELSE
+      } // end ELSE
+    } // end ELSE
+  } // end ELSE
+
+  // check if the state is inconsistent --> submit change request, else do nothing
+  // i.e. state is off and widget is "on" or vice-versa
+  // *NOTE*: prevents endless recursion
+  if (data->channelModes.test(mode) == toggleButton_in->active)
+    return;
+
+  // re-toggle button for now...
+  // *NOTE*: will be auto-toggled according to the outcome of the change request
+  gtk_toggle_button_set_active(toggleButton_in, data->channelModes.test(mode));
+
+  try
+  {
+    data->controller->mode(data->channel,                                     // channel mode
+                           RPG_Net_Protocol_Tools::IRCChannelMode2Char(mode), // corresponding mode char
+                           !data->channelModes.test(mode));                   // enable ?
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::mode(\"%s\"), continuing\n"),
+               RPG_Net_Protocol_Tools::IRCChannelMode2String(mode).c_str()));
+  }
+}
+
+void
 part_clicked_cb(GtkWidget* button_in,
                 gpointer userData_in)
 {
   ACE_TRACE(ACE_TEXT("::part_clicked_cb"));
 
-  ACE_UNUSED_ARG(button_in);
-
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("part_clicked_cb...\n")));
+
+  ACE_UNUSED_ARG(button_in);
 
   // sanity check(s)
   channel_cb_data_t* data = ACE_static_cast(channel_cb_data_t*,
@@ -108,7 +246,6 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
                                                              const std::string& UIFileDirectory_in,
                                                              GtkNotebook* notebook_in)
  : myView(NULL),
-   myChannelModes(0),
    myIsFirstNameListMsg(true),
    myParent(notebook_in)
 {
@@ -132,6 +269,7 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
   myCBData.builder = NULL;
   myCBData.channel = channel_in;
   myCBData.controller = controller_in;
+  myCBData.channelModes = 0;
 
   // create new GtkBuilder
   myCBData.builder = gtk_builder_new();
@@ -191,13 +329,13 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
                                              ACE_TEXT_ALWAYS_CHAR("channel_tab_template")));
   ACE_ASSERT(parent);
   // retrieve channel tab
-  GtkFrame* channel_tab_frame = GTK_FRAME(gtk_builder_get_object(myCBData.builder,
-                                                                 ACE_TEXT_ALWAYS_CHAR("channel_tab_frame")));
-  ACE_ASSERT(channel_tab_frame);
-  g_object_ref(channel_tab_frame);
-  gtk_container_remove(GTK_CONTAINER(parent), GTK_WIDGET(channel_tab_frame));
+  GtkVBox* channel_tab_vbox = GTK_VBOX(gtk_builder_get_object(myCBData.builder,
+                                                              ACE_TEXT_ALWAYS_CHAR("channel_tab_vbox")));
+  ACE_ASSERT(channel_tab_vbox);
+  g_object_ref(channel_tab_vbox);
+  gtk_container_remove(GTK_CONTAINER(parent), GTK_WIDGET(channel_tab_vbox));
   gint page_num = gtk_notebook_append_page(myParent,
-                                           GTK_WIDGET(channel_tab_frame),
+                                           GTK_WIDGET(channel_tab_vbox),
                                            GTK_WIDGET(channel_tab_label_hbox));
   if (page_num == -1)
   {
@@ -207,13 +345,13 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
 
     // clean up
     g_object_unref(channel_tab_label_hbox);
-    g_object_unref(channel_tab_frame);
+    g_object_unref(channel_tab_vbox);
 
     return;
   } // end IF
   // allow reordering
   gtk_notebook_set_tab_reorderable(myParent,
-                                   GTK_WIDGET(channel_tab_frame),
+                                   GTK_WIDGET(channel_tab_vbox),
                                    TRUE);
   // activate new page
   gtk_notebook_set_current_page(myParent,
@@ -221,7 +359,7 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
 
   // clean up
   g_object_unref(channel_tab_label_hbox);
-  g_object_unref(channel_tab_frame);
+  g_object_unref(channel_tab_vbox);
 
   // connect signal(s)
   GtkButton* channel_tab_label_button = GTK_BUTTON(gtk_builder_get_object(myCBData.builder,
@@ -231,7 +369,84 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(part_clicked_cb),
                    &myCBData);
-
+  // toggle buttons
+  GtkToggleButton* toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                     ACE_TEXT_ALWAYS_CHAR("mode_key_togglebutton")));
+  ACE_ASSERT(toggle_button);
+  g_signal_connect(toggle_button,
+                   ACE_TEXT_ALWAYS_CHAR("toggled"),
+                   G_CALLBACK(channel_mode_toggled_cb),
+                   &myCBData);
+  toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                    ACE_TEXT_ALWAYS_CHAR("mode_voice_togglebutton")));
+  ACE_ASSERT(toggle_button);
+  g_signal_connect(toggle_button,
+                   ACE_TEXT_ALWAYS_CHAR("toggled"),
+                   G_CALLBACK(channel_mode_toggled_cb),
+                   &myCBData);
+  toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                    ACE_TEXT_ALWAYS_CHAR("mode_ban_togglebutton")));
+  ACE_ASSERT(toggle_button);
+  g_signal_connect(toggle_button,
+                   ACE_TEXT_ALWAYS_CHAR("toggled"),
+                   G_CALLBACK(channel_mode_toggled_cb),
+                   &myCBData);
+  toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                           ACE_TEXT_ALWAYS_CHAR("mode_userlimit_togglebutton")));
+  ACE_ASSERT(toggle_button);
+  g_signal_connect(toggle_button,
+                   ACE_TEXT_ALWAYS_CHAR("toggled"),
+                   G_CALLBACK(channel_mode_toggled_cb),
+                   &myCBData);
+  toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                           ACE_TEXT_ALWAYS_CHAR("mode_moderated_togglebutton")));
+  ACE_ASSERT(toggle_button);
+  g_signal_connect(toggle_button,
+                   ACE_TEXT_ALWAYS_CHAR("toggled"),
+                   G_CALLBACK(channel_mode_toggled_cb),
+                   &myCBData);
+  toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                           ACE_TEXT_ALWAYS_CHAR("mode_blockforeign_togglebutton")));
+  ACE_ASSERT(toggle_button);
+  g_signal_connect(toggle_button,
+                   ACE_TEXT_ALWAYS_CHAR("toggled"),
+                   G_CALLBACK(channel_mode_toggled_cb),
+                   &myCBData);
+  toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                           ACE_TEXT_ALWAYS_CHAR("mode_restricttopic_togglebutton")));
+  ACE_ASSERT(toggle_button);
+  g_signal_connect(toggle_button,
+                   ACE_TEXT_ALWAYS_CHAR("toggled"),
+                   G_CALLBACK(channel_mode_toggled_cb),
+                   &myCBData);
+  toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                           ACE_TEXT_ALWAYS_CHAR("mode_inviteonly_togglebutton")));
+  ACE_ASSERT(toggle_button);
+  g_signal_connect(toggle_button,
+                   ACE_TEXT_ALWAYS_CHAR("toggled"),
+                   G_CALLBACK(channel_mode_toggled_cb),
+                   &myCBData);
+  toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                           ACE_TEXT_ALWAYS_CHAR("mode_secret_togglebutton")));
+  ACE_ASSERT(toggle_button);
+  g_signal_connect(toggle_button,
+                   ACE_TEXT_ALWAYS_CHAR("toggled"),
+                   G_CALLBACK(channel_mode_toggled_cb),
+                   &myCBData);
+  toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                           ACE_TEXT_ALWAYS_CHAR("mode_private_togglebutton")));
+  ACE_ASSERT(toggle_button);
+  g_signal_connect(toggle_button,
+                   ACE_TEXT_ALWAYS_CHAR("toggled"),
+                   G_CALLBACK(channel_mode_toggled_cb),
+                   &myCBData);
+  toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                           ACE_TEXT_ALWAYS_CHAR("mode_operator_togglebutton")));
+  ACE_ASSERT(toggle_button);
+  g_signal_connect(toggle_button,
+                   ACE_TEXT_ALWAYS_CHAR("toggled"),
+                   G_CALLBACK(channel_mode_toggled_cb),
+                   &myCBData);
   // retrieve text view
   myView = GTK_TEXT_VIEW(gtk_builder_get_object(myCBData.builder,
                                                 ACE_TEXT_ALWAYS_CHAR("channel_tab_textview")));
@@ -261,11 +476,11 @@ IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler()
 //   if (gtk_notebook_get_current_page(myParent) == myPageNum)
 //     gtk_notebook_prev_page(myParent);
 
-    GtkFrame* channel_tab_frame = GTK_FRAME(gtk_builder_get_object(myCBData.builder,
-                                                                   ACE_TEXT_ALWAYS_CHAR("channel_tab_frame")));
-    ACE_ASSERT(channel_tab_frame);
+    GtkVBox* channel_tab_vbox = GTK_VBOX(gtk_builder_get_object(myCBData.builder,
+                                                                ACE_TEXT_ALWAYS_CHAR("channel_tab_vbox")));
+    ACE_ASSERT(channel_tab_vbox);
     if (gtk_notebook_page_num(myParent,
-                              GTK_WIDGET(channel_tab_frame)) > 1)
+                              GTK_WIDGET(channel_tab_vbox)) > 1)
       gtk_notebook_prev_page(myParent);
     else
       gtk_notebook_next_page(myParent);
@@ -273,7 +488,7 @@ IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler()
     // remove channel page from channel tabs notebook
     gtk_notebook_remove_page(myParent,
                              gtk_notebook_page_num(myParent,
-                                                   GTK_WIDGET(channel_tab_frame)));
+                                                   GTK_WIDGET(channel_tab_vbox)));
 
     // clean up
     g_object_unref(myCBData.builder);
@@ -417,7 +632,7 @@ IRC_Client_GUI_MessageHandler::getTopLevelPageChild()
 
   // retrieve button handle
   return GTK_WIDGET(gtk_builder_get_object(myCBData.builder,
-                                           ACE_TEXT_ALWAYS_CHAR("channel_tab_frame")));
+                                           ACE_TEXT_ALWAYS_CHAR("channel_tab_vbox")));
 }
 
 const std::string
@@ -437,9 +652,8 @@ IRC_Client_GUI_MessageHandler::setTopic(const std::string& topic_in)
   ACE_ASSERT(myCBData.builder);
 
   // retrieve label handle
-  GtkLabel* channel_tab_topic_label = NULL;
-  channel_tab_topic_label = GTK_LABEL(gtk_builder_get_object(myCBData.builder,
-                                                             ACE_TEXT_ALWAYS_CHAR("channel_tab_topic_label")));
+  GtkLabel* channel_tab_topic_label = GTK_LABEL(gtk_builder_get_object(myCBData.builder,
+                                                                       ACE_TEXT_ALWAYS_CHAR("channel_tab_topic_label")));
   ACE_ASSERT(channel_tab_topic_label);
   gtk_label_set_text(channel_tab_topic_label,
                      topic_in.c_str());
@@ -451,8 +665,17 @@ IRC_Client_GUI_MessageHandler::setModes(const std::string& modes_in)
   ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::setModes"));
 
   RPG_Net_Protocol_Tools::merge(modes_in,
-                                myChannelModes);
+                                myCBData.channelModes);
 
+  updateModeButtons();
+
+  // enable channel modes ?
+  // retrieve channel tab mode hbox handle
+  GtkHBox* channel_tab_mode_hbox = GTK_HBOX(gtk_builder_get_object(myCBData.builder,
+                                                                   ACE_TEXT_ALWAYS_CHAR("channel_tab_mode_hbox")));
+  ACE_ASSERT(channel_tab_mode_hbox);
+  gtk_widget_set_sensitive(GTK_WIDGET(channel_tab_mode_hbox),
+                           myCBData.channelModes.test(CHANNELMODE_OPERATOR));
 }
 
 void
@@ -686,4 +909,67 @@ IRC_Client_GUI_MessageHandler::end()
                                                               ACE_TEXT_ALWAYS_CHAR("channel_tab_treeview")));
   ACE_ASSERT(channel_tab_treeview);
   gtk_widget_set_sensitive(GTK_WIDGET(channel_tab_treeview), TRUE);
+}
+
+void
+IRC_Client_GUI_MessageHandler::updateModeButtons()
+{
+  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::updateModeButtons"));
+
+  // display (changed) channel modes
+  GtkToggleButton* togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+      ACE_TEXT_ALWAYS_CHAR("mode_key_togglebutton")));
+  ACE_ASSERT(togglebutton);
+  gtk_toggle_button_set_active(togglebutton,
+                               myCBData.channelModes[CHANNELMODE_PASSWORD]);
+  togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                   ACE_TEXT_ALWAYS_CHAR("mode_voice_togglebutton")));
+  ACE_ASSERT(togglebutton);
+  gtk_toggle_button_set_active(togglebutton,
+                               myCBData.channelModes[CHANNELMODE_VOICE]);
+  togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                   ACE_TEXT_ALWAYS_CHAR("mode_ban_togglebutton")));
+  ACE_ASSERT(togglebutton);
+  gtk_toggle_button_set_active(togglebutton,
+                               myCBData.channelModes[CHANNELMODE_BAN]);
+  togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                          ACE_TEXT_ALWAYS_CHAR("mode_userlimit_togglebutton")));
+  ACE_ASSERT(togglebutton);
+  gtk_toggle_button_set_active(togglebutton,
+                               myCBData.channelModes[CHANNELMODE_USERLIMIT]);
+  togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                   ACE_TEXT_ALWAYS_CHAR("mode_moderated_togglebutton")));
+  ACE_ASSERT(togglebutton);
+  gtk_toggle_button_set_active(togglebutton,
+                               myCBData.channelModes[CHANNELMODE_MODERATED]);
+  togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                   ACE_TEXT_ALWAYS_CHAR("mode_blockforeign_togglebutton")));
+  ACE_ASSERT(togglebutton);
+  gtk_toggle_button_set_active(togglebutton,
+                               myCBData.channelModes[CHANNELMODE_BLOCKFOREIGNMSGS]);
+  togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                   ACE_TEXT_ALWAYS_CHAR("mode_restricttopic_togglebutton")));
+  ACE_ASSERT(togglebutton);
+  gtk_toggle_button_set_active(togglebutton,
+                               myCBData.channelModes[CHANNELMODE_RESTRICTEDTOPIC]);
+  togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                   ACE_TEXT_ALWAYS_CHAR("mode_inviteonly_togglebutton")));
+  ACE_ASSERT(togglebutton);
+  gtk_toggle_button_set_active(togglebutton,
+                               myCBData.channelModes[CHANNELMODE_INVITEONLY]);
+  togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                   ACE_TEXT_ALWAYS_CHAR("mode_secret_togglebutton")));
+  ACE_ASSERT(togglebutton);
+  gtk_toggle_button_set_active(togglebutton,
+                               myCBData.channelModes[CHANNELMODE_SECRET]);
+  togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                   ACE_TEXT_ALWAYS_CHAR("mode_private_togglebutton")));
+  ACE_ASSERT(togglebutton);
+  gtk_toggle_button_set_active(togglebutton,
+                               myCBData.channelModes[CHANNELMODE_PRIVATE]);
+  togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                   ACE_TEXT_ALWAYS_CHAR("mode_operator_togglebutton")));
+  ACE_ASSERT(togglebutton);
+  gtk_toggle_button_set_active(togglebutton,
+                               myCBData.channelModes[CHANNELMODE_OPERATOR]);
 }

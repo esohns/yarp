@@ -54,6 +54,7 @@ struct connection_cb_data_t
   GtkBuilder*                   mainBuilder;
   GtkBuilder*                   builder;
   std::string                   nickname;
+  RPG_Net_Protocol_UserModes_t  userModes;
   RPG_Net_Protocol_IIRCControl* controller;
   ACE_Thread_Mutex*             connectionsLock;
   connections_t*                connections;
@@ -61,12 +62,10 @@ struct connection_cb_data_t
 
 struct channel_cb_data_t
 {
-  GtkBuilder*                   builder;
-  std::string                   channel;
-  RPG_Net_Protocol_IIRCControl* controller;
+  GtkBuilder*                     builder;
+  std::string                     channel;
+  RPG_Net_Protocol_ChannelModes_t channelModes;
+  RPG_Net_Protocol_IIRCControl*   controller;
 };
-
-typedef std::vector<std::string> string_list_t;
-typedef string_list_t::const_iterator string_list_iterator_t;
 
 #endif

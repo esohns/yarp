@@ -105,21 +105,27 @@ struct RPG_Net_Protocol_IRCLoginOptions
 //            n - no messages to channel from clients on the outside
 //            m - moderated channel
 //            l - set the user limit to channel
+//            b - set a ban mask to keep users out;
+//            v - give/take the ability to speak on a moderated channel;
+//            k - set a channel key (password).
 enum RPG_Net_Protocol_ChannelMode
 {
-  CHANNELMODE_USERLIMIT = 0,
+  CHANNELMODE_PASSWORD = 0,
+  CHANNELMODE_VOICE,
+  CHANNELMODE_BAN,
+  CHANNELMODE_USERLIMIT,
   CHANNELMODE_MODERATED,
-  CHANNELMODE_NOMSGFROMBEYOND,
+  CHANNELMODE_BLOCKFOREIGNMSGS,
   CHANNELMODE_RESTRICTEDTOPIC,
   CHANNELMODE_INVITEONLY,
   CHANNELMODE_SECRET,
   CHANNELMODE_PRIVATE,
-  CHANNELMODE_CHANNELOPERATOR,
+  CHANNELMODE_OPERATOR,
   //
   CHANNELMODE_MAX,
   CHANNELMODE_INVALID
 };
-typedef std::bitset<8> RPG_Net_Protocol_ChannelModes_t;
+typedef std::bitset<11> RPG_Net_Protocol_ChannelModes_t;
 
 // see (RFC1459 section 4.2.3.2)
 //            i - marks a users as invisible

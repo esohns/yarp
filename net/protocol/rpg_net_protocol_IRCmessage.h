@@ -27,11 +27,14 @@
 
 #include <ace/Global_Macros.h>
 
-#include <string>
 #include <list>
+#include <string>
 
-typedef std::list<std::string> RPG_Net_Protocol_Parameters_t;
-typedef RPG_Net_Protocol_Parameters_t::const_iterator RPG_Net_Protocol_ParametersIterator_t;
+typedef std::list<std::string> string_list_t;
+typedef string_list_t::const_iterator string_list_iterator_t;
+
+typedef string_list_t RPG_Net_Protocol_Parameters_t;
+typedef string_list_iterator_t RPG_Net_Protocol_ParametersIterator_t;
 
 class RPG_Net_Protocol_IRCMessage
  : public RPG_Common_ReferenceCounter

@@ -86,15 +86,14 @@ class IRC_Client_GUI_Connection
                      const std::string&); // message text
   void log(const RPG_Net_Protocol_IRCMessage&);
   void error(const RPG_Net_Protocol_IRCMessage&);
-//   const std::string nick();
+
+  void updateModeButtons();
 
   std::string                  myUIFileDirectory;
   connection_cb_data_t         myCBData;
 
   ACE_Thread_Mutex             myLock;
   message_handlers_t           myMessageHandlers;
-
-  RPG_Net_Protocol_UserModes_t myUserModes;
 
   GtkNotebook*                 myParent;
   guint                        myContextID;

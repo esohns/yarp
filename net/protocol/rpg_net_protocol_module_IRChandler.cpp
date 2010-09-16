@@ -145,8 +145,12 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSEROP:              // 252
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCHANNELS:        // 254
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERME:              // 255
+        case RPG_Net_Protocol_IRC_Codes::RPL_TRYAGAIN:             // 263
         case RPG_Net_Protocol_IRC_Codes::RPL_LOCALUSERS:           // 265
         case RPG_Net_Protocol_IRC_Codes::RPL_GLOBALUSERS:          // 266
+        case RPG_Net_Protocol_IRC_Codes::RPL_LISTSTART:            // 321
+        case RPG_Net_Protocol_IRC_Codes::RPL_LIST:                 // 322
+        case RPG_Net_Protocol_IRC_Codes::RPL_LISTEND:              // 323
         case RPG_Net_Protocol_IRC_Codes::RPL_TOPIC:                // 332
         case RPG_Net_Protocol_IRC_Codes::RPL_TOPICWHOTIME:         // 333
         case RPG_Net_Protocol_IRC_Codes::RPL_NAMREPLY:             // 353
@@ -154,6 +158,8 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTD:                 // 372
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:            // 375
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:            // 376
+        case RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE:        // 433
+        case RPG_Net_Protocol_IRC_Codes::ERR_CHANOPRIVSNEEDED:     // 482
         {
 
           break;
@@ -161,7 +167,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         default:
         {
           ACE_DEBUG((LM_WARNING,
-                     ACE_TEXT("[%u]: received (numeric) command/reply: \"%s\" (%u), continuing\n"),
+                     ACE_TEXT("[%u]: received unknown (numeric) command/reply: \"%s\" (%u), continuing\n"),
                      message_inout->getID(),
                      RPG_Net_Protocol_Tools::IRCCode2String(message_inout->getData()->command.numeric).c_str(),
                      message_inout->getData()->command.numeric));
@@ -198,6 +204,33 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         {
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("[%u]: received \"MODE\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::TOPIC:
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"TOPIC\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::NAMES:
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"NAMES\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::LIST:
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"LIST\": \"%s\"\n"),
 //                      message_inout->getID(),
 //                      message_inout->getData()->params.back().c_str()));
 
@@ -779,6 +812,48 @@ RPG_Net_Protocol_Module_IRCHandler::topic(const std::string& channel_in,
 
   // step2: send it upstream
   sendMessage(topic_struct);
+}
+
+void
+RPG_Net_Protocol_Module_IRCHandler::names(const string_list_t& channels_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::names"));
+
+  // step1: init NAMES
+  RPG_Net_Protocol_IRCMessage* names_struct = NULL;
+  ACE_NEW_NORETURN(names_struct,
+                   RPG_Net_Protocol_IRCMessage());
+  ACE_ASSERT(names_struct);
+  ACE_NEW_NORETURN(names_struct->command.string,
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::NAMES)));
+  ACE_ASSERT(names_struct->command.string);
+  names_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+
+  names_struct->params = channels_in;
+
+  // step2: send it upstream
+  sendMessage(names_struct);
+}
+
+void
+RPG_Net_Protocol_Module_IRCHandler::list(const string_list_t& channels_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::list"));
+
+  // step1: init LIST
+  RPG_Net_Protocol_IRCMessage* list_struct = NULL;
+  ACE_NEW_NORETURN(list_struct,
+                   RPG_Net_Protocol_IRCMessage());
+  ACE_ASSERT(list_struct);
+  ACE_NEW_NORETURN(list_struct->command.string,
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::LIST)));
+  ACE_ASSERT(list_struct->command.string);
+  list_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+
+  list_struct->params =  channels_in;
+
+  // step2: send it upstream
+  sendMessage(list_struct);
 }
 
 void

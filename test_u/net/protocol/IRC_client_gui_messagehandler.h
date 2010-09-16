@@ -81,14 +81,13 @@ class IRC_Client_GUI_MessageHandler
 
   // helper methods
   void clear();
+  void updateModeButtons();
 
   channel_cb_data_t               myCBData;
 
   ACE_Thread_Mutex                myLock;
   std::deque<std::string>         myDisplayQueue;
   GtkTextView*                    myView;
-
-  RPG_Net_Protocol_ChannelModes_t myChannelModes;
 
   bool                            myIsFirstNameListMsg;
   GtkNotebook*                    myParent;
