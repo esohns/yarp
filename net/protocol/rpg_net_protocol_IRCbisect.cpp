@@ -1265,7 +1265,7 @@ case YY_STATE_EOF(end_of_frame):
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-{ // debug info
+{
                          ACE_DEBUG((LM_ERROR,
                                     ACE_TEXT("invalid character: \"%c\" (%d), continuing\n"),
                                     yytext[0],
@@ -1840,6 +1840,10 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
 
 /* %if-c-only */
 
+#ifndef __cplusplus
+extern int isatty (int );
+#endif /* __cplusplus */
+    
 /* %endif */
 
 /* %if-c++-only */
@@ -1875,7 +1879,7 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
 
 /* %if-c-only */
 
-        b->yy_is_interactive = 0;
+        b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
     
 /* %endif */
 /* %if-c++-only */

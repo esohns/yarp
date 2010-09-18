@@ -35,13 +35,14 @@ class ACE_Message_Block;
 // typedef void* yyscan_t;
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
 
-// Tell Flex the lexer's prototype ...
+// tell flex the lexer's prototype ...
 #define YY_DECL                                                 \
   yy::RPG_Net_Protocol_IRCParser::token_type                    \
   yylex(yy::RPG_Net_Protocol_IRCParser::semantic_type* yylval,  \
         yy::RPG_Net_Protocol_IRCParser::location_type* yylloc,  \
         RPG_Net_Protocol_IRCParserDriver& driver,               \
-        unsigned long& count,                                   \
+        unsigned long& messageCount,                            \
+        std::string& memory,                                    \
         yyscan_t& yyscanner)
 // ... and declare it for the parser's sake.
 YY_DECL;
@@ -54,13 +55,14 @@ class RPG_Net_Protocol_IRCParserDriver
 //   friend class RPG_Net_Protocol_IRCScanner;
 
  public:
-  RPG_Net_Protocol_IRCParserDriver(const bool& = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING,  // trace scanning ?
-                                   const bool& = RPG_NET_PROTOCOL_DEF_TRACE_PARSING); // trace parsing ?
+  RPG_Net_Protocol_IRCParserDriver(const bool& = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING, // debug scanning ?
+                                   const bool& = RPG_NET_PROTOCOL_DEF_TRACE_PARSING); // debug parsing ?
   virtual ~RPG_Net_Protocol_IRCParserDriver();
 
   // target data, needs to be set PRIOR to invoking parse() !
   void init(RPG_Net_Protocol_IRCMessage&, // target data
-            const bool& = false);         // debug ?
+            const bool& = false,          // debug scanner ?
+            const bool& = false);         // debug parser ?
   // *WARNING*: the argument needs to have been prepared for usage by flex:
   // --> buffers need two trailing '\0's BEYOND their data
   //    (at positions length() + 1, length() + 2)
@@ -69,9 +71,7 @@ class RPG_Net_Protocol_IRCParserDriver
   // invoked by the scanner ONLY !!!
   const bool switchBuffer();
   const bool moreData();
-
-  // debug info
-  const bool getTraceScanning() const;
+  const bool getDebugScanner() const;
 
   // error-handling
   void error(const yy::location&, // location
@@ -92,10 +92,11 @@ class RPG_Net_Protocol_IRCParserDriver
   void scan_end();
 
   // scanner
-  bool                           myTraceScanning;
+  bool                           myDebugScanner;
   yyscan_t                       myScannerContext;
-//   IRCBisectFlexLexer    myScanner;
   unsigned long                  myCurrentNumMessages;
+  // *NOTE*: stores unscanned data, enabling transitions between continuations...
+  std::string                    myMemory;
   ACE_Message_Block*             myCurrentFragment;
   bool                           myFragmentIsResized;
   YY_BUFFER_STATE                myCurrentBufferState;

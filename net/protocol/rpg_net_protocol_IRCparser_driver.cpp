@@ -31,17 +31,19 @@
 
 #include <sstream>
 
-RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& traceScanning_in,
-                                                                   const bool& traceParsing_in)
- : myTraceScanning(traceScanning_in),
+RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& debugScanner_in,
+                                                                   const bool& debugParser_in)
+ : myDebugScanner(debugScanner_in),
    myScannerContext(NULL),
    myCurrentNumMessages(0),
+   myMemory(),
    myCurrentFragment(NULL),
    myFragmentIsResized(false),
    myCurrentBufferState(NULL),
    myParser(*this,                // driver
             myCurrentNumMessages, // counter
-            myScannerContext),    // scanner context
+            myMemory,             // memory cache
+            myScannerContext),    // scanner
    myCurrentMessage(NULL),
    myIsInitialized(false)
 {
@@ -54,7 +56,7 @@ RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& t
                ACE_TEXT("failed to IRCScannerlex_init_extra(): \"%m\", continuing\n")));
 
   // init parser
-  myParser.set_debug_level(traceParsing_in); // binary (see bison manual)
+  myParser.set_debug_level(debugParser_in ? 1 : 0); // binary (see bison manual)
 }
 
 RPG_Net_Protocol_IRCParserDriver::~RPG_Net_Protocol_IRCParserDriver ()
@@ -68,9 +70,10 @@ RPG_Net_Protocol_IRCParserDriver::~RPG_Net_Protocol_IRCParserDriver ()
 
 void
 RPG_Net_Protocol_IRCParserDriver::init(RPG_Net_Protocol_IRCMessage& message_in,
+                                       const bool& debugScanner_in,
                                        const bool& debugParser_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::parse"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::init"));
 
   // sanity check(s)
   ACE_ASSERT(!myIsInitialized);
@@ -78,13 +81,8 @@ RPG_Net_Protocol_IRCParserDriver::init(RPG_Net_Protocol_IRCMessage& message_in,
   // set parse target
   myCurrentMessage = &message_in;
 
-  if (debugParser_in)
-  {
-    // remember this setting
-    myTraceScanning = debugParser_in;
-    // init parser
-    myParser.set_debug_level(debugParser_in); // binary (see bison manual)
-  } // end IF
+  myDebugScanner = debugScanner_in;
+  myParser.set_debug_level(debugParser_in ? 1 : 0); // binary (see bison manual)
 
   // OK
   myIsInitialized = true;
@@ -110,7 +108,7 @@ RPG_Net_Protocol_IRCParserDriver::parse(ACE_Message_Block* data_in)
     if (!scan_begin())
     {
       ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to parse IRC message fragment, aborting\n")));
+                 ACE_TEXT("failed to RPG_Net_Protocol_IRCParserDriver::scan_begin(), aborting\n")));
 
       // clean up
       myCurrentFragment = NULL;
@@ -123,7 +121,7 @@ RPG_Net_Protocol_IRCParserDriver::parse(ACE_Message_Block* data_in)
     result = myParser.parse();
     if (result)
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to parse IRC message fragment, continuing\n")));
+                 ACE_TEXT("failed to parse IRC message fragment, aborting\n")));
 
     // fini buffer/scanner
     scan_end();
@@ -182,7 +180,10 @@ RPG_Net_Protocol_IRCParserDriver::switchBuffer()
     return false;
   } // end IF
 
-//   // debug info
+  // *WARNING*: contrary (!) to the documentation, still need to switch_buffers()...
+  IRCScanner_switch_to_buffer(myCurrentBufferState,
+                              myScannerContext);
+
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("switched to next buffer...\n")));
 
@@ -198,11 +199,11 @@ RPG_Net_Protocol_IRCParserDriver::moreData()
 }
 
 const bool
-RPG_Net_Protocol_IRCParserDriver::getTraceScanning() const
+RPG_Net_Protocol_IRCParserDriver::getDebugScanner() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::getTraceScanning"));
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::getDebugScanner"));
 
-  return myTraceScanning;
+  return myDebugScanner;
 }
 
 void
@@ -315,6 +316,10 @@ RPG_Net_Protocol_IRCParserDriver::scan_begin()
     // what else can we do ?
     return false;
   } // end IF
+
+  // *WARNING*: contrary (!) to the documentation, still need to switch_buffers()...
+  IRCScanner_switch_to_buffer(myCurrentBufferState,
+                              myScannerContext);
 
   return true;
 }

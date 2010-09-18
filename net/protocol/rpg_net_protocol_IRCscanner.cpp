@@ -2338,7 +2338,8 @@ static void yy_fatal_error (yyconst char msg[] ,yyscan_t yyscanner );
 #define YY_DO_BEFORE_ACTION \
 	yyg->yytext_ptr = yy_bp; \
 /* %% [2.0] code to fiddle yytext and yyleng for yymore() goes here \ */\
-	yyleng = (size_t) (yy_cp - yy_bp); \
+	yyg->yytext_ptr -= yyg->yy_more_len; \
+	yyleng = (size_t) (yy_cp - yyg->yytext_ptr); \
 	yyg->yy_hold_char = *yy_cp; \
 	*yy_cp = '\0'; \
 /* %% [3.0] code to copy yytext_ptr to yytext[] goes here, if %array \ */\
@@ -2382,16 +2383,16 @@ static yyconst yy_state_type yy_NUL_trans[60] =
 
 static yyconst flex_int16_t yy_rule_linenum[20] =
     {   0,
-       77,   81,   85,   88,   91,   95,   99,  105,  110,  116,
-      122,  127,  133,  136,  139,  143,  150,  156,  162
+       77,   81,   85,   88,   91,  102,  112,  124,  135,  147,
+      159,  170,  181,  184,  187,  197,  210,  222,  253
     } ;
 
 /* The intent behind this definition is that it'll catch
  * any uses of REJECT which flex missed.
  */
 #define REJECT reject_used_but_not_detected
-#define yymore() yymore_used_but_not_detected
-#define YY_MORE_ADJ 0
+#define yymore() (yyg->yy_more_flag = 1)
+#define YY_MORE_ADJ yyg->yy_more_len
 #define YY_RESTORE_YY_MORE_OFFSET
 #include <stdlib.h>
 
@@ -2408,7 +2409,7 @@ static yyconst flex_int16_t yy_rule_linenum[20] =
    not of token_type. */
 #define yyterminate() return token::END
 #define YY_NO_UNISTD_H 1
-/* %option c++ outfile="rpg_net_protocol_IRCscanner.cpp" prefix="IRCScanner" */
+/* %option c++ outfile="rpg_net_protocol_IRCscanner.cpp" prefix="IRCScanner" noyywrap nounput */
 /*%option reentrant extra-type="unsigned long*"*/
 /* %option bison-bridge bison-locations stack */
 /* *TODO*: "see RFC 952 [DNS:4] for details on allowed hostnames..."
@@ -2699,8 +2700,8 @@ YY_DECL
   yylloc->step();
   typedef yy::RPG_Net_Protocol_IRCParser::token token;
   typedef yy::RPG_Net_Protocol_IRCParser::token_type token_type;
-  yy_flex_debug=driver.getTraceScanning();
-  std::ostringstream converter;
+  yy_flex_debug=driver.getDebugScanner();
+  std::stringstream converter;
 
 	if ( !yyg->yy_init )
 		{
@@ -2739,6 +2740,12 @@ YY_DECL
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
 /* %% [8.0] yymore()-related code goes here */
+		yyg->yy_more_len = 0;
+		if ( yyg->yy_more_flag )
+			{
+			yyg->yy_more_len = yyg->yy_c_buf_p - yyg->yytext_ptr;
+			yyg->yy_more_flag = 0;
+			}
 		yy_cp = yyg->yy_c_buf_p;
 
 		/* Support of yytext. */
@@ -2776,7 +2783,7 @@ yy_find_action:
 		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
 			{
 			int yyl;
-			for ( yyl = 0; yyl < yyleng; ++yyl )
+			for ( yyl = yyg->yy_more_len; yyl < yyleng; ++yyl )
 				if ( yytext[yyl] == '\n' )
 					   
     do{ yylineno++;
@@ -2825,7 +2832,7 @@ case 2:
 YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(command);
-                             yylval->ival = yyleng;
+                             //yylval->ival = yyleng;
                              return token::SPACE; }
 	YY_BREAK
 case 3:
@@ -2847,7 +2854,14 @@ YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext, yyleng));
+                                              std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
+                             yylval->sval->append(yytext, yyleng);
+
                              return token::ORIGIN; }
 	YY_BREAK
 case 6:
@@ -2857,7 +2871,13 @@ YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext, yyleng));
+                                              std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
+                             yylval->sval->append(yytext, yyleng);
                              return token::ORIGIN; }
 	YY_BREAK
 case 7:
@@ -2867,7 +2887,13 @@ YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext, yyleng));
+                                              std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
+                             yylval->sval->append(yytext, yyleng);
                              return token::ORIGIN; }
 	YY_BREAK
 // end <prefix>
@@ -2880,7 +2906,13 @@ YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(prefix);
                              ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext, yyleng));
+                                              std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
+                             yylval->sval->append(yytext, yyleng);
                              return token::USER; }
 	YY_BREAK
 case 9:
@@ -2891,7 +2923,13 @@ YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(prefix);
                              ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext, yyleng));
+                                              std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
+                             yylval->sval->append(yytext, yyleng);
                              return token::USER; }
 	YY_BREAK
 // end <user>
@@ -2903,7 +2941,13 @@ YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(prefix);
                              ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext, yyleng));
+                                              std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
+                             yylval->sval->append(yytext, yyleng);
                              return token::HOST; }
 	YY_BREAK
 
@@ -2915,7 +2959,13 @@ YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(params);
                              ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext, yyleng));
+                                              std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
+                             yylval->sval->append(yytext, yyleng);
                              return token::CMD_STRING; }
 	YY_BREAK
 case 12:
@@ -2925,7 +2975,12 @@ YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(params);
-                             yylval->ival = ::atoi(yytext);
+                             memory.append(yytext, yyleng);
+                             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+                             converter.clear();
+                             converter << memory;
+                             converter >> yylval->ival;
+                             memory.clear();
                              return token::CMD_NUMERIC; }
 	YY_BREAK
 // end <INITIAL, command>
@@ -2933,7 +2988,7 @@ YY_RULE_SETUP
 case 13:
 YY_RULE_SETUP
 { yylloc->step();
-                             yylval->ival = yyleng;
+                             //yylval->ival = yyleng;
                              return token::SPACE; }
 	YY_BREAK
 case 14:
@@ -2952,7 +3007,13 @@ YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext, yyleng));
+                                              std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
+                             yylval->sval->append(yytext, yyleng);
                              return token::PARAM; }
 	YY_BREAK
 case 16:
@@ -2964,7 +3025,13 @@ YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(INITIAL);
                              ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext, yyleng));
+                                              std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
+                             yylval->sval->append(yytext, yyleng);
                              return token::PARAM; }
 	YY_BREAK
 // end <params>
@@ -2978,7 +3045,13 @@ YY_RULE_SETUP
 { yylloc->step();
                              BEGIN(INITIAL);
                              ACE_NEW_NORETURN(yylval->sval,
-                                              std::string(yytext, yyleng));
+                                              std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
+                             yylval->sval->append(yytext, yyleng);
                              return token::PARAM; }
 	YY_BREAK
 // end <trailing>
@@ -2986,7 +3059,7 @@ case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
 { yylloc->step();
-                             count++;
+                             messageCount++;
                              return token::END; }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
@@ -2997,14 +3070,20 @@ case YY_STATE_EOF(command):
 case YY_STATE_EOF(params):
 case YY_STATE_EOF(trailing):
 { yylloc->step();
-                             if (!driver.switchBuffer())
-                              yyterminate(); }
-	YY_BREAK
-case 19:
-YY_RULE_SETUP
-{ yylloc->step();
+
                              if (!driver.moreData())
                              {
+                               messageCount++;
+                               yyterminate();
+                             } // end IF
+
+                             memory = yytext;
+
+                             if (!driver.switchBuffer())
+                             {
+                               ACE_DEBUG((LM_ERROR,
+                                          ACE_TEXT("failed to RPG_Net_Protocol_IRCParserDriver::switchBuffer(), aborting\n")));
+
                                // debug info
                                std::string error_message(ACE_TEXT("invalid character (was \""));
                                error_message += yytext[0];
@@ -3016,7 +3095,13 @@ YY_RULE_SETUP
                                driver.error(*yylloc, error_message);
 
                                return token_type(yytext[0]);
-                             } /* end IF */ }
+                             } // end IF
+                           }
+	YY_BREAK
+case 19:
+YY_RULE_SETUP
+{ yylloc->step();
+                             yymore(); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
@@ -3601,6 +3686,10 @@ static void IRCScanner_load_buffer_state  (yyscan_t yyscanner)
 
 /* %if-c-only */
 
+#ifndef __cplusplus
+extern int isatty (int );
+#endif /* __cplusplus */
+    
 /* %endif */
 
 /* %if-c++-only */
@@ -3636,7 +3725,7 @@ static void IRCScanner_load_buffer_state  (yyscan_t yyscanner)
 
 /* %if-c-only */
 
-        b->yy_is_interactive = 0;
+        b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
     
 /* %endif */
 /* %if-c++-only */
@@ -4277,10 +4366,52 @@ void IRCScannerfree (void * ptr , yyscan_t yyscanner)
 //   ACE_TRACE(ACE_TEXT("::IRCScannerwrap"));
 //
 //   struct yyguts_t* yyg = ACE_static_cast(struct yyguts_t*, yyscanner);
-//   // sanity check
-//   ACE_ASSERT(yyextra);
 //
-//   return (yyextra->switchBuffer() ? 0 : 1);
+//   RPG_Net_Protocol_IRCParserDriver* driver = IRCScannerget_extra(yyscanner);
+//   // sanity check
+//   ACE_ASSERT(driver);
+//   if (!driver->moreData())
+//     return 1;
+//
+//   // *NOTE*: there SHOULD be more data in a
+//   // continuation, so:
+//   // 1. gobble/save the rest
+//   // 2. switch buffers
+//   // 3. unput the rest
+//   // 4. continue matching
+//
+//   // step1
+//   std::string the_rest;
+//   the_rest += yytext[0];
+//   for (char c = yyinput(yyscanner);
+//        c != EOF;
+//        c = yyinput(yyscanner))
+//     the_rest += c;
+//
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("the rest: \"%s\"\n"),
+//              the_rest.c_str()));
+//
+//   // step2
+//   if (!driver->switchBuffer())
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to RPG_Net_Protocol_IRCParserDriver::switchBuffer() [data was: \"%s\"], aborting\n"),
+//                the_rest.c_str()));
+//
+//     return 1;
+//   } // end IF
+//
+//   // step3
+//   for (std::string::reverse_iterator iterator = the_rest.rbegin();
+//        iterator != the_rest.rend();
+//        iterator++)
+//     unput(*iterator);
+//
+//   // step4
+//  // yymore();
+//
+//   return 0;
 // }
 // #ifdef __cplusplus
 // }

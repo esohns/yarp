@@ -39,6 +39,9 @@ typedef connections_t::iterator connections_iterator_t;
 
 struct main_cb_data_t
 {
+  bool                             debugParser;
+  bool                             debugScanner;
+  unsigned long                    statisticsReportingInterval; // seconds [0 --> OFF]
   std::string                      UIFileDirectory;
   // *WARNING*: mainBuilder needs exclusive access under the "connectionsLock"
   GtkBuilder*                      builder;

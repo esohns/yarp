@@ -58,7 +58,7 @@ class RPG_Net_Protocol_Tools
   static const RPG_Net_Protocol_UserMode IRCUserModeChar2UserMode(const char&);
   static const RPG_Net_Protocol_ChannelMode IRCChannelModeChar2ChannelMode(const char&);
   static const std::string concatParams(const RPG_Net_Protocol_Parameters_t&, // parameters
-                                        const unsigned long& = 0);            // starting index
+                                        const int& = 0); // starting index (-1: LAST parameter)
 };
 
 #endif

@@ -34,6 +34,8 @@
 #define IRC_CLIENT_DEF_CLIENT_USES_TP            false
 #define IRC_CLIENT_DEF_NUM_TP_THREADS            5
 
+#define IRC_CLIENT_DEF_STATSINTERVAL             0 // seconds: 0 --> OFF
+
 #define IRC_CLIENT_DEF_SERVER_HOSTNAME           ACE_LOCALHOST
 #define IRC_CLIENT_DEF_SERVER_PORT               6667
 

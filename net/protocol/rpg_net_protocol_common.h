@@ -177,6 +177,7 @@ struct RPG_Net_Protocol_ConfigPOD
   RPG_Net_Protocol_IRCLoginOptions  loginOptions;
   // ************ stream config data ****************
   Stream_Module*                    module;
+  bool                              debugScanner;
   bool                              debugParser;
   unsigned long                     sessionID; // (== socket handle !)
   unsigned long                     statisticsReportingInterval;

@@ -87,6 +87,7 @@ is_entry_sensitive(GtkCellLayout*   layout_in,
 
 const bool
 connect_to_server(const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
+                  const bool& debugScanner_in,
                   const bool& debugParser_in,
                   const unsigned long& statisticsReportingInterval_in,
                   const std::string& serverHostname_in,
@@ -109,6 +110,7 @@ connect_to_server(const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
   stream_config.loginOptions = loginOptions_in;
   // ************ stream config data ****************
   stream_config.module = finalModule_in;
+  stream_config.debugScanner = debugScanner_in;
   stream_config.debugParser = debugParser_in;
   // *WARNING*: set at runtime (by the connection handler)
   stream_config.sessionID = 0; // (== socket handle !)
@@ -347,11 +349,12 @@ connect_clicked_cb(GtkWidget* button_in,
            current_port++)
       {
         if (connect_to_server(data->loginOptions,                // login options
-                              false,                             // debug parser ? (NO)
-                              0,                                 // statistics reporting interval (OFF)
+                              data->debugScanner,                // debug scanner ?
+                              data->debugParser,                 // debug parser ?
+                              data->statisticsReportingInterval, // statistics reporting interval [seconds: 0 --> OFF]
                               (*phonebook_iter).second.hostName, // server hostname
                               current_port,                      // server listening port
-                              module))                           // final module
+                              module))                           // final module handle
         {
           connected = true;
 
@@ -360,11 +363,12 @@ connect_clicked_cb(GtkWidget* button_in,
       } // end FOR
     else
       if (connect_to_server(data->loginOptions,                // login options
-                            false,                             // debug parser ? (NO)
-                            0,                                 // statistics reporting interval (OFF)
+                            data->debugScanner,                // debug scanner ?
+                            data->debugParser,                 // debug parser ?
+                            data->statisticsReportingInterval, // statistics reporting interval [seconds: 0 --> OFF]
                             (*phonebook_iter).second.hostName, // server hostname
                             (*port_range_iter).first,          // server listening port
-                            module))                           // final module
+                            module))                           // final module handle
         connected = true;
 
     if (connected)
@@ -588,29 +592,7 @@ quit_activated_cb(GtkWidget* widget_in,
   ACE_UNUSED_ARG(event_in);
   ACE_UNUSED_ARG(userData_in);
 
-  // stop reactor
-  if (ACE_Reactor::instance()->end_event_loop() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
-  } // end IF
-
-  // ... and wait for the reactor worker(s) to join
-  ACE_Thread_Manager::instance()->wait_grp(grp_id);
-
-  // no more data will arrive from here on...
-
-  // wait for connection processing to complete
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
-
-  // finished processing data, no more data will be advertised
-  // --> we can safely close the window...
-  // sanity check(s)
-//   ACE_ASSERT(window);
-//   gtk_widget_destroy(window);
-
-  // ...and leave GTK
+  // leave GTK
   gtk_main_quit();
 
   // destroy the toplevel widget
@@ -631,8 +613,9 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [") << IRC_CLIENT_CNF_DEF_INI_FILE << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-d          : debug parser") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-d          : debug parser") << ACE_TEXT(" [") << RPG_NET_PROTOCOL_DEF_TRACE_PARSING << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-r [VALUE]  : reporting interval (seconds: 0 --> OFF)") << ACE_TEXT(" [") << IRC_CLIENT_DEF_STATSINTERVAL << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s [FILE]   : server config file") << ACE_TEXT(" [") << IRC_CLIENT_GUI_DEF_SERVERS_FILE << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-u [DIR]    : UI file directory") << ACE_TEXT(" [\"") << IRC_CLIENT_GUI_DEF_UI_FILE_DIR << ACE_TEXT("\"]") << std::endl;
@@ -646,6 +629,7 @@ process_arguments(const int argc_in,
                   std::string& configFile_out,
                   bool& debugParser_out,
                   bool& logToFile_out,
+                  unsigned long& reportingInterval_out,
                   std::string& serverConfigFile_out,
                   bool& traceInformation_out,
                   std::string& UIFileDirectory_out,
@@ -657,8 +641,9 @@ process_arguments(const int argc_in,
 
   // init results
   configFile_out           = IRC_CLIENT_CNF_DEF_INI_FILE;
-  debugParser_out          = false;
+  debugParser_out          = RPG_NET_PROTOCOL_DEF_TRACE_PARSING;
   logToFile_out            = false;
+  reportingInterval_out    = IRC_CLIENT_DEF_STATSINTERVAL;
   serverConfigFile_out     = IRC_CLIENT_GUI_DEF_SERVERS_FILE;
   traceInformation_out     = false;
   UIFileDirectory_out      = IRC_CLIENT_GUI_DEF_UI_FILE_DIR;
@@ -668,7 +653,7 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("c:dls:tu:vx::"),
+                             ACE_TEXT("c:dlr:s:tu:vx::"),
                              1, // skip command name
                              1, // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
@@ -695,6 +680,15 @@ process_arguments(const int argc_in,
       case 'l':
       {
         logToFile_out = true;
+
+        break;
+      }
+      case 'r':
+      {
+        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+        converter.clear();
+        converter << argumentParser.opt_arg();
+        converter >> reportingInterval_out;
 
         break;
       }
@@ -725,6 +719,7 @@ process_arguments(const int argc_in,
       case 'x':
       {
         useThreadPool_out = true;
+
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
@@ -841,9 +836,9 @@ reactor_worker_func(void* args_in)
 //       } // end IF
   } // end IF
 
-  // wait for any connection(s)
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+//   // wait for any connection(s)
+//   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+//   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
   ACE_ERROR((LM_DEBUG,
              ACE_TEXT("(%t) worker leaving...\n")));
@@ -1113,8 +1108,6 @@ do_work(const bool& useThreadPool_in,
 //                      ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
 //         } // end IF
 //       } // end IF
-    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
     return;
   } // end IF
@@ -1125,14 +1118,33 @@ do_work(const bool& useThreadPool_in,
              (useThreadPool_in ? numThreadPoolThreads_in : 1)));
 
   // dispatch GTK events
+  // *WARNING*: this doesn't really make any sense - still, it seems to be a
+  // requirement to somehow "initialize" the mutex from the "main" thread...
+  // IOW: without this, GDK_THREADS_ENTER(), when first invoked from a child thread,
+  // will block indefinetly (go on, try it !)
+  GDK_THREADS_ENTER();
   gtk_main();
+  GDK_THREADS_LEAVE();
 
-//   // ... and wait for the reactor thread(s) to join
-//   ACE_Thread_Manager::instance()->wait_grp(grp_id);
-//
-//   // step4: clean up
-//   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-//   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+  // done handling UI events
+
+  // stop reactor
+  if (ACE_Reactor::instance()->end_event_loop() == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
+  } // end IF
+
+  // no more data will be enqueued onto the processing streams...
+
+  // wait for the reactor worker(s) to join
+  ACE_Thread_Manager::instance()->wait_grp(grp_id);
+
+  // no more data will arrive from here on...
+
+  // wait for connection processing to complete
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -1723,14 +1735,15 @@ ACE_TMAIN(int argc,
   g_thread_init(NULL);
   gdk_threads_init();
   gtk_init(&argc, &argv);
-  GDK_THREADS_ENTER();
 
   // step2 init/validate configuration
 
   // step2a: process commandline arguments
   std::string configFile             = IRC_CLIENT_CNF_DEF_INI_FILE;
-  bool debugParser                   = false;
+  bool debugParser                   = RPG_NET_PROTOCOL_DEF_TRACE_PARSING;
+  bool debugScanner                  = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING;
   bool logToFile                     = false;
+  unsigned long reportingInterval    = IRC_CLIENT_DEF_STATSINTERVAL;
   std::string serverConfigFile       = IRC_CLIENT_GUI_DEF_SERVERS_FILE;
   bool traceInformation              = false;
   std::string UIFileDirectory        = IRC_CLIENT_GUI_DEF_UI_FILE_DIR;
@@ -1742,6 +1755,7 @@ ACE_TMAIN(int argc,
                           configFile,
                           debugParser,
                           logToFile,
+                          reportingInterval,
                           serverConfigFile,
                           traceInformation,
                           UIFileDirectory,
@@ -1800,6 +1814,9 @@ ACE_TMAIN(int argc,
 
   // step2d: init callback data
   main_cb_data_t userData;
+  userData.debugScanner = debugScanner;
+  userData.debugParser = debugParser;
+  userData.statisticsReportingInterval = reportingInterval;
   userData.UIFileDirectory = UIFileDirectory;
   userData.builder = gtk_builder_new();
   ACE_ASSERT(userData.builder);
@@ -1864,7 +1881,6 @@ ACE_TMAIN(int argc,
 
   // clean up
   g_object_unref(userData.builder);
-  GDK_THREADS_LEAVE();
 
   // debug info
   process_profile.stop();

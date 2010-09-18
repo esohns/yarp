@@ -1337,7 +1337,8 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:     // 376
         case RPG_Net_Protocol_IRC_Codes::ERR_CHANOPRIVSNEEDED: // 482
         {
-          result = message_in.params.back();
+          result = RPG_Net_Protocol_Tools::concatParams(message_in.params,
+                                                        -1);
 
           break;
         }
@@ -1389,7 +1390,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
 
 const std::string
 RPG_Net_Protocol_Tools::concatParams(const RPG_Net_Protocol_Parameters_t& params_in,
-                                     const unsigned long& index_in)
+                                     const int& index_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::concatParams"));
 
@@ -1397,8 +1398,11 @@ RPG_Net_Protocol_Tools::concatParams(const RPG_Net_Protocol_Parameters_t& params
 
   // sanity check(s)
   if (params_in.empty() ||
-      (index_in > (params_in.size() - 1)))
+      (index_in > ACE_static_cast(int, (params_in.size() - 1))))
     return result;
+
+  if (index_in == -1)
+    return params_in.back();
 
   RPG_Net_Protocol_ParametersIterator_t iterator = params_in.begin();
   std::advance(iterator, index_in);
@@ -1410,7 +1414,7 @@ RPG_Net_Protocol_Tools::concatParams(const RPG_Net_Protocol_Parameters_t& params
     result += *iterator;
     result += ACE_TEXT_ALWAYS_CHAR(" ");
   } // end FOR
-  if (index_in < (params_in.size() - 1))
+  if (index_in < ACE_static_cast(int, (params_in.size() - 1)))
     result.erase(--result.end());
 
   return result;

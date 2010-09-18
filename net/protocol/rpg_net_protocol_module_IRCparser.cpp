@@ -22,6 +22,7 @@
 
 #include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_tools.h"
 
 #include <stream_iallocator.h>
 
@@ -30,6 +31,7 @@ RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser()
    myAllocator(NULL),
    myDriver(RPG_NET_PROTOCOL_DEF_TRACE_SCANNING,           // trace scanning ?
             RPG_NET_PROTOCOL_DEF_TRACE_PARSING),           // trace parsing ?
+   myDebugScanner(RPG_NET_PROTOCOL_DEF_TRACE_SCANNING),    // trace scanning ?
    myDebugParser(RPG_NET_PROTOCOL_DEF_TRACE_PARSING),      // trace parsing ?
    myCrunchMessages(RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES), // "crunch" messages ?
    myIsInitialized(false)
@@ -47,6 +49,7 @@ RPG_Net_Protocol_Module_IRCParser::~RPG_Net_Protocol_Module_IRCParser()
 const bool
 RPG_Net_Protocol_Module_IRCParser::init(Stream_IAllocator* allocator_in,
                                         const bool& crunchMessages_in,
+                                        const bool& debugScanner_in,
                                         const bool& debugParser_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::init"));
@@ -59,12 +62,14 @@ RPG_Net_Protocol_Module_IRCParser::init(Stream_IAllocator* allocator_in,
                ACE_TEXT("re-initializing...\n")));
 
     myAllocator = NULL;
-    myDebugParser = RPG_NET_PROTOCOL_DEF_TRACE_PARSING;
+    myDebugScanner = debugScanner_in;
+    myDebugParser = debugParser_in;
     myCrunchMessages = RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES;
     myIsInitialized = false;
   } // end IF
 
   myAllocator = allocator_in;
+  myDebugScanner = debugScanner_in;
   myDebugParser = debugParser_in;
   myCrunchMessages = crunchMessages_in;
 
@@ -151,7 +156,6 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
 
   // OK: parse this message
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("parsing message(ID: %u, %u byte(s))\n\"%s\"\n"),
 //              message_inout->getID(),
@@ -159,6 +163,7 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
 //              std::string(message_inout->rd_ptr(), message_inout->length()).c_str()));
 
   myDriver.init(ACE_const_cast(RPG_Net_Protocol_IRCMessage&, *message_inout->getData()),
+                myDebugScanner,
                 myDebugParser);
   if (!myDriver.parse(message))
   {

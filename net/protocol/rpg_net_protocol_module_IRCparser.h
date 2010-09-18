@@ -45,6 +45,7 @@ class RPG_Net_Protocol_Module_IRCParser
   // configuration / initialization
   const bool init(Stream_IAllocator*,                                 // message allocator
                   const bool& = RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES, // crunch messages ?
+                  const bool& = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING,  // debug scanner ?
                   const bool& = RPG_NET_PROTOCOL_DEF_TRACE_PARSING);  // debug parser ?
 
   // implement (part of) Stream_ITaskBase
@@ -67,6 +68,7 @@ class RPG_Net_Protocol_Module_IRCParser
 
   // driver
   RPG_Net_Protocol_IRCParserDriver myDriver;
+  bool                             myDebugScanner;
   bool                             myDebugParser;
 
   bool                             myCrunchMessages;

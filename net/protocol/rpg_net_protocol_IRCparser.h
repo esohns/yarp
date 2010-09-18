@@ -147,7 +147,7 @@ namespace yy {
     typedef token::yytokentype token_type;
 
     /// Build a parser object.
-    RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg, unsigned long& count_yyarg, yyscan_t& context_yyarg);
+    RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg, unsigned long& messageCount_yyarg, std::string& memory_yyarg, yyscan_t& context_yyarg);
     virtual ~RPG_Net_Protocol_IRCParser ();
 
     /// Parse.
@@ -308,7 +308,8 @@ namespace yy {
 
     /* User arguments.  */
     RPG_Net_Protocol_IRCParserDriver& driver;
-    unsigned long& count;
+    unsigned long& messageCount;
+    std::string& memory;
     yyscan_t& context;
   };
 

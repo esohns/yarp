@@ -2,6 +2,7 @@
 %error-verbose
 %define parser_class_name "RPG_Net_Protocol_IRCParser"
 /* %define api.pure */
+/* %locations */
 /* %define namespace "" */
 /* %name-prefix "IRCParse" */
 
@@ -10,18 +11,24 @@ class RPG_Net_Protocol_IRCParserDriver;
 typedef void* yyscan_t;
 }
 
-// parsing context
+// calling conventions / parameter passing
 %parse-param { RPG_Net_Protocol_IRCParserDriver& driver }
-%parse-param { unsigned long& count }
+%parse-param { unsigned long& messageCount }
+%parse-param { std::string& memory }
 %parse-param { yyscan_t& context }
 %lex-param   { RPG_Net_Protocol_IRCParserDriver& driver }
-%lex-param   { unsigned long& count }
+%lex-param   { unsigned long& messageCount }
+%lex-param   { std::string& memory }
 %lex-param   { yyscan_t& context }
 
 %initial-action
 {
-  // Initialize the initial location.
-  //@$.begin.filename = @$.end.filename = &driver.file;
+  // initialize the initial location
+/*   @$.begin.filename = @$.end.filename = &driver.file; */
+
+  // initialize the token value container
+/*   $$.ival = 0; */
+  $$.sval = NULL;
 };
 
 // symbols
@@ -50,8 +57,9 @@ typedef void* yyscan_t;
 /* %type  <sval> message prefix ext_prefix command params */
 
 %printer    { debug_stream() << *$$; } <sval>
-%destructor { delete $$; } <sval>
+%destructor { delete $$; $$ = NULL; } <sval>
 %printer    { debug_stream() << $$; } <ival>
+%destructor { $$ = 0; } <ival>
 /*%destructor { ACE_DEBUG((LM_DEBUG,
                          ACE_TEXT("discarding tagless symbol...\n"))); } <>*/
 
@@ -79,8 +87,7 @@ ext_prefix:   '!' "user" ext_prefix                           { driver.myCurrent
                                                               };
               | "space"                                       /* default */
 body:         command params "end_of_message"                 /* default */
-command:      "cmd_string"                                    { if (driver.myCurrentMessage->command.string)
-                                                                  delete driver.myCurrentMessage->command.string;
+command:      "cmd_string"                                    { ACE_ASSERT(driver.myCurrentMessage->command.string == NULL);
                                                                 ACE_NEW_NORETURN(driver.myCurrentMessage->command.string,
                                                                                  std::string(*$1));
                                                                 ACE_ASSERT(driver.myCurrentMessage->command.string);

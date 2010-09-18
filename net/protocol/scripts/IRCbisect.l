@@ -4,7 +4,7 @@
 
 %option pointer full nounistd 8bit
 /* %option c++ outfile="rpg_net_protocol_IRCbisect.cpp" prefix="IRCBisect" */
-%option warn nodefault noyywrap nounput
+%option warn nodefault noyywrap nounput batch nomain
 %option debug perf-report verbose
 /* %option   outfile="RPG_Net_Protocol_IRCScanner.cpp" header-file="RPG_Net_Protocol_IRCScanner.h" */
 %option reentrant extra-type="unsigned long*"

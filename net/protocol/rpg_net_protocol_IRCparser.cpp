@@ -161,14 +161,15 @@ namespace yy {
 #endif
 
   /// Build a parser object.
-  RPG_Net_Protocol_IRCParser::RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg, unsigned long& count_yyarg, yyscan_t& context_yyarg)
+  RPG_Net_Protocol_IRCParser::RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg, unsigned long& messageCount_yyarg, std::string& memory_yyarg, yyscan_t& context_yyarg)
     :
 #if YYDEBUG
       yydebug_ (false),
       yycdebug_ (&std::cerr),
 #endif
       driver (driver_yyarg),
-      count (count_yyarg),
+      messageCount (messageCount_yyarg),
+      memory (memory_yyarg),
       context (context_yyarg)
   {
   }
@@ -255,29 +256,39 @@ namespace yy {
 
     switch (yytype)
       {
-        case 4: /* "\"origin\"" */
+        case 3: /* "\"space\"" */
 
-	{ delete (yyvaluep->sval); };
+	{ (yyvaluep->ival) = 0; };
+
+	break;
+      case 4: /* "\"origin\"" */
+
+	{ delete (yyvaluep->sval); (yyvaluep->sval) = NULL; };
 
 	break;
       case 5: /* "\"user\"" */
 
-	{ delete (yyvaluep->sval); };
+	{ delete (yyvaluep->sval); (yyvaluep->sval) = NULL; };
 
 	break;
       case 6: /* "\"host\"" */
 
-	{ delete (yyvaluep->sval); };
+	{ delete (yyvaluep->sval); (yyvaluep->sval) = NULL; };
 
 	break;
       case 7: /* "\"cmd_string\"" */
 
-	{ delete (yyvaluep->sval); };
+	{ delete (yyvaluep->sval); (yyvaluep->sval) = NULL; };
+
+	break;
+      case 8: /* "\"cmd_numeric\"" */
+
+	{ (yyvaluep->ival) = 0; };
 
 	break;
       case 9: /* "\"param\"" */
 
-	{ delete (yyvaluep->sval); };
+	{ delete (yyvaluep->sval); (yyvaluep->sval) = NULL; };
 
 	break;
 
@@ -357,8 +368,12 @@ namespace yy {
     /* User initialization code.  */
     
 {
-  // Initialize the initial location.
-  //@$.begin.filename = @$.end.filename = &driver.file;
+  // initialize the initial location
+/*   @$.begin.filename = @$.end.filename = &driver.file; */
+
+  // initialize the token value container
+/*   $$.ival = 0; */
+  yylval.sval = NULL;
 }
 
 
@@ -395,7 +410,7 @@ namespace yy {
     if (yychar == yyempty_)
       {
 	YYCDEBUG << "Reading a token: ";
-	yychar = yylex (&yylval, &yylloc, driver, count, context);
+	yychar = yylex (&yylval, &yylloc, driver, messageCount, memory, context);
       }
 
 
@@ -505,8 +520,7 @@ namespace yy {
 
   case 10:
 
-    { if (driver.myCurrentMessage->command.string)
-                                                                  delete driver.myCurrentMessage->command.string;
+    { ACE_ASSERT(driver.myCurrentMessage->command.string == NULL);
                                                                 ACE_NEW_NORETURN(driver.myCurrentMessage->command.string,
                                                                                  std::string(*(yysemantic_stack_[(1) - (1)].sval)));
                                                                 ACE_ASSERT(driver.myCurrentMessage->command.string);
@@ -881,8 +895,8 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyrline_[] =
   {
-         0,    62,    62,    63,    64,    65,    70,    75,    80,    81,
-      82,    92,    98,    99,   104,   109
+         0,    70,    70,    71,    72,    73,    78,    83,    88,    89,
+      90,    99,   105,   106,   111,   116
   };
 
   // Print the state stack on the debug stream.

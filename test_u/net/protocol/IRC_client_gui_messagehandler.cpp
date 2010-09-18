@@ -38,6 +38,8 @@ update_display_cb(gpointer userData_in)
                                                                   userData_in);
   ACE_ASSERT(messageHandler);
 
+  // *WARNING*: callbacks scheduled via g_idle_add need to be protected by
+  // GDK_THREADS_ENTER/GDK_THREADS_LEAVE !
   GDK_THREADS_ENTER();
 
   messageHandler->update();
@@ -522,6 +524,10 @@ IRC_Client_GUI_MessageHandler::update()
 
   // always insert new text at the END of the buffer...
   ACE_ASSERT(myView);
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("printing: \"%s\"\n"),
+//              myDisplayQueue.front().c_str()));
 
   GtkTextIter iter;
   gtk_text_buffer_get_end_iter(gtk_text_view_get_buffer(myView),
