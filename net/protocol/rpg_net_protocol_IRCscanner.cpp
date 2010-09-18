@@ -2384,7 +2384,7 @@ static yyconst yy_state_type yy_NUL_trans[60] =
 static yyconst flex_int16_t yy_rule_linenum[20] =
     {   0,
        77,   81,   85,   88,   91,  102,  112,  124,  135,  147,
-      159,  170,  181,  184,  187,  197,  210,  222,  253
+      159,  170,  181,  184,  187,  197,  210,  222,  254
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -3073,6 +3073,7 @@ case YY_STATE_EOF(trailing):
 
                              if (!driver.moreData())
                              {
+                               BEGIN(INITIAL);
                                messageCount++;
                                yyterminate();
                              } // end IF

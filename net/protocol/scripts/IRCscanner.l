@@ -226,6 +226,7 @@ CRLF           \r\n
 
                              if (!driver.moreData())
                              {
+                               BEGIN(INITIAL);
                                messageCount++;
                                yyterminate();
                              } // end IF
