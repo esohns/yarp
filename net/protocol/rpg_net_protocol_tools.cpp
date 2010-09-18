@@ -1332,6 +1332,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRC_Codes::RPL_TRYAGAIN:      // 263
         case RPG_Net_Protocol_IRC_Codes::RPL_LOCALUSERS:    // 265
         case RPG_Net_Protocol_IRC_Codes::RPL_GLOBALUSERS:   // 266
+        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFBANLIST:  // 368
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTD:          // 372
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:     // 375
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:     // 376
@@ -1339,6 +1340,12 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         {
           result = RPG_Net_Protocol_Tools::concatParams(message_in.params,
                                                         -1);
+
+          break;
+        }
+        case RPG_Net_Protocol_IRC_Codes::RPL_BANLIST:       // 367
+        {
+          result = RPG_Net_Protocol_Tools::concatParams(message_in.params);
 
           break;
         }

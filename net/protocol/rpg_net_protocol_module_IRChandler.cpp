@@ -155,6 +155,8 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         case RPG_Net_Protocol_IRC_Codes::RPL_TOPICWHOTIME:         // 333
         case RPG_Net_Protocol_IRC_Codes::RPL_NAMREPLY:             // 353
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFNAMES:           // 366
+        case RPG_Net_Protocol_IRC_Codes::RPL_BANLIST:              // 367
+        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFBANLIST:         // 368
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTD:                 // 372
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:            // 375
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:            // 376
