@@ -236,6 +236,7 @@ print_skills_table(RPG_Character_Skills_t& skills_in)
   // increase skill rank
   choice -= 1;
   iterator = RPG_Common_SkillHelper::myRPG_Common_SkillToStringTable.begin();
+  ACE_ASSERT(RPG_Common_SkillHelper::myRPG_Common_SkillToStringTable.size() >= choice);
   std::advance(iterator, choice);
   skills_iterator = skills_in.find(iterator->first);
   if (skills_iterator != skills_in.end())
@@ -321,6 +322,7 @@ print_feats_table(const RPG_Common_SubClass& subClass_in,
   // (try to) append chosen feat
   choice -= 1;
   iterator = RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable.begin();
+  ACE_ASSERT(RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable.size() >= choice);
   std::advance(iterator, choice);
 
   feats_iterator = feats_inout.find(iterator->first);
@@ -403,6 +405,7 @@ print_spells_table(const RPG_Magic_Spells_t& spells_in,
   // append chosen spell
   choice -= 1;
   iterator = spells_in.begin();
+  ACE_ASSERT(spells_in.size() >= choice);
   std::advance(iterator, choice);
 
   // select chosen spell type

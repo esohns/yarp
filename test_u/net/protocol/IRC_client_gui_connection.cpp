@@ -846,6 +846,8 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
         case RPG_Net_Protocol_IRC_Codes::RPL_YOURID:           //  42
         case RPG_Net_Protocol_IRC_Codes::RPL_STATSDLINE:       // 250
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCLIENT:      // 251
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSEROP:          // 252
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERUNKNOWN:     // 253
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCHANNELS:    // 254
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERME:          // 255
         case RPG_Net_Protocol_IRC_Codes::RPL_TRYAGAIN:         // 263
@@ -903,6 +905,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
           // convert <# visible>
           RPG_Net_Protocol_ParametersIterator_t param_iterator = message_in.params.begin();
+          ACE_ASSERT(message_in.params.size() >= 3);
           std::advance(param_iterator, 2);
           std::stringstream converter;
           guint num_members = 0;
@@ -983,6 +986,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
           // retrieve channel name
           RPG_Net_Protocol_ParametersIterator_t param_iterator = message_in.params.begin();
+          ACE_ASSERT(message_in.params.size() >= 3);
           std::advance(param_iterator, 2);
 
           // retrieve message handler

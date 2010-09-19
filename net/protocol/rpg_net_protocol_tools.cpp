@@ -1417,7 +1417,6 @@ RPG_Net_Protocol_Tools::concatParams(const RPG_Net_Protocol_Parameters_t& params
 
   RPG_Net_Protocol_ParametersIterator_t iterator = params_in.begin();
   std::advance(iterator, index_in);
-  ACE_ASSERT(iterator != params_in.end());
   for (;
        iterator != params_in.end();
        iterator++)

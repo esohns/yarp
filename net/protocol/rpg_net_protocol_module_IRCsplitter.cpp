@@ -361,7 +361,6 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
           message->crunch();
         } // end IF
 
-//         // debug info
 //         ACE_DEBUG((LM_DEBUG,
 //                    ACE_TEXT("processing message (ID: %u - %u byte(s))...\n"),
 //                    message->getID(),

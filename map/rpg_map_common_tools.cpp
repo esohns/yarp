@@ -381,7 +381,6 @@ RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_Positions_t& seedPoints_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayFloorPlan"));
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("seed point(s): [")));
   RPG_Map_PositionsConstIterator_t next = seedPoints_in.begin();
@@ -395,6 +394,7 @@ RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_Positions_t& seedPoints_in,
                (*iterator).second));
 
     next = iterator;
+    ACE_ASSERT(next != seedPoints_in.end());
     std::advance(next, 1);
     if (next != seedPoints_in.end())
       ACE_DEBUG((LM_DEBUG,

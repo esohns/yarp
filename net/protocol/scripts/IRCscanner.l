@@ -181,7 +181,7 @@ CRLF           \r\n
 {SPACE}+                   { yylloc->step();
                              //yylval->ival = yyleng;
                              return token::SPACE; }
-":"/{TRAILING_PARAM}       { yylloc->step();
+":"                        { yylloc->step();
                              BEGIN(trailing);
                              return token_type(yytext[0]); }
 {PARAM}/{SPACE}            { yylloc->step();
@@ -207,17 +207,21 @@ CRLF           \r\n
                              return token::PARAM; }
 } // end <params>
 <trailing>{
-{TRAILING_PARAM}/{CRLF}    { yylloc->step();
-                             BEGIN(INITIAL);
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string);
-                             if (!memory.empty())
+{TRAILING_PARAM}/{CRLF}    { BEGIN(INITIAL);
+                             if (yyleng > 0)
                              {
-                               *(yylval->sval) = memory;
-                               memory.clear();
-                             } // end IF
-                             yylval->sval->append(yytext, yyleng);
-                             return token::PARAM; }
+                               yylloc->step();
+                               ACE_NEW_NORETURN(yylval->sval,
+                                                std::string);
+                               if (!memory.empty())
+                               {
+                                 *(yylval->sval) = memory;
+                                 memory.clear();
+                               } // end IF
+                               yylval->sval->append(yytext, yyleng);
+                               return token::PARAM;
+                              } // end IF
+                            }
 } // end <trailing>
 <INITIAL>{CRLF}            { yylloc->step();
                              messageCount++;

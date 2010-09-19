@@ -437,6 +437,7 @@ RPG_Common_Tools::enumToString(const std::string& enumString_in,
 
   // step2: convert everything past the first character to lower-case
   std::string::iterator first = result.begin();
+  ACE_ASSERT(result.size() >= 1);
   std::advance(first, 1); // *NOTE*: skip first character
   std::transform(first,
                  result.end(),

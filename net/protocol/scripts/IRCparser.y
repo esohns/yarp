@@ -54,7 +54,7 @@ typedef void* yyscan_t;
 %token <ival> CMD_NUMERIC "cmd_numeric"
 %token <sval> PARAM       "param"
 %token        END 0       "end_of_message"
-/* %type  <sval> message prefix ext_prefix command params */
+/* %type  <sval> message prefix ext_prefix command params trailing */
 
 %printer    { debug_stream() << *$$; } <sval>
 %destructor { delete $$; $$ = NULL; } <sval>
@@ -103,15 +103,17 @@ command:      "cmd_string"                                    { ACE_ASSERT(drive
                                                                            $1)); */
                                                               };
 params:       "space" params                                  /* default */
-              | ':' "param"                                   { driver.myCurrentMessage->params.push_front(*$2);
-/*                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set final param: \"%s\"\n"),
-                                                                           driver.myCurrentMessage->params.front().c_str())); */
-                                                              };
+              | ':' trailing                                  /* default */
               | "param" params                                { driver.myCurrentMessage->params.push_front(*$1);
 /*                                                                ACE_DEBUG((LM_DEBUG,
                                                                            ACE_TEXT("set param: \"%s\"\n"),
                                                                            driver.myCurrentMessage->params.front().c_str())); */
+                                                              };
+              |                                               /* empty */
+trailing:     "param"                                         { driver.myCurrentMessage->params.push_front(*$1);
+/*                                                                ACE_DEBUG((LM_DEBUG,
+                                                                             ACE_TEXT("set final param: \"%s\"\n"),
+                                                                             driver.myCurrentMessage->params.front().c_str())); */
                                                               };
               |                                               /* empty */
 %%

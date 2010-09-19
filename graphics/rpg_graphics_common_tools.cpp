@@ -1030,6 +1030,7 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_Type& type_in,
       if (myGraphicsCache.size() == myCacheSize)
       {
         iter = myGraphicsCache.begin();
+        ACE_ASSERT(myGraphicsCache.size() >= myOldestCacheEntry);
         std::advance(iter, myOldestCacheEntry);
         // *TODO*: what if it's still being used ?...
         SDL_FreeSurface((*iter).image);
