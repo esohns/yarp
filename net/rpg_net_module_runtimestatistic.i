@@ -299,7 +299,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolCommandType,
                                 StatisticsContainerType>::reset()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::reset"));
+//   RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::reset"));
 
   // this should happen every second (roughly)...
   {

@@ -45,7 +45,7 @@ int
 RPG_Net_ResetCounterHandler::handle_timeout(const ACE_Time_Value& tv_in,
                                             const void* arg_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_ResetCounterHandler::handle_timeout"));
+//   RPG_TRACE(ACE_TEXT("RPG_Net_ResetCounterHandler::handle_timeout"));
 
   ACE_UNUSED_ARG(tv_in);
   ACE_UNUSED_ARG(arg_in);

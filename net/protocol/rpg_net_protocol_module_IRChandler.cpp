@@ -504,8 +504,8 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
 
     if (!myConnectionIsAlive)
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("waiting for connection...\n")));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("waiting for connection...\n")));
 
       // *NOTE*: can happen when trying to register IMMEDIATELY after connecting
       // --> allow a little delay for:
@@ -531,10 +531,8 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
         return;
       } // end IF
 
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("proceeding...\n")));
-
-      return;
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("proceeding...\n")));
     } // end IF
   } // end lock scope
   // step2: ...is done ?
@@ -1001,4 +999,7 @@ RPG_Net_Protocol_Module_IRCHandler::sendMessage(RPG_Net_Protocol_IRCMessage*& co
 
     return;
   } // end IF
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("pushed message...\n")));
 }

@@ -63,12 +63,6 @@
 #include <sstream>
 #include <map>
 
-// init statics
-static int                               grp_id            = -1;
-static RPG_Stream_AllocatorHeap          heap_allocator;
-static RPG_Net_Protocol_MessageAllocator message_allocator(RPG_NET_DEF_MAX_MESSAGES,
-                                                           &heap_allocator);
-
 static void
 is_entry_sensitive(GtkCellLayout*   layout_in,
                    GtkCellRenderer* renderer_in,
@@ -86,7 +80,8 @@ is_entry_sensitive(GtkCellLayout*   layout_in,
 }
 
 const bool
-connect_to_server(const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
+connect_to_server(RPG_Stream_IAllocator* messageAllocator_in,
+                  const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
                   const bool& debugScanner_in,
                   const bool& debugParser_in,
                   const unsigned long& statisticsReportingInterval_in,
@@ -103,7 +98,7 @@ connect_to_server(const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
   RPG_Net_Protocol_ConfigPOD stream_config;
   // ************ connection config data ************
   stream_config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
-  stream_config.messageAllocator = &message_allocator;
+  stream_config.messageAllocator = messageAllocator_in;
   stream_config.defaultBufferSize = RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE;
   // ************ protocol config data **************
   stream_config.clientPingInterval = 0; // servers do this...
@@ -182,6 +177,7 @@ connect_clicked_cb(GtkWidget* button_in,
   // sanity check(s)
   ACE_ASSERT(button);
   ACE_ASSERT(data);
+  ACE_ASSERT(data->allocator);
   ACE_ASSERT(data->builder);
 
   // step1: retrieve active phonebook entry
@@ -273,7 +269,7 @@ connect_clicked_cb(GtkWidget* button_in,
 
     return;
   } // end IF
-  if (!IRChandler_impl->init(&message_allocator,
+  if (!IRChandler_impl->init(data->allocator,              // message allocator
                              RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE,
                              RPG_NET_DEF_CLIENT_PING_PONG, // auto-answer "ping" as a client ?...
                              false))                       // clients print ('.') dots for received "pings"...
@@ -336,6 +332,8 @@ connect_clicked_cb(GtkWidget* button_in,
     return;
   } // end IF
 
+  ACE_LOG_MSG->start_tracing();
+
   // step4: connect to the server
   bool connected = false;
   for (RPG_Net_Protocol_PortRangesIterator_t port_range_iter = (*phonebook_iter).second.listeningPorts.begin();
@@ -348,7 +346,8 @@ connect_clicked_cb(GtkWidget* button_in,
            current_port <= (*port_range_iter).second;
            current_port++)
       {
-        if (connect_to_server(data->loginOptions,                // login options
+        if (connect_to_server(data->allocator,                   // message allocator
+                              data->loginOptions,                // login options
                               data->debugScanner,                // debug scanner ?
                               data->debugParser,                 // debug parser ?
                               data->statisticsReportingInterval, // statistics reporting interval [seconds: 0 --> OFF]
@@ -362,7 +361,8 @@ connect_clicked_cb(GtkWidget* button_in,
         } // end IF
       } // end FOR
     else
-      if (connect_to_server(data->loginOptions,                // login options
+      if (connect_to_server(data->allocator,                   // message allocator
+                            data->loginOptions,                // login options
                             data->debugScanner,                // debug scanner ?
                             data->debugParser,                 // debug parser ?
                             data->statisticsReportingInterval, // statistics reporting interval [seconds: 0 --> OFF]
@@ -391,9 +391,8 @@ connect_clicked_cb(GtkWidget* button_in,
     return;
   } // end IF
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("registering...\n")));
-  ACE_LOG_MSG->start_tracing();
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("registering...\n")));
 
   // step5: register our connection with the server
   try
@@ -407,8 +406,8 @@ connect_clicked_cb(GtkWidget* button_in,
                ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::registerConnection(), continuing\n")));
   }
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("registering...DONE\n")));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("registering...DONE\n")));
 
   // synch access
   {
@@ -1061,7 +1060,7 @@ do_work(const bool& useThreadPool_in,
 
   // step2: dispatch events...
   // *NOTE*: if we use a thread pool, we invoke a different function...
-//   int grp_id = -1;
+  int grp_id = -1;
   if (useThreadPool_in)
   {
     // start a (group of) worker(s)...
@@ -1787,34 +1786,37 @@ ACE_TMAIN(int argc,
     return EXIT_SUCCESS;
   } // end IF
 
-  // step2c: set correct trace level
-  //ACE_Trace::start_tracing();
-  if (!traceInformation)
+  // step2c: set correct verbosity
+  u_long process_priority_mask = (LM_SHUTDOWN |
+//                                   LM_TRACE |  // <-- DISABLE trace messages !
+//                                   LM_DEBUG |  // <-- DISABLE ACE_DEBUG messages !
+                                  LM_INFO |
+                                  LM_NOTICE |
+                                  LM_WARNING |
+                                  LM_STARTUP |
+                                  LM_ERROR |
+                                  LM_CRITICAL |
+                                  LM_ALERT |
+                                  LM_EMERGENCY);
+  if (traceInformation)
   {
-    u_long process_priority_mask = (LM_SHUTDOWN |
-                                    //LM_TRACE |  // <-- DISABLE trace messages !
-                                    //LM_DEBUG |  // <-- DISABLE ACE_DEBUG messages !
-                                    LM_INFO |
-                                    LM_NOTICE |
-                                    LM_WARNING |
-                                    LM_STARTUP |
-                                    LM_ERROR |
-                                    LM_CRITICAL |
-                                    LM_ALERT |
-                                    LM_EMERGENCY);
-
-    // set new mask...
-    ACE_LOG_MSG->priority_mask(process_priority_mask,
-                               ACE_Log_Msg::PROCESS);
-
-    //ACE_LOG_MSG->stop_tracing();
+    process_priority_mask |= LM_DEBUG;
 
     // don't go VERBOSE...
     //ACE_LOG_MSG->clr_flags(ACE_Log_Msg::VERBOSE_LITE);
   } // end IF
+  // set process priority mask...
+  ACE_LOG_MSG->priority_mask(process_priority_mask,
+                             ACE_Log_Msg::PROCESS);
+
+  // init global (!) processing stream message allocator
+  RPG_Stream_AllocatorHeap heapAllocator;
+  RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
+                                                     &heapAllocator);
 
   // step2d: init callback data
   main_cb_data_t userData;
+  userData.allocator = &messageAllocator;
   userData.debugScanner = debugScanner;
   userData.debugParser = debugParser;
   userData.statisticsReportingInterval = reportingInterval;

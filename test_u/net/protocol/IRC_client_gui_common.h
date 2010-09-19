@@ -32,6 +32,7 @@
 #include <string>
 
 // forward declaration(s)
+class RPG_Stream_IAllocator;
 class IRC_Client_GUI_Connection;
 
 typedef std::map<std::string, IRC_Client_GUI_Connection*> connections_t;
@@ -39,6 +40,7 @@ typedef connections_t::iterator connections_iterator_t;
 
 struct main_cb_data_t
 {
+  RPG_Stream_IAllocator*           allocator;
   bool                             debugParser;
   bool                             debugScanner;
   unsigned long                    statisticsReportingInterval; // seconds [0 --> OFF]
