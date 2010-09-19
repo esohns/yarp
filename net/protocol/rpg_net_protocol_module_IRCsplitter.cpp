@@ -324,11 +324,17 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
 
         // *NOTE*: if scanned_bytes == 0, then it's the corner
         // case where the current buffer starts with a '\n'
+        // *NOTE*: in EITHER case, a new frame has been found...
         if (scanned_bytes == 0)
+        {
           scanned_bytes = 1;
+          myCurrentMessageLength += RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE;
+        } // end IF
         else
+        {
           scanned_bytes += RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE;
-        myCurrentMessageLength += scanned_bytes;
+          myCurrentMessageLength += scanned_bytes;
+        } // end IF
 
 //         ACE_DEBUG((LM_DEBUG,
 //                    ACE_TEXT("buffer (ID: %u, length: %u): frame boundary [#%u] @ offset %u\n\"%s\"\n"),
