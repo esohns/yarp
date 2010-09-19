@@ -39,7 +39,7 @@ RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter()
 //              NULL), // no default output stream
    myScannerContext(NULL),
    myCurrentNumFrames(0),
-   myCurrentState(NULL),
+   myCurrentBufferState(NULL),
    myCurrentMessage(NULL),
    myCurrentBuffer(NULL),
    myCurrentMessageLength(0),
@@ -60,7 +60,7 @@ RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter()
 
   // fini scanner context
   if (myScannerContext)
-    yylex_destroy(myScannerContext);
+    IRCBisectlex_destroy(myScannerContext);
 
   // clean up any unprocessed (chained) buffer(s)
   if (myCurrentMessage)
@@ -89,15 +89,15 @@ RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
     if (myStatCollectHandlerID)
       RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myStatCollectHandlerID);
     myStatCollectHandlerID = 0;
-    // *TODO*: use yyrestart() ?
     // fini scanner context
     if (myScannerContext)
-      yylex_destroy(myScannerContext);
+      IRCBisectlex_destroy(myScannerContext);
     myScannerContext = NULL;
     myCurrentNumFrames = 0;
-    if (myCurrentState)
-      yy_delete_buffer(myCurrentState, myScannerContext);
-    myCurrentState = NULL;
+    if (myCurrentBufferState)
+      IRCBisect_delete_buffer(myCurrentBufferState,
+                              myScannerContext);
+    myCurrentBufferState = NULL;
     if (myCurrentMessage)
       myCurrentMessage->release();
     myCurrentMessage = NULL;
@@ -137,11 +137,11 @@ RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
   // *NOTE*: need to clean up timer beyond this point !
 
   // init scanner context
-  if (yylex_init_extra(&myCurrentNumFrames, // extra data
-                       &myScannerContext))  // scanner context handle
+  if (IRCBisectlex_init_extra(&myCurrentNumFrames, // extra data
+                              &myScannerContext))  // scanner context handle
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to yylex_init_extra(): \"%m\", aborting\n")));
+               ACE_TEXT("failed to IRCBisectlex_init_extra(): \"%m\", aborting\n")));
 
     // clean up
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myStatCollectHandlerID);
@@ -150,8 +150,8 @@ RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
     // what else can we do ?
     return false;
   } // end IF
-  yyset_debug(traceScanning_in,
-              myScannerContext);
+  IRCBisectset_debug(traceScanning_in,
+                     myScannerContext);
 
   // OK: all's well...
   myIsInitialized = true;
@@ -305,7 +305,7 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
 //   while (myCurrentMessageLength = myScanner.yylex())
   do
   {
-    scanned_chunk = yylex(myScannerContext);
+    scanned_chunk = IRCBisectlex(myScannerContext);
     switch (scanned_chunk)
     {
       case 0:
@@ -539,7 +539,7 @@ RPG_Net_Protocol_Module_IRCSplitter::scan_begin(char* data_in,
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::scan_begin"));
 
   // sanity check(s)
-  ACE_ASSERT(myCurrentState == NULL);
+  ACE_ASSERT(myCurrentBufferState == NULL);
 
   // create/init a new buffer state
   // *WARNING*: cannot use yy_scan_buffer(), as flex modifies the data... :-(
@@ -547,13 +547,13 @@ RPG_Net_Protocol_Module_IRCSplitter::scan_begin(char* data_in,
 //   myCurrentState = yy_scan_buffer(data_in,
 //                                   length_in,
 //                                   myScannerContext);
-  myCurrentState = yy_scan_bytes(data_in,
-                                 length_in,
-                                 myScannerContext);
-  if (myCurrentState == NULL)
+  myCurrentBufferState = IRCBisect_scan_bytes(data_in,
+                                              length_in,
+                                              myScannerContext);
+  if (myCurrentBufferState == NULL)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ::yy_scan_bytes(%@,%d), aborting\n"),
+               ACE_TEXT("failed to ::IRCBisect_scan_bytes(%@,%d), aborting\n"),
                data_in,
                length_in));
 
@@ -562,8 +562,8 @@ RPG_Net_Protocol_Module_IRCSplitter::scan_begin(char* data_in,
   } // end IF
 
   // *WARNING*: contrary (!) to the documentation, still need to switch_buffers()...
-  yy_switch_to_buffer(myCurrentState,
-                      myScannerContext);
+  IRCBisect_switch_to_buffer(myCurrentBufferState,
+                             myScannerContext);
 
   return true;
 }
@@ -574,10 +574,10 @@ RPG_Net_Protocol_Module_IRCSplitter::scan_end()
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::scan_end"));
 
   // sanity check(s)
-  ACE_ASSERT(myCurrentState);
+  ACE_ASSERT(myCurrentBufferState);
 
   // clean state
-  yy_delete_buffer(myCurrentState,
-                   myScannerContext);
-  myCurrentState = NULL;
+  IRCBisect_delete_buffer(myCurrentBufferState,
+                          myScannerContext);
+  myCurrentBufferState = NULL;
 }

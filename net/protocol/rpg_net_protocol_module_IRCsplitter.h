@@ -111,7 +111,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
   yyscan_t                  myScannerContext;
 //   IRCBisectFlexLexer    myScanner;
   unsigned long             myCurrentNumFrames;
-  YY_BUFFER_STATE           myCurrentState;
+  YY_BUFFER_STATE           myCurrentBufferState;
   // message buffers
   RPG_Net_Protocol_Message* myCurrentMessage;
   RPG_Net_Protocol_Message* myCurrentBuffer;

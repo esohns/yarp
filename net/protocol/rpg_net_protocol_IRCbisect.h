@@ -1,6 +1,6 @@
-#ifndef yyHEADER_H
-#define yyHEADER_H 1
-#define yyIN_HEADER 1
+#ifndef IRCBisectHEADER_H
+#define IRCBisectHEADER_H 1
+#define IRCBisectIN_HEADER 1
 
 #line 6 "rpg_net_protocol_IRCbisect.h"
 
@@ -252,28 +252,28 @@ struct yy_buffer_state
 
 /* %endif */
 
-void yyrestart (FILE *input_file ,yyscan_t yyscanner );
-void yy_switch_to_buffer (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-YY_BUFFER_STATE yy_create_buffer (FILE *file,int size ,yyscan_t yyscanner );
-void yy_delete_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void yy_flush_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void yypush_buffer_state (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-void yypop_buffer_state (yyscan_t yyscanner );
+void IRCBisectrestart (FILE *input_file ,yyscan_t yyscanner );
+void IRCBisect_switch_to_buffer (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
+YY_BUFFER_STATE IRCBisect_create_buffer (FILE *file,int size ,yyscan_t yyscanner );
+void IRCBisect_delete_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
+void IRCBisect_flush_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
+void IRCBisectpush_buffer_state (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
+void IRCBisectpop_buffer_state (yyscan_t yyscanner );
 
-YY_BUFFER_STATE yy_scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
-YY_BUFFER_STATE yy_scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
-YY_BUFFER_STATE yy_scan_bytes (yyconst char *bytes,int len ,yyscan_t yyscanner );
+YY_BUFFER_STATE IRCBisect_scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
+YY_BUFFER_STATE IRCBisect_scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
+YY_BUFFER_STATE IRCBisect_scan_bytes (yyconst char *bytes,int len ,yyscan_t yyscanner );
 
 /* %endif */
 
-void *yyalloc (yy_size_t ,yyscan_t yyscanner );
-void *yyrealloc (void *,yy_size_t ,yyscan_t yyscanner );
-void yyfree (void * ,yyscan_t yyscanner );
+void *IRCBisectalloc (yy_size_t ,yyscan_t yyscanner );
+void *IRCBisectrealloc (void *,yy_size_t ,yyscan_t yyscanner );
+void IRCBisectfree (void * ,yyscan_t yyscanner );
 
 /* %% [1.0] yytext/yyin/yyout/yy_state_type/yylineno etc. def's & init go here */
 /* Begin user sect3 */
 
-#define yywrap(n) 1
+#define IRCBisectwrap(n) 1
 #define YY_SKIP_YYWRAP
 
 #define FLEX_DEBUG
@@ -695,9 +695,9 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
 /* %if-reentrant */
 
-int yylex_init (yyscan_t* scanner);
+int IRCBisectlex_init (yyscan_t* scanner);
 
-int yylex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
+int IRCBisectlex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
 
 /* %endif */
 
@@ -706,31 +706,31 @@ int yylex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
 /* Accessor methods to globals.
    These are made visible to non-reentrant scanners for convenience. */
 
-int yylex_destroy (yyscan_t yyscanner );
+int IRCBisectlex_destroy (yyscan_t yyscanner );
 
-int yyget_debug (yyscan_t yyscanner );
+int IRCBisectget_debug (yyscan_t yyscanner );
 
-void yyset_debug (int debug_flag ,yyscan_t yyscanner );
+void IRCBisectset_debug (int debug_flag ,yyscan_t yyscanner );
 
-YY_EXTRA_TYPE yyget_extra (yyscan_t yyscanner );
+YY_EXTRA_TYPE IRCBisectget_extra (yyscan_t yyscanner );
 
-void yyset_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
+void IRCBisectset_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
 
-FILE *yyget_in (yyscan_t yyscanner );
+FILE *IRCBisectget_in (yyscan_t yyscanner );
 
-void yyset_in  (FILE * in_str ,yyscan_t yyscanner );
+void IRCBisectset_in  (FILE * in_str ,yyscan_t yyscanner );
 
-FILE *yyget_out (yyscan_t yyscanner );
+FILE *IRCBisectget_out (yyscan_t yyscanner );
 
-void yyset_out  (FILE * out_str ,yyscan_t yyscanner );
+void IRCBisectset_out  (FILE * out_str ,yyscan_t yyscanner );
 
-int yyget_leng (yyscan_t yyscanner );
+int IRCBisectget_leng (yyscan_t yyscanner );
 
-char *yyget_text (yyscan_t yyscanner );
+char *IRCBisectget_text (yyscan_t yyscanner );
 
-int yyget_lineno (yyscan_t yyscanner );
+int IRCBisectget_lineno (yyscan_t yyscanner );
 
-void yyset_lineno (int line_number ,yyscan_t yyscanner );
+void IRCBisectset_lineno (int line_number ,yyscan_t yyscanner );
 
 /* %if-bison-bridge */
 /* %endif */
@@ -741,9 +741,9 @@ void yyset_lineno (int line_number ,yyscan_t yyscanner );
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
-extern "C" int yywrap (yyscan_t yyscanner );
+extern "C" int IRCBisectwrap (yyscan_t yyscanner );
 #else
-extern int yywrap (yyscan_t yyscanner );
+extern int IRCBisectwrap (yyscan_t yyscanner );
 #endif
 #endif
 
@@ -792,9 +792,9 @@ static int yy_flex_strlen (yyconst char * ,yyscan_t yyscanner);
 #define YY_DECL_IS_OURS 1
 /* %if-c-only Standard (non-C++) definition */
 
-extern int yylex (yyscan_t yyscanner);
+extern int IRCBisectlex (yyscan_t yyscanner);
 
-#define YY_DECL int yylex (yyscan_t yyscanner)
+#define YY_DECL int IRCBisectlex (yyscan_t yyscanner)
 /* %endif */
 /* %if-c++-only C++ definition */
 /* %endif */
@@ -825,5 +825,5 @@ extern int yylex (yyscan_t yyscanner);
 #endif
 
 #line 828 "rpg_net_protocol_IRCbisect.h"
-#undef yyIN_HEADER
-#endif /* yyHEADER_H */
+#undef IRCBisectIN_HEADER
+#endif /* IRCBisectHEADER_H */
