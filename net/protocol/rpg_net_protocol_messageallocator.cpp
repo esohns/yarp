@@ -21,7 +21,7 @@
 #include "rpg_net_protocol_messageallocator.h"
 
 RPG_Net_Protocol_MessageAllocator::RPG_Net_Protocol_MessageAllocator(const unsigned long& maxNumMessages_in,
-                                                                     Stream_AllocatorHeap* allocator_in)
+                                                                     RPG_Stream_AllocatorHeap* allocator_in)
  : inherited(maxNumMessages_in,
              allocator_in)
 {

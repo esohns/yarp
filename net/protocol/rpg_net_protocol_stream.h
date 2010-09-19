@@ -31,8 +31,8 @@
 
 #include <rpg_common_istatistic.h>
 
-#include <stream_base.h>
-#include <stream_session_config_base.h>
+#include <rpg_stream_base.h>
+#include <rpg_stream_session_config_base.h>
 
 #include <ace/Global_Macros.h>
 
@@ -41,10 +41,10 @@ class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
 
 class RPG_Net_Protocol_Stream
- : public Stream_Base<RPG_Net_Protocol_ConfigPOD,
-                      Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
-                      RPG_Net_Protocol_SessionMessage,
-                      RPG_Net_Protocol_Message>,
+ : public RPG_Stream_Base<RPG_Net_Protocol_ConfigPOD,
+                          RPG_Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
+                          RPG_Net_Protocol_SessionMessage,
+                          RPG_Net_Protocol_Message>,
    public RPG_Common_IStatistic<RPG_Net_Protocol_RuntimeStatistic>
 {
  public:
@@ -64,10 +64,10 @@ class RPG_Net_Protocol_Stream
   virtual void report() const;
 
  private:
-  typedef Stream_Base<RPG_Net_Protocol_ConfigPOD,
-                      Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
-                      RPG_Net_Protocol_SessionMessage,
-                      RPG_Net_Protocol_Message> inherited;
+  typedef RPG_Stream_Base<RPG_Net_Protocol_ConfigPOD,
+                          RPG_Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
+                          RPG_Net_Protocol_SessionMessage,
+                          RPG_Net_Protocol_Message> inherited;
 
   // safety measures
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Stream());

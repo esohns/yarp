@@ -24,20 +24,20 @@
 #include <rpg_common_timerhandler.h>
 #include <rpg_common_itimer.h>
 
-#include <stream_task_base_synch.h>
-#include <stream_streammodule.h>
+#include <rpg_stream_task_base_synch.h>
+#include <rpg_stream_streammodule.h>
 
 #include <ace/Time_Value.h>
 #include <ace/Reactor.h>
 
 // forward declaration(s)
-class Stream_IAllocator;
+class RPG_Stream_IAllocator;
 class RPG_Net_SessionMessage;
 class RPG_Net_Message;
 
 class RPG_Net_Module_ProtocolHandler
- : public Stream_TaskBaseSynch<RPG_Net_SessionMessage,
-                               RPG_Net_Message>,
+ : public RPG_Stream_TaskBaseSynch<RPG_Net_SessionMessage,
+                                   RPG_Net_Message>,
    public RPG_Common_ITimer
 {
  public:
@@ -45,7 +45,7 @@ class RPG_Net_Module_ProtocolHandler
   virtual ~RPG_Net_Module_ProtocolHandler();
 
   // initialization
-  const bool init(Stream_IAllocator*,       // message allocator
+  const bool init(RPG_Stream_IAllocator*,   // message allocator
                   const unsigned long& = 0, // client "ping" interval (server) [0 --> OFF]
                   const bool& = false,      // automatically answer "ping" messages (client)
                   const bool& = false);     // print dot ('.') for every answered PING to stderr (client)
@@ -63,8 +63,8 @@ class RPG_Net_Module_ProtocolHandler
   virtual void dump_state() const;
 
  private:
-  typedef Stream_TaskBaseSynch<RPG_Net_SessionMessage,
-                               RPG_Net_Message> inherited;
+  typedef RPG_Stream_TaskBaseSynch<RPG_Net_SessionMessage,
+                                   RPG_Net_Message> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_ProtocolHandler(const RPG_Net_Module_ProtocolHandler&));
@@ -77,7 +77,7 @@ class RPG_Net_Module_ProtocolHandler
   RPG_Common_TimerHandler myClientPingHandler;
   int                     myClientPingTimerID;
 
-  Stream_IAllocator*      myAllocator;
+  RPG_Stream_IAllocator*  myAllocator;
   unsigned long           myCounter;
   bool                    myAutomaticPong;
   bool                    myPrintPongDot;

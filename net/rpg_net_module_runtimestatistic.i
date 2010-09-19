@@ -22,8 +22,8 @@
 
 #include <rpg_common_timer_manager.h>
 
-#include <stream_message_base.h>
-#include <stream_iallocator.h>
+#include <rpg_stream_message_base.h>
+#include <rpg_stream_iallocator.h>
 
 #include <ace/Time_Value.h>
 
@@ -98,7 +98,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolMessageType,
                                 ProtocolCommandType,
                                 StatisticsContainerType>::init(const unsigned long& reportingInterval_in,
-                                                               const Stream_IAllocator* allocator_in)
+                                                               const RPG_Stream_IAllocator* allocator_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::init"));
 
@@ -249,14 +249,14 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
   switch (message_inout->getType())
   {
-    case Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
+    case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
     {
       // remember session ID for reporting...
       mySessionID = message_inout->getConfig()->getUserData().sessionID;
 
       break;
     }
-    case Stream_SessionMessage::MB_STREAM_SESSION_END:
+    case RPG_Stream_SessionMessage::MB_STREAM_SESSION_END:
     {
       // session finished ? --> print overall statistics
       // *TODO*: ...and don't forget to re-init internal counters ?
@@ -264,7 +264,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
       break;
     }
-    case Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS:
+    case RPG_Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS:
     {
 //       // *NOTE*: protect access to statistics data
 //       // from asynchronous API calls (as well as local reporting)...

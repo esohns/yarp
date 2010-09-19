@@ -30,7 +30,7 @@
 
 #include <rpg_common_istatistic.h>
 
-#include <stream_base.h>
+#include <rpg_stream_base.h>
 
 #include <ace/Global_Macros.h>
 
@@ -39,10 +39,10 @@ class RPG_Net_SessionMessage;
 class RPG_Net_Message;
 
 class RPG_Net_Stream
- : public Stream_Base<RPG_Net_ConfigPOD,
-                      RPG_Net_StreamConfig,
-                      RPG_Net_SessionMessage,
-                      RPG_Net_Message>,
+ : public RPG_Stream_Base<RPG_Net_ConfigPOD,
+                          RPG_Net_StreamConfig,
+                          RPG_Net_SessionMessage,
+                          RPG_Net_Message>,
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
  public:
@@ -62,10 +62,10 @@ class RPG_Net_Stream
   virtual void report() const;
 
  private:
-  typedef Stream_Base<RPG_Net_ConfigPOD,
-                      RPG_Net_StreamConfig,
-                      RPG_Net_SessionMessage,
-                      RPG_Net_Message> inherited;
+  typedef RPG_Stream_Base<RPG_Net_ConfigPOD,
+                          RPG_Net_StreamConfig,
+                          RPG_Net_SessionMessage,
+                          RPG_Net_Message> inherited;
 
   // safety measures
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Stream());

@@ -23,8 +23,8 @@
 
 #include "rpg_net_protocol_IRCmessage.h"
 
-#include <stream_streammodule.h>
-#include <stream_streammodule_base.h>
+#include <rpg_stream_streammodule.h>
+#include <rpg_stream_streammodule_base.h>
 
 #include <ace/Time_Value.h>
 #include <ace/Date_Time.h>
@@ -38,8 +38,8 @@
 #include <bitset>
 
 // forward declaration(s)
-class Stream_IAllocator;
-class Stream_Module;
+class RPG_Stream_IAllocator;
+class RPG_Stream_Module;
 template <typename ConfigType,
           typename StatisticsContainerType> class RPG_Net_Connection_Manager;
 class RPG_Net_Protocol_Module_IRCSplitter;
@@ -170,13 +170,13 @@ struct RPG_Net_Protocol_ConfigPOD
 {
   // ************ connection config data ************
   int                               socketBufferSize;
-  Stream_IAllocator*                messageAllocator;
+  RPG_Stream_IAllocator*            messageAllocator;
   unsigned long                     defaultBufferSize;
   // ************ protocol config data **************
   unsigned long                     clientPingInterval; // used by the server...
   RPG_Net_Protocol_IRCLoginOptions  loginOptions;
   // ************ stream config data ****************
-  Stream_Module*                    module;
+  RPG_Stream_Module*                module;
   bool                              debugScanner;
   bool                              debugParser;
   unsigned long                     sessionID; // (== socket handle !)

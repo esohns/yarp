@@ -24,24 +24,24 @@
 #include "rpg_net_message.h"
 #include "rpg_net_sessionmessage.h"
 
-#include <stream_messageallocatorheap_base.h>
-#include <stream_datablockallocatorheap.h>
+#include <rpg_stream_messageallocatorheap_base.h>
+#include <rpg_stream_datablockallocatorheap.h>
 
 // forward declarations
 class Stream_AllocatorHeap;
 
 class RPG_Net_StreamMessageAllocator
- : public Stream_MessageAllocatorHeapBase<RPG_Net_Message,
-                                          RPG_Net_SessionMessage>
+ : public RPG_Stream_MessageAllocatorHeapBase<RPG_Net_Message,
+                                              RPG_Net_SessionMessage>
 {
  public:
-  RPG_Net_StreamMessageAllocator(const unsigned long&,   // total number of concurrent messages
-                                 Stream_AllocatorHeap*); // (heap) memory allocator...
+  RPG_Net_StreamMessageAllocator(const unsigned long&,       // total number of concurrent messages
+                                 RPG_Stream_AllocatorHeap*); // (heap) memory allocator...
   virtual ~RPG_Net_StreamMessageAllocator();
 
  private:
-  typedef Stream_MessageAllocatorHeapBase<RPG_Net_Message,
-                                          RPG_Net_SessionMessage> inherited;
+  typedef RPG_Stream_MessageAllocatorHeapBase<RPG_Net_Message,
+                                              RPG_Net_SessionMessage> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamMessageAllocator(const RPG_Net_StreamMessageAllocator&));

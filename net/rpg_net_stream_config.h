@@ -23,12 +23,12 @@
 
 #include "rpg_net_common.h"
 
-#include <stream_session_config_base.h>
+#include <rpg_stream_session_config_base.h>
 
 #include <ace/Global_Macros.h>
 
 class RPG_Net_StreamConfig
- : public Stream_SessionConfigBase<RPG_Net_ConfigPOD>
+ : public RPG_Stream_SessionConfigBase<RPG_Net_ConfigPOD>
 {
  public:
   RPG_Net_StreamConfig(const RPG_Net_ConfigPOD&,                     // user data
@@ -40,7 +40,7 @@ class RPG_Net_StreamConfig
   virtual void dump_state() const;
 
  private:
-  typedef Stream_SessionConfigBase<RPG_Net_ConfigPOD> inherited;
+  typedef RPG_Stream_SessionConfigBase<RPG_Net_ConfigPOD> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamConfig());

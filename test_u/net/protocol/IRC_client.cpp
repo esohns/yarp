@@ -37,7 +37,7 @@
 
 #include <rpg_common_tools.h>
 
-#include <stream_allocatorheap.h>
+#include <rpg_stream_allocatorheap.h>
 
 #include <ace/ACE.h>
 #include <ace/Version.h>
@@ -791,7 +791,7 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step1d: init configuration object
-  Stream_AllocatorHeap heapAllocator;
+  RPG_Stream_AllocatorHeap heapAllocator;
   RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
                                                      &heapAllocator);
   RPG_Net_Protocol_Module_IRCHandler_Module IRChandlerModule(std::string("IRCHandler"),

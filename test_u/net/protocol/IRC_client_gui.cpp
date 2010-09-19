@@ -40,7 +40,7 @@
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
 
-#include <stream_allocatorheap.h>
+#include <rpg_stream_allocatorheap.h>
 
 #include <gtk/gtk.h>
 
@@ -65,7 +65,7 @@
 
 // init statics
 static int                               grp_id            = -1;
-static Stream_AllocatorHeap              heap_allocator;
+static RPG_Stream_AllocatorHeap          heap_allocator;
 static RPG_Net_Protocol_MessageAllocator message_allocator(RPG_NET_DEF_MAX_MESSAGES,
                                                            &heap_allocator);
 
@@ -76,7 +76,7 @@ is_entry_sensitive(GtkCellLayout*   layout_in,
                    GtkTreeIter*     iter_in,
                    gpointer         data_in)
 {
-  ACE_TRACE(ACE_TEXT("::is_entry_sensitive"));
+//   ACE_TRACE(ACE_TEXT("::is_entry_sensitive"));
 
   gboolean sensitive = !gtk_tree_model_iter_has_child(model_in, iter_in);
   // set corresponding property
@@ -92,7 +92,7 @@ connect_to_server(const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
                   const unsigned long& statisticsReportingInterval_in,
                   const std::string& serverHostname_in,
                   const unsigned short& serverPortNumber_in,
-                  Stream_Module* finalModule_in)
+                  RPG_Stream_Module* finalModule_in)
 {
   ACE_TRACE(ACE_TEXT("::connect_to_server"));
 
@@ -393,6 +393,7 @@ connect_clicked_cb(GtkWidget* button_in,
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("registering...\n")));
+  ACE_LOG_MSG->start_tracing();
 
   // step5: register our connection with the server
   try
@@ -1792,7 +1793,7 @@ ACE_TMAIN(int argc,
   {
     u_long process_priority_mask = (LM_SHUTDOWN |
                                     //LM_TRACE |  // <-- DISABLE trace messages !
-                                    //LM_DEBUG |
+                                    //LM_DEBUG |  // <-- DISABLE ACE_DEBUG messages !
                                     LM_INFO |
                                     LM_NOTICE |
                                     LM_WARNING |

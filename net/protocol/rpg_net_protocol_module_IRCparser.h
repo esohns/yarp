@@ -24,26 +24,26 @@
 #include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_IRCparser_driver.h"
 
-#include <stream_task_base_synch.h>
-#include <stream_streammodule.h>
+#include <rpg_stream_task_base_synch.h>
+#include <rpg_stream_streammodule.h>
 
 #include <ace/Global_Macros.h>
 
 // forward declaration(s)
-class Stream_IAllocator;
+class RPG_Stream_IAllocator;
 class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
 
 class RPG_Net_Protocol_Module_IRCParser
- : public Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
-                               RPG_Net_Protocol_Message>
+ : public RPG_Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
+                                   RPG_Net_Protocol_Message>
 {
  public:
   RPG_Net_Protocol_Module_IRCParser();
   virtual ~RPG_Net_Protocol_Module_IRCParser();
 
   // configuration / initialization
-  const bool init(Stream_IAllocator*,                                 // message allocator
+  const bool init(RPG_Stream_IAllocator*,                             // message allocator
                   const bool& = RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES, // crunch messages ?
                   const bool& = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING,  // debug scanner ?
                   const bool& = RPG_NET_PROTOCOL_DEF_TRACE_PARSING);  // debug parser ?
@@ -53,8 +53,8 @@ class RPG_Net_Protocol_Module_IRCParser
                                  bool&);                     // return value: pass message downstream ?
 
  private:
-  typedef Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
-                               RPG_Net_Protocol_Message> inherited;
+  typedef RPG_Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
+                                   RPG_Net_Protocol_Message> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCParser(const RPG_Net_Protocol_Module_IRCParser&));
@@ -64,7 +64,7 @@ class RPG_Net_Protocol_Module_IRCParser
   RPG_Net_Protocol_Message* allocateMessage(const unsigned long&); // requested size
 
   // message allocator
-  Stream_IAllocator*               myAllocator;
+  RPG_Stream_IAllocator*           myAllocator;
 
   // driver
   RPG_Net_Protocol_IRCParserDriver myDriver;

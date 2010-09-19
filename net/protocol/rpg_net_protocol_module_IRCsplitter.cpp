@@ -26,7 +26,7 @@
 
 #include <rpg_common_timer_manager.h>
 
-#include <stream_iallocator.h>
+#include <rpg_stream_iallocator.h>
 
 RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter()
  : inherited(false), // DON'T auto-start !
@@ -68,7 +68,7 @@ RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter()
 }
 
 const bool
-RPG_Net_Protocol_Module_IRCSplitter::init(Stream_IAllocator* allocator_in,
+RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
                                           const bool& crunchMessages_in,
                                           const unsigned long& statisticsCollectionInterval_in,
                                           const bool& traceScanning_in)
@@ -431,7 +431,7 @@ RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage(RPG_Net_Protocol_Sessi
 
   switch (message_inout->getType())
   {
-    case Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
+    case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
     {
       // remember session ID for reporting...
       mySessionID = message_inout->getConfig()->getUserData().sessionID;
@@ -524,7 +524,7 @@ RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage(const RPG_Net_Protocol
   // *NOTE*: this is a "fire-and-forget" API, so we don't need to
   // worry about config any longer !
   return inherited::putSessionMessage(mySessionID,
-                                      Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS,
+                                      RPG_Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS,
                                       config,
                                       inherited::myAllocator);
 }

@@ -27,22 +27,22 @@
 
 #include <rpg_common_istatistic.h>
 
-#include <stream_headmoduletask_base.h>
-#include <stream_streammodule.h>
+#include <rpg_stream_headmoduletask_base.h>
+#include <rpg_stream_streammodule.h>
 
 #include <ace/Global_Macros.h>
 #include <ace/Time_Value.h>
 
 // forward declaration(s)
-class Stream_IAllocator;
+class RPG_Stream_IAllocator;
 class RPG_Net_SessionMessage;
 class RPG_Net_Message;
 
 class RPG_Net_Module_SocketHandler
- : public Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD,
-                                    RPG_Net_StreamConfig,
-                                    RPG_Net_SessionMessage,
-                                    RPG_Net_Message>,
+ : public RPG_Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD,
+                                        RPG_Net_StreamConfig,
+                                        RPG_Net_SessionMessage,
+                                        RPG_Net_Message>,
    // implement this so we can use a generic (timed) event handler to trigger stat collection...
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
@@ -51,7 +51,7 @@ class RPG_Net_Module_SocketHandler
   virtual ~RPG_Net_Module_SocketHandler();
 
   // configuration / initialization
-  const bool init(Stream_IAllocator*,        // message allocator
+  const bool init(RPG_Stream_IAllocator*,    // message allocator
 //                   const unsigned long&,      // connection ID
                   const unsigned long& = 0); // statistics collecting interval (second(s))
                                              // 0 --> DON'T collect statistics
@@ -74,10 +74,10 @@ class RPG_Net_Module_SocketHandler
   virtual void report() const;
 
  private:
-  typedef Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD,
-                                    RPG_Net_StreamConfig,
-                                    RPG_Net_SessionMessage,
-                                    RPG_Net_Message> inherited;
+  typedef RPG_Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD,
+                                        RPG_Net_StreamConfig,
+                                        RPG_Net_SessionMessage,
+                                        RPG_Net_Message> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_SocketHandler(const RPG_Net_Module_SocketHandler&));

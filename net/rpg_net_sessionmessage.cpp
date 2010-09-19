@@ -23,7 +23,7 @@
 #include <ace/Malloc_Base.h>
 
 RPG_Net_SessionMessage::RPG_Net_SessionMessage(const unsigned long& sessionID_in,
-                                               const Stream_SessionMessageType& messageType_in,
+                                               const RPG_Stream_SessionMessageType& messageType_in,
                                                RPG_Net_StreamConfig*& config_inout)
  : inherited(sessionID_in,
              messageType_in,

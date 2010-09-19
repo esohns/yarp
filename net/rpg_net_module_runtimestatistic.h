@@ -28,8 +28,8 @@
 
 #include <rpg_common_istatistic.h>
 
-#include <stream_task_base_synch.h>
-#include <stream_streammodule_base.h>
+#include <rpg_stream_task_base_synch.h>
+#include <rpg_stream_streammodule_base.h>
 
 #include <ace/Global_Macros.h>
 #include <ace/Synch.h>
@@ -38,15 +38,15 @@
 #include <map>
 
 // forward declaration(s)
-class Stream_IAllocator;
+class RPG_Stream_IAllocator;
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
 class RPG_Net_Module_RuntimeStatistic
- : public Stream_TaskBaseSynch<SessionMessageType,
-                               ProtocolMessageType>,
+ : public RPG_Stream_TaskBaseSynch<SessionMessageType,
+                                   ProtocolMessageType>,
    public RPG_Net_ICounter,
    public RPG_Common_IStatistic<StatisticsContainerType>
 {
@@ -56,7 +56,7 @@ class RPG_Net_Module_RuntimeStatistic
 
   // initialization
   const bool init(const unsigned long& = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL, // (local) reporting interval [seconds: 0 --> OFF]
-                  const Stream_IAllocator* = NULL);                                // report cache usage ?
+                  const RPG_Stream_IAllocator* = NULL);                             // report cache usage ?
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(ProtocolMessageType*&, // data message handle
@@ -75,8 +75,8 @@ class RPG_Net_Module_RuntimeStatistic
   virtual void report() const;
 
  private:
-  typedef Stream_TaskBaseSynch<SessionMessageType,
-                               ProtocolMessageType> inherited;
+  typedef RPG_Stream_TaskBaseSynch<SessionMessageType,
+                                   ProtocolMessageType> inherited;
 
   // message type counters
   typedef std::set<ProtocolCommandType> MESSAGETYPECONTAINER_TYPE;
@@ -131,7 +131,7 @@ class RPG_Net_Module_RuntimeStatistic
   MESSAGETYPE2COUNT_TYPE             myMessageTypeStatistics;
 
   // *CACHE STATS*
-  const Stream_IAllocator*           myAllocator;
+  const RPG_Stream_IAllocator*       myAllocator;
 };
 
 // // declare module

@@ -23,7 +23,7 @@
 
 #include "rpg_net_remote_comm.h"
 
-#include <stream_message_base.h>
+#include <rpg_stream_message_base.h>
 
 #include <ace/Global_Macros.h>
 
@@ -34,15 +34,15 @@ class ACE_Data_Block;
 class RPG_Net_SessionMessage;
 // class RPG_Net_StreamMessageAllocator;
 template <typename MessageType,
-          typename SessionMessageType> class Stream_MessageAllocatorHeapBase;
+          typename SessionMessageType> class RPG_Stream_MessageAllocatorHeapBase;
 
 class RPG_Net_Message
- : public Stream_MessageBase
+ : public RPG_Stream_MessageBase
 {
   // enable access to specific private ctors...
 //   friend class RPG_Net_StreamMessageAllocator;
-  friend class Stream_MessageAllocatorHeapBase<RPG_Net_Message,
-                                               RPG_Net_SessionMessage>;
+  friend class RPG_Stream_MessageAllocatorHeapBase<RPG_Net_Message,
+                                                   RPG_Net_SessionMessage>;
  public:
   virtual ~RPG_Net_Message();
 
@@ -76,7 +76,7 @@ class RPG_Net_Message
   RPG_Net_Message(const RPG_Net_Message&);
 
  private:
-  typedef Stream_MessageBase inherited;
+  typedef RPG_Stream_MessageBase inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Message());

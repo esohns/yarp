@@ -21,8 +21,8 @@
 #ifndef RPG_NET_PROTOCOL_MODULE_IRCSTREAMER_H
 #define RPG_NET_PROTOCOL_MODULE_IRCSTREAMER_H
 
-#include <stream_task_base_synch.h>
-#include <stream_streammodule.h>
+#include <rpg_stream_task_base_synch.h>
+#include <rpg_stream_streammodule.h>
 
 #include <ace/Global_Macros.h>
 
@@ -31,8 +31,8 @@ class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
 
 class RPG_Net_Protocol_Module_IRCStreamer
- : public Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
-                               RPG_Net_Protocol_Message>
+ : public RPG_Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
+                                   RPG_Net_Protocol_Message>
 {
  public:
   RPG_Net_Protocol_Module_IRCStreamer();
@@ -43,8 +43,8 @@ class RPG_Net_Protocol_Module_IRCStreamer
                                  bool&);                     // return value: pass message downstream ?
 
  private:
-  typedef Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
-                               RPG_Net_Protocol_Message> inherited;
+  typedef RPG_Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
+                                   RPG_Net_Protocol_Message> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCStreamer(const RPG_Net_Protocol_Module_IRCStreamer&));

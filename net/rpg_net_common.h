@@ -23,7 +23,7 @@
 
 #include "rpg_net_remote_comm.h"
 
-#include <stream_streammodule.h>
+#include <rpg_stream_streammodule.h>
 
 #include <ace/Time_Value.h>
 #include <ace/Singleton.h>
@@ -43,8 +43,8 @@
 // typedef ACE_Thread_Timer_Queue_Adapter<TIMERHEAP_TYPE> RPG_Net_TimerQueue_t;
 
 // forward declaration(s)
-class Stream_IAllocator;
-class Stream_Module;
+class RPG_Stream_IAllocator;
+class RPG_Stream_Module;
 template <typename ConfigType,
           typename StatisticsContainerType> class RPG_Net_Connection_Manager;
 class RPG_Net_SessionMessage;
@@ -74,10 +74,10 @@ struct RPG_Net_ConfigPOD
   // ************ connection config data ************
   unsigned long            clientPingInterval; // used by the server...
   int                      socketBufferSize;
-  Stream_IAllocator*       messageAllocator;
+  RPG_Stream_IAllocator*   messageAllocator;
   unsigned long            defaultBufferSize;
   // ************ stream config data ************
-  Stream_Module*           module;
+  RPG_Stream_Module*       module;
   unsigned long            sessionID; // (== socket handle !)
   unsigned long            statisticsReportingInterval;
   // ************ runtime data ************

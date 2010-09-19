@@ -23,8 +23,8 @@
 
 #include "rpg_net_protocol_common.h"
 
-#include <stream_session_message_base.h>
-#include <stream_session_config_base.h>
+#include <rpg_stream_session_message_base.h>
+#include <rpg_stream_session_config_base.h>
 
 #include <ace/Global_Macros.h>
 
@@ -37,19 +37,19 @@ class RPG_Net_Protocol_Message;
 // template <typename MessageType, typename SessionMessageType> class Stream_MessageAllocatorHeapBase;
 
 class RPG_Net_Protocol_SessionMessage
- : public Stream_SessionMessageBase<Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD> >
+ : public RPG_Stream_SessionMessageBase<RPG_Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD> >
 {
 //   // enable access to private ctor(s)...
 //   friend class RPG_Net_StreamMessageAllocator;
 //   friend class Stream_MessageAllocatorHeapBase<RPG_Net_Message, RPG_Net_Protocol_SessionMessage>;
  public:
   // convenient types
-   typedef Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD> CONFIG_TYPE;
+   typedef RPG_Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD> CONFIG_TYPE;
 
   // *NOTE*: assume lifetime responsibility for the second argument !
-  RPG_Net_Protocol_SessionMessage(const unsigned long&,             // session ID
-                                  const Stream_SessionMessageType&, // session message type
-                                  CONFIG_TYPE*&);                   // config handle
+  RPG_Net_Protocol_SessionMessage(const unsigned long&,                 // session ID
+                                  const RPG_Stream_SessionMessageType&, // session message type
+                                  CONFIG_TYPE*&);                       // config handle
     // *NOTE*: to be used by message allocators...
   RPG_Net_Protocol_SessionMessage(ACE_Allocator*); // message allocator
   RPG_Net_Protocol_SessionMessage(ACE_Data_Block*, // data block
@@ -61,7 +61,7 @@ class RPG_Net_Protocol_SessionMessage
   virtual ACE_Message_Block* duplicate(void) const;
 
  private:
-  typedef Stream_SessionMessageBase<Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD> > inherited;
+  typedef RPG_Stream_SessionMessageBase<RPG_Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD> > inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_SessionMessage());

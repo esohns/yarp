@@ -23,8 +23,8 @@
 
 #include "rpg_net_protocol_iIRCControl.h"
 
-#include <stream_task_base_synch.h>
-#include <stream_streammodule.h>
+#include <rpg_stream_task_base_synch.h>
+#include <rpg_stream_streammodule.h>
 
 #include <ace/Global_Macros.h>
 #include <ace/Condition_T.h>
@@ -34,14 +34,14 @@
 #include <list>
 
 // forward declaration(s)
-class Stream_IAllocator;
+class RPG_Stream_IAllocator;
 class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
 class RPG_Net_Protocol_IRCMessage;
 
 class RPG_Net_Protocol_Module_IRCHandler
- : public Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
-                               RPG_Net_Protocol_Message>,
+ : public RPG_Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
+                                   RPG_Net_Protocol_Message>,
    public RPG_Net_Protocol_IIRCControl
 {
  public:
@@ -49,10 +49,10 @@ class RPG_Net_Protocol_Module_IRCHandler
   virtual ~RPG_Net_Protocol_Module_IRCHandler();
 
   // initialization
-  const bool init(Stream_IAllocator*,   // message allocator
-                  const unsigned long&, // default (message) buffer size
-                  const bool& = false,  // automatically answer "ping" messages (client)
-                  const bool& = false); // print dot ('.') for every answered PING to stdlog (client)
+  const bool init(RPG_Stream_IAllocator*, // message allocator
+                  const unsigned long&,   // default (message) buffer size
+                  const bool& = false,    // automatically answer "ping" messages (client)
+                  const bool& = false);   // print dot ('.') for every answered PING to stdlog (client)
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Protocol_Message*&, // data message handle
@@ -82,8 +82,8 @@ class RPG_Net_Protocol_Module_IRCHandler
   virtual void dump_state() const;
 
  private:
-  typedef Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
-                               RPG_Net_Protocol_Message> inherited;
+  typedef RPG_Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
+                                   RPG_Net_Protocol_Message> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCHandler(const RPG_Net_Protocol_Module_IRCHandler&));
@@ -107,7 +107,7 @@ class RPG_Net_Protocol_Module_IRCHandler
   Subscribers_t                          mySubscribers;
 
 //   std::string        myChannelName;
-  Stream_IAllocator*                     myAllocator;
+  RPG_Stream_IAllocator*                 myAllocator;
   unsigned long                          myDefaultBufferSize;
   bool                                   myAutomaticPong;
   bool                                   myPrintPingPongDot;

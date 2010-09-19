@@ -24,7 +24,7 @@
 #include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_tools.h"
 
-#include <stream_iallocator.h>
+#include <rpg_stream_iallocator.h>
 
 RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser()
  : //inherited(),
@@ -47,7 +47,7 @@ RPG_Net_Protocol_Module_IRCParser::~RPG_Net_Protocol_Module_IRCParser()
 }
 
 const bool
-RPG_Net_Protocol_Module_IRCParser::init(Stream_IAllocator* allocator_in,
+RPG_Net_Protocol_Module_IRCParser::init(RPG_Stream_IAllocator* allocator_in,
                                         const bool& crunchMessages_in,
                                         const bool& debugScanner_in,
                                         const bool& debugParser_in)

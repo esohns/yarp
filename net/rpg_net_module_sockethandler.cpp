@@ -57,7 +57,7 @@ RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
 }
 
 const bool
-RPG_Net_Module_SocketHandler::init(Stream_IAllocator* allocator_in,
+RPG_Net_Module_SocketHandler::init(RPG_Stream_IAllocator* allocator_in,
 //                                    const unsigned long& connectionID_in,
                                    const unsigned long& statisticsCollectionInterval_in)
 {
@@ -179,7 +179,7 @@ RPG_Net_Module_SocketHandler::handleSessionMessage(RPG_Net_SessionMessage*& mess
 
   switch (message_inout->getType())
   {
-    case Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
+    case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
     {
       // remember session ID for reporting...
       mySessionID = message_inout->getConfig()->getUserData().sessionID;
@@ -446,7 +446,7 @@ RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatisti
   // *NOTE*: this is a "fire-and-forget" API, so we don't need to
   // worry about config any longer !
   return inherited::putSessionMessage(mySessionID,
-                                      Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS,
+                                      RPG_Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS,
                                       config,
                                       inherited::myAllocator);
 }

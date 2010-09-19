@@ -26,7 +26,7 @@
 #include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_tools.h"
 
-#include <stream_iallocator.h>
+#include <rpg_stream_iallocator.h>
 
 #include <iostream>
 #include <sstream>
@@ -54,7 +54,7 @@ RPG_Net_Protocol_Module_IRCHandler::~RPG_Net_Protocol_Module_IRCHandler()
 }
 
 const bool
-RPG_Net_Protocol_Module_IRCHandler::init(Stream_IAllocator* allocator_in,
+RPG_Net_Protocol_Module_IRCHandler::init(RPG_Stream_IAllocator* allocator_in,
                                          const unsigned long& defaultBufferSize_in,
                                          const bool& autoAnswerPings_in,
                                          const bool& printPingPongDot_in)
@@ -379,7 +379,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
 
   switch (message_inout->getType())
   {
-    case Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
+    case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
     {
       // remember connection has been opened...
       {
@@ -422,7 +422,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
 
       break;
     }
-    case Stream_SessionMessage::MB_STREAM_SESSION_END:
+    case RPG_Stream_SessionMessage::MB_STREAM_SESSION_END:
     {
       // refer this information back to our subscriber(s)
       {
@@ -508,7 +508,7 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
       // *NOTE*: can happen when trying to register IMMEDIATELY after connecting
       // --> allow a little delay for:
       // - connection to establish
-      // [- the welcome NOTICE to arrive]
+      // [- the initial NOTICEs to arrive]
       // before proceeding...
       ACE_Time_Value abs_deadline = ACE_OS::gettimeofday();
       abs_deadline += RPG_NET_PROTOCOL_IRC_MAX_WELCOME_DELAY;

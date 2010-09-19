@@ -25,7 +25,7 @@
 
 #include <rpg_common_timer_manager.h>
 
-#include <stream_iallocator.h>
+#include <rpg_stream_iallocator.h>
 
 #include <iostream>
 
@@ -55,7 +55,7 @@ RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler()
 }
 
 const bool
-RPG_Net_Module_ProtocolHandler::init(Stream_IAllocator* allocator_in,
+RPG_Net_Module_ProtocolHandler::init(RPG_Stream_IAllocator* allocator_in,
                                      const unsigned long& clientPingInterval_in,
                                      const bool& autoAnswerPings_in,
                                      const bool& printPongDot_in)
