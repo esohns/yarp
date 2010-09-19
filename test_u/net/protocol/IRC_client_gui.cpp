@@ -94,7 +94,7 @@ connect_to_server(RPG_Stream_IAllocator* messageAllocator_in,
   // sanity check(s)
   ACE_ASSERT(finalModule_in);
 
-  // step2: setup configuration passed to processing stream
+  // step1: setup configuration passed to processing stream
   RPG_Net_Protocol_ConfigPOD stream_config;
   // ************ connection config data ************
   stream_config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
@@ -225,7 +225,34 @@ connect_clicked_cb(GtkWidget* button_in,
     return;
   } // end IF
 
-  // step2: create/init new final module
+  RPG_Net_Protocol_IRCLoginOptions loginOptions = data->loginOptions;
+  // step2: get nickname...
+  GtkEntry* main_entry_entry = GTK_ENTRY(gtk_builder_get_object(data->builder,
+                                         ACE_TEXT_ALWAYS_CHAR("main_entry_entry")));
+  ACE_ASSERT(main_entry_entry);
+  gtk_entry_set_text(main_entry_entry,
+                     data->loginOptions.nick.c_str());
+  gtk_editable_select_region(GTK_EDITABLE(main_entry_entry),
+                             0, -1);
+  // retrieve entry dialog handle
+  GtkDialog* main_entry_dialog = GTK_DIALOG(gtk_builder_get_object(data->builder,
+                                                                   ACE_TEXT_ALWAYS_CHAR("main_entry_dialog")));
+  ACE_ASSERT(main_entry_dialog);
+  gtk_window_set_title(GTK_WINDOW(main_entry_dialog),
+                       IRC_CLIENT_GUI_DEF_NICK_DIALOG_TITLE);
+  if (gtk_dialog_run(main_entry_dialog))
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("connection cancelled...\n")));
+
+    gtk_widget_hide(GTK_WIDGET(main_entry_dialog));
+
+    return;
+  } // end IF
+  gtk_widget_hide(GTK_WIDGET(main_entry_dialog));
+  loginOptions.nick = gtk_entry_get_text(main_entry_entry);
+
+  // step3: create/init new final module
   std::string module_name = ACE_TEXT_ALWAYS_CHAR("IRCHandler");
   RPG_Net_Protocol_Module_IRCHandler_Module* module = NULL;
   try
@@ -284,7 +311,7 @@ connect_clicked_cb(GtkWidget* button_in,
     return;
   } // end IF
 
-  // step3: create/init new connection handler
+  // step4: create/init new connection handler
   // retrieve server tabs handle
   GtkNotebook* main_server_tabs = GTK_NOTEBOOK(gtk_builder_get_object(data->builder,
                                                                       ACE_TEXT_ALWAYS_CHAR("main_server_tabs")));
@@ -332,9 +359,7 @@ connect_clicked_cb(GtkWidget* button_in,
     return;
   } // end IF
 
-  ACE_LOG_MSG->start_tracing();
-
-  // step4: connect to the server
+  // step5: connect to the server
   bool connected = false;
   for (RPG_Net_Protocol_PortRangesIterator_t port_range_iter = (*phonebook_iter).second.listeningPorts.begin();
        port_range_iter != (*phonebook_iter).second.listeningPorts.end();
@@ -347,7 +372,7 @@ connect_clicked_cb(GtkWidget* button_in,
            current_port++)
       {
         if (connect_to_server(data->allocator,                   // message allocator
-                              data->loginOptions,                // login options
+                              loginOptions,                      // login options
                               data->debugScanner,                // debug scanner ?
                               data->debugParser,                 // debug parser ?
                               data->statisticsReportingInterval, // statistics reporting interval [seconds: 0 --> OFF]
@@ -362,7 +387,7 @@ connect_clicked_cb(GtkWidget* button_in,
       } // end FOR
     else
       if (connect_to_server(data->allocator,                   // message allocator
-                            data->loginOptions,                // login options
+                            loginOptions,                      // login options
                             data->debugScanner,                // debug scanner ?
                             data->debugParser,                 // debug parser ?
                             data->statisticsReportingInterval, // statistics reporting interval [seconds: 0 --> OFF]
@@ -394,7 +419,7 @@ connect_clicked_cb(GtkWidget* button_in,
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("registering...\n")));
 
-  // step5: register our connection with the server
+  // step6: register our connection with the server
   try
   {
     // *NOTE*: this entails a little delay waiting for the welcome notice...
@@ -409,6 +434,7 @@ connect_clicked_cb(GtkWidget* button_in,
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("registering...DONE\n")));
 
+  // step7: remember this connection
   // synch access
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(data->connectionsLock);

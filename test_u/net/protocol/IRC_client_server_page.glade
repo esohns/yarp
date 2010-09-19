@@ -30,6 +30,7 @@
                             <property name="max_length">9</property>
                             <property name="invisible_char">&#x25CF;</property>
                             <property name="activates_default">True</property>
+                            <property name="width_chars">9</property>
                             <property name="truncate_multiline">True</property>
                             <property name="shadow_type">etched-out</property>
                             <signal name="focus_in_event" handler="nick_entry_kb_focused_cb"/>
