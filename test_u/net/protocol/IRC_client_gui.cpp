@@ -637,7 +637,7 @@ process_arguments(const int argc_in,
                   bool& useThreadPool_out,
                   unsigned long& numThreadPoolThreads_out)
 {
-  RPG_TRACE(ACE_TEXT("::process_arguments"));
+//   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
   configFile_out           = IRC_CLIENT_CNF_DEF_INI_FILE;
@@ -835,10 +835,6 @@ reactor_worker_func(void* args_in)
 //         } // end IF
 //       } // end IF
   } // end IF
-
-//   // wait for any connection(s)
-//   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-//   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
   ACE_ERROR((LM_DEBUG,
              ACE_TEXT("(%t) worker leaving...\n")));
@@ -1709,7 +1705,7 @@ int
 ACE_TMAIN(int argc,
           ACE_TCHAR* argv[])
 {
-  RPG_TRACE(ACE_TEXT("::main"));
+//   RPG_TRACE(ACE_TEXT("::main"));
 
   // step1: init libraries
   // *PORTABILITY*: on Windows, we need to init ACE...

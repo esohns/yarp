@@ -68,7 +68,7 @@ RPG_Common_File_Tools::isEmpty(const std::string& filename_in)
 const bool
 RPG_Common_File_Tools::isDirectory(const std::string& directory_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::isDirectory"));
+//   RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::isDirectory"));
 
   // retrieve working directory
   char cwd[MAXPATHLEN];

@@ -786,8 +786,8 @@ IRC_Client_GUI_Connection::start()
 {
   RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::start"));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("connected...\n")));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("connected...\n")));
 }
 
 void
@@ -1441,8 +1441,8 @@ IRC_Client_GUI_Connection::end()
 {
   RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::end"));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("connection lost...\n")));
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("connection lost...\n")));
 
   // commit suicide
   delete this;
