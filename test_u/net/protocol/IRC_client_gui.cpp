@@ -423,7 +423,7 @@ connect_clicked_cb(GtkWidget* button_in,
   try
   {
     // *NOTE*: this entails a little delay waiting for the welcome notice...
-    IRChandler_impl->registerConnection(data->loginOptions);
+    IRChandler_impl->registerConnection(loginOptions);
   }
   catch (...)
   {

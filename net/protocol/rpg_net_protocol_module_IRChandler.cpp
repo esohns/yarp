@@ -145,6 +145,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         case RPG_Net_Protocol_IRC_Codes::RPL_STATSDLINE:           // 250
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCLIENT:          // 251
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSEROP:              // 252
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERUNKNOWN:         // 253
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCHANNELS:        // 254
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERME:              // 255
         case RPG_Net_Protocol_IRC_Codes::RPL_TRYAGAIN:             // 263

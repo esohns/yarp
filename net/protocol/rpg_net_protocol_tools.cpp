@@ -1355,6 +1355,8 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRC_Codes::RPL_PROTOCTL:      //   5
         case RPG_Net_Protocol_IRC_Codes::RPL_YOURID:        //  42
         case RPG_Net_Protocol_IRC_Codes::RPL_STATSDLINE:    // 250
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSEROP:       // 252
+        case RPG_Net_Protocol_IRC_Codes::RPL_LUSERUNKNOWN:  // 253
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCHANNELS: // 254
         case RPG_Net_Protocol_IRC_Codes::RPL_LISTSTART:     // 321
         case RPG_Net_Protocol_IRC_Codes::RPL_LIST:          // 322
