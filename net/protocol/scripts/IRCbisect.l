@@ -9,7 +9,7 @@
 /* %option   outfile="RPG_Net_Protocol_IRCScanner.cpp" header-file="RPG_Net_Protocol_IRCScanner.h" */
 %option reentrant extra-type="unsigned long*"
 /* %option bison-bridge bison-locations stack */
-%option yylineno
+%option prefix="IRCBisect" yylineno
 
 MESSAGE ([\x00-\xFF]{-}[\r\n])+
 CRLF    \r\n
@@ -33,6 +33,6 @@ CRLF    \r\n
                          ACE_DEBUG((LM_ERROR,
                                     ACE_TEXT("invalid character: \"%c\" (%d), continuing\n"),
                                     yytext[0],
-                                    yytext[0]));
+                                    ACE_static_cast(int, yytext[0])));
                          return 1; }
 %%

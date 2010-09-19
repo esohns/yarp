@@ -321,10 +321,15 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
       case -1:
       {
         // found a frame border scanned_bytes bytes into the buffer
-        scanned_bytes += RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE;
+
+        // *NOTE*: if scanned_bytes == 0, then it's the corner
+        // case where the current buffer starts with a '\n'
+        if (scanned_bytes == 0)
+          scanned_bytes = 1;
+        else
+          scanned_bytes += RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE;
         myCurrentMessageLength += scanned_bytes;
 
-//         // debug info
 //         ACE_DEBUG((LM_DEBUG,
 //                    ACE_TEXT("buffer (ID: %u, length: %u): frame boundary [#%u] @ offset %u\n\"%s\"\n"),
 //                    myCurrentBuffer->getID(),
@@ -409,7 +414,6 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
 //     myCurrentBufferIsResized = false;
 //   } // end IF
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("found %u frame bound(s)...\n"),
 //              myCurrentNumFrames));
@@ -556,6 +560,10 @@ RPG_Net_Protocol_Module_IRCSplitter::scan_begin(char* data_in,
     // what else can we do ?
     return false;
   } // end IF
+
+  // *WARNING*: contrary (!) to the documentation, still need to switch_buffers()...
+  yy_switch_to_buffer(myCurrentState,
+                      myScannerContext);
 
   return true;
 }

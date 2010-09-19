@@ -1053,6 +1053,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:        // 375
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:        // 376
         case RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE:    // 433
+        case RPG_Net_Protocol_IRC_Codes::ERR_YOUREBANNEDCREEP: // 465
         case RPG_Net_Protocol_IRC_Codes::ERR_CHANOPRIVSNEEDED: // 482
         {
           GDK_THREADS_ENTER();
@@ -1060,6 +1061,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           log(message_in);
 
           if ((message_in.command.numeric == RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE) ||
+              (message_in.command.numeric == RPG_Net_Protocol_IRC_Codes::ERR_YOUREBANNEDCREEP) ||
               (message_in.command.numeric == RPG_Net_Protocol_IRC_Codes::ERR_CHANOPRIVSNEEDED))
             error(message_in); // show in statusbar as well...
 
@@ -1089,8 +1091,16 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
       {
         case RPG_Net_Protocol_IRCMessage::NICK:
         case RPG_Net_Protocol_IRCMessage::USER:
+        case RPG_Net_Protocol_IRCMessage::QUIT:
         {
+          GDK_THREADS_ENTER();
 
+          log(message_in);
+
+          if (command == RPG_Net_Protocol_IRCMessage::QUIT)
+            error(message_in); // --> show on statusbar as well...
+
+          GDK_THREADS_LEAVE();
 
           break;
         }

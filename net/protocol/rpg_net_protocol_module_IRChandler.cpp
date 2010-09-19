@@ -164,6 +164,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:            // 375
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:            // 376
         case RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE:        // 433
+        case RPG_Net_Protocol_IRC_Codes::ERR_YOUREBANNEDCREEP:     // 465
         case RPG_Net_Protocol_IRC_Codes::ERR_CHANOPRIVSNEEDED:     // 482
         {
 
@@ -187,6 +188,15 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
     {
       switch (RPG_Net_Protocol_Tools::IRCCommandString2Type(*message_inout->getData()->command.string))
       {
+        case RPG_Net_Protocol_IRCMessage::QUIT:
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"QUIT\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
+
+          break;
+        }
         case RPG_Net_Protocol_IRCMessage::JOIN:
         {
 //           ACE_DEBUG((LM_DEBUG,
@@ -318,7 +328,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         default:
         {
           ACE_DEBUG((LM_WARNING,
-                     ACE_TEXT("[%u]: received unknown command (was: \"%s\"), aborting\n"),
+                     ACE_TEXT("[%u]: received unknown command (was: \"%s\"), continuing\n"),
                      message_inout->getID(),
                      message_inout->getData()->command.string->c_str()));
 

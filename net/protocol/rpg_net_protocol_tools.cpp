@@ -1300,6 +1300,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
           break;
         }
         case RPG_Net_Protocol_IRCMessage::NICK:
+        case RPG_Net_Protocol_IRCMessage::QUIT:
         case RPG_Net_Protocol_IRCMessage::MODE:
         case RPG_Net_Protocol_IRCMessage::TOPIC:
         case RPG_Net_Protocol_IRCMessage::ERROR:
@@ -1338,6 +1339,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTD:          // 372
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:     // 375
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:     // 376
+        case RPG_Net_Protocol_IRC_Codes::ERR_YOUREBANNEDCREEP: // 465
         case RPG_Net_Protocol_IRC_Codes::ERR_CHANOPRIVSNEEDED: // 482
         {
           result = RPG_Net_Protocol_Tools::concatParams(message_in.params,
