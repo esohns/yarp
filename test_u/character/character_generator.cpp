@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -40,6 +41,7 @@
 #include <rpg_magic_dictionary.h>
 #include <rpg_magic_common_tools.h>
 
+#include <rpg_common_macros.h>
 #include <rpg_common_defines.h>
 #include <rpg_common_subclass.h>
 #include <rpg_common_tools.h>
@@ -64,7 +66,7 @@
 void
 print_usage(const std::string& programName_in)
 {
-  ACE_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE(ACE_TEXT("::print_usage"));
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
@@ -86,7 +88,7 @@ process_arguments(const int argc_in,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out)
 {
-  ACE_TRACE(ACE_TEXT("::process_arguments"));
+  RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
   itemDictionaryFilename_out.clear();
@@ -171,7 +173,7 @@ process_arguments(const int argc_in,
 const bool
 print_skills_table(RPG_Character_Skills_t& skills_in)
 {
-  ACE_TRACE(ACE_TEXT("::print_skills_table"));
+  RPG_TRACE(ACE_TEXT("::print_skills_table"));
 
   RPG_Character_SkillsIterator_t skills_iterator = skills_in.end();
 
@@ -255,7 +257,7 @@ print_feats_table(const RPG_Common_SubClass& subClass_in,
                   const RPG_Character_Abilities_t& abilities_in,
                   RPG_Character_Feats_t& feats_inout)
 {
-  ACE_TRACE(ACE_TEXT("::print_feats_table"));
+  RPG_TRACE(ACE_TEXT("::print_feats_table"));
 
   RPG_Character_FeatsIterator_t feats_iterator = feats_inout.end();
 
@@ -347,7 +349,7 @@ const bool
 print_spells_table(const RPG_Magic_Spells_t& spells_in,
                    RPG_Magic_SpellType& spell_inout)
 {
-  ACE_TRACE(ACE_TEXT("::print_spells_table"));
+  RPG_TRACE(ACE_TEXT("::print_spells_table"));
 
   // init return value
   spell_inout = RPG_MAGIC_SPELLTYPE_INVALID;
@@ -412,7 +414,7 @@ print_spells_table(const RPG_Magic_Spells_t& spells_in,
 RPG_Item_List_t
 generate_standard_items(const RPG_Common_SubClass& subClass_in)
 {
-  ACE_TRACE(ACE_TEXT("::generate_standard_items"));
+  RPG_TRACE(ACE_TEXT("::generate_standard_items"));
 
   RPG_Item_List_t result;
 
@@ -585,7 +587,7 @@ generate_standard_items(const RPG_Common_SubClass& subClass_in)
 RPG_Character_Player
 generate_player_character()
 {
-  ACE_TRACE(ACE_TEXT("::generate_player_character"));
+  RPG_TRACE(ACE_TEXT("::generate_player_character"));
 
   // step1: name
   std::string name;
@@ -1043,7 +1045,7 @@ generate_player_character()
 RPG_Character_Player
 generate_random_player_character()
 {
-  ACE_TRACE(ACE_TEXT("::generate_random_player_character"));
+  RPG_TRACE(ACE_TEXT("::generate_random_player_character"));
 
 //   // init result
 //   RPG_Character_Player player = RPG_Character_Player::dummy();
@@ -1074,7 +1076,7 @@ do_work(const std::string magicDictionaryFilename_in,
         const unsigned int& numPartyMembers_in,
         const bool& random_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step1a: init randomization
   RPG_Dice::init();
@@ -1236,7 +1238,7 @@ do_work(const std::string magicDictionaryFilename_in,
 
 void do_printVersion()
 {
-  ACE_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << ACE_TEXT("generator: ")
             << VERSION
@@ -1294,7 +1296,7 @@ void do_printVersion()
 int ACE_TMAIN(int argc,
               ACE_TCHAR* argv[])
 {
-  ACE_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE(ACE_TEXT("::main"));
 
   // step1: init
   // step1a set defaults

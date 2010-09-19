@@ -37,7 +37,7 @@ RPG_Net_StreamSocketBase<ConfigType,
    myCurrentReadBuffer(NULL),
    myCurrentWriteBuffer(NULL)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::RPG_Net_StreamSocketBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::RPG_Net_StreamSocketBase"));
 
 }
 
@@ -48,7 +48,7 @@ RPG_Net_StreamSocketBase<ConfigType,
                          StatisticsContainerType,
                          StreamType>::~RPG_Net_StreamSocketBase()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::~RPG_Net_StreamSocketBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::~RPG_Net_StreamSocketBase"));
 
   // wait for all workers within the stream (if any)
   myStream.waitForCompletion();
@@ -62,7 +62,7 @@ RPG_Net_StreamSocketBase<ConfigType,
                          StatisticsContainerType,
                          StreamType>::open(void* arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::open"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::open"));
 
   // sanity check
   ACE_ASSERT(arg_in);
@@ -154,7 +154,7 @@ RPG_Net_StreamSocketBase<ConfigType,
                          StatisticsContainerType,
                          StreamType>::handle_input(ACE_HANDLE handle_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::handle_input"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::handle_input"));
 
   ACE_UNUSED_ARG(handle_in);
 
@@ -248,7 +248,7 @@ RPG_Net_StreamSocketBase<ConfigType,
 // int
 // RPG_Net_StreamSocketBase<StreamType>::handle_output(ACE_HANDLE handle_in)
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::handle_output"));
+//   RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::handle_output"));
 //
 //   ACE_UNUSED_ARG(handle_in);
 //
@@ -346,7 +346,7 @@ RPG_Net_StreamSocketBase<ConfigType,
                          StreamType>::handle_close(ACE_HANDLE handle_in,
                                                    ACE_Reactor_Mask mask_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::handle_close"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::handle_close"));
 
   // clean up
   if (myStream.isRunning())
@@ -378,7 +378,7 @@ RPG_Net_StreamSocketBase<ConfigType,
                          StatisticsContainerType,
                          StreamType>::collect(StatisticsContainerType& data_out) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::collect"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::collect"));
 
   try
   {
@@ -401,7 +401,7 @@ RPG_Net_StreamSocketBase<ConfigType,
                          StatisticsContainerType,
                          StreamType>::report() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::report"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::report"));
 
   try
   {
@@ -422,7 +422,7 @@ RPG_Net_StreamSocketBase<ConfigType,
                          StatisticsContainerType,
                          StreamType>::allocateMessage(const unsigned long& requestedSize_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::allocateMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::allocateMessage"));
 
   // init return value(s)
   ACE_Message_Block* message_out = NULL;

@@ -34,7 +34,7 @@ RPG_Net_Connection_Manager<ConfigType,
    myUserData(),
    myIsInitialized(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::RPG_Net_Connection_Manager"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::RPG_Net_Connection_Manager"));
 
 //   // init user data
 //   ACE_OS::memset(&myUserData,
@@ -47,7 +47,7 @@ template <typename ConfigType,
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::~RPG_Net_Connection_Manager()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::~RPG_Net_Connection_Manager"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::~RPG_Net_Connection_Manager"));
 
   // clean up
   {
@@ -68,7 +68,7 @@ void
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::init(const unsigned long& maxNumConnections_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::init"));
 
   myMaxNumConnections = maxNumConnections_in;
 
@@ -83,7 +83,7 @@ void
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::set(const ConfigType& userData_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::set"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::set"));
 
   myUserData = userData_in;
 
@@ -96,7 +96,7 @@ const bool
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::registerConnection(CONNECTION_TYPE* connection_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::registerConnection"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::registerConnection"));
 
   // sanity check
   ACE_ASSERT(myIsInitialized);
@@ -155,7 +155,7 @@ void
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::deregisterConnection(const CONNECTION_TYPE* connection_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::deregisterConnection"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::deregisterConnection"));
 
   bool found = false;
 
@@ -207,7 +207,7 @@ void
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::abortConnections()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::abortConnections"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::abortConnections"));
 
   // synch access to myConnections
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
@@ -261,7 +261,7 @@ void
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::waitConnections() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::waitConnections"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::waitConnections"));
 
   {
     // need lock
@@ -287,7 +287,7 @@ const unsigned long
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::numConnections() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::numConnections"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::numConnections"));
 
   unsigned long num_connections = 0;
   // synch access to myConnections
@@ -306,7 +306,7 @@ void
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::abortOldestConnection()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::abortOldestConnection"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::abortOldestConnection"));
 
   // synch access to myConnections
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
@@ -343,7 +343,7 @@ const bool
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::collect(StatisticsContainerType& data_out) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::collect"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::collect"));
 
   // init result
   ACE_OS::memset(&data_out,
@@ -389,7 +389,7 @@ void
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::report() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::report"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::report"));
 
   // init result
   StatisticsContainerType result;
@@ -437,7 +437,7 @@ void
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::dump_state"));
 
   // synch access to myConnections
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);

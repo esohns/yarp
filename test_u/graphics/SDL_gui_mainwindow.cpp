@@ -29,6 +29,8 @@
 #include <rpg_graphics_common_tools.h>
 #include <rpg_graphics_SDL_tools.h>
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 #include <sstream>
@@ -46,20 +48,20 @@ SDL_GUI_MainWindow::SDL_GUI_MainWindow(const RPG_Graphics_WindowSize_t& size_in,
    myHaveMouseFocus(true), // *NOTE*: enforced with SDL_WarpMouse()
    myTitleFont(fontType_in)
 {
-  ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::SDL_GUI_MainWindow"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::SDL_GUI_MainWindow"));
 
 }
 
 SDL_GUI_MainWindow::~SDL_GUI_MainWindow()
 {
-  ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::~SDL_GUI_MainWindow"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::~SDL_GUI_MainWindow"));
 
 }
 
 void
 SDL_GUI_MainWindow::init()
 {
-  ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::init"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::init"));
 
   // init scroll margins
   initScrollSpots();
@@ -70,7 +72,7 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
                          const unsigned long& offsetX_in,
                          const unsigned long& offsetY_in)
 {
-  ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::draw"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::draw"));
 
   // set target surface
   SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
@@ -205,7 +207,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
                                 RPG_Graphics_IWindow* window_in,
                                 bool& redraw_out)
 {
-  ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::handleEvent"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::handleEvent"));
 
   // init return value(s)
   redraw_out = false;
@@ -701,7 +703,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 void
 SDL_GUI_MainWindow::initScrollSpots()
 {
-  ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::initScrollSpots"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::initScrollSpots"));
 
   // upper left
   RPG_Graphics_HotSpot::init(*this,                  // parent
@@ -766,7 +768,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
                                const unsigned long& offsetX_in,
                                const unsigned long& offsetY_in)
 {
-  ACE_TRACE(ACE_TEXT("SDL_GUI_MainWindow::drawBorder"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::drawBorder"));
 
   // set target surface
   SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);

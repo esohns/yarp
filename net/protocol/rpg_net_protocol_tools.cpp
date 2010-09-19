@@ -22,12 +22,14 @@
 
 #include "rpg_net_protocol_common.h"
 
+#include <rpg_common_macros.h>
+
 #include <sstream>
 
 const std::string
 RPG_Net_Protocol_Tools::dump(const RPG_Net_Protocol_IRCMessage& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::dump"));
 
   std::ostringstream converter;
   // see RFC1459
@@ -91,7 +93,7 @@ RPG_Net_Protocol_Tools::dump(const RPG_Net_Protocol_IRCMessage& message_in)
 const RPG_Net_Protocol_CommandType_t
 RPG_Net_Protocol_Tools::IRCCommandString2Type(const std::string& commandString_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCCommandString2Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCCommandString2Type"));
 
   if ((commandString_in) == ACE_TEXT("PASS"))
     return RPG_Net_Protocol_IRCMessage::PASS;
@@ -187,7 +189,7 @@ void
 RPG_Net_Protocol_Tools::merge(const std::string& modes_in,
                               RPG_Net_Protocol_UserModes_t& modes_inout)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::merge"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::merge"));
 
   // *NOTE* format is {[+|-]|i|w|s|o}
   bool assign = (modes_in[0] == '+');
@@ -202,7 +204,7 @@ void
 RPG_Net_Protocol_Tools::merge(const std::string& modes_in,
                               RPG_Net_Protocol_ChannelModes_t& modes_inout)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::merge"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::merge"));
 
   // *NOTE* format is {[+|-]|o|p|s|i|t|n|m|l|b|v|k}
   bool assign = (modes_in[0] == '+');
@@ -216,7 +218,7 @@ RPG_Net_Protocol_Tools::merge(const std::string& modes_in,
 const char
 RPG_Net_Protocol_Tools::IRCChannelMode2Char(const RPG_Net_Protocol_ChannelMode& mode_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCChannelMode2Char"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCChannelMode2Char"));
 
   switch (mode_in)
   {
@@ -259,7 +261,7 @@ RPG_Net_Protocol_Tools::IRCChannelMode2Char(const RPG_Net_Protocol_ChannelMode& 
 const char
 RPG_Net_Protocol_Tools::IRCUserMode2Char(const RPG_Net_Protocol_UserMode& mode_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCUserMode2Char"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCUserMode2Char"));
 
   switch (mode_in)
   {
@@ -288,7 +290,7 @@ RPG_Net_Protocol_Tools::IRCUserMode2Char(const RPG_Net_Protocol_UserMode& mode_i
 const std::string
 RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& numeric_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCCode2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCCode2String"));
 
   // init result
   std::string result = ACE_TEXT("INVALID/UNKNOWN");
@@ -1132,7 +1134,7 @@ RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& nume
 const RPG_Net_Protocol_ChannelMode
 RPG_Net_Protocol_Tools::IRCChannelModeChar2ChannelMode(const char& mode_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCChannelModeChar2ChannelMode"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCChannelModeChar2ChannelMode"));
 
   // init result
   RPG_Net_Protocol_ChannelMode result = CHANNELMODE_INVALID;
@@ -1171,7 +1173,7 @@ RPG_Net_Protocol_Tools::IRCChannelModeChar2ChannelMode(const char& mode_in)
 const RPG_Net_Protocol_UserMode
 RPG_Net_Protocol_Tools::IRCUserModeChar2UserMode(const char& mode_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCUserModeChar2UserMode"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCUserModeChar2UserMode"));
 
   // init result
   RPG_Net_Protocol_UserMode result = USERMODE_INVALID;
@@ -1202,7 +1204,7 @@ RPG_Net_Protocol_Tools::IRCUserModeChar2UserMode(const char& mode_in)
 const std::string
 RPG_Net_Protocol_Tools::IRCChannelMode2String(const RPG_Net_Protocol_ChannelMode& mode_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCChannelMode2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCChannelMode2String"));
 
   // init result
   std::string result;
@@ -1247,7 +1249,7 @@ RPG_Net_Protocol_Tools::IRCChannelMode2String(const RPG_Net_Protocol_ChannelMode
 const std::string
 RPG_Net_Protocol_Tools::IRCUserMode2String(const RPG_Net_Protocol_UserMode& mode_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCUserMode2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCUserMode2String"));
 
   // init result
   std::string result;
@@ -1278,7 +1280,7 @@ RPG_Net_Protocol_Tools::IRCUserMode2String(const RPG_Net_Protocol_UserMode& mode
 const std::string
 RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCMessage2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::IRCMessage2String"));
 
   // init result
   std::string result;
@@ -1399,7 +1401,7 @@ const std::string
 RPG_Net_Protocol_Tools::concatParams(const RPG_Net_Protocol_Parameters_t& params_in,
                                      const int& index_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::concatParams"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::concatParams"));
 
   std::string result;
 

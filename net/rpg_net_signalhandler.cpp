@@ -22,9 +22,9 @@
 
 #include "rpg_net_common_tools.h"
 
+#include <rpg_common_macros.h>
 #include <rpg_common_icontrol.h>
 
-#include <ace/OS.h>
 #include <ace/Reactor.h>
 #include <ace/Log_Msg.h>
 
@@ -37,7 +37,7 @@ RPG_Net_SignalHandler::RPG_Net_SignalHandler(RPG_Common_IControl* control_in,
    myControl(control_in),
    myReport(report_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::RPG_Net_SignalHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SignalHandler::RPG_Net_SignalHandler"));
 
 //   // sanity check
 //   ACE_ASSERT(myControl);
@@ -45,7 +45,7 @@ RPG_Net_SignalHandler::RPG_Net_SignalHandler(RPG_Common_IControl* control_in,
 
 RPG_Net_SignalHandler::~RPG_Net_SignalHandler()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::~RPG_Net_SignalHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SignalHandler::~RPG_Net_SignalHandler"));
 
 }
 
@@ -54,7 +54,7 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
                                      siginfo_t* info_in,
                                      ucontext_t* context_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::handle_signal"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SignalHandler::handle_signal"));
 
   // debug info
   if (info_in == NULL)

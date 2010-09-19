@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -25,13 +26,12 @@
 #include <rpg_magic_common_tools.h>
 #include <rpg_magic_dictionary.h>
 
-#include <rpg_common_tools.h>
-
 #include <rpg_dice_common_tools.h>
 
-#include <ace/OS.h>
+#include <rpg_common_macros.h>
+#include <rpg_common_tools.h>
+
 #include <ace/ACE.h>
-#include <ace/Trace.h>
 #include <ace/Get_Opt.h>
 #include <ace/High_Res_Timer.h>
 
@@ -42,7 +42,7 @@
 
 void print_usage(const std::string& programName_in)
 {
-  ACE_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE(ACE_TEXT("::print_usage"));
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
@@ -59,7 +59,7 @@ const bool process_arguments(const int argc_in,
                              bool& traceInformation_out,
                              bool& printVersionAndExit_out)
 {
-  ACE_TRACE(ACE_TEXT("::process_arguments"));
+  RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
   dumpDictionary_out = false;
@@ -126,7 +126,7 @@ const bool process_arguments(const int argc_in,
 void do_work(const bool& dumpDictionary_in,
              const std::string& fileName_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step1: init string conversion tables
   RPG_Dice_Common_Tools::initStringConversionTables();
@@ -157,7 +157,7 @@ void do_work(const bool& dumpDictionary_in,
 
 void do_printVersion()
 {
-  ACE_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << ACE_TEXT("parser: ")
             << VERSION
@@ -215,7 +215,7 @@ void do_printVersion()
 int ACE_TMAIN(int argc,
               ACE_TCHAR* argv[])
 {
-  ACE_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE(ACE_TEXT("::main"));
 
   // step1: init
   // step1a set defaults

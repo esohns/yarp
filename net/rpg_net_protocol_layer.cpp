@@ -20,13 +20,15 @@
 
 #include "rpg_net_protocol_layer.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 void
 RPG_Net_Protocol_Layer::ProtocolLayer2String(const ProtocolLayer& protocolType_in,
                                              std::string& typeString_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Layer::ProtocolLayer2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Layer::ProtocolLayer2String"));
 
   // init return value(s)
   typeString_out = ACE_TEXT("INVALID_PROTOCOL");

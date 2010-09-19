@@ -33,13 +33,13 @@ Net_Client_TimeoutHandler::Net_Client_TimeoutHandler(const std::string& serverHo
                  serverHostname_in.c_str()),
    myConnector(connector_in)
 {
-  ACE_TRACE(ACE_TEXT("Net_Client_TimeoutHandler::Net_Client_TimeoutHandler"));
+  RPG_TRACE(ACE_TEXT("Net_Client_TimeoutHandler::Net_Client_TimeoutHandler"));
 
 }
 
 Net_Client_TimeoutHandler::~Net_Client_TimeoutHandler()
 {
-  ACE_TRACE(ACE_TEXT("Net_Client_TimeoutHandler::~Net_Client_TimeoutHandler"));
+  RPG_TRACE(ACE_TEXT("Net_Client_TimeoutHandler::~Net_Client_TimeoutHandler"));
 
 }
 
@@ -47,7 +47,7 @@ int
 Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
                                           const void* arg_in)
 {
-  ACE_TRACE(ACE_TEXT("Net_Client_TimeoutHandler::handle_timeout"));
+  RPG_TRACE(ACE_TEXT("Net_Client_TimeoutHandler::handle_timeout"));
 
   ACE_UNUSED_ARG(tv_in);
   ACE_UNUSED_ARG(arg_in);

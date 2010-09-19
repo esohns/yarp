@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "rpg_dice_common_tools.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 #include <sstream>
@@ -28,7 +30,7 @@ RPG_Dice_DieTypeToStringTable_t RPG_Dice_DieTypeHelper::myRPG_Dice_DieTypeToStri
 
 void RPG_Dice_Common_Tools::initStringConversionTables()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Dice_Common_Tools::initStringConversionTables"));
+  RPG_TRACE(ACE_TEXT("RPG_Dice_Common_Tools::initStringConversionTables"));
 
   RPG_Dice_DieTypeHelper::init();
 
@@ -39,7 +41,7 @@ void RPG_Dice_Common_Tools::initStringConversionTables()
 
 const std::string RPG_Dice_Common_Tools::rollToString(const RPG_Dice_Roll& roll_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Dice_Common_Tools::rollToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Dice_Common_Tools::rollToString"));
 
   std::string result;
   std::stringstream str;
@@ -65,7 +67,7 @@ const std::string RPG_Dice_Common_Tools::rollToString(const RPG_Dice_Roll& roll_
 
 const std::string RPG_Dice_Common_Tools::rangeToString(const RPG_Dice_ValueRange& range_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Dice_Common_Tools::rangeToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Dice_Common_Tools::rangeToString"));
 
   std::string result;
   std::stringstream str;

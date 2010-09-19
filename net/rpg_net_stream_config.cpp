@@ -20,6 +20,8 @@
 
 #include "rpg_net_stream_config.h"
 
+#include <rpg_common_macros.h>
+
 RPG_Net_StreamConfig::RPG_Net_StreamConfig(const RPG_Net_ConfigPOD& config_in,
                                            const ACE_Time_Value& startOfSession_in,
                                            const bool& userAbort_in)
@@ -27,20 +29,20 @@ RPG_Net_StreamConfig::RPG_Net_StreamConfig(const RPG_Net_ConfigPOD& config_in,
              startOfSession_in,
              userAbort_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_StreamConfig::RPG_Net_StreamConfig"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamConfig::RPG_Net_StreamConfig"));
 
 }
 
 RPG_Net_StreamConfig::~RPG_Net_StreamConfig()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_StreamConfig::~RPG_Net_StreamConfig"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamConfig::~RPG_Net_StreamConfig"));
 
 }
 
 void
 RPG_Net_StreamConfig::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_StreamConfig::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamConfig::dump_state"));
 
   // *TODO*
   ACE_ASSERT(false);

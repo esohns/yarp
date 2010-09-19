@@ -49,7 +49,7 @@ if test "x$enable_debug" = "xyes"; then
   CXXFLAGS="${CXXFLAGS} -g -march=i686 -Wall"
   AC_MSG_RESULT(yes)
 else
-  CXXFLAGS="${CXXFLAGS} -O3 -march=i686"
+  CXXFLAGS="${CXXFLAGS} -O3 -march=i686 -DRPG_NTRACE=0"
   AC_MSG_RESULT(no)
 fi
 

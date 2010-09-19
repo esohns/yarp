@@ -26,6 +26,8 @@
 
 #include <rpg_stream_iallocator.h>
 
+#include <rpg_common_macros.h>
+
 RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser()
  : //inherited(),
    myAllocator(NULL),
@@ -36,13 +38,13 @@ RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser()
    myCrunchMessages(RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES), // "crunch" messages ?
    myIsInitialized(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser"));
 
 }
 
 RPG_Net_Protocol_Module_IRCParser::~RPG_Net_Protocol_Module_IRCParser()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::~RPG_Net_Protocol_Module_IRCParser"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::~RPG_Net_Protocol_Module_IRCParser"));
 
 }
 
@@ -52,7 +54,7 @@ RPG_Net_Protocol_Module_IRCParser::init(RPG_Stream_IAllocator* allocator_in,
                                         const bool& debugScanner_in,
                                         const bool& debugParser_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::init"));
 
   // sanity check(s)
   ACE_ASSERT(allocator_in);
@@ -83,7 +85,7 @@ void
 RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& message_inout,
                                                      bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::handleDataMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::handleDataMessage"));
 
   // don't care (implies yes per default, if we're part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
@@ -187,7 +189,7 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
 RPG_Net_Protocol_Message*
 RPG_Net_Protocol_Module_IRCParser::allocateMessage(const unsigned long& requestedSize_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::allocateMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::allocateMessage"));
 
   // init return value(s)
   RPG_Net_Protocol_Message* message_out = NULL;

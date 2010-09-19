@@ -28,6 +28,8 @@
 
 #include <rpg_stream_iallocator.h>
 
+#include <rpg_common_macros.h>
+
 #include <iostream>
 #include <sstream>
 
@@ -43,13 +45,13 @@ RPG_Net_Protocol_Module_IRCHandler::RPG_Net_Protocol_Module_IRCHandler()
    myConnectionIsAlive(false),
    myReceivedInitialNotice(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::RPG_Net_Protocol_Module_IRCHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::RPG_Net_Protocol_Module_IRCHandler"));
 
 }
 
 RPG_Net_Protocol_Module_IRCHandler::~RPG_Net_Protocol_Module_IRCHandler()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::~RPG_Net_Protocol_Module_IRCHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::~RPG_Net_Protocol_Module_IRCHandler"));
 
 }
 
@@ -59,7 +61,7 @@ RPG_Net_Protocol_Module_IRCHandler::init(RPG_Stream_IAllocator* allocator_in,
                                          const bool& autoAnswerPings_in,
                                          const bool& printPingPongDot_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::init"));
 
   // sanity check(s)
   ACE_ASSERT(allocator_in);
@@ -100,7 +102,7 @@ void
 RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*& message_inout,
                                                       bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::handleDataMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::handleDataMessage"));
 
   // don't care (implies yes per default, if we're part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
@@ -368,7 +370,7 @@ void
 RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_SessionMessage*& message_inout,
                                                          bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage"));
 
   // don't care (implies yes per default, if we're part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
@@ -484,7 +486,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
 void
 RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::registerConnection"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::registerConnection"));
 
   // "registering" an IRC connection implies the following 4 distinct steps:
   // --> see also RFC1459
@@ -657,7 +659,7 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
 void
 RPG_Net_Protocol_Module_IRCHandler::subscribe(RPG_Net_Protocol_INotify* dataCallback_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::subscribe"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::subscribe"));
 
   // sanity check(s)
   ACE_ASSERT(dataCallback_in);
@@ -671,7 +673,7 @@ RPG_Net_Protocol_Module_IRCHandler::subscribe(RPG_Net_Protocol_INotify* dataCall
 void
 RPG_Net_Protocol_Module_IRCHandler::unsubscribe(RPG_Net_Protocol_INotify* dataCallback_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::unsubscribe"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::unsubscribe"));
 
   // sanity check(s)
   ACE_ASSERT(dataCallback_in);
@@ -697,7 +699,7 @@ RPG_Net_Protocol_Module_IRCHandler::unsubscribe(RPG_Net_Protocol_INotify* dataCa
 void
 RPG_Net_Protocol_Module_IRCHandler::nick(const std::string& nick_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::nick"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::nick"));
 
   // step1: init NICK
   RPG_Net_Protocol_IRCMessage* nick_struct = NULL;
@@ -718,7 +720,7 @@ RPG_Net_Protocol_Module_IRCHandler::nick(const std::string& nick_in)
 void
 RPG_Net_Protocol_Module_IRCHandler::join(const std::string& channel_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::join"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::join"));
 
   // step1: init JOIN
   RPG_Net_Protocol_IRCMessage* join_struct = NULL;
@@ -741,7 +743,7 @@ RPG_Net_Protocol_Module_IRCHandler::join(const std::string& channel_in)
 void
 RPG_Net_Protocol_Module_IRCHandler::part(const std::string& channel_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::part"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::part"));
 
   // step1: init PART
   RPG_Net_Protocol_IRCMessage* part_struct = NULL;
@@ -766,7 +768,7 @@ RPG_Net_Protocol_Module_IRCHandler::mode(const std::string& target_in,
                                          const char& mode_in,
                                          const bool& enable_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::mode"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::mode"));
 
   // step1: init MODE
   RPG_Net_Protocol_IRCMessage* mode_struct = NULL;
@@ -794,7 +796,7 @@ void
 RPG_Net_Protocol_Module_IRCHandler::topic(const std::string& channel_in,
                                           const std::string& topic_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::topic"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::topic"));
 
   // sanity check(s)
   ACE_ASSERT(!topic_in.empty());
@@ -819,7 +821,7 @@ RPG_Net_Protocol_Module_IRCHandler::topic(const std::string& channel_in,
 void
 RPG_Net_Protocol_Module_IRCHandler::names(const string_list_t& channels_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::names"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::names"));
 
   // step1: init NAMES
   RPG_Net_Protocol_IRCMessage* names_struct = NULL;
@@ -840,7 +842,7 @@ RPG_Net_Protocol_Module_IRCHandler::names(const string_list_t& channels_in)
 void
 RPG_Net_Protocol_Module_IRCHandler::list(const string_list_t& channels_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::list"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::list"));
 
   // step1: init LIST
   RPG_Net_Protocol_IRCMessage* list_struct = NULL;
@@ -862,7 +864,7 @@ void
 RPG_Net_Protocol_Module_IRCHandler::send(const std::string& channel_in,
                                          const std::string& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::send"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::send"));
 
   // sanity check
   if (message_in.empty())
@@ -887,7 +889,7 @@ RPG_Net_Protocol_Module_IRCHandler::send(const std::string& channel_in,
 void
 RPG_Net_Protocol_Module_IRCHandler::quit(const std::string& reason_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::quit"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::quit"));
 
   // step1: init QUIT
   RPG_Net_Protocol_IRCMessage* quit_struct = NULL;
@@ -908,7 +910,7 @@ RPG_Net_Protocol_Module_IRCHandler::quit(const std::string& reason_in)
 void
 RPG_Net_Protocol_Module_IRCHandler::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::dump_state"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT(" ***** MODULE: \"%s\" state *****\n"),
@@ -922,7 +924,7 @@ RPG_Net_Protocol_Module_IRCHandler::dump_state() const
 RPG_Net_Protocol_Message*
 RPG_Net_Protocol_Module_IRCHandler::allocateMessage(const unsigned long& requestedSize_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::allocateMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::allocateMessage"));
 
   // init return value(s)
   RPG_Net_Protocol_Message* message_out = NULL;
@@ -951,7 +953,7 @@ RPG_Net_Protocol_Module_IRCHandler::allocateMessage(const unsigned long& request
 void
 RPG_Net_Protocol_Module_IRCHandler::sendMessage(RPG_Net_Protocol_IRCMessage*& command_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::sendMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::sendMessage"));
 
   // step1: get a message buffer
   RPG_Net_Protocol_Message* message = allocateMessage(myDefaultBufferSize);

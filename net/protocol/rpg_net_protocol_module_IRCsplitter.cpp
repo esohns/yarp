@@ -46,13 +46,13 @@ RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter()
 //    myCurrentBufferIsResized(false),
    myIsInitialized(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter"));
 
 }
 
 RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter"));
 
   // clean up timer if necessary
   if (myStatCollectHandlerID)
@@ -73,7 +73,7 @@ RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
                                           const unsigned long& statisticsCollectionInterval_in,
                                           const bool& traceScanning_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::init"));
 
   // sanity check(s)
   ACE_ASSERT(allocator_in);
@@ -163,7 +163,7 @@ void
 RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*& message_inout,
                                                        bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage"));
 
   // init return value(s), default behavior is to pass all messages along...
   // --> we don't want that !
@@ -420,7 +420,7 @@ void
 RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage(RPG_Net_Protocol_SessionMessage*& message_inout,
                                                           bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage"));
 
   // don't care (implies yes per default, if we're part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
@@ -452,7 +452,7 @@ RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage(RPG_Net_Protocol_Sessi
 const bool
 RPG_Net_Protocol_Module_IRCSplitter::collect(RPG_Net_Protocol_RuntimeStatistic& data_out) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::collect"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::collect"));
 
   // just a dummy...
   ACE_UNUSED_ARG(data_out);
@@ -484,7 +484,7 @@ RPG_Net_Protocol_Module_IRCSplitter::collect(RPG_Net_Protocol_RuntimeStatistic& 
 void
 RPG_Net_Protocol_Module_IRCSplitter::report() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::report"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::report"));
 
   // sanity check(s)
   ACE_ASSERT(myIsInitialized);
@@ -498,7 +498,7 @@ const bool
 RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage(const RPG_Net_Protocol_RuntimeStatistic& info_in,
                                                           const ACE_Time_Value& collectionTime_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage"));
 
   // step1: init info POD
   RPG_Net_Protocol_ConfigPOD data;
@@ -533,7 +533,7 @@ const bool
 RPG_Net_Protocol_Module_IRCSplitter::scan_begin(char* data_in,
                                                 const size_t& length_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::scan_begin"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::scan_begin"));
 
   // sanity check(s)
   ACE_ASSERT(myCurrentState == NULL);
@@ -564,7 +564,7 @@ RPG_Net_Protocol_Module_IRCSplitter::scan_begin(char* data_in,
 void
 RPG_Net_Protocol_Module_IRCSplitter::scan_end()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::scan_end"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::scan_end"));
 
   // sanity check(s)
   ACE_ASSERT(myCurrentState);

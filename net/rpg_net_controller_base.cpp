@@ -20,24 +20,26 @@
 
 #include "rpg_net_controller_base.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 RPG_Net_Controller_Base::RPG_Net_Controller_Base()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Controller_Base::RPG_Net_Controller_Base"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Controller_Base::RPG_Net_Controller_Base"));
 
 }
 
 RPG_Net_Controller_Base::~RPG_Net_Controller_Base()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Controller_Base::~RPG_Net_Controller_Base"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Controller_Base::~RPG_Net_Controller_Base"));
 
 }
 
 void
 RPG_Net_Controller_Base::start()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Controller_Base::start"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Controller_Base::start"));
 
   ACE_DEBUG((LM_NOTICE,
              ACE_TEXT("%D: starting...\n")));
@@ -46,7 +48,7 @@ RPG_Net_Controller_Base::start()
 void
 RPG_Net_Controller_Base::stop()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Controller_Base::stop"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Controller_Base::stop"));
 
   ACE_DEBUG((LM_NOTICE,
              ACE_TEXT("%D: stopping...\n")));
@@ -55,7 +57,7 @@ RPG_Net_Controller_Base::stop()
 const bool
 RPG_Net_Controller_Base::isRunning()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Controller_Base::isRunning"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Controller_Base::isRunning"));
 
   ACE_DEBUG((LM_NOTICE,
              ACE_TEXT("%D: isRunning ?...\n")));

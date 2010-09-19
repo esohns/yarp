@@ -23,7 +23,8 @@
 #include "rpg_net_remote_comm.h"
 #include "rpg_net_common_tools.h"
 
-#include <ace/OS.h>
+#include <rpg_common_macros.h>
+
 #include <ace/Reactor.h>
 
 #include <string>
@@ -34,20 +35,20 @@ RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler()
              NULL, // no specific message queue
              ACE_Reactor::instance())
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler"));
 
 }
 
 RPG_Net_Client_SocketHandler::~RPG_Net_Client_SocketHandler()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::~RPG_Net_Client_SocketHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::~RPG_Net_Client_SocketHandler"));
 
 }
 
 int
 RPG_Net_Client_SocketHandler::open(void* arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::open"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::open"));
 
   // call baseclass...
   int result = inherited::open(arg_in);
@@ -105,7 +106,7 @@ RPG_Net_Client_SocketHandler::open(void* arg_in)
 int
 RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::handle_input"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::handle_input"));
 
   ACE_UNUSED_ARG(handle_in);
 
@@ -253,7 +254,7 @@ int
 RPG_Net_Client_SocketHandler::handle_close(ACE_HANDLE handle_in,
                                            ACE_Reactor_Mask mask_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::handle_close"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::handle_close"));
 
   // debug info
   ACE_DEBUG((LM_DEBUG,

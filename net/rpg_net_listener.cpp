@@ -32,13 +32,13 @@ RPG_Net_Listener::RPG_Net_Listener()
    myIsOpen(false),
    myListeningPort(0)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Listener::RPG_Net_Listener"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::RPG_Net_Listener"));
 
 }
 
 RPG_Net_Listener::~RPG_Net_Listener()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Listener::~RPG_Net_Listener"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::~RPG_Net_Listener"));
 
   if (myIsOpen)
     close();
@@ -47,7 +47,7 @@ RPG_Net_Listener::~RPG_Net_Listener()
 void
 RPG_Net_Listener::init(const unsigned short& listeningPort_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Listener::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::init"));
 
   // *NOTE*: changes won't become active until the listener is "restarted"...
   myListeningPort = listeningPort_in;
@@ -63,7 +63,7 @@ RPG_Net_Listener::init(const unsigned short& listeningPort_in)
 const bool
 RPG_Net_Listener::isInitialized() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Listener::isInitialized"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::isInitialized"));
 
   return myIsInitialized;
 }
@@ -71,7 +71,7 @@ RPG_Net_Listener::isInitialized() const
 int
 RPG_Net_Listener::handle_accept_error(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Listener::handle_accept_error"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::handle_accept_error"));
 
   ACE_DEBUG((LM_ERROR,
              ACE_TEXT("failed to accept connection...\n")));
@@ -86,7 +86,7 @@ RPG_Net_Listener::handle_accept_error(void)
 void
 RPG_Net_Listener::start()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Listener::start"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::start"));
 
   if (myIsListening)
   {
@@ -156,7 +156,7 @@ RPG_Net_Listener::start()
 void
 RPG_Net_Listener::stop()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Listener::stop"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::stop"));
 
   if (!myIsListening)
   {
@@ -186,7 +186,7 @@ RPG_Net_Listener::stop()
 const bool
 RPG_Net_Listener::isRunning()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Listener::isRunning"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::isRunning"));
 
   return myIsListening;
 }
@@ -194,7 +194,7 @@ RPG_Net_Listener::isRunning()
 void
 RPG_Net_Listener::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Listener::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::dump_state"));
 
   // *TODO*: do something meaningful here...
   ACE_ASSERT(false);

@@ -36,13 +36,13 @@ IRC_Client_SignalHandler::IRC_Client_SignalHandler(const std::string& serverHost
                  serverHostname_in.c_str()),
    myConnector(connector_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_SignalHandler::IRC_Client_SignalHandler"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_SignalHandler::IRC_Client_SignalHandler"));
 
 }
 
 IRC_Client_SignalHandler::~IRC_Client_SignalHandler()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_SignalHandler::~IRC_Client_SignalHandler"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_SignalHandler::~IRC_Client_SignalHandler"));
 
 }
 
@@ -51,7 +51,7 @@ IRC_Client_SignalHandler::handle_signal(int signal_in,
                                         siginfo_t* info_in,
                                         ucontext_t* context_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::handle_signal"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SignalHandler::handle_signal"));
 
   ACE_UNUSED_ARG(context_in);
 

@@ -20,26 +20,28 @@
 
 #include "rpg_common_referencecounter.h"
 
+#include "rpg_common_macros.h"
+
 RPG_Common_ReferenceCounter::RPG_Common_ReferenceCounter(const unsigned long& initCount_in,
                                                          const bool& deleteOnZero_in)
  : myCounter(initCount_in),
    myDeleteOnZero(deleteOnZero_in),
    myCondition(myLock)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::RPG_Common_ReferenceCounter"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::RPG_Common_ReferenceCounter"));
 
 }
 
 RPG_Common_ReferenceCounter::~RPG_Common_ReferenceCounter()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::~RPG_Common_ReferenceCounter"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::~RPG_Common_ReferenceCounter"));
 
 }
 
 void
 RPG_Common_ReferenceCounter::increase()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::increase"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::increase"));
 
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
@@ -49,7 +51,7 @@ RPG_Common_ReferenceCounter::increase()
 void
 RPG_Common_ReferenceCounter::decrease()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::decrease"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::decrease"));
 
   bool destroy = false;
 
@@ -76,7 +78,7 @@ RPG_Common_ReferenceCounter::decrease()
 const unsigned long
 RPG_Common_ReferenceCounter::refcount()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::refcount"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::refcount"));
 
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
@@ -86,7 +88,7 @@ RPG_Common_ReferenceCounter::refcount()
 void
 RPG_Common_ReferenceCounter::waitcount()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::waitcount"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::waitcount"));
 
   {
     // need lock
@@ -109,7 +111,7 @@ RPG_Common_ReferenceCounter::waitcount()
 void
 RPG_Common_ReferenceCounter::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::dump_state"));
 
   // dump an "atomic" state...
   {

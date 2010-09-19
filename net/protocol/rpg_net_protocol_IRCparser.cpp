@@ -48,7 +48,8 @@
 
 #include "rpg_net_protocol_IRCparser_driver.h"
 #include "rpg_net_protocol_IRCmessage.h"
-#include <ace/OS_Memory.h>
+#include <rpg_common_macros.h>
+/* #include <ace/OS_Memory.h> */
 #include <ace/Log_Msg.h>
 #include <string>
 
@@ -895,8 +896,8 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyrline_[] =
   {
-         0,    70,    70,    71,    72,    73,    78,    83,    88,    89,
-      90,    99,   105,   106,   111,   116
+         0,    71,    71,    72,    73,    74,    79,    84,    89,    90,
+      91,   100,   106,   107,   112,   117
   };
 
   // Print the state stack on the debug stream.

@@ -23,9 +23,10 @@
 #include "rpg_net_sessionmessage.h"
 #include "rpg_net_message.h"
 
-#include <rpg_common_timer_manager.h>
-
 #include <rpg_stream_iallocator.h>
+
+#include <rpg_common_macros.h>
+#include <rpg_common_timer_manager.h>
 
 #include <iostream>
 
@@ -41,13 +42,13 @@ RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler()
    myIsInitialized(false)//,
 //    mySessionID(0)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler"));
 
 }
 
 RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler"));
 
   // clean up timer if necessary
   if (myClientPingTimerID)
@@ -60,7 +61,7 @@ RPG_Net_Module_ProtocolHandler::init(RPG_Stream_IAllocator* allocator_in,
                                      const bool& autoAnswerPings_in,
                                      const bool& printPongDot_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::init"));
 
   // sanity check(s)
   ACE_ASSERT(allocator_in);
@@ -121,7 +122,7 @@ void
 RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inout,
                                                   bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::handleDataMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::handleDataMessage"));
 
   // don't care (implies yes per default, if we're part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
@@ -200,7 +201,7 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inou
 // RPG_Net_Module_ProtocolHandler::handleSessionMessage(RPG_Net_SessionMessage*& message_inout,
 //                                                      bool& passMessageDownstream_out)
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::handleSessionMessage"));
+//   RPG_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::handleSessionMessage"));
 //
 //   // don't care (implies yes per default, if we're part of a stream)
 //   ACE_UNUSED_ARG(passMessageDownstream_out);
@@ -229,7 +230,7 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inou
 void
 RPG_Net_Module_ProtocolHandler::handleTimeout(const void* arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::handleTimeout"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::handleTimeout"));
 
   ACE_UNUSED_ARG(arg_in);
 
@@ -280,7 +281,7 @@ RPG_Net_Module_ProtocolHandler::handleTimeout(const void* arg_in)
 void
 RPG_Net_Module_ProtocolHandler::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::dump_state"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT(" ***** MODULE: \"%s\" state *****\n"),
@@ -294,7 +295,7 @@ RPG_Net_Module_ProtocolHandler::dump_state() const
 RPG_Net_Message*
 RPG_Net_Module_ProtocolHandler::allocateMessage(const unsigned long& requestedSize_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::allocateMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::allocateMessage"));
 
   // init return value(s)
   RPG_Net_Message* message_out = NULL;

@@ -76,7 +76,7 @@ is_entry_sensitive(GtkCellLayout*   layout_in,
                    GtkTreeIter*     iter_in,
                    gpointer         data_in)
 {
-//   ACE_TRACE(ACE_TEXT("::is_entry_sensitive"));
+//   RPG_TRACE(ACE_TEXT("::is_entry_sensitive"));
 
   gboolean sensitive = !gtk_tree_model_iter_has_child(model_in, iter_in);
   // set corresponding property
@@ -94,7 +94,7 @@ connect_to_server(const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
                   const unsigned short& serverPortNumber_in,
                   RPG_Stream_Module* finalModule_in)
 {
-  ACE_TRACE(ACE_TEXT("::connect_to_server"));
+  RPG_TRACE(ACE_TEXT("::connect_to_server"));
 
   // sanity check(s)
   ACE_ASSERT(finalModule_in);
@@ -170,7 +170,7 @@ void
 connect_clicked_cb(GtkWidget* button_in,
                    gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::connect_clicked_cb"));
+  RPG_TRACE(ACE_TEXT("::connect_clicked_cb"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("connect_clicked_cb...\n")));
@@ -424,7 +424,7 @@ send_entry_kb_focused_cb(GtkWidget* widget_in,
                          GdkEventFocus* event_in,
                          gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::send_entry_kb_focused_cb"));
+  RPG_TRACE(ACE_TEXT("::send_entry_kb_focused_cb"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("send_entry_kb_focused_cb...\n")));
@@ -452,7 +452,7 @@ void
 send_clicked_cb(GtkWidget* button_in,
                 gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::send_clicked_cb"));
+  RPG_TRACE(ACE_TEXT("::send_clicked_cb"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("send_clicked_cb...\n")));
@@ -587,7 +587,7 @@ quit_activated_cb(GtkWidget* widget_in,
                   GdkEvent* event_in,
                   gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::quit_activated_cb"));
+  RPG_TRACE(ACE_TEXT("::quit_activated_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   ACE_UNUSED_ARG(event_in);
@@ -606,7 +606,7 @@ quit_activated_cb(GtkWidget* widget_in,
 void
 print_usage(const std::string& programName_in)
 {
-  ACE_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE(ACE_TEXT("::print_usage"));
 
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
@@ -638,7 +638,7 @@ process_arguments(const int argc_in,
                   bool& useThreadPool_out,
                   unsigned long& numThreadPoolThreads_out)
 {
-  ACE_TRACE(ACE_TEXT("::process_arguments"));
+  RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
   configFile_out           = IRC_CLIENT_CNF_DEF_INI_FILE;
@@ -769,7 +769,7 @@ process_arguments(const int argc_in,
 const bool
 init_threadPool()
 {
-  ACE_TRACE(ACE_TEXT("::init_threadPool"));
+  RPG_TRACE(ACE_TEXT("::init_threadPool"));
 
   ACE_TP_Reactor* threadpool_reactor = NULL;
   ACE_NEW_RETURN(threadpool_reactor,
@@ -789,7 +789,7 @@ static
 ACE_THR_FUNC_RETURN
 tp_worker_func(void* args_in)
 {
-  ACE_TRACE(ACE_TEXT("::tp_worker_func"));
+  RPG_TRACE(ACE_TEXT("::tp_worker_func"));
 
   ACE_UNUSED_ARG(args_in);
 
@@ -811,7 +811,7 @@ static
 ACE_THR_FUNC_RETURN
 reactor_worker_func(void* args_in)
 {
-  ACE_TRACE(ACE_TEXT("::reactor_worker_func"));
+  RPG_TRACE(ACE_TEXT("::reactor_worker_func"));
 
   ACE_UNUSED_ARG(args_in);
 
@@ -852,7 +852,7 @@ do_main_window(const std::string& UIFileDirectory_in,
                const main_cb_data_t& userData_in,
                const GtkWidget* parentWidget_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_main_window"));
+  RPG_TRACE(ACE_TEXT("::do_main_window"));
 
   ACE_ASSERT(userData_in.builder);
 
@@ -1026,7 +1026,7 @@ do_work(const bool& useThreadPool_in,
         const std::string& UIFileDirectory_in,
         main_cb_data_t& userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step0a: (if necessary) init the TP_Reactor
   if (useThreadPool_in)
@@ -1155,7 +1155,7 @@ void
 do_parseServerConfigFile(const std::string& serverConfigFile_in,
                          RPG_Net_Protocol_PhoneBook& phoneBook_out)
 {
-  ACE_TRACE(ACE_TEXT("::do_parseServerConfigFile"));
+  RPG_TRACE(ACE_TEXT("::do_parseServerConfigFile"));
 
   // init return value(s)
   phoneBook_out.timestamp.update(ACE_Time_Value::zero);
@@ -1503,7 +1503,7 @@ do_parseConfigFile(const std::string& configFilename_in,
                    RPG_Net_Protocol_IRCLoginOptions& loginOptions_out,
                    RPG_Net_Protocol_PhoneBook& phoneBook_out)
 {
-  ACE_TRACE(ACE_TEXT("::do_parseConfigFile"));
+  RPG_TRACE(ACE_TEXT("::do_parseConfigFile"));
 
   ACE_Configuration_Heap config_heap;
   if (config_heap.open())
@@ -1686,7 +1686,7 @@ do_parseConfigFile(const std::string& configFilename_in,
 void
 do_printVersion(const std::string& programName_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
   std::cout << programName_in << ACE_TEXT(" : ") << TEST_U_VERSION << std::endl;
@@ -1710,7 +1710,7 @@ int
 ACE_TMAIN(int argc,
           ACE_TCHAR* argv[])
 {
-  ACE_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE(ACE_TEXT("::main"));
 
   // step1: init libraries
   // *PORTABILITY*: on Windows, we need to init ACE...

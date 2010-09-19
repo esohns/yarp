@@ -19,10 +19,10 @@
  ***************************************************************************/
 #include "rpg_common_tools.h"
 
+#include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
 #include "rpg_common_environment_incl.h"
 
-#include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
 #include <sstream>
@@ -52,7 +52,7 @@ RPG_Common_ClimateToStringTable_t RPG_Common_ClimateHelper::myRPG_Common_Climate
 void
 RPG_Common_Tools::initStringConversionTables()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::initStringConversionTables"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::initStringConversionTables"));
 
   RPG_Common_CreatureMetaTypeHelper::init();
   RPG_Common_CreatureSubTypeHelper::init();
@@ -75,7 +75,6 @@ RPG_Common_Tools::initStringConversionTables()
   RPG_Common_TerrainHelper::init();
   RPG_Common_ClimateHelper::init();
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Common_Tools: initialized string conversion tables...\n")));
 }
@@ -83,7 +82,7 @@ RPG_Common_Tools::initStringConversionTables()
 const std::string
 RPG_Common_Tools::creatureTypeToString(const RPG_Common_CreatureType& type_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::creatureTypeToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::creatureTypeToString"));
 
   std::string result = RPG_Common_CreatureMetaTypeHelper::RPG_Common_CreatureMetaTypeToString(type_in.metaType);
   if (!type_in.subTypes.empty())
@@ -106,7 +105,7 @@ RPG_Common_Tools::creatureTypeToString(const RPG_Common_CreatureType& type_in)
 const RPG_Common_Attribute
 RPG_Common_Tools::savingThrowToAttribute(const RPG_Common_SavingThrow& save_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::savingThrowToAttribute"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::savingThrowToAttribute"));
 
   switch (save_in)
   {
@@ -139,7 +138,7 @@ RPG_Common_Tools::savingThrowToAttribute(const RPG_Common_SavingThrow& save_in)
 const std::string
 RPG_Common_Tools::savingThrowToString(const RPG_Common_SavingThrowCheck& save_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::savingThrowToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::savingThrowToString"));
 
   std::string result;
 
@@ -164,7 +163,7 @@ RPG_Common_Tools::savingThrowToString(const RPG_Common_SavingThrowCheck& save_in
 const std::string
 RPG_Common_Tools::environmentToString(const RPG_Common_Environment& environment_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::environmentToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::environmentToString"));
 
   std::string result;
 
@@ -181,7 +180,7 @@ RPG_Common_Tools::environmentToString(const RPG_Common_Environment& environment_
 const RPG_Common_Plane
 RPG_Common_Tools::terrainToPlane(const RPG_Common_Terrain& terrain_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::terrainToPlane"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::terrainToPlane"));
 
   switch (terrain_in)
   {
@@ -244,7 +243,7 @@ const bool
 RPG_Common_Tools::match(const RPG_Common_Environment& environmentA_in,
                         const RPG_Common_Environment& environmentB_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::match"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::match"));
 
   if ((environmentA_in.terrain == TERRAIN_ANY) ||
       (environmentB_in.terrain == TERRAIN_ANY))
@@ -352,7 +351,7 @@ RPG_Common_Tools::match(const RPG_Common_Environment& environmentA_in,
 const signed char
 RPG_Common_Tools::getSizeModifier(const RPG_Common_Size& size_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::getSizeModifier"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::getSizeModifier"));
 
   // SIZE_FINE:       8
   // SIZE_DIMINUTIVE: 4
@@ -381,7 +380,7 @@ RPG_Common_Tools::getSizeModifier(const RPG_Common_Size& size_in)
 const unsigned char
 RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::sizeToReach"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sizeToReach"));
 
   switch (size_in)
   {
@@ -417,7 +416,7 @@ const std::string
 RPG_Common_Tools::enumToString(const std::string& enumString_in,
                                const bool& chopPrefix_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::enumToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::enumToString"));
 
   std::string result = enumString_in;
 
@@ -451,7 +450,7 @@ const bool
 RPG_Common_Tools::period2String(const ACE_Time_Value& period_in,
                                 std::string& timeString_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::period2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::period2String"));
 
   // init return value(s)
   timeString_out.resize(0);
@@ -488,7 +487,7 @@ RPG_Common_Tools::period2String(const ACE_Time_Value& period_in,
 const bool
 RPG_Common_Tools::isLinux()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::isLinux"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::isLinux"));
 
   // get system information
   ACE_utsname name;
@@ -516,7 +515,7 @@ const bool
 RPG_Common_Tools::getUserName(std::string& username_out,
                               std::string& realname_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::getUserName"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::getUserName"));
 
   // init return value(s)
   username_out.clear();
@@ -552,7 +551,7 @@ RPG_Common_Tools::getUserName(std::string& username_out,
 const std::string
 RPG_Common_Tools::getHostName()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Tools::getHostName"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::getHostName"));
 
   std::string result;
 

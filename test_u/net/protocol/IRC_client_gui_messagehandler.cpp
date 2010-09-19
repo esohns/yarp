@@ -23,6 +23,8 @@
 #include "IRC_client_gui_defines.h"
 
 #include <rpg_net_protocol_tools.h>
+
+#include <rpg_common_macros.h>
 #include <rpg_common_file_tools.h>
 
 // update callback
@@ -30,7 +32,7 @@ static
 gboolean
 update_display_cb(gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::update_display_cb"));
+  RPG_TRACE(ACE_TEXT("::update_display_cb"));
 
   // sanity check(s)
   ACE_ASSERT(userData_in);
@@ -58,7 +60,7 @@ void
 channel_mode_toggled_cb(GtkToggleButton* toggleButton_in,
                         gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::channel_mode_toggled_cb"));
+  RPG_TRACE(ACE_TEXT("::channel_mode_toggled_cb"));
 
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("channel_mode_toggled_cb...\n")));
@@ -196,7 +198,7 @@ void
 part_clicked_cb(GtkWidget* button_in,
                 gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::part_clicked_cb"));
+  RPG_TRACE(ACE_TEXT("::part_clicked_cb"));
 
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("part_clicked_cb...\n")));
@@ -227,7 +229,7 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkTextView* view_i
    myIsFirstNameListMsg(true),
    myParent(NULL)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
 
   // sanity check(s)
   ACE_ASSERT(myView);
@@ -255,7 +257,7 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
    myIsFirstNameListMsg(true),
    myParent(notebook_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
 
   // sanity check(s)
   ACE_ASSERT(controller_in);
@@ -470,7 +472,7 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
 
 IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler"));
 
   // remove queued events
   while (g_idle_remove_by_data(this));
@@ -504,7 +506,7 @@ IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler()
 void
 IRC_Client_GUI_MessageHandler::queueForDisplay(const std::string& text_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::queueForDisplay"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SignalHandler::queueForDisplay"));
 
   {
     // synch access
@@ -520,7 +522,7 @@ IRC_Client_GUI_MessageHandler::queueForDisplay(const std::string& text_in)
 void
 IRC_Client_GUI_MessageHandler::update()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SignalHandler::update"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SignalHandler::update"));
 
   // always insert new text at the END of the buffer...
   ACE_ASSERT(myView);
@@ -625,7 +627,7 @@ IRC_Client_GUI_MessageHandler::update()
 GtkWidget*
 IRC_Client_GUI_MessageHandler::getTopLevelPageChild()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::getTopLevelPageChild"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::getTopLevelPageChild"));
 
   // *WARNING*: the server log handler doesn't have a builder...
   if (!myParent)
@@ -648,7 +650,7 @@ IRC_Client_GUI_MessageHandler::getTopLevelPageChild()
 const std::string
 IRC_Client_GUI_MessageHandler::getChannel() const
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::getChannel"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::getChannel"));
 
   return myCBData.channel;
 }
@@ -656,7 +658,7 @@ IRC_Client_GUI_MessageHandler::getChannel() const
 void
 IRC_Client_GUI_MessageHandler::setTopic(const std::string& topic_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::setTopic"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::setTopic"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
@@ -672,7 +674,7 @@ IRC_Client_GUI_MessageHandler::setTopic(const std::string& topic_in)
 void
 IRC_Client_GUI_MessageHandler::setModes(const std::string& modes_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::setModes"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::setModes"));
 
   RPG_Net_Protocol_Tools::merge(modes_in,
                                 myCBData.channelModes);
@@ -691,7 +693,7 @@ IRC_Client_GUI_MessageHandler::setModes(const std::string& modes_in)
 void
 IRC_Client_GUI_MessageHandler::clear()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::clear"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::clear"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
@@ -709,7 +711,7 @@ IRC_Client_GUI_MessageHandler::clear()
 void
 IRC_Client_GUI_MessageHandler::add(const std::string& nick_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::add"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::add"));
 
   // retrieve channel liststore handle
   GtkListStore* channel_liststore = NULL;
@@ -754,7 +756,7 @@ IRC_Client_GUI_MessageHandler::add(const std::string& nick_in)
 void
 IRC_Client_GUI_MessageHandler::remove(const std::string& nick_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::remove"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::remove"));
 
   // retrieve channel liststore handle
   GtkListStore* channel_liststore = NULL;
@@ -844,7 +846,7 @@ IRC_Client_GUI_MessageHandler::remove(const std::string& nick_in)
 void
 IRC_Client_GUI_MessageHandler::append(const string_list_t& list_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::append"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::append"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
@@ -906,7 +908,7 @@ IRC_Client_GUI_MessageHandler::append(const string_list_t& list_in)
 void
 IRC_Client_GUI_MessageHandler::end()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::end"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::end"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
@@ -924,7 +926,7 @@ IRC_Client_GUI_MessageHandler::end()
 void
 IRC_Client_GUI_MessageHandler::updateModeButtons()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::updateModeButtons"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::updateModeButtons"));
 
   // display (changed) channel modes
   GtkToggleButton* togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,

@@ -41,7 +41,7 @@ typedef void* yyscan_t;
 %code {
 #include "rpg_net_protocol_IRCparser_driver.h"
 #include "rpg_net_protocol_IRCmessage.h"
-#include <ace/OS_Memory.h>
+#include <rpg_common_macros.h>
 #include <ace/Log_Msg.h>
 #include <string>
 }

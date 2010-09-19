@@ -23,6 +23,7 @@
 #include "rpg_net_defines.h"
 #include "rpg_net_packet_headers.h"
 
+#include <rpg_common_macros.h>
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
 
@@ -44,7 +45,7 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
                                          const std::string& directory_in,
                                          std::string& FQLogFilename_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::getNextLogFilename"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::getNextLogFilename"));
 
   // sanity check(s)
   ACE_ASSERT(RPG_Net_Common_Tools::myMaxNumberOfLogFiles >= 1);
@@ -258,7 +259,7 @@ const std::string
 RPG_Net_Common_Tools::IPAddress2String(const unsigned short& port_in,
                                        const unsigned long& IPAddress_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::IPAddress2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::IPAddress2String"));
 
   // init return value(s)
   std::string result;
@@ -310,7 +311,7 @@ RPG_Net_Common_Tools::IPAddress2String(const unsigned short& port_in,
 const std::string
 RPG_Net_Common_Tools::IPProtocol2String(const unsigned char& protocol_in)
 {
-  ACE_TRACE("RPG_Net_Common_Tools::IPProtocol2String");
+  RPG_TRACE("RPG_Net_Common_Tools::IPProtocol2String");
 
     // init return value(s)
   std::string result = ACE_TEXT("INVALID_PROTOCOL");
@@ -489,7 +490,7 @@ RPG_Net_Common_Tools::IPProtocol2String(const unsigned char& protocol_in)
 const std::string
 RPG_Net_Common_Tools::MACAddress2String(const char* const addressDataPtr_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::MACAddress2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::MACAddress2String"));
 
   // init return value(s)
   std::string result;
@@ -525,7 +526,7 @@ RPG_Net_Common_Tools::MACAddress2String(const char* const addressDataPtr_in)
 const std::string
 RPG_Net_Common_Tools::EthernetProtocolTypeID2String(const unsigned short& frameType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::EthernetProtocolTypeID2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::EthernetProtocolTypeID2String"));
 
   // init return value(s)
   std::string result = ACE_TEXT("UNKNOWN_ETHERNET_FRAME_TYPE");
@@ -952,7 +953,7 @@ RPG_Net_Common_Tools::EthernetProtocolTypeID2String(const unsigned short& frameT
 // RPG_Net_Common_Tools::selectNetworkInterface(const std::string& defaultInterfaceIdentifier_in,
 //                                              std::string& interfaceIdentifier_out)
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::selectNetworkInterface"));
+//   RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::selectNetworkInterface"));
 //
 //   // init return value(s)
 //   interfaceIdentifier_out.resize(0);
@@ -1049,7 +1050,7 @@ const bool
 RPG_Net_Common_Tools::retrieveLocalIPAddress(const std::string& interfaceIdentifier_in,
                                              std::string& IPaddress_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::retrieveLocalIPAddress"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::retrieveLocalIPAddress"));
 
   // init return value(s)
   IPaddress_out.resize(0);
@@ -1158,7 +1159,7 @@ RPG_Net_Common_Tools::retrieveLocalIPAddress(const std::string& interfaceIdentif
 const bool
 RPG_Net_Common_Tools::retrieveLocalHostname(std::string& hostname_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::retrieveLocalHostname"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::retrieveLocalHostname"));
 
   // init return value(s)
   hostname_out.resize(0);
@@ -1186,7 +1187,7 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
                                       const int& option_in,
                                       const int& size_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::setSocketBuffer"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::setSocketBuffer"));
 
   // sanity check
   ACE_ASSERT((option_in == SO_RCVBUF) ||
@@ -1272,7 +1273,7 @@ const bool
 RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
                                  const bool& noDelay_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::setNoDelay"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::setNoDelay"));
 
   int value = (noDelay_in ? 1 : 0);
   if (ACE_OS::setsockopt(handle_in,
@@ -1316,7 +1317,7 @@ RPG_Net_Common_Tools::retrieveSignalInfo(const int& signal_in,
                                          const ucontext_t* context_in,
                                          std::string& information_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::retrieveSignalInfo"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::retrieveSignalInfo"));
 
   // init return value
   information_out.resize(0);
@@ -1647,7 +1648,7 @@ RPG_Net_Common_Tools::retrieveSignalInfo(const int& signal_in,
 int
 RPG_Net_Common_Tools::client_selector(const dirent* dirEntry_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::client_selector"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::client_selector"));
 
   // *IMPORTANT NOTE*: we need to select those files which follow our naming
   // schema for logfiles: "<PREFIX>[_<NUMBER>]<SUFFIX>"
@@ -1671,7 +1672,7 @@ RPG_Net_Common_Tools::client_selector(const dirent* dirEntry_in)
 int
 RPG_Net_Common_Tools::server_selector(const dirent* dirEntry_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::server_selector"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::server_selector"));
 
   // *IMPORTANT NOTE*: we need to select those files which follow our naming
   // schema for logfiles: "<PREFIX>[_<NUMBER>]<SUFFIX>"
@@ -1696,7 +1697,7 @@ int
 RPG_Net_Common_Tools::comparator(const dirent** d1,
                                  const dirent** d2)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Common_Tools::comparator"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::comparator"));
 
   return ACE_OS::strcmp((*d1)->d_name,
                         (*d2)->d_name);

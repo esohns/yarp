@@ -27,13 +27,13 @@
 RPG_Net_Protocol_SocketHandler::RPG_Net_Protocol_SocketHandler()
  : inherited(RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance())
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::RPG_Net_Protocol_SocketHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::RPG_Net_Protocol_SocketHandler"));
 
 }
 
 RPG_Net_Protocol_SocketHandler::~RPG_Net_Protocol_SocketHandler()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::~RPG_Net_Protocol_SocketHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::~RPG_Net_Protocol_SocketHandler"));
 
   // wait for our worker (if any)
 
@@ -46,7 +46,7 @@ RPG_Net_Protocol_SocketHandler::~RPG_Net_Protocol_SocketHandler()
 int
 RPG_Net_Protocol_SocketHandler::svc(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::svc"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::svc"));
 
   // *NOTE*: asynchronous writing to a closed socket triggers the
   // SIGPIPE signal (default action: abort).
@@ -157,7 +157,7 @@ RPG_Net_Protocol_SocketHandler::svc(void)
 int
 RPG_Net_Protocol_SocketHandler::open(void* arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::open"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::open"));
 
   // *NOTE*: fini() on the stream invokes close() which will reset any module's
   // writer/reader tasks --> in order to allow module reuse, reset this here !
@@ -213,7 +213,7 @@ int
 RPG_Net_Protocol_SocketHandler::handle_close(ACE_HANDLE handle_in,
                                              ACE_Reactor_Mask mask_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::handle_close"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::handle_close"));
 
   // deal with our worker
   if (thr_count())
@@ -245,7 +245,7 @@ RPG_Net_Protocol_SocketHandler::handle_close(ACE_HANDLE handle_in,
 void
 RPG_Net_Protocol_SocketHandler::shutdown()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::shutdown"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::shutdown"));
 
   ACE_Message_Block* stop_mb = NULL;
   ACE_NEW_NORETURN(stop_mb,

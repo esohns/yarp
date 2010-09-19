@@ -22,6 +22,8 @@
 
 #include "rpg_net_remote_comm.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Message_Block.h>
 
 // *NOTE*: this is implicitly invoked by duplicate() as well...
@@ -29,7 +31,7 @@ RPG_Net_Message::RPG_Net_Message(const RPG_Net_Message& message_in)
  : inherited(message_in),
    myIsInitialized(message_in.myIsInitialized)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
 
 }
 
@@ -39,7 +41,7 @@ RPG_Net_Message::RPG_Net_Message(ACE_Data_Block* dataBlock_in,
              messageAllocator_in), // use this when destruction is imminent...
    myIsInitialized(true)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
 
 }
 
@@ -48,13 +50,13 @@ RPG_Net_Message::RPG_Net_Message(ACE_Data_Block* dataBlock_in,
 //              true), // usually, we want to increment the running message counter...
 //    myIsInitialized(false) // not initialized --> call init() !
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
+//   RPG_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
 //
 // }
 
 RPG_Net_Message::~RPG_Net_Message()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Message::~RPG_Net_Message"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Message::~RPG_Net_Message"));
 
   // *NOTE*: this will be called just BEFORE we're passed back
   // to the allocator !!!
@@ -66,7 +68,7 @@ RPG_Net_Message::~RPG_Net_Message()
 void
 RPG_Net_Message::init(ACE_Data_Block* dataBlock_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Message::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Message::init"));
 
   // sanity check: shouldn't be initialized...
   ACE_ASSERT(!myIsInitialized);
@@ -81,7 +83,7 @@ RPG_Net_Message::init(ACE_Data_Block* dataBlock_in)
 const int
 RPG_Net_Message::getCommand() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Message::getCommand"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Message::getCommand"));
 
   // sanity check(s)
   ACE_ASSERT(length() >= sizeof(RPG_Net_MessageHeader));
@@ -95,7 +97,7 @@ RPG_Net_Message::getCommand() const
 void
 RPG_Net_Message::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Message::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Message::dump_state"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("***** Message (ID: %u) *****\n"),
@@ -315,7 +317,7 @@ RPG_Net_Message::dump_state() const
 const bool
 RPG_Net_Message::crunchForHeader(const unsigned long& headerSize_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Message::crunchForHeader"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Message::crunchForHeader"));
 
   // sanity check(s)
   ACE_ASSERT(size() >= headerSize_in);         // enough space ?
@@ -362,7 +364,7 @@ RPG_Net_Message::crunchForHeader(const unsigned long& headerSize_in)
 ACE_Message_Block*
 RPG_Net_Message::duplicate(void) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Message::duplicate"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Message::duplicate"));
 
   RPG_Net_Message* nb = NULL;
 
@@ -411,7 +413,7 @@ RPG_Net_Message::duplicate(void) const
 const std::string
 RPG_Net_Message::commandType2String(const RPG_Net_MessageType& messageType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Message::commandType2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Message::commandType2String"));
 
   std::string result = ACE_TEXT("INVALID");
 
@@ -438,7 +440,7 @@ RPG_Net_Message::commandType2String(const RPG_Net_MessageType& messageType_in)
 // void
 // RPG_Net_Message::adjustDataOffset(const RPG_Net_MessageHeader_t& headerType_in)
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Net_Message::adjustDataOffset"));
+//   RPG_TRACE(ACE_TEXT("RPG_Net_Message::adjustDataOffset"));
 //
 //   unsigned long dataOffset = 0;
 //

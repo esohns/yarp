@@ -22,11 +22,13 @@
 
 #include "rpg_net_protocol_tools.h"
 
+#include <rpg_common_macros.h>
+
 RPG_Net_Protocol_IRCMessage::RPG_Net_Protocol_IRCMessage()
  : inherited(1,
              true)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCMessage::RPG_Net_Protocol_IRCMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCMessage::RPG_Net_Protocol_IRCMessage"));
 
   command.string = NULL;
   command.discriminator = Command::INVALID;
@@ -34,7 +36,7 @@ RPG_Net_Protocol_IRCMessage::RPG_Net_Protocol_IRCMessage()
 
 RPG_Net_Protocol_IRCMessage::~RPG_Net_Protocol_IRCMessage()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCMessage::~RPG_Net_Protocol_IRCMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCMessage::~RPG_Net_Protocol_IRCMessage"));
 
   switch (command.discriminator)
   {
@@ -53,7 +55,7 @@ RPG_Net_Protocol_IRCMessage::~RPG_Net_Protocol_IRCMessage()
 void
 RPG_Net_Protocol_IRCMessage::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCMessage::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCMessage::dump_state"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("%s"),

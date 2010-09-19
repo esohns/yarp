@@ -20,6 +20,7 @@
 
 #include "rpg_common_timerhandler.h"
 
+#include "rpg_common_macros.h"
 #include "rpg_common_itimer.h"
 
 #include <ace/Log_Msg.h>
@@ -31,13 +32,13 @@ RPG_Common_TimerHandler::RPG_Common_TimerHandler(RPG_Common_ITimer* dispatch_in,
    myDispatch(dispatch_in),
    myIsOneShot(isOneShot_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_TimerHandler::RPG_Common_TimerHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_TimerHandler::RPG_Common_TimerHandler"));
 
 }
 
 RPG_Common_TimerHandler::~RPG_Common_TimerHandler()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_TimerHandler::~RPG_Common_TimerHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_TimerHandler::~RPG_Common_TimerHandler"));
 
 }
 
@@ -45,7 +46,7 @@ int
 RPG_Common_TimerHandler::handle_timeout(const ACE_Time_Value& tv_in,
                                         const void* arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_TimerHandler::handle_timeout"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_TimerHandler::handle_timeout"));
 
   ACE_UNUSED_ARG(tv_in);
   ACE_UNUSED_ARG(arg_in);

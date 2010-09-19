@@ -23,12 +23,15 @@
 #include "rpg_dice_roll.h"
 #include "rpg_dice.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
-const int RPG_Chance_Common_Tools::getCheck(const short int& modifier_in,
-                                            const RPG_Dice_DieType& dieType_in)
+const int
+RPG_Chance_Common_Tools::getCheck(const short int& modifier_in,
+                                  const RPG_Dice_DieType& dieType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Chance_Common_Tools::getCheck"));
+  RPG_TRACE(ACE_TEXT("RPG_Chance_Common_Tools::getCheck"));
 
   RPG_Dice_Roll roll;
   roll.numDice = 1;

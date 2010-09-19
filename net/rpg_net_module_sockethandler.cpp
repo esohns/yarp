@@ -39,13 +39,13 @@ RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
    myCurrentMessage(NULL),
    myCurrentBuffer(NULL)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler"));
 
 }
 
 RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler"));
 
   // clean up timer if necessary
   if (myStatCollectHandlerID)
@@ -61,7 +61,7 @@ RPG_Net_Module_SocketHandler::init(RPG_Stream_IAllocator* allocator_in,
 //                                    const unsigned long& connectionID_in,
                                    const unsigned long& statisticsCollectionInterval_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::init"));
 
   // sanity check(s)
   ACE_ASSERT(allocator_in);
@@ -121,7 +121,7 @@ void
 RPG_Net_Module_SocketHandler::handleDataMessage(RPG_Net_Message*& message_inout,
                                                 bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::handleDataMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::handleDataMessage"));
 
   // init return value(s), default behavior is to pass all messages along...
   // --> we don't want that !
@@ -168,7 +168,7 @@ void
 RPG_Net_Module_SocketHandler::handleSessionMessage(RPG_Net_SessionMessage*& message_inout,
                                                    bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::handleSessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::handleSessionMessage"));
 
   // don't care (implies yes per default, if we're part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
@@ -200,7 +200,7 @@ RPG_Net_Module_SocketHandler::handleSessionMessage(RPG_Net_SessionMessage*& mess
 const bool
 RPG_Net_Module_SocketHandler::collect(RPG_Net_RuntimeStatistic& data_out) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::collect"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::collect"));
 
   // just a dummy...
   ACE_UNUSED_ARG(data_out);
@@ -232,7 +232,7 @@ RPG_Net_Module_SocketHandler::collect(RPG_Net_RuntimeStatistic& data_out) const
 void
 RPG_Net_Module_SocketHandler::report() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::report"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::report"));
 
   // sanity check(s)
   ACE_ASSERT(myIsInitialized);
@@ -245,7 +245,7 @@ RPG_Net_Module_SocketHandler::report() const
 const bool
 RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::bisectMessages"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::bisectMessages"));
 
   // init result
   message_out = NULL;
@@ -390,7 +390,7 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 // RPG_Net_Message*
 // RPG_Net_Module_SocketHandler::allocateMessage(const unsigned long& requestedSize_in)
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::allocateMessage"));
+//   RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::allocateMessage"));
 //
 //   // init return value(s)
 //   RPG_Net_Message* message_out = NULL;
@@ -420,7 +420,7 @@ const bool
 RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatistic& info_in,
                                                    const ACE_Time_Value& collectionTime_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::putStatisticsMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::putStatisticsMessage"));
 
   // step1: init info POD
   RPG_Net_ConfigPOD data;

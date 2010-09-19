@@ -26,11 +26,12 @@
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_common_tools.h>
 
-#include <rpg_common_tools.h>
-#include <rpg_common_file_tools.h>
-
 #include <rpg_dice.h>
 #include <rpg_dice_common_tools.h>
+
+#include <rpg_common_macros.h>
+#include <rpg_common_tools.h>
+#include <rpg_common_file_tools.h>
 
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
@@ -47,7 +48,7 @@
 void
 print_usage(const std::string& programName_in)
 {
-  ACE_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE(ACE_TEXT("::print_usage"));
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
@@ -67,7 +68,7 @@ process_arguments(const int argc_in,
                   bool& printVersionAndExit_out,
                   bool& validateXML_out)
 {
-  ACE_TRACE(ACE_TEXT("::process_arguments"));
+  RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
   dumpDictionary_out = false;
@@ -143,7 +144,7 @@ do_work(const std::string& dictionary_in,
         const bool& validateXML_in,
         const bool& dumpDictionary_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step0: init: random seed, string conversion facilities, ...
   RPG_Dice::init();
@@ -177,7 +178,7 @@ do_work(const std::string& dictionary_in,
 void
 do_printVersion(const std::string& programName_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
   std::cout << programName_in << ACE_TEXT(" : ") << TEST_U_VERSION << std::endl;
@@ -230,7 +231,7 @@ int
 ACE_TMAIN(int argc,
           ACE_TCHAR* argv[])
 {
-  ACE_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE(ACE_TEXT("::main"));
 
   // step0: init ACE
   // *PORTABILITY*: on Windows, we need to init ACE...

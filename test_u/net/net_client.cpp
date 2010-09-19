@@ -34,7 +34,7 @@
 
 #include <rpg_common_tools.h>
 
-#include <stream_allocatorheap.h>
+#include <rpg_stream_allocatorheap.h>
 
 #include <ace/Version.h>
 #include <ace/Get_Opt.h>
@@ -60,7 +60,7 @@
 void
 print_usage(const std::string& programName_in)
 {
-  ACE_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE(ACE_TEXT("::print_usage"));
 
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
@@ -90,7 +90,7 @@ process_arguments(const int argc_in,
                   bool& useThreadPool_out,
                   unsigned long& numThreadPoolThreads_out)
 {
-  ACE_TRACE(ACE_TEXT("::process_arguments"));
+  RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
   serverHostname_out = NET_CLIENT_DEF_SERVER_HOSTNAME;
@@ -216,7 +216,7 @@ process_arguments(const int argc_in,
 const bool
 init_threadPool()
 {
-  ACE_TRACE(ACE_TEXT("::init_threadPool"));
+  RPG_TRACE(ACE_TEXT("::init_threadPool"));
 
   ACE_TP_Reactor* threadpool_reactor = NULL;
   ACE_NEW_RETURN(threadpool_reactor,
@@ -236,7 +236,7 @@ void
 init_signals(const bool& allowUserRuntimeConnect_in,
              std::vector<int>& signals_inout)
 {
-  ACE_TRACE(ACE_TEXT("::init_signals"));
+  RPG_TRACE(ACE_TEXT("::init_signals"));
 
   // init return value(s)
   signals_inout.clear();
@@ -297,7 +297,7 @@ init_signalHandling(const std::vector<int>& signals_inout,
                     Net_Client_SignalHandler& eventHandler_in,
                     ACE_Sig_Handlers& signalHandlers_in)
 {
-  ACE_TRACE(ACE_TEXT("::init_signalHandling"));
+  RPG_TRACE(ACE_TEXT("::init_signalHandling"));
 
   // step1: register signal handlers for the list of signals we want to catch
 
@@ -363,7 +363,7 @@ static
 ACE_THR_FUNC_RETURN
 tp_worker_func(void* args_in)
 {
-  ACE_TRACE(ACE_TEXT("::tp_worker_func"));
+  RPG_TRACE(ACE_TEXT("::tp_worker_func"));
 
   ACE_UNUSED_ARG(args_in);
 
@@ -386,7 +386,7 @@ do_work(const std::string& serverHostname_in,
         const bool& useThreadPool_in,
         const unsigned long& numThreadPoolThreads_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step0a: (if necessary) init the TP_Reactor
   if (useThreadPool_in)
@@ -426,7 +426,7 @@ do_work(const std::string& serverHostname_in,
   } // end IF
 
   // step2a: init stream configuration object
-  Stream_AllocatorHeap heapAllocator;
+  RPG_Stream_AllocatorHeap heapAllocator;
   RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
                                                   &heapAllocator);
   RPG_Net_ConfigPOD config;
@@ -602,7 +602,7 @@ do_work(const std::string& serverHostname_in,
 void
 do_printVersion(const std::string& programName_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
 
@@ -625,7 +625,7 @@ int
 ACE_TMAIN(int argc,
           ACE_TCHAR* argv[])
 {
-  ACE_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE(ACE_TEXT("::main"));
 
   // *PROCESS PROFILE*
   ACE_Profile_Timer process_profile;

@@ -20,15 +20,14 @@
 
 #include "rpg_common_timer_manager.h"
 
+#include "rpg_common_macros.h"
 #include "rpg_common_itimer.h"
-
-#include <ace/OS.h>
 
 RPG_Common_Timer_Manager::RPG_Common_Timer_Manager()
  : myTimerQueue(NULL, // thread manager --> use default
                 NULL) // timer queue --> allocate new
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::RPG_Common_Timer_Manager"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::RPG_Common_Timer_Manager"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("activating timer dispatch queue...\n")));
@@ -44,7 +43,7 @@ RPG_Common_Timer_Manager::RPG_Common_Timer_Manager()
 
 RPG_Common_Timer_Manager::~RPG_Common_Timer_Manager()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::~RPG_Common_Timer_Manager"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::~RPG_Common_Timer_Manager"));
 
   // clean up
   {
@@ -65,7 +64,7 @@ RPG_Common_Timer_Manager::~RPG_Common_Timer_Manager()
 void
 RPG_Common_Timer_Manager::fini_timers()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::fini_timers"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::fini_timers"));
 
 //   if (myTimerQueue.cancel(myResetTimeoutHandlerID) == -1)
 //     ACE_DEBUG((LM_ERROR,
@@ -78,7 +77,7 @@ RPG_Common_Timer_Manager::scheduleTimer(const ACE_Event_Handler& handler_in,
                                         const bool& isOneShot_in,
                                         int& timerID_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::scheduleTimer"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::scheduleTimer"));
 
   // init return value(s)
   timerID_out = 0;
@@ -116,7 +115,7 @@ RPG_Common_Timer_Manager::scheduleTimer(const ACE_Event_Handler& handler_in,
 void
 RPG_Common_Timer_Manager::cancelTimer(const int& timerID_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::cancelTimer"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::cancelTimer"));
 
   // synch access to timer queue
   {
@@ -141,7 +140,7 @@ RPG_Common_Timer_Manager::cancelTimer(const int& timerID_in)
 void
 RPG_Common_Timer_Manager::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::dump_state"));
 
   // synch access to timer queue
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);

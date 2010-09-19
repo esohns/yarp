@@ -19,27 +19,26 @@
  ***************************************************************************/
 #include "rpg_common_XML_parser.h"
 
+#include "rpg_common_macros.h"
 #include "rpg_common_incl.h"
-
-#include <ace/Log_Msg.h>
 
 RPG_Common_CreatureMetaType RPG_Common_CreatureMetaType_Type::post_RPG_Common_CreatureMetaType_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_CreatureMetaType_Type::post_RPG_Common_CreatureMetaType_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_CreatureMetaType_Type::post_RPG_Common_CreatureMetaType_Type"));
 
   return RPG_Common_CreatureMetaTypeHelper::stringToRPG_Common_CreatureMetaType(post_string());
 }
 
 RPG_Common_CreatureSubType RPG_Common_CreatureSubType_Type::post_RPG_Common_CreatureSubType_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_CreatureSubType_Type::post_RPG_Common_CreatureSubType_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_CreatureSubType_Type::post_RPG_Common_CreatureSubType_Type"));
 
   return RPG_Common_CreatureSubTypeHelper::stringToRPG_Common_CreatureSubType(post_string());
 }
 
 RPG_Common_CreatureType_Type::RPG_Common_CreatureType_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_CreatureType_Type::RPG_Common_CreatureType_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_CreatureType_Type::RPG_Common_CreatureType_Type"));
 
   myCurrentType.metaType = RPG_COMMON_CREATUREMETATYPE_INVALID;
   myCurrentType.subTypes.clear();
@@ -47,21 +46,21 @@ RPG_Common_CreatureType_Type::RPG_Common_CreatureType_Type()
 
 void RPG_Common_CreatureType_Type::metaType(const RPG_Common_CreatureMetaType& metaType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_CreatureType_Type::metaType"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_CreatureType_Type::metaType"));
 
   myCurrentType.metaType = metaType_in;
 }
 
 void RPG_Common_CreatureType_Type::subType(const RPG_Common_CreatureSubType& subType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_CreatureType_Type::subType"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_CreatureType_Type::subType"));
 
   myCurrentType.subTypes.push_back(subType_in);
 }
 
 RPG_Common_CreatureType RPG_Common_CreatureType_Type::post_RPG_Common_CreatureType_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_CreatureType_Type::post_RPG_Common_CreatureType_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_CreatureType_Type::post_RPG_Common_CreatureType_Type"));
 
   RPG_Common_CreatureType result = myCurrentType;
 
@@ -74,91 +73,91 @@ RPG_Common_CreatureType RPG_Common_CreatureType_Type::post_RPG_Common_CreatureTy
 
 RPG_Common_SubClass RPG_Common_SubClass_Type::post_RPG_Common_SubClass_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_SubClass_Type::post_RPG_Common_SubClass_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_SubClass_Type::post_RPG_Common_SubClass_Type"));
 
   return RPG_Common_SubClassHelper::stringToRPG_Common_SubClass(post_string());
 }
 
 RPG_Common_Attribute RPG_Common_Attribute_Type::post_RPG_Common_Attribute_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Attribute_Type::post_RPG_Common_Attribute_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Attribute_Type::post_RPG_Common_Attribute_Type"));
 
   return RPG_Common_AttributeHelper::stringToRPG_Common_Attribute(post_string());
 }
 
 RPG_Common_Condition RPG_Common_Condition_Type::post_RPG_Common_Condition_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Condition_Type::post_RPG_Common_Condition_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Condition_Type::post_RPG_Common_Condition_Type"));
 
   return RPG_Common_ConditionHelper::stringToRPG_Common_Condition(post_string());
 }
 
 RPG_Common_Size RPG_Common_Size_Type::post_RPG_Common_Size_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Size_Type::post_RPG_Common_Size_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Size_Type::post_RPG_Common_Size_Type"));
 
   return RPG_Common_SizeHelper::stringToRPG_Common_Size(post_string());
 }
 
 RPG_Common_Skill RPG_Common_Skill_Type::post_RPG_Common_Skill_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Skill_Type::post_RPG_Common_Skill_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Skill_Type::post_RPG_Common_Skill_Type"));
 
   return RPG_Common_SkillHelper::stringToRPG_Common_Skill(post_string());
 }
 
 RPG_Common_PhysicalDamageType RPG_Common_PhysicalDamageType_Type::post_RPG_Common_PhysicalDamageType_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_PhysicalDamageType_Type::post_RPG_Common_PhysicalDamageType_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_PhysicalDamageType_Type::post_RPG_Common_PhysicalDamageType_Type"));
 
   return RPG_Common_PhysicalDamageTypeHelper::stringToRPG_Common_PhysicalDamageType(post_string());
 }
 
 RPG_Common_ActionType RPG_Common_ActionType_Type::post_RPG_Common_ActionType_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_ActionType_Type::post_RPG_Common_ActionType_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_ActionType_Type::post_RPG_Common_ActionType_Type"));
 
   return RPG_Common_ActionTypeHelper::stringToRPG_Common_ActionType(post_string());
 }
 
 RPG_Common_AreaOfEffect RPG_Common_AreaOfEffect_Type::post_RPG_Common_AreaOfEffect_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_AreaOfEffect_Type::post_RPG_Common_AreaOfEffect_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_AreaOfEffect_Type::post_RPG_Common_AreaOfEffect_Type"));
 
   return RPG_Common_AreaOfEffectHelper::stringToRPG_Common_AreaOfEffect(post_string());
 }
 
 RPG_Common_EffectType RPG_Common_EffectType_Type::post_RPG_Common_EffectType_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_EffectType_Type::post_RPG_Common_EffectType_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_EffectType_Type::post_RPG_Common_EffectType_Type"));
 
   return RPG_Common_EffectTypeHelper::stringToRPG_Common_EffectType(post_string());
 }
 
 RPG_Common_CounterMeasure RPG_Common_CounterMeasure_Type::post_RPG_Common_CounterMeasure_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_CounterMeasure_Type::post_RPG_Common_CounterMeasure_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_CounterMeasure_Type::post_RPG_Common_CounterMeasure_Type"));
 
   return RPG_Common_CounterMeasureHelper::stringToRPG_Common_CounterMeasure(post_string());
 }
 
 RPG_Common_CheckType RPG_Common_CheckType_Type::post_RPG_Common_CheckType_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_CheckType_Type::post_RPG_Common_CheckType_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_CheckType_Type::post_RPG_Common_CheckType_Type"));
 
   return RPG_Common_CheckTypeHelper::stringToRPG_Common_CheckType(post_string());
 }
 
 RPG_Common_SavingThrow RPG_Common_SavingThrow_Type::post_RPG_Common_SavingThrow_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrow_Type::post_RPG_Common_SavingThrow_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_SavingThrow_Type::post_RPG_Common_SavingThrow_Type"));
 
   return RPG_Common_SavingThrowHelper::stringToRPG_Common_SavingThrow(post_string());
 }
 
 RPG_Common_BaseCheckTypeUnion_Type::RPG_Common_BaseCheckTypeUnion_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_BaseCheckTypeUnion_Type::RPG_Common_BaseCheckTypeUnion_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_BaseCheckTypeUnion_Type::RPG_Common_BaseCheckTypeUnion_Type"));
 
   myBaseCheckTypeUnion.discriminator = RPG_Common_BaseCheckTypeUnion::INVALID;
   myBaseCheckTypeUnion.checktype = RPG_COMMON_CHECKTYPE_INVALID;
@@ -167,7 +166,7 @@ RPG_Common_BaseCheckTypeUnion_Type::RPG_Common_BaseCheckTypeUnion_Type()
 
 void RPG_Common_BaseCheckTypeUnion_Type::_characters(const ::xml_schema::ro_string& checkType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_BaseCheckTypeUnion_Type::_characters"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_BaseCheckTypeUnion_Type::_characters"));
 
   // can be either:
   // - RPG_Common_CheckType_Type --> "CHECK_xxx"
@@ -187,7 +186,7 @@ void RPG_Common_BaseCheckTypeUnion_Type::_characters(const ::xml_schema::ro_stri
 
 RPG_Common_BaseCheckTypeUnion RPG_Common_BaseCheckTypeUnion_Type::post_RPG_Common_BaseCheckTypeUnion_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_BaseCheckTypeUnion_Type::post_RPG_Common_BaseCheckTypeUnion_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_BaseCheckTypeUnion_Type::post_RPG_Common_BaseCheckTypeUnion_Type"));
 
   RPG_Common_BaseCheckTypeUnion result = myBaseCheckTypeUnion;
 
@@ -201,14 +200,14 @@ RPG_Common_BaseCheckTypeUnion RPG_Common_BaseCheckTypeUnion_Type::post_RPG_Commo
 
 RPG_Common_SaveReductionType RPG_Common_SaveReductionType_Type::post_RPG_Common_SaveReductionType_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_SaveReductionType_Type::post_RPG_Common_SaveReductionType_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_SaveReductionType_Type::post_RPG_Common_SaveReductionType_Type"));
 
   return RPG_Common_SaveReductionTypeHelper::stringToRPG_Common_SaveReductionType(post_string());
 }
 
 RPG_Common_SavingThrowCheck_Type::RPG_Common_SavingThrowCheck_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::RPG_Common_SavingThrowCheck_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::RPG_Common_SavingThrowCheck_Type"));
 
   myCurrentCheck.type = RPG_COMMON_SAVINGTHROW_INVALID;
   myCurrentCheck.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
@@ -218,35 +217,35 @@ RPG_Common_SavingThrowCheck_Type::RPG_Common_SavingThrowCheck_Type()
 
 void RPG_Common_SavingThrowCheck_Type::type(const RPG_Common_SavingThrow& type_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::type"));
 
   myCurrentCheck.type = type_in;
 }
 
 void RPG_Common_SavingThrowCheck_Type::attribute(const RPG_Common_Attribute& attribute_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::attribute"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::attribute"));
 
   myCurrentCheck.attribute = attribute_in;
 }
 
 void RPG_Common_SavingThrowCheck_Type::difficultyClass(unsigned char difficultyClass_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::difficultyClass"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::difficultyClass"));
 
   myCurrentCheck.difficultyClass = difficultyClass_in;
 }
 
 void RPG_Common_SavingThrowCheck_Type::reduction(const RPG_Common_SaveReductionType& reduction_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::reduction"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::reduction"));
 
   myCurrentCheck.reduction = reduction_in;
 }
 
 RPG_Common_SavingThrowCheck RPG_Common_SavingThrowCheck_Type::post_RPG_Common_SavingThrowCheck_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::post_RPG_Common_SavingThrowCheck_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_SavingThrowCheck_Type::post_RPG_Common_SavingThrowCheck_Type"));
 
   RPG_Common_SavingThrowCheck result = myCurrentCheck;
 
@@ -261,7 +260,7 @@ RPG_Common_SavingThrowCheck RPG_Common_SavingThrowCheck_Type::post_RPG_Common_Sa
 
 RPG_Common_Amount_Type::RPG_Common_Amount_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Amount_Type::RPG_Common_Amount_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Amount_Type::RPG_Common_Amount_Type"));
 
   myCurrentAmount.value = 0;
   myCurrentAmount.range.numDice = 0;
@@ -271,21 +270,21 @@ RPG_Common_Amount_Type::RPG_Common_Amount_Type()
 
 void RPG_Common_Amount_Type::value(signed char value_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Amount_Type::value"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Amount_Type::value"));
 
   myCurrentAmount.value = value_in;
 }
 
 void RPG_Common_Amount_Type::range(const RPG_Dice_Roll& range_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Amount_Type::range"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Amount_Type::range"));
 
   myCurrentAmount.range = range_in;
 }
 
 RPG_Common_Amount RPG_Common_Amount_Type::post_RPG_Common_Amount_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Amount_Type::post_RPG_Common_Amount_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Amount_Type::post_RPG_Common_Amount_Type"));
 
   RPG_Common_Amount result = myCurrentAmount;
 
@@ -300,7 +299,7 @@ RPG_Common_Amount RPG_Common_Amount_Type::post_RPG_Common_Amount_Type()
 
 RPG_Common_Usage_Type::RPG_Common_Usage_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Usage_Type::RPG_Common_Usage_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Usage_Type::RPG_Common_Usage_Type"));
 
   myCurrentUsage.numUses = 0;
   myCurrentUsage.period = 0;
@@ -311,28 +310,28 @@ RPG_Common_Usage_Type::RPG_Common_Usage_Type()
 
 void RPG_Common_Usage_Type::numUses(unsigned char numUses_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Usage_Type::numUses"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Usage_Type::numUses"));
 
   myCurrentUsage.numUses = numUses_in;
 }
 
 void RPG_Common_Usage_Type::period(unsigned int period_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Usage_Type::period"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Usage_Type::period"));
 
   myCurrentUsage.period = period_in;
 }
 
 void RPG_Common_Usage_Type::interval(const RPG_Dice_Roll& interval_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Usage_Type::interval"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Usage_Type::interval"));
 
   myCurrentUsage.interval = interval_in;
 }
 
 RPG_Common_Usage RPG_Common_Usage_Type::post_RPG_Common_Usage_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Usage_Type::post_RPG_Common_Usage_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Usage_Type::post_RPG_Common_Usage_Type"));
 
   RPG_Common_Usage result = myCurrentUsage;
 
@@ -348,7 +347,7 @@ RPG_Common_Usage RPG_Common_Usage_Type::post_RPG_Common_Usage_Type()
 
 RPG_Common_Duration_Type::RPG_Common_Duration_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::RPG_Common_Duration_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Duration_Type::RPG_Common_Duration_Type"));
 
   myCurrentDuration.activation = 0;
   myCurrentDuration.interval = 0;
@@ -358,35 +357,35 @@ RPG_Common_Duration_Type::RPG_Common_Duration_Type()
 
 void RPG_Common_Duration_Type::activation(unsigned int activation_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::activation"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Duration_Type::activation"));
 
   myCurrentDuration.activation = activation_in;
 }
 
 void RPG_Common_Duration_Type::interval(unsigned int interval_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::interval"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Duration_Type::interval"));
 
   myCurrentDuration.interval = interval_in;
 }
 
 void RPG_Common_Duration_Type::total(unsigned int total_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::total"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Duration_Type::total"));
 
   myCurrentDuration.total = total_in;
 }
 
 // void RPG_Common_Duration_Type::vicinity(bool vicinity_in)
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::vicinity"));
+//   RPG_TRACE(ACE_TEXT("RPG_Common_Duration_Type::vicinity"));
 //
 //   myCurrentDuration.vicinity = vicinity_in;
 // }
 
 RPG_Common_Duration RPG_Common_Duration_Type::post_RPG_Common_Duration_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Duration_Type::post_RPG_Common_Duration_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Duration_Type::post_RPG_Common_Duration_Type"));
 
   RPG_Common_Duration result = myCurrentDuration;
 
@@ -401,35 +400,35 @@ RPG_Common_Duration RPG_Common_Duration_Type::post_RPG_Common_Duration_Type()
 
 RPG_Common_Camp RPG_Common_Camp_Type::post_RPG_Common_Camp_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Camp_Type::post_RPG_Common_Camp_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Camp_Type::post_RPG_Common_Camp_Type"));
 
   return RPG_Common_CampHelper::stringToRPG_Common_Camp(post_string());
 }
 
 RPG_Common_Plane RPG_Common_Plane_Type::post_RPG_Common_Plane_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Plane_Type::post_RPG_Common_Plane_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Plane_Type::post_RPG_Common_Plane_Type"));
 
   return RPG_Common_PlaneHelper::stringToRPG_Common_Plane(post_string());
 }
 
 RPG_Common_Terrain RPG_Common_Terrain_Type::post_RPG_Common_Terrain_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Terrain_Type::post_RPG_Common_Terrain_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Terrain_Type::post_RPG_Common_Terrain_Type"));
 
   return RPG_Common_TerrainHelper::stringToRPG_Common_Terrain(post_string());
 }
 
 RPG_Common_Climate RPG_Common_Climate_Type::post_RPG_Common_Climate_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Climate_Type::post_RPG_Common_Climate_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Climate_Type::post_RPG_Common_Climate_Type"));
 
   return RPG_Common_ClimateHelper::stringToRPG_Common_Climate(post_string());
 }
 
 RPG_Common_Environment_Type::RPG_Common_Environment_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Environment_Type::RPG_Common_Environment_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Environment_Type::RPG_Common_Environment_Type"));
 
   myCurrentEnvironment.terrain = RPG_COMMON_TERRAIN_INVALID;
   myCurrentEnvironment.climate = RPG_COMMON_CLIMATE_INVALID;
@@ -437,21 +436,21 @@ RPG_Common_Environment_Type::RPG_Common_Environment_Type()
 
 void RPG_Common_Environment_Type::terrain(const RPG_Common_Terrain& terrain_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Environment_Type::terrain"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Environment_Type::terrain"));
 
   myCurrentEnvironment.terrain = terrain_in;
 }
 
 void RPG_Common_Environment_Type::climate(const RPG_Common_Climate& climate_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Environment_Type::climate"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Environment_Type::climate"));
 
   myCurrentEnvironment.climate = climate_in;
 }
 
 RPG_Common_Environment RPG_Common_Environment_Type::post_RPG_Common_Environment_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_Environment_Type::post_RPG_Common_Environment_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Environment_Type::post_RPG_Common_Environment_Type"));
 
   RPG_Common_Environment result = myCurrentEnvironment;
 

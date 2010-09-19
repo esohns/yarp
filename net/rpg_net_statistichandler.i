@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 template <typename StatisticsInfoContainer_t>
@@ -28,14 +30,14 @@ RPG_Net_StatisticHandler<StatisticsInfoContainer_t>::RPG_Net_StatisticHandler(co
    myInterface(interface_in),
    myAction(action_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_StatisticHandler::RPG_Net_StatisticHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StatisticHandler::RPG_Net_StatisticHandler"));
 
 }
 
 template <typename StatisticsInfoContainer_t>
 RPG_Net_StatisticHandler<StatisticsInfoContainer_t>::~RPG_Net_StatisticHandler()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_StatisticHandler::~RPG_Net_StatisticHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StatisticHandler::~RPG_Net_StatisticHandler"));
 
 }
 
@@ -44,7 +46,7 @@ int
 RPG_Net_StatisticHandler<StatisticsInfoContainer_t>::handle_timeout(const ACE_Time_Value& tv_in,
                                                                     const void* arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_StatisticHandler::handle_timeout"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StatisticHandler::handle_timeout"));
 
   ACE_UNUSED_ARG(tv_in);
   ACE_UNUSED_ARG(arg_in);
@@ -111,7 +113,7 @@ RPG_Net_StatisticHandler<StatisticsInfoContainer_t>::handle_timeout(const ACE_Ti
 //int RPG_Net_StatisticHandler<void>::handle_timeout(const ACE_Time_Value& tv_in,
 //                                                   const void* arg_in)
 //{
-//  ACE_TRACE(ACE_TEXT("RPG_Net_StatisticHandler::handle_timeout"));
+//  RPG_TRACE(ACE_TEXT("RPG_Net_StatisticHandler::handle_timeout"));
 //
 //  ACE_UNUSED_ARG(tv_in);
 //  ACE_UNUSED_ARG(arg_in);

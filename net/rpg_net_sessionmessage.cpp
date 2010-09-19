@@ -20,6 +20,8 @@
 
 #include "rpg_net_sessionmessage.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Malloc_Base.h>
 
 RPG_Net_SessionMessage::RPG_Net_SessionMessage(const unsigned long& sessionID_in,
@@ -29,21 +31,21 @@ RPG_Net_SessionMessage::RPG_Net_SessionMessage(const unsigned long& sessionID_in
              messageType_in,
              config_inout)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SessionMessage::RPG_Net_SessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SessionMessage::RPG_Net_SessionMessage"));
 
 }
 
 RPG_Net_SessionMessage::RPG_Net_SessionMessage(const RPG_Net_SessionMessage& message_in)
  : inherited(message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SessionMessage::RPG_Net_SessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SessionMessage::RPG_Net_SessionMessage"));
 
 }
 
 RPG_Net_SessionMessage::RPG_Net_SessionMessage(ACE_Allocator* messageAllocator_in)
  : inherited(messageAllocator_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SessionMessage::RPG_Net_SessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SessionMessage::RPG_Net_SessionMessage"));
 
 }
 
@@ -52,20 +54,20 @@ RPG_Net_SessionMessage::RPG_Net_SessionMessage(ACE_Data_Block* dataBlock_in,
  : inherited(dataBlock_in,
              messageAllocator_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SessionMessage::RPG_Net_SessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SessionMessage::RPG_Net_SessionMessage"));
 
 }
 
 RPG_Net_SessionMessage::~RPG_Net_SessionMessage()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SessionMessage::~RPG_Net_SessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SessionMessage::~RPG_Net_SessionMessage"));
 
 }
 
 ACE_Message_Block*
 RPG_Net_SessionMessage::duplicate(void) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SessionMessage::duplicate"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SessionMessage::duplicate"));
 
   RPG_Net_SessionMessage* nb = NULL;
 

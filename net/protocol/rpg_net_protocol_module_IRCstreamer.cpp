@@ -25,16 +25,18 @@
 #include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_tools.h"
 
+#include <rpg_common_macros.h>
+
 RPG_Net_Protocol_Module_IRCStreamer::RPG_Net_Protocol_Module_IRCStreamer()
 //  : inherited()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCStreamer::RPG_Net_Protocol_Module_IRCStreamer"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCStreamer::RPG_Net_Protocol_Module_IRCStreamer"));
 
 }
 
 RPG_Net_Protocol_Module_IRCStreamer::~RPG_Net_Protocol_Module_IRCStreamer()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCStreamer::~RPG_Net_Protocol_Module_IRCStreamer"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCStreamer::~RPG_Net_Protocol_Module_IRCStreamer"));
 
 }
 
@@ -42,7 +44,7 @@ void
 RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*& message_inout,
                                                        bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage"));
 
   // don't care (implies yes per default, if we're part of a stream)
   // *NOTE*: as this is an "upstream" module, the "wording" is wrong

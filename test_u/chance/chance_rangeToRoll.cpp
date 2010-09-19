@@ -17,7 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-// *IMPORTANT NOTE*: need this to import correct VERSION !
+
+// *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -26,7 +27,8 @@
 #include <rpg_dice_common.h>
 #include <rpg_dice_common_tools.h>
 
-#include <ace/OS.h>
+#include <rpg_common_macros.h>
+
 #include <ace/ACE.h>
 #include <ace/Get_Opt.h>
 #include <ace/High_Res_Timer.h>
@@ -38,7 +40,7 @@
 
 void print_usage(const std::string& programName_in)
 {
-  ACE_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE(ACE_TEXT("::print_usage"));
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
@@ -55,7 +57,7 @@ const bool process_arguments(const int argc_in,
                              bool& traceInformation_out,
                              bool& printVersionAndExit_out)
 {
-  ACE_TRACE(ACE_TEXT("::process_arguments"));
+  RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
   printAllResults_out = false;
@@ -145,7 +147,7 @@ const bool process_arguments(const int argc_in,
 void do_work(const RPG_Dice_ValueRange& valueRange_in,
              RPG_Dice_Rolls_t& rolls_out)
 {
-  ACE_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE(ACE_TEXT("::do_work"));
 
   // init result
   rolls_out.clear();
@@ -241,7 +243,7 @@ void do_work(const RPG_Dice_ValueRange& valueRange_in,
 
 void do_printVersion()
 {
-  ACE_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << ACE_TEXT("dice: ") << VERSION << std::endl;
 
@@ -295,7 +297,7 @@ void do_printVersion()
 int ACE_TMAIN(int argc,
               ACE_TCHAR* argv[])
 {
-  ACE_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE(ACE_TEXT("::main"));
 
   // step1: init
   // step1a set defaults

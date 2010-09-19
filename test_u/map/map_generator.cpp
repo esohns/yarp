@@ -17,7 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-// *IMPORTANT NOTE*: need this to import correct VERSION !
+
+// *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -26,6 +27,8 @@
 
 #include <rpg_dice.h>
 #include <rpg_dice_common_tools.h>
+
+#include <rpg_common_macros.h>
 #include <rpg_common_tools.h>
 
 #include <ace/ACE.h>
@@ -49,7 +52,7 @@
 
 void print_usage(const std::string& programName_in)
 {
-  ACE_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE(ACE_TEXT("::print_usage"));
 
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
@@ -81,7 +84,7 @@ const bool process_arguments(const int argc_in,
                              unsigned long& dimensionX_out,
                              unsigned long& dimensionY_out)
 {
-  ACE_TRACE(ACE_TEXT("::process_arguments"));
+  RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
   minRoomSize_out = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
@@ -216,7 +219,7 @@ void do_work(const unsigned long& minRoomSize_in,
              const unsigned long& dimensionX_in,
              const unsigned long& dimensionY_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step1: init: random seed, string conversion facilities, ...
   RPG_Dice::init();
@@ -248,7 +251,7 @@ void do_work(const unsigned long& minRoomSize_in,
 
 void do_printVersion(const std::string& programName_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
 
@@ -298,7 +301,7 @@ void do_printVersion(const std::string& programName_in)
 int ACE_TMAIN(int argc,
               ACE_TCHAR* argv[])
 {
-  ACE_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE(ACE_TEXT("::main"));
 
   // step1: init
   // step1a set defaults

@@ -21,10 +21,10 @@
 
 #include "rpg_dice_common_tools.h"
 
-#include <ace/OS.h>
+#include <rpg_common_macros.h>
+
 #include <ace/Time_Value.h>
 #include <ace/Log_Msg.h>
-#include <ace/Assert.h>
 
 #include <stdlib.h>
 #include <algorithm>
@@ -32,7 +32,7 @@
 
 void RPG_Dice::init()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Dice::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Dice::init"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("initializing random seed (RAND_MAX = %d)...\n"),
@@ -54,7 +54,7 @@ void RPG_Dice::generateRandomNumbers(const unsigned int& range_in,
                                      const unsigned int& numRolls_in,
                                      RPG_Dice_RollResult_t& results_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Dice::generateRandomNumbers"));
+  RPG_TRACE(ACE_TEXT("RPG_Dice::generateRandomNumbers"));
 
   ACE_ASSERT(range_in);
 
@@ -79,7 +79,7 @@ void RPG_Dice::simulateRoll(const RPG_Dice_Roll& rollSpecs_in,
                             const unsigned int& numRolls_in,
                             RPG_Dice_RollResult_t& results_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Dice::simulateRoll"));
+  RPG_TRACE(ACE_TEXT("RPG_Dice::simulateRoll"));
 
   // init result(s)
   results_out.clear();
@@ -119,7 +119,7 @@ void RPG_Dice::simulateRoll(const RPG_Dice_Roll& rollSpecs_in,
 void RPG_Dice::rollToRange(const RPG_Dice_Roll& roll_in,
                            RPG_Dice_ValueRange& valueRange_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Dice::rollToRange"));
+  RPG_TRACE(ACE_TEXT("RPG_Dice::rollToRange"));
 
   valueRange_out.begin = roll_in.modifier + (roll_in.typeDice != D_0 ? roll_in.numDice : 0);
   valueRange_out.end = roll_in.modifier + (roll_in.numDice * roll_in.typeDice);
@@ -128,7 +128,7 @@ void RPG_Dice::rollToRange(const RPG_Dice_Roll& roll_in,
 void RPG_Dice::rangeToRoll(const RPG_Dice_ValueRange& valueRange_in,
                            RPG_Dice_Roll& roll_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Dice::rangeToRoll"));
+  RPG_TRACE(ACE_TEXT("RPG_Dice::rangeToRoll"));
 
   // init result
   roll_out.numDice = 0;
@@ -274,7 +274,7 @@ void RPG_Dice::rangeToRoll(const RPG_Dice_ValueRange& valueRange_in,
 const unsigned int RPG_Dice::distanceRangeToRange(const RPG_Dice_ValueRange& rangeA_in,
                                                   const RPG_Dice_ValueRange& rangeB_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Dice::distanceRangeToRange"));
+  RPG_TRACE(ACE_TEXT("RPG_Dice::distanceRangeToRange"));
 
   return (::abs(rangeA_in.begin - rangeB_in.begin) +
           ::abs(rangeA_in.end - rangeB_in.end));

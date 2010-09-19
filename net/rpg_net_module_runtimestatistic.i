@@ -53,7 +53,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 // myMessageTypeStatistics.clear(),
    myAllocator(NULL)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::RPG_Net_Module_RuntimeStatistic"));
 
   // schedule the second-granularity timer
   ACE_Time_Value second_interval(1, 0); // one second interval
@@ -83,7 +83,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolCommandType,
                                 StatisticsContainerType>::~RPG_Net_Module_RuntimeStatistic()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::~RPG_Net_Module_RuntimeStatistic"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::~RPG_Net_Module_RuntimeStatistic"));
 
   // clean up
   fini_timers();
@@ -100,7 +100,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 StatisticsContainerType>::init(const unsigned long& reportingInterval_in,
                                                                const RPG_Stream_IAllocator* allocator_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::init"));
 
   // sanity check(s)
   if (myIsInitialized)
@@ -189,7 +189,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 StatisticsContainerType>::handleDataMessage(ProtocolMessageType*& message_inout,
                                                                             bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::handleDataMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::handleDataMessage"));
 
   // don't care (implies yes per default, if we're part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
@@ -228,7 +228,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 StatisticsContainerType>::handleSessionMessage(SessionMessageType*& message_inout,
                                                                                bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::handleSessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::handleSessionMessage"));
 
   // don't care (implies yes per default, if we're part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
@@ -299,7 +299,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolCommandType,
                                 StatisticsContainerType>::reset()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::reset"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::reset"));
 
   // this should happen every second (roughly)...
   {
@@ -325,7 +325,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolCommandType,
                                 StatisticsContainerType>::collect(StatisticsContainerType& data_out) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::collect"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::collect"));
 
   // *NOTE*: asynchronous call: someones' using our API
   // --> fill the argument with meaningful values...
@@ -355,7 +355,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolCommandType,
                                 StatisticsContainerType>::report() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::report"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::report"));
 
   // compute cache usage...
 //   unsigned long cache_used = 0;
@@ -402,7 +402,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolCommandType,
                                 StatisticsContainerType>::final_report() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::final_report"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::final_report"));
 
   {
     // synchronize access to statistics data
@@ -452,7 +452,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolCommandType,
                                 StatisticsContainerType>::fini_timers(const bool& cancelAllTimers_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::fini_timers"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::fini_timers"));
 
   if (cancelAllTimers_in)
   {

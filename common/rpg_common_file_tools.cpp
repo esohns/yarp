@@ -20,8 +20,9 @@
 
 #include "rpg_common_file_tools.h"
 
+#include "rpg_common_macros.h"
+
 #include <ace/OS.h>
-#include <ace/ACE.h>
 #include <ace/FILE_IO.h>
 #include <ace/FILE_Connector.h>
 #include <ace/Dirent_Selector.h>
@@ -29,7 +30,7 @@
 const bool
 RPG_Common_File_Tools::isReadable(const std::string& filename_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_File_Tools::isReadable"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::isReadable"));
 
   ACE_stat stat;
   if (ACE_OS::stat(filename_in.c_str(),
@@ -48,7 +49,7 @@ RPG_Common_File_Tools::isReadable(const std::string& filename_in)
 const bool
 RPG_Common_File_Tools::isEmpty(const std::string& filename_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_File_Tools::isEmpty"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::isEmpty"));
 
   ACE_stat stat;
   if (ACE_OS::stat(filename_in.c_str(),
@@ -67,7 +68,7 @@ RPG_Common_File_Tools::isEmpty(const std::string& filename_in)
 const bool
 RPG_Common_File_Tools::isDirectory(const std::string& directory_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_File_Tools::isDirectory"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::isDirectory"));
 
   // retrieve working directory
   char cwd[MAXPATHLEN];
@@ -111,7 +112,7 @@ RPG_Common_File_Tools::isDirectory(const std::string& directory_in)
 const bool
 RPG_Common_File_Tools::createDirectory(const std::string& directory_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_File_Tools::createDirectory"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::createDirectory"));
 
   if (ACE_OS::mkdir(directory_in.c_str(),
                     ACE_DEFAULT_DIR_PERMS) == -1)
@@ -166,7 +167,7 @@ RPG_Common_File_Tools::createDirectory(const std::string& directory_in)
 const bool
 RPG_Common_File_Tools::deleteFile(const std::string& filename_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_File_Tools::deleteFile"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::deleteFile"));
 
   // connect to the file...
   ACE_FILE_Addr address;
@@ -219,7 +220,7 @@ const bool
 RPG_Common_File_Tools::loadFile(const std::string& filename_in,
                                 unsigned char*& file_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Common_File_Tools::deleteFile"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::deleteFile"));
 
   // init return value(s)
   file_out = NULL;

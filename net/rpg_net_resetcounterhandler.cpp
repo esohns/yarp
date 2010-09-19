@@ -22,6 +22,8 @@
 
 #include "rpg_net_icounter.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 RPG_Net_ResetCounterHandler::RPG_Net_ResetCounterHandler(RPG_Net_ICounter* counter_in)
@@ -29,13 +31,13 @@ RPG_Net_ResetCounterHandler::RPG_Net_ResetCounterHandler(RPG_Net_ICounter* count
               ACE_Event_Handler::LO_PRIORITY), // priority
     myCounter(counter_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_ResetCounterHandler::RPG_Net_ResetCounterHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_ResetCounterHandler::RPG_Net_ResetCounterHandler"));
 
 }
 
 RPG_Net_ResetCounterHandler::~RPG_Net_ResetCounterHandler()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_ResetCounterHandler::~RPG_Net_ResetCounterHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_ResetCounterHandler::~RPG_Net_ResetCounterHandler"));
 
 }
 
@@ -43,7 +45,7 @@ int
 RPG_Net_ResetCounterHandler::handle_timeout(const ACE_Time_Value& tv_in,
                                             const void* arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_ResetCounterHandler::handle_timeout"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_ResetCounterHandler::handle_timeout"));
 
   ACE_UNUSED_ARG(tv_in);
   ACE_UNUSED_ARG(arg_in);

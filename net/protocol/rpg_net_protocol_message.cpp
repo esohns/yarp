@@ -22,6 +22,8 @@
 
 #include "rpg_net_protocol_tools.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Message_Block.h>
 #include <ace/Malloc_Base.h>
 
@@ -30,7 +32,7 @@
 RPG_Net_Protocol_Message::RPG_Net_Protocol_Message(const RPG_Net_Protocol_Message& message_in)
  : inherited(message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::RPG_Net_Protocol_Message"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::RPG_Net_Protocol_Message"));
 
 }
 
@@ -39,7 +41,7 @@ RPG_Net_Protocol_Message::RPG_Net_Protocol_Message(ACE_Data_Block* dataBlock_in,
  : inherited(dataBlock_in,        // use (don't own !) this data block
              messageAllocator_in) // use this when destruction is imminent...
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::RPG_Net_Protocol_Message"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::RPG_Net_Protocol_Message"));
 
 }
 
@@ -48,13 +50,13 @@ RPG_Net_Protocol_Message::RPG_Net_Protocol_Message(ACE_Data_Block* dataBlock_in,
 //              true), // usually, we want to increment the running message counter...
 //    myIsInitialized(false) // not initialized --> call init() !
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::RPG_Net_Protocol_Message"));
+//   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::RPG_Net_Protocol_Message"));
 //
 // }
 
 RPG_Net_Protocol_Message::~RPG_Net_Protocol_Message()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::~RPG_Net_Protocol_Message"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::~RPG_Net_Protocol_Message"));
 
   // *NOTE*: will be called just BEFORE we're passed back to the allocator
 }
@@ -62,7 +64,7 @@ RPG_Net_Protocol_Message::~RPG_Net_Protocol_Message()
 const int
 RPG_Net_Protocol_Message::getCommand() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::getCommand"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::getCommand"));
 
   // sanity check(s)
   ACE_ASSERT(getData());
@@ -89,7 +91,7 @@ RPG_Net_Protocol_Message::getCommand() const
 void
 RPG_Net_Protocol_Message::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::dump_state"));
 
   std::ostringstream converter;
 
@@ -123,7 +125,7 @@ RPG_Net_Protocol_Message::dump_state() const
 void
 RPG_Net_Protocol_Message::crunch()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::crunch"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::crunch"));
 
   // sanity check
   // *WARNING*: this is NOT enough, it's a race.
@@ -191,7 +193,7 @@ RPG_Net_Protocol_Message::crunch()
 ACE_Message_Block*
 RPG_Net_Protocol_Message::duplicate(void) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::duplicate"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::duplicate"));
 
   RPG_Net_Protocol_Message* nb = NULL;
 
@@ -240,7 +242,7 @@ RPG_Net_Protocol_Message::duplicate(void) const
 const std::string
 RPG_Net_Protocol_Message::commandType2String(const RPG_Net_Protocol_CommandType_t& commandType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::commandType2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::commandType2String"));
 
   std::string result = ACE_TEXT("INVALID/UNKNOWN");
 

@@ -28,13 +28,13 @@
 RPG_Net_SocketHandler::RPG_Net_SocketHandler()
  : inherited(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance())
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::RPG_Net_SocketHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::RPG_Net_SocketHandler"));
 
 }
 
 RPG_Net_SocketHandler::~RPG_Net_SocketHandler()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::~RPG_Net_SocketHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::~RPG_Net_SocketHandler"));
 
   // wait for our worker (if any)
 
@@ -47,7 +47,7 @@ RPG_Net_SocketHandler::~RPG_Net_SocketHandler()
 int
 RPG_Net_SocketHandler::svc(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::svc"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::svc"));
 
   ssize_t bytes_sent = 0;
   while (true)
@@ -148,7 +148,7 @@ RPG_Net_SocketHandler::svc(void)
 int
 RPG_Net_SocketHandler::open(void* arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::open"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::open"));
 
   // init/start stream, register reading data with reactor...
   // --> done by the base class
@@ -189,7 +189,7 @@ RPG_Net_SocketHandler::open(void* arg_in)
 // int
 // RPG_Net_SocketHandler::handle_input(ACE_HANDLE handle_in)
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::handle_input"));
+//   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::handle_input"));
 //
 //   ACE_UNUSED_ARG(handle_in);
 //
@@ -283,7 +283,7 @@ int
 RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,
                                     ACE_Reactor_Mask mask_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::handle_close"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::handle_close"));
 
   // deal with our worker
   if (thr_count())
@@ -315,7 +315,7 @@ RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,
 void
 RPG_Net_SocketHandler::shutdown()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandler::shutdown"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::shutdown"));
 
   ACE_Message_Block* stop_mb = NULL;
   ACE_NEW_NORETURN(stop_mb,

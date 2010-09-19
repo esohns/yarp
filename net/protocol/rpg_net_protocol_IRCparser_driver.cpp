@@ -26,6 +26,8 @@
 #include "rpg_net_protocol_IRCscanner.h"
 #include "rpg_net_protocol_message.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Message_Block.h>
 #include <ace/Log_Msg.h>
 
@@ -47,7 +49,7 @@ RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& d
    myCurrentMessage(NULL),
    myIsInitialized(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver"));
 
   // init scanner context
   if (IRCScannerlex_init_extra(this,               // extra data
@@ -61,7 +63,7 @@ RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& d
 
 RPG_Net_Protocol_IRCParserDriver::~RPG_Net_Protocol_IRCParserDriver ()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::~RPG_Net_Protocol_IRCParserDriver"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::~RPG_Net_Protocol_IRCParserDriver"));
 
   // fini scanner context
   if (myScannerContext)
@@ -73,7 +75,7 @@ RPG_Net_Protocol_IRCParserDriver::init(RPG_Net_Protocol_IRCMessage& message_in,
                                        const bool& debugScanner_in,
                                        const bool& debugParser_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::init"));
 
   // sanity check(s)
   ACE_ASSERT(!myIsInitialized);
@@ -91,7 +93,7 @@ RPG_Net_Protocol_IRCParserDriver::init(RPG_Net_Protocol_IRCMessage& message_in,
 const bool
 RPG_Net_Protocol_IRCParserDriver::parse(ACE_Message_Block* data_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::parse"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::parse"));
 
   // sanity check(s)
   ACE_ASSERT(myIsInitialized);
@@ -150,7 +152,7 @@ RPG_Net_Protocol_IRCParserDriver::parse(ACE_Message_Block* data_in)
 const bool
 RPG_Net_Protocol_IRCParserDriver::switchBuffer()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::switchBuffer"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::switchBuffer"));
 
   // sanity check
   if (myCurrentFragment->cont() == NULL)
@@ -193,7 +195,7 @@ RPG_Net_Protocol_IRCParserDriver::switchBuffer()
 const bool
 RPG_Net_Protocol_IRCParserDriver::moreData()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::moreData"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::moreData"));
 
   return (myCurrentFragment->cont() != NULL);
 }
@@ -201,7 +203,7 @@ RPG_Net_Protocol_IRCParserDriver::moreData()
 const bool
 RPG_Net_Protocol_IRCParserDriver::getDebugScanner() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::getDebugScanner"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::getDebugScanner"));
 
   return myDebugScanner;
 }
@@ -210,7 +212,7 @@ void
 RPG_Net_Protocol_IRCParserDriver::error(const yy::location& location_in,
                                         const std::string& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::error"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::error"));
 
   // debug info
   std::ostringstream converter;
@@ -242,7 +244,7 @@ RPG_Net_Protocol_IRCParserDriver::error(const yy::location& location_in,
 void
 RPG_Net_Protocol_IRCParserDriver::error(const std::string& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::error"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::error"));
 
   // debug info
   ACE_DEBUG((LM_ERROR,
@@ -256,7 +258,7 @@ RPG_Net_Protocol_IRCParserDriver::error(const std::string& message_in)
 const bool
 RPG_Net_Protocol_IRCParserDriver::scan_begin()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::scan_begin"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::scan_begin"));
 
   // sanity check(s)
   ACE_ASSERT(myCurrentBufferState == NULL);
@@ -327,7 +329,7 @@ RPG_Net_Protocol_IRCParserDriver::scan_begin()
 void
 RPG_Net_Protocol_IRCParserDriver::scan_end()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::scan_end"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::scan_end"));
 
   // sanity check(s)
   ACE_ASSERT(myCurrentBufferState);

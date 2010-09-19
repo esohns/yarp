@@ -23,24 +23,26 @@
 #include "rpg_net_sessionmessage.h"
 #include "rpg_net_message.h"
 
+#include <rpg_common_macros.h>
+
 RPG_Net_Module_HeaderParser::RPG_Net_Module_HeaderParser()
  : //inherited(),
    myIsInitialized(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_HeaderParser::RPG_Net_Module_HeaderParser"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_HeaderParser::RPG_Net_Module_HeaderParser"));
 
 }
 
 RPG_Net_Module_HeaderParser::~RPG_Net_Module_HeaderParser()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_HeaderParser::~RPG_Net_Module_HeaderParser"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_HeaderParser::~RPG_Net_Module_HeaderParser"));
 
 }
 
 const bool
 RPG_Net_Module_HeaderParser::init()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_HeaderParser::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_HeaderParser::init"));
 
   // sanity check(s)
   if (myIsInitialized)
@@ -60,7 +62,7 @@ void
 RPG_Net_Module_HeaderParser::handleDataMessage(RPG_Net_Message*& message_inout,
                                                bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_HeaderParser::handleDataMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_HeaderParser::handleDataMessage"));
 
   // don't care (implies yes per default, if we're part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
@@ -99,7 +101,7 @@ RPG_Net_Module_HeaderParser::handleDataMessage(RPG_Net_Message*& message_inout,
 void
 RPG_Net_Module_HeaderParser::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_Module_HeaderParser::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_HeaderParser::dump_state"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT(" ***** MODULE: \"%s\" state *****\n"),

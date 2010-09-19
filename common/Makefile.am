@@ -13,10 +13,11 @@ include_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \
 	rpg_common_effecttype.h rpg_common_environment.h rpg_common_environment_XML_types.h \
 	rpg_common_environment_incl.h rpg_common_file_tools.h rpg_common_icontrol.h rpg_common_idumpstate.h \
 	rpg_common_incl.h rpg_common_irefcount.h rpg_common_istatistic.h rpg_common_itimer.h \
-	rpg_common_physicaldamagetype.h rpg_common_plane.h rpg_common_referencecounter.h \
-	rpg_common_savereductiontype.h rpg_common_savingthrow.h rpg_common_savingthrowcheck.h \
-	rpg_common_size.h rpg_common_skill.h rpg_common_subclass.h rpg_common_terrain.h \
-	rpg_common_timer_manager.h rpg_common_timerhandler.h rpg_common_tools.h rpg_common_usage.h
+	rpg_common_macros.h rpg_common_physicaldamagetype.h rpg_common_plane.h \
+	rpg_common_referencecounter.h rpg_common_savereductiontype.h rpg_common_savingthrow.h \
+	rpg_common_savingthrowcheck.h rpg_common_size.h rpg_common_skill.h rpg_common_subclass.h \
+	rpg_common_terrain.h rpg_common_timer_manager.h rpg_common_timerhandler.h rpg_common_tools.h \
+	rpg_common_usage.h
 
 lib_LTLIBRARIES = libRPG_Common.la
 
@@ -30,7 +31,7 @@ libRPG_Common_la_SOURCES = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \
 	rpg_common_effecttype.h rpg_common_environment.h rpg_common_environment_XML_types.cpp \
 	rpg_common_environment_XML_types.h rpg_common_environment_incl.h rpg_common_file_tools.cpp \
 	rpg_common_file_tools.h rpg_common_icontrol.h rpg_common_idumpstate.h rpg_common_incl.h \
-	rpg_common_irefcount.h rpg_common_istatistic.h rpg_common_itimer.h \
+	rpg_common_irefcount.h rpg_common_istatistic.h rpg_common_itimer.h rpg_common_macros.h \
 	rpg_common_physicaldamagetype.h rpg_common_plane.h rpg_common_referencecounter.cpp \
 	rpg_common_referencecounter.h rpg_common_savereductiontype.h rpg_common_savingthrow.h \
 	rpg_common_savingthrowcheck.h rpg_common_size.h rpg_common_skill.h rpg_common_subclass.h \

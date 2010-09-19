@@ -4364,7 +4364,7 @@ void IRCScannerfree (void * ptr , yyscan_t yyscanner)
 // int
 // IRCScannerwrap(yyscan_t yyscanner)
 // {
-//   ACE_TRACE(ACE_TEXT("::IRCScannerwrap"));
+//   RPG_TRACE(ACE_TEXT("::IRCScannerwrap"));
 //
 //   struct yyguts_t* yyg = ACE_static_cast(struct yyguts_t*, yyscanner);
 //

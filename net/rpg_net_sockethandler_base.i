@@ -22,7 +22,8 @@
 #include "rpg_net_common_tools.h"
 #include "rpg_net_iconnectionmanager.h"
 
-#include <ace/OS.h>
+#include <rpg_common_macros.h>
+
 #include <ace/Reactor.h>
 #include <ace/INET_Addr.h>
 
@@ -40,7 +41,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
    myIsRegistered(false),
    myManager(manager_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::RPG_Net_SocketHandlerBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::RPG_Net_SocketHandlerBase"));
 
 //   // init user data
 //   ACE_OS::memset(&myUserData,
@@ -70,7 +71,7 @@ template <typename ConfigType,
 RPG_Net_SocketHandlerBase<ConfigType,
                           StatisticsContainerType>::~RPG_Net_SocketHandlerBase()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::~RPG_Net_SocketHandlerBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::~RPG_Net_SocketHandlerBase"));
 
   if (myManager)
   { // (try to) de-register with connection manager
@@ -95,7 +96,7 @@ int
 RPG_Net_SocketHandlerBase<ConfigType,
                           StatisticsContainerType>::open(void* arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::open"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::open"));
 
   // sanity check(s)
   if (!myIsRegistered)
@@ -189,7 +190,7 @@ int
 RPG_Net_SocketHandlerBase<ConfigType,
                           StatisticsContainerType>::close(u_long arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::close"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::close"));
   // [*NOTE*: hereby we override the default behavior of a ACE_Svc_Handler,
   // which would call handle_close() AGAIN]
 
@@ -262,7 +263,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
 //                           StatisticsContainerType>::handle_close(ACE_HANDLE handle_in,
 //                                                                  ACE_Reactor_Mask mask_in)
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::handle_close"));
+//   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::handle_close"));
 //
 // //   // de-register with connection manager
 // //   // *NOTE*: we do it here, while our handle is still "valid"...
@@ -288,7 +289,7 @@ void
 RPG_Net_SocketHandlerBase<ConfigType,
                           StatisticsContainerType>::init(const ConfigType& userData_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::init"));
 
   myUserData = userData_in;
   myIsInitialized = true;
@@ -297,7 +298,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
 // const bool
 // RPG_Net_SocketHandlerBase::isRegistered() const
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::isRegistered"));
+//   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::isRegistered"));
 //
 //   return myIsRegistered;
 // }
@@ -308,7 +309,7 @@ void
 RPG_Net_SocketHandlerBase<ConfigType,
                           StatisticsContainerType>::abort()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::abort"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::abort"));
 
   // call baseclass - will clean everything (including ourselves !) up
   // --> triggers handle_close()
@@ -324,7 +325,7 @@ const unsigned long
 RPG_Net_SocketHandlerBase<ConfigType,
                           StatisticsContainerType>::getID() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::getID"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::getID"));
 
   // *NOTE*: this isn't entirely portable...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
@@ -342,7 +343,7 @@ void
 RPG_Net_SocketHandlerBase<ConfigType,
                           StatisticsContainerType>::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::dump_state"));
 
   // debug info
   ACE_TCHAR buf[BUFSIZ];

@@ -25,6 +25,7 @@
 
 #include <rpg_net_protocol_tools.h>
 
+#include <rpg_common_macros.h>
 #include <rpg_common_file_tools.h>
 
 #include <sstream>
@@ -37,7 +38,7 @@ void
 disconnect_clicked_cb(GtkWidget* button_in,
                       gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::disconnect_clicked_cb"));
+  RPG_TRACE(ACE_TEXT("::disconnect_clicked_cb"));
 
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("disconnect_clicked_cb...\n")));
@@ -68,7 +69,7 @@ nick_entry_kb_focused_cb(GtkWidget* widget_in,
                          GdkEventFocus* event_in,
                          gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::nick_entry_kb_focused_cb"));
+  RPG_TRACE(ACE_TEXT("::nick_entry_kb_focused_cb"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("nick_entry_kb_focused_cb...\n")));
@@ -96,7 +97,7 @@ void
 change_clicked_cb(GtkWidget* button_in,
                   gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::change_clicked_cb"));
+  RPG_TRACE(ACE_TEXT("::change_clicked_cb"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("change_clicked_cb...\n")));
@@ -176,7 +177,7 @@ channel_entry_kb_focused_cb(GtkWidget* widget_in,
                             GdkEventFocus* event_in,
                             gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::channel_entry_kb_focused_cb"));
+  RPG_TRACE(ACE_TEXT("::channel_entry_kb_focused_cb"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("channel_entry_kb_focused_cb...\n")));
@@ -204,7 +205,7 @@ void
 join_clicked_cb(GtkWidget* button_in,
                 gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::join_clicked_cb"));
+  RPG_TRACE(ACE_TEXT("::join_clicked_cb"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("join_clicked_cb...\n")));
@@ -288,7 +289,7 @@ void
 refresh_clicked_cb(GtkWidget* button_in,
                    gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::refresh_clicked_cb"));
+  RPG_TRACE(ACE_TEXT("::refresh_clicked_cb"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("refresh_clicked_cb...\n")));
@@ -317,7 +318,7 @@ void
 user_mode_toggled_cb(GtkToggleButton* toggleButton_in,
                      gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::user_mode_toggled_cb"));
+  RPG_TRACE(ACE_TEXT("::user_mode_toggled_cb"));
 
   //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("user_mode_toggled_cb...\n")));
@@ -401,7 +402,7 @@ switch_channel_cb(GtkNotebook* notebook_in,
                   guint pageNum_in,
                   gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::switch_channel_cb"));
+  RPG_TRACE(ACE_TEXT("::switch_channel_cb"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("switch_channel_cb...\n")));
@@ -443,7 +444,7 @@ IRC_Client_GUI_Connection::IRC_Client_GUI_Connection(GtkBuilder* builder_in,
    myParent(parent_in),
    myContextID(0)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::IRC_Client_GUI_Connection"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::IRC_Client_GUI_Connection"));
 
   // sanity check(s)
   ACE_ASSERT(builder_in);
@@ -714,7 +715,7 @@ IRC_Client_GUI_Connection::IRC_Client_GUI_Connection(GtkBuilder* builder_in,
 
 IRC_Client_GUI_Connection::~IRC_Client_GUI_Connection()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::~IRC_Client_GUI_Connection"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::~IRC_Client_GUI_Connection"));
 
   // unsubscribe to updates from the controller
   try
@@ -783,7 +784,7 @@ IRC_Client_GUI_Connection::~IRC_Client_GUI_Connection()
 void
 IRC_Client_GUI_Connection::start()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::start"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::start"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("connected...\n")));
@@ -792,7 +793,7 @@ IRC_Client_GUI_Connection::start()
 void
 IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::notify"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::notify"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
@@ -1438,7 +1439,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 void
 IRC_Client_GUI_Connection::end()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::end"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::end"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("connection lost...\n")));
@@ -1450,7 +1451,7 @@ IRC_Client_GUI_Connection::end()
 RPG_Net_Protocol_IIRCControl*
 IRC_Client_GUI_Connection::getController()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::getController"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::getController"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.controller);
@@ -1461,7 +1462,7 @@ IRC_Client_GUI_Connection::getController()
 const std::string
 IRC_Client_GUI_Connection::getActiveChannel()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::getActiveChannel"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::getActiveChannel"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
@@ -1519,7 +1520,7 @@ IRC_Client_GUI_Connection::getActiveChannel()
 IRC_Client_GUI_MessageHandler*
 IRC_Client_GUI_Connection::getActiveHandler()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::getActiveHandler"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::getActiveHandler"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
@@ -1559,7 +1560,7 @@ const bool
 IRC_Client_GUI_Connection::forward(const std::string& channel_in,
                                    const std::string& messageText_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::forward"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::forward"));
 
   // --> pass to channel log
 
@@ -1587,7 +1588,7 @@ IRC_Client_GUI_Connection::forward(const std::string& channel_in,
 void
 IRC_Client_GUI_Connection::log(const RPG_Net_Protocol_IRCMessage& message_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::log"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::log"));
 
   // --> pass to server log
 
@@ -1605,7 +1606,7 @@ IRC_Client_GUI_Connection::log(const RPG_Net_Protocol_IRCMessage& message_in)
 void
 IRC_Client_GUI_Connection::error(const RPG_Net_Protocol_IRCMessage& message_in)
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::error"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::error"));
 
   // error --> print on statusbar
 
@@ -1626,7 +1627,7 @@ IRC_Client_GUI_Connection::error(const RPG_Net_Protocol_IRCMessage& message_in)
 void
 IRC_Client_GUI_Connection::updateModeButtons()
 {
-  ACE_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::updateModeButtons"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::updateModeButtons"));
 
   // display (changed) user modes
   GtkToggleButton* togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
