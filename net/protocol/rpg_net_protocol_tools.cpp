@@ -1321,6 +1321,13 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
           break;
         }
         case RPG_Net_Protocol_IRCMessage::QUIT:
+        {
+          result = message_in.prefix.origin;
+          result += ACE_TEXT_ALWAYS_CHAR(" has QUIT IRC (reason: \"%s\")");
+          result += message_in.params.back();
+
+          break;
+        }
         case RPG_Net_Protocol_IRCMessage::MODE:
         case RPG_Net_Protocol_IRCMessage::TOPIC:
         case RPG_Net_Protocol_IRCMessage::ERROR:

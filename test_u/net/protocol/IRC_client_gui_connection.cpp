@@ -1240,7 +1240,8 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
           log(message_in);
 
-          if (command == RPG_Net_Protocol_IRCMessage::QUIT)
+          if ((message_in.prefix.origin == myCBData.nickname) &&
+              (command == RPG_Net_Protocol_IRCMessage::QUIT))
             error(message_in); // --> show on statusbar as well...
 
           GDK_THREADS_LEAVE();

@@ -346,9 +346,9 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(IRC_Client_GUI_Conn
   if (!RPG_Net_Protocol_Tools::isValidIRCChannelName(myCBData.id))
   {
     // --> private conversation window, modify label accordingly
-    page_tab_label_string = ACE_TEXT_ALWAYS_CHAR("[ ");
+    page_tab_label_string = ACE_TEXT_ALWAYS_CHAR("[");
     page_tab_label_string += myCBData.id;
-    page_tab_label_string += ACE_TEXT_ALWAYS_CHAR(" ]");
+    page_tab_label_string += ACE_TEXT_ALWAYS_CHAR("]");
 
     // hide channel mode tab frame
     GtkFrame* channel_tab_mode_frame = GTK_FRAME(gtk_builder_get_object(myCBData.builder,
