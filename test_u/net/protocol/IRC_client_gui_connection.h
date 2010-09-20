@@ -67,8 +67,9 @@ class IRC_Client_GUI_Connection
   // *WARNING*: callers need protection
   // - by the main thread (servicing the gtk_main event loop)
   // - protected by GDK_THREADS_ENTER/GDK_THREADS_LEAVE
-  const std::string getActiveChannel();
+  const std::string getActiveID(); // *NOTE*: can be a channel/nick !
   IRC_Client_GUI_MessageHandler* getActiveHandler();
+  void terminateMessageHandler(const std::string&); // channel/nick
 
  private:
   typedef RPG_Net_Protocol_INotify inherited;
@@ -82,10 +83,12 @@ class IRC_Client_GUI_Connection
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_Connection& operator=(const IRC_Client_GUI_Connection&));
 
   // helper methods
-  const bool forward(const std::string&,  // channel
+  const bool forward(const std::string&,  // channel/nick
                      const std::string&); // message text
   void log(const RPG_Net_Protocol_IRCMessage&);
   void error(const RPG_Net_Protocol_IRCMessage&);
+
+  void createMessageHandler(const std::string&); // channel/nick
 
   void updateModeButtons();
 

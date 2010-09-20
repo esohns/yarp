@@ -34,6 +34,9 @@
 #include <string>
 #include <deque>
 
+// forward declaration(s)
+class IRC_Client_GUI_Connection;
+
 class IRC_Client_GUI_MessageHandler
 {
  public:
@@ -41,8 +44,9 @@ class IRC_Client_GUI_MessageHandler
   // *WARNING*: ctors/dtor need GDK_THREADS_ENTER/GDK_THREADS_LEAVE protection
   // (or call from gtk_main context...)
   IRC_Client_GUI_MessageHandler(GtkTextView*);                 // text view
-  IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_IIRCControl*, // controller handle
-                                const std::string&,            // channel
+  IRC_Client_GUI_MessageHandler(IRC_Client_GUI_Connection*,    // connection handle
+                                RPG_Net_Protocol_IIRCControl*, // controller handle
+                                const std::string&,            // identifier (channel/nick)
                                 const std::string&,            // UI (glade) file directory
                                 GtkNotebook*);                 // parent widget
   virtual ~IRC_Client_GUI_MessageHandler();
@@ -52,7 +56,7 @@ class IRC_Client_GUI_MessageHandler
   // [cannot make this a private member :-(]
   void update();
 
-  const std::string getChannel() const;
+//   const std::string getChannel() const;
 
   // *WARNING*: any method below this point needs to be either:
   // - protected by GDK_THREADS_ENTER/GDK_THREADS_LEAVE
@@ -83,7 +87,7 @@ class IRC_Client_GUI_MessageHandler
   void clear();
   void updateModeButtons();
 
-  channel_cb_data_t               myCBData;
+  handler_cb_data_t               myCBData;
 
   ACE_Thread_Mutex                myLock;
   std::deque<std::string>         myDisplayQueue;

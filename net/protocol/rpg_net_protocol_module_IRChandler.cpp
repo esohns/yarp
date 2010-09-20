@@ -163,6 +163,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTD:                 // 372
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:            // 375
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:            // 376
+        case RPG_Net_Protocol_IRC_Codes::ERR_NOSUCHNICK:           // 401
         case RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE:        // 433
         case RPG_Net_Protocol_IRC_Codes::ERR_YOUREBANNEDCREEP:     // 465
         case RPG_Net_Protocol_IRC_Codes::ERR_CHANOPRIVSNEEDED:     // 482
@@ -188,6 +189,15 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
     {
       switch (RPG_Net_Protocol_Tools::IRCCommandString2Type(*message_inout->getData()->command.string))
       {
+        case RPG_Net_Protocol_IRCMessage::NICK:
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"NICK\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
+
+          break;
+        }
         case RPG_Net_Protocol_IRCMessage::QUIT:
         {
 //           ACE_DEBUG((LM_DEBUG,
@@ -870,7 +880,7 @@ RPG_Net_Protocol_Module_IRCHandler::list(const string_list_t& channels_in)
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::send(const std::string& channel_in,
+RPG_Net_Protocol_Module_IRCHandler::send(const std::string& receiver_in,
                                          const std::string& message_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::send"));
@@ -888,7 +898,7 @@ RPG_Net_Protocol_Module_IRCHandler::send(const std::string& channel_in,
                    std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::PRIVMSG)));
   ACE_ASSERT(msg_struct->command.string);
   msg_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-  msg_struct->params.push_back(channel_in);
+  msg_struct->params.push_back(receiver_in);
   msg_struct->params.push_back(message_in);
 
   // step2: send it upstream

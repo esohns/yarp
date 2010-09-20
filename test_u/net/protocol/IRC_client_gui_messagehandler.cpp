@@ -21,6 +21,7 @@
 #include "IRC_client_gui_messagehandler.h"
 
 #include "IRC_client_gui_defines.h"
+#include "IRC_client_gui_connection.h"
 
 #include <rpg_net_protocol_tools.h>
 
@@ -65,14 +66,14 @@ channel_mode_toggled_cb(GtkToggleButton* toggleButton_in,
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("channel_mode_toggled_cb...\n")));
 
-  channel_cb_data_t* data = ACE_static_cast(channel_cb_data_t*,
+  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
                                             userData_in);
 
   // sanity check(s)
   ACE_ASSERT(toggleButton_in);
   ACE_ASSERT(data);
   ACE_ASSERT(data->builder);
-  ACE_ASSERT(!data->channel.empty());
+  ACE_ASSERT(!data->id.empty());
 
   RPG_Net_Protocol_ChannelMode mode = CHANNELMODE_INVALID;
   // find out which button toggled...
@@ -182,7 +183,7 @@ channel_mode_toggled_cb(GtkToggleButton* toggleButton_in,
 
   try
   {
-    data->controller->mode(data->channel,                                     // channel mode
+    data->controller->mode(data->id,                                          // channel name
                            RPG_Net_Protocol_Tools::IRCChannelMode2Char(mode), // corresponding mode char
                            !data->channelModes.test(mode));                   // enable ?
   }
@@ -206,13 +207,25 @@ part_clicked_cb(GtkWidget* button_in,
   ACE_UNUSED_ARG(button_in);
 
   // sanity check(s)
-  channel_cb_data_t* data = ACE_static_cast(channel_cb_data_t*,
+  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
                                             userData_in);
   ACE_ASSERT(data);
+  ACE_ASSERT(!data->id.empty());
+  ACE_ASSERT(data->connection);
+
+  // *NOTE*: if 'this' is not a channel handler, just close then page tab
+  if (!RPG_Net_Protocol_Tools::isValidIRCChannelName(data->id))
+  {
+    // *WARNING*: this will delete 'this' !
+    data->connection->terminateMessageHandler(data->id);
+
+    // done
+    return;
+  } // end IF
 
   try
   {
-    data->controller->part(data->channel);
+    data->controller->part(data->id);
   }
   catch (...)
   {
@@ -236,7 +249,7 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkTextView* view_i
 
   // init cb data
   myCBData.builder = NULL;
-  myCBData.channel.clear();
+  myCBData.id.clear();
   myCBData.controller = NULL;
 
   // setup auto-scrolling
@@ -249,8 +262,9 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkTextView* view_i
                               TRUE);
 }
 
-IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_IIRCControl* controller_in,
-                                                             const std::string& channel_in,
+IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(IRC_Client_GUI_Connection* connection_in,
+                                                             RPG_Net_Protocol_IIRCControl* controller_in,
+                                                             const std::string& id_in,
                                                              const std::string& UIFileDirectory_in,
                                                              GtkNotebook* notebook_in)
  : myView(NULL),
@@ -260,9 +274,9 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
   RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
 
   // sanity check(s)
+  ACE_ASSERT(connection_in);
   ACE_ASSERT(controller_in);
-  ACE_ASSERT(!channel_in.empty() &&
-             (channel_in.find('#', 0) == 0));
+  ACE_ASSERT(!id_in.empty());
   if (!RPG_Common_File_Tools::isDirectory(UIFileDirectory_in))
   {
     ACE_DEBUG((LM_ERROR,
@@ -274,8 +288,9 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
   ACE_ASSERT(notebook_in);
 
   // init cb data
+  myCBData.connection = connection_in;
   myCBData.builder = NULL;
-  myCBData.channel = channel_in;
+  myCBData.id = id_in;
   myCBData.controller = controller_in;
   myCBData.channelModes = 0;
 
@@ -327,11 +342,36 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(RPG_Net_Protocol_II
   GtkLabel* channel_tab_label = GTK_LABEL(gtk_builder_get_object(myCBData.builder,
                                                                  ACE_TEXT_ALWAYS_CHAR("channel_tab_label")));
   ACE_ASSERT(channel_tab_label);
-  // crop leading '#'
-  std::string channel_tab_label_string = channel_in;
-  channel_tab_label_string.erase(channel_tab_label_string.begin());
+  std::string page_tab_label_string;
+  if (!RPG_Net_Protocol_Tools::isValidIRCChannelName(myCBData.id))
+  {
+    // --> private conversation window, modify label accordingly
+    page_tab_label_string = ACE_TEXT_ALWAYS_CHAR("[ ");
+    page_tab_label_string += myCBData.id;
+    page_tab_label_string += ACE_TEXT_ALWAYS_CHAR(" ]");
+
+    // hide channel mode tab frame
+    GtkFrame* channel_tab_mode_frame = GTK_FRAME(gtk_builder_get_object(myCBData.builder,
+                                                                        ACE_TEXT_ALWAYS_CHAR("channel_tab_mode_frame")));
+    ACE_ASSERT(channel_tab_mode_frame);
+    gtk_widget_hide(GTK_WIDGET(channel_tab_mode_frame));
+    // hide channel tab treeview
+    GtkTreeView* channel_tab_treeview = GTK_TREE_VIEW(gtk_builder_get_object(myCBData.builder,
+                                                                             ACE_TEXT_ALWAYS_CHAR("channel_tab_treeview")));
+    ACE_ASSERT(channel_tab_treeview);
+    gtk_widget_hide(GTK_WIDGET(channel_tab_treeview));
+
+    // erase "topic" label
+    GtkLabel* channel_tab_topic_label = GTK_LABEL(gtk_builder_get_object(myCBData.builder,
+                                                                         ACE_TEXT_ALWAYS_CHAR("channel_tab_topic_label")));
+    ACE_ASSERT(channel_tab_topic_label);
+    gtk_label_set_text(channel_tab_topic_label,
+                       NULL);
+  } // end IF
+  else
+    page_tab_label_string = myCBData.id;
   gtk_label_set_text(channel_tab_label,
-                     channel_tab_label_string.c_str());
+                     page_tab_label_string.c_str());
   // retrieve (dummy) parent window
   parent = GTK_WINDOW(gtk_builder_get_object(myCBData.builder,
                                              ACE_TEXT_ALWAYS_CHAR("channel_tab_template")));
@@ -553,29 +593,30 @@ IRC_Client_GUI_MessageHandler::update()
     if (conversion_error)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert message text: \"%s\", continuing\n"),
+                 ACE_TEXT("failed to convert message text (was: \"%s\"): \"%s\", aborting\n"),
+                 myDisplayQueue.front().c_str(),
                  conversion_error->message));
 
       // clean up
       g_error_free(conversion_error);
+
+      return;
     } // end IF
-    else
-    {
-      // sanity check
-      ACE_ASSERT(converted_text);
 
-      // step2: display text
-      gtk_text_buffer_insert(gtk_text_view_get_buffer(myView),
-                             &iter,
-                             converted_text,
-                             -1);
-  //   gtk_text_buffer_insert_at_cursor(myTargetBuffer,
-  //                                    message_text.c_str(),
-  //                                    message_text.size());
+    // sanity check
+    ACE_ASSERT(converted_text);
 
-      // clean up
-      g_free(converted_text);
-    } // end ELSE
+    // step2: display text
+    gtk_text_buffer_insert(gtk_text_view_get_buffer(myView), &iter,
+                           converted_text,
+                           -1);
+//   gtk_text_buffer_insert_at_cursor(myTargetBuffer,
+//                                    message_text.c_str(),
+//                                    message_text.size());
+
+    // clean up
+    g_free(converted_text);
+
 
     // step3: pop stack
     myDisplayQueue.pop_front();
@@ -647,13 +688,16 @@ IRC_Client_GUI_MessageHandler::getTopLevelPageChild()
                                            ACE_TEXT_ALWAYS_CHAR("channel_tab_vbox")));
 }
 
-const std::string
-IRC_Client_GUI_MessageHandler::getChannel() const
-{
-  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::getChannel"));
-
-  return myCBData.channel;
-}
+// const std::string
+// IRC_Client_GUI_MessageHandler::getChannel() const
+// {
+//   RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::getChannel"));
+//
+//   // sanity check: 'this' might be a private message handler !...
+//   ACE_ASSERT(RPG_Net_Protocol_Tools::isValidIRCChannelName(myCBData.id));
+//
+//   return myCBData.id;
+// }
 
 void
 IRC_Client_GUI_MessageHandler::setTopic(const std::string& topic_in)

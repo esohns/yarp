@@ -65,10 +65,11 @@ struct connection_cb_data_t
   connections_t*                connections;
 };
 
-struct channel_cb_data_t
+struct handler_cb_data_t
 {
+  IRC_Client_GUI_Connection*      connection;
   GtkBuilder*                     builder;
-  std::string                     channel;
+  std::string                     id;
   RPG_Net_Protocol_ChannelModes_t channelModes;
   RPG_Net_Protocol_IIRCControl*   controller;
 };

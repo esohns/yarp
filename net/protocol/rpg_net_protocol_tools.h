@@ -47,6 +47,8 @@ class RPG_Net_Protocol_Tools
   static const char IRCChannelMode2Char(const RPG_Net_Protocol_ChannelMode&);
   static const char IRCUserMode2Char(const RPG_Net_Protocol_UserMode&);
 
+  static const bool isValidIRCChannelName(const std::string&); // string
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools());

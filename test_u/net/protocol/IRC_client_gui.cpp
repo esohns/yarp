@@ -564,13 +564,13 @@ send_clicked_cb(GtkWidget* button_in,
   // clean up
   g_free(converted_text);
 
-  // step2: retrieve active channel
-  std::string active_channel = (*connections_iterator).second->getActiveChannel();
+  // step2: retrieve active handler (channel/nick)
+  std::string active_id = (*connections_iterator).second->getActiveID();
   // sanity check
-  if (active_channel.empty())
+  if (active_id.empty())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("no active channel, aborting\n")));
+               ACE_TEXT("no active handler, aborting\n")));
 
     return;
   } // end IF
@@ -578,7 +578,7 @@ send_clicked_cb(GtkWidget* button_in,
   // step3: pass data to controller
   try
   {
-    (*connections_iterator).second->getController()->send(active_channel,
+    (*connections_iterator).second->getController()->send(active_id,
                                                           message_string);
   }
   catch (...)

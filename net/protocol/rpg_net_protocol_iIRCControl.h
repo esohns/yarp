@@ -49,6 +49,7 @@ class RPG_Net_Protocol_IIRCControl
                      const std::string&) = 0; // topic
   virtual void names(const string_list_t&) = 0; // channel(s)
   virtual void list(const string_list_t&) = 0; // channel(s)
+  // *TODO*: the receiver can be a list...
   virtual void send(const std::string&,      // nick/channel
                     const std::string&) = 0; // message
   virtual void quit(const std::string&) = 0; // reason

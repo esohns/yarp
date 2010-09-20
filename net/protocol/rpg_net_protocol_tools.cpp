@@ -287,6 +287,19 @@ RPG_Net_Protocol_Tools::IRCUserMode2Char(const RPG_Net_Protocol_UserMode& mode_i
   return ' ';
 }
 
+const bool
+RPG_Net_Protocol_Tools::isValidIRCChannelName(const std::string& string_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::isValidIRCChannelName"));
+
+  // *NOTE*: RFC1459:
+  //   <channel>    ::= ('#' | '&') <chstring>
+  //   <chstring>   ::= <any 8bit code except SPACE, BELL, NUL, CR, LF and
+  //                     comma (',')>
+  return ((string_in.find('#', 0) == 0) ||
+          (string_in.find('&', 0) == 0));
+}
+
 const std::string
 RPG_Net_Protocol_Tools::IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t& numeric_in)
 {
@@ -1300,6 +1313,13 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
           break;
         }
         case RPG_Net_Protocol_IRCMessage::NICK:
+        {
+          result = message_in.prefix.origin;
+          result += ACE_TEXT_ALWAYS_CHAR(" --> ");
+          result += message_in.params.back();
+
+          break;
+        }
         case RPG_Net_Protocol_IRCMessage::QUIT:
         case RPG_Net_Protocol_IRCMessage::MODE:
         case RPG_Net_Protocol_IRCMessage::TOPIC:
@@ -1363,6 +1383,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRC_Codes::RPL_LISTSTART:     // 321
         case RPG_Net_Protocol_IRC_Codes::RPL_LIST:          // 322
         case RPG_Net_Protocol_IRC_Codes::RPL_LISTEND:       // 323
+        case RPG_Net_Protocol_IRC_Codes::ERR_NOSUCHNICK:    // 401
         case RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE: // 433
         {
           result = RPG_Net_Protocol_Tools::concatParams(message_in.params,
