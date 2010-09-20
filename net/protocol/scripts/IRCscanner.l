@@ -161,6 +161,15 @@ CRLF           \r\n
                              yylval->sval->append(yytext, yyleng);
                              return token::HOST; }
 <INITIAL,command>{
+{NUMBER}+/{SPACE}          { yylloc->step();
+                             BEGIN(params);
+                             memory.append(yytext, yyleng);
+                             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+                             converter.clear();
+                             converter << memory;
+                             converter >> yylval->ival;
+                             memory.clear();
+                             return token::CMD_NUMERIC; }
 {LETTER}+/{SPACE}          { yylloc->step();
                              BEGIN(params);
                              ACE_NEW_NORETURN(yylval->sval,
@@ -172,15 +181,6 @@ CRLF           \r\n
                              } // end IF
                              yylval->sval->append(yytext, yyleng);
                              return token::CMD_STRING; }
-{NUMBER}{3}/{SPACE}        { yylloc->step();
-                             BEGIN(params);
-                             memory.append(yytext, yyleng);
-                             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-                             converter.clear();
-                             converter << memory;
-                             converter >> yylval->ival;
-                             memory.clear();
-                             return token::CMD_NUMERIC; }
 } // end <INITIAL, command>
 <params>{
 {SPACE}+                   { yylloc->step();

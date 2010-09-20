@@ -242,8 +242,8 @@ connect_clicked_cb(GtkWidget* button_in,
                        IRC_CLIENT_GUI_DEF_NICK_DIALOG_TITLE);
   if (gtk_dialog_run(main_entry_dialog))
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("connection cancelled...\n")));
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("connection cancelled...\n")));
 
     gtk_widget_hide(GTK_WIDGET(main_entry_dialog));
 
@@ -1763,7 +1763,8 @@ ACE_TMAIN(int argc,
   // step2a: process commandline arguments
   std::string configFile             = IRC_CLIENT_CNF_DEF_INI_FILE;
   bool debugParser                   = RPG_NET_PROTOCOL_DEF_TRACE_PARSING;
-  bool debugScanner                  = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING;
+//   bool debugScanner                  = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING;
+  bool debugScanner                  = true;
   bool logToFile                     = false;
   unsigned long reportingInterval    = IRC_CLIENT_DEF_STATSINTERVAL;
   std::string serverConfigFile       = IRC_CLIENT_GUI_DEF_SERVERS_FILE;
