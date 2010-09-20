@@ -63,10 +63,13 @@ class RPG_Net_Protocol_IRCParserDriver
   void init(RPG_Net_Protocol_IRCMessage&, // target data
             const bool& = false,          // debug scanner ?
             const bool& = false);         // debug parser ?
-  // *WARNING*: the argument needs to have been prepared for usage by flex:
+  // *WARNING*: in order to use the faster yy_scan_buffer(), the argument needs
+  // to have been prepared for usage by flex:
   // --> buffers need two trailing '\0's BEYOND their data
   //    (at positions length() + 1, length() + 2)
-  const bool parse(ACE_Message_Block*); // data
+  // --> indicated by the second argument
+  const bool parse(ACE_Message_Block*,   // data
+                   const bool& = false); // is data prepared for yy_scan_buffer ?
 
   // invoked by the scanner ONLY !!!
   const bool switchBuffer();
@@ -88,7 +91,7 @@ class RPG_Net_Protocol_IRCParserDriver
 //   void reset();
 
   // helper methods
-  const bool scan_begin();
+  const bool scan_begin(const bool&); // use yy_scan_buffer : yy_scan_bytes
   void scan_end();
 
   // scanner

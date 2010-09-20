@@ -106,30 +106,30 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
 
   // "crunch" messages for easier parsing ?
   RPG_Net_Protocol_Message* message = message_inout;
-  if (myCrunchMessages && message_inout->cont())
+  if (myCrunchMessages)
   {
     // step1: get a new message buffer
     message = allocateMessage(RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE);
     if (message == NULL)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to allocate message(%u), aborting\n"),
-                 RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE));
+                  ACE_TEXT("failed to allocate message(%u), aborting\n"),
+                  RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE));
 
       return;
     } // end IF
 
     // step2: copy available data
     for (ACE_Message_Block* source = message_inout;
-         source != NULL;
-         source = source->cont())
+          source != NULL;
+          source = source->cont())
     {
       ACE_ASSERT(source->length() <= message->space());
       if (message->copy(source->rd_ptr(),
                         source->length()))
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Message_Block::copy(): \"%m\", aborting\n")));
+                    ACE_TEXT("failed to ACE_Message_Block::copy(): \"%m\", aborting\n")));
 
         // clean up
         message->release();
@@ -138,6 +138,13 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
         return;
       } // end IF
     } // end FOR
+
+    // step3: append the "\0\0"-sequence, as required by flex
+    ACE_ASSERT(message->space() >= RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE);
+    ACE_ASSERT(RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE == 2);
+    *(message->wr_ptr()) = YY_END_OF_BUFFER_CHAR;
+    *(message->wr_ptr() + 1) = YY_END_OF_BUFFER_CHAR;
+    // *NOTE*: DO NOT adjust the write pointer --> length() should stay as it was !
   } // end IF
 
   // allocate the target data container and attach it to our current message
@@ -167,7 +174,8 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
   myDriver.init(ACE_const_cast(RPG_Net_Protocol_IRCMessage&, *message_inout->getData()),
                 myDebugScanner,
                 myDebugParser);
-  if (!myDriver.parse(message))
+  if (!myDriver.parse(message,           // data block
+                      myCrunchMessages)) // has data been crunched ?
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Net_Protocol_IRCParserDriver::parse(ID: %u), aborting\n"),

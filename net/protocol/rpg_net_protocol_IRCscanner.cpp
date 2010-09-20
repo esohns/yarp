@@ -2319,9 +2319,9 @@ static yyconst yy_state_type yy_NUL_trans[58] =
 
 static yyconst flex_int16_t yy_rule_linenum[22] =
     {   0,
-       79,   82,   86,   90,   93,   96,  107,  117,  129,  140,
-      152,  164,  173,  186,  189,  192,  202,  215,  217,  233,
-      268
+       79,   82,   86,  100,  113,  126,  137,  147,  159,  170,
+      183,  196,  205,  218,  231,  244,  254,  267,  279,  295,
+      330
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -2486,6 +2486,8 @@ extern int IRCScannerwrap (yyscan_t yyscanner );
 
 /* %not-for-header */
 
+    static void yyunput (int c,char *buf_ptr  ,yyscan_t yyscanner);
+    
 /* %ok-for-header */
 
 /* %endif */
@@ -2774,20 +2776,50 @@ YY_RULE_SETUP
 
 case 3:
 YY_RULE_SETUP
-{ yylloc->step();
+{ // handle back-up case...
+                             if (!memory.empty())
+                             {
+                               ACE_NEW_NORETURN(yylval->sval,
+                                                std::string);
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                               unput(' ');
+                               return token::ORIGIN;
+                              } // end IF
+                             yylloc->step();
                              BEGIN(command);
                              //yylval->ival = yyleng;
                              return token::SPACE; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-{ yylloc->step();
+{ // handle back-up case...
+                             if (!memory.empty())
+                             {
+                               ACE_NEW_NORETURN(yylval->sval,
+                                                std::string);
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                               unput('!');
+                               return token::ORIGIN;
+                             } // end IF
+                             yylloc->step();
                              BEGIN(user);
                              return token_type(yytext[0]); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-{ yylloc->step();
+{ // handle back-up case...
+                             if (!memory.empty())
+                             {
+                               ACE_NEW_NORETURN(yylval->sval,
+                                                std::string);
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                               unput('@');
+                               return token::ORIGIN;
+                             } // end IF
+                             yylloc->step();
                              BEGIN(host);
                              return token_type(yytext[0]); }
 	YY_BREAK
@@ -2877,6 +2909,7 @@ YY_RULE_SETUP
                              return token::USER; }
 	YY_BREAK
 // end <user>
+
 case 11:
 *yy_cp = yyg->yy_hold_char; /* undo effects of setting up yytext */
 yyg->yy_c_buf_p = yy_cp -= 1;
@@ -2894,6 +2927,7 @@ YY_RULE_SETUP
                              yylval->sval->append(yytext, yyleng);
                              return token::HOST; }
 	YY_BREAK
+// end <host>
 
 case 12:
 *yy_cp = yyg->yy_hold_char; /* undo effects of setting up yytext */
@@ -2931,13 +2965,33 @@ YY_RULE_SETUP
 
 case 14:
 YY_RULE_SETUP
-{ yylloc->step();
+{ // handle back-up case...
+                             if (!memory.empty())
+                             {
+                               ACE_NEW_NORETURN(yylval->sval,
+                                                std::string);
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                               unput(' ');
+                               return token::PARAM;
+                             } // end IF
+                             yylloc->step();
                              //yylval->ival = yyleng;
                              return token::SPACE; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-{ yylloc->step();
+{ // handle back-up case...
+                             if (!memory.empty())
+                             {
+                               ACE_NEW_NORETURN(yylval->sval,
+                                                std::string);
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                               unput(yytext[0]);
+                               return token::PARAM;
+                             } // end IF
+                             yylloc->step();
                              BEGIN(trailing);
                              return token_type(yytext[0]); }
 	YY_BREAK
@@ -2979,6 +3033,16 @@ YY_RULE_SETUP
 case 18:
 YY_RULE_SETUP
 { yylloc->step();
+                             // handle back-up case...
+                             if (!memory.empty())
+                             {
+                               ACE_NEW_NORETURN(yylval->sval,
+                                                std::string);
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                               BEGIN(end_of_frame);
+                               return token::PARAM;
+                             } // end IF
                              BEGIN(end_of_frame); }
 	YY_BREAK
 case 19:
@@ -3054,6 +3118,7 @@ case YY_STATE_EOF(end_of_frame):
 case 21:
 YY_RULE_SETUP
 { yylloc->step();
+                             // *NOTE*: this introduces the back-up case...
                              yymore(); }
 	YY_BREAK
 case 22:
@@ -3410,6 +3475,54 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	return yy_is_jam ? 0 : yy_current_state;
 }
 
+/* %if-c-only */
+
+    static void yyunput (int c, register char * yy_bp , yyscan_t yyscanner)
+/* %endif */
+/* %if-c++-only */
+/* %endif */
+{
+	register char *yy_cp;
+    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+
+    yy_cp = yyg->yy_c_buf_p;
+
+	/* undo effects of setting up yytext */
+	*yy_cp = yyg->yy_hold_char;
+
+	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
+		{ /* need to shift things up to make room */
+		/* +2 for EOB chars. */
+		register int number_to_move = yyg->yy_n_chars + 2;
+		register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
+					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
+		register char *source =
+				&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move];
+
+		while ( source > YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
+			*--dest = *--source;
+
+		yy_cp += (int) (dest - source);
+		yy_bp += (int) (dest - source);
+		YY_CURRENT_BUFFER_LVALUE->yy_n_chars =
+			yyg->yy_n_chars = YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
+
+		if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
+			YY_FATAL_ERROR( "flex scanner push-back overflow" );
+		}
+
+	*--yy_cp = (char) c;
+
+/* %% [18.0] update yylineno here */
+
+    if ( c == '\n' ){
+        --yylineno;
+    }
+
+	yyg->yytext_ptr = yy_bp;
+	yyg->yy_hold_char = *yy_cp;
+	yyg->yy_c_buf_p = yy_cp;
+}
 /* %if-c-only */
 
 /* %endif */

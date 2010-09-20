@@ -22,6 +22,7 @@
 #define RPG_NET_PROTOCOL_DEFINES_H
 
 // "\0\0"
+#define YY_END_OF_BUFFER_CHAR                          0
 #define RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE     2
 // CRLF = "\r\n"
 #define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY            ACE_TEXT_ALWAYS_CHAR("\r\n")
@@ -33,18 +34,21 @@
 
 // *NOTE*: according to RFC1459, IRC messages SHALL not exceed 512 bytes.
 // - a size of 512 bytes will allow "crunching" messages into a single buffer
-//   --> while this arguably "wastes" some memory, it allows easier
+//   --> while this arguably "wastes" some memory, it allows [easier/more robust]
 //       scanning / parsing...
 // - provide an extra 2 '\0' "resilience" bytes needed for scanning with "flex"
 // *WARNING*: be aware that a single read from the connected socket may well
 // cover MORE than one complete message at a time, so this value is just a
 // (somewhat qualified) suggestion...
-#define RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE       (RPG_NET_PROTOCOL_IRC_FRAME_MAXSIZE + 2)
+#define RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE       (RPG_NET_PROTOCOL_IRC_FRAME_MAXSIZE + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)
 
 // "crunch" messages for easier parsing ?
 // *NOTE*: comes at the cost of alloc/free, memcopy and locking per fragmented
-// message --> should be avoided...
-#define RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES           false
+// message --> should probably be avoided ...
+// OTOH, setting up the buffer correctly allows using the yy_scan_buffer()
+// (instead of yy_scan_bytes()) call, avoiding a copy of the data at that stage
+// --> adding the easier/more robust parsing, this MAY be a viable tradeoff...
+#define RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES           true
 
 // output more debugging information
 #define RPG_NET_PROTOCOL_DEF_TRACE_SCANNING            false
