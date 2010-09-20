@@ -73,7 +73,7 @@
 #define RPG_NET_DEF_MAX_QUEUE_SLOTS               10000
 // *IMPORTANT NOTE*: static heap memory consumption can be measured roughly
 // as RPG_NET_DEF_MAX_MESSAGES * sizeof(RPG_Net_Remote_Comm::RuntimePing) bytes !
-#define RPG_NET_DEF_MAX_MESSAGES                  1000
+#define RPG_NET_DEF_MAX_MESSAGES                  10000
 
 // seconds, 0 --> OFF
 #define RPG_NET_DEF_STATISTICS_COLLECT_INTERVAL   0
