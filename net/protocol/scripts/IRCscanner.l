@@ -55,6 +55,7 @@ CRLF           \r\n
 %s             command
 %s             params
 %s             trailing
+%s             end_of_frame
 
 %{
 #define YY_USER_ACTION  yylloc->columns(yyleng);
@@ -74,9 +75,13 @@ CRLF           \r\n
   std::stringstream converter;
 %}
 
-<INITIAL>":"               { yylloc->step();
+<INITIAL>{
+":"                        { yylloc->step();
                              BEGIN(prefix);
                              return token_type(yytext[0]); }
+"\r"                       { yylloc->step();
+                             BEGIN(end_of_frame); }
+} // end <INITIAL>
 <prefix>{
 {SPACE}+                   { yylloc->step();
                              BEGIN(command);
@@ -194,8 +199,8 @@ CRLF           \r\n
                              } // end IF
                              yylval->sval->append(yytext, yyleng);
                              return token::PARAM; }
-{PARAM}/{CRLF}             { yylloc->step();
-                             BEGIN(INITIAL);
+{PARAM}/"\r"               { yylloc->step();
+                             BEGIN(end_of_frame);
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
                              if (!memory.empty())
@@ -207,8 +212,9 @@ CRLF           \r\n
                              return token::PARAM; }
 } // end <params>
 <trailing>{
-{TRAILING_PARAM}/{CRLF}    { BEGIN(INITIAL);
-                             if (yyleng > 0)
+"\r"                       { yylloc->step();
+                             BEGIN(end_of_frame); }
+{TRAILING_PARAM}/"\r"      { if (yyleng > 0)
                              {
                                yylloc->step();
                                ACE_NEW_NORETURN(yylval->sval,
@@ -220,22 +226,21 @@ CRLF           \r\n
                                } // end IF
                                yylval->sval->append(yytext, yyleng);
                                return token::PARAM;
-                              } // end IF
-                            }
-} // end <trailing>
-<INITIAL>{CRLF}            { yylloc->step();
-                             messageCount++;
-                             return token::END; }
-<<EOF>>                    { yylloc->step();
-
-                             if (!driver.moreData())
-                             {
-                               BEGIN(INITIAL);
-                               messageCount++;
-                               yyterminate();
                              } // end IF
+                           }
+} // end <trailing>
+<end_of_frame>{
+"\n"                       { yylloc->step();
+                             BEGIN(INITIAL);
+                             messageCount++; }
+}
+<<EOF>>                    { if (!driver.moreData())
+                               yyterminate();
 
-                             memory = yytext;
+                             if (yyleng > 0)
+                               memory = yytext;
+                             else
+                               memory.clear();
 
                              if (!driver.switchBuffer())
                              {
@@ -243,16 +248,21 @@ CRLF           \r\n
                                           ACE_TEXT("failed to RPG_Net_Protocol_IRCParserDriver::switchBuffer(), aborting\n")));
 
                                // debug info
-                               std::string error_message(ACE_TEXT("invalid character (was \""));
-                               error_message += yytext[0];
-                               converter.str(ACE_TEXT(""));
-                               converter << ACE_static_cast(unsigned long, yytext[0]);
-                               error_message += ACE_TEXT("\" - ");
-                               error_message += converter.str();
+                               std::string error_message(ACE_TEXT("invalid data (was \""));
+                               error_message += memory;
+                               if (yyleng > 0)
+                               {
+                                 converter.str(ACE_TEXT(""));
+                                 converter << ACE_static_cast(unsigned long, yytext[0]);
+                                 error_message += ACE_TEXT("\" - ");
+                                 error_message += converter.str();
+                               } // end IF
+                               else
+                                 error_message += ACE_TEXT("\"");
                                error_message += ACE_TEXT("), continuing");
                                driver.error(*yylloc, error_message);
 
-                               return token_type(yytext[0]);
+                               yyterminate();
                              } // end IF
                            }
 <*>(?s:.)                  { yylloc->step();
