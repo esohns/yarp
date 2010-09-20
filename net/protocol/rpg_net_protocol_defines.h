@@ -48,6 +48,12 @@
 // OTOH, setting up the buffer correctly allows using the yy_scan_buffer()
 // (instead of yy_scan_bytes()) call, avoiding a copy of the data at that stage
 // --> adding the easier/more robust parsing, this MAY be a viable tradeoff...
+// *NOTE*: the current implementation uses both approaches in different phases:
+// - yy_scan_bytes (extra copy) for bisecting the frames
+// - yy_scan_buffer (crunching) during parsing/analysis
+// *TODO*: write a (robust) flex-scanner/bison parser that can handle
+// switching of buffers/"backing-up" reliably and stress-test the application
+// to see which option proves to be better...
 #define RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES           true
 
 // output more debugging information

@@ -1382,7 +1382,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           // private message ?
           if (myCBData.nickname == message_in.params.front())
           {
-            // *TODO*
+            // *TODO*: find/create a conversation window --> post
 
             GDK_THREADS_LEAVE();
 

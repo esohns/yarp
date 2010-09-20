@@ -1,7 +1,13 @@
-/* *NOTE*: this version of the scanner is rather straight-forward, as it assumes
-a continuous buffer containing the whole frame and hence makes no provisions for
-switching buffers, backing-up and the like. In this sense, it is optimized for
-speed and efficiency */
+/* *NOTE*: this prototype deals with some backing-up issues when using
+// linked message buffers in conjunction with yy_scan_bytes/switch_buffer logic.
+// This whole approach aims to avoid the overhead of "crunching" the buffers forming
+// a message frame by dynamically switching buffers on EOF and dealing with
+// backing-up issues when the scanner is "reset" in this way. The main issue stems
+// from the fact that the remaining content of the input buffer needs to be stored
+// into short-term "memory", and this state needs to be restored on the next
+// matched token, which is non-trivial, as simply unput()ting the memory will NOT
+// work ("flex scanner push-back overflow").
+// --> WORK - IN - PROGRESS */
 
 %{
 #include <stdlib.h>
@@ -102,38 +108,80 @@ CRLF           \r\n
 <INITIAL>{
 ":"                        { yylloc->step();
                              BEGIN(prefix);
-                             yylval->ival = 1;
                              return token_type(yytext[0]); }
 "\r"                       { yylloc->step();
-                             BEGIN(end_of_frame);
-                             yylval->ival = 1; }
+                             BEGIN(end_of_frame); }
 } // end <INITIAL>
 <prefix>{
-{SPACE}+                   { yylloc->step();
+{SPACE}+                   { // handle back-up case...
+                             if (!memory.empty())
+                             {
+                               ACE_NEW_NORETURN(yylval->sval,
+                                                std::string);
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                               unput(' ');
+                               return token::ORIGIN;
+                              } // end IF
+                             yylloc->step();
                              BEGIN(command);
-                             yylval->ival = yyleng;
+                             //yylval->ival = yyleng;
                              return token::SPACE; }
-"!"                        { yylloc->step();
+"!"                        { // handle back-up case...
+                             if (!memory.empty())
+                             {
+                               ACE_NEW_NORETURN(yylval->sval,
+                                                std::string);
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                               unput('!');
+                               return token::ORIGIN;
+                             } // end IF
+                             yylloc->step();
                              BEGIN(user);
-                             yylval->ival = 1;
                              return token_type(yytext[0]); }
-"@"                        { yylloc->step();
+"@"                        { // handle back-up case...
+                             if (!memory.empty())
+                             {
+                               ACE_NEW_NORETURN(yylval->sval,
+                                                std::string);
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                               unput('@');
+                               return token::ORIGIN;
+                             } // end IF
+                             yylloc->step();
                              BEGIN(host);
-                             yylval->ival = 1;
                              return token_type(yytext[0]); }
 {ORIGIN}/{SPACE}           { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
                              yylval->sval->append(yytext, yyleng);
+
                              return token::ORIGIN; }
 {ORIGIN}/"!"               { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
                              yylval->sval->append(yytext, yyleng);
                              return token::ORIGIN; }
 {ORIGIN}/"@"               { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
                              yylval->sval->append(yytext, yyleng);
                              return token::ORIGIN; }
 } // end <prefix>
@@ -142,12 +190,22 @@ CRLF           \r\n
                              BEGIN(prefix);
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
                              yylval->sval->append(yytext, yyleng);
                              return token::USER; }
 {USER}/"@"                 { yylloc->step();
                              BEGIN(prefix);
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
                              yylval->sval->append(yytext, yyleng);
                              return token::USER; }
 } // end <user>
@@ -156,55 +214,120 @@ CRLF           \r\n
                              BEGIN(prefix);
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
                              yylval->sval->append(yytext, yyleng);
                              return token::HOST; }
 } // end <host>
 <INITIAL,command>{
-{NUMBER}{3}/{SPACE}        { yylloc->step();
+{NUMBER}+/{SPACE}          { yylloc->step();
                              BEGIN(params);
+                             memory.append(yytext, yyleng);
                              converter.str(ACE_TEXT_ALWAYS_CHAR(""));
                              converter.clear();
-                             converter << yytext;
+                             converter << memory;
                              converter >> yylval->ival;
+                             memory.clear();
                              return token::CMD_NUMERIC; }
 {LETTER}+/{SPACE}          { yylloc->step();
                              BEGIN(params);
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
                              yylval->sval->append(yytext, yyleng);
                              return token::CMD_STRING; }
 } // end <INITIAL, command>
 <params>{
-{SPACE}+                   { yylloc->step();
-                             yylval->ival = yyleng;
+{SPACE}+                   { // handle back-up case...
+                             if (!memory.empty())
+                             {
+                               ACE_NEW_NORETURN(yylval->sval,
+                                                std::string);
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                               unput(' ');
+                               return token::PARAM;
+                             } // end IF
+                             yylloc->step();
+                             //yylval->ival = yyleng;
                              return token::SPACE; }
-":"                        { yylloc->step();
+":"                        { // handle back-up case...
+                             if (!memory.empty())
+                             {
+                               ACE_NEW_NORETURN(yylval->sval,
+                                                std::string);
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                               unput(yytext[0]);
+                               return token::PARAM;
+                             } // end IF
+                             yylloc->step();
                              BEGIN(trailing);
-                             yylval->ival = 1;
                              return token_type(yytext[0]); }
-"\r"                       { yylloc->step(); /* *NOTE*: non-compliant (see above) */
+"\r"                       { // handle back-up case... /* *NOTE*: non-compliant (see above) */
+                             if (!memory.empty())
+                             {
+                               ACE_NEW_NORETURN(yylval->sval,
+                                                std::string);
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                               unput(yytext[0]);
+                               return token::PARAM;
+                             } // end IF
+                             yylloc->step();
                              BEGIN(end_of_frame);
-                             yylval->ival = 1; }
+                             return token_type(yytext[0]); }
 {PARAM}/{SPACE}            { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
                              yylval->sval->append(yytext, yyleng);
                              return token::PARAM; }
 {PARAM}/"\r"               { yylloc->step(); /* *NOTE*: non-compliant (see above) */
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
+                             if (!memory.empty())
+                             {
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                             } // end IF
                              yylval->sval->append(yytext, yyleng);
                              return token::PARAM; }
 } // end <params>
 <trailing>{
 "\r"                       { yylloc->step();
-                             BEGIN(end_of_frame);
-                             yylval->ival = 1; }
-{TRAILING_PARAM}/"\r"      { yylloc->step();
-                             if (yyleng > 0)
+                             // handle back-up case...
+                             if (!memory.empty())
                              {
                                ACE_NEW_NORETURN(yylval->sval,
                                                 std::string);
+                               *(yylval->sval) = memory;
+                               memory.clear();
+                               BEGIN(end_of_frame);
+                               return token::PARAM;
+                             } // end IF
+                             BEGIN(end_of_frame); }
+{TRAILING_PARAM}/"\r"      { if (yyleng > 0)
+                             {
+                               yylloc->step();
+                               ACE_NEW_NORETURN(yylval->sval,
+                                                std::string);
+                               if (!memory.empty())
+                               {
+                                 *(yylval->sval) = memory;
+                                 memory.clear();
+                               } // end IF
                                yylval->sval->append(yytext, yyleng);
                                return token::PARAM;
                              } // end IF
@@ -215,14 +338,40 @@ CRLF           \r\n
                              BEGIN(INITIAL);
                              messageCount++; }
 }
-<<EOF>>                    { yyterminate(); }
+<<EOF>>                    { if (!driver.moreData())
+                               yyterminate();
+
+                             if (yyleng > 0)
+                               memory = yytext;
+                             else
+                               memory.clear();
+
+                             if (!driver.switchBuffer())
+                             {
+                               ACE_DEBUG((LM_ERROR,
+                                          ACE_TEXT("failed to RPG_Net_Protocol_IRCParserDriver::switchBuffer(), aborting\n")));
+
+                               // debug info
+                               std::string error_message(ACE_TEXT("invalid data (was \""));
+                               error_message += memory;
+                               if (yyleng > 0)
+                               {
+                                 converter.str(ACE_TEXT(""));
+                                 converter << ACE_static_cast(unsigned long, yytext[0]);
+                                 error_message += ACE_TEXT("\" - ");
+                                 error_message += converter.str();
+                               } // end IF
+                               else
+                                 error_message += ACE_TEXT("\"");
+                               error_message += ACE_TEXT("), continuing");
+                               driver.error(*yylloc, error_message);
+
+                               yyterminate();
+                             } // end IF
+                           }
 <*>(?s:.)                  { yylloc->step();
-
-                             // debug info
-                             std::string error_message(ACE_TEXT("invalid character, aborting"));
-                             driver.error(*yylloc, error_message);
-
-                             yyterminate(); }
+                             // *NOTE*: this introduces the back-up case...
+                             yymore(); }
 %%
 
 // #ifdef __cplusplus

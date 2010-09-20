@@ -105,6 +105,7 @@ connect_to_server(RPG_Stream_IAllocator* messageAllocator_in,
   stream_config.loginOptions = loginOptions_in;
   // ************ stream config data ****************
   stream_config.module = finalModule_in;
+  stream_config.crunchMessageBuffers = RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES;
   stream_config.debugScanner = debugScanner_in;
   stream_config.debugParser = debugParser_in;
   // *WARNING*: set at runtime (by the connection handler)
@@ -1763,8 +1764,8 @@ ACE_TMAIN(int argc,
   // step2a: process commandline arguments
   std::string configFile             = IRC_CLIENT_CNF_DEF_INI_FILE;
   bool debugParser                   = RPG_NET_PROTOCOL_DEF_TRACE_PARSING;
-//   bool debugScanner                  = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING;
-  bool debugScanner                  = true;
+  bool debugScanner                  = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING;
+//   bool debugScanner                  = true;
   bool logToFile                     = false;
   unsigned long reportingInterval    = IRC_CLIENT_DEF_STATSINTERVAL;
   std::string serverConfigFile       = IRC_CLIENT_GUI_DEF_SERVERS_FILE;
