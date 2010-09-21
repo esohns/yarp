@@ -29,9 +29,17 @@
 
 #include <list>
 #include <string>
+#include <vector>
 
+// *NOTE*: the list of parameters is essentially a simple list of items
+// (separated by ' '). However, an item can itself be a list (separated by ',')...
+// --> accomodate this "feature" by including a list of "ranges" (start/end positions
+// of list-items)
 typedef std::list<std::string> string_list_t;
 typedef string_list_t::const_iterator string_list_iterator_t;
+typedef std::pair<unsigned long, unsigned long> list_item_range_t;
+typedef std::vector<list_item_range_t> list_items_ranges_t;
+typedef list_items_ranges_t::const_iterator list_items_ranges_iterator_t;
 
 typedef string_list_t RPG_Net_Protocol_Parameters_t;
 typedef string_list_iterator_t RPG_Net_Protocol_ParametersIterator_t;
@@ -122,6 +130,7 @@ class RPG_Net_Protocol_IRCMessage
     } command;
 
     RPG_Net_Protocol_Parameters_t params;
+    list_items_ranges_t           list_param_ranges;
 
   private:
    typedef RPG_Common_ReferenceCounter inherited;

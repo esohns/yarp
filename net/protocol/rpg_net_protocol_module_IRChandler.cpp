@@ -328,10 +328,10 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         }
         case RPG_Net_Protocol_IRCMessage::ERROR:
         {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("[%u]: received \"ERROR\": \"%s\"\n"),
-                     message_inout->getID(),
-                     message_inout->getData()->params.back().c_str()));
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"ERROR\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
 
           break;
         }
@@ -737,7 +737,8 @@ RPG_Net_Protocol_Module_IRCHandler::nick(const std::string& nick_in)
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::join(const std::string& channel_in)
+RPG_Net_Protocol_Module_IRCHandler::join(const string_list_t& channels_in,
+                                         const string_list_t& keys_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::join"));
 
@@ -750,17 +751,36 @@ RPG_Net_Protocol_Module_IRCHandler::join(const std::string& channel_in)
                    std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::JOIN)));
   ACE_ASSERT(join_struct->command.string);
   join_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-  //   std::string channel_name = ACE_TEXT_ALWAYS_CHAR("#");
-  //   std::string channel_name = ACE_TEXT_ALWAYS_CHAR("&");
-  //   channel_name += channel_in;
-  join_struct->params.push_back(channel_in);
+  // compute ranges ?
+  if (!keys_in.empty())
+  {
+    list_item_range_t range;
+    if (channels_in.size() > 1)
+    {
+      range.first = 0;
+      range.second = (channels_in.size() - 1);
+      join_struct->list_param_ranges.push_back(range);
+    } // end IF
+    if (keys_in.size() > 1)
+    {
+      range.first = channels_in.size();
+      range.second = (channels_in.size() + keys_in.size() - 1);
+      join_struct->list_param_ranges.push_back(range);
+    } // end IF
+  } // end IF
+  join_struct->params = channels_in;
+  // append any keys
+  if (!keys_in.empty())
+    join_struct->params.insert(join_struct->params.end(),
+                               keys_in.begin(),
+                               keys_in.end());
 
   // step2: send it upstream
   sendMessage(join_struct);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::part(const std::string& channel_in)
+RPG_Net_Protocol_Module_IRCHandler::part(const string_list_t& channels_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::part"));
 
@@ -773,10 +793,7 @@ RPG_Net_Protocol_Module_IRCHandler::part(const std::string& channel_in)
                    std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::PART)));
   ACE_ASSERT(part_struct->command.string);
   part_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-  //   std::string channel_name = ACE_TEXT_ALWAYS_CHAR("#");
-  //   std::string channel_name = ACE_TEXT_ALWAYS_CHAR("&");
-  //   channel_name += channel_in;
-  part_struct->params.push_back(channel_in);
+  part_struct->params = channels_in;
 
   // step2: send it upstream
   sendMessage(part_struct);
@@ -785,7 +802,8 @@ RPG_Net_Protocol_Module_IRCHandler::part(const std::string& channel_in)
 void
 RPG_Net_Protocol_Module_IRCHandler::mode(const std::string& target_in,
                                          const char& mode_in,
-                                         const bool& enable_in)
+                                         const bool& enable_in,
+                                         const string_list_t& parameters_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::mode"));
 
@@ -806,6 +824,10 @@ RPG_Net_Protocol_Module_IRCHandler::mode(const std::string& target_in,
 
   mode_struct->params.push_back(target_in);
   mode_struct->params.push_back(mode_string);
+  // append any parameters
+  mode_struct->params.insert(mode_struct->params.end(),
+                             parameters_in.begin(),
+                             parameters_in.end());
 
   // step2: send it upstream
   sendMessage(mode_struct);
@@ -852,6 +874,14 @@ RPG_Net_Protocol_Module_IRCHandler::names(const string_list_t& channels_in)
   ACE_ASSERT(names_struct->command.string);
   names_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
+  // compute range ?
+  if (channels_in.size() > 1)
+  {
+    list_item_range_t range;
+    range.first = 0;
+    range.second = (channels_in.size() - 1);
+    names_struct->list_param_ranges.push_back(range);
+  } // end IF
   names_struct->params = channels_in;
 
   // step2: send it upstream
@@ -873,6 +903,14 @@ RPG_Net_Protocol_Module_IRCHandler::list(const string_list_t& channels_in)
   ACE_ASSERT(list_struct->command.string);
   list_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
+  // compute range ?
+  if (channels_in.size() > 1)
+  {
+    list_item_range_t range;
+    range.first = 0;
+    range.second = (channels_in.size() - 1);
+    list_struct->list_param_ranges.push_back(range);
+  } // end IF
   list_struct->params =  channels_in;
 
   // step2: send it upstream
@@ -880,7 +918,7 @@ RPG_Net_Protocol_Module_IRCHandler::list(const string_list_t& channels_in)
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::send(const std::string& receiver_in,
+RPG_Net_Protocol_Module_IRCHandler::send(const string_list_t& receivers_in,
                                          const std::string& message_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::send"));
@@ -898,7 +936,16 @@ RPG_Net_Protocol_Module_IRCHandler::send(const std::string& receiver_in,
                    std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::PRIVMSG)));
   ACE_ASSERT(msg_struct->command.string);
   msg_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-  msg_struct->params.push_back(receiver_in);
+
+  // compute range ?
+  if (receivers_in.size() > 1)
+  {
+    list_item_range_t range;
+    range.first = 0;
+    range.second = (receivers_in.size() - 1);
+    msg_struct->list_param_ranges.push_back(range);
+  } // end IF
+  msg_struct->params = receivers_in;
   msg_struct->params.push_back(message_in);
 
   // step2: send it upstream

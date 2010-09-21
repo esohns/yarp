@@ -1173,7 +1173,7 @@ RPG_Net_Protocol_Tools::IRCChannelModeChar2ChannelMode(const char& mode_in)
     default:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid channel mode (was: \"%c\"), aborting\n"),
+                 ACE_TEXT("unknown/invalid channel mode (was: \"%c\"), aborting\n"),
                  mode_in));
 
       break;
@@ -1204,7 +1204,7 @@ RPG_Net_Protocol_Tools::IRCUserModeChar2UserMode(const char& mode_in)
     default:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid user mode (was: \"%c\"), aborting\n"),
+                 ACE_TEXT("unknown/invalid user mode (was: \"%c\"), aborting\n"),
                  mode_in));
 
       break;

@@ -22,7 +22,7 @@ speed and efficiency */
 
 %option pointer full nounistd 8bit
 /* %option c++ outfile="rpg_net_protocol_IRCscanner.cpp" prefix="IRCScanner" noyywrap nounput */
-%option warn nodefault batch nomain noyywrap
+%option warn nodefault batch nomain noyywrap nounput
 %option debug perf-report verbose
 /*%option reentrant extra-type="unsigned long*"*/
 %option reentrant extra-type="RPG_Net_Protocol_IRCParserDriver*"
@@ -30,7 +30,7 @@ speed and efficiency */
 %option prefix="IRCScanner" yylineno
 
 /* *NOTE*: "see RFC 952 [DNS:4] for details on allowed hostnames..."
-/*RFC 952
+RFC 952
 1. A "name" (Net, Host, Gateway, or Domain name) is a text string up
    to 24 characters drawn from the alphabet (A-Z), digits (0-9), minus
    sign (-), and period (.).  Note that periods are only allowed when

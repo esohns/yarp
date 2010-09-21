@@ -194,8 +194,6 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
   } // end IF
 
   // command
-  // *NOTE*: select correct parameter separator (either ' ' (default) or ',' (list))
-  char param_separator = ' ';
   switch (message_inout->getData()->command.discriminator)
   {
     case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
@@ -256,16 +254,6 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
         return;
       } // end IF
 
-      // find correct parameter separator
-      switch (RPG_Net_Protocol_Tools::IRCCommandString2Type(*message_inout->getData()->command.string))
-      {
-        case RPG_Net_Protocol_IRCMessage::NAMES:
-        case RPG_Net_Protocol_IRCMessage::LIST:
-          param_separator = ','; break;
-        default:
-          break;
-      } // end SWITCH
-
       break;
     }
     default:
@@ -287,10 +275,95 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
   // parameter(s)
   if (!message_inout->getData()->params.empty())
   {
-    unsigned long  i = message_inout->getData()->params.size();
-    for (RPG_Net_Protocol_ParametersIterator_t iterator = message_inout->getData()->params.begin();
-         iterator != message_inout->getData()->params.end();
-         iterator++, i--)
+    // sanity check
+    if (message_inout->space() < 1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("[%u]: out of buffer space (\"%s\", %u), aborting\n"),
+                 message_inout->getID(),
+                 std::string(message_inout->rd_ptr(), message_inout->length()).c_str(),
+                 message_inout->length()));
+
+      // clean up
+      passMessageDownstream_out = false;
+      message_inout->release();
+      message_inout = NULL;
+
+      return;
+    } // end IF
+    // add a separator
+    *message_inout->wr_ptr() = ' ';
+    message_inout->wr_ptr(1);
+  } // end IF
+  unsigned long forward_i = 0;
+  unsigned long reverse_i = message_inout->getData()->params.size();
+  char param_separator = ' ';
+  list_items_ranges_iterator_t range_iterator = message_inout->getData()->list_param_ranges.begin();
+  for (RPG_Net_Protocol_ParametersIterator_t iterator = message_inout->getData()->params.begin();
+        iterator != message_inout->getData()->params.end();
+        iterator++, forward_i++, reverse_i--)
+  {
+    // (re-)set to default
+    param_separator = ' ';
+
+    // advance range iterator ?
+    if ((range_iterator != message_inout->getData()->list_param_ranges.end()) &&
+        (forward_i > (*range_iterator).second))
+      range_iterator++;
+
+    // param part of a list ?
+    if ((range_iterator != message_inout->getData()->list_param_ranges.end()) &&
+        (forward_i >= (*range_iterator).first) &&
+        (forward_i <= (*range_iterator).second))
+      param_separator = ',';
+
+    // special handling for last parameter (may contain <SPACE> characters)
+    // --> if necessary, prefix the trailing parameter
+    // *NOTE*: the "final" parameter may be a list-item, but in this case
+    // the whitespace is excluded from the allowed set of characters...
+    if ((reverse_i == 1) &&
+        ((*iterator).find(' ') != std::string::npos))
+    {
+      // sanity check(s)
+      ACE_ASSERT(param_separator == ' '); // cannot be (part of) a list-item
+      if (message_inout->space() < 1)
+      {
+        ACE_DEBUG((LM_ERROR,
+                    ACE_TEXT("[%u]: out of buffer space (\"%s\", %u), aborting\n"),
+                    message_inout->getID(),
+                    std::string(message_inout->rd_ptr(), message_inout->length()).c_str(),
+                    message_inout->length()));
+
+        // clean up
+        passMessageDownstream_out = false;
+        message_inout->release();
+        message_inout = NULL;
+
+        return;
+      } // end IF
+      *message_inout->wr_ptr() = ':';
+      message_inout->wr_ptr(1);
+    } // end IF
+
+    // append param string
+    if (message_inout->copy((*iterator).c_str(),
+                            (*iterator).size()) == -1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Message_Block::copy(\"%s\", %u): \"%m\", aborting\n"),
+                 (*iterator).c_str(),
+                 (*iterator).size()));
+
+      // clean up
+      passMessageDownstream_out = false;
+      message_inout->release();
+      message_inout = NULL;
+
+      return;
+    } // end IF
+
+    // append separator <SPACE> OR <COMMA>
+    if (reverse_i > 1)
     {
       // sanity check
       if (message_inout->space() < 1)
@@ -308,58 +381,10 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
 
         return;
       } // end IF
-      // add a <SPACE>
-      if (i == message_inout->getData()->params.size())
-        *message_inout->wr_ptr() = ' ';
-      else
-        *message_inout->wr_ptr() = param_separator;
+      *message_inout->wr_ptr() = param_separator;
       message_inout->wr_ptr(1);
-
-      // special handling for last parameter
-      if ((i == 1) &&
-          (param_separator == ' ')) // doesn't make sense for lists...
-      {
-        // if necessary, prefix the trailing parameter
-        if ((*iterator).find(' ') != std::string::npos)
-        {
-          // sanity check
-          if (message_inout->space() < 1)
-          {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("[%u]: out of buffer space (\"%s\", %u), aborting\n"),
-                       message_inout->getID(),
-                       std::string(message_inout->rd_ptr(), message_inout->length()).c_str(),
-                       message_inout->length()));
-
-            // clean up
-            passMessageDownstream_out = false;
-            message_inout->release();
-            message_inout = NULL;
-
-            return;
-          } // end IF
-          *message_inout->wr_ptr() = ':';
-          message_inout->wr_ptr(1);
-        } // end IF
-      } // end IF
-
-      if (message_inout->copy((*iterator).c_str(),
-                              (*iterator).size()) == -1)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Message_Block::copy(\"%s\", %u): \"%m\", aborting\n"),
-                   (*iterator).c_str(),
-                   (*iterator).size()));
-
-        // clean up
-        passMessageDownstream_out = false;
-        message_inout->release();
-        message_inout = NULL;
-
-        return;
-      } // end IF
-    } // end FOR
-  } // end IF
+    } // end IF
+  } // end FOR
 
   // sanity check
   if (message_inout->space() < RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE)

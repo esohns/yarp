@@ -159,6 +159,14 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
     // what else can we do ?
     return;
   } // end IF
+  // *NOTE*: at this time, the parser does not bisect (','-separated) list-items
+  // (i.e. items which are themselves lists) from the (' '-separated) list of
+  // parameters. This means that any list-items are extracted as a "whole" - a
+  // list-item will just be a single (long) string...
+  // *TODO*: check whether any messages actually use this feature on the client side
+  // and either:
+  // - make the parser more intelligent
+  // - bisect any list items in a post-processing step...
   message_inout->init(container);
 
   // *NOTE*: message has assumed control over "container"...

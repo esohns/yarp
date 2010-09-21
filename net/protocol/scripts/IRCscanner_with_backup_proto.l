@@ -36,7 +36,7 @@
 %option prefix="IRCScanner" yylineno
 
 /* *NOTE*: "see RFC 952 [DNS:4] for details on allowed hostnames..."
-/*RFC 952
+RFC 952
 1. A "name" (Net, Host, Gateway, or Domain name) is a text string up
    to 24 characters drawn from the alphabet (A-Z), digits (0-9), minus
    sign (-), and period (.).  Note that periods are only allowed when

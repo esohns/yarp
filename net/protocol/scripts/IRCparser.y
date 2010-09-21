@@ -110,7 +110,7 @@ params:       "space" params                                  /* default */
                                                                            driver.myCurrentMessage->params.front().c_str())); */
                                                               };
               |                                               /* empty */
-trailing:     "param"                                         { driver.myCurrentMessage->params.push_front(*$1);
+    trailing:     "param"                                     { driver.myCurrentMessage->params.push_front(*$1);
 /*                                                                ACE_DEBUG((LM_DEBUG,
                                                                              ACE_TEXT("set final param: \"%s\"\n"),
                                                                              driver.myCurrentMessage->params.front().c_str())); */

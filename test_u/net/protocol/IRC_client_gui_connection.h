@@ -17,8 +17,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef IRC_CLIENT_GUI_CONNECTION_HANDLER_H
-#define IRC_CLIENT_GUI_CONNECTION_HANDLER_H
+
+#ifndef IRC_CLIENT_GUI_CONNECTION_H
+#define IRC_CLIENT_GUI_CONNECTION_H
 
 #include "IRC_client_gui_common.h"
 

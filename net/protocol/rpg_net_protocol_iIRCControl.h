@@ -40,17 +40,18 @@ class RPG_Net_Protocol_IIRCControl
   virtual void unsubscribe(RPG_Net_Protocol_INotify*) = 0; // existing subscriber
   virtual void registerConnection(const RPG_Net_Protocol_IRCLoginOptions&) = 0; // login details
   virtual void nick(const std::string&) = 0; // nick
-  virtual void join(const std::string&) = 0; // channel
-  virtual void part(const std::string&) = 0; // channel
-  virtual void mode(const std::string&, // nick/channel
-                    const char&,        // user/channel mode
-                    const bool&) = 0;   // enable ?
+  virtual void join(const string_list_t&,      // channel(s)
+                    const string_list_t&) = 0; // key(s)
+  virtual void part(const string_list_t&) = 0; // channel(s)
+  virtual void mode(const std::string&,        // nick/channel
+                    const char&,               // user/channel mode
+                    const bool&,               // enable ?
+                    const string_list_t&) = 0; // any parameters
   virtual void topic(const std::string&,      // channel
                      const std::string&) = 0; // topic
   virtual void names(const string_list_t&) = 0; // channel(s)
   virtual void list(const string_list_t&) = 0; // channel(s)
-  // *TODO*: the receiver can be a list...
-  virtual void send(const std::string&,      // nick/channel
+  virtual void send(const string_list_t&,    // receiver(s) [nick/channel]
                     const std::string&) = 0; // message
   virtual void quit(const std::string&) = 0; // reason
 };
