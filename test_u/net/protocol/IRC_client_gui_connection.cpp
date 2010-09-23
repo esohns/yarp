@@ -1375,4 +1375,19 @@ IRC_Client_GUI_Connection::updateModeButtons()
   ACE_ASSERT(togglebutton);
   gtk_toggle_button_set_active(togglebutton,
                                myCBData.userModes[USERMODE_INVISIBLE]);
+  togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                          ACE_TEXT_ALWAYS_CHAR("mode_localoperator_togglebutton")));
+  ACE_ASSERT(togglebutton);
+  gtk_toggle_button_set_active(togglebutton,
+                               myCBData.userModes[USERMODE_LOCALOPERATOR]);
+  togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                          ACE_TEXT_ALWAYS_CHAR("mode_restricted_togglebutton")));
+  ACE_ASSERT(togglebutton);
+  gtk_toggle_button_set_active(togglebutton,
+                               myCBData.userModes[USERMODE_RESTRICTEDCONN]);
+  togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                          ACE_TEXT_ALWAYS_CHAR("mode_away_togglebutton")));
+  ACE_ASSERT(togglebutton);
+  gtk_toggle_button_set_active(togglebutton,
+                               myCBData.userModes[USERMODE_AWAY]);
 }

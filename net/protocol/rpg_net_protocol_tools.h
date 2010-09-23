@@ -34,6 +34,9 @@ class RPG_Net_Protocol_Tools
  public:
   // debug info
   static const std::string dump(const RPG_Net_Protocol_IRCMessage&);
+  static const std::string dump(const RPG_Net_Protocol_UserModes_t&);
+  static const std::string dump(const RPG_Net_Protocol_ChannelModes_t&);
+
   static const std::string IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t&);
   static const std::string IRCChannelMode2String(const RPG_Net_Protocol_ChannelMode&);
   static const std::string IRCUserMode2String(const RPG_Net_Protocol_UserMode&);

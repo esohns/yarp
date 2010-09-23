@@ -90,6 +90,40 @@ RPG_Net_Protocol_Tools::dump(const RPG_Net_Protocol_IRCMessage& message_in)
   return converter.str();
 }
 
+const std::string
+RPG_Net_Protocol_Tools::dump(const RPG_Net_Protocol_UserModes_t& userModes_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::dump"));
+
+  // init result
+  std::string result = ACE_TEXT_ALWAYS_CHAR("+");
+
+  for (int i = 0;
+       i < USERMODE_MAX;
+       i++)
+    if (userModes_in.test(i))
+      result += RPG_Net_Protocol_Tools::IRCUserMode2Char(ACE_static_cast(RPG_Net_Protocol_UserMode, i));
+
+  return result;
+}
+
+const std::string
+RPG_Net_Protocol_Tools::dump(const RPG_Net_Protocol_ChannelModes_t& channelModes_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::dump"));
+
+  // init result
+  std::string result = ACE_TEXT_ALWAYS_CHAR("+");
+
+  for (int i = 0;
+       i < CHANNELMODE_MAX;
+       i++)
+    if (channelModes_in.test(i))
+      result += RPG_Net_Protocol_Tools::IRCChannelMode2Char(ACE_static_cast(RPG_Net_Protocol_ChannelMode, i));
+
+  return result;
+}
+
 const RPG_Net_Protocol_CommandType_t
 RPG_Net_Protocol_Tools::IRCCommandString2Type(const std::string& commandString_in)
 {

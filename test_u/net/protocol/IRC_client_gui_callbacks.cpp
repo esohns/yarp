@@ -981,7 +981,7 @@ user_mode_toggled_cb(GtkToggleButton* toggleButton_in,
   } // end ELSE
 
   // check if the state is inconsistent --> submit change request, else do nothing
-  // i.e. state is off and widget is "on" or vice-versa
+  // i.e. state is off and widget is "on" (or vice-versa)
   // *NOTE*: prevents endless recursion
   if (data->userModes.test(mode) == toggleButton_in->active)
     return;
