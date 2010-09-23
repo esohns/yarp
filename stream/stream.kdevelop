@@ -156,6 +156,7 @@
     <tree>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
       <hidenonprojectfiles>false</hidenonprojectfiles>
+      <showvcsfields>false</showvcsfields>
     </tree>
   </kdevfileview>
   <kdevdocumentation>

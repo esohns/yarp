@@ -34,6 +34,8 @@
 
 #include <rpg_common_macros.h>
 
+#include <ace/OS.h>
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -119,8 +121,12 @@ connect_clicked_cb(GtkWidget* button_in,
                         IRC_CLIENT_GUI_DEF_NICK_DIALOG_TITLE);
   if (gtk_dialog_run(main_entry_dialog))
   {
-    //     ACE_DEBUG((LM_DEBUG,
-    //                ACE_TEXT("connection cancelled...\n")));
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("connection cancelled...\n")));
+
+    // clean up
+    gtk_entry_buffer_delete_text(gtk_entry_get_buffer(main_entry_entry),
+                                 0, -1);
 
     gtk_widget_hide(GTK_WIDGET(main_entry_dialog));
 
@@ -128,6 +134,9 @@ connect_clicked_cb(GtkWidget* button_in,
   } // end IF
   gtk_widget_hide(GTK_WIDGET(main_entry_dialog));
   loginOptions.nick = gtk_entry_get_text(main_entry_entry);
+  // clean up
+  gtk_entry_buffer_delete_text(gtk_entry_get_buffer(main_entry_entry),
+                               0, -1);
 
   // step3: create/init new final module
   std::string module_name = ACE_TEXT_ALWAYS_CHAR("IRCHandler");
@@ -917,31 +926,55 @@ user_mode_toggled_cb(GtkToggleButton* toggleButton_in,
   else
   {
     button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
-                                                      ACE_TEXT_ALWAYS_CHAR("mode_wallops_togglebutton")));
+                                                      ACE_TEXT_ALWAYS_CHAR("mode_localoperator_togglebutton")));
     ACE_ASSERT(button);
     if (button == toggleButton_in)
-      mode = USERMODE_RECVWALLOPS;
+      mode = USERMODE_LOCALOPERATOR;
     else
     {
       button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
-                                                        ACE_TEXT_ALWAYS_CHAR("mode_notices_togglebutton")));
+                                                        ACE_TEXT_ALWAYS_CHAR("mode_restricted_togglebutton")));
       ACE_ASSERT(button);
       if (button == toggleButton_in)
-        mode = USERMODE_RECVNOTICES;
+        mode = USERMODE_RESTRICTEDCONN;
       else
       {
         button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
-                                                          ACE_TEXT_ALWAYS_CHAR("mode_invisible_togglebutton")));
+                                                          ACE_TEXT_ALWAYS_CHAR("mode_away_togglebutton")));
         ACE_ASSERT(button);
         if (button == toggleButton_in)
-          mode = USERMODE_INVISIBLE;
+          mode = USERMODE_AWAY;
         else
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid user mode toggled (was: %@), aborting\n"),
-                     toggleButton_in));
+          button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
+                                                            ACE_TEXT_ALWAYS_CHAR("mode_wallops_togglebutton")));
+          ACE_ASSERT(button);
+          if (button == toggleButton_in)
+            mode = USERMODE_RECVWALLOPS;
+          else
+          {
+            button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
+                                                              ACE_TEXT_ALWAYS_CHAR("mode_notices_togglebutton")));
+            ACE_ASSERT(button);
+            if (button == toggleButton_in)
+              mode = USERMODE_RECVNOTICES;
+            else
+            {
+              button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
+                                                                ACE_TEXT_ALWAYS_CHAR("mode_invisible_togglebutton")));
+              ACE_ASSERT(button);
+              if (button == toggleButton_in)
+                mode = USERMODE_INVISIBLE;
+              else
+              {
+                ACE_DEBUG((LM_ERROR,
+                           ACE_TEXT("invalid user mode toggled (was: %@), aborting\n"),
+                           toggleButton_in));
 
-          return;
+                return;
+              } // end ELSE
+            } // end ELSE
+          } // end ELSE
         } // end ELSE
       } // end ELSE
     } // end ELSE
@@ -1025,34 +1058,52 @@ channel_mode_toggled_cb(GtkToggleButton* toggleButton_in,
   ACE_ASSERT(data->builder);
   ACE_ASSERT(!data->id.empty());
 
-  RPG_Net_Protocol_ChannelMode mode = CHANNELMODE_INVALID;
+  RPG_Net_Protocol_ChannelMode mode           = CHANNELMODE_INVALID;
+  bool                         need_parameter = false;
+  std::string                  entry_label;
   // find out which button toggled...
   GtkToggleButton* button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
                                               ACE_TEXT_ALWAYS_CHAR("mode_key_togglebutton")));
   ACE_ASSERT(button);
   if (button == toggleButton_in)
+  {
     mode = CHANNELMODE_PASSWORD;
+    need_parameter = true;
+    entry_label = IRC_CLIENT_GUI_DEF_MODE_PASSWORD_DIALOG_TITLE;
+  } // end IF
   else
   {
     button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
                                ACE_TEXT_ALWAYS_CHAR("mode_voice_togglebutton")));
     ACE_ASSERT(button);
     if (button == toggleButton_in)
+    {
       mode = CHANNELMODE_VOICE;
+      need_parameter = true;
+      entry_label = IRC_CLIENT_GUI_DEF_MODE_VOICE_DIALOG_TITLE;
+    } // end IF
     else
     {
       button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
                                  ACE_TEXT_ALWAYS_CHAR("mode_ban_togglebutton")));
       ACE_ASSERT(button);
       if (button == toggleButton_in)
+      {
         mode = CHANNELMODE_BAN;
+        need_parameter = true;
+        entry_label = IRC_CLIENT_GUI_DEF_MODE_BAN_DIALOG_TITLE;
+      } // end IF
       else
       {
         button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
                                    ACE_TEXT_ALWAYS_CHAR("mode_userlimit_togglebutton")));
         ACE_ASSERT(button);
         if (button == toggleButton_in)
+        {
           mode = CHANNELMODE_USERLIMIT;
+          need_parameter = true;
+          entry_label = IRC_CLIENT_GUI_DEF_MODE_USERLIMIT_DIALOG_TITLE;
+        }
         else
         {
           button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
@@ -1106,7 +1157,7 @@ channel_mode_toggled_cb(GtkToggleButton* toggleButton_in,
                       {
                         ACE_DEBUG((LM_ERROR,
                                    ACE_TEXT("invalid channel mode toggled (was: %@), aborting\n"),
-                                            toggleButton_in));
+                                   toggleButton_in));
 
                         return;
                       } // end ELSE
@@ -1131,11 +1182,63 @@ channel_mode_toggled_cb(GtkToggleButton* toggleButton_in,
   // *NOTE*: will be auto-toggled according to the outcome of the change request
   gtk_toggle_button_set_active(toggleButton_in, data->channelModes.test(mode));
 
+  std::string value;
+  string_list_t parameters;
+  if (need_parameter &&
+      !gtk_toggle_button_get_active(toggleButton_in)) // no need when switching mode off...
+  {
+    GtkEntry* channel_tab_entry_dialog_entry = GTK_ENTRY(gtk_builder_get_object(data->builder,
+        ACE_TEXT_ALWAYS_CHAR("channel_tab_entry_dialog_entry")));
+    ACE_ASSERT(channel_tab_entry_dialog_entry);
+    // clean up
+    gtk_entry_buffer_delete_text(gtk_entry_get_buffer(channel_tab_entry_dialog_entry),
+                                 0, -1);
+//   gtk_entry_set_max_length(channel_tab_entry_dialog_entry,
+//                            0); // no limit
+//   gtk_entry_set_width_chars(channel_tab_entry_dialog_entry,
+//                             -1); // reset to default
+
+    // retrieve entry dialog handle
+    GtkDialog* channel_tab_entry_dialog = GTK_DIALOG(gtk_builder_get_object(data->builder,
+                                                                            ACE_TEXT_ALWAYS_CHAR("channel_tab_entry_dialog")));
+    ACE_ASSERT(channel_tab_entry_dialog);
+    gtk_window_set_title(GTK_WINDOW(channel_tab_entry_dialog),
+                         entry_label.c_str());
+    if (gtk_dialog_run(channel_tab_entry_dialog))
+    {
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("channel mode cancelled...\n")));
+
+      // clean up
+      gtk_entry_buffer_delete_text(gtk_entry_get_buffer(channel_tab_entry_dialog_entry),
+                                   0, -1);
+
+      gtk_widget_hide(GTK_WIDGET(channel_tab_entry_dialog));
+
+      return;
+    } // end IF
+    gtk_widget_hide(GTK_WIDGET(channel_tab_entry_dialog));
+
+    value = gtk_entry_get_text(channel_tab_entry_dialog_entry);
+    // clean up
+    gtk_entry_buffer_delete_text(gtk_entry_get_buffer(channel_tab_entry_dialog_entry),
+                                 0, -1);
+
+    if (value.empty())
+    {
+    //     ACE_DEBUG((LM_DEBUG,
+    //                ACE_TEXT("channel mode cancelled...\n")));
+      return;
+    } // end IF
+
+    parameters.push_back(value);
+  } // end IF
   try
   {
     data->controller->mode(data->id,                                          // channel name
                            RPG_Net_Protocol_Tools::IRCChannelMode2Char(mode), // corresponding mode char
-                           !data->channelModes.test(mode));                   // enable ?
+                           !data->channelModes.test(mode),                    // enable ?
+                           parameters);                                       // parameters
   }
   catch (...)
   {
@@ -1143,6 +1246,80 @@ channel_mode_toggled_cb(GtkToggleButton* toggleButton_in,
                ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::mode(\"%s\"), continuing\n"),
                RPG_Net_Protocol_Tools::IRCChannelMode2String(mode).c_str()));
   }
+}
+
+void
+topic_clicked_cb(GtkWidget* eventBox_in,
+                 GdkEventButton* event_in,
+                 gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::topic_clicked_cb"));
+
+  ACE_UNUSED_ARG(eventBox_in);
+  ACE_UNUSED_ARG(event_in);
+
+  // sanity check(s)
+  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
+                                            userData_in);
+  ACE_ASSERT(data);
+  ACE_ASSERT(!data->id.empty());
+  ACE_ASSERT(RPG_Net_Protocol_Tools::isValidIRCChannelName(data->id));
+  ACE_ASSERT(data->connection);
+
+  // retrieve entry handle
+  GtkEntry* channel_tab_entry_dialog_entry = GTK_ENTRY(gtk_builder_get_object(data->builder,
+                                                                              ACE_TEXT_ALWAYS_CHAR("channel_tab_entry_dialog_entry")));
+  ACE_ASSERT(channel_tab_entry_dialog_entry);
+//   gtk_entry_set_max_length(channel_tab_entry_dialog_entry,
+//                            0); // no limit
+//   gtk_entry_set_width_chars(channel_tab_entry_dialog_entry,
+//                             -1); // reset to default
+  // retrieve label handle
+  GtkLabel* channel_tab_topic_label = GTK_LABEL(gtk_builder_get_object(data->builder,
+                                                                       ACE_TEXT_ALWAYS_CHAR("channel_tab_topic_label")));
+  ACE_ASSERT(channel_tab_topic_label);
+  gtk_entry_buffer_set_text(gtk_entry_get_buffer(channel_tab_entry_dialog_entry),
+                            gtk_label_get_text(channel_tab_topic_label),
+                            ACE_OS::strlen(gtk_label_get_text(channel_tab_topic_label)));
+  gtk_editable_select_region(GTK_EDITABLE(channel_tab_entry_dialog_entry),
+                             0, -1);
+
+  // retrieve entry dialog handle
+  GtkDialog* channel_tab_entry_dialog = GTK_DIALOG(gtk_builder_get_object(data->builder,
+                                                                          ACE_TEXT_ALWAYS_CHAR("channel_tab_entry_dialog")));
+  ACE_ASSERT(channel_tab_entry_dialog);
+  gtk_window_set_title(GTK_WINDOW(channel_tab_entry_dialog),
+                       IRC_CLIENT_GUI_DEF_TOPIC_DIALOG_TITLE);
+  if (gtk_dialog_run(channel_tab_entry_dialog))
+  {
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("channel topic cancelled...\n")));
+
+    // clean up
+    gtk_entry_buffer_delete_text(gtk_entry_get_buffer(channel_tab_entry_dialog_entry),
+                                 0, -1);
+
+    gtk_widget_hide(GTK_WIDGET(channel_tab_entry_dialog));
+
+    return;
+  } // end IF
+  gtk_widget_hide(GTK_WIDGET(channel_tab_entry_dialog));
+
+  std::string topic_string = gtk_entry_get_text(channel_tab_entry_dialog_entry);
+  try
+  {
+    data->controller->topic(data->id,
+                            topic_string);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::topic(), continuing\n")));
+  }
+
+  // clean up
+  gtk_entry_buffer_delete_text(gtk_entry_get_buffer(channel_tab_entry_dialog_entry),
+                               0, -1);
 }
 
 void

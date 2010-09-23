@@ -238,6 +238,27 @@ IRC_Client_GUI_Connection::IRC_Client_GUI_Connection(GtkBuilder* builder_in,
                    G_CALLBACK(user_mode_toggled_cb),
                    &myCBData);
   toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                           ACE_TEXT_ALWAYS_CHAR("mode_localoperator_togglebutton")));
+  ACE_ASSERT(toggle_button);
+  g_signal_connect(toggle_button,
+                   ACE_TEXT_ALWAYS_CHAR("toggled"),
+                   G_CALLBACK(user_mode_toggled_cb),
+                   &myCBData);
+  toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                           ACE_TEXT_ALWAYS_CHAR("mode_restricted_togglebutton")));
+  ACE_ASSERT(toggle_button);
+  g_signal_connect(toggle_button,
+                   ACE_TEXT_ALWAYS_CHAR("toggled"),
+                   G_CALLBACK(user_mode_toggled_cb),
+                   &myCBData);
+  toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                           ACE_TEXT_ALWAYS_CHAR("mode_away_togglebutton")));
+  ACE_ASSERT(toggle_button);
+  g_signal_connect(toggle_button,
+                   ACE_TEXT_ALWAYS_CHAR("toggled"),
+                   G_CALLBACK(user_mode_toggled_cb),
+                   &myCBData);
+  toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
                                                            ACE_TEXT_ALWAYS_CHAR("mode_wallops_togglebutton")));
   ACE_ASSERT(toggle_button);
   g_signal_connect(toggle_button,
@@ -647,8 +668,10 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
             if (is_operator)
             {
-              std::string op_mode = ACE_TEXT_ALWAYS_CHAR("+o");
-              (*handler_iterator).second->setModes(op_mode);
+              // *NOTE*: ops always have a voice...
+              std::string op_mode = ACE_TEXT_ALWAYS_CHAR("+ov");
+              (*handler_iterator).second->setModes(op_mode,
+                                                   std::string()); // none
             } // end IF
 
             GDK_THREADS_LEAVE();
@@ -686,13 +709,16 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
           break;
         }
+        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFBANLIST:     // 368
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTD:             // 372
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:        // 375
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:        // 376
         case RPG_Net_Protocol_IRC_Codes::ERR_NOSUCHNICK:       // 401
         case RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE:    // 433
         case RPG_Net_Protocol_IRC_Codes::ERR_YOUREBANNEDCREEP: // 465
+        case RPG_Net_Protocol_IRC_Codes::ERR_BADCHANNAME:      // 479
         case RPG_Net_Protocol_IRC_Codes::ERR_CHANOPRIVSNEEDED: // 482
+        case RPG_Net_Protocol_IRC_Codes::ERR_UMODEUNKNOWNFLAG: // 501
         {
           GDK_THREADS_ENTER();
 
@@ -701,7 +727,9 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           if ((message_in.command.numeric == RPG_Net_Protocol_IRC_Codes::ERR_NOSUCHNICK) ||
               (message_in.command.numeric == RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE) ||
               (message_in.command.numeric == RPG_Net_Protocol_IRC_Codes::ERR_YOUREBANNEDCREEP) ||
-              (message_in.command.numeric == RPG_Net_Protocol_IRC_Codes::ERR_CHANOPRIVSNEEDED))
+              (message_in.command.numeric == RPG_Net_Protocol_IRC_Codes::ERR_BADCHANNAME) ||
+              (message_in.command.numeric == RPG_Net_Protocol_IRC_Codes::ERR_CHANOPRIVSNEEDED) ||
+              (message_in.command.numeric == RPG_Net_Protocol_IRC_Codes::ERR_UMODEUNKNOWNFLAG))
             error(message_in); // show in statusbar as well...
 
           GDK_THREADS_LEAVE();
@@ -843,6 +871,10 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           // - user mode message
           // - channel mode message
 
+          // retrieve mode string
+          RPG_Net_Protocol_ParametersIterator_t param_iterator = message_in.params.begin();
+          param_iterator++;
+
           GDK_THREADS_ENTER();
 
           if (message_in.params.front() == myCBData.nickname)
@@ -874,7 +906,9 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
                 break;
               } // end IF
 
-              (*handler_iterator).second->setModes(message_in.params.back());
+              (*handler_iterator).second->setModes(*param_iterator,
+                                                   ((*param_iterator == message_in.params.back()) ? std::string()
+                                                                                                  : message_in.params.back()));
             } // end lock scope
           } // end ELSE
 
@@ -907,9 +941,14 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
             GDK_THREADS_ENTER();
 
             (*handler_iterator).second->setTopic(message_in.params.back());
-
-            GDK_THREADS_LEAVE();
           } // end lock scope
+
+          // log this event
+          log(message_in);
+
+          GDK_THREADS_LEAVE();
+
+          break;
         }
         case RPG_Net_Protocol_IRCMessage::PRIVMSG:
         {

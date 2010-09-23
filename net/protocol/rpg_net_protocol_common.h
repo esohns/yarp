@@ -105,9 +105,21 @@ struct RPG_Net_Protocol_IRCLoginOptions
 //            n - no messages to channel from clients on the outside
 //            m - moderated channel
 //            l - set the user limit to channel
-//            b - set a ban mask to keep users out;
-//            v - give/take the ability to speak on a moderated channel;
-//            k - set a channel key (password).
+//            b - set a ban mask to keep users out
+//            v - give/take the ability to speak on a moderated channel
+//            k - set a channel key (password)
+// see (RFC2812 section 4.2 and following)
+//            a - anonymous channel ('&!'-channels only)
+//            i - invite-only channel flag
+//            m - moderated channel
+//            n - no messages to channel from clients on the outside
+//            q - quiet channel (server use only)
+//            p - private channel flag
+//            s - secret channel flag
+//            r - server reop flag ('!'-channels only)
+//            t - topic settable by channel operator only flag
+//            l - set the user limit to channel
+//            k - set a channel key (password)
 enum RPG_Net_Protocol_ChannelMode
 {
   CHANNELMODE_PASSWORD = 0,
@@ -132,17 +144,28 @@ typedef std::bitset<11> RPG_Net_Protocol_ChannelModes_t;
 //            s - marks a user for receipt of server notices
 //            w - user receives wallops
 //            o - operator flag
+// see (RFC2812 section 3.1.5)
+//            a - user is flagged as away
+//            i - marks a users as invisible
+//            w - user receives wallops
+//            r - restricted user connection
+//            o - operator flag
+//            O - local operator flag
+//            s - marks a user for receipt of server notices
 enum RPG_Net_Protocol_UserMode
 {
-  USERMODE_OPERATOR = 0,
+  USERMODE_LOCALOPERATOR = 0,
+  USERMODE_OPERATOR,
+  USERMODE_RESTRICTEDCONN,
   USERMODE_RECVWALLOPS,
   USERMODE_RECVNOTICES,
   USERMODE_INVISIBLE,
+  USERMODE_AWAY,
   //
   USERMODE_MAX,
   USERMODE_INVALID
 };
-typedef std::bitset<4> RPG_Net_Protocol_UserModes_t;
+typedef std::bitset<7> RPG_Net_Protocol_UserModes_t;
 
 // phonebook
 typedef std::set<std::string> RPG_Net_Protocol_Networks_t;

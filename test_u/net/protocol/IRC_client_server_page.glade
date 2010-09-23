@@ -190,6 +190,34 @@
                     <property name="sensitive">False</property>
                     <property name="homogeneous">True</property>
                     <child>
+                      <object class="GtkToggleButton" id="mode_notices_togglebutton">
+                        <property name="label" translatable="yes">notices</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="relief">none</property>
+                        <property name="focus_on_click">False</property>
+                        <signal name="toggled" handler="user_mode_toggled_cb"/>
+                      </object>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton" id="mode_localoperator_togglebutton">
+                        <property name="label" translatable="yes">local operator</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="relief">none</property>
+                        <property name="focus_on_click">False</property>
+                        <signal name="toggled" handler="user_mode_toggled_cb"/>
+                      </object>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkToggleButton" id="mode_operator_togglebutton">
                         <property name="label" translatable="yes">operator</property>
                         <property name="visible">True</property>
@@ -200,7 +228,21 @@
                         <signal name="toggled" handler="user_mode_toggled_cb"/>
                       </object>
                       <packing>
-                        <property name="position">0</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton" id="mode_restricted_togglebutton">
+                        <property name="label" translatable="yes">restricted</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="relief">none</property>
+                        <property name="focus_on_click">False</property>
+                        <signal name="toggled" handler="user_mode_toggled_cb"/>
+                      </object>
+                      <packing>
+                        <property name="position">3</property>
                       </packing>
                     </child>
                     <child>
@@ -214,21 +256,7 @@
                         <signal name="toggled" handler="user_mode_toggled_cb"/>
                       </object>
                       <packing>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkToggleButton" id="mode_notices_togglebutton">
-                        <property name="label" translatable="yes">notices</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="relief">none</property>
-                        <property name="focus_on_click">False</property>
-                        <signal name="toggled" handler="user_mode_toggled_cb"/>
-                      </object>
-                      <packing>
-                        <property name="position">2</property>
+                        <property name="position">4</property>
                       </packing>
                     </child>
                     <child>
@@ -242,7 +270,21 @@
                         <signal name="toggled" handler="user_mode_toggled_cb"/>
                       </object>
                       <packing>
-                        <property name="position">3</property>
+                        <property name="position">5</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton" id="mode_away_togglebutton">
+                        <property name="label" translatable="yes">away</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="relief">none</property>
+                        <property name="focus_on_click">False</property>
+                        <signal name="toggled" handler="user_mode_toggled_cb"/>
+                      </object>
+                      <packing>
+                        <property name="position">6</property>
                       </packing>
                     </child>
                   </object>
@@ -356,9 +398,6 @@
     <property name="stock">gtk-close</property>
     <property name="icon-size">1</property>
   </object>
-  <object class="GtkTextBuffer" id="server_tab_log_textbuffer">
-    <property name="tag_table">server_tab_log_texttagtable</property>
-  </object>
   <object class="GtkListStore" id="server_tab_channels_store">
     <columns>
       <!-- column-name text -->
@@ -368,5 +407,8 @@
       <!-- column-name topic -->
       <column type="gchararray"/>
     </columns>
+  </object>
+  <object class="GtkTextBuffer" id="server_tab_log_textbuffer">
+    <property name="tag_table">server_tab_log_texttagtable</property>
   </object>
 </interface>

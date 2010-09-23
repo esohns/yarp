@@ -46,6 +46,7 @@ void switch_channel_cb(GtkNotebook*, GtkNotebookPage*, guint, gpointer);
 
 // IRC_Client_GUI_MessageHandler
 void channel_mode_toggled_cb(GtkToggleButton*, gpointer);
+void topic_clicked_cb(GtkWidget*, GdkEventButton*, gpointer);
 void part_clicked_cb(GtkWidget*, gpointer);
 #ifdef __cplusplus
 }

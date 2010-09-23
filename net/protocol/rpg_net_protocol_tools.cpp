@@ -265,14 +265,20 @@ RPG_Net_Protocol_Tools::IRCUserMode2Char(const RPG_Net_Protocol_UserMode& mode_i
 
   switch (mode_in)
   {
+    case USERMODE_LOCALOPERATOR:
+      return 'O';
     case USERMODE_OPERATOR:
       return 'o';
+    case USERMODE_RESTRICTEDCONN:
+      return 'r';
     case USERMODE_RECVWALLOPS:
       return 'w';
     case USERMODE_RECVNOTICES:
       return 's';
     case USERMODE_INVISIBLE:
       return 'i';
+    case USERMODE_AWAY:
+      return 'a';
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -1154,6 +1160,12 @@ RPG_Net_Protocol_Tools::IRCChannelModeChar2ChannelMode(const char& mode_in)
 
   switch (mode_in)
   {
+    case 'k':
+      result = CHANNELMODE_PASSWORD; break;
+    case 'v':
+      result = CHANNELMODE_VOICE; break;
+    case 'b':
+      result = CHANNELMODE_BAN; break;
     case 'l':
       result = CHANNELMODE_USERLIMIT; break;
     case 'm':
@@ -1193,14 +1205,20 @@ RPG_Net_Protocol_Tools::IRCUserModeChar2UserMode(const char& mode_in)
 
   switch (mode_in)
   {
+    case 'O':
+      result = USERMODE_LOCALOPERATOR; break;
     case 'o':
       result = USERMODE_OPERATOR; break;
+    case 'r':
+      result = USERMODE_RESTRICTEDCONN; break;
     case 'w':
       result = USERMODE_RECVWALLOPS; break;
     case 's':
       result = USERMODE_RECVNOTICES; break;
     case 'i':
       result = USERMODE_INVISIBLE; break;
+    case 'a':
+      result = USERMODE_AWAY; break;
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -1269,14 +1287,20 @@ RPG_Net_Protocol_Tools::IRCUserMode2String(const RPG_Net_Protocol_UserMode& mode
 
   switch (mode_in)
   {
+    case USERMODE_LOCALOPERATOR:
+      result = ACE_TEXT_ALWAYS_CHAR("USERMODE_LOCALOPERATOR"); break;
     case USERMODE_OPERATOR:
       result = ACE_TEXT_ALWAYS_CHAR("USERMODE_OPERATOR"); break;
+    case USERMODE_RESTRICTEDCONN:
+      result = ACE_TEXT_ALWAYS_CHAR("USERMODE_RESTRICTEDCONN"); break;
     case USERMODE_RECVWALLOPS:
       result = ACE_TEXT_ALWAYS_CHAR("USERMODE_RECVWALLOPS"); break;
     case USERMODE_RECVNOTICES:
       result = ACE_TEXT_ALWAYS_CHAR("USERMODE_RECVNOTICES"); break;
     case USERMODE_INVISIBLE:
       result = ACE_TEXT_ALWAYS_CHAR("USERMODE_INVISIBLE"); break;
+    case USERMODE_AWAY:
+      result = ACE_TEXT_ALWAYS_CHAR("USERMODE_AWAY"); break;
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -1392,6 +1416,8 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRC_Codes::RPL_LISTEND:       // 323
         case RPG_Net_Protocol_IRC_Codes::ERR_NOSUCHNICK:    // 401
         case RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE: // 433
+        case RPG_Net_Protocol_IRC_Codes::ERR_BADCHANNAME:   // 479
+        case RPG_Net_Protocol_IRC_Codes::ERR_UMODEUNKNOWNFLAG: // 501
         {
           result = RPG_Net_Protocol_Tools::concatParams(message_in.params,
                                                         1);

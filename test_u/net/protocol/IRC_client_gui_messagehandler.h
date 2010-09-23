@@ -70,7 +70,8 @@ class IRC_Client_GUI_MessageHandler
   GtkWidget* getTopLevelPageChild();
 
   void setTopic(const std::string&);
-  void setModes(const std::string&);
+  void setModes(const std::string&,  // mode string [i.e. "+|-x"]
+                const std::string&); // parameter, if any [i.e. <limit>,<user>,<ban mask>,...]
 
   void add(const std::string&);
   void remove(const std::string&);

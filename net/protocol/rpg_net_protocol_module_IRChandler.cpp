@@ -166,7 +166,9 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         case RPG_Net_Protocol_IRC_Codes::ERR_NOSUCHNICK:           // 401
         case RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE:        // 433
         case RPG_Net_Protocol_IRC_Codes::ERR_YOUREBANNEDCREEP:     // 465
+        case RPG_Net_Protocol_IRC_Codes::ERR_BADCHANNAME:          // 479
         case RPG_Net_Protocol_IRC_Codes::ERR_CHANOPRIVSNEEDED:     // 482
+        case RPG_Net_Protocol_IRC_Codes::ERR_UMODEUNKNOWNFLAG:     // 501
         {
 
           break;

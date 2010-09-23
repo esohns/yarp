@@ -49,4 +49,9 @@
 #define IRC_CLIENT_DEF_IRC_CHANNEL               ACE_TEXT_ALWAYS_CHAR("#foobar")
 #define IRC_CLIENT_DEF_IRC_LEAVE_REASON          ACE_TEXT("quitting...")
 
+// *NOTE*: these conform to RFC1459, but servers may allow use different sizes
+// e.g. NICKLEN option, ...
+#define IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH        9
+#define IRC_CLIENT_CNF_IRC_MAX_CHANNEL_LENGTH     200
+
 #endif

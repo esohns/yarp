@@ -312,6 +312,14 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(IRC_Client_GUI_Conn
                    ACE_TEXT_ALWAYS_CHAR("toggled"),
                    G_CALLBACK(channel_mode_toggled_cb),
                    &myCBData);
+  // topic label
+  GtkEventBox* event_box = GTK_EVENT_BOX(gtk_builder_get_object(myCBData.builder,
+                                                                ACE_TEXT_ALWAYS_CHAR("channel_tab_topic_label_eventbox")));
+  ACE_ASSERT(event_box);
+  g_signal_connect(event_box,
+                   ACE_TEXT_ALWAYS_CHAR("button-press-event"),
+                   G_CALLBACK(topic_clicked_cb),
+                   &myCBData);
   // retrieve text view
   myView = GTK_TEXT_VIEW(gtk_builder_get_object(myCBData.builder,
                                                 ACE_TEXT_ALWAYS_CHAR("channel_tab_textview")));
@@ -533,9 +541,12 @@ IRC_Client_GUI_MessageHandler::setTopic(const std::string& topic_in)
 }
 
 void
-IRC_Client_GUI_MessageHandler::setModes(const std::string& modes_in)
+IRC_Client_GUI_MessageHandler::setModes(const std::string& modes_in,
+                                        const std::string& parameter_in)
 {
   RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::setModes"));
+
+  ACE_UNUSED_ARG(parameter_in);
 
   RPG_Net_Protocol_Tools::merge(modes_in,
                                 myCBData.channelModes);
