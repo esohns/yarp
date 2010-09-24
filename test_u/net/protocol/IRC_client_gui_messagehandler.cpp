@@ -348,6 +348,28 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(IRC_Client_GUI_Conn
                    ACE_TEXT_ALWAYS_CHAR("button-press-event"),
                    G_CALLBACK(members_clicked_cb),
                    &myCBData);
+  // actions in treeview
+  GtkAction* action = GTK_ACTION(gtk_builder_get_object(myCBData.builder,
+                                                        ACE_TEXT_ALWAYS_CHAR("action_msg")));
+  ACE_ASSERT(action);
+  g_signal_connect(action,
+                   ACE_TEXT_ALWAYS_CHAR("activate"),
+                   G_CALLBACK(action_msg_cb),
+                   &myCBData);
+  action = GTK_ACTION(gtk_builder_get_object(myCBData.builder,
+                                             ACE_TEXT_ALWAYS_CHAR("action_kick")));
+  ACE_ASSERT(action);
+  g_signal_connect(action,
+                   ACE_TEXT_ALWAYS_CHAR("activate"),
+                   G_CALLBACK(action_kick_cb),
+                   &myCBData);
+  action = GTK_ACTION(gtk_builder_get_object(myCBData.builder,
+                                             ACE_TEXT_ALWAYS_CHAR("action_ban")));
+  ACE_ASSERT(action);
+  g_signal_connect(action,
+                   ACE_TEXT_ALWAYS_CHAR("activate"),
+                   G_CALLBACK(action_ban_cb),
+                   &myCBData);
 }
 
 IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler()

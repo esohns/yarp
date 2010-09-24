@@ -76,6 +76,9 @@ class RPG_Net_Protocol_Module_IRCHandler
                      const std::string&); // topic
   virtual void names(const string_list_t&); // channel(s)
   virtual void list(const string_list_t&); // channel(s)
+  virtual void kick(const std::string&,  // channel
+                    const std::string&,  // nick
+                    const std::string&); // comment
   virtual void send(const string_list_t&, // receiver(s) [nick/channel]
                     const std::string&);  // message
   virtual void quit(const std::string&); // reason

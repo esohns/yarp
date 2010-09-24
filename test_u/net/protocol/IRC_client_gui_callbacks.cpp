@@ -1314,25 +1314,28 @@ members_clicked_cb(GtkWidget* widget_in,
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("members_clicked_cb...\n")));
 
-  ACE_UNUSED_ARG(userData_in);
+  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
+                                            userData_in);
 
   // sanity check(s)
   ACE_ASSERT(GTK_TREE_VIEW(widget_in));
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->builder);
 
   // supposed to be a context menu -> right-clicked ?
   if (event_in->button != 3)
     return;
 
-  // any selected ("clicked") list item(s) at this position ?
-  GtkTreePath* path = NULL;
-  if (!gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(widget_in),
-                                     event_in->x, event_in->y,
-                                     &path, NULL,
-                                     NULL, NULL))
-    return; // no row at this position
-  ACE_ASSERT(path);
-  // clean up
-  gtk_tree_path_free(path);
+//   // any selected ("clicked") list item(s) at this position ?
+//   GtkTreePath* path = NULL;
+//   if (!gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(widget_in),
+//                                      event_in->x, event_in->y,
+//                                      &path, NULL,
+//                                      NULL, NULL))
+//     return; // no row at this position
+//   ACE_ASSERT(path);
+//   // clean up
+//   gtk_tree_path_free(path);
 
   // retrieve current selection
   GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(widget_in));
@@ -1347,7 +1350,7 @@ members_clicked_cb(GtkWidget* widget_in,
                                                        &model);
   ACE_ASSERT(selected_rows);
   ACE_ASSERT(model);
-  string_list_t nicknames;
+  data->parameters.clear();
   GtkTreePath* current_path = NULL;
   GtkTreeIter current_iter;
 //   GValue current_value;
@@ -1378,8 +1381,8 @@ members_clicked_cb(GtkWidget* widget_in,
                        0, &current_value,
                        -1);
     // *TODO*: check if these
-    nicknames.push_back(IRC_Client_Tools::UTF82Locale(current_value,
-                                                      g_utf8_strlen(current_value, -1)));
+    data->parameters.push_back(IRC_Client_Tools::UTF82Locale(current_value,
+                                                             g_utf8_strlen(current_value, -1)));
 
     // clean up
     g_free(current_value);
@@ -1389,8 +1392,127 @@ members_clicked_cb(GtkWidget* widget_in,
   // clean up
   g_list_free(selected_rows);
 
-
+  // init popup menu
+  GtkMenu* channel_tab_treeview_menu = GTK_MENU(gtk_builder_get_object(data->builder,
+                                                                       ACE_TEXT_ALWAYS_CHAR("channel_tab_treeview_menu")));
+  ACE_ASSERT(channel_tab_treeview_menu);
+  gtk_menu_popup(channel_tab_treeview_menu,
+                 NULL, NULL,
+                 NULL, NULL,
+                 event_in->button,
+                 event_in->time);
 }
+
+void
+action_msg_cb(GtkWidget* widget_in,
+              gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::action_msg_cb"));
+
+  //   ACE_DEBUG((LM_DEBUG,
+  //              ACE_TEXT("action_msg_cb...\n")));
+
+  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
+                                            userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->connection);
+  ACE_ASSERT(!data->parameters.empty());
+
+  gint page_num = -1;
+  for (string_list_iterator_t iterator = data->parameters.begin();
+       iterator != data->parameters.end();
+       iterator++)
+  {
+    page_num = data->connection->exists(*iterator);
+    if (page_num == -1)
+      data->connection->createMessageHandler(*iterator);
+  } // end FOR
+}
+
+void
+action_kick_cb(GtkWidget* widget_in,
+               gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::action_kick_cb"));
+
+  //   ACE_DEBUG((LM_DEBUG,
+  //              ACE_TEXT("action_kick_cb...\n")));
+
+  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
+                                            userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(data);
+  ACE_ASSERT(!data->id.empty());
+  ACE_ASSERT(data->controller);
+  ACE_ASSERT(!data->parameters.empty());
+
+  for (string_list_iterator_t iterator = data->parameters.begin();
+       iterator != data->parameters.end();
+       iterator++)
+  {
+    try
+    {
+      data->controller->kick(data->id,
+                             *iterator,
+                             std::string(IRC_CLIENT_DEF_IRC_KICK_REASON));
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::kick(), continuing\n")));
+    }
+  } // end FOR
+}
+
+void
+action_ban_cb(GtkWidget* widget_in,
+              gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::action_ban_cb"));
+
+  //   ACE_DEBUG((LM_DEBUG,
+  //              ACE_TEXT("action_ban_cb...\n")));
+
+  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
+                                            userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(data);
+  ACE_ASSERT(!data->id.empty());
+  ACE_ASSERT(data->controller);
+  ACE_ASSERT(!data->parameters.empty());
+
+  string_list_t parameters;
+  std::string ban_mask_string;
+  for (string_list_iterator_t iterator = data->parameters.begin();
+       iterator != data->parameters.end();
+       iterator++)
+  {
+    parameters.clear();
+    // *TODO*: this probably needs some refinement --> users can just change
+    // nicks and rejoin... should cover at least the user/hostnames as well ?
+    ban_mask_string = *iterator;
+    ban_mask_string += ACE_TEXT_ALWAYS_CHAR("!*@*");
+    parameters.push_back(ban_mask_string);
+
+    try
+    {
+      data->controller->mode(data->id,
+                             RPG_Net_Protocol_Tools::IRCChannelMode2Char(CHANNELMODE_BAN),
+                             true,
+                             parameters);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::mode(), continuing\n")));
+    }
+  } // end FOR
+}
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

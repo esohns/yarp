@@ -920,6 +920,32 @@ RPG_Net_Protocol_Module_IRCHandler::list(const string_list_t& channels_in)
 }
 
 void
+RPG_Net_Protocol_Module_IRCHandler::kick(const std::string& channel_in,
+                                         const std::string& nick_in,
+                                         const std::string& comment_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::kick"));
+
+  // step1: init KICK
+  RPG_Net_Protocol_IRCMessage* kick_struct = NULL;
+  ACE_NEW_NORETURN(kick_struct,
+                   RPG_Net_Protocol_IRCMessage());
+  ACE_ASSERT(kick_struct);
+  ACE_NEW_NORETURN(kick_struct->command.string,
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::KICK)));
+  ACE_ASSERT(kick_struct->command.string);
+  kick_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+
+  kick_struct->params.push_back(channel_in);
+  kick_struct->params.push_back(nick_in);
+  if (!comment_in.empty())
+    kick_struct->params.push_back(comment_in);
+
+  // step2: send it upstream
+  sendMessage(kick_struct);
+}
+
+void
 RPG_Net_Protocol_Module_IRCHandler::send(const string_list_t& receivers_in,
                                          const std::string& message_in)
 {

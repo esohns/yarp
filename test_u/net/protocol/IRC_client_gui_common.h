@@ -72,6 +72,7 @@ struct handler_cb_data_t
   std::string                     id;
   RPG_Net_Protocol_ChannelModes_t channelModes;
   RPG_Net_Protocol_IIRCControl*   controller;
+  string_list_t                   parameters;
 };
 
 #endif

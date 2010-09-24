@@ -1228,6 +1228,29 @@ IRC_Client_GUI_Connection::error(const RPG_Net_Protocol_IRCMessage& message_in)
   } // end lock scope
 }
 
+const guint
+IRC_Client_GUI_Connection::exists(const std::string& id_in)
+{
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::exists"));
+
+  // synch access
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+    // *NOTE*: page_num 0 is the server log: ALWAYS !
+    guint page_num = 1;
+    ACE_ASSERT(myMessageHandlers.size() > 1);
+    message_handlers_iterator_t iterator = myMessageHandlers.begin();
+    for (iterator++;
+         iterator != myMessageHandlers.end();
+         iterator++, page_num++)
+      if ((*iterator).first == id_in)
+        return page_num;
+  } // end lock scope
+
+  return -1;
+}
+
 void
 IRC_Client_GUI_Connection::createMessageHandler(const std::string& id_in)
 {

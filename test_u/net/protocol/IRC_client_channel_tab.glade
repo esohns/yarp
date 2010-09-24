@@ -396,9 +396,6 @@
     <property name="stock">gtk-close</property>
     <property name="icon-size">1</property>
   </object>
-  <object class="GtkTextBuffer" id="channel_textbuffer">
-    <property name="tag_table">channel_texttagtable</property>
-  </object>
   <object class="GtkDialog" id="channel_tab_entry_dialog">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">please insert data...</property>
@@ -437,8 +434,8 @@
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">True</property>
                 <property name="related_action">action_accept</property>
+                <property name="use_action_appearance">True</property>
                 <property name="use_stock">True</property>
                 <property name="focus_on_click">False</property>
               </object>
@@ -453,8 +450,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">True</property>
                 <property name="related_action">action_cancel</property>
+                <property name="use_action_appearance">True</property>
                 <property name="use_stock">True</property>
                 <property name="focus_on_click">False</property>
               </object>
@@ -493,5 +490,47 @@
   <object class="GtkMenu" id="channel_tab_treeview_menu">
     <property name="take_focus">False</property>
     <property name="reserve_toggle_size">False</property>
+    <child>
+      <object class="GtkMenuItem" id="menuitem_msg">
+        <property name="visible">True</property>
+        <property name="use_action_appearance">True</property>
+        <property name="related_action">action_msg</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="menuitem_kick">
+        <property name="visible">True</property>
+        <property name="use_action_appearance">True</property>
+        <property name="related_action">action_kick</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="menuitem_ban">
+        <property name="visible">True</property>
+        <property name="use_action_appearance">True</property>
+        <property name="related_action">action_ban</property>
+      </object>
+    </child>
+  </object>
+  <object class="GtkTextBuffer" id="channel_textbuffer">
+    <property name="tag_table">channel_texttagtable</property>
+  </object>
+  <object class="GtkAction" id="action_msg">
+    <property name="label">Message</property>
+    <property name="short_label">Message</property>
+    <property name="stock_id">gtk-open</property>
+    <signal name="activate" handler="action_msg_cb"/>
+  </object>
+  <object class="GtkAction" id="action_kick">
+    <property name="label">Kick</property>
+    <property name="short_label">Kick</property>
+    <property name="stock_id">gtk-close</property>
+    <signal name="activate" handler="action_kick_cb"/>
+  </object>
+  <object class="GtkAction" id="action_ban">
+    <property name="label">Ban</property>
+    <property name="short_label">Ban</property>
+    <property name="stock_id">gtk-dialog-error</property>
+    <signal name="activate" handler="action_ban_cb"/>
   </object>
 </interface>

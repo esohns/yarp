@@ -63,6 +63,8 @@ class IRC_Client_GUI_Connection
   virtual void notify(const RPG_Net_Protocol_IRCMessage&); // message data
   virtual void end();
 
+  // *NOTE*: a return value of -1 indicates non-existence
+  const guint exists(const std::string&); // channel/nick
   RPG_Net_Protocol_IIRCControl* getController();
 
   // *WARNING*: callers need protection
@@ -70,6 +72,7 @@ class IRC_Client_GUI_Connection
   // - protected by GDK_THREADS_ENTER/GDK_THREADS_LEAVE
   const std::string getActiveID(); // *NOTE*: can be a channel/nick !
   IRC_Client_GUI_MessageHandler* getActiveHandler();
+  void createMessageHandler(const std::string&); // channel/nick
   void terminateMessageHandler(const std::string&); // channel/nick
 
  private:
@@ -88,8 +91,6 @@ class IRC_Client_GUI_Connection
                      const std::string&); // message text
   void log(const RPG_Net_Protocol_IRCMessage&);
   void error(const RPG_Net_Protocol_IRCMessage&);
-
-  void createMessageHandler(const std::string&); // channel/nick
 
   void updateModeButtons();
 

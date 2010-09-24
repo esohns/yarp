@@ -51,6 +51,9 @@ class RPG_Net_Protocol_IIRCControl
                      const std::string&) = 0; // topic
   virtual void names(const string_list_t&) = 0; // channel(s)
   virtual void list(const string_list_t&) = 0; // channel(s)
+  virtual void kick(const std::string&,      // channel
+                    const std::string&,      // nick
+                    const std::string&) = 0; // comment
   virtual void send(const string_list_t&,    // receiver(s) [nick/channel]
                     const std::string&) = 0; // message
   virtual void quit(const std::string&) = 0; // reason
