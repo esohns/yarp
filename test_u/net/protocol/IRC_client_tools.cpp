@@ -106,3 +106,66 @@ IRC_Client_Tools::connect(RPG_Stream_IAllocator* messageAllocator_in,
 
   return true;
 }
+
+const std::string
+IRC_Client_Tools::UTF82Locale(const gchar* string_in,
+                              const gssize& length_in)
+{
+  RPG_TRACE(ACE_TEXT("IRC_Client_Tools::UTF82Locale"));
+
+  // init result
+  std::string result;
+
+  gchar* converted_text = NULL;
+  GError* conversion_error = NULL;
+  converted_text = g_locale_from_utf8(string_in,          // text
+                                      length_in,          // number of bytes
+                                      NULL,               // bytes read (don't care)
+                                      NULL,               // bytes written (don't care)
+                                      &conversion_error); // return value: error
+  if (conversion_error)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to convert string: \"%s\", aborting\n"),
+               conversion_error->message));
+
+    // clean up
+    g_error_free(conversion_error);
+  } // end IF
+  else
+    result = converted_text;
+
+  // clean up
+  g_free(converted_text);
+
+  return result;
+}
+
+gchar*
+IRC_Client_Tools::Locale2UTF8(const std::string& string_in)
+{
+  RPG_TRACE(ACE_TEXT("IRC_Client_Tools::Locale2UTF8"));
+
+  // init result
+  gchar* result = NULL;
+
+  GError* conversion_error = NULL;
+  result = g_locale_to_utf8(string_in.c_str(),  // text
+                            -1,                 // \0-terminated
+                            NULL,               // bytes read (don't care)
+                            NULL,               // bytes written (don't care)
+                            &conversion_error); // return value: error
+  if (conversion_error)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to convert string: \"%s\", aborting\n"),
+               conversion_error->message));
+
+      // clean up
+    g_error_free(conversion_error);
+
+    return NULL;
+  } // end IF
+
+  return result;
+}

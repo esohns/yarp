@@ -24,6 +24,8 @@
 #include "IRC_client_gui_connection.h"
 #include "IRC_client_gui_callbacks.h"
 
+#include "IRC_client_tools.h"
+
 #include <rpg_net_protocol_tools.h>
 
 #include <rpg_common_macros.h>
@@ -226,6 +228,27 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(IRC_Client_GUI_Conn
   g_object_unref(channel_tab_label_hbox);
   g_object_unref(channel_tab_vbox);
 
+  // setup auto-scrolling in textview
+  myView = GTK_TEXT_VIEW(gtk_builder_get_object(myCBData.builder,
+                                                ACE_TEXT_ALWAYS_CHAR("channel_tab_textview")));
+  ACE_ASSERT(myView);
+  GtkTextIter iter;
+  gtk_text_buffer_get_end_iter(gtk_text_view_get_buffer(myView),
+                               &iter);
+  gtk_text_buffer_create_mark(gtk_text_view_get_buffer(myView),
+                              ACE_TEXT_ALWAYS_CHAR("scroll"),
+                              &iter,
+                              TRUE);
+
+  // enable multi-selection in treeview
+  GtkTreeView* channel_tab_treeview = GTK_TREE_VIEW(gtk_builder_get_object(myCBData.builder,
+                                                                           ACE_TEXT_ALWAYS_CHAR("channel_tab_treeview")));
+  ACE_ASSERT(channel_tab_treeview);
+  GtkTreeSelection* selection = gtk_tree_view_get_selection(channel_tab_treeview);
+  ACE_ASSERT(selection);
+  gtk_tree_selection_set_mode(selection,
+                              GTK_SELECTION_MULTIPLE);
+
   // connect signal(s)
   GtkButton* channel_tab_label_button = GTK_BUTTON(gtk_builder_get_object(myCBData.builder,
                                                                           ACE_TEXT_ALWAYS_CHAR("channel_tab_label_button")));
@@ -320,19 +343,11 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(IRC_Client_GUI_Conn
                    ACE_TEXT_ALWAYS_CHAR("button-press-event"),
                    G_CALLBACK(topic_clicked_cb),
                    &myCBData);
-  // retrieve text view
-  myView = GTK_TEXT_VIEW(gtk_builder_get_object(myCBData.builder,
-                                                ACE_TEXT_ALWAYS_CHAR("channel_tab_textview")));
-  ACE_ASSERT(myView);
-
-  // setup auto-scrolling
-  GtkTextIter iter;
-  gtk_text_buffer_get_end_iter(gtk_text_view_get_buffer(myView),
-                               &iter);
-  gtk_text_buffer_create_mark(gtk_text_view_get_buffer(myView),
-                              ACE_TEXT_ALWAYS_CHAR("scroll"),
-                              &iter,
-                              TRUE);
+  // context menu in treeview
+  g_signal_connect(channel_tab_treeview,
+                   ACE_TEXT_ALWAYS_CHAR("button-press-event"),
+                   G_CALLBACK(members_clicked_cb),
+                   &myCBData);
 }
 
 IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler()
@@ -408,28 +423,14 @@ IRC_Client_GUI_MessageHandler::update()
       return; // nothing to do...
 
     // step1: convert text
-    gchar* converted_text = NULL;
-    GError* conversion_error = NULL;
-    converted_text = g_locale_to_utf8(myDisplayQueue.front().c_str(), // text
-                                      -1,   // \0-terminated
-                                      NULL, // bytes read (don't care)
-                                      NULL, // bytes written (don't care)
-                                      &conversion_error); // return value: error
-    if (conversion_error)
+    gchar* converted_text = IRC_Client_Tools::Locale2UTF8(myDisplayQueue.front());
+    if (!converted_text)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert message text (was: \"%s\"): \"%s\", aborting\n"),
-                 myDisplayQueue.front().c_str(),
-                 conversion_error->message));
-
-      // clean up
-      g_error_free(conversion_error);
+                 ACE_TEXT("failed to convert message text, aborting\n")));
 
       return;
     } // end IF
-
-    // sanity check
-    ACE_ASSERT(converted_text);
 
     // step2: display text
     gtk_text_buffer_insert(gtk_text_view_get_buffer(myView), &iter,
@@ -441,7 +442,6 @@ IRC_Client_GUI_MessageHandler::update()
 
     // clean up
     g_free(converted_text);
-
 
     // step3: pop stack
     myDisplayQueue.pop_front();
@@ -593,36 +593,23 @@ IRC_Client_GUI_MessageHandler::add(const std::string& nick_in)
 
   // step1: convert text
   GtkTreeIter iter;
-  gchar* converted_text = NULL;
-  GError* conversion_error = NULL;
-  converted_text = g_locale_to_utf8(nick_in.c_str(), // text
-                                    -1,   // \0-terminated
-                                    NULL, // bytes read (don't care)
-                                    NULL, // bytes written (don't care)
-                                    &conversion_error); // return value: error
-  if (conversion_error)
+  gchar* converted_nick_string = IRC_Client_Tools::Locale2UTF8(nick_in);
+  if (!converted_nick_string)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert nickname: \"%s\", aborting\n"),
-               conversion_error->message));
-
-      // clean up
-    g_error_free(conversion_error);
+               ACE_TEXT("failed to convert nickname: \"%s\", aborting\n")));
 
     return;
   } // end IF
 
-  // sanity check
-  ACE_ASSERT(converted_text);
-
   // step2: append new (text) entry
   gtk_list_store_append(channel_liststore, &iter);
   gtk_list_store_set(channel_liststore, &iter,
-                     0, converted_text, // column 0
+                     0, converted_nick_string, // column 0
                      -1);
 
   // clean up
-  g_free(converted_text);
+  g_free(converted_nick_string);
 }
 
 void
@@ -637,27 +624,14 @@ IRC_Client_GUI_MessageHandler::remove(const std::string& nick_in)
   ACE_ASSERT(channel_liststore);
 
   // step1: convert text
-  gchar* converted_text = NULL;
-  GError* conversion_error = NULL;
-  converted_text = g_locale_to_utf8(nick_in.c_str(), // text
-                                    -1,   // \0-terminated
-                                    NULL, // bytes read (don't care)
-                                    NULL, // bytes written (don't care)
-                                    &conversion_error); // return value: error
-  if (conversion_error)
+  gchar* converted_nick_string = IRC_Client_Tools::Locale2UTF8(nick_in);
+  if (!converted_nick_string)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert nickname: \"%s\", aborting\n"),
-               conversion_error->message));
-
-      // clean up
-    g_error_free(conversion_error);
+               ACE_TEXT("failed to convert nickname: \"%s\", aborting\n")));
 
     return;
   } // end IF
-
-  // sanity check
-  ACE_ASSERT(converted_text);
 
   // step2: find matching entry
   GtkTreeIter current_iter;
@@ -671,7 +645,7 @@ IRC_Client_GUI_MessageHandler::remove(const std::string& nick_in)
                channel_liststore));
 
     // clean up
-    g_free(converted_text);
+    g_free(converted_nick_string);
 
     return;
   } // end IF
@@ -688,7 +662,8 @@ IRC_Client_GUI_MessageHandler::remove(const std::string& nick_in)
                        &current_iter,
                        0, &current_value_string,
                        -1);
-    if (g_strcasecmp(converted_text, current_value_string) == 0)
+    if (g_strcasecmp(converted_nick_string,
+                     current_value_string) == 0)
     {
       found_row = true;
 
@@ -704,7 +679,7 @@ IRC_Client_GUI_MessageHandler::remove(const std::string& nick_in)
                                     &current_iter));
 
   // clean up
-  g_free(converted_text);
+  g_free(converted_nick_string);
 
   if (found_row)
     gtk_list_store_remove(channel_liststore,
@@ -737,43 +712,29 @@ IRC_Client_GUI_MessageHandler::append(const string_list_t& list_in)
   ACE_ASSERT(channel_liststore);
 
   GtkTreeIter iter;
-  gchar* converted_text = NULL;
-  GError* conversion_error = NULL;
+  gchar* converted_nick_string = NULL;
   for (string_list_iterator_t iterator = list_in.begin();
        iterator != list_in.end();
        iterator++)
   {
     // step1: convert text
-    converted_text = NULL;
-    conversion_error = NULL;
-    converted_text = g_locale_to_utf8((*iterator).c_str(), // text
-                                      -1,   // \0-terminated
-                                      NULL, // bytes read (don't care)
-                                      NULL, // bytes written (don't care)
-                                      &conversion_error); // return value: error
-    if (conversion_error)
+    converted_nick_string = IRC_Client_Tools::Locale2UTF8(*iterator);
+    if (!converted_nick_string)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert nickname: \"%s\", continuing\n"),
-                 conversion_error->message));
+                 ACE_TEXT("failed to convert nickname: \"%s\", aborting\n")));
 
-      // clean up
-      g_error_free(conversion_error);
+      return;
     } // end IF
-    else
-    {
-      // sanity check
-      ACE_ASSERT(converted_text);
 
-      // step2: append new (text) entry
-      gtk_list_store_append(channel_liststore, &iter);
-      gtk_list_store_set(channel_liststore, &iter,
-                         0, converted_text, // column 0
-                         -1);
+    // step2: append new (text) entry
+    gtk_list_store_append(channel_liststore, &iter);
+    gtk_list_store_set(channel_liststore, &iter,
+                       0, converted_nick_string, // column 0
+                       -1);
 
-      // clean up
-      g_free(converted_text);
-    } // end ELSE
+    // clean up
+    g_free(converted_nick_string);
   } // end FOR
 }
 

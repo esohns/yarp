@@ -56,9 +56,10 @@ fi
 # can be made.
 AC_SUBST(CXXFLAGS)
 
-PKG_CHECK_MODULES(gui, sdl libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0)
-dnl AC_SUBST(MYPROG_CFLAGS)
-dnl AC_SUBST(MYPROG_LIBS)
+# checks for libraries
+PKG_CHECK_MODULES(pkg_libs, sdl libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0)
+dnl AC_SUBST(pkg_libs_CFLAGS)
+dnl AC_SUBST(pkg_libs_LIBS)
 
 # checks for other libraries (non-pkg-config)
 # FIXME: Replace `main' with a function in `-lACE':

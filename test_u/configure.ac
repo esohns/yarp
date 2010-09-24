@@ -57,14 +57,18 @@ fi
 # can be made.
 AC_SUBST(CXXFLAGS)
 
-# Checks for libraries.
+# checks for libraries
+PKG_CHECK_MODULES(pkg_libs, gthread-2.0 gtk+-2.0)
+dnl AC_SUBST(pkg_libs_CFLAGS)
+dnl AC_SUBST(pkg_libs_LIBS)
+
+# checks for other libraries (non-pkg-config)
 # FIXME: Replace `main' with a function in `-lpthread':
 AC_CHECK_LIB([pthread], [main])
 # FIXME: Replace `main' with a function in `-lACE':
 AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lxerces-c':
 AC_CHECK_LIB([xerces-c], [main])
-AC_CHECK_LIB(gthread-2.0, g_thread_init)
 
 # Checks for header files.
 AC_HEADER_STDBOOL

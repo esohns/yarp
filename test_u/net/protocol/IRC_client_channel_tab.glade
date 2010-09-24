@@ -305,14 +305,14 @@
                         <property name="model">channel_liststore</property>
                         <property name="headers_visible">False</property>
                         <property name="search_column">0</property>
-                        <property name="fixed_height_mode">True</property>
                         <property name="show_expanders">False</property>
+                        <property name="rubber_banding">True</property>
                         <child>
                           <object class="GtkTreeViewColumn" id="channel_tab_treeviewcolumn">
-                            <property name="sizing">fixed</property>
+                            <property name="sizing">autosize</property>
                             <property name="title">nicknames</property>
                             <property name="expand">True</property>
-                            <property name="clickable">True</property>
+                            <property name="sort_indicator">True</property>
                             <property name="sort_column_id">0</property>
                             <child>
                               <object class="GtkCellRendererText" id="channel_tab_cellrenderertext"/>
@@ -489,5 +489,9 @@
     <property name="label">Accept</property>
     <property name="short_label">Accept</property>
     <property name="stock_id">gtk-ok</property>
+  </object>
+  <object class="GtkMenu" id="channel_tab_treeview_menu">
+    <property name="take_focus">False</property>
+    <property name="reserve_toggle_size">False</property>
   </object>
 </interface>

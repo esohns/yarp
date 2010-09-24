@@ -421,33 +421,20 @@ send_clicked_cb(GtkWidget* button_in,
     return; // nothing to do...
 
   // retrieve textbuffer data
-  std::string message_string;
-  // convert UTF8 to locale
-  gchar* converted_text = NULL;
-  GError* conversion_error = NULL;
-  converted_text = g_locale_from_utf8(gtk_entry_buffer_get_text(buffer),   // text
-                                      gtk_entry_buffer_get_length(buffer), // number of bytes
-                                      NULL, // bytes read (don't care)
-                                      NULL, // bytes written (don't care)
-                                      &conversion_error); // return value: error
-  if (conversion_error)
+  std::string message_string = IRC_Client_Tools::UTF82Locale(gtk_entry_buffer_get_text(buffer),    // text
+                                                             gtk_entry_buffer_get_length(buffer)); // number of bytes
+  if (message_string.empty())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert message text: \"%s\", aborting\n"),
-               conversion_error->message));
+               ACE_TEXT("failed to convert message text: \"%s\", aborting\n")));
 
     // clean up
-    g_error_free(conversion_error);
     gtk_entry_buffer_delete_text(buffer, // buffer
                                  0,      // start at position 0
                                  -1);    // delete everything
 
     return;
   } // end IF
-  message_string.append(converted_text);
-
-  // clean up
-  g_free(converted_text);
 
   // step2: retrieve active handler (channel/nick)
   std::string active_id = (*connections_iterator).second->getActiveID();
@@ -603,38 +590,25 @@ change_clicked_cb(GtkWidget* button_in,
     return; // nothing to do...
 
   // retrieve textbuffer data
-  std::string nick_string;
-  // convert UTF8 to locale
-  gchar* converted_text = NULL;
-  GError* conversion_error = NULL;
-  converted_text = g_locale_from_utf8(gtk_entry_buffer_get_text(buffer),   // text
-                                      gtk_entry_buffer_get_length(buffer), // number of bytes
-                                      NULL, // bytes read (don't care)
-                                      NULL, // bytes written (don't care)
-                                      &conversion_error); // return value: error
-  if (conversion_error)
+  std::string nick_string = IRC_Client_Tools::UTF82Locale(gtk_entry_buffer_get_text(buffer),    // text
+                                                          gtk_entry_buffer_get_length(buffer)); // number of bytes
+  if (nick_string.empty())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert nick text: \"%s\", aborting\n"),
-               conversion_error->message));
+               ACE_TEXT("failed to convert nickname: \"%s\", aborting\n")));
 
     // clean up
-    g_error_free(conversion_error);
     gtk_entry_buffer_delete_text(buffer, // buffer
                                  0,      // start at position 0
                                  -1);    // delete everything
 
     return;
   } // end IF
-  nick_string = converted_text;
 
-  // clean up
-  g_free(converted_text);
-
-  // sanity check: <= 9 characters ?
+  // sanity check: <= IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH characters ?
   // *TODO*: support the NICKLEN=xxx "feature" of the server...
-  if (nick_string.size() > 9);
-    nick_string.resize(9);
+  if (nick_string.size() > IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH);
+    nick_string.resize(IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH);
 
   try
   {
@@ -711,43 +685,27 @@ join_clicked_cb(GtkWidget* button_in,
     return; // nothing to do...
 
   // retrieve textbuffer data
-  std::string channel_string;
-  // convert UTF8 to locale
-  gchar* converted_text = NULL;
-  GError* conversion_error = NULL;
-  converted_text = g_locale_from_utf8(gtk_entry_buffer_get_text(buffer),   // text
-                                      gtk_entry_buffer_get_length(buffer), // number of bytes
-                                      NULL, // bytes read (don't care)
-                                      NULL, // bytes written (don't care)
-                                      &conversion_error); // return value: error
-  if (conversion_error)
+  std::string channel_string = IRC_Client_Tools::UTF82Locale(gtk_entry_buffer_get_text(buffer),    // text
+                                                             gtk_entry_buffer_get_length(buffer)); // number of bytes
+  if (channel_string.empty())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert channel text: \"%s\", aborting\n"),
-               conversion_error->message));
+               ACE_TEXT("failed to convert channel: \"%s\", aborting\n")));
 
     // clean up
-    g_error_free(conversion_error);
     gtk_entry_buffer_delete_text(buffer, // buffer
                                  0,      // start at position 0
                                  -1);    // delete everything
 
     return;
   } // end IF
-  channel_string = converted_text;
 
   // sanity check(s): has '#' prefix ?
   if (channel_string.find('#', 0) != 0)
-  {
-    channel_string = ACE_TEXT_ALWAYS_CHAR("#");
-    channel_string += converted_text;
-  } // end IF
-  // sanity check(s): larger than 200 characters ?
-  if (channel_string.size() > 200)
-    channel_string.resize(200);
-
-  // clean up
-  g_free(converted_text);
+    channel_string.insert(channel_string.begin(), '#');
+  // sanity check(s): larger than IRC_CLIENT_CNF_IRC_MAX_CHANNEL_LENGTH characters ?
+  if (channel_string.size() > IRC_CLIENT_CNF_IRC_MAX_CHANNEL_LENGTH)
+    channel_string.resize(IRC_CLIENT_CNF_IRC_MAX_CHANNEL_LENGTH);
 
   // *TODO*: support channel keys/multi-join ?
   string_list_t channels;
@@ -813,23 +771,15 @@ channelbox_changed_cb(GtkWidget* combobox_in,
   ACE_ASSERT(channel_value);
 
   // convert UTF8 to locale
-  std::string channel_string;
-  gchar* converted_text = NULL;
-  GError* conversion_error = NULL;
-  converted_text = g_locale_from_utf8(channel_value, // text
-                                      g_utf8_strlen(channel_value, -1), // length
-                                      NULL, // bytes read (don't care)
-                                      NULL, // bytes written (don't care)
-                                      &conversion_error); // return value: error
-  if (conversion_error)
+//   channel_string = g_value_get_string(&active_value);
+  std::string channel_string = IRC_Client_Tools::UTF82Locale(channel_value,
+                                                             g_utf8_strlen(channel_value, -1));
+  if (channel_string.empty())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert channel name (was: \"%s\"): \"%s\", aborting\n"),
-               channel_value,
-               conversion_error->message));
+               ACE_TEXT("failed to convert channel name, aborting\n")));
 
     // clean up
-    g_error_free(conversion_error);
     g_free(channel_value);
 
     return;
@@ -838,21 +788,12 @@ channelbox_changed_cb(GtkWidget* combobox_in,
   // clean up
   g_free(channel_value);
 
-  channel_string = converted_text;
-//   channel_string = g_value_get_string(&active_value);
-
   // sanity check(s): has '#' prefix ?
   if (channel_string.find('#', 0) != 0)
-  {
-    channel_string = ACE_TEXT_ALWAYS_CHAR("#");
-    channel_string += converted_text;
-  } // end IF
-  // sanity check(s): larger than 200 characters ?
-  if (channel_string.size() > 200)
-    channel_string.resize(200);
-
-  // clean up
-  g_free(converted_text);
+    channel_string.insert(channel_string.begin(), '#');
+  // sanity check(s): larger than IRC_CLIENT_CNF_IRC_MAX_CHANNEL_LENGTH characters ?
+  if (channel_string.size() > IRC_CLIENT_CNF_IRC_MAX_CHANNEL_LENGTH)
+    channel_string.resize(IRC_CLIENT_CNF_IRC_MAX_CHANNEL_LENGTH);
 
   // *TODO*: support channel key ?
   string_list_t channels;
@@ -1332,10 +1273,10 @@ part_clicked_cb(GtkWidget* button_in,
   //              ACE_TEXT("part_clicked_cb...\n")));
 
   ACE_UNUSED_ARG(button_in);
-
-  // sanity check(s)
   handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
                                             userData_in);
+
+  // sanity check(s)
   ACE_ASSERT(data);
   ACE_ASSERT(!data->id.empty());
   ACE_ASSERT(data->connection);
@@ -1361,6 +1302,94 @@ part_clicked_cb(GtkWidget* button_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::part(), continuing\n")));
   }
+}
+
+void
+members_clicked_cb(GtkWidget* widget_in,
+                   GdkEventButton* event_in,
+                   gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::members_clicked_cb"));
+
+  //   ACE_DEBUG((LM_DEBUG,
+  //              ACE_TEXT("members_clicked_cb...\n")));
+
+  ACE_UNUSED_ARG(userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(GTK_TREE_VIEW(widget_in));
+
+  // supposed to be a context menu -> right-clicked ?
+  if (event_in->button != 3)
+    return;
+
+  // any selected ("clicked") list item(s) at this position ?
+  GtkTreePath* path = NULL;
+  if (!gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(widget_in),
+                                     event_in->x, event_in->y,
+                                     &path, NULL,
+                                     NULL, NULL))
+    return; // no row at this position
+  ACE_ASSERT(path);
+  // clean up
+  gtk_tree_path_free(path);
+
+  // retrieve current selection
+  GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(widget_in));
+  ACE_ASSERT(selection);
+  // nothing selected ? --> nothing to do
+  if (gtk_tree_selection_count_selected_rows(selection) == 0)
+    return;
+
+  GList* selected_rows = NULL;
+  GtkTreeModel* model = NULL;
+  selected_rows = gtk_tree_selection_get_selected_rows(selection,
+                                                       &model);
+  ACE_ASSERT(selected_rows);
+  ACE_ASSERT(model);
+  string_list_t nicknames;
+  GtkTreePath* current_path = NULL;
+  GtkTreeIter current_iter;
+//   GValue current_value;
+  gchar* current_value = NULL;
+  for (GList* iterator = g_list_first(selected_rows);
+       iterator != NULL;
+       iterator = g_list_next(iterator))
+  {
+    current_path = ACE_static_cast(GtkTreePath*, iterator->data);
+    ACE_ASSERT(current_path);
+
+    // path --> iter
+    if (!gtk_tree_model_get_iter(model,
+                                 &current_iter,
+                                 current_path))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to gtk_tree_model_get_iter, continuing\n")));
+
+      continue;
+    } // end IF
+    // iter --> value
+//     gtk_tree_model_get_value(model,
+//                              current_iter,
+//                              0, &current_value);
+    gtk_tree_model_get(model,
+                       &current_iter,
+                       0, &current_value,
+                       -1);
+    // *TODO*: check if these
+    nicknames.push_back(IRC_Client_Tools::UTF82Locale(current_value,
+                                                      g_utf8_strlen(current_value, -1)));
+
+    // clean up
+    g_free(current_value);
+    gtk_tree_path_free(current_path);
+  } // end FOR
+
+  // clean up
+  g_list_free(selected_rows);
+
+
 }
 #ifdef __cplusplus
 }

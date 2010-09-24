@@ -48,6 +48,7 @@ void switch_channel_cb(GtkNotebook*, GtkNotebookPage*, guint, gpointer);
 void channel_mode_toggled_cb(GtkToggleButton*, gpointer);
 void topic_clicked_cb(GtkWidget*, GdkEventButton*, gpointer);
 void part_clicked_cb(GtkWidget*, gpointer);
+void members_clicked_cb(GtkWidget*, GdkEventButton*, gpointer);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

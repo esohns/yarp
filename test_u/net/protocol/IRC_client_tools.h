@@ -23,6 +23,8 @@
 
 #include <rpg_net_protocol_common.h>
 
+#include <gtk/gtk.h>
+
 #include <ace/Global_Macros.h>
 
 // forward declaration(s)
@@ -40,6 +42,10 @@ class IRC_Client_Tools
                             const std::string&,                      // hostname
                             const unsigned short&,                   // port
                             RPG_Stream_Module*);                     // final module
+
+  static const std::string UTF82Locale(const gchar*,   // string
+                                       const gssize&); // length in bytes (-1: \0-terminated)
+  static gchar* Locale2UTF8(const std::string&); // string
 
  private:
   // safety measures

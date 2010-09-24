@@ -23,6 +23,8 @@
 #include "IRC_client_gui_messagehandler.h"
 #include "IRC_client_gui_callbacks.h"
 
+#include "IRC_client_tools.h"
+
 #include <rpg_net_protocol_tools.h>
 
 #include <rpg_common_macros.h>
@@ -547,22 +549,11 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           param_iterator--;
 
           // convert text
-          gchar* converted_text = NULL;
-          GError* conversion_error = NULL;
-          converted_text = g_locale_to_utf8((*param_iterator).c_str(), // text
-                                            -1,   // \0-terminated
-                                            NULL, // bytes read (don't care)
-                                            NULL, // bytes written (don't care)
-                                            &conversion_error); // return value: error
-          if (conversion_error)
+          gchar* converted_text = IRC_Client_Tools::Locale2UTF8(*param_iterator);
+          if (!converted_text)
           {
             ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("failed to convert channel name (was: \"%s\"): \"%s\", aborting\n"),
-                       (*param_iterator).c_str(),
-                       conversion_error->message));
-
-            // clean up
-            g_error_free(conversion_error);
+                       ACE_TEXT("failed to convert message text, aborting\n")));
 
             break;
           } // end IF
