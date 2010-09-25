@@ -249,6 +249,16 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(IRC_Client_GUI_Conn
   gtk_tree_selection_set_mode(selection,
                               GTK_SELECTION_MULTIPLE);
 
+  // add the invite_channel_members_menu to the "Invite" menu item
+  GtkMenu* invite_channel_members_menu = GTK_MENU(gtk_builder_get_object(myCBData.builder,
+                                                                         ACE_TEXT_ALWAYS_CHAR("invite_channel_members_menu")));
+  ACE_ASSERT(invite_channel_members_menu);
+  GtkMenuItem* menuitem_invite = GTK_MENU_ITEM(gtk_builder_get_object(myCBData.builder,
+                                                                      ACE_TEXT_ALWAYS_CHAR("menuitem_invite")));
+  ACE_ASSERT(menuitem_invite);
+  gtk_menu_item_set_submenu(menuitem_invite,
+                            GTK_WIDGET(invite_channel_members_menu));
+
   // connect signal(s)
   GtkButton* channel_tab_label_button = GTK_BUTTON(gtk_builder_get_object(myCBData.builder,
                                                                           ACE_TEXT_ALWAYS_CHAR("channel_tab_label_button")));
@@ -355,6 +365,13 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(IRC_Client_GUI_Conn
   g_signal_connect(action,
                    ACE_TEXT_ALWAYS_CHAR("activate"),
                    G_CALLBACK(action_msg_cb),
+                   &myCBData);
+  action = GTK_ACTION(gtk_builder_get_object(myCBData.builder,
+                      ACE_TEXT_ALWAYS_CHAR("action_invite")));
+  ACE_ASSERT(action);
+  g_signal_connect(action,
+                   ACE_TEXT_ALWAYS_CHAR("activate"),
+                   G_CALLBACK(action_invite_cb),
                    &myCBData);
   action = GTK_ACTION(gtk_builder_get_object(myCBData.builder,
                                              ACE_TEXT_ALWAYS_CHAR("action_kick")));
@@ -735,7 +752,7 @@ IRC_Client_GUI_MessageHandler::append(const string_list_t& list_in)
 
   GtkTreeIter iter;
   gchar* converted_nick_string = NULL;
-  for (string_list_iterator_t iterator = list_in.begin();
+  for (string_list_const_iterator_t iterator = list_in.begin();
        iterator != list_in.end();
        iterator++)
   {

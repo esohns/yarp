@@ -488,6 +488,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
         case RPG_Net_Protocol_IRC_Codes::RPL_TRYAGAIN:         // 263
         case RPG_Net_Protocol_IRC_Codes::RPL_LOCALUSERS:       // 265
         case RPG_Net_Protocol_IRC_Codes::RPL_GLOBALUSERS:      // 266
+        case RPG_Net_Protocol_IRC_Codes::RPL_INVITING:         // 341
         {
           GDK_THREADS_ENTER();
 
@@ -941,6 +942,41 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
           break;
         }
+        case RPG_Net_Protocol_IRCMessage::KICK:
+        {
+          // retrieve nickname string
+          RPG_Net_Protocol_ParametersIterator_t param_iterator = message_in.params.begin();
+          param_iterator++;
+
+          // retrieve message handler
+          // synch access
+          {
+            ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+            message_handlers_iterator_t handler_iterator = myMessageHandlers.find(message_in.params.front());
+            if (handler_iterator == myMessageHandlers.end())
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("no handler for channel (was: \"%s\"), aborting\n"),
+                         message_in.params.front().c_str()));
+
+              GDK_THREADS_LEAVE();
+
+              break;
+            } // end IF
+
+            GDK_THREADS_ENTER();
+
+            (*handler_iterator).second->remove(*param_iterator);
+          } // end lock scope
+
+          // log this event
+          log(message_in);
+
+          GDK_THREADS_LEAVE();
+
+          break;
+        }
         case RPG_Net_Protocol_IRCMessage::PRIVMSG:
         {
           // *TODO*: parse (list of) receiver(s)
@@ -1061,6 +1097,17 @@ IRC_Client_GUI_Connection::getController()
   ACE_ASSERT(myCBData.controller);
 
   return myCBData.controller;
+}
+
+const std::string
+IRC_Client_GUI_Connection::getNickname() const
+{
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::getNickname"));
+
+  // sanity check(s)
+  ACE_ASSERT(!myCBData.nickname.empty());
+
+  return myCBData.nickname;
 }
 
 const std::string
@@ -1233,22 +1280,62 @@ IRC_Client_GUI_Connection::exists(const std::string& id_in)
 {
   RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::exists"));
 
+  // retrieve server tab channel tabs handle
+  GtkNotebook* server_tab_channel_tabs = GTK_NOTEBOOK(gtk_builder_get_object(myCBData.builder,
+                                                                             ACE_TEXT_ALWAYS_CHAR("server_tab_channel_tabs")));
+  ACE_ASSERT(server_tab_channel_tabs);
+
   // synch access
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
+    message_handlers_iterator_t iterator = myMessageHandlers.find(id_in);
+
+    // sanity check
+    if ((myMessageHandlers.empty()) ||
+        (iterator == myMessageHandlers.end()))
+      return -1;
+
     // *NOTE*: page_num 0 is the server log: ALWAYS !
-    guint page_num = 1;
-    ACE_ASSERT(myMessageHandlers.size() > 1);
-    message_handlers_iterator_t iterator = myMessageHandlers.begin();
-    for (iterator++;
-         iterator != myMessageHandlers.end();
-         iterator++, page_num++)
-      if ((*iterator).first == id_in)
+    GtkWidget* channel_tab = NULL;
+    gint num_pages = gtk_notebook_get_n_pages(server_tab_channel_tabs);
+    for (gint page_num = 0;
+         page_num < num_pages;
+         page_num++)
+    {
+      // *NOTE*: channel id's are unique, but notebook page numbers
+      // change as channels are joined/parted and private conversations "come and
+      // go", (for lack of a better metaphor)...
+      channel_tab = gtk_notebook_get_nth_page(server_tab_channel_tabs,
+                                              page_num);
+      ACE_ASSERT(channel_tab);
+
+      if ((*iterator).second->getTopLevelPageChild() == channel_tab)
         return page_num;
+    } // end FOR
   } // end lock scope
 
   return -1;
+}
+
+void
+IRC_Client_GUI_Connection::channels(string_list_t& channels_out)
+{
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::channels"));
+
+  // init return value
+  channels_out.clear();
+
+  // synch access
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+    for (message_handlers_iterator_t iterator = myMessageHandlers.begin();
+         iterator != myMessageHandlers.end();
+         iterator++)
+      if (RPG_Net_Protocol_Tools::isValidIRCChannelName((*iterator).first))
+        channels_out.push_back((*iterator).first);
+  } // end lock scope
 }
 
 void

@@ -1388,6 +1388,8 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         }
         case RPG_Net_Protocol_IRCMessage::MODE:
         case RPG_Net_Protocol_IRCMessage::TOPIC:
+        case RPG_Net_Protocol_IRCMessage::INVITE:
+        case RPG_Net_Protocol_IRCMessage::KICK:
         case RPG_Net_Protocol_IRCMessage::ERROR:
         {
           result = RPG_Net_Protocol_Tools::concatParams(message_in.params);
@@ -1448,6 +1450,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRC_Codes::RPL_LISTSTART:     // 321
         case RPG_Net_Protocol_IRC_Codes::RPL_LIST:          // 322
         case RPG_Net_Protocol_IRC_Codes::RPL_LISTEND:       // 323
+        case RPG_Net_Protocol_IRC_Codes::RPL_INVITING:      // 341
         case RPG_Net_Protocol_IRC_Codes::ERR_NOSUCHNICK:    // 401
         case RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE: // 433
         case RPG_Net_Protocol_IRC_Codes::ERR_BADCHANNAME:   // 479

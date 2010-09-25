@@ -65,7 +65,9 @@ class IRC_Client_GUI_Connection
 
   // *NOTE*: a return value of -1 indicates non-existence
   const guint exists(const std::string&); // channel/nick
+  void channels(string_list_t&); // return value: list of active channels
   RPG_Net_Protocol_IIRCControl* getController();
+  const std::string getNickname() const;
 
   // *WARNING*: callers need protection
   // - by the main thread (servicing the gtk_main event loop)

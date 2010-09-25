@@ -498,6 +498,17 @@
       </object>
     </child>
     <child>
+      <object class="GtkMenuItem" id="menuitem_invite">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">Invite</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="menuitem_separator">
+        <property name="visible">True</property>
+      </object>
+    </child>
+    <child>
       <object class="GtkMenuItem" id="menuitem_kick">
         <property name="visible">True</property>
         <property name="use_action_appearance">True</property>
@@ -516,21 +527,32 @@
     <property name="tag_table">channel_texttagtable</property>
   </object>
   <object class="GtkAction" id="action_msg">
-    <property name="label">Message</property>
-    <property name="short_label">Message</property>
+    <property name="label">Dialogue...</property>
+    <property name="short_label">Dialogue...</property>
     <property name="stock_id">gtk-open</property>
     <signal name="activate" handler="action_msg_cb"/>
   </object>
   <object class="GtkAction" id="action_kick">
-    <property name="label">Kick</property>
-    <property name="short_label">Kick</property>
+    <property name="label">Eject</property>
+    <property name="short_label">Eject</property>
     <property name="stock_id">gtk-close</property>
     <signal name="activate" handler="action_kick_cb"/>
   </object>
   <object class="GtkAction" id="action_ban">
-    <property name="label">Ban</property>
-    <property name="short_label">Ban</property>
+    <property name="label">Lock out...</property>
+    <property name="short_label">Lock out...</property>
     <property name="stock_id">gtk-dialog-error</property>
     <signal name="activate" handler="action_ban_cb"/>
+  </object>
+  <object class="GtkAction" id="action_invite">
+    <property name="label">Invite</property>
+    <property name="short_label">Invite</property>
+    <property name="stock_id">gtk-add</property>
+    <signal name="activate" handler="action_invite_cb"/>
+  </object>
+  <object class="GtkMenu" id="invite_channel_members_menu">
+    <property name="visible">True</property>
+    <property name="take_focus">False</property>
+    <property name="reserve_toggle_size">False</property>
   </object>
 </interface>

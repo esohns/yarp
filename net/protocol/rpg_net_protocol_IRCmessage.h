@@ -36,13 +36,14 @@
 // --> accomodate this "feature" by including a list of "ranges" (start/end positions
 // of list-items)
 typedef std::list<std::string> string_list_t;
-typedef string_list_t::const_iterator string_list_iterator_t;
+typedef string_list_t::iterator string_list_iterator_t;
+typedef string_list_t::const_iterator string_list_const_iterator_t;
 typedef std::pair<unsigned long, unsigned long> list_item_range_t;
 typedef std::vector<list_item_range_t> list_items_ranges_t;
 typedef list_items_ranges_t::const_iterator list_items_ranges_iterator_t;
 
 typedef string_list_t RPG_Net_Protocol_Parameters_t;
-typedef string_list_iterator_t RPG_Net_Protocol_ParametersIterator_t;
+typedef string_list_const_iterator_t RPG_Net_Protocol_ParametersIterator_t;
 
 class RPG_Net_Protocol_IRCMessage
  : public RPG_Common_ReferenceCounter

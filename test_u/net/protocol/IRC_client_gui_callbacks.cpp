@@ -704,6 +704,7 @@ join_clicked_cb(GtkWidget* button_in,
   if (channel_string.find('#', 0) != 0)
     channel_string.insert(channel_string.begin(), '#');
   // sanity check(s): larger than IRC_CLIENT_CNF_IRC_MAX_CHANNEL_LENGTH characters ?
+  // *TODO*: support the CHANNELLEN=xxx "feature" of the server...
   if (channel_string.size() > IRC_CLIENT_CNF_IRC_MAX_CHANNEL_LENGTH)
     channel_string.resize(IRC_CLIENT_CNF_IRC_MAX_CHANNEL_LENGTH);
 
@@ -792,6 +793,7 @@ channelbox_changed_cb(GtkWidget* combobox_in,
   if (channel_string.find('#', 0) != 0)
     channel_string.insert(channel_string.begin(), '#');
   // sanity check(s): larger than IRC_CLIENT_CNF_IRC_MAX_CHANNEL_LENGTH characters ?
+  // *TODO*: support the CHANNELLEN=xxx "feature" of the server...
   if (channel_string.size() > IRC_CLIENT_CNF_IRC_MAX_CHANNEL_LENGTH)
     channel_string.resize(IRC_CLIENT_CNF_IRC_MAX_CHANNEL_LENGTH);
 
@@ -1314,6 +1316,10 @@ members_clicked_cb(GtkWidget* widget_in,
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("members_clicked_cb...\n")));
 
+  // supposed to be a context menu -> right-clicked ?
+  if (event_in->button != 3)
+    return;
+
   handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
                                             userData_in);
 
@@ -1321,10 +1327,7 @@ members_clicked_cb(GtkWidget* widget_in,
   ACE_ASSERT(GTK_TREE_VIEW(widget_in));
   ACE_ASSERT(data);
   ACE_ASSERT(data->builder);
-
-  // supposed to be a context menu -> right-clicked ?
-  if (event_in->button != 3)
-    return;
+  ACE_ASSERT(data->connection);
 
 //   // any selected ("clicked") list item(s) at this position ?
 //   GtkTreePath* path = NULL;
@@ -1392,10 +1395,102 @@ members_clicked_cb(GtkWidget* widget_in,
   // clean up
   g_list_free(selected_rows);
 
+  // remove ourselves from any selection...
+  string_list_iterator_t iterator = data->parameters.begin();
+  std::string nickname = data->connection->getNickname();
+  for (;
+       iterator != data->parameters.end();
+       iterator++)
+  {
+    if (*iterator == nickname)
+      break;
+    // *NOTE*: ignore leading '@'
+    if ((*iterator).find('@', 0) == 0)
+      if (((*iterator).find(nickname, 1) == 1) &&
+          ((*iterator).size() == (nickname.size() + 1)))
+        break;
+  } // end FOR
+  if (iterator != data->parameters.end())
+    data->parameters.erase(iterator);
+  // no selection ? --> nothing to do
+  if (data->parameters.empty())
+    return;
+
   // init popup menu
   GtkMenu* channel_tab_treeview_menu = GTK_MENU(gtk_builder_get_object(data->builder,
                                                                        ACE_TEXT_ALWAYS_CHAR("channel_tab_treeview_menu")));
   ACE_ASSERT(channel_tab_treeview_menu);
+
+  // init active_channels submenu
+  GtkMenuItem* menu_item = NULL;
+  // --> retrieve list of active channels
+  // *TODO*: for invite-only channels, only operators are allowed to invite
+  // strangers --> remove those channels where this condition doesn't apply
+  string_list_t active_channels;
+  data->connection->channels(active_channels);
+  if (active_channels.size() > 1)
+  {
+    // clear popup menu
+    GtkMenu* invite_channel_members_menu = GTK_MENU(gtk_builder_get_object(data->builder,
+                                                                           ACE_TEXT_ALWAYS_CHAR("invite_channel_members_menu")));
+    ACE_ASSERT(invite_channel_members_menu);
+    GList* children = gtk_container_get_children(GTK_CONTAINER(invite_channel_members_menu));
+    if (children)
+    {
+      for (GList* current_child = g_list_first(children);
+           current_child != NULL;
+           current_child = g_list_next(current_child))
+        gtk_container_remove(GTK_CONTAINER(invite_channel_members_menu),
+                             GTK_WIDGET(current_child->data));
+      // clean up
+      g_list_free(children);
+    } // end IF
+
+    // populate popup menu
+    GtkAction* action_invite = GTK_ACTION(gtk_builder_get_object(data->builder,
+                                                                 ACE_TEXT_ALWAYS_CHAR("action_invite")));
+    ACE_ASSERT(action_invite);
+    GtkMenuItem* menu_item = NULL;
+    for (string_list_const_iterator_t iterator = active_channels.begin();
+         iterator != active_channels.end();
+         iterator++)
+    {
+      // skip current channel
+      if (*iterator == data->id)
+        continue;
+
+      menu_item = GTK_MENU_ITEM(gtk_action_create_menu_item(action_invite));
+      ACE_ASSERT(menu_item);
+      gtk_menu_item_set_label(menu_item,
+                              (*iterator).c_str());
+      gtk_menu_shell_append(GTK_MENU_SHELL(invite_channel_members_menu),
+                            GTK_WIDGET(menu_item));
+    } // end FOR
+    gtk_widget_show_all(GTK_WIDGET(invite_channel_members_menu));
+
+    menu_item = GTK_MENU_ITEM(gtk_builder_get_object(data->builder,
+                                                     ACE_TEXT_ALWAYS_CHAR("menuitem_invite")));
+    ACE_ASSERT(menu_item);
+    gtk_widget_set_sensitive(GTK_WIDGET(menu_item), TRUE);
+  } // end IF
+  else
+  {
+    menu_item = GTK_MENU_ITEM(gtk_builder_get_object(data->builder,
+                                                     ACE_TEXT_ALWAYS_CHAR("menuitem_invite")));
+    ACE_ASSERT(menu_item);
+    gtk_widget_set_sensitive(GTK_WIDGET(menu_item), FALSE);
+  } // end ELSE
+
+  // en-/disable some entries...
+  menu_item = GTK_MENU_ITEM(gtk_builder_get_object(data->builder,
+                                                   ACE_TEXT_ALWAYS_CHAR("menuitem_kick")));
+  ACE_ASSERT(menu_item);
+  gtk_widget_set_sensitive(GTK_WIDGET(menu_item), data->channelModes.test(CHANNELMODE_OPERATOR));
+  menu_item = GTK_MENU_ITEM(gtk_builder_get_object(data->builder,
+                                                   ACE_TEXT_ALWAYS_CHAR("menuitem_ban")));
+  ACE_ASSERT(menu_item);
+  gtk_widget_set_sensitive(GTK_WIDGET(menu_item), data->channelModes.test(CHANNELMODE_OPERATOR));
+
   gtk_menu_popup(channel_tab_treeview_menu,
                  NULL, NULL,
                  NULL, NULL,
@@ -1421,13 +1516,58 @@ action_msg_cb(GtkWidget* widget_in,
   ACE_ASSERT(!data->parameters.empty());
 
   gint page_num = -1;
-  for (string_list_iterator_t iterator = data->parameters.begin();
+  for (string_list_const_iterator_t iterator = data->parameters.begin();
        iterator != data->parameters.end();
        iterator++)
   {
     page_num = data->connection->exists(*iterator);
     if (page_num == -1)
       data->connection->createMessageHandler(*iterator);
+  } // end FOR
+}
+
+void
+action_invite_cb(GtkWidget* widget_in,
+                 gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::action_invite_cb"));
+
+  //   ACE_DEBUG((LM_DEBUG,
+  //              ACE_TEXT("action_invite_cb...\n")));
+
+  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
+                                            userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->builder);
+  ACE_ASSERT(data->controller);
+  ACE_ASSERT(!data->parameters.empty());
+
+  // retrieve the channel
+  // --> currently active menuitem of the invite_channel_members_menu
+  GtkMenu* invite_channel_members_menu = GTK_MENU(gtk_builder_get_object(data->builder,
+                                                                         ACE_TEXT_ALWAYS_CHAR("invite_channel_members_menu")));
+  ACE_ASSERT(invite_channel_members_menu);
+  GtkMenuItem* active_item = GTK_MENU_ITEM(gtk_menu_get_active(invite_channel_members_menu));
+  ACE_ASSERT(active_item);
+  std::string channel_string = IRC_Client_Tools::UTF82Locale(gtk_menu_item_get_label(active_item), -1);
+  ACE_ASSERT(!channel_string.empty());
+
+  for (string_list_const_iterator_t iterator = data->parameters.begin();
+       iterator != data->parameters.end();
+       iterator++)
+  {
+    try
+    {
+      data->controller->invite(*iterator,
+                               channel_string);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::invite(), continuing\n")));
+    }
   } // end FOR
 }
 
@@ -1449,7 +1589,7 @@ action_kick_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->controller);
   ACE_ASSERT(!data->parameters.empty());
 
-  for (string_list_iterator_t iterator = data->parameters.begin();
+  for (string_list_const_iterator_t iterator = data->parameters.begin();
        iterator != data->parameters.end();
        iterator++)
   {
@@ -1487,7 +1627,7 @@ action_ban_cb(GtkWidget* widget_in,
 
   string_list_t parameters;
   std::string ban_mask_string;
-  for (string_list_iterator_t iterator = data->parameters.begin();
+  for (string_list_const_iterator_t iterator = data->parameters.begin();
        iterator != data->parameters.end();
        iterator++)
   {

@@ -50,6 +50,7 @@ void topic_clicked_cb(GtkWidget*, GdkEventButton*, gpointer);
 void part_clicked_cb(GtkWidget*, gpointer);
 void members_clicked_cb(GtkWidget*, GdkEventButton*, gpointer);
 void action_msg_cb(GtkWidget*, gpointer);
+void action_invite_cb(GtkWidget*, gpointer);
 void action_kick_cb(GtkWidget*, gpointer);
 void action_ban_cb(GtkWidget*, gpointer);
 #ifdef __cplusplus

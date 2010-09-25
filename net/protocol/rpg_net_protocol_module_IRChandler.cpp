@@ -156,6 +156,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         case RPG_Net_Protocol_IRC_Codes::RPL_LISTEND:              // 323
         case RPG_Net_Protocol_IRC_Codes::RPL_TOPIC:                // 332
         case RPG_Net_Protocol_IRC_Codes::RPL_TOPICWHOTIME:         // 333
+        case RPG_Net_Protocol_IRC_Codes::RPL_INVITING:             // 341
         case RPG_Net_Protocol_IRC_Codes::RPL_NAMREPLY:             // 353
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFNAMES:           // 366
         case RPG_Net_Protocol_IRC_Codes::RPL_BANLIST:              // 367
@@ -258,6 +259,24 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         {
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("[%u]: received \"LIST\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::INVITE:
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"INVITE\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::KICK:
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"KICK\": \"%s\"\n"),
 //                      message_inout->getID(),
 //                      message_inout->getData()->params.back().c_str()));
 
@@ -917,6 +936,29 @@ RPG_Net_Protocol_Module_IRCHandler::list(const string_list_t& channels_in)
 
   // step2: send it upstream
   sendMessage(list_struct);
+}
+
+void
+RPG_Net_Protocol_Module_IRCHandler::invite(const std::string& nick_in,
+                                           const std::string& channel_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::invite"));
+
+  // step1: init INVITE
+  RPG_Net_Protocol_IRCMessage* invite_struct = NULL;
+  ACE_NEW_NORETURN(invite_struct,
+                   RPG_Net_Protocol_IRCMessage());
+  ACE_ASSERT(invite_struct);
+  ACE_NEW_NORETURN(invite_struct->command.string,
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::INVITE)));
+  ACE_ASSERT(invite_struct->command.string);
+  invite_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+
+  invite_struct->params.push_back(nick_in);
+  invite_struct->params.push_back(channel_in);
+
+  // step2: send it upstream
+  sendMessage(invite_struct);
 }
 
 void
