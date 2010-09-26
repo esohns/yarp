@@ -63,6 +63,8 @@ struct connection_cb_data_t
   RPG_Net_Protocol_IIRCControl* controller;
   ACE_Thread_Mutex*             connectionsLock;
   connections_t*                connections;
+  // *TODO*: couldn't it be done without ?
+  bool                          away;
 };
 
 struct handler_cb_data_t

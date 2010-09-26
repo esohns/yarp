@@ -151,6 +151,8 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         case RPG_Net_Protocol_IRC_Codes::RPL_TRYAGAIN:             // 263
         case RPG_Net_Protocol_IRC_Codes::RPL_LOCALUSERS:           // 265
         case RPG_Net_Protocol_IRC_Codes::RPL_GLOBALUSERS:          // 266
+        case RPG_Net_Protocol_IRC_Codes::RPL_UNAWAY:               // 305
+        case RPG_Net_Protocol_IRC_Codes::RPL_NOWAWAY:              // 306
         case RPG_Net_Protocol_IRC_Codes::RPL_LISTSTART:            // 321
         case RPG_Net_Protocol_IRC_Codes::RPL_LIST:                 // 322
         case RPG_Net_Protocol_IRC_Codes::RPL_LISTEND:              // 323
@@ -351,6 +353,15 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         {
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("[%u]: received \"ERROR\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::AWAY:
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"AWAY\": \"%s\"\n"),
 //                      message_inout->getID(),
 //                      message_inout->getData()->params.back().c_str()));
 
@@ -758,6 +769,27 @@ RPG_Net_Protocol_Module_IRCHandler::nick(const std::string& nick_in)
 }
 
 void
+RPG_Net_Protocol_Module_IRCHandler::quit(const std::string& reason_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::quit"));
+
+  // step1: init QUIT
+  RPG_Net_Protocol_IRCMessage* quit_struct = NULL;
+  ACE_NEW_NORETURN(quit_struct,
+                   RPG_Net_Protocol_IRCMessage());
+  ACE_ASSERT(quit_struct);
+  ACE_NEW_NORETURN(quit_struct->command.string,
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::QUIT)));
+  ACE_ASSERT(quit_struct->command.string);
+  quit_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  if (!reason_in.empty())
+    quit_struct->params.push_back(reason_in);
+
+  // step2: send it upstream
+  sendMessage(quit_struct);
+}
+
+void
 RPG_Net_Protocol_Module_IRCHandler::join(const string_list_t& channels_in,
                                          const string_list_t& keys_in)
 {
@@ -1023,24 +1055,27 @@ RPG_Net_Protocol_Module_IRCHandler::send(const string_list_t& receivers_in,
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::quit(const std::string& reason_in)
+RPG_Net_Protocol_Module_IRCHandler::away(const std::string& message_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::quit"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::away"));
 
-  // step1: init QUIT
-  RPG_Net_Protocol_IRCMessage* quit_struct = NULL;
-  ACE_NEW_NORETURN(quit_struct,
+  // step1: init AWAY
+  RPG_Net_Protocol_IRCMessage* away_struct = NULL;
+  ACE_NEW_NORETURN(away_struct,
                    RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(quit_struct);
-  ACE_NEW_NORETURN(quit_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::QUIT)));
-  ACE_ASSERT(quit_struct->command.string);
-  quit_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-  if (!reason_in.empty())
-    quit_struct->params.push_back(reason_in);
+  ACE_ASSERT(away_struct);
+  ACE_NEW_NORETURN(away_struct->command.string,
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::AWAY)));
+  ACE_ASSERT(away_struct->command.string);
+  away_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+
+  // *NOTE*: if there is no away message parameter, the semantic is to
+  // "un-away" the user
+  if (!message_in.empty())
+    away_struct->params.push_back(message_in);
 
   // step2: send it upstream
-  sendMessage(quit_struct);
+  sendMessage(away_struct);
 }
 
 void

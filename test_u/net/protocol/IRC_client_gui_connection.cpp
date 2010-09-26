@@ -70,6 +70,7 @@ IRC_Client_GUI_Connection::IRC_Client_GUI_Connection(GtkBuilder* builder_in,
   myCBData.controller = controller_in;
   myCBData.connectionsLock = lock_in;
   myCBData.connections = connections_in;
+  myCBData.away = false;
 
   // create new GtkBuilder
   myCBData.builder = gtk_builder_new();
@@ -281,6 +282,13 @@ IRC_Client_GUI_Connection::IRC_Client_GUI_Connection(GtkBuilder* builder_in,
                    ACE_TEXT_ALWAYS_CHAR("toggled"),
                    G_CALLBACK(user_mode_toggled_cb),
                    &myCBData);
+  GtkAction* action_away = GTK_ACTION(gtk_builder_get_object(myCBData.builder,
+                                                             ACE_TEXT_ALWAYS_CHAR("action_away")));
+  ACE_ASSERT(action_away);
+  g_signal_connect(action_away,
+                   ACE_TEXT_ALWAYS_CHAR("activate"),
+                   G_CALLBACK(action_away_cb),
+                   &myCBData);
   // retrieve channel tabs
   GtkNotebook* server_tab_channel_tabs = GTK_NOTEBOOK(gtk_builder_get_object(myCBData.builder,
                                                                              ACE_TEXT_ALWAYS_CHAR("server_tab_channel_tabs")));
@@ -491,6 +499,46 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
         case RPG_Net_Protocol_IRC_Codes::RPL_INVITING:         // 341
         {
           GDK_THREADS_ENTER();
+
+          log(message_in);
+
+          GDK_THREADS_LEAVE();
+
+          break;
+        }
+        case RPG_Net_Protocol_IRC_Codes::RPL_UNAWAY:           // 305
+        {
+          GDK_THREADS_ENTER();
+
+          // *WARNING*: needs the lock protection, otherwise
+          // there is a race...
+          myCBData.away = false;
+
+          // retrieve server tab tools togglebutton
+          GtkToggleButton* server_tab_tools_togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                                                                    ACE_TEXT_ALWAYS_CHAR("server_tab_tools_togglebutton")));
+          ACE_ASSERT(server_tab_tools_togglebutton);
+          gtk_toggle_button_set_active(server_tab_tools_togglebutton, FALSE);
+
+          log(message_in);
+
+          GDK_THREADS_LEAVE();
+
+          break;
+        }
+        case RPG_Net_Protocol_IRC_Codes::RPL_NOWAWAY:          // 306
+        {
+          GDK_THREADS_ENTER();
+
+          // *WARNING*: needs the lock protection, otherwise
+          // there is a race...
+          myCBData.away = true;
+
+          // retrieve server tab tools togglebutton
+          GtkToggleButton* server_tab_tools_togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                                                                                    ACE_TEXT_ALWAYS_CHAR("server_tab_tools_togglebutton")));
+          ACE_ASSERT(server_tab_tools_togglebutton);
+          gtk_toggle_button_set_active(server_tab_tools_togglebutton, TRUE);
 
           log(message_in);
 
@@ -872,6 +920,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           if (message_in.params.front() == myCBData.nickname)
           {
             // --> user mode
+            // *WARNING*: needs the lock protection, otherwise there is a race...
             RPG_Net_Protocol_Tools::merge(message_in.params.back(),
                                           myCBData.userModes);
 
@@ -898,6 +947,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
                 break;
               } // end IF
 
+              // *WARNING*: needs the lock protection, otherwise there is a race...
               (*handler_iterator).second->setModes(*param_iterator,
                                                    ((*param_iterator == message_in.params.back()) ? std::string()
                                                                                                   : message_in.params.back()));
@@ -1034,6 +1084,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
         }
         case RPG_Net_Protocol_IRCMessage::NOTICE:
         case RPG_Net_Protocol_IRCMessage::ERROR:
+        case RPG_Net_Protocol_IRCMessage::AWAY:
         {
           GDK_THREADS_ENTER();
 

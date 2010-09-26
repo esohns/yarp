@@ -43,16 +43,17 @@ void channelbox_changed_cb(GtkWidget*, gpointer);
 void refresh_clicked_cb(GtkWidget*, gpointer);
 void user_mode_toggled_cb(GtkToggleButton*, gpointer);
 void switch_channel_cb(GtkNotebook*, GtkNotebookPage*, guint, gpointer);
+void action_away_cb(GtkAction*, gpointer);
 
 // IRC_Client_GUI_MessageHandler
 void channel_mode_toggled_cb(GtkToggleButton*, gpointer);
 void topic_clicked_cb(GtkWidget*, GdkEventButton*, gpointer);
 void part_clicked_cb(GtkWidget*, gpointer);
 void members_clicked_cb(GtkWidget*, GdkEventButton*, gpointer);
-void action_msg_cb(GtkWidget*, gpointer);
-void action_invite_cb(GtkWidget*, gpointer);
-void action_kick_cb(GtkWidget*, gpointer);
-void action_ban_cb(GtkWidget*, gpointer);
+void action_msg_cb(GtkAction*, gpointer);
+void action_invite_cb(GtkAction*, gpointer);
+void action_kick_cb(GtkAction*, gpointer);
+void action_ban_cb(GtkAction*, gpointer);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

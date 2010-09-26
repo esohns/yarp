@@ -34,6 +34,7 @@
 #define IRC_CLIENT_GUI_DEF_MODE_BAN_DIALOG_TITLE       ACE_TEXT("please provide a ban mask...")
 #define IRC_CLIENT_GUI_DEF_MODE_USERLIMIT_DIALOG_TITLE ACE_TEXT("please provide a value...")
 #define IRC_CLIENT_GUI_DEF_TOPIC_DIALOG_TITLE          ACE_TEXT("please provide a topic...")
+#define IRC_CLIENT_GUI_DEF_AWAY_DIALOG_TITLE           ACE_TEXT("please provide an away message...")
 #define IRC_CLIENT_GUI_DEF_SERVER_LABEL_TEXT           ACE_TEXT_ALWAYS_CHAR("no server")
 #define IRC_CLIENT_GUI_DEF_CHANNEL_LABEL_TEXT          ACE_TEXT_ALWAYS_CHAR("no channel")
 #define IRC_CLIENT_GUI_DEF_TOPIC_LABEL_TEXT            ACE_TEXT_ALWAYS_CHAR("no topic")

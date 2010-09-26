@@ -1391,6 +1391,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRCMessage::INVITE:
         case RPG_Net_Protocol_IRCMessage::KICK:
         case RPG_Net_Protocol_IRCMessage::ERROR:
+        case RPG_Net_Protocol_IRCMessage::AWAY:
         {
           result = RPG_Net_Protocol_Tools::concatParams(message_in.params);
 
@@ -1422,6 +1423,8 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRC_Codes::RPL_TRYAGAIN:      // 263
         case RPG_Net_Protocol_IRC_Codes::RPL_LOCALUSERS:    // 265
         case RPG_Net_Protocol_IRC_Codes::RPL_GLOBALUSERS:   // 266
+        case RPG_Net_Protocol_IRC_Codes::RPL_UNAWAY:        // 305
+        case RPG_Net_Protocol_IRC_Codes::RPL_NOWAWAY:       // 306
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFBANLIST:  // 368
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTD:          // 372
         case RPG_Net_Protocol_IRC_Codes::RPL_MOTDSTART:     // 375

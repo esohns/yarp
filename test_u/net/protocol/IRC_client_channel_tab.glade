@@ -397,7 +397,6 @@
     <property name="icon-size">1</property>
   </object>
   <object class="GtkDialog" id="channel_tab_entry_dialog">
-    <property name="border_width">5</property>
     <property name="title" translatable="yes">please insert data...</property>
     <property name="resizable">False</property>
     <property name="window_position">center</property>
@@ -409,7 +408,6 @@
       <object class="GtkVBox" id="channel_tab_entry_dialog_vbox">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
         <child>
           <object class="GtkEntry" id="channel_tab_entry_dialog_entry">
             <property name="visible">True</property>

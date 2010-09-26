@@ -145,7 +145,7 @@ typedef std::bitset<11> RPG_Net_Protocol_ChannelModes_t;
 //            w - user receives wallops
 //            o - operator flag
 // see (RFC2812 section 3.1.5)
-//            a - user is flagged as away
+//            a - user is flagged as away (server-to-server only)
 //            i - marks a users as invisible
 //            w - user receives wallops
 //            r - restricted user connection

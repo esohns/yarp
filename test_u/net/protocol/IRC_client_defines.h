@@ -47,6 +47,7 @@
 #define IRC_CLIENT_DEF_IRC_USERMODE              0
 #define IRC_CLIENT_DEF_IRC_NICK                  ACE_TEXT_ALWAYS_CHAR("Wiz")
 #define IRC_CLIENT_DEF_IRC_CHANNEL               ACE_TEXT_ALWAYS_CHAR("#foobar")
+#define IRC_CLIENT_DEF_IRC_AWAY_MESSAGE          ACE_TEXT("currently away...")
 #define IRC_CLIENT_DEF_IRC_LEAVE_REASON          ACE_TEXT("quitting...")
 #define IRC_CLIENT_DEF_IRC_KICK_REASON           ACE_TEXT("come back later...")
 

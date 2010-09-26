@@ -925,10 +925,9 @@ user_mode_toggled_cb(GtkToggleButton* toggleButton_in,
 
   // check if the state is inconsistent --> submit change request, else do nothing
   // i.e. state is off and widget is "on" (or vice-versa)
-  // *NOTE*: prevents endless recursion
+  // *NOTE*: avoid recursion
   if (data->userModes.test(mode) == toggleButton_in->active)
     return;
-
   // re-toggle button for now...
   // *NOTE*: will be auto-toggled according to the outcome of the change request
   gtk_toggle_button_set_active(toggleButton_in, data->userModes.test(mode));
@@ -981,6 +980,98 @@ switch_channel_cb(GtkNotebook* notebook_in,
     ACE_ASSERT(main_send_hbox);
     gtk_widget_set_sensitive(GTK_WIDGET(main_send_hbox), (pageNum_in != 0));
   } // end lock scope
+}
+
+void
+action_away_cb(GtkAction* action_in,
+               gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::action_away_cb"));
+
+  //   ACE_DEBUG((LM_DEBUG,
+  //              ACE_TEXT("action_away_cb...\n")));
+
+  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
+                                               userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->builder);
+  ACE_ASSERT(data->controller);
+
+  GtkToggleButton* server_tab_tools_togglebutton = GTK_TOGGLE_BUTTON(gtk_builder_get_object(data->builder,
+                                                                                            ACE_TEXT_ALWAYS_CHAR("server_tab_tools_togglebutton")));
+  ACE_ASSERT(server_tab_tools_togglebutton);
+
+  bool activating = gtk_toggle_button_get_active(server_tab_tools_togglebutton);
+
+  // check if the state is inconsistent --> submit change request, else do nothing
+  // i.e. state is off and widget is "on" or vice-versa
+  // *NOTE*: avoid recursion
+  if (data->away == activating)
+    return;
+  // re-toggle button for now...
+  // *NOTE*: will be auto-toggled according to the outcome of the change request
+  gtk_toggle_button_set_active(server_tab_tools_togglebutton, data->away);
+
+  // activating ? --> retrieve away message
+  std::string away_message;
+  if (activating)
+  {
+    GtkEntry* server_tab_entry_dialog_entry = GTK_ENTRY(gtk_builder_get_object(data->builder,
+                                                                               ACE_TEXT_ALWAYS_CHAR("server_tab_entry_dialog_entry")));
+    ACE_ASSERT(server_tab_entry_dialog_entry);
+    // clean up
+    gtk_entry_buffer_delete_text(gtk_entry_get_buffer(server_tab_entry_dialog_entry),
+                                 0, -1);
+  //   gtk_entry_set_max_length(server_tab_entry_dialog_entry,
+  //                            0); // no limit
+  //   gtk_entry_set_width_chars(server_tab_entry_dialog_entry,
+  //                             -1); // reset to default
+
+    GtkDialog* server_tab_entry_dialog = GTK_DIALOG(gtk_builder_get_object(data->builder,
+                                                                           ACE_TEXT_ALWAYS_CHAR("server_tab_entry_dialog")));
+    ACE_ASSERT(server_tab_entry_dialog);
+    gtk_window_set_title(GTK_WINDOW(server_tab_entry_dialog),
+                         IRC_CLIENT_GUI_DEF_AWAY_DIALOG_TITLE);
+    if (gtk_dialog_run(server_tab_entry_dialog))
+    {
+  //     ACE_DEBUG((LM_DEBUG,
+  //                ACE_TEXT("away cancelled...\n")));
+
+      // clean up
+      gtk_entry_buffer_delete_text(gtk_entry_get_buffer(server_tab_entry_dialog_entry),
+                                   0, -1);
+
+      gtk_widget_hide(GTK_WIDGET(server_tab_entry_dialog));
+
+      return;
+    } // end IF
+    gtk_widget_hide(GTK_WIDGET(server_tab_entry_dialog));
+
+    away_message = IRC_Client_Tools::UTF82Locale(gtk_entry_get_text(server_tab_entry_dialog_entry), -1);
+    // clean up
+    gtk_entry_buffer_delete_text(gtk_entry_get_buffer(server_tab_entry_dialog_entry),
+                                 0, -1);
+
+    if (away_message.empty())
+    {
+      // *NOTE*: need to set SOME value, as an AWAY-message with no parameter will
+      // actually "un-away" the user (see RFC1459 Section 5.1)...
+      away_message = IRC_CLIENT_DEF_IRC_AWAY_MESSAGE;
+    } // end IF
+  } // end IF
+
+  try
+  {
+    data->controller->away(away_message);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::away(\"%s\"), continuing\n"),
+               away_message.c_str()));
+  }
 }
 
 void
@@ -1117,10 +1208,9 @@ channel_mode_toggled_cb(GtkToggleButton* toggleButton_in,
 
   // check if the state is inconsistent --> submit change request, else do nothing
   // i.e. state is off and widget is "on" or vice-versa
-  // *NOTE*: prevents endless recursion
+  // *NOTE*: avoid recursion
   if (data->channelModes.test(mode) == toggleButton_in->active)
     return;
-
   // re-toggle button for now...
   // *NOTE*: will be auto-toggled according to the outcome of the change request
   gtk_toggle_button_set_active(toggleButton_in, data->channelModes.test(mode));
@@ -1499,7 +1589,7 @@ members_clicked_cb(GtkWidget* widget_in,
 }
 
 void
-action_msg_cb(GtkWidget* widget_in,
+action_msg_cb(GtkAction* action_in,
               gpointer userData_in)
 {
   RPG_TRACE(ACE_TEXT("::action_msg_cb"));
@@ -1527,7 +1617,7 @@ action_msg_cb(GtkWidget* widget_in,
 }
 
 void
-action_invite_cb(GtkWidget* widget_in,
+action_invite_cb(GtkAction* action_in,
                  gpointer userData_in)
 {
   RPG_TRACE(ACE_TEXT("::action_invite_cb"));
@@ -1572,7 +1662,7 @@ action_invite_cb(GtkWidget* widget_in,
 }
 
 void
-action_kick_cb(GtkWidget* widget_in,
+action_kick_cb(GtkAction* action_in,
                gpointer userData_in)
 {
   RPG_TRACE(ACE_TEXT("::action_kick_cb"));
@@ -1608,7 +1698,7 @@ action_kick_cb(GtkWidget* widget_in,
 }
 
 void
-action_ban_cb(GtkWidget* widget_in,
+action_ban_cb(GtkAction* action_in,
               gpointer userData_in)
 {
   RPG_TRACE(ACE_TEXT("::action_ban_cb"));
