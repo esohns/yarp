@@ -85,6 +85,7 @@ class RPG_Net_Protocol_Module_IRCHandler
   virtual void send(const string_list_t&, // receiver(s) [nick/channel]
                     const std::string&);  // message
   virtual void away(const std::string&); // message
+  virtual void users(const std::string&); // server
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;

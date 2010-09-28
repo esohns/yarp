@@ -367,6 +367,15 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
 
           break;
         }
+        case RPG_Net_Protocol_IRCMessage::USERS:
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"USERS\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
+
+          break;
+        }
         default:
         {
           ACE_DEBUG((LM_WARNING,
@@ -1076,6 +1085,28 @@ RPG_Net_Protocol_Module_IRCHandler::away(const std::string& message_in)
 
   // step2: send it upstream
   sendMessage(away_struct);
+}
+
+void
+RPG_Net_Protocol_Module_IRCHandler::users(const std::string& server_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::users"));
+
+  // step1: init USERS
+  RPG_Net_Protocol_IRCMessage* users_struct = NULL;
+  ACE_NEW_NORETURN(users_struct,
+                   RPG_Net_Protocol_IRCMessage());
+  ACE_ASSERT(users_struct);
+  ACE_NEW_NORETURN(users_struct->command.string,
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::USERS)));
+  ACE_ASSERT(users_struct->command.string);
+  users_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+
+  if (!server_in.empty())
+    users_struct->params.push_back(server_in);
+
+  // step2: send it upstream
+  sendMessage(users_struct);
 }
 
 void

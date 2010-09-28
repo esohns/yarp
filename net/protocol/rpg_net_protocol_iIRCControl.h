@@ -60,6 +60,7 @@ class RPG_Net_Protocol_IIRCControl
   virtual void send(const string_list_t&,    // receiver(s) [nick/channel]
                     const std::string&) = 0; // message
   virtual void away(const std::string&) = 0; // message
+  virtual void users(const std::string&) = 0; // server
 };
 
 #endif

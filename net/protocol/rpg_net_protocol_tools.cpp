@@ -1392,6 +1392,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRCMessage::KICK:
         case RPG_Net_Protocol_IRCMessage::ERROR:
         case RPG_Net_Protocol_IRCMessage::AWAY:
+        case RPG_Net_Protocol_IRCMessage::USERS:
         {
           result = RPG_Net_Protocol_Tools::concatParams(message_in.params);
 

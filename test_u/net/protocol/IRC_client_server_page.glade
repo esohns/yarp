@@ -21,10 +21,10 @@
                   <object class="GtkAlignment" id="server_tab_nick_alignment">
                     <property name="visible">True</property>
                     <child>
-                      <object class="GtkHBox" id="server_tab_nick_hbox">
+                      <object class="GtkHBox" id="server_tab_users_hbox">
                         <property name="visible">True</property>
                         <child>
-                          <object class="GtkEntry" id="server_tab_nick_entry">
+                          <object class="GtkEntry" id="server_tab_users_nick_entry">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="max_length">9</property>
@@ -40,7 +40,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkButton" id="server_tab_nick_button">
+                          <object class="GtkButton" id="server_tab_users_nick_button">
                             <property name="label" translatable="yes">_Change</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
@@ -52,6 +52,50 @@
                             <property name="expand">False</property>
                             <property name="fill">False</property>
                             <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkVSeparator" id="server_tab_users_vseparator">
+                            <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBox" id="server_tab_users_combobox">
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="model">server_tab_users_store</property>
+                            <property name="has_frame">False</property>
+                            <property name="focus_on_click">False</property>
+                            <signal name="changed" handler="usersbox_changed_cb"/>
+                            <child>
+                              <object class="GtkCellRendererText" id="server_tab_users_cellrenderertext"/>
+                              <attributes>
+                                <attribute name="text">0</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="server_tab_users_refresh_button">
+                            <property name="label" translatable="yes">_Refresh</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="use_underline">True</property>
+                            <property name="focus_on_click">False</property>
+                            <signal name="clicked" handler="refresh_users_clicked_cb"/>
+                          </object>
+                          <packing>
+                            <property name="position">4</property>
                           </packing>
                         </child>
                       </object>
@@ -130,6 +174,7 @@
                             <property name="model">server_tab_channels_store</property>
                             <property name="has_frame">False</property>
                             <property name="focus_on_click">False</property>
+                            <signal name="changed" handler="channelbox_changed_cb"/>
                             <child>
                               <object class="GtkCellRendererText" id="server_tab_channels_cellrenderertext"/>
                               <attributes>
@@ -142,14 +187,14 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkButton" id="server_tab_refresh_button">
+                          <object class="GtkButton" id="server_tab_channels_refresh_button">
                             <property name="label" translatable="yes">_Refresh</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_underline">True</property>
                             <property name="focus_on_click">False</property>
-                            <signal name="clicked" handler="refresh_clicked_cb"/>
+                            <signal name="clicked" handler="refresh_channels_clicked_cb"/>
                           </object>
                           <packing>
                             <property name="position">4</property>
@@ -544,5 +589,11 @@
     <property name="label">Accept</property>
     <property name="short_label">Accept</property>
     <property name="stock_id">gtk-ok</property>
+  </object>
+  <object class="GtkListStore" id="server_tab_users_store">
+    <columns>
+      <!-- column-name text -->
+      <column type="gchararray"/>
+    </columns>
   </object>
 </interface>

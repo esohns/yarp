@@ -70,6 +70,7 @@ IRC_Client_GUI_Connection::IRC_Client_GUI_Connection(GtkBuilder* builder_in,
   myCBData.controller = controller_in;
   myCBData.connectionsLock = lock_in;
   myCBData.connections = connections_in;
+  myCBData.connection = this;
   myCBData.away = false;
 
   // create new GtkBuilder
@@ -191,18 +192,32 @@ IRC_Client_GUI_Connection::IRC_Client_GUI_Connection(GtkBuilder* builder_in,
                    G_CALLBACK(disconnect_clicked_cb),
                    &myCBData);
   GtkEntry* entry = GTK_ENTRY(gtk_builder_get_object(myCBData.builder,
-                                                     ACE_TEXT_ALWAYS_CHAR("server_tab_nick_entry")));
+                                                     ACE_TEXT_ALWAYS_CHAR("server_tab_users_nick_entry")));
   ACE_ASSERT(entry);
   g_signal_connect(entry,
                    ACE_TEXT_ALWAYS_CHAR("focus-in-event"),
                    G_CALLBACK(nick_entry_kb_focused_cb),
                    &myCBData);
   button = GTK_BUTTON(gtk_builder_get_object(myCBData.builder,
-                                             ACE_TEXT_ALWAYS_CHAR("server_tab_nick_button")));
+                                             ACE_TEXT_ALWAYS_CHAR("server_tab_users_nick_button")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(change_clicked_cb),
+                   &myCBData);
+  GtkComboBox* combobox = GTK_COMBO_BOX(gtk_builder_get_object(myCBData.builder,
+                                                               ACE_TEXT_ALWAYS_CHAR("server_tab_users_combobox")));
+  ACE_ASSERT(combobox);
+  g_signal_connect(combobox,
+                   ACE_TEXT_ALWAYS_CHAR("changed"),
+                   G_CALLBACK(usersbox_changed_cb),
+                   &myCBData);
+  button = GTK_BUTTON(gtk_builder_get_object(myCBData.builder,
+                                             ACE_TEXT_ALWAYS_CHAR("server_tab_users_refresh_button")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(refresh_users_clicked_cb),
                    &myCBData);
   entry = GTK_ENTRY(gtk_builder_get_object(myCBData.builder,
                                            ACE_TEXT_ALWAYS_CHAR("server_tab_channel_entry")));
@@ -218,19 +233,19 @@ IRC_Client_GUI_Connection::IRC_Client_GUI_Connection(GtkBuilder* builder_in,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(join_clicked_cb),
                    &myCBData);
-  GtkComboBox* combobox = GTK_COMBO_BOX(gtk_builder_get_object(myCBData.builder,
-                                                               ACE_TEXT_ALWAYS_CHAR("server_tab_channels_combobox")));
+  combobox = GTK_COMBO_BOX(gtk_builder_get_object(myCBData.builder,
+                                                  ACE_TEXT_ALWAYS_CHAR("server_tab_channels_combobox")));
   ACE_ASSERT(combobox);
   g_signal_connect(combobox,
                    ACE_TEXT_ALWAYS_CHAR("changed"),
                    G_CALLBACK(channelbox_changed_cb),
                    &myCBData);
   button = GTK_BUTTON(gtk_builder_get_object(myCBData.builder,
-                                             ACE_TEXT_ALWAYS_CHAR("server_tab_refresh_button")));
+                                             ACE_TEXT_ALWAYS_CHAR("server_tab_channels_refresh_button")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(refresh_clicked_cb),
+                   G_CALLBACK(refresh_channels_clicked_cb),
                    &myCBData);
   // toggle buttons
   GtkToggleButton* toggle_button = GTK_TOGGLE_BUTTON(gtk_builder_get_object(myCBData.builder,

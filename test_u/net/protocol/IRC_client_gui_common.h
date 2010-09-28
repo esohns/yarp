@@ -63,7 +63,8 @@ struct connection_cb_data_t
   RPG_Net_Protocol_IIRCControl* controller;
   ACE_Thread_Mutex*             connectionsLock;
   connections_t*                connections;
-  // *TODO*: couldn't it be done without ?
+  IRC_Client_GUI_Connection*    connection;
+  // *TODO*: couldn't it be done without this one ?
   bool                          away;
 };
 

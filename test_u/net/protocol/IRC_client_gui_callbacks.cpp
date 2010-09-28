@@ -626,6 +626,110 @@ change_clicked_cb(GtkWidget* button_in,
                                -1);    // delete everything
 }
 
+
+void
+usersbox_changed_cb(GtkWidget* combobox_in,
+                    gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::usersbox_changed_cb"));
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("usersbox_changed_cb...\n")));
+
+  ACE_UNUSED_ARG(combobox_in);
+  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
+                                               userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(combobox_in);
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->connection);
+
+  // step1: retrieve active users entry
+  // retrieve server tab users combobox handle
+  GtkComboBox* server_tab_users_combobox = GTK_COMBO_BOX(combobox_in);
+  ACE_ASSERT(server_tab_users_combobox);
+  GtkTreeIter active_iter;
+  //   GValue active_value;
+  gchar* user_value = NULL;
+  if (!gtk_combo_box_get_active_iter(server_tab_users_combobox,
+                                     &active_iter))
+  {
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("failed to gtk_combo_box_get_active_iter(%@), aborting\n"),
+//                server_tab_users_combobox));
+
+    return;
+  } // end IF
+//   gtk_tree_model_get_value(gtk_combo_box_get_model(serverlist),
+//                            &active_iter,
+//                            0, &active_value);
+  gtk_tree_model_get(gtk_combo_box_get_model(server_tab_users_combobox),
+                     &active_iter,
+                     0, &user_value, // just retrieve the first column...
+                     -1);
+//   ACE_ASSERT(G_VALUE_HOLDS_STRING(&active_value));
+  ACE_ASSERT(user_value);
+
+  // convert UTF8 to locale
+//   user_string = g_value_get_string(&active_value);
+  std::string user_string = IRC_Client_Tools::UTF82Locale(user_value,
+                                                          g_utf8_strlen(user_value, -1));
+  if (user_string.empty())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to convert user name, aborting\n")));
+
+    // clean up
+    g_free(user_value);
+
+    return;
+  } // end IF
+
+  // clean up
+  g_free(user_value);
+
+  // sanity check(s): has '#' prefix ?
+  if (user_string.find('#', 0) != 0)
+    user_string.insert(user_string.begin(), '#');
+  // sanity check(s): larger than IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH characters ?
+  // *TODO*: support the NICKLEN=xxx "feature" of the server...
+  if (user_string.size() > IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH)
+    user_string.resize(IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH);
+
+  data->connection->createMessageHandler(user_string);
+}
+
+void
+refresh_users_clicked_cb(GtkWidget* button_in,
+                         gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::refresh_users_clicked_cb"));
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("refresh_users_clicked_cb...\n")));
+
+  ACE_UNUSED_ARG(button_in);
+  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
+                                               userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->controller);
+
+  // *NOTE*: empty parameter --> current server
+  std::string servername;
+  try
+  {
+    data->controller->users(servername);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::users(), continuing\n")));
+  }
+}
+
 gboolean
 channel_entry_kb_focused_cb(GtkWidget* widget_in,
                             GdkEventFocus* event_in,
@@ -813,13 +917,13 @@ channelbox_changed_cb(GtkWidget* combobox_in,
 }
 
 void
-refresh_clicked_cb(GtkWidget* button_in,
-                   gpointer userData_in)
+refresh_channels_clicked_cb(GtkWidget* button_in,
+                            gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::refresh_clicked_cb"));
+  RPG_TRACE(ACE_TEXT("::refresh_channels_clicked_cb"));
 
 //   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("refresh_clicked_cb...\n")));
+//              ACE_TEXT("refresh_channels_clicked_cb...\n")));
 
   ACE_UNUSED_ARG(button_in);
   connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
