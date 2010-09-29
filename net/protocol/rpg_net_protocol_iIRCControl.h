@@ -59,8 +59,16 @@ class RPG_Net_Protocol_IIRCControl
                     const std::string&) = 0; // comment
   virtual void send(const string_list_t&,    // receiver(s) [nick/channel]
                     const std::string&) = 0; // message
+  virtual void who(const std::string&,      // name
+                   const bool&) = 0;        // query ops only ?
+  virtual void whois(const std::string&,        // server
+                     const string_list_t&) = 0; // nickmask(s)
+  virtual void whowas(const std::string&,      // nick
+                      const unsigned long&,    // count
+                      const std::string&) = 0; // server
   virtual void away(const std::string&) = 0; // message
   virtual void users(const std::string&) = 0; // server
+  virtual void userhost(const string_list_t&) = 0; // nicknames
 };
 
 #endif

@@ -151,14 +151,17 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         case RPG_Net_Protocol_IRC_Codes::RPL_TRYAGAIN:             // 263
         case RPG_Net_Protocol_IRC_Codes::RPL_LOCALUSERS:           // 265
         case RPG_Net_Protocol_IRC_Codes::RPL_GLOBALUSERS:          // 266
+        case RPG_Net_Protocol_IRC_Codes::RPL_USERHOST:             // 302
         case RPG_Net_Protocol_IRC_Codes::RPL_UNAWAY:               // 305
         case RPG_Net_Protocol_IRC_Codes::RPL_NOWAWAY:              // 306
+        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFWHO:             // 315
         case RPG_Net_Protocol_IRC_Codes::RPL_LISTSTART:            // 321
         case RPG_Net_Protocol_IRC_Codes::RPL_LIST:                 // 322
         case RPG_Net_Protocol_IRC_Codes::RPL_LISTEND:              // 323
         case RPG_Net_Protocol_IRC_Codes::RPL_TOPIC:                // 332
         case RPG_Net_Protocol_IRC_Codes::RPL_TOPICWHOTIME:         // 333
         case RPG_Net_Protocol_IRC_Codes::RPL_INVITING:             // 341
+        case RPG_Net_Protocol_IRC_Codes::RPL_WHOREPLY:             // 352
         case RPG_Net_Protocol_IRC_Codes::RPL_NAMREPLY:             // 353
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFNAMES:           // 366
         case RPG_Net_Protocol_IRC_Codes::RPL_BANLIST:              // 367
@@ -168,6 +171,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFMOTD:            // 376
         case RPG_Net_Protocol_IRC_Codes::ERR_NOSUCHNICK:           // 401
         case RPG_Net_Protocol_IRC_Codes::ERR_NICKNAMEINUSE:        // 433
+        case RPG_Net_Protocol_IRC_Codes::ERR_NEEDMOREPARAMS:       // 461
         case RPG_Net_Protocol_IRC_Codes::ERR_YOUREBANNEDCREEP:     // 465
         case RPG_Net_Protocol_IRC_Codes::ERR_BADCHANNAME:          // 479
         case RPG_Net_Protocol_IRC_Codes::ERR_CHANOPRIVSNEEDED:     // 482
@@ -371,6 +375,15 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         {
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("[%u]: received \"USERS\": \"%s\"\n"),
+//                      message_inout->getID(),
+//                      message_inout->getData()->params.back().c_str()));
+
+          break;
+        }
+        case RPG_Net_Protocol_IRCMessage::USERHOST:
+        {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("[%u]: received \"USERHOST\": \"%s\"\n"),
 //                      message_inout->getID(),
 //                      message_inout->getData()->params.back().c_str()));
 
@@ -1064,6 +1077,87 @@ RPG_Net_Protocol_Module_IRCHandler::send(const string_list_t& receivers_in,
 }
 
 void
+RPG_Net_Protocol_Module_IRCHandler::who(const std::string& name_in,
+                                        const bool& operatorsOnly_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::who"));
+
+  // step1: init WHOIS
+  RPG_Net_Protocol_IRCMessage* who_struct = NULL;
+  ACE_NEW_NORETURN(who_struct,
+                   RPG_Net_Protocol_IRCMessage());
+  ACE_ASSERT(who_struct);
+  ACE_NEW_NORETURN(who_struct->command.string,
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::WHO)));
+  ACE_ASSERT(who_struct->command.string);
+  who_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+
+  who_struct->params.push_back(name_in);
+  if (operatorsOnly_in)
+    who_struct->params.push_back(std::string("o"));
+
+  // step2: send it upstream
+  sendMessage(who_struct);
+}
+
+void
+RPG_Net_Protocol_Module_IRCHandler::whois(const std::string& servername_in,
+                                          const string_list_t& nicknames_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::whois"));
+
+  // step1: init WHOIS
+  RPG_Net_Protocol_IRCMessage* whois_struct = NULL;
+  ACE_NEW_NORETURN(whois_struct,
+                   RPG_Net_Protocol_IRCMessage());
+  ACE_ASSERT(whois_struct);
+  ACE_NEW_NORETURN(whois_struct->command.string,
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::WHOIS)));
+  ACE_ASSERT(whois_struct->command.string);
+  whois_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+
+  whois_struct->params = nicknames_in;
+  if (!servername_in.empty())
+    whois_struct->params.push_front(servername_in);
+
+  // step2: send it upstream
+  sendMessage(whois_struct);
+}
+
+void
+RPG_Net_Protocol_Module_IRCHandler::whowas(const std::string& nick_in,
+                                           const unsigned long& count_in,
+                                           const std::string& servername_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::whowas"));
+
+  // step1: init WHOWAS
+  RPG_Net_Protocol_IRCMessage* whowas_struct = NULL;
+  ACE_NEW_NORETURN(whowas_struct,
+                   RPG_Net_Protocol_IRCMessage());
+  ACE_ASSERT(whowas_struct);
+  ACE_NEW_NORETURN(whowas_struct->command.string,
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::WHOWAS)));
+  ACE_ASSERT(whowas_struct->command.string);
+  whowas_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+
+  whowas_struct->params.push_back(nick_in);
+  if (count_in)
+  {
+    std::stringstream converter;
+    converter << count_in;
+    std::string count_string;
+    converter >> count_string;
+    whowas_struct->params.push_back(count_string);
+  } // end IF
+  if (!servername_in.empty())
+    whowas_struct->params.push_back(servername_in);
+
+  // step2: send it upstream
+  sendMessage(whowas_struct);
+}
+
+void
 RPG_Net_Protocol_Module_IRCHandler::away(const std::string& message_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::away"));
@@ -1107,6 +1201,27 @@ RPG_Net_Protocol_Module_IRCHandler::users(const std::string& server_in)
 
   // step2: send it upstream
   sendMessage(users_struct);
+}
+
+void
+RPG_Net_Protocol_Module_IRCHandler::userhost(const string_list_t& nicknames_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::userhost"));
+
+  // step1: init USERHOST
+  RPG_Net_Protocol_IRCMessage* userhost_struct = NULL;
+  ACE_NEW_NORETURN(userhost_struct,
+                   RPG_Net_Protocol_IRCMessage());
+  ACE_ASSERT(userhost_struct);
+  ACE_NEW_NORETURN(userhost_struct->command.string,
+                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::USERHOST)));
+  ACE_ASSERT(userhost_struct->command.string);
+  userhost_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+
+  userhost_struct->params = nicknames_in;
+
+  // step2: send it upstream
+  sendMessage(userhost_struct);
 }
 
 void

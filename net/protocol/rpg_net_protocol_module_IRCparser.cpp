@@ -87,9 +87,6 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCParser::handleDataMessage"));
 
-  // don't care (implies yes per default, if we're part of a stream)
-  ACE_UNUSED_ARG(passMessageDownstream_out);
-
 // according to RFC1459:
 //  <message>  ::= [':' <prefix> <SPACE> ] <command> <params> <crlf>
 //  <prefix>   ::= <servername> | <nick> [ '!' <user> ] [ '@' <host> ]
@@ -192,6 +189,8 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
     // clean up
     if (message != message_inout)
       message->release();
+    passMessageDownstream_out = false;
+    message_inout->release();
 
     // what else can we do ?
     return;

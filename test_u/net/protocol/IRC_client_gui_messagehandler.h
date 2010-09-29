@@ -73,10 +73,21 @@ class IRC_Client_GUI_MessageHandler
   void setModes(const std::string&,  // mode string [i.e. "+|-x"]
                 const std::string&); // parameter, if any [i.e. <limit>,<user>,<ban mask>,...]
 
+  // users
+  void user(const std::string&,   // nick
+            const bool&,          // away ?
+            const bool&,          // IRC operator ?
+            const bool&,          // channel operator ?
+            const bool&,          // voiced ?
+            const unsigned long&, // hop count
+            const std::string&);  // real name
+  void endUsers();
+
+  // channel members
   void add(const std::string&);
   void remove(const std::string&);
-  void append(const string_list_t&);
-  void end();
+  void members(const string_list_t&);
+  void endMembers();
 
  private:
   // safety measures
@@ -85,7 +96,7 @@ class IRC_Client_GUI_MessageHandler
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_MessageHandler& operator=(const IRC_Client_GUI_MessageHandler&));
 
   // helper methods
-  void clear();
+  void clearMembers();
   void updateModeButtons();
 
   handler_cb_data_t               myCBData;
@@ -94,7 +105,7 @@ class IRC_Client_GUI_MessageHandler
   std::deque<std::string>         myDisplayQueue;
   GtkTextView*                    myView;
 
-  bool                            myIsFirstNameListMsg;
+  bool                            myIsFirstMemberListMsg;
   GtkNotebook*                    myParent;
 };
 

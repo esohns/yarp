@@ -58,7 +58,8 @@ LETTER         [[:alpha:]]
 /*LETTER    ==     [a-zA-Z]*/
 NUMBER         [[:digit:]]
 /*NUMBER    ==     [0-9]*/
-SPECIAL        [-\[\]\\`^{}]
+/* *NOTE*: violating the spec, some implementations allow '_'... */
+SPECIAL        [-\[\]\\`^{}_]
 NICK           {LETTER}([{LETTER}{NUMBER}{SPECIAL}])*
 ORIGIN         {SERVERNAME}|{NICK}
 /* *NOTE*: in order to pickup the hostname in a sequence "!user[@host] ",

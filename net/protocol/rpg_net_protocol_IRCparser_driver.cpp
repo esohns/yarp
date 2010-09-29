@@ -215,14 +215,18 @@ RPG_Net_Protocol_IRCParserDriver::error(const yy::location& location_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::error"));
 
-  // debug info
   std::ostringstream converter;
   converter << location_in;
+  // *NOTE*: the output format has been "adjusted" to fit in with bison error-reporting
   ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("failed to parse \"%s\" (@%s): \"%s\"\n"),
-             std::string(myCurrentFragment->rd_ptr(), myCurrentFragment->length()).c_str(),
+             ACE_TEXT("\" (@%s): \"%s\"\n"),
              converter.str().c_str(),
              message_in.c_str()));
+//   ACE_DEBUG((LM_ERROR,
+//              ACE_TEXT("failed to parse \"%s\" (@%s): \"%s\"\n"),
+//              std::string(myCurrentFragment->rd_ptr(), myCurrentFragment->length()).c_str(),
+//              converter.str().c_str(),
+//              message_in.c_str()));
 
   // dump message
   RPG_Net_Protocol_Message* message = NULL;
@@ -247,11 +251,14 @@ RPG_Net_Protocol_IRCParserDriver::error(const std::string& message_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::error"));
 
-  // debug info
+  // *NOTE*: the output format has been "adjusted" to fit in with bison error-reporting
   ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("failed to parse \"%s\": \"%s\"...\n"),
-             std::string(myCurrentFragment->rd_ptr(), myCurrentFragment->length()).c_str(),
+             ACE_TEXT("\": \"%s\"...\n"),
              message_in.c_str()));
+//   ACE_DEBUG((LM_ERROR,
+//              ACE_TEXT("failed to parse \"%s\": \"%s\"...\n"),
+//              std::string(myCurrentFragment->rd_ptr(), myCurrentFragment->length()).c_str(),
+//              message_in.c_str()));
 
 //   std::clog << message_in << std::endl;
 }

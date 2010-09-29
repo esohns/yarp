@@ -594,6 +594,18 @@
     <columns>
       <!-- column-name text -->
       <column type="gchararray"/>
+      <!-- column-name away -->
+      <column type="gboolean"/>
+      <!-- column-name IRCoperator -->
+      <column type="gboolean"/>
+      <!-- column-name operator -->
+      <column type="gboolean"/>
+      <!-- column-name voice -->
+      <column type="gboolean"/>
+      <!-- column-name hops -->
+      <column type="guint"/>
+      <!-- column-name realName -->
+      <column type="gchararray"/>
     </columns>
   </object>
 </interface>

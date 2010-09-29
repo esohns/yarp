@@ -689,14 +689,12 @@ usersbox_changed_cb(GtkWidget* combobox_in,
   // clean up
   g_free(user_value);
 
-  // sanity check(s): has '#' prefix ?
-  if (user_string.find('#', 0) != 0)
-    user_string.insert(user_string.begin(), '#');
   // sanity check(s): larger than IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH characters ?
   // *TODO*: support the NICKLEN=xxx "feature" of the server...
   if (user_string.size() > IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH)
     user_string.resize(IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH);
 
+  // *TODO*: if a conversation exists, simply activate the corresponding page
   data->connection->createMessageHandler(user_string);
 }
 
@@ -717,16 +715,29 @@ refresh_users_clicked_cb(GtkWidget* button_in,
   ACE_ASSERT(data);
   ACE_ASSERT(data->controller);
 
-  // *NOTE*: empty parameter --> current server
-  std::string servername;
+//   // *NOTE*: empty parameter --> current server
+//   std::string servername;
+//   try
+//   {
+//     data->controller->users(servername);
+//   }
+//   catch (...)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::users(), continuing\n")));
+//   }
+
+  // *NOTE*: empty parameter (or "0") --> ALL users
+  // (see RFC1459 section 4.5.1)
+  std::string name(ACE_TEXT_ALWAYS_CHAR("0"));
   try
   {
-    data->controller->users(servername);
+    data->controller->who(name, false);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::users(), continuing\n")));
+               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::who(), continuing\n")));
   }
 }
 
@@ -1500,7 +1511,7 @@ part_clicked_cb(GtkWidget* button_in,
   }
 }
 
-void
+gboolean
 members_clicked_cb(GtkWidget* widget_in,
                    GdkEventButton* event_in,
                    gpointer userData_in)
@@ -1512,7 +1523,7 @@ members_clicked_cb(GtkWidget* widget_in,
 
   // supposed to be a context menu -> right-clicked ?
   if (event_in->button != 3)
-    return;
+    return FALSE; // --> propagate event
 
   handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
                                             userData_in);
@@ -1523,23 +1534,36 @@ members_clicked_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->builder);
   ACE_ASSERT(data->connection);
 
-//   // any selected ("clicked") list item(s) at this position ?
-//   GtkTreePath* path = NULL;
-//   if (!gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(widget_in),
-//                                      event_in->x, event_in->y,
-//                                      &path, NULL,
-//                                      NULL, NULL))
-//     return; // no row at this position
-//   ACE_ASSERT(path);
-//   // clean up
-//   gtk_tree_path_free(path);
+  // find out which row was actually clicked
+  GtkTreePath* path = NULL;
+  if (!gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(widget_in),
+                                     event_in->x, event_in->y,
+                                     &path, NULL,
+                                     NULL, NULL))
+    return FALSE; // no row at this position --> propagate event
+  ACE_ASSERT(path);
 
   // retrieve current selection
   GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(widget_in));
   ACE_ASSERT(selection);
   // nothing selected ? --> nothing to do
   if (gtk_tree_selection_count_selected_rows(selection) == 0)
-    return;
+  {
+    // clean up
+    gtk_tree_path_free(path);
+
+    return TRUE; // done
+  } // end IF
+
+  // path part of the selection ? --> keep selection : new selection
+  if (!gtk_tree_selection_path_is_selected(selection, path))
+  {
+    gtk_tree_selection_unselect_all(selection);
+    gtk_tree_selection_select_path(selection, path);
+  } // end IF
+
+  // clean up
+  gtk_tree_path_free(path);
 
   GList* selected_rows = NULL;
   GtkTreeModel* model = NULL;
@@ -1591,24 +1615,35 @@ members_clicked_cb(GtkWidget* widget_in,
 
   // remove ourselves from any selection...
   string_list_iterator_t iterator = data->parameters.begin();
+  string_list_iterator_t self = data->parameters.end();
   std::string nickname = data->connection->getNickname();
   for (;
        iterator != data->parameters.end();
        iterator++)
   {
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("selected: \"%s\"\n"),
+//                (*iterator).c_str()));
+
     if (*iterator == nickname)
-      break;
+    {
+      self = iterator;
+      continue;
+    } // end IF
     // *NOTE*: ignore leading '@'
     if ((*iterator).find('@', 0) == 0)
       if (((*iterator).find(nickname, 1) == 1) &&
           ((*iterator).size() == (nickname.size() + 1)))
-        break;
+      {
+        self = iterator;
+        continue;
+      } // end IF
   } // end FOR
-  if (iterator != data->parameters.end())
-    data->parameters.erase(iterator);
+  if (self != data->parameters.end())
+    data->parameters.erase(self);
   // no selection ? --> nothing to do
   if (data->parameters.empty())
-    return;
+    return TRUE; // done
 
   // init popup menu
   GtkMenu* channel_tab_treeview_menu = GTK_MENU(gtk_builder_get_object(data->builder,
@@ -1690,6 +1725,8 @@ members_clicked_cb(GtkWidget* widget_in,
                  NULL, NULL,
                  event_in->button,
                  event_in->time);
+
+  return TRUE;
 }
 
 void
@@ -1763,6 +1800,34 @@ action_invite_cb(GtkAction* action_in,
                  ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::invite(), continuing\n")));
     }
   } // end FOR
+}
+
+void
+action_info_cb(GtkAction* action_in,
+               gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::action_info_cb"));
+
+  //   ACE_DEBUG((LM_DEBUG,
+  //              ACE_TEXT("action_info_cb...\n")));
+
+  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
+                                            userData_in);
+
+  // sanity check(s)
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->controller);
+  ACE_ASSERT(!data->parameters.empty());
+
+  try
+  {
+    data->controller->userhost(data->parameters);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Net_Protocol_IIRCControl::userhost(), continuing\n")));
+  }
 }
 
 void

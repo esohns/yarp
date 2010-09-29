@@ -58,7 +58,7 @@ update_display_cb(gpointer userData_in)
 
 IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkTextView* view_in)
  : myView(view_in),
-   myIsFirstNameListMsg(true),
+   myIsFirstMemberListMsg(true),
    myParent(NULL)
 {
   RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
@@ -87,7 +87,7 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(IRC_Client_GUI_Conn
                                                              const std::string& UIFileDirectory_in,
                                                              GtkNotebook* notebook_in)
  : myView(NULL),
-   myIsFirstNameListMsg(true),
+   myIsFirstMemberListMsg(true),
    myParent(notebook_in)
 {
   RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
@@ -374,6 +374,13 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(IRC_Client_GUI_Conn
                    G_CALLBACK(action_invite_cb),
                    &myCBData);
   action = GTK_ACTION(gtk_builder_get_object(myCBData.builder,
+                                             ACE_TEXT_ALWAYS_CHAR("action_info")));
+  ACE_ASSERT(action);
+  g_signal_connect(action,
+                   ACE_TEXT_ALWAYS_CHAR("activate"),
+                   G_CALLBACK(action_info_cb),
+                   &myCBData);
+  action = GTK_ACTION(gtk_builder_get_object(myCBData.builder,
                                              ACE_TEXT_ALWAYS_CHAR("action_kick")));
   ACE_ASSERT(action);
   g_signal_connect(action,
@@ -602,9 +609,9 @@ IRC_Client_GUI_MessageHandler::setModes(const std::string& modes_in,
 }
 
 void
-IRC_Client_GUI_MessageHandler::clear()
+IRC_Client_GUI_MessageHandler::clearMembers()
 {
-  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::clear"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::clearMembers"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
@@ -612,7 +619,7 @@ IRC_Client_GUI_MessageHandler::clear()
   // retrieve channel liststore handle
   GtkListStore* channel_liststore = NULL;
   channel_liststore = GTK_LIST_STORE(gtk_builder_get_object(myCBData.builder,
-                                                            ACE_TEXT_ALWAYS_CHAR("channel_liststore")));
+                                     ACE_TEXT_ALWAYS_CHAR("channel_liststore")));
   ACE_ASSERT(channel_liststore);
 
   // clear liststore
@@ -627,7 +634,7 @@ IRC_Client_GUI_MessageHandler::add(const std::string& nick_in)
   // retrieve channel liststore handle
   GtkListStore* channel_liststore = NULL;
   channel_liststore = GTK_LIST_STORE(gtk_builder_get_object(myCBData.builder,
-                                                            ACE_TEXT_ALWAYS_CHAR("channel_liststore")));
+                                     ACE_TEXT_ALWAYS_CHAR("channel_liststore")));
   ACE_ASSERT(channel_liststore);
 
   // step1: convert text
@@ -730,18 +737,18 @@ IRC_Client_GUI_MessageHandler::remove(const std::string& nick_in)
 }
 
 void
-IRC_Client_GUI_MessageHandler::append(const string_list_t& list_in)
+IRC_Client_GUI_MessageHandler::members(const string_list_t& list_in)
 {
-  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::append"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::members"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
 
-  if (myIsFirstNameListMsg)
+  if (myIsFirstMemberListMsg)
   {
-    clear();
+    clearMembers();
 
-    myIsFirstNameListMsg = false;
+    myIsFirstMemberListMsg = false;
   } // end IF
 
   // retrieve channel liststore handle
@@ -778,14 +785,14 @@ IRC_Client_GUI_MessageHandler::append(const string_list_t& list_in)
 }
 
 void
-IRC_Client_GUI_MessageHandler::end()
+IRC_Client_GUI_MessageHandler::endMembers()
 {
-  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::end"));
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::endMembers"));
 
   // sanity check(s)
   ACE_ASSERT(myCBData.builder);
 
-  myIsFirstNameListMsg = true;
+  myIsFirstMemberListMsg = true;
 
   // retrieve treeview handle
   GtkTreeView* channel_tab_treeview = NULL;

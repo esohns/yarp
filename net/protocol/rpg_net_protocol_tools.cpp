@@ -1363,13 +1363,6 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
       RPG_Net_Protocol_IRCMessage::CommandType command = RPG_Net_Protocol_Tools::IRCCommandString2Type(*message_in.command.string);
       switch (command)
       {
-        case RPG_Net_Protocol_IRCMessage::NOTICE:
-        {
-          result = RPG_Net_Protocol_Tools::concatParams(message_in.params,
-                                                        1);
-
-          break;
-        }
         case RPG_Net_Protocol_IRCMessage::NICK:
         {
           result = message_in.prefix.origin;
@@ -1386,6 +1379,13 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
 
           break;
         }
+        case RPG_Net_Protocol_IRCMessage::NOTICE:
+        {
+          result = RPG_Net_Protocol_Tools::concatParams(message_in.params,
+                                                        1);
+
+          break;
+        }
         case RPG_Net_Protocol_IRCMessage::MODE:
         case RPG_Net_Protocol_IRCMessage::TOPIC:
         case RPG_Net_Protocol_IRCMessage::INVITE:
@@ -1393,6 +1393,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRCMessage::ERROR:
         case RPG_Net_Protocol_IRCMessage::AWAY:
         case RPG_Net_Protocol_IRCMessage::USERS:
+        case RPG_Net_Protocol_IRCMessage::USERHOST:
         {
           result = RPG_Net_Protocol_Tools::concatParams(message_in.params);
 
@@ -1451,6 +1452,7 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSEROP:       // 252
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERUNKNOWN:  // 253
         case RPG_Net_Protocol_IRC_Codes::RPL_LUSERCHANNELS: // 254
+        case RPG_Net_Protocol_IRC_Codes::RPL_USERHOST:      // 302
         case RPG_Net_Protocol_IRC_Codes::RPL_LISTSTART:     // 321
         case RPG_Net_Protocol_IRC_Codes::RPL_LIST:          // 322
         case RPG_Net_Protocol_IRC_Codes::RPL_LISTEND:       // 323
@@ -1462,6 +1464,20 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         {
           result = RPG_Net_Protocol_Tools::concatParams(message_in.params,
                                                         1);
+
+          break;
+        }
+        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFWHO:      // 315
+        {
+          result = RPG_Net_Protocol_Tools::concatParams(message_in.params,
+                                                        2);
+
+          break;
+        }
+        case RPG_Net_Protocol_IRC_Codes::RPL_WHOREPLY:      // 352
+        {
+          result = RPG_Net_Protocol_Tools::concatParams(message_in.params,
+                                                        5);
 
           break;
         }

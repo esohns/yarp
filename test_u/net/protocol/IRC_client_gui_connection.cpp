@@ -40,6 +40,7 @@ IRC_Client_GUI_Connection::IRC_Client_GUI_Connection(GtkBuilder* builder_in,
                                                      const std::string& UIFileDirectory_in,
                                                      GtkNotebook* parent_in)
  : myUIFileDirectory(),
+   myIsFirstUsersMsg(true),
    myParent(parent_in),
    myContextID(0)
 {
@@ -521,6 +522,78 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
           break;
         }
+        case RPG_Net_Protocol_IRC_Codes::RPL_USERHOST:         // 302
+        {
+          // bisect (WS-separated) userhost records from the final parameter
+
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("bisecting records: \"%s\"...\n"),
+//                      message_in.params.back().c_str()));
+
+          std::string::size_type current_position = 0;
+          std::string::size_type last_position = 0;
+          std::string record;
+          string_list_t list;
+          do
+          {
+            current_position = message_in.params.back().find(' ', last_position);
+
+            record = message_in.params.back().substr(last_position,
+                                                     (((current_position == std::string::npos) ? message_in.params.back().size()
+                                                                                               : current_position) - last_position));
+
+            // check whether the record is empty
+            if (!record.empty())
+              list.push_back(record);
+
+            // advance
+            last_position = current_position + 1;
+          } while (current_position != std::string::npos);
+
+          std::string message_string;
+          GDK_THREADS_ENTER();
+
+          for (string_list_const_iterator_t iterator = list.begin();
+               iterator != list.end();
+               iterator++)
+          {
+            current_position = (*iterator).find('=', 0);
+            if (current_position == std::string::npos)
+            {
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("invalid USERHOST record: \"%s\", continuing\n"),
+                                  (*iterator).c_str()));
+
+              continue;
+            } // end IF
+
+            message_string = (*iterator).substr(0, current_position);
+            message_string += ACE_TEXT_ALWAYS_CHAR(" is \"");
+
+            // advance
+            last_position = current_position;
+
+            current_position = (*iterator).find('@', current_position);
+            if (current_position == std::string::npos)
+            {
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("invalid USERHOST record: \"%s\", continuing\n"),
+                         (*iterator).c_str()));
+
+              continue;
+            } // end IF
+            message_string += (*iterator).substr(last_position + 1, (current_position - last_position - 1));
+            message_string += ACE_TEXT_ALWAYS_CHAR("\" on \"");
+            message_string += (*iterator).substr(current_position + 1);
+            message_string += ACE_TEXT_ALWAYS_CHAR("\"\n");
+
+            log(message_string);
+          } // end FOR
+
+          GDK_THREADS_LEAVE();
+
+          break;
+        }
         case RPG_Net_Protocol_IRC_Codes::RPL_UNAWAY:           // 305
         {
           GDK_THREADS_ENTER();
@@ -554,6 +627,25 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
                                                                                                     ACE_TEXT_ALWAYS_CHAR("server_tab_tools_togglebutton")));
           ACE_ASSERT(server_tab_tools_togglebutton);
           gtk_toggle_button_set_active(server_tab_tools_togglebutton, TRUE);
+
+          log(message_in);
+
+          GDK_THREADS_LEAVE();
+
+          break;
+        }
+        case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFWHO:         // 315
+        {
+          GDK_THREADS_ENTER();
+
+          // retrieve server tab users store
+          GtkComboBox* server_tab_users_combobox = GTK_COMBO_BOX(gtk_builder_get_object(myCBData.builder,
+              ACE_TEXT_ALWAYS_CHAR("server_tab_users_combobox")));
+          ACE_ASSERT(server_tab_users_combobox);
+
+          myIsFirstUsersMsg = true;
+
+          gtk_widget_set_sensitive(GTK_WIDGET(server_tab_users_combobox), TRUE);
 
           log(message_in);
 
@@ -666,6 +758,97 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
           break;
         }
+        case RPG_Net_Protocol_IRC_Codes::RPL_WHOREPLY:         // 352
+        {
+          // bisect user information from parameter strings
+          RPG_Net_Protocol_ParametersIterator_t iterator = message_in.params.begin();
+          ACE_ASSERT(message_in.params.size() >= 8);
+          std::advance(iterator, 5); // nick position
+          std::string nick = *iterator;
+          iterator++;
+          bool away = ((*iterator).find(ACE_TEXT_ALWAYS_CHAR("G"), 0) == 0);
+          bool is_IRCoperator = ((*iterator).find(ACE_TEXT_ALWAYS_CHAR("*"), 1) == 1);
+          bool is_operator = ((*iterator).find(ACE_TEXT_ALWAYS_CHAR("@"), 2) != std::string::npos);
+          bool is_voiced = ((*iterator).find(ACE_TEXT_ALWAYS_CHAR("+"), 2) != std::string::npos);
+          unsigned long hop_count = 0;
+          std::string real_name;
+          std::stringstream converter;
+          std::string::size_type ws_position = 0;
+          ws_position = message_in.params.back().find(' ', 0);
+          converter << message_in.params.back().substr(0, ws_position);
+          converter >> hop_count;
+          real_name = message_in.params.back().substr(ws_position + 1);
+
+          GDK_THREADS_ENTER();
+
+          // retrieve server tab users store
+          GtkListStore* server_tab_users_store = GTK_LIST_STORE(gtk_builder_get_object(myCBData.builder,
+                                                                                       ACE_TEXT_ALWAYS_CHAR("server_tab_users_store")));
+          ACE_ASSERT(server_tab_users_store);
+
+          if (myIsFirstUsersMsg)
+          {
+            gtk_list_store_clear(server_tab_users_store);
+
+            myIsFirstUsersMsg = false;
+          } // end IF
+
+          // ignore own record
+          if (nick == myCBData.nickname)
+          {
+            GDK_THREADS_LEAVE();
+
+            break;
+          } // end IF
+
+          // step1: convert text
+          gchar* converted_nick_string = IRC_Client_Tools::Locale2UTF8(nick);
+          if (!converted_nick_string)
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("failed to convert nickname: \"%s\", aborting\n"),
+                       nick.c_str()));
+
+            GDK_THREADS_LEAVE();
+
+            break;
+          } // end IF
+          gchar* converted_name_string = IRC_Client_Tools::Locale2UTF8(real_name);
+          if (!converted_name_string)
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("failed to convert name: \"%s\", aborting\n"),
+                       real_name.c_str()));
+
+            // clean up
+            g_free(converted_nick_string);
+
+            GDK_THREADS_LEAVE();
+
+            break;
+          } // end IF
+
+          // step2: append new (text) entry
+          GtkTreeIter iter;
+          gtk_list_store_append(server_tab_users_store, &iter);
+          gtk_list_store_set(server_tab_users_store, &iter,
+                             0, converted_nick_string, // column 0
+                             1, away,
+                             2, is_IRCoperator,
+                             3, is_operator,
+                             4, is_voiced,
+                             5, hop_count,
+                             6, converted_name_string,
+                             -1);
+
+          // clean up
+          g_free(converted_nick_string);
+          g_free(converted_name_string);
+
+          GDK_THREADS_LEAVE();
+
+          break;
+        }
         case RPG_Net_Protocol_IRC_Codes::RPL_NAMREPLY:         // 353
         {
           // bisect (WS-separated) nicknames from the final parameter string
@@ -719,7 +902,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
             GDK_THREADS_ENTER();
 
-            (*handler_iterator).second->append(list);
+            (*handler_iterator).second->members(list);
 
             if (is_operator)
             {
@@ -757,7 +940,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
             GDK_THREADS_ENTER();
 
-            (*handler_iterator).second->end();
+            (*handler_iterator).second->endMembers();
 
             GDK_THREADS_LEAVE();
           } // end lock scope
@@ -1165,6 +1348,25 @@ IRC_Client_GUI_Connection::getController()
   return myCBData.controller;
 }
 
+IRC_Client_GUI_MessageHandler*
+IRC_Client_GUI_Connection::getHandler(const std::string& id_in)
+{
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::getHandler"));
+
+  // existing conversation ? --> retrieve message handler
+
+  // synch access
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+    message_handlers_iterator_t iterator = myMessageHandlers.find(id_in);
+    if (iterator != myMessageHandlers.end())
+      return (*iterator).second;
+  } // end lock scope
+
+  return NULL;
+}
+
 const std::string
 IRC_Client_GUI_Connection::getNickname() const
 {
@@ -1300,6 +1502,24 @@ IRC_Client_GUI_Connection::forward(const std::string& channel_in,
   } // end lock scope
 
   return true;
+}
+
+void
+IRC_Client_GUI_Connection::log(const std::string& message_in)
+{
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::log"));
+
+  // --> pass to server log
+
+  // retrieve message handler
+  // synch access
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+    message_handlers_iterator_t handler_iterator = myMessageHandlers.find(std::string());
+    ACE_ASSERT(handler_iterator != myMessageHandlers.end());
+    (*handler_iterator).second->queueForDisplay(message_in);
+  } // end lock scope
 }
 
 void

@@ -51,9 +51,10 @@ void action_away_cb(GtkAction*, gpointer);
 void channel_mode_toggled_cb(GtkToggleButton*, gpointer);
 void topic_clicked_cb(GtkWidget*, GdkEventButton*, gpointer);
 void part_clicked_cb(GtkWidget*, gpointer);
-void members_clicked_cb(GtkWidget*, GdkEventButton*, gpointer);
+gboolean members_clicked_cb(GtkWidget*, GdkEventButton*, gpointer);
 void action_msg_cb(GtkAction*, gpointer);
 void action_invite_cb(GtkAction*, gpointer);
+void action_info_cb(GtkAction*, gpointer);
 void action_kick_cb(GtkAction*, gpointer);
 void action_ban_cb(GtkAction*, gpointer);
 #ifdef __cplusplus

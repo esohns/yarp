@@ -84,8 +84,16 @@ class RPG_Net_Protocol_Module_IRCHandler
                     const std::string&); // comment
   virtual void send(const string_list_t&, // receiver(s) [nick/channel]
                     const std::string&);  // message
+  virtual void who(const std::string&, // name
+                   const bool&);       // query ops only ?
+  virtual void whois(const std::string&,    // server
+                     const string_list_t&); // nickmask(s)
+  virtual void whowas(const std::string&,   // nick
+                      const unsigned long&, // count
+                      const std::string&);  // server
   virtual void away(const std::string&); // message
   virtual void users(const std::string&); // server
+  virtual void userhost(const string_list_t&); // nicknames
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;

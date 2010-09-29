@@ -2382,9 +2382,9 @@ static yyconst yy_state_type yy_NUL_trans[60] =
 
 static yyconst flex_int16_t yy_rule_linenum[23] =
     {   0,
-      103,  107,  112,  116,  120,  124,  129,  134,  141,  147,
-      155,  163,  170,  178,  181,  185,  188,  193,  200,  203,
-      214,  219
+      104,  108,  113,  117,  121,  125,  130,  135,  142,  148,
+      156,  164,  171,  179,  182,  186,  189,  194,  201,  204,
+      215,  220
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -2439,6 +2439,7 @@ And so on...
 <letter>      = [[:alpha:]]*/
 /*LETTER    ==     [a-zA-Z]*/
 /*NUMBER    ==     [0-9]*/
+/* *NOTE*: in contradiction to the spec, '_' seems to be allowed by some implementations... */
 /* *NOTE*: in order to pickup the hostname in a sequence "!user[@host] ",
            disallow "@" within a username... */
 /* NONWHITE       [\x00-\xFF]{-}[ \t\0\r\n] */

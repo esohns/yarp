@@ -91,13 +91,16 @@ class IRC_Client_GUI_Connection
   // helper methods
   const bool forward(const std::string&,  // channel/nick
                      const std::string&); // message text
+  void log(const std::string&);
   void log(const RPG_Net_Protocol_IRCMessage&);
   void error(const RPG_Net_Protocol_IRCMessage&);
 
+  IRC_Client_GUI_MessageHandler* getHandler(const std::string&); // id (channel/nick)
   void updateModeButtons();
 
   std::string                  myUIFileDirectory;
   connection_cb_data_t         myCBData;
+  bool                         myIsFirstUsersMsg;
 
   ACE_Thread_Mutex             myLock;
   message_handlers_t           myMessageHandlers;
