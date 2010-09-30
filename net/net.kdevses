@@ -1,20 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="4" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/net/protocol/rpg_net_protocol_module_IRChandler.h" >
-   <View0 Encoding="" line="78" Type="Source" />
-  </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/net/protocol/rpg_net_protocol_module_IRChandler.cpp" >
-   <View0 Encoding="" line="739" Type="Source" />
-  </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/net/protocol/rpg_net_protocol_IRCmessage.h" >
-   <View0 Encoding="" line="132" Type="Source" />
-  </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/net/protocol/rpg_net_protocol_module_IRCstreamer.cpp" >
-   <View0 Encoding="" line="304" Type="Source" />
-  </Doc3>
- </DocsAndViews>
+ <DocsAndViews NumberOfDocuments="0" />
  <pluginList>
   <kdevdebugger>
    <breakpointList/>
