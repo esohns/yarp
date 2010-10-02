@@ -20,24 +20,26 @@
 
 #include "rpg_stream_counter.h"
 
+#include <rpg_common_macros.h>
+
 RPG_Stream_Counter::RPG_Stream_Counter(const unsigned long& initCount_in)
  : myCounter(initCount_in),
    myCondition(myLock)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Counter::RPG_Stream_Counter"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Counter::RPG_Stream_Counter"));
 
 }
 
 RPG_Stream_Counter::~RPG_Stream_Counter()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Counter::~RPG_Stream_Counter"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Counter::~RPG_Stream_Counter"));
 
 }
 
 void
 RPG_Stream_Counter::increase()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Counter::increase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Counter::increase"));
 
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
@@ -47,7 +49,7 @@ RPG_Stream_Counter::increase()
 void
 RPG_Stream_Counter::decrease()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Counter::decrease"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Counter::decrease"));
 
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
@@ -64,7 +66,7 @@ RPG_Stream_Counter::decrease()
 const unsigned long
 RPG_Stream_Counter::refcount()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Counter::refcount"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Counter::refcount"));
 
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
@@ -74,7 +76,7 @@ RPG_Stream_Counter::refcount()
 void
 RPG_Stream_Counter::waitcount()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Counter::waitcount"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Counter::waitcount"));
 
   {
     // need lock
@@ -97,7 +99,7 @@ RPG_Stream_Counter::waitcount()
 void
 RPG_Stream_Counter::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Counter::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Counter::dump_state"));
 
   // dump an "atomic" state...
   {

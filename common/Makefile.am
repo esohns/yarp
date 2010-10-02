@@ -2,8 +2,6 @@ METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
 
-#INCLUDES = -I$(top_srcdir)/.
-
 include_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \
 	rpg_common.h rpg_common_XML_parser.h rpg_common_XML_tree.h rpg_common_XML_types.h \
 	rpg_common_actiontype.h rpg_common_amount.h rpg_common_areaofeffect.h rpg_common_attribute.h \
@@ -38,7 +36,9 @@ libRPG_Common_la_SOURCES = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \
 	rpg_common_terrain.h rpg_common_timer_manager.cpp rpg_common_timer_manager.h \
 	rpg_common_timerhandler.cpp rpg_common_timerhandler.h rpg_common_tools.cpp rpg_common_tools.h \
 	rpg_common_usage.h
-libRPG_Common_la_LDFLAGS = -L/usr/local/lib
 
-bindata_DATA = rpg_common.xsd rpg_common_environment.xsd
-bindatadir = $(bindir)
+pkgdatadir = $(datadir)/@META_PACKAGE@
+configdir = $(pkgdatadir)/config
+config_DATA = rpg_common.xsd rpg_common_environment.xsd
+
+EXTRA_DIST = $(config_DATA)

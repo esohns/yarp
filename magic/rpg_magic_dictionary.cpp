@@ -28,6 +28,8 @@
 #include <rpg_dice_XML_parser.h>
 #include <rpg_dice_common_tools.h>
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 #include <iostream>
@@ -36,13 +38,13 @@
 
 RPG_Magic_Dictionary::RPG_Magic_Dictionary()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::RPG_Magic_Dictionary"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::RPG_Magic_Dictionary"));
 
 }
 
 RPG_Magic_Dictionary::~RPG_Magic_Dictionary()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::~RPG_Magic_Dictionary"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::~RPG_Magic_Dictionary"));
 
 }
 
@@ -50,7 +52,7 @@ void
 RPG_Magic_Dictionary::init(const std::string& filename_in,
                            const bool& validateXML_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::init"));
 
   // Construct the parser.
   //
@@ -230,7 +232,7 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
 const RPG_Magic_Spell_Properties
 RPG_Magic_Dictionary::getSpellProperties(const std::string& spellName_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
 
   RPG_Magic_DictionaryIterator_t iterator = myDictionary.find(spellName_in);
   if (iterator == myDictionary.end())
@@ -249,7 +251,7 @@ const RPG_Magic_Spell_Properties
 RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in,
                                          std::string& spellName_out) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
 
   // reset return value
   spellName_out.resize(0);
@@ -280,7 +282,7 @@ const RPG_Magic_Spells_t
 RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in,
                                 const unsigned char& spellLevel_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
 
   // sanity check
   ACE_ASSERT(casterClass_in.discriminator != RPG_Magic_CasterClassUnion::INVALID);
@@ -359,7 +361,7 @@ RPG_Magic_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
                                                 ::xsd::cxx::xml::error_handler<char>::severity severity_in,
                                                 const std::string& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::XSD_Error_Handler::handle"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::XSD_Error_Handler::handle"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
@@ -423,7 +425,7 @@ RPG_Magic_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
 void
 RPG_Magic_Dictionary::dump() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Dictionary::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::dump"));
 
   std::ostringstream converter;
   for (RPG_Magic_DictionaryIterator_t iterator = myDictionary.begin();

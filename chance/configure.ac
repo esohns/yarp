@@ -1,12 +1,16 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(chance, 0.1, erik.sohns@web.de)
+AC_INIT([RPG_Chance],[0.1],[erik.sohns@web.de],[RPG_Chance],[http://www.rpg.org])
 AC_PREREQ([2.63])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_AUX_DIR([.])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
+
+# define meta-package
+META_PACKAGE=RPG
+AC_DEFINE([META_PACKAGE], [RPG], [meta-package])
 
 # get system information
 AC_CANONICAL_TARGET
@@ -25,7 +29,7 @@ AC_PROG_MAKE_SET
 # AM_PROG_LIBTOOL
 
 # init other tools.
-AM_INIT_AUTOMAKE(chance, 0.1)
+AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 # build time sanity check...
 AM_SANITY_CHECK
 LT_INIT
@@ -52,8 +56,8 @@ else
   AC_MSG_RESULT(no)
 fi
 
-# export these variable (so Makefile substitutions
-# can be made.
+# export variables (so Makefile substitutions can be made)
+AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # Checks for libraries.

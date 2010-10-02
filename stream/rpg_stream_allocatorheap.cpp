@@ -20,24 +20,26 @@
 
 #include "rpg_stream_allocatorheap.h"
 
+#include <rpg_common_macros.h>
+
 RPG_Stream_AllocatorHeap::RPG_Stream_AllocatorHeap()
  : //inherited(),
    myPoolSize(0)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::RPG_Stream_AllocatorHeap"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::RPG_Stream_AllocatorHeap"));
 
 }
 
 RPG_Stream_AllocatorHeap::~RPG_Stream_AllocatorHeap()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::~RPG_Stream_AllocatorHeap"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::~RPG_Stream_AllocatorHeap"));
 
 }
 
 void*
 RPG_Stream_AllocatorHeap::malloc(size_t bytes_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::malloc"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::malloc"));
 
   // update allocation counter
   myPoolSize += bytes_in;
@@ -50,7 +52,7 @@ void*
 RPG_Stream_AllocatorHeap::calloc(size_t bytes_in,
                              char initialValue_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::calloc"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::calloc"));
 
   // update allocation counter
   myPoolSize += bytes_in;
@@ -65,7 +67,7 @@ RPG_Stream_AllocatorHeap::calloc(size_t numElements_in,
                              size_t sizePerElement_in,
                              char initialValue_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::calloc"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::calloc"));
 
   // update allocation counter
   myPoolSize += (numElements_in * sizePerElement_in);
@@ -79,7 +81,7 @@ RPG_Stream_AllocatorHeap::calloc(size_t numElements_in,
 void
 RPG_Stream_AllocatorHeap::free(void* handle_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::free"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::free"));
 
   // *TODO*: how can we update our counter ???
 //   // update allocation counter
@@ -92,7 +94,7 @@ RPG_Stream_AllocatorHeap::free(void* handle_in)
 size_t
 RPG_Stream_AllocatorHeap::cache_depth() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::cache_depth"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::cache_depth"));
 
   return cache_size();
 }
@@ -100,7 +102,7 @@ RPG_Stream_AllocatorHeap::cache_depth() const
 size_t
 RPG_Stream_AllocatorHeap::cache_size() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::cache_size"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::cache_size"));
 
   // *TODO*: how can we update our counter (see free()) ???
   return myPoolSize.value();
@@ -109,7 +111,7 @@ RPG_Stream_AllocatorHeap::cache_size() const
 void
 RPG_Stream_AllocatorHeap::dump(void) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::dump"));
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
@@ -120,7 +122,7 @@ RPG_Stream_AllocatorHeap::dump(void) const
 int
 RPG_Stream_AllocatorHeap::remove(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::remove"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::remove"));
 
   ACE_ASSERT(false);
 
@@ -132,7 +134,7 @@ RPG_Stream_AllocatorHeap::bind(const char* name_in,
                            void* pointer_in,
                            int duplicates_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::bind"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::bind"));
 
   // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -148,7 +150,7 @@ int
 RPG_Stream_AllocatorHeap::trybind(const char* name_in,
                               void*& pointer_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::trybind"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::trybind"));
 
     // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -163,7 +165,7 @@ int
 RPG_Stream_AllocatorHeap::find(const char* name_in,
                            void*& pointer_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::find"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::find"));
 
   // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -177,7 +179,7 @@ RPG_Stream_AllocatorHeap::find(const char* name_in,
 int
 RPG_Stream_AllocatorHeap::find(const char* name_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::find"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::find"));
 
   // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -190,7 +192,7 @@ RPG_Stream_AllocatorHeap::find(const char* name_in)
 int
 RPG_Stream_AllocatorHeap::unbind(const char* name_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::unbind"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::unbind"));
 
   // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -204,7 +206,7 @@ int
 RPG_Stream_AllocatorHeap::unbind(const char* name_in,
                              void*& pointer_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::unbind"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::unbind"));
 
   // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -219,7 +221,7 @@ int
 RPG_Stream_AllocatorHeap::sync(ssize_t length_in,
                            int flags_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::sync"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::sync"));
 
   // ignore these
   ACE_UNUSED_ARG(length_in);
@@ -235,7 +237,7 @@ RPG_Stream_AllocatorHeap::sync(void* address_in,
                            size_t length_in,
                            int flags_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::sync"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::sync"));
 
   // ignore these
   ACE_UNUSED_ARG(address_in);
@@ -251,7 +253,7 @@ int
 RPG_Stream_AllocatorHeap::protect(ssize_t length_in,
                               int protection_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::protect"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::protect"));
 
   // ignore these
   ACE_UNUSED_ARG(length_in);
@@ -267,7 +269,7 @@ RPG_Stream_AllocatorHeap::protect(void* address_in,
                               size_t length_in,
                               int protection_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::protect"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_AllocatorHeap::protect"));
 
   // ignore these
   ACE_UNUSED_ARG(address_in);

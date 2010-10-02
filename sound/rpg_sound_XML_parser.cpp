@@ -19,25 +19,27 @@
  ***************************************************************************/
 #include "rpg_sound_XML_parser.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 RPG_Sound_Category RPG_Sound_Category_Type::post_RPG_Sound_Category_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Category_Type::post_RPG_Sound_Category_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Category_Type::post_RPG_Sound_Category_Type"));
 
   return RPG_Sound_CategoryHelper::stringToRPG_Sound_Category(post_string());
 }
 
 RPG_Sound_Event RPG_Sound_Event_Type::post_RPG_Sound_Event_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Event_Type::post_RPG_Sound_Event_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Type::post_RPG_Sound_Event_Type"));
 
   return RPG_Sound_EventHelper::stringToRPG_Sound_Event(post_string());
 }
 
 RPG_Sound_Type::RPG_Sound_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Type::RPG_Sound_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Type::RPG_Sound_Type"));
 
   myCurrentSound.category = RPG_SOUND_CATEGORY_INVALID;
   myCurrentSound.event = RPG_SOUND_EVENT_INVALID;
@@ -47,35 +49,35 @@ RPG_Sound_Type::RPG_Sound_Type()
 
 void RPG_Sound_Type::category(const RPG_Sound_Category& category_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Type::category"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Type::category"));
 
   myCurrentSound.category = category_in;
 }
 
 void RPG_Sound_Type::event(const RPG_Sound_Event& event_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Type::event"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Type::event"));
 
   myCurrentSound.event = event_in;
 }
 
 void RPG_Sound_Type::file(const ::std::string& file_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Type::file"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Type::file"));
 
   myCurrentSound.file = file_in;
 }
 
 void RPG_Sound_Type::interval(const unsigned char interval_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Type::interval"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Type::interval"));
 
   myCurrentSound.interval = interval_in;
 }
 
 RPG_Sound RPG_Sound_Type::post_RPG_Sound_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Type::post_RPG_Sound_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Type::post_RPG_Sound_Type"));
 
   RPG_Sound result = myCurrentSound;
 
@@ -91,25 +93,25 @@ RPG_Sound RPG_Sound_Type::post_RPG_Sound_Type()
 RPG_Sound_Dictionary_Type::RPG_Sound_Dictionary_Type(RPG_Sound_Dictionary_t* soundDictionary_in)
  : myDictionary(soundDictionary_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Dictionary_Type::RPG_Sound_Dictionary_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary_Type::RPG_Sound_Dictionary_Type"));
 
 }
 
 RPG_Sound_Dictionary_Type::~RPG_Sound_Dictionary_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Dictionary_Type::~RPG_Sound_Dictionary_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary_Type::~RPG_Sound_Dictionary_Type"));
 
 }
 
 // void RPG_Sound_Dictionary_Type::pre()
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Sound_Dictionary_Type::pre"));
+//   RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary_Type::pre"));
 //
 // }
 
 void RPG_Sound_Dictionary_Type::sound(const RPG_Sound& sound_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Dictionary_Type::sound"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary_Type::sound"));
 
   RPG_Sound_t sound = sound_in;
 
@@ -118,7 +120,7 @@ void RPG_Sound_Dictionary_Type::sound(const RPG_Sound& sound_in)
 
 void RPG_Sound_Dictionary_Type::post_RPG_Sound_Dictionary_Type()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Dictionary_Type::post_RPG_Sound_Dictionary_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary_Type::post_RPG_Sound_Dictionary_Type"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished parsing dictionary, retrieved %d sound(s)...\n"),

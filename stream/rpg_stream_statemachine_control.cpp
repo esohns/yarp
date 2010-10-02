@@ -20,23 +20,25 @@
 
 #include "rpg_stream_statemachine_control.h"
 
+#include <rpg_common_macros.h>
+
 RPG_Stream_StateMachine_Control::RPG_Stream_StateMachine_Control()
  : myState(RPG_Stream_StateMachine_Control::INIT)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_StateMachine_Control::RPG_Stream_StateMachine_Control"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_StateMachine_Control::RPG_Stream_StateMachine_Control"));
 
 }
 
 RPG_Stream_StateMachine_Control::~RPG_Stream_StateMachine_Control()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_StateMachine_Control::~RPG_Stream_StateMachine_Control"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_StateMachine_Control::~RPG_Stream_StateMachine_Control"));
 
 }
 
 const RPG_Stream_StateMachine_Control::Control_StateType
 RPG_Stream_StateMachine_Control::getState() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_StateMachine_Control::getState"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_StateMachine_Control::getState"));
 
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
@@ -46,7 +48,7 @@ RPG_Stream_StateMachine_Control::getState() const
 const bool
 RPG_Stream_StateMachine_Control::changeState(const Control_StateType& newState_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_StateMachine_Control::changeState"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_StateMachine_Control::changeState"));
 
   // synchronize access to state machine...
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
@@ -250,7 +252,7 @@ RPG_Stream_StateMachine_Control::changeState(const Control_StateType& newState_i
 void
 RPG_Stream_StateMachine_Control::invokeCallback(const Control_StateType& newState_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_StateMachine_Control::invokeCallback"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_StateMachine_Control::invokeCallback"));
 
   // invoke callback...
   try
@@ -277,7 +279,7 @@ void
 RPG_Stream_StateMachine_Control::ControlState2String(const Control_StateType& state_in,
                                                   std::string& stateString_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_StateMachine_Control::ControlState2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_StateMachine_Control::ControlState2String"));
 
   // init return value(s)
   stateString_out = ACE_TEXT("UNDEFINED_STATE");

@@ -34,10 +34,10 @@
 #include <rpg_item_weapon.h>
 #include <rpg_item_common_tools.h>
 
+#include <rpg_common_macros.h>
 #include <rpg_common_defines.h>
 #include <rpg_common_file_tools.h>
 
-#include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
 #include <fstream>
@@ -86,7 +86,7 @@ RPG_Character_Player::RPG_Character_Player(// base attributes
              spells_in,
              inventory_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player::RPG_Character_Player"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player::RPG_Character_Player"));
 
   // wear default items...
   defaultEquip();
@@ -96,20 +96,20 @@ RPG_Character_Player::RPG_Character_Player(// base attributes
 RPG_Character_Player::RPG_Character_Player(const RPG_Character_Player& player_in)
  : inherited(player_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player::RPG_Character_Player"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player::RPG_Character_Player"));
 
 }
 
 RPG_Character_Player::~RPG_Character_Player()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player::~RPG_Character_Player"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player::~RPG_Character_Player"));
 
 }
 
 // RPG_Character_Player&
 // RPG_Character_Player::operator=(const RPG_Character_Player& player_in)
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Character_Player::operator="));
+//   RPG_TRACE(ACE_TEXT("RPG_Character_Player::operator="));
 //
 //   return *this;
 // }
@@ -117,7 +117,7 @@ RPG_Character_Player::~RPG_Character_Player()
 RPG_Character_Player
 RPG_Character_Player::load(const std::string& filename_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player::load"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player::load"));
 
   // sanity check(s)
   if (!RPG_Common_File_Tools::isReadable(filename_in))
@@ -229,7 +229,7 @@ RPG_Character_Player::load(const std::string& filename_in)
 const bool
 RPG_Character_Player::save(const std::string& filename_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player::save"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player::save"));
 
   // sanity check(s)
   if (RPG_Common_File_Tools::isReadable(filename_in))
@@ -375,7 +375,7 @@ RPG_Character_Player::save(const std::string& filename_in) const
 RPG_Character_Player
 RPG_Character_Player::dummy()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player::dummy"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player::dummy"));
 
   // init result
   std::string name = ACE_TEXT("");
@@ -426,7 +426,7 @@ RPG_Character_Player::dummy()
 void
 RPG_Character_Player::defaultEquip()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player::operator="));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player::operator="));
 
   RPG_Item_Base* handle = NULL;
   for (RPG_Item_ListIterator_t iterator = myInventory.myItems.begin();
@@ -506,7 +506,7 @@ RPG_Character_Player::XSD_Error_Handler::handle(const std::string& id_in,
                                                 ::xsd::cxx::xml::error_handler<char>::severity severity_in,
                                                 const std::string& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player::XSD_Error_Handler::handle"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player::XSD_Error_Handler::handle"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),

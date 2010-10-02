@@ -23,6 +23,8 @@
 #include "rpg_graphics_surface.h"
 #include "rpg_graphics_common_tools.h"
 
+#include <rpg_common_macros.h>
+
 RPG_Graphics_TopLevel::RPG_Graphics_TopLevel(const RPG_Graphics_WindowSize_t& size_in,
                                              const RPG_Graphics_Type& elementType_in,
                                              const std::string& title_in,
@@ -33,7 +35,7 @@ RPG_Graphics_TopLevel::RPG_Graphics_TopLevel(const RPG_Graphics_WindowSize_t& si
              backGround_in),
    myElementGraphicsType(elementType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::RPG_Graphics_TopLevel"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::RPG_Graphics_TopLevel"));
 
   // (try to) load interface element graphics
   myInitialized = loadGraphics(myElementGraphicsType);
@@ -53,7 +55,7 @@ RPG_Graphics_TopLevel::RPG_Graphics_TopLevel(const RPG_Graphics_WindowSize_t& si
 
 RPG_Graphics_TopLevel::~RPG_Graphics_TopLevel()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::~RPG_Graphics_TopLevel"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::~RPG_Graphics_TopLevel"));
 
   // free interface element graphics (if any)
   for (RPG_Graphics_InterfaceElementsConstIterator_t iterator = myElementGraphics.begin();
@@ -68,14 +70,14 @@ RPG_Graphics_TopLevel::child(const RPG_Graphics_WindowSize_t& size_in,
                              const RPG_Graphics_Offset_t& offset_in,
                              SDL_Surface* backGround_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::child"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::child"));
 
 }
 
 const bool
 RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_Type& graphicType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::loadGraphics"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::loadGraphics"));
 
   // step1: load interface image
   RPG_Graphics_t graphic;

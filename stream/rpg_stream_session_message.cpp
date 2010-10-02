@@ -23,6 +23,8 @@
 #include "rpg_stream_message_base.h"
 #include "rpg_stream_session_config.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Malloc_Base.h>
 
 RPG_Stream_SessionMessage::RPG_Stream_SessionMessage(const unsigned long& sessionID_in,
@@ -44,7 +46,7 @@ RPG_Stream_SessionMessage::RPG_Stream_SessionMessage(const unsigned long& sessio
    myConfig(sessionConfig_inout),
    myIsInitialized(true)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::RPG_Stream_SessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::RPG_Stream_SessionMessage"));
 
   // set return value
   sessionConfig_inout = NULL;
@@ -59,7 +61,7 @@ RPG_Stream_SessionMessage::RPG_Stream_SessionMessage(const RPG_Stream_SessionMes
    myConfig(message_in.myConfig),
    myIsInitialized(message_in.myIsInitialized)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::RPG_Stream_SessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::RPG_Stream_SessionMessage"));
 
   // increment reference counter
   if (myConfig)
@@ -79,7 +81,7 @@ RPG_Stream_SessionMessage::RPG_Stream_SessionMessage(ACE_Allocator* messageAlloc
     myConfig(NULL),
     myIsInitialized(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::RPG_Stream_SessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::RPG_Stream_SessionMessage"));
 
   // set correct message type
   // *WARNING*: this doesn't work, as we're assigned a (different) data block later...
@@ -100,7 +102,7 @@ RPG_Stream_SessionMessage::RPG_Stream_SessionMessage(ACE_Data_Block* dataBlock_i
     myConfig(NULL),
     myIsInitialized(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageBase::RPG_Stream_MessageBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::RPG_Stream_MessageBase"));
 
   // set correct message type
   // *WARNING*: need to finalize initialization through init() !
@@ -112,7 +114,7 @@ RPG_Stream_SessionMessage::RPG_Stream_SessionMessage(ACE_Data_Block* dataBlock_i
 
 RPG_Stream_SessionMessage::~RPG_Stream_SessionMessage()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::~RPG_Stream_SessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::~RPG_Stream_SessionMessage"));
 
   myID = 0;
   myMessageType = MB_BEGIN_STREAM_SESSION_MAP; // == RPG_Stream_MessageBase::MB_STREAM_SESSION
@@ -132,7 +134,7 @@ RPG_Stream_SessionMessage::init(const unsigned long& sessionID_in,
                             const RPG_Stream_SessionMessageType& messageType_in,
                             RPG_Stream_SessionConfig*& config_inout)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::init"));
 
   // sanity checks
   ACE_ASSERT(!myIsInitialized);
@@ -155,7 +157,7 @@ RPG_Stream_SessionMessage::init(const unsigned long& sessionID_in,
 const unsigned long
 RPG_Stream_SessionMessage::getID() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::getID"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::getID"));
 
   return myID;
 }
@@ -163,7 +165,7 @@ RPG_Stream_SessionMessage::getID() const
 const RPG_Stream_SessionMessage::SessionMessageType
 RPG_Stream_SessionMessage::getType() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::getType"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::getType"));
 
   return myMessageType;
 }
@@ -171,7 +173,7 @@ RPG_Stream_SessionMessage::getType() const
 const RPG_Stream_SessionConfig*
 const RPG_Stream_SessionMessage::getConfig() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::getConfig"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::getConfig"));
 
   return myConfig;
 }
@@ -179,7 +181,7 @@ const RPG_Stream_SessionMessage::getConfig() const
 void
 RPG_Stream_SessionMessage::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::dump_state"));
 
   std::string type_string;
   SessionMessageType2String(myMessageType,
@@ -207,7 +209,7 @@ RPG_Stream_SessionMessage::dump_state() const
 ACE_Message_Block*
 RPG_Stream_SessionMessage::duplicate(void) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::duplicate"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::duplicate"));
 
   RPG_Stream_SessionMessage* nb = NULL;
 
@@ -253,7 +255,7 @@ void
 RPG_Stream_SessionMessage::SessionMessageType2String(const SessionMessageType messageType_in,
                                                  std::string& string_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::SessionMessageType2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessage::SessionMessageType2String"));
 
   // init return value(s)
   string_out = ACE_TEXT("INVALID_TYPE");

@@ -20,6 +20,8 @@
 
 #include "rpg_stream_message_base.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Malloc_Base.h>
 
 template <typename ConfigType>
@@ -42,7 +44,7 @@ RPG_Stream_SessionMessageBase<ConfigType>::RPG_Stream_SessionMessageBase(const u
    myConfig(config_inout),
    myIsInitialized(true)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::RPG_Stream_SessionMessageBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::RPG_Stream_SessionMessageBase"));
 
   // set return value
   config_inout = NULL;
@@ -56,7 +58,7 @@ RPG_Stream_SessionMessageBase<ConfigType>::RPG_Stream_SessionMessageBase(ACE_All
    myConfig(NULL),
    myIsInitialized(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::RPG_Stream_SessionMessageBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::RPG_Stream_SessionMessageBase"));
 
   // set correct message type
   // *WARNING*: this doesn't work, as we're assigned a (different) data block later...
@@ -78,7 +80,7 @@ RPG_Stream_SessionMessageBase<ConfigType>::RPG_Stream_SessionMessageBase(ACE_Dat
    myConfig(NULL),
    myIsInitialized(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageBase::RPG_Stream_MessageBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::RPG_Stream_MessageBase"));
 
   // set correct message type
   // *WARNING*: need to finalize initialization through init() !
@@ -98,7 +100,7 @@ RPG_Stream_SessionMessageBase<ConfigType>::RPG_Stream_SessionMessageBase(const R
    myConfig(message_in.myConfig),
    myIsInitialized(message_in.myIsInitialized)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::RPG_Stream_SessionMessageBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::RPG_Stream_SessionMessageBase"));
 
   // increment reference counter
   if (myConfig)
@@ -114,7 +116,7 @@ RPG_Stream_SessionMessageBase<ConfigType>::RPG_Stream_SessionMessageBase(const R
 template <typename ConfigType>
 RPG_Stream_SessionMessageBase<ConfigType>::~RPG_Stream_SessionMessageBase()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::~RPG_Stream_SessionMessageBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::~RPG_Stream_SessionMessageBase"));
 
   myID = 0;
   myMessageType = RPG_Stream_SessionMessage::MB_BEGIN_STREAM_SESSION_MAP; // == RPG_Stream_MessageBase::MB_STREAM_SESSION
@@ -133,7 +135,7 @@ template <typename ConfigType>
 const unsigned long
 RPG_Stream_SessionMessageBase<ConfigType>::getID() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::getID"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::getID"));
 
   return myID;
 }
@@ -142,7 +144,7 @@ template <typename ConfigType>
 const RPG_Stream_SessionMessageType
 RPG_Stream_SessionMessageBase<ConfigType>::getType() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::getType"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::getType"));
 
   return myMessageType;
 }
@@ -151,7 +153,7 @@ template <typename ConfigType>
 const ConfigType* const
 RPG_Stream_SessionMessageBase<ConfigType>::getConfig() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::getConfig"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::getConfig"));
 
   return myConfig;
 }
@@ -160,7 +162,7 @@ template <typename ConfigType>
 void
 RPG_Stream_SessionMessageBase<ConfigType>::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::dump_state"));
 
   std::string type_string;
   RPG_Stream_SessionMessage::SessionMessageType2String(myMessageType,
@@ -189,7 +191,7 @@ template <typename ConfigType>
 ACE_Message_Block*
 RPG_Stream_SessionMessageBase<ConfigType>::duplicate(void) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::duplicate"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::duplicate"));
 
   RPG_Stream_SessionMessageBase<ConfigType>* nb = NULL;
 
@@ -237,7 +239,7 @@ RPG_Stream_SessionMessageBase<ConfigType>::init(const unsigned long& sessionID_i
                                             const RPG_Stream_SessionMessageType& messageType_in,
                                             ConfigType*& config_inout)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::init"));
 
   // sanity checks
   ACE_ASSERT(!myIsInitialized);

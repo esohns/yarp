@@ -25,17 +25,19 @@
 #include <rpg_item_instance_manager.h>
 #include <rpg_item_common_tools.h>
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 RPG_Character_Equipment::RPG_Character_Equipment()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::RPG_Character_Equipment"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Equipment::RPG_Character_Equipment"));
 
 }
 
 RPG_Character_Equipment::~RPG_Character_Equipment()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::RPG_Character_Equipment"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Equipment::RPG_Character_Equipment"));
 
 }
 
@@ -43,7 +45,7 @@ void
 RPG_Character_Equipment::equip(const RPG_Item_ID_t& itemID_in,
                                const RPG_Character_EquipmentSlot& slot_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::equip"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Equipment::equip"));
 
   // *TODO*: auto-choose appropriate slot
   ACE_ASSERT(slot_in != EQUIPMENTSLOT_ANY);
@@ -73,7 +75,7 @@ RPG_Character_Equipment::equip(const RPG_Item_ID_t& itemID_in,
 void
 RPG_Character_Equipment::unequip(const RPG_Character_EquipmentSlot& slot_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::unequip"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Equipment::unequip"));
 
   // sanity check
   if (slot_in == EQUIPMENTSLOT_ANY)
@@ -89,7 +91,7 @@ RPG_Character_Equipment::unequip(const RPG_Character_EquipmentSlot& slot_in)
 void
 RPG_Character_Equipment::strip()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::strip"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Equipment::strip"));
 
   myEquipment.clear();
 
@@ -100,7 +102,7 @@ RPG_Character_Equipment::strip()
 const RPG_Item_WeaponType
 RPG_Character_Equipment::getPrimaryWeapon(const RPG_Character_OffHand& offHand_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getPrimaryWeapon"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Equipment::getPrimaryWeapon"));
 
   RPG_Character_EquipmentSlot slot = ((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
                                                                    : EQUIPMENTSLOT_HAND_LEFT);
@@ -147,7 +149,7 @@ RPG_Character_Equipment::getPrimaryWeapon(const RPG_Character_OffHand& offHand_i
 const RPG_Item_ArmorType
 RPG_Character_Equipment::getBodyArmor() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getBodyArmor"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Equipment::getBodyArmor"));
 
   // *TODO*; consider helmets/gauntlets/boots/shields, etc...
   RPG_Character_EquipmentIterator_t iterator = myEquipment.find(EQUIPMENTSLOT_BODY);
@@ -190,7 +192,7 @@ RPG_Character_Equipment::getBodyArmor() const
 const RPG_Item_ArmorType
 RPG_Character_Equipment::getShield(const RPG_Character_OffHand& offHand_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::getShield"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Equipment::getShield"));
 
   RPG_Character_EquipmentSlot slot = ((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
                                                                    : EQUIPMENTSLOT_HAND_RIGHT);
@@ -244,7 +246,7 @@ RPG_Character_Equipment::getShield(const RPG_Character_OffHand& offHand_in) cons
 const bool
 RPG_Character_Equipment::isEquipped(const RPG_Item_ID_t& itemID_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::isEquipped"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Equipment::isEquipped"));
 
   for (RPG_Character_EquipmentIterator_t iterator = myEquipment.begin();
        iterator != myEquipment.end();
@@ -258,7 +260,7 @@ RPG_Character_Equipment::isEquipped(const RPG_Item_ID_t& itemID_in) const
 void
 RPG_Character_Equipment::dump() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Equipment::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Equipment::dump"));
 
   RPG_Item_Base* handle = NULL;
   for (RPG_Character_EquipmentIterator_t iterator = myEquipment.begin();

@@ -33,7 +33,7 @@ RPG_Stream_TaskBaseAsynch<SessionMessageType,
  : myThreadID(0),
    myQueue(RPG_STREAM_DEF_MAX_QUEUE_SLOTS)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::RPG_Stream_TaskBaseAsynch"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::RPG_Stream_TaskBaseAsynch"));
 
   // tell the task to use our message queue...
   inherited::msg_queue(&myQueue);
@@ -48,7 +48,7 @@ template <typename SessionMessageType,
 RPG_Stream_TaskBaseAsynch<SessionMessageType,
                       ProtocolMessageType>::~RPG_Stream_TaskBaseAsynch()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::~RPG_Stream_TaskBaseAsynch"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::~RPG_Stream_TaskBaseAsynch"));
 
   // flush/deactivate our queue (check whether it was empty...)
   int flushed_messages = 0;
@@ -74,7 +74,7 @@ int
 RPG_Stream_TaskBaseAsynch<SessionMessageType,
                       ProtocolMessageType>::open(void* args_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::open"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::open"));
 
   ACE_UNUSED_ARG(args_in);
 
@@ -149,7 +149,7 @@ int
 RPG_Stream_TaskBaseAsynch<SessionMessageType,
                       ProtocolMessageType>::close(u_long arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::close"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::close"));
 
   // *IMPORTANT NOTE*: this method may be invoked
   // - by an external thread closing down the active object
@@ -206,7 +206,7 @@ int
 RPG_Stream_TaskBaseAsynch<SessionMessageType,
                       ProtocolMessageType>::module_closed(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::module_closed"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::module_closed"));
 
   // just wait for our worker thread(s) to die
   // *NOTE*: this works because we assume that by the time we get here,
@@ -224,7 +224,7 @@ RPG_Stream_TaskBaseAsynch<SessionMessageType,
                       ProtocolMessageType>::put(ACE_Message_Block* mb_in,
                                                 ACE_Time_Value* tv_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::put"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::put"));
 
   // drop the message into our queue...
   return inherited::putq(mb_in,
@@ -237,7 +237,7 @@ int
 RPG_Stream_TaskBaseAsynch<SessionMessageType,
                       ProtocolMessageType>::svc(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::svc"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::svc"));
 
   ACE_Message_Block* ace_mb          = NULL;
   bool               stop_processing = false;
@@ -275,7 +275,7 @@ void
 RPG_Stream_TaskBaseAsynch<SessionMessageType,
                       ProtocolMessageType>::waitForIdleState() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::waitForIdleState"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::waitForIdleState"));
 
   // simply delegate this to our queue...
   try
@@ -296,7 +296,7 @@ void
 RPG_Stream_TaskBaseAsynch<SessionMessageType,
                       ProtocolMessageType>::shutdown()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::shutdown"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::shutdown"));
 
 //   // debug info
 //   if (inherited::module())

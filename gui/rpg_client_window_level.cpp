@@ -29,6 +29,8 @@
 
 #include <rpg_map_common_tools.h>
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 #include <sstream>
@@ -53,7 +55,7 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
    myHighlightBG(NULL),
    myHighlightTile(NULL)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::RPG_Client_WindowLevel"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::RPG_Client_WindowLevel"));
 
   ACE_OS::memset(&myCurrentWallSet,
                  0,
@@ -93,7 +95,7 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
 
 RPG_Client_WindowLevel::~RPG_Client_WindowLevel()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::~RPG_Client_WindowLevel"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::~RPG_Client_WindowLevel"));
 
   // clean up
   for (RPG_Graphics_FloorTileSetConstIterator_t iterator = myCurrentFloorSet.begin();
@@ -143,7 +145,7 @@ RPG_Client_WindowLevel::~RPG_Client_WindowLevel()
 void
 RPG_Client_WindowLevel::setView(const RPG_Graphics_Position_t& view_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setView"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setView"));
 
   myView = view_in;
 }
@@ -152,7 +154,7 @@ void
 RPG_Client_WindowLevel::setView(const int& offsetX_in,
                              const int& offsetY_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setView"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setView"));
 
   RPG_Map_Dimensions_t dimensions = myMap.getDimensions();
 
@@ -178,7 +180,7 @@ RPG_Client_WindowLevel::setView(const int& offsetX_in,
 void
 RPG_Client_WindowLevel::centerView()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::centerView"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::centerView"));
 
   RPG_Map_Dimensions_t dimensions = myMap.getDimensions();
   myView = std::make_pair(dimensions.first / 2,
@@ -189,7 +191,7 @@ void
 RPG_Client_WindowLevel::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
                              const RPG_Map_FloorPlan_t& floorPlan_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::init"));
 
   // clean up
   myWallTiles.clear();
@@ -237,7 +239,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
                           const unsigned long& offsetX_in,
                           const unsigned long& offsetY_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::draw"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::draw"));
 
   // set target surface
   SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
@@ -559,7 +561,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                                  RPG_Graphics_IWindow* window_in,
                                  bool& redraw_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::handleEvent"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::handleEvent"));
 
   // init return value(s)
   redraw_out = false;
@@ -851,7 +853,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 void
 RPG_Client_WindowLevel::clear()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::clear"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::clear"));
 
   // init clipping
   SDL_Rect old_clip_rect;
@@ -896,7 +898,7 @@ RPG_Client_WindowLevel::clear()
 void
 RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setStyle"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setStyle"));
 
   switch (style_in.discriminator)
   {
@@ -1225,7 +1227,7 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
 void
 RPG_Client_WindowLevel::initCeiling()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::initCeiling"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::initCeiling"));
 
   // sanity check
   if (myCurrentCeilingTile)
@@ -1271,7 +1273,7 @@ RPG_Client_WindowLevel::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
                                   const RPG_Graphics_WallTileSet_t& tileSet_in,
                                   RPG_Graphics_WallTileMap_t& wallTiles_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::initWalls"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::initWalls"));
 
   // init return value(s)
   wallTiles_out.clear();
@@ -1329,7 +1331,7 @@ RPG_Client_WindowLevel::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
 void
 RPG_Client_WindowLevel::initWallBlend()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::initWallBlend"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::initWallBlend"));
 
   // sanity check
   if (myWallBlend)
@@ -1391,7 +1393,7 @@ RPG_Client_WindowLevel::initDoors(const RPG_Map_FloorPlan_t& levelMap_in,
                                   const RPG_Graphics_DoorTileSet_t& tileSet_in,
                                   RPG_Graphics_DoorTileMap_t& doorTiles_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::initDoors"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::initDoors"));
 
   // init return value(s)
   doorTiles_out.clear();
@@ -1451,7 +1453,7 @@ const RPG_Graphics_Orientation
 RPG_Client_WindowLevel::getDoorOrientation(const RPG_Map_Level& level_in,
                                            const RPG_Map_Position_t& position_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::getDoorOrientation"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::getDoorOrientation"));
 
   RPG_Map_Position_t east;//, south;
   east = position_in;
@@ -1472,7 +1474,7 @@ const bool
 RPG_Client_WindowLevel::hasCeiling(const RPG_Map_Position_t& position_in,
                                    const RPG_Map_Level& level_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::hasCeiling"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::hasCeiling"));
 
   // shortcut: floors, doors never get a ceiling
   RPG_Map_Element map_element = level_in.getElement(position_in);
@@ -1573,7 +1575,7 @@ const RPG_Graphics_Type
 RPG_Client_WindowLevel::getCursor(const RPG_Map_Position_t& position_in,
                                const RPG_Map_Level& level_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::getCursor"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::getCursor"));
 
   RPG_Graphics_Type result = TYPE_CURSOR_NORMAL;
 
@@ -1591,7 +1593,7 @@ RPG_Client_WindowLevel::getCursor(const RPG_Map_Position_t& position_in,
 const RPG_Graphics_Position_t
 RPG_Client_WindowLevel::screen2Map(const RPG_Graphics_Position_t& position_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::screen2Map"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::screen2Map"));
 
   RPG_Graphics_Position_t offset, map_position;
 
@@ -1621,7 +1623,7 @@ RPG_Client_WindowLevel::screen2Map(const RPG_Graphics_Position_t& position_in)
 const RPG_Graphics_Position_t
 RPG_Client_WindowLevel::map2Screen(const RPG_Graphics_Position_t& position_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::map2Screen"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::map2Screen"));
 
   RPG_Graphics_Position_t map_center, screen_position;
 
@@ -1642,7 +1644,7 @@ RPG_Client_WindowLevel::map2Screen(const RPG_Graphics_Position_t& position_in)
 void
 RPG_Client_WindowLevel::restoreBG()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowLevel::restoreBG"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::restoreBG"));
 
   SDL_Rect dirtyRegion, clipRect;
   RPG_Graphics_Position_t tile_position;

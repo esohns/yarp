@@ -18,7 +18,6 @@ include_HEADERS = rpg_magic_XML_parser.h rpg_magic_XML_tree.h \
 
 lib_LTLIBRARIES = libRPG_Magic.la
 
-libRPG_Magic_la_LDFLAGS = -L/usr/local/lib
 libRPG_Magic_la_SOURCES = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \
 	rpg_magic_XML_parser.cpp rpg_magic_XML_parser.h rpg_magic_XML_tree.cpp rpg_magic_XML_tree.h \
 	rpg_magic_XML_types.cpp rpg_magic_XML_types.h rpg_magic_abilityclass.h rpg_magic_abilitytype.h \
@@ -33,5 +32,8 @@ libRPG_Magic_la_SOURCES = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \
 	rpg_magic_spell_type.h rpg_magic_spelllikeproperties.h rpg_magic_spelltype.h \
 	rpg_magic_subschool.h
 
-bindata_DATA = rpg_magic.xml rpg_magic.xsd
-bindatadir = $(bindir)
+pkgdatadir = $(datadir)/@META_PACKAGE@
+configdir = $(pkgdatadir)/config
+config_DATA = rpg_magic.xml rpg_magic.xsd
+
+EXTRA_DIST = $(config_DATA)

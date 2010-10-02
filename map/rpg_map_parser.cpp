@@ -49,6 +49,8 @@
 #include "rpg_map_common.h"
 #include "rpg_map_parser_driver.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 #include <string>
@@ -813,7 +815,7 @@ debug_stream() << (yyvaluep->val);
   const unsigned char
   RPG_Map_Parser::yyrline_[] =
   {
-         0,    55,    55,    56,    57,    58,   109
+         0,    57,    57,    58,    59,    60,   111
   };
 
   // Print the state stack on the debug stream.

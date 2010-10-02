@@ -32,7 +32,7 @@ RPG_Stream_TaskBase<SessionMessageType,
  : inherited(NULL, // thread manager instance
              NULL) // queue handle
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBase::RPG_Stream_TaskBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::RPG_Stream_TaskBase"));
 
   // use the default reactor...
   reactor(ACE_Reactor::instance());
@@ -43,7 +43,7 @@ template <typename SessionMessageType,
 RPG_Stream_TaskBase<SessionMessageType,
                 ProtocolMessageType>::~RPG_Stream_TaskBase()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBase::~RPG_Stream_TaskBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::~RPG_Stream_TaskBase"));
 
 }
 
@@ -54,7 +54,7 @@ int
 RPG_Stream_TaskBase<SessionMessageType,
                 ProtocolMessageType>::open(void* args_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBase::open"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::open"));
 
   ACE_UNUSED_ARG(args_in);
 
@@ -70,7 +70,7 @@ int
 RPG_Stream_TaskBase<SessionMessageType,
                 ProtocolMessageType>::close(u_long arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBase::close"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::close"));
 
   ACE_UNUSED_ARG(arg_in);
 
@@ -86,7 +86,7 @@ int
 RPG_Stream_TaskBase<SessionMessageType,
                 ProtocolMessageType>::module_closed(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBase::module_closed"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::module_closed"));
 
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
@@ -101,7 +101,7 @@ RPG_Stream_TaskBase<SessionMessageType,
                 ProtocolMessageType>::put(ACE_Message_Block* mb_in,
                                           ACE_Time_Value* tv_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBase::put"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::put"));
 
   ACE_UNUSED_ARG(mb_in);
   ACE_UNUSED_ARG(tv_in);
@@ -118,7 +118,7 @@ int
 RPG_Stream_TaskBase<SessionMessageType,
                 ProtocolMessageType>::svc(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBase::svc"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::svc"));
 
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
@@ -134,7 +134,7 @@ RPG_Stream_TaskBase<SessionMessageType,
 //                 ProtocolMessageType>::handleDataMessage(ProtocolMessageType*& message_inout,
 //                                                         bool& passMessageDownstream_out)
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleDataMessage"));
+//   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleDataMessage"));
 //
 //   // init return value(s)
 //   passMessageDownstream_out = true;
@@ -152,7 +152,7 @@ RPG_Stream_TaskBase<SessionMessageType,
                 ProtocolMessageType>::handleSessionMessage(SessionMessageType*& message_inout,
                                                            bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleSessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleSessionMessage"));
 
   // init return value(s)
   passMessageDownstream_out = true;
@@ -227,7 +227,7 @@ void
 RPG_Stream_TaskBase<SessionMessageType,
                 ProtocolMessageType>::handleProcessingError(const ACE_Message_Block* const message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleProcessingError"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleProcessingError"));
 
   ACE_UNUSED_ARG(message_in);
 
@@ -250,7 +250,7 @@ void
 RPG_Stream_TaskBase<SessionMessageType,
                 ProtocolMessageType>::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBase::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::dump_state"));
 
 //   // debug info
 //   if (module())
@@ -273,7 +273,7 @@ RPG_Stream_TaskBase<SessionMessageType,
                 ProtocolMessageType>::handleMessage(ACE_Message_Block* mb_in,
                                                     bool& stopProcessing_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleMessage"));
 
   // sanity check
   ACE_ASSERT(mb_in);
@@ -421,7 +421,7 @@ RPG_Stream_TaskBase<SessionMessageType,
                                                            bool& stopProcessing_out,
                                                            bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleControlMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleControlMessage"));
 
   // init return value(s)
   stopProcessing_out = false;

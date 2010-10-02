@@ -65,7 +65,6 @@ END_OF_LINE    {LF}|{CRLF}
 <*>(?s:.)                  { yylloc->step();
                              yylval->val = yytext[0];
 
-                             // debug info
                              std::string error_message(ACE_TEXT("invalid character (was \""));
                              error_message += yytext[0];
                              converter.str(ACE_TEXT(""));

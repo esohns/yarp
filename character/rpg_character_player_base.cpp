@@ -27,6 +27,7 @@
 
 #include <rpg_magic_common_tools.h>
 
+#include <rpg_common_macros.h>
 #include <rpg_common_tools.h>
 
 #include <ace/OS.h>
@@ -72,7 +73,7 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(// base attributes
    myOffHand(offHand_in),
    myExperience(experience_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::RPG_Character_Player_Base"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::RPG_Character_Player_Base"));
 
 }
 
@@ -84,20 +85,20 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(const RPG_Character_Player_
    myOffHand(playerBase_in.myOffHand),
    myExperience(playerBase_in.myExperience)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::RPG_Character_Player_Base"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::RPG_Character_Player_Base"));
 
 }
 
 RPG_Character_Player_Base::~RPG_Character_Player_Base()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::~RPG_Character_Player_Base"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::~RPG_Character_Player_Base"));
 
 }
 
 // RPG_Character_Player_Base&
 // RPG_Character_Player_Base::operator=(const RPG_Character_Player_Base& playerBase_in)
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::operator="));
+//   RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::operator="));
 //
 //   myGender = playerBase_in.myGender;
 //   myRace = playerBase_in.myRace;
@@ -131,7 +132,7 @@ RPG_Character_Player_Base::init(// base attributes
                                 const RPG_Magic_SpellList_t& spells_in,
                                 const RPG_Item_List_t& inventory_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::init"));
 
   // init base class
   inherited::init(// base attributes
@@ -161,7 +162,7 @@ RPG_Character_Player_Base::init(// base attributes
 const RPG_Character_Gender
 RPG_Character_Player_Base::getGender() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getGender"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::getGender"));
 
   return myGender;
 }
@@ -169,7 +170,7 @@ RPG_Character_Player_Base::getGender() const
 const RPG_Character_Race_t
 RPG_Character_Player_Base::getRace() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getRace"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::getRace"));
 
   return myRace;
 }
@@ -177,7 +178,7 @@ RPG_Character_Player_Base::getRace() const
 const RPG_Character_Class
 RPG_Character_Player_Base::getClass() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getClass"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::getClass"));
 
   return myClass;
 }
@@ -185,7 +186,7 @@ RPG_Character_Player_Base::getClass() const
 const RPG_Character_OffHand
 RPG_Character_Player_Base::getOffHand() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getOffHand"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::getOffHand"));
 
   return myOffHand;
 }
@@ -193,7 +194,7 @@ RPG_Character_Player_Base::getOffHand() const
 const unsigned char
 RPG_Character_Player_Base::getLevel(const RPG_Common_SubClass& subClass_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getLevel"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::getLevel"));
 
   // *TODO*: consider implementing class-specific tables...
   ACE_UNUSED_ARG(subClass_in);
@@ -209,7 +210,7 @@ RPG_Character_Player_Base::getLevel(const RPG_Common_SubClass& subClass_in) cons
 const unsigned int
 RPG_Character_Player_Base::getExperience() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getExperience"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::getExperience"));
 
   return myExperience;
 }
@@ -217,7 +218,7 @@ RPG_Character_Player_Base::getExperience() const
 const RPG_Character_Equipment*
 RPG_Character_Player_Base::getEquipment() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getEquipment"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::getEquipment"));
 
   return &(inherited::myEquipment);
 }
@@ -226,7 +227,7 @@ const RPG_Character_BaseAttackBonus_t
 RPG_Character_Player_Base::getAttackBonus(const RPG_Common_Attribute& modifier_in,
                                           const RPG_Combat_AttackSituation& attackSituation_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getAttackBonus"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::getAttackBonus"));
 
   ACE_ASSERT((modifier_in == ATTRIBUTE_DEXTERITY) ||
              (modifier_in == ATTRIBUTE_STRENGTH));
@@ -269,7 +270,7 @@ RPG_Character_Player_Base::getAttackBonus(const RPG_Common_Attribute& modifier_i
 const signed char
 RPG_Character_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getArmorClass"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::getArmorClass"));
 
   // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier [+ other modifiers]
   signed char result = 10;
@@ -306,7 +307,7 @@ RPG_Character_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defe
 const bool
 RPG_Character_Player_Base::isPlayerCharacter() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::isPlayerCharacter"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::isPlayerCharacter"));
 
   return true;
 }
@@ -314,7 +315,7 @@ RPG_Character_Player_Base::isPlayerCharacter() const
 void
 RPG_Character_Player_Base::gainExperience(const unsigned int& XP_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::gainExperience"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::gainExperience"));
 
   unsigned char old_level = getLevel(*myClass.subClasses.begin());
 
@@ -335,7 +336,7 @@ const unsigned int
 RPG_Character_Player_Base::rest(const RPG_Common_Camp& type_in,
                                 const unsigned int& hours_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::rest"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::rest"));
 
   // *TODO*: consider dead/dying players !
   if (myNumHitPoints < 0)
@@ -380,7 +381,7 @@ RPG_Character_Player_Base::rest(const RPG_Common_Camp& type_in,
 void
 RPG_Character_Player_Base::status() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::status"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::status"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("name: \"%s\" (XP: %d (%d))\n"),
@@ -394,7 +395,7 @@ RPG_Character_Player_Base::status() const
 void
 RPG_Character_Player_Base::dump() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::dump"));
 
   // *TODO*: add items
   ACE_DEBUG((LM_DEBUG,
@@ -420,7 +421,7 @@ RPG_Character_Player_Base::dump() const
 const signed char
 RPG_Character_Player_Base::getShieldBonus() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Base::getShieldBonus"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::getShieldBonus"));
 
   // retrieve equipped armor type
   RPG_Item_ArmorType type = myEquipment.getShield(myOffHand);

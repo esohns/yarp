@@ -21,6 +21,8 @@
 
 #include "rpg_graphics_surface.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 RPG_Graphics_SDLWindowSub::RPG_Graphics_SDLWindowSub(const RPG_Graphics_WindowType& type_in,
@@ -37,13 +39,13 @@ RPG_Graphics_SDLWindowSub::RPG_Graphics_SDLWindowSub(const RPG_Graphics_WindowTy
    myHasBeenMarkedForClosure(false),
    myBG(NULL)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::RPG_Graphics_SDLWindowSub"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::RPG_Graphics_SDLWindowSub"));
 
 }
 
 RPG_Graphics_SDLWindowSub::~RPG_Graphics_SDLWindowSub()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::~RPG_Graphics_SDLWindowSub"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::~RPG_Graphics_SDLWindowSub"));
 
   // clean up
   if (myBG)
@@ -53,7 +55,7 @@ RPG_Graphics_SDLWindowSub::~RPG_Graphics_SDLWindowSub()
 void
 RPG_Graphics_SDLWindowSub::close()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::close"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::close"));
 
   // restore saved background
   if (myBG)
@@ -65,7 +67,7 @@ RPG_Graphics_SDLWindowSub::close()
 void
 RPG_Graphics_SDLWindowSub::saveBG(const RPG_Graphics_WindowSize_t& size_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::saveBG"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::saveBG"));
 
   // sanity check(s)
   ACE_ASSERT(myBG == NULL);
@@ -92,7 +94,7 @@ RPG_Graphics_SDLWindowSub::saveBG(const RPG_Graphics_WindowSize_t& size_in)
 void
 RPG_Graphics_SDLWindowSub::restoreBG()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::restoreBG"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::restoreBG"));
 
   // sanity check(s)
   ACE_ASSERT(myBG);

@@ -24,6 +24,8 @@
 #include "rpg_graphics_surface.h"
 #include "rpg_graphics_common_tools.h"
 
+#include <rpg_common_macros.h>
+
 RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowSize_t& size_in,
                                                        const RPG_Graphics_WindowType& type_in,
                                                        const std::string& title_in,
@@ -42,7 +44,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
    myParent(NULL),
    myType(type_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
 
   ACE_OS::memset(&myClipRect,
                  0,
@@ -68,7 +70,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
     myParent(&ACE_const_cast(RPG_Graphics_SDLWindowBase&, parent_in)),
     myType(type_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
 
   // compute parent's borders
   myParent->getBorders(myBorderTop,
@@ -92,7 +94,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
 
 RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase"));
 
   // de-register with parent
   if (myParent)
@@ -116,7 +118,7 @@ RPG_Graphics_SDLWindowBase::getBorders(unsigned long& borderTop_out,
                                        unsigned long& borderLeft_out,
                                        unsigned long& borderRight_out) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getBorders"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getBorders"));
 
   // init return value(s)
   borderTop_out = myBorderTop;
@@ -147,7 +149,7 @@ RPG_Graphics_SDLWindowBase::getBorders(unsigned long& borderTop_out,
 RPG_Graphics_SDLWindowBase*
 RPG_Graphics_SDLWindowBase::getParent() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getParent"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getParent"));
 
   return myParent;
 }
@@ -155,7 +157,7 @@ RPG_Graphics_SDLWindowBase::getParent() const
 void
 RPG_Graphics_SDLWindowBase::invalidate(const SDL_Rect& rect_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::invalidate"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::invalidate"));
 
   // sanity check(s)
   ACE_ASSERT((rect_in.x >= 0) &&
@@ -173,7 +175,7 @@ RPG_Graphics_SDLWindowBase::invalidate(const SDL_Rect& rect_in)
 void
 RPG_Graphics_SDLWindowBase::addChild(RPG_Graphics_SDLWindowBase* child_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::addChild"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::addChild"));
 
   myChildren.push_back(child_in);
 }
@@ -181,7 +183,7 @@ RPG_Graphics_SDLWindowBase::addChild(RPG_Graphics_SDLWindowBase* child_in)
 void
 RPG_Graphics_SDLWindowBase::removeChild(RPG_Graphics_SDLWindowBase* child_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::removeChild"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::removeChild"));
 
   RPG_Graphics_WindowsIterator_t iterator;
   for (iterator = myChildren.begin();
@@ -198,7 +200,7 @@ RPG_Graphics_SDLWindowBase::removeChild(RPG_Graphics_SDLWindowBase* child_in)
 void
 RPG_Graphics_SDLWindowBase::setScreen(SDL_Surface* screen_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::setScreen"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::setScreen"));
 
   // sanity check(s)
   ACE_ASSERT(screen_in);
@@ -209,7 +211,7 @@ RPG_Graphics_SDLWindowBase::setScreen(SDL_Surface* screen_in)
 void
 RPG_Graphics_SDLWindowBase::refresh(SDL_Surface* targetSurface_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::refresh"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::refresh"));
 
   // set target surface
   SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
@@ -286,7 +288,7 @@ RPG_Graphics_SDLWindowBase::handleEvent(const SDL_Event& event_in,
                                         RPG_Graphics_IWindow* window_in,
                                         bool& redraw_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::handleEvent"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::handleEvent"));
 
   ACE_UNUSED_ARG(window_in);
 
@@ -445,7 +447,7 @@ RPG_Graphics_SDLWindowBase::handleEvent(const SDL_Event& event_in,
 const RPG_Graphics_WindowType
 RPG_Graphics_SDLWindowBase::getType() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getType"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getType"));
 
   return myType;
 }
@@ -453,7 +455,7 @@ RPG_Graphics_SDLWindowBase::getType() const
 const RPG_Graphics_WindowSize_t
 RPG_Graphics_SDLWindowBase::getSize(const bool& topLevel_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getSize"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getSize"));
 
   if (topLevel_in && myParent)
     return myParent->getSize(true);
@@ -464,7 +466,7 @@ RPG_Graphics_SDLWindowBase::getSize(const bool& topLevel_in) const
 RPG_Graphics_IWindow*
 RPG_Graphics_SDLWindowBase::getWindow(const RPG_Graphics_Position_t& position_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getWindow"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getWindow"));
 
   if ((position_in.first < myLastAbsolutePosition.first) ||
       (position_in.second < myLastAbsolutePosition.second) ||
@@ -499,7 +501,7 @@ RPG_Graphics_SDLWindowBase::clip(SDL_Surface* targetSurface_in,
                                  const unsigned long& offsetX_in,
                                  const unsigned long& offsetY_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::clip"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::clip"));
 
   // set target surface
   SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
@@ -525,7 +527,7 @@ RPG_Graphics_SDLWindowBase::clip(SDL_Surface* targetSurface_in,
 void
 RPG_Graphics_SDLWindowBase::unclip(SDL_Surface* targetSurface_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::unclip"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::unclip"));
 
   // set target surface
   SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);

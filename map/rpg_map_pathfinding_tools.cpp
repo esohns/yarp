@@ -21,6 +21,8 @@
 
 #include "rpg_map_common_tools.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 const bool
@@ -32,7 +34,7 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
                                     const RPG_Map_Position_t& end_in, // end position
                                     RPG_Map_Path_t& path_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Pathfinding_Tools::findPath"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Pathfinding_Tools::findPath"));
 
   // init return value(s)
   path_out.clear();

@@ -22,6 +22,8 @@
 #include "rpg_magic_dictionary.h"
 
 #include <rpg_dice_common_tools.h>
+
+#include <rpg_common_macros.h>
 #include <rpg_common_tools.h>
 
 #include <ace/Log_Msg.h>
@@ -49,7 +51,7 @@ RPG_Magic_Common_Tools::RPG_Magic_NumSpellsTable_t RPG_Magic_Common_Tools::myNum
 void
 RPG_Magic_Common_Tools::initStringConversionTables()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::initStringConversionTables"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::initStringConversionTables"));
 
   RPG_Magic_SchoolHelper::init();
   RPG_Magic_SubSchoolHelper::init();
@@ -71,7 +73,7 @@ RPG_Magic_Common_Tools::initStringConversionTables()
 void
 RPG_Magic_Common_Tools::initSpellsTables()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::initSpellsTables"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::initSpellsTables"));
 
   // SUBCLASS_BARD
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(1, 0)), 2));
@@ -1002,7 +1004,7 @@ RPG_Magic_Common_Tools::initSpellsTables()
 void
 RPG_Magic_Common_Tools::init()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::init"));
 
   initStringConversionTables();
   initSpellsTables();
@@ -1011,7 +1013,7 @@ RPG_Magic_Common_Tools::init()
 const std::string
 RPG_Magic_Common_Tools::spellToName(const RPG_Magic_SpellType& type_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellToName"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellToName"));
 
   std::string result;
 
@@ -1025,7 +1027,7 @@ RPG_Magic_Common_Tools::spellToName(const RPG_Magic_SpellType& type_in)
 const std::string
 RPG_Magic_Common_Tools::spellTypeToString(const RPG_Magic_Spell_Type& type_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellTypeToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellTypeToString"));
 
   std::string result = RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(type_in.type);
   result += ACE_TEXT_ALWAYS_CHAR(" (");
@@ -1055,7 +1057,7 @@ RPG_Magic_Common_Tools::spellTypeToString(const RPG_Magic_Spell_Type& type_in)
 const std::string
 RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_SpellLevelList_t& levels_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellLevelsToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellLevelsToString"));
 
   std::string result;
   std::ostringstream converter;
@@ -1113,7 +1115,7 @@ RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_SpellLevelList_t& le
 const std::string
 RPG_Magic_Common_Tools::spellRangeToString(const RPG_Magic_Spell_RangeProperties& range_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellRangeToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellRangeToString"));
 
   std::string result;
 
@@ -1168,7 +1170,7 @@ RPG_Magic_Common_Tools::spellRangeToString(const RPG_Magic_Spell_RangeProperties
 const std::string
 RPG_Magic_Common_Tools::spellTargetToString(const RPG_Magic_Spell_TargetProperties& target_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellTargetToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellTargetToString"));
 
   std::string result;
   std::ostringstream converter;
@@ -1251,7 +1253,7 @@ RPG_Magic_Common_Tools::spellTargetToString(const RPG_Magic_Spell_TargetProperti
 const std::string
 RPG_Magic_Common_Tools::spellDurationToString(const RPG_Magic_Spell_DurationProperties& duration_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellDurationToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellDurationToString"));
 
   std::string result = RPG_Magic_Spell_DurationHelper::RPG_Magic_Spell_DurationToString(duration_in.type);
   if ((duration_in.period.typeDice != RPG_DICE_DIETYPE_INVALID) ||
@@ -1316,7 +1318,7 @@ RPG_Magic_Common_Tools::spellDurationToString(const RPG_Magic_Spell_DurationProp
 const std::string
 RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_Spell_PreconditionList_t& preconditions_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::preconditionsToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::preconditionsToString"));
 
   std::string result;
 
@@ -1425,7 +1427,7 @@ RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_Spell_Precondition
 const std::string
 RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_EffectList_t& effects_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::effectsToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::effectsToString"));
 
   std::string result;
 
@@ -1611,7 +1613,7 @@ RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_EffectList_t& effe
 const std::string
 RPG_Magic_Common_Tools::counterMeasuresToString(const RPG_Magic_Spell_CounterMeasureList_t& counterMeasures_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::counterMeasuresToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::counterMeasuresToString"));
 
   std::string result;
 
@@ -1730,7 +1732,7 @@ RPG_Magic_Common_Tools::counterMeasuresToString(const RPG_Magic_Spell_CounterMea
 const std::string
 RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_Spells_t& knownSpells_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellsToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellsToString"));
 
   std::string result;
 
@@ -1748,7 +1750,7 @@ RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_Spells_t& knownSpells_in)
 const std::string
 RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_SpellList_t& spells_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellsToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellsToString"));
 
   std::string result;
 
@@ -1798,7 +1800,7 @@ RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_SpellList_t& spells_in)
 void
 RPG_Magic_Common_Tools::updateSpellRange(RPG_Magic_Spell_RangeProperties& range_inout)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::updateSpellRange"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::updateSpellRange"));
 
   switch (range_inout.effect)
   {
@@ -1860,7 +1862,7 @@ RPG_Magic_Common_Tools::getNumSpellsPerLevel(const RPG_Common_SubClass& subClass
                                              unsigned char& numSpells_out,
                                              unsigned char& numSpellsKnown_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::getNumSpellsPerLevel"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::getNumSpellsPerLevel"));
 
   // init return value(s)
   numSpells_out = 0;

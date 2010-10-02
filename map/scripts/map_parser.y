@@ -34,6 +34,8 @@ typedef void* yyscan_t;
 #include "rpg_map_common.h"
 #include "rpg_map_parser_driver.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 #include <string>

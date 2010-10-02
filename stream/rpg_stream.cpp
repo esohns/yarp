@@ -33,20 +33,20 @@ RPG_Stream::RPG_Stream()
    myIsInitialized(false),
    myAllocator(NULL)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream::RPG_Stream"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream::RPG_Stream"));
 
 }
 
 RPG_Stream::~RPG_Stream()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream::~RPG_Stream"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream::~RPG_Stream"));
 
 }
 
 const bool
 RPG_Stream::reset()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream::reset"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream::reset"));
 
   // sanity check: is running ?
   if (isRunning())
@@ -75,7 +75,7 @@ RPG_Stream::reset()
 const bool
 RPG_Stream::init()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream::init"));
 
   // *NOTE*: fini() invokes close() which will reset the writer/reader tasks
   // of the enqueued modules --> reset this !
@@ -119,7 +119,7 @@ RPG_Stream::init()
 const bool
 RPG_Stream::fini()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream::fini"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream::fini"));
 
   // OK: delegate this to base class close(ACE_Module_Base::M_DELETE_NONE)
   int ret = -1;
@@ -150,7 +150,7 @@ RPG_Stream::fini()
 void
 RPG_Stream::start()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream::start"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream::start"));
 
   // sanity check: is initialized ?
   if (!isInitialized())
@@ -209,7 +209,7 @@ RPG_Stream::start()
 void
 RPG_Stream::stop()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream::stop"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream::stop"));
 
   // sanity check: is running ?
   if (!isRunning())
@@ -268,7 +268,7 @@ RPG_Stream::stop()
 void
 RPG_Stream::pause()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream::pause"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream::pause"));
 
   // sanity check: is running ?
   if (!isRunning())
@@ -328,7 +328,7 @@ RPG_Stream::pause()
 void
 RPG_Stream::rewind()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream::rewind"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream::rewind"));
 
   // sanity check: is running ?
   if (isRunning())
@@ -387,7 +387,7 @@ RPG_Stream::rewind()
 void
 RPG_Stream::waitForCompletion()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream::waitForCompletion"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream::waitForCompletion"));
 
   // sanity check: is initialized ?
   if (!isInitialized())
@@ -506,7 +506,7 @@ RPG_Stream::waitForCompletion()
 const bool
 RPG_Stream::isRunning()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream::isRunning"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream::isRunning"));
 
   // delegate to the head module
   RPG_Stream_Module::MODULE_TYPE* module = NULL;
@@ -555,7 +555,7 @@ RPG_Stream::isRunning()
 void
 RPG_Stream::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream::dump_state"));
 
   std::string stream_layout;
 
@@ -591,7 +591,7 @@ RPG_Stream::dump_state() const
 const bool
 RPG_Stream::isInitialized() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream::isInitialized"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream::isInitialized"));
 
   return myIsInitialized;
 }
@@ -599,7 +599,7 @@ RPG_Stream::isInitialized() const
 void
 RPG_Stream::shutdown()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream::shutdown"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream::shutdown"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("shutting down stream...\n")));
@@ -684,7 +684,7 @@ RPG_Stream::shutdown()
 
 void RPG_Stream::deactivateModules()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream::deactivateModules"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream::deactivateModules"));
 
   // create session data
   RPG_Stream_SessionConfig* session_config = NULL;

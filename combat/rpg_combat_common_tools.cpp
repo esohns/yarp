@@ -20,6 +20,8 @@
 #include "rpg_combat_common_tools.h"
 
 #include <rpg_dice_common_tools.h>
+
+#include <rpg_common_macros.h>
 #include <rpg_common_tools.h>
 
 #include <ace/Log_Msg.h>
@@ -38,7 +40,7 @@ RPG_Combat_DamageReductionTypeToStringTable_t RPG_Combat_DamageReductionTypeHelp
 void
 RPG_Combat_Common_Tools::initStringConversionTables()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::initStringConversionTables"));
+  RPG_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::initStringConversionTables"));
 
   RPG_Combat_AttackFormHelper::init();
   RPG_Combat_AttackSituationHelper::init();
@@ -56,7 +58,7 @@ RPG_Combat_Common_Tools::initStringConversionTables()
 const std::string
 RPG_Combat_Common_Tools::attackFormsToString(const RPG_Combat_AttackForms_t& attackForms_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::attackFormsToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::attackFormsToString"));
 
   std::string result;
 
@@ -79,7 +81,7 @@ RPG_Combat_Common_Tools::attackFormsToString(const RPG_Combat_AttackForms_t& att
 const std::string
 RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damage& damage_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::damageToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::damageToString"));
 
   std::string result;
 
@@ -263,7 +265,7 @@ RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damage& damage_in)
 const std::string
 RPG_Combat_Common_Tools::damageTypeToString(const RPG_Combat_DamageTypeUnion& type_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::damageTypeToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::damageTypeToString"));
 
   std::string result;
 

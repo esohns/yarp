@@ -25,9 +25,11 @@
 
 #include <rpg_dice_common_tools.h>
 
+#include <rpg_magic_XML_parser.h>
 #include <rpg_dice_XML_parser.h>
 #include <rpg_common_XML_parser.h>
-#include <rpg_magic_XML_parser.h>
+
+#include <rpg_common_macros.h>
 
 #include <ace/Log_Msg.h>
 
@@ -35,13 +37,13 @@
 
 RPG_Item_Dictionary::RPG_Item_Dictionary()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::RPG_Item_Dictionary"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::RPG_Item_Dictionary"));
 
 }
 
 RPG_Item_Dictionary::~RPG_Item_Dictionary()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::~RPG_Item_Dictionary"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::~RPG_Item_Dictionary"));
 
 }
 
@@ -49,7 +51,7 @@ void
 RPG_Item_Dictionary::init(const std::string& filename_in,
                           const bool& validateXML_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::init"));
 
   // Construct the parser.
   //
@@ -166,7 +168,7 @@ RPG_Item_Dictionary::init(const std::string& filename_in,
 const RPG_Item_WeaponProperties
 RPG_Item_Dictionary::getWeaponProperties(const RPG_Item_WeaponType& weaponType_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::getWeaponProperties"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getWeaponProperties"));
 
   RPG_Item_WeaponDictionaryIterator_t iterator = myWeaponDictionary.find(weaponType_in);
   if (iterator == myWeaponDictionary.end())
@@ -185,7 +187,7 @@ RPG_Item_Dictionary::getWeaponProperties(const RPG_Item_WeaponType& weaponType_i
 const RPG_Item_ArmorProperties
 RPG_Item_Dictionary::getArmorProperties(const RPG_Item_ArmorType& armorType_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::getArmorProperties"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getArmorProperties"));
 
   RPG_Item_ArmorDictionaryIterator_t iterator = myArmorDictionary.find(armorType_in);
   if (iterator == myArmorDictionary.end())
@@ -208,7 +210,7 @@ RPG_Item_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
                                                ::xsd::cxx::xml::error_handler<char>::severity severity_in,
                                                const std::string& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::XSD_Error_Handler::handle"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::XSD_Error_Handler::handle"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
@@ -272,7 +274,7 @@ RPG_Item_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
 void
 RPG_Item_Dictionary::dump() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::dump"));
 
   // simply dump the current content of our dictionaries
   for (RPG_Item_WeaponDictionaryIterator_t iterator = myWeaponDictionary.begin();

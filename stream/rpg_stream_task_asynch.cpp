@@ -22,6 +22,8 @@
 
 #include "rpg_stream_defines.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/OS.h>
 #include <ace/Message_Block.h>
 #include <ace/Time_Value.h>
@@ -32,7 +34,7 @@ RPG_Stream_TaskAsynch::RPG_Stream_TaskAsynch()
  : myThreadID(0),
    myQueue(RPG_STREAM_DEF_MAX_QUEUE_SLOTS)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::RPG_Stream_TaskAsynch"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::RPG_Stream_TaskAsynch"));
 
   // tell the task to use our message queue...
   msg_queue(&myQueue);
@@ -44,7 +46,7 @@ RPG_Stream_TaskAsynch::RPG_Stream_TaskAsynch()
 
 RPG_Stream_TaskAsynch::~RPG_Stream_TaskAsynch()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::~RPG_Stream_TaskAsynch"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::~RPG_Stream_TaskAsynch"));
 
   // flush/deactivate our queue (check whether it was empty...)
   int flushed_messages = 0;
@@ -67,7 +69,7 @@ RPG_Stream_TaskAsynch::~RPG_Stream_TaskAsynch()
 int
 RPG_Stream_TaskAsynch::open(void* args_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::open"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::open"));
 
   ACE_UNUSED_ARG(args_in);
 
@@ -143,7 +145,7 @@ RPG_Stream_TaskAsynch::open(void* args_in)
 int
 RPG_Stream_TaskAsynch::close(u_long arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::close"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::close"));
 
   // *IMPORTANT NOTE*: this method may be invoked
   // - by an external thread closing down the active object
@@ -197,7 +199,7 @@ RPG_Stream_TaskAsynch::close(u_long arg_in)
 int
 RPG_Stream_TaskAsynch::module_closed(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::module_closed"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::module_closed"));
 
   // just wait for our worker thread(s) to die
   // *NOTE*: this works because we assume that by the time we get here,
@@ -212,7 +214,7 @@ int
 RPG_Stream_TaskAsynch::put(ACE_Message_Block* mb_in,
                        ACE_Time_Value* tv_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::put"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::put"));
 
   // drop the message into our queue...
   return putq(mb_in,
@@ -222,7 +224,7 @@ RPG_Stream_TaskAsynch::put(ACE_Message_Block* mb_in,
 int
 RPG_Stream_TaskAsynch::svc(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::svc"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::svc"));
 
   ACE_Message_Block* ace_mb          = NULL;
   bool               stop_processing = false;
@@ -260,7 +262,7 @@ RPG_Stream_TaskAsynch::svc(void)
 void
 RPG_Stream_TaskAsynch::waitForIdleState() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::waitForIdleState"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::waitForIdleState"));
 
   // simply delegate this to our queue...
   try
@@ -278,7 +280,7 @@ RPG_Stream_TaskAsynch::waitForIdleState() const
 void
 RPG_Stream_TaskAsynch::shutdown()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::shutdown"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::shutdown"));
 
 //   // debug info
 //   if (module())

@@ -1,12 +1,16 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(test_u, 0.1, erik.sohns@web.de)
+AC_INIT([RPG_UTest], [0.1], [erik.sohns@web.de], [RPG_UTest], [http://www.rpg.org])
 AC_PREREQ([2.63])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_AUX_DIR([.])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
+
+# define meta-package
+META_PACKAGE=RPG
+AC_DEFINE([META_PACKAGE], [RPG], [meta-package])
 
 # get system information
 AC_CANONICAL_TARGET
@@ -53,8 +57,8 @@ else
   AC_MSG_RESULT(no)
 fi
 
-# export these variable (so Makefile substitutions
-# can be made.
+# export variables (so Makefile substitutions can be made)
+AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries

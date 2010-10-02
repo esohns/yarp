@@ -20,25 +20,27 @@
 
 #include "rpg_stream_messagequeue_base.h"
 
+#include <rpg_common_macros.h>
+
 RPG_Stream_MessageQueueBase::RPG_Stream_MessageQueueBase(const unsigned long& maxMessages_in)
  : inherited(maxMessages_in, // high water mark
              maxMessages_in, // low water mark
              NULL)           // notification strategy
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::RPG_Stream_MessageQueueBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::RPG_Stream_MessageQueueBase"));
 
 }
 
 RPG_Stream_MessageQueueBase::~RPG_Stream_MessageQueueBase()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::~RPG_Stream_MessageQueueBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::~RPG_Stream_MessageQueueBase"));
 
 }
 
 bool
 RPG_Stream_MessageQueueBase::is_full_i(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::is_full_i"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::is_full_i"));
 
   return (cur_count_ >= high_water_mark_);
 }
@@ -46,7 +48,7 @@ RPG_Stream_MessageQueueBase::is_full_i(void)
 void
 RPG_Stream_MessageQueueBase::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::dump_state"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("# currently queued objects: %d\n"),

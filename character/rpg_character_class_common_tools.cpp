@@ -19,12 +19,14 @@
  ***************************************************************************/
 #include "rpg_character_class_common_tools.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 const RPG_Character_MetaClass
 RPG_Character_Class_Common_Tools::subClassToMetaClass(const RPG_Common_SubClass& subClass_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::subClassToMetaClass"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::subClassToMetaClass"));
 
   switch (subClass_in)
   {
@@ -70,7 +72,7 @@ RPG_Character_Class_Common_Tools::subClassToMetaClass(const RPG_Common_SubClass&
 RPG_Character_Class
 RPG_Character_Class_Common_Tools::classXMLTreeToClass(const RPG_Character_ClassXML_XMLTree_Type& class_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::classXMLTreeToClass"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::classXMLTreeToClass"));
 
   RPG_Character_Class result;
 

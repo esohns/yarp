@@ -22,6 +22,8 @@
 
 #include "rpg_stream_tools.h"
 
+#include <rpg_common_macros.h>
+
 RPG_Stream_SessionConfig::RPG_Stream_SessionConfig(const void* data_in,
                                            const ACE_Time_Value& startOfSession_in,
                                            const bool& userAbort_in)
@@ -30,20 +32,20 @@ RPG_Stream_SessionConfig::RPG_Stream_SessionConfig(const void* data_in,
    myStartOfSession(startOfSession_in),
    myUserAbort(userAbort_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::RPG_Stream_SessionConfig"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::RPG_Stream_SessionConfig"));
 
 }
 
 RPG_Stream_SessionConfig::~RPG_Stream_SessionConfig()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::~RPG_Stream_SessionConfig"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::~RPG_Stream_SessionConfig"));
 
 }
 
 const void*
 RPG_Stream_SessionConfig::getUserData() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::getUserData"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::getUserData"));
 
   return myUserData;
 }
@@ -51,7 +53,7 @@ RPG_Stream_SessionConfig::getUserData() const
 const ACE_Time_Value
 RPG_Stream_SessionConfig::getStartOfSession() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::getStartOfSession"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::getStartOfSession"));
 
   return myStartOfSession;
 }
@@ -59,7 +61,7 @@ RPG_Stream_SessionConfig::getStartOfSession() const
 const bool
 RPG_Stream_SessionConfig::getUserAbort() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::getUserAbort"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::getUserAbort"));
 
   return myUserAbort;
 }
@@ -67,7 +69,7 @@ RPG_Stream_SessionConfig::getUserAbort() const
 void
 RPG_Stream_SessionConfig::decrease()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::decrease"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::decrease"));
 
   bool destroy = false;
 
@@ -88,7 +90,7 @@ RPG_Stream_SessionConfig::decrease()
 void
 RPG_Stream_SessionConfig::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::dump_state"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("user data: %@, start of session: %s%s\n"),

@@ -3,19 +3,19 @@
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="5" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/sound/rpg_sound.xsd" >
-   <View0 Encoding="" line="0" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/sound/rpg_sound.xml" >
-   <View0 Encoding="" line="0" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc1>
   <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/sound/rpg_sound.map" >
-   <View0 Encoding="" line="0" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc2>
   <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/sound/configure.ac" >
-   <View0 Encoding="" line="64" Type="Source" />
+   <View0 Encoding="" line="75" Type="Source" />
   </Doc3>
   <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/sound/Makefile.am" >
-   <View0 Encoding="" line="9" Type="Source" />
+   <View0 Encoding="" line="4" Type="Source" />
   </Doc4>
  </DocsAndViews>
  <pluginList>
@@ -25,9 +25,9 @@
   </kdevdebugger>
   <kdevfilelist>
    <projectview name="XML schema" >
-    <file line="0" url="file:///home/unfv/Projects/RPG/sound/rpg_sound.xsd" col="0" encoding="" />
-    <file line="0" url="file:///home/unfv/Projects/RPG/sound/rpg_sound.xml" col="0" encoding="" />
-    <file line="0" url="file:///home/unfv/Projects/RPG/sound/rpg_sound.map" col="0" encoding="" />
+    <file line="0" url="rpg_sound.xsd" col="0" encoding="" />
+    <file line="0" url="rpg_sound.xml" col="0" encoding="" />
+    <file line="0" url="rpg_sound.map" col="0" encoding="" />
    </projectview>
    <defaultview name="" />
   </kdevfilelist>

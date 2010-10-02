@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <rpg_common_macros.h>
+
 template <typename TaskType>
 RPG_Stream_StreamModule<TaskType>::RPG_Stream_StreamModule(const std::string& name_in,
                                                    RPG_Stream_IRefCount* refCount_in)
@@ -26,7 +28,7 @@ RPG_Stream_StreamModule<TaskType>::RPG_Stream_StreamModule(const std::string& na
              &myReader,   // initialize reader side task
              refCount_in) // arg passed to task open()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_StreamModule::RPG_Stream_StreamModule"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_StreamModule::RPG_Stream_StreamModule"));
 
   // set links to ourselves...
   // *NOTE*: essential to enable dereferencing (name-lookups, controlled shutdown, etc)
@@ -37,7 +39,7 @@ RPG_Stream_StreamModule<TaskType>::RPG_Stream_StreamModule(const std::string& na
 template <typename TaskType>
 RPG_Stream_StreamModule<TaskType>::~RPG_Stream_StreamModule()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_StreamModule::~RPG_Stream_StreamModule"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_StreamModule::~RPG_Stream_StreamModule"));
 
   // *NOTE*: the base class will invoke close() which will
   // invoke module_close() and flush on every task...

@@ -22,6 +22,7 @@
 #include "rpg_map_scanner.h"
 #include "rpg_map_common_tools.h"
 
+#include <rpg_common_macros.h>
 #include <rpg_common_file_tools.h>
 
 #include <ace/Log_Msg.h>
@@ -43,7 +44,7 @@ RPG_Map_ParserDriver::RPG_Map_ParserDriver(const bool& traceScanning_in,
    myCurrentSeedPoints(NULL),
    myIsInitialized(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_ParserDriver::RPG_Map_ParserDriver"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::RPG_Map_ParserDriver"));
 
   // init scanner context
   if (MapScannerlex_init_extra(this,               // extra data
@@ -57,7 +58,7 @@ RPG_Map_ParserDriver::RPG_Map_ParserDriver(const bool& traceScanning_in,
 
 RPG_Map_ParserDriver::~RPG_Map_ParserDriver ()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_ParserDriver::~RPG_Map_ParserDriver"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::~RPG_Map_ParserDriver"));
 
   // fini scanner context
   if (myScannerContext)
@@ -69,7 +70,7 @@ RPG_Map_ParserDriver::init(RPG_Map_FloorPlan_t* plan_in,
                            RPG_Map_Positions_t* seedPoints_in,
                            const bool& debugParser_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_ParserDriver::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::init"));
 
   // sanity check(s)
   ACE_ASSERT(!myIsInitialized);
@@ -109,7 +110,7 @@ RPG_Map_ParserDriver::init(RPG_Map_FloorPlan_t* plan_in,
 const bool
 RPG_Map_ParserDriver::parse(const std::string& filename_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_ParserDriver::parse"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::parse"));
 
   // sanity check(s)
   ACE_ASSERT(myIsInitialized);
@@ -201,7 +202,7 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
 const bool
 RPG_Map_ParserDriver::getTraceScanning() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_ParserDriver::getTraceScanning"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::getTraceScanning"));
 
   return myTraceScanning;
 }
@@ -210,7 +211,7 @@ void
 RPG_Map_ParserDriver::error(const yy::location& location_in,
                             const std::string& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_ParserDriver::error"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::error"));
 
   std::ostringstream converter;
   converter << location_in;
@@ -226,7 +227,7 @@ RPG_Map_ParserDriver::error(const yy::location& location_in,
 void
 RPG_Map_ParserDriver::error(const std::string& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_ParserDriver::error"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::error"));
 
   ACE_DEBUG((LM_ERROR,
              ACE_TEXT("failed to parse file (line: %u): \"%s\"...\n"),
@@ -239,7 +240,7 @@ RPG_Map_ParserDriver::error(const std::string& message_in)
 const bool
 RPG_Map_ParserDriver::scan_begin(FILE* file_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_ParserDriver::scan_begin"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::scan_begin"));
 
   // sanity check(s)
   ACE_ASSERT(file_in);
@@ -267,7 +268,7 @@ RPG_Map_ParserDriver::scan_begin(FILE* file_in)
 void
 RPG_Map_ParserDriver::scan_end()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_ParserDriver::scan_end"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::scan_end"));
 
   // sanity check(s)
   ACE_ASSERT(myCurrentBufferState);

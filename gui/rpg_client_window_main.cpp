@@ -29,6 +29,8 @@
 #include <rpg_graphics_common_tools.h>
 #include <rpg_graphics_SDL_tools.h>
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 #include <sstream>
@@ -46,20 +48,20 @@ RPG_Client_WindowMain::RPG_Client_WindowMain(const RPG_Graphics_WindowSize_t& si
    myHaveMouseFocus(true), // *NOTE*: enforced with SDL_WarpMouse()
    myTitleFont(fontType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowMain::RPG_Client_WindowMain"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::RPG_Client_WindowMain"));
 
 }
 
 RPG_Client_WindowMain::~RPG_Client_WindowMain()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowMain::~RPG_Client_WindowMain"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::~RPG_Client_WindowMain"));
 
 }
 
 void
 RPG_Client_WindowMain::init()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowMain::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::init"));
 
   // init scroll margins
   initScrollSpots();
@@ -70,7 +72,7 @@ RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
                          const unsigned long& offsetX_in,
                          const unsigned long& offsetY_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowMain::draw"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::draw"));
 
   // set target surface
   SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
@@ -205,7 +207,7 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
                                 RPG_Graphics_IWindow* window_in,
                                 bool& redraw_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowMain::handleEvent"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::handleEvent"));
 
   // init return value(s)
   redraw_out = false;
@@ -701,7 +703,7 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 void
 RPG_Client_WindowMain::initScrollSpots()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowMain::initScrollSpots"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::initScrollSpots"));
 
   // upper left
   RPG_Graphics_HotSpot::init(*this,                  // parent
@@ -766,7 +768,7 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
                                const unsigned long& offsetX_in,
                                const unsigned long& offsetY_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Client_WindowMain::drawBorder"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::drawBorder"));
 
   // set target surface
   SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);

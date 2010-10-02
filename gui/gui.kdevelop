@@ -50,17 +50,17 @@
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
-        <cxxflags>-g -O2 -march=i686</cxxflags>
+        <cxxflags></cxxflags>
         <envvars/>
         <configargs>--disable-static</configargs>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <f77flags/>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <f77flags></f77flags>
       </optimized>
       <debug>
         <configargs>--disable-static --enable-debug</configargs>
@@ -68,16 +68,16 @@
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
-        <cxxflags>-g -march=i686 -Wall</cxxflags>
+        <cxxflags></cxxflags>
         <envvars/>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <f77flags/>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <f77flags></f77flags>
       </debug>
       <default>
         <envvars/>
@@ -93,7 +93,7 @@
         <cxxcompilerbinary></cxxcompilerbinary>
         <f77compilerbinary></f77compilerbinary>
         <cflags></cflags>
-        <cxxflags>-g -march=i686 -Wall</cxxflags>
+        <cxxflags></cxxflags>
         <f77flags></f77flags>
       </default>
     </configurations>
@@ -207,9 +207,7 @@
       <designer>/usr/lib/qt-3.3/bin/designer</designer>
       <designerpluginpaths/>
     </qt>
-    <references>
-      <pcs>automatic_%2Fhome%2Funfv%2FProjects%2FRPG%2Fgui</pcs>
-    </references>
+    <references/>
     <codecompletion>
       <automaticCodeCompletion>true</automaticCodeCompletion>
       <automaticArgumentsHint>true</automaticArgumentsHint>

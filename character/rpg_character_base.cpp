@@ -31,6 +31,8 @@
 #include <rpg_dice_common.h>
 #include <rpg_dice.h>
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 #include <string>
@@ -67,7 +69,7 @@ RPG_Character_Base::RPG_Character_Base(// base attributes
    myAlignment(alignment_in),
    myNumTotalHitPoints(maxHitPoints_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
 
 }
 
@@ -88,14 +90,14 @@ RPG_Character_Base::RPG_Character_Base(const RPG_Character_Base& playerBase_in)
    myAlignment(playerBase_in.myAlignment),
    myNumTotalHitPoints(playerBase_in.myNumTotalHitPoints)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::RPG_Character_Base"));
 
 }
 
 // RPG_Character_Base&
 // RPG_Character_Base::operator=(const RPG_Character_Base& playerBase_in)
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Character_Base::operator="));
+//   RPG_TRACE(ACE_TEXT("RPG_Character_Base::operator="));
 //
 //   myWealth = playerBase_in.myWealth;
 //   mySize = playerBase_in.mySize;
@@ -135,7 +137,7 @@ RPG_Character_Base::init(// base attributes
                          const RPG_Magic_SpellList_t& spells_in,
                          const RPG_Item_List_t& inventory_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::init"));
 
   myWealth            = wealth_in;
   mySize              = defaultSize_in;
@@ -156,14 +158,14 @@ RPG_Character_Base::init(// base attributes
 
 RPG_Character_Base::~RPG_Character_Base()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::~RPG_Character_Base"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::~RPG_Character_Base"));
 
 }
 
 const std::string
 RPG_Character_Base::getName() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getName"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::getName"));
 
   return myName;
 }
@@ -171,7 +173,7 @@ RPG_Character_Base::getName() const
 const RPG_Character_Alignment
 RPG_Character_Base::getAlignment() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getAlignment"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::getAlignment"));
 
   return myAlignment;
 }
@@ -179,7 +181,7 @@ RPG_Character_Base::getAlignment() const
 const RPG_Character_Conditions_t
 RPG_Character_Base::getCondition() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getCondition"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::getCondition"));
 
   return myCondition;
 }
@@ -187,7 +189,7 @@ RPG_Character_Base::getCondition() const
 const unsigned char
 RPG_Character_Base::getAttribute(const RPG_Common_Attribute& attribute_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getAttribute"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::getAttribute"));
 
   switch (attribute_in)
   {
@@ -231,7 +233,7 @@ RPG_Character_Base::getAttribute(const RPG_Common_Attribute& attribute_in) const
 const RPG_Character_Feats_t
 RPG_Character_Base::getFeats() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getFeats"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::getFeats"));
 
   return myFeats;
 }
@@ -239,7 +241,7 @@ RPG_Character_Base::getFeats() const
 const RPG_Character_Abilities_t
 RPG_Character_Base::getAbilities() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getAbilities"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::getAbilities"));
 
   return myAbilities;
 }
@@ -247,7 +249,7 @@ RPG_Character_Base::getAbilities() const
 const RPG_Character_Skills_t
 RPG_Character_Base::getSkills() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getSkills"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::getSkills"));
 
   return mySkills;
 }
@@ -256,7 +258,7 @@ void
 RPG_Character_Base::getSkillRank(const RPG_Common_Skill& skill_in,
                                  unsigned char& result_out) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getSkillRank"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::getSkillRank"));
 
   // init return value
   result_out = 0;
@@ -271,7 +273,7 @@ RPG_Character_Base::getSkillRank(const RPG_Common_Skill& skill_in,
 const bool
 RPG_Character_Base::hasFeat(const RPG_Character_Feat& feat_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::hasFeat"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::hasFeat"));
 
   return (myFeats.find(feat_in) != myFeats.end());
 }
@@ -279,7 +281,7 @@ RPG_Character_Base::hasFeat(const RPG_Character_Feat& feat_in) const
 const bool
 RPG_Character_Base::hasAbility(const RPG_Character_Ability& ability_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::hasAbility"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::hasAbility"));
 
   return (myAbilities.find(ability_in) != myAbilities.end());
 }
@@ -287,7 +289,7 @@ RPG_Character_Base::hasAbility(const RPG_Character_Ability& ability_in) const
 const RPG_Common_Size
 RPG_Character_Base::getSize() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getSize"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::getSize"));
 
   return mySize;
 }
@@ -295,7 +297,7 @@ RPG_Character_Base::getSize() const
 const RPG_Magic_Spells_t
 RPG_Character_Base::getKnownSpells() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getKnownSpells"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::getKnownSpells"));
 
   return myKnownSpells;
 }
@@ -303,7 +305,7 @@ RPG_Character_Base::getKnownSpells() const
 const RPG_Magic_SpellList_t
 RPG_Character_Base::getSpells() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getSpells"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::getSpells"));
 
   return mySpells;
 }
@@ -311,7 +313,7 @@ RPG_Character_Base::getSpells() const
 RPG_Character_Inventory
 RPG_Character_Base::getInventory() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getInventory"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::getInventory"));
 
   return myInventory;
 }
@@ -319,7 +321,7 @@ RPG_Character_Base::getInventory() const
 // const RPG_Character_Equipment
 // RPG_Character_Base::getEquipment() const
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Character_Base::getEquipment"));
+//   RPG_TRACE(ACE_TEXT("RPG_Character_Base::getEquipment"));
 //
 //   return myEquipment;
 // }
@@ -327,7 +329,7 @@ RPG_Character_Base::getInventory() const
 const unsigned short int
 RPG_Character_Base::getNumTotalHitPoints() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getNumTotalHitPoints"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::getNumTotalHitPoints"));
 
   return myNumTotalHitPoints;
 }
@@ -335,7 +337,7 @@ RPG_Character_Base::getNumTotalHitPoints() const
 const short int
 RPG_Character_Base::getNumHitPoints() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getNumHitPoints"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::getNumHitPoints"));
 
   return myNumHitPoints;
 }
@@ -343,7 +345,7 @@ RPG_Character_Base::getNumHitPoints() const
 const unsigned int
 RPG_Character_Base::getWealth() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::getWealth"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::getWealth"));
 
   return myWealth;
 }
@@ -351,7 +353,7 @@ RPG_Character_Base::getWealth() const
 const bool
 RPG_Character_Base::hasCondition(const RPG_Common_Condition& condition_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::hasCondition"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::hasCondition"));
 
   return (myCondition.find(condition_in) != myCondition.end());
 }
@@ -359,7 +361,7 @@ RPG_Character_Base::hasCondition(const RPG_Common_Condition& condition_in) const
 void
 RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::sustainDamage"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::sustainDamage"));
 
   signed short damage_value = 0;
   signed short total_damage_value = 0;
@@ -419,7 +421,7 @@ RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
 void
 RPG_Character_Base::status() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::status"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::status"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("condition: %s\nHP: %d/%d\nwealth: %d GP\n"),
@@ -432,7 +434,7 @@ RPG_Character_Base::status() const
 void
 RPG_Character_Base::dump() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Base::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Base::dump"));
 
   std::string spells;
   if (!myKnownSpells.empty())

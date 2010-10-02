@@ -24,6 +24,8 @@
 
 #include <rpg_dice_common_tools.h>
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 RPG_Item_Weapon::RPG_Item_Weapon(const RPG_Item_WeaponType& weaponType_in)
@@ -32,20 +34,20 @@ RPG_Item_Weapon::RPG_Item_Weapon(const RPG_Item_WeaponType& weaponType_in)
               getID()), // <-- retrieve generated item ID
    myWeaponType(weaponType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Weapon::RPG_Item_Weapon"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Weapon::RPG_Item_Weapon"));
 
 }
 
 RPG_Item_Weapon::~RPG_Item_Weapon()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Weapon::RPG_Item_Weapon"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Weapon::RPG_Item_Weapon"));
 
 }
 
 const RPG_Item_WeaponType
 RPG_Item_Weapon::getWeaponType() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Weapon::getWeaponType"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Weapon::getWeaponType"));
 
   return myWeaponType;
 }
@@ -53,7 +55,7 @@ RPG_Item_Weapon::getWeaponType() const
 void
 RPG_Item_Weapon::dump() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Weapon::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Weapon::dump"));
 
   // retrieve properties
   RPG_Item_WeaponProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(myWeaponType);

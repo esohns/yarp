@@ -41,7 +41,7 @@
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
-        <cxxflags>-g -O2 -march=i686</cxxflags>
+        <cxxflags/>
         <envvars/>
         <configargs>--disable-static</configargs>
         <topsourcedir/>
@@ -59,7 +59,7 @@
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
-        <cxxflags>-g3 -O0 -march=i686 -Wall</cxxflags>
+        <cxxflags/>
         <envvars/>
         <topsourcedir/>
         <cppflags/>
@@ -72,7 +72,7 @@
       </debug>
       <default>
         <envvars/>
-        <configargs>--disable-static</configargs>
+        <configargs>--disable-static --enable-debug</configargs>
         <builddir>debug</builddir>
         <topsourcedir/>
         <cppflags/>
@@ -84,7 +84,7 @@
         <cxxcompilerbinary/>
         <f77compilerbinary/>
         <cflags/>
-        <cxxflags>-g3 -O0 -march=i686</cxxflags>
+        <cxxflags/>
         <f77flags/>
       </default>
     </configurations>

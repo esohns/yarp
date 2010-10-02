@@ -6,16 +6,16 @@
    <View0 Encoding="" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics.xml" >
-   <View0 Encoding="" line="76" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc1>
   <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics.map" >
-   <View0 Encoding="" line="0" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc2>
   <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/configure.ac" >
-   <View0 Encoding="" line="68" Type="Source" />
+   <View0 Encoding="" line="58" Type="Source" />
   </Doc3>
   <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/Makefile.am" >
-   <View0 Encoding="" line="5" Type="Source" />
+   <View0 Encoding="" line="37" Type="Source" />
   </Doc4>
  </DocsAndViews>
  <pluginList>
@@ -25,8 +25,8 @@
   </kdevdebugger>
   <kdevfilelist>
    <projectview name="XML schema" >
-    <file line="76" url="file:///home/unfv/Projects/RPG/graphics/rpg_graphics.xml" col="0" encoding="" />
-    <file line="0" url="file:///home/unfv/Projects/RPG/graphics/rpg_graphics.map" col="0" encoding="" />
+    <file line="76" url="rpg_graphics.xml" col="0" encoding="" />
+    <file line="0" url="rpg_graphics.map" col="0" encoding="" />
    </projectview>
    <defaultview name="" />
   </kdevfilelist>
@@ -37,7 +37,7 @@
   <kdevbookmarks>
    <bookmarks>
     <bookmark url="/home/unfv/Projects/RPG/graphics/rpg_graphics_common_tools.cpp" >
-     <mark line="393" />
+     <mark line="394" />
     </bookmark>
    </bookmarks>
   </kdevbookmarks>

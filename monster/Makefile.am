@@ -35,5 +35,8 @@ libRPG_Monster_la_SOURCES = rpg_XMLSchema_XML_types.h rpg_monster.cpp \
 	rpg_monster_specialdefenseprecondition.h rpg_monster_specialdefenseproperties.h \
 	rpg_monster_specialpropertytypeunion.h rpg_monster_summonmonster.h rpg_monster_weapontypeunion.h
 
-bindata_DATA = rpg_monster.xsd rpg_monster.xml
-bindatadir = $(bindir)
+pkgdatadir = $(datadir)/@META_PACKAGE@
+configdir = $(pkgdatadir)/config
+config_DATA = rpg_monster.xsd rpg_monster.xml
+
+EXTRA_DIST = $(config_DATA)

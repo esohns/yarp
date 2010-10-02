@@ -20,7 +20,7 @@
 
 // *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
 #ifdef HAVE_CONFIG_H
-#include <gui-config.h>
+#include <RPG_GUI-config.h>
 #endif
 
 #include "rpg_client_defines.h"
@@ -54,6 +54,8 @@
 
 #include <rpg_sound_dictionary.h>
 #include <rpg_sound_common_tools.h>
+
+#include <rpg_common_macros.h>
 
 #include <gnome.h>
 #include <glade/glade.h>
@@ -102,7 +104,7 @@ static unsigned long    hover_time  = 0;
 void
 update_character_profile(const RPG_Character_Player& player_in)
 {
-  ACE_TRACE(ACE_TEXT("::update_character_profile"));
+  RPG_TRACE(ACE_TEXT("::update_character_profile"));
 
   // sanity check(s)
   ACE_ASSERT(xml);
@@ -675,7 +677,7 @@ update_character_profile(const RPG_Character_Player& player_in)
 static int
 dirent_selector(const dirent* entry_in)
 {
-  ACE_TRACE(ACE_TEXT("::dirent_selector"));
+  RPG_TRACE(ACE_TEXT("::dirent_selector"));
 
   // *NOTE*: select *.xml files
   std::string filename(entry_in->d_name);
@@ -697,7 +699,7 @@ static int
 dirent_comparator(const dirent** entry1_in,
                   const dirent** entry2_in)
 {
-  ACE_TRACE(ACE_TEXT("::dirent_comparator"));
+  RPG_TRACE(ACE_TEXT("::dirent_comparator"));
 
   return ACE_OS::strcmp((*entry1_in)->d_name,
                           (*entry2_in)->d_name);
@@ -708,7 +710,7 @@ load_character_profiles(const std::string& repository_in,
                         GtkListStore* listStore_in)
 //                         GtkComboBox* comboBox_in)
 {
-  ACE_TRACE(ACE_TEXT("::load_character_profiles"));
+  RPG_TRACE(ACE_TEXT("::load_character_profiles"));
 
   // sanity check(s)
   ACE_ASSERT(listStore_in);
@@ -816,7 +818,7 @@ about_activated_GTK_cb(GtkWidget* widget_in,
 //                        GdkEvent* event_in,
                        gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::about_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::about_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
 //   ACE_UNUSED_ARG(event_in);
@@ -854,7 +856,7 @@ properties_activated_GTK_cb(GtkWidget* widget_in,
 //                             GdkEvent* event_in,
                             gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::properties_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::properties_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
 //   ACE_UNUSED_ARG(event_in);
@@ -868,7 +870,7 @@ quit_activated_GTK_cb(GtkWidget* widget_in,
 //                       GdkEvent* event_in,
                       gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::quit_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::quit_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
 //   ACE_UNUSED_ARG(event_in);
@@ -902,7 +904,7 @@ create_character_activated_GTK_cb(GtkWidget* widget_in,
 //                                   GdkEvent* event_in,
                                   gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::create_character_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::create_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
 //   ACE_UNUSED_ARG(event_in);
@@ -916,7 +918,7 @@ load_character_activated_GTK_cb(GtkWidget* widget_in,
 //                                 GdkEvent* event_in,
                                 gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::load_character_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::load_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
 //   ACE_UNUSED_ARG(event_in);
@@ -957,7 +959,7 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
 //                                 GdkEvent* event_in,
                                 gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::character_file_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::character_file_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
 //   ACE_UNUSED_ARG(event_in);
@@ -998,7 +1000,7 @@ save_character_activated_GTK_cb(GtkWidget* widget_in,
 //                                 GdkEvent* event_in,
                                 gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::save_character_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::save_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
 //   ACE_UNUSED_ARG(event_in);
@@ -1012,7 +1014,7 @@ join_game_activated_GTK_cb(GtkWidget* widget_in,
 //                            GdkEvent* event_in,
                            gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::join_game_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::join_game_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
 //   ACE_UNUSED_ARG(event_in);
@@ -1026,7 +1028,7 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
 //                             GdkEvent* event_in,
                             gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::characters_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::characters_activated_GTK_cb"));
 
 //   ACE_UNUSED_ARG(event_in);
   GTK_cb_data_t* userData_p = ACE_static_cast(GTK_cb_data_t*, userData_in);
@@ -1086,7 +1088,7 @@ characters_refresh_activated_GTK_cb(GtkWidget* widget_in,
 //                                     GdkEvent* event_in,
                                     gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::characters_refresh_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::characters_refresh_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
 //   ACE_UNUSED_ARG(event_in);
@@ -1132,7 +1134,7 @@ Uint32
 event_timer_SDL_cb(Uint32 interval_in,
                    void* argument_in)
 {
-  ACE_TRACE(ACE_TEXT("::event_timer_SDL_cb"));
+  RPG_TRACE(ACE_TEXT("::event_timer_SDL_cb"));
 
   unsigned long* current_hovertime_p = ACE_static_cast(unsigned long*, argument_in);
   ACE_ASSERT(current_hovertime_p);
@@ -1166,7 +1168,7 @@ Uint32
 input_timer_SDL_cb(Uint32 interval_in,
                    void* argument_in)
 {
-  ACE_TRACE(ACE_TEXT("::input_timer_SDL_cb"));
+  RPG_TRACE(ACE_TEXT("::input_timer_SDL_cb"));
 
   // create a timer event
   SDL_Event event;
@@ -1190,7 +1192,7 @@ void
 do_SDL_waitForInput(const unsigned long& timeout_in,
                     SDL_Event& event_out)
 {
-  ACE_TRACE(ACE_TEXT("::do_SDL_waitForInput"));
+  RPG_TRACE(ACE_TEXT("::do_SDL_waitForInput"));
 
   SDL_TimerID timer = NULL;
   if (timeout_in)
@@ -1243,7 +1245,7 @@ do_SDL_waitForInput(const unsigned long& timeout_in,
 G_MODULE_EXPORT gint
 do_SDLEventLoop_GTK_cb(gpointer userData_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_SDLEventLoop_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::do_SDLEventLoop_GTK_cb"));
 
   GTK_cb_data_t* userData_p = ACE_static_cast(GTK_cb_data_t*, userData_in);
   ACE_ASSERT(userData_p);
@@ -1486,7 +1488,7 @@ do_SDLEventLoop_GTK_cb(gpointer userData_in)
 void
 print_usage(const std::string& programName_in)
 {
-  ACE_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE(ACE_TEXT("::print_usage"));
 
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
@@ -1523,7 +1525,7 @@ process_arguments(const int argc_in,
                   bool& printVersionAndExit_out,
                   unsigned long& numThreadPoolThreads_out)
 {
-  ACE_TRACE(ACE_TEXT("::process_arguments"));
+  RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
   iniFile_out              = RPG_CLIENT_DEF_INI_FILE;
@@ -1670,7 +1672,7 @@ process_arguments(const int argc_in,
 const bool
 init_threadPool()
 {
-  ACE_TRACE(ACE_TEXT("::init_threadPool"));
+  RPG_TRACE(ACE_TEXT("::init_threadPool"));
 
   ACE_TP_Reactor* threadpool_reactor = NULL;
   ACE_NEW_RETURN(threadpool_reactor,
@@ -1690,7 +1692,7 @@ static
 ACE_THR_FUNC_RETURN
 tp_worker_func(void* args_in)
 {
-  ACE_TRACE(ACE_TEXT("::tp_worker_func"));
+  RPG_TRACE(ACE_TEXT("::tp_worker_func"));
 
   ACE_UNUSED_ARG(args_in);
 
@@ -1712,7 +1714,7 @@ static
 ACE_THR_FUNC_RETURN
 reactor_worker_func(void* args_in)
 {
-  ACE_TRACE(ACE_TEXT("::reactor_worker_func"));
+  RPG_TRACE(ACE_TEXT("::reactor_worker_func"));
 
   ACE_UNUSED_ARG(args_in);
 
@@ -1735,7 +1737,7 @@ reactor_worker_func(void* args_in)
 const bool
 do_initAudio(const SDL_audio_config_t& audioConfig_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_initAudio"));
+  RPG_TRACE(ACE_TEXT("::do_initAudio"));
 
   // init SDL audio handling
 //   SDL_AudioSpec wanted;
@@ -1823,7 +1825,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
            const GTK_cb_data_t& userData_in,
            const SDL_video_config_t& videoConfig_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_initGUI"));
+  RPG_TRACE(ACE_TEXT("::do_initGUI"));
 
   // sanity check(s)
   if (!RPG_Common_File_Tools::isDirectory(graphicsDirectory_in.c_str()))
@@ -2305,7 +2307,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
 const bool
 do_runIntro()
 {
-  ACE_TRACE(ACE_TEXT("::do_runIntro"));
+  RPG_TRACE(ACE_TEXT("::do_runIntro"));
 
   // step1: play intro music
   RPG_Sound_Common_Tools::playSound(EVENT_MAIN_TITLE);
@@ -2346,7 +2348,7 @@ do_runIntro()
 void
 do_work(const RPG_Client_Config& config_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step0a: init RPG engine
   RPG_Engine_Common_Tools::init(config_in.magic_dictionary,
@@ -2613,7 +2615,7 @@ void
 do_parseIniFile(const std::string& iniFilename_in,
                 RPG_Client_Config& config_out)
 {
-  ACE_TRACE(ACE_TEXT("::do_parseIniFile"));
+  RPG_TRACE(ACE_TEXT("::do_parseIniFile"));
 
   // init return value(s)
   config_out.audio_config.frequency = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
@@ -2808,10 +2810,10 @@ do_parseIniFile(const std::string& iniFilename_in,
 void
 do_printVersion(const std::string& programName_in)
 {
-  ACE_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
-  std::cout << programName_in << ACE_TEXT(" : ") << GUI_VERSION << std::endl;
+  std::cout << programName_in << ACE_TEXT(" : ") << RPG_GUI_VERSION << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
@@ -2836,7 +2838,7 @@ int
 ACE_TMAIN(int argc_in,
           ACE_TCHAR* argv_in[])
 {
-  ACE_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE(ACE_TEXT("::main"));
 
   // step0: init ACE
   // *PORTABILITY*: on Windows, we need to init ACE...
@@ -3059,13 +3061,13 @@ ACE_TMAIN(int argc_in,
 //   ACE_ASSERT(gnomeSession);
 //   gnome_client_set_program(gnomeSession, ACE::basename(argv_in[0]));
   GnomeProgram* gnomeProgram = NULL;
-  gnomeProgram = gnome_program_init(RPG_CLIENT_DEF_GNOME_APPLICATION_ID, // app ID
-//                                     ACE_TEXT_ALWAYS_CHAR(VERSION),       // version
-                                    ACE_TEXT_ALWAYS_CHAR(GUI_VERSION),   // version
-                                    LIBGNOMEUI_MODULE,                   // module info
-                                    argc_in,                             // cmdline
-                                    argv_in,                             // cmdline
-                                    NULL);                               // property name(s)
+  gnomeProgram = gnome_program_init(RPG_CLIENT_DEF_GNOME_APPLICATION_ID,   // app ID
+//                                     ACE_TEXT_ALWAYS_CHAR(VERSION),      // version
+                                    ACE_TEXT_ALWAYS_CHAR(RPG_GUI_VERSION), // version
+                                    LIBGNOMEUI_MODULE,                     // module info
+                                    argc_in,                               // cmdline
+                                    argv_in,                               // cmdline
+                                    NULL);                                 // property name(s)
   ACE_ASSERT(gnomeProgram);
 
   ACE_High_Res_Timer timer;

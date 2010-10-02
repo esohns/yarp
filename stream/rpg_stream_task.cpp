@@ -23,6 +23,8 @@
 #include "rpg_stream_session_message.h"
 #include "rpg_stream_message_base.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Reactor.h>
 #include <ace/Message_Block.h>
 #include <ace/Time_Value.h>
@@ -31,7 +33,7 @@ RPG_Stream_Task::RPG_Stream_Task()
  : inherited(NULL, // thread manager instance
              NULL) // queue handle
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Task::RPG_Stream_Task"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::RPG_Stream_Task"));
 
   // use the default reactor...
   reactor(ACE_Reactor::instance());
@@ -39,7 +41,7 @@ RPG_Stream_Task::RPG_Stream_Task()
 
 RPG_Stream_Task::~RPG_Stream_Task()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Task::~RPG_Stream_Task"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::~RPG_Stream_Task"));
 
 }
 
@@ -47,7 +49,7 @@ RPG_Stream_Task::~RPG_Stream_Task()
 int
 RPG_Stream_Task::open(void* args_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Task::open"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::open"));
 
   ACE_UNUSED_ARG(args_in);
 
@@ -60,7 +62,7 @@ RPG_Stream_Task::open(void* args_in)
 int
 RPG_Stream_Task::close(u_long arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Task::close"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::close"));
 
   ACE_UNUSED_ARG(arg_in);
 
@@ -73,7 +75,7 @@ RPG_Stream_Task::close(u_long arg_in)
 int
 RPG_Stream_Task::module_closed(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Task::module_closed"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::module_closed"));
 
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
@@ -85,7 +87,7 @@ int
 RPG_Stream_Task::put(ACE_Message_Block* mb_in,
                  ACE_Time_Value* tv_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Task::put"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::put"));
 
   ACE_UNUSED_ARG(mb_in);
   ACE_UNUSED_ARG(tv_in);
@@ -99,7 +101,7 @@ RPG_Stream_Task::put(ACE_Message_Block* mb_in,
 int
 RPG_Stream_Task::svc(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Task::svc"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::svc"));
 
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
@@ -112,7 +114,7 @@ RPG_Stream_Task::svc(void)
 // RPG_Stream_Task::handleDataMessage(RPG_Stream_MessageBase*& message_inout,
 //                                bool& passMessageDownstream_out)
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Stream_Task::handleDataMessage"));
+//   RPG_TRACE(ACE_TEXT("RPG_Stream_Task::handleDataMessage"));
 //
 //   // init return value(s)
 //   passMessageDownstream_out = true;
@@ -127,7 +129,7 @@ void
 RPG_Stream_Task::handleSessionMessage(RPG_Stream_SessionMessage*& message_inout,
                                   bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Task::handleSessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::handleSessionMessage"));
 
   // init return value(s)
   passMessageDownstream_out = true;
@@ -199,7 +201,7 @@ RPG_Stream_Task::handleSessionMessage(RPG_Stream_SessionMessage*& message_inout,
 void
 RPG_Stream_Task::handleProcessingError(const ACE_Message_Block* const message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Task::handleProcessingError"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::handleProcessingError"));
 
   ACE_UNUSED_ARG(message_in);
 
@@ -219,7 +221,7 @@ RPG_Stream_Task::handleProcessingError(const ACE_Message_Block* const message_in
 void
 RPG_Stream_Task::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Task::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::dump_state"));
 
 //   // debug info
 //   if (module())
@@ -239,7 +241,7 @@ void
 RPG_Stream_Task::handleMessage(ACE_Message_Block* mb_in,
                            bool& stopProcessing_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Task::handleMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::handleMessage"));
 
   // sanity check
   ACE_ASSERT(mb_in);
@@ -380,7 +382,7 @@ RPG_Stream_Task::handleControlMessage(ACE_Message_Block* controlMessage_in,
                                   bool& stopProcessing_out,
                                   bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Task::handleControlMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::handleControlMessage"));
 
   // init return value(s)
   stopProcessing_out = false;

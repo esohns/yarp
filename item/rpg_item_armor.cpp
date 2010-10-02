@@ -21,6 +21,8 @@
 
 #include "rpg_item_dictionary.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 RPG_Item_Armor::RPG_Item_Armor(const RPG_Item_ArmorType& armorType_in)
@@ -29,20 +31,20 @@ RPG_Item_Armor::RPG_Item_Armor(const RPG_Item_ArmorType& armorType_in)
               getID()), // <-- retrieve generated item ID
    myArmorType(armorType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Armor::RPG_Item_Armor"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Armor::RPG_Item_Armor"));
 
 }
 
 RPG_Item_Armor::~RPG_Item_Armor()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Armor::~RPG_Item_Armor"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Armor::~RPG_Item_Armor"));
 
 }
 
 const RPG_Item_ArmorType
 RPG_Item_Armor::getArmorType() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Armor::getArmorType"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Armor::getArmorType"));
 
   return myArmorType;
 }
@@ -50,7 +52,7 @@ RPG_Item_Armor::getArmorType() const
 void
 RPG_Item_Armor::dump() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Armor::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Armor::dump"));
 
   // retrieve properties
   RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(myArmorType);

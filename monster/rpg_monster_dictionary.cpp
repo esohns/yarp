@@ -36,6 +36,8 @@
 #include <rpg_dice_XML_parser.h>
 #include <rpg_dice_common_tools.h>
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 #include <iostream>
@@ -44,13 +46,13 @@
 
 RPG_Monster_Dictionary::RPG_Monster_Dictionary()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::RPG_Monster_Dictionary"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary::RPG_Monster_Dictionary"));
 
 }
 
 RPG_Monster_Dictionary::~RPG_Monster_Dictionary()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::~RPG_Monster_Dictionary"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary::~RPG_Monster_Dictionary"));
 
 }
 
@@ -58,7 +60,7 @@ void
 RPG_Monster_Dictionary::init(const std::string& filename_in,
                              const bool& validateXML_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary::init"));
 
   // Construct the parser.
   //
@@ -397,7 +399,7 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
 const RPG_Monster_Properties
 RPG_Monster_Dictionary::getProperties(const std::string& name_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::getProperties"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary::getProperties"));
 
   RPG_Monster_DictionaryConstIterator_t iterator = myMonsterDictionary.find(name_in);
   if (iterator == myMonsterDictionary.end())
@@ -415,7 +417,7 @@ RPG_Monster_Dictionary::getProperties(const std::string& name_in) const
 const unsigned long
 RPG_Monster_Dictionary::numEntries() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::numEntries"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary::numEntries"));
 
   return myMonsterDictionary.size();
 }
@@ -426,7 +428,7 @@ RPG_Monster_Dictionary::find(const RPG_Character_Alignment& alignment_in,
                              const RPG_Monster_OrganizationSet_t& organizations_in,
                              RPG_Monster_List_t& list_out) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::find"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary::find"));
 
   // init return value(s)
   list_out.clear();
@@ -475,7 +477,7 @@ RPG_Monster_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
                                                   ::xsd::cxx::xml::error_handler<char>::severity severity_in,
                                                   const std::string& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::XSD_Error_Handler::handle"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary::XSD_Error_Handler::handle"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
@@ -539,7 +541,7 @@ RPG_Monster_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
 void
 RPG_Monster_Dictionary::dump() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Dictionary::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary::dump"));
 
   // simply dump the current content of our dictionary
   for (RPG_Monster_DictionaryConstIterator_t iterator = myMonsterDictionary.begin();

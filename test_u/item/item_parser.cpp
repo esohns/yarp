@@ -20,7 +20,7 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include <test_u-config.h>
 #endif
 
 #include <rpg_item_common_tools.h>
@@ -155,16 +155,17 @@ void do_work(const bool& dumpItemDictionary_in,
              ACE_TEXT("finished working...\n")));
 } // end do_work
 
-void do_printVersion()
+void do_printVersion(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
-  std::cout << ACE_TEXT("parser: ")
-            << VERSION
-            << std::endl;
+  std::cout << programName_in
+      << ACE_TEXT(" : ")
+      << TEST_U_VERSION
+      << std::endl;
 
   // create version string...
-  // *IMPORTANT NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
+  // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
   // number... We need this, as the library soname is compared to this string.
   std::ostringstream version_number;
   if (version_number << ACE::major_version())
@@ -280,7 +281,7 @@ int ACE_TMAIN(int argc,
   // step1d: handle specific program modes
   if (printVersionAndExit)
   {
-    do_printVersion();
+    do_printVersion(std::string(ACE::basename(argv[0])));
 
     return EXIT_SUCCESS;
   } // end IF

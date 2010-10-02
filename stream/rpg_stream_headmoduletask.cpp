@@ -25,6 +25,8 @@
 #include "rpg_stream_session_config.h"
 #include "rpg_stream_iallocator.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Message_Block.h>
 
 RPG_Stream_HeadModuleTask::RPG_Stream_HeadModuleTask(const bool autoStart_in)
@@ -36,7 +38,7 @@ RPG_Stream_HeadModuleTask::RPG_Stream_HeadModuleTask(const bool autoStart_in)
    myAutoStart(autoStart_in),
    myUserData(NULL)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::RPG_Stream_HeadModuleTask"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::RPG_Stream_HeadModuleTask"));
 
   // tell the task to use our message queue...
   msg_queue(&myQueue);
@@ -48,7 +50,7 @@ RPG_Stream_HeadModuleTask::RPG_Stream_HeadModuleTask(const bool autoStart_in)
 
 RPG_Stream_HeadModuleTask::~RPG_Stream_HeadModuleTask()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::~RPG_Stream_HeadModuleTask"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::~RPG_Stream_HeadModuleTask"));
 
   // flush/deactivate our queue (check whether it was empty...)
   int flushed_messages = 0;
@@ -72,7 +74,7 @@ int
 RPG_Stream_HeadModuleTask::put(ACE_Message_Block* mb_in,
                            ACE_Time_Value* tv_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::put"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::put"));
 
   // drop the message into our queue...
   return putq(mb_in,
@@ -82,7 +84,7 @@ RPG_Stream_HeadModuleTask::put(ACE_Message_Block* mb_in,
 int
 RPG_Stream_HeadModuleTask::open(void* args_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::open"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::open"));
 
   // step0: init user data
   myUserData = args_in;
@@ -140,7 +142,7 @@ RPG_Stream_HeadModuleTask::open(void* args_in)
 int
 RPG_Stream_HeadModuleTask::close(u_long arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::close"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::close"));
 
   // *NOTE*: this method may be invoked
   // - by an external thread closing down the active object
@@ -194,7 +196,7 @@ RPG_Stream_HeadModuleTask::close(u_long arg_in)
 int
 RPG_Stream_HeadModuleTask::module_closed(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::module_closed"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::module_closed"));
 
   // *NOTE*: this will be a NOP IF the stream was
   // stop()ped BEFORE it is deleted !
@@ -237,7 +239,7 @@ RPG_Stream_HeadModuleTask::module_closed(void)
 int
 RPG_Stream_HeadModuleTask::svc(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::svc"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::svc"));
 
   ACE_Message_Block* ace_mb          = NULL;
   bool               stop_processing = false;
@@ -329,7 +331,7 @@ RPG_Stream_HeadModuleTask::svc(void)
 // RPG_Stream_HeadModuleTask::handleDataMessage(RPG_Stream_MessageBase*& message_inout,
 //                                          bool& passMessageDownstream_out)
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::handleDataMessage"));
+//   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::handleDataMessage"));
 //
 //   ACE_UNUSED_ARG(message_inout);
 //   ACE_UNUSED_ARG(passMessageDownstream_out);
@@ -346,7 +348,7 @@ RPG_Stream_HeadModuleTask::handleControlMessage(ACE_Message_Block* controlMessag
                                             bool& stopProcessing_out,
                                             bool& passMessageDownstream_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::handleControlMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::handleControlMessage"));
 
   // init return value(s)
   stopProcessing_out = false;
@@ -386,7 +388,7 @@ RPG_Stream_HeadModuleTask::handleControlMessage(ACE_Message_Block* controlMessag
 void
 RPG_Stream_HeadModuleTask::start()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::start"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::start"));
 
   // (try to) change state
   // --> start a worker thread
@@ -396,7 +398,7 @@ RPG_Stream_HeadModuleTask::start()
 void
 RPG_Stream_HeadModuleTask::stop()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::stop"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::stop"));
 
   // (try to) change state
   // --> tell the worker thread to die
@@ -409,7 +411,7 @@ RPG_Stream_HeadModuleTask::stop()
 void
 RPG_Stream_HeadModuleTask::pause()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::pause"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::pause"));
 
   // (try to) change state
   changeState(inherited2::PAUSED);
@@ -418,7 +420,7 @@ RPG_Stream_HeadModuleTask::pause()
 void
 RPG_Stream_HeadModuleTask::rewind()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::rewind"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::rewind"));
 
   // *TODO*: implement this !
   ACE_ASSERT(false);
@@ -427,7 +429,7 @@ RPG_Stream_HeadModuleTask::rewind()
 void
 RPG_Stream_HeadModuleTask::waitForCompletion()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::waitForCompletion"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::waitForCompletion"));
 
   {
     ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
@@ -445,7 +447,7 @@ RPG_Stream_HeadModuleTask::waitForCompletion()
 const bool
 RPG_Stream_HeadModuleTask::isRunning()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::isRunning"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::isRunning"));
 
   return (getState() == inherited2::RUNNING);
 }
@@ -453,7 +455,7 @@ RPG_Stream_HeadModuleTask::isRunning()
 void
 RPG_Stream_HeadModuleTask::finished()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::finished"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::finished"));
 
   // (try to) set new state
   changeState(inherited2::FINISHED);
@@ -465,7 +467,7 @@ RPG_Stream_HeadModuleTask::finished()
 void
 RPG_Stream_HeadModuleTask::onStateChange(const Control_StateType& newState_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::onStateChange"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::onStateChange"));
 
   switch (newState_in)
   {
@@ -651,7 +653,7 @@ RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned long& sessionID_in,
                                          RPG_Stream_SessionConfig*& config_inout,
                                          RPG_Stream_IAllocator* allocator_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::putSessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::putSessionMessage"));
 
   // create session message
   RPG_Stream_SessionMessage* message = NULL;
@@ -728,7 +730,7 @@ RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned long& sessionID_in,
                                          const ACE_Time_Value& startOfSession_in,
                                          const bool& userAbort_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::putSessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::putSessionMessage"));
 
   // create/collect session data
   RPG_Stream_SessionConfig* config = NULL;

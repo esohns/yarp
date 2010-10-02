@@ -19,12 +19,14 @@
  ***************************************************************************/
 #include "rpg_character_player_common_tools.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 RPG_Character_Skills_t
 RPG_Character_Player_Common_Tools::skillsXMLTreeToSkills(const RPG_Character_Skills_XMLTree_Type& skills_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Common_Tools::skillsXMLTreeToSkills"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Common_Tools::skillsXMLTreeToSkills"));
 
   // init result
   RPG_Character_Skills_t result;
@@ -40,7 +42,7 @@ RPG_Character_Player_Common_Tools::skillsXMLTreeToSkills(const RPG_Character_Ski
 RPG_Character_Feats_t
 RPG_Character_Player_Common_Tools::featsXMLTreeToFeats(const RPG_Character_Feats_XMLTree_Type& feats_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Common_Tools::featsXMLTreeToFeats"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Common_Tools::featsXMLTreeToFeats"));
 
   // init result
   RPG_Character_Feats_t result;
@@ -56,7 +58,7 @@ RPG_Character_Player_Common_Tools::featsXMLTreeToFeats(const RPG_Character_Feats
 RPG_Character_Abilities_t
 RPG_Character_Player_Common_Tools::abilitiesXMLTreeToAbilities(const RPG_Character_Abilities_XMLTree_Type& abilities_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Common_Tools::abilitiesXMLTreeToAbilities"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Common_Tools::abilitiesXMLTreeToAbilities"));
 
   // init result
   RPG_Character_Abilities_t result;
@@ -72,7 +74,7 @@ RPG_Character_Player_Common_Tools::abilitiesXMLTreeToAbilities(const RPG_Charact
 RPG_Magic_Spells_t
 RPG_Character_Player_Common_Tools::knownSpellXMLTreeToSpells(const RPG_Character_PlayerXML_XMLTree_Type::spell_sequence& spells_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Common_Tools::knownSpellXMLTreeToSpells"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Common_Tools::knownSpellXMLTreeToSpells"));
 
   RPG_Magic_Spells_t result;
 
@@ -87,7 +89,7 @@ RPG_Character_Player_Common_Tools::knownSpellXMLTreeToSpells(const RPG_Character
 RPG_Character_Conditions_t
 RPG_Character_Player_Common_Tools::conditionXMLTreeToCondition(const RPG_Character_PlayerXML_XMLTree_Type::condition_sequence& condition_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Common_Tools::conditionXMLTreeToCondition"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Common_Tools::conditionXMLTreeToCondition"));
 
   RPG_Character_Conditions_t result;
 
@@ -102,7 +104,7 @@ RPG_Character_Player_Common_Tools::conditionXMLTreeToCondition(const RPG_Charact
 RPG_Magic_SpellList_t
 RPG_Character_Player_Common_Tools::spellXMLTreeToSpells(const RPG_Character_PlayerXML_XMLTree_Type::spell_sequence& spells_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Player_Common_Tools::spellXMLTreeToSpells"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Player_Common_Tools::spellXMLTreeToSpells"));
 
   RPG_Magic_SpellList_t result;
 

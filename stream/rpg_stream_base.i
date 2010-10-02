@@ -22,6 +22,8 @@
 #include "rpg_stream_session_message_base.h"
 #include "rpg_stream_iallocator.h"
 
+#include <rpg_common_macros.h>
+
 template <typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
@@ -37,7 +39,7 @@ RPG_Stream_Base<DataType,
    myIsInitialized(false),
    myAllocator(NULL)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Base::RPG_Stream_Base"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Base::RPG_Stream_Base"));
 
 }
 
@@ -50,7 +52,7 @@ RPG_Stream_Base<DataType,
             SessionMessageType,
             ProtocolMessageType>::~RPG_Stream_Base()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Base::~RPG_Stream_Base"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Base::~RPG_Stream_Base"));
 
 }
 
@@ -64,7 +66,7 @@ RPG_Stream_Base<DataType,
             SessionMessageType,
             ProtocolMessageType>::reset()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Base::reset"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Base::reset"));
 
   // sanity check: is running ?
   if (isRunning())
@@ -100,7 +102,7 @@ RPG_Stream_Base<DataType,
             SessionMessageType,
             ProtocolMessageType>::init()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Base::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Base::init"));
 
   // *NOTE*: fini() invokes close() which will reset the writer/reader tasks
   // of the enqueued modules --> reset this !
@@ -156,7 +158,7 @@ RPG_Stream_Base<DataType,
             SessionMessageType,
             ProtocolMessageType>::fini()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Base::fini"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Base::fini"));
 
   // OK: delegate this to base class close(ACE_Module_Base::M_DELETE_NONE)
   int ret = -1;
@@ -192,7 +194,7 @@ RPG_Stream_Base<DataType,
             SessionMessageType,
             ProtocolMessageType>::start()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Base::start"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Base::start"));
 
   // sanity check: is initialized ?
   if (!isInitialized())
@@ -270,7 +272,7 @@ RPG_Stream_Base<DataType,
             SessionMessageType,
             ProtocolMessageType>::stop()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Base::stop"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Base::stop"));
 
   // sanity check: is running ?
   if (!isRunning())
@@ -349,7 +351,7 @@ RPG_Stream_Base<DataType,
             SessionMessageType,
             ProtocolMessageType>::pause()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Base::pause"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Base::pause"));
 
   // sanity check: is running ?
   if (!isRunning())
@@ -428,7 +430,7 @@ RPG_Stream_Base<DataType,
             SessionMessageType,
             ProtocolMessageType>::rewind()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Base::rewind"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Base::rewind"));
 
   // sanity check: is running ?
   if (isRunning())
@@ -508,7 +510,7 @@ RPG_Stream_Base<DataType,
             SessionMessageType,
             ProtocolMessageType>::waitForCompletion()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Base::waitForCompletion"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Base::waitForCompletion"));
 
 //   // sanity check: is initialized ?
 //   if (!isInitialized())
@@ -636,7 +638,7 @@ RPG_Stream_Base<DataType,
             SessionMessageType,
             ProtocolMessageType>::isRunning()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Base::isRunning"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Base::isRunning"));
 
   // delegate to the head module
   ACE_Module<ACE_MT_SYNCH>* module = NULL;
@@ -704,7 +706,7 @@ RPG_Stream_Base<DataType,
             SessionMessageType,
             ProtocolMessageType>::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Base::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Base::dump_state"));
 
   std::string stream_layout;
 
@@ -747,7 +749,7 @@ RPG_Stream_Base<DataType,
             SessionMessageType,
             ProtocolMessageType>::isInitialized() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Base::isInitialized"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Base::isInitialized"));
 
   return myIsInitialized;
 }
@@ -762,7 +764,7 @@ RPG_Stream_Base<DataType,
             SessionMessageType,
             ProtocolMessageType>::shutdown()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Base::shutdown"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Base::shutdown"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("shutting down stream...\n")));
@@ -857,7 +859,7 @@ RPG_Stream_Base<DataType,
             SessionMessageType,
             ProtocolMessageType>::deactivateModules()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Base::deactivateModules"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Base::deactivateModules"));
 
   // create (dummy) user data
   DataType data;

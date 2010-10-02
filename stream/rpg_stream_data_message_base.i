@@ -20,6 +20,8 @@
 
 #include "rpg_stream_defines.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Malloc_Base.h>
 
 template <typename DataType>
@@ -38,7 +40,7 @@ RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(DataType*& data
    myData(data_inout),
    myIsInitialized(true)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::RPG_Stream_DataMessageBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::RPG_Stream_DataMessageBase"));
 
   // bye bye...
   data_inout = NULL;
@@ -50,7 +52,7 @@ RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(const RPG_Strea
    myData(NULL),
    myIsInitialized(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::RPG_Stream_DataMessageBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::RPG_Stream_DataMessageBase"));
 
   // maintain the same message type
   msg_type(message_in.msg_type());
@@ -66,7 +68,7 @@ RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(ACE_Allocator* 
    myData(NULL),
    myIsInitialized(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::RPG_Stream_DataMessageBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::RPG_Stream_DataMessageBase"));
 
   // set correct message type
   msg_type(RPG_Stream_MessageBase::MB_STREAM_OBJ);
@@ -83,7 +85,7 @@ RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(ACE_Data_Block*
    myData(NULL),
    myIsInitialized(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageBase::RPG_Stream_MessageBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::RPG_Stream_MessageBase"));
 
   // set correct message type
   msg_type(RPG_Stream_MessageBase::MB_STREAM_OBJ);
@@ -95,7 +97,7 @@ RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(ACE_Data_Block*
 template <typename DataType>
 RPG_Stream_DataMessageBase<DataType>::~RPG_Stream_DataMessageBase()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::~RPG_Stream_DataMessageBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::~RPG_Stream_DataMessageBase"));
 
   // clean up
   if (myData)
@@ -121,7 +123,7 @@ void
 RPG_Stream_DataMessageBase<DataType>::init(DataType*& data_inout,
                                        ACE_Data_Block* dataBlock_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::init"));
 
   // sanity check(s)
   ACE_ASSERT(!myIsInitialized);
@@ -149,7 +151,7 @@ template <typename DataType>
 const DataType* const
 RPG_Stream_DataMessageBase<DataType>::getData() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::getData"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::getData"));
 
   // sanity check
   ACE_ASSERT(myIsInitialized);
@@ -161,7 +163,7 @@ template <typename DataType>
 void
 RPG_Stream_DataMessageBase<DataType>::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::dump_state"));
 
   // dump our data...
   if (myData)
@@ -184,7 +186,7 @@ template <typename DataType>
 ACE_Message_Block*
 RPG_Stream_DataMessageBase<DataType>::duplicate(void) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::duplicate"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::duplicate"));
 
   RPG_Stream_DataMessageBase<DataType>* nb = NULL;
 

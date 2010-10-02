@@ -41,17 +41,17 @@
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
-        <cxxflags>-g -O2 -march=i686</cxxflags>
+        <cxxflags></cxxflags>
         <envvars/>
         <configargs>--disable-static</configargs>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <f77flags/>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <f77flags></f77flags>
       </optimized>
       <debug>
         <configargs>--disable-static --enable-debug</configargs>
@@ -59,7 +59,7 @@
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
-        <cxxflags>-g3 -O0 -march=i686 -Wall</cxxflags>
+        <cxxflags></cxxflags>
         <envvars/>
         <topsourcedir></topsourcedir>
         <cppflags></cppflags>
@@ -72,20 +72,20 @@
       </debug>
       <default>
         <envvars/>
-        <configargs>--disable-static</configargs>
+        <configargs>--disable-static --enable-debug</configargs>
         <builddir>debug</builddir>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpgf77options</f77compiler>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <cxxflags>-g3 -O0 -march=i686 -Wall</cxxflags>
-        <f77flags/>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <cxxflags></cxxflags>
+        <f77flags></f77flags>
       </default>
     </configurations>
     <make>
@@ -234,9 +234,7 @@
       <synchronize>true</synchronize>
       <orientation>Vertical</orientation>
     </splitheadersource>
-    <references>
-      <pcs>automatic_%2Fhome%2Funfv%2FProjects%2FRPG%2Fmap</pcs>
-    </references>
+    <references/>
   </kdevcppsupport>
   <cppsupportpart>
     <filetemplates>

@@ -21,6 +21,8 @@
 #include "rpg_stream_allocatorheap.h"
 #include "rpg_stream_message_base.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Message_Block.h>
 
 template <typename MessageType,
@@ -36,7 +38,7 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
    myPoolSize(0),
    myDataBlockAllocator(allocator_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::RPG_Stream_MessageAllocatorHeapBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::RPG_Stream_MessageAllocatorHeapBase"));
 
 }
 
@@ -45,7 +47,7 @@ template <typename MessageType,
 RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                 SessionMessageType>::~RPG_Stream_MessageAllocatorHeapBase()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::~RPG_Stream_MessageAllocatorHeapBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::~RPG_Stream_MessageAllocatorHeapBase"));
 
 }
 
@@ -55,7 +57,7 @@ void*
 RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                 SessionMessageType>::malloc(size_t bytes_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::malloc"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::malloc"));
 
   // step0: wait for an empty slot...
   // *NOTE*: we don't really ever want to actually block here...
@@ -155,7 +157,7 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                 SessionMessageType>::calloc(size_t bytes_in,
                                                             char initialValue_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::calloc"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::calloc"));
 
   // ignore this
   ACE_UNUSED_ARG(initialValue_in);
@@ -170,7 +172,7 @@ void
 RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                 SessionMessageType>::free(void* handle_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::free"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::free"));
 
   // just delegate to base class...
   inherited::free(handle_in);
@@ -186,7 +188,7 @@ size_t
 RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                 SessionMessageType>::cache_depth() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::cache_depth"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::cache_depth"));
 
   return myPoolSize.value();
 }
@@ -197,7 +199,7 @@ size_t
 RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                 SessionMessageType>::cache_size() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::cache_size"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::cache_size"));
 
   return myDataBlockAllocator.cache_size();
 }
@@ -208,7 +210,7 @@ void
 RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                 SessionMessageType>::dump(void) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::dump"));
 
   return myDataBlockAllocator.dump();
 }
@@ -221,7 +223,7 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                                             size_t sizePerElement_in,
                                                             char initialValue_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::calloc"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::calloc"));
 
   // ignore these
   ACE_UNUSED_ARG(numElements_in);
@@ -239,7 +241,7 @@ int
 RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                 SessionMessageType>::remove(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::remove"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::remove"));
 
   ACE_ASSERT(false);
 
@@ -254,7 +256,7 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                                           void* pointer_in,
                                                           int duplicates_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::bind"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::bind"));
 
   // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -273,7 +275,7 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                 SessionMessageType>::trybind(const char* name_in,
                                                              void*& pointer_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::trybind"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::trybind"));
 
     // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -291,7 +293,7 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                 SessionMessageType>::find(const char* name_in,
                                                           void*& pointer_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::find"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::find"));
 
   // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -308,7 +310,7 @@ int
 RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                 SessionMessageType>::find(const char* name_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::find"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::find"));
 
   // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -324,7 +326,7 @@ int
 RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                 SessionMessageType>::unbind(const char* name_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::unbind"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::unbind"));
 
   // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -341,7 +343,7 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                 SessionMessageType>::unbind(const char* name_in,
                                                             void*& pointer_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::unbind"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::unbind"));
 
   // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -359,7 +361,7 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                 SessionMessageType>::sync(ssize_t length_in,
                                                           int flags_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::sync"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::sync"));
 
   // ignore these
   ACE_UNUSED_ARG(length_in);
@@ -378,7 +380,7 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                                           size_t length_in,
                                                           int flags_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::sync"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::sync"));
 
   // ignore these
   ACE_UNUSED_ARG(address_in);
@@ -397,7 +399,7 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                 SessionMessageType>::protect(ssize_t length_in,
                                                              int protection_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::protect"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::protect"));
 
   // ignore these
   ACE_UNUSED_ARG(length_in);
@@ -416,7 +418,7 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                                              size_t length_in,
                                                              int protection_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::protect"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::protect"));
 
   // ignore these
   ACE_UNUSED_ARG(address_in);

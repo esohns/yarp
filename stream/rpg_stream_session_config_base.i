@@ -20,7 +20,7 @@
 
 #include "rpg_stream_tools.h"
 
-#include <ace/OS.h>
+#include <rpg_common_macros.h>
 
 template <typename DataType>
 RPG_Stream_SessionConfigBase<DataType>::RPG_Stream_SessionConfigBase(const DataType& userData_in,
@@ -31,14 +31,14 @@ RPG_Stream_SessionConfigBase<DataType>::RPG_Stream_SessionConfigBase(const DataT
    myStartOfSession(startOfSession_in),
    myUserAbort(userAbort_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::RPG_Stream_SessionConfigBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::RPG_Stream_SessionConfigBase"));
 
 }
 
 template <typename DataType>
 RPG_Stream_SessionConfigBase<DataType>::~RPG_Stream_SessionConfigBase()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::~RPG_Stream_SessionConfigBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::~RPG_Stream_SessionConfigBase"));
 
 }
 
@@ -46,7 +46,7 @@ template <typename DataType>
 const DataType
 RPG_Stream_SessionConfigBase<DataType>::getUserData() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::getUserData"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::getUserData"));
 
   return myUserData;
 }
@@ -55,7 +55,7 @@ template <typename DataType>
 const ACE_Time_Value
 RPG_Stream_SessionConfigBase<DataType>::getStartOfSession() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::getStartOfSession"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::getStartOfSession"));
 
   return myStartOfSession;
 }
@@ -64,7 +64,7 @@ template <typename DataType>
 const bool
 RPG_Stream_SessionConfigBase<DataType>::getUserAbort() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::getUserAbort"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::getUserAbort"));
 
   return myUserAbort;
 }
@@ -73,7 +73,7 @@ template <typename DataType>
 void
 RPG_Stream_SessionConfigBase<DataType>::decrease()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::decrease"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::decrease"));
 
   bool destroy = false;
 
@@ -95,7 +95,7 @@ template <typename DataType>
 void
 RPG_Stream_SessionConfigBase<DataType>::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::dump_state"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("start of session: %s%s\n"),

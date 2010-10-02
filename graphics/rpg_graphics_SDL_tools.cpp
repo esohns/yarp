@@ -22,6 +22,8 @@
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_common.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 // init statics
@@ -52,7 +54,7 @@ Uint32 RPG_Graphics_SDL_Tools::CLR32_GOLD_SHADE = 0;
 const std::string
 RPG_Graphics_SDL_Tools::keyToString(const SDL_keysym& key_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::keyToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::keyToString"));
 
   std::string result;
 
@@ -108,7 +110,7 @@ const SDL_Color
 RPG_Graphics_SDL_Tools::colorToSDLColor(const Uint32& color_in,
                                         const SDL_Surface& targetSurface_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::colorToSDLColor"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::colorToSDLColor"));
 
   SDL_Color result;
 
@@ -124,7 +126,7 @@ RPG_Graphics_SDL_Tools::colorToSDLColor(const Uint32& color_in,
 void
 RPG_Graphics_SDL_Tools::initColors()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::initColors"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::initColors"));
 
   // set up the colors used in the game
   // *NOTE*: the only way to do this without needing graphics to have been loaded first
@@ -232,7 +234,7 @@ const SDL_Rect
 RPG_Graphics_SDL_Tools::boundingBox(const SDL_Rect& rect1_in,
                                     const SDL_Rect& rect2_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::boundingBox"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::boundingBox"));
 
   RPG_Graphics_Position_t lower_right;
   lower_right.first = (((rect1_in.x + rect1_in.w) > (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1) : (rect2_in.x + rect2_in.w - 1));
@@ -252,7 +254,7 @@ const SDL_Rect
 RPG_Graphics_SDL_Tools::intersect(const SDL_Rect& rect1_in,
                                   const SDL_Rect& rect2_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::intersect"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::intersect"));
 
   RPG_Graphics_Position_t lower_right;
   lower_right.first = (((rect1_in.x + rect1_in.w) < (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1) : (rect2_in.x + rect2_in.w - 1));

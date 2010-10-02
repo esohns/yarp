@@ -23,6 +23,7 @@
 #include "rpg_map_parser_driver.h"
 #include "rpg_map_pathfinding_tools.h"
 
+#include <rpg_common_macros.h>
 #include <rpg_common_file_tools.h>
 
 #include <rpg_dice.h>
@@ -41,7 +42,7 @@ RPG_Map_Common_Tools::load(const std::string& filename_in,
                            RPG_Map_Positions_t& seedPoints_out,
                            RPG_Map_FloorPlan_t& level_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::load"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::load"));
 
   // sanity check(s)
   if (!RPG_Common_File_Tools::isReadable(filename_in))
@@ -76,7 +77,7 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
                            const RPG_Map_Positions_t& seedPoints_in,
                            const RPG_Map_FloorPlan_t& level_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::save"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::save"));
 
   // sanity check(s)
   if (RPG_Common_File_Tools::isReadable(filename_in))
@@ -269,7 +270,7 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned long& dimensionX_in,
                                       RPG_Map_Positions_t& seedPoints_out,
                                       RPG_Map_FloorPlan_t& level_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::createFloorPlan"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::createFloorPlan"));
 
   // init return value(s)
   seedPoints_out.clear();
@@ -379,7 +380,7 @@ void
 RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_Positions_t& seedPoints_in,
                                        const RPG_Map_FloorPlan_t& level_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayFloorPlan"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayFloorPlan"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("seed point(s): [")));
@@ -490,7 +491,7 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
                                     RPG_Map_Positions_t& seedPoints_out,
                                     RPG_Map_Partition_t& partition_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::makePartition"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::makePartition"));
 
   // init return value(s)
   seedPoints_out.clear();
@@ -879,7 +880,7 @@ RPG_Map_Common_Tools::displayPartition(const unsigned long& dimensionX_in,
                                        const RPG_Map_Positions_t& seedPositions_in,
                                        const RPG_Map_Partition_t& partition_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayPartition"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayPartition"));
 
   RPG_Map_Position_t current_position;
 
@@ -958,7 +959,7 @@ void
 RPG_Map_Common_Tools::findMaxSquare(const RPG_Map_Zone_t& room_in,
                                     RPG_Map_Square_t& maxSquare_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::findMaxSquare"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::findMaxSquare"));
 
   // init return value(s)
   maxSquare_out.ul = std::make_pair(0, 0);
@@ -1107,7 +1108,7 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
                                 RPG_Map_ZoneList_t& rooms_out,
                                 RPG_Map_ZoneList_t& boundaries_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::makeRooms"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::makeRooms"));
 
   // init return value(s)
   rooms_out.clear();
@@ -1575,7 +1576,7 @@ RPG_Map_Common_Tools::displayRooms(const unsigned long& dimensionX_in,
                                    const unsigned long& dimensionY_in,
                                    const RPG_Map_ZoneList_t& rooms_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayRooms"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayRooms"));
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
@@ -1627,7 +1628,7 @@ RPG_Map_Common_Tools::makeDoors(const unsigned long& dimensionX_in,
                                 const unsigned long& maxDoorsPerRoom_in,
                                 RPG_Map_ZoneList_t& doors_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::makeDoors"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::makeDoors"));
 
   // init return value(s)
   doors_out.clear();
@@ -1750,7 +1751,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
                                    const RPG_Map_ZoneList_t& rooms_in,
                                    RPG_Map_FloorPlan_t& level_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::connectRooms"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::connectRooms"));
 
   // init return value(s)
 //   level_out.size_x = dimensionX_in;
@@ -2155,7 +2156,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
 void
 RPG_Map_Common_Tools::dump(const RPG_Map_Zone_t& zone_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::dump"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("zone (%u position(s)):\n"),
@@ -2177,7 +2178,7 @@ const unsigned long
 RPG_Map_Common_Tools::dist2Positions(const RPG_Map_Position_t& position1_in,
                                      const RPG_Map_Position_t& position2_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::dist2Positions"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::dist2Positions"));
 
   return (::abs(position1_in.first - position2_in.first) +
           ::abs(position1_in.second - position2_in.second));
@@ -2186,7 +2187,7 @@ RPG_Map_Common_Tools::dist2Positions(const RPG_Map_Position_t& position1_in,
 const std::string
 RPG_Map_Common_Tools::direction2String(const RPG_Map_Direction& direction_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::direction2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::direction2String"));
 
   switch (direction_in)
   {
@@ -2219,7 +2220,7 @@ const bool
 RPG_Map_Common_Tools::isFloor(const RPG_Map_Position_t& position_in,
                               const RPG_Map_FloorPlan_t& levelMap_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::isFloor"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::isFloor"));
 
   return ((levelMap_in.doors.find(position_in) == levelMap_in.doors.end()) &&
           (levelMap_in.walls.find(position_in) == levelMap_in.walls.end()) &&
@@ -2230,7 +2231,7 @@ const unsigned long
 RPG_Map_Common_Tools::area2Positions(const RPG_Map_Position_t& position1_in,
                                      const RPG_Map_Position_t& position2_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::area2Positions"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::area2Positions"));
 
   return ((::abs(position1_in.first - position2_in.first) + 1) *
           (::abs(position1_in.second - position2_in.second) + 1));
@@ -2240,7 +2241,7 @@ const bool
 RPG_Map_Common_Tools::positionInSquare(const RPG_Map_Position_t& position_in,
                                        const RPG_Map_Square_t& square_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::positionInSquare"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::positionInSquare"));
 
   return ((position_in.first >= square_in.ul.first) &&
           (position_in.first <= square_in.lr.first) &&
@@ -2255,7 +2256,7 @@ RPG_Map_Common_Tools::intersect(const RPG_Map_Zone_t& map_in,
                                 RPG_Map_Directions_t& directions_out,
                                 RPG_Map_Direction& next_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::intersect"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::intersect"));
 
   // init return value(s)
   directions_out.clear();
@@ -2309,7 +2310,7 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Zone_t& map_in,
                                       const ORIGIN& startOrigin_in,
                                       RPG_Map_PositionList_t& trail_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::crawlToPosition"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::crawlToPosition"));
 
   // init return value(s)
   trail_out.clear();
@@ -2443,7 +2444,7 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Zone_t& map_in,
 void
 RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::crop"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::crop"));
 
   // sanity check
   if (room_inout.empty())
@@ -2577,7 +2578,7 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
 // void
 // RPG_Map_Common_Tools::cropSquareBoundary(RPG_Map_Zone_t& room_inout)
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::cropSquareBoundary"));
+//   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::cropSquareBoundary"));
 //
 //   // sanity check
 //   if (room_inout.empty())
@@ -2744,7 +2745,7 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
                            bool& isCorner_out,
                            RPG_Map_Direction& next_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::turn"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::turn"));
 
   // init return value(s)
   isCorner_out = false;
@@ -2887,7 +2888,7 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
                                         const bool& doorFillsPosition_in,
                                         RPG_Map_PositionList_t& doorPositions_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::findDoorPositions"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::findDoorPositions"));
 
   // init return value(s)
   doorPositions_out.clear();
@@ -3166,7 +3167,7 @@ const RPG_Map_Direction
 RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Zone_t& room_in,
                                          const RPG_Map_Position_t& door_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::door2exitDirection"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::door2exitDirection"));
 
   // step1: compute 4 neighbours
   RPG_Map_Position_t up, right, down, left;
@@ -3195,7 +3196,7 @@ RPG_Map_Common_Tools::displayCorridors(const unsigned long& dimensionX_in,
                                        const RPG_Map_ZoneList_t& doors_in,
                                        const RPG_Map_ZoneList_t& corridors_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayCorridors"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayCorridors"));
 
   RPG_Map_Position_t current_position;
   unsigned long index = 0;

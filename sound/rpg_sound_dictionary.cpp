@@ -22,6 +22,8 @@
 #include "rpg_sound_XML_parser.h"
 #include "rpg_sound_common_tools.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 #include <string>
@@ -29,20 +31,20 @@
 
 RPG_Sound_Dictionary::RPG_Sound_Dictionary()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Dictionary::RPG_Sound_Dictionary"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary::RPG_Sound_Dictionary"));
 
 }
 
 RPG_Sound_Dictionary::~RPG_Sound_Dictionary()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Dictionary::~RPG_Sound_Dictionary"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary::~RPG_Sound_Dictionary"));
 
 }
 
 void RPG_Sound_Dictionary::init(const std::string& filename_in,
                                 const bool& validateXML_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Dictionary::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary::init"));
 
   // Construct the parser.
   //
@@ -106,7 +108,7 @@ void RPG_Sound_Dictionary::init(const std::string& filename_in,
 
 const RPG_Sound_t RPG_Sound_Dictionary::getSound(const RPG_Sound_Event& event_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Dictionary::getSound"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary::getSound"));
 
   RPG_Sound_DictionaryIterator_t iterator = myDictionary.find(event_in);
   if (iterator == myDictionary.end())
@@ -128,7 +130,7 @@ bool RPG_Sound_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
                                                      ::xml_schema::error_handler::severity severity_in,
                                                      const std::string& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Dictionary::XSD_Error_Handler::handle"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary::XSD_Error_Handler::handle"));
 
 //   // debug info
 //   ACE_DEBUG((LM_DEBUG,
@@ -192,7 +194,7 @@ bool RPG_Sound_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
 
 void RPG_Sound_Dictionary::dump() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Dictionary::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary::dump"));
 
   std::ostringstream converter;
   unsigned long index = 0;

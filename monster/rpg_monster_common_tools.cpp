@@ -21,12 +21,14 @@
 
 #include "rpg_monster_dictionary.h"
 
+#include <rpg_combat_common_tools.h>
+#include <rpg_character_common_tools.h>
+
 #include <rpg_dice.h>
 #include <rpg_dice_common_tools.h>
 
+#include <rpg_common_macros.h>
 #include <rpg_common_tools.h>
-#include <rpg_character_common_tools.h>
-#include <rpg_combat_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -40,7 +42,7 @@ RPG_Monster_OrganizationToStringTable_t RPG_Monster_OrganizationHelper::myRPG_Mo
 void
 RPG_Monster_Common_Tools::initStringConversionTables()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::initStringConversionTables"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::initStringConversionTables"));
 
   RPG_Monster_NaturalWeaponHelper::init();
   RPG_Monster_OrganizationHelper::init();
@@ -52,7 +54,7 @@ RPG_Monster_Common_Tools::initStringConversionTables()
 const std::string
 RPG_Monster_Common_Tools::weaponTypeToString(const RPG_Monster_WeaponTypeUnion& weaponType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::weaponTypeToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::weaponTypeToString"));
 
   std::string result;
 
@@ -90,7 +92,7 @@ RPG_Monster_Common_Tools::weaponTypeToString(const RPG_Monster_WeaponTypeUnion& 
 const std::string
 RPG_Monster_Common_Tools::attackActionToString(const RPG_Monster_AttackAction& attackAction_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::attackActionToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::attackActionToString"));
 
   std::string result;
 
@@ -133,7 +135,7 @@ RPG_Monster_Common_Tools::attackActionToString(const RPG_Monster_AttackAction& a
 const std::string
 RPG_Monster_Common_Tools::attackToString(const RPG_Monster_Attack& attack_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::attackToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::attackToString"));
 
   std::string result;
   std::ostringstream converter;
@@ -183,7 +185,7 @@ RPG_Monster_Common_Tools::attackToString(const RPG_Monster_Attack& attack_in)
 const std::string
 RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_OrganizationSet_t& organizations_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::organizationsToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::organizationsToString"));
 
   std::string result;
   for (RPG_Monster_OrganizationSetIterator_t iterator = organizations_in.begin();
@@ -205,7 +207,7 @@ RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_OrganizationSe
 const std::string
 RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_Organizations_t& organizations_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::organizationsToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::organizationsToString"));
 
   std::string result;
   std::string range_string;
@@ -226,7 +228,7 @@ RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_Organizations_
 const std::string
 RPG_Monster_Common_Tools::advancementToString(const RPG_Monster_Advancement_t& advancement_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::advancementToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::advancementToString"));
 
   std::string result;
   for (RPG_Monster_AdvancementIterator_t iterator = advancement_in.begin();
@@ -245,7 +247,7 @@ RPG_Monster_Common_Tools::advancementToString(const RPG_Monster_Advancement_t& a
 const RPG_Common_PhysicalDamageList_t
 RPG_Monster_Common_Tools::naturalWeaponToPhysicalDamageType(const RPG_Monster_NaturalWeapon& naturalWeapon_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::naturalWeaponToPhysicalDamageType"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::naturalWeaponToPhysicalDamageType"));
 
   RPG_Common_PhysicalDamageList_t result;
 
@@ -307,7 +309,7 @@ RPG_Monster_Common_Tools::generateRandomEncounter(const unsigned int& numDiffere
                                                   const RPG_Monster_OrganizationSet_t& organizations_in,
                                                   RPG_Monster_Encounter_t& encounter_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::generateRandomEncounter"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::generateRandomEncounter"));
 
   // init result
   encounter_out.clear();
@@ -462,7 +464,7 @@ void
 RPG_Monster_Common_Tools::organizationStepToRoll(const RPG_Monster_OrganizationStep& organizationStep_in,
                                                  RPG_Dice_Roll& roll_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::organizationStepToRoll"));
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::organizationStepToRoll"));
 
   // init result
   roll_out.numDice = 0;

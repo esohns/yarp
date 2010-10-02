@@ -1,33 +1,41 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(graphics, 0.1, erik.sohns@web.de)
+AC_INIT([RPG_Graphics], [0.1], [erik.sohns@web.de], [RPG_Graphics], [http://www.rpg.org])
 AC_PREREQ([2.63])
 AC_CONFIG_SRCDIR([config.h.in])
+AC_CONFIG_AUX_DIR([.])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
-# get system information
-AC_CANONICAL_SYSTEM
+# define meta-package
+META_PACKAGE=RPG
+AC_DEFINE([META_PACKAGE], [RPG], [meta-package])
 
-AC_LANG_CPLUSPLUS
+# get system information
+AC_CANONICAL_TARGET
+
+AC_LANG([C++])
 
 # checks for programs
 AC_PROG_CXX
+AC_PROG_AWK
 AC_PROG_CC
 AC_PROG_CPP
-# AC_PROG_AWK
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-# AC_PROG_RANLIB
-AM_PROG_LIBTOOL
+dnl AC_PROG_RANLIB
+AC_PROG_MKDIR_P
 
 # init other tools
-AM_INIT_AUTOMAKE(graphics, 0.1)
+AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 # build time sanity check...
 AM_SANITY_CHECK
 LT_INIT
+
+# prefix config.h
+AX_PREFIX_CONFIG_H
 
 # get the cpp compiler flags
 CXXFLAGS="${CXXFLAGS=}"
@@ -41,22 +49,29 @@ AC_ARG_ENABLE(debug,
               ,
               enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
-  CXXFLAGS="${CXXFLAGS} -g3 -O0 -march=i686 -Wall"
+  CXXFLAGS="${CXXFLAGS} -g -march=i686 -Wall"
   AC_MSG_RESULT(yes)
 else
-  CXXFLAGS="${CXXFLAGS} -O3 -march=i686"
+  CXXFLAGS="${CXXFLAGS} -O3 -march=i686 -DRPG_NTRACE=0"
   AC_MSG_RESULT(no)
 fi
 
-# export these variable (so Makefile substitutions
-# can be made.
+# export variables (so Makefile substitutions can be made)
+AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries
+PKG_CHECK_MODULES(pkg_libs, sdl libpng)
+dnl AC_SUBST(pkg_libs_CFLAGS)
+dnl AC_SUBST(pkg_libs_LIBS)
+
+# checks for other libraries (non-pkg-config)
 # FIXME: Replace `main' with a function in `-lpthread':
 AC_CHECK_LIB([pthread], [main])
 # FIXME: Replace `main' with a function in `-lACE':
 AC_CHECK_LIB([ACE], [main])
+# FIXME: Replace `main' with a function in `-lSDL_ttf':
+AC_CHECK_LIB([SDL_ttf], [main])
 
 # checks for header files
 AC_HEADER_STDBOOL
@@ -67,6 +82,11 @@ AC_C_INLINE
 # checks for library functions
 AC_CHECK_FUNCS([memset])
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile
+                 data/Makefile
+                 data/cursors/Makefile
+                 data/doors/Makefile
+                 data/floors/Makefile
+                 data/walls/Makefile])
 
 AC_OUTPUT

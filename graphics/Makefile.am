@@ -2,8 +2,6 @@ METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
 
-#INCLUDES = -I$(top_srcdir)/.
-
 include_HEADERS = rpg_graphics_SDL_tools.h rpg_graphics_SDL_window_base.h \
 	rpg_graphics_SDL_window_sub.h rpg_graphics_XML_parser.h rpg_graphics_XML_types.h \
 	rpg_graphics_category.h rpg_graphics_common.h rpg_graphics_common_tools.h rpg_graphics_cursor.h \
@@ -17,7 +15,6 @@ include_HEADERS = rpg_graphics_SDL_tools.h rpg_graphics_SDL_window_base.h \
 
 lib_LTLIBRARIES = libRPG_Graphics.la
 
-libRPG_Graphics_la_LDFLAGS = -L/usr/local/lib
 libRPG_Graphics_la_SOURCES = rpg_XMLSchema_XML_types.h \
 	rpg_graphics_SDL_tools.cpp rpg_graphics_SDL_tools.h rpg_graphics_SDL_window_base.cpp \
 	rpg_graphics_SDL_window_base.h rpg_graphics_SDL_window_sub.cpp rpg_graphics_SDL_window_sub.h \
@@ -33,6 +30,12 @@ libRPG_Graphics_la_SOURCES = rpg_XMLSchema_XML_types.h \
 	rpg_graphics_surface.h rpg_graphics_tile.h rpg_graphics_tileset.h rpg_graphics_tilesettype.h \
 	rpg_graphics_tiletype.h rpg_graphics_toplevel.cpp rpg_graphics_toplevel.h rpg_graphics_type.h \
 	rpg_graphics_wallstyle.h
+libRPG_Graphics_la_CPPFLAGS	= $(pkg_libs_CFLAGS)
 
-bindata_DATA = rpg_graphics.xml rpg_graphics.xsd
-bindatadir = $(bindir)
+pkgdatadir = $(datadir)/@META_PACKAGE@
+configdir = $(pkgdatadir)/config
+config_DATA = rpg_graphics.xml rpg_graphics.xsd
+
+EXTRA_DIST = $(config_DATA)
+
+SUBDIRS = data

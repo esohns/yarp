@@ -1,12 +1,16 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([gui],[0.1],[erik.sohns@web.de],[gui],[http://www.rpg.org])
+AC_INIT([RPG_GUI], [0.1], [erik.sohns@web.de], [RPG_GUI], [http://www.rpg.org])
 AC_PREREQ(2.63)
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_AUX_DIR([.])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
+
+# define meta-package
+META_PACKAGE=RPG
+AC_DEFINE([META_PACKAGE], [RPG], [meta-package])
 
 # get system information
 AC_CANONICAL_TARGET
@@ -24,8 +28,7 @@ AC_PROG_MAKE_SET
 # AC_PROG_RANLIB
 
 # init other tools.
-#AM_INIT_AUTOMAKE([gnu nostdinc -Wall])
-AM_INIT_AUTOMAKE(gui, 0.1)
+AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 # build time sanity check...
 AM_SANITY_CHECK
 LT_INIT
@@ -48,16 +51,16 @@ if test "x$enable_debug" = "xyes"; then
   CXXFLAGS="${CXXFLAGS} -g -march=i686 -Wall"
   AC_MSG_RESULT(yes)
 else
-  CXXFLAGS="${CXXFLAGS} -O3 -march=i686"
+  CXXFLAGS="${CXXFLAGS} -O3 -march=i686 -DRPG_NTRACE=0"
   AC_MSG_RESULT(no)
 fi
 
-# export these variable (so Makefile substitutions
-# can be made.
+# export variables (so Makefile substitutions can be made)
+AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries
-PKG_CHECK_MODULES(pkg_libs, sdl libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0)
+PKG_CHECK_MODULES(pkg_libs, sdl libpng libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0)
 dnl AC_SUBST(pkg_libs_CFLAGS)
 dnl AC_SUBST(pkg_libs_LIBS)
 

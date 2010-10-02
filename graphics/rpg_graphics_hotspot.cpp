@@ -26,6 +26,8 @@
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
 
+#include <rpg_common_macros.h>
+
 RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindowBase& parent_in,
                                            const RPG_Graphics_WindowSize_t& size_in,
                                            // *NOTE*: offset doesn't include any border(s) !
@@ -39,7 +41,7 @@ RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindowBase& par
    myCursorType(graphicsType_in),
    myCursorHasBeenSet(false)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::RPG_Graphics_HotSpot"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::RPG_Graphics_HotSpot"));
 
   // *NOTE*: hotspots don't have borders
   // --> overwrite size
@@ -48,14 +50,14 @@ RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindowBase& par
 
 RPG_Graphics_HotSpot::~RPG_Graphics_HotSpot()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::~RPG_Graphics_HotSpot"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::~RPG_Graphics_HotSpot"));
 
 }
 
 const RPG_Graphics_Type
 RPG_Graphics_HotSpot::getCursorType() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::getCursorType"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::getCursorType"));
 
   return myCursorType;
 }
@@ -65,7 +67,7 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
                                   RPG_Graphics_IWindow* window_in,
                                   bool& redraw_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::handleEvent"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::handleEvent"));
 
   // init return value(s)
   redraw_out = false;
@@ -153,7 +155,7 @@ RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
                            const unsigned long& offsetX_in,
                            const unsigned long& offsetY_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::draw"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::draw"));
 
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);
@@ -191,7 +193,7 @@ RPG_Graphics_HotSpot::init(const RPG_Graphics_SDLWindowBase& parent_in,
                            const RPG_Graphics_Offset_t& offset_in,
                            const RPG_Graphics_Type& type_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::init"));
 
   RPG_Graphics_HotSpot* hotspot = NULL;
   //*NOTE*: hotspot registers automagically

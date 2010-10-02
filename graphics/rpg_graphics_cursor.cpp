@@ -23,6 +23,8 @@
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 RPG_Graphics_Cursor::RPG_Graphics_Cursor()
@@ -32,13 +34,13 @@ RPG_Graphics_Cursor::RPG_Graphics_Cursor()
    myBG(NULL)//,
 //    myCache()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::RPG_Graphics_Cursor"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::RPG_Graphics_Cursor"));
 
 }
 
 RPG_Graphics_Cursor::~RPG_Graphics_Cursor()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::~RPG_Graphics_Cursor"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::~RPG_Graphics_Cursor"));
 
   // clean up
   if (myBG)
@@ -53,7 +55,7 @@ RPG_Graphics_Cursor::~RPG_Graphics_Cursor()
 const RPG_Graphics_Type
 RPG_Graphics_Cursor::type() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::type"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::type"));
 
   return myCurrentType;
 }
@@ -61,7 +63,7 @@ RPG_Graphics_Cursor::type() const
 void
 RPG_Graphics_Cursor::set(const RPG_Graphics_Type& type_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::set"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::set"));
 
   // check cache first
   RPG_Graphics_CursorCacheConstIterator_t iterator = myCache.find(type_in);
@@ -170,7 +172,7 @@ RPG_Graphics_Cursor::set(const RPG_Graphics_Type& type_in)
 // SDL_Surface*
 // RPG_Graphics_Cursor::get() const
 // {
-//   ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::get"));
+//   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::get"));
 //
 //   // sanity check(s)
 //   ACE_ASSERT(mySurface);
@@ -184,7 +186,7 @@ RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
                          SDL_Surface* targetSurface_in,
                          SDL_Rect& dirtyRegion_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::put"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::put"));
 
   // sanity check(s)
   ACE_ASSERT(mySurface);
@@ -299,7 +301,7 @@ void
 RPG_Graphics_Cursor::restoreBG(SDL_Surface* targetSurface_in,
                                SDL_Rect& dirtyRegion_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::restoreBG"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::restoreBG"));
 
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);
@@ -341,7 +343,7 @@ RPG_Graphics_Cursor::restoreBG(SDL_Surface* targetSurface_in,
 void
 RPG_Graphics_Cursor::invalidateBG()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Cursor::invalidateBG"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::invalidateBG"));
 
   // sanity check
   ACE_ASSERT(myBG);

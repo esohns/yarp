@@ -24,15 +24,17 @@
 #include "rpg_item_weapon.h"
 #include "rpg_item_armor.h"
 
+#include <rpg_common_macros.h>
+
 RPG_Item_Instance_Manager::RPG_Item_Instance_Manager()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::RPG_Item_Instance_Manager"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::RPG_Item_Instance_Manager"));
 
 }
 
 RPG_Item_Instance_Manager::~RPG_Item_Instance_Manager()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::~RPG_Item_Instance_Manager"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::~RPG_Item_Instance_Manager"));
 
 }
 
@@ -40,7 +42,7 @@ RPG_Item_Instance_Base*
 RPG_Item_Instance_Manager::create(const RPG_Item_Type& itemType_in,
                                   const unsigned int& itemSubType_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::create"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::create"));
 
   // init return value(s)
   RPG_Item_Instance_Base* handle = NULL;
@@ -112,7 +114,7 @@ const bool
 RPG_Item_Instance_Manager::get(const RPG_Item_ID_t& itemID_in,
                                RPG_Item_Base*& handle_out) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::get"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::get"));
 
   // init return value(s)
   handle_out = NULL;
@@ -130,7 +132,7 @@ void
 RPG_Item_Instance_Manager::registerItem(const RPG_Item_ID_t& itemID_in,
                                         RPG_Item_Base* handle_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::registerItem"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::registerItem"));
 
   // sanity check(s)
   ACE_ASSERT(handle_in);
@@ -141,7 +143,7 @@ RPG_Item_Instance_Manager::registerItem(const RPG_Item_ID_t& itemID_in,
 void
 RPG_Item_Instance_Manager::deregisterItem(RPG_Item_Base* handle_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::deregisterItem"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::deregisterItem"));
 
   // sanity check(s)
   ACE_ASSERT(handle_in);

@@ -22,6 +22,8 @@
 #include "rpg_graphics_XML_parser.h"
 #include "rpg_graphics_common_tools.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 #include <string>
@@ -29,13 +31,13 @@
 
 RPG_Graphics_Dictionary::RPG_Graphics_Dictionary()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::RPG_Graphics_Dictionary"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::RPG_Graphics_Dictionary"));
 
 }
 
 RPG_Graphics_Dictionary::~RPG_Graphics_Dictionary()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::~RPG_Graphics_Dictionary"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::~RPG_Graphics_Dictionary"));
 
 }
 
@@ -43,7 +45,7 @@ void
 RPG_Graphics_Dictionary::init(const std::string& filename_in,
                               const bool& validateXML_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::init"));
 
   // Construct the parser.
   //
@@ -139,7 +141,7 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
 const RPG_Graphics_t
 RPG_Graphics_Dictionary::getGraphic(const RPG_Graphics_Type& type_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::getGraphic"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::getGraphic"));
 
   RPG_Graphics_DictionaryIterator_t iterator = myDictionary.find(type_in);
   if (iterator == myDictionary.end())
@@ -158,7 +160,7 @@ RPG_Graphics_Dictionary::getGraphic(const RPG_Graphics_Type& type_in) const
 const RPG_Graphics_Fonts_t
 RPG_Graphics_Dictionary::getFonts() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::getFonts"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::getFonts"));
 
   RPG_Graphics_Fonts_t result;
 
@@ -187,7 +189,7 @@ RPG_Graphics_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
                                                    ::xml_schema::error_handler::severity severity_in,
                                                    const std::string& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::XSD_Error_Handler::handle"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::XSD_Error_Handler::handle"));
 
 //   // debug info
 //   ACE_DEBUG((LM_DEBUG,
@@ -252,7 +254,7 @@ RPG_Graphics_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
 void
 RPG_Graphics_Dictionary::dump() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::dump"));
 
   unsigned long index = 0;
   std::string tile, tileset, elements;

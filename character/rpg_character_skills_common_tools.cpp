@@ -24,6 +24,8 @@
 #include <rpg_dice_common.h>
 #include <rpg_dice.h>
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 #include <string>
@@ -38,7 +40,7 @@ RPG_Character_Skills_Common_Tools::RPG_Character_FeatPrerequisitesTable_t RPG_Ch
 void
 RPG_Character_Skills_Common_Tools::init()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::init"));
 
   initClassSkillsTable();
   initFeatPrerequisitesTable();
@@ -48,7 +50,7 @@ RPG_Character_Skills_Common_Tools::init()
 void
 RPG_Character_Skills_Common_Tools::initBonusFeatsTables()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initBonusFeatsTables"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initBonusFeatsTables"));
 
   // clean table
   myFighterBonusFeatsTable.clear();
@@ -130,7 +132,7 @@ RPG_Character_Skills_Common_Tools::initBonusFeatsTables()
 void
 RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable"));
 
   // clean tables
   myFeatPrerequisitesTable.clear();
@@ -1173,7 +1175,7 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
 void
 RPG_Character_Skills_Common_Tools::initClassSkillsTable()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initClassSkillsTable"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initClassSkillsTable"));
 
   // clean tables
   myClassSkillsTable.clear();
@@ -1423,7 +1425,7 @@ const bool
 RPG_Character_Skills_Common_Tools::isClassSkill(const RPG_Common_SubClass& subClass_in,
                                                 const RPG_Common_Skill& skill_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::isClassSkill"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::isClassSkill"));
 
   RPG_Character_ClassSkillsTableIterator_t iterator = myClassSkillsTable.find(subClass_in);
   if (iterator == myClassSkillsTable.end())
@@ -1445,7 +1447,7 @@ RPG_Character_Skills_Common_Tools::getSkillPoints(const RPG_Common_SubClass& sub
                                                   const short int& INTModifier_in,
                                                   unsigned int& initialPoints_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::getSkillPoints"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::getSkillPoints"));
 
   // init defaults
   initialPoints_out = 0;
@@ -1515,7 +1517,7 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race
                                                         unsigned int& numInitialFeats_out,
                                                         RPG_Character_Abilities_t& baseAbilities_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::getNumFeatsAbilities"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::getNumFeatsAbilities"));
 
   // init defaults
   baseFeats_out.clear();
@@ -1859,7 +1861,7 @@ RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_Character_Fe
                                                           const RPG_Character_Feats_t& feats_in,
                                                           const RPG_Character_Abilities_t& abilities_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites"));
 
   // debug info
   if (RPG_Character_FeatHelper::RPG_Character_FeatToString(feat_in) == ACE_TEXT_ALWAYS_CHAR("RPG_CHARACTER_FEAT_INVALID"))
@@ -2118,7 +2120,7 @@ RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_Character_Fe
 const std::string
 RPG_Character_Skills_Common_Tools::skillsToString(const RPG_Character_Skills_t& skills_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::skillsToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::skillsToString"));
 
   std::string result;
 
@@ -2142,7 +2144,7 @@ RPG_Character_Skills_Common_Tools::skillsToString(const RPG_Character_Skills_t& 
 const std::string
 RPG_Character_Skills_Common_Tools::featsToString(const RPG_Character_Feats_t& feats_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::featsToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::featsToString"));
 
   std::string result;
 
@@ -2160,7 +2162,7 @@ RPG_Character_Skills_Common_Tools::featsToString(const RPG_Character_Feats_t& fe
 const std::string
 RPG_Character_Skills_Common_Tools::abilitiesToString(const RPG_Character_Abilities_t& abilities_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::abilitiesToString"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::abilitiesToString"));
 
   std::string result;
 

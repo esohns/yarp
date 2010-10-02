@@ -21,12 +21,14 @@
 
 #include "rpg_character_race.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 RPG_Character_Race_t
 RPG_Character_Race_Common_Tools::raceXMLTreeToRace(const RPG_Character_PlayerXML_XMLTree_Type::race_sequence& races_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Race_Common_Tools::raceXMLTreeToRace"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Race_Common_Tools::raceXMLTreeToRace"));
 
   RPG_Character_Race_t result;
 

@@ -20,6 +20,8 @@
 
 #include "rpg_stream_message_base.h"
 
+#include <rpg_common_macros.h>
+
 // init statics
 ACE_Atomic_Op<ACE_Thread_Mutex, unsigned long> RPG_Stream_MessageBase::myCurrentID = 1;
 
@@ -29,7 +31,7 @@ RPG_Stream_MessageBase::RPG_Stream_MessageBase(const RPG_Stream_MessageBase& mes
              message_in.message_block_allocator_)//, // message allocator
 //    myMessageID(myCurrentID++)  // *WARNING*: DON'T change (it's already been set !)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageBase::RPG_Stream_MessageBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::RPG_Stream_MessageBase"));
 
   // set correct message type
 //   msg_type(MB_STREAM_OBJ);
@@ -47,7 +49,7 @@ RPG_Stream_MessageBase::RPG_Stream_MessageBase(ACE_Data_Block* dataBlock_in,
              messageAllocator_in), // re-use the same allocator
    myMessageID(myCurrentID.value())
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageBase::RPG_Stream_MessageBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::RPG_Stream_MessageBase"));
 
   if (incrementMessageCounter_in)
   {
@@ -66,7 +68,7 @@ RPG_Stream_MessageBase::RPG_Stream_MessageBase(ACE_Allocator* messageAllocator_i
  : inherited(messageAllocator_in), // re-use the same allocator
    myMessageID(myCurrentID.value())
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageBase::RPG_Stream_MessageBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::RPG_Stream_MessageBase"));
 
   if (incrementMessageCounter_in)
   {
@@ -84,7 +86,7 @@ RPG_Stream_MessageBase::RPG_Stream_MessageBase(ACE_Allocator* messageAllocator_i
 
 RPG_Stream_MessageBase::~RPG_Stream_MessageBase()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageBase::~RPG_Stream_MessageBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::~RPG_Stream_MessageBase"));
 
   // *NOTE*: will be called BEFORE we're passed back to the allocator
 
@@ -97,7 +99,7 @@ RPG_Stream_MessageBase::~RPG_Stream_MessageBase()
 void
 RPG_Stream_MessageBase::init(ACE_Data_Block* dataBlock_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageBase::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::init"));
 
   // set data block
   data_block(dataBlock_in);
@@ -112,7 +114,7 @@ RPG_Stream_MessageBase::init(ACE_Data_Block* dataBlock_in)
 const unsigned long
 RPG_Stream_MessageBase::getID() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageBase::getID"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::getID"));
 
   return myMessageID;
 }
@@ -120,7 +122,7 @@ RPG_Stream_MessageBase::getID() const
 const int
 RPG_Stream_MessageBase::getCommand() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageBase::getCommand"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::getCommand"));
 
   return msg_type();
 }
@@ -128,7 +130,7 @@ RPG_Stream_MessageBase::getCommand() const
 ACE_Message_Block*
 RPG_Stream_MessageBase::duplicate(void) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageBase::duplicate"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::duplicate"));
 
   RPG_Stream_MessageBase* nb = NULL;
 
@@ -175,7 +177,7 @@ RPG_Stream_MessageBase::duplicate(void) const
 void
 RPG_Stream_MessageBase::dump_state() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageBase::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::dump_state"));
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
@@ -186,7 +188,7 @@ RPG_Stream_MessageBase::dump_state() const
 void
 RPG_Stream_MessageBase::resetMessageIDGenerator()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageBase::resetMessageIDGenerator"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::resetMessageIDGenerator"));
 
   myCurrentID = 1;
 
@@ -198,7 +200,7 @@ void
 RPG_Stream_MessageBase::MessageType2String(const ACE_Message_Type& type_in,
                                        std::string& typeString_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageBase::MessageType2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::MessageType2String"));
 
   // init return value(s)
   typeString_out = ACE_TEXT("INVALID_TYPE");

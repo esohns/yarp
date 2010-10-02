@@ -21,6 +21,7 @@
 
 #include "rpg_sound_dictionary.h"
 
+#include <rpg_common_macros.h>
 #include <rpg_common_file_tools.h>
 
 #include <SDL/SDL_mixer.h>
@@ -43,7 +44,7 @@ bool                   RPG_Sound_Common_Tools::myInitialized = false;
 void RPG_Sound_Common_Tools::init(const std::string& directory_in,
                                   const unsigned long& cacheSize_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::init"));
 
   // sanity check(s)
   if (!RPG_Common_File_Tools::isDirectory(directory_in))
@@ -75,7 +76,7 @@ void RPG_Sound_Common_Tools::init(const std::string& directory_in,
 void
 RPG_Sound_Common_Tools::fini()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::fini"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::fini"));
 
   // synch cache access
   {
@@ -97,7 +98,7 @@ RPG_Sound_Common_Tools::fini()
 
 void RPG_Sound_Common_Tools::playSound(const RPG_Sound_Event& event_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::playSound"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::playSound"));
 
   // step1: sound already cached ?
   RPG_Sound_SoundCacheNode_t node;
@@ -174,7 +175,7 @@ void RPG_Sound_Common_Tools::playSound(const RPG_Sound_Event& event_in)
 
 void RPG_Sound_Common_Tools::initStringConversionTables()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::initStringConversionTables"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::initStringConversionTables"));
 
   RPG_Sound_CategoryHelper::init();
   RPG_Sound_EventHelper::init();

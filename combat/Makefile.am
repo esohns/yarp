@@ -22,7 +22,9 @@ libRPG_Combat_la_SOURCES = rpg_XMLSchema_XML_types.h rpg_combat_XML_parser.cpp \
 	rpg_combat_damagecountermeasure.h rpg_combat_damageduration.h rpg_combat_damagereductiontype.h \
 	rpg_combat_defensesituation.h rpg_combat_incl.h rpg_combat_otherdamage.h rpg_combat_otherdamagetype.h \
 	rpg_combat_rangedattackproperties.h rpg_combat_rangedeffectunion.h
-libRPG_Combat_la_LDFLAGS = -L/usr/local/lib
 
-bindata_DATA = rpg_combat.xsd
-bindatadir = $(bindir)
+pkgdatadir = $(datadir)/@META_PACKAGE@
+configdir = $(pkgdatadir)/config
+config_DATA = rpg_combat.xsd
+
+EXTRA_DIST = $(config_DATA)

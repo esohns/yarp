@@ -22,12 +22,14 @@
 #include <rpg_item_base.h>
 #include <rpg_item_instance_manager.h>
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 RPG_Character_Inventory::RPG_Character_Inventory(const RPG_Item_List_t& items_in)
  : myItems(items_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::RPG_Character_Inventory"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Inventory::RPG_Character_Inventory"));
 
   // increase item references
   RPG_Item_Base* item = NULL;
@@ -58,7 +60,7 @@ RPG_Character_Inventory::RPG_Character_Inventory(const RPG_Item_List_t& items_in
 RPG_Character_Inventory::RPG_Character_Inventory(const RPG_Character_Inventory& inventory_in)
  : myItems(inventory_in.myItems)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::RPG_Character_Inventory"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Inventory::RPG_Character_Inventory"));
 
   // increase item references
   RPG_Item_Base* item = NULL;
@@ -88,7 +90,7 @@ RPG_Character_Inventory::RPG_Character_Inventory(const RPG_Character_Inventory& 
 
 RPG_Character_Inventory::~RPG_Character_Inventory()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::~RPG_Character_Inventory"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Inventory::~RPG_Character_Inventory"));
 
   // remove item references
   RPG_Item_Base* item = NULL;
@@ -119,7 +121,7 @@ RPG_Character_Inventory::~RPG_Character_Inventory()
 RPG_Character_Inventory&
 RPG_Character_Inventory::operator=(const RPG_Character_Inventory& inventory_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::operator="));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Inventory::operator="));
 
   // remove item references
   RPG_Item_Base* item = NULL;
@@ -177,7 +179,7 @@ RPG_Character_Inventory::operator=(const RPG_Character_Inventory& inventory_in)
 void
 RPG_Character_Inventory::pickUp(const RPG_Item_ID_t& itemID_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::pickUp"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Inventory::pickUp"));
 
   // increase item reference
   RPG_Item_Base* item = NULL;
@@ -204,7 +206,7 @@ RPG_Character_Inventory::pickUp(const RPG_Item_ID_t& itemID_in)
 void
 RPG_Character_Inventory::drop(const RPG_Item_ID_t& itemID_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::drop"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Inventory::drop"));
 
   // sanity check
   if (myItems.find(itemID_in) == myItems.end())
@@ -241,7 +243,7 @@ RPG_Character_Inventory::drop(const RPG_Item_ID_t& itemID_in)
 void
 RPG_Character_Inventory::dump() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Character_Inventory::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Inventory::dump"));
 
   RPG_Item_Base* base = NULL;
   for (RPG_Item_ListIterator_t iterator = myItems.begin();

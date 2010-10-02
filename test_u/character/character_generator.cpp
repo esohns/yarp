@@ -20,7 +20,7 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include <test_u-config.h>
 #endif
 
 #include <rpg_character_defines.h>
@@ -1244,7 +1244,7 @@ void do_printVersion()
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << ACE_TEXT("generator: ")
-            << VERSION
+            << TEST_U_VERSION
             << std::endl;
 
   // create version string...

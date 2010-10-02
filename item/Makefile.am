@@ -29,5 +29,8 @@ libRPG_Item_la_SOURCES = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \
 	rpg_item_weaponpropertiesbase.h rpg_item_weaponpropertiesxml.h rpg_item_weapontype.h
 libRPG_Item_la_LDFLAGS = -L/usr/local/lib
 
-bindata_DATA = rpg_item.xsd rpg_item.xml
-bindatadir = $(bindir)
+pkgdatadir = $(datadir)/@META_PACKAGE@
+configdir = $(pkgdatadir)/config
+config_DATA = rpg_item.xsd rpg_item.xml
+
+EXTRA_DIST = $(config_DATA)

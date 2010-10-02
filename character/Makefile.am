@@ -2,8 +2,6 @@ METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
 
-#INCLUDES = -I$(top_srcdir)/.
-
 noinst_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h
 
 include_HEADERS = rpg_character_XML_parser.h rpg_character_XML_tree.h \
@@ -42,7 +40,9 @@ libRPG_Character_la_SOURCES = rpg_XMLSchema_XML_tree.h \
 	rpg_character_race_common_tools.cpp rpg_character_race_common_tools.h rpg_character_skills.h \
 	rpg_character_skills_common.h rpg_character_skills_common_tools.cpp \
 	rpg_character_skills_common_tools.h rpg_character_skillvalue.h
-libRPG_Character_la_LDFLAGS = -L/usr/local/lib
 
-bindata_DATA = rpg_character.xsd rpg_character_player.xsd
-bindatadir = $(bindir)
+pkgdatadir = $(datadir)/@META_PACKAGE@
+configdir = $(pkgdatadir)/config
+config_DATA = rpg_character.xsd rpg_character_player.xsd
+
+EXTRA_DIST = $(config_DATA)

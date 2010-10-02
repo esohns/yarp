@@ -22,6 +22,8 @@
 
 #include "rpg_stream_defines.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
@@ -30,7 +32,7 @@
 const std::string
 RPG_Stream_Tools::timestamp2LocalString(const ACE_Time_Value& timestamp_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Tools::timestamp2LocalString"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Tools::timestamp2LocalString"));
 
   // init return value(s)
   std::string result;

@@ -20,6 +20,8 @@
 
 #include "rpg_stream_module.h"
 
+#include <rpg_common_macros.h>
+
 RPG_Stream_Module::RPG_Stream_Module(const std::string& name_in,
                              TASK_TYPE* writerTask_in,
                              TASK_TYPE* readerTask_in,
@@ -32,7 +34,7 @@ RPG_Stream_Module::RPG_Stream_Module(const std::string& name_in,
    myWriter(writerTask_in),
    myReader(readerTask_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Module::RPG_Stream_Module"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Module::RPG_Stream_Module"));
 
   // *WARNING*: apparently, we cannot use "this" at this stage
   // --> children must do this...
@@ -44,7 +46,7 @@ RPG_Stream_Module::RPG_Stream_Module(const std::string& name_in,
 
 RPG_Stream_Module::~RPG_Stream_Module()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Module::~RPG_Stream_Module"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Module::~RPG_Stream_Module"));
 
   // *NOTE*: the base class will invoke close() which will
   // invoke module_close() and flush on every task...
@@ -55,7 +57,7 @@ RPG_Stream_Module::~RPG_Stream_Module()
 void
 RPG_Stream_Module::resetReaderWriter()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_Module::resetReaderWriter"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Module::resetReaderWriter"));
 
   // OK: (re-)set our reader and writer tasks...
   inherited::writer(myWriter,

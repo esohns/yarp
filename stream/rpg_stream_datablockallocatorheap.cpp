@@ -22,6 +22,8 @@
 
 #include "rpg_stream_allocatorheap.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Message_Block.h>
 
 // init statics
@@ -32,7 +34,7 @@ RPG_Stream_DataBlockAllocatorHeap::RPG_Stream_DataBlockAllocatorHeap(RPG_Stream_
    myPoolSize(0),
    myHeapAllocator(allocator_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::RPG_Stream_DataBlockAllocatorHeap"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::RPG_Stream_DataBlockAllocatorHeap"));
 
   // *NOTE*: NULL --> use heap (== default allocator !)
   if (!myHeapAllocator)
@@ -44,14 +46,14 @@ RPG_Stream_DataBlockAllocatorHeap::RPG_Stream_DataBlockAllocatorHeap(RPG_Stream_
 
 RPG_Stream_DataBlockAllocatorHeap::~RPG_Stream_DataBlockAllocatorHeap()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::~RPG_Stream_DataBlockAllocatorHeap"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::~RPG_Stream_DataBlockAllocatorHeap"));
 
 }
 
 void*
 RPG_Stream_DataBlockAllocatorHeap::malloc(size_t bytes_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::malloc"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::malloc"));
 
   ACE_Data_Block* data_block = NULL;
   try
@@ -103,7 +105,7 @@ void*
 RPG_Stream_DataBlockAllocatorHeap::calloc(size_t bytes_in,
                                       char initialValue_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::calloc"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::calloc"));
 
   // ignore this
   ACE_UNUSED_ARG(initialValue_in);
@@ -115,7 +117,7 @@ RPG_Stream_DataBlockAllocatorHeap::calloc(size_t bytes_in,
 void
 RPG_Stream_DataBlockAllocatorHeap::free(void* handle_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::free"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::free"));
 
   // *NOTE*: handle_in SHOULD really be a ACE_Data_Block*...
 //   ACE_Data_Block* data_block = NULL;
@@ -133,7 +135,7 @@ RPG_Stream_DataBlockAllocatorHeap::free(void* handle_in)
 size_t
 RPG_Stream_DataBlockAllocatorHeap::cache_depth() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::cache_depth"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::cache_depth"));
 
   return myPoolSize.value();
 }
@@ -141,7 +143,7 @@ RPG_Stream_DataBlockAllocatorHeap::cache_depth() const
 size_t
 RPG_Stream_DataBlockAllocatorHeap::cache_size() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::cache_size"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::cache_size"));
 
   if (myHeapAllocator)
     return myHeapAllocator->cache_size();
@@ -153,7 +155,7 @@ RPG_Stream_DataBlockAllocatorHeap::cache_size() const
 void
 RPG_Stream_DataBlockAllocatorHeap::dump(void) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::dump"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::dump"));
 
   // debug info
   ACE_DEBUG((LM_DEBUG,
@@ -166,7 +168,7 @@ RPG_Stream_DataBlockAllocatorHeap::calloc(size_t numElements_in,
                                       size_t sizePerElement_in,
                                       char initialValue_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::calloc"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::calloc"));
 
   // ignore these
   ACE_UNUSED_ARG(numElements_in);
@@ -181,7 +183,7 @@ RPG_Stream_DataBlockAllocatorHeap::calloc(size_t numElements_in,
 int
 RPG_Stream_DataBlockAllocatorHeap::remove(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::remove"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::remove"));
 
   ACE_ASSERT(false);
 
@@ -193,7 +195,7 @@ RPG_Stream_DataBlockAllocatorHeap::bind(const char* name_in,
                                     void* pointer_in,
                                     int duplicates_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::bind"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::bind"));
 
   // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -209,7 +211,7 @@ int
 RPG_Stream_DataBlockAllocatorHeap::trybind(const char* name_in,
                                        void*& pointer_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::trybind"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::trybind"));
 
     // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -224,7 +226,7 @@ int
 RPG_Stream_DataBlockAllocatorHeap::find(const char* name_in,
                                     void*& pointer_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::find"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::find"));
 
   // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -238,7 +240,7 @@ RPG_Stream_DataBlockAllocatorHeap::find(const char* name_in,
 int
 RPG_Stream_DataBlockAllocatorHeap::find(const char* name_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::find"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::find"));
 
   // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -251,7 +253,7 @@ RPG_Stream_DataBlockAllocatorHeap::find(const char* name_in)
 int
 RPG_Stream_DataBlockAllocatorHeap::unbind(const char* name_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::unbind"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::unbind"));
 
   // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -265,7 +267,7 @@ int
 RPG_Stream_DataBlockAllocatorHeap::unbind(const char* name_in,
                                       void*& pointer_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::unbind"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::unbind"));
 
   // ignore these
   ACE_UNUSED_ARG(name_in);
@@ -280,7 +282,7 @@ int
 RPG_Stream_DataBlockAllocatorHeap::sync(ssize_t length_in,
                                     int flags_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::sync"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::sync"));
 
   // ignore these
   ACE_UNUSED_ARG(length_in);
@@ -296,7 +298,7 @@ RPG_Stream_DataBlockAllocatorHeap::sync(void* address_in,
                                     size_t length_in,
                                     int flags_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::sync"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::sync"));
 
   // ignore these
   ACE_UNUSED_ARG(address_in);
@@ -312,7 +314,7 @@ int
 RPG_Stream_DataBlockAllocatorHeap::protect(ssize_t length_in,
                                        int protection_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::protect"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::protect"));
 
   // ignore these
   ACE_UNUSED_ARG(length_in);
@@ -328,7 +330,7 @@ RPG_Stream_DataBlockAllocatorHeap::protect(void* address_in,
                                        size_t length_in,
                                        int protection_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::protect"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_DataBlockAllocatorHeap::protect"));
 
   // ignore these
   ACE_UNUSED_ARG(address_in);

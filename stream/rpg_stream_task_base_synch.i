@@ -26,7 +26,7 @@ template <typename SessionMessageType,
 RPG_Stream_TaskBaseSynch<SessionMessageType,
                      ProtocolMessageType>::RPG_Stream_TaskBaseSynch()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::RPG_Stream_TaskBaseSynch"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::RPG_Stream_TaskBaseSynch"));
 
 }
 
@@ -35,7 +35,7 @@ template <typename SessionMessageType,
 RPG_Stream_TaskBaseSynch<SessionMessageType,
                      ProtocolMessageType>::~RPG_Stream_TaskBaseSynch()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::~RPG_Stream_TaskBaseSynch"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::~RPG_Stream_TaskBaseSynch"));
 
 }
 
@@ -46,7 +46,7 @@ RPG_Stream_TaskBaseSynch<SessionMessageType,
                      ProtocolMessageType>::put(ACE_Message_Block* mb_in,
                                                ACE_Time_Value* tv_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::put"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::put"));
 
   ACE_UNUSED_ARG(tv_in);
 
@@ -66,7 +66,7 @@ int
 RPG_Stream_TaskBaseSynch<SessionMessageType,
                      ProtocolMessageType>::open(void* args_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::open"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::open"));
 
   ACE_UNUSED_ARG(args_in);
 
@@ -93,7 +93,7 @@ int
 RPG_Stream_TaskBaseSynch<SessionMessageType,
                      ProtocolMessageType>::close(u_long arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::close"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::close"));
 
   ACE_UNUSED_ARG(arg_in);
 
@@ -107,7 +107,7 @@ int
 RPG_Stream_TaskBaseSynch<SessionMessageType,
                      ProtocolMessageType>::module_closed(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::module_closed"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::module_closed"));
 
   // *NOTE*: this method is invoked by an external thread
   // either from the ACE_Module dtor or during explicit ACE_Module::close()
@@ -122,7 +122,7 @@ void
 RPG_Stream_TaskBaseSynch<SessionMessageType,
                      ProtocolMessageType>::waitForIdleState() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::waitForIdleState"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::waitForIdleState"));
 
   // just a stub, there's nothing to do...
 }

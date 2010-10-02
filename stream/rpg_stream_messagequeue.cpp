@@ -20,25 +20,26 @@
 
 #include "rpg_stream_messagequeue.h"
 
-#include <ace/OS.h>
+#include <rpg_common_macros.h>
+
 #include <ace/Time_Value.h>
 
 RPG_Stream_MessageQueue::RPG_Stream_MessageQueue(const unsigned long& maxMessages_in)
  : inherited(maxMessages_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageQueue::RPG_Stream_MessageQueue"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageQueue::RPG_Stream_MessageQueue"));
 
 }
 
 RPG_Stream_MessageQueue::~RPG_Stream_MessageQueue()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageQueue::~RPG_Stream_MessageQueue"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageQueue::~RPG_Stream_MessageQueue"));
 
 }
 
 void RPG_Stream_MessageQueue::waitForIdleState() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_MessageQueue::waitForIdleState"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageQueue::waitForIdleState"));
 
   // *TODO*: find a better way to do this
   ACE_Time_Value one_second(1, 0);

@@ -1,7 +1,17 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="0" />
+ <DocsAndViews NumberOfDocuments="3" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/net/Makefile.am" >
+   <View0 Encoding="" line="3" Type="Source" />
+  </Doc0>
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/net/configure.ac" >
+   <View0 Encoding="" line="57" Type="Source" />
+  </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/net/protocol/Makefile.am" >
+   <View0 Encoding="" line="30" Type="Source" />
+  </Doc2>
+ </DocsAndViews>
  <pluginList>
   <kdevdebugger>
    <breakpointList/>

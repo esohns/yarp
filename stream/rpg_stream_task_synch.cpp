@@ -20,18 +20,20 @@
 
 #include "rpg_stream_task_synch.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Message_Block.h>
 #include <ace/Time_Value.h>
 
 RPG_Stream_TaskSynch::RPG_Stream_TaskSynch()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskSynch::RPG_Stream_TaskSynch"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskSynch::RPG_Stream_TaskSynch"));
 
 }
 
 RPG_Stream_TaskSynch::~RPG_Stream_TaskSynch()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskSynch::~RPG_Stream_TaskSynch"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskSynch::~RPG_Stream_TaskSynch"));
 
 }
 
@@ -39,7 +41,7 @@ int
 RPG_Stream_TaskSynch::put(ACE_Message_Block* mb_in,
                       ACE_Time_Value* tv_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskSynch::put"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskSynch::put"));
 
   ACE_UNUSED_ARG(tv_in);
 
@@ -56,7 +58,7 @@ RPG_Stream_TaskSynch::put(ACE_Message_Block* mb_in,
 int
 RPG_Stream_TaskSynch::open(void* args_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskSynch::open"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskSynch::open"));
 
   ACE_UNUSED_ARG(args_in);
 
@@ -80,7 +82,7 @@ RPG_Stream_TaskSynch::open(void* args_in)
 int
 RPG_Stream_TaskSynch::close(u_long arg_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskSynch::close"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskSynch::close"));
 
   ACE_UNUSED_ARG(arg_in);
 
@@ -91,7 +93,7 @@ RPG_Stream_TaskSynch::close(u_long arg_in)
 int
 RPG_Stream_TaskSynch::module_closed(void)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskSynch::module_closed"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskSynch::module_closed"));
 
   // *NOTE*: this method is invoked by an external thread
   // either from the ACE_Module dtor or during explicit ACE_Module::close()
@@ -103,7 +105,7 @@ RPG_Stream_TaskSynch::module_closed(void)
 void
 RPG_Stream_TaskSynch::waitForIdleState() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Stream_TaskSynch::waitForIdleState"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskSynch::waitForIdleState"));
 
   // just a stub, there's nothing to do...
 }

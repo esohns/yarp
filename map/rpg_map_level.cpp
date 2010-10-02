@@ -19,26 +19,28 @@
  ***************************************************************************/
 #include "rpg_map_level.h"
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 RPG_Map_Level::RPG_Map_Level()
 //  : myFloorPlan(),
 //    myDoors()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Level::RPG_Map_Level"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::RPG_Map_Level"));
 
 }
 
 RPG_Map_Level::~RPG_Map_Level()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Level::~RPG_Map_Level"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::~RPG_Map_Level"));
 
 }
 
 void
 RPG_Map_Level::init(const RPG_Map_FloorPlan_t& floorPlan_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Level::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::init"));
 
   myFloorPlan = floorPlan_in;
 
@@ -49,7 +51,7 @@ RPG_Map_Level::init(const RPG_Map_FloorPlan_t& floorPlan_in)
 const RPG_Map_Dimensions_t
 RPG_Map_Level::getDimensions() const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Level::getDimensions"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::getDimensions"));
 
   RPG_Map_Dimensions_t result = std::make_pair(myFloorPlan.size_x, myFloorPlan.size_y);
 
@@ -59,7 +61,7 @@ RPG_Map_Level::getDimensions() const
 const RPG_Map_Element
 RPG_Map_Level::getElement(const RPG_Map_Position_t& position_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Level::getElement"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::getElement"));
 
   // sanity check
   if ((position_in.first > (myFloorPlan.size_x - 1)) ||
@@ -81,7 +83,7 @@ RPG_Map_Level::getElement(const RPG_Map_Position_t& position_in) const
 const RPG_Map_Door_t
 RPG_Map_Level::getDoor(const RPG_Map_Position_t& position_in) const
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Level::getDoor"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::getDoor"));
 
   RPG_Map_Door_t dummy;
   dummy.position = std::make_pair(0, 0);
@@ -119,7 +121,7 @@ void
 RPG_Map_Level::handleDoor(const RPG_Map_Position_t& position_in,
                           const bool& open_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Level::handleDoor"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::handleDoor"));
 
   for (RPG_Map_DoorsIterator_t iterator = myDoors.begin();
        iterator != myDoors.end();
@@ -162,7 +164,7 @@ RPG_Map_Level::handleDoor(const RPG_Map_Position_t& position_in,
 void
 RPG_Map_Level::initDoors()
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Level::initDoors"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::initDoors"));
 
   // reset door states
   myDoors.clear();

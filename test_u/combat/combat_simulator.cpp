@@ -20,7 +20,7 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include <test_u-config.h>
 #endif
 
 #include <rpg_engine_common.h>
@@ -446,10 +446,13 @@ void do_printVersion(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
-  std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
+  std::cout << programName_in
+            << ACE_TEXT(" : ")
+            << TEST_U_VERSION
+            << std::endl;
 
   // create version string...
-  // *IMPORTANT NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
+  // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
   // number... We need this, as the library soname is compared to this string.
   std::ostringstream version_number;
   if (version_number << ACE::major_version())

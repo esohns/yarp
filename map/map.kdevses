@@ -1,7 +1,14 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="0" />
+ <DocsAndViews NumberOfDocuments="2" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/map/configure.ac" >
+   <View0 Encoding="" line="53" Type="Source" />
+  </Doc0>
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/map/Makefile.am" >
+   <View0 Encoding="" line="15" Type="Source" />
+  </Doc1>
+ </DocsAndViews>
  <pluginList>
   <kdevdebugger>
    <breakpointList>
@@ -18,7 +25,7 @@
   <kdevbookmarks>
    <bookmarks>
     <bookmark url="/home/unfv/Projects/RPG/map/rpg_map_common_tools.cpp" >
-     <mark line="131" />
+     <mark line="132" />
     </bookmark>
    </bookmarks>
   </kdevbookmarks>

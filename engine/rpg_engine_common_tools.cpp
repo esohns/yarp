@@ -42,19 +42,19 @@
 #include <rpg_dice_common_tools.h>
 #include <rpg_chance_common_tools.h>
 
+#include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
 
 #include <algorithm>
 #include <sstream>
-
-#include <math.h>
 
 void
 RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
                               const std::string& itemDictionaryFile_in,
                               const std::string& monsterDictionaryFile_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::init"));
 
   // step1a: init randomization
   RPG_Dice::init();
@@ -114,7 +114,7 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
 const bool
 RPG_Engine_Common_Tools::isPartyHelpless(const RPG_Character_Party_t& party_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isPartyHelpless"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isPartyHelpless"));
 
   unsigned int numDeadOrHelpless = 0;
   for (RPG_Character_PartyConstIterator_t iterator = party_in.begin();
@@ -133,7 +133,7 @@ RPG_Engine_Common_Tools::isPartyHelpless(const RPG_Character_Party_t& party_in)
 const bool
 RPG_Engine_Common_Tools::areMonstersHelpless(const RPG_Monster_Groups_t& monsters_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::areMonstersHelpless"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::areMonstersHelpless"));
 
   unsigned int numHelplessGroups = 0;
   for (RPG_Monster_GroupsIterator_t iterator = monsters_in.begin();
@@ -154,7 +154,7 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& party
                                               const RPG_Monster_Groups_t& monsters_in,
                                               RPG_Engine_CombatantSequence_t& battleSequence_out)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::getCombatantSequence"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::getCombatantSequence"));
 
   // init result
   battleSequence_out.clear();
@@ -327,7 +327,7 @@ RPG_Engine_Common_Tools::performCombatRound(const RPG_Combat_AttackSituation& at
                                             const RPG_Combat_DefenseSituation& defenseSituation_in,
                                             const RPG_Engine_CombatantSequence_t& battleSequence_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::performCombatRound"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::performCombatRound"));
 
   // everybody gets their turn
   bool isPlayer = false;
@@ -390,7 +390,7 @@ RPG_Engine_Common_Tools::performCombatRound(const RPG_Combat_AttackSituation& at
 const bool
 RPG_Engine_Common_Tools::isMonsterGroupHelpless(const RPG_Monster_Group_t& groupInstance_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isMonsterGroupHelpless"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isMonsterGroupHelpless"));
 
   unsigned int numHelplessMonsters = 0;
   for (RPG_Monster_GroupIterator_t iterator = groupInstance_in.begin();
@@ -409,7 +409,7 @@ RPG_Engine_Common_Tools::isMonsterGroupHelpless(const RPG_Monster_Group_t& group
 const bool
 RPG_Engine_Common_Tools::isCharacterHelpless(const RPG_Character_Base* const character_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isCharacterHelpless"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isCharacterHelpless"));
 
   ACE_ASSERT(character_in);
 
@@ -430,7 +430,7 @@ const bool
 RPG_Engine_Common_Tools::isValidFoeAvailable(const bool& isMonsterAvailable_in,
                                              const RPG_Engine_CombatantSequence_t& battleSequence_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isValidFoeAvailable"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isValidFoeAvailable"));
 
   for (RPG_Engine_CombatantSequenceIterator_t iterator = battleSequence_in.begin();
        iterator != battleSequence_in.end();
@@ -451,7 +451,7 @@ RPG_Engine_Common_Tools::isValidFoeAvailable(const bool& isMonsterAvailable_in,
 const bool
 RPG_Engine_Common_Tools::isCharacterDisabled(const RPG_Character_Base* const character_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isCharacterDisabled"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isCharacterDisabled"));
 
   ACE_ASSERT(character_in);
 
@@ -471,7 +471,7 @@ const unsigned int
 RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions(const RPG_Combat_AttackForm& attackForm_in,
                                                            const RPG_Monster_AttackActions_t& actions_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions"));
 
   unsigned int result = 0;
 
@@ -523,7 +523,7 @@ const bool
 RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction(const RPG_Combat_AttackForm& attackForm_in,
                                                          const RPG_Monster_AttackAction& action_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction"));
 
   switch (attackForm_in)
   {
@@ -562,7 +562,7 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
                                    const bool& isFullRoundAction_in,
                                    const unsigned short& distance_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::attackFoe"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::attackFoe"));
 
   // sanity check
   ACE_ASSERT(attacker_in && target_inout);

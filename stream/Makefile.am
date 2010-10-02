@@ -2,8 +2,6 @@ METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
 
-#INCLUDES = -I$(top_srcdir)/.
-
 include_HEADERS = rpg_stream.h rpg_stream_allocatorheap.h rpg_stream_base.h \
 	rpg_stream_base.i rpg_stream_counter.h rpg_stream_data_message_base.h \
 	rpg_stream_data_message_base.i rpg_stream_datablockallocatorheap.h rpg_stream_defines.h \
@@ -47,4 +45,3 @@ libRPG_Stream_la_SOURCES = rpg_stream.cpp rpg_stream.h \
 	rpg_stream_task_base_asynch.h rpg_stream_task_base_asynch.i rpg_stream_task_base_synch.cpp \
 	rpg_stream_task_base_synch.h rpg_stream_task_base_synch.i rpg_stream_task_synch.cpp \
 	rpg_stream_task_synch.h rpg_stream_tools.cpp rpg_stream_tools.h
-libRPG_Stream_la_LDFLAGS = -L/usr/local/lib
