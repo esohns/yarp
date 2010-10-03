@@ -21,7 +21,7 @@
 #ifndef IRC_CLIENT_DEFINES_H
 #define IRC_CLIENT_DEFINES_H
 
-#define IRC_CLIENT_CNF_DEF_INI_FILE              ACE_TEXT("./IRC_client.ini")
+#define IRC_CLIENT_CNF_DEF_INI_FILE              ACE_TEXT("IRC_client.ini")
 // ini section headers
 #define IRC_CLIENT_CNF_LOGIN_SECTION_HEADER      ACE_TEXT("login")
 #define IRC_CLIENT_CNF_CONNECTION_SECTION_HEADER ACE_TEXT("connections")

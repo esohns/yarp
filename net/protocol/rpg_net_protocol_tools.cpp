@@ -225,13 +225,21 @@ RPG_Net_Protocol_Tools::merge(const std::string& modes_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::merge"));
 
+  RPG_Net_Protocol_UserMode user_mode = USERMODE_INVALID;
+
   // *NOTE* format is {[+|-]|i|w|s|o}
   bool assign = (modes_in[0] == '+');
   std::string::const_iterator iterator = modes_in.begin();
   for (iterator++;
        iterator != modes_in.end();
        iterator++)
-    modes_inout.set(RPG_Net_Protocol_Tools::IRCUserModeChar2UserMode(*iterator), assign);
+  {
+    user_mode = RPG_Net_Protocol_Tools::IRCUserModeChar2UserMode(*iterator);
+    if (user_mode >= USERMODE_MAX)
+      continue; // unknown user mode...
+
+    modes_inout.set(user_mode, assign);
+  } // end FOR
 }
 
 void
@@ -240,13 +248,21 @@ RPG_Net_Protocol_Tools::merge(const std::string& modes_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::merge"));
 
+  RPG_Net_Protocol_ChannelMode channel_mode = CHANNELMODE_INVALID;
+
   // *NOTE* format is {[+|-]|o|p|s|i|t|n|m|l|b|v|k}
   bool assign = (modes_in[0] == '+');
   std::string::const_iterator iterator = modes_in.begin();
   for (iterator++;
        iterator != modes_in.end();
        iterator++)
-    modes_inout.set(RPG_Net_Protocol_Tools::IRCChannelModeChar2ChannelMode(*iterator), assign);
+  {
+    channel_mode = RPG_Net_Protocol_Tools::IRCChannelModeChar2ChannelMode(*iterator);
+    if (channel_mode >= CHANNELMODE_MAX)
+      continue; // unknown channel mode...
+
+    modes_inout.set(channel_mode, assign);
+  } // end FOR
 }
 
 const char

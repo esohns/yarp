@@ -709,7 +709,10 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           if (!converted_text)
           {
             ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("failed to convert message text, aborting\n")));
+                       ACE_TEXT("failed to convert message text (was: \"%s\"), aborting\n"),
+                       (*param_iterator).c_str()));
+
+            GDK_THREADS_LEAVE();
 
             break;
           } // end IF
@@ -1173,8 +1176,6 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
                          ACE_TEXT("no handler for channel (was: \"%s\"), aborting\n"),
                          message_in.params.front().c_str()));
 
-              GDK_THREADS_LEAVE();
-
               break;
             } // end IF
 
@@ -1207,8 +1208,6 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("no handler for channel (was: \"%s\"), aborting\n"),
                          message_in.params.front().c_str()));
-
-              GDK_THREADS_LEAVE();
 
               break;
             } // end IF
@@ -1272,11 +1271,11 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
             break;
           } // end IF
 
-          GDK_THREADS_LEAVE();
-
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid receiver (was: \"%s\"), aborting\n"),
                      message_in.params.front().c_str()));
+
+          GDK_THREADS_LEAVE();
 
           break;
         }

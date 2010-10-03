@@ -36,6 +36,7 @@
 #include <rpg_net_connection_manager.h>
 
 #include <rpg_common_tools.h>
+#include <rpg_common_file_tools.h>
 
 #include <rpg_stream_allocatorheap.h>
 
@@ -66,9 +67,18 @@ print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
+  std::string path;
+#ifdef DATADIR
+  path = DATADIR;
+#else
+  path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += IRC_CLIENT_CNF_DEF_INI_FILE;
+
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [") << IRC_CLIENT_CNF_DEF_INI_FILE << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-d          : debug parser") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
@@ -736,7 +746,16 @@ ACE_TMAIN(int argc,
   // step1 init/validate configuration
 
   // step1a: process commandline arguments
-  std::string configFile             = IRC_CLIENT_CNF_DEF_INI_FILE;
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
+  std::string configFile             = base_data_path;
+  configFile                         += ACE_DIRECTORY_SEPARATOR_STR;;
+  configFile                         += IRC_CLIENT_CNF_DEF_INI_FILE;
   bool debugParser                   = false;
   bool logToFile                     = false;
   bool traceInformation              = false;
@@ -752,6 +771,15 @@ ACE_TMAIN(int argc,
                           printVersionAndExit,
                           useThreadPool,
                           numThreadPoolThreads)))
+  {
+    // make 'em learn...
+    print_usage(std::string(ACE::basename(argv[0])));
+
+    return EXIT_FAILURE;
+  } // end IF
+
+  // validate argument(s)
+  if (!RPG_Common_File_Tools::isReadable(configFile))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));

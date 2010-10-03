@@ -2,6 +2,8 @@ METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
 
+SUBDIRS = scripts
+
 include_HEADERS = location.hh position.hh rpg_net_protocol_IRC_codes.h \
 	rpg_net_protocol_IRCmessage.h rpg_net_protocol_IRCparser.h rpg_net_protocol_IRCparser_driver.h \
 	rpg_net_protocol_common.h rpg_net_protocol_defines.h rpg_net_protocol_iIRCControl.h \

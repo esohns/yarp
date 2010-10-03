@@ -10,7 +10,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 # define meta-package
 META_PACKAGE=RPG
-AC_DEFINE([META_PACKAGE], [RPG], [meta-package])
+AC_DEFINE([META_PACKAGE], ["RPG"], [meta-package])
 
 # get system information
 AC_CANONICAL_TARGET
@@ -94,6 +94,7 @@ AC_CHECK_FUNCS([memmove])
 AC_CHECK_FUNCS([memset])
 
 AC_CONFIG_FILES([Makefile
-                 protocol/Makefile])
+                 protocol/Makefile
+                 protocol/scripts/Makefile])
 
 AC_OUTPUT

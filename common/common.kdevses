@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="8" >
+ <DocsAndViews NumberOfDocuments="10" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/rpg_common.xsd" >
    <View0 Encoding="" Type="Source" />
   </Doc0>
@@ -15,17 +15,23 @@
    <View0 Encoding="" Type="Source" />
   </Doc3>
   <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/configure.ac" >
-   <View0 Encoding="" Type="Source" />
+   <View0 Encoding="" line="50" Type="Source" />
   </Doc4>
   <Doc5 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/Makefile.am" >
-   <View0 Encoding="" line="20" Type="Source" />
+   <View0 Encoding="" Type="Source" />
   </Doc5>
   <Doc6 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/rpg_common_tools.h" >
    <View0 Encoding="" line="37" Type="Source" />
   </Doc6>
   <Doc7 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/rpg_common_tools.cpp" >
-   <View0 Encoding="" line="51" Type="Source" />
+   <View0 Encoding="" line="72" Type="Source" />
   </Doc7>
+  <Doc8 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/rpg_common_file_tools.cpp" >
+   <View0 Encoding="" line="100" Type="Source" />
+  </Doc8>
+  <Doc9 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/common/rpg_common_file_tools.h" >
+   <View0 Encoding="" line="40" Type="Source" />
+  </Doc9>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>

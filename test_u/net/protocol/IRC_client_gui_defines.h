@@ -21,7 +21,6 @@
 #ifndef IRC_CLIENT_GUI_DEFINES_H
 #define IRC_CLIENT_GUI_DEFINES_H
 
-#define IRC_CLIENT_GUI_DEF_UI_FILE_DIR                 ACE_TEXT(".")
 #define IRC_CLIENT_GUI_DEF_UI_MAIN_FILE                ACE_TEXT("IRC_client_main.glade")
 #define IRC_CLIENT_GUI_DEF_UI_CHANNEL_TAB_FILE         ACE_TEXT("IRC_client_channel_tab.glade")
 #define IRC_CLIENT_GUI_DEF_UI_SERVER_PAGE_FILE         ACE_TEXT("IRC_client_server_page.glade")

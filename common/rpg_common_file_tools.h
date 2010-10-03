@@ -37,6 +37,8 @@ class RPG_Common_File_Tools
   static const bool loadFile(const std::string&, // FQ filename
                              unsigned char*&);   // return value: memory (array)
 
+  static const std::string getWorkingDirectory();
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_File_Tools());

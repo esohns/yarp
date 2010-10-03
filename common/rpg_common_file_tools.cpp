@@ -70,15 +70,6 @@ RPG_Common_File_Tools::isDirectory(const std::string& directory_in)
 {
 //   RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::isDirectory"));
 
-  // retrieve working directory
-  char cwd[MAXPATHLEN];
-  ACE_OS::memset(cwd,
-                 0,
-                 sizeof(cwd));
-  if (ACE_OS::getcwd(cwd, sizeof(cwd)) == NULL)
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("failed to ACE_OS::getcwd(): \"%m\", continuing\n")));
-
   ACE_stat stat;
   if (ACE_OS::stat(directory_in.c_str(),
                    &stat) == -1)
@@ -88,18 +79,17 @@ RPG_Common_File_Tools::isDirectory(const std::string& directory_in)
       case ENOENT:
       {
         ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("\"%s\": \"%m\" [cwd: \"%s\"], aborting\n"),
-                   directory_in.c_str(),
-                   cwd));
+                   ACE_TEXT("\"%s\": \"%m\", aborting\n"),
+                   directory_in.c_str()));
 
+        // URI doesn't even exist --> NOT a directory !
         return false;
       }
       default:
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_OS::stat(\"%s\"): \"%m\" [cwd: \"%s\"], aborting\n"),
-                   directory_in.c_str(),
-                   cwd));
+                   ACE_TEXT("failed to ACE_OS::stat(\"%s\"): \"%m\", aborting\n"),
+                   directory_in.c_str()));
 
         return false;
       }
@@ -312,4 +302,28 @@ RPG_Common_File_Tools::loadFile(const std::string& filename_in,
   } // end IF
 
   return true;
+}
+
+const std::string
+RPG_Common_File_Tools::getWorkingDirectory()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::getWorkingDirectory"));
+
+  std::string result;
+
+  // retrieve working directory
+  char cwd[MAXPATHLEN];
+  ACE_OS::memset(cwd,
+                 0,
+                 sizeof(cwd));
+  if (ACE_OS::getcwd(cwd, sizeof(cwd)) == NULL)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::getcwd(): \"%m\", aborting\n")));
+
+    return result;
+  } // end IF
+  result = cwd;
+
+  return result;
 }

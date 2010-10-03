@@ -473,7 +473,8 @@ IRC_Client_GUI_MessageHandler::update()
     if (!converted_text)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert message text, aborting\n")));
+                 ACE_TEXT("failed to convert message text (was: \"%s\"), aborting\n"),
+                 myDisplayQueue.front().c_str()));
 
       return;
     } // end IF
