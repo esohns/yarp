@@ -23,6 +23,7 @@
 #include <test_u-config.h>
 #endif
 
+#include <rpg_monster_defines.h>
 #include <rpg_monster_dictionary.h>
 #include <rpg_monster_common_tools.h>
 
@@ -40,6 +41,7 @@
 
 #include <rpg_common_macros.h>
 #include <rpg_common_tools.h>
+#include <rpg_common_file_tools.h>
 
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
@@ -51,32 +53,53 @@
 #include <sstream>
 #include <string>
 
-void print_usage(const std::string& programName_in)
+void
+print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
+
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
-  std::cout << ACE_TEXT("-m [FILE]: monster dictionary (*.xml)") << std::endl;
+  std::string path = base_data_path;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_MONSTER_DEF_DICTIONARY_FILE;
+  std::cout << ACE_TEXT("-m [FILE]: monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x       : do NOT validate XML") << std::endl;
 } // end print_usage
 
-const bool process_arguments(const int argc_in,
-                             ACE_TCHAR* argv_in[], // cannot be const...
-                             bool& dumpDictionary_out,
-                             std::string& filename_out,
-                             bool& traceInformation_out,
-                             bool& printVersionAndExit_out,
-                             bool& validateXML_out)
+const bool
+process_arguments(const int argc_in,
+                  ACE_TCHAR* argv_in[], // cannot be const...
+                  bool& dumpDictionary_out,
+                  std::string& monsterDictionaryFilename_out,
+                  bool& traceInformation_out,
+                  bool& printVersionAndExit_out,
+                  bool& validateXML_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
   dumpDictionary_out = false;
-  filename_out.clear();
+  monsterDictionaryFilename_out = base_data_path;
+  monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
+  monsterDictionaryFilename_out += RPG_MONSTER_DEF_DICTIONARY_FILE;
   traceInformation_out = false;
   printVersionAndExit_out = false;
   validateXML_out = true;
@@ -98,7 +121,7 @@ const bool process_arguments(const int argc_in,
       }
       case 'm':
       {
-        filename_out = argumentParser.opt_arg();
+        monsterDictionaryFilename_out = argumentParser.opt_arg();
 
         break;
       }
@@ -143,9 +166,10 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
-void do_work(const std::string& filename_in,
-             const bool& validateXML_in,
-             const bool& dumpDictionary_in)
+void
+do_work(const std::string& filename_in,
+        const bool& validateXML_in,
+        const bool& dumpDictionary_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -183,7 +207,8 @@ void do_work(const std::string& filename_in,
              ACE_TEXT("finished working...\n")));
 } // end do_work
 
-void do_printVersion(const std::string& programName_in)
+void
+do_printVersion(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
@@ -203,8 +228,7 @@ void do_printVersion(const std::string& programName_in)
   else
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
     return;
   } // end ELSE
@@ -219,8 +243,7 @@ void do_printVersion(const std::string& programName_in)
     else
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert: \"%s\", returning\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
       return;
     } // end ELSE
@@ -228,8 +251,7 @@ void do_printVersion(const std::string& programName_in)
   else
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
     return;
   } // end ELSE
@@ -239,15 +261,25 @@ void do_printVersion(const std::string& programName_in)
 //             << std::endl;
 }
 
-int ACE_TMAIN(int argc,
-              ACE_TCHAR* argv[])
+int
+ACE_TMAIN(int argc,
+          ACE_TCHAR* argv[])
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
   // step1: init
   // step1a set defaults
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
   bool dumpDictionary      = false;
-  std::string filename;
+  std::string monsterDictionaryFilename = base_data_path;
+  monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
+  monsterDictionaryFilename += RPG_MONSTER_DEF_DICTIONARY_FILE;
   bool traceInformation    = false;
   bool printVersionAndExit = false;
   bool validateXML         = true;
@@ -256,7 +288,7 @@ int ACE_TMAIN(int argc,
   if (!(process_arguments(argc,
                           argv,
                           dumpDictionary,
-                          filename,
+                          monsterDictionaryFilename,
                           traceInformation,
                           printVersionAndExit,
                           validateXML)))
@@ -268,11 +300,11 @@ int ACE_TMAIN(int argc,
   } // end IF
 
   // step1b: validate arguments
-  if (filename.empty())
+  if (!RPG_Common_File_Tools::isReadable(monsterDictionaryFilename))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid (XML) filename \"%s\", aborting\n"),
-               filename.c_str()));
+               monsterDictionaryFilename.c_str()));
 
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
@@ -318,7 +350,7 @@ int ACE_TMAIN(int argc,
   timer.start();
 
   // step2: do actual work
-  do_work(filename,
+  do_work(monsterDictionaryFilename,
           validateXML,
           dumpDictionary);
 

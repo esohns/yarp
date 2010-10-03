@@ -69,7 +69,11 @@
 // *NOTE*: offsets are measured in view coordinates (i.e. map squares)
 #define RPG_GRAPHICS_WINDOW_SCROLL_OFFSET              1
 
-#define RPG_GRAPHICS_DUMP_DIR                          ACE_TEXT("/var/tmp")
+#define RPG_GRAPHICS_DEF_DICTIONARY_FILE               ACE_TEXT_ALWAYS_CHAR("rpg_graphics.xml")
+#define RPG_GRAPHICS_DEF_DUMP_DIR                      ACE_TEXT("/var/tmp")
+
+// DATADIR-specific
+#define RPG_GRAPHICS_DEF_DATA_SUB                      ACE_TEXT("graphic")
 
 // buffer for printing keyboard events (debug info)
 #define RPG_GRAPHICS_SDL_KEYSYM_BUFFER_SIZE            32

@@ -36,8 +36,6 @@
 #define RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER    ACE_TEXT("connection")
 #define RPG_CLIENT_DEF_CHARACTER_REPOSITORY         ACE_TEXT("/var/tmp")
 
-#define RPG_CLIENT_DEF_GRAPHICS_DICTIONARY          ACE_TEXT("rpg_graphics.xml")
-#define RPG_CLIENT_DEF_GRAPHICS_DIRECTORY           ACE_TEXT("./data/graphics")
 #define RPG_CLIENT_DEF_GRAPHICS_CACHESIZE           50
 #define RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE    TYPE_INTERFACE
 #define RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE    ACE_TEXT_ALWAYS_CHAR("Project RPG")
@@ -46,8 +44,6 @@
 #define RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF      true
 #define RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE           DOORSTYLE_WOOD
 
-#define RPG_CLIENT_DEF_SOUND_DICTIONARY             ACE_TEXT("rpg_sound.xml")
-#define RPG_CLIENT_DEF_SOUND_DIRECTORY              ACE_TEXT("./data/sounds")
 #define RPG_CLIENT_DEF_SOUND_CACHESIZE              50
 
 #define RPG_CLIENT_DEF_AUDIO_FREQUENCY              44100
@@ -60,12 +56,6 @@
 #define RPG_CLIENT_DEF_VIDEO_BPP                    32
 #define RPG_CLIENT_DEF_VIDEO_FULLSCREEN             false
 #define RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER           false
-
-#define RPG_CLIENT_DEF_MAGIC_DICTIONARY             ACE_TEXT("rpg_magic.xml")
-
-#define RPG_CLIENT_DEF_ITEM_DICTIONARY              ACE_TEXT("rpg_item.xml")
-
-#define RPG_CLIENT_DEF_MONSTER_DICTIONARY           ACE_TEXT("rpg_monster.xml")
 
 #define RPG_CLIENT_DEF_MAP_MIN_ROOM_SIZE            0 // 0: don't care
 #define RPG_CLIENT_DEF_MAP_DOORS                    true

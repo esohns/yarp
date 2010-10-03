@@ -41,6 +41,7 @@
 #include <rpg_dice_common_tools.h>
 
 #include <rpg_common_macros.h>
+#include <rpg_common_defines.h>
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
 
@@ -393,10 +394,27 @@ print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
 
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-d [DIR] : graphics directory") << std::endl;
-  std::cout << ACE_TEXT("-g [FILE]: graphics dictionary (*.xml)") << std::endl;
+  std::string path = base_data_path;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_COMMON_DEF_DATA_SUB;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_GRAPHICS_DEF_DATA_SUB;
+  std::cout << ACE_TEXT("-d [DIR] : graphics directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  path = base_data_path;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_COMMON_DEF_CONFIG_SUB;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
+  std::cout << ACE_TEXT("-g [FILE]: graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-m [FILE]: level map (*.txt)") << std::endl;
   std::cout << ACE_TEXT("-s       : slideshow mode (show random graphics)") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
@@ -418,8 +436,23 @@ process_arguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-  directory_out = SDL_GUI_DEF_GRAPHICS_DIRECTORY;
-  dictionary_out = SDL_GUI_DEF_GRAPHICS_DICTIONARY;
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
+  directory_out = base_data_path;
+  directory_out += ACE_DIRECTORY_SEPARATOR_STR;
+  directory_out += RPG_COMMON_DEF_DATA_SUB;
+  directory_out += ACE_DIRECTORY_SEPARATOR_STR;
+  directory_out += RPG_GRAPHICS_DEF_DATA_SUB;
+  dictionary_out = base_data_path;
+  dictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
+  dictionary_out += RPG_COMMON_DEF_CONFIG_SUB;
+  dictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
+  dictionary_out += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
   filename_out.clear();
   slideShowMode_out = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
   traceInformation_out = false;
@@ -1146,9 +1179,24 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  std::string graphicsDirectory  = SDL_GUI_DEF_GRAPHICS_DIRECTORY;
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
+  std::string graphicsDirectory = base_data_path;
+  graphicsDirectory += ACE_DIRECTORY_SEPARATOR_STR;
+  graphicsDirectory += RPG_COMMON_DEF_DATA_SUB;
+  graphicsDirectory += ACE_DIRECTORY_SEPARATOR_STR;
+  graphicsDirectory += RPG_GRAPHICS_DEF_DATA_SUB;
   unsigned long cacheSize        = SDL_GUI_DEF_GRAPHICS_CACHESIZE;
-  std::string dictionary         = SDL_GUI_DEF_GRAPHICS_DICTIONARY;
+  std::string dictionary = base_data_path;
+  dictionary += ACE_DIRECTORY_SEPARATOR_STR;
+  dictionary += RPG_COMMON_DEF_CONFIG_SUB;
+  dictionary += ACE_DIRECTORY_SEPARATOR_STR;
+  dictionary += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
   mode_t mode                    = SDL_GUI_DEF_MODE;
   std::string mapFilename;
   bool slideShowMode             = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
@@ -1202,12 +1250,12 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step1b: validate arguments
-  if (dictionary.empty() ||
-      !RPG_Common_File_Tools::isReadable(dictionary))
+  if (!RPG_Common_File_Tools::isDirectory(graphicsDirectory) ||
+      !RPG_Common_File_Tools::isReadable(dictionary) ||
+      !RPG_Common_File_Tools::isReadable(mapFilename))
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid (XML) filename \"%s\", aborting\n"),
-               dictionary.c_str()));
+               ACE_TEXT("invalid argument, aborting\n")));
 
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));

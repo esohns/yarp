@@ -1205,7 +1205,7 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
       myCurrentWallSet.north.surface = shaded_wall;
 
       // debug info
-      std::string dump_path_base = RPG_GRAPHICS_DUMP_DIR;
+      std::string dump_path_base = RPG_GRAPHICS_DEF_DUMP_DIR;
       dump_path_base += ACE_DIRECTORY_SEPARATOR_STR;
 
       std::string dump_path = dump_path_base;

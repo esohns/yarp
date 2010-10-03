@@ -23,6 +23,7 @@
 #include <test_u-config.h>
 #endif
 
+#include <rpg_graphics_defines.h>
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_common_tools.h>
 
@@ -43,17 +44,25 @@
 #include <sstream>
 #include <string>
 
-#define GRAPHICSPARSER_DEF_GRAPHICS_DICTIONARY ACE_TEXT("rpg_graphics.xml")
-
 void
 print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
 
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
-  std::cout << ACE_TEXT("-g [FILE]: graphics dictionary (*.xml)") << std::endl;
+  std::string path = base_data_path;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
+  std::cout << ACE_TEXT("-g [FILE]: graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x       : do NOT validate XML") << std::endl;
@@ -71,8 +80,18 @@ process_arguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
+  // init results
   dumpDictionary_out = false;
-  filename_out.clear();
+  filename_out = base_data_path;
+  filename_out += ACE_DIRECTORY_SEPARATOR_STR;
+  filename_out += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
   traceInformation_out = false;
   printVersionAndExit_out = false;
   validateXML_out = true;
@@ -247,8 +266,18 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
+  // init results
   bool dumpDictionary            = false;
-  std::string filename           = GRAPHICSPARSER_DEF_GRAPHICS_DICTIONARY;
+  std::string filename = base_data_path;
+  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
   bool traceInformation          = false;
   bool printVersionAndExit       = false;
   bool validateXML               = true;
@@ -276,7 +305,7 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step1b: validate arguments
-  if (filename.empty())
+  if (!RPG_Common_File_Tools::isReadable(filename))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid (XML) filename \"%s\", aborting\n"),

@@ -23,6 +23,7 @@
 #include <test_u-config.h>
 #endif
 
+#include <rpg_sound_defines.h>
 #include <rpg_sound_dictionary.h>
 #include <rpg_sound_common_tools.h>
 
@@ -30,6 +31,7 @@
 #include <rpg_dice_common_tools.h>
 
 #include <rpg_common_macros.h>
+#include <rpg_common_defines.h>
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
 
@@ -45,8 +47,6 @@
 #include <sstream>
 #include <string>
 
-#define SOUNDPARSER_DEF_SOUND_DICTIONARY ACE_TEXT("rpg_sound.xml")
-#define SOUNDPARSER_DEF_SOUND_DIRECTORY  ACE_TEXT("./../../sound/data")
 #define SOUNDPARSER_DEF_SOUND_CACHESIZE  50
 
 #define SOUNDPARSER_DEF_AUDIO_FREQUENCY  44100
@@ -230,36 +230,65 @@ print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
 
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
-  std::cout << ACE_TEXT("-s [FILE]: sound dictionary (*.xml)") << std::endl;
+  std::string path = base_data_path;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_COMMON_DEF_DATA_SUB;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_SOUND_DEF_DATA_SUB;
+  std::cout << ACE_TEXT("-d [DIR] : sound directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  path = base_data_path;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_COMMON_DEF_CONFIG_SUB;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_SOUND_DEF_DICTIONARY_FILE;
+  std::cout << ACE_TEXT("-s [FILE]: sound dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
-  std::cout << ACE_TEXT("-x       : do NOT validate XML") << std::endl;
 } // end print_usage
 
 const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
-                  bool& dumpDictionary_out,
+                  std::string& directory_out,
                   std::string& filename_out,
                   bool& traceInformation_out,
-                  bool& printVersionAndExit_out,
-                  bool& validateXML_out)
+                  bool& printVersionAndExit_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-  dumpDictionary_out = false;
-  filename_out.clear();
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
+  directory_out = base_data_path;
+  directory_out += ACE_DIRECTORY_SEPARATOR_STR;
+  directory_out += RPG_COMMON_DEF_DATA_SUB;
+  directory_out += ACE_DIRECTORY_SEPARATOR_STR;
+  directory_out += RPG_SOUND_DEF_DATA_SUB;
+  filename_out = base_data_path;
+  filename_out += ACE_DIRECTORY_SEPARATOR_STR;
+  filename_out += RPG_COMMON_DEF_CONFIG_SUB;
+  filename_out += ACE_DIRECTORY_SEPARATOR_STR;
+  filename_out += RPG_SOUND_DEF_DICTIONARY_FILE;
   traceInformation_out = false;
   printVersionAndExit_out = false;
-  validateXML_out = true;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("ds:tvx"));
+                             ACE_TEXT("d:s:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -268,7 +297,7 @@ process_arguments(const int argc_in,
     {
       case 'd':
       {
-        dumpDictionary_out = true;
+        directory_out = argumentParser.opt_arg();
 
         break;
       }
@@ -287,12 +316,6 @@ process_arguments(const int argc_in,
       case 'v':
       {
         printVersionAndExit_out = true;
-
-        break;
-      }
-      case 'x':
-      {
-        validateXML_out = false;
 
         break;
       }
@@ -322,9 +345,7 @@ process_arguments(const int argc_in,
 void
 do_work(const std::string& dictionary_in,
         const std::string& path_in,
-        const unsigned long& cacheSize_in,
-        const bool& validateXML_in,
-        const bool& dumpDictionary_in)
+        const unsigned long& cacheSize_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -341,7 +362,7 @@ do_work(const std::string& dictionary_in,
   try
   {
     RPG_SOUND_DICTIONARY_SINGLETON::instance()->init(dictionary_in,
-                                                     validateXML_in);
+                                                     true);
   }
   catch (...)
   {
@@ -352,10 +373,7 @@ do_work(const std::string& dictionary_in,
   }
 
   // step3: dump sound descriptions
-  if (dumpDictionary_in)
-  {
-    RPG_SOUND_DICTIONARY_SINGLETON::instance()->dump();
-  } // end IF
+  RPG_SOUND_DICTIONARY_SINGLETON::instance()->dump();
 
   // step4: play a (random) sound
   RPG_Sound_Event event = RPG_SOUND_EVENT_INVALID;
@@ -452,13 +470,26 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  bool dumpDictionary        = false;
-  std::string filename       = SOUNDPARSER_DEF_SOUND_DICTIONARY;
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
+  std::string soundDirectory = base_data_path;
+  soundDirectory += ACE_DIRECTORY_SEPARATOR_STR;
+  soundDirectory += RPG_COMMON_DEF_DATA_SUB;
+  soundDirectory += ACE_DIRECTORY_SEPARATOR_STR;
+  soundDirectory += RPG_SOUND_DEF_DATA_SUB;
+  std::string filename = base_data_path;
+  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += RPG_COMMON_DEF_CONFIG_SUB;
+  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += RPG_SOUND_DEF_DICTIONARY_FILE;
   bool traceInformation      = false;
   bool printVersionAndExit   = false;
-  bool validateXML           = true;
 
-  std::string soundDirectory = SOUNDPARSER_DEF_SOUND_DIRECTORY;
   unsigned long cacheSize    = SOUNDPARSER_DEF_SOUND_CACHESIZE;
   SDL_audio_config_t audio_config;
   audio_config.frequency     = SOUNDPARSER_DEF_AUDIO_FREQUENCY;
@@ -469,11 +500,10 @@ ACE_TMAIN(int argc,
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
-                          dumpDictionary,
+                          soundDirectory,
                           filename,
                           traceInformation,
-                          printVersionAndExit,
-                          validateXML)))
+                          printVersionAndExit)))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
@@ -489,29 +519,14 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step1b: validate arguments
-  if (filename.empty())
+  if (!RPG_Common_File_Tools::isDirectory(soundDirectory) ||
+      !RPG_Common_File_Tools::isReadable(filename))
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid (XML) filename \"%s\", aborting\n"),
-               filename.c_str()));
+               ACE_TEXT("invalid argument, aborting\n")));
 
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
-
-    // *PORTABILITY*: on Windows, we must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
-
-    return EXIT_FAILURE;
-  } // end IF
-  else if (!RPG_Common_File_Tools::isDirectory(soundDirectory))
-  {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid sounds directory \"%s\", aborting\n"),
-               soundDirectory.c_str()));
 
     // *PORTABILITY*: on Windows, we must fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -611,9 +626,7 @@ ACE_TMAIN(int argc,
   timer.start();
   do_work(filename,
           soundDirectory,
-          cacheSize,
-          validateXML,
-          dumpDictionary);
+          cacheSize);
   timer.stop();
   // debug info
   std::string working_time_string;

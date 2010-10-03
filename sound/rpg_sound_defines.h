@@ -17,22 +17,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef RPG_SOUND_DEFINES_H
+#define RPG_SOUND_DEFINES_H
 
-#ifndef RPG_COMMON_DEFINES_H
-#define RPG_COMMON_DEFINES_H
-
-#define RPG_COMMON_MAX_SPELL_LEVEL             9
-
-// general stuff
-#define RPG_COMMON_MAX_TIMESTAMP_STRING_LENGTH 64
-
-// XML-specific
-// *NOTE*: refer to the XSD C++/Tree manual for details
-#define RPG_COMMON_XML_SCHEMA_CHARSET          ACE_TEXT("UTF-8")
-#define RPG_COMMON_XML_TARGET_NAMESPACE        ACE_TEXT("urn:rpg")
+#define RPG_SOUND_DEF_DICTIONARY_FILE ACE_TEXT_ALWAYS_CHAR("rpg_sound.xml")
 
 // DATADIR-specific
-#define RPG_COMMON_DEF_DATA_SUB               ACE_TEXT("data")
-#define RPG_COMMON_DEF_CONFIG_SUB             ACE_TEXT("config")
+#define RPG_SOUND_DEF_DATA_SUB        ACE_TEXT_ALWAYS_CHAR("sound")
 
 #endif

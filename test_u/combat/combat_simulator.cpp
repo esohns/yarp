@@ -26,6 +26,7 @@
 #include <rpg_engine_common.h>
 #include <rpg_engine_common_tools.h>
 
+#include <rpg_monster_defines.h>
 #include <rpg_monster.h>
 #include <rpg_monster_dictionary.h>
 #include <rpg_monster_common_tools.h>
@@ -37,9 +38,11 @@
 #include <rpg_character_player.h>
 #include <rpg_character_player_common.h>
 
+#include <rpg_item_defines.h>
 #include <rpg_item_dictionary.h>
 #include <rpg_item_common_tools.h>
 
+#include <rpg_magic_defines.h>
 #include <rpg_magic_dictionary.h>
 #include <rpg_magic_common_tools.h>
 
@@ -48,6 +51,7 @@
 
 #include <rpg_common_macros.h>
 #include <rpg_common_tools.h>
+#include <rpg_common_file_tools.h>
 
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
@@ -59,45 +63,77 @@
 #include <sstream>
 #include <string>
 
-void print_usage(const std::string& programName_in)
+void
+print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
+
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-b [VALUE]: number of battles (0: endless)") << std::endl;
   std::cout << ACE_TEXT("-f [VALUE]: total number of foes (0: random)") << std::endl;
-  std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << std::endl;
-  std::cout << ACE_TEXT("-m [FILE] : monster dictionary (*.xml)") << std::endl;
+  std::string path = base_data_path;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_ITEM_DEF_DICTIONARY_FILE;
+  std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  path = base_data_path;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_MONSTER_DEF_DICTIONARY_FILE;
+  std::cout << ACE_TEXT("-m [FILE] : monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-n [VALUE]: number of different monster types") << std::endl;
   std::cout << ACE_TEXT("-p [VALUE]: number of players") << std::endl;
-  std::cout << ACE_TEXT("-s [FILE] : magic dictionary (*.xml)") << std::endl;
+  path = base_data_path;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_MAGIC_DEF_DICTIONARY_FILE;
+  std::cout << ACE_TEXT("-s [FILE] : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
   std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x        : endless loop (testing purposes)") << std::endl;
 } // end print_usage
 
-const bool process_arguments(const int argc_in,
-                             ACE_TCHAR* argv_in[], // cannot be const...
-                             unsigned int& numBattles_out,
-                             unsigned int& numFoes_out,
-                             std::string& magicDictionaryFilename_out,
-                             std::string& itemDictionaryFilename_out,
-                             std::string& monsterDictionaryFilename_out,
-                             unsigned int& numMonsterTypes_out,
-                             unsigned int& numPlayers_out,
-                             bool& traceInformation_out,
-                             bool& printVersionAndExit_out,
-                             bool& endlessLoop_out)
+const bool
+process_arguments(const int argc_in,
+                  ACE_TCHAR* argv_in[], // cannot be const...
+                  unsigned int& numBattles_out,
+                  unsigned int& numFoes_out,
+                  std::string& magicDictionaryFilename_out,
+                  std::string& itemDictionaryFilename_out,
+                  std::string& monsterDictionaryFilename_out,
+                  unsigned int& numMonsterTypes_out,
+                  unsigned int& numPlayers_out,
+                  bool& traceInformation_out,
+                  bool& printVersionAndExit_out,
+                  bool& endlessLoop_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
+  // init results
   numBattles_out = 0;
   numFoes_out = 0;
-  magicDictionaryFilename_out.clear();
-  itemDictionaryFilename_out.clear();
-  monsterDictionaryFilename_out.clear();
+  magicDictionaryFilename_out = base_data_path;
+  magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
+  magicDictionaryFilename_out += RPG_MAGIC_DEF_DICTIONARY_FILE;
+  itemDictionaryFilename_out = base_data_path;
+  itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
+  itemDictionaryFilename_out += RPG_ITEM_DEF_DICTIONARY_FILE;
+  monsterDictionaryFilename_out = base_data_path;
+  monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
+  monsterDictionaryFilename_out += RPG_MONSTER_DEF_DICTIONARY_FILE;
   numMonsterTypes_out = 1;
   numPlayers_out = 1;
   traceInformation_out = false;
@@ -204,8 +240,9 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
-const unsigned int do_battle(RPG_Character_Party_t& party_in,
-                             const RPG_Monster_Encounter_t& encounter_in)
+const unsigned int
+do_battle(RPG_Character_Party_t& party_in,
+          const RPG_Monster_Encounter_t& encounter_in)
 {
   RPG_TRACE(ACE_TEXT("::do_battle"));
 
@@ -316,14 +353,15 @@ const unsigned int do_battle(RPG_Character_Party_t& party_in,
   return (numRound * 6); // each round takes 6 seconds...
 }
 
-void do_work(const std::string& magicDictionaryFilename_in,
-             const std::string& itemDictionaryFilename_in,
-             const std::string& monsterDictionaryFilename_in,
-             const unsigned int& numMonsterTypes_in,
-             const unsigned int& numFoes_in,
-             const unsigned int& numPlayers_in,
-             const unsigned int& numBattles_in,
-             bool& endlessLoop_in)
+void
+do_work(const std::string& magicDictionaryFilename_in,
+        const std::string& itemDictionaryFilename_in,
+        const std::string& monsterDictionaryFilename_in,
+        const unsigned int& numMonsterTypes_in,
+        const unsigned int& numFoes_in,
+        const unsigned int& numPlayers_in,
+        const unsigned int& numBattles_in,
+        bool& endlessLoop_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -442,7 +480,8 @@ void do_work(const std::string& magicDictionaryFilename_in,
              gameTime));
 } // end do_work
 
-void do_printVersion(const std::string& programName_in)
+void
+do_printVersion(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
@@ -462,8 +501,7 @@ void do_printVersion(const std::string& programName_in)
   else
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
     return;
   } // end ELSE
@@ -478,8 +516,7 @@ void do_printVersion(const std::string& programName_in)
     else
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert: \"%s\", returning\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
       return;
     } // end ELSE
@@ -487,8 +524,7 @@ void do_printVersion(const std::string& programName_in)
   else
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
     return;
   } // end ELSE
@@ -498,16 +534,31 @@ void do_printVersion(const std::string& programName_in)
 //             << std::endl;
 }
 
-int ACE_TMAIN(int argc,
-              ACE_TCHAR* argv[])
+int
+ACE_TMAIN(int argc,
+          ACE_TCHAR* argv[])
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
   // step1: init
   // step1a set defaults
-  std::string magicDictionaryFilename;
-  std::string itemDictionaryFilename;
-  std::string monsterDictionaryFilename;
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
+  // init results
+  std::string itemDictionaryFilename = base_data_path;
+  itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
+  itemDictionaryFilename += RPG_ITEM_DEF_DICTIONARY_FILE;
+  std::string magicDictionaryFilename = base_data_path;
+  magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
+  magicDictionaryFilename += RPG_MAGIC_DEF_DICTIONARY_FILE;
+  std::string monsterDictionaryFilename = base_data_path;
+  monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
+  monsterDictionaryFilename += RPG_MONSTER_DEF_DICTIONARY_FILE;
   unsigned int numFoes = 0;
   unsigned int numMonsterTypes = 1;
   unsigned int numPlayers = 1;
@@ -537,8 +588,9 @@ int ACE_TMAIN(int argc,
   } // end IF
 
   // step1b: validate arguments
-  if (itemDictionaryFilename.empty() ||
-      monsterDictionaryFilename.empty())
+  if (!RPG_Common_File_Tools::isReadable(magicDictionaryFilename) ||
+      !RPG_Common_File_Tools::isReadable(itemDictionaryFilename) ||
+      !RPG_Common_File_Tools::isReadable(monsterDictionaryFilename))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid (XML) filename, aborting\n")));

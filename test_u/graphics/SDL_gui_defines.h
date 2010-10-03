@@ -32,8 +32,6 @@
 #define SDL_GUI_DEF_MAP_SIZE_X                 20
 #define SDL_GUI_DEF_MAP_SIZE_Y                 15
 
-#define SDL_GUI_DEF_GRAPHICS_DICTIONARY        ACE_TEXT("rpg_graphics.xml")
-#define SDL_GUI_DEF_GRAPHICS_DIRECTORY         ACE_TEXT("./../../graphics/data")
 #define SDL_GUI_DEF_GRAPHICS_CACHESIZE         50
 #define SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE  TYPE_INTERFACE
 #define SDL_GUI_DEF_GRAPHICS_MAINWINDOW_TITLE  ACE_TEXT_ALWAYS_CHAR("Project RPG")

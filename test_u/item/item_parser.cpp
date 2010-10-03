@@ -23,6 +23,7 @@
 #include <test_u-config.h>
 #endif
 
+#include <rpg_item_defines.h>
 #include <rpg_item_common_tools.h>
 #include <rpg_item_dictionary.h>
 
@@ -30,6 +31,7 @@
 
 #include <rpg_common_macros.h>
 #include <rpg_common_tools.h>
+#include <rpg_common_file_tools.h>
 
 #include <ace/ACE.h>
 #include <ace/Get_Opt.h>
@@ -40,30 +42,51 @@
 #include <string>
 #include <algorithm>
 
-void print_usage(const std::string& programName_in)
+void
+print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
+
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d       : dump item dictionary") << std::endl;
-  std::cout << ACE_TEXT("-i [FILE]: item dictionary (*.xml)") << std::endl;
+  std::string path = base_data_path;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_ITEM_DEF_DICTIONARY_FILE;
+  std::cout << ACE_TEXT("-i [FILE]: item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
 } // end print_usage
 
-const bool process_arguments(const int argc_in,
-                             ACE_TCHAR* argv_in[], // cannot be const...
-                             bool& dumpItemDictionary_out,
-                             std::string& fileName_out,
-                             bool& traceInformation_out,
-                             bool& printVersionAndExit_out)
+const bool
+process_arguments(const int argc_in,
+                  ACE_TCHAR* argv_in[], // cannot be const...
+                  bool& dumpItemDictionary_out,
+                  std::string& itemDictionaryFilename_out,
+                  bool& traceInformation_out,
+                  bool& printVersionAndExit_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
   dumpItemDictionary_out = false;
-  fileName_out.resize(0);
+  itemDictionaryFilename_out = base_data_path;
+  itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
+  itemDictionaryFilename_out += RPG_ITEM_DEF_DICTIONARY_FILE;
   traceInformation_out = false;
   printVersionAndExit_out = false;
 
@@ -84,7 +107,7 @@ const bool process_arguments(const int argc_in,
       }
       case 'i':
       {
-        fileName_out = argumentParser.opt_arg();
+        itemDictionaryFilename_out = argumentParser.opt_arg();
 
         break;
       }
@@ -123,8 +146,9 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
-void do_work(const bool& dumpItemDictionary_in,
-             const std::string& fileName_in)
+void
+do_work(const bool& dumpItemDictionary_in,
+        const std::string& fileName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -155,7 +179,8 @@ void do_work(const bool& dumpItemDictionary_in,
              ACE_TEXT("finished working...\n")));
 } // end do_work
 
-void do_printVersion(const std::string& programName_in)
+void
+do_printVersion(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
@@ -175,8 +200,7 @@ void do_printVersion(const std::string& programName_in)
   else
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
     return;
   } // end ELSE
@@ -191,8 +215,7 @@ void do_printVersion(const std::string& programName_in)
     else
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert: \"%s\", returning\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
       return;
     } // end ELSE
@@ -200,8 +223,7 @@ void do_printVersion(const std::string& programName_in)
   else
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
     return;
   } // end ELSE
@@ -213,15 +235,25 @@ void do_printVersion(const std::string& programName_in)
 //             << std::endl;
 }
 
-int ACE_TMAIN(int argc,
-              ACE_TCHAR* argv[])
+int
+ACE_TMAIN(int argc,
+          ACE_TCHAR* argv[])
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
   // step1: init
   // step1a set defaults
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
   bool dumpItemDictionary  = false;
-  std::string filename;
+  std::string itemDictionaryFilename = base_data_path;
+  itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
+  itemDictionaryFilename += RPG_ITEM_DEF_DICTIONARY_FILE;
   bool traceInformation    = false;
   bool printVersionAndExit = false;
 
@@ -229,7 +261,7 @@ int ACE_TMAIN(int argc,
   if (!(process_arguments(argc,
                           argv,
                           dumpItemDictionary,
-                          filename,
+                          itemDictionaryFilename,
                           traceInformation,
                           printVersionAndExit)))
   {
@@ -240,11 +272,11 @@ int ACE_TMAIN(int argc,
   } // end IF
 
   // step1b: validate arguments
-  if (filename.empty())
+  if (!RPG_Common_File_Tools::isReadable(itemDictionaryFilename))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid (XML) filename \"%s\", aborting\n"),
-               filename.c_str()));
+               itemDictionaryFilename.c_str()));
 
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
@@ -291,7 +323,7 @@ int ACE_TMAIN(int argc,
 
   // step2: do actual work
   do_work(dumpItemDictionary,
-          filename);
+          itemDictionaryFilename);
 
   timer.stop();
 

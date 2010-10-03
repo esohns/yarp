@@ -62,7 +62,7 @@ AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries
-PKG_CHECK_MODULES(pkg_libs, gthread-2.0 gtk+-2.0)
+PKG_CHECK_MODULES(pkg_libs, sdl libpng gthread-2.0 gtk+-2.0)
 dnl AC_SUBST(pkg_libs_CFLAGS)
 dnl AC_SUBST(pkg_libs_LIBS)
 

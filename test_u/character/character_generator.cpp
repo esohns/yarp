@@ -33,11 +33,13 @@
 #include <rpg_character_class_common_tools.h>
 #include <rpg_character_skills_common_tools.h>
 
+#include <rpg_item_defines.h>
 #include <rpg_item_base.h>
 #include <rpg_item_instance_manager.h>
 #include <rpg_item_common_tools.h>
 #include <rpg_item_dictionary.h>
 
+#include <rpg_magic_defines.h>
 #include <rpg_magic_dictionary.h>
 #include <rpg_magic_common_tools.h>
 
@@ -68,10 +70,23 @@ print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
 
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << std::endl;
-  std::cout << ACE_TEXT("-m [FILE] : magic dictionary (*.xml)") << std::endl;
+  std::string path = base_data_path;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_ITEM_DEF_DICTIONARY_FILE;
+  std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  path = base_data_path;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_MAGIC_DEF_DICTIONARY_FILE;
+  std::cout << ACE_TEXT("-m [FILE] : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-n [VALUE]: generate (party of) #players") << std::endl;
   std::cout << ACE_TEXT("-r        : random (non-interactive)") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
@@ -90,9 +105,20 @@ process_arguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
   // init results
-  itemDictionaryFilename_out.clear();
-  magicDictionaryFilename_out.clear();
+  itemDictionaryFilename_out = base_data_path;
+  itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
+  itemDictionaryFilename_out += RPG_ITEM_DEF_DICTIONARY_FILE;
+  magicDictionaryFilename_out = base_data_path;
+  magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
+  magicDictionaryFilename_out += RPG_MAGIC_DEF_DICTIONARY_FILE;
   generateParty_out = 0;
   random_out = false;
   traceInformation_out = false;
@@ -1239,7 +1265,8 @@ do_work(const std::string magicDictionaryFilename_in,
              ACE_TEXT("finished working...\n")));
 } // end do_work
 
-void do_printVersion()
+void
+do_printVersion()
 {
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
@@ -1303,8 +1330,20 @@ int ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  std::string itemDictionaryFilename;
-  std::string magicDictionaryFilename;
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
+  // init results
+  std::string itemDictionaryFilename = base_data_path;
+  itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
+  itemDictionaryFilename += RPG_ITEM_DEF_DICTIONARY_FILE;
+  std::string magicDictionaryFilename = base_data_path;
+  magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
+  magicDictionaryFilename += RPG_MAGIC_DEF_DICTIONARY_FILE;
   unsigned int numPartyMembers = 0;
   bool random                  = false;
   bool traceInformation        = false;
@@ -1327,8 +1366,8 @@ int ACE_TMAIN(int argc,
   } // end IF
 
   // step1b: validate arguments
-  if (magicDictionaryFilename.empty() ||
-      itemDictionaryFilename.empty())
+  if (!RPG_Common_File_Tools::isReadable(itemDictionaryFilename) ||
+      !RPG_Common_File_Tools::isReadable(magicDictionaryFilename))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("missing/invalid (XML) filename, aborting\n")));
