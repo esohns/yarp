@@ -1,0 +1,1069 @@
+/***************************************************************************
+ *   Copyright (C) 2010 by Erik Sohns   *
+ *   erik.sohns@web.de   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
+#include "rpg_client_callbacks.h"
+
+#include "rpg_client_defines.h"
+#include "rpg_client_common.h"
+
+#include <rpg_character_defines.h>
+
+#include <rpg_item_instance_manager.h>
+#include <rpg_item_weapon.h>
+#include <rpg_item_armor.h>
+
+#include <rpg_common_macros.h>
+#include <rpg_common_tools.h>
+#include <rpg_common_file_tools.h>
+
+#include <gmodule.h>
+
+#include <ace/Reactor.h>
+#include <ace/Dirent_Selector.h>
+#include <ace/Log_Msg.h>
+
+#include <sstream>
+
+void
+update_character_profile(const RPG_Character_Player& player_in,
+                         GladeXML* xml_in)
+{
+  RPG_TRACE(ACE_TEXT("::update_character_profile"));
+
+  // sanity check(s)
+  ACE_ASSERT(xml_in);
+
+  std::string text;
+  std::stringstream converter;
+  GtkWidget* current = NULL;
+
+  // step1: name
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("name")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     player_in.getName().c_str());
+
+  // step2: gender
+  text.clear();
+  switch (player_in.getGender())
+  {
+    case RPG_CHARACTER_GENDER_MAX:
+    case RPG_CHARACTER_GENDER_INVALID:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid gender (was: \"%s\"), aborting\n"),
+                 RPG_Character_GenderHelper::RPG_Character_GenderToString(player_in.getGender()).c_str()));
+
+      break;
+    }
+    case GENDER_NONE:
+      text = ACE_TEXT_ALWAYS_CHAR("N/A"); break;
+    default:
+      text = RPG_Common_Tools::enumToString(RPG_Character_GenderHelper::RPG_Character_GenderToString(player_in.getGender())); break;
+  } // end SWITCH
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("gender")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     text.c_str());
+
+  // step3: race
+  text.clear();
+  RPG_Character_Race_t player_race = player_in.getRace();
+  if (player_race.count() == 0)
+    text = ACE_TEXT_ALWAYS_CHAR("N/A");
+  else
+  {
+    unsigned int race_index = 1;
+    for (unsigned int index = 0;
+         index < player_race.size();
+         index++, race_index++)
+    {
+      if (player_race.test(index))
+      {
+        switch (ACE_static_cast(RPG_Character_Race,
+                                race_index))
+        {
+          case RPG_CHARACTER_RACE_MAX:
+          case RPG_CHARACTER_RACE_INVALID:
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("invalid race (was: \"%s\"), aborting\n"),
+                       RPG_Character_RaceHelper::RPG_Character_RaceToString(ACE_static_cast(RPG_Character_Race,
+                                                                                            race_index)).c_str()));
+
+            break;
+          }
+          default:
+          {
+            text = RPG_Common_Tools::enumToString(RPG_Character_RaceHelper::RPG_Character_RaceToString(ACE_static_cast(RPG_Character_Race,
+                                                                                                                race_index)));
+            break;
+          }
+        } // end SWITCH
+        text += ACE_TEXT_ALWAYS_CHAR(",");
+      } // end IF
+    } // end FOR
+    text.erase(--text.end());
+  } // end ELSE
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("race")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     text.c_str());
+
+  // step4: class
+  text.clear();
+  RPG_Character_Class player_class = player_in.getClass();
+  switch (player_class.metaClass)
+  {
+    case RPG_CHARACTER_METACLASS_MAX:
+    case RPG_CHARACTER_METACLASS_INVALID:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid metaclass (was: \"%s\"), aborting\n"),
+                 RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString(player_class.metaClass).c_str()));
+
+      break;
+    }
+    case METACLASS_NONE:
+      text = ACE_TEXT_ALWAYS_CHAR("N/A"); break;
+    default:
+    {
+      text = RPG_Common_Tools::enumToString(RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString(player_class.metaClass));
+
+      break;
+    }
+  } // end SWITCH
+  if (!player_class.subClasses.empty())
+    text += ACE_TEXT_ALWAYS_CHAR(" (");
+  for (RPG_Character_SubClassesIterator_t iterator = player_class.subClasses.begin();
+       iterator != player_class.subClasses.end();
+       iterator++)
+  {
+    switch (*iterator)
+    {
+      case RPG_COMMON_SUBCLASS_MAX:
+      case RPG_COMMON_SUBCLASS_INVALID:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid subclass (was: \"%s\"), aborting\n"),
+                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str()));
+
+        break;
+      }
+      case SUBCLASS_NONE:
+        text += ACE_TEXT_ALWAYS_CHAR("N/A"); break;
+      default:
+      {
+        text += RPG_Common_Tools::enumToString(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator));
+
+        break;
+      }
+    } // end SWITCH
+    text += ACE_TEXT_ALWAYS_CHAR(",");
+  } // end FOR
+  if (!player_class.subClasses.empty())
+  {
+    text.erase(--text.end());
+    text += ACE_TEXT_ALWAYS_CHAR(")");
+  } // end IF
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("class")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     text.c_str());
+
+  // step5: alignment
+  text.clear();
+  RPG_Character_Alignment player_alignment = player_in.getAlignment();
+  // "Neutral" "Neutral" --> "True Neutral"
+  if ((player_alignment.civic == ALIGNMENTCIVIC_NEUTRAL) &&
+      (player_alignment.ethic == ALIGNMENTETHIC_NEUTRAL))
+    text = ACE_TEXT_ALWAYS_CHAR("True Neutral");
+  else
+  {
+    switch (player_alignment.civic)
+    {
+      case RPG_CHARACTER_ALIGNMENTCIVIC_MAX:
+      case RPG_CHARACTER_ALIGNMENTCIVIC_INVALID:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid alignment (civic) (was: \"%s\"), aborting\n"),
+                   RPG_Character_AlignmentCivicHelper::RPG_Character_AlignmentCivicToString(player_alignment.civic).c_str()));
+
+        break;
+      }
+      default:
+      {
+        text += RPG_Common_Tools::enumToString(RPG_Character_AlignmentCivicHelper::RPG_Character_AlignmentCivicToString(player_alignment.civic));
+
+        break;
+      }
+    } // end SWITCH
+    text += ACE_TEXT_ALWAYS_CHAR(" ");
+    switch (player_alignment.civic)
+    {
+      case RPG_CHARACTER_ALIGNMENTETHIC_MAX:
+      case RPG_CHARACTER_ALIGNMENTETHIC_INVALID:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid alignment (ethic) (was: \"%s\"), aborting\n"),
+                   RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString(player_alignment.ethic).c_str()));
+
+        break;
+      }
+      default:
+      {
+        text += RPG_Common_Tools::enumToString(RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString(player_alignment.ethic));
+
+        break;
+      }
+    } // end SWITCH
+  } // end ELSE
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("alignment")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     text.c_str());
+
+  // step6: condition
+  text.clear();
+  RPG_Character_Conditions_t player_condition = player_in.getCondition();
+  if (player_condition.size() > 1)
+    text += ACE_TEXT_ALWAYS_CHAR(" (");
+  for (RPG_Character_ConditionsIterator_t iterator = player_condition.begin();
+       iterator != player_condition.end();
+       iterator++)
+  {
+    switch (*iterator)
+    {
+      case RPG_COMMON_CONDITION_MAX:
+      case RPG_COMMON_CONDITION_INVALID:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid condition (was: \"%s\"), aborting\n"),
+                   RPG_Common_ConditionHelper::RPG_Common_ConditionToString(*iterator).c_str()));
+
+        break;
+      }
+      default:
+      {
+        text += RPG_Common_Tools::enumToString(RPG_Common_ConditionHelper::RPG_Common_ConditionToString(*iterator));
+
+        break;
+      }
+    } // end SWITCH
+    text += ACE_TEXT_ALWAYS_CHAR(",");
+  } // end FOR
+  if (!player_condition.empty())
+    text.erase(--text.end());
+  if (player_condition.size() > 1)
+    text += ACE_TEXT_ALWAYS_CHAR(")");
+
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("condition")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     text.c_str());
+
+  // step7: HP
+  unsigned short int total_hp = player_in.getNumTotalHitPoints();
+  short int hp = player_in.getNumHitPoints();
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << hp;
+  converter << ACE_TEXT_ALWAYS_CHAR(" / ");
+  converter << total_hp;
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("hitpoints")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+
+  // step8: AC
+  signed char armor_class_normal = player_in.getArmorClass(DEFENSE_NORMAL);
+  signed char armor_class_touch = player_in.getArmorClass(DEFENSE_TOUCH);
+  signed char armor_class_flatfooted = player_in.getArmorClass(DEFENSE_FLATFOOTED);
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << ACE_static_cast(int, armor_class_normal);
+  converter << ACE_TEXT_ALWAYS_CHAR(" / ");
+  converter << ACE_static_cast(int, armor_class_touch);
+  converter << ACE_TEXT_ALWAYS_CHAR(" / ");
+  converter << ACE_static_cast(int, armor_class_flatfooted);
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("armorclass")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+
+  // step9: XP
+  unsigned int experience = player_in.getExperience();
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << experience;
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("experience")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+
+  // step10: level(s)
+  text.clear();
+  unsigned char level = 0;
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  if (player_class.subClasses.empty())
+  {
+    converter << ACE_static_cast(unsigned int, level);
+  } // end IF
+  else
+  {
+    for (RPG_Character_SubClassesIterator_t iterator = player_class.subClasses.begin();
+         iterator != player_class.subClasses.end();
+         iterator++)
+    {
+      level = player_in.getLevel(*iterator);
+      converter << ACE_static_cast(unsigned int, level);
+      converter << ACE_TEXT_ALWAYS_CHAR(" / ");
+    } // end FOR
+  } // end ELSE
+  text = converter.str();
+  if (!player_class.subClasses.empty())
+  {
+    // trim tailing " / "
+    std::string::iterator iterator = text.end();
+    std::advance(iterator, -3);
+    text.erase(iterator, text.end());
+  } // end IF
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("level")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     text.c_str());
+
+  // step11: gold
+  unsigned int gold = player_in.getWealth();
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << gold;
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("gold")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+
+  // step12: attributes
+  unsigned int attribute = 0;
+  attribute = player_in.getAttribute(ATTRIBUTE_STRENGTH);
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << attribute;
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("strength")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+  attribute = player_in.getAttribute(ATTRIBUTE_DEXTERITY);
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << attribute;
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("dexterity")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+  attribute = player_in.getAttribute(ATTRIBUTE_CONSTITUTION);
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << attribute;
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("constitution")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+  attribute = player_in.getAttribute(ATTRIBUTE_INTELLIGENCE);
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << attribute;
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("intelligence")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+  attribute = player_in.getAttribute(ATTRIBUTE_WISDOM);
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << attribute;
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("wisdom")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+  attribute = player_in.getAttribute(ATTRIBUTE_CHARISMA);
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  converter.clear();
+  converter << attribute;
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("charisma")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     converter.str().c_str());
+
+  // step13: feats
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("feats_vbox")));
+  ACE_ASSERT(current);
+  GList* entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    // *TODO*: clear all entries
+  } // end IF
+  GtkWidget* label = NULL;
+  RPG_Character_Feats_t player_feats = player_in.getFeats();
+  for (RPG_Character_FeatsConstIterator_t iterator = player_feats.begin();
+       iterator != player_feats.end();
+       iterator++)
+  {
+    label = NULL;
+    label = gtk_label_new(RPG_Common_Tools::enumToString(RPG_Character_FeatHelper::RPG_Character_FeatToString(*iterator)).c_str());
+    ACE_ASSERT(label);
+//     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+  } // end FOR
+
+  // step14: abilities
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("abilities_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    // *TODO*: clear all entries
+  } // end IF
+  RPG_Character_Abilities_t player_abilities = player_in.getAbilities();
+  for (RPG_Character_AbilitiesConstIterator_t iterator = player_abilities.begin();
+       iterator != player_abilities.end();
+       iterator++)
+  {
+    label = NULL;
+    label = gtk_label_new(RPG_Common_Tools::enumToString(RPG_Character_AbilityHelper::RPG_Character_AbilityToString(*iterator)).c_str());
+    ACE_ASSERT(label);
+//     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+  } // end FOR
+
+  // step15: skills
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("skills_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    // *TODO*: clear all entries
+  } // end IF
+  RPG_Character_Skills_t player_skills = player_in.getSkills();
+  for (RPG_Character_SkillsConstIterator_t iterator = player_skills.begin();
+       iterator != player_skills.end();
+       iterator++)
+  {
+    text.clear();
+    text += RPG_Common_Tools::enumToString(RPG_Common_SkillHelper::RPG_Common_SkillToString((*iterator).first));
+    text += ACE_TEXT_ALWAYS_CHAR(" : ");
+    converter.str(ACE_TEXT(""));
+    converter.clear();
+    converter << ACE_static_cast(int, (*iterator).second);
+    text += converter.str();
+    label = NULL;
+    label = gtk_label_new(text.c_str());
+    ACE_ASSERT(label);
+//     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+  } // end FOR
+
+  // step16: spells
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("spells_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    // *TODO*: clear all entries
+  } // end IF
+  RPG_Magic_Spells_t player_known_spells = player_in.getKnownSpells();
+  RPG_Magic_SpellList_t player_spells = player_in.getSpells();
+  unsigned int number = 0;
+  for (RPG_Magic_SpellsIterator_t iterator = player_known_spells.begin();
+       iterator != player_known_spells.end();
+       iterator++)
+  {
+    // *NOTE*: these spells are KNOWN
+    // --> for each spells, check whether (and how often) it has been prepared/memorized
+    // i.e. Wizard/Cleric and other classes
+    number = 0;
+    for (RPG_Magic_SpellListIterator_t iterator2 = player_spells.begin();
+         iterator2 != player_spells.end();
+         iterator2++)
+      if (*iterator2 == *iterator)
+        number++;
+
+    text.clear();
+    text += RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
+    if (number)
+    {
+      text += ACE_TEXT_ALWAYS_CHAR(" : ");
+      converter.str(ACE_TEXT(""));
+      converter.clear();
+      converter << number;
+      text += converter.str();
+    } // end IF
+
+    label = NULL;
+    label = gtk_label_new(text.c_str());
+    ACE_ASSERT(label);
+//     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+  } // end FOR
+
+  // step17: inventory
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("inventory_items_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    // *TODO*: clear all entries
+  } // end IF
+  RPG_Character_Inventory player_inventory = player_in.getInventory();
+//   RPG_Character_Equipment player_equipment = player_in.getEquipment();
+  RPG_Item_Base* item = NULL;
+  for (RPG_Item_ListIterator_t iterator = player_inventory.myItems.begin();
+       iterator != player_inventory.myItems.end();
+       iterator++)
+  {
+    text.clear();
+    item = NULL;
+
+    // retrieve item handle
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
+                                                              item))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid item (ID: %d), continuing\n"),
+                 *iterator));
+
+      continue;
+    } // end IF
+    ACE_ASSERT(item);
+
+    switch (item->getType())
+    {
+      case ITEM_WEAPON:
+      {
+        RPG_Item_Weapon* weapon = ACE_dynamic_cast(RPG_Item_Weapon*, item);
+        ACE_ASSERT(weapon);
+
+        // *TODO*: pretty-print this string
+        text += RPG_Common_Tools::enumToString(RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->getWeaponType()),
+                                               false); // don't strip leading "xxx_"
+
+        break;
+      }
+      case ITEM_ARMOR:
+      {
+        RPG_Item_Armor* armor = ACE_dynamic_cast(RPG_Item_Armor*, item);
+        ACE_ASSERT(armor);
+
+        text += RPG_Common_Tools::enumToString(RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()));
+
+        break;
+      }
+      default:
+      {
+        // *TODO*: pretty-print this string
+
+        break;
+      }
+    } // end SWITCH
+
+    // equipped ? --> add '*'
+    if (player_in.getEquipment()->isEquipped(*iterator))
+      text += ACE_TEXT_ALWAYS_CHAR(" *");
+
+    label = NULL;
+    label = gtk_label_new(text.c_str());
+    ACE_ASSERT(label);
+//     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+  } // end FOR
+}
+
+// callbacks used by ::scandir...
+int
+dirent_selector(const dirent* entry_in)
+{
+  RPG_TRACE(ACE_TEXT("::dirent_selector"));
+
+  // *NOTE*: select *.xml files
+  std::string filename(entry_in->d_name);
+  std::string extension(RPG_CHARACTER_PLAYER_PROFILE_EXT);
+  if (filename.rfind(extension,
+      std::string::npos) != (filename.size() - extension.size()))
+  {
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("ignoring \"%s\"...\n"),
+//                entry_in->d_name));
+
+    return 0;
+  } // end IF
+
+  return 1;
+}
+
+int
+dirent_comparator(const dirent** entry1_in,
+                  const dirent** entry2_in)
+{
+  RPG_TRACE(ACE_TEXT("::dirent_comparator"));
+
+  return ACE_OS::strcmp((*entry1_in)->d_name,
+                        (*entry2_in)->d_name);
+}
+
+void
+load_character_profiles(const std::string& repository_in,
+                        GtkListStore* listStore_in)
+//                         GtkComboBox* comboBox_in)
+{
+  RPG_TRACE(ACE_TEXT("::load_character_profiles"));
+
+  // sanity check(s)
+  ACE_ASSERT(listStore_in);
+  if (!RPG_Common_File_Tools::isDirectory(repository_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to load_character_profiles(\"%s\"), not a directory, aborting\n"),
+               repository_in.c_str()));
+
+    return;
+  } // end IF
+
+  // retrieve all existing character profiles (*.xml) and sort them alphabetically...
+  ACE_Dirent_Selector entries;
+  if (entries.open(repository_in.c_str(),
+      &::dirent_selector,
+      &::dirent_comparator) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Dirent_Selector::open(\"%s\"): \"%m\", aborting\n"),
+               repository_in.c_str()));
+
+    return;
+  } // end IF
+
+  // clear existing entries
+  // *WARNING* triggers the "changed" signal of the combobox...
+  gtk_list_store_clear(listStore_in);
+
+  // iterate over entries
+  std::string entry;
+  std::string extension(RPG_CHARACTER_PLAYER_PROFILE_EXT);
+  GtkTreeIter iter;
+  for (unsigned int i = 0;
+       i < ACE_static_cast(unsigned int, entries.length());
+       i++)
+  {
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("character profile[%u]: %s\n"),
+//                num_profiles,
+//                entries[i]->d_name));
+
+    // sanitize name (chop off extension)
+    entry = entries[i]->d_name;
+    entry.erase(entry.rfind(extension,
+                std::string::npos),
+                std::string::npos);
+
+    // append new (text) entry
+    gtk_list_store_append(listStore_in, &iter);
+    gtk_list_store_set(listStore_in, &iter,
+                       0, entry.c_str(), // column 0
+                                      -1);
+  } // end FOR
+
+  // clean up
+  entries.close();
+
+  // debug info
+  GValue value;
+  ACE_OS::memset(&value,
+                  0,
+                  sizeof(value));
+  const gchar* text = NULL;
+  if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(listStore_in),
+      &iter))
+  {
+    gtk_tree_model_get_value(GTK_TREE_MODEL(listStore_in), &iter,
+                             0, &value);
+    text = g_value_get_string(&value);
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("character profile[0]: %s\n"),
+               std::string(text).c_str()));
+
+    g_value_unset(&value);
+  } // end IF
+  for (unsigned int i = 1;
+       gtk_tree_model_iter_next(GTK_TREE_MODEL(listStore_in),
+                                &iter);
+       i++)
+  {
+    ACE_OS::memset(&value,
+                   0,
+                   sizeof(value));
+    text = NULL;
+
+    gtk_tree_model_get_value(GTK_TREE_MODEL(listStore_in), &iter,
+                             0, &value);
+    text = g_value_get_string(&value);
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("character profile[%u]: %s\n"),
+               i,
+               std::string(text).c_str()));
+
+    g_value_unset(&value);
+  } // end FOR
+}
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif /* __cplusplus */
+G_MODULE_EXPORT gint
+about_activated_GTK_cb(GtkWidget* widget_in,
+                       gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::about_activated_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, userData_in);
+  ACE_ASSERT(data);
+
+  // sanity check(s)
+  ACE_ASSERT(data->xml);
+
+  // retrieve about dialog handle
+  GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(data->xml,
+                                                            RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME));
+  ACE_ASSERT(about_dialog);
+  if (!about_dialog)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
+               RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME));
+
+    return TRUE; // propagate
+  } // end IF
+
+  // draw it
+  if (!GTK_WIDGET_VISIBLE(about_dialog))
+    gtk_widget_show_all(about_dialog);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+properties_activated_GTK_cb(GtkWidget* widget_in,
+                            gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::properties_activated_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(userData_in);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+quit_activated_GTK_cb(GtkWidget* widget_in,
+                      gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::quit_activated_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(userData_in);
+
+  // stop reactor
+  if (ACE_Reactor::instance()->end_event_loop() == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
+
+  // leave GTK
+  gtk_main_quit();
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("leaving GTK...\n")));
+
+  // this is the "delete-event" handler
+  // --> destroy the main dialog widget
+  return TRUE; // --> propagate
+}
+
+G_MODULE_EXPORT gint
+create_character_activated_GTK_cb(GtkWidget* widget_in,
+                                  gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::create_character_activated_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(userData_in);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+load_character_activated_GTK_cb(GtkWidget* widget_in,
+                                gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::load_character_activated_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, userData_in);
+  ACE_ASSERT(data);
+
+  // sanity check(s)
+  ACE_ASSERT(data->xml);
+
+  // *NOTE*: this callback just presents the file picker
+  // --> business logic happens in character_file_actived_GTK_cb
+
+  // retrieve file chooser dialog handle
+  GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(data->xml,
+                                                                                          RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
+  ACE_ASSERT(filechooser_dialog);
+  if (!filechooser_dialog)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
+               RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
+
+    return FALSE;
+  } // end IF
+
+  // draw it
+  if (!GTK_WIDGET_VISIBLE(filechooser_dialog))
+    gtk_widget_show_all(GTK_WIDGET(filechooser_dialog));
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+character_file_activated_GTK_cb(GtkWidget* widget_in,
+                                gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::character_file_activated_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, userData_in);
+  ACE_ASSERT(data);
+
+  // sanity check(s)
+  ACE_ASSERT(data->xml);
+
+  // retrieve file chooser dialog handle
+  GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(data->xml,
+                                                                                          RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
+  ACE_ASSERT(filechooser_dialog);
+
+  // hide widget
+  gtk_widget_hide(GTK_WIDGET(filechooser_dialog));
+
+  // retrieve selected filename
+  std::string filename(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser_dialog)));
+
+  // load player profile
+  data->player = RPG_Character_Player::load(filename);
+
+  // update character profile widgets
+  ::update_character_profile(data->player,
+                             data->xml);
+
+  // make character display frame sensitive (if it's not already)
+  GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
+                                                             ACE_TEXT_ALWAYS_CHAR("character")));
+  ACE_ASSERT(character_frame);
+  gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+save_character_activated_GTK_cb(GtkWidget* widget_in,
+                                gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::save_character_activated_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(userData_in);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+join_game_activated_GTK_cb(GtkWidget* widget_in,
+                           gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::join_game_activated_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(userData_in);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+characters_activated_GTK_cb(GtkWidget* widget_in,
+                            gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::characters_activated_GTK_cb"));
+
+  GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, userData_in);
+  ACE_ASSERT(data);
+
+  // sanity check(s)
+  ACE_ASSERT(widget_in);
+  ACE_ASSERT(data->xml);
+
+  // retrieve active item
+  std::string active_item;
+  GtkTreeIter selected;
+  GtkTreeModel* model = NULL;
+  GValue value;
+  const gchar* text = NULL;
+  if (!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget_in), &selected))
+  {
+    // *WARNING*: refreshing the combobox triggers removal of items
+    // which also generates this signal...
+    return FALSE;
+  } // end IF
+  model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget_in));
+  ACE_ASSERT(model);
+  ACE_OS::memset(&value,
+                 0,
+                 sizeof(value));
+  gtk_tree_model_get_value(model, &selected,
+                           0, &value);
+  text = g_value_get_string(&value);
+  // sanity check
+  ACE_ASSERT(text);
+  active_item = text;
+  g_value_unset(&value);
+
+  // construct filename
+  std::string filename = RPG_CLIENT_DEF_CHARACTER_REPOSITORY;
+  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += active_item;
+  filename += RPG_CHARACTER_PLAYER_PROFILE_EXT;
+
+  // load player profile
+  data->player = RPG_Character_Player::load(filename);
+
+  // update character profile widgets
+  ::update_character_profile(data->player,
+                             data->xml);
+
+  // make character display frame sensitive (if it's not already)
+  GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
+                                                             ACE_TEXT_ALWAYS_CHAR("character")));
+  ACE_ASSERT(character_frame);
+  gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+characters_refresh_activated_GTK_cb(GtkWidget* widget_in,
+                                    gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::characters_refresh_activated_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, userData_in);
+  ACE_ASSERT(data);
+
+  // sanity check(s)
+  ACE_ASSERT(data->xml);
+
+  // retrieve tree model
+  GtkComboBox* available_characters = GTK_COMBO_BOX(glade_xml_get_widget(data->xml,
+                                                                         RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+  ACE_ASSERT(available_characters);
+  GtkTreeModel* model = gtk_combo_box_get_model(available_characters);
+  ACE_ASSERT(model);
+
+  // re-load profile data
+  ::load_character_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
+                            GTK_LIST_STORE(model));
+
+  // set sensitive as appropriate
+  GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
+                                                             ACE_TEXT_ALWAYS_CHAR("character")));
+  ACE_ASSERT(character_frame);
+  if (g_list_length(gtk_container_get_children(GTK_CONTAINER(available_characters))))
+  {
+    gtk_widget_set_sensitive(GTK_WIDGET(available_characters), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
+  } // end IF
+  else
+  {
+    gtk_widget_set_sensitive(GTK_WIDGET(available_characters), FALSE);
+    gtk_widget_set_sensitive(GTK_WIDGET(character_frame), FALSE);
+  } // end ELSE
+
+  // ... activate first entry as appropriate
+  if (gtk_widget_is_sensitive(GTK_WIDGET(available_characters)))
+    gtk_combo_box_set_active(available_characters, 0);
+
+  return FALSE;
+}
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
