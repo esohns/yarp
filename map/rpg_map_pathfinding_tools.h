@@ -33,7 +33,7 @@
 class RPG_Map_Pathfinding_Tools
 {
  public:
-  // classic A* algorithm
+  // "classic" A* algorithm
   static const bool findPath(const unsigned long&,       // dimension x
                              const unsigned long&,       // dimension y
                              const RPG_Map_Positions_t&, // obstacles
@@ -68,7 +68,7 @@ class RPG_Map_Pathfinding_Tools
   typedef RPG_Map_AStar_NodeList_t RPG_Map_AStar_ClosedPath_t;
   // *NOTE*: std::less<_Key> uses default operator< for std::pair<>, which sorts
   // the trail according to positions, then cost
-  // --> we don't want this for the Open Paths
+  // --> don't want this for the Open Paths
   struct node_compare
    : public std::binary_function<RPG_Map_AStar_Node_t,
                                  RPG_Map_AStar_Node_t,

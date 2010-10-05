@@ -14,5 +14,6 @@ SDL_gui_SOURCES = SDL_gui.cpp SDL_gui_defines.h SDL_gui_levelwindow.cpp \
 	SDL_gui_levelwindow.h SDL_gui_mainwindow.cpp SDL_gui_mainwindow.h
 SDL_gui_CPPFLAGS = $(pkg_libs_CFLAGS) -DDATADIR="\"$(datadir)/@META_PACKAGE@\""
 SDL_gui_LDFLAGS = $(pkg_libs_LIBS)
-SDL_gui_LDADD = -lpthread -lACE -lSDL_ttf -lRPG_Common -lRPG_Dice \
-	-lRPG_Graphics -lRPG_Map
+SDL_gui_LDADD = -lpthread -lACE -lSDL_ttf -lRPG_Dice -lRPG_Chance -lRPG_Common \
+	-lRPG_Magic -lRPG_Item -lRPG_Character -lRPG_Monster -lRPG_Combat -lRPG_Map \
+	-lRPG_Graphics -lRPG_Engine

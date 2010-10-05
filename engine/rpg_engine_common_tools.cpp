@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "rpg_engine_common_tools.h"
 
+#include <rpg_graphics_defines.h>
+
 #include <rpg_monster_common.h>
 #include <rpg_monster_common_tools.h>
 #include <rpg_monster_attackaction.h>
@@ -35,14 +37,14 @@
 #include <rpg_magic_dictionary.h>
 #include <rpg_magic_common_tools.h>
 
+#include <rpg_common_macros.h>
 #include <rpg_common_attribute.h>
 #include <rpg_common_tools.h>
 
-#include <rpg_dice.h>
-#include <rpg_dice_common_tools.h>
 #include <rpg_chance_common_tools.h>
 
-#include <rpg_common_macros.h>
+#include <rpg_dice.h>
+#include <rpg_dice_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -1189,4 +1191,246 @@ monster_advance_attack_iterator:
       } // end IF
     } // end IF
   } // end ELSE
+}
+
+const bool
+RPG_Engine_Common_Tools::hasCeiling(const RPG_Map_Position_t& position_in,
+                                    const RPG_Map_Level& level_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::hasCeiling"));
+
+  // shortcut: floors, doors never get a ceiling
+  if ((level_in.getElement(position_in) == MAPELEMENT_FLOOR) ||
+      (level_in.getElement(position_in) == MAPELEMENT_DOOR))
+    return false;
+
+  RPG_Map_Position_t east, west, south, north;
+  east = position_in;
+  east.first++;
+  west = position_in;
+  west.first--;
+  north = position_in;
+  north.second--;
+  south = position_in;
+  south.second++;
+
+  // *NOTE*: walls should get a ceiling if they're either:
+  // - "internal" (e.g. (single) strength room/corridor walls)
+  // - "outer" walls get a (single strength) ceiling "margin"
+
+  // "corridors"
+  // vertical
+  if (((level_in.getElement(east) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(east) == MAPELEMENT_DOOR)) &&
+      ((level_in.getElement(west) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(west) == MAPELEMENT_DOOR)))
+    return true;
+  // horizontal
+  if (((level_in.getElement(north) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(north) == MAPELEMENT_DOOR)) &&
+      ((level_in.getElement(south) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(south) == MAPELEMENT_DOOR)))
+    return true;
+
+  // (internal) "corners"
+  // SW
+  if (((level_in.getElement(west) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(west) == MAPELEMENT_DOOR)) &&
+      ((level_in.getElement(south) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(south) == MAPELEMENT_DOOR)) &&
+      ((level_in.getElement(north) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(north) == MAPELEMENT_WALL)) &&
+      ((level_in.getElement(east) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(east) == MAPELEMENT_WALL)))
+    return (RPG_Engine_Common_Tools::isCorner(north, level_in) ||
+            RPG_Engine_Common_Tools::isCorner(east, level_in) ||
+            RPG_Engine_Common_Tools::hasCeiling(north, level_in) ||
+            RPG_Engine_Common_Tools::hasCeiling(east, level_in));
+  // SE
+  if (((level_in.getElement(east) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(east) == MAPELEMENT_DOOR)) &&
+      ((level_in.getElement(south) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(south) == MAPELEMENT_DOOR)) &&
+      ((level_in.getElement(north) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(north) == MAPELEMENT_WALL)) &&
+      ((level_in.getElement(west) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(west) == MAPELEMENT_WALL)))
+    return (RPG_Engine_Common_Tools::isCorner(north, level_in) ||
+            RPG_Engine_Common_Tools::isCorner(west, level_in) ||
+            RPG_Engine_Common_Tools::hasCeiling(north, level_in) ||
+            RPG_Engine_Common_Tools::hasCeiling(west, level_in));
+  // NW
+  if (((level_in.getElement(west) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(west) == MAPELEMENT_DOOR)) &&
+      ((level_in.getElement(north) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(north) == MAPELEMENT_DOOR)) &&
+      ((level_in.getElement(south) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(south) == MAPELEMENT_WALL)) &&
+      ((level_in.getElement(east) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(east) == MAPELEMENT_WALL)))
+    return (RPG_Engine_Common_Tools::isCorner(south, level_in) ||
+            RPG_Engine_Common_Tools::isCorner(east, level_in) ||
+            RPG_Engine_Common_Tools::hasCeiling(south, level_in) ||
+            RPG_Engine_Common_Tools::hasCeiling(east, level_in));
+  // NE
+  if (((level_in.getElement(east) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(east) == MAPELEMENT_DOOR)) &&
+      ((level_in.getElement(north) == MAPELEMENT_FLOOR) ||
+       (level_in.getElement(north) == MAPELEMENT_DOOR)) &&
+      ((level_in.getElement(south) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(south) == MAPELEMENT_WALL)) &&
+      ((level_in.getElement(west) == MAPELEMENT_UNMAPPED) ||
+       (level_in.getElement(west) == MAPELEMENT_WALL)))
+    return (RPG_Engine_Common_Tools::isCorner(south, level_in) ||
+            RPG_Engine_Common_Tools::isCorner(west, level_in) ||
+            RPG_Engine_Common_Tools::hasCeiling(south, level_in) ||
+            RPG_Engine_Common_Tools::hasCeiling(west, level_in));
+
+  return false;
+}
+
+const RPG_Graphics_Orientation
+RPG_Engine_Common_Tools::getDoorOrientation(const RPG_Map_Level& level_in,
+                                            const RPG_Map_Position_t& position_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::getDoorOrientation"));
+
+  RPG_Map_Position_t east;//, south;
+  east = position_in;
+  east.first++;
+//   south = position_in;
+//   south.second++;
+
+  if (level_in.getElement(east) == MAPELEMENT_WALL) // &&
+//     (level_in.getElement(west) == MAPELEMENT_WALL))
+  {
+    return ORIENTATION_HORIZONTAL;
+  } // end IF
+
+  return ORIENTATION_VERTICAL;
+}
+
+const RPG_Graphics_Type
+RPG_Engine_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
+                                   const RPG_Map_Level& level_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::getCursor"));
+
+  RPG_Graphics_Type result = TYPE_CURSOR_NORMAL;
+
+  // (closed) door ?
+  if (level_in.getElement(position_in) == MAPELEMENT_DOOR)
+  {
+    RPG_Map_Door_t door = level_in.getDoor(position_in);
+    if (!door.is_open)
+      result = TYPE_CURSOR_DOOR_OPEN;
+  } // end IF
+
+  return result;
+}
+
+const RPG_Graphics_Position_t
+RPG_Engine_Common_Tools::screen2Map(const RPG_Graphics_Position_t& position_in,
+                                    const RPG_Map_Dimensions_t& mapSize_in,
+                                    const RPG_Graphics_WindowSize_t& windowSize_in,
+                                    const RPG_Graphics_Position_t& viewport_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::screen2Map"));
+
+  RPG_Graphics_Position_t offset, map_position;
+
+  offset.first = (position_in.first - (windowSize_in.first / 2) + ((viewport_in.first - viewport_in.second) * RPG_GRAPHICS_TILE_WIDTH_MOD));
+  offset.second = (position_in.second - (windowSize_in.second / 2) + ((viewport_in.first + viewport_in.second) * RPG_GRAPHICS_TILE_HEIGHT_MOD));
+
+  map_position.first = ((RPG_GRAPHICS_TILE_HEIGHT_MOD * offset.first) +
+                        (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
+                        (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+                       (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
+  map_position.second = ((-RPG_GRAPHICS_TILE_HEIGHT_MOD * offset.first) +
+                         (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
+                         (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+                        (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
+
+  // sanity check: off-map position ?
+  if ((map_position.first >= mapSize_in.first) ||
+      (map_position.second >= mapSize_in.second))
+  {
+    map_position.first = std::numeric_limits<unsigned long>::max();
+    map_position.second = std::numeric_limits<unsigned long>::max();
+  } // end IF
+
+  return map_position;
+}
+
+const RPG_Graphics_Position_t
+RPG_Engine_Common_Tools::map2Screen(const RPG_Graphics_Position_t& position_in,
+                                    const RPG_Graphics_WindowSize_t& windowSize_in,
+                                    const RPG_Graphics_Position_t& viewport_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::map2Screen"));
+
+  RPG_Graphics_Position_t map_center, screen_position;
+
+  map_center.first = windowSize_in.first / 2;
+  map_center.second = windowSize_in.second / 2;
+
+  screen_position.first = map_center.first +
+                          (RPG_GRAPHICS_TILE_WIDTH_MOD *
+                           (position_in.first - position_in.second + viewport_in.second - viewport_in.first));
+  screen_position.second = map_center.second +
+                           (RPG_GRAPHICS_TILE_HEIGHT_MOD *
+                            (position_in.first + position_in.second - viewport_in.second - viewport_in.first));
+
+  // *TODO* fix underruns (why does this happen ?)
+  return screen_position;
+}
+
+const bool
+RPG_Engine_Common_Tools::isCorner(const RPG_Map_Position_t& position_in,
+                                  const RPG_Map_Level& level_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isCorner"));
+
+  RPG_Map_Position_t east, west, south, north;
+  east = position_in;
+  east.first++;
+  west = position_in;
+  west.first--;
+  north = position_in;
+  north.second--;
+  south = position_in;
+  south.second++;
+
+  return ((((level_in.getElement(west) == MAPELEMENT_FLOOR) ||
+            (level_in.getElement(west) == MAPELEMENT_DOOR)) &&
+           ((level_in.getElement(south) == MAPELEMENT_FLOOR) ||
+            (level_in.getElement(south) == MAPELEMENT_DOOR)) &&
+           ((level_in.getElement(north) == MAPELEMENT_UNMAPPED) ||
+            (level_in.getElement(north) == MAPELEMENT_WALL)) &&
+           ((level_in.getElement(east) == MAPELEMENT_UNMAPPED) ||
+            (level_in.getElement(east) == MAPELEMENT_WALL))) || // SW
+          (((level_in.getElement(east) == MAPELEMENT_FLOOR) ||
+            (level_in.getElement(east) == MAPELEMENT_DOOR)) &&
+           ((level_in.getElement(south) == MAPELEMENT_FLOOR) ||
+            (level_in.getElement(south) == MAPELEMENT_DOOR)) &&
+           ((level_in.getElement(north) == MAPELEMENT_UNMAPPED) ||
+            (level_in.getElement(north) == MAPELEMENT_WALL)) &&
+           ((level_in.getElement(west) == MAPELEMENT_UNMAPPED) ||
+            (level_in.getElement(west) == MAPELEMENT_WALL))) || // SE
+          (((level_in.getElement(west) == MAPELEMENT_FLOOR) ||
+            (level_in.getElement(west) == MAPELEMENT_DOOR)) &&
+           ((level_in.getElement(north) == MAPELEMENT_FLOOR) ||
+            (level_in.getElement(north) == MAPELEMENT_DOOR)) &&
+           ((level_in.getElement(south) == MAPELEMENT_UNMAPPED) ||
+            (level_in.getElement(south) == MAPELEMENT_WALL)) &&
+           ((level_in.getElement(east) == MAPELEMENT_UNMAPPED) ||
+            (level_in.getElement(east) == MAPELEMENT_WALL))) || // NW
+          (((level_in.getElement(east) == MAPELEMENT_FLOOR) ||
+            (level_in.getElement(east) == MAPELEMENT_DOOR)) &&
+           ((level_in.getElement(north) == MAPELEMENT_FLOOR) ||
+            (level_in.getElement(north) == MAPELEMENT_DOOR)) &&
+           ((level_in.getElement(south) == MAPELEMENT_UNMAPPED) ||
+            (level_in.getElement(south) == MAPELEMENT_WALL)) &&
+           ((level_in.getElement(west) == MAPELEMENT_UNMAPPED) ||
+            (level_in.getElement(west) == MAPELEMENT_WALL)))); // NE
 }

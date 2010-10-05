@@ -106,8 +106,8 @@ do_initVideo(const std::string& graphicsDirectory_in,
 
   // ***** window/screen setup *****
   // set window caption
-  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING),  // window caption
-                    ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING)); // icon caption
+  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(TEST_U_PACKAGE_STRING),  // window caption
+                    ACE_TEXT_ALWAYS_CHAR(TEST_U_PACKAGE_STRING)); // icon caption
   // set window icon
   RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(TYPE_IMAGE_WM_ICON);
   ACE_ASSERT(icon_graphic.type == TYPE_IMAGE_WM_ICON);
@@ -788,22 +788,8 @@ do_work(const mode_t& mode_in,
         } // end IF
       } // end ELSE
 
-      // debug info
-      std::cout << ACE_TEXT("seed point(s): [");
-      RPG_Map_PositionsConstIterator_t next = seedPoints.begin();
-      for (RPG_Map_PositionsConstIterator_t iterator = seedPoints.begin();
-           iterator != seedPoints.end();
-           iterator++)
-      {
-        std::cout << ACE_TEXT("[") << (*iterator).first << ACE_TEXT(",") << (*iterator).second << ACE_TEXT("]");
-        next = iterator;
-        std::advance(next, 1);
-        if (next != seedPoints.end())
-          std::cout << ACE_TEXT(", ");
-      } // end FOR
-      std::cout << std::endl;
-      RPG_Map_Common_Tools::displayFloorPlan(seedPoints,
-                                             plan);
+//       RPG_Map_Common_Tools::displayFloorPlan(seedPoints,
+//                                              plan);
 
       // step3b: setup style
       RPG_Graphics_MapStyle_t mapStyle;

@@ -40,9 +40,9 @@
 
 struct GTK_cb_data_t
 {
-  inline GTK_cb_data_t()
-   : hover_lock(NULL, NULL),
-     player(RPG_Character_Player::dummy()) {};
+ inline GTK_cb_data_t()
+  : hover_lock(NULL, NULL),
+    player(RPG_Character_Player::dummy()) {};
 
   ACE_Thread_Mutex        hover_lock;
   unsigned long           hover_time;

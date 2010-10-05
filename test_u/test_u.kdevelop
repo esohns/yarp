@@ -21,7 +21,7 @@
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>net/protocol/IRC_client_gui</activetarget>
+      <activetarget>graphics/SDL_gui</activetarget>
     </general>
     <run>
       <mainprogram>/home/unfv/Projects/RPG/test_u/debug/monster/monster_parser</mainprogram>
@@ -35,40 +35,40 @@
       <autokdesu>true</autokdesu>
       <envvars/>
       <runarguments>
-        <character_generator>-i ../../item/rpg_item.xml -m ../../magic/rpg_magic.xml -n 6 -r -t</character_generator>
-        <combat_simulator>-b 0 -f 1 -i ../../item/rpg_item.xml -m ../../monster/rpg_monster.xml -n 1 -p 6 -s ../../magic/rpg_magic.xml -t -x</combat_simulator>
-        <monster_parser>-d -m ../../monster/rpg_monster.xml -t</monster_parser>
-        <item_parser>-d -i ../../item/rpg_item.xml -t</item_parser>
-        <magic_parser>-d -i ../../magic/rpg_magic.xml -t</magic_parser>
+        <character_generator>-n 6 -r -t</character_generator>
+        <combat_simulator>-b 0 -f 1 -n 1 -p 6 -t -x</combat_simulator>
+        <monster_parser>-d -t</monster_parser>
+        <item_parser>-d -t</item_parser>
+        <magic_parser>-d -t</magic_parser>
         <chance_dice>-d 6 -m 0 -n 1 -r 1 -s -t</chance_dice>
         <chance_rangeToRoll>-p -r 5-12 -t</chance_rangeToRoll>
         <net_client>-h localhost -i 1 -s 10101 -t -x</net_client>
         <net_server>-i 5 -k 60 -p 10101 -t</net_server>
-        <IRC_client>-c ./../../../net/protocol/IRC_client.ini -t</IRC_client>
-        <IRC_client_gui>-c ./../../../net/protocol/IRC_client.ini -s ./../../../net/protocol/servers.ini -t -u ./../../../net/protocol</IRC_client_gui>
+        <IRC_client>-t</IRC_client>
+        <IRC_client_gui>-t</IRC_client_gui>
         <map_generator>-a 0 -d 0 -m -r 2 -s -t -x 40 -y 20</map_generator>
-        <sound_parser>-d -s ../../sound/rpg_sound.xml -t</sound_parser>
-        <graphics_parser>-d -g ../../graphics/rpg_graphics.xml -t</graphics_parser>
-        <SDL_gui>-g ../../graphics/rpg_graphics.xml -m /var/tmp/map.txt -t</SDL_gui>
-        <character_parser>-i ../../item/rpg_item.xml -m ../../magic/rpg_magic.xml -f /var/tmp/Xerxes.xml -t</character_parser>
+        <sound_parser>-t</sound_parser>
+        <graphics_parser>-d -t</graphics_parser>
+        <SDL_gui>-m /var/tmp/current_map.txt -t</SDL_gui>
+        <character_parser>-f /var/tmp/Xerxes.xml -t</character_parser>
       </runarguments>
       <debugarguments>
-        <character_generator>-i ../../item/rpg_item.xml -m ../../magic/rpg_magic.xml -n 6 -r -t</character_generator>
-        <combat_simulator>-b 0 -f 1 -i ../../item/rpg_item.xml -m ../../monster/rpg_monster.xml -n 1 -p 6 -s ../../magic/rpg_magic.xml -t -x</combat_simulator>
-        <monster_parser>-d -m ../../monster/rpg_monster.xml -t</monster_parser>
-        <item_parser>-d -i ../../item/rpg_item.xml -t</item_parser>
-        <magic_parser>-d -i ../../magic/rpg_magic.xml -t</magic_parser>
+        <character_generator>-n 6 -r -t</character_generator>
+        <combat_simulator>-b 0 -f 1 -n 1 -p 6 -t -x</combat_simulator>
+        <monster_parser>-d -t</monster_parser>
+        <item_parser>-d -t</item_parser>
+        <magic_parser>-d -t</magic_parser>
         <chance_dice>-d 6 -m 0 -n 1 -r 1 -s -t</chance_dice>
         <chance_rangeToRoll>-p -r 5-12 -t</chance_rangeToRoll>
         <net_client>-s -t</net_client>
         <net_server>-i 1 -k 60 -p 10101 -t</net_server>
-        <IRC_client>-c ./../../../net/protocol/IRC_client.ini -t</IRC_client>
-        <IRC_client_gui>-c ./../../../net/protocol/IRC_client.ini -s ./../../../net/protocol/servers.ini -t -u ./../../../net/protocol</IRC_client_gui>
+        <IRC_client>-t</IRC_client>
+        <IRC_client_gui>-t</IRC_client_gui>
         <map_generator>-a 0 -d 0 -m -r 2 -s -t -x 40 -y 20</map_generator>
-        <sound_parser>-d -s ../../sound/rpg_sound.xml -t</sound_parser>
-        <graphics_parser>-d -g ../../graphics/rpg_graphics.xml -t</graphics_parser>
-        <SDL_gui>-g ../../graphics/rpg_graphics.xml -m /var/tmp/map.txt -t</SDL_gui>
-        <character_parser>-i ../../item/rpg_item.xml -m ../../magic/rpg_magic.xml -f /var/tmp/Xerxes.xml -t</character_parser>
+        <sound_parser>-t</sound_parser>
+        <graphics_parser>-d -t</graphics_parser>
+        <SDL_gui>-m /var/tmp/current_map.txt -t</SDL_gui>
+        <character_parser>-f /var/tmp/Xerxes.xml -t</character_parser>
       </debugarguments>
       <cwd>
         <character_generator>/home/unfv/Projects/RPG/test_u/debug/./</character_generator>

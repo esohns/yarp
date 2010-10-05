@@ -316,17 +316,13 @@ reactor_worker_func(void* args_in)
                                  NULL);
 
   if (ACE_Reactor::instance()->run_reactor_event_loop() == -1)
-  {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%m\", aborting\n")));
-
-    return -1;
-  } // end IF
+               ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%m\", continuing\n")));
 
   ACE_ERROR((LM_DEBUG,
              ACE_TEXT("(%t) worker leaving...\n")));
 
-  return 0;
+  return NULL;
 }
 
 void

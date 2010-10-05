@@ -917,8 +917,8 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
   // ***** window/screen setup *****
   // set window caption
-  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING),  // window caption
-                    ACE_TEXT_ALWAYS_CHAR(PACKAGE_STRING)); // icon caption
+  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(RPG_GUI_PACKAGE_STRING),  // window caption
+                    ACE_TEXT_ALWAYS_CHAR(RPG_GUI_PACKAGE_STRING)); // icon caption
   // set window icon
   RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(TYPE_IMAGE_WM_ICON);
   ACE_ASSERT(icon_graphic.type == TYPE_IMAGE_WM_ICON);

@@ -22,8 +22,14 @@
 
 #include "rpg_engine_common.h"
 
-#include <rpg_character_player_common.h>
+#include <rpg_graphics_common.h>
+
+#include <rpg_map_common.h>
+#include <rpg_map_level.h>
+
 #include <rpg_monster_common.h>
+
+#include <rpg_character_player_common.h>
 
 #include <ace/Global_Macros.h>
 
@@ -45,15 +51,32 @@ class RPG_Engine_Common_Tools
                    const std::string&,  // item dictionary file
                    const std::string&); // monster dictionary file
 
+  // ***** combat-related *****
   static const bool isPartyHelpless(const RPG_Character_Party_t&); // party
   static const bool areMonstersHelpless(const RPG_Monster_Groups_t&); // monsters
-
   static void getCombatantSequence(const RPG_Character_Party_t&,     // party
                                    const RPG_Monster_Groups_t&,      // monsters
                                    RPG_Engine_CombatantSequence_t&); // battle sequence
   static void performCombatRound(const RPG_Combat_AttackSituation&,      // attack situation
                                  const RPG_Combat_DefenseSituation&,     // defense situation
                                  const RPG_Engine_CombatantSequence_t&); // battle sequence
+
+  // ***** map/graphics-related *****
+  static const bool hasCeiling(const RPG_Map_Position_t&,
+                               const RPG_Map_Level&);
+  static const RPG_Graphics_Orientation getDoorOrientation(const RPG_Map_Level&,       // state
+                                                           const RPG_Map_Position_t&); // door
+  static const RPG_Graphics_Type getCursor(const RPG_Map_Position_t&, // position
+                                           const RPG_Map_Level&);     // state
+  // coordinate transformations
+  static const RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&,   // position (absolute)
+                                                  const RPG_Map_Dimensions_t&,      // map size
+                                                  const RPG_Graphics_WindowSize_t&, // window size
+                                                  const RPG_Graphics_Position_t&);  // viewport
+  // *NOTE*: translates the center of the map square to screen coordinates
+  static const RPG_Graphics_Position_t map2Screen(const RPG_Graphics_Position_t&, // position (map)
+                                                  const RPG_Graphics_WindowSize_t&, // window size
+                                                  const RPG_Graphics_Position_t&);  // viewport
 
  private:
   // safety measures
@@ -82,6 +105,9 @@ class RPG_Engine_Common_Tools
                         const RPG_Combat_DefenseSituation&, // defender situation
                         const bool&,                        // is this a Full-Round Action ?
                         const unsigned short&);             // distance (feet)
+
+  static const bool isCorner(const RPG_Map_Position_t&,
+                             const RPG_Map_Level&);
 };
 
 #endif

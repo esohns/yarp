@@ -2,8 +2,8 @@
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="1" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/map/configure.ac" >
-   <View0 Encoding="" line="84" Type="Source" />
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/map/rpg_map_common_tools.cpp" >
+   <View0 Encoding="" line="378" Type="Source" />
   </Doc0>
  </DocsAndViews>
  <pluginList>

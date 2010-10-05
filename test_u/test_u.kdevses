@@ -1,10 +1,19 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="1" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui.cpp" >
-   <View0 Encoding="" line="356" Type="Source" />
+ <DocsAndViews NumberOfDocuments="4" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/graphics/SDL_gui.cpp" >
+   <View0 Encoding="" line="793" Type="Source" />
   </Doc0>
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/graphics/SDL_gui_levelwindow.cpp" >
+   <View0 Encoding="" line="1474" Type="Source" />
+  </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/graphics/SDL_gui_levelwindow.h" >
+   <View0 Encoding="" line="91" Type="Source" />
+  </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/graphics/Makefile.am" >
+   <View0 Encoding="" line="18" Type="Source" />
+  </Doc3>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
@@ -17,15 +26,8 @@
   </kdevastyle>
   <kdevbookmarks>
    <bookmarks>
-    <bookmark url="/home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui_callbacks.cpp" >
-     <mark line="1148" />
-    </bookmark>
-    <bookmark url="/home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui_connection.cpp" >
-     <mark line="297" />
-    </bookmark>
-    <bookmark url="/home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui_messagehandler.cpp" >
-     <mark line="646" />
-     <mark line="375" />
+    <bookmark url="/home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui.cpp" >
+     <mark line="589" />
     </bookmark>
    </bookmarks>
   </kdevbookmarks>
