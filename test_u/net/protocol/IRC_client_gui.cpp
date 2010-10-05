@@ -59,7 +59,7 @@
 #include <sstream>
 #include <map>
 
-static void
+void
 is_entry_sensitive(GtkCellLayout*   layout_in,
                    GtkCellRenderer* renderer_in,
                    GtkTreeModel*    model_in,
@@ -320,17 +320,7 @@ reactor_worker_func(void* args_in)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%m\", aborting\n")));
 
-      // clean up
-//       if (stressTestServer_in)
-//       {
-//         if (ACE_Reactor::instance()->cancel_timer(timerID,  // timer ID
-//                                                   NULL,     // pointer to args passed to handler
-//                                                   1) != 1)  // don't invoke handle_close() on handler
-//         {
-//           ACE_DEBUG((LM_ERROR,
-//                     ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
-//         } // end IF
-//       } // end IF
+    return -1;
   } // end IF
 
   ACE_ERROR((LM_DEBUG,
@@ -521,15 +511,13 @@ do_work(const bool& useThreadPool_in,
   RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step0a: (if necessary) init the TP_Reactor
-  if (useThreadPool_in)
+  if (useThreadPool_in &&
+      !init_threadPool())
   {
-    if (!init_threadPool())
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to init_threadPool(), aborting\n")));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to init_threadPool(), aborting\n")));
 
-      return;
-    } // end IF
+    return;
   } // end IF
 
   // step0b: init connection manager
@@ -590,18 +578,6 @@ do_work(const bool& useThreadPool_in,
                ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%m\", aborting\n"),
                (useThreadPool_in ? numThreadPoolThreads_in : 1)));
 
-      // clean up
-//       if (stressTestServer_in)
-//       {
-//         if (ACE_Reactor::instance()->cancel_timer(timerID,  // timer ID
-//             NULL,     // pointer to args passed to handler
-//             1) != 1)  // don't invoke handle_close() on handler
-//         {
-//           ACE_DEBUG((LM_ERROR,
-//                      ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
-//         } // end IF
-//       } // end IF
-
     return;
   } // end IF
 
@@ -623,10 +599,8 @@ do_work(const bool& useThreadPool_in,
 
   // stop reactor
   if (ACE_Reactor::instance()->end_event_loop() == -1)
-  {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
-  } // end IF
 
   // no more data will be enqueued onto the processing streams...
 
@@ -1220,9 +1194,6 @@ ACE_TMAIN(int argc,
   ACE_Profile_Timer process_profile;
   // start profile timer...
   process_profile.start();
-
-//   // *NOTE*: ignore SIGPIPE in this program...
-//   ACE_Sig_Action no_sigpipe((ACE_SignalHandler)SIG_IGN, SIGPIPE);
 
   // init GTK
   g_thread_init(NULL);

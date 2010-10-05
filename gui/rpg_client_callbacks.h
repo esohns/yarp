@@ -45,31 +45,7 @@ extern "C"
   gint join_game_activated_GTK_cb(GtkWidget*, gpointer);
   gint characters_activated_GTK_cb(GtkWidget*, gpointer);
   gint characters_refresh_activated_GTK_cb(GtkWidget*, gpointer);
-
-  // IRC_Client_GUI_Connection
-  void disconnect_clicked_cb(GtkWidget*, gpointer);
-  gboolean nick_entry_kb_focused_cb(GtkWidget*, GdkEventFocus*, gpointer);
-  void change_clicked_cb(GtkWidget*, gpointer);
-  void usersbox_changed_cb(GtkWidget*, gpointer);
-  void refresh_users_clicked_cb(GtkWidget*, gpointer);
-  gboolean channel_entry_kb_focused_cb(GtkWidget*, GdkEventFocus*, gpointer);
-  void join_clicked_cb(GtkWidget*, gpointer);
-  void channelbox_changed_cb(GtkWidget*, gpointer);
-  void refresh_channels_clicked_cb(GtkWidget*, gpointer);
-  void user_mode_toggled_cb(GtkToggleButton*, gpointer);
-  void switch_channel_cb(GtkNotebook*, GtkNotebookPage*, guint, gpointer);
-  void action_away_cb(GtkAction*, gpointer);
-
-  // IRC_Client_GUI_MessageHandler
-  void channel_mode_toggled_cb(GtkToggleButton*, gpointer);
-  void topic_clicked_cb(GtkWidget*, GdkEventButton*, gpointer);
-  void part_clicked_cb(GtkWidget*, gpointer);
-  gboolean members_clicked_cb(GtkWidget*, GdkEventButton*, gpointer);
-  void action_msg_cb(GtkAction*, gpointer);
-  void action_invite_cb(GtkAction*, gpointer);
-  void action_info_cb(GtkAction*, gpointer);
-  void action_kick_cb(GtkAction*, gpointer);
-  void action_ban_cb(GtkAction*, gpointer);
+  gint do_SDLEventLoop_GTK_cb(gpointer);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

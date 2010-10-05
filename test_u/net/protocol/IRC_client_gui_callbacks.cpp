@@ -1911,7 +1911,6 @@ action_ban_cb(GtkAction* action_in,
     }
   } // end FOR
 }
-
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

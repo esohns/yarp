@@ -34,17 +34,26 @@
 #include <glade/glade.h>
 #include <SDL/SDL.h>
 
+#include <ace/Synch.h>
+
 #include <string>
 
 struct GTK_cb_data_t
 {
+  inline GTK_cb_data_t()
+   : hover_lock(NULL, NULL),
+     player(RPG_Character_Player::dummy()) {};
+
+  ACE_Thread_Mutex        hover_lock;
+  unsigned long           hover_time;
   GladeXML*               xml;
+  SDL_Surface*            screen;
   SDL_TimerID             event_timer;
   RPG_Graphics_IWindow*   previous_window;
   RPG_Client_WindowMain*  main_window;
   RPG_Client_WindowLevel* map_window;
   RPG_Map_FloorPlan_t     plan;
-  RPG_Map_Positions_t     seedPoints;
+  RPG_Map_Positions_t     seed_points;
   RPG_Character_Player    player;
 };
 

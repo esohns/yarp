@@ -23,6 +23,13 @@
 #include "rpg_client_defines.h"
 #include "rpg_client_common.h"
 
+#include <rpg_graphics_defines.h>
+#include <rpg_graphics_surface.h>
+#include <rpg_graphics_cursor.h>
+
+#include <rpg_map_defines.h>
+#include <rpg_map_common_tools.h>
+
 #include <rpg_character_defines.h>
 
 #include <rpg_item_instance_manager.h>
@@ -831,11 +838,6 @@ quit_activated_GTK_cb(GtkWidget* widget_in,
   ACE_UNUSED_ARG(widget_in);
   ACE_UNUSED_ARG(userData_in);
 
-  // stop reactor
-  if (ACE_Reactor::instance()->end_event_loop() == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
-
   // leave GTK
   gtk_main_quit();
 
@@ -1063,6 +1065,234 @@ characters_refresh_activated_GTK_cb(GtkWidget* widget_in,
     gtk_combo_box_set_active(available_characters, 0);
 
   return FALSE;
+}
+
+G_MODULE_EXPORT gint
+do_SDLEventLoop_GTK_cb(gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::do_SDLEventLoop_GTK_cb"));
+
+  GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, userData_in);
+  ACE_ASSERT(data);
+
+  SDL_Event event;
+  RPG_Graphics_Position_t mouse_position = std::make_pair(0, 0);
+  RPG_Graphics_IWindow* window = NULL;
+  bool need_redraw = false;
+  bool done = false;
+//   while (SDL_WaitEvent(&event) > 0)
+  if (SDL_PollEvent(&event))
+  {
+    // if necessary, reset hover_time
+    if (event.type != RPG_GRAPHICS_SDL_HOVEREVENT)
+    {
+      // synch access
+      ACE_Guard<ACE_Thread_Mutex> aGuard(data->hover_lock);
+
+      data->hover_time = 0;
+    } // end IF
+
+    switch (event.type)
+    {
+      case SDL_KEYDOWN:
+      {
+        switch (event.key.keysym.sym)
+        {
+          case SDLK_m:
+          {
+            std::string dump_path = RPG_MAP_DUMP_DIR;
+            dump_path += ACE_DIRECTORY_SEPARATOR_STR;
+            dump_path += ACE_TEXT("map.txt");
+            if (!RPG_Map_Common_Tools::save(dump_path,         // file
+                                            data->seed_points, // seed points
+                                            data->plan))       // plan
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),
+                         dump_path.c_str()));
+
+              done = true;
+            } // end IF
+
+            break;
+          }
+          case SDLK_q:
+          {
+            // finished event processing
+            done = true;
+
+            break;
+          }
+          default:
+          {
+            break;
+          }
+        } // end SWITCH
+
+        if (done)
+          break; // leave
+        // *WARNING*: falls through !
+      }
+      case SDL_ACTIVEEVENT:
+      case SDL_MOUSEMOTION:
+      case SDL_MOUSEBUTTONDOWN:
+      case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
+      {
+        // find window
+        switch (event.type)
+        {
+          case SDL_MOUSEMOTION:
+            mouse_position = std::make_pair(event.motion.x,
+                                            event.motion.y); break;
+          case SDL_MOUSEBUTTONDOWN:
+            mouse_position = std::make_pair(event.button.x,
+                                            event.button.y); break;
+          default:
+          {
+            int x,y;
+            SDL_GetMouseState(&x, &y);
+            mouse_position = std::make_pair(x, y);
+
+            break;
+          }
+        } // end SWITCH
+
+        window = data->main_window->getWindow(mouse_position);
+        ACE_ASSERT(window);
+
+        // notify previously "active" window upon losing "focus"
+        if (event.type == SDL_MOUSEMOTION)
+        {
+          if (data->previous_window &&
+              // (data->previous_window != mainWindow)
+              (data->previous_window != window))
+          {
+            event.type = RPG_GRAPHICS_SDL_MOUSEMOVEOUT;
+            try
+            {
+              data->previous_window->handleEvent(event,
+                                                 data->previous_window,
+                                                 need_redraw);
+            }
+            catch (...)
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+            }
+            event.type = SDL_MOUSEMOTION;
+          } // end IF
+        } // end IF
+        // remember last "active" window
+        data->previous_window = window;
+
+        // notify "active" window
+        try
+        {
+          window->handleEvent(event,
+                              window,
+                              need_redraw);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+        }
+
+        break;
+      }
+      case SDL_QUIT:
+      {
+        // finished event processing
+        done = true;
+
+        break;
+      }
+      case SDL_KEYUP:
+      case SDL_MOUSEBUTTONUP:
+      case SDL_JOYAXISMOTION:
+      case SDL_JOYBALLMOTION:
+      case SDL_JOYHATMOTION:
+      case SDL_JOYBUTTONDOWN:
+      case SDL_JOYBUTTONUP:
+      case SDL_SYSWMEVENT:
+      case SDL_VIDEORESIZE:
+      case SDL_VIDEOEXPOSE:
+      case RPG_CLIENT_SDL_TIMEREVENT:
+      default:
+      {
+
+        break;
+      }
+    } // end SWITCH
+
+        // redraw map ?
+    if (need_redraw)
+    {
+      try
+      {
+        data->map_window->draw();
+        data->map_window->refresh();
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
+      }
+    } // end IF
+
+    // redraw cursor ?
+    switch (event.type)
+    {
+      case SDL_KEYDOWN:
+      case SDL_MOUSEBUTTONDOWN:
+      {
+        // map hasn't changed --> no need to redraw
+        if (!need_redraw)
+          break;
+
+        // *WARNING*: falls through !
+      }
+      case SDL_MOUSEMOTION:
+      case RPG_GRAPHICS_SDL_HOVEREVENT:
+      {
+        // map has changed, cursor MAY have been drawn over...
+        // --> redraw cursor
+        SDL_Rect dirtyRegion;
+        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(mouse_position.first,
+                                                       mouse_position.second,
+                                                       data->screen,
+                                                       dirtyRegion);
+        RPG_Graphics_Surface::update(dirtyRegion,
+                                     data->screen);
+
+        break;
+      }
+      default:
+      {
+        break;
+      }
+    } // end SWITCH
+
+    if (done)
+    {
+      if (!SDL_RemoveTimer(data->event_timer))
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
+                   SDL_GetError()));
+
+      // leave GTK
+      gtk_main_quit();
+
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("leaving...\n")));
+
+      // quit idle task
+      return 0;
+    } // end IF
+  } // end IF
+
+  // continue idle task
+  return 1;
 }
 #ifdef __cplusplus
 }
