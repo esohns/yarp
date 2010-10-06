@@ -36,6 +36,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <stack>
 
 const bool
 RPG_Map_Common_Tools::load(const std::string& filename_in,
@@ -117,6 +118,7 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
   ssize_t sent_bytes = 0;
   std::string row;
   RPG_Map_Position_t current_position;
+  RPG_Map_Door_t current_position_door;
   for (unsigned long y = 0;
        y < level_in.size_y;
        y++)
@@ -126,6 +128,7 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
          x++)
     {
       current_position = std::make_pair(x, y);
+      current_position_door.position = current_position;
 
       // seed point ?
       if (seedPoints_in.find(current_position) != seedPoints_in.end())
@@ -134,7 +137,7 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
         // stored as long as they don't interfere with the integrity of other
         // structures (i.e. walls and doors)
         if ((level_in.walls.find(current_position) == level_in.walls.end()) &&
-            (level_in.doors.find(current_position) == level_in.doors.end()))
+            (level_in.doors.find(current_position_door) == level_in.doors.end()))
           row += '@'; // seed
         else
           ACE_DEBUG((LM_ERROR,
@@ -150,7 +153,7 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
         row += ' '; // unmapped
       else if (level_in.walls.find(current_position) != level_in.walls.end())
         row += '#'; // wall
-      else if (level_in.doors.find(current_position) != level_in.doors.end())
+      else if (level_in.doors.find(current_position_door) != level_in.doors.end())
         row += '='; // door
       else
         row += '.'; // floor
@@ -354,7 +357,6 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned long& dimensionX_in,
 
   if (wantCorridors_in)
   {
-//     // debug info
 //     displayRooms(dimensionX_in,
 //                  dimensionY_in,
 //                  rooms);
@@ -454,6 +456,7 @@ RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_Positions_t& seedPoints_in,
 //   std::cout << std::endl;
 
   RPG_Map_Position_t current_position;
+  RPG_Map_Door_t current_position_door;
   bool is_seed = false;
   for (unsigned long y = 0;
        y < level_in.size_y;
@@ -464,6 +467,7 @@ RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_Positions_t& seedPoints_in,
          x++)
     {
       current_position = std::make_pair(x, y);
+      current_position_door.position = current_position;
       is_seed = seedPoints_in.find(current_position) != seedPoints_in.end();
 
       // unmapped, floor, wall, or door ?
@@ -473,7 +477,7 @@ RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_Positions_t& seedPoints_in,
         std::cout << (is_seed ? ACE_TEXT("@") : ACE_TEXT(" ")); // unmapped
       else if (level_in.walls.find(current_position) != level_in.walls.end())
         std::cout << ACE_TEXT("#"); // wall
-      else if (level_in.doors.find(current_position) != level_in.doors.end())
+      else if (level_in.doors.find(current_position_door) != level_in.doors.end())
         std::cout << ACE_TEXT("="); // door
       else
         std::cout << (is_seed ? ACE_TEXT("@") : ACE_TEXT(".")); // floor
@@ -888,7 +892,6 @@ RPG_Map_Common_Tools::displayPartition(const unsigned long& dimensionX_in,
   // *TODO*: use boldface --> ANSI graphics ?
   if (!conflicts_in.empty())
   {
-    // debug info
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("partition (%u conflict(s))...\n"),
                conflicts_in.size()));
@@ -915,7 +918,6 @@ RPG_Map_Common_Tools::displayPartition(const unsigned long& dimensionX_in,
   } // end IF
   else
   {
-    // debug info
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("partition...\n")));
 
@@ -1578,7 +1580,6 @@ RPG_Map_Common_Tools::displayRooms(const unsigned long& dimensionX_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayRooms"));
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("room(s)...\n")));
 
@@ -1771,19 +1772,30 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
          zone_iter++)
       level_out.walls.insert(*zone_iter);
   // step1: add the doors
-  unsigned long index = 0;
-  unsigned long index2 = 0;
+//   unsigned long index = 0;
+//   unsigned long index2 = 0;
+  RPG_Map_Door_t door;
+  door.outside = INVALID;
+  door.is_open = false;
+  door.is_locked = false;
+  door.is_broken = false;
+  door.position = std::make_pair(0, 0);
   RPG_Map_ZoneConstIterator_t doors_iterator;
+  RPG_Map_ZoneListConstIterator_t rooms_iter;
+  rooms_iter = rooms_in.begin();
   for (zonelist_iter = doors_in.begin();
        zonelist_iter != doors_in.end();
-       zonelist_iter++, index++)
+       zonelist_iter++, rooms_iter++/*, index++*/)
   {
-    index2 = 0;
+//     index2 = 0;
     for (doors_iterator = (*zonelist_iter).begin();
          doors_iterator != (*zonelist_iter).end();
-         doors_iterator++, index2++)
+         doors_iterator++/*, index2++*/)
     {
-      level_out.doors.insert(*doors_iterator);
+      door.position = *doors_iterator;
+      door.outside = door2exitDirection(*rooms_iter,
+                                        door.position);
+      level_out.doors.insert(door);
 
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("door[%u,%u] at (%u,%u)\n"),
@@ -1795,8 +1807,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
 
   // step2: make corridors
   RPG_Map_ZoneList_t corridors_bounds;
-  RPG_Map_ZoneList_t corridors;
-  RPG_Map_ZoneListConstIterator_t rooms_iter, zonelist_iter2;
+  RPG_Map_ZoneListConstIterator_t zonelist_iter2;
   RPG_Map_ZoneConstIterator_t doors_iter, doors_iter2;
   RPG_Map_Zone_t current_corridor;
   RPG_Map_Positions_t possible_positions, used_positions;
@@ -1895,31 +1906,35 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
                    (*doors_iter).second,
                    (*target_door).first,
                    (*target_door).second));
-      } // end IF
-//         else
-//         {
-//           ACE_DEBUG((LM_DEBUG,
-//                      ACE_TEXT("found path from (%u,%u) to (%u,%u)\n"),
-//                      (*doors_iter).first,
-//                      (*doors_iter).second,
-//                      (*target_door).first,
-//                      (*target_door).second));
-//         } // end ELSE
 
-      used_positions.insert(*doors_iter);
-      used_positions.insert(*target_door);
-      if ((used_positions == level_out.doors) &&
-          (!connectivity_established))
+        continue;
+      } // end IF
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("found path from (%u,%u) to (%u,%u)\n"),
+//                  (*doors_iter).first,
+//                  (*doors_iter).second,
+//                  (*target_door).first,
+//                  (*target_door).second));
+
+      // minimal connectivity ?
+      if (!connectivity_established)
       {
-        // check: when minimal connectivity has been reached (i.e. every door has
-        //        been attached to some corridor), relax this constraint
-        used_positions.clear();
+        used_positions.insert(*doors_iter);
+        used_positions.insert(*target_door);
+
+        // connectivity established ? --> relax constraints
+        if (used_positions.size() == level_out.doors.size())
+        {
+          // check: when minimal connectivity has been reached (i.e. every door has
+          //        been attached to some corridor), relax this constraint
+          used_positions.clear();
 
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("connectivity has been established (%u path(s))...\n"),
 //                      (paths.size() + 1)));
 
-        connectivity_established = true;
+          connectivity_established = true;
+        } // end IF
       } // end IF
 
       // step3: create a corridor along this path
@@ -2071,7 +2086,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
   // step4
   // - clear any rubble that may now block some corridors
   // - compute unmapped areas
-  corridors = corridors_bounds;
+  RPG_Map_ZoneList_t corridors = corridors_bounds;
   RPG_Map_ZoneListIterator_t corridors_iter;
   corridors_iter = corridors.begin();
   for (RPG_Map_PathListConstIterator_t paths_iter = paths.begin();
@@ -2095,12 +2110,11 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
       (*corridors_iter).insert((*path_iter).first);
     } // end FOR
 
-//   // debug info
-//   displayCorridors(dimensionX_in,
-//                    dimensionY_in,
-//                    rooms_in,
-//                    doors_in,
-//                    corridors);
+  displayCorridors(dimensionX_in,
+                   dimensionY_in,
+                   rooms_in,
+                   doors_in,
+                   corridors);
 
   // step5: remove the walls corresponding to doors
   for (zonelist_iter = doors_in.begin();
@@ -2151,6 +2165,144 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
       // --> unmapped
       level_out.unmapped.insert(current_position);
     } // end FOR
+}
+
+void
+RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
+                                    RPG_Map_Zone_t& corridor_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::buildCorridor"));
+
+  // init return value
+  corridor_out.clear();
+
+  RPG_Map_Position_t wall_position1, wall_position2;
+
+  // *NOTE*: paths extend from door to door...
+  RPG_Map_Position_t last_position  = (*path_in.begin()).first;
+  RPG_Map_Direction  last_direction = (*path_in.begin()).second;
+  RPG_Map_PathConstIterator_t path_iter, last;
+  path_iter = path_in.begin(); path_iter++;
+  last = path_in.end(); last--;
+  for (;
+       path_iter != last;
+       path_iter++)
+  {
+    // *NOTE*: on a change of direction, add additional walls at the PREVIOUS position:
+    // - in the direction of LAST travel
+    // - in the OPPOSITE direction of CURRENT travel
+    if ((*path_iter).second != last_direction)
+    {
+      wall_position1 = last_position;
+      switch (last_direction)
+      {
+        case UP:
+          wall_position1.second--; break;
+        case DOWN:
+          wall_position1.second++; break;
+        case RIGHT:
+          wall_position1.first++; break;
+        case LEFT:
+          wall_position1.first--; break;
+        case INVALID:
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid direction (was \"%s\", %u), continuing\n"),
+                     direction2String(last_direction).c_str(),
+                     last_direction));
+
+          break;
+        }
+      } // end SWITCH
+      wall_position2 = wall_position1;
+      switch ((*path_iter).second)
+      {
+        case UP:
+          wall_position2.second++; break;
+        case DOWN:
+          wall_position2.second--; break;
+        case RIGHT:
+          wall_position2.first--; break;
+        case LEFT:
+          wall_position2.first++; break;
+        case INVALID:
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid direction (was \"%s\", %u), continuing\n"),
+                     direction2String((*path_iter).second).c_str(),
+                     (*path_iter).second));
+
+          break;
+        }
+      } // end SWITCH
+      corridor_out.insert(wall_position1);
+      corridor_out.insert(wall_position2);
+    } // end IF
+    wall_position1 = last_position;
+    wall_position2 = last_position;
+    switch ((*path_iter).second)
+    {
+      case UP:
+      {
+        wall_position1.first--;
+        wall_position1.second--;
+        wall_position2.first++;
+        wall_position2.second--;
+
+        last_position.second--;
+
+        break;
+      }
+      case DOWN:
+      {
+        wall_position1.first--;
+        wall_position1.second++;
+        wall_position2.first++;
+        wall_position2.second++;
+
+        last_position.second++;
+
+        break;
+      }
+      case RIGHT:
+      {
+        wall_position1.first++;
+        wall_position1.second--;
+        wall_position2.first++;
+        wall_position2.second++;
+
+        last_position.first++;
+
+        break;
+      }
+      case LEFT:
+      {
+        wall_position1.first--;
+        wall_position1.second--;
+        wall_position2.first--;
+        wall_position2.second++;
+
+        last_position.first--;
+
+        break;
+      }
+      case INVALID:
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid direction (was \"%s\", %u), continuing\n"),
+                   direction2String((*path_iter).second).c_str(),
+                   (*path_iter).second));
+
+        break;
+      }
+    } // end SWITCH
+    last_direction = (*path_iter).second;
+    corridor_out.insert(wall_position1);
+    corridor_out.insert(wall_position2);
+  } // end FOR
 }
 
 void
@@ -2222,9 +2374,308 @@ RPG_Map_Common_Tools::isFloor(const RPG_Map_Position_t& position_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::isFloor"));
 
-  return ((levelMap_in.doors.find(position_in) == levelMap_in.doors.end()) &&
+  RPG_Map_Door_t position_door;
+  position_door.position = position_in;
+  return ((levelMap_in.doors.find(position_door) == levelMap_in.doors.end()) &&
           (levelMap_in.walls.find(position_in) == levelMap_in.walls.end()) &&
           (levelMap_in.unmapped.find(position_in) == levelMap_in.unmapped.end()));
+}
+
+const bool
+RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
+                                   const RPG_Map_FloorPlan_t& floorPlan_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::isInsideRoom"));
+
+  // *NOTE*: algorithm is as follows:
+  // - walls are NOT considered to be part of rooms
+  // - doors are considered to be part of a room
+  // - perform a "flood-fill" of the given position
+  // - walk the perimeter, find a door
+  // - if there were no doors, it's an unmapped area --> false
+  // - that doors' notion of "outside" is the result
+
+  // step0: preliminary checking
+  if (floorPlan_in.walls.find(position_in) != floorPlan_in.walls.end())
+    return false;
+  RPG_Map_Door_t position_door;
+  position_door.position = position_in;
+  if (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end())
+    return true;
+
+  // step1: "flood-fill" the area
+  RPG_Map_Positions_t area;
+  area.insert(position_in);
+  std::stack<RPG_Map_Position_t> position_stack;
+  position_stack.push(position_in);
+  while (!position_stack.empty())
+  {
+    // compute 8 neighbours
+    RPG_Map_Position_t tl, t, tr, l, r, bl, b, br;
+    tl = position_stack.top(); tl.first--; tl.second--;
+    t = position_stack.top(); t.second--;
+    tr = position_stack.top(); tr.first++; tr.second--;
+    l = position_stack.top(); l.first--;
+    r = position_stack.top(); r.first++;
+    bl = position_stack.top(); bl.first--; bl.second++;
+    b = position_stack.top(); b.second++;
+    br = position_stack.top(); br.first++; br.second++;
+
+    // remove element
+    position_stack.pop();
+
+    // neighbor != WALL/DOOR ? --> insert into area (& stack)
+    position_door.position = tl;
+    if ((floorPlan_in.walls.find(tl) != floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+      if (area.insert(tl).second)
+        position_stack.push(tl);
+    position_door.position = t;
+    if ((floorPlan_in.walls.find(t) != floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+      if (area.insert(t).second)
+        position_stack.push(t);
+    position_door.position = tr;
+    if ((floorPlan_in.walls.find(tr) != floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+      if (area.insert(tr).second)
+        position_stack.push(tr);
+    position_door.position = l;
+    if ((floorPlan_in.walls.find(l) != floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+      if (area.insert(l).second)
+        position_stack.push(l);
+    position_door.position = r;
+    if ((floorPlan_in.walls.find(r) != floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+      if (area.insert(r).second)
+        position_stack.push(r);
+    position_door.position = bl;
+    if ((floorPlan_in.walls.find(bl) != floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+      if (area.insert(bl).second)
+        position_stack.push(bl);
+    position_door.position = b;
+    if ((floorPlan_in.walls.find(b) != floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+      if (area.insert(b).second)
+        position_stack.push(b);
+    position_door.position = br;
+    if ((floorPlan_in.walls.find(br) != floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+      if (area.insert(br).second)
+        position_stack.push(br);
+  } // end WHILE
+
+  // step2: find doors along the perimeter
+  RPG_Map_Position_t door = std::make_pair(0, 0);
+  RPG_Map_Position_t start_position = *area.begin();
+  start_position.first--; start_position.second--;
+  ACE_ASSERT(floorPlan_in.walls.find(start_position) != floorPlan_in.walls.end());
+  RPG_Map_Position_t current = start_position;
+  RPG_Map_Direction next = RIGHT;
+  RPG_Map_Direction origin = DOWN;
+  RPG_Map_Directions_t directions;
+  do
+  {
+    // compute 4 neighbours
+    RPG_Map_Position_t u, d, l, r;
+    u = current; u.second--;
+    d = current; d.second++;
+    l = current; l.first--;
+    r = current; r.first++;
+
+    // find possible destination(s)
+    directions.clear();
+    position_door.position = u;
+    if ((floorPlan_in.walls.find(u) != floorPlan_in.walls.end()) ||
+        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+      directions.insert(UP);
+    position_door.position = r;
+    if ((floorPlan_in.walls.find(r) != floorPlan_in.walls.end()) ||
+        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+      directions.insert(RIGHT);
+    position_door.position = d;
+    if ((floorPlan_in.walls.find(d) != floorPlan_in.walls.end()) ||
+        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+      directions.insert(DOWN);
+    position_door.position = l;
+    if ((floorPlan_in.walls.find(l) != floorPlan_in.walls.end()) ||
+        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+      directions.insert(LEFT);
+
+    // compute next direction (clockwise)
+
+    // sanity check: reached a dead-end ?
+    if (directions.size() <= 1)
+    {
+      // dead-end --> turn around
+      next = origin;
+    } // end IF
+    else
+      switch (origin)
+      {
+        case UP:
+        {
+          if ((directions.find(DOWN) == directions.end()) || // corner
+              (directions.find(RIGHT) != directions.end()))  // intersection ?
+          {
+            // determine next direction
+            if (directions.find(RIGHT) != directions.end())
+              next = RIGHT; // intersection, turn left
+            else
+            {
+              ACE_ASSERT(directions.find(LEFT) != directions.end());
+              next = LEFT; // corner, turn right
+            } // end ELSE
+          } // end IF
+
+          break;
+        }
+        case RIGHT:
+        {
+          if ((directions.find(LEFT) == directions.end()) || // corner
+              (directions.find(DOWN) != directions.end()))   // intersection ?
+          {
+            // determine next direction
+            if (directions.find(DOWN) != directions.end())
+              next = DOWN; // intersection, turn left
+            else
+            {
+              ACE_ASSERT(directions.find(UP) != directions.end());
+              next = UP; // corner, turn right
+            } // end ELSE
+          } // end IF
+
+          break;
+        }
+        case DOWN:
+        {
+          if ((directions.find(UP) == directions.end()) || // corner
+              (directions.find(LEFT) != directions.end())) // intersection ?
+          {
+            // determine next direction
+            if (directions.find(LEFT) != directions.end())
+              next = LEFT; // intersection, turn left
+            else
+            {
+              ACE_ASSERT(directions.find(RIGHT) != directions.end());
+              next = RIGHT; // corner, turn right
+            } // end ELSE
+          } // end IF
+
+          break;
+        }
+        case LEFT:
+        {
+          if ((directions.find(RIGHT) == directions.end()) || // corner
+              (directions.find(UP) != directions.end()))      // intersection ?
+          {
+            // determine next direction
+            if (directions.find(UP) != directions.end())
+              next = UP; // intersection, turn left
+            else
+            {
+              ACE_ASSERT(directions.find(DOWN) != directions.end());
+              next = DOWN; // corner, turn right
+            } // end ELSE
+          } // end IF
+
+          break;
+        }
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid origin (was %u), continuing\n"),
+                     origin));
+
+          // *TODO*: what else can we do ?
+          ACE_ASSERT(false);
+
+          break;
+        }
+      } // end SWITCH
+
+    // move along the perimeter
+    switch (next)
+    {
+      case UP:
+      {
+        current.second--; // go up
+        origin = DOWN;
+        break;
+      }
+      case RIGHT:
+      {
+        current.first++; // go right
+        origin = LEFT;
+        break;
+      }
+      case DOWN:
+      {
+        current.second++; // go down
+        origin = UP;
+        break;
+      }
+      case LEFT:
+      {
+        current.first--; // go left
+        origin = RIGHT;
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid direction (was %u), continuing\n"),
+                   next));
+
+        // *TODO*: what else can we do ?
+        ACE_ASSERT(false);
+
+        break;
+      }
+    } // end SWITCH
+
+    position_door.position = current;
+    if (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end())
+    {
+      door = current;
+
+      break; // done
+    } // end IF
+  } while (current != start_position);
+
+  // step3: test doors' notion of "outside"
+  position_door.position = door;
+  RPG_Map_DoorsConstIterator_t current_door_iterator = floorPlan_in.doors.find(position_door);
+  ACE_ASSERT((current_door_iterator != floorPlan_in.doors.end()) &&
+             ((*current_door_iterator).position == door));
+  // compute position just INSIDE of the door
+  current = door;
+  switch ((*current_door_iterator).outside)
+  {
+    case UP:
+      current.second++; break;
+    case RIGHT:
+      current.first--; break;
+    case DOWN:
+      current.second--; break;
+    case LEFT:
+      current.first++; break;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid direction (was %u), continuing\n"),
+                 (*current_door_iterator).outside));
+
+      // *TODO*: what else can we do ?
+      ACE_ASSERT(false);
+
+      break;
+    }
+  } // end SWITCH
+
+  return (area.find(current) != area.end());
 }
 
 const unsigned long
@@ -3200,13 +3651,19 @@ RPG_Map_Common_Tools::displayCorridors(const unsigned long& dimensionX_in,
 
   RPG_Map_Position_t current_position;
   unsigned long index = 0;
+  bool shared_path = false;
+  unsigned long first_index = 0;
   RPG_Map_ZoneListConstIterator_t iterator;
   bool done = false;
   std::ostringstream converter;
+  std::string corridor_glyphs("0123456789^°!\"§$%&/()ß?'`+*~-_:,;{}[]<>|");
   for (unsigned long y = 0;
        y < dimensionY_in;
        y++)
   {
+    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    converter.clear();
+
     for (unsigned long x = 0;
          x < dimensionX_in;
          x++)
@@ -3220,7 +3677,7 @@ RPG_Map_Common_Tools::displayCorridors(const unsigned long& dimensionX_in,
       {
         if ((*iterator).find(current_position) != (*iterator).end())
         {
-          std::cout << ACE_TEXT("=");
+          converter << ACE_TEXT("=");
 
           done = true;
 
@@ -3235,7 +3692,7 @@ RPG_Map_Common_Tools::displayCorridors(const unsigned long& dimensionX_in,
       {
         if ((*iterator).find(current_position) != (*iterator).end())
         {
-          std::cout << ACE_TEXT("#");
+          converter << ACE_TEXT("#");
 
           done = true;
 
@@ -3246,27 +3703,37 @@ RPG_Map_Common_Tools::displayCorridors(const unsigned long& dimensionX_in,
         continue;
 
       index = 0;
+      shared_path = false;
+      first_index = 0;
       for (iterator = corridors_in.begin();
            iterator != corridors_in.end();
            iterator++, index++)
       {
         if ((*iterator).find(current_position) != (*iterator).end())
         {
-          converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-          converter.clear();
-          converter << index;
-          std::cout << converter.str();
-
-          done = true;
-
-          break;
+          if (!done)
+          {
+            first_index = index;
+            done = true;
+          } // end IF
+          else
+            shared_path = true;
         } // end IF
       } // end FOR
       if (done)
-        continue;
+      {
+        ACE_ASSERT(first_index < corridor_glyphs.size());
+        converter << (shared_path ? 'x'
+                                  : corridor_glyphs[first_index]);
 
-      std::cout << ACE_TEXT(".");
+        continue;
+      } // end IF
+
+      converter << ACE_TEXT(".");
     } // end FOR
-    std::cout << std::endl;
+    converter << std::endl;
+
+    // print line
+    std::clog << converter.str();
   } // end FOR
 }

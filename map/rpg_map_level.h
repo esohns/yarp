@@ -47,11 +47,7 @@ class RPG_Map_Level
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Level(const RPG_Map_Level&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Level& operator=(const RPG_Map_Level&));
 
-  // helper methods
-  void initDoors();
-
   RPG_Map_FloorPlan_t myFloorPlan;
-  RPG_Map_Doors_t     myDoors;
 };
 
 #endif

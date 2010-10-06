@@ -461,7 +461,13 @@ debug_stream() << (yyvaluep->val);
                                      }
                                      case '=':
                                      {
-                                       driver.myCurrentPlan->doors.insert(driver.myCurrentPosition);
+                                       RPG_Map_Door_t door;
+                                       door.position = driver.myCurrentPosition;
+                                       door.outside = INVALID;
+                                       door.is_open = false;
+                                       door.is_locked = false;
+                                       door.is_broken = false;
+                                       driver.myCurrentPlan->doors.insert(door);
                                        driver.myCurrentPosition.first++;
 
                                        break;
@@ -815,7 +821,7 @@ debug_stream() << (yyvaluep->val);
   const unsigned char
   RPG_Map_Parser::yyrline_[] =
   {
-         0,    57,    57,    58,    59,    60,   111
+         0,    57,    57,    58,    59,    60,   117
   };
 
   // Print the state stack on the debug stream.

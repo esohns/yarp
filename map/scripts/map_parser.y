@@ -83,7 +83,13 @@ row:     "glyph"                 {
                                      }
                                      case '=':
                                      {
-                                       driver.myCurrentPlan->doors.insert(driver.myCurrentPosition);
+                                       RPG_Map_Door_t door;
+                                       door.position = driver.myCurrentPosition;
+                                       door.outside = INVALID;
+                                       door.is_open = false;
+                                       door.is_locked = false;
+                                       door.is_broken = false;
+                                       driver.myCurrentPlan->doors.insert(door);
                                        driver.myCurrentPosition.first++;
 
                                        break;

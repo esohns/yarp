@@ -1456,7 +1456,7 @@ SDL_GUI_LevelWindow::initWallBlend()
 }
 
 void
-SDL_GUI_LevelWindow::initDoors(const RPG_Map_FloorPlan_t& levelMap_in,
+SDL_GUI_LevelWindow::initDoors(const RPG_Map_FloorPlan_t& floorPlan_in,
                                const RPG_Map_Level& levelState_in,
                                const RPG_Graphics_DoorTileSet_t& tileSet_in,
                                RPG_Graphics_DoorTileMap_t& doorTiles_out)
@@ -1467,37 +1467,35 @@ SDL_GUI_LevelWindow::initDoors(const RPG_Map_FloorPlan_t& levelMap_in,
   doorTiles_out.clear();
 
   RPG_Graphics_Tile_t current_tile;
-  RPG_Map_Door_t current_door;
   RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-  for (RPG_Map_PositionsConstIterator_t iterator = levelMap_in.doors.begin();
-       iterator != levelMap_in.doors.end();
+  for (RPG_Map_DoorsConstIterator_t iterator = floorPlan_in.doors.begin();
+       iterator != floorPlan_in.doors.end();
        iterator++)
   {
     ACE_OS::memset(&current_tile,
                    0,
                    sizeof(current_tile));
-    current_door = levelState_in.getDoor(*iterator);
     orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-    if (current_door.is_broken)
+    if ((*iterator).is_broken)
     {
       current_tile = tileSet_in.broken;
       continue;
     } // end IF
 
     orientation = RPG_Engine_Common_Tools::getDoorOrientation(levelState_in,
-                                                              *iterator);
+                                                              (*iterator).position);
     switch (orientation)
     {
       case ORIENTATION_HORIZONTAL:
       {
-        current_tile = (current_door.is_open ? tileSet_in.horizontal_open
-                                             : tileSet_in.horizontal_closed);
+        current_tile = ((*iterator).is_open ? tileSet_in.horizontal_open
+                                            : tileSet_in.horizontal_closed);
         break;
       }
       case ORIENTATION_VERTICAL:
       {
-        current_tile = (current_door.is_open ? tileSet_in.vertical_open
-                                             : tileSet_in.vertical_closed);
+        current_tile = ((*iterator).is_open ? tileSet_in.vertical_open
+                                            : tileSet_in.vertical_closed);
         break;
       }
       default:
@@ -1513,7 +1511,7 @@ SDL_GUI_LevelWindow::initDoors(const RPG_Map_FloorPlan_t& levelMap_in,
       }
     } // end SWITCH
 
-    myDoorTiles.insert(std::make_pair(*iterator, current_tile));
+    myDoorTiles.insert(std::make_pair((*iterator).position, current_tile));
   } // end FOR
 }
 

@@ -50,7 +50,8 @@
 #define MAP_GENERATOR_DEF_DIMENSION_X           80
 #define MAP_GENERATOR_DEF_DIMENSION_Y           40
 
-void print_usage(const std::string& programName_in)
+void
+print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
 
@@ -71,18 +72,19 @@ void print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-y [VALUE]  : #rows") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_DIMENSION_Y << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
-const bool process_arguments(const int argc_in,
-                             ACE_TCHAR* argv_in[], // cannot be const...
-                             unsigned long& minRoomSize_out,
-                             bool& corridors_out,
-                             unsigned long& maxNumDoorsPerRoom_out,
-                             bool& maximizeRoomSize_out,
-                             unsigned long& numAreas_out,
-                             bool& squareRooms_out,
-                             bool& traceInformation_out,
-                             bool& printVersionAndExit_out,
-                             unsigned long& dimensionX_out,
-                             unsigned long& dimensionY_out)
+const bool
+process_arguments(const int argc_in,
+                  ACE_TCHAR* argv_in[], // cannot be const...
+                  unsigned long& minRoomSize_out,
+                  bool& corridors_out,
+                  unsigned long& maxNumDoorsPerRoom_out,
+                  bool& maximizeRoomSize_out,
+                  unsigned long& numAreas_out,
+                  bool& squareRooms_out,
+                  bool& traceInformation_out,
+                  bool& printVersionAndExit_out,
+                  unsigned long& dimensionX_out,
+                  unsigned long& dimensionY_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -209,15 +211,16 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
-void do_work(const unsigned long& minRoomSize_in,
-             const bool& doors_in,
-             const bool& corridors_in,
-             const unsigned long& maxDoorsPerRoom_in,
-             const bool& maximizeArea_in,
-             const unsigned long& numAreas_in,
-             const bool& wantSquareRooms_in,
-             const unsigned long& dimensionX_in,
-             const unsigned long& dimensionY_in)
+void
+do_work(const unsigned long& minRoomSize_in,
+        const bool& doors_in,
+        const bool& corridors_in,
+        const unsigned long& maxDoorsPerRoom_in,
+        const bool& maximizeArea_in,
+        const unsigned long& numAreas_in,
+        const bool& wantSquareRooms_in,
+        const unsigned long& dimensionX_in,
+        const unsigned long& dimensionY_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -249,7 +252,8 @@ void do_work(const unsigned long& minRoomSize_in,
              ACE_TEXT("finished working...\n")));
 } // end do_work
 
-void do_printVersion(const std::string& programName_in)
+void
+do_printVersion(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
@@ -301,8 +305,9 @@ void do_printVersion(const std::string& programName_in)
 //             << std::endl;
 }
 
-int ACE_TMAIN(int argc,
-              ACE_TCHAR* argv[])
+int
+ACE_TMAIN(int argc,
+          ACE_TCHAR* argv[])
 {
   RPG_TRACE(ACE_TEXT("::main"));
 

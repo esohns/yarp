@@ -73,26 +73,6 @@ typedef std::list<RPG_Map_Position_t> RPG_Map_PositionList_t;
 typedef RPG_Map_PositionList_t::const_iterator RPG_Map_PositionListConstIterator_t;
 typedef RPG_Map_PositionList_t::iterator RPG_Map_PositionListIterator_t;
 
-struct RPG_Map_FloorPlan_t
-{
-  unsigned long size_x;
-  unsigned long size_y;
-  RPG_Map_Positions_t unmapped; // (!floor)
-  RPG_Map_Positions_t walls;
-  RPG_Map_Positions_t doors;
-};
-
-struct RPG_Map_Door_t
-{
-  RPG_Map_Position_t position;
-  bool is_open;
-  bool is_locked;
-  bool is_broken;
-};
-typedef std::vector<RPG_Map_Door_t> RPG_Map_Doors_t;
-typedef RPG_Map_Doors_t::const_iterator RPG_Map_DoorsConstIterator_t;
-typedef RPG_Map_Doors_t::iterator RPG_Map_DoorsIterator_t;
-
 enum RPG_Map_Direction
 {
   UP = 0,
@@ -103,6 +83,46 @@ enum RPG_Map_Direction
 };
 typedef std::set<RPG_Map_Direction> RPG_Map_Directions_t;
 typedef RPG_Map_Directions_t::const_iterator RPG_Map_DirectionsConstIterator_t;
+
+struct RPG_Map_Door_t
+{
+  inline bool operator==(const RPG_Map_Door_t& rhs_in) const
+  {
+    return (position == rhs_in.position);
+  }
+  inline bool operator!=(const RPG_Map_Door_t& rhs_in) const
+  {
+    return !(position == rhs_in.position);
+  }
+
+  RPG_Map_Position_t position;
+  RPG_Map_Direction outside;
+  bool is_open;
+  bool is_locked;
+  bool is_broken;
+};
+struct door_compare
+ : public std::binary_function<RPG_Map_Door_t, RPG_Map_Door_t, bool>
+{
+  inline bool operator()(const RPG_Map_Door_t& __x,
+                         const RPG_Map_Door_t& __y) const
+  {
+    return (__x.position < __y.position);
+  }
+};
+typedef std::set<RPG_Map_Door_t, door_compare> RPG_Map_Doors_t;
+typedef RPG_Map_Doors_t::const_iterator RPG_Map_DoorsConstIterator_t;
+typedef RPG_Map_Doors_t::iterator RPG_Map_DoorsIterator_t;
+
+struct RPG_Map_FloorPlan_t
+{
+  unsigned long size_x;
+  unsigned long size_y;
+  RPG_Map_Positions_t unmapped; // (!floor)
+  RPG_Map_Positions_t walls;
+  RPG_Map_Doors_t doors;
+};
+
 typedef std::pair<RPG_Map_Position_t, RPG_Map_Direction> RPG_Map_PathStep_t;
 typedef std::list<RPG_Map_PathStep_t> RPG_Map_Path_t;
 typedef RPG_Map_Path_t::const_iterator RPG_Map_PathConstIterator_t;

@@ -36,10 +36,10 @@ class RPG_Map_Common_Tools
  public:
   static const bool load(const std::string&,    // FQ filename
                          RPG_Map_Positions_t&,  // return value: seed points (areas)
-                         RPG_Map_FloorPlan_t&); // return value: level map
+                         RPG_Map_FloorPlan_t&); // return value
   static const bool save(const std::string&,          // FQ filename
                          const RPG_Map_Positions_t&,  // seed points (areas)
-                         const RPG_Map_FloorPlan_t&); // level map
+                         const RPG_Map_FloorPlan_t&);
 
   static void createFloorPlan(const unsigned long&,  // map dimension x
                               const unsigned long&,  // map dimension y
@@ -52,16 +52,18 @@ class RPG_Map_Common_Tools
                               const bool&,           // doors to fill positions ?
                               const unsigned long&,  // max. #doors/room
                               RPG_Map_Positions_t&,  // return value: seed points (areas)
-                              RPG_Map_FloorPlan_t&); // return value: level map
+                              RPG_Map_FloorPlan_t&); // return value
   static void displayFloorPlan(const RPG_Map_Positions_t&,  // seed points (areas)
-                               const RPG_Map_FloorPlan_t&); // level map
+                               const RPG_Map_FloorPlan_t&);
 
   static const unsigned long dist2Positions(const RPG_Map_Position_t&,  // position 1
                                             const RPG_Map_Position_t&); // position 2
   static const std::string direction2String(const RPG_Map_Direction&); // direction
 
-  static const bool isFloor(const RPG_Map_Position_t&,   // position
-                            const RPG_Map_FloorPlan_t&); // level map
+  static const bool isFloor(const RPG_Map_Position_t&,
+                            const RPG_Map_FloorPlan_t&);
+  static const bool isInsideRoom(const RPG_Map_Position_t&,
+                                 const RPG_Map_FloorPlan_t&);
 
  private:
   // safety measures
@@ -165,6 +167,8 @@ class RPG_Map_Common_Tools
                            const RPG_Map_ZoneList_t&, // doors
                            const RPG_Map_ZoneList_t&, // room(s) // *TODO*: faster in/out tests ?
                            RPG_Map_FloorPlan_t&);     // return value: doors & walls
+  static void buildCorridor(const RPG_Map_Path_t&, // path
+                            RPG_Map_Zone_t&);      // return value: corridor
   static void displayCorridors(const unsigned long&,       // dimension x
                                const unsigned long&,       // dimension y
                                const RPG_Map_ZoneList_t&,  // rooms
