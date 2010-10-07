@@ -869,7 +869,6 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
     } // end WHILE
   } // end IF
 
-//   // debug info
 //   displayPartition(dimensionX_in,
 //                    dimensionY_in,
 //                    conflicts_out,
@@ -1976,11 +1975,11 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
       (*corridors_iter).insert((*path_iter).first);
     } // end FOR
 
-  displayCorridors(dimensionX_in,
-                   dimensionY_in,
-                   rooms_in,
-                   doors_in,
-                   corridors);
+//   displayCorridors(dimensionX_in,
+//                    dimensionY_in,
+//                    rooms_in,
+//                    doors_in,
+//                    corridors);
 
   // step5: remove the walls corresponding to doors
   for (zonelist_iter = doors_in.begin();
