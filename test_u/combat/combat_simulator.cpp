@@ -429,7 +429,6 @@ do_work(const std::string& magicDictionaryFilename_in,
       party.push_back(player);
     } // end FOR
 
-    // debug info
     ACE_DEBUG((LM_DEBUG,
               ACE_TEXT("generated (random) party of %d player(s)...\n"),
               numPlayers_in));
@@ -476,7 +475,7 @@ do_work(const std::string& magicDictionaryFilename_in,
   } while (endlessLoop_in);
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished working (duration (game time): %d seconds)...\n"),
+             ACE_TEXT("finished working (game time: %d second(s))...\n"),
              gameTime));
 } // end do_work
 

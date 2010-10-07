@@ -463,7 +463,7 @@ debug_stream() << (yyvaluep->val);
                                      {
                                        RPG_Map_Door_t door;
                                        door.position = driver.myCurrentPosition;
-                                       door.outside = INVALID;
+                                       door.outside = DIRECTION_INVALID;
                                        door.is_open = false;
                                        door.is_locked = false;
                                        door.is_broken = false;

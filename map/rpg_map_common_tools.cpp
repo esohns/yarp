@@ -1325,13 +1325,13 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
             continue;
 
           if ((*zonelist_iter).find(up) != (*zonelist_iter).end())
-            crop_walls.insert(UP);
+            crop_walls.insert(DIRECTION_UP);
           if ((*zonelist_iter).find(right) != (*zonelist_iter).end())
-            crop_walls.insert(RIGHT);
+            crop_walls.insert(DIRECTION_RIGHT);
           if ((*zonelist_iter).find(down) != (*zonelist_iter).end())
-            crop_walls.insert(DOWN);
+            crop_walls.insert(DIRECTION_DOWN);
           if ((*zonelist_iter).find(left) != (*zonelist_iter).end())
-            crop_walls.insert(LEFT);
+            crop_walls.insert(DIRECTION_LEFT);
         } // end FOR
       } // end FOR
 
@@ -1346,7 +1346,7 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
         {
           switch (*crop_iter)
           {
-            case UP:
+            case DIRECTION_UP:
             {
               // erase top row
               first = (*zones_iter).begin();
@@ -1369,7 +1369,7 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
 
               break;
             }
-            case RIGHT:
+            case DIRECTION_RIGHT:
             {
               // erase rightmost column
               last = (*zones_iter).end(); last--;
@@ -1395,7 +1395,7 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
 
               break;
             }
-            case DOWN:
+            case DIRECTION_DOWN:
             {
               // erase bottom row
               first = (*zones_iter).begin();
@@ -1419,7 +1419,7 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
 
               break;
             }
-            case LEFT:
+            case DIRECTION_LEFT:
             {
               // erase leftmost column
               first = (*zones_iter).begin();
@@ -1447,12 +1447,10 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
             }
             default:
             {
-              // debug info
               ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("invalid direction (was %u), continuing\n"),
-                         *crop_iter));
+                         ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
+                         RPG_Map_Common_Tools::direction2String(*crop_iter).c_str()));
 
-              // *TODO*: what else can we do ?
               ACE_ASSERT(false);
 
               break;
@@ -1531,7 +1529,7 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
     crawlToPosition(*zones_iter,
                     upper_left,
                     upper_right,
-                    DOWN,
+                    DIRECTION_DOWN,
                     trail);
     for (trail_iter = trail.begin();
          trail_iter != trail.end();
@@ -1541,7 +1539,7 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
     crawlToPosition(*zones_iter,
                     upper_right,
                     lower_right,
-                    LEFT,
+                    DIRECTION_LEFT,
                     trail);
     for (trail_iter = trail.begin();
          trail_iter != trail.end();
@@ -1551,7 +1549,7 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
     crawlToPosition(*zones_iter,
                     lower_right,
                     lower_left,
-                    UP,
+                    DIRECTION_UP,
                     trail);
     for (trail_iter = trail.begin();
          trail_iter != trail.end();
@@ -1561,7 +1559,7 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
     crawlToPosition(*zones_iter,
                     lower_left,
                     upper_left,
-                    RIGHT,
+                    DIRECTION_RIGHT,
                     trail);
     for (trail_iter = trail.begin();
          trail_iter != trail.end();
@@ -1775,7 +1773,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
 //   unsigned long index = 0;
 //   unsigned long index2 = 0;
   RPG_Map_Door_t door;
-  door.outside = INVALID;
+  door.outside = DIRECTION_INVALID;
   door.is_open = false;
   door.is_locked = false;
   door.is_broken = false;
@@ -1815,7 +1813,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
   RPG_Map_PositionsConstIterator_t target_door;
   RPG_Map_Path_t current_path;
   RPG_Map_Position_t wall_position1, wall_position2, last_position;
-  RPG_Map_Direction last_direction = INVALID;
+  RPG_Map_Direction last_direction = DIRECTION_INVALID;
   RPG_Map_PathConstIterator_t path_iter, last;
   RPG_Map_PathList_t paths;
   bool connectivity_established = false;
@@ -1954,20 +1952,19 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
           wall_position1 = last_position;
           switch (last_direction)
           {
-            case UP:
+            case DIRECTION_UP:
               wall_position1.second--; break;
-            case DOWN:
+            case DIRECTION_DOWN:
               wall_position1.second++; break;
-            case RIGHT:
+            case DIRECTION_RIGHT:
               wall_position1.first++; break;
-            case LEFT:
+            case DIRECTION_LEFT:
               wall_position1.first--; break;
             default:
             {
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("invalid direction (was \"%s\", %u), continuing\n"),
-                         direction2String(last_direction).c_str(),
-                         last_direction));
+                         RPG_Map_Common_Tools::direction2String(last_direction).c_str()));
 
               break;
             }
@@ -1975,15 +1972,15 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
           wall_position2 = wall_position1;
           switch ((*path_iter).second)
           {
-            case UP:
+            case DIRECTION_UP:
               wall_position2.second++; break;
-            case DOWN:
+            case DIRECTION_DOWN:
               wall_position2.second--; break;
-            case RIGHT:
+            case DIRECTION_RIGHT:
               wall_position2.first--; break;
-            case LEFT:
+            case DIRECTION_LEFT:
               wall_position2.first++; break;
-            case INVALID:
+            case DIRECTION_INVALID:
             {
               // reached the endpoint ?
               if ((*path_iter).first == *target_door)
@@ -1992,9 +1989,8 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
             default:
             {
               ACE_DEBUG((LM_ERROR,
-                          ACE_TEXT("invalid direction (was \"%s\", %u), continuing\n"),
-                          direction2String((*path_iter).second).c_str(),
-                          (*path_iter).second));
+                         ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
+                         RPG_Map_Common_Tools::direction2String((*path_iter).second).c_str()));
 
               break;
             }
@@ -2006,7 +2002,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
         wall_position2 = last_position;
         switch ((*path_iter).second)
         {
-          case UP:
+          case DIRECTION_UP:
           {
             wall_position1.first--;
             wall_position1.second--;
@@ -2017,7 +2013,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
 
             break;
           }
-          case DOWN:
+          case DIRECTION_DOWN:
           {
             wall_position1.first--;
             wall_position1.second++;
@@ -2028,7 +2024,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
 
             break;
           }
-          case RIGHT:
+          case DIRECTION_RIGHT:
           {
             wall_position1.first++;
             wall_position1.second--;
@@ -2039,7 +2035,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
 
             break;
           }
-          case LEFT:
+          case DIRECTION_LEFT:
           {
             wall_position1.first--;
             wall_position1.second--;
@@ -2050,7 +2046,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
 
             break;
           }
-          case INVALID:
+          case DIRECTION_INVALID:
           {
             // reached the endpoint ?
             if ((*path_iter).first == *target_door)
@@ -2059,9 +2055,8 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
           default:
           {
             ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("invalid direction (was \"%s\", %u), continuing\n"),
-                       direction2String((*path_iter).second).c_str(),
-                       (*path_iter).second));
+                       ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
+                       direction2String((*path_iter).second).c_str()));
 
             break;
           }
@@ -2169,7 +2164,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
 
 void
 RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
-                                    RPG_Map_Zone_t& corridor_out)
+                                    RPG_Map_Positions_t& corridor_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::buildCorridor"));
 
@@ -2196,21 +2191,20 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
       wall_position1 = last_position;
       switch (last_direction)
       {
-        case UP:
+        case DIRECTION_UP:
           wall_position1.second--; break;
-        case DOWN:
+        case DIRECTION_DOWN:
           wall_position1.second++; break;
-        case RIGHT:
+        case DIRECTION_RIGHT:
           wall_position1.first++; break;
-        case LEFT:
+        case DIRECTION_LEFT:
           wall_position1.first--; break;
-        case INVALID:
+        case DIRECTION_INVALID:
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid direction (was \"%s\", %u), continuing\n"),
-                     direction2String(last_direction).c_str(),
-                     last_direction));
+                     ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
+                     RPG_Map_Common_Tools::direction2String(last_direction).c_str()));
 
           break;
         }
@@ -2218,21 +2212,20 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
       wall_position2 = wall_position1;
       switch ((*path_iter).second)
       {
-        case UP:
+        case DIRECTION_UP:
           wall_position2.second++; break;
-        case DOWN:
+        case DIRECTION_DOWN:
           wall_position2.second--; break;
-        case RIGHT:
+        case DIRECTION_RIGHT:
           wall_position2.first--; break;
-        case LEFT:
+        case DIRECTION_LEFT:
           wall_position2.first++; break;
-        case INVALID:
+        case DIRECTION_INVALID:
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid direction (was \"%s\", %u), continuing\n"),
-                     direction2String((*path_iter).second).c_str(),
-                     (*path_iter).second));
+                     ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
+                     RPG_Map_Common_Tools::direction2String((*path_iter).second).c_str()));
 
           break;
         }
@@ -2244,7 +2237,7 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
     wall_position2 = last_position;
     switch ((*path_iter).second)
     {
-      case UP:
+      case DIRECTION_UP:
       {
         wall_position1.first--;
         wall_position1.second--;
@@ -2255,7 +2248,7 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
 
         break;
       }
-      case DOWN:
+      case DIRECTION_DOWN:
       {
         wall_position1.first--;
         wall_position1.second++;
@@ -2266,7 +2259,7 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
 
         break;
       }
-      case RIGHT:
+      case DIRECTION_RIGHT:
       {
         wall_position1.first++;
         wall_position1.second--;
@@ -2277,7 +2270,7 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
 
         break;
       }
-      case LEFT:
+      case DIRECTION_LEFT:
       {
         wall_position1.first--;
         wall_position1.second--;
@@ -2288,13 +2281,12 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
 
         break;
       }
-      case INVALID:
+      case DIRECTION_INVALID:
       default:
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid direction (was \"%s\", %u), continuing\n"),
-                   direction2String((*path_iter).second).c_str(),
-                   (*path_iter).second));
+                   ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
+                   RPG_Map_Common_Tools::direction2String((*path_iter).second).c_str()));
 
         break;
       }
@@ -2343,20 +2335,22 @@ RPG_Map_Common_Tools::direction2String(const RPG_Map_Direction& direction_in)
 
   switch (direction_in)
   {
-    case UP:
-      return std::string("UP");
-    case RIGHT:
-      return std::string("RIGHT");
-    case DOWN:
-      return std::string("DOWN");
-    case LEFT:
-      return std::string("LEFT");
-    case INVALID:
-      return std::string("INVALID");
+    case DIRECTION_UP:
+      return std::string("DIRECTION_UP");
+    case DIRECTION_RIGHT:
+      return std::string("DIRECTION_RIGHT");
+    case DIRECTION_DOWN:
+      return std::string("DIRECTION_DOWN");
+    case DIRECTION_LEFT:
+      return std::string("DIRECTION_LEFT");
+    case DIRECTION_INVALID:
+      return std::string("DIRECTION_INVALID");
+    case DIRECTION_MAX:
+      return std::string("DIRECTION_MAX");
     default:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid direction (was %u), continuing\n"),
+                 ACE_TEXT("invalid direction (was %u), aborting\n"),
                  direction_in));
 
       ACE_ASSERT(false);
@@ -2365,20 +2359,121 @@ RPG_Map_Common_Tools::direction2String(const RPG_Map_Direction& direction_in)
     }
   } // end SWITCH
 
-  return std::string("INVALID");
+  return std::string("DIRECTION_INVALID");
+}
+
+const std::string
+RPG_Map_Common_Tools::orientation2String(const RPG_Map_Orientation& orientation_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::orientation2String"));
+
+  switch (orientation_in)
+  {
+    case MAP_ORIENTATION_HORIZONTAL:
+      return std::string("MAP_ORIENTATION_HORIZONTAL");
+    case MAP_ORIENTATION_VERTICAL:
+      return std::string("MAP_ORIENTATION_VERTICAL");
+    case MAP_ORIENTATION_INVALID:
+      return std::string("MAP_ORIENTATION_INVALID");
+    case MAP_ORIENTATION_MAX:
+      return std::string("MAP_ORIENTATION_MAX");
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid orientation (was %u), aborting\n"),
+                 orientation_in));
+
+      ACE_ASSERT(false);
+
+      break;
+    }
+  } // end SWITCH
+
+  return std::string("MAP_ORIENTATION_INVALID");
+}
+
+const RPG_Map_Direction
+RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Position_t& position_in, // door
+                                         const RPG_Map_FloorPlan_t& floorPlan_in)
+{
+  // *NOTE*: algorithm is as follows:
+  // - perform two "flood-fill"s just beyond the given position - one INSIDE
+  //   and one OUTSIDE
+  // --> the smaller area determines INSIDE
+
+  // sanity check(s)
+  RPG_Map_Door_t position_door;
+  position_door.position = position_in;
+  RPG_Map_DoorsIterator_t iterator = floorPlan_in.doors.find(position_door);
+  if (iterator == floorPlan_in.doors.end())
+    return DIRECTION_INVALID;
+
+  // determine orientation
+  RPG_Map_Position_t east;
+  RPG_Map_Orientation orientation = MAP_ORIENTATION_INVALID;
+  east = position_in;
+  east.first++;
+  if (floorPlan_in.walls.find(east) != floorPlan_in.walls.end())
+    orientation = MAP_ORIENTATION_HORIZONTAL;
+  else
+    orientation = MAP_ORIENTATION_VERTICAL;
+
+  RPG_Map_Position_t position_1, position_2;
+  position_1 = position_in; position_2 = position_in;
+  switch (orientation)
+  {
+    case MAP_ORIENTATION_HORIZONTAL:
+      position_1.second--; position_2.second++; break;
+    case MAP_ORIENTATION_VERTICAL:
+      position_1.first--; position_2.first++; break;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid orientation (was: \"%s\"), aborting\n"),
+                 RPG_Map_Common_Tools::orientation2String(orientation).c_str()));
+
+      return DIRECTION_INVALID;
+    }
+  } // end SWITCH
+
+  RPG_Map_Positions_t area_1, area_2;
+  RPG_Map_Common_Tools::floodFill(position_1,
+                                  floorPlan_in,
+                                  area_1);
+  RPG_Map_Common_Tools::floodFill(position_2,
+                                  floorPlan_in,
+                                  area_2);
+
+  switch (orientation)
+  {
+    case MAP_ORIENTATION_HORIZONTAL:
+      return (area_1.size() <= area_2.size() ? DIRECTION_DOWN : DIRECTION_UP);
+    case MAP_ORIENTATION_VERTICAL:
+      return (area_1.size() <= area_2.size() ? DIRECTION_RIGHT : DIRECTION_LEFT);
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid orientation (was: \"%s\"), aborting\n"),
+                 RPG_Map_Common_Tools::orientation2String(orientation).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  return DIRECTION_INVALID;
 }
 
 const bool
 RPG_Map_Common_Tools::isFloor(const RPG_Map_Position_t& position_in,
-                              const RPG_Map_FloorPlan_t& levelMap_in)
+                              const RPG_Map_FloorPlan_t& floorPlan_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::isFloor"));
 
   RPG_Map_Door_t position_door;
   position_door.position = position_in;
-  return ((levelMap_in.doors.find(position_door) == levelMap_in.doors.end()) &&
-          (levelMap_in.walls.find(position_in) == levelMap_in.walls.end()) &&
-          (levelMap_in.unmapped.find(position_in) == levelMap_in.unmapped.end()));
+  return ((floorPlan_in.doors.find(position_door) == floorPlan_in.doors.end()) &&
+          (floorPlan_in.walls.find(position_in) == floorPlan_in.walls.end()) &&
+          (floorPlan_in.unmapped.find(position_in) == floorPlan_in.unmapped.end()));
 }
 
 const bool
@@ -2405,67 +2500,9 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
 
   // step1: "flood-fill" the area
   RPG_Map_Positions_t area;
-  area.insert(position_in);
-  std::stack<RPG_Map_Position_t> position_stack;
-  position_stack.push(position_in);
-  while (!position_stack.empty())
-  {
-    // compute 8 neighbours
-    RPG_Map_Position_t tl, t, tr, l, r, bl, b, br;
-    tl = position_stack.top(); tl.first--; tl.second--;
-    t = position_stack.top(); t.second--;
-    tr = position_stack.top(); tr.first++; tr.second--;
-    l = position_stack.top(); l.first--;
-    r = position_stack.top(); r.first++;
-    bl = position_stack.top(); bl.first--; bl.second++;
-    b = position_stack.top(); b.second++;
-    br = position_stack.top(); br.first++; br.second++;
-
-    // remove element
-    position_stack.pop();
-
-    // neighbor != WALL/DOOR ? --> insert into area (& stack)
-    position_door.position = tl;
-    if ((floorPlan_in.walls.find(tl) != floorPlan_in.walls.end()) &&
-        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
-      if (area.insert(tl).second)
-        position_stack.push(tl);
-    position_door.position = t;
-    if ((floorPlan_in.walls.find(t) != floorPlan_in.walls.end()) &&
-        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
-      if (area.insert(t).second)
-        position_stack.push(t);
-    position_door.position = tr;
-    if ((floorPlan_in.walls.find(tr) != floorPlan_in.walls.end()) &&
-        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
-      if (area.insert(tr).second)
-        position_stack.push(tr);
-    position_door.position = l;
-    if ((floorPlan_in.walls.find(l) != floorPlan_in.walls.end()) &&
-        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
-      if (area.insert(l).second)
-        position_stack.push(l);
-    position_door.position = r;
-    if ((floorPlan_in.walls.find(r) != floorPlan_in.walls.end()) &&
-        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
-      if (area.insert(r).second)
-        position_stack.push(r);
-    position_door.position = bl;
-    if ((floorPlan_in.walls.find(bl) != floorPlan_in.walls.end()) &&
-        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
-      if (area.insert(bl).second)
-        position_stack.push(bl);
-    position_door.position = b;
-    if ((floorPlan_in.walls.find(b) != floorPlan_in.walls.end()) &&
-        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
-      if (area.insert(b).second)
-        position_stack.push(b);
-    position_door.position = br;
-    if ((floorPlan_in.walls.find(br) != floorPlan_in.walls.end()) &&
-        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
-      if (area.insert(br).second)
-        position_stack.push(br);
-  } // end WHILE
+  RPG_Map_Common_Tools::floodFill(position_in,
+                                  floorPlan_in,
+                                  area);
 
   // step2: find doors along the perimeter
   RPG_Map_Position_t door = std::make_pair(0, 0);
@@ -2473,8 +2510,8 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
   start_position.first--; start_position.second--;
   ACE_ASSERT(floorPlan_in.walls.find(start_position) != floorPlan_in.walls.end());
   RPG_Map_Position_t current = start_position;
-  RPG_Map_Direction next = RIGHT;
-  RPG_Map_Direction origin = DOWN;
+  RPG_Map_Direction next = DIRECTION_RIGHT;
+  RPG_Map_Direction origin = DIRECTION_DOWN;
   RPG_Map_Directions_t directions;
   do
   {
@@ -2490,19 +2527,19 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
     position_door.position = u;
     if ((floorPlan_in.walls.find(u) != floorPlan_in.walls.end()) ||
         (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
-      directions.insert(UP);
+      directions.insert(DIRECTION_UP);
     position_door.position = r;
     if ((floorPlan_in.walls.find(r) != floorPlan_in.walls.end()) ||
         (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
-      directions.insert(RIGHT);
+      directions.insert(DIRECTION_RIGHT);
     position_door.position = d;
     if ((floorPlan_in.walls.find(d) != floorPlan_in.walls.end()) ||
         (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
-      directions.insert(DOWN);
+      directions.insert(DIRECTION_DOWN);
     position_door.position = l;
     if ((floorPlan_in.walls.find(l) != floorPlan_in.walls.end()) ||
         (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
-      directions.insert(LEFT);
+      directions.insert(DIRECTION_LEFT);
 
     // compute next direction (clockwise)
 
@@ -2515,69 +2552,69 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
     else
       switch (origin)
       {
-        case UP:
+        case DIRECTION_UP:
         {
-          if ((directions.find(DOWN) == directions.end()) || // corner
-              (directions.find(RIGHT) != directions.end()))  // intersection ?
+          if ((directions.find(DIRECTION_DOWN) == directions.end()) || // corner
+              (directions.find(DIRECTION_RIGHT) != directions.end()))  // intersection ?
           {
             // determine next direction
-            if (directions.find(RIGHT) != directions.end())
-              next = RIGHT; // intersection, turn left
+            if (directions.find(DIRECTION_RIGHT) != directions.end())
+              next = DIRECTION_RIGHT; // intersection, turn left
             else
             {
-              ACE_ASSERT(directions.find(LEFT) != directions.end());
-              next = LEFT; // corner, turn right
+              ACE_ASSERT(directions.find(DIRECTION_LEFT) != directions.end());
+              next = DIRECTION_LEFT; // corner, turn right
             } // end ELSE
           } // end IF
 
           break;
         }
-        case RIGHT:
+        case DIRECTION_RIGHT:
         {
-          if ((directions.find(LEFT) == directions.end()) || // corner
-              (directions.find(DOWN) != directions.end()))   // intersection ?
+          if ((directions.find(DIRECTION_LEFT) == directions.end()) || // corner
+              (directions.find(DIRECTION_DOWN) != directions.end()))   // intersection ?
           {
             // determine next direction
-            if (directions.find(DOWN) != directions.end())
-              next = DOWN; // intersection, turn left
+            if (directions.find(DIRECTION_DOWN) != directions.end())
+              next = DIRECTION_DOWN; // intersection, turn left
             else
             {
-              ACE_ASSERT(directions.find(UP) != directions.end());
-              next = UP; // corner, turn right
+              ACE_ASSERT(directions.find(DIRECTION_UP) != directions.end());
+              next = DIRECTION_UP; // corner, turn right
             } // end ELSE
           } // end IF
 
           break;
         }
-        case DOWN:
+        case DIRECTION_DOWN:
         {
-          if ((directions.find(UP) == directions.end()) || // corner
-              (directions.find(LEFT) != directions.end())) // intersection ?
+          if ((directions.find(DIRECTION_UP) == directions.end()) || // corner
+              (directions.find(DIRECTION_LEFT) != directions.end())) // intersection ?
           {
             // determine next direction
-            if (directions.find(LEFT) != directions.end())
-              next = LEFT; // intersection, turn left
+            if (directions.find(DIRECTION_LEFT) != directions.end())
+              next = DIRECTION_LEFT; // intersection, turn left
             else
             {
-              ACE_ASSERT(directions.find(RIGHT) != directions.end());
-              next = RIGHT; // corner, turn right
+              ACE_ASSERT(directions.find(DIRECTION_RIGHT) != directions.end());
+              next = DIRECTION_RIGHT; // corner, turn right
             } // end ELSE
           } // end IF
 
           break;
         }
-        case LEFT:
+        case DIRECTION_LEFT:
         {
-          if ((directions.find(RIGHT) == directions.end()) || // corner
-              (directions.find(UP) != directions.end()))      // intersection ?
+          if ((directions.find(DIRECTION_RIGHT) == directions.end()) || // corner
+              (directions.find(DIRECTION_UP) != directions.end()))      // intersection ?
           {
             // determine next direction
-            if (directions.find(UP) != directions.end())
-              next = UP; // intersection, turn left
+            if (directions.find(DIRECTION_UP) != directions.end())
+              next = DIRECTION_UP; // intersection, turn left
             else
             {
-              ACE_ASSERT(directions.find(DOWN) != directions.end());
-              next = DOWN; // corner, turn right
+              ACE_ASSERT(directions.find(DIRECTION_DOWN) != directions.end());
+              next = DIRECTION_DOWN; // corner, turn right
             } // end ELSE
           } // end IF
 
@@ -2586,10 +2623,9 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid origin (was %u), continuing\n"),
-                     origin));
+                     ACE_TEXT("invalid origin (was \"%s\"), continuing\n"),
+                     RPG_Map_Common_Tools::direction2String(origin).c_str()));
 
-          // *TODO*: what else can we do ?
           ACE_ASSERT(false);
 
           break;
@@ -2599,37 +2635,36 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
     // move along the perimeter
     switch (next)
     {
-      case UP:
+      case DIRECTION_UP:
       {
         current.second--; // go up
-        origin = DOWN;
+        origin = DIRECTION_DOWN;
         break;
       }
-      case RIGHT:
+      case DIRECTION_RIGHT:
       {
         current.first++; // go right
-        origin = LEFT;
+        origin = DIRECTION_LEFT;
         break;
       }
-      case DOWN:
+      case DIRECTION_DOWN:
       {
         current.second++; // go down
-        origin = UP;
+        origin = DIRECTION_UP;
         break;
       }
-      case LEFT:
+      case DIRECTION_LEFT:
       {
         current.first--; // go left
-        origin = RIGHT;
+        origin = DIRECTION_RIGHT;
         break;
       }
       default:
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid direction (was %u), continuing\n"),
-                   next));
+                   ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
+                   RPG_Map_Common_Tools::direction2String(next).c_str()));
 
-        // *TODO*: what else can we do ?
         ACE_ASSERT(false);
 
         break;
@@ -2644,6 +2679,7 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
       break; // done
     } // end IF
   } while (current != start_position);
+  ACE_ASSERT(door.first || door.second); // there must be a door...
 
   // step3: test doors' notion of "outside"
   position_door.position = door;
@@ -2654,21 +2690,21 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
   current = door;
   switch ((*current_door_iterator).outside)
   {
-    case UP:
+    case DIRECTION_UP:
       current.second++; break;
-    case RIGHT:
+    case DIRECTION_RIGHT:
       current.first--; break;
-    case DOWN:
+    case DIRECTION_DOWN:
       current.second--; break;
-    case LEFT:
+    case DIRECTION_LEFT:
       current.first++; break;
+    case DIRECTION_INVALID:
     default:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid direction (was %u), continuing\n"),
-                 (*current_door_iterator).outside));
+                 ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
+                 RPG_Map_Common_Tools::direction2String((*current_door_iterator).outside).c_str()));
 
-      // *TODO*: what else can we do ?
       ACE_ASSERT(false);
 
       break;
@@ -2711,7 +2747,7 @@ RPG_Map_Common_Tools::intersect(const RPG_Map_Zone_t& map_in,
 
   // init return value(s)
   directions_out.clear();
-  next_out = INVALID;
+  next_out = DIRECTION_INVALID;
 
   RPG_Map_Position_t up, right, down, left;
   up = position_in; up.second--;
@@ -2721,13 +2757,13 @@ RPG_Map_Common_Tools::intersect(const RPG_Map_Zone_t& map_in,
 
   // find possible destination(s)
   if (map_in.find(up) != map_in.end())
-    directions_out.insert(UP);
+    directions_out.insert(DIRECTION_UP);
   if (map_in.find(right) != map_in.end())
-    directions_out.insert(RIGHT);
+    directions_out.insert(DIRECTION_RIGHT);
   if (map_in.find(down) != map_in.end())
-    directions_out.insert(DOWN);
+    directions_out.insert(DIRECTION_DOWN);
   if (map_in.find(left) != map_in.end())
-    directions_out.insert(LEFT);
+    directions_out.insert(DIRECTION_LEFT);
 
   // if NOT an intersection, compute next direction
   switch (directions_out.size())
@@ -2767,7 +2803,7 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Zone_t& map_in,
   trail_out.clear();
 
   ORIGIN origin = startOrigin_in;
-  RPG_Map_Direction next = INVALID;
+  RPG_Map_Direction next = DIRECTION_INVALID;
   RPG_Map_Directions_t directions;
 
   // start at origin
@@ -2783,61 +2819,60 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Zone_t& map_in,
       // compute next direction
       switch (origin)
       {
-        case UP:
+        case DIRECTION_UP:
         {
           // proceed right, down or left, in this order
-          if (directions.find(RIGHT) != directions.end())
-            next = RIGHT;
-          else if (directions.find(DOWN) != directions.end())
-            next = DOWN;
+          if (directions.find(DIRECTION_RIGHT) != directions.end())
+            next = DIRECTION_RIGHT;
+          else if (directions.find(DIRECTION_DOWN) != directions.end())
+            next = DIRECTION_DOWN;
           else
-            next = LEFT;
+            next = DIRECTION_LEFT;
 
           break;
         }
-        case RIGHT:
+        case DIRECTION_RIGHT:
         {
           // proceed down, left or up, in this order
-          if (directions.find(DOWN) != directions.end())
-            next = DOWN;
-          else if (directions.find(LEFT) != directions.end())
-            next = LEFT;
+          if (directions.find(DIRECTION_DOWN) != directions.end())
+            next = DIRECTION_DOWN;
+          else if (directions.find(DIRECTION_LEFT) != directions.end())
+            next = DIRECTION_LEFT;
           else
-            next = UP;
+            next = DIRECTION_UP;
 
           break;
         }
-        case DOWN:
+        case DIRECTION_DOWN:
         {
           // proceed left, up or right, in this order
-          if (directions.find(LEFT) != directions.end())
-            next = LEFT;
-          else if (directions.find(UP) != directions.end())
-            next = UP;
+          if (directions.find(DIRECTION_LEFT) != directions.end())
+            next = DIRECTION_LEFT;
+          else if (directions.find(DIRECTION_UP) != directions.end())
+            next = DIRECTION_UP;
           else
-            next = RIGHT;
+            next = DIRECTION_RIGHT;
 
           break;
         }
-        case LEFT:
+        case DIRECTION_LEFT:
         {
           // proceed up, right or down, in this order
-          if (directions.find(UP) != directions.end())
-            next = UP;
-          else if (directions.find(RIGHT) != directions.end())
-            next = RIGHT;
+          if (directions.find(DIRECTION_UP) != directions.end())
+            next = DIRECTION_UP;
+          else if (directions.find(DIRECTION_RIGHT) != directions.end())
+            next = DIRECTION_RIGHT;
           else
-            next = DOWN;
+            next = DIRECTION_DOWN;
 
           break;
         }
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid origin (was %u), continuing\n"),
-                     origin));
+                     ACE_TEXT("invalid origin (was \"%s\"), continuing\n"),
+                     RPG_Map_Common_Tools::direction2String(origin).c_str()));
 
-          // *TODO*: what else can we do ?
           ACE_ASSERT(false);
 
           break;
@@ -2853,37 +2888,36 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Zone_t& map_in,
     // move
     switch (next)
     {
-      case UP:
+      case DIRECTION_UP:
       {
         current.second--; // go up
-        origin = DOWN;
+        origin = DIRECTION_DOWN;
         break;
       }
-      case RIGHT:
+      case DIRECTION_RIGHT:
       {
         current.first++; // go right
-        origin = LEFT;
+        origin = DIRECTION_LEFT;
         break;
       }
-      case DOWN:
+      case DIRECTION_DOWN:
       {
         current.second++; // go down
-        origin = UP;
+        origin = DIRECTION_UP;
         break;
       }
-      case LEFT:
+      case DIRECTION_LEFT:
       {
         current.first--; // go left
-        origin = RIGHT;
+        origin = DIRECTION_RIGHT;
         break;
       }
       default:
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid direction (was %u), continuing\n"),
-                   next));
+                   ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
+                   RPG_Map_Common_Tools::direction2String(next).c_str()));
 
-        // *TODO*: what else can we do ?
         ACE_ASSERT(false);
 
         break;
@@ -3201,7 +3235,7 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
   // init return value(s)
   isCorner_out = false;
   // *NOTE*: only change next_out if appropriate (i.e. when turning)
-//   next_out = INVALID;
+//   next_out = DIRECTION_INVALID;
 
   RPG_Map_Position_t up, right, down, left;
   up = position_in; up.second--;
@@ -3212,13 +3246,13 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
   // find possible destination(s)
   RPG_Map_Directions_t directions;
   if (map_in.find(up) != map_in.end())
-    directions.insert(UP);
+    directions.insert(DIRECTION_UP);
   if (map_in.find(right) != map_in.end())
-    directions.insert(RIGHT);
+    directions.insert(DIRECTION_RIGHT);
   if (map_in.find(down) != map_in.end())
-    directions.insert(DOWN);
+    directions.insert(DIRECTION_DOWN);
   if (map_in.find(left) != map_in.end())
-    directions.insert(LEFT);
+    directions.insert(DIRECTION_LEFT);
 
   // *NOTE*: if position is a [dead-end/]corner/intersection
   // --> compute next direction
@@ -3238,17 +3272,17 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
   // - a section of the room is "flat" (i.e. consists of "solid walls")
   switch (origin_in)
   {
-    case UP:
+    case DIRECTION_UP:
     {
-      if ((directions.find(DOWN) == directions.end()) || // corner
-          (directions.find((clockwise_in ? RIGHT : LEFT)) != directions.end())) // intersection
+      if ((directions.find(DIRECTION_DOWN) == directions.end()) || // corner
+           (directions.find((clockwise_in ? DIRECTION_RIGHT : DIRECTION_LEFT)) != directions.end())) // intersection
       {
         // determine next direction
-        if (directions.find((clockwise_in ? RIGHT : LEFT)) != directions.end())
-          next_out = (clockwise_in ? RIGHT : LEFT); // intersection, turn left/right
+        if (directions.find((clockwise_in ? DIRECTION_RIGHT : DIRECTION_LEFT)) != directions.end())
+          next_out = (clockwise_in ? DIRECTION_RIGHT : DIRECTION_LEFT); // intersection, turn left/right
         else
         {
-          next_out = (clockwise_in ? LEFT : RIGHT); // corner, turn right/left
+          next_out = (clockwise_in ? DIRECTION_LEFT : DIRECTION_RIGHT); // corner, turn right/left
           isCorner_out = true;
         } // end ELSE
 
@@ -3258,17 +3292,17 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
       // --> can continue (and cannot turn left/right)
       break;
     }
-    case RIGHT:
+    case DIRECTION_RIGHT:
     {
-      if ((directions.find(LEFT) == directions.end()) || // corner
-          (directions.find((clockwise_in ? DOWN : UP)) != directions.end())) // intersection
+      if ((directions.find(DIRECTION_LEFT) == directions.end()) || // corner
+           (directions.find((clockwise_in ? DIRECTION_DOWN : DIRECTION_UP)) != directions.end())) // intersection
       {
         // determine next direction
-        if (directions.find((clockwise_in ? DOWN : UP)) != directions.end())
-          next_out = (clockwise_in ? DOWN : UP); // intersection, turn left/right
+        if (directions.find((clockwise_in ? DIRECTION_DOWN : DIRECTION_UP)) != directions.end())
+          next_out = (clockwise_in ? DIRECTION_DOWN : DIRECTION_UP); // intersection, turn left/right
         else
         {
-          next_out = (clockwise_in ? UP : DOWN); // corner, turn right/left
+          next_out = (clockwise_in ? DIRECTION_UP : DIRECTION_DOWN); // corner, turn right/left
           isCorner_out = true;
         } // end ELSE
 
@@ -3278,17 +3312,17 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
       // --> can continue (and cannot turn left/right)
       break;
     }
-    case DOWN:
+    case DIRECTION_DOWN:
     {
-      if ((directions.find(UP) == directions.end()) || // corner
-          (directions.find((clockwise_in ? LEFT : RIGHT)) != directions.end())) // intersection
+      if ((directions.find(DIRECTION_UP) == directions.end()) || // corner
+           (directions.find((clockwise_in ? DIRECTION_LEFT : DIRECTION_RIGHT)) != directions.end())) // intersection
       {
         // determine next direction
-        if (directions.find((clockwise_in ? LEFT : RIGHT)) != directions.end())
-          next_out = (clockwise_in ? LEFT : RIGHT); // intersection, turn left/right
+        if (directions.find((clockwise_in ? DIRECTION_LEFT : DIRECTION_RIGHT)) != directions.end())
+          next_out = (clockwise_in ? DIRECTION_LEFT : DIRECTION_RIGHT); // intersection, turn left/right
         else
         {
-          next_out = (clockwise_in ? RIGHT : LEFT); // corner, turn right/left
+          next_out = (clockwise_in ? DIRECTION_RIGHT : DIRECTION_LEFT); // corner, turn right/left
           isCorner_out = true;
         } // end ELSE
 
@@ -3298,17 +3332,17 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
       // --> can continue (and cannot turn left/right)
       break;
     }
-    case LEFT:
+    case DIRECTION_LEFT:
     {
-      if ((directions.find(RIGHT) == directions.end()) || // corner
-          (directions.find((clockwise_in ? UP : DOWN)) != directions.end())) // intersection
+      if ((directions.find(DIRECTION_RIGHT) == directions.end()) || // corner
+           (directions.find((clockwise_in ? DIRECTION_UP : DIRECTION_DOWN)) != directions.end())) // intersection
       {
         // determine next direction
-        if (directions.find((clockwise_in ? UP : DOWN)) != directions.end())
-          next_out = (clockwise_in ? UP : DOWN); // intersection, turn left/right
+        if (directions.find((clockwise_in ? DIRECTION_UP : DIRECTION_DOWN)) != directions.end())
+          next_out = (clockwise_in ? DIRECTION_UP : DIRECTION_DOWN); // intersection, turn left/right
         else
         {
-          next_out = (clockwise_in ? DOWN : UP); // corner, turn right/left
+          next_out = (clockwise_in ? DIRECTION_DOWN : DIRECTION_UP); // corner, turn right/left
           isCorner_out = true;
         } // end ELSE
 
@@ -3321,10 +3355,9 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
     default:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid origin (was %u), continuing\n"),
-                 origin_in));
+                 ACE_TEXT("invalid origin (was \"%s\"), continuing\n"),
+                 RPG_Map_Common_Tools::direction2String(origin_in).c_str()));
 
-      // *TODO*: what else can we do ?
       ACE_ASSERT(false);
 
       break;
@@ -3354,8 +3387,8 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
   // - corners/intersections are unsuitable positions
   // - enforce a minimal distance [i.e. to allow corridors_bounds] between any 2 doors
   RPG_Map_Position_t current = *(room_in.begin());
-  RPG_Map_Direction next = RIGHT;
-  ORIGIN origin = DOWN;
+  RPG_Map_Direction next = DIRECTION_RIGHT;
+  ORIGIN origin = DIRECTION_DOWN;
   bool is_corner = true; // (else intersection)
   if (doorFillsPosition_in)
   {
@@ -3396,37 +3429,36 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
       // move along the perimeter
       switch (next)
       {
-        case UP:
+        case DIRECTION_UP:
         {
           current.second--; // go up
-          origin = DOWN;
+          origin = DIRECTION_DOWN;
           break;
         }
-        case RIGHT:
+        case DIRECTION_RIGHT:
         {
           current.first++; // go right
-          origin = LEFT;
+          origin = DIRECTION_LEFT;
           break;
         }
-        case DOWN:
+        case DIRECTION_DOWN:
         {
           current.second++; // go down
-          origin = UP;
+          origin = DIRECTION_UP;
           break;
         }
-        case LEFT:
+        case DIRECTION_LEFT:
         {
           current.first--; // go left
-          origin = RIGHT;
+          origin = DIRECTION_RIGHT;
           break;
         }
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid direction (was %u), continuing\n"),
-                     next));
+                     ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
+                     RPG_Map_Common_Tools::direction2String(next).c_str()));
 
-          // *TODO*: what else can we do ?
           ACE_ASSERT(false);
 
           break;
@@ -3436,7 +3468,7 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
 
     // step2: counter-clockwise
     RPG_Map_PositionList_t alt_doorPositions;
-    origin = RIGHT;
+    origin = DIRECTION_RIGHT;
     is_corner = true; // (else intersection)
     // *NOTE*: first position is ALWAYS a corner, thus unsuitable
     // --> next position to the right/down along the wall could be suitable
@@ -3467,37 +3499,36 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
       // move along the perimeter
       switch (next)
       {
-        case UP:
+        case DIRECTION_UP:
         {
           current.second--; // go up
-          origin = DOWN;
+          origin = DIRECTION_DOWN;
           break;
         }
-        case RIGHT:
+        case DIRECTION_RIGHT:
         {
           current.first++; // go right
-          origin = LEFT;
+          origin = DIRECTION_LEFT;
           break;
         }
-        case DOWN:
+        case DIRECTION_DOWN:
         {
           current.second++; // go down
-          origin = UP;
+          origin = DIRECTION_UP;
           break;
         }
-        case LEFT:
+        case DIRECTION_LEFT:
         {
           current.first--; // go left
-          origin = RIGHT;
+          origin = DIRECTION_RIGHT;
           break;
         }
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid direction (was %u), continuing\n"),
-                     next));
+                     ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
+                     RPG_Map_Common_Tools::direction2String(next).c_str()));
 
-          // *TODO*: what else can we do ?
           ACE_ASSERT(false);
 
           break;
@@ -3533,37 +3564,36 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
         // move along the perimeter
         switch (next)
         {
-          case UP:
+          case DIRECTION_UP:
           {
             current.second--; // go up
-            origin = DOWN;
+            origin = DIRECTION_DOWN;
             break;
           }
-          case RIGHT:
+          case DIRECTION_RIGHT:
           {
             current.first++; // go right
-            origin = LEFT;
+            origin = DIRECTION_LEFT;
             break;
           }
-          case DOWN:
+          case DIRECTION_DOWN:
           {
             current.second++; // go down
-            origin = UP;
+            origin = DIRECTION_UP;
             break;
           }
-          case LEFT:
+          case DIRECTION_LEFT:
           {
             current.first--; // go left
-            origin = RIGHT;
+            origin = DIRECTION_RIGHT;
             break;
           }
           default:
           {
             ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("invalid direction (was %u), continuing\n"),
-                       next));
+                       ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
+                       RPG_Map_Common_Tools::direction2String(next).c_str()));
 
-            // *TODO*: what else can we do ?
             ACE_ASSERT(false);
 
             break;
@@ -3630,14 +3660,14 @@ RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Zone_t& room_in,
   // step2: two of the neighbours will be walls, the third will be inside
   // --> the one that is NOT part of the room indicates the exit direction
   if (room_in.find(up) == room_in.end())
-    return UP;
+    return DIRECTION_UP;
   else if (room_in.find(right) == room_in.end())
-    return RIGHT;
+    return DIRECTION_RIGHT;
   else if (room_in.find(down) == room_in.end())
-    return DOWN;
+    return DIRECTION_DOWN;
 
   ACE_ASSERT(room_in.find(left) == room_in.end());
-  return LEFT;
+  return DIRECTION_LEFT;
 }
 
 void
@@ -3736,4 +3766,78 @@ RPG_Map_Common_Tools::displayCorridors(const unsigned long& dimensionX_in,
     // print line
     std::clog << converter.str();
   } // end FOR
+}
+
+void
+RPG_Map_Common_Tools::floodFill(const RPG_Map_Position_t& position_in,
+                                const RPG_Map_FloorPlan_t& floorPlan_in,
+                                RPG_Map_Positions_t& area_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::floodFill"));
+
+  // init return value(s)
+  area_out.clear();
+
+  area_out.insert(position_in);
+  std::stack<RPG_Map_Position_t> position_stack;
+  position_stack.push(position_in);
+  RPG_Map_Door_t position_door;
+  while (!position_stack.empty())
+  {
+    // compute 8 neighbours
+    RPG_Map_Position_t tl, t, tr, l, r, bl, b, br;
+    tl = position_stack.top(); tl.first--; tl.second--;
+    t = position_stack.top(); t.second--;
+    tr = position_stack.top(); tr.first++; tr.second--;
+    l = position_stack.top(); l.first--;
+    r = position_stack.top(); r.first++;
+    bl = position_stack.top(); bl.first--; bl.second++;
+    b = position_stack.top(); b.second++;
+    br = position_stack.top(); br.first++; br.second++;
+
+    // remove element
+    position_stack.pop();
+
+    // neighbor != WALL/DOOR ? --> insert into area (& stack)
+    position_door.position = tl;
+    if ((floorPlan_in.walls.find(tl) == floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) == floorPlan_in.doors.end()))
+      if (area_out.insert(tl).second)
+        position_stack.push(tl);
+    position_door.position = t;
+    if ((floorPlan_in.walls.find(t) == floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) == floorPlan_in.doors.end()))
+      if (area_out.insert(t).second)
+        position_stack.push(t);
+    position_door.position = tr;
+    if ((floorPlan_in.walls.find(tr) == floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) == floorPlan_in.doors.end()))
+      if (area_out.insert(tr).second)
+        position_stack.push(tr);
+    position_door.position = l;
+    if ((floorPlan_in.walls.find(l) == floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) == floorPlan_in.doors.end()))
+      if (area_out.insert(l).second)
+        position_stack.push(l);
+    position_door.position = r;
+    if ((floorPlan_in.walls.find(r) == floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) == floorPlan_in.doors.end()))
+      if (area_out.insert(r).second)
+        position_stack.push(r);
+    position_door.position = bl;
+    if ((floorPlan_in.walls.find(bl) == floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) == floorPlan_in.doors.end()))
+      if (area_out.insert(bl).second)
+        position_stack.push(bl);
+    position_door.position = b;
+    if ((floorPlan_in.walls.find(b) == floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) == floorPlan_in.doors.end()))
+      if (area_out.insert(b).second)
+        position_stack.push(b);
+    position_door.position = br;
+    if ((floorPlan_in.walls.find(br) == floorPlan_in.walls.end()) &&
+        (floorPlan_in.doors.find(position_door) == floorPlan_in.doors.end()))
+      if (area_out.insert(br).second)
+        position_stack.push(br);
+  } // end WHILE
 }

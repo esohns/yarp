@@ -84,26 +84,26 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
     // --> "leave" a room to find another door
     // start position ?
     if ((closedPath.back().first.position == start_in) &&
-        (startDirection_in != INVALID))
+        (startDirection_in != DIRECTION_INVALID))
     {
       switch (startDirection_in)
       {
-        case UP:
+        case DIRECTION_UP:
         {
           neighbours.push_back(up);
           break;
         }
-        case RIGHT:
+        case DIRECTION_RIGHT:
         {
           neighbours.push_back(right);
           break;
         }
-        case DOWN:
+        case DIRECTION_DOWN:
         {
           neighbours.push_back(down);
           break;
         }
-        case LEFT:
+        case DIRECTION_LEFT:
         {
           neighbours.push_back(left);
           break;
@@ -111,9 +111,10 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid direction (was \"%s\", %u), continuing\n"),
-                     RPG_Map_Common_Tools::direction2String(startDirection_in).c_str(),
-                     startDirection_in));
+                     ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
+                     RPG_Map_Common_Tools::direction2String(startDirection_in).c_str()));
+
+          ACE_ASSERT(false);
 
           break;
         }
@@ -216,7 +217,7 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
 
   // compute trail
   unsigned long index = 0;
-  RPG_Map_Direction direction = INVALID;
+  RPG_Map_Direction direction = DIRECTION_INVALID;
   // start at the end
   RPG_Map_AStar_NodeListConstIterator_t current_node = closedPath.end();
   current_node--;
@@ -228,7 +229,7 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
 //              (*current_node).first.position.second,
 //              (*current_node).second));
   RPG_Map_AStar_NodeListConstIterator_t previous_node = closedPath.begin();
-  path_out.push_front(std::make_pair((*current_node).first.position, INVALID));
+  path_out.push_front(std::make_pair((*current_node).first.position, DIRECTION_INVALID));
   for (;
        (*current_node).first.position != start_in;
        index++)
@@ -244,14 +245,14 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
     // compute direction
     if ((*current_node).first.position.second == (*previous_node).first.position.second)
       if ((*current_node).first.position.first == ((*previous_node).first.position.first + 1))
-        direction = RIGHT;
+        direction = DIRECTION_RIGHT;
       else
-        direction = LEFT;
+        direction = DIRECTION_LEFT;
     else
       if ((*current_node).first.position.second == ((*previous_node).first.position.second + 1))
-        direction = DOWN;
+        direction = DIRECTION_DOWN;
       else
-        direction = UP;
+        direction = DIRECTION_UP;
 
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("step[#%u]: (%u,%u - @%u) --> %s\n"),

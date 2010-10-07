@@ -24,8 +24,7 @@
 #include <ace/Log_Msg.h>
 
 RPG_Map_Level::RPG_Map_Level()
-//  : myFloorPlan(),
-//    myDoors()
+//  : myFloorPlan()
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::RPG_Map_Level"));
 
@@ -86,7 +85,7 @@ RPG_Map_Level::getDoor(const RPG_Map_Position_t& position_in) const
 
   RPG_Map_Door_t dummy;
   dummy.position = position_in;
-  dummy.outside = INVALID;
+  dummy.outside = DIRECTION_INVALID;
   dummy.is_open = false;
   dummy.is_locked = false;
   dummy.is_broken = false;

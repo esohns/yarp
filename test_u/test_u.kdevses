@@ -1,23 +1,24 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="4" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/graphics/SDL_gui.cpp" >
-   <View0 Encoding="" line="793" Type="Source" />
+ <DocsAndViews NumberOfDocuments="2" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/map/path_finder.cpp" >
+   <View0 Encoding="UTF-8" line="221" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/graphics/SDL_gui_levelwindow.cpp" >
-   <View0 Encoding="" line="1474" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/map/Makefile.am" >
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/graphics/SDL_gui_levelwindow.h" >
-   <View0 Encoding="" line="91" Type="Source" />
-  </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/graphics/Makefile.am" >
-   <View0 Encoding="" line="18" Type="Source" />
-  </Doc3>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
-   <breakpointList/>
+   <breakpointList>
+    <breakpoint0 location="/home/unfv/Projects/RPG/map/rpg_map_common_tools.cpp:2669" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+     <tracedExpressions/>
+    </breakpoint0>
+    <breakpoint1 location="/home/unfv/Projects/RPG/test_u/map/path_finder.cpp:230" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+     <tracedExpressions/>
+    </breakpoint1>
+   </breakpointList>
    <showInternalCommands value="0" />
   </kdevdebugger>
   <kdevastyle>
@@ -28,6 +29,9 @@
    <bookmarks>
     <bookmark url="/home/unfv/Projects/RPG/test_u/net/protocol/IRC_client_gui.cpp" >
      <mark line="589" />
+    </bookmark>
+    <bookmark url="/home/unfv/Projects/RPG/test_u/map/path_finder.cpp" >
+     <mark line="223" />
     </bookmark>
    </bookmarks>
   </kdevbookmarks>

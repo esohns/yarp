@@ -41,6 +41,8 @@ class RPG_Map_Common_Tools
                          const RPG_Map_Positions_t&,  // seed points (areas)
                          const RPG_Map_FloorPlan_t&);
 
+  static void buildCorridor(const RPG_Map_Path_t&, // path
+                            RPG_Map_Positions_t&); // return value: corridor
   static void createFloorPlan(const unsigned long&,  // map dimension x
                               const unsigned long&,  // map dimension y
                               const unsigned long&,  // #areas (==> "rooms")
@@ -58,10 +60,16 @@ class RPG_Map_Common_Tools
 
   static const unsigned long dist2Positions(const RPG_Map_Position_t&,  // position 1
                                             const RPG_Map_Position_t&); // position 2
-  static const std::string direction2String(const RPG_Map_Direction&); // direction
+  static const std::string direction2String(const RPG_Map_Direction&);
+  static const std::string orientation2String(const RPG_Map_Orientation&);
 
+  // *TODO*: relies on the size of the room in relation to its' surrounding space
+  // --> results may be wrong for small enclosures
+  static const RPG_Map_Direction door2exitDirection(const RPG_Map_Position_t&,   // door
+                                                    const RPG_Map_FloorPlan_t&);
   static const bool isFloor(const RPG_Map_Position_t&,
                             const RPG_Map_FloorPlan_t&);
+  // *NOTE*: relies on the correct notion of "outside" set for all doors !
   static const bool isInsideRoom(const RPG_Map_Position_t&,
                                  const RPG_Map_FloorPlan_t&);
 
@@ -167,13 +175,15 @@ class RPG_Map_Common_Tools
                            const RPG_Map_ZoneList_t&, // doors
                            const RPG_Map_ZoneList_t&, // room(s) // *TODO*: faster in/out tests ?
                            RPG_Map_FloorPlan_t&);     // return value: doors & walls
-  static void buildCorridor(const RPG_Map_Path_t&, // path
-                            RPG_Map_Zone_t&);      // return value: corridor
   static void displayCorridors(const unsigned long&,       // dimension x
                                const unsigned long&,       // dimension y
                                const RPG_Map_ZoneList_t&,  // rooms
                                const RPG_Map_ZoneList_t&,  // doors
                                const RPG_Map_ZoneList_t&); // corridors
+
+  static void floodFill(const RPG_Map_Position_t&,  // position
+                        const RPG_Map_FloorPlan_t&, // floor plan
+                        RPG_Map_Positions_t&);      // return value: (filled) area
 };
 
 #endif
