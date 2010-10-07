@@ -1812,8 +1812,6 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
   RPG_Dice_RollResult_t result;
   RPG_Map_PositionsConstIterator_t target_door;
   RPG_Map_Path_t current_path;
-  RPG_Map_Position_t wall_position1, wall_position2, last_position;
-  RPG_Map_Direction last_direction = DIRECTION_INVALID;
   RPG_Map_PathConstIterator_t path_iter, last;
   RPG_Map_PathList_t paths;
   bool connectivity_established = false;
@@ -1936,135 +1934,8 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
       } // end IF
 
       // step3: create a corridor along this path
-      last_position = (*doors_iter);
-      last_direction = (*current_path.begin()).second;
-      path_iter = current_path.begin(); path_iter++;
-      last = current_path.end(); last--;
-      for (;
-           path_iter != last;
-           path_iter++)
-      {
-        // when turning, add additional walls at the last position:
-        // - in the direction of last travel
-        // - from there, a corner in the OPPOSITE direction of CURRENT travel
-        if ((*path_iter).second != last_direction)
-        {
-          wall_position1 = last_position;
-          switch (last_direction)
-          {
-            case DIRECTION_UP:
-              wall_position1.second--; break;
-            case DIRECTION_DOWN:
-              wall_position1.second++; break;
-            case DIRECTION_RIGHT:
-              wall_position1.first++; break;
-            case DIRECTION_LEFT:
-              wall_position1.first--; break;
-            default:
-            {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("invalid direction (was \"%s\", %u), continuing\n"),
-                         RPG_Map_Common_Tools::direction2String(last_direction).c_str()));
-
-              break;
-            }
-          } // end SWITCH
-          wall_position2 = wall_position1;
-          switch ((*path_iter).second)
-          {
-            case DIRECTION_UP:
-              wall_position2.second++; break;
-            case DIRECTION_DOWN:
-              wall_position2.second--; break;
-            case DIRECTION_RIGHT:
-              wall_position2.first--; break;
-            case DIRECTION_LEFT:
-              wall_position2.first++; break;
-            case DIRECTION_INVALID:
-            {
-              // reached the endpoint ?
-              if ((*path_iter).first == *target_door)
-                break; // done
-            }
-            default:
-            {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                         RPG_Map_Common_Tools::direction2String((*path_iter).second).c_str()));
-
-              break;
-            }
-          } // end SWITCH
-          current_corridor.insert(wall_position1);
-          current_corridor.insert(wall_position2);
-        } // end IF
-        wall_position1 = last_position;
-        wall_position2 = last_position;
-        switch ((*path_iter).second)
-        {
-          case DIRECTION_UP:
-          {
-            wall_position1.first--;
-            wall_position1.second--;
-            wall_position2.first++;
-            wall_position2.second--;
-
-            last_position.second--;
-
-            break;
-          }
-          case DIRECTION_DOWN:
-          {
-            wall_position1.first--;
-            wall_position1.second++;
-            wall_position2.first++;
-            wall_position2.second++;
-
-            last_position.second++;
-
-            break;
-          }
-          case DIRECTION_RIGHT:
-          {
-            wall_position1.first++;
-            wall_position1.second--;
-            wall_position2.first++;
-            wall_position2.second++;
-
-            last_position.first++;
-
-            break;
-          }
-          case DIRECTION_LEFT:
-          {
-            wall_position1.first--;
-            wall_position1.second--;
-            wall_position2.first--;
-            wall_position2.second++;
-
-            last_position.first--;
-
-            break;
-          }
-          case DIRECTION_INVALID:
-          {
-            // reached the endpoint ?
-            if ((*path_iter).first == *target_door)
-              break; // done
-          }
-          default:
-          {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                       direction2String((*path_iter).second).c_str()));
-
-            break;
-          }
-        } // end SWITCH
-        last_direction = (*path_iter).second;
-        current_corridor.insert(wall_position1);
-        current_corridor.insert(wall_position2);
-      } // end FOR
+      RPG_Map_Common_Tools::buildCorridor(current_path,
+                                          current_corridor);
       corridors_bounds.push_back(current_corridor);
       paths.push_back(current_path);
     } // end FOR
@@ -2171,10 +2042,9 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
   // init return value
   corridor_out.clear();
 
-  RPG_Map_Position_t wall_position1, wall_position2;
+  RPG_Map_Position_t wall_position_1, wall_position_2, wall_position_3;
 
   // *NOTE*: paths extend from door to door...
-  RPG_Map_Position_t last_position  = (*path_in.begin()).first;
   RPG_Map_Direction  last_direction = (*path_in.begin()).second;
   RPG_Map_PathConstIterator_t path_iter, last;
   path_iter = path_in.begin(); path_iter++;
@@ -2183,22 +2053,60 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
        path_iter != last;
        path_iter++)
   {
-    // *NOTE*: on a change of direction, add additional walls at the PREVIOUS position:
+    // *NOTE*: on a CHANGE of direction add walls:
     // - in the direction of LAST travel
     // - in the OPPOSITE direction of CURRENT travel
+    // - in the CORNER between these two
+    // else, add walls flanking the CURRENT direction of travel on both sides
     if ((*path_iter).second != last_direction)
     {
-      wall_position1 = last_position;
+      wall_position_1 = (*path_iter).first;
       switch (last_direction)
       {
         case DIRECTION_UP:
-          wall_position1.second--; break;
+        {
+          wall_position_1.second--;
+          wall_position_3 = wall_position_1;
+          if ((*path_iter).second == DIRECTION_RIGHT)
+            wall_position_3.first--;
+          else
+            wall_position_3.first++;
+
+          break;
+        }
         case DIRECTION_DOWN:
-          wall_position1.second++; break;
+        {
+          wall_position_1.second++;
+          wall_position_3 = wall_position_1;
+          if ((*path_iter).second == DIRECTION_RIGHT)
+            wall_position_3.first--;
+          else
+            wall_position_3.first++;
+
+          break;
+        }
         case DIRECTION_RIGHT:
-          wall_position1.first++; break;
+        {
+          wall_position_1.first++;
+          wall_position_3 = wall_position_1;
+          if ((*path_iter).second == DIRECTION_UP)
+            wall_position_3.second++;
+          else
+            wall_position_3.second--;
+
+          break;
+        }
         case DIRECTION_LEFT:
-          wall_position1.first--; break;
+        {
+          wall_position_1.first--;
+          wall_position_3 = wall_position_1;
+          if ((*path_iter).second == DIRECTION_UP)
+            wall_position_3.second++;
+          else
+            wall_position_3.second--;
+
+          break;
+        }
         case DIRECTION_INVALID:
         default:
         {
@@ -2209,17 +2117,17 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
           break;
         }
       } // end SWITCH
-      wall_position2 = wall_position1;
+      wall_position_2 = (*path_iter).first;
       switch ((*path_iter).second)
       {
         case DIRECTION_UP:
-          wall_position2.second++; break;
+          wall_position_2.second++; break;
         case DIRECTION_DOWN:
-          wall_position2.second--; break;
+          wall_position_2.second--; break;
         case DIRECTION_RIGHT:
-          wall_position2.first--; break;
+          wall_position_2.first--; break;
         case DIRECTION_LEFT:
-          wall_position2.first++; break;
+          wall_position_2.first++; break;
         case DIRECTION_INVALID:
         default:
         {
@@ -2230,70 +2138,45 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
           break;
         }
       } // end SWITCH
-      corridor_out.insert(wall_position1);
-      corridor_out.insert(wall_position2);
     } // end IF
-    wall_position1 = last_position;
-    wall_position2 = last_position;
-    switch ((*path_iter).second)
+    else
     {
-      case DIRECTION_UP:
+      wall_position_1 = (*path_iter).first;
+      wall_position_2 = (*path_iter).first;
+      switch ((*path_iter).second)
       {
-        wall_position1.first--;
-        wall_position1.second--;
-        wall_position2.first++;
-        wall_position2.second--;
+        case DIRECTION_UP:
+        case DIRECTION_DOWN:
+        {
+          wall_position_1.first--;
+          wall_position_2.first++;
 
-        last_position.second--;
+          break;
+        }
+        case DIRECTION_RIGHT:
+        case DIRECTION_LEFT:
+        {
+          wall_position_1.second--;
+          wall_position_2.second++;
 
-        break;
-      }
-      case DIRECTION_DOWN:
-      {
-        wall_position1.first--;
-        wall_position1.second++;
-        wall_position2.first++;
-        wall_position2.second++;
+          break;
+        }
+        case DIRECTION_INVALID:
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
+                     RPG_Map_Common_Tools::direction2String((*path_iter).second).c_str()));
 
-        last_position.second++;
-
-        break;
-      }
-      case DIRECTION_RIGHT:
-      {
-        wall_position1.first++;
-        wall_position1.second--;
-        wall_position2.first++;
-        wall_position2.second++;
-
-        last_position.first++;
-
-        break;
-      }
-      case DIRECTION_LEFT:
-      {
-        wall_position1.first--;
-        wall_position1.second--;
-        wall_position2.first--;
-        wall_position2.second++;
-
-        last_position.first--;
-
-        break;
-      }
-      case DIRECTION_INVALID:
-      default:
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                   RPG_Map_Common_Tools::direction2String((*path_iter).second).c_str()));
-
-        break;
-      }
-    } // end SWITCH
+          break;
+        }
+      } // end SWITCH
+    } // end ELSE
+    corridor_out.insert(wall_position_1);
+    corridor_out.insert(wall_position_2);
+    if ((*path_iter).second != last_direction)
+      corridor_out.insert(wall_position_3);
     last_direction = (*path_iter).second;
-    corridor_out.insert(wall_position1);
-    corridor_out.insert(wall_position2);
   } // end FOR
 }
 
