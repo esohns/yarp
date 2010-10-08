@@ -130,151 +130,13 @@ do_initVideo(const std::string& graphicsDirectory_in,
   // enable cursor
   SDL_ShowCursor(SDL_ENABLE);
 
-  char driver[MAXPATHLEN];
-  if (!SDL_VideoDriverName(driver,
-                           sizeof(driver)))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_VideoDriverName(): \"%s\", aborting\n"),
-               SDL_GetError()));
+  screen = RPG_Graphics_SDL_Tools::initScreen(config_in.screen_width,
+                                              config_in.screen_height,
+                                              config_in.screen_colordepth,
+                                              config_in.doubleBuffer,
+                                              config_in.fullScreen);
 
-    return false;
-  } // end IF
-  // retrieve/list "best" available video mode
-  const SDL_VideoInfo* videoInfo = NULL;
-  videoInfo = SDL_GetVideoInfo();
-  ACE_ASSERT(videoInfo);
-  ACE_DEBUG((LM_INFO,
-             ACE_TEXT("*** video capabilities (driver: \"%s\") ***\nhardware surfaces: \"%s\"\nwindow manager: \"%s\"\nhardware to hardware blits accelerated: \"%s\"\nhardware to hardware colorkey blits accelerated: \"%s\"\nhardware to hardware alpha blits accelerated: \"%s\"\nsoftware to hardware blits accelerated: \"%s\"\nsoftware to hardware colorkey blits accelerated: \"%s\"\nsoftware to hardware alpha blits accelerated: \"%s\"\ncolor fills accelerated: \"%s\"\nvideo memory: %d bytes\n*** (suggested) video mode ***\npalette: %@\nbits[bytes]/pixel: %d[%d]\nmask[RGBA]: %x %x %x %x\nshift[RGBA]: %d %d %d %d\nloss[RGBA]: %d %d %d %d\ntransparent colorkey: %d\noverall surface alpha: %d\n"),
-             driver,
-             (videoInfo->hw_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->wm_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_hw ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_hw_CC ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_hw_A ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_sw ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_sw_CC ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_sw_A ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_fill ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             videoInfo->video_mem,
-             videoInfo->vfmt->palette,
-             videoInfo->vfmt->BitsPerPixel,
-             videoInfo->vfmt->BytesPerPixel,
-             videoInfo->vfmt->Rmask, videoInfo->vfmt->Gmask, videoInfo->vfmt->Bmask, videoInfo->vfmt->Amask,
-             videoInfo->vfmt->Rshift, videoInfo->vfmt->Gshift, videoInfo->vfmt->Bshift, videoInfo->vfmt->Ashift,
-             videoInfo->vfmt->Rloss, videoInfo->vfmt->Gloss, videoInfo->vfmt->Bloss, videoInfo->vfmt->Aloss,
-             videoInfo->vfmt->colorkey,
-             ACE_static_cast(int, videoInfo->vfmt->alpha)));
-
-  // set surface flags
-  Uint32 surface_flags = ((videoInfo->hw_available ? (SDL_HWSURFACE |
-                                                      (config_in.doubleBuffer ? SDL_DOUBLEBUF : SDL_ANYFORMAT))
-                                                                              : SDL_SWSURFACE) |
-//                                                    SDL_ASYNCBLIT | // "...will usually slow down blitting on single CPU machines,
-//                                                                    //  but may provide a speed increase on SMP systems..."
-                                                      SDL_ANYFORMAT |    // "...Allow any video depth/pixel-format..."
-                                                      SDL_HWPALETTE |    // "...Surface has exclusive palette..."
-//                                                    (videoConfig_in.doubleBuffer ? SDL_DOUBLEBUF : SDL_ANYFORMAT) |
-                                                      (config_in.fullScreen ? (SDL_FULLSCREEN | SDL_NOFRAME)
-                                                                            : SDL_RESIZABLE));
-  // get available fullscreen/hardware/... modes
-  SDL_Rect** modes = NULL;
-  modes = SDL_ListModes(NULL,           // use same as videoInfo
-                        surface_flags); // surface flags
-  // --> any valid modes available ?
-  if (modes == NULL)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("no available resolutions (flags: %x) --> change settings, aborting\n"),
-               surface_flags));
-
-    return false;
-  } // end IF
-  else if (modes == ACE_reinterpret_cast(SDL_Rect**, -1))
-  {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("ALL resolutions available (flags: %x)...\n"),
-               surface_flags));
-  }
-  else
-  {
-    // print valid modes
-    ACE_DEBUG((LM_INFO,
-               ACE_TEXT("*** available resolutions (flags: %x) ***\n"),
-               surface_flags));
-    for (unsigned int i = 0;
-         modes[i];
-         i++)
-      ACE_DEBUG((LM_INFO,
-                 ACE_TEXT("[%d]: %d x %d\n"),
-                 i + 1,
-                 modes[i]->w,
-                 modes[i]->h));
-  } // end ELSE
-
-  // check to see whether the requested mode is possible
-  int suggested_bpp = SDL_VideoModeOK(config_in.screen_width,
-                                      config_in.screen_height,
-                                      config_in.screen_colordepth,
-                                      surface_flags);
-  switch (suggested_bpp)
-  {
-    case 0:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("requested mode (width: %d, height: %d, depth: %d, flags: %x) not supported --> change settings, aborting\n"),
-                 config_in.screen_width,
-                 config_in.screen_height,
-                 config_in.screen_colordepth,
-                 surface_flags));
-
-      return false;
-    }
-    default:
-    {
-      if (suggested_bpp != config_in.screen_colordepth)
-      {
-        ACE_DEBUG((LM_WARNING,
-                   ACE_TEXT("using suggested depth: %d...\n"),
-                   suggested_bpp));
-      } // end IF
-
-      break;
-    }
-  } // end SWITCH
-
-  // switch to graphics mode... here we go !
-  screen = SDL_SetVideoMode(config_in.screen_width,
-                            config_in.screen_height,
-                            suggested_bpp,
-                            surface_flags);
-  if (!screen)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetVideoMode(%d, %d, %d, %x): \"%s\", aborting\n"),
-               config_in.screen_width,
-               config_in.screen_height,
-               suggested_bpp,
-               surface_flags,
-               SDL_GetError()));
-
-    return false;
-  } // end IF
-
-  ACE_DEBUG((LM_INFO,
-             ACE_TEXT("*** screen flags ***\nsurface: %sRAM\nasynch blits: \"%s\"\nany video depth/pixel-format: \"%s\"\nsurface has exclusive palette: \"%s\"\ndouble-buffered: \"%s\"\nblit uses hardware acceleration: \"%s\"\nblit uses a source color key: \"%s\"\nsurface is RLE encoded: \"%s\"\nblit uses source alpha blending: \"%s\"\nsurface uses preallocated memory: \"%s\"\n"),
-             ((screen->flags & SDL_HWSURFACE) ? ACE_TEXT("Video") : ACE_TEXT("")),
-             ((screen->flags & SDL_ASYNCBLIT) ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             ((screen->flags & SDL_ANYFORMAT) ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             ((screen->flags & SDL_HWPALETTE) ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             ((screen->flags & SDL_DOUBLEBUF) ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             ((screen->flags & SDL_HWACCEL) ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             ((screen->flags & SDL_SRCCOLORKEY) ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             ((screen->flags & SDL_RLEACCEL) ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             ((screen->flags & SDL_SRCALPHA) ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             ((screen->flags & SDL_PREALLOC) ? ACE_TEXT("yes") : ACE_TEXT("no"))));
-
-  return true;
+  return (screen != NULL);
 }
 
 Uint32
@@ -382,11 +244,9 @@ do_SDL_waitForInput(const unsigned long& timeout_in,
   if (timeout_in &&
       (event_out.type != SDL_GUI_SDL_TIMEREVENT))
     if (!SDL_RemoveTimer(timer))
-    {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
                  SDL_GetError()));
-    } // end IF
 }
 
 void

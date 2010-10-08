@@ -96,15 +96,16 @@ event_timer_SDL_cb(Uint32 interval_in,
   GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, argument_in);
   ACE_ASSERT(data);
 
+  SDL_Event event;
+  event.type = SDL_NOEVENT;
   // synch access
   {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(data->hover_lock);
+    ACE_Guard<ACE_Thread_Mutex> aGuard(data->hover_quit_lock);
 
     data->hover_time += interval_in;
     if (data->hover_time > RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY)
     {
       // mouse is hovering --> trigger an event
-      SDL_Event event;
       event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
       event.user.code = ACE_static_cast(int, data->hover_time);
 
@@ -114,6 +115,20 @@ event_timer_SDL_cb(Uint32 interval_in,
                    SDL_GetError()));
     } // end IF
   } // end lock scope
+
+  // dispatch a pending GTK event
+  GDK_THREADS_ENTER();
+  if (gtk_events_pending())
+  {
+    // there are pending GTK events --> trigger an event
+    event.type = RPG_CLIENT_SDL_GTKEVENT;
+
+    if (SDL_PushEvent(&event))
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+                 SDL_GetError()));
+  } // end IF
+  GDK_THREADS_LEAVE();
 
   // re-schedule
   return interval_in;
@@ -941,151 +956,13 @@ do_initGUI(const std::string& graphicsDirectory_in,
 //   // don't show (double) cursor
 //   SDL_ShowCursor(SDL_DISABLE);
 
-  char driver[MAXPATHLEN];
-  if (!SDL_VideoDriverName(driver,
-                           sizeof(driver)))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_VideoDriverName(): \"%s\", aborting\n"),
-               SDL_GetError()));
+  userData_in.screen = RPG_Graphics_SDL_Tools::initScreen(videoConfig_in.screen_width,
+                                                          videoConfig_in.screen_height,
+                                                          videoConfig_in.screen_colordepth,
+                                                          videoConfig_in.doubleBuffer,
+                                                          videoConfig_in.fullScreen);
 
-    return false;
-  } // end IF
-  // retrieve/list "best" available video mode
-  const SDL_VideoInfo* videoInfo = NULL;
-  videoInfo = SDL_GetVideoInfo();
-  ACE_ASSERT(videoInfo);
-
-  ACE_DEBUG((LM_INFO,
-             ACE_TEXT("*** video capabilities (driver: \"%s\") ***\nhardware surfaces: \"%s\"\nwindow manager: \"%s\"\nhardware to hardware blits accelerated: \"%s\"\nhardware to hardware colorkey blits accelerated: \"%s\"\nhardware to hardware alpha blits accelerated: \"%s\"\nsoftware to hardware blits accelerated: \"%s\"\nsoftware to hardware colorkey blits accelerated: \"%s\"\nsoftware to hardware alpha blits accelerated: \"%s\"\ncolor fills accelerated: \"%s\"\nvideo memory: %d bytes\n*** (suggested) video mode ***\npalette: %@\nbits[bytes]/pixel: %d[%d]\nmask[RGBA]: %x %x %x %x\nshift[RGBA]: %d %d %d %d\nloss[RGBA]: %d %d %d %d\ntransparent colorkey: %d\noverall surface alpha: %d\n"),
-             driver,
-             (videoInfo->hw_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->wm_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_hw ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_hw_CC ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_hw_A ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_sw ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_sw_CC ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_sw_A ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_fill ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             videoInfo->video_mem,
-             videoInfo->vfmt->palette,
-             videoInfo->vfmt->BitsPerPixel,
-             videoInfo->vfmt->BytesPerPixel,
-             videoInfo->vfmt->Rmask, videoInfo->vfmt->Gmask, videoInfo->vfmt->Bmask, videoInfo->vfmt->Amask,
-             videoInfo->vfmt->Rshift, videoInfo->vfmt->Gshift, videoInfo->vfmt->Bshift, videoInfo->vfmt->Ashift,
-             videoInfo->vfmt->Rloss, videoInfo->vfmt->Gloss, videoInfo->vfmt->Bloss, videoInfo->vfmt->Aloss,
-             videoInfo->vfmt->colorkey,
-             ACE_static_cast(int, videoInfo->vfmt->alpha)));
-
-  // set flags
-  Uint32 surface_flags = ((videoInfo->hw_available ? (SDL_HWSURFACE |
-                                                      (videoConfig_in.doubleBuffer ? SDL_DOUBLEBUF : SDL_ANYFORMAT))
-                                                   : SDL_SWSURFACE) |
-//                           SDL_ASYNCBLIT | // "...will usually slow down blitting on single CPU machines,
-//                                           //  but may provide a speed increase on SMP systems..."
-                          SDL_ANYFORMAT |    // "...Allow any video depth/pixel-format..."
-                          SDL_HWPALETTE |    // "...Surface has exclusive palette..."
-//                           (videoConfig_in.doubleBuffer ? SDL_DOUBLEBUF : SDL_ANYFORMAT) |
-                          (videoConfig_in.fullScreen ? (SDL_FULLSCREEN | SDL_NOFRAME) : SDL_RESIZABLE));
-  // get available fullscreen/hardware/... modes
-  SDL_Rect** modes = NULL;
-  modes = SDL_ListModes(NULL,           // use same as videoInfo
-                        surface_flags); // surface flags
-  // --> any valid modes available ?
-  if (modes == NULL)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("no available resolutions (flags: %x: change your settings), aborting\n"),
-               surface_flags));
-
-    return false;
-  } // end IF
-  else if (modes == ACE_reinterpret_cast(SDL_Rect**, -1))
-  {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("ALL resolutions available (flags: %x)...\n"),
-               surface_flags));
-  }
-  else
-  {
-    // print valid modes
-    ACE_DEBUG((LM_INFO,
-               ACE_TEXT("*** available resolutions [flags: %x] ***\n"),
-               surface_flags));
-    for (unsigned int i = 0;
-         modes[i];
-         i++)
-      ACE_DEBUG((LM_INFO,
-                 ACE_TEXT("[%d]: %d x %d\n"),
-                 i + 1,
-                 modes[i]->w,
-                 modes[i]->h));
-  } // end ELSE
-
-  // check to see whether the requested mode is possible
-  int suggested_bpp = SDL_VideoModeOK(videoConfig_in.screen_width,
-                                      videoConfig_in.screen_height,
-                                      videoConfig_in.screen_colordepth,
-                                      surface_flags);
-  switch (suggested_bpp)
-  {
-    case 0:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("requested mode (width: %d, height: %d, depth: %d, flags: %x) not supported (change your settings), aborting\n"),
-                 videoConfig_in.screen_width,
-                 videoConfig_in.screen_height,
-                 videoConfig_in.screen_colordepth,
-                 surface_flags));
-
-      return false;
-    }
-    default:
-    {
-      if (suggested_bpp != videoConfig_in.screen_colordepth)
-      {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("suggested depth: %d...\n"),
-                   suggested_bpp));
-      } // end IF
-
-      break;
-    }
-  } // end SWITCH
-
-  // switch to graphics mode... here we go !
-  userData_in.screen = SDL_SetVideoMode(videoConfig_in.screen_width,
-                                        videoConfig_in.screen_height,
-                                        videoConfig_in.screen_colordepth,
-                                        surface_flags);
-  if (!userData_in.screen)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetVideoMode(%d, %d, %d, %x): \"%s\", aborting\n"),
-               videoConfig_in.screen_width,
-               videoConfig_in.screen_height,
-               videoConfig_in.screen_colordepth,
-               surface_flags,
-               SDL_GetError()));
-
-    return false;
-  } // end IF
-
-  ACE_DEBUG((LM_INFO,
-             ACE_TEXT("*** screen flags ***\nsurface: %sRAM\nasynch blits: \"%s\"\nany video depth/pixel-format: \"%s\"\nsurface has exclusive palette: \"%s\"\ndouble-buffered: \"%s\"\nblit uses hardware acceleration: \"%s\"\nblit uses a source color key: \"%s\"\nsurface is RLE encoded: \"%s\"\nblit uses source alpha blending: \"%s\"\nsurface uses preallocated memory: \"%s\"\n"),
-             ((userData_in.screen->flags & SDL_HWSURFACE)   ? ACE_TEXT("Video") : ACE_TEXT("")),
-             ((userData_in.screen->flags & SDL_ASYNCBLIT)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((userData_in.screen->flags & SDL_ANYFORMAT)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((userData_in.screen->flags & SDL_HWPALETTE)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((userData_in.screen->flags & SDL_DOUBLEBUF)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((userData_in.screen->flags & SDL_HWACCEL)     ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((userData_in.screen->flags & SDL_SRCCOLORKEY) ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((userData_in.screen->flags & SDL_RLEACCEL)    ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((userData_in.screen->flags & SDL_SRCALPHA)    ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((userData_in.screen->flags & SDL_PREALLOC)    ? ACE_TEXT("yes")   : ACE_TEXT("no"))));
-
-  return true;
+  return (userData_in.screen != NULL);
 }
 
 const bool
@@ -1191,8 +1068,9 @@ do_work(const RPG_Client_Config& config_in)
   }
 
   GTK_cb_data_t userData;
-//   userData.hover_lock;
+//   userData.hover_quit_lock;
   userData.hover_time      = 0;
+  userData.gtk_main_quit_invoked = false;
   userData.xml             = NULL;
   userData.screen          = NULL;
   userData.event_timer     = 0;
@@ -1207,10 +1085,6 @@ do_work(const RPG_Client_Config& config_in)
 //   userData.seed_points;
 //   userData.player;
 
-  // *WARNING*: this doesn't really make any sense - still, it seems to be a
-  // requirement to somehow "initialize" the mutex from the "main" thread...
-  // IOW: without this, GDK_THREADS_ENTER(), when first invoked from a child thread,
-  // will block indefinetly (go on, try it !)
   GDK_THREADS_ENTER();
   if (!do_initGUI(config_in.graphics_directory, // graphics directory
                   config_in.glade_file,         // glade file
@@ -1224,8 +1098,14 @@ do_work(const RPG_Client_Config& config_in)
 
     return;
   } // end IF
+  GDK_THREADS_LEAVE();
   ACE_ASSERT(main_dialog);
   ACE_ASSERT(userData.screen);
+
+  // ***** mouse setup *****
+  SDL_WarpMouse((userData.screen->w / 2),
+                 (userData.screen->h / 2));
+
   RPG_Graphics_Common_Tools::init(config_in.graphics_directory,
                                   config_in.graphics_cache_size);
 
@@ -1250,29 +1130,13 @@ do_work(const RPG_Client_Config& config_in)
   mainWindow.draw();
   mainWindow.refresh();
 
-  // ***** mouse setup *****
-  SDL_WarpMouse((userData.screen->w / 2),
-                (userData.screen->h / 2));
-
   // step4b: set default cursor
   RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(TYPE_CURSOR_NORMAL);
 
   // step5: setup level "window"
   RPG_Client_WindowLevel mapWindow(mainWindow); // parent
   mapWindow.setScreen(userData.screen);
-  // refresh screen
-  try
-  {
-    mapWindow.draw();
-    mapWindow.refresh();
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
-  }
 
-  // step5: setup level
   // step5a: setup style
   RPG_Graphics_MapStyle_t mapStyle;
   mapStyle.floor_style = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
@@ -1280,7 +1144,7 @@ do_work(const RPG_Client_Config& config_in)
   mapStyle.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
   mapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
 
-  // step5a: setup map
+  // step5b: setup map
   userData.plan.size_x = 0;
   userData.plan.size_y = 0;
   userData.plan.unmapped.clear();
@@ -1310,13 +1174,10 @@ do_work(const RPG_Client_Config& config_in)
                  ACE_TEXT("failed to RPG_Map_Common_Tools::load(\"%s\"), aborting\n"),
                  config_in.map_file.c_str()));
 
-      GDK_THREADS_LEAVE();
-
       return;
     } // end IF
   } // end ELSE
 
-//   // debug info
 //   RPG_Map_Common_Tools::displayFloorPlan(userData.seedPoints,
 //                                          userData.plan);
 
@@ -1334,7 +1195,7 @@ do_work(const RPG_Client_Config& config_in)
                ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
   }
 
-  // start timer (triggers hover- and other events)
+  // start timer (triggers hover- and processes GTK events)
   userData.event_timer = NULL;
   userData.event_timer = SDL_AddTimer(RPG_CLIENT_SDL_EVENT_TIMEOUT, // interval (ms)
                                       event_timer_SDL_cb,           // event timer callback
@@ -1346,8 +1207,6 @@ do_work(const RPG_Client_Config& config_in)
                RPG_CLIENT_SDL_EVENT_TIMEOUT,
                SDL_GetError()));
 
-    GDK_THREADS_LEAVE();
-
     return;
   } // end IF
 
@@ -1358,15 +1217,31 @@ do_work(const RPG_Client_Config& config_in)
 //   // *NOTE*: make sure we generally restart system calls (after e.g. EINTR) for the reactor...
 //   ACE_Reactor::instance()->restart(1);
 
-  // setup dispatch of SDL events from the GTK (== "main") thread
-  userData.previous_window = NULL;
-  userData.main_window = &mainWindow;
-  userData.map_window = &mapWindow;
-  guint SDLEventHandlerID = gtk_idle_add(do_SDLEventLoop_GTK_cb,
-                                         &userData);
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("installed SDL event handler (ID: %u)...\n"),
-             SDLEventHandlerID));
+//   // setup dispatch of SDL events from the GTK (== "main") thread
+//   userData.previous_window = NULL;
+//   userData.main_window = &mainWindow;
+//   userData.map_window = &mapWindow;
+//   GDK_THREADS_ENTER();
+//   guint SDLEventHandlerID = gtk_idle_add(do_SDLEventLoop_GTK_cb,
+//                                          &userData);
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("installed SDL event handler (ID: %u)...\n"),
+//              SDLEventHandlerID));
+//   // setup dispatch of a hook when gkt_main_quit() is invoked
+//   guint quitHandlerID = gtk_quit_add(0,                   // main level: 0 (current)
+//                                      gtk_quit_handler_cb, // handler
+//                                      &userData);          // user data
+//   GDK_THREADS_LEAVE();
+//   if (quitHandlerID == 0)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to gtk_quit_add(), aborting\n")));
+//
+//     return;
+//   } // end IF
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("installed GTK quit handler (ID: %u)...\n"),
+//              quitHandlerID));
 
   // setup dispatch of network events
   // *NOTE*: if we use a thread pool, we invoke a different function...
@@ -1419,9 +1294,255 @@ do_work(const RPG_Client_Config& config_in)
              grp_id,
              (config_in.num_threadpool_threads ? config_in.num_threadpool_threads : 1)));
 
-  // step7: dispatch GTK (and SDL-) events
-  gtk_main();
-  GDK_THREADS_LEAVE();
+  // step7: dispatch SDL (and GTK) events
+//   gtk_main();
+  SDL_Event event;
+  bool done = false;
+  RPG_Graphics_IWindow* window = NULL;
+  RPG_Graphics_IWindow* previous_window = NULL;
+  bool need_redraw = false;
+  RPG_Graphics_Position_t mouse_position;
+  do
+  {
+    window = NULL;
+    need_redraw = false;
+    mouse_position = std::make_pair(0, 0);
+
+    // step1: get pending event
+    if (SDL_WaitEvent(&event) != 1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
+                 SDL_GetError()));
+
+      return;
+    } // end IF
+
+    // if necessary, reset hover_time
+    if (event.type != RPG_GRAPHICS_SDL_HOVEREVENT)
+    {
+      // synch access
+      ACE_Guard<ACE_Thread_Mutex> aGuard(userData.hover_quit_lock);
+
+      userData.hover_time = 0;
+    } // end IF
+
+    switch (event.type)
+    {
+      case SDL_KEYDOWN:
+      {
+        switch (event.key.keysym.sym)
+        {
+          case SDLK_m:
+          {
+            std::string dump_path = RPG_MAP_DUMP_DIR;
+            dump_path += ACE_DIRECTORY_SEPARATOR_STR;
+            dump_path += ACE_TEXT("map.txt");
+            if (!RPG_Map_Common_Tools::save(dump_path,            // file
+                                            userData.seed_points, // seed points
+                                            userData.plan))       // plan
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),
+                         dump_path.c_str()));
+
+              return;
+            } // end IF
+
+            break;
+          }
+          case SDLK_q:
+          {
+            // finished event processing
+            done = true;
+
+            break;
+          }
+          default:
+          {
+            break;
+          }
+        } // end SWITCH
+
+        if (done)
+          break; // leave
+        // *WARNING*: falls through !
+      }
+      case SDL_ACTIVEEVENT:
+      case SDL_MOUSEMOTION:
+      case SDL_MOUSEBUTTONDOWN:
+      case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
+      {
+        // find window
+        switch (event.type)
+        {
+          case SDL_MOUSEMOTION:
+            mouse_position = std::make_pair(event.motion.x,
+                                            event.motion.y); break;
+          case SDL_MOUSEBUTTONDOWN:
+            mouse_position = std::make_pair(event.button.x,
+                                            event.button.y); break;
+          default:
+          {
+            int x,y;
+            SDL_GetMouseState(&x, &y);
+            mouse_position = std::make_pair(x, y);
+
+            break;
+          }
+        } // end SWITCH
+        window = mainWindow.getWindow(mouse_position);
+        ACE_ASSERT(window);
+
+        // notify previously "active" window upon losing "focus"
+        if (event.type == SDL_MOUSEMOTION)
+        {
+          if (previous_window &&
+//               (previous_window != mainWindow)
+              (previous_window != window))
+          {
+            event.type = RPG_GRAPHICS_SDL_MOUSEMOVEOUT;
+            try
+            {
+              previous_window->handleEvent(event,
+                                           previous_window,
+                                           need_redraw);
+            }
+            catch (...)
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+            }
+            event.type = SDL_MOUSEMOTION;
+          } // end IF
+        } // end IF
+        // remember last "active" window
+        previous_window = window;
+
+        // notify "active" window
+        try
+        {
+          window->handleEvent(event,
+                              window,
+                              need_redraw);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+        }
+
+        break;
+      }
+      case SDL_QUIT:
+      {
+        // finished event processing
+        done = true;
+
+        break;
+      }
+      case RPG_CLIENT_SDL_GTKEVENT:
+      {
+        // (at least one) GTK event has arrived --> process pending events
+        GDK_THREADS_ENTER();
+        while (gtk_events_pending())
+          if (gtk_main_iteration_do(FALSE)) // NEVER block !
+          {
+            // gtk_main_quit() has been invoked --> finished event processing
+
+            // *NOTE*: as gtk_main() is never invoked, gtk_main_iteration_do ALWAYS
+            // returns true... provide a workaround by using the gtk_quit_add hook
+            // --> check if that has been called...
+            // synch access
+            {
+              ACE_Guard<ACE_Thread_Mutex> aGuard(userData.hover_quit_lock);
+
+              if (userData.gtk_main_quit_invoked)
+              {
+                done = true;
+
+                break; // ignore any remaining GTK events
+              }
+            } // end lock scope
+          } // end IF
+        GDK_THREADS_LEAVE();
+
+        break;
+      }
+      case SDL_KEYUP:
+      case SDL_MOUSEBUTTONUP:
+      case SDL_JOYAXISMOTION:
+      case SDL_JOYBALLMOTION:
+      case SDL_JOYHATMOTION:
+      case SDL_JOYBUTTONDOWN:
+      case SDL_JOYBUTTONUP:
+      case SDL_SYSWMEVENT:
+      case SDL_VIDEORESIZE:
+      case SDL_VIDEOEXPOSE:
+      case RPG_CLIENT_SDL_TIMEREVENT:
+      default:
+      {
+
+        break;
+      }
+    } // end SWITCH
+
+    // redraw map ?
+    if (need_redraw)
+    {
+      try
+      {
+        mapWindow.draw();
+        mapWindow.refresh();
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
+      }
+    } // end IF
+
+    // redraw cursor ?
+    switch (event.type)
+    {
+      case SDL_KEYDOWN:
+      case SDL_MOUSEBUTTONDOWN:
+      {
+        // map hasn't changed --> no need to redraw
+        if (!need_redraw)
+          break;
+
+        // *WARNING*: falls through !
+      }
+      case SDL_MOUSEMOTION:
+      case RPG_GRAPHICS_SDL_HOVEREVENT:
+      {
+        // map has changed, cursor MAY have been drawn over...
+        // --> redraw cursor
+        SDL_Rect dirtyRegion;
+        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(mouse_position.first,
+                                                       mouse_position.second,
+                                                       userData.screen,
+                                                       dirtyRegion);
+        RPG_Graphics_Surface::update(dirtyRegion,
+                                     userData.screen);
+
+        break;
+      }
+      default:
+      {
+        break;
+      }
+    } // end SWITCH
+  } while (!done);
+
+  // step8: clean up
+  if (!SDL_RemoveTimer(userData.event_timer))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
+               SDL_GetError()));
+  } // end IF
 
   // done handling UI events
 

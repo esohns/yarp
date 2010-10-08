@@ -60,6 +60,12 @@ class RPG_Graphics_SDL_Tools
   static Uint32 CLR32_CURSE_RED;
   static Uint32 CLR32_GOLD_SHADE;
 
+  static SDL_Surface* initScreen(const int&,   // width
+                                 const int&,   // height
+                                 const int&,   // color depth
+                                 const bool&,  // double-buffer ?
+                                 const bool&); // run fullscreen ?
+
   static const std::string keyToString(const SDL_keysym&);
 
   static const SDL_Color colorToSDLColor(const Uint32&,       // RGBA value
