@@ -25,7 +25,7 @@
 
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_surface.h>
-#include <rpg_graphics_cursor.h>
+#include <rpg_graphics_cursor_manager.h>
 #include <rpg_graphics_common_tools.h>
 #include <rpg_graphics_SDL_tools.h>
 
@@ -91,12 +91,15 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
   initCeiling();
 
   // load tile for unmapped areas
-  myCurrentOffMapTile = RPG_Graphics_Common_Tools::loadGraphic(TYPE_TILE_OFF_MAP, // tile
-                                                               false);            // don't cache
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
+  type.tilegraphic = TILE_OFF_MAP;
+  myCurrentOffMapTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                               false); // don't cache
   if (!myCurrentOffMapTile)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_TILE_OFF_MAP).c_str()));
+               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
 
   // init wall tiles / position
   initWalls(floorPlan_in,
@@ -117,12 +120,13 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
                ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), continuing\n"),
                RPG_GRAPHICS_TILE_FLOOR_WIDTH,
                RPG_GRAPHICS_TILE_FLOOR_HEIGHT));
-  myHighlightTile = RPG_Graphics_Common_Tools::loadGraphic(TYPE_TILE_CURSOR_HIGHLIGHT, // tile
-                                                           false);                     // don't cache
+  type.tilegraphic = TILE_CURSOR_HIGHLIGHT;
+  myHighlightTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                           false); // don't cache
   if (!myHighlightTile)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_TILE_CURSOR_HIGHLIGHT).c_str()));
+               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
 }
 
 SDL_GUI_LevelWindow::~SDL_GUI_LevelWindow()
@@ -257,7 +261,7 @@ SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
   centerView();
 
   // *NOTE*: fiddling with the view invalidates the cursor BG !
-  RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidateBG();
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
   // clear highlight BG
   RPG_Graphics_Surface::clear(myHighlightBG);
 
@@ -656,7 +660,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
           } // end SWITCH
 
           // *NOTE*: fiddling with the view invalidates the cursor BG !
-          RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidateBG();
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
           // clear highlight BG
           RPG_Graphics_Surface::clear(myHighlightBG);
 
@@ -712,8 +716,8 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       if (map_position != myHighlightBGPosition)
       {
         // *NOTE*: restore cursor BG first
-        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen,
-                                                             dirtyRegion);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen,
+                                                                     dirtyRegion);
 //         invalidate(dirtyRegion);
         // *NOTE*: updating straight away reduces ugly smears...
         RPG_Graphics_Surface::update(dirtyRegion,
@@ -765,16 +769,16 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       } // end IF
 
       // set an appropriate cursor
-      RPG_Graphics_Type cursor_type = RPG_Engine_Common_Tools::getCursor(map_position, myMap);
-      if (cursor_type != RPG_GRAPHICS_CURSOR_SINGLETON::instance()->type())
+      RPG_Graphics_Cursor cursor_type = RPG_Engine_Common_Tools::getCursor(map_position, myMap);
+      if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
       {
         // *NOTE*: restore cursor BG first
-        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen, dirtyRegion);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen, dirtyRegion);
 //         invalidate(dirtyRegion);
         // *NOTE*: updating straight away reduces ugly smears...
         RPG_Graphics_Surface::update(dirtyRegion, myScreen);
 
-        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(cursor_type);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(cursor_type);
       } // end IF
 
       break;
@@ -839,7 +843,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
             } // end SWITCH
 
             // invalidate cursor BG
-            RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidateBG();
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
             // clear highlight BG
             RPG_Graphics_Surface::clear(myHighlightBG);
 
@@ -1305,13 +1309,16 @@ SDL_GUI_LevelWindow::initCeiling()
   } // end IF
 
   // load tile for ceiling
-  myCurrentCeilingTile = RPG_Graphics_Common_Tools::loadGraphic(TYPE_TILE_CEILING, // tile
-                                                                false);            // don't cache
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
+  type.tilegraphic = TILE_CEILING;
+  myCurrentCeilingTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                                false); // don't cache
   if (!myCurrentCeilingTile)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_TILE_CEILING).c_str()));
+               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
 
     return;
   } // end IF

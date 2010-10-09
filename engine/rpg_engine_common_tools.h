@@ -23,6 +23,7 @@
 #include "rpg_engine_common.h"
 
 #include <rpg_graphics_common.h>
+#include <rpg_graphics_cursor.h>
 
 #include <rpg_map_common.h>
 #include <rpg_map_level.h>
@@ -66,8 +67,8 @@ class RPG_Engine_Common_Tools
                                const RPG_Map_Level&);
   static const RPG_Graphics_Orientation getDoorOrientation(const RPG_Map_Level&,       // state
                                                            const RPG_Map_Position_t&); // door
-  static const RPG_Graphics_Type getCursor(const RPG_Map_Position_t&, // position
-                                           const RPG_Map_Level&);     // state
+  static const RPG_Graphics_Cursor getCursor(const RPG_Map_Position_t&, // position
+                                             const RPG_Map_Level&);     // state
   // coordinate transformations
   static const RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&,   // position (absolute)
                                                   const RPG_Map_Dimensions_t&,      // map size

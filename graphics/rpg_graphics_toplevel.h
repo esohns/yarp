@@ -20,9 +20,14 @@
 #ifndef RPG_GRAPHICS_TOPLEVEL_H
 #define RPG_GRAPHICS_TOPLEVEL_H
 
-#include "rpg_graphics_SDL_window_base.h"
 #include "rpg_graphics_common.h"
-#include "rpg_graphics_type.h"
+#include "rpg_graphics_cursor.h"
+#include "rpg_graphics_font.h"
+#include "rpg_graphics_image.h"
+#include "rpg_graphics_tilegraphic.h"
+#include "rpg_graphics_tilesetgraphic.h"
+#include "rpg_graphics_graphictypeunion.h"
+#include "rpg_graphics_SDL_window_base.h"
 
 #include <SDL/SDL.h>
 
@@ -35,10 +40,10 @@ class RPG_Graphics_TopLevel
  : public RPG_Graphics_SDLWindowBase
 {
  public:
-  RPG_Graphics_TopLevel(const RPG_Graphics_WindowSize_t&, // size
-                        const RPG_Graphics_Type&,         // element type
-                        const std::string&,               // title
-                        SDL_Surface* = NULL);             // background
+  RPG_Graphics_TopLevel(const RPG_Graphics_WindowSize_t&,     // size
+                        const RPG_Graphics_GraphicTypeUnion&, // (element) type
+                        const std::string&,                   // title
+                        SDL_Surface* = NULL);                 // background
   virtual ~RPG_Graphics_TopLevel();
 
   // realize child window
@@ -50,7 +55,7 @@ class RPG_Graphics_TopLevel
 
  protected:
   // window element graphic(s)
-  RPG_Graphics_Type                myElementGraphicsType;
+  RPG_Graphics_GraphicTypeUnion    myElementGraphicsType;
   RPG_Graphics_InterfaceElements_t myElementGraphics;
 
  private:
@@ -62,7 +67,7 @@ class RPG_Graphics_TopLevel
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel& operator=(const RPG_Graphics_TopLevel&));
 
   // helper methods
-  const bool loadGraphics(const RPG_Graphics_Type&); // (hover) cursor graphic
+  const bool loadGraphics(const RPG_Graphics_GraphicTypeUnion&); // (element) type
 
   bool                             myInitialized;
 };

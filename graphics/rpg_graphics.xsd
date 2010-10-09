@@ -111,37 +111,62 @@
     <xsd:union memberTypes="RPG_Graphics_FloorStyle_Type RPG_Graphics_StairsStyle_Type RPG_Graphics_WallStyle_Type RPG_Graphics_DoorStyle_Type"/>
   </xsd:simpleType>
 
-  <xsd:simpleType name="RPG_Graphics_Type_Type">
+  <xsd:simpleType name="RPG_Graphics_Cursor_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="TYPE_CURSOR_DOOR_OPEN"/>
-      <xsd:enumeration value="TYPE_CURSOR_NORMAL"/>
-      <xsd:enumeration value="TYPE_CURSOR_SCROLL_D"/>
-      <xsd:enumeration value="TYPE_CURSOR_SCROLL_DL"/>
-      <xsd:enumeration value="TYPE_CURSOR_SCROLL_DR"/>
-      <xsd:enumeration value="TYPE_CURSOR_SCROLL_L"/>
-      <xsd:enumeration value="TYPE_CURSOR_SCROLL_R"/>
-      <xsd:enumeration value="TYPE_CURSOR_SCROLL_U"/>
-      <xsd:enumeration value="TYPE_CURSOR_SCROLL_UL"/>
-      <xsd:enumeration value="TYPE_CURSOR_SCROLL_UR"/>
-      <xsd:enumeration value="TYPE_CURSOR_STAIRS"/>
-      <xsd:enumeration value="TYPE_CURSOR_WAIT"/>
-      <xsd:enumeration value="TYPE_FONT_MAIN_SMALL"/>
-      <xsd:enumeration value="TYPE_FONT_MAIN_NORMAL"/>
-      <xsd:enumeration value="TYPE_FONT_MAIN_LARGE"/>
-      <xsd:enumeration value="TYPE_INTERFACE"/>
-      <xsd:enumeration value="TYPE_IMAGE_INTRO_MAIN"/>
-      <xsd:enumeration value="TYPE_IMAGE_WM_ICON"/>
-      <xsd:enumeration value="TYPE_TILE_CEILING"/>
-      <xsd:enumeration value="TYPE_TILE_CURSOR_HIGHLIGHT"/>
-      <xsd:enumeration value="TYPE_TILE_FLOOR_INVISIBLE"/>
-      <xsd:enumeration value="TYPE_TILE_OFF_MAP"/>
-      <xsd:enumeration value="TYPE_TILESET_DOOR_WOOD"/>
-      <xsd:enumeration value="TYPE_TILESET_FLOOR_AIR"/>
-      <xsd:enumeration value="TYPE_TILESET_FLOOR_STONE_COBBLED"/>
-      <xsd:enumeration value="TYPE_TILESET_FLOOR_DARK"/>
-      <xsd:enumeration value="TYPE_TILESET_WALL_BRICK"/>
-      <xsd:enumeration value="TYPE_TILESET_WALL_BRICK_HALF"/>
+      <xsd:enumeration value="CURSOR_DOOR_OPEN"/>
+      <xsd:enumeration value="CURSOR_NORMAL"/>
+      <xsd:enumeration value="CURSOR_SCROLL_D"/>
+      <xsd:enumeration value="CURSOR_SCROLL_DL"/>
+      <xsd:enumeration value="CURSOR_SCROLL_DR"/>
+      <xsd:enumeration value="CURSOR_SCROLL_L"/>
+      <xsd:enumeration value="CURSOR_SCROLL_R"/>
+      <xsd:enumeration value="CURSOR_SCROLL_U"/>
+      <xsd:enumeration value="CURSOR_SCROLL_UL"/>
+      <xsd:enumeration value="CURSOR_SCROLL_UR"/>
+      <xsd:enumeration value="CURSOR_STAIRS"/>
+      <xsd:enumeration value="CURSOR_WAIT"/>
     </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Graphics_Font_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="FONT_MAIN_SMALL"/>
+      <xsd:enumeration value="FONT_MAIN_NORMAL"/>
+      <xsd:enumeration value="FONT_MAIN_LARGE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Graphics_Image_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="IMAGE_INTERFACE"/>
+      <xsd:enumeration value="IMAGE_INTRO_MAIN"/>
+      <xsd:enumeration value="IMAGE_WM_ICON"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Graphics_TileGraphic_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="TILE_CEILING"/>
+      <xsd:enumeration value="TILE_CURSOR_HIGHLIGHT"/>
+      <xsd:enumeration value="TILE_FLOOR_INVISIBLE"/>
+      <xsd:enumeration value="TILE_OFF_MAP"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Graphics_TileSetGraphic_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="TILESET_DOOR_WOOD"/>
+      <xsd:enumeration value="TILESET_FLOOR_AIR"/>
+      <xsd:enumeration value="TILESET_FLOOR_CARPET"/>
+      <xsd:enumeration value="TILESET_FLOOR_STONE_COBBLED"/>
+      <xsd:enumeration value="TILESET_FLOOR_DARK"/>
+      <xsd:enumeration value="TILESET_WALL_BRICK"/>
+      <xsd:enumeration value="TILESET_WALL_BRICK_HALF"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Graphics_GraphicTypeUnion_Type">
+    <xsd:union memberTypes="RPG_Graphics_Cursor_Type RPG_Graphics_Font_Type RPG_Graphics_Image_Type RPG_Graphics_TileGraphic_Type RPG_Graphics_TileSetGraphic_Type"/>
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Graphics_InterfaceElementType_Type">
@@ -183,7 +208,7 @@
   <xsd:complexType name="RPG_Graphics_Tile_Type">
     <xsd:sequence>
       <xsd:element name="type" type="RPG_Graphics_TileType_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="reference" type="RPG_Graphics_Type_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="reference" type="RPG_Graphics_GraphicTypeUnion_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="style" type="RPG_Graphics_StyleUnion_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="orientation" type="RPG_Graphics_Orientation_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="file" type="xsd:string" minOccurs="0" maxOccurs="1"/>
@@ -214,7 +239,7 @@
   <xsd:complexType name="RPG_Graphics_Graphic_Type">
     <xsd:sequence>
       <xsd:element name="category" type="RPG_Graphics_Category_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="type" type="RPG_Graphics_Type_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="type" type="RPG_Graphics_GraphicTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="tile" type="RPG_Graphics_Tile_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="tileset" type="RPG_Graphics_TileSet_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="element" type="RPG_Graphics_Element_Type" minOccurs="0" maxOccurs="unbounded"/>

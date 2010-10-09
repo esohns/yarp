@@ -105,7 +105,7 @@ type_parser (::RPG_Graphics_TileType_Type_pskel& p)
 }
 
 void RPG_Graphics_Tile_Type_pskel::
-reference_parser (::RPG_Graphics_Type_Type_pskel& p)
+reference_parser (::RPG_Graphics_GraphicTypeUnion_Type_pskel& p)
 {
   this->reference_parser_ = &p;
 }
@@ -154,7 +154,7 @@ broken_parser (::xml_schema::boolean_pskel& p)
 
 void RPG_Graphics_Tile_Type_pskel::
 parsers (::RPG_Graphics_TileType_Type_pskel& type,
-         ::RPG_Graphics_Type_Type_pskel& reference,
+         ::RPG_Graphics_GraphicTypeUnion_Type_pskel& reference,
          ::RPG_Graphics_StyleUnion_Type_pskel& style,
          ::RPG_Graphics_Orientation_Type_pskel& orientation,
          ::xml_schema::string_pskel& file,
@@ -246,7 +246,7 @@ category_parser (::RPG_Graphics_Category_Type_pskel& p)
 }
 
 void RPG_Graphics_Graphic_Type_pskel::
-type_parser (::RPG_Graphics_Type_Type_pskel& p)
+type_parser (::RPG_Graphics_GraphicTypeUnion_Type_pskel& p)
 {
   this->type_parser_ = &p;
 }
@@ -283,7 +283,7 @@ size_parser (::xml_schema::unsigned_int_pskel& p)
 
 void RPG_Graphics_Graphic_Type_pskel::
 parsers (::RPG_Graphics_Category_Type_pskel& category,
-         ::RPG_Graphics_Type_Type_pskel& type,
+         ::RPG_Graphics_GraphicTypeUnion_Type_pskel& type,
          ::RPG_Graphics_Tile_Type_pskel& tile,
          ::RPG_Graphics_TileSet_Type_pskel& tileset,
          ::RPG_Graphics_Element_Type_pskel& element,
@@ -482,7 +482,7 @@ type (const RPG_Graphics_TileType&)
 }
 
 void RPG_Graphics_Tile_Type_pskel::
-reference (const RPG_Graphics_Type&)
+reference (const RPG_Graphics_GraphicTypeUnion&)
 {
 }
 
@@ -602,7 +602,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "reference" && ns == "urn:rpg")
   {
     if (this->reference_parser_)
-      this->reference (this->reference_parser_->post_RPG_Graphics_Type_Type ());
+      this->reference (this->reference_parser_->post_RPG_Graphics_GraphicTypeUnion_Type ());
 
     return true;
   }
@@ -835,7 +835,7 @@ category (const RPG_Graphics_Category&)
 }
 
 void RPG_Graphics_Graphic_Type_pskel::
-type (const RPG_Graphics_Type&)
+type (const RPG_Graphics_GraphicTypeUnion&)
 {
 }
 
@@ -955,7 +955,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "type" && ns == "urn:rpg")
   {
     if (this->type_parser_)
-      this->type (this->type_parser_->post_RPG_Graphics_Type_Type ());
+      this->type (this->type_parser_->post_RPG_Graphics_GraphicTypeUnion_Type ());
 
     return true;
   }

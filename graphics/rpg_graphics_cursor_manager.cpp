@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_graphics_cursor.h"
+#include "rpg_graphics_cursor_manager.h"
 
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_common_tools.h"
@@ -27,46 +27,46 @@
 
 #include <ace/Log_Msg.h>
 
-RPG_Graphics_Cursor::RPG_Graphics_Cursor()
+RPG_Graphics_Cursor_Manager::RPG_Graphics_Cursor_Manager()
  : inherited(),
-   myCurrentType(TYPE_CURSOR_NORMAL),
+   myCurrentType(CURSOR_NORMAL),
    myBGPosition(std::make_pair(0, 0)),
    myBG(NULL)//,
 //    myCache()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::RPG_Graphics_Cursor"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::RPG_Graphics_Cursor_Manager"));
 
 }
 
-RPG_Graphics_Cursor::~RPG_Graphics_Cursor()
+RPG_Graphics_Cursor_Manager::~RPG_Graphics_Cursor_Manager()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::~RPG_Graphics_Cursor"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::~RPG_Graphics_Cursor_Manager"));
 
   // clean up
   if (myBG)
     SDL_FreeSurface(myBG);
 
-  for (RPG_Graphics_CursorCacheConstIterator_t iterator = myCache.begin();
+  for (RPG_Graphics_Cursor_CacheConstIterator_t iterator = myCache.begin();
        iterator != myCache.end();
        iterator++)
     SDL_FreeSurface((*iterator).second);
 }
 
-const RPG_Graphics_Type
-RPG_Graphics_Cursor::type() const
+const RPG_Graphics_Cursor
+RPG_Graphics_Cursor_Manager::type() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::type"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::type"));
 
   return myCurrentType;
 }
 
 void
-RPG_Graphics_Cursor::set(const RPG_Graphics_Type& type_in)
+RPG_Graphics_Cursor_Manager::set(const RPG_Graphics_Cursor& type_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::set"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::set"));
 
   // check cache first
-  RPG_Graphics_CursorCacheConstIterator_t iterator = myCache.find(type_in);
+  RPG_Graphics_Cursor_CacheConstIterator_t iterator = myCache.find(type_in);
   if (iterator != myCache.end())
   {
     init((*iterator).second, // image
@@ -101,19 +101,23 @@ RPG_Graphics_Cursor::set(const RPG_Graphics_Type& type_in)
   } // end IF
 
   // not in cache --> (try to) load graphic
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::CURSOR;
+  type.cursor = type_in;
   RPG_Graphics_t graphic;
   graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
-  graphic.type = RPG_GRAPHICS_TYPE_INVALID;
+  graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
   // retrieve properties from the dictionary
-  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(type_in);
-  ACE_ASSERT(graphic.type == type_in);
+  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+  ACE_ASSERT((graphic.type.cursor == type_in) &&
+             (graphic.type.discriminator == RPG_Graphics_GraphicTypeUnion::CURSOR));
   // sanity check
   if (graphic.category != CATEGORY_CURSOR)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid category (was: \"%s\"): \"%s\" not a cursor type, aborting\n"),
                RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str(),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
+               RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(type_in).c_str()));
 
     return;
   } // end IF
@@ -170,9 +174,9 @@ RPG_Graphics_Cursor::set(const RPG_Graphics_Type& type_in)
 }
 
 // SDL_Surface*
-// RPG_Graphics_Cursor::get() const
+// RPG_Graphics_Cursor_Manager::get() const
 // {
-//   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::get"));
+//   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::get"));
 //
 //   // sanity check(s)
 //   ACE_ASSERT(mySurface);
@@ -181,12 +185,12 @@ RPG_Graphics_Cursor::set(const RPG_Graphics_Type& type_in)
 // }
 
 void
-RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
-                         const unsigned long& offsetY_in,
-                         SDL_Surface* targetSurface_in,
-                         SDL_Rect& dirtyRegion_out)
+RPG_Graphics_Cursor_Manager::put(const unsigned long& offsetX_in,
+                                 const unsigned long& offsetY_in,
+                                 SDL_Surface* targetSurface_in,
+                                 SDL_Rect& dirtyRegion_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::put"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::put"));
 
   // sanity check(s)
   ACE_ASSERT(mySurface);
@@ -298,10 +302,10 @@ RPG_Graphics_Cursor::put(const unsigned long& offsetX_in,
 }
 
 void
-RPG_Graphics_Cursor::restoreBG(SDL_Surface* targetSurface_in,
-                               SDL_Rect& dirtyRegion_out)
+RPG_Graphics_Cursor_Manager::restoreBG(SDL_Surface* targetSurface_in,
+                                       SDL_Rect& dirtyRegion_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::restoreBG"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::restoreBG"));
 
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);
@@ -341,9 +345,9 @@ RPG_Graphics_Cursor::restoreBG(SDL_Surface* targetSurface_in,
 }
 
 void
-RPG_Graphics_Cursor::invalidateBG()
+RPG_Graphics_Cursor_Manager::invalidateBG()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor::invalidateBG"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::invalidateBG"));
 
   // sanity check
   ACE_ASSERT(myBG);

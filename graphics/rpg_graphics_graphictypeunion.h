@@ -23,20 +23,30 @@
 // -------------------------------- * * * -------------------------------- //
 
 #pragma once
-#ifndef RPG_GRAPHICS_TILE_H
-#define RPG_GRAPHICS_TILE_H
+#ifndef RPG_GRAPHICS_GRAPHICTYPEUNION_H
+#define RPG_GRAPHICS_GRAPHICTYPEUNION_H
 
-struct RPG_Graphics_Tile
+struct RPG_Graphics_GraphicTypeUnion
 {
-  RPG_Graphics_TileType type;
-  RPG_Graphics_GraphicTypeUnion reference;
-  RPG_Graphics_StyleUnion style;
-  RPG_Graphics_Orientation orientation;
-  std::string file;
-  int offsetX;
-  int offsetY;
-  bool open;
-  bool broken;
+  union
+  {
+    RPG_Graphics_Cursor cursor;
+    RPG_Graphics_Font font;
+    RPG_Graphics_Image image;
+    RPG_Graphics_TileGraphic tilegraphic;
+    RPG_Graphics_TileSetGraphic tilesetgraphic;
+  };
+
+  enum Discriminator_t
+  {
+    CURSOR,
+    FONT,
+    IMAGE,
+    TILEGRAPHIC,
+    TILESETGRAPHIC,
+    INVALID
+  };
+  Discriminator_t discriminator;
 };
 
 #endif

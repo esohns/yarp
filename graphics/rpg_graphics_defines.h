@@ -38,6 +38,8 @@
 #define RPG_GRAPHICS_TILE_DEF_CURSORS_SUB              ACE_TEXT("cursors")
 #define RPG_GRAPHICS_TILE_DEF_DOORS_SUB                ACE_TEXT("doors")
 #define RPG_GRAPHICS_TILE_DEF_FLOORS_SUB               ACE_TEXT("floors")
+#define RPG_GRAPHICS_TILE_DEF_FONTS_SUB                ACE_TEXT("fonts")
+#define RPG_GRAPHICS_TILE_DEF_IMAGES_SUB               ACE_TEXT("images")
 #define RPG_GRAPHICS_TILE_DEF_WALLS_SUB                ACE_TEXT("walls")
 
 // default #tiles/set (floors, walls, ...)

@@ -20,7 +20,12 @@
 #ifndef RPG_GRAPHICS_SURFACE_H
 #define RPG_GRAPHICS_SURFACE_H
 
-#include "rpg_graphics_type.h"
+#include "rpg_graphics_cursor.h"
+#include "rpg_graphics_font.h"
+#include "rpg_graphics_image.h"
+#include "rpg_graphics_tilegraphic.h"
+#include "rpg_graphics_tilesetgraphic.h"
+#include "rpg_graphics_graphictypeunion.h"
 
 #include <SDL/SDL.h>
 
@@ -35,8 +40,8 @@ class RPG_Graphics_Surface
 {
  public:
   // *NOTE*: if ownership is rejected, the surface will be cached...
-  RPG_Graphics_Surface(const RPG_Graphics_Type&, // graphic type
-                       const bool&);             // assume ownership ?
+  RPG_Graphics_Surface(const RPG_Graphics_GraphicTypeUnion&, // type
+                       const bool&);                         // assume ownership ?
   RPG_Graphics_Surface(SDL_Surface*, // SDL surface
                        const bool&); // assume ownership ?
   virtual ~RPG_Graphics_Surface();
@@ -71,7 +76,7 @@ class RPG_Graphics_Surface
                   const unsigned long&, // offset y (top left == 0,0)
                   const SDL_Surface&,   // source surface
                   SDL_Surface*);        // target surface (e.g. screen)
-  static void putText(const RPG_Graphics_Type&, // font
+  static void putText(const RPG_Graphics_Font&, // font
                       const std::string&,       // string
                       const SDL_Color&,         // color
                       const bool&,              // shade ?
@@ -96,8 +101,8 @@ class RPG_Graphics_Surface
   // safety measures
   RPG_Graphics_Surface();
   // *NOTE*: if ownership is rejected, the surface will be cached...
-  void init(const RPG_Graphics_Type&, // graphic type
-            const bool&);             // assume ownership ?
+  void init(const RPG_Graphics_GraphicTypeUnion&, // type
+            const bool&);                         // assume ownership ?
   void init(SDL_Surface*, // SDL surface
             const bool&); // assume ownership ?
 

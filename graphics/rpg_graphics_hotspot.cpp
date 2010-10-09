@@ -22,7 +22,7 @@
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_surface.h"
-#include "rpg_graphics_cursor.h"
+#include "rpg_graphics_cursor_manager.h"
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
 
@@ -32,13 +32,13 @@ RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindowBase& par
                                            const RPG_Graphics_WindowSize_t& size_in,
                                            // *NOTE*: offset doesn't include any border(s) !
                                            const RPG_Graphics_Offset_t& offset_in,
-                                           const RPG_Graphics_Type& graphicsType_in)
+                                           const RPG_Graphics_Cursor& cursor_in)
  : inherited(WINDOWTYPE_HOTSPOT, // type
              parent_in,          // parent
              offset_in,          // offset
              std::string(),      // title
              NULL),              // background
-   myCursorType(graphicsType_in),
+   myCursorType(cursor_in),
    myCursorHasBeenSet(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::RPG_Graphics_HotSpot"));
@@ -54,7 +54,7 @@ RPG_Graphics_HotSpot::~RPG_Graphics_HotSpot()
 
 }
 
-const RPG_Graphics_Type
+const RPG_Graphics_Cursor
 RPG_Graphics_HotSpot::getCursorType() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::getCursorType"));
@@ -84,13 +84,13 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
       // reset cursor
       // --> restore background first
       SDL_Rect dirtyRegion;
-      RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen,
-                                                           dirtyRegion);
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen,
+                                                                   dirtyRegion);
       // *NOTE*: updating straight away reduces ugly smears...
       RPG_Graphics_Surface::update(dirtyRegion,
                                    myScreen);
 
-      RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(TYPE_CURSOR_NORMAL);
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
       myCursorHasBeenSet = false;
 
       break;
@@ -102,13 +102,13 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
       {
         // --> restore background first
         SDL_Rect dirtyRegion;
-        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen,
-                                                             dirtyRegion);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen,
+                                                                     dirtyRegion);
         // *NOTE*: updating straight away reduces ugly smears...
         RPG_Graphics_Surface::update(dirtyRegion,
                                      myScreen);
 
-        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(myCursorType);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(myCursorType);
         myCursorHasBeenSet = true;
       } // end IF
 
@@ -191,7 +191,7 @@ void
 RPG_Graphics_HotSpot::init(const RPG_Graphics_SDLWindowBase& parent_in,
                            const RPG_Graphics_WindowSize_t& size_in,
                            const RPG_Graphics_Offset_t& offset_in,
-                           const RPG_Graphics_Type& type_in)
+                           const RPG_Graphics_Cursor& cursor_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::init"));
 
@@ -202,7 +202,7 @@ RPG_Graphics_HotSpot::init(const RPG_Graphics_SDLWindowBase& parent_in,
     hotspot = new RPG_Graphics_HotSpot(parent_in,
                                        size_in,
                                        offset_in,
-                                       type_in);
+                                       cursor_in);
   }
   catch (...)
   {

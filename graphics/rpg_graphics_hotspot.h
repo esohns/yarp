@@ -20,9 +20,9 @@
 #ifndef RPG_GRAPHICS_HOTSPOT_H
 #define RPG_GRAPHICS_HOTSPOT_H
 
-#include "rpg_graphics_SDL_window_base.h"
 #include "rpg_graphics_common.h"
-#include "rpg_graphics_type.h"
+#include "rpg_graphics_cursor.h"
+#include "rpg_graphics_SDL_window_base.h"
 
 #include <SDL/SDL.h>
 
@@ -39,10 +39,10 @@ class RPG_Graphics_HotSpot
                        const RPG_Graphics_WindowSize_t&,  // size
                        // *NOTE*: offset doesn't include any border(s) !
                        const RPG_Graphics_Offset_t&,      // offset
-                       const RPG_Graphics_Type&);         // (hover) cursor graphic
+                       const RPG_Graphics_Cursor&);       // (hover) cursor graphic
   virtual ~RPG_Graphics_HotSpot();
 
-  const RPG_Graphics_Type getCursorType() const;
+  const RPG_Graphics_Cursor getCursorType() const;
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
@@ -56,7 +56,7 @@ class RPG_Graphics_HotSpot
                    const RPG_Graphics_WindowSize_t&,  // size
                    // *NOTE*: offset doesn't include any border(s) !
                    const RPG_Graphics_Offset_t&,      // offset
-                   const RPG_Graphics_Type&);         // (hover) cursor graphic
+                   const RPG_Graphics_Cursor&);       // (hover) cursor graphic
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;
@@ -66,8 +66,8 @@ class RPG_Graphics_HotSpot
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_HotSpot(const RPG_Graphics_HotSpot&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_HotSpot& operator=(const RPG_Graphics_HotSpot&));
 
-  RPG_Graphics_Type myCursorType;
-  bool              myCursorHasBeenSet;
+  RPG_Graphics_Cursor myCursorType;
+  bool                myCursorHasBeenSet;
 };
 
 #endif

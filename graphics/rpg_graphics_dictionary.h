@@ -42,7 +42,7 @@ class RPG_Graphics_Dictionary
   void init(const std::string&,  // (XML) dictionary file
             const bool& = true); // validate XML ?
 
-  const RPG_Graphics_t getGraphic(const RPG_Graphics_Type&) const; // type
+  const RPG_Graphics_t get(const RPG_Graphics_GraphicTypeUnion&) const; // type
   const RPG_Graphics_Fonts_t getFonts() const;
 
   // debug info

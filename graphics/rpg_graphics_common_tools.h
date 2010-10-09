@@ -42,15 +42,17 @@ class RPG_Graphics_Common_Tools
   static void init(const std::string&,      // graphics directory
                    const unsigned long&);   // cache size
   static void fini();
+  static const std::string typeToString(const RPG_Graphics_GraphicTypeUnion&);
   static const std::string styleToString(const RPG_Graphics_StyleUnion&);
   static const std::string tileToString(const RPG_Graphics_Tile&);
   static const std::string tileSetToString(const RPG_Graphics_TileSet&);
   static const std::string elementTypeToString(const RPG_Graphics_ElementTypeUnion&);
   static const std::string elementsToString(const RPG_Graphics_Elements_t&);
+  static const std::string graphicToString(const RPG_Graphics_t&);
 
   static void graphicToFile(const RPG_Graphics_t&, // graphic
                             std::string&);         // return value: FQ filename
-  static const RPG_Graphics_TextSize_t textSize(const RPG_Graphics_Type&, // font
+  static const RPG_Graphics_TextSize_t textSize(const RPG_Graphics_Font&, // font
                                                 const std::string&);      // string
 
   // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
@@ -64,10 +66,10 @@ class RPG_Graphics_Common_Tools
   static void loadDoorTileSet(const RPG_Graphics_DoorStyle&, // style
                               RPG_Graphics_DoorTileSet_t&);  // return value: tileset
   // *NOTE*: uncached (!) surfaces need to be SDL_FreeSurface()ed by the user !
-  static SDL_Surface* loadGraphic(const RPG_Graphics_Type&, // graphic
-                                  const bool& = true);      // cache graphic ?
+  static SDL_Surface* loadGraphic(const RPG_Graphics_GraphicTypeUnion&, // type
+                                  const bool& = true);                  // cache graphic ?
 
-  static SDL_Surface* renderText(const RPG_Graphics_Type&, // font
+  static SDL_Surface* renderText(const RPG_Graphics_Font&, // font
                                  const std::string&,       // string
                                  const SDL_Color&);        // color
 
@@ -88,8 +90,8 @@ class RPG_Graphics_Common_Tools
   static const bool initFonts();
 
   // convert style (wall-, floor-, ...) to appropriate graphic (meta)type
-  static const RPG_Graphics_Type styleToType(const RPG_Graphics_StyleUnion&, // style (generic)
-                                             const bool& = false);           // half-height (wallstyle only) ?
+  static const RPG_Graphics_GraphicTypeUnion styleToType(const RPG_Graphics_StyleUnion&, // style (generic)
+                                                         const bool& = false);           // half-height (wallstyle only) ?
 
   static void fade(const float&,  // interval (seconds)
                    SDL_Surface*,  // target image

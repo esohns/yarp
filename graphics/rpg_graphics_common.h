@@ -25,6 +25,8 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
+#include <ace/Log_Msg.h>
+
 #include <string>
 #include <map>
 #include <vector>
@@ -41,21 +43,66 @@ enum RPG_Graphics_WindowType
 };
 
 typedef RPG_Graphics_Graphic RPG_Graphics_t;
-typedef std::map<RPG_Graphics_Type, RPG_Graphics_t> RPG_Graphics_Dictionary_t;
-typedef RPG_Graphics_Dictionary_t::const_iterator RPG_Graphics_DictionaryIterator_t;
+typedef std::map<RPG_Graphics_Cursor, RPG_Graphics_t> RPG_Graphics_CursorDictionary_t;
+typedef RPG_Graphics_CursorDictionary_t::const_iterator RPG_Graphics_CursorDictionaryIterator_t;
+typedef std::map<RPG_Graphics_Font, RPG_Graphics_t> RPG_Graphics_FontDictionary_t;
+typedef RPG_Graphics_FontDictionary_t::const_iterator RPG_Graphics_FontDictionaryIterator_t;
+typedef std::map<RPG_Graphics_Image, RPG_Graphics_t> RPG_Graphics_ImageDictionary_t;
+typedef RPG_Graphics_ImageDictionary_t::const_iterator RPG_Graphics_ImageDictionaryIterator_t;
+typedef std::map<RPG_Graphics_TileGraphic, RPG_Graphics_t> RPG_Graphics_TileDictionary_t;
+typedef RPG_Graphics_TileDictionary_t::const_iterator RPG_Graphics_TileDictionaryIterator_t;
+typedef std::map<RPG_Graphics_TileSetGraphic, RPG_Graphics_t> RPG_Graphics_TileSetDictionary_t;
+typedef RPG_Graphics_TileSetDictionary_t::const_iterator RPG_Graphics_TileSetDictionaryIterator_t;
+struct RPG_Graphics_Dictionary_t
+{
+  RPG_Graphics_CursorDictionary_t cursors;
+  RPG_Graphics_FontDictionary_t fonts;
+  RPG_Graphics_ImageDictionary_t images;
+  RPG_Graphics_TileDictionary_t tiles;
+  RPG_Graphics_TileSetDictionary_t tilesets;
+};
 
 struct RPG_Graphics_GraphicsCacheNode_t
 {
-  RPG_Graphics_Type type;
+  RPG_Graphics_GraphicTypeUnion type;
   SDL_Surface* image;
 
   inline bool operator==(const RPG_Graphics_GraphicsCacheNode_t& rhs_in) const
-  { return (this->type == rhs_in.type); }
+  {
+    if (type.discriminator != rhs_in.type.discriminator)
+      return false;
+
+    switch (type.discriminator)
+    {
+      case RPG_Graphics_GraphicTypeUnion::CURSOR:
+        return (type.cursor == rhs_in.type.cursor);
+      case RPG_Graphics_GraphicTypeUnion::FONT:
+          return (type.font == rhs_in.type.font);
+      case RPG_Graphics_GraphicTypeUnion::IMAGE:
+        return (type.image == rhs_in.type.image);
+      case RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC:
+        return (type.tilegraphic == rhs_in.type.tilegraphic);
+      case RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC:
+        return (type.tilesetgraphic == rhs_in.type.tilesetgraphic);
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid RPG_Graphics_GraphicTypeUnion type (was: %d), continuing\n"),
+                   type.discriminator));
+
+        break;
+      }
+    } // end SWITCH
+
+    return false; }
+  inline bool operator!=(const RPG_Graphics_GraphicsCacheNode_t& rhs_in) const
+  {
+    return !(*this == rhs_in); }
 };
 typedef std::vector<RPG_Graphics_GraphicsCacheNode_t> RPG_Graphics_GraphicsCache_t;
 typedef RPG_Graphics_GraphicsCache_t::iterator RPG_Graphics_GraphicsCacheIterator_t;
 
-typedef std::map<RPG_Graphics_Type, TTF_Font*> RPG_Graphics_FontCache_t;
+typedef std::map<RPG_Graphics_Font, TTF_Font*> RPG_Graphics_FontCache_t;
 typedef RPG_Graphics_FontCache_t::iterator RPG_Graphics_FontCacheIterator_t;
 
 typedef std::map<RPG_Graphics_InterfaceElementType, SDL_Surface*> RPG_Graphics_InterfaceElements_t;
@@ -66,7 +113,7 @@ typedef RPG_Graphics_Elements_t::const_iterator RPG_Graphics_ElementsConstIterat
 
 struct RPG_Graphics_Font_t
 {
-  RPG_Graphics_Type type;
+  RPG_Graphics_Font type;
   unsigned int size;
   std::string file;
 };

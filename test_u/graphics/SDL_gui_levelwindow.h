@@ -55,6 +55,7 @@ class SDL_GUI_LevelWindow
   // set level properties
   void init(const RPG_Graphics_MapStyle_t&, // map style
             const RPG_Map_FloorPlan_t&);    // map
+  void setStyle(const RPG_Graphics_StyleUnion&);
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
@@ -77,8 +78,6 @@ class SDL_GUI_LevelWindow
 
   // helper methods
   void clear();
-
-  void setStyle(const RPG_Graphics_StyleUnion&);
 
   void initCeiling();
   void initWalls(const RPG_Map_FloorPlan_t&,        // level map

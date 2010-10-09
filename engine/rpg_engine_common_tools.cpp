@@ -1310,20 +1310,20 @@ RPG_Engine_Common_Tools::getDoorOrientation(const RPG_Map_Level& level_in,
   return ORIENTATION_VERTICAL;
 }
 
-const RPG_Graphics_Type
+const RPG_Graphics_Cursor
 RPG_Engine_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
                                    const RPG_Map_Level& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::getCursor"));
 
-  RPG_Graphics_Type result = TYPE_CURSOR_NORMAL;
+  RPG_Graphics_Cursor result = CURSOR_NORMAL;
 
   // (closed) door ?
   if (level_in.getElement(position_in) == MAPELEMENT_DOOR)
   {
     RPG_Map_Door_t door = level_in.getDoor(position_in);
     if (!door.is_open)
-      result = TYPE_CURSOR_DOOR_OPEN;
+      result = CURSOR_DOOR_OPEN;
   } // end IF
 
   return result;

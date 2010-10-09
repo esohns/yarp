@@ -26,7 +26,7 @@
 #include <rpg_common_macros.h>
 
 RPG_Graphics_TopLevel::RPG_Graphics_TopLevel(const RPG_Graphics_WindowSize_t& size_in,
-                                             const RPG_Graphics_Type& elementType_in,
+                                             const RPG_Graphics_GraphicTypeUnion& elementType_in,
                                              const std::string& title_in,
                                              SDL_Surface* backGround_in)
  : inherited(size_in,
@@ -75,32 +75,34 @@ RPG_Graphics_TopLevel::child(const RPG_Graphics_WindowSize_t& size_in,
 }
 
 const bool
-RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_Type& graphicType_in)
+RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_GraphicTypeUnion& type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::loadGraphics"));
 
   // step1: load interface image
   RPG_Graphics_t graphic;
-  graphic.type = graphicType_in;
+  graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
+  graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
   // retrieve properties from the dictionary
-  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(graphicType_in);
-  if (graphic.type != graphicType_in)
+  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type_in);
+  if ((graphic.category != CATEGORY_INTERFACE) ||
+      (graphic.type.discriminator != type_in.discriminator)) // too weak
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Dictionary::getGraphic(\"%s\"), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphicType_in).c_str()));
+               ACE_TEXT("failed to RPG_Graphics_Dictionary::get(\"%s\"), aborting\n"),
+               RPG_Graphics_Common_Tools::typeToString(type_in).c_str()));
 
     return false;
   } // end IF
 
   SDL_Surface* interface_image = NULL;
-  interface_image = RPG_Graphics_Common_Tools::loadGraphic(graphicType_in,
+  interface_image = RPG_Graphics_Common_Tools::loadGraphic(type_in,
                                                            false); // don't cache this one
   if (!interface_image)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphicType_in).c_str()));
+               RPG_Graphics_Common_Tools::typeToString(type_in).c_str()));
 
     return false;
   } // end IF
@@ -129,7 +131,7 @@ RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_Type& graphicType_in)
                    (*iterator).offsetY,
                    ((*iterator).offsetX + (*iterator).width),
                    ((*iterator).offsetY + (*iterator).height),
-                   RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphicType_in).c_str()));
+                   RPG_Graphics_Common_Tools::typeToString(type_in).c_str()));
 
         // clean up
         SDL_FreeSurface(interface_image);
@@ -164,7 +166,7 @@ RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_Type& graphicType_in)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("loaded %u interface element graphic(s) from \"%s\"...\n"),
              myElementGraphics.size(),
-             RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(graphicType_in).c_str()));
+             RPG_Graphics_Common_Tools::typeToString(type_in).c_str()));
 
   return true;
 }

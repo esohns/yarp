@@ -57,7 +57,12 @@ class RPG_Graphics_StairsStyle_Type_pskel;
 class RPG_Graphics_WallStyle_Type_pskel;
 class RPG_Graphics_DoorStyle_Type_pskel;
 class RPG_Graphics_StyleUnion_Type_pskel;
-class RPG_Graphics_Type_Type_pskel;
+class RPG_Graphics_Cursor_Type_pskel;
+class RPG_Graphics_Font_Type_pskel;
+class RPG_Graphics_Image_Type_pskel;
+class RPG_Graphics_TileGraphic_Type_pskel;
+class RPG_Graphics_TileSetGraphic_Type_pskel;
+class RPG_Graphics_GraphicTypeUnion_Type_pskel;
 class RPG_Graphics_InterfaceElementType_Type_pskel;
 class RPG_Graphics_HotspotType_Type_pskel;
 class RPG_Graphics_ElementTypeUnion_Type_pskel;
@@ -179,7 +184,7 @@ class RPG_Graphics_StyleUnion_Type_pskel: public ::xml_schema::simple_content
   post_RPG_Graphics_StyleUnion_Type () = 0;
 };
 
-class RPG_Graphics_Type_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Graphics_Cursor_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -187,8 +192,71 @@ class RPG_Graphics_Type_Type_pskel: public virtual ::xml_schema::string_pskel
   // virtual void
   // pre ();
 
-  virtual RPG_Graphics_Type
-  post_RPG_Graphics_Type_Type () = 0;
+  virtual RPG_Graphics_Cursor
+  post_RPG_Graphics_Cursor_Type () = 0;
+};
+
+class RPG_Graphics_Font_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Graphics_Font
+  post_RPG_Graphics_Font_Type () = 0;
+};
+
+class RPG_Graphics_Image_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Graphics_Image
+  post_RPG_Graphics_Image_Type () = 0;
+};
+
+class RPG_Graphics_TileGraphic_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Graphics_TileGraphic
+  post_RPG_Graphics_TileGraphic_Type () = 0;
+};
+
+class RPG_Graphics_TileSetGraphic_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Graphics_TileSetGraphic
+  post_RPG_Graphics_TileSetGraphic_Type () = 0;
+};
+
+class RPG_Graphics_GraphicTypeUnion_Type_pskel: public ::xml_schema::simple_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+  //
+  // virtual void
+  // _characters (const ::xml_schema::ro_string&);
+
+  virtual RPG_Graphics_GraphicTypeUnion
+  post_RPG_Graphics_GraphicTypeUnion_Type () = 0;
 };
 
 class RPG_Graphics_InterfaceElementType_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -316,7 +384,7 @@ class RPG_Graphics_Tile_Type_pskel: public ::xml_schema::complex_content
   type (const RPG_Graphics_TileType&);
 
   virtual void
-  reference (const RPG_Graphics_Type&);
+  reference (const RPG_Graphics_GraphicTypeUnion&);
 
   virtual void
   style (const RPG_Graphics_StyleUnion&);
@@ -348,7 +416,7 @@ class RPG_Graphics_Tile_Type_pskel: public ::xml_schema::complex_content
   type_parser (::RPG_Graphics_TileType_Type_pskel&);
 
   void
-  reference_parser (::RPG_Graphics_Type_Type_pskel&);
+  reference_parser (::RPG_Graphics_GraphicTypeUnion_Type_pskel&);
 
   void
   style_parser (::RPG_Graphics_StyleUnion_Type_pskel&);
@@ -373,7 +441,7 @@ class RPG_Graphics_Tile_Type_pskel: public ::xml_schema::complex_content
 
   void
   parsers (::RPG_Graphics_TileType_Type_pskel& /* type */,
-           ::RPG_Graphics_Type_Type_pskel& /* reference */,
+           ::RPG_Graphics_GraphicTypeUnion_Type_pskel& /* reference */,
            ::RPG_Graphics_StyleUnion_Type_pskel& /* style */,
            ::RPG_Graphics_Orientation_Type_pskel& /* orientation */,
            ::xml_schema::string_pskel& /* file */,
@@ -405,7 +473,7 @@ class RPG_Graphics_Tile_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::RPG_Graphics_TileType_Type_pskel* type_parser_;
-  ::RPG_Graphics_Type_Type_pskel* reference_parser_;
+  ::RPG_Graphics_GraphicTypeUnion_Type_pskel* reference_parser_;
   ::RPG_Graphics_StyleUnion_Type_pskel* style_parser_;
   ::RPG_Graphics_Orientation_Type_pskel* orientation_parser_;
   ::xml_schema::string_pskel* file_parser_;
@@ -510,7 +578,7 @@ class RPG_Graphics_Graphic_Type_pskel: public ::xml_schema::complex_content
   category (const RPG_Graphics_Category&);
 
   virtual void
-  type (const RPG_Graphics_Type&);
+  type (const RPG_Graphics_GraphicTypeUnion&);
 
   virtual void
   tile (const RPG_Graphics_Tile&);
@@ -536,7 +604,7 @@ class RPG_Graphics_Graphic_Type_pskel: public ::xml_schema::complex_content
   category_parser (::RPG_Graphics_Category_Type_pskel&);
 
   void
-  type_parser (::RPG_Graphics_Type_Type_pskel&);
+  type_parser (::RPG_Graphics_GraphicTypeUnion_Type_pskel&);
 
   void
   tile_parser (::RPG_Graphics_Tile_Type_pskel&);
@@ -555,7 +623,7 @@ class RPG_Graphics_Graphic_Type_pskel: public ::xml_schema::complex_content
 
   void
   parsers (::RPG_Graphics_Category_Type_pskel& /* category */,
-           ::RPG_Graphics_Type_Type_pskel& /* type */,
+           ::RPG_Graphics_GraphicTypeUnion_Type_pskel& /* type */,
            ::RPG_Graphics_Tile_Type_pskel& /* tile */,
            ::RPG_Graphics_TileSet_Type_pskel& /* tileset */,
            ::RPG_Graphics_Element_Type_pskel& /* element */,
@@ -585,7 +653,7 @@ class RPG_Graphics_Graphic_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::RPG_Graphics_Category_Type_pskel* category_parser_;
-  ::RPG_Graphics_Type_Type_pskel* type_parser_;
+  ::RPG_Graphics_GraphicTypeUnion_Type_pskel* type_parser_;
   ::RPG_Graphics_Tile_Type_pskel* tile_parser_;
   ::RPG_Graphics_TileSet_Type_pskel* tileset_parser_;
   ::RPG_Graphics_Element_Type_pskel* element_parser_;

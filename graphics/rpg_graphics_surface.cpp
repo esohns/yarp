@@ -44,7 +44,7 @@ PNG_read_callback(png_structp png_ptr_in,
   png_ptr_in->io_ptr = (ACE_static_cast(unsigned char*, png_ptr_in->io_ptr) + size_in);
 }
 
-RPG_Graphics_Surface::RPG_Graphics_Surface(const RPG_Graphics_Type& type_in,
+RPG_Graphics_Surface::RPG_Graphics_Surface(const RPG_Graphics_GraphicTypeUnion& type_in,
                                            const bool& ownSurface_in)
  : mySurface(NULL),
    myOwnSurface(false)
@@ -58,7 +58,7 @@ RPG_Graphics_Surface::RPG_Graphics_Surface(const RPG_Graphics_Type& type_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
+               RPG_Graphics_Common_Tools::typeToString(type_in).c_str()));
 
     return;
   } // end IF
@@ -93,7 +93,7 @@ RPG_Graphics_Surface::~RPG_Graphics_Surface()
 }
 
 void
-RPG_Graphics_Surface::init(const RPG_Graphics_Type& type_in,
+RPG_Graphics_Surface::init(const RPG_Graphics_GraphicTypeUnion& type_in,
                            const bool& ownSurface_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::init"));
@@ -116,7 +116,7 @@ RPG_Graphics_Surface::init(const RPG_Graphics_Type& type_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
+               RPG_Graphics_Common_Tools::typeToString(type_in).c_str()));
 
     return;
   } // end IF
@@ -715,7 +715,7 @@ RPG_Graphics_Surface::put(const unsigned long& offsetX_in,
 }
 
 void
-RPG_Graphics_Surface::putText(const RPG_Graphics_Type& type_in,
+RPG_Graphics_Surface::putText(const RPG_Graphics_Font& font_in,
                               const std::string& textString_in,
                               const SDL_Color& color_in,
                               const bool& shade_in,
@@ -730,14 +730,14 @@ RPG_Graphics_Surface::putText(const RPG_Graphics_Type& type_in,
   SDL_Surface* rendered_text = NULL;
   if (shade_in)
   {
-    rendered_text = RPG_Graphics_Common_Tools::renderText(type_in,
+    rendered_text = RPG_Graphics_Common_Tools::renderText(font_in,
                                                           textString_in,
                                                           shadeColor_in);
     if (!rendered_text)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Graphics_Common_Tools::renderText(\"%s\", \"%s\"), aborting\n"),
-                 RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str(),
+                 RPG_Graphics_FontHelper::RPG_Graphics_FontToString(font_in).c_str(),
                  textString_in.c_str()));
 
       return;
@@ -752,14 +752,14 @@ RPG_Graphics_Surface::putText(const RPG_Graphics_Type& type_in,
     SDL_FreeSurface(rendered_text);
     rendered_text = NULL;
   } // end IF
-  rendered_text = RPG_Graphics_Common_Tools::renderText(type_in,
+  rendered_text = RPG_Graphics_Common_Tools::renderText(font_in,
                                                         textString_in,
                                                         color_in);
   if (!rendered_text)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::renderText(\"%s\", \"%s\"), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str(),
+               RPG_Graphics_FontHelper::RPG_Graphics_FontToString(font_in).c_str(),
                textString_in.c_str()));
 
     return;

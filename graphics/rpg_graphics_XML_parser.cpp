@@ -105,10 +105,16 @@ void RPG_Graphics_StyleUnion_Type::_characters(const ::xml_schema::ro_string& st
     myCurrentStyle.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
     myCurrentStyle.wallstyle = RPG_Graphics_WallStyleHelper::stringToRPG_Graphics_WallStyle(styleType_in);
   } // end IF
-  else
+  else if (style.find(ACE_TEXT_ALWAYS_CHAR("DOORSTYLE_")) == 0)
   {
     myCurrentStyle.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
     myCurrentStyle.doorstyle = RPG_Graphics_DoorStyleHelper::stringToRPG_Graphics_DoorStyle(styleType_in);
+  } // end ELSE
+  else
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid RPG_Graphics_StyleUnion_Type (was: \"%s\"), continuing\n"),
+               style.c_str()));
   } // end ELSE
 }
 
@@ -125,11 +131,104 @@ RPG_Graphics_StyleUnion RPG_Graphics_StyleUnion_Type::post_RPG_Graphics_StyleUni
   return result;
 }
 
-RPG_Graphics_Type RPG_Graphics_Type_Type::post_RPG_Graphics_Type_Type()
+RPG_Graphics_Cursor RPG_Graphics_Cursor_Type::post_RPG_Graphics_Cursor_Type()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Type_Type::post_RPG_Graphics_Type_Type"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Type::post_RPG_Graphics_Cursor_Type"));
 
-  return RPG_Graphics_TypeHelper::stringToRPG_Graphics_Type(post_string());
+  return RPG_Graphics_CursorHelper::stringToRPG_Graphics_Cursor(post_string());
+}
+
+RPG_Graphics_Font RPG_Graphics_Font_Type::post_RPG_Graphics_Font_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Font_Type::post_RPG_Graphics_Font_Type"));
+
+  return RPG_Graphics_FontHelper::stringToRPG_Graphics_Font(post_string());
+}
+
+RPG_Graphics_Image RPG_Graphics_Image_Type::post_RPG_Graphics_Image_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Image_Type::post_RPG_Graphics_Image_Type"));
+
+  return RPG_Graphics_ImageHelper::stringToRPG_Graphics_Image(post_string());
+}
+
+RPG_Graphics_TileGraphic RPG_Graphics_TileGraphic_Type::post_RPG_Graphics_TileGraphic_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_TileGraphic_Type::post_RPG_Graphics_TileGraphic_Type"));
+
+  return RPG_Graphics_TileGraphicHelper::stringToRPG_Graphics_TileGraphic(post_string());
+}
+
+RPG_Graphics_TileSetGraphic RPG_Graphics_TileSetGraphic_Type::post_RPG_Graphics_TileSetGraphic_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_TileSetGraphic_Type::post_RPG_Graphics_TileSetGraphic_Type"));
+
+  return RPG_Graphics_TileSetGraphicHelper::stringToRPG_Graphics_TileSetGraphic(post_string());
+}
+
+RPG_Graphics_GraphicTypeUnion_Type::RPG_Graphics_GraphicTypeUnion_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_GraphicTypeUnion_Type::RPG_Graphics_GraphicTypeUnion_Type"));
+
+  myCurrentType.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+  myCurrentType.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+}
+
+void RPG_Graphics_GraphicTypeUnion_Type::_characters(const ::xml_schema::ro_string& type_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_GraphicTypeUnion_Type::_characters"));
+
+  // can be either:
+  // - RPG_Graphics_Cursor --> "CURSOR_xxx"
+  // - RPG_Graphics_Font --> "FONT_xxx"
+  // - RPG_Graphics_Image --> "IMAGE_xxx"
+  // - RPG_Graphics_TileGraphic --> "TILE_xxx"
+  // - RPG_Graphics_TileSetGraphic --> "TILESET_xxx"
+  std::string type = type_in;
+  if (type.find(ACE_TEXT_ALWAYS_CHAR("CURSOR_")) == 0)
+  {
+    myCurrentType.discriminator = RPG_Graphics_GraphicTypeUnion::CURSOR;
+    myCurrentType.cursor = RPG_Graphics_CursorHelper::stringToRPG_Graphics_Cursor(type_in);
+  } // end IF
+  else if (type.find(ACE_TEXT_ALWAYS_CHAR("FONT_")) == 0)
+  {
+    myCurrentType.discriminator = RPG_Graphics_GraphicTypeUnion::FONT;
+    myCurrentType.font = RPG_Graphics_FontHelper::stringToRPG_Graphics_Font(type_in);
+  } // end IF
+  else if (type.find(ACE_TEXT_ALWAYS_CHAR("IMAGE_")) == 0)
+  {
+    myCurrentType.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
+    myCurrentType.image = RPG_Graphics_ImageHelper::stringToRPG_Graphics_Image(type_in);
+  } // end IF
+  else if (type.find(ACE_TEXT_ALWAYS_CHAR("TILE_")) == 0)
+  {
+    myCurrentType.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
+    myCurrentType.tilegraphic = RPG_Graphics_TileGraphicHelper::stringToRPG_Graphics_TileGraphic(type_in);
+  } // end IF
+  else if (type.find(ACE_TEXT_ALWAYS_CHAR("TILESET_")) == 0)
+  {
+    myCurrentType.discriminator = RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC;
+    myCurrentType.tilesetgraphic = RPG_Graphics_TileSetGraphicHelper::stringToRPG_Graphics_TileSetGraphic(type_in);
+  } // end ELSE
+  else
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid RPG_Graphics_GraphicTypeUnion_Type (was: \"%s\"), continuing\n"),
+               type.c_str()));
+  } // end ELSE
+}
+
+RPG_Graphics_GraphicTypeUnion RPG_Graphics_GraphicTypeUnion_Type::post_RPG_Graphics_GraphicTypeUnion_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_GraphicTypeUnion_Type::post_RPG_Graphics_GraphicTypeUnion_Type"));
+
+  RPG_Graphics_GraphicTypeUnion result = myCurrentType;
+
+  // clear structure
+  myCurrentType.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+  myCurrentType.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+
+  return result;
 }
 
 RPG_Graphics_InterfaceElementType RPG_Graphics_InterfaceElementType_Type::post_RPG_Graphics_InterfaceElementType_Type()
@@ -262,7 +361,8 @@ RPG_Graphics_Tile_Type::RPG_Graphics_Tile_Type()
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Tile_Type::RPG_Graphics_Tile_Type"));
 
   myCurrentTile.type = RPG_GRAPHICS_TILETYPE_INVALID;
-  myCurrentTile.reference = RPG_GRAPHICS_TYPE_INVALID;
+  myCurrentTile.reference.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+  myCurrentTile.reference.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   myCurrentTile.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
   myCurrentTile.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentTile.orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
@@ -280,7 +380,7 @@ void RPG_Graphics_Tile_Type::type(const RPG_Graphics_TileType& type_in)
   myCurrentTile.type = type_in;
 }
 
-void RPG_Graphics_Tile_Type::reference(const RPG_Graphics_Type& reference_in)
+void RPG_Graphics_Tile_Type::reference(const RPG_Graphics_GraphicTypeUnion& reference_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Tile_Type::reference"));
 
@@ -344,7 +444,8 @@ RPG_Graphics_Tile RPG_Graphics_Tile_Type::post_RPG_Graphics_Tile_Type()
 
   // clear structure
   myCurrentTile.type = RPG_GRAPHICS_TILETYPE_INVALID;
-  myCurrentTile.reference = RPG_GRAPHICS_TYPE_INVALID;
+  myCurrentTile.reference.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+  myCurrentTile.reference.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   myCurrentTile.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
   myCurrentTile.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
   myCurrentTile.orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
@@ -424,7 +525,8 @@ RPG_Graphics_Graphic_Type::RPG_Graphics_Graphic_Type()
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Graphic_Type::RPG_Graphics_Graphic_Type"));
 
   myCurrentGraphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
-  myCurrentGraphic.type = RPG_GRAPHICS_TYPE_INVALID;
+  myCurrentGraphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+  myCurrentGraphic.type.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   myCurrentGraphic.tile.type = RPG_GRAPHICS_TILETYPE_INVALID;
   myCurrentGraphic.tile.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
   myCurrentGraphic.tile.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
@@ -449,7 +551,7 @@ void RPG_Graphics_Graphic_Type::category(const RPG_Graphics_Category& category_i
   myCurrentGraphic.category = category_in;
 }
 
-void RPG_Graphics_Graphic_Type::type(const RPG_Graphics_Type& type_in)
+void RPG_Graphics_Graphic_Type::type(const RPG_Graphics_GraphicTypeUnion& type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Graphic_Type::type"));
 
@@ -499,7 +601,8 @@ RPG_Graphics_Graphic RPG_Graphics_Graphic_Type::post_RPG_Graphics_Graphic_Type()
 
   // clear structure
   myCurrentGraphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
-  myCurrentGraphic.type = RPG_GRAPHICS_TYPE_INVALID;
+  myCurrentGraphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+  myCurrentGraphic.type.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   myCurrentGraphic.tile.type = RPG_GRAPHICS_TILETYPE_INVALID;
   myCurrentGraphic.tile.style.discriminator = RPG_Graphics_StyleUnion::INVALID;
   myCurrentGraphic.tile.style.floorstyle = RPG_GRAPHICS_FLOORSTYLE_INVALID;
@@ -543,7 +646,47 @@ void RPG_Graphics_Dictionary_Type::graphic(const RPG_Graphics_Graphic& graphic_i
 
   RPG_Graphics_t graphic = graphic_in;
 
-  myDictionary->insert(std::make_pair(graphic.type, graphic));
+  switch (graphic.type.discriminator)
+  {
+    case RPG_Graphics_GraphicTypeUnion::CURSOR:
+    {
+      myDictionary->cursors.insert(std::make_pair(graphic.type.cursor, graphic));
+
+      break;
+    }
+    case RPG_Graphics_GraphicTypeUnion::FONT:
+    {
+      myDictionary->fonts.insert(std::make_pair(graphic.type.font, graphic));
+
+      break;
+    }
+    case RPG_Graphics_GraphicTypeUnion::IMAGE:
+    {
+      myDictionary->images.insert(std::make_pair(graphic.type.image, graphic));
+
+      break;
+    }
+    case RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC:
+    {
+      myDictionary->tiles.insert(std::make_pair(graphic.type.tilegraphic, graphic));
+
+      break;
+    }
+    case RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC:
+    {
+      myDictionary->tilesets.insert(std::make_pair(graphic.type.tilesetgraphic, graphic));
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid RPG_Graphics_GraphicTypeUnion type (was: %d), continuing\n"),
+                 graphic.type.discriminator));
+
+      break;
+    }
+  } // end SWITCH
 }
 
 void RPG_Graphics_Dictionary_Type::post_RPG_Graphics_Dictionary_Type()
@@ -552,5 +695,9 @@ void RPG_Graphics_Dictionary_Type::post_RPG_Graphics_Dictionary_Type()
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished parsing dictionary, retrieved %d graphic(s)...\n"),
-             myDictionary->size()));
+             (myDictionary->cursors.size() +
+              myDictionary->fonts.size() +
+              myDictionary->images.size() +
+              myDictionary->tiles.size() +
+              myDictionary->tilesets.size())));
 }

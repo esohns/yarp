@@ -50,7 +50,7 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
   // Construct the parser.
   //
   RPG_Graphics_Category_Type                  category_p;
-  RPG_Graphics_Type_Type                      type_p;
+  RPG_Graphics_GraphicTypeUnion_Type          type_p;
   RPG_Graphics_Tile_Type                      tile_p;
   RPG_Graphics_TileType_Type                  tileType_p;
   RPG_Graphics_StyleUnion_Type                style_p;
@@ -139,22 +139,73 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
 }
 
 const RPG_Graphics_t
-RPG_Graphics_Dictionary::getGraphic(const RPG_Graphics_Type& type_in) const
+RPG_Graphics_Dictionary::get(const RPG_Graphics_GraphicTypeUnion& type_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::getGraphic"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::get"));
 
-  RPG_Graphics_DictionaryIterator_t iterator = myDictionary.find(type_in);
-  if (iterator == myDictionary.end())
+  RPG_Graphics_t dummy;
+  dummy.category = RPG_GRAPHICS_CATEGORY_INVALID;
+  dummy.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+
+  switch (type_in.discriminator)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid graphics type \"%s\", continuing\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
+    case RPG_Graphics_GraphicTypeUnion::CURSOR:
+    {
+      RPG_Graphics_CursorDictionaryIterator_t iterator = myDictionary.cursors.find(type_in.cursor);
+      if (iterator != myDictionary.cursors.end())
+        return (*iterator).second;
 
-    // *TODO*: what else can we do ?
-    ACE_ASSERT(false);
-  } // end IF
+      break;
+    }
+    case RPG_Graphics_GraphicTypeUnion::FONT:
+    {
+      RPG_Graphics_FontDictionaryIterator_t iterator = myDictionary.fonts.find(type_in.font);
+      if (iterator != myDictionary.fonts.end())
+        return (*iterator).second;
 
-  return iterator->second;
+      break;
+    }
+    case RPG_Graphics_GraphicTypeUnion::IMAGE:
+    {
+      RPG_Graphics_ImageDictionaryIterator_t iterator = myDictionary.images.find(type_in.image);
+      if (iterator != myDictionary.images.end())
+        return (*iterator).second;
+
+      break;
+    }
+    case RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC:
+    {
+      RPG_Graphics_TileDictionaryIterator_t iterator = myDictionary.tiles.find(type_in.tilegraphic);
+      if (iterator != myDictionary.tiles.end())
+        return (*iterator).second;
+
+      break;
+    }
+    case RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC:
+    {
+      RPG_Graphics_TileSetDictionaryIterator_t iterator = myDictionary.tilesets.find(type_in.tilesetgraphic);
+      if (iterator != myDictionary.tilesets.end())
+        return (*iterator).second;
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid RPG_Graphics_GraphicTypeUnion type (was: %d), aborting\n"),
+                 type_in.discriminator));
+
+      ACE_ASSERT(false);
+
+      return dummy;
+    }
+  } // end SWITCH
+
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("type \"%s\" not found, aborting\n"),
+             RPG_Graphics_Common_Tools::typeToString(type_in).c_str()));
+
+  return dummy;
 }
 
 const RPG_Graphics_Fonts_t
@@ -165,19 +216,19 @@ RPG_Graphics_Dictionary::getFonts() const
   RPG_Graphics_Fonts_t result;
 
   RPG_Graphics_Font_t font;
-  font.type = RPG_GRAPHICS_TYPE_INVALID;
+  font.type = RPG_GRAPHICS_FONT_INVALID;
   font.size = 0;
   font.file.clear();
-  for (RPG_Graphics_DictionaryIterator_t iterator = myDictionary.begin();
-       iterator != myDictionary.end();
+  for (RPG_Graphics_FontDictionaryIterator_t iterator = myDictionary.fonts.begin();
+       iterator != myDictionary.fonts.end();
        iterator++)
-    if ((*iterator).second.category == CATEGORY_FONT)
-    {
-      font.type = (*iterator).second.type;
-      font.size = (*iterator).second.size;
-      font.file = (*iterator).second.file;
-      result.push_back(font);
-    } // end IF
+  {
+    ACE_ASSERT((*iterator).second.type.discriminator == RPG_Graphics_GraphicTypeUnion::FONT);
+    font.type = (*iterator).second.type.font;
+    font.size = (*iterator).second.size;
+    font.file = (*iterator).second.file;
+    result.push_back(font);
+  } // end FOR
 
   return result;
 }
@@ -257,45 +308,39 @@ RPG_Graphics_Dictionary::dump() const
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::dump"));
 
   unsigned long index = 0;
-  std::string tile, tileset, elements;
-  for (RPG_Graphics_DictionaryIterator_t iterator = myDictionary.begin();
-       iterator != myDictionary.end();
+  for (RPG_Graphics_CursorDictionaryIterator_t iterator = myDictionary.cursors.begin();
+       iterator != myDictionary.cursors.end();
        iterator++, index++)
-  {
-    if ((iterator->second).tile.type == RPG_GRAPHICS_TILETYPE_INVALID)
-      tile = ACE_TEXT_ALWAYS_CHAR("N/A\n");
-    else
-    {
-      tile = ACE_TEXT_ALWAYS_CHAR("\n");
-      tile += RPG_Graphics_Common_Tools::tileToString((iterator->second).tile);
-    } // end ELSE
-    if ((iterator->second).tileset.type == RPG_GRAPHICS_TILESETTYPE_INVALID)
-      tileset = ACE_TEXT_ALWAYS_CHAR("N/A\n");
-    else
-    {
-      tileset = ACE_TEXT_ALWAYS_CHAR("\n");
-      tileset += RPG_Graphics_Common_Tools::tileSetToString((iterator->second).tileset);
-    } // end ELSE
-    if ((iterator->second).elements.empty())
-      elements = ACE_TEXT_ALWAYS_CHAR("N/A\n");
-    else
-    {
-      elements = ACE_TEXT_ALWAYS_CHAR("\n");
-      elements += RPG_Graphics_Common_Tools::elementsToString((iterator->second).elements);
-    } // end ELSE
-
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("Graphic[#%u]:\nCategory: %s\nType: %s\nTile: %sTileSet: %sElement(s)[%u]: %sFile: %s\nSize: %u\n"),
+               ACE_TEXT("Graphic[#%u]:\n%s===========================\n"),
                index,
-               RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString((iterator->second).category).c_str(),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString((iterator->second).type).c_str(),
-               tile.c_str(),
-               tileset.c_str(),
-               (iterator->second).elements.size(),
-               elements.c_str(),
-               ((iterator->second).file.empty() ? ACE_TEXT("N/A") : ((iterator->second).file).c_str()),
-               (iterator->second).size));
+               RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str()));
+  for (RPG_Graphics_FontDictionaryIterator_t iterator = myDictionary.fonts.begin();
+       iterator != myDictionary.fonts.end();
+       iterator++, index++)
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("===========================\n")));
-  } // end FOR
+               ACE_TEXT("Graphic[#%u]:\n%s===========================\n"),
+               index,
+               RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str()));
+  for (RPG_Graphics_ImageDictionaryIterator_t iterator = myDictionary.images.begin();
+       iterator != myDictionary.images.end();
+       iterator++, index++)
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("Graphic[#%u]:\n%s===========================\n"),
+               index,
+               RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str()));
+  for (RPG_Graphics_TileDictionaryIterator_t iterator = myDictionary.tiles.begin();
+       iterator != myDictionary.tiles.end();
+       iterator++, index++)
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("Graphic[#%u]:\n%s===========================\n"),
+               index,
+               RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str()));
+  for (RPG_Graphics_TileSetDictionaryIterator_t iterator = myDictionary.tilesets.begin();
+       iterator != myDictionary.tilesets.end();
+       iterator++, index++)
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("Graphic[#%u]:\n%s===========================\n"),
+               index,
+               RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str()));
 }

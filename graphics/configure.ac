@@ -91,6 +91,8 @@ AC_CONFIG_FILES([Makefile
                  data/cursors/Makefile
                  data/doors/Makefile
                  data/floors/Makefile
+                 data/fonts/Makefile
+                 data/images/Makefile
                  data/walls/Makefile])
 
 AC_OUTPUT

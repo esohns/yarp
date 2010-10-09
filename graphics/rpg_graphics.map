@@ -9,8 +9,13 @@ namespace urn:rpg
   RPG_Graphics_StairsStyle_Type          RPG_Graphics_StairsStyle;
   RPG_Graphics_WallStyle_Type            RPG_Graphics_WallStyle;
   RPG_Graphics_DoorStyle_Type            RPG_Graphics_DoorStyle;
+  RPG_Graphics_Cursor_Type               RPG_Graphics_Cursor;
+  RPG_Graphics_Font_Type                 RPG_Graphics_Font;
+  RPG_Graphics_Image_Type                RPG_Graphics_Image;
+  RPG_Graphics_TileGraphic_Type          RPG_Graphics_TileGraphic;
+  RPG_Graphics_TileSetGraphic_Type       RPG_Graphics_TileSetGraphic;
+  RPG_Graphics_GraphicTypeUnion_Type     RPG_Graphics_GraphicTypeUnion;
   RPG_Graphics_StyleUnion_Type           RPG_Graphics_StyleUnion;
-  RPG_Graphics_Type_Type                 RPG_Graphics_Type;
   RPG_Graphics_InterfaceElementType_Type RPG_Graphics_InterfaceElementType;
   RPG_Graphics_HotspotType_Type          RPG_Graphics_HotspotType;
   RPG_Graphics_ElementTypeUnion_Type     RPG_Graphics_ElementTypeUnion;

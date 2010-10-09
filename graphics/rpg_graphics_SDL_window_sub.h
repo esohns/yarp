@@ -20,9 +20,8 @@
 #ifndef RPG_GRAPHICS_SDL_WINDOW_SUB_H
 #define RPG_GRAPHICS_SDL_WINDOW_SUB_H
 
-#include "rpg_graphics_SDL_window_base.h"
 #include "rpg_graphics_common.h"
-#include "rpg_graphics_type.h"
+#include "rpg_graphics_SDL_window_base.h"
 
 #include <SDL/SDL.h>
 

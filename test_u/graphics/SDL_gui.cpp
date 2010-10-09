@@ -33,7 +33,7 @@
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_surface.h>
-#include <rpg_graphics_cursor.h>
+#include <rpg_graphics_cursor_manager.h>
 #include <rpg_graphics_common_tools.h>
 #include <rpg_graphics_SDL_tools.h>
 
@@ -109,8 +109,11 @@ do_initVideo(const std::string& graphicsDirectory_in,
   SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(TEST_U_PACKAGE_STRING),  // window caption
                     ACE_TEXT_ALWAYS_CHAR(TEST_U_PACKAGE_STRING)); // icon caption
   // set window icon
-  RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(TYPE_IMAGE_WM_ICON);
-  ACE_ASSERT(icon_graphic.type == TYPE_IMAGE_WM_ICON);
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
+  type.image = IMAGE_WM_ICON;
+  RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+  ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
   std::string path = graphicsDirectory_in;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += icon_graphic.file;
@@ -438,12 +441,15 @@ do_work(const mode_t& mode_in,
                                   cacheSize_in);
 
   // step2: setup main "window"
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
+  type.image = SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
   std::string title = SDL_GUI_DEF_GRAPHICS_MAINWINDOW_TITLE;
   SDL_GUI_MainWindow mainWindow(RPG_Graphics_WindowSize_t(screen->w,
-                                                          screen->h),  // size
-                                SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE, // interface elements
-                                title,                                 // title (== caption)
-                                TYPE_FONT_MAIN_LARGE);                 // title font
+                                                          screen->h), // size
+                                type,                                 // interface elements
+                                title,                                // title (== caption)
+                                FONT_MAIN_LARGE);                     // title font
   mainWindow.setScreen(screen);
   mainWindow.init();
   mainWindow.draw();
@@ -463,49 +469,161 @@ do_work(const mode_t& mode_in,
     case MODE_RANDOM_IMAGES:
     {
       // step3: show (random) images inside main "window"
-      RPG_Graphics_Type type = RPG_GRAPHICS_TYPE_INVALID;
+      RPG_Graphics_GraphicTypeUnion type;
+      type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+      type.image = RPG_GRAPHICS_IMAGE_INVALID;
       RPG_Graphics_t graphic;
+      graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
+      graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
       RPG_Dice_RollResult_t result;
       SDL_Surface* image = NULL;
+      bool release_image = false;
       do
       {
         window = NULL;
         need_redraw = false;
+        image = NULL;
+        release_image = false;
 
         // reset screen
         mainWindow.draw();
         mainWindow.refresh();
 
-        result.clear();
-        RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TYPE_MAX,
-                                        1,
-                                        result);
-        type = ACE_static_cast(RPG_Graphics_Type, (result.front() - 1));
-
-        graphic.type = RPG_GRAPHICS_TYPE_INVALID;
-        // *NOTE*: cannot load all types (some are fonts, ...)
-        // --> retrieve properties from the dictionary
-        graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(type);
-        ACE_ASSERT(graphic.type == type);
-        // sanity check
-        if ((graphic.category != CATEGORY_INTERFACE) &&
-            (graphic.category != CATEGORY_IMAGE) &&
-            (graphic.category != CATEGORY_TILE))
-          continue;
-
-        image = RPG_Graphics_Common_Tools::loadGraphic(type);
-        if (!image)
+        // choose category
+        do
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-                     RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type).c_str()));
+          result.clear();
+          RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_CATEGORY_MAX,
+                                          1,
+                                          result);
+          graphic.category = ACE_static_cast(RPG_Graphics_Category, (result.front() - 1));
+        } while (graphic.category == CATEGORY_FONT); // cannot display fonts at the moment
 
-          return;
+        // choose type within category
+        result.clear();
+        switch (graphic.category)
+        {
+          case CATEGORY_CURSOR:
+          {
+            RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_CURSOR_MAX,
+                                            1,
+                                            result);
+            type.cursor = ACE_static_cast(RPG_Graphics_Cursor, (result.front() - 1));
+            type.discriminator = RPG_Graphics_GraphicTypeUnion::CURSOR;
+
+            break;
+          }
+          case CATEGORY_INTERFACE:
+          case CATEGORY_IMAGE:
+          {
+            RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_IMAGE_MAX,
+                                            1,
+                                            result);
+            type.image = ACE_static_cast(RPG_Graphics_Image, (result.front() - 1));
+            type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
+
+            break;
+          }
+          case CATEGORY_TILE:
+          {
+            RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TILEGRAPHIC_MAX,
+                                            1,
+                                            result);
+            type.tilegraphic = ACE_static_cast(RPG_Graphics_TileGraphic, (result.front() - 1));
+            type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
+
+            break;
+          }
+          case CATEGORY_TILESET:
+          {
+            RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TILESETGRAPHIC_MAX,
+                                            1,
+                                            result);
+            type.tilesetgraphic = ACE_static_cast(RPG_Graphics_TileSetGraphic, (result.front() - 1));
+            type.discriminator = RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC;
+
+            break;
+          }
+          default:
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("invalid category (was: \"%s\"), continuing\n"),
+                       RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str()));
+
+            continue;
+          }
+        } // end SWITCH
+
+        if (graphic.category != CATEGORY_TILESET)
+        {
+          image = RPG_Graphics_Common_Tools::loadGraphic(type);
+          if (!image)
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
+                       RPG_Graphics_Common_Tools::typeToString(type).c_str()));
+
+            continue;
+          } // end IF
         } // end IF
+        else
+        {
+          // need to load this manually --> retrieve filename(s)
+          graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
+          graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+          graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+          ACE_ASSERT((graphic.type.discriminator == type.discriminator) &&
+                     (graphic.type.tilesetgraphic == type.tilesetgraphic));
+          ACE_ASSERT(!graphic.tileset.tiles.empty());
+
+          // choose random tile
+          std::vector<RPG_Graphics_Tile>::const_iterator iterator = graphic.tileset.tiles.begin();
+          result.clear();
+          RPG_Dice::generateRandomNumbers(graphic.tileset.tiles.size(),
+                                          1,
+                                          result);
+          std::advance(iterator, (result.front() - 1));
+
+          // assemble filename
+          std::string filename = graphicsDirectory_in;
+          filename += ACE_DIRECTORY_SEPARATOR_STR;
+          switch (graphic.tileset.type)
+          {
+            case TILESETTYPE_DOOR:
+              filename += RPG_GRAPHICS_TILE_DEF_DOORS_SUB; break;
+            case TILESETTYPE_FLOOR:
+              filename += RPG_GRAPHICS_TILE_DEF_FLOORS_SUB; break;
+            case TILESETTYPE_WALL:
+              filename += RPG_GRAPHICS_TILE_DEF_WALLS_SUB; break;
+            default:
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("invalid tileset type (was: \"%s\"), continuing\n"),
+                         RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(graphic.tileset.type).c_str()));
+
+              continue;
+            }
+          } // end SWITCH
+          filename += ACE_DIRECTORY_SEPARATOR_STR;
+          filename += (*iterator).file;
+
+          image = RPG_Graphics_Surface::load(filename, // file
+                                             true);    // convert to display format
+          if (!image)
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), continuing\n"),
+                       filename.c_str()));
+
+            continue;
+          } // end IF
+          release_image = true;
+        } // end ELSE
+        ACE_ASSERT(image);
 
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("showing graphics type \"%s\"...\n"),
-                   RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type).c_str()));
+                   RPG_Graphics_Common_Tools::typeToString(type).c_str()));
 
         RPG_Graphics_Surface::put((screen->w - image->w) / 2, // location x
                                   (screen->h - image->h) / 2, // location y
@@ -612,6 +730,10 @@ do_work(const mode_t& mode_in,
             }
           } // end SWITCH
         } while (event.type == SDL_MOUSEMOTION);
+
+        // clean up
+        if (release_image)
+          SDL_FreeSurface(image);
       } while (!done);
 
       break;
@@ -659,7 +781,7 @@ do_work(const mode_t& mode_in,
       mapStyle.door_style = SDL_GUI_DEF_GRAPHICS_DOORSTYLE;
 
       // step4: set default cursor
-      RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(TYPE_CURSOR_NORMAL);
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
 
       // step5: setup level "window"
       // *NOTE*: need to allocate this dynamically so parent window can
@@ -687,12 +809,7 @@ do_work(const mode_t& mode_in,
 
         return;
       } // end IF
-
       mapWindow->setScreen(screen);
-//       mapWindow->init(floorStyle,
-//                       wallStyle,
-//                       doorStyle,
-//                       plan);
 
       // refresh screen
       try
@@ -753,6 +870,20 @@ do_work(const mode_t& mode_in,
           {
             switch (event.key.keysym.sym)
             {
+              case SDLK_f:
+              {
+                mapStyle.floor_style = ACE_static_cast(RPG_Graphics_FloorStyle, mapStyle.floor_style + 1);
+                if (mapStyle.floor_style == RPG_GRAPHICS_FLOORSTYLE_MAX)
+                  mapStyle.floor_style = ACE_static_cast(RPG_Graphics_FloorStyle, 0);
+                RPG_Graphics_StyleUnion style;
+                style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
+                style.floorstyle = mapStyle.floor_style;
+                mapWindow->setStyle(style);
+
+                need_redraw = true;
+
+                break;
+              }
               case SDLK_m:
               {
                 std::string dump_path = RPG_MAP_DUMP_DIR;
@@ -775,6 +906,20 @@ do_work(const mode_t& mode_in,
               {
                 // finished event processing
                 done = true;
+
+                break;
+              }
+              case SDLK_w:
+              {
+                mapStyle.wall_style = ACE_static_cast(RPG_Graphics_WallStyle, mapStyle.wall_style + 1);;
+                if (mapStyle.wall_style == RPG_GRAPHICS_WALLSTYLE_MAX)
+                  mapStyle.wall_style = ACE_static_cast(RPG_Graphics_WallStyle, 0);
+                RPG_Graphics_StyleUnion style;
+                style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
+                style.wallstyle = mapStyle.wall_style;
+                mapWindow->setStyle(style);
+
+                need_redraw = true;
 
                 break;
               }
@@ -913,10 +1058,10 @@ do_work(const mode_t& mode_in,
             // map has changed, cursor MAY have been drawn over...
             // --> redraw cursor
             SDL_Rect dirtyRegion;
-            RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(mouse_position.first,
-                                                           mouse_position.second,
-                                                           screen,
-                                                           dirtyRegion);
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(mouse_position.first,
+                                                                   mouse_position.second,
+                                                                   screen,
+                                                                   dirtyRegion);
             RPG_Graphics_Surface::update(dirtyRegion,
                                          screen);
 
