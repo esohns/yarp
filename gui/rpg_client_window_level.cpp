@@ -104,11 +104,10 @@ RPG_Client_WindowLevel::~RPG_Client_WindowLevel()
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::~RPG_Client_WindowLevel"));
 
   // clean up
-  for (RPG_Graphics_FloorTileSetConstIterator_t iterator = myCurrentFloorSet.begin();
-       iterator != myCurrentFloorSet.end();
+  for (RPG_Graphics_FloorTilesConstIterator_t iterator = myCurrentFloorSet.tiles.begin();
+       iterator != myCurrentFloorSet.tiles.end();
        iterator++)
     SDL_FreeSurface((*iterator).surface);
-  myCurrentFloorSet.clear();
   myCurrentMapStyle.floor_style = RPG_GRAPHICS_FLOORSTYLE_INVALID;
 
   if (myCurrentWallSet.east.surface)
@@ -304,8 +303,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
   int i, j;
   RPG_Position_t current_map_position = std::make_pair(0, 0);
-  RPG_Graphics_FloorTileSetConstIterator_t floor_iterator = myCurrentFloorSet.begin();
-  RPG_Graphics_FloorTileSetConstIterator_t begin_row = myCurrentFloorSet.begin();
+  RPG_Graphics_FloorTilesConstIterator_t floor_iterator = myCurrentFloorSet.tiles.begin();
+  RPG_Graphics_FloorTilesConstIterator_t begin_row = myCurrentFloorSet.tiles.begin();
   unsigned long floor_row = 0;
   unsigned long floor_index = 0;
 //   unsigned long x, y;
@@ -328,8 +327,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
     current_map_position.second = myView.second + i;
 
     // floor tile rotation
-    floor_row = (current_map_position.second % (RPG_GRAPHICS_TILE_FLOORSET_NUMTILES / RPG_GRAPHICS_TILE_FLOORSET_ROWTILES));
-    begin_row = myCurrentFloorSet.begin();
+    floor_row = (current_map_position.second % (myCurrentFloorSet.tiles.size() / myCurrentFloorSet.rows));
+    begin_row = myCurrentFloorSet.tiles.begin();
     std::advance(begin_row, floor_row);
 
     for (j = diff + i;
@@ -346,9 +345,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         continue;
 
       // floor tile rotation
-      floor_index = (current_map_position.first % RPG_GRAPHICS_TILE_FLOORSET_ROWTILES);
+      floor_index = (current_map_position.first % myCurrentFloorSet.rows);
       floor_iterator = begin_row;
-      std::advance(floor_iterator, (RPG_GRAPHICS_TILE_FLOORSET_ROWTILES * floor_index));
+      std::advance(floor_iterator, (myCurrentFloorSet.rows * floor_index));
 
       // map --> screen coordinates
 //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
@@ -374,7 +373,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 //             (current_map_position.first >= myMap.getDimensions().first))
 
         // advance floor iterator
-        std::advance(floor_iterator, RPG_GRAPHICS_TILE_FLOORSET_ROWTILES);
+        std::advance(floor_iterator, myCurrentFloorSet.rows);
 
         continue;
       } // end IF
@@ -426,7 +425,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
       // *TODO*: step3: floor edges
 
       // advance floor iterator
-      std::advance(floor_iterator, RPG_GRAPHICS_TILE_FLOORSET_ROWTILES);
+      std::advance(floor_iterator, myCurrentFloorSet.rows);
     } // end FOR
   } // end FOR
 
@@ -925,16 +924,18 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
     case RPG_Graphics_StyleUnion::FLOORSTYLE:
     {
       // clean up
-      for (RPG_Graphics_FloorTileSetConstIterator_t iterator = myCurrentFloorSet.begin();
-           iterator != myCurrentFloorSet.end();
+      for (RPG_Graphics_FloorTilesConstIterator_t iterator = myCurrentFloorSet.tiles.begin();
+           iterator != myCurrentFloorSet.tiles.end();
            iterator++)
         SDL_FreeSurface((*iterator).surface);
-      myCurrentFloorSet.clear();
+      myCurrentFloorSet.tiles.clear();
+      myCurrentFloorSet.columns = 0;
+      myCurrentFloorSet.rows = 0;
 
       RPG_Graphics_Common_Tools::loadFloorTileSet(style_in.floorstyle,
                                                   myCurrentFloorSet);
       // sanity check
-      if (myCurrentFloorSet.empty())
+      if (myCurrentFloorSet.tiles.empty())
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("floor-style \"%s\" has no tiles, continuing\n"),
