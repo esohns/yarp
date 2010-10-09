@@ -100,10 +100,11 @@ event_timer_SDL_cb(Uint32 interval_in,
   event.type = SDL_NOEVENT;
   // synch access
   {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(data->hover_quit_lock);
+    ACE_Guard<ACE_Thread_Mutex> aGuard(data->lock);
 
     data->hover_time += interval_in;
-    if (data->hover_time > RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY)
+    data->gtk_time += interval_in;
+    if (data->hover_time >= RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY)
     {
       // mouse is hovering --> trigger an event
       event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
@@ -114,6 +115,12 @@ event_timer_SDL_cb(Uint32 interval_in,
                    ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                    SDL_GetError()));
     } // end IF
+
+    // dispatch GTK events (if any ?)
+    if (data->gtk_time < RPG_CLIENT_SDL_GTKEVENT_RESOLUTION)
+      return interval_in; // re-schedule
+
+    data->gtk_time = 0;
   } // end lock scope
 
   // dispatch a pending GTK event
@@ -1068,8 +1075,9 @@ do_work(const RPG_Client_Config& config_in)
   }
 
   GTK_cb_data_t userData;
-//   userData.hover_quit_lock;
+//   userData.lock;
   userData.hover_time      = 0;
+  userData.gtk_time        = 0;
   userData.gtk_main_quit_invoked = false;
   userData.xml             = NULL;
   userData.screen          = NULL;
@@ -1319,10 +1327,11 @@ do_work(const RPG_Client_Config& config_in)
     } // end IF
 
     // if necessary, reset hover_time
-    if (event.type != RPG_GRAPHICS_SDL_HOVEREVENT)
+    if ((event.type != RPG_GRAPHICS_SDL_HOVEREVENT) &&
+        (event.type != RPG_CLIENT_SDL_GTKEVENT))
     {
       // synch access
-      ACE_Guard<ACE_Thread_Mutex> aGuard(userData.hover_quit_lock);
+      ACE_Guard<ACE_Thread_Mutex> aGuard(userData.lock);
 
       userData.hover_time = 0;
     } // end IF
@@ -1455,7 +1464,7 @@ do_work(const RPG_Client_Config& config_in)
             // --> check if that has been called...
             // synch access
             {
-              ACE_Guard<ACE_Thread_Mutex> aGuard(userData.hover_quit_lock);
+              ACE_Guard<ACE_Thread_Mutex> aGuard(userData.lock);
 
               if (userData.gtk_main_quit_invoked)
               {

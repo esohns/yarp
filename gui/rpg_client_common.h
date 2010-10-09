@@ -41,11 +41,12 @@
 struct GTK_cb_data_t
 {
  inline GTK_cb_data_t()
-  : hover_quit_lock(NULL, NULL),
+  : lock(NULL, NULL),
     player(RPG_Character_Player::dummy()) {};
 
-  ACE_Thread_Mutex        hover_quit_lock;
+  ACE_Thread_Mutex        lock;
   unsigned long           hover_time;
+  unsigned long           gtk_time;
   bool                    gtk_main_quit_invoked;
   GladeXML*               xml;
   SDL_Surface*            screen;

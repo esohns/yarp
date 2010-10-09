@@ -845,7 +845,7 @@ quit_activated_GTK_cb(GtkWidget* widget_in,
 
   // synch access
   {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(data->hover_quit_lock);
+    ACE_Guard<ACE_Thread_Mutex> aGuard(data->lock);
 
     ACE_ASSERT(!data->gtk_main_quit_invoked);
     data->gtk_main_quit_invoked = true;
