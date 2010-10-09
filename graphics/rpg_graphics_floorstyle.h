@@ -35,11 +35,12 @@ enum RPG_Graphics_FloorStyle
   FLOORSTYLE_ICE,
   FLOORSTYLE_LAVA,
   FLOORSTYLE_MARBLE,
+  FLOORSTYLE_MURAL,
+  FLOORSTYLE_MURAL2,
   FLOORSTYLE_ROUGH,
-  FLOORSTYLE_STONE,
+  FLOORSTYLE_ROUGH_LIT,
   FLOORSTYLE_STONE_COBBLED,
   FLOORSTYLE_STONE_MOSS_COVERED,
-  FLOORSTYLE_UNMAPPED,
   FLOORSTYLE_WATER,
   //
   RPG_GRAPHICS_FLOORSTYLE_MAX,
@@ -67,11 +68,12 @@ class RPG_Graphics_FloorStyleHelper
     myRPG_Graphics_FloorStyleToStringTable.insert(std::make_pair(FLOORSTYLE_ICE, ACE_TEXT_ALWAYS_CHAR("FLOORSTYLE_ICE")));
     myRPG_Graphics_FloorStyleToStringTable.insert(std::make_pair(FLOORSTYLE_LAVA, ACE_TEXT_ALWAYS_CHAR("FLOORSTYLE_LAVA")));
     myRPG_Graphics_FloorStyleToStringTable.insert(std::make_pair(FLOORSTYLE_MARBLE, ACE_TEXT_ALWAYS_CHAR("FLOORSTYLE_MARBLE")));
+    myRPG_Graphics_FloorStyleToStringTable.insert(std::make_pair(FLOORSTYLE_MURAL, ACE_TEXT_ALWAYS_CHAR("FLOORSTYLE_MURAL")));
+    myRPG_Graphics_FloorStyleToStringTable.insert(std::make_pair(FLOORSTYLE_MURAL2, ACE_TEXT_ALWAYS_CHAR("FLOORSTYLE_MURAL2")));
     myRPG_Graphics_FloorStyleToStringTable.insert(std::make_pair(FLOORSTYLE_ROUGH, ACE_TEXT_ALWAYS_CHAR("FLOORSTYLE_ROUGH")));
-    myRPG_Graphics_FloorStyleToStringTable.insert(std::make_pair(FLOORSTYLE_STONE, ACE_TEXT_ALWAYS_CHAR("FLOORSTYLE_STONE")));
+    myRPG_Graphics_FloorStyleToStringTable.insert(std::make_pair(FLOORSTYLE_ROUGH_LIT, ACE_TEXT_ALWAYS_CHAR("FLOORSTYLE_ROUGH_LIT")));
     myRPG_Graphics_FloorStyleToStringTable.insert(std::make_pair(FLOORSTYLE_STONE_COBBLED, ACE_TEXT_ALWAYS_CHAR("FLOORSTYLE_STONE_COBBLED")));
     myRPG_Graphics_FloorStyleToStringTable.insert(std::make_pair(FLOORSTYLE_STONE_MOSS_COVERED, ACE_TEXT_ALWAYS_CHAR("FLOORSTYLE_STONE_MOSS_COVERED")));
-    myRPG_Graphics_FloorStyleToStringTable.insert(std::make_pair(FLOORSTYLE_UNMAPPED, ACE_TEXT_ALWAYS_CHAR("FLOORSTYLE_UNMAPPED")));
     myRPG_Graphics_FloorStyleToStringTable.insert(std::make_pair(FLOORSTYLE_WATER, ACE_TEXT_ALWAYS_CHAR("FLOORSTYLE_WATER")));
   };
 

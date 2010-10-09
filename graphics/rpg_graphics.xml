@@ -7,82 +7,82 @@
                     xsi:schemaLocation="urn:rpg rpg_graphics.xsd">
   <graphic>
     <category>CATEGORY_CURSOR</category>
-    <type>TYPE_CURSOR_DOOR_OPEN</type>
+    <type>CURSOR_DOOR_OPEN</type>
     <file>cursor_door_open.png</file>
   </graphic>
   <graphic>
     <category>CATEGORY_CURSOR</category>
-    <type>TYPE_CURSOR_NORMAL</type>
+    <type>CURSOR_NORMAL</type>
     <file>cursor_normal.png</file>
   </graphic>
   <graphic>
     <category>CATEGORY_CURSOR</category>
-    <type>TYPE_CURSOR_SCROLL_D</type>
+    <type>CURSOR_SCROLL_D</type>
     <file>cursor_scroll_down.png</file>
   </graphic>
   <graphic>
     <category>CATEGORY_CURSOR</category>
-    <type>TYPE_CURSOR_SCROLL_DL</type>
+    <type>CURSOR_SCROLL_DL</type>
     <file>cursor_scroll_downleft.png</file>
   </graphic>
   <graphic>
     <category>CATEGORY_CURSOR</category>
-    <type>TYPE_CURSOR_SCROLL_DR</type>
+    <type>CURSOR_SCROLL_DR</type>
     <file>cursor_scroll_downright.png</file>
   </graphic>
   <graphic>
     <category>CATEGORY_CURSOR</category>
-    <type>TYPE_CURSOR_SCROLL_L</type>
+    <type>CURSOR_SCROLL_L</type>
     <file>cursor_scroll_left.png</file>
   </graphic>
   <graphic>
     <category>CATEGORY_CURSOR</category>
-    <type>TYPE_CURSOR_SCROLL_R</type>
+    <type>CURSOR_SCROLL_R</type>
     <file>cursor_scroll_right.png</file>
   </graphic>
   <graphic>
     <category>CATEGORY_CURSOR</category>
-    <type>TYPE_CURSOR_SCROLL_U</type>
+    <type>CURSOR_SCROLL_U</type>
     <file>cursor_scroll_up.png</file>
   </graphic>
   <graphic>
     <category>CATEGORY_CURSOR</category>
-    <type>TYPE_CURSOR_SCROLL_UL</type>
+    <type>CURSOR_SCROLL_UL</type>
     <file>cursor_scroll_upleft.png</file>
   </graphic>
   <graphic>
     <category>CATEGORY_CURSOR</category>
-    <type>TYPE_CURSOR_SCROLL_UR</type>
+    <type>CURSOR_SCROLL_UR</type>
     <file>cursor_scroll_upright.png</file>
   </graphic>
   <graphic>
     <category>CATEGORY_CURSOR</category>
-    <type>TYPE_CURSOR_STAIRS</type>
+    <type>CURSOR_STAIRS</type>
     <file>cursor_stairs.png</file>
   </graphic>
   <graphic>
     <category>CATEGORY_CURSOR</category>
-    <type>TYPE_CURSOR_WAIT</type>
+    <type>CURSOR_WAIT</type>
     <file>cursor_hourglass.png</file>
   </graphic>
   <graphic size="10">
     <category>CATEGORY_FONT</category>
-    <type>TYPE_FONT_MAIN_SMALL</type>
+    <type>FONT_MAIN_SMALL</type>
     <file>font_main.ttf</file>
   </graphic>
   <graphic size="12">
     <category>CATEGORY_FONT</category>
-    <type>TYPE_FONT_MAIN_NORMAL</type>
+    <type>FONT_MAIN_NORMAL</type>
     <file>font_main.ttf</file>
   </graphic>
   <graphic size="14">
     <category>CATEGORY_FONT</category>
-    <type>TYPE_FONT_MAIN_LARGE</type>
+    <type>FONT_MAIN_LARGE</type>
     <file>font_main.ttf</file>
   </graphic>
   <graphic>
     <category>CATEGORY_INTERFACE</category>
-    <type>TYPE_INTERFACE</type>
+    <type>IMAGE_INTERFACE</type>
     <element>
       <type>INTERFACEELEMENT_BORDER_TOP_LEFT</type>
       <offsetX>1</offsetX>
@@ -157,17 +157,17 @@
   </graphic>
   <graphic>
     <category>CATEGORY_IMAGE</category>
-    <type>TYPE_IMAGE_INTRO_MAIN</type>
+    <type>IMAGE_INTRO_MAIN</type>
     <file>image_main_logo.png</file>
   </graphic>
   <graphic>
     <category>CATEGORY_IMAGE</category>
-    <type>TYPE_IMAGE_WM_ICON</type>
+    <type>IMAGE_WM_ICON</type>
     <file>image_icon.png</file>
   </graphic>
   <graphic>
     <category>CATEGORY_TILESET</category>
-    <type>TYPE_TILESET_FLOOR_AIR</type>
+    <type>TILESET_FLOOR_AIR</type>
     <tileset>
       <type>TILESETTYPE_FLOOR</type>
       <style>FLOORSTYLE_AIR</style>
@@ -211,7 +211,379 @@
   </graphic>
   <graphic>
     <category>CATEGORY_TILESET</category>
-    <type>TYPE_TILESET_FLOOR_STONE_COBBLED</type>
+    <type>TILESET_FLOOR_CARPET</type>
+    <tileset>
+      <type>TILESETTYPE_FLOOR</type>
+      <style>FLOORSTYLE_CARPET</style>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_carpet_0_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_carpet_0_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_carpet_1_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_carpet_1_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_carpet_2_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_carpet_2_1.png</file>
+      </tile>
+    </tileset>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILESET</category>
+    <type>TILESET_FLOOR_CERAMIC</type>
+    <tileset>
+      <type>TILESETTYPE_FLOOR</type>
+      <style>FLOORSTYLE_CERAMIC</style>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ceramic_0_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ceramic_0_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ceramic_0_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ceramic_1_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ceramic_1_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ceramic_1_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ceramic_2_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ceramic_2_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ceramic_2_2.png</file>
+      </tile>
+    </tileset>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILESET</category>
+    <type>TILESET_FLOOR_DARK</type>
+    <tileset>
+      <type>TILESETTYPE_FLOOR</type>
+      <style>FLOORSTYLE_DARK</style>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_dark_0_0.png</file>
+      </tile>
+    </tileset>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILESET</category>
+    <type>TILESET_FLOOR_ICE</type>
+    <tileset>
+      <type>TILESETTYPE_FLOOR</type>
+      <style>FLOORSTYLE_ICE</style>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ice_0_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ice_0_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ice_0_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ice_1_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ice_1_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ice_1_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ice_2_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ice_2_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_ice_2_2.png</file>
+      </tile>
+    </tileset>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILESET</category>
+    <type>TILESET_FLOOR_LAVA</type>
+    <tileset>
+      <type>TILESETTYPE_FLOOR</type>
+      <style>FLOORSTYLE_LAVA</style>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_lava_0_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_lava_0_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_lava_0_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_lava_1_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_lava_1_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_lava_1_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_lava_2_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_lava_2_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_lava_2_2.png</file>
+      </tile>
+    </tileset>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILESET</category>
+    <type>TILESET_FLOOR_MARBLE</type>
+    <tileset>
+      <type>TILESETTYPE_FLOOR</type>
+      <style>FLOORSTYLE_MARBLE</style>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_marble_0_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_marble_0_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_marble_0_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_marble_1_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_marble_1_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_marble_1_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_marble_2_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_marble_2_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_marble_2_2.png</file>
+      </tile>
+    </tileset>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILESET</category>
+    <type>TILESET_FLOOR_MURAL</type>
+    <tileset>
+      <type>TILESETTYPE_FLOOR</type>
+      <style>FLOORSTYLE_MURAL</style>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_mural_0_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_mural_0_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_mural_1_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_mural_1_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_mural_2_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_mural_2_1.png</file>
+      </tile>
+    </tileset>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILESET</category>
+    <type>TILESET_FLOOR_MURAL2</type>
+    <tileset>
+      <type>TILESETTYPE_FLOOR</type>
+      <style>FLOORSTYLE_MURAL2</style>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_mural2_0_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_mural2_0_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_mural2_1_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_mural2_1_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_mural2_2_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_mural2_2_1.png</file>
+      </tile>
+    </tileset>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILESET</category>
+    <type>TILESET_FLOOR_ROUGH</type>
+    <tileset>
+      <type>TILESETTYPE_FLOOR</type>
+      <style>FLOORSTYLE_ROUGH</style>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_0_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_0_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_0_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_1_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_1_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_1_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_2_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_2_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_2_2.png</file>
+      </tile>
+    </tileset>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILESET</category>
+    <type>TILESET_FLOOR_ROUGH_LIT</type>
+    <tileset>
+      <type>TILESETTYPE_FLOOR</type>
+      <style>FLOORSTYLE_ROUGH_LIT</style>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_lit_0_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_lit_0_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_lit_0_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_lit_1_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_lit_1_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_lit_1_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_lit_2_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_lit_2_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_rough_lit_2_2.png</file>
+      </tile>
+    </tileset>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILESET</category>
+    <type>TILESET_FLOOR_STONE_COBBLED</type>
     <tileset>
       <type>TILESETTYPE_FLOOR</type>
       <style>FLOORSTYLE_STONE_COBBLED</style>
@@ -255,19 +627,95 @@
   </graphic>
   <graphic>
     <category>CATEGORY_TILESET</category>
-    <type>TYPE_TILESET_FLOOR_DARK</type>
+    <type>TILESET_FLOOR_STONE_MOSS_COVERED</type>
     <tileset>
       <type>TILESETTYPE_FLOOR</type>
-      <style>FLOORSTYLE_DARK</style>
+      <style>FLOORSTYLE_STONE_MOSS_COVERED</style>
       <tile>
         <type>TILETYPE_FLOOR</type>
-        <file>floor_dark_0_0.png</file>
+        <file>floor_moss_covered_0_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_moss_covered_0_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_moss_covered_0_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_moss_covered_1_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_moss_covered_1_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_moss_covered_1_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_moss_covered_2_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_moss_covered_2_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_moss_covered_2_2.png</file>
       </tile>
     </tileset>
   </graphic>
   <graphic>
     <category>CATEGORY_TILESET</category>
-    <type>TYPE_TILESET_WALL_BRICK</type>
+    <type>TILESET_FLOOR_WATER</type>
+    <tileset>
+      <type>TILESETTYPE_FLOOR</type>
+      <style>FLOORSTYLE_WATER</style>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_water_0_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_water_0_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_water_0_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_water_1_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_water_1_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_water_1_2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_water_2_0.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_water_2_1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_FLOOR</type>
+        <file>floor_water_2_2.png</file>
+      </tile>
+    </tileset>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILESET</category>
+    <type>TILESET_WALL_BRICK</type>
     <tileset>
       <type>TILESETTYPE_WALL</type>
       <style>WALLSTYLE_BRICK</style>
@@ -295,7 +743,7 @@
   </graphic>
   <graphic>
     <category>CATEGORY_TILESET</category>
-    <type>TYPE_TILESET_WALL_BRICK_HALF</type>
+    <type>TILESET_WALL_BRICK_HALF</type>
     <tileset half="true">
       <type>TILESETTYPE_WALL</type>
       <style>WALLSTYLE_BRICK</style>
@@ -323,7 +771,7 @@
   </graphic>
   <graphic>
     <category>CATEGORY_TILESET</category>
-    <type>TYPE_TILESET_DOOR_WOOD</type>
+    <type>TILESET_DOOR_WOOD</type>
     <tileset>
       <type>TILESETTYPE_DOOR</type>
       <style>DOORSTYLE_WOOD</style>
@@ -355,7 +803,7 @@
   </graphic>
   <graphic>
     <category>CATEGORY_TILE</category>
-    <type>TYPE_TILE_OFF_MAP</type>
+    <type>TILE_OFF_MAP</type>
     <tile>
       <type>TILETYPE_FLOOR</type>
       <file>floor_dark_0_0.png</file>
@@ -363,15 +811,15 @@
   </graphic>
   <graphic>
     <category>CATEGORY_TILE</category>
-    <type>TYPE_TILE_CEILING</type>
+    <type>TILE_CEILING</type>
     <tile>
       <type>TILETYPE_FLOOR</type>
-      <reference>TYPE_TILE_OFF_MAP</reference>
+      <reference>TILE_OFF_MAP</reference>
     </tile>
   </graphic>
   <graphic>
     <category>CATEGORY_TILE</category>
-    <type>TYPE_TILE_CURSOR_HIGHLIGHT</type>
+    <type>TILE_CURSOR_HIGHLIGHT</type>
     <tile>
       <type>TILETYPE_FLOOR</type>
       <file>floor_highlight.png</file>
@@ -379,7 +827,7 @@
   </graphic>
   <graphic>
     <category>CATEGORY_TILE</category>
-    <type>TYPE_TILE_FLOOR_INVISIBLE</type>
+    <type>TILE_FLOOR_INVISIBLE</type>
     <tile>
       <type>TILETYPE_FLOOR</type>
       <file>floor_invisible.png</file>

@@ -116,6 +116,8 @@ do_initVideo(const std::string& graphicsDirectory_in,
   ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
   std::string path = graphicsDirectory_in;
   path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_GRAPHICS_TILE_DEF_IMAGES_SUB;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
   path += icon_graphic.file;
   SDL_Surface* icon_image = NULL;
   icon_image = RPG_Graphics_Surface::load(path,   // file
@@ -740,6 +742,8 @@ do_work(const mode_t& mode_in,
     }
     case MODE_LEVEL_MAP:
     {
+      bool force_redraw = false;
+
       // step3a: setup level
       RPG_Map_FloorPlan_t plan;
       RPG_Map_Positions_t seedPoints;
@@ -844,6 +848,7 @@ do_work(const mode_t& mode_in,
         window = NULL;
         need_redraw = false;
         mouse_position = std::make_pair(0, 0);
+        force_redraw = false;
 
         // step7: process events
         if (SDL_WaitEvent(&event) != 1)
@@ -880,7 +885,7 @@ do_work(const mode_t& mode_in,
                 style.floorstyle = mapStyle.floor_style;
                 mapWindow->setStyle(style);
 
-                need_redraw = true;
+                force_redraw = true;
 
                 break;
               }
@@ -919,7 +924,7 @@ do_work(const mode_t& mode_in,
                 style.wallstyle = mapStyle.wall_style;
                 mapWindow->setStyle(style);
 
-                need_redraw = true;
+                force_redraw = true;
 
                 break;
               }
@@ -1026,7 +1031,7 @@ do_work(const mode_t& mode_in,
         } // end SWITCH
 
         // redraw map ?
-        if (need_redraw)
+        if (force_redraw || need_redraw)
         {
           try
           {

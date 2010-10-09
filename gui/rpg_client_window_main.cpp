@@ -24,7 +24,7 @@
 
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_surface.h>
-#include <rpg_graphics_cursor.h>
+#include <rpg_graphics_cursor_manager.h>
 #include <rpg_graphics_hotspot.h>
 #include <rpg_graphics_common_tools.h>
 #include <rpg_graphics_SDL_tools.h>
@@ -36,9 +36,9 @@
 #include <sstream>
 
 RPG_Client_WindowMain::RPG_Client_WindowMain(const RPG_Graphics_WindowSize_t& size_in,
-                                             const RPG_Graphics_Type& elementType_in,
+                                             const RPG_Graphics_GraphicTypeUnion& elementType_in,
                                              const std::string& title_in,
-                                             const RPG_Graphics_Type& fontType_in)
+                                             const RPG_Graphics_Font& font_in)
  : inherited(size_in,        // size
              elementType_in, // element type
              title_in,       // title
@@ -46,7 +46,7 @@ RPG_Client_WindowMain::RPG_Client_WindowMain(const RPG_Graphics_WindowSize_t& si
    myScreenshotIndex(1),
    myLastHoverTime(0),
    myHaveMouseFocus(true), // *NOTE*: enforced with SDL_WarpMouse()
-   myTitleFont(fontType_in)
+   myTitleFont(font_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::RPG_Client_WindowMain"));
 
@@ -229,8 +229,8 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 
           // --> restore background
           SDL_Rect dirtyRegion;
-          RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen,
-                                                               dirtyRegion);
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen,
+                                                                       dirtyRegion);
           //             invalidate(dirtyRegion);
           // *NOTE*: updating straight away reduces ugly smears...
           RPG_Graphics_Surface::update(dirtyRegion,
@@ -391,7 +391,7 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 
         switch (hotspot->getCursorType())
         {
-          case TYPE_CURSOR_SCROLL_UL:
+          case CURSOR_SCROLL_UL:
           {
             levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                  -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
@@ -400,14 +400,14 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 
             break;
           }
-          case TYPE_CURSOR_SCROLL_U:
+          case CURSOR_SCROLL_U:
           {
             levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                  -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
-          case TYPE_CURSOR_SCROLL_UR:
+          case CURSOR_SCROLL_UR:
           {
             levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                  -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
@@ -416,21 +416,21 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 
             break;
           }
-          case TYPE_CURSOR_SCROLL_L:
+          case CURSOR_SCROLL_L:
           {
             levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                  RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
-          case TYPE_CURSOR_SCROLL_R:
+          case CURSOR_SCROLL_R:
           {
             levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                  -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
-          case TYPE_CURSOR_SCROLL_DL:
+          case CURSOR_SCROLL_DL:
           {
             levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                  RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
@@ -439,14 +439,14 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 
             break;
           }
-          case TYPE_CURSOR_SCROLL_D:
+          case CURSOR_SCROLL_D:
           {
             levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                  RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
-          case TYPE_CURSOR_SCROLL_DR:
+          case CURSOR_SCROLL_DR:
           {
             levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                  RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
@@ -458,8 +458,8 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
           default:
           {
             ACE_DEBUG((LM_DEBUG,
-                      ACE_TEXT("invalid/unknown cursor type (was: %s), aborting\n"),
-                      RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(hotspot->getCursorType()).c_str()));
+                       ACE_TEXT("invalid/unknown cursor type (was: %s), aborting\n"),
+                       RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(hotspot->getCursorType()).c_str()));
 
             return;
           }
@@ -585,7 +585,7 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 
       switch (hotspot->getCursorType())
       {
-        case TYPE_CURSOR_SCROLL_UL:
+        case CURSOR_SCROLL_UL:
         {
           levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
@@ -594,14 +594,14 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 
           break;
         }
-        case TYPE_CURSOR_SCROLL_U:
+        case CURSOR_SCROLL_U:
         {
           levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
-        case TYPE_CURSOR_SCROLL_UR:
+        case CURSOR_SCROLL_UR:
         {
           levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
@@ -610,21 +610,21 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 
           break;
         }
-        case TYPE_CURSOR_SCROLL_L:
+        case CURSOR_SCROLL_L:
         {
           levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
-        case TYPE_CURSOR_SCROLL_R:
+        case CURSOR_SCROLL_R:
         {
           levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
-        case TYPE_CURSOR_SCROLL_DL:
+        case CURSOR_SCROLL_DL:
         {
           levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
@@ -633,14 +633,14 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 
           break;
         }
-        case TYPE_CURSOR_SCROLL_D:
+        case CURSOR_SCROLL_D:
         {
           levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
-        case TYPE_CURSOR_SCROLL_DR:
+        case CURSOR_SCROLL_DR:
         {
           levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                                RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
@@ -653,14 +653,14 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
         {
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("invalid/unknown cursor type (was: %s), aborting\n"),
-                     RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(hotspot->getCursorType()).c_str()));
+                     RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(hotspot->getCursorType()).c_str()));
 
           return;
         }
       } // end SWITCH
 
 //       // *NOTE*: fiddling with the view invalidates the cursor BG !
-//       RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidateBG();
+//       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
 
       // need a redraw
       redraw_out = true;
@@ -711,56 +711,56 @@ RPG_Client_WindowMain::initScrollSpots()
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(0,
                                             0),      // offset
-                             TYPE_CURSOR_SCROLL_UL); // (hover) cursor graphic
+                             CURSOR_SCROLL_UL); // (hover) cursor graphic
   // up
   RPG_Graphics_HotSpot::init(*this,                 // parent
                              std::make_pair(mySize.first - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             0),     // offset
-                             TYPE_CURSOR_SCROLL_U); // (hover) cursor graphic
+                             CURSOR_SCROLL_U); // (hover) cursor graphic
   // upper right
   RPG_Graphics_HotSpot::init(*this,                  // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(mySize.first - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             0),      // offset
-                             TYPE_CURSOR_SCROLL_UR); // (hover) cursor graphic
+                             CURSOR_SCROLL_UR); // (hover) cursor graphic
   // left
   RPG_Graphics_HotSpot::init(*this,                 // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             mySize.second - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // size
                              std::make_pair(0,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
-                             TYPE_CURSOR_SCROLL_L); // (hover) cursor graphic
+                             CURSOR_SCROLL_L); // (hover) cursor graphic
   // right
   RPG_Graphics_HotSpot::init(*this,                 // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             mySize.second - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // size
                              std::make_pair(mySize.first - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
-                             TYPE_CURSOR_SCROLL_R); // (hover) cursor graphic
+                             CURSOR_SCROLL_R); // (hover) cursor graphic
   // lower left
   RPG_Graphics_HotSpot::init(*this,                  // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(0,
                                             mySize.second - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
-                             TYPE_CURSOR_SCROLL_DL); // (hover) cursor graphic
+                             CURSOR_SCROLL_DL); // (hover) cursor graphic
   // down
   RPG_Graphics_HotSpot::init(*this,                 // parent
                              std::make_pair(mySize.first - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             mySize.second - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
-                             TYPE_CURSOR_SCROLL_D); // (hover) cursor graphic
+                             CURSOR_SCROLL_D); // (hover) cursor graphic
   // lower right
   RPG_Graphics_HotSpot::init(*this,                  // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(mySize.first - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             mySize.second - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
-                             TYPE_CURSOR_SCROLL_DR); // (hover) cursor graphic
+                             CURSOR_SCROLL_DR); // (hover) cursor graphic
 }
 
 void

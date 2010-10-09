@@ -21,9 +21,11 @@
 
 #include "rpg_client_defines.h"
 
+#include <rpg_engine_common_tools.h>
+
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_surface.h>
-#include <rpg_graphics_cursor.h>
+#include <rpg_graphics_cursor_manager.h>
 #include <rpg_graphics_common_tools.h>
 #include <rpg_graphics_SDL_tools.h>
 
@@ -70,12 +72,15 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
   initCeiling();
 
   // load tile for unmapped areas
-  myCurrentOffMapTile = RPG_Graphics_Common_Tools::loadGraphic(TYPE_TILE_OFF_MAP, // tile
-                                                               false);            // don't cache
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
+  type.tilegraphic = TILE_OFF_MAP;
+  myCurrentOffMapTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                               false); // don't cache
   if (!myCurrentOffMapTile)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_TILE_OFF_MAP).c_str()));
+               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
 
   // init cursor highlighting
   myHighlightBG = RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_FLOOR_WIDTH,
@@ -85,12 +90,13 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
                ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), continuing\n"),
                RPG_GRAPHICS_TILE_FLOOR_WIDTH,
                RPG_GRAPHICS_TILE_FLOOR_HEIGHT));
-  myHighlightTile = RPG_Graphics_Common_Tools::loadGraphic(TYPE_TILE_CURSOR_HIGHLIGHT, // tile
-                                                           false);                     // don't cache
+  type.tilegraphic = TILE_CURSOR_HIGHLIGHT;
+  myHighlightTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                           false); // don't cache
   if (!myHighlightTile)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_TILE_CURSOR_HIGHLIGHT).c_str()));
+               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
 }
 
 RPG_Client_WindowLevel::~RPG_Client_WindowLevel()
@@ -225,7 +231,7 @@ RPG_Client_WindowLevel::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
   centerView();
 
   // *NOTE*: fiddling with the view invalidates the cursor BG !
-  RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidateBG();
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
   // clear highlight BG
   RPG_Graphics_Surface::clear(myHighlightBG);
 
@@ -347,7 +353,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
       // map --> screen coordinates
 //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
 //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
-      screen_position = map2Screen(current_map_position);
+      screen_position = RPG_Engine_Common_Tools::map2Screen(current_map_position,
+                                                            mySize,
+                                                            myView);
 
       // step1: unmapped areas
       if ((myMap.getElement(current_map_position) == MAPELEMENT_UNMAPPED) ||
@@ -448,7 +456,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
       // transform map coordinates into screen coordinates
 //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
 //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
-      screen_position = map2Screen(current_map_position);
+      screen_position = RPG_Engine_Common_Tools::map2Screen(current_map_position,
+                                                            mySize,
+                                                            myView);
 
       wall_iterator = myWallTiles.find(current_map_position);
       door_iterator = myDoorTiles.find(current_map_position);
@@ -509,8 +519,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
       } // end IF
 
       // step4: ceiling
-      if (RPG_Client_WindowLevel::hasCeiling(current_map_position,
-                                          myMap))
+      if (RPG_Engine_Common_Tools::hasCeiling(current_map_position,
+                                              myMap))
       {
         RPG_Graphics_Surface::put(screen_position.first,
                                   (screen_position.second -
@@ -524,7 +534,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   } // end FOR
 
   // refresh cursor highlight
-  screen_position = map2Screen(myHighlightBGPosition);
+  screen_position = RPG_Engine_Common_Tools::map2Screen(myHighlightBGPosition,
+                                                        mySize,
+                                                        myView);
   // grab BG
   // sanity check for underruns
   if ((screen_position.first < targetSurface->w) &&
@@ -618,7 +630,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           } // end SWITCH
 
           // *NOTE*: fiddling with the view invalidates the cursor BG !
-          RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidateBG();
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
           // clear highlight BG
           RPG_Graphics_Surface::clear(myHighlightBG);
 
@@ -644,8 +656,11 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
     case SDL_MOUSEMOTION:
     {
       // find map square
-      RPG_Graphics_Position_t map_position = screen2Map(std::make_pair(event_in.motion.x,
-                                                                       event_in.motion.y));
+      RPG_Graphics_Position_t map_position = RPG_Engine_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
+                                                                                                event_in.motion.y),
+                                                                                 myMap.getDimensions(),
+                                                                                 mySize,
+                                                                                 myView);
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
 //                  event_in.button.x,
@@ -671,8 +686,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
       if (map_position != myHighlightBGPosition)
       {
         // *NOTE*: restore cursor BG first
-        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen,
-                                                             dirtyRegion);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen,
+                                                                     dirtyRegion);
 //         invalidate(dirtyRegion);
         // *NOTE*: updating straight away reduces ugly smears...
         RPG_Graphics_Surface::update(dirtyRegion,
@@ -682,7 +697,9 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         restoreBG();
 
         // step2: store current background
-        tile_position = map2Screen(map_position);
+        tile_position = RPG_Engine_Common_Tools::map2Screen(map_position,
+                                                            mySize,
+                                                            myView);
         // sanity check for underruns
         if ((tile_position.first < ACE_static_cast(unsigned long, myScreen->w)) &&
             (tile_position.second < ACE_static_cast(unsigned long, myScreen->h)))
@@ -722,19 +739,19 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
       } // end IF
 
       // set an appropriate cursor
-      RPG_Graphics_Type cursor_type = RPG_Client_WindowLevel::getCursor(map_position,
-                                                                     myMap);
-      if (cursor_type != RPG_GRAPHICS_CURSOR_SINGLETON::instance()->type())
+      RPG_Graphics_Cursor cursor_type = RPG_Engine_Common_Tools::getCursor(map_position,
+                                                                           myMap);
+      if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
       {
         // *NOTE*: restore cursor BG first
-        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restoreBG(myScreen,
-                                                             dirtyRegion);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen,
+                                                                     dirtyRegion);
 //         invalidate(dirtyRegion);
         // *NOTE*: updating straight away reduces ugly smears...
         RPG_Graphics_Surface::update(dirtyRegion,
                                      myScreen);
 
-        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(cursor_type);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(cursor_type);
       } // end IF
 
       break;
@@ -748,8 +765,11 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
       if (event_in.button.button == 1) // left-click
       {
-        RPG_Graphics_Position_t map_position = screen2Map(std::make_pair(event_in.button.x,
-                                                                         event_in.button.y));
+        RPG_Graphics_Position_t map_position = RPG_Engine_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
+                                                                                                  event_in.button.y),
+                                                                                   myMap.getDimensions(),
+                                                                                   mySize,
+                                                                                   myView);
 
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
@@ -769,8 +789,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
             // change tile
             RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-            orientation = RPG_Client_WindowLevel::getDoorOrientation(myMap,
-                                                                  map_position);
+            orientation = RPG_Engine_Common_Tools::getDoorOrientation(myMap,
+                                                                      map_position);
             switch (orientation)
             {
               case ORIENTATION_HORIZONTAL:
@@ -796,7 +816,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             } // end SWITCH
 
             // invalidate cursor BG
-            RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidateBG();
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
             // clear highlight BG
             RPG_Graphics_Surface::clear(myHighlightBG);
 
@@ -1237,13 +1257,16 @@ RPG_Client_WindowLevel::initCeiling()
   } // end IF
 
   // load tile for ceiling
-  myCurrentCeilingTile = RPG_Graphics_Common_Tools::loadGraphic(TYPE_TILE_CEILING, // tile
-                                                                false);            // don't cache
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
+  type.tilegraphic = TILE_CEILING;
+  myCurrentCeilingTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                                false); // don't cache
   if (!myCurrentCeilingTile)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_TILE_CEILING).c_str()));
+               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
 
     return;
   } // end IF
@@ -1414,8 +1437,8 @@ RPG_Client_WindowLevel::initDoors(const RPG_Map_FloorPlan_t& floorPlan_in,
       continue;
     } // end IF
 
-    orientation = RPG_Client_WindowLevel::getDoorOrientation(levelState_in,
-                                                             (*iterator).position);
+    orientation = RPG_Engine_Common_Tools::getDoorOrientation(levelState_in,
+                                                              (*iterator).position);
     switch (orientation)
     {
       case ORIENTATION_HORIZONTAL:
@@ -1447,198 +1470,6 @@ RPG_Client_WindowLevel::initDoors(const RPG_Map_FloorPlan_t& floorPlan_in,
   } // end FOR
 }
 
-const RPG_Graphics_Orientation
-RPG_Client_WindowLevel::getDoorOrientation(const RPG_Map_Level& level_in,
-                                           const RPG_Map_Position_t& position_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::getDoorOrientation"));
-
-  RPG_Map_Position_t east;//, south;
-  east = position_in;
-  east.first++;
-//   south = position_in;
-//   south.second++;
-
-  if (level_in.getElement(east) == MAPELEMENT_WALL) // &&
-//     (level_in.getElement(west) == MAPELEMENT_WALL))
-  {
-    return ORIENTATION_HORIZONTAL;
-  } // end IF
-
-  return ORIENTATION_VERTICAL;
-}
-
-const bool
-RPG_Client_WindowLevel::hasCeiling(const RPG_Map_Position_t& position_in,
-                                   const RPG_Map_Level& level_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::hasCeiling"));
-
-  // shortcut: floors, doors never get a ceiling
-  RPG_Map_Element map_element = level_in.getElement(position_in);
-  if ((map_element == MAPELEMENT_FLOOR) ||
-      (map_element == MAPELEMENT_DOOR))
-    return false;
-
-//   RPG_Map_Position_t east, west, south, north;
-//   east = position_in;
-//   east.first++;
-//   west = position_in;
-//   west.first--;
-//   north = position_in;
-//   north.second--;
-//   south = position_in;
-//   south.second++;
-//
-//   RPG_Map_Element element_east, element_west, element_south, element_north;
-//   element_east = level_in.getElement(east);
-//   element_west = level_in.getElement(west);
-//   element_south = level_in.getElement(south);
-//   element_north = level_in.getElement(north);
-//
-//   // "corridors"
-//   // vertical
-//   if (((element_east == MAPELEMENT_FLOOR) ||
-//        (element_east == MAPELEMENT_DOOR)) &&
-//       ((element_west == MAPELEMENT_FLOOR) ||
-//        (element_west == MAPELEMENT_DOOR)))
-//     return true;
-//   // horizontal
-//   if (((element_north == MAPELEMENT_FLOOR) ||
-//        (element_north == MAPELEMENT_DOOR)) &&
-//       ((element_south == MAPELEMENT_FLOOR) ||
-//        (element_south == MAPELEMENT_DOOR)))
-//     return true;
-//
-//   // "corners"
-//   // SW
-//   if (((element_west == MAPELEMENT_FLOOR) ||
-//        (element_west == MAPELEMENT_DOOR)) &&
-//       ((element_south == MAPELEMENT_FLOOR) ||
-//        (element_south == MAPELEMENT_DOOR)) &&
-//       ((element_north == MAPELEMENT_UNMAPPED) ||
-//        (element_north == MAPELEMENT_WALL)) &&
-//       ((element_east == MAPELEMENT_UNMAPPED) ||
-//        (element_east == MAPELEMENT_WALL)))
-//     return (RPG_Client_WindowLevel::hasCeiling(north,
-//                                                level_in) ||
-//             RPG_Client_WindowLevel::hasCeiling(east,
-//                                                level_in));
-//   // SE
-//   if (((element_east == MAPELEMENT_FLOOR) ||
-//        (element_east == MAPELEMENT_DOOR)) &&
-//       ((element_south == MAPELEMENT_FLOOR) ||
-//        (element_south == MAPELEMENT_DOOR)) &&
-//       ((element_north == MAPELEMENT_UNMAPPED) ||
-//        (element_north == MAPELEMENT_WALL)) &&
-//       ((element_west == MAPELEMENT_UNMAPPED) ||
-//        (element_west == MAPELEMENT_WALL)))
-//     return (RPG_Client_WindowLevel::hasCeiling(north,
-//                                                level_in) ||
-//             RPG_Client_WindowLevel::hasCeiling(west,
-//                                                level_in));
-//   // NW
-//   if (((element_west == MAPELEMENT_FLOOR) ||
-//        (element_west == MAPELEMENT_DOOR)) &&
-//       ((element_north == MAPELEMENT_FLOOR) ||
-//        (element_north == MAPELEMENT_DOOR)) &&
-//       ((element_south == MAPELEMENT_UNMAPPED) ||
-//        (element_south == MAPELEMENT_WALL)) &&
-//       ((element_east == MAPELEMENT_UNMAPPED) ||
-//        (element_east == MAPELEMENT_WALL)))
-//     return (RPG_Client_WindowLevel::hasCeiling(south,
-//                                                level_in) ||
-//             RPG_Client_WindowLevel::hasCeiling(east,
-//                                                level_in));
-//   // NE
-//   if (((element_east == MAPELEMENT_FLOOR) ||
-//        (element_east == MAPELEMENT_DOOR)) &&
-//       ((element_north == MAPELEMENT_FLOOR) ||
-//        (element_north == MAPELEMENT_DOOR)) &&
-//       ((element_south == MAPELEMENT_UNMAPPED) ||
-//        (element_south == MAPELEMENT_WALL)) &&
-//       ((element_west == MAPELEMENT_UNMAPPED) ||
-//        (element_west == MAPELEMENT_WALL)))
-//     return (RPG_Client_WindowLevel::hasCeiling(south,
-//                                                level_in) ||
-//             RPG_Client_WindowLevel::hasCeiling(west,
-//                                                level_in));;
-//
-//   return false;
-
-  return true;
-}
-
-const RPG_Graphics_Type
-RPG_Client_WindowLevel::getCursor(const RPG_Map_Position_t& position_in,
-                               const RPG_Map_Level& level_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::getCursor"));
-
-  RPG_Graphics_Type result = TYPE_CURSOR_NORMAL;
-
-  // (closed) door ?
-  if (level_in.getElement(position_in) == MAPELEMENT_DOOR)
-  {
-    RPG_Map_Door_t door = level_in.getDoor(position_in);
-    if (!door.is_open)
-      result = TYPE_CURSOR_DOOR_OPEN;
-  } // end IF
-
-  return result;
-}
-
-const RPG_Graphics_Position_t
-RPG_Client_WindowLevel::screen2Map(const RPG_Graphics_Position_t& position_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::screen2Map"));
-
-  RPG_Graphics_Position_t offset, map_position;
-
-  offset.first = (position_in.first - (mySize.first / 2) + ((myView.first - myView.second) * RPG_GRAPHICS_TILE_WIDTH_MOD));
-  offset.second = (position_in.second - (mySize.second / 2) + ((myView.first + myView.second) * RPG_GRAPHICS_TILE_HEIGHT_MOD));
-
-  map_position.first = ((RPG_GRAPHICS_TILE_HEIGHT_MOD * offset.first) +
-                        (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
-                        (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
-                       (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
-  map_position.second = ((-RPG_GRAPHICS_TILE_HEIGHT_MOD * offset.first) +
-                         (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
-                         (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
-                        (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
-
-  // sanity check: off-map position ?
-  if ((map_position.first >= myMap.getDimensions().first) ||
-      (map_position.second >= myMap.getDimensions().second))
-  {
-    map_position.first = std::numeric_limits<unsigned long>::max();
-    map_position.second = std::numeric_limits<unsigned long>::max();
-  } // end IF
-
-  return map_position;
-}
-
-const RPG_Graphics_Position_t
-RPG_Client_WindowLevel::map2Screen(const RPG_Graphics_Position_t& position_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::map2Screen"));
-
-  RPG_Graphics_Position_t map_center, screen_position;
-
-  map_center.first = mySize.first / 2;
-  map_center.second = mySize.second / 2;
-
-  screen_position.first = map_center.first +
-                          (RPG_GRAPHICS_TILE_WIDTH_MOD *
-                           (position_in.first - position_in.second + myView.second - myView.first));
-  screen_position.second = map_center.second +
-                           (RPG_GRAPHICS_TILE_HEIGHT_MOD *
-                            (position_in.first + position_in.second - myView.second - myView.first));
-
-  // *TODO* fix underruns (why does this happen ?)
-  return screen_position;
-}
-
 void
 RPG_Client_WindowLevel::restoreBG()
 {
@@ -1649,7 +1480,9 @@ RPG_Client_WindowLevel::restoreBG()
 
   if (myHighlightBG)
   {
-    tile_position = map2Screen(myHighlightBGPosition);
+    tile_position = RPG_Engine_Common_Tools::map2Screen(myHighlightBGPosition,
+                                                        mySize,
+                                                        myView);
     // sanity check for underruns
     if ((tile_position.first < ACE_static_cast(unsigned long, myScreen->w)) &&
         (tile_position.second < ACE_static_cast(unsigned long, myScreen->h)))

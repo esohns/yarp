@@ -452,14 +452,34 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in,
           result.tilesetgraphic = TILESET_FLOOR_AIR; break;
         case FLOORSTYLE_CARPET:
           result.tilesetgraphic = TILESET_FLOOR_CARPET; break;
-        case FLOORSTYLE_STONE_COBBLED:
-          result.tilesetgraphic = TILESET_FLOOR_STONE_COBBLED; break;
+        case FLOORSTYLE_CERAMIC:
+          result.tilesetgraphic = TILESET_FLOOR_CERAMIC; break;
         case FLOORSTYLE_DARK:
           result.tilesetgraphic = TILESET_FLOOR_DARK; break;
+        case FLOORSTYLE_ICE:
+          result.tilesetgraphic = TILESET_FLOOR_ICE; break;
+        case FLOORSTYLE_LAVA:
+          result.tilesetgraphic = TILESET_FLOOR_LAVA; break;
+        case FLOORSTYLE_MARBLE:
+          result.tilesetgraphic = TILESET_FLOOR_MARBLE; break;
+        case FLOORSTYLE_MURAL:
+          result.tilesetgraphic = TILESET_FLOOR_MURAL; break;
+        case FLOORSTYLE_MURAL2:
+          result.tilesetgraphic = TILESET_FLOOR_MURAL2; break;
+        case FLOORSTYLE_ROUGH:
+          result.tilesetgraphic = TILESET_FLOOR_ROUGH; break;
+        case FLOORSTYLE_ROUGH_LIT:
+          result.tilesetgraphic = TILESET_FLOOR_ROUGH_LIT; break;
+        case FLOORSTYLE_STONE_COBBLED:
+          result.tilesetgraphic = TILESET_FLOOR_STONE_COBBLED; break;
+        case FLOORSTYLE_STONE_MOSS_COVERED:
+          result.tilesetgraphic = TILESET_FLOOR_STONE_MOSS_COVERED; break;
+        case FLOORSTYLE_WATER:
+          result.tilesetgraphic = TILESET_FLOOR_WATER; break;
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid floor-style (was: %d), aborting\n"),
+                     ACE_TEXT("invalid floor-style (was: \"%s\"), aborting\n"),
                      RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(style_in.floorstyle).c_str()));
 
           return result;
@@ -481,7 +501,7 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in,
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid wall-style (was: %d), aborting\n"),
+                     ACE_TEXT("invalid wall-style (was: \"%s\"), aborting\n"),
                      RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(style_in.wallstyle).c_str()));
 
           return result;
@@ -499,7 +519,7 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in,
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid door-style (was: %d), aborting\n"),
+                     ACE_TEXT("invalid door-style (was: \"%s\"), aborting\n"),
                      RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(style_in.doorstyle).c_str()));
 
           return result;
@@ -663,11 +683,13 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadFloorTileSet"));
 
   // init return value(s)
-  for (RPG_Graphics_FloorTileSetConstIterator_t iterator = tileSet_out.begin();
-       iterator != tileSet_out.end();
+  for (RPG_Graphics_FloorTilesConstIterator_t iterator = tileSet_out.tiles.begin();
+       iterator != tileSet_out.tiles.end();
        iterator++)
     SDL_FreeSurface((*iterator).surface);
-  tileSet_out.clear();
+  tileSet_out.tiles.clear();
+  tileSet_out.columns = 0;
+  tileSet_out.rows = 0;
 
   // step0: retrieve appropriate graphic type
   RPG_Graphics_StyleUnion style;
@@ -686,7 +708,7 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
     return;
   } // end IF
 
-  // step1: retrieve list of tiles
+  // step1: retrieve (list of) tiles
   RPG_Graphics_t graphic;
   graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
   // retrieve properties from the dictionary
@@ -711,6 +733,9 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
 
   std::string path = path_base;
   RPG_Graphics_Tile_t current_tile;
+  unsigned long column = 0;
+  unsigned long row = 0;
+  std::istringstream converter;
   for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin();
        iterator != graphic.tileset.tiles.end();
        iterator++)
@@ -731,24 +756,42 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
                  path.c_str()));
 
       // clean up
-      for (RPG_Graphics_FloorTileSetConstIterator_t iterator = tileSet_out.begin();
-           iterator != tileSet_out.end();
+      for (RPG_Graphics_FloorTilesConstIterator_t iterator = tileSet_out.tiles.begin();
+           iterator != tileSet_out.tiles.end();
            iterator++)
         SDL_FreeSurface((*iterator).surface);
-      tileSet_out.clear();
+      tileSet_out.tiles.clear();
 
       return;
     } // end IF
 
-    tileSet_out.push_back(current_tile);
+    // extract column/row from the filename (i.e. "floor_xxx_yyy_zzz_..._column#_row#.png")
+    converter.clear();
+    converter.str((*iterator).file);
+    converter.ignore((*iterator).file.size(), '_');
+    while (ACE_OS::ace_isdigit(converter.peek()) == 0)
+      converter.ignore((*iterator).file.size(), '_');
+    converter >> column;
+    converter.ignore((*iterator).file.size(), '_');
+    converter >> row;
+
+    if (column > tileSet_out.columns)
+      tileSet_out.columns = column;
+    if (row > tileSet_out.rows)
+      tileSet_out.rows = row;
+    tileSet_out.tiles.push_back(current_tile);
   } // end FOR
+  tileSet_out.columns++; tileSet_out.rows++;
+  ACE_ASSERT(tileSet_out.tiles.size() == (tileSet_out.columns * tileSet_out.rows));
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("loaded tileset \"%s\" (type: %s, style: %s, %u tile(s))...\n"),
+             ACE_TEXT("loaded tileset \"%s\" (type: %s, style: %s, %u tile(s) [%u x %u])...\n"),
              RPG_Graphics_Common_Tools::typeToString(graphic.type).c_str(),
              RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(graphic.tileset.type).c_str(),
              RPG_Graphics_Common_Tools::styleToString(graphic.tileset.style).c_str(),
-             tileSet_out.size()));
+             tileSet_out.tiles.size(),
+             tileSet_out.columns,
+             tileSet_out.rows));
 }
 
 void
@@ -1400,6 +1443,8 @@ RPG_Graphics_Common_Tools::initFonts()
 
       // construct FQ filename
       path = myGraphicsDirectory;
+      path += ACE_DIRECTORY_SEPARATOR_STR;
+      path += RPG_GRAPHICS_TILE_DEF_FONTS_SUB;
       path += ACE_DIRECTORY_SEPARATOR_STR;
       path += (*iterator).file;
       // sanity check

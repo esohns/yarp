@@ -67,11 +67,12 @@
       <xsd:enumeration value="FLOORSTYLE_ICE"/>
       <xsd:enumeration value="FLOORSTYLE_LAVA"/>
       <xsd:enumeration value="FLOORSTYLE_MARBLE"/>
+      <xsd:enumeration value="FLOORSTYLE_MURAL"/>
+      <xsd:enumeration value="FLOORSTYLE_MURAL2"/>
       <xsd:enumeration value="FLOORSTYLE_ROUGH"/>
-      <xsd:enumeration value="FLOORSTYLE_STONE"/>
+      <xsd:enumeration value="FLOORSTYLE_ROUGH_LIT"/>
       <xsd:enumeration value="FLOORSTYLE_STONE_COBBLED"/>
       <xsd:enumeration value="FLOORSTYLE_STONE_MOSS_COVERED"/>
-      <xsd:enumeration value="FLOORSTYLE_UNMAPPED"/>
       <xsd:enumeration value="FLOORSTYLE_WATER"/>
     </xsd:restriction>
   </xsd:simpleType>
@@ -158,8 +159,18 @@
       <xsd:enumeration value="TILESET_DOOR_WOOD"/>
       <xsd:enumeration value="TILESET_FLOOR_AIR"/>
       <xsd:enumeration value="TILESET_FLOOR_CARPET"/>
-      <xsd:enumeration value="TILESET_FLOOR_STONE_COBBLED"/>
+      <xsd:enumeration value="TILESET_FLOOR_CERAMIC"/>
       <xsd:enumeration value="TILESET_FLOOR_DARK"/>
+      <xsd:enumeration value="TILESET_FLOOR_ICE"/>
+      <xsd:enumeration value="TILESET_FLOOR_LAVA"/>
+      <xsd:enumeration value="TILESET_FLOOR_MARBLE"/>
+      <xsd:enumeration value="TILESET_FLOOR_MURAL"/>
+      <xsd:enumeration value="TILESET_FLOOR_MURAL2"/>
+      <xsd:enumeration value="TILESET_FLOOR_ROUGH"/>
+      <xsd:enumeration value="TILESET_FLOOR_ROUGH_LIT"/>
+      <xsd:enumeration value="TILESET_FLOOR_STONE_COBBLED"/>
+      <xsd:enumeration value="TILESET_FLOOR_STONE_MOSS_COVERED"/>
+      <xsd:enumeration value="TILESET_FLOOR_WATER"/>
       <xsd:enumeration value="TILESET_WALL_BRICK"/>
       <xsd:enumeration value="TILESET_WALL_BRICK_HALF"/>
     </xsd:restriction>

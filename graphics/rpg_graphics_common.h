@@ -134,8 +134,14 @@ struct RPG_Graphics_Tile_t
   int offset_y;
   SDL_Surface* surface;
 };
-typedef std::vector<RPG_Graphics_Tile_t> RPG_Graphics_FloorTileSet_t;
-typedef RPG_Graphics_FloorTileSet_t::const_iterator RPG_Graphics_FloorTileSetConstIterator_t;
+typedef std::vector<RPG_Graphics_Tile_t> RPG_Graphics_FloorTiles_t;
+typedef RPG_Graphics_FloorTiles_t::const_iterator RPG_Graphics_FloorTilesConstIterator_t;
+struct RPG_Graphics_FloorTileSet_t
+{
+  unsigned long columns;
+  unsigned long rows;
+  RPG_Graphics_FloorTiles_t tiles;
+};
 struct RPG_Graphics_WallTileSet_t
 {
   RPG_Graphics_Tile_t west;

@@ -46,7 +46,7 @@
 
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_dictionary.h>
-#include <rpg_graphics_cursor.h>
+#include <rpg_graphics_cursor_manager.h>
 #include <rpg_graphics_surface.h>
 #include <rpg_graphics_SDL_tools.h>
 #include <rpg_graphics_common_tools.h>
@@ -942,8 +942,11 @@ do_initGUI(const std::string& graphicsDirectory_in,
   SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(RPG_GUI_PACKAGE_STRING),  // window caption
                     ACE_TEXT_ALWAYS_CHAR(RPG_GUI_PACKAGE_STRING)); // icon caption
   // set window icon
-  RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->getGraphic(TYPE_IMAGE_WM_ICON);
-  ACE_ASSERT(icon_graphic.type == TYPE_IMAGE_WM_ICON);
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
+  type.image = IMAGE_WM_ICON;
+  RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+  ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
   std::string path = graphicsDirectory_in;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += icon_graphic.file;
@@ -981,12 +984,15 @@ do_runIntro(SDL_Surface* screen_in)
   RPG_Sound_Common_Tools::playSound(EVENT_MAIN_TITLE);
 
   // step2: show start logo
-  SDL_Surface* logo = RPG_Graphics_Common_Tools::loadGraphic(TYPE_IMAGE_INTRO_MAIN);
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
+  type.image = IMAGE_INTRO_MAIN;
+  SDL_Surface* logo = RPG_Graphics_Common_Tools::loadGraphic(type);
   if (!logo)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), aborting\n"),
-               RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(TYPE_IMAGE_INTRO_MAIN).c_str()));
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
+               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
 
     return false;
   } // end IF
@@ -1127,19 +1133,22 @@ do_work(const RPG_Client_Config& config_in)
 //   } // end IF
 
   // step4: setup main "window"
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
+  type.image = RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
   std::string title = RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE;
   RPG_Client_WindowMain mainWindow(RPG_Graphics_WindowSize_t(userData.screen->w,
                                                              userData.screen->h), // size
-                                   RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE,      // interface elements
+                                   type,                                          // interface elements
                                    title,                                         // title (== caption)
-                                   TYPE_FONT_MAIN_LARGE);                         // title font
+                                   FONT_MAIN_LARGE);                              // title font
   mainWindow.setScreen(userData.screen);
   mainWindow.init();
   mainWindow.draw();
   mainWindow.refresh();
 
   // step4b: set default cursor
-  RPG_GRAPHICS_CURSOR_SINGLETON::instance()->set(TYPE_CURSOR_NORMAL);
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
 
   // step5: setup level "window"
   RPG_Client_WindowLevel mapWindow(mainWindow); // parent
@@ -1529,10 +1538,10 @@ do_work(const RPG_Client_Config& config_in)
         // map has changed, cursor MAY have been drawn over...
         // --> redraw cursor
         SDL_Rect dirtyRegion;
-        RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(mouse_position.first,
-                                                       mouse_position.second,
-                                                       userData.screen,
-                                                       dirtyRegion);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(mouse_position.first,
+                                                               mouse_position.second,
+                                                               userData.screen,
+                                                               dirtyRegion);
         RPG_Graphics_Surface::update(dirtyRegion,
                                      userData.screen);
 

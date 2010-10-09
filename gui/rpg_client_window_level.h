@@ -87,19 +87,6 @@ class RPG_Client_WindowLevel
                  const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
                  RPG_Graphics_DoorTileMap_t&);      // return value: door tiles / position
 
-  static const RPG_Graphics_Orientation getDoorOrientation(const RPG_Map_Level&,       // state
-                                                           const RPG_Map_Position_t&); // door position
-  static const bool hasCeiling(const RPG_Map_Position_t&, // position
-                               const RPG_Map_Level&);     // state
-
-  static const RPG_Graphics_Type getCursor(const RPG_Map_Position_t&, // position
-                                           const RPG_Map_Level&);     // state
-
-  // transformation
-  const RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&); // position (absolute)
-  // *NOTE*: translates the center of the map square to screen coordinates
-  const RPG_Graphics_Position_t map2Screen(const RPG_Graphics_Position_t&); // position (map)
-
   void restoreBG();
 
   RPG_Map_Level               myMap;
