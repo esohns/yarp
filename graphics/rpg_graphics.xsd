@@ -87,14 +87,17 @@
 
   <xsd:simpleType name="RPG_Graphics_WallStyle_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="WALLSTYLE_AIR"/>
       <xsd:enumeration value="WALLSTYLE_BRICK"/>
+      <xsd:enumeration value="WALLSTYLE_BRICK_BANNER"/>
+      <xsd:enumeration value="WALLSTYLE_BRICK_PAINTING"/>
+      <xsd:enumeration value="WALLSTYLE_BRICK_PILLAR"/>
+      <xsd:enumeration value="WALLSTYLE_BRICK_POCKET"/>
       <xsd:enumeration value="WALLSTYLE_DARK"/>
+      <xsd:enumeration value="WALLSTYLE_LIGHT"/>
       <xsd:enumeration value="WALLSTYLE_MARBLE"/>
       <xsd:enumeration value="WALLSTYLE_ROUGH"/>
-      <xsd:enumeration value="WALLSTYLE_ROUGH_VINE_COVERED"/>
-      <xsd:enumeration value="WALLSTYLE_STONE"/>
-      <xsd:enumeration value="WALLSTYLE_WATER"/>
+      <xsd:enumeration value="WALLSTYLE_STUCCO"/>
+      <xsd:enumeration value="WALLSTYLE_VINE_COVERED"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -173,6 +176,26 @@
       <xsd:enumeration value="TILESET_FLOOR_WATER"/>
       <xsd:enumeration value="TILESET_WALL_BRICK"/>
       <xsd:enumeration value="TILESET_WALL_BRICK_HALF"/>
+      <xsd:enumeration value="TILESET_WALL_BRICK_BANNER"/>
+      <xsd:enumeration value="TILESET_WALL_BRICK_BANNER_HALF"/>
+      <xsd:enumeration value="TILESET_WALL_BRICK_PAINTING"/>
+      <xsd:enumeration value="TILESET_WALL_BRICK_PAINTING_HALF"/>
+      <xsd:enumeration value="TILESET_WALL_BRICK_PILLAR"/>
+      <xsd:enumeration value="TILESET_WALL_BRICK_PILLAR_HALF"/>
+      <xsd:enumeration value="TILESET_WALL_BRICK_POCKET"/>
+      <xsd:enumeration value="TILESET_WALL_BRICK_POCKET_HALF"/>
+      <xsd:enumeration value="TILESET_WALL_DARK"/>
+      <xsd:enumeration value="TILESET_WALL_DARK_HALF"/>
+      <xsd:enumeration value="TILESET_WALL_LIGHT"/>
+      <xsd:enumeration value="TILESET_WALL_LIGHT_HALF"/>
+      <xsd:enumeration value="TILESET_WALL_MARBLE"/>
+      <xsd:enumeration value="TILESET_WALL_MARBLE_HALF"/>
+      <xsd:enumeration value="TILESET_WALL_ROUGH"/>
+      <xsd:enumeration value="TILESET_WALL_ROUGH_HALF"/>
+      <xsd:enumeration value="TILESET_WALL_STUCCO"/>
+      <xsd:enumeration value="TILESET_WALL_STUCCO_HALF"/>
+      <xsd:enumeration value="TILESET_WALL_VINE_COVERED"/>
+      <xsd:enumeration value="TILESET_WALL_VINE_COVERED_HALF"/>
     </xsd:restriction>
   </xsd:simpleType>
 

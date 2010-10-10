@@ -357,7 +357,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
     current_map_position.second = myView.second + i;
 
     // floor tile rotation
-    floor_row = (current_map_position.second % (myCurrentFloorSet.tiles.size() / myCurrentFloorSet.rows));
+    floor_row = (current_map_position.second % (myCurrentFloorSet.tiles.size() / myCurrentFloorSet.columns));
     begin_row = myCurrentFloorSet.tiles.begin();
     std::advance(begin_row, floor_row);
 
@@ -375,7 +375,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
         continue;
 
       // floor tile rotation
-      floor_index = (current_map_position.first % myCurrentFloorSet.rows);
+      floor_index = (current_map_position.first % myCurrentFloorSet.columns);
       floor_iterator = begin_row;
       std::advance(floor_iterator, (myCurrentFloorSet.rows * floor_index));
 
@@ -402,8 +402,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 //             (current_map_position.first < 0) ||
 //             (current_map_position.first >= myMap.getDimensions().first))
 
-        // advance floor iterator
-        std::advance(floor_iterator, myCurrentFloorSet.rows);
+//         // advance floor iterator
+//         std::advance(floor_iterator, myCurrentFloorSet.rows);
 
         continue;
       } // end IF
@@ -454,8 +454,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
       // *TODO*: step3: floor edges
 
-      // advance floor iterator
-      std::advance(floor_iterator, myCurrentFloorSet.rows);
+//       // advance floor iterator
+//       std::advance(floor_iterator, myCurrentFloorSet.rows);
     } // end FOR
   } // end FOR
 

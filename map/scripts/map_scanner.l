@@ -1,10 +1,8 @@
 %{
-#include <stdlib.h>
+// #include <stdlib.h>
 
 #include <string>
-#include <sstream>
 
-#include <ace/OS_Memory.h>
 #include <ace/Log_Msg.h>
 
 #include "rpg_map_parser_driver.h"
@@ -16,8 +14,8 @@
 %}
 
 %option pointer full nounistd 8bit
-/* %option c++ outfile="rpg_map_scanner.cpp" prefix="MapScanner" */
-%option warn nodefault nounput noyywrap
+/* %option c++ outfile="rpg_map_scanner.cpp" prefix="MapScanner" nounput */
+%option warn nodefault batch nomain noyywrap
 %option debug perf-report verbose
 /*%option reentrant extra-type="unsigned long*"*/
 %option reentrant extra-type="RPG_Map_ParserDriver*"
@@ -37,9 +35,9 @@ WALL           [#]
 DOOR           [=]
 SEED           [@]
 GLYPH          {UNMAPPED}|{FLOOR}|{WALL}|{DOOR}|{SEED}
-LF             \n
-CRLF           \r\n
-END_OF_LINE    {LF}|{CRLF}
+
+%s             row
+%s             last_row
 
 %{
 #define YY_USER_ACTION  yylloc->columns(yyleng);
@@ -50,32 +48,43 @@ END_OF_LINE    {LF}|{CRLF}
   yylloc->step();
   typedef yy::RPG_Map_Parser::token token;
   typedef yy::RPG_Map_Parser::token_type token_type;
-  yy_flex_debug = driver.getTraceScanning();
-  std::ostringstream converter;
+  yy_flex_debug = driver.getDebugScanner();
 %}
 
-<INITIAL>{GLYPH}           { yylloc->step();
+<INITIAL>{
+{GLYPH}+/\n                { BEGIN(row);
+                             yyless(0); }
+{GLYPH}                    { BEGIN(last_row);
+                             unput(yytext[0]); }
+\n                         { yylloc->step();
+                             yylval->val = '\n';
+                             line_count++; }
+} // end <INITIAL>
+<row>{
+{GLYPH}                    { yylloc->step();
                              yylval->val = yytext[0];
                              return token::GLYPH; }
-<INITIAL>{END_OF_LINE}     { yylloc->step();
+\n                         { yylloc->step();
+                             BEGIN(INITIAL);
+                             yylval->val = '\n';
                              line_count++;
                              return token::END_OF_ROW; }
-<<EOF>>                    { yylloc->step();
-                             yyterminate(); }
+} // end <row>
+<last_row>{
+{GLYPH}                    { yylloc->step();
+                             yylval->val = yytext[0];
+                             return token::GLYPH; }
+<<EOF>>                    { BEGIN(row);
+                             unput('\n'); }
+} // end <last_row>
+<<EOF>>                    { yyterminate(); }
 <*>(?s:.)                  { yylloc->step();
                              yylval->val = yytext[0];
 
-                             std::string error_message(ACE_TEXT("invalid character (was \""));
-                             error_message += yytext[0];
-                             converter.str(ACE_TEXT(""));
-                             converter.clear();
-                             converter << ACE_static_cast(unsigned long, yytext[0]);
-                             error_message += ACE_TEXT("\" - ");
-                             error_message += converter.str();
-                             error_message += ACE_TEXT("), continuing");
-                             driver.error(*yylloc, error_message);
+                             ACE_DEBUG((LM_DEBUG,
+                                        ACE_TEXT("unknown/invalid glyph (was: \"%c\"), continuing\n"),
+                                        yytext[0]));
 
-                             return token::GLYPH;
-//                              return token_type(yytext[0]);
+                             return token_type(yytext[0]);
                            }
 %%

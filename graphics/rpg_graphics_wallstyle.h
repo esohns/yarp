@@ -28,14 +28,17 @@
 
 enum RPG_Graphics_WallStyle
 {
-  WALLSTYLE_AIR = 0,
-  WALLSTYLE_BRICK,
+  WALLSTYLE_BRICK = 0,
+  WALLSTYLE_BRICK_BANNER,
+  WALLSTYLE_BRICK_PAINTING,
+  WALLSTYLE_BRICK_PILLAR,
+  WALLSTYLE_BRICK_POCKET,
   WALLSTYLE_DARK,
+  WALLSTYLE_LIGHT,
   WALLSTYLE_MARBLE,
   WALLSTYLE_ROUGH,
-  WALLSTYLE_ROUGH_VINE_COVERED,
-  WALLSTYLE_STONE,
-  WALLSTYLE_WATER,
+  WALLSTYLE_STUCCO,
+  WALLSTYLE_VINE_COVERED,
   //
   RPG_GRAPHICS_WALLSTYLE_MAX,
   RPG_GRAPHICS_WALLSTYLE_INVALID
@@ -55,14 +58,17 @@ class RPG_Graphics_WallStyleHelper
   inline static void init()
   {
     myRPG_Graphics_WallStyleToStringTable.clear();
-    myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_AIR, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_AIR")));
     myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_BRICK, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_BRICK")));
+    myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_BRICK_BANNER, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_BRICK_BANNER")));
+    myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_BRICK_PAINTING, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_BRICK_PAINTING")));
+    myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_BRICK_PILLAR, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_BRICK_PILLAR")));
+    myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_BRICK_POCKET, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_BRICK_POCKET")));
     myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_DARK, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_DARK")));
+    myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_LIGHT, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_LIGHT")));
     myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_MARBLE, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_MARBLE")));
     myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_ROUGH, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_ROUGH")));
-    myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_ROUGH_VINE_COVERED, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_ROUGH_VINE_COVERED")));
-    myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_STONE, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_STONE")));
-    myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_WATER, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_WATER")));
+    myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_STUCCO, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_STUCCO")));
+    myRPG_Graphics_WallStyleToStringTable.insert(std::make_pair(WALLSTYLE_VINE_COVERED, ACE_TEXT_ALWAYS_CHAR("WALLSTYLE_VINE_COVERED")));
   };
 
   inline static std::string RPG_Graphics_WallStyleToString(const RPG_Graphics_WallStyle& element_in)

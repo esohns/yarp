@@ -1,43 +1,13 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="12" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_gra.cpp" >
-   <View0 Encoding="" Type="Source" />
+ <DocsAndViews NumberOfDocuments="2" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client_gui.cpp" >
+   <View0 Encoding="" line="65" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_tile.cpp" >
-   <View0 Encoding="" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client_window_level.cpp" >
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_mou.cpp" >
-   <View0 Encoding="" Type="Source" />
-  </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/vultures_win.cpp" >
-   <View0 Encoding="" Type="Source" />
-  </Doc3>
-  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/winclass/levelwin.h" >
-   <View0 Encoding="" Type="Source" />
-  </Doc4>
-  <Doc5 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/winclass/objitemwin.h" >
-   <View0 Encoding="" Type="Source" />
-  </Doc5>
-  <Doc6 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/winclass/optionwin.h" >
-   <View0 Encoding="" Type="Source" />
-  </Doc6>
-  <Doc7 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/winclass/optionwin.cpp" >
-   <View0 Encoding="" Type="Source" />
-  </Doc7>
-  <Doc8 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/3rd_party/clivecrous-vultures-2061281/vultures/winclass/objitemwin.cpp" >
-   <View0 Encoding="" Type="Source" />
-  </Doc8>
-  <Doc9 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client_gui.cpp" >
-   <View0 Encoding="" Type="Source" />
-  </Doc9>
-  <Doc10 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/configure.ac" >
-   <View0 Encoding="" line="24" Type="Source" />
-  </Doc10>
-  <Doc11 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/Makefile.am" >
-   <View0 Encoding="" line="14" Type="Source" />
-  </Doc11>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
@@ -50,10 +20,8 @@
   </kdevastyle>
   <kdevbookmarks>
    <bookmarks>
-    <bookmark url="/home/unfv/Projects/RPG/gui/rpg_client_gui.cpp" >
-     <mark line="1109" />
-     <mark line="481" />
-     <mark line="1964" />
+    <bookmark url="/home/unfv/Projects/RPG/gui/rpg_client_window_level.cpp" >
+     <mark line="329" />
     </bookmark>
    </bookmarks>
   </kdevbookmarks>

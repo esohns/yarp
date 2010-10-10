@@ -42,8 +42,9 @@
 #include <sstream>
 #include <iostream>
 
-#define PATH_FINDER_DEF_CORRIDORS false
-#define PATH_FINDER_DEF_FLOORPLAN ACE_TEXT_ALWAYS_CHAR("/var/tmp/test_map.txt")
+#define PATH_FINDER_DEF_CORRIDORS    false
+#define PATH_FINDER_DEF_DEBUG_PARSER false
+#define PATH_FINDER_DEF_FLOORPLAN    ACE_TEXT_ALWAYS_CHAR("/var/tmp/test_map.txt")
 
 void
 print_usage(const std::string& programName_in)
@@ -56,6 +57,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-c        : build corridors") << ACE_TEXT(" [") << PATH_FINDER_DEF_CORRIDORS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-d        : debug parser") << ACE_TEXT(" [") << PATH_FINDER_DEF_DEBUG_PARSER << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-m [FILE] : floor plan (*.txt)") << ACE_TEXT(" [\"") << PATH_FINDER_DEF_FLOORPLAN << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
   std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
@@ -65,6 +67,7 @@ const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   bool& buildCorridors_out,
+                  bool& debugParser_out,
                   std::string& floorPlan_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out)
@@ -73,13 +76,14 @@ process_arguments(const int argc_in,
 
   // init results
   buildCorridors_out      = PATH_FINDER_DEF_CORRIDORS;
+  debugParser_out         = PATH_FINDER_DEF_DEBUG_PARSER;
   floorPlan_out           = PATH_FINDER_DEF_FLOORPLAN;
   traceInformation_out    = false;
   printVersionAndExit_out = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("bm:tv"));
+                             ACE_TEXT("bdm:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -89,6 +93,12 @@ process_arguments(const int argc_in,
       case 'b':
       {
         buildCorridors_out = true;
+
+        break;
+      }
+      case 'd':
+      {
+        debugParser_out = true;
 
         break;
       }
@@ -135,6 +145,7 @@ process_arguments(const int argc_in,
 
 void
 do_work(const bool& buildCorridors_in,
+        const bool& debugParser_in,
         const std::string& filename_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
@@ -149,7 +160,16 @@ do_work(const bool& buildCorridors_in,
   RPG_Map_FloorPlan_t floorPlan;
   RPG_Map_Common_Tools::load(filename_in,
                              seedPoints,
-                             floorPlan);
+                             floorPlan,
+                             false,
+                             debugParser_in);
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("loaded map (\"%s\": size [%u,%u], %u seed point(s))...\n"),
+             filename_in.c_str(),
+             floorPlan.size_x,
+             floorPlan.size_y,
+             seedPoints.size()));
 
   // step2: process doors
   RPG_Map_Positions_t door_positions;
@@ -356,6 +376,7 @@ ACE_TMAIN(int argc,
   // step1: init
   // step1a set defaults
   bool buildCorridors      = PATH_FINDER_DEF_CORRIDORS;
+  bool debugParser         = PATH_FINDER_DEF_DEBUG_PARSER;
   std::string floorPlan    = PATH_FINDER_DEF_FLOORPLAN;
   bool traceInformation    = false;
   bool printVersionAndExit = false;
@@ -364,6 +385,7 @@ ACE_TMAIN(int argc,
   if (!(process_arguments(argc,
                           argv,
                           buildCorridors,
+                          debugParser,
                           floorPlan,
                           traceInformation,
                           printVersionAndExit)))
@@ -424,6 +446,7 @@ ACE_TMAIN(int argc,
   timer.start();
   // step2: do actual work
   do_work(buildCorridors,
+          debugParser,
           floorPlan);
   timer.stop();
 

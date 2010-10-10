@@ -23,11 +23,11 @@ typedef void* yyscan_t;
 
 %initial-action
 {
-  // initialize the initial location
-/*   @$.begin.filename = @$.end.filename = &driver.file; */
+  // Initialize the initial location
+  //@$.begin.filename = @$.end.filename = &driver.file;
 
   // initialize the token value container
-/*   $$.ival = 0; */
+  // $$.ival = 0;
   $$.sval = NULL;
 };
 
@@ -41,8 +41,11 @@ typedef void* yyscan_t;
 %code {
 #include "rpg_net_protocol_IRCparser_driver.h"
 #include "rpg_net_protocol_IRCmessage.h"
+
 #include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
+
 #include <string>
 }
 
@@ -110,7 +113,7 @@ params:       "space" params                                  /* default */
                                                                            driver.myCurrentMessage->params.front().c_str())); */
                                                               };
               |                                               /* empty */
-    trailing:     "param"                                     { driver.myCurrentMessage->params.push_front(*$1);
+trailing:     "param"                                         { driver.myCurrentMessage->params.push_front(*$1);
 /*                                                                ACE_DEBUG((LM_DEBUG,
                                                                              ACE_TEXT("set final param: \"%s\"\n"),
                                                                              driver.myCurrentMessage->params.front().c_str())); */

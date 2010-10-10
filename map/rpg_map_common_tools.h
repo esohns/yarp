@@ -20,6 +20,7 @@
 #ifndef RPG_MAP_COMMON_TOOLS_H
 #define RPG_MAP_COMMON_TOOLS_H
 
+#include "rpg_map_defines.h"
 #include "rpg_map_common.h"
 
 #include <ace/Global_Macros.h>
@@ -34,9 +35,11 @@
 class RPG_Map_Common_Tools
 {
  public:
-  static const bool load(const std::string&,    // FQ filename
-                         RPG_Map_Positions_t&,  // return value: seed points (areas)
-                         RPG_Map_FloorPlan_t&); // return value
+  static const bool load(const std::string&,                       // FQ filename
+                         RPG_Map_Positions_t&,                     // return value: seed points (areas)
+                         RPG_Map_FloorPlan_t&,                     // return value
+                         const bool& = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?
+                         const bool& = RPG_MAP_DEF_TRACE_PARSING); // trace parsing ?
   static const bool save(const std::string&,          // FQ filename
                          const RPG_Map_Positions_t&,  // seed points (areas)
                          const RPG_Map_FloorPlan_t&);

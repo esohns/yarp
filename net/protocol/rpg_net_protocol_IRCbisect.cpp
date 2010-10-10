@@ -857,7 +857,7 @@ static yyconst yy_state_type yy_NUL_trans[12] =
 
 static yyconst flex_int16_t yy_rule_linenum[6] =
     {   0,
-       21,   22,   23,   31,   34
+       22,   23,   24,   32,   35
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -872,6 +872,7 @@ static yyconst flex_int16_t yy_rule_linenum[6] =
 /* %option c++ outfile="rpg_net_protocol_IRCbisect.cpp" prefix="IRCBisect" */
 /* %option   outfile="RPG_Net_Protocol_IRCScanner.cpp" header-file="RPG_Net_Protocol_IRCScanner.h" */
 /* %option bison-bridge bison-locations stack */
+/* *NOTE*: "\r\n" is (ANSI-C) implementation-dependent --> use ASCII codes directly */
 
 #define INITIAL 0
 #define end_of_frame 1

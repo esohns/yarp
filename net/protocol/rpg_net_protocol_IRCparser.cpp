@@ -48,8 +48,11 @@
 
 #include "rpg_net_protocol_IRCparser_driver.h"
 #include "rpg_net_protocol_IRCmessage.h"
+
 #include <rpg_common_macros.h>
+
 #include <ace/Log_Msg.h>
+
 #include <string>
 
 
@@ -368,11 +371,11 @@ namespace yy {
     /* User initialization code.  */
     
 {
-  // initialize the initial location
-/*   @$.begin.filename = @$.end.filename = &driver.file; */
+  // Initialize the initial location
+  //@$.begin.filename = @$.end.filename = &driver.file;
 
   // initialize the token value container
-/*   $$.ival = 0; */
+  // $$.ival = 0;
   yylval.sval = NULL;
 }
 
@@ -895,8 +898,8 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyrline_[] =
   {
-         0,    70,    70,    71,    72,    73,    78,    83,    88,    89,
-      90,    99,   105,   106,   107,   112,   113,   118
+         0,    73,    73,    74,    75,    76,    81,    86,    91,    92,
+      93,   102,   108,   109,   110,   115,   116,   121
   };
 
   // Print the state stack on the debug stream.

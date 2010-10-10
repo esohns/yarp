@@ -493,11 +493,27 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in,
       switch (style_in.wallstyle)
       {
         case WALLSTYLE_BRICK:
-        {
-          result.tilesetgraphic = (halfHeight_in ? TILESET_WALL_BRICK_HALF : TILESET_WALL_BRICK);
-
-          break;
-        }
+          result.tilesetgraphic = (halfHeight_in ? TILESET_WALL_BRICK_HALF : TILESET_WALL_BRICK); break;
+        case WALLSTYLE_BRICK_BANNER:
+          result.tilesetgraphic = (halfHeight_in ? TILESET_WALL_BRICK_BANNER_HALF : TILESET_WALL_BRICK_BANNER); break;
+        case WALLSTYLE_BRICK_PAINTING:
+          result.tilesetgraphic = (halfHeight_in ? TILESET_WALL_BRICK_PAINTING_HALF : TILESET_WALL_BRICK_PAINTING); break;
+        case WALLSTYLE_BRICK_PILLAR:
+          result.tilesetgraphic = (halfHeight_in ? TILESET_WALL_BRICK_PILLAR_HALF : TILESET_WALL_BRICK_PILLAR); break;
+        case WALLSTYLE_BRICK_POCKET:
+          result.tilesetgraphic = (halfHeight_in ? TILESET_WALL_BRICK_POCKET_HALF : TILESET_WALL_BRICK_POCKET); break;
+        case WALLSTYLE_DARK:
+          result.tilesetgraphic = (halfHeight_in ? TILESET_WALL_DARK_HALF : TILESET_WALL_DARK); break;
+        case WALLSTYLE_LIGHT:
+          result.tilesetgraphic = (halfHeight_in ? TILESET_WALL_LIGHT_HALF : TILESET_WALL_LIGHT); break;
+        case WALLSTYLE_MARBLE:
+          result.tilesetgraphic = (halfHeight_in ? TILESET_WALL_MARBLE_HALF : TILESET_WALL_MARBLE); break;
+        case WALLSTYLE_ROUGH:
+          result.tilesetgraphic = (halfHeight_in ? TILESET_WALL_ROUGH_HALF : TILESET_WALL_ROUGH); break;
+        case WALLSTYLE_STUCCO:
+          result.tilesetgraphic = (halfHeight_in ? TILESET_WALL_STUCCO_HALF : TILESET_WALL_STUCCO); break;
+        case WALLSTYLE_VINE_COVERED:
+          result.tilesetgraphic = (halfHeight_in ? TILESET_WALL_VINE_COVERED_HALF : TILESET_WALL_VINE_COVERED); break;
         default:
         {
           ACE_DEBUG((LM_ERROR,

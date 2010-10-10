@@ -52,8 +52,8 @@ RPG_Map_ParserDriver::RPG_Map_ParserDriver(const bool& traceScanning_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to MapScannerlex_init_extra(): \"%m\", continuing\n")));
 
-  // init parser
-  myParser.set_debug_level(traceParsing_in); // binary (see bison manual)
+  // trace ?
+  myParser.set_debug_level((traceParsing_in ? 1 : 0)); // binary (see bison manual)
 }
 
 RPG_Map_ParserDriver::~RPG_Map_ParserDriver ()
@@ -68,7 +68,8 @@ RPG_Map_ParserDriver::~RPG_Map_ParserDriver ()
 void
 RPG_Map_ParserDriver::init(RPG_Map_FloorPlan_t* plan_in,
                            RPG_Map_Positions_t* seedPoints_in,
-                           const bool& debugParser_in)
+                           const bool& traceScanning_in,
+                           const bool& traceParsing_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::init"));
 
@@ -95,13 +96,10 @@ RPG_Map_ParserDriver::init(RPG_Map_FloorPlan_t* plan_in,
   myCurrentPlan->doors.clear();
   myCurrentSeedPoints->clear();
 
-  if (debugParser_in)
-  {
-    // remember this setting
-    myTraceScanning = debugParser_in;
-    // init parser
-    myParser.set_debug_level(debugParser_in); // binary (see bison manual)
-  } // end IF
+  // trace ?
+  myTraceScanning = traceScanning_in;
+  if (traceParsing_in)
+    myParser.set_debug_level((traceParsing_in ? 1 : 0)); // binary (see bison manual)
 
   // OK
   myIsInitialized = true;
@@ -171,9 +169,6 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
 
   // set dimensions
   myCurrentPlan->size_x = myCurrentSizeX;
-  // skip trailing newline
-  if (myCurrentPosition.first == 0)
-    myCurrentPosition.second--;
   myCurrentPlan->size_y = myCurrentPosition.second;
 
   // fini buffer/scanner
@@ -189,7 +184,6 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
     return false;
   } // end IF
 
-//   // debug info
 //   if (myParser.debug_level())
 //     RPG_Map_Common_Tools::displayFloorPlan(*myCurrentPlan);
 
@@ -200,9 +194,9 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
 }
 
 const bool
-RPG_Map_ParserDriver::getTraceScanning() const
+RPG_Map_ParserDriver::getDebugScanner() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::getTraceScanning"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::getDebugScanner"));
 
   return myTraceScanning;
 }
@@ -220,8 +214,6 @@ RPG_Map_ParserDriver::error(const yy::location& location_in,
              myCurrentNumLines,
              converter.str().c_str(),
              message_in.c_str()));
-
-//   std::clog << location_in << ": " << message_in << std::endl;
 }
 
 void
@@ -233,8 +225,6 @@ RPG_Map_ParserDriver::error(const std::string& message_in)
              ACE_TEXT("failed to parse file (line: %u): \"%s\"...\n"),
              myCurrentNumLines,
              message_in.c_str()));
-
-//   std::clog << message_in << std::endl;
 }
 
 const bool

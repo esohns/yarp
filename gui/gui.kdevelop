@@ -25,10 +25,10 @@
     </general>
     <run>
       <runarguments>
-        <RPG_client_gui>-c ./../rpg_client.ini -f /var/tmp/current_map.txt -t -u ./../rpg_client.glade</RPG_client_gui>
+        <RPG_client_gui>-f /var/tmp/current_map.txt -t</RPG_client_gui>
       </runarguments>
       <debugarguments>
-        <RPG_client_gui>-c ./../rpg_client.ini -f /var/tmp/current_map.txt -t -u ./../rpg_client.glade</RPG_client_gui>
+        <RPG_client_gui>-f /var/tmp/current_map.txt -t</RPG_client_gui>
       </debugarguments>
       <cwd>
         <RPG_client_gui>/home/unfv/Projects/RPG/gui/debug/./</RPG_client_gui>

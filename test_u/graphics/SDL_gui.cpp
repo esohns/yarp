@@ -764,7 +764,9 @@ do_work(const mode_t& mode_in,
       {
         if (!RPG_Map_Common_Tools::load(map_in,
                                         seedPoints,
-                                        plan))
+                                        plan,
+                                        false,
+                                        false))
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to RPG_Map_Common_Tools::load(\"%s\"), aborting\n"),
@@ -772,6 +774,13 @@ do_work(const mode_t& mode_in,
 
           return;
         } // end IF
+
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("loaded map (\"%s\": size [%u,%u], %u seed point(s))...\n"),
+                   map_in.c_str(),
+                   plan.size_x,
+                   plan.size_y,
+                   seedPoints.size()));
       } // end ELSE
 
 //       RPG_Map_Common_Tools::displayFloorPlan(seedPoints,

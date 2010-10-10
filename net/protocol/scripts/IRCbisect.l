@@ -11,14 +11,15 @@
 /* %option bison-bridge bison-locations stack */
 %option prefix="IRCBisect" yylineno
 
-CRLF    \r\n
-MESSAGE ([\x00-\xFF]{-}[\r\n])+
+/* *NOTE*: "\r\n" is (ANSI-C) implementation-dependent --> use ASCII codes directly */
+CRLF    \x0D\x0A
+MESSAGE ([\x00-\xFF]{-}[\x0D\x0A])+
 
 %s      end_of_frame
 
 %%
 <INITIAL>{
-"\r"                   { BEGIN(end_of_frame); }
+"\x0D"                 { BEGIN(end_of_frame); }
 {MESSAGE}              { return yyleng; }
 (?s:.)                 {
                          ACE_DEBUG((LM_ERROR,
@@ -28,7 +29,7 @@ MESSAGE ([\x00-\xFF]{-}[\r\n])+
                        }
 } // end <INITIAL>
 <end_of_frame>{
-"\n"                   { BEGIN(INITIAL);
+"\x0A"                 { BEGIN(INITIAL);
                          (*yyextra)++;
                          return -1; }
 (?s:.)                 { BEGIN(INITIAL);

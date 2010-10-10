@@ -56,14 +56,15 @@ class RPG_Map_ParserDriver
   // target data, needs to be set PRIOR to invoking parse() !
   void init(RPG_Map_FloorPlan_t*, // target data: floor plan
             RPG_Map_Positions_t*, // target data: seed points
-            const bool& = false); // debug ?
+            const bool& = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?
+            const bool& = RPG_MAP_DEF_TRACE_PARSING); // trace parsing ?
   // *WARNING*: the argument needs to have been prepared for usage by flex:
   // --> buffers need two trailing '\0's BEYOND their data
   //    (at positions length() + 1, length() + 2)
   const bool parse(const std::string&); // FQ filename
 
-  // debug info
-  const bool getTraceScanning() const;
+  // invoked by the scanner ONLY !!!
+  const bool getDebugScanner() const;
 
   // error-handling
   void error(const yy::location&, // location

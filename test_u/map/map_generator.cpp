@@ -230,7 +230,7 @@ do_work(const unsigned long& minRoomSize_in,
 
   // step2: generate random dungeon map
   RPG_Map_Positions_t seedPoints;
-  RPG_Map_FloorPlan_t levelMap;
+  RPG_Map_FloorPlan_t floorPlan;
   RPG_Map_Common_Tools::createFloorPlan(dimensionX_in,
                                         dimensionY_in,
                                         numAreas_in,
@@ -242,11 +242,38 @@ do_work(const unsigned long& minRoomSize_in,
                                         true, // doors fill a position
                                         maxDoorsPerRoom_in,
                                         seedPoints,
-                                        levelMap);
+                                        floorPlan);
 
   // step3: display the result
-  RPG_Map_Common_Tools::displayFloorPlan(seedPoints,
-                                         levelMap);
+  RPG_Map_Position_t current_position;
+  RPG_Map_Door_t current_position_door;
+  bool is_seed = false;
+  for (unsigned long y = 0;
+       y < floorPlan.size_y;
+       y++)
+  {
+    for (unsigned long x = 0;
+         x < floorPlan.size_x;
+         x++)
+    {
+      current_position = std::make_pair(x, y);
+      current_position_door.position = current_position;
+      is_seed = seedPoints.find(current_position) != seedPoints.end();
+
+      // unmapped, floor, wall, or door ?
+      // *TODO*: cannot draw seed points that are not "unmapped"/"floor" without
+      // losing essential information...
+      if (floorPlan.unmapped.find(current_position) != floorPlan.unmapped.end())
+        std::cout << (is_seed ? ACE_TEXT("@") : ACE_TEXT(" ")); // unmapped
+      else if (floorPlan.walls.find(current_position) != floorPlan.walls.end())
+        std::cout << ACE_TEXT("#"); // wall
+      else if (floorPlan.doors.find(current_position_door) != floorPlan.doors.end())
+        std::cout << ACE_TEXT("="); // door
+      else
+        std::cout << (is_seed ? ACE_TEXT("@") : ACE_TEXT(".")); // floor
+    } // end FOR
+    std::cout << std::endl;
+  } // end FOR
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));

@@ -62,17 +62,19 @@ NUMBER         [[:digit:]]
 SPECIAL        [-\[\]\\`^{}_]
 NICK           {LETTER}([{LETTER}{NUMBER}{SPECIAL}])*
 ORIGIN         {SERVERNAME}|{NICK}
+/* *NOTE*: "\r\n" is (ANSI-C) implementation-dependent --> use ASCII codes directly */
 /* *NOTE*: in order to pickup the hostname in a sequence "!user[@host] ",
            disallow "@" within a username... */
-USER           ([\x00-\xFF]{-}[ \t\0\r\n@])+
+USER           ([\x00-\xFF]{-}[ \t\0\x0D\x0A@])+
 /* NONWHITE       [\x00-\xFF]{-}[ \t\0\r\n] */
 /* USER           {NONWHITE}+ */
-CHSTRING       ([\x00-\xFF]{-}[ \b\0\r\n,])+
+CHSTRING       ([\x00-\xFF]{-}[ \b\0\x0D\x0A,])+
 MASK           [#$]{CHSTRING}
 CHANNEL        [#&]{CHSTRING}
-PARAM          ([\x00-\xFF]{-}[: \0\r\n])([\x00-\xFF]{-}[ \0\r\n])*
-TRAILING_PARAM ([\x00-\xFF]{-}[\0\r\n])*
-CRLF           \r\n
+PARAM          ([\x00-\xFF]{-}[: \0\x0D\x0A])([\x00-\xFF]{-}[ \0\x0D\x0A])*
+TRAILING_PARAM ([\x00-\xFF]{-}[\0\x0D\x0A])*
+
+CRLF           \x0D\x0A
 
 %s             prefix
 %s             user
@@ -105,7 +107,7 @@ CRLF           \r\n
                              BEGIN(prefix);
                              yylval->ival = 1;
                              return token_type(yytext[0]); }
-"\r"                       { yylloc->step();
+"\x0D"                     { yylloc->step();
                              BEGIN(end_of_frame);
                              yylval->ival = 1; }
 } // end <INITIAL>
@@ -183,7 +185,7 @@ CRLF           \r\n
                              BEGIN(trailing);
                              yylval->ival = 1;
                              return token_type(yytext[0]); }
-"\r"                       { yylloc->step(); /* *NOTE*: non-compliant (see above) */
+"\x0D"                     { yylloc->step(); /* *NOTE*: non-compliant (see above) */
                              BEGIN(end_of_frame);
                              yylval->ival = 1; }
 {PARAM}/{SPACE}            { yylloc->step();
@@ -191,17 +193,17 @@ CRLF           \r\n
                                               std::string);
                              yylval->sval->append(yytext, yyleng);
                              return token::PARAM; }
-{PARAM}/"\r"               { yylloc->step(); /* *NOTE*: non-compliant (see above) */
+{PARAM}/"\x0D"             { yylloc->step(); /* *NOTE*: non-compliant (see above) */
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
                              yylval->sval->append(yytext, yyleng);
                              return token::PARAM; }
 } // end <params>
 <trailing>{
-"\r"                       { yylloc->step();
+"\x0D"                     { yylloc->step();
                              BEGIN(end_of_frame);
                              yylval->ival = 1; }
-{TRAILING_PARAM}/"\r"      { yylloc->step();
+{TRAILING_PARAM}/"\x0D"    { yylloc->step();
                              if (yyleng > 0)
                              {
                                ACE_NEW_NORETURN(yylval->sval,
@@ -212,7 +214,7 @@ CRLF           \r\n
                            }
 } // end <trailing>
 <end_of_frame>{
-"\n"                       { yylloc->step();
+"\x0A"                     { yylloc->step();
                              BEGIN(INITIAL);
                              messageCount++; }
 }
