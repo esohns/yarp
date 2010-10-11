@@ -21,6 +21,8 @@
 
 #include <rpg_graphics_defines.h>
 
+#include <rpg_map_common_tools.h>
+
 #include <rpg_monster_common.h>
 #include <rpg_monster_common_tools.h>
 #include <rpg_monster_attackaction.h>
@@ -1191,6 +1193,207 @@ monster_advance_attack_iterator:
       } // end IF
     } // end IF
   } // end ELSE
+}
+
+void
+RPG_Engine_Common_Tools::initWalls(const RPG_Map_FloorPlan_t& floorPlan_in,
+                                   const RPG_Graphics_WallTileSet_t& tileSet_in,
+                                   RPG_Graphics_WallTileMap_t& wallTiles_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::initWalls"));
+
+  // init return value(s)
+  wallTiles_out.clear();
+
+  RPG_Map_Position_t current_position;
+  RPG_Map_Position_t east, north, west, south;
+  RPG_Graphics_WallTileSet_t current_walls;
+  RPG_Map_Door_t position_door;
+  for (unsigned long y = 0;
+       y < floorPlan_in.size_y;
+       y++)
+    for (unsigned long x = 0;
+         x < floorPlan_in.size_x;
+         x++)
+  {
+    current_position = std::make_pair(x, y);
+    ACE_OS::memset(&current_walls,
+                   0,
+                   sizeof(current_walls));
+
+    position_door.position = current_position;
+    // floor or door ? --> compute walls
+    if (RPG_Map_Common_Tools::isFloor(current_position, floorPlan_in) ||
+        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+    {
+      // step1: find neighboring walls
+      east = current_position;
+      east.first++;
+      north = current_position;
+      north.second--;
+      west = current_position;
+      west.first--;
+      south = current_position;
+      south.second++;
+
+      if ((floorPlan_in.walls.find(east) != floorPlan_in.walls.end()) ||
+          (current_position.first == (floorPlan_in.size_x - 1))) // perimeter
+        current_walls.east = tileSet_in.east;
+      if ((floorPlan_in.walls.find(west) != floorPlan_in.walls.end()) ||
+          (current_position.first == 0)) // perimeter
+        current_walls.west = tileSet_in.west;
+      if ((floorPlan_in.walls.find(north) != floorPlan_in.walls.end()) ||
+          (current_position.second == 0)) // perimeter
+        current_walls.north = tileSet_in.north;
+      if ((floorPlan_in.walls.find(south) != floorPlan_in.walls.end()) ||
+          (current_position.second == (floorPlan_in.size_y - 1))) // perimeter
+        current_walls.south = tileSet_in.south;
+
+      if (current_walls.east.surface ||
+          current_walls.north.surface ||
+          current_walls.west.surface ||
+          current_walls.south.surface)
+        wallTiles_out.insert(std::make_pair(current_position, current_walls));
+    } // end IF
+  } // end FOR
+}
+
+void
+RPG_Engine_Common_Tools::updateWalls(const RPG_Graphics_WallTileSet_t& tileSet_in,
+                                     RPG_Graphics_WallTileMap_t& wallTiles_inout)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::updateWalls"));
+
+  for (RPG_Graphics_WallTileMapIterator_t iterator = wallTiles_inout.begin();
+       iterator != wallTiles_inout.end();
+       iterator++)
+  {
+    if ((*iterator).second.west.surface)
+      (*iterator).second.west = tileSet_in.west;
+    if ((*iterator).second.north.surface)
+      (*iterator).second.north = tileSet_in.north;
+    if ((*iterator).second.east.surface)
+      (*iterator).second.east = tileSet_in.east;
+    if ((*iterator).second.south.surface)
+      (*iterator).second.south = tileSet_in.south;
+  } // end FOR
+}
+
+void
+RPG_Engine_Common_Tools::initDoors(const RPG_Map_FloorPlan_t& floorPlan_in,
+                                   const RPG_Map_Level& levelState_in,
+                                   const RPG_Graphics_DoorTileSet_t& tileSet_in,
+                                   RPG_Graphics_DoorTileMap_t& doorTiles_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::initDoors"));
+
+  // init return value(s)
+  doorTiles_out.clear();
+
+  RPG_Graphics_Tile_t current_tile;
+  RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
+  for (RPG_Map_DoorsConstIterator_t iterator = floorPlan_in.doors.begin();
+       iterator != floorPlan_in.doors.end();
+       iterator++)
+  {
+    ACE_OS::memset(&current_tile,
+                   0,
+                   sizeof(current_tile));
+    orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
+    if ((*iterator).is_broken)
+    {
+      doorTiles_out.insert(std::make_pair((*iterator).position, tileSet_in.broken));
+      continue;
+    } // end IF
+
+    orientation = RPG_Engine_Common_Tools::getDoorOrientation(levelState_in,
+                                                              (*iterator).position);
+    switch (orientation)
+    {
+      case ORIENTATION_HORIZONTAL:
+      {
+        current_tile = ((*iterator).is_open ? tileSet_in.horizontal_open
+                                            : tileSet_in.horizontal_closed);
+        break;
+      }
+      case ORIENTATION_VERTICAL:
+      {
+        current_tile = ((*iterator).is_open ? tileSet_in.vertical_open
+                                            : tileSet_in.vertical_closed);
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid door [%u,%u] orientation (was: \"%s\"), continuing\n"),
+                   (*iterator).position.first,
+                   (*iterator).position.second,
+                   RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
+
+        continue;
+      }
+    } // end SWITCH
+
+    doorTiles_out.insert(std::make_pair((*iterator).position, current_tile));
+  } // end FOR
+}
+
+void
+RPG_Engine_Common_Tools::updateDoors(const RPG_Graphics_DoorTileSet_t& tileSet_in,
+                                     const RPG_Map_Level& levelState_in,
+                                     RPG_Graphics_DoorTileMap_t& doorTiles_inout)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::updateDoors"));
+
+  RPG_Graphics_Tile_t current_tile;
+  RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
+  RPG_Map_Door_t current_door;
+  for (RPG_Graphics_DoorTileMapIterator_t iterator = doorTiles_inout.begin();
+       iterator != doorTiles_inout.end();
+       iterator++)
+  {
+    ACE_OS::memset(&current_tile,
+                   0,
+                   sizeof(current_tile));
+    orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
+
+    current_door = levelState_in.getDoor((*iterator).first);
+    if (current_door.is_broken)
+    {
+      (*iterator).second = tileSet_in.broken;
+      continue;
+    } // end IF
+
+    orientation = RPG_Engine_Common_Tools::getDoorOrientation(levelState_in,
+                                                              (*iterator).first);
+    switch (orientation)
+    {
+      case ORIENTATION_HORIZONTAL:
+      {
+        current_tile = (current_door.is_open ? tileSet_in.horizontal_open
+                                             : tileSet_in.horizontal_closed);
+        break;
+      }
+      case ORIENTATION_VERTICAL:
+      {
+        current_tile = (current_door.is_open ? tileSet_in.vertical_open
+                                             : tileSet_in.vertical_closed);
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid door [%u,%u] orientation (was: \"%s\"), continuing\n"),
+                   (*iterator).first.first,
+                   (*iterator).first.second,
+                   RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
+
+        continue;
+      }
+    } // end SWITCH
+
+    (*iterator).second = current_tile;
+  } // end FOR
 }
 
 const bool

@@ -134,6 +134,7 @@ struct RPG_Graphics_Tile_t
   int offset_y;
   SDL_Surface* surface;
 };
+
 typedef std::vector<RPG_Graphics_Tile_t> RPG_Graphics_FloorTiles_t;
 typedef RPG_Graphics_FloorTiles_t::const_iterator RPG_Graphics_FloorTilesConstIterator_t;
 struct RPG_Graphics_FloorTileSet_t
@@ -142,6 +143,7 @@ struct RPG_Graphics_FloorTileSet_t
   unsigned long rows;
   RPG_Graphics_FloorTiles_t tiles;
 };
+
 struct RPG_Graphics_WallTileSet_t
 {
   RPG_Graphics_Tile_t west;
@@ -150,7 +152,8 @@ struct RPG_Graphics_WallTileSet_t
   RPG_Graphics_Tile_t south;
 };
 typedef std::map<RPG_Graphics_Position_t, RPG_Graphics_WallTileSet_t> RPG_Graphics_WallTileMap_t;
-typedef RPG_Graphics_WallTileMap_t::const_iterator RPG_Graphics_WallTileMapConstIterator_t;
+typedef RPG_Graphics_WallTileMap_t::iterator RPG_Graphics_WallTileMapIterator_t;
+
 struct RPG_Graphics_DoorTileSet_t
 {
   RPG_Graphics_Tile_t horizontal_open;
@@ -160,7 +163,7 @@ struct RPG_Graphics_DoorTileSet_t
   RPG_Graphics_Tile_t broken;
 };
 typedef std::map<RPG_Graphics_Position_t, RPG_Graphics_Tile_t> RPG_Graphics_DoorTileMap_t;
-typedef RPG_Graphics_DoorTileMap_t::const_iterator RPG_Graphics_DoorTileMapConstIterator_t;
+typedef RPG_Graphics_DoorTileMap_t::iterator RPG_Graphics_DoorTileMapIterator_t;
 
 typedef std::vector<RPG_Graphics_Tile>::const_iterator RPG_Graphics_TileSetConstIterator_t;
 

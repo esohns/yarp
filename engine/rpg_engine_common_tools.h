@@ -63,6 +63,19 @@ class RPG_Engine_Common_Tools
                                  const RPG_Engine_CombatantSequence_t&); // battle sequence
 
   // ***** map/graphics-related *****
+  static void initWalls(const RPG_Map_FloorPlan_t&,        // floor plan
+                        const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
+                        RPG_Graphics_WallTileMap_t&);      // return value: wall tiles / position
+  static void updateWalls(const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
+                          RPG_Graphics_WallTileMap_t&);      // input/output value: wall tiles / position
+  static void initDoors(const RPG_Map_FloorPlan_t&,        // floor plan
+                        const RPG_Map_Level&,              // state
+                        const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
+                        RPG_Graphics_DoorTileMap_t&);      // return value: door tiles / position
+  static void updateDoors(const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
+                          const RPG_Map_Level&,              // state
+                          RPG_Graphics_DoorTileMap_t&);      // input/output value: door tiles / position
+
   static const bool hasCeiling(const RPG_Map_Position_t&,
                                const RPG_Map_Level&);
   static const RPG_Graphics_Orientation getDoorOrientation(const RPG_Map_Level&,       // state

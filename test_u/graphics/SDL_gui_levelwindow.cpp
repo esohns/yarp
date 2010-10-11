@@ -102,15 +102,15 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
                RPG_Graphics_Common_Tools::typeToString(type).c_str()));
 
   // init wall tiles / position
-  initWalls(floorPlan_in,
-            myCurrentWallSet,
-            myWallTiles);
+  RPG_Engine_Common_Tools::initWalls(floorPlan_in,
+                                     myCurrentWallSet,
+                                     myWallTiles);
 
   // init door tiles / position
-  initDoors(floorPlan_in,
-            myMap,
-            myCurrentDoorSet,
-            myDoorTiles);
+  RPG_Engine_Common_Tools::initDoors(floorPlan_in,
+                                     myMap,
+                                     myCurrentDoorSet,
+                                     myDoorTiles);
 
   // init cursor highlighting
   myHighlightBG = RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_FLOOR_WIDTH,
@@ -244,17 +244,6 @@ SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
   style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
   style.doorstyle = mapStyle_in.door_style;
   setStyle(style);
-
-  // init wall tiles / position
-  initWalls(floorPlan_in,
-            myCurrentWallSet,
-            myWallTiles);
-
-  // init door tiles / position
-  initDoors(floorPlan_in,
-            myMap,
-            myCurrentDoorSet,
-            myDoorTiles);
 
   // init view
   centerView();
@@ -460,8 +449,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   } // end FOR
 
   // pass 2
-  RPG_Graphics_WallTileMapConstIterator_t wall_iterator = myWallTiles.end();
-  RPG_Graphics_DoorTileMapConstIterator_t door_iterator = myDoorTiles.end();
+  RPG_Graphics_WallTileMapIterator_t wall_iterator = myWallTiles.end();
+  RPG_Graphics_DoorTileMapIterator_t door_iterator = myDoorTiles.end();
   for (i = -top_right.second;
        i <= ACE_static_cast(int, top_right.second);
        i++)
@@ -1247,6 +1236,10 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
                                     dump_path,                      // file
                                     true);                          // WITH alpha
 
+      // update wall tiles / position
+      RPG_Engine_Common_Tools::updateWalls(myCurrentWallSet,
+                                           myWallTiles);
+
       myCurrentMapStyle.wall_style = style_in.wallstyle;
 
       break;
@@ -1281,6 +1274,11 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
                    ACE_TEXT("door-style \"%s\" is incomplete, continuing\n"),
                    RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(style_in.doorstyle).c_str()));
       } // end IF
+
+      // update door tiles / position
+      RPG_Engine_Common_Tools::updateDoors(myCurrentDoorSet,
+                                           myMap,
+                                           myDoorTiles);
 
       myCurrentMapStyle.door_style = style_in.doorstyle;
 
@@ -1345,66 +1343,6 @@ SDL_GUI_LevelWindow::initCeiling()
 }
 
 void
-SDL_GUI_LevelWindow::initWalls(const RPG_Map_FloorPlan_t& levelMap_in,
-                               const RPG_Graphics_WallTileSet_t& tileSet_in,
-                               RPG_Graphics_WallTileMap_t& wallTiles_out)
-{
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::initWalls"));
-
-  // init return value(s)
-  wallTiles_out.clear();
-
-  RPG_Map_Position_t current_position;
-  RPG_Map_Position_t east, north, west, south;
-  RPG_Graphics_WallTileSet_t current_walls;
-  for (unsigned long y = 0;
-       y < levelMap_in.size_y;
-       y++)
-    for (unsigned long x = 0;
-         x < levelMap_in.size_x;
-         x++)
-    {
-      current_position = std::make_pair(x, y);
-      ACE_OS::memset(&current_walls,
-                     0,
-                     sizeof(current_walls));
-
-      if ((myMap.getElement(current_position) == MAPELEMENT_FLOOR) ||
-          (myMap.getElement(current_position) == MAPELEMENT_DOOR))
-      {
-        // step1: find neighboring walls
-        east = current_position;
-        east.first++;
-        north = current_position;
-        north.second--;
-        west = current_position;
-        west.first--;
-        south = current_position;
-        south.second++;
-
-        if ((myMap.getElement(east) == MAPELEMENT_WALL) ||
-            (current_position.first == (levelMap_in.size_x - 1))) // perimeter
-          current_walls.east = myCurrentWallSet.east;
-        if ((myMap.getElement(west) == MAPELEMENT_WALL) ||
-            (current_position.first == 0)) // perimeter
-          current_walls.west = myCurrentWallSet.west;
-        if ((myMap.getElement(north) == MAPELEMENT_WALL) ||
-            (current_position.second == 0)) // perimeter
-          current_walls.north = myCurrentWallSet.north;
-        if ((myMap.getElement(south) == MAPELEMENT_WALL) ||
-            (current_position.second == (levelMap_in.size_y - 1))) // perimeter
-          current_walls.south = myCurrentWallSet.south;
-
-        if (current_walls.east.surface ||
-            current_walls.north.surface ||
-            current_walls.west.surface ||
-            current_walls.south.surface)
-          myWallTiles.insert(std::make_pair(current_position, current_walls));
-      } // end IF
-    } // end FOR
-}
-
-void
 SDL_GUI_LevelWindow::initWallBlend()
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::initWallBlend"));
@@ -1461,66 +1399,6 @@ SDL_GUI_LevelWindow::initWallBlend()
 //
 //   SDL_FreeSurface(myWallBlend);
 //   myWallBlend = shaded_blend;
-}
-
-void
-SDL_GUI_LevelWindow::initDoors(const RPG_Map_FloorPlan_t& floorPlan_in,
-                               const RPG_Map_Level& levelState_in,
-                               const RPG_Graphics_DoorTileSet_t& tileSet_in,
-                               RPG_Graphics_DoorTileMap_t& doorTiles_out)
-{
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::initDoors"));
-
-  // init return value(s)
-  doorTiles_out.clear();
-
-  RPG_Graphics_Tile_t current_tile;
-  RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-  for (RPG_Map_DoorsConstIterator_t iterator = floorPlan_in.doors.begin();
-       iterator != floorPlan_in.doors.end();
-       iterator++)
-  {
-    ACE_OS::memset(&current_tile,
-                   0,
-                   sizeof(current_tile));
-    orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-    if ((*iterator).is_broken)
-    {
-      current_tile = tileSet_in.broken;
-      continue;
-    } // end IF
-
-    orientation = RPG_Engine_Common_Tools::getDoorOrientation(levelState_in,
-                                                              (*iterator).position);
-    switch (orientation)
-    {
-      case ORIENTATION_HORIZONTAL:
-      {
-        current_tile = ((*iterator).is_open ? tileSet_in.horizontal_open
-                                            : tileSet_in.horizontal_closed);
-        break;
-      }
-      case ORIENTATION_VERTICAL:
-      {
-        current_tile = ((*iterator).is_open ? tileSet_in.vertical_open
-                                            : tileSet_in.vertical_closed);
-        break;
-      }
-      default:
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid door orientation \"%s\", aborting\n"),
-                   RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
-
-        // clean up
-        myDoorTiles.clear();
-
-        return;
-      }
-    } // end SWITCH
-
-    myDoorTiles.insert(std::make_pair((*iterator).position, current_tile));
-  } // end FOR
 }
 
 void
