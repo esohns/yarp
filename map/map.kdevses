@@ -1,7 +1,23 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="0" />
+ <DocsAndViews NumberOfDocuments="5" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/map/rpg_map_common_tools.cpp" >
+   <View0 Encoding="" line="2310" Type="Source" />
+  </Doc0>
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/map/rpg_map_common.h" >
+   <View0 Encoding="" line="126" Type="Source" />
+  </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/map/rpg_map_level.cpp" >
+   <View0 Encoding="" line="56" Type="Source" />
+  </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/map/rpg_map_common_tools.h" >
+   <View0 Encoding="" line="72" Type="Source" />
+  </Doc3>
+  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/map/rpg_map_level.h" >
+   <View0 Encoding="" line="39" Type="Source" />
+  </Doc4>
+ </DocsAndViews>
  <pluginList>
   <kdevdebugger>
    <breakpointList>
@@ -18,8 +34,8 @@
   <kdevbookmarks>
    <bookmarks>
     <bookmark url="/home/unfv/Projects/RPG/map/rpg_map_common_tools.cpp" >
-     <mark line="132" />
-     <mark line="1937" />
+     <mark line="1898" />
+     <mark line="134" />
     </bookmark>
    </bookmarks>
   </kdevbookmarks>
