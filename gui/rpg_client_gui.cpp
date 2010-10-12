@@ -949,6 +949,8 @@ do_initGUI(const std::string& graphicsDirectory_in,
   ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
   std::string path = graphicsDirectory_in;
   path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_GRAPHICS_TILE_DEF_IMAGES_SUB;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
   path += icon_graphic.file;
   SDL_Surface* icon_image = NULL;
   icon_image = RPG_Graphics_Surface::load(path,   // graphics file

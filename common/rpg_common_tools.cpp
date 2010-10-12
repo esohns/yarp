@@ -431,7 +431,7 @@ RPG_Common_Tools::enumToString(const std::string& enumString_in,
       std::string::iterator last = result.begin();
       std::advance(last, underscore + 1); // *NOTE*: move one past '_'
       result.erase(result.begin(),
-                  last);
+                   last);
     } // end IF
   } // end IF
 

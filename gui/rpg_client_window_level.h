@@ -74,20 +74,11 @@ class RPG_Client_WindowLevel
 
   // helper methods
   void clear();
-
   void setStyle(const RPG_Graphics_StyleUnion&);
+  void restoreBG();
 
   void initCeiling();
-  void initWalls(const RPG_Map_FloorPlan_t&,        // level map
-                 const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
-                 RPG_Graphics_WallTileMap_t&);      // return value: wall tiles / position
   void initWallBlend();
-  void initDoors(const RPG_Map_FloorPlan_t&,        // level map
-                 const RPG_Map_Level&,              // state
-                 const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
-                 RPG_Graphics_DoorTileMap_t&);      // return value: door tiles / position
-
-  void restoreBG();
 
   RPG_Map_Level               myMap;
 

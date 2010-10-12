@@ -444,7 +444,15 @@ update_character_profile(const RPG_Character_Player& player_in,
 //   ACE_ASSERT(entries);
   if (entries)
   {
-    // *TODO*: clear all entries
+    for (GList* iterator = entries;
+         iterator;
+         iterator = g_list_next(iterator))
+    {
+      // *NOTE*: effectively removes the widget from the container...
+      gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    } // end FOR
+
+    g_list_free(entries);
   } // end IF
   GtkWidget* label = NULL;
   RPG_Character_Feats_t player_feats = player_in.getFeats();
@@ -452,63 +460,7 @@ update_character_profile(const RPG_Character_Player& player_in,
        iterator != player_feats.end();
        iterator++)
   {
-    label = NULL;
-    label = gtk_label_new(RPG_Common_Tools::enumToString(RPG_Character_FeatHelper::RPG_Character_FeatToString(*iterator)).c_str());
-    ACE_ASSERT(label);
-//     gtk_container_add(GTK_CONTAINER(current), label);
-    gtk_box_pack_start(GTK_BOX(current), label,
-                       TRUE, // expand
-                       TRUE, // fill
-                       0);   // padding
-  } // end FOR
-
-  // step14: abilities
-  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
-                                            ACE_TEXT_ALWAYS_CHAR("abilities_vbox")));
-  ACE_ASSERT(current);
-  entries = gtk_container_get_children(GTK_CONTAINER(current));
-//   ACE_ASSERT(entries);
-  if (entries)
-  {
-    // *TODO*: clear all entries
-  } // end IF
-  RPG_Character_Abilities_t player_abilities = player_in.getAbilities();
-  for (RPG_Character_AbilitiesConstIterator_t iterator = player_abilities.begin();
-       iterator != player_abilities.end();
-       iterator++)
-  {
-    label = NULL;
-    label = gtk_label_new(RPG_Common_Tools::enumToString(RPG_Character_AbilityHelper::RPG_Character_AbilityToString(*iterator)).c_str());
-    ACE_ASSERT(label);
-//     gtk_container_add(GTK_CONTAINER(current), label);
-    gtk_box_pack_start(GTK_BOX(current), label,
-                       TRUE, // expand
-                       TRUE, // fill
-                       0);   // padding
-  } // end FOR
-
-  // step15: skills
-  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
-                                            ACE_TEXT_ALWAYS_CHAR("skills_vbox")));
-  ACE_ASSERT(current);
-  entries = gtk_container_get_children(GTK_CONTAINER(current));
-//   ACE_ASSERT(entries);
-  if (entries)
-  {
-    // *TODO*: clear all entries
-  } // end IF
-  RPG_Character_Skills_t player_skills = player_in.getSkills();
-  for (RPG_Character_SkillsConstIterator_t iterator = player_skills.begin();
-       iterator != player_skills.end();
-       iterator++)
-  {
-    text.clear();
-    text += RPG_Common_Tools::enumToString(RPG_Common_SkillHelper::RPG_Common_SkillToString((*iterator).first));
-    text += ACE_TEXT_ALWAYS_CHAR(" : ");
-    converter.str(ACE_TEXT(""));
-    converter.clear();
-    converter << ACE_static_cast(int, (*iterator).second);
-    text += converter.str();
+    text = RPG_Common_Tools::enumToString(RPG_Character_FeatHelper::RPG_Character_FeatToString(*iterator));
     label = NULL;
     label = gtk_label_new(text.c_str());
     ACE_ASSERT(label);
@@ -518,6 +470,99 @@ update_character_profile(const RPG_Character_Player& player_in,
                        TRUE, // fill
                        0);   // padding
   } // end FOR
+  gtk_widget_show_all(current);
+
+  // step14: abilities
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("abilities_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    for (GList* iterator = entries;
+         iterator;
+         iterator = g_list_next(iterator))
+    {
+      // *NOTE*: effectively removes the widget from the container...
+      gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    } // end FOR
+
+    g_list_free(entries);
+  } // end IF
+  RPG_Character_Abilities_t player_abilities = player_in.getAbilities();
+  for (RPG_Character_AbilitiesConstIterator_t iterator = player_abilities.begin();
+       iterator != player_abilities.end();
+       iterator++)
+  {
+    text = RPG_Common_Tools::enumToString(RPG_Character_AbilityHelper::RPG_Character_AbilityToString(*iterator));
+    label = NULL;
+    label = gtk_label_new(text.c_str());
+    ACE_ASSERT(label);
+//     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+  } // end FOR
+  gtk_widget_show_all(current);
+
+  // step15: skills
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("skills_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    for (GList* iterator = entries;
+         iterator;
+         iterator = g_list_next(iterator))
+    {
+      // *NOTE*: effectively removes the widget from the container...
+      gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    } // end FOR
+
+    g_list_free(entries);
+  } // end IF
+  GtkWidget* current_box = NULL;
+  RPG_Character_Skills_t player_skills = player_in.getSkills();
+  for (RPG_Character_SkillsConstIterator_t iterator = player_skills.begin();
+       iterator != player_skills.end();
+       iterator++)
+  {
+    text = RPG_Common_Tools::enumToString(RPG_Common_SkillHelper::RPG_Common_SkillToString((*iterator).first));
+    current_box = NULL;
+    current_box = gtk_hbox_new(TRUE, // homogeneous
+                               0);    // spacing
+    ACE_ASSERT(current_box);
+    label = NULL;
+    label = gtk_label_new(text.c_str());
+    ACE_ASSERT(label);
+    gtk_box_pack_start(GTK_BOX(current_box), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+
+    converter.str(ACE_TEXT(""));
+    converter.clear();
+    converter << ACE_static_cast(int, (*iterator).second);
+    text = converter.str();
+    label = NULL;
+    label = gtk_label_new(text.c_str());
+    ACE_ASSERT(label);
+    gtk_box_pack_start(GTK_BOX(current_box), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+
+//     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), current_box,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+  } // end FOR
+  gtk_widget_show_all(current);
 
   // step16: spells
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
@@ -527,7 +572,15 @@ update_character_profile(const RPG_Character_Player& player_in,
 //   ACE_ASSERT(entries);
   if (entries)
   {
-    // *TODO*: clear all entries
+    for (GList* iterator = entries;
+         iterator;
+         iterator = g_list_next(iterator))
+    {
+      // *NOTE*: effectively removes the widget from the container...
+      gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    } // end FOR
+
+    g_list_free(entries);
   } // end IF
   RPG_Magic_Spells_t player_known_spells = player_in.getKnownSpells();
   RPG_Magic_SpellList_t player_spells = player_in.getSpells();
@@ -546,8 +599,7 @@ update_character_profile(const RPG_Character_Player& player_in,
       if (*iterator2 == *iterator)
         number++;
 
-    text.clear();
-    text += RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
+    text = RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
     if (number)
     {
       text += ACE_TEXT_ALWAYS_CHAR(" : ");
@@ -566,6 +618,7 @@ update_character_profile(const RPG_Character_Player& player_in,
                        TRUE, // fill
                        0);   // padding
   } // end FOR
+  gtk_widget_show_all(current);
 
   // step17: inventory
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
@@ -575,7 +628,15 @@ update_character_profile(const RPG_Character_Player& player_in,
 //   ACE_ASSERT(entries);
   if (entries)
   {
-    // *TODO*: clear all entries
+    for (GList* iterator = entries;
+         iterator;
+         iterator = g_list_next(iterator))
+    {
+      // *NOTE*: effectively removes the widget from the container...
+      gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    } // end FOR
+
+    g_list_free(entries);
   } // end IF
   RPG_Character_Inventory player_inventory = player_in.getInventory();
 //   RPG_Character_Equipment player_equipment = player_in.getEquipment();
@@ -584,7 +645,6 @@ update_character_profile(const RPG_Character_Player& player_in,
        iterator != player_inventory.myItems.end();
        iterator++)
   {
-    text.clear();
     item = NULL;
 
     // retrieve item handle
@@ -607,8 +667,7 @@ update_character_profile(const RPG_Character_Player& player_in,
         ACE_ASSERT(weapon);
 
         // *TODO*: pretty-print this string
-        text += RPG_Common_Tools::enumToString(RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->getWeaponType()),
-                                               false); // don't strip leading "xxx_"
+        text = RPG_Common_Tools::enumToString(RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->getWeaponType()), false); // don't strip leading "xxx_"
 
         break;
       }
@@ -617,7 +676,7 @@ update_character_profile(const RPG_Character_Player& player_in,
         RPG_Item_Armor* armor = ACE_dynamic_cast(RPG_Item_Armor*, item);
         ACE_ASSERT(armor);
 
-        text += RPG_Common_Tools::enumToString(RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()));
+        text = RPG_Common_Tools::enumToString(RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()));
 
         break;
       }
@@ -642,6 +701,7 @@ update_character_profile(const RPG_Character_Player& player_in,
                        TRUE, // fill
                        0);   // padding
   } // end FOR
+  gtk_widget_show_all(current);
 }
 
 // callbacks used by ::scandir...
