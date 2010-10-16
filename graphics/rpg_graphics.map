@@ -8,6 +8,7 @@ namespace urn:rpg
   RPG_Graphics_FloorStyle_Type           RPG_Graphics_FloorStyle;
   RPG_Graphics_StairsStyle_Type          RPG_Graphics_StairsStyle;
   RPG_Graphics_WallStyle_Type            RPG_Graphics_WallStyle;
+  RPG_Graphics_EdgeStyle_Type            RPG_Graphics_EdgeStyle;
   RPG_Graphics_DoorStyle_Type            RPG_Graphics_DoorStyle;
   RPG_Graphics_Cursor_Type               RPG_Graphics_Cursor;
   RPG_Graphics_Font_Type                 RPG_Graphics_Font;

@@ -52,7 +52,9 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
    myCurrentCeilingTile(NULL),
 //    myCurrentDoorSet(),
    myCurrentOffMapTile(NULL),
+//    myFloorEdgeTiles(),
 //    myWallTiles(),
+   myHideWalls(false),
    myWallBlend(NULL),
    myView(std::make_pair(floorPlan_in.size_x / 2,
                          floorPlan_in.size_y / 2)),
@@ -66,6 +68,9 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
   // init map state
   myMap.init(floorPlan_in);
 
+  ACE_OS::memset(&myCurrentFloorEdgeSet,
+                 0,
+                 sizeof(myCurrentFloorEdgeSet));
   ACE_OS::memset(&myCurrentWallSet,
                  0,
                  sizeof(myCurrentWallSet));
@@ -79,6 +84,9 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
   style.floorstyle = myCurrentMapStyle.floor_style;
+  setStyle(style);
+  style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
+  style.edgestyle = myCurrentMapStyle.edge_style;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
   style.wallstyle = myCurrentMapStyle.wall_style;
@@ -100,6 +108,11 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
                RPG_Graphics_Common_Tools::typeToString(type).c_str()));
+
+  // init floor edge tiles / position
+  RPG_Engine_Common_Tools::initFloorEdges(floorPlan_in,
+                                          myCurrentFloorEdgeSet,
+                                          myFloorEdgeTiles);
 
   // init wall tiles / position
   RPG_Engine_Common_Tools::initWalls(floorPlan_in,
@@ -138,7 +151,31 @@ SDL_GUI_LevelWindow::~SDL_GUI_LevelWindow()
        iterator != myCurrentFloorSet.tiles.end();
        iterator++)
     SDL_FreeSurface((*iterator).surface);
-  myCurrentMapStyle.floor_style = RPG_GRAPHICS_FLOORSTYLE_INVALID;
+
+  if (myCurrentFloorEdgeSet.east.surface)
+    SDL_FreeSurface(myCurrentFloorEdgeSet.east.surface);
+  if (myCurrentFloorEdgeSet.west.surface)
+    SDL_FreeSurface(myCurrentFloorEdgeSet.west.surface);
+  if (myCurrentFloorEdgeSet.north.surface)
+    SDL_FreeSurface(myCurrentFloorEdgeSet.north.surface);
+  if (myCurrentFloorEdgeSet.south.surface)
+    SDL_FreeSurface(myCurrentFloorEdgeSet.south.surface);
+  if (myCurrentFloorEdgeSet.south_east.surface)
+    SDL_FreeSurface(myCurrentFloorEdgeSet.south_east.surface);
+  if (myCurrentFloorEdgeSet.south_west.surface)
+    SDL_FreeSurface(myCurrentFloorEdgeSet.south_west.surface);
+  if (myCurrentFloorEdgeSet.north_east.surface)
+    SDL_FreeSurface(myCurrentFloorEdgeSet.north_east.surface);
+  if (myCurrentFloorEdgeSet.north_west.surface)
+    SDL_FreeSurface(myCurrentFloorEdgeSet.north_west.surface);
+  if (myCurrentFloorEdgeSet.other1.surface)
+    SDL_FreeSurface(myCurrentFloorEdgeSet.other1.surface);
+  if (myCurrentFloorEdgeSet.other2.surface)
+    SDL_FreeSurface(myCurrentFloorEdgeSet.other2.surface);
+  if (myCurrentFloorEdgeSet.other3.surface)
+    SDL_FreeSurface(myCurrentFloorEdgeSet.other3.surface);
+  if (myCurrentFloorEdgeSet.other4.surface)
+    SDL_FreeSurface(myCurrentFloorEdgeSet.other4.surface);
 
   if (myCurrentWallSet.east.surface)
     SDL_FreeSurface(myCurrentWallSet.east.surface);
@@ -148,7 +185,6 @@ SDL_GUI_LevelWindow::~SDL_GUI_LevelWindow()
     SDL_FreeSurface(myCurrentWallSet.north.surface);
   if (myCurrentWallSet.south.surface)
     SDL_FreeSurface(myCurrentWallSet.south.surface);
-  myCurrentMapStyle.wall_style = RPG_GRAPHICS_WALLSTYLE_INVALID;
 
   if (myWallBlend)
     SDL_FreeSurface(myWallBlend);
@@ -163,7 +199,6 @@ SDL_GUI_LevelWindow::~SDL_GUI_LevelWindow()
     SDL_FreeSurface(myCurrentDoorSet.vertical_closed.surface);
   if (myCurrentDoorSet.broken.surface)
     SDL_FreeSurface(myCurrentDoorSet.broken.surface);
-  myCurrentMapStyle.door_style = RPG_GRAPHICS_DOORSTYLE_INVALID;
 
   if (myCurrentCeilingTile)
     SDL_FreeSurface(myCurrentCeilingTile);
@@ -237,6 +272,9 @@ SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
   style.floorstyle = mapStyle_in.floor_style;
+  setStyle(style);
+  style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
+  style.edgestyle = mapStyle_in.edge_style;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
   style.wallstyle = mapStyle_in.wall_style;
@@ -334,6 +372,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 //   std::string tile_text;
 //   RPG_Graphics_TextSize_t tile_text_size;
 //   RPG_Position_t map_position = std::make_pair(0, 0);
+  RPG_Graphics_FloorEdgeTileMapIterator_t floor_edge_iterator = myFloorEdgeTiles.end();
 
   // "clear" map "window"
   clear();
@@ -439,9 +478,73 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 //                                       (rect.x + ((rect.w - tile_text_size.first) / 2)),
 //                                       (rect.y + ((rect.h - tile_text_size.second) / 2)),
 //                                       targetSurface);
-      } // end IF
 
-      // *TODO*: step3: floor edges
+        // step3: floor edges
+        floor_edge_iterator = myFloorEdgeTiles.find(current_map_position);
+        if (floor_edge_iterator != myFloorEdgeTiles.end())
+        {
+          if ((*floor_edge_iterator).second.west.surface)
+            RPG_Graphics_Surface::put(screen_position.first,
+                                      (screen_position.second -
+                                       (*floor_edge_iterator).second.west.surface->h +
+                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+                                      *(myCurrentFloorEdgeSet.west.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.north.surface)
+            RPG_Graphics_Surface::put((screen_position.first +
+                                       (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
+                                      (screen_position.second -
+                                       (*floor_edge_iterator).second.north.surface->h +
+                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+                                      *(myCurrentFloorEdgeSet.north.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.east.surface)
+            RPG_Graphics_Surface::put(screen_position.first,
+                                      (screen_position.second -
+                                       (*floor_edge_iterator).second.east.surface->h +
+                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+                                      *(myCurrentFloorEdgeSet.east.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.south.surface)
+            RPG_Graphics_Surface::put((screen_position.first +
+                                       (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
+                                      (screen_position.second -
+                                       (*floor_edge_iterator).second.south.surface->h +
+                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+                                      *(myCurrentFloorEdgeSet.south.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.south_west.surface)
+            RPG_Graphics_Surface::put(screen_position.first,
+                                      (screen_position.second -
+                                       (*floor_edge_iterator).second.south_west.surface->h +
+                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+                                      *(myCurrentFloorEdgeSet.south_west.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.north_west.surface)
+            RPG_Graphics_Surface::put((screen_position.first +
+                                       (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
+                                      (screen_position.second -
+                                       (*floor_edge_iterator).second.north_west.surface->h +
+                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+                                      *(myCurrentFloorEdgeSet.north_west.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.south_east.surface)
+            RPG_Graphics_Surface::put(screen_position.first,
+                                      (screen_position.second -
+                                       (*floor_edge_iterator).second.south_east.surface->h +
+                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+                                      *(myCurrentFloorEdgeSet.south_east.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.south_west.surface)
+            RPG_Graphics_Surface::put((screen_position.first +
+                                       (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
+                                      (screen_position.second -
+                                       (*floor_edge_iterator).second.south_west.surface->h +
+                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+                                      *(myCurrentFloorEdgeSet.south_west.surface),
+                                      targetSurface);
+        } // end IF
+      } // end IF
 
 //       // advance floor iterator
 //       std::advance(floor_iterator, myCurrentFloorSet.rows);
@@ -481,7 +584,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       wall_iterator = myWallTiles.find(current_map_position);
       door_iterator = myDoorTiles.find(current_map_position);
       // step1: walls (west & north)
-      if (wall_iterator != myWallTiles.end())
+      if ((wall_iterator != myWallTiles.end()) &&
+          !myHideWalls)
       {
         if ((*wall_iterator).second.west.surface)
           RPG_Graphics_Surface::put(screen_position.first,
@@ -517,7 +621,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       } // end IF
 
       // step3: walls (south & east)
-      if (wall_iterator != myWallTiles.end())
+      if ((wall_iterator != myWallTiles.end()) &&
+          !myHideWalls)
       {
         if ((*wall_iterator).second.south.surface)
           RPG_Graphics_Surface::put(screen_position.first,
@@ -537,8 +642,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       } // end IF
 
       // step4: ceiling
-      if (RPG_Engine_Common_Tools::hasCeiling(current_map_position,
-                                              myMap))
+      if (RPG_Engine_Common_Tools::hasCeiling(current_map_position, myMap) &&
+          !myHideWalls)
       {
         RPG_Graphics_Surface::put(screen_position.first,
                                   (screen_position.second -
@@ -937,17 +1042,38 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
   switch (style_in.discriminator)
   {
+    case RPG_Graphics_StyleUnion::EDGESTYLE:
+    {
+      RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(style_in.edgestyle,
+                                                      myCurrentFloorEdgeSet);
+      // sanity check
+      if ((myCurrentFloorEdgeSet.west.surface == NULL) &&
+          (myCurrentFloorEdgeSet.north.surface == NULL) &&
+          (myCurrentFloorEdgeSet.east.surface == NULL) &&
+          (myCurrentFloorEdgeSet.south.surface == NULL) &&
+          (myCurrentFloorEdgeSet.south_west.surface == NULL) &&
+          (myCurrentFloorEdgeSet.south_east.surface == NULL) &&
+          (myCurrentFloorEdgeSet.north_west.surface == NULL) &&
+          (myCurrentFloorEdgeSet.north_east.surface == NULL) &&
+          (myCurrentFloorEdgeSet.other1.surface == NULL) &&
+          (myCurrentFloorEdgeSet.other2.surface == NULL) &&
+          (myCurrentFloorEdgeSet.other3.surface == NULL) &&
+          (myCurrentFloorEdgeSet.other4.surface == NULL))
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("edge-style \"%s\" has no tiles, continuing\n"),
+                   RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(style_in.edgestyle).c_str()));
+      } // end IF
+      myCurrentMapStyle.edge_style = style_in.edgestyle;
+
+      // update floor edge tiles / position
+      RPG_Engine_Common_Tools::updateFloorEdges(myCurrentFloorEdgeSet,
+                                                myFloorEdgeTiles);
+
+      break;
+    }
     case RPG_Graphics_StyleUnion::FLOORSTYLE:
     {
-      // clean up
-      myCurrentFloorSet.columns = 0;
-      myCurrentFloorSet.rows = 0;
-      for (RPG_Graphics_FloorTilesConstIterator_t iterator = myCurrentFloorSet.tiles.begin();
-           iterator != myCurrentFloorSet.tiles.end();
-           iterator++)
-        SDL_FreeSurface((*iterator).surface);
-      myCurrentFloorSet.tiles.clear();
-
       RPG_Graphics_Common_Tools::loadFloorTileSet(style_in.floorstyle,
                                                   myCurrentFloorSet);
       // sanity check
@@ -963,19 +1089,6 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
     }
     case RPG_Graphics_StyleUnion::WALLSTYLE:
     {
-      // clean up
-      if (myCurrentWallSet.east.surface)
-        SDL_FreeSurface(myCurrentWallSet.east.surface);
-      if (myCurrentWallSet.west.surface)
-        SDL_FreeSurface(myCurrentWallSet.west.surface);
-      if (myCurrentWallSet.north.surface)
-        SDL_FreeSurface(myCurrentWallSet.north.surface);
-      if (myCurrentWallSet.south.surface)
-        SDL_FreeSurface(myCurrentWallSet.south.surface);
-      ACE_OS::memset(&myCurrentWallSet,
-                     0,
-                     sizeof(myCurrentWallSet));
-
       RPG_Graphics_Common_Tools::loadWallTileSet(style_in.wallstyle,
                                                  myCurrentMapStyle.half_height_walls,
                                                  myCurrentWallSet);
@@ -1246,21 +1359,6 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
     }
     case RPG_Graphics_StyleUnion::DOORSTYLE:
     {
-      // clean up
-      if (myCurrentDoorSet.horizontal_open.surface)
-        SDL_FreeSurface(myCurrentDoorSet.horizontal_open.surface);
-      if (myCurrentDoorSet.vertical_open.surface)
-        SDL_FreeSurface(myCurrentDoorSet.vertical_open.surface);
-      if (myCurrentDoorSet.horizontal_closed.surface)
-        SDL_FreeSurface(myCurrentDoorSet.horizontal_closed.surface);
-      if (myCurrentDoorSet.vertical_closed.surface)
-        SDL_FreeSurface(myCurrentDoorSet.vertical_closed.surface);
-      if (myCurrentDoorSet.broken.surface)
-        SDL_FreeSurface(myCurrentDoorSet.broken.surface);
-      ACE_OS::memset(&myCurrentDoorSet,
-                     0,
-                     sizeof(myCurrentDoorSet));
-
       RPG_Graphics_Common_Tools::loadDoorTileSet(style_in.doorstyle,
                                                  myCurrentDoorSet);
       // sanity check
@@ -1293,6 +1391,14 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
       return;
     }
   } // end SWITCH
+}
+
+void
+SDL_GUI_LevelWindow::hideWalls(const bool& hideWalls_in)
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::hideWalls"));
+
+  myHideWalls = hideWalls_in;
 }
 
 void

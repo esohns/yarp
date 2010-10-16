@@ -49,6 +49,7 @@
   <xsd:simpleType name="RPG_Graphics_TileType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="TILETYPE_DOOR"/>
+      <xsd:enumeration value="TILETYPE_EDGE_FLOOR"/>
       <xsd:enumeration value="TILETYPE_EFFECT"/>
       <xsd:enumeration value="TILETYPE_FIGURINE"/>
       <xsd:enumeration value="TILETYPE_FLOOR"/>
@@ -101,6 +102,12 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="RPG_Graphics_EdgeStyle_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="EDGESTYLE_FLOOR_STONE_COBBLED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:simpleType name="RPG_Graphics_DoorStyle_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="DOORSTYLE_IRON"/>
@@ -112,7 +119,7 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Graphics_StyleUnion_Type">
-    <xsd:union memberTypes="RPG_Graphics_FloorStyle_Type RPG_Graphics_StairsStyle_Type RPG_Graphics_WallStyle_Type RPG_Graphics_DoorStyle_Type"/>
+    <xsd:union memberTypes="RPG_Graphics_FloorStyle_Type RPG_Graphics_StairsStyle_Type RPG_Graphics_WallStyle_Type RPG_Graphics_EdgeStyle_Type RPG_Graphics_DoorStyle_Type"/>
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Graphics_Cursor_Type">
@@ -174,6 +181,7 @@
       <xsd:enumeration value="TILESET_FLOOR_STONE_COBBLED"/>
       <xsd:enumeration value="TILESET_FLOOR_STONE_MOSS_COVERED"/>
       <xsd:enumeration value="TILESET_FLOOR_WATER"/>
+      <xsd:enumeration value="TILESET_EDGE_FLOOR_STONE_COBBLED"/>
       <xsd:enumeration value="TILESET_WALL_BRICK"/>
       <xsd:enumeration value="TILESET_WALL_BRICK_HALF"/>
       <xsd:enumeration value="TILESET_WALL_BRICK_BANNER"/>
@@ -256,6 +264,7 @@
   <xsd:simpleType name="RPG_Graphics_TileSetType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="TILESETTYPE_DOOR"/>
+      <xsd:enumeration value="TILESETTYPE_EDGE_FLOOR"/>
       <xsd:enumeration value="TILESETTYPE_FLOOR"/>
       <xsd:enumeration value="TILESETTYPE_WALL"/>
     </xsd:restriction>

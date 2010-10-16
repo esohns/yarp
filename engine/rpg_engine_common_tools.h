@@ -63,6 +63,11 @@ class RPG_Engine_Common_Tools
                                  const RPG_Engine_CombatantSequence_t&); // battle sequence
 
   // ***** map/graphics-related *****
+  static void initFloorEdges(const RPG_Map_FloorPlan_t&,             // floor plan
+                             const RPG_Graphics_FloorEdgeTileSet_t&, // appropriate (style) tileset
+                             RPG_Graphics_FloorEdgeTileMap_t&);      // return value: floor edge tiles / position
+  static void updateFloorEdges(const RPG_Graphics_FloorEdgeTileSet_t&, // appropriate (style) tileset
+                               RPG_Graphics_FloorEdgeTileMap_t&);      // input/output value: floor edge tiles / position
   static void initWalls(const RPG_Map_FloorPlan_t&,        // floor plan
                         const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
                         RPG_Graphics_WallTileMap_t&);      // return value: wall tiles / position

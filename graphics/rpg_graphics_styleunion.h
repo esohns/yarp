@@ -33,6 +33,7 @@ struct RPG_Graphics_StyleUnion
     RPG_Graphics_FloorStyle floorstyle;
     RPG_Graphics_StairsStyle stairsstyle;
     RPG_Graphics_WallStyle wallstyle;
+    RPG_Graphics_EdgeStyle edgestyle;
     RPG_Graphics_DoorStyle doorstyle;
   };
 
@@ -41,6 +42,7 @@ struct RPG_Graphics_StyleUnion
     FLOORSTYLE,
     STAIRSSTYLE,
     WALLSTYLE,
+    EDGESTYLE,
     DOORSTYLE,
     INVALID
   };

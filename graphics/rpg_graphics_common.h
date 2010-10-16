@@ -144,6 +144,27 @@ struct RPG_Graphics_FloorTileSet_t
   RPG_Graphics_FloorTiles_t tiles;
 };
 
+struct RPG_Graphics_FloorEdgeTileSet_t
+{
+  // straight edges
+  RPG_Graphics_Tile_t west;
+  RPG_Graphics_Tile_t north;
+  RPG_Graphics_Tile_t east;
+  RPG_Graphics_Tile_t south;
+  // corner edges
+  RPG_Graphics_Tile_t south_west;
+  RPG_Graphics_Tile_t south_east;
+  RPG_Graphics_Tile_t north_west;
+  RPG_Graphics_Tile_t north_east;
+  // *TODO* edges
+  RPG_Graphics_Tile_t other1;
+  RPG_Graphics_Tile_t other2;
+  RPG_Graphics_Tile_t other3;
+  RPG_Graphics_Tile_t other4;
+};
+typedef std::map<RPG_Graphics_Position_t, RPG_Graphics_FloorEdgeTileSet_t> RPG_Graphics_FloorEdgeTileMap_t;
+typedef RPG_Graphics_FloorEdgeTileMap_t::iterator RPG_Graphics_FloorEdgeTileMapIterator_t;
+
 struct RPG_Graphics_WallTileSet_t
 {
   RPG_Graphics_Tile_t west;
@@ -170,6 +191,7 @@ typedef std::vector<RPG_Graphics_Tile>::const_iterator RPG_Graphics_TileSetConst
 struct RPG_Graphics_MapStyle_t
 {
   RPG_Graphics_FloorStyle floor_style;
+  RPG_Graphics_EdgeStyle edge_style;
   RPG_Graphics_WallStyle wall_style;
   bool half_height_walls;
   RPG_Graphics_DoorStyle door_style;

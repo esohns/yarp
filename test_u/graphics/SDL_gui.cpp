@@ -789,6 +789,7 @@ do_work(const mode_t& mode_in,
       // step3b: setup style
       RPG_Graphics_MapStyle_t mapStyle;
       mapStyle.floor_style = SDL_GUI_DEF_GRAPHICS_FLOORSTYLE;
+      mapStyle.edge_style = SDL_GUI_DEF_GRAPHICS_EDGESTYLE;
       mapStyle.wall_style = SDL_GUI_DEF_GRAPHICS_WALLSTYLE;
       mapStyle.half_height_walls = SDL_GUI_DEF_GRAPHICS_WALLSTYLE_HALF;
       mapStyle.door_style = SDL_GUI_DEF_GRAPHICS_DOORSTYLE;
@@ -852,6 +853,7 @@ do_work(const mode_t& mode_in,
       } // end IF
 
       RPG_Graphics_Position_t mouse_position;
+      bool hide_walls = false;
       do
       {
         window = NULL;
@@ -893,6 +895,20 @@ do_work(const mode_t& mode_in,
                 style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
                 style.floorstyle = mapStyle.floor_style;
                 mapWindow->setStyle(style);
+
+                force_redraw = true;
+
+                break;
+              }
+              case SDLK_h:
+              {
+                // toggle setting
+                if (hide_walls)
+                  hide_walls = false;
+                else
+                  hide_walls = true;
+
+                mapWindow->hideWalls(hide_walls);
 
                 force_redraw = true;
 

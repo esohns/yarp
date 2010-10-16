@@ -534,7 +534,7 @@ update_character_profile(const RPG_Character_Player& player_in,
     text = RPG_Common_Tools::enumToString(RPG_Common_SkillHelper::RPG_Common_SkillToString((*iterator).first));
     current_box = NULL;
     current_box = gtk_hbox_new(TRUE, // homogeneous
-                               0);    // spacing
+                               0);   // spacing
     ACE_ASSERT(current_box);
     label = NULL;
     label = gtk_label_new(text.c_str());

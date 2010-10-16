@@ -82,6 +82,15 @@ class RPG_Graphics_WallStyle_Type
   virtual RPG_Graphics_WallStyle post_RPG_Graphics_WallStyle_Type();
 };
 
+class RPG_Graphics_EdgeStyle_Type
+  : public RPG_Graphics_EdgeStyle_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Graphics_EdgeStyle post_RPG_Graphics_EdgeStyle_Type();
+};
+
 class RPG_Graphics_DoorStyle_Type
  : public RPG_Graphics_DoorStyle_Type_pskel,
    public ::xml_schema::string_pimpl

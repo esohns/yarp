@@ -65,6 +65,13 @@ RPG_Graphics_WallStyle RPG_Graphics_WallStyle_Type::post_RPG_Graphics_WallStyle_
   return RPG_Graphics_WallStyleHelper::stringToRPG_Graphics_WallStyle(post_string());
 }
 
+RPG_Graphics_EdgeStyle RPG_Graphics_EdgeStyle_Type::post_RPG_Graphics_EdgeStyle_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_EdgeStyle_Type::post_RPG_Graphics_EdgeStyle_Type"));
+
+  return RPG_Graphics_EdgeStyleHelper::stringToRPG_Graphics_EdgeStyle(post_string());
+}
+
 RPG_Graphics_DoorStyle RPG_Graphics_DoorStyle_Type::post_RPG_Graphics_DoorStyle_Type()
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_DoorStyle_Type::post_RPG_Graphics_DoorStyle_Type"));
@@ -86,6 +93,7 @@ void RPG_Graphics_StyleUnion_Type::_characters(const ::xml_schema::ro_string& st
 
   // can be either:
   // - RPG_Graphics_FloorStyle --> "FLOORSTYLE_xxx"
+  // - RPG_Graphics_FloorStyle --> "EDGESTYLE_xxx"
   // - RPG_Graphics_StairsStyle --> "STAIRSSTYLE_xxx"
   // - RPG_Graphics_WallStyle --> "WALLSTYLE_xxx"
   // - RPG_Graphics_DoorStyle --> "DOORSTYLE_xxx"
@@ -94,6 +102,11 @@ void RPG_Graphics_StyleUnion_Type::_characters(const ::xml_schema::ro_string& st
   {
     myCurrentStyle.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
     myCurrentStyle.floorstyle = RPG_Graphics_FloorStyleHelper::stringToRPG_Graphics_FloorStyle(styleType_in);
+  } // end IF
+  else if (style.find(ACE_TEXT_ALWAYS_CHAR("EDGESTYLE_")) == 0)
+  {
+    myCurrentStyle.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
+    myCurrentStyle.edgestyle = RPG_Graphics_EdgeStyleHelper::stringToRPG_Graphics_EdgeStyle(styleType_in);
   } // end IF
   else if (style.find(ACE_TEXT_ALWAYS_CHAR("STAIRSSTYLE_")) == 0)
   {

@@ -1196,6 +1196,122 @@ monster_advance_attack_iterator:
 }
 
 void
+RPG_Engine_Common_Tools::initFloorEdges(const RPG_Map_FloorPlan_t& floorPlan_in,
+                                        const RPG_Graphics_FloorEdgeTileSet_t& tileSet_in,
+                                        RPG_Graphics_FloorEdgeTileMap_t& floorEdgeTiles_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::initFloorEdges"));
+
+  // init return value(s)
+  floorEdgeTiles_out.clear();
+
+  RPG_Map_Position_t current_position;
+  RPG_Map_Position_t east, north, west, south;
+  RPG_Graphics_FloorEdgeTileSet_t current_floor_edges;
+  RPG_Map_Door_t position_door;
+  for (unsigned long y = 0;
+       y < floorPlan_in.size_y;
+       y++)
+    for (unsigned long x = 0;
+       x < floorPlan_in.size_x;
+       x++)
+    {
+      current_position = std::make_pair(x, y);
+      ACE_OS::memset(&current_floor_edges,
+                     0,
+                     sizeof(current_floor_edges));
+
+      position_door.position = current_position;
+      // floor or door ? --> compute floor edges
+      if (RPG_Map_Common_Tools::isFloor(current_position, floorPlan_in) ||
+          (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+      {
+        // step1: find neighboring map elements
+        east = current_position;
+        east.first++;
+        north = current_position;
+        north.second--;
+        west = current_position;
+        west.first--;
+        south = current_position;
+        south.second++;
+
+        if (floorPlan_in.walls.find(east) != floorPlan_in.walls.end())
+        {
+          current_floor_edges.east = tileSet_in.east;
+          if (floorPlan_in.walls.find(north) != floorPlan_in.walls.end())
+            current_floor_edges.north_east = tileSet_in.north_east;
+          if (floorPlan_in.walls.find(south) != floorPlan_in.walls.end())
+            current_floor_edges.south_east = tileSet_in.south_east;
+        } // end IF
+        if ((floorPlan_in.walls.find(west) != floorPlan_in.walls.end()))
+        {
+          current_floor_edges.west = tileSet_in.west;
+          if (floorPlan_in.walls.find(north) != floorPlan_in.walls.end())
+            current_floor_edges.north_west = tileSet_in.north_west;
+          if (floorPlan_in.walls.find(south) != floorPlan_in.walls.end())
+            current_floor_edges.south_west = tileSet_in.south_west;
+        } // end IF
+        if ((floorPlan_in.walls.find(north) != floorPlan_in.walls.end()))
+          current_floor_edges.north = tileSet_in.north;
+        if ((floorPlan_in.walls.find(south) != floorPlan_in.walls.end()))
+          current_floor_edges.south = tileSet_in.south;
+
+        if (current_floor_edges.east.surface ||
+            current_floor_edges.north.surface ||
+            current_floor_edges.west.surface ||
+            current_floor_edges.south.surface ||
+            current_floor_edges.south_east.surface ||
+            current_floor_edges.south_west.surface ||
+            current_floor_edges.north_west.surface ||
+            current_floor_edges.north_east.surface ||
+            current_floor_edges.other1.surface ||
+            current_floor_edges.other2.surface ||
+            current_floor_edges.other3.surface ||
+            current_floor_edges.other4.surface)
+          floorEdgeTiles_out.insert(std::make_pair(current_position, current_floor_edges));
+      } // end IF
+    } // end FOR
+}
+
+void
+RPG_Engine_Common_Tools::updateFloorEdges(const RPG_Graphics_FloorEdgeTileSet_t& tileSet_in,
+                                          RPG_Graphics_FloorEdgeTileMap_t& floorEdgeTiles_inout)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::updateFloorEdges"));
+
+  for (RPG_Graphics_FloorEdgeTileMapIterator_t iterator = floorEdgeTiles_inout.begin();
+       iterator != floorEdgeTiles_inout.end();
+       iterator++)
+  {
+    if ((*iterator).second.west.surface)
+      (*iterator).second.west = tileSet_in.west;
+    if ((*iterator).second.north.surface)
+      (*iterator).second.north = tileSet_in.north;
+    if ((*iterator).second.east.surface)
+      (*iterator).second.east = tileSet_in.east;
+    if ((*iterator).second.south.surface)
+      (*iterator).second.south = tileSet_in.south;
+    if ((*iterator).second.south_west.surface)
+      (*iterator).second.south_west = tileSet_in.south_west;
+    if ((*iterator).second.north_west.surface)
+      (*iterator).second.north_west = tileSet_in.north_west;
+    if ((*iterator).second.south_east.surface)
+      (*iterator).second.south_east = tileSet_in.south_east;
+    if ((*iterator).second.north_east.surface)
+      (*iterator).second.north_east = tileSet_in.north_east;
+    if ((*iterator).second.other1.surface)
+      (*iterator).second.other1 = tileSet_in.other1;
+    if ((*iterator).second.other2.surface)
+      (*iterator).second.other2 = tileSet_in.other2;
+    if ((*iterator).second.other3.surface)
+      (*iterator).second.other3 = tileSet_in.other3;
+    if ((*iterator).second.other4.surface)
+      (*iterator).second.other4 = tileSet_in.other4;
+  } // end FOR
+}
+
+void
 RPG_Engine_Common_Tools::initWalls(const RPG_Map_FloorPlan_t& floorPlan_in,
                                    const RPG_Graphics_WallTileSet_t& tileSet_in,
                                    RPG_Graphics_WallTileMap_t& wallTiles_out)

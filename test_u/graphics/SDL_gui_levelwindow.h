@@ -56,6 +56,7 @@ class SDL_GUI_LevelWindow
   void init(const RPG_Graphics_MapStyle_t&, // map style
             const RPG_Map_FloorPlan_t&);    // map
   void setStyle(const RPG_Graphics_StyleUnion&);
+  void hideWalls(const bool& = true); // hide walls ?
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
@@ -83,30 +84,35 @@ class SDL_GUI_LevelWindow
   void initWallBlend();
   void restoreBG();
 
-  RPG_Map_Level               myMap;
+  RPG_Map_Level                   myMap;
 
-  RPG_Graphics_MapStyle_t     myCurrentMapStyle;
-  RPG_Graphics_FloorTileSet_t myCurrentFloorSet;
-  RPG_Graphics_WallTileSet_t  myCurrentWallSet;
-  SDL_Surface*                myCurrentCeilingTile;
-  RPG_Graphics_DoorTileSet_t  myCurrentDoorSet;
-  SDL_Surface*                myCurrentOffMapTile;
+  RPG_Graphics_MapStyle_t         myCurrentMapStyle;
+  RPG_Graphics_FloorTileSet_t     myCurrentFloorSet;
+  RPG_Graphics_FloorEdgeTileSet_t myCurrentFloorEdgeSet;
+  RPG_Graphics_WallTileSet_t      myCurrentWallSet;
+  SDL_Surface*                    myCurrentCeilingTile;
+  RPG_Graphics_DoorTileSet_t      myCurrentDoorSet;
+  SDL_Surface*                    myCurrentOffMapTile;
+
+  // floor edge tiles / position
+  RPG_Graphics_FloorEdgeTileMap_t myFloorEdgeTiles;
 
   // wall tiles / position
-  RPG_Graphics_WallTileMap_t  myWallTiles;
+  RPG_Graphics_WallTileMap_t      myWallTiles;
 
-  SDL_Surface*                myWallBlend;
+  bool                            myHideWalls;
+  SDL_Surface*                    myWallBlend;
 
   // door tiles / position
-  RPG_Graphics_DoorTileMap_t  myDoorTiles;
+  RPG_Graphics_DoorTileMap_t      myDoorTiles;
 
   // center of displayed map area (map coordinates)
-  RPG_Graphics_Position_t     myView;
+  RPG_Graphics_Position_t         myView;
 
   // cursor highlight
-  RPG_Graphics_Position_t     myHighlightBGPosition; // map coordinates
-  SDL_Surface*                myHighlightBG;
-  SDL_Surface*                myHighlightTile;
+  RPG_Graphics_Position_t         myHighlightBGPosition; // map coordinates
+  SDL_Surface*                    myHighlightBG;
+  SDL_Surface*                    myHighlightTile;
 };
 
 #endif

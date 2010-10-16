@@ -38,6 +38,7 @@ RPG_Graphics_CategoryToStringTable_t RPG_Graphics_CategoryHelper::myRPG_Graphics
 RPG_Graphics_OrientationToStringTable_t RPG_Graphics_OrientationHelper::myRPG_Graphics_OrientationToStringTable;
 RPG_Graphics_TileTypeToStringTable_t RPG_Graphics_TileTypeHelper::myRPG_Graphics_TileTypeToStringTable;
 RPG_Graphics_FloorStyleToStringTable_t RPG_Graphics_FloorStyleHelper::myRPG_Graphics_FloorStyleToStringTable;
+RPG_Graphics_EdgeStyleToStringTable_t RPG_Graphics_EdgeStyleHelper::myRPG_Graphics_EdgeStyleToStringTable;
 RPG_Graphics_StairsStyleToStringTable_t RPG_Graphics_StairsStyleHelper::myRPG_Graphics_StairsStyleToStringTable;
 RPG_Graphics_WallStyleToStringTable_t RPG_Graphics_WallStyleHelper::myRPG_Graphics_WallStyleToStringTable;
 RPG_Graphics_DoorStyleToStringTable_t RPG_Graphics_DoorStyleHelper::myRPG_Graphics_DoorStyleToStringTable;
@@ -145,6 +146,8 @@ RPG_Graphics_Common_Tools::styleToString(const RPG_Graphics_StyleUnion& style_in
   {
     case RPG_Graphics_StyleUnion::FLOORSTYLE:
       return RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(style_in.floorstyle);
+    case RPG_Graphics_StyleUnion::EDGESTYLE:
+      return RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(style_in.edgestyle);
     case RPG_Graphics_StyleUnion::STAIRSSTYLE:
       return RPG_Graphics_StairsStyleHelper::RPG_Graphics_StairsStyleToString(style_in.stairsstyle);
     case RPG_Graphics_StyleUnion::WALLSTYLE:
@@ -488,6 +491,24 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in,
 
       break;
     }
+    case RPG_Graphics_StyleUnion::EDGESTYLE:
+    {
+      switch (style_in.edgestyle)
+      {
+        case EDGESTYLE_FLOOR_STONE_COBBLED:
+          result.tilesetgraphic = TILESET_EDGE_FLOOR_STONE_COBBLED; break;
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid edge-style (was: \"%s\"), aborting\n"),
+                     RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(style_in.edgestyle).c_str()));
+
+          return result;
+        }
+      } // end SWITCH
+
+      break;
+    }
     case RPG_Graphics_StyleUnion::WALLSTYLE:
     {
       switch (style_in.wallstyle)
@@ -690,6 +711,323 @@ RPG_Graphics_Common_Tools::textSize(const RPG_Graphics_Font& font_in,
 
   return std::make_pair(ACE_static_cast(unsigned long, width),
                         ACE_static_cast(unsigned long, height));
+}
+
+void
+RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& style_in,
+                                                RPG_Graphics_FloorEdgeTileSet_t& tileSet_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadFloorEdgeTileSet"));
+
+  // init return value(s)
+  if (tileSet_out.east.surface)
+  {
+    SDL_FreeSurface(tileSet_out.east.surface);
+    tileSet_out.east.surface = NULL;
+  } // end IF
+  if (tileSet_out.west.surface)
+  {
+    SDL_FreeSurface(tileSet_out.west.surface);
+    tileSet_out.west.surface = NULL;
+  } // end IF
+  if (tileSet_out.north.surface)
+  {
+    SDL_FreeSurface(tileSet_out.north.surface);
+    tileSet_out.north.surface = NULL;
+  } // end IF
+  if (tileSet_out.south.surface)
+  {
+    SDL_FreeSurface(tileSet_out.south.surface);
+    tileSet_out.south.surface = NULL;
+  } // end IF
+  if (tileSet_out.south_west.surface)
+  {
+    SDL_FreeSurface(tileSet_out.south_west.surface);
+    tileSet_out.south_west.surface = NULL;
+  } // end IF
+  if (tileSet_out.south_east.surface)
+  {
+    SDL_FreeSurface(tileSet_out.south_east.surface);
+    tileSet_out.south_east.surface = NULL;
+  } // end IF
+  if (tileSet_out.north_west.surface)
+  {
+    SDL_FreeSurface(tileSet_out.north_west.surface);
+    tileSet_out.north_west.surface = NULL;
+  } // end IF
+  if (tileSet_out.north_east.surface)
+  {
+    SDL_FreeSurface(tileSet_out.north_east.surface);
+    tileSet_out.north_east.surface = NULL;
+  } // end IF
+  if (tileSet_out.other1.surface)
+  {
+    SDL_FreeSurface(tileSet_out.other1.surface);
+    tileSet_out.other1.surface = NULL;
+  } // end IF
+  if (tileSet_out.other2.surface)
+  {
+    SDL_FreeSurface(tileSet_out.other2.surface);
+    tileSet_out.other2.surface = NULL;
+  } // end IF
+  if (tileSet_out.other3.surface)
+  {
+    SDL_FreeSurface(tileSet_out.other3.surface);
+    tileSet_out.other3.surface = NULL;
+  } // end IF
+  if (tileSet_out.other4.surface)
+  {
+    SDL_FreeSurface(tileSet_out.other4.surface);
+    tileSet_out.other4.surface = NULL;
+  } // end IF
+
+  // step0: retrieve appropriate graphic type
+  RPG_Graphics_StyleUnion style;
+  style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
+  style.edgestyle = style_in;
+  RPG_Graphics_GraphicTypeUnion graphic_type;
+  graphic_type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+  graphic_type = RPG_Graphics_Common_Tools::styleToType(style);
+  // sanity check(s)
+  if (graphic_type.discriminator == RPG_Graphics_GraphicTypeUnion::INVALID)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::styleToType(\"%s\"), aborting\n"),
+               RPG_Graphics_Common_Tools::styleToString(style).c_str()));
+
+    return;
+  } // end IF
+
+  // step1: retrieve (list of) tiles
+  RPG_Graphics_t graphic;
+  graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+  // retrieve properties from the dictionary
+  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(graphic_type);
+  ACE_ASSERT(graphic.type.discriminator == graphic_type.discriminator); // too weak
+  // sanity check(s)
+  if (graphic.category != CATEGORY_TILESET)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Dictionary::get(\"%s\"): not a tileset (was: \"%s\"), aborting\n"),
+               RPG_Graphics_Common_Tools::typeToString(graphic.type).c_str(),
+               RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str()));
+
+    return;
+  } // end IF
+
+  // assemble base path
+  std::string path_base = myGraphicsDirectory;
+  path_base += ACE_DIRECTORY_SEPARATOR_STR;
+  path_base += RPG_GRAPHICS_TILE_DEF_FLOORS_SUB;
+  path_base += ACE_DIRECTORY_SEPARATOR_STR;
+
+  std::string path = path_base;
+  RPG_Graphics_Tile_t current_tile;
+  unsigned long type = 0;
+  std::istringstream converter;
+  size_t edge_position = std::string::npos;
+  for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin();
+       iterator != graphic.tileset.tiles.end();
+       iterator++)
+  {
+    current_tile.offset_x = (*iterator).offsetX;
+    current_tile.offset_y = (*iterator).offsetY;
+    current_tile.surface = NULL;
+
+    // load file
+    path = path_base;
+    path += (*iterator).file;
+    current_tile.surface = RPG_Graphics_Surface::load(path,  // file
+                                                      true); // convert to display format
+    if (!current_tile.surface)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
+                 path.c_str()));
+
+      // clean up
+      if (tileSet_out.east.surface)
+      {
+        SDL_FreeSurface(tileSet_out.east.surface);
+        tileSet_out.east.surface = NULL;
+      } // end IF
+      if (tileSet_out.west.surface)
+      {
+        SDL_FreeSurface(tileSet_out.west.surface);
+        tileSet_out.west.surface = NULL;
+      } // end IF
+      if (tileSet_out.north.surface)
+      {
+        SDL_FreeSurface(tileSet_out.north.surface);
+        tileSet_out.north.surface = NULL;
+      } // end IF
+      if (tileSet_out.south.surface)
+      {
+        SDL_FreeSurface(tileSet_out.south.surface);
+        tileSet_out.south.surface = NULL;
+      } // end IF
+      if (tileSet_out.south_west.surface)
+      {
+        SDL_FreeSurface(tileSet_out.south_west.surface);
+        tileSet_out.south_west.surface = NULL;
+      } // end IF
+      if (tileSet_out.south_east.surface)
+      {
+        SDL_FreeSurface(tileSet_out.south_east.surface);
+        tileSet_out.south_east.surface = NULL;
+      } // end IF
+      if (tileSet_out.north_west.surface)
+      {
+        SDL_FreeSurface(tileSet_out.north_west.surface);
+        tileSet_out.north_west.surface = NULL;
+      } // end IF
+      if (tileSet_out.north_east.surface)
+      {
+        SDL_FreeSurface(tileSet_out.north_east.surface);
+        tileSet_out.north_east.surface = NULL;
+      } // end IF
+      if (tileSet_out.other1.surface)
+      {
+        SDL_FreeSurface(tileSet_out.other1.surface);
+        tileSet_out.other1.surface = NULL;
+      } // end IF
+      if (tileSet_out.other2.surface)
+      {
+        SDL_FreeSurface(tileSet_out.other2.surface);
+        tileSet_out.other2.surface = NULL;
+      } // end IF
+      if (tileSet_out.other3.surface)
+      {
+        SDL_FreeSurface(tileSet_out.other3.surface);
+        tileSet_out.other3.surface = NULL;
+      } // end IF
+      if (tileSet_out.other4.surface)
+      {
+        SDL_FreeSurface(tileSet_out.other4.surface);
+        tileSet_out.other4.surface = NULL;
+      } // end IF
+
+      return;
+    } // end IF
+
+    // extract position/type from the filename (i.e. "floor_xxx_yyy_zzz_edge#.png")
+    converter.clear();
+    converter.str((*iterator).file);
+    edge_position = (*iterator).file.find(ACE_TEXT_ALWAYS_CHAR("edge"), 7, 4);
+    if (edge_position == std::string::npos)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to find \"edge\" sequence in filename (was: \"%s\"), aborting\n"),
+                 (*iterator).file.c_str()));
+
+      // clean up
+      if (tileSet_out.east.surface)
+      {
+        SDL_FreeSurface(tileSet_out.east.surface);
+        tileSet_out.east.surface = NULL;
+      } // end IF
+      if (tileSet_out.west.surface)
+      {
+        SDL_FreeSurface(tileSet_out.west.surface);
+        tileSet_out.west.surface = NULL;
+      } // end IF
+      if (tileSet_out.north.surface)
+      {
+        SDL_FreeSurface(tileSet_out.north.surface);
+        tileSet_out.north.surface = NULL;
+      } // end IF
+      if (tileSet_out.south.surface)
+      {
+        SDL_FreeSurface(tileSet_out.south.surface);
+        tileSet_out.south.surface = NULL;
+      } // end IF
+      if (tileSet_out.south_west.surface)
+      {
+        SDL_FreeSurface(tileSet_out.south_west.surface);
+        tileSet_out.south_west.surface = NULL;
+      } // end IF
+      if (tileSet_out.south_east.surface)
+      {
+        SDL_FreeSurface(tileSet_out.south_east.surface);
+        tileSet_out.south_east.surface = NULL;
+      } // end IF
+      if (tileSet_out.north_west.surface)
+      {
+        SDL_FreeSurface(tileSet_out.north_west.surface);
+        tileSet_out.north_west.surface = NULL;
+      } // end IF
+      if (tileSet_out.north_east.surface)
+      {
+        SDL_FreeSurface(tileSet_out.north_east.surface);
+        tileSet_out.north_east.surface = NULL;
+      } // end IF
+      if (tileSet_out.other1.surface)
+      {
+        SDL_FreeSurface(tileSet_out.other1.surface);
+        tileSet_out.other1.surface = NULL;
+      } // end IF
+      if (tileSet_out.other2.surface)
+      {
+        SDL_FreeSurface(tileSet_out.other2.surface);
+        tileSet_out.other2.surface = NULL;
+      } // end IF
+      if (tileSet_out.other3.surface)
+      {
+        SDL_FreeSurface(tileSet_out.other3.surface);
+        tileSet_out.other3.surface = NULL;
+      } // end IF
+      if (tileSet_out.other4.surface)
+      {
+        SDL_FreeSurface(tileSet_out.other4.surface);
+        tileSet_out.other4.surface = NULL;
+      } // end IF
+
+      return;
+    } // end IF
+    converter.ignore(edge_position + 4);
+    converter >> type;
+    switch (type)
+    {
+      case 1:
+        tileSet_out.west = current_tile; break;
+      case 2:
+        tileSet_out.north = current_tile; break;
+      case 3:
+        tileSet_out.east = current_tile; break;
+      case 4:
+        tileSet_out.south = current_tile; break;
+      case 5:
+        tileSet_out.south_west = current_tile; break;
+      case 6:
+        tileSet_out.north_west = current_tile; break;
+      case 7:
+        tileSet_out.north_east = current_tile; break;
+      case 8:
+        tileSet_out.south_east = current_tile; break;
+      case 9:
+        tileSet_out.other1 = current_tile; break;
+      case 10:
+        tileSet_out.other2 = current_tile; break;
+      case 11:
+        tileSet_out.other3 = current_tile; break;
+      case 12:
+        tileSet_out.other4 = current_tile; break;
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid edgetile type (was: %u), continuing\n"),
+                   type));
+
+        break;
+      }
+    } // end SWITCH
+  } // end FOR
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("loaded tileset \"%s\" (type: \"%s\", style: \"%s\")...\n"),
+             RPG_Graphics_Common_Tools::typeToString(graphic.type).c_str(),
+             RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(graphic.tileset.type).c_str(),
+             RPG_Graphics_Common_Tools::styleToString(graphic.tileset.style).c_str()));
 }
 
 void
@@ -1419,6 +1757,7 @@ RPG_Graphics_Common_Tools::initStringConversionTables()
   RPG_Graphics_OrientationHelper::init();
   RPG_Graphics_TileTypeHelper::init();
   RPG_Graphics_FloorStyleHelper::init();
+  RPG_Graphics_EdgeStyleHelper::init();
   RPG_Graphics_StairsStyleHelper::init();
   RPG_Graphics_WallStyleHelper::init();
   RPG_Graphics_DoorStyleHelper::init();

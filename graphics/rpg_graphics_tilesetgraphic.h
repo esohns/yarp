@@ -43,6 +43,7 @@ enum RPG_Graphics_TileSetGraphic
   TILESET_FLOOR_STONE_COBBLED,
   TILESET_FLOOR_STONE_MOSS_COVERED,
   TILESET_FLOOR_WATER,
+  TILESET_EDGE_FLOOR_STONE_COBBLED,
   TILESET_WALL_BRICK,
   TILESET_WALL_BRICK_HALF,
   TILESET_WALL_BRICK_BANNER,
@@ -99,6 +100,7 @@ class RPG_Graphics_TileSetGraphicHelper
     myRPG_Graphics_TileSetGraphicToStringTable.insert(std::make_pair(TILESET_FLOOR_STONE_COBBLED, ACE_TEXT_ALWAYS_CHAR("TILESET_FLOOR_STONE_COBBLED")));
     myRPG_Graphics_TileSetGraphicToStringTable.insert(std::make_pair(TILESET_FLOOR_STONE_MOSS_COVERED, ACE_TEXT_ALWAYS_CHAR("TILESET_FLOOR_STONE_MOSS_COVERED")));
     myRPG_Graphics_TileSetGraphicToStringTable.insert(std::make_pair(TILESET_FLOOR_WATER, ACE_TEXT_ALWAYS_CHAR("TILESET_FLOOR_WATER")));
+    myRPG_Graphics_TileSetGraphicToStringTable.insert(std::make_pair(TILESET_EDGE_FLOOR_STONE_COBBLED, ACE_TEXT_ALWAYS_CHAR("TILESET_EDGE_FLOOR_STONE_COBBLED")));
     myRPG_Graphics_TileSetGraphicToStringTable.insert(std::make_pair(TILESET_WALL_BRICK, ACE_TEXT_ALWAYS_CHAR("TILESET_WALL_BRICK")));
     myRPG_Graphics_TileSetGraphicToStringTable.insert(std::make_pair(TILESET_WALL_BRICK_HALF, ACE_TEXT_ALWAYS_CHAR("TILESET_WALL_BRICK_HALF")));
     myRPG_Graphics_TileSetGraphicToStringTable.insert(std::make_pair(TILESET_WALL_BRICK_BANNER, ACE_TEXT_ALWAYS_CHAR("TILESET_WALL_BRICK_BANNER")));

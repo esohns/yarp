@@ -29,6 +29,7 @@
 enum RPG_Graphics_TileType
 {
   TILETYPE_DOOR = 0,
+  TILETYPE_EDGE_FLOOR,
   TILETYPE_EFFECT,
   TILETYPE_FIGURINE,
   TILETYPE_FLOOR,
@@ -55,6 +56,7 @@ class RPG_Graphics_TileTypeHelper
   {
     myRPG_Graphics_TileTypeToStringTable.clear();
     myRPG_Graphics_TileTypeToStringTable.insert(std::make_pair(TILETYPE_DOOR, ACE_TEXT_ALWAYS_CHAR("TILETYPE_DOOR")));
+    myRPG_Graphics_TileTypeToStringTable.insert(std::make_pair(TILETYPE_EDGE_FLOOR, ACE_TEXT_ALWAYS_CHAR("TILETYPE_EDGE_FLOOR")));
     myRPG_Graphics_TileTypeToStringTable.insert(std::make_pair(TILETYPE_EFFECT, ACE_TEXT_ALWAYS_CHAR("TILETYPE_EFFECT")));
     myRPG_Graphics_TileTypeToStringTable.insert(std::make_pair(TILETYPE_FIGURINE, ACE_TEXT_ALWAYS_CHAR("TILETYPE_FIGURINE")));
     myRPG_Graphics_TileTypeToStringTable.insert(std::make_pair(TILETYPE_FLOOR, ACE_TEXT_ALWAYS_CHAR("TILETYPE_FLOOR")));

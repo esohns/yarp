@@ -715,6 +715,62 @@
   </graphic>
   <graphic>
     <category>CATEGORY_TILESET</category>
+    <type>TILESET_EDGE_FLOOR_STONE_COBBLED</type>
+    <tileset>
+      <type>TILESETTYPE_EDGE_FLOOR</type>
+      <style>EDGESTYLE_FLOOR_STONE_COBBLED</style>
+      <tile>
+        <type>TILETYPE_EDGE_FLOOR</type>
+        <file>floor_cobblestone_edge1.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_EDGE_FLOOR</type>
+        <file>floor_cobblestone_edge2.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_EDGE_FLOOR</type>
+        <file>floor_cobblestone_edge3.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_EDGE_FLOOR</type>
+        <file>floor_cobblestone_edge4.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_EDGE_FLOOR</type>
+        <file>floor_cobblestone_edge5.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_EDGE_FLOOR</type>
+        <file>floor_cobblestone_edge6.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_EDGE_FLOOR</type>
+        <file>floor_cobblestone_edge7.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_EDGE_FLOOR</type>
+        <file>floor_cobblestone_edge8.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_EDGE_FLOOR</type>
+        <file>floor_cobblestone_edge9.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_EDGE_FLOOR</type>
+        <file>floor_cobblestone_edge10.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_EDGE_FLOOR</type>
+        <file>floor_cobblestone_edge11.png</file>
+      </tile>
+      <tile>
+        <type>TILETYPE_EDGE_FLOOR</type>
+        <file>floor_cobblestone_edge12.png</file>
+      </tile>
+    </tileset>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_TILESET</category>
     <type>TILESET_WALL_BRICK</type>
     <tileset>
       <type>TILESETTYPE_WALL</type>
