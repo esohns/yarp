@@ -760,25 +760,25 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
     SDL_FreeSurface(tileSet_out.north_east.surface);
     tileSet_out.north_east.surface = NULL;
   } // end IF
-  if (tileSet_out.other1.surface)
+  if (tileSet_out.top.surface)
   {
-    SDL_FreeSurface(tileSet_out.other1.surface);
-    tileSet_out.other1.surface = NULL;
+    SDL_FreeSurface(tileSet_out.top.surface);
+    tileSet_out.top.surface = NULL;
   } // end IF
-  if (tileSet_out.other2.surface)
+  if (tileSet_out.right.surface)
   {
-    SDL_FreeSurface(tileSet_out.other2.surface);
-    tileSet_out.other2.surface = NULL;
+    SDL_FreeSurface(tileSet_out.right.surface);
+    tileSet_out.right.surface = NULL;
   } // end IF
-  if (tileSet_out.other3.surface)
+  if (tileSet_out.left.surface)
   {
-    SDL_FreeSurface(tileSet_out.other3.surface);
-    tileSet_out.other3.surface = NULL;
+    SDL_FreeSurface(tileSet_out.left.surface);
+    tileSet_out.left.surface = NULL;
   } // end IF
-  if (tileSet_out.other4.surface)
+  if (tileSet_out.bottom.surface)
   {
-    SDL_FreeSurface(tileSet_out.other4.surface);
-    tileSet_out.other4.surface = NULL;
+    SDL_FreeSurface(tileSet_out.bottom.surface);
+    tileSet_out.bottom.surface = NULL;
   } // end IF
 
   // step0: retrieve appropriate graphic type
@@ -886,25 +886,25 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
         SDL_FreeSurface(tileSet_out.north_east.surface);
         tileSet_out.north_east.surface = NULL;
       } // end IF
-      if (tileSet_out.other1.surface)
+      if (tileSet_out.top.surface)
       {
-        SDL_FreeSurface(tileSet_out.other1.surface);
-        tileSet_out.other1.surface = NULL;
+        SDL_FreeSurface(tileSet_out.top.surface);
+        tileSet_out.top.surface = NULL;
       } // end IF
-      if (tileSet_out.other2.surface)
+      if (tileSet_out.right.surface)
       {
-        SDL_FreeSurface(tileSet_out.other2.surface);
-        tileSet_out.other2.surface = NULL;
+        SDL_FreeSurface(tileSet_out.right.surface);
+        tileSet_out.right.surface = NULL;
       } // end IF
-      if (tileSet_out.other3.surface)
+      if (tileSet_out.left.surface)
       {
-        SDL_FreeSurface(tileSet_out.other3.surface);
-        tileSet_out.other3.surface = NULL;
+        SDL_FreeSurface(tileSet_out.left.surface);
+        tileSet_out.left.surface = NULL;
       } // end IF
-      if (tileSet_out.other4.surface)
+      if (tileSet_out.bottom.surface)
       {
-        SDL_FreeSurface(tileSet_out.other4.surface);
-        tileSet_out.other4.surface = NULL;
+        SDL_FreeSurface(tileSet_out.bottom.surface);
+        tileSet_out.bottom.surface = NULL;
       } // end IF
 
       return;
@@ -961,25 +961,25 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
         SDL_FreeSurface(tileSet_out.north_east.surface);
         tileSet_out.north_east.surface = NULL;
       } // end IF
-      if (tileSet_out.other1.surface)
+      if (tileSet_out.top.surface)
       {
-        SDL_FreeSurface(tileSet_out.other1.surface);
-        tileSet_out.other1.surface = NULL;
+        SDL_FreeSurface(tileSet_out.top.surface);
+        tileSet_out.top.surface = NULL;
       } // end IF
-      if (tileSet_out.other2.surface)
+      if (tileSet_out.right.surface)
       {
-        SDL_FreeSurface(tileSet_out.other2.surface);
-        tileSet_out.other2.surface = NULL;
+        SDL_FreeSurface(tileSet_out.right.surface);
+        tileSet_out.right.surface = NULL;
       } // end IF
-      if (tileSet_out.other3.surface)
+      if (tileSet_out.left.surface)
       {
-        SDL_FreeSurface(tileSet_out.other3.surface);
-        tileSet_out.other3.surface = NULL;
+        SDL_FreeSurface(tileSet_out.left.surface);
+        tileSet_out.left.surface = NULL;
       } // end IF
-      if (tileSet_out.other4.surface)
+      if (tileSet_out.bottom.surface)
       {
-        SDL_FreeSurface(tileSet_out.other4.surface);
-        tileSet_out.other4.surface = NULL;
+        SDL_FreeSurface(tileSet_out.bottom.surface);
+        tileSet_out.bottom.surface = NULL;
       } // end IF
 
       return;
@@ -1005,13 +1005,13 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
       case 8:
         tileSet_out.south_east = current_tile; break;
       case 9:
-        tileSet_out.other1 = current_tile; break;
+        tileSet_out.left = current_tile; break;
       case 10:
-        tileSet_out.other2 = current_tile; break;
+        tileSet_out.top = current_tile; break;
       case 11:
-        tileSet_out.other3 = current_tile; break;
+        tileSet_out.right = current_tile; break;
       case 12:
-        tileSet_out.other4 = current_tile; break;
+        tileSet_out.bottom = current_tile; break;
       default:
       {
         ACE_DEBUG((LM_ERROR,

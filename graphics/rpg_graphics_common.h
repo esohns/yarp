@@ -156,11 +156,11 @@ struct RPG_Graphics_FloorEdgeTileSet_t
   RPG_Graphics_Tile_t south_east;
   RPG_Graphics_Tile_t north_west;
   RPG_Graphics_Tile_t north_east;
-  // *TODO* edges
-  RPG_Graphics_Tile_t other1;
-  RPG_Graphics_Tile_t other2;
-  RPG_Graphics_Tile_t other3;
-  RPG_Graphics_Tile_t other4;
+  // (square) corner edges
+  RPG_Graphics_Tile_t top;
+  RPG_Graphics_Tile_t right;
+  RPG_Graphics_Tile_t left;
+  RPG_Graphics_Tile_t bottom;
 };
 typedef std::map<RPG_Graphics_Position_t, RPG_Graphics_FloorEdgeTileSet_t> RPG_Graphics_FloorEdgeTileMap_t;
 typedef RPG_Graphics_FloorEdgeTileMap_t::iterator RPG_Graphics_FloorEdgeTileMapIterator_t;

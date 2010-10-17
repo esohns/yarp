@@ -719,35 +719,35 @@
     <tileset>
       <type>TILESETTYPE_EDGE_FLOOR</type>
       <style>EDGESTYLE_FLOOR_STONE_COBBLED</style>
-      <tile>
+      <tile offsetY="6">
         <type>TILETYPE_EDGE_FLOOR</type>
         <file>floor_cobblestone_edge1.png</file>
       </tile>
-      <tile>
+      <tile offsetX="-14" offsetY="6">
         <type>TILETYPE_EDGE_FLOOR</type>
         <file>floor_cobblestone_edge2.png</file>
       </tile>
-      <tile>
+      <tile offsetX="-8" offsetY="25">
         <type>TILETYPE_EDGE_FLOOR</type>
         <file>floor_cobblestone_edge3.png</file>
       </tile>
-      <tile>
+      <tile offsetX="1" offsetY="22">
         <type>TILETYPE_EDGE_FLOOR</type>
         <file>floor_cobblestone_edge4.png</file>
       </tile>
-      <tile>
+      <tile offsetY="13">
         <type>TILETYPE_EDGE_FLOOR</type>
         <file>floor_cobblestone_edge5.png</file>
       </tile>
-      <tile>
+      <tile offsetX="-21" offsetY="-2">
         <type>TILETYPE_EDGE_FLOOR</type>
         <file>floor_cobblestone_edge6.png</file>
       </tile>
-      <tile>
+      <tile offsetX="17" offsetY="12">
         <type>TILETYPE_EDGE_FLOOR</type>
         <file>floor_cobblestone_edge7.png</file>
       </tile>
-      <tile>
+      <tile offsetX="-25" offsetY="25">
         <type>TILETYPE_EDGE_FLOOR</type>
         <file>floor_cobblestone_edge8.png</file>
       </tile>
@@ -1391,7 +1391,7 @@
     <tileset>
       <type>TILESETTYPE_DOOR</type>
       <style>DOORSTYLE_WOOD</style>
-      <tile open="true">
+      <tile offsetX="-2" offsetY="-4" open="true">
         <type>TILETYPE_DOOR</type>
         <orientation>ORIENTATION_HORIZONTAL</orientation>
         <file>door_wood_open_h.png</file>
@@ -1401,7 +1401,7 @@
         <orientation>ORIENTATION_HORIZONTAL</orientation>
         <file>door_wood_closed_h.png</file>
       </tile>
-      <tile open="true">
+      <tile offsetX="-3" open="true">
         <type>TILETYPE_DOOR</type>
         <orientation>ORIENTATION_VERTICAL</orientation>
         <file>door_wood_open_v.png</file>

@@ -1207,6 +1207,7 @@ RPG_Engine_Common_Tools::initFloorEdges(const RPG_Map_FloorPlan_t& floorPlan_in,
 
   RPG_Map_Position_t current_position;
   RPG_Map_Position_t east, north, west, south;
+  RPG_Map_Position_t north_east, north_west, south_east, south_west;
   RPG_Graphics_FloorEdgeTileSet_t current_floor_edges;
   RPG_Map_Door_t position_door;
   for (unsigned long y = 0;
@@ -1235,6 +1236,14 @@ RPG_Engine_Common_Tools::initFloorEdges(const RPG_Map_FloorPlan_t& floorPlan_in,
         west.first--;
         south = current_position;
         south.second++;
+        north_east = north;
+        north_east.first++;
+        north_west = north;
+        north_west.first--;
+        south_east = south;
+        south_east.first++;
+        south_west = south;
+        south_west.first--;
 
         if (floorPlan_in.walls.find(east) != floorPlan_in.walls.end())
         {
@@ -1244,6 +1253,13 @@ RPG_Engine_Common_Tools::initFloorEdges(const RPG_Map_FloorPlan_t& floorPlan_in,
           if (floorPlan_in.walls.find(south) != floorPlan_in.walls.end())
             current_floor_edges.south_east = tileSet_in.south_east;
         } // end IF
+        else
+        {
+          // right corner ?
+          if ((floorPlan_in.walls.find(north) == floorPlan_in.walls.end()) &&
+              (floorPlan_in.walls.find(north_east) != floorPlan_in.walls.end()))
+            current_floor_edges.right = tileSet_in.right;
+        } // end ELSE
         if ((floorPlan_in.walls.find(west) != floorPlan_in.walls.end()))
         {
           current_floor_edges.west = tileSet_in.west;
@@ -1252,10 +1268,31 @@ RPG_Engine_Common_Tools::initFloorEdges(const RPG_Map_FloorPlan_t& floorPlan_in,
           if (floorPlan_in.walls.find(south) != floorPlan_in.walls.end())
             current_floor_edges.south_west = tileSet_in.south_west;
         } // end IF
+        else
+        {
+          // left corner ?
+          if ((floorPlan_in.walls.find(south) == floorPlan_in.walls.end()) &&
+              (floorPlan_in.walls.find(south_west) != floorPlan_in.walls.end()))
+            current_floor_edges.left = tileSet_in.left;
+        } // end ELSE
         if ((floorPlan_in.walls.find(north) != floorPlan_in.walls.end()))
           current_floor_edges.north = tileSet_in.north;
+        else
+        {
+          // top corner ?
+          if ((floorPlan_in.walls.find(west) == floorPlan_in.walls.end()) &&
+              (floorPlan_in.walls.find(north_west) != floorPlan_in.walls.end()))
+            current_floor_edges.top = tileSet_in.top;
+        } // end ELSE
         if ((floorPlan_in.walls.find(south) != floorPlan_in.walls.end()))
           current_floor_edges.south = tileSet_in.south;
+        else
+        {
+          // bottom corner ?
+          if ((floorPlan_in.walls.find(east) == floorPlan_in.walls.end()) &&
+              (floorPlan_in.walls.find(south_east) != floorPlan_in.walls.end()))
+            current_floor_edges.bottom = tileSet_in.bottom;
+        } // end ELSE
 
         if (current_floor_edges.east.surface ||
             current_floor_edges.north.surface ||
@@ -1265,10 +1302,10 @@ RPG_Engine_Common_Tools::initFloorEdges(const RPG_Map_FloorPlan_t& floorPlan_in,
             current_floor_edges.south_west.surface ||
             current_floor_edges.north_west.surface ||
             current_floor_edges.north_east.surface ||
-            current_floor_edges.other1.surface ||
-            current_floor_edges.other2.surface ||
-            current_floor_edges.other3.surface ||
-            current_floor_edges.other4.surface)
+            current_floor_edges.top.surface ||
+            current_floor_edges.right.surface ||
+            current_floor_edges.left.surface ||
+            current_floor_edges.bottom.surface)
           floorEdgeTiles_out.insert(std::make_pair(current_position, current_floor_edges));
       } // end IF
     } // end FOR
@@ -1300,14 +1337,14 @@ RPG_Engine_Common_Tools::updateFloorEdges(const RPG_Graphics_FloorEdgeTileSet_t&
       (*iterator).second.south_east = tileSet_in.south_east;
     if ((*iterator).second.north_east.surface)
       (*iterator).second.north_east = tileSet_in.north_east;
-    if ((*iterator).second.other1.surface)
-      (*iterator).second.other1 = tileSet_in.other1;
-    if ((*iterator).second.other2.surface)
-      (*iterator).second.other2 = tileSet_in.other2;
-    if ((*iterator).second.other3.surface)
-      (*iterator).second.other3 = tileSet_in.other3;
-    if ((*iterator).second.other4.surface)
-      (*iterator).second.other4 = tileSet_in.other4;
+    if ((*iterator).second.top.surface)
+      (*iterator).second.top = tileSet_in.top;
+    if ((*iterator).second.right.surface)
+      (*iterator).second.right = tileSet_in.right;
+    if ((*iterator).second.left.surface)
+      (*iterator).second.left = tileSet_in.left;
+    if ((*iterator).second.bottom.surface)
+      (*iterator).second.bottom = tileSet_in.bottom;
   } // end FOR
 }
 
