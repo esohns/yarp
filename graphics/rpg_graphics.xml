@@ -1391,22 +1391,22 @@
     <tileset>
       <type>TILESETTYPE_DOOR</type>
       <style>DOORSTYLE_WOOD</style>
-      <tile offsetX="-2" offsetY="-4" open="true">
+      <tile offsetX="-2" offsetY="2" open="true">
         <type>TILETYPE_DOOR</type>
         <orientation>ORIENTATION_HORIZONTAL</orientation>
         <file>door_wood_open_h.png</file>
       </tile>
-      <tile offsetX="-2" offsetY="-4">
+      <tile offsetX="-2" offsetY="2">
         <type>TILETYPE_DOOR</type>
         <orientation>ORIENTATION_HORIZONTAL</orientation>
         <file>door_wood_closed_h.png</file>
       </tile>
-      <tile offsetX="-3" open="true">
+      <tile offsetX="-3" offsetY="8" open="true">
         <type>TILETYPE_DOOR</type>
         <orientation>ORIENTATION_VERTICAL</orientation>
         <file>door_wood_open_v.png</file>
       </tile>
-      <tile offsetX="-3">
+      <tile offsetX="-3" offsetY="8">
         <type>TILETYPE_DOOR</type>
         <orientation>ORIENTATION_VERTICAL</orientation>
         <file>door_wood_closed_v.png</file>
