@@ -751,19 +751,19 @@
         <type>TILETYPE_EDGE_FLOOR</type>
         <file>floor_cobblestone_edge8.png</file>
       </tile>
-      <tile>
+      <tile offsetX="1" offsetY="6">
         <type>TILETYPE_EDGE_FLOOR</type>
         <file>floor_cobblestone_edge9.png</file>
       </tile>
-      <tile>
+      <tile offsetX="40" offsetY="-11">
         <type>TILETYPE_EDGE_FLOOR</type>
         <file>floor_cobblestone_edge10.png</file>
       </tile>
-      <tile>
+      <tile offsetX="42" offsetY="7">
         <type>TILETYPE_EDGE_FLOOR</type>
         <file>floor_cobblestone_edge11.png</file>
       </tile>
-      <tile>
+      <tile offsetX="-4" offsetY="22">
         <type>TILETYPE_EDGE_FLOOR</type>
         <file>floor_cobblestone_edge12.png</file>
       </tile>
