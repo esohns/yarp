@@ -375,20 +375,37 @@ do_work(const std::string& dictionary_in,
   // step3: dump sound descriptions
   RPG_SOUND_DICTIONARY_SINGLETON::instance()->dump();
 
-  // step4: play a (random) sound
+  // step4: play (random) sounds...
   RPG_Sound_Event event = RPG_SOUND_EVENT_INVALID;
   RPG_Dice_RollResult_t result;
-  RPG_Dice::generateRandomNumbers(RPG_SOUND_EVENT_MAX,
-                                  1,
-                                  result);
-  event = ACE_static_cast(RPG_Sound_Event, (result.front() - 1));
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("playing event sound \"%s\"...\n"),
-             RPG_Sound_EventHelper::RPG_Sound_EventToString(event).c_str()));
-  RPG_Sound_Common_Tools::playSound(event);
+  int current_channel = -1;
+  do
+  {
+    result.clear();
+    RPG_Dice::generateRandomNumbers(RPG_SOUND_EVENT_MAX,
+                                    1,
+                                    result);
+    event = ACE_static_cast(RPG_Sound_Event, (result.front() - 1));
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("playing event sound \"%s\"...\n"),
+               RPG_Sound_EventHelper::RPG_Sound_EventToString(event).c_str()));
 
-  // step5: wait a little while (max: 5 seconds)
-  ACE_OS::sleep(ACE_Time_Value(5, 0));
+    current_channel = RPG_Sound_Common_Tools::play(event);
+    if (current_channel == -1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to play event sound \"%s\", aborting\n"),
+                 RPG_Sound_EventHelper::RPG_Sound_EventToString(event).c_str()));
+
+      break;
+    } // end IF
+
+    // stop after some time (5 seconds)
+    ACE_OS::sleep(ACE_Time_Value(5, 0));
+    if (RPG_Sound_Common_Tools::isPlaying(current_channel))
+      RPG_Sound_Common_Tools::stop(current_channel);
+  } while (true);
+
   // *NOTE*: it seems you cannot SDL_WaitEvent() if there is no window... :-(
 //   do_SDL_waitForInput(10);
 

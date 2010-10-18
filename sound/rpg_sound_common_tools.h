@@ -39,7 +39,13 @@ class RPG_Sound_Common_Tools
                    const unsigned long&); // cache size
   static void fini();
 
-  static void playSound(const RPG_Sound_Event&); // event
+  static void soundToFile(const RPG_Sound_t&, // sound
+                          std::string&);      // return value: FQ filename
+
+  // *NOTE*: returns the channel# that is playing the sound/music/...
+  static const int play(const RPG_Sound_Event&); // event
+  static const bool isPlaying(const int& = -1); // channel (-1: ALL channels)
+  static void stop(const int& = -1); // channel (-1: ALL channels)
 
  private:
   // safety measures

@@ -19,6 +19,7 @@
  ***************************************************************************/
 #include "rpg_sound_common_tools.h"
 
+#include "rpg_sound_defines.h"
 #include "rpg_sound_dictionary.h"
 
 #include <rpg_common_macros.h>
@@ -96,9 +97,58 @@ RPG_Sound_Common_Tools::fini()
   myInitialized = false;
 }
 
-void RPG_Sound_Common_Tools::playSound(const RPG_Sound_Event& event_in)
+void
+RPG_Sound_Common_Tools::soundToFile(const RPG_Sound_t& sound_in,
+                                    std::string& file_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::playSound"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::soundToFile"));
+
+  // init return value(s)
+  file_out = mySoundDirectory;
+  file_out += ACE_DIRECTORY_SEPARATOR_STR;
+
+  switch (sound_in.category)
+  {
+    case CATEGORY_EFFECT_ONESHOT:
+    case CATEGORY_EFFECT_INTERVAL:
+    {
+      // assemble path
+      file_out += RPG_SOUND_DEF_EFFECT_SUB;
+      file_out += ACE_DIRECTORY_SEPARATOR_STR;
+      file_out += sound_in.file;
+
+      break;
+    }
+    case CATEGORY_MUSIC_ONESHOT:
+    case CATEGORY_MUSIC_AMBIENT:
+    {
+      // assemble path
+      file_out += RPG_SOUND_DEF_AMBIENT_SUB;
+      file_out += ACE_DIRECTORY_SEPARATOR_STR;
+      file_out += sound_in.file;
+
+      break;
+    }
+    case CATEGORY_MUSIC_CDTRACK:
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid category (was: \"%s\"), aborting\n"),
+                 RPG_Sound_CategoryHelper::RPG_Sound_CategoryToString(sound_in.category).c_str()));
+
+      file_out.clear();
+
+      return;
+    }
+  } // end SWITCH
+}
+
+const int
+RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::play"));
+
+  int result = -1;
 
   // step1: sound already cached ?
   RPG_Sound_SoundCacheNode_t node;
@@ -126,9 +176,8 @@ void RPG_Sound_Common_Tools::playSound(const RPG_Sound_Event& event_in)
       ACE_ASSERT(sound.event == event_in);
       // load the file
       Mix_Chunk* chunk = NULL;
-      std::string path = mySoundDirectory;
-      path += ACE_DIRECTORY_SEPARATOR_STR;
-      path += sound.file;
+      std::string path;
+      RPG_Sound_Common_Tools::soundToFile(sound, path);
       // sanity check
       if (!RPG_Common_File_Tools::isReadable(path))
       {
@@ -136,7 +185,7 @@ void RPG_Sound_Common_Tools::playSound(const RPG_Sound_Event& event_in)
                    ACE_TEXT("invalid argument(\"%s\"): not readable, aborting\n"),
                    path.c_str()));
 
-        return;
+        return result;
       } // end IF
       chunk = Mix_LoadWAV(path.c_str());
       if (!chunk)
@@ -146,7 +195,7 @@ void RPG_Sound_Common_Tools::playSound(const RPG_Sound_Event& event_in)
                    path.c_str(),
                    SDL_GetError()));
 
-        return;
+        return result;
       } // end IF
       // add the chunk to our cache
       if (mySoundCache.size() == myCacheSize)
@@ -167,13 +216,38 @@ void RPG_Sound_Common_Tools::playSound(const RPG_Sound_Event& event_in)
     } // end IF
 
     ACE_ASSERT((*iter).chunk);
-    Mix_PlayChannel(-1,            // play on the first free channel
-                    (*iter).chunk, // data
-                    0);            // don't loop
+    result = Mix_PlayChannel(-1,            // play on the first free channel
+                             (*iter).chunk, // data
+                             0);            // don't loop
   } // end lock scope
+
+  return result;
 }
 
-void RPG_Sound_Common_Tools::initStringConversionTables()
+const bool
+RPG_Sound_Common_Tools::isPlaying(const int& channel_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::isPlaying"));
+
+  if (channel_in == -1)
+    return Mix_PlayingMusic();
+
+  return Mix_Playing(channel_in);
+}
+
+void
+RPG_Sound_Common_Tools::stop(const int& channel_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::stop"));
+
+  if (channel_in == -1)
+    Mix_HaltMusic();
+  else
+    Mix_HaltChannel(channel_in);
+}
+
+void
+RPG_Sound_Common_Tools::initStringConversionTables()
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::initStringConversionTables"));
 
