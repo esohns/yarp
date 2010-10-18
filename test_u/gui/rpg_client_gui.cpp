@@ -20,14 +20,14 @@
 
 // *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
 #ifdef HAVE_CONFIG_H
-#include <RPG_GUI-config.h>
+#include <test_u-config.h>
 #endif
 
-#include "rpg_client_defines.h"
-#include "rpg_client_common.h"
-#include "rpg_client_callbacks.h"
-#include "rpg_client_window_main.h"
-#include "rpg_client_window_level.h"
+#include <rpg_client_defines.h>
+#include <rpg_client_common.h>
+#include <rpg_client_callbacks.h>
+#include <rpg_client_window_main.h>
+#include <rpg_client_window_level.h>
 
 #include <rpg_map_defines.h>
 #include <rpg_map_common_tools.h>
@@ -939,8 +939,8 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
   // ***** window/screen setup *****
   // set window caption
-  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(RPG_GUI_PACKAGE_STRING),  // window caption
-                    ACE_TEXT_ALWAYS_CHAR(RPG_GUI_PACKAGE_STRING)); // icon caption
+  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(TEST_U_PACKAGE_STRING),  // window caption
+                    ACE_TEXT_ALWAYS_CHAR(TEST_U_PACKAGE_STRING)); // icon caption
   // set window icon
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
@@ -983,7 +983,7 @@ do_runIntro(SDL_Surface* screen_in)
   RPG_TRACE(ACE_TEXT("::do_runIntro"));
 
   // step1: play intro music
-  RPG_Sound_Common_Tools::playSound(EVENT_MAIN_TITLE);
+  RPG_Sound_Common_Tools::play(EVENT_MAIN_TITLE);
 
   // step2: show start logo
   RPG_Graphics_GraphicTypeUnion type;
@@ -1022,7 +1022,8 @@ do_runIntro(SDL_Surface* screen_in)
 }
 
 void
-do_work(const RPG_Client_Config& config_in)
+do_work(const RPG_Client_Config& config_in,
+        const std::string& schemaRepository_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -1084,21 +1085,22 @@ do_work(const RPG_Client_Config& config_in)
 
   GTK_cb_data_t userData;
 //   userData.lock;
-  userData.hover_time      = 0;
-  userData.gtk_time        = 0;
+  userData.hover_time            = 0;
+  userData.gtk_time              = 0;
   userData.gtk_main_quit_invoked = false;
-  userData.xml             = NULL;
-  userData.screen          = NULL;
-  userData.event_timer     = 0;
-  userData.previous_window = NULL;
-  userData.main_window     = NULL;
-  userData.map_window      = NULL;
-  userData.plan.size_x     = 0;
-  userData.plan.size_y     = 0;
+  userData.xml                   = NULL;
+  userData.screen                = NULL;
+  userData.event_timer           = 0;
+  userData.previous_window       = NULL;
+  userData.main_window           = NULL;
+  userData.map_window            = NULL;
+  userData.plan.size_x           = 0;
+  userData.plan.size_y           = 0;
 //   userData.plan.unmapped;
 //   userData.plan.walls;
 //   userData.plan.doors;
 //   userData.seed_points;
+  userData.schemaRepository      = schemaRepository_in;
 //   userData.player;
 
   GDK_THREADS_ENTER();
@@ -1120,7 +1122,7 @@ do_work(const RPG_Client_Config& config_in)
 
   // ***** mouse setup *****
   SDL_WarpMouse((userData.screen->w / 2),
-                 (userData.screen->h / 2));
+                (userData.screen->h / 2));
 
   RPG_Graphics_Common_Tools::init(config_in.graphics_directory,
                                   config_in.graphics_cache_size);
@@ -1782,7 +1784,7 @@ do_printVersion(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
-  std::cout << programName_in << ACE_TEXT(" : ") << RPG_GUI_VERSION << std::endl;
+  std::cout << programName_in << ACE_TEXT(" : ") << TEST_U_VERSION << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
@@ -1876,6 +1878,21 @@ ACE_TMAIN(int argc_in,
   UIfile += RPG_COMMON_DEF_CONFIG_SUB;
   UIfile += ACE_DIRECTORY_SEPARATOR_STR;
   UIfile += RPG_CLIENT_DEF_GNOME_UI_FILE;
+
+  std::string schemaRepository = base_data_path;
+  schemaRepository += ACE_DIRECTORY_SEPARATOR_STR;
+  schemaRepository += RPG_COMMON_DEF_CONFIG_SUB;
+
+  // sanity check
+  if (!RPG_Common_File_Tools::isDirectory(schemaRepository))
+  {
+    ACE_DEBUG((LM_WARNING,
+               ACE_TEXT("invalid XML schema repository (was: \"%s\"), continuing\n"),
+               schemaRepository.c_str()));
+
+    // try fallback
+    schemaRepository.clear();
+  } // end IF
 
   std::string floorPlan;
   bool logToFile                     = false;
@@ -2061,19 +2078,20 @@ ACE_TMAIN(int argc_in,
 //   ACE_ASSERT(gnomeSession);
 //   gnome_client_set_program(gnomeSession, ACE::basename(argv_in[0]));
   GnomeProgram* gnomeProgram = NULL;
-  gnomeProgram = gnome_program_init(RPG_CLIENT_DEF_GNOME_APPLICATION_ID,   // app ID
-//                                     ACE_TEXT_ALWAYS_CHAR(VERSION),      // version
-                                    ACE_TEXT_ALWAYS_CHAR(RPG_GUI_VERSION), // version
-                                    LIBGNOMEUI_MODULE,                     // module info
-                                    argc_in,                               // cmdline
-                                    argv_in,                               // cmdline
-                                    NULL);                                 // property name(s)
+  gnomeProgram = gnome_program_init(RPG_CLIENT_DEF_GNOME_APPLICATION_ID,  // app ID
+//                                     ACE_TEXT_ALWAYS_CHAR(VERSION),     // version
+                                    ACE_TEXT_ALWAYS_CHAR(TEST_U_VERSION), // version
+                                    LIBGNOMEUI_MODULE,                    // module info
+                                    argc_in,                              // cmdline
+                                    argv_in,                              // cmdline
+                                    NULL);                                // property name(s)
   ACE_ASSERT(gnomeProgram);
 
   ACE_High_Res_Timer timer;
   timer.start();
   // step3: do actual work
-  do_work(config);
+  do_work(config,
+          schemaRepository);
   timer.stop();
   // debug info
   std::string working_time_string;
