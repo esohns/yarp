@@ -138,18 +138,7 @@ RPG_Character_Player::load(const std::string& filename_in,
   std::string path;
   // *NOTE*: use the working directory as a fallback...
   if (schemaRepository_in.empty())
-  {
-    char current_working_dir[PATH_MAX];
-    if (ACE_OS::getcwd(current_working_dir, PATH_MAX) == NULL)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_OS::getcwd(): \"%m\", aborting\n")));
-
-      return RPG_Character_Player::dummy();
-    } // end IF
-
-    path = current_working_dir;
-  } // end IF
+    path = RPG_Common_File_Tools::getWorkingDirectory();
   else
   {
     // sanity check(s)

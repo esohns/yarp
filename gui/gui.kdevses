@@ -2,11 +2,11 @@
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="2" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/Makefile.am" >
-   <View0 Encoding="" line="17" Type="Source" />
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client_common.h" >
+   <View0 Encoding="" line="0" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/configure.ac" >
-   <View0 Encoding="" line="54" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/gui/rpg_client_callbacks.cpp" >
+   <View0 Encoding="" line="14" Type="Source" />
   </Doc1>
  </DocsAndViews>
  <pluginList>

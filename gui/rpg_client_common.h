@@ -56,6 +56,7 @@ struct GTK_cb_data_t
   RPG_Client_WindowLevel* map_window;
   RPG_Map_FloorPlan_t     plan;
   RPG_Map_Positions_t     seed_points;
+  std::string             schemaRepository;
   RPG_Character_Player    player;
 };
 

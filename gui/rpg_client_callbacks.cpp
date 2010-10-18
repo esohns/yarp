@@ -992,7 +992,8 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   std::string filename(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser_dialog)));
 
   // load player profile
-  data->player = RPG_Character_Player::load(filename);
+  data->player = RPG_Character_Player::load(filename,
+                                            data->schemaRepository);
 
   // update character profile widgets
   ::update_character_profile(data->player,
@@ -1076,7 +1077,8 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
   filename += RPG_CHARACTER_PLAYER_PROFILE_EXT;
 
   // load player profile
-  data->player = RPG_Character_Player::load(filename);
+  data->player = RPG_Character_Player::load(filename,
+                                            data->schemaRepository);
 
   // update character profile widgets
   ::update_character_profile(data->player,
