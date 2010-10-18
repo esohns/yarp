@@ -115,7 +115,8 @@ RPG_Character_Player::~RPG_Character_Player()
 // }
 
 RPG_Character_Player
-RPG_Character_Player::load(const std::string& filename_in)
+RPG_Character_Player::load(const std::string& filename_in,
+                           const std::string& schemaRepository_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Player::load"));
 
@@ -134,19 +135,47 @@ RPG_Character_Player::load(const std::string& filename_in)
 //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
   ::xml_schema::properties props;
-  // *NOTE*: by default, schema files are searched for in the location of the
-  // instance document. This will not work...
-  char current_working_dir[PATH_MAX];
-  if (ACE_OS::getcwd(current_working_dir, PATH_MAX) == NULL)
+  std::string path;
+  // *NOTE*: use the working directory as a fallback...
+  if (schemaRepository_in.empty())
+  {
+    char current_working_dir[PATH_MAX];
+    if (ACE_OS::getcwd(current_working_dir, PATH_MAX) == NULL)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_OS::getcwd(): \"%m\", aborting\n")));
+
+      return RPG_Character_Player::dummy();
+    } // end IF
+
+    path = current_working_dir;
+  } // end IF
+  else
+  {
+    // sanity check(s)
+    if (!RPG_Common_File_Tools::isDirectory(schemaRepository_in))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Common_File_Tools::isDirectory(\"%s\"), aborting\n"),
+                 schemaRepository_in.c_str()));
+
+      return RPG_Character_Player::dummy();
+    } // end IF
+
+    path = schemaRepository_in;
+  } // end ELSE
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_CHARACTER_PLAYER_SCHEMA_FILE;
+  // sanity check(s)
+  if (!RPG_Common_File_Tools::isReadable(path))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::getcwd(): \"%m\", aborting\n")));
+               ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+               path.c_str()));
 
     return RPG_Character_Player::dummy();
   } // end IF
-  std::string path = current_working_dir;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_CHARACTER_PLAYER_SCHEMA_FILE;
+
   props.schema_location(RPG_COMMON_XML_TARGET_NAMESPACE,
                         path);
 //   props.no_namespace_schema_location(RPG_CHARACTER_PLAYER_SCHEMA_FILE);

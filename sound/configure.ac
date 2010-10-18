@@ -87,6 +87,8 @@ AC_C_INLINE
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
-                 data/Makefile])
+                 data/Makefile
+                 data/ambient/Makefile
+                 data/effect/Makefile])
 
 AC_OUTPUT

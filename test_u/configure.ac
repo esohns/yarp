@@ -66,7 +66,7 @@ AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries
-PKG_CHECK_MODULES(pkg_libs, sdl libpng gthread-2.0 gtk+-2.0)
+PKG_CHECK_MODULES(pkg_libs, sdl SDL_ttf libpng libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0 gthread-2.0 gtk+-2.0)
 dnl AC_SUBST(pkg_libs_CFLAGS)
 dnl AC_SUBST(pkg_libs_LIBS)
 
@@ -99,6 +99,7 @@ AC_CONFIG_FILES([Makefile
                  net/Makefile
                  net/protocol/Makefile
                  sound/Makefile
-                 graphics/Makefile])
+                 graphics/Makefile
+                 gui/Makefile])
 
 AC_OUTPUT

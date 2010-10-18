@@ -24,5 +24,7 @@
 
 // DATADIR-specific
 #define RPG_SOUND_DEF_DATA_SUB        ACE_TEXT_ALWAYS_CHAR("sound")
+#define RPG_SOUND_DEF_AMBIENT_SUB     ACE_TEXT_ALWAYS_CHAR("ambient")
+#define RPG_SOUND_DEF_EFFECT_SUB      ACE_TEXT_ALWAYS_CHAR("effect")
 
 #endif

@@ -59,7 +59,8 @@ class RPG_Character_Player
 //   RPG_Character_Player& operator=(const RPG_Character_Player&);
 
   // load/save player from/to an XML file
-  static RPG_Character_Player load(const std::string&); // FQ filename
+  static RPG_Character_Player load(const std::string&,  // FQ filename
+                                   const std::string&); // schema repository (directory)
   const bool save(const std::string&) const; // FQ filename
 
   // "empty" player

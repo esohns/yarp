@@ -15,12 +15,12 @@
     <projectname>gui</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
-    <defaultencoding/>
+    <description></description>
+    <defaultencoding></defaultencoding>
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>RPG_client_gui</activetarget>
+      <activetarget>libRPG_Client_GUI.la</activetarget>
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>
@@ -34,8 +34,8 @@
         <RPG_client_gui>/home/unfv/Projects/RPG/gui/debug/./</RPG_client_gui>
       </cwd>
       <mainprogram>/home/unfv/Projects/RPG/gui</mainprogram>
-      <programargs/>
-      <globaldebugarguments/>
+      <programargs></programargs>
+      <globaldebugarguments></globaldebugarguments>
       <globalcwd>/home/unfv/Projects/RPG/gui</globalcwd>
       <useglobalprogram>false</useglobalprogram>
       <terminal>false</terminal>
@@ -232,7 +232,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -253,11 +253,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath/>
-      <dbgshell/>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <gdbpath></gdbpath>
+      <dbgshell></dbgshell>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
