@@ -20,7 +20,7 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <test_u-config.h>
+#include <rpg_config.h>
 #endif
 
 #include <rpg_monster_defines.h>
@@ -214,7 +214,7 @@ do_printVersion(const std::string& programName_in)
 
   std::cout << programName_in
       << ACE_TEXT(" : ")
-      << TEST_U_VERSION
+      << RPG_VERSION
       << std::endl;
 
   // create version string...

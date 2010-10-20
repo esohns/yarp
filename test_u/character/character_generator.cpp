@@ -20,7 +20,7 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <test_u-config.h>
+#include <rpg_config.h>
 #endif
 
 #include <rpg_character_defines.h>
@@ -1266,13 +1266,14 @@ do_work(const std::string magicDictionaryFilename_in,
 } // end do_work
 
 void
-do_printVersion()
+do_printVersion(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
-  std::cout << ACE_TEXT("generator: ")
-            << TEST_U_VERSION
-            << std::endl;
+  std::cout << programName_in
+      << ACE_TEXT(" : ")
+      << RPG_VERSION
+      << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
@@ -1407,7 +1408,7 @@ int ACE_TMAIN(int argc,
   // step1d: handle specific program modes
   if (printVersionAndExit)
   {
-    do_printVersion();
+    do_printVersion(std::string(ACE::basename(argv[0])));
 
     return EXIT_SUCCESS;
   } // end IF

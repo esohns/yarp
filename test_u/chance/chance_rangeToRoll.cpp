@@ -20,7 +20,7 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <test_u-config.h>
+#include <rpg_config.h>
 #endif
 
 #include <rpg_dice.h>
@@ -241,13 +241,14 @@ void do_work(const RPG_Dice_ValueRange& valueRange_in,
              ACE_TEXT("finished working...\n")));
 } // end do_work
 
-void do_printVersion(const std::string& programName_in)
+void
+do_printVersion(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << programName_in
       << ACE_TEXT(" : ")
-      << TEST_U_VERSION
+      << RPG_VERSION
       << std::endl;
 
   // create version string...

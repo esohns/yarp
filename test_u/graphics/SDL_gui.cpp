@@ -20,7 +20,7 @@
 
 // *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
 #ifdef HAVE_CONFIG_H
-#include <test_u-config.h>
+#include <rpg_config.h>
 #endif
 
 #include "SDL_gui_defines.h"
@@ -106,8 +106,8 @@ do_initVideo(const std::string& graphicsDirectory_in,
 
   // ***** window/screen setup *****
   // set window caption
-  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(TEST_U_PACKAGE_STRING),  // window caption
-                    ACE_TEXT_ALWAYS_CHAR(TEST_U_PACKAGE_STRING)); // icon caption
+  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE_STRING),  // window caption
+                    ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE_STRING)); // icon caption
   // set window icon
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
@@ -1134,7 +1134,7 @@ do_printVersion(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
-  std::cout << programName_in << ACE_TEXT(" : ") << TEST_U_VERSION << std::endl;
+  std::cout << programName_in << ACE_TEXT(" : ") << RPG_VERSION << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version

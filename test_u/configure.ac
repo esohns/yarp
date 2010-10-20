@@ -36,7 +36,7 @@ AM_SANITY_CHECK
 LT_INIT
 
 # prefix config.h
-AX_PREFIX_CONFIG_H
+AX_PREFIX_CONFIG_H([rpg_config.h], [RPG])
 
 # get the cpp compiler flags
 #CXXFLAGS="${CXXFLAGS=}"
