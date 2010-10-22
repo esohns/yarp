@@ -21,7 +21,7 @@
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>graphics/SDL_gui</activetarget>
+      <activetarget>gui/client_gui</activetarget>
     </general>
     <run>
       <mainprogram>/home/unfv/Projects/RPG/test_u/debug/monster/monster_parser</mainprogram>
@@ -52,6 +52,7 @@
         <SDL_gui>-m /var/tmp/current_map.txt -t</SDL_gui>
         <character_parser>-f /var/tmp/Xerxes.xml -t</character_parser>
         <path_finder>-b -m /var/tmp/test_map.txt -t</path_finder>
+        <client_gui>-f /var/tmp/current_map.txt -t</client_gui>
       </runarguments>
       <debugarguments>
         <character_generator>-n 6 -r -t</character_generator>
@@ -71,6 +72,7 @@
         <SDL_gui>-m /var/tmp/current_map.txt -t</SDL_gui>
         <character_parser>-f /var/tmp/Xerxes.xml -t</character_parser>
         <path_finder>-b -m /var/tmp/test_map.txt -t</path_finder>
+        <client_gui>-f /var/tmp/current_map.txt -t</client_gui>
       </debugarguments>
       <cwd>
         <character_generator>/home/unfv/Projects/RPG/test_u/debug/./</character_generator>
@@ -90,6 +92,7 @@
         <SDL_gui>/home/unfv/Projects/RPG/test_u/debug/</SDL_gui>
         <character_parser>/home/unfv/Projects/RPG/test_u/debug/./</character_parser>
         <path_finder>/home/unfv/Projects/RPG/test_u/debug/./map</path_finder>
+        <client_gui>/home/unfv/Projects/RPG/test_u/debug/./gui</client_gui>
       </cwd>
     </run>
     <configurations>
