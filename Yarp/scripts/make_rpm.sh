@@ -10,6 +10,10 @@ PROJECT_DIR=${DEFAULT_PROJECT_DIR}
 # sanity check(s)
 [ ! -d ${PROJECT_DIR} ] && echo "ERROR: invalid project dir (was: \"${PROJECT_DIR}\"), aborting" && exit 1
 
+TARGET_DIR=${PROJECT_DIR}/rpm
+# sanity check(s)
+[ ! -d ${TARGET_DIR} ] && echo "ERROR: invalid target dir (was: \"${TARGET_DIR}\"), aborting" && exit 1
+
 # remember current dir...
 pushd . >/dev/null 2>&1
 
@@ -58,16 +62,21 @@ RETVAL=$(${CMDLINE} >/dev/null 2>&1)
 [ $? -ne 0 ] && echo "ERROR: failed to make rpm, aborting" && exit 1
 for RPM in ${HOME}/rpmbuild/RPMS/i686/*.rpm; do
   echo "INFO: created \"`basename ${RPM}`\"..."
-  mv -f ${RPM} rpm
+  mv -f ${RPM} ${TARGET_DIR}
   [ $? -ne 0 ] && echo "ERROR: failed to move rpm, aborting" && exit 1
 done
 echo "INFO: making rpm...DONE"
 
 # clean up
 echo "INFO: cleaning up ..."
-CMDLINE="${RPMBUILD_EXEC} --rmsource --rmspec ${SPECFILE}"
-RETVAL=$(${CMDLINE} >/dev/null 2>&1)
-#[ $? -ne 0 ] && echo "ERROR: failed to clean up, aborting" && exit 1
+if [ "${BUILD}" != "tarball" ]; then
+  CMDLINE="${RPMBUILD_EXEC} --rmsource --rmspec ${SPECFILE}"
+  RETVAL=$(${CMDLINE} >/dev/null 2>&1)
+  [ $? -ne 0 ] && echo "ERROR: failed to clean up source, aborting" && exit 1
+else
+  rm -f ${TARBALL}
+  [ $? -ne 0 ] && echo "ERROR: failed to clean up tarball, aborting" && exit 1
+fi
 echo "INFO: cleaning up ...DONE"
 
 # ...go back where we came from
