@@ -17,7 +17,7 @@ Source: %{name}-%{version}.tar.gz
 Provides: %{name}
 AutoReqProv: yes
 #Requires:
-#Prefix: /usr/local
+Prefix: /usr/local
 
 %description
 Yet Another (?) Role-Playing-Game System library...
@@ -34,6 +34,7 @@ make
 
 %install
 rm -rf %{buildroot}
+cd build
 %makeinstall
 
 %clean
@@ -48,11 +49,10 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-, root, root)
-%doc AUTHORS COPYING ChangeLog NEWS README TODO
+%doc AUTHORS COPYING INSTALL ChangeLog NEWS README TODO
 %{_bindir}/*
 %{_includedir}/*
-%{_libdir}/*.so.*
-%{_datadir}/%{name}
-%{_mandir}/man8/*
+%{_libdir}/*
+%{_datadir}/RPG
 
 %changelog
