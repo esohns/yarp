@@ -59,15 +59,16 @@ RETVAL=$(${CMDLINE} >/dev/null 2>&1)
 for RPM in ${HOME}/rpmbuild/RPMS/i686/*.rpm; do
   echo "INFO: created \"`basename ${RPM}`\"..."
   mv -f ${RPM} rpm
+  [ $? -ne 0 ] && echo "ERROR: failed to move rpm, aborting" && exit 1
 done
 echo "INFO: making rpm...DONE"
 
 # clean up
-echo "INFO: cleaning up source rpm..."
+echo "INFO: cleaning up ..."
 CMDLINE="${RPMBUILD_EXEC} --rmsource --rmspec ${SPECFILE}"
 RETVAL=$(${CMDLINE} >/dev/null 2>&1)
-[ $? -ne 0 ] && echo "ERROR: failed to clean up source rpm, aborting" && exit 1
-echo "INFO: cleaning up source rpm...DONE"
+#[ $? -ne 0 ] && echo "ERROR: failed to clean up, aborting" && exit 1
+echo "INFO: cleaning up ...DONE"
 
 # ...go back where we came from
 popd >/dev/null 2>&1
