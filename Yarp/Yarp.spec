@@ -2,30 +2,34 @@
 # Please report any problem to KDevelop Team <kdevelop-devel@kdevelop.org>
 # Thanks to Matthias Saou for his explanations on http://freshrpms.net/docs/fight.html
 
-Name: Yarp
+Name: yarp
 Version: 0.1
-Release:
-Vendor:
-Copyright:
-Summary:
-Group:
-Packager:
-BuildRoot:  %{_tmppath}/%{name}-root
+Release: 1
+Vendor: N/A
+Summary: Yet Another (?) Role-Playing-Game System library...
+License: GPL
+Distribution: N/A
+#Icon: N/A
+Group: Development/Libraries
+Packager: Erik Sohns <erik.sohns@web.de>
+BuildRoot: %{_tmppath}/%{name}-root
 Source: %{name}-%{version}.tar.gz
+Provides: %{name}
+AutoReqProv: yes
+#Requires:
+#Prefix: /usr/local
 
 %description
-Yet Another Role-Playing-Game System...
-
-
+Yet Another (?) Role-Playing-Game System library...
 
 %prep
-%setup
-CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" ./configure \
---target=
---disable-debug --enable-debug=no
+%setup -q
+autoreconf
 
 %build
-%configure
+mkdir build
+cd build
+../configure --disable-static
 make
 
 %install
@@ -35,15 +39,20 @@ rm -rf %{buildroot}
 %clean
 rm -rf %{buildroot}
 
+%pre
 %post -p /sbin/ldconfig
+%verifyscript
+
+%preun
 %postun -p /sbin/ldconfig
+
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog NEWS README TODO
 %{_bindir}/*
+%{_includedir}/*
 %{_libdir}/*.so.*
 %{_datadir}/%{name}
 %{_mandir}/man8/*
+
 %changelog
-
-

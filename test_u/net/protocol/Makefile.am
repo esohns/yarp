@@ -25,3 +25,5 @@ IRC_client_gui_LDADD = -lpthread -lACE -lRPG_Dice -lRPG_Common -lRPG_Stream \
 configdir = $(datadir)/@META_PACKAGE@/config
 config_DATA = IRC_client.ini IRC_client_channel_tab.glade \
 	IRC_client_main.glade IRC_client_server_page.glade servers.ini
+
+EXTRA_DIST = $(config_DATA)
