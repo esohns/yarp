@@ -25,7 +25,7 @@
 #include "rpg_character_class_common_tools.h"
 #include "rpg_character_player_XML_tree.h"
 
-#include "rpg_XMLSchema_XML_tree.h"
+// #include "rpg_XMLSchema_XML_tree.h"
 
 #include <rpg_item_instance_common.h>
 #include <rpg_item_instance_manager.h>
@@ -37,13 +37,11 @@
 #include <rpg_common_macros.h>
 #include <rpg_common_defines.h>
 #include <rpg_common_file_tools.h>
+#include <rpg_common_xsderrorhandler.h>
 
 #include <ace/Log_Msg.h>
 
 #include <fstream>
-
-// init statics
-RPG_Character_Player::XSD_Error_Handler RPG_Character_Player::myXSDErrorHandler;
 
 RPG_Character_Player::RPG_Character_Player(// base attributes
                                            const std::string& name_in,
@@ -174,10 +172,10 @@ RPG_Character_Player::load(const std::string& filename_in,
     ifs.open(filename_in.c_str(),
              std::ios_base::in);
 
-    ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type > player_p = player(ifs,
-                                                                                RPG_Character_Player::myXSDErrorHandler,
-                                                                                flags,
-                                                                                props);
+    ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type > player_p = character_player(ifs,
+                                                                                          RPG_XSDErrorHandler,
+                                                                                          flags,
+                                                                                          props);
 
     // init result
     RPG_Character_Alignment alignment;
@@ -347,11 +345,11 @@ RPG_Character_Player::save(const std::string& filename_in) const
       player_model.spell().push_back(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
     // *TODO*: add item sequence
 
-    player(ofs,
-           player_model,
-           map,
-           character_set,
-           flags);
+    character_player(ofs,
+                     player_model,
+                     map,
+                     character_set,
+                     flags);
   }
   catch (const std::ofstream::failure&)
   {
@@ -515,72 +513,4 @@ RPG_Character_Player::defaultEquip()
       }
     } // end SWITCH
   } // end FOR
-}
-
-bool
-RPG_Character_Player::XSD_Error_Handler::handle(const std::string& id_in,
-                                                unsigned long line_in,
-                                                unsigned long column_in,
-                                                ::xsd::cxx::xml::error_handler<char>::severity severity_in,
-                                                const std::string& message_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Character_Player::XSD_Error_Handler::handle"));
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-//              id_in.c_str(),
-//              line_in,
-//              column_in,
-//              message_in.c_str()));
-
-  switch (severity_in)
-  {
-    case ::xml_schema::error_handler::severity::warning:
-    {
-      ACE_DEBUG((LM_WARNING,
-                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-    case ::xml_schema::error_handler::severity::error:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-    case ::xml_schema::error_handler::severity::fatal:
-    {
-      ACE_DEBUG((LM_CRITICAL,
-                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-    default:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-  } // end SWITCH
-
-  // try to continue anyway...
-  return true;
 }

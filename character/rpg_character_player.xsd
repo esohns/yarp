@@ -61,6 +61,6 @@
   </xsd:complexType>
 
   <!-- substitution group root -->
-  <xsd:element name="player" type="RPG_Character_PlayerXML_Type"/>
+  <xsd:element name="character_player" type="RPG_Character_PlayerXML_Type"/>
 
 </xsd:schema>

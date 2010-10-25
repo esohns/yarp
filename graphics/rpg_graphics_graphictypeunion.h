@@ -33,6 +33,7 @@ struct RPG_Graphics_GraphicTypeUnion
     RPG_Graphics_Cursor cursor;
     RPG_Graphics_Font font;
     RPG_Graphics_Image image;
+    RPG_Graphics_Sprite sprite;
     RPG_Graphics_TileGraphic tilegraphic;
     RPG_Graphics_TileSetGraphic tilesetgraphic;
   };
@@ -42,6 +43,7 @@ struct RPG_Graphics_GraphicTypeUnion
     CURSOR,
     FONT,
     IMAGE,
+    SPRITE,
     TILEGRAPHIC,
     TILESETGRAPHIC,
     INVALID

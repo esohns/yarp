@@ -23,17 +23,16 @@
 // -------------------------------- * * * -------------------------------- //
 
 #pragma once
-#ifndef RPG_GRAPHICS_DOORSTYLE_H
-#define RPG_GRAPHICS_DOORSTYLE_H
+#ifndef RPG_GRAPHICS_SPRITE_H
+#define RPG_GRAPHICS_SPRITE_H
 
-enum RPG_Graphics_DoorStyle
+enum RPG_Graphics_Sprite
 {
-  DOORSTYLE_DRAWBRIDGE = 0,
-  DOORSTYLE_TELEPORTER,
-  DOORSTYLE_WOOD,
+  SPRITE_GOBLIN = 0,
+  SPRITE_PRIEST,
   //
-  RPG_GRAPHICS_DOORSTYLE_MAX,
-  RPG_GRAPHICS_DOORSTYLE_INVALID
+  RPG_GRAPHICS_SPRITE_MAX,
+  RPG_GRAPHICS_SPRITE_INVALID
 };
 
 #include <ace/Global_Macros.h>
@@ -41,52 +40,51 @@ enum RPG_Graphics_DoorStyle
 #include <map>
 #include <string>
 
-typedef std::map<RPG_Graphics_DoorStyle, std::string> RPG_Graphics_DoorStyleToStringTable_t;
-typedef RPG_Graphics_DoorStyleToStringTable_t::const_iterator RPG_Graphics_DoorStyleToStringTableIterator_t;
+typedef std::map<RPG_Graphics_Sprite, std::string> RPG_Graphics_SpriteToStringTable_t;
+typedef RPG_Graphics_SpriteToStringTable_t::const_iterator RPG_Graphics_SpriteToStringTableIterator_t;
 
-class RPG_Graphics_DoorStyleHelper
+class RPG_Graphics_SpriteHelper
 {
  public:
   inline static void init()
   {
-    myRPG_Graphics_DoorStyleToStringTable.clear();
-    myRPG_Graphics_DoorStyleToStringTable.insert(std::make_pair(DOORSTYLE_DRAWBRIDGE, ACE_TEXT_ALWAYS_CHAR("DOORSTYLE_DRAWBRIDGE")));
-    myRPG_Graphics_DoorStyleToStringTable.insert(std::make_pair(DOORSTYLE_TELEPORTER, ACE_TEXT_ALWAYS_CHAR("DOORSTYLE_TELEPORTER")));
-    myRPG_Graphics_DoorStyleToStringTable.insert(std::make_pair(DOORSTYLE_WOOD, ACE_TEXT_ALWAYS_CHAR("DOORSTYLE_WOOD")));
+    myRPG_Graphics_SpriteToStringTable.clear();
+    myRPG_Graphics_SpriteToStringTable.insert(std::make_pair(SPRITE_GOBLIN, ACE_TEXT_ALWAYS_CHAR("SPRITE_GOBLIN")));
+    myRPG_Graphics_SpriteToStringTable.insert(std::make_pair(SPRITE_PRIEST, ACE_TEXT_ALWAYS_CHAR("SPRITE_PRIEST")));
   };
 
-  inline static std::string RPG_Graphics_DoorStyleToString(const RPG_Graphics_DoorStyle& element_in)
+  inline static std::string RPG_Graphics_SpriteToString(const RPG_Graphics_Sprite& element_in)
   {
     std::string result;
-    RPG_Graphics_DoorStyleToStringTableIterator_t iterator = myRPG_Graphics_DoorStyleToStringTable.find(element_in);
-    if (iterator != myRPG_Graphics_DoorStyleToStringTable.end())
+    RPG_Graphics_SpriteToStringTableIterator_t iterator = myRPG_Graphics_SpriteToStringTable.find(element_in);
+    if (iterator != myRPG_Graphics_SpriteToStringTable.end())
       result = iterator->second;
     else
-      result = ACE_TEXT_ALWAYS_CHAR("RPG_GRAPHICS_DOORSTYLE_INVALID");
+      result = ACE_TEXT_ALWAYS_CHAR("RPG_GRAPHICS_SPRITE_INVALID");
 
     return result;
   };
 
-  inline static RPG_Graphics_DoorStyle stringToRPG_Graphics_DoorStyle(const std::string& string_in)
+  inline static RPG_Graphics_Sprite stringToRPG_Graphics_Sprite(const std::string& string_in)
   {
-    RPG_Graphics_DoorStyleToStringTableIterator_t iterator = myRPG_Graphics_DoorStyleToStringTable.begin();
+    RPG_Graphics_SpriteToStringTableIterator_t iterator = myRPG_Graphics_SpriteToStringTable.begin();
     do
     {
       if (iterator->second == string_in)
         return iterator->first;
 
       iterator++;
-    } while (iterator != myRPG_Graphics_DoorStyleToStringTable.end());
+    } while (iterator != myRPG_Graphics_SpriteToStringTable.end());
 
-    return RPG_GRAPHICS_DOORSTYLE_INVALID;
+    return RPG_GRAPHICS_SPRITE_INVALID;
   };
 
-  static RPG_Graphics_DoorStyleToStringTable_t myRPG_Graphics_DoorStyleToStringTable;
+  static RPG_Graphics_SpriteToStringTable_t myRPG_Graphics_SpriteToStringTable;
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_DoorStyleHelper());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_DoorStyleHelper(const RPG_Graphics_DoorStyleHelper&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_DoorStyleHelper& operator=(const RPG_Graphics_DoorStyleHelper&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SpriteHelper());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SpriteHelper(const RPG_Graphics_SpriteHelper&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SpriteHelper& operator=(const RPG_Graphics_SpriteHelper&));
 };
 
 #endif

@@ -141,6 +141,15 @@ class RPG_Graphics_Image_Type
     virtual RPG_Graphics_Image post_RPG_Graphics_Image_Type();
 };
 
+class RPG_Graphics_Sprite_Type
+  : public RPG_Graphics_Sprite_Type_pskel,
+  public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Graphics_Sprite post_RPG_Graphics_Sprite_Type();
+};
+
 class RPG_Graphics_TileGraphic_Type
   : public RPG_Graphics_TileGraphic_Type_pskel,
   public ::xml_schema::string_pimpl

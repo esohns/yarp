@@ -15,7 +15,7 @@ include_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \
 	rpg_common_referencecounter.h rpg_common_savereductiontype.h rpg_common_savingthrow.h \
 	rpg_common_savingthrowcheck.h rpg_common_size.h rpg_common_skill.h rpg_common_subclass.h \
 	rpg_common_terrain.h rpg_common_timer_manager.h rpg_common_timerhandler.h rpg_common_tools.h \
-	rpg_common_usage.h
+	rpg_common_usage.h rpg_common_xsderrorhandler.h
 
 lib_LTLIBRARIES = libRPG_Common.la
 
@@ -35,7 +35,7 @@ libRPG_Common_la_SOURCES = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \
 	rpg_common_savingthrowcheck.h rpg_common_size.h rpg_common_skill.h rpg_common_subclass.h \
 	rpg_common_terrain.h rpg_common_timer_manager.cpp rpg_common_timer_manager.h \
 	rpg_common_timerhandler.cpp rpg_common_timerhandler.h rpg_common_tools.cpp rpg_common_tools.h \
-	rpg_common_usage.h
+	rpg_common_usage.h rpg_common_xsderrorhandler.cpp rpg_common_xsderrorhandler.h
 
 pkgdatadir = $(datadir)/@META_PACKAGE@
 configdir = $(pkgdatadir)/config

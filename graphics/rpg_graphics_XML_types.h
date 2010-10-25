@@ -61,6 +61,7 @@ class RPG_Graphics_StyleUnion_Type_pskel;
 class RPG_Graphics_Cursor_Type_pskel;
 class RPG_Graphics_Font_Type_pskel;
 class RPG_Graphics_Image_Type_pskel;
+class RPG_Graphics_Sprite_Type_pskel;
 class RPG_Graphics_TileGraphic_Type_pskel;
 class RPG_Graphics_TileSetGraphic_Type_pskel;
 class RPG_Graphics_GraphicTypeUnion_Type_pskel;
@@ -231,6 +232,18 @@ class RPG_Graphics_Image_Type_pskel: public virtual ::xml_schema::string_pskel
 
   virtual RPG_Graphics_Image
   post_RPG_Graphics_Image_Type () = 0;
+};
+
+class RPG_Graphics_Sprite_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Graphics_Sprite
+  post_RPG_Graphics_Sprite_Type () = 0;
 };
 
 class RPG_Graphics_TileGraphic_Type_pskel: public virtual ::xml_schema::string_pskel

@@ -51,6 +51,10 @@ class RPG_Engine_Common_Tools
   static void init(const std::string&,  // magic dictionary file
                    const std::string&,  // item dictionary file
                    const std::string&); // monster dictionary file
+  static RPG_Engine_Entity loadEntity(const std::string&,  // FQ filename
+                                      const std::string&); // schema repository (directory)
+  static const bool saveEntity(const RPG_Engine_Entity&, // entity
+                               const std::string&);      // FQ filename
 
   // ***** combat-related *****
   static const bool isPartyHelpless(const RPG_Character_Party_t&); // party

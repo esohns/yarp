@@ -32,6 +32,7 @@ enum RPG_Graphics_Category
   CATEGORY_FONT,
   CATEGORY_INTERFACE,
   CATEGORY_IMAGE,
+  CATEGORY_SPRITE,
   CATEGORY_TILE,
   CATEGORY_TILESET,
   //
@@ -57,6 +58,7 @@ class RPG_Graphics_CategoryHelper
     myRPG_Graphics_CategoryToStringTable.insert(std::make_pair(CATEGORY_FONT, ACE_TEXT_ALWAYS_CHAR("CATEGORY_FONT")));
     myRPG_Graphics_CategoryToStringTable.insert(std::make_pair(CATEGORY_INTERFACE, ACE_TEXT_ALWAYS_CHAR("CATEGORY_INTERFACE")));
     myRPG_Graphics_CategoryToStringTable.insert(std::make_pair(CATEGORY_IMAGE, ACE_TEXT_ALWAYS_CHAR("CATEGORY_IMAGE")));
+    myRPG_Graphics_CategoryToStringTable.insert(std::make_pair(CATEGORY_SPRITE, ACE_TEXT_ALWAYS_CHAR("CATEGORY_SPRITE")));
     myRPG_Graphics_CategoryToStringTable.insert(std::make_pair(CATEGORY_TILE, ACE_TEXT_ALWAYS_CHAR("CATEGORY_TILE")));
     myRPG_Graphics_CategoryToStringTable.insert(std::make_pair(CATEGORY_TILESET, ACE_TEXT_ALWAYS_CHAR("CATEGORY_TILESET")));
   };

@@ -19,7 +19,10 @@
  ***************************************************************************/
 #include "rpg_engine_common_tools.h"
 
+#include "rpg_engine_XML_tree.h"
+
 #include <rpg_graphics_defines.h>
+#include <rpg_graphics_common_tools.h>
 
 #include <rpg_map_common_tools.h>
 
@@ -30,7 +33,11 @@
 
 #include <rpg_combat_common_tools.h>
 
+#include <rpg_character_defines.h>
 #include <rpg_character_common_tools.h>
+#include <rpg_character_race_common_tools.h>
+#include <rpg_character_class_common_tools.h>
+#include <rpg_character_player_common_tools.h>
 
 #include <rpg_item_common.h>
 #include <rpg_item_dictionary.h>
@@ -40,8 +47,11 @@
 #include <rpg_magic_common_tools.h>
 
 #include <rpg_common_macros.h>
+#include <rpg_common_defines.h>
 #include <rpg_common_attribute.h>
 #include <rpg_common_tools.h>
+#include <rpg_common_file_tools.h>
+#include <rpg_common_xsderrorhandler.h>
 
 #include <rpg_chance_common_tools.h>
 
@@ -52,6 +62,7 @@
 
 #include <algorithm>
 #include <sstream>
+#include <fstream>
 
 void
 RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
@@ -113,6 +124,299 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
 
     return;
   }
+}
+
+RPG_Engine_Entity
+RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
+                                    const std::string& schemaRepository_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::loadEntity"));
+
+  RPG_Engine_Entity result;
+  result.character = NULL;
+  result.position = std::make_pair(0, 0);
+  result.graphic = NULL;
+
+  // sanity check(s)
+  if (!RPG_Common_File_Tools::isReadable(filename_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+               filename_in.c_str()));
+
+    return result;
+  } // end IF
+
+  // step1: load player character
+  std::ifstream ifs;
+  ifs.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+//   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
+  ::xml_schema::flags flags = 0;
+  ::xml_schema::properties props;
+  std::string path;
+  // *NOTE*: use the working directory as a fallback...
+  if (schemaRepository_in.empty())
+    path = RPG_Common_File_Tools::getWorkingDirectory();
+  else
+  {
+    // sanity check(s)
+    if (!RPG_Common_File_Tools::isDirectory(schemaRepository_in))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Common_File_Tools::isDirectory(\"%s\"), aborting\n"),
+                 schemaRepository_in.c_str()));
+
+      return result;
+    } // end IF
+
+    path = schemaRepository_in;
+  } // end ELSE
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_CHARACTER_PLAYER_SCHEMA_FILE;
+  // sanity check(s)
+  if (!RPG_Common_File_Tools::isReadable(path))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+               path.c_str()));
+
+    return result;
+  } // end IF
+
+  props.schema_location(RPG_COMMON_XML_TARGET_NAMESPACE,
+                        path);
+//   props.no_namespace_schema_location(RPG_CHARACTER_PLAYER_SCHEMA_FILE);
+//   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
+
+  ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type > player_p;
+  try
+  {
+    ifs.open(filename_in.c_str(),
+             std::ios_base::in);
+
+    player_p = engine_player(ifs,
+                             RPG_XSDErrorHandler,
+                             flags,
+                             props);
+
+    // init result
+    RPG_Character_Alignment alignment;
+    alignment.civic = RPG_Character_AlignmentCivicHelper::stringToRPG_Character_AlignmentCivic(player_p->alignment().civic());
+    alignment.ethic = RPG_Character_AlignmentEthicHelper::stringToRPG_Character_AlignmentEthic(player_p->alignment().ethic());
+    RPG_Character_Attributes attributes;
+    attributes.strength = player_p->attributes().strength();
+    attributes.dexterity = player_p->attributes().dexterity();
+    attributes.constitution = player_p->attributes().constitution();
+    attributes.intelligence = player_p->attributes().intelligence();
+    attributes.wisdom = player_p->attributes().wisdom();
+    attributes.charisma = player_p->attributes().charisma();
+    // *TODO*: serialize/parse items
+    RPG_Item_List_t items;
+    result.character = new RPG_Character_Player(player_p->name(),
+                                                RPG_Character_GenderHelper::stringToRPG_Character_Gender(player_p->gender()),
+                                                RPG_Character_Race_Common_Tools::raceXMLTreeToRace(player_p->race()),
+                                                RPG_Character_Class_Common_Tools::classXMLTreeToClass(player_p->classXML()),
+                                                alignment,
+                                                attributes,
+                                                RPG_Character_Player_Common_Tools::skillsXMLTreeToSkills(player_p->skills()),
+                                                RPG_Character_Player_Common_Tools::featsXMLTreeToFeats(player_p->feats()),
+                                                RPG_Character_Player_Common_Tools::abilitiesXMLTreeToAbilities(player_p->abilities()),
+                                                RPG_Character_OffHandHelper::stringToRPG_Character_OffHand(player_p->offhand()),
+                                                player_p->maxHP(),
+                                                RPG_Character_Player_Common_Tools::knownSpellXMLTreeToSpells(player_p->knownSpell()),
+                                                RPG_Character_Player_Common_Tools::conditionXMLTreeToCondition(player_p->condition()),
+                                                player_p->HP(),
+                                                player_p->XP(),
+                                                player_p->gold(),
+                                                RPG_Character_Player_Common_Tools::spellXMLTreeToSpells(player_p->spell()),
+                                                items);
+  }
+  catch (const std::ifstream::failure&)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): unable to open or read error, aborting\n"),
+               filename_in.c_str()));
+  }
+  catch (const ::xml_schema::parsing& exception)
+  {
+    std::ostringstream converter;
+    converter << exception;
+    std::string text = converter.str();
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
+               filename_in.c_str(),
+               text.c_str()));
+  }
+  catch (const std::bad_alloc& exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
+               exception.what()));
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred, aborting\n"),
+               filename_in.c_str()));
+  }
+  ACE_ASSERT(result.character);
+
+  // step2: load player sprite
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+  type.sprite = RPG_Graphics_SpriteHelper::stringToRPG_Graphics_Sprite(player_p->sprite());
+  result.graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
+                                                          false); // don't cache
+  ACE_ASSERT(result.graphic);
+
+  return result;
+}
+
+const bool
+RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
+                                    const std::string& filename_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::saveEntity"));
+
+  // sanity check(s)
+  if (RPG_Common_File_Tools::isReadable(filename_in))
+  {
+    // *TODO*: warn user ?
+//     if (!RPG_Common_File_Tools::deleteFile(filename_in))
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), aborting\n"),
+//                  filename_in.c_str()));
+    //
+//       return false;
+//     } // end IF
+  } // end IF
+
+  std::ofstream ofs;
+  ofs.exceptions(std::ofstream::badbit | std::ofstream::failbit);
+  ::xml_schema::namespace_infomap map;
+  map[""].name = RPG_COMMON_XML_TARGET_NAMESPACE;
+  map[""].schema = RPG_CHARACTER_PLAYER_SCHEMA_FILE;
+  std::string character_set(RPG_COMMON_XML_SCHEMA_CHARSET);
+  //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
+  ::xml_schema::flags flags = 0;
+
+  try
+  {
+    ofs.open(filename_in.c_str(),
+             (std::ios_base::out | std::ios_base::trunc));
+
+    RPG_Character_Alignment_XMLTree_Type alignment(RPG_Character_AlignmentCivicHelper::RPG_Character_AlignmentCivicToString(getAlignment().civic),
+        RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString(getAlignment().ethic));
+    RPG_Character_Attributes_XMLTree_Type attributes(getAttribute(ATTRIBUTE_STRENGTH),
+        getAttribute(ATTRIBUTE_DEXTERITY),
+                     getAttribute(ATTRIBUTE_CONSTITUTION),
+                                  getAttribute(ATTRIBUTE_INTELLIGENCE),
+                                               getAttribute(ATTRIBUTE_WISDOM),
+                                                   getAttribute(ATTRIBUTE_CHARISMA));
+    RPG_Character_Skills_XMLTree_Type skills;
+    for (RPG_Character_SkillsConstIterator_t iterator = mySkills.begin();
+         iterator != mySkills.end();
+         iterator++)
+    {
+      RPG_Character_SkillValue_XMLTree_Type skill(RPG_Common_SkillHelper::RPG_Common_SkillToString((*iterator).first),
+          (*iterator).second);
+      skills.skill().push_back(skill);
+    } // end FOR
+    RPG_Character_Feats_XMLTree_Type feats;
+    for (RPG_Character_FeatsConstIterator_t iterator = myFeats.begin();
+         iterator != myFeats.end();
+         iterator++)
+      feats.feat().push_back(RPG_Character_FeatHelper::RPG_Character_FeatToString(*iterator));
+    RPG_Character_Abilities_XMLTree_Type abilities;
+    for (RPG_Character_AbilitiesConstIterator_t iterator = myAbilities.begin();
+         iterator != myAbilities.end();
+         iterator++)
+      abilities.ability().push_back(RPG_Character_AbilityHelper::RPG_Character_AbilityToString(*iterator));
+    RPG_Character_ClassXML_XMLTree_Type classXML(RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString(myClass.metaClass));
+    for (RPG_Character_SubClassesIterator_t iterator = myClass.subClasses.begin();
+         iterator != myClass.subClasses.end();
+         iterator++)
+      classXML.subClass().push_back(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator));
+    RPG_Character_PlayerXML_XMLTree_Type player_model(getName(),
+        alignment,
+        attributes,
+        skills,
+        feats,
+        abilities,
+        RPG_Common_SizeHelper::RPG_Common_SizeToString(getSize()),
+            getNumTotalHitPoints(),
+                                 getNumHitPoints(),
+                                     getExperience(),
+                                         getWealth(),
+                                             RPG_Character_GenderHelper::RPG_Character_GenderToString(getGender()),
+                                                 classXML,
+                                                     RPG_Character_OffHandHelper::RPG_Character_OffHandToString(getOffHand()));
+    // *NOTE*: add race, known spells, condition, prepared spells sequences "manually"
+    unsigned int race_index = 1;
+    for (unsigned int index = 0;
+         index < myRace.size();
+         index++, race_index++)
+    {
+      if (myRace.test(index))
+        player_model.race().push_back(RPG_Character_RaceHelper::RPG_Character_RaceToString(ACE_static_cast(RPG_Character_Race,
+                          race_index)));
+    } // end IF
+    for (RPG_Magic_SpellsIterator_t iterator = myKnownSpells.begin();
+         iterator != myKnownSpells.end();
+         iterator++)
+      player_model.knownSpell().push_back(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
+    for (RPG_Character_ConditionsIterator_t iterator = myCondition.begin();
+         iterator != myCondition.end();
+         iterator++)
+      player_model.condition().push_back(RPG_Common_ConditionHelper::RPG_Common_ConditionToString(*iterator));
+    for (RPG_Magic_SpellListIterator_t iterator = mySpells.begin();
+         iterator != mySpells.end();
+         iterator++)
+      player_model.spell().push_back(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
+    // *TODO*: add item sequence
+
+    character_player(ofs,
+                     player_model,
+                     map,
+                     character_set,
+                     flags);
+  }
+  catch (const std::ofstream::failure&)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("\"%s\": unable to open or write error, aborting\n"),
+                        filename_in.c_str()));
+
+    return false;
+  }
+  catch (const ::xml_schema::serialization& exception)
+  {
+    std::ostringstream converter;
+    converter << exception;
+    std::string text = converter.str();
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Character_Player::save(\"%s\"): exception occurred: \"%s\", aborting\n"),
+                        filename_in.c_str(),
+                                          text.c_str()));
+
+    throw exception;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Character_Player::save(\"%s\"): exception occurred, aborting\n"),
+                        filename_in.c_str()));
+
+    throw;
+  }
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
+//              getName().c_str(),
+//              filename_in.c_str()));
+
+  return true;
 }
 
 const bool

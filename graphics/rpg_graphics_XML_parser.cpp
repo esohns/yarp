@@ -165,6 +165,13 @@ RPG_Graphics_Image RPG_Graphics_Image_Type::post_RPG_Graphics_Image_Type()
   return RPG_Graphics_ImageHelper::stringToRPG_Graphics_Image(post_string());
 }
 
+RPG_Graphics_Sprite RPG_Graphics_Sprite_Type::post_RPG_Graphics_Sprite_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Sprite_Type::post_RPG_Graphics_Sprite_Type"));
+
+  return RPG_Graphics_SpriteHelper::stringToRPG_Graphics_Sprite(post_string());
+}
+
 RPG_Graphics_TileGraphic RPG_Graphics_TileGraphic_Type::post_RPG_Graphics_TileGraphic_Type()
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_TileGraphic_Type::post_RPG_Graphics_TileGraphic_Type"));
@@ -195,6 +202,7 @@ void RPG_Graphics_GraphicTypeUnion_Type::_characters(const ::xml_schema::ro_stri
   // - RPG_Graphics_Cursor --> "CURSOR_xxx"
   // - RPG_Graphics_Font --> "FONT_xxx"
   // - RPG_Graphics_Image --> "IMAGE_xxx"
+  // - RPG_Graphics_Sprite --> "SPRITE_xxx"
   // - RPG_Graphics_TileGraphic --> "TILE_xxx"
   // - RPG_Graphics_TileSetGraphic --> "TILESET_xxx"
   std::string type = type_in;
@@ -212,6 +220,11 @@ void RPG_Graphics_GraphicTypeUnion_Type::_characters(const ::xml_schema::ro_stri
   {
     myCurrentType.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
     myCurrentType.image = RPG_Graphics_ImageHelper::stringToRPG_Graphics_Image(type_in);
+  } // end IF
+  else if (type.find(ACE_TEXT_ALWAYS_CHAR("SPRITE_")) == 0)
+  {
+    myCurrentType.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+    myCurrentType.sprite = RPG_Graphics_SpriteHelper::stringToRPG_Graphics_Sprite(type_in);
   } // end IF
   else if (type.find(ACE_TEXT_ALWAYS_CHAR("TILE_")) == 0)
   {

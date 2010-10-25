@@ -45,6 +45,7 @@ RPG_Graphics_DoorStyleToStringTable_t RPG_Graphics_DoorStyleHelper::myRPG_Graphi
 RPG_Graphics_CursorToStringTable_t RPG_Graphics_CursorHelper::myRPG_Graphics_CursorToStringTable;
 RPG_Graphics_FontToStringTable_t RPG_Graphics_FontHelper::myRPG_Graphics_FontToStringTable;
 RPG_Graphics_ImageToStringTable_t RPG_Graphics_ImageHelper::myRPG_Graphics_ImageToStringTable;
+RPG_Graphics_SpriteToStringTable_t RPG_Graphics_SpriteHelper::myRPG_Graphics_SpriteToStringTable;
 RPG_Graphics_TileGraphicToStringTable_t RPG_Graphics_TileGraphicHelper::myRPG_Graphics_TileGraphicToStringTable;
 RPG_Graphics_TileSetGraphicToStringTable_t RPG_Graphics_TileSetGraphicHelper::myRPG_Graphics_TileSetGraphicToStringTable;
 RPG_Graphics_InterfaceElementTypeToStringTable_t RPG_Graphics_InterfaceElementTypeHelper::myRPG_Graphics_InterfaceElementTypeToStringTable;
@@ -1764,6 +1765,7 @@ RPG_Graphics_Common_Tools::initStringConversionTables()
   RPG_Graphics_CursorHelper::init();
   RPG_Graphics_FontHelper::init();
   RPG_Graphics_ImageHelper::init();
+  RPG_Graphics_SpriteHelper::init();
   RPG_Graphics_TileGraphicHelper::init();
   RPG_Graphics_TileSetGraphicHelper::init();
   RPG_Graphics_InterfaceElementTypeHelper::init();

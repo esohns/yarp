@@ -20,11 +20,26 @@
 #ifndef RPG_ENGINE_COMMON_H
 #define RPG_ENGINE_COMMON_H
 
+#include <rpg_map_common.h>
+
 #include <rpg_character_base.h>
+
+#include <SDL/SDL.h>
 
 #include <ace/Log_Msg.h>
 
 #include <set>
+#include <vector>
+
+struct RPG_Engine_Entity
+{
+  RPG_Character_Base* character;
+  RPG_Map_Position_t  position;
+  SDL_Surface*        graphic;
+};
+typedef std::vector<RPG_Engine_Entity> RPG_Engine_Entities_t;
+typedef RPG_Engine_Entities_t::iterator RPG_Engine_EntitiesIterator_t;
+typedef RPG_Engine_Entities_t::const_iterator RPG_Engine_EntitiesConstIterator_t;
 
 struct RPG_Engine_CombatantSequenceElement
 {

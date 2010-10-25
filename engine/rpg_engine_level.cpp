@@ -52,6 +52,14 @@ RPG_Engine_Level::init(const RPG_Map_FloorPlan_t& floorPlan_in)
   myFloorPlan = floorPlan_in;
 }
 
+void
+RPG_Engine_Level::add(RPG_Engine_Entity& entity_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::add"));
+
+  myEntitites.push_back(entity_in);
+}
+
 const RPG_Map_Dimensions_t
 RPG_Engine_Level::getDimensions() const
 {

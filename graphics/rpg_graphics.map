@@ -13,6 +13,7 @@ namespace urn:rpg
   RPG_Graphics_Cursor_Type               RPG_Graphics_Cursor;
   RPG_Graphics_Font_Type                 RPG_Graphics_Font;
   RPG_Graphics_Image_Type                RPG_Graphics_Image;
+  RPG_Graphics_Sprite_Type               RPG_Graphics_Sprite;
   RPG_Graphics_TileGraphic_Type          RPG_Graphics_TileGraphic;
   RPG_Graphics_TileSetGraphic_Type       RPG_Graphics_TileSetGraphic;
   RPG_Graphics_GraphicTypeUnion_Type     RPG_Graphics_GraphicTypeUnion;

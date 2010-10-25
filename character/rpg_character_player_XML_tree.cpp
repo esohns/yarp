@@ -1255,9 +1255,9 @@ operator<< (::std::ostream& o, const RPG_Character_PlayerXML_XMLTree_Type& i)
 #include <xsd/cxx/tree/error-handler.hxx>
 
 ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
-player (const ::std::string& u,
-        ::xml_schema::flags f,
-        const ::xml_schema::properties& p)
+character_player (const ::std::string& u,
+                  ::xml_schema::flags f,
+                  const ::xml_schema::properties& p)
 {
   ::xsd::cxx::xml::auto_initializer i (
     (f & ::xml_schema::flags::dont_initialize) == 0,
@@ -1271,17 +1271,17 @@ player (const ::std::string& u,
   h.throw_if_failed< ::xsd::cxx::tree::parsing< char > > ();
 
   ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type > r (
-    ::player (
+    ::character_player (
       d, f | ::xml_schema::flags::own_dom, p));
 
   return r;
 }
 
 ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
-player (const ::std::string& u,
-        ::xml_schema::error_handler& h,
-        ::xml_schema::flags f,
-        const ::xml_schema::properties& p)
+character_player (const ::std::string& u,
+                  ::xml_schema::error_handler& h,
+                  ::xml_schema::flags f,
+                  const ::xml_schema::properties& p)
 {
   ::xsd::cxx::xml::auto_initializer i (
     (f & ::xml_schema::flags::dont_initialize) == 0,
@@ -1294,17 +1294,17 @@ player (const ::std::string& u,
     throw ::xsd::cxx::tree::parsing< char > ();
 
   ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type > r (
-    ::player (
+    ::character_player (
       d, f | ::xml_schema::flags::own_dom, p));
 
   return r;
 }
 
 ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
-player (const ::std::string& u,
-        ::xercesc::DOMErrorHandler& h,
-        ::xml_schema::flags f,
-        const ::xml_schema::properties& p)
+character_player (const ::std::string& u,
+                  ::xercesc::DOMErrorHandler& h,
+                  ::xml_schema::flags f,
+                  const ::xml_schema::properties& p)
 {
   ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
     ::xsd::cxx::xml::dom::parse< char > (u, h, p, f));
@@ -1313,93 +1313,93 @@ player (const ::std::string& u,
     throw ::xsd::cxx::tree::parsing< char > ();
 
   ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type > r (
-    ::player (
+    ::character_player (
       d, f | ::xml_schema::flags::own_dom, p));
 
   return r;
 }
 
 ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
-player (::std::istream& is,
-        ::xml_schema::flags f,
-        const ::xml_schema::properties& p)
+character_player (::std::istream& is,
+                  ::xml_schema::flags f,
+                  const ::xml_schema::properties& p)
 {
   ::xsd::cxx::xml::auto_initializer i (
     (f & ::xml_schema::flags::dont_initialize) == 0,
     (f & ::xml_schema::flags::keep_dom) == 0);
 
   ::xsd::cxx::xml::sax::std_input_source isrc (is);
-  return ::player (isrc, f, p);
+  return ::character_player (isrc, f, p);
 }
 
 ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
-player (::std::istream& is,
-        ::xml_schema::error_handler& h,
-        ::xml_schema::flags f,
-        const ::xml_schema::properties& p)
+character_player (::std::istream& is,
+                  ::xml_schema::error_handler& h,
+                  ::xml_schema::flags f,
+                  const ::xml_schema::properties& p)
 {
   ::xsd::cxx::xml::auto_initializer i (
     (f & ::xml_schema::flags::dont_initialize) == 0,
     (f & ::xml_schema::flags::keep_dom) == 0);
 
   ::xsd::cxx::xml::sax::std_input_source isrc (is);
-  return ::player (isrc, h, f, p);
+  return ::character_player (isrc, h, f, p);
 }
 
 ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
-player (::std::istream& is,
-        ::xercesc::DOMErrorHandler& h,
-        ::xml_schema::flags f,
-        const ::xml_schema::properties& p)
+character_player (::std::istream& is,
+                  ::xercesc::DOMErrorHandler& h,
+                  ::xml_schema::flags f,
+                  const ::xml_schema::properties& p)
 {
   ::xsd::cxx::xml::sax::std_input_source isrc (is);
-  return ::player (isrc, h, f, p);
+  return ::character_player (isrc, h, f, p);
 }
 
 ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
-player (::std::istream& is,
-        const ::std::string& sid,
-        ::xml_schema::flags f,
-        const ::xml_schema::properties& p)
+character_player (::std::istream& is,
+                  const ::std::string& sid,
+                  ::xml_schema::flags f,
+                  const ::xml_schema::properties& p)
 {
   ::xsd::cxx::xml::auto_initializer i (
     (f & ::xml_schema::flags::dont_initialize) == 0,
     (f & ::xml_schema::flags::keep_dom) == 0);
 
   ::xsd::cxx::xml::sax::std_input_source isrc (is, sid);
-  return ::player (isrc, f, p);
+  return ::character_player (isrc, f, p);
 }
 
 ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
-player (::std::istream& is,
-        const ::std::string& sid,
-        ::xml_schema::error_handler& h,
-        ::xml_schema::flags f,
-        const ::xml_schema::properties& p)
+character_player (::std::istream& is,
+                  const ::std::string& sid,
+                  ::xml_schema::error_handler& h,
+                  ::xml_schema::flags f,
+                  const ::xml_schema::properties& p)
 {
   ::xsd::cxx::xml::auto_initializer i (
     (f & ::xml_schema::flags::dont_initialize) == 0,
     (f & ::xml_schema::flags::keep_dom) == 0);
 
   ::xsd::cxx::xml::sax::std_input_source isrc (is, sid);
-  return ::player (isrc, h, f, p);
+  return ::character_player (isrc, h, f, p);
 }
 
 ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
-player (::std::istream& is,
-        const ::std::string& sid,
-        ::xercesc::DOMErrorHandler& h,
-        ::xml_schema::flags f,
-        const ::xml_schema::properties& p)
+character_player (::std::istream& is,
+                  const ::std::string& sid,
+                  ::xercesc::DOMErrorHandler& h,
+                  ::xml_schema::flags f,
+                  const ::xml_schema::properties& p)
 {
   ::xsd::cxx::xml::sax::std_input_source isrc (is, sid);
-  return ::player (isrc, h, f, p);
+  return ::character_player (isrc, h, f, p);
 }
 
 ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
-player (::xercesc::InputSource& i,
-        ::xml_schema::flags f,
-        const ::xml_schema::properties& p)
+character_player (::xercesc::InputSource& i,
+                  ::xml_schema::flags f,
+                  const ::xml_schema::properties& p)
 {
   ::xsd::cxx::tree::error_handler< char > h;
 
@@ -1409,17 +1409,17 @@ player (::xercesc::InputSource& i,
   h.throw_if_failed< ::xsd::cxx::tree::parsing< char > > ();
 
   ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type > r (
-    ::player (
+    ::character_player (
       d, f | ::xml_schema::flags::own_dom, p));
 
   return r;
 }
 
 ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
-player (::xercesc::InputSource& i,
-        ::xml_schema::error_handler& h,
-        ::xml_schema::flags f,
-        const ::xml_schema::properties& p)
+character_player (::xercesc::InputSource& i,
+                  ::xml_schema::error_handler& h,
+                  ::xml_schema::flags f,
+                  const ::xml_schema::properties& p)
 {
   ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
     ::xsd::cxx::xml::dom::parse< char > (i, h, p, f));
@@ -1428,17 +1428,17 @@ player (::xercesc::InputSource& i,
     throw ::xsd::cxx::tree::parsing< char > ();
 
   ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type > r (
-    ::player (
+    ::character_player (
       d, f | ::xml_schema::flags::own_dom, p));
 
   return r;
 }
 
 ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
-player (::xercesc::InputSource& i,
-        ::xercesc::DOMErrorHandler& h,
-        ::xml_schema::flags f,
-        const ::xml_schema::properties& p)
+character_player (::xercesc::InputSource& i,
+                  ::xercesc::DOMErrorHandler& h,
+                  ::xml_schema::flags f,
+                  const ::xml_schema::properties& p)
 {
   ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
     ::xsd::cxx::xml::dom::parse< char > (i, h, p, f));
@@ -1447,16 +1447,16 @@ player (::xercesc::InputSource& i,
     throw ::xsd::cxx::tree::parsing< char > ();
 
   ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type > r (
-    ::player (
+    ::character_player (
       d, f | ::xml_schema::flags::own_dom, p));
 
   return r;
 }
 
 ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
-player (const ::xercesc::DOMDocument& d,
-        ::xml_schema::flags f,
-        const ::xml_schema::properties& p)
+character_player (const ::xercesc::DOMDocument& d,
+                  ::xml_schema::flags f,
+                  const ::xml_schema::properties& p)
 {
   if (f & ::xml_schema::flags::keep_dom)
   {
@@ -1464,7 +1464,7 @@ player (const ::xercesc::DOMDocument& d,
       static_cast< ::xercesc::DOMDocument* > (d.cloneNode (true)));
 
     ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type > r (
-      ::player (
+      ::character_player (
         c, f | ::xml_schema::flags::own_dom, p));
 
     return r;
@@ -1474,7 +1474,7 @@ player (const ::xercesc::DOMDocument& d,
   const ::xsd::cxx::xml::qualified_name< char > n (
     ::xsd::cxx::xml::dom::name< char > (e));
 
-  if (n.name () == "player" &&
+  if (n.name () == "character_player" &&
       n.namespace_ () == "urn:rpg")
   {
     ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type > r (
@@ -1486,14 +1486,14 @@ player (const ::xercesc::DOMDocument& d,
   throw ::xsd::cxx::tree::unexpected_element < char > (
     n.name (),
     n.namespace_ (),
-    "player",
+    "character_player",
     "urn:rpg");
 }
 
 ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type >
-player (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
-        ::xml_schema::flags f,
-        const ::xml_schema::properties&)
+character_player (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
+                  ::xml_schema::flags f,
+                  const ::xml_schema::properties&)
 {
   ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > c (
     ((f & ::xml_schema::flags::keep_dom) &&
@@ -1512,7 +1512,7 @@ player (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
                      (c.get () ? &c : &d),
                      0);
 
-  if (n.name () == "player" &&
+  if (n.name () == "character_player" &&
       n.namespace_ () == "urn:rpg")
   {
     ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type > r (
@@ -1524,7 +1524,7 @@ player (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
   throw ::xsd::cxx::tree::unexpected_element < char > (
     n.name (),
     n.namespace_ (),
-    "player",
+    "character_player",
     "urn:rpg");
 }
 
@@ -1803,17 +1803,17 @@ operator<< (::xercesc::DOMElement& e, const RPG_Character_PlayerXML_XMLTree_Type
 }
 
 void
-player (::std::ostream& o,
-        const ::RPG_Character_PlayerXML_XMLTree_Type& s,
-        const ::xml_schema::namespace_infomap& m,
-        const ::std::string& e,
-        ::xml_schema::flags f)
+character_player (::std::ostream& o,
+                  const ::RPG_Character_PlayerXML_XMLTree_Type& s,
+                  const ::xml_schema::namespace_infomap& m,
+                  const ::std::string& e,
+                  ::xml_schema::flags f)
 {
   ::xsd::cxx::xml::auto_initializer i (
     (f & ::xml_schema::flags::dont_initialize) == 0);
 
   ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
-    ::player (s, m, f));
+    ::character_player (s, m, f));
 
   ::xsd::cxx::tree::error_handler< char > h;
 
@@ -1825,18 +1825,18 @@ player (::std::ostream& o,
 }
 
 void
-player (::std::ostream& o,
-        const ::RPG_Character_PlayerXML_XMLTree_Type& s,
-        ::xml_schema::error_handler& h,
-        const ::xml_schema::namespace_infomap& m,
-        const ::std::string& e,
-        ::xml_schema::flags f)
+character_player (::std::ostream& o,
+                  const ::RPG_Character_PlayerXML_XMLTree_Type& s,
+                  ::xml_schema::error_handler& h,
+                  const ::xml_schema::namespace_infomap& m,
+                  const ::std::string& e,
+                  ::xml_schema::flags f)
 {
   ::xsd::cxx::xml::auto_initializer i (
     (f & ::xml_schema::flags::dont_initialize) == 0);
 
   ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
-    ::player (s, m, f));
+    ::character_player (s, m, f));
   ::xsd::cxx::xml::dom::ostream_format_target t (o);
   if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
   {
@@ -1845,15 +1845,15 @@ player (::std::ostream& o,
 }
 
 void
-player (::std::ostream& o,
-        const ::RPG_Character_PlayerXML_XMLTree_Type& s,
-        ::xercesc::DOMErrorHandler& h,
-        const ::xml_schema::namespace_infomap& m,
-        const ::std::string& e,
-        ::xml_schema::flags f)
+character_player (::std::ostream& o,
+                  const ::RPG_Character_PlayerXML_XMLTree_Type& s,
+                  ::xercesc::DOMErrorHandler& h,
+                  const ::xml_schema::namespace_infomap& m,
+                  const ::std::string& e,
+                  ::xml_schema::flags f)
 {
   ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
-    ::player (s, m, f));
+    ::character_player (s, m, f));
   ::xsd::cxx::xml::dom::ostream_format_target t (o);
   if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
   {
@@ -1862,14 +1862,14 @@ player (::std::ostream& o,
 }
 
 void
-player (::xercesc::XMLFormatTarget& t,
-        const ::RPG_Character_PlayerXML_XMLTree_Type& s,
-        const ::xml_schema::namespace_infomap& m,
-        const ::std::string& e,
-        ::xml_schema::flags f)
+character_player (::xercesc::XMLFormatTarget& t,
+                  const ::RPG_Character_PlayerXML_XMLTree_Type& s,
+                  const ::xml_schema::namespace_infomap& m,
+                  const ::std::string& e,
+                  ::xml_schema::flags f)
 {
   ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
-    ::player (s, m, f));
+    ::character_player (s, m, f));
 
   ::xsd::cxx::tree::error_handler< char > h;
 
@@ -1880,15 +1880,15 @@ player (::xercesc::XMLFormatTarget& t,
 }
 
 void
-player (::xercesc::XMLFormatTarget& t,
-        const ::RPG_Character_PlayerXML_XMLTree_Type& s,
-        ::xml_schema::error_handler& h,
-        const ::xml_schema::namespace_infomap& m,
-        const ::std::string& e,
-        ::xml_schema::flags f)
+character_player (::xercesc::XMLFormatTarget& t,
+                  const ::RPG_Character_PlayerXML_XMLTree_Type& s,
+                  ::xml_schema::error_handler& h,
+                  const ::xml_schema::namespace_infomap& m,
+                  const ::std::string& e,
+                  ::xml_schema::flags f)
 {
   ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
-    ::player (s, m, f));
+    ::character_player (s, m, f));
   if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
   {
     throw ::xsd::cxx::tree::serialization< char > ();
@@ -1896,15 +1896,15 @@ player (::xercesc::XMLFormatTarget& t,
 }
 
 void
-player (::xercesc::XMLFormatTarget& t,
-        const ::RPG_Character_PlayerXML_XMLTree_Type& s,
-        ::xercesc::DOMErrorHandler& h,
-        const ::xml_schema::namespace_infomap& m,
-        const ::std::string& e,
-        ::xml_schema::flags f)
+character_player (::xercesc::XMLFormatTarget& t,
+                  const ::RPG_Character_PlayerXML_XMLTree_Type& s,
+                  ::xercesc::DOMErrorHandler& h,
+                  const ::xml_schema::namespace_infomap& m,
+                  const ::std::string& e,
+                  ::xml_schema::flags f)
 {
   ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
-    ::player (s, m, f));
+    ::character_player (s, m, f));
   if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
   {
     throw ::xsd::cxx::tree::serialization< char > ();
@@ -1912,15 +1912,15 @@ player (::xercesc::XMLFormatTarget& t,
 }
 
 void
-player (::xercesc::DOMDocument& d,
-        const ::RPG_Character_PlayerXML_XMLTree_Type& s,
-        ::xml_schema::flags)
+character_player (::xercesc::DOMDocument& d,
+                  const ::RPG_Character_PlayerXML_XMLTree_Type& s,
+                  ::xml_schema::flags)
 {
   ::xercesc::DOMElement& e (*d.getDocumentElement ());
   const ::xsd::cxx::xml::qualified_name< char > n (
     ::xsd::cxx::xml::dom::name< char > (e));
 
-  if (n.name () == "player" &&
+  if (n.name () == "character_player" &&
       n.namespace_ () == "urn:rpg")
   {
     e << s;
@@ -1930,23 +1930,23 @@ player (::xercesc::DOMDocument& d,
     throw ::xsd::cxx::tree::unexpected_element < char > (
       n.name (),
       n.namespace_ (),
-      "player",
+      "character_player",
       "urn:rpg");
   }
 }
 
 ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >
-player (const ::RPG_Character_PlayerXML_XMLTree_Type& s,
-        const ::xml_schema::namespace_infomap& m,
-        ::xml_schema::flags f)
+character_player (const ::RPG_Character_PlayerXML_XMLTree_Type& s,
+                  const ::xml_schema::namespace_infomap& m,
+                  ::xml_schema::flags f)
 {
   ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
     ::xsd::cxx::xml::dom::serialize< char > (
-      "player",
+      "character_player",
       "urn:rpg",
       m, f));
 
-  ::player (*d, s, f);
+  ::character_player (*d, s, f);
   return d;
 }
 

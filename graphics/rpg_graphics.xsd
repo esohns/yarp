@@ -30,6 +30,7 @@
       <xsd:enumeration value="CATEGORY_FONT"/>
       <xsd:enumeration value="CATEGORY_INTERFACE"/>
       <xsd:enumeration value="CATEGORY_IMAGE"/>
+      <xsd:enumeration value="CATEGORY_SPRITE"/>
       <xsd:enumeration value="CATEGORY_TILE"/>
       <xsd:enumeration value="CATEGORY_TILESET"/>
     </xsd:restriction>
@@ -110,9 +111,7 @@
 
   <xsd:simpleType name="RPG_Graphics_DoorStyle_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="DOORSTYLE_IRON"/>
-      <xsd:enumeration value="DOORSTYLE_IRON_GATE"/>
-      <xsd:enumeration value="DOORSTYLE_STONE"/>
+      <xsd:enumeration value="DOORSTYLE_DRAWBRIDGE"/>
       <xsd:enumeration value="DOORSTYLE_TELEPORTER"/>
       <xsd:enumeration value="DOORSTYLE_WOOD"/>
     </xsd:restriction>
@@ -152,6 +151,13 @@
       <xsd:enumeration value="IMAGE_INTERFACE"/>
       <xsd:enumeration value="IMAGE_INTRO_MAIN"/>
       <xsd:enumeration value="IMAGE_WM_ICON"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Graphics_Sprite_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SPRITE_GOBLIN"/>
+      <xsd:enumeration value="SPRITE_PRIEST"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -208,7 +214,7 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Graphics_GraphicTypeUnion_Type">
-    <xsd:union memberTypes="RPG_Graphics_Cursor_Type RPG_Graphics_Font_Type RPG_Graphics_Image_Type RPG_Graphics_TileGraphic_Type RPG_Graphics_TileSetGraphic_Type"/>
+    <xsd:union memberTypes="RPG_Graphics_Cursor_Type RPG_Graphics_Font_Type RPG_Graphics_Image_Type RPG_Graphics_Sprite_Type RPG_Graphics_TileGraphic_Type RPG_Graphics_TileSetGraphic_Type"/>
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Graphics_InterfaceElementType_Type">

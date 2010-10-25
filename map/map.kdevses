@@ -2,8 +2,8 @@
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="1" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/map/scripts/Makefile.am" >
-   <View0 Encoding="" line="5" Type="Source" />
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/map/rpg_map_common.h" >
+   <View0 Encoding="" line="48" Type="Source" />
   </Doc0>
  </DocsAndViews>
  <pluginList>
@@ -23,7 +23,6 @@
    <bookmarks>
     <bookmark url="/home/unfv/Projects/RPG/map/rpg_map_common_tools.cpp" >
      <mark line="1898" />
-     <mark line="134" />
     </bookmark>
    </bookmarks>
   </kdevbookmarks>

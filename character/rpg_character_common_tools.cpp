@@ -950,7 +950,8 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   catch (const std::bad_alloc& exception)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught std::bad_alloc, continuing\n")));
+               ACE_TEXT("caught exception: \"%s\", continuing\n"),
+               exception.what()));
   }
 
   // step14: instantiate player character
