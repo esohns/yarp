@@ -43,7 +43,7 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
              std::make_pair(0, 0), // offset
              std::string(),        // title
              NULL),                // background
-//    myMap(floorPlan_in),
+//    myLevelState(floorPlan_in),
 //    myCurrentMapStyle(mapStyle_in),
 //    myCurrentFloorSet(),
 //    myCurrentWallSet(),
@@ -161,7 +161,7 @@ RPG_Client_WindowLevel::setView(const int& offsetX_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setView"));
 
-  RPG_Map_Dimensions_t dimensions = myMap.getDimensions();
+  RPG_Map_Dimensions_t dimensions = myLevelState.getDimensions();
 
   // handle over-/underruns
   if ((offsetX_in < 0) &&
@@ -187,7 +187,7 @@ RPG_Client_WindowLevel::centerView()
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::centerView"));
 
-  RPG_Map_Dimensions_t dimensions = myMap.getDimensions();
+  RPG_Map_Dimensions_t dimensions = myLevelState.getDimensions();
   myView = std::make_pair(dimensions.first / 2,
                           dimensions.second / 2);
 }
@@ -201,7 +201,7 @@ RPG_Client_WindowLevel::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
   // clean up
   myWallTiles.clear();
 
-  myMap.init(floorPlan_in);
+  myLevelState.init(floorPlan_in);
 
   // init style
   RPG_Graphics_StyleUnion style;
@@ -222,7 +222,7 @@ RPG_Client_WindowLevel::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
 
   // init door tiles / position
   RPG_Engine_Common_Tools::initDoors(floorPlan_in,
-                                     myMap,
+                                     myLevelState,
                                      myCurrentDoorSet,
                                      myDoorTiles);
 
@@ -339,9 +339,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
       // off-map ?
       if ((current_map_position.second < 0) ||
-          (current_map_position.second >= ACE_static_cast(int, myMap.getDimensions().second)) ||
+          (current_map_position.second >= ACE_static_cast(int, myLevelState.getDimensions().second)) ||
           (current_map_position.first < 0) ||
-          (current_map_position.first >= ACE_static_cast(int, myMap.getDimensions().first)))
+          (current_map_position.first >= ACE_static_cast(int, myLevelState.getDimensions().first)))
         continue;
 
       // floor tile rotation
@@ -357,9 +357,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
                                                             myView);
 
       // step1: unmapped areas
-      if ((myMap.getElement(current_map_position) == MAPELEMENT_UNMAPPED) ||
+      if ((myLevelState.getElement(current_map_position) == MAPELEMENT_UNMAPPED) ||
           // *NOTE*: walls are drawn together with the floor...
-          (myMap.getElement(current_map_position) == MAPELEMENT_WALL))
+          (myLevelState.getElement(current_map_position) == MAPELEMENT_WALL))
       {
         RPG_Graphics_Surface::put(screen_position.first,
                                   screen_position.second,
@@ -368,9 +368,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
 //         // off the map ? --> continue
 //         if ((current_map_position.second < 0) ||
-//             (current_map_position.second >= myMap.getDimensions().second) ||
+//             (current_map_position.second >= myLevelState.getDimensions().second) ||
 //             (current_map_position.first < 0) ||
-//             (current_map_position.first >= myMap.getDimensions().first))
+//             (current_map_position.first >= myLevelState.getDimensions().first))
 
         // advance floor iterator
         std::advance(floor_iterator, myCurrentFloorSet.rows);
@@ -379,8 +379,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
       } // end IF
 
       // step2: floor
-      if ((myMap.getElement(current_map_position) == MAPELEMENT_FLOOR) ||
-          (myMap.getElement(current_map_position) == MAPELEMENT_DOOR))
+      if ((myLevelState.getElement(current_map_position) == MAPELEMENT_FLOOR) ||
+          (myLevelState.getElement(current_map_position) == MAPELEMENT_DOOR))
       {
         RPG_Graphics_Surface::put(screen_position.first,
                                   screen_position.second,
@@ -439,7 +439,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
     current_map_position.second = myView.second + i;
     // off the map ? --> continue
     if ((current_map_position.second < 0) ||
-        (current_map_position.second >= ACE_static_cast(int, myMap.getDimensions().second)))
+        (current_map_position.second >= ACE_static_cast(int, myLevelState.getDimensions().second)))
       continue;
 
     for (j = diff + i;
@@ -449,7 +449,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
       current_map_position.first = myView.first + j;
       // off the map ? --> continue
       if ((current_map_position.first < 0) ||
-          (current_map_position.first >= ACE_static_cast(int, myMap.getDimensions().first)))
+          (current_map_position.first >= ACE_static_cast(int, myLevelState.getDimensions().first)))
         continue;
 
       // transform map coordinates into screen coordinates
@@ -519,7 +519,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
       // step4: ceiling
       if (RPG_Engine_Common_Tools::hasCeiling(current_map_position,
-                                              myMap))
+                                              myLevelState))
       {
         RPG_Graphics_Surface::put(screen_position.first,
                                   (screen_position.second -
@@ -657,7 +657,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
       // find map square
       RPG_Graphics_Position_t map_position = RPG_Engine_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
                                                                                                 event_in.motion.y),
-                                                                                 myMap.getDimensions(),
+                                                                                 myLevelState.getDimensions(),
                                                                                  mySize,
                                                                                  myView);
 //       ACE_DEBUG((LM_DEBUG,
@@ -739,7 +739,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
       // set an appropriate cursor
       RPG_Graphics_Cursor cursor_type = RPG_Engine_Common_Tools::getCursor(map_position,
-                                                                           myMap);
+                                                                           myLevelState);
       if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
       {
         // *NOTE*: restore cursor BG first
@@ -766,7 +766,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
       {
         RPG_Graphics_Position_t map_position = RPG_Engine_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
                                                                                                   event_in.button.y),
-                                                                                   myMap.getDimensions(),
+                                                                                   myLevelState.getDimensions(),
                                                                                    mySize,
                                                                                    myView);
 
@@ -778,17 +778,17 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                    map_position.second));
 
         // closed door ? --> (try to) open it
-        if (myMap.getElement(map_position) == MAPELEMENT_DOOR)
+        if (myLevelState.getElement(map_position) == MAPELEMENT_DOOR)
         {
-          RPG_Map_Door_t door = myMap.getDoor(map_position);
+          RPG_Map_Door_t door = myLevelState.getDoor(map_position);
           if (!door.is_open)
           {
-            myMap.handleDoor(map_position,
+            myLevelState.handleDoor(map_position,
                              true); // --> open
 
             // change tile
             RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-            orientation = RPG_Engine_Common_Tools::getDoorOrientation(myMap,
+            orientation = RPG_Engine_Common_Tools::getDoorOrientation(myLevelState,
                                                                       map_position);
             switch (orientation)
             {
@@ -1236,7 +1236,7 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
       // init door tiles / position
       RPG_Engine_Common_Tools::updateDoors(myCurrentDoorSet,
-                                           myMap,
+                                           myLevelState,
                                            myDoorTiles);
 
       myCurrentMapStyle.door_style = style_in.doorstyle;

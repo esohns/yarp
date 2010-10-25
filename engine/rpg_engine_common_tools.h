@@ -21,12 +21,12 @@
 #define RPG_ENGINE_COMMON_TOOLS_H
 
 #include "rpg_engine_common.h"
+#include "rpg_engine_level.h"
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_cursor.h>
 
 #include <rpg_map_common.h>
-#include <rpg_map_level.h>
 
 #include <rpg_monster_common.h>
 
@@ -74,19 +74,19 @@ class RPG_Engine_Common_Tools
   static void updateWalls(const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
                           RPG_Graphics_WallTileMap_t&);      // input/output value: wall tiles / position
   static void initDoors(const RPG_Map_FloorPlan_t&,        // floor plan
-                        const RPG_Map_Level&,              // state
+                        const RPG_Engine_Level&,              // state
                         const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
                         RPG_Graphics_DoorTileMap_t&);      // return value: door tiles / position
   static void updateDoors(const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
-                          const RPG_Map_Level&,              // state
+                          const RPG_Engine_Level&,              // state
                           RPG_Graphics_DoorTileMap_t&);      // input/output value: door tiles / position
 
   static const bool hasCeiling(const RPG_Map_Position_t&,
-                               const RPG_Map_Level&);
-  static const RPG_Graphics_Orientation getDoorOrientation(const RPG_Map_Level&,       // state
+                               const RPG_Engine_Level&);
+  static const RPG_Graphics_Orientation getDoorOrientation(const RPG_Engine_Level&,       // state
                                                            const RPG_Map_Position_t&); // door
   static const RPG_Graphics_Cursor getCursor(const RPG_Map_Position_t&, // position
-                                             const RPG_Map_Level&);     // state
+                                             const RPG_Engine_Level&);     // state
   // coordinate transformations
   static const RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&,   // position (absolute)
                                                   const RPG_Map_Dimensions_t&,      // map size
@@ -126,7 +126,7 @@ class RPG_Engine_Common_Tools
                         const unsigned short&);             // distance (feet)
 
   static const bool isCorner(const RPG_Map_Position_t&,
-                             const RPG_Map_Level&);
+                             const RPG_Engine_Level&);
 };
 
 #endif

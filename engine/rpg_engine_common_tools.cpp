@@ -1434,7 +1434,7 @@ RPG_Engine_Common_Tools::updateWalls(const RPG_Graphics_WallTileSet_t& tileSet_i
 
 void
 RPG_Engine_Common_Tools::initDoors(const RPG_Map_FloorPlan_t& floorPlan_in,
-                                   const RPG_Map_Level& levelState_in,
+                                   const RPG_Engine_Level& levelState_in,
                                    const RPG_Graphics_DoorTileSet_t& tileSet_in,
                                    RPG_Graphics_DoorTileMap_t& doorTiles_out)
 {
@@ -1493,7 +1493,7 @@ RPG_Engine_Common_Tools::initDoors(const RPG_Map_FloorPlan_t& floorPlan_in,
 
 void
 RPG_Engine_Common_Tools::updateDoors(const RPG_Graphics_DoorTileSet_t& tileSet_in,
-                                     const RPG_Map_Level& levelState_in,
+                                     const RPG_Engine_Level& levelState_in,
                                      RPG_Graphics_DoorTileMap_t& doorTiles_inout)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::updateDoors"));
@@ -1551,7 +1551,7 @@ RPG_Engine_Common_Tools::updateDoors(const RPG_Graphics_DoorTileSet_t& tileSet_i
 
 const bool
 RPG_Engine_Common_Tools::hasCeiling(const RPG_Map_Position_t& position_in,
-                                    const RPG_Map_Level& level_in)
+                                    const RPG_Engine_Level& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::hasCeiling"));
 
@@ -1646,7 +1646,7 @@ RPG_Engine_Common_Tools::hasCeiling(const RPG_Map_Position_t& position_in,
 }
 
 const RPG_Graphics_Orientation
-RPG_Engine_Common_Tools::getDoorOrientation(const RPG_Map_Level& level_in,
+RPG_Engine_Common_Tools::getDoorOrientation(const RPG_Engine_Level& level_in,
                                             const RPG_Map_Position_t& position_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::getDoorOrientation"));
@@ -1668,7 +1668,7 @@ RPG_Engine_Common_Tools::getDoorOrientation(const RPG_Map_Level& level_in,
 
 const RPG_Graphics_Cursor
 RPG_Engine_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
-                                   const RPG_Map_Level& level_in)
+                                   const RPG_Engine_Level& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::getCursor"));
 
@@ -1743,7 +1743,7 @@ RPG_Engine_Common_Tools::map2Screen(const RPG_Graphics_Position_t& position_in,
 
 const bool
 RPG_Engine_Common_Tools::isCorner(const RPG_Map_Position_t& position_in,
-                                  const RPG_Map_Level& level_in)
+                                  const RPG_Engine_Level& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isCorner"));
 

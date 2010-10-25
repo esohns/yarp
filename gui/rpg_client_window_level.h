@@ -20,11 +20,12 @@
 #ifndef RPG_CLIENT_WINDOW_LEVEL_H
 #define RPG_CLIENT_WINDOW_LEVEL_H
 
+#include <rpg_engine_level.h>
+
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_SDL_window_base.h>
 
 #include <rpg_map_common.h>
-#include <rpg_map_level.h>
 
 #include <SDL/SDL.h>
 
@@ -80,7 +81,7 @@ class RPG_Client_WindowLevel
   void initCeiling();
   void initWallBlend();
 
-  RPG_Map_Level               myMap;
+  RPG_Engine_Level            myLevelState;
 
   RPG_Graphics_MapStyle_t     myCurrentMapStyle;
   RPG_Graphics_FloorTileSet_t myCurrentFloorSet;

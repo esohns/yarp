@@ -17,23 +17,37 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RPG_MAP_LEVEL_H
-#define RPG_MAP_LEVEL_H
+#ifndef RPG_ENGINE_LEVEL_H
+#define RPG_ENGINE_LEVEL_H
 
-#include "rpg_map_common.h"
+#include <rpg_map_common.h>
+
+#include <ace/Global_Macros.h>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Map_Level
+class RPG_Engine_Level
 {
  public:
-  RPG_Map_Level(const RPG_Map_FloorPlan_t&); // map
-  virtual ~RPG_Map_Level();
+  RPG_Engine_Level();
+  RPG_Engine_Level(const RPG_Map_FloorPlan_t&);
+  virtual ~RPG_Engine_Level();
 
-  void init(const RPG_Map_FloorPlan_t&); // map
+  void init(const RPG_Map_FloorPlan_t&); // map level
+
+  const RPG_Map_Dimensions_t getDimensions() const;
+  const RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
+
+  const RPG_Map_Door_t getDoor(const RPG_Map_Position_t&) const;
+  void handleDoor(const RPG_Map_Position_t&,
+                  const bool&);              // open ? : close
 
  private:
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Level(const RPG_Engine_Level&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Level& operator=(const RPG_Engine_Level&));
+
   RPG_Map_FloorPlan_t myFloorPlan;
 };
 
