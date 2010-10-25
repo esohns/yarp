@@ -32,6 +32,15 @@ RPG_Common_ReferenceCounter::RPG_Common_ReferenceCounter(const unsigned long& in
 
 }
 
+RPG_Common_ReferenceCounter::RPG_Common_ReferenceCounter(const RPG_Common_ReferenceCounter& counter_in)
+ : myCounter(counter_in.myCounter),
+   myDeleteOnZero(counter_in.myDeleteOnZero),
+   myCondition(counter_in.myLock) // *NOTE*: use the SAME lock !
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::RPG_Common_ReferenceCounter"));
+
+}
+
 RPG_Common_ReferenceCounter::~RPG_Common_ReferenceCounter()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::~RPG_Common_ReferenceCounter"));

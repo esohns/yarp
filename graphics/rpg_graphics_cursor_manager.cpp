@@ -19,6 +19,7 @@
  ***************************************************************************/
 #include "rpg_graphics_cursor_manager.h"
 
+#include "rpg_graphics_surface.h"
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
@@ -28,8 +29,8 @@
 #include <ace/Log_Msg.h>
 
 RPG_Graphics_Cursor_Manager::RPG_Graphics_Cursor_Manager()
- : inherited(),
-   myCurrentType(CURSOR_NORMAL),
+ : myCurrentType(CURSOR_NORMAL),
+   myCurrentGraphic(NULL),
    myBGPosition(std::make_pair(0, 0)),
    myBG(NULL)//,
 //    myCache()
@@ -69,8 +70,7 @@ RPG_Graphics_Cursor_Manager::set(const RPG_Graphics_Cursor& type_in)
   RPG_Graphics_Cursor_CacheConstIterator_t iterator = myCache.find(type_in);
   if (iterator != myCache.end())
   {
-    init((*iterator).second, // image
-         false);             // don't "own" it
+    myCurrentGraphic = (*iterator).second;
 
     // create background surface
     if (myBG)
@@ -128,10 +128,10 @@ RPG_Graphics_Cursor_Manager::set(const RPG_Graphics_Cursor& type_in)
   ACE_ASSERT(!filename.empty());
 
   // load file
-  SDL_Surface* surface = NULL;
-  surface = RPG_Graphics_Surface::load(filename, // file
-                                       true);    // convert to display format
-  if (!surface)
+  myCurrentGraphic = NULL;
+  myCurrentGraphic = RPG_Graphics_Surface::load(filename, // file
+                                                true);    // convert to display format
+  if (!myCurrentGraphic)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
@@ -140,12 +140,8 @@ RPG_Graphics_Cursor_Manager::set(const RPG_Graphics_Cursor& type_in)
     return;
   } // end IF
 
-  // init base class
-  init(surface, // image
-       false);  // don't "own" it
-
   // update cache
-  myCache.insert(std::make_pair(type_in, surface));
+  myCache.insert(std::make_pair(type_in, myCurrentGraphic));
 
   // create background surface
   if (myBG)
@@ -153,14 +149,14 @@ RPG_Graphics_Cursor_Manager::set(const RPG_Graphics_Cursor& type_in)
     SDL_FreeSurface(myBG);
     myBG = NULL;
   } // end IF
-  myBG = RPG_Graphics_Surface::create(surface->w,
-                                      surface->h);
+  myBG = RPG_Graphics_Surface::create(myCurrentGraphic->w,
+                                      myCurrentGraphic->h);
   if (!myBG)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), aborting\n"),
-               surface->w,
-               surface->h));
+               myCurrentGraphic->w,
+               myCurrentGraphic->h));
 
     return;
   } // end IF
@@ -193,7 +189,7 @@ RPG_Graphics_Cursor_Manager::put(const unsigned long& offsetX_in,
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::put"));
 
   // sanity check(s)
-  ACE_ASSERT(mySurface);
+  ACE_ASSERT(myCurrentGraphic);
   ACE_ASSERT(targetSurface_in);
 //   ACE_ASSERT(offsetX_in < ACE_static_cast(unsigned long, targetSurface_in->w));
 //   ACE_ASSERT(offsetY_in < ACE_static_cast(unsigned long, targetSurface_in->h));
@@ -256,8 +252,8 @@ RPG_Graphics_Cursor_Manager::put(const unsigned long& offsetX_in,
   // compute bounding box
   dirtyRegion_out.x = offsetX_in;
   dirtyRegion_out.y = offsetY_in;
-  dirtyRegion_out.w = mySurface->w;
-  dirtyRegion_out.h = mySurface->h;
+  dirtyRegion_out.w = myCurrentGraphic->w;
+  dirtyRegion_out.h = myCurrentGraphic->h;
   // handle clipping
   if ((dirtyRegion_out.x + dirtyRegion_out.w) > targetSurface_in->w)
     dirtyRegion_out.w -= ((dirtyRegion_out.x + dirtyRegion_out.w) - targetSurface_in->w);
@@ -265,7 +261,7 @@ RPG_Graphics_Cursor_Manager::put(const unsigned long& offsetX_in,
     dirtyRegion_out.h -= ((dirtyRegion_out.y + dirtyRegion_out.h) - targetSurface_in->h);
 
   // place cursor
-  if (SDL_BlitSurface(mySurface,         // source
+  if (SDL_BlitSurface(myCurrentGraphic,  // source
                       NULL,              // aspect (--> everything)
                       targetSurface_in,  // target
                       &dirtyRegion_out)) // aspect
@@ -291,8 +287,8 @@ RPG_Graphics_Cursor_Manager::put(const unsigned long& offsetX_in,
 
   // *HACK*: somehow, SDL_BlitSurface zeroes dirtyRegion_out.w, dirtyRegion_out.h...
   // --> reset them
-  dirtyRegion_out.w = mySurface->w;
-  dirtyRegion_out.h = mySurface->h;
+  dirtyRegion_out.w = myCurrentGraphic->w;
+  dirtyRegion_out.h = myCurrentGraphic->h;
 
   // if necessary, adjust dirty region
   if ((bgRect.w != 0) &&

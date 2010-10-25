@@ -22,7 +22,6 @@
 
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
-#include "rpg_graphics_surface.h"
 
 #include <SDL/SDL.h>
 
@@ -36,7 +35,6 @@
   @author Erik Sohns <erik.sohns@web.de>
  */
 class RPG_Graphics_Cursor_Manager
- : public RPG_Graphics_Surface
 {
   // singleton requires access to the ctor/dtor
   friend class ACE_Singleton<RPG_Graphics_Cursor_Manager, ACE_Thread_Mutex>;
@@ -60,8 +58,6 @@ class RPG_Graphics_Cursor_Manager
   void invalidateBG();
 
  private:
-  typedef RPG_Graphics_Surface inherited;
-
   // safety measures
   virtual ~RPG_Graphics_Cursor_Manager();
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Cursor_Manager());
@@ -73,6 +69,7 @@ class RPG_Graphics_Cursor_Manager
   typedef RPG_Graphics_Cursor_Cache_t::const_iterator RPG_Graphics_Cursor_CacheConstIterator_t;
 
   RPG_Graphics_Cursor         myCurrentType;
+  SDL_Surface*                myCurrentGraphic;
 
   // fast(er) updates
   RPG_Graphics_Position_t     myBGPosition;

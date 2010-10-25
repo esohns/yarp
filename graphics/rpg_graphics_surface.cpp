@@ -44,12 +44,41 @@ PNG_read_callback(png_structp png_ptr_in,
   png_ptr_in->io_ptr = (ACE_static_cast(unsigned char*, png_ptr_in->io_ptr) + size_in);
 }
 
-RPG_Graphics_Surface::RPG_Graphics_Surface(const RPG_Graphics_GraphicTypeUnion& type_in,
-                                           const bool& ownSurface_in)
- : mySurface(NULL),
+RPG_Graphics_Surface::RPG_Graphics_Surface()
+ : inherited(1, true),
+   mySurface(NULL),
+//    myType({{RPG_GRAPHICS_CURSOR_INVALID}, RPG_Graphics_GraphicTypeUnion::INVALID}),
    myOwnSurface(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::RPG_Graphics_Surface"));
+
+  myType.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+  myType.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+}
+
+RPG_Graphics_Surface::RPG_Graphics_Surface(const RPG_Graphics_Surface& surface_in)
+ : inherited(surface_in),
+   mySurface(surface_in.mySurface),
+   myType(surface_in.myType),
+   myOwnSurface(surface_in.myOwnSurface)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::RPG_Graphics_Surface"));
+
+  if (myOwnSurface)
+    increase(); // increase reference count
+}
+
+RPG_Graphics_Surface::RPG_Graphics_Surface(const RPG_Graphics_GraphicTypeUnion& type_in,
+                                           const bool& ownSurface_in)
+ : inherited(1, true),
+   mySurface(NULL),
+//    myType({{RPG_GRAPHICS_CURSOR_INVALID}, RPG_Graphics_GraphicTypeUnion::INVALID}),
+   myOwnSurface(false)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::RPG_Graphics_Surface"));
+
+  myType.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+  myType.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
 
   // (try to) load graphic
   mySurface = RPG_Graphics_Common_Tools::loadGraphic(type_in,         // graphic
@@ -68,19 +97,15 @@ RPG_Graphics_Surface::RPG_Graphics_Surface(const RPG_Graphics_GraphicTypeUnion& 
 
 RPG_Graphics_Surface::RPG_Graphics_Surface(SDL_Surface* surface_in,
                                            const bool& ownSurface_in)
- : mySurface(surface_in),
+ : inherited(1, true),
+   mySurface(surface_in),
+//    myType({{RPG_GRAPHICS_CURSOR_INVALID}, RPG_Graphics_GraphicTypeUnion::INVALID}),
    myOwnSurface(ownSurface_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::RPG_Graphics_Surface"));
 
-}
-
-RPG_Graphics_Surface::RPG_Graphics_Surface()
- : mySurface(NULL),
-   myOwnSurface(false)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::RPG_Graphics_Surface"));
-
+  myType.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+  myType.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
 }
 
 RPG_Graphics_Surface::~RPG_Graphics_Surface()
@@ -88,8 +113,25 @@ RPG_Graphics_Surface::~RPG_Graphics_Surface()
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::~RPG_Graphics_Surface"));
 
   // clean up
-  if (myOwnSurface && mySurface)
+  if (myOwnSurface &&
+      mySurface)
     SDL_FreeSurface(mySurface);
+}
+
+const RPG_Graphics_GraphicTypeUnion
+RPG_Graphics_Surface::type() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::type"));
+
+  return myType;
+}
+
+SDL_Surface*
+RPG_Graphics_Surface::surface() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::surface"));
+
+  return mySurface;
 }
 
 void
@@ -121,6 +163,7 @@ RPG_Graphics_Surface::init(const RPG_Graphics_GraphicTypeUnion& type_in,
     return;
   } // end IF
 
+  myType = type_in;
   myOwnSurface = ownSurface_in;
 }
 
@@ -145,6 +188,8 @@ RPG_Graphics_Surface::init(SDL_Surface* surface_in,
   } // end IF
 
   mySurface = surface_in;
+  myType.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+  myType.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
   myOwnSurface = ownSurface_in;
 }
 

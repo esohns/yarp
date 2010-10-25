@@ -28,6 +28,8 @@
 #include "rpg_graphics_tilesetgraphic.h"
 #include "rpg_graphics_graphictypeunion.h"
 
+#include <rpg_common_referencecounter.h>
+
 #include <SDL/SDL.h>
 
 #include <ace/Global_Macros.h>
@@ -38,14 +40,25 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Graphics_Surface
+ : public RPG_Common_ReferenceCounter
 {
  public:
+  RPG_Graphics_Surface();
+  RPG_Graphics_Surface(const RPG_Graphics_Surface&);
   // *NOTE*: if ownership is rejected, the surface will be cached...
   RPG_Graphics_Surface(const RPG_Graphics_GraphicTypeUnion&, // type
                        const bool&);                         // assume ownership ?
   RPG_Graphics_Surface(SDL_Surface*, // SDL surface
                        const bool&); // assume ownership ?
-  virtual ~RPG_Graphics_Surface();
+
+    // *NOTE*: if ownership is rejected, the surface will be cached...
+  void init(const RPG_Graphics_GraphicTypeUnion&, // type
+            const bool&);                         // assume ownership ?
+  void init(SDL_Surface*, // SDL surface
+            const bool&); // assume ownership ?
+  const RPG_Graphics_GraphicTypeUnion type() const;
+  // *WARNING*: NEVER SDL_FreeSurface() the return argument !
+  SDL_Surface* surface() const;
 
   // *NOTE*: results need to be SDL_FreeSurface()d !
   // *WARNING*: display format is not available until AFTER SDL_SetVideoMode() !
@@ -98,20 +111,11 @@ class RPG_Graphics_Surface
   static void update(const SDL_Rect&, // "dirty" rectangle
                      SDL_Surface*);   // target surface (e.g. screen)
 
- protected:
-  // safety measures
-  RPG_Graphics_Surface();
-  // *NOTE*: if ownership is rejected, the surface will be cached...
-  void init(const RPG_Graphics_GraphicTypeUnion&, // type
-            const bool&);                         // assume ownership ?
-  void init(SDL_Surface*, // SDL surface
-            const bool&); // assume ownership ?
-
-  SDL_Surface* mySurface;
-
  private:
+  typedef RPG_Common_ReferenceCounter inherited;
+
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Surface(const RPG_Graphics_Surface&));
+  virtual ~RPG_Graphics_Surface();
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Surface& operator=(const RPG_Graphics_Surface&));
 
   // helper methods
@@ -119,7 +123,9 @@ class RPG_Graphics_Surface
                               const unsigned char*); // source buffer
 //                             const unsigned char&); // alpha (0: transparent --> 255: opaque)
 
-  bool         myOwnSurface;
+  SDL_Surface*                  mySurface;
+  RPG_Graphics_GraphicTypeUnion myType;
+  bool                          myOwnSurface;
 };
 
 #endif
