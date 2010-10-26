@@ -999,7 +999,24 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
       {
         case RPG_Net_Protocol_IRCMessage::NICK:
         {
-          // *TODO*: react to nick changes
+          // remember changed nickname...
+          myCBData.nickname = message_in.params.front();
+
+          GDK_THREADS_ENTER();
+
+          // --> display (changed) nickname
+          // set server tab nickname label
+          GtkLabel* server_tab_nick_label = GTK_LABEL(gtk_builder_get_object(myCBData.builder,
+                                                                             ACE_TEXT_ALWAYS_CHAR("server_tab_nick_label")));
+          ACE_ASSERT(server_tab_nick_label);
+          // --> see Pango Text Attribute Markup Language...
+          std::string nickname_string = ACE_TEXT_ALWAYS_CHAR("nickname: <b>");
+          nickname_string += myCBData.nickname;
+          nickname_string += ACE_TEXT_ALWAYS_CHAR("</b>");
+          gtk_label_set_markup(server_tab_nick_label,
+                               nickname_string.c_str());
+
+          GDK_THREADS_LEAVE();
 
           // *WARNING*: falls through !
         }
