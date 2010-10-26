@@ -545,10 +545,10 @@ nick_entry_kb_focused_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->builder);
 
   // make the "change" button the default widget...
-  GtkButton* server_tab_nick_button = GTK_BUTTON(gtk_builder_get_object(data->builder,
-                                                                        ACE_TEXT_ALWAYS_CHAR("server_tab_nick_button")));
-  ACE_ASSERT(server_tab_nick_button);
-  gtk_widget_grab_default(GTK_WIDGET(server_tab_nick_button));
+  GtkButton* server_tab_users_nick_button = GTK_BUTTON(gtk_builder_get_object(data->builder,
+                                                                              ACE_TEXT_ALWAYS_CHAR("server_tab_users_nick_button")));
+  ACE_ASSERT(server_tab_users_nick_button);
+  gtk_widget_grab_default(GTK_WIDGET(server_tab_users_nick_button));
 
   // propagate the event further...
   return FALSE;
